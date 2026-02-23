@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Yomogi&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-ivory: #FDFBF7;
+  --color-dusty-pink: #D9A0A0;
+  --color-sky-blue: #A9CCE3;
+  --color-mild-yellow: #F9E79F;
+  --color-navy: #1B2631;
+  --color-navy-ink: #2C3E50;
+  
+  --font-handwriting: 'Yomogi', cursive;
+  --font-modern: 'Inter', sans-serif;
+}
+
+body {
+  background-color: #F4F1EA;
+  background-image: radial-gradient(#d1d5db 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  color: #333;
+  font-family: var(--font-modern);
+}
+
+.notebook-paper {
+  background-color: #ffffff;
+  background-image: linear-gradient(#f3f4f6 1px, transparent 1px);
+  background-size: 100% 2.5rem;
+  background-position: 0 1.25rem;
+  box-shadow: 
+    0 20px 40px -10px rgba(0, 0, 0, 0.08),
+    0 10px 15px -5px rgba(0, 0, 0, 0.03),
+    -15px 0 20px -10px rgba(0, 0, 0, 0.04);
+  border-left: 2px solid #fca5a5;
+}
+
+.sticky-note {
+  background-color: #FEF9E7;
+  box-shadow: 3px 5px 15px rgba(0,0,0,0.08);
+  position: relative;
+  transform: rotate(-1deg);
+  transition: transform 0.3s ease;
+}
+.sticky-note:hover {
+  transform: rotate(0deg) scale(1.02);
+}
+
+.font-handwriting {
+  font-family: var(--font-handwriting);
+}
+
+.font-modern {
+  font-family: var(--font-modern);
+}
+
+.masking-tape {
+  position: relative;
+}
+.masking-tape::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 140px;
+  height: 28px;
+  background-color: rgba(249, 231, 159, 0.8);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  z-index: 10;
+}
