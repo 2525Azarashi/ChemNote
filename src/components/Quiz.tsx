@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, Edit3, ArrowLeft } from 'lucide-react';
 
 interface QuizProps {
@@ -9,6 +9,10 @@ interface QuizProps {
 
 export function Quiz({ chapter, onFinish, onBack }: QuizProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleOptionSelect = (sqId: string, option: string) => {
     setAnswers(prev => ({ ...prev, [sqId]: option }));

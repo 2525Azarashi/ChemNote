@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { chemistryData } from '../data/chemistryData';
 import { ChevronRight, Target } from 'lucide-react';
 
@@ -7,15 +7,12 @@ interface ChapterSelectionProps {
 }
 
 export function ChapterSelection({ onSelectChapter }: ChapterSelectionProps) {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="w-full notebook-paper rounded-2xl p-8 md:p-12">
-      <div className="text-center mb-12 relative">
-        <div className="masking-tape inline-block">
-          <h2 className="text-4xl font-handwriting text-[#2C3E50] font-bold px-8 py-2">
-            どこから始めますか？
-          </h2>
-        </div>
-      </div>
       
       <div className="space-y-20">
         {chemistryData.parts.map(part => {

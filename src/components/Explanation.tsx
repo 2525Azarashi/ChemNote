@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle } from 'lucide-react';
 
 interface ExplanationProps {
   chapter: any;
@@ -10,9 +10,51 @@ interface ExplanationProps {
 export function Explanation({ chapter, answers, onBack }: ExplanationProps) {
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const toggleGrade = (criteriaId: string) => {
     setSelfGrades(prev => ({ ...prev, [criteriaId]: !prev[criteriaId] }));
   };
+
+  const weakAreas = useMemo(() => {
+    const analysis: Record<string, { total: number; correct: number }> = {};
+
+    chapter.miniTest.forEach((q: any) => {
+      const category = q.category || 'その他';
+      if (!analysis[category]) {
+        analysis[category] = { total: 0, correct: 0 };
+      }
+
+      q.subQuestions.forEach((sq: any) => {
+        analysis[category].total += 1;
+
+        if (sq.type === 'descriptive') {
+           if (sq.gradingCriteria) {
+             const criteriaCount = sq.gradingCriteria.length;
+             let checkedCount = 0;
+             sq.gradingCriteria.forEach((_: any, idx: number) => {
+               if (selfGrades[`${sq.id}_${idx}`]) checkedCount++;
+             });
+             analysis[category].correct += (checkedCount / criteriaCount);
+           }
+        } else {
+          if (answers[sq.id] === sq.correctAnswer) {
+            analysis[category].correct += 1;
+          }
+        }
+      });
+    });
+
+    return Object.entries(analysis)
+      .map(([category, stats]) => ({
+        category,
+        percentage: Math.round((stats.correct / stats.total) * 100)
+      }))
+      .filter(item => item.percentage < 100)
+      .sort((a, b) => a.percentage - b.percentage);
+  }, [chapter, answers, selfGrades]);
 
   if (chapter.miniTest.length === 0) {
     return (
@@ -38,6 +80,53 @@ export function Explanation({ chapter, answers, onBack }: ExplanationProps) {
           {chapter.realTitle}
         </div>
       </div>
+
+      {/* Weak Areas Analysis */}
+      {weakAreas.length > 0 && (
+        <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-red-100 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#FFB7B2] to-[#D9A0A0]"></div>
+          <h3 className="text-xl font-handwriting font-bold text-[#2C3E50] mb-6 flex items-center gap-2">
+            <TrendingUp className="text-[#D9A0A0]" />
+            <span>分析結果：復習推奨エリア</span>
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {weakAreas.map((area) => (
+              <div key={area.category} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                <div className="flex justify-between items-end mb-3">
+                  <div className="flex items-center gap-2 text-gray-700 font-bold">
+                    <AlertTriangle className="text-[#D9A0A0]" size={18} />
+                    <span>{area.category}</span>
+                  </div>
+                  <span className="font-mono font-bold text-2xl text-[#D9A0A0]">
+                    {area.percentage}<span className="text-sm ml-0.5">%</span>
+                  </span>
+                </div>
+                
+                {/* Gauge/Slider UI */}
+                <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+                  <div 
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#FFB7B2] to-[#ff8080] rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${area.percentage}%` }}
+                  />
+                  {/* Stripes pattern overlay for texture */}
+                  <div className="absolute inset-0 opacity-30" 
+                       style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.5) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.5) 50%,rgba(255,255,255,.5) 75%,transparent 75%,transparent)', backgroundSize: '1rem 1rem' }} 
+                  />
+                </div>
+                <div className="flex justify-between mt-1 text-xs text-gray-400 font-mono">
+                  <span>0%</span>
+                  <span>50%</span>
+                  <span>100%</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-sm text-gray-500 mt-4 text-right font-modern">
+            ※ 記述問題は自己採点チェックを入れるとスコアに反映されます
+          </p>
+        </div>
+      )}
 
       {chapter.miniTest.map((q: any, i: number) => (
         <div key={q.id} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
