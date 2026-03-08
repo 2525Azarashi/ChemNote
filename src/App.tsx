@@ -55,7 +55,7 @@ export default function App() {
   return (
     <div className="min-h-screen w-full flex justify-center items-center py-6 md:py-12 px-4 md:px-8">
       {/* Mobile Toggle Button */}
-      <div className="fixed bottom-4 right-4 z-50 md:hidden">
+      <div className={`fixed bottom-4 right-4 z-50 ${forceDesktop ? 'block' : 'md:hidden'}`}>
         <button
           onClick={() => setForceDesktop(!forceDesktop)}
           className="bg-white p-3 rounded-full shadow-lg border border-gray-200 flex items-center justify-center text-gray-600 hover:text-[#A9CCE3] transition-colors"

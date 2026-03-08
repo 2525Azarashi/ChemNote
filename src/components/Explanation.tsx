@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { formatText } from '../utils/textFormatter';
 
 interface ExplanationProps {
   chapter: any;
@@ -156,11 +157,9 @@ export function Explanation({ chapter, answers, onBack }: ExplanationProps) {
               問題 {currentQuestionIndex + 1} / {chapter.miniTest.length}
             </div>
           </div>
-          <p className="text-sm md:text-base text-gray-700 font-modern leading-relaxed"
-             dangerouslySetInnerHTML={{
-               __html: currentQuestion.text.replace(/\n/g, '<br/>').replace(/<u>/g, '<u class="decoration-[#D9A0A0] decoration-4 underline-offset-4">')
-             }}
-          />
+          <div className="text-sm md:text-base text-gray-700 font-modern leading-relaxed">
+            {formatText(currentQuestion.text)}
+          </div>
         </div>
 
         {/* Answers & Results */}
@@ -180,10 +179,12 @@ export function Explanation({ chapter, answers, onBack }: ExplanationProps) {
                       <div className="flex-1 w-full">
                         <div className="text-[10px] md:text-xs text-gray-500 mb-1">あなたの解答</div>
                         <div className="font-bold text-sm md:text-base text-gray-700 mb-3 md:mb-4 whitespace-pre-wrap bg-white p-2 rounded-lg border border-gray-100 sm:border-none sm:bg-transparent sm:p-0">
-                          {answers[sq.id] || '未解答'}
+                          {formatText(answers[sq.id] || '未解答')}
                         </div>
                         <div className="text-[10px] md:text-xs text-gray-500 mb-1">模範解答</div>
-                        <div className="font-bold text-sm md:text-base text-[#1B2631] mb-3 md:mb-4 bg-white p-2 rounded-lg border border-gray-100 sm:border-none sm:bg-transparent sm:p-0">{sq.correctAnswer}</div>
+                        <div className="font-bold text-sm md:text-base text-[#1B2631] mb-3 md:mb-4 bg-white p-2 rounded-lg border border-gray-100 sm:border-none sm:bg-transparent sm:p-0">
+                          {formatText(sq.correctAnswer)}
+                        </div>
                         
                         <div className="bg-white p-3 md:p-4 rounded-lg border border-blue-200 shadow-sm">
                           <div className="text-xs md:text-sm font-bold text-[#2C3E50] mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2">
@@ -199,7 +200,9 @@ export function Explanation({ chapter, answers, onBack }: ExplanationProps) {
                                   <div className={`mt-0.5 w-4 h-4 md:w-5 md:h-5 rounded border flex items-center justify-center transition-colors shrink-0 ${isChecked ? 'bg-blue-500 border-blue-500' : 'border-gray-300 group-hover:border-blue-400 bg-white'}`}>
                                     {isChecked && <CheckCircle2 className="text-white w-3 h-3 md:w-3.5 md:h-3.5" />}
                                   </div>
-                                  <span className={`text-xs md:text-sm leading-tight ${isChecked ? 'text-gray-800 font-medium' : 'text-gray-600'}`}>{criteria}</span>
+                                  <span className={`text-xs md:text-sm leading-tight ${isChecked ? 'text-gray-800 font-medium' : 'text-gray-600'}`}>
+                                    {formatText(criteria)}
+                                  </span>
                                 </label>
                               );
                             })}
@@ -223,18 +226,20 @@ export function Explanation({ chapter, answers, onBack }: ExplanationProps) {
                   <div className="flex-1 w-full">
                     <div className="text-[10px] md:text-xs text-gray-500 mb-1">あなたの解答</div>
                     <div className={`font-bold text-sm md:text-base bg-white p-2 rounded-lg border border-gray-100 sm:border-none sm:bg-transparent sm:p-0 ${isCorrect ? 'text-green-600' : 'text-red-500 line-through opacity-70'}`}>
-                      {answers[sq.id] || '未解答'}
+                      {formatText(answers[sq.id] || '未解答')}
                     </div>
                     {!isCorrect && (
                       <div className="mt-2">
                         <div className="text-[10px] md:text-xs text-gray-500 mb-1">正解</div>
-                        <div className="font-bold text-sm md:text-base text-[#1B2631] bg-white p-2 rounded-lg border border-gray-100 sm:border-none sm:bg-transparent sm:p-0">{sq.correctAnswer}</div>
+                        <div className="font-bold text-sm md:text-base text-[#1B2631] bg-white p-2 rounded-lg border border-gray-100 sm:border-none sm:bg-transparent sm:p-0">
+                          {formatText(sq.correctAnswer)}
+                        </div>
                       </div>
                     )}
                     {sq.partialCreditCriteria && (
                       <div className="mt-2 md:mt-3 text-[10px] md:text-xs bg-yellow-50 text-yellow-800 p-2 rounded flex items-start gap-1">
                         <AlertCircle className="shrink-0 mt-0.5 w-3 h-3 md:w-3.5 md:h-3.5" />
-                        <span>{sq.partialCreditCriteria}</span>
+                        <span>{formatText(sq.partialCreditCriteria)}</span>
                       </div>
                     )}
                   </div>
@@ -252,37 +257,78 @@ export function Explanation({ chapter, answers, onBack }: ExplanationProps) {
               <Lightbulb className="text-[#F9E79F] w-4 h-4 md:w-5 md:h-5" />
               <span>解説・論理ツリー</span>
             </h4>
-            <p className="text-xs md:text-sm text-gray-700 font-modern whitespace-pre-wrap leading-relaxed mb-6 md:mb-8">
-              {currentQuestion.explanation}
-            </p>
+            <div className="text-xs md:text-sm text-gray-700 font-modern whitespace-pre-wrap leading-relaxed mb-6 md:mb-8">
+              {formatText(currentQuestion.explanation)}
+            </div>
 
             <div className="space-y-4 md:space-y-6">
-              <div>
-                <h5 className="font-bold text-xs md:text-sm text-[#2C3E50] mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2">
-                  <BookOpen className="text-[#A9CCE3] w-4 h-4 md:w-4 md:h-4" />
-                  <span>周辺知識</span>
-                </h5>
-                <ul className="list-disc list-inside space-y-1.5 md:space-y-2 text-xs md:text-sm text-gray-600 font-modern">
-                  {currentQuestion.surroundingKnowledge.map((k: string, idx: number) => (
-                    <li key={idx} className="pl-1 md:pl-2 leading-relaxed">{k}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-white p-4 md:p-5 rounded-xl border border-dashed border-[#D9A0A0]">
-                <h5 className="font-bold text-xs md:text-sm text-[#D9A0A0] mb-2 md:mb-3">さらに深掘り</h5>
-                <div className="space-y-3 md:space-y-4">
-                  {currentQuestion.deepDiveTopics.map((topic: string, idx: number) => {
-                    const [title, ...content] = topic.split('\n');
-                    return (
-                      <div key={idx}>
-                        <div className="font-bold text-gray-700 text-[11px] md:text-xs mb-1">{title}</div>
-                        <div className="text-gray-600 text-[11px] md:text-xs leading-relaxed">{content.join('\n')}</div>
-                      </div>
-                    );
-                  })}
+              {currentQuestion.surroundingKnowledge && currentQuestion.surroundingKnowledge.length > 0 && (
+                <div>
+                  <h5 className="font-bold text-xs md:text-sm text-[#2C3E50] mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2">
+                    <BookOpen className="text-[#A9CCE3] w-4 h-4 md:w-4 md:h-4" />
+                    <span>周辺知識・類似問題</span>
+                  </h5>
+                  <div className="space-y-3 md:space-y-4">
+                    {currentQuestion.surroundingKnowledge.map((k: string, idx: number) => {
+                      // Extract title if it exists (e.g., 【基本問題・類似】)
+                      const titleMatch = k.match(/^(【.*?】)(.*)/s);
+                      if (titleMatch) {
+                        return (
+                          <div key={idx} className="bg-white p-3 md:p-4 rounded-lg border border-gray-200 shadow-sm">
+                            <div className="inline-block bg-[#2C3E50] text-white text-[10px] md:text-xs font-bold px-2 py-1 rounded mb-2">
+                              {titleMatch[1].replace(/[【】]/g, '')}
+                            </div>
+                            <div className="text-xs md:text-sm text-gray-700 font-modern leading-relaxed">
+                              {formatText(titleMatch[2].trim())}
+                            </div>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={idx} className="bg-white p-3 md:p-4 rounded-lg border border-gray-200 shadow-sm text-xs md:text-sm text-gray-700 font-modern leading-relaxed">
+                          {formatText(k)}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {currentQuestion.deepDiveTopics && currentQuestion.deepDiveTopics.length > 0 && (
+                <div className="bg-white p-4 md:p-5 rounded-xl border-2 border-dashed border-[#D9A0A0]">
+                  <h5 className="font-bold text-xs md:text-sm text-[#D9A0A0] mb-3 md:mb-4 flex items-center gap-1.5 md:gap-2">
+                    <Search className="w-4 h-4 md:w-4 md:h-4" />
+                    <span>さらに深掘り</span>
+                  </h5>
+                  <div className="space-y-3 md:space-y-4">
+                    {currentQuestion.deepDiveTopics.map((topic: string, idx: number) => {
+                      const titleMatch = topic.match(/^(【.*?】)(.*)/s);
+                      let title = "";
+                      let content = topic;
+                      
+                      if (titleMatch) {
+                        title = titleMatch[1].replace(/[【】]/g, '');
+                        content = titleMatch[2].trim();
+                      } else {
+                        const parts = topic.split('\n');
+                        title = parts[0];
+                        content = parts.slice(1).join('\n');
+                      }
+
+                      return (
+                        <div key={idx} className="bg-[#FDFBF7] p-3 md:p-4 rounded-lg border border-[#D9A0A0]/30">
+                          <div className="font-bold text-[#D9A0A0] text-[11px] md:text-xs mb-2 border-b border-[#D9A0A0]/20 pb-1">
+                            {title}
+                          </div>
+                          <div className="text-gray-700 text-[11px] md:text-xs leading-relaxed whitespace-pre-wrap">
+                            {formatText(content)}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

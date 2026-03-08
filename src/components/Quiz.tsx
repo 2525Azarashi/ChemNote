@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, Edit3, ArrowLeft } from 'lucide-react';
+import { formatText } from '../utils/textFormatter';
 
 interface QuizProps {
   chapter: any;
@@ -85,11 +86,9 @@ export function Quiz({ chapter, onFinish, onBack }: QuizProps) {
             Q{currentQuestionIndex + 1}
           </div>
           
-          <p className="text-sm md:text-base text-gray-800 font-modern mb-6 md:mb-8 leading-relaxed mt-2 md:mt-0"
-             dangerouslySetInnerHTML={{
-               __html: currentQuestion.text.replace(/\n/g, '<br/>').replace(/<u>/g, '<u class="decoration-[#D9A0A0] decoration-4 underline-offset-4">')
-             }}
-          />
+          <div className="text-sm md:text-base text-gray-800 font-modern mb-6 md:mb-8 leading-relaxed mt-2 md:mt-0">
+            {formatText(currentQuestion.text)}
+          </div>
 
           <div className="space-y-4">
             {currentQuestion.subQuestions.map((sq: any) => (
@@ -108,7 +107,7 @@ export function Quiz({ chapter, onFinish, onBack }: QuizProps) {
                             : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3] hover:text-[#A9CCE3]'
                           }`}
                       >
-                        {opt}
+                        {formatText(opt)}
                       </button>
                     ))}
                   </div>
