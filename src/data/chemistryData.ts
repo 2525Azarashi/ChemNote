@@ -1,5 +1,3 @@
-import graphImage from '../assets/graph.jpg';
-
 export const chemistryData = {
   parts: [
     {
@@ -62,7 +60,7 @@ export const chemistryData = {
             {
               id: "q4",
               category: "状態変化のグラフ",
-              text: `問４　下線部①は、水・エタノールの（ ア ）の加熱と、水とエタノールの（ イ ）の加熱のグラフを示したものである。この３つのグラフ①～③をそれぞれ、水のグラフ・エタノールのグラフ・水とエタノールの混合物のグラフに分類し、①～③で示せ。\n\n<img src="${graphImage}" alt="加熱のグラフ" class="w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200" />`,
+              text: `問４　下線部①は、水・エタノールの（ ア ）の加熱と、水とエタノールの（ イ ）の加熱のグラフを示したものである。この３つのグラフ①～③をそれぞれ、水のグラフ・エタノールのグラフ・水とエタノールの混合物のグラフに分類し、①～③で示せ。\n\n<img src="/graph.jpg" alt="加熱のグラフ" class="w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200" />`,
               subQuestions: [
                 { id: "q4_1", label: "水のグラフ", type: "short_answer", correctAnswer: "①", correctAnswerRate: 85 },
                 { id: "q4_2", label: "エタノールのグラフ", type: "short_answer", correctAnswer: "③", correctAnswerRate: 85 },
