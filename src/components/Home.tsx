@@ -1,7 +1,6 @@
 import React from 'react';
 import { BookOpen, ChevronRight, Star, Sparkles, PenTool } from 'lucide-react';
 import { motion } from 'motion/react';
-import logoImage from '../assets/manatob_bg.png';
 
 interface HomeProps {
   onStart: () => void;
@@ -18,7 +17,7 @@ export function Home({ onStart }: HomeProps) {
 
       {/* Logo */}
       <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
-        <img src={logoImage} alt="Logo" className="h-8 sm:h-10 md:h-14 object-contain" referrerPolicy="no-referrer" />
+        <img src="/manatob_bg.png" alt="Logo" className="h-8 sm:h-10 md:h-14 object-contain" referrerPolicy="no-referrer" />
       </div>
 
       {/* Decorative Elements (Stickers/Doodles) */}
