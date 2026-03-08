@@ -22,8 +22,8 @@ export function ModeSelection({ onSelectMode, onBack }: ModeSelectionProps) {
       </button>
 
       {/* Logo */}
-      <div className="absolute top-4 right-4 md:top-6 md:right-6 bg-white/80 p-2 rounded-xl shadow-sm">
-        <img src="https://drive.google.com/uc?export=view&id=1bdaFoRcprvig_57izYdAEzon1gD47_Wk" alt="Logo" className="h-8 md:h-12 object-contain" referrerPolicy="no-referrer" />
+      <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
+        <img src="/manatob_bg.png" alt="Logo" className="h-8 md:h-12 object-contain" />
       </div>
 
       <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-[#2C3E50] mb-8 md:mb-12 mt-12 md:mt-0">

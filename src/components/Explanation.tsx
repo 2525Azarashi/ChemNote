@@ -18,10 +18,6 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Expand the first question by default
-    if (questions.length > 0) {
-      setExpandedQuestionId(questions[0].id);
-    }
   }, [questions]);
 
   const toggleGrade = (criteriaId: string) => {

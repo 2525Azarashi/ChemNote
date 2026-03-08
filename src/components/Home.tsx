@@ -16,8 +16,8 @@ export function Home({ onStart }: HomeProps) {
       </div>
 
       {/* Logo */}
-      <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30 bg-white/80 p-2 rounded-xl shadow-sm">
-        <img src="https://drive.google.com/uc?export=view&id=1bdaFoRcprvig_57izYdAEzon1gD47_Wk" alt="Logo" className="h-8 sm:h-10 md:h-14 object-contain" referrerPolicy="no-referrer" />
+      <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
+        <img src="/manatob_bg.png" alt="Logo" className="h-8 sm:h-10 md:h-14 object-contain" />
       </div>
 
       {/* Decorative Elements (Stickers/Doodles) */}

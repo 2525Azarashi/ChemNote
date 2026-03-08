@@ -13,105 +13,62 @@ export const chemistryData = {
           miniTest: [
             {
               id: "q1",
-              category: "物質の分類",
-              text: "物質を構成する原子の種類を（ ① ）といい、現在およそ１２０種類が存在する。私たちの身の回りにある物質は、大きく２つに分類できる。１種類の物質からできており、一つの化学式で表すことができるものを（ ② ）といい、2種類以上の（ ② ）が混じり合っており、一つの化学式で表すことができないものを（ ③ ）という。さらに、（ ② ）の中で、１種類の（ ① ）のみからできている物質を（ ④ ）といい、２種類以上の（ ① ）からできている物質を（ ⑤ ）と呼ぶ。\n\n問１. 文中の空欄（ ① ）～（ ⑤ ）にあてはまる最も適切な語句を答えよ。",
+              category: "物質の分類と性質",
+              text: "物質の分類と性質に関する次の文章を読み、あとの問いに答えよ。\n\n物質は、現在およそ120種類存在する原子の種類である「元素」から構成されている。物質は大きく分けると、1種類の物質でできている ( ア ) と、2種類以上の ( ア ) が混じり合った ( イ ) に分けられる。 ( ア ) は、酸素や鉄のように1種類の元素からできている ( ウ ) と、水や塩化ナトリウムのように2種類以上の元素からできている ( エ ) が存在する\n\nまた、物質を区別する上で、融点や沸点、密度といった性質も重要である。( ア ) の場合はこれらの値が物質ごとに ( オ ) となるが、( イ ) の場合は、混じっている物質の種類やその割合によって値が ( カ ) するという違いがある。この違いは、①水とエタノールなどの加熱で確認をすることができる。\n\n問1 文章中の空欄 ( ア ) ～ ( カ ) に入る最も適切な語句を答えよ。",
               subQuestions: [
-                { id: "q1_1", label: "①", type: "short_answer", correctAnswer: "元素", correctAnswerRate: 85 },
-                { id: "q1_2", label: "②", type: "short_answer", correctAnswer: "純物質", correctAnswerRate: 78 },
-                { id: "q1_3", label: "③", type: "short_answer", correctAnswer: "混合物", correctAnswerRate: 92 },
-                { id: "q1_4", label: "④", type: "short_answer", correctAnswer: "単体", correctAnswerRate: 65 },
-                { id: "q1_5", label: "⑤", type: "short_answer", correctAnswer: "化合物", correctAnswerRate: 70 }
+                { id: "q1_a", label: "(ア)", type: "short_answer", correctAnswer: "純物質", correctAnswerRate: 85 },
+                { id: "q1_b", label: "(イ)", type: "short_answer", correctAnswer: "混合物", correctAnswerRate: 85 },
+                { id: "q1_c", label: "(ウ)", type: "short_answer", correctAnswer: "単体", correctAnswerRate: 85 },
+                { id: "q1_d", label: "(エ)", type: "short_answer", correctAnswer: "化合物", correctAnswerRate: 85 },
+                { id: "q1_e", label: "(オ)", type: "short_answer", correctAnswer: "一定", correctAnswerRate: 85 },
+                { id: "q1_f", label: "(カ)", type: "short_answer", correctAnswer: "変化", correctAnswerRate: 85 }
               ],
-              explanation: "物質の分類の全体図（フローチャート）を思い描けるかがポイントです。\n・「一つの化学式で表せるか」→ 純物質 と 混合物\n・「何種類の成分からできているか」→ 成分の種類＝元素\n・ 1種類の元素→ 単体、2種類以上の元素→ 化合物",
-              surroundingKnowledge: [
-                "【基本問題・類似】私たちの身の回りにある物質は、大きく2つに分類される。1種類の物質からできており、固有の化学式一つで表すことができるものを（純物質）という。一方、空気や海水のように2種類以上の（純物質）が混ざり合っており、一つの化学式で表すことができないものを（混合物）という。 さらに、（純物質）はそれを構成する成分の種類である（元素）の数によって分けられる。1種類の（元素）のみからできている物質を（単体）といい、2種類以上の（元素）からできている物質を（化合物）という。"
-              ],
-              deepDiveTopics: [
-                "【深掘り】純物質と混合物の見分け方\n純物質は化学式で表せるもの（例：H2O, NaCl）。混合物は複数の化学式が混ざっているもの（例：空気はN2, O2などの混合物）。"
-              ]
+              explanation: "純物質は「一つの化学式で書ける」、混合物は「一つの化学式で書けない」と見分けるのもポイントです。また、水とエタノールの混合物を加熱するグラフのように、混合物は沸点などが一定になりません。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
             },
             {
               id: "q2",
               category: "物質の分類",
-              text: "問２. 次の(ア)～(ク)の物質を、「単体」、「化合物」、「混合物」にそれぞれ分類せよ。\n(ア) 空気  (イ) 水  (ウ) 鉄  (エ) 塩酸 (オ) 塩化ナトリウム\n(カ) 石油  (キ) 海水  (ク) 窒素",
+              text: "問2 次の (1)〜(6) の物質は、文章中の( イ )～（ エ ）のどれに分類されるか答えよ。\n(イ) 混合物　(ウ) 単体　(エ) 化合物\n\n(1) 空気　 (2) 酸素　 (3) 食塩水　 (4) メタン　 (5) 黒鉛　(6) 石油",
               subQuestions: [
-                { id: "q2_a", label: "(ア) 空気", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物", correctAnswerRate: 95 },
-                { id: "q2_b", label: "(イ) 水", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "化合物", correctAnswerRate: 88 },
-                { id: "q2_c", label: "(ウ) 鉄", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "単体", correctAnswerRate: 90 },
-                { id: "q2_d", label: "(エ) 塩酸", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物", correctAnswerRate: 45 },
-                { id: "q2_e", label: "(オ) 塩化ナトリウム", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "化合物", correctAnswerRate: 82 },
-                { id: "q2_f", label: "(カ) 石油", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物", correctAnswerRate: 75 },
-                { id: "q2_g", label: "(キ) 海水", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物", correctAnswerRate: 98 },
-                { id: "q2_h", label: "(ク) 窒素", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "単体", correctAnswerRate: 85 }
+                { id: "q2_1", label: "(1) 空気", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85 },
+                { id: "q2_2", label: "(2) 酸素", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(ウ)", correctAnswerRate: 85 },
+                { id: "q2_3", label: "(3) 食塩水", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85 },
+                { id: "q2_4", label: "(4) メタン", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(エ)", correctAnswerRate: 85 },
+                { id: "q2_5", label: "(5) 黒鉛", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(ウ)", correctAnswerRate: 85 },
+                { id: "q2_6", label: "(6) 石油", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85 }
               ],
-              explanation: "単体は1種類の元素からなる純物質（鉄Fe、窒素N2）。化合物は2種類以上の元素からなる純物質（水H2O、塩化ナトリウムNaCl）。混合物は2種類以上の純物質が混ざったもの（空気、塩酸、石油、海水）。塩酸は塩化水素HClと水H2Oの混合物であることに注意。",
-              surroundingKnowledge: [
-                "単体の例：酸素(O2)、水素(H2)、金(Au)",
-                "化合物の例：二酸化炭素(CO2)、アンモニア(NH3)",
-                "混合物の例：牛乳、岩石、合金"
-              ],
-              deepDiveTopics: [
-                "【深掘り】塩酸はなぜ混合物か？\n「塩酸」は化合物の「塩化水素」を水に溶かした水溶液の名称です。そのため、塩化水素と水という2つの純物質が混ざった「混合物」に分類されます。"
-              ]
+              explanation: "空気や食塩水、海水、石油などは「複数の純物質が混ざったもの」なので混合物です。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
             },
             {
               id: "q3",
-              category: "純物質と混合物の性質",
-              text: "問３. 純物質と混合物の性質に関する次の文章のうち、正しいものを1つ選び、記号で答えよ。\nア. 水とエタノールを混ぜ合わせた液体の沸点は、水と同じ100℃で一定となる。\nイ. 純物質であれば、物質の量が変わっても融点や沸点、密度は常に一定である。\nウ. 混合物の密度や融点は、混じっている物質の種類が同じであれば、その割合（濃度）が変わっても常に一定である。",
+              category: "元素と単体",
+              text: "問３ 物質の構成成分としての「元素」と、実際に存在する物質としての「単体」を区別することは非常に重要である。次の (1)〜(4) の下線部が、「単体」と「元素」のどちらの意味で用いられているか答えよ。\n\n(1) 植物の生育には、<u>窒素</u>が欠かせない。\n(2) 乾燥空気の体積の約78％は<u>窒素</u>である。\n(3) 砂糖は、<u>炭素</u>や<u>水素</u>、<u>酸素</u>からなる物質である。\n(4) 水を電気分解すると、<u>水素</u>と<u>酸素</u>を生じる。",
               subQuestions: [
-                { id: "q3_1", label: "解答", type: "multiple_choice", options: ["ア", "イ", "ウ"], correctAnswer: "イ", correctAnswerRate: 60 }
+                { id: "q3_1", label: "(1)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 85 },
+                { id: "q3_2", label: "(2)", "type": "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 85 },
+                { id: "q3_3", label: "(3)", "type": "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 85 },
+                { id: "q3_4", label: "(4)", "type": "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 85 }
               ],
-              explanation: "混合物は、混ざっている物質の種類やその割合によって融点・沸点・密度が変化します。純物質は物質の量に関わらず、融点・沸点・密度は一定です。",
-              surroundingKnowledge: [
-                "【標準問題・類似】水（純物質）を加熱したとき、沸点は100℃で一定になる。しかし、食塩水（混合物）を加熱すると、沸騰している間も温度は少しずつ上昇し、一定にならない。このように、混合物の沸点や融点が一定にならないのはなぜか。→混ざっている物質の種類や、その割合によって性質が変化するから。"
-              ],
-              deepDiveTopics: [
-                "【深掘り】純物質の性質\n純物質の性質について述べた次の文のうち、誤っているものはどれか。\nア. 物質の量が変わっても、密度は常に一定である。\nイ. 加熱する火の強さを変えれば、沸点は変化する。\nウ. どのような場所で採取しても、同じ物質であれば融点は一定である。\n→ 答えは「イ」。加熱する火の強さを変えても、沸点（温度）は変化しません（沸騰するまでの時間は変わります）。"
-              ]
+              explanation: "テストで最も狙われるポイントです！ 見分けるコツは「直接触れられるもの（ガスとして実体がある、など）＝単体」、「直接触れられないもの（成分として含まれている、など）＝元素」と考えることです。(2)や(4)は気体として実体があるので単体、(1)や(3)は成分の話をしているので元素となります。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
             },
             {
               id: "q4",
-              category: "純物質と混合物の定義",
-              text: "問４. 身近な物質である「塩水」は混合物に分類される。その理由を「化学式」という言葉を用いて簡潔に説明せよ。",
+              category: "状態変化のグラフ",
+              text: "問４　下線部①は、水・エタノールの（ ア ）の加熱と、水とエタノールの（ イ ）の加熱のグラフを示したものである。この３つのグラフ①～③をそれぞれ、水のグラフ・エタノールのグラフ・水とエタノールの混合物のグラフに分類し、①～③で示せ。\n\n<img src=\"/graph.jpg\" alt=\"加熱のグラフ\" class=\"w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" />",
               subQuestions: [
-                { 
-                  id: "q4_1", 
-                  label: "解答", 
-                  type: "descriptive", 
-                  correctAnswer: "水と塩化ナトリウムという2種類以上の純物質が混じっており、一つの化学式で表すことができないから。", 
-                  gradingCriteria: [
-                    "「2種類以上の純物質が混じっている」という内容が含まれている",
-                    "「一つの化学式で表せない」という内容が含まれている"
-                  ],
-                  correctAnswerRate: 35
-                }
+                { id: "q4_1", label: "水のグラフ", type: "short_answer", correctAnswer: "①", correctAnswerRate: 85 },
+                { id: "q4_2", label: "エタノールのグラフ", type: "short_answer", correctAnswer: "③", correctAnswerRate: 85 },
+                { id: "q4_3", label: "水とエタノールの( イ )のグラフ", type: "short_answer", correctAnswer: "②", correctAnswerRate: 85 }
               ],
-              explanation: "混合物は複数の純物質が混ざり合ったものであり、全体を一つの化学式で表すことはできません。塩水は水(H2O)と塩化ナトリウム(NaCl)の混合物です。",
-              surroundingKnowledge: [
-                "【論述問題・類似】「水」は化合物であるが、「塩酸」は化合物ではなく混合物に分類される。塩酸が混合物に分類される理由を、「化学式」という言葉を用いて説明しなさい。→塩酸は塩化水素と水が混ざったものであり、一つの化学式で表すことができないから。"
-              ],
-              deepDiveTopics: [
-                "【深掘り】化学式で表せるかどうかの判断\n純物質は必ず1つの化学式で表せます。混合物は成分ごとの化学式はありますが、全体を1つの化学式で表すことはできません。"
-              ]
-            },
-            {
-              id: "q5",
-              category: "元素と単体",
-              text: "問５．次の(a)～(e)の文中の下線部は、「元素」と「単体」のどちらの意味で用いられているか答えよ。\n(a) 競技用の自転車には、軽くて丈夫な<u>チタン</u>合金が使われている。\n(b) 空気中の<u>酸素</u>を吸って、二酸化炭素を吐き出す。\n(c) 水は、<u>水素</u>と<u>酸素</u>から構成されている。\n(d) ダイヤモンドと黒鉛は、どちらも<u>炭素</u>の同素体である。\n(e) 傷口の消毒に、<u>ヨウ素</u>のアルコール溶液を用いた。",
-              subQuestions: [
-                { id: "q5_a", label: "(a)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 72 },
-                { id: "q5_b", label: "(b)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 89 },
-                { id: "q5_c", label: "(c)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 68 },
-                { id: "q5_d", label: "(d)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 55 },
-                { id: "q5_e", label: "(e)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 40 }
-              ],
-              explanation: "直接触れられる具体的な物質（実体）なら「単体」、物質を構成する成分（概念）なら「元素」と判断します。(d)の「同素体」は同じ「元素」からなる単体のことを指します。",
-              surroundingKnowledge: [
-                "【論述問題・類似】水は、「水素」と「酸素」から構成されている。この文の「水素」と「酸素」は、「単体」と「元素」のどちらの意味で使われているか。また、そのように判断できる理由を説明しなさい。→ 元素。水という物質の中に、気体としての水素や酸素（単体）がそのまま存在しているわけではなく、物質を構成する成分の種類として使われている言葉だから。"
-              ],
-              deepDiveTopics: [
-                "【深掘り】元素と単体の見分け方のコツ\n「〜の単体」と言い換えて意味が通じれば「単体」、通じなければ「元素」です。例えば「水は（水素の単体）と（酸素の単体）から構成されている」はおかしいので、この場合は「元素」です。"
-              ]
+              explanation: "混合物は、純物質に比べて融点・沸点・密度が安定しないことを覚えておきましょう。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
             }
           ]
         },
