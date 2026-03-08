@@ -11,11 +11,14 @@ import { ChapterSelection } from './components/ChapterSelection';
 import { Quiz } from './components/Quiz';
 import { Explanation } from './components/Explanation';
 import { chemistryData } from './data/chemistryData';
+import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation';
 export type AppMode = 'mini_test' | 'practice';
 
 export default function App() {
+  useGlobalClickSound();
+
   const [appState, setAppState] = useState<AppState>('home');
   const [appMode, setAppMode] = useState<AppMode>('mini_test');
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
