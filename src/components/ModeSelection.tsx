@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Target, BookOpen, ArrowLeft } from 'lucide-react';
+import logoImage from '../assets/manatob_bg.png';
 
 interface ModeSelectionProps {
   onSelectMode: (mode: 'mini_test' | 'practice') => void;
@@ -23,7 +24,7 @@ export function ModeSelection({ onSelectMode, onBack }: ModeSelectionProps) {
 
       {/* Logo */}
       <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
-        <img src="/manatob_bg.png" alt="Logo" className="h-8 md:h-12 object-contain" />
+        <img src={logoImage} alt="Logo" className="h-8 md:h-12 object-contain" referrerPolicy="no-referrer" />
       </div>
 
       <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-[#2C3E50] mb-8 md:mb-12 mt-12 md:mt-0">
