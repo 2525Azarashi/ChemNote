@@ -15,6 +15,9 @@ export default defineConfig(({mode}) => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      assetsInlineLimit: 100000, // Inline assets smaller than 100kb as base64 URLs
+    },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
