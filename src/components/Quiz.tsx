@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Edit3, ArrowLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Edit3, ArrowLeft } from 'lucide-react';
 
 interface QuizProps {
   chapter: any;
@@ -9,10 +9,11 @@ interface QuizProps {
 
 export function Quiz({ chapter, onFinish, onBack }: QuizProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [currentQuestionIndex]);
 
   const handleOptionSelect = (sqId: string, option: string) => {
     setAnswers(prev => ({ ...prev, [sqId]: option }));
@@ -22,22 +23,18 @@ export function Quiz({ chapter, onFinish, onBack }: QuizProps) {
     setAnswers(prev => ({ ...prev, [sqId]: text }));
   };
 
-  const isComplete = chapter.miniTest.every((q: any) => 
-    q.subQuestions.every((sq: any) => answers[sq.id] && answers[sq.id].trim() !== '')
-  );
-
   if (chapter.miniTest.length === 0) {
     return (
-      <div className="w-full bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-gray-100 text-center">
-        <h2 className="text-2xl font-modern font-bold text-gray-800 mb-4">
+      <div className="w-full bg-white rounded-2xl shadow-xl p-6 md:p-12 border border-gray-100 text-center">
+        <h2 className="text-xl md:text-2xl font-modern font-bold text-gray-800 mb-4">
           {chapter.abstractTitle}
         </h2>
-        <p className="text-gray-500 font-modern mb-8">
+        <p className="text-sm md:text-base text-gray-500 font-modern mb-8">
           この単元の問題はまだ追加されていません。
         </p>
         <button
           onClick={() => onFinish({})}
-          className="bg-[#1B2631] text-white px-6 py-3 rounded-xl font-bold"
+          className="bg-[#1B2631] text-white px-6 py-3 rounded-xl font-bold w-full sm:w-auto"
         >
           戻る
         </button>
@@ -45,94 +42,127 @@ export function Quiz({ chapter, onFinish, onBack }: QuizProps) {
     );
   }
 
+  const currentQuestion = chapter.miniTest[currentQuestionIndex];
+  const isLastQuestion = currentQuestionIndex === chapter.miniTest.length - 1;
+
+  const handleNext = () => {
+    if (!isLastQuestion) {
+      setCurrentQuestionIndex(prev => prev + 1);
+    } else {
+      onFinish(answers);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
+    }
+  };
+
   return (
-    <div className="w-full notebook-paper rounded-2xl p-8 md:p-12 relative">
-      <div className="flex items-start justify-between mb-8 border-b-2 border-dashed border-gray-200 pb-6">
+    <div className="w-full notebook-paper rounded-2xl p-4 sm:p-6 md:p-8 lg:p-12 relative">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 md:mb-8 border-b-2 border-dashed border-gray-200 pb-4 md:pb-6">
         <div>
-          <h2 className="text-3xl font-handwriting text-[#2C3E50] mb-2 font-bold tracking-wide">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-handwriting text-[#2C3E50] mb-1 md:mb-2 font-bold tracking-wide">
             {chapter.abstractTitle} - 小テスト
           </h2>
+          <div className="text-xs md:text-sm text-gray-500 font-modern font-bold">
+            問題 {currentQuestionIndex + 1} / {chapter.miniTest.length}
+          </div>
         </div>
         <button 
           onClick={onBack}
-          className="flex items-center gap-2 text-gray-400 hover:text-[#D9A0A0] transition-colors font-modern font-bold bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100"
+          className="flex items-center gap-2 text-gray-400 hover:text-[#D9A0A0] transition-colors font-modern font-bold bg-white px-3 py-2 md:px-4 md:py-2 rounded-full shadow-sm border border-gray-100 text-sm md:text-base w-full sm:w-auto justify-center"
         >
-          <ArrowLeft size={18} />
+          <ArrowLeft size={16} className="md:w-[18px] md:h-[18px]" />
           <span>戻る</span>
         </button>
       </div>
 
-      <div className="space-y-12">
-        {chapter.miniTest.map((q: any, i: number) => (
-          <div key={q.id} className="bg-white/60 rounded-2xl p-6 md:p-8 shadow-sm border border-[#A9CCE3]/30 relative">
-            <div className="absolute -top-5 -left-5 w-12 h-12 bg-[#FFB7B2] text-white rounded-full flex items-center justify-center font-handwriting text-xl font-bold shadow-md transform -rotate-6">
-              Q{i + 1}
-            </div>
-            
-            <p className="text-lg text-gray-800 font-modern mb-8 leading-relaxed"
-               dangerouslySetInnerHTML={{
-                 __html: q.text.replace(/\n/g, '<br/>').replace(/<u>/g, '<u class="decoration-[#D9A0A0] decoration-4 underline-offset-4">')
-               }}
-            />
-
-            <div className="space-y-4">
-              {q.subQuestions.map((sq: any) => (
-                <div key={sq.id} className="flex flex-col md:flex-row md:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                  <span className="font-bold text-[#1B2631] min-w-[60px] text-center bg-gray-50 py-1 px-2 rounded-md">{sq.label}</span>
-                  
-                  {sq.type === 'multiple_choice' ? (
-                    <div className="flex flex-wrap gap-3">
-                      {sq.options.map((opt: string) => (
-                        <button
-                          key={opt}
-                          onClick={() => handleOptionSelect(sq.id, opt)}
-                          className={`px-5 py-2 rounded-full font-bold text-md transition-all duration-200 border-2 flex items-center justify-center
-                            ${answers[sq.id] === opt 
-                              ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] shadow-md scale-105' 
-                              : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3] hover:text-[#A9CCE3]'
-                            }`}
-                        >
-                          {opt}
-                        </button>
-                      ))}
-                    </div>
-                  ) : sq.type === 'descriptive' ? (
-                    <div className="flex-1 relative">
-                      <Edit3 className="absolute left-3 top-4 text-gray-400" size={18} />
-                      <textarea
-                        value={answers[sq.id] || ''}
-                        onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                        placeholder="解答を入力..."
-                        rows={3}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex-1 relative">
-                      <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                      <input
-                        type="text"
-                        value={answers[sq.id] || ''}
-                        onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                        placeholder="解答を入力..."
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern"
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+      <div className="space-y-8 md:space-y-12">
+        <div key={currentQuestion.id} className="bg-white/60 rounded-2xl p-4 sm:p-6 md:p-8 shadow-sm border border-[#A9CCE3]/30 relative mt-4 md:mt-0">
+          <div className="absolute -top-4 -left-3 md:-top-5 md:-left-5 w-10 h-10 md:w-12 md:h-12 bg-[#FFB7B2] text-white rounded-full flex items-center justify-center font-handwriting text-lg md:text-xl font-bold shadow-md transform -rotate-6">
+            Q{currentQuestionIndex + 1}
           </div>
-        ))}
+          
+          <p className="text-sm md:text-base text-gray-800 font-modern mb-6 md:mb-8 leading-relaxed mt-2 md:mt-0"
+             dangerouslySetInnerHTML={{
+               __html: currentQuestion.text.replace(/\n/g, '<br/>').replace(/<u>/g, '<u class="decoration-[#D9A0A0] decoration-4 underline-offset-4">')
+             }}
+          />
+
+          <div className="space-y-4">
+            {currentQuestion.subQuestions.map((sq: any) => (
+              <div key={sq.id} className="flex flex-col lg:flex-row lg:items-center gap-3 md:gap-4 bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-100">
+                <span className="font-bold text-[#1B2631] min-w-[60px] text-center bg-gray-50 py-1 px-2 rounded-md text-xs md:text-sm self-start lg:self-auto">{sq.label}</span>
+                
+                {sq.type === 'multiple_choice' ? (
+                  <div className="flex flex-wrap gap-2 md:gap-3">
+                    {sq.options.map((opt: string) => (
+                      <button
+                        key={opt}
+                        onClick={() => handleOptionSelect(sq.id, opt)}
+                        className={`px-3 py-1.5 md:px-4 md:py-1.5 rounded-full font-bold text-xs md:text-sm transition-all duration-200 border-2 flex items-center justify-center flex-1 sm:flex-none min-w-[80px]
+                          ${answers[sq.id] === opt 
+                            ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] shadow-md scale-[1.02] md:scale-105' 
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3] hover:text-[#A9CCE3]'
+                          }`}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                ) : sq.type === 'descriptive' ? (
+                  <div className="flex-1 relative w-full">
+                    <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
+                    <textarea
+                      value={answers[sq.id] || ''}
+                      onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                      placeholder="解答を入力..."
+                      rows={3}
+                      className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex-1 relative w-full">
+                    <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                    <input
+                      type="text"
+                      value={answers[sq.id] || ''}
+                      onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                      placeholder="解答を入力..."
+                      className="w-full pl-9 pr-4 py-2.5 md:py-2 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern"
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="mt-12 flex justify-end">
+      <div className="mt-8 md:mt-12 flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center gap-4">
         <button
-          onClick={() => onFinish(answers)}
-          className="flex items-center gap-2 px-8 py-4 rounded-xl font-bold tracking-wider transition-all duration-300 bg-[#D9A0A0] text-white shadow-lg hover:bg-[#c98f8f] hover:shadow-xl hover:-translate-y-1"
+          onClick={handlePrevious}
+          disabled={currentQuestionIndex === 0}
+          className={`flex items-center justify-center gap-2 px-4 py-3 sm:px-6 sm:py-3 rounded-xl font-bold tracking-wider transition-all duration-300 border-2 text-sm md:text-base
+            ${currentQuestionIndex === 0 
+              ? 'border-gray-200 text-gray-300 cursor-not-allowed' 
+              : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white'}`}
         >
-          <span>分析を開始する</span>
-          <ChevronRight size={20} />
+          <ChevronLeft size={18} className="md:w-5 md:h-5" />
+          <span>前の問題へ</span>
+        </button>
+
+        <button
+          onClick={handleNext}
+          className={`flex items-center justify-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 rounded-xl font-bold tracking-wider transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 text-sm md:text-base
+            ${isLastQuestion 
+              ? 'bg-[#D9A0A0] text-white hover:bg-[#c98f8f]' 
+              : 'bg-[#2C3E50] text-white hover:bg-[#1a252f]'}`}
+        >
+          <span>{isLastQuestion ? '分析を開始する' : '次の問題へ'}</span>
+          <ChevronRight size={18} className="md:w-5 md:h-5" />
         </button>
       </div>
     </div>
