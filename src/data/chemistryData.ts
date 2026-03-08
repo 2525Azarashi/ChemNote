@@ -1,5 +1,4 @@
 import graphImage from '../assets/graph.jpg';
-import graph2Image from '../assets/graph2.jpg';
 
 export const chemistryData = {
   parts: [
@@ -76,12 +75,11 @@ export const chemistryData = {
           ]
         },
         {
-          id: "c1_2",
-          abstractTitle: "② 物質の分離・精製法・区別",
+          id: "c1_2_A",
+          abstractTitle: "②-A 物質の構成と成分元素の検出",
           realTitle: "1章 物質の構成",
           topics: ["同素体", "炎色反応", "成分元素の検出"],
           miniTest: [
-            // --- 大問A ---
             {
               id: "q_c1_2_A_1",
               category: "物質の構成と成分元素の検出 (問1)",
@@ -150,8 +148,15 @@ export const chemistryData = {
               explanation: "問4\n(1) 炭酸カルシウム (CaCO3)\n(2) 白色から青色\n(3) 青色から赤色\n(4) 塩化銀 (AgCl)\n(5) 黒色 (PbS)",
               surroundingKnowledge: [],
               deepDiveTopics: []
-            },
-            // --- 大問B ---
+            }
+          ]
+        },
+        {
+          id: "c1_2_B",
+          abstractTitle: "②-B 物質の分離と精製",
+          realTitle: "1章 物質の構成",
+          topics: ["分離と精製", "蒸留", "分留", "再結晶", "抽出", "クロマトグラフィー", "昇華法"],
+          miniTest: [
             {
               id: "q_c1_2_B_1",
               category: "物質の分離と精製 (問1)",
@@ -188,7 +193,7 @@ export const chemistryData = {
             {
               id: "q_c1_2_B_3",
               category: "物質の分離と精製 (問3)",
-              text: `B　（リード文続き）\n...また、溶液を加熱して沸騰させ、生じた蒸気を冷却して再び液体として取り出す方法を ( エ: 蒸留 ) という。この ( エ ) の操作を行う際、使用する器具の名称や装置の組み立てには、いくつかの重要な注意点がある。\n\n<img src="${graph2Image}" alt="蒸留装置" class="w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200" />\n\n問3 ( エ ) の操作（蒸留）に用いる装置について、次の(1)〜(6)の問いに答えよ。\n(1)　図のA～Dの器具の名称を記せ。\n(2)　この図ではDの位置が間違っている。正しくは枝付きフラスコのどこに温度計を持ってくるべきか。\n(3)　Bの器具の冷却水はどの方向（「上から下」または「下から上」）に流すべきか。また、そのように流す理由を簡潔に答えよ。\n(4)　三角フラスコは、密栓してはならない。その理由を簡潔に答えよ。\n(5)　Aの器具に入れている沸騰石の役割を答えよ。\n(6)  Aの器具に入れる液体の量はどれぐらいにすればよいか答えよ。`,
+              text: `B　（リード文続き）\n...また、溶液を加熱して沸騰させ、生じた蒸気を冷却して再び液体として取り出す方法を ( エ: 蒸留 ) という。この ( エ ) の操作を行う際、使用する器具の名称や装置の組み立てには、いくつかの重要な注意点がある。\n\n<img src="/graph2.jpg" alt="蒸留装置" class="w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200" />\n\n問3 ( エ ) の操作（蒸留）に用いる装置について、次の(1)〜(6)の問いに答えよ。\n(1)　図のA～Dの器具の名称を記せ。\n(2)　この図ではDの位置が間違っている。正しくは枝付きフラスコのどこに温度計を持ってくるべきか。\n(3)　Bの器具の冷却水はどの方向（「上から下」または「下から上」）に流すべきか。また、そのように流す理由を簡潔に答えよ。\n(4)　三角フラスコは、密栓してはならない。その理由を簡潔に答えよ。\n(5)　Aの器具に入れている沸騰石の役割を答えよ。\n(6)  Aの器具に入れる液体の量はどれぐらいにすればよいか答えよ。`,
               subQuestions: [
                 { id: "q3_1_A", label: "問3 (1) A", type: "short_answer", correctAnswer: "枝付きフラスコ", correctAnswerRate: 85 },
                 { id: "q3_1_B", label: "問3 (1) B", type: "short_answer", correctAnswer: "リービッヒ冷却器", correctAnswerRate: 85 },
