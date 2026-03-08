@@ -9,17 +9,18 @@ export const chemistryData = {
           abstractTitle: "① 純物質と混合物",
           realTitle: "1章 物質の構成",
           topics: ["純物質と混合物"],
+          practiceProblems: [],
           miniTest: [
             {
               id: "q1",
               category: "物質の分類",
               text: "物質を構成する原子の種類を（ ① ）といい、現在およそ１２０種類が存在する。私たちの身の回りにある物質は、大きく２つに分類できる。１種類の物質からできており、一つの化学式で表すことができるものを（ ② ）といい、2種類以上の（ ② ）が混じり合っており、一つの化学式で表すことができないものを（ ③ ）という。さらに、（ ② ）の中で、１種類の（ ① ）のみからできている物質を（ ④ ）といい、２種類以上の（ ① ）からできている物質を（ ⑤ ）と呼ぶ。\n\n問１. 文中の空欄（ ① ）～（ ⑤ ）にあてはまる最も適切な語句を答えよ。",
               subQuestions: [
-                { id: "q1_1", label: "①", type: "short_answer", correctAnswer: "元素" },
-                { id: "q1_2", label: "②", type: "short_answer", correctAnswer: "純物質" },
-                { id: "q1_3", label: "③", type: "short_answer", correctAnswer: "混合物" },
-                { id: "q1_4", label: "④", type: "short_answer", correctAnswer: "単体" },
-                { id: "q1_5", label: "⑤", type: "short_answer", correctAnswer: "化合物" }
+                { id: "q1_1", label: "①", type: "short_answer", correctAnswer: "元素", correctAnswerRate: 85 },
+                { id: "q1_2", label: "②", type: "short_answer", correctAnswer: "純物質", correctAnswerRate: 78 },
+                { id: "q1_3", label: "③", type: "short_answer", correctAnswer: "混合物", correctAnswerRate: 92 },
+                { id: "q1_4", label: "④", type: "short_answer", correctAnswer: "単体", correctAnswerRate: 65 },
+                { id: "q1_5", label: "⑤", type: "short_answer", correctAnswer: "化合物", correctAnswerRate: 70 }
               ],
               explanation: "物質の分類の全体図（フローチャート）を思い描けるかがポイントです。\n・「一つの化学式で表せるか」→ 純物質 と 混合物\n・「何種類の成分からできているか」→ 成分の種類＝元素\n・ 1種類の元素→ 単体、2種類以上の元素→ 化合物",
               surroundingKnowledge: [
@@ -34,14 +35,14 @@ export const chemistryData = {
               category: "物質の分類",
               text: "問２. 次の(ア)～(ク)の物質を、「単体」、「化合物」、「混合物」にそれぞれ分類せよ。\n(ア) 空気  (イ) 水  (ウ) 鉄  (エ) 塩酸 (オ) 塩化ナトリウム\n(カ) 石油  (キ) 海水  (ク) 窒素",
               subQuestions: [
-                { id: "q2_a", label: "(ア) 空気", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物" },
-                { id: "q2_b", label: "(イ) 水", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "化合物" },
-                { id: "q2_c", label: "(ウ) 鉄", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "単体" },
-                { id: "q2_d", label: "(エ) 塩酸", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物" },
-                { id: "q2_e", label: "(オ) 塩化ナトリウム", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "化合物" },
-                { id: "q2_f", label: "(カ) 石油", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物" },
-                { id: "q2_g", label: "(キ) 海水", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物" },
-                { id: "q2_h", label: "(ク) 窒素", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "単体" }
+                { id: "q2_a", label: "(ア) 空気", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物", correctAnswerRate: 95 },
+                { id: "q2_b", label: "(イ) 水", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "化合物", correctAnswerRate: 88 },
+                { id: "q2_c", label: "(ウ) 鉄", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "単体", correctAnswerRate: 90 },
+                { id: "q2_d", label: "(エ) 塩酸", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物", correctAnswerRate: 45 },
+                { id: "q2_e", label: "(オ) 塩化ナトリウム", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "化合物", correctAnswerRate: 82 },
+                { id: "q2_f", label: "(カ) 石油", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物", correctAnswerRate: 75 },
+                { id: "q2_g", label: "(キ) 海水", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "混合物", correctAnswerRate: 98 },
+                { id: "q2_h", label: "(ク) 窒素", type: "multiple_choice", options: ["単体", "化合物", "混合物"], correctAnswer: "単体", correctAnswerRate: 85 }
               ],
               explanation: "単体は1種類の元素からなる純物質（鉄Fe、窒素N2）。化合物は2種類以上の元素からなる純物質（水H2O、塩化ナトリウムNaCl）。混合物は2種類以上の純物質が混ざったもの（空気、塩酸、石油、海水）。塩酸は塩化水素HClと水H2Oの混合物であることに注意。",
               surroundingKnowledge: [
@@ -58,7 +59,7 @@ export const chemistryData = {
               category: "純物質と混合物の性質",
               text: "問３. 純物質と混合物の性質に関する次の文章のうち、正しいものを1つ選び、記号で答えよ。\nア. 水とエタノールを混ぜ合わせた液体の沸点は、水と同じ100℃で一定となる。\nイ. 純物質であれば、物質の量が変わっても融点や沸点、密度は常に一定である。\nウ. 混合物の密度や融点は、混じっている物質の種類が同じであれば、その割合（濃度）が変わっても常に一定である。",
               subQuestions: [
-                { id: "q3_1", label: "解答", type: "multiple_choice", options: ["ア", "イ", "ウ"], correctAnswer: "イ" }
+                { id: "q3_1", label: "解答", type: "multiple_choice", options: ["ア", "イ", "ウ"], correctAnswer: "イ", correctAnswerRate: 60 }
               ],
               explanation: "混合物は、混ざっている物質の種類やその割合によって融点・沸点・密度が変化します。純物質は物質の量に関わらず、融点・沸点・密度は一定です。",
               surroundingKnowledge: [
@@ -81,7 +82,8 @@ export const chemistryData = {
                   gradingCriteria: [
                     "「2種類以上の純物質が混じっている」という内容が含まれている",
                     "「一つの化学式で表せない」という内容が含まれている"
-                  ] 
+                  ],
+                  correctAnswerRate: 35
                 }
               ],
               explanation: "混合物は複数の純物質が混ざり合ったものであり、全体を一つの化学式で表すことはできません。塩水は水(H2O)と塩化ナトリウム(NaCl)の混合物です。",
@@ -97,11 +99,11 @@ export const chemistryData = {
               category: "元素と単体",
               text: "問５．次の(a)～(e)の文中の下線部は、「元素」と「単体」のどちらの意味で用いられているか答えよ。\n(a) 競技用の自転車には、軽くて丈夫な<u>チタン</u>合金が使われている。\n(b) 空気中の<u>酸素</u>を吸って、二酸化炭素を吐き出す。\n(c) 水は、<u>水素</u>と<u>酸素</u>から構成されている。\n(d) ダイヤモンドと黒鉛は、どちらも<u>炭素</u>の同素体である。\n(e) 傷口の消毒に、<u>ヨウ素</u>のアルコール溶液を用いた。",
               subQuestions: [
-                { id: "q5_a", label: "(a)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素" },
-                { id: "q5_b", label: "(b)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体" },
-                { id: "q5_c", label: "(c)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素" },
-                { id: "q5_d", label: "(d)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素" },
-                { id: "q5_e", label: "(e)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体" }
+                { id: "q5_a", label: "(a)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 72 },
+                { id: "q5_b", label: "(b)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 89 },
+                { id: "q5_c", label: "(c)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 68 },
+                { id: "q5_d", label: "(d)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 55 },
+                { id: "q5_e", label: "(e)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 40 }
               ],
               explanation: "直接触れられる具体的な物質（実体）なら「単体」、物質を構成する成分（概念）なら「元素」と判断します。(d)の「同素体」は同じ「元素」からなる単体のことを指します。",
               surroundingKnowledge: [

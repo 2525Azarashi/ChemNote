@@ -3,12 +3,13 @@ import { ChevronRight, ChevronLeft, Edit3, ArrowLeft } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 
 interface QuizProps {
+  mode: 'mini_test' | 'practice';
   chapter: any;
   onFinish: (answers: Record<string, string>) => void;
   onBack: () => void;
 }
 
-export function Quiz({ chapter, onFinish, onBack }: QuizProps) {
+export function Quiz({ mode, chapter, onFinish, onBack }: QuizProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
@@ -24,27 +25,36 @@ export function Quiz({ chapter, onFinish, onBack }: QuizProps) {
     setAnswers(prev => ({ ...prev, [sqId]: text }));
   };
 
-  if (chapter.miniTest.length === 0) {
+  const questions = mode === 'mini_test' ? chapter.miniTest : (chapter.practiceProblems || []);
+
+  if (questions.length === 0) {
     return (
-      <div className="w-full bg-white rounded-2xl shadow-xl p-6 md:p-12 border border-gray-100 text-center">
-        <h2 className="text-xl md:text-2xl font-modern font-bold text-gray-800 mb-4">
+      <div className="w-full bg-white rounded-2xl shadow-xl p-6 md:p-12 border border-gray-100 text-center relative">
+        <button 
+          onClick={onBack}
+          className="absolute top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 text-gray-500 hover:text-[#2C3E50] transition-colors font-bold bg-gray-50 px-4 py-2 rounded-full shadow-sm"
+        >
+          <ArrowLeft size={20} />
+          <span>戻る</span>
+        </button>
+        <h2 className="text-xl md:text-2xl font-modern font-bold text-gray-800 mb-4 mt-12 md:mt-8">
           {chapter.abstractTitle}
         </h2>
         <p className="text-sm md:text-base text-gray-500 font-modern mb-8">
           この単元の問題はまだ追加されていません。
         </p>
         <button
-          onClick={() => onFinish({})}
+          onClick={onBack}
           className="bg-[#1B2631] text-white px-6 py-3 rounded-xl font-bold w-full sm:w-auto"
         >
-          戻る
+          単元選択に戻る
         </button>
       </div>
     );
   }
 
-  const currentQuestion = chapter.miniTest[currentQuestionIndex];
-  const isLastQuestion = currentQuestionIndex === chapter.miniTest.length - 1;
+  const currentQuestion = questions[currentQuestionIndex];
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   const handleNext = () => {
     if (!isLastQuestion) {
@@ -65,10 +75,10 @@ export function Quiz({ chapter, onFinish, onBack }: QuizProps) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 md:mb-8 border-b-2 border-dashed border-gray-200 pb-4 md:pb-6">
         <div>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-handwriting text-[#2C3E50] mb-1 md:mb-2 font-bold tracking-wide">
-            {chapter.abstractTitle} - 小テスト
+            {chapter.abstractTitle} - {mode === 'mini_test' ? '小テスト' : '演習問題'}
           </h2>
           <div className="text-xs md:text-sm text-gray-500 font-modern font-bold">
-            問題 {currentQuestionIndex + 1} / {chapter.miniTest.length}
+            問題 {currentQuestionIndex + 1} / {questions.length}
           </div>
         </div>
         <button 

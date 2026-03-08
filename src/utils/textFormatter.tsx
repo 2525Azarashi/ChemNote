@@ -15,8 +15,14 @@ export function formatText(text: string) {
   const htmlString = tokens.map((token) => {
     // If it's an HTML tag, render it directly
     if (token.match(/^<\/?[a-z]+[^>]*>$/i)) {
-      // Replace <u> with our styled version
-      return token.replace(/<u>/gi, '<u class="decoration-[#D9A0A0] decoration-4 underline-offset-4">');
+      // Replace <u> with our styled version (marker-like UI)
+      if (token.toLowerCase() === '<u>') {
+        return '<span class="bg-gradient-to-t from-[#F9E79F] to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat font-bold px-1">';
+      }
+      if (token.toLowerCase() === '</u>') {
+        return '</span>';
+      }
+      return token;
     }
 
     // It's normal text, now we can safely look for chemical formulas
@@ -40,24 +46,28 @@ export function formatText(text: string) {
           const baseParts = base.split(/([0-9]+)/);
           const formattedBase = baseParts.map((bp) => {
             if (bp.match(/^[0-9]+$/)) {
-              return `<sub class="text-[0.7em] align-sub">${bp}</sub>`;
+              return `<sub class="text-[0.75em] font-sans">${bp}</sub>`;
             }
             return bp;
           }).join('');
           
-          elements = `${formattedBase}<sup class="text-[0.7em] align-super">${charge}</sup>`;
+          elements = `${formattedBase}<sup class="text-[0.75em] font-sans">${charge}</sup>`;
         } else {
           // Normal molecule like H2O, CO2, or just text like A, B
           const molParts = part.split(/([0-9]+)/);
           elements = molParts.map((mp) => {
             if (mp.match(/^[0-9]+$/)) {
-              return `<sub class="text-[0.7em] align-sub">${mp}</sub>`;
+              return `<sub class="text-[0.75em] font-sans">${mp}</sub>`;
             }
             return mp;
           }).join('');
         }
 
-        return `<span class="font-serif text-[1.1em] tracking-wide mx-[1px]">${elements}</span>`;
+        // If it's a single letter (like A, B, x, y), italicize it as a math variable
+        const isSingleLetter = /^[A-Za-z]$/.test(part);
+        const fontClass = isSingleLetter ? 'font-serif italic' : 'font-serif';
+
+        return `<span class="${fontClass} text-[1.05em] tracking-wide mx-[1px]" style="font-family: 'Cambria Math', 'Times New Roman', serif;">${elements}</span>`;
       }
       
       // Normal text, replace newlines with <br/>

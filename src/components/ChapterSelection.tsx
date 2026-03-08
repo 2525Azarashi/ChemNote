@@ -1,19 +1,37 @@
 import React, { useEffect } from 'react';
 import { chemistryData } from '../data/chemistryData';
-import { ChevronRight, Target } from 'lucide-react';
+import { ChevronRight, Target, ArrowLeft } from 'lucide-react';
 
 interface ChapterSelectionProps {
+  mode: 'mini_test' | 'practice';
   onSelectChapter: (id: string) => void;
+  onBack: () => void;
 }
 
-export function ChapterSelection({ onSelectChapter }: ChapterSelectionProps) {
+export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelectionProps) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div className="w-full notebook-paper rounded-2xl p-4 sm:p-6 md:p-8 lg:p-12">
-      
+    <div className="w-full notebook-paper rounded-2xl p-4 sm:p-6 md:p-8 lg:p-12 relative">
+      <button 
+        onClick={onBack}
+        className="absolute top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 text-gray-500 hover:text-[#2C3E50] transition-colors font-bold bg-white/80 px-4 py-2 rounded-full shadow-sm z-10"
+      >
+        <ArrowLeft size={20} />
+        <span>戻る</span>
+      </button>
+
+      <div className="text-center mb-8 md:mb-12 mt-12 md:mt-0">
+        <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-[#2C3E50] mb-3 md:mb-4">
+          {mode === 'mini_test' ? '小テスト' : '演習問題'}
+        </h2>
+        <p className="text-sm md:text-base text-gray-600 font-modern">
+          学習したい単元を選択してください
+        </p>
+      </div>
+
       <div className="space-y-12 md:space-y-20">
         {chemistryData.parts.map(part => {
           // Group chapters by realTitle (e.g., "1章 物質の構成")
@@ -42,7 +60,9 @@ export function ChapterSelection({ onSelectChapter }: ChapterSelectionProps) {
                     </h4>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-                      {chapters.map(chapter => (
+                      {chapters.map(chapter => {
+                        const questions = mode === 'mini_test' ? (chapter as any).miniTest : ((chapter as any).practiceProblems || []);
+                        return (
                         <button
                           key={chapter.id}
                           onClick={() => onSelectChapter(chapter.id)}
@@ -53,7 +73,7 @@ export function ChapterSelection({ onSelectChapter }: ChapterSelectionProps) {
                           </div>
                           
                           <div className="w-full pr-6">
-                            {chapter.miniTest.length > 0 && (
+                            {questions.length > 0 && (
                               <div className="inline-flex items-center gap-1.5 md:gap-2 bg-white/60 text-yellow-800 text-[10px] md:text-xs font-bold px-2 md:px-3 py-1 rounded-full mb-2 md:mb-3 shadow-sm">
                                 <Target size={12} className="text-[#D9A0A0] md:w-3.5 md:h-3.5" />
                                 <span>TARGET_PROBLEM</span>
@@ -81,9 +101,9 @@ export function ChapterSelection({ onSelectChapter }: ChapterSelectionProps) {
                             <span className="text-[10px] md:text-xs text-gray-400 font-modern">
                               {chapter.topics.length > 0 ? `${chapter.topics.length} トピック` : ''}
                             </span>
-                            {chapter.miniTest.length > 0 ? (
+                            {questions.length > 0 ? (
                               <span className="text-[10px] md:text-xs font-bold text-[#D9A0A0] bg-white/50 px-2 py-1 rounded shadow-sm">
-                                小テスト: {chapter.miniTest.length}問
+                                {mode === 'mini_test' ? '小テスト' : '演習問題'}: {questions.length}問
                               </span>
                             ) : (
                               <span className="text-[10px] md:text-xs text-gray-400 bg-gray-100/50 px-2 py-1 rounded">
@@ -92,7 +112,8 @@ export function ChapterSelection({ onSelectChapter }: ChapterSelectionProps) {
                             )}
                           </div>
                         </button>
-                      ))}
+                        );
+                      })}
                     </div>
                     
                     {/* Dashed separator between chapters (except last) */}
