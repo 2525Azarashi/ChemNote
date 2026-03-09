@@ -242,7 +242,68 @@ export const chemistryData = {
           abstractTitle: "③ 粒子の熱運動と物質の三態",
           realTitle: "1章 物質の構成",
           topics: [],
-          miniTest: []
+          miniTest: [
+            {
+              id: "q_c1_3_1",
+              category: "粒子の熱運動と物質の三態 (問1)",
+              text: `粒子の熱運動と物質の三態に関する次の文章を読み、あとの問いに答えよ。\n\n物質を構成する粒子は、常に不規則な運動を行っている。これを ( ア ) という。すべての粒子が同じ速さで運動しているわけではなく、温度が高くなるほどその速さの平均値は ( イ：大きく / 小さく ) なる。温度を下げていくと粒子の運動は次第に穏やかになり、理論上、すべての粒子が ( ア ) をしなくなる温度が存在する。この温度をセルシウス温度で ( ウ ) ℃といい、これを ( エ ) と呼ぶ。( エ ) を基準とした温度を絶対温度といい、単位には ( オ ) が用いられる。\n\nまた、別々の入れ物に入れておいた窒素と臭素をくっつけるとやがて均一な混合気体になるように、物質の構成粒子が自然に散らばっていく現象を ( カ ) という。\n\n物質は温度などの条件によって、固体、液体、気体の3つの状態をとる。これを物質の三態という。物質が状態を変えることを「状態変化」といい、これは物質そのものは変化せず状態のみが変わる ( キ ) 変化である。一方で、原子の組み合わせが変化し、物質が別の物質に変わることを ( ク ) 変化という。\n\n状態変化に伴い、粒子の様子も大きく変化する。なお、純物質の場合、固体から液体へ、あるいは液体から気体へ状態変化している間は、加熱を続けても温度は一定に保たれる特徴がある。\n\n固体のときは粒子間の距離が小さく、強い引力が働くため、粒子はほぼ一定の位置にとどまってその場でわずかに ( ケ ) しているのみである。そのため形や体積は一定である。\n\n加熱して ( コ ) 点に達し、固体から液体になることを ( サ ) という。液体になると粒子は自由に動き回るため、体積はほぼ一定だが形は自由に変形する。\n\nさらに加熱して ( シ ) 点に達し、液体の内部からも気体が発生することを沸騰といい、液体から気体になる状態変化を ( ス ) という。気体になると粒子間の引力はほとんど働かず、粒子は激しく飛び回るため、体積は温度や圧力によって大きく変化する。\n\n問1 文章中の空欄 ( ア ) ～ ( ス ) に入る最も適切な語句、または数値を答えよ。\n（※(イ)は選択肢から選ぶこと）`,
+              subQuestions: [
+                { id: "q_c1_3_1_a", label: "問1 (ア)", type: "short_answer", correctAnswer: "熱運動", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_i", label: "問1 (イ)", type: "multiple_choice", options: ["大きく", "小さく"], correctAnswer: "大きく", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_u", label: "問1 (ウ)", type: "short_answer", correctAnswer: "-273", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_e", label: "問1 (エ)", type: "short_answer", correctAnswer: "絶対零度", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_o", label: "問1 (オ)", type: "short_answer", correctAnswer: "K", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_ka", label: "問1 (カ)", type: "short_answer", correctAnswer: "拡散", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_ki", label: "問1 (キ)", type: "short_answer", correctAnswer: "物理", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_ku", label: "問1 (ク)", type: "short_answer", correctAnswer: "化学", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_ke", label: "問1 (ケ)", type: "short_answer", correctAnswer: "振動", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_ko", label: "問1 (コ)", type: "short_answer", correctAnswer: "融", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_sa", label: "問1 (サ)", type: "short_answer", correctAnswer: "融解", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_shi", label: "問1 (シ)", type: "short_answer", correctAnswer: "沸", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_su", label: "問1 (ス)", type: "short_answer", correctAnswer: "蒸発", correctAnswerRate: 85 }
+              ],
+              explanation: "問1\n(ア) 熱運動\n(イ) 大きく\n(ウ) -273\n(エ) 絶対零度\n(オ) K（ケルビン）\n(カ) 拡散\n(キ) 物理\n(ク) 化学\n(ケ) 振動\n(コ) 融\n(サ) 融解\n(シ) 沸\n(ス) 蒸発\n解説: 絶対零度は－２７３℃であり、すべての粒子が熱運動をしなくなる温度です。固体の粒子は静止しているわけではなく、定位置で「振動」している点もテストでよく狙われます。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_3_2",
+              category: "粒子の熱運動と物質の三態 (問2)",
+              text: `問2 セルシウス温度と絶対温度の変換について、次の問いに答えよ。\n(1) セルシウス温度が２７℃のとき、絶対温度は何Kか。\n(2) 絶対温度が353Kのとき、セルシウス温度は何℃か。`,
+              subQuestions: [
+                { id: "q_c1_3_2_1", label: "問2 (1)", type: "short_answer", correctAnswer: "300K", correctAnswerRate: 85 },
+                { id: "q_c1_3_2_2", label: "問2 (2)", type: "short_answer", correctAnswer: "80℃", correctAnswerRate: 85 }
+              ],
+              explanation: "問2\n(1) 300K\n(2) 80℃\n解説: 「絶対温度 T = 273 + t (セルシウス温度)」の公式を用います。\n(1) T = 273 + 27 = 300\n(2) 353 = 273 + tより、t = 353 - 273 = 80",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_3_3",
+              category: "粒子の熱運動と物質の三態 (問3)",
+              text: `問3 次の (a) ～ (d) の状態変化の名称をそれぞれ答えよ。\n(a) 気体 から 液体 になること\n(b) 液体 から 固体 になること\n(c) 固体 から 直接気体 になること\n(d) 気体 から 直接固体 になること`,
+              subQuestions: [
+                { id: "q_c1_3_3_a", label: "問3 (a)", type: "short_answer", correctAnswer: "凝縮", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_b", label: "問3 (b)", type: "short_answer", correctAnswer: "凝固", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_c", label: "問3 (c)", type: "short_answer", correctAnswer: "昇華", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_d", label: "問3 (d)", type: "short_answer", correctAnswer: "凝華", correctAnswerRate: 85 }
+              ],
+              explanation: "問3\n(a) 凝縮\n(b) 凝固\n(c) 昇華\n(d) 凝華\n解説: 状態変化の図は矢印の向きと名前を完全に一致させておきましょう。特に、気体→固体を「凝華」と呼ぶ点は要注意です。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_3_4",
+              category: "粒子の熱運動と物質の三態 (問4)",
+              text: `問4 固体が融解している間や、液体が沸騰している間、継続して加熱しているにもかかわらず温度が一定に保たれる。その理由は「加えられた熱エネルギーが、(　　　) ために使われるから」である。 (　　) の内容が「全ての物質での(　　)が終わる」となるように適切な語句を答えよ。`,
+              subQuestions: [
+                { id: "q_c1_3_4_1", label: "問4", type: "short_answer", correctAnswer: "状態変化", correctAnswerRate: 85 }
+              ],
+              explanation: "問4\n状態変化\n解説: プリント右下の「全ての物質での状態変化が終わるまで、温度は一定に保たれる」という記述からの出題です。加えられた熱が温度上昇ではなく、粒子間の引力を断ち切って状態を変えるために使われるためです。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ]
         },
         {
           id: "c2_1",
