@@ -10,11 +10,12 @@ import { ModeSelection } from './components/ModeSelection';
 import { ChapterSelection } from './components/ChapterSelection';
 import { Quiz } from './components/Quiz';
 import { Explanation } from './components/Explanation';
+import { LearningViewer } from './components/LearningViewer';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation';
-export type AppMode = 'mini_test' | 'practice';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning';
+export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 export default function App() {
   useGlobalClickSound();
@@ -50,7 +51,11 @@ export default function App() {
   
   const handleSelectMode = (mode: AppMode) => {
     setAppMode(mode);
-    setAppState('chapters');
+    if (mode === 'learning') {
+      setAppState('learning');
+    } else {
+      setAppState('chapters');
+    }
   };
 
   const handleSelectChapter = (chapterId: string) => {
@@ -91,12 +96,13 @@ export default function App() {
       <div className="w-full max-w-5xl relative">
         {appState === 'home' && <Home onStart={handleStart} />}
         {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} />}
-        {appState === 'chapters' && <ChapterSelection mode={appMode} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} />}
+        {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
+        {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} />}
         {appState === 'quiz' && selectedChapter && (
-          <Quiz mode={appMode} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} />
+          <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} />
         )}
         {appState === 'explanation' && selectedChapter && (
-          <Explanation mode={appMode} chapter={selectedChapter} answers={quizAnswers} onBack={handleBackToChapters} />
+          <Explanation mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} answers={quizAnswers} onBack={handleBackToChapters} />
         )}
       </div>
     </div>

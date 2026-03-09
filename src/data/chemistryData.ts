@@ -62,9 +62,9 @@ export const chemistryData = {
               category: "状態変化のグラフ",
               text: `問４　下線部①は、水・エタノールの（ ア ）の加熱と、水とエタノールの（ イ ）の加熱のグラフを示したものである。この３つのグラフ①～③をそれぞれ、水のグラフ・エタノールのグラフ・水とエタノールの混合物のグラフに分類し、①～③で示せ。\n\n<img src="https://lh3.googleusercontent.com/d/1yxjXWysRGIgYKPMpQx_N9OWYNf_W6DvT" alt="加熱のグラフ" class="w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200" referrerPolicy="no-referrer" />`,
               subQuestions: [
-                { id: "q4_1", label: "水のグラフ", type: "short_answer", correctAnswer: "①", correctAnswerRate: 85 },
-                { id: "q4_2", label: "エタノールのグラフ", type: "short_answer", correctAnswer: "③", correctAnswerRate: 85 },
-                { id: "q4_3", label: "水とエタノールの( イ )のグラフ", type: "short_answer", correctAnswer: "②", correctAnswerRate: 85 }
+                { id: "q4_1", label: "水のグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "①", correctAnswerRate: 85 },
+                { id: "q4_2", label: "エタノールのグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "③", correctAnswerRate: 85 },
+                { id: "q4_3", label: "水とエタノールの( イ )のグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "②", correctAnswerRate: 85 }
               ],
               explanation: "混合物は、純物質に比べて融点・沸点・密度が安定しないことを覚えておきましょう。",
               surroundingKnowledge: [],
@@ -181,8 +181,8 @@ export const chemistryData = {
               category: "物質の分離と精製 (問2)",
               text: "B　（リード文続き）\n...液体とそれに溶けない固体の混合物は、ろ紙などを用いた ( ウ: ろ過 ) によって分けることができる。\n\n問2 ( ウ ) の操作（ろ過）を行う際の注意点について、次の(1)・(2)の理由を簡潔に答えよ。\n(1) 液体をろうとに注ぐ際、直接注がずにガラス棒を伝わらせて注ぐのはなぜか。\n(2) ろうとの足の先端は、受け器のビーカーの内壁に密着させるようにして置くのはなぜか。",
               subQuestions: [
-                { id: "q2_1_reason", label: "問2 (1) 理由", type: "short_answer", correctAnswer: "液体が周囲に飛び散るのを防ぐため", correctAnswerRate: 85 },
-                { id: "q2_2_reason", label: "問2 (2) 理由", type: "short_answer", correctAnswer: "ろ過された液体が壁面を伝わってスムーズに落ちるようにするため", correctAnswerRate: 85 }
+                { id: "q2_1_reason", label: "問2 (1) 理由", type: "descriptive", correctAnswer: "液体が周囲に飛び散るのを防ぐため", gradingCriteria: ["液体が周囲に飛び散るのを防ぐため"], correctAnswerRate: 85 },
+                { id: "q2_2_reason", label: "問2 (2) 理由", type: "descriptive", correctAnswer: "ろ過された液体が壁面を伝わってスムーズに落ちるようにするため", gradingCriteria: ["ろ過された液体が壁面を伝わってスムーズに落ちるようにするため"], correctAnswerRate: 85 }
               ],
               explanation: "問2 (1) 液体が周囲に飛び散るのを防ぐため。 (2) ろ過された液体が壁面を伝わってスムーズに落ちるようにするため。（液体の飛び散りを防ぎ、ろ過の速度を速める効果がある）\n解説: ろ紙の注意点としてプリントに記載されている内容です。(2)については、ろうとの先をビーカーの内壁につけることで、液体の表面張力が働き、ポタポタ落ちるよりもスピーディーにろ過できるメリットもあります。",
               surroundingKnowledge: [],
@@ -199,10 +199,10 @@ export const chemistryData = {
                 { id: "q3_1_D", label: "問3 (1) D", type: "short_answer", correctAnswer: "温度計", correctAnswerRate: 85 },
                 { id: "q3_2", label: "問3 (2) 位置", type: "short_answer", correctAnswer: "枝の付け根付近", correctAnswerRate: 85 },
                 { id: "q3_3_dir", label: "問3 (3) 方向", type: "short_answer", correctAnswer: "下から上", correctAnswerRate: 85 },
-                { id: "q3_3_reason", label: "問3 (3) 理由", type: "short_answer", correctAnswer: "冷却効率を高めるため", correctAnswerRate: 85 },
-                { id: "q3_4", label: "問3 (4) 理由", type: "short_answer", correctAnswer: "圧力が上昇して危険だから", correctAnswerRate: 85 },
-                { id: "q3_5", label: "問3 (5) 役割", type: "short_answer", correctAnswer: "突沸を防ぐため", correctAnswerRate: 85 },
-                { id: "q3_6", label: "問3 (6) 量", type: "short_answer", correctAnswer: "半分以下", correctAnswerRate: 85 }
+                { id: "q3_3_reason", label: "問3 (3) 理由", type: "descriptive", correctAnswer: "冷却効率を高めるため", gradingCriteria: ["冷却効率を高めるため"], correctAnswerRate: 85 },
+                { id: "q3_4", label: "問3 (4) 理由", type: "descriptive", correctAnswer: "圧力が上昇して危険だから", gradingCriteria: ["圧力が上昇して危険だから"], correctAnswerRate: 85 },
+                { id: "q3_5", label: "問3 (5) 役割", type: "descriptive", correctAnswer: "突沸を防ぐため", gradingCriteria: ["突沸を防ぐため"], correctAnswerRate: 85 },
+                { id: "q3_6", label: "問3 (6) 量", type: "descriptive", correctAnswer: "半分以下", gradingCriteria: ["半分以下"], correctAnswerRate: 85 }
               ],
               explanation: "問3\n(1) A：枝付きフラスコ　B：リービッヒ冷却器　C：三角フラスコ　D：温度計\n(2) 枝の付け根付近\n(3) 方向：下から上 　 理由：冷却器内を水で満たすため。\n(4) 三角フラスコ内の圧力が上昇して危険だから。\n(5) 突沸（急な沸騰）を防ぐため。\n(6) 液量は半分以下にする。\n解説: 蒸留装置のセッティングは記述問題で頻出です。(1)の器具の名前は確実に書けるようにしておきましょう。(2)の図は、温度計が液体の温度を測ってしまっている「よくある間違い図」です。測りたいのは「今まさに枝に向かっている蒸気の温度」なので、枝の付け根付近が正解です。",
               surroundingKnowledge: [],

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Target, BookOpen, ArrowLeft } from 'lucide-react';
+import { Target, BookOpen, ArrowLeft, FileText } from 'lucide-react';
 
 interface ModeSelectionProps {
-  onSelectMode: (mode: 'mini_test' | 'practice') => void;
+  onSelectMode: (mode: 'mini_test' | 'practice' | 'learning') => void;
   onBack: () => void;
 }
 
@@ -30,7 +30,20 @@ export function ModeSelection({ onSelectMode, onBack }: ModeSelectionProps) {
         学習モードを選択
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+        <button
+          onClick={() => onSelectMode('learning')}
+          className="group bg-white p-6 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:border-[#F4D03F] hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
+        >
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-[#F4D03F]/20 rounded-full flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
+            <FileText className="text-[#F4D03F] w-8 h-8 md:w-10 md:h-10" />
+          </div>
+          <h3 className="text-xl md:text-2xl font-bold font-handwriting text-[#2C3E50] mb-3 md:mb-4">学習(インプット)</h3>
+          <p className="text-sm md:text-base text-gray-600 font-handwriting leading-relaxed">
+            PDF資料を読んで、基礎知識をしっかりと身につけます。
+          </p>
+        </button>
+
         <button
           onClick={() => onSelectMode('mini_test')}
           className="group bg-white p-6 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:border-[#A9CCE3] hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
