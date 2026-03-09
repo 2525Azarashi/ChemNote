@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
+import clickSoundFile from '../assets/click.mp3';
 
 export function useGlobalClickSound() {
   useEffect(() => {
-    const audio = new Audio('/click.mp3');
+    const audio = new Audio(clickSoundFile);
     audio.volume = 0.5;
 
     const handleClick = (event: MouseEvent) => {
