@@ -84,6 +84,19 @@ export default function App() {
       const audio = new Audio(bgmUrl);
       audio.loop = true;
       audio.volume = 0.1; // Low volume
+      
+      audio.addEventListener('error', (e) => {
+        console.error('BGM Audio Error:', audio.error);
+        // Fallback to public folder if asset import fails
+        if (audio.src !== window.location.origin + '/bgm.mp3') {
+          console.log('Attempting fallback to /bgm.mp3');
+          audio.src = '/bgm.mp3';
+          if (isBgmEnabled && hasInteracted && !['quiz', 'explanation'].includes(appState)) {
+            audio.play().catch(err => console.warn('Fallback BGM play failed:', err));
+          }
+        }
+      });
+
       audioRef.current = audio;
     }
 
