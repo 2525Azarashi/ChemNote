@@ -14,6 +14,7 @@ import { LearningViewer } from './components/LearningViewer';
 import { Intro } from './components/Intro';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
+import bgmUrl from './assets/bgm.mp3';
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
@@ -36,6 +37,10 @@ export default function App() {
   useEffect(() => {
     const handleInteraction = () => {
       setHasInteracted(true);
+      // Explicitly try to play if it was blocked
+      if (audioRef.current) {
+        audioRef.current.play().catch(e => console.warn('BGM play failed on interaction:', e));
+      }
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('touchstart', handleInteraction);
       document.removeEventListener('keydown', handleInteraction);
@@ -75,8 +80,8 @@ export default function App() {
   // BGM Logic
   useEffect(() => {
     if (!audioRef.current) {
-      // Create audio element with local file
-      const audio = new Audio('/bgm.mp3');
+      // Create audio element with imported asset
+      const audio = new Audio(bgmUrl);
       audio.loop = true;
       audio.volume = 0.1; // Low volume
       audioRef.current = audio;
@@ -91,7 +96,7 @@ export default function App() {
       // Play might fail if user hasn't interacted with the document yet or if source is invalid
       audio.play().catch(e => {
         if (e.name === 'NotSupportedError') {
-          console.warn('BGM source invalid or blocked by browser (e.g. Google Drive virus scan warning):', e.message);
+          console.warn('BGM source invalid or blocked by browser:', e.message);
         } else {
           console.warn('BGM autoplay prevented by browser:', e.message);
         }
@@ -99,11 +104,6 @@ export default function App() {
     } else {
       audio.pause();
     }
-
-    return () => {
-      // Cleanup is not strictly necessary for a global audio element, 
-      // but good practice if component unmounts.
-    };
   }, [appState, isBgmEnabled, hasInteracted]);
 
   const handleStart = () => setAppState('mode_selection');
