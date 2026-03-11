@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { auth, provider } from '../firebase';
+import { LogIn, LogOut } from 'lucide-react';
 
 export function AuthButton() {
   const [user, setUser] = useState<User | null>(null);
@@ -40,21 +41,24 @@ export function AuthButton() {
 
   if (user) {
     return (
-      <div className="flex items-center gap-4 p-2 bg-white rounded-lg shadow-sm border">
-        <img src={user.photoURL || ''} alt="User" className="w-8 h-8 rounded-full" />
-        <div>
-          <p className="text-sm font-bold">{user.displayName}</p>
-          <p className="text-xs text-gray-500">{user.email}</p>
+      <div className="flex items-center gap-3 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-[#A9CCE3] font-handwriting">
+        <img src={user.photoURL || ''} alt="User" className="w-8 h-8 rounded-full border border-[#A9CCE3]" />
+        <div className="hidden md:block">
+          <p className="text-sm font-bold text-[#2C3E50]">{user.displayName}</p>
         </div>
-        <button onClick={handleLogout} className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200">
-          ログアウト
+        <button onClick={handleLogout} className="p-2 text-[#2C3E50] hover:bg-[#A9CCE3]/20 rounded-full transition-colors">
+          <LogOut size={20} />
         </button>
       </div>
     );
   }
 
   return (
-    <button onClick={handleLogin} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+    <button 
+      onClick={handleLogin} 
+      className="flex items-center gap-2 px-4 py-2 bg-[#A9CCE3]/20 text-[#2C3E50] rounded-full hover:bg-[#A9CCE3]/40 transition-all border border-[#A9CCE3] font-handwriting font-bold shadow-sm"
+    >
+      <LogIn size={18} />
       Googleでログイン
     </button>
   );

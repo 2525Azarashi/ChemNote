@@ -13,6 +13,7 @@ import { Explanation } from './components/Explanation';
 import { LearningViewer } from './components/LearningViewer';
 import { Intro } from './components/Intro';
 import { Flowchart } from './components/Flowchart';
+import { AuthButton } from './components/AuthButton';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import bgmUrl from './assets/bgm.mp3';
@@ -163,6 +164,11 @@ export default function App() {
       >
         {isBgmEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
       </button>
+
+      {/* Auth Button */}
+      <div className="absolute top-4 right-4 z-50">
+        <AuthButton />
+      </div>
 
       {/* Mobile Toggle Button */}
       {isMobileDevice && (
