@@ -28,10 +28,10 @@ export function Intro({ onBack }: IntroProps) {
           transition={{ duration: 0.5 }}
           className="bg-[#FDFBF7] p-6 rounded-2xl border border-gray-100 shadow-sm"
         >
-          <h3 className="text-lg md:text-xl font-bold text-[#2C3E50] mb-4 border-b-2 border-[#A9CCE3] pb-2 inline-block">
+          <h3 className="text-lg md:text-xl font-handwriting font-bold text-[#2C3E50] mb-4 border-b-2 border-[#A9CCE3] pb-2 inline-block">
             化学基礎ノートについて
           </h3>
-          <p className="text-gray-700 leading-relaxed font-modern">
+          <p className="text-gray-700 leading-relaxed font-handwriting text-lg">
             このアプリケーションは、化学基礎の学習をサポートするために作成されました。
             「わかったつもり」を防ぐため、記述問題の自己採点機能や、弱点分析機能などを搭載しています。
             日々の学習やテスト対策にぜひご活用ください。
@@ -54,8 +54,8 @@ export function Intro({ onBack }: IntroProps) {
               <Instagram size={24} />
             </div>
             <div className="flex-1">
-              <div className="text-sm text-gray-500 font-bold mb-1">Instagram</div>
-              <div className="text-[#2C3E50] font-bold flex items-center gap-2">
+              <div className="text-sm text-gray-500 font-handwriting font-bold mb-1">Instagram</div>
+              <div className="text-[#2C3E50] font-handwriting font-bold text-lg flex items-center gap-2">
                 @mana_tob1
                 <ExternalLink size={14} className="text-gray-400" />
               </div>
@@ -72,8 +72,8 @@ export function Intro({ onBack }: IntroProps) {
               <Globe size={24} />
             </div>
             <div className="flex-1">
-              <div className="text-sm text-gray-500 font-bold mb-1">公式Webサイト</div>
-              <div className="text-[#2C3E50] font-bold flex items-center gap-2">
+              <div className="text-sm text-gray-500 font-handwriting font-bold mb-1">公式Webサイト</div>
+              <div className="text-[#2C3E50] font-handwriting font-bold text-lg flex items-center gap-2">
                 mana-tob.vercel.app
                 <ExternalLink size={14} className="text-gray-400" />
               </div>

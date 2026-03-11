@@ -12,11 +12,12 @@ import { Quiz } from './components/Quiz';
 import { Explanation } from './components/Explanation';
 import { LearningViewer } from './components/LearningViewer';
 import { Intro } from './components/Intro';
+import { Flowchart } from './components/Flowchart';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import bgmUrl from './assets/bgm.mp3';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 export default function App() {
@@ -121,6 +122,7 @@ export default function App() {
 
   const handleStart = () => setAppState('mode_selection');
   const handleIntro = () => setAppState('intro');
+  const handleFlowchart = () => setAppState('flowchart');
   
   const handleSelectMode = (mode: AppMode) => {
     setAppMode(mode);
@@ -178,9 +180,14 @@ export default function App() {
       <div className="w-full max-w-5xl relative">
         {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} />}
         {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
+        {appState === 'flowchart' && <Flowchart onBack={() => {
+          // If we have a selected chapter or were in chapters mode, go back there
+          // For now, let's just go back to chapters if we were there
+          setAppState('chapters');
+        }} />}
         {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} />}
         {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
-        {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} />}
+        {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} onFlowchart={handleFlowchart} />}
         {appState === 'quiz' && selectedChapter && (
           <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} />
         )}

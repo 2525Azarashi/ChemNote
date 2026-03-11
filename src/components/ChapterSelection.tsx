@@ -6,9 +6,10 @@ interface ChapterSelectionProps {
   mode: 'mini_test' | 'practice';
   onSelectChapter: (id: string) => void;
   onBack: () => void;
+  onFlowchart: () => void;
 }
 
-export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelectionProps) {
+export function ChapterSelection({ mode, onSelectChapter, onBack, onFlowchart }: ChapterSelectionProps) {
   const [isFlowchartOpen, setIsFlowchartOpen] = useState(false);
 
   useEffect(() => {
@@ -32,6 +33,26 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
         <p className="text-sm md:text-base text-gray-600 font-modern">
           学習したい単元を選択してください
         </p>
+      </div>
+
+      {/* Flowchart Quick Access */}
+      <div className="mb-12 max-w-2xl mx-auto">
+        <button
+          onClick={onFlowchart}
+          className="w-full group relative overflow-hidden bg-gradient-to-r from-[#2C3E50] to-[#34495E] text-white p-4 md:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-between"
+        >
+          <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+              <GitBranch className="text-[#A9CCE3]" size={24} />
+            </div>
+            <div className="text-left">
+              <h3 className="text-lg md:text-xl font-handwriting font-bold tracking-wider">学習フローチャートを確認</h3>
+              <p className="text-xs text-blue-100/70 font-modern">単元の全体像と知識の繋がりをチェック！</p>
+            </div>
+          </div>
+          <ChevronRight className="relative z-10 group-hover:translate-x-1 transition-transform" />
+        </button>
       </div>
 
       <div className="space-y-12 md:space-y-20">
@@ -62,66 +83,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
                     </h4>
 
                     {/* Flowchart Accordion for '1章 物質の構成' */}
-                    {groupTitle === '1章 物質の構成' && (
-                      <div className="mb-6">
-                        <button
-                          onClick={() => setIsFlowchartOpen(!isFlowchartOpen)}
-                          className="w-full bg-white border-2 border-[#A9CCE3] rounded-xl p-4 flex items-center justify-between hover:bg-[#A9CCE3]/10 transition-colors shadow-sm"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="bg-[#A9CCE3]/20 p-2 rounded-lg">
-                              <GitBranch className="text-[#A9CCE3]" size={20} />
-                            </div>
-                            <span className="font-handwriting font-bold text-[#2C3E50] text-lg">フローチャート</span>
-                          </div>
-                          <ChevronDown 
-                            className={`text-gray-500 transition-transform duration-300 ${isFlowchartOpen ? 'rotate-180' : ''}`} 
-                            size={24} 
-                          />
-                        </button>
-                        
-                        <div 
-                          className={`overflow-hidden transition-all duration-500 ease-in-out ${isFlowchartOpen ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}
-                        >
-                          <div className="relative pl-8 md:pl-12 space-y-4 before:absolute before:inset-y-0 before:left-[1.35rem] md:before:left-[2.35rem] before:w-0.5 before:bg-gradient-to-b before:from-[#A9CCE3] before:to-transparent">
-                            
-                            {/* Node 1 */}
-                            <div className="relative">
-                              <div className="absolute -left-6 md:-left-8 top-1/2 w-4 md:w-6 h-0.5 bg-[#A9CCE3]"></div>
-                              <div className="absolute -left-[1.65rem] md:-left-[2.65rem] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[#A9CCE3] border-2 border-white"></div>
-                              <button className="w-full text-left bg-white border border-gray-200 p-3 md:p-4 rounded-lg shadow-sm hover:shadow-md hover:border-[#A9CCE3] transition-all group">
-                                <span className="text-sm md:text-base font-bold text-[#2C3E50] group-hover:text-[#A9CCE3] transition-colors">
-                                  ①(単体・化合物) 純物質と混合物の識別
-                                </span>
-                              </button>
-                            </div>
-
-                            {/* Node 2 */}
-                            <div className="relative">
-                              <div className="absolute -left-6 md:-left-8 top-1/2 w-4 md:w-6 h-0.5 bg-[#A9CCE3]"></div>
-                              <div className="absolute -left-[1.65rem] md:-left-[2.65rem] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[#A9CCE3] border-2 border-white"></div>
-                              <button className="w-full text-left bg-white border border-gray-200 p-3 md:p-4 rounded-lg shadow-sm hover:shadow-md hover:border-[#A9CCE3] transition-all group">
-                                <span className="text-sm md:text-base font-bold text-[#2C3E50] group-hover:text-[#A9CCE3] transition-colors">
-                                  ②純物質と混合物の性質の違い
-                                </span>
-                              </button>
-                            </div>
-
-                            {/* Node 3 */}
-                            <div className="relative">
-                              <div className="absolute -left-6 md:-left-8 top-1/2 w-4 md:w-6 h-0.5 bg-[#A9CCE3]"></div>
-                              <div className="absolute -left-[1.65rem] md:-left-[2.65rem] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[#A9CCE3] border-2 border-white"></div>
-                              <button className="w-full text-left bg-white border border-gray-200 p-3 md:p-4 rounded-lg shadow-sm hover:shadow-md hover:border-[#A9CCE3] transition-all group">
-                                <span className="text-sm md:text-base font-bold text-[#2C3E50] group-hover:text-[#A9CCE3] transition-colors">
-                                  ③単体と元素の違い
-                                </span>
-                              </button>
-                            </div>
-
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                    {/* Removed flowchart accordion as requested */}
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                       {chapters.map(chapter => {
