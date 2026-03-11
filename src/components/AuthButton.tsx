@@ -28,14 +28,18 @@ export function AuthButton() {
 
   // Googleログイン処理
   const handleLogin = async () => {
+    console.log("handleLogin called");
     try {
       await signInWithPopup(auth, provider);
+      console.log("signInWithPopup success");
     } catch (error: any) {
       console.error("ログインエラー:", error);
+      console.log("error code:", error.code);
       if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
+        console.log("Attempting signInWithRedirect");
         await signInWithRedirect(auth, provider);
       } else {
-        alert("ログインに失敗しました。");
+        alert("ログインに失敗しました: " + error.message);
       }
     }
   };

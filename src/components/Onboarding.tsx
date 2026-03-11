@@ -39,12 +39,16 @@ export function Onboarding({ onComplete }: OnboardingProps) {
   };
 
   const handleLogin = async () => {
+    console.log("Onboarding handleLogin called");
     try {
       const result = await signInWithPopup(auth, provider);
+      console.log("signInWithPopup success");
       await checkProfile(result.user);
     } catch (error: any) {
       console.error('ログインエラー:', error);
+      console.log("error code:", error.code);
       if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
+        console.log("Attempting signInWithRedirect");
         await signInWithRedirect(auth, provider);
       }
     }
