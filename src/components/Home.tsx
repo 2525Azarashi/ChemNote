@@ -1,17 +1,48 @@
-import React from 'react';
-import { BookOpen, ChevronRight, Star, Sparkles, PenTool, Info } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { BookOpen, ChevronRight, Star, Sparkles, PenTool, Info, User } from 'lucide-react';
 import { motion } from 'motion/react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+import { ProfileModal } from './ProfileModal';
 
 interface HomeProps {
   onStart: () => void;
   onIntro: () => void;
+  onNoteList: () => void;
 }
 
-export function Home({ onStart, onIntro }: HomeProps) {
+export function Home({ onStart, onIntro, onNoteList }: HomeProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      const fetchProfile = async () => {
+        const docRef = doc(db, 'users', auth.currentUser!.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setProfile(docSnap.data());
+        }
+      };
+      fetchProfile();
+    }
+  }, [isModalOpen]);
+
   return (
     <div className="relative w-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px] aspect-auto md:aspect-[16/9] max-w-5xl mx-auto bg-[#FDFBF7] rounded-3xl shadow-[20px_20px_60px_rgba(0,0,0,0.1),-5px_5px_15px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center overflow-hidden border-4 md:border-8 border-white ring-1 ring-gray-200 py-12 md:py-0">
       
-      {/* Background Notebook Lines */}
+      {/* Profile Display */}
+      {auth.currentUser && (
+        <div className="absolute top-4 left-4 md:top-6 md:left-6 z-30 flex items-center gap-3 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-[#A9CCE3] font-handwriting cursor-pointer hover:bg-[#A9CCE3]/20 transition-colors" onClick={() => setIsModalOpen(true)}>
+          <img src={profile?.iconUrl || auth.currentUser.photoURL || ''} alt="User" className="w-10 h-10 rounded-full border border-[#A9CCE3]" />
+          <div className="hidden md:block pr-2">
+            <p className="text-sm font-bold text-[#2C3E50]">{profile?.name || auth.currentUser.displayName}</p>
+            <p className="text-xs text-[#7F8C8D]">{profile?.grade} {profile?.stream === 'science' ? '理系' : profile?.stream === 'humanities' ? '文系' : ''}</p>
+          </div>
+        </div>
+      )}
+
+      <ProfileModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <div className="absolute inset-0 pointer-events-none opacity-30" 
            style={{ 
              backgroundImage: 'linear-gradient(transparent 95%, #A9CCE3 95%)', 
@@ -89,6 +120,16 @@ export function Home({ onStart, onIntro }: HomeProps) {
             >
               <Info className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300" />
               <span>アプリ紹介</span>
+            </motion.button>
+
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onNoteList}
+              className="group relative inline-flex items-center justify-center gap-2 md:gap-3 bg-[#F9E79F] text-[#D35400] border-2 border-[#F5B041] py-3 px-6 sm:px-8 md:py-4 md:px-10 rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_30px_rgba(0,0,0,0.1)] transition-all duration-300 font-modern font-bold text-sm sm:text-base md:text-lg tracking-widest overflow-hidden w-full sm:w-auto"
+            >
+              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform duration-300" />
+              <span>個人ノート</span>
             </motion.button>
           </div>
         </motion.div>

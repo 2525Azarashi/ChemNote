@@ -11,25 +11,49 @@ import { ChapterSelection } from './components/ChapterSelection';
 import { Quiz } from './components/Quiz';
 import { Explanation } from './components/Explanation';
 import { LearningViewer } from './components/LearningViewer';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db, auth } from './firebase';
 import { Intro } from './components/Intro';
 import { Flowchart } from './components/Flowchart';
 import { AuthButton } from './components/AuthButton';
+import { NoteList } from './components/NoteList';
+import { NoteDetail } from './components/NoteDetail';
+import { Onboarding } from './components/Onboarding';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import bgmUrl from './assets/bgm.mp3';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 export default function App() {
   useGlobalClickSound();
 
-  const [appState, setAppState] = useState<AppState>('home');
+  const [appState, setAppState] = useState<AppState>('onboarding');
   const [appMode, setAppMode] = useState<AppMode>('mini_test');
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
+  const [selectedNote, setSelectedNote] = useState<any>(null);
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [forceDesktop, setForceDesktop] = useState(false);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        setAppState('onboarding');
+      } else {
+        const docRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+          setAppState('onboarding');
+        } else {
+          setAppState('home');
+        }
+      }
+    });
+    return unsubscribe;
+  }, []);
   
   // BGM state
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -184,7 +208,8 @@ export default function App() {
       )}
 
       <div className="w-full max-w-5xl relative">
-        {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} />}
+        {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} />}
+        {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} />}
         {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
         {appState === 'flowchart' && <Flowchart onBack={() => {
           // If we have a selected chapter or were in chapters mode, go back there
@@ -200,6 +225,8 @@ export default function App() {
         {appState === 'explanation' && selectedChapter && (
           <Explanation mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} answers={quizAnswers} onBack={handleBackToChapters} />
         )}
+        {appState === 'note_list' && <NoteList onBack={() => setAppState('home')} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
+        {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}
       </div>
     </div>
   );

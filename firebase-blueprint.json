@@ -1,0 +1,40 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "ユーザーのプロフィール情報",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "ユーザー名" },
+        "iconUrl": { "type": "string", "description": "アイコン画像のURL" },
+        "grade": { "type": "string", "description": "学年" },
+        "stream": { "type": "string", "description": "理系か文系か", "enum": ["science", "humanities", "other"] }
+      },
+      "required": ["name"]
+    },
+    "UserNote": {
+      "title": "UserNote",
+      "description": "ユーザーの個人ノート",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "作成したユーザーのUID" },
+        "question": { "type": "string", "description": "問題文" },
+        "answer": { "type": "string", "description": "解答" },
+        "explanation": { "type": "string", "description": "解説" },
+        "memo": { "type": "string", "description": "ユーザーのメモ" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "作成日時" }
+      },
+      "required": ["uid", "question", "answer", "explanation"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": { "$ref": "UserProfile" },
+      "description": "ユーザープロフィール"
+    },
+    "/notes/{noteId}": {
+      "schema": { "$ref": "UserNote" },
+      "description": "ユーザーの個人ノート"
+    }
+  }
+}

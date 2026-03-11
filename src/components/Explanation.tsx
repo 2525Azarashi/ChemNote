@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronLeft, ChevronRight, Search, ChevronDown, ChevronUp, Edit3 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronLeft, ChevronRight, Search, ChevronDown, ChevronUp, Edit3, Save } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { db, auth } from '../firebase';
 
 interface ExplanationProps {
   mode: 'mini_test' | 'practice';
@@ -13,12 +15,34 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
   const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(null);
   const [expandedSq, setExpandedSq] = useState<string | null>(null);
+  const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
 
   const questions = mode === 'mini_test' ? chapter.miniTest : (chapter.practiceProblems || []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [questions]);
+
+  const handleSaveNote = async (question: any) => {
+    if (!auth.currentUser) return;
+    setSavingNote(prev => ({ ...prev, [question.id]: true }));
+    try {
+      await addDoc(collection(db, 'notes'), {
+        uid: auth.currentUser.uid,
+        question: question.text,
+        answer: question.subQuestions.map((sq: any) => sq.correctAnswer).join(', '),
+        explanation: question.explanation,
+        memo: '',
+        createdAt: serverTimestamp()
+      });
+      alert('ノートに保存しました！');
+    } catch (error) {
+      console.error('保存エラー:', error);
+      alert('保存に失敗しました。');
+    } finally {
+      setSavingNote(prev => ({ ...prev, [question.id]: false }));
+    }
+  };
 
   const toggleGrade = (criteriaId: string) => {
     setSelfGrades(prev => ({ ...prev, [criteriaId]: !prev[criteriaId] }));
@@ -181,6 +205,15 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                 </div>
                 
                 <div className="flex items-center gap-4 md:gap-6">
+                  {/* ノート保存ボタン */}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleSaveNote(question); }}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-colors ${savingNote[question.id] ? 'bg-gray-200 text-gray-500' : 'bg-[#F9E79F] text-[#D35400] hover:bg-[#F5B041]'}`}
+                    disabled={savingNote[question.id]}
+                  >
+                    <Save size={14} />
+                    {savingNote[question.id] ? '保存中...' : 'ノートに保存'}
+                  </button>
                   <div className="flex flex-col items-end">
                     <div className="text-[10px] md:text-xs text-gray-500 font-bold mb-0.5">あなたの正答率</div>
                     <div className={`font-mono font-bold text-base md:text-lg ${scorePercentage >= 80 ? 'text-green-500' : scorePercentage <= 40 ? 'text-red-500' : 'text-yellow-600'}`}>
