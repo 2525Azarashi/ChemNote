@@ -23,7 +23,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     window.scrollTo(0, 0);
   }, [questions]);
 
-  const handleSaveNote = async (question: any) => {
+  const handleSaveNote = async (question: any, index: number) => {
     if (!auth.currentUser) return;
     setSavingNote(prev => ({ ...prev, [question.id]: true }));
     try {
@@ -32,6 +32,8 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
         question: question.text,
         answer: question.subQuestions.map((sq: any) => sq.correctAnswer).join(', '),
         explanation: question.explanation,
+        chapterTitle: chapter.abstractTitle || chapter.realTitle || '',
+        questionIndex: index + 1,
         memo: '',
         createdAt: serverTimestamp()
       });
@@ -207,7 +209,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                 <div className="flex items-center gap-4 md:gap-6">
                   {/* ノート保存ボタン */}
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleSaveNote(question); }}
+                    onClick={(e) => { e.stopPropagation(); handleSaveNote(question, index); }}
                     className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-colors ${savingNote[question.id] ? 'bg-gray-200 text-gray-500' : 'bg-[#F9E79F] text-[#D35400] hover:bg-[#F5B041]'}`}
                     disabled={savingNote[question.id]}
                   >

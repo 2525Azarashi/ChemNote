@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { formatText } from '../utils/textFormatter';
 
 interface NoteDetailProps {
   note: any;
@@ -44,10 +45,36 @@ export function NoteDetail({ note, onBack }: NoteDetailProps) {
       
       {/* Original Note UI */}
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#A9CCE3] space-y-4">
-        <h2 className="text-lg font-bold text-[#2C3E50] font-sans">{note.question}</h2>
-        <div className="text-sm text-gray-800 space-y-2 font-sans">
-          <p><strong>解答:</strong> {note.answer}</p>
-          <p><strong>解説:</strong> {note.explanation}</p>
+        {(note.chapterTitle || note.questionIndex) && (
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            {note.chapterTitle && (
+              <span className="bg-[#A9CCE3]/20 text-[#2C3E50] px-3 py-1 rounded-full text-xs font-bold border border-[#A9CCE3]/50">
+                {note.chapterTitle}
+              </span>
+            )}
+            {note.questionIndex && (
+              <span className="bg-[#F9E79F]/30 text-[#D35400] px-3 py-1 rounded-full text-xs font-bold border border-[#F5B041]/50">
+                第{note.questionIndex}問
+              </span>
+            )}
+          </div>
+        )}
+        <div className="text-sm md:text-base text-gray-800 font-modern leading-relaxed">
+          {formatText(note.question)}
+        </div>
+        <div className="text-sm text-gray-800 space-y-3 font-modern mt-6 pt-6 border-t border-gray-100">
+          <div>
+            <strong className="text-[#2C3E50] mb-1 block">解答:</strong>
+            <div className="bg-gray-50 p-3 rounded-xl border border-gray-200">
+              {formatText(note.answer)}
+            </div>
+          </div>
+          <div>
+            <strong className="text-[#2C3E50] mb-1 block">解説:</strong>
+            <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100 whitespace-pre-wrap">
+              {formatText(note.explanation)}
+            </div>
+          </div>
         </div>
       </div>
 

@@ -73,7 +73,7 @@ export const chemistryData = {
           ]
         },
         {
-          id: "c1_2_A",
+          id: "c1_2",
           abstractTitle: "② 物質の構成",
           realTitle: "1章 物質の構成",
           topics: ["純物質と混合物"],
