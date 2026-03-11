@@ -16,7 +16,7 @@ export default defineConfig(({mode}) => {
       },
     },
     build: {
-      assetsInlineLimit: 1000000, // Inline assets smaller than 1MB (including our 637KB BGM)
+      assetsInlineLimit: 2000000, // Inline assets smaller than 2MB (including our 1.1MB BGM)
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.

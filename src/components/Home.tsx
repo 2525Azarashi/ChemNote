@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, ChevronRight, Star, Sparkles, PenTool, Info, User } from 'lucide-react';
+import { BookOpen, ChevronRight, Sparkles, Info, Atom, FlaskConical, Hexagon, Beaker } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { ProfileModal } from './ProfileModal';
@@ -57,7 +57,7 @@ export function Home({ onStart, onIntro, onNoteList }: HomeProps) {
         <img src="https://lh3.googleusercontent.com/d/1bdaFoRcprvig_57izYdAEzon1gD47_Wk" alt="Logo" className="h-8 sm:h-10 md:h-14 object-contain" referrerPolicy="no-referrer" />
       </div>
 
-      {/* Decorative Elements (Stickers/Doodles) */}
+      {/* Decorative Elements (Stickers/Doodles) - Replaced with Chemistry themes */}
       <motion.div 
         initial={{ rotate: -10, scale: 0.8, opacity: 0 }}
         animate={{ rotate: -12, scale: 1, opacity: 1 }}
@@ -65,20 +65,24 @@ export function Home({ onStart, onIntro, onNoteList }: HomeProps) {
         className="absolute top-6 left-6 md:top-20 md:left-24 bg-[#F9E79F] text-[#D35400] p-2 sm:p-3 md:p-4 shadow-lg transform -rotate-12 z-10 font-handwriting text-xs sm:text-sm md:text-lg font-bold border-2 border-[#F5B041]"
         style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 85%, 85% 100%, 0% 100%)' }}
       >
-        <span className="flex items-center gap-1 sm:gap-2"><Star size={12} className="sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" fill="#D35400" /> 重要！</span>
+        <span className="flex items-center gap-1 sm:gap-2"><Atom size={16} className="sm:w-4 sm:h-4 md:w-5 md:h-5" /> 化学基礎</span>
       </motion.div>
 
       <motion.div 
         initial={{ rotate: 10, scale: 0.8, opacity: 0 }}
         animate={{ rotate: 6, scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.4 }}
-        className="absolute bottom-10 right-6 md:bottom-32 md:right-24 bg-[#D9A0A0] text-white p-3 sm:p-4 md:p-6 rounded-full shadow-lg transform rotate-6 z-10 flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 border-4 border-white border-dashed"
+        className="absolute bottom-10 right-6 md:bottom-32 md:right-24 bg-[#A9CCE3] text-white p-3 sm:p-4 md:p-6 rounded-full shadow-lg transform rotate-6 z-10 flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 border-4 border-white border-dashed"
       >
-        <span className="font-handwriting font-bold text-sm sm:text-lg md:text-xl transform -rotate-6">合格<br/>祈願</span>
+        <FlaskConical size={32} className="sm:w-10 sm:h-10 md:w-12 md:h-12 transform -rotate-6" />
       </motion.div>
 
-      <div className="absolute top-1/4 right-1/4 text-[#A9CCE3] opacity-40 transform rotate-45 hidden md:block">
-        <PenTool size={120} />
+      <div className="absolute top-1/4 right-1/4 text-[#A9CCE3] opacity-40 transform rotate-12 hidden md:block">
+        <Hexagon size={120} strokeWidth={1.5} />
+      </div>
+      
+      <div className="absolute bottom-1/4 left-1/4 text-[#D9A0A0] opacity-30 transform -rotate-12 hidden md:block">
+        <Beaker size={100} strokeWidth={1.5} />
       </div>
 
       {/* Main Content */}
