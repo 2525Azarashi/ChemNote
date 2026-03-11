@@ -14,9 +14,13 @@ export function NoteList({ onBack, onSelectNote }: NoteListProps) {
   useEffect(() => {
     if (!auth.currentUser) return;
     const fetchNotes = async () => {
-      const q = query(collection(db, 'notes'), where('uid', '==', auth.currentUser!.uid), orderBy('createdAt', 'desc'));
-      const querySnapshot = await getDocs(q);
-      setNotes(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      try {
+        const localNotes = JSON.parse(localStorage.getItem(`notes_${auth.currentUser!.uid}`) || '[]');
+        localNotes.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setNotes(localNotes);
+      } catch (error) {
+        console.error("ノート取得エラー:", error);
+      }
     };
     fetchNotes();
   }, []);

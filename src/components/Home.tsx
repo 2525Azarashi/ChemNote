@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, ChevronRight, Star, Sparkles, PenTool, Info, User } from 'lucide-react';
 import { motion } from 'motion/react';
-import { doc, getDoc } from 'firebase/firestore';
-import { db, auth } from '../firebase';
+import { auth } from '../firebase';
 import { ProfileModal } from './ProfileModal';
 
 interface HomeProps {
@@ -18,10 +17,13 @@ export function Home({ onStart, onIntro, onNoteList }: HomeProps) {
   useEffect(() => {
     if (auth.currentUser) {
       const fetchProfile = async () => {
-        const docRef = doc(db, 'users', auth.currentUser!.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setProfile(docSnap.data());
+        try {
+          const localProfile = localStorage.getItem(`profile_${auth.currentUser!.uid}`);
+          if (localProfile) {
+            setProfile(JSON.parse(localProfile));
+          }
+        } catch (error) {
+          console.error("プロフィール取得エラー:", error);
         }
       };
       fetchProfile();

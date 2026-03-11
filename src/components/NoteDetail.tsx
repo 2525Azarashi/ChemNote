@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../firebase';
 import { ArrowLeft, Save, Trash2 } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
+import { auth } from '../firebase';
 
 interface NoteDetailProps {
   note: any;
@@ -14,9 +13,12 @@ export function NoteDetail({ note, onBack }: NoteDetailProps) {
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
+    if (!auth.currentUser) return;
     setSaving(true);
     try {
-      await updateDoc(doc(db, 'notes', note.id), { memo });
+      const localNotes = JSON.parse(localStorage.getItem(`notes_${auth.currentUser.uid}`) || '[]');
+      const updatedNotes = localNotes.map((n: any) => n.id === note.id ? { ...n, memo } : n);
+      localStorage.setItem(`notes_${auth.currentUser.uid}`, JSON.stringify(updatedNotes));
       alert('メモを保存しました！');
     } catch (error) {
       console.error('保存エラー:', error);
@@ -27,9 +29,12 @@ export function NoteDetail({ note, onBack }: NoteDetailProps) {
   };
 
   const handleDelete = async () => {
+    if (!auth.currentUser) return;
     if (!confirm('本当に削除しますか？')) return;
     try {
-      await deleteDoc(doc(db, 'notes', note.id));
+      const localNotes = JSON.parse(localStorage.getItem(`notes_${auth.currentUser.uid}`) || '[]');
+      const updatedNotes = localNotes.filter((n: any) => n.id !== note.id);
+      localStorage.setItem(`notes_${auth.currentUser.uid}`, JSON.stringify(updatedNotes));
       onBack();
     } catch (error) {
       console.error('削除エラー:', error);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db, auth } from '../firebase';
+import { auth } from '../firebase';
 import { X, User } from 'lucide-react';
 
 interface ProfileModalProps {
@@ -17,13 +16,16 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   useEffect(() => {
     if (isOpen && auth.currentUser) {
       const fetchProfile = async () => {
-        const docRef = doc(db, 'users', auth.currentUser!.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setName(data.name || '');
-          setGrade(data.grade || '');
-          setStream(data.stream || 'science');
+        try {
+          const localProfile = localStorage.getItem(`profile_${auth.currentUser!.uid}`);
+          if (localProfile) {
+            const data = JSON.parse(localProfile);
+            setName(data.name || '');
+            setGrade(data.grade || '');
+            setStream(data.stream || 'science');
+          }
+        } catch (error) {
+          console.error("プロフィール取得エラー:", error);
         }
       };
       fetchProfile();
@@ -34,12 +36,13 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     if (!auth.currentUser) return;
     setLoading(true);
     try {
-      await setDoc(doc(db, 'users', auth.currentUser.uid), {
+      const profileData = {
         name,
         grade,
         stream,
         iconUrl: auth.currentUser.photoURL || ''
-      }, { merge: true });
+      };
+      localStorage.setItem(`profile_${auth.currentUser.uid}`, JSON.stringify(profileData));
       onClose();
     } catch (error) {
       console.error('保存エラー:', error);

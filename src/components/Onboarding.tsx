@@ -28,10 +28,9 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
   const checkProfile = async (user: any) => {
     try {
-      const docRef = doc(db, 'users', user.uid);
-      const docSnap = await getDoc(docRef);
+      const localProfile = localStorage.getItem(`profile_${user.uid}`);
       
-      if (docSnap.exists()) {
+      if (localProfile) {
         onComplete();
       } else {
         setName(user.displayName || '');
@@ -39,12 +38,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       }
     } catch (error: any) {
       console.error("checkProfile error:", error);
-      if (error.code === 'permission-denied' || error.message?.includes('permission') || error.message?.includes('offline')) {
-        alert("Firestoreデータベースへのアクセスが拒否されました。\nFirebaseコンソールで「Firestore Database」が作成されているか、また「ルール」タブで読み書きが許可されているか確認してください。\n\n詳細: " + error.message);
-      } else {
-        alert("プロフィールの確認中にエラーが発生しました。\n詳細: " + error.message);
-      }
-      // エラーでも一応プロフィール入力画面に進ませる（保存時に再度エラーになるが、原因切り分けのため）
+      alert("プロフィールの確認中にエラーが発生しました。\n詳細: " + error.message);
       setName(user.displayName || '');
       setStep('profile');
     }
@@ -61,8 +55,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       console.log("error code:", error.code);
       if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
         alert("ポップアップがブロックされました。ブラウザの設定でポップアップを許可するか、右上のボタンからアプリを新しいタブで開いてください。");
-      } else if (error.code !== 'permission-denied' && !error.message?.includes('permission')) {
-        // FirestoreのエラーはcheckProfile内で処理されるため、ここではAuthのエラーのみアラートを出す
+      } else {
         alert("ログインに失敗しました。\nLINEやTwitterなどのアプリ内ブラウザではGoogleログインが制限されています。SafariやChromeなどの標準ブラウザで開き直してください。\n詳細: " + error.message);
       }
     }
@@ -72,16 +65,17 @@ export function Onboarding({ onComplete }: OnboardingProps) {
     if (!auth.currentUser) return;
     setLoading(true);
     try {
-      await setDoc(doc(db, 'users', auth.currentUser.uid), {
+      const profileData = {
         name,
         grade,
         stream,
         iconUrl: auth.currentUser.photoURL || ''
-      });
+      };
+      localStorage.setItem(`profile_${auth.currentUser.uid}`, JSON.stringify(profileData));
       onComplete();
     } catch (error: any) {
       console.error('保存エラー:', error);
-      alert("プロフィールの保存に失敗しました。\nFirestoreデータベースが作成されていないか、セキュリティルールで書き込みが拒否されています。\n\n詳細: " + error.message);
+      alert("プロフィールの保存に失敗しました。\n\n詳細: " + error.message);
     } finally {
       setLoading(false);
     }

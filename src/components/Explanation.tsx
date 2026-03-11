@@ -27,7 +27,8 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     if (!auth.currentUser) return;
     setSavingNote(prev => ({ ...prev, [question.id]: true }));
     try {
-      await addDoc(collection(db, 'notes'), {
+      const newNote = {
+        id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
         uid: auth.currentUser.uid,
         question: question.text,
         answer: question.subQuestions.map((sq: any) => sq.correctAnswer).join(', '),
@@ -35,8 +36,13 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
         chapterTitle: chapter.abstractTitle || chapter.realTitle || '',
         questionIndex: index + 1,
         memo: '',
-        createdAt: serverTimestamp()
-      });
+        createdAt: new Date().toISOString()
+      };
+      
+      const existingNotes = JSON.parse(localStorage.getItem(`notes_${auth.currentUser.uid}`) || '[]');
+      existingNotes.push(newNote);
+      localStorage.setItem(`notes_${auth.currentUser.uid}`, JSON.stringify(existingNotes));
+      
       alert('ノートに保存しました！');
     } catch (error) {
       console.error('保存エラー:', error);
