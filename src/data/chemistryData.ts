@@ -74,84 +74,7 @@ export const chemistryData = {
         },
         {
           id: "c1_2_A",
-          abstractTitle: "②-A 物質の構成と成分元素の検出",
-          realTitle: "1章 物質の構成",
-          topics: ["同素体", "炎色反応", "成分元素の検出"],
-          miniTest: [
-            {
-              id: "q_c1_2_A_1",
-              category: "物質の構成と成分元素の検出 (問1)",
-              text: "A　物質の構成と分離・精製に関する次の文章を読み、あとの問いに答えよ。\n\n物質は様々な元素から構成されている。同じ元素からなる単体であっても、結合のしかたや配列が異なるために性質が異なる物質が存在し、これらを互いに ( ア ) という。代表的なものとして、S（硫黄）、C（炭素）、O（酸素）、P（リン）の4つの元素が知られている。 また、物質に含まれる元素を確認する方法として、特定の元素を含む物質を炎の中に入れると特有の色を示す ( イ ) という現象を利用する方法がある。\n\nさらに、化学反応を用いて①成分元素を検出することもできる。例えば、ある未知の化合物を完全燃焼させたところ、無色の気体Aと無色の液体Bが生じた。気体Aを ( ウ ) に通すと白濁したことから、元の化合物には ( エ ) 元素が含まれていることがわかる。液体Bを、硫酸銅(Ⅱ)無水塩に触れさせると色が変化したことから、液体Bは水であり、元の化合物には ( オ ) 元素が含まれていたことがわかる。また、水溶液に硝酸銀水溶液を加えて白色沈殿が生じた場合、その水溶液には ( カ ) 元素が含まれていることが確認できる。\n\n問1 文章中の空欄 ( ア ) ～ ( カ ) に入る最も適切な語句、または元素名を答えよ。",
-              subQuestions: [
-                { id: "q1_a", label: "問1 (ア)", type: "short_answer", correctAnswer: "同素体", correctAnswerRate: 85 },
-                { id: "q1_b", label: "問1 (イ)", type: "short_answer", correctAnswer: "炎色反応", correctAnswerRate: 85 },
-                { id: "q1_c", label: "問1 (ウ)", type: "short_answer", correctAnswer: "石灰水", correctAnswerRate: 85 },
-                { id: "q1_d", label: "問1 (エ)", type: "short_answer", correctAnswer: "炭素", correctAnswerRate: 85 },
-                { id: "q1_e", label: "問1 (オ)", type: "short_answer", correctAnswer: "水素", correctAnswerRate: 85 },
-                { id: "q1_f", label: "問1 (カ)", type: "short_answer", correctAnswer: "塩素", correctAnswerRate: 85 }
-              ],
-              explanation: "問1 (ア) 同素体 (イ) 炎色反応 (ウ) 石灰水 (エ) 炭素（C） (オ) 水素（H） (カ) 塩素（Cl）",
-              surroundingKnowledge: [],
-              deepDiveTopics: []
-            },
-            {
-              id: "q_c1_2_A_2",
-              category: "物質の構成と成分元素の検出 (問2)",
-              text: "A　（リード文続き）\n...代表的なものとして、S（硫黄）、C（炭素）、O（酸素）、P（リン）の4つの元素が知られている。\n\n問2 (ア: 同素体) に関して、硫黄、炭素、酸素、リンの性質について次の問いに答えよ。\n(1) 硫黄(S)の同素体を3つ、名称で答えよ。また、そのうち「常温で安定で黄色」のもの、「淡黄色で針状」のものをそれぞれ選べ。\n(2) 炭素(C)の同素体を4つ、名称で答えよ。また、そのうち「非常に硬く電気を通さない」もの、「やわらかく電気をよく導く」ものをそれぞれ選べ。\n(3) 酸素(O)の同素体である「オゾン」は、どのような色とにおいをもつか。それぞれ簡潔に答えよ。\n(4) リン(P)の同素体のうち、猛毒で自然発火するため「水中に保存」するものは何か。また、毒性が低く「マッチの側薬」などに使われるものは何か。名称で答えよ。",
-              subQuestions: [
-                { id: "q2_1_stable", label: "問2 (1) 常温で安定", type: "short_answer", correctAnswer: "斜方硫黄", correctAnswerRate: 85 },
-                { id: "q2_1_needle", label: "問2 (1) 針状", type: "short_answer", correctAnswer: "単斜硫黄", correctAnswerRate: 85 },
-                { id: "q2_2_hard", label: "問2 (2) 硬い", type: "short_answer", correctAnswer: "ダイヤモンド", correctAnswerRate: 85 },
-                { id: "q2_2_soft", label: "問2 (2) 導く", type: "short_answer", correctAnswer: "黒鉛", correctAnswerRate: 85 },
-                { id: "q2_3_color", label: "問2 (3) オゾンの色", type: "short_answer", correctAnswer: "淡青色", correctAnswerRate: 85 },
-                { id: "q2_3_smell", label: "問2 (3) オゾンのにおい", type: "short_answer", correctAnswer: "特異臭", correctAnswerRate: 85 },
-                { id: "q2_4_poison", label: "問2 (4) 水中保存", type: "short_answer", correctAnswer: "黄リン", correctAnswerRate: 85 },
-                { id: "q2_4_match", label: "問2 (4) マッチ", type: "short_answer", correctAnswer: "赤リン", correctAnswerRate: 85 }
-              ],
-              explanation: "問2\n(1) 同素体：斜方硫黄、単斜硫黄、ゴム状硫黄 　常温で安定で黄色：斜方硫黄 　淡黄色で針状：単斜硫黄\n(2) 同素体：ダイヤモンド、黒鉛、フラーレン、カーボンナノチューブ\n非常に硬く電気を通さない：ダイヤモンド 　やわらかく電気をよく導く：黒鉛\n(3) 色：淡青色　におい：特異臭\n(4) 　水中に保存：黄リン マッチの側薬：赤リン\n\n解説: プリントに書かれている同素体の特徴（色や硬さ、保存方法）は、テストでそのまま記述や選択肢として問われます。特にリンの保存方法と、硫黄の「斜方」「単斜」の違いは完璧にしておきましょう。",
-              surroundingKnowledge: [],
-              deepDiveTopics: []
-            },
-            {
-              id: "q_c1_2_A_3",
-              category: "物質の構成と成分元素の検出 (問3)",
-              text: "A　（リード文続き）\n...また、物質に含まれる元素を確認する方法として、特定の元素を含む物質を炎の中に入れると特有の色を示す ( イ: 炎色反応 ) という現象を利用する方法がある。\n\n問3 (イ) に関して、次の元素が含まれる物質を炎の中に入れたとき、それぞれ何色の炎になるか答えよ。\n(1) Li （リチウム） (2) Na （ナトリウム） (3) K （カリウム） (4) Cu （銅）\n(5) Ca （カルシウム） (6) Sr （ストロンチウム） (7) Ba （バリウム）",
-              subQuestions: [
-                { id: "q3_1", label: "問3 (1) Li", type: "short_answer", correctAnswer: "赤", correctAnswerRate: 85 },
-                { id: "q3_2", label: "問3 (2) Na", type: "short_answer", correctAnswer: "黄", correctAnswerRate: 85 },
-                { id: "q3_3", label: "問3 (3) K", type: "short_answer", correctAnswer: "紫", correctAnswerRate: 85 },
-                { id: "q3_4", label: "問3 (4) Cu", type: "short_answer", correctAnswer: "青緑", correctAnswerRate: 85 },
-                { id: "q3_5", label: "問3 (5) Ca", type: "short_answer", correctAnswer: "橙", correctAnswerRate: 85 },
-                { id: "q3_6", label: "問3 (6) Sr", type: "short_answer", correctAnswer: "紅", correctAnswerRate: 85 },
-                { id: "q3_7", label: "問3 (7) Ba", type: "short_answer", correctAnswer: "黄緑", correctAnswerRate: 85 }
-              ],
-              explanation: "問3 (1) 赤 （赤色） (2) 黄 （黄色） (3) 紫 （紫色） (4) 青緑 （青緑色）\n(5) 橙 （橙色） (6) 紅 （紅色） (7) 黄緑 （黄緑色）\n解説: 「リアカー(Li赤) 無き(Na黄、K紫) 動力(Cu青緑) 借りるとう(Ca橙) するもくれない(Sr紅) 馬力(Ba黄緑)」で確実に暗記します。",
-              surroundingKnowledge: [],
-              deepDiveTopics: []
-            },
-            {
-              id: "q_c1_2_A_4",
-              category: "物質の構成と成分元素の検出 (問4)",
-              text: "A　（リード文続き）\n...さらに、化学反応を用いて①成分元素を検出することもできる。例えば、ある未知の化合物を完全燃焼させたところ、無色の気体Aと無色の液体Bが生じた。気体Aを ( ウ: 石灰水 ) に通すと白濁したことから、元の化合物には ( エ ) 元素が含まれていることがわかる。液体Bを、硫酸銅(Ⅱ)無水塩に触れさせると色が変化したことから、液体Bは水であり、元の化合物には ( オ ) 元素が含まれていたことがわかる。また、水溶液に硝酸銀水溶液を加えて白色沈殿が生じた場合、その水溶液には ( カ ) 元素が含まれていることが確認できる。\n\n問4 下線部①に関して、次の問いに答えよ。\n(1) 二酸化炭素を( ウ )に通して白濁したとき、生じている白色の沈殿物の名称と、その化学式を答えよ。\n(2) 文章中の下線部について、液体B（水）が触れたとき、硫酸銅(Ⅱ)無水塩は何色から何色に変化するか。\n(3) 液体B（水）の確認には、青色の塩化コバルト紙を用いることもできる。水に触れると塩化コバルト紙は何色に変化するか。\n(4) 水溶液に硝酸銀(AgNO₃)水溶液を加えたときに生じる「白色沈殿」の物質の名称と、その化学式を答えよ。\n(5) 水溶液中の硫黄(S)元素を検出するためには、酢酸鉛(Ⅱ)水溶液を加える。このとき生じる沈殿の色と、その沈殿物の化学式を答えよ。",
-              subQuestions: [
-                { id: "q4_1_name", label: "問4 (1) 沈殿名称", type: "short_answer", correctAnswer: "炭酸カルシウム", correctAnswerRate: 85 },
-                { id: "q4_1_chem", label: "問4 (1) 化学式", type: "short_answer", correctAnswer: "CaCO3", correctAnswerRate: 85 },
-                { id: "q4_2_color", label: "問4 (2) 色変化", type: "short_answer", correctAnswer: "青", correctAnswerRate: 85 },
-                { id: "q4_3_color", label: "問4 (3) 色変化", type: "short_answer", correctAnswer: "赤", correctAnswerRate: 85 },
-                { id: "q4_4_name", label: "問4 (4) 沈殿名称", type: "short_answer", correctAnswer: "塩化銀", correctAnswerRate: 85 },
-                { id: "q4_4_chem", label: "問4 (4) 化学式", type: "short_answer", correctAnswer: "AgCl", correctAnswerRate: 85 },
-                { id: "q4_5_color", label: "問4 (5) 沈殿色", type: "short_answer", correctAnswer: "黒", correctAnswerRate: 85 },
-                { id: "q4_5_chem", label: "問4 (5) 化学式", type: "short_answer", correctAnswer: "PbS", correctAnswerRate: 85 }
-              ],
-              explanation: "問4\n(1) 炭酸カルシウム (CaCO3)\n(2) 白色から青色\n(3) 青色から赤色\n(4) 塩化銀 (AgCl)\n(5) 黒色 (PbS)",
-              surroundingKnowledge: [],
-              deepDiveTopics: []
-            }
-          ]
-        },
-        {
-          id: "c1_2_B",
-          abstractTitle: "②-B 物質の分離と精製",
+          abstractTitle: "②-A 物質の分離と精製",
           realTitle: "1章 物質の構成",
           topics: ["分離と精製", "蒸留", "分留", "再結晶", "抽出", "クロマトグラフィー", "昇華法"],
           miniTest: [
@@ -232,6 +155,83 @@ export const chemistryData = {
                 { id: "q5_f", label: "問5 (f)", type: "short_answer", correctAnswer: "抽出", correctAnswerRate: 85 }
               ],
               explanation: "問5\n(a) 抽出\n(b) クロマトグラフィー（または ペーパークロマトグラフィー）\n(c) 昇華法\n(d) 再結晶\n(e) 蒸留\n(f) 抽出\n解説: プリント右側の表に載っている具体例から分離法を当てる頻出問題です。(a)と(f)は「適切な溶媒を加えて、目的の物質だけを分離する」ので抽出です。(c)のヨウ素やナフタレン、ドライアイスは「昇華しやすい物質」のため昇華法を選びます。(d)は温度による溶解度変化を利用する再結晶です。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ]
+        },
+        {
+          id: "c1_2_B",
+          abstractTitle: "②-B 物質の構成と成分元素の検出",
+          realTitle: "1章 物質の構成",
+          topics: ["同素体", "炎色反応", "成分元素の検出"],
+          miniTest: [
+            {
+              id: "q_c1_2_A_1",
+              category: "物質の構成と成分元素の検出 (問1)",
+              text: "A　物質の構成と分離・精製に関する次の文章を読み、あとの問いに答えよ。\n\n物質は様々な元素から構成されている。同じ元素からなる単体であっても、結合のしかたや配列が異なるために性質が異なる物質が存在し、これらを互いに ( ア ) という。代表的なものとして、S（硫黄）、C（炭素）、O（酸素）、P（リン）の4つの元素が知られている。 また、物質に含まれる元素を確認する方法として、特定の元素を含む物質を炎の中に入れると特有の色を示す ( イ ) という現象を利用する方法がある。\n\nさらに、化学反応を用いて①成分元素を検出することもできる。例えば、ある未知の化合物を完全燃焼させたところ、無色の気体Aと無色の液体Bが生じた。気体Aを ( ウ ) に通すと白濁したことから、元の化合物には ( エ ) 元素が含まれていることがわかる。液体Bを、硫酸銅(Ⅱ)無水塩に触れさせると色が変化したことから、液体Bは水であり、元の化合物には ( オ ) 元素が含まれていたことがわかる。また、水溶液に硝酸銀水溶液を加えて白色沈殿が生じた場合、その水溶液には ( カ ) 元素が含まれていることが確認できる。\n\n問1 文章中の空欄 ( ア ) ～ ( カ ) に入る最も適切な語句、または元素名を答えよ。",
+              subQuestions: [
+                { id: "q1_a", label: "問1 (ア)", type: "short_answer", correctAnswer: "同素体", correctAnswerRate: 85 },
+                { id: "q1_b", label: "問1 (イ)", type: "short_answer", correctAnswer: "炎色反応", correctAnswerRate: 85 },
+                { id: "q1_c", label: "問1 (ウ)", type: "short_answer", correctAnswer: "石灰水", correctAnswerRate: 85 },
+                { id: "q1_d", label: "問1 (エ)", type: "short_answer", correctAnswer: "炭素", correctAnswerRate: 85 },
+                { id: "q1_e", label: "問1 (オ)", type: "short_answer", correctAnswer: "水素", correctAnswerRate: 85 },
+                { id: "q1_f", label: "問1 (カ)", type: "short_answer", correctAnswer: "塩素", correctAnswerRate: 85 }
+              ],
+              explanation: "問1 (ア) 同素体 (イ) 炎色反応 (ウ) 石灰水 (エ) 炭素（C） (オ) 水素（H） (カ) 塩素（Cl）",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_2_A_2",
+              category: "物質の構成と成分元素の検出 (問2)",
+              text: "A　（リード文続き）\n...代表的なものとして、S（硫黄）、C（炭素）、O（酸素）、P（リン）の4つの元素が知られている。\n\n問2 (ア: 同素体) に関して、硫黄、炭素、酸素、リンの性質について次の問いに答えよ。\n(1) 硫黄(S)の同素体を3つ、名称で答えよ。また、そのうち「常温で安定で黄色」のもの、「淡黄色で針状」のものをそれぞれ選べ。\n(2) 炭素(C)の同素体を4つ、名称で答えよ。また、そのうち「非常に硬く電気を通さない」もの、「やわらかく電気をよく導く」ものをそれぞれ選べ。\n(3) 酸素(O)の同素体である「オゾン」は、どのような色とにおいをもつか。それぞれ簡潔に答えよ。\n(4) リン(P)の同素体のうち、猛毒で自然発火するため「水中に保存」するものは何か。また、毒性が低く「マッチの側薬」などに使われるものは何か。名称で答えよ。",
+              subQuestions: [
+                { id: "q2_1_stable", label: "問2 (1) 常温で安定", type: "short_answer", correctAnswer: "斜方硫黄", correctAnswerRate: 85 },
+                { id: "q2_1_needle", label: "問2 (1) 針状", type: "short_answer", correctAnswer: "単斜硫黄", correctAnswerRate: 85 },
+                { id: "q2_2_hard", label: "問2 (2) 硬い", type: "short_answer", correctAnswer: "ダイヤモンド", correctAnswerRate: 85 },
+                { id: "q2_2_soft", label: "問2 (2) 導く", type: "short_answer", correctAnswer: "黒鉛", correctAnswerRate: 85 },
+                { id: "q2_3_color", label: "問2 (3) オゾンの色", type: "short_answer", correctAnswer: "淡青色", correctAnswerRate: 85 },
+                { id: "q2_3_smell", label: "問2 (3) オゾンのにおい", type: "short_answer", correctAnswer: "特異臭", correctAnswerRate: 85 },
+                { id: "q2_4_poison", label: "問2 (4) 水中保存", type: "short_answer", correctAnswer: "黄リン", correctAnswerRate: 85 },
+                { id: "q2_4_match", label: "問2 (4) マッチ", type: "short_answer", correctAnswer: "赤リン", correctAnswerRate: 85 }
+              ],
+              explanation: "問2\n(1) 同素体：斜方硫黄、単斜硫黄、ゴム状硫黄 　常温で安定で黄色：斜方硫黄 　淡黄色で針状：単斜硫黄\n(2) 同素体：ダイヤモンド、黒鉛、フラーレン、カーボンナノチューブ\n非常に硬く電気を通さない：ダイヤモンド 　やわらかく電気をよく導く：黒鉛\n(3) 色：淡青色　におい：特異臭\n(4) 　水中に保存：黄リン マッチの側薬：赤リン\n\n解説: プリントに書かれている同素体の特徴（色や硬さ、保存方法）は、テストでそのまま記述や選択肢として問われます。特にリンの保存方法と、硫黄の「斜方」「単斜」の違いは完璧にしておきましょう。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_2_A_3",
+              category: "物質の構成と成分元素の検出 (問3)",
+              text: "A　（リード文続き）\n...また、物質に含まれる元素を確認する方法として、特定の元素を含む物質を炎の中に入れると特有の色を示す ( イ: 炎色反応 ) という現象を利用する方法がある。\n\n問3 (イ) に関して、次の元素が含まれる物質を炎の中に入れたとき、それぞれ何色の炎になるか答えよ。\n(1) Li （リチウム） (2) Na （ナトリウム） (3) K （カリウム） (4) Cu （銅）\n(5) Ca （カルシウム） (6) Sr （ストロンチウム） (7) Ba （バリウム）",
+              subQuestions: [
+                { id: "q3_1", label: "問3 (1) Li", type: "short_answer", correctAnswer: "赤", correctAnswerRate: 85 },
+                { id: "q3_2", label: "問3 (2) Na", type: "short_answer", correctAnswer: "黄", correctAnswerRate: 85 },
+                { id: "q3_3", label: "問3 (3) K", type: "short_answer", correctAnswer: "紫", correctAnswerRate: 85 },
+                { id: "q3_4", label: "問3 (4) Cu", type: "short_answer", correctAnswer: "青緑", correctAnswerRate: 85 },
+                { id: "q3_5", label: "問3 (5) Ca", type: "short_answer", correctAnswer: "橙", correctAnswerRate: 85 },
+                { id: "q3_6", label: "問3 (6) Sr", type: "short_answer", correctAnswer: "紅", correctAnswerRate: 85 },
+                { id: "q3_7", label: "問3 (7) Ba", type: "short_answer", correctAnswer: "黄緑", correctAnswerRate: 85 }
+              ],
+              explanation: "問3 (1) 赤 （赤色） (2) 黄 （黄色） (3) 紫 （紫色） (4) 青緑 （青緑色）\n(5) 橙 （橙色） (6) 紅 （紅色） (7) 黄緑 （黄緑色）\n解説: 「リアカー(Li赤) 無き(Na黄、K紫) 動力(Cu青緑) 借りるとう(Ca橙) するもくれない(Sr紅) 馬力(Ba黄緑)」で確実に暗記します。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_2_A_4",
+              category: "物質の構成と成分元素の検出 (問4)",
+              text: "A　（リード文続き）\n...さらに、化学反応を用いて①成分元素を検出することもできる。例えば、ある未知の化合物を完全燃焼させたところ、無色の気体Aと無色の液体Bが生じた。気体Aを ( ウ: 石灰水 ) に通すと白濁したことから、元の化合物には ( エ ) 元素が含まれていることがわかる。液体Bを、硫酸銅(Ⅱ)無水塩に触れさせると色が変化したことから、液体Bは水であり、元の化合物には ( オ ) 元素が含まれていたことがわかる。また、水溶液に硝酸銀水溶液を加えて白色沈殿が生じた場合、その水溶液には ( カ ) 元素が含まれていることが確認できる。\n\n問4 下線部①に関して、次の問いに答えよ。\n(1) 二酸化炭素を( ウ )に通して白濁したとき、生じている白色の沈殿物の名称と、その化学式を答えよ。\n(2) 文章中の下線部について、液体B（水）が触れたとき、硫酸銅(Ⅱ)無水塩は何色から何色に変化するか。\n(3) 液体B（水）の確認には、青色の塩化コバルト紙を用いることもできる。水に触れると塩化コバルト紙は何色に変化するか。\n(4) 水溶液に硝酸銀(AgNO₃)水溶液を加えたときに生じる「白色沈殿」の物質の名称と、その化学式を答えよ。\n(5) 水溶液中の硫黄(S)元素を検出するためには、酢酸鉛(Ⅱ)水溶液を加える。このとき生じる沈殿の色と、その沈殿物の化学式を答えよ。",
+              subQuestions: [
+                { id: "q4_1_name", label: "問4 (1) 沈殿名称", type: "short_answer", correctAnswer: "炭酸カルシウム", correctAnswerRate: 85 },
+                { id: "q4_1_chem", label: "問4 (1) 化学式", type: "short_answer", correctAnswer: "CaCO3", correctAnswerRate: 85 },
+                { id: "q4_2_color", label: "問4 (2) 色変化", type: "short_answer", correctAnswer: "青", correctAnswerRate: 85 },
+                { id: "q4_3_color", label: "問4 (3) 色変化", type: "short_answer", correctAnswer: "赤", correctAnswerRate: 85 },
+                { id: "q4_4_name", label: "問4 (4) 沈殿名称", type: "short_answer", correctAnswer: "塩化銀", correctAnswerRate: 85 },
+                { id: "q4_4_chem", label: "問4 (4) 化学式", type: "short_answer", correctAnswer: "AgCl", correctAnswerRate: 85 },
+                { id: "q4_5_color", label: "問4 (5) 沈殿色", type: "short_answer", correctAnswer: "黒", correctAnswerRate: 85 },
+                { id: "q4_5_chem", label: "問4 (5) 化学式", type: "short_answer", correctAnswer: "PbS", correctAnswerRate: 85 }
+              ],
+              explanation: "問4\n(1) 炭酸カルシウム (CaCO3)\n(2) 白色から青色\n(3) 青色から赤色\n(4) 塩化銀 (AgCl)\n(5) 黒色 (PbS)",
               surroundingKnowledge: [],
               deepDiveTopics: []
             }

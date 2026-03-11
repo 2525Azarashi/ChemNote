@@ -9,25 +9,36 @@ interface FlowchartProps {
 export function Flowchart({ onBack }: FlowchartProps) {
   const sections = [
     {
-      id: '2a',
-      title: '②-A 物質の構成と成分元素の抽出',
-      color: 'bg-blue-50 border-blue-200 text-blue-800',
+      id: '1',
+      title: '1章 物質の構成',
+      color: 'bg-amber-50 border-amber-200 text-amber-800',
       icon: <Layers className="w-6 h-6" />,
       items: [
-        { id: '2a-1', title: '① 同素体(SCOP)', desc: '同じ元素からなるが性質が異なる単体 (S, C, O, P)', icon: <Zap className="w-4 h-4" /> },
-        { id: '2a-2', title: '② 成分元素の抽出', desc: '石灰水(C), 硫酸銅(H), 硝酸銀(Cl)などによる検出', icon: <ArrowRight className="w-4 h-4" /> },
-        { id: '2a-3', title: '③ 炎色反応', desc: '特定の金属元素による特有の発色 (リアカー無き...)', icon: <Flame className="w-4 h-4" /> },
+        { id: '1-1', title: '① (単体・化合物) 純物質と混合物の識別', desc: '純物質と混合物の見分け方', icon: <Zap className="w-4 h-4" /> },
+        { id: '1-2', title: '② 純物質と混合物の性質の違い', desc: '融点・沸点による純物質の判定', icon: <Thermometer className="w-4 h-4" /> },
+        { id: '1-3', title: '③ 単体と元素の違い', desc: '単体（物質）と元素（成分）の区別', icon: <Beaker className="w-4 h-4" /> },
+      ]
+    },
+    {
+      id: '2a',
+      title: '②-A 物質の分離と精製',
+      color: 'bg-emerald-50 border-emerald-200 text-emerald-800',
+      icon: <Beaker className="w-6 h-6" />,
+      items: [
+        { id: '2a-1', title: '① 分離と精製の仕組み', desc: '混合物から純物質を取り出し、純度を高める', icon: <ArrowRight className="w-4 h-4" /> },
+        { id: '2a-2', title: '② 分離法一覧', desc: 'ろ過・蒸留・分留・昇華法・再結晶・抽出・クロマトグラフィー', icon: <Layers className="w-4 h-4" /> },
+        { id: '2a-3', title: '③ 道具の使い方', desc: 'ろ過のガラス棒、蒸留の温度計位置、冷却水の方向', icon: <Beaker className="w-4 h-4" /> },
       ]
     },
     {
       id: '2b',
-      title: '②-B 物質の分離と精製',
-      color: 'bg-emerald-50 border-emerald-200 text-emerald-800',
-      icon: <Beaker className="w-6 h-6" />,
+      title: '②-B 物質の構成と成分元素の検出',
+      color: 'bg-blue-50 border-blue-200 text-blue-800',
+      icon: <Layers className="w-6 h-6" />,
       items: [
-        { id: '2b-1', title: '① 分離と精製の仕組み', desc: '混合物から純物質を取り出し、純度を高める', icon: <ArrowRight className="w-4 h-4" /> },
-        { id: '2b-2', title: '② 分離法一覧', desc: 'ろ過・蒸留・分留・昇華法・再結晶・抽出・クロマトグラフィー', icon: <Layers className="w-4 h-4" /> },
-        { id: '2b-3', title: '③ 道具の使い方', desc: 'ろ過のガラス棒、蒸留の温度計位置、冷却水の方向', icon: <Beaker className="w-4 h-4" /> },
+        { id: '2b-1', title: '① 同素体(SCOP)', desc: '同じ元素からなるが性質が異なる単体 (S, C, O, P)', icon: <Zap className="w-4 h-4" /> },
+        { id: '2b-2', title: '② 成分元素の検出', desc: '石灰水(C), 硫酸銅(H), 硝酸銀(Cl)などによる検出', icon: <ArrowRight className="w-4 h-4" /> },
+        { id: '2b-3', title: '③ 炎色反応', desc: '特定の金属元素による特有の発色 (リアカー無き...)', icon: <Flame className="w-4 h-4" /> },
       ]
     },
     {
@@ -48,7 +59,7 @@ export function Flowchart({ onBack }: FlowchartProps) {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 flex flex-col h-[85vh]"
+      className="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 flex flex-col h-[85vh] font-handwriting"
     >
       {/* Header */}
       <div className="bg-[#2C3E50] p-4 md:p-6 flex items-center justify-between text-white shrink-0">
@@ -59,7 +70,7 @@ export function Flowchart({ onBack }: FlowchartProps) {
           <ChevronLeft size={20} />
           <span className="font-bold">戻る</span>
         </button>
-        <h2 className="text-lg md:text-2xl font-handwriting font-bold tracking-wider">学習フローチャート</h2>
+        <h2 className="text-lg md:text-2xl font-handwriting font-bold tracking-wider">学習の全体像</h2>
         <div className="w-10"></div> {/* Spacer */}
       </div>
 
