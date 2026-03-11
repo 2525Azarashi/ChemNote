@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { signInWithPopup } from 'firebase/auth';
+import React, { useState, useEffect } from 'react';
+import { signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, provider, db } from '../firebase';
 import { motion } from 'motion/react';
@@ -15,23 +15,38 @@ export function Onboarding({ onComplete }: OnboardingProps) {
   const [stream, setStream] = useState('science');
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // リダイレクト結果の確認
+    getRedirectResult(auth).then(async (result) => {
+      if (result) {
+        await checkProfile(result.user);
+      }
+    }).catch((error) => {
+      console.error("リダイレクトログインエラー:", error);
+    });
+  }, []);
+
+  const checkProfile = async (user: any) => {
+    const docRef = doc(db, 'users', user.uid);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      onComplete();
+    } else {
+      setName(user.displayName || '');
+      setStep('profile');
+    }
+  };
+
   const handleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      
-      // プロフィール登録済みか確認
-      const docRef = doc(db, 'users', user.uid);
-      const docSnap = await getDoc(docRef);
-      
-      if (docSnap.exists()) {
-        onComplete();
-      } else {
-        setName(user.displayName || '');
-        setStep('profile');
-      }
-    } catch (error) {
+      await checkProfile(result.user);
+    } catch (error: any) {
       console.error('ログインエラー:', error);
+      if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
+        await signInWithRedirect(auth, provider);
+      }
     }
   };
 

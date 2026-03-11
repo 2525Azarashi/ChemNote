@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { auth, provider } from '../firebase';
 import { LogIn, LogOut } from 'lucide-react';
 
@@ -17,6 +17,12 @@ export function AuthButton() {
         localStorage.removeItem("user_uid");
       }
     });
+    
+    // リダイレクト結果の確認
+    getRedirectResult(auth).catch((error) => {
+      console.error("リダイレクトログインエラー:", error);
+    });
+
     return () => unsubscribe();
   }, []);
 
@@ -24,9 +30,13 @@ export function AuthButton() {
   const handleLogin = async () => {
     try {
       await signInWithPopup(auth, provider);
-    } catch (error) {
+    } catch (error: any) {
       console.error("ログインエラー:", error);
-      alert("ログインに失敗しました。");
+      if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
+        await signInWithRedirect(auth, provider);
+      } else {
+        alert("ログインに失敗しました。");
+      }
     }
   };
 
