@@ -43,12 +43,19 @@ export default function App() {
       if (!user) {
         setAppState('onboarding');
       } else {
-        const docRef = doc(db, 'users', user.uid);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
+        try {
+          const docRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (!docSnap.exists()) {
+            setAppState('onboarding');
+          } else {
+            setAppState('home');
+          }
+        } catch (error) {
+          console.error("Firestore error in onAuthStateChanged:", error);
+          // エラーが発生した場合（権限エラーなど）も、とりあえずonboarding画面を表示して
+          // プロフィール作成を試みさせるか、エラーをユーザーに知らせる
           setAppState('onboarding');
-        } else {
-          setAppState('home');
         }
       }
     });
