@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, User } from 'firebase/auth';
+import { signInWithPopup, getRedirectResult, signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { auth, provider } from '../firebase';
 import { LogIn, LogOut } from 'lucide-react';
 
@@ -36,10 +36,9 @@ export function AuthButton() {
       console.error("ログインエラー:", error);
       console.log("error code:", error.code);
       if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
-        console.log("Attempting signInWithRedirect");
-        await signInWithRedirect(auth, provider);
+        alert("ポップアップがブロックされました。ブラウザの設定でポップアップを許可するか、右上のボタンからアプリを新しいタブで開いてください。");
       } else {
-        alert("ログインに失敗しました: " + error.message);
+        alert("ログインに失敗しました。\nLINEやTwitterなどのアプリ内ブラウザではGoogleログインが制限されています。SafariやChromeなどの標準ブラウザで開き直してください。\n詳細: " + error.message);
       }
     }
   };

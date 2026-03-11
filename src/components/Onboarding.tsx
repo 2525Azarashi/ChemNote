@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
+import { signInWithPopup, getRedirectResult } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, provider, db } from '../firebase';
 import { motion } from 'motion/react';
@@ -48,8 +48,9 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       console.error('ログインエラー:', error);
       console.log("error code:", error.code);
       if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
-        console.log("Attempting signInWithRedirect");
-        await signInWithRedirect(auth, provider);
+        alert("ポップアップがブロックされました。ブラウザの設定でポップアップを許可するか、右上のボタンからアプリを新しいタブで開いてください。");
+      } else {
+        alert("ログインに失敗しました。\nLINEやTwitterなどのアプリ内ブラウザではGoogleログインが制限されています。SafariやChromeなどの標準ブラウザで開き直してください。\n詳細: " + error.message);
       }
     }
   };
