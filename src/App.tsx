@@ -107,14 +107,12 @@ export default function App() {
 
   // BGM Logic
   const [isAudioValid, setIsAudioValid] = useState(true);
-  const [retryCount, setRetryCount] = useState(0);
-  const MAX_RETRIES = 3;
 
   const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
     const target = e.target as HTMLAudioElement;
     const error = target.error;
     
-    console.error('BGM failed to load. Details:', {
+    console.error('BGM failed to load or decode. Details:', {
       code: error?.code,
       message: error?.message,
       networkState: target.networkState,
@@ -122,22 +120,8 @@ export default function App() {
       src: target.src
     });
 
-    if (retryCount < MAX_RETRIES) {
-      console.log(`Retrying BGM load... (${retryCount + 1}/${MAX_RETRIES})`);
-      setTimeout(() => {
-        setRetryCount(prev => prev + 1);
-        if (audioRef.current) {
-          // キャッシュを回避するためにクエリパラメータを付与して再読み込み
-          const currentSrc = new URL(target.src, window.location.origin);
-          currentSrc.searchParams.set('retry', String(retryCount + 1));
-          target.src = currentSrc.toString();
-          target.load();
-        }
-      }, 2000);
-    } else {
-      console.warn('音源ファイルが見つかりません。無音でアプリを続行します。');
-      setIsAudioValid(false);
-    }
+    console.warn('音源ファイルが読み込めないか、ブラウザでサポートされていない形式です。無音でアプリを続行します。');
+    setIsAudioValid(false);
   };
 
   useEffect(() => {
@@ -152,7 +136,7 @@ export default function App() {
       // Play might fail if user hasn't interacted with the document yet or if source is invalid
       audio.play().catch(e => {
         if (e.name === 'NotSupportedError') {
-          console.warn('音源ファイルが見つかりません。無音でアプリを続行します。');
+          console.warn('音源ファイルが読み込めないか、サポートされていない形式です。無音でアプリを続行します。');
           setIsAudioValid(false);
         } else {
           console.warn('ブラウザの自動再生制限によりBGMがブロックされました。画面をクリックすると再生されます。');
