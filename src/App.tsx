@@ -42,8 +42,6 @@ export default function App() {
       if (!user) {
         setAppState('onboarding');
       } else {
-        // ログイン成功時にインタラクション済みとし、BGMの再生を許可する
-        setHasInteracted(true);
         try {
           // Firestoreの代わりにlocalStorageを使用
           const localProfile = localStorage.getItem(`profile_${user.uid}`);
@@ -65,10 +63,38 @@ export default function App() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isBgmEnabled, setIsBgmEnabled] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isAudioValid, setIsAudioValid] = useState(true);
+
+  const bgmStateRef = useRef({ isBgmEnabled, isAudioValid, appState });
+  useEffect(() => {
+    bgmStateRef.current = { isBgmEnabled, isAudioValid, appState };
+  }, [isBgmEnabled, isAudioValid, appState]);
 
   useEffect(() => {
     const handleInteraction = () => {
       setHasInteracted(true);
+      
+      // Attempt to play immediately on interaction to satisfy strict browser policies
+      const audio = audioRef.current;
+      const { isBgmEnabled, isAudioValid, appState } = bgmStateRef.current;
+      
+      if (audio && isAudioValid && isBgmEnabled && !['quiz', 'explanation'].includes(appState)) {
+        audio.volume = 0.1;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => {
+            if (e.name === 'NotSupportedError' || e.message?.includes('no supported sources')) {
+              console.error('[BGM Error] Decode failed on interaction. Switching to silent mode.', e);
+              setIsAudioValid(false);
+            } else if (e.name === 'NotAllowedError') {
+              console.warn('[BGM Info] Autoplay blocked by browser. Waiting for user interaction.', e);
+            } else {
+              console.error('[BGM Error] Unexpected playback error on interaction:', e);
+            }
+          });
+        }
+      }
+
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('touchstart', handleInteraction);
       document.removeEventListener('keydown', handleInteraction);
@@ -105,14 +131,11 @@ export default function App() {
     }
   }, [forceDesktop]);
 
-  // BGM Logic
-  const [isAudioValid, setIsAudioValid] = useState(true);
-
   const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
     const target = e.target as HTMLAudioElement;
     const error = target.error;
     
-    console.error('BGM failed to load or decode. Details:', {
+    console.error('[BGM Error] Failed to load or decode. Details:', {
       code: error?.code,
       message: error?.message,
       networkState: target.networkState,
@@ -134,14 +157,20 @@ export default function App() {
     if (shouldPlay) {
       audio.volume = 0.1;
       // Play might fail if user hasn't interacted with the document yet or if source is invalid
-      audio.play().catch(e => {
-        if (e.name === 'NotSupportedError') {
-          console.warn('音源ファイルが読み込めないか、サポートされていない形式です。無音でアプリを続行します。');
-          setIsAudioValid(false);
-        } else {
-          console.warn('ブラウザの自動再生制限によりBGMがブロックされました。画面をクリックすると再生されます。');
-        }
-      });
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(e => {
+          if (e.name === 'NotSupportedError' || e.message?.includes('no supported sources')) {
+            console.error('[BGM Error] Decode failed (NotSupportedError). Switching to silent mode.', e);
+            console.warn('音源ファイルが読み込めないか、サポートされていない形式です。無音でアプリを続行します。');
+            setIsAudioValid(false);
+          } else if (e.name === 'NotAllowedError') {
+            console.warn('[BGM Info] Autoplay blocked by browser. Waiting for user interaction.', e);
+          } else {
+            console.error('[BGM Error] Unexpected playback error:', e);
+          }
+        });
+      }
     } else {
       audio.pause();
     }
@@ -187,6 +216,7 @@ export default function App() {
         src="/cobblestone_dreams.mp3" 
         loop 
         preload="auto" 
+        crossOrigin="anonymous"
         onError={handleAudioError}
       />
       
