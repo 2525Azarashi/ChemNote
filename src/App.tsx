@@ -42,6 +42,8 @@ export default function App() {
       if (!user) {
         setAppState('onboarding');
       } else {
+        // ログイン成功時にインタラクション済みとし、BGMの再生を許可する
+        setHasInteracted(true);
         try {
           // Firestoreの代わりにlocalStorageを使用
           const localProfile = localStorage.getItem(`profile_${user.uid}`);
@@ -133,7 +135,7 @@ export default function App() {
         }
       }, 2000);
     } else {
-      console.warn('Max retries reached. Disabling BGM.');
+      console.warn('音源ファイルが見つかりません。無音でアプリを続行します。');
       setIsAudioValid(false);
     }
   };
@@ -150,10 +152,10 @@ export default function App() {
       // Play might fail if user hasn't interacted with the document yet or if source is invalid
       audio.play().catch(e => {
         if (e.name === 'NotSupportedError') {
-          console.warn('BGM source invalid or blocked by browser. Disabling BGM to prevent further errors.');
+          console.warn('音源ファイルが見つかりません。無音でアプリを続行します。');
           setIsAudioValid(false);
         } else {
-          console.warn('BGM autoplay prevented by browser:', e.message);
+          console.warn('ブラウザの自動再生制限によりBGMがブロックされました。画面をクリックすると再生されます。');
         }
       });
     } else {
@@ -198,7 +200,7 @@ export default function App() {
     <div className="min-h-screen w-full flex justify-center items-center py-6 md:py-12 px-4 md:px-8 relative">
       <audio 
         ref={audioRef} 
-        src="/cobblestone_dreams_2.mp3" 
+        src="/bgm.mp3" 
         loop 
         preload="auto" 
         onError={handleAudioError}
