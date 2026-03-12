@@ -53,17 +53,7 @@ export function AuthButton() {
   };
 
   if (user) {
-    return (
-      <div className="flex items-center gap-3 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-[#A9CCE3] font-handwriting">
-        <img src={user.photoURL || ''} alt="User" className="w-8 h-8 rounded-full border border-[#A9CCE3]" />
-        <div className="hidden md:block">
-          <p className="text-sm font-bold text-[#2C3E50]">{user.displayName}</p>
-        </div>
-        <button onClick={handleLogout} className="p-2 text-[#2C3E50] hover:bg-[#A9CCE3]/20 rounded-full transition-colors">
-          <LogOut size={20} />
-        </button>
-      </div>
-    );
+    return null;
   }
 
   return (

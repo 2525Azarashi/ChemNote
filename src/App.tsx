@@ -22,7 +22,6 @@ import { NoteDetail } from './components/NoteDetail';
 import { Onboarding } from './components/Onboarding';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
-import bgmUrl from './assets/bgm.mp3';
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
@@ -61,17 +60,13 @@ export default function App() {
   }, []);
   
   // BGM state
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [isBgmEnabled, setIsBgmEnabled] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
     const handleInteraction = () => {
       setHasInteracted(true);
-      // Explicitly try to play if it was blocked
-      if (audioRef.current) {
-        audioRef.current.play().catch(e => console.warn('BGM play failed on interaction:', e));
-      }
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('touchstart', handleInteraction);
       document.removeEventListener('keydown', handleInteraction);
@@ -109,38 +104,22 @@ export default function App() {
   }, [forceDesktop]);
 
   // BGM Logic
+  const [isAudioValid, setIsAudioValid] = useState(true);
+
   useEffect(() => {
-    if (!audioRef.current) {
-      // Create audio element with imported asset
-      const audio = new Audio(bgmUrl);
-      audio.loop = true;
-      audio.volume = 0.1; // Low volume
-      
-      audio.addEventListener('error', (e) => {
-        console.error('BGM Audio Error:', audio.error);
-        // Fallback to public folder if asset import fails
-        if (audio.src !== window.location.origin + '/bgm.mp3') {
-          console.log('Attempting fallback to /bgm.mp3');
-          audio.src = '/bgm.mp3';
-          if (isBgmEnabled && hasInteracted && !['quiz', 'explanation'].includes(appState)) {
-            audio.play().catch(err => console.warn('Fallback BGM play failed:', err));
-          }
-        }
-      });
-
-      audioRef.current = audio;
-    }
-
     const audio = audioRef.current;
+    if (!audio || !isAudioValid) return;
     
     // Play BGM except during quiz and explanation, and only after user interaction
     const shouldPlay = isBgmEnabled && hasInteracted && !['quiz', 'explanation'].includes(appState);
 
     if (shouldPlay) {
+      audio.volume = 0.1;
       // Play might fail if user hasn't interacted with the document yet or if source is invalid
       audio.play().catch(e => {
         if (e.name === 'NotSupportedError') {
-          console.warn('BGM source invalid or blocked by browser:', e.message);
+          console.warn('BGM source invalid or blocked by browser. Disabling BGM to prevent further errors.');
+          setIsAudioValid(false);
         } else {
           console.warn('BGM autoplay prevented by browser:', e.message);
         }
@@ -148,7 +127,7 @@ export default function App() {
     } else {
       audio.pause();
     }
-  }, [appState, isBgmEnabled, hasInteracted]);
+  }, [appState, isBgmEnabled, hasInteracted, isAudioValid]);
 
   const handleStart = () => setAppState('mode_selection');
   const handleIntro = () => setAppState('intro');
@@ -185,10 +164,21 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full flex justify-center items-center py-6 md:py-12 px-4 md:px-8 relative">
+      <audio 
+        ref={audioRef} 
+        src="/bgm.mp3" 
+        loop 
+        preload="auto" 
+        onError={() => {
+          console.warn('BGM failed to load.');
+          setIsAudioValid(false);
+        }}
+      />
+      
       {/* BGM Toggle Button */}
       <button 
         onClick={() => setIsBgmEnabled(!isBgmEnabled)}
-        className="absolute top-4 left-4 z-50 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-gray-200 text-gray-600 hover:text-[#2C3E50] transition-colors"
+        className="absolute bottom-4 left-4 z-50 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-gray-200 text-gray-600 hover:text-[#2C3E50] transition-colors"
         title={isBgmEnabled ? "BGMをオフにする" : "BGMをオンにする"}
       >
         {isBgmEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth } from '../firebase';
-import { X, User } from 'lucide-react';
+import { signOut } from 'firebase/auth';
+import { X, User, LogOut } from 'lucide-react';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -52,6 +53,15 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      onClose();
+    } catch (error) {
+      console.error("ログアウトエラー:", error);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -94,6 +104,16 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           >
             {loading ? '保存中...' : '保存する'}
           </button>
+          
+          <div className="pt-4 border-t border-gray-200 mt-4">
+            <button
+              onClick={handleLogout}
+              className="w-full p-3 bg-red-50 text-red-600 border-2 border-red-200 rounded-xl font-bold hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+            >
+              <LogOut size={20} />
+              ログアウト
+            </button>
+          </div>
         </div>
       </div>
     </div>
