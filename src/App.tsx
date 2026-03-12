@@ -198,7 +198,7 @@ export default function App() {
     <div className="min-h-screen w-full flex justify-center items-center py-6 md:py-12 px-4 md:px-8 relative">
       <audio 
         ref={audioRef} 
-        src="/bgm.mp3" 
+        src="/cobblestone_dreams%202.mp3" 
         loop 
         preload="auto" 
         onError={handleAudioError}
