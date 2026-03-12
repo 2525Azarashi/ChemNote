@@ -105,6 +105,38 @@ export default function App() {
 
   // BGM Logic
   const [isAudioValid, setIsAudioValid] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
+
+  const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
+    const target = e.target as HTMLAudioElement;
+    const error = target.error;
+    
+    console.error('BGM failed to load. Details:', {
+      code: error?.code,
+      message: error?.message,
+      networkState: target.networkState,
+      readyState: target.readyState,
+      src: target.src
+    });
+
+    if (retryCount < MAX_RETRIES) {
+      console.log(`Retrying BGM load... (${retryCount + 1}/${MAX_RETRIES})`);
+      setTimeout(() => {
+        setRetryCount(prev => prev + 1);
+        if (audioRef.current) {
+          // キャッシュを回避するためにクエリパラメータを付与して再読み込み
+          const currentSrc = new URL(target.src, window.location.origin);
+          currentSrc.searchParams.set('retry', String(retryCount + 1));
+          target.src = currentSrc.toString();
+          target.load();
+        }
+      }, 2000);
+    } else {
+      console.warn('Max retries reached. Disabling BGM.');
+      setIsAudioValid(false);
+    }
+  };
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -169,10 +201,7 @@ export default function App() {
         src="/bgm.mp3" 
         loop 
         preload="auto" 
-        onError={() => {
-          console.warn('BGM failed to load.');
-          setIsAudioValid(false);
-        }}
+        onError={handleAudioError}
       />
       
       {/* BGM Toggle Button */}
