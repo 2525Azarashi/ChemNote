@@ -334,6 +334,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                     const stepSubQuestions = expData?.subQuestionIds 
                       ? questions.flatMap((q: any) => q.subQuestions).filter((sq: any) => expData.subQuestionIds.includes(sq.id))
                       : [];
+                    console.log("Step:", stepNum, "expData:", expData, "stepSubQuestions:", stepSubQuestions);
 
                     return (
                       <React.Fragment key={i}>
@@ -378,7 +379,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                               <div className="mt-4 border-t border-[#3A506B]/50 pt-4">
                                 <h6 className="text-xs md:text-sm font-bold text-[#5BC0BE] mb-3 flex items-center gap-2">
                                   <CheckCircle2 className="w-4 h-4" />
-                                  対応する問題の答え合わせ
+                                  対応する問題の答え合わせ ({stepSubQuestions.length}) - {JSON.stringify(expData.subQuestionIds)} - Q:{JSON.stringify(questions.map(q => q.id))}
                                 </h6>
                                 <div className="space-y-3">
                                   {stepSubQuestions.map((sq: any) => renderSubQuestionCheck(sq))}
