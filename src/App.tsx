@@ -64,6 +64,7 @@ export default function App() {
   const [isBgmEnabled, setIsBgmEnabled] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isAudioValid, setIsAudioValid] = useState(true);
+  const hasLoggedAudioError = useRef(false);
 
   const bgmStateRef = useRef({ isBgmEnabled, isAudioValid, appState });
   useEffect(() => {
@@ -84,7 +85,11 @@ export default function App() {
         if (playPromise !== undefined) {
           playPromise.catch(e => {
             if (e.name === 'NotSupportedError' || e.message?.includes('no supported sources')) {
-              console.error('[BGM Error] Decode failed on interaction. Switching to silent mode.', e);
+              if (!hasLoggedAudioError.current) {
+                hasLoggedAudioError.current = true;
+                console.error('[BGM Error] Decode failed on interaction. Switching to silent mode.', e);
+                console.warn('音源ファイルが読み込めないか、サポートされていない形式です。無音でアプリを続行します。');
+              }
               setIsAudioValid(false);
             } else if (e.name === 'NotAllowedError') {
               console.warn('[BGM Info] Autoplay blocked by browser. Waiting for user interaction.', e);
@@ -135,21 +140,23 @@ export default function App() {
     const target = e.target as HTMLAudioElement;
     const error = target.error;
     
-    console.error('[BGM Error] Failed to load or decode. Details:', {
-      code: error?.code,
-      message: error?.message,
-      networkState: target.networkState,
-      readyState: target.readyState,
-      src: target.src
-    });
-
-    console.warn('音源ファイルが読み込めないか、ブラウザでサポートされていない形式です。無音でアプリを続行します。');
+    if (!hasLoggedAudioError.current) {
+      hasLoggedAudioError.current = true;
+      console.error('[BGM Error] Failed to load or decode. Details:', {
+        code: error?.code,
+        message: error?.message,
+        networkState: target.networkState,
+        readyState: target.readyState,
+        src: target.src
+      });
+      console.warn('音源ファイルが読み込めないか、ブラウザでサポートされていない形式です。無音でアプリを続行します。');
+    }
     setIsAudioValid(false);
   };
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio || !isAudioValid) return;
+    if (!audio || !isAudioValid || hasLoggedAudioError.current) return;
     
     // Play BGM except during quiz and explanation, and only after user interaction
     const shouldPlay = isBgmEnabled && hasInteracted && !['quiz', 'explanation'].includes(appState);
@@ -161,8 +168,11 @@ export default function App() {
       if (playPromise !== undefined) {
         playPromise.catch(e => {
           if (e.name === 'NotSupportedError' || e.message?.includes('no supported sources')) {
-            console.error('[BGM Error] Decode failed (NotSupportedError). Switching to silent mode.', e);
-            console.warn('音源ファイルが読み込めないか、サポートされていない形式です。無音でアプリを続行します。');
+            if (!hasLoggedAudioError.current) {
+              hasLoggedAudioError.current = true;
+              console.error('[BGM Error] Decode failed (NotSupportedError). Switching to silent mode.', e);
+              console.warn('音源ファイルが読み込めないか、サポートされていない形式です。無音でアプリを続行します。');
+            }
             setIsAudioValid(false);
           } else if (e.name === 'NotAllowedError') {
             console.warn('[BGM Info] Autoplay blocked by browser. Waiting for user interaction.', e);

@@ -9,7 +9,182 @@ export const chemistryData = {
           abstractTitle: "① 純物質と混合物",
           realTitle: "1章 物質の構成",
           topics: ["純物質と混合物"],
-          practiceProblems: [],
+          practiceProblems: [
+            {
+              id: "p_c1_1_1",
+              category: "純物質と混合物",
+              text: "問１ 次の文章の空欄に適する語句を答えなさい（選択肢がある場合はその中から正しい方を選びなさい）。\n\n物質は大きく「純物質」と「混合物」に分けられる。純物質は「（ ア ）種類の粒子からできている」ものであり、融点や沸点、密度などが物質ごとに（イ：　等しく　・　異　）なる。さらに純物質は、１種類の（ ウ ）からできている「（ エ ）」と、２種類以上の（ ウ ）からできている「（ オ ）」に分けられる。（ エ ）のうち、室温で液体として存在するのは（ カ ）と水銀だけである。一方、混合物は「（ ア ）種類以上の粒子からできている」ものであり、混じっている物質の種類やその（ キ ）によって融点や沸点などの値が（ク：　等しく　・　異　）なる。混合物を純物質に分けるには、ろ過や蒸留などの「（ ケ ）的方法」を用いるが、（ オ ）を（ エ ）に分解するには、電気分解などの「（ コ ）的方法」を用いる必要がある。",
+              subQuestions: [
+                { id: "p1_a", label: "(ア)", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "p1_i", label: "(イ)", type: "multiple_choice", options: ["等しく", "異"], correctAnswer: "等しく", correctAnswerRate: 85 },
+                { id: "p1_u", label: "(ウ)", type: "short_answer", correctAnswer: "元素", correctAnswerRate: 85 },
+                { id: "p1_e", label: "(エ)", type: "short_answer", correctAnswer: "単体", correctAnswerRate: 85 },
+                { id: "p1_o", label: "(オ)", type: "short_answer", correctAnswer: "化合物", correctAnswerRate: 85 },
+                { id: "p1_ka", label: "(カ)", type: "short_answer", correctAnswer: "臭素", correctAnswerRate: 85 },
+                { id: "p1_ki", label: "(キ)", type: "short_answer", correctAnswer: "割合", correctAnswerRate: 85 },
+                { id: "p1_ku", label: "(ク)", type: "multiple_choice", options: ["等しく", "異"], correctAnswer: "異", correctAnswerRate: 85 },
+                { id: "p1_ke", label: "(ケ)", type: "short_answer", correctAnswer: "物理", correctAnswerRate: 85 },
+                { id: "p1_ko", label: "(コ)", type: "short_answer", correctAnswer: "化学", correctAnswerRate: 85 }
+              ],
+              explanation: JSON.stringify({
+  "type": "deep_thought",
+  "phase1": {
+    "title": "フェーズ1：思考構造の分析（ユーザー確認フェーズ）",
+    "overview": {
+      "theme": "物質の分類（純物質と混合物、単体と化合物）および、構成要素の概念（元素と単体の区別）",
+      "type": "演繹型（既知知識の適用）",
+      "concepts": "純物質、混合物、単体、化合物、元素、同素体、物理的変化（分離）、化学的変化（分解）"
+    },
+    "tree": "物質の判別プロセス\n│\n├─ 条件：組成が一定か？（物理的に分けられるか）\n│   ├─ 知識：物理的方法（ろ過・蒸留など）で分離可能\n│   │   └─ 推論：融点・沸点が一定でない\n│   │       └─ 結論：【混合物】（例：海水、空気、塩酸）\n│   │\n│   └─ 知識：物理的方法で分離不可（1種類の物質）\n│       └─ 結論：【純物質】\n│           │\n│           ├─ 条件：構成元素が1種類か？\n│           │   ├─ 知識：化学的方法（電気分解など）で分解可能\n│           │   │   └─ 推論：2種類以上の元素からなる\n│           │   │       └─ 結論：【化合物】（例：塩化ナトリウム）\n│           │   │\n│           │   └─ 知識：これ以上分解できない\n│           │       └─ 推論：1種類の元素からなる\n│           │           └─ 結論：【単体】（例：酸素、鉄）\n│           │               └─ 例外知識：常温で液体の単体（臭素、水銀）\n│           │\n│           └─ 条件：文脈における「名前」の使われ方\n│               ├─ 知識：実際に存在する物質（性質・状態・反応）を指す\n│               │   └─ 結論：【単体】（例：酸素吸入、水素が発生）\n│               │\n│               └─ 知識：物質の成分（構成要素・含有）を指す\n│                   └─ 結論：【元素】（例：水は酸素からできている）",
+    "steps": [
+      {
+        "step": "Step 1",
+        "tag": "分類理解",
+        "target": "問1：物質の分類ツリーと階層構造の整理",
+        "content": "問1の文章構造を読み解き、物質の分類ツリー（純物質・混合物、単体・化合物）の階層構造を整理する。",
+        "knowledge": "物質の分類定義",
+        "purpose": "空欄(ア)〜(オ)の解答と、問2以降を解くための判断基準（モデル）の構築。"
+      },
+      {
+        "step": "Step 2",
+        "tag": "性質理解",
+        "target": "問1：純物質と混合物の性質・分離分解の違い",
+        "content": "混合物と純物質の性質の違い（融点・沸点など）と、それぞれの分離・分解手法を対応させる。",
+        "knowledge": "状態変化、分離手法（物理的）、分解手法（化学的）",
+        "purpose": "空欄(カ)〜(コ)の解答と、物質の性質に関する理解の定着。"
+      },
+      {
+        "step": "Step 3",
+        "tag": "知識照合",
+        "target": "問2：物質名からの組成判定（純物質or混合物）",
+        "content": "問2の各物質について、化学式で表せるか（純物質か）、複数の物質が混ざっているか（混合物か）を判定する。",
+        "knowledge": "代表的な物質の組成と名称（海水、空気、塩酸などの実態）",
+        "purpose": "混合物を抽出し、分類の第一段階をクリアする。"
+      },
+      {
+        "step": "Step 4",
+        "tag": "演繹推論",
+        "target": "問2：純物質の化学式からの判定（単体or化合物）",
+        "content": "問2で純物質と判定したものから、構成元素が1種類（単体）か2種類以上（化合物）かを化学式を思い浮かべて判定する。",
+        "knowledge": "元素記号、化学式",
+        "purpose": "単体と化合物の分類を完了させる。"
+      },
+      {
+        "step": "Step 5",
+        "tag": "条件抽出",
+        "target": "問3：文脈からの「具体的な物質」判定",
+        "content": "問3の各文脈において、下線部が「具体的な物質（触れる・反応する・状態がある）」として扱われているか確認する。",
+        "knowledge": "単体の定義（具体的な物質としての性質）",
+        "purpose": "単体として用いられている記述を特定する。"
+      },
+      {
+        "step": "Step 6",
+        "tag": "概念区別",
+        "target": "問3：文脈からの「成分・種類」判定",
+        "content": "問3の各文脈において、下線部が「成分・種類（含まれる・構成する）」として扱われているか確認する。",
+        "knowledge": "元素の定義（概念としての成分）",
+        "purpose": "元素として用いられている記述を特定し、単体との区別を完了させる。"
+      }
+    ]
+  },
+  "phase2": {
+    "title": "フェーズ2：解説生成（確定フェーズ）",
+    "answers": "1. 模範解答\n問１\n(ア) 1　\n(イ) 等しく　\n(ウ) 元素　\n(エ) 単体　\n(オ) 化合物　\n(カ) 臭素　\n(キ) 割合 （※質量比、混合比なども可）　\n(ク) 異　\n(ケ) 物理　\n(コ) 化学\n\n問２\n【Ａ：単体】 (1), (8), (13)\n【Ｂ：化合物】 (3), (5), (9), (11), (14), (15)\n【Ｃ：混合物】 (2), (4), (6), (7), (10), (12)\n\n問３\n単体： (1), (4), (8), (9), (10)\n元素： (2), (3), (5), (6), (7)",
+    "explanations": [
+      {
+        "step": "Step 1",
+        "tag": "分類理解",
+        "content": "物質はまず「混ざりものかどうか」で大きく2つに分類されます。1種類の物質（粒子）だけでできているのが「純物質」、2種類以上が混ざっているのが「混合物」です。さらに、純物質の中で「何種類の元素でできているか」に着目し、1種類の元素からなるものを「単体」、2種類以上の元素からなるものを「化合物」と定義します。この階層構造（ツリー）を頭の中に描けるかが最初のステップです。"
+      },
+      {
+        "step": "Step 2",
+        "tag": "性質理解",
+        "content": "純物質は中身が1種類なので、融点や沸点、密度が決まった値（等しく）になります。一方、混合物は混ざっている物質の「割合」によって、融点や沸点が変わります（異なる）。\nまた、混合物を純物質に分ける操作（ろ過、蒸留など）は状態変化を利用した「物理的」な方法です。化合物を単体に分ける操作（電気分解など）は、物質そのものを変える「化学的」な方法（化学変化）であると区別しましょう。常温・常圧で液体の単体は「水銀（金属）」と「臭素（非金属）」の2つだけであることは必須知識です。"
+      },
+      {
+        "step": "Step 3",
+        "tag": "知識照合",
+        "content": "与えられた名称から、その物質の実態をイメージします。化学式1つで表現できれば純物質、できなければ混合物です。\n・海水＝水＋塩化ナトリウムなど（混合物）\n・塩酸＝水＋塩化水素（混合物）※頻出のひっかけ\n・空気＝窒素＋酸素など（混合物）\n・石油、ガソリン＝様々な炭化水素の混ざりもの（混合物）\n・木材＝セルロース、水分などの混ざりもの（混合物）"
+      },
+      {
+        "step": "Step 4",
+        "tag": "演繹推論",
+        "content": "Step3で純物質と判定したものに化学式を当てはめ、元素記号の種類を数えます。\n・1種類（単体）：酸素(O₂)、鉄(Fe)、キセノン(Xe)\n・2種類以上（化合物）：塩化ナトリウム(NaCl)、アンモニア(NH₃)、プロパン(C₃H₈)、水(H₂O)、二酸化炭素(CO₂)、炭酸水素ナトリウム(NaHCO₃)"
+      },
+      {
+        "step": "Step 5",
+        "tag": "条件抽出",
+        "content": "「単体」は、実際に存在するリアルな物質を指します。(1)「吸入する」、(4)「飛行船に詰める」、(8)「発生する」、(9)「さびる（反応する）」、(10)「空気の約78%（体積を占める気体）」は、すべて具体的な物質としての性質や状態を表しているため「単体」です。迷ったら「〜という物質」と言い換えて意味が通じるか確認しましょう。"
+      },
+      {
+        "step": "Step 6",
+        "tag": "概念区別",
+        "content": "「元素」は、物質を構成する抽象的な成分（部品のラベル）を指します。(2)「できている（構成成分）」、(3)「含まれている（成分）」、(5)「同素体（同じ成分からなる）」、(6)「胃液に含まれる（塩素ガスが存在するわけではなく成分として存在）」、(7)「バッテリーに使われている（リチウムイオン等の成分）」は、すべて部品としての名前を指しているため「元素」です。"
+      }
+    ],
+    "stumblingPoints": [
+      {
+        "step": "Step 3",
+        "type": "概念混同",
+        "content": "・入試のひっかけポイント：「名称は1つの単語に見えるが、実は水溶液（混合物）」というパターンに注意しましょう。\n代表例：塩酸（塩化水素の水溶液）、アンモニア水（アンモニアの水溶液）。これらは化学式「HCl」「NH₃」だけで表すことはできず、水（H₂O）との混合物です。"
+      },
+      {
+        "step": "Step 6",
+        "type": "適用失敗",
+        "content": "目的：文脈から「単体（物質）」と「元素（成分）」を論理的に切り分ける基準の再構築。\n以下の2つの文について、下線部が「単体」か「元素」か答えなさい。\nA：「カルシウムは、水と激しく反応して水素を発生する。」\nB：「牛乳には、カルシウムが豊富に含まれている。」\n（解答：Aは実際に反応している「物質」なので単体。Bは牛乳の中に金属の塊が入っているわけではなく「成分」なので元素。）"
+      }
+    ]
+  }
+}),
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "p_c1_1_2",
+              category: "物質の分類",
+              text: "問２ 次の（１）〜（１５）の物質を、【Ａ：単体】【Ｂ：化合物】【Ｃ：混合物】に分類しなさい。\n\n（１） 酸素　　（２） 海水　　（３） 塩化ナトリウム　　（４） 塩酸　　（５） アンモニア\n（６） 空気　　（７） 石油（原油）　　（８） 鉄　　（９） プロパン　　（１０） ガソリン\n（１１） 水　　（１２） 木材　　（１３） キセノン　　（１４） 二酸化炭素　　（１５） 炭酸水素ナトリウム",
+              subQuestions: [
+                { id: "p2_1", label: "(1) 酸素", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "A", correctAnswerRate: 85 },
+                { id: "p2_2", label: "(2) 海水", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
+                { id: "p2_3", label: "(3) 塩化ナトリウム", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
+                { id: "p2_4", label: "(4) 塩酸", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
+                { id: "p2_5", label: "(5) アンモニア", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
+                { id: "p2_6", label: "(6) 空気", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
+                { id: "p2_7", label: "(7) 石油（原油）", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
+                { id: "p2_8", label: "(8) 鉄", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "A", correctAnswerRate: 85 },
+                { id: "p2_9", label: "(9) プロパン", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
+                { id: "p2_10", label: "(10) ガソリン", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
+                { id: "p2_11", label: "(11) 水", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
+                { id: "p2_12", label: "(12) 木材", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
+                { id: "p2_13", label: "(13) キセノン", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "A", correctAnswerRate: 85 },
+                { id: "p2_14", label: "(14) 二酸化炭素", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
+                { id: "p2_15", label: "(15) 炭酸水素ナトリウム", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 }
+              ],
+              explanation: "※問1の解説タブを参照してください。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "p_c1_1_3",
+              category: "元素と単体",
+              text: "問３ 次の(1)〜(10)の下線部は、「単体」と「元素」のどちらの意味で用いられているか。\n\n(1) 負傷者に<u>酸素</u>吸入を行った。\n(2) 水は、<u>水素</u>と<u>酸素</u>からできている。\n(3) <u>カルシウム</u>は、骨や歯に多く含まれている。\n(4) 飛行船には、かつて<u>水素</u>が詰められていたが、現在は<u>ヘリウム</u>が使われる。\n(5) ダイヤモンドは、<u>炭素</u>の同素体である。\n(6) 胃液には、<u>塩素</u>が含まれている。\n(7) 携帯電話のバッテリーには、<u>リチウム</u>が使われている。\n(8) 水を電気分解すると、陰極から<u>水素</u>が発生する。\n(9) <u>鉄</u>は、湿った空気中でさびやすい。\n(10) 地球の空気の約７８％は<u>窒素</u>である。",
+              subQuestions: [
+                { id: "p3_1", label: "(1)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 },
+                { id: "p3_2", label: "(2)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85 },
+                { id: "p3_3", label: "(3)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85 },
+                { id: "p3_4", label: "(4)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 },
+                { id: "p3_5", label: "(5)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85 },
+                { id: "p3_6", label: "(6)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85 },
+                { id: "p3_7", label: "(7)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85 },
+                { id: "p3_8", label: "(8)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 },
+                { id: "p3_9", label: "(9)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 },
+                { id: "p3_10", label: "(10)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 }
+              ],
+              explanation: "※問1の解説タブを参照してください。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ],
           miniTest: [
             {
               id: "q1",
