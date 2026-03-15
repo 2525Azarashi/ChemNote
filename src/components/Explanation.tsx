@@ -13,7 +13,36 @@ interface ExplanationProps {
 export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps) {
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
   const [expandedSq, setExpandedSq] = useState<string | null>(null);
+  const [expandedStep, setExpandedStep] = useState<string | null>(null);
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
+
+  const stepColors: Record<string, string> = {
+    "1": "bg-red-500/20 text-red-200 border-red-500/50 hover:bg-red-500/30",
+    "2": "bg-blue-500/20 text-blue-200 border-blue-500/50 hover:bg-blue-500/30",
+    "3": "bg-green-500/20 text-green-200 border-green-500/50 hover:bg-green-500/30",
+    "4": "bg-yellow-500/20 text-yellow-200 border-yellow-500/50 hover:bg-yellow-500/30",
+    "5": "bg-purple-500/20 text-purple-200 border-purple-500/50 hover:bg-purple-500/30",
+    "6": "bg-pink-500/20 text-pink-200 border-pink-500/50 hover:bg-pink-500/30",
+    "7": "bg-cyan-500/20 text-cyan-200 border-cyan-500/50 hover:bg-cyan-500/30",
+  };
+  const markerColors: Record<string, string> = {
+    "1": "bg-red-500",
+    "2": "bg-blue-500",
+    "3": "bg-green-500",
+    "4": "bg-yellow-500",
+    "5": "bg-purple-500",
+    "6": "bg-pink-500",
+    "7": "bg-cyan-500",
+  };
+  const borderColors: Record<string, string> = {
+    "1": "border-red-500",
+    "2": "border-blue-500",
+    "3": "border-green-500",
+    "4": "border-yellow-500",
+    "5": "border-purple-500",
+    "6": "border-pink-500",
+    "7": "border-cyan-500",
+  };
 
   const questions = mode === 'mini_test' ? chapter.miniTest : (chapter.practiceProblems || []);
 
@@ -105,6 +134,103 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     }
     return null;
   }, [questions]);
+
+  const renderSubQuestionCheck = (sq: any) => {
+    const isCorrect = sq.type === 'descriptive' ? false : answers[sq.id] === sq.correctAnswer;
+    const isExpanded = expandedSq === sq.id;
+
+    return (
+      <div key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? 'border-[#A9CCE3]/30' : (isCorrect ? 'border-[#5BC0BE]/30' : 'border-[#D9A0A0]/30')}`}>
+        {/* Tab Header */}
+        <button 
+          onClick={() => setExpandedSq(isExpanded ? null : sq.id)}
+          className={`w-full flex items-center justify-between p-3 md:p-4 transition-colors ${sq.type === 'descriptive' ? 'bg-[#A9CCE3]/10 hover:bg-[#A9CCE3]/20' : (isCorrect ? 'bg-[#5BC0BE]/10 hover:bg-[#5BC0BE]/20' : 'bg-[#D9A0A0]/10 hover:bg-[#D9A0A0]/20')}`}
+        >
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-2 py-1 rounded border border-[#3A506B]/50 shadow-sm">{sq.label}</div>
+            {sq.type !== 'descriptive' && (
+              <div>
+                {isCorrect ? <CheckCircle2 className="text-[#5BC0BE] w-5 h-5 md:w-6 md:h-6" /> : <XCircle className="text-[#D9A0A0] w-5 h-5 md:w-6 md:h-6" />}
+              </div>
+            )}
+            {sq.type === 'descriptive' && (
+              <div className="text-xs md:text-sm font-bold text-[#A9CCE3] flex items-center gap-1">
+                <Edit3 size={16} />
+                <span>記述問題</span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className={`text-[#7A8B99] transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+              <ChevronDown size={20} />
+            </div>
+          </div>
+        </button>
+
+        {/* Tab Content (Dropdown) */}
+        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isExpanded ? 'max-h-[1000px] opacity-100 border-t border-[#3A506B]/30' : 'max-h-0 opacity-0'}`}>
+          <div className="p-4 md:p-6 bg-[#0B132B]/40">
+            {sq.type === 'descriptive' ? (
+              <div className="flex flex-col gap-3 md:gap-4">
+                <div className="text-[10px] md:text-xs text-[#7A8B99] mb-1">あなたの解答</div>
+                <div className="font-bold text-sm md:text-base text-[#E0E1DD] mb-3 md:mb-4 whitespace-pre-wrap bg-[#1C2541]/50 p-3 rounded-lg border border-[#3A506B]/50">
+                  {formatText(answers[sq.id] || '未解答')}
+                </div>
+                <div className="text-[10px] md:text-xs text-[#7A8B99] mb-1">模範解答</div>
+                <div className="font-bold text-sm md:text-base text-[#5BC0BE] mb-3 md:mb-4 bg-[#5BC0BE]/10 p-3 rounded-lg border border-[#5BC0BE]/30">
+                  {formatText(sq.correctAnswer)}
+                </div>
+                
+                <div className="bg-[#1C2541]/50 p-3 md:p-4 rounded-lg border border-[#A9CCE3]/30 shadow-sm mt-2">
+                  <div className="text-xs md:text-sm font-bold text-[#A9CCE3] mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2">
+                    <CheckSquare className="w-4 h-4 md:w-4 md:h-4" />
+                    <span>自己採点チェック（部分点基準）</span>
+                  </div>
+                  <div className="space-y-2 md:space-y-3">
+                    {sq.gradingCriteria?.map((criteria: string, cIdx: number) => {
+                      const criteriaId = `${sq.id}_${cIdx}`;
+                      const isChecked = selfGrades[criteriaId] || false;
+                      return (
+                        <label key={cIdx} className="flex items-start gap-2 md:gap-3 cursor-pointer group py-1 md:py-0" onClick={() => toggleGrade(criteriaId)}>
+                          <div className={`mt-0.5 w-4 h-4 md:w-5 md:h-5 rounded border flex items-center justify-center transition-colors shrink-0 ${isChecked ? 'bg-[#5BC0BE] border-[#5BC0BE]' : 'border-[#3A506B] group-hover:border-[#5BC0BE] bg-[#0B132B]'}`}>
+                            {isChecked && <CheckCircle2 className="text-[#0B132B] w-3 h-3 md:w-3.5 md:h-3.5" />}
+                          </div>
+                          <span className={`text-xs md:text-sm leading-tight ${isChecked ? 'text-[#E0E1DD] font-medium' : 'text-[#7A8B99]'}`}>
+                            {formatText(criteria)}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3 md:gap-4">
+                <div className="text-[10px] md:text-xs text-[#7A8B99] mb-1">あなたの解答</div>
+                <div className={`font-bold text-sm md:text-base p-3 rounded-lg border ${isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0] line-through opacity-80'}`}>
+                  {formatText(answers[sq.id] || '未解答')}
+                </div>
+                {!isCorrect && (
+                  <div className="mt-2">
+                    <div className="text-[10px] md:text-xs text-[#7A8B99] mb-1">正解</div>
+                    <div className="font-bold text-sm md:text-base text-[#5BC0BE] bg-[#5BC0BE]/10 p-3 rounded-lg border border-[#5BC0BE]/30">
+                      {formatText(sq.correctAnswer)}
+                    </div>
+                  </div>
+                )}
+                {sq.partialCreditCriteria && (
+                  <div className="mt-2 md:mt-3 text-[10px] md:text-xs bg-[#F9E79F]/10 text-[#F9E79F] p-3 rounded-lg border border-[#F9E79F]/30 flex items-start gap-2">
+                    <AlertCircle className="shrink-0 mt-0.5 w-4 h-4" />
+                    <span className="leading-relaxed">{formatText(sq.partialCreditCriteria)}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   if (questions.length === 0) {
     return (
@@ -228,20 +354,119 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                 <Network className="w-4 h-4 md:w-5 md:h-5" />
                 思考グラフ (ロジカルツリー)
               </h4>
-              <pre className="text-xs md:text-sm text-[#E0E1DD]/80 whitespace-pre leading-relaxed overflow-x-auto bg-[#0B132B]/50 p-4 rounded-lg border border-[#3A506B]/30">
+              <div className="text-xs md:text-sm text-[#E0E1DD]/80 overflow-x-auto bg-[#0B132B]/50 p-4 rounded-lg border border-[#3A506B]/30">
                 {deepThoughtData.phase1.tree.split('\n').map((line: string, i: number) => {
-                  const match = line.match(/^([ │├─└　]+)(.*)$/);
-                  if (match) {
+                  const stepMatch = line.match(/^(.*?)\[Step (\d+)\](.*)$/);
+                  
+                  if (stepMatch) {
+                    const before = stepMatch[1];
+                    const stepNum = stepMatch[2];
+                    const after = stepMatch[3];
+                    
+                    const branchMatch = before.match(/^([ │├─└　]+)(.*)$/);
+                    const branch = branchMatch ? branchMatch[1] : "";
+                    const rawText = branchMatch ? branchMatch[2].trim() : before.trim();
+                    
+                    let nodeType = "";
+                    let nodeText = rawText;
+                    const typeMatch = rawText.match(/^(条件|知識|推論|結論|例外知識)：(.*)$/);
+                    if (typeMatch) {
+                      nodeType = typeMatch[1];
+                      nodeText = typeMatch[2].trim();
+                    }
+
+                    const expData = deepThoughtData.phase2?.explanations?.find((e: any) => e.step === `Step ${stepNum}`);
+                    const subQuestionLabels = expData?.subQuestionLabels?.join(", ");
+                    const stepSubQuestions = expData?.subQuestionIds 
+                      ? questions.flatMap((q: any) => q.subQuestions).filter((sq: any) => expData.subQuestionIds.includes(sq.id))
+                      : [];
+
                     return (
-                      <div key={i}>
-                        <span className="font-mono">{match[1]}</span>
-                        <span className="font-handwriting">{match[2]}</span>
-                      </div>
+                      <React.Fragment key={i}>
+                        <div className="flex items-center my-1.5 whitespace-pre font-mono">
+                          <span>{branch}</span>
+                          <button 
+                            onClick={() => setExpandedStep(expandedStep === stepNum ? null : stepNum)}
+                            className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md border transition-colors shadow-sm ${stepColors[stepNum] || "bg-gray-500/20 text-gray-200 border-gray-500/50 hover:bg-gray-500/30"}`}
+                          >
+                            <span className="font-handwriting">{nodeText}</span>
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm text-white shadow-sm ${markerColors[stepNum] || "bg-gray-500"}`}>
+                              Step {stepNum}
+                            </span>
+                            {nodeType && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-[#1C2541] text-[#E0E1DD] border border-[#3A506B]">
+                                {nodeType}
+                              </span>
+                            )}
+                            {subQuestionLabels && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-[#3A506B]/50 text-[#A9CCE3]">
+                                対応: {subQuestionLabels}
+                              </span>
+                            )}
+                            {after && <span className="font-handwriting">{after}</span>}
+                          </button>
+                        </div>
+                        
+                        {/* Expanded Content */}
+                        {expandedStep === stepNum && expData && (
+                          <div className={`my-3 ml-8 md:ml-12 p-4 md:p-5 bg-[#1C2541]/90 rounded-xl border-l-4 shadow-lg ${borderColors[stepNum] || "border-gray-500"}`}>
+                            <div className="flex items-center gap-2 mb-3">
+                              <div className={`text-white text-xs font-bold px-2 py-1 rounded shadow-sm ${markerColors[stepNum] || "bg-gray-500"}`}>
+                                Step {stepNum}
+                              </div>
+                              <h5 className="font-bold text-sm md:text-base text-[#E0E1DD]">{expData.tag}</h5>
+                            </div>
+                            <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap font-handwriting mb-6">
+                              {formatText(expData.content)}
+                            </div>
+                            
+                            {stepSubQuestions.length > 0 && (
+                              <div className="mt-4 border-t border-[#3A506B]/50 pt-4">
+                                <h6 className="text-xs md:text-sm font-bold text-[#5BC0BE] mb-3 flex items-center gap-2">
+                                  <CheckCircle2 className="w-4 h-4" />
+                                  対応する問題の答え合わせ
+                                </h6>
+                                <div className="space-y-3">
+                                  {stepSubQuestions.map((sq: any) => renderSubQuestionCheck(sq))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </React.Fragment>
                     );
+                  } else {
+                    const branchMatch = line.match(/^([ │├─└　]+)(.*)$/);
+                    if (branchMatch) {
+                      const branch = branchMatch[1];
+                      const rawText = branchMatch[2];
+                      
+                      let nodeType = "";
+                      let nodeText = rawText;
+                      const typeMatch = rawText.match(/^(条件|知識|推論|結論|例外知識)：(.*)$/);
+                      if (typeMatch) {
+                        nodeType = typeMatch[1];
+                        nodeText = typeMatch[2].trim();
+                      }
+
+                      return (
+                        <div key={i} className="whitespace-pre font-mono my-0.5 flex items-center">
+                          <span>{branch}</span>
+                          <span className="font-handwriting flex items-center gap-2">
+                            {nodeText}
+                            {nodeType && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-[#1C2541] text-[#E0E1DD] border border-[#3A506B]">
+                                {nodeType}
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      );
+                    }
+                    return <div key={i} className="whitespace-pre font-handwriting my-0.5">{line}</div>;
                   }
-                  return <div key={i} className="font-handwriting">{line}</div>;
                 })}
-              </pre>
+              </div>
             </div>
           )}
 
@@ -418,32 +643,6 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
               })}
             </div>
           </div>
-
-          {/* Step Explanations (from deep_thought) */}
-          {deepThoughtData && (
-            <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50">
-              <h4 className="text-[#5BC0BE] font-bold mb-4 text-base md:text-lg flex items-center gap-2">
-                <Lightbulb className="w-5 h-5 md:w-6 md:h-6" />
-                思考ステップ解説
-              </h4>
-              <div className="space-y-6">
-                {deepThoughtData.phase2.explanations.map((exp: any, idx: number) => (
-                  <div key={idx} className="bg-[#0B132B]/60 p-4 sm:p-5 rounded-xl border border-[#3A506B]/50 shadow-sm relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-[#5BC0BE]"></div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="bg-[#5BC0BE]/20 text-[#5BC0BE] text-xs font-bold px-2 py-1 rounded border border-[#5BC0BE]/30">
-                        {exp.step}
-                      </div>
-                      <h5 className="font-bold text-sm md:text-base text-[#E0E1DD]">{exp.tag}</h5>
-                    </div>
-                    <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
-                      {formatText(exp.content)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Stumbling Points (from deep_thought) */}
           {deepThoughtData && deepThoughtData.phase2.stumblingPoints && deepThoughtData.phase2.stumblingPoints.length > 0 && (
