@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Brain, Search } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
-import { DeepThoughtExplanation } from './DeepThoughtExplanation';
 import { auth } from '../firebase';
 
 interface ExplanationProps {
@@ -13,7 +12,6 @@ interface ExplanationProps {
 
 export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps) {
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
-  const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(null);
   const [expandedSq, setExpandedSq] = useState<string | null>(null);
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
 
@@ -94,6 +92,20 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
       .sort((a, b) => a.percentage - b.percentage);
   }, [questions, answers, selfGrades]);
 
+  const deepThoughtData = useMemo(() => {
+    for (const q of questions) {
+      try {
+        const parsed = JSON.parse(q.explanation);
+        if (parsed && parsed.type === 'deep_thought') {
+          return parsed;
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+    return null;
+  }, [questions]);
+
   if (questions.length === 0) {
     return (
       <div className="w-full text-center">
@@ -142,10 +154,9 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
       {/* Header */}
       <div className="p-4 md:p-6 border-b-2 border-[#1C2541] relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#0B132B]/90">
         <div className="flex items-center gap-3">
-          <Brain className="text-[#5BC0BE] w-6 h-6 md:w-8 md:h-8" />
           <div>
             <h3 className="text-lg md:text-xl font-bold text-[#5BC0BE] tracking-wider">
-              Deep Thought Analysis
+              解答・解説
             </h3>
             <div className="text-xs md:text-sm text-[#7A8B99] mt-1">
               {chapter.realTitle}
@@ -207,66 +218,78 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
           </div>
         )}
 
-        {/* Questions List */}
-        <div className="space-y-4 md:space-y-6">
-          {questions.map((question: any, index: number) => {
-            const isQuestionExpanded = expandedQuestionId === question.id;
-            const scorePercentage = calculateScore(question);
+        {/* Unified Explanation Area */}
+        <div className="bg-[#1C2541]/40 rounded-2xl shadow-lg overflow-hidden border border-[#3A506B]/50">
+          
+          {/* Logical Tree (if exists) */}
+          {deepThoughtData && (
+            <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50">
+              <h4 className="text-[#5BC0BE] font-bold mb-3 flex items-center gap-2 text-sm md:text-base">
+                <Network className="w-4 h-4 md:w-5 md:h-5" />
+                思考グラフ (ロジカルツリー)
+              </h4>
+              <pre className="text-xs md:text-sm text-[#E0E1DD]/80 whitespace-pre leading-relaxed overflow-x-auto bg-[#0B132B]/50 p-4 rounded-lg border border-[#3A506B]/30">
+                {deepThoughtData.phase1.tree.split('\n').map((line: string, i: number) => {
+                  const match = line.match(/^([ │├─└　]+)(.*)$/);
+                  if (match) {
+                    return (
+                      <div key={i}>
+                        <span className="font-mono">{match[1]}</span>
+                        <span className="font-handwriting">{match[2]}</span>
+                      </div>
+                    );
+                  }
+                  return <div key={i} className="font-handwriting">{line}</div>;
+                })}
+              </pre>
+            </div>
+          )}
 
-            return (
-              <div key={question.id} className="bg-[#1C2541]/40 rounded-2xl shadow-lg overflow-hidden border border-[#3A506B]/50">
-                {/* Question Tab Header */}
-                <button 
-                  onClick={() => setExpandedQuestionId(isQuestionExpanded ? null : question.id)}
-                  className={`w-full flex items-center justify-between p-4 md:p-6 transition-colors ${isQuestionExpanded ? 'bg-[#3A506B]/30' : 'hover:bg-[#3A506B]/20'}`}
-                >
-                  <div className="flex items-center gap-3 md:gap-4">
-                    <div className="bg-[#5BC0BE]/20 text-[#5BC0BE] border border-[#5BC0BE]/30 font-bold px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm shadow-sm">
-                      Q{index + 1}
-                    </div>
-                    <div className="text-left font-bold text-[#E0E1DD] text-sm md:text-base line-clamp-1">
-                      {question.category || '問題'}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-4 md:gap-6">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleSaveNote(question, index); }}
-                      className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-colors ${savingNote[question.id] ? 'bg-[#1C2541] text-[#7A8B99]' : 'bg-[#F9E79F]/20 text-[#F9E79F] border border-[#F9E79F]/30 hover:bg-[#F9E79F]/30'}`}
-                      disabled={savingNote[question.id]}
-                    >
-                      <Save size={14} />
-                      {savingNote[question.id] ? '保存中...' : 'ノートに保存'}
-                    </button>
-                    <div className="flex flex-col items-end">
-                      <div className="text-[10px] md:text-xs text-[#7A8B99] font-bold mb-0.5">あなたの正答率</div>
-                      <div className={`font-mono font-bold text-base md:text-lg ${scorePercentage >= 80 ? 'text-[#5BC0BE]' : scorePercentage <= 40 ? 'text-[#D9A0A0]' : 'text-[#F9E79F]'}`}>
-                        {scorePercentage}%
+          {/* Answer Checking for ALL questions */}
+          <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50 bg-[#1C2541]/20">
+            <h3 className="text-base md:text-lg font-bold text-[#5BC0BE] mb-4 md:mb-6 flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
+              <span>答え合わせ</span>
+            </h3>
+            
+            <div className="space-y-8 md:space-y-12">
+              {questions.map((question: any, qIndex: number) => {
+                const scorePercentage = calculateScore(question);
+                return (
+                  <div key={question.id} className="space-y-4 md:space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#3A506B]/30 pb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-[#5BC0BE]/20 text-[#5BC0BE] border border-[#5BC0BE]/30 font-bold px-3 py-1 rounded-full text-xs md:text-sm shadow-sm">
+                          Q{qIndex + 1}
+                        </div>
+                        <div className="text-left font-bold text-[#E0E1DD] text-sm md:text-base">
+                          {question.category || '問題'}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleSaveNote(question, qIndex); }}
+                          className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-colors ${savingNote[question.id] ? 'bg-[#1C2541] text-[#7A8B99]' : 'bg-[#F9E79F]/20 text-[#F9E79F] border border-[#F9E79F]/30 hover:bg-[#F9E79F]/30'}`}
+                          disabled={savingNote[question.id]}
+                        >
+                          <Save size={14} />
+                          {savingNote[question.id] ? '保存中...' : 'ノートに保存'}
+                        </button>
+                        <div className="flex flex-col items-end">
+                          <div className="text-[10px] md:text-xs text-[#7A8B99] font-bold mb-0.5">あなたの正答率</div>
+                          <div className={`font-mono font-bold text-base md:text-lg ${scorePercentage >= 80 ? 'text-[#5BC0BE]' : scorePercentage <= 40 ? 'text-[#D9A0A0]' : 'text-[#F9E79F]'}`}>
+                            {scorePercentage}%
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className={`text-[#5BC0BE] transition-transform duration-300 ${isQuestionExpanded ? 'rotate-180' : ''}`}>
-                      <ChevronDown size={24} />
-                    </div>
-                  </div>
-                </button>
-
-                {/* Question Content (Dropdown) */}
-                <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isQuestionExpanded ? 'max-h-[10000px] opacity-100 border-t border-[#3A506B]/50' : 'max-h-0 opacity-0'}`}>
-                  {/* Problem Restatement */}
-                  <div className="bg-[#0B132B]/60 p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50 relative">
-                    <div className="text-sm md:text-base text-[#E0E1DD]/90 leading-relaxed">
+                    
+                    {/* Problem Restatement */}
+                    <div className="bg-[#0B132B]/60 p-4 rounded-lg border border-[#3A506B]/50 text-sm md:text-base text-[#E0E1DD]/90 leading-relaxed">
                       {formatText(question.text)}
                     </div>
-                  </div>
 
-                  {/* Answers & Results */}
-                  <div className="p-4 sm:p-6 md:p-8 bg-[#1C2541]/20">
-                    <h3 className="text-base md:text-lg font-bold text-[#5BC0BE] mb-4 md:mb-6 flex items-center gap-2">
-                      <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
-                      <span>答え合わせ</span>
-                    </h3>
-                    
-                    <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
+                    <div className="space-y-3 md:space-y-4">
                       {question.subQuestions.map((sq: any) => {
                         const isCorrect = sq.type === 'descriptive' ? false : answers[sq.id] === sq.correctAnswer;
                         const isExpanded = expandedSq === sq.id;
@@ -365,108 +388,182 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                       })}
                     </div>
 
-                    {/* Explanation Memo */}
-                    <div className="mt-8 md:mt-12">
-                      {(() => {
-                        try {
-                          const parsed = JSON.parse(question.explanation);
-                          if (parsed && parsed.type === 'deep_thought') {
-                            return <DeepThoughtExplanation data={parsed} />;
-                          }
-                        } catch (e) {
-                          // Not JSON, fallback to normal rendering
+                    {/* Normal Explanation (if not deep_thought) */}
+                    {(() => {
+                      try {
+                        const parsed = JSON.parse(question.explanation);
+                        if (parsed && parsed.type === 'deep_thought') {
+                          return null; // Handled globally
                         }
-                        return (
-                          <div className="bg-[#0B132B]/80 p-4 sm:p-6 md:p-8 rounded-xl shadow-inner border border-[#3A506B]/50 relative">
-                            <h4 className="text-base md:text-lg text-[#5BC0BE] mb-3 md:mb-4 flex items-center gap-1.5 md:gap-2 border-b-2 border-[#3A506B]/50 pb-1.5 md:pb-2 inline-flex">
-                              <Lightbulb className="text-[#F9E79F] w-4 h-4 md:w-5 md:h-5" />
-                              <span>解説・論理ツリー</span>
-                            </h4>
-                            <div className="text-xs md:text-sm text-[#E0E1DD]/90 whitespace-pre-wrap leading-relaxed mb-6 md:mb-8">
-                              {formatText(question.explanation)}
-                            </div>
+                      } catch (e) {
+                        // Not JSON, render normal explanation
+                      }
+                      
+                      if (!question.explanation) return null;
 
-                            <div className="space-y-4 md:space-y-6">
-                              {question.surroundingKnowledge && question.surroundingKnowledge.length > 0 && (
-                                <div>
-                                  <h5 className="font-bold text-xs md:text-sm text-[#A9CCE3] mb-3 md:mb-4 flex items-center gap-1.5 md:gap-2">
-                                    <BookOpen className="w-4 h-4 md:w-5 md:h-5" />
-                                    <span>周辺知識・類似問題</span>
-                                  </h5>
-                                  <div className="space-y-3 md:space-y-4">
-                                    {question.surroundingKnowledge.map((k: string, idx: number) => {
-                                      const titleMatch = k.match(/^(【.*?】)(.*)/s);
-                                      if (titleMatch) {
-                                        return (
-                                          <div key={idx} className="bg-[#1C2541]/50 p-4 md:p-5 rounded-xl border border-[#A9CCE3]/30 shadow-sm relative overflow-hidden">
-                                            <div className="absolute top-0 left-0 w-1.5 h-full bg-[#A9CCE3]"></div>
-                                            <div className="inline-flex items-center gap-1.5 bg-[#A9CCE3]/10 text-[#A9CCE3] text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border border-[#A9CCE3]/20">
-                                              <BookOpen size={14} />
-                                              {titleMatch[1].replace(/[【】]/g, '')}
-                                            </div>
-                                            <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
-                                              {formatText(titleMatch[2].trim())}
-                                            </div>
-                                          </div>
-                                        );
-                                      }
-                                      return (
-                                        <div key={idx} className="bg-[#1C2541]/50 p-4 md:p-5 rounded-xl border border-[#3A506B]/50 shadow-sm text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
-                                          {formatText(k)}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              )}
-
-                              {question.deepDiveTopics && question.deepDiveTopics.length > 0 && (
-                                <div className="mt-6 md:mt-8">
-                                  <h5 className="font-bold text-xs md:text-sm text-[#D9A0A0] mb-3 md:mb-4 flex items-center gap-1.5 md:gap-2">
-                                    <Search className="w-4 h-4 md:w-5 md:h-5" />
-                                    <span>さらに深掘り</span>
-                                  </h5>
-                                  <div className="space-y-3 md:space-y-4">
-                                    {question.deepDiveTopics.map((topic: string, idx: number) => {
-                                      const titleMatch = topic.match(/^(【.*?】)(.*)/s);
-                                      let title = "";
-                                      let content = topic;
-                                      
-                                      if (titleMatch) {
-                                        title = titleMatch[1].replace(/[【】]/g, '');
-                                        content = titleMatch[2].trim();
-                                      } else {
-                                        const parts = topic.split('\n');
-                                        title = parts[0];
-                                        content = parts.slice(1).join('\n');
-                                      }
-
-                                      return (
-                                        <div key={idx} className="bg-[#D9A0A0]/10 p-4 md:p-5 rounded-xl border border-[#D9A0A0]/30 shadow-sm relative overflow-hidden">
-                                          <div className="absolute top-0 left-0 w-1.5 h-full bg-[#D9A0A0]"></div>
-                                          <div className="inline-flex items-center gap-1.5 bg-[#D9A0A0]/20 text-[#D9A0A0] text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border border-[#D9A0A0]/30">
-                                            <Lightbulb size={14} />
-                                            {title}
-                                          </div>
-                                          <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
-                                            {formatText(content)}
-                                          </div>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
+                      return (
+                        <div className="bg-[#0B132B]/80 p-4 sm:p-5 rounded-xl shadow-inner border border-[#3A506B]/50 mt-4">
+                          <h4 className="text-sm md:text-base text-[#5BC0BE] mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2 border-b-2 border-[#3A506B]/50 pb-1.5 inline-flex">
+                            <Lightbulb className="text-[#F9E79F] w-4 h-4" />
+                            <span>解説</span>
+                          </h4>
+                          <div className="text-xs md:text-sm text-[#E0E1DD]/90 whitespace-pre-wrap leading-relaxed">
+                            {formatText(question.explanation)}
                           </div>
-                        );
-                      })()}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Step Explanations (from deep_thought) */}
+          {deepThoughtData && (
+            <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50">
+              <h4 className="text-[#5BC0BE] font-bold mb-4 text-base md:text-lg flex items-center gap-2">
+                <Lightbulb className="w-5 h-5 md:w-6 md:h-6" />
+                思考ステップ解説
+              </h4>
+              <div className="space-y-6">
+                {deepThoughtData.phase2.explanations.map((exp: any, idx: number) => (
+                  <div key={idx} className="bg-[#0B132B]/60 p-4 sm:p-5 rounded-xl border border-[#3A506B]/50 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-[#5BC0BE]"></div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="bg-[#5BC0BE]/20 text-[#5BC0BE] text-xs font-bold px-2 py-1 rounded border border-[#5BC0BE]/30">
+                        {exp.step}
+                      </div>
+                      <h5 className="font-bold text-sm md:text-base text-[#E0E1DD]">{exp.tag}</h5>
+                    </div>
+                    <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
+                      {formatText(exp.content)}
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-            );
-          })}
+            </div>
+          )}
+
+          {/* Stumbling Points (from deep_thought) */}
+          {deepThoughtData && deepThoughtData.phase2.stumblingPoints && deepThoughtData.phase2.stumblingPoints.length > 0 && (
+            <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50 bg-[#1C2541]/20">
+              <h4 className="text-[#D9A0A0] font-bold mb-4 text-base md:text-lg flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" />
+                つまずきポイント
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {deepThoughtData.phase2.stumblingPoints.map((point: any, idx: number) => (
+                  <div key={idx} className="bg-[#D9A0A0]/10 p-4 sm:p-5 rounded-xl border border-[#D9A0A0]/30 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-[#D9A0A0]"></div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="bg-[#D9A0A0]/20 text-[#D9A0A0] text-xs font-bold px-2 py-0.5 rounded border border-[#D9A0A0]/30">
+                        {point.step}
+                      </div>
+                      <h5 className="font-bold text-sm md:text-base text-[#D9A0A0]">{point.type || point.point}</h5>
+                    </div>
+                    <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
+                      {formatText(point.content || point.reason)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Surrounding Knowledge / Deep Dive (from all questions) */}
+          <div className="p-4 sm:p-6 md:p-8 space-y-8">
+            {questions.map((question: any, qIndex: number) => {
+              const hasKnowledge = question.surroundingKnowledge && question.surroundingKnowledge.length > 0;
+              const hasDeepDive = question.deepDiveTopics && question.deepDiveTopics.length > 0;
+              
+              if (!hasKnowledge && !hasDeepDive) return null;
+
+              return (
+                <div key={`extra-${question.id}`} className="space-y-6">
+                  <div className="flex items-center gap-3 border-b border-[#3A506B]/30 pb-2">
+                    <div className="bg-[#5BC0BE]/20 text-[#5BC0BE] border border-[#5BC0BE]/30 font-bold px-2 py-0.5 rounded text-xs shadow-sm">
+                      Q{qIndex + 1}
+                    </div>
+                    <h4 className="font-bold text-sm md:text-base text-[#E0E1DD] opacity-80">
+                      周辺知識・深掘り
+                    </h4>
+                  </div>
+
+                  {hasKnowledge && (
+                    <div>
+                      <h5 className="font-bold text-xs md:text-sm text-[#A9CCE3] mb-3 md:mb-4 flex items-center gap-1.5 md:gap-2">
+                        <BookOpen className="w-4 h-4 md:w-5 md:h-5" />
+                        <span>周辺知識・類似問題</span>
+                      </h5>
+                      <div className="space-y-3 md:space-y-4">
+                        {question.surroundingKnowledge.map((k: string, idx: number) => {
+                          const titleMatch = k.match(/^(【.*?】)(.*)/s);
+                          if (titleMatch) {
+                            return (
+                              <div key={idx} className="bg-[#1C2541]/50 p-4 md:p-5 rounded-xl border border-[#A9CCE3]/30 shadow-sm relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-1.5 h-full bg-[#A9CCE3]"></div>
+                                <div className="inline-flex items-center gap-1.5 bg-[#A9CCE3]/10 text-[#A9CCE3] text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border border-[#A9CCE3]/20">
+                                  <BookOpen size={14} />
+                                  {titleMatch[1].replace(/[【】]/g, '')}
+                                </div>
+                                <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
+                                  {formatText(titleMatch[2].trim())}
+                                </div>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div key={idx} className="bg-[#1C2541]/50 p-4 md:p-5 rounded-xl border border-[#3A506B]/50 shadow-sm text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
+                              {formatText(k)}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {hasDeepDive && (
+                    <div className="mt-6 md:mt-8">
+                      <h5 className="font-bold text-xs md:text-sm text-[#D9A0A0] mb-3 md:mb-4 flex items-center gap-1.5 md:gap-2">
+                        <Search className="w-4 h-4 md:w-5 md:h-5" />
+                        <span>さらに深掘り</span>
+                      </h5>
+                      <div className="space-y-3 md:space-y-4">
+                        {question.deepDiveTopics.map((topic: string, idx: number) => {
+                          const titleMatch = topic.match(/^(【.*?】)(.*)/s);
+                          let title = "";
+                          let content = topic;
+                          
+                          if (titleMatch) {
+                            title = titleMatch[1].replace(/[【】]/g, '');
+                            content = titleMatch[2].trim();
+                          } else {
+                            const parts = topic.split('\n');
+                            title = parts[0];
+                            content = parts.slice(1).join('\n');
+                          }
+
+                          return (
+                            <div key={idx} className="bg-[#D9A0A0]/10 p-4 md:p-5 rounded-xl border border-[#D9A0A0]/30 shadow-sm relative overflow-hidden">
+                              <div className="absolute top-0 left-0 w-1.5 h-full bg-[#D9A0A0]"></div>
+                              <div className="inline-flex items-center gap-1.5 bg-[#D9A0A0]/20 text-[#D9A0A0] text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border border-[#D9A0A0]/30">
+                                <Lightbulb size={14} />
+                                {title}
+                              </div>
+                              <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
+                                {formatText(content)}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
