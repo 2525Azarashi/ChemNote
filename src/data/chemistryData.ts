@@ -242,7 +242,7 @@ export const chemistryData = {
                 { id: "p2_14", label: "(14) 二酸化炭素", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
                 { id: "p2_15", label: "(15) 炭酸水素ナトリウム", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 }
               ],
-              explanation: "※問1の解説タブを参照してください。",
+              explanation: "{\"type\": \"deep_thought\", \"phase1\": {\"title\": \"物質の分類\", \"overview\": \"物質を混合物、単体、化合物に分類する論理を整理します。\", \"tree\": \"物質\\n├ 混合物\\n├ 単体\\n└ 化合物\", \"steps\": [\"混合物\", \"単体\", \"化合物\"]}, \"phase2\": {\"explanations\": [{\"step\": \"混合物\", \"tag\": \"分類\", \"subQuestionIds\": [\"p2_2\", \"p2_3\", \"p2_6\", \"p2_7\", \"p2_10\", \"p2_12\"], \"content\": \"空気、海水、食塩水、石油、ガソリン、木材は混合物です。\"}, {\"step\": \"単体\", \"tag\": \"分類\", \"subQuestionIds\": [\"p2_1\", \"p2_8\", \"p2_13\"], \"content\": \"酸素、鉄、キセノンは単体です。\"}, {\"step\": \"化合物\", \"tag\": \"分類\", \"subQuestionIds\": [\"p2_3\", \"p2_5\", \"p2_9\", \"p2_11\", \"p2_14\", \"p2_15\"], \"content\": \"塩化ナトリウム、アンモニア、プロパン、水、二酸化炭素、炭酸水素ナトリウムは化合物です。\"}], \"stumblingPoints\": []}}",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
@@ -262,7 +262,7 @@ export const chemistryData = {
                 { id: "p3_9", label: "(9)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 },
                 { id: "p3_10", label: "(10)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 }
               ],
-              explanation: "※問1の解説タブを参照してください。",
+              explanation: "{\"type\": \"deep_thought\", \"phase1\": {\"title\": \"元素と単体の区別\", \"overview\": \"文脈から「単体」と「元素」を区別する論理を整理します。\", \"tree\": \"文脈判断\\n├ 単体：物質として存在\\n└ 元素：成分として存在\", \"steps\": [\"単体\", \"元素\"]}, \"phase2\": {\"explanations\": [{\"step\": \"単体\", \"tag\": \"判断\", \"subQuestionIds\": [\"p3_1\", \"p3_4\", \"p3_8\", \"p3_9\", \"p3_10\"], \"content\": \"物質として実体があるもの（気体など）です。\"}, {\"step\": \"元素\", \"tag\": \"判断\", \"subQuestionIds\": [\"p3_2\", \"p3_3\", \"p3_5\", \"p3_6\", \"p3_7\"], \"content\": \"成分として含まれているものです。\"}], \"stumblingPoints\": []}}",
               surroundingKnowledge: [],
               deepDiveTopics: []
             }
@@ -280,7 +280,7 @@ export const chemistryData = {
                 { id: "q1_e", label: "(オ)", type: "short_answer", correctAnswer: "一定", correctAnswerRate: 85 },
                 { id: "q1_f", label: "(カ)", type: "short_answer", correctAnswer: "変化", correctAnswerRate: 85 }
               ],
-              explanation: "{\"type\": \"deep_thought\", \"phase1\": {\"title\": \"物質の分類と性質\", \"overview\": \"物質の分類と性質に関する論理を整理します。\", \"tree\": \"Step 1: 物質の分類\\n ├─ 知識：1種類の物質でできている\\n └─ 結論：純物質\\nStep 2: 混合物\\n └─ 結論：2種類以上の物質が混じり合ったもの\\nStep 3: 純物質の分類\\n ├─ 知識：1種類の元素からできている\\n └─ 結論：単体\\nStep 4: 化合物\\n └─ 結論：2種類以上の元素からできている\\nStep 5: 性質\\n └─ 結論：純物質は融点・沸点が一定\", \"steps\": [\"Step 1\", \"Step 2\", \"Step 3\", \"Step 4\", \"Step 5\"]}, \"phase2\": {\"explanations\": [{\"step\": \"Step 1\", \"tag\": \"定義\", \"subQuestionIds\": [\"q1_a\"], \"subQuestionLabels\": [\"問1(ア)\"], \"content\": \"物質を構成する基本単位は「純物質」です。\"}, {\"step\": \"Step 2\", \"tag\": \"定義\", \"subQuestionIds\": [\"q1_b\"], \"subQuestionLabels\": [\"問1(イ)\"], \"content\": \"2種類以上の物質が混じり合ったものを「混合物」といいます。\"}, {\"step\": \"Step 3\", \"tag\": \"分類\", \"subQuestionIds\": [\"q1_c\"], \"subQuestionLabels\": [\"問1(ウ)\"], \"content\": \"1種類の元素からなる純物質を「単体」といいます。\"}, {\"step\": \"Step 4\", \"tag\": \"分類\", \"subQuestionIds\": [\"q1_d\"], \"subQuestionLabels\": [\"問1(エ)\"], \"content\": \"2種類以上の元素からなる純物質を「化合物」といいます。\"}, {\"step\": \"Step 5\", \"tag\": \"性質\", \"subQuestionIds\": [\"q1_e\", \"q1_f\"], \"subQuestionLabels\": [\"問1(オ)\", \"問1(カ)\"], \"content\": \"純物質は融点・沸点が一定ですが、混合物は一定ではありません。\"}], \"stumblingPoints\": []}}",
+              explanation: "{\"type\": \"deep_thought\", \"phase1\": {\"title\": \"物質の分類\", \"overview\": \"物質の分類構造を整理します。\", \"tree\": \"物質\\n├ 純物質\\n│ ├ 単体\\n│ └ 化合物\\n└ 混合物\", \"steps\": [\"単体\", \"化合物\", \"混合物\"]}, \"phase2\": {\"explanations\": [{\"step\": \"単体\", \"tag\": \"分類\", \"subQuestionIds\": [\"q1_c\"], \"content\": \"1種類の元素からなる純物質です。\"}, {\"step\": \"化合物\", \"tag\": \"分類\", \"subQuestionIds\": [\"q1_d\"], \"content\": \"2種類以上の元素からなる純物質です。\"}, {\"step\": \"混合物\", \"tag\": \"分類\", \"subQuestionIds\": [\"q1_b\"], \"content\": \"2種類以上の物質が混じり合ったものです。\"}], \"stumblingPoints\": [{\"node\": \"単体\", \"point\": \"O₂を化合物と誤解する。\"}]}}",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
@@ -323,7 +323,7 @@ export const chemistryData = {
                 { id: "q4_2", label: "エタノールのグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "③", correctAnswerRate: 85 },
                 { id: "q4_3", label: "水とエタノールの( イ )のグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "②", correctAnswerRate: 85 }
               ],
-              explanation: "混合物は、純物質に比べて融点・沸点・密度が安定しないことを覚えておきましょう。",
+              explanation: "{\"type\": \"deep_thought\", \"phase1\": {\"title\": \"状態変化のグラフ\", \"overview\": \"加熱グラフの違いを整理します。\", \"tree\": \"加熱グラフ\\n├ 純物質：温度一定\\n└ 混合物：温度変化\", \"steps\": [\"純物質\", \"混合物\"]}, \"phase2\": {\"explanations\": [{\"step\": \"純物質\", \"tag\": \"分析\", \"subQuestionIds\": [\"q4_1\", \"q4_2\"], \"content\": \"加熱中温度一定です。\"}, {\"step\": \"混合物\", \"tag\": \"分析\", \"subQuestionIds\": [\"q4_3\"], \"content\": \"加熱中温度変化します。\"}], \"stumblingPoints\": []}}",
               surroundingKnowledge: [],
               deepDiveTopics: []
             }

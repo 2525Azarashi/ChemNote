@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
 
@@ -9,6 +9,110 @@ interface ExplanationProps {
   answers: Record<string, string>;
   onBack: () => void;
 }
+
+import { InteractiveTree, NodeData } from './InteractiveTree';
+
+const substanceTreeData: NodeData = {
+  id: 'root',
+  label: '物質',
+  step: null,
+  children: [
+    {
+      id: 'step1_group',
+      label: '【Step1】物質の分類',
+      isGroup: true,
+      step: 1,
+      children: [
+        {
+          id: 'matter_elements',
+          label: '物質',
+          subLabel: '元素で構成',
+          step: 1,
+          children: [
+            {
+              id: 'pure',
+              label: '純物質',
+              step: 1,
+              explanation: '1種類の物質からなり、固有の化学式で表せるもの。',
+              relatedQuestions: ['演習問題⓵－１', '演習問題⓵－２'],
+              children: [
+                {
+                  id: 'simple_1',
+                  label: '単体',
+                  step: 1,
+                  explanation: '1種類の元素からなる純物質。',
+                  relatedQuestions: ['演習問題⓵－１', '演習問題⓵－２']
+                },
+                {
+                  id: 'compound',
+                  label: '化合物',
+                  step: 1,
+                  explanation: '2種類以上の元素からなる純物質。（例：水 H₂O、二酸化炭素 CO₂）',
+                  relatedQuestions: ['演習問題⓵－１', '演習問題⓵－２']
+                }
+              ]
+            },
+            {
+              id: 'mixture',
+              label: '混合物',
+              step: 1,
+              explanation: '複数の純物質が混ざったもの。化学式1つで表せない。（例：空気、海水）',
+              relatedQuestions: ['演習問題⓵－１', '演習問題⓵－２']
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step2_group',
+      label: '【Step2】純物質と混合物の性質',
+      isGroup: true,
+      step: 2,
+      children: [
+        {
+          id: 'pure_prop',
+          label: '純物質',
+          subLabel: '融点や沸点・密度などが物質ごとに一定となる',
+          step: 2,
+          explanation: '融点や沸点・密度などが物質ごとに一定となる',
+          relatedQuestions: ['演習問題⓵－４']
+        },
+        {
+          id: 'mixture_prop',
+          label: '混合物',
+          subLabel: '混じっている物質の種類やその割合により、値が変化する',
+          step: 2,
+          explanation: '混じっている物質の種類やその割合により、値が変化する',
+          relatedQuestions: ['演習問題⓵－４']
+        }
+      ]
+    },
+    {
+      id: 'step3_group',
+      label: '【Step3】単体と元素の区別',
+      isGroup: true,
+      step: 3,
+      children: [
+        {
+          id: 'simple_2',
+          label: '単体',
+          subLabel: '実際に存在し、直接触れることができる',
+          step: 3,
+          explanation: '1種類の元素からなる純物質。実際に存在し、直接触れることができる「実体」。（例：酸素 O₂、水素 H₂）',
+          relatedQuestions: ['演習問題⓵－３']
+        },
+        {
+          id: 'element',
+          label: '元素',
+          subLabel: '物質の構成成分で、直接触れることができない',
+          step: 3,
+          explanation: '物質の構成成分。直接触れることができない「概念」上のもの。（例：水に含まれる酸素）',
+          relatedQuestions: ['演習問題⓵－３']
+        }
+      ]
+    }
+  ]
+};
 
 export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps) {
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
@@ -304,124 +408,65 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
           {/* Logical Tree (if exists) */}
           {deepThoughtData && (
             <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50">
-              <h4 className="text-[#5BC0BE] font-bold mb-3 flex items-center gap-2 text-sm md:text-base">
-                <Network className="w-4 h-4 md:w-5 md:h-5" />
-                思考グラフ (ロジカルツリー)
-              </h4>
-              <div className="text-xs md:text-sm text-[#E0E1DD]/80 overflow-x-auto bg-[#0B132B]/50 p-4 rounded-lg border border-[#3A506B]/30">
-                {deepThoughtData.phase1.tree.split('\n').map((line: string, i: number) => {
-                  const stepMatch = line.match(/^(.*?)\[Step (\d+)\](.*)$/);
-                  
-                  if (stepMatch) {
-                    const before = stepMatch[1];
-                    const stepNum = stepMatch[2];
-                    const after = stepMatch[3];
-                    
-                    const branchMatch = before.match(/^([ │├─└　]+)(.*)$/);
-                    const branch = branchMatch ? branchMatch[1] : "";
-                    const rawText = branchMatch ? branchMatch[2].trim() : before.trim();
-                    
-                    let nodeType = "";
-                    let nodeText = rawText;
-                    const typeMatch = rawText.match(/^(条件|知識|推論|結論|例外知識)：(.*)$/);
-                    if (typeMatch) {
-                      nodeType = typeMatch[1];
-                      nodeText = typeMatch[2].trim();
-                    }
+              {chapter.abstractTitle === "① 純物質と混合物" ? (
+                <div className="space-y-4">
+                  <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 text-sm text-slate-300">
+                    <p className="mb-1"><span className="font-bold text-orange-400">「Step 1」</span>…演習問題⓵－１・演習問題⓵－２ で演習可能</p>
+                    <p className="mb-1"><span className="font-bold text-emerald-400">「Step 2」</span>…演習問題⓵－４ で演習可能</p>
+                    <p><span className="font-bold text-blue-400">「Step 3」</span>…演習問題⓵－３ で演習可能</p>
+                  </div>
+                  <InteractiveTree data={substanceTreeData} />
+                </div>
+              ) : (
+                <>
+                  <h4 className="text-[#5BC0BE] font-bold mb-3 flex items-center gap-2 text-sm md:text-base">
+                    <Network className="w-4 h-4 md:w-5 md:h-5" />
+                    思考グラフ (ロジカルツリー)
+                  </h4>
+                  <div className="text-xs md:text-sm text-[#E0E1DD]/80 overflow-x-auto bg-[#0B132B]/50 p-4 rounded-lg border border-[#3A506B]/30">
+                    {deepThoughtData.phase1.tree.split('\n').map((line: string, i: number) => {
+                      const branchMatch = line.match(/^([ │├─└]+)(.*)$/);
+                      const branch = branchMatch ? branchMatch[1] : "";
+                      const nodeText = branchMatch ? branchMatch[2].trim() : line.trim();
+                      
+                      const expData = deepThoughtData.phase2?.explanations?.find((e: any) => e.step === nodeText);
+                      const stepSubQuestions = expData?.subQuestionIds 
+                        ? questions.flatMap((q: any) => q.subQuestions).filter((sq: any) => expData.subQuestionIds.includes(sq.id))
+                        : [];
 
-                    const expData = deepThoughtData.phase2?.explanations?.find((e: any) => e.step === `Step ${stepNum}`);
-                    const subQuestionLabels = expData?.subQuestionLabels?.join(", ");
-                    const stepSubQuestions = expData?.subQuestionIds 
-                      ? questions.flatMap((q: any) => q.subQuestions).filter((sq: any) => expData.subQuestionIds.includes(sq.id))
-                      : [];
-                    console.log("Step:", stepNum, "expData:", expData, "stepSubQuestions:", stepSubQuestions);
-
-                    return (
-                      <React.Fragment key={i}>
-                        <div className="flex items-center my-1.5 whitespace-pre font-mono">
-                          <span>{branch}</span>
-                          <button 
-                            onClick={() => setExpandedStep(expandedStep === stepNum ? null : stepNum)}
-                            className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md border transition-colors shadow-sm ${stepColors[stepNum] || "bg-gray-500/20 text-gray-200 border-gray-500/50 hover:bg-gray-500/30"}`}
-                          >
-                            <span className="font-handwriting">{nodeText}</span>
-                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm text-white shadow-sm ${markerColors[stepNum] || "bg-gray-500"}`}>
-                              Step {stepNum}
-                            </span>
-                            {nodeType && (
-                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-[#1C2541] text-[#E0E1DD] border border-[#3A506B]">
-                                {nodeType}
-                              </span>
-                            )}
-                            {subQuestionLabels && (
-                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-[#3A506B]/50 text-[#A9CCE3]">
-                                対応: {subQuestionLabels}
-                              </span>
-                            )}
-                            {after && <span className="font-handwriting">{after}</span>}
-                          </button>
-                        </div>
-                        
-                        {/* Expanded Content */}
-                        {expandedStep === stepNum && expData && (
-                          <div className={`my-3 ml-8 md:ml-12 p-4 md:p-5 bg-[#1C2541]/90 rounded-xl border-l-4 shadow-lg ${borderColors[stepNum] || "border-gray-500"}`}>
-                            <div className="flex items-center gap-2 mb-3">
-                              <div className={`text-white text-xs font-bold px-2 py-1 rounded shadow-sm ${markerColors[stepNum] || "bg-gray-500"}`}>
-                                Step {stepNum}
+                      return (
+                        <React.Fragment key={i}>
+                          <div className="flex items-center my-1.5 whitespace-pre font-mono">
+                            <span>{branch}</span>
+                            <button 
+                              onClick={() => setExpandedStep(expandedStep === nodeText ? null : nodeText)}
+                              className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors shadow-sm ${expData ? "bg-[#3A506B]/20 text-[#E0E1DD] border-[#5BC0BE]/50 hover:bg-[#3A506B]/40" : "bg-gray-500/10 text-gray-400 border-gray-500/20"}`}
+                            >
+                              <span className="font-bold">{nodeText}</span>
+                            </button>
+                          </div>
+                          {expandedStep === nodeText && expData && (
+                            <div className="ml-8 mt-2 mb-4 p-4 rounded-xl bg-[#0B132B]/80 border border-[#3A506B] shadow-inner">
+                              <h6 className="text-sm font-bold text-[#5BC0BE] mb-3 flex items-center gap-2">
+                                <CheckCircle2 className="w-4 h-4" />
+                                解説と答え合わせ
+                              </h6>
+                              <div className="text-sm text-[#E0E1DD] mb-4">
+                                {expData.content}
                               </div>
-                              <h5 className="font-bold text-sm md:text-base text-[#E0E1DD]">{expData.tag}</h5>
-                            </div>
-                            <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap font-handwriting mb-6">
-                              {formatText(expData.content)}
-                            </div>
-                            
-                            {stepSubQuestions.length > 0 && (
-                              <div className="mt-4 border-t border-[#3A506B]/50 pt-4">
-                                <h6 className="text-xs md:text-sm font-bold text-[#5BC0BE] mb-3 flex items-center gap-2">
-                                  <CheckCircle2 className="w-4 h-4" />
-                                  対応する問題の答え合わせ ({stepSubQuestions.length}) - {JSON.stringify(expData.subQuestionIds)} - Q:{JSON.stringify(questions.map(q => q.id))}
-                                </h6>
+                              {stepSubQuestions.length > 0 && (
                                 <div className="space-y-3">
                                   {stepSubQuestions.map((sq: any) => renderSubQuestionCheck(sq))}
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </React.Fragment>
-                    );
-                  } else {
-                    const branchMatch = line.match(/^([ │├─└　]+)(.*)$/);
-                    if (branchMatch) {
-                      const branch = branchMatch[1];
-                      const rawText = branchMatch[2];
-                      
-                      let nodeType = "";
-                      let nodeText = rawText;
-                      const typeMatch = rawText.match(/^(条件|知識|推論|結論|例外知識)：(.*)$/);
-                      if (typeMatch) {
-                        nodeType = typeMatch[1];
-                        nodeText = typeMatch[2].trim();
-                      }
-
-                      return (
-                        <div key={i} className="whitespace-pre font-mono my-0.5 flex items-center">
-                          <span>{branch}</span>
-                          <span className="font-handwriting flex items-center gap-2">
-                            {nodeText}
-                            {nodeType && (
-                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-[#1C2541] text-[#E0E1DD] border border-[#3A506B]">
-                                {nodeType}
-                              </span>
-                            )}
-                          </span>
-                        </div>
+                              )}
+                            </div>
+                          )}
+                        </React.Fragment>
                       );
-                    }
-                    return <div key={i} className="whitespace-pre font-handwriting my-0.5">{line}</div>;
-                  }
-                })}
-              </div>
+                    })}
+                  </div>
+                </>
+              )}
             </div>
           )}
 

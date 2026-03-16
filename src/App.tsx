@@ -15,6 +15,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db, auth } from './firebase';
 import { Intro } from './components/Intro';
+import { LogicalTree } from './components/LogicalTree';
 import { Flowchart } from './components/Flowchart';
 import { AuthButton } from './components/AuthButton';
 import { NoteList } from './components/NoteList';
@@ -23,7 +24,7 @@ import { Onboarding } from './components/Onboarding';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 export default function App() {
@@ -259,13 +260,14 @@ export default function App() {
 
       <div className="w-full max-w-5xl relative">
         {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} />}
-        {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} />}
+        {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} />}
         {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
         {appState === 'flowchart' && <Flowchart onBack={() => {
           // If we have a selected chapter or were in chapters mode, go back there
           // For now, let's just go back to chapters if we were there
           setAppState('chapters');
         }} />}
+        {appState === 'logical_tree' && <LogicalTree />}
         {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} />}
         {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
         {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} onFlowchart={handleFlowchart} />}

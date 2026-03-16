@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, ChevronRight, Sparkles, Info, Atom, FlaskConical, Hexagon, Beaker } from 'lucide-react';
+import { BookOpen, ChevronRight, Sparkles, Info, Atom, FlaskConical, Hexagon, Beaker, Edit3 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { ProfileModal } from './ProfileModal';
@@ -8,9 +8,10 @@ interface HomeProps {
   onStart: () => void;
   onIntro: () => void;
   onNoteList: () => void;
+  onLogicalTree: () => void;
 }
 
-export function Home({ onStart, onIntro, onNoteList }: HomeProps) {
+export function Home({ onStart, onIntro, onNoteList, onLogicalTree }: HomeProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
 
@@ -132,9 +133,9 @@ export function Home({ onStart, onIntro, onNoteList }: HomeProps) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onNoteList}
-              className="group relative inline-flex items-center justify-center gap-2 md:gap-3 bg-[#F9E79F] text-[#D35400] border-2 border-[#F5B041] py-3 px-6 sm:px-8 md:py-4 md:px-10 rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_30px_rgba(0,0,0,0.1)] transition-all duration-300 font-modern font-bold text-sm sm:text-base md:text-lg tracking-widest overflow-hidden w-full sm:w-auto"
+              className="group relative inline-flex items-center justify-center gap-2 md:gap-3 bg-[#A9CCE3] text-[#2C3E50] border-2 border-[#A9CCE3] py-3 px-6 sm:px-8 md:py-4 md:px-10 rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_30px_rgba(0,0,0,0.1)] transition-all duration-300 font-modern font-bold text-sm sm:text-base md:text-lg tracking-widest overflow-hidden w-full sm:w-auto"
             >
-              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform duration-300" />
+              <Edit3 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform duration-300" />
               <span>個人ノート</span>
             </motion.button>
           </div>
