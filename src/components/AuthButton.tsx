@@ -26,8 +26,8 @@ export function AuthButton() {
     return () => unsubscribe();
   }, []);
 
-  // LINE内ブラウザの検知
-  const isLineBrowser = /Line\//i.test(navigator.userAgent);
+  // LINE内ブラウザやWebViewの検知
+  const isLineBrowser = /Line\//i.test(navigator.userAgent) || /wv/i.test(navigator.userAgent) || /WebView/i.test(navigator.userAgent);
 
   // Googleログイン処理
   const handleLogin = async () => {
