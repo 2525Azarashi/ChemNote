@@ -221,7 +221,7 @@ export default function App() {
     .find(c => c.id === selectedChapterId);
 
   return (
-    <div className="min-h-screen w-full flex justify-center items-center py-6 md:py-12 px-4 md:px-8 relative">
+    <div className={`min-h-screen w-full flex justify-center py-6 md:py-12 px-4 md:px-8 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
       <audio 
         ref={audioRef} 
         src="/cobblestone_dreams.mp3" 

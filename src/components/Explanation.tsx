@@ -34,21 +34,30 @@ const substanceTreeData: NodeData = {
               label: '純物質',
               step: 1,
               explanation: '1種類の物質からなり、固有の化学式で表せるもの。',
-              relatedQuestions: ['演習問題⓵－１', '演習問題⓵－２'],
+              relatedQuestions: [
+                { id: 'q1_a', label: '演習問題⓵－１(ア)' }
+              ],
               children: [
                 {
                   id: 'simple_1',
                   label: '単体',
                   step: 1,
                   explanation: '1種類の元素からなる純物質。',
-                  relatedQuestions: ['演習問題⓵－１', '演習問題⓵－２']
+                  relatedQuestions: [
+                    { id: 'q1_c', label: '演習問題⓵－１(ウ)' },
+                    { id: 'q2_2', label: '演習問題⓵－２(2)' },
+                    { id: 'q2_5', label: '演習問題⓵－２(5)' }
+                  ]
                 },
                 {
                   id: 'compound',
                   label: '化合物',
                   step: 1,
                   explanation: '2種類以上の元素からなる純物質。（例：水 H₂O、二酸化炭素 CO₂）',
-                  relatedQuestions: ['演習問題⓵－１', '演習問題⓵－２']
+                  relatedQuestions: [
+                    { id: 'q1_d', label: '演習問題⓵－１(エ)' },
+                    { id: 'q2_4', label: '演習問題⓵－２(4)' }
+                  ]
                 }
               ]
             },
@@ -57,7 +66,12 @@ const substanceTreeData: NodeData = {
               label: '混合物',
               step: 1,
               explanation: '複数の純物質が混ざったもの。化学式1つで表せない。（例：空気、海水）',
-              relatedQuestions: ['演習問題⓵－１', '演習問題⓵－２']
+              relatedQuestions: [
+                { id: 'q1_b', label: '演習問題⓵－１(イ)' },
+                { id: 'q2_1', label: '演習問題⓵－２(1)' },
+                { id: 'q2_3', label: '演習問題⓵－２(3)' },
+                { id: 'q2_6', label: '演習問題⓵－２(6)' }
+              ]
             }
           ]
         }
@@ -75,7 +89,11 @@ const substanceTreeData: NodeData = {
           subLabel: '融点や沸点・密度などが物質ごとに一定となる',
           step: 2,
           explanation: '融点や沸点・密度などが物質ごとに一定となる',
-          relatedQuestions: ['演習問題⓵－４']
+          relatedQuestions: [
+            { id: 'q1_e', label: '演習問題⓵－１(オ)' },
+            { id: 'q4_1', label: '演習問題⓵－４(水のグラフ)' },
+            { id: 'q4_2', label: '演習問題⓵－４(エタノールのグラフ)' }
+          ]
         },
         {
           id: 'mixture_prop',
@@ -83,7 +101,10 @@ const substanceTreeData: NodeData = {
           subLabel: '混じっている物質の種類やその割合により、値が変化する',
           step: 2,
           explanation: '混じっている物質の種類やその割合により、値が変化する',
-          relatedQuestions: ['演習問題⓵－４']
+          relatedQuestions: [
+            { id: 'q1_f', label: '演習問題⓵－１(カ)' },
+            { id: 'q4_3', label: '演習問題⓵－４(水とエタノールのグラフ)' }
+          ]
         }
       ]
     },
@@ -99,7 +120,10 @@ const substanceTreeData: NodeData = {
           subLabel: '実際に存在し、直接触れることができる',
           step: 3,
           explanation: '1種類の元素からなる純物質。実際に存在し、直接触れることができる「実体」。（例：酸素 O₂、水素 H₂）',
-          relatedQuestions: ['演習問題⓵－３']
+          relatedQuestions: [
+            { id: 'q3_2', label: '演習問題⓵－３(2)' },
+            { id: 'q3_4', label: '演習問題⓵－３(4)' }
+          ]
         },
         {
           id: 'element',
@@ -107,7 +131,10 @@ const substanceTreeData: NodeData = {
           subLabel: '物質の構成成分で、直接触れることができない',
           step: 3,
           explanation: '物質の構成成分。直接触れることができない「概念」上のもの。（例：水に含まれる酸素）',
-          relatedQuestions: ['演習問題⓵－３']
+          relatedQuestions: [
+            { id: 'q3_1', label: '演習問題⓵－３(1)' },
+            { id: 'q3_3', label: '演習問題⓵－３(3)' }
+          ]
         }
       ]
     }
@@ -181,6 +208,59 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     } finally {
       setSavingNote(prev => ({ ...prev, [question.id]: false }));
     }
+  };
+
+  const handleQuestionClick = (questionId: string) => {
+    // Map q_id to p_id for practice mode
+    const idMap: Record<string, string> = {
+      'q1_a': 'p1_a', 'q1_b': 'p1_i', 'q1_c': 'p1_u', 'q1_d': 'p1_e', 'q1_e': 'p1_o', 'q1_f': 'p1_ka',
+      'q2_1': 'p2_1', 'q2_2': 'p2_2', 'q2_3': 'p2_3', 'q2_4': 'p2_4', 'q2_5': 'p2_5', 'q2_6': 'p2_6',
+      'q3_1': 'p3_1', 'q3_2': 'p3_2', 'q3_3': 'p3_3', 'q3_4': 'p3_4',
+      'q4_1': 'p4_1', 'q4_2': 'p4_2', 'q4_3': 'p4_3',
+    };
+
+    const targetId = mode === 'practice' ? (idMap[questionId] || questionId.replace(/^q/, 'p')) : questionId;
+    
+    setExpandedSq(targetId);
+    
+    setTimeout(() => {
+      const element = document.getElementById(`sq-${targetId}`);
+      if (element) {
+        // Calculate the exact Y position to center the element in the viewport
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetY = rect.top + scrollTop - (window.innerHeight / 2) + (rect.height / 2);
+        
+        try {
+          window.scrollTo({ top: targetY, behavior: 'smooth' });
+        } catch (e) {
+          window.scrollTo(0, targetY);
+        }
+        
+        // Secondary fallback using scrollIntoView just in case
+        setTimeout(() => {
+          const newRect = element.getBoundingClientRect();
+          if (newRect.top < 0 || newRect.bottom > window.innerHeight) {
+            try {
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } catch (e) {
+              element.scrollIntoView();
+            }
+          }
+        }, 100);
+        
+        // Add a temporary highlight effect
+        const originalTransition = element.style.transition;
+        element.style.transition = 'all 0.5s ease';
+        element.style.boxShadow = '0 0 0 4px rgba(91, 192, 190, 0.5)';
+        setTimeout(() => {
+          element.style.boxShadow = '';
+          setTimeout(() => {
+            element.style.transition = originalTransition;
+          }, 500);
+        }, 2000);
+      }
+    }, 400);
   };
 
   const toggleGrade = (criteriaId: string) => {
@@ -325,7 +405,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
   };
 
   return (
-    <div className="w-full bg-[#0B132B] text-[#E0E1DD] rounded-3xl overflow-hidden shadow-2xl border border-[#1C2541] font-handwriting relative my-4 md:my-8">
+    <div className="w-full bg-[#0B132B] text-[#E0E1DD] rounded-3xl overflow-clip shadow-2xl border border-[#1C2541] font-handwriting relative my-4 md:my-8">
       {/* Background effects */}
       <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
         backgroundImage: 'radial-gradient(circle at 50% 0%, #3A506B 0%, transparent 70%)'
@@ -403,7 +483,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
         )}
 
         {/* Unified Explanation Area */}
-        <div className="bg-[#1C2541]/40 rounded-2xl shadow-lg overflow-hidden border border-[#3A506B]/50">
+        <div className="bg-[#1C2541]/40 rounded-2xl shadow-lg overflow-clip border border-[#3A506B]/50">
           
           {/* Logical Tree (if exists) */}
           {deepThoughtData && (
@@ -415,7 +495,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                     <p className="mb-1"><span className="font-bold text-emerald-400">「Step 2」</span>…演習問題⓵－４ で演習可能</p>
                     <p><span className="font-bold text-blue-400">「Step 3」</span>…演習問題⓵－３ で演習可能</p>
                   </div>
-                  <InteractiveTree data={substanceTreeData} />
+                  <InteractiveTree data={substanceTreeData} onQuestionClick={handleQuestionClick} />
                 </div>
               ) : (
                 <>
@@ -520,7 +600,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                         const isExpanded = expandedSq === sq.id;
 
                         return (
-                          <div key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? 'border-[#A9CCE3]/30' : (isCorrect ? 'border-[#5BC0BE]/30' : 'border-[#D9A0A0]/30')}`}>
+                          <div id={`sq-${sq.id}`} key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? 'border-[#A9CCE3]/30' : (isCorrect ? 'border-[#5BC0BE]/30' : 'border-[#D9A0A0]/30')}`}>
                             {/* Tab Header */}
                             <button 
                               onClick={() => setExpandedSq(isExpanded ? null : sq.id)}

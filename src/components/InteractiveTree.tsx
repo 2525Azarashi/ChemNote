@@ -17,7 +17,7 @@ export interface NodeData {
   subLabel?: string;
   isGroup?: boolean;
   explanation?: string;
-  relatedQuestions?: string[];
+  relatedQuestions?: { id: string; label: string }[];
   children?: NodeData[];
 }
 
@@ -27,9 +27,10 @@ interface TreeNodeProps {
   onSelect: (n: NodeData) => void;
   selectedId: string | null;
   renderContent?: (nodeId: string) => React.ReactNode;
+  onQuestionClick?: (questionId: string) => void;
 }
 
-const TreeNode = ({ node, onSelect, selectedId, renderContent }: TreeNodeProps) => {
+const TreeNode = ({ node, onSelect, selectedId, renderContent, onQuestionClick }: TreeNodeProps) => {
   const isSelected = selectedId === node.id;
   const hasContent = !!node.explanation || !!renderContent || (node.relatedQuestions && node.relatedQuestions.length > 0);
 
@@ -51,7 +52,7 @@ const TreeNode = ({ node, onSelect, selectedId, renderContent }: TreeNodeProps) 
         </div>
         <div className="mt-2 flex flex-col gap-4">
           {node.children?.map(child => (
-            <TreeNode key={child.id} node={child} onSelect={onSelect} selectedId={selectedId} renderContent={renderContent} />
+            <TreeNode key={child.id} node={child} onSelect={onSelect} selectedId={selectedId} renderContent={renderContent} onQuestionClick={onQuestionClick} />
           ))}
         </div>
       </div>
@@ -112,10 +113,10 @@ const TreeNode = ({ node, onSelect, selectedId, renderContent }: TreeNodeProps) 
                           className="text-xs bg-white text-blue-600 border border-blue-200 px-3 py-1.5 rounded-md hover:bg-blue-50 transition-colors font-bold shadow-sm"
                           onClick={(e) => {
                             e.stopPropagation();
-                            // No-op for now
+                            if (onQuestionClick) onQuestionClick(q.id);
                           }}
                         >
-                          {q}
+                          {q.label}
                         </button>
                       ))}
                     </div>
@@ -133,7 +134,7 @@ const TreeNode = ({ node, onSelect, selectedId, renderContent }: TreeNodeProps) 
           {node.children.map((child) => (
             <div key={child.id} className="relative">
               <div className="absolute -left-6 sm:-left-8 top-[26px] w-6 sm:w-8 border-t-2 border-slate-300 -translate-y-1/2" />
-              <TreeNode key={child.id} node={child} onSelect={onSelect} selectedId={selectedId} renderContent={renderContent} />
+              <TreeNode key={child.id} node={child} onSelect={onSelect} selectedId={selectedId} renderContent={renderContent} onQuestionClick={onQuestionClick} />
             </div>
           ))}
         </div>
@@ -145,9 +146,10 @@ const TreeNode = ({ node, onSelect, selectedId, renderContent }: TreeNodeProps) 
 interface InteractiveTreeProps {
   data: NodeData;
   renderContent?: (nodeId: string) => React.ReactNode;
+  onQuestionClick?: (questionId: string) => void;
 }
 
-export function InteractiveTree({ data, renderContent }: InteractiveTreeProps) {
+export function InteractiveTree({ data, renderContent, onQuestionClick }: InteractiveTreeProps) {
   const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
 
   const handleSelect = (node: NodeData) => {
@@ -181,7 +183,7 @@ export function InteractiveTree({ data, renderContent }: InteractiveTreeProps) {
       {/* Tree Container */}
       <div className="overflow-x-auto pb-8">
         <div className="min-w-max pr-8">
-          <TreeNode node={data} onSelect={handleSelect} selectedId={selectedNode?.id || null} renderContent={renderContent} />
+          <TreeNode node={data} onSelect={handleSelect} selectedId={selectedNode?.id || null} renderContent={renderContent} onQuestionClick={onQuestionClick} />
         </div>
       </div>
     </div>
