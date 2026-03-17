@@ -26,8 +26,16 @@ export function AuthButton() {
     return () => unsubscribe();
   }, []);
 
+  // LINE内ブラウザの検知
+  const isLineBrowser = /Line\//i.test(navigator.userAgent);
+
   // Googleログイン処理
   const handleLogin = async () => {
+    if (isLineBrowser) {
+      alert("LINE内ブラウザではGoogleログインが正しく動作しません。\n右上のメニューボタンから「ブラウザで開く」を選択して、SafariやChromeで開き直してください。");
+      return;
+    }
+    
     console.log("handleLogin called");
     try {
       await signInWithPopup(auth, provider);
@@ -59,10 +67,14 @@ export function AuthButton() {
   return (
     <button 
       onClick={handleLogin} 
-      className="flex items-center gap-2 px-4 py-2 bg-[#A9CCE3]/20 text-[#2C3E50] rounded-full hover:bg-[#A9CCE3]/40 transition-all border border-[#A9CCE3] font-handwriting font-bold shadow-sm"
+      className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all border font-handwriting font-bold shadow-sm ${
+        isLineBrowser 
+          ? "bg-[#D9A0A0]/20 text-[#2C3E50] border-[#D9A0A0] hover:bg-[#D9A0A0]/40" 
+          : "bg-[#A9CCE3]/20 text-[#2C3E50] border-[#A9CCE3] hover:bg-[#A9CCE3]/40"
+      }`}
     >
       <LogIn size={18} />
-      Googleでログイン
+      {isLineBrowser ? "標準ブラウザでログイン" : "Googleでログイン"}
     </button>
   );
 }
