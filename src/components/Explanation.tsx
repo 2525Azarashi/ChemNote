@@ -405,70 +405,108 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
   };
 
   return (
-    <div className="w-full bg-[#0B132B] text-[#E0E1DD] rounded-3xl overflow-clip shadow-2xl border border-[#1C2541] font-handwriting relative my-4 md:my-8">
+    <div className={`w-full rounded-3xl overflow-clip shadow-2xl border font-handwriting relative my-4 md:my-8 ${
+      mode === 'mini_test' 
+        ? 'bg-white text-gray-800 border-gray-100' 
+        : 'bg-[#0B132B] text-[#E0E1DD] border-[#1C2541]'
+    }`}>
       {/* Background effects */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
-        backgroundImage: 'radial-gradient(circle at 50% 0%, #3A506B 0%, transparent 70%)'
-      }}></div>
-      <div className="absolute inset-0 opacity-15 pointer-events-none" style={{
-        backgroundImage: 'linear-gradient(#1C2541 1px, transparent 1px)',
-        backgroundSize: '100% 2rem'
-      }}></div>
+      {mode !== 'mini_test' && (
+        <>
+          <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
+            backgroundImage: 'radial-gradient(circle at 50% 0%, #3A506B 0%, transparent 70%)'
+          }}></div>
+          <div className="absolute inset-0 opacity-15 pointer-events-none" style={{
+            backgroundImage: 'linear-gradient(#1C2541 1px, transparent 1px)',
+            backgroundSize: '100% 2rem'
+          }}></div>
+        </>
+      )}
 
       {/* Header */}
-      <div className="p-4 md:p-6 border-b-2 border-[#1C2541] relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#0B132B]/90">
+      <div className={`p-4 md:p-6 border-b-2 relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+        mode === 'mini_test' ? 'bg-white/90 border-gray-100' : 'bg-[#0B132B]/90 border-[#1C2541]'
+      }`}>
         <div className="flex items-center gap-3">
           <div>
-            <h3 className="text-lg md:text-xl font-bold text-[#5BC0BE] tracking-wider">
+            <h3 className={`text-lg md:text-xl font-bold tracking-wider ${
+              mode === 'mini_test' ? 'text-[#2C3E50]' : 'text-[#5BC0BE]'
+            }`}>
               解答・解説
             </h3>
-            <div className="text-xs md:text-sm text-[#7A8B99] mt-1">
+            <div className={`text-xs md:text-sm mt-1 ${
+              mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'
+            }`}>
               {chapter.realTitle}
             </div>
           </div>
         </div>
         <button 
           onClick={onBack}
-          className="flex items-center gap-2 text-[#7A8B99] hover:text-[#5BC0BE] transition-colors font-bold px-4 py-2 rounded-full border border-[#1C2541] hover:border-[#5BC0BE] bg-[#1C2541]/50 w-full sm:w-auto justify-center"
+          className={`flex items-center gap-2 transition-colors font-bold px-4 py-2 rounded-full border w-full sm:w-auto justify-center ${
+            mode === 'mini_test' 
+              ? 'text-gray-500 hover:text-[#2C3E50] border-gray-200 hover:border-[#2C3E50] bg-gray-50' 
+              : 'text-[#7A8B99] hover:text-[#5BC0BE] border-[#1C2541] hover:border-[#5BC0BE] bg-[#1C2541]/50'
+          }`}
         >
           <ArrowLeft size={18} />
           <span>単元選択に戻る</span>
         </button>
       </div>
 
-      <div className="p-4 md:p-6 relative z-10 space-y-6 md:space-y-8">
+      <div className={`p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${
+        mode === 'mini_test' ? 'bg-white' : ''
+      }`}>
         {/* Weak Areas Analysis */}
         {weakAreas.length > 0 && (
-          <div className="bg-[#1C2541]/50 rounded-2xl p-5 md:p-6 shadow-lg border border-[#3A506B]/50 relative overflow-hidden">
-            <h3 className="text-lg md:text-xl font-bold text-[#D9A0A0] mb-4 md:mb-6 flex items-center gap-2">
+          <div className={`rounded-2xl p-5 md:p-6 shadow-lg border relative overflow-hidden ${
+            mode === 'mini_test' ? 'bg-gray-50 border-gray-100' : 'bg-[#1C2541]/50 border-[#3A506B]/50'
+          }`}>
+            <h3 className={`text-lg md:text-xl font-bold mb-4 md:mb-6 flex items-center gap-2 ${
+              mode === 'mini_test' ? 'text-[#2C3E50]' : 'text-[#D9A0A0]'
+            }`}>
               <TrendingUp className="w-5 h-5 md:w-6 md:h-6" />
               <span>分析結果：復習推奨エリア</span>
             </h3>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
               {weakAreas.map((area) => (
-                <div key={area.category} className="bg-[#0B132B]/80 p-4 md:p-5 rounded-xl border border-[#1C2541] shadow-sm">
+                <div key={area.category} className={`p-4 md:p-5 rounded-xl border shadow-sm ${
+                  mode === 'mini_test' ? 'bg-white border-gray-100' : 'bg-[#0B132B]/80 border-[#1C2541]'
+                }`}>
                   <div className="flex justify-between items-end mb-2 md:mb-3">
-                    <div className="flex items-center gap-1.5 md:gap-2 text-[#E0E1DD] font-bold text-sm md:text-base">
-                      <AlertTriangle className="text-[#D9A0A0] w-4 h-4 md:w-[18px] md:h-[18px]" />
+                    <div className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base ${
+                      mode === 'mini_test' ? 'text-[#2C3E50]' : 'text-[#E0E1DD]'
+                    }`}>
+                      <AlertTriangle className={`w-4 h-4 md:w-[18px] md:h-[18px] ${
+                        mode === 'mini_test' ? 'text-[#D9A0A0]' : 'text-[#D9A0A0]'
+                      }`} />
                       <span>{area.category}</span>
                     </div>
-                    <span className="font-mono font-bold text-xl md:text-2xl text-[#D9A0A0]">
+                    <span className={`font-mono font-bold text-xl md:text-2xl ${
+                      mode === 'mini_test' ? 'text-[#D9A0A0]' : 'text-[#D9A0A0]'
+                    }`}>
                       {area.percentage}<span className="text-xs md:text-sm ml-0.5">%</span>
                     </span>
                   </div>
                   
                   {/* Gauge/Slider UI */}
-                  <div className="relative h-3 md:h-4 bg-[#1C2541] rounded-full overflow-hidden shadow-inner">
+                  <div className={`relative h-3 md:h-4 rounded-full overflow-hidden shadow-inner ${
+                    mode === 'mini_test' ? 'bg-gray-100' : 'bg-[#1C2541]'
+                  }`}>
                     <div 
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#D9A0A0] to-[#FFB7B2] rounded-full transition-all duration-1000 ease-out"
+                      className={`absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out ${
+                        mode === 'mini_test' ? 'bg-gradient-to-r from-[#D9A0A0] to-[#FFB7B2]' : 'bg-gradient-to-r from-[#D9A0A0] to-[#FFB7B2]'
+                      }`}
                       style={{ width: `${area.percentage}%` }}
                     />
                     <div className="absolute inset-0 opacity-30" 
                          style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.2) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.2) 75%,transparent 75%,transparent)', backgroundSize: '1rem 1rem' }} 
                     />
                   </div>
-                  <div className="flex justify-between mt-1 text-[10px] md:text-xs text-[#7A8B99] font-mono">
+                  <div className={`flex justify-between mt-1 text-[10px] md:text-xs font-mono ${
+                    mode === 'mini_test' ? 'text-gray-400' : 'text-[#7A8B99]'
+                  }`}>
                     <span>0%</span>
                     <span>50%</span>
                     <span>100%</span>
@@ -476,7 +514,9 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                 </div>
               ))}
             </div>
-            <p className="text-xs md:text-sm text-[#7A8B99] mt-4 text-right">
+            <p className={`text-xs md:text-sm mt-4 text-right ${
+              mode === 'mini_test' ? 'text-gray-400' : 'text-[#7A8B99]'
+            }`}>
               ※ 記述問題は自己採点チェックを入れるとスコアに反映されます
             </p>
           </div>
@@ -486,7 +526,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
         <div className="bg-[#1C2541]/40 rounded-2xl shadow-lg overflow-clip border border-[#3A506B]/50">
           
           {/* Logical Tree (if exists) */}
-          {deepThoughtData && (
+          {mode === 'practice' && deepThoughtData && (
             <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50">
               {chapter.abstractTitle === "① 純物質と混合物" ? (
                 <div className="space-y-4">
@@ -590,7 +630,9 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                     </div>
                     
                     {/* Problem Restatement */}
-                    <div className="bg-[#0B132B]/60 p-4 rounded-lg border border-[#3A506B]/50 text-sm md:text-base text-[#E0E1DD]/90 leading-relaxed">
+                    <div className={`p-4 rounded-lg border text-sm md:text-base leading-relaxed ${
+                      mode === 'mini_test' ? 'bg-white border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]/90'
+                    }`}>
                       {formatText(question.text)}
                     </div>
 
@@ -693,28 +735,55 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                       })}
                     </div>
 
-                    {/* Normal Explanation (if not deep_thought) */}
+                    {/* Normal Explanation (if not deep_thought or if mini_test) */}
                     {(() => {
+                      let explanationText = question.explanation;
+                      let stepInfo = null;
+
                       try {
                         const parsed = JSON.parse(question.explanation);
                         if (parsed && parsed.type === 'deep_thought') {
-                          return null; // Handled globally
+                          if (mode === 'mini_test') {
+                            // For mini_test, extract explanation from deep_thought JSON
+                            explanationText = parsed.phase2.explanations.map((ex: any) => ex.content).join('\n\n');
+                          } else {
+                            // For practice, we use deepThoughtData globally, so we can return null here
+                            return null;
+                          }
                         }
                       } catch (e) {
                         // Not JSON, render normal explanation
                       }
                       
-                      if (!question.explanation) return null;
+                      if (!explanationText) return null;
 
                       return (
-                        <div className="bg-[#0B132B]/80 p-4 sm:p-5 rounded-xl shadow-inner border border-[#3A506B]/50 mt-4">
-                          <h4 className="text-sm md:text-base text-[#5BC0BE] mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2 border-b-2 border-[#3A506B]/50 pb-1.5 inline-flex">
-                            <Lightbulb className="text-[#F9E79F] w-4 h-4" />
+                        <div className={`p-4 sm:p-5 rounded-xl shadow-inner border mt-4 ${
+                          mode === 'mini_test' ? 'bg-gray-50 border-gray-200' : 'bg-[#0B132B]/80 border-[#3A506B]/50'
+                        }`}>
+                          <h4 className={`text-sm md:text-base mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2 border-b-2 pb-1.5 inline-flex ${
+                            mode === 'mini_test' ? 'text-emerald-700 border-emerald-200' : 'text-[#5BC0BE] border-[#3A506B]/50'
+                          }`}>
+                            <Lightbulb className={`w-4 h-4 ${mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]'}`} />
                             <span>解説</span>
                           </h4>
-                          <div className="text-xs md:text-sm text-[#E0E1DD]/90 whitespace-pre-wrap leading-relaxed">
-                            {formatText(question.explanation)}
+                          <div className={`text-xs md:text-sm whitespace-pre-wrap leading-relaxed ${
+                            mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'
+                          }`}>
+                            {formatText(explanationText)}
                           </div>
+                          {mode === 'practice' && deepThoughtData && (
+                            <div className="mt-4 pt-4 border-t border-[#3A506B]/50">
+                              <h5 className="text-xs font-bold text-[#A9CCE3] mb-2">解答に必要なロジックツリーのStep:</h5>
+                              <div className="flex flex-wrap gap-2">
+                                {deepThoughtData.phase1.steps.map((step: any, idx: number) => (
+                                  <span key={idx} className="bg-[#1C2541] text-[#A9CCE3] text-[10px] px-2 py-1 rounded border border-[#3A506B]/50">
+                                    {step.step}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       );
                     })()}
@@ -725,7 +794,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
           </div>
 
           {/* Stumbling Points (from deep_thought) */}
-          {deepThoughtData && deepThoughtData.phase2.stumblingPoints && deepThoughtData.phase2.stumblingPoints.length > 0 && (
+          {mode === 'practice' && deepThoughtData && deepThoughtData.phase2.stumblingPoints && deepThoughtData.phase2.stumblingPoints.length > 0 && (
             <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50 bg-[#1C2541]/20">
               <h4 className="text-[#D9A0A0] font-bold mb-4 text-base md:text-lg flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" />

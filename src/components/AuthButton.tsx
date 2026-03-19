@@ -31,11 +31,6 @@ export function AuthButton() {
 
   // Googleログイン処理
   const handleLogin = async () => {
-    if (isLineBrowser) {
-      alert("LINE内ブラウザではGoogleログインが正しく動作しません。\n右上のメニューボタンから「ブラウザで開く」を選択して、SafariやChromeで開き直してください。");
-      return;
-    }
-    
     console.log("handleLogin called");
     try {
       await signInWithPopup(auth, provider);
@@ -46,7 +41,7 @@ export function AuthButton() {
       if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
         alert("ポップアップがブロックされました。ブラウザの設定でポップアップを許可するか、右上のボタンからアプリを新しいタブで開いてください。");
       } else {
-        alert("ログインに失敗しました。\nLINEやTwitterなどのアプリ内ブラウザではGoogleログインが制限されています。SafariやChromeなどの標準ブラウザで開き直してください。\n詳細: " + error.message);
+        alert("ログインに失敗しました。\nLINEやTwitterなどのアプリ内ブラウザではGoogleログインが制限されている場合があります。SafariやChromeなどの標準ブラウザで開き直してください。\n詳細: " + error.message);
       }
     }
   };
@@ -64,17 +59,22 @@ export function AuthButton() {
     return null;
   }
 
+  if (isLineBrowser) {
+    return (
+      <div className="bg-rose-100 text-rose-800 p-4 rounded-xl border border-rose-200 text-sm font-bold shadow-sm">
+        LINEやアプリ内ブラウザではGoogleログインが制限されています。<br/>
+        右上のメニューから「ブラウザで開く」を選択して、SafariやChromeで開き直してください。
+      </div>
+    );
+  }
+
   return (
     <button 
       onClick={handleLogin} 
-      className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all border font-handwriting font-bold shadow-sm ${
-        isLineBrowser 
-          ? "bg-[#D9A0A0]/20 text-[#2C3E50] border-[#D9A0A0] hover:bg-[#D9A0A0]/40" 
-          : "bg-[#A9CCE3]/20 text-[#2C3E50] border-[#A9CCE3] hover:bg-[#A9CCE3]/40"
-      }`}
+      className="flex items-center gap-2 px-4 py-2 rounded-full transition-all border font-handwriting font-bold shadow-sm bg-[#A9CCE3]/20 text-[#2C3E50] border-[#A9CCE3] hover:bg-[#A9CCE3]/40"
     >
       <LogIn size={18} />
-      {isLineBrowser ? "標準ブラウザでログイン" : "Googleでログイン"}
+      Googleでログイン
     </button>
   );
 }
