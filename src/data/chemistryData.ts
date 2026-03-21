@@ -13,18 +13,130 @@ export const chemistryData = {
             {
               id: "p_c1_1_1",
               category: "純物質と混合物",
-              text: "問１ 次の文章の空欄に適する語句を答えなさい（選択肢がある場合はその中から正しい方を選びなさい）。\n\n物質は大きく「純物質」と「混合物」に分けられる。純物質は「（ ア ）種類の粒子からできている」ものであり、融点や沸点、密度などが物質ごとに（イ：　等しく　・　異　）なる。さらに純物質は、１種類の（ ウ ）からできている「（ エ ）」と、２種類以上の（ ウ ）からできている「（ オ ）」に分けられる。（ エ ）のうち、室温で液体として存在するのは（ カ ）と水銀だけである。一方、混合物は「（ ア ）種類以上の粒子からできている」ものであり、混じっている物質の種類やその（ キ ）によって融点や沸点などの値が（ク：　等しく　・　異　）なる。混合物を純物質に分けるには、ろ過や蒸留などの「（ ケ ）的方法」を用いるが、（ オ ）を（ エ ）に分解するには、電気分解などの「（ コ ）的方法」を用いる必要がある。",
+              text: "問１ 次の文章の空欄に適する語句を答えなさい（選択肢がある場合はその中から正しい方を選びなさい）。\n\n物質は大きく「純物質」と「混合物」に分けられる。純物質は「（ ア ）種類の粒子からできている」ものであり、融点や沸点、密度などが物質ごとに（イ：　等しく　・　異　）なる。さらに純物質は、１種類の（ ウ ）からできている「（ エ ）」と、２種類以上の（ ウ ）からできている「（ オ ）」に分けられる。（ エ ）のうち、室温で液体として存在するのは（ カ ）と水銀だけである。一方、混合物は「（ キ ）種類以上の粒子からできている」ものであり、混じっている物質の種類やその（ ク ）によって融点や沸点などの値が（ケ：　等しく　・　異　）なる。混合物を純物質に分けるには、ろ過や蒸留などの「（ コ ）的方法」を用いるが、（ オ ）を（ エ ）に分解するには、電気分解などの「（ サ ）的方法」を用いる必要がある。",
               subQuestions: [
-                { id: "p1_a", label: "(ア)", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
-                { id: "p1_i", label: "(イ)", type: "multiple_choice", options: ["等しく", "異"], correctAnswer: "等しく", correctAnswerRate: 85 },
-                { id: "p1_u", label: "(ウ)", type: "short_answer", correctAnswer: "元素", correctAnswerRate: 85 },
-                { id: "p1_e", label: "(エ)", type: "short_answer", correctAnswer: "単体", correctAnswerRate: 85 },
-                { id: "p1_o", label: "(オ)", type: "short_answer", correctAnswer: "化合物", correctAnswerRate: 85 },
-                { id: "p1_ka", label: "(カ)", type: "short_answer", correctAnswer: "臭素", correctAnswerRate: 85 },
-                { id: "p1_ki", label: "(キ)", type: "short_answer", correctAnswer: "割合", correctAnswerRate: 85 },
-                { id: "p1_ku", label: "(ク)", type: "multiple_choice", options: ["等しく", "異"], correctAnswer: "異", correctAnswerRate: 85 },
-                { id: "p1_ke", label: "(ケ)", type: "short_answer", correctAnswer: "物理", correctAnswerRate: 85 },
-                { id: "p1_ko", label: "(コ)", type: "short_answer", correctAnswer: "化学", correctAnswerRate: 85 }
+                { 
+                  id: "p1_a", label: "(ア)", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "純物質と混合物の定義",
+                    type: "構造発見型",
+                    steps: [
+                      "① 「純物質」の定義を問う空欄であることを確認する",
+                      "② 純物質と混合物の違いは粒子の種類数であることを想起する",
+                      "③ 純物質は1種類の粒子からなることを確認する"
+                    ]
+                  }
+                },
+                { id: "p1_i", label: "(イ)", type: "multiple_choice", options: ["等しく", "異"], correctAnswer: "等しく", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "純物質の性質",
+                    type: "演繹型",
+                    steps: [
+                      "① 純物質の性質について述べている部分であると確認する",
+                      "② 不純物がない場合の状態変化の特徴を想起する",
+                      "③ 融点・沸点は一定値で現れることを確認する"
+                    ]
+                  }
+                },
+                { id: "p1_u", label: "(ウ)", type: "short_answer", correctAnswer: "元素", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "単体・化合物の分類基準",
+                    type: "構造発見型",
+                    steps: [
+                      "① 純物質の内部分類についての記述であると確認する",
+                      "② 単体と化合物は元素の種類数で区別されると想起する",
+                      "③ 粒子ではなく元素に着目する必要があると判断する"
+                    ]
+                  }
+                },
+                { id: "p1_e", label: "(エ)", type: "short_answer", correctAnswer: "単体", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "単体の定義",
+                    type: "演繹型",
+                    steps: [
+                      "① 「1種類の（ウ）」という条件に注目する",
+                      "② （ウ）が元素であることを確認する",
+                      "③ 元素が1種類のみの物質の名称を想起する"
+                    ]
+                  }
+                },
+                { id: "p1_o", label: "(オ)", type: "short_answer", correctAnswer: "化合物", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "化合物の定義",
+                    type: "演繹型",
+                    steps: [
+                      "① 「2種類以上の（ウ）」という条件に注目する",
+                      "② 複数元素からなる純物質の名称を想起する",
+                      "③ 単体との対比で整理する"
+                    ]
+                  }
+                },
+                { id: "p1_ka", label: "(カ)", type: "short_answer", correctAnswer: "臭素", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "常温で液体の単体",
+                    type: "知識再生型",
+                    steps: [
+                      "① 単体の状態（常温）に関する知識を問う問題と判断する",
+                      "② 常温で液体の単体を思い出す",
+                      "③ 水銀は既出であることを確認する"
+                    ]
+                  }
+                },
+                { id: "p1_ki", label: "(キ)", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "混合物の定義",
+                    type: "構造発見型",
+                    steps: [
+                      "① 「混合物」の定義を問う空欄であることを確認する",
+                      "② 純物質との違いは粒子の種類数であることを想起する",
+                      "③ 混合物は2種類以上の粒子からなることを確認する"
+                    ]
+                  }
+                },
+                { id: "p1_ku", label: "(ク)", type: "short_answer", correctAnswer: "割合（または組成）", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "混合物の性質決定要因",
+                    type: "構造発見型",
+                    steps: [
+                      "① 混合物の性質が何によって変わるかを問う文であると確認する",
+                      "② 混合物は複数成分からなることを確認する",
+                      "③ 各成分の量的関係が性質に影響することを想起する"
+                    ]
+                  }
+                },
+                { id: "p1_ke", label: "(ケ)", type: "multiple_choice", options: ["等しく", "異"], correctAnswer: "異", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "混合物の性質（一定性）",
+                    type: "演繹型",
+                    steps: [
+                      "① （ク）で割合が変わることを前提にする",
+                      "② 割合が変化すると性質も変わることを確認する",
+                      "③ 一定か変化するかで判断する"
+                    ]
+                  }
+                },
+                { id: "p1_ko", label: "(コ)", type: "short_answer", correctAnswer: "物理", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "分離法（物理的方法）",
+                    type: "概念区別型",
+                    steps: [
+                      "① ろ過・蒸留の操作内容を思い出す",
+                      "② 操作によって物質の本質が変化するかを確認する",
+                      "③ 化学変化が起きていないことを判断する"
+                    ]
+                  }
+                },
+                { id: "p1_sa", label: "(サ)", type: "short_answer", correctAnswer: "化学", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "分解法（化学的方法）",
+                    type: "概念区別型",
+                    steps: [
+                      "① 電気分解の操作内容を思い出す",
+                      "② 元の物質が別の物質に変化しているかを確認する",
+                      "③ 化学変化が起きていると判断する"
+                    ]
+                  }
+                }
               ],
               explanation: JSON.stringify({
   "type": "deep_thought",
@@ -111,7 +223,8 @@ export const chemistryData = {
       "p1_ki",
       "p1_ku",
       "p1_ke",
-      "p1_ko"
+      "p1_ko",
+      "p1_sa"
     ],
     "subQuestionLabels": [
       "問1(ア)",
@@ -123,7 +236,8 @@ export const chemistryData = {
       "問1(キ)",
       "問1(ク)",
       "問1(ケ)",
-      "問1(コ)"
+      "問1(コ)",
+      "問1(サ)"
     ],
     "content": "【思考内容】\n物質を分ける最初の基準は「物理的に分けられるか」です。\n\n物理的な方法（ろ過や蒸留など）で分けられるものは「混合物」、分けられないものは「純物質」となります。\n純物質は「1種類」の粒子からできています。"
   },
@@ -226,21 +340,21 @@ export const chemistryData = {
               category: "物質の分類",
               text: "問２ 次の（１）〜（１５）の物質を、【Ａ：単体】【Ｂ：化合物】【Ｃ：混合物】に分類しなさい。\n\n（１） 酸素　　（２） 海水　　（３） 塩化ナトリウム　　（４） 塩酸　　（５） アンモニア\n（６） 空気　　（７） 石油（原油）　　（８） 鉄　　（９） プロパン　　（１０） ガソリン\n（１１） 水　　（１２） 木材　　（１３） キセノン　　（１４） 二酸化炭素　　（１５） 炭酸水素ナトリウム",
               subQuestions: [
-                { id: "p2_1", label: "(1) 酸素", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "A", correctAnswerRate: 85 },
-                { id: "p2_2", label: "(2) 海水", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
-                { id: "p2_3", label: "(3) 塩化ナトリウム", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
-                { id: "p2_4", label: "(4) 塩酸", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
-                { id: "p2_5", label: "(5) アンモニア", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
-                { id: "p2_6", label: "(6) 空気", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
-                { id: "p2_7", label: "(7) 石油（原油）", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
-                { id: "p2_8", label: "(8) 鉄", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "A", correctAnswerRate: 85 },
-                { id: "p2_9", label: "(9) プロパン", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
-                { id: "p2_10", label: "(10) ガソリン", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
-                { id: "p2_11", label: "(11) 水", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
-                { id: "p2_12", label: "(12) 木材", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85 },
-                { id: "p2_13", label: "(13) キセノン", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "A", correctAnswerRate: 85 },
-                { id: "p2_14", label: "(14) 二酸化炭素", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 },
-                { id: "p2_15", label: "(15) 炭酸水素ナトリウム", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85 }
+                { id: "p2_1", label: "(1) 酸素", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "A", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 対象が単一物質かどうかを確認する", "② 酸素は1種類の元素のみからなることを想起する", "③ 他成分が含まれていないことを確認する", "④ 元素数に基づいて分類基準を適用する", "⑤ 分類を確定する"] } },
+                { id: "p2_2", label: "(2) 海水", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 複数の物質（水・塩など）が含まれていることを確認する", "② 成分が物理的に混ざっている状態であると判断する", "③ 組成が一定でないことを確認する", "④ 純物質ではないと判断する", "⑤ 分類を確定する"] } },
+                { id: "p2_3", label: "(3) 塩化ナトリウム", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① NaとClの2種類の元素からなることを確認する", "② 一定比で結びついた物質であると判断する", "③ 混合物ではないことを確認する", "④ 元素数に基づいて分類する", "⑤ 分類を確定する"] } },
+                { id: "p2_4", label: "(4) 塩酸", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 塩化水素が水に溶けた溶液であることを確認する", "② 複数成分が含まれていることを判断する", "③ 組成が変化しうることを確認する", "④ 混合物であると判断する", "⑤ 分類を確定する"] } },
+                { id: "p2_5", label: "(5) アンモニア", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 窒素と水素からなることを確認する", "② 一定組成の物質であることを判断する", "③ 混合物ではないことを確認する", "④ 元素が複数であることから分類する", "⑤ 分類を確定する"] } },
+                { id: "p2_6", label: "(6) 空気", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 複数の気体が含まれていることを確認する", "② 成分が一定でないことを判断する", "③ 混合状態であることを確認する", "④ 純物質ではないと判断する", "⑤ 分類を確定する"] } },
+                { id: "p2_7", label: "(7) 石油（原油）", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 多種類の炭化水素を含むことを確認する", "② 成分が一定でないことを判断する", "③ 混合物であることを確認する", "④ 分離可能であることを想起する", "⑤ 分類を確定する"] } },
+                { id: "p2_8", label: "(8) 鉄", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "A", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① Feのみからなることを確認する", "② 他成分が含まれていないことを判断する", "③ 単一元素で構成されることを確認する", "④ 分類基準を適用する", "⑤ 分類を確定する"] } },
+                { id: "p2_9", label: "(9) プロパン", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 炭素と水素からなることを確認する", "② 一定組成の物質であると判断する", "③ 混合物ではないことを確認する", "④ 元素が複数であることから分類する", "⑤ 分類を確定する"] } },
+                { id: "p2_10", label: "(10) ガソリン", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 多種類の炭化水素の混合であることを確認する", "② 成分比が一定でないことを判断する", "③ 混合物であることを確認する", "④ 分離可能であることを想起する", "⑤ 分類を確定する"] } },
+                { id: "p2_11", label: "(11) 水", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 水素と酸素からなることを確認する", "② 一定組成であることを判断する", "③ 単体ではないことを確認する", "④ 元素が複数であることから分類する", "⑤ 分類を確定する"] } },
+                { id: "p2_12", label: "(12) 木材", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "C", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① セルロースなど複数成分からなることを確認する", "② 成分が均一でないことを判断する", "③ 混合物であることを確認する", "④ 純物質ではないと判断する", "⑤ 分類を確定する"] } },
+                { id: "p2_13", label: "(13) キセノン", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "A", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 希ガス元素であることを確認する", "② 単一元素からなることを判断する", "③ 他成分が含まれていないことを確認する", "④ 分類基準を適用する", "⑤ 分類を確定する"] } },
+                { id: "p2_14", label: "(14) 二酸化炭素", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① 炭素と酸素からなることを確認する", "② 一定組成であることを判断する", "③ 混合物ではないことを確認する", "④ 元素が複数であることから分類する", "⑤ 分類を確定する"] } },
+                { id: "p2_15", label: "(15) 炭酸水素ナトリウム", type: "multiple_choice", options: ["A", "B", "C"], correctAnswer: "B", correctAnswerRate: 85, detailedExplanation: { theme: "物質分類", type: "演繹型", steps: ["① Na・H・C・Oからなることを確認する", "② 一定組成の物質であると判断する", "③ 混合物ではないことを確認する", "④ 元素が複数であることから分類する", "⑤ 分類を確定する"] } }
               ],
               explanation: "{\"type\": \"deep_thought\", \"phase1\": {\"title\": \"物質の分類\", \"overview\": \"物質を混合物、単体、化合物に分類する論理を整理します。\", \"tree\": \"物質\\n├ 混合物\\n├ 単体\\n└ 化合物\", \"steps\": [\"混合物\", \"単体\", \"化合物\"]}, \"phase2\": {\"explanations\": [{\"step\": \"混合物\", \"tag\": \"分類\", \"subQuestionIds\": [\"p2_2\", \"p2_3\", \"p2_6\", \"p2_7\", \"p2_10\", \"p2_12\"], \"content\": \"空気、海水、食塩水、石油、ガソリン、木材は混合物です。\"}, {\"step\": \"単体\", \"tag\": \"分類\", \"subQuestionIds\": [\"p2_1\", \"p2_8\", \"p2_13\"], \"content\": \"酸素、鉄、キセノンは単体です。\"}, {\"step\": \"化合物\", \"tag\": \"分類\", \"subQuestionIds\": [\"p2_3\", \"p2_5\", \"p2_9\", \"p2_11\", \"p2_14\", \"p2_15\"], \"content\": \"塩化ナトリウム、アンモニア、プロパン、水、二酸化炭素、炭酸水素ナトリウムは化合物です。\"}], \"stumblingPoints\": []}}",
               surroundingKnowledge: [],
@@ -251,16 +365,16 @@ export const chemistryData = {
               category: "元素と単体",
               text: "問３ 次の(1)〜(10)の下線部は、「単体」と「元素」のどちらの意味で用いられているか。\n\n(1) 負傷者に<u>酸素</u>吸入を行った。\n(2) 水は、<u>水素</u>と<u>酸素</u>からできている。\n(3) <u>カルシウム</u>は、骨や歯に多く含まれている。\n(4) 飛行船には、かつて<u>水素</u>が詰められていたが、現在は<u>ヘリウム</u>が使われる。\n(5) ダイヤモンドは、<u>炭素</u>の同素体である。\n(6) 胃液には、<u>塩素</u>が含まれている。\n(7) 携帯電話のバッテリーには、<u>リチウム</u>が使われている。\n(8) 水を電気分解すると、陰極から<u>水素</u>が発生する。\n(9) <u>鉄</u>は、湿った空気中でさびやすい。\n(10) 地球の空気の約７８％は<u>窒素</u>である。",
               subQuestions: [
-                { id: "p3_1", label: "(1)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 },
-                { id: "p3_2", label: "(2)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85 },
-                { id: "p3_3", label: "(3)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85 },
-                { id: "p3_4", label: "(4)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 },
-                { id: "p3_5", label: "(5)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85 },
-                { id: "p3_6", label: "(6)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85 },
-                { id: "p3_7", label: "(7)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85 },
-                { id: "p3_8", label: "(8)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 },
-                { id: "p3_9", label: "(9)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 },
-                { id: "p3_10", label: "(10)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85 }
+                { id: "p3_1", label: "(1)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85, detailedExplanation: { theme: "単体と元素の文脈判断", type: "文脈判断型", steps: ["① 文が「実際に使用する物質」を指しているか確認する", "② 酸素吸入は気体としての酸素を意味すると判断する", "③ 構成要素ではなく実在物質であると整理する", "④ 元素概念ではないことを確認する", "⑤ 分類を確定する"] } },
+                { id: "p3_2", label: "(2)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85, detailedExplanation: { theme: "単体と元素の文脈判断", type: "文脈判断型", steps: ["① 物質の構成を説明する文であると確認する", "② 水の材料としての水素・酸素に注目する", "③ 構成要素として扱われていると判断する", "④ 単体ではないことを確認する", "⑤ 分類を確定する"] } },
+                { id: "p3_3", label: "(3)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85, detailedExplanation: { theme: "単体と元素の文脈判断", type: "文脈判断型", steps: ["① 物質中に含まれる成分を述べていると確認する", "② カルシウムが構成要素として扱われていると判断する", "③ 実在物質としての挙動ではないと整理する", "④ 元素概念であると判断する", "⑤ 分類を確定する"] } },
+                { id: "p3_4", label: "(4)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85, detailedExplanation: { theme: "単体と元素の文脈判断", type: "文脈判断型", steps: ["① 実際に使用される気体について述べていると確認する", "② 水素・ヘリウムが物質として扱われていると判断する", "③ 構成要素ではないことを確認する", "④ 単体としての扱いであると整理する", "⑤ 分類を確定する"] } },
+                { id: "p3_5", label: "(5)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85, detailedExplanation: { theme: "単体と元素の文脈判断", type: "文脈判断型", steps: ["① 同素体という語に注目する", "② 同素体は同じ元素からなる異なる単体であると想起する", "③ 炭素が物質として扱われていると判断する", "④ 元素概念ではないことを確認する", "⑤ 分類を確定する"] } },
+                { id: "p3_6", label: "(6)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85, detailedExplanation: { theme: "単体と元素の文脈判断", type: "文脈判断型", steps: ["① 胃液の成分について述べていると確認する", "② 塩素が構成要素として含まれていると判断する", "③ 実在物質として単独で扱われていないことを確認する", "④ 元素としての意味であると整理する", "⑤ 分類を確定する"] } },
+                { id: "p3_7", label: "(7)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "元素", correctAnswerRate: 85, detailedExplanation: { theme: "単体と元素の文脈判断", type: "文脈判断型", steps: ["① 材料として使われていることに注目する", "② リチウムが成分として利用されていると判断する", "③ 構成要素としての意味合いであると整理する", "④ 単体としての扱いではないことを確認する", "⑤ 分類を確定する"] } },
+                { id: "p3_8", label: "(8)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85, detailedExplanation: { theme: "単体と元素の文脈判断", type: "文脈判断型", steps: ["① 発生する気体について述べていると確認する", "② 水素が実際に生成される物質であると判断する", "③ 構成要素ではなく生成物であると整理する", "④ 単体として扱われていると確認する", "⑤ 分類を確定する"] } },
+                { id: "p3_9", label: "(9)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85, detailedExplanation: { theme: "単体と元素の文脈判断", type: "文脈判断型", steps: ["① 物質の性質（さびやすさ）を述べていると確認する", "② 鉄が実在する物質として扱われていると判断する", "③ 構成要素ではないことを確認する", "④ 単体としての性質であると整理する", "⑤ 分類を確定する"] } },
+                { id: "p3_10", label: "(10)", type: "multiple_choice", options: ["単体", "元素"], correctAnswer: "単体", correctAnswerRate: 85, detailedExplanation: { theme: "単体と元素の文脈判断", type: "文脈判断型", steps: ["① 空気の成分割合について述べていると確認する", "② 窒素が実在する気体として扱われていると判断する", "③ 構成要素ではなく存在物質であると整理する", "④ 単体としての意味であると確認する", "⑤ 分類を確定する"] } }
               ],
               explanation: "{\"type\": \"deep_thought\", \"phase1\": {\"title\": \"元素と単体の区別\", \"overview\": \"文脈から「単体」と「元素」を区別する論理を整理します。\", \"tree\": \"文脈判断\\n├ 単体：物質として存在\\n└ 元素：成分として存在\", \"steps\": [\"単体\", \"元素\"]}, \"phase2\": {\"explanations\": [{\"step\": \"単体\", \"tag\": \"判断\", \"subQuestionIds\": [\"p3_1\", \"p3_4\", \"p3_8\", \"p3_9\", \"p3_10\"], \"content\": \"物質として実体があるもの（気体など）です。\"}, {\"step\": \"元素\", \"tag\": \"判断\", \"subQuestionIds\": [\"p3_2\", \"p3_3\", \"p3_5\", \"p3_6\", \"p3_7\"], \"content\": \"成分として含まれているものです。\"}], \"stumblingPoints\": []}}",
               surroundingKnowledge: [],
@@ -273,12 +387,84 @@ export const chemistryData = {
               category: "物質の分類と性質",
               text: "物質の分類と性質に関する次の文章を読み、あとの問いに答えよ。\n\n物質は、現在およそ120種類存在する原子の種類である「元素」から構成されている。物質は大きく分けると、1種類の物質でできている ( ア ) と、2種類以上の ( ア ) が混じり合った ( イ ) に分けられる。 ( ア ) は、酸素や鉄のように1種類の元素からできている ( ウ ) と、水や塩化ナトリウムのように2種類以上の元素からできている ( エ ) が存在する\n\nまた、物質を区別する上で、融点や沸点、密度といった性質も重要である。( ア ) の場合はこれらの値が物質ごとに ( オ ) となるが、( イ ) の場合は、混じっている物質の種類やその割合によって値が ( カ ) するという違いがある。この違いは、①<u>水とエタノールなどの加熱</u>で確認をすることができる。\n\n問1 文章中の空欄 ( ア ) ～ ( カ ) に入る最も適切な語句を答えよ。",
               subQuestions: [
-                { id: "q1_a", label: "(ア)", type: "short_answer", correctAnswer: "純物質", correctAnswerRate: 85 },
-                { id: "q1_b", label: "(イ)", type: "short_answer", correctAnswer: "混合物", correctAnswerRate: 85 },
-                { id: "q1_c", label: "(ウ)", type: "short_answer", correctAnswer: "単体", correctAnswerRate: 85 },
-                { id: "q1_d", label: "(エ)", type: "short_answer", correctAnswer: "化合物", correctAnswerRate: 85 },
-                { id: "q1_e", label: "(オ)", type: "short_answer", correctAnswer: "一定", correctAnswerRate: 85 },
-                { id: "q1_f", label: "(カ)", type: "short_answer", correctAnswer: "変化", correctAnswerRate: 85 }
+                { id: "q1_a", label: "(ア)", type: "short_answer", correctAnswer: "純物質", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "物質の分類（純物質）",
+                    type: "知識再生型",
+                    steps: [
+                      "① 物質が「1種類の物質でできている」という条件を確認する",
+                      "② 物質の分類において、1種類の物質からなるものを何と呼ぶか想起する",
+                      "③ 「純物質」と「混合物」の定義の違いを比較する",
+                      "④ 2種類以上の物質が混じり合った「混合物」を誤答として排除する",
+                      "⑤ 条件に合致する「純物質」を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q1_b", label: "(イ)", type: "short_answer", correctAnswer: "混合物", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "物質の分類（混合物）",
+                    type: "知識再生型",
+                    steps: [
+                      "① 物質が「2種類以上の(ア)が混じり合った」という条件を確認する",
+                      "② (ア)が純物質であることを踏まえ、複数の純物質が混ざったものを何と呼ぶか想起する",
+                      "③ 「純物質」と「混合物」の定義の違いを比較する",
+                      "④ 1種類の物質からなる「純物質」を誤答として排除する",
+                      "⑤ 条件に合致する「混合物」を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q1_c", label: "(ウ)", type: "short_answer", correctAnswer: "単体", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "純物質の分類（単体）",
+                    type: "知識再生型",
+                    steps: [
+                      "① 純物質のうち「1種類の元素からできている」という条件を確認する",
+                      "② 純物質が「単体」と「化合物」に分類されることを想起する",
+                      "③ 構成する元素の種類数（1種類か2種類以上か）で判断する",
+                      "④ 2種類以上の元素からなる「化合物」を誤答として排除する",
+                      "⑤ 条件に合致する「単体」を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q1_d", label: "(エ)", type: "short_answer", correctAnswer: "化合物", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "純物質の分類（化合物）",
+                    type: "知識再生型",
+                    steps: [
+                      "① 純物質のうち「2種類以上の元素からできている」という条件を確認する",
+                      "② 純物質が「単体」と「化合物」に分類されることを想起する",
+                      "③ 構成する元素の種類数（1種類か2種類以上か）で判断する",
+                      "④ 1種類の元素からなる「単体」を誤答として排除する",
+                      "⑤ 条件に合致する「化合物」を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q1_e", label: "(オ)", type: "short_answer", correctAnswer: "一定", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "純物質の性質（融点・沸点）",
+                    type: "演繹型",
+                    steps: [
+                      "① (ア)純物質の融点や沸点、密度といった性質について問われていることを確認する",
+                      "② 純物質は不純物を含まないため、状態変化の温度がどうなるかを想起する",
+                      "③ 物質ごとに固有の値を示すかどうかで判断する",
+                      "④ 混合物のように割合で変化する「変化する」「異なる」などの表現を排除する",
+                      "⑤ 常に同じ値を示す「一定」を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q1_f", label: "(カ)", type: "short_answer", correctAnswer: "変化", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "混合物の性質（融点・沸点）",
+                    type: "演繹型",
+                    steps: [
+                      "① (イ)混合物の融点や沸点、密度といった性質について問われていることを確認する",
+                      "② 混合物は混じっている物質の種類や割合によって性質がどうなるかを想起する",
+                      "③ 割合に応じて値が変動するかどうかで判断する",
+                      "④ 純物質のように固有の値を示す「一定」などの表現を排除する",
+                      "⑤ 値が変動することを示す「変化」を最終判断とする"
+                    ]
+                  }
+                }
               ],
               explanation: "{\"type\": \"deep_thought\", \"phase1\": {\"title\": \"物質の分類\", \"overview\": \"物質の分類構造を整理します。\", \"tree\": \"物質\\n├ 純物質\\n│ ├ 単体\\n│ └ 化合物\\n└ 混合物\", \"steps\": [\"単体\", \"化合物\", \"混合物\"]}, \"phase2\": {\"explanations\": [{\"step\": \"単体\", \"tag\": \"分類\", \"subQuestionIds\": [\"q1_c\"], \"content\": \"1種類の元素からなる純物質です。\"}, {\"step\": \"化合物\", \"tag\": \"分類\", \"subQuestionIds\": [\"q1_d\"], \"content\": \"2種類以上の元素からなる純物質です。\"}, {\"step\": \"混合物\", \"tag\": \"分類\", \"subQuestionIds\": [\"q1_b\"], \"content\": \"2種類以上の物質が混じり合ったものです。\"}], \"stumblingPoints\": [{\"node\": \"単体\", \"point\": \"O₂を化合物と誤解する。\"}]}}",
               surroundingKnowledge: [],
@@ -289,12 +475,84 @@ export const chemistryData = {
               category: "物質の分類",
               text: "問2 次の (1)〜(6) の物質は、文章中の( イ )～（ エ ）のどれに分類されるか答えよ。\n(イ) 混合物　(ウ) 単体　(エ) 化合物\n\n(1) 空気　 (2) 酸素　 (3) 食塩水　 (4) メタン　 (5) 黒鉛　(6) 石油",
               subQuestions: [
-                { id: "q2_1", label: "(1) 空気", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85 },
-                { id: "q2_2", label: "(2) 酸素", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(ウ)", correctAnswerRate: 85 },
-                { id: "q2_3", label: "(3) 食塩水", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85 },
-                { id: "q2_4", label: "(4) メタン", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(エ)", correctAnswerRate: 85 },
-                { id: "q2_5", label: "(5) 黒鉛", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(ウ)", correctAnswerRate: 85 },
-                { id: "q2_6", label: "(6) 石油", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85 }
+                { id: "q2_1", label: "(1) 空気", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "物質の分類（空気）",
+                    type: "演繹型",
+                    steps: [
+                      "① 空気の成分について確認する",
+                      "② 窒素、酸素、アルゴンなど複数の気体が含まれていることを想起する",
+                      "③ 複数の純物質が混ざっている状態であると判断する",
+                      "④ 単一の物質ではないため「単体」「化合物」を排除する",
+                      "⑤ 「混合物」である(イ)を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q2_2", label: "(2) 酸素", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(ウ)", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "物質の分類（酸素）",
+                    type: "演繹型",
+                    steps: [
+                      "① 酸素の構成要素について確認する",
+                      "② 酸素はOという1種類の元素のみからなることを想起する",
+                      "③ 1種類の元素からなる純物質であると判断する",
+                      "④ 複数の物質が混ざった「混合物」や、複数の元素からなる「化合物」を排除する",
+                      "⑤ 「単体」である(ウ)を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q2_3", label: "(3) 食塩水", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "物質の分類（食塩水）",
+                    type: "演繹型",
+                    steps: [
+                      "① 食塩水の成分について確認する",
+                      "② 水（溶媒）と塩化ナトリウム（溶質）が含まれていることを想起する",
+                      "③ 複数の純物質が混ざっている状態であると判断する",
+                      "④ 単一の物質ではないため「単体」「化合物」を排除する",
+                      "⑤ 「混合物」である(イ)を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q2_4", label: "(4) メタン", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(エ)", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "物質の分類（メタン）",
+                    type: "演繹型",
+                    steps: [
+                      "① メタンの構成要素について確認する",
+                      "② 炭素(C)と水素(H)の2種類の元素からなることを想起する",
+                      "③ 2種類以上の元素からなる純物質であると判断する",
+                      "④ 1種類の元素からなる「単体」や、複数の物質が混ざった「混合物」を排除する",
+                      "⑤ 「化合物」である(エ)を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q2_5", label: "(5) 黒鉛", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(ウ)", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "物質の分類（黒鉛）",
+                    type: "演繹型",
+                    steps: [
+                      "① 黒鉛の構成要素について確認する",
+                      "② 黒鉛は炭素(C)という1種類の元素のみからなることを想起する",
+                      "③ 1種類の元素からなる純物質であると判断する",
+                      "④ 複数の物質が混ざった「混合物」や、複数の元素からなる「化合物」を排除する",
+                      "⑤ 「単体」である(ウ)を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q2_6", label: "(6) 石油", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "物質の分類（石油）",
+                    type: "演繹型",
+                    steps: [
+                      "① 石油の成分について確認する",
+                      "② 多種類の炭化水素が含まれていることを想起する",
+                      "③ 複数の純物質が混ざっている状態であると判断する",
+                      "④ 単一の物質ではないため「単体」「化合物」を排除する",
+                      "⑤ 「混合物」である(イ)を最終判断とする"
+                    ]
+                  }
+                }
               ],
               explanation: "空気や食塩水、海水、石油などは「複数の純物質が混ざったもの」なので混合物です。",
               surroundingKnowledge: [],
@@ -305,10 +563,58 @@ export const chemistryData = {
               category: "元素と単体",
               text: "問３ 物質の構成成分としての「元素」と、実際に存在する物質としての「単体」を区別することは非常に重要である。次の (1)〜(4) の下線部が、「単体」と「元素」のどちらの意味で用いられているか答えよ。\n\n(1) 植物の生育には、<u>窒素</u>が欠かせない。\n(2) 乾燥空気の体積の約78％は<u>窒素</u>である。\n(3) 砂糖は、<u>炭素</u>や<u>水素</u>、<u>酸素</u>からなる物質である。\n(4) 水を電気分解すると、<u>水素</u>と<u>酸素</u>を生じる。",
               subQuestions: [
-                { id: "q3_1", label: "(1)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 85 },
-                { id: "q3_2", label: "(2)", "type": "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 85 },
-                { id: "q3_3", label: "(3)", "type": "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 85 },
-                { id: "q3_4", label: "(4)", "type": "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 85 }
+                { id: "q3_1", label: "(1)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "単体と元素の文脈判断",
+                    type: "文脈判断型",
+                    steps: [
+                      "① 文が「実際に使用する物質」か「構成成分」かを判断する",
+                      "② 植物の生育に欠かせない「窒素」は、肥料などに含まれる成分としての窒素を指していると確認する",
+                      "③ 窒素ガス（気体）そのものを吸収しているわけではないことを想起する",
+                      "④ 実在する物質としての「単体」を誤答として排除する",
+                      "⑤ 成分としての意味である「元素」を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q3_2", label: "(2)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "単体と元素の文脈判断",
+                    type: "文脈判断型",
+                    steps: [
+                      "① 文が「実際に使用する物質」か「構成成分」かを判断する",
+                      "② 空気の体積の約78％を占める「窒素」は、気体として実在する物質を指していると確認する",
+                      "③ 窒素分子（N₂）という具体的な物質の存在割合を述べていることを想起する",
+                      "④ 抽象的な成分としての「元素」を誤答として排除する",
+                      "⑤ 実在する物質としての意味である「単体」を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q3_3", label: "(3)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "単体と元素の文脈判断",
+                    type: "文脈判断型",
+                    steps: [
+                      "① 文が「実際に使用する物質」か「構成成分」かを判断する",
+                      "② 砂糖を構成する「炭素」「水素」「酸素」は、物質の材料（成分）を指していると確認する",
+                      "③ 砂糖の中に黒鉛（炭素の単体）や水素ガスが含まれているわけではないことを想起する",
+                      "④ 実在する物質としての「単体」を誤答として排除する",
+                      "⑤ 成分としての意味である「元素」を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q3_4", label: "(4)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "単体と元素の文脈判断",
+                    type: "文脈判断型",
+                    steps: [
+                      "① 文が「実際に使用する物質」か「構成成分」かを判断する",
+                      "② 水を電気分解して生じる「水素」と「酸素」は、発生した気体そのものを指していると確認する",
+                      "③ 実際に集めることができる実在の物質であることを想起する",
+                      "④ 抽象的な成分としての「元素」を誤答として排除する",
+                      "⑤ 実在する物質としての意味である「単体」を最終判断とする"
+                    ]
+                  }
+                }
               ],
               explanation: "テストで最も狙われるポイントです！ 見分けるコツは「直接触れられるもの（ガスとして実体がある、など）＝単体」、「直接触れられないもの（成分として含まれている、など）＝元素」と考えることです。(2)や(4)は気体として実体があるので単体、(1)や(3)は成分の話をしているので元素となります。",
               surroundingKnowledge: [],
@@ -319,9 +625,45 @@ export const chemistryData = {
               category: "状態変化のグラフ",
               text: `問４　下線部①は、水・エタノールの（ ア ）の加熱と、水とエタノールの（ イ ）の加熱のグラフを示したものである。この３つのグラフ①～③をそれぞれ、水のグラフ・エタノールのグラフ・水とエタノールの混合物のグラフに分類し、①～③で示せ。\n\n<img src="https://lh3.googleusercontent.com/d/1yxjXWysRGIgYKPMpQx_N9OWYNf_W6DvT" alt="加熱のグラフ" class="w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200" referrerPolicy="no-referrer" />`,
               subQuestions: [
-                { id: "q4_1", label: "水のグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "①", correctAnswerRate: 85 },
-                { id: "q4_2", label: "エタノールのグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "③", correctAnswerRate: 85 },
-                { id: "q4_3", label: "水とエタノールの( イ )のグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "②", correctAnswerRate: 85 }
+                { id: "q4_1", label: "水のグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "①", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "状態変化のグラフ（水）",
+                    type: "演繹型",
+                    steps: [
+                      "① 水が純物質であることを確認する",
+                      "② 純物質の加熱グラフの特徴を想起する",
+                      "③ 沸騰中（状態変化中）は温度が一定に保たれることを確認する",
+                      "④ 温度が変化し続けるグラフ②を排除する",
+                      "⑤ 水の沸点が100℃であることから、100℃で一定になるグラフ①を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q4_2", label: "エタノールのグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "③", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "状態変化のグラフ（エタノール）",
+                    type: "演繹型",
+                    steps: [
+                      "① エタノールが純物質であることを確認する",
+                      "② 純物質の加熱グラフの特徴を想起する",
+                      "③ 沸騰中（状態変化中）は温度が一定に保たれることを確認する",
+                      "④ 温度が変化し続けるグラフ②を排除する",
+                      "⑤ エタノールの沸点が約78℃であることから、約78℃で一定になるグラフ③を最終判断とする"
+                    ]
+                  }
+                },
+                { id: "q4_3", label: "水とエタノールの( イ )のグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "②", correctAnswerRate: 85,
+                  detailedExplanation: {
+                    theme: "状態変化のグラフ（混合物）",
+                    type: "演繹型",
+                    steps: [
+                      "① 水とエタノールの(イ)が混合物であることを確認する",
+                      "② 混合物の加熱グラフの特徴を想起する",
+                      "③ 沸騰中（状態変化中）も温度が一定に保たれず、徐々に上昇することを確認する",
+                      "④ 温度が一定になるグラフ①、③を純物質のグラフとして排除する",
+                      "⑤ 沸騰中も温度が変化し続けるグラフ②を最終判断とする"
+                    ]
+                  }
+                }
               ],
               explanation: "{\"type\": \"deep_thought\", \"phase1\": {\"title\": \"状態変化のグラフ\", \"overview\": \"加熱グラフの違いを整理します。\", \"tree\": \"加熱グラフ\\n├ 純物質：温度一定\\n└ 混合物：温度変化\", \"steps\": [\"純物質\", \"混合物\"]}, \"phase2\": {\"explanations\": [{\"step\": \"純物質\", \"tag\": \"分析\", \"subQuestionIds\": [\"q4_1\", \"q4_2\"], \"content\": \"加熱中温度一定です。\"}, {\"step\": \"混合物\", \"tag\": \"分析\", \"subQuestionIds\": [\"q4_3\"], \"content\": \"加熱中温度変化します。\"}], \"stumblingPoints\": []}}",
               surroundingKnowledge: [],

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, Info, Network } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
@@ -147,10 +147,31 @@ interface InteractiveTreeProps {
   data: NodeData;
   renderContent?: (nodeId: string) => React.ReactNode;
   onQuestionClick?: (questionId: string) => void;
+  expandedStep?: string | null;
 }
 
-export function InteractiveTree({ data, renderContent, onQuestionClick }: InteractiveTreeProps) {
+export function InteractiveTree({ data, renderContent, onQuestionClick, expandedStep }: InteractiveTreeProps) {
   const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
+
+  useEffect(() => {
+    if (expandedStep) {
+      // Find node by label
+      const findNode = (node: NodeData): NodeData | null => {
+        if (node.label === expandedStep) return node;
+        if (node.children) {
+          for (const child of node.children) {
+            const found = findNode(child);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+      const node = findNode(data);
+      if (node) {
+        setSelectedNode(node);
+      }
+    }
+  }, [expandedStep, data]);
 
   const handleSelect = (node: NodeData) => {
     setSelectedNode(prev => prev?.id === node.id ? null : node);

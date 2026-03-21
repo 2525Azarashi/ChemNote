@@ -35,7 +35,16 @@ const substanceTreeData: NodeData = {
               step: 1,
               explanation: '1種類の物質からなり、固有の化学式で表せるもの。',
               relatedQuestions: [
-                { id: 'q1_a', label: '演習問題⓵－１(ア)' }
+                { id: 'q1_a', label: '問1(ア)' },
+                { id: 'q2_1', label: '問2(1)酸素' },
+                { id: 'q2_3', label: '問2(3)塩化ナトリウム' },
+                { id: 'q2_5', label: '問2(5)アンモニア' },
+                { id: 'q2_8', label: '問2(8)鉄' },
+                { id: 'q2_9', label: '問2(9)プロパン' },
+                { id: 'q2_11', label: '問2(11)水' },
+                { id: 'q2_13', label: '問2(13)キセノン' },
+                { id: 'q2_14', label: '問2(14)二酸化炭素' },
+                { id: 'q2_15', label: '問2(15)炭酸水素ナトリウム' }
               ],
               children: [
                 {
@@ -44,9 +53,9 @@ const substanceTreeData: NodeData = {
                   step: 1,
                   explanation: '1種類の元素からなる純物質。',
                   relatedQuestions: [
-                    { id: 'q1_c', label: '演習問題⓵－１(ウ)' },
-                    { id: 'q2_2', label: '演習問題⓵－２(2)' },
-                    { id: 'q2_5', label: '演習問題⓵－２(5)' }
+                    { id: 'q2_1', label: '問2(1)酸素' },
+                    { id: 'q2_8', label: '問2(8)鉄' },
+                    { id: 'q2_13', label: '問2(13)キセノン' }
                   ]
                 },
                 {
@@ -55,8 +64,12 @@ const substanceTreeData: NodeData = {
                   step: 1,
                   explanation: '2種類以上の元素からなる純物質。（例：水 H₂O、二酸化炭素 CO₂）',
                   relatedQuestions: [
-                    { id: 'q1_d', label: '演習問題⓵－１(エ)' },
-                    { id: 'q2_4', label: '演習問題⓵－２(4)' }
+                    { id: 'q2_3', label: '問2(3)塩化ナトリウム' },
+                    { id: 'q2_5', label: '問2(5)アンモニア' },
+                    { id: 'q2_9', label: '問2(9)プロパン' },
+                    { id: 'q2_11', label: '問2(11)水' },
+                    { id: 'q2_14', label: '問2(14)二酸化炭素' },
+                    { id: 'q2_15', label: '問2(15)炭酸水素ナトリウム' }
                   ]
                 }
               ]
@@ -67,10 +80,12 @@ const substanceTreeData: NodeData = {
               step: 1,
               explanation: '複数の純物質が混ざったもの。化学式1つで表せない。（例：空気、海水）',
               relatedQuestions: [
-                { id: 'q1_b', label: '演習問題⓵－１(イ)' },
-                { id: 'q2_1', label: '演習問題⓵－２(1)' },
-                { id: 'q2_3', label: '演習問題⓵－２(3)' },
-                { id: 'q2_6', label: '演習問題⓵－２(6)' }
+                { id: 'q2_2', label: '問2(2)海水' },
+                { id: 'q2_4', label: '問2(4)塩酸' },
+                { id: 'q2_6', label: '問2(6)空気' },
+                { id: 'q2_7', label: '問2(7)石油' },
+                { id: 'q2_10', label: '問2(10)ガソリン' },
+                { id: 'q2_12', label: '問2(12)木材' }
               ]
             }
           ]
@@ -90,9 +105,7 @@ const substanceTreeData: NodeData = {
           step: 2,
           explanation: '融点や沸点・密度などが物質ごとに一定となる',
           relatedQuestions: [
-            { id: 'q1_e', label: '演習問題⓵－１(オ)' },
-            { id: 'q4_1', label: '演習問題⓵－４(水のグラフ)' },
-            { id: 'q4_2', label: '演習問題⓵－４(エタノールのグラフ)' }
+            { id: 'q1_i', label: '問1(イ)' }
           ]
         },
         {
@@ -102,8 +115,8 @@ const substanceTreeData: NodeData = {
           step: 2,
           explanation: '混じっている物質の種類やその割合により、値が変化する',
           relatedQuestions: [
-            { id: 'q1_f', label: '演習問題⓵－１(カ)' },
-            { id: 'q4_3', label: '演習問題⓵－４(水とエタノールのグラフ)' }
+            { id: 'q1_ki', label: '問1(キ)' },
+            { id: 'q1_ku', label: '問1(ク)' }
           ]
         }
       ]
@@ -121,8 +134,12 @@ const substanceTreeData: NodeData = {
           step: 3,
           explanation: '1種類の元素からなる純物質。実際に存在し、直接触れることができる「実体」。（例：酸素 O₂、水素 H₂）',
           relatedQuestions: [
-            { id: 'q3_2', label: '演習問題⓵－３(2)' },
-            { id: 'q3_4', label: '演習問題⓵－３(4)' }
+            { id: 'q3_1', label: '問3(1)酸素吸入' },
+            { id: 'q3_4', label: '問3(4)飛行船に水素・ヘリウム' },
+            { id: 'q3_7', label: '問3(7)バッテリーにリチウム' },
+            { id: 'q3_8', label: '問3(8)水素が発生' },
+            { id: 'q3_9', label: '問3(9)鉄はさびやすい' },
+            { id: 'q3_10', label: '問3(10)空気の約78%は窒素' }
           ]
         },
         {
@@ -132,8 +149,10 @@ const substanceTreeData: NodeData = {
           step: 3,
           explanation: '物質の構成成分。直接触れることができない「概念」上のもの。（例：水に含まれる酸素）',
           relatedQuestions: [
-            { id: 'q3_1', label: '演習問題⓵－３(1)' },
-            { id: 'q3_3', label: '演習問題⓵－３(3)' }
+            { id: 'q3_2', label: '問3(2)水は水素と酸素から' },
+            { id: 'q3_3', label: '問3(3)骨や歯にカルシウム' },
+            { id: 'q3_5', label: '問3(5)ダイヤモンドは炭素の同素体' },
+            { id: 'q3_6', label: '問3(6)胃液に塩素' }
           ]
         }
       ]
@@ -219,7 +238,17 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
       'q4_1': 'p4_1', 'q4_2': 'p4_2', 'q4_3': 'p4_3',
     };
 
-    const targetId = mode === 'practice' ? (idMap[questionId] || questionId.replace(/^q/, 'p')) : questionId;
+    const reverseIdMap: Record<string, string> = Object.entries(idMap).reduce((acc, [k, v]) => {
+      acc[v] = k;
+      return acc;
+    }, {} as Record<string, string>);
+
+    let targetId = questionId;
+    if (mode === 'practice') {
+      targetId = idMap[questionId] || questionId.replace(/^q/, 'p');
+    } else if (mode === 'mini_test') {
+      targetId = reverseIdMap[questionId] || questionId.replace(/^p/, 'q');
+    }
     
     setExpandedSq(targetId);
     
@@ -319,9 +348,32 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     return null;
   }, [questions]);
 
+  const getRelatedSteps = (sqId: string) => {
+    // Check substanceTreeData if it's the specific chapter
+    if (chapter.abstractTitle === "① 純物質と混合物") {
+      const steps: { step: number | string | null, label: string }[] = [];
+      const findInTree = (node: NodeData) => {
+        if (node.relatedQuestions?.some(q => q.id === sqId)) {
+          steps.push({ step: node.step, label: node.label });
+        }
+        if (node.children) {
+          node.children.forEach(findInTree);
+        }
+      };
+      findInTree(substanceTreeData);
+      if (steps.length > 0) return steps;
+    }
+
+    if (!deepThoughtData?.phase2?.explanations) return [];
+    return deepThoughtData.phase2.explanations
+      .filter((exp: any) => exp.subQuestionIds?.includes(sqId))
+      .map((exp: any) => ({ step: null, label: exp.step }));
+  };
+
   const renderSubQuestionCheck = (sq: any) => {
     const isCorrect = sq.type === 'descriptive' ? false : answers[sq.id] === sq.correctAnswer;
     const isExpanded = expandedSq === sq.id;
+    const relatedSteps = getRelatedSteps(sq.id);
 
     if (!isExpanded) {
       return (
@@ -342,10 +394,10 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     }
 
     return (
-      <div key={sq.id} className="w-full bg-[#1C2541] rounded-xl border border-[#3A506B] shadow-lg p-4 md:p-6">
+      <div id={`sq-${sq.id}`} key={sq.id} className={`w-full ${mode === 'mini_test' ? 'bg-white' : 'bg-[#1C2541]'} rounded-xl border ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]'} shadow-lg p-4 md:p-6`}>
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <div className="font-bold text-[#E0E1DD] text-sm bg-[#0B132B] px-3 py-1 rounded border border-[#3A506B]">{sq.label}</div>
+          <div className={`font-bold ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm ${mode === 'mini_test' ? 'bg-gray-100' : 'bg-[#0B132B]'} px-3 py-1 rounded border ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]'}`}>{sq.label}</div>
           <button onClick={() => setExpandedSq(null)} className="text-[#7A8B99] hover:text-[#E0E1DD]">
             <XCircle size={24} />
           </button>
@@ -355,16 +407,52 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
         <div className="space-y-4">
           <div>
             <div className="text-xs text-[#7A8B99] mb-1">あなたの解答</div>
-            <div className={`p-3 rounded-lg border ${sq.type === 'descriptive' ? 'bg-[#0B132B] border-[#3A506B]' : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0]')}`}>
+            <div className={`p-3 rounded-lg border ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'bg-gray-50 border-gray-200' : 'bg-[#0B132B] border-[#3A506B]') : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0]')}`}>
               {formatText(answers[sq.id] || '未解答')}
             </div>
           </div>
-          <div>
-            <div className="text-xs text-[#7A8B99] mb-1">正解</div>
-            <div className="p-3 rounded-lg border bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]">
-              {formatText(sq.correctAnswer)}
+          {sq.detailedExplanation ? (
+            <div className={`p-4 rounded-lg border text-sm ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
+              <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【{sq.detailedExplanation.theme}】</h5>
+              <p className={`text-xs ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'} mb-2`}>【問題タイプ】{sq.detailedExplanation.type}</p>
+              
+              {relatedSteps.length > 0 ? (
+                <div className="mb-4">
+                  <h5 className={`font-bold mb-2 text-xs ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>【関連する思考ステップ】</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {relatedSteps.map((stepInfo: { step: number | string | null, label: string }, idx: number) => (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          setExpandedStep(stepInfo.label);
+                          document.getElementById('logical-tree-section')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border flex items-center gap-1 ${mode === 'mini_test' ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200' : 'bg-[#3A506B]/30 hover:bg-[#3A506B]/50 text-[#5BC0BE] border-[#5BC0BE]/30'}`}
+                      >
+                        <Network size={14} />
+                        {stepInfo.step ? `Step ${stepInfo.step}: ${stepInfo.label}` : stepInfo.label}を復習する
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <ol className="list-decimal list-inside space-y-1">
+                  {sq.detailedExplanation.steps.map((step: string, idx: number) => (
+                    <li key={idx}>{step}</li>
+                  ))}
+                </ol>
+              )}
+
+              <p className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】{sq.correctAnswer}</p>
             </div>
-          </div>
+          ) : (
+            <div>
+              <div className="text-xs text-[#7A8B99] mb-1">正解</div>
+              <div className="p-3 rounded-lg border bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]">
+                {formatText(sq.correctAnswer)}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -523,11 +611,11 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
         )}
 
         {/* Unified Explanation Area */}
-        <div className="bg-[#1C2541]/40 rounded-2xl shadow-lg overflow-clip border border-[#3A506B]/50">
+        <div className={`rounded-2xl shadow-lg overflow-clip border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`}>
           
           {/* Logical Tree (if exists) */}
-          {mode === 'practice' && deepThoughtData && (
-            <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50">
+          {deepThoughtData && (
+            <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50">
               {chapter.abstractTitle === "① 純物質と混合物" ? (
                 <div className="space-y-4">
                   <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 text-sm text-slate-300">
@@ -535,15 +623,15 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                     <p className="mb-1"><span className="font-bold text-emerald-400">「Step 2」</span>…演習問題⓵－４ で演習可能</p>
                     <p><span className="font-bold text-blue-400">「Step 3」</span>…演習問題⓵－３ で演習可能</p>
                   </div>
-                  <InteractiveTree data={substanceTreeData} onQuestionClick={handleQuestionClick} />
+                  <InteractiveTree data={substanceTreeData} onQuestionClick={handleQuestionClick} expandedStep={expandedStep} />
                 </div>
               ) : (
                 <>
-                  <h4 className="text-[#5BC0BE] font-bold mb-3 flex items-center gap-2 text-sm md:text-base">
+                  <h4 className={`font-bold mb-3 flex items-center gap-2 text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
                     <Network className="w-4 h-4 md:w-5 md:h-5" />
                     思考グラフ (ロジカルツリー)
                   </h4>
-                  <div className="text-xs md:text-sm text-[#E0E1DD]/80 overflow-x-auto bg-[#0B132B]/50 p-4 rounded-lg border border-[#3A506B]/30">
+                  <div className={`text-xs md:text-sm overflow-x-auto p-4 rounded-lg border ${mode === 'mini_test' ? 'text-gray-700 bg-gray-50 border-gray-200' : 'text-[#E0E1DD]/80 bg-[#0B132B]/50 border-[#3A506B]/30'}`}>
                     {deepThoughtData.phase1.tree.split('\n').map((line: string, i: number) => {
                       const branchMatch = line.match(/^([ │├─└]+)(.*)$/);
                       const branch = branchMatch ? branchMatch[1] : "";
@@ -560,18 +648,18 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                             <span>{branch}</span>
                             <button 
                               onClick={() => setExpandedStep(expandedStep === nodeText ? null : nodeText)}
-                              className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors shadow-sm ${expData ? "bg-[#3A506B]/20 text-[#E0E1DD] border-[#5BC0BE]/50 hover:bg-[#3A506B]/40" : "bg-gray-500/10 text-gray-400 border-gray-500/20"}`}
+                              className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors shadow-sm ${expData ? (mode === 'mini_test' ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100" : "bg-[#3A506B]/20 text-[#E0E1DD] border-[#5BC0BE]/50 hover:bg-[#3A506B]/40") : (mode === 'mini_test' ? "bg-gray-100 text-gray-400 border-gray-200" : "bg-gray-500/10 text-gray-400 border-gray-500/20")}`}
                             >
                               <span className="font-bold">{nodeText}</span>
                             </button>
                           </div>
                           {expandedStep === nodeText && expData && (
-                            <div className="ml-8 mt-2 mb-4 p-4 rounded-xl bg-[#0B132B]/80 border border-[#3A506B] shadow-inner">
-                              <h6 className="text-sm font-bold text-[#5BC0BE] mb-3 flex items-center gap-2">
+                            <div className={`ml-8 mt-2 mb-4 p-4 rounded-xl border shadow-inner ${mode === 'mini_test' ? 'bg-white border-emerald-200' : 'bg-[#0B132B]/80 border-[#3A506B]'}`}>
+                              <h6 className={`text-sm font-bold mb-3 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
                                 <CheckCircle2 className="w-4 h-4" />
                                 解説と答え合わせ
                               </h6>
-                              <div className="text-sm text-[#E0E1DD] mb-4">
+                              <div className={`text-sm mb-4 ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>
                                 {expData.content}
                               </div>
                               {stepSubQuestions.length > 0 && (
@@ -591,8 +679,8 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
           )}
 
           {/* Answer Checking for ALL questions */}
-          <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50 bg-[#1C2541]/20">
-            <h3 className="text-base md:text-lg font-bold text-[#5BC0BE] mb-4 md:mb-6 flex items-center gap-2">
+          <div className={`p-4 sm:p-6 md:p-8 border-b ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'border-[#3A506B]/50 bg-[#1C2541]/20'}`}>
+            <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
               <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
               <span>答え合わせ</span>
             </h3>
@@ -602,27 +690,27 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                 const scorePercentage = calculateScore(question);
                 return (
                   <div key={question.id} className="space-y-4 md:space-y-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#3A506B]/30 pb-4">
+                    <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4 ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/30'}`}>
                       <div className="flex items-center gap-3">
-                        <div className="bg-[#5BC0BE]/20 text-[#5BC0BE] border border-[#5BC0BE]/30 font-bold px-3 py-1 rounded-full text-xs md:text-sm shadow-sm">
+                        <div className={`font-bold px-3 py-1 rounded-full text-xs md:text-sm shadow-sm border ${mode === 'mini_test' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'}`}>
                           Q{qIndex + 1}
                         </div>
-                        <div className="text-left font-bold text-[#E0E1DD] text-sm md:text-base">
+                        <div className={`text-left font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
                           {question.category || '問題'}
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <button
                           onClick={(e) => { e.stopPropagation(); handleSaveNote(question, qIndex); }}
-                          className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-colors ${savingNote[question.id] ? 'bg-[#1C2541] text-[#7A8B99]' : 'bg-[#F9E79F]/20 text-[#F9E79F] border border-[#F9E79F]/30 hover:bg-[#F9E79F]/30'}`}
+                          className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-colors border ${savingNote[question.id] ? (mode === 'mini_test' ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-[#1C2541] text-[#7A8B99] border-[#1C2541]') : (mode === 'mini_test' ? 'bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100' : 'bg-[#F9E79F]/20 text-[#F9E79F] border-[#F9E79F]/30 hover:bg-[#F9E79F]/30')}`}
                           disabled={savingNote[question.id]}
                         >
                           <Save size={14} />
                           {savingNote[question.id] ? '保存中...' : 'ノートに保存'}
                         </button>
                         <div className="flex flex-col items-end">
-                          <div className="text-[10px] md:text-xs text-[#7A8B99] font-bold mb-0.5">あなたの正答率</div>
-                          <div className={`font-mono font-bold text-base md:text-lg ${scorePercentage >= 80 ? 'text-[#5BC0BE]' : scorePercentage <= 40 ? 'text-[#D9A0A0]' : 'text-[#F9E79F]'}`}>
+                          <div className={`text-[10px] md:text-xs font-bold mb-0.5 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>あなたの正答率</div>
+                          <div className={`font-mono font-bold text-base md:text-lg ${scorePercentage >= 80 ? (mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]') : scorePercentage <= 40 ? (mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]') : (mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]')}`}>
                             {scorePercentage}%
                           </div>
                         </div>
@@ -642,49 +730,106 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                         const isExpanded = expandedSq === sq.id;
 
                         return (
-                          <div id={`sq-${sq.id}`} key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? 'border-[#A9CCE3]/30' : (isCorrect ? 'border-[#5BC0BE]/30' : 'border-[#D9A0A0]/30')}`}>
+                          <div id={`sq-${sq.id}`} key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'border-blue-200' : 'border-[#A9CCE3]/30') : (isCorrect ? (mode === 'mini_test' ? 'border-emerald-200' : 'border-[#5BC0BE]/30') : (mode === 'mini_test' ? 'border-red-200' : 'border-[#D9A0A0]/30'))}`}>
                             {/* Tab Header */}
                             <button 
                               onClick={() => setExpandedSq(isExpanded ? null : sq.id)}
-                              className={`w-full flex items-center justify-between p-3 md:p-4 transition-colors ${sq.type === 'descriptive' ? 'bg-[#A9CCE3]/10 hover:bg-[#A9CCE3]/20' : (isCorrect ? 'bg-[#5BC0BE]/10 hover:bg-[#5BC0BE]/20' : 'bg-[#D9A0A0]/10 hover:bg-[#D9A0A0]/20')}`}
+                              className={`w-full flex items-center justify-between p-3 md:p-4 transition-colors ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'bg-blue-50 hover:bg-blue-100' : 'bg-[#A9CCE3]/10 hover:bg-[#A9CCE3]/20') : (isCorrect ? (mode === 'mini_test' ? 'bg-emerald-50 hover:bg-emerald-100' : 'bg-[#5BC0BE]/10 hover:bg-[#5BC0BE]/20') : (mode === 'mini_test' ? 'bg-red-50 hover:bg-red-100' : 'bg-[#D9A0A0]/10 hover:bg-[#D9A0A0]/20'))}`}
                             >
                               <div className="flex items-center gap-3 md:gap-4">
-                                <div className="font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-2 py-1 rounded border border-[#3A506B]/50 shadow-sm">{sq.label}</div>
+                                <div className={`font-bold text-xs md:text-sm px-2 py-1 rounded border shadow-sm ${mode === 'mini_test' ? 'text-gray-700 bg-white border-gray-200' : 'text-[#E0E1DD] bg-[#0B132B]/50 border-[#3A506B]/50'}`}>{sq.label}</div>
                                 {sq.type !== 'descriptive' && (
                                   <div>
-                                    {isCorrect ? <CheckCircle2 className="text-[#5BC0BE] w-5 h-5 md:w-6 md:h-6" /> : <XCircle className="text-[#D9A0A0] w-5 h-5 md:w-6 md:h-6" />}
+                                    {isCorrect ? <CheckCircle2 className={`w-5 h-5 md:w-6 md:h-6 ${mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}`} /> : <XCircle className={`w-5 h-5 md:w-6 md:h-6 ${mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}`} />}
                                   </div>
                                 )}
                                 {sq.type === 'descriptive' && (
-                                  <div className="text-xs md:text-sm font-bold text-[#A9CCE3] flex items-center gap-1">
+                                  <div className={`text-xs md:text-sm font-bold flex items-center gap-1 ${mode === 'mini_test' ? 'text-blue-600' : 'text-[#A9CCE3]'}`}>
                                     <Edit3 size={16} />
                                     <span>記述問題</span>
                                   </div>
                                 )}
+                                {sq.type !== 'descriptive' && (
+                                  <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
+                                    <span className={`text-xs mr-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正解:</span>
+                                    {sq.correctAnswer}
+                                  </div>
+                                )}
                               </div>
                               <div className="flex items-center gap-3 md:gap-4">
-                                <div className={`text-[#7A8B99] transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                                <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''} ${mode === 'mini_test' ? 'text-gray-400' : 'text-[#7A8B99]'}`}>
                                   <ChevronDown size={20} />
                                 </div>
                               </div>
                             </button>
 
                             {/* Tab Content (Dropdown) */}
-                            <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isExpanded ? 'max-h-[1000px] opacity-100 border-t border-[#3A506B]/30' : 'max-h-0 opacity-0'}`}>
-                              <div className="p-4 md:p-6 bg-[#0B132B]/40">
+                            <div className={"transition-all duration-300 ease-in-out overflow-hidden " + (isExpanded ? "max-h-[1000px] opacity-100 border-t " + (mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/30') : 'max-h-0 opacity-0')}>
+                              <div className={`p-4 md:p-6 ${mode === 'mini_test' ? 'bg-gray-50' : 'bg-[#0B132B]/40'}`}>
                                 {sq.type === 'descriptive' ? (
                                   <div className="flex flex-col gap-3 md:gap-4">
-                                    <div className="text-[10px] md:text-xs text-[#7A8B99] mb-1">あなたの解答</div>
-                                    <div className="font-bold text-sm md:text-base text-[#E0E1DD] mb-3 md:mb-4 whitespace-pre-wrap bg-[#1C2541]/50 p-3 rounded-lg border border-[#3A506B]/50">
+                                    <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>あなたの解答</div>
+                                    <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800 bg-white' : 'text-[#E0E1DD] bg-[#1C2541]/50'} mb-3 md:mb-4 whitespace-pre-wrap p-3 rounded-lg border ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/50'}`}>
                                       {formatText(answers[sq.id] || '未解答')}
                                     </div>
-                                    <div className="text-[10px] md:text-xs text-[#7A8B99] mb-1">模範解答</div>
-                                    <div className="font-bold text-sm md:text-base text-[#5BC0BE] mb-3 md:mb-4 bg-[#5BC0BE]/10 p-3 rounded-lg border border-[#5BC0BE]/30">
-                                      {formatText(sq.correctAnswer)}
-                                    </div>
                                     
-                                    <div className="bg-[#1C2541]/50 p-3 md:p-4 rounded-lg border border-[#A9CCE3]/30 shadow-sm mt-2">
-                                      <div className="text-xs md:text-sm font-bold text-[#A9CCE3] mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2">
+                                    {sq.detailedExplanation ? (
+                                      <div className={`p-4 rounded-lg border text-sm mt-2 ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
+                                        <div className="mb-4">
+                                          <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題テーマ】</h5>
+                                          <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.theme}</p>
+                                        </div>
+                                        <div className="mb-4">
+                                          <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題タイプ】</h5>
+                                          <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.type}</p>
+                                        </div>
+                                        {getRelatedSteps(sq.id).length > 0 ? (
+                                          <div className="mb-4">
+                                            <h5 className="font-bold text-[#5BC0BE] mb-2">【関連する思考ステップ】</h5>
+                                            <div className="flex flex-wrap gap-2">
+                                              {getRelatedSteps(sq.id).map((stepInfo: { step: number | string | null, label: string }, idx: number) => (
+                                                <button
+                                                  key={idx}
+                                                  onClick={() => {
+                                                    setExpandedStep(stepInfo.label);
+                                                    document.getElementById('logical-tree-section')?.scrollIntoView({ behavior: 'smooth' });
+                                                  }}
+                                                  className="bg-[#3A506B]/30 hover:bg-[#3A506B]/50 text-[#5BC0BE] px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-[#5BC0BE]/30 flex items-center gap-1"
+                                                >
+                                                  <Network size={14} />
+                                                  {stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」` : `「${stepInfo.label}」`}を復習する
+                                                </button>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <ol className="list-none space-y-1.5 mb-4">
+                                            {sq.detailedExplanation.steps.map((step: string, idx: number) => (
+                                              <li key={idx} className="flex items-start gap-2">
+                                                <span className={`shrink-0 ${mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}`}></span>
+                                                <span>{step}</span>
+                                              </li>
+                                            ))}
+                                          </ol>
+                                        )}
+                                        <div className={`pt-3 border-t border-dashed ${mode === 'mini_test' ? 'border-gray-300' : 'border-[#3A506B]'}`}>
+                                          <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【解答】</h5>
+                                          <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
+                                            {formatText(sq.correctAnswer)}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <>
+                                        <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>模範解答</div>
+                                        <div className={`font-bold text-sm md:text-base mb-3 md:mb-4 p-3 rounded-lg border ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'}`}>
+                                          {formatText(sq.correctAnswer)}
+                                        </div>
+                                      </>
+                                    )}
+                                    
+                                    <div className={`${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/50 border-[#A9CCE3]/30'} p-3 md:p-4 rounded-lg border shadow-sm mt-2`}>
+                                      <div className={`text-xs md:text-sm font-bold mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2 ${mode === 'mini_test' ? 'text-blue-600' : 'text-[#A9CCE3]'}`}>
                                         <CheckSquare className="w-4 h-4 md:w-4 md:h-4" />
                                         <span>自己採点チェック（部分点基準）</span>
                                       </div>
@@ -694,10 +839,10 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                           const isChecked = selfGrades[criteriaId] || false;
                                           return (
                                             <label key={cIdx} className="flex items-start gap-2 md:gap-3 cursor-pointer group py-1 md:py-0" onClick={() => toggleGrade(criteriaId)}>
-                                              <div className={`mt-0.5 w-4 h-4 md:w-5 md:h-5 rounded border flex items-center justify-center transition-colors shrink-0 ${isChecked ? 'bg-[#5BC0BE] border-[#5BC0BE]' : 'border-[#3A506B] group-hover:border-[#5BC0BE] bg-[#0B132B]'}`}>
-                                                {isChecked && <CheckCircle2 className="text-[#0B132B] w-3 h-3 md:w-3.5 md:h-3.5" />}
+                                              <div className={`mt-0.5 w-4 h-4 md:w-5 md:h-5 rounded border flex items-center justify-center transition-colors shrink-0 ${isChecked ? (mode === 'mini_test' ? 'bg-blue-500 border-blue-500' : 'bg-[#5BC0BE] border-[#5BC0BE]') : (mode === 'mini_test' ? 'border-gray-300 group-hover:border-blue-500 bg-white' : 'border-[#3A506B] group-hover:border-[#5BC0BE] bg-[#0B132B]')}`}>
+                                                {isChecked && <CheckCircle2 className={`w-3 h-3 md:w-3.5 md:h-3.5 ${mode === 'mini_test' ? 'text-white' : 'text-[#0B132B]'}`} />}
                                               </div>
-                                              <span className={`text-xs md:text-sm leading-tight ${isChecked ? 'text-[#E0E1DD] font-medium' : 'text-[#7A8B99]'}`}>
+                                              <span className={`text-xs md:text-sm leading-tight ${isChecked ? (mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]') : 'text-[#7A8B99]'}`}>
                                                 {formatText(criteria)}
                                               </span>
                                             </label>
@@ -708,20 +853,70 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                   </div>
                                 ) : (
                                   <div className="flex flex-col gap-3 md:gap-4">
-                                    <div className="text-[10px] md:text-xs text-[#7A8B99] mb-1">あなたの解答</div>
-                                    <div className={`font-bold text-sm md:text-base p-3 rounded-lg border ${isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0] line-through opacity-80'}`}>
+                                    <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>あなたの解答</div>
+                                    <div className={`font-bold text-sm md:text-base p-3 rounded-lg border ${isCorrect ? (mode === 'mini_test' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]') : (mode === 'mini_test' ? 'bg-red-50 border-red-200 text-red-600 line-through opacity-80' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0] line-through opacity-80')}`}>
                                       {formatText(answers[sq.id] || '未解答')}
                                     </div>
-                                    {!isCorrect && (
-                                      <div className="mt-2">
-                                        <div className="text-[10px] md:text-xs text-[#7A8B99] mb-1">正解</div>
-                                        <div className="font-bold text-sm md:text-base text-[#5BC0BE] bg-[#5BC0BE]/10 p-3 rounded-lg border border-[#5BC0BE]/30">
-                                          {formatText(sq.correctAnswer)}
+                                    
+                                    {sq.detailedExplanation ? (
+                                      <div className={`p-4 rounded-lg border text-sm mt-2 ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
+                                        <div className="mb-4">
+                                          <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題テーマ】</h5>
+                                          <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.theme}</p>
+                                        </div>
+                                        <div className="mb-4">
+                                          <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題タイプ】</h5>
+                                          <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.type}</p>
+                                        </div>
+                                        {getRelatedSteps(sq.id).length > 0 ? (
+                                          <div className="mb-4">
+                                            <h5 className="font-bold text-[#5BC0BE] mb-2">【関連する思考ステップ】</h5>
+                                            <div className="flex flex-wrap gap-2">
+                                              {getRelatedSteps(sq.id).map((stepInfo: { step: number | string | null, label: string }, idx: number) => (
+                                                <button
+                                                  key={idx}
+                                                  onClick={() => {
+                                                    setExpandedStep(stepInfo.label);
+                                                    document.getElementById('logical-tree-section')?.scrollIntoView({ behavior: 'smooth' });
+                                                  }}
+                                                  className="bg-[#3A506B]/30 hover:bg-[#3A506B]/50 text-[#5BC0BE] px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-[#5BC0BE]/30 flex items-center gap-1"
+                                                >
+                                                  <Network size={14} />
+                                                  {stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」` : `「${stepInfo.label}」`}を復習する
+                                                </button>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <ol className="list-none space-y-1.5 mb-4">
+                                            {sq.detailedExplanation.steps.map((step: string, idx: number) => (
+                                              <li key={idx} className="flex items-start gap-2">
+                                                <span className={`shrink-0 ${mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}`}></span>
+                                                <span>{step}</span>
+                                              </li>
+                                            ))}
+                                          </ol>
+                                        )}
+                                        <div className={`pt-3 border-t border-dashed ${mode === 'mini_test' ? 'border-gray-300' : 'border-[#3A506B]'}`}>
+                                          <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【解答】</h5>
+                                          <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
+                                            {formatText(sq.correctAnswer)}
+                                          </div>
                                         </div>
                                       </div>
+                                    ) : (
+                                      !isCorrect && (
+                                        <div className="mt-2">
+                                          <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正解</div>
+                                          <div className={`font-bold text-sm md:text-base p-3 rounded-lg border ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'}`}>
+                                            {formatText(sq.correctAnswer)}
+                                          </div>
+                                        </div>
+                                      )
                                     )}
+
                                     {sq.partialCreditCriteria && (
-                                      <div className="mt-2 md:mt-3 text-[10px] md:text-xs bg-[#F9E79F]/10 text-[#F9E79F] p-3 rounded-lg border border-[#F9E79F]/30 flex items-start gap-2">
+                                      <div className={`mt-2 md:mt-3 text-[10px] md:text-xs p-3 rounded-lg border flex items-start gap-2 ${mode === 'mini_test' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-[#F9E79F]/10 text-[#F9E79F] border-[#F9E79F]/30'}`}>
                                         <AlertCircle className="shrink-0 mt-0.5 w-4 h-4" />
                                         <span className="leading-relaxed">{formatText(sq.partialCreditCriteria)}</span>
                                       </div>
@@ -772,12 +967,12 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                           }`}>
                             {formatText(explanationText)}
                           </div>
-                          {mode === 'practice' && deepThoughtData && (
-                            <div className="mt-4 pt-4 border-t border-[#3A506B]/50">
-                              <h5 className="text-xs font-bold text-[#A9CCE3] mb-2">解答に必要なロジックツリーのStep:</h5>
+                          {deepThoughtData && (
+                            <div className={`mt-4 pt-4 border-t ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/50'}`}>
+                              <h5 className={`text-xs font-bold mb-2 ${mode === 'mini_test' ? 'text-gray-600' : 'text-[#A9CCE3]'}`}>解答に必要なロジックツリーのStep:</h5>
                               <div className="flex flex-wrap gap-2">
                                 {deepThoughtData.phase1.steps.map((step: any, idx: number) => (
-                                  <span key={idx} className="bg-[#1C2541] text-[#A9CCE3] text-[10px] px-2 py-1 rounded border border-[#3A506B]/50">
+                                  <span key={idx} className={`text-[10px] px-2 py-1 rounded border ${mode === 'mini_test' ? 'bg-gray-100 text-gray-700 border-gray-300' : 'bg-[#1C2541] text-[#A9CCE3] border-[#3A506B]/50'}`}>
                                     {step.step}
                                   </span>
                                 ))}
@@ -794,23 +989,23 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
           </div>
 
           {/* Stumbling Points (from deep_thought) */}
-          {mode === 'practice' && deepThoughtData && deepThoughtData.phase2.stumblingPoints && deepThoughtData.phase2.stumblingPoints.length > 0 && (
-            <div className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50 bg-[#1C2541]/20">
-              <h4 className="text-[#D9A0A0] font-bold mb-4 text-base md:text-lg flex items-center gap-2">
+          {deepThoughtData && deepThoughtData.phase2.stumblingPoints && deepThoughtData.phase2.stumblingPoints.length > 0 && (
+            <div className={`p-4 sm:p-6 md:p-8 border-b ${mode === 'mini_test' ? 'border-gray-200 bg-gray-50' : 'border-[#3A506B]/50 bg-[#1C2541]/20'}`}>
+              <h4 className={`font-bold mb-4 text-base md:text-lg flex items-center gap-2 ${mode === 'mini_test' ? 'text-red-600' : 'text-[#D9A0A0]'}`}>
                 <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" />
                 つまずきポイント
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {deepThoughtData.phase2.stumblingPoints.map((point: any, idx: number) => (
-                  <div key={idx} className="bg-[#D9A0A0]/10 p-4 sm:p-5 rounded-xl border border-[#D9A0A0]/30 shadow-sm relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-[#D9A0A0]"></div>
+                  <div key={idx} className={`p-4 sm:p-5 rounded-xl border shadow-sm relative overflow-hidden ${mode === 'mini_test' ? 'bg-red-50 border-red-200' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30'}`}>
+                    <div className={`absolute top-0 left-0 w-1.5 h-full ${mode === 'mini_test' ? 'bg-red-500' : 'bg-[#D9A0A0]'}`}></div>
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="bg-[#D9A0A0]/20 text-[#D9A0A0] text-xs font-bold px-2 py-0.5 rounded border border-[#D9A0A0]/30">
+                      <div className={`text-xs font-bold px-2 py-0.5 rounded border ${mode === 'mini_test' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
                         {point.step}
                       </div>
-                      <h5 className="font-bold text-sm md:text-base text-[#D9A0A0]">{point.type || point.point}</h5>
+                      <h5 className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-red-700' : 'text-[#D9A0A0]'}`}>{point.type || point.point}</h5>
                     </div>
-                    <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
+                    <div className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
                       {formatText(point.content || point.reason)}
                     </div>
                   </div>
@@ -829,18 +1024,18 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
 
               return (
                 <div key={`extra-${question.id}`} className="space-y-6">
-                  <div className="flex items-center gap-3 border-b border-[#3A506B]/30 pb-2">
-                    <div className="bg-[#5BC0BE]/20 text-[#5BC0BE] border border-[#5BC0BE]/30 font-bold px-2 py-0.5 rounded text-xs shadow-sm">
+                  <div className={`flex items-center gap-3 border-b pb-2 ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/30'}`}>
+                    <div className={`font-bold px-2 py-0.5 rounded text-xs shadow-sm border ${mode === 'mini_test' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'}`}>
                       Q{qIndex + 1}
                     </div>
-                    <h4 className="font-bold text-sm md:text-base text-[#E0E1DD] opacity-80">
+                    <h4 className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD] opacity-80'}`}>
                       周辺知識・深掘り
                     </h4>
                   </div>
 
                   {hasKnowledge && (
                     <div>
-                      <h5 className="font-bold text-xs md:text-sm text-[#A9CCE3] mb-3 md:mb-4 flex items-center gap-1.5 md:gap-2">
+                      <h5 className={`font-bold text-xs md:text-sm mb-3 md:mb-4 flex items-center gap-1.5 md:gap-2 ${mode === 'mini_test' ? 'text-blue-600' : 'text-[#A9CCE3]'}`}>
                         <BookOpen className="w-4 h-4 md:w-5 md:h-5" />
                         <span>周辺知識・類似問題</span>
                       </h5>
@@ -849,20 +1044,20 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                           const titleMatch = k.match(/^(【.*?】)(.*)/s);
                           if (titleMatch) {
                             return (
-                              <div key={idx} className="bg-[#1C2541]/50 p-4 md:p-5 rounded-xl border border-[#A9CCE3]/30 shadow-sm relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1.5 h-full bg-[#A9CCE3]"></div>
-                                <div className="inline-flex items-center gap-1.5 bg-[#A9CCE3]/10 text-[#A9CCE3] text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border border-[#A9CCE3]/20">
+                              <div key={idx} className={`p-4 md:p-5 rounded-xl border shadow-sm relative overflow-hidden ${mode === 'mini_test' ? 'bg-blue-50 border-blue-200' : 'bg-[#1C2541]/50 border-[#A9CCE3]/30'}`}>
+                                <div className={`absolute top-0 left-0 w-1.5 h-full ${mode === 'mini_test' ? 'bg-blue-400' : 'bg-[#A9CCE3]'}`}></div>
+                                <div className={`inline-flex items-center gap-1.5 text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border ${mode === 'mini_test' ? 'bg-white text-blue-600 border-blue-200' : 'bg-[#A9CCE3]/10 text-[#A9CCE3] border-[#A9CCE3]/20'}`}>
                                   <BookOpen size={14} />
                                   {titleMatch[1].replace(/[【】]/g, '')}
                                 </div>
-                                <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
+                                <div className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
                                   {formatText(titleMatch[2].trim())}
                                 </div>
                               </div>
                             );
                           }
                           return (
-                            <div key={idx} className="bg-[#1C2541]/50 p-4 md:p-5 rounded-xl border border-[#3A506B]/50 shadow-sm text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
+                            <div key={idx} className={`p-4 md:p-5 rounded-xl border shadow-sm text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-700' : 'bg-[#1C2541]/50 border-[#3A506B]/50 text-[#E0E1DD]/90'}`}>
                               {formatText(k)}
                             </div>
                           );
@@ -873,7 +1068,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
 
                   {hasDeepDive && (
                     <div className="mt-6 md:mt-8">
-                      <h5 className="font-bold text-xs md:text-sm text-[#D9A0A0] mb-3 md:mb-4 flex items-center gap-1.5 md:gap-2">
+                      <h5 className={`font-bold text-xs md:text-sm mb-3 md:mb-4 flex items-center gap-1.5 md:gap-2 ${mode === 'mini_test' ? 'text-amber-600' : 'text-[#D9A0A0]'}`}>
                         <Search className="w-4 h-4 md:w-5 md:h-5" />
                         <span>さらに深掘り</span>
                       </h5>
@@ -893,13 +1088,13 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                           }
 
                           return (
-                            <div key={idx} className="bg-[#D9A0A0]/10 p-4 md:p-5 rounded-xl border border-[#D9A0A0]/30 shadow-sm relative overflow-hidden">
-                              <div className="absolute top-0 left-0 w-1.5 h-full bg-[#D9A0A0]"></div>
-                              <div className="inline-flex items-center gap-1.5 bg-[#D9A0A0]/20 text-[#D9A0A0] text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border border-[#D9A0A0]/30">
+                            <div key={idx} className={`p-4 md:p-5 rounded-xl border shadow-sm relative overflow-hidden ${mode === 'mini_test' ? 'bg-amber-50 border-amber-200' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30'}`}>
+                              <div className={`absolute top-0 left-0 w-1.5 h-full ${mode === 'mini_test' ? 'bg-amber-400' : 'bg-[#D9A0A0]'}`}></div>
+                              <div className={`inline-flex items-center gap-1.5 text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border ${mode === 'mini_test' ? 'bg-white text-amber-600 border-amber-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
                                 <Lightbulb size={14} />
                                 {title}
                               </div>
-                              <div className="text-xs md:text-sm text-[#E0E1DD]/90 leading-relaxed whitespace-pre-wrap">
+                              <div className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
                                 {formatText(content)}
                               </div>
                             </div>
