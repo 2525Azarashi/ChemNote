@@ -35,16 +35,8 @@ const substanceTreeData: NodeData = {
               step: 1,
               explanation: '1種類の物質からなり、固有の化学式で表せるもの。',
               relatedQuestions: [
-                { id: 'q1_a', label: '問1(ア)' },
-                { id: 'q2_1', label: '問2(1)酸素' },
-                { id: 'q2_3', label: '問2(3)塩化ナトリウム' },
-                { id: 'q2_5', label: '問2(5)アンモニア' },
-                { id: 'q2_8', label: '問2(8)鉄' },
-                { id: 'q2_9', label: '問2(9)プロパン' },
-                { id: 'q2_11', label: '問2(11)水' },
-                { id: 'q2_13', label: '問2(13)キセノン' },
-                { id: 'q2_14', label: '問2(14)二酸化炭素' },
-                { id: 'q2_15', label: '問2(15)炭酸水素ナトリウム' }
+                { id: 'q1_a', label: '演習問題⓵－１(ア)' },
+                { id: 'p1_a', label: '類題⓵－１(ア)' }
               ],
               children: [
                 {
@@ -53,9 +45,14 @@ const substanceTreeData: NodeData = {
                   step: 1,
                   explanation: '1種類の元素からなる純物質。',
                   relatedQuestions: [
-                    { id: 'q2_1', label: '問2(1)酸素' },
-                    { id: 'q2_8', label: '問2(8)鉄' },
-                    { id: 'q2_13', label: '問2(13)キセノン' }
+                    { id: 'q1_c', label: '演習問題⓵－１(ウ)' },
+                    { id: 'q2_2', label: '演習問題⓵－２(2)' },
+                    { id: 'q2_5', label: '演習問題⓵－２(5)' },
+                    { id: 'p1_u', label: '類題⓵－１(ウ)' },
+                    { id: 'p1_e', label: '類題⓵－１(エ)' },
+                    { id: 'p2_1', label: '類題⓵－２(1)' },
+                    { id: 'p2_8', label: '類題⓵－２(8)' },
+                    { id: 'p2_13', label: '類題⓵－２(13)' }
                   ]
                 },
                 {
@@ -64,12 +61,16 @@ const substanceTreeData: NodeData = {
                   step: 1,
                   explanation: '2種類以上の元素からなる純物質。（例：水 H₂O、二酸化炭素 CO₂）',
                   relatedQuestions: [
-                    { id: 'q2_3', label: '問2(3)塩化ナトリウム' },
-                    { id: 'q2_5', label: '問2(5)アンモニア' },
-                    { id: 'q2_9', label: '問2(9)プロパン' },
-                    { id: 'q2_11', label: '問2(11)水' },
-                    { id: 'q2_14', label: '問2(14)二酸化炭素' },
-                    { id: 'q2_15', label: '問2(15)炭酸水素ナトリウム' }
+                    { id: 'q1_d', label: '演習問題⓵－１(エ)' },
+                    { id: 'q2_4', label: '演習問題⓵－２(4)' },
+                    { id: 'p1_u', label: '類題⓵－１(ウ)' },
+                    { id: 'p1_o', label: '類題⓵－１(オ)' },
+                    { id: 'p2_3', label: '類題⓵－２(3)' },
+                    { id: 'p2_5', label: '類題⓵－２(5)' },
+                    { id: 'p2_9', label: '類題⓵－２(9)' },
+                    { id: 'p2_11', label: '類題⓵－２(11)' },
+                    { id: 'p2_14', label: '類題⓵－２(14)' },
+                    { id: 'p2_15', label: '類題⓵－２(15)' }
                   ]
                 }
               ]
@@ -80,12 +81,17 @@ const substanceTreeData: NodeData = {
               step: 1,
               explanation: '複数の純物質が混ざったもの。化学式1つで表せない。（例：空気、海水）',
               relatedQuestions: [
-                { id: 'q2_2', label: '問2(2)海水' },
-                { id: 'q2_4', label: '問2(4)塩酸' },
-                { id: 'q2_6', label: '問2(6)空気' },
-                { id: 'q2_7', label: '問2(7)石油' },
-                { id: 'q2_10', label: '問2(10)ガソリン' },
-                { id: 'q2_12', label: '問2(12)木材' }
+                { id: 'q1_b', label: '演習問題⓵－１(イ)' },
+                { id: 'q2_1', label: '演習問題⓵－２(1)' },
+                { id: 'q2_3', label: '演習問題⓵－２(3)' },
+                { id: 'q2_6', label: '演習問題⓵－２(6)' },
+                { id: 'p1_a', label: '類題⓵－１(ア)' },
+                { id: 'p2_2', label: '類題⓵－２(2)' },
+                { id: 'p2_4', label: '類題⓵－２(4)' },
+                { id: 'p2_6', label: '類題⓵－２(6)' },
+                { id: 'p2_7', label: '類題⓵－２(7)' },
+                { id: 'p2_10', label: '類題⓵－２(10)' },
+                { id: 'p2_12', label: '類題⓵－２(12)' }
               ]
             }
           ]
@@ -105,7 +111,12 @@ const substanceTreeData: NodeData = {
           step: 2,
           explanation: '融点や沸点・密度などが物質ごとに一定となる',
           relatedQuestions: [
-            { id: 'q1_i', label: '問1(イ)' }
+            { id: 'q1_e', label: '演習問題⓵－１(オ)' },
+            { id: 'q4_1', label: '演習問題⓵－４(水のグラフ)' },
+            { id: 'q4_2', label: '演習問題⓵－４(エタノールのグラフ)' },
+            { id: 'p1_i', label: '類題⓵－１(イ)' },
+            { id: 'p4_1', label: '類題⓵－４(水のグラフ)' },
+            { id: 'p4_2', label: '類題⓵－４(エタノールのグラフ)' }
           ]
         },
         {
@@ -115,8 +126,11 @@ const substanceTreeData: NodeData = {
           step: 2,
           explanation: '混じっている物質の種類やその割合により、値が変化する',
           relatedQuestions: [
-            { id: 'q1_ki', label: '問1(キ)' },
-            { id: 'q1_ku', label: '問1(ク)' }
+            { id: 'q1_f', label: '演習問題⓵－１(カ)' },
+            { id: 'q4_3', label: '演習問題⓵－４(水とエタノールのグラフ)' },
+            { id: 'p1_ki', label: '類題⓵－１(キ)' },
+            { id: 'p1_ku', label: '類題⓵－１(ク)' },
+            { id: 'p4_3', label: '類題⓵－４(水とエタノールのグラフ)' }
           ]
         }
       ]
@@ -134,12 +148,13 @@ const substanceTreeData: NodeData = {
           step: 3,
           explanation: '1種類の元素からなる純物質。実際に存在し、直接触れることができる「実体」。（例：酸素 O₂、水素 H₂）',
           relatedQuestions: [
-            { id: 'q3_1', label: '問3(1)酸素吸入' },
-            { id: 'q3_4', label: '問3(4)飛行船に水素・ヘリウム' },
-            { id: 'q3_7', label: '問3(7)バッテリーにリチウム' },
-            { id: 'q3_8', label: '問3(8)水素が発生' },
-            { id: 'q3_9', label: '問3(9)鉄はさびやすい' },
-            { id: 'q3_10', label: '問3(10)空気の約78%は窒素' }
+            { id: 'q3_2', label: '演習問題⓵－３(2)' },
+            { id: 'q3_4', label: '演習問題⓵－３(4)' },
+            { id: 'p3_1', label: '類題⓵－３(1)' },
+            { id: 'p3_4', label: '類題⓵－３(4)' },
+            { id: 'p3_6', label: '類題⓵－３(6)' },
+            { id: 'p3_9', label: '類題⓵－３(9)' },
+            { id: 'p3_10', label: '類題⓵－３(10)' }
           ]
         },
         {
@@ -149,10 +164,13 @@ const substanceTreeData: NodeData = {
           step: 3,
           explanation: '物質の構成成分。直接触れることができない「概念」上のもの。（例：水に含まれる酸素）',
           relatedQuestions: [
-            { id: 'q3_2', label: '問3(2)水は水素と酸素から' },
-            { id: 'q3_3', label: '問3(3)骨や歯にカルシウム' },
-            { id: 'q3_5', label: '問3(5)ダイヤモンドは炭素の同素体' },
-            { id: 'q3_6', label: '問3(6)胃液に塩素' }
+            { id: 'q3_1', label: '演習問題⓵－３(1)' },
+            { id: 'q3_3', label: '演習問題⓵－３(3)' },
+            { id: 'p3_2', label: '類題⓵－３(2)' },
+            { id: 'p3_3', label: '類題⓵－３(3)' },
+            { id: 'p3_5', label: '類題⓵－３(5)' },
+            { id: 'p3_7', label: '類題⓵－３(7)' },
+            { id: 'p3_8', label: '類題⓵－３(8)' }
           ]
         }
       ]
@@ -350,7 +368,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
 
   const getRelatedSteps = (sqId: string) => {
     // Check substanceTreeData if it's the specific chapter
-    if (chapter.abstractTitle === "① 純物質と混合物") {
+    if (chapter.abstractTitle === "1章 物質の構成 - ① 純物質と混合物") {
       const steps: { step: number | string | null, label: string }[] = [];
       const findInTree = (node: NodeData) => {
         if (node.relatedQuestions?.some(q => q.id === sqId)) {

@@ -1,6 +1,102 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowDown, Beaker, Flame, Thermometer, Layers, Zap, ArrowRight, ChevronLeft } from 'lucide-react';
+import { InteractiveTree, NodeData } from './InteractiveTree';
+
+// 物質の分類ツリーデータ
+const substanceTreeData: NodeData = {
+  id: 'root',
+  label: '物質',
+  step: null,
+  children: [
+    {
+      id: 'step1_group',
+      label: '【Step1】物質の分類',
+      isGroup: true,
+      step: 1,
+      children: [
+        {
+          id: 'matter_elements',
+          label: '物質',
+          subLabel: '元素で構成',
+          step: 1,
+          children: [
+            {
+              id: 'pure',
+              label: '純物質',
+              step: 1,
+              explanation: '1種類の物質からなり、固有の化学式で表せるもの。',
+              children: [
+                {
+                  id: 'simple_1',
+                  label: '単体',
+                  step: 1,
+                  explanation: '1種類の元素からなる純物質。'
+                },
+                {
+                  id: 'compound',
+                  label: '化合物',
+                  step: 1,
+                  explanation: '2種類以上の元素からなる純物質。（例：水 H₂O、二酸化炭素 CO₂）'
+                }
+              ]
+            },
+            {
+              id: 'mixture',
+              label: '混合物',
+              step: 1,
+              explanation: '複数の純物質が混ざったもの。化学式1つで表せない。（例：空気、海水）'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step2_group',
+      label: '【Step2】純物質と混合物の性質',
+      isGroup: true,
+      step: 2,
+      children: [
+        {
+          id: 'pure_prop',
+          label: '純物質',
+          subLabel: '融点や沸点・密度などが物質ごとに一定となる',
+          step: 2,
+          explanation: '融点や沸点・密度などが物質ごとに一定となる'
+        },
+        {
+          id: 'mixture_prop',
+          label: '混合物',
+          subLabel: '混じっている物質の種類やその割合により、値が変化する',
+          step: 2,
+          explanation: '混じっている物質の種類やその割合により、値が変化する'
+        }
+      ]
+    },
+    {
+      id: 'step3_group',
+      label: '【Step3】単体と元素の区別',
+      isGroup: true,
+      step: 3,
+      children: [
+        {
+          id: 'simple_2',
+          label: '単体',
+          subLabel: '実際に存在し、直接触れることができる',
+          step: 3,
+          explanation: '1種類の元素からなる純物質。実際に存在し、直接触れることができる「実体」。（例：酸素 O₂、水素 H₂）'
+        },
+        {
+          id: 'element',
+          label: '元素',
+          subLabel: '物質の構成成分で、直接触れることができない',
+          step: 3,
+          explanation: '物質の構成成分。直接触れることができない「概念」上のもの。（例：水に含まれる酸素）'
+        }
+      ]
+    }
+  ]
+};
 
 interface FlowchartProps {
   onBack: () => void;
@@ -76,6 +172,10 @@ export function Flowchart({ onBack }: FlowchartProps) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#FDFBF7]">
+        <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+          <h3 className="text-lg font-bold mb-4 text-gray-800">ロジカルツリー</h3>
+          <InteractiveTree data={substanceTreeData} />
+        </div>
         <div className="relative">
           {/* Vertical Line */}
           <div className="absolute left-6 md:left-12 top-8 bottom-8 w-1 bg-gray-200 rounded-full hidden sm:block"></div>

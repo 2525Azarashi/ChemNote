@@ -6,7 +6,7 @@ export const chemistryData = {
       chapters: [
         {
           id: "c1_1",
-          abstractTitle: "① 純物質と混合物",
+          abstractTitle: "1章 物質の構成 - ① 純物質と混合物",
           realTitle: "1章 物質の構成",
           topics: ["純物質と混合物"],
           practiceProblems: [
