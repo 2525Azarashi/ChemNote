@@ -21,7 +21,7 @@ export const LogicalTree = () => {
             <div>
               <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
                 <Network className="w-7 h-7 text-indigo-600" />
-                思考ナビゲーション
+                ロジックツリー
               </h1>
               <p className="text-slate-500 text-sm mt-1">
                 化学の概念を論理的に整理し、関連する演習問題を確認できます。

@@ -81,7 +81,7 @@ export function Flowchart({ onBack }: FlowchartProps) {
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#FDFBF7]">
         <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-          <h3 className="text-lg font-bold mb-4 text-gray-800">ロジカルツリー</h3>
+          <h3 className="text-lg font-bold mb-4 text-gray-800">ロジックツリー</h3>
           <InteractiveTree data={substanceTreeData} />
         </div>
         <div className="relative">

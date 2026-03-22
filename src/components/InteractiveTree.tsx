@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, Info, Network } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { formatText } from '../utils/textFormatter';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -67,7 +68,7 @@ const TreeNode = ({ node, onSelect, selectedId, renderContent, onQuestionClick }
             whileTap={{ scale: 0.95 }}
             onClick={() => hasContent && onSelect(node)}
             className={cn(
-              "flex items-center justify-between w-full sm:w-64 px-4 py-3 rounded-xl border-2 transition-all duration-200",
+              "flex items-center justify-between w-64 px-4 py-3 rounded-xl border-2 transition-all duration-200",
               getStepStyles(node.step, isSelected),
               !hasContent && "cursor-default opacity-90"
             )}
@@ -96,9 +97,9 @@ const TreeNode = ({ node, onSelect, selectedId, renderContent, onQuestionClick }
                 {node.explanation && (
                   <div className="flex items-start gap-2 mb-4">
                     <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-                    <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">
-                      {node.explanation}
-                    </p>
+                    <div className="text-slate-700 text-sm leading-relaxed">
+                      {formatText(node.explanation)}
+                    </div>
                   </div>
                 )}
                 {node.relatedQuestions && node.relatedQuestions.length > 0 && (
@@ -148,42 +149,61 @@ interface InteractiveTreeProps {
   renderContent?: (nodeId: string) => React.ReactNode;
   onQuestionClick?: (questionId: string) => void;
   expandedStep?: string | null;
+  expandedNodeId?: string | null;
 }
 
-export function InteractiveTree({ data, renderContent, onQuestionClick, expandedStep }: InteractiveTreeProps) {
+export function InteractiveTree({ data, renderContent, onQuestionClick, expandedStep, expandedNodeId }: InteractiveTreeProps) {
   const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
 
   useEffect(() => {
-    if (expandedStep) {
-      // Find node by label
-      const findNode = (node: NodeData): NodeData | null => {
-        if (node.label === expandedStep) return node;
+    if (expandedNodeId) {
+      const findNodeById = (node: NodeData): NodeData | null => {
+        if (node.id === expandedNodeId) return node;
         if (node.children) {
           for (const child of node.children) {
-            const found = findNode(child);
+            const found = findNodeById(child);
             if (found) return found;
           }
         }
         return null;
       };
-      const node = findNode(data);
+      const node = findNodeById(data);
+      if (node) {
+        setSelectedNode(node);
+        return;
+      }
+    }
+
+    if (expandedStep) {
+      // Find node by label
+      const findNodeByLabel = (node: NodeData): NodeData | null => {
+        if (node.label === expandedStep) return node;
+        if (node.children) {
+          for (const child of node.children) {
+            const found = findNodeByLabel(child);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+      const node = findNodeByLabel(data);
       if (node) {
         setSelectedNode(node);
       }
     }
-  }, [expandedStep, data]);
+  }, [expandedStep, expandedNodeId, data]);
 
   const handleSelect = (node: NodeData) => {
     setSelectedNode(prev => prev?.id === node.id ? null : node);
   };
 
   return (
-    <div className="w-full bg-slate-50 rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-inner relative overflow-hidden">
+    <div className="w-full bg-slate-50 rounded-2xl p-2 sm:p-6 md:p-8 border border-slate-200 shadow-inner relative">
       {/* Header */}
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <h4 className="text-slate-800 font-bold flex items-center gap-2 text-base md:text-lg">
           <Network className="w-5 h-5 text-blue-500" />
-          思考ナビゲーション
+          ロジックツリー
         </h4>
         <div className="flex gap-3 text-xs font-bold">
           <div className="flex items-center gap-1.5 text-orange-700 bg-orange-100 px-2 py-1 rounded-md border border-orange-200">
@@ -202,7 +222,7 @@ export function InteractiveTree({ data, renderContent, onQuestionClick, expanded
       </div>
 
       {/* Tree Container */}
-      <div className="overflow-x-auto pb-8">
+      <div className="overflow-x-auto pb-8 touch-pan-x">
         <div className="min-w-max pr-8">
           <TreeNode node={data} onSelect={handleSelect} selectedId={selectedNode?.id || null} renderContent={renderContent} onQuestionClick={onQuestionClick} />
         </div>

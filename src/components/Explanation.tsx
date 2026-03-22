@@ -19,6 +19,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
   const [expandedSq, setExpandedSq] = useState<string | null>(null);
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
+  const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
 
   const stepColors: Record<string, string> = {
@@ -193,7 +194,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     for (const q of questions) {
       try {
         const parsed = JSON.parse(q.explanation);
-        if (parsed && parsed.type === 'deep_thought') {
+        if (parsed && parsed.type === 'logic_thought') {
           return parsed;
         }
       } catch (e) {
@@ -206,10 +207,10 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
   const getRelatedSteps = (sqId: string) => {
     // Check substanceTreeData if it's the specific chapter
     if (chapter.abstractTitle === "① 純物質と混合物") {
-      const steps: { step: number | string | null, label: string }[] = [];
+      const steps: { step: number | string | null, label: string, id: string }[] = [];
       const findInTree = (node: NodeData) => {
         if (node.relatedQuestions?.some(q => q.id === sqId)) {
-          steps.push({ step: node.step, label: node.label });
+          steps.push({ step: node.step, label: node.label, id: node.id });
         }
         if (node.children) {
           node.children.forEach(findInTree);
@@ -222,7 +223,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     if (!deepThoughtData?.phase2?.explanations) return [];
     return deepThoughtData.phase2.explanations
       .filter((exp: any) => exp.subQuestionIds?.includes(sqId))
-      .map((exp: any) => ({ step: null, label: exp.step }));
+      .map((exp: any) => ({ step: null, label: exp.step, id: exp.step }));
   };
 
   const renderSubQuestionCheck = (sq: any) => {
@@ -273,12 +274,13 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
               
               {relatedSteps.length > 0 ? (
                 <div className="mb-4">
-                  <h5 className={`font-bold mb-2 text-xs ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>【関連する思考ステップ】</h5>
+                  <h5 className={`font-bold mb-2 text-xs ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>【関連するロジックステップ】</h5>
                   <div className="flex flex-wrap gap-2">
-                    {relatedSteps.map((stepInfo: { step: number | string | null, label: string }, idx: number) => (
+                    {relatedSteps.map((stepInfo: { step: number | string | null, label: string, id: string }, idx: number) => (
                       <button
                         key={idx}
                         onClick={() => {
+                          setExpandedNodeId(stepInfo.id);
                           setExpandedStep(stepInfo.label);
                           document.getElementById('logical-tree-section')?.scrollIntoView({ behavior: 'smooth' });
                         }}
@@ -484,7 +486,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                 <>
                   <h4 className="font-bold mb-3 flex items-center gap-2 text-sm md:text-base text-[#5BC0BE]">
                     <Network className="w-4 h-4 md:w-5 md:h-5" />
-                    思考グラフ (ロジカルツリー)
+                    ロジックツリー
                   </h4>
                   <div className="text-xs md:text-sm overflow-x-auto p-4 rounded-lg border text-[#E0E1DD]/80 bg-[#0B132B]/50 border-[#3A506B]/30">
                     {deepThoughtData.phase1.tree.split('\n').map((line: string, i: number) => {
@@ -515,7 +517,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                 解説と答え合わせ
                               </h6>
                               <div className="text-sm mb-4 text-[#E0E1DD]">
-                                {expData.content}
+                                {formatText(expData.content)}
                               </div>
                               {stepSubQuestions.length > 0 && (
                                 <div className="space-y-3">
@@ -640,7 +642,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                         </div>
                                         {getRelatedSteps(sq.id).length > 0 ? (
                                           <div className="mb-4">
-                                            <h5 className="font-bold text-[#5BC0BE] mb-2">【関連する思考ステップ】</h5>
+                                            <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
                                             <div className="flex flex-wrap gap-2">
                                               {getRelatedSteps(sq.id).map((stepInfo: { step: number | string | null, label: string }, idx: number) => (
                                                 <button
@@ -725,7 +727,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                         </div>
                                         {getRelatedSteps(sq.id).length > 0 ? (
                                           <div className="mb-4">
-                                            <h5 className="font-bold text-[#5BC0BE] mb-2">【関連する思考ステップ】</h5>
+                                            <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
                                             <div className="flex flex-wrap gap-2">
                                               {getRelatedSteps(sq.id).map((stepInfo: { step: number | string | null, label: string }, idx: number) => (
                                                 <button
@@ -785,16 +787,16 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                       })}
                     </div>
 
-                    {/* Normal Explanation (if not deep_thought or if mini_test) */}
+                    {/* Normal Explanation (if not logic_thought or if mini_test) */}
                     {(() => {
                       let explanationText = question.explanation;
                       let stepInfo = null;
 
                       try {
                         const parsed = JSON.parse(question.explanation);
-                        if (parsed && parsed.type === 'deep_thought') {
+                        if (parsed && parsed.type === 'logic_thought') {
                           if (mode === 'mini_test') {
-                            // For mini_test, extract explanation from deep_thought JSON
+                            // For mini_test, extract explanation from logic_thought JSON
                             explanationText = parsed.phase2.explanations.map((ex: any) => ex.content).join('\n\n');
                           } else {
                             // For practice, we use deepThoughtData globally, so we can return null here
@@ -843,7 +845,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
             </div>
           </div>
 
-          {/* Stumbling Points (from deep_thought) */}
+          {/* Stumbling Points (from logic_thought) */}
           {deepThoughtData && deepThoughtData.phase2.stumblingPoints && deepThoughtData.phase2.stumblingPoints.length > 0 && (
             <div className={`p-4 sm:p-6 md:p-8 border-b ${mode === 'mini_test' ? 'border-gray-200 bg-gray-50' : 'border-[#3A506B]/50 bg-[#1C2541]/20'}`}>
               <h4 className={`font-bold mb-4 text-base md:text-lg flex items-center gap-2 ${mode === 'mini_test' ? 'text-red-600' : 'text-[#D9A0A0]'}`}>
