@@ -1033,9 +1033,9 @@ export const substanceTreeData: NodeData = {
           step: 1,
           explanation: '<u>1種類の物質</u>だけでできているもの。固有の性質（融点・沸点・密度など）を持ち、<u>一つの化学式</u>で書くことができます。',
           relatedQuestions: [
-            { id: 'q1_a', label: '演習問題⓵－１(ア)' },
-            { id: 'q1_b', label: '演習問題⓵－１(イ)' },
-            { id: 'q1_d', label: '演習問題⓵－１(エ)' }
+            { id: 'p1_a', label: '演習問題⓵－１(ア)' },
+            { id: 'p1_i', label: '演習問題⓵－１(イ)' },
+            { id: 'p1_e', label: '演習問題⓵－１(エ)' }
           ],
           children: [
             {
@@ -1045,8 +1045,10 @@ export const substanceTreeData: NodeData = {
               subLabel: '1種類の元素',
               explanation: '<u>1種類の元素</u>からなる純物質。（例：酸素 O2、窒素 N2、鉄 Fe）',
               relatedQuestions: [
-                { id: 'q1_c', label: '演習問題⓵－１(ウ)' },
-                { id: 'p1_u', label: '類題⓵－１(ウ)' }
+                { id: 'p1_u', label: '演習問題⓵－１(ウ)' },
+                { id: 'p2_1', label: '問2(1) 酸素' },
+                { id: 'p2_8', label: '問2(8) 鉄' },
+                { id: 'p2_13', label: '問2(13) キセノン' }
               ]
             },
             {
@@ -1056,7 +1058,13 @@ export const substanceTreeData: NodeData = {
               subLabel: '2種類以上の元素',
               explanation: '<u>2種類以上の元素</u>からなる純物質。（例：水 H2O、塩化ナトリウム NaCl）',
               relatedQuestions: [
-                { id: 'q1_f', label: '演習問題⓵－１(カ)' }
+                { id: 'p1_o', label: '演習問題⓵－１(オ)' },
+                { id: 'p2_3', label: '問2(3) 塩化ナトリウム' },
+                { id: 'p2_5', label: '問2(5) アンモニア' },
+                { id: 'p2_9', label: '問2(9) プロパン' },
+                { id: 'p2_11', label: '問2(11) 水' },
+                { id: 'p2_14', label: '問2(14) 二酸化炭素' },
+                { id: 'p2_15', label: '問2(15) 炭酸水素ナトリウム' }
               ]
             }
           ]
@@ -1068,8 +1076,14 @@ export const substanceTreeData: NodeData = {
           step: 1,
           explanation: '<u>2種類以上の純物質</u>が混じり合ったもの。<u>一つの化学式で書くことができません</u>。（例：空気、海水、石油、塩酸、食塩水）',
           relatedQuestions: [
-            { id: 'q1_g', label: '演習問題⓵－１(キ)' },
-            { id: 'q1_h', label: '演習問題⓵－１(ク)' }
+            { id: 'p1_ki', label: '演習問題⓵－１(キ)' },
+            { id: 'p1_ku', label: '演習問題⓵－１(ク)' },
+            { id: 'p2_2', label: '問2(2) 海水' },
+            { id: 'p2_4', label: '問2(4) 塩酸' },
+            { id: 'p2_6', label: '問2(6) 空気' },
+            { id: 'p2_7', label: '問2(7) 石油' },
+            { id: 'p2_10', label: '問2(10) ガソリン' },
+            { id: 'p2_12', label: '問2(12) 木材' }
           ]
         }
       ]
@@ -1087,8 +1101,7 @@ export const substanceTreeData: NodeData = {
           step: 2,
           explanation: '融点や沸点、密度などが物質ごとに<u>一定</u>となります。',
           relatedQuestions: [
-            { id: 'q1_e', label: '演習問題⓵－１(オ)' },
-            { id: 'q4_1', label: '演習問題⓵－４(水のグラフ)' }
+            { id: 'p1_ke', label: '演習問題⓵－１(ケ)' }
           ]
         },
         {
@@ -1098,7 +1111,7 @@ export const substanceTreeData: NodeData = {
           step: 2,
           explanation: '混じっている物質の種類やその割合により、融点や沸点などの値が<u>変化</u>します。\n例）水とエタノールの混合物を加熱すると、沸騰している間も温度が上昇し続けます。',
           relatedQuestions: [
-            { id: 'q4_3', label: '演習問題⓵－４(水とエタノールのグラフ)' }
+            { id: 'p1_ka', label: '演習問題⓵－１(カ)' }
           ]
         }
       ]
@@ -1141,6 +1154,16 @@ export const substanceTreeData: NodeData = {
             { id: 'p3_3', label: '類題⓵－３(3)' },
             { id: 'p3_6', label: '類題⓵－３(6)' },
             { id: 'p3_7', label: '類題⓵－３(7)' }
+          ]
+        },
+        {
+          id: 'separation_1',
+          label: '分離・精製',
+          step: 3,
+          explanation: '混合物から純物質を取り出す操作。\n・物理的方法：ろ過、蒸留、再結晶、抽出、昇華法など\n・化学的方法：電気分解など',
+          relatedQuestions: [
+            { id: 'p1_ko', label: '演習問題⓵－１(コ)' },
+            { id: 'p1_sa', label: '演習問題⓵－１(サ)' }
           ]
         },
         {

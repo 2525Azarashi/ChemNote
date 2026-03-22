@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, Edit3, ArrowLeft } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
+import { InteractiveLogicTree } from './InteractiveLogicTree';
+import { substanceTreeData } from '../data/chemistryData';
+import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
 
 interface QuizProps {
   mode: 'mini_test' | 'practice';
@@ -100,50 +103,86 @@ export function Quiz({ mode, chapter, onFinish, onBack }: QuizProps) {
             {formatText(currentQuestion.text)}
           </div>
 
+          {/* Problem Logic Tree */}
+          {currentQuestion.relatedSteps && currentQuestion.relatedSteps.length > 0 && (
+            <div className="mb-8">
+              <InteractiveLogicTree 
+                data={substanceTreeData} 
+                step={String(currentQuestion.relatedSteps[0].step)}
+                focusNode={currentQuestion.relatedSteps[0].id}
+                zoom="far"
+                mobileTightCrop={true}
+              />
+            </div>
+          )}
+
           <div className="space-y-4">
             {currentQuestion.subQuestions.map((sq: any) => (
-              <div key={sq.id} className="flex flex-col lg:flex-row lg:items-center gap-3 md:gap-4 bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-100">
-                <span className="font-bold text-[#1B2631] min-w-[60px] text-center bg-gray-50 py-1 px-2 rounded-md text-xs md:text-sm self-start lg:self-auto">{sq.label}</span>
-                
-                {sq.type === 'multiple_choice' ? (
-                  <div className="flex flex-wrap gap-2 md:gap-3">
-                    {sq.options.map((opt: string) => (
-                      <button
-                        key={opt}
-                        onClick={() => handleOptionSelect(sq.id, opt)}
-                        className={`px-3 py-1.5 md:px-4 md:py-1.5 rounded-full font-bold text-xs md:text-sm transition-all duration-200 border-2 flex items-center justify-center flex-1 sm:flex-none min-w-[80px]
-                          ${answers[sq.id] === opt 
-                            ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] shadow-md scale-[1.02] md:scale-105' 
-                            : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3] hover:text-[#A9CCE3]'
-                          }`}
-                      >
-                        {formatText(opt)}
-                      </button>
-                    ))}
-                  </div>
-                ) : sq.type === 'descriptive' ? (
-                  <div className="flex-1 relative w-full">
-                    <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
-                    <textarea
-                      value={answers[sq.id] || ''}
-                      onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                      placeholder="解答を入力..."
-                      rows={3}
-                      className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex-1 relative w-full">
-                    <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                    <input
-                      type="text"
-                      value={answers[sq.id] || ''}
-                      onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                      placeholder="解答を入力..."
-                      className="w-full pl-9 pr-4 py-2.5 md:py-2 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern"
-                    />
-                  </div>
-                )}
+              <div key={sq.id} className="flex flex-col gap-3 md:gap-4 bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-3 md:gap-4">
+                  <span className="font-bold text-[#1B2631] min-w-[60px] text-center bg-gray-50 py-1 px-2 rounded-md text-xs md:text-sm self-start lg:self-auto">{sq.label}</span>
+                  
+                  {sq.type === 'multiple_choice' ? (
+                    <div className="flex flex-wrap gap-2 md:gap-3">
+                      {sq.options.map((opt: string) => (
+                        <button
+                          key={opt}
+                          onClick={() => handleOptionSelect(sq.id, opt)}
+                          className={`px-3 py-1.5 md:px-4 md:py-1.5 rounded-full font-bold text-xs md:text-sm transition-all duration-200 border-2 flex items-center justify-center flex-1 sm:flex-none min-w-[80px]
+                            ${answers[sq.id] === opt 
+                              ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] shadow-md scale-[1.02] md:scale-105' 
+                              : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3] hover:text-[#A9CCE3]'
+                            }`}
+                        >
+                          {formatText(opt)}
+                        </button>
+                      ))}
+                    </div>
+                  ) : sq.type === 'descriptive' ? (
+                    <div className="flex-1 relative w-full">
+                      <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
+                      <textarea
+                        value={answers[sq.id] || ''}
+                        onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                        placeholder="解答を入力..."
+                        rows={3}
+                        className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex-1 relative w-full">
+                      <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                      <input
+                        type="text"
+                        value={answers[sq.id] || ''}
+                        onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                        placeholder="解答を入力..."
+                        className="w-full pl-9 pr-4 py-2.5 md:py-2 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Logic Tree for sub-question */}
+                {(() => {
+                  const relatedSteps = getRelatedSteps(sq.id, currentQuestion);
+                  if (relatedSteps.length === 0) return null;
+                  
+                  const filteredData = filterTree(substanceTreeData, relatedSteps.map(s => s.id));
+                  if (!filteredData) return null;
+
+                  return (
+                    <div className="mt-2">
+                      <InteractiveLogicTree 
+                        data={filteredData} 
+                        step={String(relatedSteps[0].step)}
+                        focusNode={relatedSteps[0].id}
+                        zoom="far"
+                        mobileTightCrop={true}
+                      />
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </div>

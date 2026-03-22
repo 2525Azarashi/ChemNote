@@ -11,24 +11,11 @@ interface ExplanationProps {
 }
 
 import { InteractiveTree, NodeData } from './InteractiveTree';
+import { InteractiveLogicTree } from './InteractiveLogicTree';
 import { substanceTreeData } from '../data/chemistryData';
+import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
 
 // Substance Tree Data for Chapter 1 (Moved to chemistryData.ts)
-
-const filterTree = (node: NodeData, relatedNodeIds: string[]): NodeData | null => {
-  const isRelated = relatedNodeIds.includes(node.id);
-  const filteredChildren = node.children
-    ? node.children.map(child => filterTree(child, relatedNodeIds)).filter(child => child !== null) as NodeData[]
-    : [];
-  
-  if (isRelated || filteredChildren.length > 0) {
-    return {
-      ...node,
-      children: filteredChildren
-    };
-  }
-  return null;
-};
 
 const LogicTreeSnippet = ({ step, tree, mode }: { step: string, tree: string, mode: string }) => {
   if (!tree) return null;
@@ -748,15 +735,13 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                     {/* Problem Logic Tree */}
                     {question.relatedSteps && question.relatedSteps.length > 0 && (
                       <div className="mt-4">
-                        <div className="w-full overflow-x-auto">
-                          <div className="min-w-[800px] sm:min-w-full">
-                            <InteractiveTree 
-                              data={substanceTreeData} 
-                              expandedStep={String(question.relatedSteps[0].step)}
-                              expandedNodeId={question.relatedSteps[0].id}
-                            />
-                          </div>
-                        </div>
+                        <InteractiveLogicTree 
+                          data={substanceTreeData} 
+                          step={String(question.relatedSteps[0].step)}
+                          focusNode={question.relatedSteps[0].id}
+                          zoom="far"
+                          mobileTightCrop={true}
+                        />
                       </div>
                     )}
 
@@ -1036,10 +1021,12 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
 
                                       return (
                                         <div className="sticky top-4 scale-90 origin-top -mt-4 -mb-8">
-                                          <InteractiveTree 
+                                          <InteractiveLogicTree 
                                             data={filteredData} 
-                                            expandedStep={String(relatedSteps[0].step)}
-                                            expandedNodeId={relatedSteps[0].id}
+                                            step={String(relatedSteps[0].step)}
+                                            focusNode={relatedSteps[0].id}
+                                            zoom="far"
+                                            mobileTightCrop={true}
                                           />
                                         </div>
                                       );

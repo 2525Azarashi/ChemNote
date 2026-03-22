@@ -144,20 +144,37 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
   );
 };
 
-interface InteractiveTreeProps {
+export interface InteractiveTreeProps {
   data: NodeData;
   renderContent?: (nodeId: string) => React.ReactNode;
   onQuestionClick?: (questionId: string) => void;
   expandedStep?: string | null;
   expandedNodeId?: string | null;
   scrollTrigger?: number;
+  step?: string;
+  focusNode?: string;
+  zoom?: 'far' | 'normal';
+  mobileTightCrop?: boolean;
 }
 
-export function InteractiveTree({ data, renderContent, onQuestionClick, expandedStep, expandedNodeId, scrollTrigger }: InteractiveTreeProps) {
+export function InteractiveTree({ 
+  data, 
+  renderContent, 
+  onQuestionClick, 
+  expandedStep, 
+  expandedNodeId, 
+  scrollTrigger,
+  step,
+  focusNode,
+  zoom = 'normal',
+  mobileTightCrop = false
+}: InteractiveTreeProps) {
   const [expandedNodeIds, setExpandedNodeIds] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!expandedNodeId && !expandedStep && !scrollTrigger) return;
+    const effectiveExpandedStep = expandedStep || step || null;
+    const effectiveExpandedNodeId = expandedNodeId || focusNode || null;
+    if (!effectiveExpandedNodeId && !effectiveExpandedStep && !scrollTrigger) return;
 
     let targetNodeId: string | null = null;
 
@@ -231,7 +248,11 @@ export function InteractiveTree({ data, renderContent, onQuestionClick, expanded
   };
 
   return (
-    <div className="w-full bg-slate-50 rounded-2xl p-2 sm:p-6 md:p-8 border border-slate-200 shadow-inner relative">
+    <div className={cn(
+      "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300",
+      zoom === 'far' ? "scale-[0.75] origin-top" : "",
+      mobileTightCrop ? "p-1 sm:p-2 md:p-4" : "p-2 sm:p-6 md:p-8"
+    )}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <h4 className="text-slate-800 font-bold flex items-center gap-2 text-base md:text-lg">
