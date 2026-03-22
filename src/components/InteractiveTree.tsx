@@ -47,11 +47,11 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
     const groupBg = node.step === 1 ? 'bg-orange-50/50 border-orange-200' : node.step === 2 ? 'bg-emerald-50/50 border-emerald-200' : 'bg-blue-50/50 border-blue-200';
     const groupText = node.step === 1 ? 'text-orange-800' : node.step === 2 ? 'text-emerald-800' : 'text-blue-800';
     return (
-      <div className={cn("relative p-4 sm:p-6 rounded-2xl border-2 mb-6 mt-4", groupBg)}>
-        <div className={cn("absolute -top-3 left-4 px-3 py-1 bg-white rounded-full border-2 text-sm font-bold shadow-sm", groupBg, groupText)}>
+      <div className={cn("relative p-2 sm:p-3 rounded-xl border-2 mb-2 mt-1", groupBg)}>
+        <div className={cn("absolute -top-3 left-4 px-2 py-0.5 bg-white rounded-full border-2 text-xs font-bold shadow-sm", groupBg, groupText)}>
           {node.label}
         </div>
-        <div className="mt-2 flex flex-col gap-4">
+        <div className="mt-2 flex flex-col gap-2">
           {node.children?.map(child => (
             <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} />
           ))}
@@ -68,7 +68,7 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
             whileTap={{ scale: 0.95 }}
             onClick={() => hasContent && onSelect(node)}
             className={cn(
-              "flex items-center justify-between w-64 px-4 py-3 rounded-xl border-2 transition-all duration-200",
+              "flex items-center justify-between w-64 px-3 py-2 rounded-lg border-2 transition-all duration-200",
               getStepStyles(node.step, isSelected),
               !hasContent && "cursor-default opacity-90"
             )}

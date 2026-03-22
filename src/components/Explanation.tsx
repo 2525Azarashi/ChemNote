@@ -745,6 +745,21 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                       {formatText(question.text)}
                     </div>
 
+                    {/* Problem Logic Tree */}
+                    {question.relatedSteps && question.relatedSteps.length > 0 && (
+                      <div className="mt-4">
+                        <div className="w-full overflow-x-auto">
+                          <div className="min-w-[800px] sm:min-w-full">
+                            <InteractiveTree 
+                              data={substanceTreeData} 
+                              expandedStep={String(question.relatedSteps[0].step)}
+                              expandedNodeId={question.relatedSteps[0].id}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="space-y-3 md:space-y-4">
                       {question.subQuestions.map((sq: any) => {
                         const isCorrect = sq.type === 'descriptive' ? false : answers[sq.id] === sq.correctAnswer;
