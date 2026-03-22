@@ -1,3 +1,5 @@
+import { NodeData } from '../components/InteractiveTree';
+
 export const chemistryData = {
   parts: [
     {
@@ -6,7 +8,7 @@ export const chemistryData = {
       chapters: [
         {
           id: "c1_1",
-          abstractTitle: "1章 物質の構成 - ① 純物質と混合物",
+          abstractTitle: "① 純物質と混合物",
           realTitle: "1章 物質の構成",
           topics: ["純物質と混合物"],
           practiceProblems: [
@@ -962,6 +964,170 @@ export const chemistryData = {
         { id: "c4", abstractTitle: "セクション4：物質の変化と量", realTitle: "④物質量と化学反応式", topics: [], miniTest: [] },
         { id: "c5", abstractTitle: "セクション5：酸と塩基の反応", realTitle: "⑤酸と塩基", topics: [], miniTest: [] },
         { id: "c6", abstractTitle: "セクション6：電子のやり取り", realTitle: "⑥酸化還元反応", topics: [], miniTest: [] }
+      ]
+    }
+  ]
+};
+
+export const substanceTreeData: NodeData = {
+  id: 'root',
+  label: '物質',
+  step: null,
+  children: [
+    {
+      id: 'step1_group',
+      label: '【Step1】物質の分類',
+      isGroup: true,
+      step: 1,
+      children: [
+        {
+          id: 'matter_elements',
+          label: '物質',
+          subLabel: '元素で構成',
+          step: 1,
+          children: [
+            {
+              id: 'pure',
+              label: '純物質',
+              step: 1,
+              explanation: '1種類の物質からなり、固有の化学式で表せるもの。',
+              relatedQuestions: [
+                { id: 'q1_a', label: '演習問題⓵－１(ア)' },
+                { id: 'p1_a', label: '類題⓵－１(ア)' }
+              ],
+              children: [
+                {
+                  id: 'simple_1',
+                  label: '単体',
+                  step: 1,
+                  explanation: '1種類の元素からなる純物質。',
+                  relatedQuestions: [
+                    { id: 'q1_c', label: '演習問題⓵－１(ウ)' },
+                    { id: 'q2_2', label: '演習問題⓵－２(2)' },
+                    { id: 'q2_5', label: '演習問題⓵－２(5)' },
+                    { id: 'p1_u', label: '類題⓵－１(ウ)' },
+                    { id: 'p1_e', label: '類題⓵－１(エ)' },
+                    { id: 'p2_1', label: '類題⓵－２(1)' },
+                    { id: 'p2_8', label: '類題⓵－２(8)' },
+                    { id: 'p2_13', label: '類題⓵－２(13)' }
+                  ]
+                },
+                {
+                  id: 'compound',
+                  label: '化合物',
+                  step: 1,
+                  explanation: '2種類以上の元素からなる純物質。（例：水 H₂O、二酸化炭素 CO₂）',
+                  relatedQuestions: [
+                    { id: 'q1_d', label: '演習問題⓵－１(エ)' },
+                    { id: 'q2_4', label: '演習問題⓵－２(4)' },
+                    { id: 'p1_u', label: '類題⓵－１(ウ)' },
+                    { id: 'p1_o', label: '類題⓵－１(オ)' },
+                    { id: 'p2_3', label: '類題⓵－２(3)' },
+                    { id: 'p2_5', label: '類題⓵－２(5)' },
+                    { id: 'p2_9', label: '類題⓵－２(9)' },
+                    { id: 'p2_11', label: '類題⓵－２(11)' },
+                    { id: 'p2_14', label: '類題⓵－２(14)' },
+                    { id: 'p2_15', label: '類題⓵－２(15)' }
+                  ]
+                }
+              ]
+            },
+            {
+              id: 'mixture',
+              label: '混合物',
+              step: 1,
+              explanation: '複数の純物質が混ざったもの。化学式1つで表せない。（例：空気、海水）',
+              relatedQuestions: [
+                { id: 'q1_b', label: '演習問題⓵－１(イ)' },
+                { id: 'q2_1', label: '演習問題⓵－２(1)' },
+                { id: 'q2_3', label: '演習問題⓵－２(3)' },
+                { id: 'q2_6', label: '演習問題⓵－２(6)' },
+                { id: 'p1_a', label: '類題⓵－１(ア)' },
+                { id: 'p2_2', label: '類題⓵－２(2)' },
+                { id: 'p2_4', label: '類題⓵－２(4)' },
+                { id: 'p2_6', label: '類題⓵－２(6)' },
+                { id: 'p2_7', label: '類題⓵－２(7)' },
+                { id: 'p2_10', label: '類題⓵－２(10)' },
+                { id: 'p2_12', label: '類題⓵－２(12)' }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step2_group',
+      label: '【Step2】純物質と混合物の性質',
+      isGroup: true,
+      step: 2,
+      children: [
+        {
+          id: 'pure_prop',
+          label: '純物質',
+          subLabel: '融点や沸点・密度などが物質ごとに一定となる',
+          step: 2,
+          explanation: '融点や沸点・密度などが物質ごとに一定となる',
+          relatedQuestions: [
+            { id: 'q1_e', label: '演習問題⓵－１(オ)' },
+            { id: 'q4_1', label: '演習問題⓵－４(水のグラフ)' },
+            { id: 'q4_2', label: '演習問題⓵－４(エタノールのグラフ)' },
+            { id: 'p1_i', label: '類題⓵－１(イ)' },
+            { id: 'p4_1', label: '類題⓵－４(水のグラフ)' },
+            { id: 'p4_2', label: '類題⓵－４(エタノールのグラフ)' }
+          ]
+        },
+        {
+          id: 'mixture_prop',
+          label: '混合物',
+          subLabel: '混じっている物質の種類やその割合により、値が変化する',
+          step: 2,
+          explanation: '混じっている物質の種類やその割合により、値が変化する',
+          relatedQuestions: [
+            { id: 'q1_f', label: '演習問題⓵－１(カ)' },
+            { id: 'q4_3', label: '演習問題⓵－４(水とエタノールのグラフ)' },
+            { id: 'p1_ki', label: '類題⓵－１(キ)' },
+            { id: 'p1_ku', label: '類題⓵－１(ク)' },
+            { id: 'p4_3', label: '類題⓵－４(水とエタノールのグラフ)' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step3_group',
+      label: '【Step3】単体と元素の区別',
+      isGroup: true,
+      step: 3,
+      children: [
+        {
+          id: 'simple_2',
+          label: '単体',
+          subLabel: '実際に存在し、直接触れることができる',
+          step: 3,
+          explanation: '1種類の元素からなる純物質。実際に存在し、直接触れることができる「実体」。（例：酸素 O₂、水素 H₂）',
+          relatedQuestions: [
+            { id: 'q3_1', label: '演習問題⓵－３(1)' },
+            { id: 'q3_3', label: '演習問題⓵－３(3)' },
+            { id: 'q3_4', label: '演習問題⓵－３(4)' },
+            { id: 'q3_6', label: '演習問題⓵－３(6)' },
+            { id: 'p3_1', label: '類題⓵－３(1)' },
+            { id: 'p3_3', label: '類題⓵－３(3)' },
+            { id: 'p3_4', label: '類題⓵－３(4)' },
+            { id: 'p3_6', label: '類題⓵－３(6)' }
+          ]
+        },
+        {
+          id: 'element',
+          label: '元素',
+          subLabel: '物質を構成する成分。概念的なもの',
+          step: 3,
+          explanation: '物質を構成する成分。概念的なもの。（例：水は水素と酸素からなる）',
+          relatedQuestions: [
+            { id: 'q3_2', label: '演習問題⓵－３(2)' },
+            { id: 'q3_5', label: '演習問題⓵－３(5)' },
+            { id: 'p3_2', label: '類題⓵－３(2)' },
+            { id: 'p3_5', label: '類題⓵－３(5)' }
+          ]
+        }
       ]
     }
   ]

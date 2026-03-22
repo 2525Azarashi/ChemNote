@@ -11,172 +11,9 @@ interface ExplanationProps {
 }
 
 import { InteractiveTree, NodeData } from './InteractiveTree';
+import { substanceTreeData } from '../data/chemistryData';
 
-const substanceTreeData: NodeData = {
-  id: 'root',
-  label: '物質',
-  step: null,
-  children: [
-    {
-      id: 'step1_group',
-      label: '【Step1】物質の分類',
-      isGroup: true,
-      step: 1,
-      children: [
-        {
-          id: 'matter_elements',
-          label: '物質',
-          subLabel: '元素で構成',
-          step: 1,
-          children: [
-            {
-              id: 'pure',
-              label: '純物質',
-              step: 1,
-              explanation: '1種類の物質からなり、固有の化学式で表せるもの。',
-              relatedQuestions: [
-                { id: 'q1_a', label: '演習問題⓵－１(ア)' },
-                { id: 'p1_a', label: '類題⓵－１(ア)' }
-              ],
-              children: [
-                {
-                  id: 'simple_1',
-                  label: '単体',
-                  step: 1,
-                  explanation: '1種類の元素からなる純物質。',
-                  relatedQuestions: [
-                    { id: 'q1_c', label: '演習問題⓵－１(ウ)' },
-                    { id: 'q2_2', label: '演習問題⓵－２(2)' },
-                    { id: 'q2_5', label: '演習問題⓵－２(5)' },
-                    { id: 'p1_u', label: '類題⓵－１(ウ)' },
-                    { id: 'p1_e', label: '類題⓵－１(エ)' },
-                    { id: 'p2_1', label: '類題⓵－２(1)' },
-                    { id: 'p2_8', label: '類題⓵－２(8)' },
-                    { id: 'p2_13', label: '類題⓵－２(13)' }
-                  ]
-                },
-                {
-                  id: 'compound',
-                  label: '化合物',
-                  step: 1,
-                  explanation: '2種類以上の元素からなる純物質。（例：水 H₂O、二酸化炭素 CO₂）',
-                  relatedQuestions: [
-                    { id: 'q1_d', label: '演習問題⓵－１(エ)' },
-                    { id: 'q2_4', label: '演習問題⓵－２(4)' },
-                    { id: 'p1_u', label: '類題⓵－１(ウ)' },
-                    { id: 'p1_o', label: '類題⓵－１(オ)' },
-                    { id: 'p2_3', label: '類題⓵－２(3)' },
-                    { id: 'p2_5', label: '類題⓵－２(5)' },
-                    { id: 'p2_9', label: '類題⓵－２(9)' },
-                    { id: 'p2_11', label: '類題⓵－２(11)' },
-                    { id: 'p2_14', label: '類題⓵－２(14)' },
-                    { id: 'p2_15', label: '類題⓵－２(15)' }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 'mixture',
-              label: '混合物',
-              step: 1,
-              explanation: '複数の純物質が混ざったもの。化学式1つで表せない。（例：空気、海水）',
-              relatedQuestions: [
-                { id: 'q1_b', label: '演習問題⓵－１(イ)' },
-                { id: 'q2_1', label: '演習問題⓵－２(1)' },
-                { id: 'q2_3', label: '演習問題⓵－２(3)' },
-                { id: 'q2_6', label: '演習問題⓵－２(6)' },
-                { id: 'p1_a', label: '類題⓵－１(ア)' },
-                { id: 'p2_2', label: '類題⓵－２(2)' },
-                { id: 'p2_4', label: '類題⓵－２(4)' },
-                { id: 'p2_6', label: '類題⓵－２(6)' },
-                { id: 'p2_7', label: '類題⓵－２(7)' },
-                { id: 'p2_10', label: '類題⓵－２(10)' },
-                { id: 'p2_12', label: '類題⓵－２(12)' }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'step2_group',
-      label: '【Step2】純物質と混合物の性質',
-      isGroup: true,
-      step: 2,
-      children: [
-        {
-          id: 'pure_prop',
-          label: '純物質',
-          subLabel: '融点や沸点・密度などが物質ごとに一定となる',
-          step: 2,
-          explanation: '融点や沸点・密度などが物質ごとに一定となる',
-          relatedQuestions: [
-            { id: 'q1_e', label: '演習問題⓵－１(オ)' },
-            { id: 'q4_1', label: '演習問題⓵－４(水のグラフ)' },
-            { id: 'q4_2', label: '演習問題⓵－４(エタノールのグラフ)' },
-            { id: 'p1_i', label: '類題⓵－１(イ)' },
-            { id: 'p4_1', label: '類題⓵－４(水のグラフ)' },
-            { id: 'p4_2', label: '類題⓵－４(エタノールのグラフ)' }
-          ]
-        },
-        {
-          id: 'mixture_prop',
-          label: '混合物',
-          subLabel: '混じっている物質の種類やその割合により、値が変化する',
-          step: 2,
-          explanation: '混じっている物質の種類やその割合により、値が変化する',
-          relatedQuestions: [
-            { id: 'q1_f', label: '演習問題⓵－１(カ)' },
-            { id: 'q4_3', label: '演習問題⓵－４(水とエタノールのグラフ)' },
-            { id: 'p1_ki', label: '類題⓵－１(キ)' },
-            { id: 'p1_ku', label: '類題⓵－１(ク)' },
-            { id: 'p4_3', label: '類題⓵－４(水とエタノールのグラフ)' }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'step3_group',
-      label: '【Step3】単体と元素の区別',
-      isGroup: true,
-      step: 3,
-      children: [
-        {
-          id: 'simple_2',
-          label: '単体',
-          subLabel: '実際に存在し、直接触れることができる',
-          step: 3,
-          explanation: '1種類の元素からなる純物質。実際に存在し、直接触れることができる「実体」。（例：酸素 O₂、水素 H₂）',
-          relatedQuestions: [
-            { id: 'q3_2', label: '演習問題⓵－３(2)' },
-            { id: 'q3_4', label: '演習問題⓵－３(4)' },
-            { id: 'p3_1', label: '類題⓵－３(1)' },
-            { id: 'p3_4', label: '類題⓵－３(4)' },
-            { id: 'p3_6', label: '類題⓵－３(6)' },
-            { id: 'p3_9', label: '類題⓵－３(9)' },
-            { id: 'p3_10', label: '類題⓵－３(10)' }
-          ]
-        },
-        {
-          id: 'element',
-          label: '元素',
-          subLabel: '物質の構成成分で、直接触れることができない',
-          step: 3,
-          explanation: '物質の構成成分。直接触れることができない「概念」上のもの。（例：水に含まれる酸素）',
-          relatedQuestions: [
-            { id: 'q3_1', label: '演習問題⓵－３(1)' },
-            { id: 'q3_3', label: '演習問題⓵－３(3)' },
-            { id: 'p3_2', label: '類題⓵－３(2)' },
-            { id: 'p3_3', label: '類題⓵－３(3)' },
-            { id: 'p3_5', label: '類題⓵－３(5)' },
-            { id: 'p3_7', label: '類題⓵－３(7)' },
-            { id: 'p3_8', label: '類題⓵－３(8)' }
-          ]
-        }
-      ]
-    }
-  ]
-};
+// Substance Tree Data for Chapter 1 (Moved to chemistryData.ts)
 
 export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps) {
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
@@ -368,7 +205,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
 
   const getRelatedSteps = (sqId: string) => {
     // Check substanceTreeData if it's the specific chapter
-    if (chapter.abstractTitle === "1章 物質の構成 - ① 純物質と混合物") {
+    if (chapter.abstractTitle === "① 純物質と混合物") {
       const steps: { step: number | string | null, label: string }[] = [];
       const findInTree = (node: NodeData) => {
         if (node.relatedQuestions?.some(q => q.id === sqId)) {
@@ -632,9 +469,9 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
         <div className={`rounded-2xl shadow-lg overflow-clip border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`}>
           
           {/* Logical Tree (if exists) */}
-          {deepThoughtData && (
+          {deepThoughtData && mode === 'practice' && (
             <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50">
-              {chapter.abstractTitle === "① 純物質と混合物" ? (
+              {chapter.abstractTitle.includes("① 純物質と混合物") && mode === 'practice' ? (
                 <div className="space-y-4">
                   <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 text-sm text-slate-300">
                     <p className="mb-1"><span className="font-bold text-orange-400">「Step 1」</span>…演習問題⓵－１・演習問題⓵－２ で演習可能</p>
@@ -645,11 +482,11 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                 </div>
               ) : (
                 <>
-                  <h4 className={`font-bold mb-3 flex items-center gap-2 text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
+                  <h4 className="font-bold mb-3 flex items-center gap-2 text-sm md:text-base text-[#5BC0BE]">
                     <Network className="w-4 h-4 md:w-5 md:h-5" />
                     思考グラフ (ロジカルツリー)
                   </h4>
-                  <div className={`text-xs md:text-sm overflow-x-auto p-4 rounded-lg border ${mode === 'mini_test' ? 'text-gray-700 bg-gray-50 border-gray-200' : 'text-[#E0E1DD]/80 bg-[#0B132B]/50 border-[#3A506B]/30'}`}>
+                  <div className="text-xs md:text-sm overflow-x-auto p-4 rounded-lg border text-[#E0E1DD]/80 bg-[#0B132B]/50 border-[#3A506B]/30">
                     {deepThoughtData.phase1.tree.split('\n').map((line: string, i: number) => {
                       const branchMatch = line.match(/^([ │├─└]+)(.*)$/);
                       const branch = branchMatch ? branchMatch[1] : "";
@@ -666,18 +503,18 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                             <span>{branch}</span>
                             <button 
                               onClick={() => setExpandedStep(expandedStep === nodeText ? null : nodeText)}
-                              className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors shadow-sm ${expData ? (mode === 'mini_test' ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100" : "bg-[#3A506B]/20 text-[#E0E1DD] border-[#5BC0BE]/50 hover:bg-[#3A506B]/40") : (mode === 'mini_test' ? "bg-gray-100 text-gray-400 border-gray-200" : "bg-gray-500/10 text-gray-400 border-gray-500/20")}`}
+                              className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors shadow-sm ${expData ? "bg-[#3A506B]/20 text-[#E0E1DD] border-[#5BC0BE]/50 hover:bg-[#3A506B]/40" : "bg-gray-500/10 text-gray-400 border-gray-500/20"}`}
                             >
                               <span className="font-bold">{nodeText}</span>
                             </button>
                           </div>
                           {expandedStep === nodeText && expData && (
-                            <div className={`ml-8 mt-2 mb-4 p-4 rounded-xl border shadow-inner ${mode === 'mini_test' ? 'bg-white border-emerald-200' : 'bg-[#0B132B]/80 border-[#3A506B]'}`}>
-                              <h6 className={`text-sm font-bold mb-3 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
+                            <div className="ml-8 mt-2 mb-4 p-4 rounded-xl border shadow-inner bg-[#0B132B]/80 border-[#3A506B]">
+                              <h6 className="text-sm font-bold mb-3 flex items-center gap-2 text-[#5BC0BE]">
                                 <CheckCircle2 className="w-4 h-4" />
                                 解説と答え合わせ
                               </h6>
-                              <div className={`text-sm mb-4 ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>
+                              <div className="text-sm mb-4 text-[#E0E1DD]">
                                 {expData.content}
                               </div>
                               {stepSubQuestions.length > 0 && (
@@ -985,12 +822,12 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                           }`}>
                             {formatText(explanationText)}
                           </div>
-                          {deepThoughtData && (
-                            <div className={`mt-4 pt-4 border-t ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/50'}`}>
-                              <h5 className={`text-xs font-bold mb-2 ${mode === 'mini_test' ? 'text-gray-600' : 'text-[#A9CCE3]'}`}>解答に必要なロジックツリーのStep:</h5>
+                          {deepThoughtData && mode === 'practice' && (
+                            <div className="mt-4 pt-4 border-t border-[#3A506B]/50">
+                              <h5 className="text-xs font-bold mb-2 text-[#A9CCE3]">解答に必要なロジックツリーのStep:</h5>
                               <div className="flex flex-wrap gap-2">
                                 {deepThoughtData.phase1.steps.map((step: any, idx: number) => (
-                                  <span key={idx} className={`text-[10px] px-2 py-1 rounded border ${mode === 'mini_test' ? 'bg-gray-100 text-gray-700 border-gray-300' : 'bg-[#1C2541] text-[#A9CCE3] border-[#3A506B]/50'}`}>
+                                  <span key={idx} className="text-[10px] px-2 py-1 rounded border bg-[#1C2541] text-[#A9CCE3] border-[#3A506B]/50">
                                     {step.step}
                                   </span>
                                 ))}
