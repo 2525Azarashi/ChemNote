@@ -150,48 +150,77 @@ interface InteractiveTreeProps {
   onQuestionClick?: (questionId: string) => void;
   expandedStep?: string | null;
   expandedNodeId?: string | null;
+  scrollTrigger?: number;
 }
 
-export function InteractiveTree({ data, renderContent, onQuestionClick, expandedStep, expandedNodeId }: InteractiveTreeProps) {
+export function InteractiveTree({ data, renderContent, onQuestionClick, expandedStep, expandedNodeId, scrollTrigger }: InteractiveTreeProps) {
   const [expandedNodeIds, setExpandedNodeIds] = useState<string[]>([]);
 
   useEffect(() => {
-    if (expandedNodeId) {
-      const findNodeById = (node: NodeData): NodeData | null => {
-        if (node.id === expandedNodeId) return node;
-        if (node.children) {
-          for (const child of node.children) {
-            const found = findNodeById(child);
-            if (found) return found;
-          }
+    if (!expandedNodeId && !expandedStep && !scrollTrigger) return;
+
+    let targetNodeId: string | null = null;
+
+    const normalize = (s: string) => s.replace(/[\s【】]/g, '');
+
+    const findById = (node: NodeData, id: string, path: string[]): { node: NodeData, ancestors: string[] } | null => {
+      if (node.id === id) return { node, ancestors: path };
+      if (node.children) {
+        for (const child of node.children) {
+          const found = findById(child, id, [...path, node.id]);
+          if (found) return found;
         }
-        return null;
-      };
-      const node = findNodeById(data);
-      if (node && !expandedNodeIds.includes(node.id)) {
-        setExpandedNodeIds(prev => [...prev, node.id]);
-        return;
       }
+      return null;
+    };
+
+    const findByLabel = (node: NodeData, label: string, path: string[]): { node: NodeData, ancestors: string[] } | null => {
+      const nLabel = normalize(node.label);
+      const nTarget = normalize(label);
+      if (nLabel === nTarget || nLabel.includes(nTarget) || nTarget.includes(nLabel)) {
+        return { node, ancestors: path };
+      }
+      if (node.children) {
+        for (const child of node.children) {
+          const found = findByLabel(child, label, [...path, node.id]);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    let result = expandedNodeId ? findById(data, expandedNodeId, []) : null;
+    if (!result && expandedStep) {
+      result = findByLabel(data, expandedStep, []);
     }
 
-    if (expandedStep) {
-      // Find node by label
-      const findNodeByLabel = (node: NodeData): NodeData | null => {
-        if (node.label === expandedStep) return node;
-        if (node.children) {
-          for (const child of node.children) {
-            const found = findNodeByLabel(child);
-            if (found) return found;
-          }
-        }
-        return null;
-      };
-      const node = findNodeByLabel(data);
-      if (node && !expandedNodeIds.includes(node.id)) {
-        setExpandedNodeIds(prev => [...prev, node.id]);
-      }
+    if (result) {
+      const { node, ancestors } = result;
+      targetNodeId = node.id;
+      
+      // Expand all ancestors and the node itself to ensure it's visible
+      setExpandedNodeIds(prev => {
+        const next = new Set([...prev, ...ancestors, node.id]);
+        return Array.from(next);
+      });
     }
-  }, [expandedStep, expandedNodeId, data]);
+
+    if (targetNodeId) {
+      // Scroll to the node after a short delay to allow for expansion animation
+      setTimeout(() => {
+        const element = document.getElementById(`node-${targetNodeId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Add a temporary highlight
+          element.classList.add('ring-2', 'ring-[#5BC0BE]', 'ring-offset-2', 'transition-all', 'duration-500');
+          setTimeout(() => {
+            element.classList.remove('ring-2', 'ring-[#5BC0BE]', 'ring-offset-2');
+          }, 2000);
+        }
+      }, 300);
+    }
+  }, [expandedStep, expandedNodeId, scrollTrigger, data]);
 
   const handleSelect = (node: NodeData) => {
     setExpandedNodeIds(prev => 

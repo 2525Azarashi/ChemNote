@@ -556,7 +556,33 @@ export const chemistryData = {
                   }
                 }
               ],
-              explanation: "空気や食塩水、海水、石油などは「複数の純物質が混ざったもの」なので混合物です。",
+              explanation: JSON.stringify({
+                "type": "logic_thought",
+                "phase1": {
+                  "title": "物質の分類",
+                  "overview": "物質を混合物、単体、化合物に分類する論理を整理します。",
+                  "tree": "物質の分類\n├ Step 1: 混合物の判別\n│ └ 複数成分が混ざっているか？\n└ Step 2: 純物質の分類\n  ├ 単体（1種類）\n  └ 化合物（2種類以上）",
+                  "steps": ["Step 1: 混合物の判別", "Step 2: 純物質の分類"]
+                },
+                "phase2": {
+                  "explanations": [
+                    {
+                      "step": "Step 1",
+                      "tag": "混合物の判別",
+                      "subQuestionIds": ["q2_1", "q2_3", "q2_6"],
+                      "subQuestionLabels": ["(1) 空気", "(3) 食塩水", "(6) 石油"],
+                      "content": "空気や食塩水、石油などは「複数の純物質が混ざったもの」なので混合物です。"
+                    },
+                    {
+                      "step": "Step 2",
+                      "tag": "純物質の分類",
+                      "subQuestionIds": ["q2_2", "q2_4", "q2_5"],
+                      "subQuestionLabels": ["(2) 酸素", "(4) メタン", "(5) 黒鉛"],
+                      "content": "酸素や黒鉛は1種類の元素からなる「単体」、メタンは2種類以上の元素からなる「化合物」です。"
+                    }
+                  ]
+                }
+              }),
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
@@ -618,7 +644,26 @@ export const chemistryData = {
                   }
                 }
               ],
-              explanation: "テストで最も狙われるポイントです！ 見分けるコツは「直接触れられるもの（ガスとして実体がある、など）＝単体」、「直接触れられないもの（成分として含まれている、など）＝元素」と考えることです。(2)や(4)は気体として実体があるので単体、(1)や(3)は成分の話をしているので元素となります。",
+              explanation: JSON.stringify({
+                "type": "logic_thought",
+                "phase1": {
+                  "title": "元素と単体の識別",
+                  "overview": "文脈から「単体」と「元素」を識別する論理を整理します。",
+                  "tree": "単体と元素の識別\n└ Step 3: 文脈判断\n  ├ 単体（実体）：物質として存在\n  └ 元素（成分）：成分として存在",
+                  "steps": ["Step 3: 文脈判断"]
+                },
+                "phase2": {
+                  "explanations": [
+                    {
+                      "step": "Step 3",
+                      "tag": "文脈判断",
+                      "subQuestionIds": ["q3_1", "q3_2", "q3_3", "q3_4"],
+                      "subQuestionLabels": ["(1)", "(2)", "(3)", "(4)"],
+                      "content": "見分けるコツは「直接触れられるもの（ガスとして実体がある、など）＝単体」、「直接触れられないもの（成分として含まれている、など）＝元素」と考えることです。(2)や(4)は気体として実体があるので単体、(1)や(3)は成分の話をしているので元素となります。"
+                    }
+                  ]
+                }
+              }),
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
@@ -1075,8 +1120,11 @@ export const substanceTreeData: NodeData = {
             { id: 'q3_3', label: '演習問題⓵－３(3)' },
             { id: 'q3_5', label: '演習問題⓵－３(5)' },
             { id: 'p3_1', label: '類題⓵－３(1)' },
-            { id: 'p3_3', label: '類題⓵－３(3)' },
-            { id: 'p3_5', label: '類題⓵－３(5)' }
+            { id: 'p3_4', label: '類題⓵－３(4)' },
+            { id: 'p3_5', label: '類題⓵－３(5)' },
+            { id: 'p3_8', label: '類題⓵－３(8)' },
+            { id: 'p3_9', label: '類題⓵－３(9)' },
+            { id: 'p3_10', label: '類題⓵－３(10)' }
           ]
         },
         {
@@ -1090,8 +1138,9 @@ export const substanceTreeData: NodeData = {
             { id: 'q3_4', label: '演習問題⓵－３(4)' },
             { id: 'q3_6', label: '演習問題⓵－３(6)' },
             { id: 'p3_2', label: '類題⓵－３(2)' },
-            { id: 'p3_4', label: '類題⓵－３(4)' },
-            { id: 'p3_6', label: '類題⓵－３(6)' }
+            { id: 'p3_3', label: '類題⓵－３(3)' },
+            { id: 'p3_6', label: '類題⓵－３(6)' },
+            { id: 'p3_7', label: '類題⓵－３(7)' }
           ]
         },
         {
