@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
@@ -20,6 +20,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
   const [expandedSq, setExpandedSq] = useState<string | null>(null);
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
   const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'incorrect' | 'correct'>('incorrect');
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
 
   const stepColors: Record<string, string> = {
@@ -325,7 +326,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     );
   }
 
-  const calculateScore = (question: any) => {
+  const calculateScore = useCallback((question: any) => {
     let totalScore = 0;
     let maxScore = question.subQuestions.length;
 
@@ -347,7 +348,17 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     });
 
     return Math.round((totalScore / maxScore) * 100);
-  };
+  }, [answers, selfGrades]);
+
+  const incorrectQuestions = useMemo(() => questions.filter((q: any) => calculateScore(q) < 100), [questions, calculateScore]);
+  const correctQuestions = useMemo(() => questions.filter((q: any) => calculateScore(q) === 100), [questions, calculateScore]);
+  const filteredQuestions = activeTab === 'incorrect' ? incorrectQuestions : correctQuestions;
+
+  useEffect(() => {
+    if (incorrectQuestions.length === 0 && correctQuestions.length > 0) {
+      setActiveTab('correct');
+    }
+  }, [incorrectQuestions.length, correctQuestions.length]);
 
   return (
     <div className={`w-full rounded-3xl overflow-clip shadow-2xl border font-handwriting relative my-4 md:my-8 ${
@@ -542,8 +553,42 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
               <span>答え合わせ</span>
             </h3>
             
+            {/* Tab Switcher */}
+            <div className="flex gap-2 mb-8 p-1 rounded-2xl bg-black/10">
+              <button 
+                onClick={() => setActiveTab('incorrect')}
+                className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border ${
+                  activeTab === 'incorrect' 
+                    ? (mode === 'mini_test' ? 'bg-white text-red-600 border-red-100 shadow-sm' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30 shadow-lg')
+                    : (mode === 'mini_test' ? 'text-gray-400 border-transparent hover:text-gray-600' : 'text-[#7A8B99] border-transparent hover:text-[#E0E1DD]')
+                }`}
+              >
+                <XCircle size={18} className={activeTab === 'incorrect' ? 'text-red-500' : 'text-gray-400'} />
+                <span>復習（間違えた問題）</span>
+                <span className={`px-2 py-0.5 rounded-full text-xs ${activeTab === 'incorrect' ? 'bg-red-500 text-white' : 'bg-gray-500/20 text-gray-400'}`}>
+                  {incorrectQuestions.length}
+                </span>
+              </button>
+              <button 
+                onClick={() => setActiveTab('correct')}
+                className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border ${
+                  activeTab === 'correct' 
+                    ? (mode === 'mini_test' ? 'bg-white text-emerald-600 border-emerald-100 shadow-sm' : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30 shadow-lg')
+                    : (mode === 'mini_test' ? 'text-gray-400 border-transparent hover:text-gray-600' : 'text-[#7A8B99] border-transparent hover:text-[#E0E1DD]')
+                }`}
+              >
+                <CheckCircle2 size={18} className={activeTab === 'correct' ? 'text-emerald-500' : 'text-gray-400'} />
+                <span>正解した問題</span>
+                <span className={`px-2 py-0.5 rounded-full text-xs ${activeTab === 'correct' ? 'bg-emerald-500 text-white' : 'bg-gray-500/20 text-gray-400'}`}>
+                  {correctQuestions.length}
+                </span>
+              </button>
+            </div>
+            
             <div className="space-y-8 md:space-y-12">
-              {questions.map((question: any, qIndex: number) => {
+              {filteredQuestions.length > 0 ? (
+                filteredQuestions.map((question: any) => {
+                  const qIndex = questions.findIndex((q: any) => q.id === question.id);
                 const scorePercentage = calculateScore(question);
                 return (
                   <div key={question.id} className="space-y-4 md:space-y-6">
@@ -841,7 +886,30 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                     })()}
                   </div>
                 );
-              })}
+              })
+              ) : (
+                <div className={`p-12 text-center rounded-2xl border-2 border-dashed ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-500' : 'bg-[#1C2541]/30 border-[#3A506B]/50 text-[#7A8B99]'}`}>
+                  <div className="flex flex-col items-center gap-4">
+                    {activeTab === 'incorrect' ? (
+                      <>
+                        <CheckCircle2 size={48} className="text-emerald-500" />
+                        <p className="text-lg font-bold">素晴らしい！間違えた問題はありません。</p>
+                        <button 
+                          onClick={() => setActiveTab('correct')}
+                          className="px-6 py-2 rounded-full bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-colors"
+                        >
+                          正解した問題を確認する
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle size={48} className="text-amber-500" />
+                        <p className="text-lg font-bold">正解した問題がまだありません。</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

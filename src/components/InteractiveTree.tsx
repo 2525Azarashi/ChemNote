@@ -26,13 +26,13 @@ interface TreeNodeProps {
   key?: string | number;
   node: NodeData;
   onSelect: (n: NodeData) => void;
-  selectedId: string | null;
+  expandedNodeIds: string[];
   renderContent?: (nodeId: string) => React.ReactNode;
   onQuestionClick?: (questionId: string) => void;
 }
 
-const TreeNode = ({ node, onSelect, selectedId, renderContent, onQuestionClick }: TreeNodeProps) => {
-  const isSelected = selectedId === node.id;
+const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionClick }: TreeNodeProps) => {
+  const isSelected = expandedNodeIds.includes(node.id);
   const hasContent = !!node.explanation || !!renderContent || (node.relatedQuestions && node.relatedQuestions.length > 0);
 
   const getStepStyles = (step: StepType, isSelected: boolean) => {
@@ -53,7 +53,7 @@ const TreeNode = ({ node, onSelect, selectedId, renderContent, onQuestionClick }
         </div>
         <div className="mt-2 flex flex-col gap-4">
           {node.children?.map(child => (
-            <TreeNode key={child.id} node={child} onSelect={onSelect} selectedId={selectedId} renderContent={renderContent} onQuestionClick={onQuestionClick} />
+            <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} />
           ))}
         </div>
       </div>
@@ -135,7 +135,7 @@ const TreeNode = ({ node, onSelect, selectedId, renderContent, onQuestionClick }
           {node.children.map((child) => (
             <div key={child.id} className="relative">
               <div className="absolute -left-6 sm:-left-8 top-[26px] w-6 sm:w-8 border-t-2 border-slate-300 -translate-y-1/2" />
-              <TreeNode key={child.id} node={child} onSelect={onSelect} selectedId={selectedId} renderContent={renderContent} onQuestionClick={onQuestionClick} />
+              <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} />
             </div>
           ))}
         </div>
@@ -153,7 +153,7 @@ interface InteractiveTreeProps {
 }
 
 export function InteractiveTree({ data, renderContent, onQuestionClick, expandedStep, expandedNodeId }: InteractiveTreeProps) {
-  const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
+  const [expandedNodeIds, setExpandedNodeIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (expandedNodeId) {
@@ -168,8 +168,8 @@ export function InteractiveTree({ data, renderContent, onQuestionClick, expanded
         return null;
       };
       const node = findNodeById(data);
-      if (node) {
-        setSelectedNode(node);
+      if (node && !expandedNodeIds.includes(node.id)) {
+        setExpandedNodeIds(prev => [...prev, node.id]);
         return;
       }
     }
@@ -187,14 +187,18 @@ export function InteractiveTree({ data, renderContent, onQuestionClick, expanded
         return null;
       };
       const node = findNodeByLabel(data);
-      if (node) {
-        setSelectedNode(node);
+      if (node && !expandedNodeIds.includes(node.id)) {
+        setExpandedNodeIds(prev => [...prev, node.id]);
       }
     }
   }, [expandedStep, expandedNodeId, data]);
 
   const handleSelect = (node: NodeData) => {
-    setSelectedNode(prev => prev?.id === node.id ? null : node);
+    setExpandedNodeIds(prev => 
+      prev.includes(node.id) 
+        ? prev.filter(id => id !== node.id) 
+        : [...prev, node.id]
+    );
   };
 
   return (
@@ -224,7 +228,7 @@ export function InteractiveTree({ data, renderContent, onQuestionClick, expanded
       {/* Tree Container */}
       <div className="overflow-x-auto pb-8 touch-pan-x">
         <div className="min-w-max pr-8">
-          <TreeNode node={data} onSelect={handleSelect} selectedId={selectedNode?.id || null} renderContent={renderContent} onQuestionClick={onQuestionClick} />
+          <TreeNode node={data} onSelect={handleSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} />
         </div>
       </div>
     </div>
