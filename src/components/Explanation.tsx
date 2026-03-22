@@ -13,9 +13,23 @@ interface ExplanationProps {
 import { InteractiveTree, NodeData } from './InteractiveTree';
 import { InteractiveLogicTree } from './InteractiveLogicTree';
 import { substanceTreeData } from '../data/chemistryData';
-import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
 
 // Substance Tree Data for Chapter 1 (Moved to chemistryData.ts)
+
+const filterTree = (node: NodeData, relatedNodeIds: string[]): NodeData | null => {
+  const isRelated = relatedNodeIds.includes(node.id);
+  const filteredChildren = node.children
+    ? node.children.map(child => filterTree(child, relatedNodeIds)).filter(child => child !== null) as NodeData[]
+    : [];
+  
+  if (isRelated || filteredChildren.length > 0) {
+    return {
+      ...node,
+      children: filteredChildren
+    };
+  }
+  return null;
+};
 
 const LogicTreeSnippet = ({ step, tree, mode }: { step: string, tree: string, mode: string }) => {
   if (!tree) return null;
@@ -39,6 +53,18 @@ const LogicTreeSnippet = ({ step, tree, mode }: { step: string, tree: string, mo
       </div>
     </div>
   );
+};
+
+const getDifficulty = (sqId: string) => {
+  const id = sqId.replace(/^q/, 'p');
+  const level1 = ['p1_a', 'p1_i', 'p1_u', 'p1_e', 'p1_o', 'p1_ki', 'p1_ku', 'p2_1', 'p2_2', 'p2_3', 'p2_5', 'p2_6', 'p2_8', 'p2_11', 'p2_14'];
+  const level2 = ['p1_ka', 'p1_ke', 'p1_ko', 'p2_4', 'p2_7', 'p2_9', 'p2_10', 'p2_12', 'p2_13', 'p2_15'];
+  const level3 = ['p3_1', 'p3_2', 'p3_3', 'p3_4', 'p3_5', 'p3_6', 'p3_7', 'p3_8', 'p3_9', 'p3_10'];
+  
+  if (level1.includes(id)) return 1;
+  if (level2.includes(id)) return 2;
+  if (level3.includes(id)) return 3;
+  return 1;
 };
 
 export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps) {
@@ -330,7 +356,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
             {sq.detailedExplanation ? (
               <div className={`p-4 rounded-lg border text-sm ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
                 <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【{sq.detailedExplanation.theme}】</h5>
-                <p className={`text-xs ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'} mb-2`}>【問題タイプ】{sq.detailedExplanation.type}</p>
+                <p className={`text-xs ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'} mb-2`}>【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
                 
                 {relatedSteps.length > 0 ? (
                   <div className="mb-4">
@@ -819,8 +845,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                               <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.theme}</p>
                                             </div>
                                             <div className="mb-4">
-                                              <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題タイプ】</h5>
-                                              <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.type}</p>
+                                              <p className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
                                             </div>
                                             {getRelatedSteps(sq.id, question).length > 0 ? (
                                               <div className="mb-4">
@@ -928,8 +953,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                               <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.theme}</p>
                                             </div>
                                             <div className="mb-4">
-                                              <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題タイプ】</h5>
-                                              <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.type}</p>
+                                              <p className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
                                             </div>
                                             {getRelatedSteps(sq.id, question).length > 0 ? (
                                               <div className="mb-4">

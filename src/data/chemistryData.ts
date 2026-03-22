@@ -22,6 +22,7 @@ export const chemistryData = {
                   detailedExplanation: {
                     theme: "純物質と混合物の定義",
                     type: "構造発見型",
+                    difficulty: 1,
                     steps: [
                       "① 「純物質」の定義を問う空欄であることを確認する",
                       "② 純物質と混合物の違いは粒子の種類数であることを想起する",
@@ -33,6 +34,7 @@ export const chemistryData = {
                   detailedExplanation: {
                     theme: "純物質の性質",
                     type: "演繹型",
+                    difficulty: 1,
                     steps: [
                       "① 純物質の性質について述べている部分であると確認する",
                       "② 不純物がない場合の状態変化の特徴を想起する",
@@ -44,6 +46,7 @@ export const chemistryData = {
                   detailedExplanation: {
                     theme: "単体・化合物の分類基準",
                     type: "構造発見型",
+                    difficulty: 1,
                     steps: [
                       "① 純物質の内部分類についての記述であると確認する",
                       "② 単体と化合物は元素の種類数で区別されると想起する",
@@ -55,6 +58,7 @@ export const chemistryData = {
                   detailedExplanation: {
                     theme: "単体の定義",
                     type: "演繹型",
+                    difficulty: 1,
                     steps: [
                       "① 「1種類の（ウ）」という条件に注目する",
                       "② （ウ）が元素であることを確認する",
@@ -66,6 +70,7 @@ export const chemistryData = {
                   detailedExplanation: {
                     theme: "化合物の定義",
                     type: "演繹型",
+                    difficulty: 1,
                     steps: [
                       "① 「2種類以上の（ウ）」という条件に注目する",
                       "② 複数元素からなる純物質の名称を想起する",
@@ -88,6 +93,7 @@ export const chemistryData = {
                   detailedExplanation: {
                     theme: "混合物の定義",
                     type: "構造発見型",
+                    difficulty: 1,
                     steps: [
                       "① 「混合物」の定義を問う空欄であることを確認する",
                       "② 純物質との違いは粒子の種類数であることを想起する",
@@ -99,6 +105,7 @@ export const chemistryData = {
                   detailedExplanation: {
                     theme: "混合物の性質決定要因",
                     type: "構造発見型",
+                    difficulty: 1,
                     steps: [
                       "① 混合物の性質が何によって変わるかを問う文であると確認する",
                       "② 混合物は複数成分からなることを確認する",
@@ -121,6 +128,7 @@ export const chemistryData = {
                   detailedExplanation: {
                     theme: "分離法（物理的方法）",
                     type: "概念区別型",
+                    difficulty: 2,
                     steps: [
                       "① ろ過・蒸留の操作内容を思い出す",
                       "② 操作によって物質の本質が変化するかを確認する",
@@ -132,6 +140,7 @@ export const chemistryData = {
                   detailedExplanation: {
                     theme: "分解法（化学的方法）",
                     type: "概念区別型",
+                    difficulty: 2,
                     steps: [
                       "① 電気分解の操作内容を思い出す",
                       "② 元の物質が別の物質に変化しているかを確認する",
