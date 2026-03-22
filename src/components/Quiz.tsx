@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, Edit3, ArrowLeft } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
-import { InteractiveLogicTree } from './InteractiveLogicTree';
 import { substanceTreeData } from '../data/chemistryData';
 import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
 
@@ -103,18 +102,7 @@ export function Quiz({ mode, chapter, onFinish, onBack }: QuizProps) {
             {formatText(currentQuestion.text)}
           </div>
 
-          {/* Problem Logic Tree */}
-          {currentQuestion.relatedSteps && currentQuestion.relatedSteps.length > 0 && (
-            <div className="mb-8">
-              <InteractiveLogicTree 
-                data={substanceTreeData} 
-                step={String(currentQuestion.relatedSteps[0].step)}
-                focusNode={currentQuestion.relatedSteps[0].id}
-                zoom="far"
-                mobileTightCrop={true}
-              />
-            </div>
-          )}
+
 
           <div className="space-y-4">
             {currentQuestion.subQuestions.map((sq: any) => (
@@ -163,26 +151,7 @@ export function Quiz({ mode, chapter, onFinish, onBack }: QuizProps) {
                   )}
                 </div>
 
-                {/* Logic Tree for sub-question */}
-                {(() => {
-                  const relatedSteps = getRelatedSteps(sq.id, currentQuestion);
-                  if (relatedSteps.length === 0) return null;
-                  
-                  const filteredData = filterTree(substanceTreeData, relatedSteps.map(s => s.id));
-                  if (!filteredData) return null;
 
-                  return (
-                    <div className="mt-2">
-                      <InteractiveLogicTree 
-                        data={filteredData} 
-                        step={String(relatedSteps[0].step)}
-                        focusNode={relatedSteps[0].id}
-                        zoom="far"
-                        mobileTightCrop={true}
-                      />
-                    </div>
-                  );
-                })()}
               </div>
             ))}
           </div>

@@ -73,7 +73,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
   const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
   const [scrollTrigger, setScrollTrigger] = useState<number>(0);
-  const [activeTab, setActiveTab] = useState<'incorrect' | 'correct'>('incorrect');
+  const [expandedCorrectQuestions, setExpandedCorrectQuestions] = useState<Record<string, boolean>>({});
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
 
   const stepColors: Record<string, string> = {
@@ -473,15 +473,9 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
     return Math.round((totalScore / maxScore) * 100);
   }, [answers, selfGrades]);
 
-  const incorrectQuestions = useMemo(() => questions.filter((q: any) => calculateScore(q) < 100), [questions, calculateScore]);
-  const correctQuestions = useMemo(() => questions.filter((q: any) => calculateScore(q) === 100), [questions, calculateScore]);
-  const filteredQuestions = activeTab === 'incorrect' ? incorrectQuestions : correctQuestions;
-
-  useEffect(() => {
-    if (incorrectQuestions.length === 0 && correctQuestions.length > 0) {
-      setActiveTab('correct');
-    }
-  }, [incorrectQuestions.length, correctQuestions.length]);
+  const toggleCorrectExpanded = (id: string) => {
+    setExpandedCorrectQuestions(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   return (
     <div className={`w-full rounded-3xl overflow-clip shadow-2xl border font-handwriting relative my-4 md:my-8 ${
@@ -685,42 +679,9 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
               <span>答え合わせ</span>
             </h3>
             
-            {/* Tab Switcher */}
-            <div className="flex gap-2 mb-8 p-1 rounded-2xl bg-black/10">
-              <button 
-                onClick={() => setActiveTab('incorrect')}
-                className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border ${
-                  activeTab === 'incorrect' 
-                    ? (mode === 'mini_test' ? 'bg-white text-red-600 border-red-100 shadow-sm' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30 shadow-lg')
-                    : (mode === 'mini_test' ? 'text-gray-400 border-transparent hover:text-gray-600' : 'text-[#7A8B99] border-transparent hover:text-[#E0E1DD]')
-                }`}
-              >
-                <XCircle size={18} className={activeTab === 'incorrect' ? 'text-red-500' : 'text-gray-400'} />
-                <span>復習（間違えた問題）</span>
-                <span className={`px-2 py-0.5 rounded-full text-xs ${activeTab === 'incorrect' ? 'bg-red-500 text-white' : 'bg-gray-500/20 text-gray-400'}`}>
-                  {incorrectQuestions.length}
-                </span>
-              </button>
-              <button 
-                onClick={() => setActiveTab('correct')}
-                className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border ${
-                  activeTab === 'correct' 
-                    ? (mode === 'mini_test' ? 'bg-white text-emerald-600 border-emerald-100 shadow-sm' : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30 shadow-lg')
-                    : (mode === 'mini_test' ? 'text-gray-400 border-transparent hover:text-gray-600' : 'text-[#7A8B99] border-transparent hover:text-[#E0E1DD]')
-                }`}
-              >
-                <CheckCircle2 size={18} className={activeTab === 'correct' ? 'text-emerald-500' : 'text-gray-400'} />
-                <span>正解した問題</span>
-                <span className={`px-2 py-0.5 rounded-full text-xs ${activeTab === 'correct' ? 'bg-emerald-500 text-white' : 'bg-gray-500/20 text-gray-400'}`}>
-                  {correctQuestions.length}
-                </span>
-              </button>
-            </div>
-            
             <div className="space-y-8 md:space-y-12">
-              {filteredQuestions.length > 0 ? (
-                filteredQuestions.map((question: any) => {
-                  const qIndex = questions.findIndex((q: any) => q.id === question.id);
+              {questions.length > 0 ? (
+                questions.map((question: any, qIndex: number) => {
                 const scorePercentage = calculateScore(question);
                 return (
                   <div key={question.id} className="space-y-4 md:space-y-6">
@@ -758,26 +719,17 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                       {formatText(question.text)}
                     </div>
 
-                    {/* Problem Logic Tree */}
-                    {question.relatedSteps && question.relatedSteps.length > 0 && (
-                      <div className="mt-4">
-                        <InteractiveLogicTree 
-                          data={substanceTreeData} 
-                          step={String(question.relatedSteps[0].step)}
-                          focusNode={question.relatedSteps[0].id}
-                          zoom="far"
-                          mobileTightCrop={true}
-                        />
-                      </div>
-                    )}
+                    <div className="space-y-6 md:space-y-8">
+                      {(() => {
+                        const incorrectSqs = question.subQuestions.filter((sq: any) => sq.type === 'descriptive' ? false : answers[sq.id] !== sq.correctAnswer);
+                        const correctSqs = question.subQuestions.filter((sq: any) => sq.type === 'descriptive' ? true : answers[sq.id] === sq.correctAnswer);
+                        const isCorrectExpanded = expandedCorrectQuestions[question.id];
 
-                    <div className="space-y-3 md:space-y-4">
-                      {question.subQuestions.map((sq: any) => {
-                        const isCorrect = sq.type === 'descriptive' ? false : answers[sq.id] === sq.correctAnswer;
-                        const isExpanded = expandedSq === sq.id;
+                        const renderSq = (sq: any, isCorrect: boolean) => {
+                          const isExpanded = expandedSq === sq.id;
 
-                        return (
-                          <div id={`sq-${sq.id}`} key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'border-blue-200' : 'border-[#A9CCE3]/30') : (isCorrect ? (mode === 'mini_test' ? 'border-emerald-200' : 'border-[#5BC0BE]/30') : (mode === 'mini_test' ? 'border-red-200' : 'border-[#D9A0A0]/30'))}`}>
+                          return (
+                            <div id={`sq-${sq.id}`} key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'border-blue-200' : 'border-[#A9CCE3]/30') : (isCorrect ? (mode === 'mini_test' ? 'border-emerald-200' : 'border-[#5BC0BE]/30') : (mode === 'mini_test' ? 'border-red-200' : 'border-[#D9A0A0]/30'))}`}>
                             {/* Tab Header */}
                             <button 
                               onClick={() => setExpandedSq(isExpanded ? null : sq.id)}
@@ -814,9 +766,9 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                             <div className={"transition-all duration-300 ease-in-out overflow-hidden " + (isExpanded ? "max-h-[1500px] opacity-100 border-t " + (mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/30') : 'max-h-0 opacity-0')}>
                               <div className={`p-4 md:p-6 ${mode === 'mini_test' ? 'bg-gray-50' : 'bg-[#0B132B]/40'}`}>
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                  <div className="lg:col-span-2">
+                                  <div className={isCorrect ? "lg:col-span-3" : "lg:col-span-2"}>
                                     {/* Related Steps Badge */}
-                                    {(() => {
+                                    {!isCorrect && (() => {
                                       const relatedSteps = getRelatedSteps(sq.id, question);
                                       if (relatedSteps.length === 0) return null;
                                       return (
@@ -847,7 +799,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                             <div className="mb-4">
                                               <p className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
                                             </div>
-                                            {getRelatedSteps(sq.id, question).length > 0 ? (
+                                            {!isCorrect && getRelatedSteps(sq.id, question).length > 0 ? (
                                               <div className="mb-4">
                                                 <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
                                                 <div className="flex flex-wrap gap-2">
@@ -892,7 +844,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                               {formatText(sq.correctAnswer)}
                                             </div>
                                             
-                                            {getRelatedSteps(sq.id, question).length > 0 && (
+                                            {!isCorrect && getRelatedSteps(sq.id, question).length > 0 && (
                                               <div className="mb-4">
                                                 <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
                                                 <div className="flex flex-wrap gap-2">
@@ -955,7 +907,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                             <div className="mb-4">
                                               <p className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
                                             </div>
-                                            {getRelatedSteps(sq.id, question).length > 0 ? (
+                                            {!isCorrect && getRelatedSteps(sq.id, question).length > 0 ? (
                                               <div className="mb-4">
                                                 <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
                                                 <div className="flex flex-wrap gap-2">
@@ -1000,7 +952,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                               {formatText(sq.correctAnswer)}
                                             </div>
     
-                                            {getRelatedSteps(sq.id, question).length > 0 && (
+                                            {!isCorrect && getRelatedSteps(sq.id, question).length > 0 && (
                                               <div className="mt-4">
                                                 <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
                                                 <div className="flex flex-wrap gap-2">
@@ -1035,33 +987,71 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                   </div>
 
                                   {/* Right Column: Logic Tree */}
-                                  <div className="lg:col-span-1">
-                                    {(() => {
-                                      const relatedSteps = getRelatedSteps(sq.id, question);
-                                      if (relatedSteps.length === 0) return null;
-                                      
-                                      const filteredData = filterTree(substanceTreeData, relatedSteps.map(s => s.id));
-                                      if (!filteredData) return null;
+                                  {!isCorrect && (
+                                    <div className="lg:col-span-1">
+                                      {(() => {
+                                        const relatedSteps = getRelatedSteps(sq.id, question);
+                                        if (relatedSteps.length === 0) return null;
+                                        
+                                        const filteredData = filterTree(substanceTreeData, relatedSteps.map(s => s.id));
+                                        if (!filteredData) return null;
 
-                                      return (
-                                        <div className="sticky top-4 scale-90 origin-top -mt-4 -mb-8">
-                                          <InteractiveLogicTree 
-                                            data={filteredData} 
-                                            step={String(relatedSteps[0].step)}
-                                            focusNode={relatedSteps[0].id}
-                                            zoom="far"
-                                            mobileTightCrop={true}
-                                          />
-                                        </div>
-                                      );
-                                    })()}
-                                  </div>
+                                        return (
+                                          <div className="sticky top-4 scale-90 origin-top -mt-4 -mb-8">
+                                            <InteractiveLogicTree 
+                                              data={filteredData} 
+                                              step={String(relatedSteps[0].step)}
+                                              focusNode={relatedSteps[0].id}
+                                              zoom="far"
+                                              mobileTightCrop={true}
+                                            />
+                                          </div>
+                                        );
+                                      })()}
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </div>
                           </div>
                         );
-                      })}
+                      };
+
+                      return (
+                          <>
+                            {incorrectSqs.length > 0 && (
+                              <div className="space-y-3 md:space-y-4">
+                                <h4 className={`font-bold flex items-center gap-2 ${mode === 'mini_test' ? 'text-red-600' : 'text-[#D9A0A0]'}`}>
+                                  <XCircle size={18} />
+                                  間違えた問題
+                                </h4>
+                                {incorrectSqs.map(sq => renderSq(sq, false))}
+                              </div>
+                            )}
+
+                            {correctSqs.length > 0 && (
+                              <div className="space-y-3 md:space-y-4 mt-6">
+                                <button 
+                                  onClick={() => toggleCorrectExpanded(question.id)}
+                                  className={`w-full flex items-center justify-between p-3 md:p-4 rounded-xl border font-bold transition-colors ${mode === 'mini_test' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' : 'bg-[#5BC0BE]/10 text-[#5BC0BE] border-[#5BC0BE]/30 hover:bg-[#5BC0BE]/20'}`}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <CheckCircle2 size={18} />
+                                    <span>正解した問題を表示する ({correctSqs.length}問)</span>
+                                  </div>
+                                  <ChevronDown size={20} className={`transition-transform duration-300 ${isCorrectExpanded ? 'rotate-180' : ''}`} />
+                                </button>
+                                
+                                <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isCorrectExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                  <div className="space-y-3 md:space-y-4 mt-2">
+                                    {correctSqs.map(sq => renderSq(sq, true))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
                     </div>
 
                     {/* Normal Explanation (if not logic_thought or if mini_test) */}
@@ -1122,23 +1112,8 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
               ) : (
                 <div className={`p-12 text-center rounded-2xl border-2 border-dashed ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-500' : 'bg-[#1C2541]/30 border-[#3A506B]/50 text-[#7A8B99]'}`}>
                   <div className="flex flex-col items-center gap-4">
-                    {activeTab === 'incorrect' ? (
-                      <>
-                        <CheckCircle2 size={48} className="text-emerald-500" />
-                        <p className="text-lg font-bold">素晴らしい！間違えた問題はありません。</p>
-                        <button 
-                          onClick={() => setActiveTab('correct')}
-                          className="px-6 py-2 rounded-full bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-colors"
-                        >
-                          正解した問題を確認する
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle size={48} className="text-amber-500" />
-                        <p className="text-lg font-bold">正解した問題がまだありません。</p>
-                      </>
-                    )}
+                    <AlertCircle size={48} className="text-amber-500" />
+                    <p className="text-lg font-bold">問題がありません。</p>
                   </div>
                 </div>
               )}
