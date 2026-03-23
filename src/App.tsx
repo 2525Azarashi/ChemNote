@@ -23,6 +23,7 @@ import { NoteDetail } from './components/NoteDetail';
 import { Onboarding } from './components/Onboarding';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
+import { MobileViewWrapper } from './components/MobileViewWrapper';
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
@@ -37,6 +38,7 @@ export default function App() {
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [forceDesktop, setForceDesktop] = useState(false);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
+  const [isMobilePreview, setIsMobilePreview] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -221,65 +223,83 @@ export default function App() {
     .find(c => c.id === selectedChapterId);
 
   return (
-    <div className={`min-h-screen w-full flex justify-center py-6 md:py-12 px-4 md:px-8 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
-      <audio 
-        ref={audioRef} 
-        src="/cobblestone_dreams.mp3" 
-        loop 
-        preload="auto" 
-        crossOrigin="anonymous"
-        onError={handleAudioError}
-      />
-      
-      {/* BGM Toggle Button */}
-      <button 
-        onClick={() => setIsBgmEnabled(!isBgmEnabled)}
-        className="absolute bottom-4 left-4 z-50 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-gray-200 text-gray-600 hover:text-[#2C3E50] transition-colors"
-        title={isBgmEnabled ? "BGMをオフにする" : "BGMをオンにする"}
-      >
-        {isBgmEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
-      </button>
+    <>
+      <MobileViewWrapper isMobileMode={isMobilePreview} onClose={() => setIsMobilePreview(false)}>
+        <div className={`min-h-screen w-full flex justify-center py-6 md:py-12 px-4 md:px-8 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
+          <audio 
+            ref={audioRef} 
+            src="/cobblestone_dreams.mp3" 
+            loop 
+            preload="auto" 
+            crossOrigin="anonymous"
+            onError={handleAudioError}
+          />
+          
+          {/* BGM Toggle Button */}
+          <button 
+            onClick={() => setIsBgmEnabled(!isBgmEnabled)}
+            className="absolute bottom-4 left-4 z-50 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-gray-200 text-gray-600 hover:text-[#2C3E50] transition-colors"
+            title={isBgmEnabled ? "BGMをオフにする" : "BGMをオンにする"}
+          >
+            {isBgmEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
+          </button>
 
-      {/* Auth Button */}
-      <div className="absolute top-4 right-4 z-50">
-        <AuthButton />
-      </div>
+          {/* Auth Button */}
+          <div className="absolute top-4 right-4 z-50">
+            <AuthButton />
+          </div>
 
-      {/* Mobile Toggle Button */}
-      {isMobileDevice && (
+          {/* Mobile Toggle Button (For actual mobile devices) */}
+          {isMobileDevice && (
+            <div className="fixed bottom-4 right-4 z-[9999]">
+              <button
+                onClick={() => setForceDesktop(!forceDesktop)}
+                className={`bg-white rounded-full shadow-xl border-2 border-[#A9CCE3] flex items-center justify-center text-gray-600 hover:text-[#1B2631] transition-all ${forceDesktop ? 'p-5 scale-150 origin-bottom-right' : 'p-3'}`}
+                title={forceDesktop ? "スマホ表示に戻す" : "PC表示に切り替え"}
+              >
+                {forceDesktop ? <Smartphone size={28} className="text-[#A9CCE3]" /> : <Monitor size={24} />}
+              </button>
+            </div>
+          )}
+
+          <div className="w-full max-w-5xl relative">
+            {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} />}
+            {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
+            {appState === 'flowchart' && <Flowchart onBack={() => {
+              // If we have a selected chapter or were in chapters mode, go back there
+              // For now, let's just go back to chapters if we were there
+              setAppState('chapters');
+            }} />}
+            {appState === 'logical_tree' && <LogicalTree />}
+            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} />}
+            {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
+            {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} onFlowchart={handleFlowchart} />}
+            {appState === 'quiz' && selectedChapter && (
+              <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} />
+            )}
+            {appState === 'explanation' && selectedChapter && (
+              <Explanation mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} answers={quizAnswers} onBack={handleBackToChapters} />
+            )}
+            {appState === 'note_list' && <NoteList onBack={() => setAppState('home')} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
+            {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}
+          </div>
+        </div>
+      </MobileViewWrapper>
+
+      {/* Desktop Toggle Button for Mobile Preview */}
+      {!isMobileDevice && !isMobilePreview && (
         <div className="fixed bottom-4 right-4 z-[9999]">
           <button
-            onClick={() => setForceDesktop(!forceDesktop)}
-            className={`bg-white rounded-full shadow-xl border-2 border-[#A9CCE3] flex items-center justify-center text-gray-600 hover:text-[#1B2631] transition-all ${forceDesktop ? 'p-5 scale-150 origin-bottom-right' : 'p-3'}`}
-            title={forceDesktop ? "スマホ表示に戻す" : "PC表示に切り替え"}
+            onClick={() => setIsMobilePreview(true)}
+            className="bg-white rounded-full shadow-xl border-2 border-[#A9CCE3] flex items-center justify-center text-gray-600 hover:text-[#1B2631] transition-all p-3 group"
+            title="スマホ版でプレビュー"
           >
-            {forceDesktop ? <Smartphone size={28} className="text-[#A9CCE3]" /> : <Monitor size={24} />}
+            <Smartphone size={24} className="group-hover:scale-110 transition-transform" />
+            <span className="ml-2 font-bold text-sm hidden group-hover:inline-block whitespace-nowrap overflow-hidden transition-all">スマホ版</span>
           </button>
         </div>
       )}
-
-      <div className="w-full max-w-5xl relative">
-        {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} />}
-        {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} />}
-        {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
-        {appState === 'flowchart' && <Flowchart onBack={() => {
-          // If we have a selected chapter or were in chapters mode, go back there
-          // For now, let's just go back to chapters if we were there
-          setAppState('chapters');
-        }} />}
-        {appState === 'logical_tree' && <LogicalTree />}
-        {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} />}
-        {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
-        {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} onFlowchart={handleFlowchart} />}
-        {appState === 'quiz' && selectedChapter && (
-          <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} />
-        )}
-        {appState === 'explanation' && selectedChapter && (
-          <Explanation mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} answers={quizAnswers} onBack={handleBackToChapters} />
-        )}
-        {appState === 'note_list' && <NoteList onBack={() => setAppState('home')} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
-        {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}
-      </div>
-    </div>
+    </>
   );
 }

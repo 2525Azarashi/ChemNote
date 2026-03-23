@@ -68,7 +68,7 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
             whileTap={{ scale: 0.95 }}
             onClick={() => hasContent && onSelect(node)}
             className={cn(
-              "flex items-center justify-between w-64 px-3 py-2 rounded-lg border-2 transition-all duration-200",
+              "flex items-center justify-between w-56 sm:w-64 px-3 py-2 rounded-lg border-2 transition-all duration-200",
               getStepStyles(node.step, isSelected),
               !hasContent && "cursor-default opacity-90"
             )}
@@ -250,7 +250,7 @@ export function InteractiveTree({
   return (
     <div className={cn(
       "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300",
-      zoom === 'far' ? "scale-[0.75] origin-top" : "",
+      zoom === 'far' ? "md:scale-[0.85] lg:scale-[0.75] origin-top" : "",
       mobileTightCrop ? "p-1 sm:p-2 md:p-4" : "p-2 sm:p-6 md:p-8"
     )}>
       {/* Header */}
@@ -259,7 +259,7 @@ export function InteractiveTree({
           <Network className="w-5 h-5 text-blue-500" />
           ロジックツリー
         </h4>
-        <div className="flex gap-3 text-xs font-bold">
+        <div className="flex flex-wrap gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold justify-end">
           <div className="flex items-center gap-1.5 text-orange-700 bg-orange-100 px-2 py-1 rounded-md border border-orange-200">
             <div className="w-2 h-2 rounded-full bg-orange-500" />
             Step 1

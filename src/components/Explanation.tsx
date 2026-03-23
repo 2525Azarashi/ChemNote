@@ -997,7 +997,7 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
                                         if (!filteredData) return null;
 
                                         return (
-                                          <div className="sticky top-4 scale-90 origin-top -mt-4 -mb-8">
+                                          <div className="sticky top-4 lg:scale-90 origin-top lg:-mt-4 lg:-mb-8">
                                             <InteractiveLogicTree 
                                               data={filteredData} 
                                               step={String(relatedSteps[0].step)}

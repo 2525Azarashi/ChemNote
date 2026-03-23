@@ -101,7 +101,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
         {step === 'login' ? (
           <>
-            <h2 className="text-3xl font-bold text-[#2C3E50] mb-6">ようこそ！</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#2C3E50] mb-6">ようこそ！</h2>
             <p className="text-gray-600 mb-8">まずは Google アカウントでログインしてください。</p>
             <button
               onClick={handleLogin}
@@ -112,7 +112,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           </>
         ) : (
           <>
-            <h2 className="text-3xl font-bold text-[#2C3E50] mb-6">プロフィール設定</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#2C3E50] mb-6">プロフィール設定</h2>
             <div className="space-y-4 mb-8">
               <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="名前" className="w-full p-3 rounded-xl border-2 border-[#A9CCE3] bg-white" />
               <input type="text" value={grade} onChange={(e) => setGrade(e.target.value)} placeholder="学年" className="w-full p-3 rounded-xl border-2 border-[#A9CCE3] bg-white" />

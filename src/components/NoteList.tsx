@@ -37,7 +37,7 @@ export function NoteList({ onBack, onSelectNote }: NoteListProps) {
       <button onClick={onBack} className="flex items-center gap-2 text-[#2C3E50] font-bold">
         <ArrowLeft size={20} /> 戻る
       </button>
-      <h2 className="text-3xl font-bold text-[#2C3E50] mb-6">個人ノート一覧</h2>
+      <h2 className="text-2xl sm:text-3xl font-bold text-[#2C3E50] mb-6">個人ノート一覧</h2>
       <div className="space-y-4">
         {notes.map(note => (
           <div key={note.id} className="bg-white p-4 rounded-sm shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow transform hover:-rotate-1" onClick={() => onSelectNote(note)}>

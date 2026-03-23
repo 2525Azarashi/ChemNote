@@ -14,7 +14,6 @@
 }
 
 body {
-  min-width: 1024px;
   background-color: #F4F1EA;
   background-image: 
     radial-gradient(#e5e7eb 1.5px, transparent 1.5px),
@@ -22,6 +21,42 @@ body {
   background-size: 24px 24px, 200px 200px;
   color: #333;
   font-family: var(--font-modern);
+}
+
+/* Smartphone Preview Overrides */
+.mobile-view {
+  & .min-h-screen { min-height: 100% !important; }
+  & .h-screen { height: 100% !important; }
+  
+  /* Flex & Grid Layouts */
+  & .flex-col-reverse.sm\:flex-row { flex-direction: column-reverse !important; }
+  & .flex-col.sm\:flex-row { flex-direction: column !important; }
+  & .sm\:flex-row, & .md\:flex-row { flex-direction: column !important; }
+  & .sm\:items-center, & .md\:items-center { align-items: flex-start !important; }
+  & .lg\:grid-cols-3, & .md\:grid-cols-2, & .lg\:grid-cols-2, & .md\:grid-cols-3 { grid-template-columns: 1fr !important; }
+  
+  /* Typography */
+  & .md\:text-4xl, & .lg\:text-4xl { font-size: 1.5rem !important; line-height: 2rem !important; }
+  & .md\:text-3xl, & .sm\:text-3xl { font-size: 1.25rem !important; line-height: 1.75rem !important; }
+  & .sm\:text-5xl { font-size: 2.25rem !important; line-height: 2.5rem !important; }
+  & .md\:text-7xl { font-size: 2.25rem !important; line-height: 2.5rem !important; }
+  
+  /* Spacing */
+  & .md\:p-8, & .lg\:p-12, & .md\:p-10, & .md\:p-12 { padding: 1rem !important; }
+  & .md\:p-6, & .sm\:p-6 { padding: 1rem !important; }
+  & .md\:mb-12 { margin-bottom: 2rem !important; }
+  & .md\:mt-0 { margin-top: 2rem !important; }
+  & .md\:gap-8, & .md\:gap-6 { gap: 1rem !important; }
+  & .md\:pb-6 { padding-bottom: 1rem !important; }
+  
+  /* Sizing */
+  & .sm\:w-64, & .md\:w-64 { width: 14rem !important; }
+  & .lg\:scale-90 { transform: scale(1) !important; }
+  
+  /* Hide elements meant for desktop */
+  & .md\:block { display: none !important; }
+  & .md\:inline { display: none !important; }
+  & .md\:hidden { display: block !important; }
 }
 
 .hand-drawn-border {
