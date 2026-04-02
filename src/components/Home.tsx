@@ -36,17 +36,17 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: H
     <div className="relative w-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px] aspect-auto md:aspect-[16/9] max-w-5xl mx-auto bg-[#FDFBF7] rounded-3xl shadow-[20px_20px_60px_rgba(0,0,0,0.1),-5px_5px_15px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center overflow-hidden border-4 md:border-8 border-white ring-1 ring-gray-200 py-12 md:py-0">
       
       {/* Profile Display */}
-      {auth.currentUser && !isGuest && (
-        <div className="absolute top-4 left-4 md:top-6 md:left-6 z-30 flex items-center gap-3 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-[#A9CCE3] font-handwriting cursor-pointer hover:bg-[#A9CCE3]/20 transition-colors" onClick={() => setIsModalOpen(true)}>
-          <div className="w-10 h-10 rounded-full border border-[#A9CCE3] overflow-hidden rotate-3" style={{ borderRadius: '60% 40% 40% 60% / 40% 60% 40% 60%' }}>
-            <img src={profile?.iconUrl || auth.currentUser.photoURL || ''} alt="User" className="w-full h-full object-cover" />
+      {(auth.currentUser && !isGuest) || isGuest ? (
+        <div className="absolute top-4 left-4 md:top-6 md:left-6 z-30 flex items-center gap-3 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-[#A9CCE3] font-handwriting cursor-pointer hover:bg-[#A9CCE3]/20 transition-colors" onClick={!isGuest ? () => setIsModalOpen(true) : undefined}>
+          <div className="w-10 h-10 rounded-full border border-[#A9CCE3] overflow-hidden rotate-3 flex items-center justify-center bg-gray-100" style={{ borderRadius: '60% 40% 40% 60% / 40% 60% 40% 60%' }}>
+            {isGuest ? <Coffee className="text-gray-400" /> : <img src={profile?.iconUrl || auth.currentUser.photoURL || ''} alt="User" className="w-full h-full object-cover" />}
           </div>
           <div className="hidden md:block pr-2">
-            <p className="text-sm font-bold text-[#2C3E50]">{profile?.name || auth.currentUser.displayName}</p>
-            <p className="text-sm font-bold text-[#2C3E50]">{profile?.grade} {profile?.stream === 'science' ? '理系' : profile?.stream === 'humanities' ? '文系' : ''}</p>
+            <p className="text-sm font-bold text-[#2C3E50]">{isGuest ? 'ゲストさん' : (profile?.name || auth.currentUser.displayName)}</p>
+            {!isGuest && <p className="text-sm font-bold text-[#2C3E50]">{profile?.grade} {profile?.stream === 'science' ? '理系' : profile?.stream === 'humanities' ? '文系' : ''}</p>}
           </div>
         </div>
-      )}
+      ) : null}
 
       <ProfileModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       

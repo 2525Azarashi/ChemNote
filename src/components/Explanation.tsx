@@ -8,6 +8,7 @@ interface ExplanationProps {
   chapter: any;
   answers: Record<string, string>;
   onBack: () => void;
+  isGuest: boolean;
 }
 
 import { InteractiveTree, NodeData } from './InteractiveTree';
@@ -67,7 +68,7 @@ const getDifficulty = (sqId: string) => {
   return 1;
 };
 
-export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps) {
+export function Explanation({ mode, chapter, answers, onBack, isGuest }: ExplanationProps) {
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
   const [expandedSq, setExpandedSq] = useState<string | null>(null);
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
@@ -111,6 +112,10 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
   }, [questions]);
 
   const handleSaveNote = async (question: any, index: number) => {
+    if (isGuest) {
+      alert('ゲストモードではノート機能は使用できません。');
+      return;
+    }
     if (!auth.currentUser) return;
     setSavingNote(prev => ({ ...prev, [question.id]: true }));
     try {
