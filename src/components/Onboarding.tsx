@@ -6,9 +6,10 @@ import { motion } from 'motion/react';
 
 interface OnboardingProps {
   onComplete: () => void;
+  onGuest: () => void;
 }
 
-export function Onboarding({ onComplete }: OnboardingProps) {
+export function Onboarding({ onComplete, onGuest }: OnboardingProps) {
   const [step, setStep] = useState<'login' | 'profile'>('login');
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
@@ -108,6 +109,12 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               className="w-full p-4 bg-[#2C3E50] text-white rounded-xl font-bold hover:bg-[#1B2631] transition-colors"
             >
               Google でログイン
+            </button>
+            <button
+              onClick={onGuest}
+              className="w-full p-4 mt-4 bg-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-300 transition-colors"
+            >
+              ゲストとして利用
             </button>
           </>
         ) : (

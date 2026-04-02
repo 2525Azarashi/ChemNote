@@ -390,6 +390,68 @@ export const chemistryData = {
               explanation: "{\"type\": \"logic_thought\", \"phase1\": {\"title\": \"元素と単体の識別\", \"overview\": \"文脈から「単体」と「元素」を識別する論理を整理します。\", \"tree\": \"Step 3: 単体と元素の識別\\n├ 単体（実体）：物質として存在\\n└ 元素（成分）：成分として存在\", \"steps\": [\"Step 3: 単体と元素の識別\"]}, \"phase2\": {\"explanations\": [{\"step\": \"Step 3: 単体と元素の識別\", \"tag\": \"判断\", \"subQuestionIds\": [\"p3_1\", \"p3_2\", \"p3_3\", \"p3_4\", \"p3_5\", \"p3_6\", \"p3_7\", \"p3_8\", \"p3_9\", \"p3_10\"], \"content\": \"実際に存在する物質（実体）なら<u>単体</u>、構成成分（概念）なら<u>元素</u>と判断します。\"}], \"stumblingPoints\": []}}",
               surroundingKnowledge: [],
               deepDiveTopics: []
+            },
+            {
+              id: "p_c1_1_4",
+              category: "純物質の性質",
+              text: "次のア〜エの記述について、純物質に当てはまるものをすべて選んでア〜エの記号で答えよ。（完答） \n\nア）一定の圧力のもとでは、沸騰する温度がいつも同じである。  \n\nイ）固体が融解し始める温度と融解し終わったときの温度が一致しない。  \n\nウ）固体が融解し始める温度と融解し終わった時の温度が一致する。  \n\nエ）温度、圧力が一定ならば、単位体積あたりの質量が一定である。",
+              subQuestions: [
+                { id: "p4_ans", label: "解答", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ア,ウ,エ", correctAnswerRate: 80 }
+              ],
+              explanation: JSON.stringify({
+  "type": "logic_thought",
+  "phase1": {
+    "title": "フェーズ1：純物質の性質の分析",
+    "overview": {
+      "theme": "純物質と混合物の性質（融点・沸点・密度）",
+      "type": "演繹型（既知知識の適用）",
+      "concepts": "純物質、混合物、融点、沸点、密度"
+    },
+    "tree": "【純物質と混合物の性質判別】\n│\n├─ 条件：純物質か？\n│   ├─ はい（不純物なし）\n│   │   ├─ 融点・沸点：一定 [Step 1]\n│   │   └─ 密度：一定 [Step 2]\n│   │\n│   └─ いいえ（混合物）\n│       └─ 融点・沸点・密度：一定ではない（組成により変化） [Step 3]",
+    "steps": [
+      {
+        "step": "Step 1",
+        "tag": "性質理解",
+        "target": "純物質の融点・沸点",
+        "content": "純物質は決まった融点・沸点を持ち、状態変化中も温度が一定に保たれる。",
+        "knowledge": "純物質の性質",
+        "purpose": "ア、イ、ウの判定"
+      },
+      {
+        "step": "Step 2",
+        "tag": "性質理解",
+        "target": "純物質の密度",
+        "content": "純物質は、温度・圧力が一定ならば密度（単位体積あたりの質量）も一定である。",
+        "knowledge": "密度の定義",
+        "purpose": "エの判定"
+      },
+      {
+        "step": "Step 3",
+        "tag": "性質理解",
+        "target": "混合物の性質",
+        "content": "混合物は、成分の割合によって融点・沸点・密度が変化する。",
+        "knowledge": "混合物の性質",
+        "purpose": "イの誤り判定"
+      }
+    ]
+  },
+  "phase2": {
+    "title": "フェーズ2：解答プロセスの構築",
+    "explanations": [
+      {
+        "step": "Step 1",
+        "tag": "判定",
+        "subQuestionIds": ["p4_ans"],
+        "subQuestionLabels": ["解答"],
+        "content": "ア：純物質は決まった沸点を持つため正しい。\nイ：融点変化は混合物の特徴であるため誤り。\nウ：純物質は決まった融点を持つため正しい。\nエ：純物質は密度が一定であるため正しい。"
+      }
+    ],
+    "stumblingPoints": []
+  },
+  "difficulty": 3
+}),
+              surroundingKnowledge: [],
+              deepDiveTopics: []
             }
           ],
           miniTest: [

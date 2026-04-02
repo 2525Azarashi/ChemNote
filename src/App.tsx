@@ -39,12 +39,16 @@ export default function App() {
   const [forceDesktop, setForceDesktop] = useState(false);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [isMobilePreview, setIsMobilePreview] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        setAppState('onboarding');
+        if (!isGuest) {
+          setAppState('onboarding');
+        }
       } else {
+        setIsGuest(false);
         try {
           // Firestoreの代わりにlocalStorageを使用
           const localProfile = localStorage.getItem(`profile_${user.uid}`);
@@ -60,7 +64,7 @@ export default function App() {
       }
     });
     return unsubscribe;
-  }, []);
+  }, [isGuest]);
   
   // BGM state
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -263,8 +267,8 @@ export default function App() {
           )}
 
           <div className="w-full max-w-5xl relative">
-            {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} />}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} />}
+            {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} isGuest={isGuest} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
             {appState === 'flowchart' && <Flowchart onBack={() => {
               // If we have a selected chapter or were in chapters mode, go back there

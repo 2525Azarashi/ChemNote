@@ -333,8 +333,8 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
         </div>
 
         {/* Content with Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-4">
+        <div className="space-y-6">
+          <div className="space-y-4">
             {/* Related Steps Badge */}
             {relatedSteps.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-2">
@@ -422,18 +422,16 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
             )}
           </div>
 
-          {/* Right Column: Logic Tree */}
-          <div className="lg:col-span-1">
-            {relatedSteps.length > 0 && (
-              <div className="sticky top-4">
-                <InteractiveTree 
-                  data={substanceTreeData} 
-                  expandedStep={String(relatedSteps[0].step)}
-                  expandedNodeId={relatedSteps[0].id}
-                />
-              </div>
-            )}
-          </div>
+          {/* Logic Tree (Below) */}
+          {relatedSteps.length > 0 && (
+            <div className="mt-6">
+              <InteractiveTree 
+                data={substanceTreeData} 
+                expandedStep={String(relatedSteps[0].step)}
+                expandedNodeId={relatedSteps[0].id}
+              />
+            </div>
+          )}
         </div>
       </div>
     );
@@ -600,21 +598,23 @@ export function Explanation({ mode, chapter, answers, onBack }: ExplanationProps
           
           {/* Logical Tree (if exists) */}
           {deepThoughtData && mode === 'practice' && (
-            <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50">
+            <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50 w-full">
               {chapter.abstractTitle.includes("① 純物質と混合物") && mode === 'practice' ? (
-                <div className="space-y-4">
+                <div className="flex flex-col w-full gap-4">
                   <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 text-sm text-slate-300">
                     <p className="mb-1"><span className="font-bold text-orange-400">「Step 1」</span>…演習問題⓵－１・演習問題⓵－２ で演習可能</p>
                     <p className="mb-1"><span className="font-bold text-emerald-400">「Step 2」</span>…演習問題⓵－４ で演習可能</p>
                     <p><span className="font-bold text-blue-400">「Step 3」</span>…演習問題⓵－３ で演習可能</p>
                   </div>
-                  <InteractiveTree 
-                    data={substanceTreeData} 
-                    onQuestionClick={handleQuestionClick} 
-                    expandedStep={expandedStep} 
-                    expandedNodeId={expandedNodeId}
-                    scrollTrigger={scrollTrigger}
-                  />
+                  <div className="w-full">
+                    <InteractiveTree 
+                      data={substanceTreeData} 
+                      onQuestionClick={handleQuestionClick} 
+                      expandedStep={expandedStep} 
+                      expandedNodeId={expandedNodeId}
+                      scrollTrigger={scrollTrigger}
+                    />
+                  </div>
                 </div>
               ) : (
                 <>

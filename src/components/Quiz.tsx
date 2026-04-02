@@ -112,19 +112,28 @@ export function Quiz({ mode, chapter, onFinish, onBack }: QuizProps) {
                   
                   {sq.type === 'multiple_choice' ? (
                     <div className="flex flex-wrap gap-2 md:gap-3">
-                      {sq.options.map((opt: string) => (
-                        <button
-                          key={opt}
-                          onClick={() => handleOptionSelect(sq.id, opt)}
-                          className={`px-3 py-1.5 md:px-4 md:py-1.5 rounded-full font-bold text-xs md:text-sm transition-all duration-200 border-2 flex items-center justify-center flex-1 sm:flex-none min-w-[80px]
-                            ${answers[sq.id] === opt 
-                              ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] shadow-md scale-[1.02] md:scale-105' 
-                              : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3] hover:text-[#A9CCE3]'
-                            }`}
-                        >
-                          {formatText(opt)}
-                        </button>
-                      ))}
+                      {sq.options.map((opt: string) => {
+                        const isSelected = (answers[sq.id] || '').split(',').includes(opt);
+                        return (
+                          <button
+                            key={opt}
+                            onClick={() => {
+                              const current = (answers[sq.id] || '').split(',').filter(Boolean);
+                              const next = isSelected 
+                                ? current.filter(a => a !== opt)
+                                : [...current, opt];
+                              handleOptionSelect(sq.id, next.join(','));
+                            }}
+                            className={`px-3 py-1.5 md:px-4 md:py-1.5 rounded-full font-bold text-xs md:text-sm transition-all duration-200 border-2 flex items-center justify-center flex-1 sm:flex-none min-w-[80px]
+                              ${isSelected 
+                                ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] shadow-md scale-[1.02] md:scale-105' 
+                                : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3] hover:text-[#A9CCE3]'
+                              }`}
+                          >
+                            {formatText(opt)}
+                          </button>
+                        );
+                      })}
                     </div>
                   ) : sq.type === 'descriptive' ? (
                     <div className="flex-1 relative w-full">
