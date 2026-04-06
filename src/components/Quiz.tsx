@@ -3,21 +3,24 @@ import { ChevronRight, ChevronLeft, Edit3, ArrowLeft } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { substanceTreeData } from '../data/chemistryData';
 import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
+import { Explanation } from './Explanation';
 
 interface QuizProps {
   mode: 'mini_test' | 'practice';
   chapter: any;
   onFinish: (answers: Record<string, string>) => void;
   onBack: () => void;
+  isGuest: boolean;
 }
 
-export function Quiz({ mode, chapter, onFinish, onBack }: QuizProps) {
+export function Quiz({ mode, chapter, onFinish, onBack, isGuest }: QuizProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [showingExplanation, setShowingExplanation] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [currentQuestionIndex]);
+  }, [currentQuestionIndex, showingExplanation]);
 
   const handleOptionSelect = (sqId: string, option: string) => {
     setAnswers(prev => ({ ...prev, [sqId]: option }));
@@ -59,18 +62,41 @@ export function Quiz({ mode, chapter, onFinish, onBack }: QuizProps) {
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   const handleNext = () => {
-    if (!isLastQuestion) {
-      setCurrentQuestionIndex(prev => prev + 1);
+    if (!showingExplanation) {
+      setShowingExplanation(true);
     } else {
-      onFinish(answers);
+      if (!isLastQuestion) {
+        setCurrentQuestionIndex(prev => prev + 1);
+        setShowingExplanation(false);
+      } else {
+        onFinish(answers);
+      }
     }
   };
 
   const handlePrevious = () => {
-    if (currentQuestionIndex > 0) {
+    if (showingExplanation) {
+      setShowingExplanation(false);
+    } else if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1);
+      setShowingExplanation(true);
     }
   };
+
+  if (showingExplanation) {
+    return (
+      <Explanation 
+        mode={mode} 
+        chapter={chapter} 
+        answers={answers} 
+        onBack={() => setShowingExplanation(false)} 
+        isGuest={isGuest}
+        singleQuestionIndex={currentQuestionIndex}
+        onNextQuestion={handleNext}
+        isLastQuestion={isLastQuestion}
+      />
+    );
+  }
 
   return (
     <div className="w-full notebook-paper rounded-2xl p-4 sm:p-6 md:p-8 lg:p-12 relative">
@@ -183,11 +209,9 @@ export function Quiz({ mode, chapter, onFinish, onBack }: QuizProps) {
         <button
           onClick={handleNext}
           className={`flex items-center justify-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 rounded-xl font-bold tracking-wider transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 text-sm md:text-base
-            ${isLastQuestion 
-              ? 'bg-[#D9A0A0] text-white hover:bg-[#c98f8f]' 
-              : 'bg-[#2C3E50] text-white hover:bg-[#1a252f]'}`}
+            bg-[#2C3E50] text-white hover:bg-[#1a252f]`}
         >
-          <span>{isLastQuestion ? '分析を開始する' : '次の問題へ'}</span>
+          <span>解答と解説を見る</span>
           <ChevronRight size={18} className="md:w-5 md:h-5" />
         </button>
       </div>

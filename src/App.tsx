@@ -280,7 +280,7 @@ export default function App() {
             {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
             {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} onFlowchart={handleFlowchart} />}
             {appState === 'quiz' && selectedChapter && (
-              <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} />
+              <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} isGuest={isGuest} />
             )}
             {appState === 'explanation' && selectedChapter && (
               <Explanation mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} answers={quizAnswers} onBack={handleBackToChapters} isGuest={isGuest} />
