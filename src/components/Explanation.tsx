@@ -12,6 +12,7 @@ interface ExplanationProps {
   singleQuestionIndex?: number;
   onNextQuestion?: () => void;
   isLastQuestion?: boolean;
+  isMobileView?: boolean;
 }
 
 import { NodeData } from './InteractiveTree';
@@ -48,7 +49,7 @@ const getDifficulty = (sqId: string) => {
   return 1;
 };
 
-export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion }: ExplanationProps) {
+export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView }: ExplanationProps) {
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
   const [expandedSq, setExpandedSq] = useState<string | null>(null);
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
@@ -56,13 +57,17 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
   const [scrollTrigger, setScrollTrigger] = useState<number>(0);
   const [expandedCorrectQuestions, setExpandedCorrectQuestions] = useState<Record<string, boolean>>({});
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(isMobileView !== undefined ? isMobileView : window.innerWidth < 768);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    if (isMobileView !== undefined) {
+      setIsMobile(isMobileView);
+    } else {
+      const handleResize = () => setIsMobile(window.innerWidth < 768);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, [isMobileView]);
 
   const stepColors: Record<string, string> = {
     "1": "bg-red-500/20 text-red-200 border-red-500/50 hover:bg-red-500/30",
@@ -93,11 +98,13 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
   };
 
   const allQuestions = mode === 'mini_test' ? chapter.miniTest : (chapter.practiceProblems || []);
-  const questions = singleQuestionIndex !== undefined ? [allQuestions[singleQuestionIndex]] : allQuestions;
+  const questions = useMemo(() => {
+    return singleQuestionIndex !== undefined ? [allQuestions[singleQuestionIndex]] : allQuestions;
+  }, [allQuestions, singleQuestionIndex]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [questions]);
+  }, [singleQuestionIndex, chapter.id]);
 
   const handleSaveNote = async (question: any, index: number) => {
     const displayIndex = singleQuestionIndex !== undefined ? singleQuestionIndex : index;

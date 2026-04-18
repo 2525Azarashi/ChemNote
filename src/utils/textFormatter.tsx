@@ -1,26 +1,46 @@
 import React from 'react';
 
-export function formatText(text: string) {
+export function formatText(text: string, highlights: string[] = []) {
   if (!text) return null;
 
-  // Split text by a regex that matches chemical formulas and math variables,
-  // BUT we must avoid matching inside HTML tags like <u> or </u>.
-  // We can do this by first splitting by HTML tags, then formatting the text content,
-  // and finally joining everything back into a single HTML string.
+  // First, apply custom highlights to the text. We surround them with custom tags <hl>...</hl>
+  let highlightedText = text;
+  if (highlights.length > 0) {
+    // Sort highlights by length descending to avoid partial matches
+    const sortedHighlights = [...highlights].sort((a, b) => b.length - a.length);
+    sortedHighlights.forEach(hl => {
+      if (!hl.trim()) return;
+      // Simple string replacement for all occurrences
+      // Escape for regex
+      const escaped = hl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`(${escaped})`, 'g');
+      // We must avoid highlighting inside already created <hl> tags
+      highlightedText = highlightedText.replace(regex, '<hl>$1</hl>');
+    });
+  }
+
+  // Split text by a regex that matches chemical formulas, math variables, AND our <hl> tags
+  // BUT we must avoid matching inside HTML tags like <u> or </u> or <hl>.
   
-  // Split by HTML tags (e.g., <u>, </u>, <br/>)
-  const tagRegex = /(<\/?[a-z]+[^>]*>)/gi;
-  const tokens = text.split(tagRegex);
+  // Split by HTML tags (e.g., <u>, </u>, <br/>, <hl>, </hl>)
+  const tagRegex = /(<\/?[a-z][a-z0-9]*[^>]*>)/gi;
+  const tokens = highlightedText.split(tagRegex);
 
   const htmlString = tokens.map((token) => {
     // If it's an HTML tag, render it directly
-    if (token.match(/^<\/?[a-z]+[^>]*>$/i)) {
+    if (token.match(/^<\/?[a-z][a-z0-9]*[^>]*>$/i)) {
       // Replace <u> with our styled version (marker-like UI)
       if (token.toLowerCase() === '<u>') {
         return '<span class="bg-gradient-to-t from-[#F9E79F] to-transparent bg-[length:100%_40%] bg-bottom bg-no-repeat font-bold px-1">';
       }
       if (token.toLowerCase() === '</u>') {
         return '</span>';
+      }
+      if (token.toLowerCase() === '<hl>') {
+        return '<mark class="bg-yellow-200 text-gray-900 rounded-sm px-1 shadow-sm font-bold mx-0.5 transition-colors">';
+      }
+      if (token.toLowerCase() === '</hl>') {
+        return '</mark>';
       }
       return token;
     }
