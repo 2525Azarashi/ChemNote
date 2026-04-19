@@ -259,7 +259,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         onChange={(e) => handleTextChange(sq.id, e.target.value)}
                         placeholder="解答を入力..."
                         rows={3}
-                        className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white"
+                        className="w-full pl-9 pr-4 py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white"
                       />
                     </div>
                   ) : (
@@ -270,7 +270,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         value={answers[sq.id] || ''}
                         onChange={(e) => handleTextChange(sq.id, e.target.value)}
                         placeholder="解答を入力..."
-                        className="w-full pl-9 pr-4 py-3 md:py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm"
+                        className="w-full pl-9 pr-4 py-3 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm"
                       />
                     </div>
                   )}
