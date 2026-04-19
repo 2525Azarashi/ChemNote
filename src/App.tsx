@@ -40,8 +40,10 @@ export default function App() {
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [isMobilePreview, setIsMobilePreview] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
+  const [isExplanationView, setIsExplanationView] = useState(false);
 
-  const isMobileView = (isMobileDevice && !forceDesktop) || isMobilePreview;
+  const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
+  const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -137,13 +139,13 @@ export default function App() {
   useEffect(() => {
     const viewport = document.querySelector('meta[name="viewport"]');
     if (viewport) {
-      if (forceDesktop) {
+      if (forceDesktop || (isMobileDevice && appState === 'explanation')) {
         viewport.setAttribute('content', 'width=1024');
       } else {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
       }
     }
-  }, [forceDesktop]);
+  }, [forceDesktop, appState, isMobileDevice]);
 
   const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
     const target = e.target as HTMLAudioElement;
@@ -230,7 +232,7 @@ export default function App() {
 
   return (
     <>
-      <MobileViewWrapper isMobileMode={isMobilePreview} onClose={() => setIsMobilePreview(false)}>
+      <MobileViewWrapper isMobileMode={isMobilePreview && !shouldForceDesktopUI} onClose={() => setIsMobilePreview(false)}>
         <div className={`min-h-screen w-full flex justify-center py-6 md:py-12 px-4 md:px-8 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
           <audio 
             ref={audioRef} 
@@ -282,10 +284,10 @@ export default function App() {
             {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
             {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} onFlowchart={handleFlowchart} />}
             {appState === 'quiz' && selectedChapter && (
-              <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={isMobileView} />
+              <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={isMobileView} onExplanationChange={setIsExplanationView} />
             )}
             {appState === 'explanation' && selectedChapter && (
-              <Explanation mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} answers={quizAnswers} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={isMobileView} />
+              <Explanation mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} answers={quizAnswers} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={false} />
             )}
             {appState === 'note_list' && <NoteList onBack={() => setAppState('home')} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}

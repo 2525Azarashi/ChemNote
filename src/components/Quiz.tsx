@@ -12,9 +12,10 @@ interface QuizProps {
   onBack: () => void;
   isGuest: boolean;
   isMobileView?: boolean;
+  onExplanationChange?: (isExplanation: boolean) => void;
 }
 
-export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView }: QuizProps) {
+export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange }: QuizProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showingExplanation, setShowingExplanation] = useState(false);
@@ -99,12 +100,15 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView }:
   const handleNext = () => {
     if (!showingExplanation) {
       setShowingExplanation(true);
+      if (onExplanationChange) onExplanationChange(true);
     } else {
       if (!isLastQuestion) {
         setCurrentQuestionIndex(prev => prev + 1);
         setShowingExplanation(false);
+        if (onExplanationChange) onExplanationChange(false);
       } else {
         onFinish(answers);
+        if (onExplanationChange) onExplanationChange(false);
       }
     }
   };
@@ -112,9 +116,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView }:
   const handlePrevious = () => {
     if (showingExplanation) {
       setShowingExplanation(false);
+      if (onExplanationChange) onExplanationChange(false);
     } else if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1);
       setShowingExplanation(true);
+      if (onExplanationChange) onExplanationChange(true);
     }
   };
 
@@ -124,42 +130,42 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView }:
         mode={mode} 
         chapter={chapter} 
         answers={answers} 
-        onBack={() => setShowingExplanation(false)} 
+        onBack={() => { setShowingExplanation(false); if (onExplanationChange) onExplanationChange(false); }} 
         isGuest={isGuest}
         singleQuestionIndex={currentQuestionIndex}
         onNextQuestion={handleNext}
         isLastQuestion={isLastQuestion}
-        isMobileView={isMobileView}
+        isMobileView={false}
       />
     );
   }
 
   return (
-    <div className="w-full h-[100dvh] md:h-screen flex flex-col bg-gray-50 overflow-hidden relative">
+    <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-50">
       
       {/* Header (Fixed) */}
-      <div className="flex-none p-3 md:p-6 border-b border-gray-200 bg-white shadow-sm z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4">
-        <div className="flex items-center w-full sm:w-auto text-left gap-3 md:gap-4">
+      <div className="flex-none p-2 md:p-6 border-b border-gray-200 bg-white shadow-sm z-10 flex items-center justify-between gap-2 md:gap-4">
+        <div className="flex items-center text-left gap-2 md:gap-4 min-w-0">
           <button 
             onClick={onBack}
-            className="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors shrink-0"
+            className="flex items-center justify-center p-1.5 md:p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors shrink-0"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} className="md:w-5 md:h-5" />
           </button>
-          <div className="min-w-0">
-            <h2 className="text-base md:text-xl font-handwriting text-[#2C3E50] font-bold truncate">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-sm md:text-xl font-handwriting text-[#2C3E50] font-bold truncate">
               {chapter.abstractTitle}
             </h2>
-            <div className="text-xs text-gray-500 font-bold mt-0.5">
+            <div className="text-[10px] md:text-xs text-gray-500 font-bold mt-0.5">
               {mode === 'mini_test' ? '小テスト' : '演習問題'}
             </div>
           </div>
         </div>
         
-        <div className="flex items-center gap-3 bg-gray-100 rounded-full px-4 py-1.5 w-full sm:w-auto justify-between sm:justify-center">
-          <div className="text-xs md:text-sm text-gray-500 font-bold">進捗</div>
-          <div className="font-mono font-bold text-[#2C3E50]">
-            <span className="text-base md:text-lg">{currentQuestionIndex + 1}</span>
+        <div className="flex items-center gap-2 md:gap-3 bg-gray-100 rounded-full px-3 py-1 md:px-4 md:py-1.5 shrink-0">
+          <div className="text-[10px] md:text-sm text-gray-500 font-bold hidden sm:block">進捗</div>
+          <div className="font-mono font-bold text-[#2C3E50] text-xs md:text-base">
+            <span className="text-sm md:text-lg">{currentQuestionIndex + 1}</span>
             <span className="text-gray-400 mx-1">/</span>
             <span>{questions.length}</span>
           </div>
@@ -174,9 +180,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView }:
           lg:w-1/2 flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
           ${isDesktop ? 'h-full' : (isProblemExpanded ? 'absolute inset-0 z-30 h-full shadow-lg' : 'max-h-[35vh] h-auto shadow-md relative z-20')}
         `}>
-          <div className="flex items-center justify-between p-3 md:p-4 border-b border-gray-100 bg-blue-50/30">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#A9CCE3]/20 text-[#A9CCE3] font-bold flex items-center justify-center text-sm border-2 border-[#A9CCE3]">
+          <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-[#A9CCE3]/20 text-[#A9CCE3] font-bold flex items-center justify-center text-[10px] md:text-sm border-2 border-[#A9CCE3]">
                 Q{currentQuestionIndex + 1}
               </div>
               <span className="font-bold text-[#2C3E50] text-sm md:text-base">問題文</span>
