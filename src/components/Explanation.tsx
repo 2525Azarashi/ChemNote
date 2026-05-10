@@ -421,11 +421,18 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
   };
 
   return (
-    <div className={`w-full rounded-3xl overflow-clip shadow-2xl border font-handwriting relative my-4 md:my-8 ${
-      mode === 'mini_test' 
-        ? 'bg-white text-gray-800 border-gray-100' 
-        : 'bg-[#0B132B] text-[#E0E1DD] border-[#1C2541]'
-    }`}>
+    <div className={`explanation-desktop-wrapper ${isMobile ? 'active' : ''}`}>
+      <div className="explanation-desktop-content">
+        {isMobile && (
+          <div className="explanation-scroll-hint">
+            横にスワイプして全体を確認できます →
+          </div>
+        )}
+        <div className={`w-full rounded-3xl overflow-clip shadow-2xl border font-handwriting relative my-4 md:my-8 ${
+          mode === 'mini_test' 
+            ? 'bg-white text-gray-800 border-gray-100' 
+            : 'bg-[#0B132B] text-[#E0E1DD] border-[#1C2541]'
+        }`}>
       {/* Background effects */}
       {mode !== 'mini_test' && (
         <>
@@ -1162,6 +1169,8 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
             })}
           </div>
         </div>
+      </div>
+      </div>
       </div>
     </div>
   );

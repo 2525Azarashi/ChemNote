@@ -77,6 +77,72 @@ input:focus, textarea:focus, select:focus {
   & .md\:hidden { display: block !important; }
 }
 
+/* Explanation Component Desktop Force layout on Mobile */
+@media screen and (max-width: 1023px) {
+  .explanation-desktop-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    position: relative;
+  }
+  
+  .explanation-desktop-wrapper .explanation-desktop-content {
+    min-width: 1024px;
+    padding: 0 1rem;
+    margin: 0 auto;
+  }
+  
+  /* Disable responsive flex columns (force flex-row) */
+  .explanation-desktop-wrapper .sm\:flex-row,
+  .explanation-desktop-wrapper .md\:flex-row,
+  .explanation-desktop-wrapper .lg\:flex-row,
+  .explanation-desktop-wrapper .flex-col\.sm\:flex-row,
+  .explanation-desktop-wrapper .flex-col\.md\:flex-row {
+    flex-direction: row !important;
+  }
+  
+  /* Disable responsive grid columns (force grid-cols-2) */
+  .explanation-desktop-wrapper .sm\:grid-cols-2,
+  .explanation-desktop-wrapper .md\:grid-cols-2,
+  .explanation-desktop-wrapper .lg\:grid-cols-2,
+  .explanation-desktop-wrapper .grid-cols-1\.lg\:grid-cols-2,
+  .explanation-desktop-wrapper .grid-cols-1\.md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  
+  /* Disable responsive alignments */
+  .explanation-desktop-wrapper .sm\:items-center,
+  .explanation-desktop-wrapper .md\:items-center,
+  .explanation-desktop-wrapper .lg\:items-center,
+  .explanation-desktop-wrapper .items-start\.sm\:items-center,
+  .explanation-desktop-wrapper .items-start\.md\:items-center {
+    align-items: center !important;
+  }
+  
+  /* Horizontal scroll affordance */
+  .explanation-scroll-hint {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    animation: fadeOutExplanationHint 4s forwards;
+    animation-delay: 2s;
+  }
+}
+
+@keyframes fadeOutExplanationHint {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(10px); visibility: hidden; }
+}
+
 .hand-drawn-border {
   border-radius: 25px 22px 28px 20px / 22px 25px 20px 28px;
 }
