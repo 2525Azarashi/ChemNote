@@ -142,7 +142,7 @@ export default function App() {
       if (forceDesktop || (isMobileDevice && appState === 'explanation')) {
         viewport.setAttribute('content', 'width=1024');
       } else {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
       }
     }
   }, [forceDesktop, appState, isMobileDevice]);

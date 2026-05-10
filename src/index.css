@@ -23,6 +23,24 @@ body {
   font-family: var(--font-modern);
 }
 
+/* Prevent iOS Auto-Zoom on inputs by ensuring font-size is at least 16px */
+@media screen and (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
+/* Reset default iOS form styles to prevent unwanted visual behaviors on focus */
+input, textarea, select {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0; /* Tailwind usually handles this with classes like rounded-xl */
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none; /* Rely on Tailwind focus:ring for accessibility focus styles */
+}
+
 /* Smartphone Preview Overrides */
 .mobile-view {
   & .min-h-screen { min-height: 100% !important; }
