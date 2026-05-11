@@ -42,7 +42,7 @@ export default function App() {
   const [isGuest, setIsGuest] = useState(false);
   const [isExplanationView, setIsExplanationView] = useState(false);
 
-  const shouldForceDesktopUI = forceDesktop || isExplanationView;
+  const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
   const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
 
   useEffect(() => {
@@ -139,13 +139,13 @@ export default function App() {
   useEffect(() => {
     const viewport = document.querySelector('meta[name="viewport"]');
     if (viewport) {
-      if (forceDesktop) {
+      if (shouldForceDesktopUI) {
         viewport.setAttribute('content', 'width=1024');
       } else {
         viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
       }
     }
-  }, [forceDesktop]);
+  }, [shouldForceDesktopUI]);
 
   const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
     const target = e.target as HTMLAudioElement;
