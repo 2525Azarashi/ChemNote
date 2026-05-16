@@ -35,7 +35,7 @@ export function MobileViewWrapper({ isMobileMode, onClose, children }: MobileVie
           <div className="absolute top-0 inset-x-0 h-6 bg-slate-800 rounded-b-3xl w-40 mx-auto z-50"></div>
           
           {/* Content Area */}
-          <div className="mobile-view w-full h-full overflow-y-auto overflow-x-hidden pt-6 transform-gpu">
+          <div className="w-full h-full overflow-y-auto overflow-x-hidden pt-6 transform-gpu">
             {children}
           </div>
         </div>

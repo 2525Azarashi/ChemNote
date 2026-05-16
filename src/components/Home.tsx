@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, ChevronRight, Sparkles, Info, Atom, FlaskConical, Hexagon, Beaker, Edit3, Star, Brain, Pencil, CheckCircle, Coffee } from 'lucide-react';
+import { BookOpen, Flame, Clock, User, CheckCircle, ChevronRight, Home as HomeIcon, Edit3 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { ProfileModal } from './ProfileModal';
+import { chemistryData } from '../data/chemistryData';
 
 interface HomeProps {
   onStart: () => void;
@@ -15,15 +16,60 @@ interface HomeProps {
 export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: HomeProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'home' | 'learn' | 'srs' | 'profile'>('home');
+  
+  // Real facts state
+  const [streak, setStreak] = useState(0);
+  const [totalChapters] = useState(() => chemistryData.parts.flatMap(p => p.chapters).length);
+  const [completedChapters, setCompletedChapters] = useState(0);
+  const [srsCount, setSrsCount] = useState(0);
 
   useEffect(() => {
-    if (auth.currentUser && !isGuest) {
+    if (isGuest) {
+      setStreak(0);
+      setCompletedChapters(0);
+      setSrsCount(0);
+      return;
+    }
+
+    if (auth.currentUser) {
       const fetchProfile = async () => {
         try {
-          const localProfile = localStorage.getItem(`profile_${auth.currentUser!.uid}`);
+          const uid = auth.currentUser!.uid;
+          const localProfile = localStorage.getItem(`profile_${uid}`);
           if (localProfile) {
             setProfile(JSON.parse(localProfile));
           }
+          
+          // Calculate streak
+          const lastActive = localStorage.getItem(`lastActive_${uid}`);
+          const storedStreak = parseInt(localStorage.getItem(`streak_${uid}`) || '0', 10);
+          
+          const today = new Date().toDateString();
+          if (lastActive === today) {
+            setStreak(storedStreak);
+          } else {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (lastActive === yesterday.toDateString()) {
+              const newStreak = storedStreak + 1;
+              setStreak(newStreak);
+              localStorage.setItem(`streak_${uid}`, newStreak.toString());
+              localStorage.setItem(`lastActive_${uid}`, today);
+            } else {
+              setStreak(1);
+              localStorage.setItem(`streak_${uid}`, '1');
+              localStorage.setItem(`lastActive_${uid}`, today);
+            }
+          }
+
+          // Calculate completed chapters
+          const completed = JSON.parse(localStorage.getItem(`completed_${uid}`) || '[]');
+          setCompletedChapters(completed.length);
+          
+          // SRS count (mocked to 0 for now since not implemented)
+          setSrsCount(0);
+          
         } catch (error) {
           console.error("プロフィール取得エラー:", error);
         }
@@ -32,118 +78,171 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: H
     }
   }, [isModalOpen, isGuest]);
 
-  return (
-    <div className="relative w-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px] aspect-auto md:aspect-[16/9] max-w-5xl mx-auto bg-[#FDFBF7] rounded-3xl shadow-[20px_20px_60px_rgba(0,0,0,0.1),-5px_5px_15px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center overflow-hidden border-4 md:border-8 border-white ring-1 ring-gray-200 py-12 md:py-0">
-      
-      {/* Profile Display */}
-      {(auth.currentUser && !isGuest) || isGuest ? (
-        <div className="absolute top-4 left-4 md:top-6 md:left-6 z-30 flex items-center gap-3 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-[#A9CCE3] font-handwriting cursor-pointer hover:bg-[#A9CCE3]/20 transition-colors" onClick={!isGuest ? () => setIsModalOpen(true) : undefined}>
-          <div className="w-10 h-10 rounded-full border border-[#A9CCE3] overflow-hidden rotate-3 flex items-center justify-center bg-gray-100" style={{ borderRadius: '60% 40% 40% 60% / 40% 60% 40% 60%' }}>
-            {isGuest ? <Coffee className="text-gray-400" /> : <img src={profile?.iconUrl || auth.currentUser.photoURL || ''} alt="User" className="w-full h-full object-cover" />}
-          </div>
-          <div className="hidden md:block pr-2">
-            <p className="text-sm font-bold text-[#2C3E50]">{isGuest ? 'ゲストさん' : (profile?.name || auth.currentUser.displayName)}</p>
-            {!isGuest && <p className="text-sm font-bold text-[#2C3E50]">{profile?.grade} {profile?.stream === 'science' ? '理系' : profile?.stream === 'humanities' ? '文系' : ''}</p>}
-          </div>
-        </div>
-      ) : null}
+  const todayStr = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' });
+  const todayFormatted = todayStr.replace(/\//g, '.');
 
+  const handleTabClick = (tab: typeof activeTab) => {
+    setActiveTab(tab);
+    if (tab === 'learn') {
+      onStart();
+      setActiveTab('home');
+    } else if (tab === 'profile') {
+      if (!isGuest) {
+        setIsModalOpen(true);
+      }
+      setActiveTab('home');
+    }
+  };
+
+  const progressPercent = Math.round((completedChapters / totalChapters) * 100) || 0;
+
+  return (
+    <div className="w-full h-full min-h-[100dvh] sm:min-h-0 sm:h-[800px] w-full max-w-5xl mx-auto bg-[#FDFBF7] sm:rounded-[36px] sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] sm:border-[8px] sm:border-[#1B2631] flex flex-col overflow-hidden relative">
       <ProfileModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       
-      {/* Notebook Texture */}
-      <div className="absolute inset-0 pointer-events-none opacity-10 fabric-texture" 
-           style={{ 
-             backgroundImage: 'linear-gradient(transparent 95%, #A9CCE3 95%)', 
-             backgroundSize: '100% 2rem' 
-           }}>
-      </div>
+      {/* Background Decor */}
+      <div className="absolute inset-0 pointer-events-none opacity-5 fabric-texture"></div>
+      
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-6 md:px-12 pt-12 relative z-10">
+        
+        {/* Header */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-8">
+          <h1 className="text-[22px] md:text-[28px] font-handwriting text-[#1B2631] font-bold tracking-wide">
+            おかえり、{isGuest ? 'ゲスト' : profile?.name || 'ゲスト'} さん
+          </h1>
+          <p className="text-xs md:text-sm text-[#4B5563] mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
+        </motion.div>
 
-      {/* Decorative Illustrations */}
-      <Star className="hidden md:block absolute top-10 right-20 text-[#A9CCE3] opacity-30 w-8 h-8 rotate-12" />
-      <Hexagon className="hidden md:block absolute top-20 right-10 text-[#A9CCE3] opacity-20 w-12 h-12 -rotate-12" />
-      <Brain className="hidden md:block absolute bottom-20 left-10 text-[#D9A0A0] opacity-30 w-10 h-10 rotate-6" />
-      <Pencil className="hidden md:block absolute bottom-10 left-20 text-[#D9A0A0] opacity-30 w-8 h-8 -rotate-12" />
-      <CheckCircle className="hidden md:block absolute bottom-10 right-20 text-[#F5B041] opacity-30 w-8 h-8 rotate-12" />
-      <Coffee className="hidden md:block absolute bottom-20 right-10 text-[#F5B041] opacity-30 w-10 h-10 -rotate-6" />
-
-      {/* Logo */}
-      <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
-        <img src="https://lh3.googleusercontent.com/d/1bdaFoRcprvig_57izYdAEzon1gD47_Wk" alt="Logo" className="h-6 sm:h-8 md:h-16 object-contain" referrerPolicy="no-referrer" />
-      </div>
-
-      {/* Main Content */}
-      <div className="text-center z-20 px-4 sm:px-6 md:px-8 relative w-full mt-12 md:mt-0">
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          {/* Title Unit */}
-          <div className="flex flex-col items-center gap-2 mb-6 md:mb-8">
-            <h1 className="text-3xl sm:text-4xl md:text-7xl font-handwriting text-[#2C3E50] font-bold tracking-wider leading-tight relative">
-              マナトビ<br className="md:hidden" />
-              <span className="hidden md:inline"> </span>化学基礎
-              <svg className="absolute -bottom-2 left-0 w-full h-4 text-[#A9CCE3]" viewBox="0 0 100 10" preserveAspectRatio="none">
-                <path d="M0 5 Q 25 0, 50 5 T 100 5" stroke="currentColor" strokeWidth="2" fill="none" />
-                <path d="M0 8 Q 25 3, 50 8 T 100 8" stroke="currentColor" strokeWidth="1" fill="none" />
-              </svg>
-            </h1>
-          </div>
+        {/* CSS Grid for Mobile-First layout: 1 col on mobile, 2 cols on md, 3 cols on lg */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
-          <p className="text-sm sm:text-base md:text-3xl font-handwriting text-[#2C3E50] font-bold mb-8 md:mb-12 leading-relaxed drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]">
-            <span className="relative inline-block">
-              『わかったつもり』はもう終わり。
-              <span className="absolute -bottom-0.5 md:-bottom-1 left-0 w-full h-1 md:h-1.5 bg-[#F9E79F]/60 md:bg-[#F9E79F]/80 -rotate-1 rounded-full"></span>
-            </span>
-            <br/>
-            <span className="relative inline-block mt-2 md:mt-0">
-              学びは停止点から。
-              <span className="absolute -bottom-0.5 md:-bottom-1 left-0 w-full h-1 md:h-1.5 bg-[#F9E79F]/60 md:bg-[#F9E79F]/80 rotate-1 rounded-full"></span>
-            </span>
-          </p>
-
-          <div className="flex flex-col items-center justify-center gap-3 md:gap-4 w-full max-w-[280px] sm:max-w-[320px] mx-auto">
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onStart}
-              className="group relative inline-flex items-center justify-center gap-3 bg-[#2C3E50] text-white py-3 md:py-4 px-6 md:px-10 rounded-full shadow-[0_10px_20px_rgba(44,62,80,0.3)] hover:shadow-[0_15px_30px_rgba(44,62,80,0.4)] transition-all duration-300 font-modern font-bold text-base md:text-lg tracking-widest w-full fabric-texture"
-            >
-              <BookOpen className="w-5 h-5 md:w-6 md:h-6" />
-              <span>学習を開始する</span>
-            </motion.button>
-
-            <motion.button 
-              whileHover={!isGuest ? { scale: 1.05 } : {}}
-              whileTap={!isGuest ? { scale: 0.95 } : {}}
-              onClick={!isGuest ? onNoteList : undefined}
-              className={`inline-flex items-center justify-center gap-2 bg-transparent text-[#2C3E50] border-2 border-[#2C3E50] py-2.5 md:py-2 px-6 rounded-full font-modern font-bold text-sm tracking-widest hand-drawn-border w-full ${isGuest ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              <Edit3 className="w-4 h-4" />
-              <span>個人ノート{isGuest ? ' (ゲスト利用不可)' : ''}</span>
-            </motion.button>
-
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onIntro}
-              className="inline-flex items-center justify-center gap-2 bg-transparent text-[#2C3E50] border-2 border-transparent hover:border-[#2C3E50]/30 py-2 px-6 rounded-full font-modern font-bold text-xs md:text-sm tracking-widest transition-colors w-full"
-            >
-              <Info className="w-4 h-4" />
-              <span>アプリ紹介</span>
-            </motion.button>
+          {/* Column 1: Main Stats (Streak & Start Button) */}
+          <div className="flex flex-col gap-6 lg:col-span-1">
+            {/* Streak Card */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
+              <div className="bg-[#F9E79F] rounded-[20px] p-6 shadow-sm flex items-center justify-between border border-[#1B2631]/5 relative overflow-hidden group h-full">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">🔥</span>
+                    <span className="font-bold text-sm tracking-widest text-[#1B2631] font-modern">連続学習</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-2">
+                    <span className="text-6xl font-bold font-handwriting text-[#1B2631]">{streak}</span>
+                    <span className="text-sm font-modern text-[#1B2631] font-medium">{streak > 0 ? '日連続' : '日目'}</span>
+                  </div>
+                </div>
+                {/* Accents */}
+                <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors"></div>
+              </div>
+            </motion.div>
+            
+            {/* Start Button (Visible on Desktop here, or hidden if we want it at bottom) */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }} className="mt-auto hidden md:block">
+              <button 
+                onClick={onStart} 
+                className="w-full bg-[#1B2631] text-white py-5 px-6 rounded-[20px] font-bold flex items-center justify-between group hover:bg-[#2C3E50] transition-colors shadow-[0_8px_20px_rgba(27,38,49,0.25)] min-h-[64px]"
+              >
+                <div className="flex items-center gap-3">
+                  <BookOpen className="w-6 h-6" />
+                  <span className="font-modern tracking-widest text-[16px]">{completedChapters === 0 ? '学習を始める' : '続きから開く'}</span>
+                </div>
+                <ChevronRight className="w-6 h-6 text-white/50 group-hover:text-white transition-colors group-hover:translate-x-1" />
+              </button>
+            </motion.div>
           </div>
+
+          {/* Column 2: SRS & Progress */}
+          <div className="flex flex-col gap-6 lg:col-span-2 grid grid-cols-1 lg:grid-cols-2">
+            {/* Today's Review (SRS) */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} className="h-full">
+              <div className="border border-[#D1D5DB] rounded-[20px] p-6 bg-white shadow-sm h-full flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="font-bold text-[16px] text-[#1B2631] font-modern">今日の復習</h2>
+                  <span className={`${srsCount > 0 ? 'bg-[#D9A0A0]' : 'bg-[#D1D5DB]'} text-white text-[11px] md:text-xs font-bold px-3 py-1.5 rounded-full tracking-wider shadow-sm flex items-center gap-1.5`}>
+                    <Clock className="w-3.5 h-3.5" /> SRS {srsCount > 0 ? srsCount : 'クリア'}
+                  </span>
+                </div>
+                {srsCount > 0 ? (
+                  <ul className="text-[14px] text-[#4B5563] space-y-3 font-modern flex-1">
+                    <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-[#D1D5DB]"></div>復習アイテムがあります</li>
+                  </ul>
+                ) : (
+                  <div className="text-[14px] text-[#4B5563] font-modern py-4 text-center text-gray-400 flex-1 flex items-center justify-center">
+                    本日の復習タスクはありません🎉
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Learning Progress */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} className="h-full">
+              <div className="border border-[#D1D5DB] rounded-[20px] p-6 bg-white shadow-sm h-full flex flex-col">
+                <h2 className="font-bold text-[16px] mb-4 text-[#1B2631] font-modern">学習進捗</h2>
+                <div className="mt-auto">
+                  <div className="w-full bg-[#F4F1EA] rounded-full h-3 mb-3 overflow-hidden shadow-inner flex-shrink-0">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progressPercent}%` }}
+                      transition={{ duration: 1, delay: 0.5 }}
+                      className="bg-[#A9CCE3] h-full rounded-full" 
+                    />
+                  </div>
+                  <p className="text-[13px] text-[#4B5563] font-modern text-right font-medium">{completedChapters} / {totalChapters} 章修了 ({progressPercent}%)</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+        
+        {/* Start Button (Mobile only) */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }} className="mt-10 md:hidden">
+          <button 
+            onClick={onStart} 
+            className="w-full bg-[#1B2631] text-white py-4 px-6 rounded-full font-bold flex items-center justify-between group hover:bg-[#2C3E50] transition-colors shadow-[0_8px_20px_rgba(27,38,49,0.25)] min-h-[56px]"
+          >
+            <div className="flex items-center gap-3">
+              <BookOpen className="w-5 h-5" />
+              <span className="font-modern tracking-widest text-[15px]">{completedChapters === 0 ? '学習を始める' : '続きから開く'}</span>
+            </div>
+            <ChevronRight className="w-5 h-5 text-white/50 group-hover:text-white transition-colors group-hover:translate-x-1" />
+          </button>
+        </motion.div>
+
+        {/* Extra Links (App Info / Notes) */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.6 }} className="mt-8 md:mt-12 flex justify-center gap-8">
+          <button onClick={!isGuest ? onNoteList : undefined} className={`text-sm font-modern text-[#4B5563] hover:text-[#1B2631] flex items-center gap-2 transition-colors ${isGuest ? 'opacity-40' : ''}`}>
+            <Edit3 className="w-4 h-4" />
+            ノート
+          </button>
+          <button onClick={onIntro} className="text-sm font-modern text-[#4B5563] hover:text-[#1B2631] flex items-center gap-2 transition-colors">
+            <CheckCircle className="w-4 h-4" />
+            アプリ紹介
+          </button>
         </motion.div>
       </div>
 
-      {/* Notebook rings simulation (Left side) */}
-      <div className="absolute left-2 md:left-4 top-0 bottom-0 w-6 sm:w-8 md:w-10 flex flex-col justify-evenly py-8 pointer-events-none opacity-40">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full border-2 border-[#BDC3C7] bg-gradient-to-br from-[#ECF0F1] to-[#BDC3C7] shadow-sm relative z-30">
-            <div className="absolute top-1/2 left-full w-2 sm:w-2.5 md:w-3 h-1 bg-[#BDC3C7] -translate-y-1/2 -z-10"></div>
-          </div>
-        ))}
+      {/* Bottom Navigation */}
+      <div className="absolute bottom-0 left-0 w-full bg-[#FDFBF7]/90 backdrop-blur-md border-t border-[#D1D5DB] flex justify-around items-center px-4 md:px-10 pb-6 pt-3 z-50">
+         <NavItem icon={<HomeIcon className="w-5 h-5"/>} label="Home" isActive={activeTab === 'home'} onClick={() => handleTabClick('home')} />
+         <NavItem icon={<BookOpen className="w-5 h-5"/>} label="Learn" isActive={activeTab === 'learn'} onClick={() => handleTabClick('learn')} />
+         <NavItem icon={<Clock className="w-5 h-5"/>} label="SRS" isActive={activeTab === 'srs'} onClick={() => handleTabClick('srs')} />
+         <NavItem icon={<User className="w-5 h-5"/>} label="Profile" isActive={activeTab === 'profile'} onClick={() => handleTabClick('profile')} />
       </div>
     </div>
+  );
+}
+
+function NavItem({ icon, label, isActive, onClick }: { icon: React.ReactNode, label: string, isActive: boolean, onClick: () => void }) {
+  return (
+    <button 
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center w-16 gap-1 min-h-[44px] transition-colors ${isActive ? 'text-[#1B2631]' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+    >
+      <div className={`relative ${isActive ? '-translate-y-1' : ''} transition-transform duration-300`}>
+        {icon}
+        {isActive && <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#D9A0A0] rounded-full" />}
+      </div>
+      <span className="text-[9px] font-modern font-bold tracking-wider">{label}</span>
+    </button>
   );
 }

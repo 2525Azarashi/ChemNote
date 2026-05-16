@@ -219,6 +219,21 @@ export default function App() {
   const handleFinishQuiz = (answers: Record<string, string>) => {
     setQuizAnswers(answers);
     setAppState('explanation');
+    
+    // Track chapter completion if not guest
+    if (!isGuest && auth.currentUser && selectedChapterId) {
+      const uid = auth.currentUser.uid;
+      const key = `completed_${uid}`;
+      try {
+        const completed = JSON.parse(localStorage.getItem(key) || '[]');
+        if (!completed.includes(selectedChapterId)) {
+          completed.push(selectedChapterId);
+          localStorage.setItem(key, JSON.stringify(completed));
+        }
+      } catch (e) {
+        console.error('Failed to save completion:', e);
+      }
+    }
   };
 
   const handleBackToChapters = () => {
