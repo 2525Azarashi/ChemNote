@@ -178,7 +178,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         {/* Section 1: Problem Text */}
         <div className={`
           lg:w-[58%] flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
-          ${isDesktop ? 'h-full' : (isProblemExpanded ? 'absolute inset-0 z-30 h-full shadow-lg' : 'max-h-[35vh] h-auto shadow-md relative z-20')}
+          ${isDesktop ? 'h-full' : (isProblemExpanded ? 'absolute inset-0 z-30 h-full shadow-lg' : 'max-h-[50vh] h-auto shadow-md relative z-20')}
         `}>
           <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
             <div className="flex items-center gap-2 md:gap-3">
@@ -218,7 +218,18 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             </div>
             
             {/* Inline button at the end of question text */}
-            <div className="mt-8 border-t border-gray-150 pt-6 flex justify-center">
+            <div className="mt-8 border-t border-gray-150 pt-6 flex justify-center gap-4">
+              <button
+                onClick={handlePrevious}
+                disabled={currentQuestionIndex === 0}
+                className={`flex items-center justify-center gap-2 px-4 py-3 md:py-3.5 rounded-xl font-bold transition-all duration-200 border-2 text-sm md:text-base shrink-0
+                  ${currentQuestionIndex === 0 
+                    ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50' 
+                    : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white bg-white shadow-sm'}`}
+              >
+                <ChevronLeft size={18} />
+                <span className="hidden sm:inline">前の問題へ</span>
+              </button>
               <button
                 onClick={handleNext}
                 className="flex items-center justify-center gap-2 px-6 py-3 md:py-3.5 rounded-xl font-bold tracking-wider transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 text-sm md:text-base bg-[#2C3E50] text-white hover:bg-[#1a252f] w-full max-w-sm"
@@ -231,7 +242,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         </div>
 
         {/* Section 2: Answers Area (Scrollable) */}
-        <div className={`lg:w-[42%] flex-1 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-32 md:pb-32 ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
+        <div className={`lg:w-[42%] flex-1 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-8 md:pb-8 ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
             {currentQuestion.subQuestions.map((sq: any) => (
@@ -291,31 +302,6 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* Footer (Fixed Navigation Buttons) */}
-      <div className={`absolute bottom-0 left-0 right-0 flex-none p-4 md:px-8 md:py-5 bg-white/90 backdrop-blur-md border-t border-gray-200 z-40 ${!isDesktop && isProblemExpanded ? 'hidden' : 'block'}`}>
-        <div className="max-w-6xl mx-auto flex justify-between items-center gap-4">
-          <button
-            onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0}
-            className={`flex items-center justify-center gap-2 px-4 py-3 sm:px-6 sm:py-3.5 rounded-xl font-bold transition-all duration-200 border-2 text-sm md:text-base shrink-0
-              ${currentQuestionIndex === 0 
-                ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50' 
-                : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white bg-white shadow-sm'}`}
-          >
-            <ChevronLeft size={18} />
-            <span className="hidden sm:inline">前の問題へ</span>
-          </button>
-
-          <button
-            onClick={handleNext}
-            className="flex items-center justify-center gap-2 px-6 py-3 sm:px-8 sm:py-3.5 rounded-xl font-bold tracking-wider transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 text-sm md:text-base bg-[#2C3E50] text-white hover:bg-[#1a252f] flex-1 max-w-[320px]"
-          >
-            <span>解答と解説を見る</span>
-            <ChevronRight size={18} />
-          </button>
         </div>
       </div>
     </div>

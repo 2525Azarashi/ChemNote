@@ -1,7 +1,6 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
-import { substanceTreeData } from '../data/chemistryData';
-import { SeparationFlowchart } from './SeparationFlowchart';
+import { substanceTreeData, separationTreeData } from '../data/chemistryData';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -16,21 +15,6 @@ interface PracticeExplanationTreeProps {
   renderSubQuestionCheck: (sq: any, parentQuestion: any) => React.ReactElement;
 }
 
-const filterTree = (node: NodeData, relatedNodeIds: string[]): NodeData | null => {
-  const isRelated = relatedNodeIds.includes(node.id);
-  const filteredChildren = node.children
-    ? node.children.map(child => filterTree(child, relatedNodeIds)).filter(child => child !== null) as NodeData[]
-    : [];
-  
-  if (isRelated || filteredChildren.length > 0) {
-    return {
-      ...node,
-      children: filteredChildren
-    };
-  }
-  return null;
-};
-
 export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = ({
   deepThoughtData,
   chapter,
@@ -43,6 +27,9 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   isMobile,
   renderSubQuestionCheck
 }) => {
+  const isSeparationChapter = chapter?.id === 'c1_2_A';
+  const currentTreeData = isSeparationChapter ? separationTreeData : substanceTreeData;
+
   const renderContent = (nodeId: string) => {
     const matchedSqs: { sq: any, parentQuestion: any }[] = [];
     
@@ -77,7 +64,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
       return null;
     };
     
-    const nodeInTree = findNodeInTree(substanceTreeData, nodeId);
+    const nodeInTree = findNodeInTree(currentTreeData, nodeId);
     if (nodeInTree?.relatedQuestions) {
       const relatedIds = nodeInTree.relatedQuestions.map((rq: any) => rq.id);
       for (const question of questions) {
@@ -105,41 +92,6 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
     );
   };
 
-  // Find all related node IDs for the active chapter's questions
-  const getChapterRelatedNodeIds = () => {
-    const ids: string[] = [];
-    const sqIds = questions.flatMap(q => q.subQuestions.map((sq: any) => sq.id));
-    
-    const traverse = (node: any) => {
-      // Check if this node is related to any of our sub-questions
-      const isRelated = node.relatedQuestions?.some((rq: any) => sqIds.includes(rq.id));
-      
-      // Check if deepThoughtData has this step
-      const isStepInDeepThought = deepThoughtData?.phase2?.explanations?.some((ex: any) => {
-        const normalize = (s: string) => s.replace(/[\s【】]/g, '').toLowerCase();
-        return normalize(ex.step).includes(normalize(node.id)) || 
-               normalize(node.id).includes(normalize(ex.step));
-      });
-
-      if (isRelated || isStepInDeepThought) {
-        ids.push(node.id);
-      }
-      if (node.children) {
-        node.children.forEach(traverse);
-      }
-    };
-    
-    traverse(substanceTreeData);
-    return ids;
-  };
-
-  const relatedNodeIds = getChapterRelatedNodeIds();
-  let filteredTreeData = relatedNodeIds.length > 0 
-    ? filterTree(substanceTreeData, relatedNodeIds) || substanceTreeData
-    : substanceTreeData;
-
-  const isSeparationChapter = chapter?.id === 'c1_2_A';
-
   return (
     <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-gray-200 w-full bg-white">
       <div className="flex flex-col w-full gap-4">
@@ -147,19 +99,15 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
           {isSeparationChapter ? '分離と精製のフローチャート' : '学習フローチャート'}
         </h3>
         <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-2 sm:p-5 overflow-x-auto">
-          {isSeparationChapter ? (
-            <SeparationFlowchart onQuestionClick={handleQuestionClick} />
-          ) : (
-            <InteractiveTree 
-              data={filteredTreeData}
-              onQuestionClick={handleQuestionClick}
-              expandedStep={expandedStep}
-              expandedNodeId={expandedNodeId}
-              scrollTrigger={scrollTrigger}
-              renderContent={renderContent}
-              mobileTightCrop={isMobile}
-            />
-          )}
+          <InteractiveTree 
+            data={currentTreeData}
+            onQuestionClick={handleQuestionClick}
+            expandedStep={expandedStep}
+            expandedNodeId={expandedNodeId}
+            scrollTrigger={scrollTrigger}
+            renderContent={renderContent}
+            mobileTightCrop={isMobile}
+          />
         </div>
       </div>
     </div>

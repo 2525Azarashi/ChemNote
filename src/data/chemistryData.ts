@@ -802,7 +802,7 @@ export const chemistryData = {
             {
               id: "q_c1_2_A_7",
               category: "物質の分離と精製 (問7)",
-              text: "【問7】（共通テスト風応用）次の混合物の組合せと、それを分離するのに最も適切な操作の対応で、誤っているものを一つ選べ。\n\n① 水とエタノール ─ 分留\n② ヨウ素と塩化ナトリウム ─ 昇華法\n③ 砂と砂糖水 ─ 蒸留\n④ 葉緑素を含む色素 ─ クロマトグラフィー\n⑤ アルミ缶と鉄缶 ─ 磁石による分別",
+              text: "【問7】次の混合物の組合せと、それを分離するのに最も適切な操作の対応で、誤っているものを一つ選べ。\n\n① 水とエタノール ─ 分留\n② ヨウ素と塩化ナトリウム ─ 昇華法\n③ 砂と砂糖水 ─ 蒸留\n④ 葉緑素を含む色素 ─ クロマトグラフィー\n⑤ アルミ缶と鉄缶 ─ 磁石による分別",
               subQuestions: [
                 { id: "q7_wrong_option", label: "誤っている組み合わせ", type: "multiple_choice", options: ["①", "②", "③", "④", "⑤"], correctAnswer: "③", correctAnswerRate: 85 }
               ],
@@ -1245,6 +1245,95 @@ export const substanceTreeData: NodeData = {
             { id: 'p3_6', label: '類題⓵－３(6)' },
             { id: 'p3_7', label: '類題⓵－３(7)' }
           ]
+        }
+      ]
+    }
+  ]
+};
+
+export const separationTreeData: NodeData = {
+  id: 'separation_root',
+  label: '物質の分離と精製',
+  step: null,
+  explanation: '混合物から不純物を除き、目的の純物質を取り出す操作を分離、分離した物質の純度をより高める操作を精製といいます。\n物理的な性質（沸点、溶解度、吸着力など）の違いを利用します。',
+  children: [
+    {
+      id: 'step1_group_sep',
+      isGroup: true,
+      label: '【Step1】固体と液体の分離',
+      step: 1,
+      children: [
+        {
+          id: 'filter',
+          label: 'ろ過',
+          step: 1,
+          subLabel: 'ろ紙で固体を分離',
+          explanation: '固体と液体の混合物から、ろ紙などを用いて固体を分離する操作。通過した液体を「ろ液」と呼ぶ。\n\n【注意点】\n・ガラス棒に伝わらせて注ぐ\n・ろうとの足を内壁につける\n・ガラス棒をろ紙につける\n\n例：砂を含む水溶液から砂を分離する。',
+          relatedQuestions: [{ id: 'q2_1', label: '演習問題①-2(ろ過)' }],
+        }
+      ]
+    },
+    {
+      id: 'step2_group_sep',
+      isGroup: true,
+      label: '【Step2】沸点の違いを利用',
+      step: 2,
+      children: [
+        {
+          id: 'distillation',
+          label: '蒸留',
+          step: 2,
+          subLabel: '蒸気を冷却して分離',
+          explanation: '液体の混合物を加熱して沸騰させ、その蒸気を冷却して沸点の低い成分を分離する。\n\n【注意点】\n・沸騰石を入れる（突沸防止）\n・液量は半分以下\n・温度計の球部は枝の付け根\n・冷却水は下から上へ\n・三角フラスコを密閉しない\n\n例：NaCl水溶液から水を分離。',
+          relatedQuestions: [{ id: 'q2_2', label: '演習問題①-2(蒸留)' }],
+        },
+        {
+          id: 'fractional',
+          label: '分留',
+          step: 2,
+          subLabel: '沸点差で液体を分離',
+          explanation: '沸点の異なる2種類以上の液体混合物を加熱し、異なる温度で蒸留して分離する。\n\n例：液体空気の分離、石油（原油）の分留。\n\n【原油の分留順】沸点低 : 石油ガス→ナフサ→灯油→軽油→重油→残留 : 沸点高',
+          relatedQuestions: [{ id: 'q2_3', label: '演習問題①-2(分留)' }],
+        }
+      ]
+    },
+    {
+      id: 'step3_group_sep',
+      isGroup: true,
+      label: '【Step3】特殊な性質を利用',
+      step: 3,
+      children: [
+        {
+          id: 'sublimation',
+          label: '昇華法',
+          step: 3,
+          subLabel: '固体→気体の性質を利用',
+          explanation: '昇華しやすい固体を含む混合物を加熱し、生じた気体を冷却して分離する。\n\n【重要物質】ドライアイス、ヨウ素、ナフタレン\n例：砂とヨウ素の混合物からヨウ素を分離する。',
+          relatedQuestions: [{ id: 'q2_4', label: '演習問題①-2(昇華)' }],
+        },
+        {
+          id: 'recrystallization',
+          label: '再結晶',
+          step: 3,
+          subLabel: '温度による溶解度差を利用',
+          explanation: '少量の不純物を含む固体を熱水に溶かし、冷却して目的の純粋な固体を得る操作。\n\n例：硝酸カリウムと少量の硫酸銅(II)五水和物の混合物から硝酸カリウムを分離する。',
+          relatedQuestions: [{ id: 'q2_5', label: '演習問題①-2(再結)' }],
+        },
+        {
+          id: 'extraction',
+          label: '抽出',
+          step: 3,
+          subLabel: '特定の溶媒への溶けやすさ',
+          explanation: '混合物に適切な溶媒を加えて、目的物質だけを溶かし出して分離する操作。\n\n例：ヨウ素とヨウ化カリウム水溶液からヨウ素を分離、茶葉から成分を溶かし出す。',
+          relatedQuestions: [{ id: 'q2_6', label: '演習問題①-2(抽出)' }],
+        },
+        {
+          id: 'chromatography',
+          label: 'クロマトグラフィー',
+          step: 3,
+          subLabel: '吸着力の違いを利用',
+          explanation: '物質の吸着力の違いを利用して分離する。ろ紙を用いる場合はペーパークロマトグラフィーと呼ぶ。\n\n【種類】カラムクロマトグラフィー、ガスクロマトグラフィー\n例：水性インクの色素分離。',
+          relatedQuestions: [{ id: 'q2_7', label: '演習問題①-2(クロマト)' }],
         }
       ]
     }
