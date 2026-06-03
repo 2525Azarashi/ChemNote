@@ -1,6 +1,6 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
-import { substanceTreeData, separationTreeData } from '../data/chemistryData';
+import { substanceTreeData, separationTreeData, thermalMotionTreeData } from '../data/chemistryData';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -28,7 +28,11 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   renderSubQuestionCheck
 }) => {
   const isSeparationChapter = chapter?.id === 'c1_2_A';
-  const currentTreeData = isSeparationChapter ? separationTreeData : substanceTreeData;
+  const isThermalMotionChapter = chapter?.id === 'c1_3';
+  
+  let currentTreeData = substanceTreeData;
+  if (isSeparationChapter) currentTreeData = separationTreeData;
+  if (isThermalMotionChapter) currentTreeData = thermalMotionTreeData;
 
   const renderContent = (nodeId: string) => {
     const matchedSqs: { sq: any, parentQuestion: any }[] = [];
@@ -95,8 +99,10 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   return (
     <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-gray-200 w-full bg-white">
       <div className="flex flex-col w-full gap-4">
-        <h3 className="text-lg font-bold text-[#2C3E50] mb-2 font-handwriting">
-          {isSeparationChapter ? '分離と精製のフローチャート' : '学習フローチャート'}
+        <h3 className={`text-lg font-bold mb-2 font-handwriting ${isThermalMotionChapter ? 'text-amber-700 text-xl' : 'text-[#2C3E50]'}`}>
+          {isThermalMotionChapter ? '重要事項③ 〜粒子の熱運動と物質の三態〜' : 
+           isSeparationChapter ? '分離と精製のフローチャート' : 
+           '学習フローチャート'}
         </h3>
         <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-2 sm:p-5 overflow-x-auto">
           <InteractiveTree 

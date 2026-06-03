@@ -17,7 +17,7 @@ interface ExplanationProps {
 
 import { NodeData } from './InteractiveTree';
 import { InteractiveLogicTree } from './InteractiveLogicTree';
-import { substanceTreeData } from '../data/chemistryData';
+import { substanceTreeData, separationTreeData, thermalMotionTreeData } from '../data/chemistryData';
 import { PracticeExplanationTree } from './PracticeExplanationTree';
 
 // Substance Tree Data for Chapter 1 (Moved to chemistryData.ts)
@@ -266,7 +266,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const getRelatedSteps = (sqId: string, currentQuestion: any) => {
     const steps: { step: number | string | null, label: string, id: string }[] = [];
     
-    // Always check substanceTreeData first as it's the primary logic tree for Part 1
+    // Always check logic trees first as they are the primary logic structures
     const findInTree = (node: NodeData) => {
       if (node.relatedQuestions?.some(q => q.id === sqId)) {
         steps.push({ step: node.step, label: node.label, id: node.id });
@@ -276,9 +276,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       }
     };
     
-    if (substanceTreeData) {
-      findInTree(substanceTreeData);
-    }
+    if (chapter?.id === 'c1_2_A' && separationTreeData) findInTree(separationTreeData);
+    else if (chapter?.id === 'c1_3' && thermalMotionTreeData) findInTree(thermalMotionTreeData);
+    else if (substanceTreeData) findInTree(substanceTreeData);
     
     if (steps.length > 0) return steps;
 
@@ -580,7 +580,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         <div className={`rounded-2xl shadow-lg overflow-clip border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`}>
           
           {/* Logical Tree (if exists) */}
-          {deepThoughtData && isPracticeMode && (
+          {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A') && (
             <PracticeExplanationTree
               deepThoughtData={deepThoughtData}
               chapter={chapter}
@@ -924,7 +924,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                         const relatedSteps = getRelatedSteps(sq.id, question);
                                         if (relatedSteps.length === 0) return null;
                                         
-                                        const filteredData = filterTree(substanceTreeData, relatedSteps.map(s => s.id));
+                                        const targetTreeParams = chapter?.id === 'c1_2_A' ? separationTreeData 
+                                          : chapter?.id === 'c1_3' ? thermalMotionTreeData 
+                                          : substanceTreeData;
+                                        const filteredData = filterTree(targetTreeParams, relatedSteps.map(s => s.id));
                                         if (!filteredData) return null;
 
                                         return (

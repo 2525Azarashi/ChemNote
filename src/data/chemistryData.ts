@@ -976,64 +976,117 @@ export const chemistryData = {
           abstractTitle: "③ 粒子の熱運動と物質の三態",
           realTitle: "1章 物質の構成",
           topics: [],
-          miniTest: [
+          practiceProblems: [
             {
               id: "q_c1_3_1",
               category: "粒子の熱運動と物質の三態 (問1)",
-              text: `粒子の熱運動と物質の三態に関する次の文章を読み、あとの問いに答えよ。\n\n物質を構成する粒子は、常に不規則な運動を行っている。これを ( ア ) という。すべての粒子が同じ速さで運動しているわけではなく、温度が高くなるほどその速さの平均値は ( イ：大きく / 小さく ) なる。温度を下げていくと粒子の運動は次第に穏やかになり、理論上、すべての粒子が ( ア ) をしなくなる温度が存在する。この温度をセルシウス温度で ( ウ ) ℃といい、これを ( エ ) と呼ぶ。( エ ) を基準とした温度を絶対温度といい、単位には ( オ ) が用いられる。\n\nまた、別々の入れ物に入れておいた窒素と臭素をくっつけるとやがて均一な混合気体になるように、物質の構成粒子が自然に散らばっていく現象を ( カ ) という。\n\n物質は温度などの条件によって、固体、液体、気体の3つの状態をとる。これを物質の三態という。物質が状態を変えることを「状態変化」といい、これは物質そのものは変化せず状態のみが変わる ( キ ) 変化である。一方で、原子の組み合わせが変化し、物質が別の物質に変わることを ( ク ) 変化という。\n\n状態変化に伴い、粒子の様子も大きく変化する。なお、純物質の場合、固体から液体へ、あるいは液体から気体へ状態変化している間は、加熱を続けても温度は一定に保たれる特徴がある。\n\n固体のときは粒子間の距離が小さく、強い引力が働くため、粒子はほぼ一定の位置にとどまってその場でわずかに ( ケ ) しているのみである。そのため形や体積は一定である。\n\n加熱して ( コ ) 点に達し、固体から液体になることを ( サ ) という。液体になると粒子は自由に動き回るため、体積はほぼ一定だが形は自由に変形する。\n\nさらに加熱して ( シ ) 点に達し、液体の内部からも気体が発生することを沸騰といい、液体から気体になる状態変化を ( ス ) という。気体になると粒子間の引力はほとんど働かず、粒子は激しく飛び回るため、体積は温度や圧力によって大きく変化する。\n\n問1 文章中の空欄 ( ア ) ～ ( ス ) に入る最も適切な語句、または数値を答えよ。\n（※(イ)は選択肢から選ぶこと）`,
+              text: `【問1】 次の文章の空欄（ア）〜（ソ）に適する語句・数値を答えよ。（語句網羅）\n物質を構成する粒子は静止しておらず、不規則な運動をしている。これを（ア）という。温度が高いほど粒子の平均の速さは（イ：大きく／小さく）なる。理論上、粒子の運動が止まる温度を（ウ）といい、セルシウス温度では（エ）℃である。これを基準にした温度を（オ）といい、単位は（カ）（記号 K）で表す。セルシウス温度 t [℃] と絶対温度 T [K] の関係は T = （キ）＋ t である。物質の三態は（ク）・液体・（ケ）であり、固体→液体への変化を（コ）、液体→気体への変化を（サ）、気体→液体への変化を（シ）、液体→固体への変化を（ス）という。固体から直接気体になる変化を（セ）といい、逆に気体から直接固体になる変化を（ソ）（または昇華）という。状態だけが変化し、別の物質に変わらない変化を物理変化、別の物質になる変化を化学変化という。`,
               subQuestions: [
-                { id: "q_c1_3_1_a", label: "問1 (ア)", type: "short_answer", correctAnswer: "熱運動", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_i", label: "問1 (イ)", type: "multiple_choice", options: ["大きく", "小さく"], correctAnswer: "大きく", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_u", label: "問1 (ウ)", type: "short_answer", correctAnswer: "-273", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_e", label: "問1 (エ)", type: "short_answer", correctAnswer: "絶対零度", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_o", label: "問1 (オ)", type: "short_answer", correctAnswer: "K", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_ka", label: "問1 (カ)", type: "short_answer", correctAnswer: "拡散", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_ki", label: "問1 (キ)", type: "short_answer", correctAnswer: "物理", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_ku", label: "問1 (ク)", type: "short_answer", correctAnswer: "化学", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_ke", label: "問1 (ケ)", type: "short_answer", correctAnswer: "振動", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_ko", label: "問1 (コ)", type: "short_answer", correctAnswer: "融", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_sa", label: "問1 (サ)", type: "short_answer", correctAnswer: "融解", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_shi", label: "問1 (シ)", type: "short_answer", correctAnswer: "沸", correctAnswerRate: 85 },
-                { id: "q_c1_3_1_su", label: "問1 (ス)", type: "short_answer", correctAnswer: "蒸発", correctAnswerRate: 85 }
+                { id: "q_c1_3_1_a", label: "（ア）", type: "short_answer", correctAnswer: "熱運動", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_i", label: "（イ）", type: "multiple_choice", options: ["大きく", "小さく"], correctAnswer: "大きく", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_u", label: "（ウ）", type: "short_answer", correctAnswer: "絶対零度", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_e", label: "（エ）", type: "short_answer", correctAnswer: "−273", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_o", label: "（オ）", type: "short_answer", correctAnswer: "絶対温度", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_ka", label: "（カ）", type: "short_answer", correctAnswer: "ケルビン", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_ki", label: "（キ）", type: "short_answer", correctAnswer: "273", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_ku", label: "（ク）", type: "short_answer", correctAnswer: "固体", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_ke", label: "（ケ）", type: "short_answer", correctAnswer: "気体", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_ko", label: "（コ）", type: "short_answer", correctAnswer: "融解", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_sa", label: "（サ）", type: "short_answer", correctAnswer: "蒸発", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_shi", label: "（シ）", type: "short_answer", correctAnswer: "凝縮", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_su", label: "（ス）", type: "short_answer", correctAnswer: "凝固", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_se", label: "（セ）", type: "short_answer", correctAnswer: "昇華", correctAnswerRate: 85 },
+                { id: "q_c1_3_1_so", label: "（ソ）", type: "short_answer", correctAnswer: "凝華", correctAnswerRate: 85 }
               ],
-              explanation: "問1\n(ア) 熱運動\n(イ) 大きく\n(ウ) -273\n(エ) 絶対零度\n(オ) K（ケルビン）\n(カ) 拡散\n(キ) 物理\n(ク) 化学\n(ケ) 振動\n(コ) 融\n(サ) 融解\n(シ) 沸\n(ス) 蒸発\n解説: 絶対零度は－２７３℃であり、すべての粒子が熱運動をしなくなる温度です。固体の粒子は静止しているわけではなく、定位置で「振動」している点もテストでよく狙われます。",
+              explanation: "▼ 解答・解説\n（ア）熱運動 （イ）大きく （ウ）絶対零度 （エ）−273 （オ）絶対温度 （カ）ケルビン\n（キ）273 （ク）固体 （ケ）気体 （コ）融解 （サ）蒸発 （シ）凝縮 （ス）凝固 （セ）昇華 （ソ）凝華",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
               id: "q_c1_3_2",
               category: "粒子の熱運動と物質の三態 (問2)",
-              text: `問2 セルシウス温度と絶対温度の変換について、次の問いに答えよ。\n(1) セルシウス温度が２７℃のとき、絶対温度は何Kか。\n(2) 絶対温度が353Kのとき、セルシウス温度は何℃か。`,
+              text: `【問2】 （基礎）次の温度をセルシウス温度から絶対温度に、あるいはその逆に換算せよ。\n(1) 27 ℃ → [ ] K\n(2) 0 ℃ → [ ] K\n(3) 100 ℃ → [ ] K\n(4) 200 K → [ ] ℃\n(5) 373 K → [ ] ℃\n(6) 25 ℃ → [ ] K`,
               subQuestions: [
-                { id: "q_c1_3_2_1", label: "問2 (1)", type: "short_answer", correctAnswer: "300K", correctAnswerRate: 85 },
-                { id: "q_c1_3_2_2", label: "問2 (2)", type: "short_answer", correctAnswer: "80℃", correctAnswerRate: 85 }
+                { id: "q_c1_3_2_1", label: "(1)", type: "short_answer", correctAnswer: "300", correctAnswerRate: 85 },
+                { id: "q_c1_3_2_2", label: "(2)", type: "short_answer", correctAnswer: "273", correctAnswerRate: 85 },
+                { id: "q_c1_3_2_3", label: "(3)", type: "short_answer", correctAnswer: "373", correctAnswerRate: 85 },
+                { id: "q_c1_3_2_4", label: "(4)", type: "short_answer", correctAnswer: "-73", correctAnswerRate: 85 },
+                { id: "q_c1_3_2_5", label: "(5)", type: "short_answer", correctAnswer: "100", correctAnswerRate: 85 },
+                { id: "q_c1_3_2_6", label: "(6)", type: "short_answer", correctAnswer: "298", correctAnswerRate: 85 }
               ],
-              explanation: "問2\n(1) 300K\n(2) 80℃\n解説: 「絶対温度 T = 273 + t (セルシウス温度)」の公式を用います。\n(1) T = 273 + 27 = 300\n(2) 353 = 273 + tより、t = 353 - 273 = 80",
+              explanation: "▼ 解答・解説\n(1) 300 K (2) 273 K (3) 373 K (4) −73 ℃ (5) 100 ℃ (6) 298 K\n■ T = 273 + t ⇄ t = T − 273.",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
               id: "q_c1_3_3",
               category: "粒子の熱運動と物質の三態 (問3)",
-              text: `問3 次の (a) ～ (d) の状態変化の名称をそれぞれ答えよ。\n(a) 気体 から 液体 になること\n(b) 液体 から 固体 になること\n(c) 固体 から 直接気体 になること\n(d) 気体 から 直接固体 になること`,
+              text: `【問3】 次のア〜カの現象は、固体・液体・気体の三態のどれからどれへの状態変化か答え、変化の名称を答えよ。\nア：冷凍庫の中で水が氷になる\nイ：洗濯物が乾く\nウ：ドライアイスが小さくなる（液体にならず）\nエ：露が朝、葉に付く\nオ：寒い朝、霜柱や霜が降りる\nカ：ロウソクのロウが溶ける`,
               subQuestions: [
-                { id: "q_c1_3_3_a", label: "問3 (a)", type: "short_answer", correctAnswer: "凝縮", correctAnswerRate: 85 },
-                { id: "q_c1_3_3_b", label: "問3 (b)", type: "short_answer", correctAnswer: "凝固", correctAnswerRate: 85 },
-                { id: "q_c1_3_3_c", label: "問3 (c)", type: "short_answer", correctAnswer: "昇華", correctAnswerRate: 85 },
-                { id: "q_c1_3_3_d", label: "問3 (d)", type: "short_answer", correctAnswer: "凝華", correctAnswerRate: 85 }
+                { id: "q_c1_3_3_a", label: "ア：変化", type: "short_answer", correctAnswer: "液体から固体", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_a_name", label: "ア：名称", type: "short_answer", correctAnswer: "凝固", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_i", label: "イ：変化", type: "short_answer", correctAnswer: "液体から気体", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_i_name", label: "イ：名称", type: "short_answer", correctAnswer: "蒸発", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_u", label: "ウ：変化", type: "short_answer", correctAnswer: "固体から気体", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_u_name", label: "ウ：名称", type: "short_answer", correctAnswer: "昇華", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_e", label: "エ：変化", type: "short_answer", correctAnswer: "気体から液体", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_e_name", label: "エ：名称", type: "short_answer", correctAnswer: "凝縮", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_o", label: "オ：変化", type: "short_answer", correctAnswer: "気体から固体", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_o_name", label: "オ：名称", type: "short_answer", correctAnswer: "凝華", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_ka", label: "カ：変化", type: "short_answer", correctAnswer: "固体から液体", correctAnswerRate: 85 },
+                { id: "q_c1_3_3_ka_name", label: "カ：名称", type: "short_answer", correctAnswer: "融解", correctAnswerRate: 85 }
               ],
-              explanation: "問3\n(a) 凝縮\n(b) 凝固\n(c) 昇華\n(d) 凝華\n解説: 状態変化の図は矢印の向きと名前を完全に一致させておきましょう。特に、気体→固体を「凝華」と呼ぶ点は要注意です。",
+              explanation: "▼ 解答・解説\nア：液体→固体（凝固） イ：液体→気体（蒸発） ウ：固体→気体（昇華）\nエ：気体→液体（凝縮） オ：気体→固体（凝華） カ：固体→液体（融解）",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
               id: "q_c1_3_4",
               category: "粒子の熱運動と物質の三態 (問4)",
-              text: `問4 固体が融解している間や、液体が沸騰している間、継続して加熱しているにもかかわらず温度が一定に保たれる。その理由は「加えられた熱エネルギーが、(　　　) ために使われるから」である。 (　　) の内容が「全ての物質での(　　)が終わる」となるように適切な語句を答えよ。`,
+              text: `【問4】 （標準）次の変化のうち、化学変化はどれか。すべて選び記号で答えよ。\nア：水を加熱して水蒸気にする\nイ：鉄が空気中でさびて酸化鉄になる\nウ：砂糖が水に溶ける\nエ：マグネシウムリボンが燃えて酸化マグネシウムになる\nオ：氷が水になる\nカ：銅板を加熱して黒く変色する（CuO 生成）`,
               subQuestions: [
-                { id: "q_c1_3_4_1", label: "問4", type: "short_answer", correctAnswer: "状態変化", correctAnswerRate: 85 }
+                { id: "q_c1_3_4_ans", label: "記号", type: "short_answer", correctAnswer: "イ・エ・カ", correctAnswerRate: 85 }
               ],
-              explanation: "問4\n状態変化\n解説: プリント右下の「全ての物質での状態変化が終わるまで、温度は一定に保たれる」という記述からの出題です。加えられた熱が温度上昇ではなく、粒子間の引力を断ち切って状態を変えるために使われるためです。",
+              explanation: "▼ 解答・解説\n答：イ・エ・カ\n■ 化学変化は『別の物質に変わる』もの。さび（鉄→酸化鉄）、燃焼（Mg→MgO）、加熱酸化（Cu→CuO）は化学変化。\nア・オは状態変化（物理変化）、ウは溶解（物理変化）。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_3_5",
+              category: "粒子の熱運動と物質の三態 (問5)",
+              text: `【問5】 （文字式・文章題）ある気体粒子の平均運動エネルギーは絶対温度 T に比例する（E = kT、kは比例定数）。温度を T₁ [K] から T₂ [K] に変えたとき、平均運動エネルギーは何倍になるか。T₁, T₂ の式で表せ。また、T₁ = 300 K, T₂ = 600 K の場合の値を求めよ。`,
+              subQuestions: [
+                { id: "q_c1_3_5_exp", label: "式", type: "short_answer", correctAnswer: "T2/T1", correctAnswerRate: 85 },
+                { id: "q_c1_3_5_val", label: "値", type: "short_answer", correctAnswer: "2.0倍", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n倍率 = E(T₂)/E(T₁) = (k·T₂)/(k·T₁) = T₂/T₁.\nT₁=300 K, T₂=600 K のとき：600/300 = 2.0 倍.\n■ 平均運動エネルギーは絶対温度に比例するため、絶対温度を2倍にすると平均運動エネルギーも2倍。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_3_6",
+              category: "粒子の熱運動と物質の三態 (問6)",
+              text: `【問6】 （標準）次の問いに答えよ。\n(1) 1 atm（大気圧）下での水の融点・沸点を℃と K の両方で答えよ。\n(2) 大気圧でドライアイスは何℃で昇華するか、おおよその値を答えよ（−79℃前後）。\n(3) 絶対温度の値が負になることはあるか。理由を述べよ。`,
+              subQuestions: [
+                { id: "q_c1_3_6_1_mp_c", label: "(1)融点(℃)", type: "short_answer", correctAnswer: "0", correctAnswerRate: 85 },
+                { id: "q_c1_3_6_1_mp_k", label: "(1)融点(K)", type: "short_answer", correctAnswer: "273", correctAnswerRate: 85 },
+                { id: "q_c1_3_6_1_bp_c", label: "(1)沸点(℃)", type: "short_answer", correctAnswer: "100", correctAnswerRate: 85 },
+                { id: "q_c1_3_6_1_bp_k", label: "(1)沸点(K)", type: "short_answer", correctAnswer: "373", correctAnswerRate: 85 },
+                { id: "q_c1_3_6_2", label: "(2)", type: "short_answer", correctAnswer: "-79", correctAnswerRate: 85 },
+                { id: "q_c1_3_6_3", label: "(3)", type: "short_answer", correctAnswer: "ならない。絶対零度（0 K = −273 ℃）が粒子の運動が止まる下限であり、それより低い温度は存在しない。", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) 融点：0 ℃ = 273 K 沸点：100 ℃ = 373 K\n(2) 約 −79 ℃（=194 K）。常圧で液体にならず固体→気体に直接変化（昇華）。\n(3) ならない。絶対零度（0 K = −273 ℃）が粒子の運動が止まる下限であり、それより低い温度は存在しない。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_3_7",
+              category: "粒子の熱運動と物質の三態 (問7)",
+              text: `【問7】 右図（図3）の三態モデルにおいて、状態変化に伴うエネルギーの出入りについて、次のうち正しいものをすべて選べ。\nア：融解では熱を吸収する。\nイ：凝縮では熱を放出する。\nウ：昇華では熱を放出する。\nエ：蒸発では熱を吸収する。\nオ：凝固では熱を吸収する。`,
+              subQuestions: [
+                { id: "q_c1_3_7_ans", label: "記号", type: "short_answer", correctAnswer: "ア・イ・エ", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n答：ア・イ・エ\n■ 粒子間の結合を切る向きの変化（融解・蒸発・昇華）は『吸熱』、結合をつくる向きの変化（凝固・凝縮・凝華）は『発熱』。\nウ：昇華は固→気で結合を切るので吸熱（誤り）。オ：凝固は液→固で発熱（誤り）。",
               surroundingKnowledge: [],
               deepDiveTopics: []
             }
@@ -1334,6 +1387,111 @@ export const separationTreeData: NodeData = {
           subLabel: '吸着力の違いを利用',
           explanation: '物質の吸着力の違いを利用して分離する。ろ紙を用いる場合はペーパークロマトグラフィーと呼ぶ。\n\n【種類】カラムクロマトグラフィー、ガスクロマトグラフィー\n例：水性インクの色素分離。',
           relatedQuestions: [{ id: 'q2_7', label: '演習問題①-2(クロマト)' }],
+        }
+      ]
+    }
+  ]
+};
+
+export const thermalMotionTreeData: NodeData = {
+  id: 'thermal_motion_root',
+  label: '粒子の熱運動と物質の三態',
+  step: null,
+  explanation: 'すべての物質は粒子からできており、その粒子は熱運動と呼ばれる不規則な運動をしています。温度と状態変化の関係を整理しましょう。',
+  children: [
+    {
+      id: 'step1_group_tm',
+      isGroup: true,
+      label: '【Step1】熱運動と温度',
+      step: 1,
+      children: [
+        {
+          id: 'thermal_motion',
+          label: '熱運動',
+          step: 1,
+          subLabel: '粒子の不規則な運動',
+          explanation: 'すべての粒子が同じ速さではなく、高温になるほど速さの平均値が大きくなる。',
+          relatedQuestions: [{ id: 'q_c1_3_1_a', label: '演習問題①-3(熱運動)' }],
+        },
+        {
+          id: 'diffusion',
+          label: '気体の拡散',
+          step: 1,
+          subLabel: '粒子が自然に散らばる',
+          explanation: '窒素と臭素の容器を繋ぐと均一に混ざる現象などが例。熱運動によって引き起こされる。',
+          relatedQuestions: [],
+        },
+        {
+          id: 'absolute_temp',
+          label: '絶対温度（K）',
+          step: 1,
+          subLabel: 'セルシウス温度+273',
+          explanation: '公式：T(K) = 273 + t(℃)\nすべての粒子が熱運動をしなくなる温度を「絶対零度（0K / -273℃）」と定義する。',
+          relatedQuestions: [{ id: 'q_c1_3_2_1', label: '演習問題①-3(絶対温度)' }],
+        }
+      ]
+    },
+    {
+      id: 'step2_group_tm',
+      isGroup: true,
+      label: '【Step2】物質の三態',
+      step: 2,
+      children: [
+        {
+          id: 'solid',
+          label: '固体',
+          step: 2,
+          subLabel: '粒子が一定位置で振動',
+          explanation: '粒子間の距離が小さく、引力が強く働く。形・体積ともにほぼ一定。',
+          relatedQuestions: [],
+        },
+        {
+          id: 'liquid',
+          label: '液体',
+          step: 2,
+          subLabel: '粒子が自由に動き回る',
+          explanation: '粒子間の距離は小さいが、引力を振り切って移動できる。形は自由に変わるが、体積はほぼ一定。',
+          relatedQuestions: [],
+        },
+        {
+          id: 'gas',
+          label: '気体',
+          step: 2,
+          subLabel: '粒子が激しく飛び回る',
+          explanation: '粒子間の距離が大きく、引力はほとんど働かない。形も体積も自由（温度や圧力で変化）。',
+          relatedQuestions: [],
+        }
+      ]
+    },
+    {
+      id: 'step3_group_tm',
+      isGroup: true,
+      label: '【Step3】状態変化',
+      step: 3,
+      children: [
+        {
+          id: 'state_change_names',
+          label: '状態変化の名称',
+          step: 3,
+          subLabel: '融解・蒸発・凝縮など',
+          explanation: '・固体→液体: 融解 (融点)\n・液体→気体: 蒸発・沸騰 (沸点)\n・気体→液体: 凝縮\n・液体→固体: 凝固\n・固体⇔気体: 昇華・凝華',
+          relatedQuestions: [{ id: 'q_c1_3_3_a', label: '演習問題①-3(状態変化)' }],
+        },
+        {
+          id: 'phys_chem_change',
+          label: '物理変化と化学変化',
+          step: 3,
+          subLabel: '状態のみ or 物質そのもの',
+          explanation: '状態変化は「物理変化」に分類される。原子の組み合わせが変わる場合は「化学変化」。',
+          relatedQuestions: [{ id: 'q_c1_3_4_ans', label: '演習問題①-3(物理変化・化学変化)' }],
+        },
+        {
+          id: 'heating_curve',
+          label: '加熱中の温度一定',
+          step: 3,
+          subLabel: '状態変化中は温度が一定',
+          explanation: '全ての物質の状態変化が終わるまで、加えられた熱エネルギーが状態変化に使われるため、温度（融点・沸点）は上昇しない。',
+          relatedQuestions: [{ id: 'q_c1_3_7_ans', label: '演習問題①-3(三態モデルとエネルギー)' }],
         }
       ]
     }
