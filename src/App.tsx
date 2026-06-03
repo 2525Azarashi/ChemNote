@@ -4,8 +4,9 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Monitor, Smartphone, Volume2, VolumeX } from 'lucide-react';
+import { Monitor, Smartphone, Volume2, VolumeX, Home as HomeIcon, BookOpen, User } from 'lucide-react';
 import { Home } from './components/Home';
+import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
 import { ChapterSelection } from './components/ChapterSelection';
 import { Quiz } from './components/Quiz';
@@ -41,6 +42,7 @@ export default function App() {
   const [isMobilePreview, setIsMobilePreview] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
   const [isExplanationView, setIsExplanationView] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
   const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
@@ -140,12 +142,13 @@ export default function App() {
     const viewport = document.querySelector('meta[name="viewport"]');
     if (viewport) {
       if (shouldForceDesktopUI) {
-        viewport.setAttribute('content', 'width=1024');
+        const scale = Math.min(1, window.innerWidth / 1024);
+        viewport.setAttribute('content', `width=1024, initial-scale=${scale}, minimum-scale=${scale}, maximum-scale=3.0, user-scalable=yes`);
       } else {
         viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
       }
     }
-  }, [shouldForceDesktopUI]);
+  }, [shouldForceDesktopUI, appState]);
 
   const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
     const target = e.target as HTMLAudioElement;
@@ -286,6 +289,8 @@ export default function App() {
           )}
 
           <div className="w-full max-w-5xl relative">
+            <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
+
             {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
             {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} isGuest={isGuest} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
@@ -306,6 +311,41 @@ export default function App() {
             )}
             {appState === 'note_list' && <NoteList onBack={() => setAppState('home')} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}
+
+            {/* Global Bottom Navigation Footer */}
+            {appState !== 'onboarding' && appState !== 'quiz' && (
+              <div className="absolute bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-4 md:px-10 pb-6 pt-3 z-[45] sm:rounded-b-[28px] shadow-sm">
+                <button 
+                  onClick={() => setAppState('home')}
+                  className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${appState === 'home' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                >
+                  <HomeIcon className="w-5 h-5 stroke-[2.2]" />
+                  <span className="text-[10px] tracking-wider font-modern">Home</span>
+                </button>
+                
+                <button 
+                  onClick={() => {
+                    if (appState === 'home') {
+                      handleStart();
+                    } else {
+                      setAppState('mode_selection');
+                    }
+                  }}
+                  className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                >
+                  <BookOpen className="w-5 h-5 stroke-[2.2]" />
+                  <span className="text-[10px] tracking-wider font-modern">Learn</span>
+                </button>
+
+                <button 
+                  onClick={() => setIsProfileOpen(true)}
+                  className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${isProfileOpen ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                >
+                  <User className="w-5 h-5 stroke-[2.2]" />
+                  <span className="text-[10px] tracking-wider font-modern">Profile</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </MobileViewWrapper>

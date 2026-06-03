@@ -1,6 +1,7 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
 import { substanceTreeData } from '../data/chemistryData';
+import { SeparationFlowchart } from './SeparationFlowchart';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -133,24 +134,32 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   };
 
   const relatedNodeIds = getChapterRelatedNodeIds();
-  const filteredTreeData = relatedNodeIds.length > 0 
+  let filteredTreeData = relatedNodeIds.length > 0 
     ? filterTree(substanceTreeData, relatedNodeIds) || substanceTreeData
     : substanceTreeData;
+
+  const isSeparationChapter = chapter?.id === 'c1_2_A';
 
   return (
     <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-gray-200 w-full bg-white">
       <div className="flex flex-col w-full gap-4">
-        <h3 className="text-lg font-bold text-[#2C3E50] mb-2 font-handwriting">学習フローチャート</h3>
-        <div className="w-full bg-slate-100 rounded-2xl border border-gray-200 p-2 sm:p-4 overflow-x-auto overflow-y-hidden">
-          <InteractiveTree 
-            data={filteredTreeData}
-            onQuestionClick={handleQuestionClick}
-            expandedStep={expandedStep}
-            expandedNodeId={expandedNodeId}
-            scrollTrigger={scrollTrigger}
-            renderContent={renderContent}
-            mobileTightCrop={isMobile}
-          />
+        <h3 className="text-lg font-bold text-[#2C3E50] mb-2 font-handwriting">
+          {isSeparationChapter ? '分離と精製のフローチャート' : '学習フローチャート'}
+        </h3>
+        <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-2 sm:p-5 overflow-x-auto">
+          {isSeparationChapter ? (
+            <SeparationFlowchart onQuestionClick={handleQuestionClick} />
+          ) : (
+            <InteractiveTree 
+              data={filteredTreeData}
+              onQuestionClick={handleQuestionClick}
+              expandedStep={expandedStep}
+              expandedNodeId={expandedNodeId}
+              scrollTrigger={scrollTrigger}
+              renderContent={renderContent}
+              mobileTightCrop={isMobile}
+            />
+          )}
         </div>
       </div>
     </div>

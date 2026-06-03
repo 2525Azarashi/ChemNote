@@ -177,7 +177,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
 
         {/* Section 1: Problem Text */}
         <div className={`
-          lg:w-1/2 flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
+          lg:w-[58%] flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
           ${isDesktop ? 'h-full' : (isProblemExpanded ? 'absolute inset-0 z-30 h-full shadow-lg' : 'max-h-[35vh] h-auto shadow-md relative z-20')}
         `}>
           <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
@@ -213,12 +213,25 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             onTouchEnd={handleTextSelection}
             title="テキストを選択するとハイライトできます"
           >
-            {formatText(currentQuestion.text, highlights)}
+            <div>
+              {formatText(currentQuestion.text, highlights)}
+            </div>
+            
+            {/* Inline button at the end of question text */}
+            <div className="mt-8 border-t border-gray-150 pt-6 flex justify-center">
+              <button
+                onClick={handleNext}
+                className="flex items-center justify-center gap-2 px-6 py-3 md:py-3.5 rounded-xl font-bold tracking-wider transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 text-sm md:text-base bg-[#2C3E50] text-white hover:bg-[#1a252f] w-full max-w-sm"
+              >
+                <span>解答と解説を見る</span>
+                <ChevronRight size={18} />
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Section 2: Answers Area (Scrollable) */}
-        <div className={`lg:w-1/2 flex-1 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-32 md:pb-32 ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
+        <div className={`lg:w-[42%] flex-1 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-32 md:pb-32 ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
             {currentQuestion.subQuestions.map((sq: any) => (
