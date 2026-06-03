@@ -1,8 +1,6 @@
 import React from 'react';
-import { Network, CheckCircle2 } from 'lucide-react';
-import { InteractiveTree } from './InteractiveTree';
+import { InteractiveTree, NodeData } from './InteractiveTree';
 import { substanceTreeData } from '../data/chemistryData';
-import { formatText } from '../utils/textFormatter';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -17,6 +15,21 @@ interface PracticeExplanationTreeProps {
   renderSubQuestionCheck: (sq: any, parentQuestion: any) => React.ReactElement;
 }
 
+const filterTree = (node: NodeData, relatedNodeIds: string[]): NodeData | null => {
+  const isRelated = relatedNodeIds.includes(node.id);
+  const filteredChildren = node.children
+    ? node.children.map(child => filterTree(child, relatedNodeIds)).filter(child => child !== null) as NodeData[]
+    : [];
+  
+  if (isRelated || filteredChildren.length > 0) {
+    return {
+      ...node,
+      children: filteredChildren
+    };
+  }
+  return null;
+};
+
 export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = ({
   deepThoughtData,
   chapter,
@@ -29,79 +42,117 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   isMobile,
   renderSubQuestionCheck
 }) => {
-  return (
-    <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-[#3A506B]/50 w-full max-h-[60vh] overflow-y-auto">
-      {chapter.abstractTitle.includes("① 純物質と混合物") ? (
-        <div className="flex flex-col w-full gap-4">
-          <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 text-sm text-slate-300">
-            <p className="mb-1"><span className="font-bold text-orange-400">「Step 1」</span>…演習問題⓵－１・演習問題⓵－２ で演習可能</p>
-            <p className="mb-1"><span className="font-bold text-emerald-400">「Step 2」</span>…演習問題⓵－４ で演習可能</p>
-            <p><span className="font-bold text-blue-400">「Step 3」</span>…演習問題⓵－３ で演習可能</p>
-          </div>
-          <div className="w-full">
-            <InteractiveTree 
-              data={substanceTreeData} 
-              onQuestionClick={handleQuestionClick} 
-              expandedStep={expandedStep} 
-              expandedNodeId={expandedNodeId}
-              scrollTrigger={scrollTrigger}
-              zoom={isMobile ? 'far' : 'normal'}
-            />
-          </div>
-        </div>
-      ) : (
-        <>
-          <h4 className="font-bold mb-3 flex items-center gap-2 text-sm md:text-base text-[#5BC0BE]">
-            <Network className="w-4 h-4 md:w-5 md:h-5" />
-            ロジックツリー
-          </h4>
-          <div className="text-xs md:text-sm overflow-x-auto p-4 rounded-lg border text-[#E0E1DD]/80 bg-[#0B132B]/50 border-[#3A506B]/30">
-            {deepThoughtData.phase1.tree.split('\n').map((line: string, i: number) => {
-              const branchMatch = line.match(/^([ │├─└]+)(.*)$/);
-              const branch = branchMatch ? branchMatch[1] : "";
-              const nodeText = branchMatch ? branchMatch[2].trim() : line.trim();
-              
-              const expData = deepThoughtData.phase2?.explanations?.find((e: any) => e.step === nodeText);
-              const stepSubQuestions = expData?.subQuestionIds 
-                ? questions.flatMap((q: any) => q.subQuestions).filter((sq: any) => expData.subQuestionIds.includes(sq.id))
-                : [];
+  const renderContent = (nodeId: string) => {
+    const matchedSqs: { sq: any, parentQuestion: any }[] = [];
+    
+    // Check if deepThoughtData has explanations for this step/node
+    if (deepThoughtData?.phase2?.explanations) {
+      const stepExplanation = deepThoughtData.phase2.explanations.find((ex: any) => {
+        const normalize = (s: string) => s.replace(/[\s【】]/g, '').toLowerCase();
+        return normalize(ex.step).includes(normalize(nodeId)) || 
+               normalize(nodeId).includes(normalize(ex.step));
+      });
+      
+      for (const question of questions) {
+        for (const sq of question.subQuestions) {
+          if (stepExplanation?.subQuestionIds?.includes(sq.id)) {
+            if (!matchedSqs.some(item => item.sq.id === sq.id)) {
+              matchedSqs.push({ sq, parentQuestion: question });
+            }
+          }
+        }
+      }
+    }
+    
+    // Also check node's direct relatedQuestions configuration
+    const findNodeInTree = (node: any, id: string): any => {
+      if (node.id === id) return node;
+      if (node.children) {
+        for (const child of node.children) {
+          const res = findNodeInTree(child, id);
+          if (res) return res;
+        }
+      }
+      return null;
+    };
+    
+    const nodeInTree = findNodeInTree(substanceTreeData, nodeId);
+    if (nodeInTree?.relatedQuestions) {
+      const relatedIds = nodeInTree.relatedQuestions.map((rq: any) => rq.id);
+      for (const question of questions) {
+        for (const sq of question.subQuestions) {
+          if (relatedIds.includes(sq.id)) {
+            if (!matchedSqs.some(item => item.sq.id === sq.id)) {
+              matchedSqs.push({ sq, parentQuestion: question });
+            }
+          }
+        }
+      }
+    }
 
-              return (
-                <React.Fragment key={i}>
-                  <div className="flex items-center my-1.5 whitespace-pre font-mono">
-                    <span>{branch}</span>
-                    <button 
-                      onClick={() => setExpandedStep(expandedStep === nodeText ? null : nodeText)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors shadow-sm ${expData ? "bg-[#3A506B]/20 text-[#E0E1DD] border-[#5BC0BE]/50 hover:bg-[#3A506B]/40" : "bg-gray-500/10 text-gray-400 border-gray-500/20"}`}
-                    >
-                      <span className="font-bold">{nodeText}</span>
-                    </button>
-                  </div>
-                  {expandedStep === nodeText && expData && (
-                    <div className="ml-8 mt-2 mb-4 p-4 rounded-xl border shadow-inner bg-[#0B132B]/80 border-[#3A506B]">
-                      <h6 className="text-sm font-bold mb-3 flex items-center gap-2 text-[#5BC0BE]">
-                        <CheckCircle2 className="w-4 h-4" />
-                        解説と答え合わせ
-                      </h6>
-                      <div className="text-sm mb-4 text-[#E0E1DD]">
-                        {formatText(expData.content)}
-                      </div>
-                      {stepSubQuestions.length > 0 && (
-                        <div className="space-y-3">
-                          {stepSubQuestions.map((sq: any) => {
-                            const parentQuestion = questions.find((q: any) => q.subQuestions.some((s: any) => s.id === sq.id));
-                            return renderSubQuestionCheck(sq, parentQuestion);
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </React.Fragment>
-              );
-            })}
+    if (matchedSqs.length === 0) return null;
+
+    return (
+      <div className="mt-4 space-y-3">
+        <div className="text-xs font-bold text-slate-500 mb-2">このステップの確認問題:</div>
+        {matchedSqs.map(({ sq, parentQuestion }) => (
+          <div key={sq.id} className="w-full">
+            {renderSubQuestionCheck(sq, parentQuestion)}
           </div>
-        </>
-      )}
+        ))}
+      </div>
+    );
+  };
+
+  // Find all related node IDs for the active chapter's questions
+  const getChapterRelatedNodeIds = () => {
+    const ids: string[] = [];
+    const sqIds = questions.flatMap(q => q.subQuestions.map((sq: any) => sq.id));
+    
+    const traverse = (node: any) => {
+      // Check if this node is related to any of our sub-questions
+      const isRelated = node.relatedQuestions?.some((rq: any) => sqIds.includes(rq.id));
+      
+      // Check if deepThoughtData has this step
+      const isStepInDeepThought = deepThoughtData?.phase2?.explanations?.some((ex: any) => {
+        const normalize = (s: string) => s.replace(/[\s【】]/g, '').toLowerCase();
+        return normalize(ex.step).includes(normalize(node.id)) || 
+               normalize(node.id).includes(normalize(ex.step));
+      });
+
+      if (isRelated || isStepInDeepThought) {
+        ids.push(node.id);
+      }
+      if (node.children) {
+        node.children.forEach(traverse);
+      }
+    };
+    
+    traverse(substanceTreeData);
+    return ids;
+  };
+
+  const relatedNodeIds = getChapterRelatedNodeIds();
+  const filteredTreeData = relatedNodeIds.length > 0 
+    ? filterTree(substanceTreeData, relatedNodeIds) || substanceTreeData
+    : substanceTreeData;
+
+  return (
+    <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-gray-200 w-full bg-white">
+      <div className="flex flex-col w-full gap-4">
+        <h3 className="text-lg font-bold text-[#2C3E50] mb-2 font-handwriting">学習フローチャート</h3>
+        <div className="w-full bg-slate-100 rounded-2xl border border-gray-200 p-2 sm:p-4 overflow-x-auto overflow-y-hidden">
+          <InteractiveTree 
+            data={filteredTreeData}
+            onQuestionClick={handleQuestionClick}
+            expandedStep={expandedStep}
+            expandedNodeId={expandedNodeId}
+            scrollTrigger={scrollTrigger}
+            renderContent={renderContent}
+            mobileTightCrop={isMobile}
+          />
+        </div>
+      </div>
     </div>
   );
 };

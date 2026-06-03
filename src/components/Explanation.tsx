@@ -49,7 +49,11 @@ const getDifficulty = (sqId: string) => {
   return 1;
 };
 
-export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView }: ExplanationProps) {
+export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView }: ExplanationProps) {
+  const isPracticeMode = initialMode === 'practice';
+  // Virtual mode is always 'mini_test' for bright style choices!
+  const mode = 'mini_test';
+
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
   const [expandedSq, setExpandedSq] = useState<string | null>(null);
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
@@ -70,13 +74,13 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
   }, [isMobileView]);
 
   const stepColors: Record<string, string> = {
-    "1": "bg-red-500/20 text-red-200 border-red-500/50 hover:bg-red-500/30",
-    "2": "bg-blue-500/20 text-blue-200 border-blue-500/50 hover:bg-blue-500/30",
-    "3": "bg-green-500/20 text-green-200 border-green-500/50 hover:bg-green-500/30",
-    "4": "bg-yellow-500/20 text-yellow-200 border-yellow-500/50 hover:bg-yellow-500/30",
-    "5": "bg-purple-500/20 text-purple-200 border-purple-500/50 hover:bg-purple-500/30",
-    "6": "bg-pink-500/20 text-pink-200 border-pink-500/50 hover:bg-pink-500/30",
-    "7": "bg-cyan-500/20 text-cyan-200 border-cyan-500/50 hover:bg-cyan-500/30",
+    "1": "bg-red-500/20 text-red-700 border-red-500/50 hover:bg-red-500/30",
+    "2": "bg-blue-500/20 text-blue-700 border-blue-500/50 hover:bg-blue-500/30",
+    "3": "bg-green-500/20 text-green-700 border-green-500/50 hover:bg-green-500/30",
+    "4": "bg-yellow-500/20 text-yellow-800 border-yellow-500/50 hover:bg-yellow-500/30",
+    "5": "bg-purple-500/20 text-purple-700 border-purple-500/50 hover:bg-purple-500/30",
+    "6": "bg-pink-500/20 text-pink-700 border-pink-500/50 hover:bg-pink-500/30",
+    "7": "bg-cyan-500/20 text-cyan-700 border-cyan-500/50 hover:bg-cyan-500/30",
   };
   const markerColors: Record<string, string> = {
     "1": "bg-red-500",
@@ -97,7 +101,7 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
     "7": "border-cyan-500",
   };
 
-  const allQuestions = mode === 'mini_test' ? chapter.miniTest : (chapter.practiceProblems || []);
+  const allQuestions = initialMode === 'mini_test' ? chapter.miniTest : (chapter.practiceProblems || []);
   const questions = useMemo(() => {
     return singleQuestionIndex !== undefined ? [allQuestions[singleQuestionIndex]] : allQuestions;
   }, [allQuestions, singleQuestionIndex]);
@@ -155,7 +159,7 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
     }, {} as Record<string, string>);
 
     let targetId = questionId;
-    if (mode === 'practice') {
+    if (isPracticeMode) {
       targetId = idMap[questionId] || questionId.replace(/^q/, 'p');
     } else if (mode === 'mini_test') {
       targetId = reverseIdMap[questionId] || questionId.replace(/^p/, 'q');
@@ -349,11 +353,11 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
             {sq.detailedExplanation ? (
               <div className={`p-4 rounded-lg border text-sm ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
                 <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【{sq.detailedExplanation.theme}】</h5>
-                {mode === 'practice' && (
+                {isPracticeMode && (
                   <p className="text-xs text-[#7A8B99] mb-2">【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
                 )}
                 
-                {mode === 'practice' && (
+                {isPracticeMode && (
                   <ol className="list-decimal list-inside space-y-1">
                     {sq.detailedExplanation.steps.map((step: string, idx: number) => (
                       <li key={idx}>{step}</li>
@@ -576,7 +580,7 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
         <div className={`rounded-2xl shadow-lg overflow-clip border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`}>
           
           {/* Logical Tree (if exists) */}
-          {deepThoughtData && mode === 'practice' && (
+          {deepThoughtData && isPracticeMode && (
             <PracticeExplanationTree
               deepThoughtData={deepThoughtData}
               chapter={chapter}
@@ -687,7 +691,7 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                                 <div className="flex flex-col gap-6">
                                   <div className="w-full">
                                     {/* Related Steps Badge */}
-                                    {!isCorrect && mode === 'practice' && (() => {
+                                    {!isCorrect && isPracticeMode && (() => {
                                       const relatedSteps = getRelatedSteps(sq.id, question);
                                       if (relatedSteps.length === 0) return null;
                                       return (
@@ -715,15 +719,15 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                                               <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題テーマ】</h5>
                                               <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.theme}</p>
                                             </div>
-                                            {mode === 'practice' && (
+                                            {isPracticeMode && (
                                               <div className="mb-4">
-                                                <p className="font-bold text-[#5BC0BE]">【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
+                                                <p className="font-bold text-gray-700">【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
                                               </div>
                                             )}
-                                            {mode === 'practice' && (
+                                            {isPracticeMode && (
                                               !isCorrect && getRelatedSteps(sq.id, question).length > 0 ? (
                                                 <div className="mb-4">
-                                                  <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
+                                                  <h5 className="font-bold text-gray-700 mb-2">【関連するロジックステップ】</h5>
                                                   <div className="flex flex-wrap gap-2">
                                                     {getRelatedSteps(sq.id, question).map((stepInfo: { step: number | string | null, label: string, id: string }, idx: number) => (
                                                       <button
@@ -734,9 +738,9 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                                                           setScrollTrigger(prev => prev + 1);
                                                           // InteractiveTree handles scrolling to the specific node
                                                         }}
-                                                        className="bg-[#3A506B]/30 hover:bg-[#3A506B]/50 text-[#5BC0BE] px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-[#5BC0BE]/30 flex items-center gap-1"
+                                                        className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-slate-300 flex items-center gap-1"
                                                       >
-                                                        <Network size={14} />
+                                                        <Network size={14} className="text-[#34495E]" />
                                                         {stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」` : `「${stepInfo.label}」`}を復習する
                                                       </button>
                                                     ))}
@@ -767,7 +771,7 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                                               {formatText(sq.correctAnswer)}
                                             </div>
                                             
-                                            {!isCorrect && mode === 'practice' && getRelatedSteps(sq.id, question).length > 0 && (
+                                            {!isCorrect && isPracticeMode && getRelatedSteps(sq.id, question).length > 0 && (
                                               <div className="mb-4">
                                                 <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
                                                 <div className="flex flex-wrap gap-2">
@@ -779,9 +783,9 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                                                         setExpandedStep(stepInfo.label);
                                                         setScrollTrigger(prev => prev + 1);
                                                       }}
-                                                      className="bg-[#3A506B]/30 hover:bg-[#3A506B]/50 text-[#5BC0BE] px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-[#5BC0BE]/30 flex items-center gap-1"
+                                                      className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-slate-300 flex items-center gap-1"
                                                     >
-                                                      <Network size={14} />
+                                                      <Network size={14} className="text-[#34495E]" />
                                                       {stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」` : `「${stepInfo.label}」`}を復習する
                                                     </button>
                                                   ))}
@@ -827,12 +831,12 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                                               <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題テーマ】</h5>
                                               <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.theme}</p>
                                             </div>
-                                            {mode === 'practice' && (
+                                            {isPracticeMode && (
                                               <div className="mb-4">
                                                 <p className="font-bold text-[#5BC0BE]">【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
                                               </div>
                                             )}
-                                            {mode === 'practice' && (
+                                            {isPracticeMode && (
                                               !isCorrect && getRelatedSteps(sq.id, question).length > 0 ? (
                                                 <div className="mb-4">
                                                   <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
@@ -846,9 +850,9 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                                                           setScrollTrigger(prev => prev + 1);
                                                           // InteractiveTree handles scrolling to the specific node
                                                         }}
-                                                        className="bg-[#3A506B]/30 hover:bg-[#3A506B]/50 text-[#5BC0BE] px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-[#5BC0BE]/30 flex items-center gap-1"
+                                                        className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-slate-300 flex items-center gap-1"
                                                       >
-                                                        <Network size={14} />
+                                                        <Network size={14} className="text-[#34495E]" />
                                                         {stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」` : `「${stepInfo.label}」`}を復習する
                                                       </button>
                                                     ))}
@@ -879,7 +883,7 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                                               {formatText(sq.correctAnswer)}
                                             </div>
     
-                                            {!isCorrect && mode === 'practice' && getRelatedSteps(sq.id, question).length > 0 && (
+                                            {!isCorrect && isPracticeMode && getRelatedSteps(sq.id, question).length > 0 && (
                                               <div className="mt-4">
                                                 <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
                                                 <div className="flex flex-wrap gap-2">
@@ -891,9 +895,9 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                                                         setExpandedStep(stepInfo.label);
                                                         setScrollTrigger(prev => prev + 1);
                                                       }}
-                                                      className="bg-[#3A506B]/30 hover:bg-[#3A506B]/50 text-[#5BC0BE] px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-[#5BC0BE]/30 flex items-center gap-1"
+                                                      className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-slate-300 flex items-center gap-1"
                                                     >
-                                                      <Network size={14} />
+                                                      <Network size={14} className="text-[#34495E]" />
                                                       {stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」` : `「${stepInfo.label}」`}を復習する
                                                     </button>
                                                   ))}
@@ -914,8 +918,8 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                                   </div>
 
                                   {/* Bottom Section: Logic Tree */}
-                                  {!isCorrect && mode === 'practice' && (
-                                    <div className="w-full mt-2 pt-6 border-t border-[#3A506B]/30">
+                                  {!isCorrect && isPracticeMode && (
+                                    <div className="w-full mt-2 pt-6 border-t border-gray-200">
                                       {(() => {
                                         const relatedSteps = getRelatedSteps(sq.id, question);
                                         if (relatedSteps.length === 0) return null;
@@ -1020,12 +1024,12 @@ export function Explanation({ mode, chapter, answers, onBack, isGuest, singleQue
                           }`}>
                             {formatText(explanationText)}
                           </div>
-                          {deepThoughtData && mode === 'practice' && (
-                            <div className="mt-4 pt-4 border-t border-[#3A506B]/50">
-                              <h5 className="text-xs font-bold mb-2 text-[#A9CCE3]">解答に必要なロジックツリーのStep:</h5>
+                          {deepThoughtData && isPracticeMode && (
+                            <div className="mt-4 pt-4 border-t border-gray-200">
+                              <h5 className="text-xs font-bold mb-2 text-[#2C3E50]/80">解答に必要なロジックツリーのStep:</h5>
                               <div className="flex flex-wrap gap-2">
                                 {deepThoughtData.phase1.steps.map((step: any, idx: number) => (
-                                  <span key={idx} className="text-[10px] px-2 py-1 rounded border bg-[#1C2541] text-[#A9CCE3] border-[#3A506B]/50">
+                                  <span key={idx} className="text-[10px] px-2 py-1 rounded border bg-slate-100 text-[#2C3E50] border-gray-200">
                                     {step.step}
                                   </span>
                                 ))}

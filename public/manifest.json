@@ -1,0 +1,17 @@
+{
+  "name": "マナトビ 化学基礎",
+  "short_name": "Chembasis",
+  "description": "高校化学基礎を、楽しく続けられる学習体験へ。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F1EA",
+  "theme_color": "#F4F1EA",
+  "lang": "ja",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

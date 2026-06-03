@@ -32,7 +32,7 @@ export default function App() {
   useGlobalClickSound();
 
   const [appState, setAppState] = useState<AppState>('onboarding');
-  const [appMode, setAppMode] = useState<AppMode>('mini_test');
+  const [appMode, setAppMode] = useState<AppMode>('practice');
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [selectedNote, setSelectedNote] = useState<any>(null);
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});

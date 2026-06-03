@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>化学基礎 まとめフローチャート集</title>
+<style>
+/* === 基本リセット & レスポンシブ設計 === */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+  background: #f8fafc;
+  color: #1f2937;
+  line-height: 1.7;
+  padding: 16px;
+  overflow-x: hidden;
+  overflow-y: auto; /* スクロールを確実に有効にする */
+}
+
+header.main-header {
+  max-width: 1100px; margin: 0 auto 20px; padding: 24px;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: white; border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.1);
+}
+header.main-header h1 { font-size: 24px; margin-bottom: 6px; }
+header.main-header p { font-size: 13px; opacity: .95; }
+
+/* Step color legend */
+.color-legend {
+  max-width: 1100px; margin: 0 auto 24px; padding: 16px 20px;
+  background: white; border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.color-legend h3 { font-size: 14px; margin-bottom: 10px; color: #374151; }
+.legend-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.legend-item {
+  padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 700;
+}
+.legend-note { font-size: 11px; color: #6b7280; margin-top: 8px; }
+
+/* TOC */
+.toc {
+  max-width: 1100px; margin: 0 auto 32px; padding: 20px;
+  background: white; border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.toc h2 { font-size: 16px; margin-bottom: 12px; color: #374151; }
+.toc-unit { margin-bottom: 12px; }
+.toc-unit h3 {
+  font-size: 13px; padding: 6px 12px; border-left: 4px solid;
+  border-radius: 4px; margin-bottom: 6px;
+}
+.toc-unit ul { list-style: none; padding-left: 12px; }
+.toc-unit li { margin: 4px 0; }
+.toc-unit a {
+  color: #4b5563; text-decoration: none; font-size: 13px;
+  padding: 4px 8px; border-radius: 4px; display: inline-block;
+  transition: all 0.15s ease-in-out;
+}
+.toc-unit a:hover { background: #f3f4f6; color: #111827; text-decoration: underline; }
+
+/* Chart Section */
+.chart-section {
+  max-width: 1100px; margin: 0 auto 28px; padding: 22px;
+  background: white; border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
+  scroll-margin-top: 12px;
+  width: 100%;
+}
+.chart-header { border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; margin-bottom: 16px; }
+.chart-meta { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+.chart-title { font-size: 19px; color: #1f2937; font-weight: 700; }
+
+/* Root Node */
+.root-node {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px; background: #e2e8f0; color: #1e293b;
+  border: 1.5px solid #cbd5e1; border-radius: 8px;
+  font-weight: 700; font-size: 14px; margin-bottom: 12px;
+}
+.root-arrow { font-size: 14px; color: #9ca3af; margin-bottom: 16px; font-weight: bold; }
+
+/* Steps */
+.steps-container { position: relative; padding-left: 12px; }
+.steps-container::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 14px;
+  width: 2px; background: #d1d5db;
+}
+
+/* === Step色（data-step属性で決定）=== */
+.step-group {
+  position: relative; margin-bottom: 24px;
+  border: 1.5px solid; border-radius: 10px;
+  padding: 20px 16px 14px;
+}
+.step-group::before {
+  content: ""; position: absolute; left: -12px; top: 22px;
+  width: 12px; height: 2px; background: #d1d5db;
+}
+.step-label {
+  display: inline-block; padding: 3px 12px; border-radius: 14px;
+  font-size: 11.5px; font-weight: 700; border: 1px solid;
+  margin-bottom: 10px; position: absolute; top: -11px; left: 14px;
+  background: white;
+}
+
+/* Step1 = オレンジ */
+.step-group[data-step="1"] { border-color: #fbbf24; background: #fef3c710; }
+.step-group[data-step="1"] .step-label { background: #fef3c7; color: #92400e; border-color: #fbbf24; }
+.step-group[data-step="1"] .node-btn { border-color: #f59e0b; color: #92400e; }
+.step-group[data-step="1"] .node-btn:hover { background: #fef3c7; }
+.step-group[data-step="1"] .node-btn.open { background: #f59e0b; color: white; }
+.step-group[data-step="1"] .node-detail { border-color: #fbbf24; background: #fffbeb; }
+.step-group[data-step="1"] .info-icon { background: #fef3c7; color: #92400e; }
+.step-group[data-step="1"] .tip-box { background: #fff8e1; border-color: #fbbf24; color: #78350f; }
+
+/* Step2 = 緑 */
+.step-group[data-step="2"] { border-color: #34d399; background: #d1fae510; }
+.step-group[data-step="2"] .step-label { background: #d1fae5; color: #065f46; border-color: #34d399; }
+.step-group[data-step="2"] .node-btn { border-color: #10b981; color: #065f46; }
+.step-group[data-step="2"] .node-btn:hover { background: #d1fae5; }
+.step-group[data-step="2"] .node-btn.open { background: #10b981; color: white; }
+.step-group[data-step="2"] .node-detail { border-color: #34d399; background: #ecfdf5; }
+.step-group[data-step="2"] .info-icon { background: #d1fae5; color: #065f46; }
+.step-group[data-step="2"] .tip-box { background: #d1fae5; border-color: #34d399; color: #064e3b; }
+
+/* Step3 = 青 */
+.step-group[data-step="3"] { border-color: #60a5fa; background: #dbeafe10; }
+.step-group[data-step="3"] .step-label { background: #dbeafe; color: #1e40af; border-color: #60a5fa; }
+.step-group[data-step="3"] .node-btn { border-color: #3b82f6; color: #1e40af; }
+.step-group[data-step="3"] .node-btn:hover { background: #dbeafe; }
+.step-group[data-step="3"] .node-btn.open { background: #3b82f6; color: white; }
+.step-group[data-step="3"] .node-detail { border-color: #60a5fa; background: #eff6ff; }
+.step-group[data-step="3"] .info-icon { background: #dbeafe; color: #1e40af; }
+.step-group[data-step="3"] .tip-box { background: #dbeafe; border-color: #60a5fa; color: #1e3a8a; }
+
+/* Step4 = 黄 */
+.step-group[data-step="4"] { border-color: #facc15; background: #fef9c310; }
+.step-group[data-step="4"] .step-label { background: #fef9c3; color: #854d0e; border-color: #facc15; }
+.step-group[data-step="4"] .node-btn { border-color: #eab308; color: #854d0e; }
+.step-group[data-step="4"] .node-btn:hover { background: #fef9c3; }
+.step-group[data-step="4"] .node-btn.open { background: #eab308; color: white; }
+.step-group[data-step="4"] .node-detail { border-color: #facc15; background: #fefce8; }
+.step-group[data-step="4"] .info-icon { background: #fef9c3; color: #854d0e; }
+.step-group[data-step="4"] .tip-box { background: #fef9c3; border-color: #facc15; color: #713f12; }
+
+/* Step5 = 紫 */
+.step-group[data-step="5"] { border-color: #a78bfa; background: #ede9fe10; }
+.step-group[data-step="5"] .step-label { background: #ede9fe; color: #5b21b6; border-color: #a78bfa; }
+.step-group[data-step="5"] .node-btn { border-color: #8b5cf6; color: #5b21b6; }
+.step-group[data-step="5"] .node-btn:hover { background: #ede9fe; }
+.step-group[data-step="5"] .node-btn.open { background: #8b5cf6; color: white; }
+.step-group[data-step="5"] .node-detail { border-color: #a78bfa; background: #f5f3ff; }
+.step-group[data-step="5"] .info-icon { background: #ede9fe; color: #5b21b6; }
+.step-group[data-step="5"] .tip-box { background: #ede9fe; border-color: #a78bfa; color: #4c1d95; }
+
+.step-content { padding-top: 6px; }
+
+/* Node */
+.node-wrap { margin: 8px 0; position: relative; }
+.node-row {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.node-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 10px 16px;
+  min-width: 250px;
+  background: white;
+  border: 2px solid;
+  border-radius: 8px;
+  font-size: 13.5px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+  font-family: inherit;
+}
+.node-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.08); }
+.node-btn .node-arrow { font-size: 9px; transition: transform .2s; }
+.node-btn.open .node-arrow { transform: rotate(180deg); }
+.node-brief { font-size: 12px; color: #6b7280; font-weight: 500; }
+
+/* Detail Box */
+.node-detail {
+  display: none; margin-top: 8px;
+  background: white;
+  border: 1.5px solid;
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+.node-detail.open { display: block; animation: slideDown .2s ease-out; }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.detail-inner { display: flex; gap: 12px; }
+.info-icon {
+  flex-shrink: 0; width: 22px; height: 22px;
+  border-radius: 50%; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+.detail-text { font-size: 14px; color: #1f2937; line-height: 1.85; flex: 1; }
+
+.tip-box {
+  margin: 10px 0; padding: 12px 14px;
+  border: 1.5px solid;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Scroll Top Navigation Button */
+.top-link {
+  position: fixed; bottom: 20px; right: 20px;
+  background: #1e293b; color: white;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  text-decoration: none; cursor: pointer; border: none;
+  z-index: 100;
+}
+.top-link:hover { background: #334155; }
+
+@media (max-width: 640px) {
+  body { padding: 10px; }
+  .chart-section { padding: 16px; }
+  .chart-title { font-size: 17px; }
+  .node-btn { min-width: 160px; font-size: 12px; padding: 8px 12px; }
+  .node-brief { font-size: 11px; }
+  .tip-box { font-size: 11.5px; }
+  .legend-item { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+<header class="main-header" id="top-anchor">
+  <h1>🧪 化学基礎 まとめフローチャート集</h1>
+  <p>定期テスト・共通テスト対策 ／ 重要事項学習フローチャート（全27項目）</p>
+  <p style="margin-top:6px;font-size:12px;opacity:0.9;">ボタンをタップ、またはクリックすることで、論理ステップ詳細を開閉可能。縦横にしっかりスクロールできます。</p>
+</header>
+<div class="color-legend">
+  <h3>🎨 Stepカラーガイド</h3>
+  <div class="legend-row">
+    <div class="legend-item" style="background:#fef3c7;color:#92400e;border:2px solid #fbbf24;">Step1（オレンジ）</div>
+    <div class="legend-item" style="background:#d1fae5;color:#065f46;border:2px solid #34d399;">Step2（緑）</div>
+    <div class="legend-item" style="background:#dbeafe;color:#1e40af;border:2px solid #60a5fa;">Step3（青）</div>
+    <div class="legend-item" style="background:#fef9c3;color:#854d0e;border:2px solid #facc15;">Step4（黄）</div>
+    <div class="legend-item" style="background:#ede9fe;color:#5b21b6;border:2px solid #a78bfa;">Step5（紫）</div>
+  </div>
+</div>
+
+<nav class="toc">
+  <h2>📚 目次（全27項目完全版）</h2>
+<div class="toc-unit">
+  <h3 style="color:#16538a; border-color:#fbbf24; background:#fef3c7;">第1部 物質の構成</h3>
+  <ul>
+    <li><a href="#part1-c1_1-p_c1_1_1">重要事項1 〜純物質と混合物〜</a></li>
+    <li><a href="#part1-c1_1-p_c1_1_2">重要事項2 〜物質の分類〜</a></li>
+    <li><a href="#part1-c1_1-p_c1_1_3">重要事項3 〜元素と単体〜</a></li>
+    <li><a href="#part1-c1_1-p_c1_1_4">重要事項4 〜純物質の性質〜</a></li>
+  </ul>
+</div>
+<div class="toc-unit">
+  <h3 style="color:#991b1b; border-color:#f87171; background:#fee2e2;">第2部 物質の変化</h3>
+  <ul>
+  </ul>
+</div>
+
+</nav>
+
+<section class="chart-section" id="part1-c1_1-p_c1_1_1" data-chart-id="part1-c1_1-p_c1_1_1">
+  <div class="chart-header">
+    <div class="chart-meta">第1部 物質の構成 / 1章 物質の構成</div>
+    <h2 class="chart-title">重要事項1 〜純物質と混合物〜</h2>
+  </div>
+  <div class="root-node">純物質と混合物</div>
+  <div class="root-arrow">▼</div>
+  <div class="steps-container">
+    <div class="step-group" data-step="1">
+      <span class="step-label">Step 1</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(ア) 純物質と混合物の定義</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">構造発見型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 「純物質」の定義を問う空欄であることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 純物質と混合物の違いは粒子の種類数であることを想起する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 純物質は1種類の粒子からなることを確認する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (ア)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="2">
+      <span class="step-label">Step 2</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(イ) 純物質の性質</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 純物質の性質について述べている部分であると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 不純物がない場合の状態変化の特徴を想起する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 融点・沸点は一定値で現れることを確認する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (イ)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="3">
+      <span class="step-label">Step 3</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(ウ) 単体・化合物の分類基準</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">構造発見型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 純物質の内部分類についての記述であると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 単体と化合物は元素の種類数で区別されると想起する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 粒子ではなく元素に着目する必要があると判断する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (ウ)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="4">
+      <span class="step-label">Step 4</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(エ) 単体の定義</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 「1種類の（ウ）」という条件に注目する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② （ウ）が元素であることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 元素が1種類のみの物質の名称を想起する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (エ)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="5">
+      <span class="step-label">Step 5</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(オ) 化合物の定義</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 「2種類以上の（ウ）」という条件に注目する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 複数元素からなる純物質の名称を想起する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 単体との対比で整理する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (オ)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="1">
+      <span class="step-label">Step 1</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(カ) 常温で液体の単体</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">知識再生型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 単体の状態（常温）に関する知識を問う問題と判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 常温で液体の単体を思い出す</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 水銀は既出であることを確認する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (カ)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="2">
+      <span class="step-label">Step 2</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(キ) 混合物の定義</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">構造発見型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 「混合物」の定義を問う空欄であることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 純物質との違いは粒子の種類数であることを想起する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 混合物は2種類以上の粒子からなることを確認する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (キ)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="3">
+      <span class="step-label">Step 3</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(ク) 混合物の性質決定要因</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">構造発見型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 混合物の性質が何によって変わるかを問う文であると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 混合物は複数成分からなることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 各成分の量的関係が性質に影響することを想起する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (ク)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="4">
+      <span class="step-label">Step 4</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(ケ) 混合物の性質（一定性）</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① （ク）で割合が変わることを前提にする</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 割合が変化すると性質も変わることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 一定か変化するかで判断する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (ケ)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="5">
+      <span class="step-label">Step 5</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(コ) 分離法（物理的方法）</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">概念区別型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① ろ過・蒸留の操作内容を思い出す</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 操作によって物質の本質が変化するかを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 化学変化が起きていないことを判断する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (コ)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="1">
+      <span class="step-label">Step 1</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(サ) 分解法（化学的方法）</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">概念区別型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 電気分解の操作内容を思い出す</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 元の物質が別の物質に変化しているかを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 化学変化が起きていると判断する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (サ)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chart-section" id="part1-c1_1-p_c1_1_2" data-chart-id="part1-c1_1-p_c1_1_2">
+  <div class="chart-header">
+    <div class="chart-meta">第1部 物質の構成 / 1章 物質の構成</div>
+    <h2 class="chart-title">重要事項2 〜物質の分類〜</h2>
+  </div>
+  <div class="root-node">物質の分類</div>
+  <div class="root-arrow">▼</div>
+  <div class="steps-container">
+    <div class="step-group" data-step="1">
+      <span class="step-label">Step 1</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(1) 酸素 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 対象が単一物質かどうかを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 酸素は1種類の元素のみからなることを想起する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 他成分が含まれていないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素数に基づいて分類基準を適用する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (1) 酸素（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="2">
+      <span class="step-label">Step 2</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(2) 海水 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 複数の物質（水・塩など）が含まれていることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 成分が物理的に混ざっている状態であると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 組成が一定でないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 純物質ではないと判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (2) 海水（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="3">
+      <span class="step-label">Step 3</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(3) 塩化ナトリウム 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① NaとClの2種類の元素からなることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 一定比で結びついた物質であると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 混合物ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素数に基づいて分類する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (3) 塩化ナトリウム（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="4">
+      <span class="step-label">Step 4</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(4) 塩酸 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 塩化水素が水に溶けた溶液であることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 複数成分が含まれていることを判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 組成が変化しうることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 混合物であると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (4) 塩酸（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="5">
+      <span class="step-label">Step 5</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(5) アンモニア 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 窒素と水素からなることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 一定組成の物質であることを判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 混合物ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素が複数であることから分類する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (5) アンモニア（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="1">
+      <span class="step-label">Step 1</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(6) 空気 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 複数の気体が含まれていることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 成分が一定でないことを判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 混合状態であることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 純物質ではないと判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (6) 空気（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="2">
+      <span class="step-label">Step 2</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(7) 石油（原油） 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 多種類の炭化水素を含むことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 成分が一定でないことを判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 混合物であることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 分離可能であることを想起する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (7) 石油（原油）（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="3">
+      <span class="step-label">Step 3</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(8) 鉄 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① Feのみからなることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 他成分が含まれていないことを判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 単一元素で構成されることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 分類基準を適用する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (8) 鉄（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="4">
+      <span class="step-label">Step 4</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(9) プロパン 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 炭素と水素からなることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 一定組成の物質であると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 混合物ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素が複数であることから分類する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (9) プロパン（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="5">
+      <span class="step-label">Step 5</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(10) ガソリン 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 多種類の炭化水素の混合であることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 成分比が一定でないことを判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 混合物であることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 分離可能であることを想起する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (10) ガソリン（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="1">
+      <span class="step-label">Step 1</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(11) 水 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 水素と酸素からなることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 一定組成であることを判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 単体ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素が複数であることから分類する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (11) 水（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="2">
+      <span class="step-label">Step 2</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(12) 木材 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① セルロースなど複数成分からなることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 成分が均一でないことを判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 混合物であることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 純物質ではないと判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (12) 木材（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="3">
+      <span class="step-label">Step 3</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(13) キセノン 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 希ガス元素であることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 単一元素からなることを判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 他成分が含まれていないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 分類基準を適用する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (13) キセノン（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="4">
+      <span class="step-label">Step 4</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(14) 二酸化炭素 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 炭素と酸素からなることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 一定組成であることを判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 混合物ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素が複数であることから分類する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (14) 二酸化炭素（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="5">
+      <span class="step-label">Step 5</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(15) 炭酸水素ナトリウム 物質分類</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">演繹型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① Na・H・C・Oからなることを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 一定組成の物質であると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 混合物ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素が複数であることから分類する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (15) 炭酸水素ナトリウム（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chart-section" id="part1-c1_1-p_c1_1_3" data-chart-id="part1-c1_1-p_c1_1_3">
+  <div class="chart-header">
+    <div class="chart-meta">第1部 物質の構成 / 1章 物質の構成</div>
+    <h2 class="chart-title">重要事項3 〜元素と単体〜</h2>
+  </div>
+  <div class="root-node">元素と単体</div>
+  <div class="root-arrow">▼</div>
+  <div class="steps-container">
+    <div class="step-group" data-step="1">
+      <span class="step-label">Step 1</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(1) 単体と元素の文脈判断</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">文脈判断型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 文が「実際に使用する物質」を指しているか確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 酸素吸入は気体としての酸素を意味すると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 構成要素ではなく実在物質であると整理する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素概念ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (1)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="2">
+      <span class="step-label">Step 2</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(2) 単体と元素の文脈判断</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">文脈判断型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 物質の構成を説明する文であると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 水の材料としての水素・酸素に注目する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 構成要素として扱われていると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 単体ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (2)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="3">
+      <span class="step-label">Step 3</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(3) 単体と元素の文脈判断</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">文脈判断型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 物質中に含まれる成分を述べていると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② カルシウムが構成要素として扱われていると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 実在物質としての挙動ではないと整理する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素概念であると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (3)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="4">
+      <span class="step-label">Step 4</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(4) 単体と元素の文脈判断</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">文脈判断型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 実際に使用される気体について述べていると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 水素・ヘリウムが物質として扱われていると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 構成要素ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 単体としての扱いであると整理する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (4)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="5">
+      <span class="step-label">Step 5</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(5) 単体と元素の文脈判断</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">文脈判断型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 同素体という語に注目する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 同素体は同じ元素からなる異なる単体であると想起する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 炭素が物質として扱われていると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素概念ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (5)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="1">
+      <span class="step-label">Step 1</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(6) 単体と元素の文脈判断</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">文脈判断型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 胃液の成分について述べていると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 塩素が構成要素として含まれていると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 実在物質として単独で扱われていないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 元素としての意味であると整理する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (6)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="2">
+      <span class="step-label">Step 2</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(7) 単体と元素の文脈判断</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">文脈判断型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 材料として使われていることに注目する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② リチウムが成分として利用されていると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 構成要素としての意味合いであると整理する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 単体としての扱いではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (7)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="3">
+      <span class="step-label">Step 3</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(8) 単体と元素の文脈判断</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">文脈判断型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 発生する気体について述べていると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 水素が実際に生成される物質であると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 構成要素ではなく生成物であると整理する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 単体として扱われていると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (8)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="4">
+      <span class="step-label">Step 4</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(9) 単体と元素の文脈判断</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">文脈判断型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 物質の性質（さびやすさ）を述べていると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 鉄が実在する物質として扱われていると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 構成要素ではないことを確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 単体としての性質であると整理する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (9)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-group" data-step="5">
+      <span class="step-label">Step 5</span>
+      <div class="step-content">
+        <div class="node-wrap depth-0">
+          <div class="node-row">
+            <button class="node-btn">
+              <span>(10) 単体と元素の文脈判断</span>
+              <span class="node-arrow">▼</span>
+            </button>
+            <span class="node-brief">文脈判断型</span>
+          </div>
+          <div class="node-detail">
+            <div class="detail-inner">
+              <span class="info-icon">i</span>
+              <div class="detail-text">
+                <p style="font-weight:700;margin-bottom:8px;color:#111827;">💡 解き方のステップ：</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ① 空気の成分割合について述べていると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ② 窒素が実在する気体として扱われていると判断する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ③ 構成要素ではなく存在物質であると整理する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ④ 単体としての意味であると確認する</p>
+                <p style="margin-bottom:4px;padding-left:12px;text-indent:-12px;">• ⑤ 分類を確定する</p>
+                <div class="tip-box" style="margin-top:12px;">
+                  <strong>🎯 対象小問題：</strong> (10)（正答率: 85%）
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chart-section" id="part1-c1_1-p_c1_1_4" data-chart-id="part1-c1_1-p_c1_1_4">
+  <div class="chart-header">
+    <div class="chart-meta">第1部 物質の構成 / 1章 物質の構成</div>
+    <h2 class="chart-title">重要事項4 〜純物質の性質〜</h2>
+  </div>
+  <div class="root-node">純物質の性質</div>
+  <div class="root-arrow">▼</div>
+  <div class="steps-container">
+  </div>
+</section>
+
+
+
+<button class="top-link" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="トップへ戻る">▲</button>
+
+<script>
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.node-btn');
+  if (!btn) return;
+  e.preventDefault();
+  const wrap = btn.closest('.node-wrap');
+  const detail = wrap.querySelector(':scope > .node-detail');
+  if (!detail) return;
+  const isOpen = detail.classList.contains('open');
+  if (isOpen) {
+    detail.classList.remove('open');
+    btn.classList.remove('open');
+  } else {
+    detail.classList.add('open');
+    btn.classList.add('open');
+  }
+});
+
+// スムーズスクロール
+document.querySelectorAll('.toc a').forEach(a => {
+  a.addEventListener('click', function(ev) {
+    ev.preventDefault();
+    const id = this.getAttribute('href').substring(1);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  });
+});
+</script>
+</body>
+</html>
