@@ -41,6 +41,21 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     setHighlights([]);
   }, [currentQuestionIndex]);
 
+  // Prevent zoom/pinch out
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="viewport"]');
+    const originalContent = meta?.getAttribute('content') || '';
+    if (meta) {
+      meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+    }
+    
+    return () => {
+      if (meta) {
+        meta.setAttribute('content', originalContent);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     if (!showingExplanation) {
       window.scrollTo(0, 0);

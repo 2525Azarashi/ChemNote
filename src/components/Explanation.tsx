@@ -110,6 +110,21 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     window.scrollTo(0, 0);
   }, [singleQuestionIndex, chapter.id]);
 
+  // Prevent zoom/pinch out
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="viewport"]');
+    const originalContent = meta?.getAttribute('content') || '';
+    if (meta) {
+      meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+    }
+    
+    return () => {
+      if (meta) {
+        meta.setAttribute('content', originalContent);
+      }
+    };
+  }, []);
+
   const handleSaveNote = async (question: any, index: number) => {
     const displayIndex = singleQuestionIndex !== undefined ? singleQuestionIndex : index;
     if (isGuest) {
