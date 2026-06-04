@@ -1,5 +1,5 @@
 import { NodeData } from '../components/InteractiveTree';
-import { substanceTreeData } from '../data/chemistryData';
+import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData } from '../data/chemistryData';
 
 export const getRelatedSteps = (sqId: string, currentQuestion: any) => {
   const steps: { step: number | string | null, label: string, id: string }[] = [];
@@ -13,9 +13,10 @@ export const getRelatedSteps = (sqId: string, currentQuestion: any) => {
     }
   };
   
-  if (substanceTreeData) {
-    findInTree(substanceTreeData);
-  }
+  if (substanceTreeData) findInTree(substanceTreeData);
+  if (separationTreeData) findInTree(separationTreeData);
+  if (thermalMotionTreeData) findInTree(thermalMotionTreeData);
+  if (atomicStructureTreeData) findInTree(atomicStructureTreeData);
   
   return steps;
 };

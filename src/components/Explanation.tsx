@@ -17,8 +17,9 @@ interface ExplanationProps {
 
 import { NodeData } from './InteractiveTree';
 import { InteractiveLogicTree } from './InteractiveLogicTree';
-import { substanceTreeData, separationTreeData, thermalMotionTreeData } from '../data/chemistryData';
+import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData } from '../data/chemistryData';
 import { PracticeExplanationTree } from './PracticeExplanationTree';
+import { AtomicStructureFlowchart } from './AtomicStructureFlowchart';
 
 // Substance Tree Data for Chapter 1 (Moved to chemistryData.ts)
 
@@ -61,6 +62,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const [scrollTrigger, setScrollTrigger] = useState<number>(0);
   const [expandedCorrectQuestions, setExpandedCorrectQuestions] = useState<Record<string, boolean>>({});
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
+  const [userShowFlowchart, setUserShowFlowchart] = useState<boolean>(true);
   const [isMobile, setIsMobile] = useState(isMobileView !== undefined ? isMobileView : window.innerWidth < 768);
 
   useEffect(() => {
@@ -293,6 +295,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     
     if (chapter?.id === 'c1_2_A' && separationTreeData) findInTree(separationTreeData);
     else if (chapter?.id === 'c1_3' && thermalMotionTreeData) findInTree(thermalMotionTreeData);
+    else if (chapter?.id === 'c2_1' && atomicStructureTreeData) findInTree(atomicStructureTreeData);
     else if (substanceTreeData) findInTree(substanceTreeData);
     
     if (steps.length > 0) return steps;
@@ -526,7 +529,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       <div className={`p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${
         mode === 'mini_test' ? 'bg-white' : ''
       }`}>
-        {/* Weak Areas Analysis */}
+      {/* Weak Areas Analysis */}
         {singleQuestionIndex === undefined && weakAreas.length > 0 && (
           <div className={`rounded-2xl p-5 md:p-6 shadow-lg border relative overflow-hidden ${
             mode === 'mini_test' ? 'bg-gray-50 border-gray-100' : 'bg-[#1C2541]/50 border-[#3A506B]/50'
@@ -595,7 +598,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         <div className={`rounded-2xl shadow-lg overflow-clip border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`}>
           
           {/* Logical Tree (if exists) */}
-          {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A') && (
+          {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A' || chapter?.id === 'c2_1') && (
             <PracticeExplanationTree
               deepThoughtData={deepThoughtData}
               chapter={chapter}
@@ -941,6 +944,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                         
                                         const targetTreeParams = chapter?.id === 'c1_2_A' ? separationTreeData 
                                           : chapter?.id === 'c1_3' ? thermalMotionTreeData 
+                                          : chapter?.id === 'c2_1' ? atomicStructureTreeData
                                           : substanceTreeData;
                                         const filteredData = filterTree(targetTreeParams, relatedSteps.map(s => s.id));
                                         if (!filteredData) return null;

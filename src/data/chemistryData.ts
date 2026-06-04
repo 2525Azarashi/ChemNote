@@ -1096,8 +1096,309 @@ export const chemistryData = {
           id: "c2_1",
           abstractTitle: "① 原子の構造と電子配置・元素の周期表",
           realTitle: "2章 物質の構成粒子",
-          topics: [],
-          miniTest: []
+          topics: ["原子の構造", "電子配置", "元素の周期表"],
+          practiceProblems: [
+            {
+              id: "q_c2_1_1",
+              category: "原子の構造と電子配置・元素の周期表 (問1)",
+              text: "【問1】 次の文章の空欄（ア）〜（ト）に適する語句・数値・記号を答えよ。（語句網羅）\n\n原子は中心にある（ア）と、そのまわりを運動する（イ）からなる。（ア）は（ウ）と（エ）から構成されている。原子の直径は約（オ）m、（ア）の直径はその約（カ）分の1である。（ウ）の数を（キ）といい、これは元素ごとに決まっている。（キ）と（エ）の数の和を（ク）という。（キ）が等しく（ク）が異なる原子どうしを互いに（ケ）（アイソトープ）という。電子は（コ）とよばれる空間に存在し、（ア）に近い方から K, L, M, N, …殻 と名づけられている。n 番目の電子殻に収容できる電子の最大数は（サ）個で表される。最も外側の電子殻にある電子を（シ）といい、化学的性質を主に決める電子を（ス）という。（ス）の数は典型元素で（セ）の一の位と一致するが、（ソ）（18族）では 0 とみなす。周期表で縦の列を（タ）、横の行を（チ）という。1族のうちH以外を（ツ）金属、2族をアルカリ土類金属、17族を（テ）、18族を（ト）という。",
+              subQuestions: [
+                { id: "q_c2_1_1_a", label: "（ア）", type: "short_answer", correctAnswer: "原子核", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_i", label: "（イ）", type: "short_answer", correctAnswer: "電子", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_u", label: "（ウ）", type: "short_answer", correctAnswer: "陽子", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_e", label: "（エ）", type: "short_answer", correctAnswer: "中性子", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_o", label: "（オ） ※10⁻¹⁰ と入力", type: "short_answer", correctAnswer: "10⁻¹⁰", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ka", label: "（カ）", type: "short_answer", correctAnswer: "1万〜10万", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ki", label: "（キ）", type: "short_answer", correctAnswer: "原子番号", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ku", label: "（ク）", type: "short_answer", correctAnswer: "質量数", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ke", label: "（ケ）", type: "short_answer", correctAnswer: "同位体", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ko", label: "（コ）", type: "short_answer", correctAnswer: "電子殻", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_sa", label: "（サ） ※2n² と入力", type: "short_answer", correctAnswer: "2n²", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_shi", label: "（シ）", type: "short_answer", correctAnswer: "最外殻電子", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_su", label: "（ス）", type: "short_answer", correctAnswer: "価電子", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_se", label: "（セ）", type: "short_answer", correctAnswer: "族番号", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_so", label: "（ソ）", type: "short_answer", correctAnswer: "貴ガス", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ta", label: "（タ）", type: "short_answer", correctAnswer: "族", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_chi", label: "（チ）", type: "short_answer", correctAnswer: "周期", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_tsu", label: "（ツ）", type: "short_answer", correctAnswer: "アルカリ", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_te", label: "（テ）", type: "short_answer", correctAnswer: "ハロゲン", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_to", label: "（ト）", type: "short_answer", correctAnswer: "貴ガス", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n（ア）原子核 （イ）電子 （ウ）陽子 （エ）中性子 （オ）10⁻¹⁰ （カ）1万〜10万\n（キ）原子番号 （ク）質量数 （ケ）同位体 （コ）電子殻 （サ）2n²\n（シ）最外殻電子 （ス）価電子 （セ）族番号 （ソ）貴ガス （タ）族 （チ）周期\n（ツ）アルカリ （テ）ハロゲン （ト）貴ガス（希ガスも正答ですが、本設問は共通呼称の「貴ガス」を基本にしています）",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_2",
+              category: "原子の構造と電子配置・元素の周期表 (問2)",
+              text: "【問2】 （基礎）次の原子について、(a)陽子数、(b)中性子数、(c)電子数、(d)質量数 を答えよ（中性原子とする）。\n\n(1) ¹H  (2) ¹²C  (3) ¹⁶O  (4) ²³Na  (5) ³⁵Cl  (6) ⁴⁰Ar",
+              subQuestions: [
+                { id: "q_c2_1_2_1a", label: "(1) ¹H (a)陽子数", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_1b", label: "(1) ¹H (b)中性子数", type: "short_answer", correctAnswer: "0", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_1c", label: "(1) ¹H (c)電子数", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_1d", label: "(1) ¹H (d)質量数", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_2a", label: "(2) ¹²C (a)陽子数", type: "short_answer", correctAnswer: "6", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_2b", label: "(2) ¹²C (b)中性子数", type: "short_answer", correctAnswer: "6", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_2c", label: "(2) ¹²C (c)電子数", type: "short_answer", correctAnswer: "6", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_2d", label: "(2) ¹²C (d)質量数", type: "short_answer", correctAnswer: "12", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_3a", label: "(3) ¹⁶O (a)陽子数", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_3b", label: "(3) ¹⁶O (b)中性子数", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_3c", label: "(3) ¹⁶O (c)電子数", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_3d", label: "(3) ¹⁶O (d)質量数", type: "short_answer", correctAnswer: "16", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_4a", label: "(4) ²³Na (a)陽子数", type: "short_answer", correctAnswer: "11", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_4b", label: "(4) ²³Na (b)中性子数", type: "short_answer", correctAnswer: "12", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_4c", label: "(4) ²³Na (c)電子数", type: "short_answer", correctAnswer: "11", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_4d", label: "(4) ²³Na (d)質量数", type: "short_answer", correctAnswer: "23", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_5a", label: "(5) ³⁵Cl (a)陽子数", type: "short_answer", correctAnswer: "17", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_5b", label: "(5) ³⁵Cl (b)中性子数", type: "short_answer", correctAnswer: "18", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_5c", label: "(5) ³⁵Cl (c)電子数", type: "short_answer", correctAnswer: "17", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_5d", label: "(5) ³⁵Cl (d)質量数", type: "short_answer", correctAnswer: "35", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_6a", label: "(6) ⁴⁰Ar (a)陽子数", type: "short_answer", correctAnswer: "18", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_6b", label: "(6) ⁴⁰Ar (b)中性子数", type: "short_answer", correctAnswer: "22", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_6c", label: "(6) ⁴⁰Ar (c)電子数", type: "short_answer", correctAnswer: "18", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_6d", label: "(6) ⁴⁰Ar (d)質量数", type: "short_answer", correctAnswer: "40", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) ¹H ：(a)1 (b)0 (c)1 (d)1\n(2) ¹²C：(a)6 (b)6 (c)6 (d)12\n(3) ¹⁶O：(a)8 (b)8 (c)8 (d)16\n(4) ²³Na：(a)11 (b)12 (c)11 (d)23\n(5) ³⁵Cl：(a)17 (b)18 (c)17 (d)35\n(6) ⁴⁰Ar：(a)18 (b)22 (c)18 (d)40\n\n■ 中性子数 = 質量数 − 陽子数。 中性原子なら 電子数 = 陽子数。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_3",
+              category: "原子の構造と電子配置・元素の周期表 (問3)",
+              text: "【問3】 （基礎）次の原子の電子配置を K, L, M, N 殻の電子数で表せ（例：Na → K2 L8 M1）。\n\n(1) He  (2) C  (3) O  (4) F  (5) Ne  (6) Mg  (7) Cl  (8) K  (9) Ca",
+              subQuestions: [
+                { id: "q_c2_1_3_1", label: "(1) He", type: "short_answer", correctAnswer: "K2", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_2", label: "(2) C", type: "short_answer", correctAnswer: "K2 L4", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_3", label: "(3) O", type: "short_answer", correctAnswer: "K2 L6", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_4", label: "(4) F", type: "short_answer", correctAnswer: "K2 L7", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_5", label: "(5) Ne", type: "short_answer", correctAnswer: "K2 L8", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_6", label: "(6) Mg", type: "short_answer", correctAnswer: "K2 L8 M2", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_7", label: "(7) Cl", type: "short_answer", correctAnswer: "K2 L8 M7", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_8", label: "(8) K", type: "short_answer", correctAnswer: "K2 L8 M8 N1", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_9", label: "(9) Ca", type: "short_answer", correctAnswer: "K2 L8 M8 N2", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) He：K2\n(2) C：K2 L4\n(3) O：K2 L6\n(4) F：K2 L7\n(5) Ne：K2 L8\n(6) Mg：K2 L8 M2\n(7) Cl：K2 L8 M7\n(8) K：K2 L8 M8 N1\n(9) Ca：K2 L8 M8 N2\n\n■ K殻最大2, L殻最大8, M殻最大18個。KとLが詰まったら次はM。\nただしM殻は8個までで一旦止まりN殻に入る（K, Ca で M=8 のまま N に1, 2 個入る点に注意）。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_4",
+              category: "原子の構造と電子配置・元素の周期表 (問4)",
+              text: "【問4】 （標準）次の問いに答えよ。\n\n(1) 価電子の数が等しい元素は周期表でどの位置関係にあるか。\n(2) 第3周期で価電子数が 0 の元素を答えよ。\n(3) ¹²C と ¹³C, ¹⁴C の関係を何というか。化学的性質はどうなるか述べよ。\n(4) 典型元素と遷移元素の違いを、価電子数の変化に着目して説明せよ。",
+              subQuestions: [
+                { id: "q_c2_1_4_1", label: "(1) 位置関係", type: "short_answer", correctAnswer: "同じ族", correctAnswerRate: 85 },
+                { id: "q_c2_1_4_2", label: "(2) 元素名称（カタカナ）", type: "short_answer", correctAnswer: "アルゴン", correctAnswerRate: 85 },
+                { id: "q_c2_1_4_3a", label: "(3) 関係名", type: "short_answer", correctAnswer: "同位体", correctAnswerRate: 85 },
+                { id: "q_c2_1_4_3b", label: "(3) 化学的性質", type: "short_answer", correctAnswer: "ほぼ同じ", correctAnswerRate: 85 },
+                { id: "q_c2_1_4_4", label: "(4) 価電子数に着目した説明", type: "descriptive", correctAnswer: "典型元素は族番号によって価電子数が規則的に変化（1族→1, 2族→2...）するのに対し、遷移元素は原子番号が変わっても価電子数がほぼ1または2で同じである。", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) 同じ族（同じ縦の列）にある。\n(2) アルゴン Ar（貴ガス、価電子数 0）。\n(3) 互いに同位体（アイソトープ）の関係。陽子数は同じで中性子数が異なる。電子配置が同じため化学的性質はほぼ同じ（質量に依存する物理的性質はわずかに異なる）。\n(4) 典型元素は族番号によって価電子数が規則的に変化する（1族→1, 2族→2, 13族→3, …, 17族→7, 18族→0）。\n遷移元素（3〜12族）は原子番号が変わっても価電子数がほぼ 1 or 2 で同じ（内殻に入るため）。隣接元素どうしの性質が似る。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_5",
+              category: "原子の構造と電子配置・元素の周期表 (問5)",
+              text: "【問5】 （文字式・文章題）電子殻 n=1, 2, 3, 4 にそれぞれ収容できる電子の最大数を文字式 2n² で計算し、合計が 60 個になるためには何殻まで満たす必要があるかを示せ。",
+              subQuestions: [
+                { id: "q_c2_1_5_1", label: "n=1(K殻)最大数", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                { id: "q_c2_1_5_2", label: "n=2(L殻)最大数", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                { id: "q_c2_1_5_3", label: "n=3(M殻)最大数", type: "short_answer", correctAnswer: "18", correctAnswerRate: 85 },
+                { id: "q_c2_1_5_4", label: "n=4(N殻)最大数", type: "short_answer", correctAnswer: "32", correctAnswerRate: 85 },
+                { id: "q_c2_1_5_ans", label: "何殻まで満たす必要があるか", type: "short_answer", correctAnswer: "N殻", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\nn=1: 2·1² = 2 個 (K殻)\nn=2: 2·2² = 8 個 (L殻)\nn=3: 2·3² = 18 個 (M殻)\nn=4: 2·4² = 32 個 (N殻)\n合計：2+8+18+32 = 60 個 → N殻まで全部満たすと 60 個。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_6",
+              category: "原子の構造と電子配置・元素の周期表 (問6)",
+              text: "【問6】 （共通テスト風応用）下の周期表の位置から、A〜Fの元素の(1)価電子数、(2)単体が金属か非金属かを答えよ。\n\nA：第3周期1族  B：第2周期16族  C：第3周期17族  D：第4周期2族  E：第2周期14族  F：第3周期18族",
+              subQuestions: [
+                { id: "q_c2_1_6_a1", label: "A (1)価電子数", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_a2", label: "A (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "金属", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_b1", label: "B (1)価電子数", type: "short_answer", correctAnswer: "6", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_b2", label: "B (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "非金属", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_c1", label: "C (1)価電子数", type: "short_answer", correctAnswer: "7", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_c2", label: "C (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "非金属", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_d1", label: "D (1)価電子数", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_d2", label: "D (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "金属", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_e1", label: "E (1)価電子数", type: "short_answer", correctAnswer: "4", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_e2", label: "E (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "非金属", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_f1", label: "F (1)価電子数", type: "short_answer", correctAnswer: "0", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_f2", label: "F (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "非金属", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\nA(Na)：(1) 1 (2) 金属 (3) Li, K など（1族）\nB(O) ：(1) 6 (2) 非金属 (3) S, Se（16族）\nC(Cl)：(1) 7 (2) 非金属 (3) F, Br, I（17族）\nD(Ca)：(1) 2 (2) 金属 (3) Mg, Be, Sr（2族）\nE(C) ：(1) 4 (2) 非金属 (3) Si, Ge（14族）\nF(Ar)：(1) 0 (2) 非金属（貴ガス、単原子分子） (3) Ne, Kr（18族）",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_7",
+              category: "原子の構造と電子配置・元素の周期表 (問7)",
+              text: "【問7】 （共通テスト風応用）ある原子Xは、陽子数が中性子数の3/4倍であり、質量数が28である。次の問いに答えよ。\n\n(1) 陽子数と中性子数を求めよ。\n(2) この原子の元素記号を答えよ。\n(3) この原子의 電子配置を答えよ（例：K2 L8 M2）。",
+              subQuestions: [
+                { id: "q_c2_1_7_1p", label: "(1) 陽子数", type: "short_answer", correctAnswer: "12", correctAnswerRate: 85 },
+                { id: "q_c2_1_7_1n", label: "(1) 中性子数", type: "short_answer", correctAnswer: "16", correctAnswerRate: 85 },
+                { id: "q_c2_1_7_2", label: "(2) 元素記号", type: "short_answer", correctAnswer: "Mg", correctAnswerRate: 85 },
+                { id: "q_c2_1_7_3", label: "(3) 電子配置", type: "short_answer", correctAnswer: "K2 L8 M2", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) 陽子数を p, 中性子数を n とおくと、p = (3/4)n かつ p+n = 28.\n(3/4)n + n = 28 → (7/4)n = 28 → n = 16, p = 12.\n陽子数は12、中性子数は16となります。\n(2) 陽子数12なので、原子番号12のマグネシウム Mg です（※実在性より計算結果を優先。²⁸Mgは存在する放射性同位体であるため²⁸Mgとなります）。\n(3) 電子数＝陽子数＝12より、電子配置は K2 L8 M2 となります。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ],
+          miniTest: [
+            {
+              id: "q_c2_1_1",
+              category: "原子の構造と電子配置・元素の周期表 (問1)",
+              text: "【問1】 次の文章の空欄（ア）〜（ト）に適する語句・数値・記号を答えよ。（語句網羅）\n\n原子は中心にある（ア）と、そのまわりを運動する（イ）からなる。（ア）は（ウ）と（エ）から構成されている。原子の直径は約（オ）m、（ア）の直径はその約（カ）分の1である。（ウ）の数を（キ）といい、これは元素ごとに決まっている。（キ）と（エ）の数の和を（ク）という。（キ）が等しく（ク）が異なる原子どうしを互いに（ケ）（アイソトープ）という。電子は（コ）とよばれる空間に存在し、（ア）に近い方から K, L, M, N, …殻 と名づけられている。n 番目の電子殻に収容できる電子の最大数は（サ）個で表される。最も外側の電子殻にある電子を（シ）といい、化学的性質を主に決める電子を（ス）という。（ス）の数は典型元素で（セ）の一の位と一致するが、（ソ）（18族）では 0 とみなす。周期表で縦の列を（タ）、横の行を（チ）という。1族のうちH以外を（ツ）金属、2族をアルカリ土類金属、17族を（テ）、18族を（ト）という。",
+              subQuestions: [
+                { id: "q_c2_1_1_a", label: "（ア）", type: "short_answer", correctAnswer: "原子核", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_i", label: "（イ）", type: "short_answer", correctAnswer: "電子", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_u", label: "（ウ）", type: "short_answer", correctAnswer: "陽子", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_e", label: "（エ）", type: "short_answer", correctAnswer: "中性子", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_o", label: "（オ） ※10⁻¹⁰ と入力", type: "short_answer", correctAnswer: "10⁻¹⁰", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ka", label: "（カ）", type: "short_answer", correctAnswer: "1万〜10万", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ki", label: "（キ）", type: "short_answer", correctAnswer: "原子番号", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ku", label: "（ク）", type: "short_answer", correctAnswer: "質量数", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ke", label: "（ケ）", type: "short_answer", correctAnswer: "同位体", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ko", label: "（コ）", type: "short_answer", correctAnswer: "電子殻", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_sa", label: "（サ） ※2n² と入力", type: "short_answer", correctAnswer: "2n²", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_shi", label: "（シ）", type: "short_answer", correctAnswer: "最外殻電子", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_su", label: "（ス）", type: "short_answer", correctAnswer: "価電子", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_se", label: "（セ）", type: "short_answer", correctAnswer: "族番号", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_so", label: "（ソ）", type: "short_answer", correctAnswer: "貴ガス", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_ta", label: "（タ）", type: "short_answer", correctAnswer: "族", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_chi", label: "（チ）", type: "short_answer", correctAnswer: "周期", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_tsu", label: "（ツ）", type: "short_answer", correctAnswer: "アルカリ", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_te", label: "（テ）", type: "short_answer", correctAnswer: "ハロゲン", correctAnswerRate: 85 },
+                { id: "q_c2_1_1_to", label: "（ト）", type: "short_answer", correctAnswer: "貴ガス", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n（ア）原子核 （イ）電子 （ウ）陽子 （エ）中性子 （オ）10⁻¹⁰ （カ）1万〜10万\n（キ）原子番号 （ク）質量数 （ケ）同位体 （コ）電子殻 （サ）2n²\n（シ）最外殻電子 （ス）価電子 （セ）族番号 （ソ）貴ガス （タ）族 （チ）周期\n（ツ）アルカリ （テ）ハロゲン （ト）貴ガス（希ガスも正答ですが、本設問は共通呼称の「貴ガス」を基本にしています）",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_2",
+              category: "原子の構造と電子配置・元素の周期表 (問2)",
+              text: "【問2】 （基礎）次の原子について、(a)陽子数、(b)中性子数、(c)電子数、(d)質量数 を答えよ（中性原子とする）。\n\n(1) ¹H  (2) ¹²C  (3) ¹⁶O  (4) ²³Na  (5) ³⁵Cl  (6) ⁴⁰Ar",
+              subQuestions: [
+                { id: "q_c2_1_2_1a", label: "(1) ¹H (a)陽子数", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_1b", label: "(1) ¹H (b)中性子数", type: "short_answer", correctAnswer: "0", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_1c", label: "(1) ¹H (c)電子数", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_1d", label: "(1) ¹H (d)質量数", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_2a", label: "(2) ¹²C (a)陽子数", type: "short_answer", correctAnswer: "6", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_2b", label: "(2) ¹²C (b)中性子数", type: "short_answer", correctAnswer: "6", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_2c", label: "(2) ¹²C (c)電子数", type: "short_answer", correctAnswer: "6", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_2d", label: "(2) ¹²C (d)質量数", type: "short_answer", correctAnswer: "12", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_3a", label: "(3) ¹⁶O (a)陽子数", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_3b", label: "(3) ¹⁶O (b)中性子数", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_3c", label: "(3) ¹⁶O (c)電子数", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_3d", label: "(3) ¹⁶O (d)質量数", type: "short_answer", correctAnswer: "16", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_4a", label: "(4) ²³Na (a)陽子数", type: "short_answer", correctAnswer: "11", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_4b", label: "(4) ²³Na (b)中性子数", type: "short_answer", correctAnswer: "12", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_4c", label: "(4) ²³Na (c)電子数", type: "short_answer", correctAnswer: "11", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_4d", label: "(4) ²³Na (d)質量数", type: "short_answer", correctAnswer: "23", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_5a", label: "(5) ³⁵Cl (a)陽子数", type: "short_answer", correctAnswer: "17", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_5b", label: "(5) ³⁵Cl (b)中性子数", type: "short_answer", correctAnswer: "18", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_5c", label: "(5) ³⁵Cl (c)電子数", type: "short_answer", correctAnswer: "17", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_5d", label: "(5) ³⁵Cl (d)質量数", type: "short_answer", correctAnswer: "35", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_6a", label: "(6) ⁴⁰Ar (a)陽子数", type: "short_answer", correctAnswer: "18", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_6b", label: "(6) ⁴⁰Ar (b)中性子数", type: "short_answer", correctAnswer: "22", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_6c", label: "(6) ⁴⁰Ar (c)電子数", type: "short_answer", correctAnswer: "18", correctAnswerRate: 85 },
+                { id: "q_c2_1_2_6d", label: "(6) ⁴⁰Ar (d)質量数", type: "short_answer", correctAnswer: "40", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) ¹H ：(a)1 (b)0 (c)1 (d)1\n(2) ¹²C：(a)6 (b)6 (c)6 (d)12\n(3) ¹⁶O：(a)8 (b)8 (c)8 (d)16\n(4) ²³Na：(a)11 (b)12 (c)11 (d)23\n(5) ³⁵Cl：(a)17 (b)18 (c)17 (d)35\n(6) ⁴⁰Ar：(a)18 (b)22 (c)18 (d)40\n\n■ 中性子数 = 質量数 − 陽子数。 中性原子なら 電子数 = 陽子数。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_3",
+              category: "原子の構造と電子配置・元素の周期表 (問3)",
+              text: "【問3】 （基礎）次の原子の電子配置を K, L, M, N 殻の電子数で表せ（例：Na → K2 L8 M1）。\n\n(1) He  (2) C  (3) O  (4) F  (5) Ne  (6) Mg  (7) Cl  (8) K  (9) Ca",
+              subQuestions: [
+                { id: "q_c2_1_3_1", label: "(1) He", type: "short_answer", correctAnswer: "K2", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_2", label: "(2) C", type: "short_answer", correctAnswer: "K2 L4", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_3", label: "(3) O", type: "short_answer", correctAnswer: "K2 L6", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_4", label: "(4) F", type: "short_answer", correctAnswer: "K2 L7", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_5", label: "(5) Ne", type: "short_answer", correctAnswer: "K2 L8", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_6", label: "(6) Mg", type: "short_answer", correctAnswer: "K2 L8 M2", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_7", label: "(7) Cl", type: "short_answer", correctAnswer: "K2 L8 M7", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_8", label: "(8) K", type: "short_answer", correctAnswer: "K2 L8 M8 N1", correctAnswerRate: 85 },
+                { id: "q_c2_1_3_9", label: "(9) Ca", type: "short_answer", correctAnswer: "K2 L8 M8 N2", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) He：K2\n(2) C：K2 L4\n(3) O：K2 L6\n(4) F：K2 L7\n(5) Ne：K2 L8\n(6) Mg：K2 L8 M2\n(7) Cl：K2 L8 M7\n(8) K：K2 L8 M8 N1\n(9) Ca：K2 L8 M8 N2\n\n■ K殻最大2, L殻最大8, M殻最大18個。KとLが詰まったら次はM。\nただしM殻は8個までで一旦止まりN殻に入る（K, Ca で M=8 のまま N に1, 2 個入る点に注意）。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_4",
+              category: "原子の構造と電子配置・元素の周期表 (問4)",
+              text: "【問4】 （標準）次の問いに答えよ。\n\n(1) 価電子の数が等しい元素は周期表でどの位置関係にあるか。\n(2) 第3周期で価電子数が 0 の元素を答えよ。\n(3) ¹²C と ¹³C, ¹⁴C の関係を何というか。化学的性質はどうなるか述べよ。\n(4) 典型元素と遷移元素の違いを、価電子数の変化に着目して説明せよ。",
+              subQuestions: [
+                { id: "q_c2_1_4_1", label: "(1) 位置関係", type: "short_answer", correctAnswer: "同じ族", correctAnswerRate: 85 },
+                { id: "q_c2_1_4_2", label: "(2) 元素名称（カタカナ）", type: "short_answer", correctAnswer: "アルゴン", correctAnswerRate: 85 },
+                { id: "q_c2_1_4_3a", label: "(3) 関係名", type: "short_answer", correctAnswer: "同位体", correctAnswerRate: 85 },
+                { id: "q_c2_1_4_3b", label: "(3) 化学的性質", type: "short_answer", correctAnswer: "ほぼ同じ", correctAnswerRate: 85 },
+                { id: "q_c2_1_4_4", label: "(4) 価電子数に着目した説明", type: "descriptive", correctAnswer: "典型元素は族番号によって価電子数が規則的に変化（1族→1, 2族→2...）するのに対し、遷移元素は原子番号が変わっても価電子数がほぼ1または2で同じである。", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) 同じ族（同じ縦の列）にある。\n(2) アルゴン Ar（貴ガス、価電子数 0）。\n(3) 互いに同位体（アイソトープ）の関係。陽子数は同じで中性子数が異なる。電子配置が同じため化学的性質はほぼ同じ（質量に依存する物理的性質はわずかに異なる）。\n(4) 典型元素は族番号によって価電子数が規則的に変化する（1族→1, 2族→2, 13族→3, …, 17族→7, 18族→0）。\n遷移元素（3〜12族）は原子番号が変わっても価電子数がほぼ 1 or 2 で同じ（内殻に入るため）。隣接元素どうしの性質が似る。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_5",
+              category: "原子の構造と電子配置・元素の周期表 (問5)",
+              text: "【問5】 （文字式・文章題）電子殻 n=1, 2, 3, 4 にそれぞれ収容できる電子の最大数を文字式 2n² で計算し、合計が 60 個になるためには何殻まで満たす必要があるかを示せ。",
+              subQuestions: [
+                { id: "q_c2_1_5_1", label: "n=1(K殻)最大数", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                { id: "q_c2_1_5_2", label: "n=2(L殻)最大数", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                { id: "q_c2_1_5_3", label: "n=3(M殻)最大数", type: "short_answer", correctAnswer: "18", correctAnswerRate: 85 },
+                { id: "q_c2_1_5_4", label: "n=4(N殻)最大数", type: "short_answer", correctAnswer: "32", correctAnswerRate: 85 },
+                { id: "q_c2_1_5_ans", label: "何殻まで満たす必要があるか", type: "short_answer", correctAnswer: "N殻", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\nn=1: 2·1² = 2 個 (K殻)\nn=2: 2·2² = 8 個 (L殻)\nn=3: 2·3² = 18 個 (M殻)\nn=4: 2·4² = 32 個 (N殻)\n合計：2+8+18+32 = 60 個 → N殻まで全部満たすと 60 個。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_6",
+              category: "原子の構造と電子配置・元素の周期表 (問6)",
+              text: "【問6】 （共通テスト風応用）下の周期表の位置から、A〜Fの元素の(1)価電子数、(2)単体が金属か非金属かを答えよ。\n\nA：第3周期1族  B：第2周期16族  C：第3周期17族  D：第4周期2族  E：第2周期14族  F：第3周期18族",
+              subQuestions: [
+                { id: "q_c2_1_6_a1", label: "A (1)価電子数", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_a2", label: "A (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "金属", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_b1", label: "B (1)価電子数", type: "short_answer", correctAnswer: "6", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_b2", label: "B (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "非金属", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_c1", label: "C (1)価電子数", type: "short_answer", correctAnswer: "7", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_c2", label: "C (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "非金属", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_d1", label: "D (1)価電子数", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_d2", label: "D (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "金属", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_e1", label: "E (1)価電子数", type: "short_answer", correctAnswer: "4", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_e2", label: "E (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "非金属", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_f1", label: "F (1)価電子数", type: "short_answer", correctAnswer: "0", correctAnswerRate: 85 },
+                { id: "q_c2_1_6_f2", label: "F (2)単体分類", type: "multiple_choice", options: ["金属", "非金属"], correctAnswer: "非金属", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\nA(Na)：(1) 1 (2) 金属 (3) Li, K など（1族）\nB(O) ：(1) 6 (2) 非金属 (3) S, Se（16族）\nC(Cl)：(1) 7 (2) 非金属 (3) F, Br, I（17族）\nD(Ca)：(1) 2 (2) 金属 (3) Mg, Be, Sr（2族）\nE(C) ：(1) 4 (2) 非金属 (3) Si, Ge（14族）\nF(Ar)：(1) 0 (2) 非金属（貴ガス、単原子分子） (3) Ne, Kr（18族）",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_1_7",
+              category: "原子の構造と電子配置・元素の周期表 (問7)",
+              text: "【問7】 （共通テスト風応用）ある原子Xは、陽子数が中性子数の3/4倍であり、質量数が28である。次の問いに答えよ。\n\n(1) 陽子数と中性子数を求めよ。\n(2) この原子の元素記号を答えよ。\n(3) この原子의 電子配置を答えよ（例：K2 L8 M2）。",
+              subQuestions: [
+                { id: "q_c2_1_7_1p", label: "(1) 陽子数", type: "short_answer", correctAnswer: "12", correctAnswerRate: 85 },
+                { id: "q_c2_1_7_1n", label: "(1) 中性子数", type: "short_answer", correctAnswer: "16", correctAnswerRate: 85 },
+                { id: "q_c2_1_7_2", label: "(2) 元素記号", type: "short_answer", correctAnswer: "Mg", correctAnswerRate: 85 },
+                { id: "q_c2_1_7_3", label: "(3) 電子配置", type: "short_answer", correctAnswer: "K2 L8 M2", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) 陽子数を p, 中性子数を n とおくと、p = (3/4)n かつ p+n = 28.\n(3/4)n + n = 28 → (7/4)n = 28 → n = 16, p = 12.\n陽子数は12、中性子数は16となります。\n(2) 陽子数12なので、原子番号12のマグネシウム Mg です（※実在性より計算結果を優先。²⁸Mgは存在する放射性同位体であるため²⁸Mgとなります）。\n(3) 電子数＝陽子数＝12より、電子配置は K2 L8 M2 となります。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ]
         },
         {
           id: "c2_2",
@@ -1492,6 +1793,234 @@ export const thermalMotionTreeData: NodeData = {
           subLabel: '状態変化中は温度が一定',
           explanation: '全ての物質の状態変化が終わるまで、加えられた熱エネルギーが状態変化に使われるため、温度（融点・沸点）は上昇しない。',
           relatedQuestions: [{ id: 'q_c1_3_7_ans', label: '演習問題①-3(三態モデルとエネルギー)' }],
+        }
+      ]
+    }
+  ]
+};
+
+export const atomicStructureTreeData: NodeData = {
+  id: 'atomic_structure_root',
+  label: '原子の構造・電子配置・周期表',
+  step: null,
+  explanation: '原子は極めて小さく、複雑な構造や規則的な性質を持っています。まずは原子の基本構成から順に整理しましょう。',
+  children: [
+    {
+      id: 'step1_group_atom',
+      isGroup: true,
+      label: '【Step1：原子の構造】',
+      step: 1,
+      children: [
+        {
+          id: 'nucleus',
+          label: '原子核',
+          step: 1,
+          subLabel: '陽子と中性子からなる',
+          explanation: '原子の中心にある。原子の質量はほぼ原子核の質量で決まる（陽子 : 中性子 : 電子 ＝ 1 : 1 : 1/1840）。',
+          relatedQuestions: [
+            { id: 'q_c2_1_1_a', label: '問1(ア) 原子核' }
+          ]
+        },
+        {
+          id: 'proton',
+          label: '陽子',
+          step: 1,
+          subLabel: '正の電荷を持つ粒子',
+          explanation: '正 of 電荷を持ち、その数が元素固有の「原子番号」となります（陽子の数 ＝ 原子番号）。中性状態の原子では「陽子数 ＝ 電子数」で電気的に中性です。',
+          relatedQuestions: [
+            { id: 'q_c2_1_1_u', label: '問1(ウ) 陽子' },
+            { id: 'q_c2_1_2_1a', label: '問2(1)(a) Hの陽子数' },
+            { id: 'q_c2_1_2_2a', label: '問2(2)(a) Cの陽子数' },
+            { id: 'q_c2_1_2_3a', label: '問2(3)(a) Oの陽子数' },
+            { id: 'q_c2_1_2_4a', label: '問2(4)(a) Naの陽子数' },
+            { id: 'q_c2_1_2_5a', label: '問2(5)(a) Clの陽子数' },
+            { id: 'q_c2_1_2_6a', label: '問2(6)(a) Arの陽子数' },
+            { id: 'q_c2_1_7_1p', label: '問7(1p) 陽子数計算' }
+          ]
+        },
+        {
+          id: 'neutron',
+          label: '中性子',
+          step: 1,
+          subLabel: '電荷を持たない粒子',
+          explanation: '荷電を持たない粒子。陽子とほぼ等しい質量を持つ。質量数 ＝ 陽子の数 ＋ 中性子の数。',
+          relatedQuestions: [
+            { id: 'q_c2_1_1_e', label: '問1(エ) 中性子' },
+            { id: 'q_c2_1_2_1b', label: '問2(1)(b) Hの中性子数' },
+            { id: 'q_c2_1_2_2b', label: '問2(2)(b) Cの中性子数' },
+            { id: 'q_c2_1_2_3b', label: '問2(3)(b) Oの中性子数' },
+            { id: 'q_c2_1_2_4b', label: '問2(4)(b) Naの中性子数' },
+            { id: 'q_c2_1_2_5b', label: '問2(5)(b) Clの中性子数' },
+            { id: 'q_c2_1_2_6b', label: '問2(6)(b) Arの中性子数' },
+            { id: 'q_c2_1_7_1n', label: '問7(1n) 中性子数計算' }
+          ]
+        },
+        {
+          id: 'electron',
+          label: '電子',
+          step: 1,
+          subLabel: '負の電荷を持つ極小粒子',
+          explanation: '負の電荷を持つ。極めて軽く（陽子の1/1840の質量）、原子核のまわりに存在。原子の直径は約10⁻¹⁰m、原子核はその約1万～10万分の1のサイズ。',
+          relatedQuestions: [
+            { id: 'q_c2_1_1_i', label: '問1(イ) 電子' },
+            { id: 'q_c2_1_1_o', label: '問1(オ) 直径10⁻¹⁰m' },
+            { id: 'q_c2_1_1_ka', label: '問1(カ) サイズ比率' },
+            { id: 'q_c2_1_2_1c', label: '問2(1)(c) Hの電子数' },
+            { id: 'q_c2_1_2_2c', label: '問2(2)(c) Cの電子数' },
+            { id: 'q_c2_1_2_3c', label: '問2(3)(c) Oの電子数' },
+            { id: 'q_c2_1_2_4c', label: '問2(4)(c) Naの電子数' },
+            { id: 'q_c2_1_2_5c', label: '問2(5)(c) Clの電子数' },
+            { id: 'q_c2_1_2_6c', label: '問2(6)(c) Arの電子数' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step2_group_atom',
+      isGroup: true,
+      label: '【Step2：原子の表示と種類】',
+      step: 2,
+      children: [
+        {
+          id: 'num_mass',
+          label: '原子番号と質量数',
+          step: 2,
+          subLabel: '原子を特定・表示する数値',
+          explanation: '・原子番号 ＝ 陽子の数（＝原子中の電子の数）\n・質量数 ＝ 陽子の数 ＋ 中性子の数。\n\n元素記号の左上に質量数、左下に原子番号を書き表す。',
+          relatedQuestions: [
+            { id: 'q_c2_1_1_ki', label: '問1(キ) 原子番号' },
+            { id: 'q_c2_1_1_ku', label: '問1(ク) 質量数' },
+            { id: 'q_c2_1_2_1d', label: '問2(1)(d) Hの質量数' },
+            { id: 'q_c2_1_2_2d', label: '問2(2)(d) Cの質量数' },
+            { id: 'q_c2_1_2_3d', label: '問2(3)(d) Oの質量数' },
+            { id: 'q_c2_1_2_4d', label: '問2(4)(d) Naの質量数' },
+            { id: 'q_c2_1_2_5d', label: '問2(5)(d) Clの質量数' },
+            { id: 'q_c2_1_2_6d', label: '問2(6)(d) Arの質量数' },
+            { id: 'q_c2_1_7_2', label: '問7(2) 元素記号特定' }
+          ]
+        },
+        {
+          id: 'isotope',
+          label: '同位体 (アイソトープ)',
+          step: 2,
+          subLabel: '中性子の数が異なる同じ元素',
+          explanation: '原子番号（陽子数）が等しく、質量数（中性子数）が異なる原子同士のこと。電子配置が同じため、化学的性質はほぼ等しい。\n\n【放射性同位体（ラジオアイソトープ）】 原子核が不安定で自発的に放射線を出して壊変するもの。\n【半減期】 放射性同位体の原子数が崩壊により元の半分になるまでの時間。\n\n【応用例：¹⁴C から古代木材の伐採年代の推定】 半減期が5730年であり、崩壊減少率から約11460年前（半減期の2倍経過）と推算できる。',
+          relatedQuestions: [
+            { id: 'q_c2_1_1_ke', label: '問1(ケ) 同位体' },
+            { id: 'q_c2_1_4_3a', label: '問4(3) 同位体の定義' },
+            { id: 'q_c2_1_4_3b', label: '問4(3) 化学的性質' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step3_group_atom',
+      isGroup: true,
+      label: '【Step3：電子配置と価電子】',
+      step: 3,
+      children: [
+        {
+          id: 'shells',
+          label: '電子殻と電子配置',
+          step: 3,
+          subLabel: 'K殻, L殻, M殻, N殻...',
+          explanation: '電子が入る軌道（層）は「電子殻」と呼ばれる。内側からK殻、L殻、M殻、N殻…と順に入る。n番目の殻が収容できる最大電子数は 2n² 個。\n（K: 2個, L: 8個, M: 18個, N: 32個）\n\n★19番(K)・20番(Ca)の特例：M殻は最大18個まで入れるが、一度 8個（閉殻的な性質・安定状態）になると次に電子はN殻に入る（K: K2 L8 M8 N1 / Ca: K2 L8 M8 N2）。',
+          relatedQuestions: [
+            { id: 'q_c2_1_1_ko', label: '問1(コ) 電子殻' },
+            { id: 'q_c2_1_1_sa', label: '問1(サ) 2n²' },
+            { id: 'q_c2_1_3_1', label: '問3(1) Heの電子配置' },
+            { id: 'q_c2_1_3_2', label: '問3(2) Cの電子配置' },
+            { id: 'q_c2_1_3_3', label: '問3(3) Oの電子配置' },
+            { id: 'q_c2_1_3_4', label: '問3(4) Fの電子配置' },
+            { id: 'q_c2_1_3_5', label: '問3(5) Neの電子配置' },
+            { id: 'q_c2_1_3_6', label: '問3(6) Mgの電子配置' },
+            { id: 'q_c2_1_3_7', label: '問3(7) Clの電子配置' },
+            { id: 'q_c2_1_3_8', label: '問3(8) Kの電子配置' },
+            { id: 'q_c2_1_3_9', label: '問3(9) Caの電子配置' },
+            { id: 'q_c2_1_5_1', label: '問5(1) K殻最大数' },
+            { id: 'q_c2_1_5_2', label: '問5(2) L殻最大数' },
+            { id: 'q_c2_1_5_3', label: '問5(3) M殻最大数' },
+            { id: 'q_c2_1_5_4', label: '問5(4) N殻最大数' },
+            { id: 'q_c2_1_5_ans', label: '問5(ans) 合計60個殻' },
+            { id: 'q_c2_1_7_3', label: '問7(3) Mgの電子配置' }
+          ]
+        },
+        {
+          id: 'valence',
+          label: '最外殻電子・価電子',
+          step: 3,
+          subLabel: '化学的性質を支配する電子',
+          explanation: '・最外殻電子：最も外側の殻にある電子の数。\n・価電子：結合など化学的性質を支配する電子。\n\n★18族（貴ガス）は、ヘリウムで最外殻電子2個（その他は8個）ですが、非常に安定なため「価電子数は 0」とみなします。それ以外の元素では「最外殻電子数＝価電子数」となります。',
+          relatedQuestions: [
+            { id: 'q_c2_1_1_shi', label: '問1(シ) 最外殻電子' },
+            { id: 'q_c2_1_1_su', label: '問1(ス) 価電子' },
+            { id: 'q_c2_1_1_se', label: '問1(セ) 族番号' },
+            { id: 'q_c2_1_1_so', label: '問1(ソ) 貴ガスの定義' },
+            { id: 'q_c2_1_4_1', label: '問4(1) 価電子数と族の関係' },
+            { id: 'q_c2_1_6_a1', label: '問6(A1) 価電子数' },
+            { id: 'q_c2_1_6_b1', label: '問6(B1) 価電子数' },
+            { id: 'q_c2_1_6_c1', label: '問6(C1) 価電子数' },
+            { id: 'q_c2_1_6_d1', label: '問6(D1) 価電子数' },
+            { id: 'q_c2_1_6_e1', label: '問6(E1) 価電子数' },
+            { id: 'q_c2_1_6_f1', label: '問6(F1) 価電子数' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step4_group_atom',
+      isGroup: true,
+      label: '【Step4：元素の周期表】',
+      step: 'both',
+      children: [
+        {
+          id: 'periodic_law',
+          label: '周期律と周期表',
+          step: 'both',
+          subLabel: 'メンデレーエフが発見した規則的変化',
+          explanation: '元素を原子番号順に並べると、似た性質の元素が規則的に現れる（これを「周期律」という）。これに基づき並べた表が「元素の周期表」です。',
+          relatedQuestions: []
+        },
+        {
+          id: 'groups',
+          label: '族と周期',
+          step: 'both',
+          subLabel: '縦の列（族）と横の行（周期）',
+          explanation: '・族: 周期表の【縦の列】（1~18族）。同じ族に属する元素は価電子数が等しく、化学的性質が互いに極めて似ている。\n・周期: 周期表の【横の行】（第1~7周期）。第3周期元素なら共通してK, L, M殻の3つの殻に電子を持つ。',
+          relatedQuestions: [
+            { id: 'q_c2_1_1_ta', label: '問1(タ) 族' },
+            { id: 'q_c2_1_1_chi', label: '問1(チ) 周期' },
+            { id: 'q_c2_1_4_1', label: '問4(1) 同じ族の価電子数' }
+          ]
+        },
+        {
+          id: 'elements',
+          label: '典型元素と遷移元素',
+          step: 'both',
+          subLabel: '1,2,13～18族 ＆ 3～12族の差',
+          explanation: '・典型元素（1, 2, 13~18族）: 原子番号の増加に伴い、価電子数が1から7へと周期的に変わり、性質が大きく異なる。非金属・金属両方が含まれる。\n・遷移元素（3~12族）: 全てが金属元素。最外殻電子はほぼ 1または2 で固定されたまま、内側のd軌道などが満たされるため、隣同士の元素の性質が互いに極めて類似する。',
+          relatedQuestions: [
+            { id: 'q_c2_1_4_4', label: '問4(4) 典型と遷移の説明' },
+            { id: 'q_c2_1_6_a2', label: '問6(A2) 単体分類' },
+            { id: 'q_c2_1_6_b2', label: '問6(B2) 単体分類' },
+            { id: 'q_c2_1_6_c2', label: '問6(C2) 単体分類' },
+            { id: 'q_c2_1_6_d2', label: '問6(D2) 単体分類' },
+            { id: 'q_c2_1_6_e2', label: '問6(E2) 単体分類' },
+            { id: 'q_c2_1_6_f2', label: '問6(F2) 単体分類' }
+          ]
+        },
+        {
+          id: 'specific',
+          label: '特定グループ',
+          step: 'both',
+          subLabel: '同族元素の固有名称',
+          explanation: '・アルカリ金属: 1族（Hを除く）\n・アルカリ土類金属: 2族（Be, Mgを除く場合もあるが、広義に含む）\n・ハロゲン: 17族（価電子数7、非常に反応性に富む）\n・貴ガス: 18族（価電子数0、最外殻はK殻で2個、他は8個で閉殻し、非常に安定な単原子気体）',
+          relatedQuestions: [
+            { id: 'q_c2_1_1_tsu', label: '問1(ツ) アルカリ' },
+            { id: 'q_c2_1_1_te', label: '問1(テ) ハロゲン' },
+            { id: 'q_c2_1_1_to', label: '問1(ト) 貴ガス' },
+            { id: 'q_c2_1_4_2', label: '問4(2) アルゴン Ar' }
+          ]
         }
       ]
     }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { chemistryData } from '../data/chemistryData';
-import { ChevronRight, Target, ArrowLeft, ChevronDown, GitBranch } from 'lucide-react';
+import { ChevronRight, ArrowLeft, ChevronDown, GitBranch } from 'lucide-react';
 
 interface ChapterSelectionProps {
   mode: 'mini_test' | 'practice';
@@ -99,13 +99,6 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, onFlowchart }:
                           </div>
                           
                           <div className="w-full pr-6">
-                            {questions.length > 0 && (
-                              <div className="inline-flex items-center gap-1.5 md:gap-2 bg-white/60 text-yellow-800 text-[10px] md:text-xs font-bold px-2 md:px-3 py-1 rounded-full mb-2 md:mb-3 shadow-sm">
-                                <Target size={12} className="text-[#D9A0A0] md:w-3.5 md:h-3.5" />
-                                <span>TARGET_PROBLEM</span>
-                              </div>
-                            )}
-                            
                             <h5 className="text-base md:text-lg font-handwriting font-bold text-[#2C3E50] group-hover:text-[#D9A0A0] transition-colors leading-tight mb-3 md:mb-4">
                               {chapter.abstractTitle}
                             </h5>
