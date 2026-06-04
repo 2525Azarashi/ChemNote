@@ -16,9 +16,31 @@ interface QuizProps {
 }
 
 export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange }: QuizProps) {
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [showingExplanation, setShowingExplanation] = useState(false);
+  const [answers, setAnswers] = useState<Record<string, string>>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(`quiz_answers_${chapter.id}_${mode}`) || '{}');
+    } catch {
+      return {};
+    }
+  });
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
+    return parseInt(localStorage.getItem(`quiz_idx_${chapter.id}_${mode}`) || '0', 10);
+  });
+  const [showingExplanation, setShowingExplanation] = useState(() => {
+    return localStorage.getItem(`quiz_expl_${chapter.id}_${mode}`) === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem(`quiz_answers_${chapter.id}_${mode}`, JSON.stringify(answers));
+  }, [answers, chapter.id, mode]);
+
+  useEffect(() => {
+    localStorage.setItem(`quiz_idx_${chapter.id}_${mode}`, currentQuestionIndex.toString());
+  }, [currentQuestionIndex, chapter.id, mode]);
+
+  useEffect(() => {
+    localStorage.setItem(`quiz_expl_${chapter.id}_${mode}`, showingExplanation.toString());
+  }, [showingExplanation, chapter.id, mode]);
 
   // New state for layout and highlighting
   const [isProblemExpanded, setIsProblemExpanded] = useState(false);
@@ -156,7 +178,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   }
 
   return (
-    <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-50">
+    <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40 pb-20 md:pb-0">
       
       {/* Header (Fixed) */}
       <div className="flex-none p-2 md:p-6 border-b border-gray-200 bg-white shadow-sm z-10 flex items-center justify-between gap-2 md:gap-4">

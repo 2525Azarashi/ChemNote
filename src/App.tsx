@@ -32,25 +32,83 @@ export type AppMode = 'mini_test' | 'practice' | 'learning';
 export default function App() {
   useGlobalClickSound();
 
-  const [appState, setAppState] = useState<AppState>('onboarding');
-  const [appMode, setAppMode] = useState<AppMode>('practice');
-  const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
+  // Prevent iOS pinch zoom and double tap zoom
+  useEffect(() => {
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    };
+    
+    let lastTouchEnd = 0;
+    const handleTouchEnd = (e: TouchEvent) => {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    };
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
+
+  const [appState, setAppState] = useState<AppState>(() => (localStorage.getItem('savedAppState') as AppState) || 'onboarding');
+  const [appMode, setAppMode] = useState<AppMode>(() => (localStorage.getItem('savedAppMode') as AppMode) || 'practice');
+  const [selectedChapterId, setSelectedChapterId] = useState<string | null>(() => localStorage.getItem('savedSelectedChapterId'));
   const [selectedNote, setSelectedNote] = useState<any>(null);
-  const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('savedQuizAnswers') || '{}');
+    } catch {
+      return {};
+    }
+  });
   const [forceDesktop, setForceDesktop] = useState(false);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [isMobilePreview, setIsMobilePreview] = useState(false);
-  const [isGuest, setIsGuest] = useState(false);
+  const [isGuest, setIsGuest] = useState(() => localStorage.getItem('savedIsGuest') === 'true');
   const [isExplanationView, setIsExplanationView] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const [lastLearnState, setLastLearnState] = useState<AppState>(() => (localStorage.getItem('savedLastLearnState') as AppState) || 'mode_selection');
+
+  useEffect(() => { localStorage.setItem('savedAppState', appState); }, [appState]);
+  useEffect(() => { localStorage.setItem('savedAppMode', appMode); }, [appMode]);
+  useEffect(() => {
+    if (selectedChapterId) {
+      localStorage.setItem('savedSelectedChapterId', selectedChapterId);
+    } else {
+      localStorage.removeItem('savedSelectedChapterId');
+    }
+  }, [selectedChapterId]);
+  useEffect(() => { localStorage.setItem('savedQuizAnswers', JSON.stringify(quizAnswers)); }, [quizAnswers]);
+  useEffect(() => { localStorage.setItem('savedIsGuest', isGuest.toString()); }, [isGuest]);
+  
+  useEffect(() => {
+    if (['mode_selection', 'learning', 'chapters', 'quiz', 'explanation'].includes(appState)) {
+      setLastLearnState(appState);
+      localStorage.setItem('savedLastLearnState', appState);
+    }
+  }, [appState]);
+
+  const isFirstLoad = useRef(true);
 
   const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
   const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      const wasFirstLoad = isFirstLoad.current;
+      isFirstLoad.current = false;
+
       if (!user) {
-        if (!isGuest) {
+        if (!isGuest && !wasFirstLoad) {
           setAppState('onboarding');
         }
       } else {
@@ -60,7 +118,7 @@ export default function App() {
           const localProfile = localStorage.getItem(`profile_${user.uid}`);
           if (!localProfile) {
             setAppState('onboarding');
-          } else {
+          } else if (!wasFirstLoad) {
             setAppState('home');
           }
         } catch (error) {
@@ -251,7 +309,7 @@ export default function App() {
   return (
     <>
       <MobileViewWrapper isMobileMode={isMobilePreview && !shouldForceDesktopUI} onClose={() => setIsMobilePreview(false)}>
-        <div className={`min-h-screen w-full flex justify-center py-6 md:py-12 px-4 md:px-8 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
+        <div className={`min-h-screen w-full flex justify-center pt-6 pb-28 md:py-12 px-4 md:px-8 md:pb-28 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
           <audio 
             ref={audioRef} 
             src="/cobblestone_dreams.mp3" 
@@ -264,7 +322,7 @@ export default function App() {
           {/* BGM Toggle Button */}
           <button 
             onClick={() => setIsBgmEnabled(!isBgmEnabled)}
-            className="absolute bottom-4 left-4 z-50 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-gray-200 text-gray-600 hover:text-[#2C3E50] transition-colors"
+            className="fixed bottom-28 left-4 z-50 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-gray-200 text-gray-600 hover:text-[#2C3E50] transition-colors"
             title={isBgmEnabled ? "BGMをオフにする" : "BGMをオンにする"}
           >
             {isBgmEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
@@ -277,7 +335,7 @@ export default function App() {
 
           {/* Mobile Toggle Button (For actual mobile devices) */}
           {isMobileDevice && (
-            <div className="fixed bottom-4 right-4 z-[9999]">
+            <div className="fixed bottom-28 right-4 z-[9999]">
               <button
                 onClick={() => setForceDesktop(!forceDesktop)}
                 className={`bg-white rounded-full shadow-xl border-2 border-[#A9CCE3] flex items-center justify-center text-gray-600 hover:text-[#1B2631] transition-all ${forceDesktop ? 'p-5 scale-150 origin-bottom-right' : 'p-3'}`}
@@ -313,8 +371,8 @@ export default function App() {
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}
 
             {/* Global Bottom Navigation Footer */}
-            {appState !== 'onboarding' && appState !== 'quiz' && (
-              <div className="absolute bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-4 md:px-10 pb-6 pt-3 z-[45] sm:rounded-b-[28px] shadow-sm">
+            {appState !== 'onboarding' && (
+              <div className="fixed sm:absolute bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-4 md:px-10 pb-safe pt-3 z-[60] sm:rounded-b-[28px] shadow-sm pb-6">
                 <button 
                   onClick={() => setAppState('home')}
                   className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${appState === 'home' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
@@ -325,13 +383,13 @@ export default function App() {
                 
                 <button 
                   onClick={() => {
-                    if (appState === 'home') {
-                      handleStart();
+                    if (appState === 'home' || appState === 'note_list' || appState === 'note_detail') {
+                      setAppState(lastLearnState);
                     } else {
                       setAppState('mode_selection');
                     }
                   }}
-                  className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation', 'quiz'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <BookOpen className="w-5 h-5 stroke-[2.2]" />
                   <span className="text-[10px] tracking-wider font-modern">Learn</span>
