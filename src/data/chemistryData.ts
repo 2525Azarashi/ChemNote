@@ -975,7 +975,7 @@ export const chemistryData = {
           id: "c1_3",
           abstractTitle: "③ 粒子の熱運動と物質の三態",
           realTitle: "1章 物質の構成",
-          topics: [],
+          topics: ["熱運動", "絶対温度", "物質の三態", "状態変化", "物理変化・化学変化"],
           practiceProblems: [
             {
               id: "q_c1_3_1",
@@ -1236,7 +1236,7 @@ export const chemistryData = {
             {
               id: "q_c2_1_7",
               category: "原子の構造と電子配置・元素の周期表 (問7)",
-              text: "【問7】 （共通テスト風応用）ある原子Xは、陽子数が中性子数の3/4倍であり、質量数が28である。次の問いに答えよ。\n\n(1) 陽子数と中性子数を求めよ。\n(2) この原子の元素記号を答えよ。\n(3) この原子의 電子配置を答えよ（例：K2 L8 M2）。",
+              text: "【問7】 （共通テスト風応用）ある原子Xは、陽子数が中性子数の3/4倍であり、質量数が28である。次の問いに答えよ。\n\n(1) 陽子数と中性子数を求めよ。\n(2) この原子の元素記号を答えよ。\n(3) この原子の電子配置を答えよ（例：K2 L8 M2）。",
               subQuestions: [
                 { id: "q_c2_1_7_1p", label: "(1) 陽子数", type: "short_answer", correctAnswer: "12", correctAnswerRate: 85 },
                 { id: "q_c2_1_7_1n", label: "(1) 中性子数", type: "short_answer", correctAnswer: "16", correctAnswerRate: 85 },
@@ -1387,7 +1387,7 @@ export const chemistryData = {
             {
               id: "q_c2_1_7",
               category: "原子の構造と電子配置・元素の周期表 (問7)",
-              text: "【問7】 （共通テスト風応用）ある原子Xは、陽子数が中性子数の3/4倍であり、質量数が28である。次の問いに答えよ。\n\n(1) 陽子数と中性子数を求めよ。\n(2) この原子の元素記号を答えよ。\n(3) この原子의 電子配置を答えよ（例：K2 L8 M2）。",
+              text: "【問7】 （共通テスト風応用）ある原子Xは、陽子数が中性子数の3/4倍であり、質量数が28である。次の問いに答えよ。\n\n(1) 陽子数と中性子数を求めよ。\n(2) この原子の元素記号を答えよ。\n(3) この原子の電子配置を答えよ（例：K2 L8 M2）。",
               subQuestions: [
                 { id: "q_c2_1_7_1p", label: "(1) 陽子数", type: "short_answer", correctAnswer: "12", correctAnswerRate: 85 },
                 { id: "q_c2_1_7_1n", label: "(1) 中性子数", type: "short_answer", correctAnswer: "16", correctAnswerRate: 85 },
