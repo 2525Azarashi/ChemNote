@@ -9,7 +9,7 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-type StepType = 1 | 2 | 3 | 'both' | null;
+type StepType = 1 | 2 | 3 | 4 | 'both' | null;
 
 export interface NodeData {
   id: string;
@@ -39,13 +39,14 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
     if (step === 1) return isSelected ? 'bg-orange-100 border-orange-400 text-orange-900 shadow-md scale-[1.02]' : 'bg-white border-orange-200 text-orange-800 hover:bg-orange-50';
     if (step === 2) return isSelected ? 'bg-emerald-100 border-emerald-400 text-emerald-900 shadow-md scale-[1.02]' : 'bg-white border-emerald-200 text-emerald-800 hover:bg-emerald-50';
     if (step === 3) return isSelected ? 'bg-blue-100 border-blue-400 text-blue-900 shadow-md scale-[1.02]' : 'bg-white border-blue-200 text-blue-800 hover:bg-blue-50';
+    if (step === 4) return isSelected ? 'bg-purple-100 border-purple-400 text-purple-900 shadow-md scale-[1.02]' : 'bg-white border-purple-200 text-purple-800 hover:bg-purple-50';
     if (step === 'both') return isSelected ? 'bg-gradient-to-r from-orange-100 to-emerald-100 border-orange-400 text-slate-900 shadow-md scale-[1.02]' : 'bg-white border-orange-200 text-slate-800 hover:bg-slate-50';
     return isSelected ? 'bg-slate-100 border-slate-400 text-slate-900 shadow-md scale-[1.02]' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50';
   };
 
   if (node.isGroup) {
-    const groupBg = node.step === 1 ? 'bg-orange-50/50 border-orange-200' : node.step === 2 ? 'bg-emerald-50/50 border-emerald-200' : 'bg-blue-50/50 border-blue-200';
-    const groupText = node.step === 1 ? 'text-orange-800' : node.step === 2 ? 'text-emerald-800' : 'text-blue-800';
+    const groupBg = node.step === 1 ? 'bg-orange-50/50 border-orange-200' : node.step === 2 ? 'bg-emerald-50/50 border-emerald-200' : node.step === 3 ? 'bg-blue-50/50 border-blue-200' : 'bg-purple-50/50 border-purple-200';
+    const groupText = node.step === 1 ? 'text-orange-800' : node.step === 2 ? 'text-emerald-800' : node.step === 3 ? 'text-blue-800' : 'text-purple-800';
     return (
       <div className={cn("relative p-2 sm:p-3 rounded-xl border-2 mb-2 mt-1", groupBg)}>
         <div className={cn("absolute -top-3 left-4 px-2 py-0.5 bg-white rounded-full border-2 text-xs font-bold shadow-sm", groupBg, groupText)}>

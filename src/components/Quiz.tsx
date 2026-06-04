@@ -4,6 +4,7 @@ import { formatText } from '../utils/textFormatter';
 import { substanceTreeData } from '../data/chemistryData';
 import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
 import { Explanation } from './Explanation';
+import { IonizationEnergyChart } from './IonizationEnergyChart';
 
 interface QuizProps {
   mode: 'mini_test' | 'practice';
@@ -252,6 +253,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           >
             <div>
               {formatText(currentQuestion.text, highlights)}
+              {currentQuestion.text.includes('図6') && (
+                <div className="mt-4">
+                  <IonizationEnergyChart />
+                </div>
+              )}
             </div>
             
             {/* Inline button at the end of question text */}

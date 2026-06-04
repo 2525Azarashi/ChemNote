@@ -1404,14 +1404,241 @@ export const chemistryData = {
           id: "c2_2",
           abstractTitle: "② イオン",
           realTitle: "2章 物質の構成粒子",
-          topics: [],
-          miniTest: []
+          topics: ["電荷による分類", "構成による分類", "価数と安定性", "組成式の決定"],
+          practiceProblems: [
+            {
+              id: "q_c2_2_1",
+              category: "イオン (問1)",
+              text: "【問1】 次の文章の空欄（ア）〜（ス）に適する語句・記号を答えよ。（語句網羅）\n\n原子が電子を失ったり受け取ったりして電気を帯びた粒子を（ア）という。正の電荷を帯びたものを（イ）、負の電荷を帯びたものを（ウ）という。1つの原子からなるものを（エ）イオン、2つ以上の原子のかたまりからなるものを（オ）イオンという。イオンの右肩につける数字を（カ）といい、価電子の授受の数を示す。原子は通常、最も近い貴ガス（希ガス）と同じ（キ）になるようにイオンになる。1族のNaはNa（ク）に、2族のCaはCa（ケ）に、17族のClはCl（コ）に、16族のOはO（サ）になる。代表的な多原子イオンには、NH₄（シ）、OH（ス）、NO₃⁻、SO₄²⁻、CO₃²⁻、PO₄³⁻などがある。",
+              subQuestions: [
+                { id: "q_c2_2_1_a", label: "（ア）", type: "short_answer", correctAnswer: "イオン", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_i", label: "（イ）", type: "short_answer", correctAnswer: "陽イオン", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_u", label: "（ウ）", type: "short_answer", correctAnswer: "陰イオン", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_e", label: "（エ）", type: "short_answer", correctAnswer: "単原子", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_o", label: "（オ）", type: "short_answer", correctAnswer: "多原子", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_ka", label: "（カ）", type: "short_answer", correctAnswer: "価数", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_ki", label: "（キ）", type: "short_answer", correctAnswer: "電子配置", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_ku", label: "（ク） ※半角または上付きの⁺ を入力", type: "short_answer", correctAnswer: "⁺", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_ke", label: "（ケ） ※半角または上付きの²⁺ を入力", type: "short_answer", correctAnswer: "²⁺", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_ko", label: "（コ） ※半角または上付きの⁻ を入力", type: "short_answer", correctAnswer: "⁻", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_sa", label: "（サ） ※半角または上付きの²⁻ を入力", type: "short_answer", correctAnswer: "²⁻", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_shi", label: "（シ） ※半角または上付きの⁺ を入力", type: "short_answer", correctAnswer: "⁺", correctAnswerRate: 85 },
+                { id: "q_c2_2_1_su", label: "（ス） ※半角または上付きの⁻ を入力", type: "short_answer", correctAnswer: "⁻", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n（ア）イオン （イ）陽イオン （ウ）陰イオン （エ）単原子 （オ）多原子\n（カ）価数 （キ）電子配置 （ク）⁺ （ケ）²⁺ （コ）⁻ （サ）²⁻\n（シ）⁺ （ス）⁻\n\n■ Na⁺(11→10 電子=Ne 型), Ca²⁺(20→18=Ar 型), Cl⁻(17→18=Ar 型), O²⁻(8→10=Ne 型).",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_2_2",
+              category: "イオン (問2)",
+              text: "【問2】 （基礎）次のイオンの化学式と名称を答えよ。（上付き・下付き文字は右記をコピーしてご使用ください：⁺ , ⁻ , ²⁺ , ²⁻ , ³⁺ , ⁻ , ₄）",
+              subQuestions: [
+                { id: "q_c2_2_2_1", label: "(1) ナトリウムイオン", type: "short_answer", correctAnswer: "Na⁺", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_2", label: "(2) マグネシウムイオン", type: "short_answer", correctAnswer: "Mg²⁺", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_3", label: "(3) アルミニウムイオン", type: "short_answer", correctAnswer: "Al³⁺", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_4", label: "(4) 塩化物イオン", type: "short_answer", correctAnswer: "Cl⁻", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_5", label: "(5) 酸化物イオン", type: "short_answer", correctAnswer: "O²⁻", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_6", label: "(6) 硫化物イオン", type: "short_answer", correctAnswer: "S²⁻", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_7", label: "(7) アンモニウムイオン", type: "short_answer", correctAnswer: "NH₄⁺", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_8", label: "(8) 水酸化物イオン", type: "short_answer", correctAnswer: "OH⁻", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_9", label: "(9) 硝酸イオン", type: "short_answer", correctAnswer: "NO₃⁻", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_10", label: "(10) 硫酸イオン", type: "short_answer", correctAnswer: "SO₄²⁻", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_11", label: "(11) 炭酸イオン", type: "short_answer", correctAnswer: "CO₃²⁻", correctAnswerRate: 85 },
+                { id: "q_c2_2_2_12", label: "(12) リン酸イオン", type: "short_answer", correctAnswer: "PO₄³⁻", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) Na⁺ (2) Mg²⁺ (3) Al³⁺\n(4) Cl⁻ (5) O²⁻ (6) S²⁻\n(7) NH₄⁺ (8) OH⁻ (9) NO₃⁻\n(10) SO₄²⁻ (11) CO₃²⁻ (12) PO₄³⁻",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_2_3",
+              category: "イオン (問3)",
+              text: "【問3】 （標準）次の陽イオンと陰イオンからなる化合物の組成式と名称を書け。\n※組成式の数字は普通の半角数字（例: CaCl2, (NH4)2SO4）で入力してください。多原子イオンが複数ある場合はカッコ ( ) でくくります。",
+              subQuestions: [
+                { id: "q_c2_2_3_1a", label: "(1) Na⁺ と Cl⁻ [組成式]", type: "short_answer", correctAnswer: "NaCl", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_1b", label: "(1) Na⁺ と Cl⁻ [名称]", type: "short_answer", correctAnswer: "塩化ナトリウム", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_2a", label: "(2) Ca²⁺ と Cl⁻ [組成式]", type: "short_answer", correctAnswer: "CaCl2", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_2b", label: "(2) Ca²⁺ と Cl⁻ [名称]", type: "short_answer", correctAnswer: "塩化カルシウム", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_3a", label: "(3) Al³⁺ と O²⁻ [組成式]", type: "short_answer", correctAnswer: "Al2O3", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_3b", label: "(3) Al³⁺ と O²⁻ [名称]", type: "short_answer", correctAnswer: "酸化アルミニウム", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_4a", label: "(4) NH₄⁺ と SO₄²⁻ [組成式]", type: "short_answer", correctAnswer: "(NH4)2SO4", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_4b", label: "(4) NH₄⁺ と SO₄²⁻ [名称]", type: "short_answer", correctAnswer: "硫酸アンモニウム", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_5a", label: "(5) Na⁺ と CO₃²⁻ [組成式]", type: "short_answer", correctAnswer: "Na2CO3", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_5b", label: "(5) Na⁺ と CO₃²⁻ [名称]", type: "short_answer", correctAnswer: "炭酸ナトリウム", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_6a", label: "(6) Mg²⁺ と OH⁻ [組成式]", type: "short_answer", correctAnswer: "Mg(OH)2", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_6b", label: "(6) Mg²⁺ と OH⁻ [名称]", type: "short_answer", correctAnswer: "水酸化マグネシウム", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_7a", label: "(7) Ca²⁺ と PO₄³⁻ [組成式]", type: "short_answer", correctAnswer: "Ca3(PO4)2", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_7b", label: "(7) Ca²⁺ と PO₄³⁻ [名称]", type: "short_answer", correctAnswer: "リン酸カルシウム", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_8a", label: "(8) Al³⁺ と SO₄²⁻ [組成式]", type: "short_answer", correctAnswer: "Al2(SO4)3", correctAnswerRate: 85 },
+                { id: "q_c2_2_3_8b", label: "(8) Al³⁺ と SO₄²⁻ [名称]", type: "short_answer", correctAnswer: "硫酸アルミニウム", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) NaCl 塩化ナトリウム\n(2) CaCl₂ 塩化カルシウム\n(3) Al₂O₃ 酸化アルミニウム\n(4) (NH₄)₂SO₄ 硫酸アンモニウム\n(5) Na₂CO₃ 炭酸ナトリウム\n(6) Mg(OH)₂ 水酸化マグネシウム\n(7) Ca₃(PO₄)₂ リン酸カルシウム\n(8) Al₂(SO₄)₃ 硫酸アルミニウム\n\n■ 組成式は陽イオン × m、陰イオン × n として、価数の積が等しくなる最小整数比 m:n をとる。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_2_4",
+              category: "イオン (問4)",
+              text: "【問4】 （文字式・文章題）一般に、価数 a の陽イオン A^(a+) と価数 b の陰イオン B^(b-) からなる化合物の組成式を、最小整数比で表す方法について説明せよ。（a, b は互いに素でない場合も含む）",
+              subQuestions: [
+                { id: "q_c2_2_4_ans", label: "組成式の決定方法の説明", type: "descriptive", correctAnswer: "a と b の最小公倍数を L とすると、必要な陽イオン of 数 m = L/a，陰イオンの数 n = L/b となり、組成式は A_(L/a) B_(L/b) と表される（あるいは簡便には、価数を交差して約分する）。", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\nL = a と b の最小公倍数 とすると、 A は L/a 個、B は L/b 個 必要。\nよって組成式は A_(L/a) B_(L/b) と表されます。\n\n例：a=2, b=3 → L=6, A₃B₂。（Al³⁺ と O²⁻ → Al₂O₃）\n\n※ 簡便には「陽イオンの価数を陰イオンの添え字に、陰イオンの価数を陽イオンの添え字にしてから約分」を行います。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_2_5",
+              category: "イオン (問5)",
+              text: "【問5】 （標準）次のイオンの電子配置を、ヘリウム型、ネオン型、アルゴン型のいずれかで答えよ。（「ヘリウム型」、「ネオン型」、「アルゴン型」と入力してください）",
+              subQuestions: [
+                { id: "q_c2_2_5_1", label: "(1) Li⁺", type: "short_answer", correctAnswer: "ヘリウム型", correctAnswerRate: 85 },
+                { id: "q_c2_2_5_2", label: "(2) Na⁺", type: "short_answer", correctAnswer: "ネオン型", correctAnswerRate: 85 },
+                { id: "q_c2_2_5_3", label: "(3) Mg²⁺", type: "short_answer", correctAnswer: "ネオン型", correctAnswerRate: 85 },
+                { id: "q_c2_2_5_4", label: "(4) F⁻", type: "short_answer", correctAnswer: "ネオン型", correctAnswerRate: 85 },
+                { id: "q_c2_2_5_5", label: "(5) Cl⁻", type: "short_answer", correctAnswer: "アルゴン型", correctAnswerRate: 85 },
+                { id: "q_c2_2_5_6", label: "(6) K⁺", type: "short_answer", correctAnswer: "アルゴン型", correctAnswerRate: 85 },
+                { id: "q_c2_2_5_7", label: "(7) Ca²⁺", type: "short_answer", correctAnswer: "アルゴン型", correctAnswerRate: 85 },
+                { id: "q_c2_2_5_8", label: "(8) S²⁻", type: "short_answer", correctAnswer: "アルゴン型", correctAnswerRate: 85 },
+                { id: "q_c2_2_5_9", label: "(9) O²⁻", type: "short_answer", correctAnswer: "ネオン型", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n・ヘリウム型 (K2)：(1) Li⁺\n・ネオン型 (K2 L8)：(2) Na⁺ , (3) Mg²⁺ , (4) F⁻ , (9) O²⁻\n・アルゴン型 (K2 L8 M8)：(5) Cl⁻ , (6) K⁺ , (7) Ca²⁺ , (8) S²⁻\n\n■ いずれも貴ガスと同じ電子配置（等電子配置）になっている点が重要です。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_2_6",
+              category: "イオン (問6)",
+              text: "【問6】 （共通テスト風応用）次のうち、互いに等電子（電子数が同じ）であるイオン・原子の組合せを2組（電子数10個と18個のグループ）挙げよ。\n\n候補：Na⁺, Mg²⁺, Al³⁺, F⁻, O²⁻, N³⁻, Ne, Cl⁻, S²⁻, K⁺, Ca²⁺, Ar",
+              subQuestions: [
+                { id: "q_c2_2_6_g1", label: "電子数10 (ネオン型)のグループ", type: "descriptive", correctAnswer: "Na⁺, Mg²⁺, Al³⁺, F⁻, O²⁻, N³⁻, Ne", correctAnswerRate: 85 },
+                { id: "q_c2_2_6_g2", label: "電子数18 (アルゴン型)のグループ", type: "descriptive", correctAnswer: "Cl⁻, S²⁻, K⁺, Ca²⁺, Ar", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n・電子数10のグループ：Na⁺, Mg²⁺, Al³⁺, F⁻, O²⁻, N³⁻, Ne （Ne 型 K2 L8）\n・電子数18のグループ：Cl⁻, S²⁻, K⁺, Ca²⁺, Ar （Ar 型 K2 L8 M8）",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_2_7",
+              category: "イオン (問7)",
+              text: "【問7】 （共通テスト風応用）ある単原子イオン X²⁺ の電子配置が K2 L8 M8 であった。次の問いに答えよ。",
+              subQuestions: [
+                { id: "q_c2_2_7_sym", label: "(1) Xの元素記号を答えよ。", type: "short_answer", correctAnswer: "Ca", correctAnswerRate: 85 },
+                { id: "q_c2_2_7_num", label: "(2) Xの原子番号を答えよ。", type: "short_answer", correctAnswer: "20", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n電子数 = 2+8+8 = 18 個。\nX²⁺は電子を 2個失ってこの状態になっているため、原子のときの電子数（＝陽子数＝原子番号）は 18 + 2 = 20 個となります。\n原子番号20の元素はカルシウム（元素記号は Ca）です。\n\n答：元素記号: Ca, 原子番号: 20",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ]
         },
         {
           id: "c2_3",
           abstractTitle: "③ イオン生成とエネルギー",
           realTitle: "2章 物質の構成粒子",
-          topics: [],
+          topics: ["イオン化エネルギー", "電子親和力", "周期表の傾向", "最大値の特定", "エネルギーとイオンのなりやすさ", "連続イオン化エネルギー"],
+          practiceProblems: [
+            {
+              id: "q_c2_3_1",
+              category: "イオン生成とエネルギー (問1)",
+              text: "【問1】 次の文章の空欄（ア）〜（セ）に適する語句・記号を答えよ。（語句網羅）\n\n原子から最も外側の電子を1個取り去り、1価の（ア）にするのに必要なエネルギーを（イ）という。値が（ウ：大きい／小さい）ほど陽イオンになりにくく、（ウ）ほど（エ）と結合しやすい。原子に電子を1個与えて1価の（オ）にしたときに放出されるエネルギーを（カ）という。値が（キ：大きい／小さい）ほど陰イオンになりやすい。周期表で（ク：右上／左下）ほど（イ）は大きく、（ケ：右上／左下）ほど（カ）も大きい傾向がある。（イ）が最大なのは（コ）（18族）であり、特に Ｈｅ で最大。（カ）が最も大きいのは（サ）族の元素であり、特に（シ）が最大。アルカリ金属は（イ）が（ス）く（陽イオンになりやすい）、ハロゲンは（カ）が（セ）い（陰イオンになりやすい）。",
+              subQuestions: [
+                { id: "q_c2_3_1_a", label: "（ア）", type: "short_answer", correctAnswer: "陽イオン", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_i", label: "（イ）", type: "short_answer", correctAnswer: "イオン化エネルギー", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_u", label: "（ウ） ※「大きい」または「小さい」", type: "short_answer", correctAnswer: "大きい", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_e", label: "（エ）", type: "short_answer", correctAnswer: "非金属", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_o", label: "（オ）", type: "short_answer", correctAnswer: "陰イオン", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_ka", label: "（カ）", type: "short_answer", correctAnswer: "電子親和力", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_ki", label: "（キ） ※「大きい」または「小さい」", type: "short_answer", correctAnswer: "大きい", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_ku", label: "（ク） ※「右上」または「左下」", type: "short_answer", correctAnswer: "右上", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_ke", label: "（ケ） ※「右上」または「左下」", type: "short_answer", correctAnswer: "右上", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_ko", label: "（コ）", type: "short_answer", correctAnswer: "貴ガス", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_sa", label: "（サ） ※半角数字", type: "short_answer", correctAnswer: "17", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_shi", label: "（シ） ※元素記号または名称", type: "short_answer", correctAnswer: "Cl", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_su", label: "（ス）く", type: "short_answer", correctAnswer: "小さ", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_se", label: "（セ）い", type: "short_answer", correctAnswer: "大き", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n（ア）陽イオン （イ）イオン化エネルギー （ウ）大きい （エ）非金属（陰イオン）\n（オ）陰イオン （カ）電子親和力 （キ）大きい （ク）右上 （ケ）右上\n（コ）貴ガス （サ）17 （シ）Cl（塩素） （ス）小さ （セ）大き\n\n■ イオン化エネルギーが「小さい」ほど電子を放出しやすく陽イオンになりやすい。\n■ 電子親和力が「大きい」ほど電子を取り込んで安定化し、陰イオンになりやすい。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_3_2",
+              category: "イオン生成とエネルギー (問2)",
+              text: "【問2】 （基礎）次の元素を、第1イオン化エネルギーの大きい順に並べ替えよ。\n※半角の記号 > を用いて「A > B > C」のように並べ替えてください。",
+              subQuestions: [
+                { id: "q_c2_3_2_1", label: "(1) Na, K, Li", type: "short_answer", correctAnswer: "Li > Na > K", correctAnswerRate: 85 },
+                { id: "q_c2_3_2_2", label: "(2) Li, C, F, Ne", type: "short_answer", correctAnswer: "Ne > F > C > Li", correctAnswerRate: 85 },
+                { id: "q_c2_3_2_3", label: "(3) Na, Mg, Al", type: "short_answer", correctAnswer: "Mg > Al > Na", correctAnswerRate: 85 },
+                { id: "q_c2_3_2_4", label: "(4) F, Cl, Br, I", type: "short_answer", correctAnswer: "F > Cl > Br > I", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) Li > Na > K  （同族では原子番号大ほど小：電子殻が外側に広がる）\n(2) Ne > F > C > Li （同周期では原子番号大ほど大、貴ガス最大）\n(3) Mg > Al > Na  （Mg は閉殻型 M2 で安定、Al はM3 で1 個多いがNa よりは大）\n(4) F > Cl > Br > I （同族 ハロゲンも原子番号大ほど小）",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_3_3",
+              category: "イオン生成とエネルギー (問3)",
+              text: "【問3】 （標準）図6（第1イオン化エネルギーのグラフ）について次に答えよ。",
+              subQuestions: [
+                { id: "q_c2_3_3_1", label: "(1) 極大点（ピーク）にある元素群を答えよ。", type: "short_answer", correctAnswer: "貴ガス", correctAnswerRate: 85 },
+                { id: "q_c2_3_3_2", label: "(2) 極小点（谷）にある元素群を答えよ。", type: "short_answer", correctAnswer: "アルカリ金属", correctAnswerRate: 85 },
+                { id: "q_c2_3_3_3", label: "(3) 同じ周期内で、原子番号が増加すると第1イオン化エネルギーはどのように変化するか。", type: "descriptive", correctAnswer: "おおむね増加する（原子核の正電荷が強まり電子を強く引きつけるため）。ただし所々で凹凸あり。", correctAnswerRate: 85 },
+                { id: "q_c2_3_3_4", label: "(4) Be（4）→ B（5）でわずかに減少している。理由を簡潔に説明せよ。", type: "descriptive", correctAnswer: "Be は K2 L2（s²閉殻）で安定、B は K2 L3 で 1 個外側の電子を持つため、Be より少しのエネルギーで電子が奪える。", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) 貴ガス（He, Ne, Ar）。 閉殻で電子配置が安定しており電子を奪うのに大きなエネルギーが必要。\n(2) アルカリ金属（Li, Na, K）。 価電子1個を放出して貴ガス型になりやすく、奪いやすい。\n(3) おおむね増加する（原子核の正電荷が強まり電子を強く引きつけるため）。ただし所々で凹凸あり。\n(4) Be は K2 L2（s²閉殻）で安定、B は K2 L3 で 1 個外側の電子を持つため、Be より少しのエネルギーで電子が奪える。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_3_4",
+              category: "イオン生成とエネルギー (問4)",
+              text: "【問4】 （標準）次の問いに答えよ。",
+              subQuestions: [
+                { id: "q_c2_3_4_1", label: "(1) 電子親和力が最大の元素は何か。 ※元素記号または名称", type: "short_answer", correctAnswer: "Cl", correctAnswerRate: 85 },
+                { id: "q_c2_3_4_2", label: "(2) アルカリ金属が水と激しく反応するのは、なぜか。", type: "descriptive", correctAnswer: "アルカリ金属は第1イオン化エネルギーが特に小さく、価電子1個を容易に放出して陽イオンとなり、水との反応で水素を発生する。", correctAnswerRate: 85 },
+                { id: "q_c2_3_4_3", label: "(3) 貴ガス（希ガス）が化学的に安定な理由を電子配置の観点から述べよ。", type: "descriptive", correctAnswer: "貴ガスは最外殻電子が 2（He）または 8（Ne, Ar, …）の閉殻構造で電子配置が極めて安定しており、電子を授受しにくいため。", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) Cl（塩素）。F は原子半径が小さく入った電子間の反発が大きいため Cl の方が大きい。\n(2) アルカリ金属は第1イオン化エネルギーが特に小さく、価電子1個を容易に放出して陽イオンとなり、水との反応で水素を発生する。\n(3) 貴ガスは最外殻電子が 2（He）または 8（Ne, Ar, …）の閉殻構造で電子配置が極めて安定しており、電子を授受しにくいため。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_3_5",
+              category: "イオン生成とエネルギー (問5)",
+              text: "【問5】 （文字式・文章題）1 mol の Na 原子をすべて Na⁺ にするのに必要なエネルギーは、Na の第1イオン化エネルギー I [kJ/mol] で表される。Na の原子量を 23.0 とするとき、Na 11.5 g をすべて Na⁺ にするのに必要なエネルギーを I の式で表せ。",
+              subQuestions: [
+                { id: "q_c2_3_5_ans", label: "必要なエネルギーを表す式 [kJ]", type: "short_answer", correctAnswer: "0.5I", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\nNa 11.5 g の物質量 = 11.5/23.0 = 0.500 mol.\n必要なエネルギー = 0.500 × I = I/2  [kJ]  （= 0.5I [kJ]）。\n\n■ イオン化エネルギーは『1 mol あたり』の値（単位 kJ/mol）。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_3_6",
+              category: "イオン生成とエネルギー (問6)",
+              text: "【問6】 （文字式・文章題）原子 X の第1イオン化エネルギーを I₁、第2イオン化エネルギーを I₂ と散る（一般に I₁<I₂）。元素 X が安定な2価陽イオン X²⁺ をつくるためには、I₁＋I₂ のエネルギーを与える必要がある。下の表の元素について I₁＋I₂ の値を計算し、最も2価陽イオンになりやすい元素を元素記号で答えよ。\n\nLi: I₁=520, I₂=7298 ／ Be: I₁=899, I₂=1757 ／ Mg: I₁=738, I₂=1451 ／ Na: I₁=496, I₂=4562 ／ Ca: I₁=590, I₂=1145 （単位 kJ/mol）",
+              subQuestions: [
+                { id: "q_c2_3_6_ans", label: "最も2価陽イオンになりやすい元素の元素記号", type: "short_answer", correctAnswer: "Ca", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\nLi: 520+7298=7818 Be: 899+1757=2656 Mg: 738+1451=2189\nNa: 496+4562=5058 Ca: 590+1145=1735\n\n最小は Ca → 2価陽イオンに最もなりやすい。\n\n■ 2 族（Mg, Ca）は I₁+I₂ が小さいので2 価陽イオンになりやすい。Na（1族）は I₂ が極端に大きいので2価にはなりにくい（Ne型を破ることになるため）。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_3_7",
+              category: "イオン生成とエネルギー (問7)",
+              text: "【問7】 （共通テスト風応用）次の文中の空欄（A）、（B）に当てはまる元素記号を答えよ。\n\n『同一周期において、第1イオン化エネルギーは18族の（A）で最大、1族の（B）で最小となる傾向にある。第3周期で考えると、（A）= [A] 、（B）= [B] である。』",
+              subQuestions: [
+                { id: "q_c2_3_7_a", label: "（A）の元素記号", type: "short_answer", correctAnswer: "Ar", correctAnswerRate: 85 },
+                { id: "q_c2_3_7_b", label: "（B）の元素記号", type: "short_answer", correctAnswer: "Na", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n第3周期 18族 = Ar（アルゴン）。 第3周期 1族 = Na（ナトリウム）。\n\n■ 周期表の同一周期で、第1イオン化エネルギーは右上の貴ガスで最大、左下のアルカリ金属で最小。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ],
           miniTest: []
         },
         {
@@ -2026,3 +2253,281 @@ export const atomicStructureTreeData: NodeData = {
     }
   ]
 };
+
+export const ionTreeData: NodeData = {
+  id: 'ion_root',
+  label: 'イオン',
+  step: null,
+  explanation: '原子が電子を失ったり受け取ったりして電気を帯びた粒子をイオンといいます。その電荷の種類、構成原子数、価数、および安定性について系統的に整理しましょう。',
+  children: [
+    {
+      id: 'step1_group_ion',
+      isGroup: true,
+      label: '【Step1：電荷による分類】',
+      step: 1,
+      children: [
+        {
+          id: 'cation',
+          label: '陽イオン',
+          step: 1,
+          subLabel: '正の電荷（放出）',
+          explanation: '価電子の数が1〜3個の原子（陽性）が、電子を放出して形成される。電子を捨てることで貴ガスの閉殻構造となり安定化する。\n\n例：Na⁺、Mg²⁺、Al³⁺',
+          relatedQuestions: [
+            { id: "q_c2_2_1_i", label: "問1(イ) 陽イオン" },
+            { id: "q_c2_2_2_1", label: "問2(1) Na⁺" },
+            { id: "q_c2_2_2_2", label: "問2(2) Mg²⁺" },
+            { id: "q_c2_2_2_3", label: "問2(3) Al³⁺" },
+            { id: "q_c2_2_2_7", label: "問2(7) NH₄⁺" }
+          ]
+        },
+        {
+          id: 'anion',
+          label: '陰イオン',
+          step: 1,
+          subLabel: '負の電荷（取得）',
+          explanation: '価電子の数が6〜7個の原子（陰性）が、電子を受け取って形成される。電子を得ることで貴ガスの閉殻構造となり安定化する。\n\n例：Cl⁻、O²⁻、F⁻',
+          relatedQuestions: [
+            { id: "q_c2_2_1_u", label: "問1(ウ) 陰イオン" },
+            { id: "q_c2_2_2_4", label: "問2(4) Cl⁻" },
+            { id: "q_c2_2_2_5", label: "問2(5) O²⁻" },
+            { id: "q_c2_2_2_6", label: "問2(6) S²⁻" },
+            { id: "q_c2_2_2_8", label: "問2(8) OH⁻" },
+            { id: "q_c2_2_2_9", label: "問2(9) NO₃⁻" },
+            { id: "q_c2_2_2_10", label: "問2(10) SO₄²⁻" },
+            { id: "q_c2_2_2_11", label: "問2(11) CO₃²⁻" },
+            { id: "q_c2_2_2_12", label: "問2(12) PO₄³⁻" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step2_group_ion',
+      isGroup: true,
+      label: '【Step2：構成による分類】',
+      step: 2,
+      children: [
+        {
+          id: 'monoatomic',
+          label: '単原子イオン',
+          step: 2,
+          subLabel: '1個の原子',
+          explanation: '原子1つが電子を授受してできる。\n\n例：Na⁺、Cl⁻、Fe²⁺、Fe³⁺',
+          relatedQuestions: [
+            { id: "q_c2_2_1_e", label: "問1(エ) 単原子" },
+            { id: "q_c2_2_2_1", label: "問2(1) Na⁺" },
+            { id: "q_c2_2_2_4", label: "問2(4) Cl⁻" },
+            { id: "q_c2_2_7_sym", label: "問7(1) Ca" }
+          ]
+        },
+        {
+          id: 'polyatomic',
+          label: '多原子イオン',
+          step: 2,
+          subLabel: '2個以上の原子',
+          explanation: '複数の原子がグループとして振る舞う。名称と化学式をセットで覚える必要がある。\n\n例：\n・NH₄⁺ （アンモニウムイオン）\n・OH⁻ （水酸化物イオン）\n・NO₃⁻ （硝酸イオン）\n・SO₄²⁻ （硫酸イオン）\n・CO₃²⁻ （炭酸イオン）',
+          relatedQuestions: [
+            { id: "q_c2_2_1_o", label: "問1(オ) 多原子" },
+            { id: "q_c2_2_1_shi", label: "問1(シ) NH₄⁺" },
+            { id: "q_c2_2_1_su", label: "問1(ス) OH⁻" },
+            { id: "q_c2_2_2_7", label: "問2(7) NH₄⁺" },
+            { id: "q_c2_2_2_8", label: "問2(8) OH⁻" },
+            { id: "q_c2_2_2_9", label: "問2(9) NO₃⁻" },
+            { id: "q_c2_2_2_10", label: "問2(10) SO₄²⁻" },
+            { id: "q_c2_2_2_11", label: "問2(11) CO₃²⁻" },
+            { id: "q_c2_2_2_12", label: "問2(12) PO₄³⁻" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step3_group_ion',
+      isGroup: true,
+      label: '【Step3：価数と安定性】',
+      step: 3,
+      children: [
+        {
+          id: 'valence_charge',
+          label: 'イオンの価数',
+          step: 3,
+          subLabel: '授受した電子の数',
+          explanation: '放出または受け取った電子の数によって「1価」「2価」などが決まる。価数はイオンの右肩に付す。\n陽イオンと陰イオンが結合して化合物を作るとき、電気的に中性（価数の総和＝0）になる最小整数比で結合して組成式を構成する。\n\n例：K⁺ (1価陽イオン)、Mg²⁺ (2価陽イオン)、S²⁻ (2価陰イオン)。',
+          relatedQuestions: [
+            { id: "q_c2_2_1_ka", label: "問1(カ) 価数" },
+            { id: "q_c2_2_3_1a", label: "問3(1) 組成" },
+            { id: "q_c2_2_3_2a", label: "問3(2) 組成" },
+            { id: "q_c2_2_3_3a", label: "問3(3) 組成" },
+            { id: "q_c2_2_3_4a", label: "問3(4) 組成" },
+            { id: "q_c2_2_3_5a", label: "問3(5) 組成" },
+            { id: "q_c2_2_3_6a", label: "問3(6) 組成" },
+            { id: "q_c2_2_3_7a", label: "問3(7) 組成" },
+            { id: "q_c2_2_3_8a", label: "問3(8) 組成" },
+            { id: "q_c2_2_4_ans", label: "問4 最小整数比" }
+          ]
+        },
+        {
+          id: 'noble_config',
+          label: '貴ガス配置への変化',
+          step: 3,
+          subLabel: '最も近い貴ガスと同じ電子配置',
+          explanation: '単原子・多原子に関わらず、最終的には最も近い貴ガスと同じ安定な電子配置（閉殻構造）を取ろうとする性質がある（等電子配置）。\n\n・Li⁺ → He型 (K2)\n・Na⁺, Mg²⁺, F⁻, O²⁻, N³⁻, Ne → Ne型 (K2 L8)\n・Cl⁻, S²⁻, K⁺, Ca²⁺, Ar → Ar型 (K2 L8 M8)\n\n※等電子配置のイオンでは、陽子数が多く(原子番号が大きく)なるほど原子核が電子を強く引くため、イオン半径は小さくなります。',
+          relatedQuestions: [
+            { id: "q_c2_2_1_ki", label: "問1(キ) 電子配置" },
+            { id: "q_c2_2_1_ku", label: "問1(ク) ⁺" },
+            { id: "q_c2_2_1_ke", label: "問1(ケ) ²⁺" },
+            { id: "q_c2_2_1_ko", label: "問1(コ) ⁻" },
+            { id: "q_c2_2_1_sa", label: "問1(サ) ²⁻" },
+            { id: "q_c2_2_5_1", label: "問5(1) Li⁺ 配置" },
+            { id: "q_c2_2_6_g1", label: "問6(g1) 10個等電子" },
+            { id: "q_c2_2_7_sym", label: "問7(1) 元の原子" }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+export const ionGenerationTreeData: NodeData = {
+  id: 'ion_generation_root',
+  label: 'イオン生成とエネルギー',
+  step: null,
+  explanation: '原子から電子を取り去るのに必要なイオン化エネルギーや、電子を付け加えた際に放出される電子親和力、それらの周期表やグラフでの傾向について学びます。',
+  children: [
+    {
+      id: 'step1_group_ion_gen',
+      isGroup: true,
+      label: '【Step1：エネルギーの定義】',
+      step: 1,
+      children: [
+        {
+          id: 'ionization_energy_def',
+          label: 'イオン化エネルギー',
+          step: 1,
+          subLabel: '陽イオンになる際に必要なエネルギー',
+          explanation: '原子から電子1個を取り去り、1価の陽イオンになるときに吸収されるエネルギー。この値が小さいほど陽イオンになりやすい。',
+          relatedQuestions: [
+            { id: "q_c2_3_1_i", label: "問1(イ) イオン化エネルギー" },
+            { id: "q_c2_3_5_ans", label: "問5 Iの計算" },
+            { id: "q_c2_3_6_ans", label: "問6 2価陽イオンへのなりやすさ" }
+          ]
+        },
+        {
+          id: 'electron_affinity_def',
+          label: '電子親和力',
+          step: 1,
+          subLabel: '陰イオンになる際に放出されるエネルギー',
+          explanation: '原子が電子1個を受け取り、1価の陰イオンになるときに放出されるエネルギー。この値が大きいほど陰イオンになりやすい。',
+          relatedQuestions: [
+            { id: "q_c2_3_1_ka", label: "問1(カ) 電子親和力" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step2_group_ion_gen',
+      isGroup: true,
+      label: '【Step2：周期表における傾向】',
+      step: 2,
+      children: [
+        {
+          id: 'periodic_trend_energy',
+          label: '周期表の傾向',
+          step: 2,
+          subLabel: '左下ほど小さく、右上ほど大きい',
+          explanation: 'イオン化エネルギー・電子親和力ともに、周期表の左下にある元素ほど小さく、右上にある元素ほど大きくなる傾向。',
+          relatedQuestions: [
+            { id: "q_c2_3_1_ku", label: "問1(ク) 右上" },
+            { id: "q_c2_3_1_ke", label: "問1(ケ) 右上" },
+            { id: "q_c2_3_2_1", label: "問2(1) Na, K, Li" },
+            { id: "q_c2_3_2_2", label: "問2(2) Li, C, F, Ne" },
+            { id: "q_c2_3_2_4", label: "問2(4) F, Cl, Br, I" },
+            { id: "q_c2_3_7_a", label: "問7(A) 最大" },
+            { id: "q_c2_3_7_b", label: "問7(B) 最小" }
+          ]
+        },
+        {
+          id: 'ion_ease_relation',
+          label: '陽・陰イオンへのなりやすさ',
+          step: 2,
+          subLabel: 'エネルギーとの相関',
+          explanation: '・例1（塩素）：周期表の右上に位置し、電子親和力が大きいため陰イオンになりやすい。\n・例2（ナトリウム）：周期表の左側に位置し、イオン化エネルギーが小さいため陽イオンになりやすい。',
+          relatedQuestions: [
+            { id: "q_c2_3_1_u", label: "問1(ウ) 陽イオンなりやすさ" },
+            { id: "q_c2_3_1_shi", label: "問1(シ) Clが最大" },
+            { id: "q_c2_3_1_su", label: "問1(ス) アルカリ小さ" },
+            { id: "q_c2_3_1_se", label: "問1(セ) ハロゲン大き" },
+            { id: "q_c2_3_4_2", label: "問4(2) 水と激しく反応" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step3_group_ion_gen',
+      isGroup: true,
+      label: '【Step3：最大値の特定】',
+      step: 3,
+      children: [
+        {
+          id: 'ionization_max_helium',
+          label: 'イオン化エネルギーの最大',
+          step: 3,
+          subLabel: '18族（貴ガス）',
+          explanation: '元素の中でイオン化エネルギーが最大のものはヘリウム (He)。',
+          relatedQuestions: [
+            { id: "q_c2_3_3_1", label: "問3(1) ピーク" }
+          ]
+        },
+        {
+          id: 'affinity_max_chlorine',
+          label: '電子親和力の最大',
+          step: 3,
+          subLabel: '17族（ハロゲン）',
+          explanation: '元素の中で電子親和力が最大のものは塩素 (Cl)。\n※フッ素は原子半径が小さく電子間の反発が強いため、塩素が例外的に最大となる。',
+          relatedQuestions: [
+            { id: "q_c2_3_4_1", label: "問4(1) 最大の元素" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step4_group_ion_gen',
+      isGroup: true,
+      label: '【Step4：グラフによる識別】',
+      step: 4,
+      children: [
+        {
+          id: 'ionization_energy_graph',
+          label: 'イオン化エネルギーのグラフ',
+          step: 4,
+          subLabel: '貴ガスが頂点 (0〜3000)',
+          explanation: '原子番号とともに増加し、貴ガスで最大となった後、次の周期のアルカリ金属で急落する。ヘリウムが全元素で最も高い。',
+          relatedQuestions: [
+            { id: "q_c2_3_3_2", label: "問3(2) 谷" },
+            { id: "q_c2_3_3_3", label: "問3(3) 原子番号増加に伴う変化" },
+            { id: "q_c2_3_3_4", label: "問3(4) Be→Bの減少" }
+          ]
+        },
+        {
+          id: 'electron_affinity_graph',
+          label: '電子親和力のグラフ',
+          step: 4,
+          subLabel: 'ハロゲンが頂点 (0〜500)',
+          explanation: 'ハロゲンで高い値を示すが、塩素がフッ素よりも高くなる点に注意。',
+          relatedQuestions: [
+            { id: "q_c2_3_1_ki", label: "問1(キ) 陰イオンなりやすさ" }
+          ]
+        },
+        {
+          id: 'valence_electron_graph',
+          label: '価電子のグラフ（比較）',
+          step: 4,
+          subLabel: '貴ガスで0になる (0〜10)',
+          explanation: '周期的に1から増加するが、貴ガス（18族）に達すると0になる。',
+          relatedQuestions: [
+            { id: "q_c2_3_4_3", label: "問4(3) 貴ガスが化学的に安定な理由" }
+          ]
+          }
+        ]
+      }
+    ]
+  };
+
