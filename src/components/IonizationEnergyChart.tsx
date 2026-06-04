@@ -31,7 +31,11 @@ const data: ChartDataPoint[] = [
   { atomicNumber: 20, symbol: "Ca", energy: 590, type: "other", name: "カルシウム" },
 ];
 
-export function IonizationEnergyChart() {
+interface IonizationEnergyChartProps {
+  showDetails?: boolean;
+}
+
+export function IonizationEnergyChart({ showDetails = true }: IonizationEnergyChartProps) {
   const [hoveredPoint, setHoveredPoint] = useState<ChartDataPoint | null>(null);
 
   // SVG Size Parameters
@@ -65,9 +69,11 @@ export function IonizationEnergyChart() {
           <span className="bg-indigo-600 text-white text-xs px-2 py-0.5 rounded-full font-mono">図6</span>
           第1イオン化エネルギーの周期性
         </h4>
-        <p className="text-xs text-slate-500 mt-0.5 sm:mt-1">
-          ※各点にホバー、タップすると元素の詳細情報が表示されます。
-        </p>
+        {showDetails && (
+          <p className="text-xs text-slate-500 mt-0.5 sm:mt-1">
+            ※各点にホバー、タップすると元素の詳細情報が表示されます。
+          </p>
+        )}
       </div>
 
       <div className="relative overflow-x-auto">
@@ -264,48 +270,50 @@ export function IonizationEnergyChart() {
       </div>
 
       {/* Floating Detailed Hover Info Box */}
-      <div 
-        id="ionization-detail-panel" 
-        className={`mt-4 p-4 rounded-2xl border transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-3 ${
-          hoveredPoint 
-            ? 'bg-indigo-50/50 border-indigo-200 shadow-sm' 
-            : 'bg-slate-50/30 border-slate-100 opacity-60'
-        }`}
-      >
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm ${
-            hoveredPoint?.type === 'noble' 
-              ? 'bg-red-500' 
-              : hoveredPoint?.type === 'alkali' 
-                ? 'bg-emerald-600' 
-                : 'bg-blue-600'
-          }`}>
-            {hoveredPoint ? hoveredPoint.symbol : '?'}
+      {showDetails && (
+        <div 
+          id="ionization-detail-panel" 
+          className={`mt-4 p-4 rounded-2xl border transition-all duration-300 flex flex-col md:flex-row items-center justify-between gap-3 ${
+            hoveredPoint 
+              ? 'bg-indigo-50/50 border-indigo-200 shadow-sm' 
+              : 'bg-slate-50/30 border-slate-100 opacity-60'
+          }`}
+        >
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm ${
+              hoveredPoint?.type === 'noble' 
+                ? 'bg-red-500' 
+                : hoveredPoint?.type === 'alkali' 
+                  ? 'bg-emerald-600' 
+                  : 'bg-blue-600'
+            }`}>
+              {hoveredPoint ? hoveredPoint.symbol : '?'}
+            </div>
+            <div>
+              <h5 className="font-bold text-sm text-slate-800">
+                {hoveredPoint 
+                  ? `${hoveredPoint.name}（原子番号: ${hoveredPoint.atomicNumber}）` 
+                  : 'グラフで確認したい点をタップしてください'}
+              </h5>
+              <p className="text-xs text-slate-500">
+                {hoveredPoint 
+                  ? `${hoveredPoint.type === 'noble' ? '18族・貴ガス元素。最外殻が安定閉殻のため、電子を1個奪うのに非常に大きなエネルギーを必要とします。' : hoveredPoint.type === 'alkali' ? '1族・アルカリ金属元素。最外殻に1個だけ電子を持つため、奪われやすくエネルギーは最小になります。' : '典型元素。同一周期内では原子番号が増えるほど原子核が電子を引く力が強まり、イオン化エネルギーは増加傾向にあります。'}` 
+                  : '周期的なエネルギーの増減が確認できます。貴ガス（赤）でピーク、アルカリ金属（緑）でボトムとなります。'}
+              </p>
+            </div>
           </div>
-          <div>
-            <h5 className="font-bold text-sm text-slate-800">
-              {hoveredPoint 
-                ? `${hoveredPoint.name}（原子番号: ${hoveredPoint.atomicNumber}）` 
-                : 'グラフで確認したい点をタップしてください'}
-            </h5>
-            <p className="text-xs text-slate-500">
-              {hoveredPoint 
-                ? `${hoveredPoint.type === 'noble' ? '18族・貴ガス元素。最外殻が安定閉殻のため、電子を1個奪うのに非常に大きなエネルギーを必要とします。' : hoveredPoint.type === 'alkali' ? '1族・アルカリ金属元素。最外殻に1個だけ電子を持つため、奪われやすくエネルギーは最小になります。' : '典型元素。同一周期内では原子番号が増えるほど原子核が電子を引く力が強まり、イオン化エネルギーは増加傾向にあります。'}` 
-                : '周期的なエネルギーの増減が確認できます。貴ガス（赤）でピーク、アルカリ金属（緑）でボトムとなります。'}
-            </p>
-          </div>
+          {hoveredPoint && (
+            <div className="text-right sm:text-left shrink-0 bg-white border border-gray-100 rounded-xl px-4 py-2 shadow-sm w-full md:w-auto flex flex-row md:flex-col justify-between items-center md:items-start">
+              <span className="text-[11px] text-slate-400 block font-semibold uppercase tracking-wider">
+                第1イオン化エネルギー
+              </span>
+              <span className="text-lg font-extrabold text-indigo-700 font-mono">
+                {hoveredPoint.energy} <span className="text-xs font-semibold text-slate-400">kJ/mol</span>
+              </span>
+            </div>
+          )}
         </div>
-        {hoveredPoint && (
-          <div className="text-right sm:text-left shrink-0 bg-white border border-gray-100 rounded-xl px-4 py-2 shadow-sm w-full md:w-auto flex flex-row md:flex-col justify-between items-center md:items-start">
-            <span className="text-[11px] text-slate-400 block font-semibold uppercase tracking-wider">
-              第1イオン化エネルギー
-            </span>
-            <span className="text-lg font-extrabold text-indigo-700 font-mono">
-              {hoveredPoint.energy} <span className="text-xs font-semibold text-slate-400">kJ/mol</span>
-            </span>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }

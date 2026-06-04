@@ -663,7 +663,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                       {formatText(question.text)}
                       {question.text.includes('図6') && (
                         <div className="mt-4">
-                          <IonizationEnergyChart />
+                          <IonizationEnergyChart showDetails={true} />
                         </div>
                       )}
                     </div>

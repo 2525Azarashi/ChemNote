@@ -255,7 +255,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               {formatText(currentQuestion.text, highlights)}
               {currentQuestion.text.includes('図6') && (
                 <div className="mt-4">
-                  <IonizationEnergyChart />
+                  <IonizationEnergyChart showDetails={false} />
                 </div>
               )}
             </div>
