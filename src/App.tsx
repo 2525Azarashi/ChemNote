@@ -321,7 +321,6 @@ export default function App() {
             src="https://docs.google.com/uc?export=download&id=1o0u_KMpYXGc92gIkjArfI7lc-nVkJEXn" 
             loop 
             preload="auto" 
-            crossOrigin="anonymous"
             onError={handleAudioError}
           />
           
