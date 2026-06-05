@@ -318,9 +318,10 @@ export default function App() {
         <div className={`min-h-screen w-full flex justify-center pt-6 pb-24 md:py-12 px-4 md:px-8 md:pb-28 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
           <audio 
             ref={audioRef} 
-            src="https://docs.google.com/uc?export=download&id=1o0u_KMpYXGc92gIkjArfI7lc-nVkJEXn" 
+            src="/tanjou.mp3" 
             loop 
             preload="auto" 
+            crossOrigin="anonymous"
             onError={handleAudioError}
           />
           
