@@ -45,7 +45,6 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
               <ArrowLeft size={18} className="stroke-[2.5]" />
             </button>
             <div>
-              <span className="text-xs font-bold text-[#A9CCE3] uppercase tracking-wider block">Study Input Mode</span>
               <h1 className="text-2xl md:text-3xl font-bold text-[#1B2631]">化学基礎 まとめプリント</h1>
             </div>
           </div>
@@ -72,11 +71,11 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
         </div>
 
         {/* The Main Notebook-Styled Paper Page Container */}
-        <div className="w-full notebook-paper rounded-3xl p-6 sm:p-8 md:p-12 relative min-h-[70vh] shadow-lg border border-gray-150 relative">
+        <div className="w-full notebook-paper rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-12 relative min-h-[70vh] shadow-lg border border-gray-150">
           {/* Vertical Red Binder Line */}
-          <div className="absolute top-0 bottom-0 left-[35px] sm:left-[45px] w-[2px] bg-red-200/50 pointer-events-none"></div>
+          <div className="absolute top-0 bottom-0 left-[14px] sm:left-[36px] w-[1.5px] bg-red-200/50 pointer-events-none"></div>
 
-          <div className="pl-6 sm:pl-10 relative z-10 text-[#1B2631]">
+          <div className="pl-5 sm:pl-10 relative z-10 text-[#1B2631]">
 
             {/* TOC/Intro Sub-Page */}
             {activeTab === 'toc' && (
@@ -176,7 +175,7 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">● 物質の分類</h3>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs md:text-sm border-collapse border border-gray-200 bg-white">
+                    <table className="w-full text-left text-xs md:text-sm border-collapse border border-gray-200 bg-white min-w-[500px]">
                       <thead>
                         <tr className="bg-gray-50 border-b border-gray-200">
                           <th className="p-3 border-r border-gray-200 font-bold text-[#2C3E50]">分類</th>
@@ -296,7 +295,7 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">● 分離・精製方法のまとめ</h3>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs border-collapse border border-gray-200 bg-white">
+                    <table className="w-full text-left text-xs border-collapse border border-gray-200 bg-white min-w-[650px]">
                       <thead>
                         <tr className="bg-gray-50 border-b border-gray-200">
                           <th className="p-3 border-r border-gray-200 font-bold text-[#2C3E50] w-[15%]">方法</th>
@@ -437,7 +436,7 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
                   </p>
 
                   <div className="bg-white p-4 rounded-xl border border-gray-150">
-                    <div className="grid grid-cols-7 gap-2 text-center text-xs md:text-sm font-bold">
+                    <div className="grid grid-cols-3 sm:grid-cols-7 gap-2 text-center text-xs md:text-sm font-bold">
                       <div className="bg-red-50 p-2 rounded-lg border border-red-150"><p className="text-slate-500">Li</p><p className="text-red-500 mt-1">赤</p></div>
                       <div className="bg-amber-50 p-2 rounded-lg border border-amber-150"><p className="text-slate-500">Na</p><p className="text-amber-500 mt-1">黄</p></div>
                       <div className="bg-purple-50 p-2 rounded-lg border border-purple-150"><p className="text-slate-500">K</p><p className="text-purple-500 mt-1">淡紫</p></div>
@@ -509,7 +508,7 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
                   <p className="text-xs text-red-500 font-black border-b border-red-200 border-dashed pb-2 inline-block">重要事項④ ～粒子の熱運動と物質の三態～</p>
                   
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs border-collapse border border-gray-200 bg-white">
+                    <table className="w-full text-left text-xs border-collapse border border-gray-200 bg-white min-w-[550px]">
                       <thead>
                         <tr className="bg-gray-50 border-b border-gray-200 text-slate-700">
                           <th className="p-3 border-r border-gray-200 font-bold">状態</th>
@@ -719,7 +718,7 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
                 <div className="border-l-4 border-sky-blue bg-white p-5 rounded-r-2xl shadow-xs space-y-4">
                   <h4 className="font-bold text-[#2C3E50] text-sm">📌 分子の形と結合角（超頻出）</h4>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs border-collapse border border-gray-200 bg-white">
+                    <table className="w-full text-left text-xs border-collapse border border-gray-200 bg-white min-w-[450px]">
                       <thead>
                         <tr className="bg-gray-50 border-b border-gray-200 text-slate-700">
                           <th className="p-3 border-r border-gray-200 font-bold">分子</th>
@@ -763,7 +762,7 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
                   <p className="text-xs text-red-500 font-black border-b border-red-200 border-dashed pb-2 inline-block">重要事項② ～結晶の種類と性質～</p>
                   
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left text-[11px] md:text-xs border-collapse border border-gray-200 bg-white">
+                    <table className="w-full text-left text-[11px] md:text-xs border-collapse border border-gray-200 bg-white min-w-[700px]">
                       <thead>
                         <tr className="bg-gray-50 border-b border-gray-200 text-slate-700">
                           <th className="p-2 border-r border-gray-200 font-bold">結晶の種類</th>
@@ -960,7 +959,7 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">● 2つの代表的な定義</h3>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs md:text-sm border-collapse border border-gray-200 bg-white">
+                    <table className="w-full text-left text-xs md:text-sm border-collapse border border-gray-200 bg-white min-w-[500px]">
                       <thead>
                         <tr className="bg-gray-50 border-b border-gray-200 text-slate-700">
                           <th className="p-3 border-r border-gray-200 font-bold">定義名</th>
@@ -1022,7 +1021,7 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
                   <p className="text-xs text-red-500 font-black border-b border-red-200 border-dashed pb-2 inline-block">重要事項③ ～中和と指示薬の変色域～</p>
                   
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs border-collapse border border-gray-200 bg-white">
+                    <table className="w-full text-left text-xs border-collapse border border-gray-200 bg-white min-w-[550px]">
                       <thead>
                         <tr className="bg-gray-50 border-b border-gray-200 text-slate-700">
                           <th className="p-3 border-r border-gray-200 font-bold">指示薬名</th>
