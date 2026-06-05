@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft, Edit3, ArrowLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { substanceTreeData } from '../data/chemistryData';
 import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
@@ -46,6 +46,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // New state for layout and highlighting
   const [isProblemExpanded, setIsProblemExpanded] = useState(false);
   const [highlights, setHighlights] = useState<string[]>([]);
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   // Use passed prop if available, otherwise check window width
   const [isDesktop, setIsDesktop] = useState(!isMobileView && window.innerWidth >= 1024);
 
@@ -64,12 +66,16 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     setHighlights([]);
   }, [currentQuestionIndex]);
 
-  // Prevent zoom/pinch out
+  // Prevent zoom/pinch out during active quiz, but allow on explanations
   useEffect(() => {
     const meta = document.querySelector('meta[name="viewport"]');
     const originalContent = meta?.getAttribute('content') || '';
     if (meta) {
-      meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+      if (showingExplanation) {
+        meta.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
+      } else {
+        meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+      }
     }
     
     return () => {
@@ -77,7 +83,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         meta.setAttribute('content', originalContent);
       }
     };
-  }, []);
+  }, [showingExplanation]);
 
   useEffect(() => {
     if (!showingExplanation) {
@@ -259,33 +265,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 </div>
               )}
             </div>
-            
-            {/* Inline button at the end of question text */}
-            <div className="mt-8 border-t border-gray-150 pt-6 flex justify-center gap-4">
-              <button
-                onClick={handlePrevious}
-                disabled={currentQuestionIndex === 0}
-                className={`flex items-center justify-center gap-2 px-4 py-3 md:py-3.5 rounded-xl font-bold transition-all duration-200 border-2 text-sm md:text-base shrink-0
-                  ${currentQuestionIndex === 0 
-                    ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50' 
-                    : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white bg-white shadow-sm'}`}
-              >
-                <ChevronLeft size={18} />
-                <span className="hidden sm:inline">前の問題へ</span>
-              </button>
-              <button
-                onClick={handleNext}
-                className="flex items-center justify-center gap-2 px-6 py-3 md:py-3.5 rounded-xl font-bold tracking-wider transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 text-sm md:text-base bg-[#2C3E50] text-white hover:bg-[#1a252f] w-full max-w-sm"
-              >
-                <span>解答と解説を見る</span>
-                <ChevronRight size={18} />
-              </button>
-            </div>
           </div>
         </div>
 
         {/* Section 2: Answers Area (Scrollable) */}
-        <div className={`lg:w-[42%] flex-1 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-8 md:pb-8 ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
+        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-8 md:pb-8 relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
             {currentQuestion.subQuestions.map((sq: any) => (
@@ -325,74 +309,115 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       })}
                     </div>
                   ) : sq.type === 'sorting' ? (
-                    <div className="flex-grow flex flex-col gap-3 w-full">
-                      {/* Selected sequence area with breadcrumbs styled layout */}
-                      <div className="flex flex-wrap items-center gap-1.5 p-3 min-h-[46px] bg-[#A9CCE3]/5 border-2 border-dashed border-[#A9CCE3]/30 rounded-xl">
-                        {(answers[sq.id] ? answers[sq.id].split(' > ') : []).length === 0 ? (
-                          <span className="text-gray-400 text-xs md:text-sm italic pl-1">元素をタップして大きい順に並べてください</span>
-                        ) : (
-                          <div className="flex flex-wrap items-center gap-1.5">
-                            {(answers[sq.id] ? answers[sq.id].split(' > ') : []).map((item: string, idx: number) => (
-                              <React.Fragment key={idx}>
-                                {idx > 0 && <span className="text-gray-400 font-extrabold text-xs">&gt;</span>}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const current = answers[sq.id] ? answers[sq.id].split(' > ') : [];
-                                    const next = current.filter((_, i) => i !== idx);
-                                    handleOptionSelect(sq.id, next.join(' > '));
+                    <div className="flex-grow flex flex-col gap-4 w-full">
+                      {/* Interactive Drag & Reorder Sequence */}
+                      <div className="flex flex-col gap-2.5">
+                        <div className="text-xs text-gray-400 font-bold flex items-center justify-between">
+                          <span>ドラッグまたは左右移動ボタンで順序を並べ替え :</span>
+                          <span className="text-[10px] text-[#A9CCE3] font-normal">左ほど「大きい」</span>
+                        </div>
+                        
+                        <div className="flex flex-wrap items-center gap-2.5 p-3.5 bg-gray-50/80 border border-gray-200 rounded-2xl min-h-[72px]">
+                          {(() => {
+                            const activeOrder = answers[sq.id] ? answers[sq.id].split(' > ') : [...(sq.items || [])];
+                            
+                            const handleSwap = (idx1: number, idx2: number) => {
+                              if (idx1 < 0 || idx1 >= activeOrder.length || idx2 < 0 || idx2 >= activeOrder.length) return;
+                              const nextOrder = [...activeOrder];
+                              const temp = nextOrder[idx1];
+                              nextOrder[idx1] = nextOrder[idx2];
+                              nextOrder[idx2] = temp;
+                              handleOptionSelect(sq.id, nextOrder.join(' > '));
+                            };
+
+                            return activeOrder.map((item: string, idx: number) => {
+                              const isDragging = draggingIndex === idx;
+                              const isDragOver = dragOverIndex === idx;
+
+                              return (
+                                <div
+                                  key={`${item}-${idx}`}
+                                  draggable
+                                  onDragStart={(e) => {
+                                    setDraggingIndex(idx);
+                                    e.dataTransfer.effectAllowed = 'move';
                                   }}
-                                  className="px-3 py-1.5 bg-[#A9CCE3] text-white font-bold text-xs rounded-lg shadow-sm hover:bg-[#8eb8d6] transition-colors flex items-center gap-1.5 cursor-pointer"
+                                  onDragOver={(e) => e.preventDefault()}
+                                  onDragEnter={(e) => {
+                                    e.preventDefault();
+                                    setDragOverIndex(idx);
+                                  }}
+                                  onDragLeave={() => setDragOverIndex(null)}
+                                  onDrop={(e) => {
+                                    e.preventDefault();
+                                    setDragOverIndex(null);
+                                    if (draggingIndex === null || draggingIndex === idx) return;
+                                    const nextOrder = [...activeOrder];
+                                    const draggedValue = nextOrder[draggingIndex];
+                                    nextOrder.splice(draggingIndex, 1);
+                                    nextOrder.splice(idx, 0, draggedValue);
+                                    handleOptionSelect(sq.id, nextOrder.join(' > '));
+                                    setDraggingIndex(null);
+                                  }}
+                                  onDragEnd={() => {
+                                    setDraggingIndex(null);
+                                    setDragOverIndex(null);
+                                  }}
+                                  className={`flex flex-col items-center p-2.5 bg-white border rounded-xl shadow-xs transition-all duration-200 cursor-grab select-none
+                                    ${isDragging ? 'opacity-30 border-dashed border-gray-300 scale-95' : 'opacity-100'}
+                                    ${isDragOver ? 'border-[#A9CCE3] bg-[#A9CCE3]/15 scale-105 ring-2 ring-[#A9CCE3]/20' : 'border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50/50'}
+                                  `}
                                 >
-                                  {formatText(item)}
-                                  <span className="text-[10px] font-normal leading-none bg-white/25 px-1 rounded-sm">×</span>
-                                </button>
-                              </React.Fragment>
-                            ))}
-                          </div>
-                        )}
+                                  {/* Draggable Header */}
+                                  <div className="flex items-center gap-1.5 mb-1.5 shrink-0">
+                                    <GripVertical size={13} className="text-gray-400 font-bold" />
+                                    <span className="font-bold text-gray-800 text-sm">{formatText(item)}</span>
+                                  </div>
+
+                                  {/* Swap & Click controls */}
+                                  <div className="flex items-center gap-1 bg-gray-50 p-0.5 rounded-md border border-gray-150">
+                                    <button
+                                      type="button"
+                                      disabled={idx === 0}
+                                      onClick={() => handleSwap(idx, idx - 1)}
+                                      className="p-1 rounded hover:bg-white text-gray-500 disabled:opacity-20 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                                      title="左に移動"
+                                    >
+                                      <ChevronLeft size={13} className="stroke-[2.5]" />
+                                    </button>
+                                    <span className="text-[9px] text-gray-400 font-mono select-none px-0.5">{idx + 1}</span>
+                                    <button
+                                      type="button"
+                                      disabled={idx === activeOrder.length - 1}
+                                      onClick={() => handleSwap(idx, idx + 1)}
+                                      className="p-1 rounded hover:bg-white text-gray-500 disabled:opacity-20 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                                      title="右に移動"
+                                    >
+                                      <ChevronRight size={13} className="stroke-[2.5]" />
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            });
+                          })()}
+                        </div>
                       </div>
 
-                      {/* Remaining available item pool and clear buttons */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                        <div className="flex flex-wrap gap-2">
-                          {(sq.items || []).map((item: string) => {
-                            const selectedItems = answers[sq.id] ? answers[sq.id].split(' > ') : [];
-                            const isSelected = selectedItems.includes(item);
-                            return (
-                              <button
-                                key={item}
-                                type="button"
-                                disabled={isSelected}
-                                onClick={() => {
-                                  const current = answers[sq.id] ? answers[sq.id].split(' > ') : [];
-                                  if (!current.includes(item)) {
-                                    const next = [...current, item];
-                                    handleOptionSelect(sq.id, next.join(' > '));
-                                  }
-                                }}
-                                className={`px-4 py-2 font-bold text-sm rounded-xl border transition-all shadow-sm cursor-pointer
-                                  ${isSelected 
-                                    ? 'bg-gray-100/70 text-gray-300 border-gray-100 cursor-not-allowed scale-95' 
-                                    : 'bg-white text-gray-700 border-gray-200 hover:border-[#A9CCE3] hover:text-[#5dade2] hover:scale-[1.03] active:scale-95'
-                                  }`}
-                              >
-                                {formatText(item)}
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        {/* Reset control */}
+                      {/* Reset controls */}
+                      <div className="flex items-center justify-between gap-3 pt-0.5">
+                        <span className="text-xs text-gray-400 leading-normal">
+                          ※ 元素長押し・ドラッグ、または <code>&lt;</code> <code>&gt;</code> ボタンで並べ替えてください。
+                        </span>
+                        
                         {(answers[sq.id] || '') !== '' && (
                           <button
                             type="button"
                             onClick={() => {
                               handleOptionSelect(sq.id, '');
                             }}
-                            className="text-xs text-red-400 hover:text-red-500 transition-colors font-medium hover:underline py-1 px-2 hover:bg-red-50 rounded-lg cursor-pointer shrink-0"
+                            className="text-xs text-red-400 hover:text-red-500 transition-colors font-medium hover:underline py-1 px-2.5 hover:bg-red-50 rounded-lg cursor-pointer shrink-0"
                           >
-                            やり直す
+                            やり直す (初期設定に戻す)
                           </button>
                         )}
                       </div>
@@ -423,6 +448,29 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 </div>
               </div>
             ))}
+
+            {/* Answer submission action button and back button at the bottom of the answers column */}
+            <div className="pt-6 border-t border-gray-200/60 flex items-center justify-between gap-3">
+              <button
+                onClick={handlePrevious}
+                disabled={currentQuestionIndex === 0}
+                title="前の問題へ"
+                className={`flex items-center justify-center p-2.5 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer
+                  ${currentQuestionIndex === 0 
+                    ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50' 
+                    : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white bg-white shadow-sm'}`}
+              >
+                <ChevronLeft size={16} className="stroke-[2.5]" />
+              </button>
+
+              <button
+                onClick={handleNext}
+                className="flex shadow-md hover:shadow-lg hover:-translate-y-0.5 items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 text-xs md:text-sm bg-[#2C3E50] text-white hover:bg-[#1B2631] flex-1 sm:flex-none sm:w-[180px] cursor-pointer"
+              >
+                <span>解答と解説を見る</span>
+                <ChevronRight size={14} className="stroke-[2.5]" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

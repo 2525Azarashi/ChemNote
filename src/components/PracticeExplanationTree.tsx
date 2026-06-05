@@ -1,6 +1,6 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
-import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData } from '../data/chemistryData';
+import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData } from '../data/chemistryData';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -33,6 +33,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   const isIonChapter = chapter?.id === 'c2_2';
   const isIonGenerationChapter = chapter?.id === 'c2_3';
   const isIonSizeChapter = chapter?.id === 'c2_4';
+  const isChemicalBondChapter = chapter?.id === 'c3_1';
   
   let currentTreeData = substanceTreeData;
   if (isSeparationChapter) currentTreeData = separationTreeData;
@@ -41,6 +42,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   if (isIonChapter) currentTreeData = ionTreeData;
   if (isIonGenerationChapter) currentTreeData = ionGenerationTreeData;
   if (isIonSizeChapter) currentTreeData = ionSizeTreeData;
+  if (isChemicalBondChapter) currentTreeData = chemicalBondTreeData;
 
   const renderContent = (nodeId: string) => {
     const matchedSqs: { sq: any, parentQuestion: any }[] = [];

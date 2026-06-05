@@ -1709,9 +1709,9 @@ export const chemistryData = {
             {
               id: "q_c2_4_5",
               category: "原子の大きさとイオンの大きさ (問5)",
-              text: "【問5】 （文字式・文章題）電子数 N が等しいイオン・原子のうち、陽子数を p とする。クーロン引力で電子を核に引きつける強さは概ね p に比例し、その結果イオン半径 r は p の増加とともに減少する。同じ N=10 の系列 X^q（X は原子番号 p の元素、電荷 q = p − 10）について、p = 8, 9, 11, 12, 13 のときのイオン種をすべて書け。\n※半角アルファベット・数字、および上付き文字を模擬して「O2-, F-, Na+, Mg2+, Al3+」のようにコンマ「,」で区切って答えてください。",
+              text: "【問5】 （文字式・文章題）電子数 N が等しいイオン・原子のうち、陽子数を p とする。クーロン引力で電子を核に引きつける強さは概ね p に比例し、その結果イオン半径 r は p の増加とともに減少する。同じ N=10 の系列 X^q（X は原子番号 p の元素、電荷 q = p − 10）について、p = 8, 9, 11, 12, 13 のときのイオン種を順に並べよ。\n※下の元素カードをクリックして、p=8, 9, 11, 12, 13 の順に並べてください。",
               subQuestions: [
-                { id: "q_c2_4_5_ans", label: "p=8, 9, 11, 12, 13 のイオン種（※左から順に並べてください）", type: "short_answer", correctAnswer: "O2-, F-, Na+, Mg2+, Al3+", correctAnswerRate: 85 }
+                { id: "q_c2_4_5_ans", label: "p=8, 9, 11, 12, 13 の順", type: "sorting", items: ["O²⁻", "F⁻", "Na⁺", "Mg²⁺", "Al³⁺"], correctAnswer: "O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺", correctAnswerRate: 85 }
               ],
               explanation: "▼ 解答・解説\n- p=8, q=−2 → O²⁻\n- p=9, q=−1 → F⁻\n- p=10, q=0 → Ne（原子）\n- p=11, q=+1 → Na⁺\n- p=12, q=+2 → Mg²⁺\n- p=13, q=+3 → Al³⁺\n\n■ p増加とともに半径は単調減少 → 大小関係 O²⁻ > F⁻ > Ne > Na⁺ > Mg²⁺ > Al³⁺.",
               surroundingKnowledge: [],
@@ -1749,6 +1749,196 @@ export const chemistryData = {
           abstractTitle: "① 結合の種類",
           realTitle: "3章 化学結合",
           topics: ["イオン結合", "共有結合", "配位結合", "金属結合", "分子間力による結合"],
+          practiceProblems: [
+            {
+              id: "q_c3_1_1",
+              category: "化学結合の種類と特徴 (問1)",
+              text: "【問1】 次の文章の空欄（ア）〜（ソ）に適する語句を答えよ。（語句網羅）\n\n原子どうしを結びつけている力を化学結合という。代表的な化学結合は次の4種類である。\n\n(1) 陽イオンと陰イオンが（ア）力で引き合う結合を（イ）結合といい、（ウ）と（エ）の組合せで生じる（例：NaCl）。\n(2) 2 つの原子が電子対を出し合って共有する結合を（オ）結合といい、主に（カ）どうしの組合せで生じる（例：H₂O, NH₃）。\n(3) 一方の原子から（キ）対が提供されてもう一方の原子と共有する結合を（ク）結合といい、NH₄⁺、H₃O⁺ などにみられる。\n(4) 金属原子どうしが（ケ）電子を共有することで生じる結合を（コ）結合という。\n\n共有結合のうち、1組の電子対による結合を（サ）結合、2組による結合を（シ）結合、3組による結合を（ス）結合という。\n共有結合には、結合に使われていない（セ）電子対も存在する。\n電子の偏りに着目すると、結合の極性の強さは（ソ）の差で判断できる。",
+              subQuestions: [
+                { id: "q_c3_1_1_a", label: "問1(ア) 陽・陰イオンを引き合わす力", type: "short_answer", correctAnswer: "静電気", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_i", label: "問1(イ) 代表的な化学結合の一つ", type: "short_answer", correctAnswer: "イオン", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_u", label: "問1(ウ) イオン結合を成す元素の一つ（主に何金属か）", type: "short_answer", correctAnswer: "金属", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_e", label: "問1(エ) イオン結合を成すもう一つの元素（主に非何元素か）", type: "short_answer", correctAnswer: "非金属", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_o", label: "問1(オ) 電子対を出し合う結合", type: "short_answer", correctAnswer: "共有", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_ka", label: "問1(カ) 共有結合は主に○○元素どうしで生じるか", type: "short_answer", correctAnswer: "非金属", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_ki", label: "問1(キ) 提供される電子対（何電子対か）", type: "short_answer", correctAnswer: "非共有電子", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_ku", label: "問1(ク) 一方的に提供して共有する結合", type: "short_answer", correctAnswer: "配位", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_ke", label: "問1(ケ) 金属原子が放出する電子", type: "short_answer", correctAnswer: "自由", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_ko", label: "問1(コ) 金属電子に寄与する結合", type: "short_answer", correctAnswer: "金属", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_sa", label: "問1(サ) 1組の電子対による結合", type: "short_answer", correctAnswer: "単", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_shi", label: "問1(シ) 2組による結合", type: "short_answer", correctAnswer: "二重", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_su", label: "問1(ス) 3組による結合", type: "short_answer", correctAnswer: "三重", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_se", label: "問1(セ) 結合評価のされない電子（○○電子対か）", type: "short_answer", correctAnswer: "非共有", correctAnswerRate: 85 },
+                { id: "q_c3_1_1_so", label: "問1(ソ) 結合の極性の強さは何の差か", type: "short_answer", correctAnswer: "電気陰性度", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n- （ア）静電気（クーロン力）\n- （イ）イオン\n- （ウ）金属\n- （エ）非金属\n- （オ）共有\n- （カ）非金属\n- （キ）非共有電子\n- （ク）配位\n- （ケ）自由\n- （コ）金属\n- （サ）単\n- （シ）二重\n- （ス）三重\n- （セ）非共有\n- （ソ）電気陰性度\n\n■ 化学結合の4つの基本種類（イオン結合、共有結合、配位結合、金属結合）について総合的に解説した文章です。それぞれの特徴や構成元素、電子の共有の仕方について完璧に押さえましょう。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_1_2",
+              category: "化学結合の種類と特徴 (問2)",
+              text: "【問2】 （基礎）次の化合物・物質を構成する結合を、ア〜エからすべて選べ（複数可）。\nア：イオン結合、イ：共有結合、ウ：金属結合、エ：配位結合",
+              subQuestions: [
+                { id: "q_c3_1_2_1", label: "(1) NaCl", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ア", correctAnswerRate: 85 },
+                { id: "q_c3_1_2_2", label: "(2) H₂O", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_1_2_3", label: "(3) NH₄Cl", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ア,イ,エ", correctAnswerRate: 85 },
+                { id: "q_c3_1_2_4", label: "(4) Fe", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ウ", correctAnswerRate: 85 },
+                { id: "q_c3_1_2_5", label: "(5) CO₂", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_1_2_6", label: "(6) MgO", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ア", correctAnswerRate: 85 },
+                { id: "q_c3_1_2_7", label: "(7) Cu", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ウ", correctAnswerRate: 85 },
+                { id: "q_c3_1_2_8", label: "(8) HCl", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_1_2_9", label: "(9) NH₃", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_1_2_10", label: "(10) CaCl₂", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ア", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) NaCl : ア（Na⁺とCl⁻のイオン結合）\n(2) H₂O : イ（非金属同士の共有結合）\n(3) NH₄Cl : ア＋イ＋エ（アンモニウムイオン NH₄⁺ は、アンモニア NH₃ と水素イオン H⁺ が「共有結合」および「配位結合」で結合したものであり、その NH₄⁺ と 塩素イオン Cl⁻ の間は「イオン結合」で結合しています。したがって、3種類の結合のすべてが存在します）\n(4) Fe : ウ（金属元素のみの金属結合）\n(5) CO₂ : イ（非金属同士の共有結合）\n(6) MgO : ア（Mg²⁺とO²⁻のイオン結合）\n(7) Cu : ウ（金属結合）\n(8) HCl : イ（共有結合）\n(9) NH₃ : イ（共有結合）\n(10) CaCl₂ : ア（Ca²⁺とCl⁻のイオン結合）",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_1_3",
+              category: "化学結合の種類と特徴 (問3)",
+              text: "【問3】 （標準）次の問いに答えよ。",
+              subQuestions: [
+                {
+                  id: "q_c3_1_3_1",
+                  label: "(1) 単結合・二重結合・三重結合の共有電子対の数をそれぞれ答え、例を1つずつ挙げよ。",
+                  type: "descriptive",
+                  correctAnswer: "単結合：1対。例：H-H, HCl などのいずれか。\n二重結合：2対。例：O=O, CO₂ などのいずれか。\n三重結合：3対。例：N≡N, HC≡CH などのいずれか。",
+                  gradingCriteria: [
+                    "「単結合：1対」および例（H₂, HCl, Cl₂など）を記述している",
+                    "「二重結合：2対」および例（O₂, CO₂など）を記述している",
+                    "「三重結合：3対」および例（N₂などのいずれか）を記述している"
+                  ],
+                  detailedExplanation: {
+                    theme: "共有結合における単結合・二重結合・三重結合",
+                    type: "概念説明型",
+                    difficulty: 2,
+                    steps: [
+                      "① 単結合は共有電子対が1対で構成されることを説明し、水素分子 H₂ などの好例を挙げる。",
+                      "② 二重結合は共有電子対が2対で構成されることを説明し、酸素分子 O₂ などの好例を挙げる。",
+                      "③ 三重結合は共有電子対が3対で構成されることを説明し、窒素分子 N₂ などの好例を挙げる。"
+                    ]
+                  },
+                  correctAnswerRate: 85
+                },
+                {
+                  id: "q_c3_1_3_2",
+                  label: "(2) 配位結合と通常の共有結合は、できあがった結合の性質（結合の強さや長さ）に違いがあるか説明せよ。",
+                  type: "descriptive",
+                  correctAnswer: "配位結合は結合の形成過程（でき方）が異なるだけで、一旦できあがった結合の性質（長さや強さ）は通常の共有結合と全く区別できず、違いはない（等価である）。",
+                  gradingCriteria: [
+                    "「できあがった結合の性質に違いはない」または「完全に同一で区別できない」と述べている",
+                    "電子が分配される結果「すべて等価である」ことを説明している"
+                  ],
+                  detailedExplanation: {
+                    theme: "配位結合と共有結合の等価性",
+                    type: "概念説明型",
+                    difficulty: 3,
+                    steps: [
+                      "① 配位結合は一方の原子から非共有電子対が寄与して作られるというでき方（起源）の違いを思い出す。",
+                      "② 結合した後は、電子軌道が通常の共有結合と共有化・非局在化されるため、結合の性質は同一であることを理解する。",
+                      "③ よって、できあがりの構造特性（長さ、強さなど）は等価であり、全く区別できないと結論づける。"
+                    ]
+                  },
+                  correctAnswerRate: 85
+                },
+                {
+                  id: "q_c3_1_3_3",
+                  label: "(3) 共有結合における共有電子対・非共有電子対とは何かそれぞれ説明せよ。",
+                  type: "descriptive",
+                  correctAnswer: "共有電子対：原子がお互いに不対電子を出し合って、2つの原子の間で共有されて結合に直接関与している電子対。\n非共有電子対：結合に関与せず、1つの原子にのみペアとして局在（孤立）して存在している電子対。",
+                  gradingCriteria: [
+                    "共有電子対：「原子同士で共有されている電子対（結合に関与する電子対）」であることを説明している",
+                    "非共有電子対：「結合に関与しない、特定の原子に局在・孤立している電子対」であることを説明している"
+                  ],
+                  detailedExplanation: {
+                    theme: "共有電子対と非共有電子対の区別",
+                    type: "概念説明型",
+                    difficulty: 2,
+                    steps: [
+                      "① 共有電子対は、結合を形成する目的で原子間で共有されるペアであることを説明する。",
+                      "② 非共有電子対（孤立電子対）は、最外殻で既にペアとなっており、他の原子と結合を作るのに活用されないペアであることを説明する。"
+                    ]
+                  },
+                  correctAnswerRate: 85
+                }
+              ],
+              explanation: "▼ 解答・解説\n(1) 単結合：1対（例：H-H, HCl）\n二重結合：2対（例：O=O, CO₂）\n三重結合：3対（例：N≡N, アセチレン HC≡CH）\n\n(2) 結合のでき方は異なりますが、できあがった結合の性質（長さや結合エネルギー）には一切の違いはありません。完全に等価であり、電子の出処がどこであったかは区別不可能です。\n\n(3) 共有電子対は2つの原子に共有されて結合に使われている軌道上にあります。非共有電子対は、その原子に単独（孤立）で保存されている不対でない電子ペアです。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_1_4",
+              category: "化学結合の種類と特徴 (問4)",
+              text: "【問4】 （標準）NH₄⁺（アンモニウムイオン）と H₃O⁺（オキソニウムイオン）の生成過程を、図と電子配置で説明せよ。また、配位結合の電子の供与体はどれか。",
+              subQuestions: [
+                {
+                  id: "q_c3_1_4_ans",
+                  label: "NH₄⁺ と H₃O⁺ の生成過程・配位結合の供与体の説明",
+                  type: "descriptive",
+                  correctAnswer: "NH₄⁺：NH₃の中の窒素原子(N)がもつ非共有電子対を、水素イオン（H⁺）に一方的に提供して共有する。供与体は NH₃ の N。\nH₃O⁺：H₂Oの中の酸素原子(O)がもつ非共有電子対の1組を、水素イオン（H⁺）に一方的に提供して共有する。供与体は H₂O の O。\nできあがった結合は、元々あった共有結合と全く性質が同等であり、区別がつかない。",
+                  gradingCriteria: [
+                    "NH₄⁺に関して：アンモニア（NH₃）の窒素原子(N)の非共有電子対を、水素イオン(H⁺)に提供して配位結合を形成する説明があること",
+                    "NH₄⁺の電子供与体はアンモニアの窒素(N)であると明記していること",
+                    "H₃O⁺に関して：水（H₂O）の酸素原子(O)の非共有電子対を、水素イオン(H⁺)に提供して配位結合を形成する説明があること",
+                    "H₃O⁺の電子供与体は水の酸素(O)であると明記していること",
+                    "完成した配位結合は、もともとの共有結合と完全に等価（区別不可）になると記述していること（加点要件）"
+                  ],
+                  detailedExplanation: {
+                    theme: "アンモニウムイオンとオキソニウムイオンの配位結合形成",
+                    type: "概念説明型",
+                    difficulty: 3,
+                    steps: [
+                      "① NH₃ の N には1つの非共有電子対、H₂O の O には2つの非共有電子対が存在する点を確認する。",
+                      "② 電子が空の水素イオン H⁺ に対して、この非共有電子対の1組が一方的に提供（ドネーション）されることで共有結合と同等の状態になること（配位結合）を記述する。",
+                      "③ 窒素 (N) および 酸素 (O) がそれぞれ電子対を差し出す役割（ドナー＝供与体）であることを明示する。"
+                    ]
+                  },
+                  correctAnswerRate: 85
+                }
+              ],
+              explanation: "▼ 解答・解説\n■ NH₄⁺ （アンモニウムイオン）\nアンモニア NH₃ の窒素原子が持つ「非共有電子対」1組を、空の orbital（軌道）を持つ水素イオン H⁺ に一方的に差し出すことで共有され、配位結合が作られます。供与体（ドナー）は NH₃（窒素N）。\n\n■ H₃O⁺ （オキソニウムイオン）\n水分子 H₂O の酸素原子が持つ「非共有電子対」の中の1組を、水素イオン H⁺ に一方的に差し出すことで共有され、配位結合が作られます。供与体（ドナー）は H₂O（酸素O）。\n\n※いずれのアンモニウムイオンも、結合形成が完了した後は、最初から存在していた共有結合ともともと配位結合であった分（の結合）が完全に均質になり、長さ・強さとも均等（区別不能）になります。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_1_5",
+              category: "化学結合の種類と特徴 (問5)",
+              text: "【問5】 （文字式・文章題）電気陰性度の差 Δχ から、次の組合せの結合は共有結合とイオン結合のどちらに近いと考えられるか、Δχ を計算して判断せよ。\n※電気陰性度 χ(H)=2.2, χ(C)=2.6, χ(N)=3.0, χ(O)=3.4, χ(F)=4.0, χ(Cl)=3.2, χ(Na)=0.9, χ(Mg)=1.3 とする。\n※判定基準: Δχ が大（おおむね 1.7 以上）でイオン結合、1.7 未満で共有結合と見なします。",
+              subQuestions: [
+                { id: "q_c3_1_5_1", label: "(1) H-Cl", type: "multiple_choice", options: ["共有結合 (Δχ = 1.0)", "イオン結合 (Δχ = 1.0)"], correctAnswer: "共有結合 (Δχ = 1.0)", correctAnswerRate: 85 },
+                { id: "q_c3_1_5_2", label: "(2) Na-Cl", type: "multiple_choice", options: ["共有結合 (Δχ = 2.3)", "イオン結合 (Δχ = 2.3)"], correctAnswer: "イオン結合 (Δχ = 2.3)", correctAnswerRate: 85 },
+                { id: "q_c3_1_5_3", label: "(3) C-O", type: "multiple_choice", options: ["共有結合 (Δχ = 0.8)", "イオン結合 (Δχ = 0.8)"], correctAnswer: "共有結合 (Δχ = 0.8)", correctAnswerRate: 85 },
+                { id: "q_c3_1_5_4", label: "(4) Mg-O", type: "multiple_choice", options: ["共有結合 (Δχ = 2.1)", "イオン結合 (Δχ = 2.1)"], correctAnswer: "イオン結合 (Δχ = 2.1)", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) H-Cl：Δχ = |2.2 − 3.2| = 1.0 → 1.7未満のため 共有結合（極性を強く帯びる極性共有結合）。\n(2) Na-Cl：Δχ = |0.9 − 3.2| = 2.3 → 1.7以上のため イオン結合。\n(3) C-O：Δχ = |2.6 − 3.4| = 0.8 → 1.7未満のため 共有結合。\n(4) Mg-O：Δχ = |1.3 − 3.4| = 2.1 → 1.7以上のため イオン結合。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_1_6",
+              category: "化学結合の種類と特徴 (問6)",
+              text: "【問6】 （共通テスト風応用）次の物質中の結合のうち、すべての結合が同じ種類でない（複数種類の結合を含む）ものを1つ選べ。\n\n① H₂\n② CH₄\n③ NaCl\n④ NH₄Cl\n⑤ CO₂",
+              subQuestions: [
+                { id: "q_c3_1_6_ans", label: "複数種類の結合を含むもの", type: "multiple_choice", options: ["①", "②", "③", "④", "⑤"], correctAnswer: "④", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n答：④\n\n- ① H₂ : 全て「共有結合（単結合）」のみで構成されます。\n- ② CH₄ : 全て「共有結合（単結合）」のみで構成されます。\n- ③ NaCl : 「イオン結合」のみで構成されます。\n- ④ NH₄Cl : NH₄⁺（アンモニウムイオン）内部に窒素-水素間の「共有結合」と、それに加えて「配位結合」が存在します。さらに、NH₄⁺ という陽イオンと Cl⁻（塩化物イオン）という陰イオンとの間は「イオン結合」で結合しています。したがって、3種類もの異なる結合を同時に含んでおり、すべての結合が同じ種類ではありません。\n- ⑤ CO₂ : 全て炭素-酸素間の「共有結合（二重結合）」のみで構成されます。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_1_7",
+              category: "化学結合の種類と特徴 (問7)",
+              text: "【問7】 （共通テスト風応用）次の説明のうち、誤っているものをすべて選べ。\n\nア：イオン結合は陽イオンと陰イオンの静電気的引力による結合である。\nイ：共有結合は金属原子と非金属原子の間で生じる。\nウ：金属結合では、自由電子が金属原子の間を自由に動き回る。\nエ：配位結合は、結合のでき方は他の共有結合と異なるが、できあがった結合の性質は同じである。\nオ：水分子中の O-H 結合はイオン結合である。",
+              subQuestions: [
+                { id: "q_c3_1_7_ans", label: "誤っているものの組合せ", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ", "オ"], correctAnswer: "イ,オ", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n答：イ,オ（イとオが誤り）\n\n- ア：正しい。イオン結合は、クーロン力（電気的な引っ張り合い）のみによる結合です。\n- イ：誤り。共有結合は、一般に非金属原子どうしが価電子を共有することで結合します。金属と非金属の組み合わせはイオン結合を形成します。\n- ウ：正しい。自由電子が結晶全体を動き回ることで、熱・電気伝導性などの優れた特性が付与されます。\n- エ：正しい。できあがりの性質（長さ、強さなど）は通常の共有結合と完全に等価で区別できません。\n- オ：誤り。水分子 H₂O の O-H 結合は、非金属同士の「極性共有結合（共有結合）」です。電気陰性度の差はありますが、1.7未満（Δχ = 1.2）であるため共有結合に分類されます。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ],
           miniTest: []
         },
         {
@@ -2729,4 +2919,162 @@ export const ionSizeTreeData: NodeData = {
     }
   ]
 };
+
+export const chemicalBondTreeData: NodeData = {
+  id: 'chemical_bond_root',
+  label: '化学結合',
+  step: null,
+  explanation: '原子どうしを結びつけて物質を作る基本的な化学結合について整理しましょう。',
+  children: [
+    {
+      id: 'step1_bond_types',
+      isGroup: true,
+      label: '【Step1：結合の種類】',
+      step: 1,
+      children: [
+        {
+          id: 'ionic_bond',
+          label: 'イオン結合',
+          step: 1,
+          subLabel: '金属 ＋ 非金属',
+          explanation: '陽イオン（通常は金属元素）と陰イオン（通常は非金属元素）の方向性のない静電気力（クーロン力）に基づく結合。\n例：NaCl, MgO, CaCl₂ など。',
+          relatedQuestions: [
+            { id: "q_c3_1_1_a", label: "問1(ア) 静電気" },
+            { id: "q_c3_1_1_i", label: "問1(イ) イオン" },
+            { id: "q_c3_1_1_u", label: "問1(ウ) 金属" },
+            { id: "q_c3_1_1_e", label: "問1(エ) 非金属" },
+            { id: "q_c3_1_2_1", label: "問2(1) NaCl" },
+            { id: "q_c3_1_2_6", label: "問2(6) MgO" },
+            { id: "q_c3_1_2_10", label: "問2(10) CaCl₂" },
+            { id: "q_c3_1_5_2", label: "問5(2) Na-Cl" },
+            { id: "q_c3_1_5_4", label: "問5(4) Mg-O" },
+            { id: "q_c3_1_7_ans", label: "問7 ア" }
+          ]
+        },
+        {
+          id: 'covalent_bond',
+          label: '共有結合',
+          step: 1,
+          subLabel: '非金属 ＋ 非金属',
+          explanation: '非金属原子同士が、お互いに価電子を出し合って電子対（共有電子対）を共有することで、希ガスと同様の安定な電子配置に達する結合。\n例：H₂O, NH₃, CO₂, HCl など。',
+          relatedQuestions: [
+            { id: "q_c3_1_1_o", label: "問1(オ) 共有" },
+            { id: "q_c3_1_1_ka", label: "問1(カ) 非金属" },
+            { id: "q_c3_1_2_2", label: "問2(2) H₂O" },
+            { id: "q_c3_1_2_5", label: "問2(5) CO₂" },
+            { id: "q_c3_1_2_8", label: "問2(8) HCl" },
+            { id: "q_c3_1_2_9", label: "問2(9) NH₃" },
+            { id: "q_c3_1_3_3", label: "問3(3) 共有・非共有電子対" },
+            { id: "q_c3_1_5_1", label: "問5(1) H-Cl" },
+            { id: "q_c3_1_5_3", label: "問5(3) C-O" },
+            { id: "q_c3_1_7_ans", label: "問7 イ、オ" }
+          ]
+        },
+        {
+          id: 'metallic_bond',
+          label: '金属結合',
+          step: 1,
+          subLabel: '金属 ＋ 金属',
+          explanation: '金属原子がそれぞれ価電子を放出して結晶全体で共有し、生じた「自由電子」がすべての金属原子の間を自由に動き回り、引きつける力（静電気的）で強く結びつく結合。\n例：Fe, Cu など。',
+          relatedQuestions: [
+            { id: "q_c3_1_1_ke", label: "問1(ケ) 自由" },
+            { id: "q_c3_1_1_ko", label: "問1(コ) 金属" },
+            { id: "q_c3_1_2_4", label: "問2(4) Fe" },
+            { id: "q_c3_1_2_7", label: "問2(7) Cu" },
+            { id: "q_c3_1_7_ans", label: "問7 ウ" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step2_notation',
+      isGroup: true,
+      label: '【Step2：共有結合の表記】',
+      step: 2,
+      children: [
+        {
+          id: 'electron_formula',
+          label: '電子式',
+          step: 2,
+          subLabel: '価電子をドットで表記',
+          explanation: '最外殻の価電子を元素記号の周囲に「・」（ドット）で表現した化学式。\n・不対電子：ペアになっておらず、他の不対電子と共有結合を作る電子。\n・共有電子対：2つの原子間で共有されている電子対（1組の共有結合に1対寄与）。\n・非共有電子対（孤立電子対）：共有していない電子ペア（孤立電子対）。',
+          relatedQuestions: [
+            { id: "q_c3_1_1_se", label: "問1(セ) 非共有" },
+            { id: "q_c3_1_3_3", label: "問3(3) 共有・非共有電子対" }
+          ]
+        },
+        {
+          id: 'structural_formula',
+          label: '構造式',
+          step: 2,
+          subLabel: '価標（線）で結合表記',
+          explanation: '共有電子対を 線（価標）で表す。\n・単結合：線1本（例：H-H, HCl）\n・二重結合：線2本（例：O=O, CO₂）\n・三重結合：線3本（例：N≡N）',
+          relatedQuestions: [
+            { id: "q_c3_1_1_sa", label: "問1(サ) 単" },
+            { id: "q_c3_1_1_shi", label: "問1(シ) 二重" },
+            { id: "q_c3_1_1_su", label: "問1(ス) 三重" },
+            { id: "q_c3_1_3_1", label: "問3(1) 単・二・三重結合" }
+          ]
+        },
+        {
+          id: 'coordinate_bond',
+          label: '配位結合',
+          step: 2,
+          subLabel: '片方が電子対を提供',
+          explanation: '一方の原子だけが非共有電子対を提供し、もう一方（多くは H⁺）と共有する特異な結合。形成した後は通常の共有結合と全く区別できず性質は等価である。\n例：NH₄⁺, H₃O⁺ など。',
+          relatedQuestions: [
+            { id: "q_c3_1_1_ki", label: "問1(キ) 非共有電子" },
+            { id: "q_c3_1_1_ku", label: "問1(ク) 配位" },
+            { id: "q_c3_1_2_3", label: "問2(3) NH₄Cl" },
+            { id: "q_c3_1_3_2", label: "問3(2) 配位結合の性質の違い" },
+            { id: "q_c3_1_4_ans", label: "問4 供与体" },
+            { id: "q_c3_1_6_ans", label: "問6 全て同一でない結合" },
+            { id: "q_c3_1_7_ans", label: "問7 エ" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step3_molecular_shapes',
+      isGroup: true,
+      label: '【Step3：分子の形】',
+      step: 3,
+      children: [
+        {
+          id: 'linear_shape',
+          label: '直線形',
+          step: 3,
+          subLabel: 'CO2など',
+          explanation: '中心原子の周りに電子対や多重結合が反対の方向に配置されるため、一直線（180度）となる形状。\n例：CO₂',
+          relatedQuestions: []
+        },
+        {
+          id: 'bent_shape',
+          label: '折れ線形',
+          step: 3,
+          subLabel: 'H2O, H2S',
+          explanation: '中心原子の非共有電子対の強い電気的反発により、共有結合部分が押し曲げられて折れ曲がった形。\n例：H₂O, H₂S',
+          relatedQuestions: []
+        },
+        {
+          id: 'trigonal_pyramid',
+          label: '三角錐形',
+          step: 3,
+          subLabel: 'NH3',
+          explanation: '中心原子（Nなど）の非共有電子対が1つあり、これが3本の単結合を押し下げることでピラミッド型（三角錐）になった形。\n例：NH₃',
+          relatedQuestions: []
+        },
+        {
+          id: 'tetrahedral_shape',
+          label: '正四面体形',
+          step: 3,
+          subLabel: 'CH4, CCl4',
+          explanation: '中心原子から等距離かつ等しい角度（約109.5度）で対称に4本の結合が伸びた完全に対称的な立体形。\n例：CH₄, CCl₄, NH₄⁺',
+          relatedQuestions: []
+        }
+      ]
+    }
+  ]
+};
+
 

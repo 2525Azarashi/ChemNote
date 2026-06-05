@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Monitor, Smartphone, Volume2, VolumeX, Home as HomeIcon, BookOpen, User } from 'lucide-react';
+import { Monitor, Smartphone, Volume2, VolumeX, Home as HomeIcon, BookOpen, User, Settings } from 'lucide-react';
 import { Home } from './components/Home';
 import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
@@ -26,37 +26,11 @@ import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { MobileViewWrapper } from './components/MobileViewWrapper';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 export default function App() {
   useGlobalClickSound();
-
-  // Prevent iOS pinch zoom and double tap zoom
-  useEffect(() => {
-    const handleTouchMove = (e: TouchEvent) => {
-      if (e.touches.length > 1) {
-        e.preventDefault();
-      }
-    };
-    
-    let lastTouchEnd = 0;
-    const handleTouchEnd = (e: TouchEvent) => {
-      const now = (new Date()).getTime();
-      if (now - lastTouchEnd <= 300) {
-        e.preventDefault();
-      }
-      lastTouchEnd = now;
-    };
-
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd, { passive: false });
-
-    return () => {
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, []);
 
   const [appState, setAppState] = useState<AppState>(() => (localStorage.getItem('savedAppState') as AppState) || 'onboarding');
   const [appMode, setAppMode] = useState<AppMode>(() => (localStorage.getItem('savedAppMode') as AppMode) || 'practice');
@@ -74,7 +48,39 @@ export default function App() {
   const [isMobilePreview, setIsMobilePreview] = useState(false);
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('savedIsGuest') === 'true');
   const [isExplanationView, setIsExplanationView] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [prevAppState, setPrevAppState] = useState<AppState>('home');
+
+  // Prevent iOS pinch zoom and double tap zoom, EXCEPT on the answers/explanations pages
+  useEffect(() => {
+    const handleTouchMove = (e: TouchEvent) => {
+      if (appState === 'explanation' || isExplanationView) {
+        return; // Allow zooming
+      }
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    };
+    
+    let lastTouchEnd = 0;
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (appState === 'explanation' || isExplanationView) {
+        return; // Allow zooming
+      }
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    };
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [appState, isExplanationView]);
 
   const [lastLearnState, setLastLearnState] = useState<AppState>(() => (localStorage.getItem('savedLastLearnState') as AppState) || 'mode_selection');
 
@@ -312,27 +318,13 @@ export default function App() {
         <div className={`min-h-screen w-full flex justify-center pt-6 pb-24 md:py-12 px-4 md:px-8 md:pb-28 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
           <audio 
             ref={audioRef} 
-            src="/cobblestone_dreams.mp3" 
+            src="https://docs.google.com/uc?export=download&id=1o0u_KMpYXGc92gIkjArfI7lc-nVkJEXn" 
             loop 
             preload="auto" 
             crossOrigin="anonymous"
             onError={handleAudioError}
           />
           
-          {/* BGM Toggle Button */}
-          <button 
-            onClick={() => setIsBgmEnabled(!isBgmEnabled)}
-            className="fixed bottom-28 left-4 z-50 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-gray-200 text-gray-600 hover:text-[#2C3E50] transition-colors"
-            title={isBgmEnabled ? "BGMをオフにする" : "BGMをオンにする"}
-          >
-            {isBgmEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
-          </button>
-
-          {/* Auth Button */}
-          <div className="absolute top-4 right-4 z-50">
-            <AuthButton />
-          </div>
-
           {/* Mobile Toggle Button (For actual mobile devices) */}
           {isMobileDevice && (
             <div className="fixed bottom-28 right-4 z-[9999]">
@@ -347,7 +339,7 @@ export default function App() {
           )}
 
           <div className="w-full max-w-5xl relative">
-            <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
+            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} />}
 
             {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
             {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} isGuest={isGuest} />}
@@ -396,11 +388,16 @@ export default function App() {
                 </button>
 
                 <button 
-                  onClick={() => setIsProfileOpen(true)}
-                  className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${isProfileOpen ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  onClick={() => {
+                    if (appState !== 'settings') {
+                      setPrevAppState(appState);
+                    }
+                    setAppState('settings');
+                  }}
+                  className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
-                  <User className="w-5 h-5 stroke-[2.2]" />
-                  <span className="text-[10px] tracking-wider font-modern">Profile</span>
+                  <Settings className="w-5 h-5 stroke-[2.2]" />
+                  <span className="text-[10px] tracking-wider font-modern">Settings</span>
                 </button>
               </div>
             )}
