@@ -301,13 +301,19 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                           <button
                             key={opt}
                             onClick={() => {
-                              const current = (answers[sq.id] || '').split(',').filter(Boolean);
-                              const next = isSelected 
-                                ? current.filter(a => a !== opt)
-                                : [...current, opt];
+                              const isMultiple = sq.correctAnswer && sq.correctAnswer.includes(",");
+                              let next: string[];
+                              if (isMultiple) {
+                                const current = (answers[sq.id] || '').split(',').filter(Boolean);
+                                next = isSelected 
+                                  ? current.filter(a => a !== opt)
+                                  : [...current, opt];
+                              } else {
+                                next = isSelected ? [] : [opt];
+                              }
                               handleOptionSelect(sq.id, next.join(','));
                             }}
-                            className={`px-3 py-2 md:px-5 md:py-2 rounded-full font-bold text-sm transition-all duration-200 border-2 flex items-center justify-center flex-1 sm:flex-none min-w-[3rem] shadow-sm
+                            className={`px-3 py-2 md:px-5 md:py-2 rounded-full font-bold text-sm transition-all duration-200 border-2 flex items-center justify-center flex-1 sm:flex-none min-w-[3rem] shadow-sm cursor-pointer
                               ${isSelected 
                                 ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30 scale-[1.02]' 
                                 : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
@@ -317,6 +323,79 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                           </button>
                         );
                       })}
+                    </div>
+                  ) : sq.type === 'sorting' ? (
+                    <div className="flex-grow flex flex-col gap-3 w-full">
+                      {/* Selected sequence area with breadcrumbs styled layout */}
+                      <div className="flex flex-wrap items-center gap-1.5 p-3 min-h-[46px] bg-[#A9CCE3]/5 border-2 border-dashed border-[#A9CCE3]/30 rounded-xl">
+                        {(answers[sq.id] ? answers[sq.id].split(' > ') : []).length === 0 ? (
+                          <span className="text-gray-400 text-xs md:text-sm italic pl-1">元素をタップして大きい順に並べてください</span>
+                        ) : (
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {(answers[sq.id] ? answers[sq.id].split(' > ') : []).map((item: string, idx: number) => (
+                              <React.Fragment key={idx}>
+                                {idx > 0 && <span className="text-gray-400 font-extrabold text-xs">&gt;</span>}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const current = answers[sq.id] ? answers[sq.id].split(' > ') : [];
+                                    const next = current.filter((_, i) => i !== idx);
+                                    handleOptionSelect(sq.id, next.join(' > '));
+                                  }}
+                                  className="px-3 py-1.5 bg-[#A9CCE3] text-white font-bold text-xs rounded-lg shadow-sm hover:bg-[#8eb8d6] transition-colors flex items-center gap-1.5 cursor-pointer"
+                                >
+                                  {formatText(item)}
+                                  <span className="text-[10px] font-normal leading-none bg-white/25 px-1 rounded-sm">×</span>
+                                </button>
+                              </React.Fragment>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Remaining available item pool and clear buttons */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                        <div className="flex flex-wrap gap-2">
+                          {(sq.items || []).map((item: string) => {
+                            const selectedItems = answers[sq.id] ? answers[sq.id].split(' > ') : [];
+                            const isSelected = selectedItems.includes(item);
+                            return (
+                              <button
+                                key={item}
+                                type="button"
+                                disabled={isSelected}
+                                onClick={() => {
+                                  const current = answers[sq.id] ? answers[sq.id].split(' > ') : [];
+                                  if (!current.includes(item)) {
+                                    const next = [...current, item];
+                                    handleOptionSelect(sq.id, next.join(' > '));
+                                  }
+                                }}
+                                className={`px-4 py-2 font-bold text-sm rounded-xl border transition-all shadow-sm cursor-pointer
+                                  ${isSelected 
+                                    ? 'bg-gray-100/70 text-gray-300 border-gray-100 cursor-not-allowed scale-95' 
+                                    : 'bg-white text-gray-700 border-gray-200 hover:border-[#A9CCE3] hover:text-[#5dade2] hover:scale-[1.03] active:scale-95'
+                                  }`}
+                              >
+                                {formatText(item)}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Reset control */}
+                        {(answers[sq.id] || '') !== '' && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleOptionSelect(sq.id, '');
+                            }}
+                            className="text-xs text-red-400 hover:text-red-500 transition-colors font-medium hover:underline py-1 px-2 hover:bg-red-50 rounded-lg cursor-pointer shrink-0"
+                          >
+                            やり直す
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ) : sq.type === 'descriptive' ? (
                     <div className="flex-1 relative w-full">

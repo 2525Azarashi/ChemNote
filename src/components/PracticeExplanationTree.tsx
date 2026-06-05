@@ -1,6 +1,6 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
-import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData } from '../data/chemistryData';
+import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData } from '../data/chemistryData';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -32,6 +32,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   const isAtomicStructureChapter = chapter?.id === 'c2_1';
   const isIonChapter = chapter?.id === 'c2_2';
   const isIonGenerationChapter = chapter?.id === 'c2_3';
+  const isIonSizeChapter = chapter?.id === 'c2_4';
   
   let currentTreeData = substanceTreeData;
   if (isSeparationChapter) currentTreeData = separationTreeData;
@@ -39,6 +40,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   if (isAtomicStructureChapter) currentTreeData = atomicStructureTreeData;
   if (isIonChapter) currentTreeData = ionTreeData;
   if (isIonGenerationChapter) currentTreeData = ionGenerationTreeData;
+  if (isIonSizeChapter) currentTreeData = ionSizeTreeData;
 
   const renderContent = (nodeId: string) => {
     const matchedSqs: { sq: any, parentQuestion: any }[] = [];
@@ -105,12 +107,13 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   return (
     <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-gray-200 w-full bg-white">
       <div className="flex flex-col w-full gap-4">
-        <h3 className={`text-lg font-bold mb-2 font-handwriting ${isThermalMotionChapter ? 'text-amber-700 text-xl' : isAtomicStructureChapter ? 'text-emerald-700 text-xl' : isIonGenerationChapter ? 'text-indigo-700 text-xl' : 'text-[#2C3E50]'}`}>
+        <h3 className={`text-lg font-bold mb-2 font-handwriting ${isThermalMotionChapter ? 'text-amber-700 text-xl' : isAtomicStructureChapter ? 'text-emerald-700 text-xl' : isIonSizeChapter ? 'text-emerald-700 text-xl' : isIonGenerationChapter ? 'text-indigo-700 text-xl' : 'text-[#2C3E50]'}`}>
           {isThermalMotionChapter ? '重要事項③ 〜粒子の熱運動と物質の三態〜' : 
            isSeparationChapter ? '分離と精製のフローチャート' : 
            isAtomicStructureChapter ? '原子の構造・電子配置・周期表のフローチャート' :
            isIonChapter ? 'イオンの分類と安定性のフローチャート' :
            isIonGenerationChapter ? 'イオン生成とエネルギーのフローチャート' :
+           isIonSizeChapter ? '重要事項④ 〜原子の大きさとイオンの大きさ〜' :
            '学習フローチャート'}
         </h3>
         <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-2 sm:p-5 overflow-x-auto">

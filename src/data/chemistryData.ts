@@ -1566,12 +1566,12 @@ export const chemistryData = {
             {
               id: "q_c2_3_2",
               category: "イオン生成とエネルギー (問2)",
-              text: "【問2】 （基礎）次の元素を、第1イオン化エネルギーの大きい順に並べ替えよ。\n※半角の記号 > を用いて「A > B > C」のように並べ替えてください。",
+              text: "【問2】 （基礎）次の元素を、第1イオン化エネルギーの大きい順に並べ替えよ。\n※下の元素カードをクリックして、大きい順に選択してください。",
               subQuestions: [
-                { id: "q_c2_3_2_1", label: "(1) Na, K, Li", type: "short_answer", correctAnswer: "Li > Na > K", correctAnswerRate: 85 },
-                { id: "q_c2_3_2_2", label: "(2) Li, C, F, Ne", type: "short_answer", correctAnswer: "Ne > F > C > Li", correctAnswerRate: 85 },
-                { id: "q_c2_3_2_3", label: "(3) Na, Mg, Al", type: "short_answer", correctAnswer: "Mg > Al > Na", correctAnswerRate: 85 },
-                { id: "q_c2_3_2_4", label: "(4) F, Cl, Br, I", type: "short_answer", correctAnswer: "F > Cl > Br > I", correctAnswerRate: 85 }
+                { id: "q_c2_3_2_1", label: "(1) Na, K, Li", type: "sorting", items: ["Na", "K", "Li"], correctAnswer: "Li > Na > K", correctAnswerRate: 85 },
+                { id: "q_c2_3_2_2", label: "(2) Li, C, F, Ne", type: "sorting", items: ["Li", "C", "F", "Ne"], correctAnswer: "Ne > F > C > Li", correctAnswerRate: 85 },
+                { id: "q_c2_3_2_3", label: "(3) Na, Mg, Al", type: "sorting", items: ["Na", "Mg", "Al"], correctAnswer: "Mg > Al > Na", correctAnswerRate: 85 },
+                { id: "q_c2_3_2_4", label: "(4) F, Cl, Br, I", type: "sorting", items: ["F", "Cl", "Br", "I"], correctAnswer: "F > Cl > Br > I", correctAnswerRate: 85 }
               ],
               explanation: "▼ 解答・解説\n(1) Li > Na > K  （同族では原子番号大ほど小：電子殻が外側に広がる）\n(2) Ne > F > C > Li （同周期では原子番号大ほど大、貴ガス最大）\n(3) Mg > Al > Na  （Mg は閉殻型 M2 で安定、Al はM3 で1 個多いがNa よりは大）\n(4) F > Cl > Br > I （同族 ハロゲンも原子番号大ほど小）",
               surroundingKnowledge: [],
@@ -1584,10 +1584,10 @@ export const chemistryData = {
               subQuestions: [
                 { id: "q_c2_3_3_1", label: "(1) 極大点（ピーク）にある元素群を答えよ。", type: "short_answer", correctAnswer: "貴ガス", correctAnswerRate: 85 },
                 { id: "q_c2_3_3_2", label: "(2) 極小点（谷）にある元素群を答えよ。", type: "short_answer", correctAnswer: "アルカリ金属", correctAnswerRate: 85 },
-                { id: "q_c2_3_3_3", label: "(3) 同じ周期内で、原子番号が増加すると第1イオン化エネルギーはどのように変化するか。", type: "descriptive", correctAnswer: "おおむね増加する（原子核の正電荷が強まり電子を強く引きつけるため）。ただし所々で凹凸あり。", correctAnswerRate: 85 },
-                { id: "q_c2_3_3_4", label: "(4) Be（4）→ B（5）でわずかに減少している。理由を簡潔に説明せよ。", type: "descriptive", correctAnswer: "Be は K2 L2（s²閉殻）で安定、B は K2 L3 で 1 個外側の電子を持つため、Be より少しのエネルギーで電子が奪える。", correctAnswerRate: 85 }
+                { id: "q_c2_3_3_3", label: "(3) 同じ周期内で、原子番号が増加すると第1イオン化エネルギーはどのように変化するか。", type: "descriptive", correctAnswer: "おおむね増加する（原子核の正電荷が強まり電子を強く引きつけるため）。ただし所々で凹凸あり。", gradingCriteria: ["「おおむね増加する」という傾向", "「原子核の電荷（陽子数）が強まり電子を強く引きつける」理由", "「周期の途中で例外的に凹凸（減少）する箇所がある」記述"], correctAnswerRate: 85 },
+                { id: "q_c2_3_3_4", label: "(4) Be（4）→ B（5）でわずかに減少している。理由を簡潔に説明せよ。", type: "descriptive", correctAnswer: "Be は K2 L2（s²閉殻）で安定、B は K2 L3 で 1 個外側の電子を持つため、Be より少しのエネルギーで電子が奪える。", gradingCriteria: ["「Beの電子殻または電子軌道（s面）が閉じた閉殻に近く安定」という言及", "「Bの電子は1個がさらに外側（p軌道）に入るため、核から離れて奪いやすい」", "「Beより少ないエネルギーで済む」"], correctAnswerRate: 85 }
               ],
-              explanation: "▼ 解答・解説\n(1) 貴ガス（He, Ne, Ar）。 閉殻で電子配置が安定しており電子を奪うのに大きなエネルギーが必要。\n(2) アルカリ金属（Li, Na, K）。 価電子1個を放出して貴ガス型になりやすく、奪いやすい。\n(3) おおむね増加する（原子核の正電荷が強まり電子を強く引きつけるため）。ただし所々で凹凸あり。\n(4) Be は K2 L2（s²閉殻）で安定、B は K2 L3 で 1 個外側の電子を持つため、Be より少しのエネルギーで電子が奪える。",
+              explanation: "▼ 解答・解説\n(1) 貴ガス（He, Ne, Ar）。 閉殻で電子配置が安定しており電子を奪うのに大きなエネルギーが必要。\n(2) アルカリ金属（Li, Na, K）。 価電子1個を放出して貴ガス型になりやすく、奪いやすい。\n(3) おおむね増加する（原子核 of 正電荷が強まり電子を強く引きつけるため）。ただし所々で凹凸あり。\n(4) Be は K2 L2（s²閉殻）で安定、B は K2 L3 で 1 個外側の電子を持つため、Be より少しのエネルギーで電子が奪える。",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
@@ -1597,8 +1597,8 @@ export const chemistryData = {
               text: "【問4】 （標準）次の問いに答えよ。",
               subQuestions: [
                 { id: "q_c2_3_4_1", label: "(1) 電子親和力が最大の元素は何か。 ※元素記号または名称", type: "short_answer", correctAnswer: "Cl", correctAnswerRate: 85 },
-                { id: "q_c2_3_4_2", label: "(2) アルカリ金属が水と激しく反応するのは、なぜか。", type: "descriptive", correctAnswer: "アルカリ金属は第1イオン化エネルギーが特に小さく、価電子1個を容易に放出して陽イオンとなり、水との反応で水素を発生する。", correctAnswerRate: 85 },
-                { id: "q_c2_3_4_3", label: "(3) 貴ガス（希ガス）が化学的に安定な理由を電子配置の観点から述べよ。", type: "descriptive", correctAnswer: "貴ガスは最外殻電子が 2（He）または 8（Ne, Ar, …）の閉殻構造で電子配置が極めて安定しており、電子を授受しにくいため。", correctAnswerRate: 85 }
+                { id: "q_c2_3_4_2", label: "(2) アルカリ金属が水と激しく反応するのは、なぜか。", type: "descriptive", correctAnswer: "アルカリ金属は第1イオン化エネルギーが特に小さく、価電子1個を容易に放出して陽イオンとなり、水との反応で水素を発生する。", gradingCriteria: ["「第1イオン化エネルギーが極めて小さい/特に小さい」", "「価電子1個を容易に放出して陽イオンになりやすい」", "「水と反応して水素を生成する」"], correctAnswerRate: 85 },
+                { id: "q_c2_3_4_3", label: "(3) 貴ガス（希ガス）が化学的に安定な理由を電子配置の観点から述べよ。", type: "descriptive", correctAnswer: "貴ガスは最外殻電子が 2（He）または 8（Ne, Ar, …）の閉殻構造で電子配置が極めて安定しており、電子を授受しにくいため。", gradingCriteria: ["「閉殻構造」または「最外殻電子数が2 or 8」であること", "「最も外側の電子配置が極めて安定している」", "「電子を新しく受け入れたり他から奪う必要がない（電子を授受しにくい）」"], correctAnswerRate: 85 }
               ],
               explanation: "▼ 解答・解説\n(1) Cl（塩素）。F は原子半径が小さく入った電子間の反発が大きいため Cl の方が大きい。\n(2) アルカリ金属は第1イオン化エネルギーが特に小さく、価電子1個を容易に放出して陽イオンとなり、水との反応で水素を発生する。\n(3) 貴ガスは最外殻電子が 2（He）または 8（Ne, Ar, …）の閉殻構造で電子配置が極めて安定しており、電子を授受しにくいため。",
               surroundingKnowledge: [],
@@ -1645,7 +1645,103 @@ export const chemistryData = {
           id: "c2_4",
           abstractTitle: "④ 原子の大きさとイオンの大きさ",
           realTitle: "2章 物質の構成粒子",
-          topics: [],
+          topics: ["原子半径の傾向", "同族での変化", "同周期での変化", "陽イオン・陰イオンの半径", "等電子配置イオンの半径", "周期表の傾向性"],
+          practiceProblems: [
+            {
+              id: "q_c2_4_1",
+              category: "原子の大きさとイオンの大きさ (問1)",
+              text: "【問1】 次の文章の空欄（ア）〜（コ）に適する語句を答えよ。（語句網羅）\n\n原子の大きさ（原子半径）には次の傾向がある。(i) 同じ族（縦の列）では、原子番号が大きいほど電子殻が（ア）に増えるので原子半径は（イ：大きく／小さく）なる。(ii) 同じ周期（横の行）では、原子番号が大きいほど（ウ）の数が増えて電子を強く（エ）ため、原子半径は（オ：大きく／小さく）なる。陽イオンは、もとの原子から電子を失って一番外側の（カ）が1つなくなるので、もとの原子より半径が（キ：大きく／小さく）なる。陰イオンは、もとの原子に電子が加わって電子間の（ク）が大きくなるので、もとの原子より半径が（ケ：大きく／小さく）なる。等電子配置のイオンどうしを比べると、原子番号（陽子数）が（コ：大きい／小さい）ほどイオン半径は小さい。",
+              subQuestions: [
+                { id: "q_c2_4_1_a", label: "（ア）", type: "short_answer", correctAnswer: "外側", correctAnswerRate: 85 },
+                { id: "q_c2_4_1_i", label: "（イ） ※「大きく」または「小さく」", type: "short_answer", correctAnswer: "大きく", correctAnswerRate: 85 },
+                { id: "q_c2_4_1_u", label: "（ウ）", type: "short_answer", correctAnswer: "陽子", correctAnswerRate: 85 },
+                { id: "q_c2_4_1_e", label: "（エ）", type: "short_answer", correctAnswer: "引きつける", correctAnswerRate: 85 },
+                { id: "q_c2_4_1_o", label: "（オ） ※「大きく」または「小さく」", type: "short_answer", correctAnswer: "小さく", correctAnswerRate: 85 },
+                { id: "q_c2_4_1_ka", label: "（カ）", type: "short_answer", correctAnswer: "電子殻", correctAnswerRate: 85 },
+                { id: "q_c2_4_1_ki", label: "（キ） ※「大きく」または「小さく」", type: "short_answer", correctAnswer: "小さく", correctAnswerRate: 85 },
+                { id: "q_c2_4_1_ku", label: "（ク）", type: "short_answer", correctAnswer: "反発", correctAnswerRate: 85 },
+                { id: "q_c2_4_1_ke", label: "（ケ） ※「大きく」または「小さく」", type: "short_answer", correctAnswer: "大きく", correctAnswerRate: 85 },
+                { id: "q_c2_4_1_ko", label: "（コ） ※「大きい」または「小さい」", type: "short_answer", correctAnswer: "大きい", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n（ア）外側 （イ）大きく （ウ）陽子（または原子核の電荷） （エ）引きつける\n（オ）小さく （カ）電子殻 （キ）小さく （ク）反発（クーロン反発） （ケ）大きく\n（コ）大きい\n\n■ (i) 同族では原子番号が大きいほど最も外側の電子殻が増えるため大きくなる。\n■ (ii) 同周期では最外殻は同じだが、原子番号が大きくなるほど陽子数（核の正電荷）が増え、より強く電子を引きつけるために小さくなる。\n■ 陽イオンになると、最外殻電子を失い、最外殻そのものが1つ減るため、非常に小さくなる。\n■ 陰イオンになると、電子間の反発が増大し、電子雲が広がって大きくなる。\n■ 電子配置が同じ（等電子配置）なら、陽子数（原子番号）が大きいほど電子を強く引きつけるため小さくなる。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_4_2",
+              category: "原子の大きさとイオンの大きさ (問2)",
+              text: "【問2】 （基礎）次の原子・イオンを半径の大きい順に並べよ。\n※下の元素カードをクリックして、大きい順に選択してください。",
+              subQuestions: [
+                { id: "q_c2_4_2_1", label: "(1) Li, Na, K", type: "sorting", items: ["Li", "Na", "K"], correctAnswer: "K > Na > Li", correctAnswerRate: 85 },
+                { id: "q_c2_4_2_2", label: "(2) Na, Mg, Al", type: "sorting", items: ["Na", "Mg", "Al"], correctAnswer: "Na > Mg > Al", correctAnswerRate: 85 },
+                { id: "q_c2_4_2_3", label: "(3) F, Cl, Br", type: "sorting", items: ["F", "Cl", "Br"], correctAnswer: "Br > Cl > F", correctAnswerRate: 85 },
+                { id: "q_c2_4_2_4", label: "(4) O, F, Ne", type: "sorting", items: ["O", "F", "Ne"], correctAnswer: "Ne > F > O", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) K > Na > Li （同族・原子番号大ほど大：電子殻が増えるため）\n(2) Na > Mg > Al （同周期・原子番号大ほど小：陽子数が増え電子を強く引きつけるため）\n(3) Br > Cl > F （同族・原子番号大ほど大）\n(4) Ne > F > O （同周期・原子番号大ほど小。ただし貴ガスの原子半径の定義に注意；本問は他原子と同列のスケール）\n※実際の入試では Ne は単原子分子で『分子半径』を扱う場合と『原子半径』を扱う場合があり、教科書の定義に従う。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_4_3",
+              category: "原子の大きさとイオンの大きさ (問3)",
+              text: "【問3】 （標準）次の各原子・イオンの半径について、大→小の順に並べ替えよ。\n※下の元素カードをクリックして、大きい順に選択してください。",
+              subQuestions: [
+                { id: "q_c2_4_3_1", label: "(1) Na と Na⁺", type: "sorting", items: ["Na", "Na⁺"], correctAnswer: "Na > Na⁺", correctAnswerRate: 85 },
+                { id: "q_c2_4_3_2", label: "(2) Cl と Cl⁻", type: "sorting", items: ["Cl", "Cl⁻"], correctAnswer: "Cl⁻ > Cl", correctAnswerRate: 85 },
+                { id: "q_c2_4_3_3", label: "(3) Mg と Mg²⁺", type: "sorting", items: ["Mg", "Mg²⁺"], correctAnswer: "Mg > Mg²⁺", correctAnswerRate: 85 },
+                { id: "q_c2_4_3_4", label: "(4) O と O²⁻", type: "sorting", items: ["O", "O²⁻"], correctAnswer: "O²⁻ > O", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) Na > Na⁺ （陽イオンはもとの原子より小さくなる：電子殻を1つ失うため）\n(2) Cl⁻ > Cl （陰イオンはもとの原子より大きくなる：電子間の反発が大きくなるため）\n(3) Mg > Mg²⁺\n(4) O²⁻ > O",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_4_4",
+              category: "原子の大きさとイオンの大きさ (問4)",
+              text: "【問4】 （標準）等電子配置のイオン Na⁺, Mg²⁺, Al³⁺, F⁻, O²⁻ について、イオン半径の大きい順に並べよ。\n※下の元素カードをクリックして、大きい順に選択してください。",
+              subQuestions: [
+                { id: "q_c2_4_4_ans", label: "イオン半径の大きい順", type: "sorting", items: ["Na⁺", "Mg²⁺", "Al³⁺", "F⁻", "O²⁻"], correctAnswer: "O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n答：O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺\n\n■ いずれも電子数10（Ne型）。等電子配置では陽子数（原子番号）が大きいほど核が電子を強く引きつけて小さくなる。\n陽子数：O(8) < F(9) < Na(11) < Mg(12) < Al(13).",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_4_5",
+              category: "原子の大きさとイオンの大きさ (問5)",
+              text: "【問5】 （文字式・文章題）電子数 N が等しいイオン・原子のうち、陽子数を p とする。クーロン引力で電子を核に引きつける強さは概ね p に比例し、その結果イオン半径 r は p の増加とともに減少する。同じ N=10 の系列 X^q（X は原子番号 p の元素、電荷 q = p − 10）について、p = 8, 9, 11, 12, 13 のときのイオン種をすべて書け。\n※半角アルファベット・数字、および上付き文字を模擬して「O2-, F-, Na+, Mg2+, Al3+」のようにコンマ「,」で区切って答えてください。",
+              subQuestions: [
+                { id: "q_c2_4_5_ans", label: "p=8, 9, 11, 12, 13 のイオン種（※左から順に並べてください）", type: "short_answer", correctAnswer: "O2-, F-, Na+, Mg2+, Al3+", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n- p=8, q=−2 → O²⁻\n- p=9, q=−1 → F⁻\n- p=10, q=0 → Ne（原子）\n- p=11, q=+1 → Na⁺\n- p=12, q=+2 → Mg²⁺\n- p=13, q=+3 → Al³⁺\n\n■ p増加とともに半径は単調減少 → 大小関係 O²⁻ > F⁻ > Ne > Na⁺ > Mg²⁺ > Al³⁺.",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_4_6",
+              category: "原子の大きさとイオンの大きさ (問6)",
+              text: "【問6】 （共通テスト風応用）次の問いに答えよ。",
+              subQuestions: [
+                { id: "q_c2_4_6_1", label: "(1) 周期表で原子半径の最大値はどのあたりにあるか（位置）。", type: "descriptive", correctAnswer: "周期表の左下（第6・7周期の1族、Csなど）が最大。", gradingCriteria: ["「左下」または「最も左・下」", "「1族」または「アルカリ金属」", "「Cs」または「セシウム」"], correctAnswerRate: 85 },
+                { id: "q_c2_4_6_2", label: "(2) 同じ電子配置のイオンを比較したとき、陽イオンと陰イオンとでは、どちらが半径が大きいか。理由とともに答えよ。", type: "descriptive", correctAnswer: "陰イオン。陽子数が少ない元素から作られるため、同じ電子数でも電子を引きつける力が弱く半径が大きいため。", gradingCriteria: ["「陰イオン」と明記", "等電子では「陽子数（原子番号）が少ない」ことに言及", "「核の正電荷が弱い」「電子を引きつける力が弱い」"], correctAnswerRate: 85 },
+                { id: "q_c2_4_6_3", label: "(3) Cl⁻ と K⁺ は同じ Ar 型電子配置だが、Cl⁻ の方が大きいか、K⁺ の方が大きいか。", type: "short_answer", correctAnswer: "Cl⁻", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) 周期表の左下（第6・7周期の1族、Csなど）が最大。\n(2) 陰イオン。陽子数が少ない元素から作られるため、同じ電子数でも電子を引きつける力が弱く半径が大きい。\n(3) Cl⁻（陽子数17）の方が K⁺（陽子数19）より大きい。等電子配置では陽子数の少ない方が大きい。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c2_4_7",
+              category: "原子の大きさとイオンの大きさ (問7)",
+              text: "【問7】 （共通テスト風応用）次のうち、原子半径が大きい順に正しく並んでいるものを選べ。\n\n① F > O > N > C \n② Li > Be > B > C \n③ K > Na > Li > H \n④ Mg > Si > P > Cl",
+              subQuestions: [
+                { id: "q_c2_4_7_ans", label: "大から小に正しく並んでいるもの", type: "multiple_choice", options: ["①", "②", "③", "④"], correctAnswer: "③", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n答：③\n\n- ① F < O < N < C（同周期、Cが最大となる傾向）→ 誤り。\n- ② Li > Be > B > C（同周期、左ほど大）→ 正しい。\n- ③ K > Na > Li > H（同族1族、原子番号大ほど大）→ 最も明確に正しい。\n- ④ Mg > Si > P > Cl も、周期表で左にあるものほど原子半径が大きいため、傾向としては正しいが、Mg > Al > Si > P > S > Cl という順序の一部である。\n\n※入試ではより明確な選択肢として「③」が選ばれます。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ],
           miniTest: []
         },
         {
@@ -2530,4 +2626,107 @@ export const ionGenerationTreeData: NodeData = {
       }
     ]
   };
+
+export const ionSizeTreeData: NodeData = {
+  id: 'ion_size_root',
+  label: '原子・イオン半径',
+  step: null,
+  explanation: '原子やイオンの大きさ（半径）は、最外殻の電子にかかる核からの引力や、電子殻の数、電子間の反発などによって決まります。これらの大小関係と周期表での傾向を系統的に整理しましょう。',
+  children: [
+    {
+      id: 'step1_group_ion_size',
+      isGroup: true,
+      label: '【Step1：原子の大きさ】',
+      step: 1,
+      children: [
+        {
+          id: 'same_group_atom_size',
+          label: '同族の傾向',
+          step: 1,
+          subLabel: '原子番号↑で半径↑',
+          explanation: '同じ族（縦の列）では、原子番号が増加するほど**電子殻が増える**ため、原子半径が大きくなる。\n\n例：Na (K²L⁸M¹) > Li (K²L¹)',
+          relatedQuestions: [
+            { id: "q_c2_4_1_a", label: "問1(ア) 外側" },
+            { id: "q_c2_4_1_i", label: "問1(イ) 大きく" },
+            { id: "q_c2_4_2_1", label: "問2(1) Li, Na, K" },
+            { id: "q_c2_4_2_3", label: "問2(3) F, Cl, Br" },
+            { id: "q_c2_4_7_ans", label: "問7 ③ K > Na > Li > H" }
+          ]
+        },
+        {
+          id: 'same_period_atom_size',
+          label: '同周期の傾向',
+          step: 1,
+          subLabel: '原子番号↑で半径↓',
+          explanation: '同じ周期（横の行）では、原子番号が増加するほど**陽子数が増えて電子を引き寄せる力が強くなる**ため、原子半径が小さくなる。\n\n例：K (原子番号19) > Ca (原子番号20)',
+          relatedQuestions: [
+            { id: "q_c2_4_1_u", label: "問1(ウ) 陽子" },
+            { id: "q_c2_4_1_e", label: "問1(エ) 引きつける" },
+            { id: "q_c2_4_1_o", label: "問1(オ) 小さく" },
+            { id: "q_c2_4_2_2", label: "問2(2) Na, Mg, Al" },
+            { id: "q_c2_4_2_4", label: "問2(4) O, F, Ne" },
+            { id: "q_c2_4_6_1", label: "問6(1) 最大位置" },
+            { id: "q_c2_4_7_ans", label: "問7 ② Li > Be > B > C" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step2_group_ion_size',
+      isGroup: true,
+      label: '【Step2：イオンの大きさ】',
+      step: 2,
+      children: [
+        {
+          id: 'cation_size',
+          label: '陽イオンの半径',
+          step: 2,
+          subLabel: '元の原子より小さい',
+          explanation: '電子を失うことで電子殻が1つ減り、半径が**小さくなる**。\n\n例：Li⁺ < Li',
+          relatedQuestions: [
+            { id: "q_c2_4_1_ka", label: "問1(カ) 電子殻" },
+            { id: "q_c2_4_1_ki", label: "問1(キ) 小さく" },
+            { id: "q_c2_4_3_1", label: "問3(1) Na と Na⁺" },
+            { id: "q_c2_4_3_3", label: "問3(3) Mg と Mg²⁺" }
+          ]
+        },
+        {
+          id: 'anion_size',
+          label: '陰イオンの半径',
+          step: 2,
+          subLabel: '元の原子より大きい',
+          explanation: '電子を受け取ることで電子間の反発が増し、半径が**大きくなる**。\n\n例：Cl⁻ > Cl',
+          relatedQuestions: [
+            { id: "q_c2_4_1_ku", label: "問1(ク) 反発(クーロン反発)" },
+            { id: "q_c2_4_1_ke", label: "問1(ケ) 大きく" },
+            { id: "q_c2_4_3_2", label: "問3(2) Cl と Cl⁻" },
+            { id: "q_c2_4_3_4", label: "問3(4) O と O²⁻" }
+          ]
+        },
+        {
+          id: 'isoelectronic_ion_size',
+          label: '同じ電子配置のイオン',
+          step: 2,
+          subLabel: '原子番号↑で半径↓',
+          explanation: '同じ電子数のイオンの場合、**陽子数が多い（原子番号が大きい）**ものほど電子を引き寄せる力が強く、半径が小さい。\n\n例：O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺',
+          relatedQuestions: [
+            { id: "q_c2_4_1_ko", label: "問1(コ) 大きい" },
+            { id: "q_c2_4_4_ans", label: "問4 等電子イオン半径" },
+            { id: "q_c2_4_5_ans", label: "問5 電子数 N 系列" },
+            { id: "q_c2_4_6_2", label: "問6(2) 陽・陰半径比較" },
+            { id: "q_c2_4_6_3", label: "問6(3) Cl⁻ と K⁺" }
+          ]
+        },
+        {
+          id: 'same_group_ion_size',
+          label: '同族のイオン',
+          step: 2,
+          subLabel: '原子番号↑で半径↑',
+          explanation: '同じ族のイオンでは、原子番号が大きいほど電子殻が増え、半径が大きい。\n\n例：F⁻ < Cl⁻, Na⁺ < K⁺',
+          relatedQuestions: []
+        }
+      ]
+    }
+  ]
+};
 

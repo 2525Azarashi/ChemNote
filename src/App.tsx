@@ -309,7 +309,7 @@ export default function App() {
   return (
     <>
       <MobileViewWrapper isMobileMode={isMobilePreview && !shouldForceDesktopUI} onClose={() => setIsMobilePreview(false)}>
-        <div className={`min-h-screen w-full flex justify-center pt-6 pb-28 md:py-12 px-4 md:px-8 md:pb-28 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
+        <div className={`min-h-screen w-full flex justify-center pt-6 pb-24 md:py-12 px-4 md:px-8 md:pb-28 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
           <audio 
             ref={audioRef} 
             src="/cobblestone_dreams.mp3" 
@@ -372,7 +372,7 @@ export default function App() {
 
             {/* Global Bottom Navigation Footer */}
             {appState !== 'onboarding' && (
-              <div className="fixed sm:absolute bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-4 md:px-10 pb-safe pt-3 z-[60] sm:rounded-b-[28px] shadow-sm pb-6">
+              <div className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-4 md:px-10 pb-safe pt-3 z-[60] shadow-sm pb-6">
                 <button 
                   onClick={() => setAppState('home')}
                   className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${appState === 'home' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
