@@ -29,9 +29,10 @@ interface TreeNodeProps {
   expandedNodeIds: string[];
   renderContent?: (nodeId: string) => React.ReactNode;
   onQuestionClick?: (questionId: string) => void;
+  zoom?: 'far' | 'normal';
 }
 
-const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionClick }: TreeNodeProps) => {
+const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionClick, zoom = 'normal' }: TreeNodeProps) => {
   const isSelected = expandedNodeIds.includes(node.id);
   const hasContent = !!node.explanation || !!renderContent || (node.relatedQuestions && node.relatedQuestions.length > 0);
 
@@ -44,17 +45,25 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
     return isSelected ? 'bg-slate-100 border-slate-400 text-slate-900 shadow-md scale-[1.02]' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50';
   };
 
+  const isFar = zoom === 'far';
+  const buttonWidth = isFar ? 'w-48 sm:w-56' : 'w-56 sm:w-64';
+  const buttonTextSize = isFar ? 'text-xs sm:text-sm' : 'text-base';
+  const subLabelSize = isFar ? 'text-xs' : 'text-sm';
+  const indentClass = isFar ? 'ml-4 sm:ml-6 pl-4 sm:pl-6' : 'ml-6 sm:ml-8 pl-6 sm:pl-8';
+  const lineTranslate = isFar ? 'top-[22px]' : 'top-[26px]';
+  const horizontalLineClass = isFar ? '-left-4 sm:-left-6 w-4 sm:w-6' : '-left-6 sm:-left-8 w-6 sm:w-8';
+
   if (node.isGroup) {
     const groupBg = node.step === 1 ? 'bg-orange-50/50 border-orange-200' : node.step === 2 ? 'bg-emerald-50/50 border-emerald-200' : node.step === 3 ? 'bg-blue-50/50 border-blue-200' : 'bg-purple-50/50 border-purple-200';
     const groupText = node.step === 1 ? 'text-orange-800' : node.step === 2 ? 'text-emerald-800' : node.step === 3 ? 'text-blue-800' : 'text-purple-800';
     return (
-      <div className={cn("relative p-2 sm:p-3 rounded-xl border-2 mb-2 mt-1", groupBg)}>
-        <div className={cn("absolute -top-3 left-4 px-2 py-0.5 bg-white rounded-full border-2 text-xs font-bold shadow-sm", groupBg, groupText)}>
+      <div className={cn("relative p-2 sm:p-3 rounded-xl border-2 mb-2 mt-1 font-handwriting", groupBg)}>
+        <div className={cn("absolute -top-3 left-4 px-2 py-0.5 bg-white rounded-full border-2 text-xs font-bold font-handwriting shadow-sm", groupBg, groupText)}>
           {node.label}
         </div>
-        <div className="mt-2 flex flex-col gap-2">
+        <div className="mt-2 flex flex-col gap-2 font-handwriting">
           {node.children?.map(child => (
-            <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} />
+            <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} />
           ))}
         </div>
       </div>
@@ -62,27 +71,28 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="relative z-10">
-        <div className="flex items-center gap-4">
+    <div className="flex flex-col font-handwriting">
+      <div className="relative z-10 font-handwriting">
+        <div className="flex items-center gap-3">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => hasContent && onSelect(node)}
             className={cn(
-              "flex items-center justify-between w-56 sm:w-64 px-3 py-2 rounded-lg border-2 transition-all duration-200",
+              "flex items-center justify-between px-3 py-2 rounded-lg border-2 transition-all duration-200 font-handwriting",
+              buttonWidth,
               getStepStyles(node.step, isSelected),
               !hasContent && "cursor-default opacity-90"
             )}
           >
-            <div className="flex flex-col items-start text-left">
-              <span className="font-bold tracking-wide text-base">{node.label}</span>
+            <div className="flex flex-col items-start text-left font-handwriting">
+              <span className={cn("font-bold tracking-wide font-handwriting", buttonTextSize)}>{node.label}</span>
             </div>
             {hasContent && (
-              <ChevronRight className={cn("w-5 h-5 opacity-50 transition-transform shrink-0 ml-2", isSelected && "rotate-90 opacity-100")} />
+              <ChevronRight className={cn("w-4 h-4 opacity-50 transition-transform shrink-0 ml-1.5", isSelected && "rotate-90 opacity-100")} />
             )}
           </motion.button>
           {node.subLabel && (
-            <span className="text-sm text-slate-600 font-medium whitespace-nowrap">{node.subLabel}</span>
+            <span className={cn("text-slate-600 font-medium font-handwriting whitespace-nowrap", subLabelSize)}>{node.subLabel}</span>
           )}
         </div>
 
@@ -92,27 +102,27 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="overflow-hidden mt-2"
+              className="overflow-hidden mt-2 font-handwriting"
             >
-              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 shadow-inner ml-4 sm:ml-8 max-w-2xl">
+              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 shadow-inner ml-4 sm:ml-8 max-w-2xl font-handwriting">
                 {node.explanation && (
-                  <div className="flex items-start gap-2 mb-4">
+                  <div className="flex items-start gap-2 mb-4 font-handwriting">
                     <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-                    <div className="text-slate-700 text-sm leading-relaxed">
+                    <div className="text-slate-700 text-sm leading-relaxed font-handwriting">
                       {formatText(node.explanation)}
                     </div>
                   </div>
                 )}
                 {node.relatedQuestions && node.relatedQuestions.length > 0 && (
-                  <div className="flex items-start gap-2 mb-4">
-                    <div className="w-5 h-5 flex items-center justify-center shrink-0 mt-0.5 bg-blue-100 text-blue-600 rounded-full font-bold text-[10px]">
+                  <div className="flex items-start gap-2 mb-4 font-handwriting">
+                    <div className="w-5 h-5 flex items-center justify-center shrink-0 mt-0.5 bg-blue-100 text-blue-600 rounded-full font-bold text-[10px] font-handwriting">
                       Q
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 font-handwriting">
                       {node.relatedQuestions.map((q, idx) => (
                         <button
                           key={idx}
-                          className="text-xs bg-white text-blue-600 border border-blue-200 px-3 py-1.5 rounded-md hover:bg-blue-50 transition-colors font-bold shadow-sm"
+                          className="text-xs bg-white text-blue-600 border border-blue-200 px-3 py-1.5 rounded-md hover:bg-blue-50 transition-colors font-bold font-handwriting shadow-sm cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             if (onQuestionClick) onQuestionClick(q.id);
@@ -132,11 +142,11 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
       </div>
 
       {node.children && node.children.length > 0 && (
-        <div className="relative mt-3 ml-6 sm:ml-8 pl-6 sm:pl-8 flex flex-col gap-4 border-l-2 border-slate-300">
+        <div className={cn("relative mt-3 flex flex-col gap-4 border-l-2 border-slate-300", indentClass)}>
           {node.children.map((child) => (
             <div key={child.id} className="relative">
-              <div className="absolute -left-6 sm:-left-8 top-[26px] w-6 sm:w-8 border-t-2 border-slate-300 -translate-y-1/2" />
-              <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} />
+              <div className={cn("absolute border-t-2 border-slate-300 -translate-y-1/2", horizontalLineClass, lineTranslate)} />
+              <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} />
             </div>
           ))}
         </div>
@@ -250,36 +260,36 @@ export function InteractiveTree({
 
   return (
     <div className={cn(
-      "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300",
-      zoom === 'far' ? "md:scale-[0.85] lg:scale-[0.75] origin-top" : "",
+      "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300 font-handwriting",
+      zoom === 'far' ? "origin-top scale-[0.98]" : "",
       mobileTightCrop ? "p-1 sm:p-2 md:p-4" : "p-2 sm:p-6 md:p-8"
     )}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 sm:mb-8">
-        <h4 className="text-slate-800 font-bold flex items-center gap-2 text-base md:text-lg">
-          <Network className="w-5 h-5 text-blue-500" />
-          ロジックツリー
+      <div className="flex items-center justify-between mb-6 sm:mb-8 font-handwriting">
+        <h4 className="text-slate-800 font-bold flex items-center gap-2 text-sm sm:text-base md:text-lg font-handwriting">
+          <Network className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+          学習フローチャート
         </h4>
-        <div className="flex flex-wrap gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold justify-end">
-          <div className="flex items-center gap-1.5 text-orange-700 bg-orange-100 px-2 py-1 rounded-md border border-orange-200">
-            <div className="w-2 h-2 rounded-full bg-orange-500" />
+        <div className="flex flex-wrap gap-1 md:gap-3 text-[9px] sm:text-xs font-bold justify-end font-handwriting">
+          <div className="flex items-center gap-1 text-orange-700 bg-orange-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border border-orange-200 font-handwriting">
+            <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
             Step 1
           </div>
-          <div className="flex items-center gap-1.5 text-emerald-700 bg-emerald-100 px-2 py-1 rounded-md border border-emerald-200">
-            <div className="w-2 h-2 rounded-full bg-emerald-500" />
+          <div className="flex items-center gap-1 text-emerald-700 bg-emerald-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border border-emerald-200 font-handwriting">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             Step 2
           </div>
-          <div className="flex items-center gap-1.5 text-blue-700 bg-blue-100 px-2 py-1 rounded-md border border-blue-200">
-            <div className="w-2 h-2 rounded-full bg-blue-500" />
+          <div className="flex items-center gap-1 text-blue-700 bg-blue-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border border-blue-200 font-handwriting">
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
             Step 3
           </div>
         </div>
       </div>
 
       {/* Tree Container */}
-      <div className="overflow-x-auto pb-8 touch-pan-x">
+      <div className="overflow-x-auto pb-4 touch-pan-x">
         <div className="min-w-max pr-8">
-          <TreeNode node={data} onSelect={handleSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} />
+          <TreeNode node={data} onSelect={handleSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} />
         </div>
       </div>
     </div>
