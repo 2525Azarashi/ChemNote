@@ -125,7 +125,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
            isInteractionChapter ? '重要事項③ 〜分子の相互作用と性質〜' :
            '学習フローチャート'}
         </h3>
-        <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-2 sm:p-5 overflow-x-auto">
+        <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-2 sm:p-5">
           <InteractiveTree 
             data={currentTreeData}
             onQuestionClick={handleQuestionClick}

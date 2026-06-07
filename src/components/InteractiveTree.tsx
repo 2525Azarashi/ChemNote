@@ -287,7 +287,7 @@ export function InteractiveTree({
       </div>
 
       {/* Tree Container */}
-      <div className="overflow-x-auto pb-4 touch-pan-x">
+      <div className="overflow-x-auto pb-4 touch-auto">
         <div className="min-w-max pr-8">
           <TreeNode node={data} onSelect={handleSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} />
         </div>

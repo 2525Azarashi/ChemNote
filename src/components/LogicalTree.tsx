@@ -88,7 +88,7 @@ export const LogicalTree = () => {
             </div>
           </div>
           
-          <div className="p-6 md:p-10 overflow-x-auto">
+          <div className="p-6 md:p-10">
             <InteractiveTree 
               data={substanceTreeData} 
               onQuestionClick={handleQuestionClick}
