@@ -266,7 +266,6 @@ export default function App() {
 
   const handleStart = () => setAppState('mode_selection');
   const handleIntro = () => setAppState('intro');
-  const handleFlowchart = () => setAppState('flowchart');
   
   const handleSelectMode = (mode: AppMode) => {
     setAppMode(mode);
@@ -277,10 +276,11 @@ export default function App() {
     }
   };
 
-  const handleSelectChapter = (chapterId: string) => {
+  const handleSelectChapter = (chapterId: string, questionIndex = 0) => {
     setSelectedChapterId(chapterId);
     setAppState('quiz');
     setQuizAnswers({});
+    localStorage.setItem(`quiz_idx_${chapterId}_${appMode}`, questionIndex.toString());
   };
 
   const handleFinishQuiz = (answers: Record<string, string>) => {
@@ -344,15 +344,10 @@ export default function App() {
             {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
             {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} isGuest={isGuest} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
-            {appState === 'flowchart' && <Flowchart onBack={() => {
-              // If we have a selected chapter or were in chapters mode, go back there
-              // For now, let's just go back to chapters if we were there
-              setAppState('chapters');
-            }} />}
             {appState === 'logical_tree' && <LogicalTree />}
             {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} />}
             {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
-            {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} onFlowchart={handleFlowchart} />}
+            {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} />}
             {appState === 'quiz' && selectedChapter && (
               <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={isMobileView} onExplanationChange={setIsExplanationView} />
             )}
