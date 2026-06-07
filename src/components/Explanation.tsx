@@ -19,8 +19,6 @@ import { NodeData } from './InteractiveTree';
 import { InteractiveLogicTree } from './InteractiveLogicTree';
 import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData } from '../data/chemistryData';
 import { PracticeExplanationTree } from './PracticeExplanationTree';
-import { AtomicStructureFlowchart } from './AtomicStructureFlowchart';
-import { ChemicalBondFlowchart } from './ChemicalBondFlowchart';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
 
 // Substance Tree Data for Chapter 1 (Moved to chemistryData.ts)
@@ -64,17 +62,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const [scrollTrigger, setScrollTrigger] = useState<number>(0);
   const [expandedCorrectQuestions, setExpandedCorrectQuestions] = useState<Record<string, boolean>>({});
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
-  const [userShowFlowchart, setUserShowFlowchart] = useState<boolean>(true);
   const [isMobile, setIsMobile] = useState(isMobileView !== undefined ? isMobileView : window.innerWidth < 768);
-
-  const FlowchartComponent = useMemo(() => {
-    if (chapter?.id === 'c2_1' || chapter?.id === 'c2_2' || chapter?.id === 'c2_3' || chapter?.id === 'c2_4') {
-      return <AtomicStructureFlowchart />;
-    } else if (chapter?.id === 'c3_1') {
-      return <ChemicalBondFlowchart />;
-    }
-    return null;
-  }, [chapter]);
 
   useEffect(() => {
     if (isMobileView !== undefined) {
@@ -613,7 +601,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         <div className={`rounded-2xl shadow-lg overflow-clip border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`}>
           
           {/* Logical Tree (if exists) */}
-          {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A' || chapter?.id === 'c2_1' || chapter?.id === 'c2_2' || chapter?.id === 'c2_3' || chapter?.id === 'c2_4') && (
+          {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A' || chapter?.id === 'c2_1' || chapter?.id === 'c2_2' || chapter?.id === 'c2_3' || chapter?.id === 'c2_4' || chapter?.id?.startsWith('c3_')) && (
             <PracticeExplanationTree
               deepThoughtData={deepThoughtData}
               chapter={chapter}
@@ -1122,33 +1110,6 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-
-          {FlowchartComponent && (
-            <div className={`p-4 sm:p-6 md:p-8 border-b ${mode === 'mini_test' ? 'border-gray-200 bg-gray-50/10' : 'border-[#3A506B]/50 bg-[#1C2541]/10'}`}>
-              <div className="flex items-center justify-between mb-4 md:mb-6">
-                <h4 className={`font-bold text-base md:text-lg flex items-center gap-2 ${mode === 'mini_test' ? 'text-blue-700' : 'text-[#5BC0BE]'}`}>
-                  <Network className="w-5 h-5 md:w-6 md:h-6" />
-                  <span>要約学習フローチャート</span>
-                </h4>
-                <button
-                  onClick={() => setUserShowFlowchart(!userShowFlowchart)}
-                  className={`text-xs font-bold px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
-                    mode === 'mini_test' 
-                      ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400' 
-                      : 'bg-[#1C2541] text-[#A9CCE3] border-[#3A506B] hover:bg-[#1C2541]/80'
-                  }`}
-                >
-                  {userShowFlowchart ? '閉じる' : '表示する'}
-                </button>
-              </div>
-              
-              {userShowFlowchart && (
-                <div className="transition-all duration-300">
-                  {FlowchartComponent}
-                </div>
-              )}
             </div>
           )}
 

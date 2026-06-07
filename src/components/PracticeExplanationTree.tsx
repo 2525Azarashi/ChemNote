@@ -1,6 +1,6 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
-import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData } from '../data/chemistryData';
+import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData, crystalTreeData, interactionTreeData } from '../data/chemistryData';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -34,6 +34,8 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   const isIonGenerationChapter = chapter?.id === 'c2_3';
   const isIonSizeChapter = chapter?.id === 'c2_4';
   const isChemicalBondChapter = chapter?.id === 'c3_1';
+  const isCrystalChapter = chapter?.id === 'c3_2';
+  const isInteractionChapter = chapter?.id === 'c3_3';
   
   let currentTreeData = substanceTreeData;
   if (isSeparationChapter) currentTreeData = separationTreeData;
@@ -43,6 +45,8 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   if (isIonGenerationChapter) currentTreeData = ionGenerationTreeData;
   if (isIonSizeChapter) currentTreeData = ionSizeTreeData;
   if (isChemicalBondChapter) currentTreeData = chemicalBondTreeData;
+  if (isCrystalChapter) currentTreeData = crystalTreeData;
+  if (isInteractionChapter) currentTreeData = interactionTreeData;
 
   const renderContent = (nodeId: string) => {
     const matchedSqs: { sq: any, parentQuestion: any }[] = [];
@@ -109,13 +113,16 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   return (
     <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-gray-200 w-full bg-white">
       <div className="flex flex-col w-full gap-4">
-        <h3 className={`text-lg font-bold mb-2 font-handwriting ${isThermalMotionChapter ? 'text-amber-700 text-xl' : isAtomicStructureChapter ? 'text-emerald-700 text-xl' : isIonSizeChapter ? 'text-emerald-700 text-xl' : isIonGenerationChapter ? 'text-indigo-700 text-xl' : 'text-[#2C3E50]'}`}>
+        <h3 className={`text-lg font-bold mb-2 font-handwriting ${isThermalMotionChapter ? 'text-amber-700 text-xl' : isAtomicStructureChapter ? 'text-emerald-700 text-xl' : isIonSizeChapter ? 'text-emerald-700 text-xl' : isIonGenerationChapter ? 'text-indigo-700 text-xl' : isChemicalBondChapter ? 'text-emerald-700 text-xl font-bold' : isCrystalChapter ? 'text-emerald-700 text-xl font-bold' : isInteractionChapter ? 'text-emerald-700 text-xl font-bold' : 'text-[#2C3E50]'}`}>
           {isThermalMotionChapter ? '重要事項③ 〜粒子の熱運動と物質の三態〜' : 
            isSeparationChapter ? '分離と精製のフローチャート' : 
            isAtomicStructureChapter ? '原子の構造・電子配置・周期表のフローチャート' :
            isIonChapter ? 'イオンの分類と安定性のフローチャート' :
            isIonGenerationChapter ? 'イオン生成とエネルギーのフローチャート' :
            isIonSizeChapter ? '重要事項④ 〜原子の大きさとイオンの大きさ〜' :
+           isChemicalBondChapter ? '重要事項① 〜結合の種類と分子の形状〜' :
+           isCrystalChapter ? '重要事項② 〜結晶の種類と性質〜' :
+           isInteractionChapter ? '重要事項③ 〜分子の相互作用と性質〜' :
            '学習フローチャート'}
         </h3>
         <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-2 sm:p-5 overflow-x-auto">

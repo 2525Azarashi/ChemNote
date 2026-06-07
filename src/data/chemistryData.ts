@@ -1945,7 +1945,153 @@ export const chemistryData = {
           id: "c3_2",
           abstractTitle: "② 結晶の種類と性質",
           realTitle: "3章 化学結合",
-          topics: [],
+          topics: ["イオン結晶", "分子結晶", "共有結合結晶", "金属結晶", "単位格子", "延性・展性", "劈開"],
+          practiceProblems: [
+            {
+              id: "q_c3_2_1",
+              category: "結晶の種類と性質 (問1)",
+              text: "【問1】 次の文章の空欄（ア）〜（タ）に適する語句を答えよ。（語句網羅）\n\n結晶は構成粒子と結合の種類により次の4つに分類される。\n\n(1) 陽イオンと陰イオンが規則正しく並んだものを（ア）結晶という。融点は（イ）。硬いが（ウ）。固体状態では電気を（エ）が、（オ）液や（カ）には電気を通す。例：NaCl、CaCO₃。\n(2) 分子が分子間力で結びついて並んだ結晶を（キ）結晶という。融点は（ク）。（ケ）性をもつものが多い（ヨウ素、ドライアイス、ナフタレン）。電気は（コ）。例：I₂、CO₂、ナフタレン、氷。\n(3) すべての原子が共有結合で結びついた結晶を（サ）結晶という。融点は（シ）、（ス）。電気は通さない（ただし（セ）は例外で電気伝導性をもつ）。例：ダイヤモンド、Si、SiO₂、（セ）。\n(4) 金属原子が自由電子を共有してできた結晶を（ソ）結晶という。電気伝導性・熱伝導性をもち、（タ）・延性を示す。例：Cu, Fe, Al, Au, Ag。",
+              subQuestions: [
+                { id: "q_c3_2_1_a", label: "問1(ア) 陽・陰イオンの規則的な結晶", type: "short_answer", correctAnswer: "イオン", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_i", label: "問1(イ) イオン結晶の融点（高い／低い）", type: "multiple_choice", options: ["高い", "低い"], correctAnswer: "高い", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_u", label: "問1(ウ) 強い力を与えた時の性質（硬いが○○）", type: "short_answer", correctAnswer: "脆い", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_e", label: "問1(エ) イオン結晶の固体状態での導電性", type: "short_answer", correctAnswer: "通さない", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_o", label: "問1(オ) 電導性を得られる状態（○○液）", type: "short_answer", correctAnswer: "融解", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_ka", label: "問1(カ) 電導性を得られる状態（あるいは○○）", type: "short_answer", correctAnswer: "水溶液", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_ki", label: "問1(キ) 分子が並んだ結晶の名称", type: "short_answer", correctAnswer: "分子", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_ku", label: "問1(ク) 分子結晶の融点（高い／低い）", type: "multiple_choice", options: ["高い", "低い"], correctAnswer: "低い", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_ke", label: "問1(ケ) ドライアイス等が見せる、固体から気体になる性質", type: "short_answer", correctAnswer: "昇華", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_ko", label: "問1(コ) 分子結晶の電気伝導性", type: "short_answer", correctAnswer: "通さない", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_sa", label: "問1(サ) すべての原子が共有結合で結びついた結晶", type: "short_answer", correctAnswer: "共有結合", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_shi", label: "問1(シ) 共有結合結晶の融点の性質（○○高い）", type: "short_answer", correctAnswer: "極めて高い", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_su", label: "問1(ス) 共有結合結晶の硬さの性質（○○硬い）", type: "short_answer", correctAnswer: "極めて硬い", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_se", label: "問1(セ) 例外的に電気伝導性をもつ共有結合結晶", type: "short_answer", correctAnswer: "黒鉛", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_so", label: "問1(ソ) 金属原子の結合からなる結晶", type: "short_answer", correctAnswer: "金属", correctAnswerRate: 85 },
+                { id: "q_c3_2_1_ta", label: "問1(タ) 叩いて薄く広がる、金属特有の性質", type: "short_answer", correctAnswer: "展性", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n（ア）イオン （イ）高い （ウ）脆い（割れやすい） （エ）通さない （オ）融解 （カ）水溶液 \n（キ）分子 （ク）低い （ケ）昇華 （コ）通さない \n（サ）共有結合 （シ）極めて高い （ス）極めて硬い （セ）黒鉛（グラファイト） \n（ソ）金属 （タ）展性\n\n■ 4つの主要な結晶（イオン、分子、共有結合、金属）の特徴を対比して覚えることが基礎でありもっとも重要なポイントです。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_2_2",
+              category: "結晶の種類と性質 (問2)",
+              text: "【問2】 （基礎）次の物質を、ア：イオン結晶 イ：分子結晶 ウ：共有結合結晶 エ：金属結晶 に分類せよ。\n\n(1) NaCl (2) ダイヤモンド (3) 鉄 (4) ドライアイス (5) ヨウ素\n(6) 二酸化ケイ素 SiO₂ (7) アルミニウム (8) 塩化カルシウム\n(9) 黒鉛 (10) ナフタレン (11) 銅 (12) 氷",
+              subQuestions: [
+                { id: "q_c3_2_2_1", label: "(1) NaCl", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ア", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_2", label: "(2) ダイヤモンド", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ウ", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_3", label: "(3) 鉄", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "エ", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_4", label: "(4) ドライアイス", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_5", label: "(5) ヨウ素", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_6", label: "(6) 二酸化ケイ素 SiO₂", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ウ", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_7", label: "(7) アルミニウム", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "エ", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_8", label: "(8) 塩化カルシウム", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ア", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_9", label: "(9) 黒鉛", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ウ", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_10", label: "(10) ナフタレン", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_11", label: "(11) 銅", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "エ", correctAnswerRate: 85 },
+                { id: "q_c3_2_2_12", label: "(12) 氷", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "イ", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) ア (2) ウ (3) エ (4) イ (5) イ (6) ウ \n(7) エ (8) ア (9) ウ（共有結合結晶。黒鉛は例外的に電導性あり） \n(10) イ (11) エ (12) イ",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_2_3",
+              category: "結晶の種類と性質 (問3)",
+              text: "【問3】 （基礎）次の性質をもつ結晶はどれか。ア〜エから選べ。\nア：イオン結晶、イ：分子結晶、ウ：共有結合結晶、エ：金属結晶",
+              subQuestions: [
+                { id: "q_c3_2_3_1", label: "(1) 融点が極めて高く、極めて硬く、電気を通さない", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ウ", correctAnswerRate: 85 },
+                { id: "q_c3_2_3_2", label: "(2) 融点が低く、軽くたたくと割れる。電気を通さない", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_2_3_3", label: "(3) 展性・延性をもち、電気・熱を通す", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "エ", correctAnswerRate: 85 },
+                { id: "q_c3_2_3_4", label: "(4) 硬いがもろく、固体は電気を通さないが融解液は通す", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ア", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) ウ（共有結合結晶） (2) イ（分子結晶） (3) エ（金属結晶） (4) ア（イオン結晶）",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_2_4",
+              category: "結晶の種類と性質 (問4)",
+              text: "【問4】 （記述）次の記述問題に答えよ。",
+              subQuestions: [
+                { id: "q_c3_2_4_1", label: "(1) イオン結晶が固体では電気を通さないが、融解液や水溶液では電気を通す理由を述べよ。", type: "short_answer", correctAnswer: "溶液中でイオンが自由に動けるため", correctAnswerRate: 85 },
+                { id: "q_c3_2_4_2", label: "(2) 黒鉛が共有結合結晶でありながら電気を通す理由を述べよ。", type: "short_answer", correctAnswer: "余った1個の電子が自由に動くため", correctAnswerRate: 85 },
+                { id: "q_c3_2_4_3", label: "(3) 金属が延性・展性を示す理由を、結合の特徴と関連づけて述べよ。", type: "short_answer", correctAnswer: "結合に方向性がないため", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) 固体ではイオンが格子に固定されていて移動できないが、融解液や水溶液中ではイオンが自由に動けるため電気を運べる。\n(2) 黒鉛は炭素原子1個あたり4個 of 価電子のうち3個を共有結合に用い、残り1個が層内を自由に動くため。\n(3) 金属結合は自由電子による『方向性のない結合』なので、原子の位置を多少ずらしても結合が切れず、変形に強い。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_2_5",
+              category: "結晶の種類と性質 (問5)",
+              text: "【問5】 （文字式・文章題）\nある金属の結晶の単位格子1辺を a [nm]、密度を d [g/cm³] とし、単位格子に含まれる原子数を Z、その金属の原子量を M とする。Avogadro 定数を N_A とするとき、密度 d を a, Z, M, N_A で表したものとして正しい式を、以下の選択肢から選べ。ただし、1 nm = 10⁻⁷ cm とする。",
+              subQuestions: [
+                { 
+                  id: "q_c3_2_5_ans", 
+                  label: "適切な文字式を選択してください", 
+                  type: "multiple_choice", 
+                  options: [
+                    "d = (Z·M) / (N_A · a³ · 10⁻²¹)", 
+                    "d = (Z·M) / (N_A · a³ · 10⁻⁷)", 
+                    "d = (Z·M · N_A) / a³", 
+                    "d = a³ · N_A / (Z·M)"
+                  ], 
+                  correctAnswer: "d = (Z·M) / (N_A · a³ · 10⁻²¹)", 
+                  correctAnswerRate: 85 
+                }
+              ],
+              explanation: "▼ 解答・解説\n\n1個の原子の質量 = M/N_A [g]\n単位格子内の質量 = Z·M/N_A [g]\n単位格子の体積 = a³ × (10⁻⁷)³ = a³ × 10⁻²¹ [cm³] （a が nm 単位、1 nm=10⁻⁷ cm）\n\nよって、密度 = 質量 / 体積 より、\nd = (Z·M) / (N_A · a³ × 10⁻²¹) [g/cm³]\n\nしたがって正しい選択肢は、「d = (Z·M) / (N_A · a³ · 10⁻²¹)」です。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_2_6",
+              category: "結晶の種類と性質 (問6)",
+              text: "【問6】 （共通テスト風応用）次のうち、結晶の種類と性質の対応として誤っているものを1つ選べ。",
+              subQuestions: [
+                { 
+                  id: "q_c3_2_6_ans", 
+                  label: "誤っているものに該当する番号を1つ選べ", 
+                  type: "multiple_choice", 
+                  options: [
+                    "① イオン結晶 ─ 水によく溶けて電解質となる", 
+                    "② 分子結晶 ─ 一般に融点が低く、昇華性のあるものがある", 
+                    "③ 共有結合結晶 ─ 一般に電気を通すが、硬さは小さい", 
+                    "④ 金属結晶 ─ 電気・熱をよく伝え、展性・延性を示す"
+                  ], 
+                  correctAnswer: "③ 共有結合結晶 ─ 一般に電気を通すが、硬さは小さい", 
+                  correctAnswerRate: 85 
+                }
+              ],
+              explanation: "▼ 解答・解説\n答：③\n\n■ 共有結合結晶は一般に『電気を通さない』『極めて硬い』。黒鉛は例外。③は誤り。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_2_7",
+              category: "結晶の種類と性質 (問7)",
+              text: "【問7】 （共通テスト風応用）ある未知の固体 X に関し、次の実験結果を得た。\n\n・常温で固体、つやがあり、たたくと薄く広がる（展性あり）\n・電気をよく通す\n・水に溶けない\n\nこの固体は何結晶か。また、考えられる物質の例を1つ選べ。",
+              subQuestions: [
+                { 
+                  id: "q_c3_2_7_ans", 
+                  label: "該当する結晶の種類と、その物質の例のペアを選べ", 
+                  type: "multiple_choice", 
+                  options: [
+                    "イオン結晶 （例：塩化ナトリウム NaCl）", 
+                    "分子結晶 （例：ドライアイス CO₂）", 
+                    "共有結合結晶 （例：ダイヤモンド C）", 
+                    "金属結晶 （例：銅 Cu）"
+                  ], 
+                  correctAnswer: "金属結晶 （例：銅 Cu）", 
+                  correctAnswerRate: 85 
+                }
+              ],
+              explanation: "▼ 解答・解説\n答：金属結晶。例：銅 Cu、鉄 Fe、アルミニウム Al など。\n\n■ 展性・電導性・つやがある（金属光沢）・水に溶けない、は金属結晶の典型的特徴です。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ],
           miniTest: []
         },
         {
@@ -1953,6 +2099,151 @@ export const chemistryData = {
           abstractTitle: "③ 分子の相互作用と性質",
           realTitle: "3章 化学結合",
           topics: ["分子間力", "水素結合", "分子の極性", "電気陰性度について"],
+          practiceProblems: [
+            {
+              id: "q_c3_3_1",
+              category: "分子の相互作用と性質 (問1)",
+              text: "【問1】 次の文章の空欄（ア）〜（ス）に適する語句・記号を答えよ。（語句網羅）\n\n共有結合する2原子間で電子対を引きつける強さを（ア）という。値が大きい順に概ね F > O > N ≒ Cl > C > S > H となる。結合する原子の（ア）に差があると、電子対が片方に偏り、結合に（イ）が生じる。分子全体としての（イ）の有無で、分子は（ウ）分子と（エ）分子に分類される。例として、水 H₂O は（オ）形で（ウ）分子、アンモニア NH₃ は（カ）形で（ウ）分子、二酸化炭素 CO₂ は（キ）形で（エ）分子、メタン CH₄ は（ク）形で（エ）分子である。\n分子間にはたらく弱い引力を一般に（ケ）力という。分子量が大きいほど、また（ウ）が大きいほどこの力は強くなる。特に F, O, N の原子と結合した H が、隣の分子の F, O, N と引き合う特に強い相互作用を（コ）結合という。この結合は H₂O, NH₃, HF などにみられ、その物質の沸点が同族の水素化合物に比べて異常に（サ）原因になっている。極性分子は極性をもつ溶媒、特に（シ）に溶けやすく、無極性分子は（ス）溶媒（ヘキサンなど）に溶けやすい。",
+              subQuestions: [
+                { id: "q_c3_3_1_a", label: "問1(ア) 共有結合する2原子間で電子対を引きつける強さ", type: "short_answer", correctAnswer: "電気陰性度", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_i", label: "問1(イ) 電子対が片方に偏り、結合に生じるもの", type: "short_answer", correctAnswer: "極性", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_u", label: "問1(ウ) 分子全体としての(イ)の有無による分類（有）", type: "short_answer", correctAnswer: "極性", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_e", label: "問1(エ) 分子全体としての(イ)の有無による分類（無）", type: "short_answer", correctAnswer: "無極性", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_o", label: "問1(オ) 水 H₂O は何形か", type: "short_answer", correctAnswer: "折れ線", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_ka", label: "問1(カ) アンモニア NH₃ は何形か", type: "short_answer", correctAnswer: "三角錐", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_ki", label: "問1(キ) 二酸化炭素 CO₂ は何形か", type: "short_answer", correctAnswer: "直線", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_ku", label: "問1(ク) メタン CH₄ は何形か", type: "short_answer", correctAnswer: "正四面体", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_ke", label: "問1(ケ) 分子間にはたらく弱い引力（○○力）", type: "short_answer", correctAnswer: "ファンデルワールス", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_ko", label: "問1(コ) F, O, Nの原子と結合したHが引き合う特に強い相互作用", type: "short_answer", correctAnswer: "水素", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_sa", label: "問1(サ) その物質の沸点が同族の水素化合物に比べて異常に（高い／低い）", type: "multiple_choice", options: ["高い", "低い"], correctAnswer: "高い", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_shi", label: "問1(シ) 極性分子は極性をもつ溶媒、特に何に溶けやすいか", type: "short_answer", correctAnswer: "水", correctAnswerRate: 85 },
+                { id: "q_c3_3_1_su", label: "問1(ス) 無極性分子は何溶媒に溶けやすいか", type: "short_answer", correctAnswer: "無極性", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n（ア）電気陰性度 （イ）極性 （ウ）極性 （エ）無極性\n（オ）折れ線（V字） （カ）三角錐 （キ）直線 （ク）正四面体\n（ケ）ファンデルワールス （コ）水素 （サ）高い\n（シ）水 （ス）無極性（有機）\n\n■ 共有結合における電子の偏り（電気陰性度差による極性）と、それが分子全体で打ち消し合わないこと（分子の立体形状）を統合して、極性分子・無極性分子を判断できるようにしましょう。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_3_2",
+              category: "分子の相互作用と性質 (問2)",
+              text: "【問2】 （基礎）次の分子を、ア：極性分子、イ：無極性分子 に分類せよ。\n\n(1) H₂ (2) HCl (3) H₂O (4) CH₄ (5) CO₂\n(6) NH₃ (7) N₂ (8) HF (9) CCl₄ (10) CHCl₃",
+              subQuestions: [
+                { id: "q_c3_3_2_1", label: "(1) H₂", type: "multiple_choice", options: ["ア", "イ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_3_2_2", label: "(2) HCl", type: "multiple_choice", options: ["ア", "イ"], correctAnswer: "ア", correctAnswerRate: 85 },
+                { id: "q_c3_3_2_3", label: "(3) H₂O", type: "multiple_choice", options: ["ア", "イ"], correctAnswer: "ア", correctAnswerRate: 85 },
+                { id: "q_c3_3_2_4", label: "(4) CH₄", type: "multiple_choice", options: ["ア", "イ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_3_2_5", label: "(5) CO₂", type: "multiple_choice", options: ["ア", "イ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_3_2_6", label: "(6) NH₃", type: "multiple_choice", options: ["ア", "イ"], correctAnswer: "ア", correctAnswerRate: 85 },
+                { id: "q_c3_3_2_7", label: "(7) N₂", type: "multiple_choice", options: ["ア", "イ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_3_2_8", label: "(8) HF", type: "multiple_choice", options: ["ア", "イ"], correctAnswer: "ア", correctAnswerRate: 85 },
+                { id: "q_c3_3_2_9", label: "(9) CCl₄", type: "multiple_choice", options: ["ア", "イ"], correctAnswer: "イ", correctAnswerRate: 85 },
+                { id: "q_c3_3_2_10", label: "(10) CHCl₃", type: "multiple_choice", options: ["ア", "イ"], correctAnswer: "ア", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n極性分子（ア）：(2) HCl, (3) H₂O, (6) NH₃, (8) HF, (10) CHCl₃\n無極性分子（イ）：(1) H₂, (4) CH₄, (5) CO₂, (7) N₂, (9) CCl₄\n\n■ 同種2原子分子(H₂, N₂)は当然無極性です。二酸化炭素 CO₂ は二重結合の極性があるものの、直線対称なため打ち消し合って無極性分子となります。メタン CH₄ や四塩化炭素 CCl₄ も同様に、完全に均等で対称な正四面体構造のため、それぞれの極性が打ち消し合います。\n一方、H₂Oは折れ線、NH₃は三角錐のため打ち消し合わず、極性を持ちます。CHCl₃ はメタンの一部の水素が塩素に置き換わっており、対称性が崩れているため極性分子となります。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_3_3",
+              category: "分子の相互作用と性質 (問3)",
+              text: "【問3】 （標準）次の問いに答えよ。",
+              subQuestions: [
+                { id: "q_c3_3_3_1", label: "(1) ファンデルワールス力の特徴を、極性・分子量との関係に着目して述べよ。", type: "short_answer", correctAnswer: "分子量が大きい、または極性が大きいほど強くなる", correctAnswerRate: 85 },
+                { id: "q_c3_3_3_2", label: "(2) 水素結合が生じる条件を述べよ。", type: "short_answer", correctAnswer: "F, O, Nに結合したHが非共有電子対と引き合う", correctAnswerRate: 85 },
+                { id: "q_c3_3_3_3", label: "(3) HF, HCl, HBr, HI のうち、水素結合をもつ分子はどれか。また、そられの沸点は一般的にどう変化するか。", type: "short_answer", correctAnswer: "HFのみ。HFが突出して高く、残りは分子量順に高くなる", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) 全ての分子間にはたらく弱い引力。分子量が大きいほど、また分子の極性（双極子モーメント）が大きいほど強くなる。\n(2) F, O, N と直接結合した H が、別の分子の F, O, N の非共有電子対と引き合う。\n(3) 水素結合をもつのは HF のみ。沸点の傾向：HF > HI > HBr > HCl。\n本来 H-X の沸点は分子量とともに高くなるはずだが、HF は水素結合により異常に沸点が高くなります。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_3_4",
+              category: "分子の相互作用と性質 (問4)",
+              text: "【問4】 （標準）\nH₂O の沸点（100℃）は、同族の H₂S（−61℃）, H₂Se（−42℃）, H₂Te（−2℃）に比べて著しく高い。理由を簡潔に答えよ。",
+              subQuestions: [
+                { id: "q_c3_3_4_ans", label: "H₂Oの沸点が著しく高い理由を述べよ", type: "short_answer", correctAnswer: "水分子間に強い水素結合が形成されるため", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n\nH₂O では分子間に水素結合が形成され、これがファンデルワールス力よりはるかに強いため、液体から気体に変化させるのに大きなエネルギーを要し、沸点が異常に高くなります。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_3_5",
+              category: "分子の相互作用と性質 (問5)",
+              text: "【問5】 （文字式・文章題）\n電気陰性度を χ で表す。2原子分子 A-B における結合の極性の強さを、電気陰性度の差 Δχ = χ(B) − χ(A) (χ(B) > χ(A)) で評価する。電気陰性度の値を χ(H)=2.2, χ(C)=2.6, χ(N)=3.0, χ(O)=3.4, χ(F)=4.0, χ(Cl)=3.2 とするとき、次の結合の極性 Δχ を求め、極性が大きい順に並べよ。\n(1) C-H  (2) O-H  (3) N-H  (4) F-H  (5) Cl-H",
+              subQuestions: [
+                { id: "q_c3_3_5_1", label: "(1) C-H の極性の強さ Δχ", type: "short_answer", correctAnswer: "0.4", correctAnswerRate: 85 },
+                { id: "q_c3_3_5_2", label: "(2) O-H の極性の強さ Δχ", type: "short_answer", correctAnswer: "1.2", correctAnswerRate: 85 },
+                { id: "q_c3_3_5_3", label: "(3) N-H の極性の強さ Δχ", type: "short_answer", correctAnswer: "0.8", correctAnswerRate: 85 },
+                { id: "q_c3_3_5_4", label: "(4) F-H の極性の強さ Δχ", type: "short_answer", correctAnswer: "1.8", correctAnswerRate: 85 },
+                { id: "q_c3_3_5_5", label: "(5) Cl-H の極性の強さ Δχ", type: "short_answer", correctAnswer: "1.0", correctAnswerRate: 85 },
+                { 
+                  id: "q_c3_3_5_ranking", 
+                  label: "極性が大きい順に並べたものとして正しいものを選べ", 
+                  type: "multiple_choice", 
+                  options: [
+                    "F-H > O-H > Cl-H > N-H > C-H",
+                    "F-H > O-H > N-H > Cl-H > C-H",
+                    "Cl-H > F-H > O-H > N-H > C-H",
+                    "C-H > N-H > Cl-H > O-H > F-H"
+                  ], 
+                  correctAnswer: "F-H > O-H > Cl-H > N-H > C-H", 
+                  correctAnswerRate: 85 
+                }
+              ],
+              explanation: "▼ 解答・解説\n(1) C-H：|2.6 - 2.2| = 0.4 \n(2) O-H：|3.4 - 2.2| = 1.2 \n(3) N-H：|3.0 - 2.2| = 0.8 \n(4) F-H：|4.0 - 2.2| = 1.8 \n(5) Cl-H：|3.2 - 2.2| = 1.0\n\nしたがって、極性の大きい順は：\nF-H (1.8) > O-H (1.2) > Cl-H (1.0) > N-H (0.8) > C-H (0.4)\n\nこれにより、電気陰性度の差が大きい結合ほど極性が強く、引き合う力も強力になります。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_3_6",
+              category: "分子の相互作用と性質 (問6)",
+              text: "【問6】 （文字式・文章題）\nある同族の水素化合物 HX（X=F, Cl, Br, I）について、分子量 M に対する沸点 T_b の傾向を考える。一般に分子間力のみ考えれば M が大きいほど T_b は高い。HX の M と T_b の実測値を以下に示す。\nHF：M=20, T_b=20℃ 、 HCl：M=36.5, T_b=−85℃ 、 HBr：M=81, T_b=−67℃ 、 HI：M=128, T_b=−35℃",
+              subQuestions: [
+                { id: "q_c3_3_6_1", label: "(1) HF だけが M に対する単調な傾向から大きく外れている。理由を簡潔に述べよ。", type: "short_answer", correctAnswer: "水素結合が存在するため", correctAnswerRate: 85 },
+                { id: "q_c3_3_6_2", label: "(2) HCl, HBr, HI の沸点が分子量とともに上昇する原因は何の力か答えよ。", type: "short_answer", correctAnswer: "ファンデルワールス力", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) HF には水素結合が存在し、ファンデルワールス力に加えて分子間に強い引力がはたらくため、分子量が小さい割に沸点が異常に高い。\n(2) ファンデルワールス力（分子量の増加とともに大きくなる）。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_3_7",
+              category: "分子の相互作用と性質 (問7)",
+              text: "【問7】 （共通テスト風応用）次のうち、決定的に誤っているものを1つ選べ。",
+              subQuestions: [
+                { 
+                  id: "q_c3_3_7_ans", 
+                  label: "誤っているものを1つ選べ", 
+                  type: "multiple_choice", 
+                  options: [
+                    "ア：水素結合はF, O, N と結合した H が関与する。",
+                    "イ：CO₂ は無極性分子だが、C=O 結合自体には極性がある。",
+                    "ウ：CCl₄ は極性分子である。",
+                    "エ：分子間力にはファンデルワールス力と水素結合が含まれる。",
+                    "オ：氷の密度が水より小さいのは、水素結合による隙間の多い構造のためである。"
+                  ], 
+                  correctAnswer: "ウ：CCl₄ は極性分子である。", 
+                  correctAnswerRate: 85 
+                }
+              ],
+              explanation: "▼ 解答・解説\n答：ウ\n\n■ CCl₄ は対称的な正四面体構造で結合の極性が完全に打ち消し合い、分子全体としては無極性分子となります。したがって「極性分子である」としたウは誤りです。ア、イ、エ、オはすべて正しい記述です。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c3_3_8",
+              category: "分子の相互作用と性質 (問8)",
+              text: "【問8】 （共通テスト風応用）NH₃ と PH₃ について次の問いに答えよ。",
+              subQuestions: [
+                { id: "q_c3_3_8_1", label: "(1) どちらが沸点が高いと予想されるか、理由を答えよ。", type: "short_answer", correctAnswer: "NH₃。水素結合をもつため", correctAnswerRate: 85 },
+                { id: "q_c3_3_8_2", label: "(2) どちらが水に溶けやすいか答えよ。", type: "multiple_choice", options: ["NH₃", "PH₃"], correctAnswer: "NH₃", correctAnswerRate: 85 }
+              ],
+              explanation: "▼ 解答・解説\n(1) NH₃。NH₃ は N-H に水素結合をもつため、分子量が小さくても沸点が高い（NH₃: −33℃, PH₃: −88℃）。\n(2) NH₃。極性が大きく、しかも水素結合により水分子と強く相互作用するためよく溶けます。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ],
           miniTest: []
         }
       ]
@@ -3071,6 +3362,256 @@ export const chemicalBondTreeData: NodeData = {
           subLabel: 'CH4, CCl4',
           explanation: '中心原子から等距離かつ等しい角度（約109.5度）で対称に4本の結合が伸びた完全に対称的な立体形。\n例：CH₄, CCl₄, NH₄⁺',
           relatedQuestions: []
+        }
+      ]
+    }
+  ]
+};
+
+export const crystalTreeData: NodeData = {
+  id: 'crystal_root',
+  label: '結晶',
+  step: null,
+  explanation: '結晶は構成する粒子とそれらを結びつける「化学結合」の種類により、大きく4大結晶に分類されます。\nそれぞれの結晶が持つ粒子・結合、そして融点や導電性などの性質を体系的に整理しましょう。',
+  children: [
+    {
+      id: 'step1_crystal_types',
+      isGroup: true,
+      label: '【Step1】結晶の分類',
+      step: 1,
+      children: [
+        {
+          id: 'ionic_crystal',
+          label: 'イオン結晶',
+          step: 1,
+          subLabel: '陽イオンと陰イオン',
+          explanation: '<u>陽イオンと陰イオン</u>が規則正しく並んだ結晶。結合力は<u>静電気（クーロン力）</u>。\n例：NaCl、CaCO₃、CaCl₂ など。',
+          relatedQuestions: [
+            { id: "q_c3_2_1_a", label: "問1(ア) イオン" },
+            { id: "q_c3_2_1_e", label: "問1(エ) 通さない" },
+            { id: "q_c3_2_1_o", label: "問1(オ) 融解" },
+            { id: "q_c3_2_1_ka", label: "問1(カ) 水溶液" },
+            { id: "q_c3_2_2_1", label: "問2(1) NaCl" },
+            { id: "q_c3_2_2_8", label: "問2(8) 塩化カルシウム" },
+            { id: "q_c3_2_3_4", label: "問3(4) 性質" },
+            { id: "q_c3_2_4_1", label: "問4(1) 電気伝功性" }
+          ]
+        },
+        {
+          id: 'molecular_crystal',
+          label: '分子結晶',
+          step: 1,
+          subLabel: '分子からなる結晶',
+          explanation: '分子が<u>分子間力</u>（ファンデルワールス力や水素結合）で結びついて並んだ結晶。\n例：ヨウ素 I₂、ドライアイス CO₂、ナフタレン、氷 H₂O。',
+          relatedQuestions: [
+            { id: "q_c3_2_1_ki", label: "問1(キ) 分子" },
+            { id: "q_c3_2_1_ko", label: "問1(コ) 通さない" },
+            { id: "q_c3_2_2_4", label: "問2(4) ドライアイス" },
+            { id: "q_c3_2_2_5", label: "問2(5) ヨウ素" },
+            { id: "q_c3_2_2_10", label: "問2(10) ナフタレン" },
+            { id: "q_c3_2_2_12", label: "問2(12) 氷" },
+            { id: "q_c3_2_3_2", label: "問3(2) 性質" }
+          ]
+        },
+        {
+          id: 'covalent_crystal',
+          label: '共有結合結晶',
+          step: 1,
+          subLabel: 'すべての原子が共有結合',
+          explanation: 'すべての構成原子が<u>共有結合</u>により三次元的に繋がっている結晶。\n例：ダイヤモンド C、ケイ素 Si、二酸化ケイ素 SiO₂、黒鉛 C。',
+          relatedQuestions: [
+            { id: "q_c3_2_1_sa", label: "問1(サ) 共有結合" },
+            { id: "q_c3_2_1_se", label: "問1(セ) 黒鉛" },
+            { id: "q_c3_2_2_2", label: "問2(2) ダイヤモンド" },
+            { id: "q_c3_2_2_6", label: "問2(6) 二酸化ケイ素" },
+            { id: "q_c3_2_2_9", label: "問2(9) 黒鉛" },
+            { id: "q_c3_2_3_1", label: "問3(1) 性質" },
+            { id: "q_c3_2_4_2", label: "問4(2) 黒鉛の特性" }
+          ]
+        },
+        {
+          id: 'metallic_crystal',
+          label: '金属結晶',
+          step: 1,
+          subLabel: '金属原子と自由電子',
+          explanation: '金属原子が<u>自由電子</u>を共有して、規則正しく密に並んだ結晶。\n例：Cu、Fe、Al、Au、Ag。',
+          relatedQuestions: [
+            { id: "q_c3_2_1_so", label: "問1(ソ) 金属" },
+            { id: "q_c3_2_2_3", label: "問2(3) 鉄" },
+            { id: "q_c3_2_2_7", label: "問2(7) アルミニウム" },
+            { id: "q_c3_2_2_11", label: "問2(11) 銅" },
+            { id: "q_c3_2_3_3", label: "問3(3) 性質" },
+            { id: "q_c3_2_4_3", label: "問4(3) 変形に強い理由" },
+            { id: "q_c3_2_7_ans", label: "問7 未知の固体" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step2_crystal_properties',
+      isGroup: true,
+      label: '【Step2】結晶の性質',
+      step: 2,
+      children: [
+        {
+          id: 'melting_point',
+          label: '融点と結合力',
+          step: 2,
+          subLabel: '結合強度との関係',
+          explanation: '結晶の融点は構成粒子同士を結びつける力の強さに比例します。\n\n・<b>共有結合結晶：</b>極めて高い（結合が極めて強いため）\n・<b>イオン結晶：</b>高い（電気的な引き合いが強いため）\n・<b>金属結晶：</b>様々（水銀の-39℃からタングステンの3422℃まで広い）\n・<b>分子結晶：</b>低い（弱い分子間力で繋がっているため）',
+          relatedQuestions: [
+            { id: "q_c3_2_1_i", label: "問1(イ) 高い" },
+            { id: "q_c3_2_1_ku", label: "問1(ク) 低い" },
+            { id: "q_c3_2_1_shi", label: "問1(シ) 極めて高い" },
+            { id: "q_c3_2_6_ans", label: "問6 誤判定" }
+          ]
+        },
+        {
+          id: 'mechanical_strength',
+          label: '硬さと脆さ・変形能',
+          step: 2,
+          subLabel: '割れやすさ・変形性',
+          explanation: '・<b>イオン結晶：</b><u>硬いが脆い</u>（強い力が加わりイオンの配列がずれると、同種の電荷が向かい合って反発し割れる）。\n・<b>共有結合結晶：</b><u>極めて硬い</u>。\n・<b>分子結晶：</b>柔らかい、<u>昇華性</u>を持つものがある。\n・<b>金属結晶：</b><u>展性・延性</u>を示す（ずれても自由電子が再び結合を繋ぎ留めるため性質が保たれる）。',
+          relatedQuestions: [
+            { id: "q_c3_2_1_u", label: "問1(ウ) 脆い" },
+            { id: "q_c3_2_1_ke", label: "問1(ケ) 昇華" },
+            { id: "q_c3_2_1_su", label: "問1(ス) 極めて硬い" },
+            { id: "q_c3_2_1_ta", label: "問1(タ) 展性" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step3_unit_lattice',
+      isGroup: true,
+      label: '【Step3】単位格子',
+      step: 3,
+      children: [
+        {
+          id: 'density_calculation',
+          label: '結晶の計算問題',
+          step: 3,
+          subLabel: '単位格子と文字式の展開',
+          explanation: '結晶は構成粒子が規則正しく無限に繰り返す三次元パターン（結晶格子）です。その最小単位を<b>単位格子</b>と呼びます。単位格子内の<b>原子数(Z)、1辺(a [cm])、密度(d [g/cm³])、原子量(M)、アボガドロ定数(N_A)</b>は以下の関係式をとります。\n\n<b>d [g/cm³] = 質量 [g] / 体積 [cm³] = (Z · M / N_A) / a³</b>',
+          relatedQuestions: [
+            { id: "q_c3_2_5_ans", label: "問5 結晶の文字式" }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+export const interactionTreeData: NodeData = {
+  id: 'interaction_root',
+  label: '分子の相互作用',
+  step: null,
+  explanation: '分子間の相互作用とその強さは、結合の極性や分子量、特別な結合があるかによって決定します。\n電気陰性度からはじまる一連のステップに沿って整理しましょう。',
+  children: [
+    {
+      id: 'step1_polarity',
+      isGroup: true,
+      label: '【Step1】結合の極性と分子の形状',
+      step: 1,
+      children: [
+        {
+          id: 'electronegativity',
+          label: '電気陰性度と結合の極性',
+          step: 1,
+          subLabel: '電子対を引く強さと偏り',
+          explanation: '共有結合する原子間で電子対を惹きつける強さを<b>電気陰性度</b>と呼びます。原子間で電気陰性度に差があるとき、電子対の偏りである<b>極性</b>が生じます。',
+          relatedQuestions: [
+            { id: "q_c3_3_1_a", label: "問1(ア) 電気陰性度" },
+            { id: "q_c3_3_1_i", label: "問1(イ) 極性" },
+            { id: "q_c3_3_5_1", label: "問5(1) C-H極性" },
+            { id: "q_c3_3_5_2", label: "問5(2) O-H極性" },
+            { id: "q_c3_3_5_3", label: "問5(3) N-H極性" },
+            { id: "q_c3_3_5_4", label: "問5(4) F-H極性" },
+            { id: "q_c3_3_5_5", label: "問5(5) Cl-H極性" },
+            { id: "q_c3_3_5_ranking", label: "問5 極性の強さ順" }
+          ]
+        },
+        {
+          id: 'molecular_shape',
+          label: '分子の対称性と形状',
+          step: 1,
+          subLabel: '極性分子・無極性分子',
+          explanation: '分子全体での極性の有無によって分類されます。\n・<b>極性分子：</b>H₂O (折れ線形)、NH₃ (三角錐形)、HCl / HF (直線形) など対称性の低いもの。\n・<b>無極性分子：</b>H₂ / N₂ (同種2原子)、CO₂ (直線形)、CH₄ / CCl₄ (正四面体形) など対称性がよく極性が打ち消されるもの。',
+          relatedQuestions: [
+            { id: "q_c3_3_1_u", label: "問1(ウ) 極性分子" },
+            { id: "q_c3_3_1_e", label: "問1(エ) 無極性分子" },
+            { id: "q_c3_3_1_o", label: "問1(オ) 折れ線形" },
+            { id: "q_c3_3_1_ka", label: "問1(カ) 三角錐" },
+            { id: "q_c3_3_1_ki", label: "問1(キ) 直線" },
+            { id: "q_c3_3_1_ku", label: "問1(ク) 正四面体" },
+            { id: "q_c3_3_2_1", label: "問2(1) H₂" },
+            { id: "q_c3_3_2_2", label: "問2(2) HCl" },
+            { id: "q_c3_3_2_3", label: "問2(3) H₂O" },
+            { id: "q_c3_3_2_4", label: "問2(4) CH₄" },
+            { id: "q_c3_3_2_5", label: "問2(5) CO₂" },
+            { id: "q_c3_3_2_6", label: "問2(6) NH₃" },
+            { id: "q_c3_3_2_7", label: "問2(7) N₂" },
+            { id: "q_c3_3_2_8", label: "問2(8) HF" },
+            { id: "q_c3_3_2_9", label: "問2(9) CCl₄" },
+            { id: "q_c3_3_2_10", label: "問2(10) CHCl₃" },
+            { id: "q_c3_3_7_ans", label: "問7 誤記述の判定" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step2_intermolecular_force',
+      isGroup: true,
+      label: '【Step2】分子間力と沸点',
+      step: 2,
+      children: [
+        {
+          id: 'vanderwaals',
+          label: 'ファンデルワールス力',
+          step: 2,
+          subLabel: '普遍的な弱い力',
+          explanation: 'すべての分子間にはたらく極めて弱い引力。分子量が大きいほど、また極性が大きいほど強くなります。',
+          relatedQuestions: [
+            { id: "q_c3_3_1_ke", label: "問1(ケ) ファンデルワールス" },
+            { id: "q_c3_3_3_1", label: "問3(1) 特徴" },
+            { id: "q_c3_3_6_2", label: "問6(2) 原因力" }
+          ]
+        },
+        {
+          id: 'hydrogen_bond',
+          label: '水素結合',
+          step: 2,
+          subLabel: '極めて強い特別な結合',
+          explanation: 'F, O, N原子と直接結合したH原子が隣り合う分子のF, O, N原子の非共有電子対との間で形成される強い静電的な引力。一般の分子間力（ファンデルワールス力のみ）に比べてはるかに強く、沸点を異常に高めます。',
+          relatedQuestions: [
+            { id: "q_c3_3_1_ko", label: "問1(コ) 水素結合" },
+            { id: "q_c3_3_1_sa", label: "問1(サ) 高い" },
+            { id: "q_c3_3_3_2", label: "問3(2) 水素結合条件" },
+            { id: "q_c3_3_3_3", label: "問3(3) 水素化合物特性" },
+            { id: "q_c3_3_4_ans", label: "問4 H₂Oの沸点理由" },
+            { id: "q_c3_3_6_1", label: "問6(1) HFの大きなずれ" },
+            { id: "q_c3_3_8_1", label: "問8(1) 沸点予想：NH₃ vs PH₃" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'step3_solubility',
+      isGroup: true,
+      label: '【Step3】溶媒への溶解性',
+      step: 3,
+      children: [
+        {
+          id: 'like_dissolves_like',
+          label: '似たもの同士はよく溶け合う',
+          step: 3,
+          subLabel: '極性と溶解性の関係',
+          explanation: '物質の溶解性は極性に深く関係します。水（代表的な極性溶媒）には極性分子が溶けやすく、無極性溶媒（ヘキサン等）には無極性分子が溶けやすいという傾向があります。',
+          relatedQuestions: [
+            { id: "q_c3_3_1_shi", label: "問1(シ) 水" },
+            { id: "q_c3_3_1_su", label: "問1(ス) 無極性溶媒" },
+            { id: "q_c3_3_8_2", label: "問8(2) 溶解性予想" }
+          ]
         }
       ]
     }
