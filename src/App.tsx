@@ -358,7 +358,7 @@ export default function App() {
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}
 
             {/* Global Bottom Navigation Footer */}
-            {appState !== 'onboarding' && (
+            {appState !== 'onboarding' && appState !== 'quiz' && appState !== 'explanation' && (
               <div className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-4 md:px-10 pb-safe pt-3 z-[60] shadow-sm pb-6">
                 <button 
                   onClick={() => setAppState('home')}
