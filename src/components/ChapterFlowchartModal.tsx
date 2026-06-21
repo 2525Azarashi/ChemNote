@@ -12,7 +12,11 @@ import {
   ionSizeTreeData, 
   chemicalBondTreeData, 
   crystalTreeData, 
-  interactionTreeData 
+  interactionTreeData,
+  atomicWeightTreeData,
+  amountOfSubstanceTreeData,
+  chemicalEquationTreeData,
+  concentrationTreeData
 } from '../data/chemistryData';
 
 interface ChapterFlowchartModalProps {
@@ -42,6 +46,10 @@ export function ChapterFlowchartModal({
   if (chapterId === 'c3_1') currentTreeData = chemicalBondTreeData;
   if (chapterId === 'c3_2') currentTreeData = crystalTreeData;
   if (chapterId === 'c3_3') currentTreeData = interactionTreeData;
+  if (chapterId === 'c4_1') currentTreeData = atomicWeightTreeData;
+  if (chapterId === 'c4_2') currentTreeData = amountOfSubstanceTreeData;
+  if (chapterId === 'c4_3') currentTreeData = chemicalEquationTreeData;
+  if (chapterId === 'c4_4') currentTreeData = concentrationTreeData;
 
   // Handle click on a questions from the logic tree node
   const handleQuestionClick = (questionId: string) => {

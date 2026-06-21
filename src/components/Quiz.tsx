@@ -273,9 +273,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
             {currentQuestion.subQuestions.map((sq: any) => (
-              <div key={sq.id} className="flex flex-col gap-3 md:gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200 hover:border-[#A9CCE3]/50 transition-colors">
-                <div className="flex flex-col lg:flex-row lg:items-center gap-3 md:gap-4">
-                  <span className="font-bold text-[#1B2631] min-w-[60px] text-center bg-gray-50 py-1.5 px-3 rounded-md text-sm border border-gray-100 self-start lg:self-auto shrink-0 shadow-sm">{sq.label}</span>
+              <div key={sq.id} className="flex flex-col gap-4 bg-white p-5 rounded-2xl shadow-sm border border-gray-200 hover:border-[#A9CCE3]/50 transition-all duration-250">
+                <div className="flex flex-col gap-3.5 w-full">
+                  <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-full block">
+                    {sq.label}
+                  </span>
                   
                   {sq.type === 'multiple_choice' ? (
                     <div className="flex flex-wrap gap-2 md:gap-3 w-full">
