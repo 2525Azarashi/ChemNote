@@ -347,15 +347,25 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         <button 
           key={sq.id}
           onClick={() => setExpandedSq(sq.id)}
-          className={`w-full flex items-center justify-between p-3 md:p-4 rounded-xl border transition-colors ${sq.type === 'descriptive' ? 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30' : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30')}`}
+          className={`w-full flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 gap-3 rounded-xl border transition-colors ${sq.type === 'descriptive' ? 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30' : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30')}`}
         >
-          <div className="flex items-center gap-3">
-            <div className="font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-2 py-1 rounded border border-[#3A506B]/50">{displayLabel}</div>
+          <div className="flex flex-col md:flex-row md:items-start gap-3 w-full md:w-auto text-left flex-1 min-w-0">
+            {displayLabel.length > 20 ? (
+              <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-xs md:text-sm leading-relaxed max-w-full break-words inline-block py-1.5`}>
+                {displayLabel}
+              </div>
+            ) : (
+              <div className={`font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-3 py-1.5 rounded-xl border border-[#3A506B]/50 leading-relaxed max-w-full break-words inline-block`}>
+                {displayLabel}
+              </div>
+            )}
             {sq.type !== 'descriptive' && (
-              isCorrect ? <CheckCircle2 className="text-[#5BC0BE] w-5 h-5" /> : <XCircle className="text-[#D9A0A0] w-5 h-5" />
+              <div className="shrink-0 pt-1.5 md:pt-0">
+                {isCorrect ? <CheckCircle2 className="text-[#5BC0BE] w-5 h-5" /> : <XCircle className="text-[#D9A0A0] w-5 h-5" />}
+              </div>
             )}
           </div>
-          <ChevronDown className="text-[#7A8B99]" size={20} />
+          <ChevronDown className="text-[#7A8B99] shrink-0 self-end md:self-center" size={20} />
         </button>
       );
     }
@@ -363,9 +373,17 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     return (
       <div id={`sq-${sq.id}`} key={sq.id} className={`w-full ${isMiniTest ? 'bg-white' : 'bg-[#1C2541]'} rounded-xl border ${isMiniTest ? 'border-gray-200' : 'border-[#3A506B]'} shadow-lg p-4 md:p-6`}>
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm ${isMiniTest ? 'bg-gray-100' : 'bg-[#0B132B]'} px-3 py-1 rounded border ${isMiniTest ? 'border-gray-200' : 'border-[#3A506B]'}`}>{displayLabel}</div>
-          <button onClick={() => setExpandedSq(null)} className="text-[#7A8B99] hover:text-[#E0E1DD]">
+        <div className="flex items-start justify-between mb-4 gap-3">
+          {displayLabel.length > 20 ? (
+            <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm md:text-base leading-relaxed break-words flex-1`}>
+              {displayLabel}
+            </div>
+          ) : (
+            <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm ${isMiniTest ? 'bg-gray-100' : 'bg-[#0B132B]'} px-3 py-1 rounded border ${isMiniTest ? 'border-gray-200' : 'border-[#3A506B]'}`}>
+              {displayLabel}
+            </div>
+          )}
+          <button onClick={() => setExpandedSq(null)} className="text-[#7A8B99] hover:text-[#E0E1DD] shrink-0">
             <XCircle size={24} />
           </button>
         </div>
@@ -743,35 +761,44 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
 
                         const renderSq = (sq: any, isCorrect: boolean) => {
                           const isExpanded = expandedSq === sq.id;
+                          const displayLabel = sq.group 
+                            ? `${sq.group.split(' ')[0]} : 係数 ${sq.label}`
+                            : sq.label;
 
                           return (
                             <div id={`sq-${sq.id}`} key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'border-blue-200' : 'border-[#A9CCE3]/30') : (isCorrect ? (mode === 'mini_test' ? 'border-emerald-200' : 'border-[#5BC0BE]/30') : (mode === 'mini_test' ? 'border-red-200' : 'border-[#D9A0A0]/30'))}`}>
                             {/* Tab Header */}
                             <button 
                               onClick={() => setExpandedSq(isExpanded ? null : sq.id)}
-                              className={`w-full flex items-center justify-between p-3 md:p-4 transition-colors ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'bg-blue-50 hover:bg-blue-100' : 'bg-[#A9CCE3]/10 hover:bg-[#A9CCE3]/20') : (isCorrect ? (mode === 'mini_test' ? 'bg-emerald-50 hover:bg-emerald-100' : 'bg-[#5BC0BE]/10 hover:bg-[#5BC0BE]/20') : (mode === 'mini_test' ? 'bg-red-50 hover:bg-red-100' : 'bg-[#D9A0A0]/10 hover:bg-[#D9A0A0]/20'))}`}
+                              className={`w-full flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 gap-3 transition-colors ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'bg-blue-50 hover:bg-blue-100' : 'bg-[#A9CCE3]/10 hover:bg-[#A9CCE3]/20') : (isCorrect ? (mode === 'mini_test' ? 'bg-emerald-50 hover:bg-emerald-100' : 'bg-[#5BC0BE]/10 hover:bg-[#5BC0BE]/20') : (mode === 'mini_test' ? 'bg-red-50 hover:bg-red-100' : 'bg-[#D9A0A0]/10 hover:bg-[#D9A0A0]/20'))}`}
                             >
-                              <div className="flex items-center gap-3 md:gap-4">
-                                <div className={`font-bold text-xs md:text-sm px-2 py-1 rounded border shadow-sm ${mode === 'mini_test' ? 'text-gray-700 bg-white border-gray-200' : 'text-[#E0E1DD] bg-[#0B132B]/50 border-[#3A506B]/50'}`}>{sq.label}</div>
-                                {sq.type !== 'descriptive' && (
-                                  <div>
-                                    {isCorrect ? <CheckCircle2 className={`w-5 h-5 md:w-6 md:h-6 ${mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}`} /> : <XCircle className={`w-5 h-5 md:w-6 md:h-6 ${mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}`} />}
-                                  </div>
+                              <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-4 flex-1 min-w-0 text-left">
+                                {displayLabel.length > 20 ? (
+                                  <div className={`font-bold text-xs md:text-sm leading-relaxed max-w-full break-words inline-block py-1.5 ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>{displayLabel}</div>
+                                ) : (
+                                  <div className={`font-bold text-xs md:text-sm px-3 py-1.5 rounded-xl border shadow-xs max-w-full break-words inline-block leading-relaxed ${mode === 'mini_test' ? 'text-gray-700 bg-white border-gray-200' : 'text-[#E0E1DD] bg-[#0B132B]/50 border-[#3A506B]/50'}`}>{displayLabel}</div>
                                 )}
-                                {sq.type === 'descriptive' && (
-                                  <div className={`text-xs md:text-sm font-bold flex items-center gap-1 ${mode === 'mini_test' ? 'text-blue-600' : 'text-[#A9CCE3]'}`}>
-                                    <Edit3 size={16} />
-                                    <span>記述問題</span>
-                                  </div>
-                                )}
-                                {sq.type !== 'descriptive' && (
-                                  <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
-                                    <span className={`text-xs mr-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正解:</span>
-                                    {sq.correctAnswer}
-                                  </div>
-                                )}
+                                <div className="flex flex-wrap items-center gap-3 md:gap-4 shrink-0">
+                                  {sq.type !== 'descriptive' && (
+                                    <div>
+                                      {isCorrect ? <CheckCircle2 className={`w-5 h-5 md:w-6 md:h-6 ${mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}`} /> : <XCircle className={`w-5 h-5 md:w-6 md:h-6 ${mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}`} />}
+                                    </div>
+                                  )}
+                                  {sq.type === 'descriptive' && (
+                                    <div className={`text-xs md:text-sm font-bold flex items-center gap-1 ${mode === 'mini_test' ? 'text-blue-600' : 'text-[#A9CCE3]'}`}>
+                                      <Edit3 size={16} />
+                                      <span>記述問題</span>
+                                    </div>
+                                  )}
+                                  {sq.type !== 'descriptive' && (
+                                    <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
+                                      <span className={`text-xs mr-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正解:</span>
+                                      {sq.correctAnswer}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
-                              <div className="flex items-center gap-3 md:gap-4">
+                              <div className="flex items-center gap-3 md:gap-4 shrink-0 justify-end md:self-center">
                                 <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''} ${mode === 'mini_test' ? 'text-gray-400' : 'text-[#7A8B99]'}`}>
                                   <ChevronDown size={20} />
                                 </div>

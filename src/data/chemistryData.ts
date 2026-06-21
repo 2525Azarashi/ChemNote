@@ -1723,24 +1723,29 @@ export const chemistryData = {
             {
               id: "q_c2_4_5",
               category: "原子の大きさとイオンの大きさ (問5)",
-              text: "【問5】 （文字式・文章題）電子数 N が等しいイオン・原子のうち、陽子数を p とする。クーロン引力で電子を核に引きつける強さは概ね p に比例し、その結果イオン半径 r は p の増加とともに減少する。同じ N=10 の系列 X^q（X は原子番号 p の元素、電荷 q = p − 10）について、p = 8, 9, 11, 12, 13 のときのイオン種を順に並べよ。\n※下の元素カードをクリックして、p=8, 9, 11, 12, 13 の順に並べてください。",
+              text: "【問5】 次の（1）、（2）の問いに答えよ。\n\n（1） イオン半径の大小として、正しいものは次のア～オのうちどれか。\nア） Na⁺ ＜ Mg²⁺  イ） Na⁺ ＜ Al³⁺  ウ） O²⁻ ＜ Al³⁺  エ） F⁻ ＜ O²⁻  オ） K⁺ ＜ Ca²⁺\n\n（2） 次の原子やイオンについて、大きい方を選んで元素記号またはイオン式で答えよ。\n① Li と Na  ② Li と Be  ③ Ca と Ca²⁺  ④ Cl と Cl⁻",
               subQuestions: [
-                { id: "q_c2_4_5_ans", label: "p=8, 9, 11, 12, 13 の順", type: "sorting", items: ["O²⁻", "F⁻", "Na⁺", "Mg²⁺", "Al³⁺"], correctAnswer: "O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺", correctAnswerRate: 85 }
+                { id: "q_c2_4_5_1", label: "（1） イオン半径の大小として、正しいものはどれか。", type: "multiple_choice", options: ["ア） Na⁺ ＜ Mg²⁺", "イ） Na⁺ ＜ Al³⁺", "ウ） O²⁻ ＜ Al³⁺", "エ） F⁻ ＜ O²⁻", "オ） K⁺ ＜ Ca²⁺"], correctAnswer: "エ） F⁻ ＜ O²⁻", correctAnswerRate: 85 },
+                { id: "q_c2_4_5_2_1", label: "（2） ① LiとNaで大きい方", type: "multiple_choice", options: ["Li", "Na"], correctAnswer: "Na", correctAnswerRate: 85 },
+                { id: "q_c2_4_5_2_2", label: "（2） ② LiとBeで大きい方", type: "multiple_choice", options: ["Li", "Be"], correctAnswer: "Li", correctAnswerRate: 85 },
+                { id: "q_c2_4_5_2_3", label: "（2） ③ CaとCa²⁺で大きい方", type: "multiple_choice", options: ["Ca", "Ca²⁺"], correctAnswer: "Ca", correctAnswerRate: 85 },
+                { id: "q_c2_4_5_2_4", label: "（2） ④ ClとCl⁻で大きい方", type: "multiple_choice", options: ["Cl", "Cl⁻"], correctAnswer: "Cl⁻", correctAnswerRate: 85 }
               ],
-              explanation: "▼ 解答・解説\n- p=8, q=−2 → O²⁻\n- p=9, q=−1 → F⁻\n- p=10, q=0 → Ne（原子）\n- p=11, q=+1 → Na⁺\n- p=12, q=+2 → Mg²⁺\n- p=13, q=+3 → Al³⁺\n\n■ p増加とともに半径は単調減少 → 大小関係 O²⁻ > F⁻ > Ne > Na⁺ > Mg²⁺ > Al³⁺.",
+              explanation: "▼ 解答・解説\n（1）答：エ） F⁻ ＜ O²⁻\n等電子配置（いずれもNe型）のイオンを比較すると、**陽子数（原子番号）が小さいほど、核が電子を引く力が弱まり、イオン半径は大きくなります。**\n陽子数：O²⁻(8) ＜ F⁻(9) ＜ Na⁺(11) ＜ Mg²⁺(12) ＜ Al³⁺(13)\nしたがって、イオン半径は：O²⁻ ＞ F⁻ ＞ Na⁺ ＞ Mg²⁺ ＞ Al³⁺ となります。\n各選択肢を検証すると、F⁻ ＜ O²⁻ だけが不等号の向きが正しくなっています。\n\n（2）大きい方は次の通りです。\n① **Na**\n同じ1族の元素（同族元素）では、**周期が大きい（下にある）ほど電子殻の数が多くなるため、原子半径は大きくなります**（Li：L殻まで、Na：M殻まで）。\n\n② **Li**\n同じ第2周期の元素（同周期元素）では、**原子番号が小さい（左にある）ほど原子核の正電荷が小さく、電子を引く力が弱いため、原子半径が大きくなります**。\n\n③ **Ca**\n金属原子が陽イオンになるとき、最外殻電子をすべて失って**電子殻が1つ減る（または最外殻が内側に移る）ため、イオン半径は元の原子半径より極めて小さくなります**（Ca ＞ Ca²⁺）。\n\n④ **Cl⁻**\n非金属原子が陰イオンになるとき、最外殻に電子が入り、電子同士の反発力が强まるため、**イオン半径は元の原子半径より僅かに大きくなります**（Cl ＜ Cl⁻）。",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
               id: "q_c2_4_6",
               category: "原子の大きさとイオンの大きさ (問6)",
-              text: "【問6】 （共通テスト風応用）次の問いに答えよ。",
+              text: "【問6】 イオンが球形であるとみなしたとき、その半径をイオン半径という。次の各組のイオンについて、イオン半径が大きいのはどちらか答えよ。また、その理由を説明したそれぞれの文の空欄［ 15字以内 ］を適切に埋めよ。\n\n① O²⁻ と Na⁺\n理由：同じ電子配置では、［ 15字以内 ］ほど、イオン半径が大きいため。\n\n② Na⁺ と K⁺\n理由：同じ族では、［ 15字以内 ］ほど、イオン半径が大きいため。",
               subQuestions: [
-                { id: "q_c2_4_6_1", label: "(1) 周期表で原子半径の最大値はどのあたりにあるか（位置）。", type: "descriptive", correctAnswer: "周期表の左下（第6・7周期の1族、Csなど）が最大。", gradingCriteria: ["「左下」または「最も左・下」", "「1族」または「アルカリ金属」", "「Cs」または「セシウム」"], correctAnswerRate: 85 },
-                { id: "q_c2_4_6_2", label: "(2) 同じ電子配置のイオンを比較したとき、陽イオンと陰イオンとでは、どちらが半径が大きいか。理由とともに答えよ。", type: "descriptive", correctAnswer: "陰イオン。陽子数が少ない元素から作られるため、同じ電子数でも電子を引きつける力が弱く半径が大きいため。", gradingCriteria: ["「陰イオン」と明記", "等電子では「陽子数（原子番号）が少ない」ことに言及", "「核の正電荷が弱い」「電子を引きつける力が弱い」"], correctAnswerRate: 85 },
-                { id: "q_c2_4_6_3", label: "(3) Cl⁻ と K⁺ は同じ Ar 型電子配置だが、Cl⁻ の方が大きいか、K⁺ の方が大きいか。", type: "short_answer", correctAnswer: "Cl⁻", correctAnswerRate: 85 }
+                { id: "q_c2_4_6_1_ion", label: "① O²⁻とNa⁺でイオン半径が大きい方", type: "multiple_choice", options: ["O²⁻", "Na⁺"], correctAnswer: "O²⁻", correctAnswerRate: 85 },
+                { id: "q_c2_4_6_1_reason", label: "① の理由の空欄［ 15字以内 ］に入る言葉", type: "descriptive", correctAnswer: "原子核中の正電荷が小さいイオン", gradingCriteria: ["「正電荷（または陽子数や原子番号）が小さい（少ない）」という意味を含むこと", "「15字以内」でまとめられていること（例：「原子核中の正電荷が小さい」など）"], correctAnswerRate: 85 },
+                { id: "q_c2_4_6_2_ion", label: "② Na⁺とK⁺でイオン半径が大きい方", type: "multiple_choice", options: ["Na⁺", "K⁺"], correctAnswer: "K⁺", correctAnswerRate: 85 },
+                { id: "q_c2_4_6_2_reason", label: "② の理由の空欄［ 15字以内 ］に入る言葉", type: "descriptive", correctAnswer: "外側の電子殻に電子があるイオン", gradingCriteria: ["「外側の電子殻（または電子殻の数）に電子がある（または多い）」という意味を含むこと", "「15字以内」でまとめられていること（例：「外側の電子殻に電子がある」など）"], correctAnswerRate: 85 }
               ],
-              explanation: "▼ 解答・解説\n(1) 周期表の左下（第6・7周期の1族、Csなど）が最大。\n(2) 陰イオン。陽子数が少ない元素から作られるため、同じ電子数でも電子を引きつける力が弱く半径が大きい。\n(3) Cl⁻（陽子数17）の方が K⁺（陽子数19）より大きい。等電子配置では陽子数の少ない方が大きい。",
+              explanation: "▼ 解答・解説\n① 答：**O²⁻**、理由の空欄：**原子核中の正電荷が小さい**（または「陽子数が少ない」「原子番号が小さい」など）\n\n【解説】\nO²⁻（原子番号8）と Na⁺（原子番号11）は、どちらも電子が10個で**等電子配置（Ne型）**です。\n等電子配置のイオンでは、**原子核の正電荷（陽子数）が小さいほど、核が電子を引く力が弱くなるため、イオン半径は大きくなります**。\n\n② 答：**K⁺**、理由の空欄：**外側の電子殻に電子がある**（または「電子殻の数（または数）が多い」「最外殻の主量子数が大きい」など）\n\n【解説】\nNa⁺ と K⁺ はどちらも1族の**同族元素のイオン**です。\n同じ族のイオンでは、下（原子番号が大きく周期が大きい）にあるものほど**より外側の電子殻に電子が存在する（電子殻の数が多い）ため、イオン半径が大きくなります**（Na⁺はL殻まで、K⁺はM殻まで電子が入るため）。",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
@@ -3562,9 +3567,15 @@ export const ionSizeTreeData: NodeData = {
           relatedQuestions: [
             { id: "q_c2_4_1_ko", label: "問1(コ) 大きい" },
             { id: "q_c2_4_4_ans", label: "問4 等電子イオン半径" },
-            { id: "q_c2_4_5_ans", label: "問5 電子数 N 系列" },
-            { id: "q_c2_4_6_2", label: "問6(2) 陽・陰半径比較" },
-            { id: "q_c2_4_6_3", label: "問6(3) Cl⁻ と K⁺" }
+            { id: "q_c2_4_5_1", label: "問5(1) イオン半径大小" },
+            { id: "q_c2_4_5_2_1", label: "問5(2)① LiとNa" },
+            { id: "q_c2_4_5_2_2", label: "問5(2)② LiとBe" },
+            { id: "q_c2_4_5_2_3", label: "問5(2)③ CaとCa²⁺" },
+            { id: "q_c2_4_5_2_4", label: "問5(2)④ ClとCl⁻" },
+            { id: "q_c2_4_6_1_ion", label: "問6① O²⁻とNa⁺" },
+            { id: "q_c2_4_6_1_reason", label: "問6① 理由" },
+            { id: "q_c2_4_6_2_ion", label: "問6② Na⁺とK⁺" },
+            { id: "q_c2_4_6_2_reason", label: "問6② 理由" }
           ]
         },
         {

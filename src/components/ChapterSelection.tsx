@@ -45,7 +45,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
             if (!acc[group]) acc[group] = [];
             acc[group].push(chapter);
             return acc;
-          }, {} as Record<string, typeof part.chapters>);
+          }, {} as Record<string, any[]>);
 
           return (
             <div key={part.id} className="font-handwriting">
