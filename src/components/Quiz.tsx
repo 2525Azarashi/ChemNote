@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { substanceTreeData } from '../data/chemistryData';
@@ -15,6 +15,25 @@ interface QuizProps {
   isMobileView?: boolean;
   onExplanationChange?: (isExplanation: boolean) => void;
 }
+
+const chemistryShortcuts = [
+  { label: '⁺ (1価陽)', value: '⁺', desc: '1価陽イオン (上付きプラス)' },
+  { label: '⁻ (1価陰)', value: '⁻', desc: '1価陰イオン (上付きマイナス)' },
+  { label: '²⁺ (2価陽)', value: '²⁺', desc: '2価陽イオン' },
+  { label: '²⁻ (2価陰)', value: '²⁻', desc: '2価陰イオン' },
+  { label: '³⁺ (3価陽)', value: '³⁺', desc: '3価陽イオン' },
+  { label: '³⁻ (3価陰)', value: '³⁻', desc: '3価陰イオン' },
+  { label: 'NH₄⁺', value: 'NH₄⁺', desc: 'アンモニウムイオン' },
+  { label: 'OH⁻', value: 'OH⁻', desc: '水酸化物イオン' },
+  { label: 'NO₃⁻', value: 'NO₃⁻', desc: '硝酸イオン' },
+  { label: 'SO₄²⁻', value: 'SO₄²⁻', desc: '硫酸イオン' },
+  { label: 'CO₃²⁻', value: 'CO₃²⁻', desc: '炭酸イオン' },
+  { label: 'PO₄³⁻', value: 'PO₄³⁻', desc: 'リン酸イオン' },
+  { label: '₂ (下付き2)', value: '₂', desc: '下付き2' },
+  { label: '₃ (下付き3)', value: '₃', desc: '下付き3' },
+  { label: '₄ (下付き4)', value: '₄', desc: '下付き4' },
+  { label: '₅ (下付き5)', value: '₅', desc: '下付き5' },
+];
 
 export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange }: QuizProps) {
   const [answers, setAnswers] = useState<Record<string, string>>(() => {
@@ -140,6 +159,28 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
 
   const currentQuestion = questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+  // Group subQuestions if they have a group property
+  const groupedSubQuestions = useMemo(() => {
+    if (!currentQuestion) return [];
+    const list: { type: 'single' | 'group'; groupName?: string; items: any[] }[] = [];
+    let lastGroup: any = null;
+
+    (currentQuestion.subQuestions || []).forEach((sq: any) => {
+      if (sq.group) {
+        if (lastGroup && lastGroup.groupName === sq.group) {
+          lastGroup.items.push(sq);
+        } else {
+          lastGroup = { type: 'group', groupName: sq.group, items: [sq] };
+          list.push(lastGroup);
+        }
+      } else {
+        lastGroup = null;
+        list.push({ type: 'single', items: [sq] });
+      }
+    });
+    return list;
+  }, [currentQuestion]);
 
   const handleNext = () => {
     if (!showingExplanation) {
@@ -272,184 +313,220 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-8 md:pb-8 relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
-            {currentQuestion.subQuestions.map((sq: any) => (
-              <div key={sq.id} className="flex flex-col gap-4 bg-white p-5 rounded-2xl shadow-sm border border-gray-200 hover:border-[#A9CCE3]/50 transition-all duration-250">
-                <div className="flex flex-col gap-3.5 w-full">
-                  <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-full block">
-                    {sq.label}
-                  </span>
-                  
-                  {sq.type === 'multiple_choice' ? (
-                    <div className="flex flex-wrap gap-2 md:gap-3 w-full">
-                      {sq.options.map((opt: string) => {
-                        const isSelected = (answers[sq.id] || '').split(',').includes(opt);
+            {groupedSubQuestions.map((g: any, gIdx: number) => {
+              if (g.type === 'group') {
+                return (
+                  <div key={`group-${gIdx}`} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 hover:border-[#A9CCE3]/50 transition-all duration-250 flex flex-col gap-4">
+                    <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/50 border border-[#A9CCE3]/30 py-2.5 px-4 rounded-xl leading-relaxed shadow-xs w-full block">
+                      {formatText(g.groupName)}
+                    </span>
+                    
+                    <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3 w-full">
+                      {g.items.map((sq: any) => (
+                        <div key={sq.id} className="flex flex-col gap-1.5 min-w-[50px] bg-stone-50/80 p-2 border border-stone-200/60 rounded-xl shadow-2xs">
+                          <span className="font-bold text-stone-500 text-xs text-center border-b border-stone-200/60 pb-1 select-none font-sans">
+                            {sq.label}
+                          </span>
+                          <input
+                            type="text"
+                            value={answers[sq.id] || ''}
+                            onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                            placeholder="..."
+                            className="w-full py-1 text-center text-sm font-bold text-stone-800 border-none outline-none focus:ring-0 leading-none bg-transparent"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
+              const sq = g.items[0];
+              return (
+                <div key={sq.id} className="flex flex-col gap-4 bg-white p-5 rounded-2xl shadow-sm border border-gray-200 hover:border-[#A9CCE3]/50 transition-all duration-250">
+                  <div className="flex flex-col gap-3.5 w-full">
+                    <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-full block">
+                      {sq.label}
+                    </span>
+                    
+                    {sq.type === 'multiple_choice' ? (
+                      (() => {
+                        const isLongOptionList = sq.options.some((opt: string) => opt.length > 5);
                         return (
-                          <button
-                            key={opt}
-                            onClick={() => {
-                              const isMultiple = sq.correctAnswer && sq.correctAnswer.includes(",");
-                              let next: string[];
-                              if (isMultiple) {
-                                const current = (answers[sq.id] || '').split(',').filter(Boolean);
-                                next = isSelected 
-                                  ? current.filter(a => a !== opt)
-                                  : [...current, opt];
-                              } else {
-                                next = isSelected ? [] : [opt];
-                              }
-                              handleOptionSelect(sq.id, next.join(','));
-                            }}
-                            className={`px-3 py-2 md:px-5 md:py-2 rounded-full font-bold text-sm transition-all duration-200 border-2 flex items-center justify-center flex-1 sm:flex-none min-w-[3rem] shadow-sm cursor-pointer
-                              ${isSelected 
-                                ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30 scale-[1.02]' 
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
-                              }`}
-                          >
-                            {formatText(opt)}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ) : sq.type === 'sorting' ? (
-                    <div className="flex-grow flex flex-col gap-4 w-full">
-                      {/* Interactive Drag & Reorder Sequence */}
-                      <div className="flex flex-col gap-2.5">
-                        <div className="text-xs text-gray-400 font-bold flex items-center justify-between">
-                          <span>ドラッグまたは左右移動ボタンで順序を並べ替え :</span>
-                          <span className="text-[10px] text-[#A9CCE3] font-normal">左ほど「大きい」</span>
-                        </div>
-                        
-                        <div className="flex flex-wrap items-center gap-2.5 p-3.5 bg-gray-50/80 border border-gray-200 rounded-2xl min-h-[72px]">
-                          {(() => {
-                            const activeOrder = answers[sq.id] ? answers[sq.id].split(' > ') : [...(sq.items || [])];
-                            
-                            const handleSwap = (idx1: number, idx2: number) => {
-                              if (idx1 < 0 || idx1 >= activeOrder.length || idx2 < 0 || idx2 >= activeOrder.length) return;
-                              const nextOrder = [...activeOrder];
-                              const temp = nextOrder[idx1];
-                              nextOrder[idx1] = nextOrder[idx2];
-                              nextOrder[idx2] = temp;
-                              handleOptionSelect(sq.id, nextOrder.join(' > '));
-                            };
-
-                            return activeOrder.map((item: string, idx: number) => {
-                              const isDragging = draggingIndex === idx;
-                              const isDragOver = dragOverIndex === idx;
-
+                          <div className={isLongOptionList 
+                            ? "grid grid-cols-1 gap-2.5 w-full" 
+                            : "grid grid-cols-2 xs:grid-cols-3 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
+                          }>
+                            {sq.options.map((opt: string) => {
+                              const isSelected = (answers[sq.id] || '').split(',').includes(opt);
                               return (
-                                <div
-                                  key={`${item}-${idx}`}
-                                  draggable
-                                  onDragStart={(e) => {
-                                    setDraggingIndex(idx);
-                                    e.dataTransfer.effectAllowed = 'move';
+                                <button
+                                  key={opt}
+                                  onClick={() => {
+                                    const isMultiple = sq.correctAnswer && (sq.correctAnswer.includes(",") || sq.correctAnswer.includes("・"));
+                                    let next: string[];
+                                    if (isMultiple) {
+                                      const separator = sq.correctAnswer.includes("・") ? "・" : ",";
+                                      const current = (answers[sq.id] || '').split(separator).filter(Boolean);
+                                      const nextUnordered = isSelected 
+                                        ? current.filter(a => a !== opt)
+                                        : [...current, opt];
+                                      const ordered = sq.options.filter((o: string) => nextUnordered.includes(o));
+                                      next = ordered;
+                                      handleOptionSelect(sq.id, next.join(separator));
+                                    } else {
+                                      next = isSelected ? [] : [opt];
+                                      handleOptionSelect(sq.id, next.join(','));
+                                    }
                                   }}
-                                  onDragOver={(e) => e.preventDefault()}
-                                  onDragEnter={(e) => {
-                                    e.preventDefault();
-                                    setDragOverIndex(idx);
-                                  }}
-                                  onDragLeave={() => setDragOverIndex(null)}
-                                  onDrop={(e) => {
-                                    e.preventDefault();
-                                    setDragOverIndex(null);
-                                    if (draggingIndex === null || draggingIndex === idx) return;
-                                    const nextOrder = [...activeOrder];
-                                    const draggedValue = nextOrder[draggingIndex];
-                                    nextOrder.splice(draggingIndex, 1);
-                                    nextOrder.splice(idx, 0, draggedValue);
-                                    handleOptionSelect(sq.id, nextOrder.join(' > '));
-                                    setDraggingIndex(null);
-                                  }}
-                                  onDragEnd={() => {
-                                    setDraggingIndex(null);
-                                    setDragOverIndex(null);
-                                  }}
-                                  className={`flex flex-col items-center p-2.5 bg-white border rounded-xl shadow-xs transition-all duration-200 cursor-grab select-none
-                                    ${isDragging ? 'opacity-30 border-dashed border-gray-300 scale-95' : 'opacity-100'}
-                                    ${isDragOver ? 'border-[#A9CCE3] bg-[#A9CCE3]/15 scale-105 ring-2 ring-[#A9CCE3]/20' : 'border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50/50'}
-                                  `}
+                                  className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 border-2 flex items-center ${isLongOptionList ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3rem] shadow-sm cursor-pointer
+                                    ${isSelected 
+                                      ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30 scale-[1.01]' 
+                                      : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
+                                    }`}
                                 >
-                                  {/* Draggable Header */}
-                                  <div className="flex items-center gap-1.5 mb-1.5 shrink-0">
-                                    <GripVertical size={13} className="text-gray-400 font-bold" />
-                                    <span className="font-bold text-gray-800 text-sm">{formatText(item)}</span>
-                                  </div>
-
-                                  {/* Swap & Click controls */}
-                                  <div className="flex items-center gap-1 bg-gray-50 p-0.5 rounded-md border border-gray-150">
-                                    <button
-                                      type="button"
-                                      disabled={idx === 0}
-                                      onClick={() => handleSwap(idx, idx - 1)}
-                                      className="p-1 rounded hover:bg-white text-gray-500 disabled:opacity-20 disabled:hover:bg-transparent transition-colors cursor-pointer"
-                                      title="左に移動"
-                                    >
-                                      <ChevronLeft size={13} className="stroke-[2.5]" />
-                                    </button>
-                                    <span className="text-[9px] text-gray-400 font-mono select-none px-0.5">{idx + 1}</span>
-                                    <button
-                                      type="button"
-                                      disabled={idx === activeOrder.length - 1}
-                                      onClick={() => handleSwap(idx, idx + 1)}
-                                      className="p-1 rounded hover:bg-white text-gray-500 disabled:opacity-20 disabled:hover:bg-transparent transition-colors cursor-pointer"
-                                      title="右に移動"
-                                    >
-                                      <ChevronRight size={13} className="stroke-[2.5]" />
-                                    </button>
-                                  </div>
-                                </div>
+                                  {formatText(opt)}
+                                </button>
                               );
-                            });
-                          })()}
+                            })}
+                          </div>
+                        );
+                      })()
+                    ) : sq.type === 'sorting' ? (
+                      <div className="flex-grow flex flex-col gap-4 w-full">
+                        <div className="flex flex-col gap-2.5">
+                          <div className="text-xs text-gray-400 font-bold flex items-center justify-between">
+                            <span>ドラッグで順序を並べ替え :</span>
+                            <span className="text-[10px] text-[#A9CCE3] font-normal">左ほど「大きい」</span>
+                          </div>
+                          
+                          <div className="flex flex-wrap items-center gap-2.5 p-3.5 bg-gray-50/80 border border-gray-200 rounded-2xl min-h-[72px]">
+                            {(() => {
+                              const activeOrder = answers[sq.id] ? answers[sq.id].split(' > ') : [...(sq.items || [])];
+                              
+                              return activeOrder.map((item: string, idx: number) => {
+                                const isDragging = draggingIndex === idx;
+                                const isDragOver = dragOverIndex === idx;
+  
+                                return (
+                                  <div
+                                    key={`${item}-${idx}`}
+                                    draggable
+                                    onDragStart={(e) => {
+                                      setDraggingIndex(idx);
+                                      e.dataTransfer.effectAllowed = 'move';
+                                    }}
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDragEnter={(e) => {
+                                      e.preventDefault();
+                                      setDragOverIndex(idx);
+                                    }}
+                                    onDragLeave={() => setDragOverIndex(null)}
+                                    onDrop={(e) => {
+                                      e.preventDefault();
+                                      setDragOverIndex(null);
+                                      if (draggingIndex === null || draggingIndex === idx) return;
+                                      const nextOrder = [...activeOrder];
+                                      const draggedValue = nextOrder[draggingIndex];
+                                      nextOrder.splice(draggingIndex, 1);
+                                      nextOrder.splice(idx, 0, draggedValue);
+                                      handleOptionSelect(sq.id, nextOrder.join(' > '));
+                                      setDraggingIndex(null);
+                                    }}
+                                    onDragEnd={() => {
+                                      setDraggingIndex(null);
+                                      setDragOverIndex(null);
+                                    }}
+                                    className={`flex items-center gap-2 px-3 py-2 bg-white border rounded-xl shadow-xs transition-all duration-200 cursor-grab select-none active:cursor-grabbing
+                                      ${isDragging ? 'opacity-30 border-dashed border-gray-300 scale-95' : 'opacity-100'}
+                                      ${isDragOver ? 'border-[#A9CCE3] bg-[#A9CCE3]/15 scale-105 ring-2 ring-[#A9CCE3]/20' : 'border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50/50'}
+                                    `}
+                                  >
+                                    <GripVertical size={13} className="text-gray-400 font-bold shrink-0" />
+                                    <span className="font-bold text-gray-800 text-sm whitespace-nowrap">{formatText(item)}</span>
+                                    <span className="text-[10px] bg-stone-100 text-stone-500 rounded px-1.5 py-0.5 text-center select-none font-mono font-semibold shrink-0">{idx + 1}</span>
+                                  </div>
+                                );
+                              });
+                            })()}
+                          </div>
+                        </div>
+  
+                        <div className="flex items-center justify-between gap-3 pt-0.5">
+                          <span className="text-xs text-gray-400 leading-normal">
+                            ※ 要素をドラッグまたは指でスライドさせて、正しい順序に並び替えてください。
+                          </span>
+                          
+                          {(answers[sq.id] || '') !== '' && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                handleOptionSelect(sq.id, '');
+                              }}
+                              className="text-xs text-red-400 hover:text-red-500 transition-colors font-medium hover:underline py-1 px-2.5 hover:bg-red-50 rounded-lg cursor-pointer shrink-0"
+                            >
+                              やり直す (初期設定に戻す)
+                            </button>
+                          )}
                         </div>
                       </div>
-
-                      {/* Reset controls */}
-                      <div className="flex items-center justify-between gap-3 pt-0.5">
-                        <span className="text-xs text-gray-400 leading-normal">
-                          ※ 元素長押し・ドラッグ、または <code>&lt;</code> <code>&gt;</code> ボタンで並べ替えてください。
-                        </span>
-                        
-                        {(answers[sq.id] || '') !== '' && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              handleOptionSelect(sq.id, '');
-                            }}
-                            className="text-xs text-red-400 hover:text-red-500 transition-colors font-medium hover:underline py-1 px-2.5 hover:bg-red-50 rounded-lg cursor-pointer shrink-0"
-                          >
-                            やり直す (初期設定に戻す)
-                          </button>
-                        )}
+                    ) : sq.type === 'descriptive' ? (
+                      <div className="flex-grow relative w-full">
+                        <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
+                        <textarea
+                          value={answers[sq.id] || ''}
+                          onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                          placeholder="解答を入力..."
+                          rows={3}
+                          className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
+                        />
                       </div>
-                    </div>
-                  ) : sq.type === 'descriptive' ? (
-                    <div className="flex-1 relative w-full">
-                      <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
-                      <textarea
-                        value={answers[sq.id] || ''}
-                        onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                        placeholder="解答を入力..."
-                        rows={3}
-                        className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex-1 relative w-full">
-                      <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                      <input
-                        type="text"
-                        value={answers[sq.id] || ''}
-                        onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                        placeholder="解答を入力..."
-                        className="w-full pl-9 pr-4 py-2.5 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
-                      />
-                    </div>
-                  )}
+                    ) : (
+                      <div className="flex-grow flex flex-col gap-2 w-full">
+                        <div className="relative w-full">
+                          <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                          <input
+                            type="text"
+                            value={answers[sq.id] || ''}
+                            onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                            placeholder="解答を入力..."
+                            className="w-full pl-9 pr-4 py-2.5 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
+                          />
+                        </div>
+                        
+                        {/* Chemistry Symbol Helper Palette */}
+                        <div className="bg-stone-50 border border-stone-200/80 p-2 md:p-2.5 rounded-xl flex flex-col gap-1.5 w-full">
+                          <div className="text-[10px] md:text-xs text-stone-500 font-bold select-none px-0.5">
+                            化学記号パレット (タップで入力欄に挿入 & コピー) :
+                          </div>
+                          <div className="flex flex-wrap gap-1.5 max-h-[140px] overflow-y-auto">
+                            {chemistryShortcuts.map((item) => (
+                              <button
+                                key={item.label}
+                                type="button"
+                                onClick={() => {
+                                  const currentVal = answers[sq.id] || '';
+                                  handleTextChange(sq.id, currentVal + item.value);
+                                  try {
+                                    navigator.clipboard.writeText(item.value);
+                                  } catch (err) {
+                                    console.error(err);
+                                  }
+                                }}
+                                className="px-2 py-1 bg-white border border-stone-200 hover:border-stone-400 hover:bg-stone-100 rounded-lg text-xs md:text-sm font-bold text-stone-700 font-sans shadow-xs cursor-pointer transition-colors flex items-center gap-1 active:scale-95"
+                                title={item.desc}
+                              >
+                                <span>{item.label}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {/* Answer submission action button and back button at the bottom of the answers column */}
             <div className="pt-6 border-t border-gray-200/60 flex items-center justify-between gap-3">

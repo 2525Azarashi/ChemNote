@@ -3,8 +3,33 @@ import React from 'react';
 export function formatText(text: string, highlights: string[] = []) {
   if (!text) return null;
 
+  // Replace * with proper math multiplication crosses
+  let processedText = text.replace(
+    /([A-Za-z0-9]|\)|[％%]|\])[\s ]*\*[\s ]*([A-Za-z0-9]|\(|\[)/g,
+    '$1 <span class="font-sans font-semibold text-stone-500 mx-0.5">×</span> $2'
+  );
+
+  // Format simple numeric fractions like 11/2, 99/100, 4/5, 12/24 as vertical fractions!
+  processedText = processedText.replace(
+    /\b([0-9.]+)\/([0-9.]+)\b/g,
+    '<span class="inline-flex flex-col justify-center align-middle text-center mx-1" style="font-size: 0.8em; vertical-align: -0.22em; line-height: 1;"><span class="border-b border-stone-400 pb-[1.5px] leading-none px-0.5 font-serif font-medium">$1</span><span class="leading-none pt-[1.5px] px-0.5 font-serif font-medium">$2</span></span>'
+  );
+
+  // Replace atomic weight annotations with a smaller inline-block style
+  processedText = processedText.replace(
+    /([（(][A-Za-z]+[\s ]*[=＝][\s ]*[0-9.]+(?:[、,，\s ]+[A-Za-z]+[\s ]*[=＝][\s ]*[0-9.]+)*[）)])/g,
+    '<span class="text-[0.82em] font-sans text-stone-500 bg-stone-50 border border-stone-200/60 px-2 py-0.5 rounded-lg inline-block my-0.5 font-normal select-none shadow-xs">$1</span>'
+  );
+
+  // Replace isotopic notation like 12C, 35Cl, 10B, 24Mg with superscript representation.
+  // We match numbers immediately preceded by non-alphanumeric and immediately followed by specific element symbols or A/B/X variables.
+  processedText = processedText.replace(
+    /(?<![A-Za-z0-9])([0-9]+)(C|B|Cl|Mg|H|O|N|S|P|Na|Ca|Fe|Cu|A|B)(?![A-Za-z0-9])/g,
+    '<sup class="text-[0.75em] font-sans font-bold pr-[1px] select-none align-baseline relative -top-[0.35em]">$1</sup>$2'
+  );
+
   // First, apply custom highlights to the text. We surround them with custom tags <hl>...</hl>
-  let highlightedText = text;
+  let highlightedText = processedText;
   if (highlights.length > 0) {
     // Sort highlights by length descending to avoid partial matches
     const sortedHighlights = [...highlights].sort((a, b) => b.length - a.length);

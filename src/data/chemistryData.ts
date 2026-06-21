@@ -1084,7 +1084,7 @@ export const chemistryData = {
               category: "粒子の熱運動と物質の三態 (問7)",
               text: `【問7】 右図（図3）の三態モデルにおいて、状態変化に伴うエネルギーの出入りについて、次のうち正しいものをすべて選べ。\nア：融解では熱を吸収する。\nイ：凝縮では熱を放出する。\nウ：昇華では熱を放出する。\nエ：蒸発では熱を吸収する。\nオ：凝固では熱を吸収する。`,
               subQuestions: [
-                { id: "q_c1_3_7_ans", label: "記号", type: "short_answer", correctAnswer: "ア・イ・エ", correctAnswerRate: 85 }
+                { id: "q_c1_3_7_ans", label: "記号", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ", "オ"], correctAnswer: "ア・イ・エ", correctAnswerRate: 85 }
               ],
               explanation: "▼ 解答・解説\n答：ア・イ・エ\n■ 粒子間の結合を切る向きの変化（融解・蒸発・昇華）は『吸熱』、結合をつくる向きの変化（凝固・凝縮・凝華）は『発熱』。\nウ：昇華は固→気で結合を切るので吸熱（誤り）。オ：凝固は液→固で発熱（誤り）。",
               surroundingKnowledge: [],
@@ -1510,12 +1510,26 @@ export const chemistryData = {
             {
               id: "q_c2_2_6",
               category: "イオン (問6)",
-              text: "【問6】 （共通テスト風応用）次のうち、互いに等電子（電子数が同じ）であるイオン・原子の組合せを2組（電子数10個と18個のグループ）挙げよ。\n\n候補：Na⁺, Mg²⁺, Al³⁺, F⁻, O²⁻, N³⁻, Ne, Cl⁻, S²⁻, K⁺, Ca²⁺, Ar",
+              text: "【問6】 （共通テスト風応用）次のうち、互いに等電子（電子数が同じ）であるイオン・原子の組合せを2組（電子数10個と18個のグループ）挙げよ。",
               subQuestions: [
-                { id: "q_c2_2_6_g1", label: "電子数10 (ネオン型)のグループ", type: "descriptive", correctAnswer: "Na⁺, Mg²⁺, Al³⁺, F⁻, O²⁻, N³⁻, Ne", correctAnswerRate: 85 },
-                { id: "q_c2_2_6_g2", label: "電子数18 (アルゴン型)のグループ", type: "descriptive", correctAnswer: "Cl⁻, S²⁻, K⁺, Ca²⁺, Ar", correctAnswerRate: 85 }
+                {
+                  id: "q_c2_2_6_g1",
+                  label: "電子数10 (ネオン型)のグループ（左から原子番号の小さい順）",
+                  type: "sorting",
+                  items: ["Mg²⁺", "Ne", "Al³⁺", "F⁻", "O²⁻", "N³⁻", "Na⁺"],
+                  correctAnswer: "N³⁻ > O²⁻ > F⁻ > Ne > Na⁺ > Mg²⁺ > Al³⁺",
+                  correctAnswerRate: 85
+                },
+                {
+                  id: "q_c2_2_6_g2",
+                  label: "電子数18 (アルゴン型)のグループ（左から原子番号の小さい順）",
+                  type: "sorting",
+                  items: ["Ca²⁺", "Ar", "Cl⁻", "S²⁻", "K⁺"],
+                  correctAnswer: "S²⁻ > Cl⁻ > Ar > K⁺ > Ca²⁺",
+                  correctAnswerRate: 85
+                }
               ],
-              explanation: "▼ 解答・解説\n・電子数10のグループ：Na⁺, Mg²⁺, Al³⁺, F⁻, O²⁻, N³⁻, Ne （Ne 型 K2 L8）\n・電子数18のグループ：Cl⁻, S²⁻, K⁺, Ca²⁺, Ar （Ar 型 K2 L8 M8）",
+              explanation: "▼ 解答・解説\n・電子数10 (ネオン型)のグループ：原子番号（陽子数）が小さい順に、N³⁻(7) > O²⁻(8) > F⁻(9) > Ne(10) > Na⁺(11) > Mg²⁺(12) > Al³⁺(13) となります。\n・電子数18 (アルゴン型)のグループ：原子番号（陽子数）が小さい順に、S²⁻(16) > Cl⁻(17) > Ar(18) > K⁺(19) > Ca²⁺(20) となります。",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
@@ -1556,8 +1570,8 @@ export const chemistryData = {
                 { id: "q_c2_3_1_ko", label: "（コ）", type: "short_answer", correctAnswer: "貴ガス", correctAnswerRate: 85 },
                 { id: "q_c2_3_1_sa", label: "（サ） ※半角数字", type: "short_answer", correctAnswer: "17", correctAnswerRate: 85 },
                 { id: "q_c2_3_1_shi", label: "（シ） ※元素記号または名称", type: "short_answer", correctAnswer: "Cl", correctAnswerRate: 85 },
-                { id: "q_c2_3_1_su", label: "（ス）く", type: "short_answer", correctAnswer: "小さ", correctAnswerRate: 85 },
-                { id: "q_c2_3_1_se", label: "（セ）い", type: "short_answer", correctAnswer: "大き", correctAnswerRate: 85 }
+                { id: "q_c2_3_1_su", label: "（ス）", type: "short_answer", correctAnswer: "小さ", correctAnswerRate: 85 },
+                { id: "q_c2_3_1_se", label: "（セ）", type: "short_answer", correctAnswer: "大き", correctAnswerRate: 85 }
               ],
               explanation: "▼ 解答・解説\n（ア）陽イオン （イ）イオン化エネルギー （ウ）大きい （エ）非金属（陰イオン）\n（オ）陰イオン （カ）電子親和力 （キ）大きい （ク）右上 （ケ）右上\n（コ）貴ガス （サ）17 （シ）Cl（塩素） （ス）小さ （セ）大き\n\n■ イオン化エネルギーが「小さい」ほど電子を放出しやすく陽イオンになりやすい。\n■ 電子親和力が「大きい」ほど電子を取り込んで安定化し、陰イオンになりやすい。",
               surroundingKnowledge: [],
@@ -2254,8 +2268,8 @@ export const chemistryData = {
       chapters: [
         {
           id: "c4_1",
-          abstractTitle: "セクション4-1：原子量",
-          realTitle: "④-1 原子量",
+          abstractTitle: "④-1 原子量",
+          realTitle: "④ 物質量と化学反応式",
           topics: ["同位体の相対質量", "元素の原子量", "存在割合の計算"],
           practiceProblems: [
             {
@@ -2272,7 +2286,7 @@ export const chemistryData = {
             {
               id: "q_c4_1_2",
               category: "原子量 (問2)",
-              text: "自然界の多くの元素には同位体が存在し、その存在割合はほぼ一定である。天然に存在するホウ素は10Bが20%、11Bが80%である。質量数と相対質量が等しいとするとき、天然に存在するホウ素의原子量を求めなさい。",
+              text: "自然界の多くの元素には同位体が存在し、その存在割合はほぼ一定である。天然に存在するホウ素は10Bが20%、11Bが80%である。質量数と相対質量が等しいとするとき、天然に存在するホウ素の原子量を求めなさい。",
               subQuestions: [
                 { id: "q_c4_1_2_ans", label: "ホウ素の原子量（少数第一位まで）", type: "short_answer", correctAnswer: "10.8", correctAnswerRate: 85 }
               ],
@@ -2348,8 +2362,8 @@ export const chemistryData = {
         },
         {
           id: "c4_2",
-          abstractTitle: "セクション4-2：物質量",
-          realTitle: "④-2 物質量",
+          abstractTitle: "④-2 物質量",
+          realTitle: "④ 物質量と化学反応式",
           topics: ["アボガドロ定数", "モル質量とモル計算", "質量・体積の変換"],
           practiceProblems: [
             {
@@ -2445,21 +2459,28 @@ export const chemistryData = {
         },
         {
           id: "c4_3",
-          abstractTitle: "セクション4-3：化学反応式とイオン反応式の作り方",
-          realTitle: "④-3 化学反応式・イオン反応式",
+          abstractTitle: "④-3 化学反応式とイオン反応式の作り方",
+          realTitle: "④ 物質量と化学反応式",
           topics: ["反応式の作り方と係数決定", "未定係数法", "反応式を伴う量的計算"],
           practiceProblems: [
             {
               id: "q_c4_3_1",
               category: "反応式の作り方 (問1)",
-              text: "次の化学反応式、イオン反応式の係数を答えよ。係数が「1」の場合も省略せずに「1」と書け。\n\n① ( a ) Mg ＋ ( b ) O2 → ( c ) MgO\n② ( d ) FeS2 ＋ ( e ) O2 → ( f ) Fe2O3 ＋ ( g ) SO2\n③ ( h ) Fe^2+ ＋ ( i ) Cl2 → ( j ) Fe^3+ ＋ ( k ) Cl^-\n\nこれらの係数の組み合わせとして最も適切なものを選べ。",
+              text: "次の化学反応式、イオン反応式の係数 a 〜 k をそれぞれ半角数字で答えよ。係数が「1」の場合も省略せずに「1」と書くこと。\n\n① ( a ) Mg ＋ ( b ) O2 → ( c ) MgO\n② ( d ) FeS2 ＋ ( e ) O2 → ( f ) Fe2O3 ＋ ( g ) SO2\n③ ( h ) Fe^2+ ＋ ( i ) Cl2 → ( j ) Fe^3+ ＋ ( k ) Cl^-",
               subQuestions: [
-                { id: "q_c4_3_1_ans", label: "係数の組み合わせ", type: "multiple_choice", options: [
-                  "a=2, b=1, c=2 | d=4, e=11, f=2, g=8 | h=2, i=1, j=2, k=2",
-                  "a=1, b=1, c=1 | d=2, e=11, f=1, g=4 | h=2, i=1, j=2, k=1",
-                  "a=2, b=1, c=2 | d=4, e=9, f=2, g=6 | h=1, i=2, j=1, k=2",
-                  "a=2, b=2, c=2 | d=2, e=5, f=1, g=4 | h=2, i=1, j=2, k=2"
-                ], correctAnswer: "a=2, b=1, c=2 | d=4, e=11, f=2, g=8 | h=2, i=1, j=2, k=2", correctAnswerRate: 85 }
+                { id: "q_c4_3_1_a", label: "a", group: "① ( a ) Mg ＋ ( b ) O2 → ( c ) MgO", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                { id: "q_c4_3_1_b", label: "b", group: "① ( a ) Mg ＋ ( b ) O2 → ( c ) MgO", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c4_3_1_c", label: "c", group: "① ( a ) Mg ＋ ( b ) O2 → ( c ) MgO", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                
+                { id: "q_c4_3_1_d", label: "d", group: "② ( d ) FeS2 ＋ ( e ) O2 → ( f ) Fe2O3 ＋ ( g ) SO2", type: "short_answer", correctAnswer: "4", correctAnswerRate: 85 },
+                { id: "q_c4_3_1_e", label: "e", group: "② ( d ) FeS2 ＋ ( e ) O2 → ( f ) Fe2O3 ＋ ( g ) SO2", type: "short_answer", correctAnswer: "11", correctAnswerRate: 85 },
+                { id: "q_c4_3_1_f", label: "f", group: "② ( d ) FeS2 ＋ ( e ) O2 → ( f ) Fe2O3 ＋ ( g ) SO2", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                { id: "q_c4_3_1_g", label: "g", group: "② ( d ) FeS2 ＋ ( e ) O2 → ( f ) Fe2O3 ＋ ( g ) SO2", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                
+                { id: "q_c4_3_1_h", label: "h", group: "③ ( h ) Fe^2+ ＋ ( i ) Cl2 → ( j ) Fe^3+ ＋ ( k ) Cl^-", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                { id: "q_c4_3_1_i", label: "i", group: "③ ( h ) Fe^2+ ＋ ( i ) Cl2 → ( j ) Fe^3+ ＋ ( k ) Cl^-", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c4_3_1_j", label: "j", group: "③ ( h ) Fe^2+ ＋ ( i ) Cl2 → ( j ) Fe^3+ ＋ ( k ) Cl^-", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                { id: "q_c4_3_1_k", label: "k", group: "③ ( h ) Fe^2+ ＋ ( i ) Cl2 → ( j ) Fe^3+ ＋ ( k ) Cl^-", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 }
               ],
               explanation: "▼ 解答・解説\n① Oの原子数を左右で等しくするために、右辺を 2MgO にします。これより Mg は 2 になるため、a=2, b=1, c=2 となります。\n② Fe2O3 の Fe は 2原子なので、仮に d=2 と置くと Sの数から g=4 となります。この時右辺のOは 3＋4×2＝11原子なので、左辺 e ＝ 11/2 となります。全体を2倍にして、分数を排した最も簡単な整数比にすると：d=4, e=11, f=2, g=8 となります。\n③ 電荷と原子数を合わせます。右辺の Cl^- は 2個 (k=2) となります。このとき右辺の電荷は +3×j － 2。左辺は +2×h。 h ＝ j ＝ 2 とすると、左辺電気量＝+4、右辺電気量＝+6-2＝+4。原子数・電荷が両立して一致します。よって：h=2, i=1, j=2, k=2。",
               surroundingKnowledge: [],
@@ -2468,14 +2489,11 @@ export const chemistryData = {
             {
               id: "q_c4_3_2",
               category: "反応式の作り方 (問2)",
-              text: "次の化学変化を化学反応式で表せ。正しい式の組み合わせを選べ。\n\n① カルシウムを水に入れると、水酸化カルシウムが生成し、水素が発生する。\n② 酸化マンガン(IV)に濃塩酸を加えて加熱すると、塩化マンガン(II) MnCl2 と水が生成し、塩素が発生する。\n③ ブタン C4H10 が完全燃焼した。",
+              text: "次の化学変化を全半角文字、または下付き文字を活用して正しい化学反応式で表せ。（スペースは詰めても空けても正しく採点されます）",
               subQuestions: [
-                { id: "q_c4_3_2_ans", label: "正しい化学反応式のセット", type: "multiple_choice", options: [
-                  "① Ca + 2H2O → Ca(OH)2 + H2 | ② MnO2 + 4HCl → MnCl2 + 2H2O + Cl2 | ③ 2C4H10 + 13O2 → 8CO2 + 10H2O",
-                  "① Ca + H2O → Ca(OH)2 + H2 | ② MnO2 + 2HCl → MnCl2 + H2O + Cl2 | ③ C4H10 + 6.5O2 → 4CO2 + 5H2O",
-                  "① Ca + 2H2O → Ca(OH)2 + H2 | ② MnO2 + 4HCl → MnCl2 + 2H2O + Cl2 | ③ C4H10 + 13O2 → 4CO2 + 5H2O",
-                  "① Ca + 2H2O → Ca(OH)2 + H2 | ② MnO2 + 2HCl → MnCl2 + H2O + Cl2 | ③ 2C4H10 + 13O2 → 8CO2 + 10H2O"
-                ], correctAnswer: "① Ca + 2H2O → Ca(OH)2 + H2 | ② MnO2 + 4HCl → MnCl2 + 2H2O + Cl2 | ③ 2C4H10 + 13O2 → 8CO2 + 10H2O", correctAnswerRate: 85 }
+                { id: "q_c4_3_2_1", label: "① カルシウムを水に入れると、水酸化カルシウムが生成し、水素が発生する。", type: "short_answer", correctAnswer: "Ca+2H2O→Ca(OH)2+H2", correctAnswerRate: 85 },
+                { id: "q_c4_3_2_2", label: "② 酸化マンガン(IV)に濃塩酸を加えて加熱すると、塩化マンガン(II) MnCl2 と水が生成し、塩素が発生する。", type: "short_answer", correctAnswer: "MnO2+4HCl→MnCl2+2H2O+Cl2", correctAnswerRate: 85 },
+                { id: "q_c4_3_2_3", label: "③ ブタン C4H10 が完全燃焼した。", type: "short_answer", correctAnswer: "2C4H10+13O2→8CO2+10H2O", correctAnswerRate: 85 }
               ],
               explanation: "▼ 解答・解説\n① カルシウム Ca に水をかけると、水酸化カルシウム Ca(OH)2 （※Caは2価の陽イオン、OHは1価の陰イオンなので2個結合）と水素 H2 が生じます：Ca ＋ 2H2O → Ca(OH)2 ＋ H2\n② 酸化マンガン(IV)に濃塩酸を加えて加熱。実験室における典型的な塩素発生法です：MnO2 ＋ 4HCl → MnCl2 ＋ 2H2O ＋ Cl2\n③ ブタン C4H10 の燃焼：1分子に対して O2 が 6.5個（13/2分子）必要となるので、全体を2倍して 2C4H10 ＋ 13O2 → 8CO2 ＋ 10H2O とします。",
               surroundingKnowledge: [],
@@ -2484,16 +2502,27 @@ export const chemistryData = {
             {
               id: "q_c4_3_3",
               category: "反応式の作り方 (問3)",
-              text: "次の化学反応式・イオン反応式の空欄（ア）〜（ソ）に入る最も簡単な整数比の係数を答えよ。ただし、係数が「1」になる場合も省略せずに「1」と答えること。\n\n(1) (ア) C3H8 ＋ (イ) O2 → (ウ) CO2 ＋ (エ) H2O\n(2) (オ) Cu ＋ (カ) HNO3 → (キ) Cu(NO3)2 ＋ (ク) H2O ＋ (ケ) NO  (希硝酸の反応)\n(3) (コ) MnO4^- ＋ (サ) H2O2 ＋ (シ) H^+ → (ス) Mn^2+ ＋ (セ) H2O ＋ (ソ) O2",
+              text: "次の化学反応式・イオン反応式の空欄（ア）〜（ソ）に入る最も簡単な整数比の係数を答えよ。ただし、係数が「1」になる場合も省略せずに「1」と答えること。",
               subQuestions: [
-                { id: "q_c4_3_3_ans", label: "（ア）〜（ソ）の係数組み合わせ", type: "multiple_choice", options: [
-                  "(1) ア=1, イ=5, ウ=3, エ=4 | (2) オ=3, カ=8, キ=3, ク=4, ケ=2 | (3) コ=2, サ=5, シ=6, ス=2, セ=8, ソ=5",
-                  "(1) ア=1, イ=5, ウ=3, エ=4 | (2) オ=1, カ=4, キ=1, ク=2, ケ=2 | (3) コ=1, サ=3, シ=4, ス=1, セ=4, ソ=3",
-                  "(1) ア=2, イ=10, ウ=6, エ=8 | (2) オ=3, カ=8, キ=3, ク=4, ケ=2 | (3) コ=2, サ=5, シ=8, ス=2, セ=4, ソ=5",
-                  "(1) ア=1, イ=5, ウ=3, エ=4 | (2) オ=1, カ=4, キ=1, ク=2, ケ=1 | (3) コ=1, サ=5, シ=6, ス=1, セ=8, ソ=5"
-                ], correctAnswer: "(1) ア=1, イ=5, ウ=3, エ=4 | (2) オ=3, カ=8, キ=3, ク=4, ケ=2 | (3) コ=2, サ=5, シ=6, ス=2, セ=8, ソ=5", correctAnswerRate: 85 }
+                { id: "q_c4_3_3_a", label: "ア", group: "(1) (ア) C3H8 ＋ (イ) O2 → (ウ) CO2 ＋ (エ) H2O", type: "short_answer", correctAnswer: "1", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_b", label: "イ", group: "(1) (ア) C3H8 ＋ (イ) O2 → (ウ) CO2 ＋ (エ) H2O", type: "short_answer", correctAnswer: "5", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_c", label: "ウ", group: "(1) (ア) C3H8 ＋ (イ) O2 → (ウ) CO2 ＋ (エ) H2O", type: "short_answer", correctAnswer: "3", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_d", label: "エ", group: "(1) (ア) C3H8 ＋ (イ) O2 → (ウ) CO2 ＋ (エ) H2O", type: "short_answer", correctAnswer: "4", correctAnswerRate: 85 },
+                
+                { id: "q_c4_3_3_o", label: "オ", group: "(2) (オ) Cu ＋ (カ) HNO3 → (キ) Cu(NO3)2 ＋ (ク) H2O ＋ (ケ) NO", type: "short_answer", correctAnswer: "3", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_ka", label: "カ", group: "(2) (オ) Cu ＋ (カ) HNO3 → (キ) Cu(NO3)2 ＋ (ク) H2O ＋ (ケ) NO", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_ki", label: "キ", group: "(2) (オ) Cu ＋ (カ) HNO3 → (キ) Cu(NO3)2 ＋ (ク) H2O ＋ (ケ) NO", type: "short_answer", correctAnswer: "3", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_ku", label: "ク", group: "(2) (オ) Cu ＋ (カ) HNO3 → (キ) Cu(NO3)2 ＋ (ク) H2O ＋ (ケ) NO", type: "short_answer", correctAnswer: "4", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_ke", label: "ケ", group: "(2) (オ) Cu ＋ (カ) HNO3 → (キ) Cu(NO3)2 ＋ (ク) H2O ＋ (ケ) NO", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                
+                { id: "q_c4_3_3_ko", label: "コ", group: "(3) (コ) MnO4^- ＋ (サ) H2O2 ＋ (シ) H^+ → (ス) Mn^2+ ＋ (セ) H2O ＋ (ソ) O2", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_sa", label: "サ", group: "(3) (コ) MnO4^- ＋ (サ) H2O2 ＋ (シ) H^+ → (ス) Mn^2+ ＋ (セ) H2O ＋ (ソ) O2", type: "short_answer", correctAnswer: "5", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_shi", label: "シ", group: "(3) (コ) MnO4^- ＋ (サ) H2O2 ＋ (シ) H^+ → (ス) Mn^2+ ＋ (セ) H2O ＋ (ソ) O2", type: "short_answer", correctAnswer: "6", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_su", label: "ス", group: "(3) (コ) MnO4^- ＋ (サ) H2O2 ＋ (シ) H^+ → (ス) Mn^2+ ＋ (セ) H2O ＋ (ソ) O2", type: "short_answer", correctAnswer: "2", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_se", label: "セ", group: "(3) (コ) MnO4^- ＋ (サ) H2O2 ＋ (シ) H^+ → (ス) Mn^2+ ＋ (セ) H2O ＋ (ソ) O2", type: "short_answer", correctAnswer: "8", correctAnswerRate: 85 },
+                { id: "q_c4_3_3_so", label: "ソ", group: "(3) (コ) MnO4^- ＋ (サ) H2O2 ＋ (シ) H^+ → (ス) Mn^2+ ＋ (セ) H2O ＋ (ソ) O2", type: "short_answer", correctAnswer: "5", correctAnswerRate: 85 }
               ],
-              explanation: "▼ 解答・解説\n(1) 目算法で解きます。ア＝1 と置くと、C数よりウ＝3、H数よりエ＝4。右辺のOは 3×2＋4＝10原子となり、左辺イ＝5。よって：1, 5, 3, 4。\n(2) 銅と希硝酸の酸化還元反応（未定係数法または酸化還元半反応式）。3Cu ＋ 8HNO3 → 3Cu(NO3)2 ＋ 4H2O ＋ 2NO。よって：3, 8, 3, 4, 2。\n(3) 過マンガン酸イオンと過酸化水素の酸化還元。2MnO4^- ＋ 5H2O2 ＋ 6H^+ → 2Mn^2+ ＋ 8H2O ＋ 5O2。よって：2, 5, 6, 2, 8, 5。",
+              explanation: "▼ 解答・解説\n(1) 目算法で解きます。ア＝1 と置くと、C数よりウ＝3、H数よりエ＝4。右辺のOは 3×2＋4＝10原子となり、左辺イ＝5。よって：1, 5, 3, 4。\n(2) 銅と希硝酸の酸化還元反応（未定係数法または酸化還元半反応式）。3Cu ＋ 8HNO3 → 3Cu(NO3)2 ＋ 4H2O ＋ 2NO。よって：3, 8, 3, 4, 2。\n(3) 過マンガン酸イオンと過酸化水素の酸化還元. 2MnO4^- ＋ 5H2O2 ＋ 6H^+ → 2Mn^2+ ＋ 8H2O ＋ 5O2。よって：2, 5, 6, 2, 8, 5。",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
@@ -2522,7 +2551,7 @@ export const chemistryData = {
                 { id: "q_c4_3_5_1", label: "（1）炭酸カルシウムの純度 [％]", type: "short_answer", correctAnswer: "89", correctAnswerRate: 85 },
                 { id: "q_c4_3_5_2", label: "（2）必要な石灰石の質量 [g]", type: "short_answer", correctAnswer: "9.8", correctAnswerRate: 85 }
               ],
-              explanation: "▼ 解答・解説\n(1) 反応した炭酸カルシウム（式量100）の物質量は、発生した二酸化炭素の物質量（0.025 mol）と等しいので：\n    ・CaCO3 質量 ＝ 0.025 mol × 100 g/mol ＝ 2.5 g\n    ・純度 ＝ (2.5 g / 2.8 g) × 100 ≒ 89.2% ≒ 89% となります。\n(2) 2.8 g の石灰石（CaCO3 は 2.5 g）から発生する標準状態の CO2 の体積を算出します：\n    ・CO2 の体積 ＝ 22.4 L/mol × 0.025 mol ＝ 0.56 L\n    1.96 L の CO2 を発生させるために必要な石灰石の質量を x [g] とおくと、比例関係より：\n    2.8 g : 0.56 L ＝ x g : 1.96 L\n    x ＝ 2.8 × (1.96 / 0.56) ＝ 2.8 × 3.5 ＝ 9.8 g となります。",
+              explanation: "▼ 解答・解説\n(1) 反応した炭酸カルシウム（式量100）の物質量は、発生した二酸化炭素の物質量（0.025 mol）と等しいので：\n    ・CaCO3 質量 ＝ 0.025 mol × 100 g/mol ＝ 2.5 g\n    ・純度 ＝ (2.5 g / 2.8 g) × 100 ≒ 89.2% ≒ 89% となります。\n(2) 2.8 g の石灰石（CaCO3 は 2.5 g）から発生する標準状態 of CO2 の体積を算出します：\n    ・CO2 の体積 ＝ 22.4 L/mol × 0.025 mol ＝ 0.56 L\n    1.96 L の CO2 を発生させるために必要な石灰石の質量を x [g] とおくと、比例関係より：\n    2.8 g : 0.56 L ＝ x g : 1.96 L\n    x ＝ 2.8 × (1.96 / 0.56) ＝ 2.8 × 3.5 ＝ 9.8 g となります。",
               surroundingKnowledge: [],
               deepDiveTopics: []
             }
@@ -2531,8 +2560,8 @@ export const chemistryData = {
         },
         {
           id: "c4_4",
-          abstractTitle: "セクション4-4：濃度",
-          realTitle: "④-4 濃度",
+          abstractTitle: "④-4 濃度",
+          realTitle: "④ 物質量と化学反応式",
           topics: ["質量パーセント濃度", "モル濃度", "濃度の希釈、変換"],
           practiceProblems: [
             {
@@ -2593,8 +2622,8 @@ export const chemistryData = {
           ],
           miniTest: []
         },
-        { id: "c5", abstractTitle: "セクション5：酸と塩基の反応", realTitle: "⑤酸と塩基", topics: [], miniTest: [] },
-        { id: "c6", abstractTitle: "セクション6：電子のやり取り", realTitle: "⑥酸化還元反応", topics: [], miniTest: [] }
+        { id: "c5", abstractTitle: "⑤ 酸と塩基の反応", realTitle: "⑤ 酸と塩基", topics: [], miniTest: [] },
+        { id: "c6", abstractTitle: "⑥ 酸化還元反応（電子のやり取り）", realTitle: "⑥ 酸化還元反応", topics: [], miniTest: [] }
       ]
     }
   ]

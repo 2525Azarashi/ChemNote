@@ -325,11 +325,22 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     return [];
   };
 
+  const isGroupAllCorrect = (sq: any, currentQuestion: any) => {
+    if (!sq.group || !currentQuestion) return false;
+    const sameGroupSqs = (currentQuestion.subQuestions || []).filter((item: any) => item.group === sq.group);
+    return sameGroupSqs.every((item: any) => answers[item.id] === item.correctAnswer);
+  };
+
   const renderSubQuestionCheck = (sq: any, currentQuestion: any) => {
     const isMiniTest = mode === 'mini_test';
     const isCorrect = sq.type === 'descriptive' ? false : answers[sq.id] === sq.correctAnswer;
     const isExpanded = expandedSq === sq.id;
     const relatedSteps = getRelatedSteps(sq.id, currentQuestion);
+
+    // Label modification to include group name prefix for grouped subquestions
+    const displayLabel = sq.group 
+      ? `${sq.group.split(' ')[0]} : 係数 ${sq.label}`
+      : sq.label;
 
     if (!isExpanded) {
       return (
@@ -339,7 +350,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           className={`w-full flex items-center justify-between p-3 md:p-4 rounded-xl border transition-colors ${sq.type === 'descriptive' ? 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30' : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30')}`}
         >
           <div className="flex items-center gap-3">
-            <div className="font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-2 py-1 rounded border border-[#3A506B]/50">{sq.label}</div>
+            <div className="font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-2 py-1 rounded border border-[#3A506B]/50">{displayLabel}</div>
             {sq.type !== 'descriptive' && (
               isCorrect ? <CheckCircle2 className="text-[#5BC0BE] w-5 h-5" /> : <XCircle className="text-[#D9A0A0] w-5 h-5" />
             )}
@@ -353,7 +364,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       <div id={`sq-${sq.id}`} key={sq.id} className={`w-full ${isMiniTest ? 'bg-white' : 'bg-[#1C2541]'} rounded-xl border ${isMiniTest ? 'border-gray-200' : 'border-[#3A506B]'} shadow-lg p-4 md:p-6`}>
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm ${isMiniTest ? 'bg-gray-100' : 'bg-[#0B132B]'} px-3 py-1 rounded border ${isMiniTest ? 'border-gray-200' : 'border-[#3A506B]'}`}>{sq.label}</div>
+          <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm ${isMiniTest ? 'bg-gray-100' : 'bg-[#0B132B]'} px-3 py-1 rounded border ${isMiniTest ? 'border-gray-200' : 'border-[#3A506B]'}`}>{displayLabel}</div>
           <button onClick={() => setExpandedSq(null)} className="text-[#7A8B99] hover:text-[#E0E1DD]">
             <XCircle size={24} />
           </button>
@@ -387,6 +398,20 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 )}
 
                 <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】{sq.correctAnswer}</p>
+
+                {sq.group && (
+                  <div className="mt-3 pt-2 border-t border-gray-200/20 text-xs font-semibold flex items-center gap-2">
+                    {isGroupAllCorrect(sq, currentQuestion) ? (
+                      <span className="text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+                        ✨ この式全体の係数はすべて正解です（完答○）
+                      </span>
+                    ) : (
+                      <span className="text-amber-500 bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20">
+                        ⚠️ 反応式のすべての係数が一致したときのみ完答となります
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
               <div className="space-y-4">
@@ -396,6 +421,20 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     {formatText(sq.correctAnswer)}
                   </div>
                 </div>
+
+                {sq.group && (
+                  <div className="mt-2 text-xs font-semibold flex items-center gap-2">
+                    {isGroupAllCorrect(sq, currentQuestion) ? (
+                      <span className="text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+                        ✨ この式全体の係数はすべて正解です（完答○）
+                      </span>
+                    ) : (
+                      <span className="text-amber-500 bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20">
+                        ⚠️ 反応式のすべての係数が一致したときのみ完答となります
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -419,25 +458,53 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
 
   const calculateScore = useCallback((question: any) => {
     let totalScore = 0;
-    let maxScore = question.subQuestions.length;
+    
+    // Group subquestions to see how many effective tasks there are
+    const groups: Record<string, { sqs: any[], allCorrect: boolean }> = {};
+    let singleQuestionsCount = 0;
 
-    question.subQuestions.forEach((sq: any) => {
-      if (sq.type === 'descriptive') {
-        if (sq.gradingCriteria) {
-          const criteriaCount = sq.gradingCriteria.length;
-          let checkedCount = 0;
-          sq.gradingCriteria.forEach((_: any, idx: number) => {
-            if (selfGrades[`${sq.id}_${idx}`]) checkedCount++;
-          });
-          totalScore += (checkedCount / criteriaCount);
+    (question.subQuestions || []).forEach((sq: any) => {
+      const isCorrect = sq.type === 'descriptive'
+        ? false // grading criteria handles descriptive
+        : answers[sq.id] === sq.correctAnswer;
+
+      if (sq.group) {
+        if (!groups[sq.group]) {
+          groups[sq.group] = { sqs: [], allCorrect: true };
+        }
+        groups[sq.group].sqs.push(sq);
+        if (!isCorrect) {
+          groups[sq.group].allCorrect = false;
         }
       } else {
-        if (answers[sq.id] === sq.correctAnswer) {
-          totalScore += 1;
+        singleQuestionsCount++;
+        if (sq.type === 'descriptive') {
+          if (sq.gradingCriteria) {
+            const criteriaCount = sq.gradingCriteria.length;
+            let checkedCount = 0;
+            sq.gradingCriteria.forEach((_: any, idx: number) => {
+              if (selfGrades[`${sq.id}_${idx}`]) checkedCount++;
+            });
+            totalScore += (checkedCount / criteriaCount);
+          }
+        } else {
+          if (isCorrect) {
+            totalScore += 1;
+          }
         }
       }
     });
 
+    const groupCounts = Object.keys(groups).length;
+    const maxScore = singleQuestionsCount + groupCounts;
+
+    Object.values(groups).forEach(g => {
+      if (g.allCorrect) {
+        totalScore += 1;
+      }
+    });
+
+    if (maxScore === 0) return 0;
     return Math.round((totalScore / maxScore) * 100);
   }, [answers, selfGrades]);
 
