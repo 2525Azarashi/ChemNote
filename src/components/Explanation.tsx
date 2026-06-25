@@ -760,7 +760,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         }>
           <div className={isMobile
             ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8 lg:h-[calc(100vh-220px)] lg:overflow-hidden"
-            : "grid grid-cols-1 lg:grid-cols-[54%_46%] gap-6 p-0 h-full flex-1 overflow-hidden"
+            : "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 h-full flex-1 overflow-hidden"
           }>
             
             {/* LEFT COLUMN: Problem statements and flowcharts */}
