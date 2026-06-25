@@ -557,11 +557,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       )}
 
       {/* Header */}
-      <div className={`p-4 md:p-6 border-b-2 relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+      <div className={`p-4 md:p-6 border-b-2 relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
         mode === 'mini_test' ? 'bg-white/90 border-gray-100' : 'bg-[#0B132B]/90 border-[#1C2541]'
       }`}>
-        <div className="flex items-center gap-3">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1 min-w-0 w-full md:w-auto">
+          <div className="flex-shrink-0">
             <h3 className={`text-lg md:text-xl font-bold tracking-wider ${
               mode === 'mini_test' ? 'text-[#2C3E50]' : 'text-[#5BC0BE]'
             }`}>
@@ -573,12 +573,72 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               {chapter.realTitle}
             </div>
           </div>
+
+          {singleQuestionIndex !== undefined && questions[0] && (
+            <div className={`flex flex-wrap items-center gap-2 sm:gap-3 sm:border-l sm:pl-4 md:pl-6 lg:pl-8 ${
+              mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/50'
+            } w-full sm:w-auto`}>
+              <div className={`flex items-center gap-1 font-bold text-[11px] md:text-xs px-2.5 py-1 rounded-full border ${
+                mode === 'mini_test' 
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                  : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'
+              }`}>
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>答え合わせ</span>
+              </div>
+
+              <div className={`font-bold px-2.5 py-0.5 rounded-full text-xs shadow-sm border ${
+                mode === 'mini_test' 
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                  : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'
+              }`}>
+                Q{singleQuestionIndex + 1}
+              </div>
+
+              <div className={`font-bold text-xs md:text-sm truncate max-w-[120px] sm:max-w-[200px] ${
+                mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'
+              }`}>
+                {questions[0].category || '問題'}
+              </div>
+
+              <button
+                onClick={(e) => { e.stopPropagation(); handleSaveNote(questions[0], singleQuestionIndex); }}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold transition-colors border ${
+                  savingNote[questions[0].id] 
+                    ? (mode === 'mini_test' ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-[#1C2541] text-[#7A8B99] border-[#1C2541]') 
+                    : (mode === 'mini_test' ? 'bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100' : 'bg-[#F9E79F]/20 text-[#F9E79F] border-[#F9E79F]/30 hover:bg-[#F9E79F]/30')
+                }`}
+                disabled={savingNote[questions[0].id]}
+              >
+                <Save size={12} />
+                <span>{savingNote[questions[0].id] ? '保存中...' : 'ノートに保存'}</span>
+              </button>
+
+              {(() => {
+                const scorePercentage = calculateScore(questions[0]);
+                return (
+                  <div className="flex items-center gap-1 ml-auto sm:ml-0">
+                    <span className={`text-[10px] md:text-xs font-bold ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正答率:</span>
+                    <span className={`font-mono font-bold text-xs md:text-sm ${
+                      scorePercentage >= 80 
+                        ? (mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]') 
+                        : scorePercentage <= 40 
+                          ? (mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]') 
+                          : (mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]')
+                    }`}>
+                      {scorePercentage}%
+                    </span>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
         </div>
         {singleQuestionIndex !== undefined && onNextQuestion ? (
-          <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full md:w-auto">
             <button 
               onClick={onBack}
-              className={`flex items-center gap-2 transition-colors font-bold px-4 py-2 rounded-full border flex-1 sm:flex-none justify-center ${
+              className={`flex items-center gap-2 transition-colors font-bold px-4 py-2 rounded-full border flex-1 md:flex-none justify-center ${
                 mode === 'mini_test' 
                   ? 'text-gray-500 hover:text-[#2C3E50] border-gray-200 hover:border-[#2C3E50] bg-gray-50' 
                   : 'text-[#7A8B99] hover:text-[#5BC0BE] border-[#1C2541] hover:border-[#5BC0BE] bg-[#1C2541]/50'
@@ -589,7 +649,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             </button>
             <button 
               onClick={onNextQuestion}
-              className={`flex items-center gap-2 transition-colors font-bold px-4 py-2 rounded-full border flex-1 sm:flex-none justify-center ${
+              className={`flex items-center gap-2 transition-colors font-bold px-4 py-2 rounded-full border flex-1 md:flex-none justify-center ${
                 mode === 'mini_test' 
                   ? 'text-white bg-[#2C3E50] hover:bg-[#1a252f] border-[#2C3E50]' 
                   : 'text-[#0B132B] bg-[#5BC0BE] hover:bg-[#4A9D9C] border-[#5BC0BE]'
@@ -602,7 +662,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         ) : (
           <button 
             onClick={onBack}
-            className={`flex items-center gap-2 transition-colors font-bold px-4 py-2 rounded-full border w-full sm:w-auto justify-center ${
+            className={`flex items-center gap-2 transition-colors font-bold px-4 py-2 rounded-full border w-full md:w-auto justify-center ${
               mode === 'mini_test' 
                 ? 'text-gray-500 hover:text-[#2C3E50] border-gray-200 hover:border-[#2C3E50] bg-gray-50' 
                 : 'text-[#7A8B99] hover:text-[#5BC0BE] border-[#1C2541] hover:border-[#5BC0BE] bg-[#1C2541]/50'
@@ -687,10 +747,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           
           {/* Answer Checking for ALL questions */}
           <div className={`p-4 sm:p-6 md:p-8 border-b ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'border-[#3A506B]/50 bg-[#1C2541]/20'}`}>
-            <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
-              <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
-              <span>答え合わせ</span>
-            </h3>
+            {singleQuestionIndex === undefined && (
+              <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
+                <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
+                <span>答え合わせ</span>
+              </h3>
+            )}
             
             <div className="space-y-8 md:space-y-12">
               {questions.length > 0 ? (
@@ -698,32 +760,34 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 const scorePercentage = calculateScore(question);
                 return (
                   <div key={question.id} className="space-y-4 md:space-y-6">
-                    <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4 ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/30'}`}>
-                      <div className="flex items-center gap-3">
-                        <div className={`font-bold px-3 py-1 rounded-full text-xs md:text-sm shadow-sm border ${mode === 'mini_test' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'}`}>
-                          Q{(singleQuestionIndex !== undefined ? singleQuestionIndex : qIndex) + 1}
+                    {singleQuestionIndex === undefined && (
+                      <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4 ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/30'}`}>
+                        <div className="flex items-center gap-3">
+                          <div className={`font-bold px-3 py-1 rounded-full text-xs md:text-sm shadow-sm border ${mode === 'mini_test' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'}`}>
+                            Q{(singleQuestionIndex !== undefined ? singleQuestionIndex : qIndex) + 1}
+                          </div>
+                          <div className={`text-left font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
+                            {question.category || '問題'}
+                          </div>
                         </div>
-                        <div className={`text-left font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
-                          {question.category || '問題'}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleSaveNote(question, qIndex); }}
-                          className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-colors border ${savingNote[question.id] ? (mode === 'mini_test' ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-[#1C2541] text-[#7A8B99] border-[#1C2541]') : (mode === 'mini_test' ? 'bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100' : 'bg-[#F9E79F]/20 text-[#F9E79F] border-[#F9E79F]/30 hover:bg-[#F9E79F]/30')}`}
-                          disabled={savingNote[question.id]}
-                        >
-                          <Save size={14} />
-                          {savingNote[question.id] ? '保存中...' : 'ノートに保存'}
-                        </button>
-                        <div className="flex flex-col items-end">
-                          <div className={`text-[10px] md:text-xs font-bold mb-0.5 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>あなたの正答率</div>
-                          <div className={`font-mono font-bold text-base md:text-lg ${scorePercentage >= 80 ? (mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]') : scorePercentage <= 40 ? (mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]') : (mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]')}`}>
-                            {scorePercentage}%
+                        <div className="flex items-center gap-4">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleSaveNote(question, qIndex); }}
+                            className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-colors border ${savingNote[question.id] ? (mode === 'mini_test' ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-[#1C2541] text-[#7A8B99] border-[#1C2541]') : (mode === 'mini_test' ? 'bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100' : 'bg-[#F9E79F]/20 text-[#F9E79F] border-[#F9E79F]/30 hover:bg-[#F9E79F]/30')}`}
+                            disabled={savingNote[question.id]}
+                          >
+                            <Save size={14} />
+                            {savingNote[question.id] ? '保存中...' : 'ノートに保存'}
+                          </button>
+                          <div className="flex flex-col items-end">
+                            <div className={`text-[10px] md:text-xs font-bold mb-0.5 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>あなたの正答率</div>
+                            <div className={`font-mono font-bold text-base md:text-lg ${scorePercentage >= 80 ? (mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]') : scorePercentage <= 40 ? (mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]') : (mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]')}`}>
+                              {scorePercentage}%
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                     
                     {/* Problem Restatement */}
                     <div className={`p-4 rounded-lg border text-sm md:text-base leading-relaxed ${
