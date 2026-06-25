@@ -760,11 +760,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         }>
           <div className={isMobile
             ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8 lg:h-[calc(100vh-220px)] lg:overflow-hidden"
-            : "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 h-full flex-1 overflow-hidden"
+            : "grid grid-cols-1 lg:grid-cols-[54%_46%] gap-6 p-0 h-full flex-1 overflow-hidden"
           }>
             
             {/* LEFT COLUMN: Problem statements and flowcharts */}
-            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pr-4 pb-8">
+            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pr-4 pb-8 min-w-0">
               {singleQuestionIndex === undefined && (
                 <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
                   <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
@@ -849,7 +849,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             </div>
 
             {/* RIGHT COLUMN: Answers, grading, and explanations */}
-            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pl-4 lg:pr-4 pb-8">
+            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pl-4 lg:pr-4 pb-8 min-w-0">
               {questions.length > 0 ? (
                 questions.map((question: any, qIndex: number) => {
                 return (
@@ -1138,40 +1138,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     )}
                                   </div>
 
-                                  {/* Bottom Section: Logic Tree */}
-                                  {!isCorrect && isPracticeMode && (
-                                    <div className="w-full mt-2 pt-6 border-t border-gray-200">
-                                      {(() => {
-                                        const relatedSteps = getRelatedSteps(sq.id, question);
-                                        if (relatedSteps.length === 0) return null;
-                                        
-                                        const targetTreeParams = chapter?.id === 'c1_2_A' ? separationTreeData 
-                                          : chapter?.id === 'c1_3' ? thermalMotionTreeData 
-                                          : chapter?.id === 'c2_1' ? atomicStructureTreeData
-                                          : chapter?.id === 'c2_2' ? ionTreeData
-                                          : chapter?.id === 'c2_3' ? ionGenerationTreeData
-                                          : chapter?.id === 'c2_4' ? ionSizeTreeData
-                                          : chapter?.id === 'c3_1' ? chemicalBondTreeData
-                                          : substanceTreeData;
-                                        const filteredData = filterTree(targetTreeParams, relatedSteps.map(s => s.id));
-                                        if (!filteredData) return null;
-
-                                        return (
-                                          <div className="w-full flex justify-center">
-                                            <div className="w-full max-w-4xl">
-                                              <InteractiveLogicTree 
-                                                data={filteredData} 
-                                                step={String(relatedSteps[0].step)}
-                                                focusNode={relatedSteps[0].id}
-                                                zoom="normal"
-                                                mobileTightCrop={true}
-                                              />
-                                            </div>
-                                          </div>
-                                        );
-                                      })()}
-                                    </div>
-                                  )}
+                                  {/* Bottom Section: Logic Tree removed as requested to avoid duplication with the left-hand column tree */}
                                 </div>
                               </div>
                             </div>

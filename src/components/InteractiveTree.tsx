@@ -104,11 +104,11 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden mt-2 font-handwriting"
             >
-              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 shadow-inner ml-4 sm:ml-8 max-w-2xl font-handwriting">
+              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 shadow-inner ml-4 sm:ml-6 max-w-[85vw] md:max-w-[380px] font-handwriting whitespace-normal break-words">
                 {node.explanation && (
                   <div className="flex items-start gap-2 mb-4 font-handwriting">
                     <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-                    <div className="text-slate-700 text-sm leading-relaxed font-handwriting">
+                    <div className="text-slate-700 text-sm leading-relaxed font-handwriting whitespace-normal break-words">
                       {formatText(node.explanation)}
                     </div>
                   </div>
