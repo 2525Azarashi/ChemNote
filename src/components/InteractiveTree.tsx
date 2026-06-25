@@ -104,7 +104,7 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden mt-2 font-handwriting"
             >
-              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 shadow-inner ml-4 sm:ml-6 max-w-[85vw] md:max-w-[92%] lg:max-w-[580px] font-handwriting whitespace-normal break-words">
+              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 shadow-inner ml-3 sm:ml-4 max-w-[240px] xs:max-w-[280px] sm:max-w-[320px] md:max-w-[340px] lg:max-w-[260px] xl:max-w-[320px] font-handwriting whitespace-normal break-words">
                 {node.explanation && (
                   <div className="flex items-start gap-2 mb-4 font-handwriting">
                     <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
@@ -262,7 +262,7 @@ export function InteractiveTree({
     <div className={cn(
       "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300 font-handwriting",
       zoom === 'far' ? "origin-top scale-[0.98]" : "",
-      mobileTightCrop ? "p-1 sm:p-2 md:p-4" : "p-2 sm:p-6 md:p-8"
+      mobileTightCrop ? "p-1 sm:p-2 md:p-3" : "p-2 sm:p-4 md:p-5"
     )}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6 sm:mb-8 font-handwriting">
