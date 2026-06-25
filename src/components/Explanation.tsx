@@ -743,18 +743,19 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         )}
 
         {/* Unified Explanation Area */}
-        <div className={`rounded-2xl shadow-lg overflow-clip border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`}>
-          
-          {/* Answer Checking for ALL questions */}
-          <div className={`p-4 sm:p-6 md:p-8 border-b ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'border-[#3A506B]/50 bg-[#1C2541]/20'}`}>
-            {singleQuestionIndex === undefined && (
-              <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
-                <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
-                <span>答え合わせ</span>
-              </h3>
-            )}
+        <div className={`rounded-2xl shadow-lg border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8 lg:h-[calc(100vh-220px)] lg:overflow-hidden">
             
-            <div className="space-y-8 md:space-y-12">
+            {/* LEFT COLUMN: Problem statements and flowcharts */}
+            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pr-4">
+              {singleQuestionIndex === undefined && (
+                <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
+                  <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
+                  <span>答え合わせ</span>
+                </h3>
+              )}
+              
+              <div className="space-y-8 md:space-y-12">
               {questions.length > 0 ? (
                 questions.map((question: any, qIndex: number) => {
                 const scorePercentage = calculateScore(question);
@@ -800,7 +801,41 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         </div>
                       )}
                     </div>
+                  </div>
+                );
+              })
+              ) : null}
+              </div>
+              
+              {/* Flowchart (Logical Tree) - Moved under problem statement inside Left Column */}
+              {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A' || chapter?.id === 'c2_1' || chapter?.id === 'c2_2' || chapter?.id === 'c2_3' || chapter?.id === 'c2_4' || chapter?.id?.startsWith('c3_')) && (
+                <div className="mt-6 border-t pt-6 border-gray-200">
+                  <h4 className="text-sm font-bold mb-3 flex items-center gap-2 text-emerald-700">
+                    <Network size={16} />
+                    <span>フローチャート（解法の思考プロセス）</span>
+                  </h4>
+                  <PracticeExplanationTree
+                    deepThoughtData={deepThoughtData}
+                    chapter={chapter}
+                    questions={questions}
+                    handleQuestionClick={handleQuestionClick}
+                    expandedStep={expandedStep}
+                    setExpandedStep={setExpandedStep}
+                    expandedNodeId={expandedNodeId}
+                    scrollTrigger={scrollTrigger}
+                    isMobile={isMobile}
+                    renderSubQuestionCheck={renderSubQuestionCheck}
+                  />
+                </div>
+              )}
+            </div>
 
+            {/* RIGHT COLUMN: Answers, grading, and explanations */}
+            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pl-4">
+              {questions.length > 0 ? (
+                questions.map((question: any, qIndex: number) => {
+                return (
+                  <div key={`right-${question.id}`} className="space-y-6">
                     <div className="space-y-6 md:space-y-8">
                       {(() => {
                         const incorrectSqs = question.subQuestions.filter((sq: any) => sq.type === 'descriptive' ? false : answers[sq.id] !== sq.correctAnswer);
@@ -1218,16 +1253,14 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                   </div>
                 );
               })
-              ) : (
-                <div className={`p-12 text-center rounded-2xl border-2 border-dashed ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-500' : 'bg-[#1C2541]/30 border-[#3A506B]/50 text-[#7A8B99]'}`}>
-                  <div className="flex flex-col items-center gap-4">
-                    <AlertCircle size={48} className="text-amber-500" />
-                    <p className="text-lg font-bold">問題がありません。</p>
-                  </div>
+            ) : (
+              <div className={`p-12 text-center rounded-2xl border-2 border-dashed ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-500' : 'bg-[#1C2541]/30 border-[#3A506B]/50 text-[#7A8B99]'}`}>
+                <div className="flex flex-col items-center gap-4">
+                  <AlertCircle size={48} className="text-amber-500" />
+                  <p className="text-lg font-bold">問題がありません。</p>
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
+            )}
 
           {/* Stumbling Points (from logic_thought) */}
           {deepThoughtData && deepThoughtData.phase2.stumblingPoints && deepThoughtData.phase2.stumblingPoints.length > 0 && (
@@ -1344,27 +1377,14 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                       </div>
                     </div>
                   )}
-                </div>
-              );
-            })}
+                  </div>
+                );
+              })
+            }
           </div>
-
-          {/* Logical Tree (if exists) - Moved to bottom */}
-          {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A' || chapter?.id === 'c2_1' || chapter?.id === 'c2_2' || chapter?.id === 'c2_3' || chapter?.id === 'c2_4' || chapter?.id?.startsWith('c3_')) && (
-            <PracticeExplanationTree
-              deepThoughtData={deepThoughtData}
-              chapter={chapter}
-              questions={questions}
-              handleQuestionClick={handleQuestionClick}
-              expandedStep={expandedStep}
-              setExpandedStep={setExpandedStep}
-              expandedNodeId={expandedNodeId}
-              scrollTrigger={scrollTrigger}
-              isMobile={isMobile}
-              renderSubQuestionCheck={renderSubQuestionCheck}
-            />
-          )}
         </div>
+      </div>
+      </div>
       </div>
       </div>
       </div>
