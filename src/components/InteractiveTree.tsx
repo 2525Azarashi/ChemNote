@@ -71,8 +71,8 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
   }
 
   return (
-    <div className="flex flex-col font-handwriting">
-      <div className="relative z-10 font-handwriting">
+    <div className="flex flex-col w-full min-w-0 font-handwriting">
+      <div className="relative z-10 w-full min-w-0 font-handwriting">
         <div className="flex items-center gap-3">
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -104,7 +104,7 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden mt-2 font-handwriting"
             >
-              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 shadow-inner ml-3 sm:ml-4 mr-3 sm:mr-4 w-auto font-handwriting whitespace-normal break-words">
+              <div className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200 shadow-inner ml-1 sm:ml-2 mr-1 sm:mr-2 w-full max-w-[calc(100%-0.75rem)] md:max-w-[480px] font-handwriting whitespace-normal break-words box-border">
                 {node.explanation && (
                   <div className="flex items-start gap-2 mb-4 font-handwriting">
                     <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
@@ -260,7 +260,7 @@ export function InteractiveTree({
 
   return (
     <div className={cn(
-      "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300 font-handwriting",
+      "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300 font-handwriting min-w-0 overflow-x-auto lg:overflow-x-visible",
       zoom === 'far' ? "origin-top scale-[0.98]" : "",
       mobileTightCrop ? "p-1 sm:p-2 md:p-3" : "p-2 sm:p-4 md:p-5"
     )}>
