@@ -826,11 +826,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               
               {/* Flowchart (Logical Tree) - Moved under problem statement inside Left Column */}
               {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A' || chapter?.id === 'c2_1' || chapter?.id === 'c2_2' || chapter?.id === 'c2_3' || chapter?.id === 'c2_4' || chapter?.id?.startsWith('c3_')) && (
-                <div className="mt-6 border-t pt-6 border-gray-200">
-                  <h4 className="text-sm font-bold mb-3 flex items-center gap-2 text-emerald-700">
-                    <Network size={16} />
-                    <span>フローチャート（解法の思考プロセス）</span>
-                  </h4>
+                <div className="mt-6 border-t pt-4 border-gray-200">
                   <PracticeExplanationTree
                     deepThoughtData={deepThoughtData}
                     chapter={chapter}

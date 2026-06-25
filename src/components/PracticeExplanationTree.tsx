@@ -121,24 +121,8 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   };
 
   return (
-    <div id="logical-tree-section" className="p-3 sm:p-4 md:p-5 border-t border-gray-200 w-full bg-white">
-      <div className="flex flex-col w-full gap-4">
-        <h3 className={`text-lg font-bold mb-2 font-handwriting ${isThermalMotionChapter ? 'text-amber-700 text-xl' : isAtomicStructureChapter ? 'text-emerald-700 text-xl' : isIonSizeChapter ? 'text-emerald-700 text-xl' : isIonGenerationChapter ? 'text-indigo-700 text-xl' : isChemicalBondChapter ? 'text-emerald-700 text-xl font-bold' : isCrystalChapter ? 'text-emerald-700 text-xl font-bold' : isInteractionChapter ? 'text-emerald-700 text-xl font-bold' : isAtomicWeightChapter ? 'text-emerald-700 text-xl font-bold' : isAmountOfSubstanceChapter ? 'text-emerald-700 text-xl font-bold' : isChemicalEquationChapter ? 'text-emerald-700 text-xl font-bold' : isConcentrationChapter ? 'text-emerald-700 text-xl font-bold' : 'text-[#2C3E50]'}`}>
-          {isThermalMotionChapter ? '重要事項③ 〜粒子の熱運動と物質の三態〜' : 
-           isSeparationChapter ? '分離と精製のフローチャート' : 
-           isAtomicStructureChapter ? '原子の構造・電子配置・周期表のフローチャート' :
-           isIonChapter ? 'イオンの分類と安定性のフローチャート' :
-           isIonGenerationChapter ? 'イオン生成とエネルギーのフローチャート' :
-           isIonSizeChapter ? '重要事項④ 〜原子の大きさとイオンの大きさ〜' :
-           isChemicalBondChapter ? '重要事項① 〜結合の種類と分子の形状〜' :
-           isCrystalChapter ? '重要事項② 〜結晶の種類と性質〜' :
-           isInteractionChapter ? '重要事項③ 〜分子の相互作用と性質〜' :
-           isAtomicWeightChapter ? '重要事項① 〜原子量と同位体〜' :
-           isAmountOfSubstanceChapter ? '重要事項② 〜物質量（mol）とモル計算〜' :
-           isChemicalEquationChapter ? '重要事項③ 〜化学反応式とイオン反応式の作り方〜' :
-           isConcentrationChapter ? '重要事項④ 〜溶液の濃度と希釈〜' :
-           '学習フローチャート'}
-        </h3>
+    <div id="logical-tree-section" className="p-1 sm:p-2 border-t border-gray-100 w-full bg-white">
+      <div className="flex flex-col w-full">
         <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-1 sm:p-3">
           <InteractiveTree 
             data={currentTreeData}
