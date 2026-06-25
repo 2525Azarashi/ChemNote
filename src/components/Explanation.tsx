@@ -764,7 +764,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           }>
             
             {/* LEFT COLUMN: Problem statements and flowcharts */}
-            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pr-4">
+            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pr-4 pb-8">
               {singleQuestionIndex === undefined && (
                 <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
                   <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
@@ -849,7 +849,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             </div>
 
             {/* RIGHT COLUMN: Answers, grading, and explanations */}
-            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pl-4">
+            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pl-4 lg:pr-4 pb-8">
               {questions.length > 0 ? (
                 questions.map((question: any, qIndex: number) => {
                 return (
