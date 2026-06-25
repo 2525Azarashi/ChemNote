@@ -338,7 +338,7 @@ export default function App() {
             </div>
           )}
 
-          <div className={`w-full relative ${appState === 'explanation' ? 'max-w-[96%] xl:max-w-[1480px]' : 'max-w-5xl'}`}>
+          <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : 'max-w-5xl'}`}>
             {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} />}
 
             {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}

@@ -531,18 +531,28 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   };
 
   return (
-    <div className={`explanation-desktop-wrapper ${isMobile ? 'active' : ''}`}>
-      <div className="explanation-desktop-content">
+    <div className={isMobile 
+      ? `explanation-desktop-wrapper active` 
+      : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-40 pb-20 md:pb-0`
+    }>
+      <div className={isMobile ? "explanation-desktop-content" : "w-full h-full flex flex-col"}>
         {isMobile && (
           <div className="explanation-scroll-hint">
             横にスワイプして全体を確認できます →
           </div>
         )}
-        <div className={`w-full rounded-3xl overflow-clip shadow-2xl border font-handwriting relative my-4 md:my-8 ${
-          mode === 'mini_test' 
-            ? 'bg-white text-gray-800 border-gray-100' 
-            : 'bg-[#0B132B] text-[#E0E1DD] border-[#1C2541]'
-        }`}>
+        <div className={isMobile 
+          ? `w-full rounded-3xl overflow-clip shadow-2xl border font-handwriting relative my-4 md:my-8 ${
+              mode === 'mini_test' 
+                ? 'bg-white text-gray-800 border-gray-100' 
+                : 'bg-[#0B132B] text-[#E0E1DD] border-[#1C2541]'
+            }`
+          : `w-full h-full flex flex-col font-handwriting relative ${
+              mode === 'mini_test' 
+                ? 'bg-white text-gray-800' 
+                : 'bg-[#0B132B] text-[#E0E1DD]'
+            }`
+        }>
       {/* Background effects */}
       {mode !== 'mini_test' && (
         <>
@@ -557,7 +567,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       )}
 
       {/* Header */}
-      <div className={`p-4 md:p-6 border-b-2 relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
+      <div className={`p-4 md:p-6 border-b-2 relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 flex-none ${
         mode === 'mini_test' ? 'bg-white/90 border-gray-100' : 'bg-[#0B132B]/90 border-[#1C2541]'
       }`}>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1 min-w-0 w-full md:w-auto">
@@ -674,9 +684,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         )}
       </div>
 
-      <div className={`p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${
-        mode === 'mini_test' ? 'bg-white' : ''
-      }`}>
+      <div className={isMobile
+        ? `p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
+        : `p-4 md:p-6 relative z-10 flex-1 overflow-hidden flex flex-col ${mode === 'mini_test' ? 'bg-white' : ''}`
+      }>
       {/* Weak Areas Analysis */}
         {singleQuestionIndex === undefined && weakAreas.length > 0 && (
           <div className={`rounded-2xl p-5 md:p-6 shadow-lg border relative overflow-hidden ${
@@ -743,8 +754,14 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         )}
 
         {/* Unified Explanation Area */}
-        <div className={`rounded-2xl shadow-lg border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8 lg:h-[calc(100vh-220px)] lg:overflow-hidden">
+        <div className={isMobile
+          ? `rounded-2xl shadow-lg border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`
+          : `border-none shadow-none flex-1 flex flex-col h-full min-h-0 overflow-hidden`
+        }>
+          <div className={isMobile
+            ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8 lg:h-[calc(100vh-220px)] lg:overflow-hidden"
+            : "grid grid-cols-1 lg:grid-cols-2 gap-8 p-0 h-full flex-1 overflow-hidden"
+          }>
             
             {/* LEFT COLUMN: Problem statements and flowcharts */}
             <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pr-4">
