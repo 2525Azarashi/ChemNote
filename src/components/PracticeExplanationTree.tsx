@@ -119,7 +119,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   };
 
   return (
-    <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-b border-gray-200 w-full bg-white">
+    <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-t border-gray-200 w-full bg-white">
       <div className="flex flex-col w-full gap-4">
         <h3 className={`text-lg font-bold mb-2 font-handwriting ${isThermalMotionChapter ? 'text-amber-700 text-xl' : isAtomicStructureChapter ? 'text-emerald-700 text-xl' : isIonSizeChapter ? 'text-emerald-700 text-xl' : isIonGenerationChapter ? 'text-indigo-700 text-xl' : isChemicalBondChapter ? 'text-emerald-700 text-xl font-bold' : isCrystalChapter ? 'text-emerald-700 text-xl font-bold' : isInteractionChapter ? 'text-emerald-700 text-xl font-bold' : isAtomicWeightChapter ? 'text-emerald-700 text-xl font-bold' : isAmountOfSubstanceChapter ? 'text-emerald-700 text-xl font-bold' : isChemicalEquationChapter ? 'text-emerald-700 text-xl font-bold' : isConcentrationChapter ? 'text-emerald-700 text-xl font-bold' : 'text-[#2C3E50]'}`}>
           {isThermalMotionChapter ? '重要事項③ 〜粒子の熱運動と物質の三態〜' : 

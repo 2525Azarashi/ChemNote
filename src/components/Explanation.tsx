@@ -685,22 +685,6 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         {/* Unified Explanation Area */}
         <div className={`rounded-2xl shadow-lg overflow-clip border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`}>
           
-          {/* Logical Tree (if exists) */}
-          {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A' || chapter?.id === 'c2_1' || chapter?.id === 'c2_2' || chapter?.id === 'c2_3' || chapter?.id === 'c2_4' || chapter?.id?.startsWith('c3_')) && (
-            <PracticeExplanationTree
-              deepThoughtData={deepThoughtData}
-              chapter={chapter}
-              questions={questions}
-              handleQuestionClick={handleQuestionClick}
-              expandedStep={expandedStep}
-              setExpandedStep={setExpandedStep}
-              expandedNodeId={expandedNodeId}
-              scrollTrigger={scrollTrigger}
-              isMobile={isMobile}
-              renderSubQuestionCheck={renderSubQuestionCheck}
-            />
-          )}
-
           {/* Answer Checking for ALL questions */}
           <div className={`p-4 sm:p-6 md:p-8 border-b ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'border-[#3A506B]/50 bg-[#1C2541]/20'}`}>
             <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
@@ -1300,6 +1284,22 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               );
             })}
           </div>
+
+          {/* Logical Tree (if exists) - Moved to bottom */}
+          {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A' || chapter?.id === 'c2_1' || chapter?.id === 'c2_2' || chapter?.id === 'c2_3' || chapter?.id === 'c2_4' || chapter?.id?.startsWith('c3_')) && (
+            <PracticeExplanationTree
+              deepThoughtData={deepThoughtData}
+              chapter={chapter}
+              questions={questions}
+              handleQuestionClick={handleQuestionClick}
+              expandedStep={expandedStep}
+              setExpandedStep={setExpandedStep}
+              expandedNodeId={expandedNodeId}
+              scrollTrigger={scrollTrigger}
+              isMobile={isMobile}
+              renderSubQuestionCheck={renderSubQuestionCheck}
+            />
+          )}
         </div>
       </div>
       </div>
