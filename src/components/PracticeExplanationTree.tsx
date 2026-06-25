@@ -13,6 +13,7 @@ interface PracticeExplanationTreeProps {
   scrollTrigger: number;
   isMobile: boolean;
   renderSubQuestionCheck: (sq: any, parentQuestion: any) => React.ReactElement;
+  zoom?: 'far' | 'normal';
 }
 
 export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = ({
@@ -25,7 +26,8 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   expandedNodeId,
   scrollTrigger,
   isMobile,
-  renderSubQuestionCheck
+  renderSubQuestionCheck,
+  zoom = 'far'
 }) => {
   const isSeparationChapter = chapter?.id === 'c1_2_A';
   const isThermalMotionChapter = chapter?.id === 'c1_3';
@@ -119,7 +121,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   };
 
   return (
-    <div id="logical-tree-section" className="p-4 sm:p-6 md:p-8 border-t border-gray-200 w-full bg-white">
+    <div id="logical-tree-section" className="p-3 sm:p-4 md:p-5 border-t border-gray-200 w-full bg-white">
       <div className="flex flex-col w-full gap-4">
         <h3 className={`text-lg font-bold mb-2 font-handwriting ${isThermalMotionChapter ? 'text-amber-700 text-xl' : isAtomicStructureChapter ? 'text-emerald-700 text-xl' : isIonSizeChapter ? 'text-emerald-700 text-xl' : isIonGenerationChapter ? 'text-indigo-700 text-xl' : isChemicalBondChapter ? 'text-emerald-700 text-xl font-bold' : isCrystalChapter ? 'text-emerald-700 text-xl font-bold' : isInteractionChapter ? 'text-emerald-700 text-xl font-bold' : isAtomicWeightChapter ? 'text-emerald-700 text-xl font-bold' : isAmountOfSubstanceChapter ? 'text-emerald-700 text-xl font-bold' : isChemicalEquationChapter ? 'text-emerald-700 text-xl font-bold' : isConcentrationChapter ? 'text-emerald-700 text-xl font-bold' : 'text-[#2C3E50]'}`}>
           {isThermalMotionChapter ? '重要事項③ 〜粒子の熱運動と物質の三態〜' : 
@@ -137,7 +139,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
            isConcentrationChapter ? '重要事項④ 〜溶液の濃度と希釈〜' :
            '学習フローチャート'}
         </h3>
-        <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-2 sm:p-5">
+        <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-1 sm:p-3">
           <InteractiveTree 
             data={currentTreeData}
             onQuestionClick={handleQuestionClick}
@@ -146,6 +148,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
             scrollTrigger={scrollTrigger}
             renderContent={renderContent}
             mobileTightCrop={isMobile}
+            zoom={zoom as 'far' | 'normal'}
           />
         </div>
       </div>
