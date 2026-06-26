@@ -30,9 +30,11 @@ interface TreeNodeProps {
   renderContent?: (nodeId: string) => React.ReactNode;
   onQuestionClick?: (questionId: string) => void;
   zoom?: 'far' | 'normal';
+  depth?: number;
+  isMobile?: boolean;
 }
 
-const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionClick, zoom = 'normal' }: TreeNodeProps) => {
+const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionClick, zoom = 'normal', depth = 0, isMobile = false }: TreeNodeProps) => {
   const isSelected = expandedNodeIds.includes(node.id);
   const hasContent = !!node.explanation || !!renderContent || (node.relatedQuestions && node.relatedQuestions.length > 0);
 
@@ -53,6 +55,16 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
   const lineTranslate = isFar ? 'top-[22px]' : 'top-[26px]';
   const horizontalLineClass = isFar ? '-left-4 sm:-left-6 w-4 sm:w-6' : '-left-6 sm:-left-8 w-6 sm:w-8';
 
+  const indentPerLevel = isFar ? 48 : 64; // px on desktop
+  const mobileIndentPerLevel = isFar ? 32 : 48; // px on mobile
+  
+  const totalIndentDesktop = depth * indentPerLevel;
+  const totalIndentMobile = depth * mobileIndentPerLevel;
+
+  const dynamicMaxWidth = isMobile
+    ? `calc(100vw - ${totalIndentMobile}px - 2.5rem)`
+    : `calc(58vw - ${totalIndentDesktop}px - 6.5rem)`;
+
   if (node.isGroup) {
     const groupBg = node.step === 1 ? 'bg-orange-50/50 border-orange-200' : node.step === 2 ? 'bg-emerald-50/50 border-emerald-200' : node.step === 3 ? 'bg-blue-50/50 border-blue-200' : 'bg-purple-50/50 border-purple-200';
     const groupText = node.step === 1 ? 'text-orange-800' : node.step === 2 ? 'text-emerald-800' : node.step === 3 ? 'text-blue-800' : 'text-purple-800';
@@ -63,7 +75,7 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
         </div>
         <div className="mt-2 flex flex-col gap-2 font-handwriting">
           {node.children?.map(child => (
-            <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} />
+            <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} depth={depth + 1} isMobile={isMobile} />
           ))}
         </div>
       </div>
@@ -104,7 +116,10 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden mt-2 font-handwriting"
             >
-              <div className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200 shadow-inner ml-1 sm:ml-2 mr-1 sm:mr-2 w-full max-w-[calc(100%-1rem)] md:max-w-[calc(100%-1.5rem)] lg:max-w-[calc(100%-2rem)] font-handwriting whitespace-normal break-words box-border">
+              <div 
+                className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200 shadow-inner ml-3 sm:ml-4 mr-3 sm:mr-4 w-full sm:w-[440px] md:w-[520px] lg:w-[620px] xl:w-[760px] 2xl:w-[900px] font-handwriting whitespace-normal break-words box-border"
+                style={{ maxWidth: dynamicMaxWidth }}
+              >
                 {node.explanation && (
                   <div className="flex items-start gap-2 mb-4 font-handwriting">
                     <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
@@ -146,7 +161,7 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
           {node.children.map((child) => (
             <div key={child.id} className="relative">
               <div className={cn("absolute border-t-2 border-slate-300 -translate-y-1/2", horizontalLineClass, lineTranslate)} />
-              <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} />
+              <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} depth={depth + 1} isMobile={isMobile} />
             </div>
           ))}
         </div>
@@ -260,7 +275,7 @@ export function InteractiveTree({
 
   return (
     <div className={cn(
-      "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300 font-handwriting min-w-0 overflow-x-auto lg:overflow-x-visible",
+      "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300 font-handwriting min-w-0 overflow-x-auto",
       zoom === 'far' ? "origin-top scale-[0.98]" : "",
       mobileTightCrop ? "p-1 sm:p-2 md:p-3" : "p-2 sm:p-4 md:p-5"
     )}>
@@ -289,7 +304,7 @@ export function InteractiveTree({
       {/* Tree Container */}
       <div className="overflow-x-auto pb-4 touch-auto">
         <div className="min-w-max pr-8">
-          <TreeNode node={data} onSelect={handleSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} />
+          <TreeNode node={data} onSelect={handleSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} depth={0} isMobile={mobileTightCrop} />
         </div>
       </div>
     </div>
