@@ -1,4 +1,4 @@
-// Auto-generated global CSS — already scoped to .learning-content
+// Auto-generated global CSS - already scoped to .learning-content
 // eslint-disable-next-line
 export const LEARNING_GLOBAL_CSS = `.learning-content {
         font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', sans-serif;
