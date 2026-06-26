@@ -325,15 +325,18 @@ export default function App() {
             onError={handleAudioError}
           />
           
-          {/* Mobile Toggle Button (For actual mobile devices) */}
+          {/* Mobile/Desktop Display Toggle Button (For actual mobile devices)
+              - aria-label と title を日本語で付与し、用途を明示
+              - スクリーンリーダーで「PC表示に切り替え／スマホ表示に戻す」と読み上げ可能 */}
           {isMobileDevice && (
             <div className="fixed bottom-28 right-4 z-[9999]">
               <button
                 onClick={() => setForceDesktop(!forceDesktop)}
+                aria-label={forceDesktop ? "スマホ表示に戻す" : "PC表示に切り替え"}
+                title={forceDesktop ? "スマホ表示に戻す" : "PC表示に切り替え（タブレット/PCレイアウトで閲覧）"}
                 className={`bg-white rounded-full shadow-xl border-2 border-[#A9CCE3] flex items-center justify-center text-gray-600 hover:text-[#1B2631] transition-all ${forceDesktop ? 'p-5 scale-150 origin-bottom-right' : 'p-3'}`}
-                title={forceDesktop ? "スマホ表示に戻す" : "PC表示に切り替え"}
               >
-                {forceDesktop ? <Smartphone size={28} className="text-[#A9CCE3]" /> : <Monitor size={24} />}
+                {forceDesktop ? <Smartphone size={28} className="text-[#A9CCE3]" aria-hidden="true" /> : <Monitor size={24} aria-hidden="true" />}
               </button>
             </div>
           )}
@@ -357,15 +360,22 @@ export default function App() {
             {appState === 'note_list' && <NoteList onBack={() => setAppState('home')} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}
 
-            {/* Global Bottom Navigation Footer */}
+            {/* Global Bottom Navigation Footer
+                日本語ラベル化（ホーム／学習／設定）＋aria-labelをaria-currentで現在地を明示
+                アイコンには aria-hidden を付け、ラベルだけがスクリーンリーダーに読まれるよう整理 */}
             {appState !== 'onboarding' && appState !== 'quiz' && appState !== 'explanation' && (
-              <div className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-4 md:px-10 pb-safe pt-3 z-[60] shadow-sm pb-6">
+              <nav
+                aria-label="メインナビゲーション"
+                className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-4 md:px-10 pb-safe pt-3 z-[60] shadow-sm pb-6"
+              >
                 <button 
                   onClick={() => setAppState('home')}
+                  aria-label="ホーム画面へ移動"
+                  aria-current={appState === 'home' ? 'page' : undefined}
                   className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${appState === 'home' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
-                  <HomeIcon className="w-5 h-5 stroke-[2.2]" />
-                  <span className="text-[10px] tracking-wider font-modern">Home</span>
+                  <HomeIcon className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
+                  <span className="text-[10px] tracking-wider font-modern">ホーム</span>
                 </button>
                 
                 <button 
@@ -376,10 +386,12 @@ export default function App() {
                       setAppState('mode_selection');
                     }
                   }}
+                  aria-label="学習画面へ移動"
+                  aria-current={['mode_selection', 'chapters', 'learning', 'explanation', 'quiz'].includes(appState) ? 'page' : undefined}
                   className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation', 'quiz'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
-                  <BookOpen className="w-5 h-5 stroke-[2.2]" />
-                  <span className="text-[10px] tracking-wider font-modern">Learn</span>
+                  <BookOpen className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
+                  <span className="text-[10px] tracking-wider font-modern">学習</span>
                 </button>
 
                 <button 
@@ -389,26 +401,30 @@ export default function App() {
                     }
                     setAppState('settings');
                   }}
+                  aria-label="設定画面へ移動"
+                  aria-current={appState === 'settings' ? 'page' : undefined}
                   className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
-                  <Settings className="w-5 h-5 stroke-[2.2]" />
-                  <span className="text-[10px] tracking-wider font-modern">Settings</span>
+                  <Settings className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
+                  <span className="text-[10px] tracking-wider font-modern">設定</span>
                 </button>
-              </div>
+              </nav>
             )}
           </div>
         </div>
       </MobileViewWrapper>
 
-      {/* Desktop Toggle Button for Mobile Preview */}
+      {/* Desktop Toggle Button for Mobile Preview
+          aria-label / title を日本語で明示、アイコンには aria-hidden */}
       {!isMobileDevice && !isMobilePreview && (
         <div className="fixed bottom-4 right-4 z-[9999]">
           <button
             onClick={() => setIsMobilePreview(true)}
+            aria-label="スマホ版でプレビュー"
+            title="スマホ版でプレビュー（モバイル端末での見え方を確認）"
             className="bg-white rounded-full shadow-xl border-2 border-[#A9CCE3] flex items-center justify-center text-gray-600 hover:text-[#1B2631] transition-all p-3 group"
-            title="スマホ版でプレビュー"
           >
-            <Smartphone size={24} className="group-hover:scale-110 transition-transform" />
+            <Smartphone size={24} className="group-hover:scale-110 transition-transform" aria-hidden="true" />
             <span className="ml-2 font-bold text-sm hidden group-hover:inline-block whitespace-nowrap overflow-hidden transition-all">スマホ版</span>
           </button>
         </div>
