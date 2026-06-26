@@ -1,0 +1,138 @@
+[
+  {
+    "id": "q_c1_2_A_1",
+    "category": "物質の分離と精製 (1. ろ過)",
+    "text": "１ ろ過に関する次の問いに答えよ。\n\n液体とそれに溶けない固体の混合物を、ろ紙などを用いて分離する操作をろ過という。ろ過を行う際の注意点について、次の(1)〜(3)の理由を簡潔に答えよ。\n\n<img src=\"/filtration_setups.jpg\" alt=\"ろ過装置\" class=\"w-full max-w-sm mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) 液体をろうとに注ぐ際、直接注がずにガラス棒を伝わらせて注ぐのはなぜか。\n(2) ろ紙は、ろうとに密着させるように少量の水（または溶媒）で濡らすのはなぜか。\n(3) ろうとの足の先端（斜めに切られている部分）を、ビーカーの内壁に密着させるのはなぜか。",
+    "subQuestions": [
+      {
+        "id": "q1_1",
+        "label": "(1)",
+        "type": "descriptive",
+        "correctAnswer": "液が飛び散るのを防ぐため",
+        "gradingCriteria": [
+          "飛び散る",
+          "防ぐ"
+        ],
+        "correctAnswerRate": 85
+      },
+      {
+        "id": "q1_2",
+        "label": "(2)",
+        "type": "descriptive",
+        "correctAnswer": "ろ紙とろうとの隙間から液が流れ落ちるのを防ぎ、ろ過を早く進めるため",
+        "gradingCriteria": [
+          "隙間",
+          "早く"
+        ],
+        "correctAnswerRate": 85
+      },
+      {
+        "id": "q1_3",
+        "label": "(3)",
+        "type": "descriptive",
+        "correctAnswer": "ろ液が飛び散るのを防ぎ、また液の重みで速やかにろ過が進むようにするため",
+        "gradingCriteria": [
+          "飛び散る",
+          "速やかに"
+        ],
+        "correctAnswerRate": 85
+      }
+    ],
+    "explanation": "▼解答・解説\n(1) 液が飛び散るのを防ぐため\n(2) ろ紙とろうとの隙間から液が流れ落ちるのを防ぐため\n(3) ろ液が飛び散るのを防ぎ、速やかにろ過が進むようにするため",
+    "surroundingKnowledge": [],
+    "deepDiveTopics": []
+  },
+  {
+    "id": "q_c1_2_A_3",
+    "category": "物質の分離と精製 (3. 分留)",
+    "text": "３ 沸点の異なる2種類以上の「液体の混合物」から、加熱温度を変えて各成分に分離する操作に関する次の問いに答えよ。\n\n(1) この分離操作の名称を答えよ。\n(2) 原油（石油）をこの操作によって分離する際、精留塔から取り出される成分について、次のア〜オを、沸点が低く精留塔の「上から出てくる順」に正しく並べ替えよ。\n\nア：軽油　　イ：残油（重油など）　　ウ：石油ガス・LPガス　　エ：灯油　　オ：ナフサ（粗製ガソリン）",
+    "subQuestions": [
+      {
+        "id": "q3_1",
+        "label": "(1)",
+        "type": "short_answer",
+        "correctAnswer": "分留",
+        "correctAnswerRate": 85
+      },
+      {
+        "id": "q3_2",
+        "label": "(2)",
+        "type": "short_answer",
+        "correctAnswer": "ウオエア",
+        "correctAnswerRate": 85
+      }
+    ],
+    "explanation": "▼解答・解説\n(1) 分留（分別蒸留）\n(2) ウ → オ → エ → ア → イ\n解説: 原油の分留（精留塔）は、「沸点の低いものほど上から出てくる（気体になりやすいから）」という順番を把握する問題です。上から順に「①石油ガス・LPガス → ②ナフサ（粗製ガソリン） → ③灯油 → ④軽油 → ⑤残油（重油など）」となります。",
+    "surroundingKnowledge": [],
+    "deepDiveTopics": []
+  },
+  {
+    "id": "q_c1_2_A_5",
+    "category": "物質の分離と精製 (5. 抽出)",
+    "text": "５ 抽出に関する次の問いに答えよ。\n\n目的の物質だけをよく溶かす溶媒を用いて、混合物から成分を分離する操作を抽出という。\n\n<img src=\"/separating_funnel.jpg\" alt=\"分液漏斗\" class=\"w-full max-w-xs mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) ヨウ素と水の混合物（ヨウ素水溶液）からヨウ素を分離したい。このとき加える溶媒として最も適当なものを、次のア〜ウから選べ。\nア. エタノール　イ. ヘキサン　ウ. 食塩水\n\n(2) (1)の操作を行う際に用いる、図のようなガラス器具の名称を答えよ。\n\n(3) 茶葉に湯を注いで、香りや風味の成分を溶かしだす操作も抽出の一種である。このように、抽出は身近な生活でも利用されている。次のうち、抽出の原理を利用していないものを1つ選べ。\nア. コーヒー豆からコーヒーをいれる\nイ. 昆布からだしをとる\nウ. 海水から塩を取り出す",
+    "subQuestions": [
+      {
+        "id": "q5_1",
+        "label": "(1)",
+        "type": "multiple_choice",
+        "options": [
+          "ア",
+          "イ",
+          "ウ"
+        ],
+        "correctAnswer": "イ",
+        "correctAnswerRate": 85
+      },
+      {
+        "id": "q5_2",
+        "label": "(2)",
+        "type": "short_answer",
+        "correctAnswer": "分液漏斗",
+        "correctAnswerRate": 85
+      },
+      {
+        "id": "q5_3",
+        "label": "(3)",
+        "type": "multiple_choice",
+        "options": [
+          "ア",
+          "イ",
+          "ウ"
+        ],
+        "correctAnswer": "ウ",
+        "correctAnswerRate": 85
+      }
+    ],
+    "explanation": "▼解答・解説\n(1) イ (ヘキサン)\n(2) 分液漏斗（ぶんえきろうと）\n(3) ウ (海水から塩を取り出すのは蒸発・再結晶などを利用)",
+    "surroundingKnowledge": [],
+    "deepDiveTopics": []
+  },
+  {
+    "id": "q_c1_2_A_6",
+    "category": "物質の分離と精製 (6. 再結晶)",
+    "text": "６ 再結晶に関する次の問いに答えよ。\n\n少量の不純物を含む固体を熱水などの溶媒に溶かし、冷却して純粋な結晶を得る方法を再結晶という。\n\n(1) 再結晶は、物質の何という性質が温度によって異なることを利用しているか。\n\n(2) 少量の硫酸銅(Ⅱ)五水和物を含む硝酸カリウムの固体を熱水に溶かし、冷却すると、主にどちらの結晶が析出するか。\nア. 硫酸銅(Ⅱ)五水和物\nイ. 硝酸カリウム",
+    "subQuestions": [
+      {
+        "id": "q6_1",
+        "label": "(1)",
+        "type": "short_answer",
+        "correctAnswer": "溶解度",
+        "correctAnswerRate": 85
+      },
+      {
+        "id": "q6_2",
+        "label": "(2)",
+        "type": "multiple_choice",
+        "options": [
+          "ア",
+          "イ"
+        ],
+        "correctAnswer": "イ",
+        "correctAnswerRate": 85
+      }
+    ],
+    "explanation": "▼解答・解説\n(1) 溶解度\n(2) イ (硝酸カリウム)\n解説: 硝酸カリウムは温度による溶解度の差が非常に大きいため、冷却すると多量に析出します。一方、少量の不純物（硫酸銅）はまだ溶解度以下なので溶けたままとなり、分離できます。",
+    "surroundingKnowledge": [],
+    "deepDiveTopics": []
+  }
+]
