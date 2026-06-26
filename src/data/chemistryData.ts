@@ -8207,7 +8207,7 @@ export const atomicStructureTreeData = {
           "label": "陽子",
           "step": 1,
           "subLabel": "正の電荷を持つ粒子",
-          "explanation": "正 of 電荷を持ち、その数が元素固有の「原子番号」となります（陽子の数 ＝ 原子番号）。中性状態の原子では「陽子数 ＝ 電子数」で電気的に中性です。",
+          "explanation": "正の電荷を持ち、その数が元素固有の「原子番号」となります（陽子の数 ＝ 原子番号）。中性状態の原子では「陽子数 ＝ 電子数」で電気的に中性です。",
           "relatedQuestions": [
             {
               "id": "q_c2_1_1_u",

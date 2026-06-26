@@ -3,6 +3,7 @@ import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, Che
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
 import { ScoreSummaryCard } from './ScoreToast';
+import { ChapterRankingPanel } from './ChapterRankingPanel';
 import type { ScoreBreakdown } from '../utils/scoring';
 
 interface ExplanationProps {
@@ -703,6 +704,16 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           {runningCombo && runningCombo >= 3 && (
             <div className="mt-2 text-center text-xs text-orange-500 font-bold animate-pulse">
               🔥 {runningCombo}問連続正解のコンボ中！
+            </div>
+          )}
+          {/* Ranking Panel (Last Question) */}
+          {isLastQuestion && totalScore && (
+            <div className="mt-4 md:mt-6">
+              <ChapterRankingPanel
+                chapterId={chapter.id}
+                userScore={totalScore}
+                isGuest={isGuest}
+              />
             </div>
           )}
         </div>

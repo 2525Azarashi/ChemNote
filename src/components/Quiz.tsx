@@ -6,6 +6,7 @@ import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
 import { QuizTimerBar } from './QuizTimerBar';
+import { FloatingScoreAnimation } from './FloatingScoreAnimation';
 import {
   calcQuestionTimeLimit,
   scoreProblem,
@@ -69,6 +70,42 @@ function saveRun(chapterId: string, mode: string, run: ChapterRunState) {
   }
 }
 
+/**
+ * 問題が下付き・上付き文字パレットの表示が必要かどうかを判定
+ * 対象：イオン表記、化学式、原子番号・質量数表記など
+ */
+function requiresChemicalSymbols(question: any, answer: any = {}): boolean {
+  const text = [
+    question?.text || '',
+    answer?.correctAnswer || '',
+    question?.category || '',
+    JSON.stringify(question?.detailedExplanation || ''),
+  ]
+    .join(' ')
+    .toLowerCase();
+
+  // パターン検出：
+  // 1. イオン表記（例：Cu2+, Cl-, NH4+）
+  const ionPattern = /\b([a-z]{1,2}\d*(?:[\+\-]|【）)|\([\+\-]|イオン)/i;
+  // 2. 化学式内の数字（例：H2O, CaCO3）
+  const chemicalFormula = /\b[a-z]\d+\b|[a-z]{2,}\d+/i;
+  // 3. 上付き・下付き記号の参照（例：⁺, ⁻, ₂, ₃）
+  const unicodeSuperSubscript = /[⁺⁻²³⁴⁵₂₃₄₅]/;
+  // 4. 原子番号や質量数表記（例：_8O, 235U）
+  const massNumberPattern = /\d+[a-z]|[a-z]\d+[\+\-\)]|\d+\(/;
+  // 5. 「価」「イオン」「原子」関連キーワード
+  const chemKeywords =
+    /価|イオン|原子|分子|化合物|酸化|還元|電荷|陽子|陰イオン|陽イオン|硫酸|硝酸|塩化|水酸|炭酸|アンモニウム/;
+
+  return (
+    ionPattern.test(text) ||
+    chemicalFormula.test(text) ||
+    unicodeSuperSubscript.test(text) ||
+    massNumberPattern.test(text) ||
+    chemKeywords.test(text)
+  );
+}
+
 const chemistryShortcuts = [
   { label: '⁺ (1価陽)', value: '⁺', desc: '1価陽イオン (上付きプラス)' },
   { label: '⁻ (1価陰)', value: '⁻', desc: '1価陰イオン (上付きマイナス)' },
@@ -125,6 +162,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   const [highlights, setHighlights] = useState<string[]>([]);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  // Score animation state
+  const [showScoreAnimation, setShowScoreAnimation] = useState(false);
+  const [scoreAnimationData, setScoreAnimationData] = useState<{
+    breakdown: ScoreBreakdown;
+    totalScore: number;
+  } | null>(null);
   // Use passed prop if available, otherwise check window width
   const [isDesktop, setIsDesktop] = useState(!isMobileView && window.innerWidth >= 1024);
 
@@ -327,6 +370,20 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     if (!showingExplanation) {
       // 解答提出 → 採点して解説へ
       scoreCurrentQuestionIfNeeded();
+      
+      // スコアアニメーションのデータを取得
+      const currentQuestion = questions[currentQuestionIndex];
+      if (currentQuestion && run.perQuestion[currentQuestion.id]) {
+        const scoreData = run.perQuestion[currentQuestion.id];
+        setScoreAnimationData({
+          breakdown: scoreData,
+          totalScore: scoreData.finalScore,
+        });
+        setShowScoreAnimation(true);
+        // アニメーション終了後に自動的に非表示に
+        setTimeout(() => setShowScoreAnimation(false), 3500);
+      }
+      
       setShowingExplanation(true);
       if (onExplanationChange) onExplanationChange(true);
     } else {
@@ -433,6 +490,15 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           resetKey={`${chapter.id}_${currentQuestionIndex}`}
         />
       </div>
+
+      {/* Score Animation Overlay */}
+      {scoreAnimationData && (
+        <FloatingScoreAnimation
+          breakdown={scoreAnimationData.breakdown}
+          totalScore={scoreAnimationData.totalScore}
+          isVisible={showScoreAnimation}
+        />
+      )}
 
       {/* Main Content Area (Split on Desktop, Stacked on Mobile) */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
@@ -671,7 +737,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                           />
                         </div>
                         
-                        {/* Chemistry Symbol Helper Palette */}
+                        {/* Chemistry Symbol Helper Palette - Only show when needed */}
+                        {requiresChemicalSymbols(sq, sq.correctAnswer) && (
                         <div className="bg-stone-50 border border-stone-200/80 p-2 md:p-2.5 rounded-xl flex flex-col gap-1.5 w-full">
                           <div className="text-[10px] md:text-xs text-stone-500 font-bold select-none px-0.5">
                             化学記号パレット (タップで入力欄に挿入 & コピー) :
@@ -698,6 +765,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             ))}
                           </div>
                         </div>
+                        )}
                       </div>
                     )}
                   </div>
