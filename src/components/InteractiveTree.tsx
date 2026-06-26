@@ -62,8 +62,8 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
   const totalIndentMobile = depth * mobileIndentPerLevel;
 
   const dynamicMaxWidth = isMobile
-    ? `calc(100vw - ${totalIndentMobile}px - 2.5rem)`
-    : `calc(58vw - ${totalIndentDesktop}px - 6.5rem)`;
+    ? `calc(100vw - ${totalIndentMobile}px - 5.5rem)`
+    : `calc(50vw - ${totalIndentDesktop}px - 2.5rem)`;
 
   if (node.isGroup) {
     const groupBg = node.step === 1 ? 'bg-orange-50/50 border-orange-200' : node.step === 2 ? 'bg-emerald-50/50 border-emerald-200' : node.step === 3 ? 'bg-blue-50/50 border-blue-200' : 'bg-purple-50/50 border-purple-200';
