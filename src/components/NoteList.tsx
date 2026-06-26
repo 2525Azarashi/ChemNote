@@ -34,10 +34,20 @@ export function NoteList({ onBack, onSelectNote }: NoteListProps) {
 
   return (
     <div className="w-full space-y-6 p-4 md:p-8 bg-[#FDFBF7] min-h-screen font-handwriting" style={{ backgroundImage: 'linear-gradient(#A9CCE3 1px, transparent 1px)', backgroundSize: '100% 2.5rem' }}>
-      <button onClick={onBack} className="flex items-center gap-2 text-[#2C3E50] font-bold">
-        <ArrowLeft size={20} /> 戻る
-      </button>
-      <h2 className="text-2xl sm:text-3xl font-bold text-[#2C3E50] mb-6">個人ノート一覧</h2>
+      {/* ★ 修正：戻るボタンを「← 戻る」テキスト型から
+          サークルアイコン型に統一（Intro画面と同じスタイル）。
+          aria-label を付与してスクリーンリーダー対応も担保 */}
+      <div className="flex items-center gap-4 mb-2">
+        <button
+          onClick={onBack}
+          aria-label="ホームに戻る"
+          title="ホームに戻る"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-[#2C3E50] transition-colors shadow-sm border border-gray-200"
+        >
+          <ArrowLeft size={20} aria-hidden="true" />
+        </button>
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#2C3E50]">個人ノート一覧</h2>
+      </div>
       <div className="space-y-4">
         {notes.map(note => (
           <div key={note.id} className="bg-white p-4 rounded-sm shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow transform hover:-rotate-1" onClick={() => onSelectNote(note)}>
