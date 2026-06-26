@@ -310,7 +310,7 @@ export default function App() {
 
   const selectedChapter = chemistryData.parts
     .flatMap(p => p.chapters)
-    .find(c => c.id === selectedChapterId);
+    .find(c => (c as any).id === selectedChapterId);
 
   return (
     <>

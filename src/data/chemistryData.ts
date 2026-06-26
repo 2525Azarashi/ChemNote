@@ -707,7 +707,7 @@ export const chemistryData = {
             {
               id: "q_c1_2_A_mt_2",
               category: "物質の分離と精製 (問2)",
-              text: "A （リード文続き）\n...液体とそれに溶けない固体の混合物は、ろ紙などを用いた ( ウ: ろ過 ) によって分けることができる。\n\n問2 ( ウ ) の操作（ろ過）を行う際の注意点について、次の(1)・(2)の理由を簡潔に答えよ。\n(1) 液体をろうとに注ぐ際、直接注がずにガラス棒を伝わらせて注ぐのはなぜか。\n(2) ろうとの足の先端は、受け器 of the ビーカーの内壁に密着させるようにして置くのはなぜか。",
+              text: "A （リード文続き）\n...液体とそれに溶けない固体の混合物は、ろ紙などを用いた ( ウ: ろ過 ) によって分けることができる。\n\n<img src=\"/filtration_setups.jpg\" alt=\"ろ過装置の比較\" class=\"w-full max-w-lg mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n問2 ( ウ ) の操作（ろ過）を行う際の注意点について、次の(1)・(2)の理由を簡潔に答えよ。\n(1) 液体をろうとに注ぐ際、直接注がずにガラス棒を伝わらせて注ぐのはなぜか。\n(2) ろうとの足の先端は、受け器 of the ビーカーの内壁に密着させるようにして置くのはなぜか。",
               subQuestions: [
                 { id: "q2_mt_1_reason", label: "問2 (1) 理由", type: "descriptive", correctAnswer: "液体が周囲に飛び散るのを防ぐため", gradingCriteria: ["飛び散る", "防ぐ"], correctAnswerRate: 85 },
                 { id: "q2_mt_2_reason", label: "問2 (2) 理由", type: "descriptive", correctAnswer: "ろ過された液体が壁面を伝わってスムーズに落ちるようにするため", gradingCriteria: ["スムーズ", "壁面", "伝わって"], correctAnswerRate: 85 }
@@ -772,7 +772,7 @@ export const chemistryData = {
             {
               id: "q_c1_2_A_3",
               category: "物質の分離と精製 (4. 昇華法)",
-              text: "４ 昇華法に関する次の問いに答えよ。\n\n(1) ヨウ素の昇華性を利用して、できるだけ多くのヨウ素を集めたい。最も適当な分離法を、次の①～④のうちから1つ選べ。\n\n※選択肢の説明：\n①：丸底フラスコの上に氷などの冷却手段がない\n②：丸底フラスコの上に「冷水」を入れた丸底フラスコを載せ、下から混合物を加熱して底にヨウ素を析出させる（適切）\n③：冷水の中に混合物を入れるだけで、加熱をしない\n④：丸底フラスコの上に「温水」を入れた丸底フラスコを載せる\n\n(2) 次の中から、昇華されやすい物質をすべて選べ。\nア．塩化ナトリウム（食塩）　イ．ヨウ素　ウ．ドライアイス　エ．鉄　オ．ナフタレン　カ．水（氷）　キ．パラジクロロベンゼン",
+              text: "４ 昇華法に関する次の問いに答えよ。\n\n<img src=\"/sublimation_setups.jpg\" alt=\"昇華実験装置\" class=\"w-full max-w-lg mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) ヨウ素の昇華性を利用して、できるだけ多くのヨウ素を集めたい。最も適当な分離法を、次の①～④のうちから1つ選べ。\n\n※選択肢の説明：\n①：丸底フラスコの上に氷などの冷却手段がない\n②：丸底フラスコの上に「冷水」を入れた丸底フラスコを載せ、下から混合物を加熱して底にヨウ素を析出させる（適切）\n③：冷水の中に混合物を入れるだけで、加熱をしない\n④：丸底フラスコの上に「温水」を入れた丸底フラスコを載せる\n\n(2) 次の中から、昇華されやすい物質をすべて選べ。\nア．塩化ナトリウム（食塩）　イ．ヨウ素　ウ．ドライアイス　エ．鉄　オ．ナフタレン　カ．水（氷）　キ．パラジクロロベンゼン",
               subQuestions: [
                 { id: "q3_1_sublimation_method", label: "(1)", type: "multiple_choice", options: ["①", "②", "③", "④"], correctAnswer: "②", correctAnswerRate: 85 },
                 { id: "q3_2_sublimation_substances", label: "(2)", type: "short_answer", correctAnswer: "イ、ウ、オ、キ", correctAnswerRate: 85 }
@@ -795,7 +795,7 @@ export const chemistryData = {
             {
               id: "q_c1_2_A_5",
               category: "物質の分離と精製 (8. 操作に対応する分離法)",
-              text: "８ 次の文章（1）〜（5）に関連する分離法の名称をそれぞれ答えよ。\n\n(1) 少量の不純物を含む固体を熱水に溶かし、冷却して純粋な結晶を得る。\n(2) ヨウ素と水の混合物にヘキサンを加え、ヨウ素だけを溶かしだして分離する。\n(3) 砂とヨウ素の混合物を加熱し、ヨウ素だけを気体にしてから再び固体にして集める。\n(4) 水性ペンのインクを、ろ紙などに対する吸着力の違いを利用して分離する。\n(5) 茶葉に湯を注ぎ、香りや風味の成分を溶かしだす。",
+              text: "８ 次の文章（1）〜（5）に関連する分離法の名称をそれぞれ答えよ。\n\n<img src=\"/separating_funnel.jpg\" alt=\"分液漏斗（抽出）\" class=\"w-full max-w-xs mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) 少量の不純物を含む固体を熱水に溶かし、冷却して純粋な結晶を得る。\n(2) ヨウ素と水の混合物にヘキサンを加え、ヨウ素だけを溶かしだして分離する。\n(3) 砂とヨウ素の混合物を加熱し、ヨウ素だけを気体にしてから再び固体にして集める。\n(4) 水性ペンのインクを、ろ紙などに対する吸着力の違いを利用して分離する。\n(5) 茶葉に湯を注ぎ、香りや風味の成分を溶かしだす。",
               subQuestions: [
                 { id: "q5_1_recrystallization", label: "(1)", type: "short_answer", correctAnswer: "再結晶", correctAnswerRate: 85 },
                 { id: "q5_2_extraction", label: "(2)", type: "short_answer", correctAnswer: "抽出", correctAnswerRate: 85 },
@@ -1094,6 +1094,96 @@ export const chemistryData = {
           abstractTitle: "②-B 物質の構成と成分元素の検出",
           realTitle: "1章 物質の構成",
           topics: ["同素体", "炎色反応", "成分元素の検出"],
+          practiceProblems: [
+            {
+              id: "q_c1_2_B_1",
+              category: "物質の構成と成分元素の検出 (1)",
+              text: "【１】次の同素体についての問いに答えよ。\n\n(1) 次の記述にあてはまる同素体の名称を答えよ。\n① 硫黄（S）の同素体のうち、常温で最も安定しているものはどれか。\n② 炭素（C）の同素体のうち、柔らかくて電気を通し、鉛筆の芯などに使われるものは何か。\n③ 炭素（C）の同素体で、サッカーボールのような形をしており、有機溶媒に溶けるものは何か。\n④ 酸素（O）の同素体であるオゾン（O₃）の「色」と「においの特徴」をそれぞれ答えよ。\n⑤ リン（P）の同素体のうち、猛毒で自然発火する危険があるため、水中に保存するものは何か。\n⑥ リン（P）の同素体のうち、ほぼ無毒で、マッチの側薬などに使われるものは何か。\n\n(2) 互いに同素体の関係にある組み合わせを、次の（ア）〜（カ）のうちからすべて選び、記号で答えよ。\n（ア）ネオンとアルゴン\n（イ）赤リンと黄リン\n（ウ）ゴム状硫黄と単斜硫黄\n（エ）氷と水\n（オ）カーボンナノチューブとダイヤモンド\n（カ）ネオンとアルゴン",
+              subQuestions: [
+                { id: "q_c1_2_B_1_1_1", label: "(1) ① 硫黄(S)の最も安定な同素体", type: "short_answer", correctAnswer: "斜方硫黄", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_1_1_2", label: "(1) ② 炭素(C)の鉛筆の芯に使われる同素体", type: "short_answer", correctAnswer: "黒鉛", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_1_1_3", label: "(1) ③ 炭素(C)のサッカーボール状の同素体", type: "short_answer", correctAnswer: "フラーレン", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_1_1_4_color", label: "(1) ④ オゾンの色", type: "short_answer", correctAnswer: "淡青色", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_1_1_4_smell", label: "(1) ④ オゾンのにおいの特徴", type: "short_answer", correctAnswer: "特異臭", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_1_1_5", label: "(1) ⑤ リン(P)の水中保存する同素体", type: "short_answer", correctAnswer: "黄リン", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_1_1_6", label: "(1) ⑥ リン(P)のマッチの側薬に使われる同素体", type: "short_answer", correctAnswer: "赤リン", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_1_2", label: "(2) 同素体の組み合わせ（すべて）", type: "short_answer", correctAnswer: "イ、ウ、オ", correctAnswerRate: 85 }
+              ],
+              explanation: "【解答・解説】\n(1)\n① 斜方硫黄 （常温で最も安定な黄色の結晶です）\n② 黒鉛 （別名グラファイト。柔らかく電気をよく通します）\n③ フラーレン （C₆₀などがあり、サッカーボール状の分子構造です。有機溶媒に溶けます）\n④ 色：淡青色、におい：特異臭\n⑤ 黄リン （猛毒で自然発火するため水中に保存します）\n⑥ 赤リン （ほぼ無毒で、マッチの側薬に使われます）\n\n(2) イ、ウ、オ\n解説:\n・同素体とは、同じ元素の単体で、性質の異なる物質どうしのことです。頭文字「S, C, O, P（スコップ）」の4元素が代表例です。\n・イ（赤リンと黄リン：リンP）、ウ（ゴム状硫黄と単斜硫黄：硫黄S）、オ（カーボンナノチューブとダイヤモンド：炭素C）が同素体の関係にあります。\n・ア、カは異なる元素（ネオンとアルゴン）、エは同一物質の状態変化（氷と水：いずれもH₂O）なので同素体ではありません。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_2_B_2",
+              category: "物質の構成と成分元素の検出 (2-1)",
+              text: "【２】問１ 硫黄、炭素、酸素、リンの性質について次の問いに答えよ。\n\n(1) 硫黄(S)の同素体を3つ、名称で答えよ。また、そのうち「常温で安定で黄色」のもの、「淡黄色で針状」のものをそれぞれ選べ。\n(2) 炭素(C)的同素体を4つ、名称で答えよ。また、そのうち「非常に硬く電気を通さない」もの、「やわらかく電気をよく導く」ものをそれぞれ選べ。\n(3) 酸素(O)の同素体である「オゾン」は、どのような色とにおいをもつか。それぞれ簡潔に答えよ。\n(4) リン(P)の同素体のうち、猛毒で自然発火するため「水中に保存」するものは何か。また、毒性が低く「マッチの側薬」などに使われるものは何か。名称で答えよ。",
+              subQuestions: [
+                { id: "q_c1_2_B_2_1_stable", label: "問1 (1) 常温で安定な硫黄", type: "short_answer", correctAnswer: "斜方硫黄", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_2_1_needle", label: "問1 (1) 針状の硫黄", type: "short_answer", correctAnswer: "単斜硫黄", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_2_2_hard", label: "問1 (2) 非常に硬い炭素", type: "short_answer", correctAnswer: "ダイヤモンド", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_2_2_soft", label: "問1 (2) 電気を通す炭素", type: "short_answer", correctAnswer: "黒鉛", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_2_3_color", label: "問1 (3) オゾンの色", type: "short_answer", correctAnswer: "淡青色", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_2_3_smell", label: "問1 (3) オゾンのにおい", type: "short_answer", correctAnswer: "特異臭", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_2_4_poison", label: "問1 (4) リンの水中に保存するもの", type: "short_answer", correctAnswer: "黄リン", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_2_4_match", label: "問1 (4) リンのマッチの側薬に使うもの", type: "short_answer", correctAnswer: "赤リン", correctAnswerRate: 85 }
+              ],
+              explanation: "【解答・解説】\n問1\n(1) 同素体：斜方硫黄、単斜硫黄、ゴム状硫黄\n常温で安定で黄色：斜方硫黄\n淡黄色で針状：単斜硫黄\n(2) 同素体：ダイヤモンド、黒鉛、フラーレン、カーボンナノチューブ\n非常に硬く電気を通さない：ダイヤモンド\nやわらかく電気をよく導く：黒鉛\n(3) 色：淡青色　におい：特異臭\n(4) 水中に保存：黄リン 　マッチの側薬：赤リン\n\n解説: プリントに書かれている同素体の特徴（色や硬さ、保存方法）はテストで頻出です。特にリンの保存方法と、硫黄の「斜方」「単斜」の違いは確実に覚えておきましょう。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_2_B_3",
+              category: "物質の構成と成分元素の検出 (2-2)",
+              text: "【２】問２ 次の元素が含まれる物質を炎の中に入れたとき、それぞれ何色の炎になるか答えよ。\n\n(1) Li （リチウム）\n(2) Na （ナトリウム）\n(3) K （カリウム）\n(4) Cu （銅）\n(5) Ca （カルシウム）\n(6) Sr （ストロンチウム）\n(7) Ba （バリウム）",
+              subQuestions: [
+                { id: "q_c1_2_B_3_1", label: "(1) Li", type: "short_answer", correctAnswer: "赤", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_3_2", label: "(2) Na", type: "short_answer", correctAnswer: "黄", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_3_3", label: "(3) K", type: "short_answer", correctAnswer: "紫", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_3_4", label: "(4) Cu", type: "short_answer", correctAnswer: "青緑", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_3_5", label: "(5) Ca", type: "short_answer", correctAnswer: "橙", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_3_6", label: "(6) Sr", type: "short_answer", correctAnswer: "紅", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_3_7", label: "(7) Ba", type: "short_answer", correctAnswer: "黄緑", correctAnswerRate: 85 }
+              ],
+              explanation: "【解答・解説】\n問2\n(1) 赤 （赤色）\n(2) 黄 （黄色）\n(3) 紫 （紫色）\n(4) 青緑 （青緑色）\n(5) 橙 （橙色）\n(6) 紅 （紅色）\n(7) 黄緑 （黄緑色）\n\n解説: 「リアカー(Li赤) 無き(Na黄、K紫) 動力(Cu青緑) 借りるとう(Ca橙) するもくれない(Sr紅) 馬力(Ba黄緑)」で確実に暗記します。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_2_B_4",
+              category: "物質の構成と成分元素の検出 (3)",
+              text: "【３】次の（あ）～（う）の文章を読んで、化合物Ａ、Ｂ、Ｃにそれぞれ含まれる元素を、元素記号ですべて推定せよ。\n\n（あ）ある化合物Ａの水溶液の炎色反応を調べると、青緑色を呈した。次に、この水溶液に酢酸鉛（Ⅱ）水溶液を加えると、黒色沈殿を生じた。\n\n（い）ある化合物Ｂを加熱すると、無色の気体と無色の液体を生じた。気体は石灰水を白濁させ、液体は白色の硫酸銅（Ⅱ）無水塩に触れると青色に変化した。また、元の化合物 B の炎色反応を調べると、橙色を呈した。\n\n（う）ある化合物Ｃの水溶液の炎色反応を調べると、赤紫色（紫）を呈した。次に、この水溶液に硝酸銀水溶液を加えると、白色沈殿を生じた。",
+              subQuestions: [
+                { id: "q_c1_2_B_4_A_metal", label: "化合物Aに含まれる金属元素の元素記号", type: "short_answer", correctAnswer: "Cu", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_4_A_nonmetal", label: "化合物Aに含まれる非金属元素の元素記号", type: "short_answer", correctAnswer: "S", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_4_B_metal", label: "化合物Bに含まれる金属元素の元素記号", type: "short_answer", correctAnswer: "Ca", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_4_B_nonmetal1", label: "化合物Bに含まれる、気体（石灰水を白濁）を構成する非金属元素の元素記号", type: "short_answer", correctAnswer: "C", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_4_B_nonmetal2", label: "化合物Bに含まれる、液体（水を生成）を構成する非金属元素の元素記号", type: "short_answer", correctAnswer: "H", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_4_C_metal", label: "化合物Cに含まれる金属元素の元素記号", type: "short_answer", correctAnswer: "K", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_4_C_nonmetal", label: "化合物Cに含まれる非金属元素の元素記号", type: "short_answer", correctAnswer: "Cl", correctAnswerRate: 85 }
+              ],
+              explanation: "【解答・解説】\n化合物A：Cu, S\n化合物B：Ca, C, H\n化合物C：K, Cl\n\n解説:\n（あ）青緑色の炎色反応を示す金属元素は「銅（Cu）」です。また、酢酸鉛(Ⅱ)水溶液を加えて黒色沈殿（硫化鉛 PbS）が生じることから、非金属元素の「硫黄（S）」が含まれていることがわかります。\n\n（い）発生した気体が石灰水を白濁（炭酸カルシウム CaCO₃ 生成）させたことから「炭素（C）」元素、発生した液体が白色の硫酸銅(Ⅱ)無水塩を青色（硫酸銅(Ⅱ)五水和物 CuSO₄・5H₂O 生成）に変えた（＝水である）ことから「水素（H）」元素が含まれていると判定できます。また、元の化合物 B の炎色反応が橙色であることから、金属元素の「カルシウム（Ca）」が含まれていることがわかります。\n\n（う）赤紫色（紫）の炎色反応を示す金属元素は「カリウム（K）」です。また、硝酸銀水溶液を加えて白色沈殿（塩化銀 AgCl）が生じたことから、非金属元素の「塩素（Cl）」が含まれていることがわかります。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            },
+            {
+              id: "q_c1_2_B_5",
+              category: "物質の構成と成分元素の検出 (4)",
+              text: "【４】次の問いに答えよ。\n\n(1) 二酸化炭素を石灰水（水酸化カルシウム水溶液）に通して白濁したとき、生じている白色の沈殿物の名称と、その化学式を答えよ。\n(2) 液体（水）が触れたとき、硫酸銅(Ⅱ)無水塩は何色から何色に変化するか。\n(3) 水の確認には、青色の塩化コバルト紙を用いることもできる。水に触れると塩化コバルト紙は何色に変化するか。\n(4) 水溶液に硝酸銀(AgNO₃)水溶液を加えたときに生じる「白色沈殿」の物質の名称と、その化学式を答えよ。\n(5) 水溶液中の硫黄(S)元素を検出するためには、酢酸鉛(Ⅱ)水溶液を加える。このとき生じる沈殿の色と、その沈殿物の化学式を答えよ。",
+              subQuestions: [
+                { id: "q_c1_2_B_5_1_name", label: "(1) 白色の沈殿物の名称", type: "short_answer", correctAnswer: "炭酸カルシウム", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_5_1_chem", label: "(1) 沈殿物の化学式", type: "short_answer", correctAnswer: "CaCO3", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_5_2_color", label: "(2) 硫酸銅(Ⅱ)無水塩の色変化", type: "descriptive", correctAnswer: "白色から青色", gradingCriteria: ["白色", "青色"], correctAnswerRate: 85 },
+                { id: "q_c1_2_B_5_3_color", label: "(3) 塩化コバルト紙の色変化", type: "short_answer", correctAnswer: "赤色", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_5_4_name", label: "(4) 生じる白色沈殿の名称", type: "short_answer", correctAnswer: "塩化銀", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_5_4_chem", label: "(4) 白色沈殿の化学式", type: "short_answer", correctAnswer: "AgCl", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_5_5_color", label: "(5) 生じる沈殿の色", type: "short_answer", correctAnswer: "黒色", correctAnswerRate: 85 },
+                { id: "q_c1_2_B_5_5_chem", label: "(5) 沈殿物の化学式", type: "short_answer", correctAnswer: "PbS", correctAnswerRate: 85 }
+              ],
+              explanation: "【解答・解説】\n(1) 炭酸カルシウム 　化学式：CaCO₃\n二酸化炭素を石灰水に通すと、水に溶けにくい炭酸カルシウムの白色沈殿が生じるため、全体が白く濁ります。\n\n(2) 白色から青色\n硫酸銅(Ⅱ)無水塩（白色粉末）は水分子を取り込むと硫酸銅(Ⅱ)五水和物（青色結晶）になります。\n\n(3) 赤色（または 桃色）\n乾燥状態では青色をしていますが、水に触れると水分を吸収して赤色（桃色）へと変化します。\n\n(4) 塩化銀 　化学式：AgCl\n水溶液中に塩素イオン(Cl⁻)が存在する場合、硝酸銀水溶液を加えると、銀イオン(Ag⁺)と結びついて水に溶けにくい塩化銀の白色沈殿が生じます。\n\n(5) 黒色 　化学式：PbS\n硫黄元素を含むイオンに鉛イオン(Pb²⁺)を反応させると、硫化鉛(Ⅱ)の黒色沈殿が生じます。",
+              surroundingKnowledge: [],
+              deepDiveTopics: []
+            }
+          ],
           miniTest: [
             {
               id: "q_c1_2_B_1",
@@ -2841,8 +2931,8 @@ export const chemistryData = {
           ],
           miniTest: []
         },
-        { id: "c5", abstractTitle: "⑤ 酸と塩基の反応", realTitle: "⑤ 酸と塩基", topics: [], miniTest: [] },
-        { id: "c6", abstractTitle: "⑥ 酸化還元反応（電子のやり取り）", realTitle: "⑥ 酸化還元反応", topics: [], miniTest: [] }
+        { id: "c5", abstractTitle: "⑤ 酸と塩基の反応", realTitle: "⑤ 酸と塩基", topics: [], practiceProblems: [], miniTest: [] },
+        { id: "c6", abstractTitle: "⑥ 酸化還元反応（電子のやり取り）", realTitle: "⑥ 酸化還元反応", topics: [], practiceProblems: [], miniTest: [] }
       ]
     }
   ]

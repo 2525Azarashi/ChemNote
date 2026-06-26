@@ -40,12 +40,12 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
       <div className="space-y-12 md:space-y-20 font-handwriting">
         {chemistryData.parts.map(part => {
           // Group chapters by realTitle (e.g., "1章 物質の構成")
-          const chaptersByGroup = part.chapters.reduce((acc, chapter) => {
+          const chaptersByGroup = (part.chapters as any[]).reduce((acc: any, chapter: any) => {
             const group = chapter.realTitle || "その他";
             if (!acc[group]) acc[group] = [];
             acc[group].push(chapter);
             return acc;
-          }, {} as Record<string, any[]>);
+          }, {});
 
           return (
             <div key={part.id} className="font-handwriting">
@@ -65,7 +65,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
                     </h4>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 font-handwriting">
-                      {chapters.map(chapter => {
+                      {(chapters as any[]).map(chapter => {
                         const questions = mode === 'mini_test' ? (chapter as any).miniTest : ((chapter as any).practiceProblems || []);
                         const hasQuestions = questions.length > 0;
 
