@@ -1,10 +1,19 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical } from 'lucide-react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { substanceTreeData } from '../data/chemistryData';
 import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
+import { QuizTimerBar } from './QuizTimerBar';
+import {
+  calcQuestionTimeLimit,
+  scoreProblem,
+  calcMaxCombo,
+  comboMultiplier,
+  type ScoreBreakdown,
+} from '../utils/scoring';
+import { submitChapterScore } from '../utils/leaderboard';
 
 interface QuizProps {
   mode: 'mini_test' | 'practice';
@@ -14,6 +23,50 @@ interface QuizProps {
   isGuest: boolean;
   isMobileView?: boolean;
   onExplanationChange?: (isExplanation: boolean) => void;
+  onScored?: (breakdown: ScoreBreakdown, meta: { timeLimit: number; timeUsed: number; questionId: string }) => void;
+}
+
+/**
+ * 章単位の累積スコアを localStorage に保持するためのキー生成
+ */
+function chapterRunKey(chapterId: string, mode: string) {
+  return `quiz_run_${chapterId}_${mode}`;
+}
+
+interface ChapterRunState {
+  totalScore: number;
+  runningCombo: number;
+  perQuestion: Record<string, ScoreBreakdown & { timeLimit: number; timeUsed: number }>;
+  totalCorrect: number;
+  totalJudgeable: number;
+  totalTimeSec: number;
+  startedAt: number;
+}
+
+function loadRun(chapterId: string, mode: string): ChapterRunState {
+  try {
+    const raw = localStorage.getItem(chapterRunKey(chapterId, mode));
+    if (raw) return JSON.parse(raw);
+  } catch {
+    /* noop */
+  }
+  return {
+    totalScore: 0,
+    runningCombo: 0,
+    perQuestion: {},
+    totalCorrect: 0,
+    totalJudgeable: 0,
+    totalTimeSec: 0,
+    startedAt: Date.now(),
+  };
+}
+
+function saveRun(chapterId: string, mode: string, run: ChapterRunState) {
+  try {
+    localStorage.setItem(chapterRunKey(chapterId, mode), JSON.stringify(run));
+  } catch {
+    /* noop */
+  }
 }
 
 const chemistryShortcuts = [
@@ -35,7 +88,12 @@ const chemistryShortcuts = [
   { label: '₅ (下付き5)', value: '₅', desc: '下付き5' },
 ];
 
-export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange }: QuizProps) {
+export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange, onScored }: QuizProps) {
+  // ===== タイマー & スコア用 state =====
+  const [run, setRun] = useState<ChapterRunState>(() => loadRun(chapter.id, mode));
+  const timeUsedRef = useRef(0); // タイマーから250msごとに通知される最新値
+  const lastScoredQuestionRef = useRef<string | null>(null);
+
   const [answers, setAnswers] = useState<Record<string, string>>(() => {
     try {
       return JSON.parse(localStorage.getItem(`quiz_answers_${chapter.id}_${mode}`) || '{}');
@@ -83,6 +141,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // Clear highlights on new question
   useEffect(() => {
     setHighlights([]);
+    timeUsedRef.current = 0;
+    lastScoredQuestionRef.current = null;
   }, [currentQuestionIndex]);
 
   // Prevent zoom/pinch out during active quiz, but allow on explanations
@@ -160,6 +220,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   const currentQuestion = questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
+  // この問題の制限時間を計算（メモ化）
+  const questionTimeLimit = useMemo(() => {
+    if (!currentQuestion) return 60;
+    return calcQuestionTimeLimit(currentQuestion.subQuestions || []);
+  }, [currentQuestion]);
+
   // Group subQuestions if they have a group property
   const groupedSubQuestions = useMemo(() => {
     if (!currentQuestion) return [];
@@ -182,8 +248,85 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     return list;
   }, [currentQuestion]);
 
+  /**
+   * 現在の問題を採点して run state を更新する。
+   * 解説画面に入る瞬間 = 解答提出の瞬間 として扱う。
+   * 同じ問題を2度採点しないよう lastScoredQuestionRef でガード。
+   */
+  const scoreCurrentQuestionIfNeeded = () => {
+    if (!currentQuestion) return;
+    if (lastScoredQuestionRef.current === currentQuestion.id) return;
+    lastScoredQuestionRef.current = currentQuestion.id;
+
+    const subQuestions = currentQuestion.subQuestions || [];
+    const timeUsed = Math.max(0, Math.round(timeUsedRef.current));
+    const maxCombo = calcMaxCombo(subQuestions, answers);
+    const breakdown = scoreProblem(subQuestions, answers, {
+      timeLimit: questionTimeLimit,
+      timeUsed,
+      maxCombo,
+      runningCombo: run.runningCombo,
+    });
+
+    // 章コンボ倍率を適用
+    const multiplier = comboMultiplier(run.runningCombo);
+    const boostedScore = Math.floor(breakdown.finalScore * multiplier);
+    const finalBreakdown: ScoreBreakdown = { ...breakdown, finalScore: boostedScore };
+
+    // 章全体の状態を更新
+    const isAllCorrect =
+      breakdown.judgeableCount > 0 && breakdown.correctCount === breakdown.judgeableCount;
+    const nextRunningCombo = isAllCorrect ? run.runningCombo + 1 : 0;
+
+    const nextRun: ChapterRunState = {
+      ...run,
+      totalScore: run.totalScore + boostedScore,
+      runningCombo: nextRunningCombo,
+      totalCorrect: run.totalCorrect + breakdown.correctCount,
+      totalJudgeable: run.totalJudgeable + breakdown.judgeableCount,
+      totalTimeSec: run.totalTimeSec + timeUsed,
+      perQuestion: {
+        ...run.perQuestion,
+        [currentQuestion.id]: { ...finalBreakdown, timeLimit: questionTimeLimit, timeUsed },
+      },
+    };
+    setRun(nextRun);
+    saveRun(chapter.id, mode, nextRun);
+
+    if (onScored) {
+      onScored(finalBreakdown, {
+        timeLimit: questionTimeLimit,
+        timeUsed,
+        questionId: currentQuestion.id,
+      });
+    }
+  };
+
+  /**
+   * 章のラン全体が終わった時に Firestore へ章ベストを送る
+   */
+  const finalizeChapterRun = async (latestRun: ChapterRunState) => {
+    if (isGuest) return; // ゲストは同期しない
+    try {
+      const correctRate =
+        latestRun.totalJudgeable > 0 ? latestRun.totalCorrect / latestRun.totalJudgeable : 0;
+      await submitChapterScore({
+        chapterId: chapter.id,
+        score: latestRun.totalScore,
+        correctRate,
+        totalCorrect: latestRun.totalCorrect,
+        totalQuestions: latestRun.totalJudgeable,
+        timeUsedSec: latestRun.totalTimeSec,
+      });
+    } catch (e) {
+      console.error('[Quiz] submitChapterScore failed:', e);
+    }
+  };
+
   const handleNext = () => {
     if (!showingExplanation) {
+      // 解答提出 → 採点して解説へ
+      scoreCurrentQuestionIfNeeded();
       setShowingExplanation(true);
       if (onExplanationChange) onExplanationChange(true);
     } else {
@@ -192,6 +335,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         setShowingExplanation(false);
         if (onExplanationChange) onExplanationChange(false);
       } else {
+        // 章全体が完了 → ランキング送信
+        // run state は React 更新が非同期なので、ここでは保存済みの最新を取り直す
+        const latest = loadRun(chapter.id, mode);
+        finalizeChapterRun(latest);
+        // 新たな挑戦のためにラン状態リセット
+        try { localStorage.removeItem(chapterRunKey(chapter.id, mode)); } catch { /* noop */ }
         onFinish(answers);
         if (onExplanationChange) onExplanationChange(false);
       }
@@ -210,6 +359,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   };
 
   if (showingExplanation) {
+    const stored = run.perQuestion[currentQuestion?.id];
     return (
       <Explanation 
         mode={mode} 
@@ -221,6 +371,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         onNextQuestion={handleNext}
         isLastQuestion={isLastQuestion}
         isMobileView={false}
+        scoreBreakdown={stored || null}
+        scoreMeta={stored ? { timeLimit: stored.timeLimit, timeUsed: stored.timeUsed } : null}
+        totalScore={run.totalScore}
+        runningCombo={run.runningCombo}
       />
     );
   }
@@ -247,14 +401,37 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           </div>
         </div>
         
-        <div className="flex items-center gap-2 md:gap-3 bg-gray-100 rounded-full px-3 py-1 md:px-4 md:py-1.5 shrink-0">
-          <div className="text-[10px] md:text-sm text-gray-500 font-bold hidden sm:block">進捗</div>
-          <div className="font-mono font-bold text-[#2C3E50] text-xs md:text-base">
-            <span className="text-sm md:text-lg">{currentQuestionIndex + 1}</span>
-            <span className="text-gray-400 mx-1">/</span>
-            <span>{questions.length}</span>
+        <div className="flex items-center gap-2 shrink-0">
+          {/* 現在の累積スコアピル（スコア機能の視覚フィードバック） */}
+          <div className="flex items-center gap-1.5 bg-[#F4D03F]/15 border border-[#F4D03F]/30 rounded-full px-2 py-1 md:px-3 md:py-1.5" title={`累積スコア / 連続正解 ${run.runningCombo}`}>
+            <Trophy size={12} className="text-[#D4A017]" />
+            <div className="font-mono font-bold text-[#1B2631] text-xs md:text-sm tabular-nums">
+              {run.totalScore}
+            </div>
+            {run.runningCombo >= 3 && (
+              <span className="text-[10px] font-bold text-orange-500 ml-0.5">🔥{run.runningCombo}</span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 md:gap-3 bg-gray-100 rounded-full px-3 py-1 md:px-4 md:py-1.5 shrink-0">
+            <div className="text-[10px] md:text-sm text-gray-500 font-bold hidden sm:block">進捗</div>
+            <div className="font-mono font-bold text-[#2C3E50] text-xs md:text-base">
+              <span className="text-sm md:text-lg">{currentQuestionIndex + 1}</span>
+              <span className="text-gray-400 mx-1">/</span>
+              <span>{questions.length}</span>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* タイマーバー（ヘッダー直下、問題本文の上） ー 控えめな細いバー */}
+      <div className="flex-none bg-white border-b border-gray-100">
+        <QuizTimerBar
+          timeLimit={questionTimeLimit}
+          running={!showingExplanation}
+          onTick={(e) => { timeUsedRef.current = e; }}
+          resetKey={`${chapter.id}_${currentQuestionIndex}`}
+        />
       </div>
 
       {/* Main Content Area (Split on Desktop, Stacked on Mobile) */}

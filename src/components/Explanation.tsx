@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
+import { ScoreSummaryCard } from './ScoreToast';
+import type { ScoreBreakdown } from '../utils/scoring';
 
 interface ExplanationProps {
   mode: 'mini_test' | 'practice';
@@ -13,6 +15,10 @@ interface ExplanationProps {
   onNextQuestion?: () => void;
   isLastQuestion?: boolean;
   isMobileView?: boolean;
+  scoreBreakdown?: ScoreBreakdown | null;
+  scoreMeta?: { timeLimit: number; timeUsed: number } | null;
+  totalScore?: number;
+  runningCombo?: number;
 }
 
 import { NodeData } from './InteractiveTree';
@@ -50,7 +56,7 @@ const getDifficulty = (sqId: string) => {
   return 1;
 };
 
-export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView }: ExplanationProps) {
+export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView, scoreBreakdown, scoreMeta, totalScore, runningCombo }: ExplanationProps) {
   const isPracticeMode = initialMode === 'practice';
   // Virtual mode is always 'mini_test' for bright style choices!
   const mode = 'mini_test';
@@ -683,6 +689,24 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           </button>
         )}
       </div>
+
+      {/* スコアサマリーカード（1問ごとの採点表示 / 演習モードのみ） */}
+      {singleQuestionIndex !== undefined && scoreBreakdown && scoreMeta && mode !== 'mini_test' && (
+        <div className="px-4 md:px-6 pt-4 relative z-10">
+          <ScoreSummaryCard
+            breakdown={scoreBreakdown}
+            timeLimit={scoreMeta.timeLimit}
+            timeUsed={scoreMeta.timeUsed}
+            totalScore={totalScore}
+            isGuest={isGuest}
+          />
+          {runningCombo && runningCombo >= 3 && (
+            <div className="mt-2 text-center text-xs text-orange-500 font-bold animate-pulse">
+              🔥 {runningCombo}問連続正解のコンボ中！
+            </div>
+          )}
+        </div>
+      )}
 
       <div className={isMobile
         ? `p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`

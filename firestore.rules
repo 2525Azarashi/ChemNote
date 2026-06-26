@@ -33,5 +33,48 @@ service cloud.firestore {
       allow update: if isDocOwner(resource.data) && request.resource.data.uid == request.auth.uid;
       allow delete: if isDocOwner(resource.data);
     }
+
+    // ============================================================
+    // ランキング（リーダーボード）
+    // ============================================================
+    // 章ごとのベストスコア。
+    //   ドキュメントID = `${chapterId}_${uid}`
+    //   - 誰でも読める（順位表表示のため）
+    //   - 書き込みは「自分の uid を含むドキュメント」かつ「自分のスコアのみ」可
+    //   - bestScore が数値かつ過大でないことを軽くチェック（クライアント不正対策）
+    match /leaderboard_chapter/{docId} {
+      allow read: if true;
+      allow create, update: if isAuthenticated()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.bestScore is number
+        && request.resource.data.bestScore >= 0
+        && request.resource.data.bestScore <= 1000000;
+      allow delete: if false;
+    }
+
+    // 全章合計スコア。ドキュメントID = uid
+    match /leaderboard_total/{uid} {
+      allow read: if true;
+      allow create, update: if isAuthenticated()
+        && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.totalScore is number
+        && request.resource.data.totalScore >= 0
+        && request.resource.data.totalScore <= 100000000;
+      allow delete: if false;
+    }
+
+    // プレイ履歴（週間/月間ランキング集計用）。任意ドキュメントID。
+    //   - 誰でも読める
+    //   - 作成は本人のみ。更新・削除は不可（履歴の改ざん防止）
+    match /leaderboard_events/{eventId} {
+      allow read: if true;
+      allow create: if isAuthenticated()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.score is number
+        && request.resource.data.score >= 0
+        && request.resource.data.score <= 1000000;
+      allow update, delete: if false;
+    }
   }
 }
