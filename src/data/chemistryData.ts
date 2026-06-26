@@ -405,9 +405,9 @@ export const chemistryData = {
                     theme: "純物質の性質",
                     type: "知識再生型",
                     steps: [
-                      "① 純物質の融点や沸点、密度などの数値がどのように現れるかを確認する",
-                      "② 純粋な物質は固有の物性値を持っていることを想起する",
-                      "③ 値が「一定」であると判断する"
+                      "① 純物質は融点、沸点、密度などが常に一定であることを想起する",
+                      "② 文脈において「( ア )の場合はこれらの値が物質ごとに( オ )となる」に入る言葉を考える",
+                      "③ したがって「一定」が適切であると判断する"
                     ]
                   }
                 },
@@ -416,284 +416,14 @@ export const chemistryData = {
                     theme: "混合物の性質",
                     type: "知識再生型",
                     steps: [
-                      "① 混合物の融点や沸点、密度がどのようであるかを確認する",
-                      "② 混合物は混ざっている物質の割合や種類によって、それらの物性値が変わることを想起する",
-                      "③ 値が「変化」すると判断する"
+                      "① 混合物の場合は融点、沸点、密度などが組成によって変化・変動することを想起する",
+                      "② 文脈において「( イ )の場合は…値が( カ )する」に入る言葉を考える",
+                      "③ したがって「変化」（または「変動」）が適切であると判断する"
                     ]
                   }
                 }
               ],
-              explanation: JSON.stringify({
-                "type": "logic_thought",
-                "phase1": {
-                  "title": "化学物質の分類と物性",
-                  "overview": "すべての物質は「純物質」と「混合物」に大別され、それぞれ異なる性質を持ちます。",
-                  "tree": "物質の分類\n├ 純物質（単体、化合物）\n└ 混合物",
-                  "steps": ["物質の基本分類", "純物質と混合物の性質の違い"]
-                },
-                "phase2": {
-                  "explanations": [
-                    {
-                      "step": "物質の基本分類",
-                      "tag": "分類",
-                      "subQuestionIds": ["q1_a", "q1_b", "q1_c", "q1_d"],
-                      "subQuestionLabels": ["(ア)", "(イ)", "(ウ)", "(エ)"],
-                      "content": "1種類の物質からなるものが<b>純物質</b>、2種類以上の純物質が混ざり合ったものが<b>混合物</b>です。純物質はさらに、1種類の元素からなる<b>単体</b>と、2種類以上の元素からなる<b>化合物</b>に分けられます。"
-                    },
-                    {
-                      "step": "純物質と混合物の性質の違い",
-                      "tag": "性質",
-                      "subQuestionIds": ["q1_e", "q1_f"],
-                      "subQuestionLabels": ["(オ)", "(カ)"],
-                      "content": "純物質（単体・化合物）は融点・沸点・密度が<b>一定</b>ですが、混合物は含有する成分の割合などによってこれらの値が<b>変化</b>します。"
-                    }
-                  ]
-                }
-              }),
-              surroundingKnowledge: [],
-              deepDiveTopics: []
-            },
-            {
-              id: "q2",
-              category: "物質の分類",
-              text: "【問2】次の (1)〜(6) の物質を、(イ) 混合物、(ウ) 単体、(エ) 化合物に分類し、記号で答えよ。\n\n(1) 空気\n(2) 酸素\n(3) 食塩水\n(4) メタン\n(5) 黒鉛\n(6) 石油",
-              subQuestions: [
-                { id: "q2_1", label: "(1) 空気", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "物質の分類（空気）",
-                    type: "演繹型",
-                    steps: [
-                      "① 空気の構成要素について確認する",
-                      "② 窒素や酸素など複数の気体が混ざり合っていることを想起する",
-                      "③ 複数の純物質からなる混合物であると判断する",
-                      "④ 単一の物質ではないため「単体」「化合物」を排除する",
-                      "⑤ 「混合物」である(イ)を最終判断とする"
-                    ]
-                  }
-                },
-                { id: "q2_2", label: "(2) 酸素", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(ウ)", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "物質の分類（酸素）",
-                    type: "演繹型",
-                    steps: [
-                      "① 酸素分子の構成について確認する",
-                      "② 酸素(O)という1種類の元素のみからなる純物質であることを想起する",
-                      "③ 1種類の元素からなる「単体」であると判断する",
-                      "④ 複数の元素からなる「化合物」や複数の物質が混ざった「混合物」を排除する",
-                      "⑤ 「単体」である(ウ)を最終判断とする"
-                    ]
-                  }
-                },
-                { id: "q2_3", label: "(3) 食塩水", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "物質の分類（食塩水）",
-                    type: "演繹型",
-                    steps: [
-                      "① 食塩水の成分について確認する",
-                      "② 塩化ナトリウムと水という別々の純物質が混在していることを想起する",
-                      "③ 複数の純物質からなる「混合物」であると判断する",
-                      "④ 単一の物質ではないため「単体」「化合物」を排除する",
-                      "⑤ 「混合物」である(イ)を最終判断とする"
-                    ]
-                  }
-                },
-                { id: "q2_4", label: "(4) メタン", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(エ)", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "物質の分類（メタン）",
-                    type: "演繹型",
-                    steps: [
-                      "① メタン分子の構成について確認する",
-                      "② 炭素(C)と水素(H)という2種類の元素からなる純物質であることを想起する",
-                      "③ 2種類以上の元素からなる「化合物」であると判断する",
-                      "④ 1種類の元素からなる「単体」や複数の物質が混ざった「混合物」を排除する",
-                      "⑤ 「化合物」である(エ)を最終判断とする"
-                    ]
-                  }
-                },
-                { id: "q2_5", label: "(5) 黒鉛", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(ウ)", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "物質の分類（黒鉛）",
-                    type: "演繹型",
-                    steps: [
-                      "① 黒鉛の構成元素について確認する",
-                      "② 黒鉛は炭素(C)という1種類の元素のみからなることを想起する",
-                      "③ 1種類の元素からなる純物質であると判断する",
-                      "④ 複数の物質が混ざった「混合物」や、複数の元素からなる「化合物」を排除する",
-                      "⑤ 「単体」である(ウ)を最終判断とする"
-                    ]
-                  }
-                },
-                { id: "q2_6", label: "(6) 石油", type: "multiple_choice", options: ["(イ)", "(ウ)", "(エ)"], correctAnswer: "(イ)", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "物質の分類（石油）",
-                    type: "演繹型",
-                    steps: [
-                      "① 石油（原油）の構成について確認する",
-                      "② 複数の炭化水素などが混ざり合っていることを想起する",
-                      "③ 複数の純物質からなる混合物であると判断する",
-                      "④ 単一の物質ではないため「単体」「化合物」を排除する",
-                      "⑤ 「混合物」である(イ)を最終判断とする"
-                    ]
-                  }
-                }
-              ],
-              explanation: JSON.stringify({
-                "type": "logic_thought",
-                "phase1": {
-                  "title": "物質の分類",
-                  "overview": "混合物、単体、化合物をそれぞれ正確に判別するための基本プロセスを身につけましょう。",
-                  "tree": "物質の分類\n├ 混合物（複数の物質が混載）：空気、食塩水、石油\n└ 純物質（単一の化学式）\n   ├ 単体（1元素のみ）：酸素、黒鉛\n   └ 化合物（2元素以上）：メタン",
-                  "steps": ["Step 1: 混合物と純物質の判定", "Step 2: 単体と化合物の判定"]
-                },
-                "phase2": {
-                  "explanations": [
-                    {
-                      "step": "Step 1",
-                      "tag": "混合物の判定",
-                      "subQuestionIds": ["q2_1", "q2_3", "q2_6"],
-                      "subQuestionLabels": ["(1) 空気", "(3) 食塩水", "(6) 石油"],
-                      "content": "空気や食塩水、石油などは「複数の純物質が混ざったもの」なので混合物です。"
-                    },
-                    {
-                      "step": "Step 2",
-                      "tag": "純物質の分類",
-                      "subQuestionIds": ["q2_2", "q2_4", "q2_5"],
-                      "subQuestionLabels": ["(2) 酸素", "(4) メタン", "(5) 黒鉛"],
-                      "content": "酸素や黒鉛は1種類の元素からなる「単体」、メタンは2種類以上の元素からなる「化合物」です。"
-                    }
-                  ]
-                }
-              }),
-              surroundingKnowledge: [],
-              deepDiveTopics: []
-            },
-            {
-              id: "q3",
-              category: "元素と単体",
-              text: "問３ 物質の構成成分としての「元素」と、実際に存在する物質としての「単体」を区別することは非常に重要である。次の (1)〜(4) の下線部が、「単体」と「元素」のどちらの意味で用いられているか答えよ。\n\n(1) 植物の生育には、<u>窒素</u>が欠かせない。\n(2) 乾燥空気の体積の約78％は<u>窒素</u>である。\n(3) 砂糖は、<u>炭素</u>や<u>水素</u>、<u>酸素</u>からなる物質である。\n(4) 水を電気分解すると、<u>水素</u>と<u>酸素</u>を生じる。",
-              subQuestions: [
-                { id: "q3_1", label: "(1)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "単体と元素の文脈判断",
-                    type: "文脈判断型",
-                    steps: [
-                      "① 文が「実際に使用する物質」か「構成成分」かを判断する",
-                      "② 植物の生育に欠かせない「窒素」は、肥料などに含まれる成分としての窒素を指していると確認する",
-                      "③ 窒素ガス（気体）そのものを吸収しているわけではないことを想起する",
-                      "④ 実在する物質としての「単体」を誤答として排除する",
-                      "⑤ 成分としての意味である「元素」を最終判断とする"
-                    ]
-                  }
-                },
-                { id: "q3_2", label: "(2)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "単体と元素の文脈判断",
-                    type: "文脈判断型",
-                    steps: [
-                      "① 文が「実際に使用する物質」か「構成成分」かを判断する",
-                      "② 空気の体積の約78％を占める「窒素」は、気体として実在する物質を指していると確認する",
-                      "③ 窒素分子（N₂）という具体的な物質の存在割合を述べていることを想起する",
-                      "④ 抽象的な成分としての「元素」を誤答として排除する",
-                      "⑤ 実在する物質としての意味である「単体」を最終判断とする"
-                    ]
-                  }
-                },
-                { id: "q3_3", label: "(3)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "元素", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "単体と元素の文脈判断",
-                    type: "文脈判断型",
-                    steps: [
-                      "① 文が「実際に使用する物質」か「構成成分」かを判断する",
-                      "② 砂糖を構成する「炭素」「水素」「酸素」は、物質の材料（成分）を指していると確認する",
-                      "③ 砂糖の中に黒鉛（炭素の単体）や水素ガスが含まれているわけではないことを想起する",
-                      "④ 実在する物質としての「単体」を誤答として排除する",
-                      "⑤ 成分としての意味である「元素」を最終判断とする"
-                    ]
-                  }
-                },
-                { id: "q3_4", label: "(4)", type: "multiple_choice", options: ["元素", "単体"], correctAnswer: "単体", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "単体と元素の文脈判断",
-                    type: "文脈判断型",
-                    steps: [
-                      "① 文が「実際に使用する物質」か「構成成分」かを判断する",
-                      "② 水を電気分解して生じる「水素」と「酸素」は、発生した気体そのものを指していると確認する",
-                      "③ 実際に集めることができる実在の物質であることを想起する",
-                      "④ 抽象的な成分としての「元素」を誤答として排除する",
-                      "⑤ 実在する物質としての意味である「単体」を最終判断とする"
-                    ]
-                  }
-                }
-              ],
-              explanation: JSON.stringify({
-                "type": "logic_thought",
-                "phase1": {
-                  "title": "元素と単体の識別",
-                  "overview": "文脈から「単体」と「元素」を識別する論理を整理します。",
-                  "tree": "単体と元素の識別\n└ Step 3: 文脈判断\n  ├ 単体（実体）：物質として存在\n  └ 元素（成分）：成分として存在",
-                  "steps": ["Step 3: 文脈判断"]
-                },
-                "phase2": {
-                  "explanations": [
-                    {
-                      "step": "Step 3",
-                      "tag": "文脈判断",
-                      "subQuestionIds": ["q3_1", "q3_2", "q3_3", "q3_4"],
-                      "subQuestionLabels": ["(1)", "(2)", "(3)", "(4)"],
-                      "content": "見分けるコツは「直接触れられるもの（ガスとして実体がある、など）＝単体」、「直接触れられないもの（成分として含まれている、など）＝元素」と考えることです。(2)や(4)は気体として実体があるので単体、(1)や(3)は成分の話をしているので元素となります。"
-                    }
-                  ]
-                }
-              }),
-              surroundingKnowledge: [],
-              deepDiveTopics: []
-            },
-            {
-              id: "q4",
-              category: "状態変化のグラフ",
-              text: `問４　下線部①は、水・エタノールの（ ア ）の加熱と、水とエタノールの（ イ ）の加熱のグラフを示したものである。この３つのグラフ①～③をそれぞれ、水のグラフ・エタノールのグラフ・水とエタノールの混合物のグラフに分類し、①～③で示せ。\n\n<img src="https://lh3.googleusercontent.com/d/1yxjXWysRGIgYKPMpQx_N9OWYNf_W6DvT" alt="加熱のグラフ" class="w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200" referrerPolicy="no-referrer" />`,
-              subQuestions: [
-                { id: "q4_1", label: "水のグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "①", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "状態変化のグラフ（水）",
-                    type: "演繹型",
-                    steps: [
-                      "① 水が純物質であることを確認する",
-                      "② 純物質の加熱グラフの特徴を想起する",
-                      "③ 沸騰中（状態変化中）は温度が一定に保たれることを確認する",
-                      "④ 温度が変化し続けるグラフ②を排除する",
-                      "⑤ 水の沸点が100℃であることから、100℃で一定になるグラフ①を最終判断とする"
-                    ]
-                  }
-                },
-                { id: "q4_2", label: "エタノールのグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "③", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "状態変化のグラフ（エタノール）",
-                    type: "演繹型",
-                    steps: [
-                      "① エタノールが純物質であることを確認する",
-                      "② 純物質の加熱グラフの特徴を想起する",
-                      "③ 沸騰中（状態変化中）は温度が一定に保たれることを確認する",
-                      "④ 温度が変化し続けるグラフ②を排除する",
-                      "⑤ エタノールの沸点が約78℃であることから、約78℃で一定になるグラフ③を最終判断とする"
-                    ]
-                  }
-                },
-                { id: "q4_3", label: "水とエタノールの( イ )のグラフ", type: "multiple_choice", options: ["①", "②", "③"], correctAnswer: "②", correctAnswerRate: 85,
-                  detailedExplanation: {
-                    theme: "状態変化のグラフ（混合物）",
-                    type: "演繹型",
-                    steps: [
-                      "① 水とエタノールの(イ)が混合物であることを確認する",
-                      "② 混合物の加熱グラフの特徴を想起する",
-                      "③ 沸騰中（状態変化中）も温度が一定に保たれず、徐々に上昇することを確認する",
-                      "④ 温度が一定になるグラフ①、③を純物質のグラフとして排除する",
-                      "⑤ 沸騰中も温度が変化し続けるグラフ②を最終判断とする"
-                    ]
-                  }
-                }
-              ],
-              explanation: "{\"type\": \"logic_thought\", \"phase1\": {\"title\": \"状態変化のグラフ\", \"overview\": \"加熱グラフの違いを整理します。\", \"tree\": \"加熱グラフ\\n├ 純物質：温度一定\\n└ 混合物：温度変化\", \"steps\": [\"純物質\", \"混合物\"]}, \"phase2\": {\"explanations\": [{\"step\": \"純物質\", \"tag\": \"分析\", \"subQuestionIds\": [\"q4_1\", \"q4_2\"], \"content\": \"加熱中<u>温度一定</u>です。\"}, {\"step\": \"混合物\", \"tag\": \"分析\", \"subQuestionIds\": [\"q4_3\"], \"content\": \"加熱中<u>温度変化</u>します。\"}], \"stumblingPoints\": []}}",
+              explanation: "▼解答・解説\n(ア) 純物質\n(イ) 混合物\n(ウ) 単体\n(エ) 化合物\n(オ) 一定\n(カ) 変化",
               surroundingKnowledge: [],
               deepDiveTopics: []
             }
@@ -703,192 +433,151 @@ export const chemistryData = {
           id: "c1_2_A",
           abstractTitle: "②-A 物質の分離と精製",
           realTitle: "1章 物質の構成",
-          topics: ["分離と精製", "蒸留", "分留", "再結晶", "抽出", "クロマトグラフィー", "昇華法"],
+          topics: ["分離と精製", "ろ過", "蒸留", "昇華法", "再結晶", "抽出"],
           practiceProblems: [
             {
               id: "q_c1_2_A_1",
-              category: "物質の分離と精製 (問1)",
-              text: "【問1】次の文章の空欄（ア）〜（タ）に適する語句・例を答えよ。（語句網羅）\n\n混合物から目的物質を取り出す操作を（ア）といい、得られた物質をさらに純粋にする操作を（イ）という。固体と液体の混合物から固体を分けるには（ウ）を用い、ろ紙とろうとが必要である。沸点の違いを利用して液体を取り出す方法を（エ）といい、その装置では枝付きフラスコ、温度計、（オ）冷却器、アダプタ、三角フラスコを用いる。突沸を防ぐために（カ）を入れる。複数の液体混合物（例：液体空気、（キ））を段階的に沸点差で分ける方法は特に（ク）とよばれる。固体のまま気体になる性質を利用して分けるのが（ケ）であり、（コ）と砂の分離が代表例である（また（サ）やナフタレンも昇華しやすい）。温度による溶解度差を利用して固体を純粋に取り出すのが（シ）であり、（ス）の精製などに用いる。茶葉やヨウ素を有機溶媒に溶かして分けるのが（セ）、ろ紙への吸着力の差で色素を分けるのが（ソ）クロマトグラフィーである。気体の分離には（タ）クロマトグラフィーが用いられる。",
+              category: "物質の分離と精製 (1. ろ過)",
+              text: "１ ろ過に関する次の問いに答えよ。\n\n(1) ろ紙を通過して下に落ちた液体のことを何というか。\n(2) ろ過はどのような混合物の分離に用いる操作か。「固体」「液体」という言葉を用いて答えよ。\n(3) ろ過の操作として、最も適切な図を下の選択肢（ア）〜（エ）から1つ選べ。\n\n※選択肢の説明：\n（ア）ガラス棒を用いず直接注ぎ、ろうとの足の先端はビーカーの中央にある\n（イ）ガラス棒を伝わらせて注いでいるが、ろうとの足の先端はビーカーの中央にある\n（ウ）ガラス棒を伝わらせて注いでおり、ガラス棒の先端がろ紙の3重部分に当たり、ろうとの足の先端はビーカーの内壁に密着している（適切な操作）\n（エ）ガラス棒を用いず直接注ぎ、ろうとの足の先端はビーカーの内壁に密着している",
               subQuestions: [
-                { id: "q1_a", label: "問1 (ア)", type: "short_answer", correctAnswer: "分離", correctAnswerRate: 85 },
-                { id: "q1_b", label: "問1 (イ)", type: "short_answer", correctAnswer: "精製", correctAnswerRate: 85 },
-                { id: "q1_c", label: "問1 (ウ)", type: "short_answer", correctAnswer: "ろ過", correctAnswerRate: 85 },
-                { id: "q1_d", label: "問1 (エ)", type: "short_answer", correctAnswer: "蒸留", correctAnswerRate: 85 },
-                { id: "q1_o", label: "問1 (オ)", type: "short_answer", correctAnswer: "リービッヒ", correctAnswerRate: 85 },
-                { id: "q1_ka", label: "問1 (カ)", type: "short_answer", correctAnswer: "沸騰石", correctAnswerRate: 85 },
-                { id: "q1_ki", label: "問1 (キ)", type: "short_answer", correctAnswer: "石油", correctAnswerRate: 85 },
-                { id: "q1_ku", label: "問1 (ク)", type: "short_answer", correctAnswer: "分留", correctAnswerRate: 85 },
-                { id: "q1_ke", label: "問1 (ケ)", type: "short_answer", correctAnswer: "昇華法", correctAnswerRate: 85 },
-                { id: "q1_ko", label: "問1 (コ)", type: "short_answer", correctAnswer: "ヨウ素", correctAnswerRate: 85 },
-                { id: "q1_sa", label: "問1 (サ)", type: "short_answer", correctAnswer: "ドライアイス", correctAnswerRate: 85 },
-                { id: "q1_shi", label: "問1 (シ)", type: "short_answer", correctAnswer: "再結晶", correctAnswerRate: 85 },
-                { id: "q1_su", label: "問1 (ス)", type: "short_answer", correctAnswer: "硝酸カリウム", correctAnswerRate: 85 },
-                { id: "q1_se", label: "問1 (セ)", type: "short_answer", correctAnswer: "抽出", correctAnswerRate: 85 },
-                { id: "q1_so", label: "問1 (ソ)", type: "short_answer", correctAnswer: "ペーパー", correctAnswerRate: 85 },
-                { id: "q1_ta", label: "問1 (タ)", type: "short_answer", correctAnswer: "ガス", correctAnswerRate: 85 }
+                { id: "q1_1_filtrate", label: "(1)", type: "short_answer", correctAnswer: "ろ液", correctAnswerRate: 85 },
+                { id: "q1_2_definition", label: "(2)", type: "descriptive", correctAnswer: "固体（不溶性の固体）と液体の混合物", gradingCriteria: ["固体", "液体", "混合物"], correctAnswerRate: 85 },
+                { id: "q1_3_diagram", label: "(3)", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ウ", correctAnswerRate: 85 }
               ],
-              explanation: "{\"type\": \"logic_thought\", \"phase1\": {\"title\": \"物質の分離と精製\", \"overview\": \"混合物から目的物質を分ける種々の物理的操作方法を整理・把握しましょう。\", \"tree\": \"分離と精製\\n├ 固体＋液体 分離 ── ろ過\\n├ 沸点の差を利用 ─── 蒸留 / 分留\\n├ 昇華性を利用 ──── 昇華法\\n├ 溶解度の温度差 ── 再結晶\\n├ 溶媒への溶解度差 ─ 抽出\\n└ 吸着力の差を利用 ─ クロマトグラフィー\", \"steps\": [\"基礎用語\", \"各分離法の特徴\", \"具体例の確認\"]}, \"phase2\": {\"explanations\": [{\"step\": \"基礎用語\", \"tag\": \"定義\", \"subQuestionIds\": [\"q1_a\", \"q1_b\"], \"content\": \"混合物から目的物質を取り出す操作を<b>分離</b>、それをさらに純粋にする操作を<b>精製</b>と呼びます。\"}, {\"step\": \"各分離法の特徴\", \"tag\": \"科学的原理\", \"subQuestionIds\": [\"q1_c\", \"q1_d\", \"q1_o\", \"q1_ka\", \"q1_ku\", \"q1_ke\", \"q1_shi\", \"q1_se\", \"q1_so\", \"q1_ta\"], \"content\": \"・<b>ろ過</b>：固体と液体をろ紙で分ける。\\n・<b>蒸留・分留</b>：沸点差を利用する。リービッヒ冷却器、突沸を防ぐための<b>沸騰石</b>を使用。原油などの液体混合物を段階的に分けるのが分留。\\n・<b>昇華法</b>：昇華しやすい物質（ヨウ素・ドライアイス・ナフタレンなど）を気化させて分ける。\\n・<b>再結晶</b>：温度による溶解度差を利用する（硝酸カリウム等）。\\n・<b>抽出</b>：特定の溶媒への溶けやすさの違いを利用する（茶、ヨウ素）。\\n・<b>クロマトグラフィー</b>：吸着力の違いを利用して色素等を分ける（ペーパー、ガス）。\"}, {\"step\": \"具体例の確認\", \"tag\": \"応用\", \"subQuestionIds\": [\"q1_ki\", \"q1_ko\", \"q1_sa\", \"q1_su\"], \"content\": \"分留を行う代表例は<b>石油（原油）</b>や液体空気です。また、昇華性の物質には<b>ヨウ素</b>や<b>ドライアイス</b>、再結晶を行う物質には<b>硝酸カリウム</b>があります。\"}], \"stumblingPoints\": [{\"point\": \"蒸留と分留の区別\", \"description\": \"単純な沸点差で液体の1成分のみを取り出すのが蒸留、沸点が異なる複数の液体混合物を順に加熱して分離するのが分留です。\"}, {\"point\": \"抽出とクロマトグラフィーの区別\", \"description\": \"特定の溶媒への「溶けやすさの差」を利用するのが抽出（カフェインなど）。展開剤や固定相への「吸着力・移動速度の差」を利用するのがクロマトグラフィー（インクの色素など）です。\"}]}}",
+              explanation: "▼解答・解説\n(1) ろ液\n(2) 固体（不溶性の固体）と液体の混合物\n(3) ウ（ガラス棒に伝わらせて注ぎ、ろうとの足をビーカーの内壁につける）",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
               id: "q_c1_2_A_2",
-              category: "物質の分離と精製 (問2)",
-              text: "【問2】次の (1)〜(8) の混合物について、最も適切な分離・精製法を【ア：ろ過、イ：蒸留、ウ：分留、エ：昇華法、オ：再結晶、カ：抽出、キ：クロマトグラフィー】から選べ。",
+              category: "物質の分離と精製 (2. 蒸留)",
+              text: "２ 塩化ナトリウム（NaCl）水溶液から水を分離するため、枝付きフラスコとリービッヒ冷却器を用いて蒸留を行った。以下の問いに答えよ。\n\n<img src=\"https://lh3.googleusercontent.com/d/1kzR8OOwzTg6so_HZF9a5YCEo-tazaMmF\" alt=\"蒸留装置\" class=\"w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) 図の①～⑤の器具・物質の名前を答えよ。\n(2) 枝付きフラスコに入れる液量はどのくらいにするべきか。\n(3) 加熱する際、フラスコ内にあらかじめ「沸騰石」を入れるのはなぜか。理由を答えよ。\n(4) 温度計の球部を枝の近くに設置する理由を答えよ。「〜の温度をはかるため」という形で答えよ。\n(5) リービッヒ冷却器に流す冷却水は、「下から上」「上から下」のどちらに流すべきか。また、それはなぜか。理由を答えよ。\n(6) 留出液を集める三角フラスコをゴム栓等で密閉してはいけないのはなぜか。理由を答えよ。",
               subQuestions: [
-                { id: "q2_1", label: "(1) 砂と食塩水の混合物から砂を除く", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ", "オ", "カ", "キ"], correctAnswer: "ア", correctAnswerRate: 85 },
-                { id: "q2_2", label: "(2) 食塩水から純粋な水を取り出す", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ", "オ", "カ", "キ"], correctAnswer: "イ", correctAnswerRate: 85 },
-                { id: "q2_3", label: "(3) 原油からガソリン・灯油・軽油を分ける", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ", "オ", "カ", "キ"], correctAnswer: "ウ", correctAnswerRate: 85 },
-                { id: "q2_4", label: "(4) ヨウ素と砂の混合物からヨウ素を取り出す", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ", "オ", "カ", "キ"], correctAnswer: "エ", correctAnswerRate: 85 },
-                { id: "q2_5", label: "(5) 少量のNaClを含むKNO₃を純粋なKNO₃にする", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ", "オ", "カ", "キ"], correctAnswer: "オ", correctAnswerRate: 85 },
-                { id: "q2_6", label: "(6) お茶の葉から、お湯でカフェインを取り出す", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ", "オ", "カ", "キ"], correctAnswer: "カ", correctAnswerRate: 85 },
-                { id: "q2_7", label: "(7) インクに含まれる色素を分離する", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ", "オ", "カ", "キ"], correctAnswer: "キ", correctAnswerRate: 85 },
-                { id: "q2_8", label: "(8) 液体空気から窒素と酸素を分ける", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ", "オ", "カ", "キ"], correctAnswer: "ウ", correctAnswerRate: 85 }
+                { id: "q2_1_1", label: "(1) ①", type: "short_answer", correctAnswer: "枝付きフラスコ", correctAnswerRate: 85 },
+                { id: "q2_1_2", label: "(1) ②", type: "short_answer", correctAnswer: "リービッヒ冷却器", correctAnswerRate: 85 },
+                { id: "q2_1_3", label: "(1) ③", type: "short_answer", correctAnswer: "沸騰石", correctAnswerRate: 85 },
+                { id: "q2_1_4", label: "(1) ④", type: "short_answer", correctAnswer: "アダプター", correctAnswerRate: 85 },
+                { id: "q2_1_5", label: "(1) ⑤", type: "short_answer", correctAnswer: "三角フラスコ", correctAnswerRate: 85 },
+                { id: "q2_2_volume", label: "(2)", type: "short_answer", correctAnswer: "半分以下", correctAnswerRate: 85 },
+                { id: "q2_3_stone", label: "(3)", type: "descriptive", correctAnswer: "突沸（急な沸騰）を防ぐため", gradingCriteria: ["突沸", "沸騰", "防ぐ"], correctAnswerRate: 85 },
+                { id: "q2_4_thermometer", label: "(4)", type: "descriptive", correctAnswer: "枝に向かう蒸気の温度をはかるため", gradingCriteria: ["蒸気", "温度", "はかる"], correctAnswerRate: 85 },
+                { id: "q2_5_direction", label: "(5) 向き", type: "multiple_choice", options: ["下から上", "上から下"], correctAnswer: "下から上", correctAnswerRate: 85 },
+                { id: "q2_5_reason", label: "(5) 理由", type: "descriptive", correctAnswer: "冷却器内を水で満たし、冷却効率を高くするため", gradingCriteria: ["水で満たす", "冷却効率"], correctAnswerRate: 85 },
+                { id: "q2_6_close", label: "(6)", type: "descriptive", correctAnswer: "装置内の圧力が上昇し、器具が破損して危険だから", gradingCriteria: ["圧力", "上昇", "破損", "危険"], correctAnswerRate: 85 }
               ],
-              explanation: "▼ 解答・解説\n(1) ア (2) イ (3) ウ (4) エ (5) オ (6) カ (7) キ (8) ウ\n\n■ ポイント：\n・固体 + 液体 ──→ ろ過\n・液体 + 溶質（溶質を残す/液体を得る） ──→ 蒸留\n・複数液体（沸点差） ──→ 分留\n・昇華性物質（ヨウ素・ナフタレンなど） ──→ 昇華法\n・溶解度の温度依存差 ──→ 再結晶\n・特定の溶媒で抽出 ──→ 抽出\n・吸着力の差で分離 ──→ クロマトグラフィー",
+              explanation: "▼解答・解説\n(1) ① 枝付きフラスコ ② リービッヒ冷却器 ③ 沸騰石 ④ アダプター ⑤ 三角フラスコ\n(2) 半分以下\n(3) 突沸（急な沸騰）を防ぐため\n(4) 枝に向かう蒸気の温度をはかるため\n(5) 下から上。理由：冷却器内を水で満たし、冷却効率を高くするため\n(6) 装置内の圧力が上昇し、器具が破損して危険だから",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
               id: "q_c1_2_A_3",
-              category: "物質の分離と精製 (問3)",
-              text: "【問3】蒸留装置（図2）に関する次の問いに答えよ。\n\n<img src=\"https://lh3.googleusercontent.com/d/1kzR8OOwzTg6so_HZF9a5YCEo-tazaMmF\" alt=\"蒸留装置\" class=\"w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />",
+              category: "物質の分離と精製 (4. 昇華法)",
+              text: "４ 昇華法に関する次の問いに答えよ。\n\n(1) ヨウ素の昇華性を利用して、できるだけ多くのヨウ素を集めたい。最も適当な分離法を、次の①～④のうちから1つ選べ。\n\n※選択肢の説明：\n①：丸底フラスコの上に氷などの冷却手段がない\n②：丸底フラスコの上に「冷水」を入れた丸底フラスコを載せ、下から混合物を加熱して底にヨウ素を析出させる（適切）\n③：冷水の中に混合物を入れるだけで、加熱をしない\n④：丸底フラスコの上に「温水」を入れた丸底フラスコを載せる\n\n(2) 次の中から、昇華されやすい物質をすべて選べ。\nア．塩化ナトリウム（食塩）　イ．ヨウ素　ウ．ドライアイス　エ．鉄　オ．ナフタレン　カ．水（氷）　キ．パラジクロロベンゼン",
               subQuestions: [
-                { id: "q3_1", label: "(1) 温度計の球部はどの位置に取り付けるべきか答えよ。", type: "descriptive", correctAnswer: "枝付きフラスコの枝の付け根（蒸気が出ていく位置）に温度計の球部を合わせる。沸点を正しく測るため。", gradingCriteria: ["枝", "付け根", "蒸気", "位置", "沸点", "測る"], correctAnswerRate: 85 },
-                { id: "q3_2", label: "(2) リービッヒ冷却器に流す冷却水は、どちら側から入れて、どちら側から出すのが正しいか。理由とともに答えよ。", type: "descriptive", correctAnswer: "下から入れて上から出す。冷却器全体に水を満たし、効率よく冷却するため（また逆流を防ぐため）。", gradingCriteria: ["下から", "上から", "水で満たす", "冷却効率", "効率よく冷却"], correctAnswerRate: 85 },
-                { id: "q3_3", label: "(3) 突沸を防ぐために加えるものを答えよ。", type: "short_answer", correctAnswer: "沸騰石", correctAnswerRate: 85 },
-                { id: "q3_4", label: "(4) 加熱時に三角フラスコの口を密栓してはいけない理由を述べよ。", type: "descriptive", correctAnswer: "内部の蒸気で圧力が高まり、装置が破裂する危険があるから。", gradingCriteria: ["蒸気", "圧力", "高まり", "破裂", "危険", "密閉"], correctAnswerRate: 85 }
+                { id: "q3_1_sublimation_method", label: "(1)", type: "multiple_choice", options: ["①", "②", "③", "④"], correctAnswer: "②", correctAnswerRate: 85 },
+                { id: "q3_2_sublimation_substances", label: "(2)", type: "short_answer", correctAnswer: "イ、ウ、オ、キ", correctAnswerRate: 85 }
               ],
-              explanation: "▼ 解答・解説\n(1) 枝付きフラスコの枝の付け根（蒸気が出ていく位置）に温度計の球部を合わせる。沸点を正しく測るため。\n(2) 下から入れて上から出す。冷却器全体に冷却水を満たし、効率よく冷却するため。\n(3) 沸騰石（素焼きのかけら、ガラスビーズなど）。\n(4) 内部の蒸気による圧力上昇にともない、装置やゴム栓が外れたり、ガラス器具が破裂するおそれがあり非常に危険なため、密栓しません（常に大気圧に開放するようアダプター部に隙間を開けます）。",
+              explanation: "▼解答・解説\n(1) ②\n(2) イ、ウ、オ、キ（ヨウ素、ドライアイス、ナフタレン、パラジクロロベンゼン）",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
               id: "q_c1_2_A_4",
-              category: "物質の分離と精製 (問4)",
-              text: "【問4】（標準）KNO₃ と NaCl の混合物 20 g に水 50 g を加えて 60 ℃ で全量を溶かし、室温 20 ℃ までゆっくり冷却したところ、KNO₃ の純粋な結晶が析出した。これは何という分離法か。また、なぜ KNO₃ だけが析出し、NaCl はほとんど析出しなかったか、溶解度の温度依存性に着目して説明せよ。",
+              category: "物質の分離と精製 (7. 分離法の記述正誤)",
+              text: "７ 物質を分離する操作に関する記述として下線部が正しいものを、次の①〜⑤のうちから 1 つ選べ。\n\n① <u>溶媒に対する溶けやすさの差を利用して、混合物から特定の物質を溶媒に溶かして分離する操作を抽出</u>という。\n② <u>沸点の差を利用して、液体の混合物から成分を分離する操作を昇華法</u>という。\n③ <u>固体と液体の混合物から、ろ紙などを用いて固体を分離する操作を再結晶</u>という。\n④ <u>不純物を含む固体を溶媒に溶かし、温度によって溶解度が異なることを利用して、より純粋な物質を析出させ分離する操作をろ過</u>という。\n⑤ <u>固体の混合物を加熱して、固体から直接気体になる成分を冷却して分離する操作を蒸留</u>という。",
               subQuestions: [
-                { id: "q4_1", label: "分離法の名称", type: "short_answer", correctAnswer: "再結晶", correctAnswerRate: 85 },
-                { id: "q4_2", label: "理由の説明", type: "descriptive", correctAnswer: "KNO₃の溶解度は温度上昇とともに大きく増加するが、NaClの溶解度は温度によってほとんど変化しない。そのため高温で溶けていたKNO₃は温度を下げると溶解度が小さくなり結晶として析出する一方、NaClは溶けたままになる。", gradingCriteria: ["KNO3", "溶解度", "温度", "変化", "析出", "NaCl", "溶けたまま"], correctAnswerRate: 85 }
+                { id: "q4_1_correct_statement", label: "正しい選択肢", type: "multiple_choice", options: ["①", "②", "③", "④", "⑤"], correctAnswer: "①", correctAnswerRate: 85 }
               ],
-              explanation: "▼ 解答・解説\n分離法：再結晶（recrystallization）。\n理由：KNO₃の溶解度は温度上昇にともなって大きく増加する（温度依存性が大きい）が、NaClの溶解度は温度によってほとんど変化しない（温度依存性が非常に小さい）。そのため高温でたくさん溶けていたKNO₃は、温度を下げる（冷却する）と水に溶けきれなくなり溶解度の差にあたる量が純粋な結晶として析出する一方、NaClは溶解度が下がらないため溶けたまま液中に残る。",
+              explanation: "▼解答・解説\n正解：①\n【修正案】\n② 蒸留（または分留）\n③ ろ過\n④ 再結晶\n⑤ 昇華法",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
               id: "q_c1_2_A_5",
-              category: "物質の分離と精製 (問5)",
-              text: "【問5】（文字式・文章題）ある物質Aの溶解度は、t [℃] で S(t) [g/100g 水] で与えられる（S(t)は単調増加）。70℃の飽和水溶液 M [g] を 20℃まで冷却したとき、析出する結晶の質量を、M, S(70), S(20) を用いて表せ。",
+              category: "物質の分離と精製 (8. 操作に対応する分離法)",
+              text: "８ 次の文章（1）〜（5）に関連する分離法の名称をそれぞれ答えよ。\n\n(1) 少量の不純物を含む固体を熱水に溶かし、冷却して純粋な結晶を得る。\n(2) ヨウ素と水の混合物にヘキサンを加え、ヨウ素だけを溶かしだして分離する。\n(3) 砂とヨウ素の混合物を加熱し、ヨウ素だけを気体にしてから再び固体にして集める。\n(4) 水性ペンのインクを、ろ紙などに対する吸着力の違いを利用して分離する。\n(5) 茶葉に湯を注ぎ、香りや風味の成分を溶かしだす。",
               subQuestions: [
-                { id: "q5_formula", label: "析出する結晶の質量 [g]", type: "descriptive", correctAnswer: "M・{S(70)－S(20)} / {100＋S(70)}", gradingCriteria: ["M", "S(70)", "S(20)", "100"], correctAnswerRate: 85 }
+                { id: "q5_1_recrystallization", label: "(1)", type: "short_answer", correctAnswer: "再結晶", correctAnswerRate: 85 },
+                { id: "q5_2_extraction", label: "(2)", type: "short_answer", correctAnswer: "抽出", correctAnswerRate: 85 },
+                { id: "q5_3_sublimation", label: "(3)", type: "short_answer", correctAnswer: "昇華法", correctAnswerRate: 85 },
+                { id: "q5_4_chromatography", label: "(4)", type: "short_answer", correctAnswer: "ペーパークロマトグラフィー", correctAnswerRate: 85 },
+                { id: "q5_5_extraction2", label: "(5)", type: "short_answer", correctAnswer: "抽出", correctAnswerRate: 85 }
               ],
-              explanation: "▼ 解答・解説\n70℃飽和水溶液 M [g] の内訳：\n・水100 gに対して溶質がS(70) g溶けている溶液（全体100 + S(70) g）から、比率を考えると：\n   溶質の質量 ＝ M × S(70) / (100 + S(70)) [g]\n   水の質量 ＝ M × 100 / (100 + S(70)) [g]\n\n20℃に冷却したとき：\n・水100 gに対して溶ける溶質はS(20) gだから、上記の水W gに溶ける溶質は：\n   W × S(20) / 100 ＝ [M × {100 / (100 + S(70))}] × S(20) / 100 ＝ M × S(20) / (100 + S(70)) [g]\n\n析出する結晶の質量 ＝ 元の溶質 － 20℃で溶けたままの溶質\n   ＝ M × S(70) / (100 + S(70)) － M × S(20) / (100 + S(70))\n   ＝ M × {S(70) － S(20)} / {100 + S(70)} [g]",
-              surroundingKnowledge: [],
-              deepDiveTopics: []
-            },
-            {
-              id: "q_c1_2_A_6",
-              category: "物質の分離と精製 (問6)",
-              text: "【問6】（記述）次の操作で誤りを一つずつ指摘し、正しい方法を述べよ。\n\n(1) ろ過の際、ろうとの先（細い管的先端）をビーカーの中央に向けて、ろ液を勢いよく流した。\n(2) 蒸留の実験を、ガラス器具をすべて密閉した状態で開始した。\n(3) ペーパークロマトグラフィーで、サンプルをつけた線が展開液（溶媒）の中に浸かるようにセットした。",
-              subQuestions: [
-                { id: "q6_1", label: "(1) ろ過の誤りと正しい方法", type: "descriptive", correctAnswer: "ろうとの先はビーカーの内壁に密着させる。液はねを防ぎ、液体が壁を伝うようにするため。", gradingCriteria: ["ろうとの先", "ビーカー", "内壁", "密着", "液はね", "壁を伝う"], correctAnswerRate: 85 },
-                { id: "q6_2", label: "(2) 蒸留の誤りと正しい方法", type: "descriptive", correctAnswer: "装置は必ず大気開放（外気と通じる部分）を持たせる。完全密閉では圧力上昇で破裂する。", gradingCriteria: ["大気開放", "密閉", "圧力", "破裂"], correctAnswerRate: 85 },
-                { id: "q6_3", label: "(3) クロマトグラフィーの誤りと正しい方法", type: "descriptive", correctAnswer: "サンプルをつけた線は展開液面より上にしなければならない。線が浸かるとサンプルが溶け出してしまう。", gradingCriteria: ["サンプル", "線", "展開液面", "上", "浸かる", "溶け出す"], correctAnswerRate: 85 }
-              ],
-              explanation: "▼ 解答・解説\n(1) ろうとの先はビーカーの内壁に密着させる。液はねを防ぎ、液体が流れる速度をスムーズ（表面張力の引き込みにより速くなる）にするためです。\n(2) 装置は必ず大気開放（外気と通じる部分）を持たせ、完全密閉しないようにします。完全密閉すると装置内の空気や加熱生成された蒸気によって内圧が高まり、ガラス器具が密栓部から破裂・爆発し大事故へ繋がります。\n(3) サンプルをつけた原線は展開液の液面より上の位置になるよう調整してセットする必要があります。もし線が展開液面より下に浸かってしまうと、色素が紙を登って分離する前に展開液の中にすべて溶け出してしまい分離できません。",
-              surroundingKnowledge: [],
-              deepDiveTopics: []
-            },
-            {
-              id: "q_c1_2_A_7",
-              category: "物質の分離と精製 (問7)",
-              text: "【問7】次の混合物の組合せと、それを分離するのに最も適切な操作の対応で、誤っているものを一つ選べ。\n\n① 水とエタノール ─ 分留\n② ヨウ素と塩化ナトリウム ─ 昇華法\n③ 砂と砂糖水 ─ 蒸留\n④ 葉緑素を含む色素 ─ クロマトグラフィー\n⑤ アルミ缶と鉄缶 ─ 磁石による分別",
-              subQuestions: [
-                { id: "q7_wrong_option", label: "誤っている組み合わせ", type: "multiple_choice", options: ["①", "②", "③", "④", "⑤"], correctAnswer: "③", correctAnswerRate: 85 }
-              ],
-              explanation: "▼ 解答・解説\n答：③\n\n■ 砂と砂糖水を分けるには、まず『ろ過』で粒子が大きい「砂」を除き（＝固体と液体の分離）、その後に砂糖水全体から純粋な水を得るために『蒸留』を行います。単一のアプローチにあたる「蒸留」のみの単一操作では砂と砂糖と水を同時に適切に分けることはできないため、誤りです。",
+              explanation: "▼解答・解説\n(1) 再結晶\n(2) 抽出\n(3) 昇華法\n(4) ペーパークロマトグラフィー\n(5) 抽出",
               surroundingKnowledge: [],
               deepDiveTopics: []
             }
           ],
           miniTest: [
             {
-              id: "q_c1_2_B_1",
-              category: "物質の分離と精製 (問1)",
-              text: "B　物質の分離と精製に関する次の文章を読み、あとの問いに答えよ。\n\n自然界に存在する物質の多くは混合物である。混合物から目的の物質を取り出す操作を ( ア ) といい、取り出した物質からさらに不純物を取り除いて純度を高める操作を ( イ ) という。物質の ( ア ) には、物質が持つ様々な性質（沸点、溶解度、吸着力など）の違いが利用される。\n\n液体とそれに溶けない固体の混合物は、ろ紙などを用いた ( ウ ) によって分けることができる。 また、溶液を加熱して沸騰させ、生じた蒸気を冷却して再び液体として取り出す方法を ( エ ) という。この ( エ ) の操作を行う際、使用する器具の名称や装置の組み立てには、いくつかの重要な注意点がある。\n\n沸点の異なる2種類以上の「液体の混合物」から、加熱温度を変えて各成分に分離する操作は特に ( オ ) と呼ばれ、液体空気の分離や原油の精製などに用いられる。\n\n固体物質の分離にも様々な方法がある。少量の不純物を含む固体を熱水などに溶かし、冷却して温度による ( カ ) の違いを利用して純粋な結晶を得る方法を ( キ ) という。また、目的の物質だけをよく溶かす溶媒を用いて混合物から成分を分離する方法を ( ク ) といい、物質の ( ケ ) の違いを利用して分離する方法を ( コ ) という。さらに、ドライアイスやヨウ素のように、固体が液体を経ずに直接気体になる性質を利用して分離する方法を ( サ ) という。\n\n問1 文章中の空欄 ( ア ) ～ ( サ ) に入る最も適切な語句を答えよ。",
+              id: "q_c1_2_A_1_t",
+              category: "物質の分離と精製 (1. ろ過)",
+              text: "１ ろ過に関する次の問いに答えよ。\n\n(1) ろ紙を通過して下に落ちた液体のことを何というか。\n(2) ろ過はどのような混合物の分離に用いる操作か。「固体」「液体」という言葉を用いて答えよ。\n(3) ろ過の操作として、最も適切な図を下の選択肢（ア）〜（エ）から1つ選べ。\n\n※選択肢の説明：\n（ア）ガラス棒を用いず直接注ぎ、ろうとの足の先端はビーカーの中央にある\n（イ）ガラス棒を伝わらせて注いでいるが、ろうとの足の先端はビーカーの中央にある\n（ウ）ガラス棒を伝わらせて注いでおり、ガラス棒の先端がろ紙の3重部分に当たり、ろうとの足の先端はビーカーの内壁に密着している（適切な操作）\n（エ）ガラス棒を用いず直接注ぎ、ろうとの足の先端はビーカーの内壁に密着している",
               subQuestions: [
-                { id: "q1_a", label: "問1 (ア)", type: "short_answer", correctAnswer: "分離", correctAnswerRate: 85 },
-                { id: "q1_b", label: "問1 (イ)", type: "short_answer", correctAnswer: "精製", correctAnswerRate: 85 },
-                { id: "q1_c", label: "問1 (ウ)", type: "short_answer", correctAnswer: "ろ過", correctAnswerRate: 85 },
-                { id: "q1_d", label: "問1 (エ)", type: "short_answer", correctAnswer: "蒸留", correctAnswerRate: 85 },
-                { id: "q1_e", label: "問1 (オ)", type: "short_answer", correctAnswer: "分留", correctAnswerRate: 85 },
-                { id: "q1_f", label: "問1 (カ)", type: "short_answer", correctAnswer: "溶解度", correctAnswerRate: 85 },
-                { id: "q1_g", label: "問1 (キ)", type: "short_answer", correctAnswer: "再結晶", correctAnswerRate: 85 },
-                { id: "q1_h", label: "問1 (ク)", type: "short_answer", correctAnswer: "抽出", correctAnswerRate: 85 },
-                { id: "q1_i", label: "問1 (ケ)", type: "short_answer", correctAnswer: "吸着力", correctAnswerRate: 85 },
-                { id: "q1_j", label: "問1 (コ)", type: "short_answer", correctAnswer: "クロマトグラフィー", correctAnswerRate: 85 },
-                { id: "q1_k", label: "問1 (サ)", type: "short_answer", correctAnswer: "昇華法", correctAnswerRate: 85 }
+                { id: "q1_1_filtrate_t", label: "(1)", type: "short_answer", correctAnswer: "ろ液", correctAnswerRate: 85 },
+                { id: "q1_2_definition_t", label: "(2)", type: "descriptive", correctAnswer: "固体（不溶性の固体）と液体の混合物", gradingCriteria: ["固体", "液体", "混合物"], correctAnswerRate: 85 },
+                { id: "q1_3_diagram_t", label: "(3)", type: "multiple_choice", options: ["ア", "イ", "ウ", "エ"], correctAnswer: "ウ", correctAnswerRate: 85 }
               ],
-              explanation: "問1 (ア) 分離　(イ) 精製　(ウ) ろ過　(エ) 蒸留　(オ) 分留 (カ) 溶解度　(キ) 再結晶　(ク) 抽出　(ケ) 吸着力　(コ) クロマトグラフィー　(サ) 昇華法\n解説: 分離と精製の基本用語です。「分離（取り出す）」と「精製（さらに純度を高める）」の違いや、それぞれの分離法が「物質の何の性質の違い（沸点、溶解度など）を利用しているか」はテストでよく狙われるのでセットで覚えておきましょう。",
+              explanation: "▼解答・解説\n(1) ろ液\n(2) 固体（不溶性の固体）と液体の混合物\n(3) ウ（ガラス棒に伝わらせて注ぎ、ろうとの足をビーカーの内壁につける）",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
-              id: "q_c1_2_B_2",
-              category: "物質の分離と精製 (問2)",
-              text: "B　（リード文続き）\n...液体とそれに溶けない固体の混合物は、ろ紙などを用いた ( ウ: ろ過 ) によって分けることができる。\n\n問2 ( ウ ) の操作（ろ過）を行う際の注意点について、次の(1)・(2)の理由を簡潔に答えよ。\n(1) 液体をろうとに注ぐ際、直接注がずにガラス棒を伝わらせて注ぐのはなぜか。\n(2) ろうとの足の先端は、受け器のビーカーの内壁に密着させるようにして置くのはなぜか。",
+              id: "q_c1_2_A_2_t",
+              category: "物質の分離と精製 (2. 蒸留)",
+              text: "２ 塩化ナトリウム（NaCl）水溶液から水を分離するため、枝付きフラスコとリービッヒ冷却器を用いて蒸留を行った。以下の問いに答えよ。\n\n<img src=\"https://lh3.googleusercontent.com/d/1kzR8OOwzTg6so_HZF9a5YCEo-tazaMmF\" alt=\"蒸留装置\" class=\"w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) 図の①～⑤の器具・物質の名前を答えよ。\n(2) 枝付きフラスコに入れる液量はどのくらいにするべきか。\n(3) 加熱する際、フラスコ内にあらかじめ「沸騰石」を入れるのはなぜか。理由を答えよ。\n(4) 温度計の球部を枝の近くに設置する理由を答えよ。「〜の温度をはかるため」という形で答えよ。\n(5) リービッヒ冷却器に流す冷却水は、「下から上」「上から下」のどちらに流すべきか。また、それはなぜか。理由を答えよ。\n(6) 留出液を集める三角フラスコをゴム栓等で密閉してはいけないのはなぜか。理由を答えよ。",
               subQuestions: [
-                { id: "q2_1_reason", label: "問2 (1) 理由", type: "descriptive", correctAnswer: "液体が周囲に飛び散るのを防ぐため", gradingCriteria: ["液体が周囲に飛び散るのを防ぐため"], correctAnswerRate: 85 },
-                { id: "q2_2_reason", label: "問2 (2) 理由", type: "descriptive", correctAnswer: "ろ過された液体が壁面を伝わってスムーズに落ちるようにするため", gradingCriteria: ["ろ過された液体が壁面を伝わってスムーズに落ちるようにするため"], correctAnswerRate: 85 }
+                { id: "q2_1_1_t", label: "(1) ①", type: "short_answer", correctAnswer: "枝付きフラスコ", correctAnswerRate: 85 },
+                { id: "q2_1_2_t", label: "(1) ②", type: "short_answer", correctAnswer: "リービッヒ冷却器", correctAnswerRate: 85 },
+                { id: "q2_1_3_t", label: "(1) ③", type: "short_answer", correctAnswer: "沸騰石", correctAnswerRate: 85 },
+                { id: "q2_1_4_t", label: "(1) ④", type: "short_answer", correctAnswer: "アダプター", correctAnswerRate: 85 },
+                { id: "q2_1_5_t", label: "(1) ⑤", type: "short_answer", correctAnswer: "三角フラスコ", correctAnswerRate: 85 },
+                { id: "q2_2_volume_t", label: "(2)", type: "short_answer", correctAnswer: "半分以下", correctAnswerRate: 85 },
+                { id: "q2_3_stone_t", label: "(3)", type: "descriptive", correctAnswer: "突沸（急な沸騰）を防ぐため", gradingCriteria: ["突沸", "沸騰", "防ぐ"], correctAnswerRate: 85 },
+                { id: "q2_4_thermometer_t", label: "(4)", type: "descriptive", correctAnswer: "枝に向かう蒸気の温度をはかるため", gradingCriteria: ["蒸気", "温度", "はかる"], correctAnswerRate: 85 },
+                { id: "q2_5_direction_t", label: "(5) 向き", type: "multiple_choice", options: ["下から上", "上から下"], correctAnswer: "下から上", correctAnswerRate: 85 },
+                { id: "q2_5_reason_t", label: "(5) 理由", type: "descriptive", correctAnswer: "冷却器内を水で満たし、冷却効率を高くするため", gradingCriteria: ["水で満たす", "冷却効率"], correctAnswerRate: 85 },
+                { id: "q2_6_close_t", label: "(6)", type: "descriptive", correctAnswer: "装置内の圧力が上昇し、器具が破損して危険だから", gradingCriteria: ["圧力", "上昇", "破損", "危険"], correctAnswerRate: 85 }
               ],
-              explanation: "問2 (1) 液体が周囲に飛び散るのを防ぐため。 (2) ろ過された液体が壁面を伝わってスムーズに落ちるようにするため。（液体の飛び散りを防ぎ、ろ過の速度を速める効果がある）\n解説: ろ紙の注意点としてプリントに記載されている内容です。(2)については、ろうとの先をビーカーの内壁につけることで、液体の表面張力が働き、ポタポタ落ちるよりもスピーディーにろ過できるメリットもあります。",
+              explanation: "▼解答・解説\n(1) ① 枝付きフラスコ ② リービッヒ冷却器 ③ 沸騰石 ④ アダプター ⑤ 三角フラスコ\n(2) 半分以下\n(3) 突沸（急な沸騰）を防ぐため\n(4) 枝に向かう蒸気の温度をはかるため\n(5) 下から上。理由：冷却器内を水で満たし、冷却効率を高くするため\n(6) 装置内の圧力が上昇し、器具が破損して危険だから",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
-              id: "q_c1_2_B_3",
-              category: "物質の分離と精製 (問3)",
-              text: `B　（リード文続き）\n...また、溶液を加熱して沸騰させ、生じた蒸気を冷却して再び液体として取り出す方法を ( エ: 蒸留 ) という。この ( エ ) の操作を行う際、使用する器具の名称や装置の組み立てには、いくつかの重要な注意点がある。\n\n<img src="https://lh3.googleusercontent.com/d/1kzR8OOwzTg6so_HZF9a5YCEo-tazaMmF" alt="蒸留装置" class="w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200" referrerPolicy="no-referrer" />\n\n問3 ( エ ) の操作（蒸留）に用いる装置について、次の(1)〜(6)の問いに答えよ。\n(1)　図のA～Dの器具の名称を記せ。\n(2)　この図ではDの位置が間違っている。正しくは枝付きフラスコのどこに温度計を持ってくるべきか。\n(3)　Bの器具の冷却水はどの方向（「上から下」または「下から上」）に流すべきか。また、そのように流す理由を簡潔に答えよ。\n(4)　三角フラスコは、密栓してはならない。その理由を簡潔に答えよ。\n(5)　Aの器具に入れている沸騰石の役割を答えよ。\n(6)  Aの器具に入れる液体の量はどれぐらいにすればよいか答えよ。`,
+              id: "q_c1_2_A_3_t",
+              category: "物質の分離と精製 (4. 昇華法)",
+              text: "４ 昇華法に関する次の問いに答えよ。\n\n(1) ヨウ素の昇華性を利用して、できるだけ多くのヨウ素を集めたい。最も適当な分離法を、次の①～④のうちから1つ選べ。\n\n※選択肢の説明：\n①：丸底フラスコの上に氷などの冷却手段がない\n②：丸底フラスコの上に「冷水」を入れた丸底フラスコを載せ、下から混合物を加熱して底にヨウ素を析出させる（適切）\n③：冷水の中に混合物を入れるだけで、加熱をしない\n④：丸底フラスコの上に「温水」を入れた丸底フラスコを載せる\n\n(2) 次の中から、昇華されやすい物質をすべて選べ。\nア．塩化ナトリウム（食塩）　イ．ヨウ素　ウ．ドライアイス　エ．鉄　オ．ナフタレン　カ．水（氷）　キ．パラジクロロベンゼン",
               subQuestions: [
-                { id: "q3_1_A", label: "問3 (1) A", type: "short_answer", correctAnswer: "枝付きフラスコ", correctAnswerRate: 85 },
-                { id: "q3_1_B", label: "問3 (1) B", type: "short_answer", correctAnswer: "リービッヒ冷却器", correctAnswerRate: 85 },
-                { id: "q3_1_C", label: "問3 (1) C", type: "short_answer", correctAnswer: "三角フラスコ", correctAnswerRate: 85 },
-                { id: "q3_1_D", label: "問3 (1) D", type: "short_answer", correctAnswer: "温度計", correctAnswerRate: 85 },
-                { id: "q3_2", label: "問3 (2) 位置", type: "short_answer", correctAnswer: "枝の付け根付近", correctAnswerRate: 85 },
-                { id: "q3_3_dir", label: "問3 (3) 方向", type: "short_answer", correctAnswer: "下から上", correctAnswerRate: 85 },
-                { id: "q3_3_reason", label: "問3 (3) 理由", type: "descriptive", correctAnswer: "冷却効率を高めるため", gradingCriteria: ["冷却効率を高めるため"], correctAnswerRate: 85 },
-                { id: "q3_4", label: "問3 (4) 理由", type: "descriptive", correctAnswer: "圧力が上昇して危険だから", gradingCriteria: ["圧力が上昇して危険だから"], correctAnswerRate: 85 },
-                { id: "q3_5", label: "問3 (5) 役割", type: "descriptive", correctAnswer: "突沸を防ぐため", gradingCriteria: ["突沸を防ぐため"], correctAnswerRate: 85 },
-                { id: "q3_6", label: "問3 (6) 量", type: "descriptive", correctAnswer: "半分以下", gradingCriteria: ["半分以下"], correctAnswerRate: 85 }
+                { id: "q3_1_sublimation_method_t", label: "(1)", type: "multiple_choice", options: ["①", "②", "③", "④"], correctAnswer: "②", correctAnswerRate: 85 },
+                { id: "q3_2_sublimation_substances_t", label: "(2)", type: "short_answer", correctAnswer: "イ、ウ、オ、キ", correctAnswerRate: 85 }
               ],
-              explanation: "問3\n(1) A：枝付きフラスコ　B：リービッヒ冷却器　C：三角フラスコ　D：温度計\n(2) 枝の付け根付近\n(3) 方向：下から上 　 理由：冷却器内を水で満たすため。\n(4) 三角フラスコ内の圧力が上昇して危険だから。\n(5) 突沸（急な沸騰）を防ぐため。\n(6) 液量は半分以下にする。\n解説: 蒸留装置のセッティングは記述問題で頻出です。(1)の器具の名前は確実に書けるようにしておきましょう。(2)の図は、温度計が液体の温度を測ってしまっている「よくある間違い図」です。測りたいのは「今まさに枝に向かっている蒸気の温度」なので、枝の付け根付近が正解です。",
+              explanation: "▼解答・解説\n(1) ②\n(2) イ、ウ、オ、キ（ヨウ素、ドライアイス、ナフタレン、パラジクロロベンゼン）",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
-              id: "q_c1_2_B_4",
-              category: "物質の分離と精製 (問4)",
-              text: "B　（リード文続き）\n...沸点の異なる2種類以上の「液体の混合物」から、加熱温度を変えて各成分に分離する操作は特に ( オ: 分留 ) と呼ばれ、液体空気の分離や原油の精製などに用いられる。\n\n問4 原油（石油）を ( オ ) によって分離する際、精留塔から取り出される成分について次の問いに答えよ。上のア〜オを、沸点が低く精留塔の「上から出てくる順」に正しく並べ替えよ。\n ア：軽油　　イ：残油（重油など）　　ウ：石油ガス・LPガス　　エ：灯油　　オ：ナフサ（粗製ガソリン）",
+              id: "q_c1_2_A_4_t",
+              category: "物質の分離と精製 (7. 分離法の記述正誤)",
+              text: "７ 物質を分離する操作に関する記述として下線部が正しいものを、次の①〜⑤のうちから 1 つ選べ。\n\n① <u>溶媒に対する溶けやすさの差を利用して、混合物から特定の物質を溶媒に溶かして分離する操作を抽出</u>という。\n② <u>沸点の差を利用して、液体の混合物から成分を分離する操作を昇華法</u>という。\n③ <u>固体と液体の混合物から、ろ紙などを用いて固体を分離する操作を再結晶</u>という。\n④ <u>不純物を含む固体を溶媒に溶かし、温度によって溶解度が異なることを利用して、より純粋な物質を析出させ分離する操作をろ過</u>という。\n⑤ <u>固体の混合物を加熱して、固体から直接気体になる成分を冷却して分離する操作を蒸留</u>という。",
               subQuestions: [
-                { id: "q4_order", label: "問4 順序", type: "short_answer", correctAnswer: "ウオエア", correctAnswerRate: 85 }
+                { id: "q4_1_correct_statement_t", label: "正しい選択肢", type: "multiple_choice", options: ["①", "②", "③", "④", "⑤"], correctAnswer: "①", correctAnswerRate: 85 }
               ],
-              explanation: "問4 ウ → オ → エ → ア → イ\n解説: 原油の分留（精留塔）は、「沸点の低いものほど上から出てくる（気体になりやすいから）」という順番を把握する問題です。上から順に「①石油ガス・LPガス → ②ナフサ（粗製ガソリン） → ③灯油 → ④軽油 → ⑤残油（重油など）」となります。",
+              explanation: "▼解答・解説\n正解：①\n【修正案】\n② 蒸留（または分留）\n③ ろ過\n④ 再結晶\n⑤ 昇華法",
               surroundingKnowledge: [],
               deepDiveTopics: []
             },
             {
-              id: "q_c1_2_B_5",
-              category: "物質の分離と精製 (問5)",
-              text: "B　（リード文続き）\n...固体物質の分離にも様々な方法がある。少量の不純物を含む固体を熱水などに溶かし、冷却して温度による ( カ ) の違いを利用して純粋な結晶を得る方法を ( キ ) という。また、目的の物質だけをよく溶かす溶媒を用いて混合物から成分を分離する方法を ( ク ) といい、物質の ( ケ ) の違いを利用して分離する方法を ( コ ) という。さらに、ドライアイスやヨウ素のように、固体が液体を経ずに直接気体になる性質を利用して分離する方法を ( サ ) という。\n\n問5 次の (a) ～ (f) の混合物を分離・精製するのに最も適した方法の名称をそれぞれ答えよ。\n(a) ヨウ素とヨウ化カリウムを含む水溶液から、特定の溶媒を加えてヨウ素だけを溶かし出す。\n(b) 水性インクのシミがついたろ紙の先端を水に浸し、各色素の移動速度の違いを利用して分ける。\n(c) 砂が混ざったヨウ素を加熱し、ヨウ素の気体を冷却して取り出す。\n(d) 少量の硫酸銅(Ⅱ)五水和物を含む硝酸カリウムの固体を熱水に溶かし、その後ゆっくりと冷却する。\n(e) 塩化ナトリウム水溶液（食塩水）を加熱し、純粋な水を取り出す。\n(f) 茶葉に熱湯を注ぎ、お茶の成分を溶かし出す。",
+              id: "q_c1_2_A_5_t",
+              category: "物質の分離と精製 (8. 操作に対応する分離法)",
+              text: "８ 次の文章（1）〜（5）に関連する分離法の名称をそれぞれ答えよ。\n\n(1) 少量の不純物を含む固体を熱水に溶かし、冷却して純粋な結晶を得る。\n(2) ヨウ素と水の混合物にヘキサンを加え、ヨウ素だけを溶かしだして分離する。\n(3) 砂とヨウ素 of の混合物を加熱し、ヨウ素だけを気体にしてから再び固体にして集める。\n(4) 水性ペンのインクを、ろ紙などに対する吸着力の違いを利用して分離する。\n(5) 茶葉に湯を注ぎ、香りや風味の成分を溶かしだす。",
               subQuestions: [
-                { id: "q5_a", label: "問5 (a)", type: "short_answer", correctAnswer: "抽出", correctAnswerRate: 85 },
-                { id: "q5_b", label: "問5 (b)", type: "short_answer", correctAnswer: "クロマトグラフィー", correctAnswerRate: 85 },
-                { id: "q5_c", label: "問5 (c)", type: "short_answer", correctAnswer: "昇華法", correctAnswerRate: 85 },
-                { id: "q5_d", label: "問5 (d)", type: "short_answer", correctAnswer: "再結晶", correctAnswerRate: 85 },
-                { id: "q5_e", label: "問5 (e)", type: "short_answer", correctAnswer: "蒸留", correctAnswerRate: 85 },
-                { id: "q5_f", label: "問5 (f)", type: "short_answer", correctAnswer: "抽出", correctAnswerRate: 85 }
+                { id: "q5_1_recrystallization_t", label: "(1)", type: "short_answer", correctAnswer: "再結晶", correctAnswerRate: 85 },
+                { id: "q5_2_extraction_t", label: "(2)", type: "short_answer", correctAnswer: "抽出", correctAnswerRate: 85 },
+                { id: "q5_3_sublimation_t", label: "(3)", type: "short_answer", correctAnswer: "昇華法", correctAnswerRate: 85 },
+                { id: "q5_4_chromatography_t", label: "(4)", type: "short_answer", correctAnswer: "ペーパークロマトグラフィー", correctAnswerRate: 85 },
+                { id: "q5_5_extraction2_t", label: "(5)", type: "short_answer", correctAnswer: "抽出", correctAnswerRate: 85 }
               ],
-              explanation: "問5\n(a) 抽出\n(b) クロマトグラフィー（または ペーパークロマトグラフィー）\n(c) 昇華法\n(d) 再結晶\n(e) 蒸留\n(f) 抽出\n解説: プリント右側の表に載っている具体例から分離法を当てる頻出問題です。(a)と(f)は「適切な溶媒を加えて、目的の物質だけを分離する」ので抽出です。(c)のヨウ素やナフタレン、ドライアイスは「昇華しやすい物質」のため昇華法を選びます。(d)は温度による溶解度変化を利用する再結晶です。",
+              explanation: "▼解答・解説\n(1) 再結晶\n(2) 抽出\n(3) 昇華法\n(4) ペーパークロマトグラフィー\n(5) 抽出",
               surroundingKnowledge: [],
               deepDiveTopics: []
             }
