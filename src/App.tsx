@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Monitor, Smartphone, Volume2, VolumeX, Home as HomeIcon, BookOpen, User, Settings } from 'lucide-react';
+import { Monitor, Smartphone, Volume2, VolumeX, Home as HomeIcon, BookOpen, User, Settings, Trophy } from 'lucide-react';
 import { Home } from './components/Home';
 import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
@@ -393,13 +393,13 @@ export default function App() {
             {appState !== 'onboarding' && appState !== 'quiz' && appState !== 'explanation' && (
               <nav
                 aria-label="メインナビゲーション"
-                className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-4 md:px-10 pb-safe pt-3 z-[60] shadow-sm pb-6"
+                className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-2 md:px-10 pb-safe pt-3 z-[60] shadow-sm pb-6"
               >
                 <button 
                   onClick={() => setAppState('home')}
                   aria-label="ホーム画面へ移動"
                   aria-current={appState === 'home' ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${appState === 'home' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'home' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <HomeIcon className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">ホーム</span>
@@ -407,7 +407,7 @@ export default function App() {
                 
                 <button 
                   onClick={() => {
-                    if (appState === 'home' || appState === 'note_list' || appState === 'note_detail') {
+                    if (appState === 'home' || appState === 'note_list' || appState === 'note_detail' || appState === 'leaderboard') {
                       setAppState(lastLearnState);
                     } else {
                       setAppState('mode_selection');
@@ -415,10 +415,20 @@ export default function App() {
                   }}
                   aria-label="学習画面へ移動"
                   aria-current={['mode_selection', 'chapters', 'learning', 'explanation', 'quiz'].includes(appState) ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation', 'quiz'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation', 'quiz'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <BookOpen className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">学習</span>
+                </button>
+
+                <button 
+                  onClick={() => setAppState('leaderboard')}
+                  aria-label="ランキング画面へ移動"
+                  aria-current={appState === 'leaderboard' ? 'page' : undefined}
+                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'leaderboard' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                >
+                  <Trophy className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
+                  <span className="text-[10px] tracking-wider font-modern">ランキング</span>
                 </button>
 
                 <button 
@@ -430,7 +440,7 @@ export default function App() {
                   }}
                   aria-label="設定画面へ移動"
                   aria-current={appState === 'settings' ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-16 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <Settings className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">設定</span>

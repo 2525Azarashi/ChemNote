@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle, Trophy } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
-import { ScoreSummaryCard } from './ScoreToast';
 import { ChapterRankingPanel } from './ChapterRankingPanel';
 import type { ScoreBreakdown } from '../utils/scoring';
 
@@ -67,6 +67,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const mode = 'mini_test';
 
   const [selfGrades, setSelfGrades] = useState<Record<string, boolean>>({});
+  const [descriptiveScoreDelta, setDescriptiveScoreDelta] = useState(0);
+  const prevDescriptiveScore = useRef(0);
+  const [scorePulse, setScorePulse] = useState(false);
   const [expandedSq, setExpandedSq] = useState<string | null>(null);
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
   const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
@@ -117,7 +120,28 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const questions = useMemo(() => {
     return singleQuestionIndex !== undefined ? [allQuestions[singleQuestionIndex]] : allQuestions;
   }, [allQuestions, singleQuestionIndex]);
-  const displayTotalScore = totalScore ?? resultTotalScore;
+
+  // \u81ea\u5df1\u63a1\u70b9\u306e\u30c1\u30a7\u30c3\u30af\u6570\u304b\u3089\u30dc\u30fc\u30ca\u30b9\u70b9\u3092\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u8a08\u7b97
+  const selfGradeBonus = useMemo(() => {
+    let bonus = 0;
+    questions.forEach((q: any) => {
+      (q.subQuestions || []).forEach((sq: any) => {
+        if (sq.type === 'descriptive' && sq.gradingCriteria) {
+          const total = sq.gradingCriteria.length;
+          let checked = 0;
+          sq.gradingCriteria.forEach((_: any, idx: number) => {
+            if (selfGrades[`${sq.id}_${idx}`]) checked++;
+          });
+          // 1\u9805\u76ee\u6e80\u70b9\u3092MAX 10\u70b9\u3068\u3057\u3066\u6bd4\u4f8b\u914d\u5206
+          bonus += Math.round((checked / total) * 10);
+        }
+      });
+    });
+    return bonus;
+  }, [selfGrades, questions]);
+
+  const baseDisplayScore = totalScore ?? resultTotalScore;
+  const displayTotalScore = baseDisplayScore != null ? baseDisplayScore + selfGradeBonus : null;
   const isResultView = singleQuestionIndex === undefined;
 
   useEffect(() => {
@@ -237,7 +261,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   };
 
   const toggleGrade = (criteriaId: string) => {
-    setSelfGrades(prev => ({ ...prev, [criteriaId]: !prev[criteriaId] }));
+    setSelfGrades(prev => {
+      const next = { ...prev, [criteriaId]: !prev[criteriaId] };
+      // リアルタイムスコア更新のためのシグナル
+      setTimeout(() => setScorePulse(p => !p), 0);
+      return next;
+    });
   };
 
   const weakAreas = useMemo(() => {
@@ -610,20 +639,26 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           </div>
 
           {displayTotalScore != null && (
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${
-              mode === 'mini_test'
-                ? 'bg-[#F4D03F]/15 text-[#1B2631] border-[#F4D03F]/40'
-                : 'bg-[#F4D03F]/20 text-[#F9E79F] border-[#F4D03F]/40'
-            }`}>
+            <motion.div
+              key={scorePulse ? 'a' : 'b'}
+              initial={{ scale: 1.15 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${
+                mode === 'mini_test'
+                  ? 'bg-[#F4D03F]/15 text-[#1B2631] border-[#F4D03F]/40'
+                  : 'bg-[#F4D03F]/20 text-[#F9E79F] border-[#F4D03F]/40'
+              }`}
+            >
               <Trophy size={16} className="text-[#D4A017]" />
               <div className="leading-none">
-                <div className="text-[10px] font-bold opacity-70">Score</div>
-                <div className="font-mono font-bold text-base md:text-lg tabular-nums">
+                <div className="text-[10px] font-bold opacity-70 font-modern">Score</div>
+                <div className="font-handwriting font-bold text-base md:text-lg tabular-nums">
                   {displayTotalScore}
                   <span className="text-[10px] ml-1 opacity-70">pt</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {singleQuestionIndex !== undefined && questions[0] && (
@@ -726,31 +761,14 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         )}
       </div>
 
-      {/* スコアサマリーカード（1問ごとの採点表示 / 演習モードのみ） */}
-      {singleQuestionIndex !== undefined && scoreBreakdown && scoreMeta && (
+      {/* 1問ごとのランキングパネル（最終問のみ） */}
+      {singleQuestionIndex !== undefined && isLastQuestion && totalScore && (
         <div className="px-4 md:px-6 pt-4 relative z-10">
-          <ScoreSummaryCard
-            breakdown={scoreBreakdown}
-            timeLimit={scoreMeta.timeLimit}
-            timeUsed={scoreMeta.timeUsed}
-            totalScore={totalScore}
+          <ChapterRankingPanel
+            chapterId={chapter.id}
+            userScore={totalScore}
             isGuest={isGuest}
           />
-          {runningCombo && runningCombo >= 3 && (
-            <div className="mt-2 text-center text-xs text-orange-500 font-bold animate-pulse">
-              🔥 {runningCombo}問連続正解のコンボ中！
-            </div>
-          )}
-          {/* Ranking Panel (Last Question) */}
-          {isLastQuestion && totalScore && (
-            <div className="mt-4 md:mt-6">
-              <ChapterRankingPanel
-                chapterId={chapter.id}
-                userScore={totalScore}
-                isGuest={isGuest}
-              />
-            </div>
-          )}
         </div>
       )}
 
