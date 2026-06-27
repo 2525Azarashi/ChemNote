@@ -19,7 +19,7 @@ import { submitChapterScore } from '../utils/leaderboard';
 interface QuizProps {
   mode: 'mini_test' | 'practice';
   chapter: any;
-  onFinish: (answers: Record<string, string>) => void;
+  onFinish: (answers: Record<string, string>, result?: ChapterRunState) => void;
   onBack: () => void;
   isGuest: boolean;
   isMobileView?: boolean;
@@ -297,8 +297,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
    * 同じ問題を2度採点しないよう lastScoredQuestionRef でガード。
    */
   const scoreCurrentQuestionIfNeeded = () => {
-    if (!currentQuestion) return;
-    if (lastScoredQuestionRef.current === currentQuestion.id) return;
+    if (!currentQuestion) return null;
+    if (lastScoredQuestionRef.current === currentQuestion.id) return null;
     lastScoredQuestionRef.current = currentQuestion.id;
 
     const subQuestions = currentQuestion.subQuestions || [];
@@ -343,6 +343,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         questionId: currentQuestion.id,
       });
     }
+
+    return { breakdown: finalBreakdown, nextRun, addedScore: boostedScore };
   };
 
   /**
@@ -369,15 +371,15 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   const handleNext = () => {
     if (!showingExplanation) {
       // 解答提出 → 採点して解説へ
-      scoreCurrentQuestionIfNeeded();
+      const scored = scoreCurrentQuestionIfNeeded();
       
       // スコアアニメーションのデータを取得
       const currentQuestion = questions[currentQuestionIndex];
-      if (currentQuestion && run.perQuestion[currentQuestion.id]) {
-        const scoreData = run.perQuestion[currentQuestion.id];
+      if (scored) {
+        const scoreData = scored.breakdown;
         setScoreAnimationData({
           breakdown: scoreData,
-          totalScore: scoreData.finalScore,
+          totalScore: scored.addedScore,
         });
         setShowScoreAnimation(true);
         // アニメーション終了後に自動的に非表示に
@@ -398,7 +400,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         finalizeChapterRun(latest);
         // 新たな挑戦のためにラン状態リセット
         try { localStorage.removeItem(chapterRunKey(chapter.id, mode)); } catch { /* noop */ }
-        onFinish(answers);
+        onFinish(answers, latest);
         if (onExplanationChange) onExplanationChange(false);
       }
     }
@@ -418,21 +420,30 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   if (showingExplanation) {
     const stored = run.perQuestion[currentQuestion?.id];
     return (
-      <Explanation 
-        mode={mode} 
-        chapter={chapter} 
-        answers={answers} 
-        onBack={() => { setShowingExplanation(false); if (onExplanationChange) onExplanationChange(false); }} 
-        isGuest={isGuest}
-        singleQuestionIndex={currentQuestionIndex}
-        onNextQuestion={handleNext}
-        isLastQuestion={isLastQuestion}
-        isMobileView={false}
-        scoreBreakdown={stored || null}
-        scoreMeta={stored ? { timeLimit: stored.timeLimit, timeUsed: stored.timeUsed } : null}
-        totalScore={run.totalScore}
-        runningCombo={run.runningCombo}
-      />
+      <>
+        <Explanation 
+          mode={mode} 
+          chapter={chapter} 
+          answers={answers} 
+          onBack={() => { setShowingExplanation(false); if (onExplanationChange) onExplanationChange(false); }} 
+          isGuest={isGuest}
+          singleQuestionIndex={currentQuestionIndex}
+          onNextQuestion={handleNext}
+          isLastQuestion={isLastQuestion}
+          isMobileView={false}
+          scoreBreakdown={stored || null}
+          scoreMeta={stored ? { timeLimit: stored.timeLimit, timeUsed: stored.timeUsed } : null}
+          totalScore={run.totalScore}
+          runningCombo={run.runningCombo}
+        />
+        {scoreAnimationData && (
+          <FloatingScoreAnimation
+            breakdown={scoreAnimationData.breakdown}
+            totalScore={scoreAnimationData.totalScore}
+            isVisible={showScoreAnimation}
+          />
+        )}
+      </>
     );
   }
 

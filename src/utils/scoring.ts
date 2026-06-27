@@ -170,7 +170,6 @@ export function scoreProblem(
   ctx: ScoreContext
 ): ScoreBreakdown {
   const judgeables = subQuestions.filter((sq) => sq.type !== 'descriptive');
-  const descriptives = subQuestions.filter((sq) => sq.type === 'descriptive');
 
   let correctCount = 0;
   for (const sq of judgeables) {
@@ -182,11 +181,7 @@ export function scoreProblem(
   const correctRate = judgeables.length === 0 ? 0 : correctCount / judgeables.length;
 
   // 記述式：何か書いていたら参加点を付与
-  let descriptiveBonus = 0;
-  for (const sq of descriptives) {
-    const ans = (answers[sq.id] || '').trim();
-    if (ans.length >= 5) descriptiveBonus += 40;
-  }
+  const descriptiveBonus = 0;
 
   const basePoints = correctCount * 100;
 

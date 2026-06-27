@@ -135,7 +135,7 @@ export function FloatingScoreAnimation({
   return (
     <AnimatePresence>
       {isVisible && (
-        <div className="fixed inset-0 pointer-events-none flex flex-col items-center justify-center">
+        <div className="fixed inset-0 z-[9999] pointer-events-none flex flex-col items-center justify-center">
           {items.map((item) => (
             <motion.div
               key={item.id}

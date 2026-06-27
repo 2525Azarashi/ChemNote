@@ -50,6 +50,7 @@ export default function App() {
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('savedIsGuest') === 'true');
   const [isExplanationView, setIsExplanationView] = useState(false);
   const [prevAppState, setPrevAppState] = useState<AppState>('home');
+  const [lastQuizResult, setLastQuizResult] = useState<any>(null);
 
   // Prevent iOS pinch zoom and double tap zoom, EXCEPT on the answers/explanations pages
   useEffect(() => {
@@ -292,11 +293,13 @@ export default function App() {
     setSelectedChapterId(chapterId);
     setAppState('quiz');
     setQuizAnswers({});
+    setLastQuizResult(null);
     localStorage.setItem(`quiz_idx_${chapterId}_${appMode}`, questionIndex.toString());
   };
 
-  const handleFinishQuiz = (answers: Record<string, string>) => {
+  const handleFinishQuiz = (answers: Record<string, string>, result?: any) => {
     setQuizAnswers(answers);
+    setLastQuizResult(result || null);
     setAppState('explanation');
     
     // Track chapter completion if not guest
@@ -368,7 +371,18 @@ export default function App() {
               <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={isMobileView} onExplanationChange={setIsExplanationView} />
             )}
             {appState === 'explanation' && selectedChapter && (
-              <Explanation mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} answers={quizAnswers} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={false} />
+              <Explanation
+                mode={appMode as 'mini_test' | 'practice'}
+                chapter={selectedChapter}
+                answers={quizAnswers}
+                onBack={handleBackToChapters}
+                isGuest={isGuest}
+                isMobileView={false}
+                resultTotalScore={lastQuizResult?.totalScore}
+                resultTotalCorrect={lastQuizResult?.totalCorrect}
+                resultTotalJudgeable={lastQuizResult?.totalJudgeable}
+                resultTotalTimeSec={lastQuizResult?.totalTimeSec}
+              />
             )}
             {appState === 'note_list' && <NoteList onBack={() => setAppState('home')} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}

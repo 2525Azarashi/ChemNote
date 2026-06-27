@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle, Trophy } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
 import { ScoreSummaryCard } from './ScoreToast';
@@ -20,6 +20,10 @@ interface ExplanationProps {
   scoreMeta?: { timeLimit: number; timeUsed: number } | null;
   totalScore?: number;
   runningCombo?: number;
+  resultTotalScore?: number;
+  resultTotalCorrect?: number;
+  resultTotalJudgeable?: number;
+  resultTotalTimeSec?: number;
 }
 
 import { NodeData } from './InteractiveTree';
@@ -57,7 +61,7 @@ const getDifficulty = (sqId: string) => {
   return 1;
 };
 
-export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView, scoreBreakdown, scoreMeta, totalScore, runningCombo }: ExplanationProps) {
+export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView, scoreBreakdown, scoreMeta, totalScore, runningCombo, resultTotalScore, resultTotalCorrect, resultTotalJudgeable, resultTotalTimeSec }: ExplanationProps) {
   const isPracticeMode = initialMode === 'practice';
   // Virtual mode is always 'mini_test' for bright style choices!
   const mode = 'mini_test';
@@ -113,6 +117,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const questions = useMemo(() => {
     return singleQuestionIndex !== undefined ? [allQuestions[singleQuestionIndex]] : allQuestions;
   }, [allQuestions, singleQuestionIndex]);
+  const displayTotalScore = totalScore ?? resultTotalScore;
+  const isResultView = singleQuestionIndex === undefined;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -603,6 +609,23 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             </div>
           </div>
 
+          {displayTotalScore != null && (
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${
+              mode === 'mini_test'
+                ? 'bg-[#F4D03F]/15 text-[#1B2631] border-[#F4D03F]/40'
+                : 'bg-[#F4D03F]/20 text-[#F9E79F] border-[#F4D03F]/40'
+            }`}>
+              <Trophy size={16} className="text-[#D4A017]" />
+              <div className="leading-none">
+                <div className="text-[10px] font-bold opacity-70">Score</div>
+                <div className="font-mono font-bold text-base md:text-lg tabular-nums">
+                  {displayTotalScore}
+                  <span className="text-[10px] ml-1 opacity-70">pt</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           {singleQuestionIndex !== undefined && questions[0] && (
             <div className={`flex flex-wrap items-center gap-2 sm:gap-3 sm:border-l sm:pl-4 md:pl-6 lg:pl-8 ${
               mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/50'
@@ -704,7 +727,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       </div>
 
       {/* スコアサマリーカード（1問ごとの採点表示 / 演習モードのみ） */}
-      {singleQuestionIndex !== undefined && scoreBreakdown && scoreMeta && mode !== 'mini_test' && (
+      {singleQuestionIndex !== undefined && scoreBreakdown && scoreMeta && (
         <div className="px-4 md:px-6 pt-4 relative z-10">
           <ScoreSummaryCard
             breakdown={scoreBreakdown}
@@ -728,6 +751,54 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               />
             </div>
           )}
+        </div>
+      )}
+
+      {isResultView && displayTotalScore != null && (
+        <div className="px-4 md:px-6 pt-4 relative z-10">
+          <div className="bg-gradient-to-br from-[#FFF8E1] via-white to-[#E8F4FD] border border-[#F4D03F]/60 rounded-3xl shadow-lg p-5 md:p-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-[#F4D03F] text-[#1B2631] flex items-center justify-center shadow-md">
+                  <Trophy size={22} />
+                </div>
+                <div>
+                  <p className="text-[10px] md:text-xs uppercase tracking-widest text-[#1B2631]/60 font-bold font-modern">
+                    Result Score
+                  </p>
+                  <p className="text-3xl md:text-4xl font-handwriting font-bold text-[#1B2631] leading-none tabular-nums">
+                    {displayTotalScore}
+                    <span className="text-sm md:text-base ml-1 text-[#4B5563]">pt</span>
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2 md:gap-3 text-center">
+                <div className="bg-white/70 border border-white rounded-2xl p-3 shadow-xs">
+                  <div className="text-[10px] text-[#4B5563]/70 font-bold">Correct</div>
+                  <div className="font-mono font-bold text-[#1B2631] tabular-nums">
+                    {resultTotalCorrect ?? 0}/{resultTotalJudgeable ?? 0}
+                  </div>
+                </div>
+                <div className="bg-white/70 border border-white rounded-2xl p-3 shadow-xs">
+                  <div className="text-[10px] text-[#4B5563]/70 font-bold">Rate</div>
+                  <div className="font-mono font-bold text-[#1B2631] tabular-nums">
+                    {resultTotalJudgeable ? Math.round(((resultTotalCorrect ?? 0) / resultTotalJudgeable) * 100) : 0}%
+                  </div>
+                </div>
+                <div className="bg-white/70 border border-white rounded-2xl p-3 shadow-xs">
+                  <div className="text-[10px] text-[#4B5563]/70 font-bold">Time</div>
+                  <div className="font-mono font-bold text-[#1B2631] tabular-nums">
+                    {resultTotalTimeSec ?? 0}s
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ChapterRankingPanel
+              chapterId={chapter.id}
+              userScore={displayTotalScore}
+              isGuest={isGuest}
+            />
+          </div>
         </div>
       )}
 
@@ -899,8 +970,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                   <div key={`right-${question.id}`} className="space-y-6">
                     <div className="space-y-6 md:space-y-8">
                       {(() => {
-                        const incorrectSqs = question.subQuestions.filter((sq: any) => sq.type === 'descriptive' ? false : answers[sq.id] !== sq.correctAnswer);
-                        const correctSqs = question.subQuestions.filter((sq: any) => sq.type === 'descriptive' ? true : answers[sq.id] === sq.correctAnswer);
+                        const selfGradeSqs = question.subQuestions.filter((sq: any) => sq.type === 'descriptive');
+                        const incorrectSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive' && answers[sq.id] !== sq.correctAnswer);
+                        const correctSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive' && answers[sq.id] === sq.correctAnswer);
                         const isCorrectExpanded = expandedCorrectQuestions[question.id];
 
                         const renderSq = (sq: any, isCorrect: boolean) => {
@@ -1191,8 +1263,18 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
 
                       return (
                           <>
-                            {incorrectSqs.length > 0 && (
+                            {selfGradeSqs.length > 0 && (
                               <div className="space-y-3 md:space-y-4">
+                                <h4 className={`font-bold flex items-center gap-2 ${mode === 'mini_test' ? 'text-blue-600' : 'text-[#A9CCE3]'}`}>
+                                  <Edit3 size={18} />
+                                  <span>記述問題（自己採点）</span>
+                                </h4>
+                                {selfGradeSqs.map(sq => renderSq(sq, false))}
+                              </div>
+                            )}
+
+                            {incorrectSqs.length > 0 && (
+                              <div className="space-y-3 md:space-y-4 mt-6">
                                 <h4 className={`font-bold flex items-center gap-2 ${mode === 'mini_test' ? 'text-red-600' : 'text-[#D9A0A0]'}`}>
                                   <XCircle size={18} />
                                   間違えた問題
