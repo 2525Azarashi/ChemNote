@@ -253,6 +253,91 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 }
 
 /* =========================================================
+ * 11b. Explanation / Result full-screen overlay
+ * 結果・解説画面は単体の全画面オーバーレイとして表示し、
+ * 背後にホーム等の前画面が透けて見えないようにする。
+ * ========================================================= */
+.explanation-desktop-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  background-color: var(--color-surface, #FDFBF7);
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+}
+.explanation-desktop-content {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.explanation-scroll-hint {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  text-align: center;
+  font-size: 0.7rem;
+  padding: 6px 8px;
+  color: #fff;
+  background-color: rgba(27, 38, 49, 0.85);
+  animation: fadeOutExplanationHint 0.5s ease-out 4s forwards;
+}
+
+/* =========================================================
+ * 11c. 桜の花びら（タイトル画面の装飾）
+ * ========================================================= */
+.sakura-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+.sakura-petal {
+  position: absolute;
+  top: -24px;
+  display: block;
+  border-radius: 100% 0 100% 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transform: rotate(0deg);
+  animation-name: sakura-fall, sakura-sway;
+  animation-duration: var(--fall-duration, 12s), 3s;
+  animation-delay: var(--fall-delay, 0s), var(--fall-delay, 0s);
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+  animation-direction: normal, alternate;
+  will-change: transform, top;
+}
+
+@keyframes sakura-fall {
+  0% {
+    top: -24px;
+    transform: rotate(0deg);
+  }
+  100% {
+    top: 110%;
+    transform: rotate(540deg);
+  }
+}
+
+@keyframes sakura-sway {
+  0% { margin-left: 0; }
+  100% { margin-left: var(--sway, 30px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sakura-petal {
+    animation: none !important;
+    display: none;
+  }
+}
+
+/* =========================================================
  * 12. Container query helpers (optional)
  * ========================================================= */
 .container-card {

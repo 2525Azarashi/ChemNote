@@ -42,8 +42,8 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
             <div>
               <h2 className="text-lg md:text-xl font-bold font-handwriting">
                 {targetChapterGroupTitle
-                  ? `${targetChapterGroupTitle} 出題傾向`
-                  : '過去11年 出題傾向分析'}
+                  ? `${targetChapterGroupTitle} 共通テスト出題傾向`
+                  : '共通テスト出題傾向分析（過去11年）'}
               </h2>
               <p className="text-xs text-white/70 font-handwriting">2016〜2026年 共通テスト・センター試験</p>
             </div>

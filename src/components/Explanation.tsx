@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatText } from '../utils/textFormatter';
@@ -584,10 +585,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     setExpandedCorrectQuestions(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  return (
+  const content = (
     <div className={isMobile 
       ? `explanation-desktop-wrapper active` 
-      : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-40 pb-20 md:pb-0`
+      : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-50 pb-20 md:pb-0`
     }>
       <div className={isMobile ? "explanation-desktop-content" : "w-full h-full flex flex-col"}>
         {isMobile && (
@@ -1518,4 +1519,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       </div>
     </div>
   );
+
+  // 結果・解説画面は全画面オーバーレイとして表示するため、
+  // transform を持つ祖先要素の影響を受けないよう document.body 直下に
+  // ポータルで描画する。これにより背後に前画面（ホーム等）が透けて見える
+  // 問題を防ぎ、結果表示画面を単体の画面として成立させる。
+  if (typeof document !== 'undefined') {
+    return createPortal(content, document.body);
+  }
+  return content;
 }

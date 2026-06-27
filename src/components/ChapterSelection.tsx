@@ -108,10 +108,10 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
                           <button
                             onClick={() => setTrendModal({ open: true, chapterGroupTitle })}
                             className="flex items-center gap-1.5 text-xs font-bold font-handwriting text-[#2C3E50] bg-[#A9CCE3]/20 border border-[#A9CCE3] hover:bg-[#A9CCE3]/40 px-3 py-1.5 rounded-xl shadow-xs transition-colors cursor-pointer ml-2 shrink-0"
-                            title={`${groupTitle} の出題傾向を確認`}
+                            title={`${groupTitle} の共通テスト出題傾向を確認`}
                           >
                             <BarChart2 size={13} className="text-[#A9CCE3]" />
-                            <span className="font-handwriting">章の傾向</span>
+                            <span className="font-handwriting">共通テスト傾向</span>
                           </button>
                         )}
                       </h4>
@@ -154,10 +154,10 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
                                       unitId: trendInfo.unitId,
                                     })}
                                     className="w-full flex items-center justify-center gap-1.5 text-xs font-bold font-handwriting text-orange-600 bg-orange-50 border-2 border-orange-300 hover:bg-orange-100 py-1.5 px-3 rounded-lg shadow-xs transition-colors cursor-pointer mb-3"
-                                    title="この単元の出題傾向を確認"
+                                    title="この単元の共通テスト出題傾向を確認"
                                   >
                                     <TrendingUp size={12} className="text-orange-500" />
-                                    <span className="font-handwriting">出題傾向</span>
+                                    <span className="font-handwriting">共通テスト出題傾向</span>
                                   </button>
                                 )}
                               </div>
