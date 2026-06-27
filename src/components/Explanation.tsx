@@ -402,8 +402,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             {/* Removed related steps badge for all modes */}
 
             <div>
-              <div className="text-xs text-[#7A8B99] mb-1">あなたの解答</div>
-              <div className={`p-3 rounded-lg border ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'bg-gray-50 border-gray-200' : 'bg-[#0B132B] border-[#3A506B]') : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0]')}`}>
+              <div className="text-xs text-[#7A8B99] mb-1">
+                {sq.type === 'descriptive' ? '📝 自己採点記入内容' : 'あなたの解答'}
+              </div>
+              <div className={`p-3 rounded-lg border ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'bg-blue-50 border-blue-200' : 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30 text-[#A9CCE3]') : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0]')}`}>
                 {formatText(answers[sq.id] || '未解答')}
               </div>
             </div>
@@ -422,7 +424,17 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                   </ol>
                 )}
 
-                <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】{sq.correctAnswer}</p>
+                {sq.type !== 'descriptive' && (
+                  <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】{sq.correctAnswer}</p>
+                )}
+
+                {sq.type === 'descriptive' && (
+                  <div className="mt-3 pt-2 border-t border-[#A9CCE3]/30 flex items-center gap-2">
+                    <span className="text-[#A9CCE3] bg-[#A9CCE3]/10 px-3 py-2 rounded border border-[#A9CCE3]/30 text-sm font-bold">
+                      📝 自己採点欄 - 上の記入内容を確認してください
+                    </span>
+                  </div>
+                )}
 
                 {sq.group && (
                   <div className="mt-3 pt-2 border-t border-gray-200/20 text-xs font-semibold flex items-center gap-2">

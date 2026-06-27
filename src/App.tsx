@@ -140,9 +140,20 @@ export default function App() {
   // BGM state
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isBgmEnabled, setIsBgmEnabled] = useState(true);
+  const [bgmVolume, setBgmVolume] = useState(() => {
+    const saved = localStorage.getItem('bgm_volume');
+    return saved ? parseFloat(saved) : 0.5;
+  });
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isAudioValid, setIsAudioValid] = useState(true);
   const hasLoggedAudioError = useRef(false);
+
+  useEffect(() => {
+    localStorage.setItem('bgm_volume', bgmVolume.toString());
+    if (audioRef.current) {
+      audioRef.current.volume = bgmVolume;
+    }
+  }, [bgmVolume]);
 
   const bgmStateRef = useRef({ isBgmEnabled, isAudioValid, appState });
   useEffect(() => {
@@ -158,7 +169,7 @@ export default function App() {
       const { isBgmEnabled, isAudioValid, appState } = bgmStateRef.current;
       
       if (audio && isAudioValid && isBgmEnabled && !['quiz', 'explanation'].includes(appState)) {
-        audio.volume = 0.1;
+        audio.volume = bgmVolume;
         const playPromise = audio.play();
         if (playPromise !== undefined) {
           playPromise.catch(e => {
@@ -343,7 +354,7 @@ export default function App() {
           )}
 
           <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : 'max-w-5xl'}`}>
-            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} />}
+            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
 
             {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
             {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} isGuest={isGuest} />}

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { auth } from '../firebase';
-import { signOut } from 'firebase/auth';
-import { ChevronLeft, User, LogOut, Flame, BookOpen, GraduationCap, Compass, Settings, Volume2, VolumeX } from 'lucide-react';
+import { auth, provider } from '../firebase';
+import { signOut, signInWithPopup } from 'firebase/auth';
+import { ChevronLeft, User, LogOut, Flame, BookOpen, GraduationCap, Compass, Settings, Volume2, VolumeX, LogIn } from 'lucide-react';
 
 interface ProfileModalProps {
   onClose: () => void;
   isBgmEnabled: boolean;
   setIsBgmEnabled: (enabled: boolean) => void;
+  bgmVolume: number;
+  setBgmVolume: (volume: number) => void;
 }
 
-export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled }: ProfileModalProps) {
+export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, bgmVolume, setBgmVolume }: ProfileModalProps) {
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
   const [stream, setStream] = useState('science');
@@ -197,6 +199,36 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled }: Profile
                 />
               </button>
             </div>
+
+            {/* BGM Volume Slider */}
+            {isBgmEnabled && (
+              <div className="bg-gradient-to-r from-[#A9CCE3]/5 to-[#F9E79F]/5 border border-[#A9CCE3]/20 p-4 rounded-2xl shadow-xs space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-bold text-[#2C3E50]">
+                    音量
+                  </label>
+                  <span className="text-sm font-bold text-[#A9CCE3]">
+                    {Math.round(bgmVolume * 100)}%
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <VolumeX size={16} className="text-gray-400 flex-shrink-0" />
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={bgmVolume}
+                    onChange={(e) => setBgmVolume(parseFloat(e.target.value))}
+                    className="flex-1 h-2 bg-gray-200 rounded-full appearance-none cursor-pointer accent-[#A9CCE3]"
+                    style={{
+                      backgroundImage: `linear-gradient(to right, #A9CCE3 0%, #A9CCE3 ${bgmVolume * 100}%, #E5E7EB ${bgmVolume * 100}%, #E5E7EB 100%)`
+                    }}
+                  />
+                  <Volume2 size={16} className="text-[#A9CCE3] flex-shrink-0" />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Save/Submit Actions */}
@@ -216,17 +248,59 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled }: Profile
             </button>
           </div>
           
-          {auth.currentUser && (
-            <div className="pt-4 border-t border-gray-150 mt-6 font-modern">
+          {/* Authentication Section */}
+          <div className="pt-4 border-t border-gray-150 mt-6 font-modern space-y-3">
+            {!auth.currentUser ? (
               <button
-                onClick={handleLogout}
-                className="w-full py-3.5 bg-red-50 text-red-600 border border-red-100 hover:border-red-200 rounded-2xl font-bold hover:bg-red-100/50 transition-all flex items-center justify-center gap-2 text-sm shadow-xs cursor-pointer"
+                onClick={async () => {
+                  try {
+                    await signInWithPopup(auth, provider);
+                  } catch (error) {
+                    console.error('ログインエラー:', error);
+                  }
+                }}
+                className="w-full py-3.5 bg-gradient-to-r from-[#A9CCE3] to-[#85B8D8] text-white border border-[#A9CCE3] hover:border-[#85B8D8] rounded-2xl font-bold hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm shadow-md cursor-pointer"
               >
-                <LogOut size={16} />
-                アカウントからログアウト
+                <LogIn size={16} />
+                Googleアカウントでログイン
               </button>
-            </div>
-          )}
+            ) : (
+              <>
+                <button
+                  onClick={async () => {
+                    try {
+                      await signOut(auth);
+                      // Reset profile on logout
+                      localStorage.removeItem(`profile_${auth.currentUser?.uid}`);
+                      onClose();
+                    } catch (error) {
+                      console.error('ログアウトエラー:', error);
+                    }
+                  }}
+                  className="w-full py-3.5 bg-red-50 text-red-600 border border-red-100 hover:border-red-200 rounded-2xl font-bold hover:bg-red-100/50 transition-all flex items-center justify-center gap-2 text-sm shadow-xs cursor-pointer"
+                >
+                  <LogOut size={16} />
+                  ログアウト
+                </button>
+                <button
+                  onClick={async () => {
+                    try {
+                      await signOut(auth);
+                      localStorage.removeItem(`profile_${auth.currentUser?.uid}`);
+                      // Sign in with a different account
+                      await signInWithPopup(auth, provider);
+                    } catch (error) {
+                      console.error('アカウント切り替えエラー:', error);
+                    }
+                  }}
+                  className="w-full py-3.5 bg-blue-50 text-blue-600 border border-blue-100 hover:border-blue-200 rounded-2xl font-bold hover:bg-blue-100/50 transition-all flex items-center justify-center gap-2 text-sm shadow-xs cursor-pointer"
+                >
+                  <LogIn size={16} />
+                  アカウントを切り替え
+                </button>
+              </>
+            )}
+          </div>}
         </div>
       </div>
     </div>
