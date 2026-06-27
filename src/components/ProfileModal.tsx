@@ -300,7 +300,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, bgmVolume
                 </button>
               </>
             )}
-          </div>}
+          </div>
         </div>
       </div>
     </div>
