@@ -76,8 +76,8 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
               <TrendingUp className="text-[#F4D03F] w-6 h-6" />
             </div>
             <div className="text-left">
-              <h3 className="text-base font-bold font-handwriting">過去11年 出題傾向</h3>
-              <p className="text-xs text-white/70 font-handwriting leading-relaxed">2016〜2026年の全体分析・2027予想</p>
+              <h3 className="text-base font-bold font-handwriting">共通テスト出題傾向</h3>
+              <p className="text-xs text-white/70 font-handwriting leading-relaxed">過去11年（2016〜2026年）の全体分析・2027予想</p>
             </div>
           </button>
 
@@ -91,7 +91,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
                 <FlaskConical className="text-white w-6 h-6" />
               </div>
               <div className="text-left">
-                <h3 className="text-base font-bold font-handwriting">2027年度 共通テスト</h3>
+                <h3 className="text-sm md:text-base font-bold font-handwriting leading-tight">2027年度 共通テスト化学基礎予想問題</h3>
                 <p className="text-xs text-white/70 font-handwriting leading-relaxed">オリジナル予想問題（解説付き）</p>
               </div>
             </button>

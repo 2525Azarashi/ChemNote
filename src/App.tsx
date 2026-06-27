@@ -23,11 +23,12 @@ import { AuthButton } from './components/AuthButton';
 import { NoteList } from './components/NoteList';
 import { NoteDetail } from './components/NoteDetail';
 import { Onboarding } from './components/Onboarding';
+import { MockExam } from './components/MockExam';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { MobileViewWrapper } from './components/MobileViewWrapper';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 export default function App() {
@@ -99,7 +100,7 @@ export default function App() {
   useEffect(() => { localStorage.setItem('savedIsGuest', isGuest.toString()); }, [isGuest]);
   
   useEffect(() => {
-    if (['mode_selection', 'learning', 'chapters', 'quiz', 'explanation'].includes(appState)) {
+    if (['mode_selection', 'learning', 'chapters', 'quiz', 'explanation', 'mock_exam'].includes(appState)) {
       setLastLearnState(appState);
       localStorage.setItem('savedLastLearnState', appState);
     }
@@ -364,7 +365,8 @@ export default function App() {
             {appState === 'leaderboard' && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
             {appState === 'logical_tree' && <LogicalTree />}
-            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} />}
+            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} />}
+            {appState === 'mock_exam' && <MockExam onBack={() => setAppState('mode_selection')} />}
             {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
             {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} />}
             {appState === 'quiz' && selectedChapter && (
@@ -414,8 +416,8 @@ export default function App() {
                     }
                   }}
                   aria-label="学習画面へ移動"
-                  aria-current={['mode_selection', 'chapters', 'learning', 'explanation', 'quiz'].includes(appState) ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation', 'quiz'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  aria-current={['mode_selection', 'chapters', 'learning', 'explanation', 'quiz', 'mock_exam'].includes(appState) ? 'page' : undefined}
+                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation', 'quiz', 'mock_exam'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <BookOpen className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">学習</span>

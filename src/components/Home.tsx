@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, Flame, ChevronRight, CheckCircle, Edit3, ArrowRight } from 'lucide-react';
+import { BookOpen, ChevronRight, CheckCircle, Edit3, ArrowRight, CalendarDays } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
+import { SakuraPetals } from './SakuraPetals';
+import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
+
+// 従来のロゴ（マナトビ）
+const LOGO_URL = 'https://lh3.googleusercontent.com/d/1bdaFoRcprvig_57izYdAEzon1gD47_Wk';
 
 interface HomeProps {
   onStart: () => void;
@@ -93,6 +98,9 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   const todayStr = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' });
   const todayFormatted = todayStr.replace(/\//g, '.');
 
+  // 共通テストまでの残り日数
+  const daysUntilExam = useMemo(() => getDaysUntilExam(), []);
+
   const progressPercent = totalQuestions > 0 ? Math.round((solvedQuestions / totalQuestions) * 100) : 0;
 
   // 「次の章」を算出（学習進捗カードの状況別コピー用）
@@ -113,21 +121,61 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   const greetingName = profile?.name || 'ゲスト';
 
   return (
-    <div className="w-full h-full min-h-[100dvh] sm:min-h-0 sm:h-[800px] w-full max-w-5xl mx-auto bg-[#FDFBF7] sm:rounded-[36px] sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] sm:border-[8px] sm:border-[#1B2631] flex flex-col overflow-hidden relative">
-      
+    <div className="w-full h-full min-h-[100dvh] sm:min-h-0 sm:h-[800px] w-full max-w-5xl mx-auto sm:rounded-[36px] sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] sm:border-[8px] sm:border-[#1B2631] flex flex-col overflow-hidden relative bg-gradient-to-b from-[#FDE8EF] via-[#FFF2F6] to-[#FDFBF7]">
+
       {/* Background Decor */}
       <div className="absolute inset-0 pointer-events-none opacity-5 fabric-texture"></div>
-      
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-6 md:px-12 pt-12 relative z-10">
-        
-        {/* Header
-            ★ 修正：「ゲスト さん」→「ゲストさん」へスペース排除 */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-8 font-handwriting">
-          <h1 className="text-[22px] md:text-[28px] text-[#1B2631] font-bold tracking-wide">
-            おかえり、{greetingName}さん
-          </h1>
-          <p className="text-xs md:text-sm text-[#4B5563] mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
+      {/* 桜を降らせる装飾 */}
+      <SakuraPetals count={20} />
+
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-6 md:px-12 pt-8 md:pt-10 relative z-10">
+
+        {/* 従来のロゴ（マナトビ）※ 左上のテキストロゴは付けず、画像ロゴのみ控えめに配置 */}
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="flex justify-center mb-6"
+        >
+          <img
+            src={LOGO_URL}
+            alt="マナトビ"
+            referrerPolicy="no-referrer"
+            className="h-9 md:h-11 object-contain drop-shadow-sm"
+          />
         </motion.div>
+
+        {/* Header：挨拶＋共通テストまでのカウントダウン */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-8">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting">
+            <h1 className="text-[22px] md:text-[30px] text-[#1B2631] font-bold tracking-wide">
+              おかえり、{greetingName}さん <span aria-hidden="true">🌸</span>
+            </h1>
+            <p className="text-xs md:text-sm text-[#4B5563] mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
+          </motion.div>
+
+          {/* 共通テストまでのカウントダウンカード */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.15 }}
+            className="self-start md:self-auto shrink-0"
+          >
+            <div className="bg-white/85 backdrop-blur-sm rounded-[20px] px-5 py-4 shadow-[0_8px_24px_-10px_rgba(217,160,160,0.55)] border border-[#F4A9C4]/40 flex items-center gap-4 min-w-[200px]">
+              <div className="flex flex-col">
+                <span className="text-[11px] font-bold tracking-widest text-[#C0708A] font-modern">共通テストまで</span>
+                <div className="flex items-baseline gap-1 mt-0.5">
+                  <span className="text-3xl md:text-4xl font-bold font-handwriting text-[#D9466E] leading-none tabular-nums">{daysUntilExam}</span>
+                  <span className="text-sm font-modern font-bold text-[#D9466E]">日</span>
+                </div>
+                <span className="text-[10px] text-[#9C8089] font-modern mt-1 tracking-wide">{EXAM_DATE_LABEL}</span>
+              </div>
+              <div className="ml-auto w-11 h-11 rounded-2xl bg-[#FDE0EA] flex items-center justify-center shrink-0">
+                <CalendarDays className="w-6 h-6 text-[#E07FA0]" aria-hidden="true" />
+              </div>
+            </div>
+          </motion.div>
+        </div>
 
         {/* CSS Grid for Mobile-First layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -137,7 +185,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             {/* Streak Card
                 ★ 修正：次のマイルストーン（補助テキスト）を追加 */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-              <div className="bg-[#F9E79F] rounded-[20px] p-6 shadow-sm flex items-start justify-between border border-[#1B2631]/5 relative overflow-hidden group h-full">
+              <div className="bg-gradient-to-br from-[#FBD9E4] to-[#F9C6D7] rounded-[20px] p-6 shadow-sm flex items-start justify-between border border-[#F4A9C4]/30 relative overflow-hidden group h-full">
                 <div className="flex flex-col gap-2 w-full">
                   <div className="flex items-center gap-2">
                     <span className="text-xl" aria-hidden="true">🔥</span>
@@ -169,13 +217,13 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }} className="mt-auto hidden lg:block">
               <button 
                 onClick={onStart} 
-                className="w-full bg-[#1B2631] text-white py-5 px-6 rounded-[20px] font-bold flex items-center justify-between group hover:bg-[#2C3E50] transition-colors shadow-[0_8px_20px_rgba(27,38,49,0.25)] min-h-[64px]"
+                className="w-full bg-gradient-to-r from-[#E8688E] to-[#D9466E] text-white py-5 px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#E0577F] hover:to-[#C93B61] transition-colors shadow-[0_8px_20px_rgba(217,70,110,0.3)] min-h-[64px]"
               >
                 <div className="flex items-center gap-3">
                   <BookOpen className="w-6 h-6" aria-hidden="true" />
                   <span className="font-modern tracking-widest text-[16px]">{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</span>
                 </div>
-                <ChevronRight className="w-6 h-6 text-white/50 group-hover:text-white transition-colors group-hover:translate-x-1" aria-hidden="true" />
+                <ChevronRight className="w-6 h-6 text-white/60 group-hover:text-white transition-colors group-hover:translate-x-1" aria-hidden="true" />
               </button>
             </motion.div>
           </div>
@@ -192,7 +240,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   - 0%：これから始める人向けの説明＋「まず第1章から始めよう」CTA
                   - 進捗あり：「次の章：◯◯から始めよう」一行に切り替え */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} className="h-full">
-              <div className="border border-[#D1D5DB] rounded-[20px] p-6 bg-white shadow-sm h-full flex flex-col justify-between">
+              <div className="border border-[#F4A9C4]/30 rounded-[20px] p-6 bg-white/85 backdrop-blur-sm shadow-sm h-full flex flex-col justify-between">
                 <div>
                   <h2 className="font-bold text-[16px] mb-3 text-[#1B2631] font-modern">学習進捗</h2>
                   {solvedQuestions === 0 ? (
@@ -202,7 +250,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                       </p>
                       <button
                         onClick={onStart}
-                        className="inline-flex items-center gap-1.5 text-[13px] md:text-sm font-bold font-modern text-[#1B2631] hover:text-[#D4A017] transition-colors mb-6 group"
+                        className="inline-flex items-center gap-1.5 text-[13px] md:text-sm font-bold font-modern text-[#1B2631] hover:text-[#D9466E] transition-colors mb-6 group"
                       >
                         まず第1章から始めよう
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
@@ -215,7 +263,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                           次の章：
                           <button
                             onClick={onStart}
-                            className="font-bold text-[#1B2631] hover:text-[#D4A017] transition-colors underline-offset-4 hover:underline"
+                            className="font-bold text-[#1B2631] hover:text-[#D9466E] transition-colors underline-offset-4 hover:underline"
                           >
                             {nextChapter ? (nextChapter.abstractTitle || nextChapter.title || nextChapter.id) : '次の章'}
                           </button>
@@ -242,7 +290,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                       initial={{ width: 0 }}
                       animate={{ width: `${progressPercent}%` }}
                       transition={{ duration: 1, delay: 0.5 }}
-                      className="bg-[#1B2631] h-full rounded-full"
+                      className="bg-gradient-to-r from-[#E8688E] to-[#D9466E] h-full rounded-full"
                     />
                   </div>
                   <p className="text-[13px] text-[#4B5563] font-modern text-right font-medium">{solvedQuestions} / {totalQuestions} 問解答済み ({progressPercent}%)</p>
@@ -256,13 +304,13 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }} className="mt-10 lg:hidden">
           <button 
             onClick={onStart} 
-            className="w-full bg-[#1B2631] text-white py-4 px-6 rounded-full font-bold flex items-center justify-between group hover:bg-[#2C3E50] transition-colors shadow-[0_8px_20px_rgba(27,38,49,0.25)] min-h-[56px]"
+            className="w-full bg-gradient-to-r from-[#E8688E] to-[#D9466E] text-white py-4 px-6 rounded-full font-bold flex items-center justify-between group hover:from-[#E0577F] hover:to-[#C93B61] transition-colors shadow-[0_8px_20px_rgba(217,70,110,0.3)] min-h-[56px]"
           >
             <div className="flex items-center gap-3">
               <BookOpen className="w-5 h-5" aria-hidden="true" />
               <span className="font-modern tracking-widest text-[15px]">{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</span>
             </div>
-            <ChevronRight className="w-5 h-5 text-white/50 group-hover:text-white transition-colors group-hover:translate-x-1" aria-hidden="true" />
+            <ChevronRight className="w-5 h-5 text-white/60 group-hover:text-white transition-colors group-hover:translate-x-1" aria-hidden="true" />
           </button>
         </motion.div>
 
@@ -277,17 +325,17 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           <button
             onClick={onNoteList}
             aria-label="個人ノート一覧を開く"
-            className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-full border border-[#D1D5DB] bg-white text-sm font-modern font-medium text-[#1B2631] hover:bg-[#F4F1EA] hover:border-[#1B2631]/30 active:scale-[0.98] transition-all shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-full border border-[#F4A9C4]/50 bg-white/85 backdrop-blur-sm text-sm font-modern font-medium text-[#1B2631] hover:bg-[#FDE8EF] hover:border-[#E8688E]/50 active:scale-[0.98] transition-all shadow-sm"
           >
-            <Edit3 className="w-4 h-4" aria-hidden="true" />
+            <Edit3 className="w-4 h-4 text-[#E07FA0]" aria-hidden="true" />
             <span>ノート</span>
           </button>
           <button
             onClick={onIntro}
             aria-label="アプリ紹介を開く"
-            className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-full border border-[#D1D5DB] bg-white text-sm font-modern font-medium text-[#1B2631] hover:bg-[#F4F1EA] hover:border-[#1B2631]/30 active:scale-[0.98] transition-all shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-full border border-[#F4A9C4]/50 bg-white/85 backdrop-blur-sm text-sm font-modern font-medium text-[#1B2631] hover:bg-[#FDE8EF] hover:border-[#E8688E]/50 active:scale-[0.98] transition-all shadow-sm"
           >
-            <CheckCircle className="w-4 h-4" aria-hidden="true" />
+            <CheckCircle className="w-4 h-4 text-[#E07FA0]" aria-hidden="true" />
             <span>アプリ紹介</span>
           </button>
         </motion.div>
