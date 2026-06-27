@@ -31,6 +31,17 @@ interface FloatingScoreAnimationProps {
   isVisible: boolean;
 }
 
+// \u624b\u66f8\u304d\u98a8\u30a2\u30cb\u30e1\u30fc\u30b7\u30e7\u30f3\u7528\u306e\u30e9\u30d9\u30eb\u30fb\u8272\u5b9a\u7fa9
+const SCORE_ITEMS_CONFIG = [
+  { id: 'base',        label: '\u57fa\u790e\u70b9',       bgClass: 'bg-rose-500' },
+  { id: 'time',        label: '\u6642\u9593\u30dc\u30fc\u30ca\u30b9',   bgClass: 'bg-blue-500' },
+  { id: 'combo',       label: '\u30b3\u30f3\u30dc\u30dc\u30fc\u30ca\u30b9', bgClass: 'bg-orange-500' },
+  { id: 'perfect',     label: '\u30d1\u30fc\u30d5\u30a7\u30af\u30c8',   bgClass: 'bg-amber-500' },
+  { id: 'descriptive', label: '\u8a18\u8ff0\u5f0f',     bgClass: 'bg-violet-500' },
+  { id: 'penalty',     label: '\u30da\u30ca\u30eb\u30c6\u30a3',   bgClass: 'bg-gray-500' },
+  { id: 'total',       label: '\u5408\u8a08',           bgClass: 'bg-emerald-600' },
+] as const;
+
 export function FloatingScoreAnimation({
   breakdown,
   totalScore,
@@ -44,90 +55,34 @@ export function FloatingScoreAnimation({
       return;
     }
 
-    // スコア内訳をアニメーション対象のアイテムに変換
     const newItems: FloatingScoreItem[] = [];
     let delayOffset = 0;
 
-    // 1. 基礎点 (赤色)
     if (breakdown.basePoints > 0) {
-      newItems.push({
-        id: 'base',
-        label: '基礎点',
-        value: breakdown.basePoints,
-        color: 'from-red-500 to-red-400',
-        delay: delayOffset,
-      });
-      delayOffset += 0.3;
+      newItems.push({ id: 'base', label: '\u57fa\u790e\u70b9', value: breakdown.basePoints, color: 'bg-rose-500', delay: delayOffset });
+      delayOffset += 0.28;
     }
-
-    // 2. 時間ボーナス (青色)
     if (breakdown.timeBonus > 0) {
-      newItems.push({
-        id: 'time',
-        label: '時間ボーナス',
-        value: breakdown.timeBonus,
-        color: 'from-blue-500 to-blue-400',
-        delay: delayOffset,
-      });
-      delayOffset += 0.3;
+      newItems.push({ id: 'time', label: '\u6642\u9593\u30dc\u30fc\u30ca\u30b9', value: breakdown.timeBonus, color: 'bg-blue-500', delay: delayOffset });
+      delayOffset += 0.28;
     }
-
-    // 3. コンボボーナス (オレンジ色)
     if (breakdown.comboBonus > 0) {
-      newItems.push({
-        id: 'combo',
-        label: 'コンボボーナス',
-        value: breakdown.comboBonus,
-        color: 'from-orange-500 to-orange-400',
-        delay: delayOffset,
-      });
-      delayOffset += 0.3;
+      newItems.push({ id: 'combo', label: '\u30b3\u30f3\u30dc\u30dc\u30fc\u30ca\u30b9', value: breakdown.comboBonus, color: 'bg-orange-500', delay: delayOffset });
+      delayOffset += 0.28;
     }
-
-    // 4. パーフェクトボーナス (金色)
     if (breakdown.perfectBonus > 0) {
-      newItems.push({
-        id: 'perfect',
-        label: 'パーフェクト',
-        value: breakdown.perfectBonus,
-        color: 'from-yellow-500 to-yellow-400',
-        delay: delayOffset,
-      });
-      delayOffset += 0.3;
+      newItems.push({ id: 'perfect', label: '\u30d1\u30fc\u30d5\u30a7\u30af\u30c8', value: breakdown.perfectBonus, color: 'bg-amber-500', delay: delayOffset });
+      delayOffset += 0.28;
     }
-
-    // 5. 記述式ボーナス (紫色)
     if (breakdown.descriptiveBonus > 0) {
-      newItems.push({
-        id: 'descriptive',
-        label: '記述式ボーナス',
-        value: breakdown.descriptiveBonus,
-        color: 'from-purple-500 to-purple-400',
-        delay: delayOffset,
-      });
-      delayOffset += 0.3;
+      newItems.push({ id: 'descriptive', label: '\u8a18\u8ff0\u5f0f', value: breakdown.descriptiveBonus, color: 'bg-violet-500', delay: delayOffset });
+      delayOffset += 0.28;
     }
-
-    // 6. 延長ペナルティ (灰色)
-    if (breakdown.overtimePenalty < 0) {
-      newItems.push({
-        id: 'penalty',
-        label: '延長ペナルティ',
-        value: breakdown.overtimePenalty,
-        color: 'from-gray-500 to-gray-400',
-        delay: delayOffset,
-      });
-      delayOffset += 0.3;
+    if (breakdown.overtimePenalty > 0) {
+      newItems.push({ id: 'penalty', label: '\u30da\u30ca\u30eb\u30c6\u30a3', value: -breakdown.overtimePenalty, color: 'bg-gray-500', delay: delayOffset });
+      delayOffset += 0.28;
     }
-
-    // 7. 合計スコア (緑色、最後に表示)
-    newItems.push({
-      id: 'total',
-      label: '合計',
-      value: totalScore,
-      color: 'from-green-500 to-green-400',
-      delay: delayOffset + 0.2,
-    });
+    newItems.push({ id: 'total', label: '\u5408\u8a08', value: totalScore, color: 'bg-emerald-600', delay: delayOffset + 0.18 });
 
     setItems(newItems);
   }, [isVisible, breakdown, totalScore]);
@@ -135,44 +90,33 @@ export function FloatingScoreAnimation({
   return (
     <AnimatePresence>
       {isVisible && (
-        <div className="fixed inset-0 z-[9999] pointer-events-none flex flex-col items-center justify-center">
+        <div className="fixed inset-0 z-[9999] pointer-events-none flex flex-col items-end justify-center pr-6 gap-1.5">
           {items.map((item) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 0, scale: 0.8 }}
-              animate={{ opacity: 1, y: -80, scale: 1 }}
-              exit={{ opacity: 0, y: -120 }}
+              initial={{ opacity: 0, x: 60, rotate: 3 }}
+              animate={{ opacity: 1, x: 0, rotate: item.id === 'total' ? -1 : Math.random() > 0.5 ? 1.5 : -1.5 }}
+              exit={{ opacity: 0, x: 40 }}
               transition={{
-                duration: 1,
+                duration: 0.5,
                 delay: item.delay,
-                ease: 'easeOut',
+                ease: [0.22, 1, 0.36, 1],
               }}
-              className="text-center mb-2"
             >
-              <motion.div
+              <div
                 className={`
-                  bg-gradient-to-r ${item.color}
-                  text-white font-bold px-4 py-2 rounded-full
-                  shadow-lg whitespace-nowrap
-                  text-sm md:text-base
+                  ${item.color} text-white
+                  font-handwriting font-bold
+                  px-4 py-1.5 rounded-full shadow-lg
+                  whitespace-nowrap
+                  ${item.id === 'total' ? 'text-lg md:text-xl' : 'text-sm md:text-base'}
                 `}
+                style={{ letterSpacing: '0.04em' }}
               >
-                <div className="flex items-center gap-2">
-                  {item.id === 'total' ? (
-                    <>
-                      <span className="text-lg">✨</span>
-                      <span>
-                        合計: <span className="text-xl">+{item.value}</span>
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span>{item.label}:</span>
-                      <span className="font-extrabold text-lg">+{item.value}</span>
-                    </>
-                  )}
-                </div>
-              </motion.div>
+                {item.id === 'total'
+                  ? `${item.label}: +${item.value}`
+                  : `${item.label}: +${item.value}`}
+              </div>
             </motion.div>
           ))}
         </div>

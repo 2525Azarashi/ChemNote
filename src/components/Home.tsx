@@ -9,17 +9,26 @@ interface HomeProps {
   onIntro: () => void;
   onNoteList: () => void;
   onLogicalTree: () => void;
+  onLeaderboard?: () => void;
   isGuest: boolean;
 }
 
-export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: HomeProps) {
+export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, isGuest }: HomeProps) {
   const [profile, setProfile] = useState<any>(null);
   
   // Real stats state
   const [streak, setStreak] = useState(0);
-  const [totalChapters] = useState(() => chemistryData.parts.flatMap(p => p.chapters).length);
-  const [completedChapters, setCompletedChapters] = useState(0);
   const [completedIds, setCompletedIds] = useState<string[]>([]);
+  
+  // 問題数ベースの進捗
+  const allChaptersList = useMemo(() => chemistryData.parts.flatMap((p: any) => p.chapters), []);
+  const totalQuestions = useMemo(() => {
+    return allChaptersList.reduce((sum: number, c: any) => {
+      const qs = c.miniTest || [];
+      return sum + qs.reduce((s: number, q: any) => s + (q.subQuestions?.length || 0), 0);
+    }, 0);
+  }, [allChaptersList]);
+  const [solvedQuestions, setSolvedQuestions] = useState(0);
 
   useEffect(() => {
     const fetchProfileAndStats = async () => {
@@ -56,9 +65,21 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: H
           }
         }
 
-        // Calculate completed chapters
+        // 解いた問題数をカウント（quiz_answers_${chapterId}_mini_test から）
+        let solved = 0;
+        allChaptersList.forEach((c: any) => {
+          try {
+            const raw = localStorage.getItem(`quiz_answers_${c.id}_mini_test`);
+            if (raw) {
+              const answersObj = JSON.parse(raw);
+              solved += Object.keys(answersObj).length;
+            }
+          } catch {}
+        });
+        setSolvedQuestions(Math.min(solved, totalQuestions));
+
+        // completed chapters（次の章を求めるために継続利用）
         const completed = JSON.parse(localStorage.getItem(`completed_${uid}`) || '[]');
-        setCompletedChapters(completed.length);
         setCompletedIds(completed);
         
       } catch (error) {
@@ -67,18 +88,17 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: H
     };
     
     fetchProfileAndStats();
-  }, [isGuest]);
+  }, [isGuest, allChaptersList, totalQuestions]);
 
   const todayStr = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' });
   const todayFormatted = todayStr.replace(/\//g, '.');
 
-  const progressPercent = Math.round((completedChapters / totalChapters) * 100) || 0;
+  const progressPercent = totalQuestions > 0 ? Math.round((solvedQuestions / totalQuestions) * 100) : 0;
 
   // 「次の章」を算出（学習進捗カードの状況別コピー用）
   const nextChapter = useMemo(() => {
-    const allChapters = chemistryData.parts.flatMap(p => p.chapters);
-    return allChapters.find((c: any) => !completedIds.includes(c.id)) as any;
-  }, [completedIds]);
+    return allChaptersList.find((c: any) => !completedIds.includes(c.id)) as any;
+  }, [completedIds, allChaptersList]);
 
   // 「次のマイルストーン」を算出（連続学習カード用）
   // 3日 → 7日 → 14日 → 30日 → 60日 → 100日 の順に次の節目を選ぶ
@@ -153,7 +173,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: H
               >
                 <div className="flex items-center gap-3">
                   <BookOpen className="w-6 h-6" aria-hidden="true" />
-                  <span className="font-modern tracking-widest text-[16px]">{completedChapters === 0 ? '学習を始める' : '続きから開く'}</span>
+                  <span className="font-modern tracking-widest text-[16px]">{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</span>
                 </div>
                 <ChevronRight className="w-6 h-6 text-white/50 group-hover:text-white transition-colors group-hover:translate-x-1" aria-hidden="true" />
               </button>
@@ -175,10 +195,10 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: H
               <div className="border border-[#D1D5DB] rounded-[20px] p-6 bg-white shadow-sm h-full flex flex-col justify-between">
                 <div>
                   <h2 className="font-bold text-[16px] mb-3 text-[#1B2631] font-modern">学習進捗</h2>
-                  {completedChapters === 0 ? (
+                  {solvedQuestions === 0 ? (
                     <>
                       <p className="text-xs md:text-sm text-[#4B5563] font-modern leading-relaxed mb-3">
-                        各単元の講義と演習問題を解くことで進捗が自動的に記録されます。すべての章の課題を突破して、化学基礎を完全攻略しましょう！
+                        各単元の問題を解くことで進捗が自動的に記録されます。すべての問題を解いて、化学基礎を完全攻略しましょう！
                       </p>
                       <button
                         onClick={onStart}
@@ -190,19 +210,19 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: H
                     </>
                   ) : (
                     <p className="text-xs md:text-sm text-[#4B5563] font-modern leading-relaxed mb-6">
-                      {nextChapter ? (
+                      {solvedQuestions < totalQuestions ? (
                         <>
                           次の章：
                           <button
                             onClick={onStart}
                             className="font-bold text-[#1B2631] hover:text-[#D4A017] transition-colors underline-offset-4 hover:underline"
                           >
-                            {nextChapter.title || nextChapter.id}
+                            {nextChapter ? (nextChapter.abstractTitle || nextChapter.title || nextChapter.id) : '次の章'}
                           </button>
                           {' '}から始めよう
                         </>
                       ) : (
-                        <span className="font-bold text-[#1B2631]">🎉 全章修了！おつかれさまでした。</span>
+                        <span className="font-bold text-[#1B2631]">全問制覇！おつかれさまでした。</span>
                       )}
                     </p>
                   )}
@@ -215,7 +235,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: H
                     aria-valuenow={progressPercent}
                     aria-valuemin={0}
                     aria-valuemax={100}
-                    aria-valuetext={`${completedChapters} / ${totalChapters} 章修了（${progressPercent}%）`}
+                    aria-valuetext={`${solvedQuestions} / ${totalQuestions} 問解答済み（${progressPercent}%）`}
                     className="w-full bg-[#E5E1D8] rounded-full h-2.5 mb-3 overflow-hidden shadow-inner flex-shrink-0"
                   >
                     <motion.div 
@@ -225,7 +245,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: H
                       className="bg-[#1B2631] h-full rounded-full"
                     />
                   </div>
-                  <p className="text-[13px] text-[#4B5563] font-modern text-right font-medium">{completedChapters} / {totalChapters} 章修了 ({progressPercent}%)</p>
+                  <p className="text-[13px] text-[#4B5563] font-modern text-right font-medium">{solvedQuestions} / {totalQuestions} 問解答済み ({progressPercent}%)</p>
                 </div>
               </div>
             </motion.div>
@@ -240,7 +260,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, isGuest }: H
           >
             <div className="flex items-center gap-3">
               <BookOpen className="w-5 h-5" aria-hidden="true" />
-              <span className="font-modern tracking-widest text-[15px]">{completedChapters === 0 ? '学習を始める' : '続きから開く'}</span>
+              <span className="font-modern tracking-widest text-[15px]">{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</span>
             </div>
             <ChevronRight className="w-5 h-5 text-white/50 group-hover:text-white transition-colors group-hover:translate-x-1" aria-hidden="true" />
           </button>
