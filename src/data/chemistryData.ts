@@ -1,3 +1,5 @@
+import { acidBaseProblems } from './acidBaseProblems';
+
 export const chemistryData = {
   "parts": [
     {
@@ -7632,7 +7634,7 @@ export const chemistryData = {
           "abstractTitle": "⑤ 酸と塩基の反応",
           "realTitle": "⑤ 酸と塩基",
           "topics": [],
-          "practiceProblems": [],
+          "practiceProblems": acidBaseProblems,
           "miniTest": []
         },
         {

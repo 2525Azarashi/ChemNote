@@ -963,6 +963,22 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                           <IonizationEnergyChart showDetails={true} />
                         </div>
                       )}
+                      {/* 問題に付随する図・イラスト（PDF由来の図版など） */}
+                      {(question as any).imageUrl && (
+                        <figure className="mt-4">
+                          <img
+                            src={(question as any).imageUrl}
+                            alt={(question as any).imageCaption || '問題の図'}
+                            loading="lazy"
+                            className="max-w-full w-auto mx-auto rounded-xl border border-gray-300 bg-white shadow-sm"
+                          />
+                          {(question as any).imageCaption && (
+                            <figcaption className={`mt-2 text-center text-xs ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#E0E1DD]/60'}`}>
+                              {(question as any).imageCaption}
+                            </figcaption>
+                          )}
+                        </figure>
+                      )}
                     </div>
                   </div>
                 );

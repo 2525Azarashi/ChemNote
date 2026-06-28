@@ -609,6 +609,22 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   <IonizationEnergyChart showDetails={false} />
                 </div>
               )}
+              {/* 問題に付随する図・イラスト（PDF由来の図版など） */}
+              {currentQuestion.imageUrl && (
+                <figure className="mt-5">
+                  <img
+                    src={currentQuestion.imageUrl}
+                    alt={currentQuestion.imageCaption || '問題の図'}
+                    loading="lazy"
+                    className="max-w-full w-auto mx-auto rounded-xl border border-gray-200 bg-white shadow-sm"
+                  />
+                  {currentQuestion.imageCaption && (
+                    <figcaption className="mt-2 text-center text-xs text-gray-500 font-modern">
+                      {currentQuestion.imageCaption}
+                    </figcaption>
+                  )}
+                </figure>
+              )}
             </div>
           </div>
         </div>
