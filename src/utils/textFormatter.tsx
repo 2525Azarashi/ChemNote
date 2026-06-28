@@ -1,5 +1,28 @@
 import React from 'react';
 
+// 縦書き分数の HTML を生成するヘルパー。
+// 分子・分母はそのまま埋め込み、後段の化学式処理で変数（w, M など）も適切にイタリック化される。
+function buildFractionHtml(numerator: string, denominator: string) {
+  return (
+    '<span class="inline-flex flex-col justify-center align-middle text-center mx-1" style="font-size: 0.85em; vertical-align: -0.32em; line-height: 1;">' +
+      '<span class="border-b border-stone-400 pb-[1.5px] leading-none px-1 font-serif font-medium">' + numerator + '</span>' +
+      '<span class="leading-none pt-[1.5px] px-1 font-serif font-medium">' + denominator + '</span>' +
+    '</span>'
+  );
+}
+
+// 分母（または分子）が「単位」を表す場合は分数化しない。
+// 例: g/mol, mol/L, kJ/mol, g/cm3, L/mol などは横書きのまま残す。
+const UNIT_TOKENS = new Set([
+  'mol', 'L', 'mL', 'g', 'kg', 'mg', 'cm', 'cm2', 'cm3', 'm', 'm2', 'm3',
+  'kJ', 'J', 'kcal', 'cal', 'K', 's', 'min', 'h', 'Pa', 'kPa', 'atm', 'N',
+  'V', 'A', 'W', 'dm', 'dm3', 'mmol',
+]);
+
+function isUnitToken(token: string) {
+  return UNIT_TOKENS.has(token);
+}
+
 export function formatText(text: string, highlights: string[] = []) {
   if (!text) return null;
 
@@ -9,10 +32,32 @@ export function formatText(text: string, highlights: string[] = []) {
     '$1 <span class="font-sans font-semibold text-stone-500 mx-0.5">×</span> $2'
   );
 
-  // Format simple numeric fractions like 11/2, 99/100, 4/5, 12/24 as vertical fractions!
+  // (1) 明示的な分数表記 \frac{分子}{分母} を最優先で縦書き分数に変換する。
+  //     入れ子は想定せず、波括弧内に } を含まないシンプルな書式に対応。
   processedText = processedText.replace(
-    /\b([0-9.]+)\/([0-9.]+)\b/g,
-    '<span class="inline-flex flex-col justify-center align-middle text-center mx-1" style="font-size: 0.8em; vertical-align: -0.22em; line-height: 1;"><span class="border-b border-stone-400 pb-[1.5px] leading-none px-0.5 font-serif font-medium">$1</span><span class="leading-none pt-[1.5px] px-0.5 font-serif font-medium">$2</span></span>'
+    /\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g,
+    (_m: string, num: string, den: string) => buildFractionHtml(num.trim(), den.trim())
+  );
+
+  // (2) 括弧で囲まれた分数 (分子)/(分母) を縦書き分数にする。
+  //     例: (w/M), (x/100) のように括弧つきで書かれた割り算の中身を確実に拾う。
+  processedText = processedText.replace(
+    /\(([^()/]+)\)\s*\/\s*\(([^()/]+)\)/g,
+    (_m: string, num: string, den: string) => buildFractionHtml(num.trim(), den.trim())
+  );
+
+  // (3) 一般的な分数 a/b を縦書き分数にする。
+  //     - 分子・分母は「数字・小数・1〜2文字の英字変数（添字 _ を許可）」に限定。
+  //     - 分母（または分子）が単位トークン（mol, L, g など）の場合は変換せず横書きのまま残す。
+  //       これにより g/mol・mol/L・kJ/mol などの単位表記が壊れない。
+  processedText = processedText.replace(
+    /(?<![A-Za-z0-9_.\/])([0-9]+(?:\.[0-9]+)?|[A-Za-z][A-Za-z]?(?:_[A-Za-z0-9]+)?)\s*\/\s*([0-9]+(?:\.[0-9]+)?|[A-Za-z][A-Za-z]?(?:_[A-Za-z0-9]+)?)(?![A-Za-z0-9_.\/])/g,
+    (match: string, num: string, den: string) => {
+      // 分母が単位トークン（g/mol・mol/L・kJ/mol など）の場合は単位表記とみなし分数化しない。
+      // 分子のみが単位っぽくても分母が変数（L/a など）なら数式の分数として扱う。
+      if (isUnitToken(den)) return match;
+      return buildFractionHtml(num, den);
+    }
   );
 
   // Replace atomic weight annotations with a smaller inline-block style

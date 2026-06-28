@@ -656,22 +656,36 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     {sq.type === 'multiple_choice' ? (
                       (() => {
                         const isLongOptionList = sq.options.some((opt: string) => opt.length > 5);
+                        // 複数選択かどうかの判定：
+                        //   correctAnswer を区切り文字で分割した「すべてのトークン」が選択肢に存在する場合のみ複数選択とみなす。
+                        //   単に correctAnswer にカンマが含まれるだけ（例: "ア: 相対, イ: 単位, ..." のような
+                        //   カンマ入りの単一選択肢）を複数選択と誤判定しないようにするための堅牢な判定。
+                        const optionSet = new Set(sq.options.map((o: string) => o.trim()));
+                        const detectMulti = (sep: string) => {
+                          if (!sq.correctAnswer || !sq.correctAnswer.includes(sep)) return false;
+                          const toks = sq.correctAnswer.split(sep).map((t: string) => t.trim()).filter(Boolean);
+                          return toks.length >= 2 && toks.every((t: string) => optionSet.has(t));
+                        };
+                        const multiSep = detectMulti('・') ? '・' : (detectMulti(',') ? ',' : null);
+                        const isMultiple = multiSep !== null;
                         return (
                           <div className={isLongOptionList 
                             ? "grid grid-cols-1 gap-2.5 w-full" 
                             : "grid grid-cols-2 xs:grid-cols-3 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
                           }>
                             {sq.options.map((opt: string) => {
-                              const isSelected = (answers[sq.id] || '').split(',').includes(opt);
+                              // 単一選択ではカンマで分割せず完全一致で判定する（カンマ入り選択肢に対応）
+                              const isSelected = isMultiple
+                                ? (answers[sq.id] || '').split(multiSep as string).map(s => s.trim()).includes(opt.trim())
+                                : (answers[sq.id] || '') === opt;
                               return (
                                 <button
                                   key={opt}
                                   onClick={() => {
-                                    const isMultiple = sq.correctAnswer && (sq.correctAnswer.includes(",") || sq.correctAnswer.includes("・"));
                                     let next: string[];
                                     if (isMultiple) {
-                                      const separator = sq.correctAnswer.includes("・") ? "・" : ",";
-                                      const current = (answers[sq.id] || '').split(separator).filter(Boolean);
+                                      const separator = multiSep as string;
+                                      const current = (answers[sq.id] || '').split(separator).map(s => s.trim()).filter(Boolean);
                                       const nextUnordered = isSelected 
                                         ? current.filter(a => a !== opt)
                                         : [...current, opt];
@@ -679,8 +693,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                                       next = ordered;
                                       handleOptionSelect(sq.id, next.join(separator));
                                     } else {
-                                      next = isSelected ? [] : [opt];
-                                      handleOptionSelect(sq.id, next.join(','));
+                                      handleOptionSelect(sq.id, isSelected ? '' : opt);
+                                      return;
                                     }
                                   }}
                                   className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 border-2 flex items-center ${isLongOptionList ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3rem] shadow-sm cursor-pointer

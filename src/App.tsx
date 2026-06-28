@@ -27,6 +27,7 @@ import { MockExam } from './components/MockExam';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { MobileViewWrapper } from './components/MobileViewWrapper';
+import { countIncomingFriendRequests } from './utils/friends';
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
@@ -52,6 +53,26 @@ export default function App() {
   const [isExplanationView, setIsExplanationView] = useState(false);
   const [prevAppState, setPrevAppState] = useState<AppState>('home');
   const [lastQuizResult, setLastQuizResult] = useState<any>(null);
+  // 届いているフレンド申請件数（設定ボタンのバッジ表示用）
+  const [pendingFriendRequests, setPendingFriendRequests] = useState(0);
+
+  // フレンド申請件数を定期的に確認する（ログイン時のみ）。
+  // 設定画面を閉じた直後にも再取得して、承諾/拒否の結果をバッジに反映する。
+  useEffect(() => {
+    let cancelled = false;
+    const refresh = async () => {
+      if (!auth.currentUser) {
+        if (!cancelled) setPendingFriendRequests(0);
+        return;
+      }
+      const n = await countIncomingFriendRequests();
+      if (!cancelled) setPendingFriendRequests(n);
+    };
+    refresh();
+    const id = window.setInterval(refresh, 60000);
+    const unsub = onAuthStateChanged(auth, () => refresh());
+    return () => { cancelled = true; window.clearInterval(id); unsub(); };
+  }, [appState]);
 
   // Prevent iOS pinch zoom and double tap zoom, EXCEPT on the answers/explanations pages
   useEffect(() => {
@@ -454,11 +475,21 @@ export default function App() {
                     }
                     setAppState('settings');
                   }}
-                  aria-label="設定画面へ移動"
+                  aria-label={pendingFriendRequests > 0 ? `設定画面へ移動（フレンド申請が${pendingFriendRequests}件届いています）` : '設定画面へ移動'}
                   aria-current={appState === 'settings' ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  className={`relative flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
-                  <Settings className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
+                  <div className="relative">
+                    <Settings className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
+                    {pendingFriendRequests > 0 && (
+                      <span
+                        className="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[#E74C3C] text-white text-[9px] font-bold flex items-center justify-center shadow-sm"
+                        aria-hidden="true"
+                      >
+                        {pendingFriendRequests > 9 ? '9+' : pendingFriendRequests}
+                      </span>
+                    )}
+                  </div>
                   <span className="text-[10px] tracking-wider font-modern">設定</span>
                 </button>
               </nav>

@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
 import { SakuraPetals } from './SakuraPetals';
+import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
 import { MntbLogo } from './MntbLogo';
 import { DoorMascot } from './DoorMascot';
@@ -130,8 +131,10 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         }}
       />
       <div className="absolute inset-0 pointer-events-none opacity-5 fabric-texture"></div>
-      {/* 桜を降らせる装飾 */}
-      <SakuraPetals count={20} />
+      {/* 背景の手書き風風景：桜の木と遠くの学校（罫線の裏に描く） */}
+      <NotebookScenery />
+      {/* 桜を降らせる装飾（量を増やして春らしさを強調） */}
+      <SakuraPetals count={48} />
 
       <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 relative z-10">
 
@@ -183,13 +186,14 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
 
           {/* 連続学習カード（とびら君マスコット＋化学豆知識付き） */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] p-5 md:p-6 shadow-[0_10px_26px_-14px_rgba(46,134,222,0.45)] border border-[#A9CCE3]/40 relative overflow-hidden h-full flex items-center gap-3">
+            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] p-5 md:p-6 shadow-[0_10px_26px_-14px_rgba(46,134,222,0.45)] border border-[#A9CCE3]/40 relative overflow-hidden h-full flex flex-col">
+              {/* 上段：連続日数とマイルストーン */}
               <div className="flex flex-col gap-1 w-full min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-sm tracking-widest text-[#1B2631] font-modern">連続学習</span>
                 </div>
                 <div className="flex items-baseline gap-1 mt-1.5">
-                  <span className="text-5xl md:text-6xl font-bold font-handwriting text-[#2E86DE]">{streak}</span>
+                  <span className="text-5xl md:text-6xl font-bold font-handwriting text-[#2E86DE] leading-none">{streak}</span>
                   <span className="text-sm font-modern text-[#1B2631] font-medium">{streak > 0 ? '日連続' : '日目'}</span>
                 </div>
                 {nextMilestone && (
@@ -212,8 +216,8 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   </div>
                 )}
               </div>
-              {/* とびら君マスコット：開くたびにランダムなキャラクターと豆知識を表示 */}
-              <DoorMascot className="hidden lg:flex self-end -mb-2 -mr-2 shrink-0" />
+              {/* 下段：とびら君マスコット＋豆知識（カード内に収まる横並び） */}
+              <DoorMascot className="mt-4 pt-4 border-t border-[#A9CCE3]/25" />
             </div>
           </motion.div>
 
