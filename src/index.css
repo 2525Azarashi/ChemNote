@@ -52,6 +52,20 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* キーボード操作時のフォーカスリング（アクセシビリティ向上）
+ * - マウス/タップ時は表示せず、Tabキー等のキーボード操作時のみ表示 */
+:focus-visible {
+  outline: 2px solid #E8688E;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* インタラクティブ要素の押下フィードバックを統一（軽い沈み込み） */
+button:not(:disabled):active,
+a:active,
+[role="button"]:not([aria-disabled="true"]):active {
+  transform: translateY(0.5px) scale(0.995);
+}
+
 html {
   scroll-behavior: smooth;
 }

@@ -6,7 +6,6 @@ import { chemistryData } from '../data/chemistryData';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
-import { MntbLogo } from './MntbLogo';
 import { DoorMascot } from './DoorMascot';
 
 interface HomeProps {
@@ -138,20 +137,10 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
 
       {/* PC（lg以上）ではスクロールせず1画面に収める：縦パディングを詰め、はみ出しを隠す。
           スマホ/タブレットは従来どおり縦スクロール可能。 */}
-      <div className="flex-1 overflow-y-auto lg:overflow-hidden no-scrollbar pb-32 lg:pb-24 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 lg:pt-5 relative z-10 lg:flex lg:flex-col">
+      <div className="flex-1 overflow-y-auto lg:overflow-hidden no-scrollbar pb-32 lg:pb-24 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 lg:pt-6 relative z-10 lg:flex lg:flex-col lg:justify-center">
 
-        {/* ===== トップバー：左上ロゴ ＋ 右上の情報 ===== */}
-        <motion.div
-          initial={{ opacity: 0, y: -6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="flex items-center justify-between mb-7 md:mb-8 lg:mb-4"
-        >
-          {/* 左上ロゴ（従来の mntb を模したロゴ） */}
-          <MntbLogo />
-        </motion.div>
-
-        {/* ===== 挨拶 ＋ カウントダウン ===== */}
+        {/* ===== 挨拶 ＋ カウントダウン =====
+            ※ 左上の「まなとび」ワードマークは表示しない（ユーザー要望）。 */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-7 md:mb-8 lg:mb-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting">
             <h1 className="text-[22px] md:text-[30px] text-[#1B2631] font-bold tracking-wide">
@@ -160,24 +149,24 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             <p className="text-xs md:text-sm text-[#5D6D7E] mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
           </motion.div>
 
-          {/* 共通テストまでのカウントダウンカード（空色テーマ） */}
+          {/* 共通テストまでのカウントダウンカード（ピンクテーマ） */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
             className="self-start md:self-auto shrink-0"
           >
-            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] px-5 py-4 shadow-[0_10px_26px_-12px_rgba(46,134,222,0.5)] border border-[#A9CCE3]/50 flex items-center gap-4 min-w-[210px]">
+            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] px-5 py-4 shadow-[0_10px_26px_-12px_rgba(217,70,110,0.5)] border border-[#F4A9C4]/50 flex items-center gap-4 min-w-[210px]">
               <div className="flex flex-col">
                 <span className="text-[11px] font-bold tracking-widest text-[#5D6D7E] font-modern">共通テストまで</span>
                 <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-3xl md:text-4xl font-bold font-handwriting text-[#2E86DE] leading-none tabular-nums">{daysUntilExam}</span>
-                  <span className="text-sm font-modern font-bold text-[#2E86DE]">日</span>
+                  <span className="text-3xl md:text-4xl font-bold font-handwriting text-[#D9466E] leading-none tabular-nums">{daysUntilExam}</span>
+                  <span className="text-sm font-modern font-bold text-[#D9466E]">日</span>
                 </div>
                 <span className="text-[10px] text-[#8895A0] font-modern mt-1 tracking-wide">{EXAM_DATE_LABEL}</span>
               </div>
-              <div className="ml-auto w-11 h-11 rounded-2xl bg-[#E3F0FB] flex items-center justify-center shrink-0">
-                <CalendarDays className="w-6 h-6 text-[#4FA3F0]" aria-hidden="true" />
+              <div className="ml-auto w-11 h-11 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
+                <CalendarDays className="w-6 h-6 text-[#E8688E]" aria-hidden="true" />
               </div>
             </div>
           </motion.div>
@@ -188,18 +177,18 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
 
           {/* 連続学習カード（とびら君マスコット＋化学豆知識付き） */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] p-5 md:p-6 shadow-[0_10px_26px_-14px_rgba(46,134,222,0.45)] border border-[#A9CCE3]/40 relative overflow-hidden h-full flex flex-col">
+            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] p-5 md:p-6 shadow-[0_10px_26px_-14px_rgba(217,70,110,0.45)] border border-[#F4A9C4]/40 relative overflow-hidden h-full flex flex-col">
               {/* 上段：連続日数とマイルストーン */}
               <div className="flex flex-col gap-1 w-full min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-sm tracking-widest text-[#1B2631] font-modern">連続学習</span>
                 </div>
                 <div className="flex items-baseline gap-1 mt-1.5">
-                  <span className="text-5xl md:text-6xl font-bold font-handwriting text-[#2E86DE] leading-none">{streak}</span>
+                  <span className="text-5xl md:text-6xl font-bold font-handwriting text-[#D9466E] leading-none">{streak}</span>
                   <span className="text-sm font-modern text-[#1B2631] font-medium">{streak > 0 ? '日連続' : '日目'}</span>
                 </div>
                 {nextMilestone && (
-                  <div className="mt-3 pt-3 border-t border-[#A9CCE3]/30">
+                  <div className="mt-3 pt-3 border-t border-[#F4A9C4]/30">
                     <p className="text-[11px] md:text-xs text-[#5D6D7E] font-modern tracking-wide leading-snug">
                       <span className="opacity-80">次のマイルストーン：</span>
                       <span className="font-bold text-[#1B2631]">{nextMilestone.target}日連続</span>
@@ -207,28 +196,28 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                       <span className="font-bold text-[#1B2631]"> {nextMilestone.remaining}日</span>
                     </p>
                     {/* マイルストーン進捗バー */}
-                    <div className="w-full bg-[#E3F0FB] rounded-full h-1.5 mt-2 overflow-hidden">
+                    <div className="w-full bg-[#FBE0E9] rounded-full h-1.5 mt-2 overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.min(100, (streak / nextMilestone.target) * 100)}%` }}
                         transition={{ duration: 0.9, delay: 0.4 }}
-                        className="h-full rounded-full bg-gradient-to-r from-[#4FA3F0] to-[#2E86DE]"
+                        className="h-full rounded-full bg-gradient-to-r from-[#E8688E] to-[#D9466E]"
                       />
                     </div>
                   </div>
                 )}
               </div>
               {/* 下段：とびら君マスコット＋豆知識（カード内に収まる横並び） */}
-              <DoorMascot className="mt-4 pt-4 border-t border-[#A9CCE3]/25" />
+              <DoorMascot className="mt-4 pt-4 border-t border-[#F4A9C4]/25" />
             </div>
           </motion.div>
 
           {/* 学習進捗カード */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }}>
-            <div className="border border-[#A9CCE3]/40 rounded-[20px] p-5 md:p-6 bg-white/90 backdrop-blur-sm shadow-[0_10px_26px_-14px_rgba(46,134,222,0.45)] h-full flex flex-col justify-between">
+            <div className="border border-[#F4A9C4]/40 rounded-[20px] p-5 md:p-6 bg-white/90 backdrop-blur-sm shadow-[0_10px_26px_-14px_rgba(217,70,110,0.45)] h-full flex flex-col justify-between">
               <div>
                 <h2 className="font-bold text-[16px] mb-3 text-[#1B2631] font-modern flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-[#4FA3F0]" aria-hidden="true" />
+                  <BarChart3 className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
                   学習進捗
                 </h2>
                 {solvedQuestions === 0 ? (
@@ -238,7 +227,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                     </p>
                     <button
                       onClick={onStart}
-                      className="inline-flex items-center gap-1.5 text-[13px] md:text-sm font-bold font-modern text-[#1B2631] hover:text-[#2E86DE] transition-colors mb-6 group"
+                      className="inline-flex items-center gap-1.5 text-[13px] md:text-sm font-bold font-modern text-[#1B2631] hover:text-[#D9466E] transition-colors mb-6 group"
                     >
                       まず第1章から始めよう
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
@@ -251,7 +240,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                         次の章：
                         <button
                           onClick={onStart}
-                          className="font-bold text-[#1B2631] hover:text-[#2E86DE] transition-colors underline-offset-4 hover:underline"
+                          className="font-bold text-[#1B2631] hover:text-[#D9466E] transition-colors underline-offset-4 hover:underline"
                         >
                           {nextChapter ? (nextChapter.abstractTitle || nextChapter.title || nextChapter.id) : '次の章'}
                         </button>
@@ -271,13 +260,13 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuetext={`${solvedQuestions} / ${totalQuestions} 問解答済み（${progressPercent}%）`}
-                  className="w-full bg-[#E3F0FB] rounded-full h-2.5 mb-3 overflow-hidden shadow-inner flex-shrink-0"
+                  className="w-full bg-[#FBE0E9] rounded-full h-2.5 mb-3 overflow-hidden shadow-inner flex-shrink-0"
                 >
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progressPercent}%` }}
                     transition={{ duration: 1, delay: 0.5 }}
-                    className="bg-gradient-to-r from-[#4FA3F0] to-[#2E86DE] h-full rounded-full"
+                    className="bg-gradient-to-r from-[#E8688E] to-[#D9466E] h-full rounded-full"
                   />
                 </div>
                 <p className="text-[13px] text-[#5D6D7E] font-modern text-right font-medium">{solvedQuestions} / {totalQuestions} 問解答済み ({progressPercent}%)</p>
@@ -305,31 +294,31 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           <button
             onClick={onNoteList}
             aria-label="個人ノート一覧を開く"
-            className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#A9CCE3]/40 bg-white/90 backdrop-blur-sm hover:bg-[#F4FAFF] hover:border-[#4FA3F0]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(46,134,222,0.4)] text-left group"
+            className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
           >
-            <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#E3F0FB] flex items-center justify-center shrink-0">
-              <Edit3 className="w-5 h-5 text-[#4FA3F0]" aria-hidden="true" />
+            <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
+              <Edit3 className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">ノートを見る</div>
               <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">自分のまとめを確認しよう</div>
             </div>
-            <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#4FA3F0] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
+            <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
           </button>
 
           <button
             onClick={onIntro}
             aria-label="アプリ紹介を開く"
-            className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#A9CCE3]/40 bg-white/90 backdrop-blur-sm hover:bg-[#F4FAFF] hover:border-[#4FA3F0]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(46,134,222,0.4)] text-left group"
+            className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
           >
-            <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#E3F0FB] flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-5 h-5 text-[#4FA3F0]" aria-hidden="true" />
+            <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">アプリ紹介</div>
               <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">使い方や機能をチェック</div>
             </div>
-            <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#4FA3F0] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
+            <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
           </button>
         </motion.div>
       </div>
