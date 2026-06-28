@@ -38,8 +38,9 @@ export function DoorMascot({ className = '', showSpeech = true }: DoorMascotProp
   }, []);
 
   return (
-    <div className={`flex flex-col md:flex-row items-center gap-3 ${className}`}>
-      <div className="relative w-28 h-32 md:w-36 md:h-40 shrink-0 flex items-end justify-center">
+    <div className={`flex items-end gap-3 w-full min-w-0 ${className}`}>
+      {/* マスコット画像：サイズを固定し、カードの高さがぶれないようにする */}
+      <div className="relative w-20 h-24 sm:w-24 sm:h-28 shrink-0 flex items-end justify-center">
         <img
           src={selected.mascot.src}
           alt={selected.mascot.label}
@@ -48,10 +49,12 @@ export function DoorMascot({ className = '', showSpeech = true }: DoorMascotProp
         />
       </div>
       {showSpeech && (
-        <div className="relative bg-white/92 border border-[#F0C7D2]/70 rounded-2xl px-4 py-3 shadow-[0_10px_24px_-14px_rgba(217,160,160,0.65)] w-full md:w-[420px] md:max-w-[460px]">
-          <div className="absolute left-1/2 md:left-[-7px] top-[-7px] md:top-8 w-4 h-4 bg-white/92 border-l border-t border-[#F0C7D2]/70 rotate-45" />
+        // 吹き出しは残り幅いっぱいに広がり（flex-1 + min-w-0）、横はみ出し・テキスト切れを防ぐ
+        <div className="relative bg-white/95 border border-[#F0C7D2]/70 rounded-2xl px-4 py-3 shadow-[0_10px_24px_-14px_rgba(217,160,160,0.65)] flex-1 min-w-0 mb-1">
+          {/* 吹き出しの三角（左向き、マスコット側を指す） */}
+          <div className="absolute left-[-7px] top-7 w-4 h-4 bg-white/95 border-l border-b border-[#F0C7D2]/70 rotate-45" />
           <p className="text-[10px] font-bold tracking-widest text-[#D98AA0] font-modern mb-1">化学基礎ミニ豆知識</p>
-          <p className="text-xs md:text-sm leading-relaxed text-[#2C3E50] font-bold font-handwriting">{selected.fact}</p>
+          <p className="text-[11px] sm:text-xs leading-relaxed text-[#2C3E50] font-bold font-handwriting break-words">{selected.fact}</p>
         </div>
       )}
     </div>

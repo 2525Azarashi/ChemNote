@@ -96,6 +96,18 @@ export async function fetchFriendRequests(): Promise<FriendRequest[]> {
   return snaps.docs.map((s) => ({ id: s.id, ...(s.data() as Omit<FriendRequest, 'id'>) }));
 }
 
+// 届いている（自分宛の）フレンド申請の件数を取得する。設定ボタンのバッジ表示などに使用。
+export async function countIncomingFriendRequests(): Promise<number> {
+  const user = auth.currentUser;
+  if (!user) return 0;
+  try {
+    const snaps = await getDocs(query(collection(db, 'friend_requests'), where('toUid', '==', user.uid)));
+    return snaps.size;
+  } catch {
+    return 0;
+  }
+}
+
 export async function acceptFriendRequest(req: FriendRequest) {
   const me = await ensureFriendProfile();
   if (!me) return;
