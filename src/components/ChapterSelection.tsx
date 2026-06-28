@@ -29,7 +29,13 @@ const chapterIdToTrendUnit: Record<string, { chapterGroupTitle: string; unitId: 
   'c4_2':   { chapterGroupTitle: '4章 物質量と化学反応式', unitId: 'c4_9' },
   'c4_3':   { chapterGroupTitle: '4章 物質量と化学反応式', unitId: 'c4_10' },
   'c4_4':   { chapterGroupTitle: '4章 物質量と化学反応式', unitId: 'c4_11' },
-  'c5':     { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_12' },
+  'c5_1':   { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_12' },
+  'c5_2':   { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_13' },
+  'c5_3':   { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_14' },
+  'c5_4':   { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_15' },
+  'c5_5':   { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_16' },
+  'c5_6':   { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_17' },
+  'c5_7':   { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_18' },
   'c6':     { chapterGroupTitle: '6章 酸化還元反応', unitId: 'c6_19' },
 };
 
