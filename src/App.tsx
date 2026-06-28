@@ -127,6 +127,11 @@ export default function App() {
     }
   }, [appState]);
 
+  // 画面遷移時に常に最上部へスクロール（前画面のスクロール位置を引き継がない）
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [appState]);
+
   const isFirstLoad = useRef(true);
 
   const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';

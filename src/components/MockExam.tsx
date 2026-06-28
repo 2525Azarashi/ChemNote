@@ -16,11 +16,20 @@ const q1Questions = mockExam.questions.filter(q => q.bigQuestion === 1);
 // 第2問の問番号リスト（bigQuestion: 2のもの）
 const q2Questions = mockExam.questions.filter(q => q.bigQuestion === 2);
 
+const MOCK_ANSWERS_KEY = 'mockexam_answers_v1';
+
 export function MockExam({ onBack }: MockExamProps) {
   const [phase, setPhase] = useState<ExamPhase>('intro');
   const [currentQ1Index, setCurrentQ1Index] = useState(0);
   const [currentQ2Index, setCurrentQ2Index] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  // 解答は localStorage に保存し、誤って画面を離れても入力が消えないようにする
+  const [answers, setAnswers] = useState<Record<string, string>>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(MOCK_ANSWERS_KEY) || '{}');
+    } catch {
+      return {};
+    }
+  });
   const [showExplanation, setShowExplanation] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
 
@@ -52,6 +61,13 @@ export function MockExam({ onBack }: MockExamProps) {
     const r = s % 60;
     return `${m.toString().padStart(2, '0')}:${r.toString().padStart(2, '0')}`;
   };
+
+  // 解答内容を保存（誤って画面を離れても入力が消えないようにする）
+  useEffect(() => {
+    try {
+      localStorage.setItem(MOCK_ANSWERS_KEY, JSON.stringify(answers));
+    } catch {}
+  }, [answers]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -131,11 +147,22 @@ export function MockExam({ onBack }: MockExamProps) {
     setCurrentQ1Index(0);
     setCurrentQ2Index(0);
     setAnswers({});
+    try { localStorage.removeItem(MOCK_ANSWERS_KEY); } catch {}
     setShowExplanation(false);
     setIsAnswered(false);
     // タイマーもリセット
     setElapsedSec(0);
     examStartedAtRef.current = null;
+  };
+
+  // 解答途中で戻ろうとしたときは確認ダイアログを表示（誤操作による離脱を防ぐ）
+  const handleBackGuarded = () => {
+    const inProgress = phase === 'q1_solving' || phase === 'q2_solving' || phase === 'q2_intro';
+    if (inProgress && Object.keys(answers).length > 0) {
+      const ok = window.confirm('予想問題を中断して戻りますか？\n（解答内容は保存され、次回続きから確認できます）');
+      if (!ok) return;
+    }
+    onBack();
   };
 
   // ========== イントロ画面 ==========
@@ -349,7 +376,7 @@ export function MockExam({ onBack }: MockExamProps) {
       <div className={`bg-gradient-to-r ${bgColor} p-4 border-b border-gray-200`}>
         <div className="flex items-center justify-between mb-2 gap-2">
           <button
-            onClick={onBack}
+            onClick={handleBackGuarded}
             className="flex items-center gap-1 text-gray-500 hover:text-[#2C3E50] text-xs font-bold font-handwriting shrink-0"
           >
             <ArrowLeft size={16} />
