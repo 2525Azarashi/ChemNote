@@ -150,7 +150,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-7 md:mb-8">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting">
             <h1 className="text-[22px] md:text-[30px] text-[#1B2631] font-bold tracking-wide">
-              おかえり、{greetingName}さん <span aria-hidden="true">🌸</span>
+              おかえり、{greetingName}さん
             </h1>
             <p className="text-xs md:text-sm text-[#5D6D7E] mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
           </motion.div>
@@ -186,7 +186,6 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             <div className="bg-white/90 backdrop-blur-sm rounded-[20px] p-5 md:p-6 shadow-[0_10px_26px_-14px_rgba(46,134,222,0.45)] border border-[#A9CCE3]/40 relative overflow-hidden h-full flex items-center gap-3">
               <div className="flex flex-col gap-1 w-full min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl" aria-hidden="true">🔥</span>
                   <span className="font-bold text-sm tracking-widest text-[#1B2631] font-modern">連続学習</span>
                 </div>
                 <div className="flex items-baseline gap-1 mt-1.5">
@@ -213,8 +212,8 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   </div>
                 )}
               </div>
-              {/* とびら君マスコット：開くたびにランダムなポーズと豆知識を表示 */}
-              <DoorMascot className="hidden sm:flex self-end -mb-2 -mr-2 max-w-[360px]" />
+              {/* とびら君マスコット：開くたびにランダムなキャラクターと豆知識を表示 */}
+              <DoorMascot className="hidden lg:flex self-end -mb-2 -mr-2 shrink-0" />
             </div>
           </motion.div>
 

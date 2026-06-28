@@ -30,22 +30,41 @@ export interface FriendRequest {
 }
 
 function makeFriendCode(uid: string) {
-  return `MNTB-${uid.slice(0, 6).toUpperCase()}`;
+  // uid から英数字のみを抽出し、8 文字のフレンドコードを確定的に生成する。
+  // 衝突を抑えつつ、入力・共有しやすいフォーマット（MNTB-XXXX-XXXX）にする。
+  const cleaned = (uid || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  let base = cleaned.slice(0, 8);
+  // 万一 uid が短い場合は uid のハッシュで補完して常に 8 文字を確保する。
+  if (base.length < 8) {
+    let hash = 0;
+    for (let i = 0; i < (uid || 'mntb').length; i++) {
+      hash = (hash * 31 + (uid || 'mntb').charCodeAt(i)) >>> 0;
+    }
+    const pad = hash.toString(36).toUpperCase().replace(/[^A-Z0-9]/g, '0');
+    base = (base + pad + '00000000').slice(0, 8);
+  }
+  return `MNTB-${base.slice(0, 4)}-${base.slice(4, 8)}`;
 }
 
 export async function ensureFriendProfile(): Promise<FriendProfile | null> {
   const user = auth.currentUser;
   if (!user) return null;
+  // フレンドコードは uid から確定的に生成するため、サーバ同期の成否に関わらず必ず発行できる。
   const profile: FriendProfile = {
     uid: user.uid,
     nickname: resolveNickname(),
     photoURL: user.photoURL || '',
     friendCode: makeFriendCode(user.uid),
   };
-  await setDoc(doc(db, 'friend_profiles', user.uid), {
-    ...profile,
-    updatedAt: serverTimestamp(),
-  }, { merge: true });
+  // Firestore への保存に失敗しても、フレンドコード自体は表示できるようにプロフィールを返す。
+  try {
+    await setDoc(doc(db, 'friend_profiles', user.uid), {
+      ...profile,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+  } catch (e) {
+    console.error('フレンドプロフィールの保存に失敗しました（コードは利用できます）:', e);
+  }
   return profile;
 }
 

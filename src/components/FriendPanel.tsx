@@ -20,6 +20,7 @@ export function FriendPanel() {
   const [code, setCode] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const load = async () => {
     if (!auth.currentUser) return;
@@ -62,29 +63,36 @@ export function FriendPanel() {
         </button>
       </div>
 
-      {profile && (
-        <div className="bg-[#FDFBF7] border border-[#F0C7D2]/70 rounded-2xl p-4">
-          <p className="text-[11px] text-gray-500 font-bold mb-2">あなたのフレンドコード</p>
-          <div className="flex items-center gap-2">
-            <code className="flex-1 bg-white border border-gray-150 rounded-xl px-3 py-2 text-sm font-black tracking-wider text-[#1B2631]">
-              {profile.friendCode}
-            </code>
-            <button
-              onClick={() => navigator.clipboard?.writeText(profile.friendCode)}
-              className="p-2.5 rounded-xl bg-[#A9CCE3]/20 text-[#2C3E50] hover:bg-[#A9CCE3]/35 border border-[#A9CCE3]/40"
-              aria-label="フレンドコードをコピー"
-            >
-              <Copy size={15} />
-            </button>
-          </div>
+      <div className="bg-[#FDFBF7] border border-[#F0C7D2]/70 rounded-2xl p-4">
+        <p className="text-[11px] text-gray-500 font-bold mb-2">あなたのフレンドコード</p>
+        <div className="flex items-center gap-2">
+          <code className="flex-1 bg-white border border-gray-150 rounded-xl px-3 py-2 text-sm font-black tracking-wider text-[#1B2631]">
+            {profile ? profile.friendCode : (loading ? '発行中…' : '—')}
+          </code>
+          <button
+            onClick={() => {
+              if (!profile?.friendCode) return;
+              navigator.clipboard?.writeText(profile.friendCode);
+              setCopied(true);
+              window.setTimeout(() => setCopied(false), 1500);
+            }}
+            disabled={!profile?.friendCode}
+            className="p-2.5 rounded-xl bg-[#A9CCE3]/20 text-[#2C3E50] hover:bg-[#A9CCE3]/35 border border-[#A9CCE3]/40 disabled:opacity-40"
+            aria-label="フレンドコードをコピー"
+          >
+            {copied ? <Check size={15} /> : <Copy size={15} />}
+          </button>
         </div>
-      )}
+        <p className="text-[10px] text-gray-400 mt-2 leading-snug">
+          このコードを友だちに伝えると、相手があなたを追加できます。
+        </p>
+      </div>
 
       <div className="flex gap-2">
         <input
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
-          placeholder="MNTB-XXXXXX"
+          placeholder="MNTB-XXXX-XXXX"
           className="flex-1 px-3 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#A9CCE3] outline-none text-sm font-bold"
         />
         <button
