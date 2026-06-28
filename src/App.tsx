@@ -111,6 +111,10 @@ export default function App() {
   const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
   const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
 
+  // PC版では「学習モードを選択」(mode_selection) 以外の全画面で外側余白をなくし、
+  // ノート風背景を全幅に広げる。mode_selection だけは従来通り中央寄せ＋余白を維持。
+  const isFullBleed = appState !== 'mode_selection';
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       const wasFirstLoad = isFirstLoad.current;
@@ -331,7 +335,11 @@ export default function App() {
   return (
     <>
       <MobileViewWrapper isMobileMode={isMobilePreview && !shouldForceDesktopUI} onClose={() => setIsMobilePreview(false)}>
-        <div className={`min-h-screen w-full flex justify-center pt-6 pb-24 md:py-12 px-4 md:px-8 md:pb-28 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
+        <div className={`min-h-screen w-full flex justify-center relative ${
+          isFullBleed
+            ? 'p-0 items-stretch'
+            : `pt-6 pb-24 md:py-12 px-4 md:px-8 md:pb-28 ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`
+        }`}>
           <audio 
             ref={audioRef} 
             src="/tanjou.mp3" 
@@ -357,7 +365,7 @@ export default function App() {
             </div>
           )}
 
-          <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : 'max-w-5xl'}`}>
+          <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : (isFullBleed ? 'max-w-none' : 'max-w-5xl')}`}>
             {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
 
             {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}

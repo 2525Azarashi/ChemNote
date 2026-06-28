@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, ChevronRight, CheckCircle, Edit3, ArrowRight, CalendarDays } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
 import { SakuraPetals } from './SakuraPetals';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
-
-// 従来のロゴ（マナトビ）
-const LOGO_URL = 'https://lh3.googleusercontent.com/d/1bdaFoRcprvig_57izYdAEzon1gD47_Wk';
 
 interface HomeProps {
   onStart: () => void;
@@ -20,11 +17,11 @@ interface HomeProps {
 
 export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, isGuest }: HomeProps) {
   const [profile, setProfile] = useState<any>(null);
-  
+
   // Real stats state
   const [streak, setStreak] = useState(0);
   const [completedIds, setCompletedIds] = useState<string[]>([]);
-  
+
   // 問題数ベースの進捗
   const allChaptersList = useMemo(() => chemistryData.parts.flatMap((p: any) => p.chapters), []);
   const totalQuestions = useMemo(() => {
@@ -39,7 +36,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
     const fetchProfileAndStats = async () => {
       try {
         const uid = auth.currentUser ? auth.currentUser.uid : 'guest';
-        
+
         // Load Profile Name/Details
         const localProfile = localStorage.getItem(`profile_${uid}`);
         if (localProfile) {
@@ -47,11 +44,11 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         } else {
           setProfile({ name: auth.currentUser ? (auth.currentUser.displayName || 'ユーザー') : 'ゲスト' });
         }
-        
+
         // Calculate streak
         const lastActive = localStorage.getItem(`lastActive_${uid}`);
         const storedStreak = parseInt(localStorage.getItem(`streak_${uid}`) || '0', 10);
-        
+
         const today = new Date().toDateString();
         if (lastActive === today) {
           setStreak(storedStreak);
@@ -86,12 +83,12 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         // completed chapters（次の章を求めるために継続利用）
         const completed = JSON.parse(localStorage.getItem(`completed_${uid}`) || '[]');
         setCompletedIds(completed);
-        
+
       } catch (error) {
         console.error("プロフィール・統計情報取得エラー:", error);
       }
     };
-    
+
     fetchProfileAndStats();
   }, [isGuest, allChaptersList, totalQuestions]);
 
@@ -109,7 +106,6 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   }, [completedIds, allChaptersList]);
 
   // 「次のマイルストーン」を算出（連続学習カード用）
-  // 3日 → 7日 → 14日 → 30日 → 60日 → 100日 の順に次の節目を選ぶ
   const nextMilestone = useMemo(() => {
     const milestones = [3, 7, 14, 30, 60, 100];
     const target = milestones.find(m => m > streak);
@@ -117,226 +113,227 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
     return { target, remaining: target - streak };
   }, [streak]);
 
-  // 挨拶テキスト：「さん」とのスペースを排除（{name}さん で直結）
   const greetingName = profile?.name || 'ゲスト';
 
   return (
-    <div className="w-full h-full min-h-[100dvh] sm:min-h-0 sm:h-[800px] w-full max-w-5xl mx-auto sm:rounded-[36px] sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] sm:border-[8px] sm:border-[#1B2631] flex flex-col overflow-hidden relative bg-gradient-to-b from-[#FDE8EF] via-[#FFF2F6] to-[#FDFBF7]">
+    // タイトル画面：黒淵のフレームを撤去し、空色グラデ＋ノート罫線の柔らかい背景を全面に広げる
+    <div className="w-full min-h-[100dvh] sm:min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#E3F0FB] via-[#F4FAFF] to-[#EAF4FC]">
 
-      {/* Background Decor */}
+      {/* 背景：うっすらノート罫線（手書き風の余韻を残す） */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.18]"
+        style={{
+          backgroundImage: 'linear-gradient(transparent calc(2.5rem - 1px), #A9CCE3 calc(2.5rem - 1px))',
+          backgroundSize: '100% 2.5rem',
+        }}
+      />
       <div className="absolute inset-0 pointer-events-none opacity-5 fabric-texture"></div>
       {/* 桜を降らせる装飾 */}
       <SakuraPetals count={20} />
 
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-6 md:px-12 pt-8 md:pt-10 relative z-10">
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 relative z-10">
 
-        {/* 従来のロゴ（マナトビ）※ 左上のテキストロゴは付けず、画像ロゴのみ控えめに配置 */}
+        {/* ===== トップバー：左上ロゴ ＋ 右上の情報 ===== */}
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="flex justify-center mb-6"
+          className="flex items-center justify-between mb-7 md:mb-8"
         >
-          <img
-            src={LOGO_URL}
-            alt="マナトビ"
-            referrerPolicy="no-referrer"
-            className="h-9 md:h-11 object-contain drop-shadow-sm"
-          />
+          {/* 左上ロゴ（マナトビ） */}
+          <div className="flex items-center gap-2.5 select-none">
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-2xl bg-gradient-to-br from-[#4FA3F0] to-[#2E86DE] flex items-center justify-center shadow-[0_6px_14px_-4px_rgba(46,134,222,0.6)]">
+              <BookOpen className="w-5 h-5 md:w-[22px] md:h-[22px] text-white" strokeWidth={2.4} aria-hidden="true" />
+            </div>
+            <span className="font-handwriting font-bold text-xl md:text-2xl text-[#1B2631] tracking-wide">
+              マナトビ
+            </span>
+          </div>
         </motion.div>
 
-        {/* Header：挨拶＋共通テストまでのカウントダウン */}
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-8">
+        {/* ===== 挨拶 ＋ カウントダウン ===== */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-7 md:mb-8">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting">
             <h1 className="text-[22px] md:text-[30px] text-[#1B2631] font-bold tracking-wide">
               おかえり、{greetingName}さん <span aria-hidden="true">🌸</span>
             </h1>
-            <p className="text-xs md:text-sm text-[#4B5563] mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
+            <p className="text-xs md:text-sm text-[#5D6D7E] mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
           </motion.div>
 
-          {/* 共通テストまでのカウントダウンカード */}
+          {/* 共通テストまでのカウントダウンカード（空色テーマ） */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
             className="self-start md:self-auto shrink-0"
           >
-            <div className="bg-white/85 backdrop-blur-sm rounded-[20px] px-5 py-4 shadow-[0_8px_24px_-10px_rgba(217,160,160,0.55)] border border-[#F4A9C4]/40 flex items-center gap-4 min-w-[200px]">
+            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] px-5 py-4 shadow-[0_10px_26px_-12px_rgba(46,134,222,0.5)] border border-[#A9CCE3]/50 flex items-center gap-4 min-w-[210px]">
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold tracking-widest text-[#C0708A] font-modern">共通テストまで</span>
+                <span className="text-[11px] font-bold tracking-widest text-[#5D6D7E] font-modern">共通テストまで</span>
                 <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-3xl md:text-4xl font-bold font-handwriting text-[#D9466E] leading-none tabular-nums">{daysUntilExam}</span>
-                  <span className="text-sm font-modern font-bold text-[#D9466E]">日</span>
+                  <span className="text-3xl md:text-4xl font-bold font-handwriting text-[#2E86DE] leading-none tabular-nums">{daysUntilExam}</span>
+                  <span className="text-sm font-modern font-bold text-[#2E86DE]">日</span>
                 </div>
-                <span className="text-[10px] text-[#9C8089] font-modern mt-1 tracking-wide">{EXAM_DATE_LABEL}</span>
+                <span className="text-[10px] text-[#8895A0] font-modern mt-1 tracking-wide">{EXAM_DATE_LABEL}</span>
               </div>
-              <div className="ml-auto w-11 h-11 rounded-2xl bg-[#FDE0EA] flex items-center justify-center shrink-0">
-                <CalendarDays className="w-6 h-6 text-[#E07FA0]" aria-hidden="true" />
+              <div className="ml-auto w-11 h-11 rounded-2xl bg-[#E3F0FB] flex items-center justify-center shrink-0">
+                <CalendarDays className="w-6 h-6 text-[#4FA3F0]" aria-hidden="true" />
               </div>
             </div>
           </motion.div>
         </div>
 
-        {/* CSS Grid for Mobile-First layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* Column 1: Streak */}
-          <div className="flex flex-col gap-6 lg:col-span-1">
-            {/* Streak Card
-                ★ 修正：次のマイルストーン（補助テキスト）を追加 */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-              <div className="bg-gradient-to-br from-[#FBD9E4] to-[#F9C6D7] rounded-[20px] p-6 shadow-sm flex items-start justify-between border border-[#F4A9C4]/30 relative overflow-hidden group h-full">
-                <div className="flex flex-col gap-2 w-full">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl" aria-hidden="true">🔥</span>
-                    <span className="font-bold text-sm tracking-widest text-[#1B2631] font-modern">連続学習</span>
-                  </div>
-                  <div className="flex items-baseline gap-1 mt-2">
-                    <span className="text-6xl font-bold font-handwriting text-[#1B2631]">{streak}</span>
-                    <span className="text-sm font-modern text-[#1B2631] font-medium">{streak > 0 ? '日連続' : '日目'}</span>
-                  </div>
-                  {/* ★ 次のマイルストーン補助テキスト：
-                       メインの数字を邪魔しないよう、控えめなグレーで小さく配置 */}
-                  {nextMilestone && (
-                    <div className="mt-3 pt-3 border-t border-[#1B2631]/10">
-                      <p className="text-[11px] md:text-xs text-[#4B5563] font-modern tracking-wide leading-snug">
-                        <span className="opacity-70">次のマイルストーン：</span>
-                        <span className="font-bold text-[#1B2631]">{nextMilestone.target}日連続</span>
-                        <span className="opacity-70">まであと</span>
-                        <span className="font-bold text-[#1B2631]"> {nextMilestone.remaining}日</span>
-                      </p>
-                    </div>
-                  )}
-                </div>
-                {/* Accents */}
-                <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors pointer-events-none"></div>
-              </div>
-            </motion.div>
-            
-            {/* Start Button (Desktop only) */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }} className="mt-auto hidden lg:block">
-              <button 
-                onClick={onStart} 
-                className="w-full bg-gradient-to-r from-[#E8688E] to-[#D9466E] text-white py-5 px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#E0577F] hover:to-[#C93B61] transition-colors shadow-[0_8px_20px_rgba(217,70,110,0.3)] min-h-[64px]"
-              >
-                <div className="flex items-center gap-3">
-                  <BookOpen className="w-6 h-6" aria-hidden="true" />
-                  <span className="font-modern tracking-widest text-[16px]">{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</span>
-                </div>
-                <ChevronRight className="w-6 h-6 text-white/60 group-hover:text-white transition-colors group-hover:translate-x-1" aria-hidden="true" />
-              </button>
-            </motion.div>
-          </div>
+        {/* ===== メインカード群 ===== */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
 
-          {/* Column 2: Progress (Wider since SRS is removed) */}
-          <div className="flex flex-col gap-6 lg:col-span-2">
-            {/* Learning Progress
-                ★ 修正1：プログレスバーのコントラスト強化
-                  - トラック：bg-[#E5E1D8]（沈んだウォームグレー）
-                  - 充填：bg-[#1B2631]（テキストと同じネイビーで明確）
-                  - 高さ：h-2.5（10px）でしっかり視認
-                  - role="progressbar" + aria-* 属性をルートで完備（HTMLの<progress>はTailwindで装飾が難しいためARIAで代替）
-                ★ 修正2：状況別コピー
-                  - 0%：これから始める人向けの説明＋「まず第1章から始めよう」CTA
-                  - 進捗あり：「次の章：◯◯から始めよう」一行に切り替え */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} className="h-full">
-              <div className="border border-[#F4A9C4]/30 rounded-[20px] p-6 bg-white/85 backdrop-blur-sm shadow-sm h-full flex flex-col justify-between">
-                <div>
-                  <h2 className="font-bold text-[16px] mb-3 text-[#1B2631] font-modern">学習進捗</h2>
-                  {solvedQuestions === 0 ? (
-                    <>
-                      <p className="text-xs md:text-sm text-[#4B5563] font-modern leading-relaxed mb-3">
-                        各単元の問題を解くことで進捗が自動的に記録されます。すべての問題を解いて、化学基礎を完全攻略しましょう！
-                      </p>
-                      <button
-                        onClick={onStart}
-                        className="inline-flex items-center gap-1.5 text-[13px] md:text-sm font-bold font-modern text-[#1B2631] hover:text-[#D9466E] transition-colors mb-6 group"
-                      >
-                        まず第1章から始めよう
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
-                      </button>
-                    </>
-                  ) : (
-                    <p className="text-xs md:text-sm text-[#4B5563] font-modern leading-relaxed mb-6">
-                      {solvedQuestions < totalQuestions ? (
-                        <>
-                          次の章：
-                          <button
-                            onClick={onStart}
-                            className="font-bold text-[#1B2631] hover:text-[#D9466E] transition-colors underline-offset-4 hover:underline"
-                          >
-                            {nextChapter ? (nextChapter.abstractTitle || nextChapter.title || nextChapter.id) : '次の章'}
-                          </button>
-                          {' '}から始めよう
-                        </>
-                      ) : (
-                        <span className="font-bold text-[#1B2631]">全問制覇！おつかれさまでした。</span>
-                      )}
+          {/* 連続学習カード（ペンギンのマスコット付き） */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
+            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] p-5 md:p-6 shadow-[0_10px_26px_-14px_rgba(46,134,222,0.45)] border border-[#A9CCE3]/40 relative overflow-hidden h-full flex items-center gap-3">
+              <div className="flex flex-col gap-1 w-full min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl" aria-hidden="true">🔥</span>
+                  <span className="font-bold text-sm tracking-widest text-[#1B2631] font-modern">連続学習</span>
+                </div>
+                <div className="flex items-baseline gap-1 mt-1.5">
+                  <span className="text-5xl md:text-6xl font-bold font-handwriting text-[#2E86DE]">{streak}</span>
+                  <span className="text-sm font-modern text-[#1B2631] font-medium">{streak > 0 ? '日連続' : '日目'}</span>
+                </div>
+                {nextMilestone && (
+                  <div className="mt-3 pt-3 border-t border-[#A9CCE3]/30">
+                    <p className="text-[11px] md:text-xs text-[#5D6D7E] font-modern tracking-wide leading-snug">
+                      <span className="opacity-80">次のマイルストーン：</span>
+                      <span className="font-bold text-[#1B2631]">{nextMilestone.target}日連続</span>
+                      <span className="opacity-80">まであと</span>
+                      <span className="font-bold text-[#1B2631]"> {nextMilestone.remaining}日</span>
                     </p>
-                  )}
-                </div>
-                <div>
-                  {/* ARIA progressbar（高コントラスト版） */}
-                  <div
-                    role="progressbar"
-                    aria-label="学習進捗"
-                    aria-valuenow={progressPercent}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuetext={`${solvedQuestions} / ${totalQuestions} 問解答済み（${progressPercent}%）`}
-                    className="w-full bg-[#E5E1D8] rounded-full h-2.5 mb-3 overflow-hidden shadow-inner flex-shrink-0"
-                  >
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progressPercent}%` }}
-                      transition={{ duration: 1, delay: 0.5 }}
-                      className="bg-gradient-to-r from-[#E8688E] to-[#D9466E] h-full rounded-full"
-                    />
+                    {/* マイルストーン進捗バー */}
+                    <div className="w-full bg-[#E3F0FB] rounded-full h-1.5 mt-2 overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.min(100, (streak / nextMilestone.target) * 100)}%` }}
+                        transition={{ duration: 0.9, delay: 0.4 }}
+                        className="h-full rounded-full bg-gradient-to-r from-[#4FA3F0] to-[#2E86DE]"
+                      />
+                    </div>
                   </div>
-                  <p className="text-[13px] text-[#4B5563] font-modern text-right font-medium">{solvedQuestions} / {totalQuestions} 問解答済み ({progressPercent}%)</p>
-                </div>
+                )}
               </div>
-            </motion.div>
-          </div>
+              {/* ペンギンのマスコット */}
+              <img
+                src="/penguin_mascot.png"
+                alt="勉強するペンギンのマスコット"
+                className="w-24 md:w-32 h-auto object-contain shrink-0 drop-shadow-sm self-end -mb-1 -mr-1"
+              />
+            </div>
+          </motion.div>
+
+          {/* 学習進捗カード */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }}>
+            <div className="border border-[#A9CCE3]/40 rounded-[20px] p-5 md:p-6 bg-white/90 backdrop-blur-sm shadow-[0_10px_26px_-14px_rgba(46,134,222,0.45)] h-full flex flex-col justify-between">
+              <div>
+                <h2 className="font-bold text-[16px] mb-3 text-[#1B2631] font-modern flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-[#4FA3F0]" aria-hidden="true" />
+                  学習進捗
+                </h2>
+                {solvedQuestions === 0 ? (
+                  <>
+                    <p className="text-xs md:text-sm text-[#5D6D7E] font-modern leading-relaxed mb-3">
+                      各単元の問題を解くことで進捗が自動的に記録されます。すべての問題を解いて、化学基礎を完全攻略しましょう！
+                    </p>
+                    <button
+                      onClick={onStart}
+                      className="inline-flex items-center gap-1.5 text-[13px] md:text-sm font-bold font-modern text-[#1B2631] hover:text-[#2E86DE] transition-colors mb-6 group"
+                    >
+                      まず第1章から始めよう
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
+                    </button>
+                  </>
+                ) : (
+                  <p className="text-xs md:text-sm text-[#5D6D7E] font-modern leading-relaxed mb-6">
+                    {solvedQuestions < totalQuestions ? (
+                      <>
+                        次の章：
+                        <button
+                          onClick={onStart}
+                          className="font-bold text-[#1B2631] hover:text-[#2E86DE] transition-colors underline-offset-4 hover:underline"
+                        >
+                          {nextChapter ? (nextChapter.abstractTitle || nextChapter.title || nextChapter.id) : '次の章'}
+                        </button>
+                        {' '}から始めよう
+                      </>
+                    ) : (
+                      <span className="font-bold text-[#1B2631]">全問制覇！おつかれさまでした。</span>
+                    )}
+                  </p>
+                )}
+              </div>
+              <div>
+                <div
+                  role="progressbar"
+                  aria-label="学習進捗"
+                  aria-valuenow={progressPercent}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuetext={`${solvedQuestions} / ${totalQuestions} 問解答済み（${progressPercent}%）`}
+                  className="w-full bg-[#E3F0FB] rounded-full h-2.5 mb-3 overflow-hidden shadow-inner flex-shrink-0"
+                >
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progressPercent}%` }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                    className="bg-gradient-to-r from-[#4FA3F0] to-[#2E86DE] h-full rounded-full"
+                  />
+                </div>
+                <p className="text-[13px] text-[#5D6D7E] font-modern text-right font-medium">{solvedQuestions} / {totalQuestions} 問解答済み ({progressPercent}%)</p>
+              </div>
+            </div>
+          </motion.div>
         </div>
-        
-        {/* Start Button (Mobile only) */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }} className="mt-10 lg:hidden">
-          <button 
-            onClick={onStart} 
-            className="w-full bg-gradient-to-r from-[#E8688E] to-[#D9466E] text-white py-4 px-6 rounded-full font-bold flex items-center justify-between group hover:from-[#E0577F] hover:to-[#C93B61] transition-colors shadow-[0_8px_20px_rgba(217,70,110,0.3)] min-h-[56px]"
+
+        {/* ===== メインCTA：学習を始める（空色グラデのワイドピル） ===== */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} className="mt-6">
+          <button
+            onClick={onStart}
+            className="w-full bg-gradient-to-r from-[#4FA3F0] to-[#2E86DE] text-white py-4 md:py-5 px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#3E96EC] hover:to-[#2477CC] transition-colors shadow-[0_12px_28px_-10px_rgba(46,134,222,0.55)] min-h-[60px]"
           >
             <div className="flex items-center gap-3">
-              <BookOpen className="w-5 h-5" aria-hidden="true" />
-              <span className="font-modern tracking-widest text-[15px]">{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</span>
+              <BookOpen className="w-6 h-6" aria-hidden="true" />
+              <span className="font-modern tracking-widest text-[16px] md:text-[17px]">{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</span>
             </div>
-            <ChevronRight className="w-5 h-5 text-white/60 group-hover:text-white transition-colors group-hover:translate-x-1" aria-hidden="true" />
+            <ArrowRight className="w-6 h-6 text-white/70 group-hover:text-white transition-all group-hover:translate-x-1" aria-hidden="true" />
           </button>
         </motion.div>
 
-        {/* Extra Links (App Info / Notes)
-            ★ 修正：テキストリンク → ピル型ボタンへ
-              - 角丸（rounded-full）でカプセル状
-              - 薄いボーダー（border-[#D1D5DB]）で囲み、タップ可能なアフォーダンスを明示
-              - 内側にアイコン+余白（gap-2, px-5 py-2.5）
-              - hover時に背景がわずかに沈む（bg-[#F4F1EA]）
-              - 最低タッチターゲット高さ44px（min-h-[44px]）を確保 */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.6 }} className="mt-8 md:mt-12 flex flex-wrap justify-center gap-3 md:gap-4">
+        {/* ===== セカンダリ：ノートを見る / アプリ紹介（白いカードボタン） ===== */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <button
             onClick={onNoteList}
             aria-label="個人ノート一覧を開く"
-            className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-full border border-[#F4A9C4]/50 bg-white/85 backdrop-blur-sm text-sm font-modern font-medium text-[#1B2631] hover:bg-[#FDE8EF] hover:border-[#E8688E]/50 active:scale-[0.98] transition-all shadow-sm"
+            className="flex items-center gap-4 px-5 py-4 rounded-[18px] border border-[#A9CCE3]/40 bg-white/90 backdrop-blur-sm hover:bg-[#F4FAFF] hover:border-[#4FA3F0]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(46,134,222,0.4)] text-left group"
           >
-            <Edit3 className="w-4 h-4 text-[#E07FA0]" aria-hidden="true" />
-            <span>ノート</span>
+            <div className="w-11 h-11 rounded-2xl bg-[#E3F0FB] flex items-center justify-center shrink-0">
+              <Edit3 className="w-5 h-5 text-[#4FA3F0]" aria-hidden="true" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">ノートを見る</div>
+              <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">自分のまとめを確認しよう</div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#4FA3F0] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
           </button>
+
           <button
             onClick={onIntro}
             aria-label="アプリ紹介を開く"
-            className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-full border border-[#F4A9C4]/50 bg-white/85 backdrop-blur-sm text-sm font-modern font-medium text-[#1B2631] hover:bg-[#FDE8EF] hover:border-[#E8688E]/50 active:scale-[0.98] transition-all shadow-sm"
+            className="flex items-center gap-4 px-5 py-4 rounded-[18px] border border-[#A9CCE3]/40 bg-white/90 backdrop-blur-sm hover:bg-[#F4FAFF] hover:border-[#4FA3F0]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(46,134,222,0.4)] text-left group"
           >
-            <CheckCircle className="w-4 h-4 text-[#E07FA0]" aria-hidden="true" />
-            <span>アプリ紹介</span>
+            <div className="w-11 h-11 rounded-2xl bg-[#E3F0FB] flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-5 h-5 text-[#4FA3F0]" aria-hidden="true" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">アプリ紹介</div>
+              <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">使い方や機能をチェック</div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#4FA3F0] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
           </button>
         </motion.div>
       </div>

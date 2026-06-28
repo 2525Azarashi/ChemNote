@@ -825,19 +825,22 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         ? `p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
         : `p-4 md:p-6 relative z-10 flex-1 overflow-hidden flex flex-col ${mode === 'mini_test' ? 'bg-white' : ''}`
       }>
-      {/* Weak Areas Analysis */}
+      {/* Weak Areas Analysis
+          ★ 修正：問題数が多い場合（弱点エリアが多数）に desktop で潜在的にはみ出してスクロールできなかった不具合を解消。
+            - ブロック自体は flex-none（縮まない）
+            - 見出しは固定し、カードのグリッド部分だけを max-height 付きで縦スクロール可能にする */}
         {singleQuestionIndex === undefined && weakAreas.length > 0 && (
-          <div className={`rounded-2xl p-5 md:p-6 shadow-lg border relative overflow-hidden ${
+          <div className={`rounded-2xl p-5 md:p-6 shadow-lg border relative flex flex-col flex-none ${
             mode === 'mini_test' ? 'bg-gray-50 border-gray-100' : 'bg-[#1C2541]/50 border-[#3A506B]/50'
           }`}>
-            <h3 className={`text-lg md:text-xl font-bold mb-4 md:mb-6 flex items-center gap-2 ${
+            <h3 className={`text-lg md:text-xl font-bold mb-4 md:mb-6 flex items-center gap-2 flex-none ${
               mode === 'mini_test' ? 'text-[#2C3E50]' : 'text-[#D9A0A0]'
             }`}>
               <TrendingUp className="w-5 h-5 md:w-6 md:h-6" />
               <span>分析結果：復習推奨エリア</span>
             </h3>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 overflow-y-auto max-h-[40vh] md:max-h-[34vh] pr-1 -mr-1">
               {weakAreas.map((area) => (
                 <div key={area.category} className={`p-4 md:p-5 rounded-xl border shadow-sm ${
                   mode === 'mini_test' ? 'bg-white border-gray-100' : 'bg-[#0B132B]/80 border-[#1C2541]'

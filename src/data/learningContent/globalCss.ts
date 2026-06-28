@@ -243,11 +243,24 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
       .learning-content figure {
         text-align: center;
         margin: 20px 0;
+        max-width: 100%;
+        overflow-x: auto;
+      }
+      .learning-content figure img,
+      .learning-content img,
+      .learning-content svg {
+        max-width: 100% !important;
+        height: auto;
+        border-radius: 4px;
       }
       .learning-content figure img {
-        max-width: 100%;
         border: 1px solid #ddd;
-        border-radius: 4px;
+      }
+      /* 横に広い表は内部スクロールで全体を確認できるようにする */
+      .learning-content .table-wrap,
+      .learning-content .scroll-x {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
       .learning-content figcaption {
         font-size: 0.85em;
