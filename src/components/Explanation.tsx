@@ -588,9 +588,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const content = (
     <div className={isMobile 
       ? `explanation-desktop-wrapper active` 
-      : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-50 pb-20 md:pb-0`
+      : isResultView
+        ? `w-full min-h-screen flex flex-col bg-[#FDFBF7] overflow-y-auto z-50 pb-20 md:pb-0`
+        : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-50 pb-20 md:pb-0`
     }>
-      <div className={isMobile ? "explanation-desktop-content" : "w-full h-full flex flex-col"}>
+      <div className={isMobile ? "explanation-desktop-content" : (isResultView ? "w-full min-h-screen flex flex-col" : "w-full h-full flex flex-col")}>
         {isMobile && (
           <div className="explanation-scroll-hint">
             横にスワイプして全体を確認できます →
@@ -602,7 +604,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 ? 'bg-white text-gray-800 border-gray-100' 
                 : 'bg-[#0B132B] text-[#E0E1DD] border-[#1C2541]'
             }`
-          : `w-full h-full flex flex-col font-handwriting relative ${
+          : `${isResultView ? 'w-full min-h-screen' : 'w-full h-full'} flex flex-col font-handwriting relative ${
               mode === 'mini_test' 
                 ? 'bg-white text-gray-800' 
                 : 'bg-[#0B132B] text-[#E0E1DD]'
@@ -823,7 +825,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
 
       <div className={isMobile
         ? `p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
-        : `p-4 md:p-6 relative z-10 flex-1 overflow-hidden flex flex-col ${mode === 'mini_test' ? 'bg-white' : ''}`
+        : isResultView
+          ? `p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
+          : `p-4 md:p-6 relative z-10 flex-1 overflow-hidden flex flex-col ${mode === 'mini_test' ? 'bg-white' : ''}`
       }>
       {/* Weak Areas Analysis
           ★ 修正：問題数が多い場合（弱点エリアが多数）に desktop で潜在的にはみ出してスクロールできなかった不具合を解消。
@@ -900,7 +904,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         }>
           <div className={isMobile
             ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8 lg:h-[calc(100vh-220px)] lg:overflow-hidden"
-            : "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 h-full flex-1 overflow-hidden"
+            : isResultView
+              ? "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0"
+              : "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 h-full flex-1 overflow-hidden"
           }>
             
             {/* LEFT COLUMN: Problem statements and flowcharts */}

@@ -9,7 +9,7 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-type StepType = 1 | 2 | 3 | 4 | 'both' | null;
+type StepType = number | string | null;
 
 export interface NodeData {
   id: string;

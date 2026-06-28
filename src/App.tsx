@@ -294,12 +294,18 @@ export default function App() {
     }
   };
 
-  const handleSelectChapter = (chapterId: string, questionIndex = 0) => {
+  const handleSelectChapter = (chapterId: string, questionIndex = 0, resume = false) => {
     setSelectedChapterId(chapterId);
     setAppState('quiz');
-    setQuizAnswers({});
     setLastQuizResult(null);
-    localStorage.setItem(`quiz_idx_${chapterId}_${appMode}`, questionIndex.toString());
+
+    if (!resume) {
+      setQuizAnswers({});
+      localStorage.removeItem(`quiz_answers_${chapterId}_${appMode}`);
+      localStorage.removeItem(`quiz_run_${chapterId}_${appMode}`);
+      localStorage.removeItem(`quiz_expl_${chapterId}_${appMode}`);
+      localStorage.setItem(`quiz_idx_${chapterId}_${appMode}`, questionIndex.toString());
+    }
   };
 
   const handleFinishQuiz = (answers: Record<string, string>, result?: any) => {

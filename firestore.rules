@@ -76,5 +76,33 @@ service cloud.firestore {
         && request.resource.data.score <= 1000000;
       allow update, delete: if false;
     }
+
+
+    // Googleログインユーザー向けフレンド機能
+    match /friend_profiles/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isOwner(userId)
+        && request.resource.data.uid == request.auth.uid;
+      allow delete: if false;
+    }
+
+    match /friend_requests/{requestId} {
+      allow read: if isAuthenticated()
+        && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+      allow create: if isAuthenticated()
+        && request.resource.data.fromUid == request.auth.uid
+        && request.resource.data.toUid is string;
+      allow delete: if isAuthenticated()
+        && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+      allow update: if false;
+    }
+
+    match /friends/{userId}/items/{friendUid} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow create, update: if isAuthenticated()
+        && (request.auth.uid == userId || request.resource.data.uid == request.auth.uid);
+      allow delete: if isAuthenticated()
+        && (request.auth.uid == userId || friendUid == request.auth.uid);
+    }
   }
 }

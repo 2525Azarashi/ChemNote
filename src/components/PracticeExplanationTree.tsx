@@ -43,7 +43,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   const isChemicalEquationChapter = chapter?.id === 'c4_3';
   const isConcentrationChapter = chapter?.id === 'c4_4';
   
-  let currentTreeData = substanceTreeData;
+  let currentTreeData: NodeData = substanceTreeData;
   if (isSeparationChapter) currentTreeData = separationTreeData;
   if (isThermalMotionChapter) currentTreeData = thermalMotionTreeData;
   if (isAtomicStructureChapter) currentTreeData = atomicStructureTreeData;

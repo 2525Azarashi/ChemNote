@@ -53,17 +53,17 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
   const sectionHtml = SECTION_HTML[activeTab];
 
   return (
-    <div className="w-full min-h-screen bg-[#FDFBF7] font-modern pb-20 relative">
+    <div className="w-full min-h-screen bg-[#FDFBF7] font-modern pb-20 relative notebook-paper">
       {/* ===== グローバル学習プリント用 CSS（ビルド時に .learning-content スコープ済み）===== */}
       <style dangerouslySetInnerHTML={{ __html: LEARNING_GLOBAL_CSS }} />
 
-      <div className="max-w-5xl mx-auto px-4 py-6 md:py-8 relative">
+      <div className="w-full px-0 py-0 relative">
         {/* Absolute Background Blur */}
         <div className="absolute top-10 left-10 w-48 h-48 bg-[#A9CCE3]/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-20 right-10 w-64 h-64 bg-[#F9E79F]/10 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Back and Title Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-0 px-4 md:px-8 py-4 md:py-5 bg-white/80 backdrop-blur-sm border-b border-gray-150 sticky top-0 z-30">
           <div className="flex items-center gap-3">
             <button
               onClick={onBack}
@@ -83,7 +83,7 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
         </div>
 
         {/* Responsive Topic Tab Scroll Container */}
-        <div className="flex gap-2 overflow-x-auto pb-4 mb-6 -mx-4 px-4 scrollbar-none snap-x z-20 relative">
+        <div className="flex gap-2 overflow-x-auto py-3 mb-0 px-4 md:px-8 scrollbar-none snap-x z-20 relative bg-[#FDFBF7]/80 backdrop-blur-sm border-b border-gray-150">
           {SECTIONS.map(sec => (
             <button
               key={sec.id}
@@ -99,7 +99,7 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
         </div>
 
         {/* The Main Notebook-Styled Paper Page Container */}
-        <div className="w-full notebook-paper rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-12 relative min-h-[70vh] shadow-lg border border-gray-150">
+        <div className="w-full notebook-paper rounded-none p-4 sm:p-8 md:p-12 relative min-h-[calc(100vh-140px)] shadow-none border-0">
           {/* Vertical Red Binder Line */}
           <div className="absolute top-0 bottom-0 left-[14px] sm:left-[36px] w-[1.5px] bg-red-200/50 pointer-events-none"></div>
 

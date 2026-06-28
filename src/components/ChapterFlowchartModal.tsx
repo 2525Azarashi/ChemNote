@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, GitBranch } from 'lucide-react';
-import { InteractiveTree } from './InteractiveTree';
+import { InteractiveTree, type NodeData } from './InteractiveTree';
 import { motion } from 'motion/react';
 import { 
   substanceTreeData, 
@@ -36,7 +36,7 @@ export function ChapterFlowchartModal({
 }: ChapterFlowchartModalProps) {
   
   // Resolve correct tree data by chapterId
-  let currentTreeData = substanceTreeData;
+  let currentTreeData: NodeData = substanceTreeData;
   if (chapterId === 'c1_2_A') currentTreeData = separationTreeData;
   if (chapterId === 'c1_3') currentTreeData = thermalMotionTreeData;
   if (chapterId === 'c2_1') currentTreeData = atomicStructureTreeData;

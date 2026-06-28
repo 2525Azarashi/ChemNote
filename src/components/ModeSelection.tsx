@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Target, BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical } from 'lucide-react';
 import { TrendModal } from './TrendModal';
+import { MntbLogo } from './MntbLogo';
 
 interface ModeSelectionProps {
   onSelectMode: (mode: 'mini_test' | 'practice' | 'learning') => void;
@@ -26,15 +27,8 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
           <span>戻る</span>
         </button>
 
-        {/* Logo（マナトビ・インラインロゴ） */}
-        <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30 flex items-center gap-2 select-none">
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-2xl bg-gradient-to-br from-[#4FA3F0] to-[#2E86DE] flex items-center justify-center shadow-[0_6px_14px_-4px_rgba(46,134,222,0.6)]">
-            <BookOpen className="w-[18px] h-[18px] md:w-[22px] md:h-[22px] text-white" strokeWidth={2.4} aria-hidden="true" />
-          </div>
-          <span className="font-handwriting font-bold text-lg md:text-2xl text-[#1B2631] tracking-wide">
-            マナトビ
-          </span>
-        </div>
+        {/* Logo（従来の mntb を模したインラインロゴ） */}
+        <MntbLogo size="sm" className="absolute top-4 right-4 md:top-6 md:right-6 z-30" />
 
         <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-[#2C3E50] mb-8 md:mb-12 mt-12 md:mt-0">
           学習モードを選択
