@@ -136,21 +136,23 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
       {/* 桜を降らせる装飾（量を増やして春らしさを強調） */}
       <SakuraPetals count={48} />
 
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 relative z-10">
+      {/* PC（lg以上）ではスクロールせず1画面に収める：縦パディングを詰め、はみ出しを隠す。
+          スマホ/タブレットは従来どおり縦スクロール可能。 */}
+      <div className="flex-1 overflow-y-auto lg:overflow-hidden no-scrollbar pb-32 lg:pb-24 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 lg:pt-5 relative z-10 lg:flex lg:flex-col">
 
         {/* ===== トップバー：左上ロゴ ＋ 右上の情報 ===== */}
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="flex items-center justify-between mb-7 md:mb-8"
+          className="flex items-center justify-between mb-7 md:mb-8 lg:mb-4"
         >
           {/* 左上ロゴ（従来の mntb を模したロゴ） */}
           <MntbLogo />
         </motion.div>
 
         {/* ===== 挨拶 ＋ カウントダウン ===== */}
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-7 md:mb-8">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-7 md:mb-8 lg:mb-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting">
             <h1 className="text-[22px] md:text-[30px] text-[#1B2631] font-bold tracking-wide">
               おかえり、{greetingName}さん
@@ -182,7 +184,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         </div>
 
         {/* ===== メインカード群 ===== */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6 lg:gap-5">
 
           {/* 連続学習カード（とびら君マスコット＋化学豆知識付き） */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
@@ -285,10 +287,10 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         </div>
 
         {/* ===== メインCTA：学習を始める（空色グラデのワイドピル） ===== */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} className="mt-6">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} className="mt-6 lg:mt-5">
           <button
             onClick={onStart}
-            className="w-full bg-gradient-to-r from-[#E89AAF] to-[#D98AA0] text-white py-4 md:py-5 px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#E38EA6] hover:to-[#CC7890] transition-colors shadow-[0_12px_28px_-10px_rgba(217,138,160,0.55)] min-h-[60px]"
+            className="w-full bg-gradient-to-r from-[#E89AAF] to-[#D98AA0] text-white py-4 md:py-5 lg:py-3.5 px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#E38EA6] hover:to-[#CC7890] transition-colors shadow-[0_12px_28px_-10px_rgba(217,138,160,0.55)] min-h-[60px] lg:min-h-[54px]"
           >
             <div className="flex items-center gap-3">
               <BookOpen className="w-6 h-6" aria-hidden="true" />
@@ -299,13 +301,13 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         </motion.div>
 
         {/* ===== セカンダリ：ノートを見る / アプリ紹介（白いカードボタン） ===== */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <button
             onClick={onNoteList}
             aria-label="個人ノート一覧を開く"
-            className="flex items-center gap-4 px-5 py-4 rounded-[18px] border border-[#A9CCE3]/40 bg-white/90 backdrop-blur-sm hover:bg-[#F4FAFF] hover:border-[#4FA3F0]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(46,134,222,0.4)] text-left group"
+            className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#A9CCE3]/40 bg-white/90 backdrop-blur-sm hover:bg-[#F4FAFF] hover:border-[#4FA3F0]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(46,134,222,0.4)] text-left group"
           >
-            <div className="w-11 h-11 rounded-2xl bg-[#E3F0FB] flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#E3F0FB] flex items-center justify-center shrink-0">
               <Edit3 className="w-5 h-5 text-[#4FA3F0]" aria-hidden="true" />
             </div>
             <div className="flex-1 min-w-0">
@@ -318,9 +320,9 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           <button
             onClick={onIntro}
             aria-label="アプリ紹介を開く"
-            className="flex items-center gap-4 px-5 py-4 rounded-[18px] border border-[#A9CCE3]/40 bg-white/90 backdrop-blur-sm hover:bg-[#F4FAFF] hover:border-[#4FA3F0]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(46,134,222,0.4)] text-left group"
+            className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#A9CCE3]/40 bg-white/90 backdrop-blur-sm hover:bg-[#F4FAFF] hover:border-[#4FA3F0]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(46,134,222,0.4)] text-left group"
           >
-            <div className="w-11 h-11 rounded-2xl bg-[#E3F0FB] flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#E3F0FB] flex items-center justify-center shrink-0">
               <ShieldCheck className="w-5 h-5 text-[#4FA3F0]" aria-hidden="true" />
             </div>
             <div className="flex-1 min-w-0">

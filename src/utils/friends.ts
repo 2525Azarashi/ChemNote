@@ -92,8 +92,14 @@ export async function sendFriendRequest(friendCode: string): Promise<string> {
 export async function fetchFriendRequests(): Promise<FriendRequest[]> {
   const user = auth.currentUser;
   if (!user) return [];
-  const snaps = await getDocs(query(collection(db, 'friend_requests'), where('toUid', '==', user.uid)));
-  return snaps.docs.map((s) => ({ id: s.id, ...(s.data() as Omit<FriendRequest, 'id'>) }));
+  try {
+    const snaps = await getDocs(query(collection(db, 'friend_requests'), where('toUid', '==', user.uid)));
+    return snaps.docs.map((s) => ({ id: s.id, ...(s.data() as Omit<FriendRequest, 'id'>) }));
+  } catch (e) {
+    // 権限エラー（ルール未デプロイなど）でもパネル全体を壊さないよう、空配列で返す。
+    console.error('フレンド申請の取得に失敗しました:', e);
+    return [];
+  }
 }
 
 // 届いている（自分宛の）フレンド申請の件数を取得する。設定ボタンのバッジ表示などに使用。
@@ -133,8 +139,13 @@ export async function rejectFriendRequest(req: FriendRequest) {
 export async function fetchFriends(): Promise<Array<{ uid: string; nickname: string; photoURL?: string }>> {
   const user = auth.currentUser;
   if (!user) return [];
-  const snaps = await getDocs(collection(db, 'friends', user.uid, 'items'));
-  return snaps.docs.map((s) => s.data() as { uid: string; nickname: string; photoURL?: string });
+  try {
+    const snaps = await getDocs(collection(db, 'friends', user.uid, 'items'));
+    return snaps.docs.map((s) => s.data() as { uid: string; nickname: string; photoURL?: string });
+  } catch (e) {
+    console.error('フレンド一覧の取得に失敗しました:', e);
+    return [];
+  }
 }
 
 export async function removeFriend(friendUid: string) {

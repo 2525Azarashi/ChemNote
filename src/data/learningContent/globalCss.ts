@@ -249,8 +249,13 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
       .learning-content figure img,
       .learning-content img,
       .learning-content svg {
-        max-width: 100% !important;
+        /* 余白を詰めても画像が巨大化しないよう、コンテナ幅(100%)に加えて
+           実寸の上限(620px)も設定し、図版が大きくなりすぎないようにする。 */
+        max-width: min(100%, 620px) !important;
         height: auto;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
         border-radius: 4px;
       }
       .learning-content figure img {
