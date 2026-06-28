@@ -335,6 +335,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
    */
   const scoreCurrentQuestionIfNeeded = () => {
     if (!currentQuestion) return null;
+    if (run.perQuestion[currentQuestion.id]) return null;
     if (lastScoredQuestionRef.current === currentQuestion.id) return null;
     lastScoredQuestionRef.current = currentQuestion.id;
 

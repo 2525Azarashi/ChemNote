@@ -8,7 +8,7 @@ import { chapterTrends } from '../data/trendData';
 
 interface ChapterSelectionProps {
   mode: 'mini_test' | 'practice';
-  onSelectChapter: (id: string, questionIndex?: number) => void;
+  onSelectChapter: (id: string, questionIndex?: number, resume?: boolean) => void;
   onBack: () => void;
 }
 
@@ -120,6 +120,19 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
                         {(chapters as any[]).map(chapter => {
                           const questions = mode === 'mini_test' ? (chapter as any).miniTest : ((chapter as any).practiceProblems || []);
                           const hasQuestions = questions.length > 0;
+                          const savedIndex = Math.max(0, Math.min(
+                            questions.length - 1,
+                            parseInt(localStorage.getItem(`quiz_idx_${chapter.id}_${mode}`) || '0', 10) || 0
+                          ));
+                          const hasSavedProgress = hasQuestions && (
+                            savedIndex > 0 ||
+                            localStorage.getItem(`quiz_expl_${chapter.id}_${mode}`) === 'true' ||
+                            !!localStorage.getItem(`quiz_run_${chapter.id}_${mode}`) ||
+                            (() => {
+                              try { return Object.keys(JSON.parse(localStorage.getItem(`quiz_answers_${chapter.id}_${mode}`) || '{}')).length > 0; }
+                              catch { return false; }
+                            })()
+                          );
                           // この単元の出題傾向情報
                           const trendInfo = chapterIdToTrendUnit[chapter.id];
 
@@ -166,12 +179,22 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
                                 {/* Action buttons */}
                                 <div className="flex flex-wrap items-center gap-2 font-bold font-handwriting">
                                   {hasQuestions ? (
-                                    <button
-                                      onClick={() => onSelectChapter(chapter.id, 0)}
-                                      className="flex-1 min-w-[90px] text-center bg-[#2C3E50] text-white hover:bg-[#1B2631] font-bold font-handwriting text-xs py-2 px-3 rounded-xl shadow-xs transition-colors cursor-pointer"
-                                    >
-                                      最初から解く
-                                    </button>
+                                    <>
+                                      <button
+                                        onClick={() => onSelectChapter(chapter.id, 0, false)}
+                                        className="flex-1 min-w-[90px] text-center bg-[#2C3E50] text-white hover:bg-[#1B2631] font-bold font-handwriting text-xs py-2 px-3 rounded-xl shadow-xs transition-colors cursor-pointer"
+                                      >
+                                        最初から解く
+                                      </button>
+                                      {hasSavedProgress && (
+                                        <button
+                                          onClick={() => onSelectChapter(chapter.id, savedIndex, true)}
+                                          className="flex-1 min-w-[110px] text-center bg-[#D9A0A0] text-white hover:bg-[#C98787] font-bold font-handwriting text-xs py-2 px-3 rounded-xl shadow-xs transition-colors cursor-pointer"
+                                        >
+                                          途中から開始
+                                        </button>
+                                      )}
+                                    </>
                                   ) : (
                                     <span className="text-xs text-gray-400 bg-gray-100/50 px-2.5 py-2 rounded-lg font-handwriting">
                                       準備中
@@ -219,7 +242,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
                                       {questions.map((q: any, qIdx: number) => (
                                         <button
                                           key={q.id}
-                                          onClick={() => onSelectChapter(chapter.id, qIdx)}
+                                          onClick={() => onSelectChapter(chapter.id, qIdx, false)}
                                           className="w-full text-left p-1.5 hover:bg-[#A9CCE3]/15 rounded-lg flex justify-between items-center text-xs text-slate-700 bg-white/60 border border-gray-150 hover:border-[#A9CCE3]/30 transition-all font-bold font-handwriting cursor-pointer"
                                         >
                                           <span className="truncate pr-1.5 font-handwriting">{q.category || `問 ${qIdx + 1}`}</span>
@@ -256,7 +279,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
             chapterTitle={selectedFlowchart.title}
             questions={selectedFlowchart.questions}
             onClose={() => setSelectedFlowchart(null)}
-            onSelectQuestion={(qIdx) => onSelectChapter(selectedFlowchart.id, qIdx)}
+            onSelectQuestion={(qIdx) => onSelectChapter(selectedFlowchart.id, qIdx, false)}
           />
         )}
       </AnimatePresence>

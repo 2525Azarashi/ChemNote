@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { auth, provider } from '../firebase';
 import { signOut, signInWithPopup } from 'firebase/auth';
 import { ChevronLeft, User, LogOut, Flame, BookOpen, GraduationCap, Compass, Settings, Volume2, VolumeX, LogIn } from 'lucide-react';
+import { FriendPanel } from './FriendPanel';
 
 interface ProfileModalProps {
   onClose: () => void;
@@ -171,6 +172,8 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, bgmVolume
               </select>
             </div>
           </div>
+
+          {auth.currentUser && <FriendPanel />}
 
           {/* Sound & Music Settings */}
           <div className="bg-white border border-gray-150 p-5 rounded-3xl shadow-sm space-y-4">

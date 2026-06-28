@@ -5,6 +5,8 @@ import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
 import { SakuraPetals } from './SakuraPetals';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
+import { MntbLogo } from './MntbLogo';
+import { DoorMascot } from './DoorMascot';
 
 interface HomeProps {
   onStart: () => void;
@@ -116,14 +118,14 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   const greetingName = profile?.name || 'ゲスト';
 
   return (
-    // タイトル画面：黒淵のフレームを撤去し、空色グラデ＋ノート罫線の柔らかい背景を全面に広げる
-    <div className="w-full min-h-[100dvh] sm:min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#E3F0FB] via-[#F4FAFF] to-[#EAF4FC]">
+    // タイトル画面：他ページと馴染む淡いピンク基調＋ノート罫線の柔らかい背景を全面に広げる
+    <div className="w-full min-h-[100dvh] sm:min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE]">
 
       {/* 背景：うっすらノート罫線（手書き風の余韻を残す） */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.18]"
         style={{
-          backgroundImage: 'linear-gradient(transparent calc(2.5rem - 1px), #A9CCE3 calc(2.5rem - 1px))',
+          backgroundImage: 'linear-gradient(transparent calc(2.5rem - 1px), #F0C7D2 calc(2.5rem - 1px))',
           backgroundSize: '100% 2.5rem',
         }}
       />
@@ -140,15 +142,8 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           transition={{ duration: 0.4 }}
           className="flex items-center justify-between mb-7 md:mb-8"
         >
-          {/* 左上ロゴ（マナトビ） */}
-          <div className="flex items-center gap-2.5 select-none">
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-2xl bg-gradient-to-br from-[#4FA3F0] to-[#2E86DE] flex items-center justify-center shadow-[0_6px_14px_-4px_rgba(46,134,222,0.6)]">
-              <BookOpen className="w-5 h-5 md:w-[22px] md:h-[22px] text-white" strokeWidth={2.4} aria-hidden="true" />
-            </div>
-            <span className="font-handwriting font-bold text-xl md:text-2xl text-[#1B2631] tracking-wide">
-              マナトビ
-            </span>
-          </div>
+          {/* 左上ロゴ（従来の mntb を模したロゴ） */}
+          <MntbLogo />
         </motion.div>
 
         {/* ===== 挨拶 ＋ カウントダウン ===== */}
@@ -186,7 +181,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         {/* ===== メインカード群 ===== */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
 
-          {/* 連続学習カード（ペンギンのマスコット付き） */}
+          {/* 連続学習カード（とびら君マスコット＋化学豆知識付き） */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
             <div className="bg-white/90 backdrop-blur-sm rounded-[20px] p-5 md:p-6 shadow-[0_10px_26px_-14px_rgba(46,134,222,0.45)] border border-[#A9CCE3]/40 relative overflow-hidden h-full flex items-center gap-3">
               <div className="flex flex-col gap-1 w-full min-w-0">
@@ -218,12 +213,8 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   </div>
                 )}
               </div>
-              {/* ペンギンのマスコット */}
-              <img
-                src="/penguin_mascot.png"
-                alt="勉強するペンギンのマスコット"
-                className="w-24 md:w-32 h-auto object-contain shrink-0 drop-shadow-sm self-end -mb-1 -mr-1"
-              />
+              {/* とびら君マスコット：開くたびにランダムなポーズと豆知識を表示 */}
+              <DoorMascot className="hidden sm:flex self-end -mb-2 -mr-2 max-w-[360px]" />
             </div>
           </motion.div>
 
@@ -294,7 +285,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} className="mt-6">
           <button
             onClick={onStart}
-            className="w-full bg-gradient-to-r from-[#4FA3F0] to-[#2E86DE] text-white py-4 md:py-5 px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#3E96EC] hover:to-[#2477CC] transition-colors shadow-[0_12px_28px_-10px_rgba(46,134,222,0.55)] min-h-[60px]"
+            className="w-full bg-gradient-to-r from-[#E89AAF] to-[#D98AA0] text-white py-4 md:py-5 px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#E38EA6] hover:to-[#CC7890] transition-colors shadow-[0_12px_28px_-10px_rgba(217,138,160,0.55)] min-h-[60px]"
           >
             <div className="flex items-center gap-3">
               <BookOpen className="w-6 h-6" aria-hidden="true" />
