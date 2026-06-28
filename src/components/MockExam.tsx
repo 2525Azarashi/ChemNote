@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, ArrowRight, Check, X, ChevronRight, BookOpen, RotateCcw, Trophy } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowLeft, ArrowRight, Check, X, ChevronRight, BookOpen, RotateCcw, Trophy, Clock } from 'lucide-react';
 import { mockExam, MockExamQuestion } from '../data/mockExamData';
+
+// 共通テスト化学基礎 予想問題の目標時間（30分 = 1800秒）
+const EXAM_DURATION_SEC = 30 * 60;
 
 interface MockExamProps {
   onBack: () => void;
@@ -20,6 +23,35 @@ export function MockExam({ onBack }: MockExamProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showExplanation, setShowExplanation] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
+
+  // ===== 30分タイマー（スコアには影響しない、目標時間の目安表示）=====
+  const [elapsedSec, setElapsedSec] = useState(0);
+  const examStartedAtRef = useRef<number | null>(null);
+  // 解答中の各フェーズ（第2問イントロ含む）でタイマーを動かす
+  const isExamRunning = phase === 'q1_solving' || phase === 'q2_intro' || phase === 'q2_solving';
+
+  useEffect(() => {
+    if (!isExamRunning) return;
+    if (examStartedAtRef.current == null) {
+      examStartedAtRef.current = Date.now() - elapsedSec * 1000;
+    }
+    const id = window.setInterval(() => {
+      if (examStartedAtRef.current != null) {
+        setElapsedSec(Math.floor((Date.now() - examStartedAtRef.current) / 1000));
+      }
+    }, 1000);
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExamRunning]);
+
+  const remainingSec = EXAM_DURATION_SEC - elapsedSec;
+  const isTimeOver = remainingSec < 0;
+  const formatClock = (totalSec: number) => {
+    const s = Math.max(0, Math.floor(totalSec));
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m.toString().padStart(2, '0')}:${r.toString().padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -101,6 +133,9 @@ export function MockExam({ onBack }: MockExamProps) {
     setAnswers({});
     setShowExplanation(false);
     setIsAnswered(false);
+    // タイマーもリセット
+    setElapsedSec(0);
+    examStartedAtRef.current = null;
   };
 
   // ========== イントロ画面 ==========
@@ -165,6 +200,20 @@ export function MockExam({ onBack }: MockExamProps) {
   if (phase === 'q2_intro') {
     return (
       <div className="w-full notebook-paper rounded-2xl p-6 md:p-10 min-h-[60vh] flex flex-col items-center relative font-handwriting">
+        {/* 30分タイマー（目標時間／スコアには影響しません） */}
+        <div
+          className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold font-handwriting tabular-nums transition-colors ${
+            isTimeOver
+              ? 'bg-red-50 border-red-300 text-red-600'
+              : remainingSec < 300
+                ? 'bg-amber-50 border-amber-300 text-amber-700'
+                : 'bg-white/80 border-gray-300 text-[#2C3E50]'
+          }`}
+          title="共通テスト化学基礎の目標時間は30分です（スコアには影響しません）"
+        >
+          <Clock size={13} />
+          {isTimeOver ? <span>超過 +{formatClock(-remainingSec)}</span> : <span>残り {formatClock(remainingSec)}</span>}
+        </div>
         <div className="mt-8 text-center max-w-3xl w-full">
           <div className="bg-[#D9A0A0] text-white text-sm font-bold px-4 py-1 rounded-full inline-block font-handwriting mb-4">
             第１問 完了！ 次は第２問へ
@@ -208,7 +257,14 @@ export function MockExam({ onBack }: MockExamProps) {
           <div className="text-5xl font-bold text-[#D9A0A0] font-handwriting my-4">
             {correct} / {total}点
           </div>
-          <div className="text-xl text-gray-600 font-handwriting mb-6">正答率 {percentage}%</div>
+          <div className="text-xl text-gray-600 font-handwriting mb-2">正答率 {percentage}%</div>
+          {/* 所要時間（30分の目標に対する目安・スコアには影響しません） */}
+          <div className="flex items-center justify-center gap-1.5 text-sm text-gray-500 font-handwriting mb-6">
+            <Clock size={15} />
+            <span>所要時間 {formatClock(elapsedSec)}</span>
+            <span className="text-gray-400">/ 目標 30:00</span>
+            {isTimeOver && <span className="text-red-500 font-bold ml-1">（時間超過）</span>}
+          </div>
 
           <div className="bg-white/80 border border-gray-200 rounded-2xl p-6 mb-6 text-left">
             <h3 className="text-sm font-bold text-[#2C3E50] font-handwriting mb-4">各問の正誤</h3>
@@ -291,15 +347,35 @@ export function MockExam({ onBack }: MockExamProps) {
     <div className="w-full notebook-paper rounded-2xl overflow-hidden font-handwriting">
       {/* ヘッダー */}
       <div className={`bg-gradient-to-r ${bgColor} p-4 border-b border-gray-200`}>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-2 gap-2">
           <button
             onClick={onBack}
-            className="flex items-center gap-1 text-gray-500 hover:text-[#2C3E50] text-xs font-bold font-handwriting"
+            className="flex items-center gap-1 text-gray-500 hover:text-[#2C3E50] text-xs font-bold font-handwriting shrink-0"
           >
             <ArrowLeft size={16} />
             戻る
           </button>
-          <div className="text-xs font-bold text-gray-600 font-handwriting">
+
+          {/* 30分タイマー（目標時間／スコアには影響しません） */}
+          <div
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold font-handwriting tabular-nums shrink-0 transition-colors ${
+              isTimeOver
+                ? 'bg-red-50 border-red-300 text-red-600'
+                : remainingSec < 300
+                  ? 'bg-amber-50 border-amber-300 text-amber-700'
+                  : 'bg-white/80 border-gray-300 text-[#2C3E50]'
+            }`}
+            title="共通テスト化学基礎の目標時間は30分です（スコアには影響しません）"
+          >
+            <Clock size={13} />
+            {isTimeOver ? (
+              <span>超過 +{formatClock(-remainingSec)}</span>
+            ) : (
+              <span>残り {formatClock(remainingSec)}</span>
+            )}
+          </div>
+
+          <div className="text-xs font-bold text-gray-600 font-handwriting shrink-0">
             第{isQ1 ? '1' : '2'}問 {currentIndex + 1} / {totalQuestions}
           </div>
         </div>

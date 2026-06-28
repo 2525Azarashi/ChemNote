@@ -181,11 +181,48 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     }
   }, [isMobileView]);
 
+  // 直前に表示していた問題のインデックスを保持（離脱した問題の回答リセット用）
+  const prevQuestionIndexRef = useRef(currentQuestionIndex);
+
+  /**
+   * 指定インデックスの問題に入力された回答を消去する。
+   * ただし、その問題が既に採点済み（run.perQuestion に記録済み）の場合は保持する
+   * （採点済みの解答は解説表示の答え合わせに必要なため）。
+   * 「一度離れた未提出の問題の回答」だけをリセットし、不正な得点（解答の使い回し）を防ぐ。
+   */
+  const clearAnswersForQuestionIfUnscored = (qIndex: number) => {
+    const q = questions[qIndex];
+    if (!q) return;
+    const scored = !!run.perQuestion[q.id];
+    if (scored) return; // 採点済みは残す
+    const subIds: string[] = (q.subQuestions || []).map((sq: any) => sq.id);
+    if (subIds.length === 0) return;
+    setAnswers(prev => {
+      let changed = false;
+      const next = { ...prev };
+      subIds.forEach(id => {
+        if (id in next) {
+          delete next[id];
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  };
+
   // Clear highlights on new question
   useEffect(() => {
     setHighlights([]);
     timeUsedRef.current = 0;
     lastScoredQuestionRef.current = null;
+
+    // 問題が切り替わったら、離れた（前の）問題の未提出回答をリセットする
+    const leftIndex = prevQuestionIndexRef.current;
+    if (leftIndex !== currentQuestionIndex) {
+      clearAnswersForQuestionIfUnscored(leftIndex);
+      prevQuestionIndexRef.current = currentQuestionIndex;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionIndex]);
 
   // Prevent zoom/pinch out during active quiz, but allow on explanations
@@ -417,6 +454,18 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     }
   };
 
+  /**
+   * クイズから離脱（単元選択に戻る）するときのハンドラ。
+   * 解説表示中でない＝まだ採点していない現在の問題に入力された回答は、
+   * 離脱時にリセットして「離れた問題の回答の使い回し」による不正得点を防ぐ。
+   */
+  const handleExit = () => {
+    if (!showingExplanation) {
+      clearAnswersForQuestionIfUnscored(currentQuestionIndex);
+    }
+    onBack();
+  };
+
   if (showingExplanation) {
     const stored = run.perQuestion[currentQuestion?.id];
     return (
@@ -454,7 +503,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       <div className="flex-none p-2 md:p-6 border-b border-gray-200 bg-white shadow-sm z-10 flex items-center justify-between gap-2 md:gap-4">
         <div className="flex items-center text-left gap-2 md:gap-4 min-w-0">
           <button 
-            onClick={onBack}
+            onClick={handleExit}
             className="flex items-center justify-center p-1.5 md:p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors shrink-0"
           >
             <ArrowLeft size={18} className="md:w-5 md:h-5" />
