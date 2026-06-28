@@ -25,6 +25,8 @@ export function FriendPanel() {
   const load = async () => {
     if (!auth.currentUser) return;
     setLoading(true);
+    // 取得系（fetchFriendRequests / fetchFriends）は内部でエラーを握りつぶし
+    // 空配列を返すため、ここで権限エラーのメッセージが常時表示されることはない。
     try {
       const p = await ensureFriendProfile();
       setProfile(p);
@@ -32,7 +34,8 @@ export function FriendPanel() {
       setRequests(reqs);
       setFriends(list);
     } catch (e: any) {
-      setMessage(e?.message || 'フレンド情報の取得に失敗しました。');
+      // ここに到達するのは想定外の例外のみ。
+      console.error('フレンド情報の取得に失敗しました:', e);
     } finally {
       setLoading(false);
     }

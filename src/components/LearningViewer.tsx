@@ -98,12 +98,14 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
           ))}
         </div>
 
-        {/* The Main Notebook-Styled Paper Page Container */}
+        {/* The Main Notebook-Styled Paper Page Container
+            背景（罫線・ノート紙）は全幅のまま、読み取り用コンテンツは読みやすい最大幅に制限して中央寄せする。
+            これにより、余白を消してもPCで画像や表が巨大化しない。 */}
         <div className="w-full notebook-paper rounded-none p-4 sm:p-8 md:p-12 relative min-h-[calc(100vh-140px)] shadow-none border-0">
           {/* Vertical Red Binder Line */}
           <div className="absolute top-0 bottom-0 left-[14px] sm:left-[36px] w-[1.5px] bg-red-200/50 pointer-events-none"></div>
 
-          <div className="pl-5 sm:pl-10 relative z-10 text-[#1B2631]">
+          <div className="pl-5 sm:pl-10 relative z-10 text-[#1B2631] max-w-4xl mx-auto">
 
             {/* ====== TOC ====== */}
             {activeTab === 'toc' && (
