@@ -1,5 +1,11 @@
 import { acidBaseProblems } from './acidBaseProblems';
 
+// ⑤ 酸と塩基 を他の単元（④-1 等）と同じ粒度のタブに分割するための補助関数。
+// acidBaseProblems の各問題は category に "⑤-1 …" のような接頭辞を持つので、
+// その接頭辞でフィルタして各サブ単元の practiceProblems を取り出す。
+const acidBaseProblemsByPrefix = (prefix: string) =>
+  acidBaseProblems.filter((p: any) => typeof p.category === 'string' && p.category.startsWith(prefix));
+
 export const chemistryData = {
   "parts": [
     {
@@ -7630,11 +7636,87 @@ export const chemistryData = {
           "miniTest": []
         },
         {
-          "id": "c5",
-          "abstractTitle": "⑤ 酸と塩基の反応",
+          "id": "c5_1",
+          "abstractTitle": "⑤-1 酸と塩基の定義",
           "realTitle": "⑤ 酸と塩基",
-          "topics": [],
-          "practiceProblems": acidBaseProblems,
+          "topics": [
+            "アレニウスの定義",
+            "ブレンステッド・ローリーの定義",
+            "共役酸・共役塩基"
+          ],
+          "practiceProblems": acidBaseProblemsByPrefix("⑤-1"),
+          "miniTest": []
+        },
+        {
+          "id": "c5_2",
+          "abstractTitle": "⑤-2 酸と塩基の強さ",
+          "realTitle": "⑤ 酸と塩基",
+          "topics": [
+            "強酸・弱酸／強塩基・弱塩基",
+            "電離度α",
+            "価数"
+          ],
+          "practiceProblems": acidBaseProblemsByPrefix("⑤-2"),
+          "miniTest": []
+        },
+        {
+          "id": "c5_3",
+          "abstractTitle": "⑤-3 pHについて",
+          "realTitle": "⑤ 酸と塩基",
+          "topics": [
+            "pH＝−log[H⁺]",
+            "水のイオン積 Kw",
+            "強酸・弱酸のpH計算"
+          ],
+          "practiceProblems": acidBaseProblemsByPrefix("⑤-3"),
+          "miniTest": []
+        },
+        {
+          "id": "c5_4",
+          "abstractTitle": "⑤-4 中和とは何か",
+          "realTitle": "⑤ 酸と塩基",
+          "topics": [
+            "中和反応と塩の生成",
+            "塩の分類と液性",
+            "中和反応式"
+          ],
+          "practiceProblems": acidBaseProblemsByPrefix("⑤-4"),
+          "miniTest": []
+        },
+        {
+          "id": "c5_5",
+          "abstractTitle": "⑤-5 中和の計算",
+          "realTitle": "⑤ 酸と塩基",
+          "topics": [
+            "酸の価数×物質量＝塩基の価数×物質量",
+            "中和点・過不足の判定",
+            "中和後のpH"
+          ],
+          "practiceProblems": acidBaseProblemsByPrefix("⑤-5"),
+          "miniTest": []
+        },
+        {
+          "id": "c5_6",
+          "abstractTitle": "⑤-6 中和滴定の道具と方法",
+          "realTitle": "⑤ 酸と塩基",
+          "topics": [
+            "ホールピペット・ビュレット",
+            "メスフラスコ・コニカルビーカー",
+            "共洗いの要否"
+          ],
+          "practiceProblems": acidBaseProblemsByPrefix("⑤-6"),
+          "miniTest": []
+        },
+        {
+          "id": "c5_7",
+          "abstractTitle": "⑤-7 滴定曲線と中和反応の利用",
+          "realTitle": "⑤ 酸と塩基",
+          "topics": [
+            "滴定曲線の4タイプ",
+            "指示薬と変色域",
+            "二段階滴定・弱酸遊離"
+          ],
+          "practiceProblems": acidBaseProblemsByPrefix("⑤-7"),
           "miniTest": []
         },
         {

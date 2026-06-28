@@ -453,7 +453,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 )}
                 
                 {isPracticeMode && (
-                  <ol className="list-decimal list-inside space-y-1">
+                  <ol className="list-decimal list-inside space-y-1 font-math">
                     {sq.detailedExplanation.steps.map((step: string, idx: number) => (
                       <li key={idx}>{step}</li>
                     ))}
@@ -461,7 +461,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 )}
 
                 {sq.type !== 'descriptive' && (
-                  <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】{sq.correctAnswer}</p>
+                  <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】<span className="font-math">{sq.correctAnswer}</span></p>
                 )}
 
                 {sq.type === 'descriptive' && (
@@ -900,17 +900,22 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         {/* Unified Explanation Area */}
         <div className={isMobile
           ? `rounded-2xl shadow-lg border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`
-          : `border-none shadow-none flex-1 flex flex-col h-full min-h-0 overflow-hidden`
+          : isResultView
+            // 結果表示（全問の解答・解説一覧）はページ全体スクロールに任せる。
+            // ここで flex-1 / h-full / overflow-hidden を付けると、スコアパネルに圧迫されて
+            // 解答・解説エリアが潰れ、スクロールできず内容が見えなくなる不具合が起きていた。
+            ? `border-none shadow-none`
+            : `border-none shadow-none flex-1 flex flex-col h-full min-h-0 overflow-hidden`
         }>
           <div className={isMobile
             ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8 lg:h-[calc(100vh-220px)] lg:overflow-hidden"
             : isResultView
-              ? "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0"
+              ? "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 items-start"
               : "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 h-full flex-1 overflow-hidden"
           }>
             
             {/* LEFT COLUMN: Problem statements and flowcharts */}
-            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pr-4 pb-8 min-w-0">
+            <div className={`space-y-6 pb-8 min-w-0 ${isResultView ? 'lg:pr-4' : 'lg:overflow-y-auto lg:h-full lg:pr-4'}`}>
               {singleQuestionIndex === undefined && (
                 <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
                   <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
@@ -1007,7 +1012,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             </div>
 
             {/* RIGHT COLUMN: Answers, grading, and explanations */}
-            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pl-4 lg:pr-4 pb-8 min-w-0">
+            <div className={`space-y-6 lg:pl-4 lg:pr-4 pb-8 min-w-0 ${isResultView ? '' : 'lg:overflow-y-auto lg:h-full'}`}>
               {questions.length > 0 ? (
                 questions.map((question: any, qIndex: number) => {
                 return (
@@ -1131,7 +1136,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                   {sq.detailedExplanation.steps.map((step: string, idx: number) => (
                                                     <li key={idx} className="flex items-start gap-2">
                                                       <span className={`shrink-0 text-[#5BC0BE]`}></span>
-                                                      <span>{step}</span>
+                                                      <span className="font-math">{step}</span>
                                                     </li>
                                                   ))}
                                                 </ol>
@@ -1139,7 +1144,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                             )}
                                             <div className={`pt-3 border-t border-dashed ${mode === 'mini_test' ? 'border-gray-300' : 'border-[#3A506B]'}`}>
                                               <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【解答】</h5>
-                                              <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
+                                              <div className={`font-math font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
                                                 {formatText(sq.correctAnswer)}
                                               </div>
                                             </div>
@@ -1243,7 +1248,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                   {sq.detailedExplanation.steps.map((step: string, idx: number) => (
                                                     <li key={idx} className="flex items-start gap-2">
                                                       <span className={`shrink-0 text-[#5BC0BE]`}></span>
-                                                      <span>{step}</span>
+                                                      <span className="font-math">{step}</span>
                                                     </li>
                                                   ))}
                                                 </ol>
@@ -1251,7 +1256,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                             )}
                                             <div className={`pt-3 border-t border-dashed ${mode === 'mini_test' ? 'border-gray-300' : 'border-[#3A506B]'}`}>
                                               <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【解答】</h5>
-                                              <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
+                                              <div className={`font-math font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
                                                 {formatText(sq.correctAnswer)}
                                               </div>
                                             </div>
@@ -1384,7 +1389,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             <Lightbulb className={`w-4 h-4 ${mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]'}`} />
                             <span>解説</span>
                           </h4>
-                          <div className={`text-xs md:text-sm whitespace-pre-wrap leading-relaxed ${
+                          <div className={`font-math text-xs md:text-sm whitespace-pre-wrap leading-relaxed ${
                             mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'
                           }`}>
                             {formatText(explanationText)}

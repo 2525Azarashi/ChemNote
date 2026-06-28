@@ -32,6 +32,10 @@
   /* Typography */
   --font-handwriting: 'Yomogi', cursive;
   --font-modern: 'Inter', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  /* 数式・化学式向けフォント。
+   * 上付き／下付き（H⁺, CH₃, 10⁻³ など）や演算子が崩れない、
+   * 数学組版に適したセリフ系を優先しつつ、日本語は明朝/ゴシックでフォールバックする。 */
+  --font-math: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', 'Times New Roman', 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
 
   /* Radii */
   --radius-sm: 0.5rem;
@@ -139,6 +143,20 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
  * ========================================================= */
 .font-handwriting { font-family: var(--font-handwriting); }
 .font-modern { font-family: var(--font-modern); }
+
+/* 数式・化学式向けユーティリティ。
+ * 化学式や計算式（H⁺ / CH₃COOH / 1.0×10⁻³ mol/L / pH = −log[H⁺] など）に適用すると、
+ * 上付き・下付き・演算子・等号が手書きフォントよりも正確に読めるようになる。 */
+.font-math {
+  font-family: var(--font-math);
+  font-feature-settings: "liga" 1, "tnum" 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+/* font-math を当てた要素の中の上付き・下付きを少しだけ整える */
+.font-math sup, .font-math sub {
+  font-size: 0.72em;
+}
 
 /* Marker highlight (蛍光ペン風) */
 .marker {
