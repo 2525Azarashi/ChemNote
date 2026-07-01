@@ -897,7 +897,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           </div>
         )}
 
-        {/* Unified Explanation Area */}
+        {/* Unified Explanation Area
+            ★ 修正：結果表示（isResultView）では固定高さ＋overflow-hidden を付けず、
+              ページ自体を自然に縦スクロールさせる（PC・スマホともに全問が見えるように）。
+              1問ごとの解説表示（!isResultView）のときだけ、2カラムの固定高さレイアウトにする。 */}
         <div className={isMobile
           ? `rounded-2xl shadow-lg border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`
           : isResultView
@@ -908,13 +911,15 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             : `border-none shadow-none flex-1 flex flex-col h-full min-h-0 overflow-hidden`
         }>
           <div className={isMobile
-            ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8 lg:h-[calc(100vh-220px)] lg:overflow-hidden"
+            ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8"
             : isResultView
               ? "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 items-start"
               : "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 h-full flex-1 overflow-hidden"
           }>
             
-            {/* LEFT COLUMN: Problem statements and flowcharts */}
+            {/* LEFT COLUMN: Problem statements and flowcharts
+                結果表示では独自スクロール（lg:h-full/overflow-y-auto）を付けず、
+                ページ全体のスクロールに任せる。 */}
             <div className={`space-y-6 pb-8 min-w-0 ${isResultView ? 'lg:pr-4' : 'lg:overflow-y-auto lg:h-full lg:pr-4'}`}>
               {singleQuestionIndex === undefined && (
                 <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
