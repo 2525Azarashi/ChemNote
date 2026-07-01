@@ -10516,3 +10516,390 @@ export const concentrationTreeData = {
   ]
 };
 
+export const acidBaseTreeData = {
+  "id": "acid_base_root",
+  "label": "酸と塩基",
+  "step": null,
+  "explanation": "酸・塩基は「<b>定義</b>」→「<b>強さ・価数</b>」→「<b>pH と水のイオン積</b>」→「<b>中和反応と塩</b>」→「<b>中和の計算</b>」→「<b>滴定の器具と操作</b>」→「<b>滴定曲線・二段階滴定</b>」の順に積み上げると理解しやすい単元です。各ステップは前のステップの知識を前提にしているため、上から順に確認していきましょう。",
+  "children": [
+    {
+      "id": "ab_step1",
+      "isGroup": true,
+      "label": "【Step1】酸と塩基の定義",
+      "step": 1,
+      "children": [
+        {
+          "id": "ab_arrhenius",
+          "label": "アレニウスの定義",
+          "step": 1,
+          "subLabel": "H⁺ を出すか OH⁻ を出すか",
+          "explanation": "<b>酸</b>＝水に溶けて水素イオン H⁺ を生じる物質。<b>塩基</b>＝水に溶けて水酸化物イオン OH⁻ を生じる物質。例：HCl → H⁺ + Cl⁻、NaOH → Na⁺ + OH⁻。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_1_1",
+              "label": "⑤-1 問1 酸・塩基の定義（空欄補充）"
+            }
+          ]
+        },
+        {
+          "id": "ab_bronsted",
+          "label": "ブレンステッド・ローリーの定義",
+          "step": 1,
+          "subLabel": "H⁺ を与える＝酸／H⁺ を受け取る＝塩基",
+          "explanation": "相手に<b>水素イオン H⁺（陽子）を与える</b>物質が酸、<b>H⁺ を受け取る</b>物質が塩基。水 H₂O は相手によって酸にも塩基にもなる（両性）点に注意。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_1_2",
+              "label": "⑤-1 問2 下線部は酸か塩基か"
+            }
+          ]
+        },
+        {
+          "id": "ab_conjugate",
+          "label": "共役酸・共役塩基",
+          "step": 1,
+          "subLabel": "H⁺ の授受で対になる組",
+          "explanation": "酸が H⁺ を失うと<b>共役塩基</b>に、塩基が H⁺ を受け取ると<b>共役酸</b>になる。例：CH₃COOH ⇄ CH₃COO⁻ + H⁺ の CH₃COOH と CH₃COO⁻ が共役の関係。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_1_2",
+              "label": "⑤-1 問2 下線部は酸か塩基か"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ab_step2",
+      "isGroup": true,
+      "label": "【Step2】酸・塩基の強さと価数",
+      "step": 2,
+      "children": [
+        {
+          "id": "ab_valence",
+          "label": "酸・塩基の価数",
+          "step": 2,
+          "subLabel": "電離で出せる H⁺・OH⁻ の数",
+          "explanation": "1分子（1化学式）から出せる H⁺ の数が酸の価数、OH⁻ の数が塩基の価数。例：HCl は1価、H₂SO₄ は2価、Ca(OH)₂ は2価。酢酸 CH₃COOH は −COOH の H が1つだけ電離するため<b>1価</b>。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_2_1",
+              "label": "⑤-2 問1 価数による分類"
+            },
+            {
+              "id": "p_c5_2_3",
+              "label": "⑤-2 問3 1価である理由の記述"
+            }
+          ]
+        },
+        {
+          "id": "ab_strength",
+          "label": "酸・塩基の強弱",
+          "step": 2,
+          "subLabel": "電離度が大きい＝強い",
+          "explanation": "水溶液中でほぼ完全に電離する（電離度 α ≒ 1）ものが<b>強酸・強塩基</b>、一部しか電離しないものが<b>弱酸・弱塩基</b>。強酸：HCl, HNO₃, H₂SO₄。弱酸：CH₃COOH, H₂CO₃。強塩基：NaOH, KOH, Ba(OH)₂。弱塩基：NH₃。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_2_1",
+              "label": "⑤-2 問1 強弱・価数による分類"
+            }
+          ]
+        },
+        {
+          "id": "ab_dissociation_degree",
+          "label": "電離度 α",
+          "step": 2,
+          "subLabel": "α = (電離した物質量) / (溶かした物質量)",
+          "explanation": "電離度 α ＝ \\frac{電離した酸（塩基）の物質量}{溶かした酸（塩基）の物質量}（0 < α ≦ 1）。弱酸では [H⁺] = c α（c はモル濃度）で近似できる。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_2_2",
+              "label": "⑤-2 問2 酢酸の電離度の計算"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ab_step3",
+      "isGroup": true,
+      "label": "【Step3】pH と水のイオン積",
+      "step": 3,
+      "children": [
+        {
+          "id": "ab_kw",
+          "label": "水のイオン積 Kw",
+          "step": 3,
+          "subLabel": "[H⁺][OH⁻] = 1.0×10⁻¹⁴ (25℃)",
+          "explanation": "25℃ の水溶液では常に <b>Kw = [H⁺][OH⁻] = 1.0×10⁻¹⁴ (mol/L)²</b> が成り立つ。これを使えば [OH⁻] から [H⁺] を、[H⁺] から [OH⁻] を求められる。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_3_1",
+              "label": "⑤-3 問1 [H⁺] の計算"
+            }
+          ]
+        },
+        {
+          "id": "ab_h_concentration",
+          "label": "水素イオン濃度 [H⁺]",
+          "step": 3,
+          "subLabel": "価数×濃度×電離度で求める",
+          "explanation": "[H⁺] ＝（酸の価数）×（モル濃度 c）×（電離度 α）。強酸なら α = 1 として計算する。塩基の場合はまず [OH⁻] を求め、Kw から [H⁺] を計算する。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_3_1",
+              "label": "⑤-3 問1 [H⁺] の計算"
+            },
+            {
+              "id": "p_c5_3_5",
+              "label": "⑤-3 問5 弱酸の [H⁺]・電離度"
+            }
+          ]
+        },
+        {
+          "id": "ab_ph_scale",
+          "label": "pH の定義と目安",
+          "step": 3,
+          "subLabel": "pH = −log₁₀[H⁺]",
+          "explanation": "<b>pH = −log₁₀[H⁺]</b>。[H⁺] = 1.0×10⁻ⁿ mol/L のとき pH = n。25℃ では pH < 7 が酸性、pH = 7 が中性、pH > 7 が塩基性。pH が 1 小さくなると [H⁺] は 10 倍になる。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_3_2",
+              "label": "⑤-3 問2 pH と液性"
+            },
+            {
+              "id": "p_c5_3_3",
+              "label": "⑤-3 問3 希釈と pH の変化"
+            }
+          ]
+        },
+        {
+          "id": "ab_mixing_ph",
+          "label": "酸・塩基の混合と pH",
+          "step": 3,
+          "subLabel": "H⁺ と OH⁻ の物質量を比べる",
+          "explanation": "強酸と強塩基を混合したときは、<b>H⁺ の物質量と OH⁻ の物質量の差</b>を全体の体積で割って残った [H⁺] または [OH⁻] を求め、pH を計算する。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_3_6",
+              "label": "⑤-3 問6 混合水溶液の pH"
+            },
+            {
+              "id": "p_c5_3_7",
+              "label": "⑤-3 問7 混合後の pH"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ab_step4",
+      "isGroup": true,
+      "label": "【Step4】中和反応と塩",
+      "step": 4,
+      "children": [
+        {
+          "id": "ab_neutralization_eq",
+          "label": "中和反応の化学反応式",
+          "step": 4,
+          "subLabel": "酸 + 塩基 → 塩 + 水",
+          "explanation": "酸の H⁺ と塩基の OH⁻ が結びついて水 H₂O ができる反応。<b>酸 + 塩基 → 塩 + 水</b>。例：HCl + NaOH → NaCl + H₂O。弱塩基 NH₃ との反応では水ができず塩のみできる場合もある（HCl + NH₃ → NH₄Cl）。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_4_1",
+              "label": "⑤-4 問1 中和の化学反応式"
+            },
+            {
+              "id": "p_c5_4_2",
+              "label": "⑤-4 問2 中和の化学反応式（応用）"
+            }
+          ]
+        },
+        {
+          "id": "ab_salt_naming",
+          "label": "塩をつくる酸と塩基",
+          "step": 4,
+          "subLabel": "塩から元の酸・塩基を逆算",
+          "explanation": "塩は「陽イオン（塩基由来）」と「陰イオン（酸由来）」からできている。例：NaCl → 酸は HCl、塩基は NaOH。塩の名前や化学式から、それをつくった酸と塩基を答えられるようにする。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_4_3",
+              "label": "⑤-4 問3 塩をつくる酸と塩基"
+            }
+          ]
+        },
+        {
+          "id": "ab_salt_classification",
+          "label": "塩の分類（正塩・酸性塩・塩基性塩）",
+          "step": 4,
+          "subLabel": "残った H・OH の有無で分類",
+          "explanation": "塩の<b>組成</b>による分類。H が残っていれば酸性塩（例：NaHCO₃, KHSO₄）、OH が残っていれば塩基性塩（例：CaCl(OH)）、どちらも残っていなければ正塩（例：NaCl, CH₃COONa）。※「液性」とは別概念なので注意。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_4_4",
+              "label": "⑤-4 問4 塩の分類"
+            }
+          ]
+        },
+        {
+          "id": "ab_salt_liquidity",
+          "label": "塩の水溶液の液性",
+          "step": 4,
+          "subLabel": "強い方が勝つ",
+          "explanation": "正塩の液性は、それをつくった酸と塩基の<b>強弱</b>で決まる。（強酸＋強塩基）→中性、（強酸＋弱塩基）→酸性、（弱酸＋強塩基）→塩基性。酸性塩 NaHSO₄ は電離して H⁺ を出すので酸性を示す。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_4_6",
+              "label": "⑤-4 問6 塩の水溶液の液性"
+            }
+          ]
+        },
+        {
+          "id": "ab_weak_acid_release",
+          "label": "弱酸・弱塩基の遊離、揮発性酸の遊離",
+          "step": 4,
+          "subLabel": "強い酸・塩基が弱い方を追い出す",
+          "explanation": "弱酸の塩＋強酸→強酸の塩＋弱酸（弱酸が遊離）。弱塩基の塩＋強塩基→強塩基の塩＋弱塩基。また不揮発性の濃硫酸を加えて加熱すると揮発性の酸（HCl, HNO₃）が追い出される。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_4_7",
+              "label": "⑤-4 問7 弱酸・弱塩基の遊離"
+            },
+            {
+              "id": "p_c5_4_8",
+              "label": "⑤-4 問8 揮発性酸の遊離"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ab_step5",
+      "isGroup": true,
+      "label": "【Step5】中和反応の計算",
+      "step": 4,
+      "children": [
+        {
+          "id": "ab_neutralization_law",
+          "label": "中和の量的関係",
+          "step": 4,
+          "subLabel": "酸の H⁺ = 塩基の OH⁻ (物質量)",
+          "explanation": "過不足なく中和するとき、<b>（酸の価数）×（酸の物質量）＝（塩基の価数）×（塩基の物質量）</b>が成り立つ。濃度と体積を使うと a×c₁×V₁ ＝ b×c₂×V₂ の形になる。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_5_1",
+              "label": "⑤-5 問1 中和の量的関係"
+            }
+          ]
+        },
+        {
+          "id": "ab_mol_from_mass_gas",
+          "label": "質量・気体からの物質量計算",
+          "step": 4,
+          "subLabel": "mol へ換算してから中和の式へ",
+          "explanation": "気体は標準状態で 22.4 L/mol、固体・液体は モル質量 [g/mol] を使ってまず物質量 [mol] に換算してから中和の量的関係にあてはめる。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_5_2",
+              "label": "⑤-5 問2 気体を吸収させた中和"
+            },
+            {
+              "id": "p_c5_5_3",
+              "label": "⑤-5 問3 発生気体の体積計算"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ab_step6",
+      "isGroup": true,
+      "label": "【Step6】中和滴定の器具と操作",
+      "step": 3,
+      "children": [
+        {
+          "id": "ab_apparatus_names",
+          "label": "中和滴定に使う器具",
+          "step": 3,
+          "subLabel": "ビュレット・ホールピペット・メスフラスコ・コニカルビーカー",
+          "explanation": "<b>ビュレット</b>＝滴下量を正確に読む。<b>ホールピペット</b>＝一定体積を正確にはかりとる。<b>メスフラスコ</b>＝正確な濃度の溶液を調製する。<b>コニカルビーカー</b>＝滴定を行う容器。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_6_1",
+              "label": "⑤-6 問1 器具の名称と用途"
+            },
+            {
+              "id": "p_c5_6_2",
+              "label": "⑤-6 問2 食酢の中和滴定"
+            }
+          ]
+        },
+        {
+          "id": "ab_kyoarai",
+          "label": "共洗いと水でぬれたまま使える器具",
+          "step": 3,
+          "subLabel": "濃度が変わる器具は共洗い",
+          "explanation": "内部の液の<b>濃度が変わると困る</b>ビュレット・ホールピペットは、使う溶液で<b>共洗い</b>する。メスフラスコ・コニカルビーカーは最後に水を加える／物質量が変わらないので<b>水でぬれたまま</b>使ってよい。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_6_3",
+              "label": "⑤-6 問3 共洗い・器具の扱い"
+            }
+          ]
+        },
+        {
+          "id": "ab_titration_calc",
+          "label": "滴定結果からの濃度計算",
+          "step": 3,
+          "subLabel": "中和の量的関係＋希釈率",
+          "explanation": "滴定で求めた体積を中和の量的関係にあてはめて濃度を求める。うすめた溶液を滴定した場合は<b>希釈倍率</b>を掛けてもとの濃度に戻すことを忘れない。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_6_2",
+              "label": "⑤-6 問2 食酢の濃度・％濃度"
+            },
+            {
+              "id": "p_c5_6_3",
+              "label": "⑤-6 問3 標準溶液を用いた滴定"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ab_step7",
+      "isGroup": true,
+      "label": "【Step7】滴定曲線と二段階滴定",
+      "step": 4,
+      "children": [
+        {
+          "id": "ab_titration_curve",
+          "label": "滴定曲線と指示薬の選択",
+          "step": 4,
+          "subLabel": "中和点の pH で指示薬を選ぶ",
+          "explanation": "縦軸 pH・横軸 滴下量のグラフ。中和点付近の pH ジャンプの位置は酸・塩基の強弱で変わる。中和点が酸性側なら<b>メチルオレンジ</b>、塩基性側なら<b>フェノールフタレイン</b>を使う。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_7_1",
+              "label": "⑤-7 問1 滴定曲線と指示薬"
+            }
+          ]
+        },
+        {
+          "id": "ab_two_step_titration",
+          "label": "二段階滴定",
+          "step": 4,
+          "subLabel": "第1中和点・第2中和点",
+          "explanation": "炭酸ナトリウムと水酸化ナトリウムの混合液などでは中和点が2か所現れる。第1中和点（フェノールフタレインで判定）と第2中和点（メチルオレンジで判定）で起こる反応を区別し、滴下量の差から各成分の量を求める。",
+          "relatedQuestions": [
+            {
+              "id": "p_c5_7_2",
+              "label": "⑤-7 問2 二段階滴定の計算"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
