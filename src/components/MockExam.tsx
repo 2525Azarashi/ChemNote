@@ -168,7 +168,7 @@ export function MockExam({ onBack }: MockExamProps) {
   // ========== イントロ画面 ==========
   if (phase === 'intro') {
     return (
-      <div className="w-full notebook-paper rounded-2xl p-6 md:p-12 min-h-[60vh] flex flex-col items-center relative font-handwriting">
+      <div className="w-full notebook-paper rounded-2xl p-6 md:p-12 pb-28 md:pb-12 min-h-[60vh] flex flex-col items-center relative font-handwriting">
         <button
           onClick={onBack}
           className="absolute top-4 left-4 flex items-center gap-2 text-gray-500 hover:text-[#2C3E50] transition-colors font-bold bg-white/80 px-4 py-2 rounded-full shadow-sm font-handwriting"
@@ -226,7 +226,7 @@ export function MockExam({ onBack }: MockExamProps) {
   // ========== 第2問イントロ ==========
   if (phase === 'q2_intro') {
     return (
-      <div className="w-full notebook-paper rounded-2xl p-6 md:p-10 min-h-[60vh] flex flex-col items-center relative font-handwriting">
+      <div className="w-full notebook-paper rounded-2xl p-6 md:p-10 pb-28 md:pb-10 min-h-[60vh] flex flex-col items-center relative font-handwriting">
         {/* 30分タイマー（目標時間／スコアには影響しません） */}
         <div
           className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold font-handwriting tabular-nums transition-colors ${
@@ -277,7 +277,7 @@ export function MockExam({ onBack }: MockExamProps) {
     const grade = percentage >= 90 ? '🏆 優秀！' : percentage >= 75 ? '✨ 合格圏内！' : percentage >= 60 ? '📚 もう少し！' : '🔥 要復習！';
 
     return (
-      <div className="w-full notebook-paper rounded-2xl p-6 md:p-12 min-h-[60vh] flex flex-col items-center relative font-handwriting">
+      <div className="w-full notebook-paper rounded-2xl p-6 md:p-12 pb-28 md:pb-12 min-h-[60vh] flex flex-col items-center relative font-handwriting">
         <div className="mt-8 text-center max-w-3xl w-full">
           <div className="text-4xl mb-4">{grade.split(' ')[0]}</div>
           <h2 className="text-2xl font-bold text-[#2C3E50] font-handwriting mb-2">採点結果</h2>
@@ -415,7 +415,7 @@ export function MockExam({ onBack }: MockExamProps) {
         </div>
       </div>
 
-      <div className="p-4 md:p-8 space-y-6">
+      <div className="p-4 md:p-8 pb-28 md:pb-8 space-y-6">
         {/* 問題ヘッダー */}
         <div>
           <div className="flex items-center gap-2 mb-3">

@@ -8,11 +8,13 @@ interface ProfileModalProps {
   onClose: () => void;
   isBgmEnabled: boolean;
   setIsBgmEnabled: (enabled: boolean) => void;
+  // iOS 対策: ユーザー操作と同一スタックで直接再生/停止するためのコールバック
+  onToggleBgm?: (enabled: boolean) => void;
   bgmVolume: number;
   setBgmVolume: (volume: number) => void;
 }
 
-export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, bgmVolume, setBgmVolume }: ProfileModalProps) {
+export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleBgm, bgmVolume, setBgmVolume }: ProfileModalProps) {
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
   const [stream, setStream] = useState('science');
@@ -194,7 +196,16 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, bgmVolume
               
               <button
                 type="button"
-                onClick={() => setIsBgmEnabled(!isBgmEnabled)}
+                onClick={() => {
+                  const next = !isBgmEnabled;
+                  // onToggleBgm がある場合は、そのハンドラ内で state 更新と再生を
+                  // ユーザー操作と同一スタックで実行する（iOS の再生制限対策）。
+                  if (onToggleBgm) {
+                    onToggleBgm(next);
+                  } else {
+                    setIsBgmEnabled(next);
+                  }
+                }}
                 className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#A9CCE3]/50 ${isBgmEnabled ? 'bg-[#A9CCE3]' : 'bg-gray-200'}`}
               >
                 <span

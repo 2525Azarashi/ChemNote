@@ -108,6 +108,48 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
       .learning-content p, .learning-content li {
         font-size: 0.95em;
       }
+      /* Tailwind の Preflight で ol/ul のマーカーが消えるため、本文用リストの
+         番号・行頭記号を明示的に復活させる（例題の「問題番号 抜け」対策）。 */
+      .learning-content .main-content ol,
+      .learning-content .box ol,
+      .learning-content .box-example ol {
+        list-style: none;
+        counter-reset: q-counter;
+        padding-left: 2.2em;
+        margin: 8px 0;
+      }
+      /* 解答表記（（1）（2）…）と揃えるため、番号を全角括弧付きで表示する。 */
+      .learning-content .main-content ol > li,
+      .learning-content .box ol > li,
+      .learning-content .box-example ol > li {
+        position: relative;
+        counter-increment: q-counter;
+        margin: 4px 0;
+      }
+      .learning-content .main-content ol > li::before,
+      .learning-content .box ol > li::before,
+      .learning-content .box-example ol > li::before {
+        content: '（' counter(q-counter) '）';
+        position: absolute;
+        left: -2.2em;
+        width: 2.2em;
+        text-align: left;
+        font-weight: bold;
+        color: #16538a;
+      }
+      .learning-content .main-content ul,
+      .learning-content .box ul,
+      .learning-content .box-example ul {
+        list-style: disc;
+        padding-left: 1.6em;
+        margin: 8px 0;
+      }
+      .learning-content .main-content ul > li,
+      .learning-content .box ul > li,
+      .learning-content .box-example ul > li {
+        margin: 4px 0;
+        padding-left: 4px;
+      }
       .learning-content table {
         width: 100%;
         border-collapse: collapse;
