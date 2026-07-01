@@ -991,8 +991,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               ) : null}
               </div>
               
-              {/* Flowchart (Logical Tree) - Moved under problem statement inside Left Column */}
-              {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A' || chapter?.id === 'c2_1' || chapter?.id === 'c2_2' || chapter?.id === 'c2_3' || chapter?.id === 'c2_4' || chapter?.id?.startsWith('c3_')) && (
+              {/* Flowchart (Logical Tree) - Moved under problem statement inside Left Column
+                  ※ 専用のフローチャートが用意されている章のみ表示する。
+                     （c5 酸と塩基 / c6 酸化還元 などは専用ツリーが無いため、別単元のツリーを誤表示しない） */}
+              {['c1_1', 'c1_2_A', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4', 'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapter?.id) && (
                 <div className="mt-6 border-t pt-4 border-gray-200">
                   <PracticeExplanationTree
                     deepThoughtData={deepThoughtData}
@@ -1020,9 +1022,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     <div className="space-y-6 md:space-y-8">
                       {(() => {
                         const selfGradeSqs = question.subQuestions.filter((sq: any) => sq.type === 'descriptive');
-                        const incorrectSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive' && answers[sq.id] !== sq.correctAnswer);
-                        const correctSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive' && answers[sq.id] === sq.correctAnswer);
-                        const isCorrectExpanded = expandedCorrectQuestions[question.id];
+                        // 客観問題は「元の並び順（ア→イ→ウ…）」のまま表示する。
+                        // （以前は間違いを上・正解を折りたたみにしていたが、丸付けは上から順に行うため自然な並び順に統一）
+                        const objectiveSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive');
+                        const incorrectSqs = objectiveSqs.filter((sq: any) => answers[sq.id] !== sq.correctAnswer);
+                        const correctSqs = objectiveSqs.filter((sq: any) => answers[sq.id] === sq.correctAnswer);
 
                         const renderSq = (sq: any, isCorrect: boolean) => {
                           const isExpanded = expandedSq === sq.id;
@@ -1322,34 +1326,22 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                               </div>
                             )}
 
-                            {incorrectSqs.length > 0 && (
+                            {objectiveSqs.length > 0 && (
                               <div className="space-y-3 md:space-y-4 mt-6">
-                                <h4 className={`font-bold flex items-center gap-2 ${mode === 'mini_test' ? 'text-red-600' : 'text-[#D9A0A0]'}`}>
-                                  <XCircle size={18} />
-                                  間違えた問題
-                                </h4>
-                                {incorrectSqs.map(sq => renderSq(sq, false))}
-                              </div>
-                            )}
-
-                            {correctSqs.length > 0 && (
-                              <div className="space-y-3 md:space-y-4 mt-6">
-                                <button 
-                                  onClick={() => toggleCorrectExpanded(question.id)}
-                                  className={`w-full flex items-center justify-between p-3 md:p-4 rounded-xl border font-bold transition-colors ${mode === 'mini_test' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' : 'bg-[#5BC0BE]/10 text-[#5BC0BE] border-[#5BC0BE]/30 hover:bg-[#5BC0BE]/20'}`}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <CheckCircle2 size={18} />
-                                    <span>正解した問題を表示する ({correctSqs.length}問)</span>
-                                  </div>
-                                  <ChevronDown size={20} className={`transition-transform duration-300 ${isCorrectExpanded ? 'rotate-180' : ''}`} />
-                                </button>
-                                
-                                <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isCorrectExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                                  <div className="space-y-3 md:space-y-4 mt-2">
-                                    {correctSqs.map(sq => renderSq(sq, true))}
-                                  </div>
+                                {/* 見出し：採点結果（正誤の内訳を小さく併記） */}
+                                <div className="flex items-center justify-between gap-2 flex-wrap">
+                                  <h4 className={`font-bold flex items-center gap-2 ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>
+                                    <CheckCircle2 size={18} className={mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'} />
+                                    <span>採点結果</span>
+                                  </h4>
+                                  <span className={`text-xs font-bold ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
+                                    <span className={mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}>正解 {correctSqs.length}</span>
+                                    <span className="mx-1 opacity-50">/</span>
+                                    <span className={mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}>不正解 {incorrectSqs.length}</span>
+                                  </span>
                                 </div>
+                                {/* 元の並び順（ア→イ→ウ…）のまま、正誤の色分けだけ行って上から表示 */}
+                                {objectiveSqs.map(sq => renderSq(sq, answers[sq.id] === sq.correctAnswer))}
                               </div>
                             )}
                           </>
@@ -1428,17 +1420,19 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" />
                 つまずきポイント
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* モバイルでは窮屈にならないよう1カラム＋広めの余白・大きめの文字にする。
+                  PCでは従来通り2カラムで表示する。 */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
                 {deepThoughtData.phase2.stumblingPoints.map((point: any, idx: number) => (
-                  <div key={idx} className={`p-4 sm:p-5 rounded-xl border shadow-sm relative overflow-hidden ${mode === 'mini_test' ? 'bg-red-50 border-red-200' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30'}`}>
-                    <div className={`absolute top-0 left-0 w-1.5 h-full ${mode === 'mini_test' ? 'bg-red-500' : 'bg-[#D9A0A0]'}`}></div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className={`text-xs font-bold px-2 py-0.5 rounded border ${mode === 'mini_test' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
+                  <div key={idx} className={`p-5 sm:p-6 pl-6 sm:pl-7 rounded-2xl border shadow-sm relative overflow-hidden ${mode === 'mini_test' ? 'bg-red-50 border-red-200' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30'}`}>
+                    <div className={`absolute top-0 left-0 w-2 h-full ${mode === 'mini_test' ? 'bg-red-500' : 'bg-[#D9A0A0]'}`}></div>
+                    <div className="flex items-center flex-wrap gap-2 mb-2.5">
+                      <div className={`text-xs md:text-sm font-bold px-2.5 py-1 rounded-lg border ${mode === 'mini_test' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
                         {point.step}
                       </div>
-                      <h5 className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-red-700' : 'text-[#D9A0A0]'}`}>{point.type || point.point}</h5>
+                      <h5 className={`font-bold text-base md:text-lg leading-snug ${mode === 'mini_test' ? 'text-red-700' : 'text-[#D9A0A0]'}`}>{point.type || point.point}</h5>
                     </div>
-                    <div className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
+                    <div className={`text-sm md:text-base leading-relaxed md:leading-loose whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
                       {formatText(point.content || point.reason)}
                     </div>
                   </div>

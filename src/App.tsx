@@ -308,6 +308,41 @@ export default function App() {
     }
   }, [appState, isBgmEnabled, hasInteracted, isAudioValid]);
 
+  // iOS/Safari では audio.play() をユーザー操作（クリック/タップ）と同一の
+  // コールスタック内で呼ばないと再生がブロックされる。
+  // 設定画面のトグルでは React state 更新 → useEffect 再生では間に合わないため、
+  // 操作ハンドラ内で直接 play/pause を実行する。
+  const handleToggleBgm = (enabled: boolean) => {
+    setIsBgmEnabled(enabled);
+    setHasInteracted(true);
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (enabled) {
+      if (!isAudioValid || hasLoggedAudioError.current) return;
+      if (['quiz', 'explanation'].includes(appState)) return;
+      audio.volume = bgmVolume;
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(e => {
+          if (e.name === 'NotSupportedError' || e.message?.includes('no supported sources')) {
+            if (!hasLoggedAudioError.current) {
+              hasLoggedAudioError.current = true;
+              console.error('[BGM Error] Decode failed on toggle. Switching to silent mode.', e);
+            }
+            setIsAudioValid(false);
+          } else if (e.name === 'NotAllowedError') {
+            console.warn('[BGM Info] Playback blocked by browser on toggle.', e);
+          } else {
+            console.error('[BGM Error] Unexpected playback error on toggle:', e);
+          }
+        });
+      }
+    } else {
+      audio.pause();
+    }
+  };
+
   const handleStart = () => setAppState('mode_selection');
   const handleIntro = () => setAppState('intro');
   
@@ -398,7 +433,7 @@ export default function App() {
           )}
 
           <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : (isFullBleed ? 'max-w-none' : 'max-w-5xl')}`}>
-            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
+            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
 
             {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
             {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} isGuest={isGuest} />}

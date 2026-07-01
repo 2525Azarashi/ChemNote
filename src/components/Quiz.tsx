@@ -125,6 +125,20 @@ const chemistryShortcuts = [
   { label: '₅ (下付き5)', value: '₅', desc: '下付き5' },
 ];
 
+// iOS/Android: ソフトウェアキーボード出現時に入力欄がキーボードで隠れるのを防ぐため、
+// フォーカス時に少し遅延して入力欄を画面内へスクロールする。
+const handleInputFocusScroll = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const target = e.currentTarget;
+  // キーボードの表示アニメーション完了を待ってからスクロールする。
+  setTimeout(() => {
+    try {
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch {
+      target.scrollIntoView();
+    }
+  }, 300);
+};
+
 export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange, onScored }: QuizProps) {
   // ===== タイマー & スコア用 state =====
   const [run, setRun] = useState<ChapterRunState>(() => loadRun(chapter.id, mode));
@@ -651,6 +665,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             type="text"
                             value={answers[sq.id] || ''}
                             onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                            onFocus={handleInputFocusScroll}
                             placeholder="..."
                             className="w-full py-1 text-center text-sm font-bold text-stone-800 border-none outline-none focus:ring-0 leading-none bg-transparent"
                           />
@@ -810,6 +825,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         <textarea
                           value={answers[sq.id] || ''}
                           onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                          onFocus={handleInputFocusScroll}
                           placeholder="解答を入力..."
                           rows={3}
                           className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
@@ -823,6 +839,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             type="text"
                             value={answers[sq.id] || ''}
                             onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                            onFocus={handleInputFocusScroll}
                             placeholder="解答を入力..."
                             className="w-full pl-9 pr-4 py-2.5 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
                           />
