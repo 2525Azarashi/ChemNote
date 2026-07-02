@@ -648,12 +648,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           </div>
           
           <div 
-            className="flex-1 overflow-y-auto p-4 md:p-8 text-sm md:text-base text-gray-800 font-modern leading-relaxed"
+            className="flex-1 overflow-y-auto p-4 md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 font-modern break-words [overflow-wrap:anywhere]"
             onMouseUp={handleTextSelection}
             onTouchEnd={handleTextSelection}
             title="テキストを選択するとハイライトできます"
           >
-            <div>
+            <div className="max-w-prose md:max-w-none">
               {formatText(currentQuestion.text, highlights)}
               {currentQuestion.text.includes('図6') && (
                 <div className="mt-4">
