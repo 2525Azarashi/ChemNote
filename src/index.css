@@ -138,6 +138,16 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   border: 0;
 }
 
+/* iOS Safari の下部ツールバー / ホームインジケータでボタンが隠れて
+   押せなくなるのを防ぐための安全余白ユーティリティ。
+   通常のパディングに加えて safe-area-inset-bottom を足す。 */
+.pb-safe {
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+}
+.pb-safe-lg {
+  padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+}
+
 /* =========================================================
  * 6. Typography utilities
  * ========================================================= */
