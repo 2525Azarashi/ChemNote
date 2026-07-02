@@ -7685,7 +7685,7 @@ export const chemistryData = {
         },
         {
           "id": "c5_5",
-          "abstractTitle": "⑤-5 中和の計算",
+          "abstractTitle": "⑤-5 中和反応の計算",
           "realTitle": "⑤ 酸と塩基",
           "topics": [
             "酸の価数×物質量＝塩基の価数×物質量",
@@ -7709,7 +7709,7 @@ export const chemistryData = {
         },
         {
           "id": "c5_7",
-          "abstractTitle": "⑤-7 滴定曲線と中和反応の利用",
+          "abstractTitle": "⑤-7 滴定曲線と二段階滴定",
           "realTitle": "⑤ 酸と塩基",
           "topics": [
             "滴定曲線の4タイプ",

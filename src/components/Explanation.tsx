@@ -589,10 +589,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     <div className={isMobile 
       ? `explanation-desktop-wrapper active` 
       : isResultView
-        ? `w-full min-h-screen flex flex-col bg-[#FDFBF7] overflow-y-auto z-50 pb-20 md:pb-0`
-        : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-50 pb-20 md:pb-0`
+        ? `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-y-auto z-50`
+        : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-50`
     }>
-      <div className={isMobile ? "explanation-desktop-content" : (isResultView ? "w-full min-h-screen flex flex-col" : "w-full h-full flex flex-col")}>
+      <div className={isMobile ? "explanation-desktop-content" : (isResultView ? "w-full min-h-full flex flex-col" : "w-full h-full flex flex-col")}>
         {isMobile && (
           <div className="explanation-scroll-hint">
             横にスワイプして全体を確認できます →
@@ -604,7 +604,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 ? 'bg-white text-gray-800 border-gray-100' 
                 : 'bg-[#0B132B] text-[#E0E1DD] border-[#1C2541]'
             }`
-          : `${isResultView ? 'w-full min-h-screen' : 'w-full h-full'} flex flex-col font-handwriting relative ${
+          : `${isResultView ? 'w-full min-h-full' : 'w-full h-full'} flex flex-col font-handwriting relative ${
               mode === 'mini_test' 
                 ? 'bg-white text-gray-800' 
                 : 'bg-[#0B132B] text-[#E0E1DD]'
@@ -623,9 +623,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         </>
       )}
 
-      {/* Header */}
-      <div className={`p-4 md:p-6 border-b-2 relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 flex-none ${
-        mode === 'mini_test' ? 'bg-white/90 border-gray-100' : 'bg-[#0B132B]/90 border-[#1C2541]'
+      {/* Header（結果画面ではスクロールしても常に「単元選択に戻る」やスコアが見えるよう上部に固定） */}
+      <div className={`p-4 md:p-6 border-b-2 z-30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 flex-none ${
+        isResultView ? 'sticky top-0 backdrop-blur-md' : 'relative'
+      } ${
+        mode === 'mini_test' ? 'bg-white/95 border-gray-100' : 'bg-[#0B132B]/95 border-[#1C2541]'
       }`}>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1 min-w-0 w-full md:w-auto">
           <div className="flex-shrink-0">
@@ -826,7 +828,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       <div className={isMobile
         ? `p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
         : isResultView
-          ? `p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
+          ? `p-4 md:p-6 pb-[calc(2rem+env(safe-area-inset-bottom))] relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
           : `p-4 md:p-6 relative z-10 flex-1 overflow-hidden flex flex-col ${mode === 'mini_test' ? 'bg-white' : ''}`
       }>
       {/* Weak Areas Analysis
