@@ -7,6 +7,7 @@ import { auth } from '../firebase';
 import { ChapterRankingPanel } from './ChapterRankingPanel';
 import { QuestionFigure } from './QuestionFigure';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
+import { isAnswerCorrect } from '../utils/answerJudge';
 import type { ScoreBreakdown } from '../utils/scoring';
 
 interface ExplanationProps {
@@ -298,7 +299,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
              analysis[category].correct += (checkedCount / criteriaCount);
            }
         } else {
-          if (answers[sq.id] === sq.correctAnswer) {
+          if (isAnswerCorrect(sq, answers[sq.id])) {
             analysis[category].correct += 1;
           }
         }
@@ -377,12 +378,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const isGroupAllCorrect = (sq: any, currentQuestion: any) => {
     if (!sq.group || !currentQuestion) return false;
     const sameGroupSqs = (currentQuestion.subQuestions || []).filter((item: any) => item.group === sq.group);
-    return sameGroupSqs.every((item: any) => answers[item.id] === item.correctAnswer);
+    return sameGroupSqs.every((item: any) => isAnswerCorrect(item, answers[item.id]));
   };
 
   const renderSubQuestionCheck = (sq: any, currentQuestion: any) => {
     const isMiniTest = mode === 'mini_test';
-    const isCorrect = sq.type === 'descriptive' ? false : answers[sq.id] === sq.correctAnswer;
+    const isCorrect = sq.type === 'descriptive' ? false : isAnswerCorrect(sq, answers[sq.id]);
     const isExpanded = expandedSq === sq.id;
     const relatedSteps = getRelatedSteps(sq.id, currentQuestion);
 
@@ -545,7 +546,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     (question.subQuestions || []).forEach((sq: any) => {
       const isCorrect = sq.type === 'descriptive'
         ? false // grading criteria handles descriptive
-        : answers[sq.id] === sq.correctAnswer;
+        : isAnswerCorrect(sq, answers[sq.id]);
 
       if (sq.group) {
         if (!groups[sq.group]) {
@@ -1032,8 +1033,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         // 客観問題は「元の並び順（ア→イ→ウ…）」のまま表示する。
                         // （以前は間違いを上・正解を折りたたみにしていたが、丸付けは上から順に行うため自然な並び順に統一）
                         const objectiveSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive');
-                        const incorrectSqs = objectiveSqs.filter((sq: any) => answers[sq.id] !== sq.correctAnswer);
-                        const correctSqs = objectiveSqs.filter((sq: any) => answers[sq.id] === sq.correctAnswer);
+                        const incorrectSqs = objectiveSqs.filter((sq: any) => !isAnswerCorrect(sq, answers[sq.id]));
+                        const correctSqs = objectiveSqs.filter((sq: any) => isAnswerCorrect(sq, answers[sq.id]));
 
                         const renderSq = (sq: any, isCorrect: boolean) => {
                           const isExpanded = expandedSq === sq.id;
@@ -1348,7 +1349,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                   </span>
                                 </div>
                                 {/* 元の並び順（ア→イ→ウ…）のまま、正誤の色分けだけ行って上から表示 */}
-                                {objectiveSqs.map(sq => renderSq(sq, answers[sq.id] === sq.correctAnswer))}
+                                {objectiveSqs.map(sq => renderSq(sq, isAnswerCorrect(sq, answers[sq.id])))}
                               </div>
                             )}
                           </>
