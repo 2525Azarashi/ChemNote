@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "lint:chem": "node scripts/lint-chem.mjs",
+    "lint:chem:fix": "node scripts/lint-chem.mjs --fix"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
