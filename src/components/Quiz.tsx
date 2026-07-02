@@ -15,6 +15,8 @@ import {
   type ScoreBreakdown,
 } from '../utils/scoring';
 import { submitChapterScore } from '../utils/leaderboard';
+import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
+import { auth } from '../firebase';
 
 interface QuizProps {
   mode: 'mini_test' | 'practice';
@@ -424,6 +426,35 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     };
     setRun(nextRun);
     saveRun(chapter.id, mode, nextRun);
+
+    // 復習リスト：この問題で間違えた設問（自動採点可能なもの）をキャプチャする。
+    // 記述式（descriptive）は自動採点不可なため対象外。
+    try {
+      const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
+      if (uid) {
+        const questionIndex = currentQuestionIndex + 1;
+        const wrongInputs: WrongAnswerInput[] = subQuestions
+          .filter((sq: any) => sq.type !== 'descriptive')
+          .filter((sq: any) => {
+            const ans = (answers[sq.id] || '').trim();
+            return !(ans && ans === (sq.correctAnswer || '').trim());
+          })
+          .map((sq: any) => ({
+            chapterId: chapter.id,
+            chapterTitle: chapter.title,
+            questionIndex,
+            questionId: currentQuestion.id,
+            subQuestionId: sq.id,
+            subLabel: sq.label,
+            questionText: currentQuestion.text,
+            correctAnswer: sq.correctAnswer,
+            wrongAnswer: (answers[sq.id] || '').trim(),
+          }));
+        if (wrongInputs.length > 0) captureWrongAnswers(uid, wrongInputs);
+      }
+    } catch (e) {
+      console.error('[Quiz] captureWrongAnswers failed:', e);
+    }
 
     if (onScored) {
       onScored(finalBreakdown, {
