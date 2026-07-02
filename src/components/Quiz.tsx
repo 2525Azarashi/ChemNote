@@ -96,33 +96,87 @@ function requiresChemicalSymbols(question: any, answer: any = {}): boolean {
   // 5. 「価」「イオン」「原子」関連キーワード
   const chemKeywords =
     /価|イオン|原子|分子|化合物|酸化|還元|電荷|陽子|陰イオン|陽イオン|硫酸|硝酸|塩化|水酸|炭酸|アンモニウム/;
+  // 6. 化学反応式・イオン反応式・熱化学方程式などの記述問題
+  const reactionKeywords =
+    /反応式|化学式|組成式|電離|中和|化学反応|イオン反応|熱化学|燃焼|→|⇌/;
 
   return (
     ionPattern.test(text) ||
     chemicalFormula.test(text) ||
     unicodeSuperSubscript.test(text) ||
     massNumberPattern.test(text) ||
-    chemKeywords.test(text)
+    chemKeywords.test(text) ||
+    reactionKeywords.test(text)
   );
 }
 
-const chemistryShortcuts = [
-  { label: '⁺ (1価陽)', value: '⁺', desc: '1価陽イオン (上付きプラス)' },
-  { label: '⁻ (1価陰)', value: '⁻', desc: '1価陰イオン (上付きマイナス)' },
-  { label: '²⁺ (2価陽)', value: '²⁺', desc: '2価陽イオン' },
-  { label: '²⁻ (2価陰)', value: '²⁻', desc: '2価陰イオン' },
-  { label: '³⁺ (3価陽)', value: '³⁺', desc: '3価陽イオン' },
-  { label: '³⁻ (3価陰)', value: '³⁻', desc: '3価陰イオン' },
-  { label: 'NH₄⁺', value: 'NH₄⁺', desc: 'アンモニウムイオン' },
-  { label: 'OH⁻', value: 'OH⁻', desc: '水酸化物イオン' },
-  { label: 'NO₃⁻', value: 'NO₃⁻', desc: '硝酸イオン' },
-  { label: 'SO₄²⁻', value: 'SO₄²⁻', desc: '硫酸イオン' },
-  { label: 'CO₃²⁻', value: 'CO₃²⁻', desc: '炭酸イオン' },
-  { label: 'PO₄³⁻', value: 'PO₄³⁻', desc: 'リン酸イオン' },
-  { label: '₂ (下付き2)', value: '₂', desc: '下付き2' },
-  { label: '₃ (下付き3)', value: '₃', desc: '下付き3' },
-  { label: '₄ (下付き4)', value: '₄', desc: '下付き4' },
-  { label: '₅ (下付き5)', value: '₅', desc: '下付き5' },
+type PaletteItem = { label: string; value: string; desc: string };
+type PaletteGroup = { group: string; items: PaletteItem[] };
+
+// 化学記号パレット（カテゴリ別）。
+// 反応式・化学式・イオン式の入力を、キーボードを使わずワンタップで行えるようにする。
+const chemistryPaletteGroups: PaletteGroup[] = [
+  {
+    group: '反応式の記号',
+    items: [
+      { label: '→', value: ' → ', desc: '生成（右向き矢印）' },
+      { label: '⇌', value: ' ⇌ ', desc: '可逆反応（平衡）' },
+      { label: '+', value: ' + ', desc: '化学式どうしの区切り（プラス）' },
+      { label: '↑', value: '↑', desc: '気体の発生' },
+      { label: '↓', value: '↓', desc: '沈殿の生成' },
+      { label: '·', value: '·', desc: '水和水などの中点（例: CuSO₄·5H₂O）' },
+    ],
+  },
+  {
+    group: '下付き数字',
+    items: [
+      { label: '₁', value: '₁', desc: '下付き1' },
+      { label: '₂', value: '₂', desc: '下付き2' },
+      { label: '₃', value: '₃', desc: '下付き3' },
+      { label: '₄', value: '₄', desc: '下付き4' },
+      { label: '₅', value: '₅', desc: '下付き5' },
+      { label: '₆', value: '₆', desc: '下付き6' },
+      { label: '₇', value: '₇', desc: '下付き7' },
+      { label: '₈', value: '₈', desc: '下付き8' },
+    ],
+  },
+  {
+    group: 'イオンの価数（上付き）',
+    items: [
+      { label: '⁺', value: '⁺', desc: '1価陽イオン (上付きプラス)' },
+      { label: '⁻', value: '⁻', desc: '1価陰イオン (上付きマイナス)' },
+      { label: '²⁺', value: '²⁺', desc: '2価陽イオン' },
+      { label: '²⁻', value: '²⁻', desc: '2価陰イオン' },
+      { label: '³⁺', value: '³⁺', desc: '3価陽イオン' },
+      { label: '³⁻', value: '³⁻', desc: '3価陰イオン' },
+    ],
+  },
+  {
+    group: 'よく使うイオン式',
+    items: [
+      { label: 'H⁺', value: 'H⁺', desc: '水素イオン' },
+      { label: 'OH⁻', value: 'OH⁻', desc: '水酸化物イオン' },
+      { label: 'NH₄⁺', value: 'NH₄⁺', desc: 'アンモニウムイオン' },
+      { label: 'NO₃⁻', value: 'NO₃⁻', desc: '硝酸イオン' },
+      { label: 'SO₄²⁻', value: 'SO₄²⁻', desc: '硫酸イオン' },
+      { label: 'CO₃²⁻', value: 'CO₃²⁻', desc: '炭酸イオン' },
+      { label: 'PO₄³⁻', value: 'PO₄³⁻', desc: 'リン酸イオン' },
+      { label: 'Cl⁻', value: 'Cl⁻', desc: '塩化物イオン' },
+    ],
+  },
+  {
+    group: 'よく使う化学式',
+    items: [
+      { label: 'H₂O', value: 'H₂O', desc: '水' },
+      { label: 'CO₂', value: 'CO₂', desc: '二酸化炭素' },
+      { label: 'O₂', value: 'O₂', desc: '酸素' },
+      { label: 'H₂', value: 'H₂', desc: '水素' },
+      { label: 'N₂', value: 'N₂', desc: '窒素' },
+      { label: 'Cl₂', value: 'Cl₂', desc: '塩素' },
+      { label: 'NaCl', value: 'NaCl', desc: '塩化ナトリウム' },
+      { label: 'CaCO₃', value: 'CaCO₃', desc: '炭酸カルシウム' },
+    ],
+  },
 ];
 
 // iOS/Android: ソフトウェアキーボード出現時に入力欄がキーボードで隠れるのを防ぐため、
@@ -176,11 +230,94 @@ const handleInputFocusScroll = (e: React.FocusEvent<HTMLInputElement | HTMLTextA
   }
 };
 
+/**
+ * 化学記号パレット。
+ * - カテゴリ別に記号を配置し、ワンタップで入力欄のカーソル位置へ挿入する。
+ * - 入力欄の参照を受け取り、選択範囲（カーソル位置）に挿入 → キャレットを更新する。
+ *   参照が無い場合は末尾に追記するフォールバック動作。
+ */
+function ChemistryPalette({
+  value,
+  onChange,
+  inputRef,
+}: {
+  value: string;
+  onChange: (next: string) => void;
+  inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
+}) {
+  const insert = (text: string) => {
+    const el = inputRef.current;
+    if (el && typeof el.selectionStart === 'number' && typeof el.selectionEnd === 'number') {
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+      const next = value.slice(0, start) + text + value.slice(end);
+      onChange(next);
+      // 挿入後、キャレットを挿入文字列の直後へ移動（次の描画後に反映）。
+      const caret = start + text.length;
+      requestAnimationFrame(() => {
+        try {
+          el.focus();
+          el.setSelectionRange(caret, caret);
+        } catch {
+          /* noop */
+        }
+      });
+    } else {
+      onChange(value + text);
+    }
+  };
+
+  return (
+    <div className="bg-stone-50 border border-stone-200/80 p-2.5 md:p-3 rounded-xl flex flex-col gap-2 w-full">
+      <div className="text-[11px] md:text-xs text-stone-500 font-bold select-none px-0.5 flex items-center gap-1">
+        <span>化学記号パレット</span>
+        <span className="font-normal text-stone-400">（タップで入力欄のカーソル位置に挿入）</span>
+      </div>
+      <div className="flex flex-col gap-2 max-h-[220px] md:max-h-none overflow-y-auto">
+        {chemistryPaletteGroups.map((grp) => (
+          <div key={grp.group} className="flex flex-col gap-1">
+            <div className="text-[10px] md:text-[11px] text-stone-400 font-bold select-none px-0.5">
+              {grp.group}
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {grp.items.map((item) => (
+                <button
+                  key={item.label}
+                  type="button"
+                  // マウス/タッチダウンでの入力欄フォーカス喪失を防ぐ（キャレット維持のため）。
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => insert(item.value)}
+                  className="min-w-[44px] min-h-[36px] px-2.5 py-1.5 bg-white border border-stone-200 hover:border-stone-400 hover:bg-stone-100 rounded-lg text-sm md:text-sm font-bold text-stone-700 font-sans shadow-xs cursor-pointer transition-colors flex items-center justify-center gap-1 active:scale-95"
+                  title={item.desc}
+                  aria-label={item.desc}
+                >
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange, onScored }: QuizProps) {
   // ===== タイマー & スコア用 state =====
   const [run, setRun] = useState<ChapterRunState>(() => loadRun(chapter.id, mode));
   const timeUsedRef = useRef(0); // タイマーから250msごとに通知される最新値
   const lastScoredQuestionRef = useRef<string | null>(null);
+  // 記述/短答入力欄の参照を sub-question id 単位で保持（化学記号パレットの
+  // カーソル位置挿入に使用）。
+  const inputRefs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({});
+  const getInputRef = (sqId: string): React.RefObject<HTMLInputElement | HTMLTextAreaElement | null> => ({
+    get current() {
+      return inputRefs.current[sqId] ?? null;
+    },
+    set current(el: HTMLInputElement | HTMLTextAreaElement | null) {
+      inputRefs.current[sqId] = el;
+    },
+  });
 
   const [answers, setAnswers] = useState<Record<string, string>>(() => {
     try {
@@ -857,22 +994,35 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         </div>
                       </div>
                     ) : sq.type === 'descriptive' ? (
-                      <div className="flex-grow relative w-full">
-                        <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
-                        <textarea
-                          value={answers[sq.id] || ''}
-                          onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                          onFocus={handleInputFocusScroll}
-                          placeholder="解答を入力..."
-                          rows={3}
-                          className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
-                        />
+                      <div className="flex-grow flex flex-col gap-2 w-full">
+                        <div className="relative w-full">
+                          <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
+                          <textarea
+                            ref={(el) => { inputRefs.current[sq.id] = el; }}
+                            value={answers[sq.id] || ''}
+                            onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                            onFocus={handleInputFocusScroll}
+                            placeholder="解答を入力..."
+                            rows={3}
+                            className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
+                          />
+                        </div>
+
+                        {/* 化学記号パレット（反応式・化学式の記述が必要な問題のみ表示） */}
+                        {requiresChemicalSymbols(sq, sq.correctAnswer) && (
+                          <ChemistryPalette
+                            value={answers[sq.id] || ''}
+                            onChange={(next) => handleTextChange(sq.id, next)}
+                            inputRef={getInputRef(sq.id)}
+                          />
+                        )}
                       </div>
                     ) : (
                       <div className="flex-grow flex flex-col gap-2 w-full">
                         <div className="relative w-full">
                           <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                           <input
+                            ref={(el) => { inputRefs.current[sq.id] = el; }}
                             type="text"
                             value={answers[sq.id] || ''}
                             onChange={(e) => handleTextChange(sq.id, e.target.value)}
@@ -881,35 +1031,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             className="w-full pl-9 pr-4 py-2.5 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
                           />
                         </div>
-                        
-                        {/* Chemistry Symbol Helper Palette - Only show when needed */}
+
+                        {/* 化学記号パレット（必要な問題のみ表示・カーソル位置に挿入） */}
                         {requiresChemicalSymbols(sq, sq.correctAnswer) && (
-                        <div className="bg-stone-50 border border-stone-200/80 p-2 md:p-2.5 rounded-xl flex flex-col gap-1.5 w-full">
-                          <div className="text-[10px] md:text-xs text-stone-500 font-bold select-none px-0.5">
-                            化学記号パレット (タップで入力欄に挿入 & コピー) :
-                          </div>
-                          <div className="flex flex-wrap gap-1.5 max-h-[140px] overflow-y-auto">
-                            {chemistryShortcuts.map((item) => (
-                              <button
-                                key={item.label}
-                                type="button"
-                                onClick={() => {
-                                  const currentVal = answers[sq.id] || '';
-                                  handleTextChange(sq.id, currentVal + item.value);
-                                  try {
-                                    navigator.clipboard.writeText(item.value);
-                                  } catch (err) {
-                                    console.error(err);
-                                  }
-                                }}
-                                className="px-2 py-1 bg-white border border-stone-200 hover:border-stone-400 hover:bg-stone-100 rounded-lg text-xs md:text-sm font-bold text-stone-700 font-sans shadow-xs cursor-pointer transition-colors flex items-center gap-1 active:scale-95"
-                                title={item.desc}
-                              >
-                                <span>{item.label}</span>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
+                          <ChemistryPalette
+                            value={answers[sq.id] || ''}
+                            onChange={(next) => handleTextChange(sq.id, next)}
+                            inputRef={getInputRef(sq.id)}
+                          />
                         )}
                       </div>
                     )}
