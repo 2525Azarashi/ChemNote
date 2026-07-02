@@ -506,6 +506,35 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     }
   };
 
+  // C6: キーボードで問題を送り/戻しできるようにする（→ / ←）。
+  // 入力欄（input/textarea/contenteditable）にフォーカス中や修飾キー併用時は
+  // テキスト編集・ショートカットを妨げないよう無効化する。
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const el = document.activeElement as HTMLElement | null;
+      const tag = el?.tagName?.toLowerCase();
+      const isEditable =
+        tag === 'input' ||
+        tag === 'textarea' ||
+        tag === 'select' ||
+        (el?.isContentEditable ?? false);
+      if (isEditable) return;
+
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        handleNext();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handlePrevious();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+    // handleNext/handlePrevious は毎レンダー再生成されるため依存に含める。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showingExplanation, currentQuestionIndex, answers]);
+
   /**
    * クイズから離脱（単元選択に戻る）するときのハンドラ。
    * 解説表示中でない＝まだ採点していない現在の問題に入力された回答は、
@@ -556,9 +585,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         <div className="flex items-center text-left gap-2 md:gap-4 min-w-0">
           <button 
             onClick={handleExit}
+            title="単元選択に戻る"
+            aria-label="単元選択に戻る"
             className="flex items-center justify-center p-1.5 md:p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors shrink-0"
           >
-            <ArrowLeft size={18} className="md:w-5 md:h-5" />
+            <ArrowLeft size={18} className="md:w-5 md:h-5" aria-hidden="true" />
           </button>
           <div className="min-w-0 flex-1">
             <h2 className="text-sm md:text-xl font-handwriting text-[#2C3E50] font-bold truncate">
@@ -923,13 +954,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               <button
                 onClick={handlePrevious}
                 disabled={currentQuestionIndex === 0}
-                title="前の問題へ"
+                title="前の問題へ（←キー）"
+                aria-label="前の問題へ"
                 className={`flex items-center justify-center p-2.5 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer
                   ${currentQuestionIndex === 0 
                     ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50' 
                     : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white bg-white shadow-sm'}`}
               >
-                <ChevronLeft size={16} className="stroke-[2.5]" />
+                <ChevronLeft size={16} className="stroke-[2.5]" aria-hidden="true" />
               </button>
 
               <button
