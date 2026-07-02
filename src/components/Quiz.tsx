@@ -549,7 +549,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   }
 
   return (
-    <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40 pb-20 md:pb-0">
+    <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40">
       
       {/* Header (Fixed) */}
       <div className="flex-none p-2 md:p-6 border-b border-gray-200 bg-white shadow-sm z-10 flex items-center justify-between gap-2 md:gap-4">
@@ -681,7 +681,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         </div>
 
         {/* Section 2: Answers Area (Scrollable) */}
-        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-8 md:pb-8 relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
+        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-8 relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
             {groupedSubQuestions.map((g: any, gIdx: number) => {
