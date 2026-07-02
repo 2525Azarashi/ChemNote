@@ -254,7 +254,15 @@ export default function App() {
         const scale = Math.min(1, window.innerWidth / 1024);
         viewport.setAttribute('content', `width=1024, initial-scale=${scale}, minimum-scale=${scale}, maximum-scale=3.0, user-scalable=yes`);
       } else {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        // モバイルへ戻る/遷移する際に、以前の desktop スケールが残って
+        // 「異常にズームされた状態」で切り替わるのを防ぐため、一度スケールを
+        // 明示的に 1.0 に固定してから通常のビューポートへ戻す（D対策）。
+        // user-scalable は既定（許可）のままにしてアクセシビリティを確保する（C3）。
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0');
+        // 次フレームで拡大許可を戻し、ユーザーによるピンチズームを再度可能にする。
+        requestAnimationFrame(() => {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
+        });
       }
     }
   }, [shouldForceDesktopUI, appState]);

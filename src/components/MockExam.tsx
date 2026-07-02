@@ -426,7 +426,7 @@ export function MockExam({ onBack }: MockExamProps) {
           </div>
 
           {/* 問題文 */}
-          <div className="text-sm text-gray-800 font-handwriting leading-relaxed whitespace-pre-line mb-4">
+          <div className="text-sm leading-[1.85] md:leading-relaxed text-gray-800 font-handwriting whitespace-pre-line break-words [overflow-wrap:anywhere] mb-4">
             {currentQuestion.questionText}
           </div>
 
@@ -464,7 +464,7 @@ export function MockExam({ onBack }: MockExamProps) {
               return (
                 <div key={sub.label} className="bg-white/60 border border-gray-200 rounded-xl p-4">
                   <p className="text-xs font-bold text-gray-600 font-handwriting mb-1">問{currentQuestion.questionNumber}({sub.label})（{sub.points}点）</p>
-                  <p className="text-sm text-gray-800 font-handwriting leading-relaxed mb-3 whitespace-pre-line">{sub.questionText}</p>
+                  <p className="text-sm leading-[1.85] md:leading-relaxed text-gray-800 font-handwriting mb-3 whitespace-pre-line break-words [overflow-wrap:anywhere]">{sub.questionText}</p>
                   <div className="space-y-2">
                     {sub.choices.map((choice) => {
                       const isSelected = userAnswer === choice.id;

@@ -72,9 +72,16 @@ a:active,
 
 html {
   scroll-behavior: smooth;
+  /* オーバースクロールによるブラウザの引っ張り更新（pull-to-refresh）を抑止。
+   * スマホでピンチ/オーバースクロール時に意図しないリロードが起きる問題への対策。 */
+  overscroll-behavior-y: none;
 }
 
 body {
+  /* ダブルタップズームの遅延・誤作動を避けつつ通常操作を維持する。
+   * （ピンチによる拡大自体はアクセシビリティのため viewport 側で許可） */
+  touch-action: manipulation;
+  overscroll-behavior-y: none;
   background-color: var(--color-bg);
   background-image:
     radial-gradient(rgba(28, 38, 49, 0.06) 1.2px, transparent 1.2px),
