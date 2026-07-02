@@ -27,6 +27,7 @@ import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
+import { useIsMobile } from './hooks/useMediaQuery';
 import { MobileViewWrapper } from './components/MobileViewWrapper';
 import { countIncomingFriendRequests } from './utils/friends';
 
@@ -48,8 +49,15 @@ export default function App() {
     }
   });
   const [forceDesktop, setForceDesktop] = useState(false);
-  const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [isMobilePreview, setIsMobilePreview] = useState(false);
+  // ユーザーエージェントによるモバイル端末判定（初回のみ・不変）。
+  // 画面幅の判定は共有フック useIsMobile に一元化する（C2）。
+  const isMobileUserAgent = useRef(
+    typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
+  ).current;
+  const isNarrowViewport = useIsMobile();
+  // 「モバイル端末」= UA がモバイル or 画面幅が md 未満。
+  const isMobileDevice = isMobileUserAgent || isNarrowViewport;
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('savedIsGuest') === 'true');
   const [isExplanationView, setIsExplanationView] = useState(false);
   const [prevAppState, setPrevAppState] = useState<AppState>('home');
@@ -236,15 +244,6 @@ export default function App() {
       document.removeEventListener('touchstart', handleInteraction);
       document.removeEventListener('keydown', handleInteraction);
     };
-  }, []);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobileDevice(/Mobi|Android/i.test(navigator.userAgent) || window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   useEffect(() => {
