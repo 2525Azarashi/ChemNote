@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
 import { ChapterRankingPanel } from './ChapterRankingPanel';
+import { QuestionFigure } from './QuestionFigure';
+import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import type { ScoreBreakdown } from '../utils/scoring';
 
 interface ExplanationProps {
@@ -121,6 +123,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const questions = useMemo(() => {
     return singleQuestionIndex !== undefined ? [allQuestions[singleQuestionIndex]] : allQuestions;
   }, [allQuestions, singleQuestionIndex]);
+
+  // 章内の図版へ通し番号（図1・図2 …）を割り当てるマップ。
+  // 単問表示でも通し番号が一貫するよう、章の全問題（allQuestions）を基準に採番する。
+  const figureNumberMap = useMemo(() => buildFigureNumberMap(allQuestions), [allQuestions]);
 
   // \u81ea\u5df1\u63a1\u70b9\u306e\u30c1\u30a7\u30c3\u30af\u6570\u304b\u3089\u30dc\u30fc\u30ca\u30b9\u70b9\u3092\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u8a08\u7b97
   const selfGradeBonus = useMemo(() => {
@@ -977,19 +983,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                       )}
                       {/* 問題に付随する図・イラスト（PDF由来の図版など） */}
                       {(question as any).imageUrl && (
-                        <figure className="mt-4">
-                          <img
-                            src={(question as any).imageUrl}
-                            alt={(question as any).imageCaption || '問題の図'}
-                            loading="lazy"
-                            className="max-w-full w-auto mx-auto rounded-xl border border-gray-300 bg-white shadow-sm"
-                          />
-                          {(question as any).imageCaption && (
-                            <figcaption className={`mt-2 text-center text-xs ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#E0E1DD]/60'}`}>
-                              {(question as any).imageCaption}
-                            </figcaption>
-                          )}
-                        </figure>
+                        <QuestionFigure
+                          src={(question as any).imageUrl}
+                          caption={(question as any).imageCaption}
+                          figureNumber={getFigureNumber(figureNumberMap, (question as any).id)}
+                          tone={mode === 'mini_test' ? 'light' : 'dark'}
+                          className="mt-4"
+                        />
                       )}
                     </div>
                   </div>
