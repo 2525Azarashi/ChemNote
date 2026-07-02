@@ -29,6 +29,19 @@
   --color-warning: #F5B041;
   --color-danger: #E74C3C;
 
+  /* Semantic feedback colors (採点フィードバック用・アイコンと併用) — C3
+   * WCAG AA（本文コントラスト比 4.5:1 以上）を意識した濃いめの色を採用。 */
+  --color-correct: #1E7D46;  /* 正解（緑・濃いめ） */
+  --color-wrong:   #C0392B;  /* 不正解（赤・濃いめ） */
+  --color-hint:    #B7791F;  /* ヒント/注意（アンバー・濃いめ） */
+
+  /* Typography sizes (C3)
+   * 本文はスマホでも最小 16px を確保し、可読性を担保する。
+   * 化学式エリアは上付き・下付きが潰れないよう 1.1rem 以上。 */
+  --font-body: 1rem;        /* = 16px 本文最小サイズ */
+  --font-chem: 1.1rem;      /* 化学式エリア（1.1rem 以上） */
+  --leading-explanation: 1.7;  /* 解説エリアの行間 */
+
   /* Typography */
   --font-handwriting: 'Yomogi', cursive;
   --font-modern: 'Inter', 'Hiragino Sans', 'Yu Gothic', sans-serif;
@@ -73,6 +86,17 @@ a:active,
 html {
   scroll-behavior: smooth;
 }
+
+/* 上付き・下付きの標準スタイル（C3）。
+ * H₂O / Cu²⁺ / 10⁻³ などが行の高さを崩さず、かつ読みやすいサイズに。 */
+sub, sup {
+  font-size: 0.85em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
 
 body {
   background-color: var(--color-bg);
@@ -173,6 +197,32 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   background: linear-gradient(transparent 60%, var(--color-highlight) 60%);
   padding: 0 0.15em;
 }
+
+/* 本文・化学式・解説エリアのタイポグラフィ・ユーティリティ（C3）。
+ * CSS 変数を参照するため、テーマ側の値変更が一箇所で反映される。 */
+.text-body {
+  font-size: var(--font-body);
+  line-height: 1.7;
+}
+.text-chem {
+  font-size: var(--font-chem);
+  line-height: 1.6;
+}
+.leading-explanation {
+  line-height: var(--leading-explanation);
+}
+
+/* セマンティックカラー・ユーティリティ（色だけに依存しないよう、
+ * 使用側で ✓ / ✗ / 💡 アイコンやラベルと併用すること）。 */
+.text-correct { color: var(--color-correct); }
+.text-wrong   { color: var(--color-wrong); }
+.text-hint    { color: var(--color-hint); }
+.bg-correct-soft { background-color: color-mix(in srgb, var(--color-correct) 12%, white); }
+.bg-wrong-soft   { background-color: color-mix(in srgb, var(--color-wrong) 12%, white); }
+.bg-hint-soft    { background-color: color-mix(in srgb, var(--color-hint) 14%, white); }
+.border-correct { border-color: color-mix(in srgb, var(--color-correct) 40%, transparent); }
+.border-wrong   { border-color: color-mix(in srgb, var(--color-wrong) 40%, transparent); }
+.border-hint    { border-color: color-mix(in srgb, var(--color-hint) 40%, transparent); }
 
 /* =========================================================
  * 7. Notebook / Paper textures
