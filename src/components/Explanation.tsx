@@ -586,7 +586,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   };
 
   const content = (
-    <div className={isMobile 
+    <div
+      // C6: 解答後に表示される解説領域をスクリーンリーダーが読み上げられるよう、
+      // ライブリージョンとして宣言する。
+      role="region"
+      aria-live="polite"
+      aria-label="解答と解説"
+      className={isMobile 
       ? `explanation-desktop-wrapper active` 
       : isResultView
         ? `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-y-auto z-50`
