@@ -5,6 +5,8 @@ import { substanceTreeData } from '../data/chemistryData';
 import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
+import { QuestionFigure } from './QuestionFigure';
+import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { QuizTimerBar } from './QuizTimerBar';
 import { FloatingScoreAnimation } from './FloatingScoreAnimation';
 import {
@@ -323,6 +325,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   };
 
   const questions = mode === 'mini_test' ? chapter.miniTest : (chapter.practiceProblems || []);
+
+  // 章内の図版へ通し番号（図1・図2 …）を割り当てるためのマップ。
+  const figureNumberMap = useMemo(() => buildFigureNumberMap(questions), [questions]);
 
   if (questions.length === 0) {
     return (
@@ -693,19 +698,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               )}
               {/* 問題に付随する図・イラスト（PDF由来の図版など） */}
               {currentQuestion.imageUrl && (
-                <figure className="mt-5">
-                  <img
-                    src={currentQuestion.imageUrl}
-                    alt={currentQuestion.imageCaption || '問題の図'}
-                    loading="lazy"
-                    className="max-w-full w-auto mx-auto rounded-xl border border-gray-200 bg-white shadow-sm"
-                  />
-                  {currentQuestion.imageCaption && (
-                    <figcaption className="mt-2 text-center text-xs text-gray-500 font-modern">
-                      {currentQuestion.imageCaption}
-                    </figcaption>
-                  )}
-                </figure>
+                <QuestionFigure
+                  src={currentQuestion.imageUrl}
+                  caption={currentQuestion.imageCaption}
+                  figureNumber={getFigureNumber(figureNumberMap, currentQuestion.id)}
+                  tone="light"
+                  className="mt-5"
+                />
               )}
             </div>
           </div>
