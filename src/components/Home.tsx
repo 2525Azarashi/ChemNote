@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, RotateCcw } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, RotateCcw, FlaskConical } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
@@ -308,6 +308,22 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             <div className="flex-1 min-w-0">
               <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">ノートを見る</div>
               <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">自分のまとめを確認しよう</div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
+          </button>
+
+          {/* ===== フローチャート集：酸と塩基・酸化還元（詳細版・静的HTML） ===== */}
+          <button
+            onClick={() => window.open('/flowcharts/chem-basic-acid-redox-flowchart.html', '_blank', 'noopener,noreferrer')}
+            aria-label="酸と塩基・酸化還元 フローチャート集（詳細版）を開く"
+            className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group sm:col-span-2"
+          >
+            <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
+              <FlaskConical className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">🧪 酸と塩基・酸化還元 フローチャート集（詳細版）</div>
+              <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">第2部 物質の変化 全14項目のインタラクティブ図解</div>
             </div>
             <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
           </button>
