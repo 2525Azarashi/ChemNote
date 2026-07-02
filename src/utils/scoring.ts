@@ -11,6 +11,8 @@
  *   - 記述式（descriptive）は自動採点不可なので「参加点」を付与
  */
 
+import { isAnswerCorrect, isDescriptive } from './answerJudge';
+
 export type SubQuestionType = 'multiple_choice' | 'sorting' | 'descriptive' | 'text' | string;
 
 export interface ScoringSubQuestion {
@@ -169,12 +171,11 @@ export function scoreProblem(
   answers: Record<string, string>,
   ctx: ScoreContext
 ): ScoreBreakdown {
-  const judgeables = subQuestions.filter((sq) => sq.type !== 'descriptive');
+  const judgeables = subQuestions.filter((sq) => !isDescriptive(sq));
 
   let correctCount = 0;
   for (const sq of judgeables) {
-    const ans = (answers[sq.id] || '').trim();
-    if (ans && ans === (sq.correctAnswer || '').trim()) {
+    if (isAnswerCorrect(sq, answers[sq.id])) {
       correctCount += 1;
     }
   }
@@ -230,12 +231,11 @@ export function calcMaxCombo(
   let max = 0;
   let cur = 0;
   for (const sq of subQuestions) {
-    if (sq.type === 'descriptive') {
+    if (isDescriptive(sq)) {
       // 記述はコンボ計算から除外（中断もしない）
       continue;
     }
-    const ans = (answers[sq.id] || '').trim();
-    if (ans && ans === (sq.correctAnswer || '').trim()) {
+    if (isAnswerCorrect(sq, answers[sq.id])) {
       cur += 1;
       if (cur > max) max = cur;
     } else {

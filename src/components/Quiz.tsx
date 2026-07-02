@@ -18,6 +18,7 @@ import {
 } from '../utils/scoring';
 import { submitChapterScore } from '../utils/leaderboard';
 import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
+import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
 import { auth } from '../firebase';
 
 interface QuizProps {
@@ -439,11 +440,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       if (uid) {
         const questionIndex = currentQuestionIndex + 1;
         const wrongInputs: WrongAnswerInput[] = subQuestions
-          .filter((sq: any) => sq.type !== 'descriptive')
-          .filter((sq: any) => {
-            const ans = (answers[sq.id] || '').trim();
-            return !(ans && ans === (sq.correctAnswer || '').trim());
-          })
+          .filter((sq: any) => !isDescriptive(sq))
+          .filter((sq: any) => !isAnswerCorrect(sq, answers[sq.id]))
           .map((sq: any) => ({
             chapterId: chapter.id,
             chapterTitle: chapter.title,
