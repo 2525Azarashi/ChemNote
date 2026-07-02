@@ -322,6 +322,16 @@ export default function App() {
       if (!isAudioValid || hasLoggedAudioError.current) return;
       if (['quiz', 'explanation'].includes(appState)) return;
       audio.volume = bgmVolume;
+      // iOS Safari 対策:
+      // 音源がまだデコードされていない場合、ユーザー操作と同一スタックで
+      // load() → play() を呼ぶことで再生ブロック/デコード失敗を回避しやすくなる。
+      try {
+        if (audio.readyState < 2) {
+          audio.load();
+        }
+      } catch {
+        /* load 失敗は play 側の catch で処理 */
+      }
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.catch(e => {
@@ -405,14 +415,18 @@ export default function App() {
         <div className={`min-h-screen w-full flex justify-center relative ${
           isFullBleed
             ? 'p-0 items-stretch'
-            : `pt-6 pb-24 md:py-12 px-4 md:px-8 md:pb-28 ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`
+            : `pt-6 pb-safe-lg md:py-12 px-4 md:px-8 md:pb-28 ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`
         }`}>
+          {/* iOS Safari では crossOrigin="anonymous" が付いていると
+              同一オリジン音源でもデコードがブロックされ再生できないことがあるため付与しない。
+              playsInline を付けて iOS のインライン再生を許可する。 */}
           <audio 
             ref={audioRef} 
             src="/tanjou.mp3" 
             loop 
             preload="auto" 
-            crossOrigin="anonymous"
+            // @ts-ignore - playsInline は audio でも iOS 挙動安定のため付与
+            playsInline
             onError={handleAudioError}
           />
           
