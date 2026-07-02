@@ -19,6 +19,7 @@ import {
 import { submitChapterScore } from '../utils/leaderboard';
 import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
+import { useIsDesktop } from '../hooks/useMediaQuery';
 import { auth } from '../firebase';
 
 interface QuizProps {
@@ -224,18 +225,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     breakdown: ScoreBreakdown;
     totalScore: number;
   } | null>(null);
-  // Use passed prop if available, otherwise check window width
-  const [isDesktop, setIsDesktop] = useState(!isMobileView && window.innerWidth >= 1024);
-
-  useEffect(() => {
-    if (isMobileView !== undefined) {
-      setIsDesktop(!isMobileView);
-    } else {
-      const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, [isMobileView]);
+  // スマホ/PC判定は共有フックに一元化（lg=1024px 以上をPCとみなす）。
+  // isMobileView が渡された場合（スマホプレビュー枠）はそれを優先する。
+  const isDesktop = useIsDesktop(isMobileView !== undefined ? !isMobileView : undefined);
 
   // 直前に表示していた問題のインデックスを保持（離脱した問題の回答リセット用）
   const prevQuestionIndexRef = useRef(currentQuestionIndex);
