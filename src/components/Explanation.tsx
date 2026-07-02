@@ -8,6 +8,7 @@ import { ChapterRankingPanel } from './ChapterRankingPanel';
 import { QuestionFigure } from './QuestionFigure';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { isAnswerCorrect } from '../utils/answerJudge';
+import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
 
 interface ExplanationProps {
@@ -80,17 +81,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const [scrollTrigger, setScrollTrigger] = useState<number>(0);
   const [expandedCorrectQuestions, setExpandedCorrectQuestions] = useState<Record<string, boolean>>({});
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
-  const [isMobile, setIsMobile] = useState(isMobileView !== undefined ? isMobileView : window.innerWidth < 768);
-
-  useEffect(() => {
-    if (isMobileView !== undefined) {
-      setIsMobile(isMobileView);
-    } else {
-      const handleResize = () => setIsMobile(window.innerWidth < 768);
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, [isMobileView]);
+  // スマホ/PC判定は共有フックに一元化（md=768px 未満をスマホとみなす）。
+  // isMobileView が渡された場合（スマホプレビュー枠）はそれを優先する。
+  const isMobile = useIsMobile(isMobileView);
 
   const stepColors: Record<string, string> = {
     "1": "bg-red-500/20 text-red-700 border-red-500/50 hover:bg-red-500/30",
