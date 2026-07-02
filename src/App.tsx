@@ -21,6 +21,7 @@ import { LogicalTree } from './components/LogicalTree';
 import { Flowchart } from './components/Flowchart';
 import { AuthButton } from './components/AuthButton';
 import { NoteList } from './components/NoteList';
+import { ReviewList } from './components/ReviewList';
 import { NoteDetail } from './components/NoteDetail';
 import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
@@ -29,7 +30,7 @@ import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { MobileViewWrapper } from './components/MobileViewWrapper';
 import { countIncomingFriendRequests } from './utils/friends';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'review_list';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 export default function App() {
@@ -450,7 +451,7 @@ export default function App() {
             {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
 
             {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} isGuest={isGuest} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onReviewList={() => setAppState('review_list')} isGuest={isGuest} />}
             {appState === 'leaderboard' && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
             {appState === 'logical_tree' && <LogicalTree />}
@@ -476,6 +477,7 @@ export default function App() {
               />
             )}
             {appState === 'note_list' && <NoteList onBack={() => setAppState('home')} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
+            {appState === 'review_list' && <ReviewList onBack={() => setAppState('home')} isGuest={isGuest} />}
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}
 
             {/* Global Bottom Navigation Footer
@@ -498,7 +500,7 @@ export default function App() {
                 
                 <button 
                   onClick={() => {
-                    if (appState === 'home' || appState === 'note_list' || appState === 'note_detail' || appState === 'leaderboard') {
+                    if (appState === 'home' || appState === 'note_list' || appState === 'note_detail' || appState === 'leaderboard' || appState === 'review_list') {
                       setAppState(lastLearnState);
                     } else {
                       setAppState('mode_selection');
