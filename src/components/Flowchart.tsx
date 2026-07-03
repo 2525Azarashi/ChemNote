@@ -136,7 +136,7 @@ export function Flowchart({ onBack }: FlowchartProps) {
                     {section.icon}
                   </div>
                   <div className="flex-1">
-                    <h3 className={`text-lg md:text-xl font-bold ${section.color.split(' ')[2]}`}>
+                    <h3 className={`text-lg md:text-xl font-bold ${section.color.split(' ')[2]} ${(section.id === '5' || section.id === '6') ? 'font-handwriting' : ''}`}>
                       {section.title}
                     </h3>
                   </div>
@@ -158,8 +158,8 @@ export function Flowchart({ onBack }: FlowchartProps) {
                           {item.icon}
                         </div>
                         <div>
-                          <h4 className="font-bold text-gray-800 mb-1">{item.title}</h4>
-                          <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                          <h4 className={`font-bold text-gray-800 mb-1 ${(section.id === '5' || section.id === '6') ? 'font-handwriting text-lg' : ''}`}>{item.title}</h4>
+                          <p className={`text-sm text-gray-500 leading-relaxed ${(section.id === '5' || section.id === '6') ? 'font-handwriting' : ''}`}>{item.desc}</p>
                         </div>
                       </div>
                     </motion.div>

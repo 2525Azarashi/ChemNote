@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, Flame, ChevronRight, CheckCircle, Edit3, ArrowRight } from 'lucide-react';
+import { BookOpen, Flame, ChevronRight, CheckCircle, Edit3, ArrowRight, Star, AlertCircle, RotateCw } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
@@ -15,6 +15,8 @@ interface HomeProps {
 
 export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, isGuest }: HomeProps) {
   const [profile, setProfile] = useState<any>(null);
+  const [importantNotes, setImportantNotes] = useState<any[]>([]);
+  const [notesToReview, setNotesToReview] = useState<any[]>([]);
   
   // Real stats state
   const [streak, setStreak] = useState(0);
@@ -81,53 +83,17 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         // completed chapters（次の章を求めるために継続利用）
         const completed = JSON.parse(localStorage.getItem(`completed_${uid}`) || '[]');
         setCompletedIds(completed);
-        
-      } catch (error) {
-        console.error("プロフィール・統計情報取得エラー:", error);
-      }
-    };
-    
-    fetchProfileAndStats();
-  }, [isGuest, allChaptersList, totalQuestions]);
 
-  const todayStr = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' });
-  const todayFormatted = todayStr.replace(/\//g, '.');
-
-  const progressPercent = totalQuestions > 0 ? Math.round((solvedQuestions / totalQuestions) * 100) : 0;
-
-  // 「次の章」を算出（学習進捗カードの状況別コピー用）
-  const nextChapter = useMemo(() => {
-    return allChaptersList.find((c: any) => !completedIds.includes(c.id)) as any;
-  }, [completedIds, allChaptersList]);
-
-  // 「次のマイルストーン」を算出（連続学習カード用）
-  // 3日 → 7日 → 14日 → 30日 → 60日 → 100日 の順に次の節目を選ぶ
-  const nextMilestone = useMemo(() => {
-    const milestones = [3, 7, 14, 30, 60, 100];
-    const target = milestones.find(m => m > streak);
-    if (!target) return null;
-    return { target, remaining: target - streak };
-  }, [streak]);
-
-  // 挨拶テキスト：「さん」とのスペースを排除（{name}さん で直結）
-  const greetingName = profile?.name || 'ゲスト';
-
-  return (
-    <div className="w-full h-full min-h-[100dvh] sm:min-h-0 sm:h-[800px] w-full max-w-5xl mx-auto bg-[#FDFBF7] sm:rounded-[36px] sm:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] sm:border-[8px] sm:border-[#1B2631] flex flex-col overflow-hidden relative">
-      
-      {/* Background Decor */}
-      <div className="absolute inset-0 pointer-events-none opacity-5 fabric-texture"></div>
-      
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-6 md:px-12 pt-12 relative z-10">
-        
-        {/* Header
-            ★ 修正：「ゲスト さん」→「ゲストさん」へスペース排除 */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="mb-8 font-handwriting">
-          <h1 className="text-[22px] md:text-[28px] text-[#1B2631] font-bold tracking-wide">
-            おかえり、{greetingName}さん
-          </h1>
-          <p className="text-xs md:text-sm text-[#4B5563] mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
-        </motion.div>
+        // Fetch important notes for home display
+        try {
+          const allNotes = JSON.parse(localStorage.getItem(`notes_${uid}`) || '[]');
+          const important = allNotes.filter((n: any) => n.isImportant).slice(0, 3);
+          const toReview = allNotes.filter((n: any) => n.reviewCount && n.reviewCount < 3).slice(0, 3);
+          setImportantNotes(important);
+          setNotesToReview(toReview);
+        } catch (error) {
+          console.error("ノート取得エラー:", error);
+        }
 
         {/* CSS Grid for Mobile-First layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -265,6 +231,66 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             <ChevronRight className="w-5 h-5 text-white/50 group-hover:text-white transition-colors group-hover:translate-x-1" aria-hidden="true" />
           </button>
         </motion.div>
+
+        {/* Important Notes Section */}
+        {(importantNotes.length > 0 || notesToReview.length > 0) && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5 }} className="mt-10 md:mt-12">
+            <div className="space-y-4">
+              {/* Important Notes */}
+              {importantNotes.length > 0 && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-[20px] p-5 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Star size={18} className="text-yellow-600" fill="currentColor" />
+                    <h3 className="font-bold text-[14px] md:text-[16px] text-yellow-800 font-modern">重要な問題（復習推奨）</h3>
+                  </div>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {importantNotes.map((note) => (
+                      <div key={note.id} className="bg-white rounded-lg p-2.5 text-xs md:text-sm text-gray-700 font-modern line-clamp-2 hover:bg-yellow-100 transition-colors cursor-pointer">
+                        {note.chapterTitle && <span className="font-bold text-yellow-700">[{note.chapterTitle}] </span>}
+                        {note.question?.replace(/<[^>]*>/g, '').substring(0, 50)}...
+                      </div>
+                    ))}
+                  </div>
+                  <button 
+                    onClick={onNoteList}
+                    className="mt-3 text-xs md:text-sm font-bold text-yellow-700 hover:text-yellow-900 transition-colors inline-flex items-center gap-1"
+                  >
+                    すべての重要な問題を見る
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              )}
+
+              {/* Notes to Review */}
+              {notesToReview.length > 0 && (
+                <div className="bg-orange-50 border border-orange-200 rounded-[20px] p-5 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <AlertCircle size={18} className="text-orange-600" />
+                    <h3 className="font-bold text-[14px] md:text-[16px] text-orange-800 font-modern">復習が必要な問題</h3>
+                  </div>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {notesToReview.map((note) => (
+                      <div key={note.id} className="bg-white rounded-lg p-2.5 text-xs md:text-sm text-gray-700 font-modern line-clamp-2 hover:bg-orange-100 transition-colors cursor-pointer flex items-start gap-2">
+                        <RotateCw size={12} className="flex-shrink-0 mt-1 text-orange-600" />
+                        <span>
+                          {note.chapterTitle && <span className="font-bold text-orange-700">[{note.chapterTitle}] </span>}
+                          {note.question?.replace(/<[^>]*>/g, '').substring(0, 50)}...
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <button 
+                    onClick={onNoteList}
+                    className="mt-3 text-xs md:text-sm font-bold text-orange-700 hover:text-orange-900 transition-colors inline-flex items-center gap-1"
+                  >
+                    復習リストを確認
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
 
         {/* Extra Links (App Info / Notes)
             ★ 修正：テキストリンク → ピル型ボタンへ

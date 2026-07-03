@@ -181,7 +181,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         chapterTitle: chapter.abstractTitle || chapter.realTitle || '',
         questionIndex: displayIndex + 1,
         memo: '',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        isImportant: false,
+        reviewCount: 0,
+        tags: [],
+        lastReviewedAt: null
       };
       
       const existingNotes = JSON.parse(localStorage.getItem(`notes_${auth.currentUser.uid}`) || '[]');

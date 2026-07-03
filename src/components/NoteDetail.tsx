@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Star, RotateCw, Tag } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
 
@@ -11,13 +11,21 @@ interface NoteDetailProps {
 export function NoteDetail({ note, onBack }: NoteDetailProps) {
   const [memo, setMemo] = useState(note.memo || '');
   const [saving, setSaving] = useState(false);
+  const [isImportant, setIsImportant] = useState(note.isImportant || false);
+  const [reviewCount, setReviewCount] = useState(note.reviewCount || 0);
+  const [tags, setTags] = useState<string[]>(note.tags || []);
+  const [tagInput, setTagInput] = useState('');
 
   const handleSave = async () => {
     if (!auth.currentUser) return;
     setSaving(true);
     try {
       const localNotes = JSON.parse(localStorage.getItem(`notes_${auth.currentUser.uid}`) || '[]');
-      const updatedNotes = localNotes.map((n: any) => n.id === note.id ? { ...n, memo } : n);
+      const updatedNotes = localNotes.map((n: any) => 
+        n.id === note.id 
+          ? { ...n, memo, isImportant, reviewCount, tags, lastReviewedAt: new Date().toISOString() } 
+          : n
+      );
       localStorage.setItem(`notes_${auth.currentUser.uid}`, JSON.stringify(updatedNotes));
       alert('メモを保存しました！');
     } catch (error) {
@@ -40,6 +48,24 @@ export function NoteDetail({ note, onBack }: NoteDetailProps) {
       console.error('削除エラー:', error);
       alert('削除に失敗しました。');
     }
+  };
+
+  const handleAddTag = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && tagInput.trim()) {
+      e.preventDefault();
+      if (!tags.includes(tagInput.trim())) {
+        setTags([...tags, tagInput.trim()]);
+      }
+      setTagInput('');
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setTags(tags.filter(t => t !== tag));
+  };
+
+  const handleIncreaseReviewCount = () => {
+    setReviewCount(reviewCount + 1);
   };
 
   return (
@@ -83,7 +109,76 @@ export function NoteDetail({ note, onBack }: NoteDetailProps) {
         </div>
       </div>
 
+      {/* Learning Support Features */}
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#A9CCE3] space-y-4">
+        <h3 className="font-bold text-[#2C3E50] text-lg">学習サポート</h3>
+        
+        {/* Important Flag */}
+        <div className="flex items-center gap-3 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+          <button
+            onClick={() => setIsImportant(!isImportant)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all ${
+              isImportant 
+                ? 'bg-yellow-400 text-white shadow-md' 
+                : 'bg-white text-yellow-600 border border-yellow-300'
+            }`}
+          >
+            <Star size={18} fill={isImportant ? 'currentColor' : 'none'} />
+            {isImportant ? '重要な問題' : '重要度設定'}
+          </button>
+          <span className="text-sm text-gray-600">重要な問題として復習リストに登録します</span>
+        </div>
+
+        {/* Review Counter */}
+        <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl border border-blue-200">
+          <button
+            onClick={handleIncreaseReviewCount}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg font-bold bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+          >
+            <RotateCw size={18} />
+            復習回数: {reviewCount}
+          </button>
+          <span className="text-sm text-gray-600">この問題を復習した回数</span>
+        </div>
+
+        {/* Tags */}
+        <div className="space-y-3 p-4 bg-purple-50 rounded-xl border border-purple-200">
+          <div className="flex items-center gap-2">
+            <Tag size={18} className="text-purple-600" />
+            <span className="font-bold text-[#2C3E50]">タグ</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <div
+                key={tag}
+                className="flex items-center gap-2 px-3 py-1 bg-purple-200 text-purple-800 rounded-full text-sm font-bold"
+              >
+                {tag}
+                <button
+                  onClick={() => handleRemoveTag(tag)}
+                  className="hover:text-purple-600 font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+          <div>
+            <input
+              type="text"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyPress={handleAddTag}
+              placeholder="タグを入力してEnter（例：弱点、計算、頻出）"
+              className="w-full p-2 rounded-lg border border-purple-300 text-sm font-modern"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Memo Section */}
+      <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#A9CCE3] space-y-4">
+        <h3 className="font-bold text-[#2C3E50] text-lg">個人ノート</h3>
         <textarea
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
