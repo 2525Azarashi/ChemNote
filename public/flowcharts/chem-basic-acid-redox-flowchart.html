@@ -2951,5 +2951,42 @@ document.querySelectorAll('.toc a').forEach(a => {
   document.body.appendChild(themeBtn);
 })();
 </script>
+<script>
+/* ===== 埋め込みモード（アプリ内モーダル用） =====================
+   ?only=<chart-id> を付けると、その章のフローチャートだけを表示する。
+   さらに &embed=1 でヘッダー・目次・凡例・演習ボタン等を隠し、
+   アプリのモーダル内 iframe 表示に最適化する。 */
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var only = params.get('only');
+  var embed = params.get('embed') === '1';
+  if (!only && !embed) return;
+
+  var style = document.createElement('style');
+  var css = '';
+  if (only) {
+    css += '.chart-section { display: none !important; }';
+    css += '.chart-section[data-chart-id="' + only.replace(/["\\]/g, '') + '"] { display: block !important; }';
+  }
+  if (embed) {
+    css += 'header.main-header, .color-legend, nav, .toc, .flow-theme-btn, .flow-quiz-btn, .flow-next-btn, .flow-section-footer, .flow-progress { display: none !important; }';
+    css += 'body { padding: 8px; background: #fff; }';
+    css += '.chart-section { margin: 0 auto; box-shadow: none; border: none; padding: 10px 6px; max-width: 100%; }';
+  }
+  style.textContent = css;
+  document.head.appendChild(style);
+
+  // 埋め込み時はダークモード指定を無視してライト固定（アプリ側の配色と合わせる）
+  if (embed) {
+    try { document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}
+  }
+
+  // 対象の章が折りたたみ保存されていても、単独表示時は必ず展開する
+  if (only) {
+    var target = document.querySelector('.chart-section[data-chart-id="' + only.replace(/["\\]/g, '') + '"]');
+    if (target) target.classList.remove('flow-collapsed');
+  }
+})();
+</script>
 </body>
 </html>

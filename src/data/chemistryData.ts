@@ -1,10 +1,15 @@
 import { acidBaseProblems } from './acidBaseProblems';
+import { redoxProblems } from './redoxProblems';
 
 // ⑤ 酸と塩基 を他の単元（④-1 等）と同じ粒度のタブに分割するための補助関数。
 // acidBaseProblems の各問題は category に "⑤-1 …" のような接頭辞を持つので、
 // その接頭辞でフィルタして各サブ単元の practiceProblems を取り出す。
 const acidBaseProblemsByPrefix = (prefix: string) =>
   acidBaseProblems.filter((p: any) => typeof p.category === 'string' && p.category.startsWith(prefix));
+
+// ⑥ 酸化還元反応 も同様に category の "⑥-1 …" 接頭辞でフィルタする。
+const redoxProblemsByPrefix = (prefix: string) =>
+  redoxProblems.filter((p: any) => typeof p.category === 'string' && p.category.startsWith(prefix));
 
 export const chemistryData = {
   "parts": [
@@ -7720,11 +7725,90 @@ export const chemistryData = {
           "miniTest": []
         },
         {
-          "id": "c6",
-          "abstractTitle": "⑥ 酸化還元反応（電子のやり取り）",
+          "id": "c6_1",
+          "abstractTitle": "⑥-1 酸化と還元・酸化数",
           "realTitle": "⑥ 酸化還元反応",
-          "topics": [],
-          "practiceProblems": [],
+          "topics": [
+            "酸化・還元の定義（酸素・水素・電子）",
+            "酸化数の求め方",
+            "酸化剤・還元剤の判定"
+          ],
+          "practiceProblems": redoxProblemsByPrefix("⑥-1"),
+          "miniTest": []
+        },
+        {
+          "id": "c6_2",
+          "abstractTitle": "⑥-2 半反応式と酸化還元反応式",
+          "realTitle": "⑥ 酸化還元反応",
+          "topics": [
+            "酸化剤の半反応式",
+            "還元剤の半反応式",
+            "化学反応式の完成",
+            "SO2・H2O2 の二面性"
+          ],
+          "practiceProblems": redoxProblemsByPrefix("⑥-2"),
+          "miniTest": []
+        },
+        {
+          "id": "c6_3",
+          "abstractTitle": "⑥-3 酸化還元滴定と量的関係",
+          "realTitle": "⑥ 酸化還元反応",
+          "topics": [
+            "過マンガン酸塩滴定",
+            "ヨウ素滴定",
+            "逆滴定・COD",
+            "電子の物質量の等式"
+          ],
+          "practiceProblems": redoxProblemsByPrefix("⑥-3"),
+          "miniTest": []
+        },
+        {
+          "id": "c6_4",
+          "abstractTitle": "⑥-4 酸化力・還元力の強さ",
+          "realTitle": "⑥ 酸化還元反応",
+          "topics": [
+            "反応の進行方向と強さの序列",
+            "ハロゲンの酸化力",
+            "金属の析出反応"
+          ],
+          "practiceProblems": redoxProblemsByPrefix("⑥-4"),
+          "miniTest": []
+        },
+        {
+          "id": "c6_5",
+          "abstractTitle": "⑥-5 金属のイオン化傾向",
+          "realTitle": "⑥ 酸化還元反応",
+          "topics": [
+            "イオン化列と反応性",
+            "水・酸との反応",
+            "トタンとブリキ（犠牲防食）"
+          ],
+          "practiceProblems": redoxProblemsByPrefix("⑥-5"),
+          "miniTest": []
+        },
+        {
+          "id": "c6_6",
+          "abstractTitle": "⑥-6 電池",
+          "realTitle": "⑥ 酸化還元反応",
+          "topics": [
+            "ダニエル電池",
+            "ボルタ電池と分極",
+            "電池の量的関係"
+          ],
+          "practiceProblems": redoxProblemsByPrefix("⑥-6"),
+          "miniTest": []
+        },
+        {
+          "id": "c6_7",
+          "abstractTitle": "⑥-7 金属の製錬と電気分解",
+          "realTitle": "⑥ 酸化還元反応",
+          "topics": [
+            "製錬法とイオン化傾向",
+            "鉄の高炉製錬",
+            "銅の電解精錬",
+            "アルミニウムの溶融塩電解"
+          ],
+          "practiceProblems": redoxProblemsByPrefix("⑥-7"),
           "miniTest": []
         }
       ]

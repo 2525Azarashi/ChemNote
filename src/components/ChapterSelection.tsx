@@ -36,7 +36,13 @@ const chapterIdToTrendUnit: Record<string, { chapterGroupTitle: string; unitId: 
   'c5_5':   { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_16' },
   'c5_6':   { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_17' },
   'c5_7':   { chapterGroupTitle: '5章 酸と塩基', unitId: 'c5_18' },
-  'c6':     { chapterGroupTitle: '6章 酸化還元反応', unitId: 'c6_19' },
+  'c6_1':   { chapterGroupTitle: '6章 酸化還元反応', unitId: 'c6_19' },
+  'c6_2':   { chapterGroupTitle: '6章 酸化還元反応', unitId: 'c6_19' },
+  'c6_3':   { chapterGroupTitle: '6章 酸化還元反応', unitId: 'c6_19' },
+  'c6_4':   { chapterGroupTitle: '6章 酸化還元反応', unitId: 'c6_19' },
+  'c6_5':   { chapterGroupTitle: '6章 酸化還元反応', unitId: 'c6_19' },
+  'c6_6':   { chapterGroupTitle: '6章 酸化還元反応', unitId: 'c6_19' },
+  'c6_7':   { chapterGroupTitle: '6章 酸化還元反応', unitId: 'c6_19' },
 };
 
 // chapterのrealTitleから、対応するtrendDataのchapterGroupTitleを取得
