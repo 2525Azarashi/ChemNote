@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, RotateCcw } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
@@ -19,7 +19,7 @@ interface HomeProps {
   isGuest: boolean;
 }
 
-export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onReviewList, isGuest }: HomeProps) {
+export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, isGuest }: HomeProps) {
   const reviewDueCount = useMemo(() => {
     const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
     return getDueCount(uid);
@@ -295,46 +295,30 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           </button>
         </motion.div>
 
-        {/* ===== セカンダリ：ノートを見る / アプリ紹介（白いカードボタン） ===== */}
+        {/* ===== セカンダリ：学習ノート（ノート＋復習を統合）/ アプリ紹介 ===== */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* ノートと復習リストを1つの入口「学習ノート」に統合。今日の復習件数をバッジで提示 */}
           <button
             onClick={onNoteList}
-            aria-label="個人ノート一覧を開く"
+            aria-label={`学習ノートを開く（ノートと復習）${reviewDueCount > 0 ? `。今日の復習${reviewDueCount}件` : ''}`}
             className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
           >
-            <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
+            <div className="relative w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
               <Edit3 className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
+              {reviewDueCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-[#E8688E] text-white text-[11px] font-bold flex items-center justify-center border-2 border-white">
+                  {reviewDueCount > 99 ? '99+' : reviewDueCount}
+                </span>
+              )}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">ノートを見る</div>
-              <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">自分のまとめを確認しよう</div>
+              <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">学習ノート</div>
+              <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">
+                {reviewDueCount > 0 ? `今日の復習が${reviewDueCount}件あります` : 'ノートと復習をまとめて確認'}
+              </div>
             </div>
             <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
           </button>
-
-          {onReviewList && (
-            <button
-              onClick={onReviewList}
-              aria-label={`復習リストを開く${reviewDueCount > 0 ? `（今日の復習${reviewDueCount}件）` : ''}`}
-              className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
-            >
-              <div className="relative w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
-                <RotateCcw className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
-                {reviewDueCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-[#E8688E] text-white text-[11px] font-bold flex items-center justify-center border-2 border-white">
-                    {reviewDueCount > 99 ? '99+' : reviewDueCount}
-                  </span>
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">復習リスト</div>
-                <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">
-                  {reviewDueCount > 0 ? `今日の復習が${reviewDueCount}件あります` : '間違えた問題を復習しよう'}
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
-            </button>
-          )}
 
           <button
             onClick={onIntro}
