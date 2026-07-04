@@ -30,15 +30,53 @@ export interface JudgeableSubQuestion {
  * 解答文字列を比較用に正規化する。
  * - 前後の空白を除去
  * - 全角空白 → 除去、連続空白 → 単一化
- * 数式・化学式は表記が一意（C4 で半角統一済み）なので、
- * ここでは「空白ゆれ」の吸収のみを行い、意味を変える正規化はしない。
+ * - 全角数字（０-９）→ 半角数字（0-9）
+ * - 全角英字（Ａ-Ｚａ-ｚ）→ 半角英字（A-Za-z）
+ * - 全角記号（＋−．，％）→ 半角（+- . , %）、各種マイナス記号 → '-'
+ * - 上付き・下付き数字（₀-₉ / ⁰-⁹）→ 通常数字（化学式パレット入力と手入力の互換）
+ * 数字・英字は全角/半角どちらで入力しても同じ解答として扱う。
  */
 export function normalizeAnswer(value: string | undefined | null): string {
   if (value == null) return '';
-  return String(value)
+  let s = String(value)
     .replace(/\u3000/g, ' ') // 全角空白→半角
     .trim()
     .replace(/\s+/g, ' ');
+
+  // 全角数字・全角英字 → 半角（０-９ / Ａ-Ｚ / ａ-ｚ）
+  s = s.replace(/[\uFF10-\uFF19\uFF21-\uFF3A\uFF41-\uFF5A]/g, (ch) =>
+    String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
+  );
+
+  // 全角記号 → 半角
+  s = s
+    .replace(/[＋]/g, '+')
+    .replace(/[．]/g, '.')
+    .replace(/[，]/g, ',')
+    .replace(/[％]/g, '%')
+    // 各種マイナス/ハイフン様記号（−, ―, ‐, –, —, ー(長音は残す)を除く）
+    .replace(/[\u2212\uFF0D]/g, '-');
+
+  // 下付き数字（₀₁₂₃₄₅₆₇₈₉）→ 通常数字
+  s = s.replace(/[\u2080-\u2089]/g, (ch) =>
+    String.fromCharCode(ch.charCodeAt(0) - 0x2080 + 0x30)
+  );
+  // 上付き数字（⁰¹²³⁴-⁹）→ 通常数字、上付き +/- → +/-
+  s = s
+    .replace(/\u00B9/g, '1')
+    .replace(/\u00B2/g, '2')
+    .replace(/\u00B3/g, '3')
+    .replace(/[\u2070\u2074-\u2079]/g, (ch) => {
+      const map: Record<string, string> = {
+        '\u2070': '0', '\u2074': '4', '\u2075': '5', '\u2076': '6',
+        '\u2077': '7', '\u2078': '8', '\u2079': '9',
+      };
+      return map[ch] ?? ch;
+    })
+    .replace(/\u207A/g, '+')
+    .replace(/\u207B/g, '-');
+
+  return s;
 }
 
 /**
