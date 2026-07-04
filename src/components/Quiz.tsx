@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
-import { substanceTreeData } from '../data/chemistryData';
-import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
+import { ProblemLogicTree } from './ProblemLogicTree';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
 import { QuestionFigure } from './QuestionFigure';
@@ -872,6 +871,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   className="mt-5"
                 />
               )}
+              {/* この問題に対応するロジックツリー（該当ステップのみ抜粋）。
+                  解答解説ページと同じ抜粋範囲を再掲するため範囲が一致する。 */}
+              <ProblemLogicTree
+                chapter={chapter}
+                currentQuestion={currentQuestion}
+                isMobile={!isDesktop}
+              />
             </div>
           </div>
         </div>

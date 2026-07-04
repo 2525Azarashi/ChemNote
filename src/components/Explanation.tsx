@@ -1001,7 +1001,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               {/* Flowchart (Logical Tree) - Moved under problem statement inside Left Column
                   ※ 専用のフローチャートが用意されている章のみ表示する。
                      （c5 酸と塩基 / c6 酸化還元 などは専用ツリーが無いため、別単元のツリーを誤表示しない） */}
-              {['c1_1', 'c1_2_A', 'c1_2_B', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4', 'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapter?.id) && (
+              {(['c1_1', 'c1_2_A', 'c1_2_B', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4', 'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapter?.id)
+                || chapter?.id === 'c5' || chapter?.id?.startsWith('c5_')
+                || chapter?.id === 'c6' || chapter?.id?.startsWith('c6_')) && (
                 <div className="mt-6 border-t pt-4 border-gray-200">
                   <PracticeExplanationTree
                     deepThoughtData={deepThoughtData}
@@ -1015,6 +1017,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     isMobile={isMobile}
                     renderSubQuestionCheck={renderSubQuestionCheck}
                     zoom={isMobile ? 'normal' : 'far'}
+                    isSingleQuestion={singleQuestionIndex !== undefined}
                   />
                 </div>
               )}
