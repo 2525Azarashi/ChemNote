@@ -1,7 +1,7 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
 import { substanceTreeData, separationTreeData, componentDetectionTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData, crystalTreeData, interactionTreeData, atomicWeightTreeData, amountOfSubstanceTreeData, chemicalEquationTreeData, concentrationTreeData, acidBaseTreeData, redoxTreeData } from '../data/chemistryData';
-import { collectQuestionIds, extractRelevantTree } from '../utils/logicTreeUtils';
+import { extractSectionByChapter } from '../utils/logicTreeUtils';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -63,23 +63,17 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   const fullTreeData: NodeData | undefined = resolveTree(chapter?.id);
 
   // c5(酸と塩基)/c6(酸化還元)は単元全体で1つの大きなツリーを共有しているため、
-  // その章（下位章）に対応する Step 範囲だけを抜粋する。
-  // c1〜c4 は章ごとに専用ツリーがあり、ツリー全体がそのトピックの範囲なので抜粋しない。
-  // 単元選択画面のフローチャートと範囲を一致させるため、
-  // 抜粋は「その章の全問題（practiceProblems）」を基準に行う。
+  // その下位章（c5_1〜c5_7 / c6_1〜c6_7）に対応する重要事項セクションのみを切り出す。
+  // 添付HTML由来のフル解説（Step構成・解説付き）をそのまま表示し、
+  // 単元選択画面のフローチャートと表示範囲を一致させる。
+  // c1〜c4 は章ごとに専用ツリーがあるため切り出さない。
   const isSharedUnitTree = !!chapter?.id && (
     chapter.id === 'c5' || chapter.id.startsWith('c5_') ||
     chapter.id === 'c6' || chapter.id.startsWith('c6_')
   );
   let currentTreeData: NodeData | undefined = fullTreeData;
   if (fullTreeData && isSharedUnitTree) {
-    const chapterProblems = (chapter?.practiceProblems && chapter.practiceProblems.length > 0)
-      ? chapter.practiceProblems
-      : questions;
-    const targetIds = collectQuestionIds(chapterProblems);
-    const extracted = extractRelevantTree(fullTreeData, targetIds);
-    // 抜粋できた場合のみ差し替える。該当ノードが見つからないときはフルツリーを表示。
-    if (extracted) currentTreeData = extracted;
+    currentTreeData = extractSectionByChapter(fullTreeData, chapter!.id) ?? fullTreeData;
   }
 
   // 対応するツリーが無い章では、誤ったフローチャートを表示しない。
