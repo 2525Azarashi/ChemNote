@@ -50,9 +50,9 @@ const realTitleToChapterGroupTitle: Record<string, string> = {
   '1章 物質の構成': '1章 物質の構成',
   '2章 物質の構成粒子': '2章 物質の構成粒子',
   '3章 化学結合': '3章 化学結合',
-  '④ 物質量と化学反応式': '4章 物質量と化学反応式',
-  '⑤ 酸と塩基': '5章 酸と塩基',
-  '⑥ 酸化還元反応': '6章 酸化還元反応',
+  '4章 物質量と化学反応式': '4章 物質量と化学反応式',
+  '5章 酸と塩基': '5章 酸と塩基',
+  '6章 酸化還元反応': '6章 酸化還元反応',
 };
 
 export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelectionProps) {
