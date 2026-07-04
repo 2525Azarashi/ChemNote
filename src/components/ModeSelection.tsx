@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Target, BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical } from 'lucide-react';
 import { TrendModal } from './TrendModal';
+import { MntbLogo } from './MntbLogo';
 
 interface ModeSelectionProps {
   onSelectMode: (mode: 'mini_test' | 'practice' | 'learning') => void;
@@ -26,10 +27,8 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
           <span>戻る</span>
         </button>
 
-        {/* Logo */}
-        <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
-          <img src="https://lh3.googleusercontent.com/d/1bdaFoRcprvig_57izYdAEzon1gD47_Wk" alt="Logo" className="h-8 md:h-12 object-contain" referrerPolicy="no-referrer" />
-        </div>
+        {/* Logo（従来の mntb を模したインラインロゴ） */}
+        <MntbLogo size="sm" className="absolute top-4 right-4 md:top-6 md:right-6 z-30" />
 
         <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-[#2C3E50] mb-8 md:mb-12 mt-12 md:mt-0">
           学習モードを選択
@@ -76,8 +75,8 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
               <TrendingUp className="text-[#F4D03F] w-6 h-6" />
             </div>
             <div className="text-left">
-              <h3 className="text-base font-bold font-handwriting">過去11年 出題傾向</h3>
-              <p className="text-xs text-white/70 font-handwriting leading-relaxed">2016〜2026年の全体分析・2027予想</p>
+              <h3 className="text-base font-bold font-handwriting">共通テスト出題傾向</h3>
+              <p className="text-xs text-white/70 font-handwriting leading-relaxed">過去11年（2016〜2026年）の全体分析・2027予想</p>
             </div>
           </button>
 
@@ -91,7 +90,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
                 <FlaskConical className="text-white w-6 h-6" />
               </div>
               <div className="text-left">
-                <h3 className="text-base font-bold font-handwriting">2027年度 共通テスト</h3>
+                <h3 className="text-sm md:text-base font-bold font-handwriting leading-tight">2027年度 共通テスト化学基礎予想問題</h3>
                 <p className="text-xs text-white/70 font-handwriting leading-relaxed">オリジナル予想問題（解説付き）</p>
               </div>
             </button>

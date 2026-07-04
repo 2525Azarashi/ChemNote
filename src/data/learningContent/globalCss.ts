@@ -108,6 +108,48 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
       .learning-content p, .learning-content li {
         font-size: 0.95em;
       }
+      /* Tailwind の Preflight で ol/ul のマーカーが消えるため、本文用リストの
+         番号・行頭記号を明示的に復活させる（例題の「問題番号 抜け」対策）。 */
+      .learning-content .main-content ol,
+      .learning-content .box ol,
+      .learning-content .box-example ol {
+        list-style: none;
+        counter-reset: q-counter;
+        padding-left: 2.2em;
+        margin: 8px 0;
+      }
+      /* 解答表記（（1）（2）…）と揃えるため、番号を全角括弧付きで表示する。 */
+      .learning-content .main-content ol > li,
+      .learning-content .box ol > li,
+      .learning-content .box-example ol > li {
+        position: relative;
+        counter-increment: q-counter;
+        margin: 4px 0;
+      }
+      .learning-content .main-content ol > li::before,
+      .learning-content .box ol > li::before,
+      .learning-content .box-example ol > li::before {
+        content: '（' counter(q-counter) '）';
+        position: absolute;
+        left: -2.2em;
+        width: 2.2em;
+        text-align: left;
+        font-weight: bold;
+        color: #16538a;
+      }
+      .learning-content .main-content ul,
+      .learning-content .box ul,
+      .learning-content .box-example ul {
+        list-style: disc;
+        padding-left: 1.6em;
+        margin: 8px 0;
+      }
+      .learning-content .main-content ul > li,
+      .learning-content .box ul > li,
+      .learning-content .box-example ul > li {
+        margin: 4px 0;
+        padding-left: 4px;
+      }
       .learning-content table {
         width: 100%;
         border-collapse: collapse;
@@ -243,11 +285,29 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
       .learning-content figure {
         text-align: center;
         margin: 20px 0;
+        max-width: 100%;
+        overflow-x: auto;
+      }
+      .learning-content figure img,
+      .learning-content img,
+      .learning-content svg {
+        /* 余白を詰めても画像が巨大化しないよう、コンテナ幅(100%)に加えて
+           実寸の上限(620px)も設定し、図版が大きくなりすぎないようにする。 */
+        max-width: min(100%, 620px) !important;
+        height: auto;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 4px;
       }
       .learning-content figure img {
-        max-width: 100%;
         border: 1px solid #ddd;
-        border-radius: 4px;
+      }
+      /* 横に広い表は内部スクロールで全体を確認できるようにする */
+      .learning-content .table-wrap,
+      .learning-content .scroll-x {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
       .learning-content figcaption {
         font-size: 0.85em;

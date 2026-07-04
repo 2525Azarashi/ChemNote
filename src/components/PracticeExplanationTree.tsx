@@ -29,34 +29,32 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   renderSubQuestionCheck,
   zoom = 'far'
 }) => {
-  const isSeparationChapter = chapter?.id === 'c1_2_A';
-  const isThermalMotionChapter = chapter?.id === 'c1_3';
-  const isAtomicStructureChapter = chapter?.id === 'c2_1';
-  const isIonChapter = chapter?.id === 'c2_2';
-  const isIonGenerationChapter = chapter?.id === 'c2_3';
-  const isIonSizeChapter = chapter?.id === 'c2_4';
-  const isChemicalBondChapter = chapter?.id === 'c3_1';
-  const isCrystalChapter = chapter?.id === 'c3_2';
-  const isInteractionChapter = chapter?.id === 'c3_3';
-  const isAtomicWeightChapter = chapter?.id === 'c4_1';
-  const isAmountOfSubstanceChapter = chapter?.id === 'c4_2';
-  const isChemicalEquationChapter = chapter?.id === 'c4_3';
-  const isConcentrationChapter = chapter?.id === 'c4_4';
-  
-  let currentTreeData = substanceTreeData;
-  if (isSeparationChapter) currentTreeData = separationTreeData;
-  if (isThermalMotionChapter) currentTreeData = thermalMotionTreeData;
-  if (isAtomicStructureChapter) currentTreeData = atomicStructureTreeData;
-  if (isIonChapter) currentTreeData = ionTreeData;
-  if (isIonGenerationChapter) currentTreeData = ionGenerationTreeData;
-  if (isIonSizeChapter) currentTreeData = ionSizeTreeData;
-  if (isChemicalBondChapter) currentTreeData = chemicalBondTreeData;
-  if (isCrystalChapter) currentTreeData = crystalTreeData;
-  if (isInteractionChapter) currentTreeData = interactionTreeData;
-  if (isAtomicWeightChapter) currentTreeData = atomicWeightTreeData;
-  if (isAmountOfSubstanceChapter) currentTreeData = amountOfSubstanceTreeData;
-  if (isChemicalEquationChapter) currentTreeData = chemicalEquationTreeData;
-  if (isConcentrationChapter) currentTreeData = concentrationTreeData;
+  // 章IDごとに対応するフローチャート（ロジックツリー）を明示的に対応付ける。
+  // ここに存在しない章（例: c5 酸と塩基, c6 酸化還元）は専用ツリーが無いため、
+  // 別単元のツリー（物質の分類など）を誤って表示しないよう、フローチャートを描画しない。
+  const TREE_BY_CHAPTER: Record<string, NodeData> = {
+    c1_1: substanceTreeData,
+    c1_2_A: separationTreeData,
+    c1_3: thermalMotionTreeData,
+    c2_1: atomicStructureTreeData,
+    c2_2: ionTreeData,
+    c2_3: ionGenerationTreeData,
+    c2_4: ionSizeTreeData,
+    c3_1: chemicalBondTreeData,
+    c3_2: crystalTreeData,
+    c3_3: interactionTreeData,
+    c4_1: atomicWeightTreeData,
+    c4_2: amountOfSubstanceTreeData,
+    c4_3: chemicalEquationTreeData,
+    c4_4: concentrationTreeData,
+  };
+
+  const currentTreeData: NodeData | undefined = chapter?.id ? TREE_BY_CHAPTER[chapter.id] : undefined;
+
+  // 対応するツリーが無い章では、誤ったフローチャートを表示しない。
+  if (!currentTreeData) {
+    return null;
+  }
 
   const renderContent = (nodeId: string) => {
     const matchedSqs: { sq: any, parentQuestion: any }[] = [];

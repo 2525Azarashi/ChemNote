@@ -1,0 +1,2992 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>化学基礎 酸と塩基・酸化還元反応 フローチャート集（完全網羅版）</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+  background: #f8fafc;
+  color: #1f2937;
+  line-height: 1.7;
+  padding: 16px;
+}
+
+header.main-header {
+  max-width: 1100px; margin: 0 auto 20px; padding: 24px;
+  background: linear-gradient(135deg, #ef4444 0%, #f97316 50%, #6366f1 100%);
+  color: white; border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.1);
+}
+header.main-header h1 { font-size: 24px; margin-bottom: 6px; }
+header.main-header p { font-size: 13px; opacity: .95; }
+
+/* Step color legend */
+.color-legend {
+  max-width: 1100px; margin: 0 auto 24px; padding: 16px 20px;
+  background: white; border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.color-legend h3 { font-size: 14px; margin-bottom: 10px; color: #374151; }
+.legend-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.legend-item {
+  padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 700;
+}
+.legend-note { font-size: 11px; color: #6b7280; margin-top: 8px; }
+
+/* TOC */
+.toc {
+  max-width: 1100px; margin: 0 auto 32px; padding: 20px;
+  background: white; border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.toc h2 { font-size: 16px; margin-bottom: 12px; color: #374151; }
+.toc-unit { margin-bottom: 12px; }
+.toc-unit h3 {
+  font-size: 13px; padding: 6px 12px; border-left: 4px solid;
+  border-radius: 4px; margin-bottom: 6px;
+}
+.toc-unit ul { list-style: none; padding-left: 12px; }
+.toc-unit li { margin: 4px 0; }
+.toc-unit a {
+  color: #4b5563; text-decoration: none; font-size: 13px;
+  padding: 4px 8px; border-radius: 4px; display: inline-block;
+}
+.toc-unit a:hover { background: #f3f4f6; color: #111827; }
+
+/* Chart Section */
+.chart-section {
+  max-width: 1100px; margin: 0 auto 28px; padding: 22px;
+  background: white; border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
+  scroll-margin-top: 12px;
+}
+.chart-header { border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; margin-bottom: 16px; }
+.chart-meta { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+.chart-title { font-size: 19px; color: #1f2937; font-weight: 700; }
+
+/* Root Node */
+.root-node {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px; background: #f9fafb; color: #374151;
+  border: 1.5px solid #d1d5db; border-radius: 8px;
+  font-weight: 600; font-size: 14px; margin-bottom: 16px;
+}
+.root-arrow { font-size: 10px; color: #9ca3af; }
+
+/* Steps */
+.steps-container { position: relative; padding-left: 12px; }
+.steps-container::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 14px;
+  width: 2px; background: #d1d5db;
+}
+
+/* Step groups */
+.step-group {
+  position: relative; margin-bottom: 16px;
+  border: 1.5px solid; border-radius: 10px;
+  padding: 16px 16px 12px;
+}
+.step-group::before {
+  content: ""; position: absolute; left: -12px; top: 22px;
+  width: 12px; height: 2px; background: #d1d5db;
+}
+.step-label {
+  display: inline-block; padding: 3px 12px; border-radius: 14px;
+  font-size: 11.5px; font-weight: 700; border: 1px solid;
+  margin-bottom: 10px; position: absolute; top: -11px; left: 14px;
+  background: white;
+}
+
+/* Step1 = オレンジ */
+.step-group[data-step="1"] { border-color: #fbbf24; background: #fef3c722; }
+.step-group[data-step="1"] .step-label { background: #fef3c7; color: #92400e; border-color: #fbbf24; }
+.step-group[data-step="1"] .node-btn { border-color: #f59e0b; color: #92400e; }
+.step-group[data-step="1"] .node-btn:hover { background: #fef3c7; }
+.step-group[data-step="1"] .node-btn.open { background: #f59e0b; color: white; }
+.step-group[data-step="1"] .node-detail { border-color: #fbbf24; background: #fffbeb; }
+.step-group[data-step="1"] .info-icon { background: #fef3c7; color: #92400e; }
+.step-group[data-step="1"] .formula-box { background: #fff7ed; border-left-color: #f59e0b; }
+.step-group[data-step="1"] .diagram { background: #fffbeb; border-color: #fbbf24; }
+.step-group[data-step="1"] .tip-box { background: #fff8e1; border-color: #fbbf24; color: #78350f; }
+
+/* Step2 = 緑 */
+.step-group[data-step="2"] { border-color: #34d399; background: #d1fae522; }
+.step-group[data-step="2"] .step-label { background: #d1fae5; color: #065f46; border-color: #34d399; }
+.step-group[data-step="2"] .node-btn { border-color: #10b981; color: #065f46; }
+.step-group[data-step="2"] .node-btn:hover { background: #d1fae5; }
+.step-group[data-step="2"] .node-btn.open { background: #10b981; color: white; }
+.step-group[data-step="2"] .node-detail { border-color: #34d399; background: #ecfdf5; }
+.step-group[data-step="2"] .info-icon { background: #d1fae5; color: #065f46; }
+.step-group[data-step="2"] .formula-box { background: #f0fdf4; border-left-color: #10b981; }
+.step-group[data-step="2"] .diagram { background: #ecfdf5; border-color: #34d399; }
+.step-group[data-step="2"] .tip-box { background: #d1fae5; border-color: #34d399; color: #064e3b; }
+
+/* Step3 = 青 */
+.step-group[data-step="3"] { border-color: #60a5fa; background: #dbeafe22; }
+.step-group[data-step="3"] .step-label { background: #dbeafe; color: #1e40af; border-color: #60a5fa; }
+.step-group[data-step="3"] .node-btn { border-color: #3b82f6; color: #1e40af; }
+.step-group[data-step="3"] .node-btn:hover { background: #dbeafe; }
+.step-group[data-step="3"] .node-btn.open { background: #3b82f6; color: white; }
+.step-group[data-step="3"] .node-detail { border-color: #60a5fa; background: #eff6ff; }
+.step-group[data-step="3"] .info-icon { background: #dbeafe; color: #1e40af; }
+.step-group[data-step="3"] .formula-box { background: #eff6ff; border-left-color: #3b82f6; }
+.step-group[data-step="3"] .diagram { background: #dbeafe; border-color: #60a5fa; }
+.step-group[data-step="3"] .tip-box { background: #dbeafe; border-color: #60a5fa; color: #1e3a8a; }
+
+/* Step4 = 黄 */
+.step-group[data-step="4"] { border-color: #facc15; background: #fef9c322; }
+.step-group[data-step="4"] .step-label { background: #fef9c3; color: #854d0e; border-color: #facc15; }
+.step-group[data-step="4"] .node-btn { border-color: #eab308; color: #854d0e; }
+.step-group[data-step="4"] .node-btn:hover { background: #fef9c3; }
+.step-group[data-step="4"] .node-btn.open { background: #eab308; color: white; }
+.step-group[data-step="4"] .node-detail { border-color: #facc15; background: #fefce8; }
+.step-group[data-step="4"] .info-icon { background: #fef9c3; color: #854d0e; }
+.step-group[data-step="4"] .formula-box { background: #fefce8; border-left-color: #eab308; }
+.step-group[data-step="4"] .diagram { background: #fef9c3; border-color: #facc15; }
+.step-group[data-step="4"] .tip-box { background: #fef9c3; border-color: #facc15; color: #713f12; }
+
+/* Step5 = 紫 */
+.step-group[data-step="5"] { border-color: #a78bfa; background: #ede9fe22; }
+.step-group[data-step="5"] .step-label { background: #ede9fe; color: #5b21b6; border-color: #a78bfa; }
+.step-group[data-step="5"] .node-btn { border-color: #8b5cf6; color: #5b21b6; }
+.step-group[data-step="5"] .node-btn:hover { background: #ede9fe; }
+.step-group[data-step="5"] .node-btn.open { background: #8b5cf6; color: white; }
+.step-group[data-step="5"] .node-detail { border-color: #a78bfa; background: #f5f3ff; }
+.step-group[data-step="5"] .info-icon { background: #ede9fe; color: #5b21b6; }
+.step-group[data-step="5"] .formula-box { background: #f5f3ff; border-left-color: #8b5cf6; }
+.step-group[data-step="5"] .diagram { background: #ede9fe; border-color: #a78bfa; }
+.step-group[data-step="5"] .tip-box { background: #ede9fe; border-color: #a78bfa; color: #4c1d95; }
+
+.step-content { padding-top: 6px; }
+
+/* Node */
+.node-wrap { margin: 8px 0; position: relative; }
+.node-row {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.node-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 10px 16px;
+  min-width: 220px;
+  background: white;
+  border: 2px solid;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+  font-family: inherit;
+}
+.node-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+.node-btn .node-arrow { font-size: 9px; transition: transform .2s; }
+.node-btn.open .node-arrow { transform: rotate(180deg); }
+.node-brief { font-size: 12px; color: #6b7280; }
+
+/* Detail Box */
+.node-detail {
+  display: none; margin-top: 8px;
+  background: white;
+  border: 1.5px solid;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-left: 8px; margin-right: 8px;
+}
+.node-detail.open { display: block; animation: slideDown .2s ease-out; }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.detail-inner { display: flex; gap: 10px; }
+.info-icon {
+  flex-shrink: 0; width: 22px; height: 22px;
+  border-radius: 50%; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+.detail-text { font-size: 13.5px; color: #1f2937; line-height: 1.85; flex: 1; }
+.detail-text b {
+  background: linear-gradient(transparent 60%, #fef3c7 60%);
+  color: #92400e; font-weight: 700; padding: 0 2px;
+}
+.detail-text u { text-decoration: underline; text-decoration-style: dotted; }
+
+/* Formula/Diagram/Tip boxes */
+.formula-box {
+  margin: 10px 0; padding: 12px 14px;
+  border-left: 4px solid;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", monospace, sans-serif;
+  line-height: 1.9;
+}
+.diagram {
+  margin: 10px 0; padding: 12px 14px;
+  border: 1.5px dashed;
+  border-radius: 6px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  font-family: ui-monospace, "Hiragino Sans", monospace;
+}
+.tip-box {
+  margin: 10px 0; padding: 10px 12px;
+  border: 1.5px solid;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+/* Reference table */
+.ref-table {
+  width: 100%; border-collapse: collapse; margin: 10px 0;
+  font-size: 12px;
+}
+.ref-table th, .ref-table td {
+  border: 1px solid #d1d5db; padding: 6px 8px; text-align: left;
+}
+.ref-table th { background: #f3f4f6; font-weight: 700; }
+.ref-table b { background: linear-gradient(transparent 60%, #fef3c7 60%); padding: 0 2px; }
+
+/* Top navigation */
+.top-link {
+  position: fixed; bottom: 20px; right: 20px;
+  background: #6366f1; color: white;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  text-decoration: none; cursor: pointer; border: none;
+  z-index: 100;
+}
+.top-link:hover { background: #4f46e5; }
+
+@media (max-width: 640px) {
+  body { padding: 10px; }
+  .chart-section { padding: 16px; }
+  .chart-title { font-size: 17px; }
+  .node-btn { min-width: 160px; font-size: 12px; padding: 8px 12px; }
+  .node-brief { font-size: 11px; }
+  .formula-box, .ref-table { font-size: 11.5px; }
+  .legend-item { font-size: 11px; }
+}
+
+/* =========================================================
+ * マナトビ統合用の追加スタイル（進捗・チェック・演習/次へ・ダークモード）
+ * ========================================================= */
+.flow-progress {
+  max-width: 1100px; margin: 0 auto 24px; padding: 16px 20px;
+  background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.flow-progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.flow-progress-label { font-size: 13px; font-weight: 700; color: #374151; }
+.flow-progress-count { font-size: 13px; font-weight: 700; color: #6366f1; }
+.flow-progress-bar { width: 100%; height: 10px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
+.flow-progress-fill { height: 100%; width: 0; border-radius: 999px;
+  background: linear-gradient(90deg, #34d399, #60a5fa); transition: width .35s ease; }
+
+.chart-header { position: relative; }
+.flow-actions { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+.flow-done { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700;
+  color: #374151; cursor: pointer; user-select: none; padding: 4px 10px; border-radius: 8px;
+  background: #f3f4f6; }
+.flow-done input { width: 16px; height: 16px; accent-color: #34d399; cursor: pointer; }
+.flow-collapse-btn { font-size: 12px; font-weight: 700; color: #4b5563; background: #f3f4f6;
+  border: 1px solid #e5e7eb; border-radius: 8px; padding: 5px 12px; cursor: pointer; }
+.flow-collapse-btn:hover { background: #e5e7eb; }
+.chart-section.flow-is-done { box-shadow: 0 0 0 2px #34d399 inset, 0 2px 8px rgba(0,0,0,.06); }
+.chart-section.flow-is-done .chart-title::after { content: " ✓"; color: #10b981; }
+
+.flow-section-footer { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;
+  padding-top: 16px; border-top: 1px dashed #e5e7eb; }
+.flow-quiz-btn, .flow-next-btn { display: inline-block; font-size: 13px; font-weight: 700;
+  text-decoration: none; padding: 9px 16px; border-radius: 10px; cursor: pointer; border: none; }
+.flow-quiz-btn { background: #6366f1; color: #fff; }
+.flow-quiz-btn:hover { background: #4f46e5; }
+.flow-next-btn { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+.flow-next-btn:hover { background: #e5e7eb; }
+
+.flow-theme-btn { position: fixed; right: 16px; bottom: 70px; z-index: 50;
+  font-size: 12px; font-weight: 700; padding: 8px 14px; border-radius: 999px;
+  border: 1px solid #e5e7eb; background: #fff; color: #374151; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+.flow-theme-btn:hover { background: #f3f4f6; }
+
+/* ---- ダークモード（手動 data-theme="dark" or システム設定） ---- */
+:root[data-theme="dark"] body { background: #0f172a; color: #e2e8f0; }
+:root[data-theme="dark"] .color-legend,
+:root[data-theme="dark"] .toc,
+:root[data-theme="dark"] .chart-section,
+:root[data-theme="dark"] .flow-progress { background: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+:root[data-theme="dark"] .toc h2, :root[data-theme="dark"] .color-legend h3,
+:root[data-theme="dark"] .chart-title, :root[data-theme="dark"] .flow-progress-label { color: #f1f5f9; }
+:root[data-theme="dark"] .toc-unit a, :root[data-theme="dark"] .node-brief,
+:root[data-theme="dark"] .detail-text, :root[data-theme="dark"] .chart-meta { color: #cbd5e1; }
+:root[data-theme="dark"] .node-detail, :root[data-theme="dark"] .formula-box,
+:root[data-theme="dark"] .flow-done, :root[data-theme="dark"] .flow-collapse-btn,
+:root[data-theme="dark"] .flow-next-btn { background: #334155; color: #e2e8f0; border-color: #475569; }
+:root[data-theme="dark"] .flow-progress-bar { background: #334155; }
+:root[data-theme="dark"] .flow-theme-btn { background: #1e293b; color: #e2e8f0; border-color: #475569; }
+:root[data-theme="dark"] .flow-section-footer { border-top-color: #475569; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) body { background: #0f172a; color: #e2e8f0; }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .color-legend,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .toc,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .chart-section,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .flow-progress { background: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .chart-title,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .toc h2,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .flow-progress-label { color: #f1f5f9; }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .node-brief,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .detail-text,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .chart-meta,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .toc-unit a { color: #cbd5e1; }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .node-detail,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .formula-box,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .flow-done,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .flow-collapse-btn,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .flow-next-btn { background: #334155; color: #e2e8f0; border-color: #475569; }
+}
+</style>
+</head>
+<body>
+<header class="main-header">
+  <h1>🧪 化学基礎 酸と塩基・酸化還元反応 フローチャート集</h1>
+  <p>定期テスト対策・大学入学共通テスト対策 ／ 完全網羅版（酸塩基7項目＋酸化還元7項目）</p>
+  <p style="margin-top:6px;">各ボタンをクリックすると、公式・図・覚え方・例題を含む詳細説明が展開されます。</p>
+  <p style="margin-top:6px;font-weight:700;">🎨 Step番号で色固定（Step1=オレンジ／2=緑／3=青／4=黄／5=紫）</p>
+</header>
+
+<div class="color-legend">
+  <h3>🎨 Stepカラーガイド</h3>
+  <div class="legend-row">
+    <div class="legend-item" style="background:#fef3c7;color:#92400e;border:2px solid #f59e0b;">Step1（オレンジ）＝基本の定義</div>
+    <div class="legend-item" style="background:#d1fae5;color:#065f46;border:2px solid #10b981;">Step2（緑）＝分類・区別</div>
+    <div class="legend-item" style="background:#dbeafe;color:#1e40af;border:2px solid #3b82f6;">Step3（青）＝計算・法則</div>
+    <div class="legend-item" style="background:#fef9c3;color:#854d0e;border:2px solid #eab308;">Step4（黄）＝実験・応用</div>
+    <div class="legend-item" style="background:#ede9fe;color:#5b21b6;border:2px solid #8b5cf6;">Step5（紫）＝発展・総まとめ</div>
+  </div>
+  <p class="legend-note">Step番号ごとに色が固定されています。各項目は Step1（定義）→ Step5（総まとめ）の順に学習を進められる構成です。</p>
+</div>
+
+<nav class="toc">
+<h2>📚 目次（全14項目）</h2>
+
+<div class="toc-unit">
+  <h3 style="color:#b91c1c;border-color:#ef4444;background:#fee2e2;">第2部 物質の変化 ／ 2、酸と塩基（全7項目）</h3>
+  <ul>
+    <li><a href="#p2-2-1">重要事項① 〜酸と塩基の定義（アレニウス／ブレンステッド・ローリー）〜</a></li>
+    <li><a href="#p2-2-2">重要事項② 〜酸と塩基の強さ（電離度・価数）〜</a></li>
+    <li><a href="#p2-2-3">重要事項③ 〜pH について（水のイオン積・計算）〜</a></li>
+    <li><a href="#p2-2-4">重要事項④ 〜中和とは何か（塩の分類と液性）〜</a></li>
+    <li><a href="#p2-2-5">重要事項⑤ 〜中和反応の計算〜</a></li>
+    <li><a href="#p2-2-6">重要事項⑥ 〜中和滴定の道具と方法〜</a></li>
+    <li><a href="#p2-2-7">重要事項⑦ 〜滴定曲線と二段階滴定〜</a></li>
+  </ul>
+</div>
+
+<div class="toc-unit">
+  <h3 style="color:#4338ca;border-color:#6366f1;background:#e0e7ff;">第2部 物質の変化 ／ 3、酸化還元反応（全7項目）</h3>
+  <ul>
+    <li><a href="#p2-3-1">重要事項① 〜酸化還元反応とは何か（酸化数）〜</a></li>
+    <li><a href="#p2-3-2">重要事項② 〜半反応式と酸化還元反応式の作り方〜</a></li>
+    <li><a href="#p2-3-3">重要事項③ 〜酸化剤と還元剤の量的関係（酸化還元滴定）〜</a></li>
+    <li><a href="#p2-3-4">重要事項④ 〜酸化剤・還元剤としての強さ〜</a></li>
+    <li><a href="#p2-3-5">重要事項⑤ 〜金属のイオン化傾向と反応〜</a></li>
+    <li><a href="#p2-3-6">重要事項⑥ 〜電池（一次・二次・燃料）〜</a></li>
+    <li><a href="#p2-3-7">重要事項⑦ 〜工業的製法（Al・Fe・Cu）〜</a></li>
+  </ul>
+</div>
+</nav>
+
+
+<!-- ========== 酸と塩基 ① 定義 ========== -->
+<section class="chart-section" id="p2-2-1" data-chart-id="p2-2-1">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 2、酸と塩基</div>
+    <h2 class="chart-title">重要事項① 〜酸と塩基の定義（アレニウス／ブレンステッド・ローリー）〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">酸と塩基をどう定義するか？</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：アレニウスの定義（水溶液限定）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">アレニウスの酸</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">電離して H⁺ を生じる物質</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>アレニウスの酸</b>＝水に溶かして電離したとき、<b>H⁺（＝オキソニウムイオン H₃O⁺）</b>を生じる物質。
+<div class="formula-box">
+<b>例①</b>：HCl → H⁺ + Cl⁻（塩酸）<br>
+<b>例②</b>：H₂SO₄ → 2H⁺ + SO₄²⁻（硫酸）<br>
+<b>例③</b>：HNO₃ → H⁺ + NO₃⁻（硝酸）<br>
+<b>例④</b>：CH₃COOH ⇄ CH₃COO⁻ + H⁺（酢酸／可逆）
+</div>
+<b>厳密には</b>：H⁺ は水分子と結びついて <b>オキソニウムイオン H₃O⁺</b> として存在する。<br>
+例：HCl + H₂O → <b>H₃O⁺</b> + Cl⁻
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">アレニウスの塩基</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">電離して OH⁻ を生じる物質</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>アレニウスの塩基</b>＝水に溶かして電離したとき、<b>水酸化物イオン OH⁻</b>を生じる物質。
+<div class="formula-box">
+<b>例①</b>：NaOH → Na⁺ + OH⁻<br>
+<b>例②</b>：KOH → K⁺ + OH⁻<br>
+<b>例③</b>：Ca(OH)₂ → Ca²⁺ + 2OH⁻<br>
+<b>例④</b>：Ba(OH)₂ → Ba²⁺ + 2OH⁻
+</div>
+<b>欠点</b>：<u>アンモニア NH₃ は OH⁻ を式中に含まないのに塩基性を示す</u> → アレニウスの定義では説明できない！<br>
+→ そこで登場したのが「ブレンステッド・ローリーの定義」。
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：ブレンステッド・ローリーの定義（H⁺のやり取り）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">ブレンステッドの酸</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">H⁺ を「与える」物質</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>ブレンステッド・ローリーの酸</b>＝反応において<b>H⁺（プロトン）を相手に与える</b>物質。
+<div class="formula-box">
+<b>例①</b>：<b>HCl</b> + H₂O → H₃O⁺ + Cl⁻<br>
+　　　　→ HCl が H⁺ を H₂O に与えた → <b>HCl が酸／H₂O が塩基</b>
+</div>
+<b>ポイント</b>：水溶液以外の反応にも定義が使える！（気相・非水溶媒での反応もOK）
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">ブレンステッドの塩基</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">H⁺ を「受け取る」物質</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>ブレンステッド・ローリーの塩基</b>＝反応において<b>H⁺ を相手から受け取る</b>物質。
+<div class="formula-box">
+<b>例②</b>：NH₃ + <b>H₂O</b> ⇄ NH₄⁺ + OH⁻<br>
+　　　　→ H₂O が H⁺ を NH₃ に与えた → <b>H₂O が酸／NH₃ が塩基</b>
+</div>
+<b>ここで注目！</b>：同じ H₂O が、相手によって<u>酸にも塩基にもなる</u>！<br>
+これを <b>両性物質（両性化合物）</b> と呼ぶ。
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：共役酸・共役塩基（発展）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">共役の関係</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">H⁺のやり取りペア</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+ブレンステッドの定義では、逆反応で H⁺ をやり取りするペアを<b>共役酸・共役塩基</b>とよぶ。
+<div class="formula-box">
+NH₃ + H₂O ⇄ NH₄⁺ + OH⁻<br>
+　塩基　酸　　共役酸　共役塩基<br><br>
+・NH₃ の<b>共役酸</b>＝NH₄⁺（H⁺を1個受け取った形）<br>
+・H₂O の<b>共役塩基</b>＝OH⁻（H⁺を1個失った形）
+</div>
+<div class="tip-box">💡 コツ：「H⁺を1個外した／1個くっつけた形」を作れば共役ペアの完成！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="4">
+  <div class="step-label">【Step4：確認・練習】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">確認問題</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">酸／塩基を答える</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+次の反応で、ブレンステッド・ローリーの酸・塩基はそれぞれ何か？
+<div class="formula-box">
+❶ HCl + NH₃ → NH₄Cl<br>
+　　→ <b>酸＝HCl（H⁺を与える）／塩基＝NH₃（H⁺を受け取る）</b><br><br>
+❷ CO₃²⁻ + H₂O ⇄ HCO₃⁻ + OH⁻<br>
+　　→ <b>酸＝H₂O／塩基＝CO₃²⁻</b><br><br>
+❸ HSO₄⁻ + H₂O ⇄ SO₄²⁻ + H₃O⁺<br>
+　　→ <b>酸＝HSO₄⁻／塩基＝H₂O</b>
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== 酸と塩基 ② 酸と塩基の強さ ========== -->
+<section class="chart-section" id="p2-2-2" data-chart-id="p2-2-2">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 2、酸と塩基</div>
+    <h2 class="chart-title">重要事項② 〜酸と塩基の強さ（電離度・価数）〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">強い？弱い？何価？</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：電離度αとは】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">電離度 α の定義</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">電離した割合を示す値</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>電離度 α</b>＝電解質が水に溶けたとき、<u>溶解した全体のうち電離した割合</u>。
+<div class="formula-box">
+<b>電離度 α = 電離した電解質の物質量 ÷ 溶解した全体の物質量</b><br>
+（0 ＜ α ≦ 1）
+</div>
+<div class="tip-box">💡 濃度が<b>小さい（薄い）</b>ほど、電離度 α は<b>大きく</b>なる。</div>
+
+<div class="formula-box">
+<b>例題</b>：酢酸 0.10 mol を水に溶かすと H⁺ が 0.0010 mol 生じた。電離度は？<br>
+<b>解答</b>：α = 0.0010 ÷ 0.10 = <b>0.010</b>
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：強酸・弱酸／強塩基・弱塩基】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸の強弱（暗記）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">強酸は3つだけ！</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>強酸</b>＝水溶液中でほぼ完全に電離（α ≒ 1）
+<div class="formula-box">
+<b>★ 強酸は3つだけ ★</b><br>
+<b>塩酸 HCl</b>／<b>硫酸 H₂SO₄</b>／<b>硝酸 HNO₃</b>　と 3つ唱える！
+</div>
+<b>弱酸</b>＝電離度 α が小さい酸（それ以外はほぼ弱酸）
+<div class="formula-box">
+弱酸の代表：<b>HF</b>（フッ化水素）、<b>CH₃COOH</b>（酢酸）、<b>H₂S</b>（硫化水素）、<b>(COOH)₂</b>（シュウ酸）、<b>H₃PO₄</b>（リン酸）、<b>H₂CO₃</b>（炭酸）
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">塩基の強弱（暗記）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">1族＋Mg以外の2族＝強塩基</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>強塩基</b>＝水溶液中でほぼ完全に電離（α ≒ 1）
+<div class="formula-box">
+<b>★ 強塩基の覚え方 ★</b>　<b>1族 と（Mgを除く）2族</b> の水酸化物<br><br>
+・NaOH（水酸化ナトリウム）／KOH（水酸化カリウム）＝1族<br>
+・Ca(OH)₂（水酸化カルシウム）／Ba(OH)₂（水酸化バリウム）＝2族
+</div>
+<b>弱塩基</b>＝電離度が小さい塩基
+<div class="formula-box">
+弱塩基の代表：<b>NH₃</b>（アンモニア）、<b>Mg(OH)₂</b>、<b>Cu(OH)₂</b>、<b>Al(OH)₃</b>、<b>Fe(OH)₃</b>
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：価数】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸の価数</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">出せる H⁺ の数</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>酸の価数</b>＝電離して H⁺ になれる<b>H の数</b>。
+<table class="ref-table">
+<tr><th>価数</th><th>強酸</th><th>弱酸</th></tr>
+<tr><td><b>1価</b></td><td>HCl、HNO₃</td><td>HF、HBr、HI、CH₃COOH</td></tr>
+<tr><td><b>2価</b></td><td>H₂SO₄</td><td>H₂S、(COOH)₂（シュウ酸）、H₂CO₃</td></tr>
+<tr><td><b>3価</b></td><td>―</td><td>H₃PO₄（リン酸）</td></tr>
+</table>
+<b>注意</b>：酢酸 CH₃COOH の H は <u>-COOH の H だけが電離</u>して1価。（メチル基-CH₃のHは電離しない）
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">塩基の価数</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">出せる OH⁻ の数</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>塩基の価数</b>＝電離して OH⁻ になれる<b>OH の数</b>（NH₃ は「H⁺を受け取る数」で1価）。
+<table class="ref-table">
+<tr><th>価数</th><th>強塩基</th><th>弱塩基</th></tr>
+<tr><td><b>1価</b></td><td>NaOH、KOH</td><td>NH₃</td></tr>
+<tr><td><b>2価</b></td><td>Ca(OH)₂、Ba(OH)₂</td><td>Mg(OH)₂、Cu(OH)₂、Fe(OH)₂</td></tr>
+<tr><td><b>3価</b></td><td>―</td><td>Al(OH)₃、Fe(OH)₃</td></tr>
+</table>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="4">
+  <div class="step-label">【Step4：★超重要★ 分類まとめ表】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸と塩基の総まとめ表</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">テスト直前に見返す表</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th></th><th>強酸（α≒1）</th><th>弱酸（α小）</th><th>強塩基（α≒1）</th><th>弱塩基（α小）</th></tr>
+<tr><th>1価</th><td>HCl／HNO₃</td><td>HF／CH₃COOH／HBr／HI</td><td>NaOH／KOH</td><td>NH₃</td></tr>
+<tr><th>2価</th><td>H₂SO₄</td><td>H₂S／(COOH)₂／H₂CO₃</td><td>Ca(OH)₂／Ba(OH)₂</td><td>Mg(OH)₂／Cu(OH)₂</td></tr>
+<tr><th>3価</th><td>―</td><td>H₃PO₄</td><td>―</td><td>Al(OH)₃／Fe(OH)₃</td></tr>
+</table>
+<div class="tip-box">💡 <b>強酸3つ</b>と<b>強塩基（1族＋Ca,Ba）</b>だけ覚えれば、あとは全部「弱」でOK！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== 酸と塩基 ③ pH ========== -->
+<section class="chart-section" id="p2-2-3" data-chart-id="p2-2-3">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 2、酸と塩基</div>
+    <h2 class="chart-title">重要事項③ 〜pH について（水のイオン積・計算）〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">酸性・中性・塩基性を数値化！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：pHの定義】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">pH（水素イオン指数）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">[H⁺] の指数を取り出した値</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>pH の定義</b>：水素イオン濃度 [H⁺] を用いて、
+<div class="formula-box">
+<b>[H⁺] = 1.0 × 10⁻ˣ mol/L</b>　のとき　<b>pH = x</b><br><br>
+（正式には pH = -log₁₀[H⁺] だが、化学基礎では指数の x を読むだけで OK！）
+</div>
+<div class="tip-box">🌡 <b>pH の目安</b><br>
+pH ＜ 7 → <b>酸性</b>（数値が小さいほど強酸性）<br>
+pH ＝ 7 → <b>中性</b><br>
+pH ＞ 7 → <b>塩基性</b>（数値が大きいほど強塩基性）
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：水のイオン積 Kw】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">水のイオン積 Kw</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">[H⁺]×[OH⁻]は一定！</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+純水の中でも水はごくわずかに電離している：<b>H₂O ⇄ H⁺ + OH⁻</b>
+<div class="formula-box">
+<b>【水のイオン積】25℃で一定</b><br>
+<b>Kw = [H⁺][OH⁻] = 1.0 × 10⁻¹⁴ (mol/L)²</b><br><br>
+→ 指数どうしの関係：<b>[H⁺]の指数 + [OH⁻]の指数 = -14</b><br><br>
+中性のとき：[H⁺] ＝ [OH⁻] ＝ 1.0 × 10⁻⁷ mol/L
+</div>
+<div class="tip-box">💡 使い方：[H⁺] が分かれば [OH⁻] を、[OH⁻] が分かれば [H⁺] を計算できる！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：pH の計算パターン】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">強酸のpH計算</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">α＝1として扱う</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>強酸は α = 1</b>として計算する。
+<div class="formula-box">
+<b>例題1</b>：0.010 mol/L の HCl 水溶液の pH は？<br>
+HCl は1価の強酸なので → [H⁺] = 0.010 = 1.0 × 10⁻² mol/L<br>
+∴ <b>pH = 2</b>
+</div>
+<div class="formula-box">
+<b>例題2</b>：0.050 mol/L の H₂SO₄ 水溶液の pH は？<br>
+H₂SO₄ は2価の強酸なので → [H⁺] = 0.050 × 2 = 0.10 = 1.0 × 10⁻¹ mol/L<br>
+∴ <b>pH = 1</b>
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">弱酸のpH計算</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">濃度×価数×αを使う</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>弱酸は電離度 α をかける</b>
+<div class="formula-box">
+<b>[H⁺] = 酸のモル濃度 × 価数 × 電離度 α</b>
+</div>
+<div class="formula-box">
+<b>例題</b>：0.10 mol/L の酢酸（α = 0.010）の pH は？<br>
+[H⁺] = 0.10 × 1 × 0.010 = 1.0 × 10⁻³ mol/L<br>
+∴ <b>pH = 3</b>
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">塩基のpH計算</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">Kwを利用して[H⁺]を求める</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+塩基は [OH⁻] を求めた後、<b>水のイオン積</b> を使って [H⁺] に変換する。
+<div class="formula-box">
+<b>例題</b>：0.010 mol/L の NaOH 水溶液の pH は？<br>
+NaOH は1価の強塩基 → [OH⁻] = 0.010 = 1.0 × 10⁻² mol/L<br>
+水のイオン積より：[H⁺] × 1.0 × 10⁻² = 1.0 × 10⁻¹⁴<br>
+∴ [H⁺] = 1.0 × 10⁻¹² mol/L → <b>pH = 12</b><br><br>
+<b>裏ワザ</b>：[OH⁻] = 10⁻² のとき、指数の和 = -14 より [H⁺] の指数 = -12 → pH = 12
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="4">
+  <div class="step-label">【Step4：希釈と pH】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">希釈による pH 変化</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">薄めても pH は 7 を越えない</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>酸を10倍に薄めると</b>：[H⁺] が 1/10 → pH は 1 増える<br>
+<b>塩基を10倍に薄めると</b>：[OH⁻] が 1/10 → pH は 1 減る<br><br>
+<b>⚠ 注意</b>：薄めすぎても pH は<b>「7」を超えることはない</b>！<br>
+（薄い酸でも塩基性にはならない。水そのものの H⁺ が効いてくるため）
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="5">
+  <div class="step-label">【Step5：pH指示薬・pH測定】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">主な指示薬の変色域</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">MO・PP・BTB</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>指示薬</th><th>変色域pH</th><th>酸性側</th><th>塩基性側</th><th>覚え方</th></tr>
+<tr><td><b>メチルオレンジ MO</b></td><td>pH 3.1〜4.4</td><td><b>赤</b></td><td><b>黄</b></td><td>ベーコンエッグ（赤→黄）</td></tr>
+<tr><td><b>フェノールフタレイン PP</b></td><td>pH 8.0〜9.8</td><td><b>無色</b></td><td><b>赤（桃）</b></td><td>塩基性で赤くなる</td></tr>
+<tr><td><b>BTB溶液</b></td><td>pH 6.0〜7.6</td><td><b>黄</b></td><td>緑→<b>青</b></td><td>信号：黄・緑・青</td></tr>
+<tr><td>リトマス紙</td><td>―</td><td>青→赤</td><td>赤→青</td><td>酸性で赤変</td></tr>
+</table>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== 酸と塩基 ④ 中和と塩 ========== -->
+<section class="chart-section" id="p2-2-4" data-chart-id="p2-2-4">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 2、酸と塩基</div>
+    <h2 class="chart-title">重要事項④ 〜中和とは何か（塩の分類と液性）〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">中和 → 塩 → 液性を判定！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：中和反応とは】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">中和の定義</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">酸の H⁺ + 塩基の OH⁻ → H₂O</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>中和</b>＝酸の H⁺ と塩基の OH⁻ が結びついて、<b>水（H₂O）と塩（えん）</b>ができる反応。
+<div class="formula-box">
+<b>本質の式</b>：<b>H⁺ + OH⁻ → H₂O</b>（発熱反応 ＝ 中和熱）<br><br>
+<b>例①</b>：HCl + NaOH → NaCl + H₂O<br>
+<b>例②</b>：H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O<br>
+<b>例③</b>：HCl + NH₃ → NH₄Cl（H₂Oが出ない中和もある！）
+</div>
+<div class="tip-box">💡 中和で生じるイオン化合物を<b>「塩（えん）」</b>とよぶ。塩＝酸の陰イオン＋塩基の陽イオン。</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：塩の分類（化学式で見分ける）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">正塩・酸性塩・塩基性塩</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">式の中に H や OH が残るかで判別</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>分類</th><th>特徴（化学式）</th><th>例</th></tr>
+<tr><td><b>正塩</b></td><td>H も OH も含まない</td><td><b>NaCl</b>／Na₂SO₄／KNO₃／CH₃COONa／NH₄Cl／Na₂CO₃</td></tr>
+<tr><td><b>酸性塩</b></td><td>式に<b>酸のH</b>が残る</td><td><b>NaHSO₄</b>／<b>NaHCO₃</b>／KH₂PO₄</td></tr>
+<tr><td><b>塩基性塩</b></td><td>式に<b>塩基のOH</b>が残る</td><td>MgCl(OH)／CuCl(OH)</td></tr>
+</table>
+<div class="tip-box">⚠ <b>「酸性塩＝酸性」ではない！</b> 分類（式の見た目）と液性（水に溶かしたときの pH）は別モノ！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：液性の判定（超頻出！）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">正塩の液性判定ルール</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">元の「強い方が勝つ」</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>正塩の液性は「もとの酸と塩基の強さ」で決まる！</b>
+<table class="ref-table">
+<tr><th>もとの酸</th><th>もとの塩基</th><th>液性</th><th>例</th></tr>
+<tr><td><b>強酸</b></td><td><b>強塩基</b></td><td>中性</td><td>NaCl（HCl+NaOH）／Na₂SO₄／KNO₃</td></tr>
+<tr><td><b>強酸</b></td><td><b>弱塩基</b></td><td><b>酸性</b></td><td>NH₄Cl（HCl+NH₃）／CuSO₄</td></tr>
+<tr><td><b>弱酸</b></td><td><b>強塩基</b></td><td><b>塩基性</b></td><td>CH₃COONa（酢酸+NaOH）／Na₂CO₃</td></tr>
+<tr><td>弱酸</td><td>弱塩基</td><td>ほぼ中性</td><td>CH₃COONH₄</td></tr>
+</table>
+<div class="tip-box">💡 覚え方：<b>「強い方が勝つ！」</b> 強酸 vs 弱塩基 → 酸性が勝つ／弱酸 vs 強塩基 → 塩基性が勝つ</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸性塩の液性判定（例外注意！）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">NaHSO₄ vs NaHCO₃</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+酸性塩は<b>もとの酸・塩基の強さで判断する</b>のがルール。ただし例外あり。
+<div class="formula-box">
+❶ <b>NaHSO₄</b>（強酸 H₂SO₄ + 強塩基 NaOH の酸性塩）<br>
+　→ 電離して H⁺ を出す → <b>酸性</b>！<br><br>
+❷ <b>NaHCO₃</b>（弱酸 H₂CO₃ + 強塩基 NaOH の酸性塩）<br>
+　→ <b>塩基性</b>！（「強塩基＋弱酸の酸性塩」の場合のみ塩基性になる特殊ルール）
+</div>
+<div class="tip-box">⚠ <b>NaHCO₃（重曹）は水溶液が塩基性</b> ── これがテストの罠！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="4">
+  <div class="step-label">【Step4：弱酸・弱塩基の遊離】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">弱酸の遊離</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">強酸 + 弱酸の塩 → 弱酸が遊離</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>「強い方が勝つ」</b>の応用：弱酸の塩に強酸を加えると、弱酸が追い出される。
+<div class="formula-box">
+<b>例①</b>：CH₃COONa + HCl → CH₃COOH + NaCl（酢酸が遊離）<br>
+<b>例②</b>：Na₂CO₃ + 2HCl → 2NaCl + H₂O + CO₂↑<br>
+<b>例③</b>：CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑（石灰石＋塩酸）
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">弱塩基の遊離</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">強塩基 + 弱塩基の塩 → 弱塩基が遊離</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>例</b>：NH₄Cl + NaOH → NaCl + H₂O + NH₃↑（アンモニアが発生）
+</div>
+<div class="tip-box">🧪 <b>実験室でのアンモニア発生法</b>：塩化アンモニウム＋水酸化カルシウム を加熱！<br>
+2NH₄Cl + Ca(OH)₂ → CaCl₂ + 2H₂O + 2NH₃↑</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== 酸と塩基 ⑤ 中和反応の計算 ========== -->
+<section class="chart-section" id="p2-2-5" data-chart-id="p2-2-5">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 2、酸と塩基</div>
+    <h2 class="chart-title">重要事項⑤ 〜中和反応の計算〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">「H⁺の物質量 ＝ OH⁻の物質量」で解ける！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：中和の基本の式】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">中和の量的関係式</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">これ1本ですべて解ける</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+過不足なく中和するには、
+<div class="formula-box">
+<b>「酸が出す H⁺ の物質量」＝「塩基が出す OH⁻ の物質量」</b><br><br>
+<b>★中和の基本式★</b><br>
+<b>a × c × V = b × c' × V'</b><br><br>
+a：酸の価数　c：酸のモル濃度[mol/L]　V：酸の体積[L]<br>
+b：塩基の価数　c'：塩基のモル濃度　V'：塩基の体積
+</div>
+<div class="tip-box">💡 <b>電離度 α には依存しない！</b> 弱酸でも最終的にはすべて中和されるため、α は式に入らない。</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：基本計算例】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">計算例①：濃度を求める</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">1価と1価の中和</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>例題1</b>：0.10 mol/L の NaOH 水溶液 20 mL を中和するのに、濃度未知の HCl 15 mL 必要だった。HCl のモル濃度は？<br><br>
+<b>解答</b>：1 × c × (15/1000) = 1 × 0.10 × (20/1000)<br>
+　　c = 0.10 × 20 ÷ 15 = <b>約 0.13 mol/L</b>
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">計算例②：価数の違う中和</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">2価×1価</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>例題2</b>：0.050 mol/L の H₂SO₄ 10 mL を中和するのに必要な 0.10 mol/L の NaOH の体積は？<br><br>
+<b>解答</b>：<b>2</b> × 0.050 × (10/1000) = <b>1</b> × 0.10 × (V/1000)<br>
+　　V = <b>10 mL</b>
+</div>
+<div class="tip-box">💡 <b>H₂SO₄ は2価</b>なので H⁺ が2倍出る → NaOH は同じ物質量では足りない！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：応用パターン】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">固体を溶かした場合</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">質量→物質量に変換</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>例題3</b>：NaOH（式量40）0.40g を水に溶かして100mLとした水溶液を、0.10 mol/L の HCl で中和するのに必要な体積は？<br><br>
+NaOHの物質量 = 0.40 ÷ 40 = 0.010 mol<br>
+NaOHの濃度 = 0.010 ÷ 0.10 = 0.10 mol/L<br>
+中和式：1×0.10×0.10 = 1×0.10×V → V = <b>0.10 L ＝ 100 mL</b>
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">気体を溶かした場合（NH₃・CO₂）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">気体の体積（標準状態22.4L）</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>例題4</b>：標準状態で 224 mL のアンモニア NH₃ をすべて吸収するのに必要な 0.10 mol/L の HCl は何mL？<br><br>
+NH₃ の物質量 = 224 ÷ 22400 = 0.010 mol<br>
+NH₃は1価の塩基 → NH₃ + HCl → NH₄Cl<br>
+中和式：1×c×V(HCl) = 1×0.010<br>
+0.10 × V = 0.010 → <b>V = 0.10 L ＝ 100 mL</b>
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">逆滴定（過剰分を求める）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">気体分析に使う</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>逆滴定</b>＝過剰の既知濃度の酸（塩基）を加え、余った分を別の塩基（酸）で滴定して求める方法。
+<div class="formula-box">
+<b>例題5</b>：発生したNH₃を 0.10 mol/L の HCl 20 mL にすべて吸収させた。残った HCl を 0.10 mol/L の NaOH 12 mL で中和した。NH₃の物質量は？<br><br>
+❶ 加えた HCl（H⁺）：0.10 × 0.020 = 2.0×10⁻³ mol<br>
+❷ NaOH（OH⁻）で中和された余りの HCl：0.10 × 0.012 = 1.2×10⁻³ mol<br>
+❸ NH₃ が吸収した H⁺ の物質量 = ❶ - ❷ = <b>0.8×10⁻³ mol</b>
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== 酸と塩基 ⑥ 中和滴定の道具と方法 ========== -->
+<section class="chart-section" id="p2-2-6" data-chart-id="p2-2-6">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 2、酸と塩基</div>
+    <h2 class="chart-title">重要事項⑥ 〜中和滴定の道具と方法〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">器具ごとの「共洗い」を完全マスター！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：実験器具4つの用途と共洗い】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">4つの器具の一覧表</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">超頻出！</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>器具</th><th>用途</th><th>共洗い</th><th>理由</th></tr>
+<tr><td><b>メスフラスコ</b></td><td>正確な濃度の溶液をつくる</td><td><b>不要</b>（純水で濡れたままOK）</td><td>あとで純水を標線まで加えて希釈するため、水滴が残っても濃度に影響しない</td></tr>
+<tr><td><b>ホールピペット</b></td><td>標線までの一定体積を正確に測り取る</td><td><b>必要</b></td><td>内部に水滴が残ると濃度が薄まってしまう</td></tr>
+<tr><td><b>ビュレット</b></td><td>滴下体積を「滴下前 - 滴下後」で測る</td><td><b>必要</b></td><td>内部の水滴で濃度が変わると計算値が狂う</td></tr>
+<tr><td><b>コニカルビーカー</b></td><td>中和反応させる容器</td><td><b>不要</b>（純水で濡れたままOK）</td><td>水で薄まっても、入れた溶質の<b>物質量</b>は変わらないため中和計算に影響なし</td></tr>
+</table>
+<div class="tip-box">💡 <b>覚え方</b>：ホール<b>ト</b>ピペット・ビュレッ<b>ト</b>の「ト」＝「共洗いする」の「と」！<br>
+メスフラスコ・コニカルビーカーは「ト」がつかない → 共洗い不要！</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">駒込ピペット・安全ピペッター</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">補助器具</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>駒込ピペット</b>：おおよその体積を測って移すのに使用（メスフラスコに純水を加える最後の微調整）。<br>
+<b>安全ピペッター（ゴム球）</b>：ホールピペットの先端に取り付け、口で吸わずに液体を吸い上げるための道具。<b>直接口で吸ってはいけない</b>！
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：中和滴定の手順】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">滴定操作の6ステップ</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">実験の流れ</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+❶ <b>メスフラスコ</b>に酸（塩基）を入れ、標線まで純水を加えて<b>一定濃度の溶液</b>を調製<br>
+❷ <b>安全ピペッター</b>をつけた<b>ホールピペット</b>で溶液を標線まで測り取る<br>
+❸ 測り取った溶液を<b>コニカルビーカー</b>に入れる<br>
+❹ 指示薬（フェノールフタレイン等）を数滴加える<br>
+❺ <b>ビュレット</b>に濃度未知の溶液を入れ、先端の空気を追い出し、<b>滴下前の目盛り</b>を読む<br>
+❻ 少しずつ滴下して<b>指示薬の色が変化した点</b>で止め、目盛りを読み「滴下前－滴下後」から使用体積を求め、濃度を計算する
+</div>
+
+<div class="diagram">
+🧪【滴定装置の図】<br>
+　　［ビュレット（滴定液）］<br>
+　　　　　　　↓ ぽたぽた<br>
+　　［コニカルビーカー（測り取った試料＋指示薬）］
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：注意点】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">頻出の注意点</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">目盛り・気泡・終点</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+❶ ビュレットの目盛りは<b>液面の下端（メニスカス）</b>を読む<br>
+❷ 目盛りは<b>最小目盛りの 1/10 まで</b>読む（例：0.05mL単位）<br>
+❸ ビュレットの<b>先端の気泡</b>は必ず追い出す（体積が狂う原因）<br>
+❹ 終点付近は<b>1滴ずつ</b>滴下し、色が消えなくなった点を終点とする<br>
+❺ フェノールフタレインは<b>時間が経つと色が消える</b>ことがある → 直後の変色で判定
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== 酸と塩基 ⑦ 滴定曲線と二段階滴定 ========== -->
+<section class="chart-section" id="p2-2-7" data-chart-id="p2-2-7">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 2、酸と塩基</div>
+    <h2 class="chart-title">重要事項⑦ 〜滴定曲線と二段階滴定〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">曲線の形と指示薬を完全マスター！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：滴定曲線とは】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">滴定曲線の基本</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">縦軸pH・横軸滴下量</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>滴定曲線</b>＝滴下量（横軸）と pH（縦軸）の関係を表すグラフ。<br>
+中和点付近で pH が<b>急激に変化する（垂直に伸びる）</b>のが特徴。
+<div class="tip-box">🎯 中和点で急激な pH ジャンプが起きる範囲を<b>「pHジャンプ」</b>とよぶ。<br>
+このジャンプ範囲に<b>変色域が入っている指示薬</b>を選ぶのが鉄則！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：4つの滴定曲線パターン】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">① 強酸 + 強塩基</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">中和点 pH ＝ 7（両方の指示薬OK）</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>例</b>：HCl ＋ NaOH
+<div class="formula-box">
+<b>中和点 pH ＝ 7（中性）</b><br>
+pHジャンプの範囲がとても広い（約 pH3〜pH11）<br>
+→ <b>メチルオレンジ MO・フェノールフタレイン PP どちらでもOK</b>
+</div>
+<div class="diagram">
+　pH
+14│　　　　　　　　　　┌─
+　 │　　　　　　　　　／
+　7│─ ─ ─ ─ ─ ─ ─┤  ←ジャンプ（急激な変化）
+　 │　　　　　　　　／
+　0│───────┘
+　　　0　　　　　　中和点　　　塩基滴下量
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">② 弱酸 + 強塩基</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">中和点 pH ＞ 7（PP使用）</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>例</b>：CH₃COOH ＋ NaOH
+<div class="formula-box">
+<b>中和点 pH ＞ 7（塩基性）</b>（生じる CH₃COONa が加水分解して塩基性）<br>
+pHジャンプは塩基性側にのみ現れる（pH7〜pH11 付近）<br>
+→ <b>フェノールフタレイン PP を使用</b>（変色域 pH 8〜10 が範囲内）<br>
+→ <b>MO は使えない</b>（変色域 pH 3〜5 でジャンプ前に色が変わる）
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">③ 強酸 + 弱塩基</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">中和点 pH ＜ 7（MO使用）</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>例</b>：HCl ＋ NH₃
+<div class="formula-box">
+<b>中和点 pH ＜ 7（酸性）</b>（生じる NH₄Cl が加水分解して酸性）<br>
+pHジャンプは酸性側にのみ現れる（pH3〜pH7付近）<br>
+→ <b>メチルオレンジ MO を使用</b>（変色域 pH 3〜5 が範囲内）<br>
+→ <b>PP は使えない</b>
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">④ 弱酸 + 弱塩基</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">中和点 pH ≒ 7だが滴定不可</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>例</b>：CH₃COOH ＋ NH₃
+<div class="formula-box">
+<b>中和点 pH ≒ 7</b>だが、pHジャンプが<b>ほぼ現れない</b>！<br>
+→ <b>どの指示薬も使えない → 滴定に不向き</b>
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">4パターンまとめ表</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">これだけ暗記！</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>組み合わせ</th><th>中和点 pH</th><th>使える指示薬</th></tr>
+<tr><td>強酸 + 強塩基</td><td>= 7</td><td><b>MO・PP 両方OK</b></td></tr>
+<tr><td>弱酸 + 強塩基</td><td>&gt; 7</td><td><b>PP のみ</b>（強塩基側で変色）</td></tr>
+<tr><td>強酸 + 弱塩基</td><td>&lt; 7</td><td><b>MO のみ</b>（強酸側で変色）</td></tr>
+<tr><td>弱酸 + 弱塩基</td><td>≒ 7</td><td><b>どちらも使えない</b></td></tr>
+</table>
+<div class="tip-box">💡 <b>覚え方</b>：「強」がついている側で pH がジャンプする → その側で色が変わる指示薬を選ぶ！<br>
+（強酸→酸性側で変わる MO／強塩基→塩基性側で変わる PP）</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：二段階滴定（Na₂CO₃ の滴定）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">二段階滴定の原理</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">中和が2段階で進む</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+炭酸ナトリウム Na₂CO₃ は<b>2価の弱塩基</b>で、HCl で中和すると<b>2段階</b>に反応が進む。
+<div class="formula-box">
+<b>【第1段階（第1中和点まで）】塩基 → 弱塩基へ</b><br>
+Na₂CO₃ + HCl → NaCl + <b>NaHCO₃</b>　（強い塩基性 → 弱い塩基性）<br>
+　→ 中和点 pH ＞ 7 → <b>指示薬 PP（フェノールフタレイン）</b>で赤 → 無色<br><br>
+<b>【第2段階（第1→第2中和点）】弱塩基 → 弱酸へ</b><br>
+NaHCO₃ + HCl → NaCl + H₂O + CO₂↑　（弱い塩基性 → 酸性）<br>
+　→ 中和点 pH ＜ 7 → <b>指示薬 MO（メチルオレンジ）</b>で黄 → 赤
+</div>
+<div class="diagram">
+　pH
+　　│　　　　│　　　　│
+　11│─┐　　│　　　　│
+　　│　└─┐（第1中和点／PP変色）
+　 7│─ ─│─┐　　│
+　　│　　│　└─┐（第2中和点／MO変色）
+　 3│　　│　　│└──
+　　└──┴──┴──── 滴下量
+　　　　　v1　　v2
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">NaOHとNa₂CO₃の混合滴定</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">頻出パターン！</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+NaOH（xmol）と Na₂CO₃（ymol）の混合水溶液を HCl で滴定するとき：
+<div class="formula-box">
+<b>【第1段階】強塩基 → 弱塩基へ（PP：赤→無）</b><br>
+❶ NaOH + HCl → NaCl + H₂O 　　　　（x mol の HCl 消費）<br>
+❷ Na₂CO₃ + HCl → NaCl + NaHCO₃　（y mol の HCl 消費）<br>
+→ 第1中和点までの HCl 消費量：<b>(x + y) mol</b><br><br>
+<b>【第2段階】弱塩基 → 弱酸へ（MO：黄→赤）</b><br>
+❸ NaHCO₃ + HCl → NaCl + H₂O + CO₂　（y mol の HCl 消費）<br>
+→ 第1→第2中和点までの HCl 消費量：<b>y mol</b>
+</div>
+<div class="tip-box">💡 <b>x, y の求め方</b><br>
+① 第1中和点までの滴下量 V₁[L] × 濃度 c[mol/L] = x + y<br>
+② 第1→第2中和点までの滴下量 V₂[L] × 濃度 c = y<br>
+③ 差し引いて x = (V₁-V₂)×c、y = V₂×c を求める</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">二段階滴定 計算例題</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">共通テスト頻出</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>例題</b>：NaOH と Na₂CO₃ の混合水溶液に 0.10 mol/L HCl を滴下したところ、PP の色が消えたのは 25 mL、MO の色が変わったのはさらに 10 mL 追加した時点だった。含まれる NaOH と Na₂CO₃ の物質量は？<br><br>
+❶ 第1→第2中和点分：<b>y mol</b> = 0.10 × (10/1000) = <b>1.0×10⁻³ mol</b>（Na₂CO₃）<br>
+❷ 第1中和点まで：<b>x + y mol</b> = 0.10 × (25/1000) = 2.5×10⁻³ mol<br>
+❸ よって NaOH = x = 2.5×10⁻³ - 1.0×10⁻³ = <b>1.5×10⁻³ mol</b><br><br>
+<b>答え：NaOH = 1.5×10⁻³ mol、Na₂CO₃ = 1.0×10⁻³ mol</b>
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== 酸化還元 ① 酸化還元反応とは何か ========== -->
+<section class="chart-section" id="p2-3-1" data-chart-id="p2-3-1">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 3、酸化還元反応</div>
+    <h2 class="chart-title">重要事項① 〜酸化還元反応とは何か（酸化数）〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">「電子のやり取り」で見抜く！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：酸化・還元の3つの見方】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸化とは？</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">酸素/水素/電子/酸化数</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>酸化</b>とは、次のどれかが起こること：
+<div class="formula-box">
+❶ <b>酸素O を受け取る</b>　（例：C + O₂ → CO₂）<br>
+❷ <b>水素H を失う</b>　（例：H₂S → S）<br>
+❸ <b>電子e⁻ を失う</b>　（例：Zn → Zn²⁺ + 2e⁻）<br>
+❹ <b>酸化数が増加する</b>　（例：Fe²⁺ → Fe³⁺、+2→+3で増加）
+</div>
+<div class="tip-box">💡 現代的定義では <b>「電子を失うこと＝酸化」</b> が最も本質的。</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">還元とは？</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">酸化の逆</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>還元</b>とは、次のどれかが起こること（酸化の完全な逆）：
+<div class="formula-box">
+❶ <b>酸素O を失う</b>　（例：CuO → Cu）<br>
+❷ <b>水素H を受け取る</b>　（例：N₂ → NH₃）<br>
+❸ <b>電子e⁻ を受け取る</b>　（例：Cu²⁺ + 2e⁻ → Cu）<br>
+❹ <b>酸化数が減少する</b>
+</div>
+<div class="tip-box">🔑 <b>酸化と還元は必ず同時に起こる</b>！ 電子を出す物質があれば、必ず受け取る物質があるため。→ <b>酸化還元反応</b>とセットで呼ぶ。</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：酸化数の決定ルール】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸化数の基本ルール</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">4つの原則を覚える</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>❶ 単体</b>：すべての原子の酸化数は<b>0</b><br>
+　例：H₂、O₂、Cu、Fe、Zn　→ すべて 0<br><br>
+<b>❷ 単原子イオン</b>：酸化数はイオンの<b>価数（電荷）に等しい</b><br>
+　例：Na⁺=+1、Cl⁻=-1、Fe²⁺=+2、Al³⁺=+3<br><br>
+<b>❸ 化合物中</b>：すべての原子の酸化数の<b>和 = 0</b><br>
+　例：H₂O → +1×2 + (-2) = 0 ✓<br><br>
+<b>❹ 多原子イオン</b>：すべての原子の酸化数の<b>和 = イオンの価数</b><br>
+　例：SO₄²⁻ → S + (-2)×4 = -2 ∴ S = +6
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">元素ごとの原則的な酸化数</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">優先順位と例外</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>優先</th><th>元素</th><th>原則</th><th>例外</th></tr>
+<tr><td>1</td><td><b>アルカリ金属（1族）</b></td><td><b>+1</b></td><td>なし</td></tr>
+<tr><td>2</td><td><b>アルカリ土類金属（2族）</b></td><td><b>+2</b></td><td>なし</td></tr>
+<tr><td>3</td><td><b>フッ素 F</b></td><td><b>-1</b></td><td>なし</td></tr>
+<tr><td>4</td><td><b>水素 H</b></td><td><b>+1</b></td><td>金属水素化物 NaH、CaH₂ では <b>-1</b></td></tr>
+<tr><td>5</td><td><b>酸素 O</b></td><td><b>-2</b></td><td>過酸化物 H₂O₂・Na₂O₂ では <b>-1</b>／OF₂ では +2</td></tr>
+</table>
+<div class="tip-box">💡 <b>優先順位が高い元素から先に決めて</b>、残った元素は「化合物の和=0」から逆算する！</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸化数の計算練習</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">頻出化合物</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>物質</th><th>着目原子</th><th>酸化数</th><th>計算</th></tr>
+<tr><td>KMnO₄</td><td>Mn</td><td><b>+7</b></td><td>+1 + Mn + (-2)×4 = 0</td></tr>
+<tr><td>K₂Cr₂O₇</td><td>Cr</td><td><b>+6</b></td><td>+1×2 + Cr×2 + (-2)×7 = 0</td></tr>
+<tr><td>H₂SO₄</td><td>S</td><td><b>+6</b></td><td>+1×2 + S + (-2)×4 = 0</td></tr>
+<tr><td>HNO₃</td><td>N</td><td><b>+5</b></td><td>+1 + N + (-2)×3 = 0</td></tr>
+<tr><td>NH₃</td><td>N</td><td><b>-3</b></td><td>N + (+1)×3 = 0</td></tr>
+<tr><td>H₂O₂</td><td>O</td><td><b>-1</b>（過酸化物）</td><td>+1×2 + O×2 = 0</td></tr>
+<tr><td>NaH</td><td>H</td><td><b>-1</b>（例外）</td><td>+1 + H = 0</td></tr>
+</table>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：酸化還元の判定】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">反応が酸化還元か見抜く</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">酸化数の増減をチェック</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>手順</b>：反応前後の各原子の酸化数を求め、<b>変化があれば酸化還元反応</b>！
+<div class="formula-box">
+<b>例①</b>：2Cu + O₂ → 2CuO<br>
+　Cu：0 → +2（酸化）／O：0 → -2（還元）<br>
+　→ <b>酸化還元反応</b>（酸化と還元が同時に起きている）<br><br>
+<b>例②</b>：HCl + NaOH → NaCl + H₂O<br>
+　H：+1→+1／Cl：-1→-1／Na：+1→+1／O：-2→-2　変化なし<br>
+　→ <b>中和反応（酸化還元ではない）</b>
+</div>
+<div class="tip-box">💡 中和反応・沈殿反応は基本的に「電子の授受なし」→ 酸化還元ではない！</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸化剤・還元剤の定義</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">「自分」と「相手」の視点</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>酸化剤</b>＝<u>相手</u>を酸化する（＝自分は<b>還元される</b>／電子を受け取る）<br>
+<b>還元剤</b>＝<u>相手</u>を還元する（＝自分は<b>酸化される</b>／電子を失う）
+</div>
+<div class="tip-box">⚠ <b>「酸化剤」は自分が「酸化される」わけではない！</b><br>
+「酸化剤」は"相手を酸化する薬剤"のことなので、自分自身は還元されている。用語のトラップに注意！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== 酸化還元 ② 半反応式と反応式の作り方 ========== -->
+<section class="chart-section" id="p2-3-2" data-chart-id="p2-3-2">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 3、酸化還元反応</div>
+    <h2 class="chart-title">重要事項② 〜半反応式と酸化還元反応式の作り方〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">e⁻を含むイオン反応式を書く！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：主要な酸化剤リスト（覚える！）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸化剤一覧（反応前 → 反応後）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">これが暗記のスタート</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>酸化剤</th><th>反応前</th><th>→</th><th>反応後</th><th>半反応式</th></tr>
+<tr><td>過マンガン酸カリウム（酸性）</td><td>MnO₄⁻（赤紫）</td><td>→</td><td>Mn²⁺（無色）</td><td><b>MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O</b></td></tr>
+<tr><td>過マンガン酸カリウム（中性・塩基性）</td><td>MnO₄⁻</td><td>→</td><td>MnO₂（黒褐色）</td><td>MnO₄⁻ + 2H₂O + 3e⁻ → MnO₂ + 4OH⁻</td></tr>
+<tr><td>ニクロム酸カリウム</td><td>Cr₂O₇²⁻（橙）</td><td>→</td><td>Cr³⁺（緑）</td><td><b>Cr₂O₇²⁻ + 14H⁺ + 6e⁻ → 2Cr³⁺ + 7H₂O</b></td></tr>
+<tr><td>希硝酸</td><td>HNO₃</td><td>→</td><td>NO（無色）</td><td>HNO₃ + 3H⁺ + 3e⁻ → NO + 2H₂O</td></tr>
+<tr><td>濃硝酸</td><td>HNO₃</td><td>→</td><td>NO₂（赤褐色）</td><td>HNO₃ + H⁺ + e⁻ → NO₂ + H₂O</td></tr>
+<tr><td>熱濃硫酸</td><td>H₂SO₄</td><td>→</td><td>SO₂</td><td>H₂SO₄ + 2H⁺ + 2e⁻ → SO₂ + 2H₂O</td></tr>
+<tr><td>過酸化水素（通常）</td><td>H₂O₂</td><td>→</td><td>H₂O</td><td>H₂O₂ + 2H⁺ + 2e⁻ → 2H₂O</td></tr>
+<tr><td>二酸化硫黄（相手がH₂S時のみ）</td><td>SO₂</td><td>→</td><td>S</td><td>SO₂ + 4H⁺ + 4e⁻ → S + 2H₂O</td></tr>
+<tr><td>オゾン</td><td>O₃</td><td>→</td><td>O₂</td><td>O₃ + 2H⁺ + 2e⁻ → O₂ + H₂O</td></tr>
+<tr><td>塩素</td><td>Cl₂</td><td>→</td><td>Cl⁻</td><td>Cl₂ + 2e⁻ → 2Cl⁻</td></tr>
+<tr><td>酸素</td><td>O₂</td><td>→</td><td>H₂O</td><td>O₂ + 4H⁺ + 4e⁻ → 2H₂O</td></tr>
+</table>
+<div class="tip-box">💡 酸化剤の強さ覚え方：<b>「マンションの2階から兄さん流される」</b>（MnO₄⁻ > Cr₂O₇²⁻ > 希HNO₃ > 熱濃H₂SO₄ > H₂O₂ > SO₂ > H₂S）</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：主要な還元剤リスト】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">還元剤一覧（反応前 → 反応後）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">これも暗記！</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>還元剤</th><th>反応前</th><th>→</th><th>反応後</th><th>半反応式</th></tr>
+<tr><td>ナトリウム</td><td>Na</td><td>→</td><td>Na⁺</td><td>Na → Na⁺ + e⁻</td></tr>
+<tr><td>マグネシウム</td><td>Mg</td><td>→</td><td>Mg²⁺</td><td>Mg → Mg²⁺ + 2e⁻</td></tr>
+<tr><td>アルミニウム</td><td>Al</td><td>→</td><td>Al³⁺</td><td>Al → Al³⁺ + 3e⁻</td></tr>
+<tr><td>水素</td><td>H₂</td><td>→</td><td>H⁺</td><td>H₂ → 2H⁺ + 2e⁻</td></tr>
+<tr><td>鉄(Ⅱ)イオン</td><td>Fe²⁺</td><td>→</td><td>Fe³⁺</td><td>Fe²⁺ → Fe³⁺ + e⁻</td></tr>
+<tr><td>スズ(Ⅱ)イオン</td><td>Sn²⁺</td><td>→</td><td>Sn⁴⁺</td><td>Sn²⁺ → Sn⁴⁺ + 2e⁻</td></tr>
+<tr><td>ヨウ化物イオン</td><td>I⁻</td><td>→</td><td>I₂</td><td>2I⁻ → I₂ + 2e⁻</td></tr>
+<tr><td>硫化水素</td><td>H₂S</td><td>→</td><td>S</td><td>H₂S → S + 2H⁺ + 2e⁻</td></tr>
+<tr><td><b>シュウ酸</b></td><td>(COOH)₂</td><td>→</td><td>CO₂</td><td>(COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻</td></tr>
+<tr><td>二酸化硫黄（通常）</td><td>SO₂</td><td>→</td><td>SO₄²⁻</td><td>SO₂ + 2H₂O → SO₄²⁻ + 4H⁺ + 2e⁻</td></tr>
+<tr><td>過酸化水素（相手がKMnO₄等）</td><td>H₂O₂</td><td>→</td><td>O₂</td><td>H₂O₂ → O₂ + 2H⁺ + 2e⁻</td></tr>
+</table>
+<div class="tip-box">⚠ <b>H₂O₂ と SO₂ は「両性」</b>：<br>
+・H₂O₂：<b>普通は酸化剤</b>だが、相手が MnO₄⁻ や Cr₂O₇²⁻ のとき<b>還元剤</b>になる<br>
+・SO₂：<b>普通は還元剤</b>だが、相手が H₂S のとき<b>酸化剤</b>になる</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：半反応式の作り方（5ステップ）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">半反応式作成の手順</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">この順に組み立てる！</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>【手順】</b><br>
+❶ 酸化剤・還元剤を特定し、「<b>反応前 → 反応後</b>」を書く<br>
+❷ <b>O、H 以外</b>の原子の数を合わせる<br>
+❸ 不足している<b>O を H₂O で</b>合わせる<br>
+❹ 不足している<b>H を H⁺ で</b>合わせる<br>
+❺ 両辺の<b>電荷（±）が等しくなるよう e⁻ を加える</b>
+</div>
+<div class="formula-box">
+<b>実演①</b>：KMnO₄（酸性）の半反応式を作ろう<br><br>
+❶ MnO₄⁻ → Mn²⁺（反応前後を書く）<br>
+❷ Mn の数は左右1個ずつでOK<br>
+❸ 左辺に O が4個、右辺に0個 → 右辺に H₂O を4つ<br>
+　　MnO₄⁻ → Mn²⁺ + 4H₂O<br>
+❹ 右辺の H が 8個 → 左辺に H⁺ を 8個<br>
+　　MnO₄⁻ + 8H⁺ → Mn²⁺ + 4H₂O<br>
+❺ 電荷：左辺 = -1+8=+7、右辺 = +2 → 左辺が5多い → 左辺に e⁻ を5個<br>
+　　<b>MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O</b>　完成！
+</div>
+
+<div class="formula-box">
+<b>実演②</b>：シュウ酸(COOH)₂の半反応式<br><br>
+❶ (COOH)₂ → 2CO₂<br>
+❷ C の数：左右 2 で OK<br>
+❸ O の数：左右 4 で OK<br>
+❹ 左辺の H が2個、右辺0個 → 右辺に H⁺ を2個<br>
+　　(COOH)₂ → 2CO₂ + 2H⁺<br>
+❺ 電荷：左0、右+2 → 右に e⁻ を2個<br>
+　　<b>(COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻</b>　完成！
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="4">
+  <div class="step-label">【Step4：酸化還元反応式の作り方】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">e⁻を消して反応式を組む</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">酸化剤の式＋還元剤の式</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>【手順】</b><br>
+❶ 酸化剤・還元剤それぞれの半反応式を作る<br>
+❷ e⁻ の数が等しくなるよう、両式を整数倍する<br>
+❸ 両式を足し合わせ、<b>e⁻を消去</b>する<br>
+❹ 必要ならスペクテーターイオン（陽イオンなど）を加えて「化学反応式」に整える
+</div>
+<div class="formula-box">
+<b>実演</b>：KMnO₄ と (COOH)₂ の反応（硫酸酸性）<br><br>
+❶ MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O 　　… ①（酸化剤／e⁻5個受取）<br>
+❷ (COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻ 　　… ②（還元剤／e⁻2個放出）<br><br>
+❸ e⁻の最小公倍数10：①×2 と ②×5<br>
+　　2MnO₄⁻ + 16H⁺ + 10e⁻ → 2Mn²⁺ + 8H₂O<br>
+　　5(COOH)₂ → 10CO₂ + 10H⁺ + 10e⁻<br><br>
+❹ 足し合わせて e⁻ を消す：<br>
+　　2MnO₄⁻ + 16H⁺ + 5(COOH)₂ → 2Mn²⁺ + 8H₂O + 10CO₂ + 10H⁺<br>
+❺ H⁺ を整理（16-10=6）：<br>
+　　<b>2MnO₄⁻ + 6H⁺ + 5(COOH)₂ → 2Mn²⁺ + 8H₂O + 10CO₂</b><br><br>
+これに K⁺、SO₄²⁻ を加えて完全な化学反応式にすると：<br>
+<b>2KMnO₄ + 3H₂SO₄ + 5(COOH)₂ → K₂SO₄ + 2MnSO₄ + 8H₂O + 10CO₂</b>
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== 酸化還元 ③ 量的関係（酸化還元滴定） ========== -->
+<section class="chart-section" id="p2-3-3" data-chart-id="p2-3-3">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 3、酸化還元反応</div>
+    <h2 class="chart-title">重要事項③ 〜酸化剤と還元剤の量的関係（酸化還元滴定）〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">「電子の物質量」が等しい！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：量的関係の式】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸化還元滴定の基本式</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">e⁻の授受でつり合わせる</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>★ 酸化還元滴定の量的関係 ★</b><br><br>
+<b>（酸化剤の物質量）×（受け取る e⁻ の数）</b><br>
+　　　　　　　　　　　　　　＝<br>
+<b>（還元剤の物質量）×（放出する e⁻ の数）</b>
+</div>
+<div class="tip-box">💡 <b>e⁻の物質量が等しい！</b>という考え方。酸塩基滴定の「H⁺の物質量が等しい」と対応する。</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：KMnO₄とシュウ酸の滴定】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">実験の手順と特徴</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">指示薬いらず！</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>【手順】</b><br>
+❶ シュウ酸水溶液をコニカルビーカーに入れる<br>
+❷ <b>希H₂SO₄</b>を加えて硫酸酸性にする<br>
+❸ <b>60〜80℃</b>に加温する（反応速度を上げるため）<br>
+❹ 濃度未知のKMnO₄水溶液をビュレットから滴下<br>
+❺ 水溶液が<b>薄い赤紫色</b>に色付いた点を終点とする
+</div>
+<div class="tip-box">💡 <b>指示薬は不要</b>！ KMnO₄自身が赤紫色なので、反応が終わった直後から色が消えなくなる。<br>
+→ KMnO₄自身が指示薬の役割を果たす。</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">なぜ H₂SO₄ を使うのか？</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">HCl や HNO₃ は NG</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+KMnO₄ を酸性条件で使うが、<b>希硫酸 H₂SO₄</b>を使う理由：
+<div class="formula-box">
+❌ <b>HCl は NG</b>：Cl⁻ が KMnO₄ に酸化されて Cl₂ になってしまう<br>
+　　（KMnO₄ の Mn²⁺ 生成分が Cl⁻ の酸化に消費される → 誤差）<br><br>
+❌ <b>HNO₃ は NG</b>：HNO₃ 自身が酸化剤として働いてしまい、シュウ酸を酸化する<br>
+　　→ KMnO₄との滴定が正確にできない<br><br>
+✅ <b>H₂SO₄ は OK</b>：SO₄²⁻ は酸化されにくく、H₂SO₄ 自身も酸化剤として働かない（希硫酸なので）
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">計算例題</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">KMnO₄×5 = シュウ酸×2</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>例題</b>：硫酸酸性のもと、0.050 mol/L のシュウ酸(COOH)₂水溶液 8.0 mL に、濃度未知のKMnO₄水溶液 10 mL を加えたら過不足なく反応した。KMnO₄のモル濃度は？<br><br>
+❶ KMnO₄ は e⁻ を <b>5</b> 個受け取る（MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O）<br>
+❷ (COOH)₂ は e⁻ を <b>2</b> 個放出する（(COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻）<br><br>
+<b>量的関係式</b>：<br>
+c × (10/1000) × <b>5</b> = 0.050 × (8.0/1000) × <b>2</b><br>
+c × 0.010 × 5 = 0.050 × 0.008 × 2<br>
+c = 0.00080 ÷ 0.050 = <b>0.016 mol/L</b>
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：ヨウ素滴定】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">ヨウ素滴定の原理</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">2段階の滴定・デンプン指示薬</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>目的</b>：濃度未知の酸化剤（例：H₂O₂）を、Na₂S₂O₃（チオ硫酸ナトリウム）で間接的に滴定する。
+<div class="formula-box">
+<b>【第1段階】</b>試料の酸化剤（H₂O₂）に過剰のKIを加える<br>
+　H₂O₂ + 2KI + H₂SO₄ → I₂ + 2H₂O + K₂SO₄<br>
+　→ ヨウ素 I₂ が遊離（褐色）<br><br>
+<b>【第2段階】</b>生じた I₂ を Na₂S₂O₃ で滴定<br>
+　I₂ + 2Na₂S₂O₃ → 2NaI + Na₂S₄O₆<br>
+　（テトラチオン酸ナトリウム）
+</div>
+<div class="tip-box">🎨 <b>指示薬：デンプン水溶液</b><br>
+・I₂ が残っている間はデンプンと結合して<b>青紫色</b>を示す（ヨウ素デンプン反応）<br>
+・I₂ が I⁻ に変わりきると<b>青紫色が消える</b> → これが終点！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="4">
+  <div class="step-label">【Step4：COD（化学的酸素要求量）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">CODとは？</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">水質汚濁の指標</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>COD（Chemical Oxygen Demand）</b>＝家庭排水などに含まれる有機物によって、湖沼や海水がどの程度汚染されているかを示す指標。<br>
+有機物を酸化剤（KMnO₄）で酸化するのに必要な酸化剤の量を、<b>O₂ の質量（mg/L）</b>に換算した値。
+<div class="formula-box">
+<b>【測定手順】</b><br>
+❶ 試料水に H₂SO₄ と<b>過剰のKMnO₄</b>を加え、加熱して有機物を分解<br>
+❷ 残った KMnO₄ を<b>過剰のNa₂C₂O₄（シュウ酸ナトリウム）</b>で還元<br>
+❸ 残ったシュウ酸ナトリウムをKMnO₄で<b>逆滴定</b><br><br>
+<b>関係式</b>：<br>
+（KMnO₄が受け取ったe⁻ 総量）＝（有機物が失ったe⁻）＋（Na₂C₂O₄が失ったe⁻）<br><br>
+最終的に O₂ の質量に換算：O₂ + 4H⁺ + 4e⁻ → 2H₂O から、O₂ 1mol = e⁻ 4mol
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== 酸化還元 ④ 酸化・還元剤の強さ ========== -->
+<section class="chart-section" id="p2-3-4" data-chart-id="p2-3-4">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 3、酸化還元反応</div>
+    <h2 class="chart-title">重要事項④ 〜酸化剤・還元剤としての強さ〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">強い方が「電子を欲しがる」！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：ハロゲンの酸化力】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸化力の順序</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">F₂ > Cl₂ > Br₂ > I₂</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>ハロゲン単体の酸化力</b>（＝e⁻を受け取る力の強さ）：
+<div class="formula-box">
+<b>F₂ ＞ Cl₂ ＞ Br₂ ＞ I₂</b><br><br>
+（周期表で上ほど酸化力が強い＝原子半径が小さく電子を引き寄せやすい）
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">ハロゲンの置換反応</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">強い酸化剤が電子を奪う</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+「<b>酸化力の強い単体</b>」が「<b>酸化力の弱い単体のイオン</b>」から電子を奪って反応する。
+<div class="formula-box">
+<b>例①</b>：2NaBr + Cl₂ → 2NaCl + Br₂　（反応する）<br>
+　　→ Cl₂ は Br₂ より酸化力が強い → 反応進行 ✓<br><br>
+<b>例②</b>：2NaCl + Br₂ → 反応しない<br>
+　　→ Br₂ は Cl₂ より酸化力が弱い → 反応進まない ✗<br><br>
+<b>例③</b>：2KI + Br₂ → 2KBr + I₂ （反応する）<br>
+　　→ 溶液が褐色に着色（I₂ が生成）
+</div>
+<div class="tip-box">💡 <b>ヨウ素デンプン反応</b>：I₂ が生じたことは、デンプン水溶液に加えて青紫色になれば確認できる！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：H₂O₂ と SO₂ の両性】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">相手次第で酸化剤にも還元剤にも</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">頻出パターン</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>❶ H₂O₂（過酸化水素）</b><br>
+・基本は<b>酸化剤</b>：H₂O₂ + 2H⁺ + 2e⁻ → 2H₂O<br>
+・相手が<b>MnO₄⁻</b>（もっと強い酸化剤）のとき → <b>還元剤</b>となり O₂ を発生<br>
+　H₂O₂ → O₂ + 2H⁺ + 2e⁻<br><br>
+<b>❷ SO₂（二酸化硫黄）</b><br>
+・基本は<b>還元剤</b>：SO₂ + 2H₂O → SO₄²⁻ + 4H⁺ + 2e⁻<br>
+・相手が<b>H₂S</b>（もっと強い還元剤）のとき → <b>酸化剤</b>となり S を析出<br>
+　SO₂ + 4H⁺ + 4e⁻ → S + 2H₂O<br>
+　（SO₂ + 2H₂S → 3S + 2H₂O：温泉地の硫黄析出）
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：金属の酸化力・還元力】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">イオン化傾向との関係</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">イオン化傾向大＝還元力大</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>イオン化傾向が大きい金属ほど、還元剤として強い</b>（e⁻を放出しやすい）<br>
+<b>イオン化傾向が小さい金属イオンほど、酸化剤として強い</b>（e⁻を受け取りやすい）
+</div>
+<div class="formula-box">
+<b>例</b>：CuSO₄水溶液に Zn を入れると、Cu が析出する<br>
+Zn + Cu²⁺ → Zn²⁺ + Cu<br>
+（Zn は Cu より還元力が強い → Cu²⁺ から電子を奪える）
+</div>
+<div class="tip-box">→ 詳細は次項「重要事項⑤ イオン化傾向」で扱う！</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== 酸化還元 ⑤ 金属のイオン化傾向 ========== -->
+<section class="chart-section" id="p2-3-5" data-chart-id="p2-3-5">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 3、酸化還元反応</div>
+    <h2 class="chart-title">重要事項⑤ 〜金属のイオン化傾向と反応〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">「リッチに貸そかな…」の完全マスター！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：イオン化列と語呂合わせ】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">金属のイオン化列</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">Li〜Au、17元素</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>イオン化傾向</b>＝金属が水溶液中で陽イオンになろうとする傾向。
+<div class="formula-box">
+<b>大 ← Li ＞ K ＞ Ca ＞ Na ＞ Mg ＞ Al ＞ Zn ＞ Fe ＞ Ni ＞ Sn ＞ Pb ＞ (H₂) ＞ Cu ＞ Hg ＞ Ag ＞ Pt ＞ Au → 小</b>
+</div>
+<div class="tip-box">🎵 <b>語呂合わせ</b>：<b>「リッチに 貸そ か な！ ま あ あ て に す な！ ひ ど す ぎ 借 金！」</b><br><br>
+　<b>リッチ</b>に　＝ Li<br>
+　<b>貸</b>そ　　＝ K<br>
+　<b>か</b>　　　＝ Ca<br>
+　<b>な</b>　　　＝ Na<br>
+　<b>ま</b>　　　＝ Mg<br>
+　<b>あ</b>　　　＝ Al<br>
+　<b>あ</b>　　　＝ Zn（あえん）<br>
+　<b>て</b>　　　＝ Fe（てつ）<br>
+　<b>に</b>　　　＝ Ni<br>
+　<b>す</b>　　　＝ Sn（すず）<br>
+　<b>な</b>　　　＝ Pb（なまり）<br>
+　<b>ひ</b>　　　＝ (H₂)<br>
+　<b>ど</b>　　　＝ Cu（どう）<br>
+　<b>す</b>　　　＝ Hg（水銀＝すいぎん）<br>
+　<b>ぎ</b>　　　＝ Ag（銀）<br>
+　<b>借</b>　　　＝ Pt（白金）<br>
+　<b>金</b>　　　＝ Au</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：水との反応】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">水との反応（3段階）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">常温水／熱水／高温水蒸気</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>反応</th><th>該当金属</th><th>反応式（例）</th></tr>
+<tr><td><b>常温の水</b>と反応</td><td>Li, K, Ca, Na</td><td>2Na + 2H₂O → 2NaOH + H₂↑</td></tr>
+<tr><td><b>熱水</b>と反応</td><td>Mg</td><td>Mg + 2H₂O → Mg(OH)₂ + H₂↑</td></tr>
+<tr><td><b>高温の水蒸気</b>と反応</td><td>Al, Zn, Fe</td><td>3Fe + 4H₂O → Fe₃O₄ + 4H₂↑</td></tr>
+<tr><td>反応しない</td><td>Ni以降（Ni, Sn, Pb, Cu, Hg, Ag, Pt, Au）</td><td>―</td></tr>
+</table>
+<div class="tip-box">💡 覚え方：「常温は<b>リッチに貸そかな</b>まで、熱水は<b>マ</b>グ、水蒸気は<b>あ・あ・て</b>（Al, Zn, Fe）まで！」</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：酸との反応】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">希酸（HCl・希H₂SO₄）との反応</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">H₂より上の金属</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>希塩酸・希硫酸</b>と反応して<b>H₂ を発生</b>するのは、<b>H₂よりイオン化傾向が大きい金属</b>（Li〜Pb まで）。
+<div class="formula-box">
+<b>例①</b>：Zn + 2HCl → ZnCl₂ + H₂↑<br>
+<b>例②</b>：Fe + H₂SO₄ → FeSO₄ + H₂↑
+</div>
+<div class="tip-box">⚠ <b>Pb は表面がPbCl₂やPbSO₄で被覆されて反応が止まる</b>ため、実質的にはあまり進まない（テストの落とし穴）</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">酸化力の強い酸（熱濃H₂SO₄・希HNO₃・濃HNO₃）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">Cu, Hg, Ag も溶ける</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+H₂より下の <b>Cu、Hg、Ag</b> は希酸には溶けないが、<b>酸化力の強い酸</b>には溶ける！
+<div class="formula-box">
+<b>❶ 銅と希硝酸</b><br>
+3Cu + 8HNO₃ → 3Cu(NO₃)₂ + 4H₂O + <b>2NO↑</b>（無色気体）<br><br>
+<b>❷ 銅と濃硝酸</b><br>
+Cu + 4HNO₃ → Cu(NO₃)₂ + 2H₂O + <b>2NO₂↑</b>（赤褐色気体）<br><br>
+<b>❸ 銅と熱濃硫酸</b><br>
+Cu + 2H₂SO₄ → CuSO₄ + 2H₂O + <b>SO₂↑</b>（刺激臭気体）
+</div>
+<div class="tip-box">💡 これらの酸は<b>電子を受け取る作用（酸化力）</b>によって、H₂を発生させない代わりに金属を溶かす。<br>H⁺ ではなく NO₃⁻ や SO₄²⁻ が酸化剤として働く！</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">不動態を作る金属</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">濃硝酸に溶けない</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>不動態</b>＝金属表面に緻密な酸化被膜ができて、内部への反応が進まなくなる状態。
+<div class="formula-box">
+<b>不動態を作る金属</b>：<b>Fe, Co, Ni, Al, Cr</b>（濃硝酸には溶けない！）<br><br>
+🎵 語呂合わせ：<b>「鉄子にある苦労！」</b><br>
+　鉄（Fe）子（Co）に（Ni）ある（Al）苦労（Cr）
+</div>
+<div class="tip-box">💡 <b>アルミ製の容器で濃硝酸を運搬できる</b>のはこの性質のおかげ！</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">王水との反応</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">Pt, Au も溶かす</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>王水</b>＝<b>濃硝酸 : 濃塩酸 ＝ 1 : 3</b>（体積比）で混合した溶液。<br>
+最強の酸化力を持ち、<b>Pt（白金）や Au（金）</b>も溶かす！
+<div class="formula-box">
+🎵 語呂合わせ：<b>「一生は三円！」</b><br>
+　一（濃硝酸1）生（硝酸の「しょう」）は（体積比）三（濃塩酸3）円（塩酸の「えん」）
+</div>
+<div class="formula-box">
+<b>例</b>：Au + HNO₃ + 4HCl → HAuCl₄ + NO + 2H₂O（テトラクロロ金(III)酸）
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="4">
+  <div class="step-label">【Step4：空気との反応】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">空気中での酸化</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">常温／加熱／強熱／反応しない</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>反応</th><th>該当金属</th><th>例</th></tr>
+<tr><td><b>常温で速やかに酸化</b></td><td>Li, K, Ca, Na</td><td>4Na + O₂ → 2Na₂O</td></tr>
+<tr><td><b>加熱で酸化</b></td><td>Mg, Al, Zn, Fe, Ni, Sn, Pb, Cu</td><td>2Cu + O₂ → 2CuO</td></tr>
+<tr><td><b>強熱で酸化</b></td><td>Hg, Ag</td><td>2Hg + O₂ → 2HgO</td></tr>
+<tr><td><b>反応しない</b></td><td>Pt, Au</td><td>―（永遠に光沢を保つ！）</td></tr>
+</table>
+<div class="tip-box">💡 だから金や白金はジュエリーとして人気！ 銀は強熱でも黒く硫化しやすいので手入れが必要。</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="5">
+  <div class="step-label">【Step5：★超重要★ イオン化傾向と反応性の総まとめ表】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">総まとめ表（テスト直前に見返す）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">これだけで完璧！</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>イオン化傾向</th><th colspan="4">大　←──────────────────────→　小</th></tr>
+<tr><th>元素</th><td>Li, K, Ca, Na</td><td>Mg</td><td>Al, Zn, Fe</td><td>Ni, Sn, Pb, (H₂), Cu, Hg, Ag, Pt, Au</td></tr>
+<tr><th>水との反応</th><td>常温の水と反応</td><td>熱水と反応</td><td>高温水蒸気と反応</td><td>反応しない</td></tr>
+<tr><th>希酸との反応</th><td colspan="3">希塩酸・希硫酸と反応してH₂発生（Ni, Sn, Pbまで含む）</td><td>Cu, Hg, Ag → 酸化力の強い酸のみ／Pt, Au → 王水のみ</td></tr>
+<tr><th>空気との反応</th><td>常温で速やかに酸化</td><td colspan="2">加熱で酸化</td><td>Hg, Ag → 強熱で／Pt, Au → 反応しない</td></tr>
+<tr><th>製法</th><td colspan="2">溶融塩電解（融解した塩を電気分解）</td><td colspan="2">CO 還元・電解精錬など</td></tr>
+</table>
+<div class="formula-box">
+<b>★ 覚え方総まとめ ★</b><br>
+水：<b>「常温リッチに貸そかな、熱水マ、水蒸気アアテ、以降は反応しない」</b><br>
+酸：<b>「H₂までは希酸OK、Cu Hg Agは酸化力強い酸、Pt Auは王水のみ！」</b><br>
+空気：<b>「リッチに貸そかな速やかに、次は加熱、Hg Agは強熱、Pt Auは反応しない」</b>
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== 酸化還元 ⑥ 電池 ========== -->
+<section class="chart-section" id="p2-3-6" data-chart-id="p2-3-6">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 3、酸化還元反応</div>
+    <h2 class="chart-title">重要事項⑥ 〜電池（一次・二次・燃料）〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">酸化還元反応 → 電気エネルギーへ！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：電池の基本原理】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">電池の基本構造と用語</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">正極・負極・起電力</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>電池</b>＝酸化還元反応の化学エネルギーを電気エネルギーに変換する装置。
+<div class="formula-box">
+<b>負極（-極）</b>＝<b>還元剤</b>が e⁻ を放出する電極（＝酸化される極）<br>
+　　　　　　　　→ イオン化傾向の<b>大きい</b>金属<br><br>
+<b>正極（+極）</b>＝<b>酸化剤</b>が e⁻ を受け取る電極（＝還元される極）<br>
+　　　　　　　　→ イオン化傾向の<b>小さい</b>金属<br><br>
+<b>起電力</b>＝両極間の電位差（電池のパワー）<br>
+　　　　　　→ 2極のイオン化傾向の差が大きいほど大きい<br><br>
+<b>放電</b>＝電池から電流を取り出すこと<br>
+<b>充電</b>＝外部電源で逆反応を起こし、電池を元に戻すこと
+</div>
+<div class="tip-box">💡 電子は <b>負極 → 導線 → 正極</b> の順で流れる。電流はその逆方向（+ → -）に流れる。</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">一次電池と二次電池</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">充電できるか否か</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>分類</th><th>特徴</th><th>代表例</th></tr>
+<tr><td><b>一次電池</b></td><td>充電できない（使い切り）</td><td>マンガン乾電池／アルカリマンガン乾電池／酸化銀電池／リチウム電池</td></tr>
+<tr><td><b>二次電池（蓄電池）</b></td><td>充電して繰り返し使える</td><td>鉛蓄電池／リチウムイオン電池／ニッケル水素電池</td></tr>
+<tr><td><b>燃料電池</b></td><td>燃料と酸素を供給し続けて発電（連続型）</td><td>リン酸形／固体高分子形</td></tr>
+</table>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：基礎電池：ボルタ／ダニエル】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">ボルタ電池</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">歴史上初の電池・分極問題あり</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>構成</b>：(-) Zn ｜ H₂SO₄ aq ｜ Cu (+)<br>
+<b>起電力</b>：約 0.76 V（一次電池）<br><br>
+<b>負極反応</b>（Zn 板が溶ける）：<br>
+　<b>Zn → Zn²⁺ + 2e⁻</b><br><br>
+<b>正極反応</b>（Cu 板の表面で H₂ が発生）：<br>
+　<b>2H⁺ + 2e⁻ → H₂↑</b><br><br>
+<b>全体</b>：Zn + 2H⁺ → Zn²⁺ + H₂
+</div>
+<div class="tip-box">⚠ <b>分極</b>：正極表面にH₂が付着 → 電流が流れにくくなる<br>
+→ この問題を解消したのがダニエル電池。</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">ダニエル電池</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">素焼き板で分極を防ぐ</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>構成</b>：(-) Zn ｜ ZnSO₄ aq ｜｜ CuSO₄ aq ｜ Cu (+)<br>
+（｜｜ は素焼き板を表す）<br>
+<b>起電力</b>：約 1.10 V（一次電池）<br><br>
+<b>負極反応</b>：<b>Zn → Zn²⁺ + 2e⁻</b>（Zn板が溶ける）<br>
+<b>正極反応</b>：<b>Cu²⁺ + 2e⁻ → Cu</b>（Cu板にCuが析出）<br><br>
+<b>全体</b>：Zn + Cu²⁺ → Zn²⁺ + Cu
+</div>
+<div class="diagram">
+🧪【ダニエル電池の図】<br>
+　［Zn板］—ZnSO₄水溶液｜素焼き板｜CuSO₄水溶液—［Cu板］<br>
+　　（-極）　　　　　　　　　　　　　　　　　　（+極）
+</div>
+<div class="tip-box">💡 <b>素焼き板の役割</b>：ZnSO₄とCuSO₄が急激に混ざるのを防ぐ<br>
+（もし混ざると、Zn板が直接Cu²⁺と反応して電子が導線を流れず、電池として機能しない）<br><br>
+💡 <b>ダニエル電池を長持ちさせるコツ</b>：<br>
+❶ ZnSO₄ の濃度は<b>小さく</b>（Zn²⁺が溶けやすい環境）<br>
+❷ CuSO₄ の濃度は<b>大きく</b>（Cu が析出しやすい環境）</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：実用電池 一次／二次】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">鉛蓄電池（二次電池の代表）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">自動車バッテリー</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>構成</b>：(-) Pb ｜ H₂SO₄ aq ｜ PbO₂ (+)<br>
+<b>起電力</b>：約 2.00 V<br><br>
+<b>【放電時】</b><br>
+負極：<b>Pb + SO₄²⁻ → PbSO₄ + 2e⁻</b><br>
+正極：<b>PbO₂ + 4H⁺ + SO₄²⁻ + 2e⁻ → PbSO₄ + 2H₂O</b><br>
+全体：Pb + PbO₂ + 2H₂SO₄ → 2PbSO₄ + 2H₂O<br><br>
+<b>【充電時】</b>：放電の逆反応が起きる（電気分解！）<br>
+負極：PbSO₄ + 2e⁻ → Pb + SO₄²⁻<br>
+正極：PbSO₄ + 2H₂O → PbO₂ + 4H⁺ + SO₄²⁻ + 2e⁻
+</div>
+<div class="tip-box">💡 <b>放電すると硫酸が薄くなる</b>（H₂SO₄が消費、H₂Oが生成）<br>
+→ 電解液の密度を測れば充電状態がわかる！<br>
+自動車バッテリーの点検はこの原理を利用。</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">燃料電池（クリーンエネルギー）</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">H₂ + O₂ → H₂O のみ</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>燃料電池</b>＝水素などの燃料と酸素を供給して発電する装置。
+<div class="formula-box">
+<b>❶ リン酸形燃料電池（電解液：H₃PO₄）</b><br>
+負極：<b>H₂ → 2H⁺ + 2e⁻</b>（H₂ が電子を放出＝還元剤）<br>
+正極：<b>O₂ + 4H⁺ + 4e⁻ → 2H₂O</b>（O₂ が電子を受け取る＝酸化剤）<br>
+全体：<b>2H₂ + O₂ → 2H₂O</b><br><br>
+<b>❷ 固体高分子形燃料電池（電解液：KOH aqなどアルカリ）</b><br>
+負極：<b>H₂ + 2OH⁻ → 2H₂O + 2e⁻</b><br>
+正極：<b>O₂ + 2H₂O + 4e⁻ → 4OH⁻</b><br>
+全体：<b>2H₂ + O₂ → 2H₂O</b>
+</div>
+<div class="tip-box">🌱 <b>発生する物質が水だけ</b>＝<b>クリーンエネルギー</b>！<br>
+FCV（燃料電池自動車）や家庭用エネファームで実用化。</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">リチウムイオン電池</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">現代のスマホ・EV</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>構成</b>：(-) Li_xC（黒鉛にLi挿入） ｜ LiPF₆（有機電解液） ｜ Li_(1-x)CoO₂ (+)<br>
+<b>起電力</b>：約 <b>3.70 V</b>（非常に高い）<br>
+<b>特徴</b>：軽量・小型・高エネルギー密度・二次電池<br>
+<b>用途</b>：スマートフォン、ノートPC、電気自動車（EV）
+</div>
+<div class="tip-box">🔋 2019年ノーベル化学賞：吉野彰・グッドイナフ・ウィッティンガム（リチウムイオン電池の開発）</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">その他の実用電池</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">乾電池・酸化銀電池・ニッケル水素</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>電池</th><th>負極</th><th>正極</th><th>電解液</th><th>種類</th><th>用途</th></tr>
+<tr><td>マンガン乾電池</td><td>Zn</td><td>MnO₂（+炭素棒）</td><td>ZnCl₂ aq</td><td>一次</td><td>時計・リモコン</td></tr>
+<tr><td>アルカリマンガン乾電池</td><td>Zn</td><td>MnO₂</td><td>KOH aq</td><td>一次</td><td>大電流用途</td></tr>
+<tr><td>酸化銀電池</td><td>Zn</td><td>Ag₂O</td><td>KOH aq</td><td>一次</td><td>ボタン電池・腕時計</td></tr>
+<tr><td>ニッケル水素電池</td><td>水素吸蔵合金 MH</td><td>NiO(OH)</td><td>KOH aq</td><td>二次</td><td>ハイブリッドカー</td></tr>
+</table>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="4">
+  <div class="step-label">【Step4：電池の総まとめ表】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">主要電池の反応式一覧</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">暗記用</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>電池</th><th>負極反応</th><th>正極反応</th><th>起電力</th></tr>
+<tr><td>ボルタ</td><td>Zn → Zn²⁺ + 2e⁻</td><td>2H⁺ + 2e⁻ → H₂</td><td>0.76V</td></tr>
+<tr><td>ダニエル</td><td>Zn → Zn²⁺ + 2e⁻</td><td>Cu²⁺ + 2e⁻ → Cu</td><td>1.10V</td></tr>
+<tr><td>鉛蓄電池</td><td>Pb + SO₄²⁻ → PbSO₄ + 2e⁻</td><td>PbO₂ + 4H⁺ + SO₄²⁻ + 2e⁻ → PbSO₄ + 2H₂O</td><td>2.00V</td></tr>
+<tr><td>燃料電池（リン酸）</td><td>H₂ → 2H⁺ + 2e⁻</td><td>O₂ + 4H⁺ + 4e⁻ → 2H₂O</td><td>約1.2V</td></tr>
+<tr><td>Liイオン</td><td>Li_xC → C + xLi⁺ + xe⁻</td><td>Li_(1-x)CoO₂ + xLi⁺ + xe⁻ → LiCoO₂</td><td>3.70V</td></tr>
+</table>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== 酸化還元 ⑦ 工業的製法 ========== -->
+<section class="chart-section" id="p2-3-7" data-chart-id="p2-3-7">
+  <div class="chart-header">
+    <div class="chart-meta">第2部 物質の変化 ／ 3、酸化還元反応</div>
+    <h2 class="chart-title">重要事項⑦ 〜工業的製法（Al・Fe・Cu）〜</h2>
+  </div>
+  <div class="chart-body">
+    <div class="root-node"><span class="root-name">酸化還元を利用して金属を作る！</span><span class="root-arrow">▶</span></div>
+    <div class="steps-container">
+
+<div class="step-group" data-step="1">
+  <div class="step-label">【Step1：アルミニウムの製法（溶融塩電解）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">なぜ溶融塩電解？</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">Alはイオン化傾向が大きすぎる</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+Al はイオン化傾向が非常に大きく、<b>水溶液の電気分解では H₂O が先に還元されてしまう</b>ため、Alを得ることができない！<br>
+→ <b>アルミナ Al₂O₃ を融解</b>して電気分解する（溶融塩電解）。
+<div class="tip-box">⚠ <b>Al₂O₃ の融点は約 2054℃</b>と非常に高い！　これを下げる工夫が必要。</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">Step1-4：ボーキサイト → アルミニウム</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">4段階の製造工程</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>Step1：ボーキサイトを濃NaOH水溶液に溶かす</b><br>
+　Al₂O₃ + 2NaOH + 3H₂O → 2Na[Al(OH)₄]（テトラヒドロキシドアルミン酸ナトリウム）<br><br>
+<b>Step2：多量の水で希釈し、Al(OH)₃を沈殿させる</b><br>
+　Na[Al(OH)₄] → Al(OH)₃↓ + NaOH<br><br>
+<b>Step3：Al(OH)₃を加熱してアルミナ Al₂O₃ を得る</b><br>
+　2Al(OH)₃ → Al₂O₃ + 3H₂O<br><br>
+<b>Step4：氷晶石 Na₃AlF₆ に Al₂O₃ を溶かして溶融塩電解</b><br>
+　陰極：<b>Al³⁺ + 3e⁻ → Al</b>（アルミニウムが析出）<br>
+　陽極：<b>C + O²⁻ → CO + 2e⁻</b>　および　<b>C + 2O²⁻ → CO₂ + 4e⁻</b><br>
+　　　（陽極の炭素電極が O²⁻ と反応して消費される）
+</div>
+<div class="tip-box">💡 <b>氷晶石 Na₃AlF₆ の役割</b>：Al₂O₃（融点2054℃）の融点を下げて、約 <b>1000℃</b> でも融解させる融剤。<br>
+→ これにより電気エネルギーの消費を大幅削減。</div>
+<div class="tip-box">⚡ Al 1kg 製造に電力 <b>約14kWh</b> が必要！ アルミは「電気の缶詰」とも呼ばれる。<br>
+→ リサイクルすれば新規製造の1/30以下のエネルギーで済む。</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="2">
+  <div class="step-label">【Step2：鉄の製法（溶鉱炉）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">Step1：溶鉱炉での還元</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">CO で酸化鉄を還元</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>原料</b>：鉄鉱石（Fe₂O₃、Fe₃O₄）、<b>コークス C</b>、<b>石灰石 CaCO₃</b>
+<div class="formula-box">
+❶ コークスの燃焼で CO を発生：<br>
+　　2C + O₂ → 2CO<br><br>
+❷ <b>CO による還元</b>で銑鉄を得る：<br>
+　　<b>Fe₂O₃ + 3CO → 2Fe + 3CO₂</b><br><br>
+❸ 石灰石は鉄鉱石中の SiO₂ をスラグとして分離：<br>
+　　CaCO₃ → CaO + CO₂<br>
+　　CaO + SiO₂ → <b>CaSiO₃</b>（スラグ ＝ ケイ酸カルシウム）
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">Step2：転炉で銑鉄 → 鋼</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">炭素成分を減らす</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>銑鉄</b>（せんてつ）：溶鉱炉から得られる、炭素を約 4% 含む鉄（もろい・鋳物用）<br><br>
+<b>転炉での処理</b>：銑鉄に<b>O₂を吹き込み加熱</b> → 炭素を CO₂ として除去<br>
+　　C + O₂ → CO₂↑<br><br>
+<b>鋼</b>（こう）：炭素を約 0.02〜2% に減らした鉄（強靭・建築・レール用）
+</div>
+<div class="diagram">
+🏭【製鉄プロセス】<br>
+　鉄鉱石＋コークス＋石灰石<br>
+　　　　　↓（溶鉱炉：CO還元）<br>
+　　　銑鉄（C 約4%）<br>
+　　　　　↓（転炉：O₂吹込み）<br>
+　　　　鋼（C 少ない）
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="3">
+  <div class="step-label">【Step3：銅の製法（電解精錬）】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">銅の電解精錬の仕組み</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">粗銅 → 純銅（99.99%）</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+<b>構成</b>：陽極＝<b>粗銅</b>（99%程度）／陰極＝<b>純銅</b>（薄板）／電解液＝<b>CuSO₄ aq（硫酸酸性）</b>
+</div>
+<div class="formula-box">
+<b>【反応】</b><br>
+<b>陽極（粗銅）</b>：主に <b>Cu → Cu²⁺ + 2e⁻</b>（銅が溶け出す）<br>
+<b>陰極（純銅）</b>：<b>Cu²⁺ + 2e⁻ → Cu</b>（純銅が析出）
+</div>
+<div class="diagram">
+🔬【電解精錬の図】<br>
+　［粗銅］（+極）—CuSO₄水溶液—［純銅］（-極）<br>
+　　　　　　　　　　（電源＋直流電流）<br>
+　　　（Cu²⁺として溶ける）　　　　　（Cuとして析出）
+</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">陽極泥と不純物の行き先</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">金・銀が回収できる！</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<b>粗銅中の不純物</b>のうち：
+<div class="formula-box">
+<b>❶ Cu よりイオン化傾向が大きい</b>（Zn, Fe, Ni など）<br>
+　→ Cuと一緒に Cu²⁺, Zn²⁺, Fe²⁺として<b>電解液中に溶解</b>（陰極では析出しない）<br><br>
+<b>❷ Cu よりイオン化傾向が小さい</b>（Ag, Au など）<br>
+　→ 電子を放出しないため<b>溶けずに落下</b>し、陽極の下に<b>陽極泥（ようきょくでい）</b>として沈殿<br>
+　→ この陽極泥から<b>金や銀を回収</b>できる！（副産物）<br><br>
+<b>❸ Pb</b>：PbSO₄ が難溶性なので陽極泥に沈殿する
+</div>
+<div class="tip-box">💰 <b>実は銅の電解精錬は「金・銀の回収工程」でもある！</b> 電気代のかなりの部分が回収された貴金属で相殺される。</div>
+</div></div>
+  </div>
+</div>
+
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">電流を小さくする理由</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">純度を保つため</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<div class="formula-box">
+電流を<b>小さくゆっくり</b>流す理由：<br>
+・電流を大きくしすぎると、Cu より少し卑な不純物（Ni, Znなど）も陰極で析出してしまう<br>
+・ゆっくり電解すると、イオン化傾向の順で確実に銅だけが析出する<br>
+→ 純度 <b>99.99%</b> の純銅が得られる
+</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="step-group" data-step="4">
+  <div class="step-label">【Step4：3つの製法の総まとめ】</div>
+  <div class="step-content">
+<div class="node-wrap">
+  <div class="node-row">
+    <button class="node-btn" type="button"><span class="node-name">Al・Fe・Cu 製法の比較</span><span class="node-arrow">▼</span></button>
+    <span class="node-brief">イオン化傾向との対応</span>
+  </div>
+  <div class="node-detail">
+    <div class="detail-inner"><span class="info-icon">ⓘ</span><div class="detail-text">
+<table class="ref-table">
+<tr><th>金属</th><th>イオン化傾向</th><th>製法</th><th>主な反応</th></tr>
+<tr><td><b>Al</b></td><td>大（H₂より上）</td><td><b>溶融塩電解</b>（融解したAl₂O₃ + 氷晶石）</td><td>陰極：Al³⁺ + 3e⁻ → Al</td></tr>
+<tr><td><b>Fe</b></td><td>中</td><td><b>CO還元</b>（溶鉱炉）</td><td>Fe₂O₃ + 3CO → 2Fe + 3CO₂</td></tr>
+<tr><td><b>Cu</b></td><td>小（H₂より下）</td><td><b>電解精錬</b>（水溶液電気分解）</td><td>陰極：Cu²⁺ + 2e⁻ → Cu</td></tr>
+</table>
+<div class="tip-box">💡 <b>イオン化傾向が大きい金属</b>ほど、より強力な還元手段（電気分解）が必要！<br>
+・Al は水溶液の電気分解ではダメ → 溶融塩電解<br>
+・Fe は CO で還元できる（比較的簡単）<br>
+・Cu は水溶液の電気分解で高純度化できる</div>
+</div></div>
+  </div>
+</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========== フッター：スクリプト ========== -->
+<button class="top-link" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="トップへ">↑</button>
+
+<script>
+// Toggle node detail on button click
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.node-btn');
+  if (!btn) return;
+  e.preventDefault();
+  const wrap = btn.closest('.node-wrap');
+  const detail = wrap.querySelector(':scope > .node-detail');
+  if (!detail) return;
+  const isOpen = detail.classList.contains('open');
+  if (isOpen) {
+    detail.classList.remove('open');
+    btn.classList.remove('open');
+  } else {
+    detail.classList.add('open');
+    btn.classList.add('open');
+  }
+});
+
+// Smooth scroll for TOC links
+document.querySelectorAll('.toc a').forEach(a => {
+  a.addEventListener('click', function(ev) {
+    ev.preventDefault();
+    const id = this.getAttribute('href').substring(1);
+    const el = document.getElementById(id) || document.querySelector('[data-chart-id="' + id + '"]');
+    if (el) {
+      el.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  });
+});
+
+/* ==================================================================
+ * マナトビ統合用の拡張機能（すべて単一ファイル内で完結・外部依存なし）
+ *  - 学習単元IDのタグ付け（data-unit-id）
+ *  - 各セクションの「理解済み」チェック＋進捗バー（localStorage 保存）
+ *  - セクション開閉状態の保存／復元（localStorage）
+ *  - ダークモード（prefers-color-scheme 追従＋手動トグル）
+ *  - 「この項目を演習する」ボタン／「次の単元へ →」ナビ
+ * ================================================================== */
+(function () {
+  'use strict';
+  var LS_PREFIX = 'chemFlow.acidRedox.';
+  var LS_DONE = LS_PREFIX + 'done';        // 理解済みユニットID配列
+  var LS_COLLAPSE = LS_PREFIX + 'collapsed'; // 折りたたみ中のユニットID配列
+  var LS_THEME = LS_PREFIX + 'theme';       // 'dark' | 'light' | null(=system)
+
+  // chart-id（p2-2-1 等）→ 学習単元ID（chem-basic-...）への対応
+  function toUnitId(chartId) {
+    if (!chartId) return '';
+    var m = chartId.match(/^p2-(\d)-(\d)$/);
+    if (!m) return chartId;
+    var group = m[1] === '2' ? 'acid-base' : 'redox';
+    return 'chem-basic-' + group + '-' + String(m[2]).padStart(2, '0');
+  }
+
+  function loadArr(key) {
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { return []; }
+  }
+  function saveArr(key, arr) {
+    try { localStorage.setItem(key, JSON.stringify(arr)); } catch (e) {}
+  }
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.chart-section'));
+  var doneList = loadArr(LS_DONE);
+  var collapsedList = loadArr(LS_COLLAPSE);
+
+  // ---- 進捗バー（ヘッダー直下に挿入） -----------------------------
+  var progressWrap = document.createElement('div');
+  progressWrap.className = 'flow-progress';
+  progressWrap.innerHTML =
+    '<div class="flow-progress-top">' +
+      '<span class="flow-progress-label">学習の進捗（理解済み）</span>' +
+      '<span class="flow-progress-count" id="flowProgressCount">0 / ' + sections.length + '</span>' +
+    '</div>' +
+    '<div class="flow-progress-bar"><div class="flow-progress-fill" id="flowProgressFill"></div></div>';
+  var legend = document.querySelector('.color-legend');
+  if (legend && legend.parentNode) {
+    legend.parentNode.insertBefore(progressWrap, legend.nextSibling);
+  } else {
+    document.body.insertBefore(progressWrap, document.body.firstChild);
+  }
+
+  function updateProgress() {
+    var total = sections.length;
+    var done = doneList.length;
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    var fill = document.getElementById('flowProgressFill');
+    var count = document.getElementById('flowProgressCount');
+    if (fill) fill.style.width = pct + '%';
+    if (count) count.textContent = done + ' / ' + total;
+  }
+
+  // ---- 各セクションへ UI を注入 ------------------------------------
+  sections.forEach(function (sec, idx) {
+    var chartId = sec.getAttribute('data-chart-id') || sec.id;
+    var unitId = toUnitId(chartId);
+    sec.setAttribute('data-unit-id', unitId);
+
+    var header = sec.querySelector('.chart-header');
+    var body = sec.querySelector('.chart-body');
+    if (!header) return;
+
+    // 操作バー（理解済みチェック＋折りたたみボタン）
+    var actions = document.createElement('div');
+    actions.className = 'flow-actions';
+
+    var label = document.createElement('label');
+    label.className = 'flow-done';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = doneList.indexOf(unitId) !== -1;
+    cb.setAttribute('aria-label', 'この単元を理解済みにする');
+    var labelText = document.createElement('span');
+    labelText.textContent = '理解済み';
+    label.appendChild(cb);
+    label.appendChild(labelText);
+
+    var collapseBtn = document.createElement('button');
+    collapseBtn.type = 'button';
+    collapseBtn.className = 'flow-collapse-btn';
+    collapseBtn.setAttribute('aria-expanded', 'true');
+
+    actions.appendChild(label);
+    actions.appendChild(collapseBtn);
+    header.appendChild(actions);
+
+    if (cb.checked) sec.classList.add('flow-is-done');
+
+    // 折りたたみ状態の初期復元
+    function applyCollapsed(collapsed) {
+      if (!body) return;
+      if (collapsed) {
+        body.style.display = 'none';
+        sec.classList.add('flow-collapsed');
+        collapseBtn.textContent = '展開する ▼';
+        collapseBtn.setAttribute('aria-expanded', 'false');
+      } else {
+        body.style.display = '';
+        sec.classList.remove('flow-collapsed');
+        collapseBtn.textContent = '折りたたむ ▲';
+        collapseBtn.setAttribute('aria-expanded', 'true');
+      }
+    }
+    applyCollapsed(collapsedList.indexOf(unitId) !== -1);
+
+    collapseBtn.addEventListener('click', function () {
+      var nowCollapsed = collapsedList.indexOf(unitId) === -1;
+      applyCollapsed(nowCollapsed);
+      var i = collapsedList.indexOf(unitId);
+      if (nowCollapsed && i === -1) collapsedList.push(unitId);
+      else if (!nowCollapsed && i !== -1) collapsedList.splice(i, 1);
+      saveArr(LS_COLLAPSE, collapsedList);
+    });
+
+    cb.addEventListener('change', function () {
+      var i = doneList.indexOf(unitId);
+      if (cb.checked && i === -1) doneList.push(unitId);
+      else if (!cb.checked && i !== -1) doneList.splice(i, 1);
+      sec.classList.toggle('flow-is-done', cb.checked);
+      saveArr(LS_DONE, doneList);
+      updateProgress();
+    });
+
+    // フッター：演習リンク＋次の単元へ
+    var footer = document.createElement('div');
+    footer.className = 'flow-section-footer';
+    var quizHref = '/quiz/acid-redox?unit=' + encodeURIComponent(unitId);
+    var quizBtn = '<a class="flow-quiz-btn" href="' + quizHref + '">▶ この項目を演習する</a>';
+    var nextBtn = '';
+    if (idx < sections.length - 1) {
+      var nextId = sections[idx + 1].getAttribute('data-chart-id') || sections[idx + 1].id;
+      nextBtn = '<a class="flow-next-btn" href="#' + nextId + '">次の単元へ →</a>';
+    } else {
+      nextBtn = '<button type="button" class="flow-next-btn" onclick="window.scrollTo({top:0,behavior:\'smooth\'})">最初に戻る ↑</button>';
+    }
+    footer.innerHTML = quizBtn + nextBtn;
+    if (body) body.appendChild(footer); else sec.appendChild(footer);
+  });
+
+  updateProgress();
+
+  // ---- 次の単元へ（アンカー）のスムーズスクロール ----------------
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.flow-next-btn[href^="#"]');
+    if (!a) return;
+    e.preventDefault();
+    var el = document.getElementById(a.getAttribute('href').substring(1));
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // ---- ダークモード ------------------------------------------------
+  var root = document.documentElement;
+  function applyTheme(theme) {
+    if (theme === 'dark') root.setAttribute('data-theme', 'dark');
+    else if (theme === 'light') root.setAttribute('data-theme', 'light');
+    else root.removeAttribute('data-theme'); // system
+  }
+  var savedTheme = null;
+  try { savedTheme = localStorage.getItem(LS_THEME); } catch (e) {}
+  applyTheme(savedTheme);
+
+  var themeBtn = document.createElement('button');
+  themeBtn.type = 'button';
+  themeBtn.className = 'flow-theme-btn';
+  themeBtn.setAttribute('aria-label', 'ダークモードを切り替える');
+  function refreshThemeLabel() {
+    var isDark = root.getAttribute('data-theme') === 'dark' ||
+      (!root.getAttribute('data-theme') && window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches);
+    themeBtn.textContent = isDark ? '☀️ ライト' : '🌙 ダーク';
+  }
+  refreshThemeLabel();
+  themeBtn.addEventListener('click', function () {
+    var isDark = root.getAttribute('data-theme') === 'dark' ||
+      (!root.getAttribute('data-theme') && window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var next = isDark ? 'light' : 'dark';
+    applyTheme(next);
+    try { localStorage.setItem(LS_THEME, next); } catch (e) {}
+    refreshThemeLabel();
+  });
+  document.body.appendChild(themeBtn);
+})();
+</script>
+<script>
+/* ===== 埋め込みモード（アプリ内モーダル用） =====================
+   ?only=<chart-id> を付けると、その章のフローチャートだけを表示する。
+   さらに &embed=1 でヘッダー・目次・凡例・演習ボタン等を隠し、
+   アプリのモーダル内 iframe 表示に最適化する。 */
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var only = params.get('only');
+  var embed = params.get('embed') === '1';
+  if (!only && !embed) return;
+
+  var style = document.createElement('style');
+  var css = '';
+  if (only) {
+    css += '.chart-section { display: none !important; }';
+    css += '.chart-section[data-chart-id="' + only.replace(/["\\]/g, '') + '"] { display: block !important; }';
+  }
+  if (embed) {
+    css += 'header.main-header, .color-legend, nav, .toc, .flow-theme-btn, .flow-quiz-btn, .flow-next-btn, .flow-section-footer, .flow-progress { display: none !important; }';
+    css += 'body { padding: 8px; background: #fff; }';
+    css += '.chart-section { margin: 0 auto; box-shadow: none; border: none; padding: 10px 6px; max-width: 100%; }';
+  }
+  style.textContent = css;
+  document.head.appendChild(style);
+
+  // 埋め込み時はダークモード指定を無視してライト固定（アプリ側の配色と合わせる）
+  if (embed) {
+    try { document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}
+  }
+
+  // 対象の章が折りたたみ保存されていても、単独表示時は必ず展開する
+  if (only) {
+    var target = document.querySelector('.chart-section[data-chart-id="' + only.replace(/["\\]/g, '') + '"]');
+    if (target) target.classList.remove('flow-collapsed');
+  }
+})();
+</script>
+</body>
+</html>

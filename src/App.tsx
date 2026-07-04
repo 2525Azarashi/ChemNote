@@ -21,13 +21,17 @@ import { LogicalTree } from './components/LogicalTree';
 import { Flowchart } from './components/Flowchart';
 import { AuthButton } from './components/AuthButton';
 import { NoteList } from './components/NoteList';
+import { ReviewList } from './components/ReviewList';
 import { NoteDetail } from './components/NoteDetail';
 import { Onboarding } from './components/Onboarding';
+import { MockExam } from './components/MockExam';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
+import { useIsMobile } from './hooks/useMediaQuery';
 import { MobileViewWrapper } from './components/MobileViewWrapper';
+import { countIncomingFriendRequests } from './utils/friends';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'note_list' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'review_list';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 export default function App() {
@@ -45,12 +49,39 @@ export default function App() {
     }
   });
   const [forceDesktop, setForceDesktop] = useState(false);
-  const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [isMobilePreview, setIsMobilePreview] = useState(false);
+  // ユーザーエージェントによるモバイル端末判定（初回のみ・不変）。
+  // 画面幅の判定は共有フック useIsMobile に一元化する（C2）。
+  const isMobileUserAgent = useRef(
+    typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
+  ).current;
+  const isNarrowViewport = useIsMobile();
+  // 「モバイル端末」= UA がモバイル or 画面幅が md 未満。
+  const isMobileDevice = isMobileUserAgent || isNarrowViewport;
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('savedIsGuest') === 'true');
   const [isExplanationView, setIsExplanationView] = useState(false);
   const [prevAppState, setPrevAppState] = useState<AppState>('home');
   const [lastQuizResult, setLastQuizResult] = useState<any>(null);
+  // 届いているフレンド申請件数（設定ボタンのバッジ表示用）
+  const [pendingFriendRequests, setPendingFriendRequests] = useState(0);
+
+  // フレンド申請件数を定期的に確認する（ログイン時のみ）。
+  // 設定画面を閉じた直後にも再取得して、承諾/拒否の結果をバッジに反映する。
+  useEffect(() => {
+    let cancelled = false;
+    const refresh = async () => {
+      if (!auth.currentUser) {
+        if (!cancelled) setPendingFriendRequests(0);
+        return;
+      }
+      const n = await countIncomingFriendRequests();
+      if (!cancelled) setPendingFriendRequests(n);
+    };
+    refresh();
+    const id = window.setInterval(refresh, 60000);
+    const unsub = onAuthStateChanged(auth, () => refresh());
+    return () => { cancelled = true; window.clearInterval(id); unsub(); };
+  }, [appState]);
 
   // Prevent iOS pinch zoom and double tap zoom, EXCEPT on the answers/explanations pages
   useEffect(() => {
@@ -99,16 +130,25 @@ export default function App() {
   useEffect(() => { localStorage.setItem('savedIsGuest', isGuest.toString()); }, [isGuest]);
   
   useEffect(() => {
-    if (['mode_selection', 'learning', 'chapters', 'quiz', 'explanation'].includes(appState)) {
+    if (['mode_selection', 'learning', 'chapters', 'quiz', 'explanation', 'mock_exam'].includes(appState)) {
       setLastLearnState(appState);
       localStorage.setItem('savedLastLearnState', appState);
     }
+  }, [appState]);
+
+  // 画面遷移時に常に最上部へスクロール（前画面のスクロール位置を引き継がない）
+  useEffect(() => {
+    window.scrollTo(0, 0);
   }, [appState]);
 
   const isFirstLoad = useRef(true);
 
   const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
   const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
+
+  // PC版では「学習モードを選択」(mode_selection) 以外の全画面で外側余白をなくし、
+  // ノート風背景を全幅に広げる。mode_selection だけは従来通り中央寄せ＋余白を維持。
+  const isFullBleed = appState !== 'mode_selection';
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -207,22 +247,21 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobileDevice(/Mobi|Android/i.test(navigator.userAgent) || window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  useEffect(() => {
     const viewport = document.querySelector('meta[name="viewport"]');
     if (viewport) {
       if (shouldForceDesktopUI) {
         const scale = Math.min(1, window.innerWidth / 1024);
         viewport.setAttribute('content', `width=1024, initial-scale=${scale}, minimum-scale=${scale}, maximum-scale=3.0, user-scalable=yes`);
       } else {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        // モバイルへ戻る/遷移する際に、以前の desktop スケールが残って
+        // 「異常にズームされた状態」で切り替わるのを防ぐため、一度スケールを
+        // 明示的に 1.0 に固定してから通常のビューポートへ戻す（D対策）。
+        // user-scalable は既定（許可）のままにしてアクセシビリティを確保する（C3）。
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0');
+        // 次フレームで拡大許可を戻し、ユーザーによるピンチズームを再度可能にする。
+        requestAnimationFrame(() => {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
+        });
       }
     }
   }, [shouldForceDesktopUI, appState]);
@@ -277,6 +316,51 @@ export default function App() {
     }
   }, [appState, isBgmEnabled, hasInteracted, isAudioValid]);
 
+  // iOS/Safari では audio.play() をユーザー操作（クリック/タップ）と同一の
+  // コールスタック内で呼ばないと再生がブロックされる。
+  // 設定画面のトグルでは React state 更新 → useEffect 再生では間に合わないため、
+  // 操作ハンドラ内で直接 play/pause を実行する。
+  const handleToggleBgm = (enabled: boolean) => {
+    setIsBgmEnabled(enabled);
+    setHasInteracted(true);
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (enabled) {
+      if (!isAudioValid || hasLoggedAudioError.current) return;
+      if (['quiz', 'explanation'].includes(appState)) return;
+      audio.volume = bgmVolume;
+      // iOS Safari 対策:
+      // 音源がまだデコードされていない場合、ユーザー操作と同一スタックで
+      // load() → play() を呼ぶことで再生ブロック/デコード失敗を回避しやすくなる。
+      try {
+        if (audio.readyState < 2) {
+          audio.load();
+        }
+      } catch {
+        /* load 失敗は play 側の catch で処理 */
+      }
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(e => {
+          if (e.name === 'NotSupportedError' || e.message?.includes('no supported sources')) {
+            if (!hasLoggedAudioError.current) {
+              hasLoggedAudioError.current = true;
+              console.error('[BGM Error] Decode failed on toggle. Switching to silent mode.', e);
+            }
+            setIsAudioValid(false);
+          } else if (e.name === 'NotAllowedError') {
+            console.warn('[BGM Info] Playback blocked by browser on toggle.', e);
+          } else {
+            console.error('[BGM Error] Unexpected playback error on toggle:', e);
+          }
+        });
+      }
+    } else {
+      audio.pause();
+    }
+  };
+
   const handleStart = () => setAppState('mode_selection');
   const handleIntro = () => setAppState('intro');
   
@@ -289,12 +373,18 @@ export default function App() {
     }
   };
 
-  const handleSelectChapter = (chapterId: string, questionIndex = 0) => {
+  const handleSelectChapter = (chapterId: string, questionIndex = 0, resume = false) => {
     setSelectedChapterId(chapterId);
     setAppState('quiz');
-    setQuizAnswers({});
     setLastQuizResult(null);
-    localStorage.setItem(`quiz_idx_${chapterId}_${appMode}`, questionIndex.toString());
+
+    if (!resume) {
+      setQuizAnswers({});
+      localStorage.removeItem(`quiz_answers_${chapterId}_${appMode}`);
+      localStorage.removeItem(`quiz_run_${chapterId}_${appMode}`);
+      localStorage.removeItem(`quiz_expl_${chapterId}_${appMode}`);
+      localStorage.setItem(`quiz_idx_${chapterId}_${appMode}`, questionIndex.toString());
+    }
   };
 
   const handleFinishQuiz = (answers: Record<string, string>, result?: any) => {
@@ -330,13 +420,21 @@ export default function App() {
   return (
     <>
       <MobileViewWrapper isMobileMode={isMobilePreview && !shouldForceDesktopUI} onClose={() => setIsMobilePreview(false)}>
-        <div className={`min-h-screen w-full flex justify-center pt-6 pb-24 md:py-12 px-4 md:px-8 md:pb-28 relative ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`}>
+        <div className={`min-h-screen w-full flex justify-center relative ${
+          isFullBleed
+            ? 'p-0 items-stretch'
+            : `pt-6 pb-safe-lg md:py-12 px-4 md:px-8 md:pb-28 ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`
+        }`}>
+          {/* iOS Safari では crossOrigin="anonymous" が付いていると
+              同一オリジン音源でもデコードがブロックされ再生できないことがあるため付与しない。
+              playsInline を付けて iOS のインライン再生を許可する。 */}
           <audio 
             ref={audioRef} 
             src="/tanjou.mp3" 
             loop 
             preload="auto" 
-            crossOrigin="anonymous"
+            // @ts-ignore - playsInline は audio でも iOS 挙動安定のため付与
+            playsInline
             onError={handleAudioError}
           />
           
@@ -356,15 +454,16 @@ export default function App() {
             </div>
           )}
 
-          <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : 'max-w-5xl'}`}>
-            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
+          <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : (isFullBleed ? 'max-w-none' : 'max-w-5xl')}`}>
+            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
 
             {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} isGuest={isGuest} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('note_list')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onReviewList={() => setAppState('review_list')} isGuest={isGuest} />}
             {appState === 'leaderboard' && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
             {appState === 'logical_tree' && <LogicalTree />}
-            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} />}
+            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} />}
+            {appState === 'mock_exam' && <MockExam onBack={() => setAppState('mode_selection')} />}
             {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
             {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} />}
             {appState === 'quiz' && selectedChapter && (
@@ -385,6 +484,7 @@ export default function App() {
               />
             )}
             {appState === 'note_list' && <NoteList onBack={() => setAppState('home')} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
+            {appState === 'review_list' && <ReviewList onBack={() => setAppState('home')} isGuest={isGuest} />}
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('note_list')} />}
 
             {/* Global Bottom Navigation Footer
@@ -407,15 +507,15 @@ export default function App() {
                 
                 <button 
                   onClick={() => {
-                    if (appState === 'home' || appState === 'note_list' || appState === 'note_detail' || appState === 'leaderboard') {
+                    if (appState === 'home' || appState === 'note_list' || appState === 'note_detail' || appState === 'leaderboard' || appState === 'review_list') {
                       setAppState(lastLearnState);
                     } else {
                       setAppState('mode_selection');
                     }
                   }}
                   aria-label="学習画面へ移動"
-                  aria-current={['mode_selection', 'chapters', 'learning', 'explanation', 'quiz'].includes(appState) ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation', 'quiz'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  aria-current={['mode_selection', 'chapters', 'learning', 'explanation', 'quiz', 'mock_exam'].includes(appState) ? 'page' : undefined}
+                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation', 'quiz', 'mock_exam'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <BookOpen className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">学習</span>
@@ -438,11 +538,21 @@ export default function App() {
                     }
                     setAppState('settings');
                   }}
-                  aria-label="設定画面へ移動"
+                  aria-label={pendingFriendRequests > 0 ? `設定画面へ移動（フレンド申請が${pendingFriendRequests}件届いています）` : '設定画面へ移動'}
                   aria-current={appState === 'settings' ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  className={`relative flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
-                  <Settings className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
+                  <div className="relative">
+                    <Settings className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
+                    {pendingFriendRequests > 0 && (
+                      <span
+                        className="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[#E74C3C] text-white text-[9px] font-bold flex items-center justify-center shadow-sm"
+                        aria-hidden="true"
+                      >
+                        {pendingFriendRequests > 9 ? '9+' : pendingFriendRequests}
+                      </span>
+                    )}
+                  </div>
                   <span className="text-[10px] tracking-wider font-modern">設定</span>
                 </button>
               </nav>

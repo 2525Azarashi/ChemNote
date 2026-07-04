@@ -29,9 +29,26 @@
   --color-warning: #F5B041;
   --color-danger: #E74C3C;
 
+  /* Semantic feedback colors (採点フィードバック用・アイコンと併用) — C3
+   * WCAG AA（本文コントラスト比 4.5:1 以上）を意識した濃いめの色を採用。 */
+  --color-correct: #1E7D46;  /* 正解（緑・濃いめ） */
+  --color-wrong:   #C0392B;  /* 不正解（赤・濃いめ） */
+  --color-hint:    #B7791F;  /* ヒント/注意（アンバー・濃いめ） */
+
+  /* Typography sizes (C3)
+   * 本文はスマホでも最小 16px を確保し、可読性を担保する。
+   * 化学式エリアは上付き・下付きが潰れないよう 1.1rem 以上。 */
+  --font-body: 1rem;        /* = 16px 本文最小サイズ */
+  --font-chem: 1.1rem;      /* 化学式エリア（1.1rem 以上） */
+  --leading-explanation: 1.7;  /* 解説エリアの行間 */
+
   /* Typography */
   --font-handwriting: 'Yomogi', cursive;
   --font-modern: 'Inter', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  /* 数式・化学式向けフォント。
+   * 上付き／下付き（H⁺, CH₃, 10⁻³ など）や演算子が崩れない、
+   * 数学組版に適したセリフ系を優先しつつ、日本語は明朝/ゴシックでフォールバックする。 */
+  --font-math: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', 'Times New Roman', 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
 
   /* Radii */
   --radius-sm: 0.5rem;
@@ -52,11 +69,43 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-html {
-  scroll-behavior: smooth;
+/* キーボード操作時のフォーカスリング（アクセシビリティ向上）
+ * - マウス/タップ時は表示せず、Tabキー等のキーボード操作時のみ表示 */
+:focus-visible {
+  outline: 2px solid #E8688E;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* インタラクティブ要素の押下フィードバックを統一（軽い沈み込み） */
+button:not(:disabled):active,
+a:active,
+[role="button"]:not([aria-disabled="true"]):active {
+  transform: translateY(0.5px) scale(0.995);
 }
 
+html {
+  scroll-behavior: smooth;
+  /* オーバースクロールによるブラウザの引っ張り更新（pull-to-refresh）を抑止。
+   * スマホでピンチ/オーバースクロール時に意図しないリロードが起きる問題への対策。 */
+  overscroll-behavior-y: none;
+}
+
+/* 上付き・下付きの標準スタイル（C3）。
+ * H₂O / Cu²⁺ / 10⁻³ などが行の高さを崩さず、かつ読みやすいサイズに。 */
+sub, sup {
+  font-size: 0.85em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
 body {
+  /* ダブルタップズームの遅延・誤作動を避けつつ通常操作を維持する。
+   * （ピンチによる拡大自体はアクセシビリティのため viewport 側で許可） */
+  touch-action: manipulation;
+  overscroll-behavior-y: none;
   background-color: var(--color-bg);
   background-image:
     radial-gradient(rgba(28, 38, 49, 0.06) 1.2px, transparent 1.2px),
@@ -120,17 +169,67 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   border: 0;
 }
 
+/* iOS Safari の下部ツールバー / ホームインジケータでボタンが隠れて
+   押せなくなるのを防ぐための安全余白ユーティリティ。
+   通常のパディングに加えて safe-area-inset-bottom を足す。 */
+.pb-safe {
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+}
+.pb-safe-lg {
+  padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+}
+
 /* =========================================================
  * 6. Typography utilities
  * ========================================================= */
 .font-handwriting { font-family: var(--font-handwriting); }
 .font-modern { font-family: var(--font-modern); }
 
+/* 数式・化学式向けユーティリティ。
+ * 化学式や計算式（H⁺ / CH₃COOH / 1.0×10⁻³ mol/L / pH = −log[H⁺] など）に適用すると、
+ * 上付き・下付き・演算子・等号が手書きフォントよりも正確に読めるようになる。 */
+.font-math {
+  font-family: var(--font-math);
+  font-feature-settings: "liga" 1, "tnum" 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+/* font-math を当てた要素の中の上付き・下付きを少しだけ整える */
+.font-math sup, .font-math sub {
+  font-size: 0.72em;
+}
+
 /* Marker highlight (蛍光ペン風) */
 .marker {
   background: linear-gradient(transparent 60%, var(--color-highlight) 60%);
   padding: 0 0.15em;
 }
+
+/* 本文・化学式・解説エリアのタイポグラフィ・ユーティリティ（C3）。
+ * CSS 変数を参照するため、テーマ側の値変更が一箇所で反映される。 */
+.text-body {
+  font-size: var(--font-body);
+  line-height: 1.7;
+}
+.text-chem {
+  font-size: var(--font-chem);
+  line-height: 1.6;
+}
+.leading-explanation {
+  line-height: var(--leading-explanation);
+}
+
+/* セマンティックカラー・ユーティリティ（色だけに依存しないよう、
+ * 使用側で ✓ / ✗ / 💡 アイコンやラベルと併用すること）。 */
+.text-correct { color: var(--color-correct); }
+.text-wrong   { color: var(--color-wrong); }
+.text-hint    { color: var(--color-hint); }
+.bg-correct-soft { background-color: color-mix(in srgb, var(--color-correct) 12%, white); }
+.bg-wrong-soft   { background-color: color-mix(in srgb, var(--color-wrong) 12%, white); }
+.bg-hint-soft    { background-color: color-mix(in srgb, var(--color-hint) 14%, white); }
+.border-correct { border-color: color-mix(in srgb, var(--color-correct) 40%, transparent); }
+.border-wrong   { border-color: color-mix(in srgb, var(--color-wrong) 40%, transparent); }
+.border-hint    { border-color: color-mix(in srgb, var(--color-hint) 40%, transparent); }
 
 /* =========================================================
  * 7. Notebook / Paper textures
@@ -250,6 +349,91 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 @keyframes fadeOutExplanationHint {
   0% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(10px); visibility: hidden; }
+}
+
+/* =========================================================
+ * 11b. Explanation / Result full-screen overlay
+ * 結果・解説画面は単体の全画面オーバーレイとして表示し、
+ * 背後にホーム等の前画面が透けて見えないようにする。
+ * ========================================================= */
+.explanation-desktop-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  background-color: var(--color-surface, #FDFBF7);
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+}
+.explanation-desktop-content {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.explanation-scroll-hint {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  text-align: center;
+  font-size: 0.7rem;
+  padding: 6px 8px;
+  color: #fff;
+  background-color: rgba(27, 38, 49, 0.85);
+  animation: fadeOutExplanationHint 0.5s ease-out 4s forwards;
+}
+
+/* =========================================================
+ * 11c. 桜の花びら（タイトル画面の装飾）
+ * ========================================================= */
+.sakura-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+.sakura-petal {
+  position: absolute;
+  top: -24px;
+  display: block;
+  border-radius: 100% 0 100% 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transform: rotate(0deg);
+  animation-name: sakura-fall, sakura-sway;
+  animation-duration: var(--fall-duration, 12s), 3s;
+  animation-delay: var(--fall-delay, 0s), var(--fall-delay, 0s);
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+  animation-direction: normal, alternate;
+  will-change: transform, top;
+}
+
+@keyframes sakura-fall {
+  0% {
+    top: -24px;
+    transform: rotate(0deg);
+  }
+  100% {
+    top: 110%;
+    transform: rotate(540deg);
+  }
+}
+
+@keyframes sakura-sway {
+  0% { margin-left: 0; }
+  100% { margin-left: var(--sway, 30px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sakura-petal {
+    animation: none !important;
+    display: none;
+  }
 }
 
 /* =========================================================

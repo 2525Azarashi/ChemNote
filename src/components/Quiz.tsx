@@ -5,6 +5,8 @@ import { substanceTreeData } from '../data/chemistryData';
 import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
+import { QuestionFigure } from './QuestionFigure';
+import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { QuizTimerBar } from './QuizTimerBar';
 import { FloatingScoreAnimation } from './FloatingScoreAnimation';
 import {
@@ -15,6 +17,10 @@ import {
   type ScoreBreakdown,
 } from '../utils/scoring';
 import { submitChapterScore } from '../utils/leaderboard';
+import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
+import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
+import { useIsDesktop } from '../hooks/useMediaQuery';
+import { auth } from '../firebase';
 
 interface QuizProps {
   mode: 'mini_test' | 'practice';
@@ -96,40 +102,228 @@ function requiresChemicalSymbols(question: any, answer: any = {}): boolean {
   // 5. 「価」「イオン」「原子」関連キーワード
   const chemKeywords =
     /価|イオン|原子|分子|化合物|酸化|還元|電荷|陽子|陰イオン|陽イオン|硫酸|硝酸|塩化|水酸|炭酸|アンモニウム/;
+  // 6. 化学反応式・イオン反応式・熱化学方程式などの記述問題
+  const reactionKeywords =
+    /反応式|化学式|組成式|電離|中和|化学反応|イオン反応|熱化学|燃焼|→|⇌/;
 
   return (
     ionPattern.test(text) ||
     chemicalFormula.test(text) ||
     unicodeSuperSubscript.test(text) ||
     massNumberPattern.test(text) ||
-    chemKeywords.test(text)
+    chemKeywords.test(text) ||
+    reactionKeywords.test(text)
   );
 }
 
-const chemistryShortcuts = [
-  { label: '⁺ (1価陽)', value: '⁺', desc: '1価陽イオン (上付きプラス)' },
-  { label: '⁻ (1価陰)', value: '⁻', desc: '1価陰イオン (上付きマイナス)' },
-  { label: '²⁺ (2価陽)', value: '²⁺', desc: '2価陽イオン' },
-  { label: '²⁻ (2価陰)', value: '²⁻', desc: '2価陰イオン' },
-  { label: '³⁺ (3価陽)', value: '³⁺', desc: '3価陽イオン' },
-  { label: '³⁻ (3価陰)', value: '³⁻', desc: '3価陰イオン' },
-  { label: 'NH₄⁺', value: 'NH₄⁺', desc: 'アンモニウムイオン' },
-  { label: 'OH⁻', value: 'OH⁻', desc: '水酸化物イオン' },
-  { label: 'NO₃⁻', value: 'NO₃⁻', desc: '硝酸イオン' },
-  { label: 'SO₄²⁻', value: 'SO₄²⁻', desc: '硫酸イオン' },
-  { label: 'CO₃²⁻', value: 'CO₃²⁻', desc: '炭酸イオン' },
-  { label: 'PO₄³⁻', value: 'PO₄³⁻', desc: 'リン酸イオン' },
-  { label: '₂ (下付き2)', value: '₂', desc: '下付き2' },
-  { label: '₃ (下付き3)', value: '₃', desc: '下付き3' },
-  { label: '₄ (下付き4)', value: '₄', desc: '下付き4' },
-  { label: '₅ (下付き5)', value: '₅', desc: '下付き5' },
+type PaletteItem = { label: string; value: string; desc: string };
+type PaletteGroup = { group: string; items: PaletteItem[] };
+
+// 化学記号パレット（カテゴリ別）。
+// 反応式・化学式・イオン式の入力を、キーボードを使わずワンタップで行えるようにする。
+const chemistryPaletteGroups: PaletteGroup[] = [
+  {
+    group: '反応式の記号',
+    items: [
+      { label: '→', value: ' → ', desc: '生成（右向き矢印）' },
+      { label: '⇌', value: ' ⇌ ', desc: '可逆反応（平衡）' },
+      { label: '+', value: ' + ', desc: '化学式どうしの区切り（プラス）' },
+      { label: '↑', value: '↑', desc: '気体の発生' },
+      { label: '↓', value: '↓', desc: '沈殿の生成' },
+      { label: '·', value: '·', desc: '水和水などの中点（例: CuSO₄·5H₂O）' },
+    ],
+  },
+  {
+    group: '下付き数字',
+    items: [
+      { label: '₁', value: '₁', desc: '下付き1' },
+      { label: '₂', value: '₂', desc: '下付き2' },
+      { label: '₃', value: '₃', desc: '下付き3' },
+      { label: '₄', value: '₄', desc: '下付き4' },
+      { label: '₅', value: '₅', desc: '下付き5' },
+      { label: '₆', value: '₆', desc: '下付き6' },
+      { label: '₇', value: '₇', desc: '下付き7' },
+      { label: '₈', value: '₈', desc: '下付き8' },
+    ],
+  },
+  {
+    group: 'イオンの価数（上付き）',
+    items: [
+      { label: '⁺', value: '⁺', desc: '1価陽イオン (上付きプラス)' },
+      { label: '⁻', value: '⁻', desc: '1価陰イオン (上付きマイナス)' },
+      { label: '²⁺', value: '²⁺', desc: '2価陽イオン' },
+      { label: '²⁻', value: '²⁻', desc: '2価陰イオン' },
+      { label: '³⁺', value: '³⁺', desc: '3価陽イオン' },
+      { label: '³⁻', value: '³⁻', desc: '3価陰イオン' },
+    ],
+  },
+  {
+    group: 'よく使うイオン式',
+    items: [
+      { label: 'H⁺', value: 'H⁺', desc: '水素イオン' },
+      { label: 'OH⁻', value: 'OH⁻', desc: '水酸化物イオン' },
+      { label: 'NH₄⁺', value: 'NH₄⁺', desc: 'アンモニウムイオン' },
+      { label: 'NO₃⁻', value: 'NO₃⁻', desc: '硝酸イオン' },
+      { label: 'SO₄²⁻', value: 'SO₄²⁻', desc: '硫酸イオン' },
+      { label: 'CO₃²⁻', value: 'CO₃²⁻', desc: '炭酸イオン' },
+      { label: 'PO₄³⁻', value: 'PO₄³⁻', desc: 'リン酸イオン' },
+      { label: 'Cl⁻', value: 'Cl⁻', desc: '塩化物イオン' },
+    ],
+  },
+  {
+    group: 'よく使う化学式',
+    items: [
+      { label: 'H₂O', value: 'H₂O', desc: '水' },
+      { label: 'CO₂', value: 'CO₂', desc: '二酸化炭素' },
+      { label: 'O₂', value: 'O₂', desc: '酸素' },
+      { label: 'H₂', value: 'H₂', desc: '水素' },
+      { label: 'N₂', value: 'N₂', desc: '窒素' },
+      { label: 'Cl₂', value: 'Cl₂', desc: '塩素' },
+      { label: 'NaCl', value: 'NaCl', desc: '塩化ナトリウム' },
+      { label: 'CaCO₃', value: 'CaCO₃', desc: '炭酸カルシウム' },
+    ],
+  },
 ];
+
+// iOS/Android: ソフトウェアキーボード出現時に入力欄がキーボードで隠れるのを防ぐため、
+// フォーカス時に少し遅延して入力欄を画面内へスクロールする。
+// visualViewport API が使える場合は、キーボードで狭まった実際の可視領域を基準に
+// 入力欄がキーボードの上に来るよう調整する（block:'center' だとキーボード裏に隠れることがある）。
+const scrollInputIntoView = (target: HTMLElement) => {
+  const vv = (window as any).visualViewport as VisualViewport | undefined;
+  if (vv) {
+    const rect = target.getBoundingClientRect();
+    // 可視領域の下端（キーボード上端に相当）
+    const visibleBottom = vv.offsetTop + vv.height;
+    // 入力欄の下端が可視領域の下端より下（＝キーボードに隠れている）なら、
+    // 余白 24px を確保してスクロールする。
+    const margin = 24;
+    const overflowBottom = rect.bottom - (visibleBottom - margin);
+    if (overflowBottom > 0) {
+      window.scrollBy({ top: overflowBottom, behavior: 'smooth' });
+      return;
+    }
+    // 入力欄が可視領域の上に隠れている場合
+    const overflowTop = (vv.offsetTop + margin) - rect.top;
+    if (overflowTop > 0) {
+      window.scrollBy({ top: -overflowTop, behavior: 'smooth' });
+      return;
+    }
+    return;
+  }
+  // visualViewport 非対応環境のフォールバック
+  try {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch {
+    target.scrollIntoView();
+  }
+};
+
+const handleInputFocusScroll = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const target = e.currentTarget;
+  // キーボードの表示アニメーション完了を待ってからスクロールする。
+  setTimeout(() => scrollInputIntoView(target), 300);
+  // visualViewport のリサイズ（キーボード出現）を捉えて再調整（iOS で確実にするため）。
+  const vv = (window as any).visualViewport as VisualViewport | undefined;
+  if (vv) {
+    const onResize = () => {
+      scrollInputIntoView(target);
+      vv.removeEventListener('resize', onResize);
+    };
+    vv.addEventListener('resize', onResize);
+    // 保険として一定時間後にリスナーを解除
+    setTimeout(() => vv.removeEventListener('resize', onResize), 1000);
+  }
+};
+
+/**
+ * 化学記号パレット。
+ * - カテゴリ別に記号を配置し、ワンタップで入力欄のカーソル位置へ挿入する。
+ * - 入力欄の参照を受け取り、選択範囲（カーソル位置）に挿入 → キャレットを更新する。
+ *   参照が無い場合は末尾に追記するフォールバック動作。
+ */
+function ChemistryPalette({
+  value,
+  onChange,
+  inputRef,
+}: {
+  value: string;
+  onChange: (next: string) => void;
+  inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
+}) {
+  const insert = (text: string) => {
+    const el = inputRef.current;
+    if (el && typeof el.selectionStart === 'number' && typeof el.selectionEnd === 'number') {
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+      const next = value.slice(0, start) + text + value.slice(end);
+      onChange(next);
+      // 挿入後、キャレットを挿入文字列の直後へ移動（次の描画後に反映）。
+      const caret = start + text.length;
+      requestAnimationFrame(() => {
+        try {
+          el.focus();
+          el.setSelectionRange(caret, caret);
+        } catch {
+          /* noop */
+        }
+      });
+    } else {
+      onChange(value + text);
+    }
+  };
+
+  return (
+    <div className="bg-stone-50 border border-stone-200/80 p-2.5 md:p-3 rounded-xl flex flex-col gap-2 w-full">
+      <div className="text-[11px] md:text-xs text-stone-500 font-bold select-none px-0.5 flex items-center gap-1">
+        <span>化学記号パレット</span>
+        <span className="font-normal text-stone-400">（タップで入力欄のカーソル位置に挿入）</span>
+      </div>
+      <div className="flex flex-col gap-2 max-h-[220px] md:max-h-none overflow-y-auto">
+        {chemistryPaletteGroups.map((grp) => (
+          <div key={grp.group} className="flex flex-col gap-1">
+            <div className="text-[10px] md:text-[11px] text-stone-400 font-bold select-none px-0.5">
+              {grp.group}
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {grp.items.map((item) => (
+                <button
+                  key={item.label}
+                  type="button"
+                  // マウス/タッチダウンでの入力欄フォーカス喪失を防ぐ（キャレット維持のため）。
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => insert(item.value)}
+                  className="min-w-[44px] min-h-[36px] px-2.5 py-1.5 bg-white border border-stone-200 hover:border-stone-400 hover:bg-stone-100 rounded-lg text-sm md:text-sm font-bold text-stone-700 font-sans shadow-xs cursor-pointer transition-colors flex items-center justify-center gap-1 active:scale-95"
+                  title={item.desc}
+                  aria-label={item.desc}
+                >
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange, onScored }: QuizProps) {
   // ===== タイマー & スコア用 state =====
   const [run, setRun] = useState<ChapterRunState>(() => loadRun(chapter.id, mode));
   const timeUsedRef = useRef(0); // タイマーから250msごとに通知される最新値
   const lastScoredQuestionRef = useRef<string | null>(null);
+  // 記述/短答入力欄の参照を sub-question id 単位で保持（化学記号パレットの
+  // カーソル位置挿入に使用）。
+  const inputRefs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({});
+  const getInputRef = (sqId: string): React.RefObject<HTMLInputElement | HTMLTextAreaElement | null> => ({
+    get current() {
+      return inputRefs.current[sqId] ?? null;
+    },
+    set current(el: HTMLInputElement | HTMLTextAreaElement | null) {
+      inputRefs.current[sqId] = el;
+    },
+  });
 
   const [answers, setAnswers] = useState<Record<string, string>>(() => {
     try {
@@ -168,24 +362,52 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     breakdown: ScoreBreakdown;
     totalScore: number;
   } | null>(null);
-  // Use passed prop if available, otherwise check window width
-  const [isDesktop, setIsDesktop] = useState(!isMobileView && window.innerWidth >= 1024);
+  // スマホ/PC判定は共有フックに一元化（lg=1024px 以上をPCとみなす）。
+  // isMobileView が渡された場合（スマホプレビュー枠）はそれを優先する。
+  const isDesktop = useIsDesktop(isMobileView !== undefined ? !isMobileView : undefined);
 
-  useEffect(() => {
-    if (isMobileView !== undefined) {
-      setIsDesktop(!isMobileView);
-    } else {
-      const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, [isMobileView]);
+  // 直前に表示していた問題のインデックスを保持（離脱した問題の回答リセット用）
+  const prevQuestionIndexRef = useRef(currentQuestionIndex);
+
+  /**
+   * 指定インデックスの問題に入力された回答を消去する。
+   * ただし、その問題が既に採点済み（run.perQuestion に記録済み）の場合は保持する
+   * （採点済みの解答は解説表示の答え合わせに必要なため）。
+   * 「一度離れた未提出の問題の回答」だけをリセットし、不正な得点（解答の使い回し）を防ぐ。
+   */
+  const clearAnswersForQuestionIfUnscored = (qIndex: number) => {
+    const q = questions[qIndex];
+    if (!q) return;
+    const scored = !!run.perQuestion[q.id];
+    if (scored) return; // 採点済みは残す
+    const subIds: string[] = (q.subQuestions || []).map((sq: any) => sq.id);
+    if (subIds.length === 0) return;
+    setAnswers(prev => {
+      let changed = false;
+      const next = { ...prev };
+      subIds.forEach(id => {
+        if (id in next) {
+          delete next[id];
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  };
 
   // Clear highlights on new question
   useEffect(() => {
     setHighlights([]);
     timeUsedRef.current = 0;
     lastScoredQuestionRef.current = null;
+
+    // 問題が切り替わったら、離れた（前の）問題の未提出回答をリセットする
+    const leftIndex = prevQuestionIndexRef.current;
+    if (leftIndex !== currentQuestionIndex) {
+      clearAnswersForQuestionIfUnscored(leftIndex);
+      prevQuestionIndexRef.current = currentQuestionIndex;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionIndex]);
 
   // Prevent zoom/pinch out during active quiz, but allow on explanations
@@ -233,6 +455,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   };
 
   const questions = mode === 'mini_test' ? chapter.miniTest : (chapter.practiceProblems || []);
+
+  // 章内の図版へ通し番号（図1・図2 …）を割り当てるためのマップ。
+  const figureNumberMap = useMemo(() => buildFigureNumberMap(questions), [questions]);
 
   if (questions.length === 0) {
     return (
@@ -298,6 +523,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
    */
   const scoreCurrentQuestionIfNeeded = () => {
     if (!currentQuestion) return null;
+    if (run.perQuestion[currentQuestion.id]) return null;
     if (lastScoredQuestionRef.current === currentQuestion.id) return null;
     lastScoredQuestionRef.current = currentQuestion.id;
 
@@ -335,6 +561,32 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     };
     setRun(nextRun);
     saveRun(chapter.id, mode, nextRun);
+
+    // 復習リスト：この問題で間違えた設問（自動採点可能なもの）をキャプチャする。
+    // 記述式（descriptive）は自動採点不可なため対象外。
+    try {
+      const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
+      if (uid) {
+        const questionIndex = currentQuestionIndex + 1;
+        const wrongInputs: WrongAnswerInput[] = subQuestions
+          .filter((sq: any) => !isDescriptive(sq))
+          .filter((sq: any) => !isAnswerCorrect(sq, answers[sq.id]))
+          .map((sq: any) => ({
+            chapterId: chapter.id,
+            chapterTitle: chapter.title,
+            questionIndex,
+            questionId: currentQuestion.id,
+            subQuestionId: sq.id,
+            subLabel: sq.label,
+            questionText: currentQuestion.text,
+            correctAnswer: sq.correctAnswer,
+            wrongAnswer: (answers[sq.id] || '').trim(),
+          }));
+        if (wrongInputs.length > 0) captureWrongAnswers(uid, wrongInputs);
+      }
+    } catch (e) {
+      console.error('[Quiz] captureWrongAnswers failed:', e);
+    }
 
     if (onScored) {
       onScored(finalBreakdown, {
@@ -417,6 +669,47 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     }
   };
 
+  // C6: キーボードで問題を送り/戻しできるようにする（→ / ←）。
+  // 入力欄（input/textarea/contenteditable）にフォーカス中や修飾キー併用時は
+  // テキスト編集・ショートカットを妨げないよう無効化する。
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const el = document.activeElement as HTMLElement | null;
+      const tag = el?.tagName?.toLowerCase();
+      const isEditable =
+        tag === 'input' ||
+        tag === 'textarea' ||
+        tag === 'select' ||
+        (el?.isContentEditable ?? false);
+      if (isEditable) return;
+
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        handleNext();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handlePrevious();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+    // handleNext/handlePrevious は毎レンダー再生成されるため依存に含める。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showingExplanation, currentQuestionIndex, answers]);
+
+  /**
+   * クイズから離脱（単元選択に戻る）するときのハンドラ。
+   * 解説表示中でない＝まだ採点していない現在の問題に入力された回答は、
+   * 離脱時にリセットして「離れた問題の回答の使い回し」による不正得点を防ぐ。
+   */
+  const handleExit = () => {
+    if (!showingExplanation) {
+      clearAnswersForQuestionIfUnscored(currentQuestionIndex);
+    }
+    onBack();
+  };
+
   if (showingExplanation) {
     const stored = run.perQuestion[currentQuestion?.id];
     return (
@@ -448,16 +741,18 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   }
 
   return (
-    <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40 pb-20 md:pb-0">
+    <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40">
       
       {/* Header (Fixed) */}
       <div className="flex-none p-2 md:p-6 border-b border-gray-200 bg-white shadow-sm z-10 flex items-center justify-between gap-2 md:gap-4">
         <div className="flex items-center text-left gap-2 md:gap-4 min-w-0">
           <button 
-            onClick={onBack}
+            onClick={handleExit}
+            title="単元選択に戻る"
+            aria-label="単元選択に戻る"
             className="flex items-center justify-center p-1.5 md:p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors shrink-0"
           >
-            <ArrowLeft size={18} className="md:w-5 md:h-5" />
+            <ArrowLeft size={18} className="md:w-5 md:h-5" aria-hidden="true" />
           </button>
           <div className="min-w-0 flex-1">
             <h2 className="text-sm md:text-xl font-handwriting text-[#2C3E50] font-bold truncate">
@@ -547,24 +842,34 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           </div>
           
           <div 
-            className="flex-1 overflow-y-auto p-4 md:p-8 text-sm md:text-base text-gray-800 font-modern leading-relaxed"
+            className="flex-1 overflow-y-auto p-4 md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 font-modern break-words [overflow-wrap:anywhere]"
             onMouseUp={handleTextSelection}
             onTouchEnd={handleTextSelection}
             title="テキストを選択するとハイライトできます"
           >
-            <div>
+            <div className="max-w-prose md:max-w-none">
               {formatText(currentQuestion.text, highlights)}
               {currentQuestion.text.includes('図6') && (
                 <div className="mt-4">
                   <IonizationEnergyChart showDetails={false} />
                 </div>
               )}
+              {/* 問題に付随する図・イラスト（PDF由来の図版など） */}
+              {currentQuestion.imageUrl && (
+                <QuestionFigure
+                  src={currentQuestion.imageUrl}
+                  caption={currentQuestion.imageCaption}
+                  figureNumber={getFigureNumber(figureNumberMap, currentQuestion.id)}
+                  tone="light"
+                  className="mt-5"
+                />
+              )}
             </div>
           </div>
         </div>
 
         {/* Section 2: Answers Area (Scrollable) */}
-        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-8 md:pb-8 relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
+        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-8 relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
             {groupedSubQuestions.map((g: any, gIdx: number) => {
@@ -585,6 +890,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             type="text"
                             value={answers[sq.id] || ''}
                             onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                            onFocus={handleInputFocusScroll}
                             placeholder="..."
                             className="w-full py-1 text-center text-sm font-bold text-stone-800 border-none outline-none focus:ring-0 leading-none bg-transparent"
                           />
@@ -606,22 +912,36 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     {sq.type === 'multiple_choice' ? (
                       (() => {
                         const isLongOptionList = sq.options.some((opt: string) => opt.length > 5);
+                        // 複数選択かどうかの判定：
+                        //   correctAnswer を区切り文字で分割した「すべてのトークン」が選択肢に存在する場合のみ複数選択とみなす。
+                        //   単に correctAnswer にカンマが含まれるだけ（例: "ア: 相対, イ: 単位, ..." のような
+                        //   カンマ入りの単一選択肢）を複数選択と誤判定しないようにするための堅牢な判定。
+                        const optionSet = new Set(sq.options.map((o: string) => o.trim()));
+                        const detectMulti = (sep: string) => {
+                          if (!sq.correctAnswer || !sq.correctAnswer.includes(sep)) return false;
+                          const toks = sq.correctAnswer.split(sep).map((t: string) => t.trim()).filter(Boolean);
+                          return toks.length >= 2 && toks.every((t: string) => optionSet.has(t));
+                        };
+                        const multiSep = detectMulti('・') ? '・' : (detectMulti(',') ? ',' : null);
+                        const isMultiple = multiSep !== null;
                         return (
                           <div className={isLongOptionList 
                             ? "grid grid-cols-1 gap-2.5 w-full" 
                             : "grid grid-cols-2 xs:grid-cols-3 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
                           }>
                             {sq.options.map((opt: string) => {
-                              const isSelected = (answers[sq.id] || '').split(',').includes(opt);
+                              // 単一選択ではカンマで分割せず完全一致で判定する（カンマ入り選択肢に対応）
+                              const isSelected = isMultiple
+                                ? (answers[sq.id] || '').split(multiSep as string).map(s => s.trim()).includes(opt.trim())
+                                : (answers[sq.id] || '') === opt;
                               return (
                                 <button
                                   key={opt}
                                   onClick={() => {
-                                    const isMultiple = sq.correctAnswer && (sq.correctAnswer.includes(",") || sq.correctAnswer.includes("・"));
                                     let next: string[];
                                     if (isMultiple) {
-                                      const separator = sq.correctAnswer.includes("・") ? "・" : ",";
-                                      const current = (answers[sq.id] || '').split(separator).filter(Boolean);
+                                      const separator = multiSep as string;
+                                      const current = (answers[sq.id] || '').split(separator).map(s => s.trim()).filter(Boolean);
                                       const nextUnordered = isSelected 
                                         ? current.filter(a => a !== opt)
                                         : [...current, opt];
@@ -629,8 +949,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                                       next = ordered;
                                       handleOptionSelect(sq.id, next.join(separator));
                                     } else {
-                                      next = isSelected ? [] : [opt];
-                                      handleOptionSelect(sq.id, next.join(','));
+                                      handleOptionSelect(sq.id, isSelected ? '' : opt);
+                                      return;
                                     }
                                   }}
                                   className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 border-2 flex items-center ${isLongOptionList ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3rem] shadow-sm cursor-pointer
@@ -725,57 +1045,51 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         </div>
                       </div>
                     ) : sq.type === 'descriptive' ? (
-                      <div className="flex-grow relative w-full">
-                        <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
-                        <textarea
-                          value={answers[sq.id] || ''}
-                          onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                          placeholder="解答を入力..."
-                          rows={3}
-                          className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
-                        />
+                      <div className="flex-grow flex flex-col gap-2 w-full">
+                        <div className="relative w-full">
+                          <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
+                          <textarea
+                            ref={(el) => { inputRefs.current[sq.id] = el; }}
+                            value={answers[sq.id] || ''}
+                            onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                            onFocus={handleInputFocusScroll}
+                            placeholder="解答を入力..."
+                            rows={3}
+                            className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
+                          />
+                        </div>
+
+                        {/* 化学記号パレット（反応式・化学式の記述が必要な問題のみ表示） */}
+                        {requiresChemicalSymbols(sq, sq.correctAnswer) && (
+                          <ChemistryPalette
+                            value={answers[sq.id] || ''}
+                            onChange={(next) => handleTextChange(sq.id, next)}
+                            inputRef={getInputRef(sq.id)}
+                          />
+                        )}
                       </div>
                     ) : (
                       <div className="flex-grow flex flex-col gap-2 w-full">
                         <div className="relative w-full">
                           <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                           <input
+                            ref={(el) => { inputRefs.current[sq.id] = el; }}
                             type="text"
                             value={answers[sq.id] || ''}
                             onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                            onFocus={handleInputFocusScroll}
                             placeholder="解答を入力..."
                             className="w-full pl-9 pr-4 py-2.5 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
                           />
                         </div>
-                        
-                        {/* Chemistry Symbol Helper Palette - Only show when needed */}
+
+                        {/* 化学記号パレット（必要な問題のみ表示・カーソル位置に挿入） */}
                         {requiresChemicalSymbols(sq, sq.correctAnswer) && (
-                        <div className="bg-stone-50 border border-stone-200/80 p-2 md:p-2.5 rounded-xl flex flex-col gap-1.5 w-full">
-                          <div className="text-[10px] md:text-xs text-stone-500 font-bold select-none px-0.5">
-                            化学記号パレット (タップで入力欄に挿入 & コピー) :
-                          </div>
-                          <div className="flex flex-wrap gap-1.5 max-h-[140px] overflow-y-auto">
-                            {chemistryShortcuts.map((item) => (
-                              <button
-                                key={item.label}
-                                type="button"
-                                onClick={() => {
-                                  const currentVal = answers[sq.id] || '';
-                                  handleTextChange(sq.id, currentVal + item.value);
-                                  try {
-                                    navigator.clipboard.writeText(item.value);
-                                  } catch (err) {
-                                    console.error(err);
-                                  }
-                                }}
-                                className="px-2 py-1 bg-white border border-stone-200 hover:border-stone-400 hover:bg-stone-100 rounded-lg text-xs md:text-sm font-bold text-stone-700 font-sans shadow-xs cursor-pointer transition-colors flex items-center gap-1 active:scale-95"
-                                title={item.desc}
-                              >
-                                <span>{item.label}</span>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
+                          <ChemistryPalette
+                            value={answers[sq.id] || ''}
+                            onChange={(next) => handleTextChange(sq.id, next)}
+                            inputRef={getInputRef(sq.id)}
+                          />
                         )}
                       </div>
                     )}
@@ -789,13 +1103,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               <button
                 onClick={handlePrevious}
                 disabled={currentQuestionIndex === 0}
-                title="前の問題へ"
+                title="前の問題へ（←キー）"
+                aria-label="前の問題へ"
                 className={`flex items-center justify-center p-2.5 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer
                   ${currentQuestionIndex === 0 
                     ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50' 
                     : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white bg-white shadow-sm'}`}
               >
-                <ChevronLeft size={16} className="stroke-[2.5]" />
+                <ChevronLeft size={16} className="stroke-[2.5]" aria-hidden="true" />
               </button>
 
               <button

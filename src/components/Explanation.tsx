@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
 import { ChapterRankingPanel } from './ChapterRankingPanel';
+import { QuestionFigure } from './QuestionFigure';
+import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
+import { isAnswerCorrect } from '../utils/answerJudge';
+import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
 
 interface ExplanationProps {
@@ -76,17 +81,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const [scrollTrigger, setScrollTrigger] = useState<number>(0);
   const [expandedCorrectQuestions, setExpandedCorrectQuestions] = useState<Record<string, boolean>>({});
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
-  const [isMobile, setIsMobile] = useState(isMobileView !== undefined ? isMobileView : window.innerWidth < 768);
-
-  useEffect(() => {
-    if (isMobileView !== undefined) {
-      setIsMobile(isMobileView);
-    } else {
-      const handleResize = () => setIsMobile(window.innerWidth < 768);
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, [isMobileView]);
+  // スマホ/PC判定は共有フックに一元化（md=768px 未満をスマホとみなす）。
+  // isMobileView が渡された場合（スマホプレビュー枠）はそれを優先する。
+  const isMobile = useIsMobile(isMobileView);
 
   const stepColors: Record<string, string> = {
     "1": "bg-red-500/20 text-red-700 border-red-500/50 hover:bg-red-500/30",
@@ -120,6 +117,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const questions = useMemo(() => {
     return singleQuestionIndex !== undefined ? [allQuestions[singleQuestionIndex]] : allQuestions;
   }, [allQuestions, singleQuestionIndex]);
+
+  // 章内の図版へ通し番号（図1・図2 …）を割り当てるマップ。
+  // 単問表示でも通し番号が一貫するよう、章の全問題（allQuestions）を基準に採番する。
+  const figureNumberMap = useMemo(() => buildFigureNumberMap(allQuestions), [allQuestions]);
 
   // \u81ea\u5df1\u63a1\u70b9\u306e\u30c1\u30a7\u30c3\u30af\u6570\u304b\u3089\u30dc\u30fc\u30ca\u30b9\u70b9\u3092\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u8a08\u7b97
   const selfGradeBonus = useMemo(() => {
@@ -295,7 +296,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
              analysis[category].correct += (checkedCount / criteriaCount);
            }
         } else {
-          if (answers[sq.id] === sq.correctAnswer) {
+          if (isAnswerCorrect(sq, answers[sq.id])) {
             analysis[category].correct += 1;
           }
         }
@@ -374,12 +375,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const isGroupAllCorrect = (sq: any, currentQuestion: any) => {
     if (!sq.group || !currentQuestion) return false;
     const sameGroupSqs = (currentQuestion.subQuestions || []).filter((item: any) => item.group === sq.group);
-    return sameGroupSqs.every((item: any) => answers[item.id] === item.correctAnswer);
+    return sameGroupSqs.every((item: any) => isAnswerCorrect(item, answers[item.id]));
   };
 
   const renderSubQuestionCheck = (sq: any, currentQuestion: any) => {
     const isMiniTest = mode === 'mini_test';
-    const isCorrect = sq.type === 'descriptive' ? false : answers[sq.id] === sq.correctAnswer;
+    const isCorrect = sq.type === 'descriptive' ? false : isAnswerCorrect(sq, answers[sq.id]);
     const isExpanded = expandedSq === sq.id;
     const relatedSteps = getRelatedSteps(sq.id, currentQuestion);
 
@@ -456,7 +457,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 )}
                 
                 {isPracticeMode && (
-                  <ol className="list-decimal list-inside space-y-1">
+                  <ol className="list-decimal list-inside space-y-1 font-math">
                     {sq.detailedExplanation.steps.map((step: string, idx: number) => (
                       <li key={idx}>{step}</li>
                     ))}
@@ -464,7 +465,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 )}
 
                 {sq.type !== 'descriptive' && (
-                  <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】{sq.correctAnswer}</p>
+                  <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】<span className="font-math">{sq.correctAnswer}</span></p>
                 )}
 
                 {sq.type === 'descriptive' && (
@@ -542,7 +543,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     (question.subQuestions || []).forEach((sq: any) => {
       const isCorrect = sq.type === 'descriptive'
         ? false // grading criteria handles descriptive
-        : answers[sq.id] === sq.correctAnswer;
+        : isAnswerCorrect(sq, answers[sq.id]);
 
       if (sq.group) {
         if (!groups[sq.group]) {
@@ -588,12 +589,20 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     setExpandedCorrectQuestions(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  return (
-    <div className={isMobile 
+  const content = (
+    <div
+      // C6: 解答後に表示される解説領域をスクリーンリーダーが読み上げられるよう、
+      // ライブリージョンとして宣言する。
+      role="region"
+      aria-live="polite"
+      aria-label="解答と解説"
+      className={isMobile 
       ? `explanation-desktop-wrapper active` 
-      : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-40 pb-20 md:pb-0`
+      : isResultView
+        ? `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-y-auto z-50`
+        : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-50`
     }>
-      <div className={isMobile ? "explanation-desktop-content" : "w-full h-full flex flex-col"}>
+      <div className={isMobile ? "explanation-desktop-content" : (isResultView ? "w-full min-h-full flex flex-col" : "w-full h-full flex flex-col")}>
         {isMobile && (
           <div className="explanation-scroll-hint">
             横にスワイプして全体を確認できます →
@@ -605,7 +614,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 ? 'bg-white text-gray-800 border-gray-100' 
                 : 'bg-[#0B132B] text-[#E0E1DD] border-[#1C2541]'
             }`
-          : `w-full h-full flex flex-col font-handwriting relative ${
+          : `${isResultView ? 'w-full min-h-full' : 'w-full h-full'} flex flex-col font-handwriting relative ${
               mode === 'mini_test' 
                 ? 'bg-white text-gray-800' 
                 : 'bg-[#0B132B] text-[#E0E1DD]'
@@ -624,9 +633,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         </>
       )}
 
-      {/* Header */}
-      <div className={`p-4 md:p-6 border-b-2 relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 flex-none ${
-        mode === 'mini_test' ? 'bg-white/90 border-gray-100' : 'bg-[#0B132B]/90 border-[#1C2541]'
+      {/* Header（結果画面ではスクロールしても常に「単元選択に戻る」やスコアが見えるよう上部に固定） */}
+      <div className={`p-4 md:p-6 border-b-2 z-30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 flex-none ${
+        isResultView ? 'sticky top-0 backdrop-blur-md' : 'relative'
+      } ${
+        mode === 'mini_test' ? 'bg-white/95 border-gray-100' : 'bg-[#0B132B]/95 border-[#1C2541]'
       }`}>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1 min-w-0 w-full md:w-auto">
           <div className="flex-shrink-0">
@@ -826,21 +837,26 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
 
       <div className={isMobile
         ? `p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
-        : `p-4 md:p-6 relative z-10 flex-1 overflow-hidden flex flex-col ${mode === 'mini_test' ? 'bg-white' : ''}`
+        : isResultView
+          ? `p-4 md:p-6 pb-[calc(2rem+env(safe-area-inset-bottom))] relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
+          : `p-4 md:p-6 relative z-10 flex-1 overflow-hidden flex flex-col ${mode === 'mini_test' ? 'bg-white' : ''}`
       }>
-      {/* Weak Areas Analysis */}
+      {/* Weak Areas Analysis
+          ★ 修正：問題数が多い場合（弱点エリアが多数）に desktop で潜在的にはみ出してスクロールできなかった不具合を解消。
+            - ブロック自体は flex-none（縮まない）
+            - 見出しは固定し、カードのグリッド部分だけを max-height 付きで縦スクロール可能にする */}
         {singleQuestionIndex === undefined && weakAreas.length > 0 && (
-          <div className={`rounded-2xl p-5 md:p-6 shadow-lg border relative overflow-hidden ${
+          <div className={`rounded-2xl p-5 md:p-6 shadow-lg border relative flex flex-col flex-none ${
             mode === 'mini_test' ? 'bg-gray-50 border-gray-100' : 'bg-[#1C2541]/50 border-[#3A506B]/50'
           }`}>
-            <h3 className={`text-lg md:text-xl font-bold mb-4 md:mb-6 flex items-center gap-2 ${
+            <h3 className={`text-lg md:text-xl font-bold mb-4 md:mb-6 flex items-center gap-2 flex-none ${
               mode === 'mini_test' ? 'text-[#2C3E50]' : 'text-[#D9A0A0]'
             }`}>
               <TrendingUp className="w-5 h-5 md:w-6 md:h-6" />
               <span>分析結果：復習推奨エリア</span>
             </h3>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 overflow-y-auto max-h-[40vh] md:max-h-[34vh] pr-1 -mr-1">
               {weakAreas.map((area) => (
                 <div key={area.category} className={`p-4 md:p-5 rounded-xl border shadow-sm ${
                   mode === 'mini_test' ? 'bg-white border-gray-100' : 'bg-[#0B132B]/80 border-[#1C2541]'
@@ -893,18 +909,30 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           </div>
         )}
 
-        {/* Unified Explanation Area */}
+        {/* Unified Explanation Area
+            ★ 修正：結果表示（isResultView）では固定高さ＋overflow-hidden を付けず、
+              ページ自体を自然に縦スクロールさせる（PC・スマホともに全問が見えるように）。
+              1問ごとの解説表示（!isResultView）のときだけ、2カラムの固定高さレイアウトにする。 */}
         <div className={isMobile
           ? `rounded-2xl shadow-lg border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`
-          : `border-none shadow-none flex-1 flex flex-col h-full min-h-0 overflow-hidden`
+          : isResultView
+            // 結果表示（全問の解答・解説一覧）はページ全体スクロールに任せる。
+            // ここで flex-1 / h-full / overflow-hidden を付けると、スコアパネルに圧迫されて
+            // 解答・解説エリアが潰れ、スクロールできず内容が見えなくなる不具合が起きていた。
+            ? `border-none shadow-none`
+            : `border-none shadow-none flex-1 flex flex-col h-full min-h-0 overflow-hidden`
         }>
           <div className={isMobile
-            ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8 lg:h-[calc(100vh-220px)] lg:overflow-hidden"
-            : "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 h-full flex-1 overflow-hidden"
+            ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8"
+            : isResultView
+              ? "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 items-start"
+              : "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 h-full flex-1 overflow-hidden"
           }>
             
-            {/* LEFT COLUMN: Problem statements and flowcharts */}
-            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pr-4 pb-8 min-w-0">
+            {/* LEFT COLUMN: Problem statements and flowcharts
+                結果表示では独自スクロール（lg:h-full/overflow-y-auto）を付けず、
+                ページ全体のスクロールに任せる。 */}
+            <div className={`space-y-6 pb-8 min-w-0 ${isResultView ? 'lg:pr-4' : 'lg:overflow-y-auto lg:h-full lg:pr-4'}`}>
               {singleQuestionIndex === undefined && (
                 <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
                   <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
@@ -957,6 +985,16 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                           <IonizationEnergyChart showDetails={true} />
                         </div>
                       )}
+                      {/* 問題に付随する図・イラスト（PDF由来の図版など） */}
+                      {(question as any).imageUrl && (
+                        <QuestionFigure
+                          src={(question as any).imageUrl}
+                          caption={(question as any).imageCaption}
+                          figureNumber={getFigureNumber(figureNumberMap, (question as any).id)}
+                          tone={mode === 'mini_test' ? 'light' : 'dark'}
+                          className="mt-4"
+                        />
+                      )}
                     </div>
                   </div>
                 );
@@ -964,8 +1002,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               ) : null}
               </div>
               
-              {/* Flowchart (Logical Tree) - Moved under problem statement inside Left Column */}
-              {(deepThoughtData || chapter?.id === 'c1_2_A' || chapter?.id === 'c1_3' || chapter?.id === 'c1_1_A' || chapter?.id === 'c2_1' || chapter?.id === 'c2_2' || chapter?.id === 'c2_3' || chapter?.id === 'c2_4' || chapter?.id?.startsWith('c3_')) && (
+              {/* Flowchart (Logical Tree) - Moved under problem statement inside Left Column
+                  ※ 専用のフローチャートが用意されている章のみ表示する。
+                     （c5 酸と塩基 / c6 酸化還元 などは専用ツリーが無いため、別単元のツリーを誤表示しない） */}
+              {['c1_1', 'c1_2_A', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4', 'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapter?.id) && (
                 <div className="mt-6 border-t pt-4 border-gray-200">
                   <PracticeExplanationTree
                     deepThoughtData={deepThoughtData}
@@ -985,7 +1025,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             </div>
 
             {/* RIGHT COLUMN: Answers, grading, and explanations */}
-            <div className="space-y-6 lg:overflow-y-auto lg:h-full lg:pl-4 lg:pr-4 pb-8 min-w-0">
+            <div className={`space-y-6 lg:pl-4 lg:pr-4 pb-8 min-w-0 ${isResultView ? '' : 'lg:overflow-y-auto lg:h-full'}`}>
               {questions.length > 0 ? (
                 questions.map((question: any, qIndex: number) => {
                 return (
@@ -993,9 +1033,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     <div className="space-y-6 md:space-y-8">
                       {(() => {
                         const selfGradeSqs = question.subQuestions.filter((sq: any) => sq.type === 'descriptive');
-                        const incorrectSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive' && answers[sq.id] !== sq.correctAnswer);
-                        const correctSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive' && answers[sq.id] === sq.correctAnswer);
-                        const isCorrectExpanded = expandedCorrectQuestions[question.id];
+                        // 客観問題は「元の並び順（ア→イ→ウ…）」のまま表示する。
+                        // （以前は間違いを上・正解を折りたたみにしていたが、丸付けは上から順に行うため自然な並び順に統一）
+                        const objectiveSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive');
+                        const incorrectSqs = objectiveSqs.filter((sq: any) => !isAnswerCorrect(sq, answers[sq.id]));
+                        const correctSqs = objectiveSqs.filter((sq: any) => isAnswerCorrect(sq, answers[sq.id]));
 
                         const renderSq = (sq: any, isCorrect: boolean) => {
                           const isExpanded = expandedSq === sq.id;
@@ -1072,7 +1114,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                         </div>
                                         
                                         {sq.detailedExplanation ? (
-                                          <div className={`p-4 rounded-lg border text-sm mt-2 ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
+                                          <div className={`p-4 rounded-lg border text-sm leading-explanation mt-2 ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
                                             <div className="mb-4">
                                               <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題テーマ】</h5>
                                               <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.theme}</p>
@@ -1109,7 +1151,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                   {sq.detailedExplanation.steps.map((step: string, idx: number) => (
                                                     <li key={idx} className="flex items-start gap-2">
                                                       <span className={`shrink-0 text-[#5BC0BE]`}></span>
-                                                      <span>{step}</span>
+                                                      <span className="font-math">{step}</span>
                                                     </li>
                                                   ))}
                                                 </ol>
@@ -1117,7 +1159,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                             )}
                                             <div className={`pt-3 border-t border-dashed ${mode === 'mini_test' ? 'border-gray-300' : 'border-[#3A506B]'}`}>
                                               <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【解答】</h5>
-                                              <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
+                                              <div className={`font-math font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
                                                 {formatText(sq.correctAnswer)}
                                               </div>
                                             </div>
@@ -1184,7 +1226,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                         </div>
                                         
                                         {sq.detailedExplanation ? (
-                                          <div className={`p-4 rounded-lg border text-sm mt-2 ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
+                                          <div className={`p-4 rounded-lg border text-sm leading-explanation mt-2 ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
                                             <div className="mb-4">
                                               <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題テーマ】</h5>
                                               <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.theme}</p>
@@ -1221,7 +1263,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                   {sq.detailedExplanation.steps.map((step: string, idx: number) => (
                                                     <li key={idx} className="flex items-start gap-2">
                                                       <span className={`shrink-0 text-[#5BC0BE]`}></span>
-                                                      <span>{step}</span>
+                                                      <span className="font-math">{step}</span>
                                                     </li>
                                                   ))}
                                                 </ol>
@@ -1229,7 +1271,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                             )}
                                             <div className={`pt-3 border-t border-dashed ${mode === 'mini_test' ? 'border-gray-300' : 'border-[#3A506B]'}`}>
                                               <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【解答】</h5>
-                                              <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
+                                              <div className={`font-math font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
                                                 {formatText(sq.correctAnswer)}
                                               </div>
                                             </div>
@@ -1295,34 +1337,22 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                               </div>
                             )}
 
-                            {incorrectSqs.length > 0 && (
+                            {objectiveSqs.length > 0 && (
                               <div className="space-y-3 md:space-y-4 mt-6">
-                                <h4 className={`font-bold flex items-center gap-2 ${mode === 'mini_test' ? 'text-red-600' : 'text-[#D9A0A0]'}`}>
-                                  <XCircle size={18} />
-                                  間違えた問題
-                                </h4>
-                                {incorrectSqs.map(sq => renderSq(sq, false))}
-                              </div>
-                            )}
-
-                            {correctSqs.length > 0 && (
-                              <div className="space-y-3 md:space-y-4 mt-6">
-                                <button 
-                                  onClick={() => toggleCorrectExpanded(question.id)}
-                                  className={`w-full flex items-center justify-between p-3 md:p-4 rounded-xl border font-bold transition-colors ${mode === 'mini_test' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' : 'bg-[#5BC0BE]/10 text-[#5BC0BE] border-[#5BC0BE]/30 hover:bg-[#5BC0BE]/20'}`}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <CheckCircle2 size={18} />
-                                    <span>正解した問題を表示する ({correctSqs.length}問)</span>
-                                  </div>
-                                  <ChevronDown size={20} className={`transition-transform duration-300 ${isCorrectExpanded ? 'rotate-180' : ''}`} />
-                                </button>
-                                
-                                <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isCorrectExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                                  <div className="space-y-3 md:space-y-4 mt-2">
-                                    {correctSqs.map(sq => renderSq(sq, true))}
-                                  </div>
+                                {/* 見出し：採点結果（正誤の内訳を小さく併記） */}
+                                <div className="flex items-center justify-between gap-2 flex-wrap">
+                                  <h4 className={`font-bold flex items-center gap-2 ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>
+                                    <CheckCircle2 size={18} className={mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'} />
+                                    <span>採点結果</span>
+                                  </h4>
+                                  <span className={`text-xs font-bold ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
+                                    <span className={mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}>正解 {correctSqs.length}</span>
+                                    <span className="mx-1 opacity-50">/</span>
+                                    <span className={mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}>不正解 {incorrectSqs.length}</span>
+                                  </span>
                                 </div>
+                                {/* 元の並び順（ア→イ→ウ…）のまま、正誤の色分けだけ行って上から表示 */}
+                                {objectiveSqs.map(sq => renderSq(sq, isAnswerCorrect(sq, answers[sq.id])))}
                               </div>
                             )}
                           </>
@@ -1362,7 +1392,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             <Lightbulb className={`w-4 h-4 ${mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]'}`} />
                             <span>解説</span>
                           </h4>
-                          <div className={`text-xs md:text-sm whitespace-pre-wrap leading-relaxed ${
+                          <div className={`font-math text-xs md:text-sm whitespace-pre-wrap leading-relaxed ${
                             mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'
                           }`}>
                             {formatText(explanationText)}
@@ -1401,17 +1431,19 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" />
                 つまずきポイント
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* モバイルでは窮屈にならないよう1カラム＋広めの余白・大きめの文字にする。
+                  PCでは従来通り2カラムで表示する。 */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
                 {deepThoughtData.phase2.stumblingPoints.map((point: any, idx: number) => (
-                  <div key={idx} className={`p-4 sm:p-5 rounded-xl border shadow-sm relative overflow-hidden ${mode === 'mini_test' ? 'bg-red-50 border-red-200' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30'}`}>
-                    <div className={`absolute top-0 left-0 w-1.5 h-full ${mode === 'mini_test' ? 'bg-red-500' : 'bg-[#D9A0A0]'}`}></div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className={`text-xs font-bold px-2 py-0.5 rounded border ${mode === 'mini_test' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
+                  <div key={idx} className={`p-5 sm:p-6 pl-6 sm:pl-7 rounded-2xl border shadow-sm relative overflow-hidden ${mode === 'mini_test' ? 'bg-red-50 border-red-200' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30'}`}>
+                    <div className={`absolute top-0 left-0 w-2 h-full ${mode === 'mini_test' ? 'bg-red-500' : 'bg-[#D9A0A0]'}`}></div>
+                    <div className="flex items-center flex-wrap gap-2 mb-2.5">
+                      <div className={`text-xs md:text-sm font-bold px-2.5 py-1 rounded-lg border ${mode === 'mini_test' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
                         {point.step}
                       </div>
-                      <h5 className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-red-700' : 'text-[#D9A0A0]'}`}>{point.type || point.point}</h5>
+                      <h5 className={`font-bold text-base md:text-lg leading-snug ${mode === 'mini_test' ? 'text-red-700' : 'text-[#D9A0A0]'}`}>{point.type || point.point}</h5>
                     </div>
-                    <div className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
+                    <div className={`text-sm md:text-base leading-relaxed md:leading-loose whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
                       {formatText(point.content || point.reason)}
                     </div>
                   </div>
@@ -1522,4 +1554,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       </div>
     </div>
   );
+
+  // 結果・解説画面は全画面オーバーレイとして表示するため、
+  // transform を持つ祖先要素の影響を受けないよう document.body 直下に
+  // ポータルで描画する。これにより背後に前画面（ホーム等）が透けて見える
+  // 問題を防ぎ、結果表示画面を単体の画面として成立させる。
+  if (typeof document !== 'undefined') {
+    return createPortal(content, document.body);
+  }
+  return content;
 }

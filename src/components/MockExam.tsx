@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, ArrowRight, Check, X, ChevronRight, BookOpen, RotateCcw, Trophy } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowLeft, ArrowRight, Check, X, ChevronRight, BookOpen, RotateCcw, Trophy, Clock } from 'lucide-react';
 import { mockExam, MockExamQuestion } from '../data/mockExamData';
+
+// 共通テスト化学基礎 予想問題の目標時間（30分 = 1800秒）
+const EXAM_DURATION_SEC = 30 * 60;
 
 interface MockExamProps {
   onBack: () => void;
@@ -13,13 +16,58 @@ const q1Questions = mockExam.questions.filter(q => q.bigQuestion === 1);
 // 第2問の問番号リスト（bigQuestion: 2のもの）
 const q2Questions = mockExam.questions.filter(q => q.bigQuestion === 2);
 
+const MOCK_ANSWERS_KEY = 'mockexam_answers_v1';
+
 export function MockExam({ onBack }: MockExamProps) {
   const [phase, setPhase] = useState<ExamPhase>('intro');
   const [currentQ1Index, setCurrentQ1Index] = useState(0);
   const [currentQ2Index, setCurrentQ2Index] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  // 解答は localStorage に保存し、誤って画面を離れても入力が消えないようにする
+  const [answers, setAnswers] = useState<Record<string, string>>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(MOCK_ANSWERS_KEY) || '{}');
+    } catch {
+      return {};
+    }
+  });
   const [showExplanation, setShowExplanation] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
+
+  // ===== 30分タイマー（スコアには影響しない、目標時間の目安表示）=====
+  const [elapsedSec, setElapsedSec] = useState(0);
+  const examStartedAtRef = useRef<number | null>(null);
+  // 解答中の各フェーズ（第2問イントロ含む）でタイマーを動かす
+  const isExamRunning = phase === 'q1_solving' || phase === 'q2_intro' || phase === 'q2_solving';
+
+  useEffect(() => {
+    if (!isExamRunning) return;
+    if (examStartedAtRef.current == null) {
+      examStartedAtRef.current = Date.now() - elapsedSec * 1000;
+    }
+    const id = window.setInterval(() => {
+      if (examStartedAtRef.current != null) {
+        setElapsedSec(Math.floor((Date.now() - examStartedAtRef.current) / 1000));
+      }
+    }, 1000);
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExamRunning]);
+
+  const remainingSec = EXAM_DURATION_SEC - elapsedSec;
+  const isTimeOver = remainingSec < 0;
+  const formatClock = (totalSec: number) => {
+    const s = Math.max(0, Math.floor(totalSec));
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m.toString().padStart(2, '0')}:${r.toString().padStart(2, '0')}`;
+  };
+
+  // 解答内容を保存（誤って画面を離れても入力が消えないようにする）
+  useEffect(() => {
+    try {
+      localStorage.setItem(MOCK_ANSWERS_KEY, JSON.stringify(answers));
+    } catch {}
+  }, [answers]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -99,14 +147,28 @@ export function MockExam({ onBack }: MockExamProps) {
     setCurrentQ1Index(0);
     setCurrentQ2Index(0);
     setAnswers({});
+    try { localStorage.removeItem(MOCK_ANSWERS_KEY); } catch {}
     setShowExplanation(false);
     setIsAnswered(false);
+    // タイマーもリセット
+    setElapsedSec(0);
+    examStartedAtRef.current = null;
+  };
+
+  // 解答途中で戻ろうとしたときは確認ダイアログを表示（誤操作による離脱を防ぐ）
+  const handleBackGuarded = () => {
+    const inProgress = phase === 'q1_solving' || phase === 'q2_solving' || phase === 'q2_intro';
+    if (inProgress && Object.keys(answers).length > 0) {
+      const ok = window.confirm('予想問題を中断して戻りますか？\n（解答内容は保存され、次回続きから確認できます）');
+      if (!ok) return;
+    }
+    onBack();
   };
 
   // ========== イントロ画面 ==========
   if (phase === 'intro') {
     return (
-      <div className="w-full notebook-paper rounded-2xl p-6 md:p-12 min-h-[60vh] flex flex-col items-center relative font-handwriting">
+      <div className="w-full notebook-paper rounded-2xl p-6 md:p-12 pb-safe-lg md:pb-12 min-h-[60vh] flex flex-col items-center relative font-handwriting">
         <button
           onClick={onBack}
           className="absolute top-4 left-4 flex items-center gap-2 text-gray-500 hover:text-[#2C3E50] transition-colors font-bold bg-white/80 px-4 py-2 rounded-full shadow-sm font-handwriting"
@@ -164,7 +226,21 @@ export function MockExam({ onBack }: MockExamProps) {
   // ========== 第2問イントロ ==========
   if (phase === 'q2_intro') {
     return (
-      <div className="w-full notebook-paper rounded-2xl p-6 md:p-10 min-h-[60vh] flex flex-col items-center relative font-handwriting">
+      <div className="w-full notebook-paper rounded-2xl p-6 md:p-10 pb-safe-lg md:pb-10 min-h-[60vh] flex flex-col items-center relative font-handwriting">
+        {/* 30分タイマー（目標時間／スコアには影響しません） */}
+        <div
+          className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold font-handwriting tabular-nums transition-colors ${
+            isTimeOver
+              ? 'bg-red-50 border-red-300 text-red-600'
+              : remainingSec < 300
+                ? 'bg-amber-50 border-amber-300 text-amber-700'
+                : 'bg-white/80 border-gray-300 text-[#2C3E50]'
+          }`}
+          title="共通テスト化学基礎の目標時間は30分です（スコアには影響しません）"
+        >
+          <Clock size={13} />
+          {isTimeOver ? <span>超過 +{formatClock(-remainingSec)}</span> : <span>残り {formatClock(remainingSec)}</span>}
+        </div>
         <div className="mt-8 text-center max-w-3xl w-full">
           <div className="bg-[#D9A0A0] text-white text-sm font-bold px-4 py-1 rounded-full inline-block font-handwriting mb-4">
             第１問 完了！ 次は第２問へ
@@ -201,14 +277,21 @@ export function MockExam({ onBack }: MockExamProps) {
     const grade = percentage >= 90 ? '🏆 優秀！' : percentage >= 75 ? '✨ 合格圏内！' : percentage >= 60 ? '📚 もう少し！' : '🔥 要復習！';
 
     return (
-      <div className="w-full notebook-paper rounded-2xl p-6 md:p-12 min-h-[60vh] flex flex-col items-center relative font-handwriting">
+      <div className="w-full notebook-paper rounded-2xl p-6 md:p-12 pb-safe-lg md:pb-12 min-h-[60vh] flex flex-col items-center relative font-handwriting">
         <div className="mt-8 text-center max-w-3xl w-full">
           <div className="text-4xl mb-4">{grade.split(' ')[0]}</div>
           <h2 className="text-2xl font-bold text-[#2C3E50] font-handwriting mb-2">採点結果</h2>
           <div className="text-5xl font-bold text-[#D9A0A0] font-handwriting my-4">
             {correct} / {total}点
           </div>
-          <div className="text-xl text-gray-600 font-handwriting mb-6">正答率 {percentage}%</div>
+          <div className="text-xl text-gray-600 font-handwriting mb-2">正答率 {percentage}%</div>
+          {/* 所要時間（30分の目標に対する目安・スコアには影響しません） */}
+          <div className="flex items-center justify-center gap-1.5 text-sm text-gray-500 font-handwriting mb-6">
+            <Clock size={15} />
+            <span>所要時間 {formatClock(elapsedSec)}</span>
+            <span className="text-gray-400">/ 目標 30:00</span>
+            {isTimeOver && <span className="text-red-500 font-bold ml-1">（時間超過）</span>}
+          </div>
 
           <div className="bg-white/80 border border-gray-200 rounded-2xl p-6 mb-6 text-left">
             <h3 className="text-sm font-bold text-[#2C3E50] font-handwriting mb-4">各問の正誤</h3>
@@ -291,15 +374,35 @@ export function MockExam({ onBack }: MockExamProps) {
     <div className="w-full notebook-paper rounded-2xl overflow-hidden font-handwriting">
       {/* ヘッダー */}
       <div className={`bg-gradient-to-r ${bgColor} p-4 border-b border-gray-200`}>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-2 gap-2">
           <button
-            onClick={onBack}
-            className="flex items-center gap-1 text-gray-500 hover:text-[#2C3E50] text-xs font-bold font-handwriting"
+            onClick={handleBackGuarded}
+            className="flex items-center gap-1 text-gray-500 hover:text-[#2C3E50] text-xs font-bold font-handwriting shrink-0"
           >
             <ArrowLeft size={16} />
             戻る
           </button>
-          <div className="text-xs font-bold text-gray-600 font-handwriting">
+
+          {/* 30分タイマー（目標時間／スコアには影響しません） */}
+          <div
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold font-handwriting tabular-nums shrink-0 transition-colors ${
+              isTimeOver
+                ? 'bg-red-50 border-red-300 text-red-600'
+                : remainingSec < 300
+                  ? 'bg-amber-50 border-amber-300 text-amber-700'
+                  : 'bg-white/80 border-gray-300 text-[#2C3E50]'
+            }`}
+            title="共通テスト化学基礎の目標時間は30分です（スコアには影響しません）"
+          >
+            <Clock size={13} />
+            {isTimeOver ? (
+              <span>超過 +{formatClock(-remainingSec)}</span>
+            ) : (
+              <span>残り {formatClock(remainingSec)}</span>
+            )}
+          </div>
+
+          <div className="text-xs font-bold text-gray-600 font-handwriting shrink-0">
             第{isQ1 ? '1' : '2'}問 {currentIndex + 1} / {totalQuestions}
           </div>
         </div>
@@ -312,7 +415,7 @@ export function MockExam({ onBack }: MockExamProps) {
         </div>
       </div>
 
-      <div className="p-4 md:p-8 space-y-6">
+      <div className="p-4 md:p-8 pb-safe-lg md:pb-8 space-y-6">
         {/* 問題ヘッダー */}
         <div>
           <div className="flex items-center gap-2 mb-3">
@@ -323,7 +426,7 @@ export function MockExam({ onBack }: MockExamProps) {
           </div>
 
           {/* 問題文 */}
-          <div className="text-sm text-gray-800 font-handwriting leading-relaxed whitespace-pre-line mb-4">
+          <div className="text-sm leading-[1.85] md:leading-relaxed text-gray-800 font-handwriting whitespace-pre-line break-words [overflow-wrap:anywhere] mb-4">
             {currentQuestion.questionText}
           </div>
 
@@ -361,7 +464,7 @@ export function MockExam({ onBack }: MockExamProps) {
               return (
                 <div key={sub.label} className="bg-white/60 border border-gray-200 rounded-xl p-4">
                   <p className="text-xs font-bold text-gray-600 font-handwriting mb-1">問{currentQuestion.questionNumber}({sub.label})（{sub.points}点）</p>
-                  <p className="text-sm text-gray-800 font-handwriting leading-relaxed mb-3 whitespace-pre-line">{sub.questionText}</p>
+                  <p className="text-sm leading-[1.85] md:leading-relaxed text-gray-800 font-handwriting mb-3 whitespace-pre-line break-words [overflow-wrap:anywhere]">{sub.questionText}</p>
                   <div className="space-y-2">
                     {sub.choices.map((choice) => {
                       const isSelected = userAnswer === choice.id;

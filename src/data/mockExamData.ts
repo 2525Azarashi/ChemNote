@@ -178,7 +178,7 @@ export const mockExam = {
         { id: "⑥", text: "ウ・エ・オ" },
       ],
       correctChoice: "③",
-      explanation: "塩の液性の判定：\nウ CH₃COONa（弱酸CH₃COOH＋強塩基NaOHの塩）→加水分解により塩基性\nエ Na₂CO₃（弱酸H₂CO₃＋強塩基NaOHの塩）→塩基性\nア NaCl（強酸HCl＋強塩基NaOH→中性）\nイ NH₄Cl（強酸HCl＋弱塩基NH₃→酸性）\nオ NaHSO₄ → Na⁺＋H⁺＋SO₄²⁻で H⁺を出すので酸性\n【ポイント】「弱酸＋強塩基の塩＝塩基性」を確実に暗記",
+      explanation: "塩の液性の判定：\nウ CH₃COONa（弱酸CH₃COOH+強塩基NaOHの塩）→加水分解により塩基性\nエ Na₂CO₃（弱酸H₂CO₃+強塩基NaOHの塩）→塩基性\nア NaCl（強酸HCl+強塩基NaOH→中性）\nイ NH₄Cl（強酸HCl+弱塩基NH₃→酸性）\nオ NaHSO₄ → Na⁺+H⁺+SO₄²⁻で H⁺を出すので酸性\n【ポイント】「弱酸＋強塩基の塩＝塩基性」を確実に暗記",
       points: 3,
     },
 
@@ -237,7 +237,7 @@ export const mockExam = {
         },
         {
           label: "b",
-          questionText: "次の反応式の係数 ［ア］ および ［イ］ に入る数の組合せとして最も適当なものを，次の①〜⑤のうちから一つ選べ。\n\nNaClO + ［ア］HCl → NaCl + ［イ］H₂O + Cl₂",
+          questionText: "次の反応式の係数 ［ア］ および ［イ］ に入る数の組合せとして最も適当なものを，次の①〜⑤のうちから一つ選べ。\n\nNaClO + ［ア]HCl → NaCl + ［イ]H₂O + Cl₂",
           choices: [
             { id: "①", text: "ア=1, イ=1" },
             { id: "②", text: "ア=2, イ=1" },
@@ -246,7 +246,7 @@ export const mockExam = {
             { id: "⑤", text: "ア=3, イ=2" },
           ],
           correctChoice: "②",
-          explanation: "NaClO + ［ア］HCl → NaCl + ［イ］H₂O + Cl₂\nNa：両辺1個ずつでOK。\nCl：左辺 1+ア，右辺 1+2=3 なので ア=2。\nH：左辺 2（HClが2個），右辺 2イ なので イ=1。\nO：左辺1，右辺1で一致。\nしたがって（ア，イ）＝（2，1）。",
+          explanation: "NaClO + ［ア]HCl → NaCl + ［イ]H₂O + Cl₂\nNa：両辺1個ずつでOK。\nCl：左辺 1+ア，右辺 1+2=3 なので ア=2。\nH：左辺 2（HClが2個），右辺 2イ なので イ=1。\nO：左辺1，右辺1で一致。\nしたがって（ア，イ）=（2，1）。",
           points: 3,
         }
       ],
@@ -353,7 +353,7 @@ export const mockExam = {
 
 塩素系漂白剤の容器には「まぜるな危険」と表示されている。これは，塩素系漂白剤に酸性タイプの洗剤（主成分は塩酸 HCl）を混ぜると，次の式（2）の反応によって有毒な塩素 Cl₂ が発生するためである。
 
-NaClO + ［ア］HCl → NaCl + ［イ］H₂O + Cl₂  ……（2）
+NaClO + ［ア]HCl → NaCl + ［イ]H₂O + Cl₂  ……（2）
 
 また，洗剤には主成分として界面活性剤が含まれている。界面活性剤の分子は，水になじみやすい親水基と，水になじみにくく油になじみやすい疎水基をあわせもち，水溶液中で疎水基どうしを内側にして集合した粒子（ミセル）をつくる。これにより，水と油が混じり合った乳濁液をつくる作用（乳化）が生じ，衣類などに付着した油汚れを水中に分散させて除去することができる。`,
 
