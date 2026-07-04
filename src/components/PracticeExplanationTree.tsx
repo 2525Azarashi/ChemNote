@@ -1,6 +1,6 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
-import { substanceTreeData, separationTreeData, componentDetectionTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData, crystalTreeData, interactionTreeData, atomicWeightTreeData, amountOfSubstanceTreeData, chemicalEquationTreeData, concentrationTreeData } from '../data/chemistryData';
+import { substanceTreeData, separationTreeData, componentDetectionTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData, crystalTreeData, interactionTreeData, atomicWeightTreeData, amountOfSubstanceTreeData, chemicalEquationTreeData, concentrationTreeData, acidBaseTreeData, redoxTreeData } from '../data/chemistryData';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -50,7 +50,16 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
     c4_4: concentrationTreeData,
   };
 
-  const currentTreeData: NodeData | undefined = chapter?.id ? TREE_BY_CHAPTER[chapter.id] : undefined;
+  // 酸と塩基・酸化還元は下位章（c5_1〜c5_7 / c6_1〜c6_7）をまとめて1つのツリーに対応させる。
+  const resolveTree = (chapterId: string | undefined): NodeData | undefined => {
+    if (!chapterId) return undefined;
+    if (TREE_BY_CHAPTER[chapterId]) return TREE_BY_CHAPTER[chapterId];
+    if (chapterId === 'c5' || chapterId.startsWith('c5_')) return acidBaseTreeData;
+    if (chapterId === 'c6' || chapterId.startsWith('c6_')) return redoxTreeData;
+    return undefined;
+  };
+
+  const currentTreeData: NodeData | undefined = resolveTree(chapter?.id);
 
   // 対応するツリーが無い章では、誤ったフローチャートを表示しない。
   if (!currentTreeData) {

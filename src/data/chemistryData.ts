@@ -1499,7 +1499,16 @@ export const chemistryData = {
                 {
                   "id": "q_c1_2_A_4_2",
                   "label": "（2） 昇華されやすい物質をすべて選べ",
-                  "type": "short_answer",
+                  "type": "multiple_choice",
+                  "options": [
+                    "ア",
+                    "イ",
+                    "ウ",
+                    "エ",
+                    "オ",
+                    "カ",
+                    "キ"
+                  ],
                   "correctAnswer": "イ、ウ、オ、キ",
                   "correctAnswerRate": 85
                 }
@@ -11195,6 +11204,313 @@ export const acidBaseTreeData = {
               "id": "p_c5_7_2",
               "label": "⑤-7 問2 二段階滴定の計算"
             }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+// ------------------------------------------------------------
+// ⑥ 酸化還元反応 ロジックツリー
+// 添付の「包括版フローチャート集（①）」の酸化還元セクションを、
+// アプリの単元（c6_1〜c6_7）と設問ID（p_c6_*）に統合したロジックツリー。
+// InteractiveTree / ChapterFlowchartModal / PracticeExplanationTree から参照される。
+// ------------------------------------------------------------
+export const redoxTreeData = {
+  "id": "redox_root",
+  "label": "酸化還元反応",
+  "step": null,
+  "explanation": "酸化還元は「<b>定義・酸化数</b>」→「<b>酸化剤・還元剤と半反応式</b>」→「<b>酸化還元滴定（量的関係）</b>」→「<b>酸化力・還元力の強さ</b>」→「<b>金属のイオン化傾向</b>」→「<b>電池</b>」→「<b>金属の製錬・電気分解</b>」の順に積み上げると理解しやすい単元です。すべての土台は「電子 e⁻ の受け渡し」と「酸化数の増減」という一つの原理です。",
+  "children": [
+    {
+      "id": "rx_step1",
+      "isGroup": true,
+      "label": "【Step1】酸化・還元の定義と酸化数",
+      "step": 1,
+      "children": [
+        {
+          "id": "rx_def",
+          "label": "酸化・還元の定義",
+          "step": 1,
+          "subLabel": "酸素・水素・電子で判定",
+          "explanation": "<b>酸化</b>＝酸素を受け取る／水素を失う／<b>電子 e⁻ を失う</b>。<b>還元</b>＝酸素を失う／水素を受け取る／<b>電子 e⁻ を受け取る</b>。最も本質的な基準は「電子の授受」で、酸化と還元は必ず同時に起こる。",
+          "relatedQuestions": [
+            { "id": "p_c6_1_1", "label": "⑥-1 問1 酸化還元とは" },
+            { "id": "p_c6_1_4", "label": "⑥-1 問4 用語の確認" },
+            { "id": "p_c6_1_5", "label": "⑥-1 問5 用語の確認" }
+          ]
+        },
+        {
+          "id": "rx_oxnum",
+          "label": "酸化数の求め方",
+          "step": 1,
+          "subLabel": "単体0／H＝+1／O＝−2 など",
+          "explanation": "①単体中の原子は 0。②化合物中の H は +1、O は −2（過酸化物では −1）。③化合物全体の酸化数の総和は 0、イオンでは電荷に等しい。酸化数が<b>増える＝酸化</b>、<b>減る＝還元</b>。",
+          "relatedQuestions": [
+            { "id": "p_c6_1_2", "label": "⑥-1 問2 酸化数を求める" },
+            { "id": "p_c6_1_3", "label": "⑥-1 問3 酸化数の変化" }
+          ]
+        },
+        {
+          "id": "rx_agent_classify",
+          "label": "酸化剤・還元剤の判定",
+          "step": 1,
+          "subLabel": "相手を酸化＝酸化剤",
+          "explanation": "<b>酸化剤</b>＝相手を酸化し自身は還元される（電子を受け取る）。<b>還元剤</b>＝相手を還元し自身は酸化される（電子を与える）。反応前後で酸化数が減った原子を含む物質が酸化剤。",
+          "relatedQuestions": [
+            { "id": "p_c6_1_6", "label": "⑥-1 問6 酸化剤・還元剤の分類" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step2",
+      "isGroup": true,
+      "label": "【Step2】半反応式と酸化還元反応式",
+      "step": 2,
+      "children": [
+        {
+          "id": "rx_half_ox",
+          "label": "酸化剤の半反応式",
+          "step": 2,
+          "subLabel": "MnO₄⁻ / Cr₂O₇²⁻ など",
+          "explanation": "半反応式の作り方：①主役の変化を書く→②O は H₂O で合わせる→③H は H⁺ で合わせる→④電子 e⁻ で電荷を合わせる。例：MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O。",
+          "relatedQuestions": [
+            { "id": "p_c6_2_1", "label": "⑥-2 問1 半反応式（酸化剤）" }
+          ]
+        },
+        {
+          "id": "rx_half_red",
+          "label": "還元剤の半反応式",
+          "step": 2,
+          "subLabel": "(COOH)₂ / Fe²⁺ など",
+          "explanation": "還元剤は電子を右辺に出す形で書く。例：(COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻、Fe²⁺ → Fe³⁺ + e⁻。",
+          "relatedQuestions": [
+            { "id": "p_c6_2_2", "label": "⑥-2 問2 半反応式（還元剤）" }
+          ]
+        },
+        {
+          "id": "rx_combine",
+          "label": "酸化還元反応式の完成",
+          "step": 2,
+          "subLabel": "e⁻ を消去して合算",
+          "explanation": "酸化剤と還元剤の半反応式を、授受する電子の数がそろうように整数倍して足し合わせ、e⁻ を消去する。必要なら両辺に対イオンを補って化学反応式に直す。",
+          "relatedQuestions": [
+            { "id": "p_c6_2_3", "label": "⑥-2 問3 酸化還元反応の化学反応式" }
+          ]
+        },
+        {
+          "id": "rx_dual",
+          "label": "SO₂・H₂O₂ の二面性",
+          "step": 2,
+          "subLabel": "相手しだいで酸化剤にも還元剤にも",
+          "explanation": "H₂O₂ は普段は酸化剤だが、強い酸化剤（KMnO₄）に対しては還元剤としてはたらく。SO₂ も同様に相手によって役割が変わる。",
+          "relatedQuestions": [
+            { "id": "p_c6_2_4", "label": "⑥-2 問4 SO₂・H₂O₂ のはたらき" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step3",
+      "isGroup": true,
+      "label": "【Step3】酸化還元滴定と量的関係",
+      "step": 3,
+      "children": [
+        {
+          "id": "rx_titration",
+          "label": "量的関係の基本式",
+          "step": 3,
+          "subLabel": "酸化剤が受け取る e⁻＝還元剤が出す e⁻",
+          "explanation": "酸化還元滴定の核心は「<b>酸化剤が受け取った電子の物質量 ＝ 還元剤が放出した電子の物質量</b>」。（酸化剤の価数×mol）＝（還元剤の価数×mol）で立式する。",
+          "relatedQuestions": [
+            { "id": "p_c6_3_1", "label": "⑥-3 問1 酸化還元滴定（過酸化水素）" },
+            { "id": "p_c6_3_2", "label": "⑥-3 問2 市販の過酸化水素水" }
+          ]
+        },
+        {
+          "id": "rx_kmno4",
+          "label": "過マンガン酸塩滴定",
+          "step": 3,
+          "subLabel": "終点は薄い赤紫色",
+          "explanation": "KMnO₄ 自身が濃い赤紫色なので指示薬が不要。滴下した KMnO₄ の色が消えなくなった点（薄い赤紫色になった点）が終点。",
+          "relatedQuestions": [
+            { "id": "p_c6_3_1", "label": "⑥-3 問1 酸化還元滴定（過酸化水素）" }
+          ]
+        },
+        {
+          "id": "rx_iodine",
+          "label": "ヨウ素滴定",
+          "step": 3,
+          "subLabel": "終点にデンプン指示薬",
+          "explanation": "I₂ とチオ硫酸ナトリウムなどを用いる滴定。終点付近でデンプンを加えると青紫色（ヨウ素デンプン反応）が消える点を終点とする。",
+          "relatedQuestions": [
+            { "id": "p_c6_3_3", "label": "⑥-3 問3 ヨウ素滴定（ビタミンC）" },
+            { "id": "p_c6_3_5", "label": "⑥-3 問5 ヨウ素滴定（SO₂・H₂O₂）" }
+          ]
+        },
+        {
+          "id": "rx_cod",
+          "label": "逆滴定・COD",
+          "step": 3,
+          "subLabel": "過剰の酸化剤を後から滴定",
+          "explanation": "COD（化学的酸素要求量）は、水中の有機物を酸化するのに必要な酸素量。過剰に加えた酸化剤の残りを別の還元剤で滴定して求める（逆滴定）。",
+          "relatedQuestions": [
+            { "id": "p_c6_3_4", "label": "⑥-3 問4 COD測定（逆滴定）" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step4",
+      "isGroup": true,
+      "label": "【Step4】酸化力・還元力の強さ",
+      "step": 4,
+      "children": [
+        {
+          "id": "rx_strength",
+          "label": "反応の進む向きと強さの序列",
+          "step": 4,
+          "subLabel": "強い酸化剤が弱い酸化剤を追い出す",
+          "explanation": "酸化還元反応は「より強い酸化剤・還元剤の組み合わせ」の向きに進む。反応が実際に進んだかどうかから、酸化力・還元力の強弱を比較できる。",
+          "relatedQuestions": [
+            { "id": "p_c6_4_1", "label": "⑥-4 問1 酸化力・還元力の強さ" }
+          ]
+        },
+        {
+          "id": "rx_halogen",
+          "label": "ハロゲンの酸化力と金属の析出",
+          "step": 4,
+          "subLabel": "F₂ ＞ Cl₂ ＞ Br₂ ＞ I₂",
+          "explanation": "ハロゲンの酸化力は F₂＞Cl₂＞Br₂＞I₂。強いハロゲンは弱いハロゲンのイオンを追い出す（例：Cl₂ + 2KBr → 2KCl + Br₂）。金属の析出反応も同じ強弱の原理で説明できる。",
+          "relatedQuestions": [
+            { "id": "p_c6_4_2", "label": "⑥-4 問2 金属の析出とハロゲンの酸化力" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step5",
+      "isGroup": true,
+      "label": "【Step5】金属のイオン化傾向",
+      "step": 4,
+      "children": [
+        {
+          "id": "rx_ion_series",
+          "label": "イオン化列と反応性",
+          "step": 4,
+          "subLabel": "Li K Ca Na Mg Al Zn Fe …",
+          "explanation": "金属が水溶液中で陽イオンになろうとする傾向の順（イオン化列）。左ほど酸化されやすく反応性が大きい。「リッチ（Li）に貸そ（K,Ca,Na）かな（Mg,Al）…」で暗記する。",
+          "relatedQuestions": [
+            { "id": "p_c6_5_1", "label": "⑥-5 問1 金属のイオン化傾向" },
+            { "id": "p_c6_5_2", "label": "⑥-5 問2 金属の特定（イオン化傾向）" }
+          ]
+        },
+        {
+          "id": "rx_metal_react",
+          "label": "水・酸・空気との反応",
+          "step": 4,
+          "subLabel": "常温／加熱／王水での違い",
+          "explanation": "イオン化傾向により、水（常温・熱水・高温水蒸気）や酸（希酸・酸化力のある酸・王水）との反応性が決まる。水素よりイオン化傾向が大きい金属は希酸と反応して H₂ を発生する。",
+          "relatedQuestions": [
+            { "id": "p_c6_5_2", "label": "⑥-5 問2 金属の特定（イオン化傾向）" }
+          ]
+        },
+        {
+          "id": "rx_galvanize",
+          "label": "トタンとブリキ（犠牲防食）",
+          "step": 4,
+          "subLabel": "Zn めっき／Sn めっき",
+          "explanation": "トタン＝鉄に Zn めっき（傷ついても Zn が先に溶けて鉄を守る＝犠牲防食）。ブリキ＝鉄に Sn めっき（傷つくと鉄が先に錆びる）。イオン化傾向 Zn＞Fe＞Sn で理解する。",
+          "relatedQuestions": [
+            { "id": "p_c6_5_3", "label": "⑥-5 問3 金属の特定とトタン・ブリキ" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step6",
+      "isGroup": true,
+      "label": "【Step6】電池",
+      "step": 3,
+      "children": [
+        {
+          "id": "rx_daniell",
+          "label": "ダニエル電池",
+          "step": 3,
+          "subLabel": "負極 Zn／正極 Cu／素焼き板",
+          "explanation": "負極（−）で Zn → Zn²⁺ + 2e⁻（酸化）、正極（＋）で Cu²⁺ + 2e⁻ → Cu（還元）。電子は導線を負極→正極へ流れる。素焼き板は2液の混合を防ぎつつイオンを通し、電気的中性を保つ。",
+          "relatedQuestions": [
+            { "id": "p_c6_6_1", "label": "⑥-6 問1 ダニエル電池" }
+          ]
+        },
+        {
+          "id": "rx_volta",
+          "label": "ボルタ電池と分極",
+          "step": 3,
+          "subLabel": "正極で H₂ 発生→起電力低下",
+          "explanation": "ボルタ電池（Zn｜H₂SO₄aq｜Cu）では正極の銅表面で H₂ が発生し、泡が反応を妨げて起電力が低下する（分極）。減極剤で分極を防ぐ。",
+          "relatedQuestions": [
+            { "id": "p_c6_6_1", "label": "⑥-6 問1 ダニエル電池" }
+          ]
+        },
+        {
+          "id": "rx_battery_quant",
+          "label": "電池の量的関係",
+          "step": 3,
+          "subLabel": "負極の e⁻＝正極の e⁻",
+          "explanation": "負極で放出された電子の物質量と正極で受け取られた電子の物質量は等しい。各電極の半反応の係数から、溶けた／析出した金属の物質量を電子の授受でそろえて計算する。",
+          "relatedQuestions": [
+            { "id": "p_c6_6_2", "label": "⑥-6 問2 電池と量的関係" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step7",
+      "isGroup": true,
+      "label": "【Step7】金属の製錬と電気分解",
+      "step": 4,
+      "children": [
+        {
+          "id": "rx_smelting",
+          "label": "製錬法とイオン化傾向",
+          "step": 4,
+          "subLabel": "イオン化傾向で製法が決まる",
+          "explanation": "イオン化傾向が小さい金属（Au, Pt）は単体で産出。中程度（Fe, Cu）は酸化物・硫化物を炭素や CO で還元。大きい金属（Al 以上）は融解塩電解が必要。",
+          "relatedQuestions": [
+            { "id": "p_c6_7_1", "label": "⑥-7 問1 金属の製錬法" }
+          ]
+        },
+        {
+          "id": "rx_blast",
+          "label": "鉄の高炉製錬",
+          "step": 4,
+          "subLabel": "CO で Fe₂O₃ を還元",
+          "explanation": "高炉でコークス C が不完全燃焼して CO が生じ、これが強力な還元剤として Fe₂O₃ + 3CO → 2Fe + 3CO₂ のように鉄鉱石を還元する。",
+          "relatedQuestions": [
+            { "id": "p_c6_7_2", "label": "⑥-7 問2 鉄の製錬（高炉）" }
+          ]
+        },
+        {
+          "id": "rx_cu_refine",
+          "label": "銅の電解精錬",
+          "step": 4,
+          "subLabel": "陽極＝粗銅／陰極＝純銅",
+          "explanation": "陽極に粗銅、陰極に純銅を用い硫酸銅(II)水溶液を電気分解。粗銅が溶け、陰極に純銅が析出。銅よりイオン化傾向の小さい Au, Pt は陽極泥として沈殿する。",
+          "relatedQuestions": [
+            { "id": "p_c6_7_3", "label": "⑥-7 問3 銅の電解精錬" }
+          ]
+        },
+        {
+          "id": "rx_al_electrolysis",
+          "label": "アルミニウムの溶融塩電解",
+          "step": 4,
+          "subLabel": "氷晶石で融点降下→電気分解",
+          "explanation": "アルミナ Al₂O₃ を氷晶石とともに融かして電気分解（溶融塩電解）。陰極で Al³⁺ + 3e⁻ → Al。水溶液では水が先に反応するため、水を含まない融解液で行う必要がある。",
+          "relatedQuestions": [
+            { "id": "p_c6_7_4", "label": "⑥-7 問4 アルミニウムの溶融塩電解" }
           ]
         }
       ]

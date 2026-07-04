@@ -403,13 +403,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           onClick={() => setExpandedSq(sq.id)}
           className={`w-full flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 gap-3 rounded-xl border transition-colors ${sq.type === 'descriptive' ? 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30' : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30')}`}
         >
-          <div className="flex flex-col md:flex-row md:items-start gap-3 w-full md:w-auto text-left flex-1 min-w-0">
+          <div className="flex flex-col md:flex-row md:items-start gap-3 w-full min-w-0 text-left flex-1">
             {displayLabel.length > 20 ? (
-              <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-xs md:text-sm leading-relaxed max-w-full break-words inline-block py-1.5`}>
+              <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-xs md:text-sm leading-relaxed w-full min-w-0 break-words whitespace-normal block py-1.5`}>
                 {displayLabel}
               </div>
             ) : (
-              <div className={`font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-3 py-1.5 rounded-xl border border-[#3A506B]/50 leading-relaxed max-w-full break-words inline-block`}>
+              <div className={`font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-3 py-1.5 rounded-xl border border-[#3A506B]/50 leading-relaxed max-w-full break-words whitespace-normal inline-block`}>
                 {displayLabel}
               </div>
             )}
@@ -427,9 +427,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     return (
       <div id={`sq-${sq.id}`} key={sq.id} className={`w-full ${isMiniTest ? 'bg-white' : 'bg-[#1C2541]'} rounded-xl border ${isMiniTest ? 'border-gray-200' : 'border-[#3A506B]'} shadow-lg p-4 md:p-6`}>
         {/* Header */}
-        <div className="flex items-start justify-between mb-4 gap-3">
+        <div className="flex items-start justify-between mb-4 gap-3 min-w-0">
           {displayLabel.length > 20 ? (
-            <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm md:text-base leading-relaxed break-words flex-1`}>
+            <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm md:text-base leading-relaxed break-words whitespace-normal flex-1 min-w-0`}>
               {displayLabel}
             </div>
           ) : (
@@ -1050,11 +1050,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             >
                               <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-4 flex-1 min-w-0 text-left">
                                 {displayLabel.length > 20 ? (
-                                  <div className={`font-bold text-xs md:text-sm leading-relaxed max-w-full break-words inline-block py-1.5 ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>{displayLabel}</div>
+                                  <div className={`font-bold text-xs md:text-sm leading-relaxed w-full min-w-0 break-words whitespace-normal block py-1.5 ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>{displayLabel}</div>
                                 ) : (
-                                  <div className={`font-bold text-xs md:text-sm px-3 py-1.5 rounded-xl border shadow-xs max-w-full break-words inline-block leading-relaxed ${mode === 'mini_test' ? 'text-gray-700 bg-white border-gray-200' : 'text-[#E0E1DD] bg-[#0B132B]/50 border-[#3A506B]/50'}`}>{displayLabel}</div>
+                                  <div className={`font-bold text-xs md:text-sm px-3 py-1.5 rounded-xl border shadow-xs max-w-full break-words whitespace-normal inline-block leading-relaxed ${mode === 'mini_test' ? 'text-gray-700 bg-white border-gray-200' : 'text-[#E0E1DD] bg-[#0B132B]/50 border-[#3A506B]/50'}`}>{displayLabel}</div>
                                 )}
-                                <div className="flex flex-wrap items-center gap-3 md:gap-4 shrink-0">
+                                <div className="flex flex-wrap items-center gap-3 md:gap-4 min-w-0">
                                   {sq.type !== 'descriptive' && (
                                     <div>
                                       {isCorrect ? <CheckCircle2 className={`w-5 h-5 md:w-6 md:h-6 ${mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}`} /> : <XCircle className={`w-5 h-5 md:w-6 md:h-6 ${mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}`} />}
