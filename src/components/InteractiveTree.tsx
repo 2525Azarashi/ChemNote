@@ -104,7 +104,17 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
             )}
           </motion.button>
           {node.subLabel && (
-            <span className={cn("text-slate-600 font-medium font-handwriting whitespace-nowrap", subLabelSize)}>{node.subLabel}</span>
+            <span
+              className={cn(
+                "text-slate-600 font-medium font-handwriting min-w-0 flex-1",
+                // モバイルでは折り返し可（横スクロール＝1画面に収まらない原因を解消）。
+                // PC以上では従来通り1行表示にして見た目を維持する。
+                isMobile ? "whitespace-normal break-words leading-tight" : "whitespace-nowrap",
+                subLabelSize
+              )}
+            >
+              {node.subLabel}
+            </span>
           )}
         </div>
 
@@ -279,8 +289,12 @@ export function InteractiveTree({
       zoom === 'far' ? "origin-top scale-[0.98]" : "",
       mobileTightCrop ? "p-1 sm:p-2 md:p-3" : "p-2 sm:p-4 md:p-5"
     )}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6 sm:mb-8 font-handwriting">
+      {/* Header
+          モバイルで1画面に収めるため、tightCrop 時はヘッダー下の余白を圧縮する。 */}
+      <div className={cn(
+        "flex items-center justify-between font-handwriting",
+        mobileTightCrop ? "mb-3 sm:mb-6 md:mb-8" : "mb-6 sm:mb-8"
+      )}>
         <h4 className="text-slate-800 font-bold flex items-center gap-2 text-sm sm:text-base md:text-lg font-handwriting">
           <Network className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
           学習フローチャート

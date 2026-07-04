@@ -6870,8 +6870,8 @@ export const chemistryData = {
       "chapters": [
         {
           "id": "c4_1",
-          "abstractTitle": "④-1 原子量",
-          "realTitle": "④ 物質量と化学反応式",
+          "abstractTitle": "① 原子量",
+          "realTitle": "4章 物質量と化学反応式",
           "topics": [
             "同位体の相対質量",
             "元素の原子量",
@@ -7058,8 +7058,8 @@ export const chemistryData = {
         },
         {
           "id": "c4_2",
-          "abstractTitle": "④-2 物質量",
-          "realTitle": "④ 物質量と化学反応式",
+          "abstractTitle": "② 物質量",
+          "realTitle": "4章 物質量と化学反応式",
           "topics": [
             "アボガドロ定数",
             "モル質量とモル計算",
@@ -7213,8 +7213,8 @@ export const chemistryData = {
         },
         {
           "id": "c4_3",
-          "abstractTitle": "④-3 化学反応式とイオン反応式の作り方",
-          "realTitle": "④ 物質量と化学反応式",
+          "abstractTitle": "③ 化学反応式とイオン反応式の作り方",
+          "realTitle": "4章 物質量と化学反応式",
           "topics": [
             "反応式の作り方と係数決定",
             "未定係数法",
@@ -7539,8 +7539,8 @@ export const chemistryData = {
         },
         {
           "id": "c4_4",
-          "abstractTitle": "④-4 濃度",
-          "realTitle": "④ 物質量と化学反応式",
+          "abstractTitle": "④ 濃度",
+          "realTitle": "4章 物質量と化学反応式",
           "topics": [
             "質量パーセント濃度",
             "モル濃度",
@@ -7655,8 +7655,8 @@ export const chemistryData = {
         },
         {
           "id": "c5_1",
-          "abstractTitle": "⑤-1 酸と塩基の定義",
-          "realTitle": "⑤ 酸と塩基",
+          "abstractTitle": "① 酸と塩基の定義",
+          "realTitle": "5章 酸と塩基",
           "topics": [
             "アレニウスの定義",
             "ブレンステッド・ローリーの定義",
@@ -7667,8 +7667,8 @@ export const chemistryData = {
         },
         {
           "id": "c5_2",
-          "abstractTitle": "⑤-2 酸と塩基の強さ",
-          "realTitle": "⑤ 酸と塩基",
+          "abstractTitle": "② 酸と塩基の強さ",
+          "realTitle": "5章 酸と塩基",
           "topics": [
             "強酸・弱酸／強塩基・弱塩基",
             "電離度α",
@@ -7679,8 +7679,8 @@ export const chemistryData = {
         },
         {
           "id": "c5_3",
-          "abstractTitle": "⑤-3 pHについて",
-          "realTitle": "⑤ 酸と塩基",
+          "abstractTitle": "③ pHについて",
+          "realTitle": "5章 酸と塩基",
           "topics": [
             "pH=−log[H⁺]",
             "水のイオン積 Kw",
@@ -7691,8 +7691,8 @@ export const chemistryData = {
         },
         {
           "id": "c5_4",
-          "abstractTitle": "⑤-4 中和とは何か",
-          "realTitle": "⑤ 酸と塩基",
+          "abstractTitle": "④ 中和とは何か",
+          "realTitle": "5章 酸と塩基",
           "topics": [
             "中和反応と塩の生成",
             "塩の分類と液性",
@@ -7703,8 +7703,8 @@ export const chemistryData = {
         },
         {
           "id": "c5_5",
-          "abstractTitle": "⑤-5 中和反応の計算",
-          "realTitle": "⑤ 酸と塩基",
+          "abstractTitle": "⑤ 中和反応の計算",
+          "realTitle": "5章 酸と塩基",
           "topics": [
             "酸の価数×物質量＝塩基の価数×物質量",
             "中和点・過不足の判定",
@@ -7715,8 +7715,8 @@ export const chemistryData = {
         },
         {
           "id": "c5_6",
-          "abstractTitle": "⑤-6 中和滴定の道具と方法",
-          "realTitle": "⑤ 酸と塩基",
+          "abstractTitle": "⑥ 中和滴定の道具と方法",
+          "realTitle": "5章 酸と塩基",
           "topics": [
             "ホールピペット・ビュレット",
             "メスフラスコ・コニカルビーカー",
@@ -7727,8 +7727,8 @@ export const chemistryData = {
         },
         {
           "id": "c5_7",
-          "abstractTitle": "⑤-7 滴定曲線と二段階滴定",
-          "realTitle": "⑤ 酸と塩基",
+          "abstractTitle": "⑦ 滴定曲線と二段階滴定",
+          "realTitle": "5章 酸と塩基",
           "topics": [
             "滴定曲線の4タイプ",
             "指示薬と変色域",
@@ -7739,8 +7739,8 @@ export const chemistryData = {
         },
         {
           "id": "c6_1",
-          "abstractTitle": "⑥-1 酸化と還元・酸化数",
-          "realTitle": "⑥ 酸化還元反応",
+          "abstractTitle": "① 酸化と還元・酸化数",
+          "realTitle": "6章 酸化還元反応",
           "topics": [
             "酸化・還元の定義（酸素・水素・電子）",
             "酸化数の求め方",
@@ -7751,8 +7751,8 @@ export const chemistryData = {
         },
         {
           "id": "c6_2",
-          "abstractTitle": "⑥-2 半反応式と酸化還元反応式",
-          "realTitle": "⑥ 酸化還元反応",
+          "abstractTitle": "② 半反応式と酸化還元反応式",
+          "realTitle": "6章 酸化還元反応",
           "topics": [
             "酸化剤の半反応式",
             "還元剤の半反応式",
@@ -7764,8 +7764,8 @@ export const chemistryData = {
         },
         {
           "id": "c6_3",
-          "abstractTitle": "⑥-3 酸化還元滴定と量的関係",
-          "realTitle": "⑥ 酸化還元反応",
+          "abstractTitle": "③ 酸化還元滴定と量的関係",
+          "realTitle": "6章 酸化還元反応",
           "topics": [
             "過マンガン酸塩滴定",
             "ヨウ素滴定",
@@ -7777,8 +7777,8 @@ export const chemistryData = {
         },
         {
           "id": "c6_4",
-          "abstractTitle": "⑥-4 酸化力・還元力の強さ",
-          "realTitle": "⑥ 酸化還元反応",
+          "abstractTitle": "④ 酸化力・還元力の強さ",
+          "realTitle": "6章 酸化還元反応",
           "topics": [
             "反応の進行方向と強さの序列",
             "ハロゲンの酸化力",
@@ -7789,8 +7789,8 @@ export const chemistryData = {
         },
         {
           "id": "c6_5",
-          "abstractTitle": "⑥-5 金属のイオン化傾向",
-          "realTitle": "⑥ 酸化還元反応",
+          "abstractTitle": "⑤ 金属のイオン化傾向",
+          "realTitle": "6章 酸化還元反応",
           "topics": [
             "イオン化列と反応性",
             "水・酸との反応",
@@ -7801,8 +7801,8 @@ export const chemistryData = {
         },
         {
           "id": "c6_6",
-          "abstractTitle": "⑥-6 電池",
-          "realTitle": "⑥ 酸化還元反応",
+          "abstractTitle": "⑥ 電池",
+          "realTitle": "6章 酸化還元反応",
           "topics": [
             "ダニエル電池",
             "ボルタ電池と分極",
@@ -7813,8 +7813,8 @@ export const chemistryData = {
         },
         {
           "id": "c6_7",
-          "abstractTitle": "⑥-7 金属の製錬と電気分解",
-          "realTitle": "⑥ 酸化還元反応",
+          "abstractTitle": "⑦ 金属の製錬と電気分解",
+          "realTitle": "6章 酸化還元反応",
           "topics": [
             "製錬法とイオン化傾向",
             "鉄の高炉製錬",

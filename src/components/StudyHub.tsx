@@ -23,6 +23,7 @@ import {
   REVIEW_INTERVALS_DAYS,
   type ReviewItem,
 } from '../utils/reviewList';
+import { ForgettingCurveChart } from './ForgettingCurveChart';
 
 /**
  * StudyHub — 「ノート」と「復習リスト」を1画面に統合した学習ハブ。
@@ -338,6 +339,9 @@ export function StudyHub({ onBack, isGuest, onSelectNote }: StudyHubProps) {
             <div className="text-[11px] sm:text-xs text-gray-500 mt-0.5">習得済み</div>
           </div>
         </div>
+
+        {/* ===== 忘却曲線グラフ（解答日時→定着度の可視化・要件4） ===== */}
+        <ForgettingCurveChart items={reviewItems} now={now} />
 
         {/* ===== 今日の復習セクション（冒頭に自動表示） ===== */}
         {dueItems.length > 0 && (
