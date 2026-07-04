@@ -4,13 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>化学基礎 酸と塩基・酸化還元反応 フローチャート集（完全網羅版）</title>
+<!-- アプリ本体と同じ手書き風フォント（Yomogi）を読み込み、⑤酸と塩基・⑥酸化還元反応の
+     フローチャートの文字を手書き風に統一する。化学式は可読性のため専用フォントを維持する。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+  /* 手書き風フォント（アプリの font-handwriting と同じ Yomogi）を基本に。
+     Yomogi は日本語手書き風フォントで、ラテン文字・記号もカバーする。 */
+  font-family: 'Yomogi', "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Meiryo", cursive, sans-serif;
   background: #f8fafc;
   color: #1f2937;
-  line-height: 1.7;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
   padding: 16px;
 }
 
@@ -216,9 +224,11 @@ header.main-header p { font-size: 13px; opacity: .95; }
   margin: 10px 0; padding: 12px 14px;
   border-left: 4px solid;
   border-radius: 6px;
-  font-size: 13px;
+  font-size: 13.5px;
+  /* 化学式・数式は誤読を避けるため手書き風にせず、可読性の高いゴシック系を維持 */
   font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", monospace, sans-serif;
   line-height: 1.9;
+  letter-spacing: 0;
 }
 .diagram {
   margin: 10px 0; padding: 12px 14px;
@@ -226,8 +236,18 @@ header.main-header p { font-size: 13px; opacity: .95; }
   border-radius: 6px;
   font-size: 12.5px;
   line-height: 1.7;
+  /* 図（矢印・記号の位置合わせ）は等幅フォントを維持 */
   font-family: ui-monospace, "Hiragino Sans", monospace;
+  letter-spacing: 0;
 }
+/* 参照テーブル内の化学式・数値も可読性優先でゴシック系を維持 */
+.ref-table { letter-spacing: 0; }
+.ref-table th, .ref-table td {
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+}
+/* ノード見出し（ボタン）は手書き風だと化学式が読みにくくなるため、
+   タイトルの日本語部分は手書き風のまま、少しだけサイズを上げて視認性を確保 */
+.node-btn { font-size: 13.5px; }
 .tip-box {
   margin: 10px 0; padding: 10px 12px;
   border: 1.5px solid;
