@@ -1,6 +1,7 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
 import { substanceTreeData, separationTreeData, componentDetectionTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData, crystalTreeData, interactionTreeData, atomicWeightTreeData, amountOfSubstanceTreeData, chemicalEquationTreeData, concentrationTreeData, acidBaseTreeData, redoxTreeData } from '../data/chemistryData';
+import { collectQuestionIds, extractRelevantTree } from '../utils/logicTreeUtils';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -14,6 +15,8 @@ interface PracticeExplanationTreeProps {
   isMobile: boolean;
   renderSubQuestionCheck: (sq: any, parentQuestion: any) => React.ReactElement;
   zoom?: 'far' | 'normal';
+  /** 単問表示のとき true。該当ステップのみを抜粋表示する。 */
+  isSingleQuestion?: boolean;
 }
 
 export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = ({
@@ -27,7 +30,8 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   scrollTrigger,
   isMobile,
   renderSubQuestionCheck,
-  zoom = 'far'
+  zoom = 'far',
+  isSingleQuestion = false
 }) => {
   // 章IDごとに対応するフローチャート（ロジックツリー）を明示的に対応付ける。
   // ここに存在しない章（例: c5 酸と塩基, c6 酸化還元）は専用ツリーが無いため、
@@ -59,7 +63,18 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
     return undefined;
   };
 
-  const currentTreeData: NodeData | undefined = resolveTree(chapter?.id);
+  const fullTreeData: NodeData | undefined = resolveTree(chapter?.id);
+
+  // 単問表示のときは、その問題に対応する Step/ノードだけを抜粋する。
+  // （単元全体のフルツリーをそのまま貼らず、該当箇所のみを切り出す）
+  // 章全体を表示しているときはフルツリーをそのまま出す。
+  let currentTreeData: NodeData | undefined = fullTreeData;
+  if (fullTreeData && isSingleQuestion) {
+    const targetIds = collectQuestionIds(questions);
+    const extracted = extractRelevantTree(fullTreeData, targetIds);
+    // 抜粋できた場合のみ差し替える。該当ノードが見つからないときはフルツリーを表示。
+    if (extracted) currentTreeData = extracted;
+  }
 
   // 対応するツリーが無い章では、誤ったフローチャートを表示しない。
   if (!currentTreeData) {
