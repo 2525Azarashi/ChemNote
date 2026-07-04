@@ -1,5 +1,5 @@
 /* src/index.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Yomogi&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Yomogi&family=Klee+One:wght@400;600&family=Kaisei+Decol:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 /* =========================================================
@@ -43,7 +43,10 @@
   --leading-explanation: 1.7;  /* 解説エリアの行間 */
 
   /* Typography */
-  --font-handwriting: 'Yomogi', cursive;
+  /* 手書き風フォント（日本語対応 Google Fonts）。
+     Yomogi を主体に、Klee One / Kaisei Decol をフォールバックとして併用し、
+     ロジックツリー・フローチャートの文字を手書き感のある表示に統一する。 */
+  --font-handwriting: 'Yomogi', 'Klee One', 'Kaisei Decol', "Hiragino Maru Gothic ProN", "Hiragino Sans", cursive;
   --font-modern: 'Inter', 'Hiragino Sans', 'Yu Gothic', sans-serif;
   /* 数式・化学式向けフォント。
    * 上付き／下付き（H⁺, CH₃, 10⁻³ など）や演算子が崩れない、
