@@ -80,6 +80,25 @@ export function normalizeAnswer(value: string | undefined | null): string {
 }
 
 /**
+ * 記号選択・並び替え問題の比較用に、区切り記号だけを除いた形も作る。
+ * 例: 「ウ→オ→エ→ア→イ」「ウ > オ > エ > ア > イ」「ウオエアイ」を同一視する。
+ */
+function compactSymbolSequence(value: string): string {
+  return normalizeAnswer(value)
+    .replace(/[\s,，、・･→＞>\-－―–—]/g, '')
+    .replace(/[()（）［］\[\]【】]/g, '');
+}
+
+/**
+ * 区切り記号を無視する比較は、ア/イ/ウや①②③のような選択肢記号の列だけに限定する。
+ * 通常の短答（例: 日本語語句や化学用語）でハイフン等を過剰に無視しないためのガード。
+ */
+function looksLikeChoiceSequence(value: string): boolean {
+  const normalized = normalizeAnswer(value);
+  return /[アイウエオカキクケコサシスセソタチツテト①②③④⑤⑥⑦⑧⑨⑩]/.test(normalized);
+}
+
+/**
  * 記述式（自動採点不可）かどうか。
  * descriptive のみ自動採点対象外とする（既存仕様を踏襲）。
  */
@@ -115,7 +134,17 @@ export function isAnswerCorrect(
   if (sq.correctAnswer != null) candidates.push(sq.correctAnswer);
   if (Array.isArray(sq.acceptedAnswers)) candidates.push(...sq.acceptedAnswers);
 
-  return candidates.some((c) => normalizeAnswer(c) === ans);
+  const compactAns = compactSymbolSequence(ans);
+  const canUseCompact = looksLikeChoiceSequence(ans);
+  return candidates.some((c) => {
+    const normalizedCandidate = normalizeAnswer(c);
+    return normalizedCandidate === ans || (
+      canUseCompact &&
+      looksLikeChoiceSequence(normalizedCandidate) &&
+      !!compactAns &&
+      compactSymbolSequence(normalizedCandidate) === compactAns
+    );
+  });
 }
 
 /**

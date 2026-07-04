@@ -1,6 +1,6 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
-import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData, crystalTreeData, interactionTreeData, atomicWeightTreeData, amountOfSubstanceTreeData, chemicalEquationTreeData, concentrationTreeData } from '../data/chemistryData';
+import { substanceTreeData, separationTreeData, componentDetectionTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData, crystalTreeData, interactionTreeData, atomicWeightTreeData, amountOfSubstanceTreeData, chemicalEquationTreeData, concentrationTreeData } from '../data/chemistryData';
 
 interface PracticeExplanationTreeProps {
   deepThoughtData: any;
@@ -35,6 +35,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   const TREE_BY_CHAPTER: Record<string, NodeData> = {
     c1_1: substanceTreeData,
     c1_2_A: separationTreeData,
+    c1_2_B: componentDetectionTreeData,
     c1_3: thermalMotionTreeData,
     c2_1: atomicStructureTreeData,
     c2_2: ionTreeData,

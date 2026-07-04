@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" role="img" aria-label="ろ過の操作 ア〜エ">
+  <style>
+    .panel{fill:#fff;stroke:#cbd5e1;stroke-width:2}.line{stroke:#334155;stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}.thin{stroke:#64748b;stroke-width:2;fill:none}.water{fill:#bfdbfe;stroke:#60a5fa;stroke-width:2}.label{font:700 26px sans-serif;fill:#1e293b}.small{font:600 15px sans-serif;fill:#475569}.paper{fill:#f8fafc;stroke:#475569;stroke-width:3}.glass{fill:#eff6ff;stroke:#475569;stroke-width:3;opacity:.75}
+  </style>
+  <rect width="900" height="260" fill="#f8fafc"/>
+  <g transform="translate(20 20)">
+    <rect class="panel" width="200" height="220" rx="14"/><text class="label" x="18" y="34">ア</text>
+    <path class="line" d="M82 72h72l-30 54v66h-12v-66z"/><path class="paper" d="M92 83h52l-26 38z"/>
+    <path class="line" d="M104 118c-38 12-50 38-50 72h96"/><path class="glass" d="M52 160h100l-12 42H64z"/><path class="water" d="M67 180h72v17H62z"/>
+  </g>
+  <g transform="translate(240 20)">
+    <rect class="panel" width="200" height="220" rx="14"/><text class="label" x="18" y="34">イ</text>
+    <path class="line" d="M48 80h70l-28 48v68H78v-68z"/><path class="paper" d="M59 91h48l-24 34z"/>
+    <path class="line" d="M126 74l34 18"/><path class="thin" d="M142 80l-20 38"/><path class="glass" d="M114 152h60l-8 44h-44z"/><path class="water" d="M122 174h44v17h-48z"/>
+    <text class="small" x="70" y="216">ガラス棒なし</text>
+  </g>
+  <g transform="translate(460 20)">
+    <rect class="panel" width="200" height="220" rx="14"/><text class="label" x="18" y="34">ウ</text>
+    <path class="line" d="M74 72h78l-31 55v68h-14v-68z"/><path class="paper" d="M86 84h54l-27 39z"/>
+    <path class="line" d="M40 76l58 36"/><path class="thin" d="M68 92l-22 42"/>
+    <path class="line" d="M112 127c-26 6-34 26-34 60h96"/><path class="glass" d="M76 156h100l-12 44H88z"/><path class="water" d="M90 180h72v16H85z"/>
+    <text class="small" x="62" y="216">ガラス棒に伝わせる</text>
+  </g>
+  <g transform="translate(680 20)">
+    <rect class="panel" width="200" height="220" rx="14"/><text class="label" x="18" y="34">エ</text>
+    <path class="line" d="M76 96h78l-31 55v44h-14v-44z"/><path class="paper" d="M88 108h54l-27 39z"/>
+    <path class="line" d="M44 70l104 28"/><path class="glass" d="M68 158h112l-14 42H82z"/><path class="water" d="M84 181h80v15H78z"/>
+    <text class="small" x="54" y="216">ろうとの先が浮く</text>
+  </g>
+</svg>
