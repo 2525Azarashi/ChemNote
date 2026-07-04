@@ -11,6 +11,13 @@ import { isAnswerCorrect } from '../utils/answerJudge';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
 
+/** 表示上の問題番号（問1/【問1】/先頭の 1 など）を消して、進捗表示に統一する。 */
+function cleanQuestionText(text: string): string {
+  return String(text || '')
+    .replace(/^\s*(?:【\s*問?\s*\d+\s*】|問\s*\d+|第\s*\d+\s*問|\d+[.．、\s]+)\s*/u, '')
+    .replace(/\n\s*(?:問\s*\d+|【\s*問?\s*\d+\s*】)\s*/gu, '\n');
+}
+
 interface ExplanationProps {
   mode: 'mini_test' | 'practice';
   chapter: any;
@@ -396,13 +403,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           onClick={() => setExpandedSq(sq.id)}
           className={`w-full flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 gap-3 rounded-xl border transition-colors ${sq.type === 'descriptive' ? 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30' : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30')}`}
         >
-          <div className="flex flex-col md:flex-row md:items-start gap-3 w-full md:w-auto text-left flex-1 min-w-0">
+          <div className="flex flex-col md:flex-row md:items-start gap-3 w-full min-w-0 text-left flex-1">
             {displayLabel.length > 20 ? (
-              <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-xs md:text-sm leading-relaxed max-w-full break-words inline-block py-1.5`}>
+              <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-xs md:text-sm leading-relaxed w-full min-w-0 break-words whitespace-normal block py-1.5`}>
                 {displayLabel}
               </div>
             ) : (
-              <div className={`font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-3 py-1.5 rounded-xl border border-[#3A506B]/50 leading-relaxed max-w-full break-words inline-block`}>
+              <div className={`font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-3 py-1.5 rounded-xl border border-[#3A506B]/50 leading-relaxed max-w-full break-words whitespace-normal inline-block`}>
                 {displayLabel}
               </div>
             )}
@@ -420,9 +427,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     return (
       <div id={`sq-${sq.id}`} key={sq.id} className={`w-full ${isMiniTest ? 'bg-white' : 'bg-[#1C2541]'} rounded-xl border ${isMiniTest ? 'border-gray-200' : 'border-[#3A506B]'} shadow-lg p-4 md:p-6`}>
         {/* Header */}
-        <div className="flex items-start justify-between mb-4 gap-3">
+        <div className="flex items-start justify-between mb-4 gap-3 min-w-0">
           {displayLabel.length > 20 ? (
-            <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm md:text-base leading-relaxed break-words flex-1`}>
+            <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm md:text-base leading-relaxed break-words whitespace-normal flex-1 min-w-0`}>
               {displayLabel}
             </div>
           ) : (
@@ -776,17 +783,6 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         )}
       </div>
 
-      {/* 1問ごとのランキングパネル（最終問のみ） */}
-      {singleQuestionIndex !== undefined && isLastQuestion && totalScore && (
-        <div className="px-4 md:px-6 pt-4 relative z-10">
-          <ChapterRankingPanel
-            chapterId={chapter.id}
-            userScore={totalScore}
-            isGuest={isGuest}
-          />
-        </div>
-      )}
-
       {isResultView && displayTotalScore != null && (
         <div className="px-4 md:px-6 pt-4 relative z-10">
           <div className="bg-gradient-to-br from-[#FFF8E1] via-white to-[#E8F4FD] border border-[#F4D03F]/60 rounded-3xl shadow-lg p-5 md:p-6">
@@ -979,7 +975,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     <div className={`p-4 rounded-lg border text-sm md:text-base leading-relaxed ${
                       mode === 'mini_test' ? 'bg-white border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]/90'
                     }`}>
-                      {formatText(question.text)}
+                      {formatText(cleanQuestionText(question.text))}
                       {question.text.includes('図6') && (
                         <div className="mt-4">
                           <IonizationEnergyChart showDetails={true} />
@@ -1005,7 +1001,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               {/* Flowchart (Logical Tree) - Moved under problem statement inside Left Column
                   ※ 専用のフローチャートが用意されている章のみ表示する。
                      （c5 酸と塩基 / c6 酸化還元 などは専用ツリーが無いため、別単元のツリーを誤表示しない） */}
-              {['c1_1', 'c1_2_A', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4', 'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapter?.id) && (
+              {(['c1_1', 'c1_2_A', 'c1_2_B', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4', 'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapter?.id)
+                || chapter?.id === 'c5' || chapter?.id?.startsWith('c5_')
+                || chapter?.id === 'c6' || chapter?.id?.startsWith('c6_')) && (
                 <div className="mt-6 border-t pt-4 border-gray-200">
                   <PracticeExplanationTree
                     deepThoughtData={deepThoughtData}
@@ -1054,11 +1052,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             >
                               <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-4 flex-1 min-w-0 text-left">
                                 {displayLabel.length > 20 ? (
-                                  <div className={`font-bold text-xs md:text-sm leading-relaxed max-w-full break-words inline-block py-1.5 ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>{displayLabel}</div>
+                                  <div className={`font-bold text-xs md:text-sm leading-relaxed w-full min-w-0 break-words whitespace-normal block py-1.5 ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>{displayLabel}</div>
                                 ) : (
-                                  <div className={`font-bold text-xs md:text-sm px-3 py-1.5 rounded-xl border shadow-xs max-w-full break-words inline-block leading-relaxed ${mode === 'mini_test' ? 'text-gray-700 bg-white border-gray-200' : 'text-[#E0E1DD] bg-[#0B132B]/50 border-[#3A506B]/50'}`}>{displayLabel}</div>
+                                  <div className={`font-bold text-xs md:text-sm px-3 py-1.5 rounded-xl border shadow-xs max-w-full break-words whitespace-normal inline-block leading-relaxed ${mode === 'mini_test' ? 'text-gray-700 bg-white border-gray-200' : 'text-[#E0E1DD] bg-[#0B132B]/50 border-[#3A506B]/50'}`}>{displayLabel}</div>
                                 )}
-                                <div className="flex flex-wrap items-center gap-3 md:gap-4 shrink-0">
+                                <div className="flex flex-wrap items-center gap-3 md:gap-4 min-w-0">
                                   {sq.type !== 'descriptive' && (
                                     <div>
                                       {isCorrect ? <CheckCircle2 className={`w-5 h-5 md:w-6 md:h-6 ${mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}`} /> : <XCircle className={`w-5 h-5 md:w-6 md:h-6 ${mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}`} />}

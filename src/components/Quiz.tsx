@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
-import { substanceTreeData } from '../data/chemistryData';
-import { getRelatedSteps, filterTree } from '../utils/logicTreeUtils';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
 import { QuestionFigure } from './QuestionFigure';
@@ -81,6 +79,7 @@ function saveRun(chapterId: string, mode: string, run: ChapterRunState) {
  * 対象：イオン表記、化学式、原子番号・質量数表記など
  */
 function requiresChemicalSymbols(question: any, answer: any = {}): boolean {
+  if (question?.requiresChemicalPalette) return true;
   const text = [
     question?.text || '',
     answer?.correctAnswer || '',
@@ -235,6 +234,13 @@ const handleInputFocusScroll = (e: React.FocusEvent<HTMLInputElement | HTMLTextA
     setTimeout(() => vv.removeEventListener('resize', onResize), 1000);
   }
 };
+
+/** 表示上の問題番号（問1/【問1】/先頭の 1 など）を消して、進捗表示に統一する。 */
+function cleanQuestionText(text: string): string {
+  return String(text || '')
+    .replace(/^\s*(?:【\s*問?\s*\d+\s*】|問\s*\d+|第\s*\d+\s*問|\d+[.．、\s]+)\s*/u, '')
+    .replace(/\n\s*(?:問\s*\d+|【\s*問?\s*\d+\s*】)\s*/gu, '\n');
+}
 
 /**
  * 化学記号パレット。
@@ -848,7 +854,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             title="テキストを選択するとハイライトできます"
           >
             <div className="max-w-prose md:max-w-none">
-              {formatText(currentQuestion.text, highlights)}
+              {formatText(cleanQuestionText(currentQuestion.text), highlights)}
               {currentQuestion.text.includes('図6') && (
                 <div className="mt-4">
                   <IonizationEnergyChart showDetails={false} />
@@ -864,6 +870,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   className="mt-5"
                 />
               )}
+              {/* 問題解答画面（回答入力中）にはロジックツリーを表示しない。
+                  ロジックツリーは「単元選択・学習フローチャート」画面と
+                  「解答解説ページ」にのみ表示する。 */}
             </div>
           </div>
         </div>
@@ -922,7 +931,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                           const toks = sq.correctAnswer.split(sep).map((t: string) => t.trim()).filter(Boolean);
                           return toks.length >= 2 && toks.every((t: string) => optionSet.has(t));
                         };
-                        const multiSep = detectMulti('・') ? '・' : (detectMulti(',') ? ',' : null);
+                        const multiSep = detectMulti('・') ? '・' : (detectMulti('、') ? '、' : (detectMulti(',') ? ',' : null));
                         const isMultiple = multiSep !== null;
                         return (
                           <div className={isLongOptionList 
@@ -971,7 +980,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         <div className="flex flex-col gap-2.5">
                           <div className="text-xs text-gray-400 font-bold flex items-center justify-between">
                             <span>ドラッグで順序を並べ替え :</span>
-                            <span className="text-[10px] text-[#A9CCE3] font-normal">左ほど「大きい」</span>
+                            <span className="text-[10px] text-[#A9CCE3] font-normal">左から順に並べる</span>
                           </div>
                           
                           <div className="flex flex-wrap items-center gap-2.5 p-3.5 bg-gray-50/80 border border-gray-200 rounded-2xl min-h-[72px]">

@@ -684,16 +684,16 @@ export const chemistryData = {
                     "単体",
                     "元素"
                   ],
-                  "correctAnswer": "単体",
+                  "correctAnswer": "元素",
                   "correctAnswerRate": 85,
                   "detailedExplanation": {
                     "theme": "単体と元素の文脈判断",
                     "type": "文脈判断型",
                     "steps": [
                       "① 同素体という語に注目する",
-                      "② 同素体は同じ元素からなる異なる単体であると想起する",
-                      "③ 炭素が物質として扱われていると判断する",
-                      "④ 元素概念ではないことを確認する",
+                      "② 同素体は「同じ元素からなる異なる単体」であると想起する",
+                      "③ ここでの「炭素」は特定の物質（黒鉛やダイヤモンド）そのものではなく、共通の成分を指していると判断する",
+                      "④ 成分（概念）としての「元素」であることを確認する",
                       "⑤ 分類を確定する"
                     ]
                   }
@@ -1300,7 +1300,7 @@ export const chemistryData = {
             {
               "id": "q_c1_2_A_1",
               "category": "物質の分離と精製 (1. ろ過)",
-              "text": "1 ろ過に関する次の問いに答えよ。\n\n<img src=\"/filtration_compare.jpg\" alt=\"ろ過の操作 ア〜エ\" class=\"w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n（1）ろ紙を通過して下に落ちた液体のことを何というか。\n\n（2）ろ過はどのような混合物の分離に用いる操作か。「固体」「液体」という言葉を用いて答えよ。\n\n（3）ろ過の操作として、最も適切な図を上の(ア)〜(エ)のうちから1つ選べ。\n\n※(ア)〜(エ)の図の意味：\n（ア）ガラス棒を使わずに直接ろうとに液を注いでいる\n（イ）ろうとの足がビーカーの内壁に密着していない\n（ウ）ガラス棒に伝わらせて液を注ぎ、ろうとの足がビーカーの内壁に密着している（正しい操作）\n（エ）ガラス棒の先がろ紙にあたっておらず、液がはねている",
+              "text": "1 ろ過に関する次の問いに答えよ。\n\n<img src=\"/fig_filtration_abcd.png\" alt=\"ろ過の操作 ア〜エ\" class=\"w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n（1）ろ紙を通過して下に落ちた液体のことを何というか。\n\n（2）ろ過はどのような混合物の分離に用いる操作か。「固体」「液体」という言葉を用いて答えよ。\n\n（3）ろ過の操作として、最も適切な図を上の(ア)〜(エ)のうちから1つ選べ。\n\n※(ア)〜(エ)の図の意味：\n（ア）ガラス棒を使わずに直接ろうとに液を注いでいる\n（イ）ろうとの足がビーカーの内壁に密着していない\n（ウ）ガラス棒に伝わらせて液を注ぎ、ろうとの足がビーカーの内壁に密着している（正しい操作）\n（エ）ガラス棒の先がろ紙にあたっておらず、液がはねている",
               "subQuestions": [
                 {
                   "id": "q_c1_2_A_1_1",
@@ -1342,7 +1342,7 @@ export const chemistryData = {
             {
               "id": "q_c1_2_A_2",
               "category": "物質の分離と精製 (2. 蒸留)",
-              "text": "2 塩化ナトリウム（NaCl）水溶液から水を分離するため、枝付きフラスコとリービッヒ冷却器を用いて蒸留を行った。以下の問いに答えよ。\n\n<img src=\"/graph2.jpg\" alt=\"蒸留装置\" class=\"w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) 図の①～⑤の器具・物質の名前を答えよ。\n(2) 枝付きフラスコに入れる液量はどのくらいにするべきか。\n(3) 加熱する際、フラスコ内にあらかじめ「沸騰石」を入れるのはなぜか。理由を答えよ。\n(4) 温度計の球部を枝の近くに設置する理由を答えよ。「〜の温度をはかるため」という形で答えよ。\n(5) リービッヒ冷却器に流す冷却水は、「下から上」「上から下」のどちらに流すべきか。また、それはなぜか.理由を答えよ。\n(6) 留出液を集める三角フラスコをゴム栓等で密閉してはいけないのはなぜか。理由を答えよ。",
+              "text": "2 塩化ナトリウム（NaCl）水溶液から水を分離するため、枝付きフラスコとリービッヒ冷却器を用いて蒸留を行った。以下の問いに答えよ。\n\n<img src=\"/fig_distillation_setup.png\" alt=\"蒸留装置 ①〜⑤\" class=\"w-full max-w-md mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) 図の①～⑤の器具・物質の名前を答えよ。\n(2) 枝付きフラスコに入れる液量はどのくらいにするべきか。\n(3) 加熱する際、フラスコ内にあらかじめ「沸騰石」を入れるのはなぜか。理由を答えよ。\n(4) 温度計の球部を枝の近くに設置する理由を答えよ。「〜の温度をはかるため」という形で答えよ。\n(5) リービッヒ冷却器に流す冷却水は、「下から上」「上から下」のどちらに流すべきか。また、それはなぜか.理由を答えよ。\n(6) 留出液を集める三角フラスコをゴム栓等で密閉してはいけないのはなぜか。理由を答えよ。",
               "subQuestions": [
                 {
                   "id": "q2_1_1",
@@ -1362,7 +1362,11 @@ export const chemistryData = {
                   "id": "q2_1_3",
                   "label": "(1) ③",
                   "type": "short_answer",
-                  "correctAnswer": "沸騰石",
+                  "correctAnswer": "ガスバーナー",
+                  "acceptedAnswers": [
+                    "バーナー",
+                    "ブンゼンバーナー"
+                  ],
                   "correctAnswerRate": 85
                 },
                 {
@@ -1446,7 +1450,7 @@ export const chemistryData = {
                   "correctAnswerRate": 85
                 }
               ],
-              "explanation": "▼解答・解説\n(1) ① 枝付きフラスコ ② リービッヒ冷却器 ③ 沸騰石 ④ アダプター ⑤ 三角フラスコ\n(2) 半分以下\n(3) 突沸（急な沸騰）を防ぐため\n(4) 枝に向かう蒸気の温度をはかるため\n(5) 下から上。理由：冷却器内を水で満たし、冷却効率を高くするため\n(6) 装置内の圧力が上昇し、器具が破損して危険だから",
+              "explanation": "▼解答・解説\n(1) ① 枝付きフラスコ ② リービッヒ冷却器 ③ ガスバーナー ④ アダプター ⑤ 三角フラスコ\n(2) 半分以下\n(3) 突沸（急な沸騰）を防ぐため\n(4) 枝に向かう蒸気の温度をはかるため\n(5) 下から上。理由：冷却器内を水で満たし、冷却効率を高くするため\n(6) 装置内の圧力が上昇し、器具が破損して危険だから",
               "surroundingKnowledge": [],
               "deepDiveTopics": []
             },
@@ -1477,7 +1481,7 @@ export const chemistryData = {
             {
               "id": "q_c1_2_A_4",
               "category": "物質の分離と精製 (4. 昇華法)",
-              "text": "4 昇華法に関する次の問いに答えよ。\n\n<img src=\"/sublimation_setups.jpg\" alt=\"昇華実験装置 ①〜④\" class=\"w-full max-w-lg mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n（1）ヨウ素の昇華性を利用して、できるだけ多くのヨウ素を集めたい。最も適当な分離法を、上の図の①〜④のうちから1つ選べ。\n\n※選択肢の図の意味：\n①：丸底フラスコの上に冷却装置がなく、ヨウ素の蒸気が逃げてしまう\n②：丸底フラスコの上に「冷水」を入れた丸底フラスコを載せ、下から混合物を加熱して冷水フラスコの底にヨウ素を析出させる（適切）\n③：冷水の中に混合物を入れるだけで、加熱をしないため昇華が起きない\n④：丸底フラスコの上に「温水」を入れた丸底フラスコを載せているため、蒸気が冷却されない\n\n（2）次の中から、昇華されやすい物質をすべて選べ。\nア．塩化ナトリウム（食塩）　イ．ヨウ素　ウ．ドライアイス　エ．鉄　オ．ナフタレン　カ．水（氷）　キ．パラジクロロベンゼン",
+              "text": "4 昇華法に関する次の問いに答えよ。\n\n<img src=\"/fig_sublimation_setups.png\" alt=\"昇華実験装置 ①〜④\" class=\"w-full max-w-lg mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n（1）ヨウ素の昇華性を利用して、できるだけ多くのヨウ素を集めたい。最も適当な分離法を、上の図の①〜④のうちから1つ選べ。\n\n※選択肢の図の意味：\n①：丸底フラスコの上に冷却装置がなく、ヨウ素の蒸気が逃げてしまう\n②：丸底フラスコの上に「冷水」を入れた丸底フラスコを載せ、下から混合物を加熱して冷水フラスコの底にヨウ素を析出させる（適切）\n③：冷水の中に混合物を入れるだけで、加熱をしないため昇華が起きない\n④：丸底フラスコの上に「温水」を入れた丸底フラスコを載せているため、蒸気が冷却されない\n\n（2）次の中から、昇華されやすい物質をすべて選べ。\nア．塩化ナトリウム（食塩）　イ．ヨウ素　ウ．ドライアイス　エ．鉄　オ．ナフタレン　カ．水（氷）　キ．パラジクロロベンゼン",
               "subQuestions": [
                 {
                   "id": "q_c1_2_A_4_1",
@@ -1495,7 +1499,16 @@ export const chemistryData = {
                 {
                   "id": "q_c1_2_A_4_2",
                   "label": "（2） 昇華されやすい物質をすべて選べ",
-                  "type": "short_answer",
+                  "type": "multiple_choice",
+                  "options": [
+                    "ア",
+                    "イ",
+                    "ウ",
+                    "エ",
+                    "オ",
+                    "カ",
+                    "キ"
+                  ],
                   "correctAnswer": "イ、ウ、オ、キ",
                   "correctAnswerRate": 85
                 }
@@ -1507,7 +1520,7 @@ export const chemistryData = {
             {
               "id": "q_c1_2_A_5",
               "category": "物質の分離と精製 (5. 抽出)",
-              "text": "5 抽出に関する次の問いに答えよ。\n\n目的の物質だけをよく溶かす溶媒を用いて、混合物から成分を分離する操作を抽出という。\n\n<img src=\"/separating_funnel.jpg\" alt=\"分液漏斗\" class=\"w-full max-w-xs mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) ヨウ素と水の混合物（ヨウ素水溶液）からヨウ素を分離したい。このとき加える溶媒として最も適当なものを、次のア〜ウから選べ。\nア. エタノール　イ. ヘキサン　ウ. 食塩水\n\n(2) (1)の操作を行う際に用いる、図のようなガラス器具の名称を答えよ。\n\n(3) 茶葉に湯を注いで、香りや風味の成分を溶かしだす操作も抽出の一種である。このように、抽出は身近な生活でも利用されている。次のうち、抽出の原理を利用していないものを1つ選べ。\nア. コーヒー豆からコーヒーをいれる\nイ. 昆布からだしをとる\nウ. 海水から塩を取り出す",
+              "text": "5 抽出に関する次の問いに答えよ。\n\n目的の物質だけをよく溶かす溶媒を用いて、混合物から成分を分離する操作を抽出という。\n\n<img src=\"/fig_separating_funnel.png\" alt=\"分液漏斗\" class=\"w-full max-w-xs mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) ヨウ素と水の混合物（ヨウ素水溶液）からヨウ素を分離したい。このとき加える溶媒として最も適当なものを、次のア〜ウから選べ。\nア. エタノール　イ. ヘキサン　ウ. 食塩水\n\n(2) (1)の操作を行う際に用いる、図のようなガラス器具の名称を答えよ。\n\n(3) 茶葉に湯を注いで、香りや風味の成分を溶かしだす操作も抽出の一種である。このように、抽出は身近な生活でも利用されている。次のうち、抽出の原理を利用していないものを1つ選べ。\nア. コーヒー豆からコーヒーをいれる\nイ. 昆布からだしをとる\nウ. 海水から塩を取り出す",
               "subQuestions": [
                 {
                   "id": "q5_1",
@@ -1600,7 +1613,7 @@ export const chemistryData = {
             {
               "id": "q_c1_2_A_8",
               "category": "物質の分離と精製 (8. 操作に対応する分離法)",
-              "text": "8 次の文章（1）〜（5）に関連する分離法の名称をそれぞれ答えよ。\n\n<img src=\"/separating_funnel.jpg\" alt=\"分液漏斗（抽出）\" class=\"w-full max-w-xs mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) 少量の不純物を含む固体を熱水に溶かし、冷却して純粋な結晶を得る。\n(2) ヨウ素と水の混合物にヘキサンを加え、ヨウ素だけを溶かしだして分離する。\n(3) 砂とヨウ素の混合物を加熱し、ヨウ素だけを気体にしてから再び固体にして集める。\n(4) 水性ペンのインクを、ろ紙などに対する吸着力の違いを利用して分離する。\n(5) 茶葉に湯を注ぎ、香りや風味の成分を溶かしだす。",
+              "text": "8 次の文章（1）〜（5）に関連する分離法の名称をそれぞれ答えよ。\n\n<img src=\"/fig_separating_funnel.png\" alt=\"分液漏斗（抽出）\" class=\"w-full max-w-xs mx-auto my-4 rounded-lg shadow-sm border border-gray-200\" referrerPolicy=\"no-referrer\" />\n\n(1) 少量の不純物を含む固体を熱水に溶かし、冷却して純粋な結晶を得る。\n(2) ヨウ素と水の混合物にヘキサンを加え、ヨウ素だけを溶かしだして分離する。\n(3) 砂とヨウ素の混合物を加熱し、ヨウ素だけを気体にしてから再び固体にして集める。\n(4) 水性ペンのインクを、ろ紙などに対する吸着力の違いを利用して分離する。\n(5) 茶葉に湯を注ぎ、香りや風味の成分を溶かしだす。",
               "subQuestions": [
                 {
                   "id": "q5_1_recrystallization",
@@ -7816,6 +7829,217 @@ export const chemistryData = {
   ]
 };
 
+// ------------------------------------------------------------
+// 化学基礎 1章：設問データ修正パッチ
+// - 問題番号表示はUI側で進捗表示に統一するため、ここでは設問内容・解答形式を調整する。
+// - 数字/英字の全角半角ゆれは answerJudge.ts の正規化で吸収する。
+// ------------------------------------------------------------
+const findPracticeChapter = (chapterId: string): any =>
+  (chemistryData.parts as any[])
+    .flatMap((part: any) => part.chapters || [])
+    .find((chapter: any) => chapter.id === chapterId);
+
+const findPracticeProblem = (chapterId: string, problemId: string): any =>
+  findPracticeChapter(chapterId)?.practiceProblems?.find((problem: any) => problem.id === problemId);
+
+const findSubQuestion = (chapterId: string, problemId: string, subQuestionId: string): any =>
+  findPracticeProblem(chapterId, problemId)?.subQuestions?.find((sq: any) => sq.id === subQuestionId);
+
+(() => {
+  const c12a = findPracticeChapter('c1_2_A');
+  if (c12a) {
+    c12a.practiceProblems = (c12a.practiceProblems || []).filter(
+      (problem: any) => !['q_c1_2_A_6', 'q_c1_2_A_8'].includes(problem.id)
+    );
+  }
+
+  const filtration = findPracticeProblem('c1_2_A', 'q_c1_2_A_1');
+  if (filtration) {
+    filtration.text = String(filtration.text).replace('/fig_filtration_abcd.png', '/fig_filtration_abcd.svg');
+  }
+
+  const distillation = findPracticeProblem('c1_2_A', 'q_c1_2_A_2');
+  if (distillation) {
+    distillation.text = String(distillation.text).replace('/fig_distillation_setup.png', '/fig_distillation_setup.svg');
+  }
+
+  const fractional = findPracticeProblem('c1_2_A', 'q_c1_2_A_3');
+  const fractionalOrder = findSubQuestion('c1_2_A', 'q_c1_2_A_3', 'q3_2');
+  if (fractional) {
+    fractional.text = String(fractional.text).replace(
+      'ウ：石油ガス・LPガス　　エ：灯油　　オ：ナフサ（粗製ガソリン）',
+      'ウ：石油ガス・LPガス　　エ：灯油　　オ：ナフサ（粗製ガソリン）\n\n※ 解答欄では、記号カードを「上から出てくる順」に並べ替えなさい。'
+    );
+  }
+  if (fractionalOrder) {
+    fractionalOrder.type = 'sorting';
+    fractionalOrder.items = ['ア', 'イ', 'ウ', 'エ', 'オ'];
+    fractionalOrder.correctAnswer = 'ウ > オ > エ > ア > イ';
+    fractionalOrder.acceptedAnswers = ['ウ→オ→エ→ア→イ', 'ウオエアイ'];
+  }
+
+  const sublimation = findPracticeProblem('c1_2_A', 'q_c1_2_A_4');
+  if (sublimation) {
+    sublimation.text = String(sublimation.text)
+      .replace('/fig_sublimation_setups.png', '/fig_sublimation_setups.svg')
+      .replace(/\n\n※選択肢の図の意味：[\s\S]*?\n\n（2）/, '\n\n（2）');
+  }
+  const sublimationMulti = findSubQuestion('c1_2_A', 'q_c1_2_A_4', 'q_c1_2_A_4_2');
+  if (sublimationMulti) {
+    sublimationMulti.type = 'multiple_choice';
+    sublimationMulti.options = ['ア', 'イ', 'ウ', 'エ', 'オ', 'カ', 'キ'];
+    sublimationMulti.correctAnswer = 'イ・ウ・オ・キ';
+    sublimationMulti.acceptedAnswers = ['イ、ウ、オ、キ', 'イウオキ'];
+  }
+
+  const extraction = findPracticeProblem('c1_2_A', 'q_c1_2_A_5');
+  if (extraction) {
+    extraction.text = String(extraction.text).replace('/fig_separating_funnel.png', '/fig_separating_funnel.svg');
+  }
+  const funnelName = findSubQuestion('c1_2_A', 'q_c1_2_A_5', 'q5_2');
+  if (funnelName) {
+    funnelName.acceptedAnswers = ['分液ろうと', '分液漏斗'];
+  }
+
+  const c13 = findPracticeChapter('c1_3');
+  if (c13) {
+    c13.practiceProblems = (c13.practiceProblems || []).filter(
+      (problem: any) => !['q_c1_3_5', 'q_c1_3_6'].includes(problem.id)
+    );
+  }
+
+  const stateChange = findPracticeProblem('c1_3', 'q_c1_3_3');
+  if (stateChange) {
+    const transitions = [
+      ['a', 'ア', '液体', '固体', '凝固'],
+      ['i', 'イ', '液体', '気体', '蒸発'],
+      ['u', 'ウ', '固体', '気体', '昇華'],
+      ['e', 'エ', '気体', '液体', '凝縮'],
+      ['o', 'オ', '気体', '固体', '凝華'],
+      ['ka', 'カ', '固体', '液体', '融解'],
+    ];
+    stateChange.text = String(stateChange.text).replace(
+      'どれからどれへの状態変化か答え、変化の名称を答えよ。',
+      '「何から何へ」の状態変化かを、（出発）から（到達）の2つの解答欄に分けて答え、変化の名称も答えよ。'
+    );
+    stateChange.subQuestions = transitions.flatMap(([key, label, from, to, name]) => [
+      { id: `q_c1_3_3_${key}_from`, label: `${label}：出発`, type: 'short_answer', correctAnswer: from, correctAnswerRate: 85 },
+      { id: `q_c1_3_3_${key}_to`, label: `${label}：到達`, type: 'short_answer', correctAnswer: to, correctAnswerRate: 85 },
+      { id: `q_c1_3_3_${key}_name`, label: `${label}：名称`, type: 'short_answer', correctAnswer: name, correctAnswerRate: 85 },
+    ]);
+  }
+
+  const chemicalChange = findSubQuestion('c1_3', 'q_c1_3_4', 'q_c1_3_4_ans');
+  if (chemicalChange) {
+    chemicalChange.type = 'multiple_choice';
+    chemicalChange.options = ['ア', 'イ', 'ウ', 'エ', 'オ', 'カ'];
+    chemicalChange.acceptedAnswers = ['イ、エ、カ', 'イエカ'];
+  }
+
+  const allotropePair = findSubQuestion('c1_2_B', 'q_c1_2_B_1', 'q_c1_2_B_1_2');
+  if (allotropePair) {
+    allotropePair.type = 'multiple_choice';
+    allotropePair.options = ['ア', 'イ', 'ウ', 'エ', 'オ', 'カ'];
+    allotropePair.correctAnswer = 'イ・ウ・オ';
+    allotropePair.acceptedAnswers = ['イ、ウ、オ', 'イウオ'];
+  }
+
+  const allotropeDetails = findPracticeProblem('c1_2_B', 'q_c1_2_B_2');
+  if (allotropeDetails) {
+    allotropeDetails.text = String(allotropeDetails.text)
+      .replace('【2】問1 硫黄、炭素、酸素、リンの性質について次の問いに答えよ。', '硫黄、炭素、酸素、リンの性質について次の問いに答えよ。')
+      .replace('(1) 硫黄(S)の同素体を3つ、名称で答えよ。また、そのうち「常温で安定で黄色」のもの、「淡黄色で針状」のものをそれぞれ選べ。', '(1) 硫黄(S)の同素体のうち、「常温で安定で黄色」のもの、「淡黄色で針状」のものをそれぞれ答えよ。')
+      .replace('(2) 炭素(C)的同素体を4つ、名称で答えよ。また、そのうち「非常に硬く電気を通さない」もの、「やわらかく電気をよく導く」ものをそれぞれ選べ。', '(2) 炭素(C)の同素体のうち、「非常に硬く電気を通さない」もの、「やわらかく電気をよく導く」ものをそれぞれ答えよ。');
+    (allotropeDetails.subQuestions || []).forEach((sq: any) => {
+      sq.label = String(sq.label).replace(/^問1\s*/, '');
+    });
+  }
+
+  const flameColorAliases: Record<string, string[]> = {
+    q_c1_2_B_3_1: ['赤色'],
+    q_c1_2_B_3_2: ['黄色'],
+    q_c1_2_B_3_3: ['紫色', '赤紫', '赤紫色'],
+    q_c1_2_B_3_4: ['青緑色'],
+    q_c1_2_B_3_5: ['橙色', 'だいだい色'],
+    q_c1_2_B_3_6: ['紅色'],
+    q_c1_2_B_3_7: ['黄緑色'],
+  };
+  Object.entries(flameColorAliases).forEach(([id, aliases]) => {
+    const sq = findPracticeProblem('c1_2_B', 'q_c1_2_B_3')?.subQuestions?.find((item: any) => item.id === id);
+    if (sq) sq.acceptedAnswers = aliases;
+  });
+
+  const elementInference = findPracticeProblem('c1_2_B', 'q_c1_2_B_4');
+  if (elementInference) {
+    elementInference.text = String(elementInference.text).replace(
+      '元素記号ですべて推定せよ。',
+      '元素記号ですべて推定せよ（半角・全角英字どちらでも可）。'
+    );
+  }
+
+  const precipitateFormulas = ['q_c1_2_B_5_1_chem', 'q_c1_2_B_5_4_chem', 'q_c1_2_B_5_5_chem'];
+  precipitateFormulas.forEach((id) => {
+    const sq = findPracticeProblem('c1_2_B', 'q_c1_2_B_5')?.subQuestions?.find((item: any) => item.id === id);
+    if (sq) sq.requiresChemicalPalette = true;
+  });
+})();
+
+export const componentDetectionTreeData = {
+  id: 'component_detection_root',
+  label: '物質の構成と成分元素の検出',
+  step: null,
+  explanation: '同素体・炎色反応・沈殿反応・水の検出を、成分元素を見抜くための手がかりとして整理します。',
+  children: [
+    {
+      id: 'component_step1',
+      label: '同素体',
+      step: 1,
+      explanation: '同じ元素からできていて性質が異なる単体どうしを同素体といいます。代表元素は S・C・O・P です。',
+      relatedQuestions: [
+        { id: 'q_c1_2_B_1_2', label: '同素体の組み合わせ' },
+        { id: 'q_c1_2_B_2_1_stable', label: '硫黄の同素体' },
+        { id: 'q_c1_2_B_2_2_hard', label: '炭素の同素体' },
+      ],
+      children: [
+        { id: 'component_s', label: '硫黄 S', step: null, subLabel: '斜方・単斜・ゴム状', explanation: '常温で安定なのは斜方硫黄、針状結晶は単斜硫黄です。' },
+        { id: 'component_c', label: '炭素 C', step: null, subLabel: 'ダイヤ・黒鉛など', explanation: '硬いダイヤモンド、電気を通す黒鉛、フラーレン、カーボンナノチューブがあります。' },
+        { id: 'component_o_p', label: '酸素 O / リン P', step: null, subLabel: 'オゾン・黄リン/赤リン', explanation: 'オゾンは淡青色で特異臭。黄リンは水中保存、赤リンはマッチの側薬に使われます。' },
+      ],
+    },
+    {
+      id: 'component_step2',
+      label: '炎色反応',
+      step: 2,
+      explanation: '金属元素を炎の色から推定します。Li赤、Na黄、K紫、Cu青緑、Ca橙、Sr紅、Ba黄緑。',
+      relatedQuestions: [
+        { id: 'q_c1_2_B_3_1', label: 'Li' },
+        { id: 'q_c1_2_B_3_4', label: 'Cu' },
+        { id: 'q_c1_2_B_4_A_metal', label: '化合物Aの金属元素' },
+      ],
+      children: [
+        { id: 'flame_alkali', label: 'Li・Na・K', step: null, subLabel: '赤・黄・紫', explanation: 'アルカリ金属の炎色反応は頻出です。' },
+        { id: 'flame_others', label: 'Cu・Ca・Sr・Ba', step: null, subLabel: '青緑・橙・紅・黄緑', explanation: '語呂合わせとセットで色を覚えます。' },
+      ],
+    },
+    {
+      id: 'component_step3',
+      label: '成分元素の検出',
+      step: 3,
+      explanation: '沈殿や色変化から、CO₂・H₂O・Cl・S などの存在を判断します。',
+      relatedQuestions: [
+        { id: 'q_c1_2_B_5_1_chem', label: '石灰水とCO₂' },
+        { id: 'q_c1_2_B_5_4_chem', label: '塩化銀' },
+        { id: 'q_c1_2_B_5_5_chem', label: '硫化鉛' },
+      ],
+      children: [
+        { id: 'detect_co2', label: 'CO₂の検出', step: null, subLabel: '石灰水→白濁', explanation: 'CO₂により炭酸カルシウム CaCO₃ の白色沈殿が生じます。' },
+        { id: 'detect_water', label: '水の検出', step: null, subLabel: '硫酸銅・塩化コバルト紙', explanation: '無水硫酸銅は白→青、塩化コバルト紙は青→赤（桃）に変化します。' },
+        { id: 'detect_precipitate', label: '沈殿反応', step: null, subLabel: 'AgCl / PbS', explanation: 'Cl⁻ は AgCl 白色沈殿、S²⁻ は PbS 黒色沈殿で検出します。' },
+      ],
+    },
+  ],
+};
+
 export const substanceTreeData = {
   "id": "root",
   "label": "物質",
@@ -10980,6 +11204,313 @@ export const acidBaseTreeData = {
               "id": "p_c5_7_2",
               "label": "⑤-7 問2 二段階滴定の計算"
             }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+// ------------------------------------------------------------
+// ⑥ 酸化還元反応 ロジックツリー
+// 添付の「包括版フローチャート集（①）」の酸化還元セクションを、
+// アプリの単元（c6_1〜c6_7）と設問ID（p_c6_*）に統合したロジックツリー。
+// InteractiveTree / ChapterFlowchartModal / PracticeExplanationTree から参照される。
+// ------------------------------------------------------------
+export const redoxTreeData = {
+  "id": "redox_root",
+  "label": "酸化還元反応",
+  "step": null,
+  "explanation": "酸化還元は「<b>定義・酸化数</b>」→「<b>酸化剤・還元剤と半反応式</b>」→「<b>酸化還元滴定（量的関係）</b>」→「<b>酸化力・還元力の強さ</b>」→「<b>金属のイオン化傾向</b>」→「<b>電池</b>」→「<b>金属の製錬・電気分解</b>」の順に積み上げると理解しやすい単元です。すべての土台は「電子 e⁻ の受け渡し」と「酸化数の増減」という一つの原理です。",
+  "children": [
+    {
+      "id": "rx_step1",
+      "isGroup": true,
+      "label": "【Step1】酸化・還元の定義と酸化数",
+      "step": 1,
+      "children": [
+        {
+          "id": "rx_def",
+          "label": "酸化・還元の定義",
+          "step": 1,
+          "subLabel": "酸素・水素・電子で判定",
+          "explanation": "<b>酸化</b>＝酸素を受け取る／水素を失う／<b>電子 e⁻ を失う</b>。<b>還元</b>＝酸素を失う／水素を受け取る／<b>電子 e⁻ を受け取る</b>。最も本質的な基準は「電子の授受」で、酸化と還元は必ず同時に起こる。",
+          "relatedQuestions": [
+            { "id": "p_c6_1_1", "label": "⑥-1 問1 酸化還元とは" },
+            { "id": "p_c6_1_4", "label": "⑥-1 問4 用語の確認" },
+            { "id": "p_c6_1_5", "label": "⑥-1 問5 用語の確認" }
+          ]
+        },
+        {
+          "id": "rx_oxnum",
+          "label": "酸化数の求め方",
+          "step": 1,
+          "subLabel": "単体0／H＝+1／O＝−2 など",
+          "explanation": "①単体中の原子は 0。②化合物中の H は +1、O は −2（過酸化物では −1）。③化合物全体の酸化数の総和は 0、イオンでは電荷に等しい。酸化数が<b>増える＝酸化</b>、<b>減る＝還元</b>。",
+          "relatedQuestions": [
+            { "id": "p_c6_1_2", "label": "⑥-1 問2 酸化数を求める" },
+            { "id": "p_c6_1_3", "label": "⑥-1 問3 酸化数の変化" }
+          ]
+        },
+        {
+          "id": "rx_agent_classify",
+          "label": "酸化剤・還元剤の判定",
+          "step": 1,
+          "subLabel": "相手を酸化＝酸化剤",
+          "explanation": "<b>酸化剤</b>＝相手を酸化し自身は還元される（電子を受け取る）。<b>還元剤</b>＝相手を還元し自身は酸化される（電子を与える）。反応前後で酸化数が減った原子を含む物質が酸化剤。",
+          "relatedQuestions": [
+            { "id": "p_c6_1_6", "label": "⑥-1 問6 酸化剤・還元剤の分類" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step2",
+      "isGroup": true,
+      "label": "【Step2】半反応式と酸化還元反応式",
+      "step": 2,
+      "children": [
+        {
+          "id": "rx_half_ox",
+          "label": "酸化剤の半反応式",
+          "step": 2,
+          "subLabel": "MnO₄⁻ / Cr₂O₇²⁻ など",
+          "explanation": "半反応式の作り方：①主役の変化を書く→②O は H₂O で合わせる→③H は H⁺ で合わせる→④電子 e⁻ で電荷を合わせる。例：MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O。",
+          "relatedQuestions": [
+            { "id": "p_c6_2_1", "label": "⑥-2 問1 半反応式（酸化剤）" }
+          ]
+        },
+        {
+          "id": "rx_half_red",
+          "label": "還元剤の半反応式",
+          "step": 2,
+          "subLabel": "(COOH)₂ / Fe²⁺ など",
+          "explanation": "還元剤は電子を右辺に出す形で書く。例：(COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻、Fe²⁺ → Fe³⁺ + e⁻。",
+          "relatedQuestions": [
+            { "id": "p_c6_2_2", "label": "⑥-2 問2 半反応式（還元剤）" }
+          ]
+        },
+        {
+          "id": "rx_combine",
+          "label": "酸化還元反応式の完成",
+          "step": 2,
+          "subLabel": "e⁻ を消去して合算",
+          "explanation": "酸化剤と還元剤の半反応式を、授受する電子の数がそろうように整数倍して足し合わせ、e⁻ を消去する。必要なら両辺に対イオンを補って化学反応式に直す。",
+          "relatedQuestions": [
+            { "id": "p_c6_2_3", "label": "⑥-2 問3 酸化還元反応の化学反応式" }
+          ]
+        },
+        {
+          "id": "rx_dual",
+          "label": "SO₂・H₂O₂ の二面性",
+          "step": 2,
+          "subLabel": "相手しだいで酸化剤にも還元剤にも",
+          "explanation": "H₂O₂ は普段は酸化剤だが、強い酸化剤（KMnO₄）に対しては還元剤としてはたらく。SO₂ も同様に相手によって役割が変わる。",
+          "relatedQuestions": [
+            { "id": "p_c6_2_4", "label": "⑥-2 問4 SO₂・H₂O₂ のはたらき" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step3",
+      "isGroup": true,
+      "label": "【Step3】酸化還元滴定と量的関係",
+      "step": 3,
+      "children": [
+        {
+          "id": "rx_titration",
+          "label": "量的関係の基本式",
+          "step": 3,
+          "subLabel": "酸化剤が受け取る e⁻＝還元剤が出す e⁻",
+          "explanation": "酸化還元滴定の核心は「<b>酸化剤が受け取った電子の物質量 ＝ 還元剤が放出した電子の物質量</b>」。（酸化剤の価数×mol）＝（還元剤の価数×mol）で立式する。",
+          "relatedQuestions": [
+            { "id": "p_c6_3_1", "label": "⑥-3 問1 酸化還元滴定（過酸化水素）" },
+            { "id": "p_c6_3_2", "label": "⑥-3 問2 市販の過酸化水素水" }
+          ]
+        },
+        {
+          "id": "rx_kmno4",
+          "label": "過マンガン酸塩滴定",
+          "step": 3,
+          "subLabel": "終点は薄い赤紫色",
+          "explanation": "KMnO₄ 自身が濃い赤紫色なので指示薬が不要。滴下した KMnO₄ の色が消えなくなった点（薄い赤紫色になった点）が終点。",
+          "relatedQuestions": [
+            { "id": "p_c6_3_1", "label": "⑥-3 問1 酸化還元滴定（過酸化水素）" }
+          ]
+        },
+        {
+          "id": "rx_iodine",
+          "label": "ヨウ素滴定",
+          "step": 3,
+          "subLabel": "終点にデンプン指示薬",
+          "explanation": "I₂ とチオ硫酸ナトリウムなどを用いる滴定。終点付近でデンプンを加えると青紫色（ヨウ素デンプン反応）が消える点を終点とする。",
+          "relatedQuestions": [
+            { "id": "p_c6_3_3", "label": "⑥-3 問3 ヨウ素滴定（ビタミンC）" },
+            { "id": "p_c6_3_5", "label": "⑥-3 問5 ヨウ素滴定（SO₂・H₂O₂）" }
+          ]
+        },
+        {
+          "id": "rx_cod",
+          "label": "逆滴定・COD",
+          "step": 3,
+          "subLabel": "過剰の酸化剤を後から滴定",
+          "explanation": "COD（化学的酸素要求量）は、水中の有機物を酸化するのに必要な酸素量。過剰に加えた酸化剤の残りを別の還元剤で滴定して求める（逆滴定）。",
+          "relatedQuestions": [
+            { "id": "p_c6_3_4", "label": "⑥-3 問4 COD測定（逆滴定）" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step4",
+      "isGroup": true,
+      "label": "【Step4】酸化力・還元力の強さ",
+      "step": 4,
+      "children": [
+        {
+          "id": "rx_strength",
+          "label": "反応の進む向きと強さの序列",
+          "step": 4,
+          "subLabel": "強い酸化剤が弱い酸化剤を追い出す",
+          "explanation": "酸化還元反応は「より強い酸化剤・還元剤の組み合わせ」の向きに進む。反応が実際に進んだかどうかから、酸化力・還元力の強弱を比較できる。",
+          "relatedQuestions": [
+            { "id": "p_c6_4_1", "label": "⑥-4 問1 酸化力・還元力の強さ" }
+          ]
+        },
+        {
+          "id": "rx_halogen",
+          "label": "ハロゲンの酸化力と金属の析出",
+          "step": 4,
+          "subLabel": "F₂ ＞ Cl₂ ＞ Br₂ ＞ I₂",
+          "explanation": "ハロゲンの酸化力は F₂＞Cl₂＞Br₂＞I₂。強いハロゲンは弱いハロゲンのイオンを追い出す（例：Cl₂ + 2KBr → 2KCl + Br₂）。金属の析出反応も同じ強弱の原理で説明できる。",
+          "relatedQuestions": [
+            { "id": "p_c6_4_2", "label": "⑥-4 問2 金属の析出とハロゲンの酸化力" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step5",
+      "isGroup": true,
+      "label": "【Step5】金属のイオン化傾向",
+      "step": 4,
+      "children": [
+        {
+          "id": "rx_ion_series",
+          "label": "イオン化列と反応性",
+          "step": 4,
+          "subLabel": "Li K Ca Na Mg Al Zn Fe …",
+          "explanation": "金属が水溶液中で陽イオンになろうとする傾向の順（イオン化列）。左ほど酸化されやすく反応性が大きい。「リッチ（Li）に貸そ（K,Ca,Na）かな（Mg,Al）…」で暗記する。",
+          "relatedQuestions": [
+            { "id": "p_c6_5_1", "label": "⑥-5 問1 金属のイオン化傾向" },
+            { "id": "p_c6_5_2", "label": "⑥-5 問2 金属の特定（イオン化傾向）" }
+          ]
+        },
+        {
+          "id": "rx_metal_react",
+          "label": "水・酸・空気との反応",
+          "step": 4,
+          "subLabel": "常温／加熱／王水での違い",
+          "explanation": "イオン化傾向により、水（常温・熱水・高温水蒸気）や酸（希酸・酸化力のある酸・王水）との反応性が決まる。水素よりイオン化傾向が大きい金属は希酸と反応して H₂ を発生する。",
+          "relatedQuestions": [
+            { "id": "p_c6_5_2", "label": "⑥-5 問2 金属の特定（イオン化傾向）" }
+          ]
+        },
+        {
+          "id": "rx_galvanize",
+          "label": "トタンとブリキ（犠牲防食）",
+          "step": 4,
+          "subLabel": "Zn めっき／Sn めっき",
+          "explanation": "トタン＝鉄に Zn めっき（傷ついても Zn が先に溶けて鉄を守る＝犠牲防食）。ブリキ＝鉄に Sn めっき（傷つくと鉄が先に錆びる）。イオン化傾向 Zn＞Fe＞Sn で理解する。",
+          "relatedQuestions": [
+            { "id": "p_c6_5_3", "label": "⑥-5 問3 金属の特定とトタン・ブリキ" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step6",
+      "isGroup": true,
+      "label": "【Step6】電池",
+      "step": 3,
+      "children": [
+        {
+          "id": "rx_daniell",
+          "label": "ダニエル電池",
+          "step": 3,
+          "subLabel": "負極 Zn／正極 Cu／素焼き板",
+          "explanation": "負極（−）で Zn → Zn²⁺ + 2e⁻（酸化）、正極（＋）で Cu²⁺ + 2e⁻ → Cu（還元）。電子は導線を負極→正極へ流れる。素焼き板は2液の混合を防ぎつつイオンを通し、電気的中性を保つ。",
+          "relatedQuestions": [
+            { "id": "p_c6_6_1", "label": "⑥-6 問1 ダニエル電池" }
+          ]
+        },
+        {
+          "id": "rx_volta",
+          "label": "ボルタ電池と分極",
+          "step": 3,
+          "subLabel": "正極で H₂ 発生→起電力低下",
+          "explanation": "ボルタ電池（Zn｜H₂SO₄aq｜Cu）では正極の銅表面で H₂ が発生し、泡が反応を妨げて起電力が低下する（分極）。減極剤で分極を防ぐ。",
+          "relatedQuestions": [
+            { "id": "p_c6_6_1", "label": "⑥-6 問1 ダニエル電池" }
+          ]
+        },
+        {
+          "id": "rx_battery_quant",
+          "label": "電池の量的関係",
+          "step": 3,
+          "subLabel": "負極の e⁻＝正極の e⁻",
+          "explanation": "負極で放出された電子の物質量と正極で受け取られた電子の物質量は等しい。各電極の半反応の係数から、溶けた／析出した金属の物質量を電子の授受でそろえて計算する。",
+          "relatedQuestions": [
+            { "id": "p_c6_6_2", "label": "⑥-6 問2 電池と量的関係" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rx_step7",
+      "isGroup": true,
+      "label": "【Step7】金属の製錬と電気分解",
+      "step": 4,
+      "children": [
+        {
+          "id": "rx_smelting",
+          "label": "製錬法とイオン化傾向",
+          "step": 4,
+          "subLabel": "イオン化傾向で製法が決まる",
+          "explanation": "イオン化傾向が小さい金属（Au, Pt）は単体で産出。中程度（Fe, Cu）は酸化物・硫化物を炭素や CO で還元。大きい金属（Al 以上）は融解塩電解が必要。",
+          "relatedQuestions": [
+            { "id": "p_c6_7_1", "label": "⑥-7 問1 金属の製錬法" }
+          ]
+        },
+        {
+          "id": "rx_blast",
+          "label": "鉄の高炉製錬",
+          "step": 4,
+          "subLabel": "CO で Fe₂O₃ を還元",
+          "explanation": "高炉でコークス C が不完全燃焼して CO が生じ、これが強力な還元剤として Fe₂O₃ + 3CO → 2Fe + 3CO₂ のように鉄鉱石を還元する。",
+          "relatedQuestions": [
+            { "id": "p_c6_7_2", "label": "⑥-7 問2 鉄の製錬（高炉）" }
+          ]
+        },
+        {
+          "id": "rx_cu_refine",
+          "label": "銅の電解精錬",
+          "step": 4,
+          "subLabel": "陽極＝粗銅／陰極＝純銅",
+          "explanation": "陽極に粗銅、陰極に純銅を用い硫酸銅(II)水溶液を電気分解。粗銅が溶け、陰極に純銅が析出。銅よりイオン化傾向の小さい Au, Pt は陽極泥として沈殿する。",
+          "relatedQuestions": [
+            { "id": "p_c6_7_3", "label": "⑥-7 問3 銅の電解精錬" }
+          ]
+        },
+        {
+          "id": "rx_al_electrolysis",
+          "label": "アルミニウムの溶融塩電解",
+          "step": 4,
+          "subLabel": "氷晶石で融点降下→電気分解",
+          "explanation": "アルミナ Al₂O₃ を氷晶石とともに融かして電気分解（溶融塩電解）。陰極で Al³⁺ + 3e⁻ → Al。水溶液では水が先に反応するため、水を含まない融解液で行う必要がある。",
+          "relatedQuestions": [
+            { "id": "p_c6_7_4", "label": "⑥-7 問4 アルミニウムの溶融塩電解" }
           ]
         }
       ]
