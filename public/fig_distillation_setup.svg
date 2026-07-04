@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" role="img" aria-label="蒸留装置 ①〜⑤">
+  <style>.line{stroke:#334155;stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round}.thin{stroke:#64748b;stroke-width:2.5;fill:none}.glass{fill:#eff6ff;stroke:#475569;stroke-width:4;opacity:.78}.water{stroke:#3b82f6;stroke-width:6;fill:none;stroke-linecap:round}.label{font:800 28px sans-serif;fill:#1e293b}.small{font:600 15px sans-serif;fill:#475569}.flame{fill:#fb923c;stroke:#ea580c;stroke-width:2}</style>
+  <rect width="900" height="360" fill="#f8fafc"/>
+  <text class="small" x="28" y="32">塩化ナトリウム水溶液の蒸留</text>
+  <path class="glass" d="M190 195c-42 10-70 44-70 82 0 36 34 55 80 55s80-19 80-55c0-38-28-72-70-82v-76h-20z"/>
+  <path class="thin" d="M145 278h110"/><path d="M145 278c18 22 92 22 110 0" fill="#bfdbfe" opacity=".75"/>
+  <path class="line" d="M210 128h90l35 45"/><path class="line" d="M298 128l0-38"/><path class="thin" d="M298 90h-20"/>
+  <path class="glass" d="M330 160l300 92 18-56-300-92z"/>
+  <path class="thin" d="M358 132l250 78"/><path class="thin" d="M352 150l250 78"/>
+  <path class="water" d="M610 246l-30 44"/><path class="water" d="M410 114l-30-44"/>
+  <text class="small" x="590" y="315">冷却水入口</text><text class="small" x="325" y="66">冷却水出口</text>
+  <path class="glass" d="M694 248h92l-18 74h-56z"/><path fill="#bfdbfe" opacity=".75" d="M708 287h65l-8 28h-50z"/>
+  <path class="line" d="M648 197l65 52"/>
+  <path class="line" d="M135 334h130M160 334v-42M240 334v-42"/><path class="flame" d="M201 336c-18-28 2-34 0-58 24 24 38 44 0 58z"/>
+  <circle cx="200" cy="155" r="17" fill="#fff" stroke="#334155" stroke-width="3"/><text class="label" x="192" y="164">①</text>
+  <circle cx="486" cy="174" r="17" fill="#fff" stroke="#334155" stroke-width="3"/><text class="label" x="478" y="183">②</text>
+  <circle cx="201" cy="238" r="17" fill="#fff" stroke="#334155" stroke-width="3"/><text class="label" x="193" y="247">③</text>
+  <circle cx="657" cy="210" r="17" fill="#fff" stroke="#334155" stroke-width="3"/><text class="label" x="649" y="219">④</text>
+  <circle cx="742" cy="260" r="17" fill="#fff" stroke="#334155" stroke-width="3"/><text class="label" x="734" y="269">⑤</text>
+</svg>

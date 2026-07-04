@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { 
   substanceTreeData, 
   separationTreeData, 
+  componentDetectionTreeData,
   thermalMotionTreeData, 
   atomicStructureTreeData, 
   ionTreeData, 
@@ -28,47 +29,6 @@ interface ChapterFlowchartModalProps {
   questions?: any[];
 }
 
-// 各単元は、静的HTMLフローチャート集（v3・アプリ単元完全対応版）の
-// 該当章を iframe で埋め込んで表示する。
-// key: chapterId ／ value: フローチャート集内の data-chart-id
-const staticFlowchartMap: Record<string, string> = {
-  // ① 物質の構成
-  'c1_1': 'p1-1',    // 純物質と混合物
-  'c1_2_A': 'p1-2A', // 物質の分離と精製
-  'c1_2_B': 'p1-2B', // 物質の構成と成分元素の検出
-  'c1_3': 'p1-3',    // 粒子の熱運動と物質の三態
-  // ② 物質の構成粒子
-  'c2_1': 'p2-1',    // 原子の構造と電子配置・周期表
-  'c2_2': 'p2-2',    // イオン
-  'c2_3': 'p2-3',    // イオン生成とエネルギー
-  'c2_4': 'p2-4',    // 原子の大きさとイオンの大きさ
-  // ③ 化学結合
-  'c3_1': 'p3-1',    // 結合の種類
-  'c3_2': 'p3-2',    // 結晶の種類と性質
-  'c3_3': 'p3-3',    // 分子の相互作用と性質
-  // ④ 物質量と化学反応式
-  'c4_1': 'p4-1',    // 原子量
-  'c4_2': 'p4-2',    // 物質量（mol）
-  'c4_3': 'p4-3',    // 化学反応式とイオン反応式の作り方
-  'c4_4': 'p4-4',    // 濃度
-  // ⑤ 酸と塩基（v3 では「塩の分類」が p2-2-5 に追加され以降の番号がずれている）
-  'c5_1': 'p2-2-1', // 酸と塩基の定義
-  'c5_2': 'p2-2-2', // 酸と塩基の強さ
-  'c5_3': 'p2-2-3', // pHについて
-  'c5_4': 'p2-2-4', // 中和とは何か（※塩の分類は p2-2-5）
-  'c5_5': 'p2-2-6', // 中和と中和滴定の計算方法
-  'c5_6': 'p2-2-7', // 中和滴定の道具と方法
-  'c5_7': 'p2-2-8', // 滴定曲線と二段階滴定
-  // ⑥ 酸化還元反応（v3 では電池と金属の反応の順序が旧版と逆）
-  'c6_1': 'p2-3-1', // 酸化還元反応とは何か（酸化数）
-  'c6_2': 'p2-3-2', // 半反応式と酸化還元反応式の作り方
-  'c6_3': 'p2-3-3', // 酸化剤と還元剤の量的関係（酸化還元滴定）
-  'c6_4': 'p2-3-4', // 酸化力と還元力としての強さ
-  'c6_5': 'p2-3-6', // 金属と水・酸・空気との反応（イオン化傾向）
-  'c6_6': 'p2-3-5', // 電池
-  'c6_7': 'p2-3-7', // 工業的製法（Al・Fe・Cu）
-};
-
 export function ChapterFlowchartModal({ 
   chapterId, 
   chapterTitle, 
@@ -77,13 +37,11 @@ export function ChapterFlowchartModal({
   questions = []
 }: ChapterFlowchartModalProps) {
   
-  // 静的HTMLフローチャート（詳細版）の該当章
-  const staticChartId = staticFlowchartMap[chapterId];
-
   // Resolve correct tree data by chapterId
   let currentTreeData: NodeData | null = null;
   if (chapterId === 'c1_1') currentTreeData = substanceTreeData;
   if (chapterId === 'c1_2_A') currentTreeData = separationTreeData;
+  if (chapterId === 'c1_2_B') currentTreeData = componentDetectionTreeData;
   if (chapterId === 'c1_3') currentTreeData = thermalMotionTreeData;
   if (chapterId === 'c2_1') currentTreeData = atomicStructureTreeData;
   if (chapterId === 'c2_2') currentTreeData = ionTreeData;
@@ -149,46 +107,11 @@ export function ChapterFlowchartModal({
 
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-6 bg-[#FDFBF7] font-handwriting">
-          {staticChartId ? (
-            <div className="flex flex-col gap-4">
-              {/* 詳細版フローチャート（静的HTML を iframe 埋め込み） */}
-              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm w-full overflow-hidden">
-                <iframe
-                  src={`/flowcharts/chem-basic-acid-redox-flowchart.html?only=${staticChartId}&embed=1`}
-                  title={`${chapterTitle} フローチャート（詳細版）`}
-                  className="w-full border-0"
-                  style={{ height: 'min(62vh, 720px)', minHeight: 420 }}
-                  loading="lazy"
-                />
-                <div className="px-4 py-2 border-t border-gray-100 bg-gray-50/60 flex justify-end">
-                  <a
-                    href={`/flowcharts/chem-basic-acid-redox-flowchart.html#${staticChartId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[11px] sm:text-xs font-bold text-[#2C3E50] hover:text-[#A9CCE3] underline underline-offset-2 transition-colors"
-                  >
-                    フローチャート集（全項目）を新しいタブで開く ↗
-                  </a>
-                </div>
-              </div>
-
-              {/* ロジックツリーがある単元は併せて表示（問題への直接リンク付き） */}
-              {currentTreeData && (
-                <div className="bg-white rounded-2xl border border-gray-200 p-1 sm:p-3 shadow-sm w-full font-handwriting">
-                  <p className="text-[11px] sm:text-xs text-gray-500 font-bold px-2 pt-2 pb-1">
-                    ▼ ロジックツリー（タップで開閉・確認問題へ移動できます）
-                  </p>
-                  <InteractiveTree 
-                    data={currentTreeData}
-                    onQuestionClick={handleQuestionClick}
-                    mobileTightCrop={true}
-                    zoom="far"
-                  />
-                </div>
-              )}
-            </div>
-          ) : currentTreeData ? (
+          {currentTreeData ? (
             <div className="bg-white rounded-2xl border border-gray-200 p-1 sm:p-3 shadow-sm w-full font-handwriting">
+              <p className="text-[11px] sm:text-xs text-gray-500 font-bold px-2 pt-2 pb-1">
+                ▼ ロジックツリー（タップで開閉・確認問題へ移動できます）
+              </p>
               <InteractiveTree 
                 data={currentTreeData}
                 onQuestionClick={handleQuestionClick}

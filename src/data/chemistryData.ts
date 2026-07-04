@@ -7820,6 +7820,217 @@ export const chemistryData = {
   ]
 };
 
+// ------------------------------------------------------------
+// 化学基礎 1章：設問データ修正パッチ
+// - 問題番号表示はUI側で進捗表示に統一するため、ここでは設問内容・解答形式を調整する。
+// - 数字/英字の全角半角ゆれは answerJudge.ts の正規化で吸収する。
+// ------------------------------------------------------------
+const findPracticeChapter = (chapterId: string): any =>
+  (chemistryData.parts as any[])
+    .flatMap((part: any) => part.chapters || [])
+    .find((chapter: any) => chapter.id === chapterId);
+
+const findPracticeProblem = (chapterId: string, problemId: string): any =>
+  findPracticeChapter(chapterId)?.practiceProblems?.find((problem: any) => problem.id === problemId);
+
+const findSubQuestion = (chapterId: string, problemId: string, subQuestionId: string): any =>
+  findPracticeProblem(chapterId, problemId)?.subQuestions?.find((sq: any) => sq.id === subQuestionId);
+
+(() => {
+  const c12a = findPracticeChapter('c1_2_A');
+  if (c12a) {
+    c12a.practiceProblems = (c12a.practiceProblems || []).filter(
+      (problem: any) => !['q_c1_2_A_6', 'q_c1_2_A_8'].includes(problem.id)
+    );
+  }
+
+  const filtration = findPracticeProblem('c1_2_A', 'q_c1_2_A_1');
+  if (filtration) {
+    filtration.text = String(filtration.text).replace('/fig_filtration_abcd.png', '/fig_filtration_abcd.svg');
+  }
+
+  const distillation = findPracticeProblem('c1_2_A', 'q_c1_2_A_2');
+  if (distillation) {
+    distillation.text = String(distillation.text).replace('/fig_distillation_setup.png', '/fig_distillation_setup.svg');
+  }
+
+  const fractional = findPracticeProblem('c1_2_A', 'q_c1_2_A_3');
+  const fractionalOrder = findSubQuestion('c1_2_A', 'q_c1_2_A_3', 'q3_2');
+  if (fractional) {
+    fractional.text = String(fractional.text).replace(
+      'ウ：石油ガス・LPガス　　エ：灯油　　オ：ナフサ（粗製ガソリン）',
+      'ウ：石油ガス・LPガス　　エ：灯油　　オ：ナフサ（粗製ガソリン）\n\n※ 解答欄では、記号カードを「上から出てくる順」に並べ替えなさい。'
+    );
+  }
+  if (fractionalOrder) {
+    fractionalOrder.type = 'sorting';
+    fractionalOrder.items = ['ア', 'イ', 'ウ', 'エ', 'オ'];
+    fractionalOrder.correctAnswer = 'ウ > オ > エ > ア > イ';
+    fractionalOrder.acceptedAnswers = ['ウ→オ→エ→ア→イ', 'ウオエアイ'];
+  }
+
+  const sublimation = findPracticeProblem('c1_2_A', 'q_c1_2_A_4');
+  if (sublimation) {
+    sublimation.text = String(sublimation.text)
+      .replace('/fig_sublimation_setups.png', '/fig_sublimation_setups.svg')
+      .replace(/\n\n※選択肢の図の意味：[\s\S]*?\n\n（2）/, '\n\n（2）');
+  }
+  const sublimationMulti = findSubQuestion('c1_2_A', 'q_c1_2_A_4', 'q_c1_2_A_4_2');
+  if (sublimationMulti) {
+    sublimationMulti.type = 'multiple_choice';
+    sublimationMulti.options = ['ア', 'イ', 'ウ', 'エ', 'オ', 'カ', 'キ'];
+    sublimationMulti.correctAnswer = 'イ・ウ・オ・キ';
+    sublimationMulti.acceptedAnswers = ['イ、ウ、オ、キ', 'イウオキ'];
+  }
+
+  const extraction = findPracticeProblem('c1_2_A', 'q_c1_2_A_5');
+  if (extraction) {
+    extraction.text = String(extraction.text).replace('/fig_separating_funnel.png', '/fig_separating_funnel.svg');
+  }
+  const funnelName = findSubQuestion('c1_2_A', 'q_c1_2_A_5', 'q5_2');
+  if (funnelName) {
+    funnelName.acceptedAnswers = ['分液ろうと', '分液漏斗'];
+  }
+
+  const c13 = findPracticeChapter('c1_3');
+  if (c13) {
+    c13.practiceProblems = (c13.practiceProblems || []).filter(
+      (problem: any) => !['q_c1_3_5', 'q_c1_3_6'].includes(problem.id)
+    );
+  }
+
+  const stateChange = findPracticeProblem('c1_3', 'q_c1_3_3');
+  if (stateChange) {
+    const transitions = [
+      ['a', 'ア', '液体', '固体', '凝固'],
+      ['i', 'イ', '液体', '気体', '蒸発'],
+      ['u', 'ウ', '固体', '気体', '昇華'],
+      ['e', 'エ', '気体', '液体', '凝縮'],
+      ['o', 'オ', '気体', '固体', '凝華'],
+      ['ka', 'カ', '固体', '液体', '融解'],
+    ];
+    stateChange.text = String(stateChange.text).replace(
+      'どれからどれへの状態変化か答え、変化の名称を答えよ。',
+      '「何から何へ」の状態変化かを、（出発）から（到達）の2つの解答欄に分けて答え、変化の名称も答えよ。'
+    );
+    stateChange.subQuestions = transitions.flatMap(([key, label, from, to, name]) => [
+      { id: `q_c1_3_3_${key}_from`, label: `${label}：出発`, type: 'short_answer', correctAnswer: from, correctAnswerRate: 85 },
+      { id: `q_c1_3_3_${key}_to`, label: `${label}：到達`, type: 'short_answer', correctAnswer: to, correctAnswerRate: 85 },
+      { id: `q_c1_3_3_${key}_name`, label: `${label}：名称`, type: 'short_answer', correctAnswer: name, correctAnswerRate: 85 },
+    ]);
+  }
+
+  const chemicalChange = findSubQuestion('c1_3', 'q_c1_3_4', 'q_c1_3_4_ans');
+  if (chemicalChange) {
+    chemicalChange.type = 'multiple_choice';
+    chemicalChange.options = ['ア', 'イ', 'ウ', 'エ', 'オ', 'カ'];
+    chemicalChange.acceptedAnswers = ['イ、エ、カ', 'イエカ'];
+  }
+
+  const allotropePair = findSubQuestion('c1_2_B', 'q_c1_2_B_1', 'q_c1_2_B_1_2');
+  if (allotropePair) {
+    allotropePair.type = 'multiple_choice';
+    allotropePair.options = ['ア', 'イ', 'ウ', 'エ', 'オ', 'カ'];
+    allotropePair.correctAnswer = 'イ・ウ・オ';
+    allotropePair.acceptedAnswers = ['イ、ウ、オ', 'イウオ'];
+  }
+
+  const allotropeDetails = findPracticeProblem('c1_2_B', 'q_c1_2_B_2');
+  if (allotropeDetails) {
+    allotropeDetails.text = String(allotropeDetails.text)
+      .replace('【2】問1 硫黄、炭素、酸素、リンの性質について次の問いに答えよ。', '硫黄、炭素、酸素、リンの性質について次の問いに答えよ。')
+      .replace('(1) 硫黄(S)の同素体を3つ、名称で答えよ。また、そのうち「常温で安定で黄色」のもの、「淡黄色で針状」のものをそれぞれ選べ。', '(1) 硫黄(S)の同素体のうち、「常温で安定で黄色」のもの、「淡黄色で針状」のものをそれぞれ答えよ。')
+      .replace('(2) 炭素(C)的同素体を4つ、名称で答えよ。また、そのうち「非常に硬く電気を通さない」もの、「やわらかく電気をよく導く」ものをそれぞれ選べ。', '(2) 炭素(C)の同素体のうち、「非常に硬く電気を通さない」もの、「やわらかく電気をよく導く」ものをそれぞれ答えよ。');
+    (allotropeDetails.subQuestions || []).forEach((sq: any) => {
+      sq.label = String(sq.label).replace(/^問1\s*/, '');
+    });
+  }
+
+  const flameColorAliases: Record<string, string[]> = {
+    q_c1_2_B_3_1: ['赤色'],
+    q_c1_2_B_3_2: ['黄色'],
+    q_c1_2_B_3_3: ['紫色', '赤紫', '赤紫色'],
+    q_c1_2_B_3_4: ['青緑色'],
+    q_c1_2_B_3_5: ['橙色', 'だいだい色'],
+    q_c1_2_B_3_6: ['紅色'],
+    q_c1_2_B_3_7: ['黄緑色'],
+  };
+  Object.entries(flameColorAliases).forEach(([id, aliases]) => {
+    const sq = findPracticeProblem('c1_2_B', 'q_c1_2_B_3')?.subQuestions?.find((item: any) => item.id === id);
+    if (sq) sq.acceptedAnswers = aliases;
+  });
+
+  const elementInference = findPracticeProblem('c1_2_B', 'q_c1_2_B_4');
+  if (elementInference) {
+    elementInference.text = String(elementInference.text).replace(
+      '元素記号ですべて推定せよ。',
+      '元素記号ですべて推定せよ（半角・全角英字どちらでも可）。'
+    );
+  }
+
+  const precipitateFormulas = ['q_c1_2_B_5_1_chem', 'q_c1_2_B_5_4_chem', 'q_c1_2_B_5_5_chem'];
+  precipitateFormulas.forEach((id) => {
+    const sq = findPracticeProblem('c1_2_B', 'q_c1_2_B_5')?.subQuestions?.find((item: any) => item.id === id);
+    if (sq) sq.requiresChemicalPalette = true;
+  });
+})();
+
+export const componentDetectionTreeData = {
+  id: 'component_detection_root',
+  label: '物質の構成と成分元素の検出',
+  step: null,
+  explanation: '同素体・炎色反応・沈殿反応・水の検出を、成分元素を見抜くための手がかりとして整理します。',
+  children: [
+    {
+      id: 'component_step1',
+      label: '同素体',
+      step: 1,
+      explanation: '同じ元素からできていて性質が異なる単体どうしを同素体といいます。代表元素は S・C・O・P です。',
+      relatedQuestions: [
+        { id: 'q_c1_2_B_1_2', label: '同素体の組み合わせ' },
+        { id: 'q_c1_2_B_2_1_stable', label: '硫黄の同素体' },
+        { id: 'q_c1_2_B_2_2_hard', label: '炭素の同素体' },
+      ],
+      children: [
+        { id: 'component_s', label: '硫黄 S', step: null, subLabel: '斜方・単斜・ゴム状', explanation: '常温で安定なのは斜方硫黄、針状結晶は単斜硫黄です。' },
+        { id: 'component_c', label: '炭素 C', step: null, subLabel: 'ダイヤ・黒鉛など', explanation: '硬いダイヤモンド、電気を通す黒鉛、フラーレン、カーボンナノチューブがあります。' },
+        { id: 'component_o_p', label: '酸素 O / リン P', step: null, subLabel: 'オゾン・黄リン/赤リン', explanation: 'オゾンは淡青色で特異臭。黄リンは水中保存、赤リンはマッチの側薬に使われます。' },
+      ],
+    },
+    {
+      id: 'component_step2',
+      label: '炎色反応',
+      step: 2,
+      explanation: '金属元素を炎の色から推定します。Li赤、Na黄、K紫、Cu青緑、Ca橙、Sr紅、Ba黄緑。',
+      relatedQuestions: [
+        { id: 'q_c1_2_B_3_1', label: 'Li' },
+        { id: 'q_c1_2_B_3_4', label: 'Cu' },
+        { id: 'q_c1_2_B_4_A_metal', label: '化合物Aの金属元素' },
+      ],
+      children: [
+        { id: 'flame_alkali', label: 'Li・Na・K', step: null, subLabel: '赤・黄・紫', explanation: 'アルカリ金属の炎色反応は頻出です。' },
+        { id: 'flame_others', label: 'Cu・Ca・Sr・Ba', step: null, subLabel: '青緑・橙・紅・黄緑', explanation: '語呂合わせとセットで色を覚えます。' },
+      ],
+    },
+    {
+      id: 'component_step3',
+      label: '成分元素の検出',
+      step: 3,
+      explanation: '沈殿や色変化から、CO₂・H₂O・Cl・S などの存在を判断します。',
+      relatedQuestions: [
+        { id: 'q_c1_2_B_5_1_chem', label: '石灰水とCO₂' },
+        { id: 'q_c1_2_B_5_4_chem', label: '塩化銀' },
+        { id: 'q_c1_2_B_5_5_chem', label: '硫化鉛' },
+      ],
+      children: [
+        { id: 'detect_co2', label: 'CO₂の検出', step: null, subLabel: '石灰水→白濁', explanation: 'CO₂により炭酸カルシウム CaCO₃ の白色沈殿が生じます。' },
+        { id: 'detect_water', label: '水の検出', step: null, subLabel: '硫酸銅・塩化コバルト紙', explanation: '無水硫酸銅は白→青、塩化コバルト紙は青→赤（桃）に変化します。' },
+        { id: 'detect_precipitate', label: '沈殿反応', step: null, subLabel: 'AgCl / PbS', explanation: 'Cl⁻ は AgCl 白色沈殿、S²⁻ は PbS 黒色沈殿で検出します。' },
+      ],
+    },
+  ],
+};
+
 export const substanceTreeData = {
   "id": "root",
   "label": "物質",

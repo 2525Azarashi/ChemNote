@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 360" role="img" aria-label="分液ろうと">
+  <style>.line{stroke:#334155;stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round}.thin{stroke:#64748b;stroke-width:2;fill:none}.glass{fill:#eff6ff;stroke:#475569;stroke-width:4;opacity:.78}.water{fill:#bfdbfe;stroke:#60a5fa;stroke-width:2}.oil{fill:#fde68a;stroke:#f59e0b;stroke-width:2}.label{font:700 16px sans-serif;fill:#475569}</style>
+  <rect width="420" height="360" fill="#f8fafc"/>
+  <path class="glass" d="M160 32h100v32c0 45-24 72-39 102-10 20-11 48-11 82h-20c0-34-1-62-11-82-15-30-39-57-39-102V32z"/>
+  <path class="oil" d="M147 88h106c-4 24-15 44-27 64H174c-12-20-23-40-27-64z"/>
+  <path class="water" d="M174 152h52c-9 20-15 43-16 82h-20c-1-39-7-62-16-82z"/>
+  <path class="line" d="M190 248v42M210 248v42M174 270h52M200 290v44"/>
+  <path class="line" d="M150 334h100"/>
+  <path class="thin" d="M260 72h42M260 104h42M118 88H82M174 152H82"/>
+  <text class="label" x="306" y="78">上層</text><text class="label" x="306" y="110">有機層</text>
+  <text class="label" x="34" y="94">水層</text><text class="label" x="34" y="158">下層</text>
+  <text class="label" x="232" y="278">コック</text>
+</svg>
