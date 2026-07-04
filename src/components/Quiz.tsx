@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
-import { ProblemLogicTree } from './ProblemLogicTree';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
 import { QuestionFigure } from './QuestionFigure';
@@ -871,13 +870,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   className="mt-5"
                 />
               )}
-              {/* この問題に対応するロジックツリー（該当ステップのみ抜粋）。
-                  解答解説ページと同じ抜粋範囲を再掲するため範囲が一致する。 */}
-              <ProblemLogicTree
-                chapter={chapter}
-                currentQuestion={currentQuestion}
-                isMobile={!isDesktop}
-              />
+              {/* 問題解答画面（回答入力中）にはロジックツリーを表示しない。
+                  ロジックツリーは「単元選択・学習フローチャート」画面と
+                  「解答解説ページ」にのみ表示する。 */}
             </div>
           </div>
         </div>

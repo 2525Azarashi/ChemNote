@@ -1017,7 +1017,6 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     isMobile={isMobile}
                     renderSubQuestionCheck={renderSubQuestionCheck}
                     zoom={isMobile ? 'normal' : 'far'}
-                    isSingleQuestion={singleQuestionIndex !== undefined}
                   />
                 </div>
               )}
