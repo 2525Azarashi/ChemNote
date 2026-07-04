@@ -101,3 +101,44 @@ export const extractRelevantTree = (
 
   return prune(fullTree);
 };
+
+/**
+ * 単元全体を1つの大きなツリーで共有している c5(酸と塩基)/c6(酸化還元) 用に、
+ * 「その下位章に対応する重要事項セクションだけ」をルートごと切り出す。
+ *
+ * これらのツリーは
+ *   root（酸と塩基 / 酸化還元反応）
+ *     └ children[0] = 重要事項① …（isGroup, 章 c5_1/c6_1）
+ *     └ children[1] = 重要事項② …（isGroup, 章 c5_2/c6_2）
+ *     └ …
+ * という並びで、children の index がそのまま下位章の番号（1始まり）に対応する。
+ * 添付HTMLをそのまま反映したフル解説ツリーであり、確認問題プレースホルダは含まない。
+ *
+ * - chapterId が "c5"/"c6"（単元トップ）の場合は全セクションをそのまま表示する。
+ * - "c5_2" 等の下位章の場合は、対応する1セクションのみを子に持つルートを返す。
+ * - 対応セクションが存在しない場合はフルツリーをそのまま返す（フォールバック）。
+ *
+ * @param fullTree   単元全体のロジックツリー（acidBaseTreeData / redoxTreeData）
+ * @param chapterId  "c5" / "c5_2" / "c6" / "c6_5" など
+ * @returns          切り出し後のツリー（該当なし・単元トップならフルツリー）。
+ */
+export const extractSectionByChapter = (
+  fullTree: NodeData | null | undefined,
+  chapterId: string
+): NodeData | null => {
+  if (!fullTree) return null;
+
+  // "c5_2" -> 2 / "c6_5" -> 5。単元トップ("c5"/"c6")なら null（＝全体表示）。
+  const m = chapterId.match(/^c[56]_(\d+)$/);
+  if (!m) return fullTree; // 単元トップ or 想定外 → フル表示
+
+  const sectionIndex = parseInt(m[1], 10) - 1; // 1始まり → 0始まり
+  const children = fullTree.children || [];
+  const section = children[sectionIndex];
+  if (!section) return fullTree; // フォールバック（想定外の章番号）
+
+  return {
+    ...fullTree,
+    children: [section],
+  };
+};

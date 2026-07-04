@@ -10532,115 +10532,85 @@ export const acidBaseTreeData = {
   "id": "acidBaseTreeData_root",
   "label": "酸と塩基",
   "step": null,
-  "explanation": "酸・塩基は「<u>定義</u>」→「<u>強さ・価数</u>」→「<u>pH と水のイオン積</u>」→「<u>中和反応と塩</u>」→「<u>中和の計算</u>」→「<u>滴定の器具と操作</u>」→「<u>滴定曲線・二段階滴定</u>」の順に積み上げると理解しやすい単元です。各ステップは前のステップの知識を前提にしているため、上から順に確認していきましょう。",
+  "explanation": "酸・塩基は「<u>定義</u>」→「<u>強さ・価数</u>」→「<u>pH と水のイオン積</u>」→「<u>中和とは何か</u>」→「<u>中和反応の計算</u>」→「<u>中和滴定の道具と方法</u>」→「<u>滴定曲線・二段階滴定</u>」の順に積み上げると理解しやすい単元です。各項目をタップすると詳しい解説が開きます。",
   "children": [
     {
       "id": "acidBaseTreeData_sec1",
-      "label": "重要事項① 酸と塩基の定義",
+      "label": "重要事項① 酸と塩基の定義（アレニウス／ブレンステッド・ローリー）",
       "step": 1,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_2_1_step1_group",
-          "label": "【Step1：酸性・塩基性の基本性質】",
+          "id": "acidBaseTreeData_sec1_1",
+          "label": "【Step1：アレニウスの定義（水溶液限定）】",
           "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_1_n1",
-              "label": "酸性",
+              "id": "acidBaseTreeData_sec1_1_1",
+              "label": "アレニウスの酸",
               "step": 1,
-              "subLabel": "青リトマス→赤",
-              "explanation": "<u>酸性物質</u>＝<u>青色リトマス紙を赤色</u>に変える。\n\n<u>例</u>：塩酸 HCl、食酢（CH₃COOH）、硫酸 H₂SO₄"
+              "subLabel": "電離して H⁺ を生じる物質",
+              "explanation": "<u>アレニウスの酸</u>＝水に溶かして電離したとき、<u>H⁺（＝オキソニウムイオン H₃O⁺）</u>を生じる物質。\n\n<u>例①</u>：HCl → H⁺ + Cl⁻（塩酸）\n\n<u>例②</u>：H₂SO₄ → 2H⁺ + SO₄²⁻（硫酸）\n\n<u>例③</u>：HNO₃ → H⁺ + NO₃⁻（硝酸）\n\n<u>例④</u>：CH₃COOH ⇄ CH₃COO⁻ + H⁺（酢酸／可逆）\n\n<u>厳密には</u>：H⁺ は水分子と結びついて <u>オキソニウムイオン H₃O⁺</u> として存在する。\n\n例：HCl + H₂O → <u>H₃O⁺</u> + Cl⁻"
             },
             {
-              "id": "p2_2_1_n2",
-              "label": "塩基性（アルカリ性）",
+              "id": "acidBaseTreeData_sec1_1_2",
+              "label": "アレニウスの塩基",
               "step": 1,
-              "subLabel": "赤リトマス→青",
-              "explanation": "<u>塩基性物質</u>＝<u>赤色リトマス紙を青色</u>に変える。\n\n<u>例</u>：NaOH、Ca(OH)₂、NH₃\n\n💡 <u>水に溶けやすい塩基をアルカリ</u>、その水溶液の性質を<u>アルカリ性</u>という"
-            },
-            {
-              "id": "p2_2_1_n3",
-              "label": "電離とは",
-              "step": 1,
-              "subLabel": "イオンに分かれる",
-              "explanation": "<u>電離</u>＝物質が水に溶けた時に<u>陽イオンと陰イオンに分かれる</u>こと。\n\n例：HCl → H⁺ + Cl⁻\n\n例：NaOH → Na⁺ + OH⁻"
+              "subLabel": "電離して OH⁻ を生じる物質",
+              "explanation": "<u>アレニウスの塩基</u>＝水に溶かして電離したとき、<u>水酸化物イオン OH⁻</u>を生じる物質。\n\n<u>例①</u>：NaOH → Na⁺ + OH⁻\n\n<u>例②</u>：KOH → K⁺ + OH⁻\n\n<u>例③</u>：Ca(OH)₂ → Ca²⁺ + 2OH⁻\n\n<u>例④</u>：Ba(OH)₂ → Ba²⁺ + 2OH⁻\n\n<u>欠点</u>：<u>アンモニア NH₃ は OH⁻ を式中に含まないのに塩基性を示す</u> → アレニウスの定義では説明できない！\n\n→ そこで登場したのが「ブレンステッド・ローリーの定義」。"
             }
           ]
         },
         {
-          "id": "p2_2_1_step2_group",
-          "label": "【Step2：アレニウスの定義】",
-          "step": 1,
+          "id": "acidBaseTreeData_sec1_2",
+          "label": "【Step2：ブレンステッド・ローリーの定義（H⁺のやり取り）】",
+          "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_1_n5",
-              "label": "アレニウスの定義",
-              "step": 1,
-              "subLabel": "H⁺ を生じる酸、OH⁻ を生じる塩基",
-              "explanation": "<u>★ アレニウスの定義 ★</u>\n\n電離すると\n\n・<u>H⁺（H₃O⁺）を生じる物質 ＝ 酸</u>\n\n・<u>OH⁻ を生じる物質 ＝ 塩基</u>",
-              "relatedQuestions": [
-                { "id": "p_c5_1_1", "label": "⑤-1 問1 酸・塩基の定義（空欄補充）" }
-              ]
+              "id": "acidBaseTreeData_sec1_2_1",
+              "label": "ブレンステッドの酸",
+              "step": 2,
+              "subLabel": "H⁺ を「与える」物質",
+              "explanation": "<u>ブレンステッド・ローリーの酸</u>＝反応において<u>H⁺（プロトン）を相手に与える</u>物質。\n\n<u>例①</u>：<u>HCl</u> + H₂O → H₃O⁺ + Cl⁻\n\n→ HCl が H⁺ を H₂O に与えた → <u>HCl が酸／H₂O が塩基</u>\n\n<u>ポイント</u>：水溶液以外の反応にも定義が使える！（気相・非水溶媒での反応もOK）"
             },
             {
-              "id": "p2_2_1_n6",
-              "label": "酸の例",
-              "step": 1,
-              "subLabel": "HNO₃→H⁺＋NO₃⁻",
-              "explanation": "<u>酸の電離例</u>\n\n・HCl → H⁺ + Cl⁻\n\n・H₂SO₄ → 2H⁺ + SO₄²⁻\n\n・HNO₃ → H⁺ + NO₃⁻\n\n・CH₃COOH ⇄ CH₃COO⁻ + H⁺"
-            },
-            {
-              "id": "p2_2_1_n7",
-              "label": "塩基の例",
-              "step": 1,
-              "subLabel": "Ba(OH)₂→Ba²⁺+2OH⁻",
-              "explanation": "<u>塩基の電離例</u>\n\n・NaOH → Na⁺ + OH⁻\n\n・KOH → K⁺ + OH⁻\n\n・Ba(OH)₂ → Ba²⁺ + 2OH⁻\n\n・Ca(OH)₂ → Ca²⁺ + 2OH⁻"
-            },
-            {
-              "id": "p2_2_1_n8",
-              "label": "アレニウスの限界",
-              "step": 1,
-              "subLabel": "気体同士は判定不可",
-              "explanation": "<u>HCl + NH₃ → NH₄Cl</u>（気体同士の反応）\n\n→ 水溶液の反応ではないので、<u>アレニウスでは酸塩基を判別できない</u>。\n\n→ 気体や固体でも定義できるものが必要。"
+              "id": "acidBaseTreeData_sec1_2_2",
+              "label": "ブレンステッドの塩基",
+              "step": 2,
+              "subLabel": "H⁺ を「受け取る」物質",
+              "explanation": "<u>ブレンステッド・ローリーの塩基</u>＝反応において<u>H⁺ を相手から受け取る</u>物質。\n\n<u>例②</u>：NH₃ + <u>H₂O</u> ⇄ NH₄⁺ + OH⁻\n\n→ H₂O が H⁺ を NH₃ に与えた → <u>H₂O が酸／NH₃ が塩基</u>\n\n<u>ここで注目！</u>：同じ H₂O が、相手によって<u>酸にも塩基にもなる</u>！\n\nこれを <u>両性物質（両性化合物）</u> と呼ぶ。"
             }
           ]
         },
         {
-          "id": "p2_2_1_step3_group",
-          "label": "【Step3：ブレンステッド・ローリーの定義】",
-          "step": 1,
+          "id": "acidBaseTreeData_sec1_3",
+          "label": "【Step3：共役酸・共役塩基（発展）】",
+          "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_1_n10",
-              "label": "ブレンステッド・ローリー",
-              "step": 1,
-              "subLabel": "H⁺ の授受で定義",
-              "explanation": "<u>★ ブレンステッド・ローリーの定義 ★</u>\n\n電離で\n\n・<u>H⁺ を与える物質 ＝ 酸</u>\n\n・<u>H⁺ を受け取る物質 ＝ 塩基</u>"
-            },
+              "id": "acidBaseTreeData_sec1_3_1",
+              "label": "共役の関係",
+              "step": 3,
+              "subLabel": "H⁺のやり取りペア",
+              "explanation": "ブレンステッドの定義では、逆反応で H⁺ をやり取りするペアを<u>共役酸・共役塩基</u>とよぶ。\n\nNH₃ + H₂O ⇄ NH₄⁺ + OH⁻\n\n塩基 酸 共役酸 共役塩基\n\n・NH₃ の<u>共役酸</u>＝NH₄⁺（H⁺を1個受け取った形）\n\n・H₂O の<u>共役塩基</u>＝OH⁻（H⁺を1個失った形）\n\n💡 コツ：「H⁺を1個外した／1個くっつけた形」を作れば共役ペアの完成！"
+            }
+          ]
+        },
+        {
+          "id": "acidBaseTreeData_sec1_4",
+          "label": "【Step4：確認・練習】",
+          "step": 4,
+          "isGroup": true,
+          "children": [
             {
-              "id": "p2_2_1_n11",
-              "label": "例1：HCl と H₂O",
-              "step": 1,
-              "subLabel": "HClは酸・H₂Oは塩基",
-              "explanation": "<u>HCl + H₂O → H₃O⁺ + Cl⁻</u>\n\n・HCl が H⁺ を与える → <u>酸</u>\n\n・H₂O が H⁺ を受け取る → <u>塩基</u>"
-            },
-            {
-              "id": "p2_2_1_n12",
-              "label": "例2：NH₃ と H₂O",
-              "step": 1,
-              "subLabel": "可逆反応",
-              "explanation": "<u>NH₃ + H₂O ⇄ NH₄⁺ + OH⁻</u>\n\n<u>右向きの反応</u>：\n\n・H₂O が H⁺ を与える → 酸\n\n・NH₃ が H⁺ を受け取る → 塩基\n\n<u>左向きの反応</u>：\n\n・NH₄⁺ が H⁺ を与える → 酸\n\n・OH⁻ が H⁺ を受け取る → 塩基\n\n💡「⇄」は<u>左→右</u>・<u>右→左</u>の両方向に進む（弱酸・弱塩基の反応で多い）"
-            },
-            {
-              "id": "p2_2_1_n13",
-              "label": "可逆反応への布石",
-              "step": 1,
-              "subLabel": "弱酸・弱塩基",
-              "explanation": "弱酸・弱塩基は完全に電離しない＝<u>可逆反応</u>。\n\n詳細は「電離度」で学習。"
+              "id": "acidBaseTreeData_sec1_4_1",
+              "label": "確認問題",
+              "step": 4,
+              "subLabel": "酸／塩基を答える",
+              "explanation": "次の反応で、ブレンステッド・ローリーの酸・塩基はそれぞれ何か？\n\n❶ HCl + NH₃ → NH₄Cl\n\n→ <u>酸＝HCl（H⁺を与える）／塩基＝NH₃（H⁺を受け取る）</u>\n\n❷ CO₃²⁻ + H₂O ⇄ HCO₃⁻ + OH⁻\n\n→ <u>酸＝H₂O／塩基＝CO₃²⁻</u>\n\n❸ HSO₄⁻ + H₂O ⇄ SO₄²⁻ + H₃O⁺\n\n→ <u>酸＝HSO₄⁻／塩基＝H₂O</u>"
             }
           ]
         }
@@ -10648,94 +10618,81 @@ export const acidBaseTreeData = {
     },
     {
       "id": "acidBaseTreeData_sec2",
-      "label": "重要事項② 酸塩基の強さ",
+      "label": "重要事項② 酸と塩基の強さ（電離度・価数）",
       "step": 2,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_2_2_step1_group",
-          "label": "【Step1：電離度】",
-          "step": 2,
+          "id": "acidBaseTreeData_sec2_1",
+          "label": "【Step1：電離度αとは】",
+          "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_2_n1",
-              "label": "電離度αとは",
-              "step": 2,
-              "subLabel": "電離した割合",
-              "explanation": "<u>電離度α</u>＝電解質が水に溶けているとき、<u>溶解した電解質全体のうち電離した電解質の割合</u>。\n\n<u>【公式】電離度 α ＝ 電離した電解質の物質量 / 溶解した電解質全体の物質量</u>\n\n<u>（0 ＜ α ≦ 1）</u>"
-            },
-            {
-              "id": "p2_2_2_n2",
-              "label": "強酸・弱酸の違い",
-              "step": 2,
-              "subLabel": "亜鉛との反応で確認",
-              "explanation": "<u>亜鉛Zn＋酸 → H₂発生</u>（Zn + 2H⁺ → Zn²⁺ + H₂）\n\n<u>塩酸</u>を亜鉛にかける → H₂が<u>多数発生</u>\n\n<u>酢酸</u>を亜鉛にかける → H₂は<u>少量発生</u>\n\n理由：同じ体積でも塩酸の方がH⁺が多い → <u>電離度が大きい</u>"
-            },
-            {
-              "id": "p2_2_2_n3",
-              "label": "電離度の例",
-              "step": 2,
-              "subLabel": "塩酸＞酢酸",
-              "explanation": "<u>塩酸</u>：HCl → H⁺ + Cl⁻　ほとんど全部電離（α ≒ 1）\n\n<u>酢酸</u>：CH₃COOH ⇄ CH₃COO⁻ + H⁺　一部のみ電離（α ≪ 1）\n\n<u>例題</u>：酢酸0.10 molを水に溶かしてH⁺が0.0010 mol生じた。電離度は？\n\nα ＝ 0.0010/0.10 ＝ <u>0.010</u>"
+              "id": "acidBaseTreeData_sec2_1_1",
+              "label": "電離度 α の定義",
+              "step": 1,
+              "subLabel": "電離した割合を示す値",
+              "explanation": "<u>電離度 α</u>＝電解質が水に溶けたとき、<u>溶解した全体のうち電離した割合</u>。\n\n<u>電離度 α = 電離した電解質の物質量 ÷ 溶解した全体の物質量</u>\n\n（0 ＜ α ≦ 1）\n\n💡 濃度が<u>小さい（薄い）</u>ほど、電離度 α は<u>大きく</u>なる。\n\n<u>例題</u>：酢酸 0.10 mol を水に溶かすと H⁺ が 0.0010 mol 生じた。電離度は？\n\n<u>解答</u>：α = 0.0010 ÷ 0.10 = <u>0.010</u>"
             }
           ]
         },
         {
-          "id": "p2_2_2_step2_group",
-          "label": "【Step2：強酸・強塩基】",
+          "id": "acidBaseTreeData_sec2_2",
+          "label": "【Step2：強酸・弱酸／強塩基・弱塩基】",
           "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_2_n5",
-              "label": "強酸",
+              "id": "acidBaseTreeData_sec2_2_1",
+              "label": "酸の強弱（暗記）",
               "step": 2,
-              "subLabel": "電離度1に近い酸",
-              "explanation": "<u>強酸</u>＝水溶液中でほぼ完全に電離して電離度が1に近い酸。\n\n<u>★ 強酸3つの呪文 ★</u>\n\n<u>「塩酸・硫酸・硝酸」</u>を3つ唱える！\n\nHCl・H₂SO₄・HNO₃"
+              "subLabel": "強酸は3つだけ！",
+              "explanation": "<u>強酸</u>＝水溶液中でほぼ完全に電離（α ≒ 1）\n\n<u>★ 強酸は3つだけ ★</u>\n\n<u>塩酸 HCl</u>／<u>硫酸 H₂SO₄</u>／<u>硝酸 HNO₃</u> と 3つ唱える！\n\n<u>弱酸</u>＝電離度 α が小さい酸（それ以外はほぼ弱酸）\n\n弱酸の代表：<u>HF</u>（フッ化水素）、<u>CH₃COOH</u>（酢酸）、<u>H₂S</u>（硫化水素）、<u>(COOH)₂</u>（シュウ酸）、<u>H₃PO₄</u>（リン酸）、<u>H₂CO₃</u>（炭酸）"
             },
             {
-              "id": "p2_2_2_n6",
-              "label": "強塩基",
+              "id": "acidBaseTreeData_sec2_2_2",
+              "label": "塩基の強弱（暗記）",
               "step": 2,
-              "subLabel": "1族とMg以外の2族",
-              "explanation": "<u>強塩基</u>＝水溶液中でほぼ完全に電離して電離度が1に近い塩基。\n\n<u>★ 強塩基の覚え方 ★</u>\n\n<u>「1族 と Mg以外の2族」</u>\n\nNaOH、KOH、Ca(OH)₂、Ba(OH)₂、Sr(OH)₂など"
+              "subLabel": "1族＋Mg以外の2族＝強塩基",
+              "explanation": "<u>強塩基</u>＝水溶液中でほぼ完全に電離（α ≒ 1）\n\n<u>★ 強塩基の覚え方 ★</u> <u>1族 と（Mgを除く）2族</u> の水酸化物\n\n・NaOH（水酸化ナトリウム）／KOH（水酸化カリウム）＝1族\n\n・Ca(OH)₂（水酸化カルシウム）／Ba(OH)₂（水酸化バリウム）＝2族\n\n<u>弱塩基</u>＝電離度が小さい塩基\n\n弱塩基の代表：<u>NH₃</u>（アンモニア）、<u>Mg(OH)₂</u>、<u>Cu(OH)₂</u>、<u>Al(OH)₃</u>、<u>Fe(OH)₃</u>"
             }
           ]
         },
         {
-          "id": "p2_2_2_step3_group",
-          "label": "【Step3：弱酸・弱塩基・価数】",
-          "step": 2,
+          "id": "acidBaseTreeData_sec2_3",
+          "label": "【Step3：価数】",
+          "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_2_n8",
-              "label": "弱酸・弱塩基",
-              "step": 2,
-              "subLabel": "電離度小",
-              "explanation": "<u>弱酸・弱塩基</u>＝一部しか電離せず電離度が小さい酸・塩基。\n\n<u>例</u>\n\n弱酸：酢酸 CH₃COOH、シュウ酸 (COOH)₂、H₂S、HF\n\n弱塩基：NH₃、Mg(OH)₂、Al(OH)₃、Cu(OH)₂\n\n<u>★ 濃度が小さい（うすい）ほど電離度αは大きい</u>"
-            },
-            {
-              "id": "p2_2_2_n9",
+              "id": "acidBaseTreeData_sec2_3_1",
               "label": "酸の価数",
-              "step": 2,
-              "subLabel": "H⁺になれるHの数",
-              "explanation": "<u>酸の価数</u>＝電離してH⁺になれるHの数。\n\n1価：HCl、HNO₃、CH₃COOH（CH₃のHは電離しない！）\n\n2価：H₂SO₄、H₂S、(COOH)₂\n\n3価：H₃PO₄"
+              "step": 3,
+              "subLabel": "出せる H⁺ の数",
+              "explanation": "<u>酸の価数</u>＝電離して H⁺ になれる<u>H の数</u>。\n\n価数強酸弱酸\n<u>1価</u>HCl、HNO₃HF、HBr、HI、CH₃COOH\n<u>2価</u>H₂SO₄H₂S、(COOH)₂（シュウ酸）、H₂CO₃\n<u>3価</u>―H₃PO₄（リン酸）\n\n<u>注意</u>：酢酸 CH₃COOH の H は <u>-COOH の H だけが電離</u>して1価。（メチル基-CH₃のHは電離しない）"
             },
             {
-              "id": "p2_2_2_n10",
+              "id": "acidBaseTreeData_sec2_3_2",
               "label": "塩基の価数",
-              "step": 2,
-              "subLabel": "OH⁻になれるOHの数",
-              "explanation": "<u>塩基の価数</u>＝電離してOH⁻になれるOHの数。\n\n1価：NaOH、KOH、<u>NH₃</u>（NH₃+H₂O⇄NH₄⁺+OH⁻ なので1価塩基）\n\n2価：Ca(OH)₂、Ba(OH)₂、Mg(OH)₂、Cu(OH)₂\n\n3価：Al(OH)₃"
-            },
+              "step": 3,
+              "subLabel": "出せる OH⁻ の数",
+              "explanation": "<u>塩基の価数</u>＝電離して OH⁻ になれる<u>OH の数</u>（NH₃ は「H⁺を受け取る数」で1価）。\n\n価数強塩基弱塩基\n<u>1価</u>NaOH、KOHNH₃\n<u>2価</u>Ca(OH)₂、Ba(OH)₂Mg(OH)₂、Cu(OH)₂、Fe(OH)₂\n<u>3価</u>―Al(OH)₃、Fe(OH)₃"
+            }
+          ]
+        },
+        {
+          "id": "acidBaseTreeData_sec2_4",
+          "label": "【Step4：★超重要★ 分類まとめ表】",
+          "step": 4,
+          "isGroup": true,
+          "children": [
             {
-              "id": "p2_2_2_n11",
-              "label": "価数と強弱の総まとめ",
-              "step": 2,
-              "subLabel": "暗記必須の表",
-              "explanation": "価数 ｜ 酸（強・弱） ｜ 塩基（強・弱）\n1価 ｜ 強:HCl,HBr,HI,HNO₃　／弱:HF,CH₃COOH ｜ 強:NaOH,KOH　／弱:NH₃\n2価 ｜ 強:H₂SO₄　／弱:H₂S,(COOH)₂ ｜ 強:Ca(OH)₂,Ba(OH)₂　／弱:Mg(OH)₂,Cu(OH)₂\n3価 ｜ 弱:H₃PO₄ ｜ 弱:Al(OH)₃"
+              "id": "acidBaseTreeData_sec2_4_1",
+              "label": "酸と塩基の総まとめ表",
+              "step": 4,
+              "subLabel": "テスト直前に見返す表",
+              "explanation": "強酸（α≒1）弱酸（α小）強塩基（α≒1）弱塩基（α小）\n1価HCl／HNO₃HF／CH₃COOH／HBr／HINaOH／KOHNH₃\n2価H₂SO₄H₂S／(COOH)₂／H₂CO₃Ca(OH)₂／Ba(OH)₂Mg(OH)₂／Cu(OH)₂\n3価―H₃PO₄―Al(OH)₃／Fe(OH)₃\n\n💡 <u>強酸3つ</u>と<u>強塩基（1族＋Ca,Ba）</u>だけ覚えれば、あとは全部「弱」でOK！"
             }
           ]
         }
@@ -10743,88 +10700,96 @@ export const acidBaseTreeData = {
     },
     {
       "id": "acidBaseTreeData_sec3",
-      "label": "重要事項③ pH",
+      "label": "重要事項③ pH について（水のイオン積・計算）",
       "step": 3,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_2_3_step1_group",
-          "label": "【Step1：水素イオン濃度 [H⁺]】",
-          "step": 3,
+          "id": "acidBaseTreeData_sec3_1",
+          "label": "【Step1：pHの定義】",
+          "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_3_n1",
-              "label": "[H⁺]の公式",
-              "step": 3,
-              "subLabel": "濃度×電離度×価数",
-              "explanation": "<u>【公式】[H⁺] ＝ 物質のモル濃度 × 電離度 × 価数</u>\n\n　　　　[OH⁻] ＝ 物質のモル濃度 × 電離度 × 価数\n\n<u>例題</u>：硫酸 0.10 mol/L（α=1）の [H⁺] は？\n\n[H⁺] ＝ 0.10 × 1 × 2 ＝ <u>0.20 mol/L</u>"
+              "id": "acidBaseTreeData_sec3_1_1",
+              "label": "pH（水素イオン指数）",
+              "step": 1,
+              "subLabel": "[H⁺] の指数を取り出した値",
+              "explanation": "<u>pH の定義</u>：水素イオン濃度 [H⁺] を用いて、\n\n<u>[H⁺] = 1.0 × 10⁻ˣ mol/L</u> のとき <u>pH = x</u>\n\n（正式には pH = -log₁₀[H⁺] だが、化学基礎では指数の x を読むだけで OK！）\n\n🌡 <u>pH の目安</u>\n\npH ＜ 7 → <u>酸性</u>（数値が小さいほど強酸性）\n\npH ＝ 7 → <u>中性</u>\n\npH ＞ 7 → <u>塩基性</u>（数値が大きいほど強塩基性）"
             }
           ]
         },
         {
-          "id": "p2_2_3_step2_group",
-          "label": "【Step2：水のイオン積】",
-          "step": 3,
+          "id": "acidBaseTreeData_sec3_2",
+          "label": "【Step2：水のイオン積 Kw】",
+          "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_3_n3",
-              "label": "水のイオン積",
-              "step": 3,
-              "subLabel": "[H⁺][OH⁻]=1.0×10⁻¹⁴",
-              "explanation": "<u>★ 水のイオン積 ★</u>\n\n<u>[H⁺][OH⁻] ＝ 1.0×10⁻¹⁴ mol²/L²</u>（25℃）\n\n指数の関係：<u>[H⁺]の指数 ＋ [OH⁻]の指数 ＝ −14</u>\n\n<u>中性</u>：[H⁺] ＝ [OH⁻] ＝ 1.0×10⁻⁷ mol/L\n\n<u>酸性</u>：[H⁺] ＞ [OH⁻]\n\n<u>塩基性</u>：[H⁺] ＜ [OH⁻]"
+              "id": "acidBaseTreeData_sec3_2_1",
+              "label": "水のイオン積 Kw",
+              "step": 2,
+              "subLabel": "[H⁺]×[OH⁻]は一定！",
+              "explanation": "純水の中でも水はごくわずかに電離している：<u>H₂O ⇄ H⁺ + OH⁻</u>\n\n<u>【水のイオン積】25℃で一定</u>\n\n<u>Kw = [H⁺][OH⁻] = 1.0 × 10⁻¹⁴ (mol/L)²</u>\n\n→ 指数どうしの関係：<u>[H⁺]の指数 + [OH⁻]の指数 = -14</u>\n\n中性のとき：[H⁺] ＝ [OH⁻] ＝ 1.0 × 10⁻⁷ mol/L\n\n💡 使い方：[H⁺] が分かれば [OH⁻] を、[OH⁻] が分かれば [H⁺] を計算できる！"
             }
           ]
         },
         {
-          "id": "p2_2_3_step3_group",
-          "label": "【Step3：pHの定義】",
+          "id": "acidBaseTreeData_sec3_3",
+          "label": "【Step3：pH の計算パターン】",
           "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_3_n5",
-              "label": "pHの定義",
+              "id": "acidBaseTreeData_sec3_3_1",
+              "label": "強酸のpH計算",
               "step": 3,
-              "subLabel": "[H⁺]の指数",
-              "explanation": "<u>★ pH の定義 ★</u>\n\n[H⁺] ＝ 1.0×10⁻ˣ (mol/L) のとき、<u>pH ＝ x</u>\n\n<u>例</u>：[OH⁻]＝1.0×10⁻¹² → [H⁺]＝1.0×10⁻² → <u>pH＝2</u>"
+              "subLabel": "α＝1として扱う",
+              "explanation": "<u>強酸は α = 1</u>として計算する。\n\n<u>例題1</u>：0.010 mol/L の HCl 水溶液の pH は？\n\nHCl は1価の強酸なので → [H⁺] = 0.010 = 1.0 × 10⁻² mol/L\n\n∴ <u>pH = 2</u>\n\n<u>例題2</u>：0.050 mol/L の H₂SO₄ 水溶液の pH は？\n\nH₂SO₄ は2価の強酸なので → [H⁺] = 0.050 × 2 = 0.10 = 1.0 × 10⁻¹ mol/L\n\n∴ <u>pH = 1</u>"
             },
             {
-              "id": "p2_2_3_n6",
-              "label": "pHの範囲",
+              "id": "acidBaseTreeData_sec3_3_2",
+              "label": "弱酸のpH計算",
               "step": 3,
-              "subLabel": "0〜14",
-              "explanation": "<u>★ pH のスケール ★</u>\n\n酸性：pH ＝ 0(強) 〜 6(弱)\n\n中性：pH ＝ 7\n\n塩基性：pH ＝ 8(弱) 〜 14(強)"
+              "subLabel": "濃度×価数×αを使う",
+              "explanation": "<u>弱酸は電離度 α をかける</u>\n\n<u>[H⁺] = 酸のモル濃度 × 価数 × 電離度 α</u>\n\n<u>例題</u>：0.10 mol/L の酢酸（α = 0.010）の pH は？\n\n[H⁺] = 0.10 × 1 × 0.010 = 1.0 × 10⁻³ mol/L\n\n∴ <u>pH = 3</u>"
             },
             {
-              "id": "p2_2_3_n7",
-              "label": "指示薬",
+              "id": "acidBaseTreeData_sec3_3_3",
+              "label": "塩基のpH計算",
               "step": 3,
-              "subLabel": "BTB・メチルオレンジ・PP",
-              "explanation": "<u>指示薬</u>＝pHを調べるための薬。\n\n<u>変色域</u>＝色が変わるpHの範囲。\n\n<u>❶ メチルオレンジ</u>：pH3 <u>赤</u> ─[変色域]─ pH5 <u>黄</u>　（覚え方：「ベーコンエッグ」）\n\n<u>❷ フェノールフタレイン</u>：pH8 <u>無色</u> ─[変色域]─ pH10 <u>赤</u>\n\n<u>❸ BTB（もとは緑）</u>：pH6 <u>黄</u> ─[変色域]─ pH8 <u>青</u>"
+              "subLabel": "Kwを利用して[H⁺]を求める",
+              "explanation": "塩基は [OH⁻] を求めた後、<u>水のイオン積</u> を使って [H⁺] に変換する。\n\n<u>例題</u>：0.010 mol/L の NaOH 水溶液の pH は？\n\nNaOH は1価の強塩基 → [OH⁻] = 0.010 = 1.0 × 10⁻² mol/L\n\n水のイオン積より：[H⁺] × 1.0 × 10⁻² = 1.0 × 10⁻¹⁴\n\n∴ [H⁺] = 1.0 × 10⁻¹² mol/L → <u>pH = 12</u>\n\n<u>裏ワザ</u>：[OH⁻] = 10⁻² のとき、指数の和 = -14 より [H⁺] の指数 = -12 → pH = 12"
             }
           ]
         },
         {
-          "id": "p2_2_3_step4_group",
-          "label": "【Step4：希釈とpHの変化】",
-          "step": 3,
+          "id": "acidBaseTreeData_sec3_4",
+          "label": "【Step4：希釈と pH】",
+          "step": 4,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_3_n9",
-              "label": "希釈の法則",
-              "step": 3,
-              "subLabel": "強酸・強塩基のみ",
-              "explanation": "<u>★ 希釈とpH ★</u>\n\n強酸・強塩基を <u>10倍ずつ薄める</u> と\n\n・酸性：pHが <u>1 大きくなる</u>\n\n・塩基性：pHが <u>1 小さくなる</u>\n\n例：0.10 mol/L 塩酸（pH=1）→100倍に薄める→[H⁺]=1.0×10⁻³→<u>pH=3</u>"
-            },
+              "id": "acidBaseTreeData_sec3_4_1",
+              "label": "希釈による pH 変化",
+              "step": 4,
+              "subLabel": "薄めても pH は 7 を越えない",
+              "explanation": "<u>酸を10倍に薄めると</u>：[H⁺] が 1/10 → pH は 1 増える\n\n<u>塩基を10倍に薄めると</u>：[OH⁻] が 1/10 → pH は 1 減る\n\n<u>⚠ 注意</u>：薄めすぎても pH は<u>「7」を超えることはない</u>！\n\n（薄い酸でも塩基性にはならない。水そのものの H⁺ が効いてくるため）"
+            }
+          ]
+        },
+        {
+          "id": "acidBaseTreeData_sec3_5",
+          "label": "【Step5：pH指示薬・pH測定】",
+          "step": 1,
+          "isGroup": true,
+          "children": [
             {
-              "id": "p2_2_3_n10",
-              "label": "希釈の注意点",
-              "step": 3,
-              "subLabel": "中性に近づくだけ",
-              "explanation": "⚠️ <u>注意</u>：\n\n・pH=6（酸性）の水溶液を100倍に薄めても、pHは<u>8にはならず</u>、pH=7（中性）止まり\n\n・pH=9（塩基性）の水溶液を1000倍に薄めても、pHは<u>6にはならず</u>、pH=7止まり\n\n　→ 水自身もH⁺・OH⁻を持つため、中性を超えない"
+              "id": "acidBaseTreeData_sec3_5_1",
+              "label": "主な指示薬の変色域",
+              "step": 1,
+              "subLabel": "MO・PP・BTB",
+              "explanation": "指示薬変色域pH酸性側塩基性側覚え方\n<u>メチルオレンジ MO</u>pH 3.1〜4.4<u>赤</u><u>黄</u>ベーコンエッグ（赤→黄）\n<u>フェノールフタレイン PP</u>pH 8.0〜9.8<u>無色</u><u>赤（桃）</u>塩基性で赤くなる\n<u>BTB溶液</u>pH 6.0〜7.6<u>黄</u>緑→<u>青</u>信号：黄・緑・青\nリトマス紙―青→赤赤→青酸性で赤変"
             }
           ]
         }
@@ -10832,51 +10797,81 @@ export const acidBaseTreeData = {
     },
     {
       "id": "acidBaseTreeData_sec4",
-      "label": "重要事項④ 中和",
+      "label": "重要事項④ 中和とは何か（塩の分類と液性）",
       "step": 4,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_2_4_step1_group",
-          "label": "【Step1：中和の定義】",
-          "step": 4,
+          "id": "acidBaseTreeData_sec4_1",
+          "label": "【Step1：中和反応とは】",
+          "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_4_n1",
-              "label": "中和とは",
-              "step": 4,
-              "subLabel": "酸と塩基が打ち消し合う",
-              "explanation": "<u>中和</u>＝酸と塩基が<u>互いの性質を打ち消し合う反応</u>。\n\n<u>例</u>：HCl + NaOH → H₂O + NaCl"
+              "id": "acidBaseTreeData_sec4_1_1",
+              "label": "中和の定義",
+              "step": 1,
+              "subLabel": "酸の H⁺ + 塩基の OH⁻ → H₂O",
+              "explanation": "<u>中和</u>＝酸の H⁺ と塩基の OH⁻ が結びついて、<u>水（H₂O）と塩（えん）</u>ができる反応。\n\n<u>本質の式</u>：<u>H⁺ + OH⁻ → H₂O</u>（発熱反応 ＝ 中和熱）\n\n<u>例①</u>：HCl + NaOH → NaCl + H₂O\n\n<u>例②</u>：H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O\n\n<u>例③</u>：HCl + NH₃ → NH₄Cl（H₂Oが出ない中和もある！）\n\n💡 中和で生じるイオン化合物を<u>「塩（えん）」</u>とよぶ。塩＝酸の陰イオン＋塩基の陽イオン。"
             }
           ]
         },
         {
-          "id": "p2_2_4_step2_group",
-          "label": "【Step2：中和で起こること（水と塩）】",
+          "id": "acidBaseTreeData_sec4_2",
+          "label": "【Step2：塩の分類（化学式で見分ける）】",
+          "step": 2,
+          "isGroup": true,
+          "children": [
+            {
+              "id": "acidBaseTreeData_sec4_2_1",
+              "label": "正塩・酸性塩・塩基性塩",
+              "step": 2,
+              "subLabel": "式の中に H や OH が残るかで判別",
+              "explanation": "分類特徴（化学式）例\n<u>正塩</u>H も OH も含まない<u>NaCl</u>／Na₂SO₄／KNO₃／CH₃COONa／NH₄Cl／Na₂CO₃\n<u>酸性塩</u>式に<u>酸のH</u>が残る<u>NaHSO₄</u>／<u>NaHCO₃</u>／KH₂PO₄\n<u>塩基性塩</u>式に<u>塩基のOH</u>が残るMgCl(OH)／CuCl(OH)\n\n⚠ <u>「酸性塩＝酸性」ではない！</u> 分類（式の見た目）と液性（水に溶かしたときの pH）は別モノ！"
+            }
+          ]
+        },
+        {
+          "id": "acidBaseTreeData_sec4_3",
+          "label": "【Step3：液性の判定（超頻出！）】",
+          "step": 3,
+          "isGroup": true,
+          "children": [
+            {
+              "id": "acidBaseTreeData_sec4_3_1",
+              "label": "正塩の液性判定ルール",
+              "step": 3,
+              "subLabel": "元の「強い方が勝つ」",
+              "explanation": "<u>正塩の液性は「もとの酸と塩基の強さ」で決まる！</u>\n\nもとの酸もとの塩基液性例\n<u>強酸</u><u>強塩基</u>中性NaCl（HCl+NaOH）／Na₂SO₄／KNO₃\n<u>強酸</u><u>弱塩基</u><u>酸性</u>NH₄Cl（HCl+NH₃）／CuSO₄\n<u>弱酸</u><u>強塩基</u><u>塩基性</u>CH₃COONa（酢酸+NaOH）／Na₂CO₃\n弱酸弱塩基ほぼ中性CH₃COONH₄\n\n💡 覚え方：<u>「強い方が勝つ！」</u> 強酸 vs 弱塩基 → 酸性が勝つ／弱酸 vs 強塩基 → 塩基性が勝つ"
+            },
+            {
+              "id": "acidBaseTreeData_sec4_3_2",
+              "label": "酸性塩の液性判定（例外注意！）",
+              "step": 3,
+              "subLabel": "NaHSO₄ vs NaHCO₃",
+              "explanation": "酸性塩は<u>もとの酸・塩基の強さで判断する</u>のがルール。ただし例外あり。\n\n❶ <u>NaHSO₄</u>（強酸 H₂SO₄ + 強塩基 NaOH の酸性塩）\n\n→ 電離して H⁺ を出す → <u>酸性</u>！\n\n❷ <u>NaHCO₃</u>（弱酸 H₂CO₃ + 強塩基 NaOH の酸性塩）\n\n→ <u>塩基性</u>！（「強塩基＋弱酸の酸性塩」の場合のみ塩基性になる特殊ルール）\n\n⚠ <u>NaHCO₃（重曹）は水溶液が塩基性</u> ── これがテストの罠！"
+            }
+          ]
+        },
+        {
+          "id": "acidBaseTreeData_sec4_4",
+          "label": "【Step4：弱酸・弱塩基の遊離】",
           "step": 4,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_4_n3",
-              "label": "水ができる",
+              "id": "acidBaseTreeData_sec4_4_1",
+              "label": "弱酸の遊離",
               "step": 4,
-              "subLabel": "H⁺ + OH⁻ → H₂O",
-              "explanation": "<u>★ ❶ 水（H₂O）ができる ★</u>\n\n酸の H⁺ と 塩基の OH⁻ が結びついて H₂O を生じる\n\n例1：HCl + NaOH → <u>H₂O</u> + NaCl\n\n例2：H₂SO₄ + Ca(OH)₂ → CaSO₄ + <u>2H₂O</u>"
+              "subLabel": "強酸 + 弱酸の塩 → 弱酸が遊離",
+              "explanation": "<u>「強い方が勝つ」</u>の応用：弱酸の塩に強酸を加えると、弱酸が追い出される。\n\n<u>例①</u>：CH₃COONa + HCl → CH₃COOH + NaCl（酢酸が遊離）\n\n<u>例②</u>：Na₂CO₃ + 2HCl → 2NaCl + H₂O + CO₂↑\n\n<u>例③</u>：CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑（石灰石＋塩酸）"
             },
             {
-              "id": "p2_2_4_n4",
-              "label": "塩ができる",
+              "id": "acidBaseTreeData_sec4_4_2",
+              "label": "弱塩基の遊離",
               "step": 4,
-              "subLabel": "酸の陰イオン＋塩基の陽イオン",
-              "explanation": "<u>★ ❷ 塩ができる ★</u>\n\n酸の陰イオン と 塩基の陽イオン が結びついた化合物 ＝ <u>塩</u>\n\n例1：HCl + NaOH → H₂O + <u>NaCl</u>\n\n例2：H₂SO₄ + Ca(OH)₂ → <u>CaSO₄</u> + 2H₂O"
-            },
-            {
-              "id": "p2_2_4_n5",
-              "label": "中和反応の本質",
-              "step": 4,
-              "subLabel": "発熱反応",
-              "explanation": "💡 中和反応は<u>発熱反応</u>（中和熱を伴う）\n\n💡 H⁺と OH⁻の物質量が等しいとき＝<u>中和点</u>"
+              "subLabel": "強塩基 + 弱塩基の塩 → 弱塩基が遊離",
+              "explanation": "<u>例</u>：NH₄Cl + NaOH → NaCl + H₂O + NH₃↑（アンモニアが発生）\n\n🧪 <u>実験室でのアンモニア発生法</u>：塩化アンモニウム＋水酸化カルシウム を加熱！\n\n2NH₄Cl + Ca(OH)₂ → CaCl₂ + 2H₂O + 2NH₃↑"
             }
           ]
         }
@@ -10884,115 +10879,73 @@ export const acidBaseTreeData = {
     },
     {
       "id": "acidBaseTreeData_sec5",
-      "label": "重要事項⑤ 塩",
+      "label": "重要事項⑤ 中和反応の計算",
       "step": 1,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_2_5_step1_group",
-          "label": "【Step1：塩の化学式による分類】",
+          "id": "acidBaseTreeData_sec5_1",
+          "label": "【Step1：中和の基本の式】",
           "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_5_n1",
-              "label": "酸性塩",
+              "id": "acidBaseTreeData_sec5_1_1",
+              "label": "中和の量的関係式",
               "step": 1,
-              "subLabel": "H⁺を含む塩",
-              "explanation": "<u>酸性塩</u>＝化学式に<u>酸由来のH</u>を含む塩。\n\n<u>例</u>：NaHSO₄、NaHCO₃、KH₂PO₄、Na₂HPO₄"
-            },
-            {
-              "id": "p2_2_5_n2",
-              "label": "塩基性塩",
-              "step": 1,
-              "subLabel": "OH⁻を含む塩",
-              "explanation": "<u>塩基性塩</u>＝化学式に<u>塩基由来のOH</u>を含む塩。\n\n<u>例</u>：MgCl(OH)、CuCl(OH)"
-            },
-            {
-              "id": "p2_2_5_n3",
-              "label": "正塩",
-              "step": 1,
-              "subLabel": "HもOHも含まない",
-              "explanation": "<u>正塩</u>＝化学式にH⁺もOH⁻もどちらも含まない塩。\n\n<u>例</u>：NaCl、Na₂SO₄、KNO₃、CH₃COONa\n\n<u>注意</u>\n\n・NH₄Cl → NH₄⁺ なので<u>正塩</u>（H⁺ではない）\n\n・CH₃COONa → CH₃COO⁻ なので<u>正塩</u>（H⁺ではない）"
+              "subLabel": "これ1本ですべて解ける",
+              "explanation": "過不足なく中和するには、\n\n<u>「酸が出す H⁺ の物質量」＝「塩基が出す OH⁻ の物質量」</u>\n\n<u>★中和の基本式★</u>\n\n<u>a × c × V = b × c' × V'</u>\n\na：酸の価数 c：酸のモル濃度[mol/L] V：酸の体積[L]\n\nb：塩基の価数 c'：塩基のモル濃度 V'：塩基の体積\n\n💡 <u>電離度 α には依存しない！</u> 弱酸でも最終的にはすべて中和されるため、α は式に入らない。"
             }
           ]
         },
         {
-          "id": "p2_2_5_step2_group",
-          "label": "【Step2：正塩の液性（加水分解）】",
-          "step": 1,
+          "id": "acidBaseTreeData_sec5_2",
+          "label": "【Step2：基本計算例】",
+          "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_5_n5",
-              "label": "強酸×強塩基",
-              "step": 1,
-              "subLabel": "中性",
-              "explanation": "<u>強酸＋強塩基</u>からなる正塩の水溶液 → <u>中性</u>\n\n<u>例</u>\n\nNaCl（HCl + NaOH）\n\nKCl（HCl + KOH）"
+              "id": "acidBaseTreeData_sec5_2_1",
+              "label": "計算例①：濃度を求める",
+              "step": 2,
+              "subLabel": "1価と1価の中和",
+              "explanation": "<u>例題1</u>：0.10 mol/L の NaOH 水溶液 20 mL を中和するのに、濃度未知の HCl 15 mL 必要だった。HCl のモル濃度は？\n\n<u>解答</u>：1 × c × (15/1000) = 1 × 0.10 × (20/1000)\n\nc = 0.10 × 20 ÷ 15 = <u>約 0.13 mol/L</u>"
             },
             {
-              "id": "p2_2_5_n6",
-              "label": "強酸×弱塩基",
-              "step": 1,
-              "subLabel": "酸性",
-              "explanation": "<u>強酸＋弱塩基</u>からなる正塩の水溶液 → <u>酸性</u>\n\n<u>例</u>\n\nNH₄Cl（HCl + NH₃）\n\nCuSO₄（H₂SO₄ + Cu(OH)₂）\n\n💡 弱い側のイオンが加水分解で残るため、強い側の性質が出る"
-            },
-            {
-              "id": "p2_2_5_n7",
-              "label": "弱酸×強塩基",
-              "step": 1,
-              "subLabel": "塩基性",
-              "explanation": "<u>弱酸＋強塩基</u>からなる正塩の水溶液 → <u>塩基性</u>\n\n<u>例</u>\n\nCH₃COONa（CH₃COOH + NaOH）\n\nNa₂CO₃（H₂CO₃ + NaOH）"
-            },
-            {
-              "id": "p2_2_5_n8",
-              "label": "弱酸×弱塩基",
-              "step": 1,
-              "subLabel": "中性に近い",
-              "explanation": "<u>弱酸＋弱塩基</u>からなる正塩 → <u>中性に近い</u>\n\n<u>例</u>\n\nCH₃COONH₄（CH₃COOH + NH₃）\n\n(NH₄)₂CO₃（H₂CO₃ + NH₃）"
-            },
-            {
-              "id": "p2_2_5_n9",
-              "label": "酸性塩・塩基性塩の液性",
-              "step": 1,
-              "subLabel": "そのまま",
-              "explanation": "<u>酸性塩</u>の水溶液 → <u>酸性</u>\n\n<u>塩基性塩</u>の水溶液 → <u>塩基性</u>\n\n⚠️ ただし NaHCO₃ は例外的に<u>塩基性</u>（HCO₃⁻が弱酸由来で加水分解しやすい）"
+              "id": "acidBaseTreeData_sec5_2_2",
+              "label": "計算例②：価数の違う中和",
+              "step": 2,
+              "subLabel": "2価×1価",
+              "explanation": "<u>例題2</u>：0.050 mol/L の H₂SO₄ 10 mL を中和するのに必要な 0.10 mol/L の NaOH の体積は？\n\n<u>解答</u>：<u>2</u> × 0.050 × (10/1000) = <u>1</u> × 0.10 × (V/1000)\n\nV = <u>10 mL</u>\n\n💡 <u>H₂SO₄ は2価</u>なので H⁺ が2倍出る → NaOH は同じ物質量では足りない！"
             }
           ]
         },
         {
-          "id": "p2_2_5_step3_group",
-          "label": "【Step3：遊離反応】",
-          "step": 1,
+          "id": "acidBaseTreeData_sec5_3",
+          "label": "【Step3：応用パターン】",
+          "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_5_n11",
-              "label": "弱酸の遊離反応",
-              "step": 1,
-              "subLabel": "弱酸の塩＋強酸",
-              "explanation": "<u>★ 弱酸の遊離 ★</u>\n\n<u>弱酸の塩 ＋ 強酸 → 弱酸 ＋ 強酸の塩</u>\n\n<u>例</u>：CH₃COONa + HCl → CH₃COOH + NaCl\n\n　　（弱酸の塩）　（強酸）　→（弱酸）　（強酸の塩）"
+              "id": "acidBaseTreeData_sec5_3_1",
+              "label": "固体を溶かした場合",
+              "step": 3,
+              "subLabel": "質量→物質量に変換",
+              "explanation": "<u>例題3</u>：NaOH（式量40）0.40g を水に溶かして100mLとした水溶液を、0.10 mol/L の HCl で中和するのに必要な体積は？\n\nNaOHの物質量 = 0.40 ÷ 40 = 0.010 mol\n\nNaOHの濃度 = 0.010 ÷ 0.10 = 0.10 mol/L\n\n中和式：1×0.10×0.10 = 1×0.10×V → V = <u>0.10 L ＝ 100 mL</u>"
             },
             {
-              "id": "p2_2_5_n12",
-              "label": "弱塩基の遊離反応",
-              "step": 1,
-              "subLabel": "弱塩基の塩＋強塩基",
-              "explanation": "<u>★ 弱塩基の遊離 ★</u>\n\n<u>弱塩基の塩 ＋ 強塩基 → 弱塩基 ＋ 強塩基の塩</u>\n\n<u>例</u>：NH₄Cl + NaOH → NH₃ + H₂O + NaCl\n\n　　（弱塩基の塩）（強塩基）→（弱塩基）　（強塩基の塩）"
+              "id": "acidBaseTreeData_sec5_3_2",
+              "label": "気体を溶かした場合（NH₃・CO₂）",
+              "step": 3,
+              "subLabel": "気体の体積（標準状態22.4L）",
+              "explanation": "<u>例題4</u>：標準状態で 224 mL のアンモニア NH₃ をすべて吸収するのに必要な 0.10 mol/L の HCl は何mL？\n\nNH₃ の物質量 = 224 ÷ 22400 = 0.010 mol\n\nNH₃は1価の塩基 → NH₃ + HCl → NH₄Cl\n\n中和式：1×c×V(HCl) = 1×0.010\n\n0.10 × V = 0.010 → <u>V = 0.10 L ＝ 100 mL</u>"
             },
             {
-              "id": "p2_2_5_n13",
-              "label": "揮発性の酸の遊離",
-              "step": 1,
-              "subLabel": "揮発酸の塩＋不揮発酸",
-              "explanation": "<u>揮発性の酸</u>＝常温で気体になりやすい酸（HCl、HNO₃、CH₃COOH）\n\n<u>不揮発性の酸</u>＝常温で気体になりにくい酸（H₂SO₄、(COOH)₂）\n\n<u>★ 揮発性酸の遊離 ★</u>\n\n<u>揮発性酸の塩 ＋ 不揮発性酸 → 揮発性酸 ＋ 不揮発性酸の塩</u>\n\n<u>例</u>：NaCl + H₂SO₄ → HCl↑ + NaHSO₄"
-            },
-            {
-              "id": "p2_2_5_n14",
-              "label": "酸化物・水酸化物・オキソ酸",
-              "step": 1,
-              "subLabel": "補足知識",
-              "explanation": "<u>❶ 酸化物の分類</u>\n\n・塩基性酸化物：金属元素の酸化物（例：Na₂O、MgO）\n\n・酸性酸化物：非金属元素の酸化物（例：CO₂、SO₃）\n\n・両性酸化物：<u>Al、Zn、Sn、Pb</u>（覚え方「<u>アアスンナリと両性に愛される</u>」）\n\n<u>❷ 水酸化物</u>＝塩基性酸化物＋水\n\n　例：MgO + H₂O → Mg(OH)₂\n\n<u>❸ オキソ酸</u>＝酸素原子を含む酸（酸性酸化物＋水）\n\n　例：SO₃ + H₂O → H₂SO₄\n\n　例：N₂O₅ + H₂O → 2HNO₃"
+              "id": "acidBaseTreeData_sec5_3_3",
+              "label": "逆滴定（過剰分を求める）",
+              "step": 3,
+              "subLabel": "気体分析に使う",
+              "explanation": "<u>逆滴定</u>＝過剰の既知濃度の酸（塩基）を加え、余った分を別の塩基（酸）で滴定して求める方法。\n\n<u>例題5</u>：発生したNH₃を 0.10 mol/L の HCl 20 mL にすべて吸収させた。残った HCl を 0.10 mol/L の NaOH 12 mL で中和した。NH₃の物質量は？\n\n❶ 加えた HCl（H⁺）：0.10 × 0.020 = 2.0×10⁻³ mol\n\n❷ NaOH（OH⁻）で中和された余りの HCl：0.10 × 0.012 = 1.2×10⁻³ mol\n\n❸ NH₃ が吸収した H⁺ の物質量 = ❶ - ❷ = <u>0.8×10⁻³ mol</u>"
             }
           ]
         }
@@ -11000,95 +10953,59 @@ export const acidBaseTreeData = {
     },
     {
       "id": "acidBaseTreeData_sec6",
-      "label": "重要事項⑥ 中和滴定計算",
+      "label": "重要事項⑥ 中和滴定の道具と方法",
       "step": 2,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_2_6_step1_group",
-          "label": "【Step1：中和の原理（中和点）】",
-          "step": 2,
+          "id": "acidBaseTreeData_sec6_1",
+          "label": "【Step1：実験器具4つの用途と共洗い】",
+          "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_6_n1",
-              "label": "中和点とは",
-              "step": 2,
-              "subLabel": "H⁺=OH⁻",
-              "explanation": "<u>中和</u>＝酸と塩基が打ち消し合うこと。\n\n塩基が与えるOH⁻の物質量 ＝ 酸が与えるH⁺の物質量　のとき＝<u>中和点</u>"
+              "id": "acidBaseTreeData_sec6_1_1",
+              "label": "4つの器具の一覧表",
+              "step": 1,
+              "subLabel": "超頻出！",
+              "explanation": "器具用途共洗い理由\n<u>メスフラスコ</u>正確な濃度の溶液をつくる<u>不要</u>（純水で濡れたままOK）あとで純水を標線まで加えて希釈するため、水滴が残っても濃度に影響しない\n<u>ホールピペット</u>標線までの一定体積を正確に測り取る<u>必要</u>内部に水滴が残ると濃度が薄まってしまう\n<u>ビュレット</u>滴下体積を「滴下前 - 滴下後」で測る<u>必要</u>内部の水滴で濃度が変わると計算値が狂う\n<u>コニカルビーカー</u>中和反応させる容器<u>不要</u>（純水で濡れたままOK）水で薄まっても、入れた溶質の<u>物質量</u>は変わらないため中和計算に影響なし\n\n💡 <u>覚え方</u>：ホール<u>ト</u>ピペット・ビュレッ<u>ト</u>の「ト」＝「共洗いする」の「と」！\n\nメスフラスコ・コニカルビーカーは「ト」がつかない → 共洗い不要！"
+            },
+            {
+              "id": "acidBaseTreeData_sec6_1_2",
+              "label": "駒込ピペット・安全ピペッター",
+              "step": 1,
+              "subLabel": "補助器具",
+              "explanation": "<u>駒込ピペット</u>：おおよその体積を測って移すのに使用（メスフラスコに純水を加える最後の微調整）。\n\n<u>安全ピペッター（ゴム球）</u>：ホールピペットの先端に取り付け、口で吸わずに液体を吸い上げるための道具。<u>直接口で吸ってはいけない</u>！"
             }
           ]
         },
         {
-          "id": "p2_2_6_step2_group",
-          "label": "【Step2：中和の量的関係（最重要公式）】",
+          "id": "acidBaseTreeData_sec6_2",
+          "label": "【Step2：中和滴定の手順】",
           "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_6_n3",
-              "label": "中和の公式",
+              "id": "acidBaseTreeData_sec6_2_1",
+              "label": "滴定操作の6ステップ",
               "step": 2,
-              "subLabel": "受験頻出！",
-              "explanation": "<u>★ ★ ★ 中和の公式（最重要）★ ★ ★</u>\n\n<u>（酸の価数）×（酸の物質量）＝（塩基の価数）×（塩基の物質量）</u>\n\n<u>濃度・体積で表すと：</u>\n\n　a × c (mol/L) × V (L) ＝ b × c′(mol/L) × V′(L)\n\n　a：酸の価数、c：酸のモル濃度、V：酸の体積\n\n　b：塩基の価数、c′：塩基のモル濃度、V′：塩基の体積"
-            },
-            {
-              "id": "p2_2_6_n4",
-              "label": "注意点",
-              "step": 2,
-              "subLabel": "電離度は無視！",
-              "explanation": "⚠️ <u>中和の量的関係に、酸・塩基の強弱や電離度は影響しない</u>\n\n　→ 弱酸でも、最終的には全部中和される（ルシャトリエの原理）\n\n⚠️ ただし、<u>pHを求めるとき</u>は電離度を考慮する（電離度×濃度×価数）"
+              "subLabel": "実験の流れ",
+              "explanation": "❶ <u>メスフラスコ</u>に酸（塩基）を入れ、標線まで純水を加えて<u>一定濃度の溶液</u>を調製\n\n❷ <u>安全ピペッター</u>をつけた<u>ホールピペット</u>で溶液を標線まで測り取る\n\n❸ 測り取った溶液を<u>コニカルビーカー</u>に入れる\n\n❹ 指示薬（フェノールフタレイン等）を数滴加える\n\n❺ <u>ビュレット</u>に濃度未知の溶液を入れ、先端の空気を追い出し、<u>滴下前の目盛り</u>を読む\n\n❻ 少しずつ滴下して<u>指示薬の色が変化した点</u>で止め、目盛りを読み「滴下前－滴下後」から使用体積を求め、濃度を計算する\n\n🧪【滴定装置の図】\n\n［ビュレット（滴定液）］\n\n↓ ぽたぽた\n\n［コニカルビーカー（測り取った試料＋指示薬）］"
             }
           ]
         },
         {
-          "id": "p2_2_6_step3_group",
-          "label": "【Step3：滴定の計算手順】",
-          "step": 2,
+          "id": "acidBaseTreeData_sec6_3",
+          "label": "【Step3：注意点】",
+          "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_2_6_n6",
-              "label": "問題の解き方",
-              "step": 2,
-              "subLabel": "公式に当てはめる",
-              "explanation": "<u>★ 滴定計算のステップ ★</u>\n\n① 酸・塩基の<u>価数</u>を確認\n\n② 公式 a·c·V ＝ b·c′·V′ に値を代入\n\n③ 不明な量について解く\n\n<u>例題</u>：0.10 mol/L 塩酸 10 mL を中和するのに必要な 0.10 mol/L NaOH の体積は？\n\n1×0.10×10 ＝ 1×0.10×V′ → V′ ＝ <u>10 mL</u>"
-            },
-            {
-              "id": "p2_2_6_n7",
-              "label": "発展：ルシャトリエの原理",
-              "step": 2,
-              "subLabel": "電離度に関係ない理由",
-              "explanation": "<u>★ なぜ弱酸でも全部中和されるのか？ ★</u>\n\n弱酸の電離：CH₃COOH ⇄ CH₃COO⁻ + H⁺（可逆反応）\n\n❶ H⁺ が中和反応で減少する\n\n❷ H⁺を増やすために、新しい平衡状態へ → <u>反応が右に進む</u>（正反応）\n\n❸ 電離度に関係なく、H⁺はOH⁻と最後まで反応\n\nこれが<u>ルシャトリエの原理</u>。\n\n（詳細は3年1学期）"
-            }
-          ]
-        },
-        {
-          "id": "p2_2_6_step4_group",
-          "label": "【Step4：応用：二段階滴定】",
-          "step": 2,
-          "isGroup": true,
-          "children": [
-            {
-              "id": "p2_2_6_n9",
-              "label": "二段階滴定の概要",
-              "step": 2,
-              "subLabel": "NaOH＋Na₂CO₃ vs HCl",
-              "explanation": "<u>二段階滴定</u>＝NaOH x mol と Na₂CO₃ y mol の混合液に塩酸HClを滴下。\n\n<u>★ 反応式（順番で起こる）★</u>\n\n<u>[第1段階：塩基→弱塩基へ]</u>（指示薬：フェノールフタレイン）\n\n❶ NaOH + HCl → NaCl + H₂O\n\n　x mol　　 x mol\n\n❷ Na₂CO₃ + HCl → NaCl + NaHCO₃\n\n　y mol　　 y mol\n\n<u>[第2段階：弱塩基→弱酸へ]</u>（指示薬：メチルオレンジ）\n\n❸ NaHCO₃ + HCl → NaCl + H₂O + CO₂\n\n　y mol　　 y mol"
-            },
-            {
-              "id": "p2_2_6_n10",
-              "label": "二段階滴定の関係式",
-              "step": 2,
-              "subLabel": "x mol, y mol を解く",
-              "explanation": "<u>★ 計算のポイント ★</u>\n\n第1中和点まで反応したHCl＝(x + y) mol\n\n第1中和点〜第2中和点で反応したHCl＝y mol\n\nこの2つから x と y を計算"
-            },
-            {
-              "id": "p2_2_6_n11",
-              "label": "演習例題",
-              "step": 2,
-              "subLabel": "12mL vs 4mL",
-              "explanation": "<u>例題</u>：NaOHとNa₂CO₃の混合液10.0mLにフェノールフタレインを加え0.10mol/L塩酸で滴定。\n\n赤色消失まで <u>12.0 mL</u>、その後メチルオレンジで赤になるまで <u>4.0 mL</u>。\n\nNaOHとNa₂CO₃の mol を求めよ。\n\n<u>解答</u>：第2段階で4.0mL → y mol×1000=0.10×4.0 → y = <u>4.0×10⁻⁴ mol</u>（Na₂CO₃）\n\n第1段階で12mL → (x+y)＝0.10×12.0/1000＝1.2×10⁻³\n\nx ＝ 1.2×10⁻³ − 4.0×10⁻⁴ ＝ <u>8.0×10⁻⁴ mol</u>（NaOH）"
+              "id": "acidBaseTreeData_sec6_3_1",
+              "label": "頻出の注意点",
+              "step": 3,
+              "subLabel": "目盛り・気泡・終点",
+              "explanation": "❶ ビュレットの目盛りは<u>液面の下端（メニスカス）</u>を読む\n\n❷ 目盛りは<u>最小目盛りの 1/10 まで</u>読む（例：0.05mL単位）\n\n❸ ビュレットの<u>先端の気泡</u>は必ず追い出す（体積が狂う原因）\n\n❹ 終点付近は<u>1滴ずつ</u>滴下し、色が消えなくなった点を終点とする\n\n❺ フェノールフタレインは<u>時間が経つと色が消える</u>ことがある → 直後の変色で判定"
             }
           ]
         }
@@ -11096,248 +11013,102 @@ export const acidBaseTreeData = {
     },
     {
       "id": "acidBaseTreeData_sec7",
-      "label": "重要事項⑦ 中和滴定の実験",
+      "label": "重要事項⑦ 滴定曲線と二段階滴定",
       "step": 3,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_2_7_step1_group",
-          "label": "【Step1：濃度調整：メスフラスコ】",
-          "step": 3,
-          "isGroup": true,
-          "children": [
-            {
-              "id": "p2_2_7_n1",
-              "label": "メスフラスコ",
-              "step": 3,
-              "subLabel": "正確な濃度を作る",
-              "explanation": "<u>メスフラスコ</u>\n\n<u>役割</u>：正確な濃度の溶液をつくる\n\n<u>洗浄</u>：純水で洗い、<u>ぬれたまま使用可</u>\n\n<u>理由</u>：さらに純水を加えて薄めるため、初期に水があっても問題なし\n\n<u>使い方</u>：メスフラスコに酸（塩基）を入れ、目盛り線まで水を加える"
-            }
-          ]
-        },
-        {
-          "id": "p2_2_7_step2_group",
-          "label": "【Step2：溶液採取：ホールピペット】",
-          "step": 3,
-          "isGroup": true,
-          "children": [
-            {
-              "id": "p2_2_7_n3",
-              "label": "ホールピペット",
-              "step": 3,
-              "subLabel": "正確な体積を採取",
-              "explanation": "<u>ホールピペット</u>＋安全ピペッター\n\n<u>役割</u>：標線まで吸って一定体積を正確にとる\n\n<u>洗浄</u>：使用する溶液で内部を2〜3回洗浄＝<u>共洗い（ともあらい）</u>\n\n<u>理由</u>：水が残ると標線まで入れても水滴分濃度が薄まるから\n\n<u>使い方</u>：メスフラスコから標線まで吸い取ってコニカルビーカーへ"
-            }
-          ]
-        },
-        {
-          "id": "p2_2_7_step3_group",
-          "label": "【Step3：反応容器と指示薬：コニカルビーカー】",
-          "step": 3,
-          "isGroup": true,
-          "children": [
-            {
-              "id": "p2_2_7_n5",
-              "label": "コニカルビーカー",
-              "step": 3,
-              "subLabel": "中和反応の容器",
-              "explanation": "<u>コニカルビーカー</u>\n\n<u>役割</u>：中和するための容器\n\n<u>洗浄</u>：純水で洗い、<u>ぬれたまま使用可</u>\n\n<u>理由</u>：水で薄まっても、溶液中の溶質の<u>物質量は変わらない</u>から\n\n　　　　（中和反応は物質量で決まるため）"
-            },
-            {
-              "id": "p2_2_7_n6",
-              "label": "指示薬の入れ方",
-              "step": 3,
-              "subLabel": "酸→PP、塩基→メチルオレンジ",
-              "explanation": "<u>指示薬の選び方</u>\n\n・コニカルビーカー内が <u>酸性側</u>（酸を測りとった）→ <u>フェノールフタレイン</u>\n\n・コニカルビーカー内が <u>塩基側</u>（塩基を測りとった）→ <u>メチルオレンジ</u>"
-            }
-          ]
-        },
-        {
-          "id": "p2_2_7_step4_group",
-          "label": "【Step4：滴定操作：ビュレット】",
-          "step": 3,
-          "isGroup": true,
-          "children": [
-            {
-              "id": "p2_2_7_n8",
-              "label": "ビュレット",
-              "step": 3,
-              "subLabel": "滴下量を測る",
-              "explanation": "<u>ビュレット</u>\n\n<u>役割</u>：滴下した溶液の体積を「滴下前 − 滴下後」で正確に測る\n\n<u>洗浄</u>：使用する溶液で内部を2〜3回洗浄＝<u>共洗い</u>\n\n<u>理由</u>：水が残ると濃度が薄まるから\n\n<u>使い方</u>\n\n① 濃度未知の塩基（酸）を入れる\n\n② 先端の<u>空気を追い出す</u>\n\n③ 滴下前の目盛りを読む\n\n④ コニカルビーカーに滴下\n\n⑤ 色が変化した点で滴下後の目盛りを読む\n\n⑥ 中和に使った体積から濃度を計算"
-            },
-            {
-              "id": "p2_2_7_n9",
-              "label": "共洗いの覚え方",
-              "step": 3,
-              "subLabel": "「ト」がつくもの",
-              "explanation": "<u>★ 共洗いの覚え方 ★</u>\n\nホールピペッ<u>ト</u>とビュレッ<u>ト</u>の「ト」は共洗いの「と」！\n\n<u>共洗いする</u>：ホールピペット・ビュレット（使う溶液で洗う）\n\n<u>純水でOK</u>：メスフラスコ・コニカルビーカー（ぬれたまま可）"
-            },
-            {
-              "id": "p2_2_7_n10",
-              "label": "計算式",
-              "step": 3,
-              "subLabel": "未知濃度を求める",
-              "explanation": "塩基の価数 × 塩基水溶液の濃度（未知） × 塩基水溶液の体積（既知）\n\n＝ 酸の価数 × 酸水溶液の濃度（既知） × 酸水溶液の体積（既知）\n\n未知の濃度について解く"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "acidBaseTreeData_sec8",
-      "label": "重要事項⑧ 滴定曲線",
-      "step": 4,
-      "isGroup": true,
-      "children": [
-        {
-          "id": "p2_2_8_step1_group",
+          "id": "acidBaseTreeData_sec7_1",
           "label": "【Step1：滴定曲線とは】",
-          "step": 4,
-          "isGroup": true,
-          "children": [
-            {
-              "id": "p2_2_8_n1",
-              "label": "滴定曲線",
-              "step": 4,
-              "subLabel": "滴下量とpHのグラフ",
-              "explanation": "<u>滴定曲線</u>＝中和滴定で加えた塩基（酸）の体積と、混合水溶液のpHとの関係を表したグラフ。\n\n中和点付近で<u>急激にpHが変化</u>するのが特徴。"
-            }
-          ]
-        },
-        {
-          "id": "p2_2_8_step2_group",
-          "label": "【Step2：指示薬の選択（4パターン）】",
-          "step": 4,
-          "isGroup": true,
-          "children": [
-            {
-              "id": "p2_2_8_n3",
-              "label": "強酸×強塩基",
-              "step": 4,
-              "subLabel": "両方OK",
-              "explanation": "<u>❶ 強酸×強塩基</u>（例：HCl + NaOH）\n\n<u>中和点 pH ＝ 7</u>（NaClは中性塩）\n\n中和点前後のpH変化が大きい→<u>両方の指示薬の変色域にかかる</u>\n\n<u>指示薬</u>：<u>メチルオレンジ・フェノールフタレイン どちらでも可</u>"
-            },
-            {
-              "id": "p2_2_8_n4",
-              "label": "弱酸×弱塩基",
-              "step": 4,
-              "subLabel": "どちらも不可",
-              "explanation": "<u>❷ 弱酸×弱塩基</u>（例：CH₃COOH + NH₃）\n\n<u>中和点 pH ≒ 7</u>（CH₃COONH₄は中性に近い）\n\n中和点前後のpH変化が<u>小さい</u>→指示薬の変色域と一致しない\n\n<u>指示薬</u>：<u>どちらも使用できない</u>（普通は滴定しない）"
-            },
-            {
-              "id": "p2_2_8_n5",
-              "label": "弱塩基×強酸",
-              "step": 4,
-              "subLabel": "メチルオレンジ",
-              "explanation": "<u>❸ 弱塩基×強酸</u>（例：NH₃ + HCl）\n\n<u>中和点 pH ＜ 7</u>（NH₄Clは酸性）\n\n<u>指示薬</u>：<u>メチルオレンジ</u>（変色域 pH3〜5）\n\n覚え方：<u>「強」がつく側で変化する指示薬</u>＝強酸側の酸性pHで変色するメチルオレンジ"
-            },
-            {
-              "id": "p2_2_8_n6",
-              "label": "弱酸×強塩基",
-              "step": 4,
-              "subLabel": "フェノールフタレイン",
-              "explanation": "<u>❹ 弱酸×強塩基</u>（例：CH₃COOH + NaOH）\n\n<u>中和点 pH ＞ 7</u>（CH₃COONaは塩基性）\n\n<u>指示薬</u>：<u>フェノールフタレイン</u>（変色域 pH8〜10）\n\n覚え方：<u>「強」がつく側で変化する指示薬</u>＝強塩基側の塩基性pHで変色するフェノールフタレイン"
-            },
-            {
-              "id": "p2_2_8_n7",
-              "label": "指示薬選択まとめ",
-              "step": 4,
-              "subLabel": "暗記用早見表",
-              "explanation": "組合せ ｜ 中和点pH ｜ 使う指示薬\n強酸×強塩基 ｜ ＝7 ｜ 両方OK\n強酸×弱塩基 ｜ ＜7 ｜ メチルオレンジ\n弱酸×強塩基 ｜ ＞7 ｜ フェノールフタレイン\n弱酸×弱塩基 ｜ ≒7 ｜ どちらも不可"
-            }
-          ]
-        },
-        {
-          "id": "p2_2_8_step3_group",
-          "label": "【Step3：二段階滴定（再掲）】",
-          "step": 4,
-          "isGroup": true,
-          "children": [
-            {
-              "id": "p2_2_8_n9",
-              "label": "二段階滴定の概要",
-              "step": 4,
-              "subLabel": "NaOH＋Na₂CO₃",
-              "explanation": "<u>二段階滴定</u>＝NaOH と Na₂CO₃ の混合液に塩酸を加える滴定。\n\n2つの中和点で色が変化。\n\n<u>第1中和点</u>（pH ≒ 8.3）：<u>フェノールフタレイン</u> 赤→無色\n\n　→ NaOH + Na₂CO₃ → NaHCO₃ まで進行\n\n<u>第2中和点</u>（pH ≒ 3.8）：<u>メチルオレンジ</u> 黄→赤\n\n　→ NaHCO₃ + HCl → NaCl + H₂O + CO₂ まで進行"
-            },
-            {
-              "id": "p2_2_8_n10",
-              "label": "計算のコツ",
-              "step": 4,
-              "subLabel": "(x+y) と y で連立",
-              "explanation": "NaOH x mol、Na₂CO₃ y mol とすると\n\n第1中和点までに反応したHCl ＝ <u>(x + y) mol</u>\n\n第1中和点〜第2中和点で反応したHCl ＝ <u>y mol</u>\n\nこれでx, yを連立で求める。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "acidBaseTreeData_qlinks",
-      "label": "📝 単元の確認問題",
-      "step": 4,
-      "isGroup": true,
-      "children": [
-        {
-          "id": "acidBaseTreeData_leftover_step1",
-          "label": "📝 Step1 対応の確認問題",
           "step": 1,
-          "subLabel": "1問",
-          "relatedQuestions": [
-            { "id": "p_c5_1_2", "label": "⑤-1 問2 下線部は酸か塩基か" }
+          "isGroup": true,
+          "children": [
+            {
+              "id": "acidBaseTreeData_sec7_1_1",
+              "label": "滴定曲線の基本",
+              "step": 1,
+              "subLabel": "縦軸pH・横軸滴下量",
+              "explanation": "<u>滴定曲線</u>＝滴下量（横軸）と pH（縦軸）の関係を表すグラフ。\n\n中和点付近で pH が<u>急激に変化する（垂直に伸びる）</u>のが特徴。\n🎯 中和点で急激な pH ジャンプが起きる範囲を<u>「pHジャンプ」</u>とよぶ。\n\nこのジャンプ範囲に<u>変色域が入っている指示薬</u>を選ぶのが鉄則！"
+            }
           ]
         },
         {
-          "id": "acidBaseTreeData_leftover_step2",
-          "label": "📝 Step2 対応の確認問題",
+          "id": "acidBaseTreeData_sec7_2",
+          "label": "【Step2：4つの滴定曲線パターン】",
           "step": 2,
-          "subLabel": "3問",
-          "relatedQuestions": [
-            { "id": "p_c5_2_1", "label": "⑤-2 問1 価数による分類" },
-            { "id": "p_c5_2_3", "label": "⑤-2 問3 1価である理由の記述" },
-            { "id": "p_c5_2_2", "label": "⑤-2 問2 酢酸の電離度の計算" }
+          "isGroup": true,
+          "children": [
+            {
+              "id": "acidBaseTreeData_sec7_2_1",
+              "label": "① 強酸 + 強塩基",
+              "step": 2,
+              "subLabel": "中和点 pH ＝ 7（両方の指示薬OK）",
+              "explanation": "<u>例</u>：HCl ＋ NaOH\n\n<u>中和点 pH ＝ 7（中性）</u>\n\npHジャンプの範囲がとても広い（約 pH3〜pH11）\n\n→ <u>メチルオレンジ MO・フェノールフタレイン PP どちらでもOK</u>\n\npH\n14│ ┌─\n│ ／\n7│─ ─ ─ ─ ─ ─ ─┤ ←ジャンプ（急激な変化）\n│ ／\n0│───────┘\n0 中和点 塩基滴下量"
+            },
+            {
+              "id": "acidBaseTreeData_sec7_2_2",
+              "label": "② 弱酸 + 強塩基",
+              "step": 2,
+              "subLabel": "中和点 pH ＞ 7（PP使用）",
+              "explanation": "<u>例</u>：CH₃COOH ＋ NaOH\n\n<u>中和点 pH ＞ 7（塩基性）</u>（生じる CH₃COONa が加水分解して塩基性）\n\npHジャンプは塩基性側にのみ現れる（pH7〜pH11 付近）\n\n→ <u>フェノールフタレイン PP を使用</u>（変色域 pH 8〜10 が範囲内）\n\n→ <u>MO は使えない</u>（変色域 pH 3〜5 でジャンプ前に色が変わる）"
+            },
+            {
+              "id": "acidBaseTreeData_sec7_2_3",
+              "label": "③ 強酸 + 弱塩基",
+              "step": 2,
+              "subLabel": "中和点 pH ＜ 7（MO使用）",
+              "explanation": "<u>例</u>：HCl ＋ NH₃\n\n<u>中和点 pH ＜ 7（酸性）</u>（生じる NH₄Cl が加水分解して酸性）\n\npHジャンプは酸性側にのみ現れる（pH3〜pH7付近）\n\n→ <u>メチルオレンジ MO を使用</u>（変色域 pH 3〜5 が範囲内）\n\n→ <u>PP は使えない</u>"
+            },
+            {
+              "id": "acidBaseTreeData_sec7_2_4",
+              "label": "④ 弱酸 + 弱塩基",
+              "step": 2,
+              "subLabel": "中和点 pH ≒ 7だが滴定不可",
+              "explanation": "<u>例</u>：CH₃COOH ＋ NH₃\n\n<u>中和点 pH ≒ 7</u>だが、pHジャンプが<u>ほぼ現れない</u>！\n\n→ <u>どの指示薬も使えない → 滴定に不向き</u>"
+            },
+            {
+              "id": "acidBaseTreeData_sec7_2_5",
+              "label": "4パターンまとめ表",
+              "step": 2,
+              "subLabel": "これだけ暗記！",
+              "explanation": "組み合わせ中和点 pH使える指示薬\n強酸 + 強塩基= 7<u>MO・PP 両方OK</u>\n弱酸 + 強塩基> 7<u>PP のみ</u>（強塩基側で変色）\n強酸 + 弱塩基< 7<u>MO のみ</u>（強酸側で変色）\n弱酸 + 弱塩基≒ 7<u>どちらも使えない</u>\n\n💡 <u>覚え方</u>：「強」がついている側で pH がジャンプする → その側で色が変わる指示薬を選ぶ！\n\n（強酸→酸性側で変わる MO／強塩基→塩基性側で変わる PP）"
+            }
           ]
         },
         {
-          "id": "acidBaseTreeData_leftover_step3",
-          "label": "📝 Step3 対応の確認問題",
+          "id": "acidBaseTreeData_sec7_3",
+          "label": "【Step3：二段階滴定（Na₂CO₃ の滴定）】",
           "step": 3,
-          "subLabel": "9問",
-          "relatedQuestions": [
-            { "id": "p_c5_3_1", "label": "⑤-3 問1 [H⁺] の計算" },
-            { "id": "p_c5_3_5", "label": "⑤-3 問5 弱酸の [H⁺]・電離度" },
-            { "id": "p_c5_3_2", "label": "⑤-3 問2 pH と液性" },
-            { "id": "p_c5_3_3", "label": "⑤-3 問3 希釈と pH の変化" },
-            { "id": "p_c5_3_6", "label": "⑤-3 問6 混合水溶液の pH" },
-            { "id": "p_c5_3_7", "label": "⑤-3 問7 混合後の pH" },
-            { "id": "p_c5_6_1", "label": "⑤-6 問1 器具の名称と用途" },
-            { "id": "p_c5_6_2", "label": "⑤-6 問2 食酢の中和滴定" },
-            { "id": "p_c5_6_3", "label": "⑤-6 問3 共洗い・器具の扱い" }
-          ]
-        },
-        {
-          "id": "acidBaseTreeData_leftover_step4",
-          "label": "📝 Step4 対応の確認問題",
-          "step": 4,
-          "subLabel": "12問",
-          "relatedQuestions": [
-            { "id": "p_c5_4_1", "label": "⑤-4 問1 中和の化学反応式" },
-            { "id": "p_c5_4_2", "label": "⑤-4 問2 中和の化学反応式（応用）" },
-            { "id": "p_c5_4_3", "label": "⑤-4 問3 塩をつくる酸と塩基" },
-            { "id": "p_c5_4_4", "label": "⑤-4 問4 塩の分類" },
-            { "id": "p_c5_4_6", "label": "⑤-4 問6 塩の水溶液の液性" },
-            { "id": "p_c5_4_7", "label": "⑤-4 問7 弱酸・弱塩基の遊離" },
-            { "id": "p_c5_4_8", "label": "⑤-4 問8 揮発性酸の遊離" },
-            { "id": "p_c5_5_1", "label": "⑤-5 問1 中和の量的関係" },
-            { "id": "p_c5_5_2", "label": "⑤-5 問2 気体を吸収させた中和" },
-            { "id": "p_c5_5_3", "label": "⑤-5 問3 発生気体の体積計算" },
-            { "id": "p_c5_7_1", "label": "⑤-7 問1 滴定曲線と指示薬" },
-            { "id": "p_c5_7_2", "label": "⑤-7 問2 二段階滴定の計算" }
+          "isGroup": true,
+          "children": [
+            {
+              "id": "acidBaseTreeData_sec7_3_1",
+              "label": "二段階滴定の原理",
+              "step": 3,
+              "subLabel": "中和が2段階で進む",
+              "explanation": "炭酸ナトリウム Na₂CO₃ は<u>2価の弱塩基</u>で、HCl で中和すると<u>2段階</u>に反応が進む。\n\n<u>【第1段階（第1中和点まで）】塩基 → 弱塩基へ</u>\n\nNa₂CO₃ + HCl → NaCl + <u>NaHCO₃</u> （強い塩基性 → 弱い塩基性）\n\n→ 中和点 pH ＞ 7 → <u>指示薬 PP（フェノールフタレイン）</u>で赤 → 無色\n\n<u>【第2段階（第1→第2中和点）】弱塩基 → 弱酸へ</u>\n\nNaHCO₃ + HCl → NaCl + H₂O + CO₂↑ （弱い塩基性 → 酸性）\n\n→ 中和点 pH ＜ 7 → <u>指示薬 MO（メチルオレンジ）</u>で黄 → 赤\n\npH\n│ │ │\n11│─┐ │ │\n│ └─┐（第1中和点／PP変色）\n7│─ ─│─┐ │\n│ │ └─┐（第2中和点／MO変色）\n3│ │ │└──\n└──┴──┴──── 滴下量\nv1 v2"
+            },
+            {
+              "id": "acidBaseTreeData_sec7_3_2",
+              "label": "NaOHとNa₂CO₃の混合滴定",
+              "step": 3,
+              "subLabel": "頻出パターン！",
+              "explanation": "NaOH（xmol）と Na₂CO₃（ymol）の混合水溶液を HCl で滴定するとき：\n\n<u>【第1段階】強塩基 → 弱塩基へ（PP：赤→無）</u>\n\n❶ NaOH + HCl → NaCl + H₂O （x mol の HCl 消費）\n\n❷ Na₂CO₃ + HCl → NaCl + NaHCO₃ （y mol の HCl 消費）\n\n→ 第1中和点までの HCl 消費量：<u>(x + y) mol</u>\n\n<u>【第2段階】弱塩基 → 弱酸へ（MO：黄→赤）</u>\n\n❸ NaHCO₃ + HCl → NaCl + H₂O + CO₂ （y mol の HCl 消費）\n\n→ 第1→第2中和点までの HCl 消費量：<u>y mol</u>\n\n💡 <u>x, y の求め方</u>\n\n① 第1中和点までの滴下量 V₁[L] × 濃度 c[mol/L] = x + y\n\n② 第1→第2中和点までの滴下量 V₂[L] × 濃度 c = y\n\n③ 差し引いて x = (V₁-V₂)×c、y = V₂×c を求める"
+            },
+            {
+              "id": "acidBaseTreeData_sec7_3_3",
+              "label": "二段階滴定 計算例題",
+              "step": 3,
+              "subLabel": "共通テスト頻出",
+              "explanation": "<u>例題</u>：NaOH と Na₂CO₃ の混合水溶液に 0.10 mol/L HCl を滴下したところ、PP の色が消えたのは 25 mL、MO の色が変わったのはさらに 10 mL 追加した時点だった。含まれる NaOH と Na₂CO₃ の物質量は？\n\n❶ 第1→第2中和点分：<u>y mol</u> = 0.10 × (10/1000) = <u>1.0×10⁻³ mol</u>（Na₂CO₃）\n\n❷ 第1中和点まで：<u>x + y mol</u> = 0.10 × (25/1000) = 2.5×10⁻³ mol\n\n❸ よって NaOH = x = 2.5×10⁻³ - 1.0×10⁻³ = <u>1.5×10⁻³ mol</u>\n\n<u>答え：NaOH = 1.5×10⁻³ mol、Na₂CO₃ = 1.0×10⁻³ mol</u>"
+            }
           ]
         }
       ]
     }
   ]
 };
+
 
 // ------------------------------------------------------------
 // ⑥ 酸化還元反応 ロジックツリー
@@ -11349,91 +11120,84 @@ export const redoxTreeData = {
   "id": "redoxTreeData_root",
   "label": "酸化還元反応",
   "step": null,
-  "explanation": "酸化還元は「<u>定義・酸化数</u>」→「<u>酸化剤・還元剤と半反応式</u>」→「<u>酸化還元滴定（量的関係）</u>」→「<u>酸化力・還元力の強さ</u>」→「<u>金属のイオン化傾向</u>」→「<u>電池</u>」→「<u>金属の製錬・電気分解</u>」の順に積み上げると理解しやすい単元です。すべての土台は「電子 e⁻ の受け渡し」と「酸化数の増減」という一つの原理です。",
+  "explanation": "酸化還元は「<u>定義・酸化数</u>」→「<u>半反応式・反応式</u>」→「<u>酸化還元滴定</u>」→「<u>酸化力・還元力の強さ</u>」→「<u>金属のイオン化傾向</u>」→「<u>電池</u>」→「<u>工業的製法</u>」の順に積み上げると理解しやすい単元です。すべての土台は「電子 e⁻ の受け渡し」と「酸化数の増減」という一つの原理です。",
   "children": [
     {
       "id": "redoxTreeData_sec1",
-      "label": "重要事項① 酸化還元反応",
+      "label": "重要事項① 酸化還元反応とは何か（酸化数）",
       "step": 1,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_3_1_step1_group",
-          "label": "【Step1：酸化・還元の定義】",
+          "id": "redoxTreeData_sec1_1",
+          "label": "【Step1：酸化・還元の3つの見方】",
           "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_1_n1",
-              "label": "中学の復習",
+              "id": "redoxTreeData_sec1_1_1",
+              "label": "酸化とは？",
               "step": 1,
-              "subLabel": "酸素のやりとり",
-              "explanation": "<u>中学までの定義</u>\n\n<u>酸化</u>＝酸素を受け取る反応\n\n<u>還元</u>＝酸素が失われる反応"
+              "subLabel": "酸素/水素/電子/酸化数",
+              "explanation": "<u>酸化</u>とは、次のどれかが起こること：\n\n❶ <u>酸素O を受け取る</u> （例：C + O₂ → CO₂）\n\n❷ <u>水素H を失う</u> （例：H₂S → S）\n\n❸ <u>電子e⁻ を失う</u> （例：Zn → Zn²⁺ + 2e⁻）\n\n❹ <u>酸化数が増加する</u> （例：Fe²⁺ → Fe³⁺、+2→+3で増加）\n\n💡 現代的定義では <u>「電子を失うこと＝酸化」</u> が最も本質的。"
             },
             {
-              "id": "p2_3_1_n2",
-              "label": "高校での3つの定義",
+              "id": "redoxTreeData_sec1_1_2",
+              "label": "還元とは？",
               "step": 1,
-              "subLabel": "酸素・水素・電子",
-              "explanation": "<u>★ 高校での酸化還元の3定義 ★</u>\n\n ｜ 酸素 ｜ 水素 ｜ 電子\n酸化 ｜ 受け取る ｜ 失う ｜ 失う\n還元 ｜ 失う ｜ 受け取る ｜ 受け取る\n\n<u>覚え方</u>：「酸素の酸化・還元の逆が水素・電子」"
+              "subLabel": "酸化の逆",
+              "explanation": "<u>還元</u>とは、次のどれかが起こること（酸化の完全な逆）：\n\n❶ <u>酸素O を失う</u> （例：CuO → Cu）\n\n❷ <u>水素H を受け取る</u> （例：N₂ → NH₃）\n\n❸ <u>電子e⁻ を受け取る</u> （例：Cu²⁺ + 2e⁻ → Cu）\n\n❹ <u>酸化数が減少する</u>\n\n🔑 <u>酸化と還元は必ず同時に起こる</u>！ 電子を出す物質があれば、必ず受け取る物質があるため。→ <u>酸化還元反応</u>とセットで呼ぶ。"
             }
           ]
         },
         {
-          "id": "p2_3_1_step2_group",
-          "label": "【Step2：酸化数】",
-          "step": 1,
+          "id": "redoxTreeData_sec1_2",
+          "label": "【Step2：酸化数の決定ルール】",
+          "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_1_n4",
-              "label": "酸化数とは",
-              "step": 1,
-              "subLabel": "電子の授受を数値化",
-              "explanation": "<u>酸化数</u>＝化学反応において原子がどれだけ電子を受け取った・失ったかを表す数。\n\n<u>酸化数が大きくなる → 酸化された</u>（電子を失った）\n\n<u>酸化数が小さくなる → 還元された</u>（電子を受け取った）\n\n※必ず<u>+を明示</u>すること！"
+              "id": "redoxTreeData_sec1_2_1",
+              "label": "酸化数の基本ルール",
+              "step": 2,
+              "subLabel": "4つの原則を覚える",
+              "explanation": "<u>❶ 単体</u>：すべての原子の酸化数は<u>0</u>\n\n例：H₂、O₂、Cu、Fe、Zn → すべて 0\n\n<u>❷ 単原子イオン</u>：酸化数はイオンの<u>価数（電荷）に等しい</u>\n\n例：Na⁺=+1、Cl⁻=-1、Fe²⁺=+2、Al³⁺=+3\n\n<u>❸ 化合物中</u>：すべての原子の酸化数の<u>和 = 0</u>\n\n例：H₂O → +1×2 + (-2) = 0 ✓\n\n<u>❹ 多原子イオン</u>：すべての原子の酸化数の<u>和 = イオンの価数</u>\n\n例：SO₄²⁻ → S + (-2)×4 = -2 ∴ S = +6"
             },
             {
-              "id": "p2_3_1_n5",
-              "label": "酸化数の決め方ルール",
-              "step": 1,
-              "subLabel": "5つのルール",
-              "explanation": "<u>❶ 単体</u>：すべての原子の酸化数は<u>0</u>\n\n　例：Cu, Fe, Au, O₂, H₂ → すべて 0\n\n<u>単原子イオン</u>：酸化数＝イオンの価数\n\n　例：Fe²⁺は+2、Fe³⁺は+3\n\n<u>❷ 化合物</u>：全ての原子の酸化数の和は<u>0</u>\n\n<u>化合物のイオン</u>：酸化数の和＝イオンの価数\n\n<u>化合物中の原子の酸化数（基本）</u>\n\n① <u>水素 H = +1</u>　例：HCl → H:+1, Cl:−1\n\n② <u>酸素 O = −2</u>　例：H₂O → H:+1×2, O:−2\n\n③ <u>フッ素 F = −1</u>　例：HF → H:+1, F:−1\n\n④ <u>アルカリ金属 = +1</u>（Li, Na, K, Rb, Cs）\n\n⑤ <u>アルカリ土類金属 = +2</u>（Mg, Ca, Sr, Ba）"
+              "id": "redoxTreeData_sec1_2_2",
+              "label": "元素ごとの原則的な酸化数",
+              "step": 2,
+              "subLabel": "優先順位と例外",
+              "explanation": "優先元素原則例外\n1<u>アルカリ金属（1族）</u><u>+1</u>なし\n2<u>アルカリ土類金属（2族）</u><u>+2</u>なし\n3<u>フッ素 F</u><u>-1</u>なし\n4<u>水素 H</u><u>+1</u>金属水素化物 NaH、CaH₂ では <u>-1</u>\n5<u>酸素 O</u><u>-2</u>過酸化物 H₂O₂・Na₂O₂ では <u>-1</u>／OF₂ では +2\n\n💡 <u>優先順位が高い元素から先に決めて</u>、残った元素は「化合物の和=0」から逆算する！"
             },
             {
-              "id": "p2_3_1_n6",
-              "label": "酸化数の例外",
-              "step": 1,
-              "subLabel": "NaH と H₂O₂",
-              "explanation": "<u>★ 例外（受験頻出）★</u>\n\n<u>❶ NaH</u>（水素化ナトリウム）\n\n　Na: +1（アルカリ金属のルールが優先）\n\n　<u>H: −1</u>（普段は+1だが、ここでは−1）\n\n　計：+1+(−1)=0 ✓\n\n<u>❷ H₂O₂</u>（過酸化水素）\n\n　H: +1×2 = +2\n\n　<u>O: −1</u>（普段は−2だが、ここでは−1）\n\n　計：+2+(−1×2)=0 ✓"
+              "id": "redoxTreeData_sec1_2_3",
+              "label": "酸化数の計算練習",
+              "step": 2,
+              "subLabel": "頻出化合物",
+              "explanation": "物質着目原子酸化数計算\nKMnO₄Mn<u>+7</u>+1 + Mn + (-2)×4 = 0\nK₂Cr₂O₇Cr<u>+6</u>+1×2 + Cr×2 + (-2)×7 = 0\nH₂SO₄S<u>+6</u>+1×2 + S + (-2)×4 = 0\nHNO₃N<u>+5</u>+1 + N + (-2)×3 = 0\nNH₃N<u>-3</u>N + (+1)×3 = 0\nH₂O₂O<u>-1</u>（過酸化物）+1×2 + O×2 = 0\nNaHH<u>-1</u>（例外）+1 + H = 0"
             }
           ]
         },
         {
-          "id": "p2_3_1_step3_group",
-          "label": "【Step3：酸化剤・還元剤の見分け方】",
-          "step": 1,
+          "id": "redoxTreeData_sec1_3",
+          "label": "【Step3：酸化還元の判定】",
+          "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_1_n8",
-              "label": "酸化剤",
-              "step": 1,
-              "subLabel": "相手を酸化・自身は還元",
-              "explanation": "<u>酸化剤</u>＝相手を酸化させて、<u>自身は還元される</u>物質。\n\n→ 反応の前後で、自身の<u>酸化数が減少</u>する物質"
+              "id": "redoxTreeData_sec1_3_1",
+              "label": "反応が酸化還元か見抜く",
+              "step": 3,
+              "subLabel": "酸化数の増減をチェック",
+              "explanation": "<u>手順</u>：反応前後の各原子の酸化数を求め、<u>変化があれば酸化還元反応</u>！\n\n<u>例①</u>：2Cu + O₂ → 2CuO\n\nCu：0 → +2（酸化）／O：0 → -2（還元）\n\n→ <u>酸化還元反応</u>（酸化と還元が同時に起きている）\n\n<u>例②</u>：HCl + NaOH → NaCl + H₂O\n\nH：+1→+1／Cl：-1→-1／Na：+1→+1／O：-2→-2 変化なし\n\n→ <u>中和反応（酸化還元ではない）</u>\n\n💡 中和反応・沈殿反応は基本的に「電子の授受なし」→ 酸化還元ではない！"
             },
             {
-              "id": "p2_3_1_n9",
-              "label": "還元剤",
-              "step": 1,
-              "subLabel": "相手を還元・自身は酸化",
-              "explanation": "<u>還元剤</u>＝相手を還元させて、<u>自身は酸化される</u>物質。\n\n→ 反応の前後で、自身の<u>酸化数が増加</u>する物質"
-            },
-            {
-              "id": "p2_3_1_n10",
-              "label": "例題：酸化剤を見分ける",
-              "step": 1,
-              "subLabel": "酸化数の変化に注目",
-              "explanation": "<u>例題</u>：MnO₂ + 4HCl → MnCl₂ + 2H₂O + Cl₂　酸化剤はどれか？\n\n<u>解答</u>：\n\n・Mn：MnO₂では+4 → MnCl₂では+2 → <u>酸化数 減少</u> → 自身は還元 → <u>MnO₂は酸化剤</u>\n\n・Cl：HClでは−1 → Cl₂では0 → 酸化数 増加 → HClが還元剤\n\n答：<u>酸化マンガン(IV) MnO₂</u>"
+              "id": "redoxTreeData_sec1_3_2",
+              "label": "酸化剤・還元剤の定義",
+              "step": 3,
+              "subLabel": "「自分」と「相手」の視点",
+              "explanation": "<u>酸化剤</u>＝<u>相手</u>を酸化する（＝自分は<u>還元される</u>／電子を受け取る）\n\n<u>還元剤</u>＝<u>相手</u>を還元する（＝自分は<u>酸化される</u>／電子を失う）\n\n⚠ <u>「酸化剤」は自分が「酸化される」わけではない！</u>\n\n「酸化剤」は\"相手を酸化する薬剤\"のことなので、自分自身は還元されている。用語のトラップに注意！"
             }
           ]
         }
@@ -11441,123 +11205,67 @@ export const redoxTreeData = {
     },
     {
       "id": "redoxTreeData_sec2",
-      "label": "重要事項② 半反応式・反応式",
+      "label": "重要事項② 半反応式と酸化還元反応式の作り方",
       "step": 2,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_3_2_step1_group",
-          "label": "【Step1：酸化剤・還元剤の暗記】",
-          "step": 2,
+          "id": "redoxTreeData_sec2_1",
+          "label": "【Step1：主要な酸化剤リスト（覚える！）】",
+          "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_2_n1",
-              "label": "覚えるべき酸化剤",
-              "step": 2,
-              "subLabel": "反応前→反応後",
-              "explanation": "<u>★ 覚えるべき酸化剤（自身の酸化数は減少）★</u>\n\n反応前 ｜ 反応後\nオゾン O₃ ｜ 酸素 O₂\n塩素 Cl₂ ｜ 塩化物イオン Cl⁻\n過マンガン酸イオン MnO₄⁻ (酸性) ｜ Mn²⁺（淡桃色）\n過マンガン酸イオン MnO₄⁻ (中性) ｜ MnO₂（黒褐色沈殿）\n二クロム酸イオン Cr₂O₇²⁻ ｜ Cr³⁺（緑色）\n希硝酸 HNO₃ ｜ NO（一酸化窒素）\n濃硝酸 HNO₃ ｜ NO₂（赤褐色気体）\n熱濃硫酸 H₂SO₄ ｜ SO₂（二酸化硫黄）"
-            },
-            {
-              "id": "p2_3_2_n2",
-              "label": "覚えるべき還元剤",
-              "step": 2,
-              "subLabel": "反応前→反応後",
-              "explanation": "<u>★ 覚えるべき還元剤（自身の酸化数は増加）★</u>\n\n反応前 ｜ 反応後\n陽性の強い金属（Na, Mg, Al） ｜ 陽イオン（Na⁺, Mg²⁺, Al³⁺）\n鉄(Ⅱ)イオン Fe²⁺ ｜ 鉄(Ⅲ)イオン Fe³⁺\nスズ(Ⅱ)イオン Sn²⁺ ｜ スズ(Ⅳ)イオン Sn⁴⁺\nヨウ化物イオン I⁻ ｜ ヨウ素 I₂（褐色）\nシュウ酸 (COOH)₂ ｜ 二酸化炭素 CO₂\n硫化水素 H₂S ｜ 硫黄 S（淡黄色沈殿）\nチオ硫酸イオン S₂O₃²⁻ ｜ テトラチオン酸イオン S₄O₆²⁻"
-            },
-            {
-              "id": "p2_3_2_n3",
-              "label": "両方になる物質",
-              "step": 2,
-              "subLabel": "SO₂とH₂O₂",
-              "explanation": "<u>★ 相手によって酸化剤・還元剤が変わる物質 ★</u>\n\n物質 ｜ 基本 ｜ 例外\nSO₂（二酸化硫黄） ｜ ★還元剤（→SO₄²⁻） ｜ H₂S相手のとき酸化剤（→S）\nH₂O₂（過酸化水素） ｜ ★酸化剤（→H₂O） ｜ MnO₄⁻やCr₂O₇²⁻相手のとき還元剤（→O₂）"
-            },
-            {
-              "id": "p2_3_2_n4",
-              "label": "酸化力の順番（覚え方）",
-              "step": 2,
-              "subLabel": "マンションの2階…",
-              "explanation": "<u>★ 覚え方「マンションの2階から兄さん流される」★</u>\n\n酸化剤になりたい順番（酸化力が強い順）：\n\n<u>MnO₄⁻（マンション）＞ Cr₂O₇²⁻（の2階）＞ H₂O₂（から）＞ SO₂（兄さん）＞ H₂S（流される）</u>\n\n左 → 右 で「基本は酸化剤」が3つ、「基本は還元剤」が2つ"
+              "id": "redoxTreeData_sec2_1_1",
+              "label": "酸化剤一覧（反応前 → 反応後）",
+              "step": 1,
+              "subLabel": "これが暗記のスタート",
+              "explanation": "酸化剤反応前→反応後半反応式\n過マンガン酸カリウム（酸性）MnO₄⁻（赤紫）→Mn²⁺（無色）<u>MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O</u>\n過マンガン酸カリウム（中性・塩基性）MnO₄⁻→MnO₂（黒褐色）MnO₄⁻ + 2H₂O + 3e⁻ → MnO₂ + 4OH⁻\nニクロム酸カリウムCr₂O₇²⁻（橙）→Cr³⁺（緑）<u>Cr₂O₇²⁻ + 14H⁺ + 6e⁻ → 2Cr³⁺ + 7H₂O</u>\n希硝酸HNO₃→NO（無色）HNO₃ + 3H⁺ + 3e⁻ → NO + 2H₂O\n濃硝酸HNO₃→NO₂（赤褐色）HNO₃ + H⁺ + e⁻ → NO₂ + H₂O\n熱濃硫酸H₂SO₄→SO₂H₂SO₄ + 2H⁺ + 2e⁻ → SO₂ + 2H₂O\n過酸化水素（通常）H₂O₂→H₂OH₂O₂ + 2H⁺ + 2e⁻ → 2H₂O\n二酸化硫黄（相手がH₂S時のみ）SO₂→SSO₂ + 4H⁺ + 4e⁻ → S + 2H₂O\nオゾンO₃→O₂O₃ + 2H⁺ + 2e⁻ → O₂ + H₂O\n塩素Cl₂→Cl⁻Cl₂ + 2e⁻ → 2Cl⁻\n酸素O₂→H₂OO₂ + 4H⁺ + 4e⁻ → 2H₂O\n\n💡 酸化剤の強さ覚え方：<u>「マンションの2階から兄さん流される」</u>（MnO₄⁻ > Cr₂O₇²⁻ > 希HNO₃ > 熱濃H₂SO₄ > H₂O₂ > SO₂ > H₂S）"
             }
           ]
         },
         {
-          "id": "p2_3_2_step2_group",
-          "label": "【Step2：半反応式の作成（5ステップ）】",
+          "id": "redoxTreeData_sec2_2",
+          "label": "【Step2：主要な還元剤リスト】",
           "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_2_n6",
-              "label": "半反応式とは",
+              "id": "redoxTreeData_sec2_2_1",
+              "label": "還元剤一覧（反応前 → 反応後）",
               "step": 2,
-              "subLabel": "電子を含むイオン式",
-              "explanation": "<u>半反応式（イオン反応式）</u>＝酸化剤・還元剤の働きを<u>電子(e⁻)を含むイオン式</u>で表したもの。"
-            },
-            {
-              "id": "p2_3_2_n7",
-              "label": "半反応式の5ステップ",
-              "step": 2,
-              "subLabel": "受験必須手順",
-              "explanation": "<u>★ 半反応式の作成手順（5ステップ）★</u>\n\n① <u>反応前→反応後の物質を書く</u>（暗記表から）\n\n② <u>酸素・水素以外の物質の数を合わせる</u>\n\n③ <u>酸素の数を合わせる</u>：足りない方に <u>H₂O</u> を加える\n\n④ <u>水素の数を合わせる</u>：足りない方に <u>H⁺</u> を加える\n\n⑤ <u>電荷を合わせる</u>：足りない方に <u>e⁻</u> を加える"
-            },
-            {
-              "id": "p2_3_2_n8",
-              "label": "例：MnO₄⁻ の半反応式",
-              "step": 2,
-              "subLabel": "酸性条件",
-              "explanation": "<u>例</u>：MnO₄⁻ → Mn²⁺\n\n① MnO₄⁻ → Mn²⁺\n\n② Mn数は同じ（1個ずつ）\n\n③ 酸素：左4個、右0個 → 右に4H₂O：MnO₄⁻ → Mn²⁺ + 4H₂O\n\n④ 水素：右8個、左0個 → 左に8H⁺：MnO₄⁻ + 8H⁺ → Mn²⁺ + 4H₂O\n\n⑤ 電荷：左 −1+8=+7、右 +2 → 左に5e⁻\n\n　<u>MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O</u>"
-            },
-            {
-              "id": "p2_3_2_n9",
-              "label": "例：H₂O₂ の還元剤としての半反応式",
-              "step": 2,
-              "subLabel": "酸化数+1のO",
-              "explanation": "<u>例</u>：H₂O₂ → O₂（還元剤として）\n\n① H₂O₂ → O₂\n\n② 酸素2個ずつ：同じ\n\n③ 酸素OK\n\n④ 水素：左2、右0 → 右に2H⁺：H₂O₂ → O₂ + 2H⁺\n\n⑤ 電荷：左0、右+2 → 右に2e⁻\n\n　<u>H₂O₂ → O₂ + 2H⁺ + 2e⁻</u>"
+              "subLabel": "これも暗記！",
+              "explanation": "還元剤反応前→反応後半反応式\nナトリウムNa→Na⁺Na → Na⁺ + e⁻\nマグネシウムMg→Mg²⁺Mg → Mg²⁺ + 2e⁻\nアルミニウムAl→Al³⁺Al → Al³⁺ + 3e⁻\n水素H₂→H⁺H₂ → 2H⁺ + 2e⁻\n鉄(Ⅱ)イオンFe²⁺→Fe³⁺Fe²⁺ → Fe³⁺ + e⁻\nスズ(Ⅱ)イオンSn²⁺→Sn⁴⁺Sn²⁺ → Sn⁴⁺ + 2e⁻\nヨウ化物イオンI⁻→I₂2I⁻ → I₂ + 2e⁻\n硫化水素H₂S→SH₂S → S + 2H⁺ + 2e⁻\n<u>シュウ酸</u>(COOH)₂→CO₂(COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻\n二酸化硫黄（通常）SO₂→SO₄²⁻SO₂ + 2H₂O → SO₄²⁻ + 4H⁺ + 2e⁻\n過酸化水素（相手がKMnO₄等）H₂O₂→O₂H₂O₂ → O₂ + 2H⁺ + 2e⁻\n\n⚠ <u>H₂O₂ と SO₂ は「両性」</u>：\n\n・H₂O₂：<u>普通は酸化剤</u>だが、相手が MnO₄⁻ や Cr₂O₇²⁻ のとき<u>還元剤</u>になる\n\n・SO₂：<u>普通は還元剤</u>だが、相手が H₂S のとき<u>酸化剤</u>になる"
             }
           ]
         },
         {
-          "id": "p2_3_2_step3_group",
-          "label": "【Step3：イオン反応式の合成】",
-          "step": 2,
+          "id": "redoxTreeData_sec2_3",
+          "label": "【Step3：半反応式の作り方（5ステップ）】",
+          "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_2_n11",
-              "label": "イオン反応式作成手順",
-              "step": 2,
-              "subLabel": "電子を打ち消す",
-              "explanation": "<u>★ イオン反応式の作り方 ★</u>\n\n① 酸化剤・還元剤の半反応式を書く\n\n② 両式に整数倍を掛けて<u>電子(e⁻)の数を等しくする</u>\n\n③ 足し合わせて<u>電子と一部のH⁺を打ち消す</u>"
-            },
-            {
-              "id": "p2_3_2_n12",
-              "label": "例題：MnO₄⁻ と H₂O₂",
-              "step": 2,
-              "subLabel": "硫酸酸性",
-              "explanation": "<u>例題</u>：硫酸酸性で MnO₄⁻ と H₂O₂ が反応\n\n酸化剤：MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O　×2\n\n還元剤：H₂O₂ → O₂ + 2H⁺ + 2e⁻　×5\n\n電子の数を10に合わせて足し合わせ：\n\n2MnO₄⁻ + 16H⁺ + 5H₂O₂ → 2Mn²⁺ + 8H₂O + 5O₂ + 10H⁺\n\nH⁺を打ち消し：\n\n<u>2MnO₄⁻ + 6H⁺ + 5H₂O₂ → 2Mn²⁺ + 8H₂O + 5O₂</u>"
+              "id": "redoxTreeData_sec2_3_1",
+              "label": "半反応式作成の手順",
+              "step": 3,
+              "subLabel": "この順に組み立てる！",
+              "explanation": "<u>【手順】</u>\n\n❶ 酸化剤・還元剤を特定し、「<u>反応前 → 反応後</u>」を書く\n\n❷ <u>O、H 以外</u>の原子の数を合わせる\n\n❸ 不足している<u>O を H₂O で</u>合わせる\n\n❹ 不足している<u>H を H⁺ で</u>合わせる\n\n❺ 両辺の<u>電荷（±）が等しくなるよう e⁻ を加える</u>\n\n<u>実演①</u>：KMnO₄（酸性）の半反応式を作ろう\n\n❶ MnO₄⁻ → Mn²⁺（反応前後を書く）\n\n❷ Mn の数は左右1個ずつでOK\n\n❸ 左辺に O が4個、右辺に0個 → 右辺に H₂O を4つ\n\nMnO₄⁻ → Mn²⁺ + 4H₂O\n\n❹ 右辺の H が 8個 → 左辺に H⁺ を 8個\n\nMnO₄⁻ + 8H⁺ → Mn²⁺ + 4H₂O\n\n❺ 電荷：左辺 = -1+8=+7、右辺 = +2 → 左辺が5多い → 左辺に e⁻ を5個\n\n<u>MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O</u> 完成！\n\n<u>実演②</u>：シュウ酸(COOH)₂の半反応式\n\n❶ (COOH)₂ → 2CO₂\n\n❷ C の数：左右 2 で OK\n\n❸ O の数：左右 4 で OK\n\n❹ 左辺の H が2個、右辺0個 → 右辺に H⁺ を2個\n\n(COOH)₂ → 2CO₂ + 2H⁺\n\n❺ 電荷：左0、右+2 → 右に e⁻ を2個\n\n<u>(COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻</u> 完成！"
             }
           ]
         },
         {
-          "id": "p2_3_2_step4_group",
-          "label": "【Step4：化学反応式の完成】",
-          "step": 2,
+          "id": "redoxTreeData_sec2_4",
+          "label": "【Step4：酸化還元反応式の作り方】",
+          "step": 4,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_2_n14",
-              "label": "イオン式→化学式",
-              "step": 2,
-              "subLabel": "見守りイオン追加",
-              "explanation": "<u>★ 化学反応式への変換 ★</u>\n\n① イオン反応式の<u>不足イオン</u>を推測（化合物の元の塩）\n\n② <u>両辺に同じイオンを足す</u>（K⁺、SO₄²⁻、Na⁺ など）\n\n③ イオン式を化学式に書き直す"
-            },
-            {
-              "id": "p2_3_2_n15",
-              "label": "例題の続き：化学反応式",
-              "step": 2,
-              "subLabel": "K⁺とSO₄²⁻を追加",
-              "explanation": "<u>イオン反応式</u>：2MnO₄⁻ + 6H⁺ + 5H₂O₂ → 2Mn²⁺ + 8H₂O + 5O₂\n\n左辺：6H⁺ → 3H₂SO₄ から（SO₄²⁻3個必要）\n\n　　 2MnO₄⁻ → 2KMnO₄ から（K⁺2個必要）\n\n右辺：2Mn²⁺ → 2MnSO₄、余りのSO₄²⁻と2K⁺ → K₂SO₄\n\n<u>3H₂SO₄ + 2KMnO₄ + 5H₂O₂ → 5O₂ + 2MnSO₄ + 8H₂O + K₂SO₄</u>"
+              "id": "redoxTreeData_sec2_4_1",
+              "label": "e⁻を消して反応式を組む",
+              "step": 4,
+              "subLabel": "酸化剤の式＋還元剤の式",
+              "explanation": "<u>【手順】</u>\n\n❶ 酸化剤・還元剤それぞれの半反応式を作る\n\n❷ e⁻ の数が等しくなるよう、両式を整数倍する\n\n❸ 両式を足し合わせ、<u>e⁻を消去</u>する\n\n❹ 必要ならスペクテーターイオン（陽イオンなど）を加えて「化学反応式」に整える\n\n<u>実演</u>：KMnO₄ と (COOH)₂ の反応（硫酸酸性）\n\n❶ MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O … ①（酸化剤／e⁻5個受取）\n\n❷ (COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻ … ②（還元剤／e⁻2個放出）\n\n❸ e⁻の最小公倍数10：①×2 と ②×5\n\n2MnO₄⁻ + 16H⁺ + 10e⁻ → 2Mn²⁺ + 8H₂O\n\n5(COOH)₂ → 10CO₂ + 10H⁺ + 10e⁻\n\n❹ 足し合わせて e⁻ を消す：\n\n2MnO₄⁻ + 16H⁺ + 5(COOH)₂ → 2Mn²⁺ + 8H₂O + 10CO₂ + 10H⁺\n\n❺ H⁺ を整理（16-10=6）：\n\n<u>2MnO₄⁻ + 6H⁺ + 5(COOH)₂ → 2Mn²⁺ + 8H₂O + 10CO₂</u>\n\nこれに K⁺、SO₄²⁻ を加えて完全な化学反応式にすると：\n\n<u>2KMnO₄ + 3H₂SO₄ + 5(COOH)₂ → K₂SO₄ + 2MnSO₄ + 8H₂O + 10CO₂</u>"
             }
           ]
         }
@@ -11565,94 +11273,81 @@ export const redoxTreeData = {
     },
     {
       "id": "redoxTreeData_sec3",
-      "label": "重要事項③ 酸化還元滴定",
+      "label": "重要事項③ 酸化剤と還元剤の量的関係（酸化還元滴定）",
       "step": 3,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_3_3_step1_group",
-          "label": "【Step1：量的関係の基本原理】",
-          "step": 3,
+          "id": "redoxTreeData_sec3_1",
+          "label": "【Step1：量的関係の式】",
+          "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_3_n1",
-              "label": "酸化還元滴定とは",
-              "step": 3,
-              "subLabel": "濃度や物質量を求める滴定",
-              "explanation": "<u>酸化還元滴定</u>＝酸化剤や還元剤の濃度や物質量を求める滴定。"
-            },
-            {
-              "id": "p2_3_3_n2",
-              "label": "量的関係の公式",
-              "step": 3,
-              "subLabel": "受け取る e⁻=失う e⁻",
-              "explanation": "<u>★ 酸化還元滴定の核心 ★</u>\n\n反応の終点では：\n\n<u>酸化剤が受け取る電子(e⁻)の物質量 ＝ 還元剤が失う電子(e⁻)の物質量</u>\n\nつまり：\n\n（酸化剤の物質量 × 1molあたりの電子数）\n\n　＝（還元剤の物質量 × 1molあたりの電子数）"
+              "id": "redoxTreeData_sec3_1_1",
+              "label": "酸化還元滴定の基本式",
+              "step": 1,
+              "subLabel": "e⁻の授受でつり合わせる",
+              "explanation": "<u>★ 酸化還元滴定の量的関係 ★</u>\n\n<u>（酸化剤の物質量）×（受け取る e⁻ の数）</u>\n\n＝\n\n<u>（還元剤の物質量）×（放出する e⁻ の数）</u>\n\n💡 <u>e⁻の物質量が等しい！</u>という考え方。酸塩基滴定の「H⁺の物質量が等しい」と対応する。"
             }
           ]
         },
         {
-          "id": "p2_3_3_step2_group",
-          "label": "【Step2：酸化還元滴定（シュウ酸 × KMnO₄）】",
-          "step": 3,
+          "id": "redoxTreeData_sec3_2",
+          "label": "【Step2：KMnO₄とシュウ酸の滴定】",
+          "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_3_n4",
-              "label": "実験操作",
-              "step": 3,
-              "subLabel": "(COOH)₂を測りKMnO₄を滴下",
-              "explanation": "<u>実験手順</u>\n\n❶ 濃度がわかっているシュウ酸 (COOH)₂ をコニカルビーカーに入れ、硫酸酸性で<u>60〜80℃に加温</u>\n\n❷ 濃度未知のKMnO₄水溶液をビュレットから滴下\n\n❸ 過不足なく反応した瞬間に、滴下したKMnO₄の<u>赤紫色が消えなくなる</u>\n\n　→ 水溶液がうすい赤紫色になった点が<u>反応の終点</u>"
+              "id": "redoxTreeData_sec3_2_1",
+              "label": "実験の手順と特徴",
+              "step": 2,
+              "subLabel": "指示薬いらず！",
+              "explanation": "<u>【手順】</u>\n\n❶ シュウ酸水溶液をコニカルビーカーに入れる\n\n❷ <u>希H₂SO₄</u>を加えて硫酸酸性にする\n\n❸ <u>60〜80℃</u>に加温する（反応速度を上げるため）\n\n❹ 濃度未知のKMnO₄水溶液をビュレットから滴下\n\n❺ 水溶液が<u>薄い赤紫色</u>に色付いた点を終点とする\n\n💡 <u>指示薬は不要</u>！ KMnO₄自身が赤紫色なので、反応が終わった直後から色が消えなくなる。\n\n→ KMnO₄自身が指示薬の役割を果たす。"
             },
             {
-              "id": "p2_3_3_n5",
-              "label": "半反応式と量的関係",
-              "step": 3,
-              "subLabel": "×5と×2",
-              "explanation": "酸化剤：MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O　（KMnO₄物質量×5＝電子の物質量）\n\n還元剤：(COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻　（(COOH)₂物質量×2＝電子の物質量）\n\n<u>★ KMnO₄ × 5 ＝ (COOH)₂ × 2</u>\n\n（電子の物質量で等号）\n\n化学反応式：\n\n2KMnO₄ + 5(COOH)₂ + 3H₂SO₄ → 2MnSO₄ + 10CO₂ + K₂SO₄ + 8H₂O"
+              "id": "redoxTreeData_sec3_2_2",
+              "label": "なぜ H₂SO₄ を使うのか？",
+              "step": 2,
+              "subLabel": "HCl や HNO₃ は NG",
+              "explanation": "KMnO₄ を酸性条件で使うが、<u>希硫酸 H₂SO₄</u>を使う理由：\n\n❌ <u>HCl は NG</u>：Cl⁻ が KMnO₄ に酸化されて Cl₂ になってしまう\n\n（KMnO₄ の Mn²⁺ 生成分が Cl⁻ の酸化に消費される → 誤差）\n\n❌ <u>HNO₃ は NG</u>：HNO₃ 自身が酸化剤として働いてしまい、シュウ酸を酸化する\n\n→ KMnO₄との滴定が正確にできない\n\n✅ <u>H₂SO₄ は OK</u>：SO₄²⁻ は酸化されにくく、H₂SO₄ 自身も酸化剤として働かない（希硫酸なので）"
             },
             {
-              "id": "p2_3_3_n6",
-              "label": "例題",
-              "step": 3,
-              "subLabel": "濃度未知のKMnO₄",
-              "explanation": "<u>例題</u>：濃度未知のKMnO₄水溶液10mLに、硫酸酸性下で0.050 mol/Lのシュウ酸水溶液8.0mLを加えると過不足なく反応した。KMnO₄の濃度は？\n\nx(mol/L) × 10/1000 × 5 ＝ 0.050 × 8.0/1000 × 2\n\nx = 0.016\n\n<u>答：0.016 mol/L</u>"
+              "id": "redoxTreeData_sec3_2_3",
+              "label": "計算例題",
+              "step": 2,
+              "subLabel": "KMnO₄×5 = シュウ酸×2",
+              "explanation": "<u>例題</u>：硫酸酸性のもと、0.050 mol/L のシュウ酸(COOH)₂水溶液 8.0 mL に、濃度未知のKMnO₄水溶液 10 mL を加えたら過不足なく反応した。KMnO₄のモル濃度は？\n\n❶ KMnO₄ は e⁻ を <u>5</u> 個受け取る（MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O）\n\n❷ (COOH)₂ は e⁻ を <u>2</u> 個放出する（(COOH)₂ → 2CO₂ + 2H⁺ + 2e⁻）\n\n<u>量的関係式</u>：\n\nc × (10/1000) × <u>5</u> = 0.050 × (8.0/1000) × <u>2</u>\n\nc × 0.010 × 5 = 0.050 × 0.008 × 2\n\nc = 0.00080 ÷ 0.050 = <u>0.016 mol/L</u>"
             }
           ]
         },
         {
-          "id": "p2_3_3_step3_group",
-          "label": "【Step3：頻出パターン（ヨウ素滴定・COD）】",
+          "id": "redoxTreeData_sec3_3",
+          "label": "【Step3：ヨウ素滴定】",
           "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_3_n8",
-              "label": "ヨウ素滴定の概要",
+              "id": "redoxTreeData_sec3_3_1",
+              "label": "ヨウ素滴定の原理",
               "step": 3,
-              "subLabel": "H₂O₂ → I₂ → Na₂S₂O₃",
-              "explanation": "<u>ヨウ素滴定</u>：過酸化水素水（濃度未知）を測る方法\n\n<u>① H₂O₂ + KI + H₂SO₄ で I₂ を生成（褐色になる）</u>\n\n酸化剤：H₂O₂ + 2H⁺ + 2e⁻ → 2H₂O\n\n還元剤：2I⁻ → I₂ + 2e⁻\n\nイオン式：H₂O₂ + 2H⁺ + 2I⁻ → I₂ + 2H₂O\n\n化学式：<u>H₂O₂ + H₂SO₄ + 2KI → I₂ + 2H₂O + K₂SO₄</u>\n\n<u>② 生じたI₂を濃度既知のNa₂S₂O₃で滴定</u>（デンプンで青紫→無色）\n\n酸化剤：I₂ + 2e⁻ → 2I⁻\n\n還元剤：2S₂O₃²⁻ → S₄O₆²⁻ + 2e⁻\n\nイオン式：I₂ + 2S₂O₃²⁻ → S₄O₆²⁻ + 2I⁻\n\n化学式：<u>I₂ + 2Na₂S₂O₃ → Na₂S₄O₆ + 2NaI</u>"
-            },
+              "subLabel": "2段階の滴定・デンプン指示薬",
+              "explanation": "<u>目的</u>：濃度未知の酸化剤（例：H₂O₂）を、Na₂S₂O₃（チオ硫酸ナトリウム）で間接的に滴定する。\n\n<u>【第1段階】</u>試料の酸化剤（H₂O₂）に過剰のKIを加える\n\nH₂O₂ + 2KI + H₂SO₄ → I₂ + 2H₂O + K₂SO₄\n\n→ ヨウ素 I₂ が遊離（褐色）\n\n<u>【第2段階】</u>生じた I₂ を Na₂S₂O₃ で滴定\n\nI₂ + 2Na₂S₂O₃ → 2NaI + Na₂S₄O₆\n\n（テトラチオン酸ナトリウム）\n\n🎨 <u>指示薬：デンプン水溶液</u>\n\n・I₂ が残っている間はデンプンと結合して<u>青紫色</u>を示す（ヨウ素デンプン反応）\n\n・I₂ が I⁻ に変わりきると<u>青紫色が消える</u> → これが終点！"
+            }
+          ]
+        },
+        {
+          "id": "redoxTreeData_sec3_4",
+          "label": "【Step4：COD（化学的酸素要求量）】",
+          "step": 4,
+          "isGroup": true,
+          "children": [
             {
-              "id": "p2_3_3_n9",
-              "label": "ヨウ素滴定の計算例",
-              "step": 3,
-              "subLabel": "H₂O₂濃度を求める",
-              "explanation": "<u>例題</u>：濃度未知の過酸化水素水10mLに十分量のKI水溶液を加え、生じたI₂を0.10 mol/L Na₂S₂O₃水溶液で滴定したら18mLで終点。H₂O₂のモル濃度は？\n\n①Na₂S₂O₃: 0.10×18/1000 ＝ 1.8×10⁻³ mol\n\n②I₂の物質量 ＝ Na₂S₂O₃の半分 ＝ 9.0×10⁻⁴ mol\n\n③H₂O₂の物質量 ＝ I₂の物質量 ＝ 9.0×10⁻⁴ mol\n\n④x ＝ 9.0×10⁻⁴/(10/1000) ＝ <u>9.0×10⁻² mol/L</u>"
-            },
-            {
-              "id": "p2_3_3_n10",
-              "label": "COD（化学的酸素要求量）",
-              "step": 3,
-              "subLabel": "排水の有機物汚染指標",
-              "explanation": "<u>COD</u>（Chemical Oxygen Demand）＝家庭などからの排水に含まれる有機物による湖沼や海水の汚染指標。\n\n有機物を酸化分解するときに使う酸化剤（KMnO₄など）の量を<u>酸素の質量（mg）に換算</u>したもの。\n\n単位：<u>mg/L</u>\n\n<u>実験手順</u>\n\n❶ コニカルビーカーに試料水＋硫酸（酸性化）\n\n❷ KMnO₄を少し多めに加え弱火で数十分煮沸（有機物分解、KMnO₄余る）\n\n❸ Na₂C₂O₄（シュウ酸ナトリウム）を多めに加え、余ったKMnO₄を還元（Na₂C₂O₄余る）\n\n❹ 再びKMnO₄を滴下し、薄い赤紫色になる終点まで\n\n<u>★ 量的関係 ★</u>\n\nKMnO₄が受け取ったe⁻物質量＝有機物が失ったe⁻物質量＋Na₂C₂O₄が失ったe⁻物質量"
-            },
-            {
-              "id": "p2_3_3_n11",
-              "label": "CODの例題",
-              "step": 3,
-              "subLabel": "計算手順",
-              "explanation": "<u>例題</u>：試料水50mLに6.0 mol/L H₂SO₄ 5.0mL、2.0×10⁻³ mol/L KMnO₄を10.0mL、5.0×10⁻³ mol/L Na₂C₂O₄を10.0mL加え、最後にKMnO₄を3.0mLで終点。CODは何mg/L？\n\n①使ったKMnO₄: 2.0×10⁻³×(10.0+3.0)/1000 = 2.6×10⁻⁵ mol\n\n②使ったNa₂C₂O₄: 5.0×10⁻³×10.0/1000 = 5.0×10⁻⁵ mol\n\n③e⁻の式：2.6×10⁻⁵×5 = x + 5.0×10⁻⁵×2\n\n　x = 3.0×10⁻⁵ mol（有機物の電子）\n\n④酸素換算：O₂ + 4H⁺ + 4e⁻ → 2H₂O\n\n　酸素質量 = 3.0×10⁻⁵×(1/4)×32×10³ = 0.24 mg\n\n⑤試料水1.0Lに換算：0.24×(1000/50)＝<u>4.8 mg/L</u>"
+              "id": "redoxTreeData_sec3_4_1",
+              "label": "CODとは？",
+              "step": 4,
+              "subLabel": "水質汚濁の指標",
+              "explanation": "<u>COD（Chemical Oxygen Demand）</u>＝家庭排水などに含まれる有機物によって、湖沼や海水がどの程度汚染されているかを示す指標。\n\n有機物を酸化剤（KMnO₄）で酸化するのに必要な酸化剤の量を、<u>O₂ の質量（mg/L）</u>に換算した値。\n\n<u>【測定手順】</u>\n\n❶ 試料水に H₂SO₄ と<u>過剰のKMnO₄</u>を加え、加熱して有機物を分解\n\n❷ 残った KMnO₄ を<u>過剰のNa₂C₂O₄（シュウ酸ナトリウム）</u>で還元\n\n❸ 残ったシュウ酸ナトリウムをKMnO₄で<u>逆滴定</u>\n\n<u>関係式</u>：\n\n（KMnO₄が受け取ったe⁻ 総量）＝（有機物が失ったe⁻）＋（Na₂C₂O₄が失ったe⁻）\n\n最終的に O₂ の質量に換算：O₂ + 4H⁺ + 4e⁻ → 2H₂O から、O₂ 1mol = e⁻ 4mol"
             }
           ]
         }
@@ -11660,80 +11355,59 @@ export const redoxTreeData = {
     },
     {
       "id": "redoxTreeData_sec4",
-      "label": "重要事項④ 酸化力・還元力",
+      "label": "重要事項④ 酸化剤・還元剤としての強さ",
       "step": 4,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_3_4_step1_group",
+          "id": "redoxTreeData_sec4_1",
           "label": "【Step1：ハロゲンの酸化力】",
-          "step": 4,
+          "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_4_n1",
-              "label": "ハロゲンの酸化力",
-              "step": 4,
-              "subLabel": "F₂＞Cl₂＞Br₂＞I₂",
-              "explanation": "電子親和力は周期表で右上が大きいため、電子を受け取る力（＝酸化力）は右上の方が大きい。\n\n<u>★ ハロゲンの酸化力 ★</u>\n\n<u>F₂ ＞ Cl₂ ＞ Br₂ ＞ I₂</u>\n\n（自身が還元したい力＝酸化力が強い順）"
+              "id": "redoxTreeData_sec4_1_1",
+              "label": "酸化力の順序",
+              "step": 1,
+              "subLabel": "F₂ > Cl₂ > Br₂ > I₂",
+              "explanation": "<u>ハロゲン単体の酸化力</u>（＝e⁻を受け取る力の強さ）：\n\n<u>F₂ ＞ Cl₂ ＞ Br₂ ＞ I₂</u>\n\n（周期表で上ほど酸化力が強い＝原子半径が小さく電子を引き寄せやすい）"
             },
             {
-              "id": "p2_3_4_n2",
-              "label": "反応例1：反応する場合",
-              "step": 4,
-              "subLabel": "強い酸化剤で弱いものを追い出す",
-              "explanation": "<u>例</u>：2Br⁻ + Cl₂ → Br₂ + 2Cl⁻　<u>（反応する）</u>\n\n理由：Cl₂はBr₂より酸化力が強い\n\n→ Cl₂は電子を奪いやすく、Br⁻から電子を奪う"
-            },
-            {
-              "id": "p2_3_4_n3",
-              "label": "反応例2：反応しない場合",
-              "step": 4,
-              "subLabel": "弱い酸化剤では奪えない",
-              "explanation": "<u>例</u>：2F⁻ + Br₂ → F₂ + 2Br⁻　<u>（反応しない）</u>\n\n理由：F₂はBr₂より酸化力が強い\n\n→ Br₂はF⁻から電子を奪えない\n\n💡 「酸化力が強いものは弱いもののイオンを単体に戻せる、逆は不可」"
+              "id": "redoxTreeData_sec4_1_2",
+              "label": "ハロゲンの置換反応",
+              "step": 1,
+              "subLabel": "強い酸化剤が電子を奪う",
+              "explanation": "「<u>酸化力の強い単体</u>」が「<u>酸化力の弱い単体のイオン</u>」から電子を奪って反応する。\n\n<u>例①</u>：2NaBr + Cl₂ → 2NaCl + Br₂ （反応する）\n\n→ Cl₂ は Br₂ より酸化力が強い → 反応進行 ✓\n\n<u>例②</u>：2NaCl + Br₂ → 反応しない\n\n→ Br₂ は Cl₂ より酸化力が弱い → 反応進まない ✗\n\n<u>例③</u>：2KI + Br₂ → 2KBr + I₂ （反応する）\n\n→ 溶液が褐色に着色（I₂ が生成）\n\n💡 <u>ヨウ素デンプン反応</u>：I₂ が生じたことは、デンプン水溶液に加えて青紫色になれば確認できる！"
             }
           ]
         },
         {
-          "id": "p2_3_4_step2_group",
-          "label": "【Step2：金属のイオン化傾向】",
-          "step": 4,
+          "id": "redoxTreeData_sec4_2",
+          "label": "【Step2：H₂O₂ と SO₂ の両性】",
+          "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_4_n5",
-              "label": "金属のイオン化傾向",
-              "step": 4,
-              "subLabel": "陽イオンになりやすさ",
-              "explanation": "<u>金属のイオン化傾向</u>＝単体の金属が、水溶液中で<u>電子を失って陽イオンになろうとする性質</u>。\n\n＝金属が電子を失って酸化したい（相手を還元させたい還元剤の）性質\n\n→ イオン化傾向は金属の種類によって異なる"
-            },
-            {
-              "id": "p2_3_4_n6",
-              "label": "金属のイオン化列",
-              "step": 4,
-              "subLabel": "リッチに貸そかな…",
-              "explanation": "<u>★ ★ 金属のイオン化列（最重要暗記） ★ ★</u>\n\n<u>大 ←————————————————————————————→ 小</u>\n\n<u>Li ＞ K ＞ Ca ＞ Na ＞ Mg ＞ Al ＞ Zn ＞ Fe ＞ Ni ＞ Sn ＞ Pb ＞ (H₂) ＞ Cu ＞ Hg ＞ Ag ＞ Pt ＞ Au</u>\n\n<u>★ 覚え方 ★</u>\n\n<u>リッチに　貸そ　かな！　まあ　あて　に　すな！　ひ　ど　すぎ　借　金！</u>\n\n　Li K Ca Na　Mg Al Zn　Fe Ni Sn Pb (H)　Cu Hg Ag　Pt Au"
+              "id": "redoxTreeData_sec4_2_1",
+              "label": "相手次第で酸化剤にも還元剤にも",
+              "step": 2,
+              "subLabel": "頻出パターン",
+              "explanation": "<u>❶ H₂O₂（過酸化水素）</u>\n\n・基本は<u>酸化剤</u>：H₂O₂ + 2H⁺ + 2e⁻ → 2H₂O\n\n・相手が<u>MnO₄⁻</u>（もっと強い酸化剤）のとき → <u>還元剤</u>となり O₂ を発生\n\nH₂O₂ → O₂ + 2H⁺ + 2e⁻\n\n<u>❷ SO₂（二酸化硫黄）</u>\n\n・基本は<u>還元剤</u>：SO₂ + 2H₂O → SO₄²⁻ + 4H⁺ + 2e⁻\n\n・相手が<u>H₂S</u>（もっと強い還元剤）のとき → <u>酸化剤</u>となり S を析出\n\nSO₂ + 4H⁺ + 4e⁻ → S + 2H₂O\n\n（SO₂ + 2H₂S → 3S + 2H₂O：温泉地の硫黄析出）"
             }
           ]
         },
         {
-          "id": "p2_3_4_step3_group",
-          "label": "【Step3：イオン化傾向と反応性】",
-          "step": 4,
+          "id": "redoxTreeData_sec4_3",
+          "label": "【Step3：金属の酸化力・還元力】",
+          "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_4_n8",
-              "label": "金属同士のイオン置換反応",
-              "step": 4,
-              "subLabel": "強い金属が弱いイオンを置換",
-              "explanation": "<u>イオン化傾向が大きい金属</u>は<u>小さい金属のイオン</u>を還元して単体にできる\n\n<u>例</u>：Zn + CuSO₄ → ZnSO₄ + Cu\n\n（ZnはCuよりイオン化傾向が大きい→Zn²⁺になりCu²⁺はCuに戻る）"
-            },
-            {
-              "id": "p2_3_4_n9",
-              "label": "電池の起電力との関係",
-              "step": 4,
-              "subLabel": "イオン化差大ほど起電力大",
-              "explanation": "💡 電池をつくる2つの極の金属のイオン化傾向の差が大きいほど、起電力（電圧）は大きくなる"
+              "id": "redoxTreeData_sec4_3_1",
+              "label": "イオン化傾向との関係",
+              "step": 3,
+              "subLabel": "イオン化傾向大＝還元力大",
+              "explanation": "<u>イオン化傾向が大きい金属ほど、還元剤として強い</u>（e⁻を放出しやすい）\n\n<u>イオン化傾向が小さい金属イオンほど、酸化剤として強い</u>（e⁻を受け取りやすい）\n\n<u>例</u>：CuSO₄水溶液に Zn を入れると、Cu が析出する\n\nZn + Cu²⁺ → Zn²⁺ + Cu\n\n（Zn は Cu より還元力が強い → Cu²⁺ から電子を奪える）\n\n→ 詳細は次項「重要事項⑤ イオン化傾向」で扱う！"
             }
           ]
         }
@@ -11741,134 +11415,103 @@ export const redoxTreeData = {
     },
     {
       "id": "redoxTreeData_sec5",
-      "label": "重要事項⑤ 電池",
+      "label": "重要事項⑤ 金属のイオン化傾向と反応",
       "step": 1,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_3_5_step1_group",
-          "label": "【Step1：電池の基本】",
+          "id": "redoxTreeData_sec5_1",
+          "label": "【Step1：イオン化列と語呂合わせ】",
           "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_5_n1",
-              "label": "電池とは",
+              "id": "redoxTreeData_sec5_1_1",
+              "label": "金属のイオン化列",
               "step": 1,
-              "subLabel": "化学エネ→電気エネ",
-              "explanation": "<u>電池</u>＝金属のイオン化傾向を用いて、<u>化学エネルギーを電気エネルギーに変換</u>して取り出す装置。\n\n<u>負極活物質</u>＝負極で<u>酸化される</u>物質\n\n<u>正極活物質</u>＝正極で<u>還元される</u>物質\n\n<u>★ 基本ルール ★</u>\n\n電流：<u>正極 → 負極</u>（外部回路）\n\n電子：<u>負極 → 正極</u>（外部回路）"
+              "subLabel": "Li〜Au、17元素",
+              "explanation": "<u>イオン化傾向</u>＝金属が水溶液中で陽イオンになろうとする傾向。\n\n<u>大 ← Li ＞ K ＞ Ca ＞ Na ＞ Mg ＞ Al ＞ Zn ＞ Fe ＞ Ni ＞ Sn ＞ Pb ＞ (H₂) ＞ Cu ＞ Hg ＞ Ag ＞ Pt ＞ Au → 小</u>\n\n🎵 <u>語呂合わせ</u>：<u>「リッチに 貸そ か な！ ま あ あ て に す な！ ひ ど す ぎ 借 金！」</u>\n\n<u>リッチ</u>に ＝ Li\n\n<u>貸</u>そ ＝ K\n\n<u>か</u> ＝ Ca\n\n<u>な</u> ＝ Na\n\n<u>ま</u> ＝ Mg\n\n<u>あ</u> ＝ Al\n\n<u>あ</u> ＝ Zn（あえん）\n\n<u>て</u> ＝ Fe（てつ）\n\n<u>に</u> ＝ Ni\n\n<u>す</u> ＝ Sn（すず）\n\n<u>な</u> ＝ Pb（なまり）\n\n<u>ひ</u> ＝ (H₂)\n\n<u>ど</u> ＝ Cu（どう）\n\n<u>す</u> ＝ Hg（水銀＝すいぎん）\n\n<u>ぎ</u> ＝ Ag（銀）\n\n<u>借</u> ＝ Pt（白金）\n\n<u>金</u> ＝ Au"
             }
           ]
         },
         {
-          "id": "p2_3_5_step2_group",
-          "label": "【Step2：ボルタ電池とダニエル電池】",
-          "step": 1,
+          "id": "redoxTreeData_sec5_2",
+          "label": "【Step2：水との反応】",
+          "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_5_n3",
-              "label": "ボルタ電池",
-              "step": 1,
-              "subLabel": "Zn/H₂SO₄/Cu",
-              "explanation": "<u>ボルタ電池</u>＝イオン化傾向が異なる2種の金属（ZnとCu）を硫酸水溶液に浸す。\n\n<u>ZnはCuよりイオン化傾向大 → Znが酸化されやすい（還元剤）</u>\n\n<u>負極（Zn）</u>：Zn → Zn²⁺ + 2e⁻\n\n<u>正極（Cu）</u>：2H⁺ + 2e⁻ → H₂　（溶液は硫酸なのでCu²⁺は無い）\n\n<u>全体</u>：Zn + 2H⁺ → Zn²⁺ + H₂\n\n<u>問題点</u>：水素が銅板にくっつき、正極の反応が起こらなくなる（分極）→ 電池が止まる"
-            },
-            {
-              "id": "p2_3_5_n4",
-              "label": "ダニエル電池",
-              "step": 1,
-              "subLabel": "ZnSO₄ | Cu/CuSO₄",
-              "explanation": "<u>ダニエル電池</u>＝Zn板を浸した硫酸亜鉛水溶液 と Cu板を浸した硫酸銅水溶液を素焼き板で仕切る。\n\n<u>負極（Zn）</u>：Zn → Zn²⁺ + 2e⁻\n\n<u>正極（Cu）</u>：Cu²⁺ + 2e⁻ → Cu\n\n<u>全体</u>：Zn + Cu²⁺ → Zn²⁺ + Cu\n\n<u>素焼き板の役割</u>：硫酸亜鉛水溶液と硫酸銅水溶液が急激に混ざるのを防ぐ\n\n→ Zn板でCu²⁺と電子が直接反応するのを防ぐ\n\n💡 <u>ダニエル電池を長持ちさせるコツ</u>\n\n❶ ZnSO₄水溶液の濃度は<u>小さい</u>方がよい（Zn²⁺が溶けやすい）\n\n❷ CuSO₄水溶液の濃度は<u>大きい</u>方がよい（Cuができやすい）",
-              "relatedQuestions": [
-                { "id": "p_c6_6_1", "label": "⑥-6 問1 ダニエル電池" }
-              ]
+              "id": "redoxTreeData_sec5_2_1",
+              "label": "水との反応（3段階）",
+              "step": 2,
+              "subLabel": "常温水／熱水／高温水蒸気",
+              "explanation": "反応該当金属反応式（例）\n<u>常温の水</u>と反応Li, K, Ca, Na2Na + 2H₂O → 2NaOH + H₂↑\n<u>熱水</u>と反応MgMg + 2H₂O → Mg(OH)₂ + H₂↑\n<u>高温の水蒸気</u>と反応Al, Zn, Fe3Fe + 4H₂O → Fe₃O₄ + 4H₂↑\n反応しないNi以降（Ni, Sn, Pb, Cu, Hg, Ag, Pt, Au）―\n\n💡 覚え方：「常温は<u>リッチに貸そかな</u>まで、熱水は<u>マ</u>グ、水蒸気は<u>あ・あ・て</u>（Al, Zn, Fe）まで！」"
             }
           ]
         },
         {
-          "id": "p2_3_5_step3_group",
-          "label": "【Step3：実用電池：燃料電池】",
-          "step": 1,
+          "id": "redoxTreeData_sec5_3",
+          "label": "【Step3：酸との反応】",
+          "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_5_n6",
-              "label": "燃料電池",
-              "step": 1,
-              "subLabel": "H₂とO₂で発電",
-              "explanation": "<u>燃料電池</u>＝水素などの燃料と酸素などの酸化剤を用いて化学エネルギーを取り出す装置。\n\n<u>❶ リン酸形燃料電池 ／ ❷ 固体高分子形燃料電池</u>（どちらも反応式は同じ）\n\n<u>負極</u>：H₂ → 2H⁺ + 2e⁻　（電子を放出して酸化、還元剤）\n\n<u>正極</u>：O₂ + 4H⁺ + 4e⁻ → 2H₂O　（電子を受け取って還元、酸化剤）\n\n<u>全体</u>：<u>2H₂ + O₂ → 2H₂O</u>\n\n発生する物質が<u>水だけ</u>＝<u>クリーンエネルギー</u>"
+              "id": "redoxTreeData_sec5_3_1",
+              "label": "希酸（HCl・希H₂SO₄）との反応",
+              "step": 3,
+              "subLabel": "H₂より上の金属",
+              "explanation": "<u>希塩酸・希硫酸</u>と反応して<u>H₂ を発生</u>するのは、<u>H₂よりイオン化傾向が大きい金属</u>（Li〜Pb まで）。\n\n<u>例①</u>：Zn + 2HCl → ZnCl₂ + H₂↑\n\n<u>例②</u>：Fe + H₂SO₄ → FeSO₄ + H₂↑\n\n⚠ <u>Pb は表面がPbCl₂やPbSO₄で被覆されて反応が止まる</u>ため、実質的にはあまり進まない（テストの落とし穴）"
+            },
+            {
+              "id": "redoxTreeData_sec5_3_2",
+              "label": "酸化力の強い酸（熱濃H₂SO₄・希HNO₃・濃HNO₃）",
+              "step": 3,
+              "subLabel": "Cu, Hg, Ag も溶ける",
+              "explanation": "H₂より下の <u>Cu、Hg、Ag</u> は希酸には溶けないが、<u>酸化力の強い酸</u>には溶ける！\n\n<u>❶ 銅と希硝酸</u>\n\n3Cu + 8HNO₃ → 3Cu(NO₃)₂ + 4H₂O + <u>2NO↑</u>（無色気体）\n\n<u>❷ 銅と濃硝酸</u>\n\nCu + 4HNO₃ → Cu(NO₃)₂ + 2H₂O + <u>2NO₂↑</u>（赤褐色気体）\n\n<u>❸ 銅と熱濃硫酸</u>\n\nCu + 2H₂SO₄ → CuSO₄ + 2H₂O + <u>SO₂↑</u>（刺激臭気体）\n\n💡 これらの酸は<u>電子を受け取る作用（酸化力）</u>によって、H₂を発生させない代わりに金属を溶かす。\nH⁺ ではなく NO₃⁻ や SO₄²⁻ が酸化剤として働く！"
+            },
+            {
+              "id": "redoxTreeData_sec5_3_3",
+              "label": "不動態を作る金属",
+              "step": 3,
+              "subLabel": "濃硝酸に溶けない",
+              "explanation": "<u>不動態</u>＝金属表面に緻密な酸化被膜ができて、内部への反応が進まなくなる状態。\n\n<u>不動態を作る金属</u>：<u>Fe, Co, Ni, Al, Cr</u>（濃硝酸には溶けない！）\n\n🎵 語呂合わせ：<u>「鉄子にある苦労！」</u>\n\n鉄（Fe）子（Co）に（Ni）ある（Al）苦労（Cr）\n\n💡 <u>アルミ製の容器で濃硝酸を運搬できる</u>のはこの性質のおかげ！"
+            },
+            {
+              "id": "redoxTreeData_sec5_3_4",
+              "label": "王水との反応",
+              "step": 3,
+              "subLabel": "Pt, Au も溶かす",
+              "explanation": "<u>王水</u>＝<u>濃硝酸 : 濃塩酸 ＝ 1 : 3</u>（体積比）で混合した溶液。\n\n最強の酸化力を持ち、<u>Pt（白金）や Au（金）</u>も溶かす！\n\n🎵 語呂合わせ：<u>「一生は三円！」</u>\n\n一（濃硝酸1）生（硝酸の「しょう」）は（体積比）三（濃塩酸3）円（塩酸の「えん」）\n\n<u>例</u>：Au + HNO₃ + 4HCl → HAuCl₄ + NO + 2H₂O（テトラクロロ金(III)酸）"
             }
           ]
         },
         {
-          "id": "p2_3_5_step4_group",
-          "label": "【Step4：電池の分類（一次・二次）】",
-          "step": 1,
+          "id": "redoxTreeData_sec5_4",
+          "label": "【Step4：空気との反応】",
+          "step": 4,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_5_n8",
-              "label": "起電力・放電・充電",
-              "step": 1,
-              "subLabel": "用語の確認",
-              "explanation": "<u>起電力</u>＝電池の両極間の電圧（電位差）の最大値 ≒ 電池のパワー\n\n　→ 2極の金属のイオン化傾向の差が大きいほど大\n\n<u>放電</u>＝電池から電流を取り出すこと\n\n<u>充電</u>＝放電と逆向きの電流を外部から強制的に通じること"
-            },
-            {
-              "id": "p2_3_5_n9",
-              "label": "一次電池",
-              "step": 1,
-              "subLabel": "充電できない",
-              "explanation": "<u>一次電池</u>＝充電できない電池\n\n<u>例</u>：マンガン乾電池、アルカリ乾電池、リチウム電池、酸化銀電池、空気亜鉛電池、ボルタ電池、ダニエル電池"
-            },
-            {
-              "id": "p2_3_5_n10",
-              "label": "二次電池（蓄電池）",
-              "step": 1,
-              "subLabel": "充電で繰り返し使える",
-              "explanation": "<u>二次電池</u>＝充電によって繰り返し使える電池\n\n<u>例</u>：鉛蓄電池、リチウムイオン電池、ニッケル水素電池、ニッケルカドミウム電池"
-            },
-            {
-              "id": "p2_3_5_n11",
-              "label": "コージェネレーション",
-              "step": 1,
-              "subLabel": "排熱の有効利用",
-              "explanation": "<u>コージェネレーションシステム</u>＝燃料電池などの<u>排熱</u>を利用してエネルギーを有効に活用する仕組み。\n\n💡 燃料電池の発電と給湯を組み合わせるなど、省エネで注目されている"
+              "id": "redoxTreeData_sec5_4_1",
+              "label": "空気中での酸化",
+              "step": 4,
+              "subLabel": "常温／加熱／強熱／反応しない",
+              "explanation": "反応該当金属例\n<u>常温で速やかに酸化</u>Li, K, Ca, Na4Na + O₂ → 2Na₂O\n<u>加熱で酸化</u>Mg, Al, Zn, Fe, Ni, Sn, Pb, Cu2Cu + O₂ → 2CuO\n<u>強熱で酸化</u>Hg, Ag2Hg + O₂ → 2HgO\n<u>反応しない</u>Pt, Au―（永遠に光沢を保つ！）\n\n💡 だから金や白金はジュエリーとして人気！ 銀は強熱でも黒く硫化しやすいので手入れが必要。"
             }
           ]
         },
         {
-          "id": "p2_3_5_step5_group",
-          "label": "【Step5：補足：金属の製錬（テスト範囲外）】",
+          "id": "redoxTreeData_sec5_5",
+          "label": "【Step5：★超重要★ イオン化傾向と反応性の総まとめ表】",
           "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_5_n13",
-              "label": "製錬とは",
+              "id": "redoxTreeData_sec5_5_1",
+              "label": "総まとめ表（テスト直前に見返す）",
               "step": 1,
-              "subLabel": "酸化還元で金属を得る",
-              "explanation": "<u>製錬</u>＝鉱石から酸化還元反応を利用して<u>単体の金属を得ること</u>。"
-            },
-            {
-              "id": "p2_3_5_n14",
-              "label": "鉄の製錬",
-              "step": 1,
-              "subLabel": "高炉でCO還元",
-              "explanation": "<u>鉄の製錬</u>\n\n❶ 赤鉄鉱（Fe₂O₃）や磁鉄鉱（Fe₃O₄）などの鉄鉱石を、コークスから生じた<u>CO で還元</u>\n\n❷ 高炉内で炭素4%を含む<u>銑鉄</u>を得て、炭素含有量を減らして<u>鋼</u>にする"
-            },
-            {
-              "id": "p2_3_5_n15",
-              "label": "銅の製造",
-              "step": 1,
-              "subLabel": "電解精錬",
-              "explanation": "<u>銅の製造</u>\n\n黄銅鉱（CuFeS₂）などの銅鉱石を<u>酸素と反応</u>させて<u>粗銅</u>を得て、<u>電解精錬</u>で純度を高める"
-            },
-            {
-              "id": "p2_3_5_n16",
-              "label": "アルミニウムの製造",
-              "step": 1,
-              "subLabel": "溶融塩電解",
-              "explanation": "<u>アルミニウムの製造</u>\n\n❶ ボーキサイト（Al₂O₃を含む）を精製して<u>アルミナ（Al₂O₃）</u>を得る\n\n❷ <u>氷晶石</u>を融解して溶媒とし、<u>溶融塩電解</u>でAlを得る"
+              "subLabel": "これだけで完璧！",
+              "explanation": "イオン化傾向大 ←──────────────────────→ 小\n元素Li, K, Ca, NaMgAl, Zn, FeNi, Sn, Pb, (H₂), Cu, Hg, Ag, Pt, Au\n水との反応常温の水と反応熱水と反応高温水蒸気と反応反応しない\n希酸との反応希塩酸・希硫酸と反応してH₂発生（Ni, Sn, Pbまで含む）Cu, Hg, Ag → 酸化力の強い酸のみ／Pt, Au → 王水のみ\n空気との反応常温で速やかに酸化加熱で酸化Hg, Ag → 強熱で／Pt, Au → 反応しない\n製法溶融塩電解（融解した塩を電気分解）CO 還元・電解精錬など\n\n<u>★ 覚え方総まとめ ★</u>\n\n水：<u>「常温リッチに貸そかな、熱水マ、水蒸気アアテ、以降は反応しない」</u>\n\n酸：<u>「H₂までは希酸OK、Cu Hg Agは酸化力強い酸、Pt Auは王水のみ！」</u>\n\n空気：<u>「リッチに貸そかな速やかに、次は加熱、Hg Agは強熱、Pt Auは反応しない」</u>"
             }
           ]
         }
@@ -11876,208 +11519,204 @@ export const redoxTreeData = {
     },
     {
       "id": "redoxTreeData_sec6",
-      "label": "重要事項⑥ 金属の反応",
+      "label": "重要事項⑥ 電池（一次・二次・燃料）",
       "step": 2,
       "isGroup": true,
       "children": [
         {
-          "id": "p2_3_6_step1_group",
-          "label": "【Step1：イオン化傾向の再確認】",
-          "step": 2,
+          "id": "redoxTreeData_sec6_1",
+          "label": "【Step1：電池の基本原理】",
+          "step": 1,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_6_n1",
-              "label": "イオン化列（再掲）",
-              "step": 2,
-              "subLabel": "リッチに貸そかな…",
-              "explanation": "<u>★ 金属のイオン化列 ★</u>\n\n<u>Li ＞ K ＞ Ca ＞ Na ＞ Mg ＞ Al ＞ Zn ＞ Fe ＞ Ni ＞ Sn ＞ Pb ＞ (H₂) ＞ Cu ＞ Hg ＞ Ag ＞ Pt ＞ Au</u>\n\n<u>リッチに 貸そ かな！ まあ あて に すな！ ひ ど すぎ 借 金！</u>"
+              "id": "redoxTreeData_sec6_1_1",
+              "label": "電池の基本構造と用語",
+              "step": 1,
+              "subLabel": "正極・負極・起電力",
+              "explanation": "<u>電池</u>＝酸化還元反応の化学エネルギーを電気エネルギーに変換する装置。\n\n<u>負極（-極）</u>＝<u>還元剤</u>が e⁻ を放出する電極（＝酸化される極）\n\n→ イオン化傾向の<u>大きい</u>金属\n\n<u>正極（+極）</u>＝<u>酸化剤</u>が e⁻ を受け取る電極（＝還元される極）\n\n→ イオン化傾向の<u>小さい</u>金属\n\n<u>起電力</u>＝両極間の電位差（電池のパワー）\n\n→ 2極のイオン化傾向の差が大きいほど大きい\n\n<u>放電</u>＝電池から電流を取り出すこと\n\n<u>充電</u>＝外部電源で逆反応を起こし、電池を元に戻すこと\n\n💡 電子は <u>負極 → 導線 → 正極</u> の順で流れる。電流はその逆方向（+ → -）に流れる。"
             },
             {
-              "id": "p2_3_6_n2",
-              "label": "反応性の総まとめ",
-              "step": 2,
-              "subLabel": "覚え方早見表",
-              "explanation": "反応 ｜ 覚え方 ｜ 反応する金属\n水との反応 ｜ 常に水菜、空気熱くて、反応しない ｜ Li,K,Ca,Na(常温)／Mg,Al,Zn,Fe(熱水/水蒸気)\n酸との反応 ｜ (H₂)までは希酸でH₂発生、それ以後は酸化力ある酸、借金は王水 ｜\n空気との反応 ｜ 貸そかな速やかに！加熱はまあ…ひどいフグ反応しない ｜ Li,K,Ca,Na(常温)…"
+              "id": "redoxTreeData_sec6_1_2",
+              "label": "一次電池と二次電池",
+              "step": 1,
+              "subLabel": "充電できるか否か",
+              "explanation": "分類特徴代表例\n<u>一次電池</u>充電できない（使い切り）マンガン乾電池／アルカリマンガン乾電池／酸化銀電池／リチウム電池\n<u>二次電池（蓄電池）</u>充電して繰り返し使える鉛蓄電池／リチウムイオン電池／ニッケル水素電池\n<u>燃料電池</u>燃料と酸素を供給し続けて発電（連続型）リン酸形／固体高分子形"
             }
           ]
         },
         {
-          "id": "p2_3_6_step2_group",
-          "label": "【Step2：水との反応】",
+          "id": "redoxTreeData_sec6_2",
+          "label": "【Step2：基礎電池：ボルタ／ダニエル】",
           "step": 2,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_6_n4",
-              "label": "常温の水と反応",
+              "id": "redoxTreeData_sec6_2_1",
+              "label": "ボルタ電池",
               "step": 2,
-              "subLabel": "Li, K, Ca, Na",
-              "explanation": "<u>常温の水と反応</u>する金属：<u>Li, K, Ca, Na</u>（イオン化傾向特に大）\n\n<u>例</u>：2Na + 2H₂O → 2NaOH + H₂↑\n\n水素と水酸化物を生成"
+              "subLabel": "歴史上初の電池・分極問題あり",
+              "explanation": "<u>構成</u>：(-) Zn ｜ H₂SO₄ aq ｜ Cu (+)\n\n<u>起電力</u>：約 0.76 V（一次電池）\n\n<u>負極反応</u>（Zn 板が溶ける）：\n\n<u>Zn → Zn²⁺ + 2e⁻</u>\n\n<u>正極反応</u>（Cu 板の表面で H₂ が発生）：\n\n<u>2H⁺ + 2e⁻ → H₂↑</u>\n\n<u>全体</u>：Zn + 2H⁺ → Zn²⁺ + H₂\n\n⚠ <u>分極</u>：正極表面にH₂が付着 → 電流が流れにくくなる\n\n→ この問題を解消したのがダニエル電池。"
             },
             {
-              "id": "p2_3_6_n5",
-              "label": "熱水・水蒸気と反応",
+              "id": "redoxTreeData_sec6_2_2",
+              "label": "ダニエル電池",
               "step": 2,
-              "subLabel": "Mg〜Fe",
-              "explanation": "<u>熱水と反応</u>：Mg\n\n<u>高温の水蒸気と反応</u>：Al、Zn、Fe\n\n<u>例</u>：Mg + 2H₂O → Mg(OH)₂ + H₂↑\n\n<u>例</u>：3Fe + 4H₂O → Fe₃O₄ + 4H₂↑（高温水蒸気）"
-            },
-            {
-              "id": "p2_3_6_n6",
-              "label": "水と反応しない",
-              "step": 2,
-              "subLabel": "Ni 以下",
-              "explanation": "<u>水と反応しない</u>：Ni、Sn、Pb、Cu、Hg、Ag、Pt、Au"
+              "subLabel": "素焼き板で分極を防ぐ",
+              "explanation": "<u>構成</u>：(-) Zn ｜ ZnSO₄ aq ｜｜ CuSO₄ aq ｜ Cu (+)\n\n（｜｜ は素焼き板を表す）\n\n<u>起電力</u>：約 1.10 V（一次電池）\n\n<u>負極反応</u>：<u>Zn → Zn²⁺ + 2e⁻</u>（Zn板が溶ける）\n\n<u>正極反応</u>：<u>Cu²⁺ + 2e⁻ → Cu</u>（Cu板にCuが析出）\n\n<u>全体</u>：Zn + Cu²⁺ → Zn²⁺ + Cu\n\n🧪【ダニエル電池の図】\n\n［Zn板］—ZnSO₄水溶液｜素焼き板｜CuSO₄水溶液—［Cu板］\n\n（-極） （+極）\n\n💡 <u>素焼き板の役割</u>：ZnSO₄とCuSO₄が急激に混ざるのを防ぐ\n\n（もし混ざると、Zn板が直接Cu²⁺と反応して電子が導線を流れず、電池として機能しない）\n\n💡 <u>ダニエル電池を長持ちさせるコツ</u>：\n\n❶ ZnSO₄ の濃度は<u>小さく</u>（Zn²⁺が溶けやすい環境）\n\n❷ CuSO₄ の濃度は<u>大きく</u>（Cu が析出しやすい環境）"
             }
           ]
         },
         {
-          "id": "p2_3_6_step3_group",
-          "label": "【Step3：酸との反応】",
-          "step": 2,
+          "id": "redoxTreeData_sec6_3",
+          "label": "【Step3：実用電池 一次／二次】",
+          "step": 3,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_6_n8",
-              "label": "希酸との反応",
-              "step": 2,
-              "subLabel": "(H₂)より大きい金属",
-              "explanation": "<u>希酸（HCl、希H₂SO₄など）と反応</u>：イオン化傾向が(H₂)より大きい金属\n\n<u>例</u>：Fe + 2HCl → FeCl₂ + H₂↑\n\n水素と塩ができる"
+              "id": "redoxTreeData_sec6_3_1",
+              "label": "鉛蓄電池（二次電池の代表）",
+              "step": 3,
+              "subLabel": "自動車バッテリー",
+              "explanation": "<u>構成</u>：(-) Pb ｜ H₂SO₄ aq ｜ PbO₂ (+)\n\n<u>起電力</u>：約 2.00 V\n\n<u>【放電時】</u>\n\n負極：<u>Pb + SO₄²⁻ → PbSO₄ + 2e⁻</u>\n\n正極：<u>PbO₂ + 4H⁺ + SO₄²⁻ + 2e⁻ → PbSO₄ + 2H₂O</u>\n\n全体：Pb + PbO₂ + 2H₂SO₄ → 2PbSO₄ + 2H₂O\n\n<u>【充電時】</u>：放電の逆反応が起きる（電気分解！）\n\n負極：PbSO₄ + 2e⁻ → Pb + SO₄²⁻\n\n正極：PbSO₄ + 2H₂O → PbO₂ + 4H⁺ + SO₄²⁻ + 2e⁻\n\n💡 <u>放電すると硫酸が薄くなる</u>（H₂SO₄が消費、H₂Oが生成）\n\n→ 電解液の密度を測れば充電状態がわかる！\n\n自動車バッテリーの点検はこの原理を利用。"
             },
             {
-              "id": "p2_3_6_n9",
-              "label": "酸化力の強い酸との反応",
-              "step": 2,
-              "subLabel": "Cu, Hg, Ag",
-              "explanation": "<u>Cu、Hg、Ag</u>は希酸とは反応しないが、<u>酸化力の強い酸</u>とは反応。\n\n<u>希硝酸</u>：3Cu + 8HNO₃ → 3Cu(NO₃)₂ + 4H₂O + 2NO↑\n\n<u>濃硝酸</u>：Cu + 4HNO₃ → Cu(NO₃)₂ + 2H₂O + 2NO₂↑\n\n<u>熱濃硫酸</u>：Cu + 2H₂SO₄ → CuSO₄ + 2H₂O + SO₂↑\n\n⚠️ <u>不動態</u>：Fe, Co, Ni, Al, Cr は<u>濃硝酸には溶けない</u>（表面に酸化被膜）\n覚え方：<u>「鉄子にある苦労（Fe Co Ni Al Cr）」</u>"
+              "id": "redoxTreeData_sec6_3_2",
+              "label": "燃料電池（クリーンエネルギー）",
+              "step": 3,
+              "subLabel": "H₂ + O₂ → H₂O のみ",
+              "explanation": "<u>燃料電池</u>＝水素などの燃料と酸素を供給して発電する装置。\n\n<u>❶ リン酸形燃料電池（電解液：H₃PO₄）</u>\n\n負極：<u>H₂ → 2H⁺ + 2e⁻</u>（H₂ が電子を放出＝還元剤）\n\n正極：<u>O₂ + 4H⁺ + 4e⁻ → 2H₂O</u>（O₂ が電子を受け取る＝酸化剤）\n\n全体：<u>2H₂ + O₂ → 2H₂O</u>\n\n<u>❷ 固体高分子形燃料電池（電解液：KOH aqなどアルカリ）</u>\n\n負極：<u>H₂ + 2OH⁻ → 2H₂O + 2e⁻</u>\n\n正極：<u>O₂ + 2H₂O + 4e⁻ → 4OH⁻</u>\n\n全体：<u>2H₂ + O₂ → 2H₂O</u>\n\n🌱 <u>発生する物質が水だけ</u>＝<u>クリーンエネルギー</u>！\n\nFCV（燃料電池自動車）や家庭用エネファームで実用化。"
             },
             {
-              "id": "p2_3_6_n10",
-              "label": "王水との反応",
-              "step": 2,
-              "subLabel": "Pt, Au",
-              "explanation": "<u>王水</u>＝<u>濃硝酸と濃塩酸を体積比 1:3 で混合</u>した溶液。\n\nこれだけが <u>Pt（白金）、Au（金）</u> を溶かせる。\n\n覚え方：<u>「一生は三円」</u>（1:3）"
+              "id": "redoxTreeData_sec6_3_3",
+              "label": "リチウムイオン電池",
+              "step": 3,
+              "subLabel": "現代のスマホ・EV",
+              "explanation": "<u>構成</u>：(-) Li_xC（黒鉛にLi挿入） ｜ LiPF₆（有機電解液） ｜ Li_(1-x)CoO₂ (+)\n\n<u>起電力</u>：約 <u>3.70 V</u>（非常に高い）\n\n<u>特徴</u>：軽量・小型・高エネルギー密度・二次電池\n\n<u>用途</u>：スマートフォン、ノートPC、電気自動車（EV）\n\n🔋 2019年ノーベル化学賞：吉野彰・グッドイナフ・ウィッティンガム（リチウムイオン電池の開発）"
+            },
+            {
+              "id": "redoxTreeData_sec6_3_4",
+              "label": "その他の実用電池",
+              "step": 3,
+              "subLabel": "乾電池・酸化銀電池・ニッケル水素",
+              "explanation": "電池負極正極電解液種類用途\nマンガン乾電池ZnMnO₂（+炭素棒）ZnCl₂ aq一次時計・リモコン\nアルカリマンガン乾電池ZnMnO₂KOH aq一次大電流用途\n酸化銀電池ZnAg₂OKOH aq一次ボタン電池・腕時計\nニッケル水素電池水素吸蔵合金 MHNiO(OH)KOH aq二次ハイブリッドカー"
             }
           ]
         },
         {
-          "id": "p2_3_6_step4_group",
-          "label": "【Step4：空気との反応】",
-          "step": 2,
+          "id": "redoxTreeData_sec6_4",
+          "label": "【Step4：電池の総まとめ表】",
+          "step": 4,
           "isGroup": true,
           "children": [
             {
-              "id": "p2_3_6_n12",
-              "label": "常温で速やかに酸化",
-              "step": 2,
-              "subLabel": "Li, K, Ca, Na",
-              "explanation": "<u>常温で速やかに酸化</u>：Li, K, Ca, Na\n\n<u>例</u>：4Na + O₂ → 2Na₂O（金属の酸化物）"
-            },
-            {
-              "id": "p2_3_6_n13",
-              "label": "加熱で酸化",
-              "step": 2,
-              "subLabel": "Mg〜Cu",
-              "explanation": "<u>加熱すると酸化</u>：Mg, Al, Zn, Fe, Ni, Sn, Pb, Cu"
-            },
-            {
-              "id": "p2_3_6_n14",
-              "label": "強熱で酸化",
-              "step": 2,
-              "subLabel": "Hg, Ag",
-              "explanation": "<u>強熱（高温強加熱）で酸化</u>：Hg, Ag"
-            },
-            {
-              "id": "p2_3_6_n15",
-              "label": "反応しない",
-              "step": 2,
-              "subLabel": "Pt, Au",
-              "explanation": "<u>空気と反応しない</u>：Pt, Au"
-            }
-          ]
-        },
-        {
-          "id": "p2_3_6_step5_group",
-          "label": "【Step5：総まとめ表】",
-          "step": 2,
-          "isGroup": true,
-          "children": [
-            {
-              "id": "p2_3_6_n17",
-              "label": "イオン化傾向と反応性の総まとめ",
-              "step": 2,
-              "subLabel": "暗記用最終表",
-              "explanation": "イオン化 ｜ 大　←──────────────────────→　小\n元素 ｜ Li K Ca Na ｜ Mg ｜ Al Zn Fe Ni Sn Pb ｜ (H₂) Cu Hg Ag Pt Au\n水との反応 ｜ 常温の水と反応 ｜ 熱水と反応 ｜ 高温水蒸気と反応 ｜ 反応しない\n酸との反応 ｜ 希酸（HCl等）と反応してH₂を発生 ｜ Cu,Hg,Ag→酸化力強い酸／Pt,Au→王水のみ\n空気との反応 ｜ 常温で速やかに酸化 ｜ 加熱で酸化 ｜ Hg,Ag→強熱で／Pt,Au→反応しない\n\n<u>★ 覚え方総まとめ ★</u>\n\n水：「常に水菜、空気熱くて、反応しない」\n\n酸：「酸の水素まではH₂できる。酸である水素からは強い酸、借金は王水！」\n\n空気：「貸そうかな、速やかに！加熱はまああてにすんなひどいフグ！反応しない」"
+              "id": "redoxTreeData_sec6_4_1",
+              "label": "主要電池の反応式一覧",
+              "step": 4,
+              "subLabel": "暗記用",
+              "explanation": "電池負極反応正極反応起電力\nボルタZn → Zn²⁺ + 2e⁻2H⁺ + 2e⁻ → H₂0.76V\nダニエルZn → Zn²⁺ + 2e⁻Cu²⁺ + 2e⁻ → Cu1.10V\n鉛蓄電池Pb + SO₄²⁻ → PbSO₄ + 2e⁻PbO₂ + 4H⁺ + SO₄²⁻ + 2e⁻ → PbSO₄ + 2H₂O2.00V\n燃料電池（リン酸）H₂ → 2H⁺ + 2e⁻O₂ + 4H⁺ + 4e⁻ → 2H₂O約1.2V\nLiイオンLi_xC → C + xLi⁺ + xe⁻Li_(1-x)CoO₂ + xLi⁺ + xe⁻ → LiCoO₂3.70V"
             }
           ]
         }
       ]
     },
     {
-      "id": "redoxTreeData_qlinks",
-      "label": "📝 単元の確認問題",
-      "step": 4,
+      "id": "redoxTreeData_sec7",
+      "label": "重要事項⑦ 工業的製法（Al・Fe・Cu）",
+      "step": 3,
       "isGroup": true,
       "children": [
         {
-          "id": "redoxTreeData_leftover_step1",
-          "label": "📝 Step1 対応の確認問題",
+          "id": "redoxTreeData_sec7_1",
+          "label": "【Step1：アルミニウムの製法（溶融塩電解）】",
           "step": 1,
-          "subLabel": "6問",
-          "relatedQuestions": [
-            { "id": "p_c6_1_1", "label": "⑥-1 問1 酸化還元とは" },
-            { "id": "p_c6_1_4", "label": "⑥-1 問4 用語の確認" },
-            { "id": "p_c6_1_5", "label": "⑥-1 問5 用語の確認" },
-            { "id": "p_c6_1_2", "label": "⑥-1 問2 酸化数を求める" },
-            { "id": "p_c6_1_3", "label": "⑥-1 問3 酸化数の変化" },
-            { "id": "p_c6_1_6", "label": "⑥-1 問6 酸化剤・還元剤の分類" }
+          "isGroup": true,
+          "children": [
+            {
+              "id": "redoxTreeData_sec7_1_1",
+              "label": "なぜ溶融塩電解？",
+              "step": 1,
+              "subLabel": "Alはイオン化傾向が大きすぎる",
+              "explanation": "Al はイオン化傾向が非常に大きく、<u>水溶液の電気分解では H₂O が先に還元されてしまう</u>ため、Alを得ることができない！\n\n→ <u>アルミナ Al₂O₃ を融解</u>して電気分解する（溶融塩電解）。\n⚠ <u>Al₂O₃ の融点は約 2054℃</u>と非常に高い！ これを下げる工夫が必要。"
+            },
+            {
+              "id": "redoxTreeData_sec7_1_2",
+              "label": "Step1-4：ボーキサイト → アルミニウム",
+              "step": 1,
+              "subLabel": "4段階の製造工程",
+              "explanation": "<u>Step1：ボーキサイトを濃NaOH水溶液に溶かす</u>\n\nAl₂O₃ + 2NaOH + 3H₂O → 2Na[Al(OH)₄]（テトラヒドロキシドアルミン酸ナトリウム）\n\n<u>Step2：多量の水で希釈し、Al(OH)₃を沈殿させる</u>\n\nNa[Al(OH)₄] → Al(OH)₃↓ + NaOH\n\n<u>Step3：Al(OH)₃を加熱してアルミナ Al₂O₃ を得る</u>\n\n2Al(OH)₃ → Al₂O₃ + 3H₂O\n\n<u>Step4：氷晶石 Na₃AlF₆ に Al₂O₃ を溶かして溶融塩電解</u>\n\n陰極：<u>Al³⁺ + 3e⁻ → Al</u>（アルミニウムが析出）\n\n陽極：<u>C + O²⁻ → CO + 2e⁻</u> および <u>C + 2O²⁻ → CO₂ + 4e⁻</u>\n\n（陽極の炭素電極が O²⁻ と反応して消費される）\n\n💡 <u>氷晶石 Na₃AlF₆ の役割</u>：Al₂O₃（融点2054℃）の融点を下げて、約 <u>1000℃</u> でも融解させる融剤。\n\n→ これにより電気エネルギーの消費を大幅削減。\n⚡ Al 1kg 製造に電力 <u>約14kWh</u> が必要！ アルミは「電気の缶詰」とも呼ばれる。\n\n→ リサイクルすれば新規製造の1/30以下のエネルギーで済む。"
+            }
           ]
         },
         {
-          "id": "redoxTreeData_leftover_step2",
-          "label": "📝 Step2 対応の確認問題",
+          "id": "redoxTreeData_sec7_2",
+          "label": "【Step2：鉄の製法（溶鉱炉）】",
           "step": 2,
-          "subLabel": "4問",
-          "relatedQuestions": [
-            { "id": "p_c6_2_1", "label": "⑥-2 問1 半反応式（酸化剤）" },
-            { "id": "p_c6_2_2", "label": "⑥-2 問2 半反応式（還元剤）" },
-            { "id": "p_c6_2_3", "label": "⑥-2 問3 酸化還元反応の化学反応式" },
-            { "id": "p_c6_2_4", "label": "⑥-2 問4 SO₂・H₂O₂ のはたらき" }
+          "isGroup": true,
+          "children": [
+            {
+              "id": "redoxTreeData_sec7_2_1",
+              "label": "Step1：溶鉱炉での還元",
+              "step": 2,
+              "subLabel": "CO で酸化鉄を還元",
+              "explanation": "<u>原料</u>：鉄鉱石（Fe₂O₃、Fe₃O₄）、<u>コークス C</u>、<u>石灰石 CaCO₃</u>\n\n❶ コークスの燃焼で CO を発生：\n\n2C + O₂ → 2CO\n\n❷ <u>CO による還元</u>で銑鉄を得る：\n\n<u>Fe₂O₃ + 3CO → 2Fe + 3CO₂</u>\n\n❸ 石灰石は鉄鉱石中の SiO₂ をスラグとして分離：\n\nCaCO₃ → CaO + CO₂\n\nCaO + SiO₂ → <u>CaSiO₃</u>（スラグ ＝ ケイ酸カルシウム）"
+            },
+            {
+              "id": "redoxTreeData_sec7_2_2",
+              "label": "Step2：転炉で銑鉄 → 鋼",
+              "step": 2,
+              "subLabel": "炭素成分を減らす",
+              "explanation": "<u>銑鉄</u>（せんてつ）：溶鉱炉から得られる、炭素を約 4% 含む鉄（もろい・鋳物用）\n\n<u>転炉での処理</u>：銑鉄に<u>O₂を吹き込み加熱</u> → 炭素を CO₂ として除去\n\nC + O₂ → CO₂↑\n\n<u>鋼</u>（こう）：炭素を約 0.02〜2% に減らした鉄（強靭・建築・レール用）\n\n🏭【製鉄プロセス】\n\n鉄鉱石＋コークス＋石灰石\n\n↓（溶鉱炉：CO還元）\n\n銑鉄（C 約4%）\n\n↓（転炉：O₂吹込み）\n\n鋼（C 少ない）"
+            }
           ]
         },
         {
-          "id": "redoxTreeData_leftover_step3",
-          "label": "📝 Step3 対応の確認問題",
+          "id": "redoxTreeData_sec7_3",
+          "label": "【Step3：銅の製法（電解精錬）】",
           "step": 3,
-          "subLabel": "6問",
-          "relatedQuestions": [
-            { "id": "p_c6_3_1", "label": "⑥-3 問1 酸化還元滴定（過酸化水素）" },
-            { "id": "p_c6_3_2", "label": "⑥-3 問2 市販の過酸化水素水" },
-            { "id": "p_c6_3_3", "label": "⑥-3 問3 ヨウ素滴定（ビタミンC）" },
-            { "id": "p_c6_3_5", "label": "⑥-3 問5 ヨウ素滴定（SO₂・H₂O₂）" },
-            { "id": "p_c6_3_4", "label": "⑥-3 問4 COD測定（逆滴定）" },
-            { "id": "p_c6_6_2", "label": "⑥-6 問2 電池と量的関係" }
+          "isGroup": true,
+          "children": [
+            {
+              "id": "redoxTreeData_sec7_3_1",
+              "label": "銅の電解精錬の仕組み",
+              "step": 3,
+              "subLabel": "粗銅 → 純銅（99.99%）",
+              "explanation": "<u>構成</u>：陽極＝<u>粗銅</u>（99%程度）／陰極＝<u>純銅</u>（薄板）／電解液＝<u>CuSO₄ aq（硫酸酸性）</u>\n\n<u>【反応】</u>\n\n<u>陽極（粗銅）</u>：主に <u>Cu → Cu²⁺ + 2e⁻</u>（銅が溶け出す）\n\n<u>陰極（純銅）</u>：<u>Cu²⁺ + 2e⁻ → Cu</u>（純銅が析出）\n\n🔬【電解精錬の図】\n\n［粗銅］（+極）—CuSO₄水溶液—［純銅］（-極）\n\n（電源＋直流電流）\n\n（Cu²⁺として溶ける） （Cuとして析出）"
+            },
+            {
+              "id": "redoxTreeData_sec7_3_2",
+              "label": "陽極泥と不純物の行き先",
+              "step": 3,
+              "subLabel": "金・銀が回収できる！",
+              "explanation": "<u>粗銅中の不純物</u>のうち：\n\n<u>❶ Cu よりイオン化傾向が大きい</u>（Zn, Fe, Ni など）\n\n→ Cuと一緒に Cu²⁺, Zn²⁺, Fe²⁺として<u>電解液中に溶解</u>（陰極では析出しない）\n\n<u>❷ Cu よりイオン化傾向が小さい</u>（Ag, Au など）\n\n→ 電子を放出しないため<u>溶けずに落下</u>し、陽極の下に<u>陽極泥（ようきょくでい）</u>として沈殿\n\n→ この陽極泥から<u>金や銀を回収</u>できる！（副産物）\n\n<u>❸ Pb</u>：PbSO₄ が難溶性なので陽極泥に沈殿する\n\n💰 <u>実は銅の電解精錬は「金・銀の回収工程」でもある！</u> 電気代のかなりの部分が回収された貴金属で相殺される。"
+            },
+            {
+              "id": "redoxTreeData_sec7_3_3",
+              "label": "電流を小さくする理由",
+              "step": 3,
+              "subLabel": "純度を保つため",
+              "explanation": "電流を<u>小さくゆっくり</u>流す理由：\n\n・電流を大きくしすぎると、Cu より少し卑な不純物（Ni, Znなど）も陰極で析出してしまう\n\n・ゆっくり電解すると、イオン化傾向の順で確実に銅だけが析出する\n\n→ 純度 <u>99.99%</u> の純銅が得られる"
+            }
           ]
         },
         {
-          "id": "redoxTreeData_leftover_step4",
-          "label": "📝 Step4 対応の確認問題",
+          "id": "redoxTreeData_sec7_4",
+          "label": "【Step4：3つの製法の総まとめ】",
           "step": 4,
-          "subLabel": "9問",
-          "relatedQuestions": [
-            { "id": "p_c6_4_1", "label": "⑥-4 問1 酸化力・還元力の強さ" },
-            { "id": "p_c6_4_2", "label": "⑥-4 問2 金属の析出とハロゲンの酸化力" },
-            { "id": "p_c6_5_1", "label": "⑥-5 問1 金属のイオン化傾向" },
-            { "id": "p_c6_5_2", "label": "⑥-5 問2 金属の特定（イオン化傾向）" },
-            { "id": "p_c6_5_3", "label": "⑥-5 問3 金属の特定とトタン・ブリキ" },
-            { "id": "p_c6_7_1", "label": "⑥-7 問1 金属の製錬法" },
-            { "id": "p_c6_7_2", "label": "⑥-7 問2 鉄の製錬（高炉）" },
-            { "id": "p_c6_7_3", "label": "⑥-7 問3 銅の電解精錬" },
-            { "id": "p_c6_7_4", "label": "⑥-7 問4 アルミニウムの溶融塩電解" }
+          "isGroup": true,
+          "children": [
+            {
+              "id": "redoxTreeData_sec7_4_1",
+              "label": "Al・Fe・Cu 製法の比較",
+              "step": 4,
+              "subLabel": "イオン化傾向との対応",
+              "explanation": "金属イオン化傾向製法主な反応\n<u>Al</u>大（H₂より上）<u>溶融塩電解</u>（融解したAl₂O₃ + 氷晶石）陰極：Al³⁺ + 3e⁻ → Al\n<u>Fe</u>中<u>CO還元</u>（溶鉱炉）Fe₂O₃ + 3CO → 2Fe + 3CO₂\n<u>Cu</u>小（H₂より下）<u>電解精錬</u>（水溶液電気分解）陰極：Cu²⁺ + 2e⁻ → Cu\n\n💡 <u>イオン化傾向が大きい金属</u>ほど、より強力な還元手段（電気分解）が必要！\n\n・Al は水溶液の電気分解ではダメ → 溶融塩電解\n\n・Fe は CO で還元できる（比較的簡単）\n\n・Cu は水溶液の電気分解で高純度化できる"
+            }
           ]
         }
       ]
     }
   ]
 };
+
 

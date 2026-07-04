@@ -21,7 +21,7 @@ import {
   acidBaseTreeData,
   redoxTreeData
 } from '../data/chemistryData';
-import { collectQuestionIds, extractRelevantTree } from '../utils/logicTreeUtils';
+import { extractSectionByChapter } from '../utils/logicTreeUtils';
 
 interface ChapterFlowchartModalProps {
   chapterId: string;
@@ -41,8 +41,9 @@ export function ChapterFlowchartModal({
   
   // Resolve the FULL tree data by chapterId.
   // ※ c5(酸と塩基)/c6(酸化還元)は単元全体で1つの大きなツリーを共有しており、
-  //   下位章（c6_1〜c6_7 等）ごとに開いた場合は「その章の問題に対応するStep範囲だけ」を
-  //   抜粋して表示する（フルツリーをそのまま貼らない）。
+  //   下位章（c5_1〜c5_7 / c6_1〜c6_7）ごとに開いた場合は、
+  //   「添付HTML由来のその重要事項セクション全体（フル解説ツリー）」を表示する。
+  //   （確認問題プレースホルダは差し込まない）
   let fullTreeData: NodeData | null = null;
   if (chapterId === 'c1_1') fullTreeData = substanceTreeData;
   if (chapterId === 'c1_2_A') fullTreeData = separationTreeData;
@@ -63,16 +64,15 @@ export function ChapterFlowchartModal({
   if (chapterId === 'c6' || chapterId.startsWith('c6_')) fullTreeData = redoxTreeData;
 
   // c5/c6 は単元全体で1つの大きなツリーを共有しているため、
-  // その章（下位章）の問題に対応するStep範囲のみを抜粋する。
-  // c1〜c4 は章ごとに専用ツリーがあり、ツリー全体がそのトピックの範囲なので抜粋しない。
+  // その下位章（c5_1〜c5_7 / c6_1〜c6_7）に対応する重要事項セクションのみを切り出す。
+  // 添付HTML由来のフル解説（Step構成・解説付き）をそのまま表示する。
+  // c1〜c4 は章ごとに専用ツリーがあるため切り出さない。
   const isSharedUnitTree =
     chapterId === 'c5' || chapterId.startsWith('c5_') ||
     chapterId === 'c6' || chapterId.startsWith('c6_');
   let currentTreeData: NodeData | null = fullTreeData;
-  if (fullTreeData && isSharedUnitTree && questions.length > 0) {
-    const targetIds = collectQuestionIds(questions);
-    const extracted = extractRelevantTree(fullTreeData, targetIds);
-    if (extracted) currentTreeData = extracted;
+  if (fullTreeData && isSharedUnitTree) {
+    currentTreeData = extractSectionByChapter(fullTreeData, chapterId);
   }
 
   // Handle click on a questions from the logic tree node
