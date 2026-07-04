@@ -28,26 +28,45 @@ interface ChapterFlowchartModalProps {
   questions?: any[];
 }
 
-// ⑤ 酸と塩基・⑥ 酸化還元反応 の各サブ単元は、
-// 静的HTMLフローチャート集（詳細版）の該当章を iframe で埋め込んで表示する。
+// 各単元は、静的HTMLフローチャート集（v3・アプリ単元完全対応版）の
+// 該当章を iframe で埋め込んで表示する。
 // key: chapterId ／ value: フローチャート集内の data-chart-id
 const staticFlowchartMap: Record<string, string> = {
-  // ⑤ 酸と塩基
+  // ① 物質の構成
+  'c1_1': 'p1-1',    // 純物質と混合物
+  'c1_2_A': 'p1-2A', // 物質の分離と精製
+  'c1_2_B': 'p1-2B', // 物質の構成と成分元素の検出
+  'c1_3': 'p1-3',    // 粒子の熱運動と物質の三態
+  // ② 物質の構成粒子
+  'c2_1': 'p2-1',    // 原子の構造と電子配置・周期表
+  'c2_2': 'p2-2',    // イオン
+  'c2_3': 'p2-3',    // イオン生成とエネルギー
+  'c2_4': 'p2-4',    // 原子の大きさとイオンの大きさ
+  // ③ 化学結合
+  'c3_1': 'p3-1',    // 結合の種類
+  'c3_2': 'p3-2',    // 結晶の種類と性質
+  'c3_3': 'p3-3',    // 分子の相互作用と性質
+  // ④ 物質量と化学反応式
+  'c4_1': 'p4-1',    // 原子量
+  'c4_2': 'p4-2',    // 物質量（mol）
+  'c4_3': 'p4-3',    // 化学反応式とイオン反応式の作り方
+  'c4_4': 'p4-4',    // 濃度
+  // ⑤ 酸と塩基（v3 では「塩の分類」が p2-2-5 に追加され以降の番号がずれている）
   'c5_1': 'p2-2-1', // 酸と塩基の定義
   'c5_2': 'p2-2-2', // 酸と塩基の強さ
   'c5_3': 'p2-2-3', // pHについて
-  'c5_4': 'p2-2-4', // 中和とは何か
-  'c5_5': 'p2-2-5', // 中和反応の計算
-  'c5_6': 'p2-2-6', // 中和滴定の道具と方法
-  'c5_7': 'p2-2-7', // 滴定曲線と二段階滴定
-  // ⑥ 酸化還元反応
+  'c5_4': 'p2-2-4', // 中和とは何か（※塩の分類は p2-2-5）
+  'c5_5': 'p2-2-6', // 中和と中和滴定の計算方法
+  'c5_6': 'p2-2-7', // 中和滴定の道具と方法
+  'c5_7': 'p2-2-8', // 滴定曲線と二段階滴定
+  // ⑥ 酸化還元反応（v3 では電池と金属の反応の順序が旧版と逆）
   'c6_1': 'p2-3-1', // 酸化還元反応とは何か（酸化数）
   'c6_2': 'p2-3-2', // 半反応式と酸化還元反応式の作り方
   'c6_3': 'p2-3-3', // 酸化剤と還元剤の量的関係（酸化還元滴定）
-  'c6_4': 'p2-3-4', // 酸化剤・還元剤としての強さ
-  'c6_5': 'p2-3-5', // 金属のイオン化傾向と反応
-  'c6_6': 'p2-3-6', // 電池
-  'c6_7': 'p2-3-7', // 工業的製法
+  'c6_4': 'p2-3-4', // 酸化力と還元力としての強さ
+  'c6_5': 'p2-3-6', // 金属と水・酸・空気との反応（イオン化傾向）
+  'c6_6': 'p2-3-5', // 電池
+  'c6_7': 'p2-3-7', // 工業的製法（Al・Fe・Cu）
 };
 
 export function ChapterFlowchartModal({ 
@@ -62,7 +81,8 @@ export function ChapterFlowchartModal({
   const staticChartId = staticFlowchartMap[chapterId];
 
   // Resolve correct tree data by chapterId
-  let currentTreeData: NodeData = substanceTreeData;
+  let currentTreeData: NodeData | null = null;
+  if (chapterId === 'c1_1') currentTreeData = substanceTreeData;
   if (chapterId === 'c1_2_A') currentTreeData = separationTreeData;
   if (chapterId === 'c1_3') currentTreeData = thermalMotionTreeData;
   if (chapterId === 'c2_1') currentTreeData = atomicStructureTreeData;
@@ -152,8 +172,8 @@ export function ChapterFlowchartModal({
                 </div>
               </div>
 
-              {/* ⑤ 酸と塩基はロジックツリーも併せて表示（問題への直接リンク付き） */}
-              {chapterId.startsWith('c5') && (
+              {/* ロジックツリーがある単元は併せて表示（問題への直接リンク付き） */}
+              {currentTreeData && (
                 <div className="bg-white rounded-2xl border border-gray-200 p-1 sm:p-3 shadow-sm w-full font-handwriting">
                   <p className="text-[11px] sm:text-xs text-gray-500 font-bold px-2 pt-2 pb-1">
                     ▼ ロジックツリー（タップで開閉・確認問題へ移動できます）
@@ -167,7 +187,7 @@ export function ChapterFlowchartModal({
                 </div>
               )}
             </div>
-          ) : (
+          ) : currentTreeData ? (
             <div className="bg-white rounded-2xl border border-gray-200 p-1 sm:p-3 shadow-sm w-full font-handwriting">
               <InteractiveTree 
                 data={currentTreeData}
@@ -175,6 +195,10 @@ export function ChapterFlowchartModal({
                 mobileTightCrop={true}
                 zoom="far"
               />
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm w-full text-center text-sm text-gray-400 font-handwriting font-bold">
+              この単元のフローチャートは準備中です
             </div>
           )}
         </div>
