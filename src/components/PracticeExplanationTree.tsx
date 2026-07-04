@@ -15,8 +15,6 @@ interface PracticeExplanationTreeProps {
   isMobile: boolean;
   renderSubQuestionCheck: (sq: any, parentQuestion: any) => React.ReactElement;
   zoom?: 'far' | 'normal';
-  /** 単問表示のとき true。該当ステップのみを抜粋表示する。 */
-  isSingleQuestion?: boolean;
 }
 
 export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = ({
@@ -30,8 +28,7 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   scrollTrigger,
   isMobile,
   renderSubQuestionCheck,
-  zoom = 'far',
-  isSingleQuestion = false
+  zoom = 'far'
 }) => {
   // 章IDごとに対応するフローチャート（ロジックツリー）を明示的に対応付ける。
   // ここに存在しない章（例: c5 酸と塩基, c6 酸化還元）は専用ツリーが無いため、
@@ -65,12 +62,21 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
 
   const fullTreeData: NodeData | undefined = resolveTree(chapter?.id);
 
-  // 単問表示のときは、その問題に対応する Step/ノードだけを抜粋する。
-  // （単元全体のフルツリーをそのまま貼らず、該当箇所のみを切り出す）
-  // 章全体を表示しているときはフルツリーをそのまま出す。
+  // c5(酸と塩基)/c6(酸化還元)は単元全体で1つの大きなツリーを共有しているため、
+  // その章（下位章）に対応する Step 範囲だけを抜粋する。
+  // c1〜c4 は章ごとに専用ツリーがあり、ツリー全体がそのトピックの範囲なので抜粋しない。
+  // 単元選択画面のフローチャートと範囲を一致させるため、
+  // 抜粋は「その章の全問題（practiceProblems）」を基準に行う。
+  const isSharedUnitTree = !!chapter?.id && (
+    chapter.id === 'c5' || chapter.id.startsWith('c5_') ||
+    chapter.id === 'c6' || chapter.id.startsWith('c6_')
+  );
   let currentTreeData: NodeData | undefined = fullTreeData;
-  if (fullTreeData && isSingleQuestion) {
-    const targetIds = collectQuestionIds(questions);
+  if (fullTreeData && isSharedUnitTree) {
+    const chapterProblems = (chapter?.practiceProblems && chapter.practiceProblems.length > 0)
+      ? chapter.practiceProblems
+      : questions;
+    const targetIds = collectQuestionIds(chapterProblems);
     const extracted = extractRelevantTree(fullTreeData, targetIds);
     // 抜粋できた場合のみ差し替える。該当ノードが見つからないときはフルツリーを表示。
     if (extracted) currentTreeData = extracted;

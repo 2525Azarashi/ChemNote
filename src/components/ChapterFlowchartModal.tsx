@@ -21,6 +21,7 @@ import {
   acidBaseTreeData,
   redoxTreeData
 } from '../data/chemistryData';
+import { collectQuestionIds, extractRelevantTree } from '../utils/logicTreeUtils';
 
 interface ChapterFlowchartModalProps {
   chapterId: string;
@@ -38,25 +39,41 @@ export function ChapterFlowchartModal({
   questions = []
 }: ChapterFlowchartModalProps) {
   
-  // Resolve correct tree data by chapterId
-  let currentTreeData: NodeData | null = null;
-  if (chapterId === 'c1_1') currentTreeData = substanceTreeData;
-  if (chapterId === 'c1_2_A') currentTreeData = separationTreeData;
-  if (chapterId === 'c1_2_B') currentTreeData = componentDetectionTreeData;
-  if (chapterId === 'c1_3') currentTreeData = thermalMotionTreeData;
-  if (chapterId === 'c2_1') currentTreeData = atomicStructureTreeData;
-  if (chapterId === 'c2_2') currentTreeData = ionTreeData;
-  if (chapterId === 'c2_3') currentTreeData = ionGenerationTreeData;
-  if (chapterId === 'c2_4') currentTreeData = ionSizeTreeData;
-  if (chapterId === 'c3_1') currentTreeData = chemicalBondTreeData;
-  if (chapterId === 'c3_2') currentTreeData = crystalTreeData;
-  if (chapterId === 'c3_3') currentTreeData = interactionTreeData;
-  if (chapterId === 'c4_1') currentTreeData = atomicWeightTreeData;
-  if (chapterId === 'c4_2') currentTreeData = amountOfSubstanceTreeData;
-  if (chapterId === 'c4_3') currentTreeData = chemicalEquationTreeData;
-  if (chapterId === 'c4_4') currentTreeData = concentrationTreeData;
-  if (chapterId === 'c5' || chapterId.startsWith('c5_')) currentTreeData = acidBaseTreeData;
-  if (chapterId === 'c6' || chapterId.startsWith('c6_')) currentTreeData = redoxTreeData;
+  // Resolve the FULL tree data by chapterId.
+  // ※ c5(酸と塩基)/c6(酸化還元)は単元全体で1つの大きなツリーを共有しており、
+  //   下位章（c6_1〜c6_7 等）ごとに開いた場合は「その章の問題に対応するStep範囲だけ」を
+  //   抜粋して表示する（フルツリーをそのまま貼らない）。
+  let fullTreeData: NodeData | null = null;
+  if (chapterId === 'c1_1') fullTreeData = substanceTreeData;
+  if (chapterId === 'c1_2_A') fullTreeData = separationTreeData;
+  if (chapterId === 'c1_2_B') fullTreeData = componentDetectionTreeData;
+  if (chapterId === 'c1_3') fullTreeData = thermalMotionTreeData;
+  if (chapterId === 'c2_1') fullTreeData = atomicStructureTreeData;
+  if (chapterId === 'c2_2') fullTreeData = ionTreeData;
+  if (chapterId === 'c2_3') fullTreeData = ionGenerationTreeData;
+  if (chapterId === 'c2_4') fullTreeData = ionSizeTreeData;
+  if (chapterId === 'c3_1') fullTreeData = chemicalBondTreeData;
+  if (chapterId === 'c3_2') fullTreeData = crystalTreeData;
+  if (chapterId === 'c3_3') fullTreeData = interactionTreeData;
+  if (chapterId === 'c4_1') fullTreeData = atomicWeightTreeData;
+  if (chapterId === 'c4_2') fullTreeData = amountOfSubstanceTreeData;
+  if (chapterId === 'c4_3') fullTreeData = chemicalEquationTreeData;
+  if (chapterId === 'c4_4') fullTreeData = concentrationTreeData;
+  if (chapterId === 'c5' || chapterId.startsWith('c5_')) fullTreeData = acidBaseTreeData;
+  if (chapterId === 'c6' || chapterId.startsWith('c6_')) fullTreeData = redoxTreeData;
+
+  // c5/c6 は単元全体で1つの大きなツリーを共有しているため、
+  // その章（下位章）の問題に対応するStep範囲のみを抜粋する。
+  // c1〜c4 は章ごとに専用ツリーがあり、ツリー全体がそのトピックの範囲なので抜粋しない。
+  const isSharedUnitTree =
+    chapterId === 'c5' || chapterId.startsWith('c5_') ||
+    chapterId === 'c6' || chapterId.startsWith('c6_');
+  let currentTreeData: NodeData | null = fullTreeData;
+  if (fullTreeData && isSharedUnitTree && questions.length > 0) {
+    const targetIds = collectQuestionIds(questions);
+    const extracted = extractRelevantTree(fullTreeData, targetIds);
+    if (extracted) currentTreeData = extracted;
+  }
 
   // Handle click on a questions from the logic tree node
   const handleQuestionClick = (questionId: string) => {
