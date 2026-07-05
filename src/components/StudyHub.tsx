@@ -11,6 +11,7 @@ import {
   Flame,
   NotebookPen,
   ChevronDown,
+  PenLine,
 } from 'lucide-react';
 import { auth } from '../firebase';
 import {
@@ -45,6 +46,8 @@ interface StudyHubProps {
   isGuest: boolean;
   /** ノート詳細を開く（既存の NoteDetail 画面へ） */
   onSelectNote: (note: any) => void;
+  /** 復習アイテム／ノートから、対応する演習問題へ直接遷移する（要件5） */
+  onReview?: (target: any) => void;
 }
 
 type Tab = 'today' | 'notes' | 'important' | 'all';
@@ -82,10 +85,11 @@ interface ReviewCardProps {
   onCorrect: (key: string) => void;
   onWrong: (key: string) => void;
   onRemove: (key: string) => void;
+  onReview?: (item: ReviewItem) => void;
   compact?: boolean;
 }
 
-const ReviewCard: React.FC<ReviewCardProps> = ({ item, now, onCorrect, onWrong, onRemove, compact = false }) => {
+const ReviewCard: React.FC<ReviewCardProps> = ({ item, now, onCorrect, onWrong, onRemove, onReview, compact = false }) => {
   const due = item.dueAt <= now;
   const mastered = isMastered(item);
   const retention = Math.round((item.box / (REVIEW_INTERVALS_DAYS.length - 1)) * 100);
@@ -125,7 +129,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ item, now, onCorrect, onWrong, 
         </span>
       </div>
 
-      <p className="text-sm text-[#2C3E50] leading-relaxed break-words [overflow-wrap:anywhere]">
+      <p className="text-base text-[#2C3E50] leading-loose break-words [overflow-wrap:anywhere] font-handwriting">
         {truncate(stripHtml(item.questionText) || '（問題文なし）')}
       </p>
 
@@ -153,6 +157,15 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ item, now, onCorrect, onWrong, 
 
       {/* アクション */}
       <div className="mt-3 flex flex-wrap gap-2">
+        {onReview && (
+          <button
+            onClick={() => onReview(item)}
+            aria-label="この問題を解き直す"
+            className="inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-lg bg-[#2C3E50] text-white text-sm font-bold hover:bg-[#1B2631] transition-colors"
+          >
+            <PenLine size={16} aria-hidden="true" /> 解いてみる
+          </button>
+        )}
         <button
           onClick={() => onCorrect(item.key)}
           aria-label="復習で正解にする"
@@ -242,7 +255,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onSelect }) => {
 // メイン
 // ============================================================
 
-export function StudyHub({ onBack, isGuest, onSelectNote }: StudyHubProps) {
+export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubProps) {
   const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
 
   const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
@@ -304,7 +317,8 @@ export function StudyHub({ onBack, isGuest, onSelectNote }: StudyHubProps) {
   ];
 
   return (
-    <div className="w-full min-h-screen bg-[#FDFBF7] font-modern pb-28 md:pb-12">
+    // 要件5：学習ノート画面の背景を罫線（ノートの横線）にし、手書き風フォントで統一。
+    <div className="w-full min-h-screen notebook-paper font-handwriting pb-28 md:pb-12">
       <div className="max-w-3xl mx-auto p-4 md:p-8 space-y-5">
         {/* ヘッダー */}
         <div className="flex items-center gap-4">
@@ -377,6 +391,7 @@ export function StudyHub({ onBack, isGuest, onSelectNote }: StudyHubProps) {
                     onCorrect={handleCorrect}
                     onWrong={handleWrong}
                     onRemove={handleRemove}
+                    onReview={onReview}
                   />
                 ))}
               </ul>
@@ -473,6 +488,7 @@ export function StudyHub({ onBack, isGuest, onSelectNote }: StudyHubProps) {
                         onCorrect={handleCorrect}
                         onWrong={handleWrong}
                         onRemove={handleRemove}
+                        onReview={onReview}
                         compact
                       />
                     ))}

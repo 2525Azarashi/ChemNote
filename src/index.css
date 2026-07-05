@@ -366,7 +366,9 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   height: 100%;
   z-index: 50;
   background-color: var(--color-surface, #FDFBF7);
-  overflow-x: auto;
+  /* スマホでは縦スクロールのみ許可し、横スワイプ前提のレイアウトをやめる。
+     これにより「間違えた問題など下部の要素が見られない」不具合を解消する。 */
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   display: flex;

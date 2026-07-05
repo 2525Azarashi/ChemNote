@@ -458,31 +458,59 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionIndex]);
 
-  // Prevent zoom/pinch out during active quiz, but allow on explanations.
+  // 問題解答画面ではズーム（ピンチ／ダブルタップ）を一切禁止する。
   //
-  // 【ズーム不具合の修正（要件2）】
-  // 解説表示に切り替わる瞬間、直前の（クイズ回答中の）ズーム倍率が残ったまま
-  // 拡大許可へ切り替わると、意図せず拡大された状態で解説が表示されてしまう。
-  // これを避けるため、解説へ移る際は一旦 scale=1.0 固定でズーム状態を初期化し、
-  // スクロール位置も最上部へ戻してから、次フレームでピンチズームを許可する。
+  // 【要件2・利便性向上】
+  // - meta viewport を scale=1.0 固定・user-scalable=no にして拡大を禁止。
+  // - iOS Safari は maximum-scale を後から変えても効かない場合があるため、
+  //   gesturestart / gesturechange（ピンチ）と、300ms以内の連続タップ（ダブルタップ）
+  //   を JS で明示的に抑止し、確実にズームさせない。
+  // - 解説表示（showingExplanation）へ切り替わる瞬間は、一旦 scale=1.0 に初期化して
+  //   直前のズーム倍率を引き継がないようにしてから、閲覧用のピンチズームを許可する。
   useEffect(() => {
     const meta = document.querySelector('meta[name="viewport"]');
     const originalContent = meta?.getAttribute('content') || '';
+
+    const LOCK = 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+    const ALLOW = 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover';
+
+    // ピンチズーム（iOS の gesture イベント）を抑止
+    const preventGesture = (e: Event) => { e.preventDefault(); };
+    // ダブルタップズームを抑止（前回タップから300ms以内の2回目タップをキャンセル）
+    let lastTouchEnd = 0;
+    const preventDoubleTapZoom = (e: TouchEvent) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    };
+
     if (meta) {
       if (showingExplanation) {
-        // まず scale=1.0 に固定してズームをリセット
-        meta.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+        // 解説へ移る瞬間: 一旦 scale=1.0 に初期化 → 次フレームで閲覧用ズームを許可
+        meta.setAttribute('content', LOCK);
         window.scrollTo(0, 0);
-        // 次フレームで閲覧用のピンチズームを許可
         requestAnimationFrame(() => {
-          meta.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
+          meta.setAttribute('content', ALLOW);
         });
       } else {
-        meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+        // 解答中: ズーム完全禁止
+        meta.setAttribute('content', LOCK);
       }
     }
-    
+
+    // 解答中のみズーム抑止リスナーを登録する
+    if (!showingExplanation) {
+      document.addEventListener('gesturestart', preventGesture, { passive: false });
+      document.addEventListener('gesturechange', preventGesture, { passive: false });
+      document.addEventListener('touchend', preventDoubleTapZoom, { passive: false });
+    }
+
     return () => {
+      document.removeEventListener('gesturestart', preventGesture);
+      document.removeEventListener('gesturechange', preventGesture);
+      document.removeEventListener('touchend', preventDoubleTapZoom);
       if (meta) {
         meta.setAttribute('content', originalContent);
       }
@@ -655,28 +683,39 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     [highlights, focusHighlightVariants]
   );
 
-  // 現在フォーカス中の短答設問オブジェクト。
+  // テキスト入力を伴う設問（短答穴埋め + 記述/計算）。
+  // フローティング入力バーの対象は「入力欄を持つ全設問」＝この一覧とする。
+  // multiple_choice / sorting は選択・並べ替えUIのため対象外。
+  const inputNavSubs = useMemo(() => {
+    if (!currentQuestion) return [] as any[];
+    return (currentQuestion.subQuestions || []).filter(
+      (sq: any) => isShortAnswerType(sq) || sq.type === 'descriptive'
+    );
+  }, [currentQuestion]);
+
+  // 現在フォーカス中の設問オブジェクト（短答・記述いずれも対象）。
   const focusedSub = useMemo(() => {
     if (!focusedSubId) return null;
-    return shortAnswerSubs.find((sq: any) => sq.id === focusedSubId) || null;
-  }, [focusedSubId, shortAnswerSubs]);
+    return inputNavSubs.find((sq: any) => sq.id === focusedSubId) || null;
+  }, [focusedSubId, inputNavSubs]);
 
-  // shortAnswerSubs 内での現在フォーカスのインデックス（前へ/次へ判定用）。
+  // inputNavSubs 内での現在フォーカスのインデックス（前へ/次へ判定用）。
   const focusedIndex = useMemo(() => {
     if (!focusedSubId) return -1;
-    return shortAnswerSubs.findIndex((sq: any) => sq.id === focusedSubId);
-  }, [focusedSubId, shortAnswerSubs]);
+    return inputNavSubs.findIndex((sq: any) => sq.id === focusedSubId);
+  }, [focusedSubId, inputNavSubs]);
 
   /**
-   * フローティング入力バーの 前へ/次へ で、フォーカスする短答設問を移動する。
+   * フローティング入力バーの 前へ/次へ で、フォーカスする設問を移動する。
    * dir=-1 で前、dir=1 で次。移動後は該当入力欄へ実フォーカスも移す。
+   * 対象は入力欄を持つ全設問（短答穴埋め・記述/計算）。
    */
   const moveFocus = (dir: -1 | 1) => {
-    if (shortAnswerSubs.length === 0) return;
+    if (inputNavSubs.length === 0) return;
     let idx = focusedIndex;
     if (idx < 0) idx = 0;
-    else idx = Math.min(shortAnswerSubs.length - 1, Math.max(0, idx + dir));
-    const target = shortAnswerSubs[idx];
+    else idx = Math.min(inputNavSubs.length - 1, Math.max(0, idx + dir));
+    const target = inputNavSubs[idx];
     if (!target) return;
     setFocusedSubId(target.id);
     requestAnimationFrame(() => {
@@ -1325,7 +1364,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               <span className="font-bold text-[#2C3E50] text-xs bg-blue-50/60 border border-[#A9CCE3]/40 px-2.5 py-1 rounded-lg truncate">
                 {focusedSub.label}
               </span>
-              {shortAnswerSubs.length > 1 && isShortAnswerType(focusedSub) && (
+              {inputNavSubs.length > 1 && (
                 <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     type="button"
@@ -1341,14 +1380,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     前へ
                   </button>
                   <span className="text-[11px] text-gray-400 font-bold tabular-nums">
-                    {focusedIndex + 1}/{shortAnswerSubs.length}
+                    {focusedIndex + 1}/{inputNavSubs.length}
                   </span>
                   <button
                     type="button"
                     onClick={() => moveFocus(1)}
-                    disabled={focusedIndex >= shortAnswerSubs.length - 1}
+                    disabled={focusedIndex >= inputNavSubs.length - 1}
                     className={`flex items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
-                      focusedIndex >= shortAnswerSubs.length - 1
+                      focusedIndex >= inputNavSubs.length - 1
                         ? 'border-gray-200 text-gray-300 bg-gray-50'
                         : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
                     }`}
@@ -1376,11 +1415,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
                 placeholder="解答を入力..."
                 autoFocus
-                enterKeyHint={focusedIndex >= shortAnswerSubs.length - 1 ? 'done' : 'next'}
+                enterKeyHint={focusedIndex >= inputNavSubs.length - 1 ? 'done' : 'next'}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && isShortAnswerType(focusedSub)) {
+                  if (e.key === 'Enter') {
                     e.preventDefault();
-                    if (focusedIndex < shortAnswerSubs.length - 1) moveFocus(1);
+                    if (focusedIndex < inputNavSubs.length - 1) moveFocus(1);
                   }
                 }}
                 className="w-full px-3 py-2.5 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none font-modern bg-gray-50 focus:bg-white leading-relaxed"
