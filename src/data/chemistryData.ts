@@ -7855,12 +7855,14 @@ const findSubQuestion = (chapterId: string, problemId: string, subQuestionId: st
 
   const filtration = findPracticeProblem('c1_2_A', 'q_c1_2_A_1');
   if (filtration) {
-    filtration.text = String(filtration.text).replace('/fig_filtration_abcd.png', '/fig_filtration_abcd.svg');
+    // ②-A 問1（ろ過）: 添付の写真（ア〜エの4パターン）に差し替え
+    filtration.text = String(filtration.text).replace('/fig_filtration_abcd.png', '/photo_filtration_abcd.jpg');
   }
 
   const distillation = findPracticeProblem('c1_2_A', 'q_c1_2_A_2');
   if (distillation) {
-    distillation.text = String(distillation.text).replace('/fig_distillation_setup.png', '/fig_distillation_setup.svg');
+    // ②-A 問2（蒸留）: 添付の蒸留装置写真（①〜⑤）に差し替え
+    distillation.text = String(distillation.text).replace('/fig_distillation_setup.png', '/photo_distillation_setup.jpg');
   }
 
   const fractional = findPracticeProblem('c1_2_A', 'q_c1_2_A_3');
@@ -7880,8 +7882,9 @@ const findSubQuestion = (chapterId: string, problemId: string, subQuestionId: st
 
   const sublimation = findPracticeProblem('c1_2_A', 'q_c1_2_A_4');
   if (sublimation) {
+    // ②-A 問4（昇華法）: 添付の昇華実験装置写真（①〜④）に差し替え
     sublimation.text = String(sublimation.text)
-      .replace('/fig_sublimation_setups.png', '/fig_sublimation_setups.svg')
+      .replace('/fig_sublimation_setups.png', '/photo_sublimation_setups.jpg')
       .replace(/\n\n※選択肢の図の意味：[\s\S]*?\n\n（2）/, '\n\n（2）');
   }
   const sublimationMulti = findSubQuestion('c1_2_A', 'q_c1_2_A_4', 'q_c1_2_A_4_2');
@@ -7894,7 +7897,8 @@ const findSubQuestion = (chapterId: string, problemId: string, subQuestionId: st
 
   const extraction = findPracticeProblem('c1_2_A', 'q_c1_2_A_5');
   if (extraction) {
-    extraction.text = String(extraction.text).replace('/fig_separating_funnel.png', '/fig_separating_funnel.svg');
+    // ②-A 問5（抽出）: 添付の分液漏斗写真に差し替え
+    extraction.text = String(extraction.text).replace('/fig_separating_funnel.png', '/photo_separating_funnel.jpg');
   }
   const funnelName = findSubQuestion('c1_2_A', 'q_c1_2_A_5', 'q5_2');
   if (funnelName) {

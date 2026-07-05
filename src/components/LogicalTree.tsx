@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Search, Network, Info, BookOpen } from 'lucide-react';
 import { InteractiveTree } from './InteractiveTree';
 import { substanceTreeData } from '../data/chemistryData';
+import { useIsMobile } from '../hooks/useMediaQuery';
 
 export const LogicalTree = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
+  // モバイルでは1画面に収まるよう、余白を圧縮したタイトなレイアウトにする（要件3）。
+  const isMobile = useIsMobile();
 
   const handleQuestionClick = (qId: string) => {
     console.log('Question clicked:', qId);
@@ -13,10 +16,10 @@ export const LogicalTree = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] p-4 sm:p-6 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="min-h-screen bg-[#F8F9FA] p-2 sm:p-6 md:p-8 overflow-x-hidden">
+      <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6">
         {/* Header Section */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
               <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
@@ -88,11 +91,12 @@ export const LogicalTree = () => {
             </div>
           </div>
           
-          <div className="p-6 md:p-10">
+          <div className="p-3 sm:p-6 md:p-10">
             <InteractiveTree 
               data={substanceTreeData} 
               onQuestionClick={handleQuestionClick}
               expandedStep={expandedStep}
+              mobileTightCrop={isMobile}
             />
           </div>
         </div>

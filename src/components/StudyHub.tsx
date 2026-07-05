@@ -217,7 +217,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onSelect }) => {
         )}
       </div>
 
-      <h3 className="font-bold text-[#2C3E50] leading-relaxed break-words [overflow-wrap:anywhere] font-modern">
+      <h3 className="font-bold text-[#2C3E50] leading-relaxed break-words [overflow-wrap:anywhere] font-handwriting text-lg">
         {truncate(stripHtml(note.question) || '（問題文なし）', 70)}
       </h3>
       <p className="text-sm text-gray-500 mt-1 break-words [overflow-wrap:anywhere]">

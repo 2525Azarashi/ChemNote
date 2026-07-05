@@ -156,20 +156,50 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     window.scrollTo(0, 0);
   }, [singleQuestionIndex, chapter.id]);
 
-  // Set viewport to allow zoom/pinch out on explanation pages
+  // Set viewport to allow zoom/pinch out on explanation pages.
+  //
+  // 【ズーム不具合の修正（要件2）】
+  // 解答解説・結果表示画面へ遷移した際に、直前の画面（クイズ等）で残っていた
+  // ズーム倍率がそのまま引き継がれ、意図せず拡大された状態で表示される不具合があった。
+  // これを防ぐため、遷移直後にまず「拡大を禁止した scale=1.0 固定」を一度当てて
+  // ブラウザのズーム状態を強制的に初期化（scale=1）し、そのうえで次フレームで
+  // ユーザーによるピンチズームを許可する2段階の処理にする。
+  // あわせてスクロール位置も最上部にリセットしてから表示する。
   useEffect(() => {
     const meta = document.querySelector('meta[name="viewport"]');
     const originalContent = meta?.getAttribute('content') || '';
+
+    // ① まずスクロール位置を最上部へ（前画面のスクロール位置を引き継がない）
+    window.scrollTo(0, 0);
+
     if (meta) {
-      meta.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
+      // ② 拡大禁止の scale=1.0 を一旦強制適用 → ブラウザのズームを初期状態に戻す
+      meta.setAttribute(
+        'content',
+        'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
+      );
+      // ③ 次フレームで、閲覧のためのピンチズームを再度許可する
+      requestAnimationFrame(() => {
+        meta.setAttribute(
+          'content',
+          'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover'
+        );
+      });
     }
-    
+
     return () => {
       if (meta) {
-        meta.setAttribute('content', originalContent);
+        // 離脱時も一旦 scale=1.0 に固定してズーム状態をリセットしてから元へ戻す
+        meta.setAttribute(
+          'content',
+          'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
+        );
+        requestAnimationFrame(() => {
+          meta.setAttribute('content', originalContent);
+        });
       }
     };
-  }, []);
+  }, [singleQuestionIndex, chapter.id]);
 
   const handleSaveNote = async (question: any, index: number) => {
     const displayIndex = singleQuestionIndex !== undefined ? singleQuestionIndex : index;
@@ -188,6 +218,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         explanation: question.explanation,
         chapterTitle: chapter.abstractTitle || chapter.realTitle || '',
         questionIndex: displayIndex + 1,
+        // 復習用リンク（要件5）：ノートから該当の演習問題へ戻れるよう
+        // 章IDと問題IDを保持する。
+        chapterId: chapter.id,
+        questionId: question.id,
         memo: '',
         createdAt: new Date().toISOString(),
         isImportant: false,

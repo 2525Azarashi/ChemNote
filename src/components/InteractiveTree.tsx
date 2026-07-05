@@ -48,22 +48,32 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
   };
 
   const isFar = zoom === 'far';
-  const buttonWidth = isFar ? 'w-48 sm:w-56' : 'w-56 sm:w-64';
-  const buttonTextSize = isFar ? 'text-xs sm:text-sm' : 'text-base';
-  const subLabelSize = isFar ? 'text-xs' : 'text-sm';
-  const indentClass = isFar ? 'ml-4 sm:ml-6 pl-4 sm:pl-6' : 'ml-6 sm:ml-8 pl-6 sm:pl-8';
+  // 【横スクロール解消（要件3）】
+  // 従来はノードのボタン幅を固定（w-56/w-64）し、深い階層ほど右にはみ出して
+  // 横スクロールしないと全体構造が把握できなかった。
+  // ここではボタンを「最大幅の指定 + 縮小可能（min-w-0）」にして、
+  // 画面幅の中で自動的に収まる（＝縦スクロールだけで俯瞰できる）ようにする。
+  const buttonWidth = isFar
+    ? 'w-full max-w-[13rem] sm:max-w-[15rem]'
+    : 'w-full max-w-[15rem] sm:max-w-[18rem]';
+  const buttonTextSize = isFar ? 'text-xs sm:text-sm' : 'text-sm sm:text-base';
+  const subLabelSize = isFar ? 'text-xs' : 'text-xs sm:text-sm';
+  // 階層インデントを小さめにして、深い階層でも1画面幅に収める。
+  const indentClass = isFar ? 'ml-2 sm:ml-4 pl-2 sm:pl-4' : 'ml-3 sm:ml-5 pl-3 sm:pl-5';
   const lineTranslate = isFar ? 'top-[22px]' : 'top-[26px]';
-  const horizontalLineClass = isFar ? '-left-4 sm:-left-6 w-4 sm:w-6' : '-left-6 sm:-left-8 w-6 sm:w-8';
+  const horizontalLineClass = isFar ? '-left-2 sm:-left-4 w-2 sm:w-4' : '-left-3 sm:-left-5 w-3 sm:w-5';
 
-  const indentPerLevel = isFar ? 48 : 64; // px on desktop
-  const mobileIndentPerLevel = isFar ? 32 : 48; // px on mobile
-  
+  // 展開パネルの最大幅は「画面幅からインデント分を引いた値」に収める。
+  // これにより深い階層でも右方向へはみ出さない（横スクロール不要）。
+  const indentPerLevel = isFar ? 24 : 32; // px
+  const mobileIndentPerLevel = isFar ? 16 : 24; // px
+
   const totalIndentDesktop = depth * indentPerLevel;
   const totalIndentMobile = depth * mobileIndentPerLevel;
 
   const dynamicMaxWidth = isMobile
-    ? `calc(100vw - ${totalIndentMobile}px - 5.5rem)`
-    : `calc(50vw - ${totalIndentDesktop}px - 2.5rem)`;
+    ? `calc(100vw - ${totalIndentMobile}px - 4rem)`
+    : `calc(100% - ${totalIndentDesktop}px)`;
 
   if (node.isGroup) {
     const groupBg = node.step === 1 ? 'bg-orange-50/50 border-orange-200' : node.step === 2 ? 'bg-emerald-50/50 border-emerald-200' : node.step === 3 ? 'bg-blue-50/50 border-blue-200' : 'bg-purple-50/50 border-purple-200';
@@ -84,20 +94,20 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
 
   return (
     <div className="flex flex-col w-full min-w-0 font-handwriting">
-      <div className="relative z-10 w-full min-w-0 font-handwriting">
-        <div className="flex items-center gap-3">
+      <div className="relative z-10 w-full min-w-0 font-handwriting" id={`node-${node.id}`}>
+        <div className="flex items-start gap-2 sm:gap-3 min-w-0">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => hasContent && onSelect(node)}
             className={cn(
-              "flex items-center justify-between px-3 py-2 rounded-lg border-2 transition-all duration-200 font-handwriting",
+              "flex items-center justify-between px-3 py-2 rounded-lg border-2 transition-all duration-200 font-handwriting shrink-0 min-w-0",
               buttonWidth,
               getStepStyles(node.step, isSelected),
               !hasContent && "cursor-default opacity-90"
             )}
           >
-            <div className="flex flex-col items-start text-left font-handwriting">
-              <span className={cn("font-bold tracking-wide font-handwriting", buttonTextSize)}>{node.label}</span>
+            <div className="flex flex-col items-start text-left font-handwriting min-w-0">
+              <span className={cn("font-bold tracking-wide font-handwriting break-words leading-tight", buttonTextSize)}>{node.label}</span>
             </div>
             {hasContent && (
               <ChevronRight className={cn("w-4 h-4 opacity-50 transition-transform shrink-0 ml-1.5", isSelected && "rotate-90 opacity-100")} />
@@ -106,10 +116,8 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
           {node.subLabel && (
             <span
               className={cn(
-                "text-slate-600 font-medium font-handwriting min-w-0 flex-1",
-                // モバイルでは折り返し可（横スクロール＝1画面に収まらない原因を解消）。
-                // PC以上では従来通り1行表示にして見た目を維持する。
-                isMobile ? "whitespace-normal break-words leading-tight" : "whitespace-nowrap",
+                // 横スクロールを完全に無くすため、subLabel は常に折り返し可能にする。
+                "text-slate-600 font-medium font-handwriting min-w-0 flex-1 whitespace-normal break-words leading-tight self-center",
                 subLabelSize
               )}
             >
@@ -127,7 +135,7 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
               className="overflow-hidden mt-2 font-handwriting"
             >
               <div 
-                className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200 shadow-inner ml-3 sm:ml-4 mr-3 sm:mr-4 w-full sm:w-[440px] md:w-[520px] lg:w-[620px] xl:w-[760px] 2xl:w-[900px] font-handwriting whitespace-normal break-words box-border"
+                className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200 shadow-inner mr-1 sm:mr-2 w-full font-handwriting whitespace-normal break-words box-border"
                 style={{ maxWidth: dynamicMaxWidth }}
               >
                 {node.explanation && (
@@ -285,7 +293,9 @@ export function InteractiveTree({
 
   return (
     <div className={cn(
-      "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300 font-handwriting min-w-0 overflow-x-auto",
+      // 【横スクロール解消（要件3）】overflow-x-auto を外し、横方向は常に画面幅内に収める。
+      // 縦方向のスクロールだけで全体（ロジックツリー）を俯瞰できるようにする。
+      "w-full bg-slate-50 rounded-2xl border border-slate-200 shadow-inner relative transition-transform duration-300 font-handwriting min-w-0 overflow-x-hidden",
       zoom === 'far' ? "origin-top scale-[0.98]" : "",
       mobileTightCrop ? "p-1 sm:p-2 md:p-3" : "p-2 sm:p-4 md:p-5"
     )}>
@@ -315,9 +325,11 @@ export function InteractiveTree({
         </div>
       </div>
 
-      {/* Tree Container */}
-      <div className="overflow-x-auto pb-4 touch-auto">
-        <div className="min-w-max pr-8">
+      {/* Tree Container
+          横スクロールを無くし、幅は親要素（画面幅）に収める。
+          深い階層のノードも折り返し・縮小して1画面幅内に表示する。 */}
+      <div className="pb-4 w-full min-w-0 overflow-x-hidden">
+        <div className="w-full min-w-0">
           <TreeNode node={data} onSelect={handleSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} depth={0} isMobile={mobileTightCrop} />
         </div>
       </div>
