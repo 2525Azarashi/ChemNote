@@ -644,13 +644,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-50`
     }>
       <div className={isMobile ? "explanation-desktop-content" : (isResultView ? "w-full min-h-full flex flex-col" : "w-full h-full flex flex-col")}>
-        {isMobile && (
-          <div className="explanation-scroll-hint">
-            横にスワイプして全体を確認できます →
-          </div>
-        )}
         <div className={isMobile 
-          ? `w-full rounded-3xl overflow-clip shadow-2xl border font-handwriting relative my-4 md:my-8 ${
+          ? `w-full rounded-3xl overflow-visible shadow-2xl border font-handwriting relative my-4 md:my-8 ${
               mode === 'mini_test' 
                 ? 'bg-white text-gray-800 border-gray-100' 
                 : 'bg-[#0B132B] text-[#E0E1DD] border-[#1C2541]'

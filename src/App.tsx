@@ -419,33 +419,48 @@ export default function App() {
    */
   const handleReviewNote = (note: any) => {
     if (!note) return;
-    const chapterId: string | undefined = note.chapterId;
-    if (!chapterId) {
-      // 章IDが無い古いノートは遷移できないため、単元選択へ誘導。
-      alert('この復習ノートには問題へのリンク情報がありません。単元選択から復習してください。');
+    const allChapters = chemistryData.parts.flatMap(p => p.chapters) as any[];
+
+    // 1) chapterId で章を特定（新しいノート）
+    let chapter = note.chapterId
+      ? allChapters.find(c => c.id === note.chapterId)
+      : undefined;
+
+    // 2) chapterId が無い/一致しない場合は chapterTitle（表示名）で章を特定（古いノート）
+    if (!chapter && note.chapterTitle) {
+      chapter = allChapters.find(
+        c => c.abstractTitle === note.chapterTitle || c.realTitle === note.chapterTitle
+      );
+    }
+
+    // 3) それでも見つからない場合、questionId を全章から検索（最後の手段）
+    if (!chapter && note.questionId) {
+      chapter = allChapters.find(c =>
+        ((c.practiceProblems || []) as any[]).some((q: any) => q.id === note.questionId)
+      );
+    }
+
+    if (!chapter) {
+      alert('この復習ノートに対応する問題が見つかりませんでした。単元選択から復習してください。');
       setAppState('chapters');
       return;
     }
+
     // 練習モードへ切り替え（演習問題を開くため）。
     setAppMode('practice');
 
-    const chapter = chemistryData.parts
-      .flatMap(p => p.chapters)
-      .find(c => (c as any).id === chapterId);
-
-    let questionIndex = 0;
-    if (chapter) {
-      const list: any[] = (chapter as any).practiceProblems || [];
-      if (note.questionId) {
-        const idx = list.findIndex((q: any) => q.id === note.questionId);
-        if (idx >= 0) questionIndex = idx;
-      }
-      if (questionIndex === 0 && typeof note.questionIndex === 'number' && note.questionIndex > 0) {
-        // questionIndex は 1始まりの表示番号 → 0始まりへ変換
-        questionIndex = Math.min(Math.max(0, note.questionIndex - 1), Math.max(0, list.length - 1));
-      }
+    const list: any[] = (chapter.practiceProblems || []) as any[];
+    let questionIndex = -1;
+    if (note.questionId) {
+      questionIndex = list.findIndex((q: any) => q.id === note.questionId);
     }
-    handleSelectChapter(chapterId, questionIndex, false);
+    if (questionIndex < 0 && typeof note.questionIndex === 'number' && note.questionIndex > 0) {
+      // questionIndex は 1始まりの表示番号 → 0始まりへ変換
+      questionIndex = Math.min(note.questionIndex - 1, Math.max(0, list.length - 1));
+    }
+    if (questionIndex < 0) questionIndex = 0;
+
+    handleSelectChapter(chapter.id, questionIndex, false);
   };
 
   const selectedChapter = chemistryData.parts
@@ -518,7 +533,7 @@ export default function App() {
                 resultTotalTimeSec={lastQuizResult?.totalTimeSec}
               />
             )}
-            {appState === 'study_hub' && <StudyHub onBack={() => setAppState('home')} isGuest={isGuest} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
+            {appState === 'study_hub' && <StudyHub onBack={() => setAppState('home')} isGuest={isGuest} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} onReview={handleReviewNote} />}
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('study_hub')} onReview={handleReviewNote} />}
 
             {/* Global Bottom Navigation Footer

@@ -70,7 +70,8 @@ export function NoteDetail({ note, onBack, onReview }: NoteDetailProps) {
     setReviewCount(reviewCount + 1);
   };
 
-  const canReview = !!(onReview && note.chapterId);
+  // 章ID・章名・問題IDのいずれかがあれば、対応する演習問題へ遷移できる。
+  const canReview = !!(onReview && (note.chapterId || note.chapterTitle || note.questionId));
 
   return (
     // 要件5：背景を罫線（ノートの横線）にし、余白を最小化して罫線を画面いっぱいに広げる。
