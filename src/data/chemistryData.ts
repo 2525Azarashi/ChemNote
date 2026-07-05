@@ -7986,6 +7986,406 @@ const findSubQuestion = (chapterId: string, problemId: string, subQuestionId: st
     const sq = findPracticeProblem('c1_2_B', 'q_c1_2_B_5')?.subQuestions?.find((item: any) => item.id === id);
     if (sq) sq.requiresChemicalPalette = true;
   });
+
+  // ============================================================
+  // 化学基礎 2章：物質の構成粒子 設問データ修正パッチ
+  // （添付PDF「原子の構造と電子配置」に基づく修正・新規問題の追加）
+  // 進捗N/7 は各章 practiceProblems[N-1] に対応する。
+  // ============================================================
+
+  // ------------------------------------------------------------
+  // 全体の修正点：電子配置の表記を下付き文字ではなく
+  //   K2L8M1 のように普通の半角数字をそのまま羅列する形に統一する。
+  // ------------------------------------------------------------
+  // 電子配置文字列を「K2L8M1」形式（スペースなし・普通の数字）へ正規化するヘルパー。
+  const toPlainShellConfig = (value: string): string => {
+    if (typeof value !== 'string') return value;
+    // 下付き数字（₀-₉）→ 普通の数字
+    let s = value.replace(/[\u2080-\u2089]/g, (ch) =>
+      String.fromCharCode(ch.charCodeAt(0) - 0x2080 + 0x30)
+    );
+    // 殻記号と数字の間・殻どうしの間のスペースを詰める（例: "K2 L8 M1" → "K2L8M1"）
+    s = s.replace(/([KLMNOPQ])\s*(\d+)/g, '$1$2').replace(/(\d)\s+([KLMNOPQ])/g, '$1$2');
+    return s;
+  };
+
+  // ------------------------------------------------------------
+  // ① 原子の構造と電子配置・元素の周期表 (c2_1)
+  // ------------------------------------------------------------
+  const c2_1 = findPracticeChapter('c2_1');
+  if (c2_1) {
+    // ①-1（進捗1/7 q_c2_1_1）：(オ) は上付き文字（10⁻¹⁰）の入力が必要なため、
+    //   他単元と同じ上付き・下付き文字パレットを表示する。
+    const q211_o = findSubQuestion('c2_1', 'q_c2_1_1', 'q_c2_1_1_o');
+    if (q211_o) {
+      q211_o.requiresChemicalPalette = true;
+      q211_o.acceptedAnswers = Array.from(
+        new Set([...(q211_o.acceptedAnswers || []), '10^-10', '10-10'])
+      );
+    }
+    // (サ) 2n² も上付き入力が必要なので同様にパレットを出す（利便性向上）。
+    const q211_sa = findSubQuestion('c2_1', 'q_c2_1_1', 'q_c2_1_1_sa');
+    if (q211_sa) {
+      q211_sa.requiresChemicalPalette = true;
+      q211_sa.acceptedAnswers = Array.from(
+        new Set([...(q211_sa.acceptedAnswers || []), '2n2', '2n^2'])
+      );
+    }
+
+    // ①-2（進捗2/7 q_c2_1_2）：全角数字でも正解になるようにする。
+    //   → 判定は answerJudge.ts の normalizeAnswer が全角→半角変換を行うため既に対応済み。
+    //   念のため問題文に全角でも可である旨を明記する。
+    const q212 = findPracticeProblem('c2_1', 'q_c2_1_2');
+    if (q212 && !String(q212.text).includes('全角')) {
+      q212.text = String(q212.text).replace(
+        /（中性原子とする）。/,
+        '（中性原子とする）。※数字は半角・全角どちらで入力しても正解になります。'
+      );
+    }
+
+    // ①-3（進捗3/7 q_c2_1_3）：電子配置の答えを K2L8M1 形式（普通の数字の羅列）に統一。
+    const q213 = findPracticeProblem('c2_1', 'q_c2_1_3');
+    if (q213) {
+      q213.text = String(q213.text).replace('（例：Na → K2 L8 M1）', '（例：Na → K2L8M1）');
+      (q213.subQuestions || []).forEach((sq: any) => {
+        const plain = toPlainShellConfig(sq.correctAnswer);
+        const accepted = new Set<string>(sq.acceptedAnswers || []);
+        // 従来のスペース区切り表記も引き続き正解として許容する。
+        if (sq.correctAnswer && sq.correctAnswer !== plain) accepted.add(sq.correctAnswer);
+        sq.correctAnswer = plain;
+        sq.acceptedAnswers = Array.from(accepted);
+      });
+    }
+
+    // ①-5（進捗5/7 q_c2_1_5）：問題を削除する。
+    c2_1.practiceProblems = (c2_1.practiceProblems || []).filter(
+      (problem: any) => problem.id !== 'q_c2_1_5'
+    );
+
+    // ①-new：上記修正を行ったうえで新しい問題を末尾に挿入する。
+    //   PDF ①「原子の構造と電子配置」問2（放射線）・問4（周期表）を出典とする。
+    if (!(c2_1.practiceProblems || []).some((p: any) => p.id === 'q_c2_1_new')) {
+      c2_1.practiceProblems.push({
+        id: 'q_c2_1_new',
+        category: '原子の構造と電子配置・元素の周期表 (問)',
+        text: '【問】 原子の構造・放射線・周期表について、次の問いに答えよ。',
+        subQuestions: [
+          {
+            id: 'q_c2_1_new_1',
+            label: '(1) 原子の直径は原子核の直径のおよそ何倍か（ア〜エから選べ）　ア）10倍　イ）100倍　ウ）1万〜10万倍　エ）1億倍',
+            type: 'multiple_choice',
+            options: ['ア', 'イ', 'ウ', 'エ'],
+            correctAnswer: 'ウ',
+            correctAnswerRate: 80,
+          },
+          {
+            id: 'q_c2_1_new_2',
+            label: '(2) 同位体のうち、放射線を放出して別の原子核に変わるものを特に何というか。',
+            type: 'short_answer',
+            correctAnswer: '放射性同位体',
+            acceptedAnswers: ['ラジオアイソトープ', '放射性同位体（ラジオアイソトープ）'],
+            correctAnswerRate: 75,
+          },
+          {
+            id: 'q_c2_1_new_3',
+            label: '(3) α線の実体は何か（電子／陽子／中性子／ヘリウムの原子核／高エネルギーの電磁波 から選べ）。',
+            type: 'short_answer',
+            correctAnswer: 'ヘリウムの原子核',
+            acceptedAnswers: ['ヘリウム原子核', 'He原子核'],
+            correctAnswerRate: 75,
+          },
+          {
+            id: 'q_c2_1_new_4',
+            label: '(4) β線の実体は何か（同上の群から選べ）。',
+            type: 'short_answer',
+            correctAnswer: '電子',
+            correctAnswerRate: 80,
+          },
+          {
+            id: 'q_c2_1_new_5',
+            label: '(5) 木材中の¹⁴Cの割合が大気中の1/8に減少していた。半減期を5730年とすると、伐採されたのは今から何年前か（単位不要・数値のみ）。',
+            type: 'short_answer',
+            correctAnswer: '17190',
+            correctAnswerRate: 60,
+          },
+          {
+            id: 'q_c2_1_new_6',
+            label: '(6) 常温で液体である元素を2つ、名称で答えよ（1つ目）。',
+            type: 'short_answer',
+            correctAnswer: '水銀',
+            acceptedAnswers: ['臭素'],
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_1_new_7',
+            label: '(7) 常温で液体である元素を2つ、名称で答えよ（2つ目）。',
+            type: 'short_answer',
+            correctAnswer: '臭素',
+            acceptedAnswers: ['水銀'],
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_1_new_8',
+            label: '(8) 1族元素（水素を除く）の総称を答えよ。',
+            type: 'short_answer',
+            correctAnswer: 'アルカリ金属',
+            correctAnswerRate: 80,
+          },
+          {
+            id: 'q_c2_1_new_9',
+            label: '(9) 2族元素の総称を答えよ。',
+            type: 'short_answer',
+            correctAnswer: 'アルカリ土類金属',
+            correctAnswerRate: 75,
+          },
+        ],
+        explanation:
+          '▼ 解答・解説\n(1) ウ。原子の直径（約10⁻¹⁰m）は原子核の直径（約10⁻¹⁴〜10⁻¹⁵m）のおよそ1万〜10万倍。\n(2) 放射性同位体（ラジオアイソトープ）。\n(3) α線＝ヘリウムの原子核（He²⁺の流れ）。\n(4) β線＝電子（の流れ）。\n(5) 1/8 = (1/2)³ なので半減期を3回経過。5730×3 = 17190年前。\n(6)(7) 常温で液体の元素は水銀 Hg と臭素 Br₂。\n(8) アルカリ金属（水素を除く1族）。\n(9) アルカリ土類金属（2族）。',
+        surroundingKnowledge: [],
+        deepDiveTopics: [],
+      });
+    }
+  }
+
+  // ------------------------------------------------------------
+  // ② イオン (c2_2)
+  // ------------------------------------------------------------
+  const c2_2 = findPracticeChapter('c2_2');
+  if (c2_2) {
+    // ②-3（進捗3/7 q_c2_2_3）：結晶の単元の問題である旨を明記する（削除より前に実施）。
+    const q223 = findPracticeProblem('c2_2', 'q_c2_2_3');
+    if (q223 && !String(q223.text).includes('結晶の単元')) {
+      q223.text = String(q223.text).replace(
+        '【問3】 （標準）',
+        '【問3】 （標準）（結晶の単元の問題だが、イオンと関連するので出題）'
+      );
+    }
+
+    // ②-1 / ②-4 / ②-6（進捗1・4・6/7）：問題を削除する。
+    c2_2.practiceProblems = (c2_2.practiceProblems || []).filter(
+      (problem: any) => !['q_c2_2_1', 'q_c2_2_4', 'q_c2_2_6'].includes(problem.id)
+    );
+
+    // ②-new：上記修正を行ったうえで新しい問題を末尾に挿入する。
+    //   PDF ②「イオン」問2（多原子イオンの名称）・問3（イオンの電子数）を出典とする。
+    if (!(c2_2.practiceProblems || []).some((p: any) => p.id === 'q_c2_2_new')) {
+      c2_2.practiceProblems.push({
+        id: 'q_c2_2_new',
+        category: 'イオン (問)',
+        text: '【問】 次の各イオンについて、名称または電子数を答えよ。',
+        subQuestions: [
+          {
+            id: 'q_c2_2_new_1',
+            label: '(1) H₃O⁺ の名称を答えよ。',
+            type: 'short_answer',
+            correctAnswer: 'オキソニウムイオン',
+            acceptedAnswers: ['オキソニウム'],
+            correctAnswerRate: 65,
+          },
+          {
+            id: 'q_c2_2_new_2',
+            label: '(2) CH₃COO⁻ の名称を答えよ。',
+            type: 'short_answer',
+            correctAnswer: '酢酸イオン',
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_2_new_3',
+            label: '(3) HCO₃⁻ の名称を答えよ。',
+            type: 'short_answer',
+            correctAnswer: '炭酸水素イオン',
+            acceptedAnswers: ['炭酸水素イオン（重炭酸イオン）', '重炭酸イオン'],
+            correctAnswerRate: 65,
+          },
+          {
+            id: 'q_c2_2_new_4',
+            label: '(4) K⁺ 1個が持つ電子の数は何個か（数値のみ）。',
+            type: 'short_answer',
+            correctAnswer: '18',
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_2_new_5',
+            label: '(5) Mg²⁺ 1個が持つ電子の数は何個か（数値のみ）。',
+            type: 'short_answer',
+            correctAnswer: '10',
+            correctAnswerRate: 75,
+          },
+          {
+            id: 'q_c2_2_new_6',
+            label: '(6) S²⁻ 1個が持つ電子の数は何個か（数値のみ）。',
+            type: 'short_answer',
+            correctAnswer: '18',
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_2_new_7',
+            label: '(7) NH₄⁺ 1個が持つ電子の数は何個か（数値のみ）。',
+            type: 'short_answer',
+            correctAnswer: '10',
+            correctAnswerRate: 65,
+          },
+        ],
+        explanation:
+          '▼ 解答・解説\n(1) オキソニウムイオン。(2) 酢酸イオン。(3) 炭酸水素イオン。\n多原子イオンの名称と化学式の対応は頻出なので丸暗記が必須。\n(4) K⁺：19-1 = 18個（Arと同じ）。(5) Mg²⁺：12-2 = 10個（Neと同じ）。\n(6) S²⁻：16+2 = 18個（Arと同じ）。(7) NH₄⁺：(7+4×1)-1 = 10個（Neと同じ）。\nイオンは最も近い貴ガスと同じ安定な電子配置になろうとする。',
+        surroundingKnowledge: [],
+        deepDiveTopics: [],
+      });
+    }
+  }
+
+  // ------------------------------------------------------------
+  // ③ イオン生成とエネルギー (c2_3)
+  // ------------------------------------------------------------
+  const c2_3 = findPracticeChapter('c2_3');
+  if (c2_3) {
+    // ③-3 / ③-4 / ③-5 / ③-6（進捗3・4・5・6/7）：問題を削除する。
+    c2_3.practiceProblems = (c2_3.practiceProblems || []).filter(
+      (problem: any) =>
+        !['q_c2_3_3', 'q_c2_3_4', 'q_c2_3_5', 'q_c2_3_6'].includes(problem.id)
+    );
+
+    // ③-new：上記修正を行ったうえで新しい問題を末尾に挿入する。
+    //   PDF ③「イオン化エネルギー」問1（空欄）・問3（グラフ選択）を出典とする。
+    if (!(c2_3.practiceProblems || []).some((p: any) => p.id === 'q_c2_3_new')) {
+      c2_3.practiceProblems.push({
+        id: 'q_c2_3_new',
+        category: 'イオン生成とエネルギー (問)',
+        text:
+          '【問】 イオン化エネルギーと電子親和力について、次の問いに答えよ。\n\n気体状態の原子から電子を1個取り去って1価の陽イオンにするのに必要なエネルギーを（　①　）という。この値が最も大きい元素は（　②　）である。一方、気体状態の原子が電子を1個受け取って1価の陰イオンになるときに放出されるエネルギーを（　③　）という。この値が全元素中で最大となるのは、フッ素ではなく（　④　）である。',
+        subQuestions: [
+          {
+            id: 'q_c2_3_new_1',
+            label: '① 空欄に入る語句を答えよ。',
+            type: 'short_answer',
+            correctAnswer: '(第一)イオン化エネルギー',
+            acceptedAnswers: ['第一イオン化エネルギー', 'イオン化エネルギー', '第1イオン化エネルギー'],
+            correctAnswerRate: 75,
+          },
+          {
+            id: 'q_c2_3_new_2',
+            label: '② 第一イオン化エネルギーが全元素中で最大となる元素を、元素名または元素記号で答えよ。',
+            type: 'short_answer',
+            correctAnswer: 'ヘリウム',
+            acceptedAnswers: ['He', 'ヘリウム（He）'],
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_3_new_3',
+            label: '③ 空欄に入る語句を答えよ。',
+            type: 'short_answer',
+            correctAnswer: '電子親和力',
+            correctAnswerRate: 75,
+          },
+          {
+            id: 'q_c2_3_new_4',
+            label: '④ 電子親和力が全元素中で最大となる元素を、元素名または元素記号で答えよ。',
+            type: 'short_answer',
+            correctAnswer: '塩素',
+            acceptedAnswers: ['Cl', '塩素（Cl）'],
+            correctAnswerRate: 60,
+          },
+          {
+            id: 'q_c2_3_new_5',
+            label: '(2) 原子番号を横軸にとったとき、「貴ガス（18族）で0になる」グラフは、第1イオン化エネルギー・価電子・電子親和力のうちどれか。',
+            type: 'short_answer',
+            correctAnswer: '価電子',
+            acceptedAnswers: ['価電子の数'],
+            correctAnswerRate: 65,
+          },
+        ],
+        explanation:
+          '▼ 解答・解説\n① 第一イオン化エネルギー：小さいほど陽イオンになりやすい。\n② ヘリウム He。第一イオン化エネルギーは周期表の右上ほど大きく、貴ガスの中でも最上部の He が最大。\n③ 電子親和力：大きいほど陰イオンになりやすい。\n④ 塩素 Cl。電子親和力はハロゲン（17族）で大きいが、フッ素は原子半径が小さすぎて電子間の反発が強いため、最大は Cl となる（頻出の例外）。\n(2) 価電子は貴ガス（18族）で0になる。イオン化エネルギーは貴ガスで極大、電子親和力は貴ガスでほぼ0（負）になる点で区別する。',
+        surroundingKnowledge: [],
+        deepDiveTopics: [],
+      });
+    }
+  }
+
+  // ------------------------------------------------------------
+  // ④ 原子の大きさとイオンの大きさ (c2_4)
+  // ------------------------------------------------------------
+  const c2_4 = findPracticeChapter('c2_4');
+  if (c2_4) {
+    // ④-new：新しい問題を末尾に挿入する。
+    //   PDF ④「原子の大きさとイオンの大きさ」問1（空欄穴埋め）を出典とする。
+    if (!(c2_4.practiceProblems || []).some((p: any) => p.id === 'q_c2_4_new')) {
+      c2_4.practiceProblems.push({
+        id: 'q_c2_4_new',
+        category: '原子の大きさとイオンの大きさ (問)',
+        text:
+          '【問】 原子半径・イオン半径の周期的な傾向について、次の各空欄に入る語句を、それぞれの選択肢から選んで答えよ。',
+        subQuestions: [
+          {
+            id: 'q_c2_4_new_a',
+            label: '(ア) 同じ族では、原子番号が大きくなるほど原子半径は（大きく／小さく）なる。',
+            type: 'multiple_choice',
+            options: ['大きく', '小さく'],
+            correctAnswer: '大きく',
+            correctAnswerRate: 75,
+          },
+          {
+            id: 'q_c2_4_new_i',
+            label: '(イ) それは、原子番号が大きくなるにつれて（　）の数が多くなるためである。空欄に入る語句を答えよ。',
+            type: 'short_answer',
+            correctAnswer: '電子殻',
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_4_new_u',
+            label: '(ウ) 同じ周期では、原子番号が大きくなるほど原子半径は（大きく／小さく）なる。',
+            type: 'multiple_choice',
+            options: ['大きく', '小さく'],
+            correctAnswer: '小さく',
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_4_new_e',
+            label: '(エ) それは、原子核中の（　）の数が多くなり電子が強く引き付けられるためである。空欄に入る語句を答えよ。',
+            type: 'short_answer',
+            correctAnswer: '陽子',
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_4_new_o',
+            label: '(オ) 原子が電子を放出して陽イオンになると、もとの原子半径よりも（大きく／小さく）なる。',
+            type: 'multiple_choice',
+            options: ['大きく', '小さく'],
+            correctAnswer: '小さく',
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_4_new_ka',
+            label: '(カ) 原子が電子を受け取って陰イオンになると、もとの原子半径よりも（大きく／小さく）なる。',
+            type: 'multiple_choice',
+            options: ['大きく', '小さく'],
+            correctAnswer: '大きく',
+            correctAnswerRate: 70,
+          },
+          {
+            id: 'q_c2_4_new_ki',
+            label: '(キ) O²⁻, F⁻, Na⁺ のように同じ電子配置のイオンでは、原子番号が（大きい／小さい）ほどイオン半径は小さくなる。',
+            type: 'multiple_choice',
+            options: ['大きい', '小さい'],
+            correctAnswer: '大きい',
+            correctAnswerRate: 60,
+          },
+          {
+            id: 'q_c2_4_new_ku',
+            label: '(ク) それは、電子数が同じでも陽子数が多いほど原子核が電子を引き付ける力が（強く／弱く）なるためである。',
+            type: 'multiple_choice',
+            options: ['強く', '弱く'],
+            correctAnswer: '強く',
+            correctAnswerRate: 65,
+          },
+        ],
+        explanation:
+          '▼ 解答・解説\n(ア) 大きく：同族（縦）は下に行くほど電子殻が増えて原子半径が大きくなる。\n(イ) 電子殻。\n(ウ) 小さく：同周期（横）は右に行くほど陽子が増え、電子がギュッと引き付けられて小さくなる。\n(エ) 陽子。\n(オ) 小さく：陽イオンは最外殻の電子を失うため小さくなる。\n(カ) 大きく：陰イオンは電子が増え、電子間の反発により大きくなる。\n(キ) 大きい：等電子配置では原子番号（=陽子数）が大きいほど核の引力が強く、半径は小さくなる（例：O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺）。\n(ク) 強く。',
+        surroundingKnowledge: [],
+        deepDiveTopics: [],
+      });
+    }
+  }
 })();
 
 export const componentDetectionTreeData = {
