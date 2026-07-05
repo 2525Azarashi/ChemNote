@@ -243,6 +243,43 @@ function cleanQuestionText(text: string): string {
 }
 
 /**
+ * 設問ラベル（例: "問1 (ア)" / "(ア)" / "問3 (1) A"）から、
+ * 問題文中でハイライトすべき「空欄トークン」を推定して返す。
+ * 主に ( ア ) 〜 ( ス ) のような穴埋め記号を対象にする。
+ * 見つからない場合は null を返す（＝ハイライトしない）。
+ */
+function extractBlankToken(label: string): string | null {
+  if (!label) return null;
+  // カッコ内のカタカナ1文字（ア〜ン）や、丸数字・英字1文字などを拾う。
+  // 例: "問1 (ア)" → "ア", "(イ)" → "イ"
+  const kata = label.match(/[（(]\s*([ア-ンア-ヶ])\s*[)）]/);
+  if (kata) return kata[1];
+  return null;
+}
+
+/**
+ * 問題文中に「( ア )」のように空白付きで書かれた空欄と、
+ * 詰めて書かれた「(ア)」の両方に対応するため、ハイライト候補文字列を複数返す。
+ */
+function blankHighlightVariants(token: string): string[] {
+  return [
+    `( ${token} )`,
+    `(${token})`,
+    `（ ${token} ）`,
+    `（${token}）`,
+  ];
+}
+
+/**
+ * short_answer（短答穴埋め）かどうかの判定。
+ * multiple_choice / sorting / descriptive 以外の短答入力を対象にする。
+ */
+function isShortAnswerType(sq: any): boolean {
+  const t = sq?.type;
+  return t !== 'multiple_choice' && t !== 'sorting' && t !== 'descriptive';
+}
+
+/**
  * 化学記号パレット。
  * - カテゴリ別に記号を配置し、ワンタップで入力欄のカーソル位置へ挿入する。
  * - 入力欄の参照を受け取り、選択範囲（カーソル位置）に挿入 → キャレットを更新する。
@@ -360,6 +397,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // New state for layout and highlighting
   const [isProblemExpanded, setIsProblemExpanded] = useState(false);
   const [highlights, setHighlights] = useState<string[]>([]);
+  // 現在フォーカス中の短答穴埋め設問ID（フローティング入力欄・空欄ハイライト用）
+  const [focusedSubId, setFocusedSubId] = useState<string | null>(null);
+  // ソフトキーボードが表示されているか（visualViewport で推定）。
+  // 表示中のみ、短答穴埋め用のフローティング入力バーを画面下部に出す。
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   // Score animation state
@@ -416,13 +458,25 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionIndex]);
 
-  // Prevent zoom/pinch out during active quiz, but allow on explanations
+  // Prevent zoom/pinch out during active quiz, but allow on explanations.
+  //
+  // 【ズーム不具合の修正（要件2）】
+  // 解説表示に切り替わる瞬間、直前の（クイズ回答中の）ズーム倍率が残ったまま
+  // 拡大許可へ切り替わると、意図せず拡大された状態で解説が表示されてしまう。
+  // これを避けるため、解説へ移る際は一旦 scale=1.0 固定でズーム状態を初期化し、
+  // スクロール位置も最上部へ戻してから、次フレームでピンチズームを許可する。
   useEffect(() => {
     const meta = document.querySelector('meta[name="viewport"]');
     const originalContent = meta?.getAttribute('content') || '';
     if (meta) {
       if (showingExplanation) {
-        meta.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
+        // まず scale=1.0 に固定してズームをリセット
+        meta.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+        window.scrollTo(0, 0);
+        // 次フレームで閲覧用のピンチズームを許可
+        requestAnimationFrame(() => {
+          meta.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
+        });
       } else {
         meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
       }
@@ -440,6 +494,39 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       window.scrollTo(0, 0);
     }
   }, [currentQuestionIndex, showingExplanation]);
+
+  // ソフトキーボードの表示/非表示を visualViewport の高さ変化で推定する。
+  // キーボードが閉じたら、フローティング入力欄も閉じて「問題文全体＋入力欄」を
+  // 同時に見られる通常表示に戻す（要件1）。
+  useEffect(() => {
+    const vv = (window as any).visualViewport as VisualViewport | undefined;
+    if (!vv) return;
+    // 初期のフル高さ。キーボード表示で vv.height はこれより小さくなる。
+    const baseline = () => Math.max(vv.height, window.innerHeight || 0);
+    let base = baseline();
+    const onResize = () => {
+      const full = Math.max(base, window.innerHeight || 0);
+      // 可視領域が 15% 以上縮んだらキーボード表示とみなす。
+      const shrink = full - vv.height;
+      const visible = shrink > full * 0.15;
+      setKeyboardVisible(visible);
+      if (!visible) {
+        // キーボードが閉じたらフォーカス状態も解除（通常表示へ）
+        setFocusedSubId(null);
+      }
+    };
+    vv.addEventListener('resize', onResize);
+    vv.addEventListener('scroll', onResize);
+    return () => {
+      vv.removeEventListener('resize', onResize);
+      vv.removeEventListener('scroll', onResize);
+    };
+  }, []);
+
+  // 問題が切り替わったらフォーカス・キーボード状態をリセット
+  useEffect(() => {
+    setFocusedSubId(null);
+  }, [currentQuestionIndex]);
 
   const handleTextSelection = () => {
     const selection = window.getSelection();
@@ -521,6 +608,90 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     });
     return list;
   }, [currentQuestion]);
+
+  // ────────────────────────────────────────────────────────────────
+  // 要件1（解答入力方式）／要件4（化学記号パレットの出し分け）用の派生値
+  // ────────────────────────────────────────────────────────────────
+
+  // この問題に含まれる「短答穴埋め（short_answer）」の設問リスト。
+  // フローティング入力バーの 前へ/次へ ナビゲーションで使う。
+  const shortAnswerSubs = useMemo(() => {
+    if (!currentQuestion) return [] as any[];
+    return (currentQuestion.subQuestions || []).filter((sq: any) => isShortAnswerType(sq));
+  }, [currentQuestion]);
+
+  // インライン穴埋め（問題文中に入力欄を埋め込む）モードを使うか。
+  // データ側で inlineBlanks が明示され、かつ短答穴埋めが存在する場合のみ有効。
+  const useInlineBlanks = useMemo(() => {
+    if (!currentQuestion) return false;
+    if (!(currentQuestion as any).inlineBlanks) return false;
+    return shortAnswerSubs.length > 0;
+  }, [currentQuestion, shortAnswerSubs]);
+
+  // この問題に化学記号パレットが必要か（要件4）。
+  // いずれかの設問、または問題文自体が化学式・イオン・元素記号を要するなら true。
+  const questionNeedsChemPalette = useMemo(() => {
+    if (!currentQuestion) return false;
+    const subs = currentQuestion.subQuestions || [];
+    return (
+      subs.some((sq: any) => requiresChemicalSymbols(sq, sq.correctAnswer)) ||
+      requiresChemicalSymbols(currentQuestion as any)
+    );
+  }, [currentQuestion]);
+
+  // 現在フォーカス中の穴埋め設問に対応する、問題文中のハイライト候補文字列。
+  const focusHighlightVariants = useMemo(() => {
+    if (!focusedSubId || !currentQuestion) return [] as string[];
+    const sub = (currentQuestion.subQuestions || []).find((sq: any) => sq.id === focusedSubId);
+    if (!sub) return [] as string[];
+    const token = extractBlankToken(sub.label || '');
+    if (!token) return [] as string[];
+    return blankHighlightVariants(token);
+  }, [focusedSubId, currentQuestion]);
+
+  // ユーザー選択のハイライトと、フォーカス穴埋めのハイライトを結合。
+  const combinedHighlights = useMemo(
+    () => Array.from(new Set([...highlights, ...focusHighlightVariants])),
+    [highlights, focusHighlightVariants]
+  );
+
+  // 現在フォーカス中の短答設問オブジェクト。
+  const focusedSub = useMemo(() => {
+    if (!focusedSubId) return null;
+    return shortAnswerSubs.find((sq: any) => sq.id === focusedSubId) || null;
+  }, [focusedSubId, shortAnswerSubs]);
+
+  // shortAnswerSubs 内での現在フォーカスのインデックス（前へ/次へ判定用）。
+  const focusedIndex = useMemo(() => {
+    if (!focusedSubId) return -1;
+    return shortAnswerSubs.findIndex((sq: any) => sq.id === focusedSubId);
+  }, [focusedSubId, shortAnswerSubs]);
+
+  /**
+   * フローティング入力バーの 前へ/次へ で、フォーカスする短答設問を移動する。
+   * dir=-1 で前、dir=1 で次。移動後は該当入力欄へ実フォーカスも移す。
+   */
+  const moveFocus = (dir: -1 | 1) => {
+    if (shortAnswerSubs.length === 0) return;
+    let idx = focusedIndex;
+    if (idx < 0) idx = 0;
+    else idx = Math.min(shortAnswerSubs.length - 1, Math.max(0, idx + dir));
+    const target = shortAnswerSubs[idx];
+    if (!target) return;
+    setFocusedSubId(target.id);
+    requestAnimationFrame(() => {
+      const el = inputRefs.current[target.id];
+      if (el) {
+        el.focus();
+        try {
+          const len = (el.value || '').length;
+          (el as any).setSelectionRange?.(len, len);
+        } catch {
+          /* noop */
+        }
+      }
+    });
+  };
 
   /**
    * 現在の問題を採点して run state を更新する。
@@ -854,7 +1025,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             title="テキストを選択するとハイライトできます"
           >
             <div className="max-w-prose md:max-w-none">
-              {formatText(cleanQuestionText(currentQuestion.text), highlights)}
+              {formatText(cleanQuestionText(currentQuestion.text), combinedHighlights)}
               {currentQuestion.text.includes('図6') && (
                 <div className="mt-4">
                   <IonizationEnergyChart showDetails={false} />
@@ -899,7 +1070,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             type="text"
                             value={answers[sq.id] || ''}
                             onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                            onFocus={handleInputFocusScroll}
+                            onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
                             placeholder="..."
                             className="w-full py-1 text-center text-sm font-bold text-stone-800 border-none outline-none focus:ring-0 leading-none bg-transparent"
                           />
@@ -1061,8 +1232,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             ref={(el) => { inputRefs.current[sq.id] = el; }}
                             value={answers[sq.id] || ''}
                             onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                            onFocus={handleInputFocusScroll}
-                            placeholder="解答を入力..."
+                            onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
+                            placeholder="解答を入力...（改行可）"
                             rows={3}
                             className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
                           />
@@ -1086,7 +1257,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             type="text"
                             value={answers[sq.id] || ''}
                             onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                            onFocus={handleInputFocusScroll}
+                            onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
                             placeholder="解答を入力..."
                             className="w-full pl-9 pr-4 py-2.5 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
                           />
@@ -1133,6 +1304,102 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           </div>
         </div>
       </div>
+
+      {/*
+        フローティング解答バー（要件1・スマホのみ）
+        ─────────────────────────────────────────────
+        ソフトキーボード表示中に、フォーカス中の設問の入力欄を画面下部に
+        浮かせて表示する。1問ずつ集中して回答でき、前へ/次へで穴埋めを移動できる。
+        - 短答穴埋め（short_answer）: 1行の入力欄
+        - 記述/計算（descriptive）: 複数行の textarea（改行可・数式UIなし）
+        - 化学記号パレットは questionNeedsChemPalette かつ当該設問が
+          記号入力を要する場合のみ表示（要件4）。
+      */}
+      {!isDesktop && keyboardVisible && focusedSub && (
+        <div
+          className="fixed left-0 right-0 z-[60] bg-white border-t-2 border-[#A9CCE3]/60 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] px-3 pt-2.5 pb-[calc(0.5rem+env(safe-area-inset-bottom))]"
+          style={{ bottom: 0 }}
+        >
+          <div className="max-w-2xl mx-auto flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-bold text-[#2C3E50] text-xs bg-blue-50/60 border border-[#A9CCE3]/40 px-2.5 py-1 rounded-lg truncate">
+                {focusedSub.label}
+              </span>
+              {shortAnswerSubs.length > 1 && isShortAnswerType(focusedSub) && (
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => moveFocus(-1)}
+                    disabled={focusedIndex <= 0}
+                    className={`flex items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+                      focusedIndex <= 0
+                        ? 'border-gray-200 text-gray-300 bg-gray-50'
+                        : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
+                    }`}
+                  >
+                    <ChevronLeft size={14} className="stroke-[2.5]" />
+                    前へ
+                  </button>
+                  <span className="text-[11px] text-gray-400 font-bold tabular-nums">
+                    {focusedIndex + 1}/{shortAnswerSubs.length}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => moveFocus(1)}
+                    disabled={focusedIndex >= shortAnswerSubs.length - 1}
+                    className={`flex items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+                      focusedIndex >= shortAnswerSubs.length - 1
+                        ? 'border-gray-200 text-gray-300 bg-gray-50'
+                        : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
+                    }`}
+                  >
+                    次へ
+                    <ChevronRight size={14} className="stroke-[2.5]" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {focusedSub.type === 'descriptive' ? (
+              <textarea
+                value={answers[focusedSub.id] || ''}
+                onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
+                placeholder="解答を入力...（改行可）"
+                rows={2}
+                autoFocus
+                className="w-full px-3 py-2 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none resize-none font-modern bg-gray-50 focus:bg-white leading-relaxed"
+              />
+            ) : (
+              <input
+                type="text"
+                value={answers[focusedSub.id] || ''}
+                onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
+                placeholder="解答を入力..."
+                autoFocus
+                enterKeyHint={focusedIndex >= shortAnswerSubs.length - 1 ? 'done' : 'next'}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && isShortAnswerType(focusedSub)) {
+                    e.preventDefault();
+                    if (focusedIndex < shortAnswerSubs.length - 1) moveFocus(1);
+                  }
+                }}
+                className="w-full px-3 py-2.5 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none font-modern bg-gray-50 focus:bg-white leading-relaxed"
+              />
+            )}
+
+            {/* 化学記号パレット（要件4：必要な問題のみ表示） */}
+            {questionNeedsChemPalette && requiresChemicalSymbols(focusedSub, focusedSub.correctAnswer) && (
+              <div className="max-h-[28vh] overflow-y-auto">
+                <ChemistryPalette
+                  value={answers[focusedSub.id] || ''}
+                  onChange={(next) => handleTextChange(focusedSub.id, next)}
+                  inputRef={getInputRef(focusedSub.id)}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Save, Trash2, Star, RotateCw, Tag } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Star, RotateCw, Tag, PenLine } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
 
 interface NoteDetailProps {
   note: any;
   onBack: () => void;
+  /** 問題項目をタップしたときに、対応する演習問題へ遷移する（要件5） */
+  onReview?: (note: any) => void;
 }
 
-export function NoteDetail({ note, onBack }: NoteDetailProps) {
+export function NoteDetail({ note, onBack, onReview }: NoteDetailProps) {
   const [memo, setMemo] = useState(note.memo || '');
   const [saving, setSaving] = useState(false);
   const [isImportant, setIsImportant] = useState(note.isImportant || false);
@@ -68,16 +70,28 @@ export function NoteDetail({ note, onBack }: NoteDetailProps) {
     setReviewCount(reviewCount + 1);
   };
 
+  const canReview = !!(onReview && note.chapterId);
+
   return (
-    <div className="w-full space-y-6 p-4 md:p-8 bg-[#FDFBF7] min-h-screen font-handwriting">
-      <button onClick={onBack} className="flex items-center gap-2 text-[#2C3E50] font-bold">
-        <ArrowLeft size={20} /> 戻る
-      </button>
-      
-      {/* Original Note UI */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#A9CCE3] space-y-4">
-        {(note.chapterTitle || note.questionIndex) && (
-          <div className="flex flex-wrap items-center gap-2 mb-2">
+    // 要件5：背景を罫線（ノートの横線）にし、余白を最小化して罫線を画面いっぱいに広げる。
+    // すべての文字を手書き風フォント（font-handwriting）で表示する。
+    <div className="w-full min-h-screen notebook-paper font-handwriting text-[#2C3E50]">
+      <div className="px-3 pt-4 pb-24 md:px-6 space-y-5">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#2C3E50] font-bold">
+          <ArrowLeft size={20} /> 戻る
+        </button>
+
+        {/* 問題カード：タップで対応する演習問題へ遷移（要件5） */}
+        <div
+          role={canReview ? 'button' : undefined}
+          tabIndex={canReview ? 0 : undefined}
+          onClick={canReview ? () => onReview!(note) : undefined}
+          onKeyDown={canReview ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onReview!(note); } } : undefined}
+          className={`bg-white/70 p-5 rounded-2xl border border-[#A9CCE3] space-y-4 transition-all ${
+            canReview ? 'cursor-pointer hover:bg-white hover:shadow-md hover:border-[#2C3E50]/40 active:scale-[0.995]' : ''
+          }`}
+        >
+          <div className="flex flex-wrap items-center gap-2 mb-1">
             {note.chapterTitle && (
               <span className="bg-[#A9CCE3]/20 text-[#2C3E50] px-3 py-1 rounded-full text-xs font-bold border border-[#A9CCE3]/50">
                 {note.chapterTitle}
@@ -88,29 +102,42 @@ export function NoteDetail({ note, onBack }: NoteDetailProps) {
                 第{note.questionIndex}問
               </span>
             )}
+            {canReview && (
+              <span className="ml-auto flex items-center gap-1 text-[#2C3E50] text-xs font-bold bg-[#A9CCE3]/25 px-3 py-1 rounded-full border border-[#A9CCE3]/60">
+                <PenLine size={13} /> タップして復習
+              </span>
+            )}
           </div>
-        )}
-        <div className="text-sm md:text-base text-gray-800 font-modern leading-relaxed">
-          {formatText(note.question)}
-        </div>
-        <div className="text-sm text-gray-800 space-y-3 font-modern mt-6 pt-6 border-t border-gray-100">
-          <div>
-            <strong className="text-[#2C3E50] mb-1 block">解答:</strong>
-            <div className="bg-gray-50 p-3 rounded-xl border border-gray-200">
-              {formatText(note.answer)}
+          <div className="text-base md:text-lg leading-loose">
+            {formatText(note.question)}
+          </div>
+          <div className="text-sm md:text-base space-y-3 mt-4 pt-4 border-t border-gray-200/70">
+            <div>
+              <strong className="text-[#2C3E50] mb-1 block">解答:</strong>
+              <div className="bg-gray-50/70 p-3 rounded-xl border border-gray-200 leading-relaxed">
+                {formatText(note.answer)}
+              </div>
+            </div>
+            <div>
+              <strong className="text-[#2C3E50] mb-1 block">解説:</strong>
+              <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100 whitespace-pre-wrap leading-relaxed">
+                {formatText(note.explanation)}
+              </div>
             </div>
           </div>
-          <div>
-            <strong className="text-[#2C3E50] mb-1 block">解説:</strong>
-            <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100 whitespace-pre-wrap">
-              {formatText(note.explanation)}
-            </div>
-          </div>
+          {canReview && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onReview!(note); }}
+              className="w-full mt-2 flex items-center justify-center gap-2 px-5 py-3 bg-[#2C3E50] text-white rounded-xl font-bold hover:bg-[#1B2631] transition-colors"
+            >
+              <PenLine size={18} /> この問題を解き直す
+            </button>
+          )}
         </div>
-      </div>
 
       {/* Learning Support Features */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#A9CCE3] space-y-4">
+      <div className="bg-white/70 p-5 rounded-2xl border border-[#A9CCE3] space-y-4">
         <h3 className="font-bold text-[#2C3E50] text-lg">学習サポート</h3>
         
         {/* Important Flag */}
@@ -170,20 +197,20 @@ export function NoteDetail({ note, onBack }: NoteDetailProps) {
               onChange={(e) => setTagInput(e.target.value)}
               onKeyPress={handleAddTag}
               placeholder="タグを入力してEnter（例：弱点、計算、頻出）"
-              className="w-full p-2 rounded-lg border border-purple-300 text-sm font-modern"
+              className="w-full p-2 rounded-lg border border-purple-300 text-sm font-handwriting"
             />
           </div>
         </div>
       </div>
 
       {/* Memo Section */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#A9CCE3] space-y-4">
+      <div className="bg-white/70 p-5 rounded-2xl border border-[#A9CCE3] space-y-4">
         <h3 className="font-bold text-[#2C3E50] text-lg">個人ノート</h3>
         <textarea
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
           placeholder="メモを入力..."
-          className="w-full p-4 rounded-xl border-2 border-[#A9CCE3] bg-white h-32 font-handwriting"
+          className="w-full p-4 rounded-xl border-2 border-[#A9CCE3] bg-white/80 h-32 font-handwriting leading-loose"
         />
         <div className="flex gap-4">
           <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-6 py-3 bg-[#2C3E50] text-white rounded-xl font-bold hover:bg-[#1B2631]">
@@ -193,6 +220,7 @@ export function NoteDetail({ note, onBack }: NoteDetailProps) {
             <Trash2 size={20} /> 削除
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

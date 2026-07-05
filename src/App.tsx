@@ -412,6 +412,42 @@ export default function App() {
     setSelectedChapterId(null);
   };
 
+  /**
+   * 学習ノートの問題項目から、対応する演習問題へ遷移する（要件5）。
+   * ノートに保存された chapterId / questionId を優先して問題位置を特定し、
+   * 見つからなければ questionIndex（1始まり表示番号）でフォールバックする。
+   */
+  const handleReviewNote = (note: any) => {
+    if (!note) return;
+    const chapterId: string | undefined = note.chapterId;
+    if (!chapterId) {
+      // 章IDが無い古いノートは遷移できないため、単元選択へ誘導。
+      alert('この復習ノートには問題へのリンク情報がありません。単元選択から復習してください。');
+      setAppState('chapters');
+      return;
+    }
+    // 練習モードへ切り替え（演習問題を開くため）。
+    setAppMode('practice');
+
+    const chapter = chemistryData.parts
+      .flatMap(p => p.chapters)
+      .find(c => (c as any).id === chapterId);
+
+    let questionIndex = 0;
+    if (chapter) {
+      const list: any[] = (chapter as any).practiceProblems || [];
+      if (note.questionId) {
+        const idx = list.findIndex((q: any) => q.id === note.questionId);
+        if (idx >= 0) questionIndex = idx;
+      }
+      if (questionIndex === 0 && typeof note.questionIndex === 'number' && note.questionIndex > 0) {
+        // questionIndex は 1始まりの表示番号 → 0始まりへ変換
+        questionIndex = Math.min(Math.max(0, note.questionIndex - 1), Math.max(0, list.length - 1));
+      }
+    }
+    handleSelectChapter(chapterId, questionIndex, false);
+  };
+
   const selectedChapter = chemistryData.parts
     .flatMap(p => p.chapters)
     .find(c => (c as any).id === selectedChapterId);
@@ -483,7 +519,7 @@ export default function App() {
               />
             )}
             {appState === 'study_hub' && <StudyHub onBack={() => setAppState('home')} isGuest={isGuest} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} />}
-            {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('study_hub')} />}
+            {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('study_hub')} onReview={handleReviewNote} />}
 
             {/* Global Bottom Navigation Footer
                 日本語ラベル化（ホーム／学習／設定）＋aria-labelをaria-currentで現在地を明示
