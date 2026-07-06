@@ -76,6 +76,24 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
     : `calc(100% - ${totalIndentDesktop}px)`;
 
   if (node.isGroup) {
+    // Detect the redundant outer wrapper group (e.g. "重要事項⑦ 工業的製法（Al・Fe・Cu）").
+    // Such a wrapper only exists to bundle the Step1/Step2/Step3 cards together, and its
+    // label duplicates the chapter title / heading shown at the top of the page.
+    // In that case we drop the outer box + label pill and render the Step group cards
+    // directly, so the hierarchy stays a flat "中項目 → Step カード" without double nesting.
+    const childrenAllGroups = !!node.children && node.children.length > 0 && node.children.every(c => c.isGroup);
+    const isRedundantWrapper = node.label?.startsWith('重要事項') || (childrenAllGroups && (node.step === null || node.step === undefined));
+
+    if (isRedundantWrapper) {
+      return (
+        <div className="flex flex-col gap-2 mb-1 font-handwriting">
+          {node.children?.map(child => (
+            <TreeNode key={child.id} node={child} onSelect={onSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} depth={depth} isMobile={isMobile} />
+          ))}
+        </div>
+      );
+    }
+
     const groupBg = node.step === 1 ? 'bg-orange-50/50 border-orange-200' : node.step === 2 ? 'bg-emerald-50/50 border-emerald-200' : node.step === 3 ? 'bg-blue-50/50 border-blue-200' : 'bg-purple-50/50 border-purple-200';
     const groupText = node.step === 1 ? 'text-orange-800' : node.step === 2 ? 'text-emerald-800' : node.step === 3 ? 'text-blue-800' : 'text-purple-800';
     return (
