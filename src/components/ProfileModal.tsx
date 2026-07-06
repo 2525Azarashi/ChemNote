@@ -82,7 +82,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#FDFBF7] font-modern pb-32">
+    <div className="w-full min-h-screen bg-[#FDFBF7] font-handwriting pb-32">
       <div className="max-w-2xl mx-auto px-4 py-6 md:py-8 relative">
         {/* Background Decor */}
         <div className="absolute top-10 right-4 w-40 h-40 bg-[#A9CCE3]/15 rounded-full blur-3xl pointer-events-none"></div>
@@ -142,7 +142,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="ニックネーム"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white shadow-xs focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all text-sm font-bold"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white shadow-xs focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all text-sm font-bold font-modern"
               />
             </div>
 
@@ -155,7 +155,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
                 placeholder="学年（例：高校1年 など）"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white shadow-xs focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all text-sm font-bold"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white shadow-xs focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all text-sm font-bold font-modern"
               />
             </div>
 
@@ -166,7 +166,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
               <select
                 value={stream}
                 onChange={(e) => setStream(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-transparent outline-none transition-all text-sm font-bold appearance-none cursor-pointer"
+                className="w-full pl-10 pr-4 py-3 bg-transparent outline-none transition-all text-sm font-bold appearance-none cursor-pointer font-modern"
               >
                 <option value="science">理系（化学・物理など）</option>
                 <option value="humanities">文系（社会・国語など）</option>

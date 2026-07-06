@@ -73,7 +73,7 @@ export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRa
 
   if (isGuest) {
     return (
-      <div className="mt-4 rounded-2xl border border-[#F4D03F]/50 bg-[#F4D03F]/15 p-4 text-sm font-bold text-[#1B2631]">
+      <div className="mt-4 rounded-2xl border border-[#F4D03F]/50 bg-[#F4D03F]/15 p-4 text-sm font-bold text-[#1B2631] font-handwriting">
         Googleログインすると、結果がランキングに反映されます。
       </div>
     );
@@ -81,7 +81,7 @@ export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRa
 
   if (loading) {
     return (
-      <div className="mt-4 rounded-2xl border border-gray-200 bg-white/70 p-4 text-sm text-gray-500">
+      <div className="mt-4 rounded-2xl border border-gray-200 bg-white/70 p-4 text-sm text-gray-500 font-handwriting">
         ランキングを読み込み中...
       </div>
     );
@@ -103,7 +103,7 @@ export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRa
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="mt-6 rounded-2xl border-2 border-[#A9CCE3]/60 bg-gradient-to-br from-[#E8F4FD] to-[#FFF8E1] p-4 shadow-lg md:p-6"
+        className="mt-6 rounded-2xl border-2 border-[#A9CCE3]/60 bg-gradient-to-br from-[#E8F4FD] to-[#FFF8E1] p-4 shadow-lg md:p-6 font-handwriting"
       >
         <div className="mb-4 flex items-center gap-2 md:mb-6">
           <Trophy className="h-5 w-5 text-yellow-600 md:h-6 md:w-6" />
