@@ -145,6 +145,16 @@ export default function App() {
   const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
   const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
 
+  // 解答解説ページ専用のスマホ判定。
+  // 【スクロール不具合の修正】
+  // 従来は Explanation に isMobileView={false} を固定で渡していたため、
+  // 実機スマホでも常に「PC版レイアウト（fixed + overflow-hidden）」で描画され、
+  // 縦スクロールできず下部の要素（間違えた問題など）が見られない不具合があった。
+  // 解説ページは shouldForceDesktopUI（＝解説中は常に true）に引きずられないよう、
+  // 純粋に「スマホ端末 or スマホプレビュー枠」かどうかだけで判定する。
+  // ただしユーザーが手動で「PC表示」に切り替えている場合（forceDesktop）は尊重する。
+  const isMobileExplanation = (isMobileDevice || isMobilePreview) && !forceDesktop;
+
   // PC版では「学習モードを選択」(mode_selection) 以外の全画面で外側余白をなくし、
   // ノート風背景を全幅に広げる。mode_selection だけは従来通り中央寄せ＋余白を維持。
   const isFullBleed = appState !== 'mode_selection';
@@ -526,7 +536,7 @@ export default function App() {
                 answers={quizAnswers}
                 onBack={handleBackToChapters}
                 isGuest={isGuest}
-                isMobileView={false}
+                isMobileView={isMobileExplanation}
                 resultTotalScore={lastQuizResult?.totalScore}
                 resultTotalCorrect={lastQuizResult?.totalCorrect}
                 resultTotalJudgeable={lastQuizResult?.totalJudgeable}

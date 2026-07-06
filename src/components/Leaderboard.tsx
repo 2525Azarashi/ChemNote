@@ -102,7 +102,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
   const me = auth.currentUser;
 
   return (
-    <div className="w-full min-h-screen bg-[#FDFBF7] font-modern pb-32">
+    <div className="w-full min-h-screen bg-[#FDFBF7] font-handwriting pb-32">
       <div className="max-w-3xl mx-auto px-4 py-6 md:py-8 relative">
         <div className="absolute top-10 right-4 w-40 h-40 bg-[#F4D03F]/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-20 left-4 w-48 h-48 bg-[#A9CCE3]/15 rounded-full blur-3xl pointer-events-none" />
@@ -147,7 +147,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
             <select
               value={chapterId}
               onChange={(e) => setChapterId(e.target.value)}
-              className="w-full px-3 py-2 bg-transparent outline-none text-sm font-bold text-[#1B2631] cursor-pointer"
+              className="w-full px-3 py-2 bg-transparent outline-none text-sm font-bold text-[#1B2631] cursor-pointer font-modern"
             >
               {allChapters.map((c) => (
                 <option key={c.id} value={c.id}>

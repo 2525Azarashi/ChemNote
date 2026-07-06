@@ -96,7 +96,7 @@ export function FriendPanel() {
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
           placeholder="MNTB-XXXX-XXXX"
-          className="flex-1 px-3 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#A9CCE3] outline-none text-sm font-bold"
+          className="flex-1 px-3 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#A9CCE3] outline-none text-sm font-bold font-modern"
         />
         <button
           onClick={async () => {

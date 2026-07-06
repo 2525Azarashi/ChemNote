@@ -17,7 +17,7 @@ import {
 import { submitChapterScore } from '../utils/leaderboard';
 import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
-import { useIsDesktop } from '../hooks/useMediaQuery';
+import { useIsDesktop, useIsMobile } from '../hooks/useMediaQuery';
 import { auth } from '../firebase';
 
 interface QuizProps {
@@ -429,6 +429,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // スマホ/PC判定は共有フックに一元化（lg=1024px 以上をPCとみなす）。
   // isMobileView が渡された場合（スマホプレビュー枠）はそれを優先する。
   const isDesktop = useIsDesktop(isMobileView !== undefined ? !isMobileView : undefined);
+  // 解答解説ページに渡すスマホ判定。
+  // 【スクロール不具合の修正】従来は Explanation に isMobileView={false} を固定で
+  // 渡していたため、実機スマホでも解説がPC版レイアウト（overflow-hidden）で描画され、
+  // 縦スクロールできない不具合があった。ここでスマホ判定を正しく引き渡す。
+  const isMobileForExplanation = useIsMobile(isMobileView);
 
   // 直前に表示していた問題のインデックスを保持（離脱した問題の回答リセット用）
   const prevQuestionIndexRef = useRef(currentQuestionIndex);
@@ -955,7 +960,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           singleQuestionIndex={currentQuestionIndex}
           onNextQuestion={handleNext}
           isLastQuestion={isLastQuestion}
-          isMobileView={false}
+          isMobileView={isMobileForExplanation}
           scoreBreakdown={stored || null}
           scoreMeta={stored ? { timeLimit: stored.timeLimit, timeUsed: stored.timeUsed } : null}
           totalScore={run.totalScore}
@@ -1103,8 +1108,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           </div>
         </div>
 
-        {/* Section 2: Answers Area (Scrollable) */}
-        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-8 relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
+        {/* Section 2: Answers Area
+            スマホ（!isDesktop）では、下部の「前へ / 解答と解説を見る」ナビゲーションを
+            画面下に固定バーとして常時表示する（要件1）。そのぶん、解答欄の内容が
+            固定バーに隠れないよう下部余白を大きめに確保する。
+            ページ全体は fixed inset-0 + overflow-hidden で固定され、スワイプ/ページ
+            スクロールでの問題送りは発生しない。問題送りは固定バーの前へ/次へのみ。 */}
+        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 ${isDesktop ? 'pb-8' : 'pb-[calc(6rem+env(safe-area-inset-bottom))]'} relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
             {groupedSubQuestions.map((g: any, gIdx: number) => {
@@ -1333,32 +1343,77 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               );
             })}
 
-            {/* Answer submission action button and back button at the bottom of the answers column */}
-            <div className="pt-6 border-t border-gray-200/60 flex items-center justify-between gap-3">
-              <button
-                onClick={handlePrevious}
-                disabled={currentQuestionIndex === 0}
-                title="前の問題へ（←キー）"
-                aria-label="前の問題へ"
-                className={`flex items-center justify-center p-2.5 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer
-                  ${currentQuestionIndex === 0 
-                    ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50' 
-                    : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white bg-white shadow-sm'}`}
-              >
-                <ChevronLeft size={16} className="stroke-[2.5]" aria-hidden="true" />
-              </button>
+            {/* Answer submission action button and back button at the bottom of the answers column
+                （PC版のみ：解答欄カラムの末尾にインライン表示。
+                　スマホ版では下部固定ナビゲーションバーに置き換える＝要件1） */}
+            {isDesktop && (
+              <div className="pt-6 border-t border-gray-200/60 flex items-center justify-between gap-3">
+                <button
+                  onClick={handlePrevious}
+                  disabled={currentQuestionIndex === 0}
+                  title="前の問題へ（←キー）"
+                  aria-label="前の問題へ"
+                  className={`flex items-center justify-center p-2.5 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer
+                    ${currentQuestionIndex === 0 
+                      ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50' 
+                      : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white bg-white shadow-sm'}`}
+                >
+                  <ChevronLeft size={16} className="stroke-[2.5]" aria-hidden="true" />
+                </button>
 
-              <button
-                onClick={handleNext}
-                className="flex shadow-md hover:shadow-lg hover:-translate-y-0.5 items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 text-xs md:text-sm bg-[#2C3E50] text-white hover:bg-[#1B2631] flex-1 sm:flex-none sm:w-[180px] cursor-pointer"
-              >
-                <span>解答と解説を見る</span>
-                <ChevronRight size={14} className="stroke-[2.5]" />
-              </button>
-            </div>
+                <button
+                  onClick={handleNext}
+                  className="flex shadow-md hover:shadow-lg hover:-translate-y-0.5 items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 text-xs md:text-sm bg-[#2C3E50] text-white hover:bg-[#1B2631] flex-1 sm:flex-none sm:w-[180px] cursor-pointer"
+                >
+                  <span>解答と解説を見る</span>
+                  <ChevronRight size={14} className="stroke-[2.5]" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/*
+        スマホ版・下部固定ナビゲーションバー（要件1）
+        ─────────────────────────────────────────────
+        「前へ」「解答と解説を見る（次へ）」ボタンを画面下部に固定表示する。
+        - 解答欄の内容量に関わらず常に同じ位置に表示され、位置ズレしない。
+        - 問題の移動はこのボタンのみで行う（スワイプ／ページスクロールでの
+          問題送りは実装しない。ページ自体は fixed + overflow-hidden で固定）。
+        - 問題文の全画面表示中（isProblemExpanded）は非表示。
+        - ソフトキーボード表示中（keyboardVisible）は、穴埋め移動用の
+          フローティング解答バーを優先するため非表示にして重なりを防ぐ。
+      */}
+      {!isDesktop && !isProblemExpanded && !(keyboardVisible && focusedSub) && (
+        <div
+          className="fixed left-0 right-0 bottom-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.10)] px-3 pt-2.5 pb-[calc(0.6rem+env(safe-area-inset-bottom))]"
+        >
+          <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
+            <button
+              onClick={handlePrevious}
+              disabled={currentQuestionIndex === 0}
+              title="前の問題へ"
+              aria-label="前の問題へ"
+              className={`flex items-center justify-center p-3 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer
+                ${currentQuestionIndex === 0
+                  ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50'
+                  : 'border-[#A9CCE3] text-[#A9CCE3] active:bg-[#A9CCE3] active:text-white bg-white shadow-sm'}`}
+            >
+              <ChevronLeft size={18} className="stroke-[2.5]" aria-hidden="true" />
+              <span className="ml-1 text-xs">前へ</span>
+            </button>
+
+            <button
+              onClick={handleNext}
+              className="flex shadow-md active:translate-y-0.5 items-center justify-center gap-1.5 px-5 py-3 rounded-xl font-bold tracking-wider transition-all duration-200 text-sm bg-[#2C3E50] text-white active:bg-[#1B2631] flex-1 cursor-pointer"
+            >
+              <span>解答と解説を見る</span>
+              <ChevronRight size={16} className="stroke-[2.5]" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/*
         フローティング解答バー（要件1・スマホのみ）
