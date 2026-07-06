@@ -375,6 +375,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // 記述/短答入力欄の参照を sub-question id 単位で保持（化学記号パレットの
   // カーソル位置挿入に使用）。
   const inputRefs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({});
+  // フローティング入力バー内の実入力要素の参照（スマホ時の唯一の編集入力）。
+  // カードはタップ選択のみの表示専用にし、実際の文字入力はこのバーで行う（要件1）。
+  const barInputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const getInputRef = (sqId: string): React.RefObject<HTMLInputElement | HTMLTextAreaElement | null> => ({
     get current() {
       return inputRefs.current[sqId] ?? null;
@@ -418,6 +421,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // ソフトキーボードが表示されているか（visualViewport で推定）。
   // 表示中のみ、短答穴埋め用のフローティング入力バーを画面下部に出す。
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  // フローティング入力バーをキーボード上端に追従させるためのオフセット（px）。
+  // visualViewport から算出した「画面下端からキーボード上端までの距離」。
+  // iOS Safari では position:fixed + bottom:0 がキーボードに隠れるため、
+  // ここで動的に bottom 値を与えてキーボードに貼り付くようにする。
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   // Score animation state
@@ -559,7 +567,15 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       const shrink = full - vv.height;
       const visible = shrink > full * 0.15;
       setKeyboardVisible(visible);
-      if (!visible) {
+      if (visible) {
+        // キーボード上端の位置（レイアウトビューポート下端からの距離）。
+        // layout viewport の高さ - (visualViewport の可視下端) がキーボード高さに相当。
+        // offsetTop はページスクロール分、height は可視高さ。
+        const layoutH = window.innerHeight || full;
+        const kbTopFromBottom = Math.max(0, layoutH - (vv.height + vv.offsetTop));
+        setKeyboardOffset(kbTopFromBottom);
+      } else {
+        setKeyboardOffset(0);
         // キーボードが閉じたらフォーカス状態も解除（通常表示へ）
         setFocusedSubId(null);
       }
@@ -576,6 +592,30 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   useEffect(() => {
     setFocusedSubId(null);
   }, [currentQuestionIndex]);
+
+  // 選択中の空欄（focusedSubId）が変わったら、フローティングバー内の入力欄へ
+  // 実フォーカスを移してソフトキーボードを開く（要件1：入力はバーに一本化）。
+  // カードのタップ→バー出現→キーボード表示、という流れを成立させる。
+  useEffect(() => {
+    if (isDesktop) return;
+    if (!focusedSubId) return;
+    const raf = requestAnimationFrame(() => {
+      const el = barInputRef.current;
+      if (el) {
+        el.focus();
+        try {
+          const len = (el.value || '').length;
+          (el as any).setSelectionRange?.(len, len);
+        } catch {
+          /* noop */
+        }
+      }
+      // 選択中の空欄カードをバーの上に見えるようスクロール
+      const card = document.getElementById(`ans-card-${focusedSubId}`);
+      if (card) setTimeout(() => scrollInputIntoView(card), 320);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [focusedSubId, isDesktop]);
 
   const handleTextSelection = () => {
     const selection = window.getSelection();
@@ -740,7 +780,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     if (!target) return;
     setFocusedSubId(target.id);
     requestAnimationFrame(() => {
-      const el = inputRefs.current[target.id];
+      // スマホでは編集入力はフローティングバー内の入力欄に一本化しているため、
+      // そちらへフォーカスを移す（カードは表示専用）。PC等でバーが無い場合は
+      // 従来どおりカード入力へフォーカスする。
+      const el = barInputRef.current ?? inputRefs.current[target.id];
       if (el) {
         el.focus();
         try {
@@ -1126,29 +1169,59 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     </span>
                     
                     <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3 w-full">
-                      {g.items.map((sq: any) => (
-                        <div key={sq.id} className="flex flex-col gap-1.5 min-w-[50px] bg-stone-50/80 p-2 border border-stone-200/60 rounded-xl shadow-2xs">
+                      {g.items.map((sq: any) => {
+                        const isFocusedBlank = focusedSubId === sq.id;
+                        return (
+                        <div
+                          key={sq.id}
+                          className={`flex flex-col gap-1.5 min-w-[50px] p-2 border rounded-xl shadow-2xs transition-colors ${
+                            isFocusedBlank
+                              ? 'bg-[#A9CCE3]/20 border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40'
+                              : 'bg-stone-50/80 border-stone-200/60'
+                          }`}
+                        >
                           <span className="font-bold text-stone-500 text-xs text-center border-b border-stone-200/60 pb-1 select-none font-sans">
                             {sq.label}
                           </span>
-                          <input
-                            type="text"
-                            value={answers[sq.id] || ''}
-                            onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                            onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
-                            placeholder="..."
-                            className="w-full py-1 text-center text-sm font-bold text-stone-800 border-none outline-none focus:ring-0 leading-none bg-transparent"
-                          />
+                          {isDesktop ? (
+                            <input
+                              type="text"
+                              value={answers[sq.id] || ''}
+                              onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                              onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
+                              placeholder="..."
+                              className="w-full py-1 text-center text-sm font-bold text-stone-800 border-none outline-none focus:ring-0 leading-none bg-transparent"
+                            />
+                          ) : (
+                            // スマホ：表示専用チップ。タップで当該空欄を選択し、
+                            // 下部フローティングバーで入力する（要件1：二重入力の解消）。
+                            <button
+                              type="button"
+                              id={`ans-card-${sq.id}`}
+                              onClick={() => setFocusedSubId(sq.id)}
+                              aria-label={`${sq.label} の解答を入力`}
+                              className="w-full min-h-[1.75rem] py-1 text-center text-sm font-bold text-stone-800 leading-none bg-transparent cursor-text"
+                            >
+                              {answers[sq.id]
+                                ? <span className="break-all">{answers[sq.id]}</span>
+                                : <span className="text-stone-300">タップ</span>}
+                            </button>
+                          )}
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 );
               }
 
               const sq = g.items[0];
+              const isTextInputSq = isShortAnswerType(sq) || sq.type === 'descriptive';
+              const isFocusedCard = !isDesktop && isTextInputSq && focusedSubId === sq.id;
               return (
-                <div key={sq.id} className="flex flex-col gap-4 bg-white p-5 rounded-2xl shadow-sm border border-gray-200 hover:border-[#A9CCE3]/50 transition-all duration-250">
+                <div key={sq.id} className={`flex flex-col gap-4 bg-white p-5 rounded-2xl shadow-sm border transition-all duration-250 ${
+                  isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
+                }`}>
                   <div className="flex flex-col gap-3.5 w-full">
                     <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-full block">
                       {sq.label}
@@ -1291,50 +1364,92 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       </div>
                     ) : sq.type === 'descriptive' ? (
                       <div className="flex-grow flex flex-col gap-2 w-full">
-                        <div className="relative w-full">
-                          <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
-                          <textarea
-                            ref={(el) => { inputRefs.current[sq.id] = el; }}
-                            value={answers[sq.id] || ''}
-                            onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                            onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
-                            placeholder="解答を入力...（改行可）"
-                            rows={3}
-                            className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
-                          />
-                        </div>
-
-                        {/* 化学記号パレット（反応式・化学式の記述が必要な問題のみ表示） */}
-                        {requiresChemicalSymbols(sq, sq.correctAnswer) && (
-                          <ChemistryPalette
-                            value={answers[sq.id] || ''}
-                            onChange={(next) => handleTextChange(sq.id, next)}
-                            inputRef={getInputRef(sq.id)}
-                          />
+                        {isDesktop ? (
+                          <>
+                            <div className="relative w-full">
+                              <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
+                              <textarea
+                                ref={(el) => { inputRefs.current[sq.id] = el; }}
+                                value={answers[sq.id] || ''}
+                                onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                                onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
+                                placeholder="解答を入力...（改行可）"
+                                rows={3}
+                                className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
+                              />
+                            </div>
+                            {/* 化学記号パレット（反応式・化学式の記述が必要な問題のみ表示） */}
+                            {requiresChemicalSymbols(sq, sq.correctAnswer) && (
+                              <ChemistryPalette
+                                value={answers[sq.id] || ''}
+                                onChange={(next) => handleTextChange(sq.id, next)}
+                                inputRef={getInputRef(sq.id)}
+                              />
+                            )}
+                          </>
+                        ) : (
+                          // スマホ：表示専用。タップで下部フローティングバーに入力を集約。
+                          <button
+                            type="button"
+                            id={`ans-card-${sq.id}`}
+                            onClick={() => setFocusedSubId(sq.id)}
+                            aria-label={`${sq.label} の解答を入力`}
+                            className={`relative w-full text-left pl-9 pr-4 py-2.5 min-h-[3.5rem] text-[16px] rounded-xl border transition-all font-modern leading-relaxed whitespace-pre-wrap break-words cursor-text ${
+                              focusedSubId === sq.id
+                                ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
+                                : 'border-gray-300 bg-gray-50'
+                            }`}
+                          >
+                            <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
+                            {answers[sq.id]
+                              ? <span className="text-gray-800">{answers[sq.id]}</span>
+                              : <span className="text-gray-400">解答を入力...</span>}
+                          </button>
                         )}
                       </div>
                     ) : (
                       <div className="flex-grow flex flex-col gap-2 w-full">
-                        <div className="relative w-full">
-                          <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                          <input
-                            ref={(el) => { inputRefs.current[sq.id] = el; }}
-                            type="text"
-                            value={answers[sq.id] || ''}
-                            onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                            onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
-                            placeholder="解答を入力..."
-                            className="w-full pl-9 pr-4 py-2.5 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
-                          />
-                        </div>
-
-                        {/* 化学記号パレット（必要な問題のみ表示・カーソル位置に挿入） */}
-                        {requiresChemicalSymbols(sq, sq.correctAnswer) && (
-                          <ChemistryPalette
-                            value={answers[sq.id] || ''}
-                            onChange={(next) => handleTextChange(sq.id, next)}
-                            inputRef={getInputRef(sq.id)}
-                          />
+                        {isDesktop ? (
+                          <>
+                            <div className="relative w-full">
+                              <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                              <input
+                                ref={(el) => { inputRefs.current[sq.id] = el; }}
+                                type="text"
+                                value={answers[sq.id] || ''}
+                                onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                                onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
+                                placeholder="解答を入力..."
+                                className="w-full pl-9 pr-4 py-2.5 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
+                              />
+                            </div>
+                            {/* 化学記号パレット（必要な問題のみ表示・カーソル位置に挿入） */}
+                            {requiresChemicalSymbols(sq, sq.correctAnswer) && (
+                              <ChemistryPalette
+                                value={answers[sq.id] || ''}
+                                onChange={(next) => handleTextChange(sq.id, next)}
+                                inputRef={getInputRef(sq.id)}
+                              />
+                            )}
+                          </>
+                        ) : (
+                          // スマホ：表示専用。タップで下部フローティングバーに入力を集約。
+                          <button
+                            type="button"
+                            id={`ans-card-${sq.id}`}
+                            onClick={() => setFocusedSubId(sq.id)}
+                            aria-label={`${sq.label} の解答を入力`}
+                            className={`relative w-full text-left pl-9 pr-4 py-2.5 min-h-[2.75rem] text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-text ${
+                              focusedSubId === sq.id
+                                ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
+                                : 'border-gray-300 bg-gray-50'
+                            }`}
+                          >
+                            <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                            {answers[sq.id]
+                              ? <span className="text-gray-800">{answers[sq.id]}</span>
+                              : <span className="text-gray-400">解答を入力...</span>}
+                          </button>
                         )}
                       </div>
                     )}
@@ -1385,7 +1500,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         - ソフトキーボード表示中（keyboardVisible）は、穴埋め移動用の
           フローティング解答バーを優先するため非表示にして重なりを防ぐ。
       */}
-      {!isDesktop && !isProblemExpanded && !(keyboardVisible && focusedSub) && (
+      {!isDesktop && !isProblemExpanded && !focusedSub && (
         <div
           className="fixed left-0 right-0 bottom-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.10)] px-3 pt-2.5 pb-[calc(0.6rem+env(safe-area-inset-bottom))]"
         >
@@ -1425,72 +1540,93 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         - 化学記号パレットは questionNeedsChemPalette かつ当該設問が
           記号入力を要する場合のみ表示（要件4）。
       */}
-      {!isDesktop && keyboardVisible && focusedSub && (
+      {!isDesktop && focusedSub && (
         <div
-          className="fixed left-0 right-0 z-[60] bg-white border-t-2 border-[#A9CCE3]/60 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] px-3 pt-2.5 pb-[calc(0.5rem+env(safe-area-inset-bottom))]"
-          style={{ bottom: 0 }}
+          className="fixed left-0 right-0 z-[60] bg-white border-t-2 border-[#A9CCE3]/60 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] px-3 pt-2.5 transition-[bottom] duration-150"
+          style={{
+            bottom: keyboardOffset,
+            // キーボード非表示時（オフセット0）はセーフエリア分の余白を確保
+            paddingBottom: keyboardOffset > 0 ? '0.5rem' : 'calc(0.5rem + env(safe-area-inset-bottom))',
+          }}
         >
           <div className="max-w-2xl mx-auto flex flex-col gap-2">
             <div className="flex items-center justify-between gap-2">
               <span className="font-bold text-[#2C3E50] text-xs bg-blue-50/60 border border-[#A9CCE3]/40 px-2.5 py-1 rounded-lg truncate">
                 {focusedSub.label}
               </span>
-              {inputNavSubs.length > 1 && (
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => moveFocus(-1)}
-                    disabled={focusedIndex <= 0}
-                    className={`flex items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
-                      focusedIndex <= 0
-                        ? 'border-gray-200 text-gray-300 bg-gray-50'
-                        : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
-                    }`}
-                  >
-                    <ChevronLeft size={14} className="stroke-[2.5]" />
-                    前へ
-                  </button>
-                  <span className="text-[11px] text-gray-400 font-bold tabular-nums">
-                    {focusedIndex + 1}/{inputNavSubs.length}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => moveFocus(1)}
-                    disabled={focusedIndex >= inputNavSubs.length - 1}
-                    className={`flex items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
-                      focusedIndex >= inputNavSubs.length - 1
-                        ? 'border-gray-200 text-gray-300 bg-gray-50'
-                        : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
-                    }`}
-                  >
-                    次へ
-                    <ChevronRight size={14} className="stroke-[2.5]" />
-                  </button>
-                </div>
-              )}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {inputNavSubs.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => moveFocus(-1)}
+                      disabled={focusedIndex <= 0}
+                      className={`flex items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+                        focusedIndex <= 0
+                          ? 'border-gray-200 text-gray-300 bg-gray-50'
+                          : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
+                      }`}
+                    >
+                      <ChevronLeft size={14} className="stroke-[2.5]" />
+                      前へ
+                    </button>
+                    <span className="text-[11px] text-gray-400 font-bold tabular-nums">
+                      {focusedIndex + 1}/{inputNavSubs.length}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => moveFocus(1)}
+                      disabled={focusedIndex >= inputNavSubs.length - 1}
+                      className={`flex items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+                        focusedIndex >= inputNavSubs.length - 1
+                          ? 'border-gray-200 text-gray-300 bg-gray-50'
+                          : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
+                      }`}
+                    >
+                      次へ
+                      <ChevronRight size={14} className="stroke-[2.5]" />
+                    </button>
+                  </>
+                )}
+                {/* 完了：フローティングバーを閉じ、下部ナビ（前へ/解答と解説）へ戻す */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    barInputRef.current?.blur();
+                    setFocusedSubId(null);
+                  }}
+                  className="flex items-center px-3 py-1.5 rounded-lg text-xs font-bold border border-[#2C3E50] bg-[#2C3E50] text-white active:bg-[#1B2631]"
+                >
+                  完了
+                </button>
+              </div>
             </div>
 
             {focusedSub.type === 'descriptive' ? (
               <textarea
+                ref={(el) => { barInputRef.current = el; inputRefs.current[focusedSub.id] = el; }}
                 value={answers[focusedSub.id] || ''}
                 onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
                 placeholder="解答を入力...（改行可）"
                 rows={2}
-                autoFocus
                 className="w-full px-3 py-2 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none resize-none font-modern bg-gray-50 focus:bg-white leading-relaxed"
               />
             ) : (
               <input
+                ref={(el) => { barInputRef.current = el; inputRefs.current[focusedSub.id] = el; }}
                 type="text"
                 value={answers[focusedSub.id] || ''}
                 onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
                 placeholder="解答を入力..."
-                autoFocus
                 enterKeyHint={focusedIndex >= inputNavSubs.length - 1 ? 'done' : 'next'}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     if (focusedIndex < inputNavSubs.length - 1) moveFocus(1);
+                    else {
+                      barInputRef.current?.blur();
+                      setFocusedSubId(null);
+                    }
                   }
                 }}
                 className="w-full px-3 py-2.5 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none font-modern bg-gray-50 focus:bg-white leading-relaxed"
@@ -1503,7 +1639,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 <ChemistryPalette
                   value={answers[focusedSub.id] || ''}
                   onChange={(next) => handleTextChange(focusedSub.id, next)}
-                  inputRef={getInputRef(focusedSub.id)}
+                  inputRef={{
+                    get current() { return barInputRef.current; },
+                    set current(el) { barInputRef.current = el; },
+                  }}
                 />
               </div>
             )}
