@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { Explanation } from './Explanation';
@@ -378,6 +378,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // フローティング入力バー内の実入力要素の参照（スマホ時の唯一の編集入力）。
   // カードはタップ選択のみの表示専用にし、実際の文字入力はこのバーで行う（要件1）。
   const barInputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+  // 「前へ/次へ」やキーボードの「次へ(next)」でフォーカスを移すとき、
+  // 再レンダー後に描画前（同期）で確実に .focus() するための一時保持。
+  // iOS でソフトキーボードが一瞬閉じてしまう不具合の防止に用いる。
+  const pendingFocusIdRef = useRef<string | null>(null);
   const getInputRef = (sqId: string): React.RefObject<HTMLInputElement | HTMLTextAreaElement | null> => ({
     get current() {
       return inputRefs.current[sqId] ?? null;
@@ -593,16 +597,39 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     setFocusedSubId(null);
   }, [currentQuestionIndex]);
 
+  // 「次へ/前へ」やキーボードの next キーによる移動時は、再レンダー直後・描画前に
+  // 同期でフォーカスを移す（useLayoutEffect）。iOS はユーザー操作に続く同期的な
+  // focus 移動であればソフトキーボードを閉じないため、「次へ」で入力状態が一瞬
+  // 解除される不具合を防げる（課題2）。
+  useLayoutEffect(() => {
+    if (isDesktop) return;
+    if (!focusedSubId) return;
+    if (pendingFocusIdRef.current !== focusedSubId) return;
+    pendingFocusIdRef.current = null;
+    const el = barInputRef.current;
+    if (el) {
+      el.focus({ preventScroll: true });
+      try {
+        const len = (el.value || '').length;
+        (el as any).setSelectionRange?.(len, len);
+      } catch {
+        /* noop */
+      }
+    }
+  }, [focusedSubId, isDesktop]);
+
   // 選択中の空欄（focusedSubId）が変わったら、フローティングバー内の入力欄へ
   // 実フォーカスを移してソフトキーボードを開く（要件1：入力はバーに一本化）。
   // カードのタップ→バー出現→キーボード表示、という流れを成立させる。
+  // （移動由来の pendingFocus は上の useLayoutEffect が処理済みなのでスキップ）
   useEffect(() => {
     if (isDesktop) return;
     if (!focusedSubId) return;
     const raf = requestAnimationFrame(() => {
       const el = barInputRef.current;
-      if (el) {
-        el.focus();
+      // すでにフォーカス済み（useLayoutEffect で処理済み等）なら二重処理しない
+      if (el && document.activeElement !== el) {
+        el.focus({ preventScroll: true });
         try {
           const len = (el.value || '').length;
           (el as any).setSelectionRange?.(len, len);
@@ -778,22 +805,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     else idx = Math.min(inputNavSubs.length - 1, Math.max(0, idx + dir));
     const target = inputNavSubs[idx];
     if (!target) return;
+    if (target.id === focusedSubId) return;
+    // iOS でソフトキーボードを閉じさせないために、ここでは blur せず
+    // 「次にフォーカスすべき設問」を記録して state を更新するだけにする。
+    // 実際の .focus() は再レンダー直後の useLayoutEffect（描画前・同期）で行う。
+    // これにより「次へ」押下時にフォーカス（入力状態）が一瞬解除される不具合を防ぐ。
+    pendingFocusIdRef.current = target.id;
     setFocusedSubId(target.id);
-    requestAnimationFrame(() => {
-      // スマホでは編集入力はフローティングバー内の入力欄に一本化しているため、
-      // そちらへフォーカスを移す（カードは表示専用）。PC等でバーが無い場合は
-      // 従来どおりカード入力へフォーカスする。
-      const el = barInputRef.current ?? inputRefs.current[target.id];
-      if (el) {
-        el.focus();
-        try {
-          const len = (el.value || '').length;
-          (el as any).setSelectionRange?.(len, len);
-        } catch {
-          /* noop */
-        }
-      }
-    });
   };
 
   /**
@@ -1602,36 +1620,50 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               </div>
             </div>
 
-            {focusedSub.type === 'descriptive' ? (
-              <textarea
-                ref={(el) => { barInputRef.current = el; inputRefs.current[focusedSub.id] = el; }}
-                value={answers[focusedSub.id] || ''}
-                onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
-                placeholder="解答を入力...（改行可）"
-                rows={2}
-                className="w-full px-3 py-2 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none resize-none font-modern bg-gray-50 focus:bg-white leading-relaxed"
-              />
-            ) : (
-              <input
-                ref={(el) => { barInputRef.current = el; inputRefs.current[focusedSub.id] = el; }}
-                type="text"
-                value={answers[focusedSub.id] || ''}
-                onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
-                placeholder="解答を入力..."
-                enterKeyHint={focusedIndex >= inputNavSubs.length - 1 ? 'done' : 'next'}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    if (focusedIndex < inputNavSubs.length - 1) moveFocus(1);
-                    else {
+            {/*
+              入力要素は「常に同じ textarea 1つ」に統一する。
+              ─────────────────────────────────────────────
+              短答穴埋め（1行）と記述/計算（複数行）で要素を input/textarea に
+              切り替えると、設問移動のたびに DOM 要素が差し替わり（unmount→mount）、
+              iOS ではその瞬間にソフトキーボードが閉じてしまう。
+              そこで要素種別を変えず textarea 1本に固定し、rows と改行可否だけを
+              設問タイプで切り替える。これにより「次へ」でフォーカス（入力状態）が
+              解除されずシームレスに次の空欄へ移れる（課題2）。
+              font-size は 16px を明示し、タップ時の自動ズームも防止（課題1）。
+            */}
+            <textarea
+              key="floating-answer-input"
+              ref={(el) => { barInputRef.current = el; if (focusedSub) inputRefs.current[focusedSub.id] = el; }}
+              value={answers[focusedSub.id] || ''}
+              onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
+              placeholder={focusedSub.type === 'descriptive' ? '解答を入力...（改行可）' : '解答を入力...'}
+              rows={focusedSub.type === 'descriptive' ? 2 : 1}
+              enterKeyHint={focusedIndex >= inputNavSubs.length - 1 ? 'done' : 'next'}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  // 記述/計算は改行を許可（Shift+Enter でなくても改行）。ただし
+                  // 最後の設問での Enter は「完了」として扱いキーボードを閉じる。
+                  if (focusedSub.type === 'descriptive') {
+                    if (focusedIndex >= inputNavSubs.length - 1) {
+                      e.preventDefault();
                       barInputRef.current?.blur();
                       setFocusedSubId(null);
                     }
+                    return; // それ以外は通常の改行を許可
                   }
-                }}
-                className="w-full px-3 py-2.5 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none font-modern bg-gray-50 focus:bg-white leading-relaxed"
-              />
-            )}
+                  // 短答：Enter=次の空欄へ（改行はしない）。最後なら完了。
+                  e.preventDefault();
+                  if (focusedIndex < inputNavSubs.length - 1) moveFocus(1);
+                  else {
+                    barInputRef.current?.blur();
+                    setFocusedSubId(null);
+                  }
+                }
+              }}
+              className={`w-full px-3 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none resize-none font-modern bg-gray-50 focus:bg-white leading-relaxed ${
+                focusedSub.type === 'descriptive' ? 'py-2' : 'py-2.5'
+              }`}
+            />
 
             {/* 化学記号パレット（要件4：必要な問題のみ表示） */}
             {questionNeedsChemPalette && requiresChemicalSymbols(focusedSub, focusedSub.correctAnswer) && (
