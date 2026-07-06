@@ -8145,6 +8145,15 @@ const findSubQuestion = (chapterId: string, problemId: string, subQuestionId: st
         deepDiveTopics: [],
       });
     }
+
+    // ①-miniTest：小テスト（mode='mini_test'）は practiceProblems とは別の
+    //   miniTest 配列を参照する。c2_1 の miniTest には修正前の設問（進捗5/7 の削除前・
+    //   電子配置のスペース区切り表記・パレット未設定・新規問題なし）がそのまま残っていたため、
+    //   上記の全修正を反映した practiceProblems と同一内容へ同期する。
+    //   （他の 2章 単元 c2_2〜c2_4 は miniTest が空配列のため practiceProblems のみで完結する。）
+    if (Array.isArray(c2_1.miniTest) && c2_1.miniTest.length > 0) {
+      c2_1.miniTest = c2_1.practiceProblems;
+    }
   }
 
   // ------------------------------------------------------------

@@ -133,6 +133,22 @@ const chemistryPaletteGroups: PaletteGroup[] = [
     ],
   },
   {
+    group: '上付き数字（指数・べき）',
+    items: [
+      { label: '⁻', value: '⁻', desc: '上付きマイナス（指数の符号／例: 10⁻¹⁰）' },
+      { label: '⁰', value: '⁰', desc: '上付き0' },
+      { label: '¹', value: '¹', desc: '上付き1' },
+      { label: '²', value: '²', desc: '上付き2（例: 2n²）' },
+      { label: '³', value: '³', desc: '上付き3' },
+      { label: '⁴', value: '⁴', desc: '上付き4' },
+      { label: '⁵', value: '⁵', desc: '上付き5' },
+      { label: '⁶', value: '⁶', desc: '上付き6' },
+      { label: '⁷', value: '⁷', desc: '上付き7' },
+      { label: '⁸', value: '⁸', desc: '上付き8' },
+      { label: '⁹', value: '⁹', desc: '上付き9' },
+    ],
+  },
+  {
     group: '下付き数字',
     items: [
       { label: '₁', value: '₁', desc: '下付き1' },
