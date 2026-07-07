@@ -580,8 +580,18 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         setKeyboardOffset(kbTopFromBottom);
       } else {
         setKeyboardOffset(0);
-        // キーボードが閉じたらフォーカス状態も解除（通常表示へ）
-        setFocusedSubId(null);
+        // キーボードが閉じたらフォーカス状態も解除（通常表示へ）。
+        // ただし選択式・並べ替え等のテキスト非入力設問は元々キーボードを
+        // 開かないため、この resize 起因の解除対象から除外する
+        // （除外しないと固定パネルが即座に閉じてしまう）。
+        setFocusedSubId((prev) => {
+          if (!prev) return prev;
+          const cur = (currentQuestionRef.current?.subQuestions || []).find(
+            (sq: any) => sq.id === prev
+          );
+          const isText = cur && (isShortAnswerType(cur) || cur.type === 'descriptive');
+          return isText ? null : prev;
+        });
       }
     };
     vv.addEventListener('resize', onResize);
@@ -606,6 +616,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     if (!focusedSubId) return;
     if (pendingFocusIdRef.current !== focusedSubId) return;
     pendingFocusIdRef.current = null;
+    // テキスト非入力（選択式・並べ替え）はキーボードを開かないため
+    // フォーカス移動は不要。
+    {
+      const cur = (currentQuestionRef.current?.subQuestions || []).find((sq: any) => sq.id === focusedSubId);
+      const isText = cur && (isShortAnswerType(cur) || cur.type === 'descriptive');
+      if (!isText) return;
+    }
     const el = barInputRef.current;
     if (el) {
       el.focus({ preventScroll: true });
@@ -625,6 +642,18 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   useEffect(() => {
     if (isDesktop) return;
     if (!focusedSubId) return;
+    // テキスト非入力（選択式・並べ替え）はキーボードを開かないため、
+    // カードのスクロールのみ行いフォーカス移動はしない。
+    const curSub = (currentQuestionRef.current?.subQuestions || []).find((sq: any) => sq.id === focusedSubId);
+    const isTextFocus = curSub && (isShortAnswerType(curSub) || curSub.type === 'descriptive');
+    if (!isTextFocus) {
+      const card = document.getElementById(`ans-card-${focusedSubId}`);
+      if (card) {
+        const raf = requestAnimationFrame(() => setTimeout(() => scrollInputIntoView(card), 150));
+        return () => cancelAnimationFrame(raf);
+      }
+      return;
+    }
     const raf = requestAnimationFrame(() => {
       const el = barInputRef.current;
       // すでにフォーカス済み（useLayoutEffect で処理済み等）なら二重処理しない
@@ -663,6 +692,145 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     setAnswers(prev => ({ ...prev, [sqId]: text }));
   };
 
+  // ────────────────────────────────────────────────────────────────
+  // 解答コントロールの共通描画（要件1）
+  // 選択式（multiple_choice）・並べ替え（sorting）の入力UIを関数化し、
+  // PC版はインラインで、スマホ版は下部固定パネル内で同じUIを再利用する。
+  // これにより「問題形式によらず解答欄を固定表示・前へ/次へで遷移」を満たす。
+  // ────────────────────────────────────────────────────────────────
+
+  /** 選択式（単一・複数）の選択肢ボタン群を描画する。 */
+  const renderMultipleChoiceControl = (sq: any) => {
+    const isLongOptionList = sq.options.some((opt: string) => opt.length > 5);
+    // 複数選択かどうかの判定：
+    //   correctAnswer を区切り文字で分割した「すべてのトークン」が選択肢に存在する場合のみ複数選択とみなす。
+    const optionSet = new Set(sq.options.map((o: string) => o.trim()));
+    const detectMulti = (sep: string) => {
+      if (!sq.correctAnswer || !sq.correctAnswer.includes(sep)) return false;
+      const toks = sq.correctAnswer.split(sep).map((t: string) => t.trim()).filter(Boolean);
+      return toks.length >= 2 && toks.every((t: string) => optionSet.has(t));
+    };
+    const multiSep = detectMulti('・') ? '・' : (detectMulti('、') ? '、' : (detectMulti(',') ? ',' : null));
+    const isMultiple = multiSep !== null;
+    return (
+      <div className={isLongOptionList
+        ? "grid grid-cols-1 gap-2.5 w-full"
+        : "grid grid-cols-2 xs:grid-cols-3 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
+      }>
+        {sq.options.map((opt: string) => {
+          const isSelected = isMultiple
+            ? (answers[sq.id] || '').split(multiSep as string).map(s => s.trim()).includes(opt.trim())
+            : (answers[sq.id] || '') === opt;
+          return (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => {
+                if (isMultiple) {
+                  const separator = multiSep as string;
+                  const current = (answers[sq.id] || '').split(separator).map(s => s.trim()).filter(Boolean);
+                  const nextUnordered = isSelected
+                    ? current.filter(a => a !== opt)
+                    : [...current, opt];
+                  const ordered = sq.options.filter((o: string) => nextUnordered.includes(o));
+                  handleOptionSelect(sq.id, ordered.join(separator));
+                } else {
+                  handleOptionSelect(sq.id, isSelected ? '' : opt);
+                }
+              }}
+              className={`px-4 py-2.5 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${isLongOptionList ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3rem] shadow-sm cursor-pointer
+                ${isSelected
+                  ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30 scale-[1.01]'
+                  : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
+                }`}
+            >
+              {formatText(opt)}
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
+
+  /** 並べ替え（sorting）のドラッグ並べ替えUIを描画する。 */
+  const renderSortingControl = (sq: any) => {
+    const activeOrder = answers[sq.id] ? answers[sq.id].split(' > ') : [...(sq.items || [])];
+    return (
+      <div className="flex-grow flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-2.5">
+          <div className="text-xs text-gray-400 font-bold flex items-center justify-between">
+            <span>ドラッグで順序を並べ替え :</span>
+            <span className="text-[10px] text-[#A9CCE3] font-normal">左から順に並べる</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2.5 p-3.5 bg-gray-50/80 border border-gray-200 rounded-2xl min-h-[72px]">
+            {activeOrder.map((item: string, idx: number) => {
+              const isDragging = draggingIndex === idx;
+              const isDragOver = dragOverIndex === idx;
+              return (
+                <div
+                  key={`${item}-${idx}`}
+                  draggable
+                  onDragStart={(e) => {
+                    setDraggingIndex(idx);
+                    e.dataTransfer.effectAllowed = 'move';
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDragEnter={(e) => {
+                    e.preventDefault();
+                    setDragOverIndex(idx);
+                  }}
+                  onDragLeave={() => setDragOverIndex(null)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setDragOverIndex(null);
+                    if (draggingIndex === null || draggingIndex === idx) return;
+                    const nextOrder = [...activeOrder];
+                    const draggedValue = nextOrder[draggingIndex];
+                    nextOrder.splice(draggingIndex, 1);
+                    nextOrder.splice(idx, 0, draggedValue);
+                    handleOptionSelect(sq.id, nextOrder.join(' > '));
+                    setDraggingIndex(null);
+                  }}
+                  onDragEnd={() => {
+                    setDraggingIndex(null);
+                    setDragOverIndex(null);
+                  }}
+                  className={`flex items-center gap-2 px-3 py-2 bg-white border rounded-xl shadow-xs transition-all duration-200 cursor-grab select-none active:cursor-grabbing
+                    ${isDragging ? 'opacity-30 border-dashed border-gray-300 scale-95' : 'opacity-100'}
+                    ${isDragOver ? 'border-[#A9CCE3] bg-[#A9CCE3]/15 scale-105 ring-2 ring-[#A9CCE3]/20' : 'border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50/50'}
+                  `}
+                >
+                  <GripVertical size={13} className="text-gray-400 font-bold shrink-0" />
+                  <span className="font-bold text-gray-800 text-sm whitespace-nowrap">{formatText(item)}</span>
+                  <span className="text-[10px] bg-stone-100 text-stone-500 rounded px-1.5 py-0.5 text-center select-none font-mono font-semibold shrink-0">{idx + 1}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-3 pt-0.5">
+          <span className="text-xs text-gray-400 leading-normal">
+            ※ 要素をドラッグまたは指でスライドさせて、正しい順序に並び替えてください。
+          </span>
+          {(answers[sq.id] || '') !== '' && (
+            <button
+              type="button"
+              onClick={() => handleOptionSelect(sq.id, '')}
+              className="text-xs text-red-400 hover:text-red-500 transition-colors font-medium hover:underline py-1 px-2.5 hover:bg-red-50 rounded-lg cursor-pointer shrink-0"
+            >
+              やり直す (初期設定に戻す)
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  /** 選択式の現在の選択内容を「表示専用チップ」用の文字列にする。 */
+  const describeChoiceAnswer = (sq: any): string => {
+    return answers[sq.id] || '';
+  };
+
   const questions = mode === 'mini_test' ? chapter.miniTest : (chapter.practiceProblems || []);
 
   // 章内の図版へ通し番号（図1・図2 …）を割り当てるためのマップ。
@@ -696,6 +864,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
 
   const currentQuestion = questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+  // visualViewport の resize ハンドラ（マウント時登録・依存なし）から
+  // 最新の currentQuestion を参照するための ref。
+  const currentQuestionRef = useRef<any>(currentQuestion);
+  useEffect(() => {
+    currentQuestionRef.current = currentQuestion;
+  }, [currentQuestion]);
 
   // この問題の制限時間を計算（メモ化）
   const questionTimeLimit = useMemo(() => {
@@ -771,17 +946,16 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     [highlights, focusHighlightVariants]
   );
 
-  // テキスト入力を伴う設問（短答穴埋め + 記述/計算）。
-  // フローティング入力バーの対象は「入力欄を持つ全設問」＝この一覧とする。
-  // multiple_choice / sorting は選択・並べ替えUIのため対象外。
+  // 固定表示（フローティング解答パネル）の対象となる全設問。
+  // 要件1：問題形式によらず解答欄を画面下部に固定表示し、前へ/次へで遷移する。
+  // そのため短答穴埋め・記述/計算だけでなく、選択式（multiple_choice）・
+  // 並べ替え（sorting）も含めて「解答可能な全設問」を対象とする。
   const inputNavSubs = useMemo(() => {
     if (!currentQuestion) return [] as any[];
-    return (currentQuestion.subQuestions || []).filter(
-      (sq: any) => isShortAnswerType(sq) || sq.type === 'descriptive'
-    );
+    return (currentQuestion.subQuestions || []).slice();
   }, [currentQuestion]);
 
-  // 現在フォーカス中の設問オブジェクト（短答・記述いずれも対象）。
+  // 現在フォーカス中の設問オブジェクト（全形式対象）。
   const focusedSub = useMemo(() => {
     if (!focusedSubId) return null;
     return inputNavSubs.find((sq: any) => sq.id === focusedSubId) || null;
@@ -1234,8 +1408,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               }
 
               const sq = g.items[0];
-              const isTextInputSq = isShortAnswerType(sq) || sq.type === 'descriptive';
-              const isFocusedCard = !isDesktop && isTextInputSq && focusedSubId === sq.id;
+              // 要件1：全形式でカードをタップ→固定パネル表示に統一するため、
+              // フォーカス中カードのハイライトも全形式で有効にする。
+              const isFocusedCard = !isDesktop && focusedSubId === sq.id;
               return (
                 <div key={sq.id} className={`flex flex-col gap-4 bg-white p-5 rounded-2xl shadow-sm border transition-all duration-250 ${
                   isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
@@ -1246,140 +1421,49 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     </span>
                     
                     {sq.type === 'multiple_choice' ? (
-                      (() => {
-                        const isLongOptionList = sq.options.some((opt: string) => opt.length > 5);
-                        // 複数選択かどうかの判定：
-                        //   correctAnswer を区切り文字で分割した「すべてのトークン」が選択肢に存在する場合のみ複数選択とみなす。
-                        //   単に correctAnswer にカンマが含まれるだけ（例: "ア: 相対, イ: 単位, ..." のような
-                        //   カンマ入りの単一選択肢）を複数選択と誤判定しないようにするための堅牢な判定。
-                        const optionSet = new Set(sq.options.map((o: string) => o.trim()));
-                        const detectMulti = (sep: string) => {
-                          if (!sq.correctAnswer || !sq.correctAnswer.includes(sep)) return false;
-                          const toks = sq.correctAnswer.split(sep).map((t: string) => t.trim()).filter(Boolean);
-                          return toks.length >= 2 && toks.every((t: string) => optionSet.has(t));
-                        };
-                        const multiSep = detectMulti('・') ? '・' : (detectMulti('、') ? '、' : (detectMulti(',') ? ',' : null));
-                        const isMultiple = multiSep !== null;
-                        return (
-                          <div className={isLongOptionList 
-                            ? "grid grid-cols-1 gap-2.5 w-full" 
-                            : "grid grid-cols-2 xs:grid-cols-3 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
-                          }>
-                            {sq.options.map((opt: string) => {
-                              // 単一選択ではカンマで分割せず完全一致で判定する（カンマ入り選択肢に対応）
-                              const isSelected = isMultiple
-                                ? (answers[sq.id] || '').split(multiSep as string).map(s => s.trim()).includes(opt.trim())
-                                : (answers[sq.id] || '') === opt;
-                              return (
-                                <button
-                                  key={opt}
-                                  onClick={() => {
-                                    let next: string[];
-                                    if (isMultiple) {
-                                      const separator = multiSep as string;
-                                      const current = (answers[sq.id] || '').split(separator).map(s => s.trim()).filter(Boolean);
-                                      const nextUnordered = isSelected 
-                                        ? current.filter(a => a !== opt)
-                                        : [...current, opt];
-                                      const ordered = sq.options.filter((o: string) => nextUnordered.includes(o));
-                                      next = ordered;
-                                      handleOptionSelect(sq.id, next.join(separator));
-                                    } else {
-                                      handleOptionSelect(sq.id, isSelected ? '' : opt);
-                                      return;
-                                    }
-                                  }}
-                                  className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 border-2 flex items-center ${isLongOptionList ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3rem] shadow-sm cursor-pointer
-                                    ${isSelected 
-                                      ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30 scale-[1.01]' 
-                                      : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
-                                    }`}
-                                >
-                                  {formatText(opt)}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        );
-                      })()
+                      isDesktop ? (
+                        // PC版：選択肢ボタンをインライン表示。
+                        renderMultipleChoiceControl(sq)
+                      ) : (
+                        // スマホ版：表示専用チップ。タップで下部固定パネルに選択UIを表示（要件1）。
+                        <button
+                          type="button"
+                          id={`ans-card-${sq.id}`}
+                          onClick={() => setFocusedSubId(sq.id)}
+                          aria-label={`${sq.label} の解答を選択`}
+                          className={`relative w-full text-left px-4 py-2.5 min-h-[2.75rem] text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-pointer ${
+                            focusedSubId === sq.id
+                              ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
+                              : 'border-gray-300 bg-gray-50'
+                          }`}
+                        >
+                          {describeChoiceAnswer(sq)
+                            ? <span className="text-gray-800 font-bold">{formatText(describeChoiceAnswer(sq))}</span>
+                            : <span className="text-gray-400">タップして選択...</span>}
+                        </button>
+                      )
                     ) : sq.type === 'sorting' ? (
-                      <div className="flex-grow flex flex-col gap-4 w-full">
-                        <div className="flex flex-col gap-2.5">
-                          <div className="text-xs text-gray-400 font-bold flex items-center justify-between">
-                            <span>ドラッグで順序を並べ替え :</span>
-                            <span className="text-[10px] text-[#A9CCE3] font-normal">左から順に並べる</span>
-                          </div>
-                          
-                          <div className="flex flex-wrap items-center gap-2.5 p-3.5 bg-gray-50/80 border border-gray-200 rounded-2xl min-h-[72px]">
-                            {(() => {
-                              const activeOrder = answers[sq.id] ? answers[sq.id].split(' > ') : [...(sq.items || [])];
-                              
-                              return activeOrder.map((item: string, idx: number) => {
-                                const isDragging = draggingIndex === idx;
-                                const isDragOver = dragOverIndex === idx;
-  
-                                return (
-                                  <div
-                                    key={`${item}-${idx}`}
-                                    draggable
-                                    onDragStart={(e) => {
-                                      setDraggingIndex(idx);
-                                      e.dataTransfer.effectAllowed = 'move';
-                                    }}
-                                    onDragOver={(e) => e.preventDefault()}
-                                    onDragEnter={(e) => {
-                                      e.preventDefault();
-                                      setDragOverIndex(idx);
-                                    }}
-                                    onDragLeave={() => setDragOverIndex(null)}
-                                    onDrop={(e) => {
-                                      e.preventDefault();
-                                      setDragOverIndex(null);
-                                      if (draggingIndex === null || draggingIndex === idx) return;
-                                      const nextOrder = [...activeOrder];
-                                      const draggedValue = nextOrder[draggingIndex];
-                                      nextOrder.splice(draggingIndex, 1);
-                                      nextOrder.splice(idx, 0, draggedValue);
-                                      handleOptionSelect(sq.id, nextOrder.join(' > '));
-                                      setDraggingIndex(null);
-                                    }}
-                                    onDragEnd={() => {
-                                      setDraggingIndex(null);
-                                      setDragOverIndex(null);
-                                    }}
-                                    className={`flex items-center gap-2 px-3 py-2 bg-white border rounded-xl shadow-xs transition-all duration-200 cursor-grab select-none active:cursor-grabbing
-                                      ${isDragging ? 'opacity-30 border-dashed border-gray-300 scale-95' : 'opacity-100'}
-                                      ${isDragOver ? 'border-[#A9CCE3] bg-[#A9CCE3]/15 scale-105 ring-2 ring-[#A9CCE3]/20' : 'border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50/50'}
-                                    `}
-                                  >
-                                    <GripVertical size={13} className="text-gray-400 font-bold shrink-0" />
-                                    <span className="font-bold text-gray-800 text-sm whitespace-nowrap">{formatText(item)}</span>
-                                    <span className="text-[10px] bg-stone-100 text-stone-500 rounded px-1.5 py-0.5 text-center select-none font-mono font-semibold shrink-0">{idx + 1}</span>
-                                  </div>
-                                );
-                              });
-                            })()}
-                          </div>
-                        </div>
-  
-                        <div className="flex items-center justify-between gap-3 pt-0.5">
-                          <span className="text-xs text-gray-400 leading-normal">
-                            ※ 要素をドラッグまたは指でスライドさせて、正しい順序に並び替えてください。
-                          </span>
-                          
-                          {(answers[sq.id] || '') !== '' && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                handleOptionSelect(sq.id, '');
-                              }}
-                              className="text-xs text-red-400 hover:text-red-500 transition-colors font-medium hover:underline py-1 px-2.5 hover:bg-red-50 rounded-lg cursor-pointer shrink-0"
-                            >
-                              やり直す (初期設定に戻す)
-                            </button>
-                          )}
-                        </div>
-                      </div>
+                      isDesktop ? (
+                        // PC版：ドラッグ並べ替えUIをインライン表示。
+                        renderSortingControl(sq)
+                      ) : (
+                        // スマホ版：表示専用チップ。タップで下部固定パネルに並べ替えUIを表示（要件1）。
+                        <button
+                          type="button"
+                          id={`ans-card-${sq.id}`}
+                          onClick={() => setFocusedSubId(sq.id)}
+                          aria-label={`${sq.label} の順序を並べ替え`}
+                          className={`relative w-full text-left px-4 py-2.5 min-h-[2.75rem] text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-pointer ${
+                            focusedSubId === sq.id
+                              ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
+                              : 'border-gray-300 bg-gray-50'
+                          }`}
+                        >
+                          {(answers[sq.id] || '')
+                            ? <span className="text-gray-800 font-bold">{(answers[sq.id] || '').split(' > ').join(' → ')}</span>
+                            : <span className="text-gray-400">タップして並べ替え...</span>}
+                        </button>
+                      )
                     ) : sq.type === 'descriptive' ? (
                       <div className="flex-grow flex flex-col gap-2 w-full">
                         {isDesktop ? (
@@ -1606,7 +1690,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     </button>
                   </>
                 )}
-                {/* 完了：フローティングバーを閉じ、下部ナビ（前へ/解答と解説）へ戻す */}
+                {/* 完了：固定パネルを閉じ、下部ナビ（前へ/解答と解説）へ戻す */}
                 <button
                   type="button"
                   onClick={() => {
@@ -1621,62 +1705,76 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             </div>
 
             {/*
-              入力要素は「常に同じ textarea 1つ」に統一する。
+              固定パネル内の解答UI（要件1：問題形式によらず固定表示）
               ─────────────────────────────────────────────
-              短答穴埋め（1行）と記述/計算（複数行）で要素を input/textarea に
-              切り替えると、設問移動のたびに DOM 要素が差し替わり（unmount→mount）、
-              iOS ではその瞬間にソフトキーボードが閉じてしまう。
-              そこで要素種別を変えず textarea 1本に固定し、rows と改行可否だけを
-              設問タイプで切り替える。これにより「次へ」でフォーカス（入力状態）が
-              解除されずシームレスに次の空欄へ移れる（課題2）。
-              font-size は 16px を明示し、タップ時の自動ズームも防止（課題1）。
+              フォーカス中の設問タイプに応じて、下記のいずれかを表示する。
+                - 選択式（multiple_choice）: 選択肢ボタン群
+                - 並べ替え（sorting）      : ドラッグ並べ替えUI
+                - それ以外（短答/記述/計算）: 統一 textarea（キーボード入力）
+              テキスト入力は「常に同じ textarea 1つ」に統一する。要素種別を
+              input/textarea で切り替えると設問移動のたびに DOM が差し替わり、
+              iOS でソフトキーボードが閉じてしまうため、textarea 1本に固定して
+              rows と改行可否のみ切り替える（課題2）。font-size は 16px を明示し、
+              タップ時の自動ズームも防止する（課題1）。
             */}
-            <textarea
-              key="floating-answer-input"
-              ref={(el) => { barInputRef.current = el; if (focusedSub) inputRefs.current[focusedSub.id] = el; }}
-              value={answers[focusedSub.id] || ''}
-              onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
-              placeholder={focusedSub.type === 'descriptive' ? '解答を入力...（改行可）' : '解答を入力...'}
-              rows={focusedSub.type === 'descriptive' ? 2 : 1}
-              enterKeyHint={focusedIndex >= inputNavSubs.length - 1 ? 'done' : 'next'}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  // 記述/計算は改行を許可（Shift+Enter でなくても改行）。ただし
-                  // 最後の設問での Enter は「完了」として扱いキーボードを閉じる。
-                  if (focusedSub.type === 'descriptive') {
-                    if (focusedIndex >= inputNavSubs.length - 1) {
-                      e.preventDefault();
-                      barInputRef.current?.blur();
-                      setFocusedSubId(null);
-                    }
-                    return; // それ以外は通常の改行を許可
-                  }
-                  // 短答：Enter=次の空欄へ（改行はしない）。最後なら完了。
-                  e.preventDefault();
-                  if (focusedIndex < inputNavSubs.length - 1) moveFocus(1);
-                  else {
-                    barInputRef.current?.blur();
-                    setFocusedSubId(null);
-                  }
-                }
-              }}
-              className={`w-full px-3 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none resize-none font-modern bg-gray-50 focus:bg-white leading-relaxed ${
-                focusedSub.type === 'descriptive' ? 'py-2' : 'py-2.5'
-              }`}
-            />
-
-            {/* 化学記号パレット（要件4：必要な問題のみ表示） */}
-            {questionNeedsChemPalette && requiresChemicalSymbols(focusedSub, focusedSub.correctAnswer) && (
-              <div className="max-h-[28vh] overflow-y-auto">
-                <ChemistryPalette
-                  value={answers[focusedSub.id] || ''}
-                  onChange={(next) => handleTextChange(focusedSub.id, next)}
-                  inputRef={{
-                    get current() { return barInputRef.current; },
-                    set current(el) { barInputRef.current = el; },
-                  }}
-                />
+            {focusedSub.type === 'multiple_choice' ? (
+              <div className="max-h-[42vh] overflow-y-auto py-1">
+                {renderMultipleChoiceControl(focusedSub)}
               </div>
+            ) : focusedSub.type === 'sorting' ? (
+              <div className="max-h-[42vh] overflow-y-auto py-1">
+                {renderSortingControl(focusedSub)}
+              </div>
+            ) : (
+              <>
+                <textarea
+                  key="floating-answer-input"
+                  ref={(el) => { barInputRef.current = el; if (focusedSub) inputRefs.current[focusedSub.id] = el; }}
+                  value={answers[focusedSub.id] || ''}
+                  onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
+                  placeholder={focusedSub.type === 'descriptive' ? '解答を入力...（改行可）' : '解答を入力...'}
+                  rows={focusedSub.type === 'descriptive' ? 2 : 1}
+                  enterKeyHint={focusedIndex >= inputNavSubs.length - 1 ? 'done' : 'next'}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      // 記述/計算は改行を許可（Shift+Enter でなくても改行）。ただし
+                      // 最後の設問での Enter は「完了」として扱いキーボードを閉じる。
+                      if (focusedSub.type === 'descriptive') {
+                        if (focusedIndex >= inputNavSubs.length - 1) {
+                          e.preventDefault();
+                          barInputRef.current?.blur();
+                          setFocusedSubId(null);
+                        }
+                        return; // それ以外は通常の改行を許可
+                      }
+                      // 短答：Enter=次の空欄へ（改行はしない）。最後なら完了。
+                      e.preventDefault();
+                      if (focusedIndex < inputNavSubs.length - 1) moveFocus(1);
+                      else {
+                        barInputRef.current?.blur();
+                        setFocusedSubId(null);
+                      }
+                    }
+                  }}
+                  className={`w-full px-3 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none resize-none font-modern bg-gray-50 focus:bg-white leading-relaxed ${
+                    focusedSub.type === 'descriptive' ? 'py-2' : 'py-2.5'
+                  }`}
+                />
+
+                {/* 化学記号パレット（要件4：必要な問題のみ表示） */}
+                {questionNeedsChemPalette && requiresChemicalSymbols(focusedSub, focusedSub.correctAnswer) && (
+                  <div className="max-h-[28vh] overflow-y-auto">
+                    <ChemistryPalette
+                      value={answers[focusedSub.id] || ''}
+                      onChange={(next) => handleTextChange(focusedSub.id, next)}
+                      inputRef={{
+                        get current() { return barInputRef.current; },
+                        set current(el) { barInputRef.current = el; },
+                      }}
+                    />
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

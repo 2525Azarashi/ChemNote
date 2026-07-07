@@ -134,7 +134,22 @@ input, textarea, select, button {
   font-family: inherit;
 }
 
+/* iOS/モバイルの自動ズーム防止。
+ * 入力欄（input/textarea/select）の実効 font-size が 16px 未満だと、
+ * iOS Safari はフォーカス時に画面を自動拡大する。
+ * これを全画面・全問題形式で確実に防ぐため、以下の2条件のいずれかで 16px を強制する。
+ *   1) ビューポート幅 768px 以下（従来のスマホ相当）
+ *   2) 粗いポインタ＝タッチ主体のデバイス（幅が 768px を超える
+ *      タブレット/横向き等でも、md: ブレークポイントで text-sm(14px) に
+ *      戻ってしまうケースを含めて確実にズームを防ぐ）
+ * Tailwind の md:text-sm 等より優先させるため !important を付与する。 */
 @media screen and (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
+@media (pointer: coarse) {
   input, textarea, select {
     font-size: 16px !important;
   }
