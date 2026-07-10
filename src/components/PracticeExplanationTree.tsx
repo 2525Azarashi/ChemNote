@@ -15,6 +15,12 @@ interface PracticeExplanationTreeProps {
   isMobile: boolean;
   renderSubQuestionCheck: (sq: any, parentQuestion: any) => React.ReactElement;
   zoom?: 'far' | 'normal';
+  /**
+   * true のとき、単元選択画面のロジックツリーと完全に同一の「折りたたみ式」挙動にする。
+   * （初期状態はすべて閉じており、ノードをタップした時だけ展開する）
+   * このとき expandedStep / expandedNodeId / scrollTrigger による自動展開は行わない。
+   */
+  collapsible?: boolean;
 }
 
 export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = ({
@@ -28,7 +34,8 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   scrollTrigger,
   isMobile,
   renderSubQuestionCheck,
-  zoom = 'far'
+  zoom = 'far',
+  collapsible = false
 }) => {
   // 章IDごとに対応するフローチャート（ロジックツリー）を明示的に対応付ける。
   // ここに存在しない章（例: c5 酸と塩基, c6 酸化還元）は専用ツリーが無いため、
@@ -147,15 +154,23 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
     <div id="logical-tree-section" className="p-1 sm:p-2 border-t border-gray-100 w-full bg-white">
       <div className="flex flex-col w-full">
         <div className="w-full bg-[#FDFBF7] rounded-2xl border border-gray-200 p-1 sm:p-3">
+          {collapsible && (
+            <p className="text-[11px] sm:text-xs text-gray-500 font-bold px-2 pt-2 pb-1">
+              ▼ ロジックツリー（タップで開閉・確認問題へ移動できます）
+            </p>
+          )}
           <InteractiveTree 
             data={currentTreeData}
             onQuestionClick={handleQuestionClick}
-            expandedStep={expandedStep}
-            expandedNodeId={expandedNodeId}
-            scrollTrigger={scrollTrigger}
+            /* collapsible のときは単元選択画面のロジックツリーと同一挙動にするため、
+               自動展開（expandedStep / expandedNodeId / scrollTrigger）を渡さず、
+               初期状態はすべて折りたたんだ状態にする。 */
+            expandedStep={collapsible ? undefined : expandedStep}
+            expandedNodeId={collapsible ? undefined : expandedNodeId}
+            scrollTrigger={collapsible ? undefined : scrollTrigger}
             renderContent={renderContent}
-            mobileTightCrop={isMobile}
-            zoom={zoom as 'far' | 'normal'}
+            mobileTightCrop={collapsible ? true : isMobile}
+            zoom={collapsible ? 'far' : (zoom as 'far' | 'normal')}
           />
         </div>
       </div>

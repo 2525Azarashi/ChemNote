@@ -646,7 +646,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       // 【スマホ:自然フィット + 縦スクロール】
       // 画面幅に自然にフィットする通常サイズのレイアウトで表示し、
       // 収まりきらない場合は通常の縦スクロールで閲覧できるようにする。
-      ? `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-y-auto z-50`
+      // ※ 1問ごとの答え合わせ（!isResultView）でも結果表示（isResultView）でも、
+      //   スマホでは同一の「縦スクロール可能」なオーバーレイにする。
+      //   iOS Safari では position:fixed + height:100% だとスクロールが効かない
+      //   ことがあるため、動的ビューポート高さ(h-dvh)と慣性スクロールを明示する。
+      ? `fixed inset-0 w-full h-[100dvh] flex flex-col bg-[#FDFBF7] overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch] z-50`
       : isResultView
         ? `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-y-auto z-50`
         : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-50`
@@ -697,7 +701,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             </div>
           </div>
 
-          {displayTotalScore != null && (
+          {/* 固定ヘッダーの Score 表示は削除。
+              結果表示画面（isResultView）では下部の「RESULT SCORE」カード内にのみ Score を表示し、
+              固定ヘッダーには「単元選択に戻る」ボタンのみを残す。
+              1問ごとの答え合わせ（!isResultView）でのみ、進行中スコアを従来どおりヘッダーに表示する。 */}
+          {!isResultView && displayTotalScore != null && (
             <motion.div
               key={scorePulse ? 'a' : 'b'}
               initial={{ scale: 1.15 }}
@@ -1058,6 +1066,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     isMobile={isMobile}
                     renderSubQuestionCheck={renderSubQuestionCheck}
                     zoom={isMobile ? 'normal' : 'far'}
+                    collapsible
                   />
                 </div>
               )}
