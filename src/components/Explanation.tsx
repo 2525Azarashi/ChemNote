@@ -635,6 +635,38 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     setExpandedCorrectQuestions(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
+  // 学習フローチャート（ロジックツリー）ブロック。
+  // ・PC/結果表示: 左カラムの問題文の下に表示する。
+  // ・スマホの「1問ごとの答え合わせ（!isResultView）」: 縦積み1カラムで
+  //   「問題文 → 採点結果 → 学習フローチャート」の順にするため、
+  //   採点結果より後ろ（order-3）に配置し直す。
+  const hasFlowchart = ['c1_1', 'c1_2_A', 'c1_2_B', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4', 'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapter?.id)
+    || chapter?.id === 'c5' || chapter?.id?.startsWith('c5_')
+    || chapter?.id === 'c6' || chapter?.id?.startsWith('c6_');
+  const flowchartBlock = hasFlowchart ? (
+    <div className="mt-6 border-t pt-4 border-gray-200">
+      <PracticeExplanationTree
+        deepThoughtData={deepThoughtData}
+        chapter={chapter}
+        questions={questions}
+        handleQuestionClick={handleQuestionClick}
+        expandedStep={expandedStep}
+        setExpandedStep={setExpandedStep}
+        expandedNodeId={expandedNodeId}
+        scrollTrigger={scrollTrigger}
+        isMobile={isMobile}
+        renderSubQuestionCheck={renderSubQuestionCheck}
+        zoom={isMobile ? 'normal' : 'far'}
+        collapsible
+      />
+    </div>
+  ) : null;
+
+  // スマホの1問ごとの答え合わせ（!isResultView）だけ、縦積みの並び順を
+  // 「問題文 → 採点結果 → 学習フローチャート」に組み替える。
+  // それ以外（PC、結果表示画面）は従来どおり左カラム内にフローチャートを表示する。
+  const reorderMobile = isMobile && !isResultView;
+
   const content = (
     <div
       // C6: 解答後に表示される解説領域をスクリーンリーダーが読み上げられるよう、
@@ -967,7 +999,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             ? `border-none shadow-none`
             : `border-none shadow-none flex-1 flex flex-col h-full min-h-0 overflow-hidden`
         }>
-          <div className={isMobile
+          <div className={reorderMobile
+            // スマホの1問ごとの答え合わせは flex-col + order で
+            // 「問題文 → 採点結果 → 学習フローチャート」に並べ替える。
+            ? "flex flex-col gap-6 p-4 sm:p-6 md:p-8"
+            : isMobile
             ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8"
             : isResultView
               ? "grid grid-cols-1 lg:grid-cols-[58%_42%] gap-6 p-0 items-start"
@@ -977,7 +1013,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             {/* LEFT COLUMN: Problem statements and flowcharts
                 結果表示では独自スクロール（lg:h-full/overflow-y-auto）を付けず、
                 ページ全体のスクロールに任せる。 */}
-            <div className={`space-y-6 pb-8 min-w-0 ${isResultView ? 'lg:pr-4' : 'lg:overflow-y-auto lg:h-full lg:pr-4'}`}>
+            <div className={`space-y-6 pb-8 min-w-0 ${reorderMobile ? 'order-1' : ''} ${isResultView ? 'lg:pr-4' : 'lg:overflow-y-auto lg:h-full lg:pr-4'}`}>
               {singleQuestionIndex === undefined && (
                 <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
                   <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
@@ -1047,33 +1083,17 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               ) : null}
               </div>
               
-              {/* Flowchart (Logical Tree) - Moved under problem statement inside Left Column
+              {/* Flowchart (Logical Tree) - 問題文の下に表示（左カラム内）。
                   ※ 専用のフローチャートが用意されている章のみ表示する。
-                     （c5 酸と塩基 / c6 酸化還元 などは専用ツリーが無いため、別単元のツリーを誤表示しない） */}
-              {(['c1_1', 'c1_2_A', 'c1_2_B', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4', 'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapter?.id)
-                || chapter?.id === 'c5' || chapter?.id?.startsWith('c5_')
-                || chapter?.id === 'c6' || chapter?.id?.startsWith('c6_')) && (
-                <div className="mt-6 border-t pt-4 border-gray-200">
-                  <PracticeExplanationTree
-                    deepThoughtData={deepThoughtData}
-                    chapter={chapter}
-                    questions={questions}
-                    handleQuestionClick={handleQuestionClick}
-                    expandedStep={expandedStep}
-                    setExpandedStep={setExpandedStep}
-                    expandedNodeId={expandedNodeId}
-                    scrollTrigger={scrollTrigger}
-                    isMobile={isMobile}
-                    renderSubQuestionCheck={renderSubQuestionCheck}
-                    zoom={isMobile ? 'normal' : 'far'}
-                    collapsible
-                  />
-                </div>
-              )}
+                     （c5 酸と塩基 / c6 酸化還元 などは専用ツリーが無いため、別単元のツリーを誤表示しない）
+                  ※ スマホの1問ごとの答え合わせ（reorderMobile）では、採点結果の後ろ（order-3）に
+                     別途表示するため、ここ（左カラム内）では表示しない。 */}
+              {!reorderMobile && flowchartBlock}
             </div>
 
-            {/* RIGHT COLUMN: Answers, grading, and explanations */}
-            <div className={`space-y-6 lg:pl-4 lg:pr-4 pb-8 min-w-0 ${isResultView ? '' : 'lg:overflow-y-auto lg:h-full'}`}>
+            {/* RIGHT COLUMN: Answers, grading, and explanations
+                （スマホの1問ごとの答え合わせでは order-2 = 問題文の直後に表示） */}
+            <div className={`space-y-6 lg:pl-4 lg:pr-4 pb-8 min-w-0 ${reorderMobile ? 'order-2' : ''} ${isResultView ? '' : 'lg:overflow-y-auto lg:h-full'}`}>
               {questions.length > 0 ? (
                 questions.map((question: any, qIndex: number) => {
                 return (
@@ -1600,6 +1620,15 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             }
           </div>
         </div>
+
+        {/* 学習フローチャート（スマホの1問ごとの答え合わせのみ）
+            縦積み順を「問題文 → 採点結果 → 学習フローチャート」にするため、
+            order-3 として採点結果（RIGHT COLUMN）の後ろに配置する。 */}
+        {reorderMobile && flowchartBlock && (
+          <div className="order-3 min-w-0">
+            {flowchartBlock}
+          </div>
+        )}
       </div>
       </div>
       </div>
