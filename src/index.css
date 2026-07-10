@@ -375,86 +375,14 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
  * 背後にホーム等の前画面が透けて見えないようにする。
  * ========================================================= */
 /* -----------------------------------------------------------------
- * スマホ:解答解説の「俯瞰(fit-to-screen)」レイアウト
+ * スマホ:解答解説の「自然フィット + 縦スクロール」レイアウト
  * -----------------------------------------------------------------
- * 縦スクロールでは下部の学習フローチャート等が閲覧できない不具合があった。
- * そこで PC版と同様に、全体を画面内に収める縮小(俯瞰)表示を初期状態とし、
- * 詳細はブラウザ標準のピンチアウト(拡大)で自由に確認できるようにする。
- *
- * - overlay : 画面全体を覆う固定領域。自前スクロールはしない（overflow:hidden）。
- *             拡大操作はブラウザのビューポートズームに委ねる。
- * - scaler  : 基準幅(768px)で組んだレイアウト全体を transform:scale で縮小する層。
- * - content : 実際の解説コンテンツ本体（実寸計測の対象）。
+ * 画面全体を無理に縮小する俯瞰表示はやめ、スマートフォンの画面幅に
+ * 自然にフィットする通常サイズのレイアウトで表示する。
+ * 内容が収まりきらない場合は通常の縦スクロールで閲覧できる。
+ * 図・フローチャートなど横幅の大きい要素だけは個別にピンチ拡大を許容する。
+ * （wrapper 側の overflow / scale 制御は Explanation.tsx 内の Tailwind クラスで行う）
  * ----------------------------------------------------------------- */
-.explanation-overview-overlay {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 50;
-  background-color: var(--color-surface, #FDFBF7);
-  /* 縦スクロール前提をやめ、全体を画面内に収める俯瞰表示にする。 */
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* ピンチアウトによる拡大・パンを許可（縦スクロールへ固定しない）。 */
-  touch-action: pan-x pan-y pinch-zoom;
-}
-.explanation-overview-scaler {
-  /* 基準幅は JS 側からインラインスタイルで width / transform を指定する。 */
-  flex: none;
-  transform-origin: top center;
-  /* 縮小アニメーションで初期表示のガタつきを軽減。 */
-  transition: transform 0.15s ease-out;
-  will-change: transform;
-}
-.explanation-overview-content {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-/* ピンチアウト操作のヒント（俯瞰表示の初期に表示し、数秒でフェードアウト）。 */
-.explanation-pinch-hint {
-  position: fixed;
-  top: calc(env(safe-area-inset-top, 0px) + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 60;
-  max-width: 92vw;
-  white-space: nowrap;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 6px 12px;
-  border-radius: 9999px;
-  color: #fff;
-  background-color: rgba(27, 38, 49, 0.88);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  pointer-events: none;
-  animation: fadeOutExplanationHint 0.5s ease-out 4.5s forwards;
-}
-
-/* 後方互換：旧クラス名が残っていても最低限崩れないようにフォールバックしておく。 */
-.explanation-desktop-wrapper {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 50;
-  background-color: var(--color-surface, #FDFBF7);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.explanation-desktop-content {
-  width: 100%;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
 .explanation-scroll-hint {
   position: sticky;
   top: 0;

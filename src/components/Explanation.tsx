@@ -92,66 +92,6 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   // isMobileView が渡された場合（スマホプレビュー枠）はそれを優先する。
   const isMobile = useIsMobile(isMobileView);
 
-  // 【スマホ:俯瞰(fit-to-screen)レイアウト】
-  // 縦スクロール方式ではなく、PC版と同じレイアウトを「基準幅」で描画し、
-  // その全体を画面内に収まるよう自動縮小(scale)して俯瞰表示する。
-  // 詳細を見たい箇所はブラウザ標準のピンチアウト(拡大)で自由に拡大できる。
-  //  - overlayRef  : 画面全体のオーバーレイ（表示可能領域）
-  //  - contentRef  : 基準幅で描画された解説コンテンツ本体（実寸を計測する対象）
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  // 俯瞰表示のための基準幅（スマホでも PC 相当のレイアウトで描画するための論理幅）。
-  const MOBILE_OVERVIEW_BASE_WIDTH = 768;
-  const [overviewScale, setOverviewScale] = useState<number>(1);
-
-  // コンテンツ実寸とオーバーレイ表示領域から、全体が収まる縮小率を計算する。
-  useEffect(() => {
-    if (!isMobile) return;
-
-    const recompute = () => {
-      const overlay = overlayRef.current;
-      const contentEl = contentRef.current;
-      if (!overlay || !contentEl) return;
-
-      // 表示可能領域（オーバーレイの内寸）。
-      const availW = overlay.clientWidth;
-      const availH = overlay.clientHeight;
-
-      // 基準幅で描画されたコンテンツの実寸（縮小前）。
-      const naturalW = MOBILE_OVERVIEW_BASE_WIDTH;
-      const naturalH = contentEl.scrollHeight;
-      if (!availW || !availH || !naturalH) return;
-
-      // 幅・高さの両方が収まる縮小率を採用（全体が俯瞰できるようにする）。
-      // 1.0 を上限とし、コンテンツが小さい場合に無理な拡大はしない。
-      const scale = Math.min(availW / naturalW, availH / naturalH, 1);
-      setOverviewScale(scale > 0 ? scale : 1);
-    };
-
-    // 初期計算 & 次フレームでの再計算（レイアウト確定後の実寸を取得するため）。
-    recompute();
-    const raf = requestAnimationFrame(recompute);
-    const t = setTimeout(recompute, 200);
-
-    // コンテンツ高さの変化（設問展開など）にも追従する。
-    let ro: ResizeObserver | null = null;
-    if (typeof ResizeObserver !== 'undefined' && contentRef.current) {
-      ro = new ResizeObserver(() => recompute());
-      ro.observe(contentRef.current);
-    }
-    window.addEventListener('resize', recompute);
-    window.addEventListener('orientationchange', recompute);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(t);
-      if (ro) ro.disconnect();
-      window.removeEventListener('resize', recompute);
-      window.removeEventListener('orientationchange', recompute);
-    };
-    // 展開状態などが変わるたびに再計算する。
-  }, [isMobile, expandedSq, expandedStep, expandedNodeId, expandedCorrectQuestions, selfGrades, singleQuestionIndex, chapter.id]);
-
   const stepColors: Record<string, string> = {
     "1": "bg-red-500/20 text-red-700 border-red-500/50 hover:bg-red-500/30",
     "2": "bg-blue-500/20 text-blue-700 border-blue-500/50 hover:bg-blue-500/30",
@@ -216,18 +156,18 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     window.scrollTo(0, 0);
   }, [singleQuestionIndex, chapter.id]);
 
-  // Set viewport to allow zoom/pinch out on explanation pages.
-  //
-  // 【俯瞰(fit-to-screen) + ピンチアウト前提のUI】
-  // 解答解説画面は、初期状態では全体を画面内に収める縮小(俯瞰)表示とし
-  // （縮小自体は CSS transform:scale で行う。overviewScale を参照）、
-  // 詳細を確認したい箇所はブラウザ標準のピンチアウト(拡大)で自由に拡大できる。
-  // そのため、この画面ではユーザーによるピンチズームを許可する。
+  // 【スマホ:自然フィット + 縦スクロール前提のUI】
+  // 解答解説・結果表示画面は、スマートフォンの画面幅に自然にフィットする
+  // 通常サイズのレイアウトで表示する（画面全体を無理に縮小＝俯瞰表示はしない）。
+  // 内容が画面に収まらない場合は通常の縦スクロールで閲覧できるようにする。
+  // 図・フローチャートなど横幅の大きい要素だけは、必要に応じて個別に
+  // ピンチイン・アウトで拡大できるよう、ページ全体のズーム自体は許可しておく
+  // （ただし初期表示は等倍 = scale 1.0）。
   //
   // あわせて、直前の画面（クイズ等）で残っていたズーム倍率をそのまま
   // 引き継いで意図せず拡大表示される不具合を防ぐため、遷移直後にまず
   // 「拡大禁止の scale=1.0 固定」を一度当ててブラウザのズーム状態を初期化し、
-  // 次フレームでピンチズームを許可する2段階処理にする。
+  // 次フレームでピンチズームを再許可する2段階処理にする。
   // スクロール位置も最上部にリセットしてから表示する。
   useEffect(() => {
     const meta = document.querySelector('meta[name="viewport"]');
@@ -237,18 +177,17 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     window.scrollTo(0, 0);
 
     if (meta) {
-      // ② 拡大禁止の scale=1.0 を一旦強制適用 → ブラウザのズームを初期状態に戻す
+      // ② 拡大禁止の scale=1.0 を一旦強制適用 → ブラウザのズームを初期状態(等倍)に戻す
       meta.setAttribute(
         'content',
         'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
       );
-      // ③ 次フレームで、閲覧のためのピンチズームを再度許可する。
-      //    俯瞰表示は大きく縮小される場合があるため、細部（フローチャート等）まで
-      //    しっかり拡大できるよう最大倍率は大きめ（10倍）に設定する。
+      // ③ 次フレームで、図・フローチャートなどを個別に拡大できるようピンチズームを再許可する。
+      //    初期は等倍のままなので、通常のコンテンツは縮小されず読みやすいサイズで表示される。
       requestAnimationFrame(() => {
         meta.setAttribute(
           'content',
-          'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=10.0, user-scalable=yes, viewport-fit=cover'
+          'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover'
         );
       });
     }
@@ -703,40 +642,21 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       role="region"
       aria-live="polite"
       aria-label="解答と解説"
-      ref={isMobile ? overlayRef : undefined}
       className={isMobile
-      // 【スマホ:俯瞰(fit-to-screen)】
-      // 縦スクロール方式をやめ、全体を画面内に収める俯瞰オーバーレイにする。
-      // 自前のスクロールは行わず、閲覧はブラウザ標準のピンチアウト(拡大)に委ねる。
-      ? `explanation-overview-overlay`
+      // 【スマホ:自然フィット + 縦スクロール】
+      // 画面幅に自然にフィットする通常サイズのレイアウトで表示し、
+      // 収まりきらない場合は通常の縦スクロールで閲覧できるようにする。
+      ? `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-y-auto z-50`
       : isResultView
         ? `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-y-auto z-50`
         : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-50`
     }>
-      {/* ピンチアウト操作を促すヒント（スマホの俯瞰表示のみ）。
-          スケーリングの影響を受けないよう scaler の外側に固定表示する。 */}
-      {isMobile && (
-        <div className="explanation-pinch-hint" aria-hidden="true">
-          <Search size={12} className="inline-block -mt-0.5 mr-1" />
-          全体表示中：ピンチで拡大して確認できます
-        </div>
-      )}
-      {/* 俯瞰表示のためのスケーリング層（スマホのみ）。
-          基準幅で描画したコンテンツ全体を、画面に収まる縮小率で表示する。 */}
-      <div
-        className={isMobile ? "explanation-overview-scaler" : "w-full h-full flex flex-col"}
-        style={isMobile ? {
-          width: `${MOBILE_OVERVIEW_BASE_WIDTH}px`,
-          transform: `scale(${overviewScale})`,
-          transformOrigin: 'top center',
-        } : undefined}
-      >
-      <div ref={isMobile ? contentRef : undefined} className={isMobile ? "explanation-overview-content" : (isResultView ? "w-full min-h-full flex flex-col" : "w-full h-full flex flex-col")}>
+      <div className={isMobile ? "w-full min-h-full flex flex-col" : (isResultView ? "w-full min-h-full flex flex-col" : "w-full h-full flex flex-col")}>
         <div className={isMobile 
-          ? `w-full rounded-3xl overflow-visible shadow-2xl border font-handwriting relative ${
+          ? `w-full flex flex-col font-handwriting relative ${
               mode === 'mini_test' 
-                ? 'bg-white text-gray-800 border-gray-100' 
-                : 'bg-[#0B132B] text-[#E0E1DD] border-[#1C2541]'
+                ? 'bg-white text-gray-800' 
+                : 'bg-[#0B132B] text-[#E0E1DD]'
             }`
           : `${isResultView ? 'w-full min-h-full' : 'w-full h-full'} flex flex-col font-handwriting relative ${
               mode === 'mini_test' 
@@ -970,8 +890,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             </h3>
             
             <div className={isMobile
-              // スマホの俯瞰表示では内部スクロールを設けず、全カードをそのまま並べて
-              // 画面縮小(俯瞰)で一望できるようにする（40vhで途中クリップしない）。
+              // スマホでは内部スクロール（40vh固定）を設けず、全カードをそのまま並べて
+              // ページ全体の縦スクロールで閲覧できるようにする（途中でクリップしない）。
               ? "grid grid-cols-1 gap-4"
               : "grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 overflow-y-auto max-h-[40vh] md:max-h-[34vh] pr-1 -mr-1"}>
               {weakAreas.map((area) => (
@@ -1511,7 +1431,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             <Lightbulb className={`w-4 h-4 ${mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]'}`} />
                             <span>解説</span>
                           </h4>
-                          <div className={`font-math text-xs md:text-sm whitespace-pre-wrap leading-relaxed ${
+                          {/* 解説本文の地の文は手書き風フォントで統一する。
+                              （数式・化学式は formatText 内で個別に serif/Cambria Math を指定しているため崩れない） */}
+                          <div className={`font-handwriting text-xs md:text-sm whitespace-pre-wrap leading-relaxed ${
                             mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'
                           }`}>
                             {formatText(explanationText)}
@@ -1550,11 +1472,14 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" />
                 つまずきポイント
               </h4>
-              {/* モバイルでは窮屈にならないよう1カラム＋広めの余白・大きめの文字にする。
-                  PCでは従来通り2カラムで表示する。 */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
+              {/* つまずきポイントは縦積みではなく「横並び」にして横幅を活かす。
+                  - スマホ: 横スクロール可能な行にして、各カードは読みやすい幅を確保する。
+                  - PC   : 従来通りグリッドで2カラム表示。 */}
+              <div className={isMobile
+                ? "flex flex-row gap-4 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory"
+                : "grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5"}>
                 {deepThoughtData.phase2.stumblingPoints.map((point: any, idx: number) => (
-                  <div key={idx} className={`p-5 sm:p-6 pl-6 sm:pl-7 rounded-2xl border shadow-sm relative overflow-hidden ${mode === 'mini_test' ? 'bg-red-50 border-red-200' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30'}`}>
+                  <div key={idx} className={`p-5 sm:p-6 pl-6 sm:pl-7 rounded-2xl border shadow-sm relative overflow-hidden ${isMobile ? 'shrink-0 w-[80%] max-w-[320px] snap-start' : ''} ${mode === 'mini_test' ? 'bg-red-50 border-red-200' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30'}`}>
                     <div className={`absolute top-0 left-0 w-2 h-full ${mode === 'mini_test' ? 'bg-red-500' : 'bg-[#D9A0A0]'}`}></div>
                     <div className="flex items-center flex-wrap gap-2 mb-2.5">
                       <div className={`text-xs md:text-sm font-bold px-2.5 py-1 rounded-lg border ${mode === 'mini_test' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
@@ -1666,7 +1591,6 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             }
           </div>
         </div>
-      </div>
       </div>
       </div>
       </div>
