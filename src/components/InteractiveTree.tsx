@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronRight, Info, Network } from 'lucide-react';
+import { X, ChevronRight, Info, Network, ChevronDown, ChevronUp } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { formatText } from '../utils/textFormatter';
@@ -113,7 +113,14 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
   return (
     <div className="flex flex-col w-full min-w-0 font-handwriting">
       <div className="relative z-10 w-full min-w-0 font-handwriting" id={`node-${node.id}`}>
-        <div className="flex items-start gap-2 sm:gap-3 min-w-0">
+        {/* 【補足説明文(subLabel)の縦書き解消】
+            以前はボタン(shrink-0)と subLabel を常に横並び(flex-row)にしていたため、
+            横幅の狭いスマホや深い階層では subLabel の領域が極端に細くなり、
+            1文字ずつ改行されて「縦書き」のように読みにくくなっていた。
+            そこで、狭い画面では縦積み(flex-col)にして subLabel を
+            ノードの下に「全幅で横書き」表示し、十分な幅がある画面(sm以上)でのみ
+            従来どおり横並びにする。 */}
+        <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3 min-w-0">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => hasContent && onSelect(node)}
@@ -134,8 +141,10 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
           {node.subLabel && (
             <span
               className={cn(
-                // 横スクロールを完全に無くすため、subLabel は常に折り返し可能にする。
-                "text-slate-600 font-medium font-handwriting min-w-0 flex-1 whitespace-normal break-words leading-tight self-center",
+                // subLabel は常に横書き（whitespace-normal で単語単位に折り返す）。
+                // 狭い画面では上のボタンの下に全幅で回り込み、
+                // sm 以上では flex-1 で残り幅いっぱいを使って横書き表示する。
+                "text-slate-600 font-medium font-handwriting w-full sm:w-auto sm:flex-1 min-w-0 whitespace-normal break-words leading-snug sm:self-center pl-1 sm:pl-0",
                 subLabelSize
               )}
             >
@@ -217,6 +226,13 @@ export interface InteractiveTreeProps {
   focusNode?: string;
   zoom?: 'far' | 'normal';
   mobileTightCrop?: boolean;
+  /**
+   * true のとき、ヘッダーに「ツリー全体を開閉するボタン(▲/▼)」を表示し、
+   * ワンタップでロジックツリー本体をまるごと折りたたみ／展開できるようにする。
+   */
+  collapsibleAll?: boolean;
+  /** ツリー全体の初期表示状態（true=最初から折りたたむ）。既定は展開表示。 */
+  defaultCollapsed?: boolean;
 }
 
 export function InteractiveTree({ 
@@ -229,9 +245,13 @@ export function InteractiveTree({
   step,
   focusNode,
   zoom = 'normal',
-  mobileTightCrop = false
+  mobileTightCrop = false,
+  collapsibleAll = false,
+  defaultCollapsed = false
 }: InteractiveTreeProps) {
   const [expandedNodeIds, setExpandedNodeIds] = useState<string[]>([]);
+  // ツリー全体の開閉状態（collapsibleAll のときのみ使用）
+  const [treeCollapsed, setTreeCollapsed] = useState<boolean>(collapsibleAll ? defaultCollapsed : false);
 
   useEffect(() => {
     const effectiveExpandedStep = expandedStep || step || null;
@@ -321,36 +341,78 @@ export function InteractiveTree({
           モバイルで1画面に収めるため、tightCrop 時はヘッダー下の余白を圧縮する。 */}
       <div className={cn(
         "flex items-center justify-between font-handwriting",
-        mobileTightCrop ? "mb-3 sm:mb-6 md:mb-8" : "mb-6 sm:mb-8"
+        // 折りたたみ時はヘッダー下の余白を詰める（本体が非表示のため）
+        (collapsibleAll && treeCollapsed) ? "mb-0" : (mobileTightCrop ? "mb-3 sm:mb-6 md:mb-8" : "mb-6 sm:mb-8")
       )}>
-        <h4 className="text-slate-800 font-bold flex items-center gap-2 text-sm sm:text-base md:text-lg font-handwriting">
-          <Network className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
-          学習フローチャート
-        </h4>
-        <div className="flex flex-wrap gap-1 md:gap-3 text-[9px] sm:text-xs font-bold justify-end font-handwriting">
-          <div className="flex items-center gap-1 text-orange-700 bg-orange-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border border-orange-200 font-handwriting">
-            <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-            Step 1
+        {/* collapsibleAll のときはタイトル部分自体を「ツリー全体の開閉ボタン」にする */}
+        {collapsibleAll ? (
+          <button
+            type="button"
+            onClick={() => setTreeCollapsed(v => !v)}
+            aria-expanded={!treeCollapsed}
+            aria-label={treeCollapsed ? 'ロジックツリーを開く' : 'ロジックツリーを閉じる'}
+            className="group flex items-center gap-2 text-slate-800 font-bold text-sm sm:text-base md:text-lg font-handwriting rounded-lg px-1 -mx-1 py-0.5 hover:bg-slate-100 transition-colors"
+          >
+            <Network className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 shrink-0" />
+            <span>学習フローチャート</span>
+            <span className="flex items-center gap-1 ml-1 text-[10px] sm:text-xs font-bold text-slate-500 bg-white border border-slate-200 rounded-full px-2 py-0.5 group-hover:border-blue-300 group-hover:text-blue-600 transition-colors">
+              {treeCollapsed ? (
+                <>
+                  <ChevronDown className="w-3.5 h-3.5" />
+                  開く
+                </>
+              ) : (
+                <>
+                  <ChevronUp className="w-3.5 h-3.5" />
+                  閉じる
+                </>
+              )}
+            </span>
+          </button>
+        ) : (
+          <h4 className="text-slate-800 font-bold flex items-center gap-2 text-sm sm:text-base md:text-lg font-handwriting">
+            <Network className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+            学習フローチャート
+          </h4>
+        )}
+        {/* Step 凡例：ツリー全体を閉じているときは非表示にしてヘッダーをすっきりさせる */}
+        {!(collapsibleAll && treeCollapsed) && (
+          <div className="flex flex-wrap gap-1 md:gap-3 text-[9px] sm:text-xs font-bold justify-end font-handwriting">
+            <div className="flex items-center gap-1 text-orange-700 bg-orange-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border border-orange-200 font-handwriting">
+              <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+              Step 1
+            </div>
+            <div className="flex items-center gap-1 text-emerald-700 bg-emerald-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border border-emerald-200 font-handwriting">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              Step 2
+            </div>
+            <div className="flex items-center gap-1 text-blue-700 bg-blue-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border border-blue-200 font-handwriting">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+              Step 3
+            </div>
           </div>
-          <div className="flex items-center gap-1 text-emerald-700 bg-emerald-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border border-emerald-200 font-handwriting">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            Step 2
-          </div>
-          <div className="flex items-center gap-1 text-blue-700 bg-blue-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border border-blue-200 font-handwriting">
-            <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-            Step 3
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Tree Container
           横スクロールを無くし、幅は親要素（画面幅）に収める。
-          深い階層のノードも折り返し・縮小して1画面幅内に表示する。 */}
-      <div className="pb-4 w-full min-w-0 overflow-x-hidden">
-        <div className="w-full min-w-0">
-          <TreeNode node={data} onSelect={handleSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} depth={0} isMobile={mobileTightCrop} />
-        </div>
-      </div>
+          深い階層のノードも折り返し・縮小して1画面幅内に表示する。
+          collapsibleAll 時は treeCollapsed で本体をまるごと開閉する。 */}
+      <AnimatePresence initial={false}>
+        {!(collapsibleAll && treeCollapsed) && (
+          <motion.div
+            key="tree-body"
+            initial={collapsibleAll ? { opacity: 0, height: 0 } : false}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden pb-4 w-full min-w-0 overflow-x-hidden"
+          >
+            <div className="w-full min-w-0">
+              <TreeNode node={data} onSelect={handleSelect} expandedNodeIds={expandedNodeIds} renderContent={renderContent} onQuestionClick={onQuestionClick} zoom={zoom} depth={0} isMobile={mobileTightCrop} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
