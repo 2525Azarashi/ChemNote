@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Monitor, Smartphone, Volume2, VolumeX, Home as HomeIcon, BookOpen, User, Settings, Trophy } from 'lucide-react';
+import { Smartphone, Volume2, VolumeX, Home as HomeIcon, BookOpen, User, Settings, Trophy } from 'lucide-react';
 import { Home } from './components/Home';
 import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
@@ -47,7 +47,9 @@ export default function App() {
       return {};
     }
   });
-  const [forceDesktop, setForceDesktop] = useState(false);
+  // スマホ端末では常にスマホ向けレイアウトで表示するため、PC/スマホ切り替えは廃止。
+  // 既存の判定ロジック（shouldForceDesktopUI / isMobileExplanation）との互換のため定数 false を保持する。
+  const forceDesktop = false;
   const [isMobilePreview, setIsMobilePreview] = useState(false);
   // ユーザーエージェントによるモバイル端末判定（初回のみ・不変）。
   // 画面幅の判定は共有フック useIsMobile に一元化する（C2）。
@@ -498,21 +500,8 @@ export default function App() {
             onError={handleAudioError}
           />
           
-          {/* Mobile/Desktop Display Toggle Button (For actual mobile devices)
-              - aria-label と title を日本語で付与し、用途を明示
-              - スクリーンリーダーで「PC表示に切り替え／スマホ表示に戻す」と読み上げ可能 */}
-          {isMobileDevice && (
-            <div className="fixed bottom-28 right-4 z-[9999]">
-              <button
-                onClick={() => setForceDesktop(!forceDesktop)}
-                aria-label={forceDesktop ? "スマホ表示に戻す" : "PC表示に切り替え"}
-                title={forceDesktop ? "スマホ表示に戻す" : "PC表示に切り替え（タブレット/PCレイアウトで閲覧）"}
-                className={`bg-white rounded-full shadow-xl border-2 border-[#A9CCE3] flex items-center justify-center text-gray-600 hover:text-[#1B2631] transition-all ${forceDesktop ? 'p-5 scale-150 origin-bottom-right' : 'p-3'}`}
-              >
-                {forceDesktop ? <Smartphone size={28} className="text-[#A9CCE3]" aria-hidden="true" /> : <Monitor size={24} aria-hidden="true" />}
-              </button>
-            </div>
-          )}
+          {/* スマホ版の「パソコン版・スマホ版の切り替えボタン」は削除。
+              （スマホ端末では常にスマホ向けレイアウトで表示する。forceDesktop は false 固定） */}
 
           <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : (isFullBleed ? 'max-w-none' : 'max-w-5xl')}`}>
             {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
