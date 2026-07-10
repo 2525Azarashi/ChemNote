@@ -171,6 +171,8 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
             renderContent={renderContent}
             mobileTightCrop={collapsible ? true : isMobile}
             zoom={collapsible ? 'far' : (zoom as 'far' | 'normal')}
+            /* 結果表示画面ではツリー全体をワンタップで開閉できるようにする */
+            collapsibleAll={collapsible}
           />
         </div>
       </div>
