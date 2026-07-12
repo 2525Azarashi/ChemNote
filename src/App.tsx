@@ -29,6 +29,7 @@ import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIsMobile } from './hooks/useMediaQuery';
 import { MobileViewWrapper } from './components/MobileViewWrapper';
 import { countIncomingFriendRequests } from './utils/friends';
+import { applyOverviewViewport } from './utils/viewportControl';
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
@@ -265,22 +266,9 @@ export default function App() {
       if (shouldForceDesktopUI) {
         // 解答解説画面：俯瞰UI。常に PC 版レイアウト（width=1024）で描画し、
         // 初期表示は全体が画面内に収まる縮小倍率（fit scale）にする。
-        // minimum-scale=fit で「全体俯瞰」までピンチインで戻れ、
-        // maximum-scale=5.0 で詳細を確認したい箇所を自由に拡大できる。
-        // iOS Safari は同じ width のままだと initial-scale の再適用を無視することがあるため、
-        // 一度 device-width にリセットしてから width=1024 を適用する2段階処理にする。
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
-        requestAnimationFrame(() => {
-          // fit scale は device-width リセット後の innerWidth から算出する。
-          // （リセット前に読むと、直前の viewport が width=1024 だった場合に
-          //   innerWidth≒1024 → scale=1 となり、俯瞰の縮小表示にならないため）
-          const deviceWidth = Math.min(
-            window.innerWidth || 0,
-            (window.screen && window.screen.width) || Infinity
-          ) || window.innerWidth;
-          const scale = Math.min(1, deviceWidth / 1024);
-          viewport.setAttribute('content', `width=1024, initial-scale=${scale}, minimum-scale=${scale}, maximum-scale=5.0, user-scalable=yes`);
-        });
+        // 実装は viewportControl.applyOverviewViewport に一元化。
+        // （ページ遷移毎のズームリセットは Explanation 側でも同関数を呼ぶ）
+        applyOverviewViewport();
       } else {
         // モバイルへ戻る/遷移する際に、以前の desktop スケールが残って
         // 「異常にズームされた状態」で切り替わるのを防ぐため、一度スケールを
