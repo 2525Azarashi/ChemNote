@@ -156,55 +156,17 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     window.scrollTo(0, 0);
   }, [singleQuestionIndex, chapter.id]);
 
-  // 【スマホ:自然フィット + 縦スクロール前提のUI】
-  // 解答解説・結果表示画面は、スマートフォンの画面幅に自然にフィットする
-  // 通常サイズのレイアウトで表示する（画面全体を無理に縮小＝俯瞰表示はしない）。
-  // 内容が画面に収まらない場合は通常の縦スクロールで閲覧できるようにする。
-  // 図・フローチャートなど横幅の大きい要素だけは、必要に応じて個別に
-  // ピンチイン・アウトで拡大できるよう、ページ全体のズーム自体は許可しておく
-  // （ただし初期表示は等倍 = scale 1.0）。
+  // 【スマホ:俯瞰UI＋ピンチアウト前提】
+  // 解答解説・結果表示画面は、スマホでも PC 版と同じ俯瞰レイアウト
+  // （width=1024 viewport ＋ 全体が画面内に収まる縮小表示）で表示する。
+  // 詳細を確認したい箇所はピンチアウト（拡大操作）で自由にズームできる。
   //
-  // あわせて、直前の画面（クイズ等）で残っていたズーム倍率をそのまま
-  // 引き継いで意図せず拡大表示される不具合を防ぐため、遷移直後にまず
-  // 「拡大禁止の scale=1.0 固定」を一度当ててブラウザのズーム状態を初期化し、
-  // 次フレームでピンチズームを再許可する2段階処理にする。
-  // スクロール位置も最上部にリセットしてから表示する。
-  useEffect(() => {
-    const meta = document.querySelector('meta[name="viewport"]');
-    const originalContent = meta?.getAttribute('content') || '';
-
-    // ① まずスクロール位置を最上部へ（前画面のスクロール位置を引き継がない）
-    window.scrollTo(0, 0);
-
-    if (meta) {
-      // ② 拡大禁止の scale=1.0 を一旦強制適用 → ブラウザのズームを初期状態(等倍)に戻す
-      meta.setAttribute(
-        'content',
-        'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
-      );
-      // ③ 次フレームで、図・フローチャートなどを個別に拡大できるようピンチズームを再許可する。
-      //    初期は等倍のままなので、通常のコンテンツは縮小されず読みやすいサイズで表示される。
-      requestAnimationFrame(() => {
-        meta.setAttribute(
-          'content',
-          'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover'
-        );
-      });
-    }
-
-    return () => {
-      if (meta) {
-        // 離脱時も一旦 scale=1.0 に固定してズーム状態をリセットしてから元へ戻す
-        meta.setAttribute(
-          'content',
-          'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
-        );
-        requestAnimationFrame(() => {
-          meta.setAttribute('content', originalContent);
-        });
-      }
-    };
-  }, [singleQuestionIndex, chapter.id]);
+  // viewport メタタグの書き換えは App.tsx の shouldForceDesktopUI effect に
+  // 一元化した。以前はここでも viewport を書き換えており、App / Quiz と
+  // 3箇所で競合して effect の実行順序次第で「PC版レイアウト × device-width
+  // viewport」の組み合わせになり、初回表示時のみ縦スクロール不能（リロードで
+  // 解消）という不安定な挙動が発生していたため、当コンポーネントからの
+  // viewport 操作は廃止した。
 
   const handleSaveNote = async (question: any, index: number) => {
     const displayIndex = singleQuestionIndex !== undefined ? singleQuestionIndex : index;
