@@ -10,6 +10,7 @@ import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering'
 import { isAnswerCorrect } from '../utils/answerJudge';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
+import { applyOverviewViewport } from '../utils/viewportControl';
 
 /** 表示上の問題番号（問1/【問1】/先頭の 1 など）を消して、進捗表示に統一する。 */
 function cleanQuestionText(text: string): string {
@@ -152,21 +153,23 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const displayTotalScore = baseDisplayScore != null ? baseDisplayScore + selfGradeBonus : null;
   const isResultView = singleQuestionIndex === undefined;
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [singleQuestionIndex, chapter.id]);
-
   // 【スマホ:俯瞰UI＋ピンチアウト前提】
   // 解答解説・結果表示画面は、スマホでも PC 版と同じ俯瞰レイアウト
   // （width=1024 viewport ＋ 全体が画面内に収まる縮小表示）で表示する。
   // 詳細を確認したい箇所はピンチアウト（拡大操作）で自由にズームできる。
   //
-  // viewport メタタグの書き換えは App.tsx の shouldForceDesktopUI effect に
-  // 一元化した。以前はここでも viewport を書き換えており、App / Quiz と
-  // 3箇所で競合して effect の実行順序次第で「PC版レイアウト × device-width
-  // viewport」の組み合わせになり、初回表示時のみ縦スクロール不能（リロードで
-  // 解消）という不安定な挙動が発生していたため、当コンポーネントからの
-  // viewport 操作は廃止した。
+  // 【ページ遷移ごとのズームリセット】
+  // 解答解説ページへ新たに移動する度（次の問題の解説へ移る度）に、
+  // ピンチアウトによる拡大・縮小状態をリセットして初期倍率
+  // （全体が画面に収まる俯瞰表示）へ戻す。前の問題で拡大していた状態を
+  // そのまま次の解説ページへ引き継がないようにするため、
+  // singleQuestionIndex / chapter.id の変化に応じて俯瞰用 viewport を再適用する。
+  // viewport 書き換えの実装は viewportControl.applyOverviewViewport に一元化
+  // されており、App.tsx（画面種別の切替時）と同じ関数を共有する。
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    applyOverviewViewport();
+  }, [singleQuestionIndex, chapter.id]);
 
   const handleSaveNote = async (question: any, index: number) => {
     const displayIndex = singleQuestionIndex !== undefined ? singleQuestionIndex : index;
@@ -1463,14 +1466,16 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" />
                 つまずきポイント
               </h4>
-              {/* つまずきポイントは縦積みではなく「横並び」にして横幅を活かす。
-                  - スマホ: 横スクロール可能な行にして、各カードは読みやすい幅を確保する。
-                  - PC   : 従来通りグリッドで2カラム表示。 */}
-              <div className={isMobile
-                ? "flex flex-row gap-4 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory"
-                : "grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5"}>
+              {/* 【横幅確保のため縦積み1カラムに統一】
+                  つまずきポイントはこのブロック自体が右カラム（俯瞰レイアウト時は
+                  全幅の42% ≈ 430px）の中に置かれるため、さらに2カラムへ分割すると
+                  1カラムあたり約200pxしかなく、文章が縦に細長く折り返されて
+                  非常に読みにくくなっていた。カードを縦積み1カラムにして
+                  1カラムあたりの横幅を十分に確保し、俯瞰の縮小表示でも
+                  文章の形が把握できる可読性を保つ。 */}
+              <div className="grid grid-cols-1 gap-4 md:gap-5">
                 {deepThoughtData.phase2.stumblingPoints.map((point: any, idx: number) => (
-                  <div key={idx} className={`p-5 sm:p-6 pl-6 sm:pl-7 rounded-2xl border shadow-sm relative overflow-hidden ${isMobile ? 'shrink-0 w-[80%] max-w-[320px] snap-start' : ''} ${mode === 'mini_test' ? 'bg-red-50 border-red-200' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30'}`}>
+                  <div key={idx} className={`p-5 sm:p-6 pl-6 sm:pl-7 rounded-2xl border shadow-sm relative overflow-hidden ${mode === 'mini_test' ? 'bg-red-50 border-red-200' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30'}`}>
                     <div className={`absolute top-0 left-0 w-2 h-full ${mode === 'mini_test' ? 'bg-red-500' : 'bg-[#D9A0A0]'}`}></div>
                     <div className="flex items-center flex-wrap gap-2 mb-2.5">
                       <div className={`text-xs md:text-sm font-bold px-2.5 py-1 rounded-lg border ${mode === 'mini_test' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
