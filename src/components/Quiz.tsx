@@ -17,7 +17,7 @@ import {
 import { submitChapterScore } from '../utils/leaderboard';
 import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
-import { useIsDesktop, useIsMobile } from '../hooks/useMediaQuery';
+import { useIsDesktop } from '../hooks/useMediaQuery';
 import { auth } from '../firebase';
 
 interface QuizProps {
@@ -446,10 +446,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // isMobileView が渡された場合（スマホプレビュー枠）はそれを優先する。
   const isDesktop = useIsDesktop(isMobileView !== undefined ? !isMobileView : undefined);
   // 解答解説ページに渡すスマホ判定。
-  // 【スクロール不具合の修正】従来は Explanation に isMobileView={false} を固定で
-  // 渡していたため、実機スマホでも解説がPC版レイアウト（overflow-hidden）で描画され、
-  // 縦スクロールできない不具合があった。ここでスマホ判定を正しく引き渡す。
-  const isMobileForExplanation = useIsMobile(isMobileView);
+  // 【俯瞰UI＋ピンチズーム前提への変更】スマホでも常に PC 版レイアウト
+  // （俯瞰表示）で描画するため、常に false を渡す。縮小/拡大は
+  // App.tsx の viewport 制御（width=1024 ＋ fit scale ＋ ピンチズーム許可）に委ねる。
+  const isMobileForExplanation = false;
 
   // 直前に表示していた問題のインデックスを保持（離脱した問題の回答リセット用）
   const prevQuestionIndexRef = useRef(currentQuestionIndex);
@@ -495,22 +495,31 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionIndex]);
 
+  // showingExplanation の状態を App 側（isExplanationView）へ同期する。
+  //
+  // 【俯瞰UI化に伴う修正】viewport の制御は App.tsx の shouldForceDesktopUI
+  // effect に一元化したため、解説表示中かどうかを App が正確に把握できる
+  // 必要がある。従来は各ハンドラ内でのみ onExplanationChange を呼んでいたため、
+  // localStorage から showingExplanation=true で復元された場合（リロード/再開時）
+  // に App 側と状態がズレ、初回表示だけレイアウトと viewport の組み合わせが
+  // 不整合になる問題があった。effect で常に同期させて確実に一致させる。
+  useEffect(() => {
+    if (onExplanationChange) onExplanationChange(showingExplanation);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showingExplanation]);
+
   // 問題解答画面ではズーム（ピンチ／ダブルタップ）を一切禁止する。
   //
   // 【要件2・利便性向上】
-  // - meta viewport を scale=1.0 固定・user-scalable=no にして拡大を禁止。
-  // - iOS Safari は maximum-scale を後から変えても効かない場合があるため、
+  // - iOS Safari は meta viewport の maximum-scale を後から変えても効かない場合があるため、
   //   gesturestart / gesturechange（ピンチ）と、300ms以内の連続タップ（ダブルタップ）
   //   を JS で明示的に抑止し、確実にズームさせない。
-  // - 解説表示（showingExplanation）へ切り替わる瞬間は、一旦 scale=1.0 に初期化して
-  //   直前のズーム倍率を引き継がないようにしてから、閲覧用のピンチズームを許可する。
+  //
+  // 【俯瞰UI化に伴う修正】従来はここで meta viewport も直接書き換えていたが、
+  // App / Explanation と 3箇所で競合して初回表示時のスクロール不能の原因と
+  // なっていたため廃止し、viewport 制御は App.tsx に一元化した。
+  // （解説表示中は上の同期 effect 経由で App が俯瞰用 viewport を適用する）
   useEffect(() => {
-    const meta = document.querySelector('meta[name="viewport"]');
-    const originalContent = meta?.getAttribute('content') || '';
-
-    const LOCK = 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-    const ALLOW = 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover';
-
     // ピンチズーム（iOS の gesture イベント）を抑止
     const preventGesture = (e: Event) => { e.preventDefault(); };
     // ダブルタップズームを抑止（前回タップから300ms以内の2回目タップをキャンセル）
@@ -523,22 +532,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       lastTouchEnd = now;
     };
 
-    if (meta) {
-      if (showingExplanation) {
-        // 解説へ移る瞬間: 一旦 scale=1.0 に初期化 → 次フレームで閲覧用ズームを許可
-        meta.setAttribute('content', LOCK);
-        window.scrollTo(0, 0);
-        requestAnimationFrame(() => {
-          meta.setAttribute('content', ALLOW);
-        });
-      } else {
-        // 解答中: ズーム完全禁止
-        meta.setAttribute('content', LOCK);
-      }
-    }
-
-    // 解答中のみズーム抑止リスナーを登録する
-    if (!showingExplanation) {
+    if (showingExplanation) {
+      // 解説へ移る瞬間: スクロール位置を最上部へ（viewport は App 側が制御）
+      window.scrollTo(0, 0);
+    } else {
+      // 解答中のみズーム抑止リスナーを登録する
       document.addEventListener('gesturestart', preventGesture, { passive: false });
       document.addEventListener('gesturechange', preventGesture, { passive: false });
       document.addEventListener('touchend', preventDoubleTapZoom, { passive: false });
@@ -548,9 +546,6 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       document.removeEventListener('gesturestart', preventGesture);
       document.removeEventListener('gesturechange', preventGesture);
       document.removeEventListener('touchend', preventDoubleTapZoom);
-      if (meta) {
-        meta.setAttribute('content', originalContent);
-      }
     };
   }, [showingExplanation]);
 

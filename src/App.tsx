@@ -147,15 +147,17 @@ export default function App() {
   const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
   const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
 
-  // 解答解説ページ専用のスマホ判定。
-  // 【スクロール不具合の修正】
-  // 従来は Explanation に isMobileView={false} を固定で渡していたため、
-  // 実機スマホでも常に「PC版レイアウト（fixed + overflow-hidden）」で描画され、
-  // 縦スクロールできず下部の要素（間違えた問題など）が見られない不具合があった。
-  // 解説ページは shouldForceDesktopUI（＝解説中は常に true）に引きずられないよう、
-  // 純粋に「スマホ端末 or スマホプレビュー枠」かどうかだけで判定する。
-  // ただしユーザーが手動で「PC表示」に切り替えている場合（forceDesktop）は尊重する。
-  const isMobileExplanation = (isMobileDevice || isMobilePreview) && !forceDesktop;
+  // 【解答解説ページ：俯瞰UI＋ピンチズーム前提への変更】
+  // 従来はスマホ専用の「縦スクロールレイアウト」を isMobileExplanation で切り替えていたが、
+  // viewport メタタグを App / Quiz / Explanation の3箇所が競合して書き換えるため、
+  // effect の実行順序次第で「PC版レイアウト × device-width viewport」の組み合わせになり、
+  // 初回表示時のみ縦スクロール不能（リロードで解消）という不安定な挙動が発生していた。
+  // このような個別のスクロール不具合を追いかけるのではなく、スマホでも PC 版と同じ
+  // 「俯瞰レイアウト（width=1024 viewport）＋ピンチアウト前提」の UI に統一する：
+  //  - 初期表示：画面幅に全体が収まる縮小表示（initial-scale = 画面幅/1024）
+  //  - 拡大時：ピンチ操作で自由にズームイン・アウト可能（user-scalable=yes）
+  // viewport の制御は下の shouldForceDesktopUI の effect（App.tsx）に一元化し、
+  // Explanation / Quiz 側での解説表示時の viewport 書き換えは廃止した。
 
   // PC版では「学習モードを選択」(mode_selection) 以外の全画面で外側余白をなくし、
   // ノート風背景を全幅に広げる。mode_selection だけは従来通り中央寄せ＋余白を維持。
@@ -261,8 +263,24 @@ export default function App() {
     const viewport = document.querySelector('meta[name="viewport"]');
     if (viewport) {
       if (shouldForceDesktopUI) {
-        const scale = Math.min(1, window.innerWidth / 1024);
-        viewport.setAttribute('content', `width=1024, initial-scale=${scale}, minimum-scale=${scale}, maximum-scale=3.0, user-scalable=yes`);
+        // 解答解説画面：俯瞰UI。常に PC 版レイアウト（width=1024）で描画し、
+        // 初期表示は全体が画面内に収まる縮小倍率（fit scale）にする。
+        // minimum-scale=fit で「全体俯瞰」までピンチインで戻れ、
+        // maximum-scale=5.0 で詳細を確認したい箇所を自由に拡大できる。
+        // iOS Safari は同じ width のままだと initial-scale の再適用を無視することがあるため、
+        // 一度 device-width にリセットしてから width=1024 を適用する2段階処理にする。
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        requestAnimationFrame(() => {
+          // fit scale は device-width リセット後の innerWidth から算出する。
+          // （リセット前に読むと、直前の viewport が width=1024 だった場合に
+          //   innerWidth≒1024 → scale=1 となり、俯瞰の縮小表示にならないため）
+          const deviceWidth = Math.min(
+            window.innerWidth || 0,
+            (window.screen && window.screen.width) || Infinity
+          ) || window.innerWidth;
+          const scale = Math.min(1, deviceWidth / 1024);
+          viewport.setAttribute('content', `width=1024, initial-scale=${scale}, minimum-scale=${scale}, maximum-scale=5.0, user-scalable=yes`);
+        });
       } else {
         // モバイルへ戻る/遷移する際に、以前の desktop スケールが残って
         // 「異常にズームされた状態」で切り替わるのを防ぐため、一度スケールを
@@ -525,7 +543,9 @@ export default function App() {
                 answers={quizAnswers}
                 onBack={handleBackToChapters}
                 isGuest={isGuest}
-                isMobileView={isMobileExplanation}
+                // スマホでも常に PC 版レイアウト（俯瞰UI）で表示する。
+                // 縮小/拡大は viewport（width=1024 ＋ fit scale ＋ ピンチズーム許可）側で制御する。
+                isMobileView={false}
                 resultTotalScore={lastQuizResult?.totalScore}
                 resultTotalCorrect={lastQuizResult?.totalCorrect}
                 resultTotalJudgeable={lastQuizResult?.totalJudgeable}
