@@ -2,8 +2,27 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     // ===============================================================
-    // Helper Functions
+    // 設計方針（フレンド機能）
     // ===============================================================
+    // Firestore のルールは「クエリ結果」ではなく「クエリが必ず条件を
+    // 満たすと静的に証明できるか」で判定される。そのため
+    //   query(friend_profiles, where('friendCode','==',code))
+    // のような検索を許可するには friend_profiles 全体を読ませる必要が
+    // あり、認証済みユーザーが全ユーザーのプロフィールを吸い出せてしまう。
+    //
+    // そこで「コード → uid」だけを持つ逆引きインデックス
+    //   friend_codes/{friendCode}  ->  { uid }
+    // を作り、コードを知っている人だけが get（単一ドキュメント取得）で
+    // uid を引けるようにする。list は禁止するので総当り列挙はできない。
+    //
+    // 個人情報（nickname / photoURL）は friend_profiles に置き、
+    // 「自分」か「自分のフレンド」か「自分と申請関係にある相手」だけが
+    // 読めるようにする。
+    // ===============================================================
+
+    // ---------------------------------------------------------------
+    // Helper Functions
+    // ---------------------------------------------------------------
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -16,11 +35,32 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == docData.uid;
     }
 
+    // 自分の friends 配下に相手が登録されているか（= フレンド関係にある）
+    function isMyFriend(otherUid) {
+      return isAuthenticated()
+        && exists(/databases/$(database)/documents/friends/$(request.auth.uid)/items/$(otherUid));
+    }
+
+    // 申請ドキュメントID は必ず `${toUid}_${fromUid}` に固定する。
+    // これにより「1組につき1申請」が保証され、重複申請やスパムを防げる。
+    function requestIdMatches(requestId, fromUid, toUid) {
+      return requestId == toUid + '_' + fromUid;
+    }
+
+    // me → other への申請が存在するか
+    function requestExists(fromUid, toUid) {
+      return exists(/databases/$(database)/documents/friend_requests/$(toUid + '_' + fromUid));
+    }
+
+    function requestData(fromUid, toUid) {
+      return get(/databases/$(database)/documents/friend_requests/$(toUid + '_' + fromUid)).data;
+    }
+
     // ===============================================================
     // Collections
     // ===============================================================
-    
-    // ユーザープロフィール
+
+    // ユーザープロフィール（本人のみ）
     match /users/{userId} {
       allow read: if isOwner(userId);
       allow write: if isOwner(userId);
@@ -37,15 +77,12 @@ service cloud.firestore {
     // ============================================================
     // ランキング（リーダーボード）
     // ============================================================
-    // 章ごとのベストスコア。
-    //   ドキュメントID = `${chapterId}_${uid}`
-    //   - 誰でも読める（順位表表示のため）
-    //   - 書き込みは「自分の uid を含むドキュメント」かつ「自分のスコアのみ」可
-    //   - bestScore が数値かつ過大でないことを軽くチェック（クライアント不正対策）
+    // 章ごとのベストスコア。ドキュメントID = `${chapterId}_${uid}`
     match /leaderboard_chapter/{docId} {
       allow read: if true;
       allow create, update: if isAuthenticated()
         && request.resource.data.uid == request.auth.uid
+        && docId == request.resource.data.chapterId + '_' + request.auth.uid
         && request.resource.data.bestScore is number
         && request.resource.data.bestScore >= 0
         && request.resource.data.bestScore <= 1000000;
@@ -65,8 +102,6 @@ service cloud.firestore {
     }
 
     // プレイ履歴（週間/月間ランキング集計用）。任意ドキュメントID。
-    //   - 誰でも読める
-    //   - 作成は本人のみ。更新・削除は不可（履歴の改ざん防止）
     match /leaderboard_events/{eventId} {
       allow read: if true;
       allow create: if isAuthenticated()
@@ -77,32 +112,134 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-
-    // Googleログインユーザー向けフレンド機能
-    match /friend_profiles/{userId} {
-      allow read: if isAuthenticated();
-      allow create, update: if isOwner(userId)
-        && request.resource.data.uid == request.auth.uid;
-      allow delete: if false;
+    // ============================================================
+    // フレンドコード逆引きインデックス
+    //   friend_codes/{friendCode} = { uid, nickname, photoURL, updatedAt }
+    // ============================================================
+    // - get のみ許可（コードを知っている人だけが uid を引ける）
+    // - list は禁止 → コード一覧の列挙・総当り収集を防止
+    // - 表示名を同梱するのは「申請前に相手を確認する」ため。コードを
+    //   知らなければ到達できないので、プロフィール全体の露出にならない。
+    // - 上書き（他人のコードの奪取）は禁止：既存ドキュメントの uid が
+    //   自分自身でなければ update 不可
+    function validCodeDoc() {
+      return request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid', 'nickname', 'photoURL', 'updatedAt'])
+        && request.resource.data.nickname is string
+        && request.resource.data.nickname.size() <= 24;
     }
 
+    match /friend_codes/{friendCode} {
+      allow get: if isAuthenticated();
+      allow list: if false;
+
+      allow create: if isAuthenticated()
+        && validCodeDoc()
+        && friendCode.matches('^MNTB-[A-Z0-9]{4}-[A-Z0-9]{4}$');
+
+      // 自分のコードの再保存のみ許可（uid は変更不可）
+      allow update: if isAuthenticated()
+        && resource.data.uid == request.auth.uid
+        && validCodeDoc();
+
+      allow delete: if isAuthenticated() && resource.data.uid == request.auth.uid;
+    }
+
+    // ============================================================
+    // フレンドプロフィール（表示名・アイコン）
+    //   friend_profiles/{uid} = { uid, nickname, photoURL, friendCode }
+    // ============================================================
+    // - 読めるのは「本人」「自分のフレンド」「自分と申請関係にある相手」のみ
+    // - list は禁止 → 全ユーザーのプロフィール収集を防止
+    // - 書き込みは本人のみ、uid の偽装も不可
+    match /friend_profiles/{userId} {
+      allow get: if isOwner(userId)
+        || isMyFriend(userId)
+        || (isAuthenticated() && requestExists(request.auth.uid, userId))
+        || (isAuthenticated() && requestExists(userId, request.auth.uid));
+      allow list: if false;
+
+      allow create, update: if isOwner(userId)
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.nickname is string
+        && request.resource.data.nickname.size() <= 24;
+      allow delete: if isOwner(userId);
+    }
+
+    // ============================================================
+    // フレンド申請
+    //   friend_requests/{toUid}_{fromUid}
+    //     = { fromUid, toUid, fromNickname, fromPhotoURL, createdAt }
+    // ============================================================
     match /friend_requests/{requestId} {
-      allow read: if isAuthenticated()
+      // 当事者だけが読める。list は where で当事者を明示したクエリのみ通る。
+      allow get, list: if isAuthenticated()
         && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+
+      // 申請の作成: 送信者本人のみ。ID を固定して重複申請を防ぐ。
       allow create: if isAuthenticated()
         && request.resource.data.fromUid == request.auth.uid
-        && request.resource.data.toUid is string;
+        && request.resource.data.toUid is string
+        && request.resource.data.toUid != request.auth.uid
+        && requestIdMatches(requestId, request.resource.data.fromUid, request.resource.data.toUid)
+        && request.resource.data.keys().hasOnly(
+             ['fromUid', 'toUid', 'fromNickname', 'fromPhotoURL', 'createdAt'])
+        && request.resource.data.fromNickname is string
+        && request.resource.data.fromNickname.size() <= 24
+        // すでにフレンドなら申請不要
+        && !isMyFriend(request.resource.data.toUid);
+
+      // 内容の書き換えは一切不可（承認は delete + friends 作成で表現する）
+      allow update: if false;
+
+      // 削除できるのは当事者のみ（受信者=拒否/承認、送信者=取り消し）
       allow delete: if isAuthenticated()
         && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
-      allow update: if false;
     }
 
+    // ============================================================
+    // フレンド関係
+    //   friends/{ownerUid}/items/{friendUid} = { uid, nickname, photoURL, addedAt }
+    // ============================================================
     match /friends/{userId}/items/{friendUid} {
-      allow read: if isAuthenticated() && request.auth.uid == userId;
-      allow create, update: if isAuthenticated()
-        && (request.auth.uid == userId || request.resource.data.uid == request.auth.uid);
+      // 自分のフレンド一覧のみ読める（他人の交友関係は見えない）
+      allow read: if isOwner(userId);
+
+      allow create: if isAuthenticated()
+        && request.resource.data.uid == friendUid
+        && friendUid != userId
+        && request.resource.data.keys().hasOnly(['uid', 'nickname', 'photoURL', 'addedAt'])
+        && (
+          // (1) 受信者が承認する場合:
+          //     自分の配下に「自分へ申請してきた相手」を登録する
+          (
+            request.auth.uid == userId
+            && requestExists(friendUid, userId)
+          )
+          // (2) 承認の副作用として、申請してきた相手の配下に自分を登録する:
+          //     「相手 → 自分」の申請が実在することを検証するので、
+          //     無関係な他人の friends に勝手に割り込むことはできない。
+          || (
+            request.auth.uid == friendUid
+            && requestExists(userId, friendUid)
+          )
+        );
+
+      // 書き換えは (a) 自分の一覧の表示名リフレッシュ、または
+      // (b) 承認処理の再実行（片側だけ既に存在していた場合）に限定。
+      // uid の差し替えは常に禁止。
+      allow update: if isAuthenticated()
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.keys().hasOnly(['uid', 'nickname', 'photoURL', 'addedAt'])
+        && (
+          isOwner(userId)
+          || (request.auth.uid == friendUid && requestExists(userId, friendUid))
+        );
+
+      // 削除は「自分の一覧から消す」か「相手の一覧から自分を消す」のみ。
+      // 第三者同士のフレンド関係には手を出せない。
       allow delete: if isAuthenticated()
-        && (request.auth.uid == userId || friendUid == request.auth.uid);
+        && (request.auth.uid == userId || request.auth.uid == friendUid);
     }
   }
 }
