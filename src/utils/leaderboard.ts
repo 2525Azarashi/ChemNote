@@ -230,21 +230,19 @@ export async function fetchChapterRanking(
 ): Promise<RankingResult<ChapterScoreEntry>[]> {
   const me = auth.currentUser;
   try {
-    const q = query(
-      collection(db, 'leaderboard_chapter'),
-      where('chapterId', '==', chapterId),
-      orderBy('bestScore', 'desc'),
-      limit(topN)
-    );
+    // chapterId の単一条件で取得してクライアント側で並べる。
+    // 複合インデックスが未デプロイの環境でもランキングを確実に表示できる。
+    const q = query(collection(db, 'leaderboard_chapter'), where('chapterId', '==', chapterId));
     const snaps = await getDocs(q);
-    const list: RankingResult<ChapterScoreEntry>[] = [];
-    let rank = 0;
-    snaps.forEach((s) => {
-      rank += 1;
-      const entry = s.data() as ChapterScoreEntry;
-      list.push({ rank, entry, isMe: !!me && entry.uid === me.uid });
-    });
-    return list;
+    const entries = snaps.docs
+      .map((item) => item.data() as ChapterScoreEntry)
+      .sort((a, b) => (b.bestScore || 0) - (a.bestScore || 0) || (a.timeUsedSec || 0) - (b.timeUsedSec || 0))
+      .slice(0, topN);
+    return entries.map((entry, index) => ({
+      rank: index + 1,
+      entry,
+      isMe: !!me && entry.uid === me.uid,
+    }));
   } catch (e) {
     console.error('[Leaderboard] fetchChapterRanking failed:', e);
     return [];

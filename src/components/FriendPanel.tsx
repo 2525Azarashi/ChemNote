@@ -12,6 +12,7 @@ import {
   type FriendRequest,
 } from '../utils/friends';
 import { auth } from '../firebase';
+import { DoorMascot } from './DoorMascot';
 
 export function FriendPanel() {
   const [profile, setProfile] = useState<FriendProfile | null>(null);
@@ -45,12 +46,24 @@ export function FriendPanel() {
     load();
   }, []);
 
-  if (!auth.currentUser) {
-    return null;
-  }
+  const runAction = async (action: () => Promise<unknown>, success: string) => {
+    setLoading(true);
+    setMessage('');
+    try {
+      await action();
+      setMessage(success);
+      await load();
+    } catch (error: any) {
+      setMessage(error?.message || '操作に失敗しました。通信状態を確認してください。');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!auth.currentUser) return null;
 
   return (
-    <div className="bg-white border border-gray-150 p-5 rounded-3xl shadow-sm space-y-4">
+    <div className="bg-white border border-gray-150 p-3 sm:p-4 rounded-2xl shadow-sm space-y-3 h-full overflow-hidden flex flex-col">
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
           <UserPlus size={15} />
@@ -66,7 +79,7 @@ export function FriendPanel() {
         </button>
       </div>
 
-      <div className="bg-[#FDFBF7] border border-[#F0C7D2]/70 rounded-2xl p-4">
+      <div className="bg-[#FDFBF7] border border-[#F0C7D2]/70 rounded-xl p-3">
         <p className="text-[11px] text-gray-500 font-bold mb-2">あなたのフレンドコード</p>
         <div className="flex items-center gap-2">
           <code className="flex-1 bg-white border border-gray-150 rounded-xl px-3 py-2 text-sm font-black tracking-wider text-[#1B2631]">
@@ -96,7 +109,7 @@ export function FriendPanel() {
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
           placeholder="MNTB-XXXX-XXXX"
-          className="flex-1 px-3 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#A9CCE3] outline-none text-sm font-bold font-modern"
+          className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#A9CCE3] outline-none text-sm font-bold font-modern"
         />
         <button
           onClick={async () => {
@@ -111,8 +124,8 @@ export function FriendPanel() {
               setLoading(false);
             }
           }}
-          disabled={loading}
-          className="px-4 py-3 rounded-xl bg-[#2C3E50] text-white font-bold hover:bg-[#1B2631] disabled:opacity-50 flex items-center gap-2"
+          disabled={loading || !code.trim()}
+          className="px-3 py-2.5 rounded-xl bg-[#2C3E50] text-white font-bold hover:bg-[#1B2631] disabled:opacity-50 flex items-center gap-1.5"
         >
           <Send size={14} />
           申請
@@ -122,29 +135,29 @@ export function FriendPanel() {
       {message && <p className="text-xs font-bold text-[#2C3E50] bg-blue-50 border border-blue-100 rounded-xl p-3">{message}</p>}
 
       {requests.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-[11px] text-gray-400 font-bold">届いている申請</p>
+        <div className="space-y-2 max-h-32 overflow-y-auto pr-1">
+          <p className="text-[11px] text-gray-400 font-bold sticky top-0 bg-white">届いている申請</p>
           {requests.map((req) => (
             <div key={req.id} className="flex items-center gap-3 bg-[#F9E79F]/15 border border-[#F9E79F]/50 rounded-2xl p-3">
               <Avatar name={req.fromNickname} url={req.fromPhotoURL} />
               <span className="flex-1 text-sm font-bold text-[#1B2631] truncate">{req.fromNickname}</span>
-              <button onClick={async () => { await acceptFriendRequest(req); await load(); }} className="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100"><Check size={15} /></button>
-              <button onClick={async () => { await rejectFriendRequest(req); await load(); }} className="p-2 rounded-xl bg-red-50 text-red-600 border border-red-100"><X size={15} /></button>
+              <button disabled={loading} aria-label={`${req.fromNickname}さんを承認`} onClick={() => runAction(() => acceptFriendRequest(req), `${req.fromNickname} さんとフレンドになりました。`)} className="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 disabled:opacity-40"><Check size={15} /></button>
+              <button disabled={loading} aria-label={`${req.fromNickname}さんを拒否`} onClick={() => runAction(() => rejectFriendRequest(req), '申請を拒否しました。')} className="p-2 rounded-xl bg-red-50 text-red-600 border border-red-100 disabled:opacity-40"><X size={15} /></button>
             </div>
           ))}
         </div>
       )}
 
-      <div className="space-y-2">
-        <p className="text-[11px] text-gray-400 font-bold">フレンド一覧</p>
+      <div className="space-y-2 min-h-0 flex-1 overflow-y-auto pr-1">
+        <p className="text-[11px] text-gray-400 font-bold sticky top-0 bg-white z-10">フレンド一覧（{friends.length}人）</p>
         {friends.length === 0 ? (
-          <p className="text-xs text-gray-400 bg-gray-50 rounded-2xl p-4 text-center">まだフレンドはいません。コードで追加してみましょう。</p>
+          <div className="text-xs text-gray-400 bg-gray-50 rounded-2xl p-3 flex items-center gap-2"><DoorMascot showSpeech={false} size="mini" className="w-auto" /><span>まだフレンドはいません。コードで追加してみましょう。</span></div>
         ) : (
           friends.map((f) => (
             <div key={f.uid} className="flex items-center gap-3 bg-gray-50 border border-gray-150 rounded-2xl p-3">
               <Avatar name={f.nickname} url={f.photoURL} />
               <span className="flex-1 text-sm font-bold text-[#1B2631] truncate">{f.nickname}</span>
-              <button onClick={async () => { await removeFriend(f.uid); await load(); }} className="text-xs font-bold text-red-500 hover:underline">解除</button>
+              <button disabled={loading} onClick={() => { if (window.confirm(`${f.nickname} さんとのフレンド関係を解除しますか？`)) runAction(() => removeFriend(f.uid), 'フレンドを解除しました。'); }} className="text-xs font-bold text-red-500 hover:underline disabled:opacity-40">解除</button>
             </div>
           ))
         )}
