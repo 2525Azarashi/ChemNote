@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Check, Copy, RefreshCw, Send, UserPlus, X } from 'lucide-react';
 import {
   acceptFriendRequest,
+  cancelFriendRequest,
   ensureFriendProfile,
   fetchFriendRequests,
   fetchFriends,
+  fetchSentFriendRequests,
   rejectFriendRequest,
   removeFriend,
   sendFriendRequest,
@@ -17,9 +19,11 @@ import { DoorMascot } from './DoorMascot';
 export function FriendPanel() {
   const [profile, setProfile] = useState<FriendProfile | null>(null);
   const [requests, setRequests] = useState<FriendRequest[]>([]);
+  const [sentRequests, setSentRequests] = useState<FriendRequest[]>([]);
   const [friends, setFriends] = useState<Array<{ uid: string; nickname: string; photoURL?: string }>>([]);
   const [code, setCode] = useState('');
   const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -31,8 +35,13 @@ export function FriendPanel() {
     try {
       const p = await ensureFriendProfile();
       setProfile(p);
-      const [reqs, list] = await Promise.all([fetchFriendRequests(), fetchFriends()]);
+      const [reqs, sent, list] = await Promise.all([
+        fetchFriendRequests(),
+        fetchSentFriendRequests(),
+        fetchFriends(),
+      ]);
       setRequests(reqs);
+      setSentRequests(sent);
       setFriends(list);
     } catch (e: any) {
       // ここに到達するのは想定外の例外のみ。
@@ -49,11 +58,13 @@ export function FriendPanel() {
   const runAction = async (action: () => Promise<unknown>, success: string) => {
     setLoading(true);
     setMessage('');
+    setIsError(false);
     try {
       await action();
       setMessage(success);
       await load();
     } catch (error: any) {
+      setIsError(true);
       setMessage(error?.message || '操作に失敗しました。通信状態を確認してください。');
     } finally {
       setLoading(false);
@@ -114,11 +125,14 @@ export function FriendPanel() {
         <button
           onClick={async () => {
             setMessage('');
+            setIsError(false);
             setLoading(true);
             try {
               setMessage(await sendFriendRequest(code));
               setCode('');
+              await load();
             } catch (e: any) {
+              setIsError(true);
               setMessage(e?.message || '申請に失敗しました。');
             } finally {
               setLoading(false);
@@ -132,7 +146,18 @@ export function FriendPanel() {
         </button>
       </div>
 
-      {message && <p className="text-xs font-bold text-[#2C3E50] bg-blue-50 border border-blue-100 rounded-xl p-3">{message}</p>}
+      {message && (
+        <p
+          role={isError ? 'alert' : 'status'}
+          className={`text-xs font-bold rounded-xl p-3 border ${
+            isError
+              ? 'text-red-700 bg-red-50 border-red-100'
+              : 'text-[#2C3E50] bg-blue-50 border-blue-100'
+          }`}
+        >
+          {message}
+        </p>
+      )}
 
       {requests.length > 0 && (
         <div className="space-y-2 max-h-32 overflow-y-auto pr-1">
@@ -143,6 +168,24 @@ export function FriendPanel() {
               <span className="flex-1 text-sm font-bold text-[#1B2631] truncate">{req.fromNickname}</span>
               <button disabled={loading} aria-label={`${req.fromNickname}さんを承認`} onClick={() => runAction(() => acceptFriendRequest(req), `${req.fromNickname} さんとフレンドになりました。`)} className="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 disabled:opacity-40"><Check size={15} /></button>
               <button disabled={loading} aria-label={`${req.fromNickname}さんを拒否`} onClick={() => runAction(() => rejectFriendRequest(req), '申請を拒否しました。')} className="p-2 rounded-xl bg-red-50 text-red-600 border border-red-100 disabled:opacity-40"><X size={15} /></button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {sentRequests.length > 0 && (
+        <div className="space-y-2 max-h-32 overflow-y-auto pr-1">
+          <p className="text-[11px] text-gray-400 font-bold sticky top-0 bg-white">送信済みの申請（承認待ち）</p>
+          {sentRequests.map((req) => (
+            <div key={req.id} className="flex items-center gap-3 bg-gray-50 border border-gray-150 rounded-2xl p-3">
+              <span className="flex-1 text-xs font-bold text-gray-500 truncate">相手の承認を待っています</span>
+              <button
+                disabled={loading}
+                onClick={() => runAction(() => cancelFriendRequest(req), '申請を取り消しました。')}
+                className="text-xs font-bold text-gray-500 hover:underline disabled:opacity-40"
+              >
+                取消
+              </button>
             </div>
           ))}
         </div>
