@@ -47,13 +47,25 @@ service cloud.firestore {
       return requestId == toUid + '_' + fromUid;
     }
 
-    // me → other への申請が存在するか
+    // fromUid → toUid への申請が存在するか
     function requestExists(fromUid, toUid) {
       return exists(/databases/$(database)/documents/friend_requests/$(toUid + '_' + fromUid));
     }
 
-    function requestData(fromUid, toUid) {
-      return get(/databases/$(database)/documents/friend_requests/$(toUid + '_' + fromUid)).data;
+    // 申請が存在し、かつ承認の根拠として有効な状態か。
+    //
+    // 注意: トランザクション／バッチ内の get() は「コミット前の状態」を見る。
+    // 承認処理が同一トランザクションで
+    //   (1) status を accepted に更新
+    //   (2) 双方の friends を作成
+    // を行う場合、(2) の評価時点では status はまだ pending に見える。
+    // 一方、承認を2段階（先に status 更新 → 後で friends 作成）で行う実装や
+    // リトライ時には accepted が見える。両方を許容する。
+    // rejected / canceled は承認の根拠にならないので除外する。
+    function requestUsableForFriendship(fromUid, toUid) {
+      return requestExists(fromUid, toUid)
+        && get(/databases/$(database)/documents/friend_requests/$(toUid + '_' + fromUid))
+             .data.status in ['pending', 'accepted'];
     }
 
     // ===============================================================
@@ -169,7 +181,9 @@ service cloud.firestore {
     // ============================================================
     // フレンド申請
     //   friend_requests/{toUid}_{fromUid}
-    //     = { fromUid, toUid, fromNickname, fromPhotoURL, createdAt }
+    //     = { fromUid, toUid, fromNickname, fromPhotoURL, status,
+    //         createdAt, updatedAt }
+    //   status: "pending" | "accepted" | "rejected" | "canceled"
     // ============================================================
     match /friend_requests/{requestId} {
       // 当事者だけが読める。list は where で当事者を明示したクエリのみ通る。
@@ -183,16 +197,41 @@ service cloud.firestore {
         && request.resource.data.toUid != request.auth.uid
         && requestIdMatches(requestId, request.resource.data.fromUid, request.resource.data.toUid)
         && request.resource.data.keys().hasOnly(
-             ['fromUid', 'toUid', 'fromNickname', 'fromPhotoURL', 'createdAt'])
+             ['fromUid', 'toUid', 'fromNickname', 'fromPhotoURL', 'status',
+              'createdAt', 'updatedAt'])
         && request.resource.data.fromNickname is string
         && request.resource.data.fromNickname.size() <= 24
+        // 新規申請は必ず pending から始まる
+        && request.resource.data.status == 'pending'
         // すでにフレンドなら申請不要
         && !isMyFriend(request.resource.data.toUid);
 
-      // 内容の書き換えは一切不可（承認は delete + friends 作成で表現する）
-      allow update: if false;
+      // 状態遷移のみ許可する。当事者・遷移元・遷移先をすべて検証し、
+      // fromUid / toUid の差し替えは禁止する。
+      //   受信者: pending -> accepted | rejected
+      //   送信者: pending -> canceled
+      allow update: if isAuthenticated()
+        // 当事者以外は触れない
+        && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid)
+        // 遷移元は必ず pending（承認済みを蒸し返せない）
+        && resource.data.status == 'pending'
+        // 変更できるのは status と updatedAt だけ
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'updatedAt'])
+        && (
+          // 受信者は承認 or 拒否
+          (
+            resource.data.toUid == request.auth.uid
+            && request.resource.data.status in ['accepted', 'rejected']
+          )
+          // 送信者は取り消しのみ
+          || (
+            resource.data.fromUid == request.auth.uid
+            && request.resource.data.status == 'canceled'
+          )
+        );
 
-      // 削除できるのは当事者のみ（受信者=拒否/承認、送信者=取り消し）
+      // 削除できるのは当事者のみ（受信者=拒否/承認後の後片付け、送信者=取り消し）
       allow delete: if isAuthenticated()
         && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
     }
@@ -214,14 +253,14 @@ service cloud.firestore {
           //     自分の配下に「自分へ申請してきた相手」を登録する
           (
             request.auth.uid == userId
-            && requestExists(friendUid, userId)
+            && requestUsableForFriendship(friendUid, userId)
           )
           // (2) 承認の副作用として、申請してきた相手の配下に自分を登録する:
           //     「相手 → 自分」の申請が実在することを検証するので、
           //     無関係な他人の friends に勝手に割り込むことはできない。
           || (
             request.auth.uid == friendUid
-            && requestExists(userId, friendUid)
+            && requestUsableForFriendship(userId, friendUid)
           )
         );
 
@@ -233,7 +272,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['uid', 'nickname', 'photoURL', 'addedAt'])
         && (
           isOwner(userId)
-          || (request.auth.uid == friendUid && requestExists(userId, friendUid))
+          || (request.auth.uid == friendUid && requestUsableForFriendship(userId, friendUid))
         );
 
       // 削除は「自分の一覧から消す」か「相手の一覧から自分を消す」のみ。
