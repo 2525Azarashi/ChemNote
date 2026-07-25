@@ -83,7 +83,7 @@ function toFriendlyError(error: any, fallback: string): Error {
   switch (code) {
     case 'permission-denied':
       return new Error(
-        'この操作は許可されていません。firestore.rules を本番へデプロイしてください（firebase deploy --only firestore:rules）。'
+        'この操作は許可されていません。本番の Firestore ルールがアプリの版と一致していない可能性があります。最新の firestore.rules をデプロイしてください（firebase deploy --only firestore:rules）。'
       );
     case 'unauthenticated':
       return new Error('ログインの有効期限が切れています。もう一度Googleログインしてください。');
@@ -104,6 +104,11 @@ function toFriendlyError(error: any, fallback: string): Error {
     default:
       return new Error(error?.message ? `${fallback}（${error.message}）` : fallback);
   }
+}
+
+/** Firestore の permission-denied かどうか（フォールバック判定用）。 */
+function isPermissionDenied(error: any): boolean {
+  return error?.code === 'permission-denied';
 }
 
 function makeFriendCode(uid: string, salt = 0) {
@@ -199,19 +204,62 @@ export async function ensureFriendProfile(): Promise<FriendProfile | null> {
   return profile;
 }
 
-/** コードから相手を1件だけ引く（get のみ。列挙はできない）。 */
+/**
+ * 【旧ルール互換】friend_profiles を friendCode で where 検索する。
+ * 旧ルール（friend_profiles を認証済み全員が read 可能だった版）が本番に
+ * 残っている環境では friend_codes コレクションが read/write とも拒否される
+ * ため、この検索が唯一の到達経路になる。最新ルールではこのクエリ自体が
+ * 拒否されるので、失敗時は null を返して呼び出し元に判断を委ねる。
+ */
+async function lookupByProfileQuery(code: string): Promise<{ uid: string; nickname: string; photoURL: string } | null> {
+  const snaps = await getDocs(query(collection(db, 'friend_profiles'), where('friendCode', '==', code)));
+  const hit = snaps.docs[0];
+  if (!hit) return null;
+  const data = hit.data() as { uid?: string; nickname?: string; photoURL?: string };
+  if (typeof data.uid !== 'string' || data.uid.length === 0) return null;
+  return {
+    uid: data.uid,
+    nickname: data.nickname || '名無しの化学者',
+    photoURL: data.photoURL || '',
+  };
+}
+
+/**
+ * コードから相手を1件だけ引く（原則 get のみ。列挙はできない）。
+ * 本番ルールが古い場合（friend_codes 未定義で get が拒否される／相手の
+ * 逆引きインデックスが書き込めず存在しない場合）は、旧ルールで許可されて
+ * いた friend_profiles の where 検索へフォールバックする。
+ */
 async function lookupByFriendCode(code: string): Promise<{ uid: string; nickname: string; photoURL: string } | null> {
   try {
     const snap = await getDoc(doc(db, 'friend_codes', code));
-    if (!snap.exists()) return null;
-    const data = snap.data() as { uid?: string; nickname?: string; photoURL?: string };
-    if (typeof data.uid !== 'string' || data.uid.length === 0) return null;
-    return {
-      uid: data.uid,
-      nickname: data.nickname || '名無しの化学者',
-      photoURL: data.photoURL || '',
-    };
+    if (snap.exists()) {
+      const data = snap.data() as { uid?: string; nickname?: string; photoURL?: string };
+      if (typeof data.uid === 'string' && data.uid.length > 0) {
+        return {
+          uid: data.uid,
+          nickname: data.nickname || '名無しの化学者',
+          photoURL: data.photoURL || '',
+        };
+      }
+    }
+    // インデックス未作成（相手が旧版クライアント／旧ルールで登録できなかった）
+    // の可能性があるので、旧方式でも探す。最新ルールでは拒否されるが、
+    // その場合は「見つからない」として扱えばよい。
+    try {
+      return await lookupByProfileQuery(code);
+    } catch {
+      return null;
+    }
   } catch (e) {
+    if (isPermissionDenied(e)) {
+      // 旧ルールが本番に残っている環境: friend_codes 自体が読めない。
+      try {
+        return await lookupByProfileQuery(code);
+      } catch (e2) {
+        throw toFriendlyError(e2, 'フレンドコードの検索に失敗しました。');
+      }
+    }
     throw toFriendlyError(e, 'フレンドコードの検索に失敗しました。');
   }
 }
@@ -271,18 +319,32 @@ export async function sendFriendRequest(friendCode: string): Promise<string> {
     throw toFriendlyError(e, '申請状況の確認に失敗しました。');
   }
 
+  const reqRef = doc(db, 'friend_requests', requestId(me.uid, target.uid));
+  const basePayload = {
+    fromUid: me.uid,
+    toUid: target.uid,
+    fromNickname: me.nickname,
+    fromPhotoURL: me.photoURL || '',
+    createdAt: serverTimestamp(),
+  };
   try {
-    await setDoc(doc(db, 'friend_requests', requestId(me.uid, target.uid)), {
-      fromUid: me.uid,
-      toUid: target.uid,
-      fromNickname: me.nickname,
-      fromPhotoURL: me.photoURL || '',
+    // 最新ルール向け: status 状態機械つきの申請
+    await setDoc(reqRef, {
+      ...basePayload,
       status: 'pending' satisfies FriendRequestStatus,
-      createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
   } catch (e) {
-    throw toFriendlyError(e, '申請の送信に失敗しました。');
+    if (!isPermissionDenied(e)) throw toFriendlyError(e, '申請の送信に失敗しました。');
+    // 【旧ルール互換】本番ルールが status/updatedAt を知らない版
+    // （keys().hasOnly が createdAt までしか許可しない）だと上の書き込みは
+    // フィールド超過で拒否される。旧ルールが許可する形へ落として再試行する。
+    // 読み取り側は status 欠落を 'pending' として扱うため互換性がある。
+    try {
+      await setDoc(reqRef, basePayload);
+    } catch (e2) {
+      throw toFriendlyError(e2, '申請の送信に失敗しました。');
+    }
   }
 
   return `${target.nickname} さんへ申請しました。`;
@@ -347,6 +409,27 @@ export async function acceptFriendRequest(req: FriendRequest) {
 
   const reqRef = doc(db, 'friend_requests', requestId(req.fromUid, req.toUid));
 
+  // 【旧ルール互換】承認 = 「双方の friends 作成 + 申請削除」を1バッチで行う。
+  // status 更新を含まないため、update を一切許可しない旧ルールでも、
+  // 申請の実在を検証する最新ルールでも成功する。
+  const acceptWithLegacyBatch = async () => {
+    const batch = writeBatch(db);
+    batch.set(doc(db, 'friends', me.uid, 'items', req.fromUid), {
+      uid: req.fromUid,
+      nickname: req.fromNickname || '名無しの化学者',
+      photoURL: req.fromPhotoURL || '',
+      addedAt: serverTimestamp(),
+    });
+    batch.set(doc(db, 'friends', req.fromUid, 'items', me.uid), {
+      uid: me.uid,
+      nickname: me.nickname,
+      photoURL: me.photoURL || '',
+      addedAt: serverTimestamp(),
+    });
+    batch.delete(reqRef);
+    await batch.commit();
+  };
+
   try {
     await runTransaction(db, async (tx) => {
       const snap = await tx.get(reqRef);
@@ -378,6 +461,15 @@ export async function acceptFriendRequest(req: FriendRequest) {
   } catch (e: any) {
     // 業務ロジック由来のメッセージはそのまま見せる
     if (e instanceof Error && !('code' in e)) throw e;
+    if (isPermissionDenied(e)) {
+      // 旧ルール（friend_requests の update 全面禁止）環境へのフォールバック。
+      try {
+        await acceptWithLegacyBatch();
+        return;
+      } catch (e2) {
+        throw toFriendlyError(e2, '承認に失敗しました。');
+      }
+    }
     throw toFriendlyError(e, '承認に失敗しました。');
   }
 
