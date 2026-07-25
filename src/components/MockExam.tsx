@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, ArrowRight, Check, X, ChevronRight, BookOpen, RotateCcw, Trophy, Clock } from 'lucide-react';
 import { mockExam, MockExamQuestion } from '../data/mockExamData';
+import { formatText } from '../utils/textFormatter';
 
 // 共通テスト化学基礎 予想問題の目標時間（30分 = 1800秒）
 const EXAM_DURATION_SEC = 30 * 60;
@@ -427,7 +428,7 @@ export function MockExam({ onBack }: MockExamProps) {
 
           {/* 問題文 */}
           <div className="text-sm leading-[1.85] md:leading-relaxed text-gray-800 font-handwriting whitespace-pre-line break-words [overflow-wrap:anywhere] mb-4">
-            {currentQuestion.questionText}
+            {formatText(currentQuestion.questionText)}
           </div>
 
           {/* 表データ */}
@@ -464,7 +465,7 @@ export function MockExam({ onBack }: MockExamProps) {
               return (
                 <div key={sub.label} className="bg-white/60 border border-gray-200 rounded-xl p-4">
                   <p className="text-xs font-bold text-gray-600 font-handwriting mb-1">問{currentQuestion.questionNumber}({sub.label})（{sub.points}点）</p>
-                  <p className="text-sm leading-[1.85] md:leading-relaxed text-gray-800 font-handwriting mb-3 whitespace-pre-line break-words [overflow-wrap:anywhere]">{sub.questionText}</p>
+                  <p className="text-sm leading-[1.85] md:leading-relaxed text-gray-800 font-handwriting mb-3 whitespace-pre-line break-words [overflow-wrap:anywhere]">{formatText(sub.questionText)}</p>
                   <div className="space-y-2">
                     {sub.choices.map((choice) => {
                       const isSelected = userAnswer === choice.id;
@@ -490,7 +491,7 @@ export function MockExam({ onBack }: MockExamProps) {
                           disabled={showExplanation}
                         >
                           <span className="font-bold shrink-0">{choice.id}</span>
-                          <span>{choice.text}</span>
+                          <span>{formatText(choice.text)}</span>
                           {showExplanation && choice.id === sub.correctChoice && <Check className="w-4 h-4 text-green-600 ml-auto shrink-0" />}
                           {showExplanation && isSelected && choice.id !== sub.correctChoice && <X className="w-4 h-4 text-red-500 ml-auto shrink-0" />}
                         </button>
@@ -500,7 +501,7 @@ export function MockExam({ onBack }: MockExamProps) {
                   {showExplanation && (
                     <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-3">
                       <p className="text-xs font-bold text-amber-800 font-handwriting mb-1">解説</p>
-                      <p className="text-xs text-gray-700 font-handwriting leading-relaxed whitespace-pre-line">{sub.explanation}</p>
+                      <p className="text-xs text-gray-700 font-handwriting leading-relaxed whitespace-pre-line">{formatText(sub.explanation)}</p>
                     </div>
                   )}
                 </div>
@@ -536,7 +537,7 @@ export function MockExam({ onBack }: MockExamProps) {
                   disabled={showExplanation}
                 >
                   <span className="font-bold shrink-0">{choice.id}</span>
-                  <span className="flex-1">{choice.text}</span>
+                  <span className="flex-1">{formatText(choice.text)}</span>
                   {showExplanation && choice.id === currentQuestion.correctChoice && <Check className="w-4 h-4 text-green-600 shrink-0" />}
                   {showExplanation && isSelected && choice.id !== currentQuestion.correctChoice && <X className="w-4 h-4 text-red-500 shrink-0" />}
                 </button>
@@ -555,7 +556,7 @@ export function MockExam({ onBack }: MockExamProps) {
                 {isCorrect(currentQuestion) ? '正解！' : `不正解（正解: ${currentQuestion.correctChoice}）`}
               </span>
             </div>
-            <p className="text-xs text-gray-700 font-handwriting leading-relaxed whitespace-pre-line">{currentQuestion.explanation}</p>
+            <p className="text-xs text-gray-700 font-handwriting leading-relaxed whitespace-pre-line">{formatText(currentQuestion.explanation)}</p>
           </div>
         )}
 

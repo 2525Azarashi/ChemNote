@@ -92,10 +92,21 @@ export async function sendFriendRequest(friendCode: string): Promise<string> {
 
   const friendship = await getDoc(doc(db, 'friends', me.uid, 'items', target.uid));
   if (friendship.exists()) throw new Error(`${target.nickname} さんとはすでにフレンドです。`);
-  const incoming = await getDoc(doc(db, 'friend_requests', `${me.uid}_${target.uid}`));
-  if (incoming.exists()) throw new Error('相手から申請が届いています。「届いている申請」から承認してください。');
-  const outgoing = await getDoc(doc(db, 'friend_requests', `${target.uid}_${me.uid}`));
-  if (outgoing.exists()) return `${target.nickname} さんへ申請済みです。`;
+  // friend_requests の単一ドキュメント get は、存在しない場合に Firestore ルールが
+  // resource.data から申請者を判定できず permission-denied になる。参加者を where で
+  // 明示したクエリならルールが認可可能で、未申請時も安全に空結果として取得できる。
+  const incoming = await getDocs(query(
+    collection(db, 'friend_requests'),
+    where('fromUid', '==', target.uid),
+    where('toUid', '==', me.uid),
+  ));
+  if (!incoming.empty) throw new Error('相手から申請が届いています。「届いている申請」から承認してください。');
+  const outgoing = await getDocs(query(
+    collection(db, 'friend_requests'),
+    where('fromUid', '==', me.uid),
+    where('toUid', '==', target.uid),
+  ));
+  if (!outgoing.empty) return `${target.nickname} さんへ申請済みです。`;
 
   await setDoc(doc(db, 'friend_requests', `${target.uid}_${me.uid}`), {
     fromUid: me.uid,
