@@ -55,9 +55,13 @@ friend_profiles/{uid}                  ← 表示用プロフィール
   - 本人 / フレンド / 申請関係にある相手のみ get 可能、list 禁止
 
 friend_requests/{toUid}_{fromUid}      ← 申請（1組につき必ず1件）
-  { fromUid, toUid, fromNickname, fromPhotoURL, createdAt }
+  { fromUid, toUid, fromNickname, fromPhotoURL, status, createdAt, updatedAt }
+  status: "pending" | "accepted" | "rejected" | "canceled"
   - ドキュメントIDを固定 → 重複申請を構造的に防止
-  - update 禁止。承認は「delete + friends 作成」で表現
+  - update は status と updatedAt のみ変更可（当事者・遷移元・遷移先を検証）
+      受信者: pending -> accepted | rejected
+      送信者: pending -> canceled
+  - pending 以外からの遷移は禁止 → 承認済みを蒸し返せない
 
 friends/{ownerUid}/items/{friendUid}   ← 確定した関係（双方向に1件ずつ）
   { uid, nickname, photoURL, addedAt }
@@ -91,6 +95,24 @@ friends/{ownerUid}/items/{friendUid}   ← 確定した関係（双方向に1件
 | uid の差し替え | `request.resource.data.uid == friendUid` を強制 |
 | 想定外フィールドの注入 | `keys().hasOnly([...])` でホワイトリスト化 |
 | 自分自身をフレンド／申請 | `friendUid != userId`, `toUid != request.auth.uid` |
+| **送信者による自己承認** | `accepted` への遷移は `toUid == request.auth.uid` のみ |
+| 承認済み申請の蒸し返し | 遷移元を `resource.data.status == 'pending'` に限定 |
+| 不正な status 値の書き込み | `status in ['accepted','rejected']` 等で列挙を強制 |
+| status 更新にかこつけた uid すり替え | `diff().affectedKeys().hasOnly(['status','updatedAt'])` |
+| 拒否・取消済み申請での関係作成 | `requestUsableForFriendship()` が `pending`/`accepted` のみ許可 |
+
+### 承認フローの整合性
+
+承認は `runTransaction` で以下を原子的に実行します。
+
+1. 申請の存在と `status === 'pending'` を確認（二重承認・競合を防止）
+2. 申請を `status: 'accepted'` に更新
+3. 双方の `friends/{uid}/items/{friendUid}` を作成
+
+トランザクション／バッチ内の `get()` は**コミット前の状態**を見るため、
+(3) の評価時点では `status` はまだ `pending` に見えます。そのためルールの
+`requestUsableForFriendship()` は `pending` と `accepted` の両方を
+承認の根拠として許容し、`rejected` / `canceled` は除外しています。
 
 ### 「他人のフレンドを勝手に消せない」ことの根拠
 

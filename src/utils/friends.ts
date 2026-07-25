@@ -35,8 +35,10 @@ import {
   getDoc,
   getDocs,
   query,
+  runTransaction,
   serverTimestamp,
   setDoc,
+  updateDoc,
   where,
   writeBatch,
   type Timestamp,
@@ -52,13 +54,17 @@ export interface FriendProfile {
   updatedAt?: Timestamp | null;
 }
 
+export type FriendRequestStatus = 'pending' | 'accepted' | 'rejected' | 'canceled';
+
 export interface FriendRequest {
   id: string;
   fromUid: string;
   toUid: string;
   fromNickname: string;
   fromPhotoURL?: string;
+  status?: FriendRequestStatus;
   createdAt?: Timestamp | null;
+  updatedAt?: Timestamp | null;
 }
 
 export const FRIEND_CODE_PATTERN = /^MNTB-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
@@ -74,18 +80,30 @@ function requestId(fromUid: string, toUid: string) {
  */
 function toFriendlyError(error: any, fallback: string): Error {
   const code = error?.code as string | undefined;
-  if (code === 'permission-denied') {
-    return new Error(
-      'この操作は許可されていません。firestore.rules のデプロイ（firebase deploy --only firestore:rules）が済んでいるか確認してください。'
-    );
+  switch (code) {
+    case 'permission-denied':
+      return new Error(
+        'この操作は許可されていません。firestore.rules を本番へデプロイしてください（firebase deploy --only firestore:rules）。'
+      );
+    case 'unauthenticated':
+      return new Error('ログインの有効期限が切れています。もう一度Googleログインしてください。');
+    case 'unavailable':
+      return new Error('Firestore に接続できません。通信状態を確認してもう一度お試しください。');
+    case 'failed-precondition':
+      return new Error('オフラインのため実行できません。オンラインに戻ってからお試しください。');
+    case 'not-found':
+      return new Error('対象のデータが見つかりませんでした。画面を更新してお試しください。');
+    case 'already-exists':
+      return new Error('すでに登録済みです。画面を更新してご確認ください。');
+    case 'aborted':
+      return new Error('同時に別の操作が行われました。もう一度お試しください。');
+    case 'deadline-exceeded':
+      return new Error('処理がタイムアウトしました。もう一度お試しください。');
+    case 'resource-exhausted':
+      return new Error('アクセスが集中しています。しばらく待ってからお試しください。');
+    default:
+      return new Error(error?.message ? `${fallback}（${error.message}）` : fallback);
   }
-  if (code === 'unavailable' || code === 'failed-precondition') {
-    return new Error('通信状態が不安定です。オンラインに戻ってからもう一度お試しください。');
-  }
-  if (code === 'unauthenticated') {
-    return new Error('Googleログインが必要です。もう一度ログインしてください。');
-  }
-  return new Error(error?.message ? `${fallback}（${error.message}）` : fallback);
 }
 
 function makeFriendCode(uid: string, salt = 0) {
@@ -236,7 +254,8 @@ export async function sendFriendRequest(friendCode: string): Promise<string> {
       where('toUid', '==', me.uid),
       where('fromUid', '==', target.uid),
     ));
-    if (!incoming.empty) {
+    const pendingIncoming = incoming.docs.find((d) => (d.data().status ?? 'pending') === 'pending');
+    if (pendingIncoming) {
       throw new Error('相手から申請が届いています。「届いている申請」から承認してください。');
     }
 
@@ -245,7 +264,8 @@ export async function sendFriendRequest(friendCode: string): Promise<string> {
       where('fromUid', '==', me.uid),
       where('toUid', '==', target.uid),
     ));
-    if (!outgoing.empty) return `${target.nickname} さんへ申請済みです。`;
+    const pendingOutgoing = outgoing.docs.find((d) => (d.data().status ?? 'pending') === 'pending');
+    if (pendingOutgoing) return `${target.nickname} さんへ申請済みです。`;
   } catch (e: any) {
     if (e instanceof Error && e.message.includes('申請が届いています')) throw e;
     throw toFriendlyError(e, '申請状況の確認に失敗しました。');
@@ -257,7 +277,9 @@ export async function sendFriendRequest(friendCode: string): Promise<string> {
       toUid: target.uid,
       fromNickname: me.nickname,
       fromPhotoURL: me.photoURL || '',
+      status: 'pending' satisfies FriendRequestStatus,
       createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
   } catch (e) {
     throw toFriendlyError(e, '申請の送信に失敗しました。');
@@ -271,7 +293,9 @@ export async function fetchFriendRequests(): Promise<FriendRequest[]> {
   if (!user) return [];
   try {
     const snaps = await getDocs(query(collection(db, 'friend_requests'), where('toUid', '==', user.uid)));
-    return snaps.docs.map((s) => ({ id: s.id, ...(s.data() as Omit<FriendRequest, 'id'>) }));
+    return snaps.docs
+      .map((s) => ({ id: s.id, ...(s.data() as Omit<FriendRequest, 'id'>) }))
+      .filter((r) => (r.status ?? 'pending') === 'pending');
   } catch (e) {
     // 権限エラー（ルール未デプロイなど）でもパネル全体を壊さないよう空配列で返す。
     console.error('フレンド申請の取得に失敗しました:', e);
@@ -285,7 +309,9 @@ export async function fetchSentFriendRequests(): Promise<FriendRequest[]> {
   if (!user) return [];
   try {
     const snaps = await getDocs(query(collection(db, 'friend_requests'), where('fromUid', '==', user.uid)));
-    return snaps.docs.map((s) => ({ id: s.id, ...(s.data() as Omit<FriendRequest, 'id'>) }));
+    return snaps.docs
+      .map((s) => ({ id: s.id, ...(s.data() as Omit<FriendRequest, 'id'>) }))
+      .filter((r) => (r.status ?? 'pending') === 'pending');
   } catch (e) {
     console.error('送信済み申請の取得に失敗しました:', e);
     return [];
@@ -298,7 +324,7 @@ export async function countIncomingFriendRequests(): Promise<number> {
   if (!user) return 0;
   try {
     const snaps = await getDocs(query(collection(db, 'friend_requests'), where('toUid', '==', user.uid)));
-    return snaps.size;
+    return snaps.docs.filter((s) => (s.data().status ?? 'pending') === 'pending').length;
   } catch {
     return 0;
   }
@@ -306,8 +332,12 @@ export async function countIncomingFriendRequests(): Promise<number> {
 
 /**
  * 申請を承認する。
- * 双方の friends に1件ずつ作成し、申請を削除するところまでを1バッチで確定。
- * ルール側は「申請ドキュメントが実在すること」を検証するので、
+ *
+ * トランザクションで
+ *   (1) 申請の存在と status === 'pending' を確認（二重承認・競合を防ぐ）
+ *   (2) 申請を status: 'accepted' に更新
+ *   (3) 双方の friends/{uid}/items/{friendUid} を作成
+ * を原子的に確定する。ルール側も「申請の実在」を検証するため、
  * 申請なしに他人の friends へ割り込むことはできない。
  */
 export async function acceptFriendRequest(req: FriendRequest) {
@@ -315,47 +345,80 @@ export async function acceptFriendRequest(req: FriendRequest) {
   if (!me) throw new Error('Googleログインが必要です。');
   if (req.toUid !== me.uid) throw new Error('この申請を承認する権限がありません。');
 
-  const batch = writeBatch(db);
-  // 自分の一覧に相手を追加
-  batch.set(doc(db, 'friends', me.uid, 'items', req.fromUid), {
-    uid: req.fromUid,
-    nickname: req.fromNickname || '名無しの化学者',
-    photoURL: req.fromPhotoURL || '',
-    addedAt: serverTimestamp(),
-  });
-  // 相手の一覧に自分を追加
-  batch.set(doc(db, 'friends', req.fromUid, 'items', me.uid), {
-    uid: me.uid,
-    nickname: me.nickname,
-    photoURL: me.photoURL || '',
-    addedAt: serverTimestamp(),
-  });
-  // 申請を削除（friends 作成の検証より後に評価される）
-  batch.delete(doc(db, 'friend_requests', requestId(req.fromUid, req.toUid)));
+  const reqRef = doc(db, 'friend_requests', requestId(req.fromUid, req.toUid));
 
   try {
-    await batch.commit();
-  } catch (e) {
+    await runTransaction(db, async (tx) => {
+      const snap = await tx.get(reqRef);
+      if (!snap.exists()) {
+        throw new Error('この申請は取り消されたか、すでに処理済みです。');
+      }
+      const status = (snap.data().status ?? 'pending') as FriendRequestStatus;
+      if (status !== 'pending') {
+        throw new Error('この申請はすでに処理済みです。');
+      }
+
+      // (2) 申請を承認済みへ
+      tx.update(reqRef, { status: 'accepted', updatedAt: serverTimestamp() });
+
+      // (3) 双方向にフレンド関係を作成
+      tx.set(doc(db, 'friends', me.uid, 'items', req.fromUid), {
+        uid: req.fromUid,
+        nickname: req.fromNickname || '名無しの化学者',
+        photoURL: req.fromPhotoURL || '',
+        addedAt: serverTimestamp(),
+      });
+      tx.set(doc(db, 'friends', req.fromUid, 'items', me.uid), {
+        uid: me.uid,
+        nickname: me.nickname,
+        photoURL: me.photoURL || '',
+        addedAt: serverTimestamp(),
+      });
+    });
+  } catch (e: any) {
+    // 業務ロジック由来のメッセージはそのまま見せる
+    if (e instanceof Error && !('code' in e)) throw e;
     throw toFriendlyError(e, '承認に失敗しました。');
+  }
+
+  // 承認済み申請の後片付け（失敗してもフレンド関係は成立しているので致命的でない）
+  try {
+    await deleteDoc(reqRef);
+  } catch (e) {
+    console.error('承認済み申請の削除に失敗しました（フレンド登録は完了しています）:', e);
   }
 }
 
+/** 申請を拒否する。status を rejected にしてから削除する。 */
 export async function rejectFriendRequest(req: FriendRequest) {
   const user = auth.currentUser;
   if (!user || req.toUid !== user.uid) throw new Error('この申請を拒否する権限がありません。');
+  const reqRef = doc(db, 'friend_requests', requestId(req.fromUid, req.toUid));
   try {
-    await deleteDoc(doc(db, 'friend_requests', requestId(req.fromUid, req.toUid)));
+    // 監査可能性のため一度 rejected を記録してから削除する。
+    await updateDoc(reqRef, { status: 'rejected', updatedAt: serverTimestamp() });
+  } catch (e) {
+    console.error('拒否ステータスの記録に失敗しました:', e);
+  }
+  try {
+    await deleteDoc(reqRef);
   } catch (e) {
     throw toFriendlyError(e, '申請の拒否に失敗しました。');
   }
 }
 
-/** 自分が送った申請を取り消す。 */
+/** 自分が送った申請を取り消す。status を canceled にしてから削除する。 */
 export async function cancelFriendRequest(req: FriendRequest) {
   const user = auth.currentUser;
   if (!user || req.fromUid !== user.uid) throw new Error('この申請を取り消す権限がありません。');
+  const reqRef = doc(db, 'friend_requests', requestId(req.fromUid, req.toUid));
   try {
-    await deleteDoc(doc(db, 'friend_requests', requestId(req.fromUid, req.toUid)));
+    await updateDoc(reqRef, { status: 'canceled', updatedAt: serverTimestamp() });
+  } catch (e) {
+    console.error('取消ステータスの記録に失敗しました:', e);
+  }
+  try {
+    await deleteDoc(reqRef);
   } catch (e) {
     throw toFriendlyError(e, '申請の取り消しに失敗しました。');
   }
