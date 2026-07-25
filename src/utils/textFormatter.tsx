@@ -23,11 +23,37 @@ function isUnitToken(token: string) {
   return UNIT_TOKENS.has(token);
 }
 
+const SUBSCRIPT_CLASS = 'text-[0.75em] font-sans align-sub leading-none';
+const SUPERSCRIPT_CLASS = 'text-[0.75em] font-sans align-super leading-none';
+
+const SUBSCRIPT_CHAR_MAP: Record<string, string> = {
+  '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4',
+  '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9',
+};
+const SUPERSCRIPT_CHAR_MAP: Record<string, string> = {
+  '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5',
+  '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁺': '+', '⁻': '−',
+};
+
+/** Unicode / TeX風の添字を semantic HTML に統一し、フォントに依存せず上下配置する。 */
+function normalizeScientificScripts(text: string) {
+  return text
+    .replace(/[₀₁₂₃₄₅₆₇₈₉]+/g, (value) =>
+      `<sub class="${SUBSCRIPT_CLASS}">${[...value].map((char) => SUBSCRIPT_CHAR_MAP[char]).join('')}</sub>`
+    )
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]+/g, (value) =>
+      `<sup class="${SUPERSCRIPT_CLASS}">${[...value].map((char) => SUPERSCRIPT_CHAR_MAP[char]).join('')}</sup>`
+    )
+    // 問題データに残る H^+ / Fe^2+ / cm^3 / x_{1} も同じ表示へ揃える。
+    .replace(/([A-Za-z0-9)])_\{?([0-9]+)\}?/g, `$1<sub class="${SUBSCRIPT_CLASS}">$2</sub>`)
+    .replace(/([A-Za-z0-9)])\^\{?([0-9]*[+\-−]?|[+\-−])\}?/g, `$1<sup class="${SUPERSCRIPT_CLASS}">$2</sup>`);
+}
+
 export function formatText(text: string, highlights: string[] = []) {
   if (!text) return null;
 
   // Replace * with proper math multiplication crosses
-  let processedText = text.replace(
+  let processedText = normalizeScientificScripts(text).replace(
     /([A-Za-z0-9]|\)|[％%]|\])[\s ]*\*[\s ]*([A-Za-z0-9]|\(|\[)/g,
     '$1 <span class="font-sans font-semibold text-stone-500 mx-0.5">×</span> $2'
   );
@@ -70,7 +96,7 @@ export function formatText(text: string, highlights: string[] = []) {
   // We match numbers immediately preceded by non-alphanumeric and immediately followed by specific element symbols or A/B/X variables.
   processedText = processedText.replace(
     /(?<![A-Za-z0-9])([0-9]+)(C|B|Cl|Mg|H|O|N|S|P|Na|Ca|Fe|Cu|A|B)(?![A-Za-z0-9])/g,
-    '<sup class="text-[0.75em] font-sans font-bold pr-[1px] select-none align-baseline relative -top-[0.35em]">$1</sup>$2'
+    `<sup class="${SUPERSCRIPT_CLASS} font-bold pr-[1px] select-none">$1</sup>$2`
   );
 
   // First, apply custom highlights to the text. We surround them with custom tags <hl>...</hl>
@@ -122,32 +148,46 @@ export function formatText(text: string, highlights: string[] = []) {
 
     return parts.map((part) => {
       if (part.match(/^[A-Za-z]+[0-9]*[+-]?$/)) {
-        // Check if it's an ion (ends with + or -)
-        const ionMatch = part.match(/^([A-Za-z0-9]+?)([0-9]*[+-])$/);
+        // Check if it's an ion (ends with + or -). Compact notation is ambiguous:
+        // Cu2+ is Cu²⁺, NH4+ is NH₄⁺, SO42- is SO₄²⁻. Element数と末尾数字から判定する。
+        const ionMatch = part.match(/^([A-Za-z]+)([0-9]*)([+-])$/);
         
         let elements = '';
 
         if (ionMatch) {
-          // It's an ion like Cu2+, Cl-, SO42-
-          const base = ionMatch[1];
-          const charge = ionMatch[2];
+          const letters = ionMatch[1];
+          const digits = ionMatch[2];
+          const sign = ionMatch[3];
+          const elementSymbols = letters.match(/[A-Z][a-z]?/g) || [];
+          const isSingleElement = elementSymbols.length === 1 && elementSymbols[0] === letters;
+          let base = letters;
+          let charge = sign;
+
+          if (digits && isSingleElement) {
+            charge = `${digits}${sign}`;
+          } else if (digits.length > 1) {
+            base = `${letters}${digits.slice(0, -1)}`;
+            charge = `${digits.slice(-1)}${sign}`;
+          } else if (digits) {
+            base = `${letters}${digits}`;
+          }
           
-          // Process base for subscripts (e.g., SO4 -> SO_4)
+          // Process base for subscripts (e.g., NH4 / SO4).
           const baseParts = base.split(/([0-9]+)/);
           const formattedBase = baseParts.map((bp) => {
             if (bp.match(/^[0-9]+$/)) {
-              return `<sub class="text-[0.75em] font-sans">${bp}</sub>`;
+              return `<sub class="${SUBSCRIPT_CLASS}">${bp}</sub>`;
             }
             return bp;
           }).join('');
           
-          elements = `${formattedBase}<sup class="text-[0.75em] font-sans">${charge}</sup>`;
+          elements = `${formattedBase}<sup class="${SUPERSCRIPT_CLASS}">${charge}</sup>`;
         } else {
           // Normal molecule like H2O, CO2, or just text like A, B
           const molParts = part.split(/([0-9]+)/);
           elements = molParts.map((mp) => {
             if (mp.match(/^[0-9]+$/)) {
-              return `<sub class="text-[0.75em] font-sans">${mp}</sub>`;
+              return `<sub class="${SUBSCRIPT_CLASS}">${mp}</sub>`;
             }
             return mp;
           }).join('');

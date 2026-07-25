@@ -410,11 +410,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           <div className="flex flex-col md:flex-row md:items-start gap-3 w-full min-w-0 text-left flex-1">
             {displayLabel.length > 20 ? (
               <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-xs md:text-sm leading-relaxed w-full min-w-0 break-words whitespace-normal block py-1.5`}>
-                {displayLabel}
+                {formatText(displayLabel)}
               </div>
             ) : (
               <div className={`font-bold text-[#E0E1DD] text-xs md:text-sm bg-[#0B132B]/50 px-3 py-1.5 rounded-xl border border-[#3A506B]/50 leading-relaxed max-w-full break-words whitespace-normal inline-block`}>
-                {displayLabel}
+                {formatText(displayLabel)}
               </div>
             )}
             {sq.type !== 'descriptive' && (
@@ -434,11 +434,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         <div className="flex items-start justify-between mb-4 gap-3 min-w-0">
           {displayLabel.length > 20 ? (
             <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm md:text-base leading-relaxed break-words whitespace-normal flex-1 min-w-0`}>
-              {displayLabel}
+              {formatText(displayLabel)}
             </div>
           ) : (
             <div className={`font-bold ${isMiniTest ? 'text-gray-800' : 'text-[#E0E1DD]'} text-sm ${isMiniTest ? 'bg-gray-100' : 'bg-[#0B132B]'} px-3 py-1 rounded border ${isMiniTest ? 'border-gray-200' : 'border-[#3A506B]'}`}>
-              {displayLabel}
+              {formatText(displayLabel)}
             </div>
           )}
           <button onClick={() => setExpandedSq(null)} className="text-[#7A8B99] hover:text-[#E0E1DD] shrink-0">
@@ -462,7 +462,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             </div>
             {sq.detailedExplanation ? (
               <div className={`p-4 rounded-lg border text-sm ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
-                <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【{sq.detailedExplanation.theme}】</h5>
+                <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【{formatText(sq.detailedExplanation.theme)}】</h5>
                 {isPracticeMode && (
                   <p className="text-xs text-[#7A8B99] mb-2">【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
                 )}
@@ -470,13 +470,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 {isPracticeMode && (
                   <ol className="list-decimal list-inside space-y-1 font-math">
                     {sq.detailedExplanation.steps.map((step: string, idx: number) => (
-                      <li key={idx}>{step}</li>
+                      <li key={idx}>{formatText(step)}</li>
                     ))}
                   </ol>
                 )}
 
                 {sq.type !== 'descriptive' && (
-                  <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】<span className="font-math">{sq.correctAnswer}</span></p>
+                  <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】<span className="font-math">{formatText(sq.correctAnswer)}</span></p>
                 )}
 
                 {sq.type === 'descriptive' && (
@@ -1087,9 +1087,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             >
                               <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-4 flex-1 min-w-0 text-left">
                                 {displayLabel.length > 20 ? (
-                                  <div className={`font-bold text-xs md:text-sm leading-relaxed w-full min-w-0 break-words whitespace-normal block py-1.5 ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>{displayLabel}</div>
+                                  <div className={`font-bold text-xs md:text-sm leading-relaxed w-full min-w-0 break-words whitespace-normal block py-1.5 ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>{formatText(displayLabel)}</div>
                                 ) : (
-                                  <div className={`font-bold text-xs md:text-sm px-3 py-1.5 rounded-xl border shadow-xs max-w-full break-words whitespace-normal inline-block leading-relaxed ${mode === 'mini_test' ? 'text-gray-700 bg-white border-gray-200' : 'text-[#E0E1DD] bg-[#0B132B]/50 border-[#3A506B]/50'}`}>{displayLabel}</div>
+                                  <div className={`font-bold text-xs md:text-sm px-3 py-1.5 rounded-xl border shadow-xs max-w-full break-words whitespace-normal inline-block leading-relaxed ${mode === 'mini_test' ? 'text-gray-700 bg-white border-gray-200' : 'text-[#E0E1DD] bg-[#0B132B]/50 border-[#3A506B]/50'}`}>{formatText(displayLabel)}</div>
                                 )}
                                 <div className="flex flex-wrap items-center gap-3 md:gap-4 min-w-0">
                                   {sq.type !== 'descriptive' && (
@@ -1106,7 +1106,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                   {sq.type !== 'descriptive' && (
                                     <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
                                       <span className={`text-xs mr-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正解:</span>
-                                      {sq.correctAnswer}
+                                      {formatText(sq.correctAnswer)}
                                     </div>
                                   )}
                                 </div>
@@ -1132,7 +1132,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                           {relatedSteps.map((stepInfo, sIdx) => (
                                             <div key={sIdx} className="flex items-center gap-2 px-3 py-1.5 rounded-full border font-bold text-xs bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30">
                                               <Network size={12} />
-                                              <span>Step {stepInfo.step}: {stepInfo.label}</span>
+                                              <span>{formatText(`Step ${stepInfo.step}: ${stepInfo.label}`)}</span>
                                             </div>
                                           ))}
                                         </div>
@@ -1150,7 +1150,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                           <div className={`p-4 rounded-lg border text-sm leading-explanation mt-2 ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
                                             <div className="mb-4">
                                               <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題テーマ】</h5>
-                                              <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.theme}</p>
+                                              <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{formatText(sq.detailedExplanation.theme)}</p>
                                             </div>
                                             {isPracticeMode && (
                                               <div className="mb-4">
@@ -1174,7 +1174,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                         className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-slate-300 flex items-center gap-1"
                                                       >
                                                         <Network size={14} className="text-[#34495E]" />
-                                                        {stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」` : `「${stepInfo.label}」`}を復習する
+                                                        {formatText(stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」を復習する` : `「${stepInfo.label}」を復習する`)}
                                                       </button>
                                                     ))}
                                                   </div>
@@ -1184,7 +1184,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                   {sq.detailedExplanation.steps.map((step: string, idx: number) => (
                                                     <li key={idx} className="flex items-start gap-2">
                                                       <span className={`shrink-0 text-[#5BC0BE]`}></span>
-                                                      <span className="font-math">{step}</span>
+                                                      <span className="font-math">{formatText(step)}</span>
                                                     </li>
                                                   ))}
                                                 </ol>
@@ -1262,7 +1262,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                           <div className={`p-4 rounded-lg border text-sm leading-explanation mt-2 ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
                                             <div className="mb-4">
                                               <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題テーマ】</h5>
-                                              <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{sq.detailedExplanation.theme}</p>
+                                              <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{formatText(sq.detailedExplanation.theme)}</p>
                                             </div>
                                             {isPracticeMode && (
                                               <div className="mb-4">
@@ -1286,7 +1286,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                         className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-slate-300 flex items-center gap-1"
                                                       >
                                                         <Network size={14} className="text-[#34495E]" />
-                                                        {stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」` : `「${stepInfo.label}」`}を復習する
+                                                        {formatText(stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」を復習する` : `「${stepInfo.label}」を復習する`)}
                                                       </button>
                                                     ))}
                                                   </div>
@@ -1296,7 +1296,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                   {sq.detailedExplanation.steps.map((step: string, idx: number) => (
                                                     <li key={idx} className="flex items-start gap-2">
                                                       <span className={`shrink-0 text-[#5BC0BE]`}></span>
-                                                      <span className="font-math">{step}</span>
+                                                      <span className="font-math">{formatText(step)}</span>
                                                     </li>
                                                   ))}
                                                 </ol>
@@ -1438,7 +1438,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                               <div className="flex flex-wrap gap-2">
                                 {deepThoughtData.phase1.steps.map((step: any, idx: number) => (
                                   <span key={idx} className="text-[10px] px-2 py-1 rounded border bg-slate-100 text-[#2C3E50] border-gray-200">
-                                    {step.step}
+                                    {formatText(String(step.step))}
                                   </span>
                                 ))}
                               </div>
@@ -1479,9 +1479,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     <div className={`absolute top-0 left-0 w-2 h-full ${mode === 'mini_test' ? 'bg-red-500' : 'bg-[#D9A0A0]'}`}></div>
                     <div className="flex items-center flex-wrap gap-2 mb-2.5">
                       <div className={`text-xs md:text-sm font-bold px-2.5 py-1 rounded-lg border ${mode === 'mini_test' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
-                        {point.step}
+                        {formatText(String(point.step))}
                       </div>
-                      <h5 className={`font-bold text-base md:text-lg leading-snug ${mode === 'mini_test' ? 'text-red-700' : 'text-[#D9A0A0]'}`}>{point.type || point.point}</h5>
+                      <h5 className={`font-bold text-base md:text-lg leading-snug ${mode === 'mini_test' ? 'text-red-700' : 'text-[#D9A0A0]'}`}>{formatText(point.type || point.point)}</h5>
                     </div>
                     <div className={`text-sm md:text-base leading-relaxed md:leading-loose whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
                       {formatText(point.content || point.reason)}
@@ -1526,7 +1526,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 <div className={`absolute top-0 left-0 w-1.5 h-full ${mode === 'mini_test' ? 'bg-blue-400' : 'bg-[#A9CCE3]'}`}></div>
                                 <div className={`inline-flex items-center gap-1.5 text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border ${mode === 'mini_test' ? 'bg-white text-blue-600 border-blue-200' : 'bg-[#A9CCE3]/10 text-[#A9CCE3] border-[#A9CCE3]/20'}`}>
                                   <BookOpen size={14} />
-                                  {titleMatch[1].replace(/[【】]/g, '')}
+                                  {formatText(titleMatch[1].replace(/[【】]/g, ''))}
                                 </div>
                                 <div className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
                                   {formatText(titleMatch[2].trim())}
@@ -1570,7 +1570,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                               <div className={`absolute top-0 left-0 w-1.5 h-full ${mode === 'mini_test' ? 'bg-amber-400' : 'bg-[#D9A0A0]'}`}></div>
                               <div className={`inline-flex items-center gap-1.5 text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border ${mode === 'mini_test' ? 'bg-white text-amber-600 border-amber-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
                                 <Lightbulb size={14} />
-                                {title}
+                                {formatText(title)}
                               </div>
                               <div className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
                                 {formatText(content)}
