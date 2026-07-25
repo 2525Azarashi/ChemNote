@@ -90,7 +90,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
   }, []);
 
   return (
-    <div className="w-full notebook-paper rounded-2xl p-3 sm:p-5 md:p-6 relative font-handwriting">
+    <div className="flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] min-h-0 w-full flex-col overflow-hidden notebook-paper p-3 pb-[calc(5.75rem+env(safe-area-inset-bottom))] sm:p-5 sm:pb-[calc(5.75rem+env(safe-area-inset-bottom))] md:p-6 md:pb-[calc(5.75rem+env(safe-area-inset-bottom))] relative font-handwriting">
       <button 
         onClick={onBack}
         className="absolute top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 text-gray-500 hover:text-[#2C3E50] transition-colors font-bold font-handwriting bg-white/80 px-4 py-2 rounded-full shadow-sm z-10"
@@ -99,8 +99,8 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
         <span className="font-handwriting">戻る</span>
       </button>
 
-      <div className="text-center mb-5 mt-12 md:mt-1 font-handwriting">
-        <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-[#2C3E50] mb-3 md:mb-4">
+      <div className="shrink-0 text-center mb-3 mt-10 md:mt-0 font-handwriting">
+        <h2 className="text-xl md:text-3xl font-handwriting font-bold text-[#2C3E50] mb-1.5 md:mb-2">
           {mode === 'mini_test' ? '小テスト' : '演習問題'}
         </h2>
         <p className="text-sm md:text-base text-gray-600 font-handwriting font-bold">
@@ -108,8 +108,8 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
         </p>
       </div>
 
-      <div className="font-handwriting">
-        <div className="mb-4 border-b border-slate-200/80">
+      <div className="flex min-h-0 flex-1 flex-col font-handwriting">
+        <div className="mb-3 shrink-0 border-b border-slate-200/80">
           <div
             role="tablist"
             aria-label="章を選択"
@@ -131,6 +131,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
                   onClick={() => {
                     setActiveGroupTitle(group.title);
                     setExpandedChapterId(null);
+                    document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
                   }}
                   className={`shrink-0 rounded-xl border px-3 py-2 text-left transition-all cursor-pointer ${
                     isActive
@@ -153,7 +154,8 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
             id="chapter-tab-panel"
             role="tabpanel"
             aria-labelledby={`chapter-tab-${chapterGroups.indexOf(activeGroup)}`}
-            className="rounded-2xl border border-slate-200/80 bg-white/35 p-3 sm:p-4"
+            tabIndex={0}
+            className="min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain rounded-2xl border border-slate-200/80 bg-white/35 p-3 pb-6 sm:p-4 sm:pb-6 [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable]"
           >
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/70 pb-3">
               <div>
@@ -176,7 +178,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
               )}
             </div>
 
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {activeGroup.chapters.map(chapter => {
                 const questions = mode === 'mini_test' ? (chapter.miniTest || []) : (chapter.practiceProblems || []);
                 const hasQuestions = questions.length > 0;
@@ -198,7 +200,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
                 return (
                   <article
                     key={chapter.id}
-                    className="flex min-h-[160px] flex-col justify-between rounded-xl border border-yellow-200/80 bg-[#FFFDF2]/90 p-3.5 text-left shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md"
+                    className="flex min-h-[148px] flex-col justify-between rounded-xl border border-yellow-200/80 bg-[#FFFDF2]/90 p-3 text-left shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md"
                   >
                     <div>
                       <h4 className="text-sm font-bold leading-tight text-[#2C3E50]">{chapter.abstractTitle}</h4>
