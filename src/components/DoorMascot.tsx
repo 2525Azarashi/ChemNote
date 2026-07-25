@@ -57,9 +57,10 @@ const mascots = [
 export interface DoorMascotProps {
   className?: string;
   showSpeech?: boolean;
+  size?: 'mini' | 'normal';
 }
 
-export function DoorMascot({ className = '', showSpeech = true }: DoorMascotProps) {
+export function DoorMascot({ className = '', showSpeech = true, size = 'normal' }: DoorMascotProps) {
   const selected = useMemo(() => {
     const mascot = mascots[Math.floor(Math.random() * mascots.length)];
     const fact = chemistryFacts[Math.floor(Math.random() * chemistryFacts.length)];
@@ -67,9 +68,9 @@ export function DoorMascot({ className = '', showSpeech = true }: DoorMascotProp
   }, []);
 
   return (
-    <div className={`flex items-end gap-3 w-full min-w-0 ${className}`}>
-      {/* マスコット画像：サイズを固定し、カードの高さがぶれないようにする */}
-      <div className="relative w-20 h-24 sm:w-24 sm:h-28 shrink-0 flex items-end justify-center">
+    <div className={`flex items-end gap-3 min-w-0 ${showSpeech ? 'w-full' : ''} ${className}`}>
+      {/* マスコット画像：用途に応じて通常／ミニ表示を選べる */}
+      <div className={`relative shrink-0 flex items-end justify-center ${size === 'mini' ? 'w-11 h-12' : 'w-20 h-24 sm:w-24 sm:h-28'}`}>
         <img
           src={selected.mascot.src}
           alt={selected.mascot.label}

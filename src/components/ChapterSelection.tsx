@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
 import { TrendModal } from './TrendModal';
 import { chapterTrends } from '../data/trendData';
+import { DoorMascot } from './DoorMascot';
 
 interface ChapterSelectionProps {
   mode: 'mini_test' | 'practice';
@@ -98,6 +99,8 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
         <ArrowLeft size={20} />
         <span className="font-handwriting">戻る</span>
       </button>
+
+      <DoorMascot showSpeech={false} size="mini" className="absolute top-3 right-4 md:top-5 md:right-6 w-auto z-10" />
 
       <div className="shrink-0 text-center mb-3 mt-10 md:mt-0 font-handwriting">
         <h2 className="text-xl md:text-3xl font-handwriting font-bold text-[#2C3E50] mb-1.5 md:mb-2">

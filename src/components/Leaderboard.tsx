@@ -10,7 +10,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { Trophy, Crown, Medal, ChevronLeft, RefreshCw, User, BookOpen, Calendar, Globe } from 'lucide-react';
+import { Trophy, Crown, Medal, ChevronLeft, RefreshCw, User, BookOpen, Calendar, Globe, Users } from 'lucide-react';
 import {
   fetchChapterRanking,
   fetchTotalRanking,
@@ -19,6 +19,8 @@ import {
 } from '../utils/leaderboard';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
+import { fetchFriendCompetition } from '../utils/friends';
+import { DoorMascot } from './DoorMascot';
 
 interface LeaderboardProps {
   onBack: () => void;
@@ -31,6 +33,7 @@ type Tab = 'total' | 'chapter' | 'period';
 
 export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardProps) {
   const [tab, setTab] = useState<Tab>('total');
+  const [scope, setScope] = useState<'all' | 'friends'>('all');
   const [period, setPeriod] = useState<RankingPeriod>('week');
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<Array<{ rank: number; nickname: string; photoURL?: string; score: number; sub?: string; isMe: boolean; uid?: string }>>([]);
@@ -46,7 +49,24 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
   const load = async () => {
     setLoading(true);
     try {
-      if (tab === 'total') {
+      if (scope === 'friends' && auth.currentUser) {
+        let since: Date | null = null;
+        if (tab === 'period' && period !== 'all') {
+          since = new Date();
+          if (period === 'week') since.setDate(since.getDate() - 7);
+          else since.setMonth(since.getMonth() - 1);
+        }
+        const list = await fetchFriendCompetition(tab, { chapterId, since });
+        setRows(list.map((entry, index) => ({
+          rank: index + 1,
+          nickname: entry.nickname,
+          photoURL: entry.photoURL,
+          score: entry.score,
+          sub: entry.sub,
+          isMe: entry.uid === auth.currentUser?.uid,
+          uid: entry.uid,
+        })));
+      } else if (tab === 'total') {
         const list = await fetchTotalRanking(100);
         setRows(
           list.map((r) => ({
@@ -95,7 +115,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, period, chapterId]);
+  }, [tab, scope, period, chapterId]);
 
   // 自分が圏外かどうか判定
   const myRow = rows.find((r) => r.isMe);
@@ -124,6 +144,8 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
             <h2 className="text-xl md:text-2xl font-bold text-[#1B2631]">ランキング</h2>
           </div>
 
+          <DoorMascot showSpeech={false} size="mini" className="hidden sm:flex w-auto ml-1" />
+
           <button
             onClick={load}
             className="ml-auto p-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-700 rounded-xl transition-all shadow-sm cursor-pointer"
@@ -134,7 +156,17 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
           </button>
         </div>
 
-        {/* タブ */}
+        {/* 全国／フレンド競争 */}
+        <div className="relative z-10 grid grid-cols-2 gap-2 mb-3 rounded-2xl bg-white/70 border border-gray-200 p-1.5">
+          <button onClick={() => setScope('all')} className={`flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold transition-all ${scope === 'all' ? 'bg-[#1B2631] text-white shadow-sm' : 'text-gray-500 hover:bg-white'}`}>
+            <Globe size={14} /> 全国
+          </button>
+          <button onClick={() => !isGuest && setScope('friends')} disabled={isGuest} className={`flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-40 ${scope === 'friends' ? 'bg-[#D9466E] text-white shadow-sm' : 'text-gray-500 hover:bg-white'}`}>
+            <Users size={14} /> フレンド競争
+          </button>
+        </div>
+
+        {/* 集計タブ */}
         <div className="relative z-10 grid grid-cols-3 gap-2 mb-4">
           <TabButton active={tab === 'total'} onClick={() => setTab('total')} icon={<Globe size={14} />} label="全章合計" />
           <TabButton active={tab === 'chapter'} onClick={() => setTab('chapter')} icon={<BookOpen size={14} />} label="章別ベスト" />
@@ -199,7 +231,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
             <div className="text-right">
               <p className="text-[10px] uppercase tracking-widest opacity-60">順位 / スコア</p>
               <p className="text-lg font-bold font-handwriting tabular-nums">
-                {myRow ? `${myRow.rank}位` : '圏外'}
+                {myRow ? `${myRow.rank}位` : (scope === 'friends' ? '未参加' : '圏外')}
                 <span className="text-xs opacity-70 ml-2">{myRow ? `${myRow.score} pt` : ''}</span>
               </p>
             </div>
@@ -218,9 +250,9 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
             <div className="p-10 text-center text-sm text-gray-400">読み込み中…</div>
           ) : rows.length === 0 ? (
             <div className="p-10 text-center text-sm text-gray-400">
-              まだ誰もチャレンジしていません。
+              {scope === 'friends' ? 'フレンドの記録はまだありません。' : 'まだ誰もチャレンジしていません。'}
               <br />
-              一番乗りで頂点を取ろう！
+              {scope === 'friends' ? '同じ問題に挑戦して競争しよう！' : '一番乗りで頂点を取ろう！'}
             </div>
           ) : (
             <ul className="divide-y divide-gray-100">

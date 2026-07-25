@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Target, BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical } from 'lucide-react';
 import { TrendModal } from './TrendModal';
 import { MntbLogo } from './MntbLogo';
+import { DoorMascot } from './DoorMascot';
 
 interface ModeSelectionProps {
   onSelectMode: (mode: 'mini_test' | 'practice' | 'learning') => void;
@@ -30,9 +31,12 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
         {/* Logo（従来の mntb を模したインラインロゴ） */}
         <MntbLogo size="sm" className="absolute top-4 right-4 md:top-6 md:right-6 z-30" />
 
-        <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-[#2C3E50] mb-8 md:mb-12 mt-12 md:mt-0">
-          学習モードを選択
-        </h2>
+        <div className="flex items-center gap-2 mb-8 md:mb-12 mt-12 md:mt-0">
+          <DoorMascot showSpeech={false} size="mini" className="w-auto" />
+          <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-[#2C3E50]">
+            学習モードを選択
+          </h2>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
           {/* 学習(インプット)ボタン */}
