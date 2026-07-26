@@ -17,6 +17,7 @@ import {
 import { submitChapterScore } from '../utils/leaderboard';
 import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
+import { splitQuestionLabel, buildSubQuestionList } from '../utils/questionDisplay';
 import { useIsDesktop } from '../hooks/useMediaQuery';
 import { auth } from '../firebase';
 
@@ -1450,6 +1451,32 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   className="mt-5"
                 />
               )}
+              {/* 表示ルール1・2：左側の「問題文」欄には共通リード文に加えて、
+                  続く全小問の設問文（問1、問2、…）を順番に表示する。
+                  左側だけ読めば全設問が理解できるようにする。 */}
+              {(() => {
+                const sqList = buildSubQuestionList(currentQuestion);
+                if (sqList.length === 0) return null;
+                return (
+                  <div className="mt-4 pt-3 border-t border-dashed border-gray-300">
+                    <div className="text-[11px] font-bold mb-2 text-gray-500">設問一覧</div>
+                    <ol className="space-y-2">
+                      {sqList.map((item, sIdx) => (
+                        <li key={sIdx} className="flex items-start gap-2">
+                          {item.marker && (
+                            <span className="shrink-0 font-bold text-xs px-2 py-0.5 rounded-md border mt-0.5 bg-gray-50 text-gray-600 border-gray-200">
+                              {formatText(item.marker)}
+                            </span>
+                          )}
+                          <span className="min-w-0 leading-relaxed">
+                            {formatText(item.body, combinedHighlights)}
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                );
+              })()}
               {/* 問題解答画面（回答入力中）にはロジックツリーを表示しない。
                   ロジックツリーは「単元選択・学習フローチャート」画面と
                   「解答解説ページ」にのみ表示する。 */}
@@ -1525,13 +1552,18 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               // 要件1：全形式でカードをタップ→固定パネル表示に統一するため、
               // フォーカス中カードのハイライトも全形式で有効にする。
               const isFocusedCard = !isDesktop && focusedSubId === sq.id;
+              // 表示ルール3：右側の解答欄カードには設問文自体は含めず、
+              // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
+              const sqAllIndex = ((currentQuestion?.subQuestions || []) as any[]).indexOf(sq);
+              const sqMarker = splitQuestionLabel(sq.label || '', `問${(sqAllIndex < 0 ? gIdx : sqAllIndex) + 1}`).marker
+                || `問${(sqAllIndex < 0 ? gIdx : sqAllIndex) + 1}`;
               return (
                 <div key={sq.id} className={`flex flex-col gap-4 bg-white p-5 rounded-2xl shadow-sm border transition-all duration-250 ${
                   isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
                 }`}>
                   <div className="flex flex-col gap-3.5 w-full">
-                    <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-full block">
-                      {sq.label}
+                    <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block">
+                      {formatText(sqMarker)}
                     </span>
                     
                     {sq.type === 'multiple_choice' ? (
@@ -1767,8 +1799,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         >
           <div className="max-w-2xl mx-auto flex flex-col gap-2">
             <div className="flex items-center justify-between gap-2">
+              {/* 表示ルール3：解答入力パネルにも設問マーカーのみを表示（設問文は左の問題文欄で読む） */}
               <span className="font-bold text-[#2C3E50] text-xs bg-blue-50/60 border border-[#A9CCE3]/40 px-2.5 py-1 rounded-lg truncate">
-                {focusedSub.label}
+                {formatText(
+                  focusedSub.group
+                    ? `${String(focusedSub.group).split(' ')[0]} : 係数 ${splitQuestionLabel(focusedSub.label || '', `問${focusedIndex + 1}`).marker || focusedSub.label}`
+                    : (splitQuestionLabel(focusedSub.label || '', `問${focusedIndex + 1}`).marker || `問${focusedIndex + 1}`)
+                )}
               </span>
               <div className="flex items-center gap-1.5 shrink-0">
                 {inputNavSubs.length > 1 && (
