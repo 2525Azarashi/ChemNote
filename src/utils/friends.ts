@@ -83,7 +83,7 @@ function toFriendlyError(error: any, fallback: string): Error {
   switch (code) {
     case 'permission-denied':
       return new Error(
-        'この操作は許可されていません。本番の Firestore ルールがアプリの版と一致していない可能性があります。最新の firestore.rules をデプロイしてください（firebase deploy --only firestore:rules）。'
+        'この操作は許可されていません。本番の Firestore セキュリティルールが古いままです。管理者は Firebase Console（console.firebase.google.com → Firestore → ルール）でリポジトリの firestore.rules を貼り付けて「公開」するか、firebase deploy --only firestore:rules を実行してください。詳細は docs/DEPLOY_FIRESTORE_RULES.md を参照。'
       );
     case 'unauthenticated':
       return new Error('ログインの有効期限が切れています。もう一度Googleログインしてください。');
