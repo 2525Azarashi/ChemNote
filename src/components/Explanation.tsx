@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle, Trophy, KeyRound, ListOrdered, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatText } from '../utils/textFormatter';
+import { ExplanationBody } from './ExplanationBody';
 import { auth } from '../firebase';
 import { ChapterRankingPanel } from './ChapterRankingPanel';
 import { QuestionFigure } from './QuestionFigure';
@@ -1028,7 +1029,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     <div className={`p-4 rounded-lg border text-sm md:text-base leading-relaxed ${
                       mode === 'mini_test' ? 'bg-white border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]/90'
                     }`}>
-                      {formatText(cleanQuestionText(question.text))}
+                      {/* 問題文にも Markdown テーブル（実験結果の表など）が含まれるため
+                          ExplanationBody を通して本物の <table> で描画する。 */}
+                      <ExplanationBody
+                        text={cleanQuestionText(question.text)}
+                        tone={mode === 'mini_test' ? 'light' : 'dark'}
+                      />
                       {question.text.includes('図6') && (
                         <div className="mt-4">
                           <IonizationEnergyChart showDetails={true} />
@@ -1487,12 +1493,15 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             <span>解説</span>
                           </h4>
                           {/* 解説本文の地の文は手書き風フォントで統一する。
-                              （数式・化学式は formatText 内で個別に serif/Cambria Math を指定しているため崩れない） */}
-                          <div className={`font-handwriting text-xs md:text-sm whitespace-pre-wrap leading-relaxed ${
-                            mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'
-                          }`}>
-                            {formatText(explanationText)}
-                          </div>
+                              （数式・化学式は formatText 内で個別に serif/Cambria Math を指定しているため崩れない）
+                              ExplanationBody を通すことで、Markdown テーブルは本物の <table> として描画される。 */}
+                          <ExplanationBody
+                            text={explanationText}
+                            tone={mode === 'mini_test' ? 'light' : 'dark'}
+                            className={`font-handwriting text-xs md:text-sm leading-relaxed ${
+                              mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'
+                            }`}
+                          />
                           {deepThoughtData && isPracticeMode && (
                             <div className="mt-4 pt-4 border-t border-gray-200">
                               <h5 className="text-xs font-bold mb-2 text-[#2C3E50]/80">解答に必要なロジックツリーのStep:</h5>
