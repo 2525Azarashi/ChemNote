@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, ChevronRight, Info, Network, ChevronDown, ChevronUp } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { formatText } from '../utils/textFormatter';
+import { ExplanationBody } from './ExplanationBody';
+import { ExplanationChart } from './ExplanationChart';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,6 +19,11 @@ export interface NodeData {
   subLabel?: string;
   isGroup?: boolean;
   explanation?: string;
+  /**
+   * 解説に添える図・グラフの識別子（ExplanationChart の EXPLANATION_CHARTS のキー）。
+   * アスキーアートで図を描かず、SVG として構造化して描画するために用いる。
+   */
+  chart?: string;
   relatedQuestions?: { id: string; label: string }[];
   children?: NodeData[];
 }
@@ -36,7 +42,7 @@ interface TreeNodeProps {
 
 const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionClick, zoom = 'normal', depth = 0, isMobile = false }: TreeNodeProps) => {
   const isSelected = expandedNodeIds.includes(node.id);
-  const hasContent = !!node.explanation || !!renderContent || (node.relatedQuestions && node.relatedQuestions.length > 0);
+  const hasContent = !!node.explanation || !!node.chart || !!renderContent || (node.relatedQuestions && node.relatedQuestions.length > 0);
 
   const getStepStyles = (step: StepType, isSelected: boolean) => {
     if (step === 1) return isSelected ? 'bg-orange-100 border-orange-400 text-orange-900 shadow-md scale-[1.02]' : 'bg-white border-orange-200 text-orange-800 hover:bg-orange-50';
@@ -165,11 +171,13 @@ const TreeNode = ({ node, onSelect, expandedNodeIds, renderContent, onQuestionCl
                 className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200 shadow-inner mr-1 sm:mr-2 w-full font-handwriting whitespace-normal break-words box-border"
                 style={{ maxWidth: dynamicMaxWidth }}
               >
-                {node.explanation && (
+                {(node.explanation || node.chart) && (
                   <div className="flex items-start gap-2 mb-4 font-handwriting">
                     <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-                    <div className="text-slate-700 text-sm leading-relaxed font-handwriting whitespace-normal break-words">
-                      {formatText(node.explanation)}
+                    <div className="min-w-0 flex-1 text-slate-700 text-sm leading-relaxed font-handwriting whitespace-normal break-words">
+                      {node.explanation && <ExplanationBody text={node.explanation} />}
+                      {/* グラフはアスキーアートではなく SVG（構造化データ）で描画する */}
+                      <ExplanationChart chartId={node.chart} />
                     </div>
                   </div>
                 )}
