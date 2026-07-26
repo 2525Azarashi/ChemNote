@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { chemistryData } from '../data/chemistryData';
-import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2 } from 'lucide-react';
+import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
 import { TrendModal } from './TrendModal';
 import { chapterTrends } from '../data/trendData';
 import { DoorMascot } from './DoorMascot';
+import { MolBasicsSection } from './MolBasicsSection';
 
 interface ChapterSelectionProps {
   mode: 'mini_test' | 'practice';
@@ -85,6 +86,8 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
     chapterGroupTitle?: string;
     unitId?: string;
   }>({ open: false });
+  // チュートリアル（物質量 mol 補講）モーダルの開閉
+  const [tutorialOpen, setTutorialOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -312,7 +315,80 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
             </div>
           </section>
         )}
+
+        {/* ========== チュートリアル（単元選択の下） ==========
+            物質量（mol）の考え方を配布プリントそのままの途中式で学べる
+            「物質量（mol）がわからない人へ」をチュートリアルとして常設表示する。 */}
+        <div className="shrink-0 mt-3">
+          <button
+            type="button"
+            onClick={() => setTutorialOpen(true)}
+            className="w-full flex items-center justify-between gap-3 rounded-2xl border-2 border-[#7c3aed]/35 bg-gradient-to-r from-[#f6f1ff] to-[#efe6ff] px-4 py-3 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer"
+            title="チュートリアル：物質量（mol）がわからない人へ"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#7c3aed] text-white shadow-md">
+                <GraduationCap size={20} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold tracking-widest text-[#7c3aed]">チュートリアル</p>
+                <p className="truncate text-sm sm:text-base font-bold text-[#3f3352]">
+                  物質量（mol）がわからない人へ
+                </p>
+                <p className="hidden sm:block truncate text-[11px] font-bold text-[#6b6280]">
+                  「スタートは？ゴールは？」単位変換の図と同じ途中式で mol 計算を根本から理解する
+                </p>
+              </div>
+            </div>
+            <span className="flex shrink-0 items-center gap-1 rounded-full bg-[#7c3aed] px-3 py-1.5 text-[11px] font-bold text-white">
+              開く
+              <ChevronRight size={13} />
+            </span>
+          </button>
+        </div>
       </div>
+
+      {/* チュートリアル全画面モーダル */}
+      <AnimatePresence>
+        {tutorialOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[80] flex flex-col bg-black/45 backdrop-blur-sm"
+            onClick={() => setTutorialOpen(false)}
+          >
+            <motion.div
+              initial={{ y: 24, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 24, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="mx-auto my-3 flex h-[calc(100dvh-1.5rem)] w-[min(60rem,calc(100vw-1rem))] flex-col overflow-hidden rounded-2xl bg-[#fbf8ff] shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[#c9bce6] bg-white/90 px-4 py-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <GraduationCap size={18} className="shrink-0 text-[#7c3aed]" />
+                  <span className="truncate text-sm sm:text-base font-bold text-[#3f3352]">
+                    チュートリアル：物質量（mol）がわからない人へ
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setTutorialOpen(false)}
+                  className="flex shrink-0 items-center gap-1 rounded-full border border-[#c9bce6] bg-white px-3 py-1.5 text-xs font-bold text-[#5b21b6] transition-colors hover:bg-[#f3ecff] cursor-pointer"
+                >
+                  <X size={14} />
+                  閉じる
+                </button>
+              </div>
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-6 sm:px-5 [-webkit-overflow-scrolling:touch]">
+                <MolBasicsSection showHeader={false} />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Chapter Flowchart Viewer Modal */}
       <AnimatePresence>

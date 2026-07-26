@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle, Trophy } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle, Trophy, KeyRound, ListOrdered, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatText } from '../utils/textFormatter';
 import { auth } from '../firebase';
@@ -8,6 +8,7 @@ import { ChapterRankingPanel } from './ChapterRankingPanel';
 import { QuestionFigure } from './QuestionFigure';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { isAnswerCorrect } from '../utils/answerJudge';
+import { splitQuestionLabel, answerCardMarker, buildSubQuestionList } from '../utils/questionDisplay';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
 import { applyOverviewViewport } from '../utils/viewportControl';
@@ -395,10 +396,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     const isExpanded = expandedSq === sq.id;
     const relatedSteps = getRelatedSteps(sq.id, currentQuestion);
 
-    // Label modification to include group name prefix for grouped subquestions
-    const displayLabel = sq.group 
-      ? `${sq.group.split(' ')[0]} : 係数 ${sq.label}`
-      : sq.label;
+    // 表示ルール3：右側（解答欄・採点結果）には設問文自体は含めず、
+    // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
+    const sqIndex = ((currentQuestion?.subQuestions || []) as any[]).indexOf(sq);
+    const displayLabel = answerCardMarker(sq, sqIndex < 0 ? 0 : sqIndex);
 
     if (!isExpanded) {
       return (
@@ -1021,7 +1022,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                       </div>
                     )}
                     
-                    {/* Problem Restatement */}
+                    {/* Problem Restatement
+                        表示ルール1・2：左側の「問題文」欄には共通リード文に加えて、
+                        続く全小問の設問文を順番に表示する（左側だけで全問いが理解できる）。 */}
                     <div className={`p-4 rounded-lg border text-sm md:text-base leading-relaxed ${
                       mode === 'mini_test' ? 'bg-white border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]/90'
                     }`}>
@@ -1041,6 +1044,36 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                           className="mt-4"
                         />
                       )}
+
+                      {/* 全小問の設問文一覧（省略せず網羅） */}
+                      {(() => {
+                        const sqList = buildSubQuestionList(question);
+                        if (sqList.length === 0) return null;
+                        return (
+                          <div className={`mt-4 pt-3 border-t border-dashed ${mode === 'mini_test' ? 'border-gray-300' : 'border-[#3A506B]'}`}>
+                            <div className={`text-[11px] font-bold mb-2 flex items-center gap-1.5 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
+                              <ListOrdered size={13} />
+                              <span>設問一覧</span>
+                            </div>
+                            <ol className="space-y-2">
+                              {sqList.map((item, sIdx) => (
+                                <li key={sIdx} className="flex items-start gap-2">
+                                  {item.marker && (
+                                    <span className={`shrink-0 font-bold text-xs px-2 py-0.5 rounded-md border mt-0.5 ${
+                                      mode === 'mini_test' ? 'bg-gray-50 text-gray-600 border-gray-200' : 'bg-[#0B132B] text-[#A9CCE3] border-[#3A506B]'
+                                    }`}>
+                                      {formatText(item.marker)}
+                                    </span>
+                                  )}
+                                  <span className="min-w-0 leading-relaxed">
+                                    {formatText(item.body)}
+                                  </span>
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 );
@@ -1074,9 +1107,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
 
                         const renderSq = (sq: any, isCorrect: boolean) => {
                           const isExpanded = expandedSq === sq.id;
-                          const displayLabel = sq.group 
-                            ? `${sq.group.split(' ')[0]} : 係数 ${sq.label}`
-                            : sq.label;
+                          // 表示ルール3：右側の採点結果カードには設問文を再掲せず、
+                          // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
+                          const sqIndex = ((question?.subQuestions || []) as any[]).indexOf(sq);
+                          const displayLabel = answerCardMarker(sq, sqIndex < 0 ? 0 : sqIndex);
 
                           return (
                             <div id={`sq-${sq.id}`} key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'border-blue-200' : 'border-[#A9CCE3]/30') : (isCorrect ? (mode === 'mini_test' ? 'border-emerald-200' : 'border-[#5BC0BE]/30') : (mode === 'mini_test' ? 'border-red-200' : 'border-[#D9A0A0]/30'))}`}>
@@ -1253,26 +1287,73 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                       </div>
                                     ) : (
                                       <div className="flex flex-col gap-3 md:gap-4">
-                                        <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>あなたの解答</div>
-                                        <div className={`font-bold text-sm md:text-base p-3 rounded-lg border ${isCorrect ? (mode === 'mini_test' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]') : (mode === 'mini_test' ? 'bg-red-50 border-red-200 text-red-600 line-through opacity-80' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0] line-through opacity-80')}`}>
-                                          {formatText(answers[sq.id] || '未解答')}
+                                        {/* ① 判定バナー：正誤を一目で伝える */}
+                                        <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border font-bold text-sm ${
+                                          isCorrect
+                                            ? (mode === 'mini_test' ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-[#5BC0BE]/15 border-[#5BC0BE]/40 text-[#5BC0BE]')
+                                            : (mode === 'mini_test' ? 'bg-red-50 border-red-300 text-red-600' : 'bg-[#D9A0A0]/15 border-[#D9A0A0]/40 text-[#D9A0A0]')
+                                        }`}>
+                                          {isCorrect ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
+                                          <span>{isCorrect ? '正解！' : '不正解 — ここが伸びしろ'}</span>
                                         </div>
-                                        
-                                        {sq.detailedExplanation ? (
-                                          <div className={`p-4 rounded-lg border text-sm leading-explanation mt-2 ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
-                                            <div className="mb-4">
-                                              <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-1`}>【問題テーマ】</h5>
-                                              <p className={`${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>{formatText(sq.detailedExplanation.theme)}</p>
+
+                                        {/* ② あなたの解答 vs 正解 を横並びで比較 */}
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                          <div>
+                                            <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>あなたの解答</div>
+                                            <div className={`font-bold text-sm md:text-base p-3 rounded-lg border break-words ${isCorrect ? (mode === 'mini_test' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]') : (mode === 'mini_test' ? 'bg-red-50 border-red-200 text-red-600 line-through opacity-80' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0] line-through opacity-80')}`}>
+                                              {formatText(answers[sq.id] || '未解答')}
                                             </div>
-                                            {isPracticeMode && (
-                                              <div className="mb-4">
-                                                <p className="font-bold text-[#5BC0BE]">【難易度】: {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}</p>
-                                              </div>
-                                            )}
-                                            {isPracticeMode && (
-                                              !isCorrect && getRelatedSteps(sq.id, question).length > 0 ? (
-                                                <div className="mb-4">
-                                                  <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
+                                          </div>
+                                          <div>
+                                            <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正解</div>
+                                            <div className={`font-math font-bold text-sm md:text-base p-3 rounded-lg border break-words ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'}`}>
+                                              {formatText(sq.correctAnswer)}
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        {sq.detailedExplanation ? (
+                                          <div className={`rounded-xl border text-sm leading-explanation overflow-hidden ${mode === 'mini_test' ? 'bg-white border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]'}`}>
+                                            {/* ③ 答えの核心：この問いで問われている本質を最初に伝える */}
+                                            <div className={`p-4 border-b-2 ${mode === 'mini_test' ? 'bg-amber-50/70 border-amber-300' : 'bg-[#F9E79F]/10 border-[#F9E79F]/40'}`}>
+                                              <h5 className={`font-bold mb-1.5 flex items-center gap-1.5 ${mode === 'mini_test' ? 'text-amber-700' : 'text-[#F9E79F]'}`}>
+                                                <KeyRound size={15} />
+                                                <span>答えの核心（ここだけは押さえる）</span>
+                                                {isPracticeMode && (
+                                                  <span className={`ml-auto text-[10px] font-bold ${mode === 'mini_test' ? 'text-amber-600/80' : 'text-[#F9E79F]/80'}`}>
+                                                    難易度 {'★'.repeat(getDifficulty(sq.id)) + '☆'.repeat(5 - getDifficulty(sq.id))}
+                                                  </span>
+                                                )}
+                                              </h5>
+                                              <p className={`font-bold leading-relaxed ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>{formatText(sq.detailedExplanation.theme)}</p>
+                                            </div>
+
+                                            <div className="p-4 space-y-4">
+                                              {/* ④ 正解までの道すじ：番号つきステップで再現可能な手順にする */}
+                                              {isPracticeMode && sq.detailedExplanation.steps?.length > 0 && (
+                                                <div>
+                                                  <h5 className={`font-bold mb-2 flex items-center gap-1.5 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
+                                                    <Target size={15} />
+                                                    <span>正解までの道すじ</span>
+                                                  </h5>
+                                                  <ol className="list-none space-y-2">
+                                                    {sq.detailedExplanation.steps.map((step: string, idx: number) => (
+                                                      <li key={idx} className="flex items-start gap-2.5">
+                                                        <span className={`shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold ${mode === 'mini_test' ? 'bg-emerald-100 text-emerald-700 border border-emerald-300' : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border border-[#5BC0BE]/40'}`}>
+                                                          {idx + 1}
+                                                        </span>
+                                                        <span className="font-math leading-relaxed min-w-0">{formatText(step)}</span>
+                                                      </li>
+                                                    ))}
+                                                  </ol>
+                                                </div>
+                                              )}
+
+                                              {/* ⑤ 間違えたときだけ：関連ロジックの復習導線 */}
+                                              {!isCorrect && isPracticeMode && getRelatedSteps(sq.id, question).length > 0 && (
+                                                <div className={`p-3 rounded-lg border ${mode === 'mini_test' ? 'bg-blue-50/60 border-blue-200' : 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30'}`}>
+                                                  <h5 className={`font-bold mb-2 text-xs ${mode === 'mini_test' ? 'text-blue-700' : 'text-[#A9CCE3]'}`}>間違えた原因はここ — 関連ステップを復習</h5>
                                                   <div className="flex flex-wrap gap-2">
                                                     {getRelatedSteps(sq.id, question).map((stepInfo: { step: number | string | null, label: string, id: string }, idx: number) => (
                                                       <button
@@ -1283,7 +1364,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                           setScrollTrigger(prev => prev + 1);
                                                           // InteractiveTree handles scrolling to the specific node
                                                         }}
-                                                        className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-slate-300 flex items-center gap-1"
+                                                        className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-slate-300 flex items-center gap-1 cursor-pointer"
                                                       >
                                                         <Network size={14} className="text-[#34495E]" />
                                                         {formatText(stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」を復習する` : `「${stepInfo.label}」を復習する`)}
@@ -1291,34 +1372,14 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                     ))}
                                                   </div>
                                                 </div>
-                                              ) : (
-                                                <ol className="list-none space-y-1.5 mb-4">
-                                                  {sq.detailedExplanation.steps.map((step: string, idx: number) => (
-                                                    <li key={idx} className="flex items-start gap-2">
-                                                      <span className={`shrink-0 text-[#5BC0BE]`}></span>
-                                                      <span className="font-math">{formatText(step)}</span>
-                                                    </li>
-                                                  ))}
-                                                </ol>
-                                              )
-                                            )}
-                                            <div className={`pt-3 border-t border-dashed ${mode === 'mini_test' ? 'border-gray-300' : 'border-[#3A506B]'}`}>
-                                              <h5 className={`font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'} mb-2`}>【解答】</h5>
-                                              <div className={`font-math font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'} p-3 rounded-lg border`}>
-                                                {formatText(sq.correctAnswer)}
-                                              </div>
+                                              )}
                                             </div>
                                           </div>
                                         ) : (
-                                          <div className="mt-2">
-                                            <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正解</div>
-                                            <div className={`font-bold text-sm md:text-base p-3 rounded-lg border ${mode === 'mini_test' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'}`}>
-                                              {formatText(sq.correctAnswer)}
-                                            </div>
-    
+                                          <div className="mt-1">
                                             {!isCorrect && isPracticeMode && getRelatedSteps(sq.id, question).length > 0 && (
-                                              <div className="mt-4">
-                                                <h5 className="font-bold text-[#5BC0BE] mb-2">【関連するロジックステップ】</h5>
+                                              <div className={`p-3 rounded-lg border ${mode === 'mini_test' ? 'bg-blue-50/60 border-blue-200' : 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30'}`}>
+                                                <h5 className={`font-bold mb-2 text-xs ${mode === 'mini_test' ? 'text-blue-700' : 'text-[#A9CCE3]'}`}>間違えた原因はここ — 関連ステップを復習</h5>
                                                 <div className="flex flex-wrap gap-2">
                                                   {getRelatedSteps(sq.id, question).map((stepInfo: { step: number | string | null, label: string, id: string }, idx: number) => (
                                                     <button
@@ -1328,7 +1389,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                                         setExpandedStep(stepInfo.label);
                                                         setScrollTrigger(prev => prev + 1);
                                                       }}
-                                                      className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-slate-300 flex items-center gap-1"
+                                                      className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-slate-300 flex items-center gap-1 cursor-pointer"
                                                     >
                                                       <Network size={14} className="text-[#34495E]" />
                                                       {stepInfo.step ? `Step ${stepInfo.step}の「${stepInfo.label}」` : `「${stepInfo.label}」`}を復習する
@@ -1341,7 +1402,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                         )}
     
                                         {sq.partialCreditCriteria && (
-                                          <div className={`mt-2 md:mt-3 text-[10px] md:text-xs p-3 rounded-lg border flex items-start gap-2 ${mode === 'mini_test' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-[#F9E79F]/10 text-[#F9E79F] border-[#F9E79F]/30'}`}>
+                                          <div className={`mt-1 text-[10px] md:text-xs p-3 rounded-lg border flex items-start gap-2 ${mode === 'mini_test' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-[#F9E79F]/10 text-[#F9E79F] border-[#F9E79F]/30'}`}>
                                             <AlertCircle className="shrink-0 mt-0.5 w-4 h-4" />
                                             <span className="leading-relaxed">{formatText(sq.partialCreditCriteria)}</span>
                                           </div>
