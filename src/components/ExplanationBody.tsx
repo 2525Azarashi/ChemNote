@@ -109,11 +109,52 @@ const alignClass: Record<Alignment, string> = {
   right: 'text-right',
 };
 
-function ExplanationTable({ block }: { block: TableBlock; key?: React.Key }) {
+/**
+ * 表の配色。解説は「明るい下地（ミニテスト・学習フロー）」と
+ * 「暗い下地（演習モードの解説パネル）」の両方に出るため、両対応させる。
+ */
+export type ExplanationTone = 'light' | 'dark';
+
+const toneStyles: Record<ExplanationTone, {
+  wrapper: string;
+  headCell: string;
+  rowHeadCell: string;
+  bodyCell: string;
+  rowEven: string;
+  rowOdd: string;
+}> = {
+  light: {
+    wrapper: 'border-slate-200 bg-white',
+    headCell: 'border-slate-200 bg-slate-100 text-slate-700',
+    rowHeadCell: 'border-slate-200 text-slate-700',
+    bodyCell: 'border-slate-200 text-slate-700',
+    rowEven: 'bg-white',
+    rowOdd: 'bg-slate-50/70',
+  },
+  dark: {
+    wrapper: 'border-[#3A506B]/60 bg-[#0B132B]/60',
+    headCell: 'border-[#3A506B]/60 bg-[#1C2541] text-[#5BC0BE]',
+    rowHeadCell: 'border-[#3A506B]/60 text-[#E0E1DD]',
+    bodyCell: 'border-[#3A506B]/60 text-[#E0E1DD]/90',
+    rowEven: 'bg-transparent',
+    rowOdd: 'bg-[#1C2541]/40',
+  },
+};
+
+interface ExplanationTableProps {
+  block: TableBlock;
+  tone: ExplanationTone;
+  // このリポジトリは @types/react を導入していないため、JSX の key が
+  // props として型チェックされる。明示的に受け取って型エラーを避ける。
+  key?: React.Key;
+}
+
+function ExplanationTable({ block, tone }: ExplanationTableProps) {
   const colCount = block.header.length;
+  const t = toneStyles[tone];
   return (
     // 列数が多い表はスマホで横スクロールできるようにする（文字を潰して縦書きにしない）
-    <div className="my-2 -mx-1 overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div className={`my-2 -mx-1 overflow-x-auto rounded-lg border shadow-sm ${t.wrapper}`}>
       <table className="w-full min-w-full border-collapse text-[11px] sm:text-xs font-handwriting">
         <thead>
           <tr>
@@ -122,7 +163,8 @@ function ExplanationTable({ block }: { block: TableBlock; key?: React.Key }) {
                 key={i}
                 scope="col"
                 className={[
-                  'border-b border-slate-200 bg-slate-100 px-2 py-1.5 font-bold text-slate-700 whitespace-normal break-words align-top',
+                  'border-b px-2 py-1.5 font-bold whitespace-normal break-words align-top',
+                  t.headCell,
                   alignClass[block.align[i] ?? 'left'],
                 ].join(' ')}
               >
@@ -133,7 +175,7 @@ function ExplanationTable({ block }: { block: TableBlock; key?: React.Key }) {
         </thead>
         <tbody>
           {block.rows.map((row, r) => (
-            <tr key={r} className={r % 2 === 1 ? 'bg-slate-50/70' : 'bg-white'}>
+            <tr key={r} className={r % 2 === 1 ? t.rowOdd : t.rowEven}>
               {Array.from({ length: colCount }).map((_, c) => {
                 const cell = row[c] ?? '';
                 // 各行の1列目は行見出し（scope="row"）として扱い、表の意味構造を保つ
@@ -143,7 +185,8 @@ function ExplanationTable({ block }: { block: TableBlock; key?: React.Key }) {
                       key={c}
                       scope="row"
                       className={[
-                        'border-t border-slate-200 px-2 py-1.5 font-bold text-slate-700 whitespace-normal break-words align-top',
+                        'border-t px-2 py-1.5 font-bold whitespace-normal break-words align-top',
+                        t.rowHeadCell,
                         alignClass[block.align[c] ?? 'left'],
                       ].join(' ')}
                     >
@@ -155,7 +198,8 @@ function ExplanationTable({ block }: { block: TableBlock; key?: React.Key }) {
                   <td
                     key={c}
                     className={[
-                      'border-t border-l border-slate-200 px-2 py-1.5 text-slate-700 whitespace-normal break-words align-top',
+                      'border-t border-l px-2 py-1.5 whitespace-normal break-words align-top',
+                      t.bodyCell,
                       alignClass[block.align[c] ?? 'left'],
                     ].join(' ')}
                   >
@@ -174,27 +218,32 @@ function ExplanationTable({ block }: { block: TableBlock; key?: React.Key }) {
 export interface ExplanationBodyProps {
   text: string;
   className?: string;
+  /** 表の配色。暗い背景のパネルに載せるときは 'dark' を指定する。 */
+  tone?: ExplanationTone;
+  /** ユーザーが選択したハイライト語（formatText にそのまま渡す） */
+  highlights?: string[];
 }
 
 /**
  * 解説本文（テキスト＋Markdown テーブル）をレンダリングする。
  * テーブルを含まない場合は従来と完全に同じ出力（formatText のみ）になる。
  */
-export function ExplanationBody({ text, className }: ExplanationBodyProps) {
+export function ExplanationBody({ text, className, tone = 'light', highlights = [] }: ExplanationBodyProps) {
   if (!text) return null;
   const blocks = parseExplanationBlocks(text);
 
   if (blocks.length === 1 && blocks[0].kind === 'text') {
-    return <div className={className}>{formatText(text)}</div>;
+    return <div className={className}>{formatText(text, highlights)}</div>;
   }
 
   return (
     <div className={className}>
       {blocks.map((block, i) =>
         block.kind === 'table' ? (
-          <ExplanationTable key={`t-${i}`} block={block} />
+          <ExplanationTable key={`t-${i}`} block={block} tone={tone} />
         ) : (
-          <div key={`p-${i}`}>{formatText(block.text)}</div>
+          // テーブル以外の地の文は改行をそのまま活かす（元の pre-wrap 相当の見た目を保つ）
+          <div key={`p-${i}`} className="whitespace-pre-wrap">{formatText(block.text, highlights)}</div>
         )
       )}
     </div>

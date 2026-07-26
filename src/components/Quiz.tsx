@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
+import { ExplanationBody } from './ExplanationBody';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
 import { QuestionFigure } from './QuestionFigure';
@@ -76,44 +77,67 @@ function saveRun(chapterId: string, mode: string, run: ChapterRunState) {
 }
 
 /**
- * 問題が下付き・上付き文字パレットの表示が必要かどうかを判定
- * 対象：イオン表記、化学式、原子番号・質量数表記など
+ * 解答文字列そのものが化学記号パレットの記号を必要とするか判定する。
+ *
+ * パレットは「入力補助」なので、判断材料は
+ * **その設問の解答として実際に打ち込む文字列**に限るのが正しい。
+ * 問題文や解説に「イオン」「酸化」などの語が含まれるだけでパレットを出すと、
+ * 語句を答えるだけの設問にも大量に表示されてしまう（旧実装の問題点）。
  */
-function requiresChemicalSymbols(question: any, answer: any = {}): boolean {
+function answerNeedsPalette(ansRaw: string): boolean {
+  const ans = String(ansRaw);
+
+  // 1. 上付き・下付き Unicode を含む（H₂O, Cu²⁺, 10⁻³ など）。
+  //    ¹²³ は U+00B9/B2/B3 で U+2070-2079 の範囲外なので個別に列挙する。
+  if (/[₀-₉⁰-⁹⁺⁻¹²³]/.test(ans)) return true;
+  // 2. 反応式の記号（→ ⇌ ⇄ ↔）。
+  //    ただし「1族→1」のような日本語の説明文中の矢印は反応式ではないので、
+  //    元素記号になり得るラテン文字を含む場合に限る。
+  if (/[→⇌⇄↔]/.test(ans) && /[A-Za-z]/.test(ans)) return true;
+  // 3. TeX 風の上付き・下付き（e^-, ^2+, _8 など）
+  if (/\^\{?[0-9]*[+\-−]/.test(ans) || /_\{?[0-9]/.test(ans)) return true;
+  // 4. 元素記号＋数字／電荷（H2O, CaCO3, SO42- など）。
+  //    ただし単位付きの数値（25 mL, 0.10 mol/L）は除外する。
+  if (/(?:[A-Z][a-z]?\d*){1,}[\d+\-]/.test(ans) && /[A-Z]/.test(ans)) {
+    const unitOnly =
+      /^[\d.,\s×^\-+()/]*(?:mol|L|mL|g|kg|mg|cm|m|kJ|J|K|Pa|kPa|atm|%|℃|mol\/L|g\/mol|個)?[\d.,\s×^\-+()/]*$/i;
+    if (!unitOnly.test(ans)) return true;
+  }
+  // 5. イオン式の平文表記（Na+, Cl-, OH-, NH4+ など）
+  if (/[A-Z][A-Za-z]{0,3}\d*\s*[+\-]\s*$/.test(ans.trim())) return true;
+
+  return false;
+}
+
+/**
+ * 設問が下付き・上付き文字パレットの表示を必要とするかどうかを判定する。
+ *
+ * 判定方針（要件4）：
+ *  - データ側で `requiresChemicalPalette` が明示された設問は常に表示（opt-in）。
+ *  - 選択式（multiple_choice / true_false / select / sorting）はタップで選ぶだけなので不要。
+ *  - それ以外は correctAnswer / acceptedAnswers のいずれかが
+ *    化学式・イオン式・反応式・上下付き文字を含む場合のみ表示する。
+ */
+function requiresChemicalSymbols(question: any): boolean {
   if (question?.requiresChemicalPalette) return true;
-  const text = [
-    question?.text || '',
-    answer?.correctAnswer || '',
-    question?.category || '',
-    JSON.stringify(question?.detailedExplanation || ''),
-  ]
-    .join(' ')
-    .toLowerCase();
 
-  // パターン検出：
-  // 1. イオン表記（例：Cu2+, Cl-, NH4+）
-  const ionPattern = /\b([a-z]{1,2}\d*(?:[\+\-]|【）)|\([\+\-]|イオン)/i;
-  // 2. 化学式内の数字（例：H2O, CaCO3）
-  const chemicalFormula = /\b[a-z]\d+\b|[a-z]{2,}\d+/i;
-  // 3. 上付き・下付き記号の参照（例：⁺, ⁻, ₂, ₃）
-  const unicodeSuperSubscript = /[⁺⁻²³⁴⁵₂₃₄₅]/;
-  // 4. 原子番号や質量数表記（例：_8O, 235U）
-  const massNumberPattern = /\d+[a-z]|[a-z]\d+[\+\-\)]|\d+\(/;
-  // 5. 「価」「イオン」「原子」関連キーワード
-  const chemKeywords =
-    /価|イオン|原子|分子|化合物|酸化|還元|電荷|陽子|陰イオン|陽イオン|硫酸|硝酸|塩化|水酸|炭酸|アンモニウム/;
-  // 6. 化学反応式・イオン反応式・熱化学方程式などの記述問題
-  const reactionKeywords =
-    /反応式|化学式|組成式|電離|中和|化学反応|イオン反応|熱化学|燃焼|→|⇌/;
+  const type = String(question?.type || '');
+  if (
+    type === 'multiple_choice' ||
+    type === 'true_false' ||
+    type === 'select' ||
+    type === 'sorting'
+  ) {
+    return false;
+  }
 
-  return (
-    ionPattern.test(text) ||
-    chemicalFormula.test(text) ||
-    unicodeSuperSubscript.test(text) ||
-    massNumberPattern.test(text) ||
-    chemKeywords.test(text) ||
-    reactionKeywords.test(text)
-  );
+  const answers: string[] = [
+    question?.correctAnswer,
+    ...(Array.isArray(question?.acceptedAnswers) ? question.acceptedAnswers : []),
+  ].filter((a: any): a is string => typeof a === 'string' && a.trim() !== '');
+
+  if (answers.length === 0) return false;
+  return answers.some((a) => answerNeedsPalette(a));
 }
 
 type PaletteItem = { label: string; value: string; desc: string };
@@ -1035,14 +1059,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   }, [currentQuestion, shortAnswerSubs]);
 
   // この問題に化学記号パレットが必要か（要件4）。
-  // いずれかの設問、または問題文自体が化学式・イオン・元素記号を要するなら true。
+  // 「解答として実際に打ち込む文字列」が化学式・イオン式・反応式・上下付き文字を
+  // 含む設問が1つでもあれば true。問題データ側の明示 opt-in も尊重する。
   const questionNeedsChemPalette = useMemo(() => {
     if (!currentQuestion) return false;
+    if ((currentQuestion as any).requiresChemicalPalette) return true;
     const subs = currentQuestion.subQuestions || [];
-    return (
-      subs.some((sq: any) => requiresChemicalSymbols(sq, sq.correctAnswer)) ||
-      requiresChemicalSymbols(currentQuestion as any)
-    );
+    return subs.some((sq: any) => requiresChemicalSymbols(sq));
   }, [currentQuestion]);
 
   // 現在フォーカス中の穴埋め設問に対応する、問題文中のハイライト候補文字列。
@@ -1435,7 +1458,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             title="テキストを選択するとハイライトできます"
           >
             <div className="max-w-prose md:max-w-none">
-              {formatText(cleanQuestionText(currentQuestion.text), combinedHighlights)}
+              {/* 問題文に含まれる Markdown テーブル（実験結果の表など）は
+                  ExplanationBody を通して本物の <table> として描画する。 */}
+              <ExplanationBody
+                text={cleanQuestionText(currentQuestion.text)}
+                highlights={combinedHighlights}
+              />
               {currentQuestion.text.includes('図6') && (
                 <div className="mt-4">
                   <IonizationEnergyChart showDetails={false} />
@@ -1627,7 +1655,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                               />
                             </div>
                             {/* 化学記号パレット（反応式・化学式の記述が必要な問題のみ表示） */}
-                            {requiresChemicalSymbols(sq, sq.correctAnswer) && (
+                            {requiresChemicalSymbols(sq) && (
                               <ChemistryPalette
                                 value={answers[sq.id] || ''}
                                 onChange={(next) => handleTextChange(sq.id, next)}
@@ -1672,7 +1700,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                               />
                             </div>
                             {/* 化学記号パレット（必要な問題のみ表示・カーソル位置に挿入） */}
-                            {requiresChemicalSymbols(sq, sq.correctAnswer) && (
+                            {requiresChemicalSymbols(sq) && (
                               <ChemistryPalette
                                 value={answers[sq.id] || ''}
                                 onChange={(next) => handleTextChange(sq.id, next)}
@@ -1913,7 +1941,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 />
 
                 {/* 化学記号パレット（要件4：必要な問題のみ表示） */}
-                {questionNeedsChemPalette && requiresChemicalSymbols(focusedSub, focusedSub.correctAnswer) && (
+                {questionNeedsChemPalette && requiresChemicalSymbols(focusedSub) && (
                   <div className="max-h-[28vh] overflow-y-auto">
                     <ChemistryPalette
                       value={answers[focusedSub.id] || ''}
