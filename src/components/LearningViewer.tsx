@@ -9,10 +9,16 @@ import {
   SECTION_2_2_HTML,
   SECTION_2_3_HTML,
 } from '../data/learningContent';
+import { MolBasicsSection } from './MolBasicsSection';
 
 interface LearningViewerProps {
   onBack: () => void;
+  /** 初期表示するタブ（'mol-basics' で「物質量がわからない人へ」を直接開く） */
+  initialTab?: string;
 }
+
+// 「物質量がわからない人へ」タブのID（色分けの判定にも使う）
+export const MOL_BASICS_TAB_ID = 'mol-basics';
 
 const SECTIONS = [
   { id: 'toc', title: '目次・使い方' },
@@ -20,6 +26,7 @@ const SECTIONS = [
   { id: '1-2', title: '1-2. 物質の構成粒子' },
   { id: '1-3', title: '1-3. 化学結合' },
   { id: '2-1', title: '2-1. 物質量と化学反応式' },
+  { id: MOL_BASICS_TAB_ID, title: '⭐ 物質量がわからない人へ' },
   { id: '2-2', title: '2-2. 酸と塩基' },
   { id: '2-3', title: '2-3. 酸化還元反応' },
 ];
@@ -39,12 +46,13 @@ const SECTION_PART_LABEL: Record<string, string> = {
   '1-2': '第1部 物質の構成',
   '1-3': '第1部 物質の構成',
   '2-1': '第2部 物質の変化',
+  [MOL_BASICS_TAB_ID]: '第2部 物質の変化 / 物質量 補講',
   '2-2': '第2部 物質の変化',
   '2-3': '第2部 物質の変化',
 };
 
-export function LearningViewer({ onBack }: LearningViewerProps) {
-  const [activeTab, setActiveTab] = useState('toc');
+export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
+  const [activeTab, setActiveTab] = useState(initialTab || 'toc');
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -90,8 +98,12 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
               onClick={() => setActiveTab(sec.id)}
               className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-sm border snap-start cursor-pointer
                 ${activeTab === sec.id
-                  ? 'bg-[#2C3E50] border-[#2C3E50] text-[#FDFBF7] transform -translate-y-0.5 shadow-md'
-                  : 'bg-white border-gray-150 text-gray-500 hover:text-[#2C3E50] hover:bg-gray-50'}`}
+                  ? (sec.id === MOL_BASICS_TAB_ID
+                      ? 'bg-[#5b21b6] border-[#5b21b6] text-white transform -translate-y-0.5 shadow-md'
+                      : 'bg-[#2C3E50] border-[#2C3E50] text-[#FDFBF7] transform -translate-y-0.5 shadow-md')
+                  : (sec.id === MOL_BASICS_TAB_ID
+                      ? 'bg-[#f3ecff] border-[#c9bce6] text-[#5b21b6] hover:bg-[#e9dcff]'
+                      : 'bg-white border-gray-150 text-gray-500 hover:text-[#2C3E50] hover:bg-gray-50')}`}
             >
               {sec.title}
             </button>
@@ -164,6 +176,16 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
                       <h4 className="font-bold text-[#2C3E50] border-b border-gray-200 pb-1.5 mb-2 text-sm">第2部 物質の変化</h4>
                       <ul className="space-y-1.5 text-xs font-bold text-gray-600">
                         <li className="flex items-center gap-1.5"><span className="text-gray-400">1.</span> 物質量と化学反応式 (mol計算・化学反応式・イオン反応式・濃度)</li>
+                        <li>
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab(MOL_BASICS_TAB_ID)}
+                            className="w-full text-left flex items-start gap-1.5 rounded-lg border border-[#c9bce6] bg-[#f3ecff] px-2 py-1.5 text-[#5b21b6] hover:bg-[#e9dcff] transition-colors cursor-pointer"
+                          >
+                            <span>⭐</span>
+                            <span>物質量がわからない人へ (プリントの単位変換の図で全部解く)</span>
+                          </button>
+                        </li>
                         <li className="flex items-center gap-1.5"><span className="text-gray-400">2.</span> 酸と塩基 (定義・電離度・強さ・pH・中和・塩の分類・中和滴定)</li>
                         <li className="flex items-center gap-1.5"><span className="text-gray-400">3.</span> 酸化還元反応 (定義・酸化数・半反応式・滴定・イオン化傾向・電池)</li>
                       </ul>
@@ -176,6 +198,35 @@ export function LearningViewer({ onBack }: LearningViewerProps) {
                     💡 上部メニューから見たいセクションを選択して勉強を進めましょう。
                   </p>
                 </div>
+              </div>
+            )}
+
+            {/* ====== 2-1 の冒頭に「物質量がわからない人へ」への案内を出す ====== */}
+            {activeTab === '2-1' && (
+              <button
+                type="button"
+                onClick={() => setActiveTab(MOL_BASICS_TAB_ID)}
+                className="mb-5 w-full text-left rounded-xl border-2 border-[#c9bce6] border-l-8 border-l-[#7c3aed] bg-[#f7f2ff] px-4 py-3 transition-colors hover:bg-[#f0e7ff] cursor-pointer"
+              >
+                <span className="block text-[11px] font-extrabold tracking-widest text-[#7c3aed]">物質量 補講</span>
+                <span className="mt-0.5 block text-sm font-bold text-[#5b21b6]">
+                  ⭐ mol の計算がどうしても苦手な人へ →「物質量がわからない人へ」を見る
+                </span>
+                <span className="mt-1 block text-[11px] font-bold leading-relaxed text-[#6b6280]">
+                  配布プリントの「単位変換の図」をそのまま操作して、どんな問題も同じ途中式で解けるようになります。
+                </span>
+              </button>
+            )}
+
+            {/* ====== ⭐ 物質量がわからない人へ（プリント完全再現 + 操作できる図） ====== */}
+            {activeTab === MOL_BASICS_TAB_ID && (
+              <div className="animate-fade-in-up">
+                <div className="mb-4">
+                  <span className="text-xs font-extrabold text-[#7c3aed] tracking-widest uppercase block">
+                    {SECTION_PART_LABEL[MOL_BASICS_TAB_ID]}
+                  </span>
+                </div>
+                <MolBasicsSection showHeader />
               </div>
             )}
 
