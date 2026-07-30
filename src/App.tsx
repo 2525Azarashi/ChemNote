@@ -30,6 +30,7 @@ import { useIsMobile } from './hooks/useMediaQuery';
 import { MobileViewWrapper } from './components/MobileViewWrapper';
 import { countIncomingFriendRequests } from './utils/friends';
 import { applyOverviewViewport } from './utils/viewportControl';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
@@ -522,23 +523,30 @@ export default function App() {
             {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
             {appState === 'chapters' && <ChapterSelection mode={appMode as 'mini_test' | 'practice'} onSelectChapter={handleSelectChapter} onBack={() => setAppState('mode_selection')} />}
             {appState === 'quiz' && selectedChapter && (
-              <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={isMobileView} onExplanationChange={setIsExplanationView} />
+              <ErrorBoundary label="演習画面" onReset={handleBackToChapters}>
+                <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={isMobileView} onExplanationChange={setIsExplanationView} />
+              </ErrorBoundary>
             )}
             {appState === 'explanation' && selectedChapter && (
-              <Explanation
-                mode={appMode as 'mini_test' | 'practice'}
-                chapter={selectedChapter}
-                answers={quizAnswers}
-                onBack={handleBackToChapters}
-                isGuest={isGuest}
-                // スマホでも常に PC 版レイアウト（俯瞰UI）で表示する。
-                // 縮小/拡大は viewport（width=1024 ＋ fit scale ＋ ピンチズーム許可）側で制御する。
-                isMobileView={false}
-                resultTotalScore={lastQuizResult?.totalScore}
-                resultTotalCorrect={lastQuizResult?.totalCorrect}
-                resultTotalJudgeable={lastQuizResult?.totalJudgeable}
-                resultTotalTimeSec={lastQuizResult?.totalTimeSec}
-              />
+              /* 結果・ランキング画面は問題データを一括で描画するため、
+                 1問でもデータ不備があると全体が表示できなくなる。
+                 エラーバウンダリで包み、真っ白な画面で操作不能にならないようにする。 */
+              <ErrorBoundary label="結果・解説画面" onReset={handleBackToChapters}>
+                <Explanation
+                  mode={appMode as 'mini_test' | 'practice'}
+                  chapter={selectedChapter}
+                  answers={quizAnswers}
+                  onBack={handleBackToChapters}
+                  isGuest={isGuest}
+                  // スマホでも常に PC 版レイアウト（俯瞰UI）で表示する。
+                  // 縮小/拡大は viewport（width=1024 ＋ fit scale ＋ ピンチズーム許可）側で制御する。
+                  isMobileView={false}
+                  resultTotalScore={lastQuizResult?.totalScore}
+                  resultTotalCorrect={lastQuizResult?.totalCorrect}
+                  resultTotalJudgeable={lastQuizResult?.totalJudgeable}
+                  resultTotalTimeSec={lastQuizResult?.totalTimeSec}
+                />
+              </ErrorBoundary>
             )}
             {appState === 'study_hub' && <StudyHub onBack={() => setAppState('home')} isGuest={isGuest} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} onReview={handleReviewNote} />}
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('study_hub')} onReview={handleReviewNote} />}

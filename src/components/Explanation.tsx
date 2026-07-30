@@ -9,6 +9,7 @@ import { ChapterRankingPanel } from './ChapterRankingPanel';
 import { QuestionFigure } from './QuestionFigure';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { isAnswerCorrect } from '../utils/answerJudge';
+import { gradingCriteriaProgress, resolveGradingCriteria } from '../utils/gradingCriteria';
 import { splitQuestionLabel, answerCardMarker, buildSubQuestionList } from '../utils/questionDisplay';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
@@ -137,14 +138,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     let bonus = 0;
     questions.forEach((q: any) => {
       (q.subQuestions || []).forEach((sq: any) => {
-        if (sq.type === 'descriptive' && sq.gradingCriteria) {
-          const total = sq.gradingCriteria.length;
-          let checked = 0;
-          sq.gradingCriteria.forEach((_: any, idx: number) => {
-            if (selfGrades[`${sq.id}_${idx}`]) checked++;
-          });
+        if (sq.type === 'descriptive') {
+          // gradingCriteria が string で書かれたデータ（旧 ⑤-7 二段階滴定）でも
+          // 例外を出さないよう、必ず配列へ正規化してから集計する。
+          const { ratio } = gradingCriteriaProgress(sq, selfGrades);
           // 1\u9805\u76ee\u6e80\u70b9\u3092MAX 10\u70b9\u3068\u3057\u3066\u6bd4\u4f8b\u914d\u5206
-          bonus += Math.round((checked / total) * 10);
+          bonus += Math.round(ratio * 10);
         }
       });
     });
@@ -300,14 +299,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         analysis[category].total += 1;
 
         if (sq.type === 'descriptive') {
-           if (sq.gradingCriteria) {
-             const criteriaCount = sq.gradingCriteria.length;
-             let checkedCount = 0;
-             sq.gradingCriteria.forEach((_: any, idx: number) => {
-               if (selfGrades[`${sq.id}_${idx}`]) checkedCount++;
-             });
-             analysis[category].correct += (checkedCount / criteriaCount);
-           }
+           // 記述問題は自己採点チェックの達成率をそのまま得点扱いにする。
+           // （基準が string / 未設定のデータでも安全に 0〜1 の比率が返る）
+           analysis[category].correct += gradingCriteriaProgress(sq, selfGrades).ratio;
         } else {
           if (isAnswerCorrect(sq, answers[sq.id])) {
             analysis[category].correct += 1;
@@ -569,14 +563,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       } else {
         singleQuestionsCount++;
         if (sq.type === 'descriptive') {
-          if (sq.gradingCriteria) {
-            const criteriaCount = sq.gradingCriteria.length;
-            let checkedCount = 0;
-            sq.gradingCriteria.forEach((_: any, idx: number) => {
-              if (selfGrades[`${sq.id}_${idx}`]) checkedCount++;
-            });
-            totalScore += (checkedCount / criteriaCount);
-          }
+          totalScore += gradingCriteriaProgress(sq, selfGrades).ratio;
         } else {
           if (isCorrect) {
             totalScore += 1;
@@ -1274,7 +1261,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                             <span>自己採点チェック（部分点基準）</span>
                                           </div>
                                           <div className="space-y-2 md:space-y-3">
-                                            {sq.gradingCriteria?.map((criteria: string, cIdx: number) => {
+                                            {resolveGradingCriteria(sq).map((criteria: string, cIdx: number) => {
                                               const criteriaId = `${sq.id}_${cIdx}`;
                                               const isChecked = selfGrades[criteriaId] || false;
                                               return (
