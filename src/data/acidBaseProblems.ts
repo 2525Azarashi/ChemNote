@@ -692,11 +692,20 @@ export const acidBaseProblems = [
         "detailedExplanation": { "theme": "指示薬の選択", "type": "知識再生型", "difficulty": 3, "steps": ["① 第2中和点は炭酸（弱酸）の遊離で酸性側", "② 変色域が酸性側の指示薬を用いる", "③ メチルオレンジ（またはメチルレッド）"] } },
       { "id": "p_c5_7_2_2", "label": "問2 第1中和点までに起こる2つの反応式", "type": "descriptive",
         "correctAnswer": "NaOH + HCl → NaCl + H₂O　／　Na₂CO₃ + HCl → NaCl + NaHCO₃",
-        "gradingCriteria": "NaOHが中和される式（NaOH+HCl→NaCl+H₂O）と、Na₂CO₃が炭酸水素ナトリウムに変わる式（Na₂CO₃+HCl→NaCl+NaHCO₃）の2式が正しく書けていること。", "correctAnswerRate": 40,
+        "gradingCriteria": [
+          "① 強塩基 NaOH の中和の式が書けている：NaOH + HCl → NaCl + H₂O",
+          "② Na₂CO₃ が NaHCO₃ に変わる式が書けている：Na₂CO₃ + HCl → NaCl + NaHCO₃",
+          "③ 第1中和点までに起こるのはこの2反応だけ（CO₂ は発生させていない）と示せている",
+          "④ 2式とも係数が正しく、化学式の書き方（下付き数字・矢印）に誤りがない"
+        ], "correctAnswerRate": 40,
         "detailedExplanation": { "theme": "二段階滴定 第1段階の反応", "type": "知識再生型", "difficulty": 4, "steps": ["① まず強塩基のNaOHが中和される：NaOH+HCl→NaCl+H₂O", "② 次にNa₂CO₃が1段階反応してNaHCO₃になる：Na₂CO₃+HCl→NaCl+NaHCO₃", "③ この2反応が第1中和点までに進む"] } },
       { "id": "p_c5_7_2_3", "label": "問3 第1中和点から第2中和点までに起こる反応式", "type": "descriptive",
         "correctAnswer": "NaHCO₃ + HCl → NaCl + H₂O + CO₂",
-        "gradingCriteria": "炭酸水素ナトリウムが塩酸と反応して二酸化炭素を発生する式（NaHCO₃+HCl→NaCl+H₂O+CO₂）が正しく書けていること。", "correctAnswerRate": 40,
+        "gradingCriteria": [
+          "① 反応するのは第1中和点で生じた NaHCO₃ である、と特定できている",
+          "② 生成物に CO₂（と H₂O）を正しく書けている：NaHCO₃ + HCl → NaCl + H₂O + CO₂",
+          "③ 係数・化学式の書き方（下付き数字・矢印）に誤りがない"
+        ], "correctAnswerRate": 40,
         "detailedExplanation": { "theme": "二段階滴定 第2段階の反応", "type": "知識再生型", "difficulty": 4, "steps": ["① 第1中和点で生じたNaHCO₃が塩酸とさらに反応", "② NaHCO₃+HCl→NaCl+H₂O+CO₂", "③ CO₂が発生して第2中和点に達する"] } },
       { "id": "p_c5_7_2_4a", "label": "問4（1） 水酸化ナトリウムのモル濃度", "type": "short_answer",
         "correctAnswer": "0.050 mol/L", "correctAnswerRate": 35,
