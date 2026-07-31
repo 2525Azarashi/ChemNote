@@ -8,6 +8,7 @@ import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
 import { getDueCount } from '../utils/reviewList';
 import { DoorMascot } from './DoorMascot';
+import { FeedbackButton } from './FeedbackButton';
 
 interface HomeProps {
   onStart: () => void;
@@ -295,8 +296,8 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           </button>
         </motion.div>
 
-        {/* ===== セカンダリ：学習ノート（ノート＋復習を統合）/ アプリ紹介 ===== */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* ===== セカンダリ：学習ノート（ノート＋復習を統合）/ アプリ紹介 / ご意見 ===== */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* ノートと復習リストを1つの入口「学習ノート」に統合。今日の復習件数をバッジで提示 */}
           <button
             onClick={onNoteList}
@@ -334,6 +335,19 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             </div>
             <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
           </button>
+
+          {/* ご意見・ご要望（タイトル画面からの意見収集入口）
+              学習ノート／アプリ紹介と同じカード様式に揃え、
+              「気づいたときにすぐ書ける」場所として常設する。 */}
+          <FeedbackButton
+            screen="title"
+            variant="card"
+            label="ご意見・ご要望"
+            subLabel="気づいたことを開発者に伝える"
+            description="アプリ全体の使い勝手・ほしい機能など、自由にお書きください"
+            context={{ streak, solvedQuestions, totalQuestions, isGuest }}
+            className="sm:col-span-2 lg:col-span-1"
+          />
         </motion.div>
       </div>
     </div>

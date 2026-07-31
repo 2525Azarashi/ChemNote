@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, ArrowRight, Check, X, ChevronRight, BookOpen, RotateCcw, Trophy, Clock } from 'lucide-react';
 import { mockExam, MockExamQuestion } from '../data/mockExamData';
 import { formatText } from '../utils/textFormatter';
+import { FeedbackButton } from './FeedbackButton';
 
 // 共通テスト化学基礎 予想問題の目標時間（30分 = 1800秒）
 const EXAM_DURATION_SEC = 30 * 60;
@@ -348,6 +349,28 @@ export function MockExam({ onBack }: MockExamProps) {
               <ArrowLeft className="w-4 h-4" />
               選択に戻る
             </button>
+          </div>
+
+          {/* ===== 模擬試験の結果についてのご意見（意見収集入口）=====
+              難易度や設問の妥当性は解き終わった直後の感想が最も価値が高いため、
+              得点・正答率・所要時間を自動で添付して送れるようにする。 */}
+          <div className="mt-6 pt-5 border-t border-gray-200 flex flex-col items-center gap-2">
+            <p className="text-xs text-gray-500 font-handwriting text-center leading-relaxed">
+              難易度や設問の分かりにくさなど、この模擬試験へのご意見をお寄せください。
+            </p>
+            <FeedbackButton
+              screen="mock_exam_result"
+              variant="inline"
+              label="模擬試験にご意見"
+              description="共通テスト予想問題（化学基礎）の難易度・設問についてのご意見をお聞かせください"
+              context={{
+                correct,
+                total,
+                percentage,
+                elapsedSec,
+                isTimeOver,
+              }}
+            />
           </div>
         </div>
       </div>
