@@ -1,5 +1,6 @@
 import { acidBaseProblems } from './acidBaseProblems';
 import { redoxProblems } from './redoxProblems';
+import { pickCrystalProblems } from './crystalProblems';
 
 // ⑤ 酸と塩基 を他の単元（④-1 等）と同じ粒度のタブに分割するための補助関数。
 // acidBaseProblems の各問題は category に "⑤-1 …" のような接頭辞を持つので、
@@ -5819,6 +5820,17 @@ export const chemistryData = {
             "劈開"
           ],
           "practiceProblems": [
+            // ── 教科書順①〜④（基本教科書「化学結合」の配列を厳守して先頭に配置）──
+            //   ① イオン結合とイオン結晶（組成式・名称・へき開）
+            //   ② 共有結合と分子（電子式・構造式・分子の形と極性）＝分子結晶の前提
+            //   ③ 共有結合の結晶（炭素の同素体・ダイヤモンドと黒鉛）
+            //   ④ 化学式の種類と物質中の化学結合（配位結合・金属結合まで出そろう）
+            ...pickCrystalProblems(
+              'p_c3_2_ion',
+              'p_c3_2_molecule',
+              'p_c3_2_covalent',
+              'p_c3_2_formula'
+            ),
             {
               "id": "q_c3_2_1",
               "category": "結晶の種類と性質 (問1)",
@@ -5949,6 +5961,10 @@ export const chemistryData = {
               "surroundingKnowledge": [],
               "deepDiveTopics": []
             },
+            // ── 教科書順⑤：4種類の結晶の分類（まとめ）──
+            //   既存の語句網羅問題（q_c3_2_1）で用語を確認した直後に、
+            //   「でき方・性質・例」を対応づける総整理問題を置く。
+            ...pickCrystalProblems('p_c3_2_classify'),
             {
               "id": "q_c3_2_2",
               "category": "結晶の種類と性質 (問2)",
@@ -6253,7 +6269,10 @@ export const chemistryData = {
               "explanation": "▼ 解答・解説\n答：金属結晶。例：銅 Cu、鉄 Fe、アルミニウム Al など。\n\n■ 展性・電導性・つやがある（金属光沢）・水に溶けない、は金属結晶の典型的特徴です。",
               "surroundingKnowledge": [],
               "deepDiveTopics": []
-            }
+            },
+            // ── 教科書順⑥：章末の総合演習 ──
+            //   結晶4分類・組成式・分子の極性・同素体・配位結合を1題で総点検する。
+            ...pickCrystalProblems('p_c3_2_synthesis')
           ],
           "miniTest": []
         },
@@ -9789,7 +9808,7 @@ export const crystalTreeData = {
           "id": "p3_2_step1_group_qlink",
           "label": "📝 このStepの確認問題",
           "step": 1,
-          "subLabel": "29問",
+          "subLabel": "37問",
           "explanation": "このStepに対応する演習・確認問題です。タップして解答画面へ移動できます。",
           "relatedQuestions": [
             { "id": "q_c3_2_1_a", "label": "問1(ア) イオン" },
@@ -9820,7 +9839,15 @@ export const crystalTreeData = {
             { "id": "q_c3_2_2_11", "label": "問2(11) 銅" },
             { "id": "q_c3_2_3_3", "label": "問3(3) 性質" },
             { "id": "q_c3_2_4_3", "label": "問4(3) 変形に強い理由" },
-            { "id": "q_c3_2_7_ans", "label": "問7 未知の固体" }
+            { "id": "q_c3_2_7_ans", "label": "問7 未知の固体" },
+            { "id": "p_c3_2_ion_1a1", "label": "結晶①問1(1) CaCl₂" },
+            { "id": "p_c3_2_ion_1b1", "label": "結晶①問1(2) Al₂O₃" },
+            { "id": "p_c3_2_ion_1c1", "label": "結晶①問1(3) (NH₄)₂SO₄" },
+            { "id": "p_c3_2_ion_1d1", "label": "結晶①問1(4) Cu(NO₃)₂" },
+            { "id": "p_c3_2_ion_3", "label": "結晶①問3 組成式で表す理由" },
+            { "id": "p_c3_2_formula_1a", "label": "結晶④問1① 分子式はどれか" },
+            { "id": "p_c3_2_formula_1b", "label": "結晶④問1② 組成式の理由" },
+            { "id": "p_c3_2_synthesis_3a", "label": "結晶⑥問3① MgCl₂" }
           ]
         }
       ]
@@ -9863,7 +9890,7 @@ export const crystalTreeData = {
           "id": "p3_2_step2_group_qlink",
           "label": "📝 このStepの確認問題",
           "step": 2,
-          "subLabel": "8問",
+          "subLabel": "18問",
           "explanation": "このStepに対応する演習・確認問題です。タップして解答画面へ移動できます。",
           "relatedQuestions": [
             { "id": "q_c3_2_1_i", "label": "問1(イ) 高い" },
@@ -9873,7 +9900,17 @@ export const crystalTreeData = {
             { "id": "q_c3_2_1_u", "label": "問1(ウ) 脆い" },
             { "id": "q_c3_2_1_ke", "label": "問1(ケ) 昇華" },
             { "id": "q_c3_2_1_su", "label": "問1(ス) 極めて硬い" },
-            { "id": "q_c3_2_1_ta", "label": "問1(タ) 展性" }
+            { "id": "q_c3_2_1_ta", "label": "問1(タ) 展性" },
+            { "id": "p_c3_2_ion_2", "label": "結晶①問2 へき開の理由" },
+            { "id": "p_c3_2_molecule_4", "label": "結晶②(4) 極性分子" },
+            { "id": "p_c3_2_covalent_4", "label": "結晶③(4) 共有結合の結晶" },
+            { "id": "p_c3_2_covalent_5b", "label": "結晶③(5) 硬い理由" },
+            { "id": "p_c3_2_covalent_6b", "label": "結晶③(6) 電気を通す理由" },
+            { "id": "p_c3_2_covalent_7", "label": "結晶③(7) はがれやすい理由" },
+            { "id": "p_c3_2_formula_2c", "label": "結晶④問2(c) NH₄Cl の結合" },
+            { "id": "p_c3_2_synthesis_3b", "label": "結晶⑥問3② 融解で通電" },
+            { "id": "p_c3_2_synthesis_5c", "label": "結晶⑥問5 自由電子" },
+            { "id": "p_c3_2_synthesis_6", "label": "結晶⑥問6 昇華の理由" }
           ]
         }
       ]
@@ -9916,10 +9953,24 @@ export const crystalTreeData = {
           "id": "p3_2_step3_group_qlink",
           "label": "📝 このStepの確認問題",
           "step": 3,
-          "subLabel": "1問",
+          "subLabel": "15問",
           "explanation": "このStepに対応する演習・確認問題です。タップして解答画面へ移動できます。",
           "relatedQuestions": [
-            { "id": "q_c3_2_5_ans", "label": "問5 結晶の文字式" }
+            { "id": "p_c3_2_classify_1b", "label": "結晶⑤(1) 金属結晶の性質" },
+            { "id": "p_c3_2_classify_2b", "label": "結晶⑤(2) 共有結合の結晶の性質" },
+            { "id": "p_c3_2_classify_2c", "label": "結晶⑤(2) 例：ケイ素" },
+            { "id": "p_c3_2_classify_3b", "label": "結晶⑤(3) 分子結晶の性質" },
+            { "id": "p_c3_2_classify_4b", "label": "結晶⑤(4) イオン結晶の性質" },
+            { "id": "p_c3_2_covalent_1a", "label": "結晶③(1) ダイヤモンド" },
+            { "id": "p_c3_2_covalent_1b", "label": "結晶③(1) 黒鉛" },
+            { "id": "p_c3_2_synthesis_1a", "label": "結晶⑥問1 A の結晶" },
+            { "id": "p_c3_2_synthesis_1b", "label": "結晶⑥問1 B の結晶" },
+            { "id": "p_c3_2_synthesis_1c", "label": "結晶⑥問1 C の結晶" },
+            { "id": "p_c3_2_synthesis_1d", "label": "結晶⑥問1 D の結晶" },
+            { "id": "p_c3_2_synthesis_1e", "label": "結晶⑥問1 E の結晶（例外）" },
+            { "id": "p_c3_2_synthesis_2c", "label": "結晶⑥問2 C の物質" },
+            { "id": "p_c3_2_synthesis_7", "label": "結晶⑥問7 正誤判定" },
+            { "id": "q_c3_2_3_1", "label": "問3(1) 性質から判定" }
           ]
         }
       ]
