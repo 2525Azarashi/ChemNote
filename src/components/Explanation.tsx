@@ -6,6 +6,7 @@ import { formatText } from '../utils/textFormatter';
 import { ExplanationBody } from './ExplanationBody';
 import { auth } from '../firebase';
 import { ChapterRankingPanel } from './ChapterRankingPanel';
+import { FeedbackButton } from './FeedbackButton';
 import { QuestionFigure } from './QuestionFigure';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { isAnswerCorrect } from '../utils/answerJudge';
@@ -858,6 +859,31 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               userScore={displayTotalScore}
               isGuest={isGuest}
             />
+
+            {/* ===== この単元についてのご意見（結果画面の意見収集入口）=====
+                解いた直後は「ここが分かりにくい」が一番鮮明なタイミングなので、
+                スコアカードの直下に常設する。単元ID・スコア・正答数を自動で添付する。 */}
+            <div className="mt-4 pt-4 border-t border-[#F4D03F]/40 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+              <p className="text-[11px] text-[#4B5563]/80 font-modern leading-snug flex-1">
+                この単元の問題文・解説で気づいたこと（分かりにくい、誘導が欲しい、誕字・表示崩れなど）をお寄せください。
+              </p>
+              <FeedbackButton
+                screen="chapter_result"
+                variant="inline"
+                label="この単元にご意見"
+                description={`${chapter.title || chapter.id}の問題・解説についてのご意見をお聞かせください`}
+                context={{
+                  chapterId: chapter.id,
+                  chapterTitle: chapter.title || '',
+                  mode,
+                  totalScore: displayTotalScore,
+                  correct: resultTotalCorrect ?? 0,
+                  judgeable: resultTotalJudgeable ?? 0,
+                  timeSec: resultTotalTimeSec ?? 0,
+                }}
+                className="shrink-0 self-start sm:self-auto"
+              />
+            </div>
           </div>
         </div>
       )}

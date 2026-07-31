@@ -280,5 +280,70 @@ service cloud.firestore {
       allow delete: if isAuthenticated()
         && (request.auth.uid == userId || request.auth.uid == friendUid);
     }
+
+    // ============================================================
+    // ユーザーフィードバック（ご意見・ご要望の投函箱）
+    //   feedback/{docId}
+    // ------------------------------------------------------------
+    // 設計方針
+    //  - ゲスト（未ログイン）でも送れるようにするため create は
+    //    認証を要求しない。ただし「投函するだけ」に徹底して絞る。
+    //  - read / update / delete は一切許可しない（allow を書かない）。
+    //    運営は Firebase コンソールや Admin SDK から閲覧するため、
+    //    クライアントに読み取り権限を与える必要がない。これにより
+    //    他人の意見や連絡先メールアドレスを覗かれる余地をなくす。
+    //  - スパムで課金が膨らまないよう、フィールド構成と本文長を厳格に検証する。
+    // ============================================================
+    match /feedback/{docId} {
+      // 投函内容が想定どおりか検証する
+      function isValidFeedback(data) {
+        return data.keys().hasAll([
+                 'id', 'screen', 'category', 'rating', 'message', 'uid', 'createdAt'
+               ])
+          && data.keys().hasOnly([
+               'id', 'screen', 'category', 'rating', 'message', 'uid',
+               'displayName', 'authEmail', 'contactEmail', 'context',
+               'userAgent', 'viewport', 'appVersion', 'createdAtIso',
+               'createdAt', 'status'
+             ])
+          // 送信元画面・種類は既知の値のみ
+          && data.screen is string
+          && data.screen in ['title', 'chapter_result', 'mock_exam_result', 'other']
+          && data.category is string
+          && data.category in ['praise', 'problem', 'bug', 'request', 'other']
+          // 評価は 0〜5（0 = 未選択）
+          && data.rating is int
+          && data.rating >= 0 && data.rating <= 5
+          // 本文は必須・空不可・2000文字以内（クライアント側の上限と一致）
+          && data.message is string
+          && data.message.size() > 0
+          && data.message.size() <= 2000
+          // 管理IDは短い文字列
+          && data.id is string
+          && data.id.size() > 0 && data.id.size() <= 80
+          // uid は「本人の uid」か「null（ゲスト）」のみ。他人へのなりすまし防止。
+          && (data.uid == null || (isAuthenticated() && data.uid == request.auth.uid))
+          // 付帯情報の暴走を防ぐサイズ制限
+          && (!('context' in data) || data.context == null
+              || (data.context is map && data.context.keys().size() <= 20))
+          && (!('userAgent' in data) || (data.userAgent is string && data.userAgent.size() <= 400))
+          && (!('viewport' in data) || (data.viewport is string && data.viewport.size() <= 40))
+          && (!('appVersion' in data) || (data.appVersion is string && data.appVersion.size() <= 40))
+          && (!('createdAtIso' in data) || (data.createdAtIso is string && data.createdAtIso.size() <= 40))
+          && (!('displayName' in data) || data.displayName == null || (data.displayName is string && data.displayName.size() <= 100))
+          && (!('authEmail' in data) || data.authEmail == null || (data.authEmail is string && data.authEmail.size() <= 200))
+          && (!('contactEmail' in data) || data.contactEmail == null || (data.contactEmail is string && data.contactEmail.size() <= 200))
+          // 新規投函は必ず status = 'new'（運営が Admin SDK 側で更新する）
+          && (!('status' in data) || data.status == 'new')
+          // 時刻はサーバー時刻のみ（端末時計の偽装で並び順を荒らせない）
+          && data.createdAt == request.time;
+      }
+
+      // 投函のみ許可（ゲスト可）
+      allow create: if isValidFeedback(request.resource.data);
+
+      // クライアントからの閲覧・改変・削除は全面禁止
+      allow read, update, delete: if false;
+    }
   }
 }

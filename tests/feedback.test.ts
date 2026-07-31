@@ -1,0 +1,335 @@
+import { readFileSync } from 'node:fs';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+/**
+ * ユーザーフィードバック収集機能の回帰テスト。
+ *
+ * 実際の送信（Firestore / GAS Webhook）はネットワークに依存するため、
+ * ここでは「送信前後の純粋なロジック」を検証する。
+ *   - 入力検証（空送信・長文・不正メール・範囲外の評価を弾けるか）
+ *   - ペイロード生成（必須メタ情報が揃うか・本文が上限で切られるか）
+ *   - mailto: 生成（宛先・件名・本文に必要情報が載るか）
+ *   - 再送キュー（重複しないか・上限を守るか）
+ *   - ラベル定義がルール／GASと矛盾しないか
+ */
+
+// firebase 実体を読み込むと初期化＆ネットワークが走るためモックする
+vi.mock('../src/firebase', () => ({
+  auth: { currentUser: null },
+  db: {},
+  provider: {},
+}));
+vi.mock('firebase/firestore', () => ({
+  addDoc: vi.fn(async () => ({ id: 'mock' })),
+  collection: vi.fn(() => ({})),
+  serverTimestamp: vi.fn(() => 'SERVER_TIMESTAMP'),
+}));
+
+import {
+  validateFeedback,
+  buildFeedbackPayload,
+  buildFeedbackMailto,
+  enqueueFeedback,
+  readFeedbackQueue,
+  pendingFeedbackCount,
+  describeFeedbackSinks,
+  getFeedbackEmail,
+  getFeedbackWebhookUrl,
+  FEEDBACK_EMAIL,
+  FEEDBACK_MESSAGE_MAX,
+  FEEDBACK_QUEUE_KEY,
+  FEEDBACK_QUEUE_LIMIT,
+  FEEDBACK_CATEGORY_LABELS,
+  FEEDBACK_SCREEN_LABELS,
+  type FeedbackInput,
+} from '../src/utils/feedback';
+
+// ------------------------------------------------------------------
+// localStorage の簡易モック（Node 環境には存在しない）
+// ------------------------------------------------------------------
+class MemoryStorage {
+  private store = new Map<string, string>();
+  getItem(key: string) { return this.store.has(key) ? this.store.get(key)! : null; }
+  setItem(key: string, value: string) { this.store.set(key, value); }
+  removeItem(key: string) { this.store.delete(key); }
+  clear() { this.store.clear(); }
+  get length() { return this.store.size; }
+  key(index: number) { return Array.from(this.store.keys())[index] ?? null; }
+}
+
+const storage = new MemoryStorage();
+(globalThis as any).localStorage = storage;
+
+const baseInput: FeedbackInput = {
+  screen: 'title',
+  category: 'request',
+  rating: 4,
+  message: '復習リストに単元名も表示してほしいです。',
+};
+
+beforeEach(() => {
+  storage.clear();
+});
+
+describe('validateFeedback', () => {
+  it('正常な入力は通る', () => {
+    expect(validateFeedback(baseInput)).toEqual({ valid: true, errors: [] });
+  });
+
+  it('本文が空・空白のみなら弾く', () => {
+    for (const message of ['', '   ', '\n\t ']) {
+      const result = validateFeedback({ ...baseInput, message });
+      expect(result.valid).toBe(false);
+      expect(result.errors.join()).toContain('ご意見・ご感想を入力してください');
+    }
+  });
+
+  it('本文が上限を超えたら弾く', () => {
+    const result = validateFeedback({ ...baseInput, message: 'あ'.repeat(FEEDBACK_MESSAGE_MAX + 1) });
+    expect(result.valid).toBe(false);
+    expect(result.errors.join()).toContain(`${FEEDBACK_MESSAGE_MAX}文字以内`);
+  });
+
+  it('評価は0〜5の整数のみ許す（0は「未選択」として有効）', () => {
+    expect(validateFeedback({ ...baseInput, rating: 0 }).valid).toBe(true);
+    expect(validateFeedback({ ...baseInput, rating: 5 }).valid).toBe(true);
+    for (const rating of [-1, 6, 2.5]) {
+      expect(validateFeedback({ ...baseInput, rating }).valid).toBe(false);
+    }
+  });
+
+  it('返信用メールは未入力ならOK、形式不正なら弾く', () => {
+    expect(validateFeedback({ ...baseInput, contactEmail: '' }).valid).toBe(true);
+    expect(validateFeedback({ ...baseInput, contactEmail: 'user@example.com' }).valid).toBe(true);
+    for (const contactEmail of ['user', 'user@', 'user@example', 'a b@example.com']) {
+      const result = validateFeedback({ ...baseInput, contactEmail });
+      expect(result.valid).toBe(false);
+      expect(result.errors.join()).toContain('返信用メールアドレス');
+    }
+  });
+});
+
+describe('buildFeedbackPayload', () => {
+  it('必須メタ情報が揃う', () => {
+    const payload = buildFeedbackPayload(baseInput);
+    expect(payload.id).toMatch(/^fb_/);
+    expect(payload.screen).toBe('title');
+    expect(payload.category).toBe('request');
+    expect(payload.rating).toBe(4);
+    expect(payload.message).toBe(baseInput.message);
+    // 未ログイン（モック）なので uid は null → ルール上ゲスト投函として通る
+    expect(payload.uid).toBeNull();
+    expect(typeof payload.createdAtIso).toBe('string');
+    expect(new Date(payload.createdAtIso).toString()).not.toBe('Invalid Date');
+    expect(typeof payload.userAgent).toBe('string');
+    expect(typeof payload.viewport).toBe('string');
+    expect(typeof payload.appVersion).toBe('string');
+  });
+
+  it('IDは毎回ユニークになる（重複送信の検出に使う）', () => {
+    const ids = new Set(Array.from({ length: 50 }, () => buildFeedbackPayload(baseInput).id));
+    expect(ids.size).toBe(50);
+  });
+
+  it('本文は前後の空白を落とし、上限で切り詰める', () => {
+    const payload = buildFeedbackPayload({ ...baseInput, message: `   ${'あ'.repeat(FEEDBACK_MESSAGE_MAX + 500)}   ` });
+    expect(payload.message.length).toBe(FEEDBACK_MESSAGE_MAX);
+  });
+
+  it('空の任意項目は undefined にして Firestore へ余計なキーを送らない', () => {
+    const payload = buildFeedbackPayload({ ...baseInput, contactEmail: '   ', context: {} });
+    expect(payload.contactEmail).toBeUndefined();
+    expect(payload.context).toBeUndefined();
+  });
+
+  it('context は渡した内容がそのまま載る（結果画面のスコア添付用）', () => {
+    const payload = buildFeedbackPayload({
+      ...baseInput,
+      screen: 'chapter_result',
+      context: { chapterId: 'c3_2', totalScore: 120 },
+    });
+    expect(payload.context).toEqual({ chapterId: 'c3_2', totalScore: 120 });
+  });
+});
+
+describe('buildFeedbackMailto', () => {
+  it('既定の宛先は mntobira@gmail.com', () => {
+    expect(getFeedbackEmail()).toBe(FEEDBACK_EMAIL);
+    expect(FEEDBACK_EMAIL).toBe('mntobira@gmail.com');
+  });
+
+  it('件名と本文に必要情報が載る', () => {
+    const payload = buildFeedbackPayload({
+      ...baseInput,
+      screen: 'mock_exam_result',
+      category: 'bug',
+      message: '選択肢が重なって表示されます',
+      context: { correct: 12, total: 20 },
+    });
+    const url = buildFeedbackMailto(payload);
+
+    expect(url.startsWith(`mailto:${FEEDBACK_EMAIL}?`)).toBe(true);
+
+    const decoded = decodeURIComponent(url);
+    expect(decoded).toContain('【まなとび】フィードバック');
+    expect(decoded).toContain(FEEDBACK_SCREEN_LABELS.mock_exam_result);
+    expect(decoded).toContain(FEEDBACK_CATEGORY_LABELS.bug);
+    expect(decoded).toContain('選択肢が重なって表示されます');
+    expect(decoded).toContain('correct: 12');
+    expect(decoded).toContain(payload.id);
+  });
+
+  it('評価未選択のときは「未選択」と書く', () => {
+    const decoded = decodeURIComponent(buildFeedbackMailto(buildFeedbackPayload({ ...baseInput, rating: 0 })));
+    expect(decoded).toContain('評価: 未選択');
+  });
+
+  it('改行や記号を含む本文でも壊れない（URLエンコードされる）', () => {
+    const message = '1行目\n2行目 & 3行目 ?=#';
+    const url = buildFeedbackMailto(buildFeedbackPayload({ ...baseInput, message }));
+    // 生の & や # が body に混ざるとパラメータが壊れる
+    expect(url.split('body=')[1]).not.toContain('&');
+    expect(url.split('body=')[1]).not.toContain('#');
+    expect(decodeURIComponent(url)).toContain(message);
+  });
+});
+
+describe('再送キュー', () => {
+  it('積んだものが読み出せる', () => {
+    const payload = buildFeedbackPayload(baseInput);
+    enqueueFeedback(payload);
+    expect(pendingFeedbackCount()).toBe(1);
+    expect(readFeedbackQueue()[0].id).toBe(payload.id);
+  });
+
+  it('同じIDは二重に積まれない', () => {
+    const payload = buildFeedbackPayload(baseInput);
+    enqueueFeedback(payload);
+    enqueueFeedback(payload);
+    enqueueFeedback(payload);
+    expect(pendingFeedbackCount()).toBe(1);
+  });
+
+  it('上限を超えたら古いものから捨てる', () => {
+    for (let i = 0; i < FEEDBACK_QUEUE_LIMIT + 5; i += 1) {
+      enqueueFeedback(buildFeedbackPayload({ ...baseInput, message: `意見${i}` }));
+    }
+    const queue = readFeedbackQueue();
+    expect(queue.length).toBe(FEEDBACK_QUEUE_LIMIT);
+    // 最後に積んだものは必ず残る
+    expect(queue[queue.length - 1].message).toBe(`意見${FEEDBACK_QUEUE_LIMIT + 4}`);
+  });
+
+  it('壊れたJSONが入っていても空配列として扱う（例外を投げない）', () => {
+    storage.setItem(FEEDBACK_QUEUE_KEY, '{not json');
+    expect(readFeedbackQueue()).toEqual([]);
+    expect(pendingFeedbackCount()).toBe(0);
+  });
+});
+
+describe('収集先の案内', () => {
+  it('webhook 未設定ならFirestoreのみ案内する', () => {
+    expect(getFeedbackWebhookUrl()).toBe('');
+    const sinks = describeFeedbackSinks();
+    expect(sinks.length).toBe(1);
+    expect(sinks[0]).toContain('Firestore');
+  });
+});
+
+describe('設置場所（タイトル画面・各結果画面）', () => {
+  const read = (path: string) => readFileSync(path, 'utf8');
+
+  it('タイトル画面（Home.tsx）に screen="title" の入口がある', () => {
+    const src = read('src/components/Home.tsx');
+    expect(src).toContain("import { FeedbackButton } from './FeedbackButton'");
+    expect(src).toMatch(/<FeedbackButton[\s\S]*?screen="title"/);
+    // 既存カード（学習ノート／アプリ紹介）を壊していないこと
+    expect(src).toContain('学習ノート');
+    expect(src).toContain('アプリ紹介');
+  });
+
+  it('単元の結果画面（Explanation.tsx）に screen="chapter_result" の入口があり、結果カード内に置かれている', () => {
+    const src = read('src/components/Explanation.tsx');
+    expect(src).toContain("import { FeedbackButton } from './FeedbackButton'");
+    expect(src).toMatch(/<FeedbackButton[\s\S]*?screen="chapter_result"/);
+    // isResultView（= 結果表示時のみ）のブロック内、ランキングパネルの後に置く
+    const resultBlock = src.slice(src.indexOf('isResultView && displayTotalScore != null'));
+    const rankingAt = resultBlock.indexOf('<ChapterRankingPanel');
+    const feedbackAt = resultBlock.indexOf('<FeedbackButton');
+    expect(rankingAt).toBeGreaterThan(-1);
+    expect(feedbackAt).toBeGreaterThan(rankingAt);
+    // 単元IDとスコアを添付していること（あとから分析できるようにする）
+    expect(resultBlock.slice(feedbackAt, feedbackAt + 800)).toContain('chapterId: chapter.id');
+  });
+
+  it('模擬試験の結果画面（MockExam.tsx）に screen="mock_exam_result" の入口がある', () => {
+    const src = read('src/components/MockExam.tsx');
+    expect(src).toContain("import { FeedbackButton } from './FeedbackButton'");
+    expect(src).toMatch(/<FeedbackButton[\s\S]*?screen="mock_exam_result"/);
+    // phase === 'result' のブロック内に置かれていること
+    const resultBlock = src.slice(src.indexOf("if (phase === 'result')"));
+    expect(resultBlock.indexOf('<FeedbackButton')).toBeGreaterThan(-1);
+    // 得点・正答率・所要時間を添付していること
+    const snippet = resultBlock.slice(resultBlock.indexOf('<FeedbackButton'));
+    expect(snippet).toContain('percentage');
+    expect(snippet).toContain('elapsedSec');
+  });
+
+  it('起動時に未送信キューを自動再送する（App.tsx）', () => {
+    const src = read('src/App.tsx');
+    expect(src).toContain("import { flushFeedbackQueue } from './utils/feedback'");
+    expect(src).toContain('flushFeedbackQueue()');
+    // オンライン復帰時にも再送する
+    expect(src).toContain("addEventListener('online'");
+  });
+
+  it('firestore.rules に feedback の投函専用ルールがある', () => {
+    const rules = read('firestore.rules');
+    expect(rules).toContain('match /feedback/{docId}');
+    // 投函のみ許可、読み書き削除は全面禁止
+    expect(rules).toContain('allow create: if isValidFeedback(request.resource.data);');
+    expect(rules).toContain('allow read, update, delete: if false;');
+    // 本文長の上限がクライアント側（FEEDBACK_MESSAGE_MAX）と一致していること
+    expect(rules).toContain(`data.message.size() <= ${FEEDBACK_MESSAGE_MAX}`);
+    // 画面・種類の許可値がラベル定義と一致していること
+    for (const screen of Object.keys(FEEDBACK_SCREEN_LABELS)) {
+      expect(rules).toContain(`'${screen}'`);
+    }
+    for (const category of Object.keys(FEEDBACK_CATEGORY_LABELS)) {
+      expect(rules).toContain(`'${category}'`);
+    }
+  });
+
+  it('Google Apps Script と設定手順が同梱されている', () => {
+    const gas = read('docs/feedback-gas.js');
+    // スプレッドシート追記とメール通知の両方を切り替えられること
+    expect(gas).toContain('APPEND_SHEET');
+    expect(gas).toContain('SEND_EMAIL');
+    expect(gas).toContain(FEEDBACK_EMAIL);
+    expect(gas).toContain('function doPost');
+    expect(gas).toContain('SpreadsheetApp');
+    expect(gas).toContain('MailApp.sendEmail');
+    // GAS 側のラベルがアプリ側と揃っていること
+    for (const label of Object.values(FEEDBACK_SCREEN_LABELS)) {
+      expect(gas).toContain(label);
+    }
+    expect(read('docs/FEEDBACK_SETUP.md')).toContain('VITE_FEEDBACK_WEBHOOK_URL');
+    expect(read('.env.example')).toContain('VITE_FEEDBACK_WEBHOOK_URL');
+  });
+});
+
+describe('ラベル定義の整合性', () => {
+  it('画面・種類のキーが firestore.rules / GAS の許可値と一致する', () => {
+    // ルール側で `in [...]` にハードコードした値と揃っていることを担保する
+    expect(Object.keys(FEEDBACK_SCREEN_LABELS).sort())
+      .toEqual(['chapter_result', 'mock_exam_result', 'other', 'title']);
+    expect(Object.keys(FEEDBACK_CATEGORY_LABELS).sort())
+      .toEqual(['bug', 'other', 'praise', 'problem', 'request']);
+  });
+
+  it('全ラベルが日本語で埋まっている（UIの空表示を防ぐ）', () => {
+    for (const label of [...Object.values(FEEDBACK_SCREEN_LABELS), ...Object.values(FEEDBACK_CATEGORY_LABELS)]) {
+      expect(label.trim().length).toBeGreaterThan(0);
+    }
+  });
+});

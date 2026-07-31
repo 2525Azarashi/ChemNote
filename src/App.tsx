@@ -31,6 +31,7 @@ import { MobileViewWrapper } from './components/MobileViewWrapper';
 import { countIncomingFriendRequests } from './utils/friends';
 import { applyOverviewViewport } from './utils/viewportControl';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { flushFeedbackQueue } from './utils/feedback';
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
@@ -85,6 +86,15 @@ export default function App() {
     const unsub = onAuthStateChanged(auth, () => refresh());
     return () => { cancelled = true; window.clearInterval(id); unsub(); };
   }, [appState]);
+
+  // 送信に失敗して端末に溜まっているフィードバックを、起動時とオンライン復帰時に自動再送する。
+  // （電波の悪い教室や機内モードで書いた意見を取りこぼさないための保険）
+  useEffect(() => {
+    const flush = () => { void flushFeedbackQueue().catch(() => {}); };
+    const timer = window.setTimeout(flush, 2500);
+    window.addEventListener('online', flush);
+    return () => { window.clearTimeout(timer); window.removeEventListener('online', flush); };
+  }, []);
 
   // Prevent iOS pinch zoom and double tap zoom, EXCEPT on the answers/explanations pages
   useEffect(() => {
