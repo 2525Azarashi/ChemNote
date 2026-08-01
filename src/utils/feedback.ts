@@ -113,15 +113,18 @@ export interface FeedbackPayload extends FeedbackInput {
   appVersion: string;
 }
 
+/** 送信先の種別 */
+export type FeedbackSink = 'firestore' | 'webhook';
+
 /** 送信結果 */
 export interface FeedbackResult {
   /** 1つ以上の送信口に届いたか */
   ok: boolean;
   /** 成功した送信口 */
-  delivered: Array<'firestore' | 'webhook'>;
+  delivered: FeedbackSink[];
   /** 失敗した送信口とエラーメッセージ */
-  failed: Array<{ sink: 'firestore' | 'webhook'; reason: string }>;
-  /** 全滅して再送キューに退避したか */
+  failed: Array<{ sink: FeedbackSink; reason: string }>;
+  /** 未達の送信先があり、再送キューに退避したか */
   queued: boolean;
   /** 手動送信用の mailto: URL（常に生成しておく） */
   mailtoUrl: string;
@@ -378,21 +381,47 @@ function readStorage(): Storage | null {
   return null;
 }
 
-/** 再送キューを読み出す */
-export function readFeedbackQueue(): FeedbackPayload[] {
+/**
+ * キューに積まれた1件。
+ * `pending` に「まだ届いていない送信先」だけを持たせることで、
+ * 「Firestore は成功したがスプレッドシートだけ失敗した」場合に
+ * スプレッドシートのみを再送でき、Firestore の二重登録を防げる。
+ */
+export interface QueuedFeedback {
+  payload: FeedbackPayload;
+  /** 未達の送信先 */
+  pending: FeedbackSink[];
+}
+
+/** 再送キューを読み出す（旧フォーマットも読めるようにする） */
+export function readFeedbackQueue(): QueuedFeedback[] {
   const ls = readStorage();
   if (!ls) return [];
   try {
     const raw = ls.getItem(FEEDBACK_QUEUE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as FeedbackPayload[]) : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((item: any): QueuedFeedback | null => {
+        if (!item || typeof item !== 'object') return null;
+        // 新フォーマット { payload, pending }
+        if (item.payload && Array.isArray(item.pending)) {
+          return { payload: item.payload as FeedbackPayload, pending: item.pending as FeedbackSink[] };
+        }
+        // 旧フォーマット（ペイロードが直接入っている）→ 全送信先を未達として扱う
+        if (typeof item.id === 'string' && typeof item.message === 'string') {
+          return { payload: item as FeedbackPayload, pending: ['firestore', 'webhook'] };
+        }
+        return null;
+      })
+      .filter((item): item is QueuedFeedback => item !== null);
   } catch {
     return [];
   }
 }
 
-function writeFeedbackQueue(items: FeedbackPayload[]): void {
+function writeFeedbackQueue(items: QueuedFeedback[]): void {
   const ls = readStorage();
   if (!ls) return;
   try {
@@ -405,11 +434,19 @@ function writeFeedbackQueue(items: FeedbackPayload[]): void {
   }
 }
 
-/** 送信に失敗したフィードバックをキューへ退避する */
-export function enqueueFeedback(payload: FeedbackPayload): void {
+/**
+ * 未達の送信先があるフィードバックをキューへ退避する。
+ * すでに同じIDが入っている場合は pending を統合する。
+ */
+export function enqueueFeedback(payload: FeedbackPayload, pending: FeedbackSink[]): void {
+  if (pending.length === 0) return;
   const queue = readFeedbackQueue();
-  if (queue.some((item) => item.id === payload.id)) return;
-  queue.push(payload);
+  const existing = queue.find((item) => item.payload.id === payload.id);
+  if (existing) {
+    existing.pending = Array.from(new Set([...existing.pending, ...pending]));
+  } else {
+    queue.push({ payload, pending: [...pending] });
+  }
   writeFeedbackQueue(queue);
 }
 
@@ -422,41 +459,52 @@ export function pendingFeedbackCount(): number {
 // 送信本体
 // -------------------------------------------------------------------
 
+/** 現在有効な送信先の一覧 */
+function activeSinks(): FeedbackSink[] {
+  const sinks: FeedbackSink[] = ['firestore'];
+  if (getFeedbackWebhookUrl()) sinks.push('webhook');
+  return sinks;
+}
+
 /**
- * 全ての有効な送信口へ並行して送る。
- * 1つでも成功すれば ok = true とし、全滅した場合のみ再送キューへ積む。
+ * 指定された送信先へ並行して送る。
+ *
+ * ★ 1つでも成功すれば ok = true（ユーザーの意見は受理された）とするが、
+ *   失敗した送信先は「その送信先だけ」を再送キューに積む。
+ *   これにより「Firestore は成功したのにスプレッドシートの1行だけ失われる」
+ *   という取りこぼしを防ぐ。
  */
-async function deliver(payload: FeedbackPayload): Promise<FeedbackResult> {
-  const delivered: Array<'firestore' | 'webhook'> = [];
-  const failed: Array<{ sink: 'firestore' | 'webhook'; reason: string }> = [];
+async function deliver(payload: FeedbackPayload, sinks: FeedbackSink[]): Promise<FeedbackResult> {
+  const delivered: FeedbackSink[] = [];
+  const failed: Array<{ sink: FeedbackSink; reason: string }> = [];
   const webhookUrl = getFeedbackWebhookUrl();
+  const tasks: Array<Promise<void>> = [];
 
-  const tasks: Array<Promise<void>> = [
-    sendToFirestore(payload).then(
-      () => { delivered.push('firestore'); },
-      (error) => { failed.push({ sink: 'firestore', reason: String(error?.message || error) }); },
-    ),
-  ];
+  const run = (sink: FeedbackSink, task: Promise<void>) => {
+    tasks.push(task.then(
+      () => { delivered.push(sink); },
+      (error) => { failed.push({ sink, reason: String(error?.message || error) }); },
+    ));
+  };
 
-  if (webhookUrl) {
-    tasks.push(
-      sendToWebhook(payload, webhookUrl).then(
-        () => { delivered.push('webhook'); },
-        (error) => { failed.push({ sink: 'webhook', reason: String(error?.message || error) }); },
-      ),
-    );
+  if (sinks.includes('firestore')) {
+    run('firestore', sendToFirestore(payload));
+  }
+  if (sinks.includes('webhook') && webhookUrl) {
+    run('webhook', sendToWebhook(payload, webhookUrl));
+    // webhook が未設定になった場合は「送る必要がない」ので失敗扱いにしない
   }
 
   await Promise.all(tasks);
 
-  const ok = delivered.length > 0;
-  if (!ok) enqueueFeedback(payload);
+  const pending = failed.map((item) => item.sink);
+  if (pending.length > 0) enqueueFeedback(payload, pending);
 
   return {
-    ok,
+    ok: delivered.length > 0,
     delivered,
     failed,
-    queued: !ok,
+    queued: pending.length > 0,
     mailtoUrl: buildFeedbackMailto(payload),
     payload,
   };
@@ -474,35 +522,43 @@ export async function submitFeedback(input: FeedbackInput): Promise<FeedbackResu
     throw new Error(validation.errors.join('\n'));
   }
   const payload = buildFeedbackPayload(input);
-  return deliver(payload);
+  return deliver(payload, activeSinks());
 }
 
 /**
  * 溜まっている未送信フィードバックをまとめて再送する。
- * アプリ起動時に1回呼べばよい（失敗したものはキューに残る）。
+ * アプリ起動時とオンライン復帰時に呼ぶ（失敗したものはキューに残る）。
  *
- * @returns 送信に成功した件数
+ * 送信先ごとに未達を記録しているので、例えば「Firestore は既に成功、
+ * スプレッドシートだけ未達」の件はスプレッドシートのみ再送し、
+ * Firestore に同じ意見が2件登録されることはない。
+ *
+ * @returns 完全に送り切れてキューから消えた件数
  */
 export async function flushFeedbackQueue(): Promise<number> {
   const queue = readFeedbackQueue();
   if (queue.length === 0) return 0;
 
-  const remaining: FeedbackPayload[] = [];
-  let sent = 0;
+  // deliver() が失敗時に enqueue するので、先にキューを空にしてから回す
+  writeFeedbackQueue([]);
 
-  for (const payload of queue) {
+  let cleared = 0;
+  for (const item of queue) {
+    // webhook が未設定に戻された場合は webhook 待ちを打ち切る
+    const targets = item.pending.filter(
+      (sink) => sink !== 'webhook' || getFeedbackWebhookUrl(),
+    );
+    if (targets.length === 0) { cleared += 1; continue; }
+
     try {
-      const result = await deliver(payload);
-      if (result.ok) sent += 1;
-      else remaining.push(payload);
+      const result = await deliver(item.payload, targets);
+      // 失敗分は deliver() が自動でキューに戻す
+      if (!result.queued) cleared += 1;
     } catch {
-      remaining.push(payload);
+      // 予期しない例外でも意見を捨てない
+      enqueueFeedback(item.payload, targets);
     }
   }
 
-  // deliver() が失敗時に enqueue するため、いったん消してから書き戻す
-  writeFeedbackQueue([]);
-  if (remaining.length > 0) writeFeedbackQueue(remaining);
-
-  return sent;
+  return cleared;
 }
