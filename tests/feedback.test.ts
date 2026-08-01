@@ -195,35 +195,66 @@ describe('buildFeedbackMailto', () => {
 });
 
 describe('再送キュー', () => {
-  it('積んだものが読み出せる', () => {
+  it('積んだものが読み出せる（未達の送信先つき）', () => {
     const payload = buildFeedbackPayload(baseInput);
-    enqueueFeedback(payload);
+    enqueueFeedback(payload, ['webhook']);
     expect(pendingFeedbackCount()).toBe(1);
-    expect(readFeedbackQueue()[0].id).toBe(payload.id);
+    const queue = readFeedbackQueue();
+    expect(queue[0].payload.id).toBe(payload.id);
+    expect(queue[0].pending).toEqual(['webhook']);
   });
 
-  it('同じIDは二重に積まれない', () => {
+  it('同じIDは二重に積まれず、未達の送信先が統合される', () => {
     const payload = buildFeedbackPayload(baseInput);
-    enqueueFeedback(payload);
-    enqueueFeedback(payload);
-    enqueueFeedback(payload);
+    enqueueFeedback(payload, ['webhook']);
+    enqueueFeedback(payload, ['firestore']);
+    enqueueFeedback(payload, ['webhook']);
     expect(pendingFeedbackCount()).toBe(1);
+    expect(readFeedbackQueue()[0].pending.sort()).toEqual(['firestore', 'webhook']);
+  });
+
+  it('未達の送信先が空なら積まない', () => {
+    enqueueFeedback(buildFeedbackPayload(baseInput), []);
+    expect(pendingFeedbackCount()).toBe(0);
+  });
+
+  it('スプレッドシートだけ未達の場合、Firestoreは再送対象に含めない（二重登録の防止）', () => {
+    const payload = buildFeedbackPayload(baseInput);
+    enqueueFeedback(payload, ['webhook']);
+    expect(readFeedbackQueue()[0].pending).not.toContain('firestore');
   });
 
   it('上限を超えたら古いものから捨てる', () => {
     for (let i = 0; i < FEEDBACK_QUEUE_LIMIT + 5; i += 1) {
-      enqueueFeedback(buildFeedbackPayload({ ...baseInput, message: `意見${i}` }));
+      enqueueFeedback(buildFeedbackPayload({ ...baseInput, message: `意見${i}` }), ['webhook']);
     }
     const queue = readFeedbackQueue();
     expect(queue.length).toBe(FEEDBACK_QUEUE_LIMIT);
     // 最後に積んだものは必ず残る
-    expect(queue[queue.length - 1].message).toBe(`意見${FEEDBACK_QUEUE_LIMIT + 4}`);
+    expect(queue[queue.length - 1].payload.message).toBe(`意見${FEEDBACK_QUEUE_LIMIT + 4}`);
   });
 
   it('壊れたJSONが入っていても空配列として扱う（例外を投げない）', () => {
     storage.setItem(FEEDBACK_QUEUE_KEY, '{not json');
     expect(readFeedbackQueue()).toEqual([]);
     expect(pendingFeedbackCount()).toBe(0);
+  });
+
+  it('旧フォーマット（ペイロード直置き）のキューも読める＝アプリ更新で意見を失わない', () => {
+    const payload = buildFeedbackPayload(baseInput);
+    storage.setItem(FEEDBACK_QUEUE_KEY, JSON.stringify([payload]));
+    const queue = readFeedbackQueue();
+    expect(queue.length).toBe(1);
+    expect(queue[0].payload.id).toBe(payload.id);
+    // 旧データは全送信先を未達として扱う
+    expect(queue[0].pending.sort()).toEqual(['firestore', 'webhook']);
+  });
+
+  it('配列でない／壊れた要素は無視する', () => {
+    storage.setItem(FEEDBACK_QUEUE_KEY, JSON.stringify({ nope: true }));
+    expect(readFeedbackQueue()).toEqual([]);
+    storage.setItem(FEEDBACK_QUEUE_KEY, JSON.stringify([null, 42, 'x', {}]));
+    expect(readFeedbackQueue()).toEqual([]);
   });
 });
 
