@@ -34,6 +34,10 @@ interface FeedbackModalProps {
   context?: Record<string, unknown>;
   /** 見出し下に出す補助文（省略時は画面名から自動生成） */
   description?: string;
+  /** 種類の初期選択（省略時は画面から自動推定） */
+  category?: FeedbackCategory;
+  /** 本文の初期値（「化学の公開希望」など、用途が決まっている入口用） */
+  initialMessage?: string;
   /** 閉じる */
   onClose: () => void;
 }
@@ -46,10 +50,17 @@ function defaultCategory(screen: FeedbackScreen): FeedbackCategory {
   return 'request';
 }
 
-export function FeedbackModal({ screen, context, description, onClose }: FeedbackModalProps) {
-  const [category, setCategory] = useState<FeedbackCategory>(() => defaultCategory(screen));
+export function FeedbackModal({
+  screen,
+  context,
+  description,
+  category: initialCategory,
+  initialMessage,
+  onClose,
+}: FeedbackModalProps) {
+  const [category, setCategory] = useState<FeedbackCategory>(() => initialCategory || defaultCategory(screen));
   const [rating, setRating] = useState(0);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(initialMessage || '');
   const [contactEmail, setContactEmail] = useState('');
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
@@ -150,10 +161,26 @@ export function FeedbackModal({ screen, context, description, onClose }: Feedbac
                 <div>
                   <div className="flex items-start gap-3 bg-[#FFF4E5] border border-[#FF9F43]/60 rounded-2xl p-4">
                     <AlertTriangle size={20} className="text-[#E67E22] shrink-0 mt-0.5" aria-hidden="true" />
-                    <div className="text-xs text-[#7E5109] font-modern leading-relaxed">
-                      <p className="font-bold text-sm text-[#B9770E] mb-1">通信に失敗しました</p>
-                      入力内容は端末に保存しました。次回アプリを開いたときに自動で再送します。
+                    <div className="text-xs text-[#7E5109] font-modern leading-relaxed min-w-0">
+                      <p className="font-bold text-sm text-[#B9770E] mb-1">送信できませんでした</p>
+                      入力内容は<b>端末に保存済み</b>です。次回アプリを開いたときに自動で再送します。
                       すぐに届けたい場合は、下のボタンからメールでお送りください。
+
+                      {/* 何が起きたのかを具体的に開示する。
+                          「原因不明のまま何度も押させる」体験を避け、
+                          運営側の設定不備であることも隠さず伝える。 */}
+                      {result.failed.length > 0 && (
+                        <ul className="mt-2 pt-2 border-t border-[#FF9F43]/40 space-y-1">
+                          {result.failed.map((item) => (
+                            <li key={item.sink} className="break-words">
+                              <span className="font-bold">
+                                {item.sink === 'firestore' ? '管理データベース' : 'スプレッドシート'}：
+                              </span>
+                              {item.reason}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </div>
                   <a

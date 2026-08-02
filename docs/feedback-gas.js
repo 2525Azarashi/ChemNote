@@ -125,8 +125,26 @@ var CATEGORY_LABELS = {
 /**
  * 動作確認用。デプロイURLをブラウザで開くとこの文字列が出れば公開設定は正しい。
  * シートへの接続可否もここで分かる。
+ *
+ * また、アプリの「送信テスト」から
+ *     ...\/exec?ping=1&callback=関数名
+ * が呼ばれたときは JSONP を返す。
+ * これによりアプリ側は「このURLに匿名で到達できるか」を確実に判定でき、
+ * 「アクセスできるユーザーが［全員］になっていない（401）」を検出できる。
  */
-function doGet() {
+function doGet(e) {
+  var params = (e && e.parameter) || {};
+
+  if (params.ping) {
+    var body = JSON.stringify({ ok: true, service: 'chemnote-feedback' });
+    if (params.callback) {
+      return ContentService
+        .createTextOutput(params.callback + '(' + body + ');')
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    }
+    return ContentService.createTextOutput(body).setMimeType(ContentService.MimeType.JSON);
+  }
+
   var status = 'ChemNote feedback endpoint is running.';
   if (CONFIG.APPEND_SHEET) {
     try {

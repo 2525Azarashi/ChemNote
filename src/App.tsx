@@ -24,6 +24,7 @@ import { NoteDetail } from './components/NoteDetail';
 import { StudyHub } from './components/StudyHub';
 import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
+import { SubjectSelection, type SubjectId } from './components/SubjectSelection';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIsMobile } from './hooks/useMediaQuery';
@@ -33,8 +34,11 @@ import { applyOverviewViewport } from './utils/viewportControl';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { flushFeedbackQueue } from './utils/feedback';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
+
+/** 科目選択の保存キー（次回起動時に前回の科目を復元する） */
+const SELECTED_SUBJECT_KEY = 'savedSelectedSubject';
 
 export default function App() {
   useGlobalClickSound();
@@ -63,6 +67,10 @@ export default function App() {
   // 「モバイル端末」= UA がモバイル or 画面幅が md 未満。
   const isMobileDevice = isMobileUserAgent || isNarrowViewport;
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('savedIsGuest') === 'true');
+  // 選択中の科目。ログイン直後の科目選択画面（＝タイトル画面）で決まる。
+  const [selectedSubject, setSelectedSubject] = useState<SubjectId>(
+    () => (localStorage.getItem(SELECTED_SUBJECT_KEY) as SubjectId) || 'chemistry_basic',
+  );
   const [isExplanationView, setIsExplanationView] = useState(false);
   const [prevAppState, setPrevAppState] = useState<AppState>('home');
   const [lastQuizResult, setLastQuizResult] = useState<any>(null);
@@ -141,6 +149,7 @@ export default function App() {
   }, [selectedChapterId]);
   useEffect(() => { localStorage.setItem('savedQuizAnswers', JSON.stringify(quizAnswers)); }, [quizAnswers]);
   useEffect(() => { localStorage.setItem('savedIsGuest', isGuest.toString()); }, [isGuest]);
+  useEffect(() => { localStorage.setItem(SELECTED_SUBJECT_KEY, selectedSubject); }, [selectedSubject]);
   
   useEffect(() => {
     if (['mode_selection', 'learning', 'chapters', 'quiz', 'explanation', 'mock_exam'].includes(appState)) {
@@ -174,6 +183,12 @@ export default function App() {
   // PC版では「学習モードを選択」(mode_selection) 以外の全画面で外側余白をなくし、
   // ノート風背景を全幅に広げる。mode_selection だけは従来通り中央寄せ＋余白を維持。
   const isFullBleed = appState !== 'mode_selection';
+
+  /** 科目を選び終えたら、その科目のホーム（学習ダッシュボード）へ進む */
+  const handleSelectSubject = (subject: SubjectId) => {
+    setSelectedSubject(subject);
+    setAppState('home');
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -502,7 +517,7 @@ export default function App() {
         <div className={`min-h-screen w-full flex justify-center relative ${
           isFullBleed
             ? 'p-0 items-stretch'
-            : `pt-6 pb-safe-lg md:py-12 px-4 md:px-8 md:pb-28 ${['onboarding', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`
+            : `pt-6 pb-safe-lg md:py-12 px-4 md:px-8 md:pb-28 ${['onboarding', 'subject_selection', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`
         }`}>
           {/* iOS Safari では crossOrigin="anonymous" が付いていると
               同一オリジン音源でもデコードがブロックされ再生できないことがあるため付与しない。
@@ -523,8 +538,10 @@ export default function App() {
           <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : (isFullBleed ? 'max-w-none' : 'max-w-5xl')}`}>
             {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
 
-            {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} isGuest={isGuest} />}
+            {/* ログイン／ゲスト開始の直後は、必ず科目選択（＝タイトル）画面を経由する */}
+            {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('subject_selection')} onGuest={() => { setIsGuest(true); setAppState('subject_selection'); }} />}
+            {appState === 'subject_selection' && <SubjectSelection onSelectSubject={handleSelectSubject} isGuest={isGuest} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => setAppState('subject_selection')} subjectLabel={selectedSubject === 'chemistry_basic' ? '化学基礎' : '化学'} isGuest={isGuest} />}
             {appState === 'leaderboard' && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
             {appState === 'logical_tree' && <LogicalTree />}
@@ -564,7 +581,7 @@ export default function App() {
             {/* Global Bottom Navigation Footer
                 日本語ラベル化（ホーム／学習／設定）＋aria-labelをaria-currentで現在地を明示
                 アイコンには aria-hidden を付け、ラベルだけがスクリーンリーダーに読まれるよう整理 */}
-            {appState !== 'onboarding' && appState !== 'quiz' && appState !== 'explanation' && (
+            {appState !== 'onboarding' && appState !== 'subject_selection' && appState !== 'quiz' && appState !== 'explanation' && (
               <nav
                 aria-label="メインナビゲーション"
                 className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-2 md:px-10 pb-safe pt-3 z-[60] shadow-sm pb-6"

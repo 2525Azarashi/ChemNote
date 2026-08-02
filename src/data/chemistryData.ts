@@ -1,6 +1,13 @@
 import { acidBaseProblems } from './acidBaseProblems';
 import { redoxProblems } from './redoxProblems';
 import { pickCrystalProblems } from './crystalProblems';
+import {
+  buildSupplement,
+  enhanceExplanation,
+  extractFlowchartSteps,
+  isStructuredExplanation,
+} from '../utils/explanationFormat';
+import { getUnitTeaching } from './unitTeaching';
 
 // ⑤ 酸と塩基 を他の単元（④-1 等）と同じ粒度のタブに分割するための補助関数。
 // acidBaseProblems の各問題は category に "⑤-1 …" のような接頭辞を持つので、
@@ -8993,6 +9000,51 @@ const findSubQuestion = (chapterId: string, problemId: string, subQuestionId: st
         surroundingKnowledge: [],
         deepDiveTopics: [],
       });
+    }
+  }
+})();
+
+// ------------------------------------------------------------
+// 解答・解説の統一フォーマット適用パス
+// ------------------------------------------------------------
+// すべての章の練習問題・小テストの explanation を、
+// 「① 解答のピンクマーカー ／ ② ①②③の思考手順 ／ ③ 共通テスト出題傾向ボックス」
+// を満たす形に整形する。
+//
+// ・解答の値は subQuestions[].correctAnswer をそのまま使うため、
+//   解説文から解答を推測することによる取り違えが起こらない。
+// ・単元ごとの思考の型・出題傾向は unitTeaching.ts が供給する。
+// ・ロジックツリー等の構造化データ（JSON文字列）は対象外。
+// ・enhanceExplanation は冪等なので、二重に走っても内容は変わらない。
+//
+// 上のパッチ群がすべて適用されたあとに実行する必要があるため、
+// この位置（最後のパッチ IIFE の直後）に置いている。
+(() => {
+  const chapters = (chemistryData.parts as any[]).flatMap((part: any) => part.chapters || []);
+
+  for (const chapter of chapters) {
+    const teaching = getUnitTeaching(chapter.id);
+    const problems = [
+      ...(chapter.practiceProblems || []),
+      ...(chapter.miniTest || []),
+    ];
+
+    for (const problem of problems) {
+      if (!problem) continue;
+
+      if (typeof problem.explanation === 'string' && isStructuredExplanation(problem.explanation)) {
+        // ロジックツリー問題：explanation は描画用の構造化データなので触らず、
+        // 解答・思考手順・出題傾向は補足ブロックとして別フィールドに持たせる。
+        // 思考手順はフローチャートの STEP を参照する形で組み立てる。
+        problem.explanationSupplement = buildSupplement(
+          problem,
+          teaching,
+          extractFlowchartSteps(problem.explanation),
+        );
+        continue;
+      }
+
+      problem.explanation = enhanceExplanation(problem, teaching);
     }
   }
 })();
