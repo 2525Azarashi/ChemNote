@@ -46,7 +46,12 @@ function normalizeScientificScripts(text: string) {
     )
     // 問題データに残る H^+ / Fe^2+ / cm^3 / x_{1} も同じ表示へ揃える。
     .replace(/([A-Za-z0-9)])_\{?([0-9]+)\}?/g, `$1<sub class="${SUBSCRIPT_CLASS}">$2</sub>`)
-    .replace(/([A-Za-z0-9)])\^\{?([0-9]*[+\-−]?|[+\-−])\}?/g, `$1<sup class="${SUPERSCRIPT_CLASS}">$2</sup>`);
+    .replace(/([A-Za-z0-9)])\^\{?([0-9]*[+\-−]?|[+\-−])\}?/g, `$1<sup class="${SUPERSCRIPT_CLASS}">$2</sup>`)
+    // 半反応式データ（redoxProblems.ts）で使われる MINUS SIGN(U+2212) の電荷を
+    // ASCII の "-" に寄せて、下の化学式変換でイオンとして上付きにできるようにする。
+    //   Cl−・e−・NO3− → 電荷なので変換する
+    //   C−H・O−H・N−H → 構造式の結合線なので変換しない（直後が英大文字なら除外）
+    .replace(/([A-Za-z][A-Za-z]?[0-9]*)\u2212(?![A-Za-z0-9(])/g, '$1-');
 }
 
 export function formatText(text: string, highlights: string[] = []) {
@@ -92,12 +97,41 @@ export function formatText(text: string, highlights: string[] = []) {
     '<span class="text-[0.82em] font-sans text-stone-500 bg-stone-50 border border-stone-200/60 px-2 py-0.5 rounded-lg inline-block my-0.5 font-normal select-none shadow-xs">$1</span>'
   );
 
-  // Replace isotopic notation like 12C, 35Cl, 10B, 24Mg with superscript representation.
-  // We match numbers immediately preceded by non-alphanumeric and immediately followed by specific element symbols or A/B/X variables.
-  processedText = processedText.replace(
-    /(?<![A-Za-z0-9])([0-9]+)(C|B|Cl|Mg|H|O|N|S|P|Na|Ca|Fe|Cu|A|B)(?![A-Za-z0-9])/g,
-    `<sup class="${SUPERSCRIPT_CLASS} font-bold pr-[1px] select-none">$1</sup>$2`
+  // 質量数（同位体）の上付き表記。35Cl / 12C / 26Mg のような「質量数＋元素記号」を ³⁵Cl と描画する。
+  //
+  // ★重要★ ここは化学反応式の「係数」と衝突しやすい。
+  //   2H₂O・8H⁺・2Cl⁻・3Cu ＋ … の先頭の数字は係数であって質量数ではないため、
+  //   上付きにしてしまうと「係数が左上に小さく出る」という誤表示になる。
+  //   そこで「直後に化学式が続かない位置（日本語・句読点・行末など）」に限って
+  //   質量数とみなす。反応式の中では必ず直後に
+  //     ・下付き数字（H₂O → <sub> タグ）
+  //     ・電荷記号（+ / - / − / <sup> タグ）
+  //     ・空白＋演算子（ ＋ 、→ など）
+  //   のいずれかが来るため、この条件だけで係数を確実に除外できる。
+  const ISOTOPE_ELEMENTS = [
+    'Cl', 'Ca', 'Cu', 'Co', 'Cr', 'Mg', 'Mn', 'Na', 'Ne', 'Ni', 'Ar', 'Ag', 'Al',
+    'Ba', 'Be', 'Br', 'Fe', 'He', 'Li', 'Pb', 'Si', 'Sn', 'Zn',
+    'B', 'C', 'F', 'H', 'I', 'K', 'N', 'O', 'P', 'S', 'U', 'A', 'X',
+  ].join('|');
+  //   直後に来てよい文字（＝ここで途切れるなら化学式ではない）。
+  //   ASCII の "(" は Cu(NO₃)₂ / Al(OH)₃ のように化学式が続く合図なので許可しない。
+  //   全角の「（」は日本語の注記（26Mg（相対質量…）なので許可する。
+  const AFTER_ISOTOPE = '[ぁ-んァ-ヶー一-龥、。，．・「」『』（）)：:；;％%\\n]';
+  const ISOTOPE_RE = new RegExp(
+    `(?<![A-Za-z0-9<\\-−])([0-9]{1,3})(${ISOTOPE_ELEMENTS})(?![A-Za-z0-9])` +
+      `(?=${AFTER_ISOTOPE}|\\s*[-−–]\\s*[0-9]{1,3}[A-Z]|$)`,
+    'g'
   );
+  //   さらに、反応式の行では行末の「＋ 2Ag」のような係数も拾ってしまうため、
+  //   反応の矢印を含む行は質量数変換の対象から丸ごと外す。
+  //   （化学基礎の反応式に核反応＝質量数表記が現れることは無い）
+  const REACTION_LINE = /[→⟶⟵←⇄⇌⇔⟷]/;
+  processedText = processedText
+    .split('\n')
+    .map((line) => (REACTION_LINE.test(line)
+      ? line
+      : line.replace(ISOTOPE_RE, `<sup class="${SUPERSCRIPT_CLASS} font-bold pr-[1px] select-none">$1</sup>$2`)))
+    .join('\n');
 
   // First, apply custom highlights to the text. We surround them with custom tags <hl>...</hl>
   let highlightedText = processedText;
@@ -118,11 +152,22 @@ export function formatText(text: string, highlights: string[] = []) {
   // Split text by a regex that matches chemical formulas, math variables, AND our <hl> tags
   // BUT we must avoid matching inside HTML tags like <u> or </u> or <hl>.
   
-  // Split by HTML tags (e.g., <u>, </u>, <br/>, <hl>, </hl>)
-  const tagRegex = /(<\/?[a-z][a-z0-9]*[^>]*>)/gi;
+  // Split by HTML tags (e.g., <u>, </u>, <br/>, <hl>, </hl>) and HTML comments.
+  //
+  // ★HTMLコメントを必ずトークンとして切り出すこと★
+  // コメント（例：整形エンジンの冪等マーカー <!--fmt-v1-->）を素通しせずに
+  // 下の化学式変換へ流すと、末尾の "-->" の "-" がイオンの電荷として
+  // <sup>-</sup> に化けてコメントが閉じなくなり、
+  // 「以降の解説本文がまるごとブラウザに飲み込まれて消える」という致命的な事故になる。
+  const tagRegex = /(<!--[\s\S]*?-->|<\/?[a-z][a-z0-9]*[^>]*>)/gi;
   const tokens = highlightedText.split(tagRegex);
 
   const htmlString = tokens.map((token) => {
+    // HTML コメントはそのまま（中身を一切加工せずに）出力する
+    if (token.startsWith('<!--') && token.endsWith('-->')) {
+      return token;
+    }
+
     // If it's an HTML tag, render it directly
     if (token.match(/^<\/?[a-z][a-z0-9]*[^>]*>$/i)) {
       // Replace <u> with our styled version (marker-like UI)
@@ -143,7 +188,9 @@ export function formatText(text: string, highlights: string[] = []) {
 
     // It's normal text, now we can safely look for chemical formulas
     // Matches: A sequence of letters, optional digits, optional charge
-    const chemRegex = /([A-Za-z]+[0-9]*[+-]?)/g;
+    // 末尾の +/- は「電荷」のときだけ取り込む。直後に数字が続く場合
+    // （35Cl-35Cl の同位体ペアや mol-1 のような表記）はハイフンであって電荷ではない。
+    const chemRegex = /([A-Za-z]+[0-9]*(?:[+-](?![0-9]))?)/g;
     const parts = token.split(chemRegex);
 
     return parts.map((part) => {

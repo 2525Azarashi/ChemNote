@@ -155,6 +155,42 @@ export function buildAnswerBlock(question: QuestionLike): string {
  * のうち、①があればそれを主、なければ②を使う。
  * ①がある場合でも、単元の型を意識させるため②を「この単元の型」として併記する。
  */
+/**
+ * 1ステップの文字列を「見出し」と「理由・着眼点」の2段に分ける。
+ *
+ * フォーマット要件2 は思考手順を
+ *   ・太字のステップ見出し
+ *   ・その下に理由／着眼点のサブ説明
+ * の2段構成にすることを求めている。元データが
+ *   「◯◯する：△△だから」「◯◯する。△△に注意」「◯◯する（△△のため）」
+ * のように書かれている場合は、機械的に安全に分割できる。
+ * 分割できない短い一文はそのまま見出しだけにする
+ * （無内容なサブ説明を自動生成して水増しすると、かえって質が落ちるため）。
+ */
+function splitStepDetail(text: string): { head: string; detail: string } {
+  const source = text.trim();
+
+  // ① 「：」区切り（例：「価数を確認する：H₂SO₄は2価」）
+  const colon = source.match(/^([^：:]{4,40})[：:]\s*(.+)$/s);
+  if (colon && colon[2].trim().length >= 4) {
+    return { head: colon[1].trim(), detail: colon[2].trim() };
+  }
+
+  // ② 「。」区切り（1文目を見出し、残りを説明に）
+  const period = source.match(/^([^。]{4,40})。\s*(.+)$/s);
+  if (period && period[2].trim().length >= 4) {
+    return { head: period[1].trim(), detail: period[2].trim().replace(/。$/, '') };
+  }
+
+  // ③ 末尾の丸括弧を補足とみなす（例：「両辺の H を合わせる（H⁺ を8個加える）」）
+  const paren = source.match(/^(.{4,40}?)\s*（([^（）]{6,})）\s*$/s);
+  if (paren) {
+    return { head: paren[1].trim(), detail: paren[2].trim() };
+  }
+
+  return { head: source, detail: '' };
+}
+
 export function buildStepsBlock(question: QuestionLike, teaching?: UnitTeaching): string {
   const parts: string[] = [];
 
@@ -173,7 +209,10 @@ export function buildStepsBlock(question: QuestionLike, teaching?: UnitTeaching)
         const text = String(raw).trim();
         const hasCircle = /^[①-⑮]/.test(text);
         const body = hasCircle ? text.replace(/^[①-⑮]\s*/, '') : text;
-        return `　<b>${circledNumber(index)} ${body}</b>`;
+        // 「見出し＋理由・着眼点」の2段構成にできる書き方なら分割する
+        const { head, detail } = splitStepDetail(body);
+        const line = `　<b>${circledNumber(index)} ${head}</b>`;
+        return detail ? `${line}\n　　└ ${detail}` : line;
       });
       return `${heading}\n${steps.join('\n')}`;
     });
@@ -239,7 +278,9 @@ export function normalizeLegacyBody(body: string): string {
   return qualifyStepReferences(
     body
       .replace(/<u>([\s\S]*?)<\/u>/g, (_match, inner) => KEY(String(inner)))
-      .replace(/^\s*▼\s*解答[・･]?解説\s*\n?/gm, '')
+      // 「▼ 解答と解説」「▼ 解答・解説」「▼ 解説」など、自動生成する
+      // 【解 答】ラベルと二重になる旧見出しを取り除く
+      .replace(/^\s*▼\s*(?:解答\s*[・･と]?\s*)?解説\s*\n?/gm, '')
       .trim(),
   );
 }
