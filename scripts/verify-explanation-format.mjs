@@ -1,8 +1,40 @@
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { chemistryData } from '../src/data/chemistryData.ts';
 import { mockExam } from '../src/data/mockExamData.ts';
+import { formatText } from '../src/utils/textFormatter.tsx';
 
 // 「STEP」はフローチャート／ロジックツリーを参照するときだけ使ってよい
 const FLOW_REF = /(?:フローチャート|ロジックツリー)[^。\n<]{0,30}STEP\s*\d+/gi;
+
+/**
+ * 実描画したときに「本文がブラウザに飲み込まれていないか」を確認する。
+ *
+ * 冪等マーカー <!--fmt-v1--> の "-->" が化学式変換でイオンの電荷に化け、
+ * コメントが閉じずに以降の解説がまるごと消える、という事故が実際に起きた。
+ * 同種の再発を機械的に検出するため、描画後のHTMLについて
+ *   ・HTMLコメントが必ず閉じていること
+ *   ・コメントの外側に、解説末尾の文字が残っていること
+ * を検査する。
+ */
+function checkRendered(text) {
+  const s = typeof text === 'string' ? text : '';
+  if (!s) return { commentClosed: true, bodyVisible: true };
+  let html;
+  try {
+    html = renderToStaticMarkup(formatText(s));
+  } catch {
+    return { commentClosed: false, bodyVisible: false };
+  }
+  // コメントを取り除いた「実際に見える側」のHTML
+  const visible = html.replace(/<!--[\s\S]*?-->/g, '');
+  const commentClosed = !visible.includes('<!--');
+  // 解説末尾の日本語を10文字ぶん取り出し、可視側に残っているかを見る
+  const tail = (s.replace(/<[^>]*>/g, '').replace(/\s+/g, '').slice(-10)) || '';
+  const visibleText = visible.replace(/<[^>]*>/g, '').replace(/\s+/g, '');
+  const bodyVisible = tail === '' || visibleText.includes(tail);
+  return { commentClosed, bodyVisible };
+}
 
 function check(text) {
   const s = typeof text === 'string' ? text : '';
@@ -13,6 +45,7 @@ function check(text) {
     hasTrend: /ココが狙われる/.test(s),
     noYellow: !/<u>/i.test(s),
     stepOnlyFlow: !/STEP/i.test(stripped),
+    ...checkRendered(s),
   };
 }
 

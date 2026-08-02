@@ -13,6 +13,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Send, Star, CheckCircle2, AlertTriangle, Mail, MessageSquareHeart, Loader2 } from 'lucide-react';
 import {
@@ -85,6 +86,16 @@ export function FeedbackModal({
     return () => window.clearTimeout(timer);
   }, []);
 
+  // モーダル表示中は背後のページをスクロールさせない。
+  // （背後が動くと、モーダル内をスクロールしているつもりで裏側が動いてしまい
+  //   「送信ボタンまでたどり着けない」体験になる）
+  useEffect(() => {
+    const { body } = document;
+    const previous = body.style.overflow;
+    body.style.overflow = 'hidden';
+    return () => { body.style.overflow = previous; };
+  }, []);
+
   const handleSubmit = useCallback(async () => {
     const validation = validateFeedback({ screen, category, rating, message, contactEmail });
     if (!validation.valid) {
@@ -105,7 +116,20 @@ export function FeedbackModal({
 
   const headerNote = description || `${FEEDBACK_SCREEN_LABELS[screen]}についてのご意見をお聞かせください`;
 
-  return (
+  /* ===================================================================
+   * レイアウト方針（「送信ボタンまでスクロールできない」不具合の対策）
+   * ===================================================================
+   *  1. createPortal で <body> 直下に描画する。
+   *     呼び出し元（タイトル画面のカード等）は motion のアニメーションで
+   *     transform が掛かることがあり、transform 付き祖先があると
+   *     position:fixed の基準がその祖先になってしまう。結果、モーダルが
+   *     祖先の高さに閉じ込められて下端が画面外に切れ、送信ボタンへ
+   *     到達できなくなる。ポータル化でこれを根本から断つ。
+   *  2. パネルは「ヘッダー（固定）／本文（スクロール）／フッター（固定）」の
+   *     3段 flex 構成にする。送信ボタンはスクロール領域の外＝常時表示。
+   *  3. 高さは 100dvh 基準にし、iOS のホームバー用に safe-area を確保する。
+   * =================================================================== */
+  const modal = (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
@@ -123,10 +147,10 @@ export function FeedbackModal({
           exit={{ opacity: 0, y: 20, scale: 0.98 }}
           transition={{ type: 'spring', stiffness: 320, damping: 30 }}
           onClick={(event: React.MouseEvent) => event.stopPropagation()}
-          className="w-full sm:max-w-lg max-h-[92dvh] overflow-y-auto no-scrollbar bg-[#FDFBF7] rounded-t-[26px] sm:rounded-[26px] border border-[#F4A9C4]/50 shadow-[0_24px_60px_-20px_rgba(217,70,110,0.5)] font-handwriting"
+          className="w-full sm:max-w-lg flex flex-col max-h-[100dvh] sm:max-h-[min(88dvh,720px)] overflow-hidden bg-[#FDFBF7] rounded-t-[26px] sm:rounded-[26px] border border-[#F4A9C4]/50 shadow-[0_24px_60px_-20px_rgba(217,70,110,0.5)] font-handwriting"
         >
-          {/* ヘッダー */}
-          <div className="sticky top-0 z-10 flex items-start gap-3 px-5 pt-5 pb-3 bg-gradient-to-b from-[#FFF1F5] to-[#FDFBF7] border-b border-[#F4A9C4]/35 rounded-t-[26px]">
+          {/* ヘッダー（固定） */}
+          <div className="shrink-0 flex items-start gap-3 px-5 pt-5 pb-3 bg-gradient-to-b from-[#FFF1F5] to-[#FDFBF7] border-b border-[#F4A9C4]/35 rounded-t-[26px]">
             <div className="w-10 h-10 rounded-2xl bg-[#FBE0E9] text-[#D9466E] flex items-center justify-center shrink-0">
               <MessageSquareHeart size={20} aria-hidden="true" />
             </div>
@@ -146,7 +170,7 @@ export function FeedbackModal({
 
           {result ? (
             /* ============ 送信完了 ============ */
-            <div className="px-5 py-6">
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
               {result.ok ? (
                 <div className="text-center">
                   <div className="w-14 h-14 mx-auto rounded-full bg-[#E8F8EE] text-[#27AE60] flex items-center justify-center mb-3">
@@ -201,7 +225,8 @@ export function FeedbackModal({
             </div>
           ) : (
             /* ============ 入力フォーム ============ */
-            <div className="px-5 py-4 space-y-4">
+            <>
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-4 space-y-4">
               {/* 満足度（任意） */}
               <div>
                 <label className="block text-[11px] font-bold text-[#8895A0] font-modern tracking-wider mb-2">
@@ -313,8 +338,11 @@ export function FeedbackModal({
                 お名前・メールアドレスは未入力でも送信できます。学習の記録や成績には影響しません。
               </p>
 
-              {/* 送信ボタン */}
-              <div className="grid grid-cols-[1fr_2fr] gap-2 pb-2">
+            </div>
+
+            {/* 送信ボタン（スクロール領域の外＝常に画面内に残る） */}
+            <div className="shrink-0 border-t border-[#F4A9C4]/35 bg-[#FDFBF7]/95 backdrop-blur-sm px-5 pt-3 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
+              <div className="grid grid-cols-[1fr_2fr] gap-2">
                 <button
                   onClick={onClose}
                   disabled={sending}
@@ -332,9 +360,14 @@ export function FeedbackModal({
                 </button>
               </div>
             </div>
+            </>
           )}
         </motion.div>
       </motion.div>
     </AnimatePresence>
   );
+
+  // SSR / テスト環境で document が無い場合はそのまま返す
+  if (typeof document === 'undefined') return modal;
+  return createPortal(modal, document.body);
 }
