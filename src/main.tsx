@@ -1,6 +1,7 @@
 // src/main.tsx
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Analytics } from '@vercel/analytics/react';
 import App from './App.tsx';
 import './index.css';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -19,5 +20,11 @@ createRoot(document.getElementById('root')!).render(
     <ThemeProvider>
       <App />
     </ThemeProvider>
+    {/*
+      Vercel Web Analytics（画面には何も描画されず、計測用スクリプトだけを注入する）
+      - Vercel にデプロイされている場合のみデータが収集される
+      - 本アプリは URL が変化しない SPA のため、既定ではページビューが常に "/" に集約される
+    */}
+    <Analytics />
   </StrictMode>
 );
