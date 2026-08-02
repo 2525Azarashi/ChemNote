@@ -1,5 +1,8 @@
 // 2027年度 共通テスト化学基礎 オリジナル予想問題データ
 
+import { enhanceExplanation } from '../utils/explanationFormat';
+import { getUnitTeaching } from './unitTeaching';
+
 export interface MockExamSubQuestion {
   label: string; // "a", "b", "c" など
   questionText: string;
@@ -367,3 +370,66 @@ NaClO + ［ア]HCl → NaCl + ［イ]H₂O + Cl₂  ……（2）
     }
   }
 };
+
+// ------------------------------------------------------------
+// 解答・解説の統一フォーマット適用パス（予想問題）
+// ------------------------------------------------------------
+// 練習問題と同じく、
+//   ① 解答のピンクマーカー ／ ② ①②③の思考手順 ／ ③ 共通テスト出題傾向ボックス
+// を全設問に適用する。
+//
+// 予想問題は章IDを持たないため、各設問が扱うテーマに対応する
+// 単元の指導テンプレート（unitTeaching）を手動で割り当てている。
+// キーは「第何問-問番号」。
+const MOCK_EXAM_UNIT_MAP: Record<string, string> = {
+  '1-1': 'c2_1',  // 陽子・中性子・電子の数と同位体
+  '1-2': 'c2_3',  // イオン化エネルギー・電子親和力・電気陰性度
+  '1-3': 'c3_2',  // 結晶の種類と結合
+  '1-4': 'c3_3',  // 分子の極性
+  '1-5': 'c1_3',  // 状態変化
+  '1-6': 'c4_2',  // 物質量（燃焼の量的関係）
+  '1-7': 'c4_4',  // 濃度（希釈）
+  '1-8': 'c5_4',  // 塩の液性
+  '1-9': 'c6_1',  // 酸化数
+  '1-10': 'c6_5', // 金属の性質と用途
+  '2-1': 'c6_1',  // 酸化数と反応式の係数
+  '2-2': 'c6_3',  // 酸化還元の量的関係
+  '2-3': 'c3_3',  // 界面活性剤（分子の極性・親水基と疎水基）
+};
+
+(() => {
+  const questions = (mockExam.questions as any[]) || [];
+
+  for (const question of questions) {
+    if (!question) continue;
+
+    const teaching = getUnitTeaching(MOCK_EXAM_UNIT_MAP[`${question.bigQuestion}-${question.questionNumber}`] || '');
+    const subQuestions = (question.subQuestions as any[]) || [];
+
+    if (subQuestions.length > 0) {
+      // 小設問がある場合：解答・出題傾向は小設問ごとに付ける。
+      // 親の解説はリード文なので、黄色マーカーの除去などの整形だけを行う。
+      question.explanation = enhanceExplanation({ explanation: question.explanation });
+
+      for (const sub of subQuestions) {
+        if (!sub) continue;
+        sub.explanation = enhanceExplanation(
+          {
+            explanation: sub.explanation,
+            subQuestions: [{ label: sub.label ? `(${sub.label})` : '', correctAnswer: sub.correctChoice }],
+          },
+          teaching,
+        );
+      }
+      continue;
+    }
+
+    question.explanation = enhanceExplanation(
+      {
+        explanation: question.explanation,
+        subQuestions: [{ correctAnswer: question.correctChoice }],
+      },
+      teaching,
+    );
+  }
+})();

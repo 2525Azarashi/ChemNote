@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
@@ -17,10 +17,14 @@ interface HomeProps {
   onLogicalTree: () => void;
   onLeaderboard?: () => void;
   onReviewList?: () => void;
+  /** 科目選択（タイトル）画面へ戻る */
+  onChangeSubject?: () => void;
+  /** 現在選択中の科目名（表示用） */
+  subjectLabel?: string;
   isGuest: boolean;
 }
 
-export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, isGuest }: HomeProps) {
+export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onChangeSubject, subjectLabel = '化学基礎', isGuest }: HomeProps) {
   const reviewDueCount = useMemo(() => {
     const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
     return getDueCount(uid);
@@ -150,6 +154,19 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             ※ 左上の「まなとび」ワードマークは表示しない（ユーザー要望）。 */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-7 md:mb-8 lg:mb-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting">
+            {/* 現在の科目バッジ（タップで科目選択＝タイトル画面へ戻れる導線） */}
+            {onChangeSubject && (
+              <button
+                onClick={onChangeSubject}
+                aria-label={`科目を変更する（現在：${subjectLabel}）`}
+                className="group inline-flex items-center gap-1.5 mb-2 pl-2.5 pr-2 py-1 rounded-full bg-white/85 backdrop-blur-sm border border-[#F4A9C4]/55 text-[11px] font-modern font-bold text-[#D9466E] hover:bg-white hover:border-[#E8688E] transition-colors min-h-[28px]"
+              >
+                <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                {subjectLabel}
+                <span className="text-[#B8C4CE] group-hover:text-[#E8688E] transition-colors" aria-hidden="true">|</span>
+                <Repeat2 className="w-3.5 h-3.5 text-[#8895A0] group-hover:text-[#E8688E] transition-colors" aria-hidden="true" />
+              </button>
+            )}
             <h1 className="text-[22px] md:text-[30px] text-[#1B2631] font-bold tracking-wide">
               おかえり、{greetingName}さん
             </h1>

@@ -1530,6 +1530,29 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         </div>
                       );
                     })()}
+
+                    {/* 解答・思考手順・出題傾向の補足ブロック
+                        （explanation がロジックツリーの構造化データで、
+                          本文として描画できない問題にだけ付与される） */}
+                    {(question as any).explanationSupplement && (
+                      <div className={`p-4 sm:p-5 rounded-xl shadow-inner border mt-4 ${
+                        mode === 'mini_test' ? 'bg-gray-50 border-gray-200' : 'bg-[#0B132B]/80 border-[#3A506B]/50'
+                      }`}>
+                        <h4 className={`text-sm md:text-base mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2 border-b-2 pb-1.5 inline-flex ${
+                          mode === 'mini_test' ? 'text-emerald-700 border-emerald-200' : 'text-[#5BC0BE] border-[#3A506B]/50'
+                        }`}>
+                          <Lightbulb className={`w-4 h-4 ${mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]'}`} />
+                          <span>解答・解説</span>
+                        </h4>
+                        <ExplanationBody
+                          text={(question as any).explanationSupplement}
+                          tone={mode === 'mini_test' ? 'light' : 'dark'}
+                          className={`font-handwriting text-xs md:text-sm leading-relaxed ${
+                            mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'
+                          }`}
+                        />
+                      </div>
+                    )}
                   </div>
                 );
               })

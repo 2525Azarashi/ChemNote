@@ -15,7 +15,10 @@
  *        （import する側を差し替えるだけでロジックの再実装が不要）
  *
  * ここには DOM / React / Firebase など環境依存物を一切 import しないこと。
+ * （answerEquivalence も同じく純粋関数のみのモジュール）
  */
+
+import { isEquivalentAnswer } from './answerEquivalence';
 
 /** 判定対象となる最小限の設問形状（scoring.ts の型と互換） */
 export interface JudgeableSubQuestion {
@@ -118,6 +121,10 @@ export function isJudgeable(sq: { type?: string }): boolean {
  * - 記述式は常に false（自動採点不可）
  * - 空解答は false
  * - correctAnswer または acceptedAnswers のいずれかに（正規化して）一致すれば正解
+ * - さらに answerEquivalence による「表記ゆれの緩和」でも一致すれば正解
+ *     半角/全角、ひらがな/カタカナ、長音、句読点・括弧、
+ *     単位付き数値（40 mL ＝ 40 ＝ 0.040 L）、指数表記（5.0×10⁻² ＝ 0.050）、
+ *     化学的な同義語（ろ過＝濾過、貴ガス＝希ガス、ネオン型＝Ne型 など）
  *
  * これがアプリ全体の「正解/不正解」判定の唯一の基準。
  */
@@ -136,14 +143,26 @@ export function isAnswerCorrect(
 
   const compactAns = compactSymbolSequence(ans);
   const canUseCompact = looksLikeChoiceSequence(ans);
+  const rawUser = String(userAnswer ?? '');
+
   return candidates.some((c) => {
     const normalizedCandidate = normalizeAnswer(c);
-    return normalizedCandidate === ans || (
+
+    // ① 従来どおりの厳密一致（最速パス）
+    if (normalizedCandidate === ans) return true;
+
+    // ② 選択肢記号の並び替え（区切り記号の違いを無視）
+    if (
       canUseCompact &&
       looksLikeChoiceSequence(normalizedCandidate) &&
       !!compactAns &&
       compactSymbolSequence(normalizedCandidate) === compactAns
-    );
+    ) {
+      return true;
+    }
+
+    // ③ 表記ゆれの緩和（半角全角・かなカナ・単位・同義語 など）
+    return isEquivalentAnswer(c, rawUser);
   });
 }
 
