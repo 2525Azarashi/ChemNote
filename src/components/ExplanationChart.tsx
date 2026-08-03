@@ -1,4 +1,5 @@
 import React from 'react';
+import { EXTRA_EXPLANATION_CHARTS } from './ExplanationChartsExtra';
 
 /**
  * ExplanationChart
@@ -173,6 +174,8 @@ function HeatingCurvePureVsMixture() {
 /** 解説ノードから参照できる図の一覧（キー → コンポーネント）。 */
 export const EXPLANATION_CHARTS: Record<string, React.FC> = {
   heating_curve_pure_vs_mixture: HeatingCurvePureVsMixture,
+  // ロジックツリー内のアスキーアート図を置き換えた SVG 図（別ファイルで定義）
+  ...EXTRA_EXPLANATION_CHARTS,
 };
 
 export interface ExplanationChartProps {

@@ -9,10 +9,12 @@
  * 「データ ＋ 単元別の指導テンプレート」から自動生成する方式を採る。
  *
  *   1. 解答の超・強調表示（視認性MAX）
- *      → ピンク（#ffc0cb）のマーカー＋太字。0.1秒で解答を発見できる。
+ *      → ピンクの蛍光ペン＋太字。0.1秒で解答を発見できる。
+ *      → 蛍光ペンは「文字全体の塗りつぶし」ではなく、まとめプリントと同じ
+ *        ★文字の下だけに引くアンダーライン型★（下 40% のグラデーション）にする。
  *      → ★黄色は使用禁止★（フローチャート／ロジックツリーの強調色と衝突するため）
  *         このため、既存解説中の <u> タグ（textFormatter が黄色マーカーへ変換する）は
- *         問題解説に限りオレンジ（#ffd8a8）のキーワード強調へ置き換える。
+ *         問題解説に限り「黒い波線」のキーワード強調（KEY）へ置き換える。
  *
  *   2. 解説のプロセス化・体系化（記号の厳格な使い分け）
  *      → 思考手順は必ず ①②③…（丸数字）。各ステップは
@@ -41,13 +43,33 @@
 // 基本パーツ
 // -------------------------------------------------------------------
 
-/** 解答マーカー（ピンク）。「これが答え」だと一目で分かる最重要の装飾。 */
-export const ANS = (text: string): string =>
-  `<span style="background-color:#ffc0cb; color:#1a1a1a; font-weight:bold; padding:1px 6px; border-radius:5px;">${text}</span>`;
+/**
+ * 解答マーカー（ピンクの蛍光ペン）。
+ *
+ * 以前は文字全体を塗りつぶす背景色だったが、まとめプリントの黄色マーカーと同じ
+ * 「文字の下だけに引くアンダーライン型」に変更した。
+ * 文字の下 40% にだけグラデーションを敷くので、文字そのものは読みやすいまま残る。
+ * 文字色は指定しない（＝テーマの文字色を継承する）。ダークテーマでは明るい文字、
+ * ライトテーマでは濃い文字のまま、下線だけがピンクに光る。
+ */
+export const ANS_STYLE =
+  'background-image:linear-gradient(to top, rgba(233,104,142,0.85) 0%, rgba(244,169,196,0.75) 55%, rgba(244,169,196,0) 100%); background-repeat:no-repeat; background-size:100% 40%; background-position:0 100%; font-weight:bold; padding:0 3px 1px; border-radius:2px;';
 
-/** キーワード強調（オレンジ）。解答ではないが落としてはいけない語に使う。 */
+export const ANS = (text: string): string =>
+  `<span style="${ANS_STYLE}">${text}</span>`;
+
+/**
+ * キーワード強調。
+ *
+ * 以前はオレンジの塗りつぶしだったが、「大事な要素の下に黒い波線を引く」形に変更。
+ * 色は currentColor（＝本文の文字色）にしてある。ダークテーマ（練習モード）では
+ * 明るい波線、ライトテーマ（小テスト）では黒に近い波線になり、どちらでも必ず見える。
+ */
+export const KEY_STYLE =
+  'font-weight:bold; -webkit-text-decoration:underline wavy currentColor; text-decoration:underline wavy currentColor; text-decoration-thickness:1.5px; text-underline-offset:5px; text-decoration-skip-ink:none;';
+
 export const KEY = (text: string): string =>
-  `<span style="background-color:#ffd8a8; color:#1a1a1a; font-weight:bold; padding:1px 4px; border-radius:4px;">${text}</span>`;
+  `<span style="${KEY_STYLE}">${text}</span>`;
 
 /** 見出しラベル（枠線のみ・地味め）。セクションの切れ目を作る。 */
 export const LABEL = (text: string): string =>
@@ -95,6 +117,49 @@ export interface UnitTeaching {
   steps: ThinkingStep[];
   /** 出題傾向ボックスの内容 */
   trend: TrendInsight;
+}
+
+// -------------------------------------------------------------------
+// 単位変換（まとめプリントの「単位変換の図」）
+// -------------------------------------------------------------------
+
+/**
+ * 単位変換の1ホップ（図の矢印1本ぶん）。
+ *
+ * 「単位変換の図」では、mol をハブにして
+ *   個数 ←（÷ / × 6.0×10²³）→ mol ←（÷ / × M）→ 質量[g]
+ *                              mol ←（÷ / × 22.4）→ 標準状態の体積[L]
+ * という橋が架かっている。その1本を表す。
+ */
+export interface ConversionHop {
+  /** 矢印に書く換算（例：「÷ 44 g/mol」「× 22.4 L/mol」「× 2（係数比）」） */
+  arrow: string;
+  /** 変換後に到達する単位（例：「mol」「L」「g」「個」） */
+  to: string;
+}
+
+/**
+ * 1問ぶんの「単位変換による解き方」。
+ *
+ * 物質量（mol）がからむ計算問題は、公式の暗記ではなく
+ * 「スタートの単位 → mol → ゴールの単位」という一本道の乗り換えで必ず解ける。
+ * その道順をデータとして持ち、解説の先頭に図と同じ形で提示する。
+ */
+export interface UnitConversionWalk {
+  /** スタートの量（例：「88 g（二酸化炭素の質量）」） */
+  start: string;
+  /** スタートの単位（ルート図の左端。例：「g」） */
+  startUnit: string;
+  /** ゴール（例：「標準状態の体積 [L]」） */
+  goal: string;
+  /** mol を経由してゴールへ向かう矢印の並び */
+  route: ConversionHop[];
+  /** ①②③ の思考手順（見出し＋理由・着眼点の2段構成） */
+  steps: ThinkingStep[];
+  /** 換算をひと続きに書いた式（省略可） */
+  oneLine?: string[];
+  /** 単位の約分などによる検算コメント（省略可） */
+  check?: string;
 }
 
 /** 整形に必要な小問の最小形 */
@@ -147,6 +212,69 @@ export function buildAnswerBlock(question: QuestionLike): string {
 }
 
 /**
+ * 「単位変換で解く」ブロックを組み立てる。
+ *
+ * ■ なぜ専用ブロックにするのか
+ * 物質量（mol）の計算は、公式を4つも5つも覚えると必ずどれかを取り違える。
+ * まとめプリントの「単位変換の図」は、mol をハブにした乗り換え路線図として
+ *   ・mol へ向かうときは ÷（割る）
+ *   ・mol から離れるときは ×（掛ける）
+ * という2つのルールだけで全問を貫く。この考え方を、解答の直後・詳しい解説の前に
+ * 必ず同じ形で提示することで、生徒が毎回同じ手順を再現できるようにする。
+ *
+ * ■ 構成
+ *   1. 変換ルート（［スタート単位］→ ［mol］→ ［ゴール単位］の一本道）
+ *   2. ①②③ の思考手順（各ホップの理由つき）
+ *   3. ひと続きの換算式（単位が約分されてゴールの単位だけが残ることを見せる）
+ *   4. 検算コメント
+ */
+export function buildUnitConversionBlock(walk: UnitConversionWalk): string {
+  const rows: string[] = [];
+
+  rows.push(LABEL('単位変換で解く'));
+  rows.push(
+    `まとめプリントの${KEY('単位変換の図')}のとおり、${KEY('まず mol に直す')}→${KEY('次に求めたい単位へ変換する')}の一本道で解きます。`,
+  );
+
+  // --- 1. 変換ルート（路線図） ---
+  const stations = [`［${walk.startUnit}］`, ...walk.route.map((hop) => `［${hop.to}］`)];
+  const arrows = walk.route.map((hop) => hop.arrow);
+  const routeLine = stations
+    .map((station, index) => (index === 0 ? station : `─（${arrows[index - 1]}）→ ${station}`))
+    .join(' ');
+  rows.push('');
+  rows.push(`<b>■ 変換ルート</b>`);
+  rows.push(`　${routeLine}`);
+  rows.push(`　スタート：${walk.start}　／　ゴール：${walk.goal}`);
+
+  // --- 2. ①②③ の思考手順 ---
+  if (walk.steps.length > 0) {
+    rows.push('');
+    rows.push('<b>■ ルートのたどり方</b>');
+    walk.steps.forEach((step, index) => {
+      rows.push(`<b>${circledNumber(index)} ${step.title}</b>`);
+      if (step.detail) rows.push(`　└ ${step.detail}`);
+    });
+  }
+
+  // --- 3. ひと続きの換算式 ---
+  if (walk.oneLine && walk.oneLine.length > 0) {
+    rows.push('');
+    rows.push('<b>■ 一気に書くとこの1行</b>');
+    walk.oneLine.forEach((line) => rows.push(`　${line}`));
+  }
+
+  // --- 4. 検算 ---
+  if (walk.check) {
+    rows.push('');
+    rows.push(`<b>■ 単位で検算</b>`);
+    rows.push(`　${walk.check}`);
+  }
+
+  return rows.join('\n');
+}
+
+/**
  * 思考手順（①②③）ブロックを組み立てる。
  *
  * 優先順位:
@@ -191,7 +319,12 @@ function splitStepDetail(text: string): { head: string; detail: string } {
   return { head: source, detail: '' };
 }
 
-export function buildStepsBlock(question: QuestionLike, teaching?: UnitTeaching): string {
+export function buildStepsBlock(
+  question: QuestionLike,
+  teaching?: UnitTeaching,
+  /** 上位で既に問題固有の思考手順（単位変換ブロック等）を出しているか */
+  hasSpecificSteps = false,
+): string {
   const parts: string[] = [];
 
   // --- ① 小問固有の思考手順 ---
@@ -224,7 +357,9 @@ export function buildStepsBlock(question: QuestionLike, teaching?: UnitTeaching)
     const rows = teaching.steps.map((step, index) => (
       `<b>${circledNumber(index)} ${step.title}</b>\n　└ ${step.detail}`
     ));
-    const title = detailed.length > 0 ? 'この単元の思考の型' : '解法の思考手順';
+    // 問題固有の手順（小問の detailedExplanation／単位変換ブロック）が
+    // すでに上にある場合は、こちらは「単元の型」として位置づける。
+    const title = detailed.length > 0 || hasSpecificSteps ? 'この単元の思考の型' : '解法の思考手順';
     parts.push(`${LABEL(title)}\n${rows.join('\n')}`);
   }
 
@@ -433,7 +568,17 @@ export function extractFlowchartSteps(explanation: string): FlowchartStepLike[] 
   }
 }
 
-export function enhanceExplanation(question: QuestionLike, teaching?: UnitTeaching): string {
+export function enhanceExplanation(
+  question: QuestionLike,
+  teaching?: UnitTeaching,
+  /**
+   * 物質量（mol）計算問題のための「単位変換の道順」。
+   * 渡された場合は、解答の直後に「単位変換で解く」ブロックを挿入し、
+   * 単元共通の思考手順テンプレートより優先して表示する
+   * （この問題に固有の、より具体的な手順だから）。
+   */
+  unitConversion?: UnitConversionWalk,
+): string {
   const original = typeof question.explanation === 'string' ? question.explanation : '';
 
   // 二重適用と、構造化データ（ロジックツリー JSON）は触らない
@@ -444,7 +589,10 @@ export function enhanceExplanation(question: QuestionLike, teaching?: UnitTeachi
   const answerBlock = buildAnswerBlock(question);
   if (answerBlock) sections.push(answerBlock);
 
-  const stepsBlock = buildStepsBlock(question, teaching);
+  // 単位変換で解ける問題は、まず「単位変換の図」の道順を提示する。
+  if (unitConversion) sections.push(buildUnitConversionBlock(unitConversion));
+
+  const stepsBlock = buildStepsBlock(question, teaching, Boolean(unitConversion));
   if (stepsBlock) sections.push(stepsBlock);
 
   const body = normalizeLegacyBody(original);

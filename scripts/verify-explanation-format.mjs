@@ -40,7 +40,9 @@ function check(text) {
   const s = typeof text === 'string' ? text : '';
   const stripped = s.replace(FLOW_REF, '');
   return {
-    hasAns: /background-color:\s*#ffc0cb/i.test(s),
+    // 解答マーカー（ピンクの蛍光ペン）。文字全体の塗りつぶしをやめ、
+    // 「文字の下だけに引くアンダーライン型」のグラデーションに変更した。
+    hasAns: /linear-gradient\(to top,\s*rgba\(233,\s*104,\s*142/i.test(s),
     hasCircle: /[①②③④⑤]/.test(s),
     hasTrend: /ココが狙われる/.test(s),
     noYellow: !/<u>/i.test(s),
