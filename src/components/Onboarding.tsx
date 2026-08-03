@@ -1,8 +1,32 @@
+/**
+ * ===================================================================
+ * オンボーディング（初回起動時のログイン → プロフィール設定）
+ * ===================================================================
+ *
+ * ■ 設計方針：Google アカウント連携を「主動線」にする
+ *   学習記録・連続日数・ランキング・フレンドはすべてアカウントに
+ *   紐づくため、ゲスト利用のままだと
+ *     ・端末を変えると記録がゼロに戻る
+ *     ・ブラウザのデータを消すと記録が消える
+ *     ・ランキングやフレンドが使えない
+ *   という不利益が後から発覚する。あとで「知らなかった」と
+ *   なるのを防ぐため、この画面では
+ *     ① 連携で何が得られるかを先に具体的に見せる
+ *     ② Google 連携ボタンを主ボタン（大・カラー）にする
+ *     ③ ゲストは「あとで連携できる」ことを添えた副action に落とす
+ *   の3点を徹底する。
+ *
+ * ■ popup が塞がれた環境への対応
+ *   utils/googleAuth.ts が popup → redirect の切り替えを吸収する。
+ *   リダイレクトから戻ったときの結果もここで受け取る。
+ */
+
 import React, { useState, useEffect } from 'react';
-import { signInWithPopup, getRedirectResult } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, provider, db } from '../firebase';
 import { motion } from 'motion/react';
+import { Loader2, AlertTriangle, Check, ArrowRight } from 'lucide-react';
+import { auth } from '../firebase';
+import { signInWithGoogle, consumeGoogleRedirectResult, GOOGLE_LINK_BENEFITS, isInAppBrowser } from '../utils/googleAuth';
+import { GoogleMark } from './GoogleLinkBanner';
 
 interface OnboardingProps {
   onComplete: () => void;
@@ -15,130 +39,222 @@ export function Onboarding({ onComplete, onGuest }: OnboardingProps) {
   const [grade, setGrade] = useState('');
   const [stream, setStream] = useState('science');
   const [loading, setLoading] = useState(false);
+  const [signing, setSigning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [guestConfirm, setGuestConfirm] = useState(false);
 
+  const inAppBrowser = isInAppBrowser();
+
+  // リダイレクト方式で戻ってきた場合の結果を受け取る
   useEffect(() => {
-    // リダイレクト結果の確認
-    getRedirectResult(auth).then(async (result) => {
-      if (result) {
-        await checkProfile(result.user);
-      }
-    }).catch((error) => {
-      console.error("リダイレクトログインエラー:", error);
+    let cancelled = false;
+    consumeGoogleRedirectResult().then((user) => {
+      if (!cancelled && user) checkProfile(user);
     });
+    return () => { cancelled = true; };
   }, []);
 
-  const checkProfile = async (user: any) => {
+  const checkProfile = (user: any) => {
     try {
       const localProfile = localStorage.getItem(`profile_${user.uid}`);
-      
       if (localProfile) {
         onComplete();
       } else {
         setName(user.displayName || '');
         setStep('profile');
       }
-    } catch (error: any) {
-      console.error("checkProfile error:", error);
-      alert("プロフィールの確認中にエラーが発生しました。\n詳細: " + error.message);
+    } catch {
+      // localStorage が使えない環境でも、プロフィール入力へは進める
       setName(user.displayName || '');
       setStep('profile');
     }
   };
 
   const handleLogin = async () => {
-    console.log("Onboarding handleLogin called");
-    try {
-      const result = await signInWithPopup(auth, provider);
-      console.log("signInWithPopup success");
-      await checkProfile(result.user);
-    } catch (error: any) {
-      console.error('ログインエラー:', error);
-      console.log("error code:", error.code);
-      if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
-        alert("ポップアップがブロックされました。ブラウザの設定でポップアップを許可するか、右上のボタンからアプリを新しいタブで開いてください。");
-      } else {
-        alert("ログインに失敗しました。\nLINEやTwitterなどのアプリ内ブラウザではGoogleログインが制限されています。SafariやChromeなどの標準ブラウザで開き直してください。\n詳細: " + error.message);
-      }
+    setSigning(true);
+    setError(null);
+    const outcome = await signInWithGoogle();
+    if (outcome.redirecting) return; // ページ遷移するのでそのまま待つ
+    setSigning(false);
+    if (outcome.ok && outcome.user) {
+      checkProfile(outcome.user);
+      return;
     }
+    setError(outcome.message || 'ログインに失敗しました。');
   };
 
   const handleSaveProfile = async () => {
     if (!auth.currentUser) return;
     setLoading(true);
     try {
-      const profileData = {
+      localStorage.setItem(`profile_${auth.currentUser.uid}`, JSON.stringify({
         name,
         grade,
         stream,
-        iconUrl: auth.currentUser.photoURL || ''
-      };
-      localStorage.setItem(`profile_${auth.currentUser.uid}`, JSON.stringify(profileData));
+        iconUrl: auth.currentUser.photoURL || '',
+      }));
       onComplete();
-    } catch (error: any) {
-      console.error('保存エラー:', error);
-      alert("プロフィールの保存に失敗しました。\n\n詳細: " + error.message);
+    } catch (saveError: any) {
+      setError('プロフィールの保存に失敗しました。' + String(saveError?.message || ''));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#FDFBF7] font-handwriting">
-      {/* Notebook Background */}
-      <div className="absolute inset-0 pointer-events-none opacity-20" 
-           style={{ 
-             backgroundImage: 'linear-gradient(transparent 95%, #A9CCE3 95%)', 
-             backgroundSize: '100% 2rem' 
-           }}>
-      </div>
-      
-      <div className="bg-[#FDFBF7] p-8 rounded-3xl shadow-2xl border-4 border-white w-full max-w-md text-center relative z-10">
-        {/* Notebook Rings */}
-        <div className="absolute left-0 top-0 bottom-0 w-8 flex flex-col justify-evenly py-8 pointer-events-none">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="w-6 h-6 rounded-full border-4 border-[#BDC3C7] bg-[#ECF0F1] shadow-md"></div>
-          ))}
-        </div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE] p-4 font-handwriting">
+      {/* ノート罫線の背景 */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.18]"
+        style={{
+          backgroundImage: 'linear-gradient(transparent calc(2.5rem - 1px), #F0C7D2 calc(2.5rem - 1px))',
+          backgroundSize: '100% 2.5rem',
+        }}
+        aria-hidden="true"
+      />
 
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
+        className="relative z-10 my-auto w-full max-w-md rounded-[26px] border border-[#F4A9C4]/55 bg-white/95 p-6 shadow-[0_22px_54px_-22px_rgba(217,70,110,0.5)] backdrop-blur-sm sm:p-7"
+      >
         {step === 'login' ? (
           <>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#2C3E50] mb-6">ようこそ！</h2>
-            <p className="text-gray-600 mb-8">まずは Google アカウントでログインしてください。</p>
+            <h2 className="text-center text-2xl font-bold text-[#1B2631] sm:text-[28px]">ようこそ！</h2>
+            <p className="mt-2 text-center text-[12px] font-modern leading-relaxed text-[#5D6D7E]">
+              学習記録を守るため、<b className="text-[#D9466E]">Google アカウントでの連携</b>をおすすめしています。
+            </p>
+
+            {/* 連携で得られること（抽象論にせず具体的に示す） */}
+            <ul className="mt-4 space-y-1.5 rounded-2xl border border-[#F4A9C4]/45 bg-[#FFF7FA] px-4 py-3">
+              {GOOGLE_LINK_BENEFITS.map((benefit) => (
+                <li key={benefit} className="flex items-start gap-2 text-[11.5px] font-modern leading-snug text-[#5D6D7E]">
+                  <Check size={14} className="mt-[1px] shrink-0 text-[#E8688E]" aria-hidden="true" />
+                  <span>{benefit}</span>
+                </li>
+              ))}
+            </ul>
+
+            {/* アプリ内ブラウザは Google ログイン自体が使えないため先に案内する */}
+            {inAppBrowser && (
+              <div className="mt-4 flex items-start gap-2 rounded-2xl border border-[#FF9F43]/60 bg-[#FFF4E5] px-3.5 py-3">
+                <AlertTriangle size={16} className="mt-0.5 shrink-0 text-[#E67E22]" aria-hidden="true" />
+                <p className="text-[11px] font-modern leading-relaxed text-[#7E5109]">
+                  LINE や Instagram などの<b>アプリ内ブラウザ</b>では Google ログインが利用できません。
+                  右上のメニューから「ブラウザで開く」を選び、Safari や Chrome で開き直してください。
+                </p>
+              </div>
+            )}
+
+            {/* ===== 主ボタン：Google 連携 ===== */}
             <button
               onClick={handleLogin}
-              className="w-full p-4 bg-[#2C3E50] text-white rounded-xl font-bold hover:bg-[#1B2631] transition-colors"
+              disabled={signing}
+              className="mt-5 flex w-full items-center justify-center gap-2.5 rounded-2xl border border-[#DADCE0] bg-white px-4 py-3.5 text-[14px] font-bold text-[#3C4043] shadow-[0_10px_24px_-14px_rgba(60,64,67,0.45)] transition-all hover:bg-[#F8F9FA] hover:shadow-[0_12px_28px_-14px_rgba(60,64,67,0.5)] disabled:opacity-50"
             >
-              Google でログイン
+              {signing
+                ? <><Loader2 size={19} className="animate-spin" aria-hidden="true" />連携中…</>
+                : <><GoogleMark size={20} />Google アカウントで続ける</>}
             </button>
-            <button
-              onClick={onGuest}
-              className="w-full p-4 mt-4 bg-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-300 transition-colors"
-            >
-              ゲストとして利用
-            </button>
+            <p className="mt-2 text-center text-[10.5px] font-modern leading-snug text-[#8895A0]">
+              メールアドレスとお名前のみを利用します。パスワードは受け取りません。
+            </p>
+
+            {error && (
+              <div className="mt-4 flex items-start gap-2 rounded-2xl border border-[#E74C3C]/40 bg-[#FDEDEC] px-3.5 py-3" role="alert">
+                <AlertTriangle size={15} className="mt-0.5 shrink-0 text-[#C0392B]" aria-hidden="true" />
+                <p className="text-[11px] font-modern leading-relaxed text-[#C0392B]">{error}</p>
+              </div>
+            )}
+
+            {/* ===== 副action：ゲスト利用（不利益を隠さず1度だけ確認する） ===== */}
+            <div className="mt-5 border-t border-dashed border-[#E4E8EC] pt-4">
+              {!guestConfirm ? (
+                <button
+                  onClick={() => setGuestConfirm(true)}
+                  className="w-full rounded-xl py-2 text-[11.5px] font-bold text-[#8895A0] underline decoration-dotted underline-offset-4 transition-colors hover:text-[#5D6D7E]"
+                >
+                  連携せずにゲストとして試す
+                </button>
+              ) : (
+                <div className="rounded-2xl border border-[#E4E8EC] bg-[#F7F9FA] px-3.5 py-3">
+                  <p className="text-[11px] font-modern leading-relaxed text-[#5D6D7E]">
+                    ゲスト利用では、学習記録は<b className="text-[#1B2631]">この端末の中だけ</b>に保存されます。
+                    ブラウザのデータを消すと記録も消え、ランキングやフレンドは使えません。
+                    <br />
+                    <span className="text-[#8895A0]">※ あとから設定画面でいつでも連携でき、記録はそのまま引き継がれます。</span>
+                  </p>
+                  <div className="mt-2.5 grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setGuestConfirm(false)}
+                      className="rounded-xl border border-[#F4A9C4]/60 bg-white py-2 text-[11.5px] font-bold text-[#D9466E] transition-colors hover:bg-[#FFF3F7]"
+                    >
+                      連携に戻る
+                    </button>
+                    <button
+                      onClick={onGuest}
+                      className="flex items-center justify-center gap-1 rounded-xl border border-[#E4E8EC] bg-white py-2 text-[11.5px] font-bold text-[#8895A0] transition-colors hover:bg-[#F2F4F5]"
+                    >
+                      ゲストで始める<ArrowRight size={13} aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#2C3E50] mb-6">プロフィール設定</h2>
-            <div className="space-y-4 mb-8">
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="名前" className="w-full p-3 rounded-xl border-2 border-[#A9CCE3] bg-white" />
-              <input type="text" value={grade} onChange={(e) => setGrade(e.target.value)} placeholder="学年" className="w-full p-3 rounded-xl border-2 border-[#A9CCE3] bg-white" />
-              <select value={stream} onChange={(e) => setStream(e.target.value)} className="w-full p-3 rounded-xl border-2 border-[#A9CCE3] bg-white">
-                <option value="science">理系</option>
-                <option value="humanities">文系</option>
+            <h2 className="text-center text-2xl font-bold text-[#1B2631] sm:text-[26px]">プロフィール設定</h2>
+            <p className="mt-2 text-center text-[11.5px] font-modern leading-relaxed text-[#5D6D7E]">
+              連携が完了しました。表示名と学年を設定して始めましょう。
+            </p>
+
+            <div className="mt-5 space-y-2.5">
+              <input
+                type="text"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                placeholder="ニックネーム"
+                className="w-full rounded-2xl border border-[#E4E8EC] bg-white px-4 py-3 text-[14px] font-modern text-[#1B2631] placeholder:text-[#B8C4CE] focus:border-[#E8688E] focus:outline-none focus:ring-2 focus:ring-[#FBE0E9]"
+              />
+              <input
+                type="text"
+                value={grade}
+                onChange={(event) => setGrade(event.target.value)}
+                placeholder="学年（例：高校1年）"
+                className="w-full rounded-2xl border border-[#E4E8EC] bg-white px-4 py-3 text-[14px] font-modern text-[#1B2631] placeholder:text-[#B8C4CE] focus:border-[#E8688E] focus:outline-none focus:ring-2 focus:ring-[#FBE0E9]"
+              />
+              <select
+                value={stream}
+                onChange={(event) => setStream(event.target.value)}
+                className="w-full cursor-pointer appearance-none rounded-2xl border border-[#E4E8EC] bg-white px-4 py-3 text-[14px] font-modern text-[#1B2631] focus:border-[#E8688E] focus:outline-none focus:ring-2 focus:ring-[#FBE0E9]"
+              >
+                <option value="science">理系（化学・物理など）</option>
+                <option value="humanities">文系（社会・国語など）</option>
                 <option value="other">その他</option>
               </select>
             </div>
+
+            {error && (
+              <div className="mt-4 flex items-start gap-2 rounded-2xl border border-[#E74C3C]/40 bg-[#FDEDEC] px-3.5 py-3" role="alert">
+                <AlertTriangle size={15} className="mt-0.5 shrink-0 text-[#C0392B]" aria-hidden="true" />
+                <p className="text-[11px] font-modern leading-relaxed text-[#C0392B]">{error}</p>
+              </div>
+            )}
+
             <button
               onClick={handleSaveProfile}
               disabled={loading}
-              className="w-full p-4 bg-[#2C3E50] text-white rounded-xl font-bold hover:bg-[#1B2631] transition-colors"
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#E8688E] to-[#D9466E] py-3.5 text-[14px] font-bold text-white shadow-[0_12px_28px_-14px_rgba(217,70,110,0.9)] transition-colors hover:from-[#E0567F] hover:to-[#C93C61] disabled:opacity-50"
             >
-              {loading ? '保存中...' : '開始する'}
+              {loading
+                ? <><Loader2 size={17} className="animate-spin" aria-hidden="true" />保存中…</>
+                : <>学習をはじめる<ArrowRight size={17} aria-hidden="true" /></>}
             </button>
           </>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

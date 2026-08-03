@@ -26,6 +26,7 @@ import { MntbLogo } from './MntbLogo';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { FeedbackModal } from './FeedbackModal';
+import { GoogleLinkBanner } from './GoogleLinkBanner';
 import { chemistryData } from '../data/chemistryData';
 
 /** アプリが扱う科目の識別子 */
@@ -137,21 +138,11 @@ export function SubjectSelection({ onSelectSubject, isGuest }: SubjectSelectionP
           transition={{ duration: 0.5 }}
           className="text-center mb-8 md:mb-10"
         >
-          <div className="flex justify-center mb-4">
-            <MntbLogo />
-          </div>
-
-          <h1 className="font-handwriting font-bold text-[#1B2631] tracking-wide text-[30px] sm:text-[38px] md:text-[46px] leading-tight">
-            まなとび
-          </h1>
-
-          {/* 装飾ライン（左右の細線で挟んだキャッチコピー） */}
-          <div className="flex items-center justify-center gap-3 mt-3">
-            <span className="h-px w-8 sm:w-14 bg-gradient-to-r from-transparent to-[#F4A9C4]" aria-hidden="true" />
-            <p className="text-[11px] sm:text-[13px] font-modern tracking-[0.25em] text-[#D9466E] font-bold whitespace-nowrap">
-              まなびの、とびらを開こう
-            </p>
-            <span className="h-px w-8 sm:w-14 bg-gradient-to-l from-transparent to-[#F4A9C4]" aria-hidden="true" />
+          {/* ロゴのみを大きく置く。
+              以前はロゴの下に「まなとび」「まなびの、とびらを開こう」の
+              文字を重ねていたが、ロゴ自体がアプリ名を表しており冗長なため撤去した。 */}
+          <div className="flex justify-center">
+            <MntbLogo size="hero" />
           </div>
 
           <p className="mt-5 text-[13px] sm:text-sm text-[#5D6D7E] font-modern leading-relaxed">
@@ -159,6 +150,9 @@ export function SubjectSelection({ onSelectSubject, isGuest }: SubjectSelectionP
             学習する科目を選んでください。
           </p>
         </motion.header>
+
+        {/* ===== Googleアカウント連携のおすすめ（ゲスト利用中のみ） ===== */}
+        {isGuest && <GoogleLinkBanner />}
 
         {/* ===== 科目カード ===== */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 max-w-4xl w-full mx-auto">
