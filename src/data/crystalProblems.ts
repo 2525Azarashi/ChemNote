@@ -23,11 +23,11 @@
 
 /** 解答マーカー（ピンク：最終解答）。 */
 const A = (text: string) =>
-  `<span style="background-color:#ffc0cb;font-weight:bold;padding:0 4px;border-radius:4px;">${text}</span>`;
+  `<span style="background-image:linear-gradient(to top, rgba(233,104,142,0.85) 0%, rgba(244,169,196,0.75) 55%, rgba(244,169,196,0) 100%); background-repeat:no-repeat; background-size:100% 40%; background-position:0 100%; font-weight:bold; padding:0 3px 1px; border-radius:2px;">${text}</span>`;
 
 /** 補助マーカー（オレンジ：キーワード・記述の核心）。 */
 const K = (text: string) =>
-  `<span style="background-color:#ffd8a8;font-weight:bold;padding:0 4px;border-radius:4px;">${text}</span>`;
+  `<span style="font-weight:bold; -webkit-text-decoration:underline wavy currentColor; text-decoration:underline wavy currentColor; text-decoration-thickness:1.5px; text-underline-offset:5px; text-decoration-skip-ink:none;">${text}</span>`;
 
 /** 共通テスト出題傾向の特設ボックス。 */
 const trendBox = (lines: string[]) =>

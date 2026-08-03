@@ -79,14 +79,20 @@ export function formatText(text: string, highlights: string[] = []) {
 
   // (3) 一般的な分数 a/b を縦書き分数にする。
   //     - 分子・分母は「数字・小数・1〜2文字の英字変数（添字 _ を許可）」に限定。
-  //     - 分母（または分子）が単位トークン（mol, L, g など）の場合は変換せず横書きのまま残す。
-  //       これにより g/mol・mol/L・kJ/mol などの単位表記が壊れない。
+  //     - 分子・分母のどちらかが単位トークン（mol, L, g など）の場合は変換せず
+  //       横書きのまま残す。これにより
+  //         ・g/mol・mol/L・kJ/mol などの単位表記
+  //         ・単位変換の換算係数「(22.4 L / 1 mol)」「(d g / 1 cm³)」
+  //       が壊れない。
+  //
+  //       ★分子側も除外する理由★
+  //       以前は分母だけを見ていたため、「22.4 L / 1 mol」が
+  //       「L ÷ 1」の分数と誤認され、スラッシュが分数の横線に化けて
+  //       画面上は「22.4 L1 mol」と表示されてしまっていた（換算係数が読めない）。
   processedText = processedText.replace(
     /(?<![A-Za-z0-9_.\/])([0-9]+(?:\.[0-9]+)?|[A-Za-z][A-Za-z]?(?:_[A-Za-z0-9]+)?)\s*\/\s*([0-9]+(?:\.[0-9]+)?|[A-Za-z][A-Za-z]?(?:_[A-Za-z0-9]+)?)(?![A-Za-z0-9_.\/])/g,
     (match: string, num: string, den: string) => {
-      // 分母が単位トークン（g/mol・mol/L・kJ/mol など）の場合は単位表記とみなし分数化しない。
-      // 分子のみが単位っぽくても分母が変数（L/a など）なら数式の分数として扱う。
-      if (isUnitToken(den)) return match;
+      if (isUnitToken(den) || isUnitToken(num)) return match;
       return buildFractionHtml(num, den);
     }
   );
@@ -162,7 +168,7 @@ export function formatText(text: string, highlights: string[] = []) {
   const tagRegex = /(<!--[\s\S]*?-->|<\/?[a-z][a-z0-9]*[^>]*>)/gi;
   const tokens = highlightedText.split(tagRegex);
 
-  const htmlString = tokens.map((token) => {
+  const htmlString = tokens.map((token, tokenIndex) => {
     // HTML コメントはそのまま（中身を一切加工せずに）出力する
     if (token.startsWith('<!--') && token.endsWith('-->')) {
       return token;
@@ -193,7 +199,17 @@ export function formatText(text: string, highlights: string[] = []) {
     const chemRegex = /([A-Za-z]+[0-9]*(?:[+-](?![0-9]))?)/g;
     const parts = token.split(chemRegex);
 
-    return parts.map((part) => {
+    // ── 1文字の元素記号が斜体になってしまう問題への対策 ───────────────
+    // H₂O は上流の処理で `H` + <sub>2</sub> + `O` の3トークンに分解されるため、
+    // `H` も `O` も「1文字＝数式の変数」と誤判定されて斜体になっていた。
+    // そこで、直前が </sub> </sup>、直後が <sub> <sup> のときは
+    // 「化学式の途中」だと分かるので、斜体にせず立体（upright）で描画する。
+    const prevToken = tokens[tokenIndex - 1] || '';
+    const nextToken = tokens[tokenIndex + 1] || '';
+    const continuesFormula = /^<\/(?:sub|sup)>$/i.test(prevToken.trim());
+    const startsFormula = /^<(?:sub|sup)[\s>]/i.test(nextToken.trim()) || /^<(?:sub|sup)>$/i.test(nextToken.trim());
+
+    return parts.map((part, partIndex) => {
       if (part.match(/^[A-Za-z]+[0-9]*[+-]?$/)) {
         // Check if it's an ion (ends with + or -). Compact notation is ambiguous:
         // Cu2+ is Cu²⁺, NH4+ is NH₄⁺, SO42- is SO₄²⁻. Element数と末尾数字から判定する。
@@ -241,8 +257,22 @@ export function formatText(text: string, highlights: string[] = []) {
         }
 
         // If it's a single letter (like A, B, x, y), italicize it as a math variable
+        // ただし化学式の一部（H₂O の H / O、Na⁺ の Na など）は立体のままにする。
         const isSingleLetter = /^[A-Za-z]$/.test(part);
-        const fontClass = isSingleLetter ? 'font-serif italic' : 'font-serif';
+        // このトークン内で「先頭に密着しているか」「末尾に密着しているか」
+        const touchesTokenHead = parts.slice(0, partIndex).join('') === '';
+        const touchesTokenTail = parts.slice(partIndex + 1).join('') === '';
+        // 同じトークン内で化学式片と直に隣接している場合（"H2O" → "H2" + "" + "O"）も
+        // 化学式の一部とみなす。split の仕様上、連続一致の間には空文字が入る。
+        const isChemPart = (p: string | undefined) => !!p && /^[A-Za-z]+[0-9]*[+-]?$/.test(p);
+        const gluedToPrevPart = parts[partIndex - 1] === '' && isChemPart(parts[partIndex - 2]);
+        const gluedToNextPart = parts[partIndex + 1] === '' && isChemPart(parts[partIndex + 2]);
+        const isPartOfFormula =
+          (continuesFormula && touchesTokenHead) ||
+          (startsFormula && touchesTokenTail) ||
+          gluedToPrevPart ||
+          gluedToNextPart;
+        const fontClass = isSingleLetter && !isPartOfFormula ? 'font-serif italic' : 'font-serif';
 
         return `<span class="${fontClass} text-[1.05em] tracking-wide mx-[1px]" style="font-family: 'Cambria Math', 'Times New Roman', serif;">${elements}</span>`;
       }
