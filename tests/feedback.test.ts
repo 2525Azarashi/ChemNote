@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 /**
@@ -41,6 +41,7 @@ import {
   FEEDBACK_QUEUE_LIMIT,
   FEEDBACK_CATEGORY_LABELS,
   FEEDBACK_SCREEN_LABELS,
+  DEFAULT_FEEDBACK_WEBHOOK_URL,
   type FeedbackInput,
 } from '../src/utils/feedback';
 
@@ -90,9 +91,18 @@ describe('validateFeedback', () => {
     expect(result.errors.join()).toContain(`${FEEDBACK_MESSAGE_MAX}文字以内`);
   });
 
-  it('評価は0〜5の整数のみ許す（0は「未選択」として有効）', () => {
-    expect(validateFeedback({ ...baseInput, rating: 0 }).valid).toBe(true);
-    expect(validateFeedback({ ...baseInput, rating: 5 }).valid).toBe(true);
+  it('評価は1〜5の整数が必須（0＝未選択は弾く）', () => {
+    // スプレッドシートで AVERAGE() を取れるようにしたいので、
+    // 星評価は「任意」から「必須」に変更した。
+    for (const rating of [1, 2, 3, 4, 5]) {
+      expect(validateFeedback({ ...baseInput, rating }).valid).toBe(true);
+    }
+    // 0（未選択）・未指定はエラーになる
+    for (const input of [{ ...baseInput, rating: 0 }, { ...baseInput, rating: undefined }]) {
+      const result = validateFeedback(input);
+      expect(result.valid).toBe(false);
+      expect(result.errors.join()).toContain('満足度');
+    }
     for (const rating of [-1, 6, 2.5]) {
       expect(validateFeedback({ ...baseInput, rating }).valid).toBe(false);
     }
@@ -179,9 +189,17 @@ describe('buildFeedbackMailto', () => {
     expect(decoded).toContain(payload.id);
   });
 
-  it('評価未選択のときは「未選択」と書く', () => {
+  it('評価は「数字のみ」で書く（シートで平均を取れるように）', () => {
+    const decoded = decodeURIComponent(buildFeedbackMailto(buildFeedbackPayload({ ...baseInput, rating: 4 })));
+    expect(decoded).toContain('評価: 4');
+    // '4 / 5' のような文字列にはしない（AVERAGE() の対象外になる）
+    expect(decoded).not.toContain('4 / 5');
+  });
+
+  it('評価未選択（0）のときは空欄にする（旧版アプリからの保険）', () => {
     const decoded = decodeURIComponent(buildFeedbackMailto(buildFeedbackPayload({ ...baseInput, rating: 0 })));
-    expect(decoded).toContain('評価: 未選択');
+    expect(decoded).toContain('評価: ');
+    expect(decoded).not.toContain('評価: 0');
   });
 
   it('改行や記号を含む本文でも壊れない（URLエンコードされる）', () => {
@@ -259,11 +277,14 @@ describe('再送キュー', () => {
 });
 
 describe('収集先の案内', () => {
-  it('webhook 未設定ならFirestoreのみ案内する', () => {
-    expect(getFeedbackWebhookUrl()).toBe('');
+  it('既定の webhook URL が同梱されているのでシートも案内する', () => {
+    // 利用者が URL を入力する欄は廃止し、アプリに既定 URL を同梱してある。
+    expect(getFeedbackWebhookUrl()).toBe(DEFAULT_FEEDBACK_WEBHOOK_URL);
+    expect(getFeedbackWebhookUrl()).toMatch(/^https:\/\/script\.google\.com\//);
     const sinks = describeFeedbackSinks();
-    expect(sinks.length).toBe(1);
+    expect(sinks.length).toBe(2);
     expect(sinks[0]).toContain('Firestore');
+    expect(sinks[1]).toContain('スプレッドシート');
   });
 });
 
@@ -308,10 +329,19 @@ describe('設置場所（タイトル画面・各結果画面）', () => {
 
   it('起動時に未送信キューを自動再送する（App.tsx）', () => {
     const src = read('src/App.tsx');
-    expect(src).toContain("import { flushFeedbackQueue } from './utils/feedback'");
+    // 「お問い合わせの送信状態」の欄を廃止しても、
+    // 失敗した分の自動再送はここだけで成立していることを守る。
+    expect(src).toMatch(/import \{[^}]*flushFeedbackQueue[^}]*\} from '\.\/utils\/feedback'/);
     expect(src).toContain('flushFeedbackQueue()');
     // オンライン復帰時にも再送する
     expect(src).toContain("addEventListener('online'");
+  });
+
+  it('「お問い合わせの送信状態」の欄は廃止されている', () => {
+    // 診断・手動再送の UI は利用者には不要なので削除した。
+    expect(existsSync('src/components/FeedbackRouteSettings.tsx')).toBe(false);
+    const profile = read('src/components/ProfileModal.tsx');
+    expect(profile).not.toContain('FeedbackRouteSettings');
   });
 
   it('firestore.rules に feedback の投函専用ルールがある', () => {

@@ -80,9 +80,15 @@ describe('crystalProblems（結晶単元の追加問題）', () => {
   });
 
   it('解答マーカーはピンク/オレンジで、黄色は使わない（フローチャートと衝突するため）', () => {
+    // 現行の解答マーカーはブランドピンク（#E8688E → #F4A9C4）の
+    // 下寄せグラデーション。以前の単色 #ffc0cb とは別実装なので
+    // 「ピンク系の色が使われていること」を見る。
+    const PINK_MARKER = /rgba\(233,\s*104,\s*142|rgba\(244,\s*169,\s*196|#ffc0cb|#E8688E|#F4A9C4/i;
     for (const p of crystalProblems) {
-      expect(p.explanation, p.id).toContain('background-color:#ffc0cb');
+      expect(PINK_MARKER.test(p.explanation), p.id).toBe(true);
+      // 黄色はフローチャートの配色と衝突するので禁止
       expect(p.explanation.toLowerCase(), p.id).not.toContain('yellow');
+      expect(p.explanation.toLowerCase(), p.id).not.toMatch(/#ff0|#ffff00|#fff9c4|#fff6cc/);
       expect(p.explanation, p.id).not.toMatch(/<u>|<hl>/);
     }
   });
@@ -123,13 +129,19 @@ describe('c3_2 への組み込み（教科書順の配置）', () => {
       'p_c3_2_molecule',  // ② 共有結合と分子（電子式・極性）
       'p_c3_2_covalent',  // ③ 共有結合の結晶（同素体）
       'p_c3_2_formula',   // ④ 化学式の種類と物質中の化学結合
+      'q_c3_2_n1',        // 追加：基礎の確認
+      'q_c3_2_n2',
+      'q_c3_2_n3',
+      'q_c3_2_n4',
       'q_c3_2_1',         // 既存：語句網羅
       'p_c3_2_classify',  // ⑤ 4種類の結晶の分類（まとめ）
       'q_c3_2_2',
       'q_c3_2_3',
+      'q_c3_2_n5',
       'q_c3_2_4',
       'q_c3_2_6',
       'q_c3_2_7',
+      'q_c3_2_n6',
       'p_c3_2_synthesis', // ⑥ 章末の総合演習
     ]);
   });

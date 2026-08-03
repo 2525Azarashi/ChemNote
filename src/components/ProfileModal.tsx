@@ -3,7 +3,6 @@ import { auth } from '../firebase';
 import { ChevronLeft, User, LogOut, Flame, BookOpen, GraduationCap, Compass, Settings, Volume2, VolumeX, LogIn, Users, Save, Check, Loader2, AlertTriangle } from 'lucide-react';
 import { FriendPanel } from './FriendPanel';
 import { DoorMascot } from './DoorMascot';
-import { FeedbackRouteSettings } from './FeedbackRouteSettings';
 import { GoogleMark } from './GoogleLinkBanner';
 import { signInWithGoogle, signOutGoogle, switchGoogleAccount, GOOGLE_LINK_BENEFITS } from '../utils/googleAuth';
 
@@ -215,9 +214,10 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
                   )}
                 </section>
 
-                {/* お問い合わせ送信経路の設定・診断
-                    （「送信できない」ときに、原因の切り分けと即時復旧をここで完結させる） */}
-                <FeedbackRouteSettings />
+                {/* ※「お問い合わせの送信状態」の欄は廃止した。
+                    送信に失敗した分は localStorage のキューに残り、
+                    App.tsx の起動時・オンライン復帰時に自動で再送されるため、
+                    利用者が手動で診断・復旧操作をする必要がない。 */}
 
                 <div className="grid grid-cols-[1fr_2fr] gap-2 shrink-0">
                   <button onClick={onClose} className="py-2.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-500">キャンセル</button>

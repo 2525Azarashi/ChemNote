@@ -345,5 +345,75 @@ service cloud.firestore {
       // クライアントからの閲覧・改変・削除は全面禁止
       allow read, update, delete: if false;
     }
+
+    // ============================================================
+    // 利用者台帳（app_users）
+    // ============================================================
+    // 目的：総ユーザー数と、登録されている Google アカウントの把握。
+    //
+    // 設計:
+    //  - ドキュメントID = uid に固定し、1人1行にする。
+    //    これにより getCountFromServer() の件数がそのまま「総ユーザー数」になる。
+    //  - 書き込めるのは「自分の行」だけ。他人の行は作れも消せもしない。
+    //    （フィードバックと違い匿名投函を許すと、
+    //      いくらでも偽アカウントを増やせて総数が無意味になるため、
+    //      ここは必ず認証を要求する。）
+    //  - read は全面禁止。運営は Firebase コンソール／Admin SDK から見る。
+    //    利用者が他人のメールアドレスを列挙できてはならない。
+    //  - delete も禁止（数を勝手に減らされないようにする）。
+    // ============================================================
+    match /app_users/{userId} {
+      function isValidUserRecord(data) {
+        return data.keys().hasOnly([
+                 'uid', 'isGoogleLinked', 'displayName', 'email', 'photoUrl',
+                 'profileName', 'grade', 'streak', 'completedCount',
+                 'createdAtIso', 'appVersion', 'userAgent',
+                 'firstSeenAt', 'lastSeenAt', 'lastSeenIso'
+               ])
+          // uid はドキュメントIDかつ本人のものに限る（なりすまし防止）
+          && data.uid is string
+          && data.uid == userId
+          && data.uid == request.auth.uid
+          && data.isGoogleLinked is bool
+          // 学習状況は非負の整数。異常値でグラフを壊されないよう上限も置く。
+          && data.streak is int && data.streak >= 0 && data.streak <= 100000
+          && data.completedCount is int && data.completedCount >= 0 && data.completedCount <= 100000
+          // 文字列項目の長さ制限（ストレージの暴走防止）
+          && (!('displayName' in data) || data.displayName == null || (data.displayName is string && data.displayName.size() <= 100))
+          && (!('email' in data) || data.email == null || (data.email is string && data.email.size() <= 200))
+          && (!('photoUrl' in data) || data.photoUrl == null || (data.photoUrl is string && data.photoUrl.size() <= 500))
+          && (!('profileName' in data) || data.profileName == null || (data.profileName is string && data.profileName.size() <= 100))
+          && (!('grade' in data) || data.grade == null || (data.grade is string && data.grade.size() <= 50))
+          && (!('createdAtIso' in data) || data.createdAtIso == null || (data.createdAtIso is string && data.createdAtIso.size() <= 40))
+          && (!('appVersion' in data) || (data.appVersion is string && data.appVersion.size() <= 40))
+          && (!('userAgent' in data) || (data.userAgent is string && data.userAgent.size() <= 400))
+          && (!('lastSeenIso' in data) || (data.lastSeenIso is string && data.lastSeenIso.size() <= 40))
+          // 「最終利用」は必ずサーバー時刻（端末時計の偽装を防ぐ）
+          && (!('lastSeenAt' in data) || data.lastSeenAt == request.time);
+      }
+
+      // 自分の行だけ作成・更新できる。
+      //
+      // ※ firstSeenAt の扱いに注意：
+      //   更新時の request.resource.data は「書き込み後のドキュメント全体」なので、
+      //   既存の firstSeenAt（過去の時刻）もそこに含まれる。
+      //   そのため firstSeenAt == request.time を共通条件にすると
+      //   2回目以降の更新が必ず拒否されてしまう。
+      //   よって「作成時はサーバー時刻であること」だけを検証し、
+      //   「更新時は改ざんされていないこと（＝値が変わらないこと）」を検証する。
+      allow create: if isOwner(userId)
+        && isValidUserRecord(request.resource.data)
+        && (!('firstSeenAt' in request.resource.data)
+            || request.resource.data.firstSeenAt == request.time);
+
+      allow update: if isOwner(userId)
+        && isValidUserRecord(request.resource.data)
+        && (!('firstSeenAt' in request.resource.data)
+            || request.resource.data.firstSeenAt == resource.data.firstSeenAt
+            || !('firstSeenAt' in resource.data));
+
+      // 閲覧・削除はクライアントからは不可（運営は管理コンソールから見る）
+      allow read, delete: if false;
+    }
   }
 }

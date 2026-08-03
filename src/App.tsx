@@ -32,7 +32,8 @@ import { MobileViewWrapper } from './components/MobileViewWrapper';
 import { countIncomingFriendRequests } from './utils/friends';
 import { applyOverviewViewport } from './utils/viewportControl';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { flushFeedbackQueue } from './utils/feedback';
+import { flushFeedbackQueue, getFeedbackWebhookUrl } from './utils/feedback';
+import { recordUserPresence } from './utils/userRegistry';
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
@@ -102,6 +103,19 @@ export default function App() {
     const timer = window.setTimeout(flush, 2500);
     window.addEventListener('online', flush);
     return () => { window.clearTimeout(timer); window.removeEventListener('online', flush); };
+  }, []);
+
+  // 利用状況（総ユーザー数・登録 Google アカウント）を記録する。
+  // ログイン状態が確定してから送りたいので onAuthStateChanged に乗せる。
+  // 送りすぎないよう、初回と「前回から24時間以上あいたとき」だけ記録される
+  // （判定は userRegistry 側が行う）。失敗してもアプリは止めない。
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, () => {
+      window.setTimeout(() => {
+        void recordUserPresence(getFeedbackWebhookUrl()).catch(() => {});
+      }, 4000);
+    });
+    return unsub;
   }, []);
 
   // Prevent iOS pinch zoom and double tap zoom, EXCEPT on the answers/explanations pages
