@@ -61,6 +61,12 @@ var CONFIG = {
   /** 記録先シート名（存在しなければ自動作成） */
   SHEET_NAME: 'feedback',
   /**
+   * 利用者台帳のシート名（存在しなければ自動作成）。
+   * 「総ユーザー数」と「登録されている Google アカウント」は
+   * このシートを見れば分かる（1人1行で上書きされる）。
+   */
+  USER_SHEET_NAME: 'users',
+  /**
    * 記録先スプレッドシートのID。
    * スプレッドシートの『拡張機能 → Apps Script』から作った場合は
    * 空のままでOK（紐づいているシートを自動で使います）。
@@ -94,7 +100,7 @@ var HEADERS = [
   '管理ID',
   '送信画面',
   '種類',
-  '評価',
+  '評価', // ★ 数値のみ（1〜5）。AVERAGE() でそのまま平均を取れる
   '内容',
   '返信用メール',
   'ユーザー名',
@@ -105,6 +111,27 @@ var HEADERS = [
   '画面サイズ',
   'UserAgent',
   '端末送信日時',
+];
+
+/**
+ * 利用者台帳（users シート）の見出し。
+ * uid をキーに1人1行で上書きするので、
+ * 行数（見出しを除く）= 総ユーザー数になる。
+ */
+var USER_HEADERS = [
+  '初回登録日時',
+  '最終利用日時',
+  'Google連携',
+  'メールアドレス',
+  'Google表示名',
+  'アプリ内ニックネーム',
+  '学年',
+  '連続学習日数',
+  '修了章数',
+  'uid',
+  'アカウント作成日',
+  'アプリ版',
+  'UserAgent',
 ];
 
 var SCREEN_LABELS = {
@@ -126,10 +153,10 @@ var CATEGORY_LABELS = {
  * 動作確認用。デプロイURLをブラウザで開くとこの文字列が出れば公開設定は正しい。
  * シートへの接続可否もここで分かる。
  *
- * また、アプリの「送信テスト」から
+ * また
  *     ...\/exec?ping=1&callback=関数名
- * が呼ばれたときは JSONP を返す。
- * これによりアプリ側は「このURLに匿名で到達できるか」を確実に判定でき、
+ * のように呼ばれたときは JSONP を返す。
+ * これにより「このURLに匿名で到達できるか」をブラウザからでも確実に判定でき、
  * 「アクセスできるユーザーが［全員］になっていない（401）」を検出できる。
  */
 function doGet(e) {
@@ -151,6 +178,14 @@ function doGet(e) {
       status += '\nsheet: OK (' + getSheet().getName() + ')';
     } catch (error) {
       status += '\nsheet: NG - ' + error;
+    }
+    try {
+      var userSheet = getUserSheet();
+      // 見出し行を除いた行数 = 登録ユーザー数
+      var userCount = Math.max(0, userSheet.getLastRow() - 1);
+      status += '\nusers: OK (' + userSheet.getName() + ', ' + userCount + '人)';
+    } catch (error) {
+      status += '\nusers: NG - ' + error;
     }
   }
   status += '\nmail: ' + (CONFIG.SEND_EMAIL ? 'ON -> ' + CONFIG.NOTIFY_EMAIL : 'OFF');
@@ -182,6 +217,35 @@ function testFeedback() {
 }
 
 /**
+ * 利用者台帳（users シート）の動作確認用。
+ * 実行するとテスト行が1行追加される（確認後は削除してください）。
+ * 2回実行しても行が増えなければ「1人1行」の上書きが正しく動いている。
+ * ▶ エディタ上部の関数選択で testUserRecord を選んで「実行」
+ */
+function testUserRecord() {
+  var result = doPost({
+    postData: {
+      contents: JSON.stringify({
+        kind: 'user',
+        event: 'signup',
+        uid: 'uid_manual_test',
+        isGoogleLinked: true,
+        displayName: '動作確認ユーザー',
+        email: 'test@example.com',
+        profileName: 'てすと',
+        grade: '高校1年',
+        streak: 3,
+        completedCount: 2,
+        createdAtIso: new Date().toISOString(),
+        recordedAtIso: new Date().toISOString(),
+        appVersion: 'manual-test',
+      }),
+    },
+  });
+  Logger.log(result.getContent());
+}
+
+/**
  * アプリからの POST を受け取る本体。
  */
 function doPost(e) {
@@ -191,6 +255,14 @@ function doPost(e) {
     if (CONFIG.SHARED_SECRET && payload.secret !== CONFIG.SHARED_SECRET) {
       return jsonResponse({ ok: false, error: 'forbidden' });
     }
+
+    // ★ 利用者台帳の記録（kind === 'user'）はフィードバックとは別のシートへ。
+    //   フィードバックには message が必須だが、こちらには無いので先に振り分ける。
+    if (payload.kind === 'user') {
+      if (CONFIG.APPEND_SHEET) upsertUserRow(payload);
+      return jsonResponse({ ok: true, uid: payload.uid || '' });
+    }
+
     if (!payload.message) {
       return jsonResponse({ ok: false, error: 'message is required' });
     }
@@ -267,7 +339,13 @@ function appendToSheet(p) {
     p.id || '',
     label(SCREEN_LABELS, p.screen, '不明'),
     label(CATEGORY_LABELS, p.category, '不明'),
-    p.rating ? p.rating + ' / 5' : '未選択',
+    // ★ 評価は「数値」として書く。
+    //   以前は '5 / 5' という文字列だったため、シート上で
+    //   AVERAGE() の対象にならず平均が計算できなかった。
+    //   アプリ側で星評価を必須化したので通常は 1〜5 が入るが、
+    //   旧バージョンのアプリからの送信に備え、
+    //   未選択は空セルにする（0 を入れると平均を下げてしまうため）。
+    typeof p.rating === 'number' && p.rating > 0 ? p.rating : '',
     p.message || '',
     p.contactEmail || '',
     p.displayName || 'ゲスト',
@@ -283,6 +361,85 @@ function appendToSheet(p) {
   sheet.getRange(sheet.getLastRow(), 6).setWrap(true);
 }
 
+/**
+ * 利用者台帳のシートを取得（無ければ作成し、見出し行を用意する）
+ */
+function getUserSheet() {
+  var book = getBook();
+  var sheet = book.getSheetByName(CONFIG.USER_SHEET_NAME);
+  if (!sheet) {
+    sheet = book.insertSheet(CONFIG.USER_SHEET_NAME);
+  }
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(USER_HEADERS);
+    sheet.getRange(1, 1, 1, USER_HEADERS.length).setFontWeight('bold').setBackground('#E8DAF5');
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(4, 240); // メールアドレス列を広めに
+  }
+  return sheet;
+}
+
+/**
+ * 利用者を1人1行で記録する（uid をキーに上書き）。
+ *
+ * ★ なぜ追記ではなく上書きなのか
+ *   起動のたびに追記すると同じ人が何行も並び、
+ *   「総ユーザー数＝行数」で数えられなくなってしまう。
+ *   uid で既存行を探して更新することで、
+ *   行数がそのまま実際の登録者数になるようにしている。
+ *
+ *   初回登録日時だけは既存の値を保持し、上書きしない。
+ */
+function upsertUserRow(p) {
+  var sheet = getUserSheet();
+  var now = new Date();
+  var uid = p.uid || '';
+  if (!uid) return;
+
+  var uidColumn = USER_HEADERS.indexOf('uid') + 1; // 1-based
+  var lastRow = sheet.getLastRow();
+
+  // 既存行を探す（見出し行を除く）
+  var targetRow = 0;
+  var firstSeen = now;
+  if (lastRow >= 2) {
+    var uids = sheet.getRange(2, uidColumn, lastRow - 1, 1).getValues();
+    for (var i = 0; i < uids.length; i++) {
+      if (String(uids[i][0]) === uid) {
+        targetRow = i + 2;
+        break;
+      }
+    }
+  }
+  if (targetRow) {
+    // 初回登録日時は保持する
+    var existing = sheet.getRange(targetRow, 1).getValue();
+    if (existing) firstSeen = existing;
+  }
+
+  var row = [
+    firstSeen,
+    now,
+    p.isGoogleLinked ? '連携済み' : 'ゲスト',
+    p.email || '',
+    p.displayName || '',
+    p.profileName || '',
+    p.grade || '',
+    typeof p.streak === 'number' ? p.streak : '',
+    typeof p.completedCount === 'number' ? p.completedCount : '',
+    uid,
+    p.createdAtIso || '',
+    p.appVersion || '',
+    p.userAgent || '',
+  ];
+
+  if (targetRow) {
+    sheet.getRange(targetRow, 1, 1, row.length).setValues([row]);
+  } else {
+    sheet.appendRow(row);
+  }
+}
+
 function sendNotificationMail(p) {
   var screenLabel = label(SCREEN_LABELS, p.screen, '不明');
   var categoryLabel = label(CATEGORY_LABELS, p.category, '不明');
@@ -295,7 +452,7 @@ function sendNotificationMail(p) {
     '■ 基本情報',
     '送信画面: ' + screenLabel,
     '種類: ' + categoryLabel,
-    '評価: ' + (p.rating ? p.rating + ' / 5' : '未選択'),
+    '評価: ' + (p.rating ? p.rating : '未選択'),
     '返信希望先: ' + (p.contactEmail || '（なし）'),
     'ユーザー: ' + (p.displayName || 'ゲスト') + (p.uid ? '（uid: ' + p.uid + '）' : '（ゲスト）'),
     'ログインメール: ' + (p.authEmail || '（なし）'),

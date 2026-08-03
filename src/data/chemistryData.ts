@@ -10720,7 +10720,7 @@ export const crystalTreeData = {
           "id": "p3_2_step1_group_qlink",
           "label": "📝 このStepの確認問題",
           "step": 1,
-          "subLabel": "37問",
+          "subLabel": "40問",
           "explanation": "このStepに対応する演習・確認問題です。タップして解答画面へ移動できます。",
           "relatedQuestions": [
             { "id": "q_c3_2_1_a", "label": "問1(ア) イオン" },
