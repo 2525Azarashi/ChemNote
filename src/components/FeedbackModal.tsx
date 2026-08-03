@@ -227,10 +227,14 @@ export function FeedbackModal({
             /* ============ 入力フォーム ============ */
             <>
             <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-4 space-y-4">
-              {/* 満足度（任意） */}
+              {/* 満足度（必須）
+                  ★はスプレッドシート側で平均を取るための数値。
+                  空欄が混ざると平均が崩れるので入力を必須にし、
+                  同じ星を再タップしても 0 に戻らない（解除できない）。 */}
               <div>
                 <label className="block text-[11px] font-bold text-[#8895A0] font-modern tracking-wider mb-2">
-                  満足度（任意）
+                  満足度
+                  <span className="ml-1.5 inline-block px-1.5 py-[1px] rounded-md bg-[#FBE0E9] text-[#D9466E] text-[9px] align-middle">必須</span>
                 </label>
                 <div className="flex items-center gap-1.5" role="radiogroup" aria-label="満足度">
                   {[1, 2, 3, 4, 5].map((value) => (
@@ -240,7 +244,7 @@ export function FeedbackModal({
                       role="radio"
                       aria-checked={rating === value}
                       aria-label={`${value}点`}
-                      onClick={() => setRating(rating === value ? 0 : value)}
+                      onClick={() => setRating(value)}
                       className="p-1.5 rounded-xl hover:bg-[#FBE0E9]/60 transition-colors"
                     >
                       <Star
@@ -251,9 +255,12 @@ export function FeedbackModal({
                     </button>
                   ))}
                   {rating > 0 && (
-                    <span className="ml-1 text-xs font-bold text-[#D9466E] font-modern tabular-nums">{rating} / 5</span>
+                    <span className="ml-1 text-xs font-bold text-[#D9466E] font-modern tabular-nums">{rating}</span>
                   )}
                 </div>
+                {rating === 0 && (
+                  <p className="mt-1.5 text-[10px] text-[#8895A0] font-modern">星をタップして満足度を選んでください。</p>
+                )}
               </div>
 
               {/* 種類 */}
@@ -352,7 +359,7 @@ export function FeedbackModal({
                 </button>
                 <button
                   onClick={handleSubmit}
-                  disabled={sending || message.trim().length === 0}
+                  disabled={sending || message.trim().length === 0 || rating === 0}
                   className="py-3 rounded-2xl bg-gradient-to-r from-[#E8688E] to-[#D9466E] text-white text-sm font-bold flex items-center justify-center gap-2 shadow-[0_10px_24px_-12px_rgba(217,70,110,0.9)] hover:from-[#E0567F] hover:to-[#C93C61] transition-colors disabled:opacity-40 disabled:shadow-none"
                 >
                   {sending ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <Send size={16} aria-hidden="true" />}

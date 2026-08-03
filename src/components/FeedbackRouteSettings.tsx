@@ -1,35 +1,25 @@
 /**
  * ===================================================================
- * お問い合わせ（ご意見）の送信先設定 ＆ 疎通診断
+ * お問い合わせ（ご意見）の送信状態の確認
  * ===================================================================
  *
- * ■ 背景（なぜこの画面が必要になったか）
- * 「お問い合わせフォームがそもそも送信できない」という不具合の実測調査で、
- * 次の2点が原因であることが判明した。
- *
- *   ① 本番 Firestore（mntb-4ef06）が `feedback` への書き込みを
- *      PERMISSION_DENIED で拒否している
- *      → リポジトリの firestore.rules が本番へ未反映。
- *        アプリ側のコードでは絶対に解消できない（Console での公開が必要）。
- *
- *   ② Google スプレッドシート側（GAS）は連携済みでも、アプリが
- *      そのURLを知らなければ 1 行も追記されない
- *      → `VITE_FEEDBACK_WEBHOOK_URL` は Vite の仕様で「ビルド時」に
- *        埋め込まれる値のため、環境変数を入れて再ビルドするまで反映されない。
- *
- * ①②が同時に成立すると送信口がゼロになり、フォームは必ず失敗する。
- *
  * ■ この画面の役割
- *   - ②を「再ビルド無し」で今すぐ解消する（URLを貼って保存 → localStorage）
- *   - どこが詰まっているかを実際に送って可視化する（疎通診断）
- *   - ①については、対処手順を画面上で明示する
+ *   - 「ご意見が本当に届いているか」を実際に送って可視化する（疎通診断）
+ *   - 端末に溜まった未送信ぶんを手動で再送する
+ *   - Firestore のルール未反映など、運営側で直すべき点を明示する
+ *
+ * ■ 送信先URL（Google Apps Script）について
+ *   以前はこの画面に「受け取りURL」の入力欄を置いていたが、
+ *   URL は utils/feedback.ts に既定値として同梱されており、
+ *   利用者が入力・変更する必要はない（誤って書き換えると
+ *   ご意見がどこにも届かなくなる事故につながる）。
+ *   そのため入力欄は撤去し、確認と復旧の機能だけを残している。
+ *   URL を差し替えたい場合は環境変数 VITE_FEEDBACK_WEBHOOK_URL を使う。
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link2, PlayCircle, CheckCircle2, XCircle, MinusCircle, Loader2, ExternalLink, AlertTriangle } from 'lucide-react';
+import { PlayCircle, CheckCircle2, XCircle, MinusCircle, Loader2, ExternalLink, AlertTriangle } from 'lucide-react';
 import {
-  getFeedbackWebhookUrl,
-  setFeedbackWebhookUrl,
   diagnoseFeedbackRoutes,
   pendingFeedbackCount,
   flushFeedbackQueue,
@@ -37,24 +27,14 @@ import {
 } from '../utils/feedback';
 
 export function FeedbackRouteSettings() {
-  const [url, setUrl] = useState('');
-  const [saved, setSaved] = useState<'idle' | 'ok' | 'invalid'>('idle');
   const [running, setRunning] = useState(false);
   const [results, setResults] = useState<SinkDiagnosis[] | null>(null);
   const [queued, setQueued] = useState(0);
   const [flushing, setFlushing] = useState(false);
 
   useEffect(() => {
-    setUrl(getFeedbackWebhookUrl());
     setQueued(pendingFeedbackCount());
   }, []);
-
-  const handleSave = useCallback(() => {
-    const ok = setFeedbackWebhookUrl(url);
-    setSaved(ok ? 'ok' : 'invalid');
-    setResults(null);
-    window.setTimeout(() => setSaved('idle'), 2600);
-  }, [url]);
 
   const handleDiagnose = useCallback(async () => {
     setRunning(true);
@@ -86,50 +66,13 @@ export function FeedbackRouteSettings() {
 
   return (
     <section className="bg-white border border-gray-150 p-3 rounded-2xl shadow-sm space-y-2.5">
-      <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">お問い合わせの送信先</h3>
-
-      {/* ---- Google スプレッドシート（GAS）のURL ---- */}
-      <div className="space-y-1.5">
-        <label htmlFor="feedback-webhook-url" className="flex items-center gap-1.5 text-[11px] font-bold text-[#1B2631]">
-          <Link2 size={13} className="text-[#E8688E]" aria-hidden="true" />
-          Google スプレッドシートの受け取りURL
-        </label>
-        <input
-          id="feedback-webhook-url"
-          type="url"
-          inputMode="url"
-          spellCheck={false}
-          value={url}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => setUrl(event.target.value)}
-          placeholder="https://script.google.com/macros/s/.../exec"
-          className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-[11px] text-[#1B2631] font-mono placeholder:text-gray-300 focus:outline-none focus:border-[#E8688E] focus:bg-white"
-        />
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleSave}
-            className="px-3 py-1.5 rounded-lg bg-[#2C3E50] text-white text-[11px] font-bold hover:bg-[#1B2631] transition-colors"
-          >
-            保存して有効化
-          </button>
-          {saved === 'ok' && (
-            <span className="text-[10px] font-bold text-[#27AE60] flex items-center gap-1">
-              <CheckCircle2 size={12} aria-hidden="true" />保存しました（再ビルド不要）
-            </span>
-          )}
-          {saved === 'invalid' && (
-            <span className="text-[10px] font-bold text-[#C0392B] flex items-center gap-1">
-              <XCircle size={12} aria-hidden="true" />URLの形式が正しくありません
-            </span>
-          )}
-        </div>
-        <p className="text-[10px] text-gray-400 leading-relaxed">
-          GAS の［デプロイ］→［ウェブアプリ］で発行された、末尾が <code className="font-mono">/exec</code> のURLを貼り付けてください。
-          「アクセスできるユーザー」は必ず<b>「全員」</b>にする必要があります。
-        </p>
-      </div>
+      <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">お問い合わせの送信状態</h3>
 
       {/* ---- 疎通診断 ---- */}
-      <div className="pt-2 border-t border-gray-100 space-y-2">
+      <div className="space-y-2">
+        <p className="text-[10px] text-gray-400 leading-relaxed">
+          ご意見が正しく届く状態かを、実際にテスト送信して確認できます。
+        </p>
         <button
           onClick={handleDiagnose}
           disabled={running}

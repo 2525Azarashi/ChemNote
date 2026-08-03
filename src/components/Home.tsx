@@ -9,6 +9,7 @@ import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
 import { getDueCount } from '../utils/reviewList';
 import { DoorMascot } from './DoorMascot';
 import { FeedbackButton } from './FeedbackButton';
+import { GoogleLinkBanner } from './GoogleLinkBanner';
 
 interface HomeProps {
   onStart: () => void;
@@ -195,6 +196,15 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             </div>
           </motion.div>
         </div>
+
+        {/* ===== Googleアカウント連携のおすすめ（ゲスト利用中のみ） =====
+            ゲストのままだと記録が端末に閉じてしまうため、
+            ホームでも一行の細い帯で連携を案内する（×で当面非表示にできる）。 */}
+        {isGuest && !auth.currentUser && (
+          <div className="mb-5 md:mb-6 lg:mb-4">
+            <GoogleLinkBanner variant="inline" dismissible />
+          </div>
+        )}
 
         {/* ===== メインカード群 ===== */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6 lg:gap-5">

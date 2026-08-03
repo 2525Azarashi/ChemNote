@@ -81,11 +81,11 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
               <ArrowLeft size={18} className="stroke-[2.5]" />
             </button>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-[#1B2631]">化学基礎 まとめプリント</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-[#5b21b6]">化学基礎 まとめプリント</h1>
             </div>
           </div>
 
-          <div className="text-right text-xs text-gray-400 font-bold hidden md:block">
+          <div className="text-right text-xs text-[#8b81a3] font-bold hidden md:block">
             大学入学共通テスト対策 / 2次試験対策 / 定期テスト対策
           </div>
         </div>
@@ -98,12 +98,10 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
               onClick={() => setActiveTab(sec.id)}
               className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-sm border snap-start cursor-pointer
                 ${activeTab === sec.id
-                  ? (sec.id === MOL_BASICS_TAB_ID
-                      ? 'bg-[#5b21b6] border-[#5b21b6] text-white transform -translate-y-0.5 shadow-md'
-                      : 'bg-[#2C3E50] border-[#2C3E50] text-[#FDFBF7] transform -translate-y-0.5 shadow-md')
+                  ? 'bg-[#5b21b6] border-[#5b21b6] text-white transform -translate-y-0.5 shadow-md'
                   : (sec.id === MOL_BASICS_TAB_ID
                       ? 'bg-[#f3ecff] border-[#c9bce6] text-[#5b21b6] hover:bg-[#e9dcff]'
-                      : 'bg-white border-gray-150 text-gray-500 hover:text-[#2C3E50] hover:bg-gray-50')}`}
+                      : 'bg-white border-[#e3daf5] text-[#6b6280] hover:text-[#5b21b6] hover:bg-[#faf7ff]')}`}
             >
               {sec.title}
             </button>
@@ -122,60 +120,60 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
             {/* ====== TOC ====== */}
             {activeTab === 'toc' && (
               <div className="space-y-8 animate-fade-in-up">
-                <div className="text-center py-6 border-b border-gray-250 border-dotted">
-                  <h2 className="text-3xl sm:text-4xl font-black text-[#2C3E50] font-modern tracking-wider mb-3">
+                <div className="text-center py-6 border-b-2 border-[#c9bce6] border-dotted">
+                  <h2 className="text-3xl sm:text-4xl font-black text-[#5b21b6] font-modern tracking-wider mb-3">
                     化学基礎 まとめプリント
                   </h2>
-                  <p className="text-[#A9CCE3] font-bold text-sm tracking-wide">
+                  <p className="text-[#7c3aed] font-bold text-sm tracking-wide">
                     大学入学共通テスト対策 / 大学2次試験対策 / 定期テスト対策
                   </p>
                 </div>
 
                 {/* Important style representation guide */}
-                <div className="bg-white/80 border border-gray-200 p-5 rounded-2xl shadow-xs space-y-4">
-                  <h4 className="text-xs font-bold text-gray-400 tracking-wider uppercase">📖 重要語の表記について</h4>
+                <div className="bg-white border-2 border-[#c9bce6] border-l-8 border-l-[#7c3aed] p-5 rounded-xl shadow-xs space-y-4">
+                  <h4 className="text-xs font-bold text-[#7c3aed] tracking-wider uppercase">📖 重要語の表記について</h4>
                   <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-around pt-2">
                     <div className="flex items-center gap-3">
-                      <span className="w-1.5 h-1.5 bg-red-400 rounded-full"></span>
+                      <span className="w-1.5 h-1.5 bg-[#7c3aed] rounded-full"></span>
                       <p className="text-sm">
-                        <span className="border-b-2 border-slate-800 pb-0.5 inline-block font-bold">太下線表記</span>
-                        <span className="text-xs text-gray-400 font-bold ml-2">＝最重要（必ず覚える）</span>
+                        <span className="border-b-2 border-[#3f3352] pb-0.5 inline-block font-bold">太下線表記</span>
+                        <span className="text-xs text-[#8b81a3] font-bold ml-2">＝最重要（必ず覚える）</span>
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="w-1.5 h-1.5 bg-[#A9CCE3] rounded-full"></span>
+                      <span className="w-1.5 h-1.5 bg-[#c9bce6] rounded-full"></span>
                       <p className="text-sm">
-                        <span className="underline decoration-wavy decoration-[#A9CCE3] underline-offset-4 inline-block font-bold">波線下線表記</span>
-                        <span className="text-xs text-gray-400 font-bold ml-2">＝重要（押さえておく）</span>
+                        <span className="underline decoration-wavy decoration-[#7c3aed] underline-offset-4 inline-block font-bold">波線下線表記</span>
+                        <span className="text-xs text-[#8b81a3] font-bold ml-2">＝重要（押さえておく）</span>
                       </p>
                     </div>
                   </div>
-                  <p className="text-[11px] text-gray-400 pt-1 border-t border-gray-100 italic">
+                  <p className="text-[11px] text-[#8b81a3] pt-1 border-t border-[#e3daf5] italic">
                     ※ 例題および演習問題の解答・解説部分には強調ラインを適用していません。
                   </p>
                 </div>
 
                 {/* Print Content Map / 目次 */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-[#2C3E50] flex items-center gap-2 border-b-2 border-[#2C3E50]/15 pb-2">
-                    <BookOpen size={18} className="text-[#A9CCE3]" />
+                  <h3 className="text-lg font-bold text-[#5b21b6] flex items-center gap-2 border-b-2 border-dotted border-[#c9bce6] pb-2">
+                    <BookOpen size={18} className="text-[#7c3aed]" />
                     <span>プリント目次</span>
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-                    <div className="bg-white/40 p-4 rounded-xl border border-gray-150">
-                      <h4 className="font-bold text-[#2C3E50] border-b border-gray-200 pb-1.5 mb-2 text-sm">第1部 物質の構成</h4>
-                      <ul className="space-y-1.5 text-xs font-bold text-gray-600">
-                        <li className="flex items-center gap-1.5"><span className="text-gray-400">1.</span> 物質の構成 (純物質・混合物・分離法・同素体・炎色反応)</li>
-                        <li className="flex items-center gap-1.5"><span className="text-gray-400">2.</span> 物質の構成粒子 (原子の構造・電子配置・周期表・放射線・イオン)</li>
-                        <li className="flex items-center gap-1.5"><span className="text-gray-400">3.</span> 化学結合 (結合の種類・結晶・分子の極性・水素結合)</li>
+                    <div className="bg-white p-4 rounded-xl border-2 border-[#c9bce6] border-l-[6px] border-l-[#7c3aed]">
+                      <h4 className="font-bold text-[#5b21b6] border-b border-dotted border-[#c9bce6] pb-1.5 mb-2 text-sm">第1部 物質の構成</h4>
+                      <ul className="space-y-1.5 text-xs font-bold text-[#3f3352]">
+                        <li className="flex items-center gap-1.5"><span className="text-[#7c3aed]">1.</span> 物質の構成 (純物質・混合物・分離法・同素体・炎色反応)</li>
+                        <li className="flex items-center gap-1.5"><span className="text-[#7c3aed]">2.</span> 物質の構成粒子 (原子の構造・電子配置・周期表・放射線・イオン)</li>
+                        <li className="flex items-center gap-1.5"><span className="text-[#7c3aed]">3.</span> 化学結合 (結合の種類・結晶・分子の極性・水素結合)</li>
                       </ul>
                     </div>
 
-                    <div className="bg-white/40 p-4 rounded-xl border border-gray-150">
-                      <h4 className="font-bold text-[#2C3E50] border-b border-gray-200 pb-1.5 mb-2 text-sm">第2部 物質の変化</h4>
-                      <ul className="space-y-1.5 text-xs font-bold text-gray-600">
-                        <li className="flex items-center gap-1.5"><span className="text-gray-400">1.</span> 物質量と化学反応式 (mol計算・化学反応式・イオン反応式・濃度)</li>
+                    <div className="bg-white p-4 rounded-xl border-2 border-[#c9bce6] border-l-[6px] border-l-[#7c3aed]">
+                      <h4 className="font-bold text-[#5b21b6] border-b border-dotted border-[#c9bce6] pb-1.5 mb-2 text-sm">第2部 物質の変化</h4>
+                      <ul className="space-y-1.5 text-xs font-bold text-[#3f3352]">
+                        <li className="flex items-center gap-1.5"><span className="text-[#7c3aed]">1.</span> 物質量と化学反応式 (mol計算・化学反応式・イオン反応式・濃度)</li>
                         <li>
                           <button
                             type="button"
@@ -186,15 +184,15 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
                             <span>物質量がわからない人へ (プリントの単位変換の図で全部解く)</span>
                           </button>
                         </li>
-                        <li className="flex items-center gap-1.5"><span className="text-gray-400">2.</span> 酸と塩基 (定義・電離度・強さ・pH・中和・塩の分類・中和滴定)</li>
-                        <li className="flex items-center gap-1.5"><span className="text-gray-400">3.</span> 酸化還元反応 (定義・酸化数・半反応式・滴定・イオン化傾向・電池)</li>
+                        <li className="flex items-center gap-1.5"><span className="text-[#7c3aed]">2.</span> 酸と塩基 (定義・電離度・強さ・pH・中和・塩の分類・中和滴定)</li>
+                        <li className="flex items-center gap-1.5"><span className="text-[#7c3aed]">3.</span> 酸化還元反応 (定義・酸化数・半反応式・滴定・イオン化傾向・電池)</li>
                       </ul>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-gray-200 border-dashed text-center">
-                  <p className="text-xs text-gray-400 font-bold">
+                <div className="pt-6 border-t-2 border-[#c9bce6] border-dotted text-center">
+                  <p className="text-xs text-[#8b81a3] font-bold">
                     💡 上部メニューから見たいセクションを選択して勉強を進めましょう。
                   </p>
                 </div>
@@ -234,7 +232,7 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
             {sectionHtml && (
               <div className="animate-fade-in-up">
                 <div className="mb-4">
-                  <span className="text-xs font-extrabold text-[#A9CCE3] tracking-widest uppercase block">
+                  <span className="text-xs font-extrabold text-[#7c3aed] tracking-widest uppercase block">
                     {SECTION_PART_LABEL[activeTab]}
                   </span>
                 </div>

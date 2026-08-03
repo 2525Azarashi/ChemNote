@@ -1,19 +1,42 @@
-// Auto-generated global CSS - already scoped to .learning-content
+// 化学基礎 まとめプリントの共通スタイル（すべて .learning-content 配下にスコープ済み）
+//
+// ■ デザイン方針
+//   mol チュートリアル（components/MolBasicsSection.tsx の .mbs-* ）と
+//   同じ「紫のプリント」デザインに統一している。
+//   - 紙面全体：うすい紫のグラデーション＋左に太いアクセント罫
+//   - 見出し：紫（塗りつぶしの帯ではなく、罫と色で階層を示す）
+//   - 囲み：白いカード＋細い紫罫＋左5pxのアクセント罫
+//   - ラベル（📘 Point など）：mol の Tag と同じ「囲み文字」
+//   - 式：白地・中央寄せ・角丸の囲み（.mbs-formula 相当）
+//
+//   既存の HTML（section_*.ts）は自動生成されたもので書き換えられないため、
+//   クラス名は一切変更していない。box / box-point / box-example / formula /
+//   reaction / wavy / details / ol の全角括弧カウンタなどはすべてそのまま動く。
+//
 // eslint-disable-next-line
 export const LEARNING_GLOBAL_CSS = `.learning-content {
+        /* mol チュートリアル（.mbs-root）と同じトークン */
+        --lc-accent: #7c3aed;
+        --lc-accent-d: #5b21b6;
+        --lc-accent-l: #f3ecff;
+        --lc-line: #c9bce6;
+        --lc-ink: #3f3352;
         font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', sans-serif;
-        color: #2c3e50;
-        background: #fafafa;
-        line-height: 1.7;
+        color: var(--lc-ink);
+        background: linear-gradient(180deg, #fbf8ff 0%, #f7f2ff 100%);
+        border: 2px solid var(--lc-line);
+        border-left: 8px solid var(--lc-accent);
+        border-radius: 12px;
+        line-height: 1.9;
         margin: 0;
-        padding: 0;
+        padding: 18px 18px 22px;
       }
       .learning-content .layout {
         max-width: 1200px;
         margin: 0 auto;
         display: flex;
         gap: 30px;
-        padding: 20px;
+        padding: 0;
       }
       .learning-content .sidebar {
         width: 260px;
@@ -24,16 +47,18 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         top: 20px;
         background: #fff;
         padding: 18px;
-        border: 1px solid #e0e0e0;
+        border: 1.6px solid var(--lc-line);
         border-radius: 8px;
         font-size: 0.88em;
       }
       .learning-content .sidebar h3 {
         margin-top: 0;
         font-size: 1em;
-        color: #16538a;
-        border-bottom: 2px solid #16538a;
-        padding-bottom: 8px;
+        color: var(--lc-accent-d);
+        background: none;
+        border: 0;
+        border-bottom: 2px dotted var(--lc-line);
+        padding: 0 0 8px;
       }
       .learning-content .sidebar ul {
         list-style: none;
@@ -48,65 +73,82 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         font-size: 0.9em;
       }
       .learning-content .sidebar a {
-        color: #444;
+        color: var(--lc-ink);
         text-decoration: none;
         display: block;
         padding: 2px 6px;
         border-radius: 4px;
       }
+      .learning-content .sidebar a:hover {
+        background: var(--lc-accent-l);
+        color: var(--lc-accent-d);
+      }
+      /* 紙面本体：外枠は .learning-content 側が持つので、内側は素の紙にする */
       .learning-content .main-content {
         flex-grow: 1;
         min-width: 0;
-        background: #fff;
-        padding: 30px 40px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
+        background: transparent;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
       }
+      /* ===== 見出し ===== */
       .learning-content h1 {
         text-align: center;
-        font-size: 1.9em;
-        color: #16538a;
-        border-bottom: 3px double #16538a;
+        font-size: 1.6em;
+        font-weight: 900;
+        color: var(--lc-accent-d);
+        background: none;
+        border: 0;
+        border-bottom: 2px dotted var(--lc-line);
         padding-bottom: 14px;
         margin-top: 0;
       }
       .learning-content h1 small {
         display: block;
-        font-size: 0.55em;
-        color: #555;
+        font-size: 0.58em;
+        color: #6b6280;
         margin-top: 8px;
         font-weight: normal;
       }
+      /* 大見出し：塗りつぶしの帯ではなく、白いカード＋左のアクセント罫（mol と同じ静けさ） */
       .learning-content h2 {
-        font-size: 1.4em;
-        background: linear-gradient(90deg, #16538a, #2980b9);
-        color: #fff;
+        font-size: 1.24em;
+        font-weight: 900;
+        color: var(--lc-accent-d);
+        background: #fff;
+        border: 1.6px solid var(--lc-line);
+        border-left: 6px solid var(--lc-accent);
         padding: 10px 16px;
-        margin-top: 48px;
-        border-radius: 6px;
+        margin-top: 42px;
+        border-radius: 8px;
       }
       .learning-content h3 {
-        font-size: 1.2em;
-        color: #16538a;
-        border-left: 6px solid #16538a;
-        padding: 4px 0 4px 12px;
-        margin-top: 36px;
-        background: #eef5fa;
+        font-size: 1.1em;
+        font-weight: 900;
+        color: var(--lc-accent-d);
+        border: 0;
+        border-left: 4px solid var(--lc-accent);
+        padding: 2px 0 2px 12px;
+        margin-top: 32px;
+        background: none;
       }
       .learning-content h4 {
-        font-size: 1.05em;
-        color: #c0392b;
-        margin-top: 28px;
+        font-size: 1.02em;
+        font-weight: 800;
+        color: var(--lc-ink);
+        margin-top: 26px;
         padding-bottom: 4px;
-        border-bottom: 1px dashed #c0392b;
+        border-bottom: 1px dashed var(--lc-line);
       }
       .learning-content h5 {
         font-size: 1em;
-        color: #2c3e50;
+        font-weight: 800;
+        color: var(--lc-accent-d);
         margin-top: 20px;
       }
       .learning-content p, .learning-content li {
-        font-size: 0.95em;
+        font-size: 0.94em;
       }
       /* Tailwind の Preflight で ol/ul のマーカーが消えるため、本文用リストの
          番号・行頭記号を明示的に復活させる（例題の「問題番号 抜け」対策）。 */
@@ -135,7 +177,7 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         width: 2.2em;
         text-align: left;
         font-weight: bold;
-        color: #16538a;
+        color: var(--lc-accent);
       }
       .learning-content .main-content ul,
       .learning-content .box ul,
@@ -150,138 +192,161 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         margin: 4px 0;
         padding-left: 4px;
       }
+      .learning-content .main-content ul > li::marker,
+      .learning-content .box ul > li::marker,
+      .learning-content .box-example ul > li::marker {
+        color: var(--lc-accent);
+      }
+      /* ===== 表 ===== */
       .learning-content table {
         width: 100%;
         border-collapse: collapse;
         margin: 16px 0;
         font-size: 0.88em;
+        background: #fff;
       }
       .learning-content th, .learning-content td {
-        border: 1px solid #b0bec5;
+        border: 1px solid var(--lc-line);
         padding: 8px 10px;
         text-align: left;
         vertical-align: top;
       }
       .learning-content th {
-        background: #cfe2f3;
+        background: var(--lc-accent-l);
         text-align: center;
         font-weight: bold;
-        color: #16538a;
+        color: var(--lc-accent-d);
       }
       .learning-content tr:nth-child(even) td {
-        background: #f7fafc;
+        background: #fbf8ff;
       }
+      /* ===== 囲み（box） =====
+         mol の .mbs-ex と同じ「白いカード＋細い紫罫＋左5pxアクセント」。
+         種類ごとの色は左罫とラベル文字だけで示し、地は白のまま統一する。 */
       .learning-content .box {
-        padding: 14px 18px;
+        background: #fff;
+        padding: 12px 14px;
         margin: 16px 0;
-        border-radius: 6px;
-        border-left: 5px solid;
+        border: 1.6px solid var(--lc-line);
+        border-radius: 8px;
+        border-left: 5px solid var(--lc-accent);
+      }
+      /* ラベルは mol の Tag（囲み文字）と同じ見た目にする */
+      .learning-content .box::before {
+        display: inline-block;
+        border: 1.6px solid currentColor;
+        background: #fff;
+        padding: 0 6px;
+        margin-bottom: 8px;
+        font-weight: 800;
+        font-size: 0.86em;
+        line-height: 1.7;
+        white-space: nowrap;
       }
       .learning-content .box-point {
-        background: #e8f4fb;
-        border-color: #3498db;
+        border-left-color: var(--lc-accent);
       }
       .learning-content .box-point::before {
         content: '📘 Point';
-        display: block;
-        font-weight: bold;
-        color: #2980b9;
-        margin-bottom: 8px;
+        color: var(--lc-accent-d);
       }
       .learning-content .box-test {
-        background: #fff7e0;
-        border-color: #f39c12;
+        border-left-color: #b45309;
       }
       .learning-content .box-test::before {
         content: '✏️ 定期テスト・受験で聞かれること';
-        display: block;
-        font-weight: bold;
-        color: #e67e22;
-        margin-bottom: 8px;
+        color: #b45309;
       }
       .learning-content .box-example {
-        background: #eafaf1;
-        border-color: #27ae60;
+        border-left-color: #1f7a55;
       }
       .learning-content .box-example::before {
         content: '📗 例題';
-        display: block;
-        font-weight: bold;
-        color: #27ae60;
-        margin-bottom: 8px;
+        color: #1f7a55;
       }
       .learning-content .box-memory {
-        background: #fef9e7;
-        border-color: #f1c40f;
+        border-left-color: #a16207;
+      }
+      /* 覚え方だけは mol の .mbs-goal（黄色の付箋）に寄せて目立たせる */
+      .learning-content .box-memory {
+        background: #fff6cc;
+        border-color: #e8d27a;
       }
       .learning-content .box-memory::before {
         content: '😀 覚え方';
-        display: block;
-        font-weight: bold;
-        color: #b7950b;
-        margin-bottom: 8px;
+        color: #8a6d0b;
       }
       .learning-content .box-advanced {
-        background: #f5eef8;
-        border-color: #9b59b6;
+        border-left-color: #7e22ce;
+        border-style: dashed;
       }
       .learning-content .box-advanced::before {
         content: '🔬 発展';
-        display: block;
-        font-weight: bold;
-        color: #8e44ad;
-        margin-bottom: 8px;
+        color: #7e22ce;
       }
       .learning-content .box-review {
-        background: #f4f6f7;
-        border-color: #7f8c8d;
+        border-left-color: #64748b;
       }
       .learning-content .box-review::before {
         content: '🔄 復習';
-        display: block;
-        font-weight: bold;
-        color: #7f8c8d;
-        margin-bottom: 8px;
+        color: #64748b;
       }
       .learning-content .box-note {
-        background: #fdf2e9;
-        border-color: #e67e22;
+        border-left-color: #c2410c;
       }
       .learning-content .box-note::before {
         content: '💡 補足';
-        display: block;
-        font-weight: bold;
-        color: #d35400;
-        margin-bottom: 8px;
+        color: #c2410c;
       }
+      .learning-content .box > *:first-of-type {
+        margin-top: 0;
+      }
+      .learning-content .box > *:last-child {
+        margin-bottom: 0;
+      }
+      /* ===== 折りたたみ（解答など） ===== */
       .learning-content details {
         background: #fff;
-        border: 2px dashed #16a085;
-        border-radius: 6px;
-        padding: 10px 14px;
-        margin-top: 10px;
+        border: 2px dashed var(--lc-accent);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-top: 12px;
       }
       .learning-content summary {
-        font-weight: bold;
-        color: #16a085;
+        font-weight: 800;
+        color: var(--lc-accent-d);
         cursor: pointer;
+        font-size: 0.92em;
         padding: 4px 0;
+        list-style: revert;
       }
+      .learning-content details[open] > summary {
+        border-bottom: 1px dotted var(--lc-line);
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+      }
+      /* ===== 式 ===== */
       .learning-content .formula {
-        background: #f8f9fa;
-        border: 1px solid #dee2e6;
-        padding: 8px 12px;
-        margin: 8px 0;
+        background: #fff;
+        border: 1px solid var(--lc-line);
+        padding: 10px 12px;
+        margin: 12px 0;
         font-family: 'Cambria Math', 'Times New Roman', serif;
-        border-radius: 4px;
+        border-radius: 6px;
+        overflow-x: auto;
       }
       .learning-content .reaction {
         text-align: center;
-        padding: 8px;
-        background: #f8f9fa;
-        margin: 8px 0;
+        padding: 10px 8px;
+        margin: 12px 0;
+        background: #fff;
+        border: 1px solid var(--lc-line);
+        border-radius: 6px;
         font-family: 'Cambria Math', serif;
+        font-weight: 700;
+        overflow-x: auto;
       }
+      /* ===== 図版 ===== */
       .learning-content figure {
         text-align: center;
         margin: 20px 0;
@@ -301,7 +366,8 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         border-radius: 4px;
       }
       .learning-content figure img {
-        border: 1px solid #ddd;
+        border: 1.6px solid var(--lc-line);
+        background: #fff;
       }
       /* 横に広い表は内部スクロールで全体を確認できるようにする */
       .learning-content .table-wrap,
@@ -310,15 +376,15 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         -webkit-overflow-scrolling: touch;
       }
       .learning-content figcaption {
-        font-size: 0.85em;
-        color: #7f8c8d;
+        font-size: 0.82em;
+        color: #6b6280;
         margin-top: 6px;
       }
       .learning-content .top-btn {
         position: fixed;
         bottom: 24px;
         right: 24px;
-        background: #16538a;
+        background: var(--lc-accent);
         color: #fff;
         padding: 10px 14px;
         text-decoration: none;
@@ -328,6 +394,7 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
       @media (max-width: 900px) {
         .learning-content .layout {
           flex-direction: column;
+          gap: 18px;
         }
         .learning-content .sidebar {
           width: 100%;
@@ -335,22 +402,36 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         .learning-content .sidebar-inner {
           position: static;
         }
-        .learning-content .main-content {
-          padding: 20px;
+      }
+      @media (max-width: 640px) {
+        .learning-content {
+          padding: 12px 12px 16px;
+          border-left-width: 6px;
         }
+        .learning-content h1 { font-size: 1.3em; }
+        .learning-content h2 { font-size: 1.08em; padding: 8px 12px; }
+        .learning-content .box { padding: 10px 12px; }
       }
       .learning-content hr.divider {
         border: 0;
-        border-top: 2px dotted #b0bec5;
-        margin: 30px 0;
+        border-top: 2px dotted var(--lc-line);
+        margin: 26px 0;
       }
       .learning-content .arrow-down {
         text-align: center;
-        color: #3498db;
+        color: var(--lc-accent);
         font-size: 1.3em;
         margin: 8px 0;
       }
-    
+
       .learning-content u.wavy { text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
       .learning-content strong u { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
-      .learning-content strong u.wavy { text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }`;
+      .learning-content strong u.wavy { text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+      /* 本文中の強調は mol の .mbs-mark（網かけ）と同じ紫の下地にする */
+      .learning-content mark {
+        background: #ded6ef;
+        color: inherit;
+        padding: 1px 4px;
+        font-weight: 800;
+        border-radius: 2px;
+      }`;

@@ -21,6 +21,7 @@ import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
 import { fetchFriendCompetition } from '../utils/friends';
 import { DoorMascot } from './DoorMascot';
+import { GoogleLinkBanner } from './GoogleLinkBanner';
 
 interface LeaderboardProps {
   onBack: () => void;
@@ -238,9 +239,15 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
           </motion.div>
         )}
 
+        {/* ゲストは順位に載れない。文言で伝えるだけだとその場で解決できないので、
+            そのまま連携できるカードを置いておく。 */}
         {isGuest && (
-          <div className="relative z-10 mb-4 bg-[#F4D03F]/20 border border-[#F4D03F]/40 rounded-2xl p-4 text-sm text-[#1B2631] font-bold text-center">
-            ゲストモードではランキングに参加できません。Googleでログインして全国順位を狙おう！
+          <div className="relative z-10 mb-4">
+            <GoogleLinkBanner
+              variant="card"
+              className="mb-0"
+              onLinked={() => window.location.reload()}
+            />
           </div>
         )}
 

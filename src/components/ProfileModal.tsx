@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { auth, provider } from '../firebase';
-import { signOut, signInWithPopup } from 'firebase/auth';
-import { ChevronLeft, User, LogOut, Flame, BookOpen, GraduationCap, Compass, Settings, Volume2, VolumeX, LogIn, Users, Save } from 'lucide-react';
+import { auth } from '../firebase';
+import { ChevronLeft, User, LogOut, Flame, BookOpen, GraduationCap, Compass, Settings, Volume2, VolumeX, LogIn, Users, Save, Check, Loader2, AlertTriangle } from 'lucide-react';
 import { FriendPanel } from './FriendPanel';
 import { DoorMascot } from './DoorMascot';
 import { FeedbackRouteSettings } from './FeedbackRouteSettings';
+import { GoogleMark } from './GoogleLinkBanner';
+import { signInWithGoogle, signOutGoogle, switchGoogleAccount, GOOGLE_LINK_BENEFITS } from '../utils/googleAuth';
 
 interface ProfileModalProps {
   onClose: () => void;
@@ -25,6 +26,9 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
   const [loading, setLoading] = useState(false);
   const [streak, setStreak] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
+  /** Google 連携の進行状態（連携／切り替えのどちらでも使う） */
+  const [signing, setSigning] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -68,17 +72,27 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
   };
 
   const logout = async () => {
-    const uid = auth.currentUser?.uid;
-    await signOut(auth);
-    if (uid) localStorage.removeItem(`profile_${uid}`);
+    await signOutGoogle();
     onClose();
   };
 
+  /** ゲスト → Google 連携（記録はローカルに残るのでそのまま引き継がれる） */
+  const linkGoogle = async () => {
+    setSigning(true);
+    setAuthError(null);
+    const outcome = await signInWithGoogle();
+    if (outcome.redirecting) return; // ページ遷移するのでそのまま待つ
+    setSigning(false);
+    if (!outcome.ok) setAuthError(outcome.message || 'ログインに失敗しました。');
+  };
+
   const switchAccount = async () => {
-    const uid = auth.currentUser?.uid;
-    await signOut(auth);
-    if (uid) localStorage.removeItem(`profile_${uid}`);
-    await signInWithPopup(auth, provider);
+    setSigning(true);
+    setAuthError(null);
+    const outcome = await switchGoogleAccount();
+    if (outcome.redirecting) return;
+    setSigning(false);
+    if (!outcome.ok) setAuthError(outcome.message || 'ログインに失敗しました。');
   };
 
   return (
@@ -156,13 +170,48 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
                 <section className="bg-white border border-gray-150 p-3 rounded-2xl shadow-sm space-y-2 flex-1">
                   <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">アカウント</h3>
                   {!auth.currentUser ? (
-                    <button onClick={() => signInWithPopup(auth, provider)} className="compact-action bg-[#A9CCE3] text-white"><LogIn size={15} />Googleアカウントでログイン</button>
+                    /* 未連携：連携の「得」を具体的に見せてから押してもらう。
+                       ボタンは Google のブランドガイドに近い白地＋Gマークで、
+                       「見慣れた形」にして心理的なハードルを下げる。 */
+                    <div className="space-y-2">
+                      <div className="rounded-xl bg-[#FBE0E9]/40 border border-[#F4A9C4]/50 p-2.5">
+                        <p className="text-[11px] font-bold text-[#1B2631] mb-1.5">Google アカウントと連携すると</p>
+                        <ul className="space-y-1">
+                          {GOOGLE_LINK_BENEFITS.map((benefit) => (
+                            <li key={benefit} className="flex items-start gap-1.5 text-[10px] text-[#5D6D7E] leading-snug">
+                              <Check size={13} className="shrink-0 mt-[1px] text-[#D9466E]" />
+                              <span>{benefit}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <button
+                        onClick={linkGoogle}
+                        disabled={signing}
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white border border-gray-300 text-[#1B2631] text-xs font-bold shadow-sm disabled:opacity-50"
+                      >
+                        {signing ? <Loader2 size={15} className="animate-spin" /> : <GoogleMark size={17} />}
+                        {signing ? '連携中…' : 'Google アカウントで連携'}
+                      </button>
+                      <p className="text-[9px] text-gray-400 text-center leading-snug">
+                        連携は無料です。いまの学習記録はそのまま引き継がれます。
+                      </p>
+                    </div>
                   ) : (
                     <>
                       <p className="text-[10px] text-gray-400 truncate px-1">{auth.currentUser.email}</p>
-                      <button onClick={logout} className="compact-action bg-red-50 text-red-600 border border-red-100"><LogOut size={15} />ログアウト</button>
-                      <button onClick={switchAccount} className="compact-action bg-blue-50 text-blue-600 border border-blue-100"><LogIn size={15} />アカウントを切り替え</button>
+                      <button onClick={logout} disabled={signing} className="compact-action bg-red-50 text-red-600 border border-red-100 disabled:opacity-50"><LogOut size={15} />ログアウト</button>
+                      <button onClick={switchAccount} disabled={signing} className="compact-action bg-blue-50 text-blue-600 border border-blue-100 disabled:opacity-50">
+                        {signing ? <Loader2 size={15} className="animate-spin" /> : <LogIn size={15} />}
+                        {signing ? '切り替え中…' : 'アカウントを切り替え'}
+                      </button>
                     </>
+                  )}
+                  {authError && (
+                    <div role="alert" className="flex items-start gap-1.5 rounded-xl bg-[#FDEDEC] border border-[#E74C3C]/40 px-2.5 py-2 text-[10px] leading-snug text-[#C0392B]">
+                      <AlertTriangle size={14} className="shrink-0 mt-[1px]" />
+                      <span>{authError}</span>
+                    </div>
                   )}
                 </section>
 

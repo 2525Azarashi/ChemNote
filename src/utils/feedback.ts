@@ -271,9 +271,12 @@ export function validateFeedback(input: Partial<FeedbackInput>): FeedbackValidat
   if (message.length > FEEDBACK_MESSAGE_MAX) {
     errors.push(`本文は${FEEDBACK_MESSAGE_MAX}文字以内で入力してください。`);
   }
+  // 星評価は必須。
+  // （スプレッドシート側で平均を取るため、未選択の 0 が混ざると
+  //   平均値が不当に下がってしまう。よって 1〜5 のみ受け付ける。）
   const rating = input.rating ?? 0;
-  if (!Number.isInteger(rating) || rating < 0 || rating > 5) {
-    errors.push('評価は0〜5の範囲で選択してください。');
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    errors.push('満足度（星）を選択してください。');
   }
   const contact = (input.contactEmail || '').trim();
   if (contact && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) {
@@ -378,7 +381,8 @@ export function buildFeedbackMailto(payload: FeedbackPayload, to: string = getFe
     '--- 以下は自動で付与された情報です（そのまま送信してください）---',
     `送信画面: ${FEEDBACK_SCREEN_LABELS[payload.screen]}`,
     `種類: ${FEEDBACK_CATEGORY_LABELS[payload.category]}`,
-    `評価: ${payload.rating > 0 ? `${payload.rating} / 5` : '未選択'}`,
+    // 数値のみ（「5 / 5」のような書式だとスプレッドシートで平均が取れない）
+    `評価: ${payload.rating > 0 ? String(payload.rating) : ''}`,
     `返信希望先: ${payload.contactEmail || '（なし）'}`,
     `送信日時: ${payload.createdAtIso}`,
     `ユーザー: ${payload.displayName || 'ゲスト'}${payload.uid ? `（uid: ${payload.uid}）` : ''}`,
