@@ -10,6 +10,7 @@ import { getDueCount } from '../utils/reviewList';
 import { DoorMascot } from './DoorMascot';
 import { FeedbackButton } from './FeedbackButton';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
+import { backfillLegacyProgress, countSolvedProblems, countSolvedByChapter } from '../utils/progress';
 
 interface HomeProps {
   onStart: () => void;
@@ -36,15 +37,20 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   const [streak, setStreak] = useState(0);
   const [completedIds, setCompletedIds] = useState<string[]>([]);
 
-  // 問題数ベースの進捗
+  // ===== 学習進捗（大問ベース） =====
+  // 分母：全章の「大問」数（miniTest ＋ practiceProblems）。
+  //   以前は miniTest の「小問」数だけを分母にしていたため、
+  //   演習（practiceProblems＝大問の大多数）が丸ごと抜け落ちていた。
+  // 分子：1点でも獲得した大問の数（utils/progress の台帳を参照）。
   const allChaptersList = useMemo(() => chemistryData.parts.flatMap((p: any) => p.chapters), []);
   const totalQuestions = useMemo(() => {
     return allChaptersList.reduce((sum: number, c: any) => {
-      const qs = c.miniTest || [];
-      return sum + qs.reduce((s: number, q: any) => s + (q.subQuestions?.length || 0), 0);
+      return sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0);
     }, 0);
   }, [allChaptersList]);
   const [solvedQuestions, setSolvedQuestions] = useState(0);
+  /** 章ID → その章で解いた大問数（「次の章」の算出に使う） */
+  const [solvedByChapter, setSolvedByChapter] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const fetchProfileAndStats = async () => {
@@ -81,18 +87,15 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           }
         }
 
-        // 解いた問題数をカウント（quiz_answers_${chapterId}_mini_test から）
-        let solved = 0;
-        allChaptersList.forEach((c: any) => {
-          try {
-            const raw = localStorage.getItem(`quiz_answers_${c.id}_mini_test`);
-            if (raw) {
-              const answersObj = JSON.parse(raw);
-              solved += Object.keys(answersObj).length;
-            }
-          } catch {}
-        });
-        setSolvedQuestions(Math.min(solved, totalQuestions));
+        // 解いた大問数をカウント（1点でも取れた大問＝進捗）。
+        // 初回だけ旧データ（quiz_run_* / quiz_answers_* / completed_*）から引き継ぐ。
+        try {
+          backfillLegacyProgress(uid, allChaptersList);
+        } catch {
+          /* 引き継ぎに失敗しても現在の進捗表示は続行する */
+        }
+        setSolvedQuestions(Math.min(countSolvedProblems(uid), totalQuestions));
+        setSolvedByChapter(countSolvedByChapter(uid));
 
         // completed chapters（次の章を求めるために継続利用）
         const completed = JSON.parse(localStorage.getItem(`completed_${uid}`) || '[]');
@@ -115,9 +118,17 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   const progressPercent = totalQuestions > 0 ? Math.round((solvedQuestions / totalQuestions) * 100) : 0;
 
   // 「次の章」を算出（学習進捗カードの状況別コピー用）
+  // 大問をすべて解き終えた章は飛ばし、まだ残っている最初の章を提示する。
+  // （completed_ は「ミニテストを通した」履歴でしかなく、
+  //   演習の進捗を反映しないため、台帳側の章ごと件数を併せて見る）
   const nextChapter = useMemo(() => {
-    return allChaptersList.find((c: any) => !completedIds.includes(c.id)) as any;
-  }, [completedIds, allChaptersList]);
+    const remaining = allChaptersList.find((c: any) => {
+      const total = (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0);
+      if (total === 0) return false;
+      return (solvedByChapter[c.id] || 0) < total;
+    }) as any;
+    return remaining || (allChaptersList.find((c: any) => !completedIds.includes(c.id)) as any);
+  }, [completedIds, allChaptersList, solvedByChapter]);
 
   // 「次のマイルストーン」を算出（連続学習カード用）
   const nextMilestone = useMemo(() => {
@@ -257,7 +268,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                 {solvedQuestions === 0 ? (
                   <>
                     <p className="text-xs md:text-sm text-[#5D6D7E] font-modern leading-relaxed mb-3">
-                      各単元の問題を解くことで進捗が自動的に記録されます。すべての問題を解いて、化学基礎を完全攻略しましょう！
+                      各単元の問題を解くと、<span className="font-bold text-[#1B2631]">1点でも取れた大問</span>が進捗として自動的に記録されます。すべての問題を解いて、{subjectLabel}を完全攻略しましょう！
                     </p>
                     <button
                       onClick={onStart}
@@ -271,7 +282,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   <p className="text-xs md:text-sm text-[#5D6D7E] font-modern leading-relaxed mb-6">
                     {solvedQuestions < totalQuestions ? (
                       <>
-                        次の章：
+                        次の章：{/* 未完了の大問が残っている最初の章 */}
                         <button
                           onClick={onStart}
                           className="font-bold text-[#1B2631] hover:text-[#D9466E] transition-colors underline-offset-4 hover:underline"
@@ -293,7 +304,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   aria-valuenow={progressPercent}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                  aria-valuetext={`${solvedQuestions} / ${totalQuestions} 問解答済み（${progressPercent}%）`}
+                  aria-valuetext={`大問 ${solvedQuestions} / ${totalQuestions} 問クリア（${progressPercent}%）`}
                   className="w-full bg-[#FBE0E9] rounded-full h-2.5 mb-3 overflow-hidden shadow-inner flex-shrink-0"
                 >
                   <motion.div
@@ -303,7 +314,8 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                     className="bg-gradient-to-r from-[#E8688E] to-[#D9466E] h-full rounded-full"
                   />
                 </div>
-                <p className="text-[13px] text-[#5D6D7E] font-modern text-right font-medium">{solvedQuestions} / {totalQuestions} 問解答済み ({progressPercent}%)</p>
+                {/* 単位は「大問」。小問数と混ざらないよう明記する */}
+                <p className="text-[13px] text-[#5D6D7E] font-modern text-right font-medium">大問 {solvedQuestions} / {totalQuestions} 問クリア ({progressPercent}%)</p>
               </div>
             </div>
           </motion.div>

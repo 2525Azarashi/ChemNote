@@ -474,3 +474,22 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .container-card {
   container-type: inline-size;
 }
+
+/* =========================================================
+ * 13. 横スクロールカルーセル（科目選択）
+ * ---------------------------------------------------------
+ * スクロールバーを消しても操作に迷わないよう、
+ * 画面側で「矢印・ドット・案内文」を必ず添えて使う。
+ *
+ * ※ 既存の `no-scrollbar` は実体が定義されていない no-op のため、
+ *   既存画面の見た目を変えないよう、あえて別名の専用クラスにしている。
+ * ========================================================= */
+.carousel-x {
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* 旧 Edge / IE */
+}
+.carousel-x::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;                  /* Chrome / Safari */
+}

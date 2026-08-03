@@ -12,6 +12,8 @@ import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering'
 import { isAnswerCorrect } from '../utils/answerJudge';
 import { gradingCriteriaProgress, resolveGradingCriteria } from '../utils/gradingCriteria';
 import { splitQuestionLabel, answerCardMarker, buildSubQuestionList } from '../utils/questionDisplay';
+import { buildUnitKataBlock, sliceEnhancedByQuestion, questionGroupKey } from '../utils/explanationFormat';
+import { getUnitTeaching } from '../data/unitTeaching';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
 import { applyOverviewViewport } from '../utils/viewportControl';
@@ -92,6 +94,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
   const [scrollTrigger, setScrollTrigger] = useState<number>(0);
   const [expandedCorrectQuestions, setExpandedCorrectQuestions] = useState<Record<string, boolean>>({});
+  // 要件①「この単元の思考の型」は単元につき1回だけ・採点結果の直後・折りたたみで出す。
+  // 初期状態は閉じる（画面を圧迫させず、必要な人だけ開ける）。
+  const [kataOpen, setKataOpen] = useState(false);
+  // 問ごとのアコーディオンへ解説を配った大問では、通し読み用の全文をたたんでおく
+  // （情報は消さない。参考書的な一覧性は「まとめて読む」で担保する）。
+  const [fullExplanationOpen, setFullExplanationOpen] = useState<Record<string, boolean>>({});
   const [savingNote, setSavingNote] = useState<Record<string, boolean>>({});
   // スマホ/PC判定は共有フックに一元化（md=768px 未満をスマホとみなす）。
   // isMobileView が渡された場合（スマホプレビュー枠）はそれを優先する。
@@ -129,6 +137,48 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const questions = useMemo(() => {
     return singleQuestionIndex !== undefined ? [allQuestions[singleQuestionIndex]] : allQuestions;
   }, [allQuestions, singleQuestionIndex]);
+
+  // 要件①：「この単元の思考の型」の本文。単元（章）に紐づくので問題ごとには作らない。
+  // 内容・表現・順番・解説は従来と1文字も変えていない（エンジン側の buildUnitKataBlock がそのまま組む）。
+  const unitKataBlock = useMemo(() => buildUnitKataBlock(getUnitTeaching(chapter.id)), [chapter.id]);
+
+  /**
+   * 要件①のアコーディオン本体。
+   * ・単元につき1回だけ描画する（呼び出し側で最初の大問にのみ差し込む）
+   * ・配置は「採点結果」の直後
+   * ・初期状態は閉じる（画面を圧迫させず、必要な人だけ開ける）
+   */
+  const kataAccordion = unitKataBlock ? (
+    <div className={`rounded-xl border overflow-hidden ${mode === 'mini_test' ? 'border-pink-200 bg-pink-50/40' : 'border-[#D9466E]/40 bg-[#D9466E]/10'}`}>
+      <button
+        type="button"
+        onClick={() => setKataOpen(prev => !prev)}
+        aria-expanded={kataOpen}
+        className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 md:px-4 md:py-3 text-left transition-colors ${mode === 'mini_test' ? 'hover:bg-pink-100/70' : 'hover:bg-[#D9466E]/20'}`}
+      >
+        <span className={`font-bold text-xs md:text-sm flex items-center gap-2 flex-wrap ${mode === 'mini_test' ? 'text-[#B03A5B]' : 'text-[#F4A9C4]'}`}>
+          <BookOpen size={16} className="shrink-0" />
+          <span>この単元の思考の型</span>
+          <span className={`font-normal text-[10px] md:text-xs ${mode === 'mini_test' ? 'text-[#B03A5B]/70' : 'text-[#F4A9C4]/70'}`}>
+            （この単元の全問に共通・必要なときだけ開く）
+          </span>
+        </span>
+        <span className={`flex items-center gap-1 shrink-0 text-[10px] md:text-xs font-bold ${mode === 'mini_test' ? 'text-[#B03A5B]' : 'text-[#F4A9C4]'}`}>
+          <span>{kataOpen ? '閉じる' : '開く'}</span>
+          <ChevronDown size={16} className={`transition-transform duration-300 ${kataOpen ? 'rotate-180' : ''}`} />
+        </span>
+      </button>
+      {kataOpen && (
+        <div className={`px-3 pb-3 md:px-4 md:pb-4 border-t ${mode === 'mini_test' ? 'border-pink-200 bg-white' : 'border-[#D9466E]/30 bg-[#0B132B]/50'}`}>
+          <ExplanationBody
+            text={unitKataBlock}
+            tone={mode === 'mini_test' ? 'light' : 'dark'}
+            className={`font-handwriting text-xs md:text-sm leading-relaxed pt-3 ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+          />
+        </div>
+      )}
+    </div>
+  ) : null;
 
   // 章内の図版へ通し番号（図1・図2 …）を割り当てるマップ。
   // 単問表示でも通し番号が一貫するよう、章の全問題（allQuestions）を基準に採番する。
@@ -1124,8 +1174,28 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         const incorrectSqs = objectiveSqs.filter((sq: any) => !isAnswerCorrect(sq, answers[sq.id]));
                         const correctSqs = objectiveSqs.filter((sq: any) => isAnswerCorrect(sq, answers[sq.id]));
 
+                        // ─────────────────────────────────────────────
+                        // 要件④：小問アコーディオンを開くと、その場で
+                        //   (ア) / 正解 / 解法の思考手順 / 詳しい解説
+                        // が完結するようにする。
+                        //
+                        // 解説本文は「問N」単位で切り出す（機械可読の目印 <!--grp:N--> を
+                        // 整形エンジンが埋め込んでいる）。切るだけなので情報は一切失われない。
+                        // 目印が無い大問（＝問が1つ）は従来どおり下の「解説」ブロックに出す。
+                        const enhancedText: string =
+                          (question as any).explanationSupplement || question.explanation || '';
+                        const questionSlices = sliceEnhancedByQuestion(enhancedText);
+                        const sliceForSq = (sq: any): string => {
+                          if (!questionSlices) return '';
+                          const key = questionGroupKey(sq?.label);
+                          if (!key) return '';
+                          const hit = questionSlices.groups.filter((g) => g.key === key);
+                          return hit.map((g) => g.text).join('\n');
+                        };
+
                         const renderSq = (sq: any, isCorrect: boolean) => {
                           const isExpanded = expandedSq === sq.id;
+                          const sqSlice = sliceForSq(sq);
                           // 表示ルール3：右側の採点結果カードには設問文を再掲せず、
                           // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
                           const sqIndex = ((question?.subQuestions || []) as any[]).indexOf(sq);
@@ -1172,7 +1242,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             </button>
 
                             {/* Tab Content (Dropdown) */}
-                            <div className={"transition-all duration-300 ease-in-out overflow-hidden " + (isExpanded ? "max-h-[1500px] opacity-100 border-t " + (mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/30') : 'max-h-0 opacity-0')}>
+                            {/* 要件④で「解法の思考手順＋詳しい解説」を内側に同梱したため、
+                                展開後の高さが大きく伸びる。max-h で切れて解説が読めなくなるのを防ぐ。 */}
+                            <div className={"transition-all duration-300 ease-in-out overflow-hidden " + (isExpanded ? "max-h-none opacity-100 border-t " + (mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/30') : 'max-h-0 opacity-0')}>
                               <div className={`p-4 md:p-6 ${mode === 'mini_test' ? 'bg-gray-50' : 'bg-[#0B132B]/40'}`}>
                                 <div className="flex flex-col gap-6">
                                   <div className="w-full">
@@ -1303,6 +1375,18 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                             })}
                                           </div>
                                         </div>
+
+                                        {/* 要件④（記述問題も同じ設計）：この小問が属する「問」の
+                                            解法の思考手順＋詳しい解説をその場で完結させる。 */}
+                                        {sqSlice.trim() && (
+                                          <div className={`mt-1 rounded-xl border p-3 md:p-4 ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#0B132B]/60 border-[#3A506B]/50'}`}>
+                                            <ExplanationBody
+                                              text={sqSlice}
+                                              tone={mode === 'mini_test' ? 'light' : 'dark'}
+                                              className={`font-handwriting text-xs md:text-sm leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+                                            />
+                                          </div>
+                                        )}
                                       </div>
                                     ) : (
                                       <div className="flex flex-col gap-3 md:gap-4">
@@ -1426,6 +1510,19 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                             <span className="leading-relaxed">{formatText(sq.partialCreditCriteria)}</span>
                                           </div>
                                         )}
+
+                                        {/* ⑥ 要件④：この小問が属する「問」の解法の思考手順＋詳しい解説を、
+                                               その場で読み切れるように同梱する（スクロール往復をなくす）。
+                                               本文は切り出しただけで、要約・省略は一切していない。 */}
+                                        {sqSlice.trim() && (
+                                          <div className={`mt-1 rounded-xl border p-3 md:p-4 ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#0B132B]/60 border-[#3A506B]/50'}`}>
+                                            <ExplanationBody
+                                              text={sqSlice}
+                                              tone={mode === 'mini_test' ? 'light' : 'dark'}
+                                              className={`font-handwriting text-xs md:text-sm leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+                                            />
+                                          </div>
+                                        )}
                                       </div>
                                     )}
                                   </div>
@@ -1450,6 +1547,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                               </div>
                             )}
 
+                            {/* 客観問題が無い大問（記述のみ）でも、要件①の型は必ず1回出す */}
+                            {qIndex === 0 && objectiveSqs.length === 0 && kataAccordion && (
+                              <div className="mt-6">{kataAccordion}</div>
+                            )}
+
                             {objectiveSqs.length > 0 && (
                               <div className="space-y-3 md:space-y-4 mt-6">
                                 {/* 見出し：採点結果（正誤の内訳を小さく併記） */}
@@ -1464,6 +1566,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     <span className={mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}>不正解 {incorrectSqs.length}</span>
                                   </span>
                                 </div>
+
+                                {/* 要件①：「この単元の思考の型」を採点結果の直後に1回だけ（折りたたみ） */}
+                                {qIndex === 0 && kataAccordion}
+
                                 {/* 元の並び順（ア→イ→ウ…）のまま、正誤の色分けだけ行って上から表示 */}
                                 {objectiveSqs.map(sq => renderSq(sq, isAnswerCorrect(sq, answers[sq.id])))}
                               </div>
@@ -1495,19 +1601,49 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                       
                       if (!explanationText) return null;
 
+                      // 要件④で「問ごとのアコーディオンの中」に解説を配れた大問だけは、
+                      // ここの全文を初期状態で折りたたむ（同じ解説が二重に並ぶのを防ぐ）。
+                      // ★情報は一切削らない★ ── 「全文を通して読む」で必ず開ける。
+                      const isDistributed = Boolean(sliceEnhancedByQuestion(explanationText));
+                      const fullOpen = fullExplanationOpen[question.id] ?? !isDistributed;
+
                       return (
                         <div className={`p-4 sm:p-5 rounded-xl shadow-inner border mt-4 ${
                           mode === 'mini_test' ? 'bg-gray-50 border-gray-200' : 'bg-[#0B132B]/80 border-[#3A506B]/50'
                         }`}>
-                          <h4 className={`text-sm md:text-base mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2 border-b-2 pb-1.5 inline-flex ${
-                            mode === 'mini_test' ? 'text-emerald-700 border-emerald-200' : 'text-[#5BC0BE] border-[#3A506B]/50'
-                          }`}>
-                            <Lightbulb className={`w-4 h-4 ${mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]'}`} />
-                            <span>解説</span>
-                          </h4>
+                          {isDistributed ? (
+                            <button
+                              type="button"
+                              onClick={() => setFullExplanationOpen(prev => ({ ...prev, [question.id]: !fullOpen }))}
+                              aria-expanded={fullOpen}
+                              className={`w-full flex items-center justify-between gap-3 text-left ${fullOpen ? 'mb-2 md:mb-3' : ''}`}
+                            >
+                              <span className={`text-sm md:text-base flex items-center gap-1.5 md:gap-2 flex-wrap ${
+                                mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'
+                              }`}>
+                                <Lightbulb className={`w-4 h-4 shrink-0 ${mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]'}`} />
+                                <span>解説を全文まとめて読む</span>
+                                <span className={`text-[10px] md:text-xs font-normal ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
+                                  （各問の解説は上のアコーディオン内にも入っています）
+                                </span>
+                              </span>
+                              <span className={`flex items-center gap-1 shrink-0 text-[10px] md:text-xs font-bold ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
+                                <span>{fullOpen ? '閉じる' : '開く'}</span>
+                                <ChevronDown size={16} className={`transition-transform duration-300 ${fullOpen ? 'rotate-180' : ''}`} />
+                              </span>
+                            </button>
+                          ) : (
+                            <h4 className={`text-sm md:text-base mb-2 md:mb-3 flex items-center gap-1.5 md:gap-2 border-b-2 pb-1.5 inline-flex ${
+                              mode === 'mini_test' ? 'text-emerald-700 border-emerald-200' : 'text-[#5BC0BE] border-[#3A506B]/50'
+                            }`}>
+                              <Lightbulb className={`w-4 h-4 ${mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]'}`} />
+                              <span>解説</span>
+                            </h4>
+                          )}
                           {/* 解説本文の地の文は手書き風フォントで統一する。
                               （数式・化学式は formatText 内で個別に serif/Cambria Math を指定しているため崩れない）
                               ExplanationBody を通すことで、Markdown テーブルは本物の <table> として描画される。 */}
+                          {fullOpen && (
                           <ExplanationBody
                             text={explanationText}
                             tone={mode === 'mini_test' ? 'light' : 'dark'}
@@ -1515,6 +1651,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                               mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'
                             }`}
                           />
+                          )}
                           {deepThoughtData && isPracticeMode && (
                             <div className="mt-4 pt-4 border-t border-gray-200">
                               <h5 className="text-xs font-bold mb-2 text-[#2C3E50]/80">解答に必要なロジックツリーのStep:</h5>
