@@ -24,7 +24,7 @@ import { NoteDetail } from './components/NoteDetail';
 import { StudyHub } from './components/StudyHub';
 import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
-import { SubjectSelection, type SubjectId } from './components/SubjectSelection';
+import { SubjectSelection, getSubjectLabel, isSubjectId, type SubjectId } from './components/SubjectSelection';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIsMobile } from './hooks/useMediaQuery';
@@ -69,9 +69,11 @@ export default function App() {
   const isMobileDevice = isMobileUserAgent || isNarrowViewport;
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('savedIsGuest') === 'true');
   // 選択中の科目。ログイン直後の科目選択画面（＝タイトル画面）で決まる。
-  const [selectedSubject, setSelectedSubject] = useState<SubjectId>(
-    () => (localStorage.getItem(SELECTED_SUBJECT_KEY) as SubjectId) || 'chemistry_basic',
-  );
+  // 保存値が今の科目一覧に無い（＝古い/壊れた値）場合は化学基礎に戻す。
+  const [selectedSubject, setSelectedSubject] = useState<SubjectId>(() => {
+    const saved = localStorage.getItem(SELECTED_SUBJECT_KEY);
+    return isSubjectId(saved) ? saved : 'chemistry_basic';
+  });
   const [isExplanationView, setIsExplanationView] = useState(false);
   const [prevAppState, setPrevAppState] = useState<AppState>('home');
   const [lastQuizResult, setLastQuizResult] = useState<any>(null);
@@ -555,7 +557,7 @@ export default function App() {
             {/* ログイン／ゲスト開始の直後は、必ず科目選択（＝タイトル）画面を経由する */}
             {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('subject_selection')} onGuest={() => { setIsGuest(true); setAppState('subject_selection'); }} />}
             {appState === 'subject_selection' && <SubjectSelection onSelectSubject={handleSelectSubject} isGuest={isGuest} />}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => setAppState('subject_selection')} subjectLabel={selectedSubject === 'chemistry_basic' ? '化学基礎' : '化学'} isGuest={isGuest} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => setAppState('subject_selection')} subjectLabel={getSubjectLabel(selectedSubject)} isGuest={isGuest} />}
             {appState === 'leaderboard' && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
             {appState === 'logical_tree' && <LogicalTree />}

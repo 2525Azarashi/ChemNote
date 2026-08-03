@@ -17,6 +17,7 @@ import {
 } from '../utils/scoring';
 import { submitChapterScore } from '../utils/leaderboard';
 import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
+import { markProblemSolved } from '../utils/progress';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
 import { splitQuestionLabel, buildSubQuestionList } from '../utils/questionDisplay';
 import { useIsDesktop } from '../hooks/useMediaQuery';
@@ -1171,6 +1172,19 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     };
     setRun(nextRun);
     saveRun(chapter.id, mode, nextRun);
+
+    // ===== 学習進捗の記録（1点でも取れた大問は「解いた」として永続化） =====
+    // run state（quiz_run_*）は章を解き終えた時点で削除され、
+    // quiz_answers_* も章に入り直すと消えるため、
+    // 「採点したこの瞬間」に別台帳（solved_problems_v1_*）へ追記しておく。
+    // こうしないと、やり切った章ほど進捗から消えるという逆転が起きる。
+    try {
+      const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
+      markProblemSolved(uid, chapter.id, currentQuestion.id, boostedScore);
+    } catch (e) {
+      // 進捗記録の失敗で学習そのものを止めない
+      console.error('[Quiz] markProblemSolved failed:', e);
+    }
 
     // 復習リスト：この問題で間違えた設問（自動採点可能なもの）をキャプチャする。
     // 記述式（descriptive）は自動採点不可なため対象外。

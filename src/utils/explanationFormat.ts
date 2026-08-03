@@ -319,51 +319,390 @@ function splitStepDetail(text: string): { head: string; detail: string } {
   return { head: source, detail: '' };
 }
 
+/** セクション見出しの文言（画面側と共有するため定数化する） */
+export const STEPS_TITLE = '解法の思考手順';
+export const DETAIL_TITLE = '詳しい解説';
+export const UNIT_KATA_TITLE = 'この単元の思考の型';
+
+/**
+ * 小問1つぶんの思考手順を「丸数字の見出し＋理由・着眼点」の2段構成に整形する。
+ * （旧 buildStepsBlock の中身をそのまま切り出したもの。出力は1文字も変えない）
+ */
+function formatSubSteps(sub: SubQuestionLike): string {
+  const label = (sub.label || '').trim();
+  const theme = sub.detailedExplanation?.theme;
+  const heading = `<b>${label || '小問'}</b>${theme ? `　— ${theme}` : ''}`;
+  const steps = (sub.detailedExplanation?.steps || []).map((raw, index) => {
+    // 元データが「① …」で始まる場合は番号を重複させない
+    const text = String(raw).trim();
+    const hasCircle = /^[①-⑮]/.test(text);
+    const body = hasCircle ? text.replace(/^[①-⑮]\s*/, '') : text;
+    // 「見出し＋理由・着眼点」の2段構成にできる書き方なら分割する
+    const { head, detail } = splitStepDetail(body);
+    const line = `　<b>${circledNumber(index)} ${head}</b>`;
+    return detail ? `${line}\n　　└ ${detail}` : line;
+  });
+  return `${heading}\n${steps.join('\n')}`;
+}
+
+/** 思考手順を持つ小問だけを抜き出す */
+function subsWithSteps(subs: SubQuestionLike[]): SubQuestionLike[] {
+  return subs.filter(
+    (s) => s?.detailedExplanation?.steps && s.detailedExplanation.steps.length > 0,
+  );
+}
+
+/** 単元テンプレートの ①②③ 行（ラベルなしの本体だけ） */
+function formatTeachingSteps(teaching: UnitTeaching): string {
+  return teaching.steps
+    .map((step, index) => `<b>${circledNumber(index)} ${step.title}</b>\n　└ ${step.detail}`)
+    .join('\n');
+}
+
+/**
+ * 「この単元の思考の型」ブロックを組み立てる。
+ *
+ * ■ なぜ独立した関数にするのか
+ * 従来はこのブロックを *問題ごとに* 解説文へ埋め込んでいたため、
+ * 同じ単元の中で何度も同じ内容が繰り返し表示され、画面を圧迫していた。
+ * 単元につき1回だけ「採点結果の直後」にアコーディオンで見せる方式に変えるため、
+ * 画面側（Explanation.tsx）から直接呼べる形に切り出す。
+ *
+ * ★内容・表現・順番・解説は従来の出力と1文字も変えていない★
+ */
+export function buildUnitKataBlock(teaching?: UnitTeaching): string {
+  if (!teaching?.steps?.length) return '';
+  return `${LABEL(UNIT_KATA_TITLE)}\n${formatTeachingSteps(teaching)}`;
+}
+
 export function buildStepsBlock(
   question: QuestionLike,
   teaching?: UnitTeaching,
   /** 上位で既に問題固有の思考手順（単位変換ブロック等）を出しているか */
   hasSpecificSteps = false,
+  /**
+   * 「この単元の思考の型」を含めるか。
+   * 単元につき1回だけ画面側で表示する新方式では false を渡す
+   * （型そのものは buildUnitKataBlock が同じ内容を出力する）。
+   */
+  includeUnitKata = true,
 ): string {
   const parts: string[] = [];
 
   // --- ① 小問固有の思考手順 ---
-  const detailed = (question.subQuestions || []).filter(
-    (s) => s?.detailedExplanation?.steps && s.detailedExplanation.steps.length > 0,
-  );
+  const detailed = subsWithSteps(question.subQuestions || []);
 
   if (detailed.length > 0) {
-    const blocks = detailed.map((sub) => {
-      const label = (sub.label || '').trim();
-      const theme = sub.detailedExplanation?.theme;
-      const heading = `<b>${label || '小問'}</b>${theme ? `　— ${theme}` : ''}`;
-      const steps = (sub.detailedExplanation?.steps || []).map((raw, index) => {
-        // 元データが「① …」で始まる場合は番号を重複させない
-        const text = String(raw).trim();
-        const hasCircle = /^[①-⑮]/.test(text);
-        const body = hasCircle ? text.replace(/^[①-⑮]\s*/, '') : text;
-        // 「見出し＋理由・着眼点」の2段構成にできる書き方なら分割する
-        const { head, detail } = splitStepDetail(body);
-        const line = `　<b>${circledNumber(index)} ${head}</b>`;
-        return detail ? `${line}\n　　└ ${detail}` : line;
-      });
-      return `${heading}\n${steps.join('\n')}`;
-    });
-    parts.push(`${LABEL('解法の思考手順')}\n${blocks.join('\n\n')}`);
+    parts.push(`${LABEL(STEPS_TITLE)}\n${detailed.map(formatSubSteps).join('\n\n')}`);
   }
 
   // --- ② 単元共通の思考手順テンプレート ---
   if (teaching?.steps?.length) {
-    const rows = teaching.steps.map((step, index) => (
-      `<b>${circledNumber(index)} ${step.title}</b>\n　└ ${step.detail}`
-    ));
     // 問題固有の手順（小問の detailedExplanation／単位変換ブロック）が
     // すでに上にある場合は、こちらは「単元の型」として位置づける。
-    const title = detailed.length > 0 || hasSpecificSteps ? 'この単元の思考の型' : '解法の思考手順';
-    parts.push(`${LABEL(title)}\n${rows.join('\n')}`);
+    const isUnitKata = detailed.length > 0 || hasSpecificSteps;
+    if (!isUnitKata) {
+      // この問題にとっての「解法の思考手順」そのものなので必ず残す
+      parts.push(`${LABEL(STEPS_TITLE)}\n${formatTeachingSteps(teaching)}`);
+    } else if (includeUnitKata) {
+      parts.push(`${LABEL(UNIT_KATA_TITLE)}\n${formatTeachingSteps(teaching)}`);
+    }
   }
 
   return parts.join('\n\n');
+}
+
+// -------------------------------------------------------------------
+// 問（問1・問2…）単位への再構成
+// -------------------------------------------------------------------
+
+/** 全角数字を半角に寄せる（ラベルの表記ゆれ対策） */
+function toHalfWidthDigits(text: string): string {
+  return text.replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0));
+}
+
+/**
+ * 小問ラベルから「どの問に属するか」のキーを取り出す。
+ * 「問2 (1) …」→ '2'、「(ア)」など問番号を持たないものは '' を返す。
+ */
+export function questionGroupKey(label?: string): string {
+  const matched = toHalfWidthDigits(String(label || '').trim()).match(/^問\s*(\d+)/);
+  return matched ? matched[1] : '';
+}
+
+/** 詳しい解説本文を問ごとに切り分けた結果 */
+export interface BodySegments {
+  /** 最初の「問N」見出しより前にある共通のリード文 */
+  lead: string;
+  /** 問キー → その問に属する本文（出現順） */
+  segments: { key: string; text: string }[];
+}
+
+/**
+ * 詳しい解説の本文を「問N」の見出し行を境界にして切り分ける。
+ *
+ * ■ 無損失であることが絶対条件
+ * 情報量を絶対に減らさないという要件のため、
+ * 「行を落とさず・並べ替えず、境界で切るだけ」に徹している。
+ *   lead + segments を順に連結すると、必ず元の本文に戻る。
+ * 境界が1つも見つからない場合は null を返し、呼び出し側は分割せず従来表示にする。
+ */
+export function splitBodyByQuestionGroups(body: string, keys: string[]): BodySegments | null {
+  if (!body || keys.length === 0) return null;
+  const lines = body.split('\n');
+  const anchors: { index: number; key: string }[] = [];
+
+  lines.forEach((line, index) => {
+    const matched = toHalfWidthDigits(line).match(/^\s*(?:【\s*)?問\s*(\d+)/);
+    if (matched && keys.includes(matched[1])) anchors.push({ index, key: matched[1] });
+  });
+
+  if (anchors.length === 0) return null;
+
+  const lead = lines.slice(0, anchors[0].index).join('\n');
+  const segments = anchors.map((anchor, i) => ({
+    key: anchor.key,
+    text: lines
+      .slice(anchor.index, i + 1 < anchors.length ? anchors[i + 1].index : lines.length)
+      .join('\n'),
+  }));
+
+  return { lead, segments };
+}
+
+/**
+ * 「解法の思考手順」と「詳しい解説」の両方に *まったく同じ一文* が
+ * 書かれている場合だけ、詳しい解説側の重複行を落とす。
+ *
+ * ■ 情報量を絶対に減らさないためのガード（実データで検証済み）
+ * 次のいずれかに当てはまる行は、たとえ一致しても絶対に落とさない。
+ *   ・表の行（|）……… 表が壊れる
+ *   ・見出し行（■◆【）… 文章の骨格が消える
+ *   ・「=」「→」を含む行… 計算式・反応式の途中が消えて筋道が追えなくなる
+ *     （例：「2.0=25.0c」の次の「c=0.080 mol/L」を落とすと答えが消える）
+ *   ・短い行（10文字未満）… 偶然の一致が起こりうる
+ * この条件で実際に落ちるのは全174大問で1行だけであり、
+ * 「重複していて、かつ落としても情報が失われない」ものに限定できている。
+ */
+export function dedupeAgainstSteps(body: string, stepsText: string): string {
+  if (!body || !stepsText) return body;
+
+  const normalize = (line: string): string =>
+    line
+      .replace(/<[^>]*>/g, '')
+      .replace(/[①-⑮]/g, '')
+      // 思考手順側の箇条書き記号（└ ├ ─ など）も落として、同じ文なら同じ鍵になるようにする
+      .replace(/[└├─―\-‐‑–—]/g, '')
+      .replace(/[\s　・■※（）()「」【】。、,.：:→＝=＋+]/g, '')
+      .trim();
+
+  const stepLines = new Set(
+    stepsText.split('\n').map(normalize).filter((s) => s.length >= 16),
+  );
+  if (stepLines.size === 0) return body;
+
+  const kept = body.split('\n').filter((line) => {
+    const plain = line.replace(/<[^>]*>/g, '');
+    if (line.includes('|')) return true; // 表は絶対に壊さない
+    if (/^\s*[■◆【]/.test(plain)) return true; // 見出しは消さない
+    if (/[=＝→⟶]/.test(plain)) return true; // 計算式・反応式は消さない
+    if (/答え|よって|したがって|ゆえに|求める/.test(plain)) return true; // 結論行は消さない
+    if (line.includes(ANS_STYLE) || line.includes(KEY_STYLE)) return true; // 強調済みは消さない
+    const normalized = normalize(line);
+    // 短い行は偶然の一致が起こりやすいので落とさない（16文字以上の完全一致のみ）
+    if (normalized.length < 16) return true;
+    return !stepLines.has(normalized);
+  });
+
+  return kept.join('\n');
+}
+
+/**
+ * 問ごとのセクションに付ける「機械可読の目印」。
+ *
+ * 採点画面（Explanation.tsx）の小問アコーディオンは、この目印を頼りに
+ * 「この小問が属する問の解説だけ」を切り出して表示する。
+ * HTML コメントなので画面には一切出ない（textFormatter はコメントをそのまま通す）。
+ */
+export const GROUP_MARK = (key: string): string => `<!--grp:${key}-->`;
+const GROUP_MARK_PATTERN = /<!--grp:([^-]*)-->/g;
+
+export interface EnhancedSlices {
+  /** 全問に共通する部分（解答一覧・リード文・共通の思考手順など） */
+  common: string;
+  /** 問ごとの部分 */
+  groups: { key: string; text: string }[];
+}
+
+/**
+ * 整形済み解説を「問N」単位に切り出す。目印が無い（＝単一の問の大問）場合は null。
+ * 文字を書き換えずに切るだけなので、common + groups を連結すると元に戻る。
+ */
+export function sliceEnhancedByQuestion(text: string): EnhancedSlices | null {
+  const source = String(text || '');
+  if (!source) return null;
+  const marks: { index: number; key: string; length: number }[] = [];
+  GROUP_MARK_PATTERN.lastIndex = 0;
+  let matched: RegExpExecArray | null;
+  while ((matched = GROUP_MARK_PATTERN.exec(source)) !== null) {
+    marks.push({ index: matched.index, key: matched[1], length: matched[0].length });
+  }
+  if (marks.length === 0) return null;
+  const common = source.slice(0, marks[0].index);
+  const groups = marks.map((mark, i) => ({
+    key: mark.key,
+    text: source.slice(mark.index + mark.length, i + 1 < marks.length ? marks[i + 1].index : source.length),
+  }));
+  return { common, groups };
+}
+
+/** 問ごとの区切り線（画面を横断する仕切り） */
+function groupDivider(): string {
+  return '<div style="border-top:2px dashed #E9688E; opacity:0.55; margin:20px 0 12px;"></div>';
+}
+
+/** 問ごとの見出し（「問1」など） */
+function groupHeading(key: string): string {
+  return `<div style="font-weight:bold; font-size:1.05em; color:#B03A5B; letter-spacing:0.04em; margin-bottom:2px;">問${key}</div>`;
+}
+
+/**
+ * 1問（問N）ぶんの解説パーツ。
+ * 画面側（採点結果のアコーディオン）でも同じ切り分けを再利用する。
+ */
+export interface QuestionGroupParts {
+  /** 問キー（'1' など）。問番号を持たない大問では '' */
+  key: string;
+  /** この問に属する小問 */
+  subs: SubQuestionLike[];
+  /** 解法の思考手順の本体（ラベルなし・空文字なら無し） */
+  steps: string;
+  /** 詳しい解説の本体（ラベルなし・空文字なら無し） */
+  detail: string;
+}
+
+/**
+ * 1つの大問を「問N」単位に組み替える。
+ *
+ * ■ 目的（要件②）
+ * 従来は「全問の思考手順」→「全問の詳しい解説」という並びだったため、
+ * 問1の解説を読むには画面を大きく下へ送る必要があった。
+ * ここで問ごとに ［思考手順 → 詳しい解説］ を隣接させ、
+ * 「1問を見れば、その問題に必要な情報がその場で完結する」状態にする。
+ *
+ * 分割できない大問（問番号が無い／本文に境界が無い）は
+ * 1グループ（key=''）として返すため、全単元で同じ呼び出し方が使える。
+ */
+export function buildQuestionGroupParts(
+  question: QuestionLike,
+  body: string,
+): { lead: string; groups: QuestionGroupParts[] } {
+  const subs = (question.subQuestions || []).filter(Boolean) as SubQuestionLike[];
+  const keys: string[] = [];
+  for (const sub of subs) {
+    const key = questionGroupKey(sub.label);
+    if (key && !keys.includes(key)) keys.push(key);
+  }
+
+  const stepsOf = (list: SubQuestionLike[]): string =>
+    subsWithSteps(list).map(formatSubSteps).join('\n\n');
+
+  // 問番号が2つ以上あり、かつ本文をその境界で切れるときだけ問ごとに分ける。
+  const segmented = keys.length >= 2 ? splitBodyByQuestionGroups(body, keys) : null;
+
+  if (!segmented) {
+    return {
+      lead: '',
+      groups: [{ key: '', subs, steps: stepsOf(subs), detail: body }],
+    };
+  }
+
+  // 本文の登場順を尊重しつつ、同じ問が複数回現れる場合は連結して1つにまとめる。
+  const order: string[] = [];
+  const detailByKey = new Map<string, string>();
+  for (const segment of segmented.segments) {
+    if (!detailByKey.has(segment.key)) {
+      order.push(segment.key);
+      detailByKey.set(segment.key, segment.text);
+    } else {
+      detailByKey.set(segment.key, `${detailByKey.get(segment.key)}\n${segment.text}`);
+    }
+  }
+  // 本文に現れなかった問（解説が別の問にまとめて書かれている等）も落とさない。
+  for (const key of keys) if (!detailByKey.has(key)) order.push(key);
+
+  const groups = order.map((key) => {
+    const groupSubs = subs.filter((sub) => questionGroupKey(sub.label) === key);
+    return {
+      key,
+      subs: groupSubs,
+      steps: stepsOf(groupSubs),
+      detail: detailByKey.get(key) || '',
+    };
+  });
+
+  return { lead: segmented.lead, groups };
+}
+
+/**
+ * 問ごとに ［解法の思考手順 → 詳しい解説］ を隣接させたセクション列を作る。
+ * 2つのブロックは統合も削除もせず、必ず別ブロックとして残す。
+ */
+function buildInterleavedSections(
+  question: QuestionLike,
+  body: string,
+  fallbackSteps: string,
+  hasAnswerBlock: boolean,
+): string[] {
+  const { lead, groups } = buildQuestionGroupParts(question, body);
+  const sections: string[] = [];
+
+  // 単一グループ（＝従来どおりの大問）は、見出しや区切り線を足さずに
+  // 「思考手順 → 詳しい解説」の順で並べるだけにする（既存の見た目を崩さない）。
+  if (groups.length <= 1) {
+    const steps = groups[0]?.steps || '';
+    const stepsText = steps || fallbackSteps;
+    if (stepsText) sections.push(`${LABEL(STEPS_TITLE)}\n${stepsText}`);
+    const detail = dedupeAgainstSteps(groups[0]?.detail ?? body, stepsText);
+    if (detail.trim()) {
+      sections.push(hasAnswerBlock ? `${LABEL(DETAIL_TITLE)}\n${detail}` : detail);
+    }
+    return sections;
+  }
+
+  // 複数の問を含む大問：問ごとに完結させる
+  //
+  // ★情報欠落を防ぐための安全弁★
+  // 小問ごとの思考手順を持たない大問では、思考手順は「大問全体に共通の1本」しかない。
+  // これを問ごとに配り直すことはできない（どの問にも等しく効く手順のため）ので、
+  // 問の並びの前に1回だけ、従来どおりの位置で必ず出す。
+  // ここを省くと解説が丸ごと消えるため、絶対に落としてはならない。
+  const hasGroupSteps = groups.some((group) => Boolean(group.steps));
+  if (!hasGroupSteps && fallbackSteps) {
+    sections.push(
+      `${LABEL(STEPS_TITLE)}<span style="font-size:0.8em; color:#B03A5B; margin-left:6px;">（この大問のすべての問に共通）</span>\n${fallbackSteps}`,
+    );
+  }
+
+  if (lead.trim()) sections.push(`${LABEL(DETAIL_TITLE)}\n${lead}`);
+
+  const hadSectionBefore = sections.length > 0;
+
+  groups.forEach((group, index) => {
+    const rows: string[] = [];
+    // 目印は区切り線より前に置く（＝この問のセクションはここから始まる）
+    rows.push(GROUP_MARK(group.key));
+    if (index > 0 || hadSectionBefore) rows.push(groupDivider());
+    rows.push(groupHeading(group.key));
+    if (group.steps) rows.push(`${LABEL(STEPS_TITLE)}\n${group.steps}`);
+    // 重複除去の対象は「この問に隣接して置かれた思考手順」。
+    // 共通1本の場合は、その共通手順を基準にする。
+    const detail = dedupeAgainstSteps(group.detail, group.steps || (hasGroupSteps ? '' : fallbackSteps));
+    if (detail.trim()) rows.push(`${LABEL(DETAIL_TITLE)}\n${detail}`);
+    if (rows.length > 0) sections.push(rows.join('\n'));
+  });
+
+  return sections;
 }
 
 /**
@@ -454,9 +793,15 @@ export function isStructuredExplanation(explanation: string): boolean {
  *
  * 構成（上から順に、生徒が見る順序）
  *   1. 【解 答】      … ピンクマーカー。まずここで答え合わせができる
- *   2. 【解法の思考手順】… ①②③。なぜその答えになるのかの筋道
- *   3. 【詳しい解説】  … 既存の解説本文（黄色を排除して継承）
+ *   2. （単位変換で解く）… mol計算の道順（該当問題のみ）
+ *   3. 問ごとに ［【解法の思考手順】→【詳しい解説】］ を隣接させて反復
+ *      → 問1 の解説を読むために画面を大きく送る必要がなくなる（要件②）。
+ *      → 2つのブロックは統合も削除もせず、必ず別ブロックとして残す。
  *   4. 💡 出題傾向ボックス … 単元別の実践分析
+ *
+ * ■「この単元の思考の型」はここには含まれない（要件①）
+ * 単元共通の型は、単元につき1回だけ「採点結果の直後」のアコーディオンで
+ * 表示する。内容は buildUnitKataBlock() が従来と同一の文字列で生成する。
  *
  * @param question   問題オブジェクト
  * @param teaching   単元別の指導テンプレート（無い単元は省略可）
@@ -537,15 +882,13 @@ export function buildSupplement(
   const flowBlock = flowchartSteps?.length ? buildFlowchartSteps(flowchartSteps) : '';
   if (flowBlock) sections.push(flowBlock);
 
-  const stepsBlock = buildStepsBlock(question, teaching);
+  // 「この単元の思考の型」は含めない（単元につき1回だけ、
+  // 採点結果の直後のアコーディオンで表示する ── 要件①）。
+  const stepsBlock = buildStepsBlock(question, teaching, Boolean(flowBlock), false);
   if (stepsBlock) {
-    // フローチャート由来の手順を出したときは、単元テンプレート側の見出しが
-    // 「解法の思考手順」と重複しないよう「この単元の思考の型」に寄せる
-    sections.push(
-      flowBlock
-        ? stepsBlock.replace(LABEL('解法の思考手順'), LABEL('この単元の思考の型'))
-        : stepsBlock,
-    );
+    // フローチャート由来の手順を出したときは、見出しが「解法の思考手順」と
+    // 重複しないよう、単元テンプレート側は出力しない（上の false で抑止済み）。
+    sections.push(stepsBlock);
   }
 
   if (teaching?.trend) sections.push(buildTrendBox(teaching.trend));
@@ -592,13 +935,26 @@ export function enhanceExplanation(
   // 単位変換で解ける問題は、まず「単位変換の図」の道順を提示する。
   if (unitConversion) sections.push(buildUnitConversionBlock(unitConversion));
 
-  const stepsBlock = buildStepsBlock(question, teaching, Boolean(unitConversion));
-  if (stepsBlock) sections.push(stepsBlock);
-
+  // ★要件② 問ごとに ［解法の思考手順 → 詳しい解説］ を隣接させる★
+  //
+  // 従来は「全問ぶんの思考手順」→「全問ぶんの詳しい解説」という並びだったため、
+  // 問1の詳しい解説を読むには画面を大きく下へ送る必要があった。
+  // ここで問単位に組み替えて「1問を見ればその場で完結する」構成にする。
+  //
+  // ★「この単元の思考の型」は含めない★（要件①）
+  // 単元につき1回だけ、採点結果の直後にアコーディオンで表示するため、
+  // 画面側（Explanation.tsx）が buildUnitKataBlock() で描画する。
   const body = normalizeLegacyBody(original);
+  const hasSpecificSteps = Boolean(unitConversion);
+  const fallbackSteps = buildStepsBlock(question, teaching, hasSpecificSteps, false)
+    .replace(`${LABEL(STEPS_TITLE)}\n`, '');
+
   if (body) {
-    // 解答ブロックを作れた場合のみ「詳しい解説」の見出しを付けて区別する
-    sections.push(answerBlock ? `${LABEL('詳しい解説')}\n${body}` : body);
+    sections.push(
+      ...buildInterleavedSections(question, body, fallbackSteps, Boolean(answerBlock)),
+    );
+  } else if (fallbackSteps) {
+    sections.push(`${LABEL(STEPS_TITLE)}\n${fallbackSteps}`);
   }
 
   if (teaching?.trend) sections.push(buildTrendBox(teaching.trend));
