@@ -8,6 +8,8 @@ import { QuestionFigure } from './QuestionFigure';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { QuizTimerBar } from './QuizTimerBar';
 import { FloatingScoreAnimation } from './FloatingScoreAnimation';
+import { LiveStandingPill, OvertakeBanner } from './LiveStandingPill';
+import { useLiveStanding } from '../hooks/useLiveStanding';
 import {
   calcQuestionTimeLimit,
   scoreProblem,
@@ -1018,6 +1020,20 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     return calcQuestionTimeLimit(currentQuestion.subQuestions || []);
   }, [currentQuestion]);
 
+  // ===== 解答中のライブ順位（臨場感）=====
+  //
+  // 「解き終わってから順位を見る」だけでは、いまの1問が順位に
+  // どう跳ね返るのか分からず、得点が手応えにならない。
+  // ワールドカップ中継のように、解答中もずっと順位と点差を見せる。
+  //
+  // 通信は「章を開いたとき1回だけ」。順位はスコアが動くたびに手元で
+  // 再計算するので、1問ごとに Firestore を読みに行くことはしない。
+  const { standing: liveStanding, delta: rankDeltaValue } = useLiveStanding(
+    chapter.id,
+    run.totalScore,
+    isGuest,
+  );
+
   // Group subQuestions if they have a group property
   const groupedSubQuestions = useMemo(() => {
     if (!currentQuestion) return [];
@@ -1360,6 +1376,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             isVisible={showScoreAnimation}
           />
         )}
+        {/* 順位が動くのは「採点した瞬間」＝この解説画面へ切り替わる瞬間なので、
+            実況バナーは解説画面側にも置く。ここに無いと肝心の順位変動が
+            一度も表示されないことになる。 */}
+        <OvertakeBanner
+          delta={rankDeltaValue}
+          rank={liveStanding?.rank ?? 0}
+          triggerKey={run.totalScore}
+        />
       </>
     );
   }
@@ -1389,6 +1413,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         </div>
         
         <div className="flex items-center gap-2 shrink-0">
+          {/* 現在順位ピル（臨場感）。
+              既存のスコアピル・進捗ピルと同じ「丸いピル」の形・同じ色域にそろえ、
+              並べても違和感が出ないようにしている。ゲスト時は standing が null で非表示。 */}
+          <LiveStandingPill standing={liveStanding} />
+
           {/* 現在の累積スコアピル（スコア機能の視覚フィードバック） */}
           <div className="flex items-center gap-1.5 bg-[#F4D03F]/15 border border-[#F4D03F]/30 rounded-full px-2 py-1 md:px-3 md:py-1.5" title={`累積スコア / 連続正解 ${run.runningCombo}`}>
             <Trophy size={12} className="text-[#D4A017]" />
@@ -1429,6 +1458,16 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           isVisible={showScoreAnimation}
         />
       )}
+
+      {/* 順位が動いた瞬間だけ降りてくる実況バナー（「2人抜き！ 7位 → 5位」）。
+          「+120点」だけでは順位への影響が伝わらないので、順位変動を言語化する。
+          2.6秒で自動的に消えるので、解答の邪魔にならない。 */}
+      <OvertakeBanner
+        delta={rankDeltaValue}
+        rank={liveStanding?.rank ?? 0}
+        triggerKey={run.totalScore}
+      />
+
 
       {/* Main Content Area (Split on Desktop, Stacked on Mobile) */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
