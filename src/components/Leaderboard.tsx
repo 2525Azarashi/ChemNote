@@ -10,7 +10,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { Trophy, Crown, Medal, ChevronLeft, RefreshCw, User, BookOpen, Calendar, Globe, Users } from 'lucide-react';
+import { Trophy, Crown, Medal, ChevronLeft, RefreshCw, User, BookOpen, Calendar, Globe, Users, TrendingUp } from 'lucide-react';
 import {
   fetchChapterRanking,
   fetchTotalRanking,
@@ -22,6 +22,8 @@ import { chemistryData } from '../data/chemistryData';
 import { fetchFriendCompetition } from '../utils/friends';
 import { DoorMascot } from './DoorMascot';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
+import { RankingPodium } from './RankingPodium';
+import { qualifyLineFor } from '../utils/liveRank';
 
 interface LeaderboardProps {
   onBack: () => void;
@@ -122,6 +124,35 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
   const myRow = rows.find((r) => r.isMe);
   const me = auth.currentUser;
 
+  // 進出ラインは参加人数に応じて決める（少人数で「全員が圏内」になると線の意味が消える）
+  const qualifyLine = qualifyLineFor(rows.length);
+
+  /**
+   * すぐ上の相手までの点差。
+   * 順位を見せるだけだと「遠い」で終わってしまうが、点差まで見せると
+   * 「あと○点なら次の1問で届く」と分かり、順位が現実の目標になる。
+   * 同点では抜けないので +1 して「抜くのに必要な点」を出す。
+   */
+  const chaseInfo = useMemo(() => {
+    if (!myRow || myRow.rank <= 1) return null;
+    const above = rows.filter((r) => r.rank < myRow.rank);
+    if (above.length === 0) return null;
+    const target = above.reduce((best, cur) => (cur.rank > best.rank ? cur : best), above[0]);
+    return {
+      gap: Math.max(1, target.score - myRow.score + 1),
+      targetRank: target.rank,
+      targetName: target.nickname,
+    };
+  }, [rows, myRow]);
+
+  /** 首位のときに見せる「2位との差」＝守るべきリード */
+  const defendInfo = useMemo(() => {
+    if (!myRow || myRow.rank !== 1) return null;
+    const second = rows.find((r) => r.rank === 2);
+    if (!second) return null;
+    return Math.max(0, myRow.score - second.score);
+  }, [rows, myRow]);
+
   return (
     <div className="w-full min-h-screen bg-[#FDFBF7] font-handwriting pb-32">
       <div className="max-w-3xl mx-auto px-4 py-6 md:py-8 relative">
@@ -209,33 +240,84 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
           </div>
         )}
 
+        {/* 上位3名の表彰台。
+            一覧だけだと1位も4位も同じ高さの行で「頂点に立つ」感覚が出ないため、
+            国際大会の順位発表と同じく台の形で見せる。下の一覧は今までどおり残す。 */}
+        {rows.length > 0 && (
+          <div className="relative z-10 mb-4">
+            <RankingPodium
+              entries={rows.slice(0, 3).map((r) => ({
+                rank: r.rank,
+                nickname: r.nickname,
+                photoURL: r.photoURL,
+                score: r.score,
+                isMe: r.isMe,
+              }))}
+            />
+          </div>
+        )}
+
         {/* 自分の順位サマリー */}
         {!isGuest && me && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative z-10 mb-4 bg-[#1B2631] text-white rounded-2xl p-4 shadow-md flex items-center justify-between"
+            className="relative z-10 mb-4 bg-[#1B2631] text-white rounded-2xl p-4 shadow-md"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
-                {me.photoURL ? (
-                  <img src={me.photoURL} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                ) : (
-                  <User size={18} />
-                )}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                  {me.photoURL ? (
+                    <img src={me.photoURL} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  ) : (
+                    <User size={18} />
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-widest opacity-60">あなた</p>
+                  <p className="text-sm font-bold truncate max-w-[180px]">{myRow?.nickname || '—'}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest opacity-60">あなた</p>
-                <p className="text-sm font-bold truncate max-w-[180px]">{myRow?.nickname || '—'}</p>
+              <div className="text-right shrink-0">
+                <p className="text-[10px] uppercase tracking-widest opacity-60">順位 / スコア</p>
+                <p className="text-lg font-bold font-handwriting tabular-nums">
+                  {myRow ? `${myRow.rank}位` : (scope === 'friends' ? '未参加' : '圏外')}
+                  <span className="text-xs opacity-70 ml-2">{myRow ? `${myRow.score} pt` : ''}</span>
+                </p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-[10px] uppercase tracking-widest opacity-60">順位 / スコア</p>
-              <p className="text-lg font-bold font-handwriting tabular-nums">
-                {myRow ? `${myRow.rank}位` : (scope === 'friends' ? '未参加' : '圏外')}
-                <span className="text-xs opacity-70 ml-2">{myRow ? `${myRow.score} pt` : ''}</span>
+
+            {/* すぐ上の相手までの点差。
+                「あと○点で○位」まで示すと、順位が“届く距離”になり本気になれる。
+                順位そのものより、この点差の方が次の行動を決める情報になる。 */}
+            {chaseInfo && (
+              <div className="mt-3 pt-3 border-t border-white/15 flex items-center gap-2 text-xs">
+                <TrendingUp size={14} className="text-[#F4D03F] shrink-0" />
+                <p className="font-bold min-w-0 truncate">
+                  あと<span className="text-[#F4D03F] tabular-nums mx-1 text-sm">{chaseInfo.gap}</span>pt で
+                  <span className="mx-1">{chaseInfo.targetRank}位</span>
+                  <span className="opacity-60">（{chaseInfo.targetName}）</span>
+                </p>
+              </div>
+            )}
+            {myRow && myRow.rank === 1 && (
+              <div className="mt-3 pt-3 border-t border-white/15 flex items-center gap-2 text-xs">
+                <Crown size={14} className="text-[#F4D03F] shrink-0" />
+                <p className="font-bold">
+                  首位を守っています。
+                  {defendInfo != null && (
+                    <span className="opacity-70 ml-1">2位との差 {defendInfo} pt</span>
+                  )}
+                </p>
+              </div>
+            )}
+            {qualifyLine != null && myRow && myRow.rank > 1 && (
+              <p className="mt-2 text-[10px] font-bold opacity-70">
+                {myRow.rank <= qualifyLine
+                  ? `上位${qualifyLine}位以内（圏内）を維持中`
+                  : `上位${qualifyLine}位以内が当面の目標ライン`}
               </p>
-            </div>
+            )}
           </motion.div>
         )}
 
@@ -264,8 +346,20 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
           ) : (
             <ul className="divide-y divide-gray-100">
               {rows.map((r) => (
+                <React.Fragment key={`${r.uid}-${r.rank}`}>
+                {/* 進出ラインの区切り。
+                    ここに線が1本あるだけで「あと1つ上がれば圏内」という当落線が生まれ、
+                    順位そのものに意味が出る（グループリーグ突破ラインと同じ考え方）。 */}
+                {qualifyLine != null && r.rank === qualifyLine + 1 && (
+                  <li className="flex items-center gap-2 px-4 py-1.5 bg-[#FDFBF7] border-y border-dashed border-[#D4A017]/50">
+                    <span className="h-px flex-1 bg-[#D4A017]/30" />
+                    <span className="text-[10px] font-bold text-[#A47C0A] whitespace-nowrap">
+                      上位{qualifyLine}位ライン
+                    </span>
+                    <span className="h-px flex-1 bg-[#D4A017]/30" />
+                  </li>
+                )}
                 <li
-                  key={`${r.uid}-${r.rank}`}
                   className={`flex items-center gap-3 px-4 py-3 transition-colors ${
                     r.isMe ? 'bg-[#F4D03F]/15 border-l-4 border-[#F4D03F]' : 'hover:bg-gray-50'
                   }`}
@@ -290,6 +384,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
                     <span className="text-[10px] text-gray-400 ml-1">pt</span>
                   </p>
                 </li>
+                </React.Fragment>
               ))}
             </ul>
           )}

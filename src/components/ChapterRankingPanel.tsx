@@ -3,6 +3,7 @@ import { Trophy, TrendingUp, Users, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { auth } from '../firebase';
 import { fetchChapterRanking } from '../utils/leaderboard';
+import { RankingPodium } from './RankingPodium';
 
 interface ChapterRankingPanelProps {
   chapterId: string;
@@ -16,10 +17,15 @@ interface RankingData {
   topScores: Array<{
     rank: number;
     nickname: string;
+    photoURL?: string;
     score: number;
     isCurrentUser: boolean;
   }>;
   percentile: number;
+  /** すぐ上の相手までの点差。「あと○点で○位」を出すために使う */
+  chase: { gap: number; targetRank: number; targetName: string } | null;
+  /** 首位のときの2位との差（守るべきリード） */
+  lead: number | null;
 }
 
 export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRankingPanelProps) {
@@ -50,6 +56,7 @@ export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRa
         const topScores = topRanking.slice(0, 3).map((row) => ({
           rank: row.rank,
           nickname: row.entry.nickname || '名無しの化学者',
+          photoURL: row.entry.photoURL,
           score: row.entry.bestScore,
           isCurrentUser: row.entry.uid === uid,
         }));
@@ -59,7 +66,28 @@ export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRa
           Math.round(((totalParticipants - userRank + 1) / totalParticipants) * 100)
         );
 
-        setRanking({ userRank, totalParticipants, topScores, percentile });
+        // すぐ上の相手までの点差を出す。
+        // 「#5」だけでは次に何をすればよいか分からないが、
+        // 「あと18点で4位」まで示せば、次の1問が具体的な意味を持つ。
+        const above = topRanking.filter((row) => row.rank < userRank);
+        const chase =
+          above.length > 0
+            ? (() => {
+                const target = above.reduce((best, cur) => (cur.rank > best.rank ? cur : best), above[0]);
+                return {
+                  gap: Math.max(1, (target.entry.bestScore || 0) - userScore + 1),
+                  targetRank: target.rank,
+                  targetName: target.entry.nickname || '名無しの化学者',
+                };
+              })()
+            : null;
+
+        // 首位なら「2位との差」＝守るべきリードを出す
+        const second = topRanking.find((row) => row.rank === 2);
+        const lead =
+          userRank === 1 && second ? Math.max(0, userScore - (second.entry.bestScore || 0)) : null;
+
+        setRanking({ userRank, totalParticipants, topScores, percentile, chase, lead });
       } catch (error) {
         console.error('Failed to fetch ranking:', error);
         setRanking(null);
@@ -89,12 +117,8 @@ export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRa
 
   if (!ranking) return null;
 
-  const getRankBadge = (rank: number) => {
-    if (rank === 1) return '1st';
-    if (rank === 2) return '2nd';
-    if (rank === 3) return '3rd';
-    return `#${rank}`;
-  };
+  // 順位の見せ方は RankingPodium（表彰台）に一元化したので、
+  // ここで文字列バッジ（1st/2nd/3rd）を組み立てる必要はなくなった。
 
   return (
     <AnimatePresence>
@@ -110,6 +134,22 @@ export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRa
           <h3 className="text-base font-bold text-[#2C3E50] md:text-lg">ランキング</h3>
         </div>
 
+        {/* 上位3名の表彰台。
+            解き終わった直後にいちばん見たいのは「頂点が誰か」と「自分との距離」。
+            一覧より台の形の方が高さの差でそれが一目で伝わる。 */}
+        {ranking.topScores.length > 0 && (
+          <RankingPodium
+            entries={ranking.topScores.map((entry) => ({
+              rank: entry.rank,
+              nickname: entry.nickname,
+              photoURL: entry.photoURL,
+              score: entry.score,
+              isMe: entry.isCurrentUser,
+            }))}
+            className="mb-4"
+          />
+        )}
+
         <div className="mb-4 rounded-xl border-2 border-[#F4D03F]/40 bg-white p-4 md:p-5">
           <div className="mb-3 flex items-center justify-between">
             <span className="text-sm font-semibold text-gray-600 md:text-base">あなたの順位</span>
@@ -122,39 +162,36 @@ export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRa
               <span className="font-bold text-green-600">上位 {ranking.percentile}%</span>
             </div>
           </div>
-        </div>
 
-        <div className="space-y-2 md:space-y-3">
-          <h4 className="px-1 text-xs font-bold text-gray-600 md:text-sm">トップスコア</h4>
-          {ranking.topScores.length === 0 ? (
-            <div className="rounded-lg border border-gray-200 bg-white/70 p-3 text-sm text-gray-500">
-              まだランキングデータがありません。
+          {/* あと何点で1つ上か。
+              順位だけだと「遠い」で終わるが、点差まで見えると
+              「次の1問で届く」と分かり、もう1章やる理由になる。 */}
+          {ranking.chase && (
+            <div className="mt-3 flex items-center gap-2 rounded-lg border border-[#F4D03F]/50 bg-[#FFF8E1] px-3 py-2">
+              <Zap className="h-4 w-4 shrink-0 text-orange-500" />
+              <p className="min-w-0 truncate text-xs font-bold text-[#2C3E50] md:text-sm">
+                あと<span className="mx-1 text-base tabular-nums text-[#D4A017]">{ranking.chase.gap}</span>点で
+                {ranking.chase.targetRank}位
+                <span className="ml-1 font-normal text-gray-500">（{ranking.chase.targetName}）</span>
+              </p>
             </div>
-          ) : (
-            ranking.topScores.map((entry) => (
-              <motion.div
-                key={`${entry.rank}-${entry.nickname}`}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: entry.rank * 0.1 }}
-                className={`flex items-center gap-2 rounded-lg border-2 p-3 transition-all md:gap-3 md:p-4 ${
-                  entry.isCurrentUser
-                    ? 'border-[#F4D03F]/80 bg-gradient-to-r from-[#F4D03F]/20 to-[#F4D03F]/10'
-                    : 'border-gray-200 bg-gray-50 hover:border-gray-300'
-                }`}
-              >
-                <span className="w-10 text-sm font-black text-[#2C3E50]">{getRankBadge(entry.rank)}</span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-semibold text-gray-800 md:text-sm">{entry.nickname}</p>
-                </div>
-                <span className="ml-auto text-sm font-bold text-[#2C3E50] md:text-base">{entry.score}点</span>
-                {entry.isCurrentUser && (
-                  <span className="ml-2 rounded bg-white px-2 py-1 text-xs font-bold text-[#D4A017]">YOU</span>
-                )}
-              </motion.div>
-            ))
+          )}
+          {ranking.lead != null && (
+            <div className="mt-3 flex items-center gap-2 rounded-lg border border-[#F4D03F]/50 bg-[#FFF8E1] px-3 py-2">
+              <Trophy className="h-4 w-4 shrink-0 text-[#D4A017]" />
+              <p className="text-xs font-bold text-[#2C3E50] md:text-sm">
+                首位です。2位との差は
+                <span className="mx-1 text-base tabular-nums text-[#D4A017]">{ranking.lead}</span>点
+              </p>
+            </div>
           )}
         </div>
+
+        {ranking.topScores.length === 0 && (
+          <div className="rounded-lg border border-gray-200 bg-white/70 p-3 text-sm text-gray-500">
+            まだランキングデータがありません。
+          </div>
+        )}
 
         {ranking.userRank > 10 && (
           <motion.div

@@ -1,7 +1,6 @@
-import React, { useCallback, useState } from 'react';
-import { RefreshCw } from 'lucide-react';
+import React, { useState } from 'react';
 import { auth } from '../firebase';
-import { mascotTips, TIP_CATEGORIES, TIP_TOTAL } from '../data/mascotTips';
+import { mascotTips } from '../data/mascotTips';
 import { markTipSeen, pickTip, readLastTipId, readSeenTipIds, resetSeenTips } from '../utils/tipRotation';
 
 // 添付されたとびら君キャラクター（9種）。public/mascots に配置。
@@ -28,8 +27,14 @@ const currentUid = (): string => auth.currentUser?.uid || 'guest';
 
 /**
  * 1つ選んで「既読」として記録する。
+ *
  * ★未読を優先するので、開き続けていれば必ず全部の豆知識に出会える★
  * （以前は毎回ただのランダムで、一度も出ないものが残っていた）
+ *
+ * この仕組みは画面には一切出さない「裏方」である。
+ * 分野バッジ・読了カウンター・「別の豆知識を見る」ボタンは廃止したため、
+ * 見た目は従来どおり「とびら君がひとこと言うだけ」に戻っている。
+ * それでも取りこぼしが出ないよう、選び方だけは賢いままにしておく。
  */
 function selectTip() {
   const uid = currentUid();
@@ -38,22 +43,14 @@ function selectTip() {
   markTipSeen(uid, picked.tip.id);
   // ちょうど全部読み切ったら、次の巡のために既読をリセットする
   if (picked.justCompleted) resetSeenTips(uid);
-  return picked;
+  return picked.tip;
 }
 
 export function DoorMascot({ className = '', showSpeech = true, size = 'normal' }: DoorMascotProps) {
   // マスコットの絵柄は表示ごとにランダム（従来どおり）
-  const [mascot, setMascot] = useState(() => mascots[Math.floor(Math.random() * mascots.length)]);
+  const [mascot] = useState(() => mascots[Math.floor(Math.random() * mascots.length)]);
   // 吹き出しを出さない使い方（アイコン用途）では豆知識を選ばない
-  const [picked, setPicked] = useState(() => (showSpeech ? selectTip() : null));
-
-  /** 「別の豆知識を見る」──読みたい人が自分のペースで次へ進めるようにする */
-  const showNext = useCallback(() => {
-    setMascot(mascots[Math.floor(Math.random() * mascots.length)]);
-    setPicked(selectTip());
-  }, []);
-
-  const category = picked ? TIP_CATEGORIES[picked.tip.category] : null;
+  const [tip] = useState(() => (showSpeech ? selectTip() : null));
 
   return (
     <div className={`flex items-end gap-3 min-w-0 ${showSpeech ? 'w-full' : ''} ${className}`}>
@@ -66,45 +63,12 @@ export function DoorMascot({ className = '', showSpeech = true, size = 'normal' 
           className="max-w-full max-h-full object-contain drop-shadow-md select-none"
         />
       </div>
-      {showSpeech && picked && (
+      {showSpeech && tip && (
         // 吹き出しは残り幅いっぱいに広がり（flex-1 + min-w-0）、横はみ出し・テキスト切れを防ぐ
         <div className="relative bg-white/95 border border-[#F0C7D2]/70 rounded-2xl px-4 py-3 shadow-[0_10px_24px_-14px_rgba(217,160,160,0.65)] flex-1 min-w-0 mb-1">
           {/* 吹き出しの三角（左向き、マスコット側を指す） */}
           <div className="absolute left-[-7px] top-7 w-4 h-4 bg-white/95 border-l border-b border-[#F0C7D2]/70 rotate-45" />
-
-          {/* 上段：分野バッジ＋読んだ数。
-              「何の話か」が一目で分かり、集めていく手応えも作る。 */}
-          <div className="flex items-center justify-between gap-2 mb-1.5">
-            {category && (
-              <span className="inline-flex items-center gap-1 shrink-0 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFF1F5] text-[#B03A5B] border border-[#F0C7D2]">
-                <span aria-hidden="true">{category.emoji}</span>
-                <span>{category.label}</span>
-              </span>
-            )}
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span className="text-[9px] sm:text-[10px] font-bold text-[#B03A5B]/70 tabular-nums">
-                {picked.seenCount}／{picked.total}個
-              </span>
-              <button
-                type="button"
-                onClick={showNext}
-                aria-label="別の豆知識を見る"
-                title="別の豆知識を見る"
-                className="p-1 rounded-full text-[#D9466E] hover:bg-[#FFF1F5] active:scale-95 transition"
-              >
-                <RefreshCw size={12} />
-              </button>
-            </div>
-          </div>
-
-          <p className="text-[11px] sm:text-xs leading-relaxed text-[#2C3E50] font-bold font-handwriting break-words">{picked.tip.text}</p>
-
-          {/* 全部読み切った瞬間だけ、ねぎらいを添える */}
-          {picked.seenCount === TIP_TOTAL && (
-            <p className="mt-1.5 text-[9px] sm:text-[10px] font-bold text-[#D9466E]">
-              🎉 豆知識を{TIP_TOTAL}個ぜんぶ読みました！ここからもう一巡します。
-            </p>
-          )}
+          <p className="text-[11px] sm:text-xs leading-relaxed text-[#2C3E50] font-bold font-handwriting break-words">{tip.text}</p>
         </div>
       )}
     </div>
