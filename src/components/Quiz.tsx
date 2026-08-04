@@ -238,15 +238,21 @@ const scrollInputIntoView = (target: HTMLElement) => {
     const rect = target.getBoundingClientRect();
     // 可視領域の下端（キーボード上端に相当）
     const visibleBottom = vv.offsetTop + vv.height;
-    // 入力欄の下端が可視領域の下端より下（＝キーボードに隠れている）なら、
+    // フローティング解答バーはキーボードの上に重なって表示されるため、
+    // 「可視領域の下端」だけを基準にするとバーの裏に隠れてしまう。
+    // 実際のバーの高さを測って遮蔽領域として差し引く。
+    // （入力欄拡大でバーが高くなったぶん、この補正がないと選択中の空欄が隠れる）
+    const bar = document.getElementById('floating-answer-bar');
+    const barHeight = bar ? bar.getBoundingClientRect().height : 0;
+    // 入力欄の下端が実効可視下端より下（＝キーボード／バーに隠れている）なら、
     // 余白 24px を確保してスクロールする。
     const margin = 24;
-    const overflowBottom = rect.bottom - (visibleBottom - margin);
+    const overflowBottom = rect.bottom - (visibleBottom - margin - barHeight);
     if (overflowBottom > 0) {
       window.scrollBy({ top: overflowBottom, behavior: 'smooth' });
       return;
     }
-    // 入力欄が可視領域の上に隠れている場合
+    // 入力欄が可視領域の上に隠れている場合（上端側はバーの高さと無関係）
     const overflowTop = (vv.offsetTop + margin) - rect.top;
     if (overflowTop > 0) {
       window.scrollBy({ top: -overflowTop, behavior: 'smooth' });
@@ -366,13 +372,15 @@ function ChemistryPalette({
         <span>化学記号パレット</span>
         <span className="font-normal text-stone-400">（タップで入力欄のカーソル位置に挿入）</span>
       </div>
-      <div className="flex flex-col gap-2 max-h-[220px] md:max-h-none overflow-y-auto">
+      {/* ボタンを 44px 角に拡大したぶん全体が縦に伸びるため、スマホでのスクロール
+          領域を 220px → 240px に微増し、1画面に見える行数を保つ。 */}
+      <div className="flex flex-col gap-2.5 max-h-[240px] md:max-h-none overflow-y-auto">
         {chemistryPaletteGroups.map((grp) => (
-          <div key={grp.group} className="flex flex-col gap-1">
-            <div className="text-[10px] md:text-[11px] text-stone-400 font-bold select-none px-0.5">
+          <div key={grp.group} className="flex flex-col gap-1.5">
+            <div className="text-[11px] text-stone-400 font-bold select-none px-0.5">
               {grp.group}
             </div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {grp.items.map((item) => (
                 <button
                   key={item.label}
@@ -380,7 +388,9 @@ function ChemistryPalette({
                   // マウス/タッチダウンでの入力欄フォーカス喪失を防ぐ（キャレット維持のため）。
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => insert(item.value)}
-                  className="min-w-[44px] min-h-[36px] px-2.5 py-1.5 bg-white border border-stone-200 hover:border-stone-400 hover:bg-stone-100 rounded-lg text-sm md:text-sm font-bold text-stone-700 font-sans shadow-xs cursor-pointer transition-colors flex items-center justify-center gap-1 active:scale-95"
+                  // 記号は連続でタップするため、1つあたり 44px 角以上を確保する
+                  // （以前は min-h-[36px] で誤タップしやすかった）。
+                  className="min-w-[2.75rem] min-h-[2.75rem] px-3 py-2 bg-white border border-stone-200 hover:border-stone-400 hover:bg-stone-100 rounded-lg text-[15px] font-bold text-stone-700 font-sans shadow-xs cursor-pointer transition-colors flex items-center justify-center gap-1 active:scale-95"
                   title={item.desc}
                   aria-label={item.desc}
                 >
@@ -743,7 +753,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     return (
       <div className={isLongOptionList
         ? "grid grid-cols-1 gap-2.5 w-full"
-        : "grid grid-cols-2 xs:grid-cols-3 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
+        // 注：以前ここに xs:grid-cols-3 があったが、Tailwind v4 の @theme に
+        // xs ブレークポイントは未定義で「効かないクラス」だった。スマホで列数を
+        // 増やすと1つあたりのタップ幅が狭くなり本要件（タップしづらい）に逆行する
+        // ため、ブレークポイントを追加せずクラスを削除している。
+        : "grid grid-cols-2 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
       }>
         {sq.options.map((opt: string) => {
           const isSelected = isMultiple
@@ -766,7 +780,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   handleOptionSelect(sq.id, isSelected ? '' : opt);
                 }
               }}
-              className={`px-4 py-2.5 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${isLongOptionList ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3rem] shadow-sm cursor-pointer
+              // スマホは 48px 以上の高さ・幅を確保してタップしやすくする（PC は従来寸法）。
+              className={`px-4 py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${isLongOptionList ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3.25rem] md:min-w-[3rem] shadow-sm cursor-pointer
                 ${isSelected
                   ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30 scale-[1.01]'
                   : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
@@ -844,10 +859,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         setTapSortSelect(null);
                       }
                     }}
-                    className="flex-1 flex items-center gap-2 text-left min-w-0 cursor-pointer"
+                    className="flex-1 flex items-center gap-2 text-left min-w-0 min-h-[2.75rem] cursor-pointer"
                   >
-                    <GripVertical size={14} className={`shrink-0 ${isSelected ? 'text-[#A9CCE3]' : 'text-gray-400'}`} />
-                    <span className="font-bold text-gray-800 text-[15px] break-words">{formatText(item)}</span>
+                    <GripVertical size={16} className={`shrink-0 ${isSelected ? 'text-[#A9CCE3]' : 'text-gray-400'}`} />
+                    <span className="font-bold text-gray-800 text-[16px] break-words">{formatText(item)}</span>
                   </button>
                   {/* ◀▶ 移動ボタン（確実な操作手段） */}
                   <div className="flex items-center gap-1 shrink-0">
@@ -856,22 +871,23 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       aria-label="1つ上へ移動"
                       disabled={idx === 0}
                       onClick={() => { reorderSort(sq.id, activeOrder, idx, idx - 1); setTapSortSelect(null); }}
-                      className={`flex items-center justify-center w-8 h-8 rounded-lg border transition-colors ${
+                      // ▲▼ は 32px 角では隣同士を誤タップしやすいため 44px 角に拡大。
+                      className={`flex items-center justify-center w-11 h-11 rounded-lg border transition-colors ${
                         idx === 0 ? 'border-gray-150 text-gray-300 bg-gray-50' : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
                       }`}
                     >
-                      <ChevronLeft size={16} className="stroke-[2.5] -rotate-90" />
+                      <ChevronLeft size={18} className="stroke-[2.5] -rotate-90" />
                     </button>
                     <button
                       type="button"
                       aria-label="1つ下へ移動"
                       disabled={idx === activeOrder.length - 1}
                       onClick={() => { reorderSort(sq.id, activeOrder, idx, idx + 1); setTapSortSelect(null); }}
-                      className={`flex items-center justify-center w-8 h-8 rounded-lg border transition-colors ${
+                      className={`flex items-center justify-center w-11 h-11 rounded-lg border transition-colors ${
                         idx === activeOrder.length - 1 ? 'border-gray-150 text-gray-300 bg-gray-50' : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
                       }`}
                     >
-                      <ChevronRight size={16} className="stroke-[2.5] rotate-90" />
+                      <ChevronRight size={18} className="stroke-[2.5] rotate-90" />
                     </button>
                   </div>
                 </div>
@@ -1571,7 +1587,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             固定バーに隠れないよう下部余白を大きめに確保する。
             ページ全体は fixed inset-0 + overflow-hidden で固定され、スワイプ/ページ
             スクロールでの問題送りは発生しない。問題送りは固定バーの前へ/次へのみ。 */}
-        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 ${isDesktop ? 'pb-8' : 'pb-[calc(6rem+env(safe-area-inset-bottom))]'} relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
+        {/* 下部余白：入力欄の拡大でフローティング解答バーが高くなったため、
+            最後の解答カードがバーに隠れないよう 6rem → 9rem に広げる。 */}
+        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 ${isDesktop ? 'pb-8' : 'pb-[calc(9rem+env(safe-area-inset-bottom))]'} relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
             {groupedSubQuestions.map((g: any, gIdx: number) => {
@@ -1582,19 +1600,27 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       {formatText(g.groupName)}
                     </span>
                     
-                    <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3 w-full">
+                    {/*
+                      空欄グリッドの列数（スマホ入力UI改善）
+                      ─────────────────────────────────────────────
+                      以前は grid-cols-3（＋効いていない xs:grid-cols-4）で、375px 幅の
+                      端末では 1 セルが約 90px しかなく、タップ・視認ともに窮屈だった。
+                      スマホでは 2 列に減らして 1 セルあたりの幅を約 1.5 倍に広げる。
+                      sm 以上は従来どおり列数を増やし、PC の見た目は変えない。
+                    */}
+                    <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-6 gap-2.5 sm:gap-3 w-full">
                       {g.items.map((sq: any) => {
                         const isFocusedBlank = focusedSubId === sq.id;
                         return (
                         <div
                           key={sq.id}
-                          className={`flex flex-col gap-1.5 min-w-[50px] p-2 border rounded-xl shadow-2xs transition-colors ${
+                          className={`flex flex-col gap-1.5 min-w-[50px] p-2.5 sm:p-2 border rounded-xl shadow-2xs transition-colors ${
                             isFocusedBlank
                               ? 'bg-[#A9CCE3]/20 border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40'
                               : 'bg-stone-50/80 border-stone-200/60'
                           }`}
                         >
-                          <span className="font-bold text-stone-500 text-xs text-center border-b border-stone-200/60 pb-1 select-none font-sans">
+                          <span className="font-bold text-stone-500 text-[13px] sm:text-xs text-center border-b border-stone-200/60 pb-1.5 sm:pb-1 select-none font-sans">
                             {sq.label}
                           </span>
                           {isDesktop ? (
@@ -1609,16 +1635,29 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                           ) : (
                             // スマホ：表示専用チップ。タップで当該空欄を選択し、
                             // 下部フローティングバーで入力する（要件1：二重入力の解消）。
+                            //
+                            // タップ領域について（スマホ入力UI改善）
+                            // ───────────────────────────────────────
+                            // 以前は min-h-[1.75rem]（=28px）で、iOS ヒューマンインターフェイス
+                            // ガイドラインおよび Material の推奨最小タップサイズ 44px を大きく
+                            // 下回っていた。これが「入力欄が小さくタップしづらい」の主原因。
+                            // 44px を最低ラインとして満たすだけでは指の当たり判定に余裕がない
+                            // ため 48px を確保し、文字も本文最小 16px に揃える。
+                            // 枠線と背景を与えて「ここが入力欄」であることも明示する。
                             <button
                               type="button"
                               id={`ans-card-${sq.id}`}
                               onClick={() => setFocusedSubId(sq.id)}
                               aria-label={`${sq.label} の解答を入力`}
-                              className="w-full min-h-[1.75rem] py-1 text-center text-sm font-bold text-stone-800 leading-none bg-transparent cursor-text"
+                              className={`w-full min-h-[3rem] px-2 py-1.5 flex items-center justify-center text-center text-[16px] font-bold text-stone-800 leading-snug rounded-lg border transition-colors cursor-text ${
+                                isFocusedBlank
+                                  ? 'bg-white border-[#A9CCE3]'
+                                  : 'bg-white/70 border-stone-200/70'
+                              }`}
                             >
                               {answers[sq.id]
                                 ? <span className="break-all">{answers[sq.id]}</span>
-                                : <span className="text-stone-300">タップ</span>}
+                                : <span className="text-stone-300 text-[15px]">タップ</span>}
                             </button>
                           )}
                         </div>
@@ -1658,7 +1697,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                           id={`ans-card-${sq.id}`}
                           onClick={() => setFocusedSubId(sq.id)}
                           aria-label={`${sq.label} の解答を選択`}
-                          className={`relative w-full text-left px-4 py-2.5 min-h-[2.75rem] text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-pointer ${
+                          // タップ領域は 48px 以上（44px の最小推奨に余裕を持たせる）。
+                          className={`relative w-full text-left px-4 py-3 min-h-[3.25rem] flex items-center text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-pointer ${
                             focusedSubId === sq.id
                               ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
                               : 'border-gray-300 bg-gray-50'
@@ -1680,7 +1720,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                           id={`ans-card-${sq.id}`}
                           onClick={() => setFocusedSubId(sq.id)}
                           aria-label={`${sq.label} の順序を並べ替え`}
-                          className={`relative w-full text-left px-4 py-2.5 min-h-[2.75rem] text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-pointer ${
+                          // タップ領域は 48px 以上（44px の最小推奨に余裕を持たせる）。
+                          className={`relative w-full text-left px-4 py-3 min-h-[3.25rem] flex items-center text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-pointer ${
                             focusedSubId === sq.id
                               ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
                               : 'border-gray-300 bg-gray-50'
@@ -1723,13 +1764,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             id={`ans-card-${sq.id}`}
                             onClick={() => setFocusedSubId(sq.id)}
                             aria-label={`${sq.label} の解答を入力`}
-                            className={`relative w-full text-left pl-9 pr-4 py-2.5 min-h-[3.5rem] text-[16px] rounded-xl border transition-all font-modern leading-relaxed whitespace-pre-wrap break-words cursor-text ${
+                            // 記述・計算は複数行を書くため、他形式より広い高さ（約 80px）を確保する。
+                            className={`relative w-full text-left pl-10 pr-4 py-3 min-h-[5rem] text-[16px] rounded-xl border transition-all font-modern leading-relaxed whitespace-pre-wrap break-words cursor-text ${
                               focusedSubId === sq.id
                                 ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
                                 : 'border-gray-300 bg-gray-50'
                             }`}
                           >
-                            <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
+                            <Edit3 className="absolute left-3 top-3.5 text-gray-400" size={17} />
                             {answers[sq.id]
                               ? <span className="text-gray-800">{answers[sq.id]}</span>
                               : <span className="text-gray-400">解答を入力...</span>}
@@ -1768,13 +1810,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             id={`ans-card-${sq.id}`}
                             onClick={() => setFocusedSubId(sq.id)}
                             aria-label={`${sq.label} の解答を入力`}
-                            className={`relative w-full text-left pl-9 pr-4 py-2.5 min-h-[2.75rem] text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-text ${
+                            // タップ領域は 48px 以上（44px の最小推奨に余裕を持たせる）。
+                            className={`relative w-full text-left pl-10 pr-4 py-3 min-h-[3.25rem] flex items-center text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-text ${
                               focusedSubId === sq.id
                                 ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
                                 : 'border-gray-300 bg-gray-50'
                             }`}
                           >
-                            <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                            <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={17} />
                             {answers[sq.id]
                               ? <span className="text-gray-800">{answers[sq.id]}</span>
                               : <span className="text-gray-400">解答を入力...</span>}
@@ -1871,7 +1914,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       */}
       {!isDesktop && focusedSub && (
         <div
-          className="fixed left-0 right-0 z-[60] bg-white border-t-2 border-[#A9CCE3]/60 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] px-3 pt-2.5 transition-[bottom] duration-150"
+          id="floating-answer-bar"
+          className="fixed left-0 right-0 z-[60] bg-white border-t-2 border-[#A9CCE3]/60 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] px-3 pt-3 transition-[bottom] duration-150"
           style={{
             bottom: keyboardOffset,
             // キーボード非表示時（オフセット0）はセーフエリア分の余白を確保
@@ -1881,7 +1925,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           <div className="max-w-2xl mx-auto flex flex-col gap-2">
             <div className="flex items-center justify-between gap-2">
               {/* 表示ルール3：解答入力パネルにも設問マーカーのみを表示（設問文は左の問題文欄で読む） */}
-              <span className="font-bold text-[#2C3E50] text-xs bg-blue-50/60 border border-[#A9CCE3]/40 px-2.5 py-1 rounded-lg truncate">
+              <span className="font-bold text-[#2C3E50] text-[13px] bg-blue-50/60 border border-[#A9CCE3]/40 px-3 py-1.5 rounded-lg truncate">
                 {formatText(
                   focusedSub.group
                     ? `${String(focusedSub.group).split(' ')[0]} : 係数 ${splitQuestionLabel(focusedSub.label || '', `問${focusedIndex + 1}`).marker || focusedSub.label}`
@@ -1895,30 +1939,33 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       type="button"
                       onClick={() => moveFocus(-1)}
                       disabled={focusedIndex <= 0}
-                      className={`flex items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+                      aria-label="前の空欄へ"
+                      // 空欄移動は入力中に最も多く押すボタン。44px 相当の高さを確保する。
+                      className={`flex items-center justify-center gap-0.5 px-3 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border transition-colors ${
                         focusedIndex <= 0
                           ? 'border-gray-200 text-gray-300 bg-gray-50'
                           : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
                       }`}
                     >
-                      <ChevronLeft size={14} className="stroke-[2.5]" />
+                      <ChevronLeft size={16} className="stroke-[2.5]" />
                       前へ
                     </button>
-                    <span className="text-[11px] text-gray-400 font-bold tabular-nums">
+                    <span className="text-xs text-gray-400 font-bold tabular-nums">
                       {focusedIndex + 1}/{inputNavSubs.length}
                     </span>
                     <button
                       type="button"
                       onClick={() => moveFocus(1)}
                       disabled={focusedIndex >= inputNavSubs.length - 1}
-                      className={`flex items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+                      aria-label="次の空欄へ"
+                      className={`flex items-center justify-center gap-0.5 px-3 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border transition-colors ${
                         focusedIndex >= inputNavSubs.length - 1
                           ? 'border-gray-200 text-gray-300 bg-gray-50'
                           : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
                       }`}
                     >
                       次へ
-                      <ChevronRight size={14} className="stroke-[2.5]" />
+                      <ChevronRight size={16} className="stroke-[2.5]" />
                     </button>
                   </>
                 )}
@@ -1929,7 +1976,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     barInputRef.current?.blur();
                     setFocusedSubId(null);
                   }}
-                  className="flex items-center px-3 py-1.5 rounded-lg text-xs font-bold border border-[#2C3E50] bg-[#2C3E50] text-white active:bg-[#1B2631]"
+                  className="flex items-center justify-center px-4 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border border-[#2C3E50] bg-[#2C3E50] text-white active:bg-[#1B2631]"
                 >
                   完了
                 </button>
@@ -1949,12 +1996,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               rows と改行可否のみ切り替える（課題2）。font-size は 16px を明示し、
               タップ時の自動ズームも防止する（課題1）。
             */}
+            {/* 選択肢・並べ替えはボタンを 48px 級に拡大したぶん縦に伸びるため、
+                スクロール領域を 42vh → 46vh に広げ、一覧性を保つ。 */}
             {focusedSub.type === 'multiple_choice' ? (
-              <div className="max-h-[42vh] overflow-y-auto py-1">
+              <div className="max-h-[46vh] overflow-y-auto py-1">
                 {renderMultipleChoiceControl(focusedSub)}
               </div>
             ) : focusedSub.type === 'sorting' ? (
-              <div className="max-h-[42vh] overflow-y-auto py-1">
+              <div className="max-h-[46vh] overflow-y-auto py-1">
                 {renderSortingControl(focusedSub)}
               </div>
             ) : (
@@ -1965,7 +2014,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   value={answers[focusedSub.id] || ''}
                   onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
                   placeholder={focusedSub.type === 'descriptive' ? '解答を入力...（改行可）' : '解答を入力...'}
-                  rows={focusedSub.type === 'descriptive' ? 2 : 1}
+                  // 行数（スマホ入力UI改善）
+                  // ─────────────────────────────────────────
+                  // 短答でも rows=1 は入力域が窮屈で、化学式の上付き・下付きが
+                  // 詰まって見えるため 2 行に広げる。記述・計算は 3 行に広げ、
+                  // 書いた内容を読み返しながら続きを書けるようにする。
+                  rows={focusedSub.type === 'descriptive' ? 3 : 2}
                   enterKeyHint={focusedIndex >= inputNavSubs.length - 1 ? 'done' : 'next'}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
@@ -1988,8 +2042,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       }
                     }
                   }}
-                  className={`w-full px-3 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none resize-none font-modern bg-gray-50 focus:bg-white leading-relaxed ${
-                    focusedSub.type === 'descriptive' ? 'py-2' : 'py-2.5'
+                  className={`w-full px-3.5 py-3 text-[16px] rounded-xl border-2 border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none resize-none font-modern bg-gray-50 focus:bg-white leading-relaxed ${
+                    focusedSub.type === 'descriptive' ? 'min-h-[6rem]' : 'min-h-[4.5rem]'
                   }`}
                 />
 
