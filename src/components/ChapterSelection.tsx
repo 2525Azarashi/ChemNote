@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { chemistryData } from '../data/chemistryData';
+import { chemistryAdvancedData, type AdvancedFieldId } from '../data/chemistryAdvancedData';
 import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
@@ -12,6 +13,15 @@ interface ChapterSelectionProps {
   mode: 'mini_test' | 'practice';
   onSelectChapter: (id: string, questionIndex?: number, resume?: boolean) => void;
   onBack: () => void;
+  /**
+   * 表示する科目。省略時は従来どおり化学基礎。
+   * 'chemistry' のときは、指定された分野（理論／無機／有機）の単元だけを表示する。
+   */
+  subject?: 'chemistry_basic' | 'chemistry';
+  /** 科目が 'chemistry' のときに表示する分野 */
+  field?: AdvancedFieldId;
+  /** 分野名（画面見出しに出す。化学のときのみ） */
+  fieldTitle?: string;
 }
 
 // chapterのIDから、対応するtrendDataの情報を取得するマッピング
@@ -57,29 +67,58 @@ const realTitleToChapterGroupTitle: Record<string, string> = {
   '6章 酸化還元反応': '6章 酸化還元反応',
 };
 
-const chapterGroups = chemistryData.parts.flatMap(part => {
-  const groups = new Map<string, any[]>();
+/**
+ * parts を「教科書の章（realTitle）」単位のタブにまとめる共通処理。
+ * 化学基礎・化学（発展）のどちらも同じ構造なので、そのまま使い回せる。
+ */
+function buildChapterGroups(parts: any[]) {
+  return parts.flatMap((part: any) => {
+    const groups = new Map<string, any[]>();
 
-  (part.chapters as any[]).forEach(chapter => {
-    const groupTitle = chapter.realTitle || 'その他';
-    const chapters = groups.get(groupTitle) || [];
-    chapters.push(chapter);
-    groups.set(groupTitle, chapters);
+    (part.chapters as any[]).forEach(chapter => {
+      const groupTitle = chapter.realTitle || 'その他';
+      const chapters = groups.get(groupTitle) || [];
+      chapters.push(chapter);
+      groups.set(groupTitle, chapters);
+    });
+
+    return Array.from(groups, ([title, chapters]) => ({
+      title,
+      chapters,
+      partId: part.id,
+      partTitle: part.title,
+    }));
   });
+}
 
-  return Array.from(groups, ([title, chapters]) => ({
-    title,
-    chapters,
-    partId: part.id,
-    partTitle: part.title,
-  }));
-});
+/** 化学基礎のタブ（従来どおりモジュール読み込み時に一度だけ作る） */
+const chapterGroups = buildChapterGroups(chemistryData.parts as any[]);
 
-export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelectionProps) {
+export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'chemistry_basic', field, fieldTitle }: ChapterSelectionProps) {
+  const isAdvanced = subject === 'chemistry';
+
+  /**
+   * 表示対象のタブ一覧。
+   * - 化学基礎：従来どおり全 parts
+   * - 化学    ：選択された分野（part）のみに絞る
+   */
+  const groups = useMemo(() => {
+    if (!isAdvanced) return chapterGroups;
+    const parts = chemistryAdvancedData.parts.filter(p => !field || p.field === field);
+    return buildChapterGroups(parts as any[]);
+  }, [isAdvanced, field]);
+
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null);
-  const [activeGroupTitle, setActiveGroupTitle] = useState(chapterGroups[0]?.title || '');
+  const [activeGroupTitle, setActiveGroupTitle] = useState(groups[0]?.title || '');
   const [selectedFlowchart, setSelectedFlowchart] = useState<{ id: string; title: string; questions: any[] } | null>(null);
-  const activeGroup = chapterGroups.find(group => group.title === activeGroupTitle) || chapterGroups[0];
+
+  // 分野を切り替えたときは、その分野の先頭の章を開き直す
+  useEffect(() => {
+    setActiveGroupTitle(groups[0]?.title || '');
+    setExpandedChapterId(null);
+  }, [groups]);
+
+  const activeGroup = groups.find(group => group.title === activeGroupTitle) || groups[0];
   // 出題傾向モーダルの状態
   const [trendModal, setTrendModal] = useState<{
     open: boolean;
@@ -106,6 +145,12 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
       <DoorMascot showSpeech={false} size="mini" className="absolute top-3 right-4 md:top-5 md:right-6 w-auto z-10" />
 
       <div className="shrink-0 text-center mb-3 mt-10 md:mt-0 font-handwriting">
+        {/* 化学（発展）では、今どの分野にいるかが分かるよう分野名を添える。 */}
+        {isAdvanced && fieldTitle && (
+          <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest text-[#D9A0A0]">
+            化学 ／ {fieldTitle}
+          </p>
+        )}
         <h2 className="text-xl md:text-3xl font-handwriting font-bold text-[#2C3E50] mb-1.5 md:mb-2">
           {mode === 'mini_test' ? '小テスト' : '演習問題'}
         </h2>
@@ -121,7 +166,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
             aria-label="章を選択"
             className="flex gap-1.5 overflow-x-auto pb-2 px-0.5 [scrollbar-width:thin]"
           >
-            {chapterGroups.map((group, index) => {
+            {groups.map((group, index) => {
               const isActive = group.title === activeGroup?.title;
               const chapterNumber = group.title.match(/^\d+章/)?.[0] || `${index + 1}章`;
               const shortTitle = group.title.replace(/^\d+章\s*/, '');
@@ -159,7 +204,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
           <section
             id="chapter-tab-panel"
             role="tabpanel"
-            aria-labelledby={`chapter-tab-${chapterGroups.indexOf(activeGroup)}`}
+            aria-labelledby={`chapter-tab-${groups.indexOf(activeGroup)}`}
             tabIndex={0}
             className="min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain rounded-2xl border border-slate-200/80 bg-white/35 p-3 pb-6 sm:p-4 sm:pb-6 [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable]"
           >
@@ -318,7 +363,9 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
 
         {/* ========== チュートリアル（単元選択の下） ==========
             物質量（mol）の考え方を配布プリントそのままの途中式で学べる
-            「物質量（mol）がわからない人へ」をチュートリアルとして常設表示する。 */}
+            「物質量（mol）がわからない人へ」をチュートリアルとして常設表示する。
+            ※ mol は化学基礎の内容なので、化学（発展）では表示しない。 */}
+        {!isAdvanced && (
         <div className="shrink-0 mt-3">
           <button
             type="button"
@@ -346,6 +393,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack }: ChapterSelec
             </span>
           </button>
         </div>
+        )}
       </div>
 
       {/* チュートリアル全画面モーダル */}

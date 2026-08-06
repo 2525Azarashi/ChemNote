@@ -49,6 +49,7 @@ import { NotebookScenery } from './NotebookScenery';
 import { FeedbackModal } from './FeedbackModal';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
 import { chemistryData } from '../data/chemistryData';
+import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
 
 /** アプリが扱う科目の識別子 */
 export type SubjectId = 'chemistry_basic' | 'chemistry' | 'english_listening';
@@ -125,6 +126,16 @@ export function SubjectSelection({ onSelectSubject, isGuest }: SubjectSelectionP
     return { chapters: chapters.length, questions };
   }, []);
 
+  /** 化学（発展）の収録ボリューム。問題は順次追加するため、単元数だけ先に表示する。 */
+  const advancedStats = useMemo(() => {
+    const chapters = getAllAdvancedChapters();
+    let questions = 0;
+    chapters.forEach((c) => {
+      questions += (c.practiceProblems || []).length + (c.miniTest || []).length;
+    });
+    return { chapters: chapters.length, questions };
+  }, []);
+
   const subjects: SubjectDefinition[] = useMemo(() => [
     {
       id: 'chemistry_basic',
@@ -143,13 +154,13 @@ export function SubjectSelection({ onSelectSubject, isGuest }: SubjectSelectionP
       id: 'chemistry',
       title: '化学',
       latin: 'Chemistry',
-      description: '理論・無機・有機を扱う「化学」。現在、鋭意制作中です。',
+      description: '理論・無機・有機を、教科書の順番どおりに配置。単元から選んで学習できます。',
       highlights: [
-        '理論化学（気体・溶液・平衡・反応速度）',
-        '無機化学（各元素の系統的性質）',
-        '有機化学（構造決定・高分子）',
+        `全${advancedStats.chapters}単元を教科書順で収録（問題は順次追加中）`,
+        '理論化学・無機化学・有機化学を分野別に選択',
+        '化学基礎と同じ単元画面・同じ演習の進め方',
       ],
-      available: false,
+      available: true,
       icon: FlaskConical,
     },
     {
@@ -165,7 +176,7 @@ export function SubjectSelection({ onSelectSubject, isGuest }: SubjectSelectionP
       available: false,
       icon: Headphones,
     },
-  ], [basicStats]);
+  ], [basicStats, advancedStats]);
 
   // ===================================================================
   // カルーセル（横スクロール）の制御

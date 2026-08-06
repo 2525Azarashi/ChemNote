@@ -3,6 +3,7 @@ import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, Shi
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
+import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
@@ -23,10 +24,12 @@ interface HomeProps {
   onChangeSubject?: () => void;
   /** 現在選択中の科目名（表示用） */
   subjectLabel?: string;
+  /** 現在選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
+  subject?: 'chemistry_basic' | 'chemistry';
   isGuest: boolean;
 }
 
-export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onChangeSubject, subjectLabel = '化学基礎', isGuest }: HomeProps) {
+export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest }: HomeProps) {
   const reviewDueCount = useMemo(() => {
     const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
     return getDueCount(uid);
@@ -42,7 +45,13 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   //   以前は miniTest の「小問」数だけを分母にしていたため、
   //   演習（practiceProblems＝大問の大多数）が丸ごと抜け落ちていた。
   // 分子：1点でも獲得した大問の数（utils/progress の台帳を参照）。
-  const allChaptersList = useMemo(() => chemistryData.parts.flatMap((p: any) => p.chapters), []);
+  // 科目に応じて集計対象の章を切り替える（化学基礎の振る舞いは従来のまま）。
+  const allChaptersList = useMemo(
+    () => (subject === 'chemistry'
+      ? (getAllAdvancedChapters() as any[])
+      : chemistryData.parts.flatMap((p: any) => p.chapters)),
+    [subject],
+  );
   const totalQuestions = useMemo(() => {
     return allChaptersList.reduce((sum: number, c: any) => {
       return sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0);
