@@ -381,7 +381,7 @@ NaClO + ［ア]HCl → NaCl + ［イ]H₂O + Cl₂  ……（2）
 // 予想問題は章IDを持たないため、各設問が扱うテーマに対応する
 // 単元の指導テンプレート（unitTeaching）を手動で割り当てている。
 // キーは「第何問-問番号」。
-const MOCK_EXAM_UNIT_MAP: Record<string, string> = {
+export const MOCK_EXAM_UNIT_MAP: Record<string, string> = {
   '1-1': 'c2_1',  // 陽子・中性子・電子の数と同位体
   '1-2': 'c2_3',  // イオン化エネルギー・電子親和力・電気陰性度
   '1-3': 'c3_2',  // 結晶の種類と結合

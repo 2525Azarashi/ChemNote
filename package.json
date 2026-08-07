@@ -11,6 +11,10 @@
     "lint": "tsc --noEmit",
     "lint:chem": "node scripts/lint-chem.mjs",
     "lint:chem:fix": "node scripts/lint-chem.mjs --fix",
+    "verify:format": "tsx scripts/verify-explanation-format.mjs",
+    "verify:coverage": "tsx scripts/verify-subquestion-coverage.mjs",
+    "verify:loss": "tsx scripts/verify-no-content-loss.mjs",
+    "verify": "npm run verify:format && npm run verify:coverage && npm run verify:loss",
     "test:rules": "firebase emulators:exec --only firestore --project mntb-rules-test \"vitest run\""
   },
   "dependencies": {

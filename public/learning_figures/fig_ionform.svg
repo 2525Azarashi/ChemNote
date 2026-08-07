@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 560" width="880" height="560" role="img" aria-label="陽イオン・陰イオンの生成（Na→Na⁺、Cl→Cl⁻）">
-<title>陽イオン・陰イオンの生成（Na→Na⁺、Cl→Cl⁻）</title>
-<desc>Naは電子1個を放出してNe型のNa⁺に、Clは電子1個を受け取ってAr型のCl⁻になる。陽子数と電子数の差が電荷になる。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 560" width="880" height="560" role="img" aria-label="陽イオン・陰イオンの生成（Na→Na+、Cl→Cl-）">
+<title>陽イオン・陰イオンの生成（Na→Na+、Cl→Cl-）</title>
+<desc>Naは電子1個を放出してNe型のNa+に、Clは電子1個を受け取ってAr型のCl-になる。陽子数と電子数の差が電荷になる。</desc>
 <style>
   .t{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#2f2740;}
   .s{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#6b6280;}
@@ -49,7 +49,7 @@
 <text x="324" y="100" class="t eb" font-size="13" text-anchor="middle" fill="#d94a6a">電子を 1 個</text>
 <text x="324" y="148" class="t eb" font-size="13" text-anchor="middle" fill="#d94a6a">放出する</text>
 <circle cx="324" cy="176" r="5.4" fill="#d94a6a" stroke="none" stroke-width="0"/>
-<text x="346" y="176" class="t eb" font-size="12" text-anchor="start" fill="#d94a6a">e⁻</text>
+<text x="346" y="176" class="t eb" font-size="12" text-anchor="start" fill="#d94a6a">e<tspan font-size="8.6" dy="-4.3">−</tspan></text>
 <circle cx="452" cy="128" r="22" fill="none" stroke="#b9b1c9" stroke-width="1.3"/>
 <circle cx="452" cy="128" r="40" fill="none" stroke="#b9b1c9" stroke-width="1.3"/>
 <circle cx="452" cy="128" r="15" fill="#f3ecff" stroke="#5b21b6" stroke-width="1.8"/>
@@ -64,7 +64,7 @@
 <circle cx="423.7157287525381" cy="156.2842712474619" r="4.6" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.2"/>
 <circle cx="412" cy="128" r="4.6" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.2"/>
 <circle cx="423.7157287525381" cy="99.7157287525381" r="4.6" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.2"/>
-<text x="452" y="204" class="t eb" font-size="19" text-anchor="middle" fill="#2f2740">Na⁺</text>
+<text x="437.78" y="204" class="t eb" font-size="19" text-anchor="start" fill="#2f2740">Na<tspan font-size="13.7" dy="-6.8">+</tspan></text>
 <text x="452" y="222" class="s b" font-size="11" text-anchor="middle">ナトリウムイオン</text>
 <text x="452" y="239" class="f b" font-size="10.5" text-anchor="middle">電子 10 個（2・8）</text>
 <rect x="560" y="62" width="296" height="132" rx="10" fill="#ffffff" stroke="#e8b48f" stroke-width="1.5"/>
@@ -72,7 +72,7 @@
 <text x="578" y="112" class="t b" font-size="12.5" text-anchor="start">陽子 11 個（＋11）</text>
 <text x="578" y="134" class="t b" font-size="12.5" text-anchor="start">電子 10 個（−10）</text>
 <line x1="578" y1="148" x2="838" y2="148" stroke="#b9b1c9" stroke-width="1.4" stroke-linecap="round"/>
-<text x="578" y="168" class="t eb" font-size="13" text-anchor="start" fill="#d94a6a">差し引き ＋1 → Na⁺</text>
+<text x="578" y="168" class="t eb" font-size="13" text-anchor="start" fill="#d94a6a">差し引き ＋1 → Na<tspan font-size="9.4" dy="-4.7">+</tspan></text>
 <text x="578" y="186" class="s b" font-size="11" text-anchor="start">電子配置は Ne と同じ（安定）</text>
 <rect x="14" y="270" width="852" height="244" rx="12" fill="#eff5fd" stroke="#8fb4e8" stroke-width="1.6"/>
 <rect x="30" y="284" width="118" height="26" rx="13" fill="#3a7bd5" stroke="none" stroke-width="0"/>
@@ -105,7 +105,7 @@
 <text x="324" y="352" class="t eb" font-size="13" text-anchor="middle" fill="#3a7bd5">電子を 1 個</text>
 <text x="324" y="400" class="t eb" font-size="13" text-anchor="middle" fill="#3a7bd5">受け取る</text>
 <circle cx="316" cy="426" r="5.4" fill="#3a7bd5" stroke="none" stroke-width="0"/>
-<text x="330" y="426" class="t eb" font-size="12" text-anchor="start" fill="#3a7bd5">e⁻</text>
+<text x="330" y="426" class="t eb" font-size="12" text-anchor="start" fill="#3a7bd5">e<tspan font-size="8.6" dy="-4.3">−</tspan></text>
 <circle cx="452" cy="380" r="22" fill="none" stroke="#b9b1c9" stroke-width="1.3"/>
 <circle cx="452" cy="380" r="40" fill="none" stroke="#b9b1c9" stroke-width="1.3"/>
 <circle cx="452" cy="380" r="58" fill="none" stroke="#b9b1c9" stroke-width="1.3"/>
@@ -129,7 +129,7 @@
 <circle cx="410.98780669118025" cy="421.01219330881975" r="4.6" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.2"/>
 <circle cx="394" cy="380" r="4.6" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.2"/>
 <circle cx="410.98780669118025" cy="338.98780669118025" r="4.6" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.2"/>
-<text x="452" y="456" class="t eb" font-size="19" text-anchor="middle" fill="#2f2740">Cl⁻</text>
+<text x="437.78" y="456" class="t eb" font-size="19" text-anchor="start" fill="#2f2740">Cl<tspan font-size="13.7" dy="-6.8">−</tspan></text>
 <text x="452" y="474" class="s b" font-size="11" text-anchor="middle">塩化物イオン</text>
 <text x="452" y="491" class="f b" font-size="10.5" text-anchor="middle">電子 18 個（2・8・8）</text>
 <rect x="560" y="320" width="296" height="140" rx="10" fill="#ffffff" stroke="#8fb4e8" stroke-width="1.5"/>
@@ -137,7 +137,7 @@
 <text x="578" y="372" class="t b" font-size="12.5" text-anchor="start">陽子 17 個（＋17）</text>
 <text x="578" y="394" class="t b" font-size="12.5" text-anchor="start">電子 18 個（−18）</text>
 <line x1="578" y1="408" x2="838" y2="408" stroke="#b9b1c9" stroke-width="1.4" stroke-linecap="round"/>
-<text x="578" y="428" class="t eb" font-size="13" text-anchor="start" fill="#3a7bd5">差し引き −1 → Cl⁻</text>
+<text x="578" y="428" class="t eb" font-size="13" text-anchor="start" fill="#3a7bd5">差し引き −1 → Cl<tspan font-size="9.4" dy="-4.7">−</tspan></text>
 <text x="578" y="448" class="s b" font-size="11" text-anchor="start">電子配置は Ar と同じ（安定）</text>
 <rect x="14" y="524" width="852" height="30" rx="15" fill="#f3ecff" stroke="#a794d6" stroke-width="1.3"/>
 <text x="440" y="539" class="t eb" font-size="12.5" text-anchor="middle" fill="#5b21b6">どちらも「いちばん近い貴ガスと同じ電子配置」になろうとして電子をやりとりする。</text>

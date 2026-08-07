@@ -328,7 +328,7 @@ export const UNIT_KATA_TITLE = 'この単元の思考の型';
  * 小問1つぶんの思考手順を「丸数字の見出し＋理由・着眼点」の2段構成に整形する。
  * （旧 buildStepsBlock の中身をそのまま切り出したもの。出力は1文字も変えない）
  */
-function formatSubSteps(sub: SubQuestionLike): string {
+function formatSubSteps(sub: SubQuestionLike, includeHeading = true): string {
   const label = (sub.label || '').trim();
   const theme = sub.detailedExplanation?.theme;
   const heading = `<b>${label || '小問'}</b>${theme ? `　— ${theme}` : ''}`;
@@ -342,6 +342,11 @@ function formatSubSteps(sub: SubQuestionLike): string {
     const line = `　<b>${circledNumber(index)} ${head}</b>`;
     return detail ? `${line}\n　　└ ${detail}` : line;
   });
+  // 小問ごとのセクションでは、直前のカード見出しに同じ「ラベル＋テーマ」を
+  // すでに大きく表示している。ここで再掲すると同じ情報が2行続くだけなので、
+  // 見出しを省いて手順そのものから始める（要件③：重複表現の整理）。
+  // 省くのは *重複しているときだけ* で、情報は1つも失われない。
+  if (!includeHeading) return steps.join('\n');
   return `${heading}\n${steps.join('\n')}`;
 }
 
@@ -393,7 +398,9 @@ export function buildStepsBlock(
   const detailed = subsWithSteps(question.subQuestions || []);
 
   if (detailed.length > 0) {
-    parts.push(`${LABEL(STEPS_TITLE)}\n${detailed.map(formatSubSteps).join('\n\n')}`);
+    parts.push(
+      `${LABEL(STEPS_TITLE)}\n${detailed.map((sub) => formatSubSteps(sub)).join('\n\n')}`,
+    );
   }
 
   // --- ② 単元共通の思考手順テンプレート ---
@@ -419,6 +426,241 @@ export function buildStepsBlock(
 /** 全角数字を半角に寄せる（ラベルの表記ゆれ対策） */
 function toHalfWidthDigits(text: string): string {
   return text.replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0));
+}
+
+/**
+ * 小問マーカーの表記ゆれを吸収する正規化。
+ *
+ * ■ なぜ必要か（実測にもとづく）
+ * 教材データは人の手で長期間書き足されてきたため、同じ「(1)」でも
+ *   ・全角括弧「（1）」／半角括弧「(1)」
+ *   ・全角数字「（１）」／半角数字「(1)」
+ *   ・全角スペース「（1） 答え」／半角スペース
+ * が混在している。全174問を機械的に走査したところ、この表記ゆれだけが原因で
+ * 「本文には見出しがあるのに、小問と結び付かない」問題が多数あった。
+ * ここで両者を同じ土俵に載せてから比較する。
+ *
+ * ★注意★ この正規化は「比較のためだけ」に使う。
+ * 本文そのものは1文字も書き換えない（情報を失わせないための鉄則）。
+ */
+function normalizeMarker(text: string): string {
+  return toHalfWidthDigits(String(text || ''))
+    .replace(/[（]/g, '(')
+    .replace(/[）]/g, ')')
+    .replace(/[\u3000\s]+/g, ' ')
+    .trim();
+}
+
+/** タグを取り除いて素の文字にする（見出し判定用） */
+function plainLine(line: string): string {
+  return normalizeMarker(String(line || '').replace(/<[^>]*>/g, ''));
+}
+
+/**
+ * 小問ラベルから「本文中で見出しになりうるマーカー」の候補を取り出す。
+ *
+ * 例）
+ *   「問2 (1) 中和点のpH」 → ['問2(1)', '(1)']
+ *   「（ア）」             → ['(ア)']
+ *   「(3) ろ過の図」       → ['(3)']
+ *   「① 斜方硫黄」        → ['①']
+ *
+ * 候補を複数返すのは、本文側が「問2(1)」と書く場合と、
+ * 「問2」のセクションの中で単に「(1)」と書く場合の両方があるため。
+ * 長いマーカー（より限定的なもの）から順に並べる。
+ */
+export function subMarkerCandidates(label?: string): string[] {
+  const s = normalizeMarker(label);
+  if (!s) return [];
+  const out: string[] = [];
+
+  // 「問2 (1) …」形式
+  const withQ = s.match(/^問\s*(\d+)\s*\(\s*([^)]{1,8}?)\s*\)/);
+  if (withQ) {
+    out.push(`問${withQ[1]}(${withQ[2]})`);
+    out.push(`(${withQ[2]})`);
+  }
+
+  // 「(1)(a)」のような二段の入れ子
+  const nested = s.match(/^\(\s*([^)]{1,8}?)\s*\)\s*\(\s*([^)]{1,8}?)\s*\)/);
+  if (nested) {
+    out.push(`(${nested[1]})(${nested[2]})`);
+    out.push(`(${nested[2]})`);
+    out.push(`(${nested[1]})`);
+  }
+
+  // 「A (1)価電子数」「A(1)」形式（大問中でさらに物質A・B・Cに枝分かれするタイプ）
+  const alphaParen = s.match(/^([A-Za-z])\s*\(\s*([^)]{1,8}?)\s*\)/);
+  if (alphaParen) {
+    out.push(`${alphaParen[1]}(${alphaParen[2]})`);
+    out.push(`${alphaParen[1]} (${alphaParen[2]})`);
+  }
+
+  // 「(ア)」「(1)」形式
+  const paren = s.match(/^\(\s*([^)]{1,8}?)\s*\)/);
+  if (paren) out.push(`(${paren[1]})`);
+
+  // 「問4」だけの形式
+  const onlyQ = s.match(/^問\s*(\d+)/);
+  if (onlyQ) out.push(`問${onlyQ[1]}`);
+
+  // 「① …」形式
+  const circled = s.match(/^([①-⑮])/);
+  if (circled) out.push(circled[1]);
+
+  // 「a」「b」「c」だけの形式（穴埋めの空欄記号）。
+  // 1文字は偶然の一致が起きやすいので、照合側で「直後が区切り文字」であることを必須にする。
+  const bareAlpha = s.match(/^([A-Za-z])(?:\s|[:：.．、,]|$)/);
+  if (bareAlpha) out.push(bareAlpha[1]);
+
+  // 上のどれにも当てはまらない「説明的なラベル」
+  // （例：「化合物Aに含まれる金属元素の元素記号」）は、ラベルそのものを見出しとみなす。
+  // 本文側も同じ文言で書き出されていることが多く、これで結び付けられる。
+  if (out.length === 0 && s.length >= 4) out.push(s);
+
+  return [...new Set(out.filter(Boolean))];
+}
+
+/** 記号ではない「素の語」で始まるマーカーか（境界チェックを厳しくする対象） */
+function isWordMarker(marker: string): boolean {
+  return /^[A-Za-z0-9]/.test(marker);
+}
+
+/**
+ * 本文の各行が「どの小問の見出しか」を判定して、行番号→マーカーの対応を作る。
+ * 行頭がマーカーで始まる行だけを境界とみなす（文中に出てくる (1) は無視）。
+ */
+function findSubAnchors(
+  lines: string[],
+  markersInOrder: { key: string; markers: string[] }[],
+): { index: number; key: string }[] {
+  const anchors: { index: number; key: string }[] = [];
+  const used = new Set<string>();
+
+  lines.forEach((line, index) => {
+    const plain = plainLine(line);
+    if (!plain) return;
+    for (const entry of markersInOrder) {
+      if (used.has(entry.key)) continue;
+      const matched = entry.markers.some((marker) => {
+        if (!plain.startsWith(marker)) return false;
+        const rest = plain.slice(marker.length);
+        // 「(1)」が「(10)」の先頭に一致してしまう事故を防ぐ
+        if (/^[0-9０-９]/.test(rest)) return false;
+        // 「a」が「acid」の先頭に一致してしまう事故を防ぐ
+        // （素の語で始まるマーカーは、直後が区切り文字か行末であることを必須にする）
+        if (isWordMarker(marker) && rest !== '' && !/^[\s(（:：.．、,／/─\-]/.test(rest)) return false;
+        return true;
+      });
+      if (matched) {
+        anchors.push({ index, key: entry.key });
+        used.add(entry.key);
+        return;
+      }
+    }
+  });
+
+  return anchors.sort((a, b) => a.index - b.index);
+}
+
+/**
+ * 1行に複数の小問がまとめ書きされている本文を、小問ごとの行に開く。
+ *
+ * ■ なぜ必要か（実データで確認した最大の壁）
+ * 教材データには、こう書かれた解説が多数ある：
+ *
+ *   （ア）熱運動 （イ）大きく （ウ）絶対零度 （エ）−273 （オ）絶対温度 （カ）ケルビン
+ *
+ * 6問ぶんの答えが1行に詰まっているため、「行の境界で切る」方式では
+ * どこにも切れ目が無く、小問ごとに解説を配ることができなかった。
+ * ここで各マーカーの直前に改行を入れて、切れる形に整える。
+ *
+ * ★情報は1文字も減らない★
+ * 行わない操作：削除・要約・並べ替え・語句の書き換え。
+ * 行う操作：マーカー直前の「空白を改行に置き換える」だけ。
+ * 表示上も、6つの答えが横1列から縦6行になって *読みやすくなる* 方向にしか変わらない。
+ * 表（|を含む行）と、そもそもマーカーが1つ以下の行には一切手を触れない。
+ */
+function explodeInlineMarkers(
+  body: string,
+  markersInOrder: { key: string; markers: string[] }[],
+): string {
+  // 照合に使うマーカー（最長一致を優先）
+  const all = [...new Set(markersInOrder.flatMap((entry) => entry.markers))].sort(
+    (a, b) => b.length - a.length,
+  );
+  if (all.length < 2) return body;
+
+  return body
+    .split('\n')
+    .map((line) => {
+      if (line.includes('|')) return line; // 表は絶対に壊さない
+      if (/<(?:div|table|tr|td|th)\b/i.test(line)) return line; // ブロック要素も触らない
+
+      // この行に「行頭以外の位置で」現れるマーカーの数を数える
+      const plain = plainLine(line);
+      const found = all.filter((marker) => plain.includes(marker));
+      if (found.length < 2) return line; // まとめ書きではないので触らない
+
+      // 実際の（正規化していない）行に対して、全角・半角どちらの表記でも
+      // マーカーの直前にある空白を改行へ置き換える。
+      let out = line;
+      for (const marker of found) {
+        // 「(ア)」→ 全角・半角どちらでも当たる正規表現に変換する
+        const pattern = marker
+          .split('')
+          .map((ch) => {
+            if (ch === '(') return '[(（]';
+            if (ch === ')') return '[)）]';
+            if (ch === ' ') return '[\\s　]*';
+            if (/[0-9]/.test(ch)) {
+              return `[${ch}${String.fromCharCode(ch.charCodeAt(0) + 0xfee0)}]`;
+            }
+            return ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          })
+          .join('');
+        // 行頭のマーカーは対象外（すでに切れ目になっている）。
+        // 直前が空白のときだけ、その空白を改行にする。
+        out = out.replace(new RegExp(`([^\\n])[\\s　]+(?=${pattern})`, 'g'), '$1\n');
+      }
+      return out;
+    })
+    .join('\n');
+}
+
+/**
+ * 詳しい解説の本文を「小問（(ア)/(1)/①…）」の見出し行で切り分ける。
+ *
+ * ■ 無損失であることが絶対条件（要件の最重要事項）
+ * splitBodyByQuestionGroups と同じく「行を落とさず・並べ替えず、境界で切るだけ」。
+ *   lead + segments を順に連結すると、必ず元の本文に戻る。
+ * 2つ以上の境界が見つからない場合は null を返し、呼び出し側は従来表示のままにする。
+ */
+export function splitBodyBySubQuestions(
+  body: string,
+  subs: SubQuestionLike[],
+): BodySegments | null {
+  if (!body || !subs || subs.length < 2) return null;
+
+  const markersInOrder = subs
+    .map((sub) => ({ key: String(sub.id || sub.label || ''), markers: subMarkerCandidates(sub.label) }))
+    .filter((entry) => entry.key && entry.markers.length > 0);
+  if (markersInOrder.length < 2) return null;
+
+  const lines = explodeInlineMarkers(body, markersInOrder).split('\n');
+  const anchors = findSubAnchors(lines, markersInOrder);
+  // 少なくとも2箇所で切れないと「問ごとに完結」にならない
+  if (anchors.length < 2) return null;
+
+  const lead = lines.slice(0, anchors[0].index).join('\n');
+  const segments = anchors.map((anchor, i) => ({
+    key: anchor.key,
+    text: lines
+      .slice(anchor.index, i + 1 < anchors.length ? anchors[i + 1].index : lines.length)
+      .join('\n'),
+  }));
+
+  return { lead, segments };
 }
 
 /**
@@ -527,6 +769,91 @@ export function dedupeAgainstSteps(body: string, stepsText: string): string {
 export const GROUP_MARK = (key: string): string => `<!--grp:${key}-->`;
 const GROUP_MARK_PATTERN = /<!--grp:([^-]*)-->/g;
 
+/**
+ * 小問（(ア)/(1)/① …）ごとのセクションに付ける目印。
+ *
+ * ■ なぜ「問N」用とは別の目印が要るのか（実測にもとづく設計判断）
+ * 教材データの小問ラベルは「(ア)」「(1)」が主流で、「問N」形式は少数派だった。
+ * そのため <!--grp:N--> だけでは全174問中15問（8.6%）にしか目印が付かず、
+ * 「採点結果のアコーディオンを開いても解説が出てこない」状態が
+ * 残り91%の問題で起きていた。
+ *
+ * ここでは小問 id をそのまま鍵にする。id は問題データ内で一意なので、
+ * ラベルの表記ゆれ（全角/半角括弧など）に一切影響されずに結び付けられる。
+ * HTML コメントなので画面には出ない。
+ */
+export const SQ_MARK = (id: string): string => `<!--sq:${id}-->`;
+const SQ_MARK_PATTERN = /<!--sq:([^>]*?)-->/g;
+
+/**
+ * 小問セクションの「見出しの終わり／本文の始まり」を示す目印。
+ *
+ * ■ なぜ2つ目の目印が必要か
+ * 全文まとめ読みでは「(ア) — テーマ ／ 答え」という見出しカードが要る。
+ * しかし採点アコーディオンの中では、そのすぐ上のタブに同じ (ア) と正解が
+ * すでに出ているので、見出しを再掲すると同じ情報が二重に並んでしまう（要件③）。
+ * そこで「見出しはここまで」を機械的に示し、アコーディオン側はこの目印から後ろ
+ * ＝［解法の思考手順］＋［詳しい解説］だけを取り出せるようにする。
+ */
+export const SQ_BODY_MARK = '<!--sqb-->';
+
+/**
+ * 「この大問のすべての小問に共通する解説」の始まりを示す目印。
+ *
+ * ■ なぜ必要か（要件⑤「1問を見ればその場で完結する」）
+ * 大問全体に1本しかない思考手順や、全小問の前提になるリード文は、
+ * 特定の小問に配り直すことができない。かといって共通部分だけ画面の別の場所に
+ * 置いてしまうと、アコーディオンを開いた生徒はまた上へスクロールする羽目になる。
+ * そこでこの目印から後ろ・最初の小問セクションまでを「共通部分」とし、
+ * 画面側がどの小問のアコーディオンにも必ず添えて表示する。
+ * 本文は複製されるだけで、1文字も削られない。
+ */
+export const SQ_SHARED_MARK = '<!--sqall-->';
+
+export interface SubQuestionSlices {
+  /** 全小問に共通する部分（解答一覧・リード文など） */
+  common: string;
+  /** どの小問のアコーディオンにも添える共通解説（無ければ空文字） */
+  shared: string;
+  /** 小問 id ごとの部分（見出しを含む・全文まとめ読み用） */
+  subs: { id: string; text: string; body: string }[];
+}
+
+/**
+ * 整形済み解説を「小問」単位に切り出す。目印が無ければ null。
+ * 文字を書き換えずに切るだけなので、common + subs.text を連結すると元に戻る。
+ */
+export function sliceEnhancedBySubQuestion(text: string): SubQuestionSlices | null {
+  const source = String(text || '');
+  if (!source) return null;
+  const marks: { index: number; id: string; length: number }[] = [];
+  SQ_MARK_PATTERN.lastIndex = 0;
+  let matched: RegExpExecArray | null;
+  while ((matched = SQ_MARK_PATTERN.exec(source)) !== null) {
+    marks.push({ index: matched.index, id: matched[1], length: matched[0].length });
+  }
+  if (marks.length === 0) return null;
+
+  const common = source.slice(0, marks[0].index);
+
+  // 共通解説（<!--sqall--> 〜 最初の小問セクション）を取り出す
+  const sharedAt = common.indexOf(SQ_SHARED_MARK);
+  const shared = sharedAt >= 0 ? common.slice(sharedAt + SQ_SHARED_MARK.length) : '';
+
+  const subs = marks.map((mark, i) => {
+    const text = source.slice(
+      mark.index + mark.length,
+      i + 1 < marks.length ? marks[i + 1].index : source.length,
+    );
+    // 見出しの後ろ（＝思考手順＋詳しい解説）だけを body として取り出す
+    const bodyAt = text.indexOf(SQ_BODY_MARK);
+    const body = bodyAt >= 0 ? text.slice(bodyAt + SQ_BODY_MARK.length) : text;
+    return { id: mark.id, text, body };
+  });
+
+  return { common, shared, subs };
+}
+
 export interface EnhancedSlices {
   /** 全問に共通する部分（解答一覧・リード文・共通の思考手順など） */
   common: string;
@@ -554,6 +881,42 @@ export function sliceEnhancedByQuestion(text: string): EnhancedSlices | null {
     text: source.slice(mark.index + mark.length, i + 1 < marks.length ? marks[i + 1].index : source.length),
   }));
   return { common, groups };
+}
+
+/**
+ * 小問1つぶんの「見出しカード」。
+ *
+ * ■ 設計の意図（生徒にとっての分かりやすさ）
+ * 参考書を読む生徒がまず知りたいのは、順に
+ *   1. これはどの問いか（(ア) など）
+ *   2. 何を問われているのか（テーマ＝一言でいうと何の問題か）
+ *   3. 答えは何か（先に答えを見せてから理由を読む＝先行オーガナイザ）
+ * の3つ。従来はこの3つが解説本文のあちこちに散っていたため、
+ * 生徒は「今どの問いの話を読んでいるのか」を見失いやすかった。
+ * ここで3つを1枚のカードに集約し、必ずこの順で提示する。
+ *
+ * ★内容は問題データ（label / theme / correctAnswer）をそのまま使う。
+ *   要約も言い換えもしていない★
+ */
+function subQuestionCard(sub: SubQuestionLike, index: number): string {
+  const label = (sub.label || '').trim() || `小問${index + 1}`;
+  const theme = (sub.detailedExplanation?.theme || '').trim();
+  const answer = sub.correctAnswer ? String(sub.correctAnswer).trim() : '';
+  const isFree = sub.type === 'descriptive';
+
+  const rows: string[] = [];
+  rows.push(
+    '<div style="background-color:#FFF1F5; border-left:6px solid #D9466E; border-radius:8px; padding:8px 12px; margin-top:6px;">' +
+      `<span style="display:inline-block; background-color:#D9466E; color:#FFFFFF; font-weight:bold; font-size:0.86em; padding:1px 12px; border-radius:999px;">${label}</span>` +
+      (theme
+        ? `<span style="color:#8A2E4A; font-weight:bold; margin-left:8px;">${theme}</span>`
+        : '') +
+      '</div>',
+  );
+  if (answer) {
+    rows.push(`　${ANS(`${isFree ? '【解答例】' : '【解答】'}${answer}`)}`);
+  }
+  return rows.join('\n');
 }
 
 /** 問ごとの区切り線（画面を横断する仕切り） */
@@ -605,7 +968,9 @@ export function buildQuestionGroupParts(
   }
 
   const stepsOf = (list: SubQuestionLike[]): string =>
-    subsWithSteps(list).map(formatSubSteps).join('\n\n');
+    subsWithSteps(list)
+      .map((sub) => formatSubSteps(sub))
+      .join('\n\n');
 
   // 問番号が2つ以上あり、かつ本文をその境界で切れるときだけ問ごとに分ける。
   const segmented = keys.length >= 2 ? splitBodyByQuestionGroups(body, keys) : null;
@@ -645,6 +1010,227 @@ export function buildQuestionGroupParts(
 }
 
 /**
+ * 小問（(ア)/(1)/a …）ごとに ［解法の思考手順 → 詳しい解説］ を隣接させる。
+ *
+ * ■ なぜこの関数を足したのか（実測にもとづく）
+ * 従来は「問N」形式のラベルしか問単位に分けられなかった。しかし教材データの
+ * 小問ラベルは (ア)・(1)・a などが主流で、「問N」形式は少数派だったため、
+ * 全174大問のうち9割で「問ごとに完結」が発動していなかった。
+ * その結果、採点結果のアコーディオンを開いても解説が出てこない状態になっていた。
+ * ここを小問ラベルでも切れるようにして、要件②④⑤を全単元で成立させる。
+ *
+ * ■ 生徒にとっての読み順（教育設計）
+ *   1. どの問いか＋何を問う問題か＋答え … subQuestionCard（先に結論）
+ *   2. 解法の思考手順（①②③）        … 次に、同じ手順を再現する方法
+ *   3. 詳しい解説                      … 最後に、なぜそうなるかの根拠
+ * 「結論 → 手順 → 根拠」の順は、すでに答え合わせを終えた生徒が
+ * 「自分はどこで間違えたか」を最短で特定できる並びになっている。
+ *
+ * ■ 情報量は絶対に減らさない
+ *   ・本文は splitBodyBySubQuestions が「行を落とさず境界で切るだけ」
+ *   ・どの小問にも配れない共通部分（リード文・共通の思考手順）は
+ *     SQ_SHARED_MARK を付けて必ず残し、画面側が全アコーディオンに添える
+ *   ・削るのは「直前のカードと完全に重複するラベルだけの行」のみ（要件③）
+ *
+ * 切り分けられないときは null を返し、呼び出し側は従来表示のままにする。
+ */
+function buildSubQuestionSections(
+  question: QuestionLike,
+  body: string,
+  fallbackSteps: string,
+  hasAnswerBlock: boolean,
+): string[] | null {
+  const subs = (question.subQuestions || []).filter(Boolean) as SubQuestionLike[];
+  if (subs.length < 2) return null;
+
+  const segmented =
+    splitBodyBySubQuestions(body, subs) ||
+    segmentByStepsOnly(body, subs) ||
+    segmentByCardOnly(body, subs);
+  if (!segmented) return null;
+
+  const subById = new Map<string, { sub: SubQuestionLike; index: number }>();
+  subs.forEach((sub, index) => {
+    const key = String(sub.id || sub.label || '');
+    if (key && !subById.has(key)) subById.set(key, { sub, index });
+  });
+
+  const sections: string[] = [];
+
+  // --- ① 全小問に共通する部分 ---
+  // 大問全体に1本しかない思考手順と、最初の小問より前にあるリード文は、
+  // どれか1つの小問に配ることができない。ここでまとめて置き、
+  // 目印を付けて「どのアコーディオンにも添える共通部分」であることを示す。
+  const sharedRows: string[] = [];
+  const hasSubSteps = subs.some((sub) => (sub.detailedExplanation?.steps || []).length > 0);
+  if (!hasSubSteps && fallbackSteps) {
+    sharedRows.push(
+      `${LABEL(STEPS_TITLE)}<span style="font-size:0.8em; color:#B03A5B; margin-left:6px;">（この大問のすべての問に共通）</span>\n${fallbackSteps}`,
+    );
+  }
+  if (segmented.lead.trim()) {
+    // 見出しは「この小問の詳しい解説」と区別できる文言にする。
+    // 同じ「詳しい解説」が2つ続くと、生徒はどちらが自分の問の話か分からなくなる。
+    // ★文言を変えているだけで、本文は1文字も削っていない★
+    sharedRows.push(
+      hasAnswerBlock
+        ? `${LABEL('この大問全体の解説')}<span style="font-size:0.8em; color:#B03A5B; margin-left:6px;">（すべての問に共通）</span>\n${segmented.lead}`
+        : segmented.lead,
+    );
+  }
+
+  // ★情報欠落を防ぐための安全弁★
+  // 本文に見出しが見つからなかった小問（＝解説が他の小問にまとめて書かれている等）は、
+  // 下のループで自分のセクションを持てない。その小問の思考手順をここで拾わないと、
+  // 従来は表示されていた手順がまるごと消えてしまう。必ず共通部分として残す。
+  const matchedKeys = new Set(segmented.segments.map((segment) => segment.key));
+  const orphanSteps = subs
+    .filter((sub) => !matchedKeys.has(String(sub.id || sub.label || '')))
+    .filter((sub) => (sub.detailedExplanation?.steps || []).length > 0)
+    .map((sub) => formatSubSteps(sub));
+  if (orphanSteps.length > 0) {
+    // これは「他の小問の思考手順」なので、自分の問の手順と取り違えないよう
+    // 見出しで明示する。手順そのものは1つも省いていない。
+    sharedRows.push(
+      `${LABEL('関連する問の思考手順')}<span style="font-size:0.8em; color:#B03A5B; margin-left:6px;">（この大問のほかの問）</span>\n${orphanSteps.join('\n\n')}`,
+    );
+  }
+
+  if (sharedRows.length > 0) {
+    sections.push(`${SQ_SHARED_MARK}${sharedRows.join('\n\n')}`);
+  }
+
+  // --- ② 小問ごとに ［カード → 思考手順 → 詳しい解説］ ---
+  segmented.segments.forEach((segment, index) => {
+    const entry = subById.get(segment.key);
+    const sub = entry?.sub;
+    const rows: string[] = [];
+
+    // 目印は区切り線より前（＝この小問のセクションはここから始まる）
+    rows.push(SQ_MARK(segment.key));
+    if (index > 0 || sections.length > 0) rows.push(groupDivider());
+
+    // 1. 見出しカード：どの問い／何を問う問題／答え
+    if (sub) rows.push(subQuestionCard(sub, entry?.index ?? index));
+
+    // ここから先が「採点アコーディオンの中に出す本文」
+    rows.push(SQ_BODY_MARK);
+
+    // 2. 解法の思考手順（この小問に固有のものがあるときだけ）
+    //    見出しは上のカードと重複するので出さない（要件③）。
+    const stepsText = sub ? formatSubSteps(sub, false) : '';
+    if (stepsText.trim()) rows.push(`${LABEL(STEPS_TITLE)}\n${stepsText}`);
+
+    // 3. 詳しい解説
+    const detailSource = stripRedundantMarkerLine(segment.text, sub);
+    const detail = dedupeAgainstSteps(
+      detailSource,
+      stepsText || (hasSubSteps ? '' : fallbackSteps),
+    );
+    if (detail.trim()) rows.push(`${LABEL(DETAIL_TITLE)}\n${detail}`);
+
+    sections.push(rows.join('\n'));
+  });
+
+  return sections;
+}
+
+/**
+ * 本文を小問ごとに切れない大問のための最後の手段。
+ *
+ * ■ どういう場合に効くか
+ * 小問ごとの「解法の思考手順」（detailedExplanation.steps）は持っているのに、
+ * 詳しい解説の本文がひとかたまりで書かれていて境界が無い、という大問がある。
+ * この場合でも「手順は小問ごとに配れる」ので、
+ *   ・共通のリード文（本文まるごと）は共通部分として全員に添える
+ *   ・手順とカードは小問ごとに出す
+ * という形にすれば、要件④「アコーディオンを開けばその問題の情報が出る」を満たせる。
+ *
+ * ★本文は1文字も削らない★
+ * 本文全体を lead（＝共通部分）に置き、各小問のセグメントは空にする。
+ * 画面側は必ず共通部分を添えて表示するので、生徒が読める文章量は従来と同じか増える。
+ */
+function segmentByStepsOnly(
+  body: string,
+  subs: SubQuestionLike[],
+): BodySegments | null {
+  const usable = subs.filter(
+    (sub) =>
+      String(sub.id || sub.label || '') &&
+      (sub.detailedExplanation?.steps || []).length > 0,
+  );
+  // 「ほとんどの小問が自前の手順を持っている」ときだけ有効にする。
+  // 一部しか持たない大問でこれをやると、手順の無い小問のカードが空で並んでしまう。
+  if (usable.length < 2 || usable.length < subs.length) return null;
+
+  return {
+    lead: body,
+    segments: usable.map((sub) => ({ key: String(sub.id || sub.label || ''), text: '' })),
+  };
+}
+
+/**
+ * 最後のよりどころ：本文がどうしても小問ごとに切り分けられない大問の受け皿。
+ *
+ * ■ どんな大問がここに来るのか（実データで確認済み）
+ * 「化合物Aに含まれる金属元素の元素記号」のように、ラベルが *問いの文章そのもの* で、
+ * 本文中にその文字列が現れない大問。あるいは「ア：出発／ア：到達／ア：名称」のように
+ * 1つの空欄が複数の小問に分かれていて、解説は1行にまとめて書かれている大問。
+ * これらは本文を機械的に分けようとすると必ず情報が欠ける。
+ *
+ * ■ そこでどうするか
+ * 本文を1文字も切らずに丸ごと「共通部分」に置く。画面側はこの共通部分を
+ * *すべての小問アコーディオンに添える* ので、どの小問を開いても
+ *   ［その小問のカード（問い・ねらい・答え）］→［思考手順］→［詳しい解説］
+ * が最後まで読める。無理に切って情報を失うより、複製して全部見せるほうが
+ * 「1問を見ればその場で完結する」という要件を確実に満たせる。
+ *
+ * ★複製されるだけで、削られる情報は1文字もない★
+ */
+function segmentByCardOnly(body: string, subs: SubQuestionLike[]): BodySegments | null {
+  const usable = subs.filter((sub) => String(sub.id || sub.label || ''));
+  if (usable.length < 2) return null;
+  // カードに出せる中身（ねらい or 答え）が無いと、ただの空カードが並ぶだけになる
+  const informative = usable.filter(
+    (sub) => (sub.detailedExplanation?.theme || '').trim() || String(sub.correctAnswer || '').trim(),
+  );
+  if (informative.length < usable.length) return null;
+
+  return {
+    lead: body,
+    segments: usable.map((sub) => ({ key: String(sub.id || sub.label || ''), text: '' })),
+  };
+}
+
+/**
+ * 小問セクションの先頭行が「ラベルだけの見出し」なら取り除く。
+ *
+ * ★情報を失わせないための厳格な条件★
+ * 取り除くのは、その行からラベル部分を取り去ると *何も残らない* 場合だけ。
+ * 「(ア) 小さくなる」のように内容が続く行は、たとえラベルで始まっていても残す。
+ * 直前の見出しカードに同じラベルが必ず出ているので、
+ * 落ちるのは純粋な重複表示だけになる（要件③）。
+ */
+function stripRedundantMarkerLine(text: string, sub?: SubQuestionLike): string {
+  if (!sub) return text;
+  const markers = subMarkerCandidates(sub.label);
+  if (markers.length === 0) return text;
+
+  const lines = text.split('\n');
+  if (lines.length === 0) return text;
+
+  const first = plainLine(lines[0]);
+  const hit = markers.find((marker) => first.startsWith(marker));
+  if (!hit) return text;
+
+  // ラベルを取り除いた残り。記号・空白しか残らないときだけ「見出しだけの行」とみなす。
+  const rest = first.slice(hit.length).replace(/^[\s　:：.．、,／/─―\-]+/, '').trim();
+  if (rest !== '') return text;
+
+  return lines.slice(1).join('\n');
+}
+
+/**
  * 問ごとに ［解法の思考手順 → 詳しい解説］ を隣接させたセクション列を作る。
  * 2つのブロックは統合も削除もせず、必ず別ブロックとして残す。
  */
@@ -657,9 +1243,13 @@ function buildInterleavedSections(
   const { lead, groups } = buildQuestionGroupParts(question, body);
   const sections: string[] = [];
 
-  // 単一グループ（＝従来どおりの大問）は、見出しや区切り線を足さずに
-  // 「思考手順 → 詳しい解説」の順で並べるだけにする（既存の見た目を崩さない）。
+  // 単一グループ（＝「問N」では分けられない大問）。
+  // ここが全174問中の大多数を占める。まず小問（(ア)/(1)/a …）単位で
+  // 「問ごとに完結」させられないかを試し、できないときだけ従来表示に戻す。
   if (groups.length <= 1) {
+    const bySub = buildSubQuestionSections(question, body, fallbackSteps, hasAnswerBlock);
+    if (bySub) return bySub;
+
     const steps = groups[0]?.steps || '';
     const stepsText = steps || fallbackSteps;
     if (stepsText) sections.push(`${LABEL(STEPS_TITLE)}\n${stepsText}`);
@@ -868,6 +1458,46 @@ export function buildFlowchartSteps(steps: FlowchartStepLike[]): string {
  * この種の問題だけはフローチャートが実在するため、
  * 思考手順の各段階から「STEP n」への参照を張る（要件2の記号の使い分け）。
  */
+/**
+ * ロジックツリー問題の「小問ごとのセクション」を組み立てる。
+ *
+ * ■ なぜ必要か（実測にもとづく設計判断）
+ * logic_thought 形式の問題は explanation が JSON なので enhanceExplanation を通らず、
+ * 表示用の文字列は buildSupplement が作っている。ところが従来の buildSupplement は
+ * 「全小問ぶんの思考手順」を1枚の大きなブロックにまとめて出していたため、
+ * <!--sq:--> の目印が1つも付かず、採点結果の小問アコーディオンを開いても
+ * 中身が空のままだった（実測で 17大問・145小問がこの状態）。
+ *
+ * ここでは *すでにデータに存在する情報だけ* を小問ごとに並べ替える。
+ * 要約・簡略化・削除は一切していない（順番と見出しの付け方を変えているだけ）。
+ *
+ * 並び順は他の問題と完全にそろえる：
+ *   ［カード（どの問い／何を問うか／答え）］ → ［解法の思考手順］
+ */
+function buildSupplementSubSections(question: QuestionLike): string[] | null {
+  const subs = (question.subQuestions || []).filter(Boolean) as SubQuestionLike[];
+  if (subs.length < 2) return null;
+  // 小問ごとに固有の思考手順があるときだけ、小問単位に分ける意味がある
+  if (subsWithSteps(subs).length < 2) return null;
+
+  const sections: string[] = [];
+  subs.forEach((sub, index) => {
+    const key = String(sub.id || sub.label || '');
+    if (!key) return;
+    const rows: string[] = [SQ_MARK(key)];
+    if (sections.length > 0) rows.push(groupDivider());
+    rows.push(subQuestionCard(sub, index));
+    rows.push(SQ_BODY_MARK);
+    // カード見出しに「ラベル＋テーマ」を出しているので、手順側の見出しは省く
+    // （要件③：重複表現の整理。落とすのは重複した見出しだけで、手順は全て残る）
+    const steps = formatSubSteps(sub, false);
+    if (steps.trim()) rows.push(`${LABEL(STEPS_TITLE)}\n${steps}`);
+    sections.push(rows.join('\n'));
+  });
+
+  return sections.length >= 2 ? sections : null;
+}
+
 export function buildSupplement(
   question: QuestionLike,
   teaching?: UnitTeaching,
@@ -880,15 +1510,38 @@ export function buildSupplement(
 
   // フローチャートがあるなら、それを参照する形の思考手順を最優先で置く
   const flowBlock = flowchartSteps?.length ? buildFlowchartSteps(flowchartSteps) : '';
-  if (flowBlock) sections.push(flowBlock);
 
-  // 「この単元の思考の型」は含めない（単元につき1回だけ、
-  // 採点結果の直後のアコーディオンで表示する ── 要件①）。
-  const stepsBlock = buildStepsBlock(question, teaching, Boolean(flowBlock), false);
-  if (stepsBlock) {
-    // フローチャート由来の手順を出したときは、見出しが「解法の思考手順」と
-    // 重複しないよう、単元テンプレート側は出力しない（上の false で抑止済み）。
-    sections.push(stepsBlock);
+  // ★要件②④⑤ 小問ごとに完結させる★
+  const perSub = buildSupplementSubSections(question);
+
+  if (perSub) {
+    // フローチャート由来の手順は大問全体に共通するので「共通部分」に置く。
+    // 画面側はこれをすべての小問アコーディオンに添えるため、
+    // どの小問を開いても全体の流れが読める（複製されるだけで削られていない）。
+    // 見出しが小問ごとの「解法の思考手順」とぶつかって
+    // 「同じ見出しが2回続く」ように見えるのを避けるため、
+    // 共通側だけ「大問全体の流れ」であることを明記する。
+    // ★文言を足しているだけで、手順そのものは1行も削っていない★
+    if (flowBlock) {
+      sections.push(
+        `${SQ_SHARED_MARK}${flowBlock.replace(
+          `${LABEL(STEPS_TITLE)}\n`,
+          `${LABEL('この大問全体の流れ')}<span style="font-size:0.8em; color:#B03A5B; margin-left:6px;">（フローチャートの読み方）</span>\n`,
+        )}`,
+      );
+    }
+    sections.push(...perSub);
+  } else {
+    if (flowBlock) sections.push(flowBlock);
+
+    // 「この単元の思考の型」は含めない（単元につき1回だけ、
+    // 採点結果の直後のアコーディオンで表示する ── 要件①）。
+    const stepsBlock = buildStepsBlock(question, teaching, Boolean(flowBlock), false);
+    if (stepsBlock) {
+      // フローチャート由来の手順を出したときは、見出しが「解法の思考手順」と
+      // 重複しないよう、単元テンプレート側は出力しない（上の false で抑止済み）。
+      sections.push(stepsBlock);
+    }
   }
 
   if (teaching?.trend) sections.push(buildTrendBox(teaching.trend));

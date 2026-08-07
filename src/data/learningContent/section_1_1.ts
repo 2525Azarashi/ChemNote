@@ -146,20 +146,18 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
           </tr>
         </tbody></table>
 
-        <div class="figrow wide">
-          <div class="figrow-text">
-            <span class="figrow-title">装置図で覚える4つの操作</span>
-            <p>分離・精製は<strong><u>「何の違いを利用しているか」</u></strong>で区別すると迷いません。装置の絵とセットで覚えましょう。</p>
-            <ul>
-              <li><strong>ろ過</strong>…<u>粒の大きさ</u>の違い。ろ紙を4つ折りにし、ろうとの<strong>あしの長い方を器壁につける</strong>（液がはねず、あしの中の液柱が吸い込む力になる）。ガラス棒でろ紙の三重の側を支える。</li>
-              <li><strong>蒸留</strong>…<u>沸点</u>の違い。温度計の球部は<strong>枝の高さ</strong>（＝出ていく蒸気の温度をはかる）。<strong>沸騰石</strong>で突沸を防ぎ、リービッヒ冷却器の水は<strong>下から入れて上から出す</strong>（管を水で満たすため）。三角フラスコは密栓しない。</li>
-              <li><strong>抽出</strong>…<u>溶媒への溶けやすさ</u>の違い。分液ろうとで振ったあとは<strong>栓を開けて中の圧力を抜く</strong>。下層は下のコックから、上層は上口から取り出す。</li>
-              <li><strong>クロマトグラフィー</strong>…<u>吸着力</u>の違い。<strong>インクの点は溶媒につけない</strong>（つけると色素が溶け出て流れてしまう）。吸着されにくい色素ほど遠くまで上がる。</li>
-            </ul>
-          </div>
-          <figure class="figrow-fig">
+        <div class="figfull">
+          <span class="figrow-title">装置図で覚える4つの操作</span>
+          <p>分離・精製は<strong><u>「何の違いを利用しているか」</u></strong>で区別すると迷いません。装置の絵とセットで覚えましょう。図の中の<strong>紫の丸数字</strong>は、となりにある「注意点」の番号と対応しています（<u>入試で問われるのはこの注意点</u>）。</p>
+          <ul>
+            <li><strong>ろ過</strong>…<u>粒の大きさ</u>の違い。ろ紙を4つ折りにし、ろうとの<strong>あしの長い方を器壁につける</strong>（液がはねず、あしの中の液柱が吸い込む力になる）。ガラス棒でろ紙の三重の側を支える。</li>
+            <li><strong>蒸留</strong>…<u>沸点</u>の違い。温度計の球部は<strong>枝の高さ</strong>（＝出ていく蒸気の温度をはかる）。<strong>沸騰石</strong>で突沸を防ぎ、リービッヒ冷却器の水は<strong>下から入れて上から出す</strong>（管を水で満たすため）。三角フラスコは密栓しない。</li>
+            <li><strong>抽出</strong>…<u>溶媒への溶けやすさ</u>の違い。分液ろうとで振ったあとは<strong>栓を開けて中の圧力を抜く</strong>。下層は下のコックから、上層は上口から取り出す。</li>
+            <li><strong>クロマトグラフィー</strong>…<u>吸着力</u>の違い。<strong>インクの点は溶媒につけない</strong>（つけると色素が溶け出て流れてしまう）。吸着されにくい色素ほど遠くまで上がる。</li>
+          </ul>
+          <figure style="margin:0;">
             <img src="/learning_figures/fig_separation.svg" alt="ろ過装置・蒸留装置・分液ろうとによる抽出・ペーパークロマトグラフィーの装置図（オリジナル作図）">
-            <figcaption><strong>📐 分離・精製の代表的な装置（オリジナル作図）</strong><br>ろ過／蒸留／抽出／ペーパークロマトグラフィー。赤い注記が試験でそのまま問われるポイントです。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+            <figcaption><strong>📐 分離・精製の代表的な装置（オリジナル作図）</strong><br>ろ過／蒸留／抽出／ペーパークロマトグラフィー。<strong>紫の丸数字＝入試で問われる注意点</strong>で、図の番号と注意点の一覧が同じ番号でつながっています。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
           </figure>
         </div>
 

@@ -11,3 +11,6 @@ coverage/
 # 図版プレビュー（ローカル確認用・コミットしない）
 public/_section_preview.html
 public/learning_figures/_preview.html
+
+# 解説構成の調査用スクリプト（ローカル分析用・コミットしない）
+.tmpwork/

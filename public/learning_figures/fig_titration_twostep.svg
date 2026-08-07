@@ -28,7 +28,7 @@
 </marker>
 </defs>
 <rect x="14" y="14" width="852" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
-<text x="440" y="27" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">二段階滴定：NaOH x mol ＋ Na₂CO₃ y mol の混合水溶液に 0.10 mol/L HCl を滴下</text>
+<text x="165.3" y="27" class="t eb" font-size="14" text-anchor="start" fill="#5b21b6">二段階滴定：NaOH x mol ＋ Na<tspan font-size="10.1" dy="2.8">2</tspan><tspan dy="-2.8">CO</tspan><tspan font-size="10.1" dy="2.8">3</tspan><tspan dy="-2.8"> y mol の混合水溶液に 0.10 mol/L HCl を滴下</tspan></text>
 <rect x="14" y="54" width="520" height="470" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.5"/>
 <rect x="64" y="185.2" width="446" height="39.08571428571432" rx="2" fill="#fdeaf4" stroke="none" stroke-width="0"/>
 <line x1="64" y1="185.2" x2="510" y2="185.2" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
@@ -94,8 +94,8 @@
 <rect x="566" y="104" width="286" height="26" rx="10" fill="#e0559a" stroke="none" stroke-width="0"/>
 <rect x="566" y="120" width="286" height="10" rx="0" fill="#e0559a" stroke="none" stroke-width="0"/>
 <text x="709" y="117" class="t eb" font-size="11.5" text-anchor="middle" fill="#ffffff">第1段階（〜第1中和点）</text>
-<text x="580" y="150" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">❶ NaOH + HCl → NaCl + H₂O</text>
-<text x="580" y="171" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">❷ Na₂CO₃ + HCl → NaCl + NaHCO₃</text>
+<text x="580" y="150" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">❶ NaOH + HCl → NaCl + H<tspan font-size="8.3" dy="2.3">2</tspan><tspan dy="-2.3">O</tspan></text>
+<text x="580" y="171" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">❷ Na<tspan font-size="8.3" dy="2.3">2</tspan><tspan dy="-2.3">CO</tspan><tspan font-size="8.3" dy="2.3">3</tspan><tspan dy="-2.3"> + HCl → NaCl + NaHCO</tspan><tspan font-size="8.3" dy="2.3">3</tspan></text>
 <line x1="578" y1="198" x2="840" y2="198" stroke="#dcd7e6" stroke-width="1.2" stroke-linecap="round"/>
 <text x="580" y="214" class="t eb" font-size="11.5" text-anchor="start" fill="#e0559a">使った HCl ＝ (x + y) mol</text>
 <text x="580" y="230" class="s b" font-size="9.5" text-anchor="start">強い塩基から先に反応する</text>
@@ -103,8 +103,8 @@
 <rect x="566" y="252" width="286" height="26" rx="10" fill="#e08a2a" stroke="none" stroke-width="0"/>
 <rect x="566" y="268" width="286" height="10" rx="0" fill="#e08a2a" stroke="none" stroke-width="0"/>
 <text x="709" y="265" class="t eb" font-size="11.5" text-anchor="middle" fill="#ffffff">第2段階（第1→第2中和点）</text>
-<text x="580" y="298" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">❸ NaHCO₃ + HCl</text>
-<text x="580" y="319" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">　　→ NaCl + H₂O + CO₂</text>
+<text x="580" y="298" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">❸ NaHCO<tspan font-size="8.3" dy="2.3">3</tspan><tspan dy="-2.3"> + HCl</tspan></text>
+<text x="580" y="319" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">　　→ NaCl + H<tspan font-size="8.3" dy="2.3">2</tspan><tspan dy="-2.3">O + CO</tspan><tspan font-size="8.3" dy="2.3">2</tspan></text>
 <line x1="578" y1="346" x2="840" y2="346" stroke="#dcd7e6" stroke-width="1.2" stroke-linecap="round"/>
 <text x="580" y="362" class="t eb" font-size="11.5" text-anchor="start" fill="#e08a2a">使った HCl ＝ y mol</text>
 <text x="580" y="378" class="s b" font-size="9.5" text-anchor="start">弱塩基 → 弱酸へ</text>

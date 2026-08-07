@@ -435,7 +435,8 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
       .learning-content .figrow-text > :last-child {
         margin-bottom: 0;
       }
-      .learning-content .figrow-text .figrow-title {
+      .learning-content .figrow-text .figrow-title,
+      .learning-content .figfull > .figrow-title {
         display: inline-block;
         font-weight: 800;
         font-size: 0.94em;
@@ -518,6 +519,18 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         text-align: left;
         font-size: 0.82em;
         line-height: 1.75;
+      }
+      /* .figfull の中に置いた解説文は、.figrow-text と同じ読み心地にそろえる */
+      .learning-content .figfull > p,
+      .learning-content .figfull > ul li,
+      .learning-content .figfull > ol li {
+        font-size: 0.92em;
+        line-height: 1.85;
+      }
+      .learning-content .figfull > ul,
+      .learning-content .figfull > ol {
+        margin: 8px 0 14px;
+        padding-left: 1.25em;
       }
       /* スマホでは2カラムをやめて縦積み（文字→図の順で読ませる） */
       @media (max-width: 760px) {
