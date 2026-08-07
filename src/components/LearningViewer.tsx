@@ -1,3 +1,4 @@
+import type { MouseEvent as ReactMouseEvent } from 'react';
 import { useState, useEffect } from 'react';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import {
@@ -53,10 +54,32 @@ const SECTION_PART_LABEL: Record<string, string> = {
 
 export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
   const [activeTab, setActiveTab] = useState(initialTab || 'toc');
+  // 図をタップしたとき全画面で拡大表示する（自作図は情報量が多く、
+  // 2カラムに入れると文字が小さくなるため。スマホでの「読めない」を防ぐ）
+  const [zoomFig, setZoomFig] = useState<{ src: string; alt: string } | null>(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeTab]);
+
+  // Esc で拡大表示を閉じる
+  useEffect(() => {
+    if (!zoomFig) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setZoomFig(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [zoomFig]);
+
+  // 本文HTML内の図（dangerouslySetInnerHTML で描画）はイベント委譲で拾う
+  const handleContentClick = (e: ReactMouseEvent<HTMLElement>) => {
+    const el = e.target as HTMLElement | null;
+    if (!el || el.tagName !== 'IMG') return;
+    const img = el as HTMLImageElement;
+    if (!img.closest('.figrow-fig, .figfull')) return;
+    setZoomFig({ src: img.getAttribute('src') || '', alt: img.getAttribute('alt') || '図' });
+  };
 
   const sectionHtml = SECTION_HTML[activeTab];
 
@@ -238,6 +261,7 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
                 </div>
                 <article
                   className="learning-content"
+                  onClick={handleContentClick}
                   dangerouslySetInnerHTML={{ __html: sectionHtml }}
                 />
               </div>
@@ -247,6 +271,40 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
         </div>
 
       </div>
+
+      {/* ===== 図の拡大表示（タップで開く／どこを押しても閉じる） ===== */}
+      {zoomFig && (
+        <div
+          className="fixed inset-0 z-[60] flex flex-col bg-[#2f2740]/85 backdrop-blur-sm p-3 sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label="図の拡大表示"
+          onClick={() => setZoomFig(null)}
+        >
+          <div className="flex items-center justify-between gap-3 pb-2">
+            <span className="text-[11px] sm:text-xs font-bold text-white/85">
+              図をピンチ操作でさらに拡大できます
+            </span>
+            <button
+              type="button"
+              onClick={() => setZoomFig(null)}
+              className="rounded-xl bg-white/95 px-4 py-2 text-xs font-extrabold text-[#5b21b6] shadow-lg hover:bg-white cursor-pointer"
+            >
+              閉じる ✕
+            </button>
+          </div>
+          <div
+            className="min-h-0 flex-1 overflow-auto rounded-2xl bg-white p-2 sm:p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={zoomFig.src}
+              alt={zoomFig.alt}
+              className="mx-auto block h-auto w-full max-w-[1100px]"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

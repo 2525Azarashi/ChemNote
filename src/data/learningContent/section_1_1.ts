@@ -1,5 +1,5 @@
 // Auto-generated from 化学基礎まとめプリント_図入り (v2).html
-// Section 1-1 - Base64 images extracted to /public/learning_images/
+// Section 1-1 - 図版はすべて自作の SVG（/public/learning_figures/）を参照する
 // Inline <style> blocks pre-scoped to .learning-content
 // eslint-disable-next-line
 export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
@@ -146,7 +146,22 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
           </tr>
         </tbody></table>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;align-items:center;"><img src="/learning_images/learn_img_01_17a1420f.jpg" alt="ろ過装置" style="max-width:210px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><img src="/learning_images/learn_img_02_76cf94f9.jpg" alt="蒸留装置" style="max-width:360px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><img src="/learning_images/learn_img_03_21744b98.jpg" alt="分液ろうとによる抽出" style="max-width:230px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><img src="/learning_images/learn_img_04_3054a97f.jpg" alt="ペーパークロマトグラフィー" style="max-width:230px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"></div><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong>📷 分離・精製の主な装置と方法</strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.3〜4 から抽出：ろ過装置／蒸留装置／分液ろうと（抽出）／ペーパークロマトグラフィー</span></figcaption></figure>
+        <div class="figrow wide">
+          <div class="figrow-text">
+            <span class="figrow-title">装置図で覚える4つの操作</span>
+            <p>分離・精製は<strong><u>「何の違いを利用しているか」</u></strong>で区別すると迷いません。装置の絵とセットで覚えましょう。</p>
+            <ul>
+              <li><strong>ろ過</strong>…<u>粒の大きさ</u>の違い。ろ紙を4つ折りにし、ろうとの<strong>あしの長い方を器壁につける</strong>（液がはねず、あしの中の液柱が吸い込む力になる）。ガラス棒でろ紙の三重の側を支える。</li>
+              <li><strong>蒸留</strong>…<u>沸点</u>の違い。温度計の球部は<strong>枝の高さ</strong>（＝出ていく蒸気の温度をはかる）。<strong>沸騰石</strong>で突沸を防ぎ、リービッヒ冷却器の水は<strong>下から入れて上から出す</strong>（管を水で満たすため）。三角フラスコは密栓しない。</li>
+              <li><strong>抽出</strong>…<u>溶媒への溶けやすさ</u>の違い。分液ろうとで振ったあとは<strong>栓を開けて中の圧力を抜く</strong>。下層は下のコックから、上層は上口から取り出す。</li>
+              <li><strong>クロマトグラフィー</strong>…<u>吸着力</u>の違い。<strong>インクの点は溶媒につけない</strong>（つけると色素が溶け出て流れてしまう）。吸着されにくい色素ほど遠くまで上がる。</li>
+            </ul>
+          </div>
+          <figure class="figrow-fig">
+            <img src="/learning_figures/fig_separation.svg" alt="ろ過装置・蒸留装置・分液ろうとによる抽出・ペーパークロマトグラフィーの装置図（オリジナル作図）">
+            <figcaption><strong>📐 分離・精製の代表的な装置（オリジナル作図）</strong><br>ろ過／蒸留／抽出／ペーパークロマトグラフィー。赤い注記が試験でそのまま問われるポイントです。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
 
         <div class="box box-example">
           <p>物質を分離する操作に関する記述として、下線部が正しいものを選べ。</p>
@@ -234,7 +249,22 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
           リアカー（Li 赤）なき（Na 黄）K村（K 赤紫）動力（Cu 青緑）借りようと（Ca 橙赤）するもくれない（Sr 紅）馬力（Ba 黄緑）
         </div>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><img src="/learning_images/learn_img_05_6d45732b.jpg" alt="炎色反応の覚え方" style="max-width:550px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u>📷 炎色反応の語呂合わせ</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.5 から抽出：Li・Na・K・Cu・Ca・Sr・Ba と炎の色の対応表（リアカー無きK村、動力借るとするもくれない、馬力で行こう）</span></figcaption></figure>
+        <div class="figrow">
+          <div class="figrow-text">
+            <span class="figrow-title">色と語呂を「見た目」で結びつける</span>
+            <p>炎色反応は<strong>文字だけで覚えると必ず色を取り違えます</strong>。右の図で<u>炎の色そのもの</u>と語呂の位置を目で結びつけてください。</p>
+            <ul>
+              <li>操作：白金線を<strong>濃塩酸で洗い</strong>、外炎（最も温度が高い部分）に入れる。</li>
+              <li><strong>Mg は炎色反応を示さない</strong>…アルカリ土類金属と混同させる定番のひっかけ。</li>
+              <li>Li 赤 と Sr 紅、Ca 橙赤 は<strong>いずれも赤系</strong>。「赤＝Li」と決めつけないこと。</li>
+              <li>Na の黄色は<strong>ごく微量でも出る</strong>ので、他の色を見るときは Na の混入に注意。</li>
+            </ul>
+          </div>
+          <figure class="figrow-fig">
+            <img src="/learning_figures/fig_flame.svg" alt="Li・Na・K・Cu・Ca・Sr・Ba の炎色反応の色と語呂合わせの対応図（オリジナル作図）">
+            <figcaption><strong>🔥 炎色反応の色と語呂の対応（オリジナル作図）</strong><br>「リアカー無き K 村、動力借るとするもくれない、馬力で行こう」を色見本つきで整理。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
         <h4>重要事項② ～成分元素の検出～</h4>
         <p>目的：どんな液体かわからない時に、ある元素がその液体に入っているか知りたい！</p>
         <table>
@@ -355,8 +385,24 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
           状態変化の名称：固体→液体「融解」、液体→気体「蒸発」、気体→液体「凝縮」、液体→固体「凝固」、固体→気体「昇華」、気体→固体「凝華」
         </div>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><img src="/learning_images/learn_img_06_cf6a4e3c.jpg" alt="物質の三態の粒子モデル" style="max-width:700px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u>📷 物質の三態と粒子モデル</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.7 から抽出：固体・液体・気体での粒子の並び方と運動</span></figcaption></figure><figure style="text-align:center;margin:24px 0;padding:18px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<img src="/learning_images/learn_img_07_f9f842fb.png" alt="状態変化の図：固体・液体・気体の三態と状態変化（融解・凝固・蒸発・凝縮・昇華・凝華）" style="max-width:780px;width:100%;height:auto;border:1px solid #ddd;border-radius:6px;background:#fff;">
-<figcaption style="font-size:0.9em;color:#5d7a8d;margin-top:12px;line-height:1.5;"><strong><u>📷 物質の三態と状態変化</u></strong><br><span style="font-size:0.92em;color:#7a8a96;">固体・液体・気体の粒子の様子と、それらの間を結ぶ6つの状態変化（融解／凝固／蒸発／凝縮／昇華／凝華）</span></figcaption>
-</figure>
+        <div class="figrow wide">
+          <div class="figrow-text">
+            <span class="figrow-title">粒子の並び方 → 状態変化の矢印</span>
+            <p>三態は<strong>「粒子の並び方」と「熱運動の激しさ」</strong>の違いです。右の図は上段に粒子モデル、下段に6つの状態変化をまとめてあります。</p>
+            <ul>
+              <li><strong>固体</strong>…規則正しく並び、その場で<u>振動</u>するだけ。</li>
+              <li><strong>液体</strong>…粒子は接しているが位置を<u>入れかえられる</u>ので流れる。</li>
+              <li><strong>気体</strong>…粒子がばらばらに<u>飛び回る</u>ため、体積は容器いっぱいに広がる。</li>
+            </ul>
+            <p><strong>矢印の向き＝熱の出入り</strong>で覚えます。<strong><u>赤い矢印（融解・蒸発・昇華）は熱を加える向き</u></strong>、<strong><u>青い矢印（凝固・凝縮・凝華）は熱をうばう向き</u></strong>です。</p>
+            <ul>
+              <li>固体→気体が<strong>昇華</strong>、気体→固体が<strong>凝華</strong>（旧課程では両方「昇華」と呼んだので要注意）。</li>
+              <li>融点・沸点では、<strong>全部が変化し終わるまで温度が上がらない</strong>（加えた熱は粒子どうしの結びつきを切るのに使われる）。</li>
+            </ul>
+          </div>
+          <figure class="figrow-fig">
+            <img src="/learning_figures/fig_states.svg" alt="固体・液体・気体の粒子モデルと、融解・凝固・蒸発・凝縮・昇華・凝華の6つの状態変化を示す図（オリジナル作図）">
+            <figcaption><strong>❄️💧💨 物質の三態と6つの状態変化（オリジナル作図）</strong><br>上段：粒子モデル（並び方と運動）／下段：状態変化の名称と熱の出入り。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
 `;

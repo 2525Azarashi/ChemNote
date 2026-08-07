@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 560" width="880" height="560" role="img" aria-label="物質の三態と状態変化（融解・凝固・蒸発・凝縮・昇華・凝華）">
+<title>物質の三態と状態変化（融解・凝固・蒸発・凝縮・昇華・凝華）</title>
+<desc>固体は規則正しく並んで振動、液体は接したまま流動、気体はすき間が広く自由に運動する。加熱で融解・蒸発・昇華、冷却で凝固・凝縮・凝華が起こる。</desc>
+<style>
+  .t{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#2f2740;}
+  .s{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#6b6280;}
+  .f{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#9c93ab;}
+  .b{font-weight:700;}
+  .eb{font-weight:800;}
+  text{dominant-baseline:middle;}
+</style>
+<rect x="0" y="0" width="880" height="560" fill="#ffffff"/>
+<defs>
+<marker id="ar0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#2f2740"/>
+</marker>
+<marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#d94a6a"/>
+</marker>
+<marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#3a7bd5"/>
+</marker>
+<marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#7c3aed"/>
+</marker>
+</defs>
+<rect x="34" y="48" width="200" height="258" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
+<rect x="48" y="58" width="172" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="134" y="71" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">固体</text>
+<rect x="60" y="92" width="148" height="130" rx="8" fill="#ffffff" stroke="#b9b1c9" stroke-width="1.6"/>
+<circle cx="86" cy="118" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="73" y1="118" x2="76" y2="118" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="96" y1="118" x2="99" y2="118" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="110" cy="118" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="97" y1="118" x2="100" y2="118" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="120" y1="118" x2="123" y2="118" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="134" cy="118" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="121" y1="118" x2="124" y2="118" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="144" y1="118" x2="147" y2="118" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="158" cy="118" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="145" y1="118" x2="148" y2="118" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="168" y1="118" x2="171" y2="118" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="86" cy="142" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="73" y1="142" x2="76" y2="142" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="96" y1="142" x2="99" y2="142" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="110" cy="142" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="97" y1="142" x2="100" y2="142" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="120" y1="142" x2="123" y2="142" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="134" cy="142" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="121" y1="142" x2="124" y2="142" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="144" y1="142" x2="147" y2="142" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="158" cy="142" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="145" y1="142" x2="148" y2="142" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="168" y1="142" x2="171" y2="142" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="86" cy="166" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="73" y1="166" x2="76" y2="166" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="96" y1="166" x2="99" y2="166" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="110" cy="166" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="97" y1="166" x2="100" y2="166" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="120" y1="166" x2="123" y2="166" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="134" cy="166" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="121" y1="166" x2="124" y2="166" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="144" y1="166" x2="147" y2="166" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="158" cy="166" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="145" y1="166" x2="148" y2="166" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="168" y1="166" x2="171" y2="166" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="86" cy="190" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="73" y1="190" x2="76" y2="190" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="96" y1="190" x2="99" y2="190" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="110" cy="190" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="97" y1="190" x2="100" y2="190" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="120" y1="190" x2="123" y2="190" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="134" cy="190" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="121" y1="190" x2="124" y2="190" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="144" y1="190" x2="147" y2="190" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="158" cy="190" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<line x1="145" y1="190" x2="148" y2="190" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="168" y1="190" x2="171" y2="190" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round"/>
+<text x="134" y="244" class="t eb" font-size="12.5" text-anchor="middle" fill="#5b21b6">位置が決まっている</text>
+<text x="134" y="266" class="s b" font-size="11.5" text-anchor="middle">規則正しく並び、その場で振動</text>
+<rect x="340" y="48" width="200" height="258" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
+<rect x="354" y="58" width="172" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="440" y="71" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">液体</text>
+<rect x="366" y="92" width="148" height="130" rx="8" fill="#ffffff" stroke="#b9b1c9" stroke-width="1.6"/>
+<circle cx="390" cy="144" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="412" cy="136" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="434" cy="146" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="456" cy="138" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="476" cy="148" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="396" cy="166" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="420" cy="160" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="442" cy="168" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="464" cy="160" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="482" cy="170" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="392" cy="188" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="416" cy="184" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="438" cy="190" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="460" cy="184" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<circle cx="480" cy="192" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<path d="M400,126 q22,-10 44,0" fill="none" stroke="#3a7bd5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar2)"/>
+<text x="440" y="244" class="t eb" font-size="12.5" text-anchor="middle" fill="#5b21b6">位置は変わる</text>
+<text x="440" y="266" class="s b" font-size="11.5" text-anchor="middle">接したまま流れるように動く</text>
+<rect x="646" y="48" width="200" height="258" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
+<rect x="660" y="58" width="172" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="746" y="71" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">気体</text>
+<rect x="672" y="92" width="148" height="130" rx="8" fill="#ffffff" stroke="#b9b1c9" stroke-width="1.6"/>
+<circle cx="700" cy="122" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<path d="M709.5262794416288,127.5 l12.124355652982143,6.999999999999999" fill="none" stroke="#d94a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<circle cx="744" cy="114" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<path d="M734.4737205583712,119.5 l-12.124355652982143,6.999999999999999" fill="none" stroke="#d94a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<circle cx="784" cy="132" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<path d="M789.5,122.47372055837117 l7.000000000000002,-12.12435565298214" fill="none" stroke="#d94a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<circle cx="710" cy="160" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<path d="M699.663381171355,156.23777842341764 l-13.155696691002717,-4.788282006559362" fill="none" stroke="#d94a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<circle cx="758" cy="154" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<path d="M763.5,163.52627944162882 l7.000000000000002,12.12435565298214" fill="none" stroke="#d94a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<circle cx="792" cy="174" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<path d="M784.929336293448,165.57351112569125 l-8.99902653561155,-10.724622203665692" fill="none" stroke="#d94a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<circle cx="698" cy="194" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<path d="M696.0898700456638,204.8328852831343 l-2.4310744873370242,13.787308542170912" fill="none" stroke="#d94a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<circle cx="738" cy="192" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<path d="M747.5262794416288,186.5 l12.124355652982143,-6.999999999999999" fill="none" stroke="#d94a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<circle cx="776" cy="202" r="8" fill="#cdbdf0" stroke="#5b21b6" stroke-width="1.4"/>
+<path d="M765.1671147168657,203.91012995433624 l-13.787308542170912,2.431074487337024" fill="none" stroke="#d94a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<text x="746" y="244" class="t eb" font-size="12.5" text-anchor="middle" fill="#5b21b6">自由に飛び回る</text>
+<text x="746" y="266" class="s b" font-size="11.5" text-anchor="middle">すき間が広く、激しく動く</text>
+<path d="M242,358 L332,358" fill="none" stroke="#d94a6a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<path d="M332,386 L242,386" fill="none" stroke="#3a7bd5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar2)"/>
+<text x="287" y="340" class="t eb" font-size="14" text-anchor="middle" fill="#d94a6a">融解</text>
+<text x="287" y="404" class="t eb" font-size="14" text-anchor="middle" fill="#3a7bd5">凝固</text>
+<path d="M548,358 L638,358" fill="none" stroke="#d94a6a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<path d="M638,386 L548,386" fill="none" stroke="#3a7bd5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar2)"/>
+<text x="593" y="340" class="t eb" font-size="14" text-anchor="middle" fill="#d94a6a">蒸発</text>
+<text x="593" y="404" class="t eb" font-size="14" text-anchor="middle" fill="#3a7bd5">凝縮</text>
+<text x="134" y="372" class="t eb" font-size="15" text-anchor="middle" fill="#2f2740">固体</text>
+<text x="440" y="372" class="t eb" font-size="15" text-anchor="middle" fill="#2f2740">液体</text>
+<text x="746" y="372" class="t eb" font-size="15" text-anchor="middle" fill="#2f2740">気体</text>
+<path d="M122,390 C122,452 734,452 734,390" fill="none" stroke="#d94a6a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<path d="M758,390 C758,500 146,500 146,390" fill="none" stroke="#3a7bd5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar2)"/>
+<rect x="378" y="422.5" width="124" height="28" rx="14" fill="#ffffff" stroke="#d94a6a" stroke-width="1.3"/>
+<text x="440" y="436.5" class="t eb" font-size="12" text-anchor="middle" fill="#d94a6a">昇華（固体→気体）</text>
+<rect x="378" y="458.5" width="124" height="28" rx="14" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.3"/>
+<text x="440" y="472.5" class="t eb" font-size="12" text-anchor="middle" fill="#3a7bd5">凝華（気体→固体）</text>
+<rect x="60" y="514" width="300" height="30" rx="15" fill="#fdeef1" stroke="#d94a6a" stroke-width="1.3"/>
+<text x="210" y="529" class="t b" font-size="12" text-anchor="middle" fill="#d94a6a">→ 加熱（熱を加える）＝赤い矢印</text>
+<rect x="520" y="514" width="300" height="30" rx="15" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.3"/>
+<text x="670" y="529" class="t b" font-size="12" text-anchor="middle" fill="#3a7bd5">← 冷却（熱をうばう）＝青い矢印</text>
+</svg>

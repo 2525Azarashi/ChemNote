@@ -1,5 +1,5 @@
 // Auto-generated from 化学基礎まとめプリント_図入り (v2).html
-// Section 1-3 - Base64 images extracted to /public/learning_images/
+// Section 1-3 - 図版はすべて自作の SVG（/public/learning_figures/）を参照する
 // Inline <style> blocks pre-scoped to .learning-content
 // eslint-disable-next-line
 export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
@@ -355,7 +355,22 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
           </details>
         </div>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><img src="/learning_images/learn_img_15_d8f83274.jpg" alt="金属結合の模式図" style="max-width:400px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u class="wavy">📷 金属結合（自由電子と陽イオン）</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.20 から抽出：規則正しく並んだ金属陽イオンの間を自由電子が動き回る</span></figcaption></figure>
+        <div class="figrow">
+          <div class="figrow-text">
+            <span class="figrow-title">自由電子が金属の性質をぜんぶ説明する</span>
+            <p>金属結合は<strong><u>「金属陽イオンの海に自由電子が満ちている」</u></strong>状態です。金属の3つの特徴はすべてこの図から導けます。</p>
+            <ul>
+              <li><strong>電気伝導性・熱伝導性</strong>…自由電子が動いて電気と熱を運ぶ。</li>
+              <li><strong>展性・延性</strong>（叩いて広がる・引いて伸びる）…イオンの位置がずれても自由電子がのりの役目をするので結合が切れない。イオン結晶はずれると同符号が向き合って割れる（へき開）ので、ここが決定的な違い。</li>
+              <li><strong>金属光沢</strong>…自由電子が可視光を反射する。</li>
+              <li>自由電子は<u>特定の原子に属さず結晶全体を動き回る</u>のがポイント。だから金属結晶には「分子」が存在せず、組成式で表す。</li>
+            </ul>
+          </div>
+          <figure class="figrow-fig">
+            <img src="/learning_figures/fig_metal.svg" alt="規則正しく並んだ金属陽イオンのあいだを自由電子が動き回る金属結合の模式図（オリジナル作図）">
+            <figcaption><strong>🔩 金属結合と自由電子（オリジナル作図）</strong><br>規則正しく並んだ金属陽イオンの間を自由電子が動き回ります。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
         <h4>重要事項② ～結晶の種類と性質～</h4>
         <ul>
           <li><strong><u>結晶</u></strong>…原子、分子、イオンが規則正しく配列している固体＋融点が一定</li>
@@ -649,5 +664,21 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
           <p>特徴：4℃で水の体積は最小、密度は最大になる。</p>
         </div>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><img src="/learning_images/learn_img_16_b0f3f34c.jpg" alt="水素化物の沸点グラフ" style="max-width:450px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u>📷 水素化合物の沸点と水素結合</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.26 から抽出：H₂O・HF・NH₃ は水素結合により沸点が異常に高い</span></figcaption></figure>
+        <div class="figrow wide">
+          <div class="figrow-text">
+            <span class="figrow-title">グラフの「飛び出した3点」が水素結合</span>
+            <p>右のグラフで<strong><u>H₂O・HF・NH₃ の3点だけが折れ線から大きく上に飛び出している</u></strong>のが分かります。これが水素結合の証拠です。</p>
+            <ul>
+              <li>水素結合ができるのは <strong>F・O・N</strong> に H が結合した分子（電気陰性度が非常に大きく、H が強く正に帯電するため）。</li>
+              <li>同じ族の他の水素化合物（H₂S・HCl・PH₃ など）は<strong>分子量が大きいほど沸点が高い</strong>（ファンデルワールス力が強くなる）という素直な傾向に乗る。</li>
+              <li>沸点の高さは <strong>H₂O ＞ HF ＞ NH₃</strong>。H₂O は1分子が<u>水素結合を平均2本</u>つくれるので最強。</li>
+              <li>水素結合の強さは <u>共有結合 ＞ 水素結合 ＞ ファンデルワールス力</u> の中間。「結合」と名前がつくが分子間力の一種であることに注意。</li>
+              <li>おまけ：氷が水に浮くのも水素結合のせい（すきまの多い立体構造をとるので密度が小さい）。</li>
+            </ul>
+          </div>
+          <figure class="figrow-fig">
+            <img src="/learning_figures/fig_hbond.svg" alt="14族・15族・16族・17族の水素化合物の沸点を原子番号に対して示したグラフ。H2O・HF・NH3 だけが水素結合により沸点が異常に高いことを示す図（オリジナル作図）">
+            <figcaption><strong>🌡 水素化合物の沸点と水素結合（オリジナル作図）</strong><br>H₂O・HF・NH₃ は水素結合により沸点が異常に高くなります。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
 `;

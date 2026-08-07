@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 470" width="860" height="470" role="img" aria-label="炎色反応の語呂合わせと元素・炎の色の対応">
+<title>炎色反応の語呂合わせと元素・炎の色の対応</title>
+<desc>Li赤、Na黄、K赤紫、Cu青緑、Ca橙、Sr紅、Ba黄緑。Mgは炎色反応を示さない。</desc>
+<style>
+  .t{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#2f2740;}
+  .s{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#6b6280;}
+  .f{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#9c93ab;}
+  .b{font-weight:700;}
+  .eb{font-weight:800;}
+  text{dominant-baseline:middle;}
+</style>
+<rect x="0" y="0" width="860" height="470" fill="#ffffff"/>
+<rect x="14" y="14" width="832" height="86" rx="12" fill="#f3ecff" stroke="#a794d6" stroke-width="1.6"/>
+<text x="34" y="38" class="t eb" font-size="12.5" text-anchor="start" fill="#5b21b6">語呂合わせ</text>
+<text x="430" y="68" class="t eb" font-size="21" text-anchor="middle" fill="#5b21b6">リアカー 無き K 村、動力 借りると するもくれない 馬力</text>
+<text x="430" y="90" class="s b" font-size="11.5" text-anchor="middle">（リ＝Li赤／ナ＝Na黄／K＝K赤紫／村＝Cu青緑／動＝Ca橙／借＝Sr紅／馬＝Ba黄緑）</text>
+<rect x="18" y="116" width="110.85714285714286" height="250" rx="10" fill="#ffffff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="18" y="116" width="110.85714285714286" height="30" rx="10" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="18" y="136" width="110.85714285714286" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="73.42857142857143" y="131" class="t eb" font-size="13" text-anchor="middle" fill="#5b21b6">リアカー</text>
+<path d="M73.42857142857143,161.5 C92.17857142857143,181.5 92.17857142857143,204 73.42857142857143,214 C54.67857142857143,204 54.67857142857143,181.5 73.42857142857143,161.5 Z" fill="#e0483f" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+<path d="M73.42857142857143,179 C82.17857142857143,190.25 82.17857142857143,201.5 73.42857142857143,209 C64.67857142857143,201.5 64.67857142857143,190.25 73.42857142857143,179 Z" fill="#fff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<text x="73.42857142857143" y="244" class="t eb" font-size="26" text-anchor="middle" fill="#2f2740">Li</text>
+<rect x="41.42857142857143" y="268" width="64" height="30" rx="8" fill="#e0483f" stroke="#b9b1c9" stroke-width="1"/>
+<text x="73.42857142857143" y="283" class="t eb" font-size="14" text-anchor="middle" fill="#ffffff">赤</text>
+<text x="73.42857142857143" y="316" class="s b" font-size="11" text-anchor="middle">リ → 赤</text>
+<line x1="73.42857142857143" y1="146" x2="73.42857142857143" y2="164" stroke="#c9bce6" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 3"/>
+<rect x="136.85714285714286" y="116" width="110.85714285714286" height="250" rx="10" fill="#ffffff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="136.85714285714286" y="116" width="110.85714285714286" height="30" rx="10" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="136.85714285714286" y="136" width="110.85714285714286" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="192.28571428571428" y="131" class="t eb" font-size="13" text-anchor="middle" fill="#5b21b6">無き</text>
+<path d="M192.28571428571428,161.5 C211.03571428571428,181.5 211.03571428571428,204 192.28571428571428,214 C173.53571428571428,204 173.53571428571428,181.5 192.28571428571428,161.5 Z" fill="#e8b427" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+<path d="M192.28571428571428,179 C201.03571428571428,190.25 201.03571428571428,201.5 192.28571428571428,209 C183.53571428571428,201.5 183.53571428571428,190.25 192.28571428571428,179 Z" fill="#fff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<text x="192.28571428571428" y="244" class="t eb" font-size="26" text-anchor="middle" fill="#2f2740">Na</text>
+<rect x="160.28571428571428" y="268" width="64" height="30" rx="8" fill="#e8b427" stroke="#b9b1c9" stroke-width="1"/>
+<text x="192.28571428571428" y="283" class="t eb" font-size="14" text-anchor="middle" fill="#5a4108">黄</text>
+<text x="192.28571428571428" y="316" class="s b" font-size="11" text-anchor="middle">ナ → 黄</text>
+<line x1="192.28571428571428" y1="146" x2="192.28571428571428" y2="164" stroke="#c9bce6" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 3"/>
+<rect x="255.71428571428572" y="116" width="110.85714285714286" height="250" rx="10" fill="#ffffff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="255.71428571428572" y="116" width="110.85714285714286" height="30" rx="10" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="255.71428571428572" y="136" width="110.85714285714286" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="311.14285714285717" y="131" class="t eb" font-size="13" text-anchor="middle" fill="#5b21b6">K</text>
+<path d="M311.14285714285717,161.5 C329.89285714285717,181.5 329.89285714285717,204 311.14285714285717,214 C292.39285714285717,204 292.39285714285717,181.5 311.14285714285717,161.5 Z" fill="#a24bb8" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+<path d="M311.14285714285717,179 C319.89285714285717,190.25 319.89285714285717,201.5 311.14285714285717,209 C302.39285714285717,201.5 302.39285714285717,190.25 311.14285714285717,179 Z" fill="#fff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<text x="311.14285714285717" y="244" class="t eb" font-size="26" text-anchor="middle" fill="#2f2740">K</text>
+<rect x="279.14285714285717" y="268" width="64" height="30" rx="8" fill="#a24bb8" stroke="#b9b1c9" stroke-width="1"/>
+<text x="311.14285714285717" y="283" class="t eb" font-size="14" text-anchor="middle" fill="#ffffff">赤紫</text>
+<text x="311.14285714285717" y="316" class="s b" font-size="11" text-anchor="middle">K → 赤紫</text>
+<line x1="311.14285714285717" y1="146" x2="311.14285714285717" y2="164" stroke="#c9bce6" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 3"/>
+<rect x="374.57142857142856" y="116" width="110.85714285714286" height="250" rx="10" fill="#ffffff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="374.57142857142856" y="116" width="110.85714285714286" height="30" rx="10" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="374.57142857142856" y="136" width="110.85714285714286" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="430" y="131" class="t eb" font-size="13" text-anchor="middle" fill="#5b21b6">村</text>
+<path d="M430,161.5 C448.75,181.5 448.75,204 430,214 C411.25,204 411.25,181.5 430,161.5 Z" fill="#2a9d8f" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+<path d="M430,179 C438.75,190.25 438.75,201.5 430,209 C421.25,201.5 421.25,190.25 430,179 Z" fill="#fff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<text x="430" y="244" class="t eb" font-size="26" text-anchor="middle" fill="#2f2740">Cu</text>
+<rect x="398" y="268" width="64" height="30" rx="8" fill="#2a9d8f" stroke="#b9b1c9" stroke-width="1"/>
+<text x="430" y="283" class="t eb" font-size="14" text-anchor="middle" fill="#ffffff">青緑</text>
+<text x="430" y="316" class="s b" font-size="11" text-anchor="middle">村 → 青緑</text>
+<line x1="430" y1="146" x2="430" y2="164" stroke="#c9bce6" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 3"/>
+<rect x="493.42857142857144" y="116" width="110.85714285714286" height="250" rx="10" fill="#ffffff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="493.42857142857144" y="116" width="110.85714285714286" height="30" rx="10" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="493.42857142857144" y="136" width="110.85714285714286" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="548.8571428571429" y="131" class="t eb" font-size="13" text-anchor="middle" fill="#5b21b6">動力</text>
+<path d="M548.8571428571429,161.5 C567.6071428571429,181.5 567.6071428571429,204 548.8571428571429,214 C530.1071428571429,204 530.1071428571429,181.5 548.8571428571429,161.5 Z" fill="#ef8a3c" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+<path d="M548.8571428571429,179 C557.6071428571429,190.25 557.6071428571429,201.5 548.8571428571429,209 C540.1071428571429,201.5 540.1071428571429,190.25 548.8571428571429,179 Z" fill="#fff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<text x="548.8571428571429" y="244" class="t eb" font-size="26" text-anchor="middle" fill="#2f2740">Ca</text>
+<rect x="516.8571428571429" y="268" width="64" height="30" rx="8" fill="#ef8a3c" stroke="#b9b1c9" stroke-width="1"/>
+<text x="548.8571428571429" y="283" class="t eb" font-size="14" text-anchor="middle" fill="#5c2d05">橙</text>
+<text x="548.8571428571429" y="316" class="s b" font-size="11" text-anchor="middle">動 → 橙</text>
+<line x1="548.8571428571429" y1="146" x2="548.8571428571429" y2="164" stroke="#c9bce6" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 3"/>
+<rect x="612.2857142857143" y="116" width="110.85714285714286" height="250" rx="10" fill="#ffffff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="612.2857142857143" y="116" width="110.85714285714286" height="30" rx="10" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="612.2857142857143" y="136" width="110.85714285714286" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="667.7142857142858" y="131" class="t eb" font-size="13" text-anchor="middle" fill="#5b21b6">借りると</text>
+<path d="M667.7142857142858,161.5 C686.4642857142858,181.5 686.4642857142858,204 667.7142857142858,214 C648.9642857142858,204 648.9642857142858,181.5 667.7142857142858,161.5 Z" fill="#d6336c" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+<path d="M667.7142857142858,179 C676.4642857142858,190.25 676.4642857142858,201.5 667.7142857142858,209 C658.9642857142858,201.5 658.9642857142858,190.25 667.7142857142858,179 Z" fill="#fff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<text x="667.7142857142858" y="244" class="t eb" font-size="26" text-anchor="middle" fill="#2f2740">Sr</text>
+<rect x="635.7142857142858" y="268" width="64" height="30" rx="8" fill="#d6336c" stroke="#b9b1c9" stroke-width="1"/>
+<text x="667.7142857142858" y="283" class="t eb" font-size="14" text-anchor="middle" fill="#ffffff">紅</text>
+<text x="667.7142857142858" y="316" class="s b" font-size="11" text-anchor="middle">借 → 紅</text>
+<line x1="667.7142857142858" y1="146" x2="667.7142857142858" y2="164" stroke="#c9bce6" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 3"/>
+<rect x="731.1428571428571" y="116" width="110.85714285714286" height="250" rx="10" fill="#ffffff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="731.1428571428571" y="116" width="110.85714285714286" height="30" rx="10" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="731.1428571428571" y="136" width="110.85714285714286" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="786.5714285714286" y="131" class="t eb" font-size="13" text-anchor="middle" fill="#5b21b6">馬力</text>
+<path d="M786.5714285714286,161.5 C805.3214285714286,181.5 805.3214285714286,204 786.5714285714286,214 C767.8214285714286,204 767.8214285714286,181.5 786.5714285714286,161.5 Z" fill="#7cb342" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+<path d="M786.5714285714286,179 C795.3214285714286,190.25 795.3214285714286,201.5 786.5714285714286,209 C777.8214285714286,201.5 777.8214285714286,190.25 786.5714285714286,179 Z" fill="#fff" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<text x="786.5714285714286" y="244" class="t eb" font-size="26" text-anchor="middle" fill="#2f2740">Ba</text>
+<rect x="754.5714285714286" y="268" width="64" height="30" rx="8" fill="#7cb342" stroke="#b9b1c9" stroke-width="1"/>
+<text x="786.5714285714286" y="283" class="t eb" font-size="14" text-anchor="middle" fill="#26400f">黄緑</text>
+<text x="786.5714285714286" y="316" class="s b" font-size="11" text-anchor="middle">馬 → 黄緑</text>
+<line x1="786.5714285714286" y1="146" x2="786.5714285714286" y2="164" stroke="#c9bce6" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 3"/>
+<rect x="14" y="380" width="832" height="58" rx="10" fill="#fdeef1" stroke="#d94a6a" stroke-width="1.4"/>
+<text x="34" y="400" class="t eb" font-size="12" text-anchor="start" fill="#d94a6a">⚠ ここが狙われる</text>
+<text x="34" y="422" class="t b" font-size="12" text-anchor="start" fill="#2f2740">Mg は炎色反応を示さない。花火の色や、リチウム電池の炎色として出題されることも多い。</text>
+</svg>

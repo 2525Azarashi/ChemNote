@@ -368,7 +368,8 @@ export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSection
               スタートを「1mol」にして、<b>1mol＝22.4L</b> →　<b>1L＝1.34g</b>（密度）→　<b>1mol＝Mg</b>（モル質量）の
               矢印を順にタップすると、上と同じ式ができます。
             </p>
-            <MolUnitMap title="★ 例題6用　単位変換の図" initialScale={0.68} />
+            {/* initialScale は渡さない＝表示幅に自動で収める（スマホで右端が切れるのを防ぐ） */}
+            <MolUnitMap title="★ 例題6用　単位変換の図" />
           </div>
         </details>
       </Example>

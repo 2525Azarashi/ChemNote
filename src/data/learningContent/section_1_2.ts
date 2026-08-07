@@ -1,5 +1,5 @@
 // Auto-generated from 化学基礎まとめプリント_図入り (v2).html
-// Section 1-2 - Base64 images extracted to /public/learning_images/
+// Section 1-2 - 図版はすべて自作の SVG（/public/learning_figures/）を参照する
 // Inline <style> blocks pre-scoped to .learning-content
 // eslint-disable-next-line
 export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒子</h3>
@@ -97,7 +97,23 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
           </ol>
         </div>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><img src="/learning_images/learn_img_08_af7e2787.jpg" alt="元素の周期表" style="max-width:780px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong>📷 元素の周期表（族・周期・分類）</strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.9 から抽出：典型／遷移、金属／非金属、アルカリ金属、ハロゲン、貴ガスの位置</span></figcaption></figure>
+        <div class="figrow wide">
+          <div class="figrow-text">
+            <span class="figrow-title">周期表は「区画」で読む</span>
+            <p>周期表は暗記の羅列ではなく、<strong><u>いくつかの区画に色分けされた地図</u></strong>として覚えます。右の図の区切り線がそのまま出題ポイントです。</p>
+            <ul>
+              <li><strong>族＝縦の列</strong>（同じ族は価電子数が同じ → 性質が似る）、<strong>周期＝横の行</strong>（同じ周期は最外殻が同じ）。</li>
+              <li><strong>典型元素</strong>＝1・2族と13〜18族。<strong>遷移元素</strong>＝3〜12族（すべて金属で、価電子は 1 か 2）。</li>
+              <li><strong>金属／非金属の境目</strong>は B・Si・As・Te・At を通る<u>階段状の線</u>。線の左下が金属。</li>
+              <li>1族（H を除く）＝<strong>アルカリ金属</strong>、2族（Be・Mg を除く）＝<strong>アルカリ土類金属</strong>、17族＝<strong>ハロゲン</strong>、18族＝<strong>貴ガス</strong>。</li>
+              <li><strong>常温で液体の単体は Hg（水銀）と Br₂（臭素）だけ</strong>。位置も一緒に押さえる。</li>
+            </ul>
+          </div>
+          <figure class="figrow-fig">
+            <img src="/learning_figures/fig_periodic.svg" alt="第1〜4周期の周期表。典型元素と遷移元素、金属と非金属の境界の階段線、アルカリ金属・アルカリ土類金属・ハロゲン・貴ガスの位置を色分けした図（オリジナル作図）">
+            <figcaption><strong>🗺 元素の周期表（族・周期・分類）（オリジナル作図）</strong><br>典型／遷移、金属／非金属の階段線、アルカリ金属・ハロゲン・貴ガスの位置を1枚に整理。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
 
         <div class="box box-test">
           <p><strong><u>電子配置</u></strong></p>
@@ -342,7 +358,22 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
           </details>
         </div>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><img src="/learning_images/learn_img_09_ee5dc13e.jpg" alt="Na→Na⁺ / Cl→Cl⁻ の電子授受" style="max-width:780px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u class="wavy">📷 陽イオン・陰イオンの生成</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.11 から抽出：Na が電子1個を放出して Na⁺、Cl が電子1個を受け取って Cl⁻ になる様子（どちらも貴ガス配置で安定）</span></figcaption></figure>
+        <div class="figrow wide">
+          <div class="figrow-text">
+            <span class="figrow-title">電子を「捨てる」か「もらう」か</span>
+            <p>イオンができる理由はただ一つ、<strong><u>貴ガスと同じ電子配置になりたい</u></strong>からです。右の図で電子の行き先を目で追ってください。</p>
+            <ul>
+              <li><strong>Na（11個）</strong>は最外殻の電子が1個だけ。<u>1個捨てる</u>方が近道なので <strong>Na⁺</strong>（Ne 型・10個）になる。</li>
+              <li><strong>Cl（17個）</strong>は最外殻が7個。あと<u>1個もらえば</u>8個になるので <strong>Cl⁻</strong>（Ar 型・18個）になる。</li>
+              <li><strong>陽イオンは元の原子より小さく</strong>（電子殻が1つ減る）、<strong>陰イオンは元の原子より大きい</strong>（電子が増えて反発する）。</li>
+              <li>イオンの電子数＝<u>原子番号 − 価数</u>（陽イオンは引く、陰イオンは足す）。多原子イオンでも合計で貴ガス配置になる。</li>
+            </ul>
+          </div>
+          <figure class="figrow-fig">
+            <img src="/learning_figures/fig_ionform.svg" alt="Na が電子1個を放出して Na⁺ になり、Cl が電子1個を受け取って Cl⁻ になる過程を電子殻の図で示した図（オリジナル作図）">
+            <figcaption><strong>⚡ 陽イオン・陰イオンの生成（オリジナル作図）</strong><br>Na → Na⁺（電子を1個放出）／Cl → Cl⁻（電子を1個受け取る）。どちらも貴ガス配置で安定します。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
         <h4>重要事項③ ～イオン生成とエネルギー～</h4>
         <ul>
           <li><strong><u>（第一）イオン化エネルギー</u></strong>…1価の陽イオンになるときに吸収されるエネルギー</li>
@@ -377,7 +408,17 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
           </ul>
         </div>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;align-items:center;"><img src="/learning_images/learn_img_10_aa47d580.jpg" alt="価電子のグラフ" style="max-width:330px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><img src="/learning_images/learn_img_11_b933018c.jpg" alt="イオン化エネルギーのグラフ" style="max-width:330px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><img src="/learning_images/learn_img_12_6cbbce20.jpg" alt="電子親和力のグラフ" style="max-width:330px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"></div><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u class="wavy">📷 価電子・イオン化エネルギー・電子親和力のグラフ</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.13 から抽出：原子番号に対する周期的変化（価電子0〜10／イオン化エネルギー〜3000／電子親和力〜500 の縦軸スケールで見分ける）</span></figcaption></figure>
+        <div class="figfull">
+          <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u class="wavy">3つのグラフは「縦軸の目盛り」と「山の形」で一発で見分けられます。</u></strong>
+          ① 価電子は<strong>貴ガスで 0 に落ちる</strong>のこぎり型（縦軸 0〜8）。
+          ② イオン化エネルギーは<strong>貴ガスが山の頂上</strong>で He が最大（縦軸 0〜2500 kJ/mol）。
+          ③ 電子親和力は<strong>ハロゲンが山の頂上</strong>で <u>Cl ＞ F</u>（縦軸 0〜400 kJ/mol）。<br>
+          <span style="color:#6b6280;">※ ①と②は「貴ガスの位置」で真逆になるのがポイント。②のイオン化エネルギーが小さい元素（アルカリ金属）ほど陽イオンになりやすく、③の電子親和力が大きい元素（ハロゲン）ほど陰イオンになりやすい、と結びつけて覚えます。</span></p>
+          <figure style="margin:0;">
+            <img src="/learning_figures/fig_periodicity.svg" alt="原子番号に対する価電子数・第一イオン化エネルギー・電子親和力の周期的変化を3段のグラフで示した図（オリジナル作図）">
+            <figcaption><strong>📈 価電子・イオン化エネルギー・電子親和力の周期性（オリジナル作図）</strong><br>上段：価電子数（貴ガスで 0）／中段：第一イオン化エネルギー（貴ガスが最大）／下段：電子親和力（ハロゲンが最大、Cl ＞ F）。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
         <h4>重要事項④ ～原子の大きさとイオンの大きさ～</h4>
 
         <div class="box box-test">
@@ -428,5 +469,15 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
           </details>
         </div>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><img src="/learning_images/learn_img_13_595ed906.jpg" alt="周期表上の原子半径傾向" style="max-width:640px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong>📷 原子半径の周期傾向</strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.14 から抽出：左下ほど大きく、右上ほど小さい</span></figcaption></figure><figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><img src="/learning_images/learn_img_14_271f23bb.jpg" alt="Ne型イオンの大きさ比較" style="max-width:720px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u>📷 同じ電子配置のイオン半径比較</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.15 から抽出：O²⁻＞F⁻＞Na⁺＞Mg²⁺＞Al³⁺（原子番号が大きいほど核電荷が増え、イオン半径は小さくなる）</span></figcaption></figure>
+        <div class="figfull">
+          <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u>大きさの比較は「電子殻の数」→「核の引きつける力」の2段階で判定します。</u></strong><br>
+          ❶ <strong>電子殻の数が多いほうが大きい</strong>（同じ族なら下に行くほど大きい：Li ＜ Na ＜ K）。<br>
+          ❷ 電子殻の数が同じなら、<strong>陽子が多いほど電子を強く引きつけるので小さい</strong>（同じ周期なら右に行くほど小さい：Li ＞ Be ＞ B）。<br>
+          <span style="color:#6b6280;">※ だから原子半径は<strong>左下ほど大きく、右上ほど小さい</strong>。同じ Ne 型の電子配置（電子はどれも10個）で比べると、核電荷だけが効いて
+          <strong>O²⁻ ＞ F⁻ ＞ Na⁺ ＞ Mg²⁺ ＞ Al³⁺</strong> の順になります。「イオンは価数が大きいほど小さい」ではなく「陽子が多いほど小さい」と理解しておくと、K⁺ と Cl⁻ のような Ar 型でも同じ論理で答えられます。</span></p>
+          <figure style="margin:0;">
+            <img src="/learning_figures/fig_radius.svg" alt="周期表上での原子半径の傾向（左下ほど大きい）と、Ne 型の電子配置をもつ O²⁻・F⁻・Na⁺・Mg²⁺・Al³⁺ のイオン半径の比較を示した図（オリジナル作図）">
+            <figcaption><strong>⭕ 原子半径とイオン半径（オリジナル作図）</strong><br>上段：周期表上の傾向（左下ほど大きく、右上ほど小さい）／下段：同じ Ne 型イオンの大きさ比較（O²⁻ ＞ F⁻ ＞ Na⁺ ＞ Mg²⁺ ＞ Al³⁺）。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
 `;
