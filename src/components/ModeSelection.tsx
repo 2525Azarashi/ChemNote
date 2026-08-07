@@ -8,9 +8,17 @@ interface ModeSelectionProps {
   onSelectMode: (mode: 'mini_test' | 'practice' | 'learning') => void;
   onBack: () => void;
   onMockExam?: () => void;
+  /** 選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
+  subject?: 'chemistry_basic' | 'chemistry';
 }
 
-export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectionProps) {
+export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic' }: ModeSelectionProps) {
+  /**
+   * 化学（発展）では、化学基礎専用のコンテンツ
+   * （学習インプット / 出題傾向 / 2027年度予想問題）はまだ用意していないので隠す。
+   * 化学基礎側の表示は一切変えない。
+   */
+  const isAdvanced = subject === 'chemistry';
   const [showOverallTrend, setShowOverallTrend] = useState(false);
 
   useEffect(() => {
@@ -38,8 +46,9 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
-          {/* 学習(インプット)ボタン */}
+        <div className={`grid grid-cols-1 gap-6 w-full max-w-3xl ${isAdvanced ? '' : 'md:grid-cols-2'}`}>
+          {/* 学習(インプット)ボタン（化学基礎のみ） */}
+          {!isAdvanced && (
           <button
             onClick={() => onSelectMode('learning')}
             className="group bg-white p-6 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:border-[#F4D03F] hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
@@ -52,6 +61,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
               基礎知識をしっかりと身につけます。
             </p>
           </button>
+          )}
 
           {/* 演習問題ボタン */}
           <button
@@ -68,7 +78,15 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
           </button>
         </div>
 
-        {/* 演習問題ボタンの下に追加ボタンを配置 */}
+        {/* 化学（発展）は演習のみ。準備中のコンテンツがあることを明示する。 */}
+        {isAdvanced && (
+          <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
+            ※「学習(インプット)」「出題傾向」「予想問題」は化学基礎のみ対応です。化学は順次追加していきます。
+          </p>
+        )}
+
+        {/* 演習問題ボタンの下に追加ボタンを配置（化学基礎のみ） */}
+        {!isAdvanced && (
         <div className="w-full max-w-3xl mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* 全体出題傾向ボタン */}
           <button
@@ -100,6 +118,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam }: ModeSelectio
             </button>
           )}
         </div>
+        )}
       </div>
 
       {/* 全体出題傾向モーダル */}

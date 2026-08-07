@@ -1,5 +1,5 @@
 // Auto-generated from 化学基礎まとめプリント_図入り (v2).html
-// Section 2-2 - Base64 images extracted to /public/learning_images/
+// Section 2-2 - 図版はすべて自作の SVG（/public/learning_figures/）を参照する
 // Inline <style> blocks pre-scoped to .learning-content
 // eslint-disable-next-line
 export const SECTION_2_2_HTML = `        <h3 id="sec2-2">2. 酸と塩基</h3>
@@ -482,7 +482,19 @@ export const SECTION_2_2_HTML = `        <h3 id="sec2-2">2. 酸と塩基</h3>
         <h4>重要事項⑧ ～滴定曲線と二段階滴定～</h4>
         <p><strong><u>滴定曲線</u></strong>…中和滴定で加えた塩基（酸）の体積と、混合水溶液のpHとの関係を表したグラフ</p>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;align-items:center;"><img src="/learning_images/learn_img_17_9015e444.jpg" alt="強酸×強塩基の滴定曲線" style="max-width:320px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><img src="/learning_images/learn_img_18_053ba83c.jpg" alt="強酸×弱塩基の滴定曲線" style="max-width:320px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"></div><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u>📷 中和滴定の滴定曲線と指示薬の選び方</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.50 から抽出：中和点 pH と指示薬の変色域（フェノールフタレイン／メチルオレンジ）を重ねて表示</span></figcaption></figure>
+        <div class="figfull">
+          <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u>滴定曲線は「中和点の pH がどこに来るか」だけを見ます。</u></strong>
+          曲線が急に立ち上がる部分（pH ジャンプ）の<u>真ん中</u>が中和点です。<br>
+          ❶ <strong>強酸×強塩基</strong>…中和点 <strong>pH ≒ 7</strong>。ジャンプが非常に長いので<u>どちらの指示薬でも使える</u>。<br>
+          ❷ <strong>弱酸×強塩基</strong>…中和点は<strong>塩基性側（pH ≒ 8〜9）</strong>。→ <strong>フェノールフタレイン</strong>（変色域 8.0〜9.8）。<br>
+          ❸ <strong>強酸×弱塩基</strong>…中和点は<strong>酸性側（pH ≒ 5〜6）</strong>。→ <strong>メチルオレンジ</strong>（変色域 3.1〜4.4）。<br>
+          <span style="color:#6b6280;">※ 中和点がずれる理由は<strong>塩の加水分解</strong>です。弱酸＋強塩基の塩（CH₃COONa など）は水に溶けると塩基性、強酸＋弱塩基の塩（NH₄Cl など）は酸性になります。
+          「指示薬は中和点の pH をはさむ変色域のものを選ぶ」——この一文が判断基準です。なお弱酸×弱塩基はジャンプがほとんど無いので、中和滴定には使えません。</span></p>
+          <figure style="margin:0;">
+            <img src="/learning_figures/fig_titration_curves.svg" alt="強酸×強塩基・弱酸×強塩基・強酸×弱塩基の3種類の中和滴定曲線に、フェノールフタレインとメチルオレンジの変色域を重ねて示した図（オリジナル作図）">
+            <figcaption><strong>📉 滴定曲線と指示薬の選び方（オリジナル作図）</strong><br>各パネルの帯が指示薬の変色域。中和点の pH をはさむ帯の指示薬を選びます。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
 
         <table>
           <tbody><tr>
@@ -537,7 +549,18 @@ export const SECTION_2_2_HTML = `        <h3 id="sec2-2">2. 酸と塩基</h3>
           <p>第1中和点までに反応したHClは (x + y) mol、第1中和点から第2中和点までに反応したHClは y mol。</p>
         </div>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><img src="/learning_images/learn_img_19_7690e36f.jpg" alt="二段階滴定の概念図" style="max-width:700px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u>📷 二段階中和滴定の滴定曲線</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.51 から抽出：第1中和点（フェノールフタレイン）と第2中和点（メチルオレンジ）</span></figcaption></figure>
+        <div class="figfull">
+          <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u>二段階滴定は「山が2つある滴定曲線」として見ると一気に分かります。</u></strong><br>
+          NaOH と Na₂CO₃ の混合水溶液に塩酸を加えていくと、pH ジャンプが<strong>2回</strong>起こります。<br>
+          <strong>① 第1中和点（フェノールフタレイン：赤→無色）</strong>まで … NaOH の中和 ＋ Na₂CO₃ → NaHCO₃ が同時に進む。<br>
+          <strong>② 第2中和点（メチルオレンジ：黄→赤）</strong>まで … 残った NaHCO₃ → NaCl ＋ H₂O ＋ CO₂ が進む。<br>
+          <span style="color:#6b6280;">※ したがって<strong>第2段階で使った塩酸の体積が、そのまま NaHCO₃（＝もとの Na₂CO₃）の物質量</strong>に対応します。
+          第1段階からその分を引けば NaOH の物質量が出ます。指示薬を「先にフェノールフタレイン、次にメチルオレンジ」の順に使うのは、変色域が塩基性側 → 酸性側の順に現れるからです。</span></p>
+          <figure style="margin:0;">
+            <img src="/learning_figures/fig_titration_twostep.svg" alt="NaOH と Na2CO3 の混合水溶液に塩酸を滴下したときの二段階滴定曲線。第1中和点（フェノールフタレイン）と第2中和点（メチルオレンジ）を示した図（オリジナル作図）">
+            <figcaption><strong>📊 二段階中和滴定の滴定曲線（オリジナル作図）</strong><br>第1中和点＝フェノールフタレイン（赤→無色）、第2中和点＝メチルオレンジ（黄→赤）。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
 
         <div class="box box-example">
           <p><strong>演習例題</strong>　NaOHとNa<sub>2</sub>CO<sub>3</sub>の混合水溶液10.0 mLにフェノールフタレイン溶液を加え、0.10 mol/L塩酸で滴定すると、赤色の消失までに12.0 mL要した。メチルオレンジを加えてさらに滴定すると、赤色になるまでに4.0 mL要した。混合水溶液中のNaOHとNa<sub>2</sub>CO<sub>3</sub>のmolを求めよ。</p>

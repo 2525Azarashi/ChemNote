@@ -7,3 +7,7 @@ coverage/
 .env*
 !.env.example
 .audit-data.json
+
+# 図版プレビュー（ローカル確認用・コミットしない）
+public/_section_preview.html
+public/learning_figures/_preview.html

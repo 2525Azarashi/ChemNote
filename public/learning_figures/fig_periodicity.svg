@@ -1,0 +1,267 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 720" width="880" height="720" role="img" aria-label="価電子の数・第一イオン化エネルギー・電子親和力の周期性">
+<title>価電子の数・第一イオン化エネルギー・電子親和力の周期性</title>
+<desc>価電子は0〜8、イオン化エネルギーは数千kJ/molで貴ガスが山、電子親和力は数百kJ/molでハロゲンが山になる。縦軸の最大値で3つのグラフを見分けられる。</desc>
+<style>
+  .t{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#2f2740;}
+  .s{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#6b6280;}
+  .f{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#9c93ab;}
+  .b{font-weight:700;}
+  .eb{font-weight:800;}
+  text{dominant-baseline:middle;}
+</style>
+<rect x="0" y="0" width="880" height="720" fill="#ffffff"/>
+<rect x="14" y="14" width="420" height="300" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="26" y="26" width="396" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="224" y="39" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">価電子の数</text>
+<line x1="72" y1="216" x2="410" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="72" y1="178.5" x2="410" y2="178.5" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="72" y1="141" x2="410" y2="141" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="72" y1="103.5" x2="410" y2="103.5" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="72" y1="66" x2="410" y2="66" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="88.0952380952381" y1="66" x2="88.0952380952381" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="152.47619047619048" y1="66" x2="152.47619047619048" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="232.95238095238093" y1="66" x2="232.95238095238093" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="313.42857142857144" y1="66" x2="313.42857142857144" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="393.90476190476187" y1="66" x2="393.90476190476187" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="72" y1="216" x2="410" y2="216" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="72" y1="66" x2="72" y2="216" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="88.0952380952381" y1="216" x2="88.0952380952381" y2="221" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="88.0952380952381" y="231" class="s b" font-size="10" text-anchor="middle">1</text>
+<line x1="152.47619047619048" y1="216" x2="152.47619047619048" y2="221" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="152.47619047619048" y="231" class="s b" font-size="10" text-anchor="middle">5</text>
+<line x1="232.95238095238093" y1="216" x2="232.95238095238093" y2="221" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="232.95238095238093" y="231" class="s b" font-size="10" text-anchor="middle">10</text>
+<line x1="313.42857142857144" y1="216" x2="313.42857142857144" y2="221" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="313.42857142857144" y="231" class="s b" font-size="10" text-anchor="middle">15</text>
+<line x1="393.90476190476187" y1="216" x2="393.90476190476187" y2="221" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="393.90476190476187" y="231" class="s b" font-size="10" text-anchor="middle">20</text>
+<line x1="67" y1="216" x2="72" y2="216" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="63" y="216" class="s b" font-size="10" text-anchor="end">0</text>
+<line x1="67" y1="178.5" x2="72" y2="178.5" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="63" y="178.5" class="s b" font-size="10" text-anchor="end">2</text>
+<line x1="67" y1="141" x2="72" y2="141" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="63" y="141" class="s b" font-size="10" text-anchor="end">4</text>
+<line x1="67" y1="103.5" x2="72" y2="103.5" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="63" y="103.5" class="s b" font-size="10" text-anchor="end">6</text>
+<line x1="67" y1="66" x2="72" y2="66" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="63" y="66" class="s b" font-size="10" text-anchor="end">8</text>
+<text x="241" y="250" class="t b" font-size="12" text-anchor="middle">原子番号</text>
+<text x="29" y="141" class="t b" font-size="11" text-anchor="middle" transform="rotate(-90 29 141)">価電子の数</text>
+<path d="M88.1,197.3 L104.2,216.0 L120.3,197.3 L136.4,178.5 L152.5,159.8 L168.6,141.0 L184.7,122.3 L200.8,103.5 L216.9,84.8 L233.0,216.0 L249.0,197.3 L265.1,178.5 L281.2,159.8 L297.3,141.0 L313.4,122.3 L329.5,103.5 L345.6,84.8 L361.7,216.0 L377.8,197.3 L393.9,178.5 L393.90476190476187,216 L88.0952380952381,216 Z" fill="#e7f6f3" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<path d="M88.1,197.3 L104.2,216.0 L120.3,197.3 L136.4,178.5 L152.5,159.8 L168.6,141.0 L184.7,122.3 L200.8,103.5 L216.9,84.8 L233.0,216.0 L249.0,197.3 L265.1,178.5 L281.2,159.8 L297.3,141.0 L313.4,122.3 L329.5,103.5 L345.6,84.8 L361.7,216.0 L377.8,197.3 L393.9,178.5" fill="none" stroke="#1e9e8a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="88.0952380952381" cy="197.25" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="104.19047619047619" cy="216" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="120.28571428571428" cy="197.25" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="136.38095238095238" cy="178.5" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="152.47619047619048" cy="159.75" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="168.57142857142856" cy="141" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="184.66666666666666" cy="122.25" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="200.76190476190476" cy="103.5" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="216.85714285714286" cy="84.75" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="232.95238095238093" cy="216" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="249.04761904761907" cy="197.25" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="265.1428571428571" cy="178.5" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="281.23809523809524" cy="159.75" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="297.3333333333333" cy="141" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="313.42857142857144" cy="122.25" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="329.5238095238095" cy="103.5" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="345.61904761904765" cy="84.75" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="361.7142857142857" cy="216" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="377.8095238095238" cy="197.25" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="393.90476190476187" cy="178.5" r="2.8" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<circle cx="216.85714285714286" cy="84.75" r="4.4" fill="#d94a6a" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="205.85714285714286" y="90.75" width="22" height="18" rx="9" fill="#ffffff" stroke="#d94a6a" stroke-width="1.1"/>
+<text x="216.85714285714286" y="99.75" class="t eb" font-size="10.5" text-anchor="middle" fill="#d94a6a">F</text>
+<circle cx="345.61904761904765" cy="84.75" r="4.4" fill="#d94a6a" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="334.61904761904765" y="90.75" width="22" height="18" rx="9" fill="#ffffff" stroke="#d94a6a" stroke-width="1.1"/>
+<text x="345.61904761904765" y="99.75" class="t eb" font-size="10.5" text-anchor="middle" fill="#d94a6a">Cl</text>
+<circle cx="104.19047619047619" cy="216" r="4.4" fill="#3a7bd5" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="93.19047619047619" y="192" width="22" height="18" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.1"/>
+<text x="104.19047619047619" y="201" class="t eb" font-size="10.5" text-anchor="middle" fill="#3a7bd5">He</text>
+<circle cx="232.95238095238093" cy="216" r="4.4" fill="#3a7bd5" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="221.95238095238093" y="192" width="22" height="18" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.1"/>
+<text x="232.95238095238093" y="201" class="t eb" font-size="10.5" text-anchor="middle" fill="#3a7bd5">Ne</text>
+<circle cx="361.7142857142857" cy="216" r="4.4" fill="#3a7bd5" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="350.7142857142857" y="192" width="22" height="18" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.1"/>
+<text x="361.7142857142857" y="201" class="t eb" font-size="10.5" text-anchor="middle" fill="#3a7bd5">Ar</text>
+<rect x="26" y="270" width="396" height="34" rx="8" fill="#ffffff" stroke="#c9bce6" stroke-width="1.2"/>
+<text x="224" y="287" class="t b" font-size="11" text-anchor="middle" fill="#5b21b6">縦軸の最大値が 8 → 価電子のグラフ</text>
+<rect x="446" y="14" width="420" height="300" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="458" y="26" width="396" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="656" y="39" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">第一イオン化エネルギー</text>
+<line x1="504" y1="216" x2="842" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="504" y1="187.15384615384616" x2="842" y2="187.15384615384616" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="504" y1="158.30769230769232" x2="842" y2="158.30769230769232" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="504" y1="129.46153846153845" x2="842" y2="129.46153846153845" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="504" y1="100.61538461538461" x2="842" y2="100.61538461538461" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="504" y1="71.76923076923077" x2="842" y2="71.76923076923077" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="520.0952380952381" y1="66" x2="520.0952380952381" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="584.4761904761905" y1="66" x2="584.4761904761905" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="664.952380952381" y1="66" x2="664.952380952381" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="745.4285714285714" y1="66" x2="745.4285714285714" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="825.9047619047619" y1="66" x2="825.9047619047619" y2="216" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="504" y1="216" x2="842" y2="216" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="504" y1="66" x2="504" y2="216" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="520.0952380952381" y1="216" x2="520.0952380952381" y2="221" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="520.0952380952381" y="231" class="s b" font-size="10" text-anchor="middle">1</text>
+<line x1="584.4761904761905" y1="216" x2="584.4761904761905" y2="221" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="584.4761904761905" y="231" class="s b" font-size="10" text-anchor="middle">5</text>
+<line x1="664.952380952381" y1="216" x2="664.952380952381" y2="221" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="664.952380952381" y="231" class="s b" font-size="10" text-anchor="middle">10</text>
+<line x1="745.4285714285714" y1="216" x2="745.4285714285714" y2="221" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="745.4285714285714" y="231" class="s b" font-size="10" text-anchor="middle">15</text>
+<line x1="825.9047619047619" y1="216" x2="825.9047619047619" y2="221" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="825.9047619047619" y="231" class="s b" font-size="10" text-anchor="middle">20</text>
+<line x1="499" y1="216" x2="504" y2="216" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="495" y="216" class="s b" font-size="10" text-anchor="end">0</text>
+<line x1="499" y1="187.15384615384616" x2="504" y2="187.15384615384616" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="495" y="187.15384615384616" class="s b" font-size="10" text-anchor="end">500</text>
+<line x1="499" y1="158.30769230769232" x2="504" y2="158.30769230769232" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="495" y="158.30769230769232" class="s b" font-size="10" text-anchor="end">1000</text>
+<line x1="499" y1="129.46153846153845" x2="504" y2="129.46153846153845" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="495" y="129.46153846153845" class="s b" font-size="10" text-anchor="end">1500</text>
+<line x1="499" y1="100.61538461538461" x2="504" y2="100.61538461538461" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="495" y="100.61538461538461" class="s b" font-size="10" text-anchor="end">2000</text>
+<line x1="499" y1="71.76923076923077" x2="504" y2="71.76923076923077" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="495" y="71.76923076923077" class="s b" font-size="10" text-anchor="end">2500</text>
+<text x="673" y="250" class="t b" font-size="12" text-anchor="middle">原子番号</text>
+<text x="461" y="141" class="t b" font-size="11" text-anchor="middle" transform="rotate(-90 461 141)">kJ/mol</text>
+<path d="M520.1,140.3 C522.8,130.1 530.8,71.5 536.2,79.2 C541.6,86.8 546.9,171.8 552.3,186.0 C557.7,200.2 563.0,166.8 568.4,164.1 C573.7,161.4 579.1,171.6 584.5,169.8 C589.8,168.0 595.2,159.1 600.6,153.3 C605.9,147.6 611.3,137.3 616.7,135.1 C622.0,132.9 627.4,142.9 632.8,140.2 C638.1,137.5 643.5,126.4 648.9,119.0 C654.2,111.6 659.6,84.5 665.0,95.9 C670.3,107.3 675.7,174.5 681.0,187.4 C686.4,200.3 691.8,174.2 697.1,173.4 C702.5,172.6 707.9,183.1 713.2,182.7 C718.6,182.2 724.0,174.8 729.3,170.6 C734.7,166.4 740.1,159.7 745.4,157.6 C750.8,155.6 756.2,160.6 761.5,158.3 C766.9,156.0 772.3,148.8 777.6,143.8 C783.0,138.8 788.3,120.3 793.7,128.3 C799.1,136.3 804.4,182.9 809.8,191.8 C815.2,200.8 823.2,183.6 825.9,182.0 L825.9047619047619,216 L520.0952380952381,216 Z" fill="#fdeef1" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<path d="M520.1,140.3 C522.8,130.1 530.8,71.5 536.2,79.2 C541.6,86.8 546.9,171.8 552.3,186.0 C557.7,200.2 563.0,166.8 568.4,164.1 C573.7,161.4 579.1,171.6 584.5,169.8 C589.8,168.0 595.2,159.1 600.6,153.3 C605.9,147.6 611.3,137.3 616.7,135.1 C622.0,132.9 627.4,142.9 632.8,140.2 C638.1,137.5 643.5,126.4 648.9,119.0 C654.2,111.6 659.6,84.5 665.0,95.9 C670.3,107.3 675.7,174.5 681.0,187.4 C686.4,200.3 691.8,174.2 697.1,173.4 C702.5,172.6 707.9,183.1 713.2,182.7 C718.6,182.2 724.0,174.8 729.3,170.6 C734.7,166.4 740.1,159.7 745.4,157.6 C750.8,155.6 756.2,160.6 761.5,158.3 C766.9,156.0 772.3,148.8 777.6,143.8 C783.0,138.8 788.3,120.3 793.7,128.3 C799.1,136.3 804.4,182.9 809.8,191.8 C815.2,200.8 823.2,183.6 825.9,182.0" fill="none" stroke="#d94a6a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="520.0952380952381" cy="140.30769230769232" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="536.1904761904761" cy="79.15384615384616" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="552.2857142857143" cy="186" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="568.3809523809524" cy="164.1346153846154" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="584.4761904761905" cy="169.78846153846155" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="600.5714285714286" cy="153.34615384615384" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="616.6666666666666" cy="135.11538461538464" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="632.7619047619048" cy="140.19230769230768" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="648.8571428571429" cy="119.01923076923077" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="664.952380952381" cy="95.9423076923077" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="681.047619047619" cy="187.3846153846154" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="697.1428571428571" cy="173.4230769230769" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="713.2380952380952" cy="182.65384615384616" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="729.3333333333333" cy="170.59615384615384" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="745.4285714285714" cy="157.6153846153846" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="761.5238095238095" cy="158.30769230769232" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="777.6190476190477" cy="143.8269230769231" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="793.7142857142858" cy="128.25" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="809.8095238095239" cy="191.82692307692307" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="825.9047619047619" cy="181.96153846153845" r="2.8" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<circle cx="536.1904761904761" cy="79.15384615384616" r="4.4" fill="#d94a6a" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="525.1904761904761" y="85.15384615384616" width="22" height="18" rx="9" fill="#ffffff" stroke="#d94a6a" stroke-width="1.1"/>
+<text x="536.1904761904761" y="94.15384615384616" class="t eb" font-size="10.5" text-anchor="middle" fill="#d94a6a">He</text>
+<circle cx="664.952380952381" cy="95.9423076923077" r="4.4" fill="#d94a6a" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="653.952380952381" y="71.9423076923077" width="22" height="18" rx="9" fill="#ffffff" stroke="#d94a6a" stroke-width="1.1"/>
+<text x="664.952380952381" y="80.9423076923077" class="t eb" font-size="10.5" text-anchor="middle" fill="#d94a6a">Ne</text>
+<circle cx="793.7142857142858" cy="128.25" r="4.4" fill="#d94a6a" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="782.7142857142858" y="104.25" width="22" height="18" rx="9" fill="#ffffff" stroke="#d94a6a" stroke-width="1.1"/>
+<text x="793.7142857142858" y="113.25" class="t eb" font-size="10.5" text-anchor="middle" fill="#d94a6a">Ar</text>
+<circle cx="552.2857142857143" cy="186" r="4.4" fill="#3a7bd5" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="541.2857142857143" y="162" width="22" height="18" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.1"/>
+<text x="552.2857142857143" y="171" class="t eb" font-size="10.5" text-anchor="middle" fill="#3a7bd5">Li</text>
+<circle cx="681.047619047619" cy="187.3846153846154" r="4.4" fill="#3a7bd5" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="670.047619047619" y="163.3846153846154" width="22" height="18" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.1"/>
+<text x="681.047619047619" y="172.3846153846154" class="t eb" font-size="10.5" text-anchor="middle" fill="#3a7bd5">Na</text>
+<circle cx="809.8095238095239" cy="191.82692307692307" r="4.4" fill="#3a7bd5" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="798.8095238095239" y="167.82692307692307" width="22" height="18" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.1"/>
+<text x="809.8095238095239" y="176.82692307692307" class="t eb" font-size="10.5" text-anchor="middle" fill="#3a7bd5">K</text>
+<rect x="458" y="270" width="396" height="34" rx="8" fill="#ffffff" stroke="#c9bce6" stroke-width="1.2"/>
+<text x="656" y="287" class="t b" font-size="11" text-anchor="middle" fill="#5b21b6">縦軸が数千 kJ/mol → イオン化エネルギー</text>
+<rect x="14" y="330" width="420" height="300" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="26" y="342" width="396" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="224" y="355" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">電子親和力</text>
+<line x1="72" y1="532" x2="410" y2="532" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="72" y1="494.5" x2="410" y2="494.5" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="72" y1="457" x2="410" y2="457" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="72" y1="419.5" x2="410" y2="419.5" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="72" y1="382" x2="410" y2="382" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="88.0952380952381" y1="382" x2="88.0952380952381" y2="532" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="152.47619047619048" y1="382" x2="152.47619047619048" y2="532" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="232.95238095238093" y1="382" x2="232.95238095238093" y2="532" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="313.42857142857144" y1="382" x2="313.42857142857144" y2="532" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="393.90476190476187" y1="382" x2="393.90476190476187" y2="532" stroke="#dcd7e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 4"/>
+<line x1="72" y1="532" x2="410" y2="532" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="72" y1="382" x2="72" y2="532" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="88.0952380952381" y1="532" x2="88.0952380952381" y2="537" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="88.0952380952381" y="547" class="s b" font-size="10" text-anchor="middle">1</text>
+<line x1="152.47619047619048" y1="532" x2="152.47619047619048" y2="537" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="152.47619047619048" y="547" class="s b" font-size="10" text-anchor="middle">5</text>
+<line x1="232.95238095238093" y1="532" x2="232.95238095238093" y2="537" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="232.95238095238093" y="547" class="s b" font-size="10" text-anchor="middle">10</text>
+<line x1="313.42857142857144" y1="532" x2="313.42857142857144" y2="537" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="313.42857142857144" y="547" class="s b" font-size="10" text-anchor="middle">15</text>
+<line x1="393.90476190476187" y1="532" x2="393.90476190476187" y2="537" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="393.90476190476187" y="547" class="s b" font-size="10" text-anchor="middle">20</text>
+<line x1="67" y1="532" x2="72" y2="532" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="63" y="532" class="s b" font-size="10" text-anchor="end">0</text>
+<line x1="67" y1="494.5" x2="72" y2="494.5" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="63" y="494.5" class="s b" font-size="10" text-anchor="end">100</text>
+<line x1="67" y1="457" x2="72" y2="457" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="63" y="457" class="s b" font-size="10" text-anchor="end">200</text>
+<line x1="67" y1="419.5" x2="72" y2="419.5" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="63" y="419.5" class="s b" font-size="10" text-anchor="end">300</text>
+<line x1="67" y1="382" x2="72" y2="382" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="63" y="382" class="s b" font-size="10" text-anchor="end">400</text>
+<text x="241" y="566" class="t b" font-size="12" text-anchor="middle">原子番号</text>
+<text x="29" y="457" class="t b" font-size="11" text-anchor="middle" transform="rotate(-90 29 457)">kJ/mol</text>
+<path d="M88.1,504.6 C90.8,509.2 98.8,531.2 104.2,532.0 C109.6,532.8 114.9,509.5 120.3,509.5 C125.7,509.5 131.0,529.9 136.4,532.0 C141.7,534.1 147.1,529.5 152.5,521.9 C157.8,514.3 163.2,484.6 168.6,486.3 C173.9,487.9 179.3,533.2 184.7,532.0 C190.0,530.8 195.4,499.6 200.8,479.1 C206.1,458.6 211.5,400.2 216.9,409.0 C222.2,417.8 227.6,514.8 233.0,532.0 C238.3,549.2 243.7,512.1 249.0,512.1 C254.4,512.1 259.8,531.3 265.1,532.0 C270.5,532.7 275.9,524.6 281.2,516.3 C286.6,507.9 292.0,483.6 297.3,481.8 C302.7,479.9 308.1,509.1 313.4,505.0 C318.8,500.9 324.2,474.3 329.5,457.0 C334.9,439.7 340.3,388.6 345.6,401.1 C351.0,413.6 356.3,513.2 361.7,532.0 C367.1,550.8 372.4,514.1 377.8,514.0 C383.2,513.9 391.2,528.4 393.9,531.3 L393.90476190476187,532 L88.0952380952381,532 Z" fill="#eaf2fc" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<path d="M88.1,504.6 C90.8,509.2 98.8,531.2 104.2,532.0 C109.6,532.8 114.9,509.5 120.3,509.5 C125.7,509.5 131.0,529.9 136.4,532.0 C141.7,534.1 147.1,529.5 152.5,521.9 C157.8,514.3 163.2,484.6 168.6,486.3 C173.9,487.9 179.3,533.2 184.7,532.0 C190.0,530.8 195.4,499.6 200.8,479.1 C206.1,458.6 211.5,400.2 216.9,409.0 C222.2,417.8 227.6,514.8 233.0,532.0 C238.3,549.2 243.7,512.1 249.0,512.1 C254.4,512.1 259.8,531.3 265.1,532.0 C270.5,532.7 275.9,524.6 281.2,516.3 C286.6,507.9 292.0,483.6 297.3,481.8 C302.7,479.9 308.1,509.1 313.4,505.0 C318.8,500.9 324.2,474.3 329.5,457.0 C334.9,439.7 340.3,388.6 345.6,401.1 C351.0,413.6 356.3,513.2 361.7,532.0 C367.1,550.8 372.4,514.1 377.8,514.0 C383.2,513.9 391.2,528.4 393.9,531.3" fill="none" stroke="#3a7bd5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="88.0952380952381" cy="504.625" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="104.19047619047619" cy="532" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="120.28571428571428" cy="509.5" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="136.38095238095238" cy="532" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="152.47619047619048" cy="521.875" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="168.57142857142856" cy="486.25" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="184.66666666666666" cy="532" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="200.76190476190476" cy="479.125" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="216.85714285714286" cy="409" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="232.95238095238093" cy="532" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="249.04761904761907" cy="512.125" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="265.1428571428571" cy="532" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="281.23809523809524" cy="516.25" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="297.3333333333333" cy="481.75" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="313.42857142857144" cy="505" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="329.5238095238095" cy="457" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="345.61904761904765" cy="401.125" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="361.7142857142857" cy="532" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="377.8095238095238" cy="514" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="393.90476190476187" cy="531.25" r="2.8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<circle cx="216.85714285714286" cy="409" r="4.4" fill="#d94a6a" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="205.85714285714286" y="385" width="22" height="18" rx="9" fill="#ffffff" stroke="#d94a6a" stroke-width="1.1"/>
+<text x="216.85714285714286" y="394" class="t eb" font-size="10.5" text-anchor="middle" fill="#d94a6a">F</text>
+<circle cx="345.61904761904765" cy="401.125" r="4.4" fill="#d94a6a" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="334.61904761904765" y="407.125" width="22" height="18" rx="9" fill="#ffffff" stroke="#d94a6a" stroke-width="1.1"/>
+<text x="345.61904761904765" y="416.125" class="t eb" font-size="10.5" text-anchor="middle" fill="#d94a6a">Cl</text>
+<circle cx="104.19047619047619" cy="532" r="4.4" fill="#3a7bd5" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="93.19047619047619" y="508" width="22" height="18" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.1"/>
+<text x="104.19047619047619" y="517" class="t eb" font-size="10.5" text-anchor="middle" fill="#3a7bd5">He</text>
+<circle cx="232.95238095238093" cy="532" r="4.4" fill="#3a7bd5" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="221.95238095238093" y="508" width="22" height="18" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.1"/>
+<text x="232.95238095238093" y="517" class="t eb" font-size="10.5" text-anchor="middle" fill="#3a7bd5">Ne</text>
+<circle cx="361.7142857142857" cy="532" r="4.4" fill="#3a7bd5" stroke="#ffffff" stroke-width="1.4"/>
+<rect x="350.7142857142857" y="508" width="22" height="18" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.1"/>
+<text x="361.7142857142857" y="517" class="t eb" font-size="10.5" text-anchor="middle" fill="#3a7bd5">Ar</text>
+<rect x="26" y="586" width="396" height="34" rx="8" fill="#ffffff" stroke="#c9bce6" stroke-width="1.2"/>
+<text x="224" y="603" class="t b" font-size="11" text-anchor="middle" fill="#5b21b6">縦軸が数百 kJ/mol → 電子親和力</text>
+<rect x="446" y="330" width="420" height="300" rx="12" fill="#f3ecff" stroke="#a794d6" stroke-width="1.6"/>
+<rect x="458" y="342" width="396" height="26" rx="13" fill="#ffffff" stroke="none" stroke-width="0"/>
+<text x="656" y="355" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">3つのグラフの見分け方</text>
+<rect x="462" y="392" width="388" height="52" rx="9" fill="#ffffff" stroke="#1e9e8a" stroke-width="1.6"/>
+<rect x="462" y="392" width="6" height="52" rx="3" fill="#1e9e8a" stroke="none" stroke-width="0"/>
+<text x="478" y="409" class="t eb" font-size="12.5" text-anchor="start" fill="#1e9e8a">価電子の数</text>
+<text x="834" y="409" class="t eb" font-size="12" text-anchor="end" fill="#2f2740">縦軸 0 〜 8</text>
+<text x="478" y="429" class="s b" font-size="11" text-anchor="start">貴ガスで 0 に落ちる</text>
+<rect x="462" y="454" width="388" height="52" rx="9" fill="#ffffff" stroke="#d94a6a" stroke-width="1.6"/>
+<rect x="462" y="454" width="6" height="52" rx="3" fill="#d94a6a" stroke="none" stroke-width="0"/>
+<text x="478" y="471" class="t eb" font-size="12.5" text-anchor="start" fill="#d94a6a">イオン化エネルギー</text>
+<text x="834" y="471" class="t eb" font-size="12" text-anchor="end" fill="#2f2740">縦軸 〜 2500</text>
+<text x="478" y="491" class="s b" font-size="11" text-anchor="start">貴ガスが山・アルカリ金属が谷</text>
+<rect x="462" y="516" width="388" height="52" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<rect x="462" y="516" width="6" height="52" rx="3" fill="#3a7bd5" stroke="none" stroke-width="0"/>
+<text x="478" y="533" class="t eb" font-size="12.5" text-anchor="start" fill="#3a7bd5">電子親和力</text>
+<text x="834" y="533" class="t eb" font-size="12" text-anchor="end" fill="#2f2740">縦軸 〜 400</text>
+<text x="478" y="553" class="s b" font-size="11" text-anchor="start">ハロゲンが山（F・Cl が大きい）</text>
+<rect x="462" y="580" width="388" height="38" rx="9" fill="#ffffff" stroke="#d94a6a" stroke-width="1.5"/>
+<text x="656" y="599" class="t eb" font-size="11.5" text-anchor="middle" fill="#d94a6a">⚠ 共通テストでは「縦軸の数値」だけで即断できる</text>
+</svg>

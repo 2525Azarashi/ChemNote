@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="720" height="420" role="img" aria-label="金属結合（金属陽イオンと自由電子）">
+<title>金属結合（金属陽イオンと自由電子）</title>
+<desc>規則正しく並んだ金属陽イオンの間を自由電子が動き回る。電気伝導性・熱伝導性・金属光沢・展性延性はすべて自由電子で説明できる。</desc>
+<style>
+  .t{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#2f2740;}
+  .s{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#6b6280;}
+  .f{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#9c93ab;}
+  .b{font-weight:700;}
+  .eb{font-weight:800;}
+  text{dominant-baseline:middle;}
+</style>
+<rect x="0" y="0" width="720" height="420" fill="#ffffff"/>
+<defs>
+<marker id="ar0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#2f2740"/>
+</marker>
+<marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#7c3aed"/>
+</marker>
+<marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#d94a6a"/>
+</marker>
+<marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#3a7bd5"/>
+</marker>
+<marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#d9932a"/>
+</marker>
+</defs>
+<rect x="14" y="14" width="692" height="392" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="30" y="28" width="660" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="360" y="41" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">金属結合 — 自由電子が金属全体を結びつける</text>
+<circle cx="70" cy="92" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="70" y="92" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="132" cy="92" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="132" y="92" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="194" cy="92" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="194" y="92" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="256" cy="92" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="256" y="92" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="70" cy="154" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="70" y="154" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="132" cy="154" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="132" y="154" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="194" cy="154" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="194" y="154" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="256" cy="154" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="256" y="154" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="70" cy="216" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="70" y="216" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="132" cy="216" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="132" y="216" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="194" cy="216" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="194" y="216" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="256" cy="216" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="256" y="216" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="70" cy="278" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="70" y="278" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="132" cy="278" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="132" y="278" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="194" cy="278" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="194" y="278" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="256" cy="278" r="17" fill="#f6c98d" stroke="#c9822c" stroke-width="1.8"/>
+<text x="256" y="278" class="t eb" font-size="14" text-anchor="middle" fill="#8a5410">＋</text>
+<circle cx="101" cy="62" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M109.45723358707318,65.07818128993102 l12.21600407021681,4.446261863233693" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="163" cy="74" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M157.21491151282115,80.8943999880708 l-8.356238925925012,9.958577760546714" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="225" cy="60" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M228.07818128993102,51.542766412926824 l4.446261863233695,-12.216004070216808" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="88" cy="122" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M79.54276641292682,118.92181871006898 l-12.21600407021681,-4.446261863233692" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="148" cy="130" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M152.5,137.79422863405995 l6.500000000000002,11.258330249197702" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="212" cy="118" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M205.1056000119292,112.21491151282115 l-9.958577760546714,-8.356238925925012" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="258" cy="140" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M256.4371664009976,148.86326977710988 l-2.2574263096700937,12.802500789158705" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="96" cy="184" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M104.45723358707318,180.92181871006898 l12.21600407021681,-4.446261863233693" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="156" cy="176" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M147.13673022289012,177.56283359900237 l-12.802500789158705,2.2574263096700937" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="220" cy="190" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M226.8943999880708,195.78508848717885 l9.958577760546714,8.35623892592501" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="110" cy="244" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M106.92181871006898,235.54276641292682 l-4.446261863233693,-12.21600407021681" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="172" cy="250" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M164.20577136594005,254.5 l-11.258330249197703,6.499999999999999" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="232" cy="236" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M237.78508848717885,229.1056000119292 l8.356238925925012,-9.958577760546714" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="60" cy="152" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M61.562833599002374,160.86326977710988 l2.2574263096700955,12.802500789158705" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="262" cy="76" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<path d="M254.20577136594005,71.5 l-11.258330249197702,-6.500000000000002" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.75"/>
+<circle cx="50" cy="330" r="13" fill="#f6c98d" stroke="#c9822c" stroke-width="1.6"/>
+<text x="70" y="330" class="t b" font-size="12" text-anchor="start">金属の陽イオン（規則正しく並ぶ）</text>
+<circle cx="50" cy="360" r="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="1.2"/>
+<text x="70" y="360" class="t b" font-size="12" text-anchor="start">自由電子（金属全体を自由に動き回る）</text>
+<rect x="340" y="84" width="340" height="210" rx="10" fill="#ffffff" stroke="#c9bce6" stroke-width="1.5"/>
+<text x="358" y="108" class="t eb" font-size="12.5" text-anchor="start" fill="#5b21b6">自由電子から説明できる性質</text>
+<rect x="358" y="136" width="304" height="32" rx="7" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="370" y="152" class="t eb" font-size="12" text-anchor="start" fill="#5b21b6">電気伝導性</text>
+<text x="464" y="152" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">自由電子が電荷を運ぶ</text>
+<rect x="358" y="176" width="304" height="32" rx="7" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="370" y="192" class="t eb" font-size="12" text-anchor="start" fill="#5b21b6">熱伝導性</text>
+<text x="464" y="192" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">自由電子が熱を伝える</text>
+<rect x="358" y="216" width="304" height="32" rx="7" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="370" y="232" class="t eb" font-size="12" text-anchor="start" fill="#5b21b6">金属光沢</text>
+<text x="464" y="232" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">自由電子が光を反射する</text>
+<rect x="358" y="256" width="304" height="32" rx="7" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="370" y="272" class="t eb" font-size="12" text-anchor="start" fill="#5b21b6">展性・延性</text>
+<text x="464" y="272" class="t b" font-size="11.5" text-anchor="start" fill="#2f2740">ずれても結合が切れない</text>
+<text x="510" y="326" class="s b" font-size="11.5" text-anchor="middle">「たたくと広がる（展性）」「引くと伸びる（延性）」も</text>
+<text x="510" y="346" class="s b" font-size="11.5" text-anchor="middle">自由電子のおかげで結合が切れないから。</text>
+</svg>

@@ -1,0 +1,231 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 740" width="880" height="740" role="img" aria-label="中和滴定の滴定曲線4パターンと指示薬の選び方">
+<title>中和滴定の滴定曲線4パターンと指示薬の選び方</title>
+<desc>強酸×強塩基は中和点pH7で指示薬はどちらでも可。弱酸×強塩基は中和点がpH7より大きくフェノールフタレイン。弱塩基×強酸は中和点がpH7より小さくメチルオレンジ。弱酸×弱塩基は指示薬が使えない。</desc>
+<style>
+  .t{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#2f2740;}
+  .s{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#6b6280;}
+  .f{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#9c93ab;}
+  .b{font-weight:700;}
+  .eb{font-weight:800;}
+  text{dominant-baseline:middle;}
+</style>
+<rect x="0" y="0" width="880" height="740" fill="#ffffff"/>
+<defs>
+<marker id="ar0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#3a7bd5"/>
+</marker>
+<marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#d94a6a"/>
+</marker>
+<marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#7c3aed"/>
+</marker>
+</defs>
+<rect x="14" y="14" width="420" height="340" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="26" y="26" width="396" height="26" rx="13" fill="#ffffff" stroke="none" stroke-width="0"/>
+<text x="224" y="39" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">❶ 強酸 × 強塩基</text>
+<text x="224" y="68" class="s b" font-size="10.5" text-anchor="middle">0.1 mol/L HCl 10 mL ← 0.1 mol/L NaOH を滴下</text>
+<rect x="58" y="125.99999999999999" width="354" height="18.000000000000014" rx="2" fill="#fdeaf4" stroke="none" stroke-width="0"/>
+<line x1="58" y1="125.99999999999999" x2="412" y2="125.99999999999999" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<line x1="58" y1="144" x2="412" y2="144" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<text x="63" y="135" class="t eb" font-size="9" text-anchor="start" fill="#e0559a">8〜9.8</text>
+<rect x="58" y="180" width="354" height="13" rx="2" fill="#fdf1de" stroke="none" stroke-width="0"/>
+<line x1="58" y1="180" x2="412" y2="180" stroke="#e08a2a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<line x1="58" y1="193" x2="412" y2="193" stroke="#e08a2a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<text x="407" y="186.5" class="t eb" font-size="9" text-anchor="end" fill="#e08a2a">3.1〜4.4</text>
+<line x1="58" y1="224" x2="412" y2="224" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="58" y1="84" x2="58" y2="224" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="58" y1="224" x2="58" y2="229" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="58" y="239" class="s b" font-size="9.5" text-anchor="middle">0</text>
+<line x1="146.5" y1="224" x2="146.5" y2="229" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="146.5" y="239" class="s b" font-size="9.5" text-anchor="middle">5</text>
+<line x1="235" y1="224" x2="235" y2="229" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="235" y="239" class="s b" font-size="9.5" text-anchor="middle">10</text>
+<line x1="323.5" y1="224" x2="323.5" y2="229" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="323.5" y="239" class="s b" font-size="9.5" text-anchor="middle">15</text>
+<line x1="412" y1="224" x2="412" y2="229" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="412" y="239" class="s b" font-size="9.5" text-anchor="middle">20</text>
+<line x1="53" y1="224" x2="58" y2="224" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="224" class="s b" font-size="9.5" text-anchor="end">0</text>
+<line x1="53" y1="204" x2="58" y2="204" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="204" class="s b" font-size="9.5" text-anchor="end">2</text>
+<line x1="53" y1="184" x2="58" y2="184" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="184" class="s b" font-size="9.5" text-anchor="end">4</text>
+<line x1="53" y1="164" x2="58" y2="164" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="164" class="s b" font-size="9.5" text-anchor="end">6</text>
+<line x1="53" y1="144" x2="58" y2="144" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="144" class="s b" font-size="9.5" text-anchor="end">8</text>
+<line x1="53" y1="124" x2="58" y2="124" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="124" class="s b" font-size="9.5" text-anchor="end">10</text>
+<line x1="53" y1="104" x2="58" y2="104" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="104" class="s b" font-size="9.5" text-anchor="end">12</text>
+<line x1="53" y1="84" x2="58" y2="84" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="84" class="s b" font-size="9.5" text-anchor="end">14</text>
+<text x="235" y="258" class="t b" font-size="12" text-anchor="middle">NaOH水溶液の滴下量（mL）</text>
+<text x="27" y="154" class="t b" font-size="11" text-anchor="middle" transform="rotate(-90 27 154)">pH</text>
+<line x1="235" y1="84" x2="235" y2="224" stroke="#7c3aed" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="5 4" opacity="0.7"/>
+<path d="M58.0,214.0 C62.1,213.8 83.1,212.6 93.4,212.0 C103.7,211.4 134.1,209.9 146.5,209.0 C158.9,208.1 190.3,205.3 199.6,204.0 C208.9,202.7 222.2,199.5 226.2,198.0 C230.1,196.5 232.2,196.1 233.2,191.0 C234.3,185.9 234.8,158.3 235.0,154.0" fill="none" stroke="#3a7bd5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M235.0,154.0 C235.2,149.7 235.7,122.1 236.8,117.0 C237.8,111.9 239.9,111.4 243.8,110.0 C247.8,108.6 261.1,106.0 270.4,105.0 C279.7,104.0 307.0,101.7 323.5,101.0 C340.0,100.3 401.7,99.2 412.0,99.0" fill="none" stroke="#3a7bd5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="235" cy="154" r="5" fill="#d94a6a" stroke="#ffffff" stroke-width="1.8"/>
+<text x="243" y="134" class="t eb" font-size="10.5" text-anchor="start" fill="#d94a6a">中和点 pH＝7</text>
+<rect x="26" y="284" width="396" height="56" rx="9" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.6"/>
+<rect x="26" y="284" width="6" height="56" rx="3" fill="#3a7bd5" stroke="none" stroke-width="0"/>
+<text x="42" y="302" class="s b" font-size="10" text-anchor="start">使う指示薬</text>
+<text x="42" y="321" class="t eb" font-size="12" text-anchor="start" fill="#3a7bd5">どちらでもよい</text>
+<text x="406" y="302" class="s b" font-size="9.5" text-anchor="end">垂直部分が両方の変色域をまたぐ</text>
+<defs>
+<marker id="ar0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#1e9e8a"/>
+</marker>
+<marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#d94a6a"/>
+</marker>
+<marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#7c3aed"/>
+</marker>
+</defs>
+<rect x="446" y="14" width="420" height="340" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="458" y="26" width="396" height="26" rx="13" fill="#ffffff" stroke="none" stroke-width="0"/>
+<text x="656" y="39" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">❹ 弱酸 × 強塩基</text>
+<text x="656" y="68" class="s b" font-size="10.5" text-anchor="middle">0.1 mol/L CH₃COOH 10 mL ← 0.1 mol/L NaOH を滴下</text>
+<rect x="490" y="125.99999999999999" width="354" height="18.000000000000014" rx="2" fill="#fdeaf4" stroke="none" stroke-width="0"/>
+<line x1="490" y1="125.99999999999999" x2="844" y2="125.99999999999999" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<line x1="490" y1="144" x2="844" y2="144" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<text x="495" y="135" class="t eb" font-size="9" text-anchor="start" fill="#e0559a">8〜9.8</text>
+<rect x="490" y="180" width="354" height="13" rx="2" fill="#fdf1de" stroke="none" stroke-width="0"/>
+<line x1="490" y1="180" x2="844" y2="180" stroke="#e08a2a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<line x1="490" y1="193" x2="844" y2="193" stroke="#e08a2a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<text x="839" y="186.5" class="t eb" font-size="9" text-anchor="end" fill="#e08a2a">3.1〜4.4</text>
+<line x1="490" y1="224" x2="844" y2="224" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="490" y1="84" x2="490" y2="224" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="490" y1="224" x2="490" y2="229" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="490" y="239" class="s b" font-size="9.5" text-anchor="middle">0</text>
+<line x1="578.5" y1="224" x2="578.5" y2="229" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="578.5" y="239" class="s b" font-size="9.5" text-anchor="middle">5</text>
+<line x1="667" y1="224" x2="667" y2="229" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="667" y="239" class="s b" font-size="9.5" text-anchor="middle">10</text>
+<line x1="755.5" y1="224" x2="755.5" y2="229" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="755.5" y="239" class="s b" font-size="9.5" text-anchor="middle">15</text>
+<line x1="844" y1="224" x2="844" y2="229" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="844" y="239" class="s b" font-size="9.5" text-anchor="middle">20</text>
+<line x1="485" y1="224" x2="490" y2="224" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="481" y="224" class="s b" font-size="9.5" text-anchor="end">0</text>
+<line x1="485" y1="204" x2="490" y2="204" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="481" y="204" class="s b" font-size="9.5" text-anchor="end">2</text>
+<line x1="485" y1="184" x2="490" y2="184" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="481" y="184" class="s b" font-size="9.5" text-anchor="end">4</text>
+<line x1="485" y1="164" x2="490" y2="164" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="481" y="164" class="s b" font-size="9.5" text-anchor="end">6</text>
+<line x1="485" y1="144" x2="490" y2="144" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="481" y="144" class="s b" font-size="9.5" text-anchor="end">8</text>
+<line x1="485" y1="124" x2="490" y2="124" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="481" y="124" class="s b" font-size="9.5" text-anchor="end">10</text>
+<line x1="485" y1="104" x2="490" y2="104" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="481" y="104" class="s b" font-size="9.5" text-anchor="end">12</text>
+<line x1="485" y1="84" x2="490" y2="84" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="481" y="84" class="s b" font-size="9.5" text-anchor="end">14</text>
+<text x="667" y="258" class="t b" font-size="12" text-anchor="middle">NaOH水溶液の滴下量（mL）</text>
+<text x="459" y="154" class="t b" font-size="11" text-anchor="middle" transform="rotate(-90 459 154)">pH</text>
+<line x1="667" y1="84" x2="667" y2="224" stroke="#7c3aed" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="5 4" opacity="0.7"/>
+<path d="M490.0,195.0 C492.1,193.9 501.5,187.8 507.7,186.0 C513.9,184.3 534.8,181.2 543.1,180.0 C551.4,178.8 568.2,177.2 578.5,176.0 C588.8,174.8 622.3,171.4 631.6,170.0 C640.9,168.6 654.2,165.5 658.1,164.0 C662.1,162.5 664.2,160.2 665.2,157.0 C666.3,153.8 666.8,139.3 667.0,137.0" fill="none" stroke="#1e9e8a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M667.0,137.0 C667.2,134.7 667.7,120.2 668.8,117.0 C669.8,113.8 671.9,111.4 675.9,110.0 C679.8,108.6 693.1,106.0 702.4,105.0 C711.7,104.0 739.0,101.7 755.5,101.0 C772.0,100.3 833.7,99.2 844.0,99.0" fill="none" stroke="#1e9e8a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="667" cy="137" r="5" fill="#d94a6a" stroke="#ffffff" stroke-width="1.8"/>
+<text x="659" y="157" class="t eb" font-size="10.5" text-anchor="end" fill="#d94a6a">中和点 pH＞7</text>
+<rect x="458" y="284" width="396" height="56" rx="9" fill="#ffffff" stroke="#e0559a" stroke-width="1.6"/>
+<rect x="458" y="284" width="6" height="56" rx="3" fill="#e0559a" stroke="none" stroke-width="0"/>
+<text x="474" y="302" class="s b" font-size="10" text-anchor="start">使う指示薬</text>
+<text x="474" y="321" class="t eb" font-size="12" text-anchor="start" fill="#e0559a">フェノールフタレイン</text>
+<text x="838" y="302" class="s b" font-size="9.5" text-anchor="end">中和点が塩基性側にずれる</text>
+<defs>
+<marker id="ar0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#d9932a"/>
+</marker>
+<marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#d94a6a"/>
+</marker>
+<marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#7c3aed"/>
+</marker>
+</defs>
+<rect x="14" y="368" width="420" height="340" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.5"/>
+<rect x="26" y="380" width="396" height="26" rx="13" fill="#ffffff" stroke="none" stroke-width="0"/>
+<text x="224" y="393" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">❸ 弱塩基 × 強酸</text>
+<text x="224" y="422" class="s b" font-size="10.5" text-anchor="middle">0.1 mol/L NH₃ 10 mL ← 0.1 mol/L HCl を滴下</text>
+<rect x="58" y="480" width="354" height="18" rx="2" fill="#fdeaf4" stroke="none" stroke-width="0"/>
+<line x1="58" y1="480" x2="412" y2="480" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<line x1="58" y1="498" x2="412" y2="498" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<text x="407" y="489" class="t eb" font-size="9" text-anchor="end" fill="#e0559a">8〜9.8</text>
+<rect x="58" y="534" width="354" height="13" rx="2" fill="#fdf1de" stroke="none" stroke-width="0"/>
+<line x1="58" y1="534" x2="412" y2="534" stroke="#e08a2a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<line x1="58" y1="547" x2="412" y2="547" stroke="#e08a2a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
+<text x="63" y="540.5" class="t eb" font-size="9" text-anchor="start" fill="#e08a2a">3.1〜4.4</text>
+<line x1="58" y1="578" x2="412" y2="578" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="58" y1="438" x2="58" y2="578" stroke="#2f2740" stroke-width="2" stroke-linecap="square"/>
+<line x1="58" y1="578" x2="58" y2="583" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="58" y="593" class="s b" font-size="9.5" text-anchor="middle">0</text>
+<line x1="146.5" y1="578" x2="146.5" y2="583" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="146.5" y="593" class="s b" font-size="9.5" text-anchor="middle">5</text>
+<line x1="235" y1="578" x2="235" y2="583" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="235" y="593" class="s b" font-size="9.5" text-anchor="middle">10</text>
+<line x1="323.5" y1="578" x2="323.5" y2="583" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="323.5" y="593" class="s b" font-size="9.5" text-anchor="middle">15</text>
+<line x1="412" y1="578" x2="412" y2="583" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="412" y="593" class="s b" font-size="9.5" text-anchor="middle">20</text>
+<line x1="53" y1="578" x2="58" y2="578" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="578" class="s b" font-size="9.5" text-anchor="end">0</text>
+<line x1="53" y1="558" x2="58" y2="558" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="558" class="s b" font-size="9.5" text-anchor="end">2</text>
+<line x1="53" y1="538" x2="58" y2="538" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="538" class="s b" font-size="9.5" text-anchor="end">4</text>
+<line x1="53" y1="518" x2="58" y2="518" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="518" class="s b" font-size="9.5" text-anchor="end">6</text>
+<line x1="53" y1="498" x2="58" y2="498" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="498" class="s b" font-size="9.5" text-anchor="end">8</text>
+<line x1="53" y1="478" x2="58" y2="478" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="478" class="s b" font-size="9.5" text-anchor="end">10</text>
+<line x1="53" y1="458" x2="58" y2="458" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="458" class="s b" font-size="9.5" text-anchor="end">12</text>
+<line x1="53" y1="438" x2="58" y2="438" stroke="#2f2740" stroke-width="1.6" stroke-linecap="round"/>
+<text x="49" y="438" class="s b" font-size="9.5" text-anchor="end">14</text>
+<text x="235" y="612" class="t b" font-size="12" text-anchor="middle">塩酸の滴下量（mL）</text>
+<text x="27" y="508" class="t b" font-size="11" text-anchor="middle" transform="rotate(-90 27 508)">pH</text>
+<line x1="235" y1="438" x2="235" y2="578" stroke="#7c3aed" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="5 4" opacity="0.7"/>
+<path d="M58.0,467.0 C60.1,468.1 69.5,474.3 75.7,476.0 C81.9,477.8 102.8,480.9 111.1,482.0 C119.4,483.1 136.2,483.8 146.5,485.0 C156.8,486.2 190.3,490.5 199.6,492.0 C208.9,493.5 222.2,496.5 226.2,498.0 C230.1,499.5 232.2,501.9 233.2,505.0 C234.3,508.1 234.8,522.7 235.0,525.0" fill="none" stroke="#d9932a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M235.0,525.0 C235.2,527.3 235.7,541.9 236.8,545.0 C237.8,548.1 239.9,550.6 243.8,552.0 C247.8,553.4 261.1,556.0 270.4,557.0 C279.7,558.0 307.0,560.3 323.5,561.0 C340.0,561.7 401.7,562.8 412.0,563.0" fill="none" stroke="#d9932a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="235" cy="525" r="5" fill="#d94a6a" stroke="#ffffff" stroke-width="1.8"/>
+<text x="243" y="505" class="t eb" font-size="10.5" text-anchor="start" fill="#d94a6a">中和点 pH＜7</text>
+<rect x="26" y="638" width="396" height="56" rx="9" fill="#ffffff" stroke="#e08a2a" stroke-width="1.6"/>
+<rect x="26" y="638" width="6" height="56" rx="3" fill="#e08a2a" stroke="none" stroke-width="0"/>
+<text x="42" y="656" class="s b" font-size="10" text-anchor="start">使う指示薬</text>
+<text x="42" y="675" class="t eb" font-size="12" text-anchor="start" fill="#e08a2a">メチルオレンジ</text>
+<text x="406" y="656" class="s b" font-size="9.5" text-anchor="end">中和点が酸性側にずれる</text>
+<rect x="446" y="368" width="420" height="340" rx="12" fill="#f3ecff" stroke="#a794d6" stroke-width="1.6"/>
+<rect x="458" y="380" width="396" height="26" rx="13" fill="#ffffff" stroke="none" stroke-width="0"/>
+<text x="656" y="393" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">指示薬の選び方</text>
+<rect x="462" y="416" width="388" height="40" rx="9" fill="#ffffff" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="656" y="436" class="t eb" font-size="12.5" text-anchor="middle" fill="#5b21b6">「強」がついている側で変色する指示薬を選ぶ</text>
+<rect x="462" y="466" width="388" height="36" rx="8" fill="#ffffff" stroke="#3a7bd5" stroke-width="1.4"/>
+<rect x="462" y="466" width="5" height="36" rx="2.5" fill="#3a7bd5" stroke="none" stroke-width="0"/>
+<text x="476" y="484" class="t eb" font-size="11.5" text-anchor="start" fill="#2f2740">❶ 強酸 × 強塩基</text>
+<text x="624" y="484" class="t b" font-size="11" text-anchor="middle" fill="#6b6280">pH ＝ 7</text>
+<text x="838" y="484" class="t eb" font-size="11.5" text-anchor="end" fill="#3a7bd5">どちらも可</text>
+<rect x="462" y="510" width="388" height="36" rx="8" fill="#ffffff" stroke="#9c93ab" stroke-width="1.4"/>
+<rect x="462" y="510" width="5" height="36" rx="2.5" fill="#9c93ab" stroke="none" stroke-width="0"/>
+<text x="476" y="528" class="t eb" font-size="11.5" text-anchor="start" fill="#2f2740">❷ 弱酸 × 弱塩基</text>
+<text x="624" y="528" class="t b" font-size="11" text-anchor="middle" fill="#6b6280">pH ≒ 7</text>
+<text x="838" y="528" class="t eb" font-size="11.5" text-anchor="end" fill="#9c93ab">どちらも使えない</text>
+<rect x="462" y="554" width="388" height="36" rx="8" fill="#ffffff" stroke="#e08a2a" stroke-width="1.4"/>
+<rect x="462" y="554" width="5" height="36" rx="2.5" fill="#e08a2a" stroke="none" stroke-width="0"/>
+<text x="476" y="572" class="t eb" font-size="11.5" text-anchor="start" fill="#2f2740">❸ 弱塩基 × 強酸</text>
+<text x="624" y="572" class="t b" font-size="11" text-anchor="middle" fill="#6b6280">pH ＜ 7</text>
+<text x="838" y="572" class="t eb" font-size="11.5" text-anchor="end" fill="#e08a2a">メチルオレンジ</text>
+<rect x="462" y="598" width="388" height="36" rx="8" fill="#ffffff" stroke="#e0559a" stroke-width="1.4"/>
+<rect x="462" y="598" width="5" height="36" rx="2.5" fill="#e0559a" stroke="none" stroke-width="0"/>
+<text x="476" y="616" class="t eb" font-size="11.5" text-anchor="start" fill="#2f2740">❹ 弱酸 × 強塩基</text>
+<text x="624" y="616" class="t b" font-size="11" text-anchor="middle" fill="#6b6280">pH ＞ 7</text>
+<text x="838" y="616" class="t eb" font-size="11.5" text-anchor="end" fill="#e0559a">フェノールフタレイン</text>
+<rect x="464" y="643" width="26" height="14" rx="3" fill="#fdeaf4" stroke="#e0559a" stroke-width="1.2"/>
+<text x="498" y="650" class="t b" font-size="10" text-anchor="start" fill="#e0559a">フェノールフタレイン：pH 8〜9.8（無色→赤）</text>
+<rect x="464" y="665" width="26" height="14" rx="3" fill="#fdf1de" stroke="#e08a2a" stroke-width="1.2"/>
+<text x="498" y="672" class="t b" font-size="10" text-anchor="start" fill="#e08a2a">メチルオレンジ：pH 3.1〜4.4（赤→黄）</text>
+</svg>

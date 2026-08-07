@@ -380,6 +380,161 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         color: #6b6280;
         margin-top: 6px;
       }
+      /* ===== 図版レイアウト（文字を図の左に置く2カラム） =====
+         上の figure ルールは max-width:620px を !important で強制しているので、
+         2カラムに入れた図はそのままだと 620px のまま中央寄せになってしまう。
+         .figrow の中だけは列幅いっぱい（100%）に広げ直す。 */
+      .learning-content .figrow {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr);
+        gap: 18px;
+        align-items: start;
+        margin: 22px 0;
+        padding: 16px;
+        background: #fbf9ff;
+        border: 1.5px solid var(--lc-line);
+        border-radius: 12px;
+      }
+      /* 図を左・文字を右にしたいときは .figrow.rev を付ける */
+      .learning-content .figrow.rev {
+        grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+      }
+      .learning-content .figrow.rev > .figrow-text {
+        order: 2;
+      }
+      .learning-content .figrow.rev > .figrow-fig {
+        order: 1;
+      }
+      /* 図が主役で説明が短いとき（図を大きく） */
+      .learning-content .figrow.wide {
+        grid-template-columns: minmax(0, 0.78fr) minmax(0, 2.3fr);
+      }
+      /* ===== 広い画面では図の行だけ本文カラムより少し外へ広げる =====
+         本文カラムは max-w-4xl（896px）だが、自作図は 880px 幅で描いてある。
+         2カラムに入れると図が半分の幅まで縮み、図中の 10px の文字が読めない。
+         1180px 以上の画面では、図の行だけ左右へ 102px ずつはみ出させて
+         1100px 幅で見せる（1180px の画面でも左右に 20px 以上の余白が残る計算）。 */
+      @media (min-width: 1180px) {
+        .learning-content .figrow,
+        .learning-content .figfull {
+          width: 1100px;
+          margin-left: -102px;
+          margin-right: -102px;
+        }
+        /* 図は広げたいが、説明文まで 1100px に伸ばすと1行が長すぎて読みにくい。
+           .figfull の中の文章だけは 880px で折り返しておく（図は全幅のまま）。 */
+        .learning-content .figfull > p,
+        .learning-content .figfull > ul,
+        .learning-content .figfull > ol {
+          max-width: 880px;
+        }
+      }
+      .learning-content .figrow-text > :first-child {
+        margin-top: 0;
+      }
+      .learning-content .figrow-text > :last-child {
+        margin-bottom: 0;
+      }
+      .learning-content .figrow-text .figrow-title {
+        display: inline-block;
+        font-weight: 800;
+        font-size: 0.94em;
+        color: var(--lc-accent-dark, #5b21b6);
+        background: #f1e9ff;
+        border-radius: 999px;
+        padding: 4px 12px;
+        margin-bottom: 10px;
+      }
+      .learning-content .figrow-text p,
+      .learning-content .figrow-text li {
+        font-size: 0.92em;
+        line-height: 1.85;
+      }
+      .learning-content .figrow-text ul,
+      .learning-content .figrow-text ol {
+        margin: 8px 0 0;
+        padding-left: 1.25em;
+      }
+      .learning-content .figrow-fig {
+        margin: 0;
+        text-align: center;
+      }
+      .learning-content .figrow-fig img,
+      .learning-content .figrow-fig svg {
+        /* 図は列の幅いっぱいまで使う（620px の上限を打ち消す） */
+        max-width: 100% !important;
+        width: 100%;
+        height: auto;
+        display: block;
+        background: #fff;
+        border: 1.5px solid var(--lc-line);
+        border-radius: 10px;
+      }
+      .learning-content .figrow-fig figcaption {
+        margin-top: 8px;
+        text-align: left;
+        font-size: 0.8em;
+        line-height: 1.7;
+      }
+      /* ===== 図の拡大（タップ／クリックで全画面） =====
+         自作図は文字も線も多いので、2カラムに入れて縮むと読みにくい。
+         図そのものを押したら等倍以上で見られるようにして、
+         「小さくて読めない」を起こさないようにする。 */
+      .learning-content .figrow-fig img,
+      .learning-content .figfull img {
+        cursor: zoom-in;
+      }
+      .learning-content .figzoom-hint {
+        display: inline-block;
+        margin-top: 6px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: #f1e9ff;
+        color: var(--lc-accent-dark, #5b21b6);
+        font-size: 0.72em;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+      /* 図だけを大きく1枚見せたいとき（文字は下） */
+      .learning-content .figfull {
+        margin: 22px 0;
+        padding: 16px;
+        background: #fbf9ff;
+        border: 1.5px solid var(--lc-line);
+        border-radius: 12px;
+      }
+      .learning-content .figfull img,
+      .learning-content .figfull svg {
+        max-width: 100% !important;
+        width: 100%;
+        height: auto;
+        display: block;
+        background: #fff;
+        border: 1.5px solid var(--lc-line);
+        border-radius: 10px;
+      }
+      .learning-content .figfull figcaption {
+        margin-top: 10px;
+        text-align: left;
+        font-size: 0.82em;
+        line-height: 1.75;
+      }
+      /* スマホでは2カラムをやめて縦積み（文字→図の順で読ませる） */
+      @media (max-width: 760px) {
+        .learning-content .figrow,
+        .learning-content .figrow.rev,
+        .learning-content .figrow.wide {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 14px;
+          padding: 12px;
+        }
+        .learning-content .figrow.rev > .figrow-text {
+          order: 1;
+        }
+        .learning-content .figrow.rev > .figrow-fig {
+          order: 2;
+        }
+      }
       .learning-content .top-btn {
         position: fixed;
         bottom: 24px;

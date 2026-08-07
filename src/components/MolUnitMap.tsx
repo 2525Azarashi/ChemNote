@@ -12,7 +12,7 @@
  *  - 矢印の変換の数字をタップすると、その変換（＝1を掛ける）が式に追加される。
  */
 
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 /* ============================================================
  * 数値ユーティリティ（プリントの表記に合わせる）
@@ -222,8 +222,57 @@ export function MolUnitMap({ title = '★ 単位変換の図　〜この図だ�
   const [startNode, setStartNode] = useState<NodeId>('g');
   const [steps, setSteps] = useState<Step[]>([]);
 
+  /* --- 縮尺 ---
+     スマホでは 880px の図が画面からはみ出して右側（kg / g / mg）が
+     まったく見えなくなってしまうので、既定では「表示幅にぴったり収める」
+     オートフィットにしておく。ユーザーが ＋／－ を押した瞬間に手動へ切りかわる。 */
   const [scale, setScale] = useState(initialScale ?? 0.78);
+  const [autoFit, setAutoFit] = useState(initialScale === undefined);
+  const [fullscreen, setFullscreen] = useState(false);
   const [showHint, setShowHint] = useState(true);
+
+  /* 図の表示領域の幅を測って、オートフィット時の縮尺を決める */
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [boxW, setBoxW] = useState(0);
+  const [boxH, setBoxH] = useState(0);
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const update = () => {
+      // padding(4px*2) + border(1px*2) を引いた実際に使える幅
+      setBoxW(Math.max(0, el.clientWidth - 10));
+      setBoxH(Math.max(0, el.clientHeight - 10));
+    };
+    update();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', update);
+      return () => window.removeEventListener('resize', update);
+    }
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fullscreen]);
+
+  /** 表示領域に図全体が収まる縮尺（0.28〜1.0 に丸める） */
+  const fitScale = useMemo(() => {
+    if (!boxW) return null;
+    const byW = boxW / CANVAS_W;
+    // 全画面のときは高さも見て、図が1画面に収まるようにする
+    const byH = fullscreen && boxH ? boxH / CANVAS_H : Infinity;
+    const v = Math.min(byW, byH);
+    return Math.max(0.28, Math.min(1, Math.round(v * 100) / 100));
+  }, [boxW, boxH, fullscreen]);
+
+  // オートフィット中は測った縮尺を反映する
+  useEffect(() => {
+    if (autoFit && fitScale != null) setScale(fitScale);
+  }, [autoFit, fitScale]);
+
+  /** ＋／－ を押したら手動モードへ */
+  const bumpScale = (d: number) => {
+    setAutoFit(false);
+    setScale(s => Math.max(0.28, Math.min(1.6, Math.round((s + d) * 100) / 100)));
+  };
 
   const naRef = useRef<HTMLInputElement>(null);
   const vmRef = useRef<HTMLInputElement>(null);
@@ -465,9 +514,25 @@ export function MolUnitMap({ title = '★ 単位変換の図　〜この図だ�
 
       {/* ================= 図 ================= */}
       <div className="mb-zoom-row">
-        <button type="button" className="mb-btn mb-btn-icon" onClick={() => setScale(s => Math.max(0.4, Math.round((s - 0.08) * 100) / 100))} aria-label="縮小">－</button>
+        <button type="button" className="mb-btn mb-btn-icon" onClick={() => bumpScale(-0.08)} aria-label="縮小">－</button>
         <span className="mb-zoom-val">{Math.round(scale * 100)}%</span>
-        <button type="button" className="mb-btn mb-btn-icon" onClick={() => setScale(s => Math.min(1.6, Math.round((s + 0.08) * 100) / 100))} aria-label="拡大">＋</button>
+        <button type="button" className="mb-btn mb-btn-icon" onClick={() => bumpScale(+0.08)} aria-label="拡大">＋</button>
+        <button
+          type="button"
+          className={`mb-btn ${autoFit ? 'mb-btn-on' : 'mb-btn-sub'}`}
+          onClick={() => setAutoFit(a => !a)}
+          title="図の全体が画面に収まるように自動で縮小します"
+        >
+          {autoFit ? '✓ 全体表示' : '全体表示'}
+        </button>
+        <button
+          type="button"
+          className="mb-btn mb-btn-sub mb-btn-fs"
+          onClick={() => setFullscreen(true)}
+          title="画面いっぱいに図を開きます（スマホ向け）"
+        >
+          ⛶ 大きく見る
+        </button>
         <button type="button" className="mb-btn mb-btn-sub" onClick={resetLayout}>図の配置をリセット</button>
         <span className="mb-ml-toggle">
           体積の単位:
@@ -476,7 +541,18 @@ export function MolUnitMap({ title = '★ 単位変換の図　〜この図だ�
         </span>
       </div>
 
-      <div className="mb-canvas-scroll">
+      <div className={fullscreen ? 'mb-fs-overlay' : 'mb-fs-inline'}>
+        {fullscreen && (
+          <div className="mb-fs-bar">
+            <span className="mb-fs-title">単位変換の図</span>
+            <button type="button" className="mb-btn mb-btn-icon" onClick={() => bumpScale(-0.08)} aria-label="縮小">－</button>
+            <span className="mb-zoom-val">{Math.round(scale * 100)}%</span>
+            <button type="button" className="mb-btn mb-btn-icon" onClick={() => bumpScale(+0.08)} aria-label="拡大">＋</button>
+            <button type="button" className={`mb-btn ${autoFit ? 'mb-btn-on' : 'mb-btn-sub'}`} onClick={() => setAutoFit(a => !a)}>全体表示</button>
+            <button type="button" className="mb-btn mb-btn-sub" onClick={() => setFullscreen(false)}>閉じる ✕</button>
+          </div>
+        )}
+      <div className="mb-canvas-scroll" ref={scrollRef}>
         <div
           className="mb-canvas"
           style={{ width: CANVAS_W * scale, height: CANVAS_H * scale }}
@@ -610,6 +686,7 @@ export function MolUnitMap({ title = '★ 単位変換の図　〜この図だ�
           </div>
         </div>
       </div>
+      </div>
 
       {/* ================= 定数の入力 ================= */}
       <div className="mb-panel">
@@ -740,7 +817,21 @@ const MAP_CSS = `
 .mb-chip{border:1.5px solid var(--mb-line);background:#fff;border-radius:999px;padding:2px 10px;font-size:.95em;font-weight:800;color:var(--mb-accent-d);cursor:pointer;font-family:inherit;}
 .mb-chip.on{background:var(--mb-accent);color:#fff;border-color:var(--mb-accent);}
 
+.mb-btn-on{background:var(--mb-accent);color:#fff;border-color:var(--mb-accent);}
 .mb-canvas-scroll{overflow:auto;-webkit-overflow-scrolling:touch;background:#fff;border:1px solid var(--mb-line);border-radius:10px;padding:4px;}
+
+/* ===== 全画面表示（スマホで図の右端まで見えるように） ===== */
+.mb-fs-inline{display:block;}
+.mb-fs-overlay{
+  position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;
+  background:rgba(47,39,64,.9);backdrop-filter:blur(2px);padding:8px;gap:8px;
+}
+.mb-fs-overlay .mb-canvas-scroll{flex:1 1 auto;min-height:0;}
+.mb-fs-bar{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:0 0 auto;
+  background:#fff;border-radius:10px;padding:6px 10px;
+}
+.mb-fs-title{font-size:.82em;font-weight:800;color:var(--mb-accent-d);margin-right:auto;}
 .mb-canvas{position:relative;}
 .mb-canvas-inner{position:relative;transform-origin:top left;touch-action:none;}
 .mb-svg{position:absolute;inset:0;pointer-events:none;}
@@ -821,7 +912,15 @@ const MAP_CSS = `
   .mb-input-num{width:84px;}
   .mb-val>span:first-child{min-width:76px;}
   .mb-formula{font-size:.96em;}
+  /* 図のボタン行は横に並べきれないので折り返し前提にする */
+  .mb-zoom-row{gap:6px;}
+  .mb-zoom-row .mb-btn{font-size:.74em;padding:4px 8px;}
+  .mb-ml-toggle{margin-left:0;width:100%;}
+  /* 縦長の画面でも図の全体像がわかるように、最低限の高さを確保する */
+  .mb-fs-inline .mb-canvas-scroll{max-height:60vh;}
 }
+/* 「大きく見る」ボタンはスマホでいちばん効くので、そこだけ目立たせる */
+.mb-btn-fs{border-color:var(--mb-accent);color:var(--mb-accent-d);font-weight:900;}
 `;
 
 export default MolUnitMap;

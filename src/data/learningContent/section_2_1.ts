@@ -1,5 +1,5 @@
 // Auto-generated from 化学基礎まとめプリント_図入り (v2).html
-// Section 2-1 - Base64 images extracted to /public/learning_images/
+// Section 2-1 - 図版はすべて自作の SVG（/public/learning_figures/）を参照する
 // Inline <style> blocks pre-scoped to .learning-content
 // eslint-disable-next-line
 export const SECTION_2_1_HTML = `        <h3 id="sec2-1">1. 物質量と化学反応式</h3>

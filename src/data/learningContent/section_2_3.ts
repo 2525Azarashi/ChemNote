@@ -1,5 +1,5 @@
 // Auto-generated from 化学基礎まとめプリント_図入り (v2).html
-// Section 2-3 - Base64 images extracted to /public/learning_images/
+// Section 2-3 - 図版はすべて自作の SVG（/public/learning_figures/）を参照する
 // Inline <style> blocks pre-scoped to .learning-content
 // eslint-disable-next-line
 export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</h3>
@@ -452,6 +452,23 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
           <p><strong>問題点</strong>：水素が銅板にくっつき、正極の反応が起こらなくなり電池が消える</p>
         </div>
 
+        <div class="figrow rev">
+          <div class="figrow-text">
+            <span class="figrow-title">図で確認するボルタ電池</span>
+            <p>電池の図は<strong><u>「①どちらがイオン化傾向が大きいか → ②そこが負極 → ③電子は負極から外へ出ていく」</u></strong>の順に読みます。</p>
+            <ul>
+              <li><strong>負極＝Zn 板</strong>（イオン化傾向が大きい方が溶ける）。<strong>正極＝Cu 板</strong>。</li>
+              <li><strong>電子は Zn → 導線 → Cu</strong> の向き。<u>電流はその逆（Cu → Zn）</u>。ここを取り違える人が非常に多い。</li>
+              <li>正極では溶液中の <strong>H⁺</strong> が電子を受け取って <strong>H₂</strong> が発生する。硫酸水溶液なので <u>Cu²⁺ は存在しない</u>点に注意（Cu 板は電子の通り道でしかない）。</li>
+              <li><strong>起電力は約 1.1 V</strong> だが、発生した H₂ が Cu 板をおおう<strong>分極</strong>のためすぐ電圧が落ちる。</li>
+            </ul>
+          </div>
+          <figure class="figrow-fig">
+            <img src="/learning_figures/fig_volta.svg" alt="希硫酸に亜鉛板と銅板を浸したボルタ電池の模式図。負極で Zn が溶け、正極で水素が発生し、電子が亜鉛板から銅板へ流れることを示す図（オリジナル作図）">
+            <figcaption><strong>🔋 ボルタ電池（オリジナル作図）</strong><br>負極（Zn 板）／正極（Cu 板）と電子の流れ、正極での H₂ 発生。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
+
         <h5>② ダニエル電池</h5>
         <p>亜鉛Zn板を浸した硫酸亜鉛水溶液と銅板Cu板を浸した硫酸銅水溶液を用いる。</p>
         <div class="box box-point">
@@ -469,6 +486,23 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
           </ul>
         </div>
 
+        <div class="figrow rev">
+          <div class="figrow-text">
+            <span class="figrow-title">図で確認するダニエル電池</span>
+            <p>ボルタ電池との違いは<strong><u>電解液が2種類あり、素焼き板で仕切られている</u></strong>ことだけです。</p>
+            <ul>
+              <li><strong>負極側＝ZnSO₄ 水溶液に Zn 板</strong>、<strong>正極側＝CuSO₄ 水溶液に Cu 板</strong>。電子は Zn → Cu。</li>
+              <li>正極では <strong>Cu²⁺ が電子を受け取って Cu が析出</strong>する（＝Cu 板が重くなる／Zn 板は軽くなる）。H₂ は発生しないので<strong>分極が起きず長持ち</strong>。</li>
+              <li><strong>素焼き板</strong>は「2つの溶液が混ざるのを防ぎつつ、イオンだけを通す」役目。混ざると Cu²⁺ が直接 Zn 板に触れて電子が導線を通らなくなり、電流が取り出せない。</li>
+              <li>放電が続くと負極側は Zn²⁺ が増えて<u>正電荷が過剰</u>、正極側は Cu²⁺ が減って<u>負電荷が過剰</u>になるため、SO₄²⁻ が素焼き板を通って負極側へ移動して電気的な釣り合いを保つ。</li>
+            </ul>
+          </div>
+          <figure class="figrow-fig">
+            <img src="/learning_figures/fig_daniell.svg" alt="硫酸亜鉛水溶液と硫酸銅水溶液を素焼き板で仕切ったダニエル電池の模式図。負極で Zn が溶け、正極で Cu が析出することを示す図（オリジナル作図）">
+            <figcaption><strong>🔋 ダニエル電池（オリジナル作図）</strong><br>素焼き板で2つの電解液を仕切り、負極で Zn²⁺ が溶け出し、正極で Cu が析出します。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
+
         <h5>③ 燃料電池</h5>
         <p>水素などの燃料と酸素などの酸化剤を用いて、化学エネルギーを取り出す装置。リン酸形燃料電池、固体高分子形燃料電池などがある。</p>
         <div class="box box-point">
@@ -479,9 +513,25 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
           <p>全体：2H<sub>2</sub> + O<sub>2</sub> → 2H<sub>2</sub>O</p>
         </div>
 
-        <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;align-items:center;"><img src="/learning_images/learn_img_20_830b571b.jpg" alt="ボルタ電池" style="max-width:330px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><img src="/learning_images/learn_img_21_29d1dcc6.jpg" alt="ダニエル電池" style="max-width:330px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"></div><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u>📷 ボルタ電池とダニエル電池</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.59 から抽出：負極（Zn板）と正極（Cu板）、電子の流れ、半反応式</span></figcaption></figure><figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;"><img src="/learning_images/learn_img_22_db97b0b2.jpg" alt="燃料電池（リン酸形）" style="max-width:500px;width:100%;height:auto;border:1px solid #ddd;border-radius:4px;background:#fff;display:inline-block;"><figcaption style="font-size:0.85em;color:#5d7a8d;margin-top:10px;line-height:1.5;"><strong><u>📷 燃料電池の仕組み</u></strong><br><span style="font-size:0.9em;color:#90a4ae;">元プリント p.60 から抽出：水素 H₂ と酸素 O₂ から電気エネルギーを取り出し、水 H₂O を生成</span></figcaption></figure>
+        <div class="figrow rev">
+          <div class="figrow-text">
+            <span class="figrow-title">図で確認する燃料電池（リン酸形）</span>
+            <p>燃料電池は<strong><u>「水素の燃焼を、熱ではなく電気として取り出す装置」</u></strong>です。反応の向きは水の電気分解の<u>ちょうど逆</u>。</p>
+            <ul>
+              <li><strong>負極に H₂、正極に O₂</strong> を送り込み続ける（＝活物質を外から供給するので電極自身は減らない）。</li>
+              <li>電極は<strong>多孔質（穴だらけ）</strong>で、気体と電解質と電極が触れる面積をかせいでいる。触媒には白金を使う。</li>
+              <li>電解質はリン酸 H₃PO₄ 水溶液で、<strong>H⁺ が負極から正極へ移動</strong>する。</li>
+              <li><strong>生成物は水だけ</strong>で CO₂ を出さない。エネルギー変換効率が高いのが最大の利点。</li>
+              <li>正極の式 <strong>O₂ + 4H⁺ + 4e⁻ → 2H₂O</strong> は係数4で覚える（負極の式を2倍して電子数をそろえる）。</li>
+            </ul>
+          </div>
+          <figure class="figrow-fig">
+            <img src="/learning_figures/fig_fuelcell.svg" alt="リン酸形燃料電池の模式図。負極に水素、正極に酸素を送り、H+ が電解質を移動して水が生成することを示す図（オリジナル作図）">
+            <figcaption><strong>💧 燃料電池（リン酸形）の仕組み（オリジナル作図）</strong><br>H₂ と O₂ から電気エネルギーを取り出し、生成物は水 H₂O だけ。<span class="figzoom-hint">タップで拡大できます</span></figcaption>
+          </figure>
+        </div>
 
-        <div class="box box-test">
+                <div class="box box-test">
           <p><strong>電池の起電力と種類</strong></p>
           <ul>
             <li><strong><u>起電力</u></strong>…電池の両極間の電圧（電位差）の最大値 ≒ 電池のパワー<br>→ 2つの極の金属のイオン化傾向の差が大きいほど、起電力は大きくなる</li>

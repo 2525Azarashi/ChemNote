@@ -64,11 +64,21 @@ describe('科目の定義', () => {
     expect(def).toContain('icon: Headphones');
   });
 
-  it('化学基礎だけが公開中で、他の2科目は準備中', () => {
+  it('化学は available: true（＝公開中）として定義されている', () => {
+    // 化学（発展）は単元だけ先に公開し、問題は順次追加していく方針。
+    const block = SRC.slice(SRC.indexOf("id: 'chemistry',"));
+    const end = block.indexOf('},');
+    const def = block.slice(0, end);
+    expect(def).toContain("title: '化学'");
+    expect(def).toContain('available: true');
+    expect(def).toContain('icon: FlaskConical');
+  });
+
+  it('化学基礎と化学が公開中で、英語リスニングだけ準備中', () => {
     const availableTrue = (SRC.match(/available: true/g) || []).length;
     const availableFalse = (SRC.match(/available: false/g) || []).length;
-    expect(availableTrue).toBe(1);
-    expect(availableFalse).toBe(2);
+    expect(availableTrue).toBe(2);
+    expect(availableFalse).toBe(1);
   });
 });
 

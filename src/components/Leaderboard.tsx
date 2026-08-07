@@ -19,6 +19,7 @@ import {
 } from '../utils/leaderboard';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
+import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
 import { fetchFriendCompetition } from '../utils/friends';
 import { DoorMascot } from './DoorMascot';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
@@ -41,8 +42,13 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<Array<{ rank: number; nickname: string; photoURL?: string; score: number; sub?: string; isMe: boolean; uid?: string }>>([]);
 
+  // 化学基礎の章に加えて、化学（発展）の章もランキングの選択肢に含める。
+  // 章ID は接頭辞（c… / a…）で衝突しないため、単純な連結で安全に並べられる。
   const allChapters = useMemo(
-    () => chemistryData.parts.flatMap((p: any) => p.chapters.map((c: any) => ({ id: c.id, title: c.abstractTitle || c.title || c.id }))),
+    () => [
+      ...chemistryData.parts.flatMap((p: any) => p.chapters.map((c: any) => ({ id: c.id, title: c.abstractTitle || c.title || c.id }))),
+      ...getAllAdvancedChapters().map((c) => ({ id: c.id, title: c.abstractTitle || c.id })),
+    ],
     []
   );
   const [chapterId, setChapterId] = useState<string>(
