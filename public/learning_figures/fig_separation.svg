@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 700" width="880" height="700" role="img" aria-label="分離・精製の主な装置と方法（ろ過・蒸留・抽出・クロマトグラフィー）">
-<title>分離・精製の主な装置と方法（ろ過・蒸留・抽出・クロマトグラフィー）</title>
-<desc>ろ過は固体と液体、蒸留は沸点の差、抽出は溶けやすさの差、クロマトグラフィーは吸着・移動しやすさの差を利用して混合物を分離する。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 1112" width="940" height="1112" role="img" aria-label="分離・精製の主な装置と方法（ろ過・蒸留・抽出・ペーパークロマトグラフィー）">
+<title>分離・精製の主な装置と方法（ろ過・蒸留・抽出・ペーパークロマトグラフィー）</title>
+<desc>ろ過は粒の大きさ、蒸留は沸点の差、抽出は溶けやすさの差、ペーパークロマトグラフィーは吸着・移動しやすさの差を利用して混合物を分離する。ろ過ではろ紙を4つ折りにして開き、3枚重なった側にガラス棒を当て、ろうとの足の長いほうをビーカーの内壁につける。蒸留ではリービッヒ冷却器の内管を蒸気が通り、外管には冷却水を低い側から入れて高い側から出す。</desc>
 <style>
   .t{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#2f2740;}
   .s{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Noto Sans CJK JP','Yu Gothic','Meiryo',sans-serif;fill:#6b6280;}
@@ -9,7 +9,7 @@
   .eb{font-weight:800;}
   text{dominant-baseline:middle;}
 </style>
-<rect x="0" y="0" width="880" height="700" fill="#ffffff"/>
+<rect x="0" y="0" width="940" height="1112" fill="#ffffff"/>
 <defs>
 <marker id="ar0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
   <path d="M0,0.6 L10,5 L0,9.4 z" fill="#2f2740"/>
@@ -23,102 +23,339 @@
 <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
   <path d="M0,0.6 L10,5 L0,9.4 z" fill="#d94a6a"/>
 </marker>
+<marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#d9932a"/>
+</marker>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" orient="auto-start-reverse">
+  <path d="M0,0.6 L10,5 L0,9.4 z" fill="#6b6280"/>
+</marker>
 </defs>
-<rect x="14" y="14" width="264" height="320" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
-<rect x="30" y="26" width="240" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
-<text x="150" y="39" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">ろ過</text>
-<path d="M54,74 L60,114 L104,120 L112,80" fill="none" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M58,92 L61,114 L104,119 L108,98 Z" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-<line x1="104" y1="86" x2="138" y2="144" stroke="#9c93ab" stroke-width="4" stroke-linecap="round"/>
-<path d="M110,98 Q122,120 136,142" fill="none" stroke="#3a7bd5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M104,130 L192,130 L154,184 L154,216 L142,216 L142,184 Z" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M112,135 L184,135 L151,180 L145,180 Z" fill="#fdf4e3" stroke="#d9932a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="148" cy="228" r="3.2" fill="#3a7bd5" stroke="none" stroke-width="0"/>
-<circle cx="148" cy="240" r="2.6" fill="#3a7bd5" stroke="none" stroke-width="0"/>
-<path d="M106,250 L110,306 L186,306 L190,250" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M108,280 L110,305 L186,305 L188,280 Z" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="42" y="80" class="s b" font-size="11" text-anchor="start">ろ過する液</text>
-<text x="198" y="92" class="s b" font-size="11" text-anchor="start">ガラス棒</text>
-<line x1="196" y1="92" x2="130" y2="120" stroke="#9c93ab" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 3"/>
-<text x="220" y="152" class="s b" font-size="11" text-anchor="start">ろ紙</text>
-<line x1="218" y1="152" x2="168" y2="154" stroke="#9c93ab" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 3"/>
-<text x="200" y="280" class="s b" font-size="11" text-anchor="start">ろ液</text>
-<line x1="198" y1="280" x2="182" y2="284" stroke="#9c93ab" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 3"/>
-<text x="150" y="328" class="t b" font-size="11.5" text-anchor="middle" fill="#5b21b6">固体と液体を分ける</text>
-<rect x="292" y="14" width="574" height="320" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
-<rect x="308" y="26" width="400" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
-<text x="508" y="39" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">蒸留</text>
-<path d="M361,96 L361,124 A34,34 0 1,0 379,124 L379,96" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M339,146 A34,34 0 0,0 401,146 A34,34 0 0,1 339,146 Z" fill="#eaf2fc" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M339,148 A33,33 0 0,0 401,148" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="358" cy="170" r="2.6" fill="#9c93ab" stroke="none" stroke-width="0"/>
-<circle cx="374" cy="174" r="2.6" fill="#9c93ab" stroke="none" stroke-width="0"/>
-<circle cx="386" cy="166" r="2.6" fill="#9c93ab" stroke="none" stroke-width="0"/>
-<line x1="370" y1="78" x2="370" y2="124" stroke="#d94a6a" stroke-width="3" stroke-linecap="round"/>
-<circle cx="370" cy="128" r="4" fill="#d94a6a" stroke="none" stroke-width="0"/>
-<rect x="364" y="74" width="12" height="20" rx="3" fill="#ffffff" stroke="#2f2740" stroke-width="1.4"/>
-<path d="M379,106 L422,118" fill="none" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M422,103 L546,141 L546,163 L422,125 Z" fill="#eaf2fc" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<line x1="422" y1="114" x2="546" y2="152" stroke="#9c93ab" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5 4"/>
-<path d="M528,164 l0,20" fill="none" stroke="#3a7bd5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
-<path d="M446,84 l0,18" fill="none" stroke="#3a7bd5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
-<path d="M546,144 l16,6 l-4,22 l-14,-6 Z" fill="#ffffff" stroke="#2f2740" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M572,172 L550,228 L610,228 L588,172 Z" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M556,212 L550,227 L610,227 L604,212 Z" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="580" cy="184" r="2.6" fill="#3a7bd5" stroke="none" stroke-width="0"/>
-<path d="M360,200 q4,-12 10,-6 q6,-14 10,0 q8,-6 10,6 Z" fill="#d9932a" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
-<line x1="344" y1="202" x2="396" y2="202" stroke="#2f2740" stroke-width="2" stroke-linecap="round"/>
-<text x="324" y="84" class="s b" font-size="11" text-anchor="start">温度計</text>
-<line x1="338" y1="154" x2="314" y2="204" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
-<text x="312" y="216" class="s b" font-size="11" text-anchor="middle">枝付きフラスコ</text>
-<line x1="387" y1="167" x2="412" y2="186" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
-<text x="416" y="190" class="s b" font-size="11" text-anchor="start" fill="#6b6280">沸騰石</text>
-<text x="488" y="80" class="s b" font-size="11" text-anchor="middle">リービッヒ冷却器</text>
-<text x="528" y="194" class="s b" font-size="10.5" text-anchor="middle" fill="#3a7bd5">冷却水</text>
-<text x="626" y="214" class="s b" font-size="11" text-anchor="start">三角フラスコ</text>
-<text x="624" y="184" class="s b" font-size="11" text-anchor="start" fill="#3a7bd5">留出液</text>
-<text x="508" y="284" class="t b" font-size="11.5" text-anchor="middle" fill="#5b21b6">沸点の差で液体どうしを分ける</text>
-<rect x="14" y="348" width="264" height="300" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
-<rect x="30" y="360" width="200" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
-<text x="130" y="373" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">抽出</text>
-<path d="M120,412 L120,426 L96,436 L96,504 L130,558 L164,504 L164,436 L140,426 L140,412 Z" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M96,446 L164,446 L164,494 L96,494 Z" fill="#fdf4e3" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M96,494 L164,494 L164,504 L130,558 L96,504 Z" fill="#eaf2fc" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
-<line x1="96" y1="494" x2="164" y2="494" stroke="#2f2740" stroke-width="1.8" stroke-linecap="round"/>
-<line x1="96" y1="446" x2="164" y2="446" stroke="#d9932a" stroke-width="1.4" stroke-linecap="round"/>
-<path d="M96,436 L96,504 L130,558 L164,504 L164,436" fill="none" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="130" cy="564" r="7" fill="#ffffff" stroke="#2f2740" stroke-width="1.8"/>
-<line x1="119" y1="564" x2="141" y2="564" stroke="#2f2740" stroke-width="2.4" stroke-linecap="round"/>
-<line x1="130" y1="571" x2="130" y2="586" stroke="#2f2740" stroke-width="2" stroke-linecap="round"/>
-<text x="178" y="468" class="s b" font-size="11" text-anchor="start" fill="#d9932a">ヘキサンの層</text>
-<line x1="176" y1="468" x2="162" y2="470" stroke="#9c93ab" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 3"/>
-<text x="178" y="512" class="s b" font-size="11" text-anchor="start" fill="#3a7bd5">水の層</text>
-<line x1="176" y1="512" x2="160" y2="508" stroke="#9c93ab" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 3"/>
-<text x="82" y="420" class="s b" font-size="11" text-anchor="end">分液ろうと</text>
-<line x1="84" y1="420" x2="118" y2="422" stroke="#9c93ab" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 3"/>
-<text x="130" y="606" class="t b" font-size="11.5" text-anchor="middle" fill="#5b21b6">溶けやすさの差で分ける</text>
-<rect x="292" y="348" width="574" height="300" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
-<rect x="400" y="360" width="340" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
-<text x="570" y="373" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">クロマトグラフィー</text>
-<path d="M406,438 L410,546 L514,546 L518,438" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M414,520 L415,545 L509,545 L510,520 Z" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="446" y="414" width="32" height="126" rx="2" fill="#fffdf6" stroke="#b9b1c9" stroke-width="1.5"/>
-<text x="462" y="404" class="t b" font-size="11.5" text-anchor="middle" fill="#5b21b6">開始前</text>
-<circle cx="462" cy="512" r="5.5" fill="#4b3b6b" stroke="none" stroke-width="0"/>
-<text x="406" y="560" class="s b" font-size="10.5" text-anchor="start">水性ペンの点をつける</text>
-<path d="M530,478 l28,0" fill="none" stroke="#7c3aed" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar2)"/>
-<text x="544" y="462" class="t b" font-size="10" text-anchor="middle" fill="#7c3aed">水が上がる</text>
-<path d="M578,438 L582,546 L686,546 L690,438" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M586,520 L587,545 L681,545 L682,520 Z" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="618" y="414" width="32" height="126" rx="2" fill="#fffdf6" stroke="#b9b1c9" stroke-width="1.5"/>
-<text x="634" y="404" class="t b" font-size="11.5" text-anchor="middle" fill="#5b21b6">開始後</text>
-<rect x="620" y="448" width="28" height="9" rx="3" fill="#e0554e" stroke="none" stroke-width="0"/>
-<rect x="620" y="466" width="28" height="9" rx="3" fill="#e8a83c" stroke="none" stroke-width="0"/>
-<rect x="620" y="486" width="28" height="9" rx="3" fill="#3f8ecf" stroke="none" stroke-width="0"/>
-<line x1="616" y1="512" x2="652" y2="512" stroke="#9c93ab" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 3"/>
-<path d="M662,512 l0,-58" fill="none" stroke="#3a7bd5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
-<text x="692" y="452" class="s b" font-size="10" text-anchor="start" fill="#d94a6a">軽い＝速い</text>
-<text x="692" y="492" class="s b" font-size="10" text-anchor="start" fill="#3a7bd5">重い＝遅い</text>
-<text x="570" y="584" class="t b" font-size="11.5" text-anchor="middle" fill="#5b21b6">吸着・移動しやすさの差で分ける</text>
-<text x="440" y="676" class="t b" font-size="12.5" text-anchor="middle" fill="#6b6280">いずれも「混合物 → 純物質」に分ける操作。何の差を利用しているかで区別する。</text>
+<rect x="14" y="14" width="912" height="366" rx="14" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
+<rect x="26" y="24" width="888" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="470" y="37" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">蒸留 ― 沸点の差で液体どうしを分ける</text>
+<path d="M138,100 L138,184 A42,42 0 1,0 162,184 L162,100" fill="#ffffff" stroke="#2f2740" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M112,242 A42,42 0 0,0 188,242 Z" fill="#eaf2fc" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M112,242 L188,242" fill="none" stroke="#3a7bd5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="128" cy="256" r="3" fill="#9c93ab" stroke="none" stroke-width="0"/>
+<circle cx="150" cy="260" r="3" fill="#9c93ab" stroke="none" stroke-width="0"/>
+<circle cx="170" cy="253" r="3" fill="#9c93ab" stroke="none" stroke-width="0"/>
+<path d="M144,236 q-8,-22 2,-40 q10,-16 4,-32" fill="none" stroke="#b9b1c9" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 5"/>
+<path d="M166,238 q8,-20 0,-38" fill="none" stroke="#b9b1c9" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 5"/>
+<rect x="143" y="64" width="14" height="108" rx="7" fill="#ffffff" stroke="#2f2740" stroke-width="1.5"/>
+<line x1="150" y1="80" x2="156" y2="80" stroke="#b9b1c9" stroke-width="1" stroke-linecap="round"/>
+<line x1="150" y1="96" x2="156" y2="96" stroke="#b9b1c9" stroke-width="1" stroke-linecap="round"/>
+<line x1="150" y1="112" x2="156" y2="112" stroke="#b9b1c9" stroke-width="1" stroke-linecap="round"/>
+<line x1="150" y1="128" x2="156" y2="128" stroke="#b9b1c9" stroke-width="1" stroke-linecap="round"/>
+<line x1="150" y1="144" x2="156" y2="144" stroke="#b9b1c9" stroke-width="1" stroke-linecap="round"/>
+<line x1="150" y1="166" x2="150" y2="88" stroke="#d94a6a" stroke-width="3.4" stroke-linecap="round"/>
+<circle cx="150" cy="167" r="5.5" fill="#d94a6a" stroke="none" stroke-width="0"/>
+<line x1="158" y1="167" x2="246" y2="167" stroke="#d94a6a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 4" opacity="0.75"/>
+<path d="M162,152 L242,174 L242,186 L162,164 Z" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M270.8,180 L289.3,170.9 L493.9,218.5 L506.5,234.8 L503.4,248.4 L484.8,257.4 L280.3,209.9 L267.6,193.6 Z" fill="#eaf2fc" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M463,245.2 L320.8,212.1" fill="none" stroke="#3a7bd5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)" opacity="0.9"/>
+<path d="M226,169.6 L549.4,244.7 L546.2,258.3 L222.8,183.2 Z" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="250.2" cy="180.3" r="2.2" fill="#b9b1c9" stroke="none" stroke-width="0"/>
+<circle cx="272.7" cy="189.6" r="2.2" fill="#b9b1c9" stroke="none" stroke-width="0"/>
+<circle cx="296.9" cy="191.2" r="2.2" fill="#b9b1c9" stroke="none" stroke-width="0"/>
+<circle cx="319.4" cy="200.5" r="2.2" fill="#b9b1c9" stroke="none" stroke-width="0"/>
+<path d="M440,229.6 L543.2,253.5" fill="none" stroke="#3a7bd5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+<path d="M298.8,174.2 L305.9,144 L317.6,146.7 L310.5,176.9 Z" fill="#ffffff" stroke="#2f2740" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M303.9,143.5 L319.5,147.1" fill="none" stroke="#2f2740" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M313.5,137.5 L321.2,104.4" fill="none" stroke="#3a7bd5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<path d="M463.6,251.5 L456.6,281.7 L468.3,284.4 L475.3,254.2 Z" fill="#ffffff" stroke="#2f2740" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M454.7,281.2 L470.2,284.8" fill="none" stroke="#2f2740" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M452.9,323.9 L460.6,290.8" fill="none" stroke="#3a7bd5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<rect x="400" y="344" width="60" height="9" rx="3" fill="#dcd7e6" stroke="#b9b1c9" stroke-width="1.2"/>
+<rect x="426" y="246" width="8" height="100" rx="3" fill="#dcd7e6" stroke="#b9b1c9" stroke-width="1.2"/>
+<rect x="419" y="234" width="22" height="14" rx="4" fill="#b9b1c9" stroke="#6b6280" stroke-width="1.2"/>
+<path d="M550.4,243.6 L586.4,281.6 L577.6,290.4 L541.6,252.4 Z" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M570,284 L570,302" fill="none" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M594,284 L594,302" fill="none" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M570,302 L542,340 Q539,346 546,346 L618,346 Q625,346 622,340 L594,302" fill="#ffffff" stroke="#2f2740" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M554,328 L550,344 L614,344 L610,328 Z" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="582" cy="314" r="3" fill="#3a7bd5" stroke="none" stroke-width="0"/>
+<rect x="102" y="268" width="96" height="7" rx="2" fill="#dcd7e6" stroke="#b9b1c9" stroke-width="1.2"/>
+<line x1="108" y1="268" x2="108" y2="275" stroke="#b9b1c9" stroke-width="0.9" stroke-linecap="round"/>
+<line x1="121" y1="268" x2="121" y2="275" stroke="#b9b1c9" stroke-width="0.9" stroke-linecap="round"/>
+<line x1="134" y1="268" x2="134" y2="275" stroke="#b9b1c9" stroke-width="0.9" stroke-linecap="round"/>
+<line x1="147" y1="268" x2="147" y2="275" stroke="#b9b1c9" stroke-width="0.9" stroke-linecap="round"/>
+<line x1="160" y1="268" x2="160" y2="275" stroke="#b9b1c9" stroke-width="0.9" stroke-linecap="round"/>
+<line x1="173" y1="268" x2="173" y2="275" stroke="#b9b1c9" stroke-width="0.9" stroke-linecap="round"/>
+<line x1="186" y1="268" x2="186" y2="275" stroke="#b9b1c9" stroke-width="0.9" stroke-linecap="round"/>
+<line x1="102" y1="272" x2="198" y2="272" stroke="#2f2740" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="110" y1="272" x2="94" y2="352" stroke="#2f2740" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="190" y1="272" x2="206" y2="352" stroke="#2f2740" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M140,326 Q142,300 150,282 Q158,300 160,326 Z" fill="#d9932a" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M145,326 Q147,308 150,296 Q153,308 155,326 Z" fill="#f7dc9a" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="140" y="326" width="20" height="26" rx="3" fill="#ffffff" stroke="#2f2740" stroke-width="1.6"/>
+<line x1="64" y1="352" x2="664" y2="352" stroke="#2f2740" stroke-width="2.6" stroke-linecap="round"/>
+<text x="110" y="76" class="s b" font-size="11" text-anchor="end">温度計</text>
+<line x1="114" y1="76" x2="141" y2="76" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="28" y="148" class="s b" font-size="10.5" text-anchor="start" fill="#d94a6a">球部は枝の高さ</text>
+<line x1="130" y1="152" x2="144" y2="163" stroke="#d94a6a" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 3" opacity="0.8"/>
+<text x="32" y="206" class="s b" font-size="10.5" text-anchor="start">枝付きフラスコ</text>
+<line x1="106" y1="208" x2="118" y2="214" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="228" y="268" class="s b" font-size="10.5" text-anchor="start">沸騰石</text>
+<line x1="226" y1="266" x2="180" y2="256" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="392" y="156" class="t b" font-size="11.5" text-anchor="middle" fill="#5b21b6">リービッヒ冷却器</text>
+<line x1="392" y1="166" x2="392" y2="192" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="330" y="96" class="s b" font-size="10.5" text-anchor="middle" fill="#3a7bd5">冷却水（出）</text>
+<text x="464" y="336" class="s b" font-size="10.5" text-anchor="start" fill="#3a7bd5">冷却水（入）</text>
+<text x="300" y="300" class="s b" font-size="10.5" text-anchor="middle">内管＝蒸気　外管＝冷却水</text>
+<line x1="302" y1="290" x2="334" y2="226" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="388" y="340" class="f b" font-size="9.5" text-anchor="end">クランプで固定</text>
+<line x1="392" y1="338" x2="418" y2="330" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="528" y="320" class="s b" font-size="10.5" text-anchor="end" fill="#3a7bd5">留出液</text>
+<line x1="532" y1="322" x2="556" y2="334" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="660" y="332" class="s b" font-size="10.5" text-anchor="start">三角フラスコ（受け器）</text>
+<line x1="656" y1="334" x2="624" y2="340" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="120" cy="148" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="120" y="148.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">1</text>
+<circle cx="212" cy="268" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="212" y="268.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">2</text>
+<circle cx="450" cy="336" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="450" y="336.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">3</text>
+<line x1="100" y1="244" x2="112" y2="244" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="88" cy="244" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="88" y="244.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">4</text>
+<line x1="614" y1="300" x2="600" y2="306" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="624" cy="297" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="624" y="297.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">5</text>
+<rect x="650" y="76" width="270" height="246" rx="12" fill="#ffffff" stroke="#a794d6" stroke-width="1.6"/>
+<rect x="650" y="76" width="270" height="28" rx="12" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="650" y="94" width="270" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="785" y="90" class="t eb" font-size="12" text-anchor="middle" fill="#5b21b6">蒸留でここが問われる</text>
+<circle cx="668" cy="122" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="668" y="122.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">1</text>
+<text x="682" y="122" class="t" font-size="10.5" text-anchor="start">温度計の球部は「枝の高さ」に置く</text>
+<text x="682" y="138.5" class="t" font-size="10.5" text-anchor="start">出ていく蒸気の温度をはかるため</text>
+<circle cx="668" cy="160" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="668" y="160.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">2</text>
+<text x="682" y="160" class="t" font-size="10.5" text-anchor="start">沸騰石を入れて突沸（急な沸騰）を防ぐ</text>
+<circle cx="668" cy="181.5" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="668" y="182" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">3</text>
+<text x="682" y="181.5" class="t" font-size="10.5" text-anchor="start">冷却水は下（低い側）から入れて</text>
+<text x="682" y="198" class="t" font-size="10.5" text-anchor="start">上（高い側）から出す</text>
+<text x="682" y="214.5" class="t" font-size="10.5" text-anchor="start">管が水で満たされ、蒸気と逆向きに</text>
+<text x="682" y="231" class="t" font-size="10.5" text-anchor="start">流れるので効率よく冷やせる</text>
+<circle cx="668" cy="252.5" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="668" y="253" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">4</text>
+<text x="682" y="252.5" class="t" font-size="10.5" text-anchor="start">液の量はフラスコの半分以下にする</text>
+<circle cx="668" cy="274" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="668" y="274.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">5</text>
+<text x="682" y="274" class="t" font-size="10.5" text-anchor="start">三角フラスコは密栓しない</text>
+<text x="682" y="290.5" class="t" font-size="10.5" text-anchor="start">圧力が上がって危険だから</text>
+<rect x="14" y="394" width="912" height="346" rx="14" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
+<rect x="26" y="404" width="888" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="470" y="417" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">ろ過 ― 粒の大きさの差で固体と液体を分ける</text>
+<rect x="34" y="700" width="96" height="12" rx="3" fill="#dcd7e6" stroke="#b9b1c9" stroke-width="1.3"/>
+<rect x="56" y="452" width="10" height="250" rx="3" fill="#dcd7e6" stroke="#b9b1c9" stroke-width="1.3"/>
+<rect x="64" y="545" width="108" height="7" rx="3" fill="#dcd7e6" stroke="#b9b1c9" stroke-width="1.2"/>
+<path d="M134,490 L191,578 L191,662 L205,642 L205,578 L258,490" fill="#ffffff" stroke="#2f2740" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M140,493 A56,12 0 0,0 252,493 L196,573 Z" fill="#fdf4e3" stroke="#d9932a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M196,505 Q225,503 252,493 L196,573 Z" fill="#f0d5a2" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="196" y1="505" x2="196" y2="573" stroke="#d9932a" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M140,493 A56,12 0 0,1 252,493" fill="none" stroke="#d9932a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<text x="173" y="508" class="t b" font-size="10" text-anchor="middle" fill="#8a5a12">1枚</text>
+<text x="220" y="508" class="t eb" font-size="10" text-anchor="middle" fill="#7a4c08">3枚</text>
+<circle cx="185" cy="526" r="2.7" fill="#b9b1c9" stroke="none" stroke-width="0"/>
+<circle cx="196" cy="533" r="2.7" fill="#b9b1c9" stroke="none" stroke-width="0"/>
+<circle cx="207" cy="524" r="2.7" fill="#b9b1c9" stroke="none" stroke-width="0"/>
+<circle cx="196" cy="519" r="2.7" fill="#b9b1c9" stroke="none" stroke-width="0"/>
+<ellipse cx="196" cy="490" rx="62" ry="14" fill="none" stroke="#2f2740" stroke-width="2.2"/>
+<path d="M169,548 A27,7 0 0,0 223,548" fill="none" stroke="#b9b1c9" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M169,548 A27,7 0 0,1 223,548" fill="none" stroke="#b9b1c9" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<path d="M187,600 L191,700 Q192,706 198,706 L314,706 Q320,706 321,700 L325,600" fill="none" stroke="#2f2740" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M192,668 L195,702 L313,702 L316,668 Z" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="189" y1="654" x2="189" y2="664" stroke="#d94a6a" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M190,662 Q192,666 194,672" fill="none" stroke="#3a7bd5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M292,454 L308,508 L376,490 L360,436" fill="#ffffff" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M296.7,470 L308,507 L375,490 L370.1,470 Z" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M292,454 l-9,3 l7,5" fill="none" stroke="#2f2740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="298" y1="462" x2="234" y2="494" stroke="#ded8ea" stroke-width="8" stroke-linecap="round"/>
+<line x1="296" y1="465" x2="236" y2="492" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<path d="M289,461 Q295,466 300,468 L240,498" fill="none" stroke="#3a7bd5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="130" y="462" class="s b" font-size="10.5" text-anchor="end">ろ紙</text>
+<text x="128" y="516" class="s b" font-size="10.5" text-anchor="end">ろうと</text>
+<line x1="132" y1="516" x2="152" y2="516" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="128" y="582" class="s b" font-size="10.5" text-anchor="end">ろうと台（リング）</text>
+<text x="252" y="444" class="s b" font-size="10.5" text-anchor="middle">ガラス棒</text>
+<line x1="258" y1="452" x2="272" y2="476" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="272" y="526" class="s b" font-size="10.5" text-anchor="start">沈殿（固体）</text>
+<line x1="268" y1="526" x2="216" y2="526" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="334" y="676" class="s b" font-size="10.5" text-anchor="start" fill="#3a7bd5">ろ液</text>
+<line x1="332" y1="678" x2="314" y2="682" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="334" y="702" class="s b" font-size="10.5" text-anchor="start">ビーカー</text>
+<line x1="332" y1="700" x2="318" y2="698" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<line x1="152" y1="466" x2="172" y2="484" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="142" cy="462" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="142" y="462.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">1</text>
+<line x1="276" y1="496" x2="258" y2="484" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="286" cy="500" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="286" y="500.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">2</text>
+<line x1="158" y1="658" x2="184" y2="660" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="148" cy="658" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="148" y="658.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">3</text>
+<circle cx="282" cy="684" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="282" y="684.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">4</text>
+<line x1="152" y1="578" x2="174" y2="554" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="142" cy="582" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="142" y="582.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">5</text>
+<rect x="452" y="436" width="190" height="288" rx="12" fill="#ffffff" stroke="#a794d6" stroke-width="1.6"/>
+<rect x="452" y="436" width="190" height="28" rx="12" fill="#fdf2dc" stroke="none" stroke-width="0"/>
+<rect x="452" y="454" width="190" height="10" rx="0" fill="#fdf2dc" stroke="none" stroke-width="0"/>
+<text x="547" y="450" class="t eb" font-size="12" text-anchor="middle" fill="#8a5a12">ろ紙の折り方</text>
+<circle cx="500" cy="512" r="30" fill="#fffdf6" stroke="#d9932a" stroke-width="1.6"/>
+<line x1="470" y1="512" x2="530" y2="512" stroke="#d9932a" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="4 3"/>
+<line x1="500" y1="482" x2="500" y2="542" stroke="#d9932a" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="4 3"/>
+<text x="500" y="556" class="s b" font-size="10" text-anchor="middle">円形のろ紙</text>
+<path d="M564,527 A30,30 0 0,1 624,527 Z" fill="#fffdf6" stroke="#d9932a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="594" y1="497" x2="594" y2="527" stroke="#d9932a" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="4 3"/>
+<text x="594" y="556" class="s b" font-size="10" text-anchor="middle">半分に折る</text>
+<path d="M500,637 L530,637 A30,30 0 0,0 500,607 Z" fill="#fffdf6" stroke="#d9932a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="500" y="666" class="s b" font-size="10" text-anchor="middle">さらに半分</text>
+<path d="M568,606 A26,6 0 0,0 620,606 L594,644 Z" fill="#fdf4e3" stroke="#d9932a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M594,612 Q607,611 620,606 L594,644 Z" fill="#f0d5a2" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="594" y1="612" x2="594" y2="644" stroke="#d9932a" stroke-width="1.3" stroke-linecap="round"/>
+<path d="M568,606 A26,6 0 0,1 620,606" fill="none" stroke="#d9932a" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<text x="578" y="620" class="t b" font-size="9" text-anchor="middle" fill="#8a5a12">1</text>
+<text x="608" y="619" class="t eb" font-size="9" text-anchor="middle" fill="#7a4c08">3</text>
+<text x="594" y="660" class="s b" font-size="10" text-anchor="middle">開いて円すいに</text>
+<text x="594" y="674" class="s b" font-size="10" text-anchor="middle">（1枚側と3枚側）</text>
+<path d="M536,512 L556,512" fill="none" stroke="#d9932a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar4)"/>
+<path d="M594,566 Q594,586 512,586 L500,596" fill="none" stroke="#d9932a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4" marker-end="url(#ar4)"/>
+<path d="M536,622 L556,622" fill="none" stroke="#d9932a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar4)"/>
+<text x="547" y="700" class="t eb" font-size="10.5" text-anchor="middle" fill="#8a5a12">3枚側にガラス棒を当てる</text>
+<text x="547" y="716" class="s" font-size="9.5" text-anchor="middle">（1枚側は破れやすい）</text>
+<rect x="656" y="436" width="264" height="288" rx="12" fill="#ffffff" stroke="#a794d6" stroke-width="1.6"/>
+<rect x="656" y="436" width="264" height="28" rx="12" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="656" y="454" width="264" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="788" y="450" class="t eb" font-size="12" text-anchor="middle" fill="#5b21b6">ろ過の注意点（入試で問われる）</text>
+<circle cx="674" cy="482" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="674" y="482.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">1</text>
+<text x="688" y="482" class="t" font-size="10.5" text-anchor="start">ろ紙は4つ折りにして開き、</text>
+<text x="688" y="498.5" class="t" font-size="10.5" text-anchor="start">3枚重なった側にガラス棒を当てる</text>
+<circle cx="674" cy="521" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="674" y="521.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">2</text>
+<text x="688" y="521" class="t" font-size="10.5" text-anchor="start">液はガラス棒を伝わらせて</text>
+<text x="688" y="537.5" class="t" font-size="10.5" text-anchor="start">静かに注ぐ（はねを防ぐ）</text>
+<circle cx="674" cy="560" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="674" y="560.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">3</text>
+<text x="688" y="560" class="t" font-size="10.5" text-anchor="start">ろうとの足は長いほうを</text>
+<text x="688" y="576.5" class="t" font-size="10.5" text-anchor="start">ビーカーの内壁につける</text>
+<circle cx="674" cy="599" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="674" y="599.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">4</text>
+<text x="688" y="599" class="t" font-size="10.5" text-anchor="start">ろ紙を通った液が「ろ液」、</text>
+<text x="688" y="615.5" class="t" font-size="10.5" text-anchor="start">残った固体が「沈殿（残留物）」</text>
+<circle cx="674" cy="638" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="674" y="638.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">5</text>
+<text x="688" y="638" class="t" font-size="10.5" text-anchor="start">ろうと台やスタンドのリングで</text>
+<text x="688" y="654.5" class="t" font-size="10.5" text-anchor="start">固定して装置を安定させる</text>
+<line x1="670" y1="679" x2="906" y2="679" stroke="#c9bce6" stroke-width="1" stroke-linecap="round"/>
+<text x="672" y="695" class="s" font-size="9.8" text-anchor="start">分けられるのは「粒の大きさの差」。</text>
+<text x="672" y="710" class="s" font-size="9.8" text-anchor="start">溶けている物質はろ紙を通り抜ける。</text>
+<rect x="14" y="754" width="452" height="310" rx="14" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
+<rect x="26" y="764" width="428" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="240" y="777" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">抽出 ― 溶けやすさの差で分ける</text>
+<rect x="123" y="800" width="10" height="8" rx="2" fill="#ffffff" stroke="#2f2740" stroke-width="1.5"/>
+<path d="M119,808 L137,808 L134,822 L122,822 Z" fill="#ffffff" stroke="#2f2740" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="120" y1="822" x2="120" y2="842" stroke="#2f2740" stroke-width="2" stroke-linecap="round"/>
+<line x1="136" y1="822" x2="136" y2="842" stroke="#2f2740" stroke-width="2" stroke-linecap="round"/>
+<path d="M120,842 L97,858 L97,912 L128,968 L159,912 L159,858 L136,842" fill="#ffffff" stroke="#2f2740" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M97,866 L159,866 L159,906 L97,906 Z" fill="#fdf4e3" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M97,906 L159,906 L159,912 L128,968 L97,912 Z" fill="#eaf2fc" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="97" y1="866" x2="159" y2="866" stroke="#d9932a" stroke-width="1.4" stroke-linecap="round"/>
+<line x1="97" y1="906" x2="159" y2="906" stroke="#2f2740" stroke-width="2" stroke-linecap="round"/>
+<path d="M97,858 L97,912 L128,968 L159,912 L159,858" fill="none" stroke="#2f2740" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="113" y1="972" x2="143" y2="972" stroke="#2f2740" stroke-width="3.2" stroke-linecap="round"/>
+<circle cx="128" cy="972" r="7" fill="#ffffff" stroke="#2f2740" stroke-width="1.8"/>
+<line x1="128" y1="979" x2="128" y2="998" stroke="#2f2740" stroke-width="2.6" stroke-linecap="round"/>
+<circle cx="128" cy="1009" r="3.2" fill="#3a7bd5" stroke="none" stroke-width="0"/>
+<text x="84" y="884" class="s b" font-size="10" text-anchor="end" fill="#b57a1e">上層（密度小）</text>
+<line x1="86" y1="884" x2="96" y2="884" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="84" y="932" class="s b" font-size="10" text-anchor="end" fill="#3a7bd5">下層（密度大）</text>
+<line x1="86" y1="932" x2="104" y2="930" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="174" y="846" class="s b" font-size="10" text-anchor="start">分液ろうと</text>
+<line x1="172" y1="846" x2="144" y2="844" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<text x="84" y="976" class="s b" font-size="10" text-anchor="end">コック</text>
+<line x1="86" y1="976" x2="118" y2="974" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<line x1="158" y1="814" x2="138" y2="812" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="168" cy="814" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="168" y="814.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">1</text>
+<line x1="174" y1="906" x2="160" y2="906" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="184" cy="906" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="184" y="906.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">2</text>
+<line x1="160" y1="974" x2="138" y2="972" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="170" cy="976" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="170" y="976.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">3</text>
+<rect x="246" y="796" width="208" height="240" rx="12" fill="#ffffff" stroke="#a794d6" stroke-width="1.6"/>
+<rect x="246" y="796" width="208" height="28" rx="12" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="246" y="814" width="208" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="350" y="810" class="t eb" font-size="12" text-anchor="middle" fill="#5b21b6">抽出のポイント</text>
+<circle cx="264" cy="842" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="264" y="842.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">1</text>
+<text x="278" y="842" class="t" font-size="10.5" text-anchor="start">よく振り混ぜて静置する。</text>
+<text x="278" y="858" class="t" font-size="10.5" text-anchor="start">ときどき栓を開けて</text>
+<text x="278" y="874" class="t" font-size="10.5" text-anchor="start">中の圧力を抜く</text>
+<circle cx="264" cy="896" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="264" y="896.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">2</text>
+<text x="278" y="896" class="t" font-size="10.5" text-anchor="start">密度の小さい液が上層、</text>
+<text x="278" y="912" class="t" font-size="10.5" text-anchor="start">大きい液が下層になる</text>
+<circle cx="264" cy="934" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="264" y="934.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">3</text>
+<text x="278" y="934" class="t" font-size="10.5" text-anchor="start">下層はコックから、</text>
+<text x="278" y="950" class="t" font-size="10.5" text-anchor="start">上層は上の口から出す</text>
+<line x1="260" y1="991" x2="440" y2="991" stroke="#c9bce6" stroke-width="1" stroke-linecap="round"/>
+<text x="262" y="1007" class="s" font-size="9.8" text-anchor="start">ヨウ素をヘキサンに移すように、</text>
+<text x="262" y="1022" class="s" font-size="9.8" text-anchor="start">「溶けやすい溶媒」へ移す操作。</text>
+<rect x="478" y="754" width="448" height="310" rx="14" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.4"/>
+<rect x="490" y="764" width="424" height="26" rx="13" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="702" y="777" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">ペーパークロマトグラフィー ― 吸着・移動しやすさの差で分ける</text>
+<rect x="500" y="842" width="26" height="120" rx="2" fill="#fffdf6" stroke="#b9b1c9" stroke-width="1.4"/>
+<circle cx="513" cy="946" r="5" fill="#4b3b6b" stroke="none" stroke-width="0"/>
+<text x="513" y="830" class="s b" font-size="10" text-anchor="middle">はじめ</text>
+<line x1="548" y1="822" x2="692" y2="822" stroke="#b9b1c9" stroke-width="4" stroke-linecap="round"/>
+<path d="M556,836 L561,1000 Q562,1006 568,1006 L672,1006 Q678,1006 679,1000 L684,836" fill="#ffffff" stroke="#2f2740" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M563,962 L566,1002 L674,1002 L677,962 Z" fill="#eaf2fc" stroke="#3a7bd5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="604" y="818" width="36" height="180" rx="2" fill="#fffdf6" stroke="#b9b1c9" stroke-width="1.5"/>
+<line x1="598" y1="946" x2="646" y2="946" stroke="#9c93ab" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="4 3"/>
+<rect x="608" y="856" width="28" height="10" rx="4" fill="#e0554e" stroke="none" stroke-width="0"/>
+<rect x="608" y="886" width="28" height="10" rx="4" fill="#e8a83c" stroke="none" stroke-width="0"/>
+<rect x="608" y="916" width="28" height="10" rx="4" fill="#3f8ecf" stroke="none" stroke-width="0"/>
+<path d="M656,944 L656,852" fill="none" stroke="#3a7bd5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ar1)"/>
+<text x="622" y="806" class="s b" font-size="10" text-anchor="middle">ろ紙</text>
+<text x="600" y="932" class="f b" font-size="9.5" text-anchor="end">原点</text>
+<text x="596" y="984" class="s b" font-size="10" text-anchor="end" fill="#3a7bd5">水</text>
+<text x="600" y="860" class="s b" font-size="10" text-anchor="end" fill="#d94a6a">速い</text>
+<text x="600" y="906" class="s b" font-size="10" text-anchor="end" fill="#3a7bd5">遅い</text>
+<line x1="513" y1="970" x2="513" y2="954" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="513" cy="982" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="513" y="982.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">1</text>
+<line x1="692" y1="900" x2="662" y2="900" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="701" cy="900" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="701" y="900.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">2</text>
+<line x1="692" y1="858" x2="642" y2="858" stroke="#9c93ab" stroke-width="1.1" stroke-linecap="round"/>
+<circle cx="701" cy="858" r="9.5" fill="#7c3aed" stroke="#ffffff" stroke-width="2"/>
+<text x="701" y="858.5" class="t eb" font-size="11" text-anchor="middle" fill="#ffffff">3</text>
+<rect x="716" y="796" width="204" height="240" rx="12" fill="#ffffff" stroke="#a794d6" stroke-width="1.6"/>
+<rect x="716" y="796" width="204" height="28" rx="12" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<rect x="716" y="814" width="204" height="10" rx="0" fill="#f3ecff" stroke="none" stroke-width="0"/>
+<text x="818" y="810" class="t eb" font-size="12" text-anchor="middle" fill="#5b21b6">クロマトのポイント</text>
+<circle cx="734" cy="842" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="734" y="842.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">1</text>
+<text x="748" y="842" class="t" font-size="10.5" text-anchor="start">原点（インクの点）は</text>
+<text x="748" y="858" class="t" font-size="10.5" text-anchor="start">展開液につけない。</text>
+<text x="748" y="874" class="t" font-size="10.5" text-anchor="start">つけると溶け出てしまう</text>
+<circle cx="734" cy="896" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="734" y="896.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">2</text>
+<text x="748" y="896" class="t" font-size="10.5" text-anchor="start">溶媒がろ紙を上がるとき、</text>
+<text x="748" y="912" class="t" font-size="10.5" text-anchor="start">色素も一緒に運ばれる</text>
+<circle cx="734" cy="934" r="7.5" fill="#7c3aed" stroke="none" stroke-width="0"/>
+<text x="734" y="934.5" class="t eb" font-size="9.5" text-anchor="middle" fill="#ffffff">3</text>
+<text x="748" y="934" class="t" font-size="10.5" text-anchor="start">吸着されにくい成分ほど</text>
+<text x="748" y="950" class="t" font-size="10.5" text-anchor="start">速く、遠くまで上がる</text>
+<line x1="730" y1="991" x2="906" y2="991" stroke="#c9bce6" stroke-width="1" stroke-linecap="round"/>
+<text x="732" y="1007" class="s" font-size="9.8" text-anchor="start">上がった距離の差で、</text>
+<text x="732" y="1022" class="s" font-size="9.8" text-anchor="start">混ざった色素を見分けられる。</text>
+<text x="470" y="1090" class="t b" font-size="12.5" text-anchor="middle" fill="#6b6280">いずれも「混合物 → 純物質」に分ける操作。何の差を利用しているかで区別する。</text>
 </svg>

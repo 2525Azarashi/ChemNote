@@ -24,6 +24,39 @@ import { buildVolta, buildDaniell, buildFuelCell } from './fig_battery.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.resolve(HERE, '../../public/learning_figures');
 
+/**
+ * Noto Sans CJK JP に収録されておらず、□（豆腐）になってしまう記号。
+ * 図の中で使うと「文字化けしている」ように見えるので、ビルドで弾く。
+ * 代替が決まっているものは lib.mjs の GLYPH_FALLBACK が自動で置き換えるため、
+ * ここで引っかかるのは「代替を決めていない新しい記号」だけになる。
+ */
+const RISKY_GLYPHS = [
+  ['\u2252', '≒', '≈（U+2248）を使う'],
+  ['\u2247', '≇', '≉（U+2249）を使う'],
+  ['\u2A75', '⩵', '== と書く'],
+  ['\u2A76', '⩶', '=== と書く'],
+  ['\u29EB', '⧫', '◆（U+25C6）を使う'],
+  ['\u2B1B', '⬛', '■（U+25A0）を使う'],
+  ['\u2B1C', '⬜', '□（U+25A1）を使う'],
+  ['\u1D400', '𝐀', '数式用英字は使わず普通の英字にする'],
+  ['\u2206', '∆', 'Δ（U+0394 ギリシャ大文字デルタ）を使う'],
+];
+
+/** 描画テキスト（<text> の中身）にグリフ欠けの記号が残っていないか調べる */
+function checkGlyphs(name, svg) {
+  const drawn = [...svg.matchAll(/<text\b[^>]*>([\s\S]*?)<\/text>/g)]
+    .map((m) => m[1].replace(/<[^>]*>/g, ''))
+    .join('');
+  for (const [ch, label, hint] of RISKY_GLYPHS) {
+    if (drawn.includes(ch)) {
+      throw new Error(
+        `${name}: フォントに無い記号「${label}」(U+${ch.codePointAt(0).toString(16).toUpperCase()}) が図の中にあります。` +
+          `豆腐（□）になるので ${hint} か、lib.mjs の GLYPH_FALLBACK に代替を追加してください。`
+      );
+    }
+  }
+}
+
 /** 出力するファイル名 → 生成関数 */
 const FIGURES = [
   ['fig_separation.svg', separation, '1-1 分離・精製（ろ過／蒸留／抽出／クロマトグラフィー）'],
@@ -54,6 +87,7 @@ async function main() {
     if (svg.includes('undefined') || svg.includes('NaN')) {
       throw new Error(`${name}: undefined / NaN が混ざっています`);
     }
+    checkGlyphs(name, svg);
     await writeFile(path.join(OUT, name), svg, 'utf8');
     const kb = (Buffer.byteLength(svg, 'utf8') / 1024).toFixed(1);
     total += Buffer.byteLength(svg, 'utf8');
