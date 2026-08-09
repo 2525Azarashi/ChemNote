@@ -201,21 +201,22 @@ export default function App() {
   const isFirstLoad = useRef(true);
 
   /**
-   * 科目選択画面を「どこから開いたか」。遷移先と戻るボタンの出し分けに使う。
+   * 科目選択画面を「どこから開いたか」。科目を選んだあとの遷移先に使う。
    *
-   *  - 'onboarding' … ログイン／ゲスト開始の直後。まだホームが無いので
-   *                   「戻る」は出さず、科目を選んだらホームへ進む。
-   *  - 'start'      … ホームの「学習を始める」から。科目を選んだら
-   *                   そのまま学習モード選択へ進む（もう一度ボタンを押させない）。
-   *  - 'change'     … ホームの「科目を変更」から。科目を選んだらホームへ戻る。
+   *  - 'start'  … ホームの「学習を始める」から。科目を選んだら
+   *               そのまま学習モード選択へ進む（もう一度ボタンを押させない）。
+   *  - 'change' … ホームの「科目を変更」から。科目を選んだらホームへ戻る。
+   *
+   * 科目選択は必ずホームから開くので、'onboarding' は廃止した。
+   * （以前はログイン直後にも科目選択を挟んでいたため、科目選択が2回出ていた）
    *
    * ref ではなく state にしている理由：
-   *   この値は「戻るボタンを出すか」の *描画* に使うため。ref はレンダリングを
+   *   この値は描画（遷移先の分岐）に使うため。ref はレンダリングを
    *   起こさないので、ホーム→科目選択の遷移と同時に更新しても
-   *   ボタンの有無が1テンポ遅れて反映されず、事故になりやすい。
+   *   1テンポ遅れて反映され、事故になりやすい。
    */
   const [subjectPickerOrigin, setSubjectPickerOrigin] =
-    useState<'onboarding' | 'start' | 'change'>('onboarding');
+    useState<'start' | 'change'>('start');
 
   const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
   const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
@@ -240,7 +241,7 @@ export default function App() {
    * 科目を選び終えたときの遷移先。
    *  - ホームの「学習を始める」から来た場合 … そのまま学習モード選択へ進む
    *    （ホームに戻してしまうと、もう一度ボタンを押させることになる）
-   *  - オンボーディング直後・「科目を変更」から来た場合 … ホーム（ダッシュボード）へ
+   *  - 「科目を変更」から来た場合 … ホーム（ダッシュボード）へ
    */
   const handleSelectSubject = (subject: SubjectId) => {
     setSelectedSubject(subject);
@@ -470,17 +471,14 @@ export default function App() {
    *
    * 安全のための配慮：
    *  - すでにホームにいるときは何もしない（戻る先が同じ画面）。
-   *  - ログイン前の入口（オンボーディング、およびその直後の科目選択）では
-   *    作動させない。まだホームが無い状態で飛ばすと操作不能に見えるため。
-   *    一方、ホーム経由で開いた科目選択は戻り先があるので対象に含める。
+   *  - ログイン前（オンボーディング）では作動させない。
+   *    まだホームが無い状態で飛ばすと操作不能に見えるため。
+   *    科目選択は必ずホームから開くので、こちらは対象に含める。
    *  - 解答の内容は Quiz 側が localStorage に保存しており、
    *    ここでは画面を移すだけなので書きかけの答えは失われない。
    *    （単元に入り直せば「続きから」再開できる）
    */
-  const idleResetEnabled =
-    appState !== 'home' &&
-    appState !== 'onboarding' &&
-    !(appState === 'subject_selection' && subjectPickerOrigin === 'onboarding');
+  const idleResetEnabled = appState !== 'home' && appState !== 'onboarding';
 
   useIdleReset({
     enabled: idleResetEnabled,
@@ -639,18 +637,18 @@ export default function App() {
             {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
 
             {/* ログイン／ゲスト開始の直後は、必ず科目選択（＝タイトル）画面を経由する */}
-            {appState === 'onboarding' && <Onboarding onComplete={() => { setSubjectPickerOrigin('onboarding'); setAppState('subject_selection'); }} onGuest={() => { setIsGuest(true); setSubjectPickerOrigin('onboarding'); setAppState('subject_selection'); }} />}
+            {/* ログイン／ゲスト開始の直後は、そのままホームへ入る。
+                以前はここで科目選択を挟んでいたため、
+                «ログイン → 科目選択 → ホーム → 学習を始める → 科目選択»
+                と科目選択が2回出てしまっていた。
+                科目はホームの「学習を始める」で選ぶ（初期値は化学基礎）。 */}
+            {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
             {appState === 'subject_selection' && (
               <SubjectSelection
                 onSelectSubject={handleSelectSubject}
                 isGuest={isGuest}
-                // ホーム経由で開いたときだけ「ホームに戻る」を出す
-                // （オンボーディング直後は戻る先が無いため undefined = 非表示）
-                onBack={
-                  subjectPickerOrigin === 'onboarding'
-                    ? undefined
-                    : () => setAppState('home')
-                }
+                // 科目選択は必ずホームから開くので、常に「ホームに戻る」を出せる
+                onBack={() => setAppState('home')}
               />
             )}
             {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'} isGuest={isGuest} />}

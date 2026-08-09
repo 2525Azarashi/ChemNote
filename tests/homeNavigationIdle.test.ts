@@ -56,19 +56,37 @@ describe('② ホームの「学習を始める」→ 科目選択 → 学習モ
     expect(APP).not.toContain('subjectPickerReturnsToMode');
   });
 
-  it('入口ごとに origin を設定している（onboarding / start / change）', () => {
-    // オンボーディング完了・ゲスト開始 → onboarding
-    expect(APP).toMatch(/onComplete=\{\(\) => \{ setSubjectPickerOrigin\('onboarding'\)/);
-    expect(APP).toMatch(/onGuest=\{\(\) => \{[^}]*setSubjectPickerOrigin\('onboarding'\)/);
+  it('入口ごとに origin を設定している（start / change）', () => {
     // ホームの「学習を始める」→ start
     expect(APP).toContain("setSubjectPickerOrigin('start')");
     // ホームの「科目を変更」→ change
     expect(APP).toContain("setSubjectPickerOrigin('change')");
+    // 入口は2種類だけ（'onboarding' は廃止済み）
+    expect(APP).toMatch(/useState<'start' \| 'change'>/);
+    expect(APP).not.toContain("setSubjectPickerOrigin('onboarding')");
   });
 
-  it('オンボーディング直後だけ「ホームに戻る」を出さない（行き止まり防止）', () => {
-    // onBack は origin が 'onboarding' のときのみ undefined
-    expect(APP).toMatch(/subjectPickerOrigin === 'onboarding'\s*\?\s*undefined/);
+  it('ログイン／ゲスト開始の直後はホームへ入る（科目選択を2回出さない）', () => {
+    // 以前は «ログイン → 科目選択 → ホーム → 学習を始める → 科目選択» となり、
+    // 科目選択が2回出ていた。オンボーディング直後はホームへ直行させる。
+    const m = APP.match(/\{appState === 'onboarding' && <Onboarding([\s\S]*?)\/>\}/);
+    expect(m, 'Onboarding の結線が見つからない').toBeTruthy();
+    const props = m![1];
+
+    expect(props).toContain("onComplete={() => setAppState('home')}");
+    expect(props).toMatch(/onGuest=\{\(\) => \{[^}]*setAppState\('home'\)/);
+    // 科目選択へ寄り道していないこと
+    expect(props).not.toContain('subject_selection');
+  });
+
+  it('科目選択は必ずホームから開くので、常に「ホームに戻る」を出す（行き止まり防止）', () => {
+    const m = APP.match(/\{appState === 'subject_selection' && \(([\s\S]*?)\n            \)\}/);
+    expect(m, 'SubjectSelection の結線が見つからない').toBeTruthy();
+    const props = m![1];
+
+    expect(props).toContain("onBack={() => setAppState('home')}");
+    // 「戻るボタンを出さない」分岐が残っていないこと
+    expect(props).not.toContain('undefined');
   });
 
   it('SubjectSelection が任意の onBack を受け取り、渡されたときだけ描画する', () => {
@@ -107,8 +125,8 @@ describe('④ 無操作が続いたらホーム画面へ戻る', () => {
     expect(cond).toContain("appState !== 'home'");
     // オンボーディングでは無効（戻る先のホームがまだ無い）
     expect(cond).toContain("appState !== 'onboarding'");
-    // オンボーディング直後の科目選択も無効。ホーム経由の科目選択は対象に含める
-    expect(cond).toContain("subjectPickerOrigin === 'onboarding'");
+    // 科目選択は必ずホームから開くので、除外しない（戻り先がある）
+    expect(cond).not.toContain('subjectPickerOrigin');
   });
 
   it('フックが操作イベントでタイマーを振り出しに戻す', () => {
