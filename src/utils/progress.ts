@@ -151,6 +151,28 @@ export function countSolvedProblems(uid: string | null | undefined): number {
 }
 
 /**
+ * 指定した章の集合に限って、解いた大問数を数える。
+ *
+ * ホームの「学習進捗」を科目ごとに出すために追加した。
+ * countSolvedProblems は全科目の合計を返すため、化学基礎の分母（174問）に
+ * 化学（発展）で解いた分が乗ってしまい、数字が分母を超えることがあった。
+ *
+ * @param chapterIds 集計対象の章ID（例：化学基礎の全章）
+ */
+export function countSolvedProblemsIn(
+  uid: string | null | undefined,
+  chapterIds: Iterable<string>,
+): number {
+  const target = new Set(chapterIds);
+  let count = 0;
+  Object.keys(readSolvedMap(uid)).forEach((key) => {
+    const chapterId = key.split('::')[0];
+    if (chapterId && target.has(chapterId)) count++;
+  });
+  return count;
+}
+
+/**
  * 章ごとに解いた大問数を数える。
  * 章の進捗表示や「次の章」の判定に使える。
  */

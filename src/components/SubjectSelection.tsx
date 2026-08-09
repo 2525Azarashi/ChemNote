@@ -92,9 +92,15 @@ interface SubjectSelectionProps {
   onSelectSubject: (subject: SubjectId) => void;
   /** ゲスト利用中かどうか（挨拶の出し分けに使う） */
   isGuest: boolean;
+  /**
+   * ホームから「学習を始める」で来たときだけ渡される。
+   * オンボーディング直後（＝戻る先が無い）ときは undefined のままにして、
+   * 行き止まりにならないよう戻るボタン自体を出さない。
+   */
+  onBack?: () => void;
 }
 
-export function SubjectSelection({ onSelectSubject, isGuest }: SubjectSelectionProps) {
+export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSelectionProps) {
   /**
    * 「公開されたら知らせて」モーダルで、どの科目が押されたかを覚えておく。
    * 以前は文面が「化学」固定だったため、科目が増えると誤った案内になってしまう。
@@ -280,6 +286,20 @@ export function SubjectSelection({ onSelectSubject, isGuest }: SubjectSelectionP
       <div className="absolute inset-0 pointer-events-none opacity-5 fabric-texture" aria-hidden="true" />
       <NotebookScenery />
       <SakuraPetals count={40} />
+
+      {/* ===== ホームへ戻る（ホームの「学習を始める」から来たときだけ） =====
+          オンボーディング直後は戻る先が無いので表示しない。 */}
+      {onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="ホームに戻る"
+          className="absolute top-4 left-4 sm:top-5 sm:left-5 z-30 flex items-center gap-1.5 rounded-full border border-[#F4A9C4]/70 bg-white/95 px-3.5 py-2 text-[12px] font-bold text-[#D9466E] shadow-[0_8px_20px_-10px_rgba(217,70,110,0.5)] backdrop-blur-sm transition-all hover:bg-white hover:border-[#E8688E] active:scale-95 min-h-[44px] cursor-pointer"
+        >
+          <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          <span className="font-modern">ホーム</span>
+        </button>
+      )}
 
       <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-5 sm:px-8 md:px-12 pt-10 sm:pt-12 md:pt-14 relative z-10 flex flex-col justify-center">
 

@@ -1,6 +1,6 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
-import { useState, useEffect } from 'react';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { ArrowLeft, BookOpen, Eye, EyeOff } from 'lucide-react';
 import {
   LEARNING_GLOBAL_CSS,
   SECTION_1_1_HTML,
@@ -11,6 +11,10 @@ import {
   SECTION_2_3_HTML,
 } from '../data/learningContent';
 import { MolBasicsSection } from './MolBasicsSection';
+import {
+  normalizeAnswerAccordions,
+  countAnswerAccordions,
+} from '../utils/learningAccordion';
 
 interface LearningViewerProps {
   onBack: () => void;
@@ -57,9 +61,12 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
   // 図をタップしたとき全画面で拡大表示する（自作図は情報量が多く、
   // 2カラムに入れると文字が小さくなるため。スマホでの「読めない」を防ぐ）
   const [zoomFig, setZoomFig] = useState<{ src: string; alt: string } | null>(null);
+  // 「解答をすべて表示」しているかどうか（タブを変えたらリセット）
+  const [allAnswersOpen, setAllAnswersOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setAllAnswersOpen(false);
   }, [activeTab]);
 
   // Esc で拡大表示を閉じる
@@ -72,16 +79,35 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
     return () => window.removeEventListener('keydown', onKey);
   }, [zoomFig]);
 
-  // 本文HTML内の図（dangerouslySetInnerHTML で描画）はイベント委譲で拾う
+  // 本文HTML内の図（dangerouslySetInnerHTML で描画）はイベント委譲で拾う。
+  // 解答パネルの開閉は <details> のネイティブ挙動に任せている
+  // （JS で open を書き換えると再レンダリングで消えるため）。
   const handleContentClick = (e: ReactMouseEvent<HTMLElement>) => {
     const el = e.target as HTMLElement | null;
-    if (!el || el.tagName !== 'IMG') return;
+    if (!el) return;
+    if (el.tagName !== 'IMG') return;
     const img = el as HTMLImageElement;
     if (!img.closest('.figrow-fig, .figfull')) return;
     setZoomFig({ src: img.getAttribute('src') || '', alt: img.getAttribute('alt') || '図' });
   };
 
-  const sectionHtml = SECTION_HTML[activeTab];
+  // 原稿の <details>/<summary> を「解答パネル」に正規化する。
+  // 文言のばらつき（解答を表示／解答と解説を表示…）をここで吸収するため、
+  // section_*.ts 側は一切書き換えなくてよい。
+  //
+  // ここで allAnswersOpen を HTML に焼き込んでいるのが重要。
+  // 「開いた状態」を DOM 側（d.open = true）に持たせると、React が
+  // dangerouslySetInnerHTML を貼り直したときに開閉が消えてしまう。
+  const rawSectionHtml = SECTION_HTML[activeTab];
+  const sectionHtml = useMemo(
+    () => (rawSectionHtml ? normalizeAnswerAccordions(rawSectionHtml, allAnswersOpen) : rawSectionHtml),
+    [rawSectionHtml, allAnswersOpen],
+  );
+  const answerCount = useMemo(() => countAnswerAccordions(rawSectionHtml || ''), [rawSectionHtml]);
+
+  // 解答の一括開閉。HTML を作り直すので、個別に開いていたものも
+  // ボタンの状態にそろう（「すべて表示」なら全部開く／「すべて隠す」なら全部閉じる）。
+  const toggleAllAnswers = () => setAllAnswersOpen(v => !v);
 
   return (
     <div className="w-full min-h-screen bg-[#FDFBF7] font-modern pb-20 relative notebook-paper">
@@ -254,12 +280,38 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
             {/* ====== 各章 (1-1 〜 2-3) — 元のフル HTML を忠実に表示 ====== */}
             {sectionHtml && (
               <div className="animate-fade-in-up">
-                <div className="mb-4">
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                   <span className="text-xs font-extrabold text-[#7c3aed] tracking-widest uppercase block">
                     {SECTION_PART_LABEL[activeTab]}
                   </span>
+
+                  {/* このセクションの解答をまとめて開閉する。
+                      「まず自力で解く」→「答え合わせで一気に開く」の流れを1タップで。 */}
+                  {answerCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={toggleAllAnswers}
+                      aria-pressed={allAnswersOpen}
+                      className={`flex items-center gap-1.5 rounded-xl border-2 px-3 py-2 text-[11px] font-extrabold shadow-sm transition-colors cursor-pointer
+                        ${allAnswersOpen
+                          ? 'border-[#7c3aed] bg-[#7c3aed] text-white hover:bg-[#6d28d9]'
+                          : 'border-[#c9bce6] bg-white text-[#5b21b6] hover:bg-[#f3ecff]'}`}
+                    >
+                      {allAnswersOpen ? <EyeOff size={14} /> : <Eye size={14} />}
+                      <span>
+                        {allAnswersOpen
+                          ? `解答をすべて隠す（${answerCount}）`
+                          : `解答をすべて表示（${answerCount}）`}
+                      </span>
+                    </button>
+                  )}
                 </div>
+                {/* key に開閉状態を含めることで、一括開閉のときだけ
+                    本文を作り直す（＝全アコーディオンが確実に指定状態になる）。
+                    key が同じ間は React が DOM を触らないので、
+                    個別に開いた解答は勝手に閉じない。 */}
                 <article
+                  key={`${activeTab}:${allAnswersOpen ? 'open' : 'closed'}`}
                   className="learning-content"
                   onClick={handleContentClick}
                   dangerouslySetInnerHTML={{ __html: sectionHtml }}

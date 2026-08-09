@@ -385,7 +385,7 @@ export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSection
         </p>
 
         <details className="mbs-details">
-          <summary>💡 <Tag>演習1　解答</Tag>を表示</summary>
+          <summary>💡 <Tag>演習1　解答</Tag></summary>
           <div className="mbs-details-body">
             <p className="mbs-p">問題でわかるルート（経路）を<br />　　　下の図で丸をすると右図のようになる。</p>
             <ul className="mbs-list">
@@ -428,7 +428,7 @@ export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSection
         </p>
 
         <details className="mbs-details">
-          <summary>💡 <Tag>演習2　解答</Tag>を表示</summary>
+          <summary>💡 <Tag>演習2　解答</Tag></summary>
           <div className="mbs-details-body">
             <p className="mbs-p">化学式は個、特に<U>物質量の比</U>であることを利用する。</p>
             <p className="mbs-p">
@@ -582,9 +582,28 @@ const SECTION_CSS = `
 .mbs-list>li{margin:2px 0;}
 .mbs-list>li::before{content:'・';margin-right:2px;}
 
-.mbs-details{border:2px dashed var(--mbs-accent);border-radius:8px;padding:8px 12px;margin:12px 0;background:#fff;}
-.mbs-details>summary{font-weight:800;color:var(--mbs-accent-d);cursor:pointer;font-size:.9em;list-style:revert;}
-.mbs-details-body{padding-top:8px;border-top:1px dotted var(--mbs-line);margin-top:8px;}
+/* 折りたたみ（解答など）。まとめプリント本文（.lc-ans）と同じ挙動・同じ
+   タップ領域にそろえている。閉じているときは「押せるボタン」に見せる。 */
+.mbs-details{border:2px solid var(--mbs-line);border-radius:12px;padding:0;margin:14px 0;background:#fff;overflow:hidden;transition:border-color .18s ease,box-shadow .18s ease;}
+.mbs-details[open]{border-color:var(--mbs-accent);box-shadow:0 2px 10px rgba(124,58,237,.1);}
+.mbs-details>summary{display:flex;align-items:center;gap:8px;min-height:46px;padding:10px 14px;font-weight:800;color:var(--mbs-accent-d);background:var(--mbs-accent-l);cursor:pointer;font-size:.9em;list-style:none;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .18s ease;}
+.mbs-details>summary::-webkit-details-marker{display:none;}
+.mbs-details>summary::marker{content:'';}
+.mbs-details>summary:hover{background:#e9dcff;}
+.mbs-details>summary:focus-visible{outline:3px solid var(--mbs-accent);outline-offset:-3px;}
+/* 開閉状態を右端に文字で出す（三角だけだと気づかれにくいため） */
+.mbs-details>summary::after{content:'タップして表示 ▼';margin-left:auto;flex:0 0 auto;font-size:.82em;color:var(--mbs-accent);white-space:nowrap;}
+.mbs-details[open]>summary::after{content:'閉じる ▲';}
+.mbs-details-body{padding:12px 14px 14px;margin-top:0;border-top:1px dotted var(--mbs-line);}
+@media (prefers-reduced-motion: no-preference){
+  .mbs-details[open]>.mbs-details-body{animation:mbsAnsReveal .22s ease-out both;}
+}
+@keyframes mbsAnsReveal{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+@media (max-width:640px){
+  .mbs-details>summary{min-height:52px;font-size:.95em;padding:12px;}
+  .mbs-details>summary::after{content:'▼';}
+  .mbs-details[open]>summary::after{content:'▲';}
+}
 
 .mbs-hr{border:0;border-top:2px dotted var(--mbs-line);margin:26px 0;}
 

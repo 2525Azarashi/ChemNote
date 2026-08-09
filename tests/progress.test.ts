@@ -8,6 +8,7 @@ import {
   markProblemSolved,
   isProblemSolved,
   countSolvedProblems,
+  countSolvedProblemsIn,
   countSolvedByChapter,
   backfillLegacyProgress,
 } from '../src/utils/progress';
@@ -128,6 +129,49 @@ describe('countSolvedByChapter', () => {
   });
 });
 
+/**
+ * -------------------------------------------------------------------
+ * countSolvedProblemsIn：科目ごとの「何問中何問」を出すための集計
+ * -------------------------------------------------------------------
+ * ホームの学習進捗を教科別に並べる際、全科目合計の countSolvedProblems を
+ * そのまま使うと「化学基礎 174問中 180問」のように分子が分母を超えてしまう。
+ * 対象の章に限って数えられることを担保する。
+ */
+describe('countSolvedProblemsIn：対象の章に限って数える', () => {
+  it('指定した章の分だけを数え、他の科目の分は混ぜない', () => {
+    // 化学基礎（c*）で3問、化学（発展 a*）で2問解いた状態
+    markProblemSolved('u', 'c1_1', 'q1', 10);
+    markProblemSolved('u', 'c1_1', 'q2', 10);
+    markProblemSolved('u', 'c2_1', 'q1', 10);
+    markProblemSolved('u', 'a1_1', 'q1', 10);
+    markProblemSolved('u', 'a2_1', 'q1', 10);
+
+    // 全科目合計は5問
+    expect(countSolvedProblems('u')).toBe(5);
+    // 化学基礎に限れば3問（化学の2問が混ざらない）
+    expect(countSolvedProblemsIn('u', ['c1_1', 'c2_1'])).toBe(3);
+    // 化学に限れば2問
+    expect(countSolvedProblemsIn('u', ['a1_1', 'a2_1'])).toBe(2);
+  });
+
+  it('対象の章が空なら 0（分母0の科目でも壊れない）', () => {
+    markProblemSolved('u', 'c1_1', 'q1', 10);
+    expect(countSolvedProblemsIn('u', [])).toBe(0);
+  });
+
+  it('未受講の章を指定しても 0 のまま（存在しない章IDを無視する）', () => {
+    markProblemSolved('u', 'c1_1', 'q1', 10);
+    expect(countSolvedProblemsIn('u', ['zzz_9'])).toBe(0);
+  });
+
+  it('Set でも配列でも同じ結果になる（Iterable を受ける）', () => {
+    markProblemSolved('u', 'c1_1', 'q1', 10);
+    markProblemSolved('u', 'c1_1', 'q2', 10);
+    expect(countSolvedProblemsIn('u', new Set(['c1_1']))).toBe(2);
+    expect(countSolvedProblemsIn('u', ['c1_1'])).toBe(2);
+  });
+});
+
 describe('backfillLegacyProgress：既存ユーザーの履歴を取りこぼさない', () => {
   const chapters = [
     {
@@ -223,12 +267,25 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
   it('Home.tsx が大問ベースの分母（miniTest＋practiceProblems）を使っている', () => {
     const src = readFileSync('src/components/Home.tsx', 'utf8');
     expect(src).toContain("from '../utils/progress'");
-    expect(src).toContain('countSolvedProblems');
+    // 科目ごとに数える版を使う（全科目合計の countSolvedProblems ではない）
+    expect(src).toContain('countSolvedProblemsIn');
     expect(src).toContain('backfillLegacyProgress');
     expect(src).toContain('c.practiceProblems?.length');
 
     // 旧実装（mini_test の answers を数える）が残っていないこと
     expect(src).not.toContain('quiz_answers_${c.id}_mini_test');
+  });
+
+  it('Home.tsx が教科ごとの進捗バーを出している（化学基礎と化学を並べる）', () => {
+    const src = readFileSync('src/components/Home.tsx', 'utf8');
+    // 科目の定義（化学基礎＝chemistryData / 化学＝getAllAdvancedChapters）
+    expect(src).toContain('subjectProgressDefs');
+    expect(src).toContain('getAllAdvancedChapters');
+    // 科目ID → { solved, total } を持ち、ループで並べていること
+    expect(src).toContain('subjectProgress');
+    expect(src).toMatch(/subjectProgressDefs\.map\(/);
+    // 全科目合計で分母を割る旧実装（単一の progressPercent）が残っていないこと
+    expect(src).not.toMatch(/const progressPercent\s*=/);
   });
 
   it('総大問数が 174 問（実データと一致）', async () => {
