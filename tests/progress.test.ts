@@ -288,6 +288,29 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
     expect(src).not.toMatch(/const progressPercent\s*=/);
   });
 
+  it('問題が0件の科目は「大問 0/0 問 (0%)」ではなく「準備中」と出す', () => {
+    // 化学（発展）は章立て（66章）だけが先行実装され、問題データは0件。
+    // 分母0のまま数字を出すと不具合に見えるため、文言で伝える。
+    const src = readFileSync('src/components/Home.tsx', 'utf8');
+    expect(src).toContain('const isEmpty = p.total === 0');
+    expect(src).toContain('問題を準備中');
+    // 分母0でゼロ除算せず 0% に落ちること（NaN% を出さない）
+    expect(src).toMatch(/p\.total > 0 \? Math\.round\(\(p\.solved \/ p\.total\) \* 100\) : 0/);
+  });
+
+  it('化学（発展）はまだ問題が0件（進捗表示の前提を固定する）', async () => {
+    // ここが将来1問でも入ったら、上の「準備中」表示は自動的に数字に切り替わる。
+    // その変化に気づけるよう、現状を明示的に記録しておく。
+    const { getAllAdvancedChapters } = await import('../src/data/chemistryAdvancedData');
+    const chapters = getAllAdvancedChapters() as any[];
+    expect(chapters.length).toBeGreaterThan(0); // 章立ては存在する
+    const total = chapters.reduce(
+      (sum: number, c: any) => sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0),
+      0,
+    );
+    expect(total).toBe(0);
+  });
+
   it('総大問数が 174 問（実データと一致）', async () => {
     const { chemistryData } = await import('../src/data/chemistryData');
     const chapters = (chemistryData as any).parts.flatMap((p: any) => p.chapters);

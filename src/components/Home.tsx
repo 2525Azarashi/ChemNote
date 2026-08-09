@@ -367,6 +367,10 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   const percent = p.total > 0 ? Math.round((p.solved / p.total) * 100) : 0;
                   const isCurrent = def.id === subject;
                   const isDone = p.total > 0 && p.solved >= p.total;
+                  // まだ問題が1問も入っていない科目（化学（発展）は章立てのみ先行実装）。
+                  // ここで「大問 0 / 0 問 (0%)」と出すと不具合に見えてしまうため、
+                  // 数字ではなく「準備中」と伝える。
+                  const isEmpty = p.total === 0;
                   return (
                     <div key={def.id}>
                       <div className="flex items-baseline justify-between gap-2 mb-1">
@@ -385,10 +389,14 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                         </span>
                         <span
                           className={`font-modern text-[12px] md:text-[13px] tabular-nums ${
-                            isCurrent ? 'font-bold text-[#1B2631]' : 'font-medium text-[#7A8894]'
+                            isEmpty
+                              ? 'font-medium text-[#A9B4BE]'
+                              : isCurrent
+                                ? 'font-bold text-[#1B2631]'
+                                : 'font-medium text-[#7A8894]'
                           }`}
                         >
-                          大問 {p.solved} / {p.total} 問 ({percent}%)
+                          {isEmpty ? '問題を準備中' : `大問 ${p.solved} / ${p.total} 問 (${percent}%)`}
                         </span>
                       </div>
                       <div
@@ -397,17 +405,21 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                         aria-valuenow={percent}
                         aria-valuemin={0}
                         aria-valuemax={100}
-                        aria-valuetext={`${def.label}：大問 ${p.solved} / ${p.total} 問クリア（${percent}%）`}
+                        aria-valuetext={
+                          isEmpty
+                            ? `${def.label}：問題を準備中`
+                            : `${def.label}：大問 ${p.solved} / ${p.total} 問クリア（${percent}%）`
+                        }
                         className={`w-full bg-[#FBE0E9] rounded-full overflow-hidden shadow-inner flex-shrink-0 ${
-                          isCurrent ? 'h-2.5' : 'h-1.5'
-                        }`}
+                          isCurrent && !isEmpty ? 'h-2.5' : 'h-1.5'
+                        } ${isEmpty ? 'opacity-60' : ''}`}
                       >
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${percent}%` }}
                           transition={{ duration: 1, delay: 0.5 + i * 0.12 }}
                           className={`h-full rounded-full ${
-                            isCurrent
+                            isCurrent && !isEmpty
                               ? 'bg-gradient-to-r from-[#E8688E] to-[#D9466E]'
                               : 'bg-[#F0AFC2]'
                           }`}
