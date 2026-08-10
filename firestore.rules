@@ -89,15 +89,69 @@ service cloud.firestore {
     // ============================================================
     // ランキング（リーダーボード）
     // ============================================================
+    //
+    // ★このブロックの設計方針（セキュリティ上の要所）★
+    //
+    // ランキングは `allow read: if true` で誰でも読める。
+    // つまり「ここに書けた内容は全ユーザーに配信される」ことになる。
+    // したがって書き込み側の検証を、フレンド系コレクションと同じ水準まで
+    // 引き上げておく必要がある。以前は uid とスコアの範囲しか見ておらず、
+    //   ・nickname / photoURL の型も長さも未検証
+    //     → 数MBの文字列や不適切な表示名を全員の画面に載せられる
+    //   ・フィールドの追加が自由
+    //     → 想定外のデータを公開コレクションに置ける（保存領域の悪用）
+    // という穴があった。
+    //
+    // 対策は次の3点。
+    //   1. hasOnly() で許可フィールドを固定する（未知のフィールドを拒否）
+    //   2. nickname / photoURL に型と長さの上限を課す
+    //   3. 数値・タイムスタンプの型と範囲を明示する
+    //
+    // なお photoURL の上限を 512 にしているのは、Google アカウントの
+    // アバターURL（lh3.googleusercontent.com/...）が十分収まる長さで、
+    // かつデータURL等を押し込めない値として選んだもの。
+
+    // 表示名の妥当性。フレンド系（friend_profiles など）と同じ 24 文字上限で揃える。
+    function isValidRankingIdentity(data) {
+      return data.nickname is string
+        && data.nickname.size() > 0
+        && data.nickname.size() <= 24
+        && data.photoURL is string
+        && data.photoURL.size() <= 512;
+    }
+
     // 章ごとのベストスコア。ドキュメントID = `${chapterId}_${uid}`
     match /leaderboard_chapter/{docId} {
       allow read: if true;
       allow create, update: if isAuthenticated()
+        // 書き込めるのは本人の行だけ（ID にも uid を含めて二重に縛る）
         && request.resource.data.uid == request.auth.uid
         && docId == request.resource.data.chapterId + '_' + request.auth.uid
+        // 想定したフィールド以外は一切受け付けない
+        && request.resource.data.keys().hasOnly([
+             'uid', 'nickname', 'photoURL', 'chapterId', 'bestScore',
+             'correctRate', 'totalCorrect', 'totalQuestions', 'timeUsedSec', 'playedAt'
+           ])
+        && request.resource.data.keys().hasAll([
+             'uid', 'nickname', 'photoURL', 'chapterId', 'bestScore', 'playedAt'
+           ])
+        && isValidRankingIdentity(request.resource.data)
+        && request.resource.data.chapterId is string
+        && request.resource.data.chapterId.size() <= 64
         && request.resource.data.bestScore is number
         && request.resource.data.bestScore >= 0
-        && request.resource.data.bestScore <= 1000000;
+        && request.resource.data.bestScore <= 1000000
+        && request.resource.data.correctRate is number
+        && request.resource.data.correctRate >= 0
+        && request.resource.data.correctRate <= 1
+        && request.resource.data.totalCorrect is number
+        && request.resource.data.totalCorrect >= 0
+        && request.resource.data.totalQuestions is number
+        && request.resource.data.totalQuestions >= 0
+        && request.resource.data.totalQuestions <= 10000
+        && request.resource.data.timeUsedSec is number
+        && request.resource.data.timeUsedSec >= 0
+        && request.resource.data.playedAt is timestamp;
       allow delete: if false;
     }
 
@@ -107,9 +161,21 @@ service cloud.firestore {
       allow create, update: if isAuthenticated()
         && request.auth.uid == uid
         && request.resource.data.uid == uid
+        && request.resource.data.keys().hasOnly([
+             'uid', 'nickname', 'photoURL', 'totalScore', 'chapterScores', 'updatedAt'
+           ])
+        && request.resource.data.keys().hasAll([
+             'uid', 'nickname', 'photoURL', 'totalScore', 'updatedAt'
+           ])
+        && isValidRankingIdentity(request.resource.data)
         && request.resource.data.totalScore is number
         && request.resource.data.totalScore >= 0
-        && request.resource.data.totalScore <= 100000000;
+        && request.resource.data.totalScore <= 100000000
+        // chapterScores は { chapterId: score } のマップ。
+        // 章数（化学基礎+化学発展）を大きく超える件数は入らないようにする。
+        && request.resource.data.chapterScores is map
+        && request.resource.data.chapterScores.size() <= 300
+        && request.resource.data.updatedAt is timestamp;
       allow delete: if false;
     }
 
@@ -118,9 +184,30 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isAuthenticated()
         && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+             'uid', 'nickname', 'photoURL', 'chapterId', 'score',
+             'correctRate', 'totalCorrect', 'totalQuestions', 'timeUsedSec', 'playedAt'
+           ])
+        && request.resource.data.keys().hasAll([
+             'uid', 'nickname', 'photoURL', 'chapterId', 'score', 'playedAt'
+           ])
+        && isValidRankingIdentity(request.resource.data)
+        && request.resource.data.chapterId is string
+        && request.resource.data.chapterId.size() <= 64
         && request.resource.data.score is number
         && request.resource.data.score >= 0
-        && request.resource.data.score <= 1000000;
+        && request.resource.data.score <= 1000000
+        && request.resource.data.correctRate is number
+        && request.resource.data.correctRate >= 0
+        && request.resource.data.correctRate <= 1
+        && request.resource.data.totalCorrect is number
+        && request.resource.data.totalCorrect >= 0
+        && request.resource.data.totalQuestions is number
+        && request.resource.data.totalQuestions >= 0
+        && request.resource.data.totalQuestions <= 10000
+        && request.resource.data.timeUsedSec is number
+        && request.resource.data.timeUsedSec >= 0
+        && request.resource.data.playedAt is timestamp;
       allow update, delete: if false;
     }
 
