@@ -1,8 +1,12 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
-import { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, BookOpen, Eye, EyeOff } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { ArrowLeft, BookOpen, Eye, EyeOff, Printer } from 'lucide-react';
 import {
   LEARNING_GLOBAL_CSS,
+  LEARNING_PRINT_CSS,
+  PRINT_MODE_CLASS,
+  NO_PRINT_CLASS,
+  type PrintMode,
   SECTION_1_1_HTML,
   SECTION_1_2_HTML,
   SECTION_1_3_HTML,
@@ -44,6 +48,18 @@ const SECTION_HTML: Record<string, string> = {
   '2-1': SECTION_2_1_HTML,
   '2-2': SECTION_2_2_HTML,
   '2-3': SECTION_2_3_HTML,
+};
+
+/** 印刷ダイアログのタイトル（＝PDFの既定ファイル名）に使うセクション名 */
+const SECTION_PRINT_TITLE: Record<string, string> = {
+  toc: '目次・使い方',
+  '1-1': '1-1 物質の構成',
+  '1-2': '1-2 物質の構成粒子',
+  '1-3': '1-3 化学結合',
+  '2-1': '2-1 物質量と化学反応式',
+  [MOL_BASICS_TAB_ID]: '物質量がわからない人へ',
+  '2-2': '2-2 酸と塩基',
+  '2-3': '2-3 酸化還元反応',
 };
 
 const SECTION_PART_LABEL: Record<string, string> = {
@@ -109,18 +125,75 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
   // ボタンの状態にそろう（「すべて表示」なら全部開く／「すべて隠す」なら全部閉じる）。
   const toggleAllAnswers = () => setAllAnswersOpen(v => !v);
 
+  // ============================================================
+  // 印刷（PDF書き出し）
+  // ------------------------------------------------------------
+  // ブラウザの印刷機能をそのまま使う（= PDF に保存できる）。
+  // 追加ライブラリを入れずに済み、生徒側の環境差にも強い。
+  //
+  // やっていること
+  //   1. body に印刷モードのクラスを付ける
+  //        lc-print-answers … 解答つき（答え合わせ・指導用）
+  //        lc-print-blank   … 解答を伏せる（自習・配布用）
+  //      解答は <details> なので、閉じていると中身が印刷されない。
+  //      CSS 側で「開閉状態に関係なく」表示／非表示を決めている。
+  //   2. document.title を差し替える
+  //      「PDF に保存」したときの既定ファイル名になるため。
+  //   3. window.print() を呼び、印刷後に元へ戻す
+  //      afterprint が飛ばないブラウザもあるので、タイマーでも復帰させる。
+  // ============================================================
+  const [printMenuOpen, setPrintMenuOpen] = useState(false);
+
+  const handlePrint = useCallback((mode: PrintMode) => {
+    setPrintMenuOpen(false);
+    if (typeof window === 'undefined') return;
+
+    const body = document.body;
+    const modeClass = PRINT_MODE_CLASS[mode];
+    const prevTitle = document.title;
+    const sectionTitle = SECTION_PRINT_TITLE[activeTab] || 'まとめプリント';
+    const suffix = mode === 'answers' ? '解答つき' : '解答なし';
+
+    // 印刷モードのクラスは常に片方だけ付く状態にする
+    body.classList.remove(PRINT_MODE_CLASS.answers, PRINT_MODE_CLASS.blank);
+    body.classList.add(modeClass);
+    document.title = `化学基礎まとめプリント_${sectionTitle}_${suffix}`;
+
+    let restored = false;
+    const restore = () => {
+      if (restored) return;
+      restored = true;
+      body.classList.remove(modeClass);
+      document.title = prevTitle;
+      window.removeEventListener('afterprint', restore);
+    };
+    window.addEventListener('afterprint', restore);
+
+    try {
+      window.print();
+    } finally {
+      // Safari など afterprint を発火しない環境向けの保険
+      window.setTimeout(restore, 1500);
+    }
+  }, [activeTab]);
+
+  // タブを切り替えたら印刷メニューは閉じる（別セクションを刷ってしまう事故を防ぐ）
+  useEffect(() => setPrintMenuOpen(false), [activeTab]);
+
   return (
     <div className="w-full min-h-screen bg-[#FDFBF7] font-modern pb-20 relative notebook-paper">
       {/* ===== グローバル学習プリント用 CSS（ビルド時に .learning-content スコープ済み）===== */}
       <style dangerouslySetInnerHTML={{ __html: LEARNING_GLOBAL_CSS }} />
+      {/* ===== 印刷（PDF書き出し）用 CSS。@media print のみなので画面表示は変わらない ===== */}
+      <style dangerouslySetInnerHTML={{ __html: LEARNING_PRINT_CSS }} />
 
       <div className="w-full px-0 py-0 relative">
         {/* Absolute Background Blur */}
-        <div className="absolute top-10 left-10 w-48 h-48 bg-[#A9CCE3]/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-20 right-10 w-64 h-64 bg-[#F9E79F]/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className={`absolute top-10 left-10 w-48 h-48 bg-[#A9CCE3]/10 rounded-full blur-3xl pointer-events-none ${NO_PRINT_CLASS}`}></div>
+        <div className={`absolute bottom-20 right-10 w-64 h-64 bg-[#F9E79F]/10 rounded-full blur-3xl pointer-events-none ${NO_PRINT_CLASS}`}></div>
 
         {/* Back and Title Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-0 px-4 md:px-8 py-4 md:py-5 bg-white/80 backdrop-blur-sm border-b border-gray-150 sticky top-0 z-30">
+        <div className={`flex flex-col md:flex-row md:items-center justify-between gap-4 mb-0 px-4 md:px-8 py-4 md:py-5 bg-white/80 backdrop-blur-sm border-b border-gray-150 sticky top-0 z-30 ${NO_PRINT_CLASS}`}>
           <div className="flex items-center gap-3">
             <button
               onClick={onBack}
@@ -134,13 +207,73 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
             </div>
           </div>
 
-          <div className="text-right text-xs text-[#8b81a3] font-bold hidden md:block">
-            大学入学共通テスト対策 / 2次試験対策 / 定期テスト対策
+          <div className="flex items-center gap-3">
+            {/* ===== 印刷 / PDF 書き出し =====
+                「解答つき」と「解答なし」を選ばせるのが要点。
+                同じ紙面を、答え合わせ用と書き込み用の2通りで使えるようにする。 */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setPrintMenuOpen(v => !v)}
+                aria-expanded={printMenuOpen}
+                aria-haspopup="menu"
+                className="flex items-center gap-1.5 rounded-xl border-2 border-[#7c3aed] bg-[#7c3aed] px-3 py-2 text-[11px] md:text-xs font-extrabold text-white shadow-sm transition-colors hover:bg-[#6d28d9] cursor-pointer"
+                title="このセクションを印刷 / PDFで保存"
+              >
+                <Printer size={14} />
+                <span>印刷 / PDF</span>
+              </button>
+
+              {printMenuOpen && (
+                <>
+                  {/* 外側タップで閉じるための透明レイヤー */}
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setPrintMenuOpen(false)}
+                    aria-hidden="true"
+                  />
+                  <div
+                    role="menu"
+                    className="absolute right-0 top-[calc(100%+8px)] z-50 w-64 rounded-xl border-2 border-[#c9bce6] bg-white p-2 shadow-xl"
+                  >
+                    <p className="px-2 pb-1.5 pt-1 text-[10px] font-extrabold tracking-wider text-[#8b81a3]">
+                      A4縦で印刷されます（PDF保存も可）
+                    </p>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={() => handlePrint('answers')}
+                      className="w-full rounded-lg px-2 py-2 text-left transition-colors hover:bg-[#f3ecff] cursor-pointer"
+                    >
+                      <span className="block text-xs font-extrabold text-[#5b21b6]">解答つきで印刷</span>
+                      <span className="mt-0.5 block text-[10px] font-bold leading-relaxed text-[#6b6280]">
+                        すべての解答を開いた状態で出力（答え合わせ・保存用）
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={() => handlePrint('blank')}
+                      className="mt-1 w-full rounded-lg px-2 py-2 text-left transition-colors hover:bg-[#f3ecff] cursor-pointer"
+                    >
+                      <span className="block text-xs font-extrabold text-[#5b21b6]">解答を伏せて印刷</span>
+                      <span className="mt-0.5 block text-[10px] font-bold leading-relaxed text-[#6b6280]">
+                        解答欄を空けて出力（自分で解くプリントとして使う）
+                      </span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="text-right text-xs text-[#8b81a3] font-bold hidden lg:block">
+              大学入学共通テスト対策 / 2次試験対策 / 定期テスト対策
+            </div>
           </div>
         </div>
 
         {/* Responsive Topic Tab Scroll Container */}
-        <div className="flex gap-2 overflow-x-auto py-3 mb-0 px-4 md:px-8 scrollbar-none snap-x z-20 relative bg-[#FDFBF7]/80 backdrop-blur-sm border-b border-gray-150">
+        <div className={`flex gap-2 overflow-x-auto py-3 mb-0 px-4 md:px-8 scrollbar-none snap-x z-20 relative bg-[#FDFBF7]/80 backdrop-blur-sm border-b border-gray-150 ${NO_PRINT_CLASS}`}>
           {SECTIONS.map(sec => (
             <button
               key={sec.id}
@@ -162,9 +295,24 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
             これにより、余白を消してもPCで画像や表が巨大化しない。 */}
         <div className="w-full notebook-paper rounded-none p-4 sm:p-8 md:p-12 relative min-h-[calc(100vh-140px)] shadow-none border-0">
           {/* Vertical Red Binder Line */}
-          <div className="absolute top-0 bottom-0 left-[14px] sm:left-[36px] w-[1.5px] bg-red-200/50 pointer-events-none"></div>
+          <div className={`absolute top-0 bottom-0 left-[14px] sm:left-[36px] w-[1.5px] bg-red-200/50 pointer-events-none ${NO_PRINT_CLASS}`}></div>
 
-          <div className="pl-5 sm:pl-10 relative z-10 text-[#1B2631] max-w-4xl mx-auto">
+          <div className="pl-5 sm:pl-10 relative z-10 text-[#1B2631] max-w-4xl mx-auto learning-print-area">
+
+            {/* ====== 印刷したときだけ出る紙のヘッダー ======
+                配布プリントとして成立させるために、タイトル・セクション名と
+                名前／日付の記入欄を紙の一番上に置く。画面では表示されない。 */}
+            <div className="lc-print-only lc-print-head" aria-hidden="true">
+              <div className="lc-print-title">化学基礎 まとめプリント</div>
+              <div className="lc-print-sub">
+                {SECTION_PRINT_TITLE[activeTab] || ''}
+                {SECTION_PART_LABEL[activeTab] ? `　（${SECTION_PART_LABEL[activeTab]}）` : ''}
+              </div>
+              <div className="lc-print-meta">
+                <span>名前：<span className="lc-print-field" /></span>
+                <span>日付：<span className="lc-print-field" /></span>
+              </div>
+            </div>
 
             {/* ====== TOC ====== */}
             {activeTab === 'toc' && (
@@ -280,7 +428,7 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
             {/* ====== 各章 (1-1 〜 2-3) — 元のフル HTML を忠実に表示 ====== */}
             {sectionHtml && (
               <div className="animate-fade-in-up">
-                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div className={`mb-4 flex flex-wrap items-center justify-between gap-3 ${NO_PRINT_CLASS}`}>
                   <span className="text-xs font-extrabold text-[#7c3aed] tracking-widest uppercase block">
                     {SECTION_PART_LABEL[activeTab]}
                   </span>
@@ -327,7 +475,7 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
       {/* ===== 図の拡大表示（タップで開く／どこを押しても閉じる） ===== */}
       {zoomFig && (
         <div
-          className="fixed inset-0 z-[60] flex flex-col bg-[#2f2740]/85 backdrop-blur-sm p-3 sm:p-6"
+          className={`fixed inset-0 z-[60] flex flex-col bg-[#2f2740]/85 backdrop-blur-sm p-3 sm:p-6 ${NO_PRINT_CLASS}`}
           role="dialog"
           aria-modal="true"
           aria-label="図の拡大表示"
