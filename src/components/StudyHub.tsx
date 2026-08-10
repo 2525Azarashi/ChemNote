@@ -25,6 +25,7 @@ import {
   type ReviewItem,
 } from '../utils/reviewList';
 import { ForgettingCurveChart } from './ForgettingCurveChart';
+import { stripHtmlToText } from '../utils/sanitizeHtml';
 
 /**
  * StudyHub — 「ノート」と「復習リスト」を1画面に統合した学習ハブ。
@@ -56,12 +57,13 @@ type Tab = 'today' | 'notes' | 'important' | 'all';
 // 表示用の小道具
 // ============================================================
 
-function stripHtml(html?: string): string {
-  if (!html) return '';
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html;
-  return (tmp.textContent || tmp.innerText || '').trim();
-}
+// 一覧のプレビュー用にHTMLタグを落としてテキストだけにする。
+//
+// ★以前は innerHTML に代入して textContent を読み出していた★
+//   <script> は実行されないが、<img src=x onerror=...> は
+//   HTMLの解析時に読み込みが走り onerror が発火し得る。
+//   DOMを一切作らない共通実装に統一した。
+const stripHtml = stripHtmlToText;
 
 function truncate(text: string, max = 90): string {
   return text.length > max ? text.slice(0, max) + '…' : text;
