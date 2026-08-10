@@ -1,0 +1,28 @@
+# ------------------------------------------------------------------
+# セキュリティヘッダー（Cloudflare Pages / Netlify 形式）
+#
+# Vercel にデプロイする場合は同じ内容を vercel.json 側で配信する。
+# 両方置いてあるのは、ホスティング先を変えてもヘッダーが落ちないようにするため。
+#
+# CSP の許可先は「アプリが実際に通信している先」だけを列挙している：
+#   - Firestore / Firebase Auth  … firestore.googleapis.com, identitytoolkit, securetoken
+#   - Google ログイン UI         … accounts.google.com, apis.google.com, <authDomain>
+#   - Google Fonts               … fonts.googleapis.com(CSS) / fonts.gstatic.com(本体)
+#   - フィードバック送信(GAS)     … script.google.com, script.googleusercontent.com
+#   - Vercel Analytics           … va.vercel-scripts.com
+#
+# 'unsafe-inline'（style のみ）が必要な理由:
+#   Tailwind v4 / motion(framer) / まとめプリント用の <style> 注入が
+#   インラインスタイルを使うため。script 側には付けていない。
+# ------------------------------------------------------------------
+
+/*
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://apis.google.com https://accounts.google.com https://www.gstatic.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self'; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://script.google.com https://script.googleusercontent.com https://va.vercel-scripts.com https://*.firebaseio.com wss://*.firebaseio.com; frame-src 'self' https://accounts.google.com https://mntb-4ef06.firebaseapp.com; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  X-Permitted-Cross-Domain-Policies: none
+  X-DNS-Prefetch-Control: off

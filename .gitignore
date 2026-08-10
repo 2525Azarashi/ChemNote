@@ -14,3 +14,38 @@ public/learning_figures/_preview.html
 
 # 解説構成の調査用スクリプト（ローカル分析用・コミットしない）
 .tmpwork/
+.backup/
+
+# ------------------------------------------------------------------
+# 秘密情報 / 資格情報（絶対にコミットしない）
+# ------------------------------------------------------------------
+# 別プロジェクトの apiKey・appId を含む自動生成ファイル
+firebase-applet-config.json
+firebase-blueprint.json
+*serviceAccount*.json
+*service-account*.json
+*-credentials.json
+*.pem
+*.key
+*.p12
+.firebase/
+firestore-debug.log
+firebase-debug.log
+ui-debug.log
+
+# ------------------------------------------------------------------
+# リポジトリ直下の使い捨てスクリプト・調査用ダンプ
+# （正式なスクリプトは scripts/ 配下に置く）
+# ------------------------------------------------------------------
+/*.js
+/*.cjs
+/*.mjs
+!eslint.config.js
+/chem_data_*.json
+/temp_*.json
+/missing_*.json
+/dump_*.json
+/ids.txt
+/summary.txt
+/breakpoints.txt
+/responsive_classes.txt
