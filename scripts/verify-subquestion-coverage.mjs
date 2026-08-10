@@ -16,6 +16,7 @@
  * 使い方: npx tsx scripts/verify-subquestion-coverage.mjs
  */
 import { chemistryData } from '../src/data/chemistryData.ts';
+import { chemistryAdvancedData } from '../src/data/chemistryAdvancedData.ts';
 import {
   sliceEnhancedBySubQuestion,
   sliceEnhancedByQuestion,
@@ -46,7 +47,12 @@ let totalSq = 0;
 let filled = 0;
 const emptyByQuestion = new Map();
 
-for (const part of chemistryData.parts) {
+// 化学基礎（chemistryData）と化学発展（chemistryAdvancedData）の両方を検査する。
+// 発展側は単元の枠だけ用意して問題が空の章も多いが、収録済みの章は
+// まったく同じ品質基準（開けば必ず中身が出る）を満たさなければならない。
+const allParts = [...chemistryData.parts, ...chemistryAdvancedData.parts];
+
+for (const part of allParts) {
   for (const chapter of part.chapters || []) {
     for (const question of [...(chapter.practiceProblems || []), ...(chapter.miniTest || [])]) {
       const text = question.explanationSupplement || question.explanation || '';

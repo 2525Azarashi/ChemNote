@@ -28,6 +28,8 @@ const TARGET_FILES = [
   'src/data/chemistryData.ts',
   'src/data/mockExamData.ts',
   'src/data/trendData.ts',
+  // 化学（発展）の問題データ。化学基礎と同じ表記ルールで書く。
+  'src/data/advancedThermoProblems.ts',
 ];
 
 // ------------------------------------------------------------------

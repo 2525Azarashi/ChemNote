@@ -25,6 +25,7 @@
  * 使い方: npx tsx scripts/verify-no-content-loss.mjs
  */
 import { chemistryData } from '../src/data/chemistryData.ts';
+import { chemistryAdvancedData } from '../src/data/chemistryAdvancedData.ts';
 import { mockExam } from '../src/data/mockExamData.ts';
 
 /** 日本語の文字だけを数える（記号やスタイル文字列は複製されるため対象外） */
@@ -55,7 +56,8 @@ function sourceMaterial(question) {
 let checked = 0;
 const failures = [];
 
-for (const part of chemistryData.parts) {
+// 化学基礎＋化学発展をまとめて検査する
+for (const part of [...chemistryData.parts, ...chemistryAdvancedData.parts]) {
   for (const chapter of part.chapters || []) {
     for (const question of [...(chapter.practiceProblems || []), ...(chapter.miniTest || [])]) {
       const rendered = question.explanationSupplement || question.explanation || '';

@@ -289,8 +289,10 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
   });
 
   it('問題が0件の科目は「大問 0/0 問 (0%)」ではなく「準備中」と出す', () => {
-    // 化学（発展）は章立て（66章）だけが先行実装され、問題データは0件。
-    // 分母0のまま数字を出すと不具合に見えるため、文言で伝える。
+    // 問題データが0件の科目で分母0のまま数字を出すと不具合に見えるため、
+    // 「問題を準備中」という文言で伝える。
+    // （化学（発展）は演習問題の収録が始まったので、この分岐は
+    //  今後追加される他科目のための安全網として残している。）
     const src = readFileSync('src/components/Home.tsx', 'utf8');
     expect(src).toContain('const isEmpty = p.total === 0');
     expect(src).toContain('問題を準備中');
@@ -298,9 +300,10 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
     expect(src).toMatch(/p\.total > 0 \? Math\.round\(\(p\.solved \/ p\.total\) \* 100\) : 0/);
   });
 
-  it('化学（発展）はまだ問題が0件（進捗表示の前提を固定する）', async () => {
-    // ここが将来1問でも入ったら、上の「準備中」表示は自動的に数字に切り替わる。
-    // その変化に気づけるよう、現状を明示的に記録しておく。
+  it('化学（発展）は演習問題20問が進捗の分母に入る', async () => {
+    // 出典テキスト『化学の道しるべ 理論化学 ～化学反応と熱・光エネルギー編～』の
+    // 演習1〜20 を「問題」として収録したため、化学（発展）の分母は 0 ではなく 20。
+    // まとめプリントに載せただけで問題側に入っていない、という退行を防ぐ。
     const { getAllAdvancedChapters } = await import('../src/data/chemistryAdvancedData');
     const chapters = getAllAdvancedChapters() as any[];
     expect(chapters.length).toBeGreaterThan(0); // 章立ては存在する
@@ -308,7 +311,11 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
       (sum: number, c: any) => sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0),
       0,
     );
-    expect(total).toBe(0);
+    expect(total).toBe(20);
+
+    // 収録済みの単元だけに問題がぶら下がっている（他は枠のみ）
+    const withProblems = chapters.filter((c) => (c.practiceProblems?.length || 0) > 0).map((c) => c.id);
+    expect(withProblems.sort()).toEqual(['a1_1', 'a3_1', 'a3_2', 'a3_3', 'a3_4']);
   });
 
   it('総大問数が 174 問（実データと一致）', async () => {

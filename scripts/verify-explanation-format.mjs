@@ -1,6 +1,7 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { chemistryData } from '../src/data/chemistryData.ts';
+import { chemistryAdvancedData } from '../src/data/chemistryAdvancedData.ts';
 import { mockExam } from '../src/data/mockExamData.ts';
 import { formatText } from '../src/utils/textFormatter.tsx';
 
@@ -65,7 +66,8 @@ function report(label, items) {
 
 const items = [];
 let supplements = 0;
-for (const part of chemistryData.parts) {
+// 化学基礎＋化学発展。発展側の収録済み単元も同じフォーマット要件を満たす必要がある。
+for (const part of [...chemistryData.parts, ...chemistryAdvancedData.parts]) {
   for (const c of part.chapters || []) {
     for (const p of [...(c.practiceProblems || []), ...(c.miniTest || [])]) {
       if (p.explanationSupplement) supplements += 1;
