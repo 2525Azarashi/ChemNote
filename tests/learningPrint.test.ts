@@ -178,3 +178,203 @@ describe('LearningViewer の印刷UI', () => {
     expect(block).toContain('MOL_BASICS_TAB_ID');
   });
 });
+
+/* ==================================================================
+ * 強調表記（語句＝太字＋太い下線 / 文章＝太字＋太い波線・いずれも黒）
+ *
+ * ■ 背景
+ *   まとめプリントを印刷したとき「強調しているはずの箇所が
+ *   強調に見えない」不具合が出ていた。原因は3つ。
+ *     ① 印刷CSSに color / text-decoration-color の指定が無く、
+ *        下線の色が親要素の色を継承して薄く見えていた
+ *     ② 印刷時に波線（wavy）を点線（dotted）へ置き換えていたため
+ *        「語句」と「文章」の区別が消えていた
+ *     ③ 線が 1pt しかなく A4 の縮尺では本文の罫線と見分けが付かない
+ *   さらに <strong> で包まれていない裸の <u> には
+ *   `strong u` のルールが一切当たっていなかった。
+ *
+ * ■ ここで守る規則
+ *   語句   … <strong><u>…</u></strong>              → 太字＋太い直線・黒
+ *   文章   … <strong><u class="wavy">…</u></strong>  → 太字＋太い波線・黒
+ *   下線部 … <u class="q">…</u>                      → 問題文の指示対象。
+ *            “強調”ではないので太字にしない（細線のみ）
+ * ================================================================== */
+const SECTION_FILES = [
+  'section_1_1',
+  'section_1_2',
+  'section_1_3',
+  'section_2_1',
+  'section_2_2',
+  'section_2_3',
+] as const;
+
+const globalCssSrc = read('src/data/learningContent/globalCss.ts');
+const sectionSrcs = new Map(
+  SECTION_FILES.map((f) => [f, read(`src/data/learningContent/${f}.ts`)] as const),
+);
+
+/** `text-decoration-*` などを含むCSSブロックを取り出す */
+const cssBlock = (css: string, selector: string): string => {
+  const at = css.indexOf(selector);
+  if (at < 0) return '';
+  const open = css.indexOf('{', at);
+  const close = css.indexOf('}', open);
+  return open < 0 || close < 0 ? '' : css.slice(open, close);
+};
+
+describe.each([
+  ['画面表示（globalCss.ts）', () => globalCssSrc, '3px'],
+  ['印刷（printCss.ts）', () => printCssSrc, '1.6pt'],
+])('強調表記の規則 — %s', (_label, getSrc, thickness) => {
+  const src = getSrc();
+
+  it('語句の強調は「太い直線」で描かれる', () => {
+    const block = cssBlock(src, '.learning-content strong u:not(.wavy)');
+    expect(block).toContain('text-decoration-style: solid !important');
+    expect(block).toContain(`text-decoration-thickness: ${thickness} !important`);
+  });
+
+  it('文章の強調は「太い波線」で描かれる（dotted へ化けていない）', () => {
+    const block = cssBlock(src, '.learning-content u.wavy');
+    expect(block).toContain('text-decoration-style: wavy !important');
+    expect(block).toContain(`text-decoration-thickness: ${thickness} !important`);
+    expect(block).not.toContain('dotted');
+  });
+
+  it('強調の文字色と下線色を黒に固定している（親の色を継承しない）', () => {
+    const block = cssBlock(src, '.learning-content u:not(.q)');
+    expect(block).toContain('color: #000 !important');
+    expect(block).toContain('text-decoration-color: #000 !important');
+    expect(block).toContain('font-weight: 900 !important');
+  });
+
+  it('<strong> の無い裸の <u> にもルールが当たる（u 側に直接指定）', () => {
+    // `strong u` だけに頼ると <strong> を書き忘れた箇所で強調が消える
+    expect(src).toContain('.learning-content u:not(.q)');
+    expect(src).toContain('.learning-content u:not(.wavy):not(.q)');
+    expect(src).toContain('.learning-content u.wavy');
+  });
+
+  it('問題文の「下線部」（u.q）は強調と区別され、太字にならない', () => {
+    const block = cssBlock(src, '.learning-content u.q');
+    expect(block).toContain('text-decoration-style: solid !important');
+    // 語句の強調と同じ太さになってしまうと区別が付かない
+    expect(block).not.toContain(`text-decoration-thickness: ${thickness}`);
+    expect(block).toMatch(/font-weight:\s*(inherit|normal)\s*!important/);
+  });
+});
+
+describe('本文の強調マークアップ', () => {
+  it.each(SECTION_FILES)('%s: すべての <u> が「強調」か「下線部」のどちらかに分類されている', (file) => {
+    const src = sectionSrcs.get(file)!;
+    const stray: string[] = [];
+    const re = /<u(\s[^>]*)?>/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(src))) {
+      const attrs = m[1] ?? '';
+      // 問題文の下線部は class="q" で明示する
+      if (/class="[^"]*\bq\b[^"]*"/.test(attrs)) continue;
+      // 強調は必ず <strong> の直下に置く
+      const before = src.slice(Math.max(0, m.index - 20), m.index);
+      if (/<strong>\s*$/.test(before)) continue;
+      stray.push(src.slice(m.index, m.index + 60));
+    }
+    expect(stray).toEqual([]);
+  });
+
+  it.each(SECTION_FILES)('%s: <strong> の開閉タグ数が一致している', (file) => {
+    const src = sectionSrcs.get(file)!;
+    const open = (src.match(/<strong>/g) ?? []).length;
+    const close = (src.match(/<\/strong>/g) ?? []).length;
+    expect(close).toBe(open);
+  });
+
+  it.each(SECTION_FILES)('%s: <u> の開閉タグ数が一致している', (file) => {
+    const src = sectionSrcs.get(file)!;
+    const open = (src.match(/<u(\s[^>]*)?>/g) ?? []).length;
+    const close = (src.match(/<\/u>/g) ?? []).length;
+    expect(close).toBe(open);
+  });
+
+  it('語句・文章の両方の強調が実際に使われている', () => {
+    let term = 0;
+    let sentence = 0;
+    for (const src of sectionSrcs.values()) {
+      term += (src.match(/<strong><u>/g) ?? []).length;
+      sentence += (src.match(/<strong><u class="wavy">/g) ?? []).length;
+    }
+    expect(term).toBeGreaterThan(100);
+    expect(sentence).toBeGreaterThan(0);
+  });
+});
+
+/* ==================================================================
+ * 図（インラインSVG）のCSS名前空間
+ *
+ * ■ 背景
+ *   インラインSVGの中に書いた <style> は SVG 内に閉じず、
+ *   ドキュメント全体のCSSに漏れる。そのため複数の図が
+ *   同じ短いクラス名（.t / .l / .s など）を使っていると、
+ *   後ろに書かれた図の定義が前の図を上書きしてしまう。
+ *
+ *   実際に「半反応式の作り方」の図では
+ *     .t  … 後の図の定義（青文字）が勝ち → 青地に青文字で見えない
+ *     .l  … 後の図の text-anchor:middle が勝ち
+ *           → 左寄せラベルが中央寄せになり STEP バッジに重なる
+ *   という崩れが起きていた。
+ *
+ * ■ ここで守る規則
+ *   図ごとに `lcfig-<節>-<連番>` のクラスを付け、<style> の
+ *   セレクタは必ずそのクラス配下に書く（他の図に影響させない）。
+ * ================================================================== */
+describe('インラインSVGのスタイルはスコープされている', () => {
+  type Fig = { file: string; scope: string; selectors: string[] };
+  const figures: Fig[] = [];
+
+  for (const [file, src] of sectionSrcs) {
+    const re = /<svg\b([^>]*)>([\s\S]*?)<\/svg>/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(src))) {
+      const styleMatch = /<style>([\s\S]*?)<\/style>/.exec(m[2]);
+      if (!styleMatch) continue;
+      const scope = /class="[^"]*\b(lcfig-[0-9-]+)\b/.exec(m[1])?.[1] ?? '';
+      const selectors = [...styleMatch[1].matchAll(/^\s*([^{\n]+?)\s*\{/gm)].map((s) => s[1]);
+      figures.push({ file, scope, selectors });
+    }
+  }
+
+  it('インラインSVGの <style> が検出できている', () => {
+    expect(figures.length).toBeGreaterThanOrEqual(10);
+  });
+
+  it('<style> を持つ図はすべて lcfig-* のスコープクラスを持つ', () => {
+    expect(figures.filter((f) => !f.scope).map((f) => f.file)).toEqual([]);
+  });
+
+  it('スコープクラスは図ごとに一意', () => {
+    const scopes = figures.map((f) => f.scope);
+    expect(new Set(scopes).size).toBe(scopes.length);
+  });
+
+  it('すべてのセレクタが自分のスコープクラス配下に書かれている', () => {
+    const leaks: string[] = [];
+    for (const fig of figures) {
+      for (const sel of fig.selectors) {
+        if (!sel.includes(`.${fig.scope} `)) leaks.push(`${fig.file}: ${sel}`);
+      }
+    }
+    expect(leaks).toEqual([]);
+  });
+});
+
+describe('印刷時の図の扱い（printCss.ts）', () => {
+  it('インラインSVGも用紙幅に収まるよう縮小される', () => {
+    const block = cssBlock(printCssSrc, '.learning-content svg');
+    expect(block).toContain('max-width: 100%');
+    expect(block).toContain('height: auto');
+  });
+
+  it('画面用の「タップで拡大」ヒントは印刷されない', () => {
+    expect(printCssSrc).toMatch(/\.figzoom-hint\s*\{\s*display:\s*none\s*!important/);
+  });
+});

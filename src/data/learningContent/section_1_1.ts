@@ -17,7 +17,7 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
             <th>純物質<br><small>1種類の物質でできたもの<br>（一つの化学式で書ける）</small></th>
             <td>
               <strong><u>単体</u></strong>：1種類の元素でできたもの<br>例）酸素、窒素、鉄<br><br>
-              <strong><u class="wavy">化合物</u></strong>：2種類以上の元素でできたもの<br>例）水、塩化ナトリウム
+              <strong><u>化合物</u></strong>：2種類以上の元素でできたもの<br>例）水、塩化ナトリウム
             </td>
           </tr>
           <tr>
@@ -43,14 +43,14 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
         <div class="box box-example">
           <p>次の文中の下線部が、単体なのか元素なのかを答えよ。</p>
           <ol>
-            <li><u>酸素</u>は、水に溶けにくい。</li>
-            <li>食塩（塩化ナトリウム）には、<u>ナトリウムと塩素</u>が含まれている。</li>
-            <li>植物の生育には、<u>窒素</u>が欠かせない。</li>
-            <li>黄リンも赤リンも、<u>リン</u>の同素体である。</li>
-            <li>水を電気分解すると、<u>水素と酸素</u>を生じる。</li>
-            <li>砂糖は、<u>炭素や水素、酸素</u>からなる物質である。</li>
-            <li>乾燥空気の体積の約78％は<u>窒素</u>である。</li>
-            <li>骨には<u>カルシウム</u>が含まれている。</li>
+            <li><u class="q">酸素</u>は、水に溶けにくい。</li>
+            <li>食塩（塩化ナトリウム）には、<u class="q">ナトリウムと塩素</u>が含まれている。</li>
+            <li>植物の生育には、<u class="q">窒素</u>が欠かせない。</li>
+            <li>黄リンも赤リンも、<u class="q">リン</u>の同素体である。</li>
+            <li>水を電気分解すると、<u class="q">水素と酸素</u>を生じる。</li>
+            <li>砂糖は、<u class="q">炭素や水素、酸素</u>からなる物質である。</li>
+            <li>乾燥空気の体積の約78％は<u class="q">窒素</u>である。</li>
+            <li>骨には<u class="q">カルシウム</u>が含まれている。</li>
           </ol>
           <details>
             <summary>💡 解答を表示</summary>
@@ -64,7 +64,7 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
 
         <h4>重要事項② ～物質の分離・精製法・区別～</h4>
         <p>
-          <strong><u class="wavy">分離</u></strong>…混合物から欲しい物質を取り出す操作<br>
+          <strong><u>分離</u></strong>…混合物から欲しい物質を取り出す操作<br>
           <strong><u>精製</u></strong>…分離された物質をさらに純粋にする（＝きれいにする）こと
         </p>
 
@@ -90,7 +90,7 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
             </td>
           </tr>
           <tr>
-            <td><strong><u class="wavy">蒸留</u></strong></td>
+            <td><strong><u>蒸留</u></strong></td>
             <td>沸点の違いを利用して、固体が溶けた液体や、液体同士の混合物を加熱して沸騰させ、その蒸気を冷却して、沸点の低い成分を分離する操作。</td>
             <td>
               NaCl水溶液から水を分離する<br>
@@ -148,12 +148,12 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
 
         <div class="figfull">
           <span class="figrow-title">装置図で覚える4つの操作</span>
-          <p>分離・精製は<strong><u>「何の違いを利用しているか」</u></strong>で区別すると迷いません。装置の絵とセットで覚えましょう。図の中の<strong>紫の丸数字</strong>は、となりにある「注意点」の番号と対応しています（<u>入試で問われるのはこの注意点</u>）。</p>
+          <p>分離・精製は<strong><u class="wavy">「何の違いを利用しているか」</u></strong>で区別すると迷いません。装置の絵とセットで覚えましょう。図の中の<strong>紫の丸数字</strong>は、となりにある「注意点」の番号と対応しています（<strong><u>入試で問われるのはこの注意点</u></strong>）。</p>
           <ul>
-            <li><strong>ろ過</strong>…<u>粒の大きさ</u>の違い。ろ紙を4つ折りにし、ろうとの<strong>あしの長い方を器壁につける</strong>（液がはねず、あしの中の液柱が吸い込む力になる）。ガラス棒でろ紙の三重の側を支える。</li>
-            <li><strong>蒸留</strong>…<u>沸点</u>の違い。温度計の球部は<strong>枝の高さ</strong>（＝出ていく蒸気の温度をはかる）。<strong>沸騰石</strong>で突沸を防ぎ、リービッヒ冷却器の水は<strong>下から入れて上から出す</strong>（管を水で満たすため）。三角フラスコは密栓しない。</li>
-            <li><strong>抽出</strong>…<u>溶媒への溶けやすさ</u>の違い。分液ろうとで振ったあとは<strong>栓を開けて中の圧力を抜く</strong>。下層は下のコックから、上層は上口から取り出す。</li>
-            <li><strong>クロマトグラフィー</strong>…<u>吸着力</u>の違い。<strong>インクの点は溶媒につけない</strong>（つけると色素が溶け出て流れてしまう）。吸着されにくい色素ほど遠くまで上がる。</li>
+            <li><strong>ろ過</strong>…<strong><u>粒の大きさ</u></strong>の違い。ろ紙を4つ折りにし、ろうとの<strong>あしの長い方を器壁につける</strong>（液がはねず、あしの中の液柱が吸い込む力になる）。ガラス棒でろ紙の三重の側を支える。</li>
+            <li><strong>蒸留</strong>…<strong><u>沸点</u></strong>の違い。温度計の球部は<strong>枝の高さ</strong>（＝出ていく蒸気の温度をはかる）。<strong>沸騰石</strong>で突沸を防ぎ、リービッヒ冷却器の水は<strong>下から入れて上から出す</strong>（管を水で満たすため）。三角フラスコは密栓しない。</li>
+            <li><strong>抽出</strong>…<strong><u>溶媒への溶けやすさ</u></strong>の違い。分液ろうとで振ったあとは<strong>栓を開けて中の圧力を抜く</strong>。下層は下のコックから、上層は上口から取り出す。</li>
+            <li><strong>クロマトグラフィー</strong>…<strong><u>吸着力</u></strong>の違い。<strong>インクの点は溶媒につけない</strong>（つけると色素が溶け出て流れてしまう）。吸着されにくい色素ほど遠くまで上がる。</li>
           </ul>
           <figure style="margin:0;">
             <img src="/learning_figures/fig_separation.svg" alt="ろ過装置・蒸留装置・分液ろうとによる抽出・ペーパークロマトグラフィーの装置図（オリジナル作図）">
@@ -164,10 +164,10 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
         <div class="box box-example">
           <p>物質を分離する操作に関する記述として、下線部が正しいものを選べ。</p>
           <ol>
-            <li>溶媒に対する溶解度の違いを利用して、混合物から特定の物質を溶媒に溶かして分離する操作を<u>抽出</u>という。</li>
-            <li>沸点の差を利用して、液体の混合物から成分を分離する操作を<u>昇華法</u>という。</li>
-            <li>固体と液体の混合物から、ろ紙などを用いて固体を分離する操作を<u>再結晶</u>という。</li>
-            <li>固体の混合物を加熱して、固体から直接気体になる成分を冷却して、分離する操作を<u>蒸留</u>という。</li>
+            <li>溶媒に対する溶解度の違いを利用して、混合物から特定の物質を溶媒に溶かして分離する操作を<u class="q">抽出</u>という。</li>
+            <li>沸点の差を利用して、液体の混合物から成分を分離する操作を<u class="q">昇華法</u>という。</li>
+            <li>固体と液体の混合物から、ろ紙などを用いて固体を分離する操作を<u class="q">再結晶</u>という。</li>
+            <li>固体の混合物を加熱して、固体から直接気体になる成分を冷却して、分離する操作を<u class="q">蒸留</u>という。</li>
           </ol>
           <details>
             <summary>💡 解答を表示</summary>
@@ -180,7 +180,7 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
         <p><strong><u>同素体</u></strong>…同じ元素からなるが、性質の異なる単体が存在するもの</p>
 
         <div class="box box-memory">
-          <p><strong><u class="wavy">同素体のスコップ（S・C・O・P）</u></strong></p>
+          <p><strong><u>同素体のスコップ（S・C・O・P）</u></strong></p>
           <table>
             <tbody><tr>
               <th>元素</th>
@@ -250,7 +250,7 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
         <div class="figrow">
           <div class="figrow-text">
             <span class="figrow-title">色と語呂を「見た目」で結びつける</span>
-            <p>炎色反応は<strong>文字だけで覚えると必ず色を取り違えます</strong>。右の図で<u>炎の色そのもの</u>と語呂の位置を目で結びつけてください。</p>
+            <p>炎色反応は<strong>文字だけで覚えると必ず色を取り違えます</strong>。右の図で<strong><u>炎の色そのもの</u></strong>と語呂の位置を目で結びつけてください。</p>
             <ul>
               <li>操作：白金線を<strong>濃塩酸で洗い</strong>、外炎（最も温度が高い部分）に入れる。</li>
               <li><strong>Mg は炎色反応を示さない</strong>…アルカリ土類金属と混同させる定番のひっかけ。</li>
@@ -374,8 +374,8 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
         <ul>
           <li><strong>物理変化</strong>…物質そのものは変化しないが、状態のみが変わること</li>
           <li><strong>化学変化</strong>…原子の組み合わせが変化し、物質が別の物質に変わること</li>
-          <li><strong><u class="wavy">融点</u></strong>…固体が融解するときの温度</li>
-          <li><strong><u class="wavy">沸点</u></strong>…液体が沸騰（液体の内部からの蒸発）するときの温度</li>
+          <li><strong><u>融点</u></strong>…固体が融解するときの温度</li>
+          <li><strong><u>沸点</u></strong>…液体が沸騰（液体の内部からの蒸発）するときの温度</li>
         </ul>
 
         <div class="box box-note">
@@ -388,11 +388,11 @@ export const SECTION_1_1_HTML = `        <h3 id="sec1-1">1. 物質の構成</h3>
             <span class="figrow-title">粒子の並び方 → 状態変化の矢印</span>
             <p>三態は<strong>「粒子の並び方」と「熱運動の激しさ」</strong>の違いです。右の図は上段に粒子モデル、下段に6つの状態変化をまとめてあります。</p>
             <ul>
-              <li><strong>固体</strong>…規則正しく並び、その場で<u>振動</u>するだけ。</li>
-              <li><strong>液体</strong>…粒子は接しているが位置を<u>入れかえられる</u>ので流れる。</li>
-              <li><strong>気体</strong>…粒子がばらばらに<u>飛び回る</u>ため、体積は容器いっぱいに広がる。</li>
+              <li><strong>固体</strong>…規則正しく並び、その場で<strong><u>振動</u></strong>するだけ。</li>
+              <li><strong>液体</strong>…粒子は接しているが位置を<strong><u>入れかえられる</u></strong>ので流れる。</li>
+              <li><strong>気体</strong>…粒子がばらばらに<strong><u>飛び回る</u></strong>ため、体積は容器いっぱいに広がる。</li>
             </ul>
-            <p><strong>矢印の向き＝熱の出入り</strong>で覚えます。<strong><u>赤い矢印（融解・蒸発・昇華）は熱を加える向き</u></strong>、<strong><u>青い矢印（凝固・凝縮・凝華）は熱をうばう向き</u></strong>です。</p>
+            <p><strong>矢印の向き＝熱の出入り</strong>で覚えます。<strong><u class="wavy">赤い矢印（融解・蒸発・昇華）は熱を加える向き</u></strong>、<strong><u class="wavy">青い矢印（凝固・凝縮・凝華）は熱をうばう向き</u></strong>です。</p>
             <ul>
               <li>固体→気体が<strong>昇華</strong>、気体→固体が<strong>凝華</strong>（旧課程では両方「昇華」と呼んだので要注意）。</li>
               <li>融点・沸点では、<strong>全部が変化し終わるまで温度が上がらない</strong>（加えた熱は粒子どうしの結びつきを切るのに使われる）。</li>

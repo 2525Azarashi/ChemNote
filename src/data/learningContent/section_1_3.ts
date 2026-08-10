@@ -21,10 +21,10 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
         </ul>
 
         <h5>❷ 共有結合（非金属元素どうしからなる結合）</h5>
-        <p><strong><u class="wavy">共有結合</u></strong>…価電子が2個の原子の間で共有されることによって形成される結合<br>＝お互いの電子が足りない非金属元素どうしが、価電子を共有する結合</p>
+        <p><strong><u>共有結合</u></strong>…価電子が2個の原子の間で共有されることによって形成される結合<br>＝お互いの電子が足りない非金属元素どうしが、価電子を共有する結合</p>
 
         <div class="box box-point">
-          <p><strong><u class="wavy">共有結合の考え方と表し方</u></strong></p>
+          <p><strong><u>共有結合の考え方と表し方</u></strong></p>
           <p>毎回図で考えると手間なので、最外殻電子だけに注目して2つの方法で結合を考える ＝ <strong><u>電子式</u></strong>と<strong><u>構造式</u></strong></p>
           <ol>
             <li><strong><u>電子式</u></strong>…最外殻電子だけに注目する式。最外殻電子が5個以上になると、不対電子2個で1組の電子対を作る。</li>
@@ -62,15 +62,15 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
         </div>
 
         <figure style="text-align:center;margin:24px 0;padding:18px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<svg viewBox="0 0 820 380" xmlns="http://www.w3.org/2000/svg" style="max-width:780px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:6px;">
+<svg class="lcfig lcfig-1-3-1" viewBox="0 0 820 380" xmlns="http://www.w3.org/2000/svg" style="max-width:780px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:6px;">
   <style>
-    .learning-content .h {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
-    .learning-content .sym {font:bold 28px serif;fill:#222;text-anchor:middle;dominant-baseline:central}
-    .learning-content .sub {font:italic 18px serif;fill:#222;text-anchor:middle;dominant-baseline:central}
-    .learning-content .ed {fill:#e74c3c}
-    .learning-content .lbl {font:11px sans-serif;fill:#666;text-anchor:middle}
-    .learning-content .sect {font:bold 12px sans-serif;fill:#666;text-anchor:middle}
-    .learning-content .bondline {stroke:#222;stroke-width:2.5;fill:none}
+    .learning-content .lcfig-1-3-1 .h {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
+    .learning-content .lcfig-1-3-1 .sym {font:bold 28px serif;fill:#222;text-anchor:middle;dominant-baseline:central}
+    .learning-content .lcfig-1-3-1 .sub {font:italic 18px serif;fill:#222;text-anchor:middle;dominant-baseline:central}
+    .learning-content .lcfig-1-3-1 .ed {fill:#e74c3c}
+    .learning-content .lcfig-1-3-1 .lbl {font:11px sans-serif;fill:#666;text-anchor:middle}
+    .learning-content .lcfig-1-3-1 .sect {font:bold 12px sans-serif;fill:#666;text-anchor:middle}
+    .learning-content .lcfig-1-3-1 .bondline {stroke:#222;stroke-width:2.5;fill:none}
   </style>
   <text class="h" x="410" y="20">電子式（ルイス構造）と構造式</text>
 
@@ -191,7 +191,7 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
     <text x="0" y="0" style="font-size:11px;fill:#555">※ 原子価＝原子1個が持つ価標の数（その原子の不対電子の数に等しい）：H=1、O=2、C=4、N=3</text>
   </g>
 </svg>
-<figcaption style="font-size:0.9em;color:#5d7a8d;margin-top:12px;line-height:1.5;"><strong><u class="wavy">🧪 共有結合の電子式と構造式</u></strong><br><span style="font-size:0.92em;color:#7a8a96;">H₂（単結合）／H₂O（単結合×2、折れ線）／CO₂（二重結合）／N₂（三重結合）の電子式と構造式。●は最外殻電子。</span></figcaption>
+<figcaption style="font-size:0.9em;color:#5d7a8d;margin-top:12px;line-height:1.5;"><strong><u>🧪 共有結合の電子式と構造式</u></strong><br><span style="font-size:0.92em;color:#7a8a96;">H₂（単結合）／H₂O（単結合×2、折れ線）／CO₂（二重結合）／N₂（三重結合）の電子式と構造式。●は最外殻電子。</span></figcaption>
 </figure>
 
         <div class="box box-point">
@@ -222,12 +222,12 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
         </div>
 
         <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
+<svg class="lcfig lcfig-1-3-2" viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
   <style>
-    .learning-content .t {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
-    .learning-content .a {font:11px sans-serif;fill:#555;text-anchor:middle}
-    .learning-content .c {font:bold 12px sans-serif;text-anchor:middle}
-    .learning-content .bond {stroke:#444;stroke-width:2.5;fill:none}
+    .learning-content .lcfig-1-3-2 .t {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
+    .learning-content .lcfig-1-3-2 .a {font:11px sans-serif;fill:#555;text-anchor:middle}
+    .learning-content .lcfig-1-3-2 .c {font:bold 12px sans-serif;text-anchor:middle}
+    .learning-content .lcfig-1-3-2 .bond {stroke:#444;stroke-width:2.5;fill:none}
   </style>
   <!-- 直線型 CO2 -->
   <g transform="translate(20,40)">
@@ -358,12 +358,12 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
         <div class="figrow">
           <div class="figrow-text">
             <span class="figrow-title">自由電子が金属の性質をぜんぶ説明する</span>
-            <p>金属結合は<strong><u>「金属陽イオンの海に自由電子が満ちている」</u></strong>状態です。金属の3つの特徴はすべてこの図から導けます。</p>
+            <p>金属結合は<strong><u class="wavy">「金属陽イオンの海に自由電子が満ちている」</u></strong>状態です。金属の3つの特徴はすべてこの図から導けます。</p>
             <ul>
               <li><strong>電気伝導性・熱伝導性</strong>…自由電子が動いて電気と熱を運ぶ。</li>
               <li><strong>展性・延性</strong>（叩いて広がる・引いて伸びる）…イオンの位置がずれても自由電子がのりの役目をするので結合が切れない。イオン結晶はずれると同符号が向き合って割れる（へき開）ので、ここが決定的な違い。</li>
               <li><strong>金属光沢</strong>…自由電子が可視光を反射する。</li>
-              <li>自由電子は<u>特定の原子に属さず結晶全体を動き回る</u>のがポイント。だから金属結晶には「分子」が存在せず、組成式で表す。</li>
+              <li>自由電子は<strong><u>特定の原子に属さず結晶全体を動き回る</u></strong>のがポイント。だから金属結晶には「分子」が存在せず、組成式で表す。</li>
             </ul>
           </div>
           <figure class="figrow-fig">
@@ -375,8 +375,8 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
         <ul>
           <li><strong><u>結晶</u></strong>…原子、分子、イオンが規則正しく配列している固体＋融点が一定</li>
           <li><strong><u>無定型固体（非晶質・アモルファス）</u></strong>…原子や分子が不規則に配列している固体＋融点は一定ではない</li>
-          <li><strong><u class="wavy">組成式</u></strong>…その構成イオンの原子とその割合を最も簡単な比で表した式</li>
-          <li><strong><u class="wavy">分子式</u></strong>…分子を作る原子の数で表した式</li>
+          <li><strong><u>組成式</u></strong>…その構成イオンの原子とその割合を最も簡単な比で表した式</li>
+          <li><strong><u>分子式</u></strong>…分子を作る原子の数で表した式</li>
         </ul>
 
         <div class="box box-point">
@@ -505,14 +505,14 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
         </tbody></table>
 
         <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" style="max-width:720px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
+<svg class="lcfig lcfig-1-3-3" viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" style="max-width:720px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
   <style>
-    .learning-content .tt {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
-    .learning-content .ll {font:13px sans-serif;fill:#333;text-anchor:middle}
-    .learning-content .sl {font:11px sans-serif;fill:#666;text-anchor:middle}
-    .learning-content .b1 {fill:#fef9e7;stroke:#f1c40f}
-    .learning-content .b2 {fill:#eafaf1;stroke:#27ae60}
-    .learning-content .b3 {fill:#f5eef8;stroke:#9b59b6}
+    .learning-content .lcfig-1-3-3 .tt {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
+    .learning-content .lcfig-1-3-3 .ll {font:13px sans-serif;fill:#333;text-anchor:middle}
+    .learning-content .lcfig-1-3-3 .sl {font:11px sans-serif;fill:#666;text-anchor:middle}
+    .learning-content .lcfig-1-3-3 .b1 {fill:#fef9e7;stroke:#f1c40f}
+    .learning-content .lcfig-1-3-3 .b2 {fill:#eafaf1;stroke:#27ae60}
+    .learning-content .lcfig-1-3-3 .b3 {fill:#f5eef8;stroke:#9b59b6}
   </style>
   <!-- イオン結合 -->
   <rect class="b1" x="20" y="30" width="200" height="270" rx="8" stroke-width="2"/>
@@ -579,8 +579,8 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
 
         <h5>分子の形状と極性</h5>
         <ul>
-          <li><strong><u class="wavy">極性分子</u></strong>…分子全体として極性がある物質</li>
-          <li><strong><u class="wavy">無極性分子</u></strong>…分子全体として極性がない物質</li>
+          <li><strong><u>極性分子</u></strong>…分子全体として極性がある物質</li>
+          <li><strong><u>無極性分子</u></strong>…分子全体として極性がない物質</li>
         </ul>
 
         <table>
@@ -667,12 +667,12 @@ export const SECTION_1_3_HTML = `        <h3 id="sec1-3">3. 化学結合</h3>
         <div class="figrow wide">
           <div class="figrow-text">
             <span class="figrow-title">グラフの「飛び出した3点」が水素結合</span>
-            <p>右のグラフで<strong><u>H₂O・HF・NH₃ の3点だけが折れ線から大きく上に飛び出している</u></strong>のが分かります。これが水素結合の証拠です。</p>
+            <p>右のグラフで<strong><u class="wavy">H₂O・HF・NH₃ の3点だけが折れ線から大きく上に飛び出している</u></strong>のが分かります。これが水素結合の証拠です。</p>
             <ul>
               <li>水素結合ができるのは <strong>F・O・N</strong> に H が結合した分子（電気陰性度が非常に大きく、H が強く正に帯電するため）。</li>
               <li>同じ族の他の水素化合物（H₂S・HCl・PH₃ など）は<strong>分子量が大きいほど沸点が高い</strong>（ファンデルワールス力が強くなる）という素直な傾向に乗る。</li>
-              <li>沸点の高さは <strong>H₂O ＞ HF ＞ NH₃</strong>。H₂O は1分子が<u>水素結合を平均2本</u>つくれるので最強。</li>
-              <li>水素結合の強さは <u>共有結合 ＞ 水素結合 ＞ ファンデルワールス力</u> の中間。「結合」と名前がつくが分子間力の一種であることに注意。</li>
+              <li>沸点の高さは <strong>H₂O ＞ HF ＞ NH₃</strong>。H₂O は1分子が<strong><u>水素結合を平均2本</u></strong>つくれるので最強。</li>
+              <li>水素結合の強さは <strong><u>共有結合 ＞ 水素結合 ＞ ファンデルワールス力</u></strong> の中間。「結合」と名前がつくが分子間力の一種であることに注意。</li>
               <li>おまけ：氷が水に浮くのも水素結合のせい（すきまの多い立体構造をとるので密度が小さい）。</li>
             </ul>
           </div>

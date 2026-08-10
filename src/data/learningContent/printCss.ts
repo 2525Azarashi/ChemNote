@@ -248,27 +248,95 @@ export const LEARNING_PRINT_CSS = `
   .learning-content thead { display: table-header-group; }
   .learning-content tr { break-inside: avoid; page-break-inside: avoid; }
 
-  /* 図は紙幅に収める。拡大用の当たり判定は不要 */
-  .learning-content img {
+  /* 図は紙幅に収める。拡大用の当たり判定は不要。
+     自作図（インラインSVG）は viewBox で描いてあるので、
+     幅だけ紙幅に合わせれば中身は自動で縮尺される。 */
+  .learning-content img,
+  .learning-content svg {
     max-width: 100% !important;
     height: auto !important;
     cursor: default !important;
+  }
+  /* 画面では「タップで拡大できます」のバッジを出しているが、紙では無意味 */
+  .learning-content .figzoom-hint { display: none !important; }
+
+  /* ---------------------------------------------------------------
+     強調表記（紙面）
+     ---------------------------------------------------------------
+       語句（用語・化学式・数値）
+           <strong><u>…</u></strong>              太字 ＋ 太い直線の下線（黒）
+       文章（述語をもつ言い切り・説明文）
+           <strong><u class="wavy">…</u></strong>  太字 ＋ 太い波線の下線（黒）
+       問題文の「下線部」（強調ではない）
+           <u class="q">…</u>                     細い直線の下線だけ
+
+     ■ 以前ここが効いていなかった理由
+       ① 上の見出し・表・囲みのルールが color:#000 !important を
+          広範囲に当てており、強調側には色指定が無かったため、
+          線の色（text-decoration-color）が親の色を継承して薄く出ていた。
+       ② 波線を dotted（点線）に置き換えていたので、
+          「文章＝波線」の区別が紙では消えていた。
+       ③ 太さを 1pt にしていたため、A4 に縮小されると
+          本文の罫線と見分けがつかなかった。
+       → いずれも「語句＝太い直線／文章＝太い波線／どちらも黒」に統一する。
+
+     ■ print-color-adjust は使わない方針だが、下線は「背景」ではなく
+       文字装飾なので、プリンタの「背景を印刷しない」設定でも必ず出る。
+     --------------------------------------------------------------- */
+  .learning-content u:not(.q),
+  .learning-content strong u {
+    color: #000 !important;
+    font-weight: 900 !important;
+    text-decoration-color: #000 !important;
+    text-decoration-skip-ink: none !important;
+    /* 旧ブラウザ向けの保険。border-bottom では波線が出せないので
+       あくまで text-decoration を主にする */
+    background: none !important;
+  }
+  /* 語句 ＝ 太字＋太い直線 */
+  .learning-content u:not(.wavy):not(.q),
+  .learning-content strong u:not(.wavy) {
+    text-decoration-line: underline !important;
+    text-decoration-style: solid !important;
+    text-decoration-thickness: 1.6pt !important;
+    text-underline-offset: 2pt !important;
+  }
+  /* 文章 ＝ 太字＋太い波線 */
+  .learning-content u.wavy,
+  .learning-content strong u.wavy {
+    text-decoration-line: underline !important;
+    text-decoration-style: wavy !important;
+    text-decoration-thickness: 1.6pt !important;
+    text-underline-offset: 2.5pt !important;
+  }
+  /* 問題文の「下線部」は強調ではないので、細線のみ・太字にしない */
+  .learning-content u.q {
+    font-weight: normal !important;
+    text-decoration-line: underline !important;
+    text-decoration-style: solid !important;
+    text-decoration-thickness: 0.5pt !important;
+    text-decoration-color: #000 !important;
+    text-underline-offset: 1.5pt !important;
+  }
+  /* 強調の中に <sub>/<sup>（化学式の添字）が入っても太字・黒を保つ */
+  .learning-content strong u sub,
+  .learning-content strong u sup,
+  .learning-content u:not(.q) sub,
+  .learning-content u:not(.q) sup {
+    color: #000 !important;
+    font-weight: 900 !important;
   }
 
   /* 強調：網かけは白黒で潰れるので、下線＋太字に置き換える */
   .learning-content mark {
     background: none !important;
     color: #000 !important;
-    font-weight: 800 !important;
-    border-bottom: 1.5pt solid #000 !important;
+    font-weight: 900 !important;
+    text-decoration: underline !important;
+    text-decoration-thickness: 1.6pt !important;
+    text-decoration-color: #000 !important;
     padding: 0 !important;
     border-radius: 0 !important;
-  }
-  .learning-content u.wavy,
-  .learning-content strong u.wavy {
-    text-decoration: underline !important;
-    text-decoration-style: dotted !important;
-    text-decoration-thickness: 1pt !important;
   }
 
   /* リンクは紙では下線だけ（URLは出さない：本文が読みにくくなるため） */

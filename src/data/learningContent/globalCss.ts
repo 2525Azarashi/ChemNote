@@ -654,9 +654,68 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         margin: 8px 0;
       }
 
-      .learning-content u.wavy { text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
-      .learning-content strong u { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
-      .learning-content strong u.wavy { text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+      /* ===================================================================
+         強調表記のルール（画面・印刷で共通。printCss.ts が同じ規則を
+         @media print 側でも再宣言している）
+         -------------------------------------------------------------------
+         語句（用語・化学式・数値・ラベル）
+             <strong><u>…</u></strong>            太字 ＋ 太い直線の下線（黒）
+         文章（述語をもつ言い切り・説明文）
+             <strong><u class="wavy">…</u></strong> 太字 ＋ 太い波線の下線（黒）
+         問題文の「下線部」（強調ではない）
+             <u class="q">…</u>                    細い直線の下線だけ（太字にしない）
+
+         ■ なぜ color / text-decoration-color を明示するのか
+           .learning-content は本文色に紫寄りの --lc-ink を使っている。
+           強調は「黒でしっかり」という要件なので、継承に任せず
+           文字色・線の色を両方 #000 に固定する。
+           text-decoration-color を省くと線だけ親の色を継承して
+           薄く見える（＝強調が効いていないように見える）ため。
+
+         ■ なぜ !important を付けるのか
+           セクションHTMLは自動生成で、表のセルや figcaption など
+           色を直接指定した要素の中にも強調が現れる。
+           そこに負けないよう、強調だけは最優先で通す。
+         =================================================================== */
+      /* 語句・文章に共通の土台（太字＋黒）。
+         <strong> で包み忘れた <u> 単体でも強調が消えないよう、
+         セレクタは u 側にも直接当てている。 */
+      .learning-content u:not(.q),
+      .learning-content strong u {
+        color: #000 !important;
+        font-weight: 900 !important;
+        text-decoration-color: #000 !important;
+        /* 「g」「y」の下ばらいで下線が途切れないようにする */
+        text-decoration-skip-ink: none;
+      }
+      /* 語句 ＝ 太字＋太い直線 */
+      .learning-content u:not(.wavy):not(.q),
+      .learning-content strong u:not(.wavy) {
+        text-decoration-line: underline !important;
+        text-decoration-style: solid !important;
+        text-decoration-thickness: 3px !important;
+        text-underline-offset: 3px;
+      }
+      /* 文章 ＝ 太字＋太い波線 */
+      .learning-content u.wavy,
+      .learning-content strong u.wavy {
+        text-decoration-line: underline !important;
+        text-decoration-style: wavy !important;
+        text-decoration-thickness: 3px !important;
+        /* 波線は振幅があるので、直線より少し下げて文字と干渉させない */
+        text-underline-offset: 4px;
+      }
+      /* 問題文の「下線部」は“強調”ではなく“指示対象”。
+         太字にせず、細い線だけにして強調と区別する。 */
+      .learning-content u.q {
+        font-weight: inherit !important;
+        color: inherit !important;
+        text-decoration-line: underline !important;
+        text-decoration-style: solid !important;
+        text-decoration-thickness: 1px !important;
+        text-decoration-color: currentColor !important;
+        text-underline-offset: 2px;
+      }
       /* 本文中の強調は mol の .mbs-mark（網かけ）と同じ紫の下地にする */
       .learning-content mark {
         background: #ded6ef;

@@ -21,7 +21,7 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
           <p><strong><u>質量数と放射性同位体</u></strong></p>
           <ul>
             <li><strong><u>原子番号</u></strong>…元素ごとに決まっている陽子の数</li>
-            <li><strong><u class="wavy">質量数</u></strong>…陽子の数 ＋ 中性子の数</li>
+            <li><strong><u>質量数</u></strong>…陽子の数 ＋ 中性子の数</li>
             <li><strong><u>同位体（アイソトープ）</u></strong>…原子番号（陽子の数）が同じだが、中性子・質量数が異なる原子どうし</li>
           </ul>
         </div>
@@ -80,9 +80,9 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
             <li><strong>族</strong>…周期表の縦の列（1族～18族）　<strong><u>周期</u></strong>…周期表の横の行（第1周期～第7周期）</li>
             <li><strong><u>同族元素</u></strong>…同じ族に属する元素群</li>
             <li><strong><u>典型元素</u></strong>…周期表の1, 2, 13～18族の元素</li>
-            <li><strong><u class="wavy">遷移元素</u></strong>…周期表の3～12族の元素。すべて金属元素である。</li>
-            <li><strong><u class="wavy">金属元素</u></strong>…単体が金属光沢を持ち、電気や熱をよく導く元素</li>
-            <li><strong><u class="wavy">非金属元素</u></strong>…金属の性質を示さない元素</li>
+            <li><strong><u>遷移元素</u></strong>…周期表の3～12族の元素。すべて金属元素である。</li>
+            <li><strong><u>金属元素</u></strong>…単体が金属光沢を持ち、電気や熱をよく導く元素</li>
+            <li><strong><u>非金属元素</u></strong>…金属の性質を示さない元素</li>
           </ul>
         </div>
 
@@ -104,7 +104,7 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
             <ul>
               <li><strong>族＝縦の列</strong>（同じ族は価電子数が同じ → 性質が似る）、<strong>周期＝横の行</strong>（同じ周期は最外殻が同じ）。</li>
               <li><strong>典型元素</strong>＝1・2族と13〜18族。<strong>遷移元素</strong>＝3〜12族（すべて金属で、価電子は 1 か 2）。</li>
-              <li><strong>金属／非金属の境目</strong>は B・Si・As・Te・At を通る<u>階段状の線</u>。線の左下が金属。</li>
+              <li><strong>金属／非金属の境目</strong>は B・Si・As・Te・At を通る<strong><u>階段状の線</u></strong>。線の左下が金属。</li>
               <li>1族（H を除く）＝<strong>アルカリ金属</strong>、2族（Be・Mg を除く）＝<strong>アルカリ土類金属</strong>、17族＝<strong>ハロゲン</strong>、18族＝<strong>貴ガス</strong>。</li>
               <li><strong>常温で液体の単体は Hg（水銀）と Br₂（臭素）だけ</strong>。位置も一緒に押さえる。</li>
             </ul>
@@ -120,8 +120,8 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
           <ul>
             <li><strong><u>電子殻</u></strong>…電子が存在する原子核を取り囲むいくつかの層（原子核に近い順からK殻、L殻、M殻、N殻…）</li>
             <li><strong><u>電子配置</u></strong>…電子の配置のされ方・ルール</li>
-            <li><strong><u class="wavy">最外殻電子</u></strong>…原子中で、最も外側の電子殻中にある電子</li>
-            <li><strong><u class="wavy">価電子</u></strong>…互いに結びついたりするときに重要な役割を果たす最外殻電子<br>※貴ガス配置の価電子は0。それ以外は最外殻電子と同じ</li>
+            <li><strong><u>最外殻電子</u></strong>…原子中で、最も外側の電子殻中にある電子</li>
+            <li><strong><u>価電子</u></strong>…互いに結びついたりするときに重要な役割を果たす最外殻電子<br>※貴ガス配置の価電子は0。それ以外は最外殻電子と同じ</li>
           </ul>
         </div>
 
@@ -135,16 +135,16 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
         </div>
 
         <figure style="text-align:center;margin:24px 0;padding:18px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<svg viewBox="0 0 800 460" xmlns="http://www.w3.org/2000/svg" style="max-width:760px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:6px;">
+<svg class="lcfig lcfig-1-2-1" viewBox="0 0 800 460" xmlns="http://www.w3.org/2000/svg" style="max-width:760px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:6px;">
   <style>
-    .learning-content .title {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
-    .learning-content .name {font:bold 13px sans-serif;fill:#222;text-anchor:middle}
-    .learning-content .nuc {font:bold 13px sans-serif;fill:#fff;text-anchor:middle;dominant-baseline:central}
-    .learning-content .shell {font:11px sans-serif;fill:#888;text-anchor:middle}
-    .learning-content .lbl {font:11px sans-serif;fill:#555;text-anchor:middle}
-    .learning-content .e {fill:#e74c3c;stroke:#a93226;stroke-width:0.5}
-    .learning-content .orbit {fill:none;stroke:#bbb;stroke-width:1;stroke-dasharray:3 2}
-    .learning-content .nucleus {fill:#16538a}
+    .learning-content .lcfig-1-2-1 .title {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
+    .learning-content .lcfig-1-2-1 .name {font:bold 13px sans-serif;fill:#222;text-anchor:middle}
+    .learning-content .lcfig-1-2-1 .nuc {font:bold 13px sans-serif;fill:#fff;text-anchor:middle;dominant-baseline:central}
+    .learning-content .lcfig-1-2-1 .shell {font:11px sans-serif;fill:#888;text-anchor:middle}
+    .learning-content .lcfig-1-2-1 .lbl {font:11px sans-serif;fill:#555;text-anchor:middle}
+    .learning-content .lcfig-1-2-1 .e {fill:#e74c3c;stroke:#a93226;stroke-width:0.5}
+    .learning-content .lcfig-1-2-1 .orbit {fill:none;stroke:#bbb;stroke-width:1;stroke-dasharray:3 2}
+    .learning-content .lcfig-1-2-1 .nucleus {fill:#16538a}
   </style>
   
   <!-- H (1個) -->
@@ -309,21 +309,21 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
     <text x="495" y="4" style="font-size:11px;fill:#555">※ K殻=最大2個、L殻=最大8個、M殻=最大8個（化学基礎範囲）</text>
   </g>
 </svg>
-<figcaption style="font-size:0.9em;color:#5d7a8d;margin-top:12px;line-height:1.5;"><strong><u>🔬 主な原子の電子配置</u></strong><br><span style="font-size:0.92em;color:#7a8a96;">H・He・C・Ne・Na・Cl・Ar の電子配置。K殻（最大2個）、L殻（最大8個）、M殻に電子が順に入る。最外殻電子（橙）が<u>価電子</u>として化学的性質を決める。</span></figcaption>
+<figcaption style="font-size:0.9em;color:#5d7a8d;margin-top:12px;line-height:1.5;"><strong><u>🔬 主な原子の電子配置</u></strong><br><span style="font-size:0.92em;color:#7a8a96;">H・He・C・Ne・Na・Cl・Ar の電子配置。K殻（最大2個）、L殻（最大8個）、M殻に電子が順に入る。最外殻電子（橙）が<strong><u>価電子</u></strong>として化学的性質を決める。</span></figcaption>
 </figure>
 
         <h4>重要事項② ～イオン～</h4>
         <p>
           普通、原子は陽子の数と電子の数が等しいので電気的に中性である。<br>
-          → 原子が電子を与えたり、受け取ったりして、電気を帯びる粒子 ＝ <strong><u class="wavy">イオン</u></strong><br>
-          正の電荷をもつイオン＝<strong><u class="wavy">陽イオン</u></strong>　負の電荷をもつイオン＝<strong><u class="wavy">陰イオン</u></strong>
+          → 原子が電子を与えたり、受け取ったりして、電気を帯びる粒子 ＝ <strong><u>イオン</u></strong><br>
+          正の電荷をもつイオン＝<strong><u>陽イオン</u></strong>　負の電荷をもつイオン＝<strong><u>陰イオン</u></strong>
         </p>
 
         <div class="box box-point">
           <p><strong>イオンへのなりやすさ</strong></p>
           <ul>
-            <li>価電子の数が1～3個の原子…陽イオンになりやすい＝<strong><u class="wavy">陽性</u></strong></li>
-            <li>価電子の数が6～7個の原子…陰イオンになりやすい＝<strong><u class="wavy">陰性</u></strong></li>
+            <li>価電子の数が1～3個の原子…陽イオンになりやすい＝<strong><u>陽性</u></strong></li>
+            <li>価電子の数が6～7個の原子…陰イオンになりやすい＝<strong><u>陰性</u></strong></li>
           </ul>
           <p>＝安定した電子配置（貴ガス）を取りたい＝イオンになりたい</p>
         </div>
@@ -338,7 +338,7 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
             <td>Na<sup>+</sup>、Cl<sup>−</sup>、Fe<sup>2+</sup>、Fe<sup>3+</sup></td>
           </tr>
           <tr>
-            <td><strong><u class="wavy">多原子イオン</u></strong></td>
+            <td><strong><u>多原子イオン</u></strong></td>
             <td>
               NH<sub>4</sub><sup>+</sup>、H<sub>3</sub>O<sup>+</sup>（オキソニウムイオン）<br>
               OH<sup>−</sup>、NO<sub>3</sub><sup>−</sup>（硝酸イオン）、HCO<sub>3</sub><sup>−</sup>（炭酸水素イオン）<br>
@@ -361,12 +361,12 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
         <div class="figrow wide">
           <div class="figrow-text">
             <span class="figrow-title">電子を「捨てる」か「もらう」か</span>
-            <p>イオンができる理由はただ一つ、<strong><u>貴ガスと同じ電子配置になりたい</u></strong>からです。右の図で電子の行き先を目で追ってください。</p>
+            <p>イオンができる理由はただ一つ、<strong><u class="wavy">貴ガスと同じ電子配置になりたい</u></strong>からです。右の図で電子の行き先を目で追ってください。</p>
             <ul>
-              <li><strong>Na（11個）</strong>は最外殻の電子が1個だけ。<u>1個捨てる</u>方が近道なので <strong>Na⁺</strong>（Ne 型・10個）になる。</li>
-              <li><strong>Cl（17個）</strong>は最外殻が7個。あと<u>1個もらえば</u>8個になるので <strong>Cl⁻</strong>（Ar 型・18個）になる。</li>
+              <li><strong>Na（11個）</strong>は最外殻の電子が1個だけ。<strong><u>1個捨てる</u></strong>方が近道なので <strong>Na⁺</strong>（Ne 型・10個）になる。</li>
+              <li><strong>Cl（17個）</strong>は最外殻が7個。あと<strong><u>1個もらえば</u></strong>8個になるので <strong>Cl⁻</strong>（Ar 型・18個）になる。</li>
               <li><strong>陽イオンは元の原子より小さく</strong>（電子殻が1つ減る）、<strong>陰イオンは元の原子より大きい</strong>（電子が増えて反発する）。</li>
-              <li>イオンの電子数＝<u>原子番号 − 価数</u>（陽イオンは引く、陰イオンは足す）。多原子イオンでも合計で貴ガス配置になる。</li>
+              <li>イオンの電子数＝<strong><u>原子番号 − 価数</u></strong>（陽イオンは引く、陰イオンは足す）。多原子イオンでも合計で貴ガス配置になる。</li>
             </ul>
           </div>
           <figure class="figrow-fig">
@@ -377,11 +377,11 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
         <h4>重要事項③ ～イオン生成とエネルギー～</h4>
         <ul>
           <li><strong><u>（第一）イオン化エネルギー</u></strong>…1価の陽イオンになるときに吸収されるエネルギー</li>
-          <li><strong><u class="wavy">電子親和力</u></strong>…1価の陰イオンになるときに放出されるエネルギー</li>
+          <li><strong><u>電子親和力</u></strong>…1価の陰イオンになるときに放出されるエネルギー</li>
         </ul>
 
         <div class="box box-point">
-          <p><strong><u class="wavy">① イオン化エネルギーと電子親和力の大小</u></strong></p>
+          <p><strong><u>① イオン化エネルギーと電子親和力の大小</u></strong></p>
           <ul>
             <li>イオン化エネルギーも電子親和力も、周期表の<strong><u class="wavy">左下ほど小さく、右上ほど大きい</u></strong></li>
             <li>イオン化エネルギーが小さい方が陽イオンになりやすい</li>
@@ -392,19 +392,19 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
         </div>
 
         <div class="box box-point">
-          <p><strong><u class="wavy">② イオン化エネルギー・電子親和力の最大値</u></strong></p>
+          <p><strong><u>② イオン化エネルギー・電子親和力の最大値</u></strong></p>
           <ul>
             <li>イオン化エネルギーの最大は18族（貴ガス）。最大はヘリウム。</li>
-            <li>電子親和力の最大は17族（ハロゲン）。最大は<strong><u class="wavy">塩素</u></strong>（フッ素の方が右上だが例外。フッ素は原子半径が小さすぎて電子間の反発が強い）。</li>
+            <li>電子親和力の最大は17族（ハロゲン）。最大は<strong><u>塩素</u></strong>（フッ素の方が右上だが例外。フッ素は原子半径が小さすぎて電子間の反発が強い）。</li>
           </ul>
         </div>
 
         <div class="box box-test">
-          <p><strong><u class="wavy">価電子・イオン化エネルギー・電子親和力のグラフの見分け方</u></strong></p>
+          <p><strong><u>価電子・イオン化エネルギー・電子親和力のグラフの見分け方</u></strong></p>
           <ul>
             <li><strong>① 価電子のグラフ</strong>：徐々に増えるが貴ガスで0になる。縦軸 0～10程度（少ない）。コーンが斜めの形。</li>
-            <li><strong><u class="wavy">② イオン化エネルギーのグラフ</u></strong>：徐々に貴ガスで減少。縦軸 0～3000程度（多い）。ヘリウムが最も高い。</li>
-            <li><strong><u class="wavy">③ 電子親和力のグラフ</u></strong>：徐々にハロゲンで減少するが、塩素＞フッ素。縦軸 0～500程度（中）。塩素が最も高い。</li>
+            <li><strong><u>② イオン化エネルギーのグラフ</u></strong>：徐々に貴ガスで減少。縦軸 0～3000程度（多い）。ヘリウムが最も高い。</li>
+            <li><strong><u>③ 電子親和力のグラフ</u></strong>：徐々にハロゲンで減少するが、塩素＞フッ素。縦軸 0～500程度（中）。塩素が最も高い。</li>
           </ul>
         </div>
 
@@ -412,7 +412,7 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
           <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u class="wavy">3つのグラフは「縦軸の目盛り」と「山の形」で一発で見分けられます。</u></strong>
           ① 価電子は<strong>貴ガスで 0 に落ちる</strong>のこぎり型（縦軸 0〜8）。
           ② イオン化エネルギーは<strong>貴ガスが山の頂上</strong>で He が最大（縦軸 0〜2500 kJ/mol）。
-          ③ 電子親和力は<strong>ハロゲンが山の頂上</strong>で <u>Cl ＞ F</u>（縦軸 0〜400 kJ/mol）。<br>
+          ③ 電子親和力は<strong>ハロゲンが山の頂上</strong>で <strong><u>Cl ＞ F</u></strong>（縦軸 0〜400 kJ/mol）。<br>
           <span style="color:#6b6280;">※ ①と②は「貴ガスの位置」で真逆になるのがポイント。②のイオン化エネルギーが小さい元素（アルカリ金属）ほど陽イオンになりやすく、③の電子親和力が大きい元素（ハロゲン）ほど陰イオンになりやすい、と結びつけて覚えます。</span></p>
           <figure style="margin:0;">
             <img src="/learning_figures/fig_periodicity.svg" alt="原子番号に対する価電子数・第一イオン化エネルギー・電子親和力の周期的変化を3段のグラフで示した図（オリジナル作図）">
@@ -446,8 +446,8 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
         <div class="box box-point">
           <p><strong>イオンの大きさのまとめ</strong></p>
           <ol>
-            <li>同じ電子配置のイオン半径は、原子番号が大きくなるほど<strong><u class="wavy">小さく</u></strong>なる<br>例）O<sup>2−</sup> ＞ F<sup>−</sup> ＞ Na<sup>+</sup> ＞ Mg<sup>2+</sup> ＞ Al<sup>3+</sup></li>
-            <li>異なる電子配置（同族）のイオン半径は、原子番号が大きくなるほど<strong><u class="wavy">大きく</u></strong>なる</li>
+            <li>同じ電子配置のイオン半径は、原子番号が大きくなるほど<strong><u>小さく</u></strong>なる<br>例）O<sup>2−</sup> ＞ F<sup>−</sup> ＞ Na<sup>+</sup> ＞ Mg<sup>2+</sup> ＞ Al<sup>3+</sup></li>
+            <li>異なる電子配置（同族）のイオン半径は、原子番号が大きくなるほど<strong><u>大きく</u></strong>なる</li>
           </ol>
         </div>
 
@@ -470,7 +470,7 @@ export const SECTION_1_2_HTML = `        <h3 id="sec1-2">2. 物質の構成粒�
         </div>
 
         <div class="figfull">
-          <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u>大きさの比較は「電子殻の数」→「核の引きつける力」の2段階で判定します。</u></strong><br>
+          <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u class="wavy">大きさの比較は「電子殻の数」→「核の引きつける力」の2段階で判定します。</u></strong><br>
           ❶ <strong>電子殻の数が多いほうが大きい</strong>（同じ族なら下に行くほど大きい：Li ＜ Na ＜ K）。<br>
           ❷ 電子殻の数が同じなら、<strong>陽子が多いほど電子を強く引きつけるので小さい</strong>（同じ周期なら右に行くほど小さい：Li ＞ Be ＞ B）。<br>
           <span style="color:#6b6280;">※ だから原子半径は<strong>左下ほど大きく、右上ほど小さい</strong>。同じ Ne 型の電子配置（電子はどれも10個）で比べると、核電荷だけが効いて
