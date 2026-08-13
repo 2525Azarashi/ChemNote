@@ -194,14 +194,14 @@ export const SECTION_2_1_HTML = `        <h3 id="sec2-1">1. 物質量と化学�
         </tbody></table>
 
         <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<svg viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
+<svg class="lcfig lcfig-2-1-1" viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
   <style>
-    .learning-content .t {font:bold 17px sans-serif;fill:#16538a;text-anchor:middle}
-    .learning-content .l {font:13px sans-serif;fill:#333;text-anchor:middle}
-    .learning-content .s {font:11px sans-serif;fill:#666;text-anchor:middle}
-    .learning-content .b {fill:#fef9e7;stroke:#e67e22;stroke-width:2}
-    .learning-content .c {fill:#e8f4fb;stroke:#3498db;stroke-width:2}
-    .learning-content .ar {stroke:#c0392b;stroke-width:2;fill:none;marker-end:url(#ma)}
+    .learning-content .lcfig-2-1-1 .t {font:bold 17px sans-serif;fill:#16538a;text-anchor:middle}
+    .learning-content .lcfig-2-1-1 .l {font:13px sans-serif;fill:#333;text-anchor:middle}
+    .learning-content .lcfig-2-1-1 .s {font:11px sans-serif;fill:#666;text-anchor:middle}
+    .learning-content .lcfig-2-1-1 .b {fill:#fef9e7;stroke:#e67e22;stroke-width:2}
+    .learning-content .lcfig-2-1-1 .c {fill:#e8f4fb;stroke:#3498db;stroke-width:2}
+    .learning-content .lcfig-2-1-1 .ar {stroke:#c0392b;stroke-width:2;fill:none;marker-end:url(#ma)}
   </style>
   <defs><marker id="ma" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#c0392b"/></marker></defs>
   <text class="t" x="300" y="30">物質量 mol を中心にした単位変換</text>
@@ -249,7 +249,7 @@ export const SECTION_2_1_HTML = `        <h3 id="sec2-1">1. 物質量と化学�
         <p>化学反応式の作り方は大きく2つ：</p>
         <ul>
           <li>① <strong><u>目算法</u></strong>…化学反応式を素早く考える方法</li>
-          <li>② <strong><u class="wavy">未定係数法</u></strong>…連立方程式を用いて複雑な化学反応式を考える方法</li>
+          <li>② <strong><u>未定係数法</u></strong>…連立方程式を用いて複雑な化学反応式を考える方法</li>
         </ul>
 
         <div class="box box-point">
@@ -305,7 +305,7 @@ export const SECTION_2_1_HTML = `        <h3 id="sec2-1">1. 物質量と化学�
         </div>
 
         <div class="box box-example">
-          <p><strong><u class="wavy">例題2（未定係数法）</u></strong>　二酸化窒素と水から一酸化窒素と硝酸が得られる反応。</p>
+          <p><strong><u>例題2（未定係数法）</u></strong>　二酸化窒素と水から一酸化窒素と硝酸が得られる反応。</p>
           <details>
             <summary>💡 解答を表示</summary>
             <p>❶ aNO<sub>2</sub> + bH<sub>2</sub>O → cNO + dHNO<sub>3</sub></p>
@@ -321,7 +321,7 @@ export const SECTION_2_1_HTML = `        <h3 id="sec2-1">1. 物質量と化学�
         </ol>
 
         <div class="box box-example">
-          <p><strong><u class="wavy">例題3（イオン反応式・未定係数法）</u></strong>　Cr<sub>2</sub>O<sub>7</sub><sup>2−</sup> + H<sup>+</sup> + I<sup>−</sup> → Cr<sup>3+</sup> + H<sub>2</sub>O + I<sub>2</sub></p>
+          <p><strong><u>例題3（イオン反応式・未定係数法）</u></strong>　Cr<sub>2</sub>O<sub>7</sub><sup>2−</sup> + H<sup>+</sup> + I<sup>−</sup> → Cr<sup>3+</sup> + H<sub>2</sub>O + I<sub>2</sub></p>
           <details>
             <summary>💡 解答を表示</summary>
             <p>❶ aCr<sub>2</sub>O<sub>7</sub><sup>2−</sup> + bH<sup>+</sup> + cI<sup>−</sup> → dCr<sup>3+</sup> + eH<sub>2</sub>O + fI<sub>2</sub></p>
@@ -427,7 +427,7 @@ export const SECTION_2_1_HTML = `        <h3 id="sec2-1">1. 物質量と化学�
         </div>
 
         <div class="box box-point">
-          <p><strong><u class="wavy">溶液の調製：例 1.00 mol/L NaCl水溶液</u></strong></p>
+          <p><strong><u>溶液の調製：例 1.00 mol/L NaCl水溶液</u></strong></p>
           <ol>
             <li>NaCl 1.00 mol（58.5 g）を正確に測り取る</li>
             <li>ビーカーにNaClと少量の蒸留水を入れ、溶かす</li>
@@ -489,7 +489,7 @@ export const SECTION_2_1_HTML = `        <h3 id="sec2-1">1. 物質量と化学�
             <p>溶液を1 L（1000 cm<sup>3</sup>）とおく</p>
             <p>① 溶液の質量：1 L × 1000 cm<sup>3</sup>/L × d g/cm<sup>3</sup> ＝ 1000d g</p>
             <p>② 溶質の物質量：1000d × P/100 × 1 mol/M g ＝ 10dP/M (mol)</p>
-            <p>③ モル濃度 ＝ (10dP/M) / 1 L ＝ <strong><u class="wavy">10dP/M (mol/L)</u></strong></p>
+            <p>③ モル濃度 ＝ (10dP/M) / 1 L ＝ <strong><u>10dP/M (mol/L)</u></strong></p>
           </details>
         </div>
 

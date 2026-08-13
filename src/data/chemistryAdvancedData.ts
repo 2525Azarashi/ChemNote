@@ -15,7 +15,8 @@
  *                           … 教科書の「小単元」。アプリ上の1単元（＝大問の集まり）
  *  - `chapters[].topics`    … その小単元で扱う内容の要約
  *  - `chapters[].practiceProblems` / `miniTest`
- *                           … 問題本体。**本コミットでは空配列**（枠組みのみ先行）
+ *                           … 問題本体。収録済みの単元は末尾の `ADVANCED_PROBLEMS`
+ *                              で章IDをキーに流し込む（未収録の単元は空配列のまま）
  *
  * 並び順の方針
  *  - ユーザー指示により「ひとまず教科書順」とする。
@@ -31,6 +32,21 @@
  *    接頭辞を分けることで化学基礎の既存データを一切汚染しない。
  */
 
+import {
+  a1_1Problems,
+  a3_1Problems,
+  a3_2Problems,
+  a3_3Problems,
+  a3_4Problems,
+} from './advancedThermoProblems';
+import {
+  buildSupplement,
+  enhanceExplanation,
+  extractFlowchartSteps,
+  isStructuredExplanation,
+} from '../utils/explanationFormat';
+import { getUnitTeaching } from './unitTeaching';
+
 /** 1つの小単元（アプリ上の1単元＝大問の集まり）。化学基礎の chapter と同形。 */
 export interface AdvancedChapter {
   id: string;
@@ -40,7 +56,7 @@ export interface AdvancedChapter {
   realTitle: string;
   /** 扱う内容 */
   topics: string[];
-  /** 演習問題（現時点では未収録） */
+  /** 演習問題（収録済みの単元は ADVANCED_PROBLEMS から流し込まれる） */
   practiceProblems: any[];
   /** 小テスト（現時点では未収録） */
   miniTest: any[];
@@ -456,6 +472,61 @@ export const chemistryAdvancedData: { parts: AdvancedPart[] } = {
     },
   ],
 };
+
+// =====================================================================
+// 問題データの流し込み
+// =====================================================================
+//
+// 上の chapters は枠組みだけを持ち、practiceProblems は常に空配列で作られる。
+// 収録済みの単元は、章IDをキーにしたこのテーブルから実データを差し込む。
+// 新しい単元の問題を書いたら、ここに1行足すだけでアプリに反映される。
+//
+/** 章ID → 演習問題の配列 */
+const ADVANCED_PROBLEMS: Record<string, any[]> = {
+  // 1章① 粒子の熱運動と物質の三態
+  a1_1: a1_1Problems,
+  // 3章 化学反応とエネルギー
+  a3_1: a3_1Problems,
+  a3_2: a3_2Problems,
+  a3_3: a3_3Problems,
+  a3_4: a3_4Problems,
+};
+
+(() => {
+  for (const chapter of chemistryAdvancedData.parts.flatMap((p) => p.chapters)) {
+    const problems = ADVANCED_PROBLEMS[chapter.id];
+    if (problems && problems.length > 0) {
+      chapter.practiceProblems = problems;
+    }
+  }
+})();
+
+// ---------------------------------------------------------------------
+// 解説の自動整形
+// ---------------------------------------------------------------------
+// chemistryData.ts と同じ後処理をかけて、
+// 「解答カード → 小問ごとのアコーディオン → ココが狙われる」の体裁に揃える。
+// enhanceExplanation は冪等（整形済みマーカーで二重適用を防ぐ）なので、
+// HMR で再評価されても壊れない。
+(() => {
+  const chapters = chemistryAdvancedData.parts.flatMap((p) => p.chapters);
+  for (const chapter of chapters) {
+    const teaching = getUnitTeaching(chapter.id);
+    const problems = [...(chapter.practiceProblems || []), ...(chapter.miniTest || [])];
+    for (const problem of problems) {
+      if (!problem) continue;
+      if (typeof problem.explanation === 'string' && isStructuredExplanation(problem.explanation)) {
+        problem.explanationSupplement = buildSupplement(
+          problem,
+          teaching,
+          extractFlowchartSteps(problem.explanation),
+        );
+        continue;
+      }
+      problem.explanation = enhanceExplanation(problem, teaching);
+    }
+  }
+})();
 
 /** 分野（理論／無機／有機）の表示情報。単元選択の入口ボタンに使う。 */
 export const ADVANCED_FIELDS = [

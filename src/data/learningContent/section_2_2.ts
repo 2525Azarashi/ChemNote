@@ -50,10 +50,10 @@ export const SECTION_2_2_HTML = `        <h3 id="sec2-2">2. 酸と塩基</h3>
 
         <div class="box box-test">
           <ul>
-            <li><strong><u class="wavy">強酸</u></strong>…水溶液中でほぼ完全に電離して電離度が1に近い酸<br>→ 塩酸・硫酸・硝酸（3つ唱える！）</li>
-            <li><strong><u class="wavy">強塩基</u></strong>…水溶液中でほぼ完全に電離して電離度が1に近い塩基<br>→ 1族とMg以外の2族</li>
-            <li><strong><u class="wavy">弱酸</u></strong>…一部しか電離せず電離度が小さい酸</li>
-            <li><strong><u class="wavy">弱塩基</u></strong>…一部しか電離せず電離度が小さい塩基</li>
+            <li><strong><u>強酸</u></strong>…水溶液中でほぼ完全に電離して電離度が1に近い酸<br>→ 塩酸・硫酸・硝酸（3つ唱える！）</li>
+            <li><strong><u>強塩基</u></strong>…水溶液中でほぼ完全に電離して電離度が1に近い塩基<br>→ 1族とMg以外の2族</li>
+            <li><strong><u>弱酸</u></strong>…一部しか電離せず電離度が小さい酸</li>
+            <li><strong><u>弱塩基</u></strong>…一部しか電離せず電離度が小さい塩基</li>
           </ul>
         </div>
 
@@ -148,17 +148,17 @@ export const SECTION_2_2_HTML = `        <h3 id="sec2-2">2. 酸と塩基</h3>
         </div>
 
         <div class="box box-point">
-          <p><strong><u class="wavy">酸と塩基の水溶液を水で希釈した場合</u></strong></p>
+          <p><strong><u>酸と塩基の水溶液を水で希釈した場合</u></strong></p>
           <p>強酸・強塩基を100倍に薄めると[H<sup>+</sup>]は100倍に薄まる ＝ pHは10倍薄めると酸性の場合1大きくなり、塩基性の場合1小さくなる。</p>
           <p>※ pH＝6（酸性）で水を100倍に薄めてもpHは8にならず、pH＝7の中性で止まる。<br>※ pH＝9（塩基性）で水を1000倍に薄めてもpHは6にならず、pH＝7の中性で止まる。</p>
         </div>
 
         <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<svg viewBox="0 0 720 180" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
+<svg class="lcfig lcfig-2-2-1" viewBox="0 0 720 180" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
   <style>
-    .learning-content .t {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
-    .learning-content .n {font:bold 13px sans-serif;text-anchor:middle;fill:#222}
-    .learning-content .l {font:11px sans-serif;text-anchor:middle;fill:#444}
+    .learning-content .lcfig-2-2-1 .t {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
+    .learning-content .lcfig-2-2-1 .n {font:bold 13px sans-serif;text-anchor:middle;fill:#222}
+    .learning-content .lcfig-2-2-1 .l {font:11px sans-serif;text-anchor:middle;fill:#444}
   </style>
   <text class="t" x="360" y="25">pH スケール（0〜14）</text>
   <!-- gradient bar -->
@@ -331,7 +331,7 @@ export const SECTION_2_2_HTML = `        <h3 id="sec2-2">2. 酸と塩基</h3>
         </div>
 
         <div class="box box-point">
-          <p><strong><u class="wavy">酸化物、水酸化物、オキソ酸</u></strong></p>
+          <p><strong><u>酸化物、水酸化物、オキソ酸</u></strong></p>
           <p>❶ 酸化物の分類</p>
           <ul>
             <li>塩基性酸化物…一般に金属元素の酸化物</li>
@@ -414,17 +414,17 @@ export const SECTION_2_2_HTML = `        <h3 id="sec2-2">2. 酸と塩基</h3>
         </div>
 
         <div class="box box-memory">
-          <p><strong>共洗いの覚え方</strong>　ホールピペット<u>ト</u>とビュレット<u>ト</u>の「ト」は<u>と</u>もあらいの「と」！</p>
+          <p><strong>共洗いの覚え方</strong>　ホールピペット<strong><u>ト</u></strong>とビュレット<strong><u>ト</u></strong>の「ト」は<strong><u>と</u></strong>もあらいの「と」！</p>
         </div>
 
         <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
+<svg class="lcfig lcfig-2-2-2" viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
   <style>
-    .learning-content .t {font:bold 13px sans-serif;fill:#16538a;text-anchor:middle}
-    .learning-content .l {font:11px sans-serif;fill:#555;text-anchor:middle}
-    .learning-content .gl {fill:#d6e9f5;stroke:#16538a;stroke-width:1.5}
-    .learning-content .sol {fill:#aed6f1;opacity:0.7}
-    .learning-content .mark {stroke:#c0392b;stroke-width:1.5}
+    .learning-content .lcfig-2-2-2 .t {font:bold 13px sans-serif;fill:#16538a;text-anchor:middle}
+    .learning-content .lcfig-2-2-2 .l {font:11px sans-serif;fill:#555;text-anchor:middle}
+    .learning-content .lcfig-2-2-2 .gl {fill:#d6e9f5;stroke:#16538a;stroke-width:1.5}
+    .learning-content .lcfig-2-2-2 .sol {fill:#aed6f1;opacity:0.7}
+    .learning-content .lcfig-2-2-2 .mark {stroke:#c0392b;stroke-width:1.5}
   </style>
   <!-- メスフラスコ -->
   <g transform="translate(40,20)">
@@ -483,9 +483,9 @@ export const SECTION_2_2_HTML = `        <h3 id="sec2-2">2. 酸と塩基</h3>
         <p><strong><u>滴定曲線</u></strong>…中和滴定で加えた塩基（酸）の体積と、混合水溶液のpHとの関係を表したグラフ</p>
 
         <div class="figfull">
-          <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u>滴定曲線は「中和点の pH がどこに来るか」だけを見ます。</u></strong>
-          曲線が急に立ち上がる部分（pH ジャンプ）の<u>真ん中</u>が中和点です。<br>
-          ❶ <strong>強酸×強塩基</strong>…中和点 <strong>pH ≒ 7</strong>。ジャンプが非常に長いので<u>どちらの指示薬でも使える</u>。<br>
+          <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u class="wavy">滴定曲線は「中和点の pH がどこに来るか」だけを見ます。</u></strong>
+          曲線が急に立ち上がる部分（pH ジャンプ）の<strong><u>真ん中</u></strong>が中和点です。<br>
+          ❶ <strong>強酸×強塩基</strong>…中和点 <strong>pH ≒ 7</strong>。ジャンプが非常に長いので<strong><u class="wavy">どちらの指示薬でも使える</u></strong>。<br>
           ❷ <strong>弱酸×強塩基</strong>…中和点は<strong>塩基性側（pH ≒ 8〜9）</strong>。→ <strong>フェノールフタレイン</strong>（変色域 8.0〜9.8）。<br>
           ❸ <strong>強酸×弱塩基</strong>…中和点は<strong>酸性側（pH ≒ 5〜6）</strong>。→ <strong>メチルオレンジ</strong>（変色域 3.1〜4.4）。<br>
           <span style="color:#6b6280;">※ 中和点がずれる理由は<strong>塩の加水分解</strong>です。弱酸＋強塩基の塩（CH₃COONa など）は水に溶けると塩基性、強酸＋弱塩基の塩（NH₄Cl など）は酸性になります。
@@ -550,7 +550,7 @@ export const SECTION_2_2_HTML = `        <h3 id="sec2-2">2. 酸と塩基</h3>
         </div>
 
         <div class="figfull">
-          <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u>二段階滴定は「山が2つある滴定曲線」として見ると一気に分かります。</u></strong><br>
+          <p style="margin:0 0 12px;font-size:0.94em;line-height:1.85;"><strong><u class="wavy">二段階滴定は「山が2つある滴定曲線」として見ると一気に分かります。</u></strong><br>
           NaOH と Na₂CO₃ の混合水溶液に塩酸を加えていくと、pH ジャンプが<strong>2回</strong>起こります。<br>
           <strong>① 第1中和点（フェノールフタレイン：赤→無色）</strong>まで … NaOH の中和 ＋ Na₂CO₃ → NaHCO₃ が同時に進む。<br>
           <strong>② 第2中和点（メチルオレンジ：黄→赤）</strong>まで … 残った NaHCO₃ → NaCl ＋ H₂O ＋ CO₂ が進む。<br>

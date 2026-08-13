@@ -12,11 +12,30 @@ import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering'
 import { isAnswerCorrect } from '../utils/answerJudge';
 import { gradingCriteriaProgress, resolveGradingCriteria } from '../utils/gradingCriteria';
 import { splitQuestionLabel, answerCardMarker, buildSubQuestionList } from '../utils/questionDisplay';
-import { buildUnitKataBlock, sliceEnhancedByQuestion, questionGroupKey } from '../utils/explanationFormat';
+import {
+  buildUnitKataBlock,
+  sliceEnhancedByQuestion,
+  sliceEnhancedBySubQuestion,
+  questionGroupKey,
+} from '../utils/explanationFormat';
 import { getUnitTeaching } from '../data/unitTeaching';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
 import { applyOverviewViewport } from '../utils/viewportControl';
+
+/**
+ * 小問アコーディオンの中で「ここから先は大問全体に共通する話」を示す仕切り。
+ *
+ * 上半分＝いま開いている小問の答えと手順、
+ * 下半分＝この大問のすべての問に関わる説明、という読み分けができるようにする。
+ * 共通部分は各アコーディオンに *複製* しているだけで、情報は1つも削っていない。
+ */
+const SHARED_DIVIDER =
+  '<div style="display:flex; align-items:center; gap:8px; margin:16px 0 8px; color:#B03A5B; opacity:0.75;">' +
+  '<span style="flex:1; height:1px; background-color:#E9688E; opacity:0.45;"></span>' +
+  '<span style="font-size:0.78em; font-weight:bold; white-space:nowrap;">ここから下は この大問に共通</span>' +
+  '<span style="flex:1; height:1px; background-color:#E9688E; opacity:0.45;"></span>' +
+  '</div>';
 
 /** 表示上の問題番号（問1/【問1】/先頭の 1 など）を消して、進捗表示に統一する。 */
 function cleanQuestionText(text: string): string {
@@ -445,7 +464,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     // 表示ルール3：右側（解答欄・採点結果）には設問文自体は含めず、
     // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
     const sqIndex = ((currentQuestion?.subQuestions || []) as any[]).indexOf(sq);
-    const displayLabel = answerCardMarker(sq, sqIndex < 0 ? 0 : sqIndex);
+    const displayLabel = answerCardMarker(sq, sqIndex < 0 ? 0 : sqIndex, currentQuestion);
 
     if (!isExpanded) {
       return (
@@ -1185,7 +1204,34 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         const enhancedText: string =
                           (question as any).explanationSupplement || question.explanation || '';
                         const questionSlices = sliceEnhancedByQuestion(enhancedText);
+                        // 小問（(ア)/(1)/a …）単位の切り出し。
+                        // 教材データのラベルは「問N」形式が少数派で、これが無いと
+                        // 全174大問のうち9割でアコーディオンを開いても解説が出てこなかった。
+                        const subSlices = sliceEnhancedBySubQuestion(enhancedText);
                         const sliceForSq = (sq: any): string => {
+                          // ① まず小問単位（こちらが大多数の問題で当たる）
+                          if (subSlices) {
+                            const key = String(sq?.id ?? '');
+                            const hit = subSlices.subs.filter((x) => x.id === key);
+                            if (hit.length > 0) {
+                              // 見出しカードはアコーディオンのタブと重複するので body 側だけを使い、
+                              // どの小問にも共通する解説（リード文・共通の思考手順）を必ず添える。
+                              // ★共通部分は複製されるだけで、削られていない★
+                              const own = hit.map((x) => x.body).join('\n');
+                              // ★並び順は「その小問の話 → 大問全体に共通する話」★
+                              // 開いた瞬間に、自分が間違えた問の答えと手順が目に入るようにする。
+                              // 共通部分を先に置くと、長い共通解説をスクロールし切って
+                              // やっと自分の問にたどり着くことになり、かえって探しにくい。
+                              if (!subSlices.shared.trim()) return own;
+                              if (!own.trim()) return subSlices.shared;
+                              // 自分の問の話と、大問全体に共通する話の境目を目で分かるようにする。
+                              // 境目が無いと、共通解説を自分の問の続きだと誤読してしまう。
+                              return `${own}\n${SHARED_DIVIDER}\n${subSlices.shared}`;
+                            }
+                            // 見出しが本文に無かった小問にも、共通部分だけは必ず届ける
+                            if (subSlices.shared.trim()) return subSlices.shared;
+                          }
+                          // ② 次に「問N」単位（従来の経路）
                           if (!questionSlices) return '';
                           const key = questionGroupKey(sq?.label);
                           if (!key) return '';
@@ -1199,7 +1245,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                           // 表示ルール3：右側の採点結果カードには設問文を再掲せず、
                           // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
                           const sqIndex = ((question?.subQuestions || []) as any[]).indexOf(sq);
-                          const displayLabel = answerCardMarker(sq, sqIndex < 0 ? 0 : sqIndex);
+                          const displayLabel = answerCardMarker(sq, sqIndex < 0 ? 0 : sqIndex, question);
 
                           return (
                             <div id={`sq-${sq.id}`} key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'border-blue-200' : 'border-[#A9CCE3]/30') : (isCorrect ? (mode === 'mini_test' ? 'border-emerald-200' : 'border-[#5BC0BE]/30') : (mode === 'mini_test' ? 'border-red-200' : 'border-[#D9A0A0]/30'))}`}>
@@ -1604,7 +1650,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                       // 要件④で「問ごとのアコーディオンの中」に解説を配れた大問だけは、
                       // ここの全文を初期状態で折りたたむ（同じ解説が二重に並ぶのを防ぐ）。
                       // ★情報は一切削らない★ ── 「全文を通して読む」で必ず開ける。
-                      const isDistributed = Boolean(sliceEnhancedByQuestion(explanationText));
+                      const isDistributed = Boolean(
+                        sliceEnhancedByQuestion(explanationText) ||
+                          sliceEnhancedBySubQuestion(explanationText),
+                      );
                       const fullOpen = fullExplanationOpen[question.id] ?? !isDistributed;
 
                       return (

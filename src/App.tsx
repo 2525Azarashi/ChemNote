@@ -29,6 +29,7 @@ import { AdvancedFieldSelection } from './components/AdvancedFieldSelection';
 import { chemistryAdvancedData, ADVANCED_FIELDS, type AdvancedFieldId } from './data/chemistryAdvancedData';
 import { chemistryData } from './data/chemistryData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
+import { useIdleReset } from './hooks/useIdleReset';
 import { useIsMobile } from './hooks/useMediaQuery';
 import { MobileViewWrapper } from './components/MobileViewWrapper';
 import { countIncomingFriendRequests } from './utils/friends';
@@ -44,6 +45,13 @@ export type AppMode = 'mini_test' | 'practice' | 'learning';
 const SELECTED_SUBJECT_KEY = 'savedSelectedSubject';
 /** 化学（発展）で最後に選んだ分野の保存キー */
 const SELECTED_FIELD_KEY = 'savedSelectedAdvancedField';
+
+/**
+ * 無操作でホーム画面に戻るまでの時間（30分）。
+ * 問題を read しながら考え込む時間を邪魔しない程度に長く取り、
+ * かつ放置された端末が学習画面のまま残らない長さにしている。
+ */
+const IDLE_RESET_MS = 30 * 60 * 1000;
 
 export default function App() {
   useGlobalClickSound();
@@ -192,6 +200,24 @@ export default function App() {
 
   const isFirstLoad = useRef(true);
 
+  /**
+   * 科目選択画面を「どこから開いたか」。科目を選んだあとの遷移先に使う。
+   *
+   *  - 'start'  … ホームの「学習を始める」から。科目を選んだら
+   *               そのまま学習モード選択へ進む（もう一度ボタンを押させない）。
+   *  - 'change' … ホームの「科目を変更」から。科目を選んだらホームへ戻る。
+   *
+   * 科目選択は必ずホームから開くので、'onboarding' は廃止した。
+   * （以前はログイン直後にも科目選択を挟んでいたため、科目選択が2回出ていた）
+   *
+   * ref ではなく state にしている理由：
+   *   この値は描画（遷移先の分岐）に使うため。ref はレンダリングを
+   *   起こさないので、ホーム→科目選択の遷移と同時に更新しても
+   *   1テンポ遅れて反映され、事故になりやすい。
+   */
+  const [subjectPickerOrigin, setSubjectPickerOrigin] =
+    useState<'start' | 'change'>('start');
+
   const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
   const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
 
@@ -211,10 +237,15 @@ export default function App() {
   // ノート風背景を全幅に広げる。mode_selection だけは従来通り中央寄せ＋余白を維持。
   const isFullBleed = appState !== 'mode_selection';
 
-  /** 科目を選び終えたら、その科目のホーム（学習ダッシュボード）へ進む */
+  /**
+   * 科目を選び終えたときの遷移先。
+   *  - ホームの「学習を始める」から来た場合 … そのまま学習モード選択へ進む
+   *    （ホームに戻してしまうと、もう一度ボタンを押させることになる）
+   *  - 「科目を変更」から来た場合 … ホーム（ダッシュボード）へ
+   */
   const handleSelectSubject = (subject: SubjectId) => {
     setSelectedSubject(subject);
-    setAppState('home');
+    setAppState(subjectPickerOrigin === 'start' ? 'mode_selection' : 'home');
   };
 
   useEffect(() => {
@@ -431,7 +462,38 @@ export default function App() {
     }
   };
 
-  const handleStart = () => setAppState('mode_selection');
+  /**
+   * -----------------------------------------------------------------
+   * 一定時間なにも操作されなかったらホーム画面へ戻す
+   * -----------------------------------------------------------------
+   * 端末を開いたまま放置されたとき、問題や解説の画面で止まったままに
+   * せず、とびら君が話しているホームに戻す。
+   *
+   * 安全のための配慮：
+   *  - すでにホームにいるときは何もしない（戻る先が同じ画面）。
+   *  - ログイン前（オンボーディング）では作動させない。
+   *    まだホームが無い状態で飛ばすと操作不能に見えるため。
+   *    科目選択は必ずホームから開くので、こちらは対象に含める。
+   *  - 解答の内容は Quiz 側が localStorage に保存しており、
+   *    ここでは画面を移すだけなので書きかけの答えは失われない。
+   *    （単元に入り直せば「続きから」再開できる）
+   */
+  const idleResetEnabled = appState !== 'home' && appState !== 'onboarding';
+
+  useIdleReset({
+    enabled: idleResetEnabled,
+    timeoutMs: IDLE_RESET_MS,
+    onIdle: () => setAppState('home'),
+  });
+
+  // ホームの「学習を始める」は、まず科目を選ばせる。
+  // 以前は学習モード選択（mode_selection）へ直行していたため、
+  // 別の科目を勉強したいときにホームの「科目を変更」を探す必要があった。
+  // 学習の入口を «科目 → モード → 単元» の一本道にそろえる。
+  const handleStart = () => {
+    setSubjectPickerOrigin('start');
+    setAppState('subject_selection');
+  };
   const handleIntro = () => setAppState('intro');
   
   const handleSelectMode = (mode: AppMode) => {
@@ -575,9 +637,21 @@ export default function App() {
             {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
 
             {/* ログイン／ゲスト開始の直後は、必ず科目選択（＝タイトル）画面を経由する */}
-            {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('subject_selection')} onGuest={() => { setIsGuest(true); setAppState('subject_selection'); }} />}
-            {appState === 'subject_selection' && <SubjectSelection onSelectSubject={handleSelectSubject} isGuest={isGuest} />}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => setAppState('subject_selection')} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'} isGuest={isGuest} />}
+            {/* ログイン／ゲスト開始の直後は、そのままホームへ入る。
+                以前はここで科目選択を挟んでいたため、
+                «ログイン → 科目選択 → ホーム → 学習を始める → 科目選択»
+                と科目選択が2回出てしまっていた。
+                科目はホームの「学習を始める」で選ぶ（初期値は化学基礎）。 */}
+            {appState === 'onboarding' && <Onboarding onComplete={() => setAppState('home')} onGuest={() => { setIsGuest(true); setAppState('home'); }} />}
+            {appState === 'subject_selection' && (
+              <SubjectSelection
+                onSelectSubject={handleSelectSubject}
+                isGuest={isGuest}
+                // 科目選択は必ずホームから開くので、常に「ホームに戻る」を出せる
+                onBack={() => setAppState('home')}
+              />
+            )}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'} isGuest={isGuest} />}
             {appState === 'leaderboard' && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
             {appState === 'logical_tree' && <LogicalTree />}

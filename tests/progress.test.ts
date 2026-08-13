@@ -8,6 +8,7 @@ import {
   markProblemSolved,
   isProblemSolved,
   countSolvedProblems,
+  countSolvedProblemsIn,
   countSolvedByChapter,
   backfillLegacyProgress,
 } from '../src/utils/progress';
@@ -128,6 +129,49 @@ describe('countSolvedByChapter', () => {
   });
 });
 
+/**
+ * -------------------------------------------------------------------
+ * countSolvedProblemsIn：科目ごとの「何問中何問」を出すための集計
+ * -------------------------------------------------------------------
+ * ホームの学習進捗を教科別に並べる際、全科目合計の countSolvedProblems を
+ * そのまま使うと「化学基礎 174問中 180問」のように分子が分母を超えてしまう。
+ * 対象の章に限って数えられることを担保する。
+ */
+describe('countSolvedProblemsIn：対象の章に限って数える', () => {
+  it('指定した章の分だけを数え、他の科目の分は混ぜない', () => {
+    // 化学基礎（c*）で3問、化学（発展 a*）で2問解いた状態
+    markProblemSolved('u', 'c1_1', 'q1', 10);
+    markProblemSolved('u', 'c1_1', 'q2', 10);
+    markProblemSolved('u', 'c2_1', 'q1', 10);
+    markProblemSolved('u', 'a1_1', 'q1', 10);
+    markProblemSolved('u', 'a2_1', 'q1', 10);
+
+    // 全科目合計は5問
+    expect(countSolvedProblems('u')).toBe(5);
+    // 化学基礎に限れば3問（化学の2問が混ざらない）
+    expect(countSolvedProblemsIn('u', ['c1_1', 'c2_1'])).toBe(3);
+    // 化学に限れば2問
+    expect(countSolvedProblemsIn('u', ['a1_1', 'a2_1'])).toBe(2);
+  });
+
+  it('対象の章が空なら 0（分母0の科目でも壊れない）', () => {
+    markProblemSolved('u', 'c1_1', 'q1', 10);
+    expect(countSolvedProblemsIn('u', [])).toBe(0);
+  });
+
+  it('未受講の章を指定しても 0 のまま（存在しない章IDを無視する）', () => {
+    markProblemSolved('u', 'c1_1', 'q1', 10);
+    expect(countSolvedProblemsIn('u', ['zzz_9'])).toBe(0);
+  });
+
+  it('Set でも配列でも同じ結果になる（Iterable を受ける）', () => {
+    markProblemSolved('u', 'c1_1', 'q1', 10);
+    markProblemSolved('u', 'c1_1', 'q2', 10);
+    expect(countSolvedProblemsIn('u', new Set(['c1_1']))).toBe(2);
+    expect(countSolvedProblemsIn('u', ['c1_1'])).toBe(2);
+  });
+});
+
 describe('backfillLegacyProgress：既存ユーザーの履歴を取りこぼさない', () => {
   const chapters = [
     {
@@ -223,12 +267,55 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
   it('Home.tsx が大問ベースの分母（miniTest＋practiceProblems）を使っている', () => {
     const src = readFileSync('src/components/Home.tsx', 'utf8');
     expect(src).toContain("from '../utils/progress'");
-    expect(src).toContain('countSolvedProblems');
+    // 科目ごとに数える版を使う（全科目合計の countSolvedProblems ではない）
+    expect(src).toContain('countSolvedProblemsIn');
     expect(src).toContain('backfillLegacyProgress');
     expect(src).toContain('c.practiceProblems?.length');
 
     // 旧実装（mini_test の answers を数える）が残っていないこと
     expect(src).not.toContain('quiz_answers_${c.id}_mini_test');
+  });
+
+  it('Home.tsx が教科ごとの進捗バーを出している（化学基礎と化学を並べる）', () => {
+    const src = readFileSync('src/components/Home.tsx', 'utf8');
+    // 科目の定義（化学基礎＝chemistryData / 化学＝getAllAdvancedChapters）
+    expect(src).toContain('subjectProgressDefs');
+    expect(src).toContain('getAllAdvancedChapters');
+    // 科目ID → { solved, total } を持ち、ループで並べていること
+    expect(src).toContain('subjectProgress');
+    expect(src).toMatch(/subjectProgressDefs\.map\(/);
+    // 全科目合計で分母を割る旧実装（単一の progressPercent）が残っていないこと
+    expect(src).not.toMatch(/const progressPercent\s*=/);
+  });
+
+  it('問題が0件の科目は「大問 0/0 問 (0%)」ではなく「準備中」と出す', () => {
+    // 問題データが0件の科目で分母0のまま数字を出すと不具合に見えるため、
+    // 「問題を準備中」という文言で伝える。
+    // （化学（発展）は演習問題の収録が始まったので、この分岐は
+    //  今後追加される他科目のための安全網として残している。）
+    const src = readFileSync('src/components/Home.tsx', 'utf8');
+    expect(src).toContain('const isEmpty = p.total === 0');
+    expect(src).toContain('問題を準備中');
+    // 分母0でゼロ除算せず 0% に落ちること（NaN% を出さない）
+    expect(src).toMatch(/p\.total > 0 \? Math\.round\(\(p\.solved \/ p\.total\) \* 100\) : 0/);
+  });
+
+  it('化学（発展）は演習問題20問が進捗の分母に入る', async () => {
+    // 出典テキスト『化学の道しるべ 理論化学 ～化学反応と熱・光エネルギー編～』の
+    // 演習1〜20 を「問題」として収録したため、化学（発展）の分母は 0 ではなく 20。
+    // まとめプリントに載せただけで問題側に入っていない、という退行を防ぐ。
+    const { getAllAdvancedChapters } = await import('../src/data/chemistryAdvancedData');
+    const chapters = getAllAdvancedChapters() as any[];
+    expect(chapters.length).toBeGreaterThan(0); // 章立ては存在する
+    const total = chapters.reduce(
+      (sum: number, c: any) => sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0),
+      0,
+    );
+    expect(total).toBe(20);
+
+    // 収録済みの単元だけに問題がぶら下がっている（他は枠のみ）
+    const withProblems = chapters.filter((c) => (c.practiceProblems?.length || 0) > 0).map((c) => c.id);
+    expect(withProblems.sort()).toEqual(['a1_1', 'a3_1', 'a3_2', 'a3_3', 'a3_4']);
   });
 
   it('総大問数が 174 問（実データと一致）', async () => {

@@ -11,7 +11,11 @@ import { getDueCount } from '../utils/reviewList';
 import { DoorMascot } from './DoorMascot';
 import { FeedbackButton } from './FeedbackButton';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
-import { backfillLegacyProgress, countSolvedProblems, countSolvedByChapter } from '../utils/progress';
+import {
+  backfillLegacyProgress,
+  countSolvedByChapter,
+  countSolvedProblemsIn,
+} from '../utils/progress';
 
 interface HomeProps {
   onStart: () => void;
@@ -61,6 +65,30 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   /** 章ID → その章で解いた大問数（「次の章」の算出に使う） */
   const [solvedByChapter, setSolvedByChapter] = useState<Record<string, number>>({});
 
+  // ===== 科目ごとの進捗（「何問中何問」を教科別に見せる） =====
+  // 従来は選択中の科目の1本だけを表示していたため、
+  // 他の科目の進み具合を見るには科目を切り替える必要があった。
+  // ここで全科目分をまとめて作り、カード内に並べて出す。
+  const subjectProgressDefs = useMemo(
+    () => [
+      {
+        id: 'chemistry_basic' as const,
+        label: '化学基礎',
+        chapters: chemistryData.parts.flatMap((p: any) => p.chapters) as any[],
+      },
+      {
+        id: 'chemistry' as const,
+        label: '化学',
+        chapters: getAllAdvancedChapters() as any[],
+      },
+    ],
+    [],
+  );
+  /** 科目ID → { solved, total } */
+  const [subjectProgress, setSubjectProgress] = useState<
+    Record<string, { solved: number; total: number }>
+  >({});
+
   useEffect(() => {
     const fetchProfileAndStats = async () => {
       try {
@@ -103,8 +131,31 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         } catch {
           /* 引き継ぎに失敗しても現在の進捗表示は続行する */
         }
-        setSolvedQuestions(Math.min(countSolvedProblems(uid), totalQuestions));
+        // 選択中の科目の進捗。
+        // countSolvedProblems は全科目の合計を返すため、そのまま使うと
+        // 「化学基礎 174問中 180問」のように分母を超えることがあった。
+        // 対象の章に限って数える countSolvedProblemsIn を使う。
+        const currentChapterIds = allChaptersList.map((c: any) => c.id);
+        setSolvedQuestions(
+          Math.min(countSolvedProblemsIn(uid, currentChapterIds), totalQuestions),
+        );
         setSolvedByChapter(countSolvedByChapter(uid));
+
+        // 科目ごとの進捗（教科別に「何問中何問」を並べて出すため）
+        const perSubject: Record<string, { solved: number; total: number }> = {};
+        subjectProgressDefs.forEach((def) => {
+          const total = def.chapters.reduce(
+            (sum: number, c: any) =>
+              sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0),
+            0,
+          );
+          const solved = Math.min(
+            countSolvedProblemsIn(uid, def.chapters.map((c: any) => c.id)),
+            total,
+          );
+          perSubject[def.id] = { solved, total };
+        });
+        setSubjectProgress(perSubject);
 
         // completed chapters（次の章を求めるために継続利用）
         const completed = JSON.parse(localStorage.getItem(`completed_${uid}`) || '[]');
@@ -116,7 +167,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
     };
 
     fetchProfileAndStats();
-  }, [isGuest, allChaptersList, totalQuestions]);
+  }, [isGuest, allChaptersList, totalQuestions, subjectProgressDefs]);
 
   const todayStr = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' });
   const todayFormatted = todayStr.replace(/\//g, '.');
@@ -124,7 +175,6 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   // 共通テストまでの残り日数
   const daysUntilExam = useMemo(() => getDaysUntilExam(), []);
 
-  const progressPercent = totalQuestions > 0 ? Math.round((solvedQuestions / totalQuestions) * 100) : 0;
 
   // 「次の章」を算出（学習進捗カードの状況別コピー用）
   // 大問をすべて解き終えた章は飛ばし、まだ残っている最初の章を提示する。
@@ -306,25 +356,78 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   </p>
                 )}
               </div>
-              <div>
-                <div
-                  role="progressbar"
-                  aria-label="学習進捗"
-                  aria-valuenow={progressPercent}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuetext={`大問 ${solvedQuestions} / ${totalQuestions} 問クリア（${progressPercent}%）`}
-                  className="w-full bg-[#FBE0E9] rounded-full h-2.5 mb-3 overflow-hidden shadow-inner flex-shrink-0"
-                >
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progressPercent}%` }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                    className="bg-gradient-to-r from-[#E8688E] to-[#D9466E] h-full rounded-full"
-                  />
-                </div>
-                {/* 単位は「大問」。小問数と混ざらないよう明記する */}
-                <p className="text-[13px] text-[#5D6D7E] font-modern text-right font-medium">大問 {solvedQuestions} / {totalQuestions} 問クリア ({progressPercent}%)</p>
+              {/* ===== 教科ごとの進捗 =====
+                  以前は選択中の科目1本だけを出していたため、他の科目の
+                  進み具合を見るには科目を切り替える必要があった。
+                  ここで全科目を縦に並べ、いま選んでいる科目を強調する。
+                  単位は「大問」（小問数と混ざらないよう明記する）。 */}
+              <div className="space-y-3">
+                {subjectProgressDefs.map((def, i) => {
+                  const p = subjectProgress[def.id] || { solved: 0, total: 0 };
+                  const percent = p.total > 0 ? Math.round((p.solved / p.total) * 100) : 0;
+                  const isCurrent = def.id === subject;
+                  const isDone = p.total > 0 && p.solved >= p.total;
+                  // まだ問題が1問も入っていない科目（化学（発展）は章立てのみ先行実装）。
+                  // ここで「大問 0 / 0 問 (0%)」と出すと不具合に見えてしまうため、
+                  // 数字ではなく「準備中」と伝える。
+                  const isEmpty = p.total === 0;
+                  return (
+                    <div key={def.id}>
+                      <div className="flex items-baseline justify-between gap-2 mb-1">
+                        <span
+                          className={`font-modern text-[12px] md:text-[13px] flex items-center gap-1.5 ${
+                            isCurrent ? 'font-bold text-[#1B2631]' : 'font-medium text-[#7A8894]'
+                          }`}
+                        >
+                          {def.label}
+                          {isCurrent && (
+                            <span className="rounded-full bg-[#FBE0E9] px-1.5 py-0.5 text-[10px] font-bold text-[#D9466E]">
+                              選択中
+                            </span>
+                          )}
+                          {isDone && <span aria-label="全問クリア">🏆</span>}
+                        </span>
+                        <span
+                          className={`font-modern text-[12px] md:text-[13px] tabular-nums ${
+                            isEmpty
+                              ? 'font-medium text-[#A9B4BE]'
+                              : isCurrent
+                                ? 'font-bold text-[#1B2631]'
+                                : 'font-medium text-[#7A8894]'
+                          }`}
+                        >
+                          {isEmpty ? '問題を準備中' : `大問 ${p.solved} / ${p.total} 問 (${percent}%)`}
+                        </span>
+                      </div>
+                      <div
+                        role="progressbar"
+                        aria-label={`${def.label}の学習進捗`}
+                        aria-valuenow={percent}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuetext={
+                          isEmpty
+                            ? `${def.label}：問題を準備中`
+                            : `${def.label}：大問 ${p.solved} / ${p.total} 問クリア（${percent}%）`
+                        }
+                        className={`w-full bg-[#FBE0E9] rounded-full overflow-hidden shadow-inner flex-shrink-0 ${
+                          isCurrent && !isEmpty ? 'h-2.5' : 'h-1.5'
+                        } ${isEmpty ? 'opacity-60' : ''}`}
+                      >
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${percent}%` }}
+                          transition={{ duration: 1, delay: 0.5 + i * 0.12 }}
+                          className={`h-full rounded-full ${
+                            isCurrent && !isEmpty
+                              ? 'bg-gradient-to-r from-[#E8688E] to-[#D9466E]'
+                              : 'bg-[#F0AFC2]'
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </motion.div>

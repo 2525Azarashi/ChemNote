@@ -59,12 +59,90 @@ function Example({ no, question, children }: { no: string; question: React.React
   );
 }
 
+/* ---------- 解答の折りたたみ（まとめプリント本文と操作感をそろえる） ---------- */
+
+/**
+ * 「解答をすべて表示／隠す」を各パネルへ伝えるための入れもの。
+ *
+ * generation は「一括操作が押された回数」。これが変わったときだけ
+ * 各パネルの開閉を openAll にそろえ直す。こうしておくと、
+ *  - 一括で開く → その後 個別に閉じる … 閉じたままにできる
+ *  - もう一度一括で開く … generation が進むので全部開く
+ * という自然な挙動になる（openAll だけを見ていると、個別操作が
+ * 効かなかったり、再レンダリングのたびに勝手に開き直したりする）。
+ */
+const AnswerReveal = React.createContext<{ generation: number; openAll: boolean }>({
+  generation: 0,
+  openAll: false,
+});
+
+/**
+ * 解答パネル。まとめプリント本文の `.lc-ans`（utils/learningAccordion.ts が
+ * 生成する構造）と同じ見た目・同じタップ領域・同じヒント文言にそろえてある。
+ *
+ * `cursor-pointer` を付けているのは意図的で、useGlobalClickSound が
+ * `.cursor-pointer` を対象にしているため、これだけで解答を開いたときにも
+ * クリック音が鳴る（本文側と挙動がそろう）。
+ */
+function AnswerPanel({
+  label,
+  icon = '💡',
+  /** 'tool' は解答ではない補助パネル。「解答をすべて表示」の対象外にする */
+  kind = 'answer',
+  children,
+}: {
+  label: React.ReactNode;
+  icon?: string;
+  kind?: 'answer' | 'tool';
+  children: React.ReactNode;
+}) {
+  const { generation, openAll } = React.useContext(AnswerReveal);
+  const [open, setOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (kind !== 'answer') return;
+    setOpen(openAll);
+    // generation を依存に入れることで「もう一度すべて表示」を押せる
+  }, [generation, openAll, kind]);
+
+  return (
+    <details
+      className="mbs-details"
+      open={open}
+      // ネイティブの開閉を state に取り込む（React 側と DOM をずらさないため）
+      onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}
+    >
+      <summary className="mbs-details-sum cursor-pointer">
+        <span className="mbs-details-ico" aria-hidden="true">{icon}</span>
+        <span className="mbs-details-txt">{label}</span>
+        <span className="mbs-details-hint" aria-hidden="true" />
+      </summary>
+      <div className="mbs-details-body">{children}</div>
+    </details>
+  );
+}
+
+/**
+ * このセクションにある「解答」パネルの数（演習1・演習2）。
+ * 一括ボタンの表示に使う。kind="tool" のパネル（単位変換の図）は数えない。
+ * パネルを増やしたときはここも直す必要があるため、
+ * tests/molBasicsAnswerPanel.test.ts で実際の個数と一致するか検査している。
+ */
+export const MBS_ANSWER_COUNT = 2;
+
 /* ============================================================
  * 本体
  * ============================================================ */
 
 export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSectionProps) {
+  // 演習の解答をまとめて開閉する（まとめプリント本文と同じ操作を用意する）。
+  // generation は「一括操作を押した回数」。詳しくは AnswerReveal のコメント参照。
+  const [reveal, setReveal] = React.useState({ generation: 0, openAll: false });
+  const toggleAllAnswers = () =>
+    setReveal((r) => ({ generation: r.generation + 1, openAll: !r.openAll }));
+
   return (
+    <AnswerReveal.Provider value={reveal}>
     <div className="mbs-root">
       <style>{SECTION_CSS}</style>
 
@@ -85,6 +163,22 @@ export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSection
           </div>
         </div>
       )}
+
+      {/* 演習の解答を一括で開閉する。
+          「まず自力で解く」→「答え合わせで一気に開く」を1タップにする。
+          押したあとに個別で閉じてもよい（次に押すまで勝手に開き直さない）。 */}
+      <div className="mbs-toolbar">
+        <button
+          type="button"
+          className={`mbs-revealall cursor-pointer${reveal.openAll ? ' is-on' : ''}`}
+          onClick={toggleAllAnswers}
+          aria-pressed={reveal.openAll}
+        >
+          {reveal.openAll
+            ? `解答をすべて隠す（${MBS_ANSWER_COUNT}）`
+            : `解答をすべて表示（${MBS_ANSWER_COUNT}）`}
+        </button>
+      </div>
 
       {/* ==================== 重要事項② ==================== */}
       <h3 className="mbs-h3"><Tag>重要事項②</Tag>　〜物質量〜</h3>
@@ -361,17 +455,20 @@ export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSection
           M＝30.016≒<U>30</U>
         </Formula>
 
-        <details className="mbs-details">
-          <summary>この式を「単位変換の図」で作ってみる（操作用）</summary>
-          <div className="mbs-details-body">
-            <p className="mbs-p mbs-small">
-              スタートを「1mol」にして、<b>1mol＝22.4L</b> →　<b>1L＝1.34g</b>（密度）→　<b>1mol＝Mg</b>（モル質量）の
-              矢印を順にタップすると、上と同じ式ができます。
-            </p>
-            {/* initialScale は渡さない＝表示幅に自動で収める（スマホで右端が切れるのを防ぐ） */}
-            <MolUnitMap title="★ 例題6用　単位変換の図" />
-          </div>
-        </details>
+        {/* これは解答ではなく操作用の道具なので、
+            「解答をすべて表示」では開かない（kind="tool"） */}
+        <AnswerPanel
+          icon="🛠"
+          kind="tool"
+          label={<>この式を「単位変換の図」で作ってみる（操作用）</>}
+        >
+          <p className="mbs-p mbs-small">
+            スタートを「1mol」にして、<b>1mol＝22.4L</b> →　<b>1L＝1.34g</b>（密度）→　<b>1mol＝Mg</b>（モル質量）の
+            矢印を順にタップすると、上と同じ式ができます。
+          </p>
+          {/* initialScale は渡さない＝表示幅に自動で収める（スマホで右端が切れるのを防ぐ） */}
+          <MolUnitMap title="★ 例題6用　単位変換の図" />
+        </AnswerPanel>
       </Example>
 
       <hr className="mbs-hr" />
@@ -384,9 +481,7 @@ export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSection
           を求めよ。
         </p>
 
-        <details className="mbs-details">
-          <summary>💡 <Tag>演習1　解答</Tag>を表示</summary>
-          <div className="mbs-details-body">
+        <AnswerPanel label={<Tag>演習1　解答</Tag>}>
             <p className="mbs-p">問題でわかるルート（経路）を<br />　　　下の図で丸をすると右図のようになる。</p>
             <ul className="mbs-list">
               <li>アボガドロ定数をN<sub>A</sub>（/mol）</li>
@@ -416,8 +511,7 @@ export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSection
               ※ 上の「単位変換の図」で、密度の矢印を <b>d</b>、モル質量の矢印を <b>M</b>、アボガドロ定数の矢印を <b>N<sub>A</sub></b> と
               入力すれば、この式をそのまま作れます（数字を入れなくても文字式で立式できます）。
             </p>
-          </div>
-        </details>
+        </AnswerPanel>
       </section>
 
       {/* ==================== 演習2 ==================== */}
@@ -427,9 +521,7 @@ export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSection
           10.2g得られた。このとき、金属Aの原子量Mを求めなさい。
         </p>
 
-        <details className="mbs-details">
-          <summary>💡 <Tag>演習2　解答</Tag>を表示</summary>
-          <div className="mbs-details-body">
+        <AnswerPanel label={<Tag>演習2　解答</Tag>}>
             <p className="mbs-p">化学式は個、特に<U>物質量の比</U>であることを利用する。</p>
             <p className="mbs-p">
               原子量Mの金属A：5.4g　→　<span className="mbs-boxed"><strong>酸素が4.8g化合する</strong></span>　→　化合物A<sub>2</sub>O<sub>3</sub>：10.2g
@@ -449,8 +541,7 @@ export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSection
             <Formula>
               0.10mol×<Frac up="Mg" down="1mol" />＝5.4g　　　　M＝<strong>54</strong>
             </Formula>
-          </div>
-        </details>
+        </AnswerPanel>
       </section>
 
       <div className="mbs-closing">
@@ -460,6 +551,7 @@ export function MolBasicsSection({ onBack, showHeader = true }: MolBasicsSection
         </p>
       </div>
     </div>
+    </AnswerReveal.Provider>
   );
 }
 
@@ -582,9 +674,52 @@ const SECTION_CSS = `
 .mbs-list>li{margin:2px 0;}
 .mbs-list>li::before{content:'・';margin-right:2px;}
 
-.mbs-details{border:2px dashed var(--mbs-accent);border-radius:8px;padding:8px 12px;margin:12px 0;background:#fff;}
-.mbs-details>summary{font-weight:800;color:var(--mbs-accent-d);cursor:pointer;font-size:.9em;list-style:revert;}
-.mbs-details-body{padding-top:8px;border-top:1px dotted var(--mbs-line);margin-top:8px;}
+/* 折りたたみ（解答など）。まとめプリント本文（.lc-ans）と同じ挙動・同じ
+   タップ領域にそろえている。閉じているときは「押せるボタン」に見せる。 */
+.mbs-details{border:2px solid var(--mbs-line);border-radius:12px;padding:0;margin:14px 0;background:#fff;overflow:hidden;transition:border-color .18s ease,box-shadow .18s ease;}
+.mbs-details[open]{border-color:var(--mbs-accent);box-shadow:0 2px 10px rgba(124,58,237,.1);}
+.mbs-details>summary{display:flex;align-items:center;gap:8px;min-height:46px;padding:10px 14px;font-weight:800;color:var(--mbs-accent-d);background:var(--mbs-accent-l);cursor:pointer;font-size:.9em;list-style:none;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .18s ease;}
+.mbs-details>summary::-webkit-details-marker{display:none;}
+.mbs-details>summary::marker{content:'';}
+.mbs-details>summary:hover{background:#e9dcff;}
+.mbs-details>summary:focus-visible{outline:3px solid var(--mbs-accent);outline-offset:-3px;}
+.mbs-details-ico{font-size:1.05em;line-height:1;flex:0 0 auto;}
+.mbs-details-txt{flex:1 1 auto;min-width:0;}
+/* 開閉状態を右端に文字で出す（三角だけだと気づかれにくいため）。
+   本文側（.lc-ans-hint）と同じ文言・同じ位置にそろえている。 */
+.mbs-details-hint{flex:0 0 auto;font-size:.82em;font-weight:800;letter-spacing:.02em;color:var(--mbs-accent);white-space:nowrap;}
+.mbs-details>summary>.mbs-details-hint::after{content:'タップして表示 ▼';}
+.mbs-details[open]>summary>.mbs-details-hint::after{content:'閉じる ▲';}
+.mbs-details-body{padding:12px 14px 14px;margin-top:0;border-top:1px dotted var(--mbs-line);}
+@media (prefers-reduced-motion: no-preference){
+  .mbs-details[open]>.mbs-details-body{animation:mbsAnsReveal .22s ease-out both;}
+}
+@keyframes mbsAnsReveal{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+@media (max-width:640px){
+  .mbs-details>summary{min-height:52px;font-size:.95em;padding:12px;}
+  /* スマホでは文言を短くして折り返しを防ぐ（本文側と同じ扱い） */
+  .mbs-details>summary>.mbs-details-hint::after{content:'▼';}
+  .mbs-details[open]>summary>.mbs-details-hint::after{content:'▲';}
+}
+
+/* 解答の一括開閉ボタン */
+.mbs-toolbar{display:flex;justify-content:flex-end;margin:0 0 4px;}
+.mbs-revealall{
+  display:inline-flex;align-items:center;gap:6px;min-height:40px;
+  border:2px solid var(--mbs-line);border-radius:12px;background:#fff;
+  color:var(--mbs-accent-d);padding:8px 12px;font-size:.78em;font-weight:800;
+  font-family:inherit;cursor:pointer;transition:background .18s ease,border-color .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.mbs-revealall::before{content:'👁';font-weight:400;}
+.mbs-revealall:hover{background:var(--mbs-accent-l);}
+.mbs-revealall.is-on{background:var(--mbs-accent);border-color:var(--mbs-accent);color:#fff;}
+.mbs-revealall.is-on::before{content:'🙈';}
+.mbs-revealall.is-on:hover{background:#6d28d9;}
+.mbs-revealall:focus-visible{outline:3px solid var(--mbs-accent);outline-offset:2px;}
+@media (max-width:640px){
+  .mbs-revealall{min-height:44px;font-size:.82em;}
+}
 
 .mbs-hr{border:0;border-top:2px dotted var(--mbs-line);margin:26px 0;}
 

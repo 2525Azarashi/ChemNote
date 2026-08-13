@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, ArrowRight, Check, X, ChevronRight, BookOpen, RotateCcw, Trophy, Clock } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, X, ChevronRight, ChevronDown, BookOpen, RotateCcw, Trophy, Clock } from 'lucide-react';
 import { mockExam, MockExamQuestion } from '../data/mockExamData';
 import { formatText } from '../utils/textFormatter';
+import { ExplanationBody } from './ExplanationBody';
+import { buildUnitKataBlock } from '../utils/explanationFormat';
+import { getUnitTeaching } from '../data/unitTeaching';
+import { MOCK_EXAM_UNIT_MAP } from '../data/mockExamData';
 import { FeedbackButton } from './FeedbackButton';
 
 // 共通テスト化学基礎 予想問題の目標時間（30分 = 1800秒）
@@ -34,6 +38,10 @@ export function MockExam({ onBack }: MockExamProps) {
   });
   const [showExplanation, setShowExplanation] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
+  // 採点結果の「1問ずつのアコーディオン」で、いま開いている問（要件④）
+  const [openResultKey, setOpenResultKey] = useState<string | null>(null);
+  // 「この模試で使う思考の型」の開閉（要件①：模試につき1回だけ、採点結果の直後）
+  const [kataOpen, setKataOpen] = useState(false);
 
   // ===== 30分タイマー（スコアには影響しない、目標時間の目安表示）=====
   const [elapsedSec, setElapsedSec] = useState(0);
@@ -278,6 +286,111 @@ export function MockExam({ onBack }: MockExamProps) {
     const percentage = Math.round((correct / total) * 100);
     const grade = percentage >= 90 ? '🏆 優秀！' : percentage >= 75 ? '✨ 合格圏内！' : percentage >= 60 ? '📚 もう少し！' : '🔥 要復習！';
 
+    // 「この単元の思考の型」は模試全体で1回だけ出す（要件①）。
+    // 模試は複数単元にまたがるので、出題数がいちばん多い単元の型を代表として使う。
+    const unitCount = new Map<string, number>();
+    mockExam.questions.forEach((q) => {
+      const unit = MOCK_EXAM_UNIT_MAP[`${q.bigQuestion}-${q.questionNumber}`];
+      if (unit) unitCount.set(unit, (unitCount.get(unit) || 0) + 1);
+    });
+    const mainUnit = [...unitCount.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+    const kataBlock = buildUnitKataBlock(getUnitTeaching(mainUnit));
+
+    /**
+     * 採点結果の1行＝1問のアコーディオン。
+     *
+     * 閉じているとき：  問N(a)　❌　正解：③
+     * 開いたとき　　：  正解 → 解法の思考手順 → 詳しい解説（元データの解説をそのまま全文）
+     *
+     * ★解説文は enhanceExplanation で整形済みのものをそのまま渡している。
+     *   このコンポーネントは1文字も削っていない★
+     */
+    const renderResultRow = (
+      q: MockExamQuestion,
+      subLabel: string | undefined,
+      correctChoice: string | undefined,
+      explanation: string,
+      points: number,
+    ) => {
+      const rowKey = getAnswerKey(q, subLabel);
+      const result = isCorrect(q, subLabel);
+      const userAnswer = answers[rowKey];
+      const isOpen = openResultKey === rowKey;
+      const title = `問${q.questionNumber}${subLabel ? `(${subLabel})` : ''}`;
+
+      const mark =
+        result === true ? (
+          <span className="shrink-0 w-6 h-6 rounded-full bg-green-100 border-2 border-green-400 flex items-center justify-center">
+            <Check className="w-3.5 h-3.5 text-green-700" />
+          </span>
+        ) : result === false ? (
+          <span className="shrink-0 w-6 h-6 rounded-full bg-red-100 border-2 border-red-400 flex items-center justify-center">
+            <X className="w-3.5 h-3.5 text-red-600" />
+          </span>
+        ) : (
+          <span className="shrink-0 w-6 h-6 rounded-full bg-gray-100 border-2 border-gray-300 flex items-center justify-center text-[10px] font-bold text-gray-500">
+            −
+          </span>
+        );
+
+      const border =
+        result === true
+          ? 'border-green-300 bg-green-50/40'
+          : result === false
+            ? 'border-red-300 bg-red-50/40'
+            : 'border-gray-200 bg-gray-50/60';
+
+      return (
+        <div key={rowKey} className={`border-2 rounded-xl overflow-hidden ${border}`}>
+          <button
+            type="button"
+            onClick={() => setOpenResultKey(isOpen ? null : rowKey)}
+            className="w-full flex items-center gap-2 px-3 py-2.5 text-left"
+            aria-expanded={isOpen}
+          >
+            {mark}
+            <span className="text-xs sm:text-sm font-bold text-[#2C3E50] font-handwriting shrink-0">
+              {title}
+            </span>
+            {correctChoice && (
+              <span className="text-[11px] sm:text-xs text-gray-600 font-handwriting">
+                正解：<span className="font-bold text-[#B03A5B]">{correctChoice}</span>
+              </span>
+            )}
+            {result === false && userAnswer && (
+              <span className="text-[11px] text-gray-400 font-handwriting hidden sm:inline">
+                （あなた：{userAnswer}）
+              </span>
+            )}
+            <span className="ml-auto flex items-center gap-1 text-[11px] text-gray-500 font-handwriting shrink-0">
+              <span className="hidden sm:inline">{points}点</span>
+              <ChevronDown
+                className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+              />
+            </span>
+          </button>
+
+          {isOpen && (
+            <div className="px-3 pb-3 pt-2 border-t border-gray-200 bg-white/80">
+              {/* 問題文（どの問の話かを見失わないように、開いたその場で再掲する） */}
+              <p className="text-[11px] text-gray-500 font-handwriting leading-relaxed mb-2 whitespace-pre-line">
+                {formatText(
+                  subLabel
+                    ? q.subQuestions?.find((x) => x.label === subLabel)?.questionText || q.questionText
+                    : q.questionText,
+                )}
+              </p>
+              <ExplanationBody
+                text={explanation}
+                tone="light"
+                className="text-[11px] sm:text-xs text-gray-700 font-handwriting leading-relaxed"
+              />
+            </div>
+          )}
+        </div>
+      );
+    };
+
     return (
       <div className="w-full notebook-paper rounded-2xl p-6 md:p-12 pb-safe-lg md:pb-12 min-h-[60vh] flex flex-col items-center relative font-handwriting">
         <div className="mt-8 text-center max-w-3xl w-full">
@@ -295,42 +408,70 @@ export function MockExam({ onBack }: MockExamProps) {
             {isTimeOver && <span className="text-red-500 font-bold ml-1">（時間超過）</span>}
           </div>
 
-          <div className="bg-white/80 border border-gray-200 rounded-2xl p-6 mb-6 text-left">
-            <h3 className="text-sm font-bold text-[#2C3E50] font-handwriting mb-4">各問の正誤</h3>
+          {/*
+            ★要件④⑤ 採点結果は「1問ごとのアコーディオン」にする★
+
+            従来は ◯× の丸が並ぶだけで、どこを間違えたかは分かっても
+            「なぜ間違えたのか」を知るには問題を解き直す画面まで戻る必要があった。
+            ここでは章の問題（Explanation.tsx）とまったく同じ考え方で、
+            1問を開けば ［正解］→［解法の思考手順］→［詳しい解説］が
+            その場で最後まで読める構成にする。
+            ★表示している情報は元データそのままで、要約も省略もしていない★
+          */}
+          <div className="bg-white/80 border border-gray-200 rounded-2xl p-4 sm:p-6 mb-6 text-left">
+            <h3 className="text-sm font-bold text-[#2C3E50] font-handwriting mb-1">各問の正誤と解説</h3>
+            <p className="text-[11px] text-gray-500 font-handwriting mb-4">
+              気になる問をタップすると、その問の正解と解説だけがその場で開きます。
+            </p>
+
+            {/* ★要件① この模試の思考の型は、採点結果の直後に1回だけ★ */}
+            {kataBlock && (
+              <div className="mb-4 border-2 border-[#E9688E]/35 rounded-xl overflow-hidden bg-[#FFF7FA]">
+                <button
+                  type="button"
+                  onClick={() => setKataOpen((v) => !v)}
+                  className="w-full flex items-center justify-between gap-2 px-3 py-2.5 text-left"
+                >
+                  <span className="text-xs sm:text-sm font-bold text-[#B03A5B] font-handwriting">
+                    この模試で使う思考の型
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#B03A5B] shrink-0 transition-transform ${kataOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                {kataOpen && (
+                  <div className="px-3 pb-3 border-t border-[#E9688E]/25 pt-2">
+                    <ExplanationBody
+                      text={kataBlock}
+                      tone="light"
+                      className="text-[11px] sm:text-xs text-gray-700 font-handwriting leading-relaxed"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="space-y-4">
-              {/* 第1問 */}
-              <div>
-                <p className="text-xs font-bold text-gray-500 font-handwriting mb-2">第1問（各3点）</p>
-                <div className="flex flex-wrap gap-2">
-                  {q1Questions.map((q) => {
-                    const result = isCorrect(q);
-                    return (
-                      <div key={q.questionNumber} className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold font-handwriting border-2 ${result === true ? 'bg-green-100 border-green-400 text-green-700' : result === false ? 'bg-red-100 border-red-400 text-red-700' : 'bg-gray-100 border-gray-300 text-gray-500'}`}>
-                        {result === true ? <Check className="w-4 h-4" /> : result === false ? <X className="w-4 h-4" /> : <span>問{q.questionNumber}</span>}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              {/* 第2問 */}
-              <div>
-                <p className="text-xs font-bold text-gray-500 font-handwriting mb-2">第2問</p>
-                <div className="flex flex-wrap gap-2">
-                  {q2Questions.map(q => (
-                    q.subQuestions
-                      ? q.subQuestions.map(sub => {
-                          const result = isCorrect(q, sub.label);
-                          return (
-                            <div key={`${q.questionNumber}${sub.label}`} className={`px-2 h-8 rounded-full flex items-center justify-center text-xs font-bold font-handwriting border-2 ${result === true ? 'bg-green-100 border-green-400 text-green-700' : result === false ? 'bg-red-100 border-red-400 text-red-700' : 'bg-gray-100 border-gray-300 text-gray-500'}`}>
-                              {result === true ? <Check className="w-3 h-3 mr-1" /> : result === false ? <X className="w-3 h-3 mr-1" /> : null}
-                              問{q.questionNumber}{sub.label}
-                            </div>
-                          );
-                        })
-                      : null
-                  ))}
-                </div>
-              </div>
+              {([1, 2] as const).map((big) => {
+                const list = big === 1 ? q1Questions : q2Questions;
+                if (list.length === 0) return null;
+                return (
+                  <div key={big}>
+                    <p className="text-xs font-bold text-gray-500 font-handwriting mb-2">
+                      第{big}問
+                    </p>
+                    <div className="space-y-2">
+                      {list.flatMap((q) =>
+                        q.subQuestions && q.subQuestions.length > 0
+                          ? q.subQuestions.map((sub) =>
+                              renderResultRow(q, sub.label, sub.correctChoice, sub.explanation, sub.points),
+                            )
+                          : [renderResultRow(q, undefined, q.correctChoice, q.explanation, q.points)],
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

@@ -36,7 +36,7 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
           覚え方：酸素の酸化と還元の逆が水素と電子
         </div>
 
-        <p><strong><u class="wavy">酸化数</u></strong>…化学反応において原子がどれだけ電子を受け取った・失ったかを表す数</p>
+        <p><strong><u>酸化数</u></strong>…化学反応において原子がどれだけ電子を受け取った・失ったかを表す数</p>
         <ul>
           <li>酸化数が大きくなる → 酸化の数値が大きくなる ＝ 酸化する</li>
           <li>酸化数が小さくなる → 酸化の数値が小さくなる ＝ 還元する</li>
@@ -57,8 +57,8 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         </div>
 
         <ul>
-          <li><strong><u class="wavy">酸化剤</u></strong>…相手を酸化させて、自身は還元する物質</li>
-          <li><strong><u class="wavy">還元剤</u></strong>…相手を還元させて、自身は酸化する物質</li>
+          <li><strong><u>酸化剤</u></strong>…相手を酸化させて、自身は還元する物質</li>
+          <li><strong><u>還元剤</u></strong>…相手を還元させて、自身は酸化する物質</li>
         </ul>
         <p>→ 反応の前後での酸化数の変化に注目する</p>
 
@@ -73,13 +73,13 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         </div>
 
         <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
+<svg class="lcfig lcfig-2-3-1" viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
   <style>
-    .learning-content .t {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
-    .learning-content .l {font:13px sans-serif;fill:#222;text-anchor:middle}
-    .learning-content .s {font:11px sans-serif;fill:#666;text-anchor:middle}
-    .learning-content .box1 {fill:#fdedec;stroke:#c0392b;stroke-width:2}
-    .learning-content .box2 {fill:#eafaf1;stroke:#27ae60;stroke-width:2}
+    .learning-content .lcfig-2-3-1 .t {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
+    .learning-content .lcfig-2-3-1 .l {font:13px sans-serif;fill:#222;text-anchor:middle}
+    .learning-content .lcfig-2-3-1 .s {font:11px sans-serif;fill:#666;text-anchor:middle}
+    .learning-content .lcfig-2-3-1 .box1 {fill:#fdedec;stroke:#c0392b;stroke-width:2}
+    .learning-content .lcfig-2-3-1 .box2 {fill:#eafaf1;stroke:#27ae60;stroke-width:2}
   </style>
   <text class="t" x="360" y="25">酸化数で見る 酸化還元反応</text>
   <!-- LHS -->
@@ -109,7 +109,7 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         <h5>Step 1　酸化剤・還元剤の暗記</h5>
 
         <div class="box box-point">
-          <p><strong><u class="wavy">❶ 覚えるべき酸化剤（自身の酸化数は減少）</u></strong></p>
+          <p><strong><u>❶ 覚えるべき酸化剤（自身の酸化数は減少）</u></strong></p>
           <table>
             <tbody><tr>
               <th>反応前</th>
@@ -151,7 +151,7 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         </div>
 
         <div class="box box-point">
-          <p><strong><u class="wavy">❷ 覚えるべき還元剤（自身の酸化数は増加）</u></strong></p>
+          <p><strong><u>❷ 覚えるべき還元剤（自身の酸化数は増加）</u></strong></p>
           <table>
             <tbody><tr>
               <th>反応前</th>
@@ -229,19 +229,19 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
           <p><strong>例題</strong>　硫酸酸性水溶液中で過酸化水素（H<sub>2</sub>O<sub>2</sub>）と過マンガン酸カリウム（KMnO<sub>4</sub>）が反応するとき</p>
           <details>
             <summary>💡 6ステップの解説を表示</summary>
-            <p><strong><u class="wavy">① 酸化剤・還元剤の特定</u></strong></p>
+            <p><strong><u>① 酸化剤・還元剤の特定</u></strong></p>
             <p>語呂合わせから KMnO<sub>4</sub>のほうがH<sub>2</sub>O<sub>2</sub>に比べ酸化力が強い。</p>
             <ul>
               <li>酸化剤：MnO<sub>4</sub><sup>−</sup> → Mn<sup>2+</sup></li>
               <li>還元剤：H<sub>2</sub>O<sub>2</sub> → O<sub>2</sub></li>
             </ul>
-            <p><strong><u class="wavy">② 酸素・水素以外の原子の数を合わせる</u></strong>（今回は不要）</p>
-            <p><strong><u class="wavy">③ 水（H<sub>2</sub>O）で酸素の数を合わせる</u></strong></p>
+            <p><strong><u>② 酸素・水素以外の原子の数を合わせる</u></strong>（今回は不要）</p>
+            <p><strong><u>③ 水（H<sub>2</sub>O）で酸素の数を合わせる</u></strong></p>
             <ul>
               <li>酸化剤：MnO<sub>4</sub><sup>−</sup> → Mn<sup>2+</sup> + 4H<sub>2</sub>O</li>
               <li>還元剤：H<sub>2</sub>O<sub>2</sub> → O<sub>2</sub></li>
             </ul>
-            <p><strong><u class="wavy">④ H<sup>+</sup>で水素の数を合わせる</u></strong></p>
+            <p><strong><u>④ H<sup>+</sup>で水素の数を合わせる</u></strong></p>
             <ul>
               <li>酸化剤：8H<sup>+</sup> + MnO<sub>4</sub><sup>−</sup> → Mn<sup>2+</sup> + 4H<sub>2</sub>O</li>
               <li>還元剤：H<sub>2</sub>O<sub>2</sub> → O<sub>2</sub> + 2H<sup>+</sup></li>
@@ -272,18 +272,18 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
               <li>左辺：6H<sup>+</sup>→3SO<sub>4</sub><sup>2−</sup>必要、2MnO<sub>4</sub><sup>−</sup>→2K<sup>+</sup>必要</li>
               <li>右辺：2Mn<sup>2+</sup>→2SO<sub>4</sub><sup>2−</sup>必要、余りの1つのSO<sub>4</sub><sup>2−</sup>と2K<sup>+</sup>が結合</li>
             </ul>
-            <p class="reaction"><strong><u class="wavy">3H<sub>2</sub>SO<sub>4</sub> + 2KMnO<sub>4</sub> + 5H<sub>2</sub>O<sub>2</sub> → 5O<sub>2</sub> + 2MnSO<sub>4</sub> + 8H<sub>2</sub>O + K<sub>2</sub>SO<sub>4</sub></u></strong></p>
+            <p class="reaction"><strong><u>3H<sub>2</sub>SO<sub>4</sub> + 2KMnO<sub>4</sub> + 5H<sub>2</sub>O<sub>2</sub> → 5O<sub>2</sub> + 2MnSO<sub>4</sub> + 8H<sub>2</sub>O + K<sub>2</sub>SO<sub>4</sub></u></strong></p>
           </details>
         </div>
 
         <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
+<svg class="lcfig lcfig-2-3-2" viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
   <style>
-    .learning-content .t {font:bold 14px sans-serif;fill:#fff;text-anchor:middle}
-    .learning-content .l {font:13px sans-serif;fill:#16538a}
-    .learning-content .e {font:13px sans-serif;fill:#222;text-anchor:middle}
-    .learning-content .step {fill:#16538a;stroke:#16538a}
-    .learning-content .body {fill:#eef5fa;stroke:#16538a}
+    .learning-content .lcfig-2-3-2 .t {font:bold 14px sans-serif;fill:#fff;text-anchor:middle}
+    .learning-content .lcfig-2-3-2 .l {font:13px sans-serif;fill:#16538a}
+    .learning-content .lcfig-2-3-2 .e {font:13px sans-serif;fill:#222;text-anchor:middle}
+    .learning-content .lcfig-2-3-2 .step {fill:#16538a;stroke:#16538a}
+    .learning-content .lcfig-2-3-2 .body {fill:#eef5fa;stroke:#16538a}
   </style>
   <g transform="translate(0,0)">
     <rect class="step" x="20" y="20" width="60" height="40" rx="6"/>
@@ -322,7 +322,7 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         <p><strong><u>酸化還元滴定</u></strong>…酸化剤や還元剤の濃度や物質量を求める滴定</p>
 
         <div class="box box-test">
-          <p><strong><u class="wavy">① シュウ酸 (COOH)<sub>2</sub> とKMnO<sub>4</sub>の滴定</u></strong></p>
+          <p><strong><u>① シュウ酸 (COOH)<sub>2</sub> とKMnO<sub>4</sub>の滴定</u></strong></p>
           <ol>
             <li>濃度がわかっている(COOH)<sub>2</sub>をコニカルビーカーに入れ、硫酸酸性で60～80℃に加湿する</li>
             <li>濃度がわからないKMnO<sub>4</sub>水溶液をビュレットから滴下する</li>
@@ -331,7 +331,7 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         </div>
 
         <div class="box box-point">
-          <p><strong><u class="wavy">酸化剤・還元剤の量的関係</u></strong></p>
+          <p><strong><u>酸化剤・還元剤の量的関係</u></strong></p>
           <p>酸化剤が受け取る電子（e<sup>−</sup>）の物質量 ＝ 還元剤が失う電子（e<sup>−</sup>）の物質量</p>
           <p>半反応式：</p>
           <ul>
@@ -455,11 +455,11 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         <div class="figrow rev">
           <div class="figrow-text">
             <span class="figrow-title">図で確認するボルタ電池</span>
-            <p>電池の図は<strong><u>「①どちらがイオン化傾向が大きいか → ②そこが負極 → ③電子は負極から外へ出ていく」</u></strong>の順に読みます。</p>
+            <p>電池の図は<strong><u class="wavy">「①どちらがイオン化傾向が大きいか → ②そこが負極 → ③電子は負極から外へ出ていく」</u></strong>の順に読みます。</p>
             <ul>
               <li><strong>負極＝Zn 板</strong>（イオン化傾向が大きい方が溶ける）。<strong>正極＝Cu 板</strong>。</li>
-              <li><strong>電子は Zn → 導線 → Cu</strong> の向き。<u>電流はその逆（Cu → Zn）</u>。ここを取り違える人が非常に多い。</li>
-              <li>正極では溶液中の <strong>H⁺</strong> が電子を受け取って <strong>H₂</strong> が発生する。硫酸水溶液なので <u>Cu²⁺ は存在しない</u>点に注意（Cu 板は電子の通り道でしかない）。</li>
+              <li><strong>電子は Zn → 導線 → Cu</strong> の向き。<strong><u>電流はその逆（Cu → Zn）</u></strong>。ここを取り違える人が非常に多い。</li>
+              <li>正極では溶液中の <strong>H⁺</strong> が電子を受け取って <strong>H₂</strong> が発生する。硫酸水溶液なので <strong><u class="wavy">Cu²⁺ は存在しない</u></strong>点に注意（Cu 板は電子の通り道でしかない）。</li>
               <li><strong>起電力は約 1.1 V</strong> だが、発生した H₂ が Cu 板をおおう<strong>分極</strong>のためすぐ電圧が落ちる。</li>
             </ul>
           </div>
@@ -481,20 +481,20 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         <div class="box box-point">
           <p><strong><u>ダニエル電池の効率</u></strong></p>
           <ul>
-            <li>❶ 硫酸亜鉛水溶液の濃度は、<strong><u class="wavy">小さい</u></strong>方が電池は長く持つ<br>→ Zn → Zn<sup>2+</sup> + 2e<sup>−</sup>で、濃度が濃いとZn<sup>2+</sup>が溶けづらくなる</li>
-            <li>❷ 硫酸銅水溶液の濃度は、<strong><u class="wavy">大きい</u></strong>方が電池は長く持つ<br>→ Cu<sup>2+</sup> + 2e<sup>−</sup> → Cuで、濃度がうすいとCuができづらくなる</li>
+            <li>❶ 硫酸亜鉛水溶液の濃度は、<strong><u>小さい</u></strong>方が電池は長く持つ<br>→ Zn → Zn<sup>2+</sup> + 2e<sup>−</sup>で、濃度が濃いとZn<sup>2+</sup>が溶けづらくなる</li>
+            <li>❷ 硫酸銅水溶液の濃度は、<strong><u>大きい</u></strong>方が電池は長く持つ<br>→ Cu<sup>2+</sup> + 2e<sup>−</sup> → Cuで、濃度がうすいとCuができづらくなる</li>
           </ul>
         </div>
 
         <div class="figrow rev">
           <div class="figrow-text">
             <span class="figrow-title">図で確認するダニエル電池</span>
-            <p>ボルタ電池との違いは<strong><u>電解液が2種類あり、素焼き板で仕切られている</u></strong>ことだけです。</p>
+            <p>ボルタ電池との違いは<strong><u class="wavy">電解液が2種類あり、素焼き板で仕切られている</u></strong>ことだけです。</p>
             <ul>
               <li><strong>負極側＝ZnSO₄ 水溶液に Zn 板</strong>、<strong>正極側＝CuSO₄ 水溶液に Cu 板</strong>。電子は Zn → Cu。</li>
               <li>正極では <strong>Cu²⁺ が電子を受け取って Cu が析出</strong>する（＝Cu 板が重くなる／Zn 板は軽くなる）。H₂ は発生しないので<strong>分極が起きず長持ち</strong>。</li>
               <li><strong>素焼き板</strong>は「2つの溶液が混ざるのを防ぎつつ、イオンだけを通す」役目。混ざると Cu²⁺ が直接 Zn 板に触れて電子が導線を通らなくなり、電流が取り出せない。</li>
-              <li>放電が続くと負極側は Zn²⁺ が増えて<u>正電荷が過剰</u>、正極側は Cu²⁺ が減って<u>負電荷が過剰</u>になるため、SO₄²⁻ が素焼き板を通って負極側へ移動して電気的な釣り合いを保つ。</li>
+              <li>放電が続くと負極側は Zn²⁺ が増えて<strong><u>正電荷が過剰</u></strong>、正極側は Cu²⁺ が減って<strong><u>負電荷が過剰</u></strong>になるため、SO₄²⁻ が素焼き板を通って負極側へ移動して電気的な釣り合いを保つ。</li>
             </ul>
           </div>
           <figure class="figrow-fig">
@@ -506,8 +506,8 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         <h5>③ 燃料電池</h5>
         <p>水素などの燃料と酸素などの酸化剤を用いて、化学エネルギーを取り出す装置。リン酸形燃料電池、固体高分子形燃料電池などがある。</p>
         <div class="box box-point">
-          <p>水素…H<sup>+</sup>になりたい → 電子を放出して酸化したい・<strong><u class="wavy">還元剤</u></strong></p>
-          <p>酸素（イオン化傾向にはないが）…O<sup>2−</sup>になりたい → 電子を受け取って還元したい・<strong><u class="wavy">酸化剤</u></strong></p>
+          <p>水素…H<sup>+</sup>になりたい → 電子を放出して酸化したい・<strong><u>還元剤</u></strong></p>
+          <p>酸素（イオン化傾向にはないが）…O<sup>2−</sup>になりたい → 電子を受け取って還元したい・<strong><u>酸化剤</u></strong></p>
           <p>負極：H<sub>2</sub> → 2H<sup>+</sup> + 2e<sup>−</sup>（電子を放出して酸化）</p>
           <p>正極：O<sub>2</sub> + 4H<sup>+</sup> + 4e<sup>−</sup> → 2H<sub>2</sub>O（電子を受け取って還元）</p>
           <p>全体：2H<sub>2</sub> + O<sub>2</sub> → 2H<sub>2</sub>O</p>
@@ -516,7 +516,7 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         <div class="figrow rev">
           <div class="figrow-text">
             <span class="figrow-title">図で確認する燃料電池（リン酸形）</span>
-            <p>燃料電池は<strong><u>「水素の燃焼を、熱ではなく電気として取り出す装置」</u></strong>です。反応の向きは水の電気分解の<u>ちょうど逆</u>。</p>
+            <p>燃料電池は<strong><u class="wavy">「水素の燃焼を、熱ではなく電気として取り出す装置」</u></strong>です。反応の向きは水の電気分解の<strong><u>ちょうど逆</u></strong>。</p>
             <ul>
               <li><strong>負極に H₂、正極に O₂</strong> を送り込み続ける（＝活物質を外から供給するので電極自身は減らない）。</li>
               <li>電極は<strong>多孔質（穴だらけ）</strong>で、気体と電解質と電極が触れる面積をかせいでいる。触媒には白金を使う。</li>
@@ -643,12 +643,12 @@ export const SECTION_2_3_HTML = `        <h3 id="sec2-3">3. 酸化還元反応</
         </div>
 
         <figure style="text-align:center;margin:20px 0;padding:16px;background:#fafcfe;border:1px solid #d6e4ec;border-radius:8px;">
-<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" style="max-width:720px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
+<svg class="lcfig lcfig-2-3-3" viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" style="max-width:720px;width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:4px;">
   <style>
-    .learning-content .t {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
-    .learning-content .l {font:12px sans-serif;fill:#222;text-anchor:middle}
-    .learning-content .s {font:10px sans-serif;fill:#444;text-anchor:middle}
-    .learning-content .h {font:bold 11px sans-serif;fill:#fff;text-anchor:middle}
+    .learning-content .lcfig-2-3-3 .t {font:bold 14px sans-serif;fill:#16538a;text-anchor:middle}
+    .learning-content .lcfig-2-3-3 .l {font:12px sans-serif;fill:#222;text-anchor:middle}
+    .learning-content .lcfig-2-3-3 .s {font:10px sans-serif;fill:#444;text-anchor:middle}
+    .learning-content .lcfig-2-3-3 .h {font:bold 11px sans-serif;fill:#fff;text-anchor:middle}
   </style>
   <text class="t" x="360" y="22">金属のイオン化傾向と反応性</text>
   <!-- header row labels -->

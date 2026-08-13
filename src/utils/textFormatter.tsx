@@ -1,4 +1,5 @@
 import React from 'react';
+import { sanitizeInlineHtml } from './sanitizeHtml';
 
 // 縦書き分数の HTML を生成するヘルパー。
 // 分子・分母はそのまま埋め込み、後段の化学式処理で変数（w, M など）も適切にイタリック化される。
@@ -285,5 +286,17 @@ export function formatText(text: string, highlights: string[] = []) {
     }).join('');
   }).join('');
 
-  return <span dangerouslySetInnerHTML={{ __html: htmlString }} />;
+  // ★セキュリティ上の要所★
+  // ここまでで組み立てた htmlString は dangerouslySetInnerHTML に渡すため、
+  // 「HTML として解釈されてよいもの」だけに絞り込んでから出力する。
+  //
+  // なぜ出口でサニタイズするのか
+  //   この関数には問題データ（<u> や <br/>、冪等マーカー <!--fmt-v1--> を
+  //   意図的に含む）と、生徒が解答欄に打ち込んだ文字列の両方が流れてくる。
+  //     Explanation.tsx: formatText(answers[sq.id] || '未解答')
+  //   入口で一律エスケープすると前者の表示が壊れるので、
+  //   出口で許可リスト方式に絞る形にしている。
+  //   これで <img src=x onerror=...> や <script> のような入力は
+  //   タグとして成立しなくなる（＝XSSにならない）。
+  return <span dangerouslySetInnerHTML={{ __html: sanitizeInlineHtml(htmlString) }} />;
 }

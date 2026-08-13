@@ -304,26 +304,88 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
       .learning-content .box > *:last-child {
         margin-bottom: 0;
       }
-      /* ===== 折りたたみ（解答など） ===== */
-      .learning-content details {
+      /* ===== 折りたたみ（解答など） =====
+         utils/learningAccordion.ts が描画直前に付ける
+         .lc-ans / .lc-ans-sum に対してデザインを当てている。
+         閉じているときは「押せるボタン」に見せ、開いたら
+         解答用紙のような枠に変わる、という2状態を作る。 */
+      .learning-content details.lc-ans {
         background: #fff;
-        border: 2px dashed var(--lc-accent);
-        border-radius: 8px;
-        padding: 8px 12px;
-        margin-top: 12px;
+        border: 2px solid var(--lc-line);
+        border-radius: 12px;
+        padding: 0;
+        margin-top: 14px;
+        overflow: hidden;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
       }
-      .learning-content summary {
+      .learning-content details.lc-ans[open] {
+        border-color: var(--lc-accent);
+        box-shadow: 0 2px 10px rgba(124, 58, 237, 0.1);
+      }
+      /* 見出し（ここがタップ領域。スマホでも押しやすい高さを確保する） */
+      .learning-content summary.lc-ans-sum {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 46px;
+        padding: 10px 14px;
         font-weight: 800;
-        color: var(--lc-accent-d);
-        cursor: pointer;
         font-size: 0.92em;
-        padding: 4px 0;
-        list-style: revert;
+        color: var(--lc-accent-d);
+        background: var(--lc-accent-l);
+        cursor: pointer;
+        /* ネイティブの三角マーカーは消し、右側に自作の矢印を出す */
+        list-style: none;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        transition: background 0.18s ease;
       }
-      .learning-content details[open] > summary {
-        border-bottom: 1px dotted var(--lc-line);
-        margin-bottom: 8px;
-        padding-bottom: 8px;
+      .learning-content summary.lc-ans-sum::-webkit-details-marker { display: none; }
+      .learning-content summary.lc-ans-sum::marker { content: ''; }
+      .learning-content summary.lc-ans-sum:hover { background: #e9dcff; }
+      .learning-content summary.lc-ans-sum:focus-visible {
+        outline: 3px solid var(--lc-accent);
+        outline-offset: -3px;
+      }
+      .learning-content .lc-ans-ico { font-size: 1.05em; line-height: 1; }
+      .learning-content .lc-ans-txt { flex: 1 1 auto; min-width: 0; }
+      /* 「タップして表示 ▼」／「閉じる ▲」を状態に応じて出す */
+      .learning-content .lc-ans-hint {
+        flex: 0 0 auto;
+        font-size: 0.82em;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: var(--lc-accent);
+        white-space: nowrap;
+      }
+      .learning-content details.lc-ans > summary .lc-ans-hint::after { content: 'タップして表示 ▼'; }
+      .learning-content details.lc-ans[open] > summary .lc-ans-hint::after { content: '閉じる ▲'; }
+      /* 解答本体 */
+      .learning-content details.lc-ans > *:not(summary) {
+        margin-left: 14px;
+        margin-right: 14px;
+      }
+      .learning-content details.lc-ans > *:not(summary):first-of-type { margin-top: 12px; }
+      .learning-content details.lc-ans > *:not(summary):last-child { margin-bottom: 14px; }
+      /* 開いた瞬間に中身がふわっと出る（位置ズレを感じさせないため縦方向のみ） */
+      @media (prefers-reduced-motion: no-preference) {
+        .learning-content details.lc-ans[open] > *:not(summary) {
+          animation: lcAnsReveal 0.22s ease-out both;
+        }
+      }
+      @keyframes lcAnsReveal {
+        from { opacity: 0; transform: translateY(-4px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @media (max-width: 640px) {
+        .learning-content summary.lc-ans-sum {
+          min-height: 52px;
+          font-size: 0.95em;
+          padding: 12px 12px;
+        }
+        /* スマホでは文言を短くして折り返しを防ぐ */
+        .learning-content details.lc-ans > summary .lc-ans-hint::after { content: '▼'; }
+        .learning-content details.lc-ans[open] > summary .lc-ans-hint::after { content: '▲'; }
       }
       /* ===== 式 ===== */
       .learning-content .formula {
@@ -435,7 +497,8 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
       .learning-content .figrow-text > :last-child {
         margin-bottom: 0;
       }
-      .learning-content .figrow-text .figrow-title {
+      .learning-content .figrow-text .figrow-title,
+      .learning-content .figfull > .figrow-title {
         display: inline-block;
         font-weight: 800;
         font-size: 0.94em;
@@ -519,6 +582,18 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         font-size: 0.82em;
         line-height: 1.75;
       }
+      /* .figfull の中に置いた解説文は、.figrow-text と同じ読み心地にそろえる */
+      .learning-content .figfull > p,
+      .learning-content .figfull > ul li,
+      .learning-content .figfull > ol li {
+        font-size: 0.92em;
+        line-height: 1.85;
+      }
+      .learning-content .figfull > ul,
+      .learning-content .figfull > ol {
+        margin: 8px 0 14px;
+        padding-left: 1.25em;
+      }
       /* スマホでは2カラムをやめて縦積み（文字→図の順で読ませる） */
       @media (max-width: 760px) {
         .learning-content .figrow,
@@ -579,9 +654,68 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         margin: 8px 0;
       }
 
-      .learning-content u.wavy { text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
-      .learning-content strong u { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
-      .learning-content strong u.wavy { text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+      /* ===================================================================
+         強調表記のルール（画面・印刷で共通。printCss.ts が同じ規則を
+         @media print 側でも再宣言している）
+         -------------------------------------------------------------------
+         語句（用語・化学式・数値・ラベル）
+             <strong><u>…</u></strong>            太字 ＋ 太い直線の下線（黒）
+         文章（述語をもつ言い切り・説明文）
+             <strong><u class="wavy">…</u></strong> 太字 ＋ 太い波線の下線（黒）
+         問題文の「下線部」（強調ではない）
+             <u class="q">…</u>                    細い直線の下線だけ（太字にしない）
+
+         ■ なぜ color / text-decoration-color を明示するのか
+           .learning-content は本文色に紫寄りの --lc-ink を使っている。
+           強調は「黒でしっかり」という要件なので、継承に任せず
+           文字色・線の色を両方 #000 に固定する。
+           text-decoration-color を省くと線だけ親の色を継承して
+           薄く見える（＝強調が効いていないように見える）ため。
+
+         ■ なぜ !important を付けるのか
+           セクションHTMLは自動生成で、表のセルや figcaption など
+           色を直接指定した要素の中にも強調が現れる。
+           そこに負けないよう、強調だけは最優先で通す。
+         =================================================================== */
+      /* 語句・文章に共通の土台（太字＋黒）。
+         <strong> で包み忘れた <u> 単体でも強調が消えないよう、
+         セレクタは u 側にも直接当てている。 */
+      .learning-content u:not(.q),
+      .learning-content strong u {
+        color: #000 !important;
+        font-weight: 900 !important;
+        text-decoration-color: #000 !important;
+        /* 「g」「y」の下ばらいで下線が途切れないようにする */
+        text-decoration-skip-ink: none;
+      }
+      /* 語句 ＝ 太字＋太い直線 */
+      .learning-content u:not(.wavy):not(.q),
+      .learning-content strong u:not(.wavy) {
+        text-decoration-line: underline !important;
+        text-decoration-style: solid !important;
+        text-decoration-thickness: 3px !important;
+        text-underline-offset: 3px;
+      }
+      /* 文章 ＝ 太字＋太い波線 */
+      .learning-content u.wavy,
+      .learning-content strong u.wavy {
+        text-decoration-line: underline !important;
+        text-decoration-style: wavy !important;
+        text-decoration-thickness: 3px !important;
+        /* 波線は振幅があるので、直線より少し下げて文字と干渉させない */
+        text-underline-offset: 4px;
+      }
+      /* 問題文の「下線部」は“強調”ではなく“指示対象”。
+         太字にせず、細い線だけにして強調と区別する。 */
+      .learning-content u.q {
+        font-weight: inherit !important;
+        color: inherit !important;
+        text-decoration-line: underline !important;
+        text-decoration-style: solid !important;
+        text-decoration-thickness: 1px !important;
+        text-decoration-color: currentColor !important;
+        text-underline-offset: 2px;
+      }
       /* 本文中の強調は mol の .mbs-mark（網かけ）と同じ紫の下地にする */
       .learning-content mark {
         background: #ded6ef;

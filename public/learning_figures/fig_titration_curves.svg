@@ -87,7 +87,7 @@
 <rect x="446" y="14" width="420" height="340" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.5"/>
 <rect x="458" y="26" width="396" height="26" rx="13" fill="#ffffff" stroke="none" stroke-width="0"/>
 <text x="656" y="39" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">❹ 弱酸 × 強塩基</text>
-<text x="656" y="68" class="s b" font-size="10.5" text-anchor="middle">0.1 mol/L CH₃COOH 10 mL ← 0.1 mol/L NaOH を滴下</text>
+<text x="522.66" y="68" class="s b" font-size="10.5" text-anchor="start">0.1 mol/L CH<tspan font-size="7.6" dy="2.1">3</tspan><tspan dy="-2.1">COOH 10 mL ← 0.1 mol/L NaOH を滴下</tspan></text>
 <rect x="490" y="125.99999999999999" width="354" height="18.000000000000014" rx="2" fill="#fdeaf4" stroke="none" stroke-width="0"/>
 <line x1="490" y1="125.99999999999999" x2="844" y2="125.99999999999999" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
 <line x1="490" y1="144" x2="844" y2="144" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
@@ -150,7 +150,7 @@
 <rect x="14" y="368" width="420" height="340" rx="12" fill="#faf7ff" stroke="#c9bce6" stroke-width="1.5"/>
 <rect x="26" y="380" width="396" height="26" rx="13" fill="#ffffff" stroke="none" stroke-width="0"/>
 <text x="224" y="393" class="t eb" font-size="14" text-anchor="middle" fill="#5b21b6">❸ 弱塩基 × 強酸</text>
-<text x="224" y="422" class="s b" font-size="10.5" text-anchor="middle">0.1 mol/L NH₃ 10 mL ← 0.1 mol/L HCl を滴下</text>
+<text x="105.1" y="422" class="s b" font-size="10.5" text-anchor="start">0.1 mol/L NH<tspan font-size="7.6" dy="2.1">3</tspan><tspan dy="-2.1"> 10 mL ← 0.1 mol/L HCl を滴下</tspan></text>
 <rect x="58" y="480" width="354" height="18" rx="2" fill="#fdeaf4" stroke="none" stroke-width="0"/>
 <line x1="58" y1="480" x2="412" y2="480" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
 <line x1="58" y1="498" x2="412" y2="498" stroke="#e0559a" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 3" opacity="0.8"/>
@@ -212,7 +212,7 @@
 <rect x="462" y="510" width="388" height="36" rx="8" fill="#ffffff" stroke="#9c93ab" stroke-width="1.4"/>
 <rect x="462" y="510" width="5" height="36" rx="2.5" fill="#9c93ab" stroke="none" stroke-width="0"/>
 <text x="476" y="528" class="t eb" font-size="11.5" text-anchor="start" fill="#2f2740">❷ 弱酸 × 弱塩基</text>
-<text x="624" y="528" class="t b" font-size="11" text-anchor="middle" fill="#6b6280">pH ≒ 7</text>
+<text x="624" y="528" class="t b" font-size="11" text-anchor="middle" fill="#6b6280">pH ≈ 7</text>
 <text x="838" y="528" class="t eb" font-size="11.5" text-anchor="end" fill="#9c93ab">どちらも使えない</text>
 <rect x="462" y="554" width="388" height="36" rx="8" fill="#ffffff" stroke="#e08a2a" stroke-width="1.4"/>
 <rect x="462" y="554" width="5" height="36" rx="2.5" fill="#e08a2a" stroke="none" stroke-width="0"/>

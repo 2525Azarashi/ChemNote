@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { ArrowLeft, BookOpen, Trash2, Star, RotateCw, AlertCircle } from 'lucide-react';
+import { stripHtmlToText } from '../utils/sanitizeHtml';
 
 interface NoteListProps {
   onBack: () => void;
@@ -32,12 +33,14 @@ export function NoteList({ onBack, onSelectNote }: NoteListProps) {
     fetchNotes();
   }, []);
 
-  // Simple function to strip HTML tags for preview
-  const stripHtml = (html: string) => {
-    const tmp = document.createElement('DIV');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
-  };
+  // 一覧のプレビュー用にHTMLタグを落としてテキストだけにする。
+  //
+  // ★以前は innerHTML に代入して textContent を読み出していた★
+  //   <script> は実行されないが、<img src=x onerror=...> は
+  //   HTMLの解析時に読み込みが走り onerror が発火し得る。
+  //   「テキストが欲しいだけ」なのにHTMLを評価するのは危険なので、
+  //   DOMを一切作らない共通実装（stripHtmlToText）に置き換えた。
+  const stripHtml = stripHtmlToText;
 
   // Filter notes based on current filter
   const filteredNotes = notes.filter(note => {

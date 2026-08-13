@@ -21,7 +21,7 @@ import { submitChapterScore } from '../utils/leaderboard';
 import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
 import { markProblemSolved } from '../utils/progress';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
-import { splitQuestionLabel, buildSubQuestionList } from '../utils/questionDisplay';
+import { answerCardMarker, buildSubQuestionList } from '../utils/questionDisplay';
 import { useIsDesktop } from '../hooks/useMediaQuery';
 import { auth } from '../firebase';
 
@@ -1675,8 +1675,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               // 表示ルール3：右側の解答欄カードには設問文自体は含めず、
               // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
               const sqAllIndex = ((currentQuestion?.subQuestions || []) as any[]).indexOf(sq);
-              const sqMarker = splitQuestionLabel(sq.label || '', `問${(sqAllIndex < 0 ? gIdx : sqAllIndex) + 1}`).marker
-                || `問${(sqAllIndex < 0 ? gIdx : sqAllIndex) + 1}`;
+              // (1) の中が ①② に分かれている設問では "(1)①" のように枝番まで出す。
+              // そうしないと解答欄に "(1)" が並び、今どれを入力中か分からなくなる。
+              const sqMarker = answerCardMarker(sq, sqAllIndex < 0 ? gIdx : sqAllIndex, currentQuestion);
               return (
                 <div key={sq.id} className={`flex flex-col gap-4 bg-white p-5 rounded-2xl shadow-sm border transition-all duration-250 ${
                   isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
@@ -1924,13 +1925,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         >
           <div className="max-w-2xl mx-auto flex flex-col gap-2">
             <div className="flex items-center justify-between gap-2">
-              {/* 表示ルール3：解答入力パネルにも設問マーカーのみを表示（設問文は左の問題文欄で読む） */}
+              {/* 表示ルール3：解答入力パネルにも設問マーカーのみを表示（設問文は左の問題文欄で読む）。
+                  枝番（①②）まで含めることで、入力中の設問がひと目で分かるようにする。 */}
               <span className="font-bold text-[#2C3E50] text-[13px] bg-blue-50/60 border border-[#A9CCE3]/40 px-3 py-1.5 rounded-lg truncate">
-                {formatText(
-                  focusedSub.group
-                    ? `${String(focusedSub.group).split(' ')[0]} : 係数 ${splitQuestionLabel(focusedSub.label || '', `問${focusedIndex + 1}`).marker || focusedSub.label}`
-                    : (splitQuestionLabel(focusedSub.label || '', `問${focusedIndex + 1}`).marker || `問${focusedIndex + 1}`)
-                )}
+                {formatText(answerCardMarker(focusedSub, focusedIndex, currentQuestion))}
               </span>
               <div className="flex items-center gap-1.5 shrink-0">
                 {inputNavSubs.length > 1 && (
