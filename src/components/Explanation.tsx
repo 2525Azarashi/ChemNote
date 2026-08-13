@@ -464,7 +464,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     // 表示ルール3：右側（解答欄・採点結果）には設問文自体は含めず、
     // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
     const sqIndex = ((currentQuestion?.subQuestions || []) as any[]).indexOf(sq);
-    const displayLabel = answerCardMarker(sq, sqIndex < 0 ? 0 : sqIndex);
+    const displayLabel = answerCardMarker(sq, sqIndex < 0 ? 0 : sqIndex, currentQuestion);
 
     if (!isExpanded) {
       return (
@@ -1245,7 +1245,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                           // 表示ルール3：右側の採点結果カードには設問文を再掲せず、
                           // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
                           const sqIndex = ((question?.subQuestions || []) as any[]).indexOf(sq);
-                          const displayLabel = answerCardMarker(sq, sqIndex < 0 ? 0 : sqIndex);
+                          const displayLabel = answerCardMarker(sq, sqIndex < 0 ? 0 : sqIndex, question);
 
                           return (
                             <div id={`sq-${sq.id}`} key={sq.id} className={`rounded-xl border overflow-hidden transition-all duration-300 ${isExpanded ? 'shadow-lg' : 'shadow-sm'} ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'border-blue-200' : 'border-[#A9CCE3]/30') : (isCorrect ? (mode === 'mini_test' ? 'border-emerald-200' : 'border-[#5BC0BE]/30') : (mode === 'mini_test' ? 'border-red-200' : 'border-[#D9A0A0]/30'))}`}>
