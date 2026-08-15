@@ -5,6 +5,7 @@ import { chemistryBasicTrendDataset } from '../data/trendData';
 import { chemistryAdvancedTrendDataset } from '../data/chemistryAdvancedTrendData';
 import { MntbLogo } from './MntbLogo';
 import { DoorMascot } from './DoorMascot';
+import { subjectTheme } from '../data/subjectTheme';
 
 interface ModeSelectionProps {
   onSelectMode: (mode: 'mini_test' | 'practice' | 'learning') => void;
@@ -29,6 +30,13 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
    * 空の画面へ連れていかないよう、「演習問題」だけを出す（カードの見た目は他科目と同じ）。
    */
   const isListening = subject === 'english_listening';
+  /**
+   * 科目ごとの配色。
+   * この画面はどの科目でも同じダスティローズで描かれていたため、
+   * 「今どの科目のモードを選んでいるのか」が見た目から分からなかった。
+   * 演習問題カードのアクセントを科目色にして区別できるようにする。
+   */
+  const theme = subjectTheme(subject);
   const [showOverallTrend, setShowOverallTrend] = useState(false);
 
   useEffect(() => {
@@ -50,7 +58,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
         <MntbLogo size="sm" className="absolute top-4 right-4 md:top-6 md:right-6 z-30" />
 
         <div className="flex items-center gap-2 mb-8 md:mb-12 mt-12 md:mt-0">
-          <DoorMascot showSpeech={false} size="mini" className="w-auto" />
+          <DoorMascot subject={subject} showSpeech={false} size="mini" className="w-auto" />
           <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-[#2C3E50]">
             学習モードを選択
           </h2>
@@ -78,10 +86,20 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           {/* 演習問題ボタン */}
           <button
             onClick={() => onSelectMode('practice')}
-            className="group bg-white p-6 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:border-[#D9A0A0] hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
+            className="group bg-white p-6 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
+            /* hover の枠線色は科目ごとに変わるため、Tailwind ではなく直接指定する
+               （クラス名を動的に組み立てると JIT がクラスを生成できない） */
+            style={{ borderColor: 'transparent' }}
+            onMouseEnter={(event) => { event.currentTarget.style.borderColor = theme.accent; }}
+            onMouseLeave={(event) => { event.currentTarget.style.borderColor = 'transparent'; }}
+            onFocus={(event) => { event.currentTarget.style.borderColor = theme.accent; }}
+            onBlur={(event) => { event.currentTarget.style.borderColor = 'transparent'; }}
           >
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-[#D9A0A0]/20 rounded-full flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
-              <BookOpen className="text-[#D9A0A0] w-8 h-8 md:w-10 md:h-10" />
+            <div
+              className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform"
+              style={{ backgroundColor: `${theme.accentSoft}55` }}
+            >
+              <BookOpen className="w-8 h-8 md:w-10 md:h-10" style={{ color: theme.accent }} />
             </div>
             <h3 className="text-xl md:text-2xl font-bold font-handwriting text-[#2C3E50] mb-3 md:mb-4">演習問題</h3>
             <p className="text-sm md:text-base text-gray-600 font-handwriting leading-relaxed">

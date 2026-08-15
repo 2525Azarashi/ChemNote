@@ -9,6 +9,7 @@ import { TrendModal } from './TrendModal';
 import { chemistryBasicTrendDataset } from '../data/trendData';
 import { chemistryAdvancedTrendDataset } from '../data/chemistryAdvancedTrendData';
 import { DoorMascot } from './DoorMascot';
+import { subjectTheme } from '../data/subjectTheme';
 import { MolBasicsSection } from './MolBasicsSection';
 
 interface ChapterSelectionProps {
@@ -143,6 +144,13 @@ function splitTabTitle(title: string, index: number): { kicker: string; label: s
 export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'chemistry_basic', field, fieldTitle }: ChapterSelectionProps) {
   const isAdvanced = subject === 'chemistry';
   const isListening = subject === 'english_listening';
+  /**
+   * 科目ごとの配色。
+   * これまで覈しのラベル等はすべてダスティローズ直書きだったため、
+   * 化学でもリスニングでも同じ色に見えてしまっていた。
+   * 色を動的に差し替える部分は Tailwind の JIT が拾えないので style 属性で渡す。
+   */
+  const theme = subjectTheme(subject);
 
   /**
    * 表示対象のタブ一覧。
@@ -205,18 +213,18 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
         <span className="font-handwriting">戻る</span>
       </button>
 
-      <DoorMascot showSpeech={false} size="mini" className="absolute top-3 right-4 md:top-5 md:right-6 w-auto z-10" />
+      <DoorMascot subject={subject} showSpeech={false} size="mini" className="absolute top-3 right-4 md:top-5 md:right-6 w-auto z-10" />
 
       <div className="shrink-0 text-center mb-3 mt-10 md:mt-0 font-handwriting">
         {/* 化学（発展）では、今どの分野にいるかが分かるよう分野名を添える。 */}
         {isAdvanced && fieldTitle && (
-          <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest text-[#D9A0A0]">
+          <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest" style={{ color: theme.accent }}>
             化学 ／ {fieldTitle}
           </p>
         )}
         {/* 英語リスニングでも、今どの科目にいるかを同じ位置・同じ書式で示す。 */}
         {isListening && (
-          <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest text-[#D9A0A0]">
+          <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest" style={{ color: theme.accent }}>
             英語リスニング ／ 共通テスト大問別
           </p>
         )}
@@ -258,7 +266,10 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                       : 'border-slate-200 bg-white/75 text-slate-600 hover:border-[#A9CCE3] hover:bg-white'
                   }`}
                 >
-                  <span className={`block text-[10px] font-bold leading-none ${isActive ? 'text-[#A9CCE3]' : 'text-[#D9A0A0]'}`}>
+                  <span
+                    className="block text-[10px] font-bold leading-none"
+                    style={{ color: isActive ? theme.accentSoft : theme.accent }}
+                  >
                     {chapterNumber}
                   </span>
                   <span className="mt-1 block text-xs sm:text-sm font-bold whitespace-nowrap">{shortTitle}</span>
@@ -278,7 +289,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
           >
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/70 pb-3">
               <div>
-                <p className="text-[10px] font-bold text-[#D9A0A0]">{activeGroup.partTitle}</p>
+                <p className="text-[10px] font-bold" style={{ color: theme.accent }}>{activeGroup.partTitle}</p>
                 <h3 className="mt-0.5 text-base sm:text-lg font-bold text-[#2C3E50]">{activeGroup.title}</h3>
               </div>
               {trendGroupMap[activeGroup.title] && (
@@ -361,7 +372,8 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                               <button
                                 type="button"
                                 onClick={() => onSelectChapter(chapter.id, savedIndex, true)}
-                                className="flex-1 min-w-[82px] rounded-lg bg-[#D9A0A0] px-2.5 py-1.5 text-center text-[11px] text-white transition-colors hover:bg-[#C98787] cursor-pointer"
+                                className="flex-1 min-w-[82px] rounded-lg px-2.5 py-1.5 text-center text-[11px] text-white transition-opacity hover:opacity-85 cursor-pointer"
+                                style={{ backgroundColor: theme.accent }}
                               >
                                 続きから
                               </button>

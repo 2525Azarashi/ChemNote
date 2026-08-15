@@ -55,7 +55,8 @@ export function AdvancedFieldSelection({ onSelectField, onBack }: AdvancedFieldS
         <span className="font-handwriting">戻る</span>
       </button>
 
-      <DoorMascot showSpeech={false} size="mini" className="absolute top-3 right-4 md:top-5 md:right-6 w-auto z-10" />
+      {/* この画面は化学（発展）専用なので科目を固定で渡す */}
+      <DoorMascot subject="chemistry" showSpeech={false} size="mini" className="absolute top-3 right-4 md:top-5 md:right-6 w-auto z-10" />
 
       <div className="shrink-0 text-center mb-4 mt-10 md:mt-0 font-handwriting">
         <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest text-[#D9A0A0]">CHEMISTRY</p>
