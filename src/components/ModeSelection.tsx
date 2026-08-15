@@ -15,8 +15,11 @@ interface ModeSelectionProps {
 export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic' }: ModeSelectionProps) {
   /**
    * 化学（発展）では、化学基礎専用のコンテンツ
-   * （学習インプット / 出題傾向 / 2027年度予想問題）はまだ用意していないので隠す。
+   * （出題傾向 / 2027年度予想問題）はまだ用意していないので隠す。
    * 化学基礎側の表示は一切変えない。
+   *
+   * 「学習(インプット)」だけは例外で、化学でもまとめプリントを公開済みなので
+   * 両方の科目で表示する（非表示のままだと、化学を選んだ人がプリントにたどり着けない）。
    */
   const isAdvanced = subject === 'chemistry';
   const [showOverallTrend, setShowOverallTrend] = useState(false);
@@ -46,9 +49,8 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           </h2>
         </div>
 
-        <div className={`grid grid-cols-1 gap-6 w-full max-w-3xl ${isAdvanced ? '' : 'md:grid-cols-2'}`}>
-          {/* 学習(インプット)ボタン（化学基礎のみ） */}
-          {!isAdvanced && (
+        <div className="grid grid-cols-1 gap-6 w-full max-w-3xl md:grid-cols-2">
+          {/* 学習(インプット)ボタン（化学基礎・化学の両方） */}
           <button
             onClick={() => onSelectMode('learning')}
             className="group bg-white p-6 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:border-[#F4D03F] hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
@@ -58,10 +60,11 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
             </div>
             <h3 className="text-xl md:text-2xl font-bold font-handwriting text-[#2C3E50] mb-3 md:mb-4">学習(インプット)</h3>
             <p className="text-sm md:text-base text-gray-600 font-handwriting leading-relaxed">
-              基礎知識をしっかりと身につけます。
+              {isAdvanced
+                ? 'まとめプリントで基礎知識をしっかりと身につけます。（現在は理論化学「化学反応とエネルギー」を公開中）'
+                : '基礎知識をしっかりと身につけます。'}
             </p>
           </button>
-          )}
 
           {/* 演習問題ボタン */}
           <button
@@ -78,10 +81,10 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           </button>
         </div>
 
-        {/* 化学（発展）は演習のみ。準備中のコンテンツがあることを明示する。 */}
+        {/* 化学（発展）で準備中のコンテンツがあることを明示する。 */}
         {isAdvanced && (
           <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
-            ※「学習(インプット)」「出題傾向」「予想問題」は化学基礎のみ対応です。化学は順次追加していきます。
+            ※「出題傾向」「予想問題」は化学基礎のみ対応です。化学の「学習(インプット)」は順次章を追加していきます。
           </p>
         )}
 

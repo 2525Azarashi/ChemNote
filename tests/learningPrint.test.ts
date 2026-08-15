@@ -146,7 +146,8 @@ describe('LearningViewer の印刷UI', () => {
   });
 
   it('PDFの既定ファイル名になる document.title を差し替え、後で戻す', () => {
-    expect(viewerSrc).toMatch(/document\.title\s*=\s*`化学基礎まとめプリント/);
+    // 科目名（化学基礎 / 化学）は config.label から差し込む
+    expect(viewerSrc).toMatch(/document\.title\s*=\s*`\$\{config\.label\}まとめプリント/);
     expect(viewerSrc).toMatch(/document\.title\s*=\s*prevTitle/);
   });
 
@@ -168,14 +169,86 @@ describe('LearningViewer の印刷UI', () => {
     expect(viewerSrc).toContain('日付：');
   });
 
-  it('全タブ分の印刷タイトルが用意されている', () => {
+  it('化学基礎の全タブ分の印刷タイトルが用意されている', () => {
     const ids = ['toc', "'1-1'", "'1-2'", "'1-3'", "'2-1'", "'2-2'", "'2-3'"];
     const block = viewerSrc.slice(
-      viewerSrc.indexOf('SECTION_PRINT_TITLE'),
-      viewerSrc.indexOf('const SECTION_PART_LABEL'),
+      viewerSrc.indexOf('const BASIC_PRINT_TITLE'),
+      viewerSrc.indexOf('const ADVANCED_PRINT_TITLE'),
     );
+    expect(block).not.toBe('');
     for (const id of ids) expect(block).toContain(id.replace(/'/g, ''));
     expect(block).toContain('MOL_BASICS_TAB_ID');
+  });
+});
+
+/* ==================================================================
+ * 科目切り替え（化学基礎 / 化学）
+ *
+ * ※ 「化学の方にそもそもインプットのボタンがない」という報告を受けて追加。
+ *   ・化学でも「学習(インプット)」を押せること
+ *   ・押したときに化学用の本文（熱化学）が出ること
+ * をソース上で保証する。
+ * ================================================================== */
+describe('まとめプリントの科目切り替え', () => {
+  const modeSrc = read('src/components/ModeSelection.tsx');
+  const appSrc = read('src/App.tsx');
+
+  it('★ 化学（発展）でも「学習(インプット)」ボタンを隠さない', () => {
+    // 以前は {!isAdvanced && ( でボタンごと消していた。
+    // learning を呼ぶボタンが isAdvanced で囲われていないことを見る。
+    const at = modeSrc.indexOf("onSelectMode('learning')");
+    expect(at).toBeGreaterThan(0);
+    const before = modeSrc.slice(Math.max(0, at - 400), at);
+    expect(before).not.toMatch(/\{!isAdvanced && \(\s*$/);
+  });
+
+  it('★ App から LearningViewer へ subject を渡している', () => {
+    const at = appSrc.indexOf('<LearningViewer');
+    expect(at).toBeGreaterThan(0);
+    expect(appSrc.slice(at, at + 300)).toContain('subject=');
+  });
+
+  it('★ 科目ごとの本文マップが両方定義されている', () => {
+    expect(viewerSrc).toContain('BASIC_SECTION_HTML');
+    expect(viewerSrc).toContain('ADVANCED_SECTION_HTML');
+    expect(viewerSrc).toContain('ADV_THERMO_HTML');
+  });
+
+  it('★ 化学のタブに熱化学の章が入っている', () => {
+    const block = viewerSrc.slice(
+      viewerSrc.indexOf('const ADVANCED_SECTIONS'),
+      viewerSrc.indexOf('const BASIC_SECTION_HTML'),
+    );
+    expect(block).toContain("'adv-3'");
+    expect(block).toContain('化学反応とエネルギー');
+  });
+
+  it('★ 科目名はハードコードせず config.label を使う', () => {
+    // 画面ヘッダー・印刷ヘッダー・目次見出しの3か所
+    const hits = viewerSrc.match(/\{config\.label\} まとめプリント/g) || [];
+    expect(hits.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('★ その科目に無いタブIDは目次へ落とす（空白画面を出さない）', () => {
+    // 化学基礎の '2-1' を開いたまま化学へ切り替えると、
+    // ADVANCED_SECTION_HTML に該当キーが無いため本文も目次も描かれない。
+    // 初期値と、科目が変わったときの両方でガードしている。
+    expect(viewerSrc).toMatch(/SECTIONS\.some\(s => s\.id === requestedTab\)/);
+    expect(viewerSrc).toMatch(/if \(!SECTIONS\.some\(s => s\.id === activeTab\)\) setActiveTab\('toc'\)/);
+  });
+
+  it('★ 化学（発展）の章にも印刷タイトルと部の見出しがある', () => {
+    // 印刷ヘッダーが空欄のまま出力されると配布プリントとして成立しない
+    const title = viewerSrc.slice(
+      viewerSrc.indexOf('const ADVANCED_PRINT_TITLE'),
+      viewerSrc.indexOf('const BASIC_PART_LABEL'),
+    );
+    expect(title).toContain("'adv-3'");
+    const part = viewerSrc.slice(
+      viewerSrc.indexOf('const ADVANCED_PART_LABEL'),
+      viewerSrc.indexOf('const SUBJECT_CONFIG'),
+    );
+    expect(part).toContain("'adv-3'");
   });
 });
 
@@ -206,11 +279,35 @@ const SECTION_FILES = [
   'section_2_1',
   'section_2_2',
   'section_2_3',
+  // 化学（発展）のまとめプリントも、同じ強調ルール・同じSVGスコープ規則で検査する
+  'adv_thermo',
 ] as const;
 
 const globalCssSrc = read('src/data/learningContent/globalCss.ts');
+
+/**
+ * 原稿ファイルから「本文（テンプレートリテラルの中身）」だけを取り出す。
+ *
+ * ファイル先頭の説明コメントには記法の見本として `<u>` や `<strong>` を
+ * そのまま書いている（後から章を足す人が読むための仕様書）。
+ * これをマークアップ検査に混ぜると
+ *   ・裸の <u> がある
+ *   ・開閉タグ数が合わない
+ * という誤検知になるため、`export const … = \`` 以降〜末尾のバッククォート
+ * までに範囲を絞る。検査したいのは実際に描画される HTML だけ。
+ */
+const sectionBody = (src: string): string => {
+  const at = src.indexOf('_HTML = `');
+  if (at < 0) return src;
+  const from = at + '_HTML = `'.length;
+  const to = src.lastIndexOf('`');
+  return to > from ? src.slice(from, to) : src.slice(from);
+};
+
 const sectionSrcs = new Map(
-  SECTION_FILES.map((f) => [f, read(`src/data/learningContent/${f}.ts`)] as const),
+  SECTION_FILES.map(
+    (f) => [f, sectionBody(read(`src/data/learningContent/${f}.ts`))] as const,
+  ),
 );
 
 /** `text-decoration-*` などを含むCSSブロックを取り出す */
@@ -337,7 +434,9 @@ describe('インラインSVGのスタイルはスコープされている', () =
     while ((m = re.exec(src))) {
       const styleMatch = /<style>([\s\S]*?)<\/style>/.exec(m[2]);
       if (!styleMatch) continue;
-      const scope = /class="[^"]*\b(lcfig-[0-9-]+)\b/.exec(m[1])?.[1] ?? '';
+      // スコープ名は節番号（lcfig-2-3-1）だけでなく、
+      // 化学（発展）のように英字を含む形（lcfig-adv-thermo-1）も許す。
+      const scope = /class="[^"]*\b(lcfig-[a-z0-9-]*[0-9])\b/.exec(m[1])?.[1] ?? '';
       const selectors = [...styleMatch[1].matchAll(/^\s*([^{\n]+?)\s*\{/gm)].map((s) => s[1]);
       figures.push({ file, scope, selectors });
     }

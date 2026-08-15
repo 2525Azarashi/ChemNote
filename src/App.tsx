@@ -657,7 +657,12 @@ export default function App() {
             {appState === 'logical_tree' && <LogicalTree />}
             {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'} />}
             {appState === 'mock_exam' && <MockExam onBack={() => setAppState('mode_selection')} />}
-            {appState === 'learning' && <LearningViewer onBack={() => setAppState('mode_selection')} />}
+            {appState === 'learning' && (
+              <LearningViewer
+                onBack={() => setAppState('mode_selection')}
+                subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'}
+              />
+            )}
             {/* 化学（発展）：理論化学・無機化学・有機化学の分野選択 */}
             {appState === 'advanced_fields' && (
               <AdvancedFieldSelection
