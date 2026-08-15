@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { chemistryData } from '../data/chemistryData';
 import { chemistryAdvancedData, type AdvancedFieldId } from '../data/chemistryAdvancedData';
+import { englishListeningData } from '../data/englishListeningData';
 import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
 import { TrendModal } from './TrendModal';
-import { chapterTrends } from '../data/trendData';
+import { chemistryBasicTrendDataset } from '../data/trendData';
+import { chemistryAdvancedTrendDataset } from '../data/chemistryAdvancedTrendData';
 import { DoorMascot } from './DoorMascot';
 import { MolBasicsSection } from './MolBasicsSection';
 
@@ -16,8 +18,9 @@ interface ChapterSelectionProps {
   /**
    * 表示する科目。省略時は従来どおり化学基礎。
    * 'chemistry' のときは、指定された分野（理論／無機／有機）の単元だけを表示する。
+   * 'english_listening' のときは、共通テストの大問（第1問〜第6問）を単元として表示する。
    */
-  subject?: 'chemistry_basic' | 'chemistry';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening';
   /** 科目が 'chemistry' のときに表示する分野 */
   field?: AdvancedFieldId;
   /** 分野名（画面見出しに出す。化学のときのみ） */
@@ -67,6 +70,26 @@ const realTitleToChapterGroupTitle: Record<string, string> = {
   '6章 酸化還元反応': '6章 酸化還元反応',
 };
 
+// 化学（発展）は単元 ID（a1_1 など）と章名（realTitle）が
+// そのまま傾向データ側の ID / chapterGroupTitle と一致するので、
+// 手書きの対応表を作らずデータから自動生成する。
+const advancedChapterIdToTrendUnit: Record<string, { chapterGroupTitle: string; unitId: string }> =
+  Object.fromEntries(
+    chemistryAdvancedTrendDataset.chapters.flatMap(chapter =>
+      chapter.units.map(unit => [
+        unit.id,
+        { chapterGroupTitle: chapter.chapterGroupTitle, unitId: unit.id },
+      ] as const)
+    )
+  );
+
+const advancedRealTitleToChapterGroupTitle: Record<string, string> = Object.fromEntries(
+  chemistryAdvancedTrendDataset.chapters.map(chapter => [
+    chapter.chapterGroupTitle,
+    chapter.chapterGroupTitle,
+  ])
+);
+
 /**
  * parts を「教科書の章（realTitle）」単位のタブにまとめる共通処理。
  * 化学基礎・化学（発展）のどちらも同じ構造なので、そのまま使い回せる。
@@ -94,19 +117,45 @@ function buildChapterGroups(parts: any[]) {
 /** 化学基礎のタブ（従来どおりモジュール読み込み時に一度だけ作る） */
 const chapterGroups = buildChapterGroups(chemistryData.parts as any[]);
 
+/** 英語リスニングのタブ（第1問〜第6問）。こちらも一度だけ作る。 */
+const listeningGroups = buildChapterGroups(englishListeningData.parts as any[]);
+
+/**
+ * タブに出す見出しを「小さな添え字（上段）＋ 見出し（下段）」に分解する。
+ *
+ * - 化学基礎／化学：「1章 物質の構成」→ 上段「1章」／下段「物質の構成」
+ * - 英語リスニング：「第1問」        → 上段「Q1」／下段「第1問」
+ *   （リスニングの大問には章名が無いので、上段に通し番号を置いて
+ *    デザイン（2段組みのタブ）を他科目とまったく同じに保つ）
+ */
+function splitTabTitle(title: string, index: number): { kicker: string; label: string } {
+  const chapterMatch = title.match(/^(\d+章)\s*(.*)$/);
+  if (chapterMatch) {
+    return { kicker: chapterMatch[1], label: chapterMatch[2] || title };
+  }
+  const questionMatch = title.match(/^第(\d+)問$/);
+  if (questionMatch) {
+    return { kicker: `Q${questionMatch[1]}`, label: title };
+  }
+  return { kicker: `${index + 1}章`, label: title };
+}
+
 export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'chemistry_basic', field, fieldTitle }: ChapterSelectionProps) {
   const isAdvanced = subject === 'chemistry';
+  const isListening = subject === 'english_listening';
 
   /**
    * 表示対象のタブ一覧。
-   * - 化学基礎：従来どおり全 parts
-   * - 化学    ：選択された分野（part）のみに絞る
+   * - 化学基礎      ：従来どおり全 parts
+   * - 化学          ：選択された分野（part）のみに絞る
+   * - 英語リスニング：全 parts（前半＝2回読み／後半＝1回読み）
    */
   const groups = useMemo(() => {
+    if (isListening) return listeningGroups;
     if (!isAdvanced) return chapterGroups;
     const parts = chemistryAdvancedData.parts.filter(p => !field || p.field === field);
     return buildChapterGroups(parts as any[]);
-  }, [isAdvanced, field]);
+  }, [isAdvanced, isListening, field]);
 
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null);
   const [activeGroupTitle, setActiveGroupTitle] = useState(groups[0]?.title || '');
@@ -119,6 +168,20 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
   }, [groups]);
 
   const activeGroup = groups.find(group => group.title === activeGroupTitle) || groups[0];
+
+  // 出題傾向データ（科目ごとに切り替える）。リスニングには傾向データがないのでボタンを出さない。
+  const trendDataset = isAdvanced ? chemistryAdvancedTrendDataset : chemistryBasicTrendDataset;
+  const trendUnitMap = isListening
+    ? {}
+    : isAdvanced
+      ? advancedChapterIdToTrendUnit
+      : chapterIdToTrendUnit;
+  const trendGroupMap: Record<string, string> = isListening
+    ? {}
+    : isAdvanced
+      ? advancedRealTitleToChapterGroupTitle
+      : realTitleToChapterGroupTitle;
+
   // 出題傾向モーダルの状態
   const [trendModal, setTrendModal] = useState<{
     open: boolean;
@@ -151,6 +214,12 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
             化学 ／ {fieldTitle}
           </p>
         )}
+        {/* 英語リスニングでも、今どの科目にいるかを同じ位置・同じ書式で示す。 */}
+        {isListening && (
+          <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest text-[#D9A0A0]">
+            英語リスニング ／ 共通テスト大問別
+          </p>
+        )}
         <h2 className="text-xl md:text-3xl font-handwriting font-bold text-[#2C3E50] mb-1.5 md:mb-2">
           {mode === 'mini_test' ? '小テスト' : '演習問題'}
         </h2>
@@ -168,8 +237,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
           >
             {groups.map((group, index) => {
               const isActive = group.title === activeGroup?.title;
-              const chapterNumber = group.title.match(/^\d+章/)?.[0] || `${index + 1}章`;
-              const shortTitle = group.title.replace(/^\d+章\s*/, '');
+              const { kicker: chapterNumber, label: shortTitle } = splitTabTitle(group.title, index);
 
               return (
                 <button
@@ -213,12 +281,12 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                 <p className="text-[10px] font-bold text-[#D9A0A0]">{activeGroup.partTitle}</p>
                 <h3 className="mt-0.5 text-base sm:text-lg font-bold text-[#2C3E50]">{activeGroup.title}</h3>
               </div>
-              {realTitleToChapterGroupTitle[activeGroup.title] && (
+              {trendGroupMap[activeGroup.title] && (
                 <button
                   type="button"
                   onClick={() => setTrendModal({
                     open: true,
-                    chapterGroupTitle: realTitleToChapterGroupTitle[activeGroup.title],
+                    chapterGroupTitle: trendGroupMap[activeGroup.title],
                   })}
                   className="flex items-center gap-1.5 rounded-lg border border-[#A9CCE3] bg-[#A9CCE3]/15 px-2.5 py-1.5 text-[11px] font-bold text-[#2C3E50] transition-colors hover:bg-[#A9CCE3]/30 cursor-pointer"
                   title={`${activeGroup.title} の共通テスト出題傾向を確認`}
@@ -246,7 +314,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                     catch { return false; }
                   })()
                 );
-                const trendInfo = chapterIdToTrendUnit[chapter.id];
+                const trendInfo = trendUnitMap[chapter.id];
 
                 return (
                   <article
@@ -365,7 +433,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
             物質量（mol）の考え方を配布プリントそのままの途中式で学べる
             「物質量（mol）がわからない人へ」をチュートリアルとして常設表示する。
             ※ mol は化学基礎の内容なので、化学（発展）では表示しない。 */}
-        {!isAdvanced && (
+        {subject === 'chemistry_basic' && (
         <div className="shrink-0 mt-3">
           <button
             type="button"
@@ -457,6 +525,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
           onClose={() => setTrendModal({ open: false })}
           targetChapterGroupTitle={trendModal.chapterGroupTitle}
           targetUnitId={trendModal.unitId}
+          dataset={trendDataset}
         />
       )}
     </div>

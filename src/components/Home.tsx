@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
 import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
+import { getAllListeningChapters } from '../data/englishListeningData';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
@@ -29,7 +30,7 @@ interface HomeProps {
   /** 現在選択中の科目名（表示用） */
   subjectLabel?: string;
   /** 現在選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
-  subject?: 'chemistry_basic' | 'chemistry';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening';
   isGuest: boolean;
 }
 
@@ -51,9 +52,11 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   // 分子：1点でも獲得した大問の数（utils/progress の台帳を参照）。
   // 科目に応じて集計対象の章を切り替える（化学基礎の振る舞いは従来のまま）。
   const allChaptersList = useMemo(
-    () => (subject === 'chemistry'
-      ? (getAllAdvancedChapters() as any[])
-      : chemistryData.parts.flatMap((p: any) => p.chapters)),
+    () => {
+      if (subject === 'chemistry') return getAllAdvancedChapters() as any[];
+      if (subject === 'english_listening') return getAllListeningChapters() as any[];
+      return chemistryData.parts.flatMap((p: any) => p.chapters) as any[];
+    },
     [subject],
   );
   const totalQuestions = useMemo(() => {
@@ -80,6 +83,11 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         id: 'chemistry' as const,
         label: '化学',
         chapters: getAllAdvancedChapters() as any[],
+      },
+      {
+        id: 'english_listening' as const,
+        label: '英語リスニング',
+        chapters: getAllListeningChapters() as any[],
       },
     ],
     [],

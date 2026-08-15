@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Target, BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical } from 'lucide-react';
 import { TrendModal } from './TrendModal';
+import { chemistryBasicTrendDataset } from '../data/trendData';
+import { chemistryAdvancedTrendDataset } from '../data/chemistryAdvancedTrendData';
 import { MntbLogo } from './MntbLogo';
 import { DoorMascot } from './DoorMascot';
 
@@ -9,19 +11,24 @@ interface ModeSelectionProps {
   onBack: () => void;
   onMockExam?: () => void;
   /** 選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
-  subject?: 'chemistry_basic' | 'chemistry';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening';
 }
 
 export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic' }: ModeSelectionProps) {
   /**
-   * 化学（発展）では、化学基礎専用のコンテンツ
-   * （出題傾向 / 2027年度予想問題）はまだ用意していないので隠す。
+   * 化学（発展）では、化学基礎専用の 2027年度予想問題はまだ用意していないので隠す。
    * 化学基礎側の表示は一切変えない。
    *
-   * 「学習(インプット)」だけは例外で、化学でもまとめプリントを公開済みなので
-   * 両方の科目で表示する（非表示のままだと、化学を選んだ人がプリントにたどり着けない）。
+   * 「学習(インプット)」と「出題傾向」は例外で、化学でも
+   * まとめプリントと過去15年（本試＋追試）の分析を公開済みなので両方の科目で表示する。
    */
   const isAdvanced = subject === 'chemistry';
+  /**
+   * 英語リスニングはまず大問（単元）だけを公開した段階なので、
+   * まとめプリント（学習インプット）・出題傾向・予想問題はまだ無い。
+   * 空の画面へ連れていかないよう、「演習問題」だけを出す（カードの見た目は他科目と同じ）。
+   */
+  const isListening = subject === 'english_listening';
   const [showOverallTrend, setShowOverallTrend] = useState(false);
 
   useEffect(() => {
@@ -49,8 +56,9 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 w-full max-w-3xl md:grid-cols-2">
-          {/* 学習(インプット)ボタン（化学基礎・化学の両方） */}
+        <div className={`grid grid-cols-1 gap-6 w-full ${isListening ? 'max-w-md' : 'max-w-3xl md:grid-cols-2'}`}>
+          {/* 学習(インプット)ボタン（化学基礎・化学の両方。リスニングは未収録） */}
+          {!isListening && (
           <button
             onClick={() => onSelectMode('learning')}
             className="group bg-white p-6 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:border-[#F4D03F] hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
@@ -65,6 +73,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
                 : '基礎知識をしっかりと身につけます。'}
             </p>
           </button>
+          )}
 
           {/* 演習問題ボタン */}
           <button
@@ -76,7 +85,9 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
             </div>
             <h3 className="text-xl md:text-2xl font-bold font-handwriting text-[#2C3E50] mb-3 md:mb-4">演習問題</h3>
             <p className="text-sm md:text-base text-gray-600 font-handwriting leading-relaxed">
-              より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。
+              {isListening
+                ? '第1問〜第6問の大問別に単元を選んで取り組みます。'
+                : 'より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。'}
             </p>
           </button>
         </div>
@@ -88,8 +99,15 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           </p>
         )}
 
-        {/* 演習問題ボタンの下に追加ボタンを配置（化学基礎のみ） */}
-        {!isAdvanced && (
+        {/* 英語リスニングで準備中のコンテンツがあることを明示する。 */}
+        {isListening && (
+          <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
+            ※ まずは大問（第1問〜第6問）の単元を公開しています。問題・音声・「学習(インプット)」は順次追加していきます。
+          </p>
+        )}
+
+        {/* 演習問題ボタンの下に追加ボタンを配置（化学基礎・化学） */}
+        {(subject === 'chemistry_basic' || isAdvanced) && (
         <div className="w-full max-w-3xl mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* 全体出題傾向ボタン */}
           <button
@@ -101,12 +119,16 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
             </div>
             <div className="text-left">
               <h3 className="text-base font-bold font-handwriting">共通テスト出題傾向</h3>
-              <p className="text-xs text-white/70 font-handwriting leading-relaxed">過去11年（2016〜2026年）の全体分析・2027予想</p>
+              <p className="text-xs text-white/70 font-handwriting leading-relaxed">
+                {isAdvanced
+                  ? '過去15年（2012〜2026年・本試＋追試）の全体分析・2027予想'
+                  : '過去11年（2016〜2026年）の全体分析・2027予想'}
+              </p>
             </div>
           </button>
 
-          {/* 2027年予想問題ボタン */}
-          {onMockExam && (
+          {/* 2027年予想問題ボタン（化学基礎のみ） */}
+          {onMockExam && !isAdvanced && (
             <button
               onClick={onMockExam}
               className="group bg-gradient-to-r from-[#D9A0A0] to-[#C0847E] text-white p-4 rounded-2xl shadow-md border-2 border-transparent hover:shadow-xl transition-all duration-300 flex items-center gap-4 transform hover:-translate-y-1"
@@ -128,6 +150,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
       {showOverallTrend && (
         <TrendModal
           onClose={() => setShowOverallTrend(false)}
+          dataset={isAdvanced ? chemistryAdvancedTrendDataset : chemistryBasicTrendDataset}
         />
       )}
     </>

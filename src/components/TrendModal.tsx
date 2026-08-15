@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, TrendingUp, ChevronDown, ChevronUp, BarChart2, BookOpen, Star, AlertCircle } from 'lucide-react';
-import { overallTrend, chapterTrends, rotationAnalysis } from '../data/trendData';
+import { chemistryBasicTrendDataset, type TrendDataset } from '../data/trendData';
 
 interface TrendModalProps {
   onClose: () => void;
@@ -8,11 +8,26 @@ interface TrendModalProps {
   // unitId: 特定の小単元を表示する場合に指定。
   targetChapterGroupTitle?: string;
   targetUnitId?: string;
+  /** 表示するデータセット。未指定なら化学基礎。 */
+  dataset?: TrendDataset;
 }
 
-export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: TrendModalProps) {
+export function TrendModal({
+  onClose,
+  targetChapterGroupTitle,
+  targetUnitId,
+  dataset = chemistryBasicTrendDataset,
+}: TrendModalProps) {
   const [activeTab, setActiveTab] = useState<'overall' | 'chapter' | 'rotation'>('overall');
   const [expandedUnit, setExpandedUnit] = useState<string | null>(targetUnitId || null);
+
+  const overallTrend = dataset.overall;
+  const chapterTrends = dataset.chapters;
+  const rotationAnalysis = dataset.rotation;
+  // 追試験の情報を持つデータセットかどうか（化学（発展）のみ true）
+  const hasSupplementary =
+    overallTrend.yearlyOverview.some(r => !!r.supplementary) ||
+    rotationAnalysis.some(r => !!r.yearsSupplementary);
 
   // ターゲットの章を探す
   const targetChapter = targetChapterGroupTitle
@@ -43,9 +58,9 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
               <h2 className="text-lg md:text-xl font-bold font-handwriting">
                 {targetChapterGroupTitle
                   ? `${targetChapterGroupTitle} 共通テスト出題傾向`
-                  : '共通テスト出題傾向分析（過去11年）'}
+                  : dataset.headerTitle}
               </h2>
-              <p className="text-xs text-white/70 font-handwriting">2016〜2026年 共通テスト・センター試験</p>
+              <p className="text-xs text-white/70 font-handwriting">{dataset.headerSubtitle}</p>
             </div>
           </div>
           <button
@@ -91,7 +106,7 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
               <div>
                 <h3 className="text-base font-bold text-[#2C3E50] font-handwriting mb-3 flex items-center gap-2">
                   <BarChart2 className="w-4 h-4 text-[#A9CCE3]" />
-                  大問構成・分量の推移（一覧表）
+                  {dataset.yearlyTableTitle}
                 </h3>
                 <div className="overflow-x-auto rounded-xl border border-gray-200">
                   <table className="w-full text-xs font-handwriting">
@@ -100,7 +115,8 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
                         <th className="p-2 text-left font-bold">年度</th>
                         <th className="p-2 text-center font-bold">区分</th>
                         <th className="p-2 text-center font-bold">小問数</th>
-                        <th className="p-2 text-left font-bold">主な構成の特徴</th>
+                        <th className="p-2 text-left font-bold">{hasSupplementary ? '本試験の構成の特徴' : '主な構成の特徴'}</th>
+                        {hasSupplementary && <th className="p-2 text-left font-bold">追試験の特徴</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -112,6 +128,9 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
                           </td>
                           <td className="p-2 text-center">{row.subQuestions}</td>
                           <td className="p-2 text-gray-700 leading-relaxed">{row.feature}</td>
+                          {hasSupplementary && (
+                            <td className="p-2 text-purple-700 leading-relaxed">{row.supplementary ?? '—'}</td>
+                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -123,7 +142,7 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
               <div>
                 <h3 className="text-base font-bold text-[#2C3E50] font-handwriting mb-3 flex items-center gap-2">
                   <TrendingUp className="w-4 h-4 text-[#D9A0A0]" />
-                  大きく見える3つのトレンド
+                  大きく見える{overallTrend.bigTrends.length}つのトレンド
                 </h3>
                 <div className="space-y-3">
                   {overallTrend.bigTrends.map((trend, i) => (
@@ -149,7 +168,7 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
                   2027年共通テスト 予想構成
                 </h3>
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-3">
-                  <p className="text-xs font-bold text-amber-800 font-handwriting mb-3">【第1問】小問集合 9〜10問</p>
+                  <p className="text-xs font-bold text-amber-800 font-handwriting mb-3">{dataset.structurePrimaryLabel}</p>
                   <div className="space-y-2">
                     {overallTrend.exam2027Structure.q1.map((item) => (
                       <div key={item.no} className="flex items-start gap-2">
@@ -165,7 +184,7 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
                   </div>
                 </div>
                 <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                  <p className="text-xs font-bold text-blue-800 font-handwriting mb-2">【第2問】テーマ型総合問題 6〜9問 ★予想テーマ候補★</p>
+                  <p className="text-xs font-bold text-blue-800 font-handwriting mb-2">{dataset.structureSecondaryLabel}</p>
                   <ul className="space-y-1">
                     {overallTrend.exam2027Structure.q2Candidates.map((c, i) => (
                       <li key={i} className="text-xs text-gray-700 font-handwriting flex items-start gap-1.5">
@@ -188,7 +207,7 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-gray-600 font-handwriting mt-2">共通テスト化以降、平均点は概ね25〜30点の間で安定。「8割以上が壁」と評されるのが定型化しており、その壁の正体は第2問のグラフ・表読解と複合計算である。</p>
+                <p className="text-xs text-gray-600 font-handwriting mt-2">{dataset.averageScoreNote}</p>
               </div>
             </div>
           )}
@@ -295,7 +314,7 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
                   <AlertCircle className="w-4 h-4 text-red-600" />
                   <h3 className="text-sm font-bold text-red-700 font-handwriting">ローテーション分析と2027年出題予想度</h3>
                 </div>
-                <p className="text-xs text-gray-600 font-handwriting">11年分のデータを並べると、出題テーマには明確な周期性・代替性がある。重要テーマは1〜3年おきに必ず再登場する。</p>
+                <p className="text-xs text-gray-600 font-handwriting">{dataset.rotationIntro}</p>
               </div>
 
               <div className="overflow-x-auto rounded-xl border border-gray-200">
@@ -312,7 +331,12 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
                       <tr key={row.theme} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                         <td className="p-2">
                           <div className="font-bold text-[#2C3E50]">{row.theme}</div>
-                          <div className="text-gray-400 text-[10px] mt-0.5">{row.years}</div>
+                          <div className="text-gray-400 text-[10px] mt-0.5">
+                            {hasSupplementary ? '本試: ' : ''}{row.years}
+                          </div>
+                          {row.yearsSupplementary && (
+                            <div className="text-purple-400 text-[10px] mt-0.5">追試: {row.yearsSupplementary}</div>
+                          )}
                         </td>
                         <td className="p-2 text-center text-gray-600">{row.cycle}</td>
                         <td className="p-2">
@@ -339,16 +363,7 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
                       </tr>
                     </thead>
                     <tbody>
-                      {[
-                        ["大問構成", "第1問・第2問とも小問集合（独立7問×2）", "第1問=小問集合10問前後／第2問=1テーマ総合問題6〜9問"],
-                        ["小問数", "13〜15問", "13〜19問（2025は最多）"],
-                        ["1問あたり配点", "ほぼ均等（3〜4点）", "重い問題は4〜5点、軽い問題は2点と差がある"],
-                        ["問題の長さ", "1問あたり3〜5行", "リード文＋実験操作＋表＋グラフで1テーマ1〜2ページ"],
-                        ["図表の量", "1〜2題", "毎回4〜6か所（グラフ・装置図・分子モデル・表）"],
-                        ["計算の複雑度", "一段階計算が多い", "多段階／グラフ読み取りからの逆算／文字式での一般化"],
-                        ["テーマ性", "なし（純粋な単元別）", "あり（蒸留・宇宙・科学史・肥料・しょうゆなど）"],
-                        ["求められる力", "知識＋計算技能", "知識＋計算技能＋資料読解＋現象解釈＋複合的思考"],
-                      ].map(([aspect, center, kyotsuu], i) => (
+                      {dataset.comparisonTable.map(([aspect, center, kyotsuu], i) => (
                         <tr key={aspect} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                           <td className="p-2 font-bold text-[#2C3E50] whitespace-nowrap">{aspect}</td>
                           <td className="p-2 text-gray-600">{center}</td>
@@ -364,14 +379,10 @@ export function TrendModal({ onClose, targetChapterGroupTitle, targetUnitId }: T
               <div className="bg-gradient-to-r from-[#2C3E50] to-[#34495E] text-white rounded-xl p-5">
                 <h3 className="text-sm font-bold font-handwriting mb-3">受験生への最終メッセージ</h3>
                 <p className="text-xs font-handwriting leading-relaxed text-white/90 mb-2">
-                  共通テスト化学基礎で安定して8割以上を取るには、以下の3つの力が不可欠である：
+                  {dataset.finalMessageLead}
                 </p>
                 <ul className="space-y-2">
-                  {[
-                    "①【知識の正確さ】どんなに思考型でも、6章すべての基本用語・反応・公式を「即答できる反射神経」がベース。特に『電子配置20元素』『イオン化列』『代表的酸塩基』『指示薬の変色域』『主要反応式』は完全暗記。",
-                    "②【計算の単位追跡】molを起点として、g・L・粒子数・mol/L・%への双方向変換を機械的にこなす。物質量と化学反応式が最重要章。",
-                    "③【グラフ・表の読解力】グラフを見たら必ず「軸・単位・傾き・プラトー・交点」の5点をチェックする習慣。プラトーは『片方が尽きた限界点』、傾きは『反応の量的比』を表すと即座に解釈できる訓練を。"
-                  ].map((msg, i) => (
+                  {dataset.finalMessages.map((msg, i) => (
                     <li key={i} className="text-xs font-handwriting text-white/90 flex items-start gap-2">
                       <span className="text-[#F4D03F] shrink-0">★</span>
                       <span>{msg}</span>
