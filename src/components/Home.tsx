@@ -319,8 +319,13 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   </div>
                 )}
               </div>
-              {/* 下段：とびら君マスコット＋豆知識（カード内に収まる横並び） */}
-              <DoorMascot className="mt-4 pt-4 border-t border-[#F4A9C4]/25" />
+              {/* 下段：とびら君マスコット＋豆知識（カード内に収まる横並び）
+                  科目を渡して、いま開いている科目の豆知識と配色にする。 */}
+              <DoorMascot
+                subject={subject}
+                showCategory
+                className="mt-4 pt-4 border-t border-[#F4A9C4]/25"
+              />
             </div>
           </motion.div>
 
