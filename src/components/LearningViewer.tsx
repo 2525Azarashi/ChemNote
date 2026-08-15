@@ -13,6 +13,7 @@ import {
   SECTION_2_1_HTML,
   SECTION_2_2_HTML,
   SECTION_2_3_HTML,
+  ADV_THERMO_HTML,
 } from '../data/learningContent';
 import { MolBasicsSection } from './MolBasicsSection';
 import {
@@ -20,16 +21,31 @@ import {
   countAnswerAccordions,
 } from '../utils/learningAccordion';
 
+/** まとめプリントを出す科目 */
+export type LearningSubject = 'chemistry_basic' | 'chemistry';
+
 interface LearningViewerProps {
   onBack: () => void;
   /** 初期表示するタブ（'mol-basics' で「物質量がわからない人へ」を直接開く） */
   initialTab?: string;
+  /** 表示する科目。省略時は従来どおり化学基礎。 */
+  subject?: LearningSubject;
 }
 
 // 「物質量がわからない人へ」タブのID（色分けの判定にも使う）
 export const MOL_BASICS_TAB_ID = 'mol-basics';
 
-const SECTIONS = [
+// ===================================================================
+// 科目ごとの目次・本文・印刷ラベル
+// -------------------------------------------------------------------
+// 化学基礎と化学（発展）で中身がまったく違うため、科目をキーにして
+// 「タブ一覧 / 本文HTML / 印刷タイトル / 部の見出し」をまとめて切り替える。
+// こうしておくと、化学側に節を足すときも下の表に1行足すだけで済む。
+// ===================================================================
+
+type SectionDef = { id: string; title: string };
+
+const BASIC_SECTIONS: SectionDef[] = [
   { id: 'toc', title: '目次・使い方' },
   { id: '1-1', title: '1-1. 物質の構成' },
   { id: '1-2', title: '1-2. 物質の構成粒子' },
@@ -40,8 +56,14 @@ const SECTIONS = [
   { id: '2-3', title: '2-3. 酸化還元反応' },
 ];
 
+/** 化学（発展）。まずは理論化学3章（熱化学）から公開し、順次追加していく。 */
+const ADVANCED_SECTIONS: SectionDef[] = [
+  { id: 'toc', title: '目次・使い方' },
+  { id: 'adv-3', title: '3. 化学反応とエネルギー' },
+];
+
 // 各セクションのHTMLマップ（生成時に .learning-content スコープ済み）
-const SECTION_HTML: Record<string, string> = {
+const BASIC_SECTION_HTML: Record<string, string> = {
   '1-1': SECTION_1_1_HTML,
   '1-2': SECTION_1_2_HTML,
   '1-3': SECTION_1_3_HTML,
@@ -50,8 +72,12 @@ const SECTION_HTML: Record<string, string> = {
   '2-3': SECTION_2_3_HTML,
 };
 
+const ADVANCED_SECTION_HTML: Record<string, string> = {
+  'adv-3': ADV_THERMO_HTML,
+};
+
 /** 印刷ダイアログのタイトル（＝PDFの既定ファイル名）に使うセクション名 */
-const SECTION_PRINT_TITLE: Record<string, string> = {
+const BASIC_PRINT_TITLE: Record<string, string> = {
   toc: '目次・使い方',
   '1-1': '1-1 物質の構成',
   '1-2': '1-2 物質の構成粒子',
@@ -62,7 +88,12 @@ const SECTION_PRINT_TITLE: Record<string, string> = {
   '2-3': '2-3 酸化還元反応',
 };
 
-const SECTION_PART_LABEL: Record<string, string> = {
+const ADVANCED_PRINT_TITLE: Record<string, string> = {
+  toc: '目次・使い方',
+  'adv-3': '3 化学反応とエネルギー',
+};
+
+const BASIC_PART_LABEL: Record<string, string> = {
   '1-1': '第1部 物質の構成',
   '1-2': '第1部 物質の構成',
   '1-3': '第1部 物質の構成',
@@ -72,8 +103,53 @@ const SECTION_PART_LABEL: Record<string, string> = {
   '2-3': '第2部 物質の変化',
 };
 
-export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
-  const [activeTab, setActiveTab] = useState(initialTab || 'toc');
+const ADVANCED_PART_LABEL: Record<string, string> = {
+  'adv-3': '理論化学 3章 化学反応とエネルギー',
+};
+
+/** 科目ごとの設定をひとまとめにする（分岐をここ1か所に閉じ込める） */
+const SUBJECT_CONFIG: Record<
+  LearningSubject,
+  {
+    /** 画面ヘッダー・印刷ヘッダー・PDFファイル名に使う科目名 */
+    label: string;
+    sections: SectionDef[];
+    html: Record<string, string>;
+    printTitle: Record<string, string>;
+    partLabel: Record<string, string>;
+  }
+> = {
+  chemistry_basic: {
+    label: '化学基礎',
+    sections: BASIC_SECTIONS,
+    html: BASIC_SECTION_HTML,
+    printTitle: BASIC_PRINT_TITLE,
+    partLabel: BASIC_PART_LABEL,
+  },
+  chemistry: {
+    label: '化学',
+    sections: ADVANCED_SECTIONS,
+    html: ADVANCED_SECTION_HTML,
+    printTitle: ADVANCED_PRINT_TITLE,
+    partLabel: ADVANCED_PART_LABEL,
+  },
+};
+
+export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic' }: LearningViewerProps) {
+  const config = SUBJECT_CONFIG[subject] ?? SUBJECT_CONFIG.chemistry_basic;
+  const SECTIONS = config.sections;
+  const SECTION_HTML = config.html;
+  const SECTION_PRINT_TITLE = config.printTitle;
+  const SECTION_PART_LABEL = config.partLabel;
+  const isAdvanced = subject === 'chemistry';
+
+  // 科目に存在しないタブIDが来たら目次に落とす。
+  // 化学基礎で '2-1' を開いたまま科目を切り替えた場合など、
+  // そのままだと「本文も目次も出ない空白画面」になってしまうため。
+  const requestedTab = initialTab || 'toc';
+  const [activeTab, setActiveTab] = useState(
+    SECTIONS.some(s => s.id === requestedTab) ? requestedTab : 'toc',
+  );
   // 図をタップしたとき全画面で拡大表示する（自作図は情報量が多く、
   // 2カラムに入れると文字が小さくなるため。スマホでの「読めない」を防ぐ）
   const [zoomFig, setZoomFig] = useState<{ src: string; alt: string } | null>(null);
@@ -84,6 +160,12 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setAllAnswersOpen(false);
   }, [activeTab]);
+
+  // 科目が変わったら、その科目に無いタブは目次へ戻す（空白画面の防止）
+  useEffect(() => {
+    if (!SECTIONS.some(s => s.id === activeTab)) setActiveTab('toc');
+    // activeTab を依存に入れると「存在するタブ」でも毎回評価するだけなので安全
+  }, [SECTIONS, activeTab]);
 
   // Esc で拡大表示を閉じる
   useEffect(() => {
@@ -157,7 +239,7 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
     // 印刷モードのクラスは常に片方だけ付く状態にする
     body.classList.remove(PRINT_MODE_CLASS.answers, PRINT_MODE_CLASS.blank);
     body.classList.add(modeClass);
-    document.title = `化学基礎まとめプリント_${sectionTitle}_${suffix}`;
+    document.title = `${config.label}まとめプリント_${sectionTitle}_${suffix}`;
 
     let restored = false;
     const restore = () => {
@@ -175,7 +257,7 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
       // Safari など afterprint を発火しない環境向けの保険
       window.setTimeout(restore, 1500);
     }
-  }, [activeTab]);
+  }, [activeTab, config.label, SECTION_PRINT_TITLE]);
 
   // タブを切り替えたら印刷メニューは閉じる（別セクションを刷ってしまう事故を防ぐ）
   useEffect(() => setPrintMenuOpen(false), [activeTab]);
@@ -203,7 +285,7 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
               <ArrowLeft size={18} className="stroke-[2.5]" />
             </button>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-[#5b21b6]">化学基礎 まとめプリント</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-[#5b21b6]">{config.label} まとめプリント</h1>
             </div>
           </div>
 
@@ -303,7 +385,7 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
                 配布プリントとして成立させるために、タイトル・セクション名と
                 名前／日付の記入欄を紙の一番上に置く。画面では表示されない。 */}
             <div className="lc-print-only lc-print-head" aria-hidden="true">
-              <div className="lc-print-title">化学基礎 まとめプリント</div>
+              <div className="lc-print-title">{config.label} まとめプリント</div>
               <div className="lc-print-sub">
                 {SECTION_PRINT_TITLE[activeTab] || ''}
                 {SECTION_PART_LABEL[activeTab] ? `　（${SECTION_PART_LABEL[activeTab]}）` : ''}
@@ -319,7 +401,7 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
               <div className="space-y-8 animate-fade-in-up">
                 <div className="text-center py-6 border-b-2 border-[#c9bce6] border-dotted">
                   <h2 className="text-3xl sm:text-4xl font-black text-[#5b21b6] font-modern tracking-wider mb-3">
-                    化学基礎 まとめプリント
+                    {config.label} まとめプリント
                   </h2>
                   <p className="text-[#7c3aed] font-bold text-sm tracking-wide">
                     大学入学共通テスト対策 / 大学2次試験対策 / 定期テスト対策
@@ -357,6 +439,32 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
                     <span>プリント目次</span>
                   </h3>
 
+                  {/* ---- 化学（発展）の目次。公開済みの章だけを載せ、準備中も明示する ---- */}
+                  {isAdvanced && (
+                    <div className="grid grid-cols-1 gap-6 pt-2">
+                      <div className="bg-white p-4 rounded-xl border-2 border-[#c9bce6] border-l-[6px] border-l-[#7c3aed]">
+                        <h4 className="font-bold text-[#5b21b6] border-b border-dotted border-[#c9bce6] pb-1.5 mb-2 text-sm">理論化学</h4>
+                        <ul className="space-y-1.5 text-xs font-bold text-[#3f3352]">
+                          <li>
+                            <button
+                              type="button"
+                              onClick={() => setActiveTab('adv-3')}
+                              className="w-full text-left flex items-start gap-1.5 rounded-lg border border-[#c9bce6] bg-[#f3ecff] px-2 py-1.5 text-[#5b21b6] hover:bg-[#e9dcff] transition-colors cursor-pointer"
+                            >
+                              <span className="text-[#7c3aed]">3.</span>
+                              <span>化学反応とエネルギー (エンタルピー・熱化学反応式・ヘスの法則・結合エネルギー・光)</span>
+                            </button>
+                          </li>
+                        </ul>
+                        <p className="mt-3 border-t border-[#e3daf5] pt-2 text-[11px] font-bold text-[#8b81a3]">
+                          ほかの章（物質の状態と平衡 / 溶液 / 電池と電気分解 / 反応速度 / 化学平衡）と、
+                          無機化学・有機化学のまとめプリントは順次追加していきます。
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {!isAdvanced && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                     <div className="bg-white p-4 rounded-xl border-2 border-[#c9bce6] border-l-[6px] border-l-[#7c3aed]">
                       <h4 className="font-bold text-[#5b21b6] border-b border-dotted border-[#c9bce6] pb-1.5 mb-2 text-sm">第1部 物質の構成</h4>
@@ -386,6 +494,7 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
                       </ul>
                     </div>
                   </div>
+                  )}
                 </div>
 
                 <div className="pt-6 border-t-2 border-[#c9bce6] border-dotted text-center">
@@ -393,6 +502,20 @@ export function LearningViewer({ onBack, initialTab }: LearningViewerProps) {
                     💡 上部メニューから見たいセクションを選択して勉強を進めましょう。
                   </p>
                 </div>
+              </div>
+            )}
+
+            {/* ====== 化学（発展）3章の冒頭に、対応する演習問題への案内を出す ====== */}
+            {isAdvanced && activeTab === 'adv-3' && (
+              <div className={`mb-5 rounded-xl border-2 border-[#c9bce6] border-l-8 border-l-[#7c3aed] bg-[#f7f2ff] px-4 py-3 ${NO_PRINT_CLASS}`}>
+                <span className="block text-[11px] font-extrabold tracking-widest text-[#7c3aed]">インプット → アウトプット</span>
+                <span className="mt-0.5 block text-sm font-bold text-[#5b21b6]">
+                  このプリントを読んだら「演習問題」の 理論化学 3章 で手を動かそう
+                </span>
+                <span className="mt-1 block text-[11px] font-bold leading-relaxed text-[#6b6280]">
+                  演習1〜20（反応エンタルピー / ヘスの法則 / 結合エネルギー / 光とエネルギー）が、
+                  ここで学んだ順番のまま並んでいます。
+                </span>
               </div>
             )}
 

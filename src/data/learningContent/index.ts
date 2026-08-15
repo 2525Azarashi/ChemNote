@@ -14,4 +14,6 @@ export { SECTION_1_3_HTML } from './section_1_3';
 export { SECTION_2_1_HTML } from './section_2_1';
 export { SECTION_2_2_HTML } from './section_2_2';
 export { SECTION_2_3_HTML } from './section_2_3';
+// 化学（発展）のまとめプリント。化学基礎とは別の科目として扱う。
+export { ADV_THERMO_HTML } from './adv_thermo';
 
