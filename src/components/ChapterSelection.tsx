@@ -6,7 +6,8 @@ import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2,
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
 import { TrendModal } from './TrendModal';
-import { chapterTrends } from '../data/trendData';
+import { chemistryBasicTrendDataset } from '../data/trendData';
+import { chemistryAdvancedTrendDataset } from '../data/chemistryAdvancedTrendData';
 import { DoorMascot } from './DoorMascot';
 import { MolBasicsSection } from './MolBasicsSection';
 
@@ -68,6 +69,26 @@ const realTitleToChapterGroupTitle: Record<string, string> = {
   '5章 酸と塩基': '5章 酸と塩基',
   '6章 酸化還元反応': '6章 酸化還元反応',
 };
+
+// 化学（発展）は単元 ID（a1_1 など）と章名（realTitle）が
+// そのまま傾向データ側の ID / chapterGroupTitle と一致するので、
+// 手書きの対応表を作らずデータから自動生成する。
+const advancedChapterIdToTrendUnit: Record<string, { chapterGroupTitle: string; unitId: string }> =
+  Object.fromEntries(
+    chemistryAdvancedTrendDataset.chapters.flatMap(chapter =>
+      chapter.units.map(unit => [
+        unit.id,
+        { chapterGroupTitle: chapter.chapterGroupTitle, unitId: unit.id },
+      ] as const)
+    )
+  );
+
+const advancedRealTitleToChapterGroupTitle: Record<string, string> = Object.fromEntries(
+  chemistryAdvancedTrendDataset.chapters.map(chapter => [
+    chapter.chapterGroupTitle,
+    chapter.chapterGroupTitle,
+  ])
+);
 
 /**
  * parts を「教科書の章（realTitle）」単位のタブにまとめる共通処理。
@@ -147,6 +168,20 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
   }, [groups]);
 
   const activeGroup = groups.find(group => group.title === activeGroupTitle) || groups[0];
+
+  // 出題傾向データ（科目ごとに切り替える）。リスニングには傾向データがないのでボタンを出さない。
+  const trendDataset = isAdvanced ? chemistryAdvancedTrendDataset : chemistryBasicTrendDataset;
+  const trendUnitMap = isListening
+    ? {}
+    : isAdvanced
+      ? advancedChapterIdToTrendUnit
+      : chapterIdToTrendUnit;
+  const trendGroupMap: Record<string, string> = isListening
+    ? {}
+    : isAdvanced
+      ? advancedRealTitleToChapterGroupTitle
+      : realTitleToChapterGroupTitle;
+
   // 出題傾向モーダルの状態
   const [trendModal, setTrendModal] = useState<{
     open: boolean;
@@ -246,12 +281,12 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                 <p className="text-[10px] font-bold text-[#D9A0A0]">{activeGroup.partTitle}</p>
                 <h3 className="mt-0.5 text-base sm:text-lg font-bold text-[#2C3E50]">{activeGroup.title}</h3>
               </div>
-              {realTitleToChapterGroupTitle[activeGroup.title] && (
+              {trendGroupMap[activeGroup.title] && (
                 <button
                   type="button"
                   onClick={() => setTrendModal({
                     open: true,
-                    chapterGroupTitle: realTitleToChapterGroupTitle[activeGroup.title],
+                    chapterGroupTitle: trendGroupMap[activeGroup.title],
                   })}
                   className="flex items-center gap-1.5 rounded-lg border border-[#A9CCE3] bg-[#A9CCE3]/15 px-2.5 py-1.5 text-[11px] font-bold text-[#2C3E50] transition-colors hover:bg-[#A9CCE3]/30 cursor-pointer"
                   title={`${activeGroup.title} の共通テスト出題傾向を確認`}
@@ -279,7 +314,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                     catch { return false; }
                   })()
                 );
-                const trendInfo = chapterIdToTrendUnit[chapter.id];
+                const trendInfo = trendUnitMap[chapter.id];
 
                 return (
                   <article
@@ -490,6 +525,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
           onClose={() => setTrendModal({ open: false })}
           targetChapterGroupTitle={trendModal.chapterGroupTitle}
           targetUnitId={trendModal.unitId}
+          dataset={trendDataset}
         />
       )}
     </div>

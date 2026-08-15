@@ -603,3 +603,97 @@ export const rotationAnalysis = [
   { theme: "気体の性質／実験室製法", years: "2016, 2017, 2019, 2024, 2025", cycle: "1〜2年", prediction: "○ 中程度" },
   { theme: "日常との関連（界面活性剤など）", years: "2017, 2018, 2020, 2022", cycle: "2〜3年", prediction: "○ 来る年（界面活性剤、漂白剤）" },
 ];
+
+// ============================================================
+// 汎用トレンドデータ型（科目横断で TrendModal が利用する）
+// 化学基礎（本データ）と 化学（発展） の両方をこの型で表現する。
+// ============================================================
+
+export interface YearlyOverviewRow {
+  year: number;
+  type: string; // "センター" | "共通テスト"
+  bigQuestions: number;
+  subQuestions: number;
+  points: number;
+  feature: string;
+  /** 追試験（追・再試験）の特徴。化学（発展）のみ設定。 */
+  supplementary?: string;
+}
+
+export interface RotationRow {
+  theme: string;
+  years: string;
+  cycle: string;
+  prediction: string;
+  /** 追試験での出題年。化学（発展）のみ設定。 */
+  yearsSupplementary?: string;
+}
+
+export interface OverallTrend {
+  title: string;
+  period: string;
+  yearlyOverview: YearlyOverviewRow[];
+  bigTrends: { title: string; detail: string }[];
+  averageScores: { year: number; score: string }[];
+  exam2027Structure: {
+    q1: { no: number; theme: string; probability: string }[];
+    q2Candidates: string[];
+  };
+}
+
+/** TrendModal が描画に必要とするデータ一式 */
+export interface TrendDataset {
+  /** モーダルヘッダーのタイトル（章指定なしの場合） */
+  headerTitle: string;
+  /** モーダルヘッダーのサブタイトル */
+  headerSubtitle: string;
+  /** 年度別一覧表の見出し */
+  yearlyTableTitle: string;
+  /** 「2027年予想構成」ブロックの第1エリア見出し */
+  structurePrimaryLabel: string;
+  /** 「2027年予想構成」ブロックの第2エリア見出し */
+  structureSecondaryLabel: string;
+  /** 平均点ブロックの補足文 */
+  averageScoreNote: string;
+  /** ローテーションタブ冒頭の説明文 */
+  rotationIntro: string;
+  /** センター→共通テスト比較表（[観点, センター, 共通テスト]） */
+  comparisonTable: [string, string, string][];
+  /** 受験生への最終メッセージ（導入文＋箇条書き） */
+  finalMessageLead: string;
+  finalMessages: string[];
+  overall: OverallTrend;
+  chapters: ChapterTrend[];
+  rotation: RotationRow[];
+}
+
+export const chemistryBasicTrendDataset: TrendDataset = {
+  headerTitle: '共通テスト出題傾向分析（過去11年）',
+  headerSubtitle: '2016〜2026年 共通テスト・センター試験',
+  yearlyTableTitle: '大問構成・分量の推移（一覧表）',
+  structurePrimaryLabel: '【第1問】小問集合 9〜10問',
+  structureSecondaryLabel: '【第2問】テーマ型総合問題 6〜9問 ★予想テーマ候補★',
+  averageScoreNote:
+    '共通テスト化以降、平均点は概ね25〜30点の間で安定。「8割以上が壁」と評されるのが定型化しており、その壁の正体は第2問のグラフ・表読解と複合計算である。',
+  rotationIntro:
+    '11年分のデータを並べると、出題テーマには明確な周期性・代替性がある。重要テーマは1〜3年おきに必ず再登場する。',
+  comparisonTable: [
+    ['大問構成', '第1問・第2問とも小問集合（独立7問×2）', '第1問=小問集合10問前後／第2問=1テーマ総合問題6〜9問'],
+    ['小問数', '13〜15問', '13〜19問（2025は最多）'],
+    ['1問あたり配点', 'ほぼ均等（3〜4点）', '重い問題は4〜5点、軽い問題は2点と差がある'],
+    ['問題の長さ', '1問あたり3〜5行', 'リード文＋実験操作＋表＋グラフで1テーマ1〜2ページ'],
+    ['図表の量', '1〜2題', '毎回4〜6か所（グラフ・装置図・分子モデル・表）'],
+    ['計算の複雑度', '一段階計算が多い', '多段階／グラフ読み取りからの逆算／文字式での一般化'],
+    ['テーマ性', 'なし（純粋な単元別）', 'あり（蒸留・宇宙・科学史・肥料・しょうゆなど）'],
+    ['求められる力', '知識＋計算技能', '知識＋計算技能＋資料読解＋現象解釈＋複合的思考'],
+  ],
+  finalMessageLead: '共通テスト化学基礎で安定して8割以上を取るには、以下の3つの力が不可欠である：',
+  finalMessages: [
+    '①【知識の正確さ】どんなに思考型でも、6章すべての基本用語・反応・公式を「即答できる反射神経」がベース。特に『電子配置20元素』『イオン化列』『代表的酸塩基』『指示薬の変色域』『主要反応式』は完全暗記。',
+    '②【計算の単位追跡】molを起点として、g・L・粒子数・mol/L・%への双方向変換を機械的にこなす。物質量と化学反応式が最重要章。',
+    '③【グラフ・表の読解力】グラフを見たら必ず「軸・単位・傾き・プラトー・交点」の5点をチェックする習慣。プラトーは『片方が尽きた限界点』、傾きは『反応の量的比』を表すと即座に解釈できる訓練を。',
+  ],
+  overall: overallTrend,
+  chapters: chapterTrends,
+  rotation: rotationAnalysis,
+};

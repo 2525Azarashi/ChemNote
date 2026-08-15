@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Target, BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical } from 'lucide-react';
 import { TrendModal } from './TrendModal';
+import { chemistryBasicTrendDataset } from '../data/trendData';
+import { chemistryAdvancedTrendDataset } from '../data/chemistryAdvancedTrendData';
 import { MntbLogo } from './MntbLogo';
 import { DoorMascot } from './DoorMascot';
 
@@ -14,12 +16,11 @@ interface ModeSelectionProps {
 
 export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic' }: ModeSelectionProps) {
   /**
-   * 化学（発展）では、化学基礎専用のコンテンツ
-   * （出題傾向 / 2027年度予想問題）はまだ用意していないので隠す。
+   * 化学（発展）では、化学基礎専用の 2027年度予想問題はまだ用意していないので隠す。
    * 化学基礎側の表示は一切変えない。
    *
-   * 「学習(インプット)」だけは例外で、化学でもまとめプリントを公開済みなので
-   * 両方の科目で表示する（非表示のままだと、化学を選んだ人がプリントにたどり着けない）。
+   * 「学習(インプット)」と「出題傾向」は例外で、化学でも
+   * まとめプリントと過去15年（本試＋追試）の分析を公開済みなので両方の科目で表示する。
    */
   const isAdvanced = subject === 'chemistry';
   /**
@@ -105,8 +106,8 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           </p>
         )}
 
-        {/* 演習問題ボタンの下に追加ボタンを配置（化学基礎のみ） */}
-        {subject === 'chemistry_basic' && (
+        {/* 演習問題ボタンの下に追加ボタンを配置（化学基礎・化学） */}
+        {(subject === 'chemistry_basic' || isAdvanced) && (
         <div className="w-full max-w-3xl mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* 全体出題傾向ボタン */}
           <button
@@ -118,12 +119,16 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
             </div>
             <div className="text-left">
               <h3 className="text-base font-bold font-handwriting">共通テスト出題傾向</h3>
-              <p className="text-xs text-white/70 font-handwriting leading-relaxed">過去11年（2016〜2026年）の全体分析・2027予想</p>
+              <p className="text-xs text-white/70 font-handwriting leading-relaxed">
+                {isAdvanced
+                  ? '過去15年（2012〜2026年・本試＋追試）の全体分析・2027予想'
+                  : '過去11年（2016〜2026年）の全体分析・2027予想'}
+              </p>
             </div>
           </button>
 
-          {/* 2027年予想問題ボタン */}
-          {onMockExam && (
+          {/* 2027年予想問題ボタン（化学基礎のみ） */}
+          {onMockExam && !isAdvanced && (
             <button
               onClick={onMockExam}
               className="group bg-gradient-to-r from-[#D9A0A0] to-[#C0847E] text-white p-4 rounded-2xl shadow-md border-2 border-transparent hover:shadow-xl transition-all duration-300 flex items-center gap-4 transform hover:-translate-y-1"
@@ -145,6 +150,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
       {showOverallTrend && (
         <TrendModal
           onClose={() => setShowOverallTrend(false)}
+          dataset={isAdvanced ? chemistryAdvancedTrendDataset : chemistryBasicTrendDataset}
         />
       )}
     </>
