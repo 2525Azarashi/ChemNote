@@ -28,6 +28,7 @@ import { SubjectSelection, getSubjectLabel, isSubjectId, type SubjectId } from '
 import { AdvancedFieldSelection } from './components/AdvancedFieldSelection';
 import { chemistryAdvancedData, ADVANCED_FIELDS, type AdvancedFieldId } from './data/chemistryAdvancedData';
 import { chemistryData } from './data/chemistryData';
+import { englishListeningData } from './data/englishListeningData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIdleReset } from './hooks/useIdleReset';
 import { useIsMobile } from './hooks/useMediaQuery';
@@ -500,6 +501,9 @@ export default function App() {
     setAppMode(mode);
     if (mode === 'learning') {
       setAppState('learning');
+    } else if (selectedSubject === 'english_listening') {
+      // 英語リスニングは分野選択を持たず、そのまま大問（単元）選択へ進む。
+      setAppState('chapters');
     } else if (selectedSubject === 'chemistry') {
       // 化学（発展）は単元の前に「理論／無機／有機」の分野選択を挙む。
       setAppState('advanced_fields');
@@ -600,13 +604,14 @@ export default function App() {
   };
 
   /**
-   * 選択中の章。
-   * 化学基礎と化学（発展）の両方から探す。
-   * 章ID は接頭辞（c… / a…）で重複しないため、単純な連結で安全に引ける。
+   * 選択中の章（単元）。
+   * 化学基礎・化学（発展）・英語リスニングのすべてから探す。
+   * 単元ID は接頭辞（c… / a… / el…）で重複しないため、単純な連結で安全に引ける。
    */
   const selectedChapter = [
     ...chemistryData.parts.flatMap(p => p.chapters as any[]),
     ...chemistryAdvancedData.parts.flatMap(p => p.chapters as any[]),
+    ...englishListeningData.parts.flatMap(p => p.chapters as any[]),
   ].find(c => (c as any).id === selectedChapterId);
 
   return (
@@ -651,11 +656,11 @@ export default function App() {
                 onBack={() => setAppState('home')}
               />
             )}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'} isGuest={isGuest} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} />}
             {appState === 'leaderboard' && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
             {appState === 'logical_tree' && <LogicalTree />}
-            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'} />}
+            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} />}
             {appState === 'mock_exam' && <MockExam onBack={() => setAppState('mode_selection')} />}
             {appState === 'learning' && (
               <LearningViewer
@@ -675,7 +680,7 @@ export default function App() {
                 mode={appMode as 'mini_test' | 'practice'}
                 onSelectChapter={handleSelectChapter}
                 onBack={() => setAppState(selectedSubject === 'chemistry' ? 'advanced_fields' : 'mode_selection')}
-                subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'}
+                subject={selectedSubject}
                 field={selectedField}
                 fieldTitle={ADVANCED_FIELDS.find(f => f.id === selectedField)?.title}
               />

@@ -9,7 +9,7 @@ interface ModeSelectionProps {
   onBack: () => void;
   onMockExam?: () => void;
   /** 選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
-  subject?: 'chemistry_basic' | 'chemistry';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening';
 }
 
 export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic' }: ModeSelectionProps) {
@@ -22,6 +22,12 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
    * 両方の科目で表示する（非表示のままだと、化学を選んだ人がプリントにたどり着けない）。
    */
   const isAdvanced = subject === 'chemistry';
+  /**
+   * 英語リスニングはまず大問（単元）だけを公開した段階なので、
+   * まとめプリント（学習インプット）・出題傾向・予想問題はまだ無い。
+   * 空の画面へ連れていかないよう、「演習問題」だけを出す（カードの見た目は他科目と同じ）。
+   */
+  const isListening = subject === 'english_listening';
   const [showOverallTrend, setShowOverallTrend] = useState(false);
 
   useEffect(() => {
@@ -49,8 +55,9 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 w-full max-w-3xl md:grid-cols-2">
-          {/* 学習(インプット)ボタン（化学基礎・化学の両方） */}
+        <div className={`grid grid-cols-1 gap-6 w-full ${isListening ? 'max-w-md' : 'max-w-3xl md:grid-cols-2'}`}>
+          {/* 学習(インプット)ボタン（化学基礎・化学の両方。リスニングは未収録） */}
+          {!isListening && (
           <button
             onClick={() => onSelectMode('learning')}
             className="group bg-white p-6 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:border-[#F4D03F] hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
@@ -65,6 +72,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
                 : '基礎知識をしっかりと身につけます。'}
             </p>
           </button>
+          )}
 
           {/* 演習問題ボタン */}
           <button
@@ -76,7 +84,9 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
             </div>
             <h3 className="text-xl md:text-2xl font-bold font-handwriting text-[#2C3E50] mb-3 md:mb-4">演習問題</h3>
             <p className="text-sm md:text-base text-gray-600 font-handwriting leading-relaxed">
-              より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。
+              {isListening
+                ? '第1問〜第6問の大問別に単元を選んで取り組みます。'
+                : 'より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。'}
             </p>
           </button>
         </div>
@@ -88,8 +98,15 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           </p>
         )}
 
+        {/* 英語リスニングで準備中のコンテンツがあることを明示する。 */}
+        {isListening && (
+          <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
+            ※ まずは大問（第1問〜第6問）の単元を公開しています。問題・音声・「学習(インプット)」は順次追加していきます。
+          </p>
+        )}
+
         {/* 演習問題ボタンの下に追加ボタンを配置（化学基礎のみ） */}
-        {!isAdvanced && (
+        {subject === 'chemistry_basic' && (
         <div className="w-full max-w-3xl mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* 全体出題傾向ボタン */}
           <button

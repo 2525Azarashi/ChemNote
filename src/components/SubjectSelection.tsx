@@ -50,6 +50,7 @@ import { FeedbackModal } from './FeedbackModal';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
 import { chemistryData } from '../data/chemistryData';
 import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
+import { getListeningStats } from '../data/englishListeningData';
 
 /** アプリが扱う科目の識別子 */
 export type SubjectId = 'chemistry_basic' | 'chemistry' | 'english_listening';
@@ -142,6 +143,13 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
     return { chapters: chapters.length, questions };
   }, []);
 
+  /**
+   * 英語リスニングの収録ボリューム。
+   * 化学（発展）と同じやり方で、まずは大問（単元）だけを公開し、
+   * 問題は順次追加していく。数字はデータから算出する。
+   */
+  const listeningStats = useMemo(() => getListeningStats(), []);
+
   const subjects: SubjectDefinition[] = useMemo(() => [
     {
       id: 'chemistry_basic',
@@ -173,16 +181,16 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
       id: 'english_listening',
       title: '英語リスニング',
       latin: 'English Listening',
-      description: '共通テスト「英語リスニング」対策。現在、鋭意制作中です。',
+      description: '共通テスト「英語リスニング」を、本試験と同じ大問の並びで配置。大問ごとに選んで学習できます。',
       highlights: [
-        '第1〜6問の設問形式別トレーニング',
-        '1回読み・複数話者への対応力',
-        'ディクテーションと聞き取りメモの型',
+        `第1問〜第6問の全${listeningStats.units}単元を本試験順で収録（問題は順次追加中）`,
+        `配点${listeningStats.points}点・マーク${listeningStats.marks}個の大問構成に対応`,
+        '化学と同じ単元画面・同じ演習の進め方',
       ],
-      available: false,
+      available: true,
       icon: Headphones,
     },
-  ], [basicStats, advancedStats]);
+  ], [basicStats, advancedStats, listeningStats]);
 
   // ===================================================================
   // カルーセル（横スクロール）の制御

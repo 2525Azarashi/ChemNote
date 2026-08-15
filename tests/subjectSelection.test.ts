@@ -6,7 +6,9 @@ import { describe, it, expect, vi } from 'vitest';
  * 科目選択（タイトル）画面の回帰テスト
  * ===================================================================
  * ご要望：
- *   - 「英語リスニング」を、化学と同じく未開発（準備中）として追加する
+ *   - 「英語リスニング」を科目として追加する
+ *     → 後に「まずは大問（第1問〜第6問）の単元を追加」となったため、
+ *       化学（発展）と同じ方針で available: true に変更した。
  *   - ウィンドウのサイズは今までと同じ
  *   - 横スクロールで選べるようにする（カルーセル方式）
  *
@@ -54,13 +56,13 @@ describe('科目の定義', () => {
     expect(isSubjectId(null)).toBe(false);
   });
 
-  it('英語リスニングは available: false（＝準備中）として定義されている', () => {
-    // 定義ブロックを切り出して確認する
+  it('英語リスニングは available: true（＝公開中）として定義されている', () => {
+    // 大問（第1問〜第6問）の単元を先に公開し、問題は順次追加していく方針。
     const block = SRC.slice(SRC.indexOf("id: 'english_listening'"));
     const end = block.indexOf('},');
     const def = block.slice(0, end);
     expect(def).toContain("title: '英語リスニング'");
-    expect(def).toContain('available: false');
+    expect(def).toContain('available: true');
     expect(def).toContain('icon: Headphones');
   });
 
@@ -74,11 +76,11 @@ describe('科目の定義', () => {
     expect(def).toContain('icon: FlaskConical');
   });
 
-  it('化学基礎と化学が公開中で、英語リスニングだけ準備中', () => {
+  it('3科目すべてが公開中（準備中の科目は無い）', () => {
     const availableTrue = (SRC.match(/available: true/g) || []).length;
     const availableFalse = (SRC.match(/available: false/g) || []).length;
-    expect(availableTrue).toBe(2);
-    expect(availableFalse).toBe(1);
+    expect(availableTrue).toBe(3);
+    expect(availableFalse).toBe(0);
   });
 });
 
@@ -154,5 +156,19 @@ describe('App 側の結線', () => {
   it('localStorage に古い/壊れた科目IDが入っていても化学基礎に倒す', () => {
     expect(APP).toContain('isSubjectId(saved)');
     expect(APP).not.toContain('as SubjectId) ||');
+  });
+
+  it('選択中の科目が「化学 or 化学基礎」に潰されず、そのまま各画面へ渡る', () => {
+    // 以前は 2科目前提の三項演算子で english_listening が化学基礎に丸められていた。
+    // ホーム・モード選択・単元選択は selectedSubject をそのまま受け取る。
+    expect(APP).toContain('subject={selectedSubject}');
+    // まとめプリント（LearningViewer）は化学系のみなので従来の分岐を残す
+    expect(APP).toContain("subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'}");
+  });
+
+  it('英語リスニングは分野選択を挟まず、直接単元選択へ進む', () => {
+    expect(APP).toContain("selectedSubject === 'english_listening'");
+    // 単元データが「選択中の単元」の探索対象に含まれている
+    expect(APP).toContain('englishListeningData.parts.flatMap');
   });
 });
