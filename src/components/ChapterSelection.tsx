@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { chemistryData } from '../data/chemistryData';
 import { chemistryAdvancedData, type AdvancedFieldId } from '../data/chemistryAdvancedData';
 import { englishListeningData } from '../data/englishListeningData';
-import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X } from 'lucide-react';
+import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X, Headphones } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
 import { TrendModal } from './TrendModal';
@@ -11,6 +11,8 @@ import { chemistryAdvancedTrendDataset } from '../data/chemistryAdvancedTrendDat
 import { DoorMascot } from './DoorMascot';
 import { subjectTheme } from '../data/subjectTheme';
 import { MolBasicsSection } from './MolBasicsSection';
+import { ListeningAudioPlayer } from './ListeningAudioPlayer';
+import type { ListeningAudioTrack } from '../data/englishListeningQ1AProblems';
 
 interface ChapterSelectionProps {
   mode: 'mini_test' | 'practice';
@@ -122,6 +124,30 @@ const chapterGroups = buildChapterGroups(chemistryData.parts as any[]);
 const listeningGroups = buildChapterGroups(englishListeningData.parts as any[]);
 
 /**
+ * 単元の中に収録されている音源を、回（problem）ごとにまとめて取り出す。
+ *
+ * ご要望「復習用の音源を聞く場所もしっかりと作って」に対応するためのもの。
+ * 問題を解き直さなくても、単元選択の画面からいつでも音源だけを
+ * 聞き直せるようにする（＝復習専用の入口）。
+ */
+function collectAudioSets(
+  chapter: any,
+): { id: string; title: string; readCount: 1 | 2; tracks: ListeningAudioTrack[] }[] {
+  const problems: any[] = [
+    ...((chapter?.practiceProblems as any[]) || []),
+    ...((chapter?.miniTest as any[]) || []),
+  ];
+  return problems
+    .filter((p) => Array.isArray(p?.audioTracks) && p.audioTracks.length > 0)
+    .map((p) => ({
+      id: p.id,
+      title: p.category || chapter.abstractTitle,
+      readCount: (p.readCount || 2) as 1 | 2,
+      tracks: p.audioTracks as ListeningAudioTrack[],
+    }));
+}
+
+/**
  * タブに出す見出しを「小さな添え字（上段）＋ 見出し（下段）」に分解する。
  *
  * - 化学基礎／化学：「1章 物質の構成」→ 上段「1章」／下段「物質の構成」
@@ -166,6 +192,11 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
   }, [isAdvanced, isListening, field]);
 
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null);
+  /**
+   * 復習用音源パネルで開いている回（problem.id）。
+   * 英語リスニングのみで使う。null なら閉じている。
+   */
+  const [openAudioSetId, setOpenAudioSetId] = useState<string | null>(null);
   const [activeGroupTitle, setActiveGroupTitle] = useState(groups[0]?.title || '');
   const [selectedFlowchart, setSelectedFlowchart] = useState<{ id: string; title: string; questions: any[] } | null>(null);
 
@@ -173,6 +204,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
   useEffect(() => {
     setActiveGroupTitle(groups[0]?.title || '');
     setExpandedChapterId(null);
+    setOpenAudioSetId(null);
   }, [groups]);
 
   const activeGroup = groups.find(group => group.title === activeGroupTitle) || groups[0];
@@ -258,6 +290,9 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                   onClick={() => {
                     setActiveGroupTitle(group.title);
                     setExpandedChapterId(null);
+                    // 大問を切り替えたら、開いていた復習用音源パネルも閉じる
+                    // （別の大問の音源が開いたまま残るのを防ぐ）
+                    setOpenAudioSetId(null);
                     document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
                   }}
                   className={`shrink-0 rounded-xl border px-3 py-2 text-left transition-all cursor-pointer ${
@@ -326,6 +361,10 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                   })()
                 );
                 const trendInfo = trendUnitMap[chapter.id];
+                // 英語リスニングの単元に収録されている音源（回ごと）。
+                // 1つでもあれば「復習用音源」ボタンをカードに出す。
+                const audioSets = isListening ? collectAudioSets(chapter) : [];
+                const hasAudio = audioSets.length > 0;
 
                 return (
                   <article
@@ -383,6 +422,30 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                           <span className="rounded-lg bg-slate-100/70 px-2.5 py-1.5 text-[11px] text-slate-400">準備中</span>
                         )}
 
+                        {/* ★復習用の音源（英語リスニングのみ）
+                            問題を解き直さなくても音源だけを聞き直せる入口。
+                            ヘッドホンアイコン＋ミントの配色で、他のボタンから
+                            一目で区別できるようにしている。 */}
+                        {hasAudio && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const first = audioSets[0].id;
+                              setOpenAudioSetId(openAudioSetId === first ? null : first);
+                            }}
+                            aria-expanded={openAudioSetId === audioSets[0].id}
+                            className={`inline-flex items-center gap-1 rounded-lg border p-1.5 text-[10px] font-bold transition-colors cursor-pointer ${
+                              openAudioSetId === audioSets[0].id
+                                ? 'border-[#3E9C93] bg-[#3E9C93] text-white'
+                                : 'border-[#5BC0BE]/60 bg-[#EAF9F6] text-[#2F7C74] hover:bg-[#D8F3EE]'
+                            }`}
+                            title="復習用の音源を聞く（問題を解かずに音声だけ再生）"
+                          >
+                            <Headphones size={12} />
+                            音源
+                          </button>
+                        )}
+
                         <button
                           type="button"
                           onClick={() => setSelectedFlowchart({ id: chapter.id, title: chapter.abstractTitle, questions })}
@@ -438,6 +501,58 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                 );
               })}
             </div>
+
+            {/* ================================================================
+                復習用の音源を聞く場所（英語リスニングのみ）
+                ================================================================
+                ご要望「復習用の音源を聞く場所もしっかりと作って」に対応。
+
+                ・単元カードは横4列のグリッドで幅が狭いため、プレーヤー本体は
+                  グリッドの**下に全幅**で開く（スクリプトや語句が読める幅を確保）。
+                ・カード側の「音源」ボタンと連動し、押した回のパネルが開く。
+                ・問題を解かなくても再生できるので、通学中の聞き直しに使える。 */}
+            {isListening && (
+              <AnimatePresence initial={false}>
+                {(() => {
+                  const sets = activeGroup.chapters.flatMap((c: any) => collectAudioSets(c));
+                  const target = sets.find((s) => s.id === openAudioSetId);
+                  if (!target) return null;
+                  return (
+                    <motion.div
+                      key={target.id}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-3">
+                        <div className="mb-1.5 flex items-center justify-between gap-2">
+                          <p className="text-[11px] font-bold text-[#2F7C74]">
+                            復習用音源 ／ {target.title}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => setOpenAudioSetId(null)}
+                            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-500 transition-colors hover:bg-slate-50 cursor-pointer"
+                          >
+                            <X size={11} />
+                            閉じる
+                          </button>
+                        </div>
+                        <ListeningAudioPlayer
+                          tracks={target.tracks}
+                          mode="review"
+                          tone="light"
+                          readCount={target.readCount}
+                          title="復習用の音源を聞く"
+                        />
+                      </div>
+                    </motion.div>
+                  );
+                })()}
+              </AnimatePresence>
+            )}
           </section>
         )}
 

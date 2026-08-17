@@ -253,6 +253,151 @@ describe('まとめプリントの科目切り替え', () => {
 });
 
 /* ==================================================================
+ * 「重要事項ごとに見る」ボタン（熱化学）
+ *
+ * ■ 背景
+ *   熱化学の章が1本の長いHTMLで、
+ *     ・内容が省略されていて足りない
+ *     ・同じ熱化学でも重要事項ごとに切り替えて見たい
+ *   という要望を受けて ADV_THERMO_PARTS に分割した。
+ *   ここでは「分割データが壊れていないこと」と
+ *   「従来の通し表示・印刷が生きていること」を守る。
+ * ================================================================== */
+describe('熱化学の重要事項ごとの分割（ADV_THERMO_PARTS）', () => {
+  const advSrc = read('src/data/learningContent/adv_thermo.ts');
+
+  it('重要事項の配列をエクスポートし、バレルからも出している', () => {
+    expect(advSrc).toContain('export const ADV_THERMO_PARTS');
+    expect(barrelSrc).toContain('ADV_THERMO_PARTS');
+    expect(barrelSrc).toContain('LearningPart');
+  });
+
+  it('★ 通し表示用の ADV_THERMO_HTML は全パートの連結で作る（本文の二重管理を防ぐ）', () => {
+    expect(advSrc).toMatch(
+      /export const ADV_THERMO_HTML\s*=\s*ADV_THERMO_PARTS\.map\(p => p\.html\)\.join/,
+    );
+  });
+
+  it('★ 重要事項①〜⑦がすべて揃っている（配布プリントの実物どおり）', () => {
+    // 配布プリントの重要事項は①〜⑦。
+    // ⑧はアプリ側で勝手に作っていた番号だったので、実物に合わせて廃止した。
+    for (const no of ['①', '②', '③', '④', '⑤', '⑥', '⑦']) {
+      expect(advSrc).toContain(`重要事項${no}`);
+    }
+    // プリントには重要事項のほかに「定期テスト・入試に出やすいこと⓵」がある
+    expect(advSrc).toContain('定期テスト・入試に出やすいこと①');
+    // ゴール・総まとめを含めて14ブロック
+    const ids = advSrc.match(/^\s*\{ id: '[a-z0-9]+', no:/gm) ?? [];
+    expect(ids.length).toBe(14);
+  });
+
+  it('★ プリントのコラム❶〜❺と演習1〜20が省略されずに入っている', () => {
+    for (const kw of ['コラム❶', 'コラム❷', 'コラム❸', 'コラム❹', 'コラム❺', '深堀りコラム']) {
+      expect(advSrc).toContain(kw);
+    }
+    for (let i = 1; i <= 20; i += 1) {
+      expect(advSrc).toContain(`演習${i} `);
+    }
+  });
+
+  it('★ 実物プリント特有の重要語がそろっている（エントロピー・光の節）', () => {
+    for (const kw of [
+      'ΔG ＝ ΔH − TΔS',
+      'エントロピー増大の法則',
+      'ギブスエネルギー',
+      '光電極',
+      'ルシフェリン',
+      'ルシフェラーゼ',
+      'オキシルシフェリン',
+      'ケミカルライト',
+      'ルミノール',
+      '光化学反応',
+    ]) {
+      expect(advSrc).toContain(kw);
+    }
+  });
+
+  it('★ 各パートは id / no / title / short / html をすべて持つ', () => {
+    const block = advSrc.slice(
+      advSrc.indexOf('export const ADV_THERMO_PARTS'),
+      advSrc.indexOf('export const ADV_THERMO_HTML'),
+    );
+    const rows = block.match(/\{ id: [\s\S]*?\},/g) ?? [];
+    expect(rows.length).toBeGreaterThanOrEqual(10);
+    for (const row of rows) {
+      for (const key of ['id:', 'no:', 'title:', 'short:', 'html:']) {
+        expect(row).toContain(key);
+      }
+    }
+  });
+
+  it('★ 省略されていた重要事項（熱量測定・分解/状態変化・弱酸の中和）が入っている', () => {
+    // 「内容を省略しないで入れてほしい」という要望に対する回帰テスト。
+    // まとめプリントに載っていて、以前の版に無かった項目を名指しで押さえる。
+    for (const kw of [
+      'Q ［J］ ＝ m ［g］ × c ［J/(g・K)］ × Δt ［K］', // 熱量の基本式
+      '比熱',
+      '熱容量',
+      '外挿',
+      '分解エンタルピー',
+      '融解エンタルピー',
+      '蒸発エンタルピー',
+      '昇華エンタルピー',
+      '弱酸',
+      '結合エンタルピー',
+      '光触媒',
+      '化学発光',
+    ]) {
+      expect(advSrc).toContain(kw);
+    }
+  });
+
+  it('★ 例題は分割前より増えている（薄いままの節が残っていない）', () => {
+    const examples = advSrc.match(/box box-example/g) ?? [];
+    expect(examples.length).toBeGreaterThanOrEqual(14);
+  });
+});
+
+describe('LearningViewer の「重要事項ごとに見る」UI', () => {
+  it('★ パート分割データを読み込み、章ごとの対応表を持つ', () => {
+    expect(viewerSrc).toContain('ADV_THERMO_PARTS');
+    expect(viewerSrc).toContain('SECTION_PARTS');
+    expect(viewerSrc).toContain("ALL_PARTS_ID");
+  });
+
+  it('★ 「すべて通して読む」と各重要事項のボタンを出す', () => {
+    expect(viewerSrc).toContain('重要事項ごとに見る');
+    expect(viewerSrc).toContain('すべて通して読む');
+    expect(viewerSrc).toMatch(/parts\.map\(part =>/);
+    expect(viewerSrc).toMatch(/onClick=\{\(\) => selectPart\(part\.id\)\}/);
+  });
+
+  it('★ 選択中のパートだけを描画する（未選択なら章まるごと）', () => {
+    expect(viewerSrc).toMatch(/currentPart \? currentPart\.html : fullSectionHtml/);
+  });
+
+  it('★ パートを切り替えたら本文を作り直す（key に含める）', () => {
+    expect(viewerSrc).toMatch(/key=\{`\$\{activeTab\}:\$\{activePart\}/);
+  });
+
+  it('★ タブを移ったら「すべて」に戻す（前の章の①が残らない）', () => {
+    expect(viewerSrc).toMatch(/setActivePart\(ALL_PARTS_ID\)/);
+  });
+
+  it('★ 前へ / 次へで重要事項を読み進められる', () => {
+    expect(viewerSrc).toContain('前の重要事項');
+    expect(viewerSrc).toContain('次の重要事項');
+    expect(viewerSrc).toContain('prevPart');
+    expect(viewerSrc).toContain('nextPart');
+  });
+
+  it('★ 絞り込み中は印刷タイトル・紙のヘッダーにも重要事項名を入れる', () => {
+    expect(viewerSrc).toMatch(/currentPart \? `_\$\{currentPart\.no\}\$\{currentPart\.title\}`/);
+    expect(viewerSrc).toMatch(/currentPart \? `　\$\{currentPart\.no\}\$\{currentPart\.title\}`/);
+  });
+});
+
+/* ==================================================================
  * 強調表記（語句＝太字＋太い下線 / 文章＝太字＋太い波線・いずれも黒）
  *
  * ■ 背景

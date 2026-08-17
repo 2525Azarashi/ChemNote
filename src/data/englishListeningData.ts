@@ -41,6 +41,9 @@
  *  ※ 配点は大問単位（A・B合計）で公表されるため、A/B に共通の値を持たせている。
  */
 
+import { EL1_A_PROBLEMS } from './englishListeningQ1AProblems';
+import { enhanceExplanation, isStructuredExplanation } from '../utils/explanationFormat';
+
 /** 1つの単元（アプリ上の1単元）。他科目の chapter と同形。 */
 export interface ListeningChapter {
   id: string;
@@ -185,6 +188,44 @@ export const englishListeningData: { parts: ListeningPart[] } = {
     },
   ],
 };
+
+// =====================================================================
+// 問題の流し込み
+// =====================================================================
+//
+// 化学（chemistryAdvancedData.ts）とまったく同じ手順で、
+// 別ファイルに切り出した問題を単元IDをキーに割り当てる。
+// 回（第1回・第2回…）を増やすときは問題ファイル側の配列に足すだけでよい。
+
+/** 単元ID → 演習問題。収録済みの単元だけを列挙する。 */
+const LISTENING_PROBLEMS: Record<string, any[]> = {
+  el1_A: EL1_A_PROBLEMS,
+};
+
+(() => {
+  for (const chapter of englishListeningData.parts.flatMap((p) => p.chapters)) {
+    const problems = LISTENING_PROBLEMS[chapter.id];
+    if (problems && problems.length > 0) {
+      chapter.practiceProblems = problems;
+    }
+  }
+})();
+
+// 解説を「解答カード → 小問ごとのアコーディオン」へ自動整形する。
+// enhanceExplanation は冪等（整形済みマーカーで二重適用を防ぐ）なので、
+// HMR で再評価されても壊れない。
+(() => {
+  for (const chapter of englishListeningData.parts.flatMap((p) => p.chapters)) {
+    const problems = [...(chapter.practiceProblems || []), ...(chapter.miniTest || [])];
+    for (const problem of problems) {
+      if (!problem) continue;
+      if (typeof problem.explanation === 'string' && isStructuredExplanation(problem.explanation)) {
+        continue;
+      }
+      problem.explanation = enhanceExplanation(problem);
+    }
+  }
+})();
 
 /** 単元選択画面などで使う「区分」の一覧 */
 export const LISTENING_SECTIONS = [

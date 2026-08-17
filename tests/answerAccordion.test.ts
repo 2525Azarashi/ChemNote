@@ -176,7 +176,11 @@ describe('④ 表示側の結線（LearningViewer）', () => {
   it('一括開閉のときだけ本文を作り直す（key に開閉状態を含める）', () => {
     // key を固定にすると「すべて開く」が効かず、
     // 逆に毎回変えると個別に開いた解答が勝手に閉じてしまう。
-    expect(VIEWER).toMatch(/key=\{`\$\{activeTab\}:\$\{allAnswersOpen \? 'open' : 'closed'\}`\}/);
+    // 「重要事項ごとに見る」を入れたので、切り替え単位として
+    // activePart も key に含まれる（パートを移ったら本文は作り直す）。
+    expect(VIEWER).toMatch(
+      /key=\{`\$\{activeTab\}:\$\{activePart\}:\$\{allAnswersOpen \? 'open' : 'closed'\}`\}/,
+    );
   });
 
   it('解答が無いセクションでは一括ボタンを出さない', () => {

@@ -84,8 +84,18 @@ describe('他科目と同じ形（画面を流用するための約束）', () =
     }
   });
 
-  it('問題はまだ未収録（＝画面上は「準備中」と出る段階）', () => {
-    expect(getListeningStats().questions).toBe(0);
+  it('第1問A には問題が収録され、他の単元はまだ「準備中」', () => {
+    // 第1問A に第1回を差し込んだので、収録数は 0 ではなくなる。
+    expect(getListeningStats().questions).toBeGreaterThan(0);
+
+    for (const chapter of getAllListeningChapters()) {
+      if (chapter.id === 'el1_A') {
+        expect(chapter.practiceProblems.length).toBeGreaterThan(0);
+      } else {
+        // まだ収録していない単元は空のまま（画面上は「準備中」と出る）
+        expect(chapter.practiceProblems.length).toBe(0);
+      }
+    }
   });
 });
 

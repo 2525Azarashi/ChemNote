@@ -1,6 +1,6 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { ArrowLeft, BookOpen, Eye, EyeOff, Printer } from 'lucide-react';
+import { ArrowLeft, BookOpen, Eye, EyeOff, LayoutList, Printer } from 'lucide-react';
 import {
   LEARNING_GLOBAL_CSS,
   LEARNING_PRINT_CSS,
@@ -14,6 +14,8 @@ import {
   SECTION_2_2_HTML,
   SECTION_2_3_HTML,
   ADV_THERMO_HTML,
+  ADV_THERMO_PARTS,
+  type LearningPart,
 } from '../data/learningContent';
 import { MolBasicsSection } from './MolBasicsSection';
 import {
@@ -74,6 +76,25 @@ const BASIC_SECTION_HTML: Record<string, string> = {
 
 const ADVANCED_SECTION_HTML: Record<string, string> = {
   'adv-3': ADV_THERMO_HTML,
+};
+
+// ===================================================================
+// 「重要事項ごとに見る」ための分割データ
+// -------------------------------------------------------------------
+// 長い章を一気にスクロールさせると、どこを読んでいるのか分からなくなる。
+// そこで章を重要事項①②③…に切り分け、ボタン（チップ）で
+// 見たいところだけを出せるようにする。
+//
+// ・ここに登録が無いタブは従来どおり「1本の長い本文」を表示する
+//   （化学基礎側は原稿がそのままなので、何も変わらない）
+// ・「すべて」を選べば、これまでと同じ通し読みができる
+// ===================================================================
+
+/** 「すべて通して読む」を表す擬似パートID */
+export const ALL_PARTS_ID = 'all';
+
+const SECTION_PARTS: Record<string, LearningPart[]> = {
+  'adv-3': ADV_THERMO_PARTS,
 };
 
 /** 印刷ダイアログのタイトル（＝PDFの既定ファイル名）に使うセクション名 */
@@ -155,10 +176,14 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
   const [zoomFig, setZoomFig] = useState<{ src: string; alt: string } | null>(null);
   // 「解答をすべて表示」しているかどうか（タブを変えたらリセット）
   const [allAnswersOpen, setAllAnswersOpen] = useState(false);
+  // 表示中の「重要事項」。ALL_PARTS_ID なら章を通して読む。
+  const [activePart, setActivePart] = useState<string>(ALL_PARTS_ID);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setAllAnswersOpen(false);
+    // タブを移ったら「すべて」に戻す（前の章の①が選ばれたままにならないように）
+    setActivePart(ALL_PARTS_ID);
   }, [activeTab]);
 
   // 科目が変わったら、その科目に無いタブは目次へ戻す（空白画面の防止）
@@ -196,12 +221,30 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
   // ここで allAnswersOpen を HTML に焼き込んでいるのが重要。
   // 「開いた状態」を DOM 側（d.open = true）に持たせると、React が
   // dangerouslySetInnerHTML を貼り直したときに開閉が消えてしまう。
-  const rawSectionHtml = SECTION_HTML[activeTab];
+  //
+  // 重要事項ボタンで絞り込んでいるときは、その重要事項のHTMLだけを描く。
+  // 「すべて」のときは章まるごと（＝従来と同じ本文）。
+  const parts = SECTION_PARTS[activeTab];
+  const currentPart = parts?.find(p => p.id === activePart) ?? null;
+  const fullSectionHtml = SECTION_HTML[activeTab];
+  const rawSectionHtml = currentPart ? currentPart.html : fullSectionHtml;
   const sectionHtml = useMemo(
     () => (rawSectionHtml ? normalizeAnswerAccordions(rawSectionHtml, allAnswersOpen) : rawSectionHtml),
     [rawSectionHtml, allAnswersOpen],
   );
   const answerCount = useMemo(() => countAnswerAccordions(rawSectionHtml || ''), [rawSectionHtml]);
+
+  // 重要事項を切り替えたら、解答の一括表示はリセットして本文の先頭へ戻す
+  const selectPart = useCallback((id: string) => {
+    setActivePart(id);
+    setAllAnswersOpen(false);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  // 「前の重要事項 / 次の重要事項」用。読み進める動線を残しておく。
+  const partIndex = parts && currentPart ? parts.findIndex(p => p.id === currentPart.id) : -1;
+  const prevPart = partIndex > 0 ? parts![partIndex - 1] : null;
+  const nextPart = parts && partIndex >= 0 && partIndex < parts.length - 1 ? parts[partIndex + 1] : null;
 
   // 解答の一括開閉。HTML を作り直すので、個別に開いていたものも
   // ボタンの状態にそろう（「すべて表示」なら全部開く／「すべて隠す」なら全部閉じる）。
@@ -233,7 +276,11 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
     const body = document.body;
     const modeClass = PRINT_MODE_CLASS[mode];
     const prevTitle = document.title;
-    const sectionTitle = SECTION_PRINT_TITLE[activeTab] || 'まとめプリント';
+    // 重要事項で絞り込んでいるときは、その名前もファイル名に入れる
+    // （「熱化学のヘスの法則だけ刷った紙」が後から判別できるように）
+    const baseTitle = SECTION_PRINT_TITLE[activeTab] || 'まとめプリント';
+    const partTitle = currentPart ? `_${currentPart.no}${currentPart.title}` : '';
+    const sectionTitle = `${baseTitle}${partTitle}`;
     const suffix = mode === 'answers' ? '解答つき' : '解答なし';
 
     // 印刷モードのクラスは常に片方だけ付く状態にする
@@ -257,7 +304,7 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
       // Safari など afterprint を発火しない環境向けの保険
       window.setTimeout(restore, 1500);
     }
-  }, [activeTab, config.label, SECTION_PRINT_TITLE]);
+  }, [activeTab, config.label, SECTION_PRINT_TITLE, currentPart]);
 
   // タブを切り替えたら印刷メニューは閉じる（別セクションを刷ってしまう事故を防ぐ）
   useEffect(() => setPrintMenuOpen(false), [activeTab]);
@@ -388,6 +435,8 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
               <div className="lc-print-title">{config.label} まとめプリント</div>
               <div className="lc-print-sub">
                 {SECTION_PRINT_TITLE[activeTab] || ''}
+                {/* 重要事項で絞り込んでいるときは、紙の見出しにもその名前を出す */}
+                {currentPart ? `　${currentPart.no}${currentPart.title}` : ''}
                 {SECTION_PART_LABEL[activeTab] ? `　（${SECTION_PART_LABEL[activeTab]}）` : ''}
               </div>
               <div className="lc-print-meta">
@@ -548,6 +597,53 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
               </div>
             )}
 
+            {/* ====== 重要事項ごとに見るボタン ======
+                長い章を一気にスクロールするのではなく、重要事項①②③…を
+                チップで選んでピンポイントに読めるようにする。
+                印刷は選んでいる重要事項だけを刷る（＝1テーマ1枚のプリントになる）。 */}
+            {parts && parts.length > 0 && (
+              <div className={`mb-5 rounded-2xl border-2 border-[#c9bce6] bg-white/90 p-3 sm:p-4 ${NO_PRINT_CLASS}`}>
+                <div className="mb-2 flex items-center gap-1.5">
+                  <LayoutList size={14} className="text-[#7c3aed]" />
+                  <span className="text-[11px] font-extrabold tracking-widest text-[#7c3aed]">
+                    重要事項ごとに見る
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => selectPart(ALL_PARTS_ID)}
+                    aria-pressed={activePart === ALL_PARTS_ID}
+                    className={`rounded-xl border-2 px-3 py-2 text-[11px] font-extrabold transition-colors cursor-pointer
+                      ${activePart === ALL_PARTS_ID
+                        ? 'border-[#5b21b6] bg-[#5b21b6] text-white shadow-md'
+                        : 'border-[#c9bce6] bg-white text-[#5b21b6] hover:bg-[#f3ecff]'}`}
+                  >
+                    すべて通して読む
+                  </button>
+                  {parts.map(part => (
+                    <button
+                      key={part.id}
+                      type="button"
+                      onClick={() => selectPart(part.id)}
+                      aria-pressed={activePart === part.id}
+                      className={`rounded-xl border-2 px-3 py-2 text-[11px] font-extrabold transition-colors cursor-pointer
+                        ${activePart === part.id
+                          ? 'border-[#7c3aed] bg-[#7c3aed] text-white shadow-md'
+                          : 'border-[#c9bce6] bg-[#faf7ff] text-[#5b21b6] hover:bg-[#f0e7ff]'}`}
+                    >
+                      {part.short}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-2 border-t border-[#e3daf5] pt-2 text-[10px] font-bold leading-relaxed text-[#8b81a3]">
+                  {currentPart
+                    ? `「${currentPart.no}${currentPart.title}」だけを表示中。印刷するとこの部分だけのプリントになります。`
+                    : '章全体を表示中。重要事項を選べば、そこだけに絞り込んで読めます。'}
+                </p>
+              </div>
+            )}
+
             {/* ====== 各章 (1-1 〜 2-3) — 元のフル HTML を忠実に表示 ====== */}
             {sectionHtml && (
               <div className="animate-fade-in-up">
@@ -582,11 +678,56 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
                     key が同じ間は React が DOM を触らないので、
                     個別に開いた解答は勝手に閉じない。 */}
                 <article
-                  key={`${activeTab}:${allAnswersOpen ? 'open' : 'closed'}`}
+                  key={`${activeTab}:${activePart}:${allAnswersOpen ? 'open' : 'closed'}`}
                   className="learning-content"
                   onClick={handleContentClick}
                   dangerouslySetInnerHTML={{ __html: sectionHtml }}
                 />
+
+                {/* ====== 重要事項の「前へ / 次へ」 ======
+                    絞り込んで読んでいるときだけ出す。上まで戻らずに
+                    そのまま次の重要事項へ進めるようにするため。 */}
+                {currentPart && (
+                  <div className={`mt-8 flex flex-wrap items-stretch justify-between gap-3 border-t-2 border-dotted border-[#c9bce6] pt-5 ${NO_PRINT_CLASS}`}>
+                    {prevPart ? (
+                      <button
+                        type="button"
+                        onClick={() => selectPart(prevPart.id)}
+                        className="flex-1 min-w-[45%] rounded-xl border-2 border-[#c9bce6] bg-white px-3 py-2.5 text-left transition-colors hover:bg-[#f3ecff] cursor-pointer"
+                      >
+                        <span className="block text-[10px] font-extrabold tracking-widest text-[#8b81a3]">← 前の重要事項</span>
+                        <span className="mt-0.5 block text-xs font-extrabold text-[#5b21b6]">
+                          {prevPart.no}{prevPart.title}
+                        </span>
+                      </button>
+                    ) : (
+                      <span className="flex-1 min-w-[45%]" />
+                    )}
+                    {nextPart ? (
+                      <button
+                        type="button"
+                        onClick={() => selectPart(nextPart.id)}
+                        className="flex-1 min-w-[45%] rounded-xl border-2 border-[#7c3aed] bg-[#f7f2ff] px-3 py-2.5 text-right transition-colors hover:bg-[#f0e7ff] cursor-pointer"
+                      >
+                        <span className="block text-[10px] font-extrabold tracking-widest text-[#7c3aed]">次の重要事項 →</span>
+                        <span className="mt-0.5 block text-xs font-extrabold text-[#5b21b6]">
+                          {nextPart.no}{nextPart.title}
+                        </span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => selectPart(ALL_PARTS_ID)}
+                        className="flex-1 min-w-[45%] rounded-xl border-2 border-[#7c3aed] bg-[#f7f2ff] px-3 py-2.5 text-right transition-colors hover:bg-[#f0e7ff] cursor-pointer"
+                      >
+                        <span className="block text-[10px] font-extrabold tracking-widest text-[#7c3aed]">最後の重要事項です</span>
+                        <span className="mt-0.5 block text-xs font-extrabold text-[#5b21b6]">
+                          章全体を通して読む →
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
