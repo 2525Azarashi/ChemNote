@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
-import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
+import React, { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
+import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy, Eraser, RotateCcw } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { ExplanationBody } from './ExplanationBody';
 import { Explanation } from './Explanation';
@@ -457,6 +457,74 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     localStorage.setItem(`quiz_expl_${chapter.id}_${mode}`, showingExplanation.toString());
   }, [showingExplanation, chapter.id, mode]);
 
+  // ────────────────────────────────────────────────────────────────
+  // 消去法（elimination）
+  // ────────────────────────────────────────────────────────────────
+  //
+  // ■ 何のための状態か
+  //   リスニングやイラスト選択では「これは違う」と分かった選択肢を先に潰し、
+  //   残りに集中するのが定石（消去法）。紙の問題冊子で選択肢に斜線を引く動作を
+  //   アプリ上で再現する。
+  //
+  // ■ 解答（answers）とは完全に別の状態にしている理由
+  //   同じ state に混ぜると「消したつもりが解答になっていた」という
+  //   取り違えが起きる。採点対象は answers のみ、消去は表示だけに効く、
+  //   と役割を分けることで誤答リスクを無くす。
+  //
+  // ■ 形
+  //   { [設問ID]: 消去した選択肢の配列 }
+  //   選択肢そのものの文字列で持つ（並び替えや添字ズレに影響されないため）。
+  const [eliminated, setEliminated] = useState<Record<string, string[]>>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(`quiz_elim_${chapter.id}_${mode}`) || '{}');
+    } catch {
+      return {};
+    }
+  });
+
+  /**
+   * 消去モード。
+   *   false … 通常。タップ＝解答を選ぶ
+   *   true  … 消去モード。タップ＝その選択肢に斜線を引く（解答は動かさない）
+   * 「タップの意味が変わる」ため、必ず画面上でモードが見えるようにする。
+   */
+  const [eliminateMode, setEliminateMode] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(`quiz_elim_${chapter.id}_${mode}`, JSON.stringify(eliminated));
+  }, [eliminated, chapter.id, mode]);
+
+  /** ある設問で、その選択肢が消去済みか。 */
+  const isEliminated = (sqId: string, opt: string) =>
+    (eliminated[sqId] || []).includes(opt);
+
+  /**
+   * 選択肢の消去をトグルする。
+   * 消した選択肢がすでに解答として選ばれていた場合は解答を外す
+   * （「違うと判断したものが答えのまま残る」矛盾を防ぐ）。
+   */
+  const toggleEliminate = (sqId: string, opt: string) => {
+    setEliminated((prev) => {
+      const cur = prev[sqId] || [];
+      const next = cur.includes(opt) ? cur.filter((o) => o !== opt) : [...cur, opt];
+      return { ...prev, [sqId]: next };
+    });
+    setAnswers((prev) => {
+      const cur = prev[sqId];
+      if (!cur) return prev;
+      // 単一選択でその選択肢が選ばれていたら外す
+      if (cur === opt && !(eliminated[sqId] || []).includes(opt)) {
+        return { ...prev, [sqId]: '' };
+      }
+      return prev;
+    });
+  };
+
+  /** この設問の消去をすべて元に戻す。 */
+  const clearEliminated = (sqId: string) => {
+    setEliminated((prev) => ({ ...prev, [sqId]: [] }));
+  };
+
   // New state for layout and highlighting
   const [isProblemExpanded, setIsProblemExpanded] = useState(false);
   const [highlights, setHighlights] = useState<string[]>([]);
@@ -752,7 +820,40 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     };
     const multiSep = detectMulti('・') ? '・' : (detectMulti('、') ? '、' : (detectMulti(',') ? ',' : null));
     const isMultiple = multiSep !== null;
+    const elimCount = (eliminated[sq.id] || []).length;
     return (
+      <div className="flex w-full flex-col gap-2">
+      {/*
+        消去法のスイッチ。
+        タップの意味が変わる操作なので、選択肢のすぐ上に置き
+        「いまどちらのモードか」を色と文言で必ず見せる。
+      */}
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setEliminateMode((v) => !v)}
+          aria-pressed={eliminateMode}
+          className={`flex min-h-[2.25rem] items-center gap-1.5 rounded-lg border-2 px-2.5 py-1 text-[11px] font-bold transition-colors cursor-pointer ${
+            eliminateMode
+              ? 'border-[#E8A87C] bg-[#E8A87C] text-white ring-2 ring-[#E8A87C]/30'
+              : 'border-gray-200 bg-white text-gray-500 hover:border-[#E8A87C]/60 hover:bg-orange-50/60'
+          }`}
+        >
+          <Eraser size={13} />
+          {eliminateMode ? '消去モード中（タップで斜線）' : '消去法を使う'}
+        </button>
+        {elimCount > 0 && (
+          <button
+            type="button"
+            onClick={() => clearEliminated(sq.id)}
+            className="flex min-h-[2.25rem] items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-[11px] font-bold text-gray-500 transition-colors cursor-pointer hover:bg-gray-50"
+          >
+            <RotateCcw size={12} />
+            消去を戻す（{elimCount}）
+          </button>
+        )}
+      </div>
+
       <div className={isLongOptionList
         ? "grid grid-cols-1 gap-2.5 w-full"
         // 注：以前ここに xs:grid-cols-3 があったが、Tailwind v4 の @theme に
@@ -765,11 +866,23 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           const isSelected = isMultiple
             ? (answers[sq.id] || '').split(multiSep as string).map(s => s.trim()).includes(opt.trim())
             : (answers[sq.id] || '') === opt;
+          const struck = isEliminated(sq.id, opt);
           return (
             <button
               key={opt}
               type="button"
+              aria-pressed={isSelected}
+              // 消去済みは支援技術にも「候補から外した」と伝える
+              aria-disabled={struck && !eliminateMode}
               onClick={() => {
+                // ---- 消去モード：解答は動かさず、斜線のオン／オフだけを切り替える ----
+                if (eliminateMode) {
+                  toggleEliminate(sq.id, opt);
+                  return;
+                }
+                // ---- 通常モード：消した選択肢は誤タップ防止のため選べない ----
+                //      もう一度候補に戻したいときは消去モードで解除する。
+                if (struck) return;
                 if (isMultiple) {
                   const separator = multiSep as string;
                   const current = (answers[sq.id] || '').split(separator).map(s => s.trim()).filter(Boolean);
@@ -784,15 +897,20 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               }}
               // スマホは 48px 以上の高さ・幅を確保してタップしやすくする（PC は従来寸法）。
               className={`px-4 py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${isLongOptionList ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3.25rem] md:min-w-[3rem] shadow-sm cursor-pointer
-                ${isSelected
-                  ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30 scale-[1.01]'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
+                ${struck
+                  // 消去済み：斜線＋グレーで「候補から外した」ことを一目で示す。
+                  // 紙の冊子で選択肢に線を引いた状態の再現。
+                  ? 'bg-gray-100 text-gray-400 border-gray-200 line-through decoration-2 decoration-[#E8A87C] opacity-70'
+                  : isSelected
+                    ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30 scale-[1.01]'
+                    : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
                 }`}
             >
               {formatText(opt)}
             </button>
           );
         })}
+      </div>
       </div>
     );
   };
@@ -1127,6 +1245,24 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     if (!currentQuestion) return [] as any[];
     return (currentQuestion.subQuestions || []).slice();
   }, [currentQuestion]);
+
+  // ────────────────────────────────────────────────────────────────
+  // 英語リスニング：問ごとの音源トラック
+  // ────────────────────────────────────────────────────────────────
+  //
+  // ご要望「1問題とそれに該当する再生ボタンを横に配置して」に対応するため、
+  // 「この設問(subId)に対応するトラックがあるか」を O(1) で引けるようにする。
+  // 解答カード側は subId で引いて、そのカードの横に再生ボタンを描く。
+  const listeningTracks: any[] = useMemo(() => {
+    const t = (currentQuestion as any)?.audioTracks;
+    return Array.isArray(t) ? t : [];
+  }, [currentQuestion]);
+
+  /** 設問IDに対応する音源トラックがあるか（無ければ再生ボタンを出さない）。 */
+  const hasTrackFor = useCallback(
+    (sqId: string) => listeningTracks.some((t) => t?.subId === sqId),
+    [listeningTracks],
+  );
 
   // 現在フォーカス中の設問オブジェクト（全形式対象）。
   const focusedSub = useMemo(() => {
@@ -1538,17 +1674,19 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               {/* ★英語リスニング：音源プレーヤーは問題文の「いちばん上」に置く。
                   リスニングでは音を聞くことが問題そのものなので、
                   スクロールせずに必ず目に入る位置に置き、
-                  ヘッドホンアイコンで「ここが音源」と一目で分かるようにする。 */}
-              {Array.isArray((currentQuestion as any).audioTracks) &&
-                (currentQuestion as any).audioTracks.length > 0 && (
-                  <ListeningAudioPlayer
-                    tracks={(currentQuestion as any).audioTracks}
-                    mode="practice"
-                    tone="light"
-                    readCount={(currentQuestion as any).readCount || 2}
-                    className="mb-4"
-                  />
-                )}
+                  ヘッドホンアイコンで「ここが音源」と一目で分かるようにする。
+
+                  なお「1問ごとの再生ボタン」は解答カードの横（右ペイン）にも出す。
+                  こちらのパネルは再生速度の切替と全問の一覧という役割に絞る。 */}
+              {listeningTracks.length > 0 && (
+                <ListeningAudioPlayer
+                  tracks={listeningTracks}
+                  mode="practice"
+                  tone="light"
+                  readCount={(currentQuestion as any).readCount || 2}
+                  className="mb-4"
+                />
+              )}
               {/* 問題文に含まれる Markdown テーブル（実験結果の表など）は
                   ExplanationBody を通して本物の <table> として描画する。 */}
               <ExplanationBody
@@ -1704,10 +1842,45 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 <div key={sq.id} className={`flex flex-col gap-4 bg-white p-5 rounded-2xl shadow-sm border transition-all duration-250 ${
                   isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
                 }`}>
-                  <div className="flex flex-col gap-3.5 w-full">
+                  {/*
+                    ★英語リスニング：1問とその再生ボタンを「横」に並べる（ご要望）
+                    ------------------------------------------------------------
+                    以前は問1〜問4の再生ボタンが問題文ペインの上部に1か所だけあり、
+                    解答するときに「今どの問を聞くのか」を目で探す必要があった。
+                    そこで、その設問に対応するトラックがある場合だけ、
+                    解答カードの左側に「その問専用の再生ボタン」を縦に細く置き、
+                    設問マーカー・選択肢と横並びにする。
+                    音源を持たない教科（化学など）では列が生えないので影響しない。
+                  */}
+                  <div className={hasTrackFor(sq.id) ? 'flex flex-row items-start gap-3' : 'contents'}>
+                    {hasTrackFor(sq.id) && (
+                      <ListeningAudioPlayer
+                        tracks={listeningTracks}
+                        focusSubId={sq.id}
+                        variant="inline"
+                        mode="practice"
+                        tone="light"
+                        readCount={(currentQuestion as any).readCount || 2}
+                      />
+                    )}
+                  <div className="flex flex-col gap-3.5 w-full min-w-0">
                     <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block">
                       {formatText(sqMarker)}
                     </span>
+
+                    {/*
+                      第1問B（イラスト選択）用：この設問のイラストをカード内に出す。
+                      ①〜④が1枚に収まった画像なので、選択肢チップの真上に置くと
+                      「絵を見ながらマークする」動きが最短になる。
+                    */}
+                    {sq.imageUrl && (
+                      <QuestionFigure
+                        src={sq.imageUrl}
+                        caption={sq.imageCaption}
+                        tone="light"
+                        className="w-full"
+                      />
+                    )}
                     
                     {sq.type === 'multiple_choice' ? (
                       isDesktop ? (
@@ -1848,6 +2021,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         )}
                       </div>
                     )}
+                  </div>
                   </div>
                 </div>
               );
@@ -2020,7 +2194,36 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 スクロール領域を 42vh → 46vh に広げ、一覧性を保つ。 */}
             {focusedSub.type === 'multiple_choice' ? (
               <div className="max-h-[46vh] overflow-y-auto py-1">
-                {renderMultipleChoiceControl(focusedSub)}
+                {/*
+                  ★英語リスニング（スマホ）：この問の再生ボタンを選択肢の「横」に置く。
+                  スマホでは画面幅が狭いので、PC と同じ左列レイアウトを踏襲しつつ
+                  ボタン列を細く（4.5rem）保ち、選択肢が潰れないようにしている。
+                  第1問B ではイラストも同じパネル内に出し、
+                  「絵を見る → その場でマークする」を1画面で完結させる。
+                */}
+                <div className={hasTrackFor(focusedSub.id) ? 'flex flex-row items-start gap-3' : 'contents'}>
+                  {hasTrackFor(focusedSub.id) && (
+                    <ListeningAudioPlayer
+                      tracks={listeningTracks}
+                      focusSubId={focusedSub.id}
+                      variant="inline"
+                      mode="practice"
+                      tone="light"
+                      readCount={(currentQuestion as any).readCount || 2}
+                    />
+                  )}
+                  <div className="min-w-0 flex-1 flex flex-col gap-2">
+                    {focusedSub.imageUrl && (
+                      <QuestionFigure
+                        src={focusedSub.imageUrl}
+                        caption={focusedSub.imageCaption}
+                        tone="light"
+                        className="w-full"
+                      />
+                    )}
+                    {renderMultipleChoiceControl(focusedSub)}
+                  </div>
+                </div>
               </div>
             ) : focusedSub.type === 'sorting' ? (
               <div className="max-h-[46vh] overflow-y-auto py-1">

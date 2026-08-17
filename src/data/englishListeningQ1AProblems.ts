@@ -56,8 +56,18 @@ export type ListeningAudioTrack = {
   label: string;
   /** 一言でわかる場面メモ（例：'電車に傘を忘れた'） */
   hint: string;
-  /** 音源のパス（public 配下の絶対パス） */
-  audioUrl: string;
+  /**
+   * 音源のパス（public 配下の絶対パス）。
+   *
+   * 任意項目にしている理由：
+   *   配布 PDF から取り込んだ類題集（第1問A 13セット・第1問B 15セット）には
+   *   MP3 が付属しない。audioUrl を必須にすると「音源が無い問題は登録できない」
+   *   ことになり、112問がアプリに載らなくなってしまう。
+   *   そこで未設定を許可し、ListeningAudioPlayer 側で
+   *   ブラウザの音声合成（SpeechSynthesis）が script を読み上げる。
+   *   MP3 を後から用意したら、このフィールドを埋めるだけで実音源に切り替わる。
+   */
+  audioUrl?: string;
   /** 読み上げられる英文（スクリプト） */
   script: string;
   /** スクリプトの和訳 */

@@ -42,6 +42,8 @@
  */
 
 import { EL1_A_PROBLEMS } from './englishListeningQ1AProblems';
+import { EL1_A_EXTRA_PROBLEMS } from './englishListeningQ1ASets';
+import { EL1_B_PROBLEMS } from './englishListeningQ1BProblems';
 import { enhanceExplanation, isStructuredExplanation } from '../utils/explanationFormat';
 
 /** 1つの単元（アプリ上の1単元）。他科目の chapter と同形。 */
@@ -199,7 +201,10 @@ export const englishListeningData: { parts: ListeningPart[] } = {
 
 /** 単元ID → 演習問題。収録済みの単元だけを列挙する。 */
 const LISTENING_PROBLEMS: Record<string, any[]> = {
-  el1_A: EL1_A_PROBLEMS,
+  // 第1問A：手作りの第1回 ＋ 配布PDF由来の13セット（第2回〜第14回）
+  el1_A: [...EL1_A_PROBLEMS, ...EL1_A_EXTRA_PROBLEMS],
+  // 第1問B：配布PDF（スクリプト側）＋ イラストPDF を対応させた15セット
+  el1_B: EL1_B_PROBLEMS,
 };
 
 (() => {
