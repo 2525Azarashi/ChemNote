@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { auth } from '../firebase';
-import { ChevronLeft, User, LogOut, Flame, BookOpen, GraduationCap, Compass, Settings, Volume2, VolumeX, LogIn, Users, Save, Check, Loader2, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, User, LogOut, Flame, BookOpen, GraduationCap, Compass, Settings, Volume2, VolumeX, LogIn, Users, Save, Check, Loader2, AlertTriangle, School, ClipboardList } from 'lucide-react';
 import { FriendPanel } from './FriendPanel';
+import { ClassPanel } from './ClassPanel';
 import { DoorMascot } from './DoorMascot';
 import { GoogleMark } from './GoogleLinkBanner';
 import { signInWithGoogle, signOutGoogle, switchGoogleAccount, GOOGLE_LINK_BENEFITS } from '../utils/googleAuth';
@@ -13,11 +14,20 @@ interface ProfileModalProps {
   onToggleBgm?: (enabled: boolean) => void;
   bgmVolume: number;
   setBgmVolume: (volume: number) => void;
+  /**
+   * 先生ダッシュボードを開く。
+   *
+   * → なぜホームでなく設定の下に置くのか：
+   *   利用者の大半は生徒であり、先生用の入口を目立つ位置に置くと
+   *   「自分の成績が見られる画面」と誤解されやすい。
+   *   先生は設定を探すことを苦にしないので、ここに置く。
+   */
+  onOpenTeacherDashboard?: () => void;
 }
 
-type SettingsTab = 'general' | 'friends';
+type SettingsTab = 'general' | 'friends' | 'class';
 
-export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleBgm, bgmVolume, setBgmVolume }: ProfileModalProps) {
+export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleBgm, bgmVolume, setBgmVolume, onOpenTeacherDashboard }: ProfileModalProps) {
   const [tab, setTab] = useState<SettingsTab>('general');
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
@@ -108,18 +118,36 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
           <DoorMascot showSpeech={false} size="mini" className="w-auto ml-auto -my-2" />
         </header>
 
-        <div className="grid grid-cols-2 gap-1.5 bg-white/70 border border-gray-200 rounded-2xl p-1.5 mb-2 sm:mb-3 relative z-10 shrink-0">
+        <div className="grid grid-cols-3 gap-1.5 bg-white/70 border border-gray-200 rounded-2xl p-1.5 mb-2 sm:mb-3 relative z-10 shrink-0">
           <button onClick={() => setTab('general')} className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${tab === 'general' ? 'bg-[#1B2631] text-white shadow-sm' : 'text-gray-500'}`}>
             <Settings size={14} /> 基本設定
           </button>
           <button onClick={() => setTab('friends')} disabled={!auth.currentUser} className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all disabled:opacity-40 ${tab === 'friends' ? 'bg-[#D9466E] text-white shadow-sm' : 'text-gray-500'}`}>
             <Users size={14} /> フレンド
           </button>
+          <button onClick={() => setTab('class')} disabled={!auth.currentUser} className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all disabled:opacity-40 ${tab === 'class' ? 'bg-[#4A7FA0] text-white shadow-sm' : 'text-gray-500'}`}>
+            <School size={14} /> クラス
+          </button>
         </div>
 
         <main className="relative z-10 flex-1 min-h-0">
           {tab === 'friends' && auth.currentUser ? (
             <FriendPanel />
+          ) : tab === 'class' && auth.currentUser ? (
+            <div className="h-full overflow-y-auto no-scrollbar pb-4">
+              <ClassPanel defaultDisplayName={name} />
+
+              {/* 先生用の入口。生徒が誤って開いてもクラス0件の案内が出るだけ。 */}
+              {onOpenTeacherDashboard && (
+                <button
+                  onClick={onOpenTeacherDashboard}
+                  className="mt-2.5 w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-[#4A7FA0]"
+                >
+                  <ClipboardList size={14} />
+                  先生の方はこちら（クラスの管理）
+                </button>
+              )}
+            </div>
           ) : (
             <div className="h-full grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 overflow-y-auto md:overflow-hidden no-scrollbar">
               <div className="space-y-2 sm:space-y-3">

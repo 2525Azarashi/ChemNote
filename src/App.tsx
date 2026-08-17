@@ -38,8 +38,10 @@ import { applyOverviewViewport } from './utils/viewportControl';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { flushFeedbackQueue, getFeedbackWebhookUrl } from './utils/feedback';
 import { recordUserPresence } from './utils/userRegistry';
+import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './utils/studySync';
+import { TeacherDashboard } from './components/TeacherDashboard';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 /** 科目選択の保存キー（次回起動時に前回の科目を復元する） */
@@ -138,6 +140,42 @@ export default function App() {
     });
     return unsub;
   }, []);
+
+  // ============================================================
+  // 学習進捗・復習リストのクラウド同期
+  // ============================================================
+  // これまで進捗は端末の localStorage だけにあり、
+  // 機種変更やキャッシュ削除で全部消えていた。
+  // ログインしている場合はクラウドと**マージ**して引き継ぐ。
+  //
+  // ・上書きではなくマージなので、オフラインで解いた分も残る
+  // ・失敗しても学習は止めない（次回起動で再試行）
+  // ・ゲストは同期しない（他人の記録と混ざらないようにする）
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        // ログアウトしたら同期状態を捨てる（別アカウントと混ざらないように）
+        resetStudySyncState();
+        return;
+      }
+      // ログイン直後は他の初期化処理と競合しやすいので少し待つ
+      window.setTimeout(() => {
+        void pullStudyData().then((result) => {
+          if (result.addedProblems > 0 || result.addedReviews > 0) {
+            console.info(
+              `[studySync] クラウドから引き継ぎました: 進捗 +${result.addedProblems} / 復習 +${result.addedReviews}`,
+            );
+          }
+        });
+      }, 1500);
+    });
+    return unsub;
+  }, []);
+
+  // 画面を離れるとき（スマホでアプリを切り替えたときを含む）に
+  // 未送信の学習データを送る。iOS Safari は beforeunload が
+  // 発火しないことがあるため pagehide / visibilitychange を使う。
+  useEffect(() => installStudySyncFlush(), []);
 
   // Prevent iOS pinch zoom and double tap zoom, EXCEPT on the answers/explanations pages
   useEffect(() => {
@@ -639,7 +677,9 @@ export default function App() {
               （スマホ端末では常にスマホ向けレイアウトで表示する。forceDesktop は false 固定） */}
 
           <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : (isFullBleed ? 'max-w-none' : 'max-w-5xl')}`}>
-            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} />}
+            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} onOpenTeacherDashboard={() => setAppState('teacher_dashboard')} />}
+            {/* 先生ダッシュボード。戻る先を設定にしているのは、入ってきた経路と揃えるため。 */}
+            {appState === 'teacher_dashboard' && <TeacherDashboard onBack={() => setAppState('settings')} />}
 
             {/* ログイン／ゲスト開始の直後は、必ず科目選択（＝タイトル）画面を経由する */}
             {/* ログイン／ゲスト開始の直後は、そのままホームへ入る。

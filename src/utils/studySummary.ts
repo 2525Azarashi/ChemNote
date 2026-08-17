@@ -1,0 +1,428 @@
+/**
+ * ===================================================================
+ * 学習サマリーの算出（先生ダッシュボード／観点別評価の材料）
+ * ===================================================================
+ *
+ * -------------------------------------------------------------------
+ * ■ なぜこれを作るのか
+ * -------------------------------------------------------------------
+ * 高校では新学習指導要領のもとで「観点別評価」が求められ、なかでも
+ *
+ *     「主体的に学習に取り組む態度」
+ *
+ * の評価材料が現場で最も不足している。知識・技能はテストの点で測れるが、
+ * 「粘り強く取り組んだか」「自分の学習を調整したか」は
+ * 客観的な証跡がないと評価しづらく、提出物や挙手で代替されがちである。
+ *
+ * このアプリは既に
+ *   - 間違えた問題を忘却曲線（0/1/3/7/14/30/60日）で再出題し
+ *   - 何回間違え、何回正解し直したかを ReviewItem に記録している
+ *
+ * つまり「間違えた後にどう行動したか」という、態度評価にとって
+ * 理想的なデータを既に持っている。ここではそれを
+ * **先生がそのまま評価に使える指標**へ変換する。
+ *
+ * -------------------------------------------------------------------
+ * ■ 設計上の重要な注意（教育的な誠実さ）
+ * -------------------------------------------------------------------
+ * この数値は「先生の判断を助ける材料」であり、**成績そのものではない**。
+ * したがって、
+ *   - 断定的な評定（A/B/C）を機械的に出すことはしない
+ *   - 「取り組み度」は 0〜100 の目安値とし、内訳を必ず併記する
+ *   - 内訳を見れば先生が自分で判断を覆せるようにする
+ * という方針を取る。数字だけが独り歩きして生徒が不当に評価されるのは
+ * 避けなければならない。
+ */
+
+import type { ReviewItem } from './reviewList';
+import type { SolvedMap } from './studySyncCore';
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** 日付を「その日の0時」に丸めた epoch ms（日単位の集計に使う） */
+export function startOfDay(time: number): number {
+  const date = new Date(time);
+  date.setHours(0, 0, 0, 0);
+  return date.getTime();
+}
+
+/** YYYY-MM-DD 文字列（CSV や表示に使う。ローカルタイム基準） */
+export function toDateKey(time: number): string {
+  const date = new Date(time);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+// ===================================================================
+// 学習した日の集計
+// ===================================================================
+
+/**
+ * 進捗マップ（値 = 初回解答時刻）から「学習した日」の集合を作る。
+ *
+ * solvedMap は初回解答時刻しか持たないため、
+ * 「2回目以降に解いた日」は拾えない。これは既知の限界で、
+ * 少なく見積もる方向の誤差なので評価上は安全側に働く。
+ * （復習リストの updatedAt も併せて見ることで精度を上げる）
+ */
+export function collectStudyDays(
+  solved: SolvedMap | null | undefined,
+  reviewItems: ReviewItem[] | null | undefined = [],
+): string[] {
+  const days = new Set<string>();
+
+  if (solved && typeof solved === 'object') {
+    Object.values(solved).forEach((time) => {
+      const value = Number(time);
+      if (Number.isFinite(value) && value > 0) days.add(toDateKey(value));
+    });
+  }
+
+  if (Array.isArray(reviewItems)) {
+    reviewItems.forEach((item) => {
+      const value = Number(item?.updatedAt);
+      if (Number.isFinite(value) && value > 0) days.add(toDateKey(value));
+    });
+  }
+
+  return Array.from(days).sort();
+}
+
+/**
+ * 直近 windowDays 日のうち、何日学習したか。
+ * 「先週ちゃんとやったか」を見るための指標で、
+ * 連続日数（streak）より実態を反映しやすい
+ * （週末に休む生徒が不当に低く出ないため）。
+ */
+export function countActiveDaysWithin(
+  studyDays: string[],
+  windowDays: number,
+  now: number = Date.now(),
+): number {
+  const threshold = startOfDay(now) - (windowDays - 1) * DAY_MS;
+  return studyDays.filter((day) => {
+    const time = new Date(`${day}T00:00:00`).getTime();
+    return Number.isFinite(time) && time >= threshold;
+  }).length;
+}
+
+// ===================================================================
+// 復習の実行状況（＝「主体的に取り組む態度」の中核）
+// ===================================================================
+
+export interface ReviewDiscipline {
+  /** 復習リストに載っている総数 */
+  total: number;
+  /** 期限が来ているのに未対応の数 */
+  overdue: number;
+  /** box が最終段階まで進んだ（＝定着した）数 */
+  mastered: number;
+  /** 復習で解き直した回数の合計 */
+  retryCount: number;
+  /** 間違えた回数の合計 */
+  wrongCount: number;
+  /**
+   * 立て直し率 = 解き直した回数 / 間違えた回数
+   * 「間違えたあと、実際に戻って解き直したか」を表す。
+   * 1.0 に近いほど、間違いを放置していない。
+   */
+  recoveryRate: number;
+}
+
+export function summarizeReviewDiscipline(
+  items: ReviewItem[] | null | undefined,
+  masteredBox: number,
+  now: number = Date.now(),
+): ReviewDiscipline {
+  const list = Array.isArray(items) ? items : [];
+  let overdue = 0;
+  let mastered = 0;
+  let retryCount = 0;
+  let wrongCount = 0;
+
+  list.forEach((item) => {
+    const due = Number(item?.dueAt);
+    if (Number.isFinite(due) && due <= now) overdue += 1;
+    if (Number(item?.box) >= masteredBox) mastered += 1;
+    retryCount += Number.isFinite(Number(item?.correctCount)) ? Number(item.correctCount) : 0;
+    wrongCount += Number.isFinite(Number(item?.wrongCount)) ? Number(item.wrongCount) : 0;
+  });
+
+  return {
+    total: list.length,
+    overdue,
+    mastered,
+    retryCount,
+    wrongCount,
+    recoveryRate: wrongCount > 0 ? retryCount / wrongCount : 0,
+  };
+}
+
+// ===================================================================
+// 単元別の到達状況
+// ===================================================================
+
+export interface ChapterProgressRow {
+  chapterId: string;
+  chapterTitle: string;
+  /** その章の大問総数 */
+  totalProblems: number;
+  /** 解いた大問数 */
+  solvedProblems: number;
+  /** 到達率 0〜100（整数） */
+  ratePercent: number;
+  /** その章で復習待ちになっている数（つまずきの所在） */
+  pendingReviews: number;
+}
+
+export interface ChapterDefinition {
+  id: string;
+  title: string;
+  totalProblems: number;
+}
+
+/**
+ * 章ごとの到達状況を出す。
+ * 先生が最初に見るのは「クラスのどこが弱いか」なので、
+ * 個人でも同じ形の行を作れるようにしておく。
+ */
+export function buildChapterProgressRows(
+  chapters: ChapterDefinition[],
+  solved: SolvedMap | null | undefined,
+  reviewItems: ReviewItem[] | null | undefined = [],
+  now: number = Date.now(),
+): ChapterProgressRow[] {
+  const solvedByChapter = new Map<string, number>();
+  if (solved && typeof solved === 'object') {
+    Object.keys(solved).forEach((key) => {
+      const chapterId = key.split('::')[0];
+      if (!chapterId) return;
+      solvedByChapter.set(chapterId, (solvedByChapter.get(chapterId) || 0) + 1);
+    });
+  }
+
+  const pendingByChapter = new Map<string, number>();
+  if (Array.isArray(reviewItems)) {
+    reviewItems.forEach((item) => {
+      const due = Number(item?.dueAt);
+      if (!item?.chapterId) return;
+      if (Number.isFinite(due) && due <= now) {
+        pendingByChapter.set(item.chapterId, (pendingByChapter.get(item.chapterId) || 0) + 1);
+      }
+    });
+  }
+
+  return chapters.map((chapter) => {
+    // 解いた数が総数を超えないよう抑える（章の問題が減った場合の保険）
+    const solvedCount = Math.min(solvedByChapter.get(chapter.id) || 0, chapter.totalProblems);
+    return {
+      chapterId: chapter.id,
+      chapterTitle: chapter.title,
+      totalProblems: chapter.totalProblems,
+      solvedProblems: solvedCount,
+      ratePercent:
+        chapter.totalProblems > 0 ? Math.round((solvedCount / chapter.totalProblems) * 100) : 0,
+      pendingReviews: pendingByChapter.get(chapter.id) || 0,
+    };
+  });
+}
+
+// ===================================================================
+// 取り組み度（先生が判断するための目安値）
+// ===================================================================
+
+export interface EngagementInput {
+  /** 直近2週間で学習した日数 */
+  activeDaysIn14: number;
+  /** 立て直し率（0〜1超） */
+  recoveryRate: number;
+  /** 期限超過の復習数 */
+  overdue: number;
+  /** 復習リストの総数 */
+  reviewTotal: number;
+}
+
+export interface EngagementScore {
+  /** 0〜100 の目安値 */
+  score: number;
+  /** 内訳（先生が自分で判断し直せるように必ず併記する） */
+  breakdown: {
+    /** 継続（最大50点）：直近14日のうち何日やったか */
+    continuity: number;
+    /** 立て直し（最大35点）：間違いを解き直しているか */
+    recovery: number;
+    /** 未処理（最大15点）：期限超過を放置していないか */
+    upkeep: number;
+  };
+}
+
+/**
+ * 「主体的に学習に取り組む態度」の目安値。
+ *
+ * 配点の考え方：
+ *   継続 50点 … 毎日でなくてよい。14日中7日（週3〜4回）で満点に近づく設計。
+ *                 毎日を満点条件にすると部活等で不当に低く出るため。
+ *   立て直し 35点 … 間違えた回数に対して解き直した割合。
+ *                     「間違えた数」自体は減点しない（挑戦を罰しないため）。
+ *   未処理 15点 … 期限超過の割合が低いほど高い。復習が0件なら満点扱い
+ *                   （まだ間違えていない＝放置していない）。
+ *
+ * ⚠️ この値は評定ではない。必ず breakdown と併せて提示する。
+ */
+export function calcEngagementScore(input: EngagementInput): EngagementScore {
+  const activeDays = Math.max(0, Number(input.activeDaysIn14) || 0);
+  // 14日中7日で満点。それ以上やっている生徒も満点で頭打ち（過剰学習を煽らない）
+  const continuity = Math.round(Math.min(1, activeDays / 7) * 50);
+
+  const rate = Math.max(0, Number(input.recoveryRate) || 0);
+  const recovery = Math.round(Math.min(1, rate) * 35);
+
+  const total = Math.max(0, Number(input.reviewTotal) || 0);
+  const overdue = Math.max(0, Number(input.overdue) || 0);
+  const overdueRatio = total > 0 ? Math.min(1, overdue / total) : 0;
+  const upkeep = Math.round((1 - overdueRatio) * 15);
+
+  return {
+    score: continuity + recovery + upkeep,
+    breakdown: { continuity, recovery, upkeep },
+  };
+}
+
+// ===================================================================
+// 生徒1人分のサマリー
+// ===================================================================
+
+export interface StudentSummary {
+  uid: string;
+  displayName: string;
+  /** 解いた大問の総数 */
+  solvedTotal: number;
+  /** 直近14日で学習した日数 */
+  activeDaysIn14: number;
+  /** 最終学習日（YYYY-MM-DD、記録が無ければ null） */
+  lastStudiedAt: string | null;
+  review: ReviewDiscipline;
+  engagement: EngagementScore;
+}
+
+export function buildStudentSummary(params: {
+  uid: string;
+  displayName: string;
+  solved: SolvedMap | null | undefined;
+  reviewItems: ReviewItem[] | null | undefined;
+  masteredBox: number;
+  now?: number;
+}): StudentSummary {
+  const now = params.now ?? Date.now();
+  const studyDays = collectStudyDays(params.solved, params.reviewItems);
+  const review = summarizeReviewDiscipline(params.reviewItems, params.masteredBox, now);
+  const activeDaysIn14 = countActiveDaysWithin(studyDays, 14, now);
+
+  return {
+    uid: params.uid,
+    displayName: params.displayName,
+    solvedTotal: params.solved ? Object.keys(params.solved).length : 0,
+    activeDaysIn14,
+    lastStudiedAt: studyDays.length > 0 ? studyDays[studyDays.length - 1] : null,
+    review,
+    engagement: calcEngagementScore({
+      activeDaysIn14,
+      recoveryRate: review.recoveryRate,
+      overdue: review.overdue,
+      reviewTotal: review.total,
+    }),
+  };
+}
+
+// ===================================================================
+// CSV 出力
+// ===================================================================
+
+/**
+ * CSV のセルを安全にエスケープする。
+ *
+ * ⚠️ セキュリティ上の注意（CSV インジェクション）
+ * Excel は先頭が = + - @ のセルを数式として解釈するため、
+ * 生徒の入力（ニックネーム等）がそのまま入ると意図しない実行につながる。
+ * 先頭に ' を付けて無効化する。学校へ配る成果物なので、ここは必須。
+ */
+export function escapeCsvCell(value: unknown): string {
+  const text = value === null || value === undefined ? '' : String(value);
+  const neutralized = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
+  if (/[",\r\n]/.test(neutralized)) {
+    return `"${neutralized.replace(/"/g, '""')}"`;
+  }
+  return neutralized;
+}
+
+export const STUDENT_CSV_HEADERS = [
+  '生徒名',
+  '解いた大問数',
+  '直近14日の学習日数',
+  '最終学習日',
+  '復習リスト件数',
+  '未処理の復習',
+  '定着した問題数',
+  '間違えた回数',
+  '解き直した回数',
+  '立て直し率',
+  '取り組み度',
+  '内訳:継続',
+  '内訳:立て直し',
+  '内訳:未処理',
+] as const;
+
+/**
+ * 先生がそのまま Excel で開ける CSV を作る。
+ *
+ * BOM を付けるのは、Excel が UTF-8 を自動判別せず
+ * 日本語が文字化けするため（現場で最も多い躓きどころ）。
+ */
+export function buildStudentCsv(rows: StudentSummary[], withBom = true): string {
+  const lines: string[] = [];
+  lines.push(STUDENT_CSV_HEADERS.map(escapeCsvCell).join(','));
+
+  rows.forEach((row) => {
+    lines.push(
+      [
+        row.displayName,
+        row.solvedTotal,
+        row.activeDaysIn14,
+        row.lastStudiedAt ?? '未学習',
+        row.review.total,
+        row.review.overdue,
+        row.review.mastered,
+        row.review.wrongCount,
+        row.review.retryCount,
+        `${Math.round(row.review.recoveryRate * 100)}%`,
+        row.engagement.score,
+        row.engagement.breakdown.continuity,
+        row.engagement.breakdown.recovery,
+        row.engagement.breakdown.upkeep,
+      ]
+        .map(escapeCsvCell)
+        .join(','),
+    );
+  });
+
+  const body = `${lines.join('\r\n')}\r\n`;
+  return withBom ? `\uFEFF${body}` : body;
+}
+
+export const CHAPTER_CSV_HEADERS = ['単元', '大問数', 'クラス平均到達率(%)', '未処理の復習(合計)'] as const;
+
+/** 章別の到達状況を CSV に（クラス全体の弱点把握用） */
+export function buildChapterCsv(rows: ChapterProgressRow[], withBom = true): string {
+  const lines: string[] = [];
+  lines.push(CHAPTER_CSV_HEADERS.map(escapeCsvCell).join(','));
+  rows.forEach((row) => {
+    lines.push(
+      [row.chapterTitle, row.totalProblems, row.ratePercent, row.pendingReviews]
+        .map(escapeCsvCell)
+        .join(','),
+    );
+  });
+  const body = `${lines.join('\r\n')}\r\n`;
+  return withBom ? `\uFEFF${body}` : body;
+}
