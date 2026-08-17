@@ -268,7 +268,16 @@ describe('音源ボタンが「わかりやすい場所」に置かれている'
   });
 
   it('Quiz：音源を持つ問題のときだけ出す（他科目に影響しない）', () => {
-    expect(QUIZ).toMatch(/Array\.isArray\(\(currentQuestion as any\)\.audioTracks\)/);
+    // audioTracks は「問題ごとの音源リスト」を listeningTracks に正規化してから使う。
+    // 配列でなければ空配列になるので、化学など音源を持たない科目では
+    // listeningTracks.length === 0 となりプレーヤーは描画されない。
+    expect(QUIZ).toMatch(
+      /const listeningTracks[\s\S]{0,200}?Array\.isArray\(t\) \? t : \[\]/,
+    );
+    expect(QUIZ).toMatch(/\(currentQuestion as any\)\?\.audioTracks/);
+    expect(QUIZ).toContain('listeningTracks.length > 0');
+    // 小問ごとの再生ボタンも「その小問の音源があるときだけ」出す
+    expect(QUIZ).toContain('hasTrackFor');
   });
 
   it('Explanation：復習用としてスクリプトつきで出す', () => {

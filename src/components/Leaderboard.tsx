@@ -83,7 +83,14 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
             nickname: r.entry.nickname,
             photoURL: r.entry.photoURL,
             score: r.entry.totalScore,
-            sub: `${Object.keys(r.entry.chapterScores || {}).length} 章クリア`,
+            // 0pt のユーザーも掲載する（連携済みなら全員載る）ため、
+            // 「0 章クリア」ではなく「まだ挑戦していません」と出して、
+            // 記録が無いのか点が伸びていないのかを取り違えないようにする。
+            sub:
+              (r.entry.totalScore || 0) === 0 &&
+              Object.keys(r.entry.chapterScores || {}).length === 0
+                ? 'まだ挑戦していません'
+                : `${Object.keys(r.entry.chapterScores || {}).length} 章クリア`,
             isMe: r.isMe,
             uid: r.entry.uid,
           }))

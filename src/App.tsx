@@ -38,6 +38,7 @@ import { applyOverviewViewport } from './utils/viewportControl';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { flushFeedbackQueue, getFeedbackWebhookUrl } from './utils/feedback';
 import { recordUserPresence } from './utils/userRegistry';
+import { ensureRankingEntry } from './utils/leaderboard';
 import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './utils/studySync';
 import { TeacherDashboard } from './components/TeacherDashboard';
 
@@ -137,6 +138,23 @@ export default function App() {
       window.setTimeout(() => {
         void recordUserPresence(getFeedbackWebhookUrl()).catch(() => {});
       }, 4000);
+    });
+    return unsub;
+  }, []);
+
+  // ランキングへの参加登録（ご要望：0pt のユーザーも掲載する）
+  // ─────────────────────────────────────────────
+  // これまで leaderboard_total の枠は「初めてスコアを更新したとき」に
+  // しか作られず、連携したばかりの人はランキングに存在しなかった。
+  // Google 連携が確定した時点で totalScore: 0 の枠を作り、
+  // 「連携済みなら必ず載る」状態にする。
+  // 既にスコアがある人は名前とアイコンの更新だけが走る（スコアは触らない）。
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (!user) return; // ゲストは掲載対象外
+      window.setTimeout(() => {
+        void ensureRankingEntry().catch(() => {});
+      }, 3000);
     });
     return unsub;
   }, []);

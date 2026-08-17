@@ -2,6 +2,12 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react';
 import { Headphones, Play, Pause, RotateCcw, Repeat2, FileText, ChevronDown } from 'lucide-react';
 import type { ListeningAudioTrack } from '../data/englishListeningQ1AProblems';
+import {
+  hasRealAudio,
+  isSpeechSupported,
+  speak,
+  stopSpeech,
+} from '../utils/listeningSpeech';
 
 /**
  * ListeningAudioPlayer
@@ -49,6 +55,14 @@ export interface ListeningAudioPlayerProps {
    * Explanation で「この問の音源だけ」を出したいときに使う。
    */
   focusSubId?: string;
+  /**
+   * 表示バリアント。
+   *   'panel'  … 既定。見出し＋速度切替つきのパネル（問題文ペイン上部に置く形）
+   *   'inline' … 見出しを省き、再生ボタンだけを縦に細く並べる。
+   *              「1問とその再生ボタンを横に並べる」ため、解答カードの左側に
+   *              差し込む用途。focusSubId と併用して1問ぶんだけを出す。
+   */
+  variant?: 'panel' | 'inline';
   /** 追加クラス（余白調整） */
   className?: string;
 }
@@ -68,10 +82,12 @@ export function ListeningAudioPlayer({
   title,
   readCount = 2,
   focusSubId,
+  variant = 'panel',
   className = '',
 }: ListeningAudioPlayerProps) {
   const isDark = tone === 'dark';
   const isReview = mode === 'review';
+  const isInline = variant === 'inline';
 
   // focusSubId が指定されていればその問だけに絞る
   const list = useMemo(
@@ -90,6 +106,15 @@ export function ListeningAudioPlayer({
 
   const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({});
 
+  /**
+   * MP3 を持たないトラックがあるか。
+   * PDF 由来の類題集は音源ファイルが無いため、読み上げ（SpeechSynthesis）で代替する。
+   * 1つでも代替対象があれば、その旨をユーザーに明示する。
+   */
+  const usesSpeech = useMemo(() => list.some((t) => !hasRealAudio(t)), [list]);
+  /** 読み上げが使えない端末では「音が出ない理由」を伝える必要がある */
+  const speechBlocked = usesSpeech && !isSpeechSupported();
+
   // アンマウント時は必ず止める（画面遷移後に音だけ残るのを防ぐ）
   useEffect(() => {
     const refs = audioRefs;
@@ -97,6 +122,7 @@ export function ListeningAudioPlayer({
       (Object.values(refs.current) as (HTMLAudioElement | null)[]).forEach((el) => {
         if (el && !el.paused) el.pause();
       });
+      stopSpeech();
     };
   }, []);
 
@@ -107,11 +133,33 @@ export function ListeningAudioPlayer({
     });
   }, [rate]);
 
-  /** 指定トラックを先頭から再生する。repeat=true なら本番同様に2回続けて流す。 */
+  /**
+   * 指定トラックを先頭から再生する。repeat=true なら本番同様に2回続けて流す。
+   *
+   * MP3 がある場合は <audio> を鳴らし、無い場合は script を読み上げる。
+   * どちらの経路でも playingId の見え方は同じにして、UI を1本化する。
+   */
   const play = useCallback(
     (subId: string, repeat = false) => {
+      const track = list.find((t) => t.subId === subId);
+      if (!track) return;
+
+      // ---- MP3 が無い問題：ブラウザの音声合成で読み上げる ----
+      if (!hasRealAudio(track)) {
+        pauseOtherAudio(null);
+        repeatLeft.current = 0;
+        const started = speak(subId, track.script, repeat ? 2 : 1, {
+          rate,
+          onEnd: () => setPlayingId(null),
+        });
+        setPlayingId(started ? subId : null);
+        return;
+      }
+
+      // ---- 通常経路：MP3 を再生する ----
       const el = audioRefs.current[subId];
       if (!el) return;
+      stopSpeech();
       pauseOtherAudio(el);
       repeatLeft.current = repeat ? 1 : 0;
       el.currentTime = 0;
@@ -123,12 +171,26 @@ export function ListeningAudioPlayer({
         setPlayingId(subId);
       }
     },
-    [rate],
+    [rate, list],
   );
 
   /** 再生／一時停止のトグル（同じボタンを2回押したら止まる）。 */
   const toggle = useCallback(
     (subId: string) => {
+      const track = list.find((t) => t.subId === subId);
+      if (!track) return;
+
+      // 読み上げ経路：SpeechSynthesis は一時停止より「止めて読み直す」方が分かりやすい
+      if (!hasRealAudio(track)) {
+        if (playingId === subId) {
+          stopSpeech();
+          setPlayingId(null);
+          return;
+        }
+        play(subId, false);
+        return;
+      }
+
       const el = audioRefs.current[subId];
       if (!el) return;
       if (playingId === subId && !el.paused) {
@@ -139,7 +201,7 @@ export function ListeningAudioPlayer({
       }
       play(subId, false);
     },
-    [playingId, play],
+    [playingId, play, list],
   );
 
   /** 再生終了時。2回読みの残りがあればもう一度鳴らす。 */
@@ -178,6 +240,78 @@ export function ListeningAudioPlayer({
     ? 'border-[#3A506B]/70 bg-[#0B132B]/60 text-[#E0E1DD]'
     : 'border-[#5BC0BE]/30 bg-white text-slate-700';
 
+  // ─────────────────────────────────────────────────────────────
+  // inline バリアント：解答カードの左に差し込む「その問だけの再生ボタン」
+  //   ご要望「1問題とそれに該当する再生ボタンを横に配置して」に対応する形。
+  //   見出し・速度切替を省き、幅を取らない縦積みにする。
+  // ─────────────────────────────────────────────────────────────
+  if (isInline) {
+    return (
+      <div
+        className={`flex shrink-0 flex-col gap-1.5 ${className}`}
+        aria-label={`${list[0]?.label ?? ''}の音源`}
+      >
+        {list.map((track) => {
+          const isPlaying = playingId === track.subId;
+          return (
+            <React.Fragment key={track.subId}>
+              {/* 主ボタン：この問だけを再生／停止する */}
+              <button
+                type="button"
+                onClick={() => toggle(track.subId)}
+                disabled={speechBlocked}
+                aria-label={`${track.label}（${track.hint}）の音源を${isPlaying ? '停止' : '再生'}`}
+                className={`flex min-h-[3rem] w-[4.5rem] flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 font-bold shadow-sm transition-all sm:w-20 ${
+                  speechBlocked
+                    ? 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400'
+                    : `cursor-pointer ${isPlaying ? activeBtnClass : idleBtnClass}`
+                }`}
+              >
+                {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+                <span className="text-[10px] leading-none">
+                  {isPlaying ? '停止' : '再生'}
+                </span>
+              </button>
+
+              {/* 本番同様の2回読み。1問ずつ本番条件を再現できるようにする。 */}
+              {readCount === 2 && (
+                <button
+                  type="button"
+                  onClick={() => play(track.subId, true)}
+                  disabled={speechBlocked}
+                  aria-label={`${track.label} を本番と同じように2回続けて再生`}
+                  className={`flex min-h-[2rem] w-[4.5rem] items-center justify-center gap-1 rounded-lg border px-1 py-1 text-[10px] font-bold transition-colors sm:w-20 ${
+                    speechBlocked
+                      ? 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400'
+                      : `cursor-pointer ${idleBtnClass}`
+                  }`}
+                >
+                  <Repeat2 size={11} />2回
+                </button>
+              )}
+
+              {!hasRealAudio(track) ? null : (
+                <audio
+                  ref={(el) => {
+                    audioRefs.current[track.subId] = el;
+                  }}
+                  src={track.audioUrl}
+                  preload="none"
+                  onEnded={() => handleEnded(track.subId)}
+                  onPause={() => {
+                    if (playingId === track.subId) setPlayingId(null);
+                  }}
+                  // @ts-ignore - iOS のインライン再生を許可する
+                  playsInline
+                />
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <section
       className={`rounded-2xl border-2 p-3 sm:p-4 shadow-sm ${panelClass} ${className}`}
@@ -198,6 +332,18 @@ export function ListeningAudioPlayer({
                 ? 'スクリプト・和訳を見ながら聞き直せます'
                 : `ボタンを押すと音声が流れます（本番は${readCount}回読み）`}
             </p>
+            {/*
+              MP3 未収録の類題集では読み上げ音声で代替している。
+              「録音音声ではない」ことを伝えないと、発音の癖を本番のものだと
+              誤解してしまうため、必ず明示する。
+            */}
+            {usesSpeech && (
+              <p className={`mt-0.5 text-[10px] font-bold leading-snug ${subTextClass}`}>
+                {speechBlocked
+                  ? '※この端末では読み上げに対応していません。スクリプトを黙読して練習してください。'
+                  : '※この回は端末の読み上げ音声で再生します（録音音源ではありません）'}
+              </p>
+            )}
           </div>
         </div>
 
@@ -282,20 +428,26 @@ export function ListeningAudioPlayer({
                 </>
               )}
 
-              {/* 音声本体。controls は出さず、上のボタンに操作を集約する。 */}
-              <audio
-                ref={(el) => {
-                  audioRefs.current[track.subId] = el;
-                }}
-                src={track.audioUrl}
-                preload="none"
-                onEnded={() => handleEnded(track.subId)}
-                onPause={() => {
-                  if (playingId === track.subId) setPlayingId(null);
-                }}
-                // @ts-ignore - iOS のインライン再生を許可する
-                playsInline
-              />
+              {/*
+                音声本体。controls は出さず、上のボタンに操作を集約する。
+                MP3 が無いトラックでは <audio> を作らない（src="" の読み込み
+                エラーがコンソールに出るのを避ける）。読み上げ経路が担当する。
+              */}
+              {hasRealAudio(track) && (
+                <audio
+                  ref={(el) => {
+                    audioRefs.current[track.subId] = el;
+                  }}
+                  src={track.audioUrl}
+                  preload="none"
+                  onEnded={() => handleEnded(track.subId)}
+                  onPause={() => {
+                    if (playingId === track.subId) setPlayingId(null);
+                  }}
+                  // @ts-ignore - iOS のインライン再生を許可する
+                  playsInline
+                />
+              )}
             </div>
           );
         })}

@@ -101,6 +101,71 @@ export function resolveNickname(): string {
 }
 
 // ============================================================
+// ランキングへの参加登録（0pt でも掲載する）
+// ============================================================
+
+/**
+ * ランキングに「自分」を登録する（スコア 0 のままでも掲載されるようにする）。
+ *
+ * ■ なぜ必要か
+ *   これまで leaderboard_total のドキュメントは
+ *   「1問でも採点してスコアを更新したとき」にしか作られていなかった。
+ *   そのため Google 連携直後のユーザーはランキングに現れず、
+ *   「参加していないのか、0点なのか」が本人にも他人にも分からなかった。
+ *
+ *   ご要望どおり「Google アカウント連携したユーザーは全員掲載」にするため、
+ *   ログイン直後にこの関数を呼び、totalScore: 0 の枠を先に作っておく。
+ *
+ * ■ 既存スコアを絶対に壊さないための作り
+ *   単純な merge でも totalScore を書くと、既にスコアを持つ人の値を
+ *   0 に巻き戻してしまう危険がある。そこで
+ *     ・ドキュメントが存在しない場合 → totalScore: 0 で新規作成
+ *     ・存在する場合                 → nickname / photoURL だけ更新
+ *   と経路を分ける。ニックネームやアイコンの変更が
+ *   スコアを出すまで反映されない問題も同時に解消する。
+ *
+ * ■ 失敗してもアプリは止めない
+ *   ランキングは学習の付随機能なので、通信・権限のエラーは警告に留める。
+ *
+ * @returns 新規に枠を作ったか（テスト・ログ用）
+ */
+export async function ensureRankingEntry(): Promise<{ created: boolean }> {
+  const user = auth.currentUser;
+  if (!user) return { created: false }; // ゲストは掲載対象外（識別子を持たない）
+
+  const nickname = resolveNickname();
+  const photoURL = user.photoURL || '';
+  const ref = doc(db, 'leaderboard_total', user.uid);
+
+  try {
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      // すでに枠がある人：スコアには一切触れず、表示名とアイコンだけ最新化する。
+      const data = snap.data() as TotalScoreEntry;
+      if (data.nickname === nickname && (data.photoURL || '') === photoURL) {
+        return { created: false }; // 変化なし。無駄な書き込みをしない。
+      }
+      await setDoc(ref, { nickname, photoURL, updatedAt: serverTimestamp() }, { merge: true });
+      return { created: false };
+    }
+
+    // 初回：0pt の枠を作る。これで「連携済みなら必ず載る」状態になる。
+    await setDoc(ref, {
+      uid: user.uid,
+      nickname,
+      photoURL,
+      totalScore: 0,
+      chapterScores: {},
+      updatedAt: serverTimestamp(),
+    });
+    return { created: true };
+  } catch (e) {
+    console.warn('[Leaderboard] ensureRankingEntry failed:', e);
+    return { created: false };
+  }
+}
+
+// ============================================================
 // 章スコア書き込み
 // ============================================================
 
@@ -251,6 +316,21 @@ export async function fetchChapterRanking(
 
 /**
  * 全章合計ランキングを取得
+ *
+ * ■ 0pt のユーザーも掲載する（ご要望）
+ *   ensureRankingEntry() がログイン時に totalScore: 0 の枠を作るため、
+ *   Google 連携済みのユーザーは全員このコレクションに存在する。
+ *   ここでは絞り込み（where）を一切かけないので、0pt の人もそのまま並ぶ。
+ *
+ * ■ 同点の並び順
+ *   Firestore の orderBy('totalScore','desc') だけでは同点内の順序が
+ *   ドキュメントID順（実質ランダム）になり、0pt の人が大量に並ぶと
+ *   毎回順番が入れ替わって落ち着かない。
+ *   そこで取得後に「スコア降順 → 更新が新しい順 → 名前順」で安定化させる。
+ *
+ * ■ 同順位の扱い
+ *   同点なら同じ順位を与える（0pt の人が全員違う順位になるのは不自然なため）。
+ *   例：100pt, 50pt, 0pt, 0pt, 0pt → 1位, 2位, 3位, 3位, 3位
  */
 export async function fetchTotalRanking(
   topN: number = LEADERBOARD_PAGE_SIZE
@@ -263,11 +343,27 @@ export async function fetchTotalRanking(
       limit(topN)
     );
     const snaps = await getDocs(q);
+    const entries: TotalScoreEntry[] = [];
+    snaps.forEach((s) => entries.push(s.data() as TotalScoreEntry));
+
+    entries.sort((a, b) => {
+      const diff = (b.totalScore || 0) - (a.totalScore || 0);
+      if (diff !== 0) return diff;
+      // 同点：最近プレイした人を上に（0pt 同士でも順序が毎回変わらないようにする）
+      const at = a.updatedAt?.toMillis?.() ?? 0;
+      const bt = b.updatedAt?.toMillis?.() ?? 0;
+      if (bt !== at) return bt - at;
+      return (a.nickname || '').localeCompare(b.nickname || '', 'ja');
+    });
+
     const list: RankingResult<TotalScoreEntry>[] = [];
     let rank = 0;
-    snaps.forEach((s) => {
-      rank += 1;
-      const entry = s.data() as TotalScoreEntry;
+    let prevScore: number | null = null;
+    entries.forEach((entry, index) => {
+      const score = entry.totalScore || 0;
+      // 同点は同順位。違うスコアになったら「その要素の通し番号」を順位にする。
+      if (prevScore === null || score !== prevScore) rank = index + 1;
+      prevScore = score;
       list.push({ rank, entry, isMe: !!me && entry.uid === me.uid });
     });
     return list;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2 } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2, Bell } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
@@ -18,6 +18,8 @@ import {
   countSolvedProblemsIn,
 } from '../utils/progress';
 import { loadSchoolBrand } from '../utils/classroom';
+import { UpdateNoticeModal } from './UpdateNoticeModal';
+import { unreadNoticeCount } from '../utils/updateNotices';
 
 interface HomeProps {
   onStart: () => void;
@@ -50,6 +52,12 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
    * 未参加の生徒（大半）には何も出ない。
    */
   const schoolBrand = useMemo(() => loadSchoolBrand(), []);
+
+  // ===== お知らせ（更新履歴）=====
+  // 未読件数は localStorage を見るだけなので同期的に初期化できる。
+  // モーダルを閉じたときに 0 件へ更新してバッジを消す。
+  const [showNotices, setShowNotices] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(() => unreadNoticeCount());
 
   // Real stats state
   const [streak, setStreak] = useState(0);
@@ -268,13 +276,42 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             <p className="text-xs md:text-sm text-[#5D6D7E] mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
           </motion.div>
 
-          {/* 共通テストまでのカウントダウンカード（ピンクテーマ） */}
+          {/* 共通テストまでのカウントダウンカード（ピンクテーマ）＋ お知らせベル */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
-            className="self-start md:self-auto shrink-0"
+            className="self-start md:self-auto shrink-0 flex items-start gap-2.5"
           >
+            {/* ===== お知らせ（更新履歴） =====
+                アプリが更新されても、利用者から見ると画面が黙って変わるだけで
+                「問題が増えた」「不具合が直った」ことに気づけない。
+                ベルを常設し、未読があれば件数を出して気づけるようにする。
+                カウントダウンの隣に置くのは、毎回必ず視線が通る位置だから。 */}
+            <button
+              type="button"
+              onClick={() => setShowNotices(true)}
+              aria-label={
+                unreadCount > 0
+                  ? `お知らせを開く（未読 ${unreadCount} 件）`
+                  : 'お知らせを開く'
+              }
+              className="relative flex h-[68px] w-[52px] shrink-0 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-[18px] border border-[#F4A9C4]/50 bg-white/90 shadow-[0_10px_26px_-12px_rgba(217,70,110,0.5)] backdrop-blur-sm transition-colors hover:bg-white"
+            >
+              <Bell className="h-5 w-5 text-[#E8688E]" aria-hidden="true" />
+              <span className="font-modern text-[9px] font-bold tracking-wide text-[#5D6D7E]">
+                お知らせ
+              </span>
+              {unreadCount > 0 && (
+                <span
+                  className="absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-[#D9466E] px-1 text-[10px] font-bold text-white shadow-md"
+                  aria-hidden="true"
+                >
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </button>
+
             <div className="bg-white/90 backdrop-blur-sm rounded-[20px] px-5 py-4 shadow-[0_10px_26px_-12px_rgba(217,70,110,0.5)] border border-[#F4A9C4]/50 flex items-center gap-4 min-w-[210px]">
               <div className="flex flex-col">
                 <span className="text-[11px] font-bold tracking-widest text-[#5D6D7E] font-modern">共通テストまで</span>
@@ -530,6 +567,18 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           />
         </motion.div>
       </div>
+
+      {/* ===== お知らせ（更新履歴）のモーダル =====
+          閉じたときに未読件数を読み直す。モーダル側で既読化しているので、
+          ここでは 0 件になったバッジを反映するだけで済む。 */}
+      {showNotices && (
+        <UpdateNoticeModal
+          onClose={() => {
+            setShowNotices(false);
+            setUnreadCount(unreadNoticeCount());
+          }}
+        />
+      )}
     </div>
   );
 }
