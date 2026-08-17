@@ -8,6 +8,7 @@ import { auth } from '../firebase';
 import { ChapterRankingPanel } from './ChapterRankingPanel';
 import { FeedbackButton } from './FeedbackButton';
 import { QuestionFigure } from './QuestionFigure';
+import { ListeningAudioPlayer } from './ListeningAudioPlayer';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { isAnswerCorrect } from '../utils/answerJudge';
 import { gradingCriteriaProgress, resolveGradingCriteria } from '../utils/gradingCriteria';
@@ -1111,6 +1112,20 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     <div className={`p-4 rounded-lg border text-sm md:text-base leading-relaxed ${
                       mode === 'mini_test' ? 'bg-white border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]/90'
                     }`}>
+                      {/* ★英語リスニング：復習用の音源をここに置く。
+                          採点直後の画面なので、「聞き取れなかった箇所を
+                          スクリプト・和訳つきで聞き直す」導線として最重要の位置。
+                          mode='review' でスクリプト／和訳／語句を開けるようにする。 */}
+                      {Array.isArray((question as any).audioTracks) &&
+                        (question as any).audioTracks.length > 0 && (
+                          <ListeningAudioPlayer
+                            tracks={(question as any).audioTracks}
+                            mode="review"
+                            tone={mode === 'mini_test' ? 'light' : 'dark'}
+                            readCount={(question as any).readCount || 2}
+                            className="mb-4"
+                          />
+                        )}
                       {/* 問題文にも Markdown テーブル（実験結果の表など）が含まれるため
                           ExplanationBody を通して本物の <table> で描画する。 */}
                       <ExplanationBody

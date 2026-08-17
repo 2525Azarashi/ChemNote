@@ -5,6 +5,7 @@ import { ExplanationBody } from './ExplanationBody';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
 import { QuestionFigure } from './QuestionFigure';
+import { ListeningAudioPlayer } from './ListeningAudioPlayer';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { QuizTimerBar } from './QuizTimerBar';
 import { FloatingScoreAnimation } from './FloatingScoreAnimation';
@@ -1534,6 +1535,20 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             title="テキストを選択するとハイライトできます"
           >
             <div className="max-w-prose md:max-w-none">
+              {/* ★英語リスニング：音源プレーヤーは問題文の「いちばん上」に置く。
+                  リスニングでは音を聞くことが問題そのものなので、
+                  スクロールせずに必ず目に入る位置に置き、
+                  ヘッドホンアイコンで「ここが音源」と一目で分かるようにする。 */}
+              {Array.isArray((currentQuestion as any).audioTracks) &&
+                (currentQuestion as any).audioTracks.length > 0 && (
+                  <ListeningAudioPlayer
+                    tracks={(currentQuestion as any).audioTracks}
+                    mode="practice"
+                    tone="light"
+                    readCount={(currentQuestion as any).readCount || 2}
+                    className="mb-4"
+                  />
+                )}
               {/* 問題文に含まれる Markdown テーブル（実験結果の表など）は
                   ExplanationBody を通して本物の <table> として描画する。 */}
               <ExplanationBody
