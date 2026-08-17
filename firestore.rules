@@ -502,5 +502,240 @@ service cloud.firestore {
       // 閲覧・削除はクライアントからは不可（運営は管理コンソールから見る）
       allow read, delete: if false;
     }
+
+    // ============================================================
+    // 学習進捗の同期（study_progress）
+    //   study_progress/{uid} = {
+    //     uid, solved, reviewItems, solvedTotal, reviewTotal,
+    //     lastStudiedAt, updatedAt
+    //   }
+    // ============================================================
+    //
+    // ■ これまでの問題
+    //   学習進捗は端末の localStorage だけにあり、機種変更や
+    //   キャッシュ削除で消えていた。また先生が生徒の状況を
+    //   見る手段が原理的に存在しなかった。
+    //
+    // ■ 誰が読めるのか（ここが最重要）
+    //   ① 生徒本人
+    //   ② その生徒が「閲覧を許可した」先生だけ
+    //
+    //   ②の判定に study_access/{生徒uid}_{先生uid} の存在を使う。
+    //   Firestore のルールには繰り返し処理が無く、「先生が担当する
+    //   全クラスを走査して在籍を確認する」ことが書けないため、
+    //   exists() 1回で判定できる形に落としてある。
+    //
+    // ■ list を禁止する理由
+    //   list を許すと「全生徒の学習データを列挙するクエリ」が
+    //   静的に否定できず、他人の進捗を吸い出せてしまう。
+    //   先生は在籍者の uid を class_members から得て、
+    //   1件ずつ get する（クライアント実装もそうしている）。
+    // ============================================================
+    match /study_progress/{userId} {
+      function teacherHasAccess() {
+        return isAuthenticated()
+          && exists(/databases/$(database)/documents/study_access/$(userId + '_' + request.auth.uid));
+      }
+
+      function isValidProgress(data) {
+        return data.keys().hasOnly([
+                 'uid', 'solved', 'reviewItems',
+                 'solvedTotal', 'reviewTotal', 'lastStudiedAt', 'updatedAt'
+               ])
+          // uid の偽装を防ぐ（他人の進捗として書き込めない）
+          && data.uid is string
+          && data.uid == userId
+          && data.uid == request.auth.uid
+          && data.solved is map
+          && data.reviewItems is list
+          // 復習リストは studySyncCore.MAX_SYNCED_REVIEW_ITEMS = 600 で
+          // 上限を掛けている。ドキュメント1MiB制限に触れる前に弾く。
+          && data.reviewItems.size() <= 600
+          && (!('solvedTotal' in data) || (data.solvedTotal is int && data.solvedTotal >= 0))
+          && (!('reviewTotal' in data) || (data.reviewTotal is int && data.reviewTotal >= 0))
+          && (!('lastStudiedAt' in data) || data.lastStudiedAt is int)
+          // 更新時刻は必ずサーバー時刻（端末時計の偽装を防ぐ）
+          && (!('updatedAt' in data) || data.updatedAt == request.time);
+      }
+
+      allow get: if isOwner(userId) || teacherHasAccess();
+      allow list: if false;
+
+      // 書けるのは本人だけ。先生は読み取り専用（成績の書き換えを防ぐ）。
+      allow create, update: if isOwner(userId) && isValidProgress(request.resource.data);
+
+      // 削除は本人のみ（退会時に自分のデータを消せる状態を保つ）
+      allow delete: if isOwner(userId);
+    }
+
+    // ============================================================
+    // 学習データの閲覧許可（study_access）
+    //   study_access/{生徒uid}_{先生uid} =
+    //     { studentUid, teacherUid, classId, grantedAt }
+    // ============================================================
+    //
+    // ■ 設計の意図：同意を仕組みで担保する
+    //   このレコードを作れるのは **生徒本人だけ**。
+    //   先生が勝手に作ることはできないので、
+    //   「先生が無断で生徒のデータを見る」ことが原理的に起こらない。
+    //   生徒がクラスに参加する行為が、そのまま閲覧許可になる。
+    //
+    //   学校へ提供する際に必ず問われる「誰が何を見られるのか」に
+    //   仕組みで答えられるようにするための中核。
+    // ============================================================
+    match /study_access/{accessId} {
+      // 当事者（生徒本人・許可された先生）だけが存在を確認できる
+      allow get: if isAuthenticated()
+        && (resource.data.studentUid == request.auth.uid
+            || resource.data.teacherUid == request.auth.uid);
+      allow list: if false;
+
+      // 作成できるのは生徒本人のみ。
+      // ドキュメントIDを `${studentUid}_${teacherUid}` に固定することで、
+      // 中身とIDの食い違い（別人の許可をこっそり作る）を防ぐ。
+      allow create, update: if isAuthenticated()
+        && request.resource.data.studentUid == request.auth.uid
+        && request.resource.data.teacherUid is string
+        && request.resource.data.classId is string
+        && accessId == request.resource.data.studentUid + '_' + request.resource.data.teacherUid;
+
+      // 取り消せるのは生徒本人のみ（先生に許可を消させない＝
+      // 生徒が抜けたのに許可だけ残る、の逆も防ぐ）
+      allow delete: if isAuthenticated() && resource.data.studentUid == request.auth.uid;
+    }
+
+    // ============================================================
+    // クラス（classrooms）
+    //   classrooms/{classId} = {
+    //     id, teacherUid, schoolName, className, joinCode,
+    //     subject, joinOpen, memberCount, createdAt, updatedAt
+    //   }
+    // ============================================================
+    //
+    // ■ read を認証済み全員に許すのはなぜか
+    //   生徒が参加コードを入力したとき、クラス名を表示して
+    //   「この授業に参加しますか？」と確認させる必要がある。
+    //   そのため get は許可する。ただし list は禁止するので、
+    //   全国のクラスを列挙することはできない。
+    //   （classrooms に個人情報は置かない設計にしてある）
+    // ============================================================
+    match /classrooms/{classId} {
+      function isValidClassroom(data) {
+        return data.keys().hasOnly([
+                 'id', 'teacherUid', 'schoolName', 'className', 'joinCode',
+                 'subject', 'joinOpen', 'memberCount', 'createdAt', 'updatedAt'
+               ])
+          && data.teacherUid is string
+          && data.teacherUid == request.auth.uid
+          && data.schoolName is string && data.schoolName.size() > 0 && data.schoolName.size() <= 40
+          && data.className is string && data.className.size() > 0 && data.className.size() <= 40
+          && data.joinCode is string && data.joinCode.matches('^[ACDEFGHJKMNPQRSTWXYZ2345679]{6}$')
+          && data.subject in ['chemistry_basic', 'chemistry', 'english_listening']
+          && data.joinOpen is bool;
+      }
+
+      allow get: if isAuthenticated();
+      allow list: if false;
+
+      allow create: if isAuthenticated() && isValidClassroom(request.resource.data);
+
+      // 担任のみ更新可。teacherUid と joinCode は変更不可
+      // （コードを差し替えて他クラスの生徒を奪えないようにする）
+      allow update: if isAuthenticated()
+        && resource.data.teacherUid == request.auth.uid
+        && isValidClassroom(request.resource.data)
+        && request.resource.data.teacherUid == resource.data.teacherUid
+        && request.resource.data.joinCode == resource.data.joinCode;
+
+      allow delete: if isAuthenticated() && resource.data.teacherUid == request.auth.uid;
+    }
+
+    // ============================================================
+    // 参加コードの逆引き（class_codes）
+    //   class_codes/{joinCode} = { classId, teacherUid, createdAt }
+    // ============================================================
+    //
+    // friend_codes と同じ発想。ルールは「クエリ結果」ではなく
+    // 「クエリが必ず条件を満たすと静的に証明できるか」で判定されるため、
+    // where('joinCode','==',x) を許すと classrooms 全体を読ませることに
+    // なる。コードを知っている人だけが get できる形にし、list は禁止して
+    // 総当りによる列挙を防ぐ。
+    // ============================================================
+    match /class_codes/{joinCode} {
+      allow get: if isAuthenticated();
+      allow list: if false;
+
+      allow create: if isAuthenticated()
+        && joinCode.matches('^[ACDEFGHJKMNPQRSTWXYZ2345679]{6}$')
+        && request.resource.data.keys().hasOnly(['classId', 'teacherUid', 'createdAt'])
+        && request.resource.data.classId is string
+        && request.resource.data.teacherUid == request.auth.uid;
+
+      // 既にあるコードは奪えない（別の先生が上書きして
+      // 生徒の参加先をすり替えることを防ぐ）
+      allow update: if isAuthenticated()
+        && resource.data.teacherUid == request.auth.uid
+        && request.resource.data.teacherUid == resource.data.teacherUid;
+
+      allow delete: if isAuthenticated() && resource.data.teacherUid == request.auth.uid;
+    }
+
+    // ============================================================
+    // 在籍（class_members）
+    //   class_members/{classId}_{生徒uid} =
+    //     { classId, uid, displayName, rosterName?, joinedAt, updatedAt? }
+    // ============================================================
+    //
+    // ■ ドキュメントIDを固定する理由
+    //   `${classId}_${uid}` に固定することで「1クラス1生徒1行」が
+    //   保証され、同じ生徒が二重に在籍することがなくなる。
+    //   friend_requests で同じ手法を使っており、実績がある。
+    //
+    // ■ list を許可している理由（ここだけ例外）
+    //   先生が在籍者一覧を取るには where('classId','==',x) の
+    //   クエリが必要になる。classId を知っているのは
+    //   担任と在籍生徒だけなので、これは許容できる。
+    //   在籍レコードには表示名しか無く、学習データは含まれない。
+    // ============================================================
+    match /class_members/{memberId} {
+      function isValidMember(data) {
+        return data.keys().hasOnly(['classId', 'uid', 'displayName', 'rosterName', 'joinedAt', 'updatedAt'])
+          && data.classId is string
+          && data.uid is string
+          && data.displayName is string && data.displayName.size() <= 24
+          && (!('rosterName' in data) || (data.rosterName is string && data.rosterName.size() <= 24))
+          && memberId == data.classId + '_' + data.uid;
+      }
+
+      // 担任か本人が読める。
+      // 担任判定はクラスを1回 get するだけで済む。
+      function isClassTeacher(classId) {
+        return isAuthenticated()
+          && exists(/databases/$(database)/documents/classrooms/$(classId))
+          && get(/databases/$(database)/documents/classrooms/$(classId)).data.teacherUid == request.auth.uid;
+      }
+
+      allow get, list: if isAuthenticated()
+        && (resource.data.uid == request.auth.uid || isClassTeacher(resource.data.classId));
+
+      // 参加するのは生徒本人のみ（先生が生徒を勝手に登録できない）
+      allow create: if isAuthenticated()
+        && request.resource.data.uid == request.auth.uid
+        && isValidMember(request.resource.data);
+
+      // 更新は
+      //   ・本人（表示名の変更）
+      //   ・担任（rosterName = 出席番号などの設定）
+      // のみ。uid / classId は変更不可。
+      allow update: if isAuthenticated()
+        && isValidMember(request.resource.data)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.classId == resource.data.classId
+        && (resource.data.uid == request.auth.uid || isClassTeacher(resource.data.classId));
+
+      // 退出は本人、除籍は担任
+      allow delete: if isAuthenticated()
+        && (resource.data.uid == request.auth.uid || isClassTeacher(resource.data.classId));
+    }
   }
 }

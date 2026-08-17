@@ -20,6 +20,7 @@ import {
 import { submitChapterScore } from '../utils/leaderboard';
 import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
 import { markProblemSolved } from '../utils/progress';
+import { schedulePush } from '../utils/studySync';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
 import { answerCardMarker, buildSubQuestionList } from '../utils/questionDisplay';
 import { useIsDesktop } from '../hooks/useMediaQuery';
@@ -1213,6 +1214,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     try {
       const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
       markProblemSolved(uid, chapter.id, currentQuestion.id, boostedScore);
+
+      // localStorage への記録が済んだので、クラウドへの送信を予約する。
+      // 1問ごとに通信すると1授業で数千書き込みになるため、
+      // studySync 側でまとめて（デバウンスして）送る。
+      // 通信できなくても localStorage には残っているので学習は続く。
+      schedulePush();
     } catch (e) {
       // 進捗記録の失敗で学習そのものを止めない
       console.error('[Quiz] markProblemSolved failed:', e);
