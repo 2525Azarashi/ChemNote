@@ -1241,7 +1241,7 @@ const EL1_B_SET7: ListeningProblem = {
       label: '問1 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '③',
       correctAnswerRate: 66,
       imageUrl: '/listening_q1b/el1B_set7_q1.jpg',
       imageCaption: '問1 の選択肢イラスト（①〜④）',
@@ -1262,7 +1262,7 @@ const EL1_B_SET7: ListeningProblem = {
       label: '問2 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '④',
       correctAnswerRate: 63,
       imageUrl: '/listening_q1b/el1B_set7_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④）',
@@ -1283,7 +1283,7 @@ const EL1_B_SET7: ListeningProblem = {
       label: '問3 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '②',
       correctAnswerRate: 60,
       imageUrl: '/listening_q1b/el1B_set7_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④）',
@@ -1323,29 +1323,29 @@ const EL1_B_SET7: ListeningProblem = {
   ],
   explanation: `第7回（難易度：標準）の解説です。イラスト選択では「4枚の違い」を先に言語化しておくことが最大の得点源になります。
 
-問1　正解は ①
+問1　正解は ③
 スクリプト："The poster of the mountains is above the desk, and the poster of the sea is next to the window."
-イラストの内容：① 山のポスターが机の上、海のポスターが窓の横／② 海のポスターが机の上、山のポスターが窓の横／③ 2枚とも窓の横／④ 山のポスターだけが机の上
+イラストの内容：① 2枚とも窓の横／② 海のポスターが机の上、山のポスターが窓の横／③ 山のポスターが机の上、海のポスターが窓の横／④ 山のポスターだけが机の上
 正解のイラスト：山のポスターが机の上、海のポスターが窓の横
-2枚のポスター（山/海）と2か所（机の上/窓の横）の対応。①と②が入れ替えのひっかけ。
+2枚のポスター（山/海）と2か所（机の上/窓の横）の対応。③と②が入れ替えのひっかけ。
 
-問2　正解は ①
+問2　正解は ④
 スクリプト："I can see two dogs in the park. The white one is running, but the black one is sleeping."
-イラストの内容：① 白い犬が走り、黒い犬が寝ている／② 黒い犬が走り、白い犬が寝ている／③ 2匹とも走っている／④ 2匹とも寝ている
+イラストの内容：① 2匹とも走っている／② 黒い犬が走り、白い犬が寝ている／③ 2匹とも寝ている／④ 白い犬が走り、黒い犬が寝ている
 正解のイラスト：白い犬が走り、黒い犬が寝ている
 色と動作の対応＋but の対比。走る/寝るの組み合わせの鏡像がひっかけ。
 
-問3　正解は ①
+問3　正解は ②
 スクリプト："To get to the platform, go up the stairs and turn right. Don't use the escalator today."
-イラストの内容：① 階段を上がって右へ曲がる案内／② エスカレーターで上がる案内／③ 階段を上がって左へ曲がる案内／④ エレベーターの案内
+イラストの内容：① 階段を上がって左へ曲がる案内／② 階段を上がって右へ曲がる案内／③ エスカレーターで上がる案内／④ エレベーターの案内
 正解のイラスト：階段を上がって右へ曲がる案内
 up the stairs＋turn right＋not the escalator の3情報。左右の反転がひっかけ。
 
 問4　正解は ①
 スクリプト："There are more oranges than apples in the basket. I count five oranges and three apples."
-イラストの内容：① かごにみかん5個・りんご3個／② かごにみかん3個・りんご5個／③ かごにみかん5個だけ／④ かごにりんご8個
+イラストの内容：① かごにみかん5個・りんご3個／② かごにみかん5個だけ／③ かごにみかん3個・りんご5個／④ かごにりんご8個
 正解のイラスト：かごにみかん5個・りんご3個
-more A than B（Aのほうが多い）の比較と具体数。5と3の対応を逆に取る②がひっかけ。`,
+more A than B（Aのほうが多い）の比較と具体数。5と3の対応を逆に取る③がひっかけ。`,
   surroundingKnowledge: [
     '位置の前置詞：on（接触して上）／over・above（離れて上）／under・below（下）／in front of（前）／behind（後ろ）／between A and B（A と B の間）／next to・beside（隣）。',
     '比較の聞き取り：taller / shorter / bigger / more ~ than。どちらが基準かを取り違えないこと。',
@@ -1431,7 +1431,7 @@ const EL1_B_SET8: ListeningProblem = {
       label: '問1 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '④',
       correctAnswerRate: 54,
       imageUrl: '/listening_q1b/el1B_set8_q1.jpg',
       imageCaption: '問1 の選択肢イラスト（①〜④）',
@@ -1452,7 +1452,7 @@ const EL1_B_SET8: ListeningProblem = {
       label: '問2 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '③',
       correctAnswerRate: 51,
       imageUrl: '/listening_q1b/el1B_set8_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④）',
@@ -1494,7 +1494,7 @@ const EL1_B_SET8: ListeningProblem = {
       label: '問4 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '②',
       correctAnswerRate: 45,
       imageUrl: '/listening_q1b/el1B_set8_q4.jpg',
       imageCaption: '問4 の選択肢イラスト（①〜④）',
@@ -1513,15 +1513,15 @@ const EL1_B_SET8: ListeningProblem = {
   ],
   explanation: `第8回（難易度：やや難）の解説です。イラスト選択では「4枚の違い」を先に言語化しておくことが最大の得点源になります。
 
-問1　正解は ①
+問1　正解は ④
 スクリプト："The girl playing the guitar is my sister. The one at the piano is her friend."
-イラストの内容：① ギターを弾く女の子（話者の妹）と、ピアノの女の子／② ピアノを弾く女の子（話者の妹）と、ギターの女の子／③ 2人ともピアノ／④ バイオリンとピアノを弾く2人
+イラストの内容：① ピアノを弾く女の子（話者の妹）と、ギターの女の子／② 2人ともピアノ／③ バイオリンとピアノを弾く2人／④ ギターを弾く女の子（話者の妹）と、ピアノの女の子
 正解のイラスト：ギターを弾く女の子（話者の妹）と、ピアノの女の子
 楽器（guitar/piano）と人物関係（sister/friend）の対応。楽器名の聞き取りと入れ替えが鍵。
 
-問2　正解は ①
+問2　正解は ③
 スクリプト："I put the dictionary on the top shelf because I use it every day. The photo album is on the bottom shelf."
-イラストの内容：① 辞書が一番上の棚、写真アルバムが一番下の棚／② 辞書が一番下、写真アルバムが一番上／③ 2冊とも真ん中の棚／④ 辞書が真ん中、アルバムが上
+イラストの内容：① 辞書が真ん中、アルバムが上／② 辞書が一番下、写真アルバムが一番上／③ 辞書が一番上の棚、写真アルバムが一番下の棚／④ 2冊とも真ん中の棚
 正解のイラスト：辞書が一番上の棚、写真アルバムが一番下の棚
 top shelf / bottom shelf の上下と物の対応。because 以下の理由はダミー情報。
 
@@ -1531,9 +1531,9 @@ top shelf / bottom shelf の上下と物の対応。because 以下の理由は�
 正解のイラスト：アヒル3羽が泳ぎ、2羽が草の上に座っている
 数（three + two more）と場所（in the pond / on the grass）の対応。合計5羽だが動作で分かれる。
 
-問4　正解は ①
+問4　正解は ②
 スクリプト："The bus is almost full. There's only one seat left, next to the old man at the back."
-イラストの内容：① 後部のお年寄りの横に1つだけ空席／② 前のほうに空席がたくさん／③ 空席なし（全員座っている）／④ 運転席のすぐ後ろに空席1つ
+イラストの内容：① 前のほうに空席がたくさん／② 後部のお年寄りの横に1つだけ空席／③ 運転席のすぐ後ろに空席1つ／④ 空席なし（全員座っている）
 正解のイラスト：後部のお年寄りの横に1つだけ空席
 only one seat left（残り1席）＋位置（next to the old man at the back）の2条件。almost full の状況把握も必要。`,
   surroundingKnowledge: [
@@ -1621,7 +1621,7 @@ const EL1_B_SET9: ListeningProblem = {
       label: '問1 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '③',
       correctAnswerRate: 78,
       imageUrl: '/listening_q1b/el1B_set9_q1.jpg',
       imageCaption: '問1 の選択肢イラスト（①〜④）',
@@ -1642,7 +1642,7 @@ const EL1_B_SET9: ListeningProblem = {
       label: '問2 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '②',
       correctAnswerRate: 75,
       imageUrl: '/listening_q1b/el1B_set9_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④）',
@@ -1663,7 +1663,7 @@ const EL1_B_SET9: ListeningProblem = {
       label: '問3 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '④',
       correctAnswerRate: 72,
       imageUrl: '/listening_q1b/el1B_set9_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④）',
@@ -1703,27 +1703,27 @@ const EL1_B_SET9: ListeningProblem = {
   ],
   explanation: `第9回（難易度：易しめ）の解説です。イラスト選択では「4枚の違い」を先に言語化しておくことが最大の得点源になります。
 
-問1　正解は ①
+問1　正解は ③
 スクリプト："Can I have some soup, please? I don't want salad today."
-イラストの内容：① スープを頼む女の子／② サラダを頼む女の子／③ スープとサラダ両方／④ パンを頼む女の子
+イラストの内容：① スープとサラダ両方／② パンを頼む女の子／③ スープを頼む女の子／④ サラダを頼む女の子
 正解のイラスト：スープを頼む女の子
 don't want salad の否定が核心。欲しいもの／いらないものの基本問題。
 
-問2　正解は ①
+問2　正解は ②
 スクリプト："The flag is on the left side of the blackboard, not the right."
-イラストの内容：① 黒板の左側に国旗／② 黒板の右側に国旗／③ 黒板の上に国旗／④ 黒板の横に旗はない
+イラストの内容：① 黒板の上に国旗／② 黒板の左側に国旗／③ 黒板の横に旗はない／④ 黒板の右側に国旗
 正解のイラスト：黒板の左側に国旗
 left / not the right の位置の聞き分け。左右反転の最も基本的な型。
 
-問3　正解は ①
+問3　正解は ④
 スクリプト："I'm wearing my new blue hat today, not the yellow one."
-イラストの内容：① 青い帽子をかぶる女の子／② 黄色い帽子をかぶる女の子／③ 青い帽子を手に持つ女の子／④ 帽子をかぶっていない女の子
+イラストの内容：① 青い帽子を手に持つ女の子／② 帽子をかぶっていない女の子／③ 黄色い帽子をかぶる女の子／④ 青い帽子をかぶる女の子
 正解のイラスト：青い帽子をかぶる女の子
 wearing（かぶっている）と色（blue, not yellow）の2条件。「かぶる／持つ」の動作の違いもひっかけ。
 
 問4　正解は ①
 スクリプト："The doors on the left side will open at the next station."
-イラストの内容：① 電車の左側のドアが開く／② 電車の右側のドアが開く／③ 両側のドアが開く／④ ドアは開かない
+イラストの内容：① 電車の左側のドアが開く／② 両側のドアが開く／③ 電車の右側のドアが開く／④ ドアは開かない
 正解のイラスト：電車の左側のドアが開く
 left side の聞き取りのみのシンプルな問題。車内アナウンスの場面設定。`,
   surroundingKnowledge: [
@@ -1811,7 +1811,7 @@ const EL1_B_SET10: ListeningProblem = {
       label: '問1 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '②',
       correctAnswerRate: 66,
       imageUrl: '/listening_q1b/el1B_set10_q1.jpg',
       imageCaption: '問1 の選択肢イラスト（①〜④）',
@@ -1832,7 +1832,7 @@ const EL1_B_SET10: ListeningProblem = {
       label: '問2 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '④',
       correctAnswerRate: 63,
       imageUrl: '/listening_q1b/el1B_set10_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④）',
@@ -1874,7 +1874,7 @@ const EL1_B_SET10: ListeningProblem = {
       label: '問4 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '③',
       correctAnswerRate: 57,
       imageUrl: '/listening_q1b/el1B_set10_q4.jpg',
       imageCaption: '問4 の選択肢イラスト（①〜④）',
@@ -1893,15 +1893,15 @@ const EL1_B_SET10: ListeningProblem = {
   ],
   explanation: `第10回（難易度：標準）の解説です。イラスト選択では「4枚の違い」を先に言語化しておくことが最大の得点源になります。
 
-問1　正解は ①
+問1　正解は ②
 スクリプト："The calendar on the wall says today is Wednesday, the fifteenth."
-イラストの内容：① 15日（水曜）に丸印のカレンダー／② 15日（木曜）に丸印のカレンダー／③ 5日（水曜）に丸印のカレンダー／④ 25日（水曜）に丸印のカレンダー
+イラストの内容：① 5日（水曜）に丸印のカレンダー／② 15日（水曜）に丸印のカレンダー／③ 25日（水曜）に丸印のカレンダー／④ 15日（木曜）に丸印のカレンダー
 正解のイラスト：15日（水曜）に丸印のカレンダー
 曜日（Wednesday）と日付（the fifteenth）の2条件。fifteen/fifty 系の音の聞き分けも絡む。
 
-問2　正解は ①
+問2　正解は ④
 スクリプト："This is a photo of my family. There are five of us, including the dog."
-イラストの内容：① 人間4人と犬1匹の写真／② 人間5人の写真（犬なし）／③ 人間3人と犬2匹／④ 人間4人の写真（犬なし）
+イラストの内容：① 人間3人と犬2匹／② 人間4人の写真（犬なし）／③ 人間5人の写真（犬なし）／④ 人間4人と犬1匹の写真
 正解のイラスト：人間4人と犬1匹の写真
 five of us, including the dog（犬を入れて5）の解釈が核心。「犬を含める」表現のひっかけ。
 
@@ -1911,9 +1911,9 @@ five of us, including the dog（犬を入れて5）の解釈が核心。「犬�
 正解のイラスト：コーヒー2杯と紅茶1杯（紅茶は窓際の客へ）
 飲み物の種類と数（two coffees / one tea）の対応。by the window の位置情報は補助。
 
-問4　正解は ①
+問4　正解は ③
 スクリプト："The children are sitting under the tree because it's too hot in the sun."
-イラストの内容：① 木の下に座る子どもたち／② 日なたに座る子どもたち／③ 木の下で立っている子どもたち／④ ベンチに座る子どもたち
+イラストの内容：① 木の下で立っている子どもたち／② 日なたに座る子どもたち／③ 木の下に座る子どもたち／④ ベンチに座る子どもたち
 正解のイラスト：木の下に座る子どもたち
 under the tree の位置と、because 以下の理由（暑いから）はダミー情報。座る／立つもひっかけ。`,
   surroundingKnowledge: [
@@ -2001,7 +2001,7 @@ const EL1_B_SET11: ListeningProblem = {
       label: '問1 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '③',
       correctAnswerRate: 66,
       imageUrl: '/listening_q1b/el1B_set11_q1.jpg',
       imageCaption: '問1 の選択肢イラスト（①〜④）',
@@ -2043,7 +2043,7 @@ const EL1_B_SET11: ListeningProblem = {
       label: '問3 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '②',
       correctAnswerRate: 60,
       imageUrl: '/listening_q1b/el1B_set11_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④）',
@@ -2064,7 +2064,7 @@ const EL1_B_SET11: ListeningProblem = {
       label: '問4 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '④',
       correctAnswerRate: 57,
       imageUrl: '/listening_q1b/el1B_set11_q4.jpg',
       imageCaption: '問4 の選択肢イラスト（①〜④）',
@@ -2083,29 +2083,29 @@ const EL1_B_SET11: ListeningProblem = {
   ],
   explanation: `第11回（難易度：標準）の解説です。イラスト選択では「4枚の違い」を先に言語化しておくことが最大の得点源になります。
 
-問1　正解は ①
+問1　正解は ③
 スクリプト："I gave my teacher a bouquet of twelve red roses this morning."
-イラストの内容：① 赤いバラ12本の花束／② 赤いバラ6本の花束／③ 白いバラ12本の花束／④ 赤いチューリップ12本
+イラストの内容：① 赤いバラ6本の花束／② 赤いチューリップ12本／③ 赤いバラ12本の花束／④ 白いバラ12本の花束
 正解のイラスト：赤いバラ12本の花束
 花の種類（roses）・色（red）・数（twelve）の3条件。どれか1つだけ違う選択肢がひっかけ。
 
 問2　正解は ①
 スクリプト："There are two bicycles in front of our house. The blue one is mine."
-イラストの内容：① 家の前に自転車2台（青と赤）／② 家の前に自転車1台（青）／③ 家の後ろに自転車2台／④ 家の前にバイク2台
+イラストの内容：① 家の前に自転車2台（青と赤）／② 家の前に自転車1台（青）／③ 家の前にバイク2台／④ 家の後ろに自転車2台
 正解のイラスト：家の前に自転車2台（青と赤）
 台数（two）と場所（in front of the house）が要点。The blue one is mine は絵の特定に必須の情報ではない。
 
-問3　正解は ①
+問3　正解は ②
 スクリプト："Both of my cats are sleeping. One is on the chair, and the other is on the rug."
-イラストの内容：① 1匹は椅子の上、もう1匹は絨毯の上で寝ている／② 2匹とも椅子の上で寝ている／③ 1匹は寝て、もう1匹は遊んでいる／④ 2匹とも床で寝ている
+イラストの内容：① 2匹とも床で寝ている／② 1匹は椅子の上、もう1匹は絨毯の上で寝ている／③ 2匹とも椅子の上で寝ている／④ 1匹は寝て、もう1匹は遊んでいる
 正解のイラスト：1匹は椅子の上、もう1匹は絨毯の上で寝ている
-Both〜sleeping の両方＋one〜the other〜 の場所の対応。「片方だけ寝ている」③がひっかけ。
+Both〜sleeping の両方＋one〜the other〜 の場所の対応。「片方だけ寝ている」④がひっかけ。
 
-問4　正解は ①
+問4　正解は ④
 スクリプト："Please open the window. It's closed now, and the room is getting hot."
-イラストの内容：① 閉まっている窓（これから開ける場面）／② 開いている窓／③ 閉まっているドア／④ 開いているドア
+イラストの内容：① 開いているドア／② 閉まっているドア／③ 開いている窓／④ 閉まっている窓（これから開ける場面）
 正解のイラスト：閉まっている窓（これから開ける場面）
-open the window（依頼）＋It's closed now（現在の状態）の時間関係。絵は「今閉まっている窓」が正解。②は未来の状態なので誤り。`,
+open the window（依頼）＋It's closed now（現在の状態）の時間関係。絵は「今閉まっている窓」が正解。③は未来の状態なので誤り。`,
   surroundingKnowledge: [
     '位置の前置詞：on（接触して上）／over・above（離れて上）／under・below（下）／in front of（前）／behind（後ろ）／between A and B（A と B の間）／next to・beside（隣）。',
     '比較の聞き取り：taller / shorter / bigger / more ~ than。どちらが基準かを取り違えないこと。',
@@ -2212,7 +2212,7 @@ const EL1_B_SET12: ListeningProblem = {
       label: '問2 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '④',
       correctAnswerRate: 63,
       imageUrl: '/listening_q1b/el1B_set12_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④）',
@@ -2233,7 +2233,7 @@ const EL1_B_SET12: ListeningProblem = {
       label: '問3 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '②',
       correctAnswerRate: 60,
       imageUrl: '/listening_q1b/el1B_set12_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④）',
@@ -2254,7 +2254,7 @@ const EL1_B_SET12: ListeningProblem = {
       label: '問4 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '③',
       correctAnswerRate: 57,
       imageUrl: '/listening_q1b/el1B_set12_q4.jpg',
       imageCaption: '問4 の選択肢イラスト（①〜④）',
@@ -2275,25 +2275,25 @@ const EL1_B_SET12: ListeningProblem = {
 
 問1　正解は ①
 スクリプト："The boy holding the flag is the leader of our team."
-イラストの内容：① 旗を持っている男の子／② 旗を掲げたポールの横に立つ男の子／③ 笛を持っている男の子／④ 腕章をした男の子（旗なし）
+イラストの内容：① 旗を持っている男の子／② 笛を持っている男の子／③ 旗を掲げたポールの横に立つ男の子／④ 腕章をした男の子（旗なし）
 正解のイラスト：旗を持っている男の子
 holding the flag（旗を持っている）の現在分詞による人物特定。動作の違いがひっかけ。
 
-問2　正解は ①
+問2　正解は ④
 スクリプト："I usually take the train to school, but today I came by bus because of the rain."
-イラストの内容：① バスで学校に向かう男の子／② 電車で学校に向かう男の子／③ 自転車で学校に向かう男の子／④ 徒歩で学校に向かう男の子
+イラストの内容：① 徒歩で学校に向かう男の子／② 自転車で学校に向かう男の子／③ 電車で学校に向かう男の子／④ バスで学校に向かう男の子
 正解のイラスト：バスで学校に向かう男の子
 usually（いつも）と but today（今日は）の時制対比。問われるのは今日の手段。2022年A問4型の画像版。
 
-問3　正解は ①
+問3　正解は ②
 スクリプト："Put the apples in the green bowl and the oranges in the white one, please."
-イラストの内容：① 緑のボウルにりんご、白いボウルにみかん／② 白いボウルにりんご、緑のボウルにみかん／③ 全部緑のボウル／④ りんごはかご、みかんは白いボウル
+イラストの内容：① 白いボウルにりんご、緑のボウルにみかん／② 緑のボウルにりんご、白いボウルにみかん／③ りんごはかご、みかんは白いボウル／④ 全部緑のボウル
 正解のイラスト：緑のボウルにりんご、白いボウルにみかん
-果物と容器の色の対応の組み合わせ。①と②が鏡像。
+果物と容器の色の対応の組み合わせ。②と①が鏡像。
 
-問4　正解は ①
+問4　正解は ③
 スクリプト："Please be quiet. Some students are reading books at the desks near the window."
-イラストの内容：① 窓際の机で本を読む学生たち／② 窓際の机で話している学生たち／③ 部屋の中央の机で読む学生たち／④ 本棚の前に立つ学生たち
+イラストの内容：① 部屋の中央の机で読む学生たち／② 窓際の机で話している学生たち／③ 窓際の机で本を読む学生たち／④ 本棚の前に立つ学生たち
 正解のイラスト：窓際の机で本を読む学生たち
 動作（reading）と場所（near the window）の2条件。reading/talking の動作違いがひっかけ。`,
   surroundingKnowledge: [
@@ -2402,7 +2402,7 @@ const EL1_B_SET13: ListeningProblem = {
       label: '問2 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '③',
       correctAnswerRate: 51,
       imageUrl: '/listening_q1b/el1B_set13_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④）',
@@ -2423,7 +2423,7 @@ const EL1_B_SET13: ListeningProblem = {
       label: '問3 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '④',
       correctAnswerRate: 48,
       imageUrl: '/listening_q1b/el1B_set13_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④）',
@@ -2444,7 +2444,7 @@ const EL1_B_SET13: ListeningProblem = {
       label: '問4 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '②',
       correctAnswerRate: 45,
       imageUrl: '/listening_q1b/el1B_set13_q4.jpg',
       imageCaption: '問4 の選択肢イラスト（①〜④）',
@@ -2465,25 +2465,25 @@ const EL1_B_SET13: ListeningProblem = {
 
 問1　正解は ①
 スクリプト："Everyone in the picture is wearing glasses except the tall boy in the middle."
-イラストの内容：① 中央の背の高い男の子以外全員が眼鏡／② 中央の男の子だけ眼鏡／③ 全員眼鏡／④ 誰も眼鏡をしていない
+イラストの内容：① 中央の背の高い男の子以外全員が眼鏡／② 中央の男の子だけ眼鏡／③ 誰も眼鏡をしていない／④ 全員眼鏡
 正解のイラスト：中央の背の高い男の子以外全員が眼鏡
 except（〜を除いて）の構文理解が核心。「全員−1人」を正確に絵に対応させる難度高めの問題。
 
-問2　正解は ①
+問2　正解は ③
 スクリプト："There were five birds on the wire a minute ago, but two just flew away."
-イラストの内容：① 電線に鳥が3羽残っている／② 電線に鳥が5羽いる／③ 電線に鳥が2羽いる／④ 電線に鳥はいない
+イラストの内容：① 電線に鳥が2羽いる／② 電線に鳥が5羽いる／③ 電線に鳥が3羽残っている／④ 電線に鳥はいない
 正解のイラスト：電線に鳥が3羽残っている
 5−2＝3 の計算。過去の状態（were five）と現在の状態の時間変化を追う。2024年A型の画像版。
 
-問3　正解は ①
+問3　正解は ④
 スクリプト："The clock on the wall is ten minutes fast. It says nine ten, but it's actually nine o'clock."
-イラストの内容：① 9時10分を指す時計／② 9時ちょうどを指す時計／③ 10時9分を指す時計／④ 8時50分を指す時計
+イラストの内容：① 10時9分を指す時計／② 9時ちょうどを指す時計／③ 8時50分を指す時計／④ 9時10分を指す時計
 正解のイラスト：9時10分を指す時計
 ten minutes fast（10分進んでいる）の理解が鍵。絵に描かれるのは時計の表示（9:10）であり、実際 の時刻（9:00）ではない。高度なひっかけ。
 
-問4　正解は ①
+問4　正解は ②
 スクリプト："I finished reading three books this week, so I have just one more to go before Sunday."
-イラストの内容：① 読み終えた本3冊の隣に、これから読む本が1冊／② 読み終えた本4冊／③ これから読む本が3冊／④ 本が全部で3冊だけ
+イラストの内容：① これから読む本が3冊／② 読み終えた本3冊の隣に、これから読む本が1冊／③ 読み終えた本4冊／④ 本が全部で3冊だけ
 正解のイラスト：読み終えた本3冊の隣に、これから読む本が1冊
 finished three＋one more to go の数量関係。合計4冊のうち残り1冊、という状態を選ぶ。`,
   surroundingKnowledge: [
@@ -2571,7 +2571,7 @@ const EL1_B_SET14: ListeningProblem = {
       label: '問1 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '③',
       correctAnswerRate: 66,
       imageUrl: '/listening_q1b/el1B_set14_q1.jpg',
       imageCaption: '問1 の選択肢イラスト（①〜④）',
@@ -2592,7 +2592,7 @@ const EL1_B_SET14: ListeningProblem = {
       label: '問2 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '②',
       correctAnswerRate: 63,
       imageUrl: '/listening_q1b/el1B_set14_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④）',
@@ -2613,7 +2613,7 @@ const EL1_B_SET14: ListeningProblem = {
       label: '問3 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '④',
       correctAnswerRate: 60,
       imageUrl: '/listening_q1b/el1B_set14_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④）',
@@ -2653,27 +2653,27 @@ const EL1_B_SET14: ListeningProblem = {
   ],
   explanation: `第14回（難易度：標準）の解説です。イラスト選択では「4枚の違い」を先に言語化しておくことが最大の得点源になります。
 
-問1　正解は ①
+問1　正解は ③
 スクリプト："The woman wearing a hat is carrying a heavy suitcase, but the woman without a hat has only a small bag."
-イラストの内容：① 帽子の女性が大きなスーツケース、帽子なしの女性が小さなバッグ／② 帽子なしの女性がスーツケース、帽子の女性が小さなバッグ／③ 2人ともスーツケース／④ 2人とも小さなバッグ
+イラストの内容：① 帽子なしの女性がスーツケース、帽子の女性が小さなバッグ／② 2人ともスーツケース／③ 帽子の女性が大きなスーツケース、帽子なしの女性が小さなバッグ／④ 2人とも小さなバッグ
 正解のイラスト：帽子の女性が大きなスーツケース、帽子なしの女性が小さなバッグ
-帽子の有無と荷物の大きさの対応。but の対比構文。鏡像の②がひっかけ。
+帽子の有無と荷物の大きさの対応。but の対比構文。鏡像の①がひっかけ。
 
-問2　正解は ①
+問2　正解は ②
 スクリプト："There are two balls under the chair. The red one is bigger than the blue one."
-イラストの内容：① 椅子の下に大きい赤いボールと小さい青いボール／② 椅子の下に小さい赤いボールと大きい青いボール／③ 椅子の上にボール2つ／④ 椅子の下にボール1つ
+イラストの内容：① 椅子の下に小さい赤いボールと大きい青いボール／② 椅子の下に大きい赤いボールと小さい青いボール／③ 椅子の上にボール2つ／④ 椅子の下にボール1つ
 正解のイラスト：椅子の下に大きい赤いボールと小さい青いボール
 位置（under the chair）・色・大きさ比較（bigger than）の3条件。比較級の対応が鍵。
 
-問3　正解は ①
+問3　正解は ④
 スクリプト："The desks in my office are in two rows. My desk is the second one from the window."
-イラストの内容：① 2列の机、窓から2番目に印／② 2列の机、窓から1番目に印／③ 1列の机、窓から2番目に印／④ 2列の机、窓から一番遠い机に印
+イラストの内容：① 2列の机、窓から一番遠い机に印／② 1列の机、窓から2番目に印／③ 2列の机、窓から1番目に印／④ 2列の机、窓から2番目に印
 正解のイラスト：2列の机、窓から2番目に印
 two rows（2列）と the second one from the window（窓から2番目）の序数表現。序数の聞き取りが核心。
 
 問4　正解は ①
 スクリプト："Don't leave your umbrella by the door. Hang it on the hook on the wall."
-イラストの内容：① 壁のフックに掛けられた傘／② ドアのそばに立て掛けられた傘／③ 床に開いて置かれた傘／④ かばんの中の畳まれた傘
+イラストの内容：① 壁のフックに掛けられた傘／② かばんの中の畳まれた傘／③ 床に開いて置かれた傘／④ ドアのそばに立て掛けられた傘
 正解のイラスト：壁のフックに掛けられた傘
 Don't leave〜by the door（否定の指示）の後に正しい場所（on the hook on the wall）が来る。否定→指示の流れ。`,
   surroundingKnowledge: [
@@ -2782,7 +2782,7 @@ const EL1_B_SET15: ListeningProblem = {
       label: '問2 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '③',
       correctAnswerRate: 63,
       imageUrl: '/listening_q1b/el1B_set15_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④）',
@@ -2803,7 +2803,7 @@ const EL1_B_SET15: ListeningProblem = {
       label: '問3 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '②',
       correctAnswerRate: 60,
       imageUrl: '/listening_q1b/el1B_set15_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④）',
@@ -2824,7 +2824,7 @@ const EL1_B_SET15: ListeningProblem = {
       label: '問4 発話に合うイラスト',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
-      correctAnswer: '①',
+      correctAnswer: '④',
       correctAnswerRate: 57,
       imageUrl: '/listening_q1b/el1B_set15_q4.jpg',
       imageCaption: '問4 の選択肢イラスト（①〜④）',
@@ -2849,21 +2849,21 @@ const EL1_B_SET15: ListeningProblem = {
 正解のイラスト：雲の上に飛行機、雲の下に鳥
 above / below the clouds と対象（plane/bird）の上下対応。鏡像の②がひっかけ。
 
-問2　正解は ①
+問2　正解は ③
 スクリプト："My dog is in the doghouse now. He was in the garden a minute ago."
-イラストの内容：① 犬小屋の中にいる犬／② 庭にいる犬／③ 家の中にいる犬／④ 犬小屋の屋根の上にいる犬
+イラストの内容：① 犬小屋の屋根の上にいる犬／② 庭にいる犬／③ 犬小屋の中にいる犬／④ 家の中にいる犬
 正解のイラスト：犬小屋の中にいる犬
 now と a minute ago の時制対比。問われるのは現在の場所。過去の情報（garden）はひっかけ。
 
-問3　正解は ①
+問3　正解は ②
 スクリプト："Four students are standing in front of the whiteboard, and two are sitting at their desks."
-イラストの内容：① 4人がホワイトボードの前に立ち、2人が机に座っている／② 2人が立ち、4人が座っている／③ 6人全員が立っている／④ 6人全員が座っている
+イラストの内容：① 6人全員が立っている／② 4人がホワイトボードの前に立ち、2人が机に座っている／③ 2人が立ち、4人が座っている／④ 6人全員が座っている
 正解のイラスト：4人がホワイトボードの前に立ち、2人が机に座っている
-数（four standing / two sitting）と動作の対応。合計6人だが比率の逆転②がひっかけ。
+数（four standing / two sitting）と動作の対応。合計6人だが比率の逆転③がひっかけ。
 
-問4　正解は ①
+問4　正解は ④
 スクリプト："I bought the pencil case with the blue stars, not the one with the red hearts."
-イラストの内容：① 青い星柄の筆箱／② 赤いハート柄の筆箱／③ 青いハート柄の筆箱／④ 赤い星柄の筆箱
+イラストの内容：① 赤いハート柄の筆箱／② 赤い星柄の筆箱／③ 青いハート柄の筆箱／④ 青い星柄の筆箱
 正解のイラスト：青い星柄の筆箱
 not A, but B 型。色と柄の2属性の組み合わせ。属性の掛け違い（青ハート・赤星）がひっかけ。2025年問5型。`,
   surroundingKnowledge: [

@@ -1,0 +1,141 @@
+/**
+ * ===================================================================
+ * 英語リスニング：問題文（選択肢）と解答欄を「同じ場所」に出すための整形
+ * ===================================================================
+ *
+ * ■ なぜ必要か（ご要望：問題文と解答欄を分離しないで）
+ *   第1問A のデータは
+ *     ・problem.text        … リード文＋「問1（話者：…）＋①〜④の英文」
+ *     ・subQuestions[].options … ['①','②','③','④'] のマークだけ
+ *   という持ち方をしている。マークシートの再現としては正しいが、
+ *   画面上は「左ペインに英文／右ペインに①〜④のチップ」と分かれてしまい、
+ *   ①がどの英文なのかを目で往復して探す必要があった。
+ *
+ *   そこで、problem.text から「問Nの①〜④の本文」を機械的に取り出し、
+ *   解答欄の選択肢ボタンにそのまま載せる。こうすると
+ *   「読む場所」と「押す場所」が一致し、視線移動がゼロになる。
+ *
+ * ■ データは書き換えない
+ *   解説（Explanation）では従来どおり問題文全文（①〜④つき）を見せたい。
+ *   そのため元データには手を入れず、Quiz の表示時にだけ
+ *   ・選択肢本文を取り出す（buildListeningOptionTexts）
+ *   ・左ペインからは重複する問N ブロックを落とす（stripListeningQuestionBlocks）
+ *   という2つの整形を行う。
+ *
+ * ■ 第1問B（イラスト選択）について
+ *   判断材料はイラスト（subQuestion.imageUrl）なので選択肢本文は無い。
+ *   その場合は空の Map が返り、呼び出し側はマークのみのボタンを描く。
+ */
+
+/** 選択肢マーク（第1問A/B はすべて ①〜④ の4択） */
+const MARKS = ['①', '②', '③', '④'];
+
+/** 行頭のマークを見て「何番の選択肢か」を返す（該当しなければ -1）。 */
+function markIndexOf(line: string): number {
+  const head = line.trim().charAt(0);
+  return MARKS.indexOf(head);
+}
+
+/** 「問1」「問 1」「問1（話者：…）」などから設問番号を取り出す（なければ null）。 */
+function questionNumberOf(line: string): number | null {
+  const m = line.match(/^\s*問\s*(\d+)/u);
+  return m ? Number(m[1]) : null;
+}
+
+/**
+ * problem.text から「設問番号 → ①〜④の本文」を取り出す。
+ *
+ * 想定する形（第1問A の生成データ）:
+ *   ────────────────────
+ *   問1（話者：女性（高校生））
+ *   ① She went to bed early last night.
+ *   ② She plans to go to bed early tonight.
+ *   ...
+ *
+ * 取り出せなかった設問はキーを作らない（＝マークのみで描画される）。
+ */
+export function parseListeningOptionBlocks(text: string): Map<number, string[]> {
+  const result = new Map<number, string[]>();
+  let currentNo: number | null = null;
+
+  for (const rawLine of String(text || '').split('\n')) {
+    const qno = questionNumberOf(rawLine);
+    if (qno !== null) {
+      currentNo = qno;
+      continue;
+    }
+    if (currentNo === null) continue;
+
+    const idx = markIndexOf(rawLine);
+    if (idx < 0) continue;
+
+    // 「① 本文」のマークを外して本文だけにする（先頭の記号・空白も除去）。
+    const body = rawLine.trim().slice(1).replace(/^[\s.．、,:：)）]*/u, '').trim();
+    if (!body) continue;
+
+    const list = result.get(currentNo) || [];
+    list[idx] = body;
+    result.set(currentNo, list);
+  }
+
+  // ①〜④が欠けている（＝抽出が不完全な）設問は使わない。
+  // 途中まで表示すると「②だけ本文が無い」といった不整合になり、かえって危険。
+  for (const [no, list] of Array.from(result.entries())) {
+    if (list.length !== 4 || list.some((s) => !s)) result.delete(no);
+  }
+  return result;
+}
+
+/**
+ * subQuestion のラベル（"問2 話者（…）の発話に最も近い英文"）から設問番号を推定する。
+ * 取れない場合は並び順（index+1）を使う。
+ */
+export function subQuestionNumber(sq: any, index: number): number {
+  const m = String(sq?.label || '').match(/問\s*(\d+)/u);
+  return m ? Number(m[1]) : index + 1;
+}
+
+/**
+ * 「subQuestion.id → 選択肢本文の配列（options と同じ並び）」を作る。
+ * 選択肢本文が取れない設問（第1問B など）はキーを持たない。
+ */
+export function buildListeningOptionTexts(problem: any): Map<string, string[]> {
+  const map = new Map<string, string[]>();
+  const blocks = parseListeningOptionBlocks(problem?.text || '');
+  if (blocks.size === 0) return map;
+
+  const subs: any[] = problem?.subQuestions || [];
+  subs.forEach((sq, i) => {
+    const bodies = blocks.get(subQuestionNumber(sq, i));
+    if (!bodies) return;
+    const options: string[] = Array.isArray(sq?.options) ? sq.options : [];
+    // options が ①〜④ のマークであることを確認してから対応づける
+    // （将来「本文そのものを options に入れる」形になっても壊れないようにする）。
+    if (options.length !== 4 || !options.every((o, idx) => String(o).trim() === MARKS[idx])) return;
+    map.set(sq.id, bodies);
+  });
+  return map;
+}
+
+/**
+ * 左ペイン用に「問N 以降のブロック」を落とし、リード文（指示文・コツ）だけを残す。
+ *
+ * 選択肢本文と設問文は解答カード側に出すので、左ペインに残すと
+ * 同じ文が2か所に並び「どちらを見ればよいか」が分からなくなる。
+ * 分離をやめる（＝解答欄と同期させる）ための整形。
+ */
+export function stripListeningQuestionBlocks(text: string): string {
+  const lines = String(text || '').split('\n');
+  let cut = lines.length;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    if (questionNumberOf(lines[i]) !== null) {
+      cut = i;
+      // 直前が区切り線（──── など）や空行なら、それも一緒に落とす。
+      while (cut > 0 && /^[\s─―—-]*$/u.test(lines[cut - 1])) cut -= 1;
+      break;
+    }
+  }
+
+  return lines.slice(0, cut).join('\n').replace(/\n{3,}/gu, '\n\n').trim();
+}

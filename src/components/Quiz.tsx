@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
-import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy, Eraser, RotateCcw } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { ExplanationBody } from './ExplanationBody';
 import { Explanation } from './Explanation';
@@ -23,7 +23,11 @@ import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList'
 import { markProblemSolved } from '../utils/progress';
 import { schedulePush } from '../utils/studySync';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
-import { answerCardMarker, buildSubQuestionList } from '../utils/questionDisplay';
+import { answerCardMarker, buildSubQuestionList, splitQuestionLabel } from '../utils/questionDisplay';
+import {
+  buildListeningOptionTexts,
+  stripListeningQuestionBlocks,
+} from '../utils/listeningOptions';
 import { useIsDesktop } from '../hooks/useMediaQuery';
 import { auth } from '../firebase';
 
@@ -458,13 +462,26 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   }, [showingExplanation, chapter.id, mode]);
 
   // ────────────────────────────────────────────────────────────────
-  // 消去法（elimination）
+  // 消去法（elimination）― モードを持たず「選択肢の直接タップ」で行う
   // ────────────────────────────────────────────────────────────────
   //
   // ■ 何のための状態か
   //   リスニングやイラスト選択では「これは違う」と分かった選択肢を先に潰し、
   //   残りに集中するのが定石（消去法）。紙の問題冊子で選択肢に斜線を引く動作を
   //   アプリ上で再現する。
+  //
+  // ■ 消去モード（トグルボタン）を廃止した理由（ご要望）
+  //   以前は専用ボタンで消去モードに切り替え、モード中だけ
+  //   タップ＝斜線という仕様だった。しかしモードがあると
+  //     ・押す前に必ずボタンを探す手間が増える
+  //     ・「いま押したら選択なのか消去なのか」を毎回確認しないといけない
+  //   という負担が生まれる。そこでモードを無くし、
+  //   選択肢そのものを続けてタップするだけで消去できるようにした。
+  //
+  // ■ タップ1種類で3状態を回す（cycleOption）
+  //     未選択 → 選択 → 消去（斜線） → 未選択 → …
+  //   「選んだけれど、やっぱり違う」という思考の流れがそのまま指の動きになり、
+  //   どの状態からでも続けてタップすれば元に戻せるので詰まらない。
   //
   // ■ 解答（answers）とは完全に別の状態にしている理由
   //   同じ state に混ぜると「消したつもりが解答になっていた」という
@@ -482,14 +499,6 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     }
   });
 
-  /**
-   * 消去モード。
-   *   false … 通常。タップ＝解答を選ぶ
-   *   true  … 消去モード。タップ＝その選択肢に斜線を引く（解答は動かさない）
-   * 「タップの意味が変わる」ため、必ず画面上でモードが見えるようにする。
-   */
-  const [eliminateMode, setEliminateMode] = useState(false);
-
   useEffect(() => {
     localStorage.setItem(`quiz_elim_${chapter.id}_${mode}`, JSON.stringify(eliminated));
   }, [eliminated, chapter.id, mode]);
@@ -498,31 +507,22 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   const isEliminated = (sqId: string, opt: string) =>
     (eliminated[sqId] || []).includes(opt);
 
-  /**
-   * 選択肢の消去をトグルする。
-   * 消した選択肢がすでに解答として選ばれていた場合は解答を外す
-   * （「違うと判断したものが答えのまま残る」矛盾を防ぐ）。
-   */
-  const toggleEliminate = (sqId: string, opt: string) => {
+  /** 斜線を引く（消去する）。 */
+  const strikeOption = (sqId: string, opt: string) => {
     setEliminated((prev) => {
       const cur = prev[sqId] || [];
-      const next = cur.includes(opt) ? cur.filter((o) => o !== opt) : [...cur, opt];
-      return { ...prev, [sqId]: next };
-    });
-    setAnswers((prev) => {
-      const cur = prev[sqId];
-      if (!cur) return prev;
-      // 単一選択でその選択肢が選ばれていたら外す
-      if (cur === opt && !(eliminated[sqId] || []).includes(opt)) {
-        return { ...prev, [sqId]: '' };
-      }
-      return prev;
+      if (cur.includes(opt)) return prev;
+      return { ...prev, [sqId]: [...cur, opt] };
     });
   };
 
-  /** この設問の消去をすべて元に戻す。 */
-  const clearEliminated = (sqId: string) => {
-    setEliminated((prev) => ({ ...prev, [sqId]: [] }));
+  /** 斜線を消して候補に戻す。 */
+  const restoreOption = (sqId: string, opt: string) => {
+    setEliminated((prev) => {
+      const cur = prev[sqId] || [];
+      if (!cur.includes(opt)) return prev;
+      return { ...prev, [sqId]: cur.filter((o) => o !== opt) };
+    });
   };
 
   // New state for layout and highlighting
@@ -820,41 +820,34 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     };
     const multiSep = detectMulti('・') ? '・' : (detectMulti('、') ? '、' : (detectMulti(',') ? ',' : null));
     const isMultiple = multiSep !== null;
-    const elimCount = (eliminated[sq.id] || []).length;
+
+    /*
+      ★英語リスニング：選択肢の本文を「解答欄のボタンそのもの」に載せる（ご要望）
+      ------------------------------------------------------------------
+      第1問A のデータは options が ['①','②','③','④'] のマークだけで、
+      英文本体は problem.text 側にあった。そのため
+      「左ペインで英文を読む → 右ペインで①〜④を押す」という往復が必要だった。
+      listeningOptionTexts は problem.text から①〜④の本文を取り出した対応表で、
+      ここに本文があれば、マークと本文を1つのボタンに同居させる。
+      これで「問題文（選択肢）と解答欄が同期する」＝分離が無くなる。
+      第1問B（イラスト選択）には本文が無いので、従来どおりマークのみになる。
+    */
+    const optionTexts: string[] | undefined = listeningOptionTexts.get(sq.id);
+    // 本文つきの選択肢は必ず縦1列（英文は長いので横並びにすると読めない）。
+    const stacked = isLongOptionList || !!optionTexts;
+
     return (
       <div className="flex w-full flex-col gap-2">
       {/*
-        消去法のスイッチ。
-        タップの意味が変わる操作なので、選択肢のすぐ上に置き
-        「いまどちらのモードか」を色と文言で必ず見せる。
+        消去法の操作説明。
+        ボタン（モード切替）を置かず、選択肢を続けてタップするだけで
+        「選ぶ → 消す → 戻す」が回ることを一行で伝える。
       */}
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setEliminateMode((v) => !v)}
-          aria-pressed={eliminateMode}
-          className={`flex min-h-[2.25rem] items-center gap-1.5 rounded-lg border-2 px-2.5 py-1 text-[11px] font-bold transition-colors cursor-pointer ${
-            eliminateMode
-              ? 'border-[#E8A87C] bg-[#E8A87C] text-white ring-2 ring-[#E8A87C]/30'
-              : 'border-gray-200 bg-white text-gray-500 hover:border-[#E8A87C]/60 hover:bg-orange-50/60'
-          }`}
-        >
-          <Eraser size={13} />
-          {eliminateMode ? '消去モード中（タップで斜線）' : '消去法を使う'}
-        </button>
-        {elimCount > 0 && (
-          <button
-            type="button"
-            onClick={() => clearEliminated(sq.id)}
-            className="flex min-h-[2.25rem] items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-[11px] font-bold text-gray-500 transition-colors cursor-pointer hover:bg-gray-50"
-          >
-            <RotateCcw size={12} />
-            消去を戻す（{elimCount}）
-          </button>
-        )}
-      </div>
+      <p className="text-[10px] font-bold leading-snug text-gray-400">
+        タップで選択／もう一度タップで斜線（消去法）／さらにタップで元に戻ります
+      </p>
 
-      <div className={isLongOptionList
+      <div className={stacked
         ? "grid grid-cols-1 gap-2.5 w-full"
         // 注：以前ここに xs:grid-cols-3 があったが、Tailwind v4 の @theme に
         // xs ブレークポイントは未定義で「効かないクラス」だった。スマホで列数を
@@ -862,28 +855,35 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         // ため、ブレークポイントを追加せずクラスを削除している。
         : "grid grid-cols-2 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
       }>
-        {sq.options.map((opt: string) => {
+        {sq.options.map((opt: string, optIdx: number) => {
           const isSelected = isMultiple
             ? (answers[sq.id] || '').split(multiSep as string).map(s => s.trim()).includes(opt.trim())
             : (answers[sq.id] || '') === opt;
           const struck = isEliminated(sq.id, opt);
+          const body = optionTexts?.[optIdx];
           return (
             <button
               key={opt}
               type="button"
               aria-pressed={isSelected}
               // 消去済みは支援技術にも「候補から外した」と伝える
-              aria-disabled={struck && !eliminateMode}
+              aria-disabled={struck}
               onClick={() => {
-                // ---- 消去モード：解答は動かさず、斜線のオン／オフだけを切り替える ----
-                if (eliminateMode) {
-                  toggleEliminate(sq.id, opt);
+                // ────────────────────────────────────────────────
+                // 選択肢の直接タップだけで消去法まで行う（モード無し）
+                //   未選択 → 選択 → 斜線（消去）→ 未選択 → …
+                // ────────────────────────────────────────────────
+                //
+                // ① 斜線が引かれている選択肢をタップ → 斜線を消して未選択に戻す。
+                //    「間違って消した」をその場のタップ1回で取り消せる。
+                if (struck) {
+                  restoreOption(sq.id, opt);
                   return;
                 }
-                // ---- 通常モード：消した選択肢は誤タップ防止のため選べない ----
-                //      もう一度候補に戻したいときは消去モードで解除する。
-                if (struck) return;
                 if (isMultiple) {
+                  // 複数選択：選択中のものをタップ＝選択解除（従来どおり）。
+                  // 複数選択で斜線まで回すと「解除したのか消したのか」が
+                  // 分からなくなるため、複数選択では斜線を使わない。
                   const separator = multiSep as string;
                   const current = (answers[sq.id] || '').split(separator).map(s => s.trim()).filter(Boolean);
                   const nextUnordered = isSelected
@@ -891,12 +891,20 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     : [...current, opt];
                   const ordered = sq.options.filter((o: string) => nextUnordered.includes(o));
                   handleOptionSelect(sq.id, ordered.join(separator));
-                } else {
-                  handleOptionSelect(sq.id, isSelected ? '' : opt);
+                  return;
                 }
+                // ② 単一選択で「いま選んでいる」ものをタップ
+                //    → 解答を外し、そのまま斜線を引く（＝これは違うと判断した）。
+                if (isSelected) {
+                  handleOptionSelect(sq.id, '');
+                  strikeOption(sq.id, opt);
+                  return;
+                }
+                // ③ それ以外（未選択）をタップ → 解答として選ぶ。
+                handleOptionSelect(sq.id, opt);
               }}
               // スマホは 48px 以上の高さ・幅を確保してタップしやすくする（PC は従来寸法）。
-              className={`px-4 py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${isLongOptionList ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3.25rem] md:min-w-[3rem] shadow-sm cursor-pointer
+              className={`px-4 py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${stacked ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3.25rem] md:min-w-[3rem] shadow-sm cursor-pointer
                 ${struck
                   // 消去済み：斜線＋グレーで「候補から外した」ことを一目で示す。
                   // 紙の冊子で選択肢に線を引いた状態の再現。
@@ -906,7 +914,24 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
                 }`}
             >
-              {formatText(opt)}
+              {body ? (
+                // マークは丸バッジで固定幅にし、英文は折り返して全文を読ませる。
+                // 「読む場所」と「押す場所」を1つにするのがこの表示の目的。
+                <span className="flex w-full items-start gap-2.5">
+                  <span
+                    className={`shrink-0 text-[15px] md:text-base leading-6 ${
+                      struck ? 'text-gray-400' : isSelected ? 'text-white' : 'text-[#2C3E50]'
+                    }`}
+                  >
+                    {opt}
+                  </span>
+                  <span className="min-w-0 flex-1 text-[15px] md:text-sm font-medium leading-6 break-words [overflow-wrap:anywhere]">
+                    {formatText(body)}
+                  </span>
+                </span>
+              ) : (
+                formatText(opt)
+              )}
             </button>
           );
         })}
@@ -1263,6 +1288,35 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     (sqId: string) => listeningTracks.some((t) => t?.subId === sqId),
     [listeningTracks],
   );
+
+  // ────────────────────────────────────────────────────────────────
+  // 英語リスニング：選択肢の本文（問題文と解答欄を分離しないための対応表）
+  // ────────────────────────────────────────────────────────────────
+  //
+  // ご要望「問題文と解答欄を分離しないで／問題文(選択肢)と解答欄が同期するように」
+  // に対応するため、problem.text に書かれている ①〜④ の英文を
+  // 「設問ID → 選択肢本文の配列」に組み替える。
+  // 解答欄の選択肢ボタンがこの本文を表示するので、
+  // 読む場所と押す場所が一致し、左右のペインを往復する必要が無くなる。
+  //
+  // 元データは書き換えない（解説側では従来どおり問題文全文を見せたいため）。
+  const listeningOptionTexts = useMemo(
+    () => buildListeningOptionTexts(currentQuestion),
+    [currentQuestion],
+  );
+
+  /**
+   * 「問題文と解答欄を1つにまとめる」表示にするか（ご要望：分離しないで）。
+   *
+   * 音源つきの問題（＝英語リスニング）が対象。
+   *   ・第1問A … 選択肢の英文を解答カードのボタンに載せる
+   *   ・第1問B … 判断材料のイラストを解答カードに載せる（既にそうなっている）
+   * どちらも「設問文・選択肢・解答」を1枚のカードに揃え、
+   * 左ペインには共通のリード文（指示文・解き方のコツ）だけを残す。
+   *
+   * 化学など音源が無い教科では false のままなので、従来表示に影響しない。
+   */
+  const listeningUnified = listeningTracks.length > 0;
 
   // 現在フォーカス中の設問オブジェクト（全形式対象）。
   const focusedSub = useMemo(() => {
@@ -1671,26 +1725,31 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             title="テキストを選択するとハイライトできます"
           >
             <div className="max-w-prose md:max-w-none">
-              {/* ★英語リスニング：音源プレーヤーは問題文の「いちばん上」に置く。
-                  リスニングでは音を聞くことが問題そのものなので、
-                  スクロールせずに必ず目に入る位置に置き、
-                  ヘッドホンアイコンで「ここが音源」と一目で分かるようにする。
-
-                  なお「1問ごとの再生ボタン」は解答カードの横（右ペイン）にも出す。
-                  こちらのパネルは再生速度の切替と全問の一覧という役割に絞る。 */}
-              {listeningTracks.length > 0 && (
-                <ListeningAudioPlayer
-                  tracks={listeningTracks}
-                  mode="practice"
-                  tone="light"
-                  readCount={(currentQuestion as any).readCount || 2}
-                  className="mb-4"
-                />
-              )}
+              {/*
+                ★英語リスニング：画面上部の「音源を聞く」パネルは置かない（ご要望）
+                ------------------------------------------------------------------
+                以前はここに問1〜問4の再生ボタン・もう1回・2回続けて・速度切替を
+                まとめたパネルがあった。しかし1問ごとの再生ボタンは解答カードの
+                横にも出しているため、同じ機能が2か所に並び
+                「どちらを押せばよいか」が分からない状態になっていた。
+                そこでパネルを廃止し、再生も速度切替も
+                「解いている問のすぐ横」の1か所に集約している。
+                （速度切替は ListeningAudioPlayer の inline バリアントへ移設済み）
+              */}
               {/* 問題文に含まれる Markdown テーブル（実験結果の表など）は
-                  ExplanationBody を通して本物の <table> として描画する。 */}
+                  ExplanationBody を通して本物の <table> として描画する。
+
+                  ★英語リスニング：選択肢（①〜④の英文）と設問文は解答カード側に
+                    出すので、左ペインからは問N 以降のブロックを落とす。
+                    同じ文が2か所に出ると「どちらが本物か」を確かめる手間が生まれ、
+                    問題文と解答欄が分離しているように見えてしまうため。
+                    リスニング以外（listeningUnified=false）は従来どおり全文。 */}
               <ExplanationBody
-                text={cleanQuestionText(currentQuestion.text)}
+                text={
+                  listeningUnified
+                    ? stripListeningQuestionBlocks(cleanQuestionText(currentQuestion.text))
+                    : cleanQuestionText(currentQuestion.text)
+                }
                 highlights={combinedHighlights}
               />
               {currentQuestion.text.includes('図6') && (
@@ -1710,8 +1769,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               )}
               {/* 表示ルール1・2：左側の「問題文」欄には共通リード文に加えて、
                   続く全小問の設問文（問1、問2、…）を順番に表示する。
-                  左側だけ読めば全設問が理解できるようにする。 */}
+                  左側だけ読めば全設問が理解できるようにする。
+
+                  ★ただし英語リスニングのように「選択肢本文を解答カードに移した」
+                    問題では、設問一覧を出すと設問文が左右2か所に分かれてしまう。
+                    ご要望「問題文と解答欄を分離しないで」に反するため、
+                    その場合は設問一覧を出さず、解答カード側に一本化する。 */}
               {(() => {
+                if (listeningUnified) return null;
                 const sqList = buildSubQuestionList(currentQuestion);
                 if (sqList.length === 0) return null;
                 return (
@@ -1864,9 +1929,27 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       />
                     )}
                   <div className="flex flex-col gap-3.5 w-full min-w-0">
+                    {/*
+                      ★英語リスニング：設問文もこのカードに出す（ご要望）
+                      ------------------------------------------------------
+                      選択肢本文を解答カードへ移した問題では、左ペインの
+                      「設問一覧」を出していない。設問文がどこにも無くなると
+                      何を答えるのか分からないので、マーカーの隣に設問文を並べて
+                      「問N ＋ 設問文 ＋ ①〜④ ＋ 解答」を1枚のカードに揃える。
+                      これで問題文と解答欄が完全に同期する。
+                    */}
                     <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block">
                       {formatText(sqMarker)}
                     </span>
+                    {listeningUnified && (() => {
+                      const { body } = splitQuestionLabel(sq.label || '', sqMarker);
+                      if (!body) return null;
+                      return (
+                        <p className="text-[15px] md:text-sm leading-relaxed text-gray-700 font-modern break-words [overflow-wrap:anywhere]">
+                          {formatText(body, combinedHighlights)}
+                        </p>
+                      );
+                    })()}
 
                     {/*
                       第1問B（イラスト選択）用：この設問のイラストをカード内に出す。
@@ -1883,8 +1966,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     )}
                     
                     {sq.type === 'multiple_choice' ? (
-                      isDesktop ? (
-                        // PC版：選択肢ボタンをインライン表示。
+                      // ★英語リスニング（音源つき／選択肢本文つき）は、スマホでも
+                      //   選択肢をこのカード内にそのまま出す。
+                      //   下部パネルに飛ばすと「問題文はカード・解答はパネル」と
+                      //   離れてしまい、ご要望の「分離しない」に反するため。
+                      //   化学など従来の問題は、これまでどおり下部固定パネルを使う。
+                      isDesktop || listeningUnified ? (
+                        // PC版・リスニング：選択肢ボタンをインライン表示。
                         renderMultipleChoiceControl(sq)
                       ) : (
                         // スマホ版：表示専用チップ。タップで下部固定パネルに選択UIを表示（要件1）。

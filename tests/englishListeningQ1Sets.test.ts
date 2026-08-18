@@ -4,13 +4,16 @@
  * ===================================================================
  * ご要望：
  *   ① 1問題とそれに該当する再生ボタンを「横」に配置する
- *   ② 選択肢タップで消去法を行えるようにする
+ *   ② 選択肢を直接タップして消去法を行えるようにする（モードは持たない）
  *   ③ 第1問A の問題追加を PDF のとおりに行う（13セット・52問）
  *   ④ 第1問B の問題追加を PDF（イラスト＋スクリプト）のとおりに行う（15セット・60問）
  *      S1 の画像の右下にあった GenSpark ロゴは削除する
+ *   ⑤ 問題文（選択肢）と解答欄を分離せず、同じカードに並べて同期させる
+ *   ⑥ 画面上部の「音源を聞く」パネルは置かない
+ *   ⑦ 第1問B セット7〜15（36問）の選択肢はシャッフルして正解を散らす
  *
- * これらは別の修正で簡単に巻き戻る（音源パネルが1か所に戻る、
- * 消去法の分岐が消える、データの配線が外れる）ため、テストで固定する。
+ * これらは別の修正で簡単に巻き戻る（音源パネルが復活する、
+ * 消去モードが戻る、データの配線が外れる）ため、テストで固定する。
  */
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
@@ -231,24 +234,35 @@ describe('解答画面：問ごとの再生ボタンが横に並ぶ', () => {
 });
 
 // =====================================================================
-// ② 選択肢タップで消去法
+// ② 選択肢の直接タップで消去法（モードなし）
 // =====================================================================
-describe('解答画面：消去法（選択肢に斜線を引く）', () => {
+describe('解答画面：消去法（選択肢を直接タップして斜線を引く）', () => {
   it('解答とは別の state で消去を持っている（取り違え防止）', () => {
     expect(QUIZ).toContain('const [eliminated, setEliminated]');
-    expect(QUIZ).toContain('const [eliminateMode, setEliminateMode]');
   });
 
-  it('消去モードのトグルと「消去を戻す」がある', () => {
-    expect(QUIZ).toContain('消去法を使う');
-    expect(QUIZ).toContain('消去モード中');
-    expect(QUIZ).toContain('消去を戻す');
-    expect(QUIZ).toContain('const clearEliminated');
+  it('消去モードの切替ボタンを持たない（ご要望：モードではなく直接タップ）', () => {
+    // モード用の state・トグル文言が一切残っていないこと。
+    // 残っていると「押す前にモードを確認する」手間が復活してしまう。
+    expect(QUIZ).not.toContain('eliminateMode');
+    expect(QUIZ).not.toContain('消去法を使う');
+    expect(QUIZ).not.toContain('消去モード中');
+    expect(QUIZ).not.toContain('消去を戻す');
   });
 
-  it('消去モードでは解答が変わらない（先に return する）', () => {
-    expect(QUIZ).toContain('if (eliminateMode) {');
-    expect(QUIZ).toContain('toggleEliminate(sq.id, opt);');
+  it('タップだけで 未選択→選択→斜線→未選択 と巡回する', () => {
+    // ① 斜線済みをタップ → 斜線を消して候補に戻す
+    expect(QUIZ).toMatch(/if \(struck\) \{[\s\S]{0,120}?restoreOption\(sq\.id, opt\)/);
+    // ② 選択中をタップ → 解答を外して斜線を引く
+    expect(QUIZ).toMatch(
+      /if \(isSelected\) \{[\s\S]{0,200}?handleOptionSelect\(sq\.id, ''\);[\s\S]{0,120}?strikeOption\(sq\.id, opt\)/,
+    );
+    // ③ 未選択をタップ → 解答として選ぶ
+    expect(QUIZ).toContain("handleOptionSelect(sq.id, opt);");
+  });
+
+  it('操作方法を選択肢の上に一行で示している（モード表示の代わり）', () => {
+    expect(QUIZ).toContain('タップで選択／もう一度タップで斜線（消去法）／さらにタップで元に戻ります');
   });
 
   it('消去済みの選択肢は取り消し線で表示される', () => {
@@ -258,6 +272,60 @@ describe('解答画面：消去法（選択肢に斜線を引く）', () => {
 
   it('消去状態は端末に保存され、戻ってきても残る', () => {
     expect(QUIZ).toContain('quiz_elim_');
+  });
+});
+
+// =====================================================================
+// ③ 問題文（選択肢）と解答欄を分離しない
+// =====================================================================
+describe('英語リスニング：問題文（選択肢）と解答欄が同じ場所にある', () => {
+  it('選択肢の英文を problem.text から取り出して解答欄に載せている', () => {
+    expect(QUIZ).toContain('buildListeningOptionTexts');
+    expect(QUIZ).toContain('listeningOptionTexts.get(sq.id)');
+  });
+
+  it('左ペインからは問N 以降（設問文・選択肢）を落として重複させない', () => {
+    expect(QUIZ).toContain('stripListeningQuestionBlocks');
+    // 設問一覧はリスニングでは描画しない（解答カード側に一本化）
+    expect(QUIZ).toMatch(/if \(listeningUnified\) return null;/);
+  });
+
+  it('設問文も解答カード側に出す（何を答えるか分からなくならないように）', () => {
+    expect(QUIZ).toContain('splitQuestionLabel(sq.label');
+  });
+
+  it('スマホでも下部パネルに飛ばさず、カード内で選択肢を表示する', () => {
+    expect(QUIZ).toContain('isDesktop || listeningUnified ?');
+  });
+
+  it('音源を持つ問題だけを対象にする（化学などに影響しない）', () => {
+    expect(QUIZ).toContain('const listeningUnified = listeningTracks.length > 0');
+  });
+});
+
+// =====================================================================
+// ④ 上部の「音源を聞く」パネルは置かない
+// =====================================================================
+describe('英語リスニング：上部の音源パネルを廃止した', () => {
+  it('Quiz は panel バリアント（見出しつきパネル）を使っていない', () => {
+    // 解答カード横の inline バリアントのみを使う。
+    expect(QUIZ).not.toMatch(/<ListeningAudioPlayer(?![\s\S]{0,400}?variant="inline")/);
+    const inlineCount = (QUIZ.match(/variant="inline"/g) || []).length;
+    const playerCount = (QUIZ.match(/<ListeningAudioPlayer/g) || []).length;
+    expect(playerCount).toBeGreaterThan(0);
+    expect(inlineCount).toBe(playerCount);
+  });
+
+  it('速度切替（0.75倍／標準）は inline バリアントに移設されている', () => {
+    const player = read('src/components/ListeningAudioPlayer.tsx');
+    // inline の早期 return より前に速度切替のボタン群があること
+    const inlineAt = player.indexOf('if (isInline) {');
+    const returnAt = player.indexOf('return (', inlineAt);
+    const endAt = player.indexOf('return (\n    <section');
+    const inlineBlock = player.slice(returnAt, endAt);
+    expect(inlineAt).toBeGreaterThan(-1);
+    expect(inlineBlock).toContain('0.75倍');
+    expect(inlineBlock).toContain('setRate');
   });
 });
 
@@ -290,6 +358,83 @@ describe('MP3 未収録の回でも音が出る（読み上げフォールバッ
     for (const p of [...EL1_A_EXTRA_PROBLEMS, ...EL1_B_PROBLEMS]) {
       for (const track of p.audioTracks) {
         expect(track.audioUrl).toBeUndefined();
+      }
+    }
+  });
+});
+
+// =====================================================================
+// ⑦ 第1問B セット7〜15：選択肢のシャッフル
+// =====================================================================
+//
+// 配布 PDF は第7セット以降の正解がすべて ① になっていた（PDF 側の不備）。
+// 「①を押しておけば当たる」状態では消去法の練習にならないため、
+// イラスト（画像の①〜④のコマ）と正解をセットで入れ替えている。
+// 巻き戻ると気づけないので、テストで固定する。
+describe('第1問B：セット7〜15 の選択肢はシャッフルされている', () => {
+  const SHUFFLED = EL1_B_PROBLEMS.filter((p) => {
+    const m = p.id.match(/set(\d+)$/);
+    return m ? Number(m[1]) >= 7 : false;
+  });
+
+  it('対象は 9セット・36問', () => {
+    expect(SHUFFLED.length).toBe(9);
+    expect(SHUFFLED.reduce((n, p) => n + p.subQuestions.length, 0)).toBe(36);
+  });
+
+  it('各セットの正解に ①②③④ がちょうど1回ずつ出る', () => {
+    for (const p of SHUFFLED) {
+      const answers = p.subQuestions.map((sq: any) => sq.correctAnswer);
+      expect([...answers].sort()).toEqual([...MARKS].sort());
+    }
+  });
+
+  it('「①ばかり」ではない（正解の偏りが解消されている）', () => {
+    const count: Record<string, number> = { '①': 0, '②': 0, '③': 0, '④': 0 };
+    for (const p of EL1_B_PROBLEMS) {
+      for (const sq of p.subQuestions as any[]) count[sq.correctAnswer] += 1;
+    }
+    // 60問中どのマークも「半分以上」にはならない＝当てずっぽうが通らない
+    for (const mark of MARKS) expect(count[mark]).toBeLessThan(30);
+    // どのマークも必ず出番がある
+    for (const mark of MARKS) expect(count[mark]).toBeGreaterThan(0);
+  });
+
+  it('並びが単純な規則（昇順・降順・一定間隔）になっていない', () => {
+    for (const p of SHUFFLED) {
+      const idx = p.subQuestions.map((sq: any) => MARKS.indexOf(sq.correctAnswer));
+      expect(idx).not.toEqual([...idx].sort((a, b) => a - b));
+      expect(idx).not.toEqual([...idx].sort((a, b) => b - a));
+      // 「+1 ずつずれる」ような回転パターンも避ける
+      const strides = new Set([0, 1, 2].map((i) => (idx[i + 1] - idx[i] + 4) % 4));
+      expect(strides.size).toBeGreaterThan(1);
+    }
+  });
+
+  it('イラストの差し替え前の原本を保管している（再シャッフル・巻き戻しが可能）', () => {
+    const dir = path.join(ROOT, 'scripts/assets/q1b_original');
+    expect(fs.existsSync(dir)).toBe(true);
+    expect(fs.readdirSync(dir).filter((f) => f.endsWith('.jpg')).length).toBe(36);
+  });
+
+  it('シャッフル用スクリプトが残っている（手作業ではない＝再現できる）', () => {
+    const script = read('scripts/shuffle_q1b_options.py');
+    // 選択肢の①②③④のバッジと枠は動かさず、中身だけを入れ替える設計。
+    expect(script).toContain('badge_box');
+    expect(script).toContain('frame_inner_box');
+    // 乱数の種を固定しているので、同じ結果を再現できる
+    expect(script).toMatch(/SEED\s*=\s*\d+/);
+  });
+
+  it('解説の中の ①〜④ も入れ替え後の番号に合わせて書き換わっている', () => {
+    for (const p of SHUFFLED) {
+      for (const sq of p.subQuestions as any[]) {
+        const no = sq.id.slice(sq.id.lastIndexOf('_') + 1);
+        // 「問N　正解は ○」の行が subQuestion.correctAnswer と一致していること。
+        // ここがズレると「解説を読んだら正解が違う」という最悪の不整合になる。
+        const m = p.explanation.match(new RegExp(`問${no}\\s*正解は\\s*([①②③④])`));
+        expect(m, `${sq.id} の解説に正解の行が無い`).not.toBeNull();
+        expect(m![1]).toBe(sq.correctAnswer);
       }
     }
   });

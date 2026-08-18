@@ -243,7 +243,13 @@ export function ListeningAudioPlayer({
   // ─────────────────────────────────────────────────────────────
   // inline バリアント：解答カードの左に差し込む「その問だけの再生ボタン」
   //   ご要望「1問題とそれに該当する再生ボタンを横に配置して」に対応する形。
-  //   見出し・速度切替を省き、幅を取らない縦積みにする。
+  //   見出しを省き、幅を取らない縦積みにする。
+  //
+  //   ★速度切替もここに置く（ご要望：問題文ペイン上部のパネルは不要）
+  //     以前は panel バリアント（画面上部の「音源を聞く」欄）だけに
+  //     0.75倍／標準の切替があった。そのパネルを廃止したため、
+  //     切替が消えてしまわないよう「その問の再生ボタンの真下」に移設する。
+  //     ゆっくり確認 → 本番速度、の練習が同じ場所で完結する。
   // ─────────────────────────────────────────────────────────────
   if (isInline) {
     return (
@@ -289,6 +295,37 @@ export function ListeningAudioPlayer({
                   <Repeat2 size={11} />2回
                 </button>
               )}
+
+              {/* 読み上げ非対応端末では「なぜ押せないか」を必ず伝える。
+                  上部パネルを廃止したので、この注記もインライン側に持つ。 */}
+              {speechBlocked && (
+                <p className={`w-[4.5rem] text-[9px] font-bold leading-tight sm:w-20 ${subTextClass}`}>
+                  この端末は読み上げ非対応
+                </p>
+              )}
+
+              {/* 再生速度（0.75倍／標準）。
+                  上部パネルを廃止したため、ここが唯一の速度切替になる。
+                  幅を取らないよう2段の細いボタンにする。 */}
+              <div
+                className="flex w-[4.5rem] flex-col gap-1 sm:w-20"
+                role="group"
+                aria-label="再生速度"
+              >
+                {[0.75, 1].map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setRate(r)}
+                    aria-pressed={rate === r}
+                    className={`min-h-[1.75rem] rounded-lg border px-1 py-0.5 text-[10px] font-bold transition-colors cursor-pointer ${
+                      rate === r ? activeBtnClass : idleBtnClass
+                    }`}
+                  >
+                    {r === 1 ? '標準' : '0.75倍'}
+                  </button>
+                ))}
+              </div>
 
               {!hasRealAudio(track) ? null : (
                 <audio
