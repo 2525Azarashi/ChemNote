@@ -13,15 +13,33 @@ import { subjectTheme } from '../data/subjectTheme';
 import { MolBasicsSection } from './MolBasicsSection';
 import { ListeningAudioPlayer } from './ListeningAudioPlayer';
 import type { ListeningAudioTrack } from '../data/englishListeningQ1AProblems';
+import { buildListeningRounds } from '../utils/listeningRounds';
+import { problemKey, readSolvedMap } from '../utils/progress';
+import { auth } from '../firebase';
 
 interface ChapterSelectionProps {
   mode: 'mini_test' | 'practice';
-  onSelectChapter: (id: string, questionIndex?: number, resume?: boolean) => void;
+  /**
+   * 単元（章）を選んで演習画面へ移るためのハンドラ。
+   *
+   * @param questionIndex 章の中で最初に開く問題（0始まり）
+   * @param resume        保存された解答を引き継ぐか
+   * @param range         「この範囲だけを1回として解く」ときの範囲（両端を含む）。
+   *                      英語リスニングの「第N回演習」ボタンから渡す。
+   *                      省略時は章の全問を通しで解く（化学は従来のまま）。
+   */
+  onSelectChapter: (
+    id: string,
+    questionIndex?: number,
+    resume?: boolean,
+    range?: { startIndex: number; endIndex: number } | null,
+  ) => void;
   onBack: () => void;
   /**
    * 表示する科目。省略時は従来どおり化学基礎。
    * 'chemistry' のときは、指定された分野（理論／無機／有機）の単元だけを表示する。
-   * 'english_listening' のときは、共通テストの大問（第1問〜第6問）を単元として表示する。
+   * 'english_listening' のときは、共通テストの大問を A・B ごとの単元として表示する
+   * （第1問A・第1問B …）。各単元のページには「第N回演習」のボタンを並べる。
    */
   subject?: 'chemistry_basic' | 'chemistry' | 'english_listening';
   /** 科目が 'chemistry' のときに表示する分野 */
@@ -120,7 +138,11 @@ function buildChapterGroups(parts: any[]) {
 /** 化学基礎のタブ（従来どおりモジュール読み込み時に一度だけ作る） */
 const chapterGroups = buildChapterGroups(chemistryData.parts as any[]);
 
-/** 英語リスニングのタブ（第1問〜第6問）。こちらも一度だけ作る。 */
+/**
+ * 英語リスニングのタブ。
+ * A・B が分かれる大問は realTitle も別（'第1問 A' / '第1問 B'）にしてあるので、
+ * この共通処理を通すだけで A・B が独立したタブになる（ご要望）。
+ */
 const listeningGroups = buildChapterGroups(englishListeningData.parts as any[]);
 
 /**
@@ -152,17 +174,24 @@ function collectAudioSets(
  *
  * - 化学基礎／化学：「1章 物質の構成」→ 上段「1章」／下段「物質の構成」
  * - 英語リスニング：「第1問」        → 上段「Q1」／下段「第1問」
+ *                   「第1問 A」      → 上段「Q1A」／下段「第1問 A」
  *   （リスニングの大問には章名が無いので、上段に通し番号を置いて
  *    デザイン（2段組みのタブ）を他科目とまったく同じに保つ）
+ *
+ * ★A・B の枝番まで上段に出す理由★
+ *   第1問 A と第1問 B は設問形式がまったく違う別の練習なので、
+ *   タブを横に並べたときに「Q1」が2つ続くと見分けが付かない。
+ *   上段を Q1A / Q1B と書き分けることで、狭いスマホ幅でも取り違えない。
  */
 function splitTabTitle(title: string, index: number): { kicker: string; label: string } {
   const chapterMatch = title.match(/^(\d+章)\s*(.*)$/);
   if (chapterMatch) {
     return { kicker: chapterMatch[1], label: chapterMatch[2] || title };
   }
-  const questionMatch = title.match(/^第(\d+)問$/);
+  // 「第1問」「第1問 A」「第1問A」のいずれの表記でも拾う
+  const questionMatch = title.match(/^第(\d+)問\s*([A-Z]?)$/);
   if (questionMatch) {
-    return { kicker: `Q${questionMatch[1]}`, label: title };
+    return { kicker: `Q${questionMatch[1]}${questionMatch[2]}`, label: title };
   }
   return { kicker: `${index + 1}章`, label: title };
 }
@@ -199,6 +228,26 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
   const [openAudioSetId, setOpenAudioSetId] = useState<string | null>(null);
   const [activeGroupTitle, setActiveGroupTitle] = useState(groups[0]?.title || '');
   const [selectedFlowchart, setSelectedFlowchart] = useState<{ id: string; title: string; questions: any[] } | null>(null);
+
+  /**
+   * すでに解いた大問（回）の一覧。
+   *
+   * ■ なぜ出すのか
+   *   「第1回演習〜第14回演習」を並べるだけだと、次にどれをやればいいのか
+   *   分からず、同じ回を何度も開いてしまう。解いた回に「済」を付けることで、
+   *   まだ手を付けていない回が一目で分かる。
+   *
+   * ■ 通信しない理由
+   *   これは localStorage の台帳（solved_problems_v1_*）を読むだけ。
+   *   単元選択を開くたびに通信すると表示が遅くなるので、
+   *   すでに手元にある記録だけで描画する。
+   */
+  const solvedMap = useMemo(
+    () => readSolvedMap(auth.currentUser?.uid || 'guest'),
+    // 画面に入ったときの一度だけで十分（回を解いたら演習画面を経由して戻ってくる）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   // 分野を切り替えたときは、その分野の先頭の章を開き直す
   useEffect(() => {
@@ -343,6 +392,130 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
               )}
             </div>
 
+            {/* ================================================================
+                英語リスニング：「第N回演習」のボタンを並べる
+                ================================================================
+                ■ なぜこの形にしたのか（ご要望）
+                  これまで「第1問A」を開くと、収録14回分が1本の通し番号
+                  （進捗 1/14）でつながっていた。つまり
+                    ・今日は第3回だけやりたい
+                    ・前にやった第7回だけ解き直したい
+                  ができず、必ず頭から通しで解くしかなかった。
+                  そこで大問のページを開いた時点で
+                  「第1回演習 … 第14回演習」が並ぶ形にして、
+                  やりたい回をその場で1タップで始められるようにした。
+
+                ■ 化学と分けている理由
+                  化学基礎・化学は「章 → 大問がいくつか」という作りで、
+                  回という単位が無い。共通の見た目にすると、かえって
+                  どちらの科目でも意味の分からないボタンが並ぶ。
+                  そのため、リスニングだけ専用の並べ方にしている。 */}
+            {isListening ? (
+              <div className="space-y-5">
+                {activeGroup.chapters.map((chapter: any) => {
+                  const questions = mode === 'mini_test' ? (chapter.miniTest || []) : (chapter.practiceProblems || []);
+                  const rounds = buildListeningRounds(questions);
+                  const audioSets = collectAudioSets(chapter);
+
+                  return (
+                    <div key={chapter.id}>
+                      {/* 単元の説明（何を練習する回なのか）。
+                          回のボタンだけだと「第1問Aって何をするんだっけ」が分からない。 */}
+                      <div className="mb-2.5">
+                        {chapter.topics && chapter.topics.length > 0 && (
+                          <p className="text-[11px] font-bold leading-relaxed text-slate-500">
+                            {chapter.topics.join(' ・ ')}
+                          </p>
+                        )}
+                        <p className="mt-1 text-[10px] font-bold text-slate-400">
+                          {rounds.length > 0
+                            ? `全${rounds.length}回 ／ 解きたい回を選んでください（1回ずつ完結します）`
+                            : 'この大問の問題は準備中です'}
+                        </p>
+                      </div>
+
+                      {rounds.length > 0 ? (
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                          {rounds.map((round) => {
+                            const solved = solvedMap[problemKey(chapter.id, round.questionId)];
+                            const audio = audioSets.find((s) => s.id === round.questionId);
+                            return (
+                              <div
+                                key={round.questionId}
+                                className={`flex flex-col rounded-xl border p-2.5 text-left shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md ${
+                                  solved
+                                    ? 'border-[#5BC0BE]/60 bg-[#EAF9F6]'
+                                    : 'border-yellow-200/80 bg-[#FFFDF2]/90'
+                                }`}
+                              >
+                                {/* 回のボタン本体。
+                                    第4引数で「この回だけ」を範囲として渡すことで、
+                                    進捗が 1/1 になり、その回を解き終えた時点で
+                                    ちゃんと結果画面に進む。 */}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    onSelectChapter(chapter.id, round.index, false, {
+                                      startIndex: round.index,
+                                      endIndex: round.index,
+                                    })
+                                  }
+                                  className="flex min-w-0 flex-1 flex-col items-start text-left cursor-pointer"
+                                  title={`${round.roundLabel}${round.detail ? ` ／ ${round.detail}` : ''}`}
+                                >
+                                  <span className="flex w-full items-center justify-between gap-1">
+                                    <span className="text-[13px] font-bold text-[#2C3E50]">
+                                      {round.roundLabel}
+                                    </span>
+                                    {solved ? (
+                                      <span className="shrink-0 rounded-full bg-[#3E9C93] px-1.5 py-0.5 text-[9px] font-bold text-white">
+                                        済
+                                      </span>
+                                    ) : (
+                                      <ChevronRight size={13} className="shrink-0 text-[#A9CCE3]" />
+                                    )}
+                                  </span>
+                                  {round.detail && (
+                                    <span className="mt-1 line-clamp-2 text-[10px] font-bold leading-snug text-slate-500">
+                                      {round.detail}
+                                    </span>
+                                  )}
+                                </button>
+
+                                {/* 回ごとの復習用音源。
+                                    問題を解き直さなくても、この回の音声だけを聞ける。 */}
+                                {audio && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setOpenAudioSetId(openAudioSetId === audio.id ? null : audio.id)
+                                    }
+                                    aria-expanded={openAudioSetId === audio.id}
+                                    className={`mt-2 inline-flex items-center justify-center gap-1 rounded-lg border px-1.5 py-1 text-[10px] font-bold transition-colors cursor-pointer ${
+                                      openAudioSetId === audio.id
+                                        ? 'border-[#3E9C93] bg-[#3E9C93] text-white'
+                                        : 'border-[#5BC0BE]/60 bg-white text-[#2F7C74] hover:bg-[#D8F3EE]'
+                                    }`}
+                                    title={`${round.roundLabel} の音源だけを聞く`}
+                                  >
+                                    <Headphones size={11} />
+                                    音源
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="rounded-xl border border-slate-200 bg-white/70 p-4 text-center text-[11px] font-bold text-slate-400">
+                          準備中（問題は順次追加しています）
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {activeGroup.chapters.map(chapter => {
                 const questions = mode === 'mini_test' ? (chapter.miniTest || []) : (chapter.practiceProblems || []);
@@ -501,6 +674,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                 );
               })}
             </div>
+            )}
 
             {/* ================================================================
                 復習用の音源を聞く場所（英語リスニングのみ）

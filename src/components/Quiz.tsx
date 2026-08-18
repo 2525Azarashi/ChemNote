@@ -40,6 +40,25 @@ interface QuizProps {
   isMobileView?: boolean;
   onExplanationChange?: (isExplanation: boolean) => void;
   onScored?: (breakdown: ScoreBreakdown, meta: { timeLimit: number; timeUsed: number; questionId: string }) => void;
+  /**
+   * 「この範囲だけを1回の演習として解く」ときの範囲（両端を含む・章内の通し番号）。
+   *
+   * ■ 何のために足したのか（ご要望）
+   *   英語リスニングは、これまで「第1問A」を開くと収録14回分が
+   *   ひとつの通し番号（進捗 1/14）でつながっていた。
+   *   そのため「第3回だけ解く」ことができず、必ず頭から通しでしか解けなかった。
+   *   「第1問A のページ → 第1回演習〜第14回演習のボタンが並ぶ」形にするため、
+   *   選ばれた1回だけを1セットとして扱えるようにする。
+   *
+   * ■ 章IDを分けなかった理由（とても大事）
+   *   回ごとに新しい章IDを作ると、保存キー（quiz_answers_ / quiz_run_ など）や
+   *   進捗台帳・ランキングの宛先が変わり、今まで解いてくれた記録が
+   *   まるごと迷子になる。だから章IDは今のまま据え置き、
+   *   「章の中のどこからどこまでを1回とみなすか」だけをここで受け取る。
+   *
+   * 省略（undefined）時は従来どおり章の全問を通しで解く。
+   */
+  questionRange?: { startIndex: number; endIndex: number } | null;
 }
 
 /**
@@ -411,7 +430,7 @@ function ChemistryPalette({
   );
 }
 
-export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange, onScored }: QuizProps) {
+export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange, onScored, questionRange }: QuizProps) {
   // ===== タイマー & スコア用 state =====
   const [run, setRun] = useState<ChapterRunState>(() => loadRun(chapter.id, mode));
   const timeUsedRef = useRef(0); // タイマーから250msごとに通知される最新値
@@ -1139,6 +1158,38 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // 章内の図版へ通し番号（図1・図2 …）を割り当てるためのマップ。
   const figureNumberMap = useMemo(() => buildFigureNumberMap(questions), [questions]);
 
+  /**
+   * 今回解く範囲（両端を含む）。
+   *
+   * ■ 設計の要点：`questions` は章の全問のまま据え置く
+   *   `currentQuestionIndex` は「章の中の通し番号」であり、
+   *     ・localStorage の `quiz_idx_*`
+   *     ・解説画面へ渡す singleQuestionIndex
+   *     ・図版の通し番号（図1・図2…）
+   *   がすべてこの番号を前提にしている。
+   *   ここで配列そのものを切り出すと番号の意味がズレて、
+   *   「解説に別の問題が出る」「図番号が飛ぶ」といった不具合になる。
+   *   そこで配列は切らず、「どこからどこまでを1回とみなすか」だけを持つ。
+   *
+   * ■ 値の丸め方
+   *   データ追加・削除で範囲が配列の外を指しても落ちないよう、
+   *   必ず 0〜(最終問) に収める。範囲指定が無ければ章の全問が範囲。
+   */
+  const lastIndex = Math.max(0, questions.length - 1);
+  const rangeStart = questionRange
+    ? Math.min(Math.max(0, questionRange.startIndex), lastIndex)
+    : 0;
+  const rangeEnd = questionRange
+    ? Math.min(Math.max(rangeStart, questionRange.endIndex), lastIndex)
+    : lastIndex;
+  /** 範囲内の問題数（進捗ピルの分母） */
+  const rangeCount = rangeEnd - rangeStart + 1;
+  /** 範囲内での現在位置（1始まり・進捗ピルの分子） */
+  const rangePosition = Math.min(
+    rangeCount,
+    Math.max(1, currentQuestionIndex - rangeStart + 1),
+  );
+
   if (questions.length === 0) {
     return (
       <div className="w-full bg-white rounded-2xl shadow-xl p-6 md:p-12 border border-gray-100 text-center relative">
@@ -1166,7 +1217,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   }
 
   const currentQuestion = questions[currentQuestionIndex];
-  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  // 「最後の問題か」＝範囲の終わりに来たか。
+  // 章の最終問ではなく範囲の終わりで判定することで、
+  // 1回分（例：第3回演習）を解き終えた時点でちゃんと結果画面へ進める。
+  const isLastQuestion = currentQuestionIndex >= rangeEnd;
 
   // visualViewport の resize ハンドラ（マウント時登録・依存なし）から
   // 最新の currentQuestion を参照するための ref。
@@ -1516,7 +1570,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     if (showingExplanation) {
       setShowingExplanation(false);
       if (onExplanationChange) onExplanationChange(false);
-    } else if (currentQuestionIndex > 0) {
+    } else if (currentQuestionIndex > rangeStart) {
+      // 「前へ」で今回の範囲より前（別の回）へは戻さない。
+      // 選んだ回だけを解いているのに前の回が出てくると、
+      // どの回を解いているのか分からなくなるため。
       setCurrentQuestionIndex(prev => prev - 1);
       setShowingExplanation(true);
       if (onExplanationChange) onExplanationChange(true);
@@ -1645,10 +1702,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
 
           <div className="flex items-center gap-2 md:gap-3 bg-gray-100 rounded-full px-3 py-1 md:px-4 md:py-1.5 shrink-0">
             <div className="text-[10px] md:text-sm text-gray-500 font-bold hidden sm:block">進捗</div>
+            {/* 分母は「今回解く範囲の問題数」。
+                1回分（例：第3回演習）だけを選んで解いているときに
+                章全体の 14 が分母になると、あと13回残っているように見えて
+                いつまでも終わらない印象になるため。 */}
             <div className="font-mono font-bold text-[#2C3E50] text-xs md:text-base">
-              <span className="text-sm md:text-lg">{currentQuestionIndex + 1}</span>
+              <span className="text-sm md:text-lg">{rangePosition}</span>
               <span className="text-gray-400 mx-1">/</span>
-              <span>{questions.length}</span>
+              <span>{rangeCount}</span>
             </div>
           </div>
         </div>

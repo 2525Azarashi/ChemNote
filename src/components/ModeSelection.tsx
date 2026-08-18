@@ -104,7 +104,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
             <h3 className="text-xl md:text-2xl font-bold font-handwriting text-[#2C3E50] mb-3 md:mb-4">演習問題</h3>
             <p className="text-sm md:text-base text-gray-600 font-handwriting leading-relaxed">
               {isListening
-                ? '第1問〜第6問の大問別に単元を選んで取り組みます。'
+                ? '第1問A・第1問B …のように大問別（A／Bも別）に選び、回ごとに取り組みます。'
                 : 'より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。'}
             </p>
           </button>
@@ -120,7 +120,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
         {/* 英語リスニングで準備中のコンテンツがあることを明示する。 */}
         {isListening && (
           <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
-            ※ まずは大問（第1問〜第6問）の単元を公開しています。問題・音声・「学習(インプット)」は順次追加していきます。
+            ※ まずは大問（第1問A〜第6問B）の単元を公開しています。問題・音声・「学習(インプット)」は順次追加していきます。
           </p>
         )}
 
