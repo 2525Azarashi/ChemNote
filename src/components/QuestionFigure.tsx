@@ -36,6 +36,15 @@ interface QuestionFigureProps {
   tone?: 'light' | 'dark';
   /** figure の追加クラス（余白調整など） */
   className?: string;
+  /**
+   * <img> に足すクラス。
+   *
+   * ご要望「スクロールとかしなくても選択肢の英文と図が一目に映るようにしてほしい」
+   * に対応するため、リスニングの問題ブロックでは図に高さ上限
+   * （例: max-h-[34vh]）を与えて 1 画面に収める。
+   * 拡大したいときは従来どおりタップでライトボックスが開くので情報は失われない。
+   */
+  imgClassName?: string;
 }
 
 export function QuestionFigure({
@@ -45,6 +54,7 @@ export function QuestionFigure({
   alt,
   tone = 'light',
   className = 'mt-5',
+  imgClassName = '',
 }: QuestionFigureProps) {
   const [zoomed, setZoomed] = useState(false);
 
@@ -97,7 +107,7 @@ export function QuestionFigure({
             alt={resolvedAlt}
             loading="lazy"
             decoding="async"
-            className="max-w-full w-auto mx-auto rounded-xl border border-gray-200 bg-white shadow-sm transition-transform duration-200 group-hover:scale-[1.01]"
+            className={`max-w-full w-auto mx-auto rounded-xl border border-gray-200 bg-white shadow-sm transition-transform duration-200 group-hover:scale-[1.01] ${imgClassName}`}
           />
           {/* 拡大ヒントのアイコン（44px 以上のタップ領域を確保） */}
           <span
