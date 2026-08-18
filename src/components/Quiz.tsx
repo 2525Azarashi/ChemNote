@@ -26,12 +26,12 @@ import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
 import { answerCardMarker, buildSubQuestionList, splitQuestionLabel } from '../utils/questionDisplay';
 import {
   buildListeningOptionTexts,
-  stripListeningQuestionBlocks,
-  stripListeningHowToBlocks,
+  buildListeningLeadText,
 } from '../utils/listeningOptions';
 import {
   buildListeningSteps,
   isPerSubQuestionListening,
+  stepLabelOf,
   stepScoreKey,
 } from '../utils/listeningSteps';
 import { useIsDesktop } from '../hooks/useMediaQuery';
@@ -1931,30 +1931,26 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           ★英語リスニング（listeningUnified）のスマホ表示は上下を入れ替える（ご要望）
           ------------------------------------------------------------------
           ご要望：
-            「問題文はスマホでスクロールとかしなくても選択肢の英文と図が
-              一目に映るようにしてほしい。だから、選択肢の英文と図は
-              スマホだったら上に持ってきて、パソコンだったら右に持ってきてほしい」
+            「選択肢の英文と図はスマホだったら上に持ってきて、
+              パソコンだったら右に持ってきてほしい」
 
-          PC では従来どおり「問題文＝左 / 解答（選択肢の英文・図）＝右」なので
-          すでにご要望どおり。一方スマホでは解答ペインが下に来るため、
-          選択肢まで届くのにスクロールが必要だった。
-          そこで flex-col-reverse で解答ペインを上（＝最初の画面）に出し、
-          共通リード文（問題文）を下へ回す。
+          PC では従来どおり「問題＝左 / 解答＝右」でご要望どおり。
+          一方スマホでは解答ペインが下に来るため、選択肢まで届くのに
+          スクロールが必要だった。そこで flex-col-reverse で解答ペインを
+          上（＝最初に見える場所）に出す。
+          ※ ただし「音源」と「図」は問題側（左ペイン）に置く（ご要望）。
+             スマホでは左ペインが下に回るが、それは
+             「共通リード文＋いま解いている問の見出し・音源・図」であり、
+             解答（選択肢）とセットで1画面に収まる高さに抑えている。
           リスニング以外（化学など）は従来の flex-col のままなので影響しない。 */}
       <div className={`flex-1 flex ${listeningUnified ? 'flex-col-reverse' : 'flex-col'} lg:flex-row overflow-hidden relative`}>
 
-        {/* Section 1: Problem Text */}
-        {/* リスニングではリード文（指示文）だけなので、スマホでの高さ上限を
-            50vh → 30vh に絞り、上側の解答ペインに画面を明け渡す。
-            PC も左ペインを 58% → 46% に狭め、右ペインで英文4つ／図が
-            スクロールなしで収まるようにする。 */}
+        {/* Section 1: Problem Text
+            ★左右比は従来どおり 58% / 42%（勝手に変えない、というご指摘に対応）。
+              スマホの高さ上限も従来どおり 50vh。 */}
         <div className={`
-          ${listeningUnified ? 'lg:w-[46%]' : 'lg:w-[58%]'} flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
-          ${isDesktop
-            ? 'h-full'
-            : (isProblemExpanded
-              ? 'absolute inset-0 z-30 h-full shadow-lg'
-              : `${listeningUnified ? 'max-h-[30vh]' : 'max-h-[50vh]'} h-auto shadow-md relative z-20`)}
+          lg:w-[58%] flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
+          ${isDesktop ? 'h-full' : (isProblemExpanded ? 'absolute inset-0 z-30 h-full shadow-lg' : 'max-h-[50vh] h-auto shadow-md relative z-20')}
         `}>
           <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
             <div className="flex items-center gap-2 md:gap-3">
@@ -1993,24 +1989,105 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               {/* 問題文に含まれる Markdown テーブル（実験結果の表など）は
                   ExplanationBody を通して本物の <table> として描画する。
 
-                  ★英語リスニング：選択肢（①〜④の英文）と設問文は解答カード側に
-                    出すので、左ペインからは問N 以降のブロックを落とす。
-                    同じ文が2か所に出ると「どちらが本物か」を確かめる手間が生まれ、
-                    問題文と解答欄が分離しているように見えてしまうため。
+                  ★英語リスニング：ここに出すのは「共通のリード文」だけ。
+                    問1〜問4のブロックは落とす。
 
-                  ★さらに【音源の聞き方】【解き方のコツ】のような定型の説明ブロックも
-                    落とす（ご要望：「いまこの音源の聞き方とかはもういらないので、
-                    問題をつけた今のこの上場面に4つの英文がしっかりと映るもしくは、
-                    図がしっかりと映るようにしてほしい」）。
-                    これらは毎回同じ文面で、スマホでは選択肢を画面外に押し出す
-                    だけの存在になっていた。
+                    ■ 不具合だった点（ご指摘：「全部の問いがまとまってて
+                      どの問いを解いているかが分からない」）
+                      以前は cleanQuestionText を先に通していた。これは
+                      「行頭の 問N を消す」処理なので、切り落とす目印である
+                      問N が先に消えてしまい、問1〜問4が全部残っていた。
+                      buildListeningLeadText が正しい順序
+                      （問Nで切る → 定型ブロックを落とす）を保証する。
+                    いま解いている問の見出し・音源・図は、このリード文より
+                    「上」に出す（下記）。
                     リスニング以外（listeningUnified=false）は従来どおり全文。 */}
+
+              {/*
+                ★英語リスニング：いま解いている問の「問題」をペインの先頭に出す
+                ------------------------------------------------------------------
+                ご指摘：
+                  「再生ボタンはさ、左の問題の文章のところにおいてほしいよね。
+                    何で解答の方に置くの？第１問の図も何で解答の方にあるの？
+                    問題の方（左側）においてっていったよね」
+
+                そこで
+                  ・いま解いている問の見出し（問2 …）
+                  ・その問の音源（再生／2回／速度）
+                  ・その問の図（第1問B のイラスト）
+                をすべて問題文ペイン＝左側にまとめる。
+                右の解答ペインには選択肢（①〜④）だけが残るので、
+                「どの問を解いているのか」も左を見れば必ず分かる。
+
+                さらに、毎回同じ指示文（リード文）より前に置く。
+                後ろに置くと「スクロールしてから再生を押す」ことになり、
+                ご要望「スクロールしてわざわざ答えるのめんどい」に反する。
+              */}
+              {listeningUnified && activeStepSub && (() => {
+                const stepMarker = stepLabelOf(activeStepSub, safeStepIndex);
+                const { body } = splitQuestionLabel(activeStepSub.label || '', stepMarker);
+                return (
+                  <div className="mb-4">
+                    {/* いま解いている問の見出し。回の中で迷子にならないよう
+                        「問2 / 全4問」まで添える。 */}
+                    <div className="flex items-center gap-2 flex-wrap mb-2.5">
+                      <span className="font-bold text-white text-sm bg-[#2C3E50] py-1.5 px-3.5 rounded-lg shadow-sm">
+                        {formatText(stepMarker)}
+                      </span>
+                      {listeningSteps.length > 1 && (
+                        <span className="text-[11px] font-bold text-gray-400">
+                          （全{listeningSteps.length}問中 {safeStepIndex + 1}問目）
+                        </span>
+                      )}
+                    </div>
+
+                    {body && (
+                      <p className="text-[15px] md:text-base leading-relaxed text-gray-800 font-modern break-words [overflow-wrap:anywhere] mb-3">
+                        {formatText(body, combinedHighlights)}
+                      </p>
+                    )}
+
+                    {/* この問の音源。問題文のすぐ下＝「問題のところ」に横帯で置く。
+                        横帯なのでボタンはどれも 44px 以上あり、指で押しやすい。 */}
+                    {hasTrackFor(activeStepSub.id) && (
+                      <div className="rounded-xl border border-[#A9CCE3]/40 bg-blue-50/50 p-2.5">
+                        <ListeningAudioPlayer
+                          tracks={listeningTracks}
+                          focusSubId={activeStepSub.id}
+                          variant="inline"
+                          orientation="horizontal"
+                          mode="practice"
+                          tone="light"
+                          readCount={(currentQuestion as any).readCount || 2}
+                        />
+                      </div>
+                    )}
+
+                    {/* この問の図（第1問B のイラスト①〜④）。
+                        選択肢の中ではなく問題側に置く（ご要望）。
+                        スマホは問題ペインが 50vh なので 26vh に抑えて
+                        見出し・音源と一緒に1画面へ収め、PC は広いので
+                        42vh まで大きく出す。タップでさらに拡大できる。 */}
+                    {activeStepSub.imageUrl && (
+                      <QuestionFigure
+                        src={activeStepSub.imageUrl}
+                        caption={activeStepSub.imageCaption}
+                        tone="light"
+                        className="mt-3"
+                        imgClassName="max-h-[26vh] md:max-h-[42vh] object-contain"
+                      />
+                    )}
+
+                    {/* リード文（毎回同じ指示文）との区切り */}
+                    <div className="mt-4 border-t-2 border-[#A9CCE3]/40" />
+                  </div>
+                );
+              })()}
+
               <ExplanationBody
                 text={
                   listeningUnified
-                    ? stripListeningHowToBlocks(
-                        stripListeningQuestionBlocks(cleanQuestionText(currentQuestion.text)),
-                      )
+                    ? buildListeningLeadText(currentQuestion.text)
                     : cleanQuestionText(currentQuestion.text)
                 }
                 highlights={combinedHighlights}
@@ -2077,7 +2154,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             スクロールでの問題送りは発生しない。問題送りは固定バーの前へ/次へのみ。 */}
         {/* 下部余白：入力欄の拡大でフローティング解答バーが高くなったため、
             最後の解答カードがバーに隠れないよう 6rem → 9rem に広げる。 */}
-        <div className={`${listeningUnified ? 'lg:w-[54%]' : 'lg:w-[42%]'} flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 ${isDesktop ? 'pb-8' : 'pb-[calc(9rem+env(safe-area-inset-bottom))]'} relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
+        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 ${isDesktop ? 'pb-8' : 'pb-[calc(9rem+env(safe-area-inset-bottom))]'} relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
             {visibleGroupedSubQuestions.map((g: any, gIdx: number) => {
@@ -2171,79 +2248,25 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
                 }`}>
                   {/*
-                    ★リスニング：カード内を「上＝問題／下＝解答」の2ブロックに分ける
+                    ★リスニング：この解答カードには「解答」だけを置く
                     ------------------------------------------------------------
-                    ご要望：
-                      「後音源はその画面の上側の問題のところに設置すること。
-                        選択肢のところに設置しても押しずらい」
-                      「図は選択肢のところに載せるのやめよう。見にくい」
+                    ご指摘：
+                      「再生ボタンはさ、左の問題の文章のところにおいてほしいよね。
+                        何で解答の方に置くの？第１問の図も何で解答の方にあるの？
+                        問題の方（左側）においてっていったよね」
 
-                    以前は再生ボタンを幅 4.5rem の細い縦列にして選択肢の左に
-                    差し込んでいたため、ボタンが小さくて押しにくく、
-                    図も①〜④のチップに挟まれて見づらかった。
-                    そこで、このカードの上部に「問題ブロック」を新設し、
-                      問N ＋ 設問文 ＋ 音源（横帯）＋ 図
-                    をまとめる。選択肢は、そのすぐ下の「解答ブロック」に置く。
-                    スマホではこのペイン自体が画面の上側に来る（flex-col-reverse）
-                    ため、開いた瞬間に「音源・図・英文4つ」が1画面に収まる。
+                    そこで音源・図・設問文はすべて問題文ペイン（左側）へ移した。
+                    ここに残すのは 問N のマーカーと選択肢（①〜④）だけ。
+                    化学など従来の問題は listeningUnified=false なので、
+                    これまでどおり設問マーカー＋入力UIの形のまま。
                   */}
-                  <div className="contents">
                   <div className="flex flex-col gap-3.5 w-full min-w-0">
-                    {/*
-                      ★英語リスニング：設問文もこのカードに出す（ご要望）
-                      ------------------------------------------------------
-                      選択肢本文を解答カードへ移した問題では、左ペインの
-                      「設問一覧」を出していない。設問文がどこにも無くなると
-                      何を答えるのか分からないので、マーカーの隣に設問文を並べて
-                      「問N ＋ 設問文 ＋ ①〜④ ＋ 解答」を1枚のカードに揃える。
-                      これで問題文と解答欄が完全に同期する。
-                    */}
+                    {/* 設問マーカー（(ア)/(1)/問2 など）。
+                        リスニングでは設問文の本体は左ペインにあるので、
+                        ここは「いまどの問の解答欄か」を示す目印だけ。 */}
                     <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block">
                       {formatText(sqMarker)}
                     </span>
-                    {listeningUnified && (() => {
-                      const { body } = splitQuestionLabel(sq.label || '', sqMarker);
-                      if (!body) return null;
-                      return (
-                        <p className="text-[15px] md:text-sm leading-relaxed text-gray-700 font-modern break-words [overflow-wrap:anywhere]">
-                          {formatText(body, combinedHighlights)}
-                        </p>
-                      );
-                    })()}
-
-                    {/*
-                      音源（この問専用）。設問文の直下＝「問題のところ」に横帯で置く。
-                      横帯にすることで 再生 / 2回 / 0.75倍 / 標準 のどれも
-                      44px 級のタップ領域を確保できる。
-                    */}
-                    {hasTrackFor(sq.id) && (
-                      <div className="rounded-xl border border-[#A9CCE3]/30 bg-blue-50/40 p-2.5">
-                        <ListeningAudioPlayer
-                          tracks={listeningTracks}
-                          focusSubId={sq.id}
-                          variant="inline"
-                          orientation="horizontal"
-                          mode="practice"
-                          tone="light"
-                          readCount={(currentQuestion as any).readCount || 2}
-                        />
-                      </div>
-                    )}
-
-                    {/*
-                      第1問B（イラスト選択）用：この設問のイラスト。
-                      選択肢チップの中ではなく、この「問題ブロック」に置く（ご要望）。
-                      さらに高さ上限を付けて、図と選択肢が同時に1画面へ収まるようにする。
-                    */}
-                    {sq.imageUrl && (
-                      <QuestionFigure
-                        src={sq.imageUrl}
-                        caption={sq.imageCaption}
-                        tone="light"
-                        className="w-full"
-                        imgClassName="max-h-[34vh] object-contain"
-                      />
-                    )}
                     
                     {sq.type === 'multiple_choice' ? (
                       // ★英語リスニング（音源つき／選択肢本文つき）は、スマホでも
@@ -2389,7 +2412,6 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         )}
                       </div>
                     )}
-                  </div>
                   </div>
                 </div>
               );
@@ -2565,39 +2587,17 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 {/*
                   ★英語リスニング（スマホ・固定パネル）
                   ──────────────────────────────────────────────
-                  ご要望「音源はその画面の上側の問題のところに設置すること／
-                  選択肢のところに設置しても押しずらい」に合わせ、
-                  再生ボタンは選択肢の横（細い縦列）ではなく、
-                  パネル上部の横帯として置く。図も選択肢の中には入れず、
-                  音源のすぐ下＝「問題のところ」に高さ上限つきで出す。
+                  ご指摘「再生ボタンはさ、左の問題の文章のところにおいてほしいよね。
+                  何で解答の方に置くの？／第１問の図も何で解答の方にあるの？
+                  問題の方（左側）においてっていったよね」を反映し、
+                  音源プレイヤーと図はこの解答パネルからは完全に取り除き、
+                  「問題」側（左ペインの現在の問ブロック）だけに置く。
+                  ここは選択肢だけを表示する。
+                  ※リスニングは isDesktop || listeningUnified の分岐により
+                  そもそもこの固定パネルへ来ないが、二重表示の再発を防ぐため
+                  実装からも除去しておく。
                 */}
-                <div className={hasTrackFor(focusedSub.id) ? 'flex flex-col items-stretch gap-3' : 'contents'}>
-                  {hasTrackFor(focusedSub.id) && (
-                    <div className="rounded-xl border border-[#A9CCE3]/30 bg-blue-50/40 p-2">
-                      <ListeningAudioPlayer
-                        tracks={listeningTracks}
-                        focusSubId={focusedSub.id}
-                        variant="inline"
-                        orientation="horizontal"
-                        mode="practice"
-                        tone="light"
-                        readCount={(currentQuestion as any).readCount || 2}
-                      />
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1 flex flex-col gap-2">
-                    {focusedSub.imageUrl && (
-                      <QuestionFigure
-                        src={focusedSub.imageUrl}
-                        caption={focusedSub.imageCaption}
-                        tone="light"
-                        className="w-full"
-                        imgClassName="max-h-[26vh] object-contain"
-                      />
-                    )}
-                    {renderMultipleChoiceControl(focusedSub)}
-                  </div>
-                </div>
+                {renderMultipleChoiceControl(focusedSub)}
               </div>
             ) : focusedSub.type === 'sorting' ? (
               <div className="max-h-[46vh] overflow-y-auto py-1">

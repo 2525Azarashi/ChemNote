@@ -24,6 +24,19 @@
  *   D4  【音源の聞き方】等の定型ブロックを問題文から落とす
  *   D5  音源は画面上側の「問題のところ」に置く
  *
+ * ★続き（差し戻しを受けた修正 E1〜E4）★
+ * 1回目の実装をお見せしたところ、次のご指摘をいただいた（原文）：
+ *   > 解答のところは変わってるけど、問題のところさ、全部の問いがまとまってて
+ *   > どの問いを解いているかが分からない。で再生ボタンはさ、
+ *   > 左の問題の文章のところにおいてほしいよね。何で解答の方に置くの？
+ *   > 第１問の図も何で解答の方にあるの？問題の方（左側）においてっていったよね。
+ *   > 勝手に左右の２画面の比も変えないでよ。
+ *
+ *   E1  左ペインに問1〜問4が全部残っていた → いま解いている問だけにする
+ *   E2  再生ボタンは左（問題文）ペインに置く（解答側に置かない）
+ *   E3  図も左（問題文）ペインに置く（解答側に置かない）
+ *   E4  左右2画面の比（58% / 42%・50vh）は変えない
+ *
  * ★重要（回帰防止）★
  *   進捗を問ごとにするために教材データ（practiceProblems）を分割してはいけない。
  *   分割すると進捗台帳のキー（章ID::大問ID）が総入れ替えになり、
@@ -38,7 +51,7 @@ import {
   stepLabelOf,
   stepScoreKey,
 } from '../src/utils/listeningSteps';
-import { stripListeningHowToBlocks } from '../src/utils/listeningOptions';
+import { buildListeningLeadText, stripListeningHowToBlocks } from '../src/utils/listeningOptions';
 import { EL1_A_EXTRA_PROBLEMS } from '../src/data/englishListeningQ1ASets';
 import { EL1_B_PROBLEMS } from '../src/data/englishListeningQ1BProblems';
 import { getAllListeningChapters } from '../src/data/englishListeningData';
@@ -202,21 +215,23 @@ describe('D2: 選択肢の英文・図が一目に映る（スクロール不要
     expect(QUIZ).toContain('lg:flex-row');
   });
 
-  it('リスニングでは問題文ペインの高さを絞って上側を解答に明け渡す', () => {
-    // 50vh → 30vh。リード文（指示文）だけなのでこれで足りる。
-    expect(QUIZ).toContain("listeningUnified ? 'max-h-[30vh]' : 'max-h-[50vh]'");
+  it('左右2画面の比は勝手に変えない（58% / 42% のまま）', () => {
+    // ご指摘：「勝手に左右の２画面の比も変えないでよ」
+    // 一度 46% / 54% に変えてしまったので、元の比に戻したことを固定する。
+    // listeningUnified による幅の分岐が復活していないことも確認する。
+    expect(QUIZ).toContain('lg:w-[58%]');
+    expect(QUIZ).toContain('lg:w-[42%]');
+    expect(QUIZ).not.toContain('lg:w-[46%]');
+    expect(QUIZ).not.toContain('lg:w-[54%]');
+    expect(QUIZ).not.toMatch(/listeningUnified \? 'lg:w-\[/u);
   });
 
-  it('PC ではリスニングだけ右ペインを広げる（英文4つが折り返さない）', () => {
-    expect(QUIZ).toContain("listeningUnified ? 'lg:w-[46%]' : 'lg:w-[58%]'");
-    expect(QUIZ).toContain("listeningUnified ? 'lg:w-[54%]' : 'lg:w-[42%]'");
-  });
-
-  it('化学など従来の問題のレイアウトは変えない', () => {
-    // listeningUnified=false 側の値が従来のまま残っていること。
-    expect(QUIZ).toContain("'lg:w-[58%]'");
-    expect(QUIZ).toContain("'lg:w-[42%]'");
-    expect(QUIZ).toContain("'max-h-[50vh]'");
+  it('問題文ペインの高さ上限も元の 50vh に戻す', () => {
+    // 一度 30vh に絞ってしまったが、音源と図を左（問題側）に置いたので
+    // 左ペインには十分な高さが必要。元の 50vh のまま。
+    expect(QUIZ).toContain('max-h-[50vh]');
+    expect(QUIZ).not.toContain('max-h-[30vh]');
+    expect(QUIZ).not.toMatch(/listeningUnified \? 'max-h-\[/u);
   });
 });
 
@@ -230,8 +245,17 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
   });
 
   it('リスニングの図は高さ上限つきで描画される（選択肢と同時に1画面）', () => {
-    expect(QUIZ).toContain('imgClassName="max-h-[34vh] object-contain"');
-    expect(QUIZ).toContain('imgClassName="max-h-[26vh] object-contain"');
+    // 図は「問題のところ（左側）」の現在の問ブロックにだけ置く。
+    expect(QUIZ).toContain('imgClassName="max-h-[26vh] md:max-h-[42vh] object-contain"');
+  });
+
+  it('図は解答カード側・スマホ固定パネル側には残さない', () => {
+    // ご指摘：「第１問の図も何で解答の方にあるの？問題の方（左側）においてっていったよね」
+    // 解答側（sq / focusedSub）に図を描く記述が復活していないこと。
+    expect(QUIZ).not.toContain('src={sq.imageUrl}');
+    expect(QUIZ).not.toContain('src={focusedSub.imageUrl}');
+    // 図は activeStepSub（＝いま解いている問）に紐づけて左ペインに出す。
+    expect(QUIZ).toContain('src={activeStepSub.imageUrl}');
   });
 
   it('図はタップで拡大できる（上限を付けても情報は失わない）', () => {
@@ -278,11 +302,88 @@ describe('D4: 「音源の聞き方」等の定型説明を問題文から落と
   });
 
   it('Quiz の問題文描画に組み込まれている（書いただけで未配線を防ぐ）', () => {
-    expect(QUIZ).toContain('stripListeningHowToBlocks(');
-    // stripListeningQuestionBlocks の結果をさらに通す二段構え
-    expect(QUIZ).toMatch(
-      /stripListeningHowToBlocks\(\s*stripListeningQuestionBlocks\(cleanQuestionText\(currentQuestion\.text\)\)/,
-    );
+    // 呼び出し順を間違えないよう buildListeningLeadText に閉じ込めた（E1 の修正）。
+    expect(QUIZ).toContain('buildListeningLeadText(currentQuestion.text)');
+  });
+});
+
+// =====================================================================
+// E1: 左ペインには「いま解いている問」だけを出す
+// =====================================================================
+describe('E1: 左ペインに問1〜問4がまとまって残る不具合の修正', () => {
+  /*
+   * ■ 何がバグだったか
+   *   以前の呼び出しは
+   *     stripListeningQuestionBlocks(cleanQuestionText(text))
+   *   だった。cleanQuestionText は「行頭の 問N を消す」処理なので、
+   *   先に通すと切り落とす目印の 問N が消えてしまい、
+   *   stripListeningQuestionBlocks が何も切れず問1〜問4が全部残った。
+   *   → ご指摘「全部の問いがまとまっててどの問いを解いているかが分からない」
+   */
+  it('リード文だけが残り、問N と選択肢は落ちる（第1問A の実データ）', () => {
+    for (const p of EL1_A_EXTRA_PROBLEMS) {
+      const lead = buildListeningLeadText(p.text);
+      expect(lead).not.toMatch(/^\s*問\s*\d/mu);
+      // 選択肢の丸番号が行頭に並ぶブロックも残っていないこと。
+      expect(lead).not.toMatch(/^\s*[①②③④]/mu);
+      expect(lead).not.toContain('音源の聞き方');
+      // 指示文（リード）は残っていること＝何をする回なのかは読める。
+      expect(lead).toContain('第1問 A');
+      expect(lead.length).toBeGreaterThan(20);
+    }
+  });
+
+  it('リード文だけが残り、問N と選択肢は落ちる（第1問B の実データ）', () => {
+    for (const p of EL1_B_PROBLEMS) {
+      const lead = buildListeningLeadText(p.text);
+      expect(lead).not.toMatch(/^\s*問\s*\d/mu);
+      expect(lead).not.toContain('音源の聞き方');
+      expect(lead).not.toContain('解き方のコツ');
+      expect(lead).toContain('第1問 B');
+    }
+  });
+
+  it('Quiz は壊れた順序（cleanQuestionText を先に通す）を使わない', () => {
+    expect(QUIZ).not.toMatch(/stripListeningQuestionBlocks\(\s*cleanQuestionText\(/u);
+  });
+
+  it('左ペインにいま解いている問の見出しと「全N問中M問目」を出す', () => {
+    expect(QUIZ).toContain('stepLabelOf(activeStepSub, safeStepIndex)');
+    expect(QUIZ).toContain('splitQuestionLabel(activeStepSub.label');
+    expect(QUIZ).toContain('全{listeningSteps.length}問中');
+  });
+
+  it('リスニング以外（化学など）は従来どおり全文を出す', () => {
+    expect(QUIZ).toContain('cleanQuestionText(currentQuestion.text)');
+  });
+
+  it('いま解いている問のブロックは、毎回同じリード文より「前」に出す', () => {
+    // 後ろに置くと「毎回同じ指示文を読み飛ばしてから再生を押す」動線になり、
+    // ご要望「スクロールしてわざわざ答えるのめんどい」に反する。
+    // 見出し・音源・図 → リード文 の順で並んでいることを固定する。
+    const stepBlockAt = QUIZ.indexOf('stepLabelOf(activeStepSub, safeStepIndex)');
+    const leadAt = QUIZ.indexOf('buildListeningLeadText(currentQuestion.text)');
+    expect(stepBlockAt).toBeGreaterThan(-1);
+    expect(leadAt).toBeGreaterThan(-1);
+    expect(stepBlockAt).toBeLessThan(leadAt);
+  });
+});
+
+// =====================================================================
+// E2: 再生ボタンは左（問題文）ペインに置く
+// =====================================================================
+describe('E2: 音源プレイヤーは問題文ペイン（左側）に置く', () => {
+  it('いま解いている問（activeStepSub）の音源を左ペインに出す', () => {
+    expect(QUIZ).toContain('hasTrackFor(activeStepSub.id)');
+    expect(QUIZ).toContain('focusSubId={activeStepSub.id}');
+  });
+
+  it('解答カード・スマホ固定パネルには音源を置かない', () => {
+    // ご指摘：「再生ボタンはさ、左の問題の文章のところにおいてほしいよね。何で解答の方に置くの？」
+    expect(QUIZ).not.toContain('focusSubId={sq.id}');
+    expect(QUIZ).not.toContain('focusSubId={focusedSub.id}');
+    expect(QUIZ).not.toContain('hasTrackFor(sq.id)');
+    expect(QUIZ).not.toContain('hasTrackFor(focusedSub.id)');
   });
 });
 

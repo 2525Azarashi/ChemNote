@@ -189,3 +189,30 @@ export function stripListeningHowToBlocks(text: string): string {
 
   return kept.join('\n').replace(/\n{3,}/gu, '\n\n').trim();
 }
+
+/**
+ * 問題文ペイン（左側）に出す「リード文だけ」を作る。
+ *
+ * ■ なぜ専用の関数にしたのか（不具合の修正）
+ *   これまで呼び出し側は
+ *     stripListeningQuestionBlocks(cleanQuestionText(text))
+ *   の順で通していた。ところが `cleanQuestionText` は
+ *   「行頭の 問N を消す」処理なので、先に通すと問N の行が消えてしまい、
+ *   `stripListeningQuestionBlocks` が切り落とす目印を見つけられなかった。
+ *   結果として左ペインに問1〜問4の全ブロックがそのまま残り、
+ *
+ *     > 問題のところさ、全部の問いがまとまってて
+ *     > どの問いを解いているかが分からない
+ *
+ *   というご指摘のとおりの状態になっていた。
+ *   順序を間違えないよう、正しい順番をこの関数に閉じ込める。
+ *
+ * ■ やること（順番が大事）
+ *   ① 問N 以降のブロックを落とす（この時点では問N がまだ残っている）
+ *   ② 【音源の聞き方】【解き方のコツ】の定型ブロックを落とす
+ *   結果は「第2回　第1問 A（…）」＋「①〜④のうちから1つずつ選びなさい」だけになる。
+ *   いま解いている問の見出し・音源・図は、呼び出し側がこの下に描く。
+ */
+export function buildListeningLeadText(text: string): string {
+  return stripListeningHowToBlocks(stripListeningQuestionBlocks(text));
+}
