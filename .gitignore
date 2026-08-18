@@ -49,3 +49,7 @@ ui-debug.log
 /summary.txt
 /breakpoints.txt
 /responsive_classes.txt
+
+# Python (scripts/ 配下の生成キャッシュ。成果物ではないので追跡しない)
+__pycache__/
+*.pyc
