@@ -181,9 +181,9 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
       id: 'english_listening',
       title: '英語リスニング',
       latin: 'English Listening',
-      description: '共通テスト「英語リスニング」を、本試験と同じ大問の並びで配置。大問ごとに選んで学習できます。',
+      description: '共通テスト「英語リスニング」を、本試験と同じ大問の並びで配置。第1問A・第1問B のように A／B も別のタブに分けてあります。',
       highlights: [
-        `第1問〜第6問の全${listeningStats.units}単元を本試験順で収録（問題は順次追加中）`,
+        `第1問A〜第6問Bの全${listeningStats.units}単元を本試験順で収録（問題は順次追加中）`,
         `配点${listeningStats.points}点・マーク${listeningStats.marks}個の大問構成に対応`,
         '化学と同じ単元画面・同じ演習の進め方',
       ],

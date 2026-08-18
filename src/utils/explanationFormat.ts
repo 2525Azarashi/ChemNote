@@ -182,8 +182,14 @@ interface QuestionLike {
 // セクション生成
 // -------------------------------------------------------------------
 
-/** すでにこのエンジンで整形済みか（二重適用の防止） */
-const ENHANCED_MARK = '<!--fmt-v1-->';
+/**
+ * すでにこのエンジンで整形済みか（二重適用の防止）
+ *
+ * リスニング専用エンジン（listeningExplanation.ts）も同じ目印を先頭に付ける。
+ * こうしておくと、後から汎用エンジンを通しても isEnhanced() が true を返して
+ * 二重に整形されない＝解説が二重に長くならない。
+ */
+export const ENHANCED_MARK = '<!--fmt-v1-->';
 
 export function isEnhanced(explanation: unknown): boolean {
   return typeof explanation === 'string' && explanation.includes(ENHANCED_MARK);

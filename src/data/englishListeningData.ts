@@ -11,10 +11,14 @@
  *
  * 構造の対応（他科目と同じルール）
  *  - `parts[].title`        … 大きな区分。リスニングでは「前半（2回読み）／後半（1回読み）」
- *  - `chapters[].realTitle` … 単元選択画面のタブ見出し。ここでは「第1問」「第2問」…
+ *  - `chapters[].realTitle` … 単元選択画面のタブ見出し。
+ *                              ★A・B が分かれる大問は「第1問 A」「第1問 B」と
+ *                                別のタブ見出しにしている（ご要望）。
+ *                                第1問 A と第1問 B は設問形式（英文を選ぶ／絵を選ぶ）が
+ *                                まったく違うので、同じ「第1問」タブに同居させると
+ *                                「今どちらの練習をしているのか」が分からなくなる。
  *  - `chapters[].abstractTitle`
- *                           … アプリ上の1単元。「第1問 A」「第1問 B」のように
- *                              A・B が分かれている大問は別単元として並べる
+ *                           … アプリ上の1単元。realTitle と同じ「第1問 A」を入れる
  *  - `chapters[].topics`    … その単元で扱う内容（設問形式の要約）
  *  - `chapters[].practiceProblems` / `miniTest`
  *                           … 問題本体。今回は「まず単元を追加する」段階なので
@@ -45,14 +49,29 @@ import { EL1_A_PROBLEMS } from './englishListeningQ1AProblems';
 import { EL1_A_EXTRA_PROBLEMS } from './englishListeningQ1ASets';
 import { EL1_B_PROBLEMS } from './englishListeningQ1BProblems';
 import { enhanceExplanation, isStructuredExplanation } from '../utils/explanationFormat';
+import { buildListeningExplanation } from '../utils/listeningExplanation';
 
 /** 1つの単元（アプリ上の1単元）。他科目の chapter と同形。 */
 export interface ListeningChapter {
   id: string;
   /** アプリの単元名として表示（例：「第1問 A」） */
   abstractTitle: string;
-  /** 単元選択画面のタブ見出しになる（例：「第1問」） */
+  /**
+   * 単元選択画面のタブ見出しになる（例：「第1問 A」）。
+   * A・B が分かれる大問は A・B それぞれを独立したタブにする。
+   */
   realTitle: string;
+  /**
+   * 配点を合算するときの「大問」キー（例：'第1問'）。
+   *
+   * ■ なぜ realTitle と別に持つのか
+   *   共通テストの配点は大問単位（第1問＝28点）でしか公表されない。
+   *   realTitle を A・B で分けた結果、realTitle をキーに配点を集計すると
+   *   第1問の28点を A と B で二重に数えてしまい合計が100点を超える。
+   *   そこで「表示のためのタブ名（realTitle）」と
+   *   「配点を数えるための大問名（questionGroup）」を分離した。
+   */
+  questionGroup: string;
   /** 扱う内容 */
   topics: string[];
   /** 演習問題（今回は未収録。問題を入れると自動で「最初から」ボタンが出る） */
@@ -85,14 +104,20 @@ export interface ListeningPart {
  */
 const ch = (
   id: string,
-  realTitle: string,
-  abstractTitle: string,
+  /** タブ見出し＝単元名（例：'第1問 A'）。表示はこの1つに統一する。 */
+  title: string,
+  /** 配点を合算するときの大問キー（例：'第1問'） */
+  questionGroup: string,
   topics: string[],
   meta: { points: number; marks: number; readCount: 1 | 2; speakers: string },
 ): ListeningChapter => ({
   id,
-  abstractTitle,
-  realTitle,
+  // タブ見出しと単元名は同じ文字列にする。
+  // 別にすると「タブは第1問、カードは第1問 A」と2通りの呼び名が生まれ、
+  // どの単元を開いているのか分かりにくくなるため。
+  abstractTitle: title,
+  realTitle: title,
+  questionGroup,
   topics,
   practiceProblems: [],
   miniTest: [],
@@ -112,15 +137,15 @@ export const englishListeningData: { parts: ListeningPart[] } = {
       chapters: [
         ch(
           'el1_A',
-          '第1問',
           '第1問 A',
+          '第1問',
           ['短い発話の内容に合う英文を選ぶ', '言い換え（パラフレーズ）の理解', '数量・時刻・否定表現の聞き取り'],
           { points: 28, marks: 4, readCount: 2, speakers: '1人（短い発話）' },
         ),
         ch(
           'el1_B',
-          '第1問',
           '第1問 B',
+          '第1問',
           ['短い発話の内容に合う絵を選ぶ', '位置・動作・状態の描写', '前置詞と語彙の正確な理解'],
           { points: 28, marks: 4, readCount: 2, speakers: '1人（短い発話）' },
         ),
@@ -153,15 +178,15 @@ export const englishListeningData: { parts: ListeningPart[] } = {
         ),
         ch(
           'el4_A',
-          '第4問',
           '第4問 A',
+          '第4問',
           ['やや長い発話に沿って情報を整理する', '図表・表の完成', 'イラストの並べ替え（不要な選択肢に注意）'],
           { points: 12, marks: 8, readCount: 1, speakers: '1人（モノローグ）' },
         ),
         ch(
           'el4_B',
-          '第4問',
           '第4問 B',
+          '第4問',
           ['複数の発話を比較して条件に合うものを選ぶ', '4人の情報を聞きながら取捨選択する', '条件表への書き込みメモの型'],
           { points: 12, marks: 1, readCount: 1, speakers: '4人（複数の発話）' },
         ),
@@ -174,15 +199,15 @@ export const englishListeningData: { parts: ListeningPart[] } = {
         ),
         ch(
           'el6_A',
-          '第6問',
           '第6問 A',
+          '第6問',
           ['2人の会話について質問の答えを選ぶ', '話者の立場・意図の把握', '会話の流れを追う'],
           { points: 14, marks: 2, readCount: 1, speakers: '2人（会話）' },
         ),
         ch(
           'el6_B',
-          '第6問',
           '第6問 B',
+          '第6問',
           ['3人の議論から意見と図表を選ぶ', '賛成・反対の立場を整理する', '意見の根拠となるグラフを判断する'],
           { points: 14, marks: 2, readCount: 1, speakers: '3人（議論）' },
         ),
@@ -219,6 +244,17 @@ const LISTENING_PROBLEMS: Record<string, any[]> = {
 // 解説を「解答カード → 小問ごとのアコーディオン」へ自動整形する。
 // enhanceExplanation は冪等（整形済みマーカーで二重適用を防ぐ）なので、
 // HMR で再評価されても壊れない。
+//
+// ■ リスニングだけ専用の組み立てを先に試す理由（ご要望そのもの）
+//     > 解説は、解答の道筋よりも以前にスクリプトをまずは出すこと。
+//     > その後でそのスクリプトのどの単語／表現を聞き取れればよかったのかを反映する。
+//     > スクリプトはスクリプトだけで枠で囲む。
+//     > 解説が長すぎるというか変に多くて、どこが大事なのか分からない。
+//   化学と同じ汎用エンジンだと［解答 → 思考手順 → 詳しい解説］の順になり、
+//   スクリプトが本文の地の文に埋もれてしまう。リスニングは「聞こえたか」の勝負なので、
+//   復習で最初に見たいのは “実際には何と言っていたのか” である。
+//   そこで buildListeningExplanation が組み立てられた場合だけそれを使い、
+//   組み立てられない（スクリプトが無い）ときは従来どおり汎用エンジンに任せる。
 (() => {
   for (const chapter of englishListeningData.parts.flatMap((p) => p.chapters)) {
     const problems = [...(chapter.practiceProblems || []), ...(chapter.miniTest || [])];
@@ -227,7 +263,9 @@ const LISTENING_PROBLEMS: Record<string, any[]> = {
       if (typeof problem.explanation === 'string' && isStructuredExplanation(problem.explanation)) {
         continue;
       }
-      problem.explanation = enhanceExplanation(problem);
+      // スクリプトを持つリスニング問題は専用の並び（スクリプト → 決め手 → 道すじ）に、
+      // それ以外は従来の汎用エンジンに。
+      problem.explanation = buildListeningExplanation(problem) || enhanceExplanation(problem);
     }
   }
 })();
@@ -266,17 +304,20 @@ export function getAllListeningChapters(): ListeningChapter[] {
 }
 
 /**
- * 大問（realTitle）ごとの収録状況。
+ * 大問（questionGroup）ごとの収録状況。
  * A・B に分かれる大問は配点が共通なので、配点の二重計上を避けるために
  * 「大問単位でユニークにしてから」合計する。
  */
 export function getListeningStats() {
   const chapters = getAllListeningChapters();
-  // 大問の数（realTitle のユニーク数）＝ 6
-  const sections = new Set(chapters.map((c) => c.realTitle)).size;
+  // 大問の数（questionGroup のユニーク数）＝ 6。
+  // ★realTitle ではなく questionGroup を使う★
+  //   タブは A・B で分けたので realTitle は9種類あるが、
+  //   共通テストの大問はあくまで第1問〜第6問の6つ。
+  const sections = new Set(chapters.map((c) => c.questionGroup)).size;
   // 配点は大問単位で公表されるため、大問ごとに1回だけ足す
   const pointsByQuestion = new Map<string, number>();
-  chapters.forEach((c) => pointsByQuestion.set(c.realTitle, c.points));
+  chapters.forEach((c) => pointsByQuestion.set(c.questionGroup, c.points));
   const points = [...pointsByQuestion.values()].reduce((a, b) => a + b, 0);
   // マーク数は単元ごとに独立しているのでそのまま合計する
   const marks = chapters.reduce((sum, c) => sum + c.marks, 0);

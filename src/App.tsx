@@ -63,6 +63,36 @@ export default function App() {
   const [appState, setAppState] = useState<AppState>(() => (localStorage.getItem('savedAppState') as AppState) || 'onboarding');
   const [appMode, setAppMode] = useState<AppMode>(() => (localStorage.getItem('savedAppMode') as AppMode) || 'practice');
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(() => localStorage.getItem('savedSelectedChapterId'));
+  /**
+   * 「今回はこの範囲だけを解く」ときの範囲（両端を含む・章内の通し番号）。
+   *
+   * ■ 何のために持つのか（ご要望）
+   *   英語リスニングは「第1問A のページ → 第1回演習〜第14回演習のボタン」の形にした。
+   *   ボタンで1回を選んだら、その1回だけを解き、その1回だけを振り返れるようにする。
+   *   （これまでは14回分がひと続きで、途中でやめると中途半端な位置に取り残されていた）
+   *
+   * ■ 章IDを分けずに範囲で表す理由
+   *   回ごとに章IDを作ると、保存キーや進捗台帳・ランキングの宛先が変わって
+   *   これまでの学習記録が迷子になる。章IDは据え置き、範囲だけを別に持つ。
+   *
+   * ■ localStorage に載せている理由
+   *   演習中にアプリを閉じて開き直したとき、範囲を忘れていると
+   *   「第3回だけのはずが章の最後まで続く」ことになり、
+   *   選んだはずの回と実際に解く範囲が食い違ってしまう。
+   */
+  const [quizRange, setQuizRange] = useState<{ startIndex: number; endIndex: number } | null>(() => {
+    try {
+      const raw = localStorage.getItem('savedQuizRange');
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (
+        parsed && typeof parsed.startIndex === 'number' && typeof parsed.endIndex === 'number'
+      ) return { startIndex: parsed.startIndex, endIndex: parsed.endIndex };
+      return null;
+    } catch {
+      return null;
+    }
+  });
   const [selectedNote, setSelectedNote] = useState<any>(null);
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>(() => {
     try {
@@ -238,6 +268,13 @@ export default function App() {
       localStorage.removeItem('savedSelectedChapterId');
     }
   }, [selectedChapterId]);
+  useEffect(() => {
+    if (quizRange) {
+      localStorage.setItem('savedQuizRange', JSON.stringify(quizRange));
+    } else {
+      localStorage.removeItem('savedQuizRange');
+    }
+  }, [quizRange]);
   useEffect(() => { localStorage.setItem('savedQuizAnswers', JSON.stringify(quizAnswers)); }, [quizAnswers]);
   useEffect(() => { localStorage.setItem('savedIsGuest', isGuest.toString()); }, [isGuest]);
   useEffect(() => { localStorage.setItem(SELECTED_SUBJECT_KEY, selectedSubject); }, [selectedSubject]);
@@ -568,8 +605,19 @@ export default function App() {
     }
   };
 
-  const handleSelectChapter = (chapterId: string, questionIndex = 0, resume = false) => {
+  const handleSelectChapter = (
+    chapterId: string,
+    questionIndex = 0,
+    resume = false,
+    /**
+     * 「この範囲だけを1回として解く」ときの範囲（両端を含む）。
+     * 英語リスニングの「第N回演習」ボタンから渡す。
+     * 省略時は範囲なし＝章の全問を通しで解く（化学基礎・化学は従来のまま）。
+     */
+    range: { startIndex: number; endIndex: number } | null = null,
+  ) => {
     setSelectedChapterId(chapterId);
+    setQuizRange(range);
     setAppState('quiz');
     setLastQuizResult(null);
 
@@ -745,7 +793,7 @@ export default function App() {
             )}
             {appState === 'quiz' && selectedChapter && (
               <ErrorBoundary label="演習画面" onReset={handleBackToChapters}>
-                <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={isMobileView} onExplanationChange={setIsExplanationView} />
+                <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={isMobileView} onExplanationChange={setIsExplanationView} questionRange={quizRange} />
               </ErrorBoundary>
             )}
             {appState === 'explanation' && selectedChapter && (
@@ -766,6 +814,9 @@ export default function App() {
                   resultTotalCorrect={lastQuizResult?.totalCorrect}
                   resultTotalJudgeable={lastQuizResult?.totalJudgeable}
                   resultTotalTimeSec={lastQuizResult?.totalTimeSec}
+                  // 1回分（例：第3回演習）だけを解いたときは、その回だけを振り返る。
+                  // 解いていない回まで答え合わせに並ぶと、どこまでやったか分からなくなる。
+                  questionRange={quizRange}
                 />
               </ErrorBoundary>
             )}

@@ -19,6 +19,7 @@ import {
   sliceEnhancedBySubQuestion,
   questionGroupKey,
 } from '../utils/explanationFormat';
+import { isScriptFirstExplanation } from '../utils/listeningExplanation';
 import { getUnitTeaching } from '../data/unitTeaching';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
@@ -63,6 +64,19 @@ interface ExplanationProps {
   resultTotalCorrect?: number;
   resultTotalJudgeable?: number;
   resultTotalTimeSec?: number;
+  /**
+   * 結果画面で振り返る範囲（両端を含む・章内の通し番号）。
+   *
+   * ■ 何のために足したのか（ご要望）
+   *   英語リスニングは「第1問A のページ → 第1回演習〜第14回演習」の形にしたので、
+   *   1回分だけを解いて結果画面に来ることがある。
+   *   そのとき章の14回分すべてが結果に並ぶと、解いていない回まで
+   *   「答え合わせ」に出てきてしまい、自分がどこまでやったのか分からない。
+   *   そこで「今回解いた範囲だけ」を振り返れるようにする。
+   *
+   *   省略時は従来どおり章の全問を振り返る（化学基礎・化学は従来のまま）。
+   */
+  questionRange?: { startIndex: number; endIndex: number } | null;
 }
 
 import { NodeData } from './InteractiveTree';
@@ -100,7 +114,7 @@ const getDifficulty = (sqId: string) => {
   return 1;
 };
 
-export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView, scoreBreakdown, scoreMeta, totalScore, runningCombo, resultTotalScore, resultTotalCorrect, resultTotalJudgeable, resultTotalTimeSec }: ExplanationProps) {
+export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView, scoreBreakdown, scoreMeta, totalScore, runningCombo, resultTotalScore, resultTotalCorrect, resultTotalJudgeable, resultTotalTimeSec, questionRange }: ExplanationProps) {
   const isPracticeMode = initialMode === 'practice';
   // Virtual mode is always 'mini_test' for bright style choices!
   const mode = 'mini_test';
@@ -154,9 +168,24 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   };
 
   const allQuestions = initialMode === 'mini_test' ? chapter.miniTest : (chapter.practiceProblems || []);
+  /**
+   * 結果画面で並べる範囲の先頭（章内の通し番号）。
+   * 1回分だけを解いたときに、その回だけを振り返れるようにするためのもの。
+   * 範囲指定が無ければ 0（＝章の先頭から全部）で従来と同じ。
+   */
+  const rangeOffset = useMemo(() => {
+    if (!questionRange) return 0;
+    const last = Math.max(0, allQuestions.length - 1);
+    return Math.min(Math.max(0, questionRange.startIndex), last);
+  }, [questionRange, allQuestions.length]);
+
   const questions = useMemo(() => {
-    return singleQuestionIndex !== undefined ? [allQuestions[singleQuestionIndex]] : allQuestions;
-  }, [allQuestions, singleQuestionIndex]);
+    if (singleQuestionIndex !== undefined) return [allQuestions[singleQuestionIndex]];
+    if (!questionRange) return allQuestions;
+    const last = Math.max(0, allQuestions.length - 1);
+    const end = Math.min(Math.max(rangeOffset, questionRange.endIndex), last);
+    return allQuestions.slice(rangeOffset, end + 1);
+  }, [allQuestions, singleQuestionIndex, questionRange, rangeOffset]);
 
   // 要件①：「この単元の思考の型」の本文。単元（章）に紐づくので問題ごとには作らない。
   // 内容・表現・順番・解説は従来と1文字も変えていない（エンジン側の buildUnitKataBlock がそのまま組む）。
@@ -244,7 +273,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   }, [singleQuestionIndex, chapter.id]);
 
   const handleSaveNote = async (question: any, index: number) => {
-    const displayIndex = singleQuestionIndex !== undefined ? singleQuestionIndex : index;
+    // 範囲を切り出して表示しているときは、切り出しの先頭ぶんを足して
+    // 「章の中での本当の番号」に戻す（ノートに出る Q番号がズレないようにする）。
+    const displayIndex = singleQuestionIndex !== undefined ? singleQuestionIndex : rangeOffset + index;
     if (isGuest) {
       alert('ゲストモードではノート機能は使用できません。');
       return;
@@ -1081,7 +1112,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                       <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4 ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/30'}`}>
                         <div className="flex items-center gap-3">
                           <div className={`font-bold px-3 py-1 rounded-full text-xs md:text-sm shadow-sm border ${mode === 'mini_test' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'}`}>
-                            Q{(singleQuestionIndex !== undefined ? singleQuestionIndex : qIndex) + 1}
+                            Q{(singleQuestionIndex !== undefined ? singleQuestionIndex : rangeOffset + qIndex) + 1}
                           </div>
                           <div className={`text-left font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
                             {question.category || '問題'}
@@ -1257,6 +1288,23 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         const renderSq = (sq: any, isCorrect: boolean) => {
                           const isExpanded = expandedSq === sq.id;
                           const sqSlice = sliceForSq(sq);
+                          // ─────────────────────────────────────────────
+                          // リスニングだけ「スクリプトを最初に出す」ためのスイッチ。
+                          //
+                          // ご要望：
+                          //   > 解説は、解答の道筋よりも以前にスクリプトをまずは出すこと。
+                          //   > 解説が長すぎるというか変に多くて、どこが大事なのか分からない。
+                          //
+                          // 下の「正解までの道すじ」は detailedExplanation.steps を並べたもので、
+                          // リスニングでは実データを数えたところ 52問／60問がまったく同じ4行
+                          // （＝その問固有ではない形式共通の一般論）だった。
+                          // これを小問の先頭に出すと、スクリプトより前に同じ一般論が
+                          // 4問ぶん並び、肝心の「どの語を聞き取れば良かったか」が埋もれる。
+                          //
+                          // そこで、リスニング専用の並びで整形された解説のときだけ
+                          // ここでの道すじ表示を止める。★情報は失われない★ ──
+                          // 同じ一般論は「解説を全文まとめて読む」の冒頭に1回だけ載せている。
+                          const isScriptFirst = isScriptFirstExplanation(sqSlice);
                           // 表示ルール3：右側の採点結果カードには設問文を再掲せず、
                           // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
                           const sqIndex = ((question?.subQuestions || []) as any[]).indexOf(sq);
@@ -1494,8 +1542,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                             </div>
 
                                             <div className="p-4 space-y-4">
-                                              {/* ④ 正解までの道すじ：番号つきステップで再現可能な手順にする */}
-                                              {isPracticeMode && sq.detailedExplanation.steps?.length > 0 && (
+                                              {/* ④ 正解までの道すじ：番号つきステップで再現可能な手順にする
+                                                     （リスニングのスクリプト先出し形式では、この一般論が
+                                                       スクリプトより前に来てしまうので出さない。
+                                                       同じ内容は全文まとめ読みの冒頭に1回だけ載せている） */}
+                                              {!isScriptFirst && isPracticeMode && sq.detailedExplanation.steps?.length > 0 && (
                                                 <div>
                                                   <h5 className={`font-bold mb-2 flex items-center gap-1.5 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
                                                     <Target size={15} />
@@ -1811,7 +1862,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 <div key={`extra-${question.id}`} className="space-y-6">
                   <div className={`flex items-center gap-3 border-b pb-2 ${mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/30'}`}>
                     <div className={`font-bold px-2 py-0.5 rounded text-xs shadow-sm border ${mode === 'mini_test' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'}`}>
-                      Q{(singleQuestionIndex !== undefined ? singleQuestionIndex : qIndex) + 1}
+                      Q{(singleQuestionIndex !== undefined ? singleQuestionIndex : rangeOffset + qIndex) + 1}
                     </div>
                     <h4 className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD] opacity-80'}`}>
                       周辺知識・深掘り
