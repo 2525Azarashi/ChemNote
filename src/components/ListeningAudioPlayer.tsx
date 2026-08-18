@@ -63,6 +63,17 @@ export interface ListeningAudioPlayerProps {
    *              差し込む用途。focusSubId と併用して1問ぶんだけを出す。
    */
   variant?: 'panel' | 'inline';
+  /**
+   * inline バリアントのボタンの並べ方。
+   *   'vertical'   … 既定。縦1列（解答カードの左に細く差し込む従来の形）
+   *   'horizontal' … 横1列に折り返して並べる。
+   *
+   * ご要望「音源はその画面の上側の問題のところに設置すること／
+   * 選択肢のところに設置しても押しずらい」に対応するため、
+   * 問題ブロックの上部に横帯として置けるようにした。
+   * 横帯なら 4.5rem 幅の縦列に押し込まれず、指で押しやすい大きさを保てる。
+   */
+  orientation?: 'vertical' | 'horizontal';
   /** 追加クラス（余白調整） */
   className?: string;
 }
@@ -83,11 +94,13 @@ export function ListeningAudioPlayer({
   readCount = 2,
   focusSubId,
   variant = 'panel',
+  orientation = 'vertical',
   className = '',
 }: ListeningAudioPlayerProps) {
   const isDark = tone === 'dark';
   const isReview = mode === 'review';
   const isInline = variant === 'inline';
+  const isRow = isInline && orientation === 'horizontal';
 
   // focusSubId が指定されていればその問だけに絞る
   const list = useMemo(
@@ -254,7 +267,11 @@ export function ListeningAudioPlayer({
   if (isInline) {
     return (
       <div
-        className={`flex shrink-0 flex-col gap-1.5 ${className}`}
+        className={`flex ${
+          isRow
+            ? 'w-full flex-row flex-wrap items-center gap-2'
+            : 'shrink-0 flex-col gap-1.5'
+        } ${className}`}
         aria-label={`${list[0]?.label ?? ''}の音源`}
       >
         {list.map((track) => {
@@ -267,14 +284,18 @@ export function ListeningAudioPlayer({
                 onClick={() => toggle(track.subId)}
                 disabled={speechBlocked}
                 aria-label={`${track.label}（${track.hint}）の音源を${isPlaying ? '停止' : '再生'}`}
-                className={`flex min-h-[3rem] w-[4.5rem] flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 font-bold shadow-sm transition-all sm:w-20 ${
+                className={`flex items-center justify-center rounded-xl border-2 font-bold shadow-sm transition-all ${
+                  isRow
+                    ? 'min-h-[3rem] min-w-[6rem] flex-1 flex-row gap-1.5 px-3 py-2'
+                    : 'min-h-[3rem] w-[4.5rem] flex-col gap-0.5 px-1 py-1.5 sm:w-20'
+                } ${
                   speechBlocked
                     ? 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400'
                     : `cursor-pointer ${isPlaying ? activeBtnClass : idleBtnClass}`
                 }`}
               >
                 {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-                <span className="text-[10px] leading-none">
+                <span className={isRow ? 'text-[13px] leading-none' : 'text-[10px] leading-none'}>
                   {isPlaying ? '停止' : '再生'}
                 </span>
               </button>
@@ -286,7 +307,11 @@ export function ListeningAudioPlayer({
                   onClick={() => play(track.subId, true)}
                   disabled={speechBlocked}
                   aria-label={`${track.label} を本番と同じように2回続けて再生`}
-                  className={`flex min-h-[2rem] w-[4.5rem] items-center justify-center gap-1 rounded-lg border px-1 py-1 text-[10px] font-bold transition-colors sm:w-20 ${
+                  className={`flex items-center justify-center gap-1 rounded-lg border font-bold transition-colors ${
+                    isRow
+                      ? 'min-h-[2.75rem] min-w-[4.25rem] px-3 py-1.5 text-[12px]'
+                      : 'min-h-[2rem] w-[4.5rem] px-1 py-1 text-[10px] sm:w-20'
+                  } ${
                     speechBlocked
                       ? 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400'
                       : `cursor-pointer ${idleBtnClass}`
@@ -299,7 +324,11 @@ export function ListeningAudioPlayer({
               {/* 読み上げ非対応端末では「なぜ押せないか」を必ず伝える。
                   上部パネルを廃止したので、この注記もインライン側に持つ。 */}
               {speechBlocked && (
-                <p className={`w-[4.5rem] text-[9px] font-bold leading-tight sm:w-20 ${subTextClass}`}>
+                <p
+                  className={`text-[9px] font-bold leading-tight ${
+                    isRow ? 'w-full' : 'w-[4.5rem] sm:w-20'
+                  } ${subTextClass}`}
+                >
                   この端末は読み上げ非対応
                 </p>
               )}
@@ -308,7 +337,11 @@ export function ListeningAudioPlayer({
                   上部パネルを廃止したため、ここが唯一の速度切替になる。
                   幅を取らないよう2段の細いボタンにする。 */}
               <div
-                className="flex w-[4.5rem] flex-col gap-1 sm:w-20"
+                className={
+                  isRow
+                    ? 'flex flex-row gap-1.5'
+                    : 'flex w-[4.5rem] flex-col gap-1 sm:w-20'
+                }
                 role="group"
                 aria-label="再生速度"
               >
@@ -318,9 +351,11 @@ export function ListeningAudioPlayer({
                     type="button"
                     onClick={() => setRate(r)}
                     aria-pressed={rate === r}
-                    className={`min-h-[1.75rem] rounded-lg border px-1 py-0.5 text-[10px] font-bold transition-colors cursor-pointer ${
-                      rate === r ? activeBtnClass : idleBtnClass
-                    }`}
+                    className={`rounded-lg border font-bold transition-colors cursor-pointer ${
+                      isRow
+                        ? 'min-h-[2.75rem] min-w-[3.5rem] px-2.5 py-1 text-[12px]'
+                        : 'min-h-[1.75rem] px-1 py-0.5 text-[10px]'
+                    } ${rate === r ? activeBtnClass : idleBtnClass}`}
                   >
                     {r === 1 ? '標準' : '0.75倍'}
                   </button>

@@ -77,6 +77,25 @@ interface ExplanationProps {
    *   省略時は従来どおり章の全問を振り返る（化学基礎・化学は従来のまま）。
    */
   questionRange?: { startIndex: number; endIndex: number } | null;
+  /**
+   * 「いま解いた1問（小問）」のID。
+   *
+   * ■ 何のために足したのか（ご要望）
+   *   「問1で1つの進捗、問2で1つの進捗みたいな感じにしてほしい。だから解説も修正な」
+   *
+   *   リスニングは1画面＝1問（問1だけ／問2だけ）にしたので、
+   *   その直後の解説にも問1〜問4の答えが全部並んでいると、
+   *   まだ解いていない問2以降の正解まで見えてしまい、
+   *   進捗を1問ずつに分けた意味が無くなる。
+   *   このIDが渡されたときは、その小問だけを
+   *   ・設問一覧
+   *   ・音源（復習用スクリプト）
+   *   ・採点結果／解説アコーディオン
+   *   に絞り込む。
+   *
+   *   省略時は従来どおり大問まるごとの解説（化学基礎・化学はこちら）。
+   */
+  focusSubQuestionId?: string | null;
 }
 
 import { NodeData } from './InteractiveTree';
@@ -114,7 +133,7 @@ const getDifficulty = (sqId: string) => {
   return 1;
 };
 
-export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView, scoreBreakdown, scoreMeta, totalScore, runningCombo, resultTotalScore, resultTotalCorrect, resultTotalJudgeable, resultTotalTimeSec, questionRange }: ExplanationProps) {
+export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView, scoreBreakdown, scoreMeta, totalScore, runningCombo, resultTotalScore, resultTotalCorrect, resultTotalJudgeable, resultTotalTimeSec, questionRange, focusSubQuestionId }: ExplanationProps) {
   const isPracticeMode = initialMode === 'practice';
   // Virtual mode is always 'mini_test' for bright style choices!
   const mode = 'mini_test';
@@ -180,12 +199,45 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   }, [questionRange, allQuestions.length]);
 
   const questions = useMemo(() => {
-    if (singleQuestionIndex !== undefined) return [allQuestions[singleQuestionIndex]];
-    if (!questionRange) return allQuestions;
-    const last = Math.max(0, allQuestions.length - 1);
-    const end = Math.min(Math.max(rangeOffset, questionRange.endIndex), last);
-    return allQuestions.slice(rangeOffset, end + 1);
-  }, [allQuestions, singleQuestionIndex, questionRange, rangeOffset]);
+    const picked = (() => {
+      if (singleQuestionIndex !== undefined) return [allQuestions[singleQuestionIndex]];
+      if (!questionRange) return allQuestions;
+      const last = Math.max(0, allQuestions.length - 1);
+      const end = Math.min(Math.max(rangeOffset, questionRange.endIndex), last);
+      return allQuestions.slice(rangeOffset, end + 1);
+    })();
+
+    /*
+      ご要望「問1で1つの進捗、問2で1つの進捗…だから解説も修正な」への対応。
+      ─────────────────────────────────────────────────────────
+      focusSubQuestionId が指定されているときは、
+      「いま解いた1問」だけを持つ大問オブジェクトに差し替える。
+      subQuestions を絞るだけなので、解説本文・音源・図など
+      他のフィールドは元のまま。解説の描画コードは全て
+      question.subQuestions を辿るので、ここ1か所で
+        ・設問一覧
+        ・採点結果（正解 n / 不正解 n）
+        ・小問アコーディオン
+        ・復習用の音源リスト
+      がすべて「その問だけ」に揃う。
+      該当IDが無い場合は絞り込まない（安全側に倒す）。
+    */
+    if (!focusSubQuestionId) return picked;
+    return picked.map((q: any) => {
+      const subs: any[] = Array.isArray(q?.subQuestions) ? q.subQuestions : [];
+      const hit = subs.filter((sq: any) => sq?.id === focusSubQuestionId);
+      if (hit.length === 0) return q;
+      const tracks: any[] = Array.isArray(q?.audioTracks) ? q.audioTracks : [];
+      const focusedTracks = tracks.filter((t: any) => t?.subId === focusSubQuestionId);
+      return {
+        ...q,
+        subQuestions: hit,
+        // 音源も「その問のトラックだけ」にする。復習で問1〜問4の
+        // スクリプトが全部開けると、未着手の問の答えが読めてしまう。
+        audioTracks: focusedTracks.length > 0 ? focusedTracks : tracks,
+      };
+    });
+  }, [allQuestions, singleQuestionIndex, questionRange, rangeOffset, focusSubQuestionId]);
 
   // 要件①：「この単元の思考の型」の本文。単元（章）に紐づくので問題ごとには作らない。
   // 内容・表現・順番・解説は従来と1文字も変えていない（エンジン側の buildUnitKataBlock がそのまま組む）。

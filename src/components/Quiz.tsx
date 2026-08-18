@@ -27,7 +27,13 @@ import { answerCardMarker, buildSubQuestionList, splitQuestionLabel } from '../u
 import {
   buildListeningOptionTexts,
   stripListeningQuestionBlocks,
+  stripListeningHowToBlocks,
 } from '../utils/listeningOptions';
+import {
+  buildListeningSteps,
+  isPerSubQuestionListening,
+  stepScoreKey,
+} from '../utils/listeningSteps';
 import { useIsDesktop } from '../hooks/useMediaQuery';
 import { auth } from '../firebase';
 
@@ -72,6 +78,17 @@ interface ChapterRunState {
   totalScore: number;
   runningCombo: number;
   perQuestion: Record<string, ScoreBreakdown & { timeLimit: number; timeUsed: number }>;
+  /**
+   * 「1問ずつ」解くリスニング用の採点記録。キーは `大問ID::小問ID`。
+   *
+   * perQuestion と分けている理由：
+   *   perQuestion のキーは「大問ID」である前提で、進捗の引き継ぎ
+   *   （progress.ts の backfillLegacyProgress）がキーを大問IDとして数える。
+   *   小問単位のキーを混ぜると存在しない大問を「解いた」と数えてしまうため、
+   *   別のフィールドに置いて既存の集計を汚さないようにしている。
+   *   古い保存データには無いフィールドなので任意項目にしている。
+   */
+  perStep?: Record<string, ScoreBreakdown & { timeLimit: number; timeUsed: number }>;
   totalCorrect: number;
   totalJudgeable: number;
   totalTimeSec: number;
@@ -89,6 +106,7 @@ function loadRun(chapterId: string, mode: string): ChapterRunState {
     totalScore: 0,
     runningCombo: 0,
     perQuestion: {},
+    perStep: {},
     totalCorrect: 0,
     totalJudgeable: 0,
     totalTimeSec: 0,
@@ -468,9 +486,27 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     return localStorage.getItem(`quiz_expl_${chapter.id}_${mode}`) === 'true';
   });
 
+  /**
+   * リスニングで「いま大問（回）の中の何問目を解いているか」（0始まり）。
+   *
+   * ご要望：
+   *   > 問1で1つの進捗、問2で1つの進捗みたいな感じにしてほしい。
+   *
+   * 大問そのもの（第N回演習）は分割していないので `currentQuestionIndex` は
+   * これまでどおり「回」を指す。その中の何問目かをこの state が持つ。
+   * 中断して戻ってきたときに問1からやり直しにならないよう端末に保存する。
+   */
+  const [stepIndex, setStepIndex] = useState(() => {
+    return parseInt(localStorage.getItem(`quiz_step_${chapter.id}_${mode}`) || '0', 10);
+  });
+
   useEffect(() => {
     localStorage.setItem(`quiz_answers_${chapter.id}_${mode}`, JSON.stringify(answers));
   }, [answers, chapter.id, mode]);
+
+  useEffect(() => {
+    localStorage.setItem(`quiz_step_${chapter.id}_${mode}`, stepIndex.toString());
+  }, [stepIndex, chapter.id, mode]);
 
   useEffect(() => {
     localStorage.setItem(`quiz_idx_${chapter.id}_${mode}`, currentQuestionIndex.toString());
@@ -1217,10 +1253,56 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   }
 
   const currentQuestion = questions[currentQuestionIndex];
+
+  // ────────────────────────────────────────────────────────────────
+  // リスニング：1画面＝1問（ご要望「問1で1つの進捗、問2で1つの進捗」）
+  // ────────────────────────────────────────────────────────────────
+  //
+  // `perStep` が true のときは、大問（回）の中の小問を1問ずつ見せる。
+  // 化学など音源を持たない問題は false になり、これまでどおり
+  // 大問まるごと1画面（(1)〜(4)を並べて表示）のまま。
+  const perStep = isPerSubQuestionListening(currentQuestion);
+  const listeningSteps = perStep ? buildListeningSteps(currentQuestion) : [];
+  /** 範囲外を指さないよう丸めた、いま表示している問の位置 */
+  const safeStepIndex = perStep
+    ? Math.min(Math.max(0, stepIndex), Math.max(0, listeningSteps.length - 1))
+    : 0;
+  /** いま表示している小問（1問ずつモードのときだけ中身が入る） */
+  const activeStepSub = perStep
+    ? (currentQuestion.subQuestions || [])[safeStepIndex] ?? null
+    : null;
+  /** この回の最後の問まで来たか */
+  const isLastStep = !perStep || safeStepIndex >= listeningSteps.length - 1;
+
+  /**
+   * 進捗ピルの分子・分母。
+   *
+   * ・1問ずつモード（リスニング）… その回の中の「問」を数える（例 2/4）
+   * ・従来モード（化学など）      … 範囲内の「大問」を数える（例 3/14）
+   *
+   * 回をまたぐ通し番号にはしていない。1回＝4問と短いので、
+   * 「この回のどこまで来たか」が分かるほうが達成感につながる。
+   */
+  const progressTotal = perStep ? listeningSteps.length : rangeCount;
+  const progressPosition = perStep ? safeStepIndex + 1 : rangePosition;
+
+  /**
+   * 「前へ」を押せるか。
+   *
+   * 1問ずつモードでは、回の先頭（問1）にいても
+   * まだ前の回が範囲内にあるなら戻れる。逆に範囲の先頭の問1では
+   * 戻る先が無いのでボタンを無効にする（押しても何も起きないボタンを
+   * 押せる状態にしておくと、壊れているように見えるため）。
+   */
+  const canGoPrevious = showingExplanation
+    ? true
+    : (perStep && safeStepIndex > 0) || currentQuestionIndex > rangeStart;
+
   // 「最後の問題か」＝範囲の終わりに来たか。
   // 章の最終問ではなく範囲の終わりで判定することで、
   // 1回分（例：第3回演習）を解き終えた時点でちゃんと結果画面へ進める。
-  const isLastQuestion = currentQuestionIndex >= rangeEnd;
+  // 1問ずつモードでは「範囲の最後の回」かつ「その回の最後の問」で完了とする。
+  const isLastQuestion = currentQuestionIndex >= rangeEnd && isLastStep;
 
   // visualViewport の resize ハンドラ（マウント時登録・依存なし）から
   // 最新の currentQuestion を参照するための ref。
@@ -1270,6 +1352,24 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     });
     return list;
   }, [currentQuestion]);
+
+  /**
+   * 解答欄に実際に描画するグループ一覧。
+   *
+   * ご要望「問1で1つの進捗、問2で1つの進捗みたいな感じにしてほしい」に対応し、
+   * 1問ずつモード（perStep）では、いま解いている問だけを解答欄に出す。
+   * 以前は問1〜問4のカードが4枚縦に並んでいたため、
+   * 「今どれを解いているのか」が分からず、スマホでは選択肢まで
+   * スクロールが必要だった。
+   *
+   * 化学など従来の問題（perStep=false）は groupedSubQuestions をそのまま使う。
+   */
+  const visibleGroupedSubQuestions = useMemo(() => {
+    if (!perStep || !activeStepSub) return groupedSubQuestions;
+    return groupedSubQuestions.filter((g: any) =>
+      (g.items || []).some((sq: any) => sq?.id === activeStepSub.id),
+    );
+  }, [groupedSubQuestions, perStep, activeStepSub]);
 
   // ────────────────────────────────────────────────────────────────
   // 要件1（解答入力方式）／要件4（化学記号パレットの出し分け）用の派生値
@@ -1412,11 +1512,35 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
    */
   const scoreCurrentQuestionIfNeeded = () => {
     if (!currentQuestion) return null;
-    if (run.perQuestion[currentQuestion.id]) return null;
-    if (lastScoredQuestionRef.current === currentQuestion.id) return null;
-    lastScoredQuestionRef.current = currentQuestion.id;
 
-    const subQuestions = currentQuestion.subQuestions || [];
+    // ────────────────────────────────────────────────────────────────
+    // 採点の単位（ご要望「問1で1つの進捗、問2で1つの進捗」）
+    // ────────────────────────────────────────────────────────────────
+    //
+    // ・1問ずつモード（リスニング）… いま表示している1問だけを採点する。
+    //     「解答と解説を見る」を押すたびにその問の点が出るので、
+    //     4問まとめて採点されて何が合っていたのか分からない状態を解消する。
+    // ・従来モード（化学など）      … 大問の全小問をまとめて採点する。
+    //
+    // 二重採点のガードも単位に合わせる。大問IDだけで見ていると、
+    // 1問ずつモードでは問1を採点した時点で問2〜問4が
+    // 「もう採点済み」と判定されて0点のまま飛ばされてしまう。
+    const scoringKey = perStep && activeStepSub
+      ? stepScoreKey(currentQuestion.id, activeStepSub.id)
+      : currentQuestion.id;
+
+    if (perStep) {
+      if (run.perStep?.[scoringKey]) return null;
+    } else if (run.perQuestion[scoringKey]) {
+      return null;
+    }
+    if (lastScoredQuestionRef.current === scoringKey) return null;
+    lastScoredQuestionRef.current = scoringKey;
+
+    // 採点対象の小問。1問ずつモードでは表示中の1問だけ。
+    const subQuestions = perStep && activeStepSub
+      ? [activeStepSub]
+      : (currentQuestion.subQuestions || []);
     const timeUsed = Math.max(0, Math.round(timeUsedRef.current));
     const maxCombo = calcMaxCombo(subQuestions, answers);
     const breakdown = scoreProblem(subQuestions, answers, {
@@ -1436,6 +1560,15 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       breakdown.judgeableCount > 0 && breakdown.correctCount === breakdown.judgeableCount;
     const nextRunningCombo = isAllCorrect ? run.runningCombo + 1 : 0;
 
+    // 採点済みの記録先。
+    //
+    // ★1問ずつモードの記録は perQuestion に入れない★
+    //   perQuestion のキーは「大問ID」であることを前提に、
+    //   進捗の引き継ぎ処理（progress.ts の backfillLegacyProgress）が
+    //   キーをそのまま大問IDとして数えている。ここに小問単位のキーを混ぜると
+    //   存在しない大問を「解いた」と数えて進捗が分母を超えてしまう。
+    //   そのため小問単位は perStep という別の入れ物に分ける。
+    const scoreRecord = { ...finalBreakdown, timeLimit: questionTimeLimit, timeUsed };
     const nextRun: ChapterRunState = {
       ...run,
       totalScore: run.totalScore + boostedScore,
@@ -1443,10 +1576,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       totalCorrect: run.totalCorrect + breakdown.correctCount,
       totalJudgeable: run.totalJudgeable + breakdown.judgeableCount,
       totalTimeSec: run.totalTimeSec + timeUsed,
-      perQuestion: {
-        ...run.perQuestion,
-        [currentQuestion.id]: { ...finalBreakdown, timeLimit: questionTimeLimit, timeUsed },
-      },
+      perQuestion: perStep
+        ? run.perQuestion
+        : { ...run.perQuestion, [scoringKey]: scoreRecord },
+      perStep: perStep
+        ? { ...(run.perStep || {}), [scoringKey]: scoreRecord }
+        : run.perStep,
     };
     setRun(nextRun);
     saveRun(chapter.id, mode, nextRun);
@@ -1456,6 +1591,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     // quiz_answers_* も章に入り直すと消えるため、
     // 「採点したこの瞬間」に別台帳（solved_problems_v1_*）へ追記しておく。
     // こうしないと、やり切った章ほど進捗から消えるという逆転が起きる。
+    //
+    // ★1問ずつモードでも記録の単位は「大問（回）」のまま★
+    //   画面の進み方を問単位にしても、台帳のキーは `章ID::大問ID` を変えない。
+    //   ここを小問単位に変えると、ホームの分母（章あたり14問・15問）と
+    //   分子の単位が食い違い、これまでの学習記録も全部「未着手」に戻ってしまう。
+    //   ご要望は「解き方・見え方」の話なので、記録の互換性は保つ。
     try {
       const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
       markProblemSolved(uid, chapter.id, currentQuestion.id, boostedScore);
@@ -1549,8 +1690,17 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       setShowingExplanation(true);
       if (onExplanationChange) onExplanationChange(true);
     } else {
-      if (!isLastQuestion) {
+      // ★1問ずつモード：まず同じ回の次の問へ進む★
+      // 問1の解説 →「次へ」→ 問2 → … と進み、その回の4問を終えてから
+      // 次の回（または結果画面）へ移る。
+      if (perStep && !isLastStep) {
+        setStepIndex(safeStepIndex + 1);
+        setShowingExplanation(false);
+        if (onExplanationChange) onExplanationChange(false);
+      } else if (!isLastQuestion) {
         setCurrentQuestionIndex(prev => prev + 1);
+        // 次の回は必ず問1から始める。
+        setStepIndex(0);
         setShowingExplanation(false);
         if (onExplanationChange) onExplanationChange(false);
       } else {
@@ -1570,11 +1720,24 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     if (showingExplanation) {
       setShowingExplanation(false);
       if (onExplanationChange) onExplanationChange(false);
+    } else if (perStep && safeStepIndex > 0) {
+      // ★1問ずつモード：同じ回の1つ前の問（の解説）へ戻る★
+      // 問3を解いている途中で「問2の答えをもう一度見たい」という戻り方を
+      // 回をまたがずにできるようにする。
+      setStepIndex(safeStepIndex - 1);
+      setShowingExplanation(true);
+      if (onExplanationChange) onExplanationChange(true);
     } else if (currentQuestionIndex > rangeStart) {
       // 「前へ」で今回の範囲より前（別の回）へは戻さない。
       // 選んだ回だけを解いているのに前の回が出てくると、
       // どの回を解いているのか分からなくなるため。
       setCurrentQuestionIndex(prev => prev - 1);
+      // 前の回に戻るときは、その回の最後の問から見えるようにする。
+      const prevQuestion = questions[currentQuestionIndex - 1];
+      const prevSteps = isPerSubQuestionListening(prevQuestion)
+        ? buildListeningSteps(prevQuestion)
+        : [];
+      setStepIndex(prevSteps.length > 0 ? prevSteps.length - 1 : 0);
       setShowingExplanation(true);
       if (onExplanationChange) onExplanationChange(true);
     }
@@ -1622,7 +1785,17 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   };
 
   if (showingExplanation) {
-    const stored = run.perQuestion[currentQuestion?.id];
+    /*
+      解説に渡すスコア。
+      ─────────────────────────────────────────────
+      1問ずつモード（リスニング）では、採点も「問ごと」に
+      run.perStep へ記録している（run.perQuestion は大問単位の台帳のまま）。
+      解説画面のスコア表示もその問の記録を出さないと、
+      「問2を解いたのに問1の点数が出る」ことになる。
+    */
+    const stored = perStep && activeStepSub
+      ? run.perStep?.[stepScoreKey(currentQuestion.id, activeStepSub.id)]
+      : run.perQuestion[currentQuestion?.id];
     return (
       <>
         <Explanation 
@@ -1635,6 +1808,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           onNextQuestion={handleNext}
           isLastQuestion={isLastQuestion}
           isMobileView={isMobileForExplanation}
+          /* ご要望「だから解説も修正な」：1問ずつ解いたのだから、
+             解説もその問だけに絞る（問2以降の正解が先に見えないようにする）。 */
+          focusSubQuestionId={perStep && activeStepSub ? activeStepSub.id : null}
           scoreBreakdown={stored || null}
           scoreMeta={stored ? { timeLimit: stored.timeLimit, timeUsed: stored.timeUsed } : null}
           totalScore={run.totalScore}
@@ -1705,11 +1881,17 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             {/* 分母は「今回解く範囲の問題数」。
                 1回分（例：第3回演習）だけを選んで解いているときに
                 章全体の 14 が分母になると、あと13回残っているように見えて
-                いつまでも終わらない印象になるため。 */}
+                いつまでも終わらない印象になるため。
+
+                ★リスニング（1問ずつモード）では「問」を数える★
+                ご要望「問1で1つの進捗、問2で1つの進捗」に合わせ、
+                4問ある回では 1/4 → 2/4 → 3/4 → 4/4 と動く。
+                以前は4問まとめて1件だったので 1/1 のまま動かず、
+                解いた実感がまったく残らなかった。 */}
             <div className="font-mono font-bold text-[#2C3E50] text-xs md:text-base">
-              <span className="text-sm md:text-lg">{rangePosition}</span>
+              <span className="text-sm md:text-lg">{progressPosition}</span>
               <span className="text-gray-400 mx-1">/</span>
-              <span>{rangeCount}</span>
+              <span>{progressTotal}</span>
             </div>
           </div>
         </div>
@@ -1744,13 +1926,35 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       />
 
 
-      {/* Main Content Area (Split on Desktop, Stacked on Mobile) */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+      {/* Main Content Area (Split on Desktop, Stacked on Mobile)
+
+          ★英語リスニング（listeningUnified）のスマホ表示は上下を入れ替える（ご要望）
+          ------------------------------------------------------------------
+          ご要望：
+            「問題文はスマホでスクロールとかしなくても選択肢の英文と図が
+              一目に映るようにしてほしい。だから、選択肢の英文と図は
+              スマホだったら上に持ってきて、パソコンだったら右に持ってきてほしい」
+
+          PC では従来どおり「問題文＝左 / 解答（選択肢の英文・図）＝右」なので
+          すでにご要望どおり。一方スマホでは解答ペインが下に来るため、
+          選択肢まで届くのにスクロールが必要だった。
+          そこで flex-col-reverse で解答ペインを上（＝最初の画面）に出し、
+          共通リード文（問題文）を下へ回す。
+          リスニング以外（化学など）は従来の flex-col のままなので影響しない。 */}
+      <div className={`flex-1 flex ${listeningUnified ? 'flex-col-reverse' : 'flex-col'} lg:flex-row overflow-hidden relative`}>
 
         {/* Section 1: Problem Text */}
+        {/* リスニングではリード文（指示文）だけなので、スマホでの高さ上限を
+            50vh → 30vh に絞り、上側の解答ペインに画面を明け渡す。
+            PC も左ペインを 58% → 46% に狭め、右ペインで英文4つ／図が
+            スクロールなしで収まるようにする。 */}
         <div className={`
-          lg:w-[58%] flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
-          ${isDesktop ? 'h-full' : (isProblemExpanded ? 'absolute inset-0 z-30 h-full shadow-lg' : 'max-h-[50vh] h-auto shadow-md relative z-20')}
+          ${listeningUnified ? 'lg:w-[46%]' : 'lg:w-[58%]'} flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
+          ${isDesktop
+            ? 'h-full'
+            : (isProblemExpanded
+              ? 'absolute inset-0 z-30 h-full shadow-lg'
+              : `${listeningUnified ? 'max-h-[30vh]' : 'max-h-[50vh]'} h-auto shadow-md relative z-20`)}
         `}>
           <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
             <div className="flex items-center gap-2 md:gap-3">
@@ -1786,17 +1990,6 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             title="テキストを選択するとハイライトできます"
           >
             <div className="max-w-prose md:max-w-none">
-              {/*
-                ★英語リスニング：画面上部の「音源を聞く」パネルは置かない（ご要望）
-                ------------------------------------------------------------------
-                以前はここに問1〜問4の再生ボタン・もう1回・2回続けて・速度切替を
-                まとめたパネルがあった。しかし1問ごとの再生ボタンは解答カードの
-                横にも出しているため、同じ機能が2か所に並び
-                「どちらを押せばよいか」が分からない状態になっていた。
-                そこでパネルを廃止し、再生も速度切替も
-                「解いている問のすぐ横」の1か所に集約している。
-                （速度切替は ListeningAudioPlayer の inline バリアントへ移設済み）
-              */}
               {/* 問題文に含まれる Markdown テーブル（実験結果の表など）は
                   ExplanationBody を通して本物の <table> として描画する。
 
@@ -1804,11 +1997,20 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     出すので、左ペインからは問N 以降のブロックを落とす。
                     同じ文が2か所に出ると「どちらが本物か」を確かめる手間が生まれ、
                     問題文と解答欄が分離しているように見えてしまうため。
+
+                  ★さらに【音源の聞き方】【解き方のコツ】のような定型の説明ブロックも
+                    落とす（ご要望：「いまこの音源の聞き方とかはもういらないので、
+                    問題をつけた今のこの上場面に4つの英文がしっかりと映るもしくは、
+                    図がしっかりと映るようにしてほしい」）。
+                    これらは毎回同じ文面で、スマホでは選択肢を画面外に押し出す
+                    だけの存在になっていた。
                     リスニング以外（listeningUnified=false）は従来どおり全文。 */}
               <ExplanationBody
                 text={
                   listeningUnified
-                    ? stripListeningQuestionBlocks(cleanQuestionText(currentQuestion.text))
+                    ? stripListeningHowToBlocks(
+                        stripListeningQuestionBlocks(cleanQuestionText(currentQuestion.text)),
+                      )
                     : cleanQuestionText(currentQuestion.text)
                 }
                 highlights={combinedHighlights}
@@ -1875,10 +2077,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             スクロールでの問題送りは発生しない。問題送りは固定バーの前へ/次へのみ。 */}
         {/* 下部余白：入力欄の拡大でフローティング解答バーが高くなったため、
             最後の解答カードがバーに隠れないよう 6rem → 9rem に広げる。 */}
-        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 ${isDesktop ? 'pb-8' : 'pb-[calc(9rem+env(safe-area-inset-bottom))]'} relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
+        <div className={`${listeningUnified ? 'lg:w-[54%]' : 'lg:w-[42%]'} flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 ${isDesktop ? 'pb-8' : 'pb-[calc(9rem+env(safe-area-inset-bottom))]'} relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
             <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
-            {groupedSubQuestions.map((g: any, gIdx: number) => {
+            {visibleGroupedSubQuestions.map((g: any, gIdx: number) => {
               if (g.type === 'group') {
                 return (
                   <div key={`group-${gIdx}`} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 hover:border-[#A9CCE3]/50 transition-all duration-250 flex flex-col gap-4">
@@ -1969,26 +2171,23 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
                 }`}>
                   {/*
-                    ★英語リスニング：1問とその再生ボタンを「横」に並べる（ご要望）
+                    ★リスニング：カード内を「上＝問題／下＝解答」の2ブロックに分ける
                     ------------------------------------------------------------
-                    以前は問1〜問4の再生ボタンが問題文ペインの上部に1か所だけあり、
-                    解答するときに「今どの問を聞くのか」を目で探す必要があった。
-                    そこで、その設問に対応するトラックがある場合だけ、
-                    解答カードの左側に「その問専用の再生ボタン」を縦に細く置き、
-                    設問マーカー・選択肢と横並びにする。
-                    音源を持たない教科（化学など）では列が生えないので影響しない。
+                    ご要望：
+                      「後音源はその画面の上側の問題のところに設置すること。
+                        選択肢のところに設置しても押しずらい」
+                      「図は選択肢のところに載せるのやめよう。見にくい」
+
+                    以前は再生ボタンを幅 4.5rem の細い縦列にして選択肢の左に
+                    差し込んでいたため、ボタンが小さくて押しにくく、
+                    図も①〜④のチップに挟まれて見づらかった。
+                    そこで、このカードの上部に「問題ブロック」を新設し、
+                      問N ＋ 設問文 ＋ 音源（横帯）＋ 図
+                    をまとめる。選択肢は、そのすぐ下の「解答ブロック」に置く。
+                    スマホではこのペイン自体が画面の上側に来る（flex-col-reverse）
+                    ため、開いた瞬間に「音源・図・英文4つ」が1画面に収まる。
                   */}
-                  <div className={hasTrackFor(sq.id) ? 'flex flex-row items-start gap-3' : 'contents'}>
-                    {hasTrackFor(sq.id) && (
-                      <ListeningAudioPlayer
-                        tracks={listeningTracks}
-                        focusSubId={sq.id}
-                        variant="inline"
-                        mode="practice"
-                        tone="light"
-                        readCount={(currentQuestion as any).readCount || 2}
-                      />
-                    )}
+                  <div className="contents">
                   <div className="flex flex-col gap-3.5 w-full min-w-0">
                     {/*
                       ★英語リスニング：設問文もこのカードに出す（ご要望）
@@ -2013,9 +2212,28 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     })()}
 
                     {/*
-                      第1問B（イラスト選択）用：この設問のイラストをカード内に出す。
-                      ①〜④が1枚に収まった画像なので、選択肢チップの真上に置くと
-                      「絵を見ながらマークする」動きが最短になる。
+                      音源（この問専用）。設問文の直下＝「問題のところ」に横帯で置く。
+                      横帯にすることで 再生 / 2回 / 0.75倍 / 標準 のどれも
+                      44px 級のタップ領域を確保できる。
+                    */}
+                    {hasTrackFor(sq.id) && (
+                      <div className="rounded-xl border border-[#A9CCE3]/30 bg-blue-50/40 p-2.5">
+                        <ListeningAudioPlayer
+                          tracks={listeningTracks}
+                          focusSubId={sq.id}
+                          variant="inline"
+                          orientation="horizontal"
+                          mode="practice"
+                          tone="light"
+                          readCount={(currentQuestion as any).readCount || 2}
+                        />
+                      </div>
+                    )}
+
+                    {/*
+                      第1問B（イラスト選択）用：この設問のイラスト。
+                      選択肢チップの中ではなく、この「問題ブロック」に置く（ご要望）。
+                      さらに高さ上限を付けて、図と選択肢が同時に1画面へ収まるようにする。
                     */}
                     {sq.imageUrl && (
                       <QuestionFigure
@@ -2023,6 +2241,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         caption={sq.imageCaption}
                         tone="light"
                         className="w-full"
+                        imgClassName="max-h-[34vh] object-contain"
                       />
                     )}
                     
@@ -2183,11 +2402,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               <div className="pt-6 border-t border-gray-200/60 flex items-center justify-between gap-3">
                 <button
                   onClick={handlePrevious}
-                  disabled={currentQuestionIndex === 0}
+                  disabled={!canGoPrevious}
                   title="前の問題へ（←キー）"
                   aria-label="前の問題へ"
                   className={`flex items-center justify-center p-2.5 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer
-                    ${currentQuestionIndex === 0 
+                    ${!canGoPrevious 
                       ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50' 
                       : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white bg-white shadow-sm'}`}
                 >
@@ -2225,11 +2444,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
             <button
               onClick={handlePrevious}
-              disabled={currentQuestionIndex === 0}
+              disabled={!canGoPrevious}
               title="前の問題へ"
               aria-label="前の問題へ"
               className={`flex items-center justify-center p-3 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer
-                ${currentQuestionIndex === 0
+                ${!canGoPrevious
                   ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50'
                   : 'border-[#A9CCE3] text-[#A9CCE3] active:bg-[#A9CCE3] active:text-white bg-white shadow-sm'}`}
             >
@@ -2344,22 +2563,27 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             {focusedSub.type === 'multiple_choice' ? (
               <div className="max-h-[46vh] overflow-y-auto py-1">
                 {/*
-                  ★英語リスニング（スマホ）：この問の再生ボタンを選択肢の「横」に置く。
-                  スマホでは画面幅が狭いので、PC と同じ左列レイアウトを踏襲しつつ
-                  ボタン列を細く（4.5rem）保ち、選択肢が潰れないようにしている。
-                  第1問B ではイラストも同じパネル内に出し、
-                  「絵を見る → その場でマークする」を1画面で完結させる。
+                  ★英語リスニング（スマホ・固定パネル）
+                  ──────────────────────────────────────────────
+                  ご要望「音源はその画面の上側の問題のところに設置すること／
+                  選択肢のところに設置しても押しずらい」に合わせ、
+                  再生ボタンは選択肢の横（細い縦列）ではなく、
+                  パネル上部の横帯として置く。図も選択肢の中には入れず、
+                  音源のすぐ下＝「問題のところ」に高さ上限つきで出す。
                 */}
-                <div className={hasTrackFor(focusedSub.id) ? 'flex flex-row items-start gap-3' : 'contents'}>
+                <div className={hasTrackFor(focusedSub.id) ? 'flex flex-col items-stretch gap-3' : 'contents'}>
                   {hasTrackFor(focusedSub.id) && (
-                    <ListeningAudioPlayer
-                      tracks={listeningTracks}
-                      focusSubId={focusedSub.id}
-                      variant="inline"
-                      mode="practice"
-                      tone="light"
-                      readCount={(currentQuestion as any).readCount || 2}
-                    />
+                    <div className="rounded-xl border border-[#A9CCE3]/30 bg-blue-50/40 p-2">
+                      <ListeningAudioPlayer
+                        tracks={listeningTracks}
+                        focusSubId={focusedSub.id}
+                        variant="inline"
+                        orientation="horizontal"
+                        mode="practice"
+                        tone="light"
+                        readCount={(currentQuestion as any).readCount || 2}
+                      />
+                    </div>
                   )}
                   <div className="min-w-0 flex-1 flex flex-col gap-2">
                     {focusedSub.imageUrl && (
@@ -2368,6 +2592,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         caption={focusedSub.imageCaption}
                         tone="light"
                         className="w-full"
+                        imgClassName="max-h-[26vh] object-contain"
                       />
                     )}
                     {renderMultipleChoiceControl(focusedSub)}

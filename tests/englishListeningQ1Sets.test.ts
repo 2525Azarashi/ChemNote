@@ -11,6 +11,10 @@
  *   ⑤ 問題文（選択肢）と解答欄を分離せず、同じカードに並べて同期させる
  *   ⑥ 画面上部の「音源を聞く」パネルは置かない
  *   ⑦ 第1問B セット7〜15（36問）の選択肢はシャッフルして正解を散らす
+ *   ⑧ 進捗は「問1で1つ・問2で1つ」に分ける（回まるごと1進捗をやめる）
+ *   ⑨ 選択肢の英文と図はスマホでは上・PCでは右に置き、スクロールなしで一目に映す
+ *   ⑩ 図は選択肢の中に載せない（見にくい）。音源は問題ブロック（上側）に置く
+ *   ⑪ 【音源の聞き方】等の定型ブロックは問題文から落とす
  *
  * これらは別の修正で簡単に巻き戻る（音源パネルが復活する、
  * 消去モードが戻る、データの配線が外れる）ため、テストで固定する。
@@ -28,6 +32,7 @@ const read = (p: string) => fs.readFileSync(path.join(ROOT, p), 'utf-8');
 const QUIZ = read('src/components/Quiz.tsx');
 const PLAYER = read('src/components/ListeningAudioPlayer.tsx');
 const SPEECH = read('src/utils/listeningSpeech.ts');
+const FIGURE = read('src/components/QuestionFigure.tsx');
 
 const MARKS = ['①', '②', '③', '④'];
 
@@ -203,19 +208,34 @@ describe('単元への配線', () => {
 });
 
 // =====================================================================
-// ① 1問とその再生ボタンを横に配置する
+// ① 音源は「問題のところ（上側）」に横帯で置く
+//    ご要望：「後音源はその画面の上側の問題のところに設置すること。
+//              選択肢のところに設置しても押しずらい」
 // =====================================================================
-describe('解答画面：問ごとの再生ボタンが横に並ぶ', () => {
+describe('解答画面：音源は問題ブロックに横帯で置く', () => {
   it('ListeningAudioPlayer に inline バリアントがある', () => {
     expect(PLAYER).toContain("variant?: 'panel' | 'inline'");
     expect(PLAYER).toContain("const isInline = variant === 'inline'");
   });
 
-  it('解答カードで focusSubId + variant="inline" を使っている', () => {
+  it('inline に横並び（horizontal）の並べ方がある', () => {
+    expect(PLAYER).toContain("orientation?: 'vertical' | 'horizontal'");
+    expect(PLAYER).toContain("const isRow = isInline && orientation === 'horizontal'");
+  });
+
+  it('横帯モードではボタンが 44px 級のタップ領域を持つ（押しやすさ）', () => {
+    // 再生ボタン・2回ボタン・速度ボタンのいずれも min-h 2.75rem(44px) 以上。
+    expect(PLAYER).toContain("min-h-[3rem] min-w-[6rem] flex-1 flex-row");
+    expect(PLAYER).toContain("min-h-[2.75rem] min-w-[4.25rem]");
+    expect(PLAYER).toContain("min-h-[2.75rem] min-w-[3.5rem]");
+  });
+
+  it('解答カードで focusSubId + variant="inline" + horizontal を使っている', () => {
     expect(QUIZ).toContain('variant="inline"');
     expect(QUIZ).toContain('focusSubId={sq.id}');
-    // 横並びにするための flex-row
-    expect(QUIZ).toContain("'flex flex-row items-start gap-3'");
+    expect(QUIZ).toContain('orientation="horizontal"');
+    // 音源を選択肢の左に細く差し込む縦列レイアウトは廃止した
+    expect(QUIZ).not.toContain("'flex flex-row items-start gap-3'");
   });
 
   it('その設問に音源がある場合だけボタン列を出す（他科目に影響しない）', () => {
@@ -225,11 +245,19 @@ describe('解答画面：問ごとの再生ボタンが横に並ぶ', () => {
 
   it('スマホの固定パネルでも問ごとの再生ボタンを出す', () => {
     expect(QUIZ).toContain('focusSubId={focusedSub.id}');
+    // 固定パネルでも縦積み（音源が上・選択肢が下）にする
+    expect(QUIZ).toContain("'flex flex-col items-stretch gap-3'");
   });
 
-  it('第1問B のイラストを設問単位で描画している', () => {
+  it('第1問B のイラストは選択肢の中ではなく問題ブロックに置く（見にくさ解消）', () => {
+    // ご要望：「図は選択肢のところに載せるのやめよう。見にくい」
+    // 図自体は残すが、選択肢チップに挟まれない位置＝設問文・音源の直後に置き、
+    // 高さ上限を付けて選択肢と同時に1画面へ収める。
     expect(QUIZ).toContain('sq.imageUrl');
     expect(QUIZ).toContain('focusedSub.imageUrl');
+    expect(QUIZ).toContain('imgClassName="max-h-[34vh] object-contain"');
+    expect(QUIZ).toContain('imgClassName="max-h-[26vh] object-contain"');
+    expect(FIGURE).toContain('imgClassName');
   });
 });
 
@@ -306,9 +334,9 @@ describe('英語リスニング：問題文（選択肢）と解答欄が同じ�
 // =====================================================================
 // ④ 上部の「音源を聞く」パネルは置かない
 // =====================================================================
-describe('英語リスニング：上部の音源パネルを廃止した', () => {
+describe('英語リスニング：見出しつき音源パネル（panel）は使わない', () => {
   it('Quiz は panel バリアント（見出しつきパネル）を使っていない', () => {
-    // 解答カード横の inline バリアントのみを使う。
+    // 音源は問題ブロックの横帯（inline + horizontal）だけに置く。
     expect(QUIZ).not.toMatch(/<ListeningAudioPlayer(?![\s\S]{0,400}?variant="inline")/);
     const inlineCount = (QUIZ.match(/variant="inline"/g) || []).length;
     const playerCount = (QUIZ.match(/<ListeningAudioPlayer/g) || []).length;

@@ -139,3 +139,53 @@ export function stripListeningQuestionBlocks(text: string): string {
 
   return lines.slice(0, cut).join('\n').replace(/\n{3,}/gu, '\n\n').trim();
 }
+
+/**
+ * 解答中の画面から「操作の説明」の見出しブロックを落とす。
+ *
+ * ■ なぜ落とすのか（ご要望）
+ *     > いまこの音源の聞き方とかはもういらないので、
+ *     > 問題をつけた今のこの上場面に4つの英文がしっかりと映る
+ *     > もしくは、図がしっかりと映るようにしてほしい。
+ *     > スクロールしてわざわざ答えるのめんどい。
+ *
+ *   問題データのリード文には【音源の聞き方】【解き方のコツ】という
+ *   長い説明が入っている。初回は役に立つが、2回目以降は毎回同じ文章で、
+ *   しかも「選択肢の英文・イラスト」よりも上にあるため
+ *   スマホでは本題が画面の外に押し出されてしまっていた。
+ *   アプリの操作方法は画面を見れば分かる（再生ボタンは問の横にある）ので、
+ *   解答中の画面からは落とし、限られた1画面を選択肢と図に使う。
+ *
+ * ■ データは書き換えない
+ *   解説画面では問題文を全文見せたいので、元データには手を入れず
+ *   Quiz の表示時にだけこの整形を通す。
+ *
+ * ■ 落とす対象
+ *   「【…】で始まる行」から次の空行までを1ブロックとして扱う。
+ *   問題そのものの指示文（「①〜④のうちから1つずつ選びなさい」）は
+ *   【】で囲まれていないので残る。
+ */
+const DROPPED_LEAD_HEADINGS = ['音源の聞き方', '解き方のコツ'];
+
+export function stripListeningHowToBlocks(text: string): string {
+  const lines = String(text || '').split('\n');
+  const kept: string[] = [];
+  let dropping = false;
+
+  for (const line of lines) {
+    const heading = line.match(/^\s*【\s*([^】]+?)\s*】/u);
+    if (heading) {
+      // 落とす見出しに入ったらブロック終わり（空行）まで捨てる。
+      dropping = DROPPED_LEAD_HEADINGS.includes(heading[1].trim());
+      if (dropping) continue;
+    }
+    if (dropping) {
+      // 空行まで来たらブロックの終わり。空行自体は捨てて詰める。
+      if (line.trim() === '') dropping = false;
+      continue;
+    }
+    kept.push(line);
+  }
+
+  return kept.join('\n').replace(/\n{3,}/gu, '\n\n').trim();
+}
