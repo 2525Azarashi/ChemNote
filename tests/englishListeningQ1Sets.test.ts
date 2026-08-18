@@ -12,9 +12,13 @@
  *   ⑥ 画面上部の「音源を聞く」パネルは置かない
  *   ⑦ 第1問B セット7〜15（36問）の選択肢はシャッフルして正解を散らす
  *   ⑧ 進捗は「問1で1つ・問2で1つ」に分ける（回まるごと1進捗をやめる）
- *   ⑨ 選択肢の英文と図はスマホでは上・PCでは右に置き、スクロールなしで一目に映す
- *   ⑩ 図は選択肢の中に載せない（見にくい）。音源は問題ブロック（上側）に置く
+ *   ⑨ 選択肢の英文はスマホでは上・PCでは右に置き、スクロールなしで一目に映す
+ *   ⑩ 図は選択肢の中に載せない（見にくい）
  *   ⑪ 【音源の聞き方】等の定型ブロックは問題文から落とす
+ *   ⑫ 左ペインには「いま解いている問」だけを出す（問1〜問4をまとめない）
+ *   ⑬ 再生ボタンは左の問題文のところに置く（解答側に置かない）
+ *   ⑭ 図も問題の方（左側）に置く（解答側に置かない）
+ *   ⑮ 左右2画面の比（58% / 42%・50vh）は勝手に変えない
  *
  * これらは別の修正で簡単に巻き戻る（音源パネルが復活する、
  * 消去モードが戻る、データの配線が外れる）ため、テストで固定する。
@@ -208,11 +212,14 @@ describe('単元への配線', () => {
 });
 
 // =====================================================================
-// ① 音源は「問題のところ（上側）」に横帯で置く
+// ① 音源は「左の問題文のところ」に横帯で置く
 //    ご要望：「後音源はその画面の上側の問題のところに設置すること。
 //              選択肢のところに設置しても押しずらい」
+//    ご指摘（差し戻し）：「再生ボタンはさ、左の問題の文章のところに
+//              おいてほしいよね。何で解答の方に置くの？」
+//    → 音源・図は左ペイン（問題文）側に置き、解答カードには置かない。
 // =====================================================================
-describe('解答画面：音源は問題ブロックに横帯で置く', () => {
+describe('解答画面：音源は左（問題文）ペインに横帯で置く', () => {
   it('ListeningAudioPlayer に inline バリアントがある', () => {
     expect(PLAYER).toContain("variant?: 'panel' | 'inline'");
     expect(PLAYER).toContain("const isInline = variant === 'inline'");
@@ -230,33 +237,36 @@ describe('解答画面：音源は問題ブロックに横帯で置く', () => {
     expect(PLAYER).toContain("min-h-[2.75rem] min-w-[3.5rem]");
   });
 
-  it('解答カードで focusSubId + variant="inline" + horizontal を使っている', () => {
+  it('左ペインの問ブロックで focusSubId + variant="inline" + horizontal を使っている', () => {
     expect(QUIZ).toContain('variant="inline"');
-    expect(QUIZ).toContain('focusSubId={sq.id}');
+    expect(QUIZ).toContain('focusSubId={activeStepSub.id}');
     expect(QUIZ).toContain('orientation="horizontal"');
     // 音源を選択肢の左に細く差し込む縦列レイアウトは廃止した
     expect(QUIZ).not.toContain("'flex flex-row items-start gap-3'");
   });
 
-  it('その設問に音源がある場合だけボタン列を出す（他科目に影響しない）', () => {
+  it('その問に音源がある場合だけボタン列を出す（他科目に影響しない）', () => {
     expect(QUIZ).toContain('const hasTrackFor');
-    expect(QUIZ).toContain('hasTrackFor(sq.id)');
+    expect(QUIZ).toContain('hasTrackFor(activeStepSub.id)');
   });
 
-  it('スマホの固定パネルでも問ごとの再生ボタンを出す', () => {
-    expect(QUIZ).toContain('focusSubId={focusedSub.id}');
-    // 固定パネルでも縦積み（音源が上・選択肢が下）にする
-    expect(QUIZ).toContain("'flex flex-col items-stretch gap-3'");
+  it('解答カード・スマホ固定パネルには音源を置かない（ご指摘の反映）', () => {
+    // 「何で解答の方に置くの？」→ 解答側からは完全に取り除く。
+    expect(QUIZ).not.toContain('focusSubId={sq.id}');
+    expect(QUIZ).not.toContain('focusSubId={focusedSub.id}');
+    expect(QUIZ).not.toContain('hasTrackFor(sq.id)');
+    expect(QUIZ).not.toContain('hasTrackFor(focusedSub.id)');
   });
 
-  it('第1問B のイラストは選択肢の中ではなく問題ブロックに置く（見にくさ解消）', () => {
+  it('第1問B のイラストは問題の方（左側）に置く', () => {
     // ご要望：「図は選択肢のところに載せるのやめよう。見にくい」
-    // 図自体は残すが、選択肢チップに挟まれない位置＝設問文・音源の直後に置き、
-    // 高さ上限を付けて選択肢と同時に1画面へ収める。
-    expect(QUIZ).toContain('sq.imageUrl');
-    expect(QUIZ).toContain('focusedSub.imageUrl');
-    expect(QUIZ).toContain('imgClassName="max-h-[34vh] object-contain"');
-    expect(QUIZ).toContain('imgClassName="max-h-[26vh] object-contain"');
+    // ご指摘：「第１問の図も何で解答の方にあるの？
+    //          問題の方（左側）においてっていったよね」
+    // → 図は左ペインの「いま解いている問」ブロックにだけ置く。
+    expect(QUIZ).toContain('src={activeStepSub.imageUrl}');
+    expect(QUIZ).toContain('imgClassName="max-h-[26vh] md:max-h-[42vh] object-contain"');
+    expect(QUIZ).not.toContain('src={sq.imageUrl}');
+    expect(QUIZ).not.toContain('src={focusedSub.imageUrl}');
     expect(FIGURE).toContain('imgClassName');
   });
 });
@@ -312,14 +322,18 @@ describe('英語リスニング：問題文（選択肢）と解答欄が同じ�
     expect(QUIZ).toContain('listeningOptionTexts.get(sq.id)');
   });
 
-  it('左ペインからは問N 以降（設問文・選択肢）を落として重複させない', () => {
-    expect(QUIZ).toContain('stripListeningQuestionBlocks');
+  it('左ペインはリード文のみ（問1〜問4をまとめて出さない）', () => {
+    // ご指摘：「問題のところさ、全部の問いがまとまってて
+    //          どの問いを解いているかが分からない」
+    // → 正しい順序を閉じ込めた buildListeningLeadText を使う。
+    expect(QUIZ).toContain('buildListeningLeadText(currentQuestion.text)');
     // 設問一覧はリスニングでは描画しない（解答カード側に一本化）
     expect(QUIZ).toMatch(/if \(listeningUnified\) return null;/);
   });
 
-  it('設問文も解答カード側に出す（何を答えるか分からなくならないように）', () => {
-    expect(QUIZ).toContain('splitQuestionLabel(sq.label');
+  it('設問文は問題ペイン（左側）に出す（何を答えるか分からなくならないように）', () => {
+    // いま解いている問（activeStepSub）の設問文を左ペインに出す。
+    expect(QUIZ).toContain('splitQuestionLabel(activeStepSub.label');
   });
 
   it('スマホでも下部パネルに飛ばさず、カード内で選択肢を表示する', () => {

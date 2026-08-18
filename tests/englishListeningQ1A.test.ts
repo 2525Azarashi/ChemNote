@@ -256,16 +256,23 @@ describe('ListeningAudioPlayer（音源を聞く場所）', () => {
 });
 
 describe('音源ボタンが「わかりやすい場所」に置かれている', () => {
-  it('Quiz：解いている問のすぐ横に練習用プレーヤーがある', () => {
+  it('Quiz：解いている問の問題文のすぐ下に練習用プレーヤーがある', () => {
     // 画面上部の「音源を聞く」パネルは廃止し（ご要望）、
-    // 解答カードの横に置く inline バリアントに一本化した。
-    // 「今どの問を聞くのか」を目で探す必要がない位置なので、
-    // 上部パネルより短い動線になっている。
+    // inline バリアントに一本化した。
+    //
+    // 置き場所はその後さらに修正した。ご指摘（原文）：
+    //   > 再生ボタンはさ、左の問題の文章のところにおいてほしいよね。
+    //   > 何で解答の方に置くの？
+    // そこで解答カード側ではなく、問題文ペイン（左側）の
+    // 「いま解いている問」ブロックに置く。
     expect(QUIZ).toContain('ListeningAudioPlayer');
     expect(QUIZ).toContain("mode=\"practice\"");
     expect(QUIZ).toContain('variant="inline"');
-    // その問の音源だけを鳴らすため、必ず focusSubId を渡している
-    expect(QUIZ).toMatch(/focusSubId=\{sq\.id\}/);
+    // その問の音源だけを鳴らすため、必ず focusSubId を渡している。
+    // 対象は「いま解いている問」= activeStepSub。
+    expect(QUIZ).toMatch(/focusSubId=\{activeStepSub\.id\}/);
+    // 解答カード側（sq）に戻していないこと。
+    expect(QUIZ).not.toMatch(/focusSubId=\{sq\.id\}/);
   });
 
   it('Quiz：音源を持つ問題のときだけ出す（他科目に影響しない）', () => {
