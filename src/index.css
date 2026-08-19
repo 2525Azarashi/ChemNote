@@ -388,6 +388,37 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   animation: shimmer 1.6s linear infinite;
 }
 
+/*
+ * 消去法：選択肢に斜線を引いた瞬間のフィードバック。
+ * 「押した結果いま状態が変わった」ことを動きで伝えるのが目的（視覚差の強化）。
+ * 色や透明度の差だけだと2段階あることに気づかれない、というご指摘への対応。
+ */
+@keyframes strikeOutOption {
+  0%   { transform: translateX(0) scale(1); }
+  35%  { transform: translateX(-2px) scale(0.985); }
+  70%  { transform: translateX(1px) scale(0.995); }
+  100% { transform: translateX(0) scale(1); }
+}
+.animate-strike-out { animation: strikeOutOption 0.28s ease-out both; }
+
+/* 斜線そのものを左から右へ引く（紙に線を引く動作の再現） */
+@keyframes drawStrikeLine {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.animate-draw-strike {
+  transform-origin: left center;
+  animation: drawStrikeLine 0.24s ease-out both;
+}
+
+/* 動きを減らす設定の端末では、上記アニメーションを無効化する */
+@media (prefers-reduced-motion: reduce) {
+  .animate-strike-out,
+  .animate-draw-strike {
+    animation: none;
+  }
+}
+
 /* Keep legacy keyframe for compatibility */
 @keyframes fadeOutExplanationHint {
   0% { opacity: 1; transform: translateY(0); }

@@ -53,11 +53,48 @@ export function pickEnglishVoice(): SpeechSynthesisVoice | null {
   );
 }
 
+/**
+ * 対話（第3問・第4問）用に、A と B で聞き分けられる2つの声を選ぶ。
+ *
+ * ■ なぜ必要か
+ *   第3問は「2人の対話」を1回だけ聞いて答える大問。
+ *   1つの声で全部読み上げると、どこで話者が替わったのか分からず
+ *   「誰がどう言ったか」を問う設問（What will the man do? など）が解けない。
+ *   本番の音源は男性／女性の2人なので、読み上げでも声を替える必要がある。
+ *
+ * ■ 選び方
+ *   1. 英語音声を集める（en-US → en-GB → en 系）。
+ *   2. 名前が違う2つが取れれば、それを A / B に割り当てる。
+ *   3. 1つしか無い端末では同じ声を返し、呼び出し側が pitch をずらして
+ *      聞き分けられるようにする（voice が null でも動く）。
+ */
+export function pickEnglishVoicePair(): [SpeechSynthesisVoice | null, SpeechSynthesisVoice | null] {
+  if (!isSpeechSupported()) return [null, null];
+  let voices: SpeechSynthesisVoice[] = [];
+  try {
+    voices = window.speechSynthesis.getVoices() || [];
+  } catch {
+    return [null, null];
+  }
+  const english = voices.filter((v) => v.lang?.toLowerCase().startsWith('en'));
+  if (english.length === 0) return [null, null];
+
+  const first = pickEnglishVoice() || english[0];
+  const second = english.find((v) => v.name !== first.name) || first;
+  return [first, second];
+}
+
 export interface SpeakOptions {
   /** 読み上げ速度。0.75 でゆっくり確認できる */
   rate?: number;
   /** 読み終わり（または中断）で1回だけ呼ばれる */
   onEnd?: () => void;
+}
+
+/** 対話1行ぶん。who は話者ラベル（'A' / 'B'）。 */
+export interface SpeechTurn {
+  who: string;
+  text: string;
 }
 
 /** 現在読み上げ中の識別子。null なら停止中。 */
@@ -127,6 +164,85 @@ export function speak(id: string, text: string, times = 1, opts: SpeakOptions = 
 
   try {
     for (let i = 0; i < total; i += 1) enqueue(i);
+  } catch {
+    finish();
+    return false;
+  }
+  return true;
+}
+
+/**
+ * 対話（A / B の掛け合い）を、話者ごとに声を替えて読み上げる。
+ *
+ * @param id     UI 側の識別子（subId）
+ * @param turns  A / B の発話を順番に並べた配列
+ * @param times  通し回数（第3問は1回読みなので通常 1）
+ *
+ * ■ 実装の要点
+ *   ・1発話＝1 utterance にする。utterance ごとに voice を替えられるので、
+ *     これが「話者を聞き分けられる」最も確実な方法になる。
+ *   ・声が1種類しか無い端末でも聞き分けられるよう、pitch を A=1.05 / B=0.9 と
+ *     わずかにずらす（声色を替える端末では二重に分かりやすくなるだけで害はない）。
+ *   ・終了通知は最後の発話だけに付ける。途中の utterance に付けると
+ *     1行読み終わった時点で「再生終了」扱いになり、UI のアイコンが戻ってしまう。
+ */
+export function speakDialogue(
+  id: string,
+  turns: SpeechTurn[],
+  times = 1,
+  opts: SpeakOptions = {},
+): boolean {
+  if (!isSpeechSupported()) return false;
+  const lines = (turns || [])
+    .map((t) => ({ who: (t.who || 'A').trim(), text: (t.text || '').trim() }))
+    .filter((t) => t.text.length > 0);
+  if (lines.length === 0) return false;
+
+  stopSpeech();
+
+  const total = Math.max(1, Math.min(3, Math.floor(times)));
+  currentId = id;
+  endNotified = false;
+
+  const finish = () => {
+    if (endNotified) return;
+    endNotified = true;
+    currentId = null;
+    opts.onEnd?.();
+  };
+
+  const [voiceA, voiceB] = pickEnglishVoicePair();
+
+  // 3人以上（A/B/C）にも耐えるよう、登場順に A 側・B 側を交互に割り当てる。
+  const speakers = Array.from(new Set(lines.map((l) => l.who)));
+
+  const queue: { text: string; voice: SpeechSynthesisVoice | null; pitch: number }[] = [];
+  for (let pass = 0; pass < total; pass += 1) {
+    lines.forEach((line) => {
+      const isSecond = speakers.indexOf(line.who) % 2 === 1;
+      queue.push({
+        text: line.text,
+        voice: isSecond ? voiceB : voiceA,
+        pitch: isSecond ? 0.9 : 1.05,
+      });
+    });
+  }
+
+  try {
+    queue.forEach((item, index) => {
+      const u = new window.SpeechSynthesisUtterance(item.text);
+      u.lang = 'en-US';
+      u.rate = opts.rate ?? 1;
+      u.pitch = item.pitch;
+      if (item.voice) u.voice = item.voice;
+      if (index === queue.length - 1) {
+        u.onend = finish;
+        u.onerror = finish;
+      } else {
+        u.onerror = finish;
+      }
+      window.speechSynthesis.speak(u);
+    });
   } catch {
     finish();
     return false;

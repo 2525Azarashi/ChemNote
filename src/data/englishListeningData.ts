@@ -48,6 +48,7 @@
 import { EL1_A_PROBLEMS } from './englishListeningQ1AProblems';
 import { EL1_A_EXTRA_PROBLEMS } from './englishListeningQ1ASets';
 import { EL1_B_PROBLEMS } from './englishListeningQ1BProblems';
+import { EL3_PROBLEMS } from './englishListeningQ3Problems';
 import { enhanceExplanation, isStructuredExplanation } from '../utils/explanationFormat';
 import { buildListeningExplanation } from '../utils/listeningExplanation';
 
@@ -230,6 +231,8 @@ const LISTENING_PROBLEMS: Record<string, any[]> = {
   el1_A: [...EL1_A_PROBLEMS, ...EL1_A_EXTRA_PROBLEMS],
   // 第1問B：配布PDF（スクリプト側）＋ イラストPDF を対応させた15セット
   el1_B: EL1_B_PROBLEMS,
+  // 第3問：配布PDF由来の15セット（各6問・1回読み・2人の対話）
+  el3: EL3_PROBLEMS,
 };
 
 (() => {

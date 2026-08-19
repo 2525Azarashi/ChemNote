@@ -53,3 +53,7 @@ ui-debug.log
 # Python (scripts/ 配下の生成キャッシュ。成果物ではないので追跡しない)
 __pycache__/
 *.pyc
+
+# ローカル配布用の一時成果物（push 不可時のバックアップ）
+.delivery/
+chemnote_*.tar.gz

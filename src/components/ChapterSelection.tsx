@@ -318,11 +318,33 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col font-handwriting">
+        {/* ================================================================
+            章／大問の一覧
+            ================================================================
+            ■ なぜ横スクロール（カルーセル）をやめたのか（ご要望）
+                > 単元選択をカルーセルではなく一覧にして。
+              横スクロールだと、画面の外に出ている章が「あることに気付けない」。
+              化学（発展）は1分野に17〜29章あり、右端まで何度もスワイプしないと
+              全体像がつかめなかった。一覧（折り返して並べる）にすれば
+              「どんな単元があるか」を一目で見渡してから選べる。
+
+            ■ 折り返しグリッドにしている理由
+              章名の長さがばらばら（'3章 化学結合' ↔ '④ 希薄溶液の性質（沸点上昇・凝固点降下）'）
+              なので、横幅を等分するグリッドにして高さで揃える。
+              whitespace-nowrap を外し、長い章名は2行に折り返して全文を出す
+              （途中で切れると別の章と見分けが付かない）。
+
+            ■ 高さに上限を付けている理由
+              29章を全部並べると一覧だけで画面が埋まり、下の単元リストが見えない。
+              上限（max-h）を付けて縦スクロールにすることで、
+              「一覧を広く見渡せる」と「選んだ先がすぐ見える」を両立させる。
+              章が少ない科目（化学基礎6・リスニング9）では上限に届かず全件が出る。
+        */}
         <div className="mb-3 shrink-0 border-b border-slate-200/80">
           <div
             role="tablist"
             aria-label="章を選択"
-            className="flex gap-1.5 overflow-x-auto pb-2 px-0.5 [scrollbar-width:thin]"
+            className="grid grid-cols-2 gap-1.5 max-h-[34vh] overflow-y-auto overscroll-contain pb-2 px-0.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 [scrollbar-width:thin]"
           >
             {groups.map((group, index) => {
               const isActive = group.title === activeGroup?.title;
@@ -344,7 +366,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                     setOpenAudioSetId(null);
                     document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
                   }}
-                  className={`shrink-0 rounded-xl border px-3 py-2 text-left transition-all cursor-pointer ${
+                  className={`flex h-full min-h-[3rem] flex-col justify-center rounded-xl border px-2.5 py-2 text-left transition-all cursor-pointer ${
                     isActive
                       ? 'border-[#A9CCE3] bg-[#2C3E50] text-white shadow-sm'
                       : 'border-slate-200 bg-white/75 text-slate-600 hover:border-[#A9CCE3] hover:bg-white'
@@ -356,7 +378,9 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                   >
                     {chapterNumber}
                   </span>
-                  <span className="mt-1 block text-xs sm:text-sm font-bold whitespace-nowrap">{shortTitle}</span>
+                  <span className="mt-1 block text-xs sm:text-sm font-bold leading-snug break-words [overflow-wrap:anywhere]">
+                    {shortTitle}
+                  </span>
                 </button>
               );
             })}

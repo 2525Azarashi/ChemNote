@@ -70,6 +70,19 @@ export type ListeningAudioTrack = {
   audioUrl?: string;
   /** 読み上げられる英文（スクリプト） */
   script: string;
+  /**
+   * 対話形式（第3問など）の場合の発話単位。
+   *
+   * 任意項目にしている理由：
+   *   第1問は1人の短い発話なので script 1本で足りるが、第3問は
+   *   「2人の対話（5〜7発話）」を1回だけ聞いて答える大問。
+   *   1つの声で通して読むと話者の交替が分からず、
+   *   「What will the man do?」のような設問が解けなくなる。
+   *   そこで発話を行単位で持ち、ListeningAudioPlayer 側で
+   *   A / B に別の声（と少しずらした pitch）を割り当てて読み上げる。
+   *   turns を持たないトラックは従来どおり script を1つの声で読む。
+   */
+  turns?: { who: string; text: string }[];
   /** スクリプトの和訳 */
   translation: string;
   /** この音源で押さえたい語句・表現 */
