@@ -223,6 +223,33 @@ describe('まとめプリントの科目切り替え', () => {
     expect(block).toContain('化学反応とエネルギー');
   });
 
+  it('★ 化学のタブに電池と電気分解の章が入っている', () => {
+    const block = viewerSrc.slice(
+      viewerSrc.indexOf('const ADVANCED_SECTIONS'),
+      viewerSrc.indexOf('const BASIC_SECTION_HTML'),
+    );
+    expect(block).toContain("'adv-4'");
+    expect(block).toContain('電池と電気分解');
+    // 本文・パート・印刷タイトル・部見出しの4つの対応表すべてに登録されている
+    for (const table of [
+      'ADVANCED_SECTION_HTML',
+      'SECTION_PARTS',
+      'ADVANCED_PRINT_TITLE',
+      'ADVANCED_PART_LABEL',
+    ]) {
+      const at = viewerSrc.indexOf(`const ${table}`);
+      expect(at).toBeGreaterThan(0);
+      expect(viewerSrc.slice(at, viewerSrc.indexOf('};', at))).toContain("'adv-4'");
+    }
+  });
+
+  it('★ 目次から4章を開けるボタンがあり、「準備中」の一覧から外れている', () => {
+    expect(viewerSrc).toContain("setActiveTab('adv-4')");
+    const at = viewerSrc.indexOf('ほかの章（');
+    expect(at).toBeGreaterThan(0);
+    expect(viewerSrc.slice(at, at + 120)).not.toContain('電池と電気分解');
+  });
+
   it('★ 科目名はハードコードせず config.label を使う', () => {
     // 画面ヘッダー・印刷ヘッダー・目次見出しの3か所
     const hits = viewerSrc.match(/\{config\.label\} まとめプリント/g) || [];
@@ -358,9 +385,114 @@ describe('熱化学の重要事項ごとの分割（ADV_THERMO_PARTS）', () => 
   });
 });
 
+/* ==================================================================
+ * 「重要事項ごとに見る」ボタン（4章 電池と電気分解）
+ *
+ * ■ 背景
+ *   熱化学（3章）と完全に同じ構造・同じ記法で書く、という取り決めで
+ *   adv_electro.ts を追加した。3章と同じ観点で
+ *     ・分割データが壊れていないこと
+ *     ・原典の演習1〜15が省略されていないこと
+ *     ・原典の誤植を正しい形に直したままであること
+ *   を守る。
+ * ================================================================== */
+describe('電池と電気分解の重要事項ごとの分割（ADV_ELECTRO_PARTS）', () => {
+  const advSrc = read('src/data/learningContent/adv_electro.ts');
+
+  it('重要事項の配列をエクスポートし、バレルからも出している', () => {
+    expect(advSrc).toContain('export const ADV_ELECTRO_PARTS');
+    expect(barrelSrc).toContain('ADV_ELECTRO_PARTS');
+    expect(barrelSrc).toContain('ADV_ELECTRO_HTML');
+  });
+
+  it('★ 通し表示用の ADV_ELECTRO_HTML は全パートの連結で作る（本文の二重管理を防ぐ）', () => {
+    expect(advSrc).toMatch(
+      /export const ADV_ELECTRO_HTML\s*=\s*ADV_ELECTRO_PARTS\.map\(p => p\.html\)\.join/,
+    );
+  });
+
+  it('★ 重要事項①〜④と「出やすいこと①②」がすべて揃っている', () => {
+    for (const no of ['①', '②', '③', '④']) {
+      expect(advSrc).toContain(`重要事項${no}`);
+    }
+    expect(advSrc).toContain('定期テスト・入試に出やすいこと①');
+    expect(advSrc).toContain('定期テスト・入試に出やすいこと②');
+  });
+
+  it('★ 演習1〜15が省略されずに入っている', () => {
+    for (let i = 1; i <= 15; i += 1) {
+      expect(advSrc).toContain(`演習${i} `);
+    }
+  });
+
+  it('★ 各パートは id / no / title / short / html をすべて持つ', () => {
+    const block = advSrc.slice(
+      advSrc.indexOf('export const ADV_ELECTRO_PARTS'),
+      advSrc.indexOf('export const ADV_ELECTRO_HTML'),
+    );
+    const rows = block.match(/\{ id: [\s\S]*?\},/g) ?? [];
+    expect(rows.length).toBeGreaterThanOrEqual(12);
+    for (const row of rows) {
+      for (const key of ['id:', 'no:', 'title:', 'short:', 'html:']) {
+        expect(row).toContain(key);
+      }
+    }
+    // 参照している定数がすべて実際に定義されている（未定義参照でビルドが落ちない）
+    for (const m of block.matchAll(/html:\s*([A-Z_0-9]+)\s*\}/g)) {
+      expect(advSrc).toContain(`const ${m[1]} = \``);
+    }
+  });
+
+  it('★ この章の必修キーワードがそろっている', () => {
+    for (const kw of [
+      'イオン化傾向',
+      'ボルタ電池',
+      'ダニエル電池',
+      '燃料電池',
+      '鉛蓄電池',
+      'ファラデー',
+      '一次電池',
+      '二次電池',
+      '過電圧',
+      'イオン交換膜法',
+      '電解精錬',
+      '陽極泥',
+      '溶融塩電解',
+      '氷晶石',
+      'ボーキサイト',
+      '電流効率',
+    ]) {
+      expect(advSrc).toContain(kw);
+    }
+  });
+
+  it('★ 原典の誤植を化学的に正しい形へ直したまま保つ', () => {
+    // 燃料電池の全体式は 2H2 + O2 → 2H2O（原典は 2H2 + O2 → H2O）
+    expect(advSrc).not.toMatch(/2H<sub>2<\/sub> ＋ O<sub>2<\/sub> → H<sub>2<\/sub>O(?!<)/);
+    // 鉛蓄電池の電解液は硫酸 H2SO4（原典は H2PO4）
+    expect(advSrc).not.toContain('H<sub>2</sub>PO<sub>4</sub>');
+    // 演習15(ⅱ) の答えは 1.20 kg（原典は 1.20 g）
+    expect(advSrc).toContain('1.20 kg');
+  });
+
+  it('★ 電池と電気分解の用語を混同させない対比表がある', () => {
+    expect(advSrc).toContain('負極');
+    expect(advSrc).toContain('正極');
+    expect(advSrc).toContain('陰極');
+    expect(advSrc).toContain('陽極');
+    expect(advSrc).toContain('この単元の総まとめ');
+  });
+
+  it('★ 例題（演習）が薄くなっていない', () => {
+    const examples = advSrc.match(/box box-example/g) ?? [];
+    expect(examples.length).toBeGreaterThanOrEqual(10);
+  });
+});
+
 describe('LearningViewer の「重要事項ごとに見る」UI', () => {
   it('★ パート分割データを読み込み、章ごとの対応表を持つ', () => {
     expect(viewerSrc).toContain('ADV_THERMO_PARTS');
+    expect(viewerSrc).toContain('ADV_ELECTRO_PARTS');
     expect(viewerSrc).toContain('SECTION_PARTS');
     expect(viewerSrc).toContain("ALL_PARTS_ID");
   });
@@ -426,6 +558,7 @@ const SECTION_FILES = [
   'section_2_3',
   // 化学（発展）のまとめプリントも、同じ強調ルール・同じSVGスコープ規則で検査する
   'adv_thermo',
+  'adv_electro',
 ] as const;
 
 const globalCssSrc = read('src/data/learningContent/globalCss.ts');
