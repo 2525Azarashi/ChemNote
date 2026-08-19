@@ -15,6 +15,8 @@ import {
   SECTION_2_3_HTML,
   ADV_THERMO_HTML,
   ADV_THERMO_PARTS,
+  ADV_ELECTRO_HTML,
+  ADV_ELECTRO_PARTS,
   type LearningPart,
 } from '../data/learningContent';
 import { MolBasicsSection } from './MolBasicsSection';
@@ -58,10 +60,11 @@ const BASIC_SECTIONS: SectionDef[] = [
   { id: '2-3', title: '2-3. 酸化還元反応' },
 ];
 
-/** 化学（発展）。まずは理論化学3章（熱化学）から公開し、順次追加していく。 */
+/** 化学（発展）。理論化学3章（熱化学）・4章（電池と電気分解）を公開し、順次追加していく。 */
 const ADVANCED_SECTIONS: SectionDef[] = [
   { id: 'toc', title: '目次・使い方' },
   { id: 'adv-3', title: '3. 化学反応とエネルギー' },
+  { id: 'adv-4', title: '4. 電池と電気分解' },
 ];
 
 // 各セクションのHTMLマップ（生成時に .learning-content スコープ済み）
@@ -76,6 +79,7 @@ const BASIC_SECTION_HTML: Record<string, string> = {
 
 const ADVANCED_SECTION_HTML: Record<string, string> = {
   'adv-3': ADV_THERMO_HTML,
+  'adv-4': ADV_ELECTRO_HTML,
 };
 
 // ===================================================================
@@ -95,6 +99,7 @@ export const ALL_PARTS_ID = 'all';
 
 const SECTION_PARTS: Record<string, LearningPart[]> = {
   'adv-3': ADV_THERMO_PARTS,
+  'adv-4': ADV_ELECTRO_PARTS,
 };
 
 /** 印刷ダイアログのタイトル（＝PDFの既定ファイル名）に使うセクション名 */
@@ -112,6 +117,7 @@ const BASIC_PRINT_TITLE: Record<string, string> = {
 const ADVANCED_PRINT_TITLE: Record<string, string> = {
   toc: '目次・使い方',
   'adv-3': '3 化学反応とエネルギー',
+  'adv-4': '4 電池と電気分解',
 };
 
 const BASIC_PART_LABEL: Record<string, string> = {
@@ -126,6 +132,7 @@ const BASIC_PART_LABEL: Record<string, string> = {
 
 const ADVANCED_PART_LABEL: Record<string, string> = {
   'adv-3': '理論化学 3章 化学反応とエネルギー',
+  'adv-4': '理論化学 4章 電池と電気分解',
 };
 
 /** 科目ごとの設定をひとまとめにする（分岐をここ1か所に閉じ込める） */
@@ -504,9 +511,19 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
                               <span>化学反応とエネルギー (エンタルピー・熱化学反応式・ヘスの法則・結合エネルギー・光)</span>
                             </button>
                           </li>
+                          <li>
+                            <button
+                              type="button"
+                              onClick={() => setActiveTab('adv-4')}
+                              className="w-full text-left flex items-start gap-1.5 rounded-lg border border-[#c9bce6] bg-[#f3ecff] px-2 py-1.5 text-[#5b21b6] hover:bg-[#e9dcff] transition-colors cursor-pointer"
+                            >
+                              <span className="text-[#7c3aed]">4.</span>
+                              <span>電池と電気分解 (電池式・ボルタ・ダニエル・燃料電池・鉛蓄電池・ファラデーの法則・電気分解・工業的製法)</span>
+                            </button>
+                          </li>
                         </ul>
                         <p className="mt-3 border-t border-[#e3daf5] pt-2 text-[11px] font-bold text-[#8b81a3]">
-                          ほかの章（物質の状態と平衡 / 溶液 / 電池と電気分解 / 反応速度 / 化学平衡）と、
+                          ほかの章（物質の状態と平衡 / 溶液 / 反応速度 / 化学平衡）と、
                           無機化学・有機化学のまとめプリントは順次追加していきます。
                         </p>
                       </div>
@@ -564,6 +581,20 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
                 <span className="mt-1 block text-[11px] font-bold leading-relaxed text-[#6b6280]">
                   演習1〜20（反応エンタルピー / ヘスの法則 / 結合エネルギー / 光とエネルギー）が、
                   ここで学んだ順番のまま並んでいます。
+                </span>
+              </div>
+            )}
+
+            {/* ====== 化学（発展）4章の冒頭に、この章の読み方を出す ====== */}
+            {isAdvanced && activeTab === 'adv-4' && (
+              <div className={`mb-5 rounded-xl border-2 border-[#c9bce6] border-l-8 border-l-[#7c3aed] bg-[#f7f2ff] px-4 py-3 ${NO_PRINT_CLASS}`}>
+                <span className="block text-[11px] font-extrabold tracking-widest text-[#7c3aed]">この章の読み方</span>
+                <span className="mt-0.5 block text-sm font-bold text-[#5b21b6]">
+                  「電子はどこから出て、どこへ入るか」だけを追いかければ、この章はぐっと簡単になる
+                </span>
+                <span className="mt-1 block text-[11px] font-bold leading-relaxed text-[#6b6280]">
+                  重要事項①（酸化還元の復習）→ ②（電池）→ ③（電気分解）→ ④（工業的製法）の順に読むのが最短ルート。
+                  上のボタンで重要事項を 1 つずつ選べば、長さに圧倒されずに進められます。
                 </span>
               </div>
             )}

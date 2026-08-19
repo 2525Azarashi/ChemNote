@@ -103,7 +103,9 @@ export function scriptBox(script: string, translation?: string): string {
     LISTENING_SCRIPT_FIRST_MARK +
     '<div style="background-color:#F2FBFA; border:2px solid #3E9C93; border-left:9px solid #3E9C93; border-radius:10px; padding:12px 14px; margin-top:6px; color:#12403C;">' +
     '<div style="font-size:0.78em; font-weight:bold; letter-spacing:0.08em; color:#2F7C74; margin-bottom:6px;">SCRIPT ／ 実際に流れた英文</div>' +
-    `<div style="font-size:1.06em; font-weight:bold; line-height:1.85;">${escapeHtml(body)}</div>` +
+    // 対話（第3問）のスクリプトは 'A: …' / 'B: …' の複数行で入ってくる。
+    // 改行をそのまま出すと1行に潰れて誰の発話か追えないため、<br> に置き換える。
+    `<div style="font-size:1.06em; font-weight:bold; line-height:1.85;">${escapeHtml(body).replace(/\n/g, '<br>')}</div>` +
     (jp
       ? `<div style="margin-top:8px; padding-top:8px; border-top:1px dashed rgba(62,156,147,0.5); font-size:0.9em; color:#2F7C74;">${escapeHtml(jp)}</div>`
       : '') +

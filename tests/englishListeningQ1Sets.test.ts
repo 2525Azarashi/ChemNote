@@ -292,15 +292,21 @@ describe('解答画面：消去法（選択肢を直接タップして斜線を�
     // ① 斜線済みをタップ → 斜線を消して候補に戻す
     expect(QUIZ).toMatch(/if \(struck\) \{[\s\S]{0,120}?restoreOption\(sq\.id, opt\)/);
     // ② 選択中をタップ → 解答を外して斜線を引く
+    //    （斜線を引く関数は、変化を動きで見せるため strikeOptionAnimated に変更）
     expect(QUIZ).toMatch(
-      /if \(isSelected\) \{[\s\S]{0,200}?handleOptionSelect\(sq\.id, ''\);[\s\S]{0,120}?strikeOption\(sq\.id, opt\)/,
+      /if \(isSelected\) \{[\s\S]{0,200}?handleOptionSelect\(sq\.id, ''\);[\s\S]{0,120}?strikeOptionAnimated\(sq\.id, opt\)/,
     );
     // ③ 未選択をタップ → 解答として選ぶ
     expect(QUIZ).toContain("handleOptionSelect(sq.id, opt);");
   });
 
-  it('操作方法を選択肢の上に一行で示している（モード表示の代わり）', () => {
-    expect(QUIZ).toContain('タップで選択／もう一度タップで斜線（消去法）／さらにタップで元に戻ります');
+  it('操作方法を選択肢の上に示している（モード表示の代わり）', () => {
+    // 文字だけの一行説明から、各状態の見本を並べた表示に変更した。
+    // 「2段階あることに気づかれない」というご指摘への対応。
+    expect(QUIZ).toContain('タップで選択');
+    expect(QUIZ).toContain('もう一度で斜線');
+    expect(QUIZ).toContain('さらにタップで元に戻る');
+    expect(QUIZ).toContain('長押しでこの設問の斜線をまとめて消す');
   });
 
   it('消去済みの選択肢は取り消し線で表示される', () => {

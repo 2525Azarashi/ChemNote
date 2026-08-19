@@ -6,6 +6,7 @@ import {
   hasRealAudio,
   isSpeechSupported,
   speak,
+  speakDialogue,
   stopSpeech,
 } from '../utils/listeningSpeech';
 
@@ -161,10 +162,17 @@ export function ListeningAudioPlayer({
       if (!hasRealAudio(track)) {
         pauseOtherAudio(null);
         repeatLeft.current = 0;
-        const started = speak(subId, track.script, repeat ? 2 : 1, {
-          rate,
-          onEnd: () => setPlayingId(null),
-        });
+        // 対話（第3問）は話者ごとに声を替える。1つの声で通して読むと
+        // どこで話者が替わったか分からず、「男性は何をするか」型の設問が解けない。
+        const started = track.turns && track.turns.length > 0
+          ? speakDialogue(subId, track.turns, repeat ? 2 : 1, {
+              rate,
+              onEnd: () => setPlayingId(null),
+            })
+          : speak(subId, track.script, repeat ? 2 : 1, {
+              rate,
+              onEnd: () => setPlayingId(null),
+            });
         setPlayingId(started ? subId : null);
         return;
       }
@@ -563,9 +571,28 @@ export function ListeningAudioPlayer({
                   <p className={`mb-1 text-[10px] font-bold ${headingClass}`}>
                     {track.label} スクリプト
                   </p>
-                  <p className="text-[13px] sm:text-sm font-bold leading-relaxed">
-                    {track.script}
-                  </p>
+                  {/* 対話（第3問）は話者ラベル付きで行を分ける。
+                      1つの段落にまとめると誰の発話か追えず、復習の役に立たない。 */}
+                  {track.turns && track.turns.length > 0 ? (
+                    <ul className="space-y-1">
+                      {track.turns.map((turn, i) => (
+                        <li key={`${turn.who}-${i}`} className="flex gap-2">
+                          <span
+                            className={`mt-0.5 shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${badgeClass}`}
+                          >
+                            {turn.who}
+                          </span>
+                          <span className="text-[13px] sm:text-sm font-bold leading-relaxed">
+                            {turn.text}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-[13px] sm:text-sm font-bold leading-relaxed">
+                      {track.script}
+                    </p>
+                  )}
                   <p className={`mt-2 text-[12px] leading-relaxed ${subTextClass}`}>
                     {track.translation}
                   </p>

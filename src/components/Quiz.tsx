@@ -580,6 +580,67 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     });
   };
 
+  /**
+   * その設問の斜線をすべて消す（長押しで一気にリセット）。
+   *
+   * ご指摘「事故的に選択肢を復活させてしまうリスク」への対応。
+   * 1つずつタップして戻すと、戻す途中で別の選択肢を誤って選んでしまう
+   * （＝解答が入ってしまう）ことがある。まとめて白紙に戻す道を用意して、
+   * 「やり直したい」ときに解答を触らずに済むようにする。
+   */
+  const clearEliminated = (sqId: string) => {
+    setEliminated((prev) => {
+      if (!(prev[sqId] || []).length) return prev;
+      const next = { ...prev };
+      delete next[sqId];
+      return next;
+    });
+  };
+
+  // 直前に斜線を引いた選択肢（アニメーションを1回だけ流すためのキー）。
+  // `${設問ID}\u0000${選択肢}` の形で持つ。区切りに \u0000 を使うのは
+  // 選択肢の文字列に現れ得ない文字にして衝突を避けるため。
+  const [justStruck, setJustStruck] = useState<string | null>(null);
+
+  /** 斜線を引き、同時にアニメーション対象として記録する。 */
+  const strikeOptionAnimated = (sqId: string, opt: string) => {
+    strikeOption(sqId, opt);
+    setJustStruck(`${sqId}\u0000${opt}`);
+  };
+
+  // 長押し判定用。押し始めのタイマーと、「長押しが成立したので
+  // 指を離したときの通常タップ（onClick）は無視する」フラグを持つ。
+  const longPressTimer = useRef<number | null>(null);
+  const longPressFired = useRef(false);
+
+  /** 長押し開始（500ms 押し続けたら、その設問の斜線を全部消す）。 */
+  const beginLongPress = (sqId: string) => {
+    longPressFired.current = false;
+    if (longPressTimer.current !== null) window.clearTimeout(longPressTimer.current);
+    longPressTimer.current = window.setTimeout(() => {
+      longPressTimer.current = null;
+      // 斜線が1つも無いなら何も起きない（誤爆しても害がない）
+      if (!(eliminated[sqId] || []).length) return;
+      longPressFired.current = true;
+      clearEliminated(sqId);
+      // 端末が対応していれば触覚で「まとめて戻した」ことを伝える
+      if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+        navigator.vibrate(30);
+      }
+    }, 500);
+  };
+
+  /** 長押し解除（指を離した／指が外れた／スクロールした）。 */
+  const endLongPress = () => {
+    if (longPressTimer.current !== null) {
+      window.clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  // 設問が変わる・アンマウントされるときにタイマーを残さない
+  useEffect(() => () => endLongPress(), []);
+
   // New state for layout and highlighting
   const [isProblemExpanded, setIsProblemExpanded] = useState(false);
   const [highlights, setHighlights] = useState<string[]>([]);
@@ -898,9 +959,28 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         ボタン（モード切替）を置かず、選択肢を続けてタップするだけで
         「選ぶ → 消す → 戻す」が回ることを一行で伝える。
       */}
-      <p className="text-[10px] font-bold leading-snug text-gray-400">
-        タップで選択／もう一度タップで斜線（消去法）／さらにタップで元に戻ります
-      </p>
+      {/*
+        操作説明は「文字だけ」だと読み飛ばされるため、
+        各状態の見た目そのものを小さな見本として並べて示す。
+        初見のユーザーが「斜線という段階がある」ことに気づけるようにするのが目的。
+      */}
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold leading-snug text-gray-400">
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block rounded-md border-2 border-gray-200 bg-white px-1.5 py-0.5 text-gray-600">ア</span>
+          <span>タップで選択</span>
+        </span>
+        <span aria-hidden="true" className="text-gray-300">→</span>
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block rounded-md border-2 border-[#A9CCE3] bg-[#A9CCE3] px-1.5 py-0.5 text-white">ア</span>
+          <span>もう一度で斜線</span>
+        </span>
+        <span aria-hidden="true" className="text-gray-300">→</span>
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block rounded-md border-2 border-gray-200 bg-gray-100 px-1.5 py-0.5 text-gray-400 line-through decoration-2 decoration-[#E8A87C]">ア</span>
+          <span>さらにタップで元に戻る</span>
+        </span>
+        <span className="text-gray-400">／長押しでこの設問の斜線をまとめて消す</span>
+      </div>
 
       <div className={stacked
         ? "grid grid-cols-1 gap-2.5 w-full"
@@ -915,6 +995,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             ? (answers[sq.id] || '').split(multiSep as string).map(s => s.trim()).includes(opt.trim())
             : (answers[sq.id] || '') === opt;
           const struck = isEliminated(sq.id, opt);
+          // 斜線を引いた直後だけアニメーションを流す（状態変化を動きで知らせる）
+          const strikeAnimating = struck && justStruck === `${sq.id}\u0000${opt}`;
           const body = optionTexts?.[optIdx];
           return (
             <button
@@ -923,7 +1005,30 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               aria-pressed={isSelected}
               // 消去済みは支援技術にも「候補から外した」と伝える
               aria-disabled={struck}
+              // 見た目（斜線・グレー）に頼らず、状態を言葉でも伝える。
+              // 「今どの状態か視覚情報だけで判断させない」ためのラベル。
+              aria-label={`${opt}${body ? ` ${body}` : ''}／${
+                struck ? '消去済み。タップで元に戻します' : isSelected ? '選択中。タップで斜線を引きます' : '未選択'
+              }`}
+              title={struck ? '消去済み（タップで元に戻す／長押しでまとめて戻す）' : undefined}
+              // 長押しで、その設問の斜線をまとめて消す。
+              // タッチ・マウスの両方を拾うため Pointer Events を使う。
+              onPointerDown={() => beginLongPress(sq.id)}
+              onPointerUp={endLongPress}
+              onPointerLeave={endLongPress}
+              onPointerCancel={endLongPress}
+              onContextMenu={(e) => {
+                // 長押しが成立した直後にモバイルの長押しメニューが出ると
+                // 操作の邪魔になるため抑制する。
+                if (longPressFired.current) e.preventDefault();
+              }}
               onClick={() => {
+                // 長押しでまとめて消した直後は、指を離したときの
+                // 通常タップを実行しない（意図しない選択を防ぐ）。
+                if (longPressFired.current) {
+                  longPressFired.current = false;
+                  return;
+                }
                 // ────────────────────────────────────────────────
                 // 選択肢の直接タップだけで消去法まで行う（モード無し）
                 //   未選択 → 選択 → 斜線（消去）→ 未選択 → …
@@ -952,18 +1057,20 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 //    → 解答を外し、そのまま斜線を引く（＝これは違うと判断した）。
                 if (isSelected) {
                   handleOptionSelect(sq.id, '');
-                  strikeOption(sq.id, opt);
+                  strikeOptionAnimated(sq.id, opt);
                   return;
                 }
                 // ③ それ以外（未選択）をタップ → 解答として選ぶ。
                 handleOptionSelect(sq.id, opt);
               }}
               // スマホは 48px 以上の高さ・幅を確保してタップしやすくする（PC は従来寸法）。
-              className={`px-4 py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${stacked ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3.25rem] md:min-w-[3rem] shadow-sm cursor-pointer
+              className={`relative px-4 py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${stacked ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3.25rem] md:min-w-[3rem] shadow-sm cursor-pointer
                 ${struck
-                  // 消去済み：斜線＋グレーで「候補から外した」ことを一目で示す。
+                  // 消去済み：斜線＋グレーに加え、枠線を破線にして
+                  // 「候補から外した（もう枠として生きていない）」ことを形でも示す。
+                  // 色や透明度だけでは段階の違いが伝わりにくい、というご指摘への対応。
                   // 紙の冊子で選択肢に線を引いた状態の再現。
-                  ? 'bg-gray-100 text-gray-400 border-gray-200 line-through decoration-2 decoration-[#E8A87C] opacity-70'
+                  ? `bg-gray-100 text-gray-400 border-gray-300 border-dashed line-through decoration-2 decoration-[#E8A87C] opacity-70 shadow-none ${strikeAnimating ? 'animate-strike-out' : ''}`
                   : isSelected
                     ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30 scale-[1.01]'
                     : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
@@ -987,10 +1094,35 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               ) : (
                 formatText(opt)
               )}
+              {/*
+                消去済みを示すアイコン。
+                「取り消し線＋グレー」だけでは通常表示との差に気づきにくいため、
+                ✕ のバッジを重ねて、色が見分けにくい環境でも
+                形で「消してある」と分かるようにする。
+              */}
+              {struck && (
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#E8A87C] text-[9px] font-bold leading-none text-white shadow-sm ${
+                    strikeAnimating ? 'animate-draw-strike' : ''
+                  }`}
+                >
+                  ✕
+                </span>
+              )}
             </button>
           );
         })}
       </div>
+      {/*
+        いま何個消したかを読み上げ・表示の両方で伝える。
+        「今どの状態か」を見た目だけで覚えなくて済むようにするのが目的。
+      */}
+      {(eliminated[sq.id] || []).length > 0 && (
+        <p className="text-[10px] font-bold text-gray-400" aria-live="polite">
+          {(eliminated[sq.id] || []).length}個を消去中（長押しでまとめて元に戻す）
+        </p>
+      )}
       </div>
     );
   };

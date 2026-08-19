@@ -1,0 +1,3860 @@
+[
+ {
+  "set": 1,
+  "difficulty": "易しめ",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "図書館で本を借りようとしている。",
+    "speakers": "女性(高校生) / 男性(司書)",
+    "question": "How long can the woman keep the book first?",
+    "options": [
+     "Three weeks",
+     "Two weeks",
+     "One week",
+     "Four weeks"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Can I borrow this book for three weeks?"
+     },
+     {
+      "who": "B",
+      "text": "Usually two weeks is the limit, but new books are just one week."
+     },
+     {
+      "who": "A",
+      "text": "This one was published last month."
+     },
+     {
+      "who": "B",
+      "text": "Then it's one week. But you can renew it once online."
+     },
+     {
+      "who": "A",
+      "text": "OK, I'll do that if I need more time."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "One week",
+    "explanation": "通常2週間・新刊は1週間、という条件分岐。この本は先月刊行＝新刊扱い。renew（延長可）はダミー。2022年問13型（条件による日付・期間の特定）。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "駅で切符の買い方を尋ねている。",
+    "speakers": "男性(旅行者) / 女性(駅員)",
+    "question": "How much will the man pay?",
+    "options": [
+     "150 yen",
+     "200 yen",
+     "350 yen",
+     "550 yen"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Excuse me, how much is a ticket to Central Park Station?"
+     },
+     {
+      "who": "B",
+      "text": "It's 350 yen for adults. Are you a student?"
+     },
+     {
+      "who": "A",
+      "text": "Yes, I'm a university student."
+     },
+     {
+      "who": "B",
+      "text": "Then it's 200 yen with your student ID card."
+     },
+     {
+      "who": "A",
+      "text": "Great. Here's my ID."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "200 yen",
+    "explanation": "学生証提示で割引（350→200円）。数字の聞き分けと条件の適用。",
+    "shuffled": false,
+    "lockReason": "数値が昇順に並んでいる"
+   },
+   {
+    "q": 3,
+    "scene": "誕生日パーティーの準備について話している。",
+    "speakers": "女性(母親) / 男性(息子・小学生)",
+    "question": "How many sandwiches will the mother make?",
+    "options": [
+     "7",
+     "8",
+     "56",
+     "64"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "How many friends are coming to your party on Saturday?"
+     },
+     {
+      "who": "B",
+      "text": "Eight friends. Oh wait, Tom can't come."
+     },
+     {
+      "who": "A",
+      "text": "So seven friends plus you."
+     },
+     {
+      "who": "B",
+      "text": "Right. Can you make eight sandwiches for each person?"
+     },
+     {
+      "who": "A",
+      "text": "Eight each? That's sixty-four!"
+     },
+     {
+      "who": "B",
+      "text": "Sorry, I mean eight sandwiches in total!"
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "8",
+    "explanation": "人数の訂正（8→7人）と数量の訂正（each→in total）の2段階ひっかけ。最終発話の in totalが結論。2026年問17型（数値の組み立て）。",
+    "shuffled": false,
+    "lockReason": "数値が昇順に並んでいる"
+   },
+   {
+    "q": 4,
+    "scene": "放課後、明日の持ち物について話している。",
+    "speakers": "男性(高校生) / 女性(高校生)",
+    "question": "What will the boy bring to school tomorrow?",
+    "options": [
+     "Gym clothes",
+     "A paint set",
+     "Two paint sets",
+     "A math textbook only"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Do we need our gym clothes tomorrow?"
+     },
+     {
+      "who": "B",
+      "text": "Let me check... Tomorrow we have math, English, and art."
+     },
+     {
+      "who": "A",
+      "text": "No PE?"
+     },
+     {
+      "who": "B",
+      "text": "Right. But bring a paint set for art class."
+     },
+     {
+      "who": "A",
+      "text": "I don't have one. Can I borrow yours?"
+     },
+     {
+      "who": "B",
+      "text": "Sure, I have two."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "A paint set",
+    "explanation": "持ち物の候補（体操着→不要、絵の具セット→必要）の絞り込み。gym clothesは先に出てくるダミー。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "ペットの世話の分担について話している。",
+    "speakers": "女性(姉) / 男性(弟・中学生)",
+    "question": "What will the boy do this week?",
+    "options": [
+     "Feed the dog twice a day",
+     "Walk the dog every day",
+     "Nothing this week",
+     "Feed the dog once a day"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "It's your turn to feed the dog this week."
+     },
+     {
+      "who": "B",
+      "text": "But I fed him last week, too!"
+     },
+     {
+      "who": "A",
+      "text": "Because I was sick. This week I'll take him for a walk every day instead."
+     },
+     {
+      "who": "B",
+      "text": "OK, deal. So I just feed him in the morning?"
+     },
+     {
+      "who": "A",
+      "text": "Morning and evening, please."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "Feed the dog twice a day",
+    "explanation": "分担（姉＝散歩、弟＝餌）と回数（morning and evening＝1日2回）の特定。insteadの言い換えに注意。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "映画館で席を探している。",
+    "speakers": "男性(大学生) / 女性(大学生)",
+    "question": "What is the problem?",
+    "options": [
+     "A man is sitting in the woman's seat.",
+     "Their tickets are for another movie.",
+     "They are in the wrong row.",
+     "Their seats are in different rows."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Our seats are G-11 and G-12."
+     },
+     {
+      "who": "B",
+      "text": "This row is F. The next one must be G."
+     },
+     {
+      "who": "A",
+      "text": "Right. G-11 is here. You're next to me."
+     },
+     {
+      "who": "B",
+      "text": "Wait, there's someone in G-12 already."
+     },
+     {
+      "who": "A",
+      "text": "Let me check his ticket... Oh, he's in the wrong row. His seat is H-12."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "A man is sitting in the woman's seat.",
+    "explanation": "G-12に先客→その人のチケットはH-12＝その人が間違えている。誰が間違えたかの特定。2026年問1 5型（間違いの所在を問う）。",
+    "shuffled": true
+   }
+  ]
+ },
+ {
+  "set": 2,
+  "difficulty": "標準",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "喫茶店でアルバイトの面接をしている。",
+    "speakers": "男性(店主) / 女性(高校生)",
+    "question": "When will the girl work on Saturdays?",
+    "options": [
+     "From 8:00 a.m.",
+     "From 11:00 a.m.",
+     "From noon",
+     "From 4:00 p.m."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Can you work on weekdays after school?"
+     },
+     {
+      "who": "B",
+      "text": "I can work on Mondays and Wednesdays, from four to eight."
+     },
+     {
+      "who": "A",
+      "text": "We also need someone on Saturday mornings."
+     },
+     {
+      "who": "B",
+      "text": "I have piano lessons until eleven, so I can start at noon."
+     },
+     {
+      "who": "A",
+      "text": "OK. Let's start with Monday, Wednesday, and Saturday afternoons."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "From noon",
+    "explanation": "until eleven → start at noonの時間変換。morningの希望が叶わず午後勤務に。時刻の複数出現がひっかけ。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 2,
+    "scene": "空港で友達を待っている。",
+    "speakers": "女性(大学生) / 男性(大学生)",
+    "question": "When will Yuki arrive at the bus stop?",
+    "options": [
+     "3:30",
+     "3:40",
+     "4:00",
+     "4:10"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Yuki's flight lands at three, right?"
+     },
+     {
+      "who": "B",
+      "text": "Yes, but she has to pick up her luggage. That takes about thirty minutes."
+     },
+     {
+      "who": "A",
+      "text": "And the bus from the airport to the city?"
+     },
+     {
+      "who": "B",
+      "text": "Forty minutes. So she'll be here around... let me think."
+     },
+     {
+      "who": "A",
+      "text": "We should meet her at the bus stop at four-ten."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "4:10",
+    "explanation": "3:00着＋30分（荷物）＋40分（バス）＝4:10。時間計算の連鎖。2026年問17型。",
+    "shuffled": false,
+    "lockReason": "数値が昇順に並んでいる"
+   },
+   {
+    "q": 3,
+    "scene": "兄妹で祖父母への贈り物を相談している。",
+    "speakers": "男性(兄) / 女性(妹)",
+    "question": "What will they probably give their grandmother?",
+    "options": [
+     "Flowers to plant in the garden",
+     "A photo album",
+     "Cut flowers and a cake",
+     "A scarf"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "What should we get Grandma for her seventieth birthday?"
+     },
+     {
+      "who": "B",
+      "text": "How about a scarf? She always wears one."
+     },
+     {
+      "who": "A",
+      "text": "We gave her a scarf last year. A photo album?"
+     },
+     {
+      "who": "B",
+      "text": "We did that two years ago. What about flowers and a cake?"
+     },
+     {
+      "who": "A",
+      "text": "She loves gardening. Let's get her flowers she can plant in the garden, not cut flowers."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "Flowers to plant in the garden",
+    "explanation": "候補3つを過去の実績で消去し、最終提案が結論。not cut flowersの限定がポイント。2023年問13型（提案→修正→合意）。",
+    "shuffled": true
+   },
+   {
+    "q": 4,
+    "scene": "会社で会議の変更連絡をしている。",
+    "speakers": "女性(会社員) / 男性(会社員)",
+    "question": "What was changed about the meeting?",
+    "options": [
+     "The room",
+     "The time",
+     "The number of people",
+     "The date"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Did you hear about tomorrow's meeting?"
+     },
+     {
+      "who": "B",
+      "text": "It's at ten in Room 3, right?"
+     },
+     {
+      "who": "A",
+      "text": "The time is the same, but the room changed to Room 5 on the fourth floor."
+     },
+     {
+      "who": "B",
+      "text": "Room 5? Isn't that the small one?"
+     },
+     {
+      "who": "A",
+      "text": "Yes, but only six people are coming, so it's fine."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "The room",
+    "explanation": "The time is the same, but〜の対比で変わったのは部屋のみ。変わらない情報と変わった情報の聞き分け。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "新しい携帯電話の契約について話している。",
+    "speakers": "男性(客) / 女性(店員)",
+    "question": "How will the man pay, and what will he get?",
+    "options": [
+     "Cash and pay 50,000 yen",
+     "Card and pay 50,000 yen",
+     "Card and get points worth 5,000 yen",
+     "Cash and get points worth 5,000 yen"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "How much is this smartphone?"
+     },
+     {
+      "who": "B",
+      "text": "It's 60,000 yen, but today we have a campaign. It's 50,000 yen if you pay cash."
+     },
+     {
+      "who": "A",
+      "text": "I only have my credit card."
+     },
+     {
+      "who": "B",
+      "text": "With a card it's the regular price, but you get 5,000 yen worth of points."
+     },
+     {
+      "who": "A",
+      "text": "OK, I'll use my card then."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Card and get points worth 5,000 yen",
+    "explanation": "支払方法で条件が変わる（現金→値引き／カード→ポイント）。最終選択（カード）と特典の組み合わせを問う。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 6,
+    "scene": "宿題のレポートについて話している。",
+    "speakers": "女性(高校生) / 男性(高校生)",
+    "question": "When is the report due?",
+    "options": [
+     "Today",
+     "Tomorrow",
+     "Thursday",
+     "Friday"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Have you finished the history report?"
+     },
+     {
+      "who": "B",
+      "text": "Almost. I just have to write the conclusion."
+     },
+     {
+      "who": "A",
+      "text": "Isn't it due tomorrow?"
+     },
+     {
+      "who": "B",
+      "text": "No, the teacher changed it to Friday because of the school trip."
+     },
+     {
+      "who": "A",
+      "text": "Lucky! I haven't even started mine."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "Friday",
+    "explanation": "明日締切→先生が金曜に変更、の訂正型。曜日の変更に注意。2022年問13型。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   }
+  ]
+ },
+ {
+  "set": 3,
+  "difficulty": "標準",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "動物園での見学計画を立てている。",
+    "speakers": "男性(父親) / 女性(娘・小学生)",
+    "question": "What will they see first?",
+    "options": [
+     "The monkeys",
+     "The elephants",
+     "They will have lunch first",
+     "The pandas"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "The pandas are the most popular. The line is already long."
+     },
+     {
+      "who": "B",
+      "text": "Can we see them last, then?"
+     },
+     {
+      "who": "A",
+      "text": "Good idea. We'll start with the elephants near the entrance."
+     },
+     {
+      "who": "B",
+      "text": "And the monkeys after that?"
+     },
+     {
+      "who": "A",
+      "text": "Sure. Then lunch, and the pandas in the afternoon when the line is shorter."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "The elephants",
+    "explanation": "順序の組み立て。パンダは最初の話題だが last に変更。near the entrance が第一候補の根拠。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "風邪をひいた生徒と先生が話している。",
+    "speakers": "女性(先生) / 男性(生徒)",
+    "question": "What will the boy do?",
+    "options": [
+     "Go to the nurse's office now",
+     "Go home right away",
+     "Take the math test this afternoon",
+     "Study for tomorrow's test in class"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "You look pale. Are you all right?"
+     },
+     {
+      "who": "B",
+      "text": "I have a headache and a slight fever."
+     },
+     {
+      "who": "A",
+      "text": "You should go to the nurse's office."
+     },
+     {
+      "who": "B",
+      "text": "But we have a math test this afternoon!"
+     },
+     {
+      "who": "A",
+      "text": "Your health comes first. You can take the test tomorrow."
+     },
+     {
+      "who": "B",
+      "text": "OK. I'll go now and take the test tomorrow."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "Go to the nurse's office now",
+    "explanation": "テストを受ける vs保健室、の葛藤から最終決定（保健室へ今行く・テストは明日）。2024年問15型（現在の行動を問う）。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "マンションの買い物の分担を話している。",
+    "speakers": "女性(妻) / 男性(夫)",
+    "question": "What will the husband buy?",
+    "options": [
+     "Milk, eggs, bread, and butter",
+     "Milk, eggs, and white bread",
+     "Eggs and butter only",
+     "Milk, eggs, and whole grain bread"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "We're out of milk and eggs."
+     },
+     {
+      "who": "B",
+      "text": "I'll stop by the supermarket on my way home."
+     },
+     {
+      "who": "A",
+      "text": "Can you also get bread? Not the white one ̶ the whole grain one."
+     },
+     {
+      "who": "B",
+      "text": "Sure. Anything else?"
+     },
+     {
+      "who": "A",
+      "text": "No, that's all. Oh wait ̶ do we have butter?"
+     },
+     {
+      "who": "B",
+      "text": "Yes, I bought some yesterday."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "Milk, eggs, and whole grain bread",
+    "explanation": "買う物リストの確定（牛乳・卵・全粒粉パン）。butter は既にあり＝買わない。not the white oneの限定に注意。",
+    "shuffled": true
+   },
+   {
+    "q": 4,
+    "scene": "オンラインで買った商品の不具合について話している。",
+    "speakers": "男性(客) / 女性(店のスタッフ)",
+    "question": "What will the man do first?",
+    "options": [
+     "Wait a week",
+     "Get a refund",
+     "Send back the broken headphones",
+     "Buy new headphones at a store"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "The headphones I ordered last week arrived yesterday, but the left side doesn't work."
+     },
+     {
+      "who": "B",
+      "text": "I'm sorry to hear that. We can exchange them or give you a refund."
+     },
+     {
+      "who": "A",
+      "text": "I'd like to exchange them, please."
+     },
+     {
+      "who": "B",
+      "text": "Please send them back with the form in the box. Shipping is free."
+     },
+     {
+      "who": "A",
+      "text": "How long will it take to get the new ones?"
+     },
+     {
+      "who": "B",
+      "text": "About a week after we receive yours."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Send back the broken headphones",
+    "explanation": "交換を選択（返金でない）。まず最初に送り返す、という手順の問い。2026年問14型（What will 〜do first?）。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "博物館でガイドツアーについて尋ねている。",
+    "speakers": "女性(旅行者) / 男性(受付)",
+    "question": "Which tour will the woman join?",
+    "options": [
+     "A self-guided tour",
+     "The 3:30 tour",
+     "The 2:00 tour",
+     "The 11:00 tour"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Are there any guided tours in English?"
+     },
+     {
+      "who": "B",
+      "text": "Yes, at eleven and at two. The eleven o'clock tour is full, I'm afraid."
+     },
+     {
+      "who": "A",
+      "text": "Then I'll take the two o'clock one. How long is it?"
+     },
+     {
+      "who": "B",
+      "text": "Ninety minutes. It starts at the main hall, next to the gift shop."
+     },
+     {
+      "who": "A",
+      "text": "Where is that?"
+     },
+     {
+      "who": "B",
+      "text": "Go straight down this hallway, and it's on your right."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "The 2:00 tour",
+    "explanation": "11時は満員→2時のツアーに決定。時間帯の消去法。ガイドなしの選択肢もひっかけ。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "テニス部の練習日程を確認している。",
+    "speakers": "男性(キャプテン) / 女性(部員)",
+    "question": "What should the woman do on Saturday?",
+    "options": [
+     "Arrive at the courts at 8:30",
+     "Go to the school festival",
+     "Play a match in the afternoon",
+     "Practice at the school"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "This week we have practice on Tuesday and Thursday as usual."
+     },
+     {
+      "who": "B",
+      "text": "What about Friday?"
+     },
+     {
+      "who": "A",
+      "text": "Friday is canceled because of the school festival."
+     },
+     {
+      "who": "B",
+      "text": "And the match on Saturday?"
+     },
+     {
+      "who": "A",
+      "text": "It's still on. Be at the courts by eight thirty."
+     },
+     {
+      "who": "B",
+      "text": "Eight thirty? That's earlier than usual!"
+     },
+     {
+      "who": "A",
+      "text": "The other team asked for an early start."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "Arrive at the courts at 8:30",
+    "explanation": "曜日ごとの予定整理。土曜は試合あり＆集合は8:30。キャンセル（金曜）と時刻変更の複合情報。",
+    "shuffled": true
+   }
+  ]
+ },
+ {
+  "set": 4,
+  "difficulty": "標準",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "引っ越しの段取りを話している。",
+    "speakers": "女性(大学生) / 男性(兄)",
+    "question": "What will they pack tonight?",
+    "options": [
+     "The piano",
+     "Books",
+     "Clothes",
+     "Kitchen items"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "The moving truck comes at nine tomorrow."
+     },
+     {
+      "who": "B",
+      "text": "I'll help you pack the kitchen stuff tonight."
+     },
+     {
+      "who": "A",
+      "text": "Thanks. I already packed my books and clothes."
+     },
+     {
+      "who": "B",
+      "text": "What about your piano?"
+     },
+     {
+      "who": "A",
+      "text": "A special company is coming for it on Friday. It stays here until then."
+     },
+     {
+      "who": "B",
+      "text": "Got it. So tonight, just the kitchen."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "Kitchen items",
+    "explanation": "既に梱包済み（本・服）と別日（ピアノ）を除き、今夜は台所用品。時制の整理（過去・未来）が鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "バスを降りる場所を確認している。",
+    "speakers": "男性(旅行者) / 女性(バスの運転手)",
+    "question": "Where should the man get off?",
+    "options": [
+     "At the science museum stop",
+     "At the first stop",
+     "At the art museum",
+     "At the third stop, City Hospital"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Does this bus go to the science museum?"
+     },
+     {
+      "who": "B",
+      "text": "No, it goes to the art museum. For the science museum, get off at the third stop and walk five minutes."
+     },
+     {
+      "who": "A",
+      "text": "The third stop... What's the stop called?"
+     },
+     {
+      "who": "B",
+      "text": "City Hospital. You'll see a big park on your left."
+     },
+     {
+      "who": "A",
+      "text": "Thanks. And which stop is this bus's last stop?"
+     },
+     {
+      "who": "B",
+      "text": "The art museum."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "At the third stop, City Hospital",
+    "explanation": "目的地とバスの行き先が違う点がポイント。third stop（City Hospital）で降りる。停留所名の聞き取り。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "遅れた荷物の配達について電話している。",
+    "speakers": "女性(客) / 男性(配達会社)",
+    "question": "When will the package be delivered?",
+    "options": [
+     "Yesterday",
+     "Today before noon",
+     "Tomorrow morning",
+     "Tomorrow evening"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "My package was supposed to arrive yesterday, but it didn't."
+     },
+     {
+      "who": "B",
+      "text": "I'm sorry. Let me check... It left our Osaka center this morning."
+     },
+     {
+      "who": "A",
+      "text": "When will it arrive in Tokyo?"
+     },
+     {
+      "who": "B",
+      "text": "If it left this morning, it should arrive tomorrow before noon."
+     },
+     {
+      "who": "A",
+      "text": "I won't be home in the morning. Can you deliver it in the evening?"
+     },
+     {
+      "who": "B",
+      "text": "Certainly. Between six and eight, then."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "Tomorrow evening",
+    "explanation": "当初予定（昨日）→変更後（明日午前）→再変更（明日夕方6〜8時）の3段階。最終指定が正解。時間情報の連続訂正。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 4,
+    "scene": "学校の文化祭の出し物を決めている。",
+    "speakers": "男性(高校生) / 女性(高校生)",
+    "question": "What will their class do for the festival?",
+    "options": [
+     "A café",
+     "Nothing decided yet",
+     "A survey",
+     "A haunted house"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Our class needs to decide today: a haunted house or a café."
+     },
+     {
+      "who": "B",
+      "text": "The café idea got more votes in the survey."
+     },
+     {
+      "who": "A",
+      "text": "True, but three other classes are doing cafés already."
+     },
+     {
+      "who": "B",
+      "text": "Oh. Then the haunted house would be more unique."
+     },
+     {
+      "who": "A",
+      "text": "Exactly. Let's go with that. I'll tell our teacher."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "A haunted house",
+    "explanation": "多数決（カフェ）を他クラスとの重複で覆す展開。more unique が決定の根拠。最終結論型。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "レンタカーの予約変更をしている。",
+    "speakers": "女性(客) / 男性(店員)",
+    "question": "What did the woman decide?",
+    "options": [
+     "Keep the compact car",
+     "Change to a van",
+     "Change the pickup time",
+     "Cancel the reservation"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I reserved a compact car for this weekend, but two more people are coming."
+     },
+     {
+      "who": "B",
+      "text": "Then you'll need a bigger car. We have a van for seven people."
+     },
+     {
+      "who": "A",
+      "text": "How much more is it?"
+     },
+     {
+      "who": "B",
+      "text": "3,000 yen more per day."
+     },
+     {
+      "who": "A",
+      "text": "That's fine. Same pickup time, ten o'clock on Saturday?"
+     },
+     {
+      "who": "B",
+      "text": "Yes. I'll change your reservation to a van."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Change to a van",
+    "explanation": "人数増→バンに変更。値段と時刻は変更なし。何が変わり何が変わらないかの整理。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "写真展の感想を話している。",
+    "speakers": "男性(大学生) / 女性(大学生)",
+    "question": "What do both people agree on?",
+    "options": [
+     "The nature photos were the best.",
+     "The entrance fee was high.",
+     "The city photos were too dark.",
+     "The exhibition was too small."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "What did you think of the photo exhibition?"
+     },
+     {
+      "who": "B",
+      "text": "The nature photos were amazing, especially the ones of the northern lights."
+     },
+     {
+      "who": "A",
+      "text": "I liked the city photos better."
+     },
+     {
+      "who": "B",
+      "text": "Really? They were all black and white. I found them a bit dark."
+     },
+     {
+      "who": "A",
+      "text": "That's what I liked about them. But the entrance fee was a little high, right?"
+     },
+     {
+      "who": "B",
+      "text": "Yeah, 1,800 yen is a lot for students."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "The entrance fee was high.",
+    "explanation": "感想は2人で異なる（自然 vs 都市）が、入場料が高い点で一致。What do they have in common?型。2025年問16型。",
+    "shuffled": true
+   }
+  ]
+ },
+ {
+  "set": 5,
+  "difficulty": "標準",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "日本に来た留学生とホストファミリーが話している。",
+    "speakers": "男性(留学生) / 女性(ホストマザー)",
+    "question": "Why is the conveyor-belt sushi restaurant a good choice?",
+    "options": [
+     "It is famous for shrimp.",
+     "It is near their house.",
+     "It is cheap.",
+     "He can avoid shellfish easily."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I want to try Japanese food while I'm here."
+     },
+     {
+      "who": "B",
+      "text": "Do you like sushi?"
+     },
+     {
+      "who": "A",
+      "text": "I love it, but I'm allergic to shellfish, so no shrimp or crab, please."
+     },
+     {
+      "who": "B",
+      "text": "How about a conveyor-belt sushi place? You can choose only what you like."
+     },
+     {
+      "who": "A",
+      "text": "That sounds perfect. Can we go this weekend?"
+     },
+     {
+      "who": "B",
+      "text": "Sure, Saturday night. I'll make a reservation."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "He can avoid shellfish easily.",
+    "explanation": "アレルギー（甲殻類NG）→自分で選べる回転寿司が最適、という理由の推論。Why型の設問。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "スマホの画面が割れた生徒同士が話している。",
+    "speakers": "女性(高校生) / 男性(高校生)",
+    "question": "How much will the girl probably pay for the repair?",
+    "options": [
+     "6,000 yen",
+     "10,000 yen",
+     "Nothing, it's free",
+     "8,000 yen"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Oh no, I dropped my phone and the screen cracked!"
+     },
+     {
+      "who": "B",
+      "text": "Is it still working?"
+     },
+     {
+      "who": "A",
+      "text": "Yes, but it's hard to read messages."
+     },
+     {
+      "who": "B",
+      "text": "There's a repair shop next to the station. They fix screens in an hour."
+     },
+     {
+      "who": "A",
+      "text": "How much does it cost?"
+     },
+     {
+      "who": "B",
+      "text": "My brother paid 8,000 yen last month, but with a student discount it was 6,000."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "6,000 yen",
+    "explanation": "通常8,000円・学生割引6,000円。話者は高校生→割引適用。条件付き価格の判定。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "週末のボランティア活動について話している。",
+    "speakers": "男性(大学生) / 女性(大学生)",
+    "question": "What will the woman do on Sunday?",
+    "options": [
+     "Skip the cleanup",
+     "Join the cleanup around noon",
+     "Bring her own gloves",
+     "Join the cleanup from 10:00"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Are you joining the beach cleanup on Sunday?"
+     },
+     {
+      "who": "B",
+      "text": "I want to, but I work until noon on Sundays."
+     },
+     {
+      "who": "A",
+      "text": "The cleanup starts at ten and ends at two."
+     },
+     {
+      "who": "B",
+      "text": "Then I can only join for the second half."
+     },
+     {
+      "who": "A",
+      "text": "That's fine. Just come when you can. Bring gloves if you have them."
+     },
+     {
+      "who": "B",
+      "text": "I don't, but I'll buy some on the way."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Join the cleanup around noon",
+    "explanation": "勤務（正午まで）→活動の後半から参加。時刻の組み合わせと部分参加の結論。",
+    "shuffled": true
+   },
+   {
+    "q": 4,
+    "scene": "英語のスピーチコンテストの準備をしている。",
+    "speakers": "女性(高校生) / 男性(先生)",
+    "question": "What will the student cut from her speech?",
+    "options": [
+     "The conclusion",
+     "The story about her grandmother",
+     "Part of the introduction",
+     "One minute from the middle"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "My speech is five minutes long, but the limit is four."
+     },
+     {
+      "who": "B",
+      "text": "Then you need to cut about sixty seconds."
+     },
+     {
+      "who": "A",
+      "text": "Which part should I cut?"
+     },
+     {
+      "who": "B",
+      "text": "The introduction is too long. The story about your grandmother is the best part, so keep it."
+     },
+     {
+      "who": "A",
+      "text": "OK. I'll shorten the opening and practice again tonight."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Part of the introduction",
+    "explanation": "どこを削るかの助言（序論が長すぎ）。keep it で祖母の話は残す。keep/cut の対応が鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "夜、夕食の買い出しについて話している。",
+    "speakers": "男性(父親) / 女性(母親)",
+    "question": "What will the father buy?",
+    "options": [
+     "Rice, salmon, and ice cream",
+     "Rice, tuna, and ice cream",
+     "Salmon and ice cream only",
+     "Rice and tuna only"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I'm going to the store. Do we need anything?"
+     },
+     {
+      "who": "B",
+      "text": "We're out of rice. And get some fish for dinner."
+     },
+     {
+      "who": "A",
+      "text": "Salmon or tuna?"
+     },
+     {
+      "who": "B",
+      "text": "Tuna is on sale today, but the kids prefer salmon."
+     },
+     {
+      "who": "A",
+      "text": "I'll get salmon, then. Anything sweet for dessert?"
+     },
+     {
+      "who": "B",
+      "text": "The kids ate all the ice cream yesterday, so yes, please."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "Rice, salmon, and ice cream",
+    "explanation": "米・魚（セールのマグロではなく子供の好みでサケ）・アイス（昨日食べ尽くした）。on sale情報で誘導するひっかけ。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "就職活動の面接の服装について相談している。",
+    "speakers": "女性(大学生) / 男性(兄)",
+    "question": "What will the woman wear to the interview?",
+    "options": [
+     "Casual clothes",
+     "Her navy suit",
+     "The same clothes as the employees",
+     "A new suit she will buy"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I have a job interview on Friday. Should I wear a suit?"
+     },
+     {
+      "who": "B",
+      "text": "For a company interview, yes. Which company is it?"
+     },
+     {
+      "who": "A",
+      "text": "A design company. My friend there said everyone wears casual clothes."
+     },
+     {
+      "who": "B",
+      "text": "Still, for the interview itself, a suit is safer. You can dress casually after you get the job."
+     },
+     {
+      "who": "A",
+      "text": "You're right. I'll wear my navy suit."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Her navy suit",
+    "explanation": "職場のカジュアル文化（ダミー情報）vs面接はスーツ、という助言に従う。ネイビーのスーツが具体的答え。",
+    "shuffled": true
+   }
+  ]
+ },
+ {
+  "set": 6,
+  "difficulty": "やや難",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "町の清掃イベントの案内を確認している。",
+    "speakers": "男性(町の職員) / 女性(住民)",
+    "question": "Which information stayed the same?",
+    "options": [
+     "The day",
+     "The place",
+     "The time",
+     "None of them"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "The cleanup event was moved from this Sunday to next Sunday because of the weather forecast."
+     },
+     {
+      "who": "B",
+      "text": "Oh, I already told my friends about this Sunday."
+     },
+     {
+      "who": "A",
+      "text": "Please tell them about the change. Also, the meeting place changed from the park entrance to the community center."
+     },
+     {
+      "who": "B",
+      "text": "Same time, nine o'clock?"
+     },
+     {
+      "who": "A",
+      "text": "No, thirty minutes earlier, at eight thirty."
+     },
+     {
+      "who": "B",
+      "text": "OK, new day, new place, new time. Got it."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "None of them",
+    "explanation": "日・場所・時刻すべて変更。stayed the same（変わらなかったもの）を問う逆転の設問。全部変わった＝④が正解。2022年問15型（否定の確認）。",
+    "shuffled": false,
+    "lockReason": "解説がマーク番号を直接指している"
+   },
+   {
+    "q": 2,
+    "scene": "祖父母の金婚式の計画を話している。",
+    "speakers": "女性(母) / 男性(息子・大学生)",
+    "question": "What should the son bring to the party?",
+    "options": [
+     "His girlfriend",
+     "A gift",
+     "Lunch",
+     "A card"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Grandma and Grandpa's fiftieth anniversary is next month."
+     },
+     {
+      "who": "B",
+      "text": "Are we having a party?"
+     },
+     {
+      "who": "A",
+      "text": "At a restaurant on the 20th. But Grandpa's doctor said he should eat early, so we moved it from dinner to lunch."
+     },
+     {
+      "who": "B",
+      "text": "Can I invite my girlfriend?"
+     },
+     {
+      "who": "A",
+      "text": "It's family only this time. Sorry."
+     },
+     {
+      "who": "B",
+      "text": "No problem. What should I bring?"
+     },
+     {
+      "who": "A",
+      "text": "Just a card. Your grandfather said no gifts."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "A card",
+    "explanation": "時間変更（夕食→昼食）・家族のみ（彼女不可）・no giftsが混在。最終的に持参するのはカードのみ。複数訂正の中の確定情報。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "ホテルのチェックインでトラブルがあった後で話している。",
+    "speakers": "男性(旅行者) / 女性(同僚)",
+    "question": "What was the man's mistake?",
+    "options": [
+     "He booked the wrong month.",
+     "He paid at the wrong hotel.",
+     "He went to the wrong hotel.",
+     "He lost his reservation paper."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "How was your trip?"
+     },
+     {
+      "who": "B",
+      "text": "Terrible at first. The hotel couldn't find my reservation."
+     },
+     {
+      "who": "A",
+      "text": "Oh no. What happened?"
+     },
+     {
+      "who": "B",
+      "text": "Turns out I booked it for the wrong month ̶ July instead of June."
+     },
+     {
+      "who": "A",
+      "text": "Did you find a room?"
+     },
+     {
+      "who": "B",
+      "text": "Luckily they had one, but I had to pay a higher price for the same night."
+     },
+     {
+      "who": "A",
+      "text": "At least you got a room."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "He booked the wrong month.",
+    "explanation": "2026年問15型（間違いの特定）。July instead of June＝月を間違えた。部屋は確保できたが高くついた、は結末の詳細。",
+    "shuffled": true
+   },
+   {
+    "q": 4,
+    "scene": "雑誌の定期購読について話している。",
+    "speakers": "女性(妻) / 男性(夫)",
+    "question": "What will the woman do?",
+    "options": [
+     "Cancel the cooking magazine",
+     "Buy back issues at the used bookstore",
+     "Cancel the travel magazine",
+     "Switch to the digital version"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "This cooking magazine costs 800 yen a month. That's almost 10,000 yen a year."
+     },
+     {
+      "who": "B",
+      "text": "Why not read it online? The digital version is half the price."
+     },
+     {
+      "who": "A",
+      "text": "I know, but I like paper. I cut out recipes and keep them."
+     },
+     {
+      "who": "B",
+      "text": "Then how about buying back issues? They're 500 yen each at the used bookstore."
+     },
+     {
+      "who": "A",
+      "text": "But I want to read the new recipes first. I'll keep the subscription but cancel the other one ̶ the travel magazine I never read."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Cancel the travel magazine",
+    "explanation": "提案2つ（デジタル版・バックナンバー）を却下し、別の雑誌（旅行）を解約する結論。主語の取り違い注意。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "夜道で拾った財布の対応を話している。",
+    "speakers": "男性(高校生) / 女性(母親)",
+    "question": "When will the boy take the wallet to the police box?",
+    "options": [
+     "Tonight",
+     "Tomorrow morning before practice",
+     "Tomorrow before school",
+     "Tomorrow after school"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I found a wallet on my way home. There's no ID inside, just cash and a train pass."
+     },
+     {
+      "who": "B",
+      "text": "You should take it to the police box tonight."
+     },
+     {
+      "who": "A",
+      "text": "It's closed already. The one near the station closes at eight."
+     },
+     {
+      "who": "B",
+      "text": "Then take it tomorrow morning before school."
+     },
+     {
+      "who": "A",
+      "text": "But I have morning practice at seven."
+     },
+     {
+      "who": "B",
+      "text": "OK. Take it after school, then. Don't spend any of the money, of course."
+     },
+     {
+      "who": "A",
+      "text": "Of course not!"
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "Tomorrow after school",
+    "explanation": "今夜（閉まっている）→明朝（練習がある）→放課後、の消去。3つの時刻候補を潰していく型。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 6,
+    "scene": "スーパーでアレルギー対応の商品を探している。",
+    "speakers": "女性(客) / 男性(店員)",
+    "question": "Why doesn't the woman buy the white bread?",
+    "options": [
+     "It contains eggs.",
+     "It is too expensive.",
+     "It may have touched eggs at the factory.",
+     "It is frozen."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Do you have any bread without eggs? My son is allergic."
+     },
+     {
+      "who": "B",
+      "text": "This white bread has no eggs. But it was made in a factory that also makes cakes with eggs."
+     },
+     {
+      "who": "A",
+      "text": "Then it's not safe for him. His allergy is serious."
+     },
+     {
+      "who": "B",
+      "text": "We also have rice-flour bread in the frozen section. It's made in a special factory with no eggs at all."
+     },
+     {
+      "who": "A",
+      "text": "That's the one. Where's the frozen section?"
+     },
+     {
+      "who": "B",
+      "text": "At the back, next to the drinks."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "It may have touched eggs at the factory.",
+    "explanation": "卵不使用でも同一工場製造（コンタミネーション）のため避ける、という細かい区別。Why型＋理由の精度が求められる。やや難。",
+    "shuffled": true
+   }
+  ]
+ },
+ {
+  "set": 7,
+  "difficulty": "標準",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "部活の新入部員への説明をしている。",
+    "speakers": "男性(部長) / 女性(新入部員)",
+    "question": "What will the new member do about her job?",
+    "options": [
+     "Ask to change her shift",
+     "Work only on weekends",
+     "Quit her part-time job",
+     "Skip Friday practice"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Practice is every Monday, Wednesday, and Friday from four to six."
+     },
+     {
+      "who": "B",
+      "text": "I have a part-time job on Fridays. Can I skip Friday practice?"
+     },
+     {
+      "who": "A",
+      "text": "Friday is when we practice with the coach, so it's the most important."
+     },
+     {
+      "who": "B",
+      "text": "Then I'll ask my boss to change my shift."
+     },
+     {
+      "who": "A",
+      "text": "Also, bring your own water bottle. The school doesn't provide drinks."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "Ask to change her shift",
+    "explanation": "金曜練習が最重要→シフト変更を申し出る。行動の解決策を問う。水筒はダミー詳細。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "朝、寝坊した兄弟が話している。",
+    "speakers": "男性(兄) / 女性(妹)",
+    "question": "How will the brother get to school?",
+    "options": [
+     "By the 8:20 bus",
+     "By bicycle",
+     "By the 7:50 bus",
+     "On foot"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "It's already seven forty! The bus leaves at seven fifty."
+     },
+     {
+      "who": "B",
+      "text": "We'll never make it. It's a ten-minute walk to the bus stop."
+     },
+     {
+      "who": "A",
+      "text": "The next bus is at eight twenty, but then I'll miss the first period."
+     },
+     {
+      "who": "B",
+      "text": "Why don't you take my bike? It's faster."
+     },
+     {
+      "who": "A",
+      "text": "What about you?"
+     },
+     {
+      "who": "B",
+      "text": "My first class is second period. I'll take the eight-twenty bus."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "By bicycle",
+    "explanation": "間に合わないバス・遅刻するバスを経て、妹の自転車で行く結論。兄弟で異なる手段になる点に注意。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "アパートの騒音問題について話している。",
+    "speakers": "女性(住人) / 男性(大家)",
+    "question": "What will the owner do?",
+    "options": [
+     "Send a notice to everyone",
+     "Talk to all residents",
+     "Change the quiet hours",
+     "Visit the noisy neighbors"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "The people upstairs play loud music every night until midnight."
+     },
+     {
+      "who": "B",
+      "text": "Have you talked to them directly?"
+     },
+     {
+      "who": "A",
+      "text": "I did, twice. They were friendly but nothing changed."
+     },
+     {
+      "who": "B",
+      "text": "I see. I'll send a notice to all residents about quiet hours after ten."
+     },
+     {
+      "who": "A",
+      "text": "Could you talk to them directly instead? A general notice might not work."
+     },
+     {
+      "who": "B",
+      "text": "All right. I'll visit them this weekend."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "Visit the noisy neighbors",
+    "explanation": "最初の提案（全戸への通知）→住人の要望で直接訪問に変更。insteadの効いた要望が結論を変える。",
+    "shuffled": true
+   },
+   {
+    "q": 4,
+    "scene": "デパートで入学祝いを選んでいる。",
+    "speakers": "男性(父) / 女性(店員)",
+    "question": "What will the father buy?",
+    "options": [
+     "A fountain pen",
+     "The smaller desk lamp",
+     "The large desk lamp",
+     "Nothing today"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I'm looking for a gift for my daughter. She's starting junior high school."
+     },
+     {
+      "who": "B",
+      "text": "How about a fountain pen? These start at 3,000 yen."
+     },
+     {
+      "who": "A",
+      "text": "She already has one from her grandmother."
+     },
+     {
+      "who": "B",
+      "text": "Then maybe a desk lamp? This one changes brightness and color."
+     },
+     {
+      "who": "A",
+      "text": "That's nice, but a bit expensive. Do you have anything around 5,000 yen?"
+     },
+     {
+      "who": "B",
+      "text": "This smaller lamp is 4,500 yen. Same functions."
+     },
+     {
+      "who": "A",
+      "text": "I'll take that one."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "The smaller desk lamp",
+    "explanation": "万年筆（既に所持）→大きいランプ（高い）→小型ランプ4,500円で確定。価格帯の条件指定。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "海外旅行前に両替について話している。",
+    "speakers": "女性(旅行者) / 男性(友人)",
+    "question": "Where will the woman probably exchange her money?",
+    "options": [
+     "At the bank counter",
+     "At her hotel",
+     "At the airport",
+     "At the bank's machine"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Should I exchange money at the airport?"
+     },
+     {
+      "who": "B",
+      "text": "The rates there are bad. I always use the machine at the city bank ̶ better rates."
+     },
+     {
+      "who": "A",
+      "text": "But I leave at six in the morning. The bank won't be open."
+     },
+     {
+      "who": "B",
+      "text": "The machine is available twenty-four hours."
+     },
+     {
+      "who": "A",
+      "text": "Perfect. How much should I exchange?"
+     },
+     {
+      "who": "B",
+      "text": "I took about 300 dollars for a week. Cards work almost everywhere there, so that was enough."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "At the bank's machine",
+    "explanation": "空港（レート悪）→銀行（早朝で窓口不可）→24時間使えるATM、の絞り込み。機械と窓口の区別が鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "試験の結果について話している。",
+    "speakers": "男性(高校生) / 女性(高校生)",
+    "question": "What will the boy help the girl with? (※男女の発話を確認)",
+    "options": [
+     "Reading",
+     "Writing",
+     "Grammar",
+     "Listening"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "How did you do on the English test?"
+     },
+     {
+      "who": "B",
+      "text": "Eighty-two points. I lost points on the listening section again."
+     },
+     {
+      "who": "A",
+      "text": "Same here. I got seventy-eight, and my reading score was fine but writing was terrible."
+     },
+     {
+      "who": "B",
+      "text": "Let's practice together. I'll teach you listening if you help me with... wait, actually my writing is OK."
+     },
+     {
+      "who": "A",
+      "text": "Then you teach me listening, and I'll ask the teacher for writing help."
+     },
+     {
+      "who": "B",
+      "text": "Deal. Let's start after school on Thursday."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "Listening",
+    "explanation": "男性（B）がリスニングが苦手で女子が教える、という設定に注意。設問の主語（boy/girl）と苦手科目の対応が鍵。主語の取り違え型。2025年問16型の類似。",
+    "shuffled": true
+   }
+  ]
+ },
+ {
+  "set": 8,
+  "difficulty": "標準",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "習い事の体験教室について電話している。",
+    "speakers": "女性(母親) / 男性(教室スタッフ)",
+    "question": "What time is the trial lesson, and what should they bring?",
+    "options": [
+     "10:00, indoor shoes",
+     "1:00, nothing",
+     "4:00, indoor shoes",
+     "4:00, a piano book"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I'd like to sign my son up for a trial piano lesson."
+     },
+     {
+      "who": "B",
+      "text": "We have trials on Saturdays at ten, one, and four."
+     },
+     {
+      "who": "A",
+      "text": "He has soccer until eleven on Saturdays. One o'clock, please."
+     },
+     {
+      "who": "B",
+      "text": "The one o'clock class is full. How about four?"
+     },
+     {
+      "who": "A",
+      "text": "That works. Do we need to bring anything?"
+     },
+     {
+      "who": "B",
+      "text": "Just indoor shoes. We provide everything else."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "4:00, indoor shoes",
+    "explanation": "時刻（10時は習い事と重複・1時は満員→4時）と持ち物（上履き）の2情報を問う。組み合わせの正確性。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 2,
+    "scene": "庭の手入れを手伝ってもらう約束をしている。",
+    "speakers": "男性(祖父) / 女性(孫・高校生)",
+    "question": "When will the girl help her grandfather?",
+    "options": [
+     "Saturday all day",
+     "Saturday morning from eight",
+     "Sunday morning",
+     "Sunday if it doesn't rain"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Can you help me in the garden this Saturday?"
+     },
+     {
+      "who": "B",
+      "text": "I have a test on Monday, so I should study. How about Sunday?"
+     },
+     {
+      "who": "A",
+      "text": "Sunday is supposed to rain."
+     },
+     {
+      "who": "B",
+      "text": "Then Saturday morning only. I can study in the afternoon."
+     },
+     {
+      "who": "A",
+      "text": "Deal. Come at eight ̶ it gets too hot after ten."
+     },
+     {
+      "who": "B",
+      "text": "Eight?! Grandpa, it's Saturday... OK, OK, eight."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Saturday morning from eight",
+    "explanation": "土曜終日→テスト勉強で午前のみ、かつ8時開始。日曜は雨予報で消去。条件の絞り込み。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 3,
+    "scene": "献血会場での案内を聞いている。",
+    "speakers": "女性(看護師) / 男性(会社員)",
+    "question": "What must the man do before donating blood?",
+    "options": [
+     "Eat a full meal",
+     "Have a snack and a drink",
+     "Wait forty minutes",
+     "Pay for the cookies"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Before donating blood, please fill out this form and show your ID."
+     },
+     {
+      "who": "B",
+      "text": "Here's my driver's license."
+     },
+     {
+      "who": "A",
+      "text": "Thank you. Have you eaten today?"
+     },
+     {
+      "who": "B",
+      "text": "Just breakfast, around seven."
+     },
+     {
+      "who": "A",
+      "text": "It's past noon, so please have a snack and something to drink first. We have free cookies and juice over there."
+     },
+     {
+      "who": "B",
+      "text": "OK. How long does the whole thing take?"
+     },
+     {
+      "who": "A",
+      "text": "About forty minutes after the snack."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Have a snack and a drink",
+    "explanation": "朝食のみ＝空腹気味→まず軽食と飲み物。40分は献血そのものの時間でダミー。手順の正しい理解。",
+    "shuffled": true
+   },
+   {
+    "q": 4,
+    "scene": "図書委員の仕事の引き継ぎをしている。",
+    "speakers": "女性(3年生) / 男性(2年生)",
+    "question": "What do the committee members do on Fridays?",
+    "options": [
+     "Choose new books",
+     "Arrange new books by theme",
+     "Clean the library",
+     "Check returned books only"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "As library committee members, we check the returned books every morning."
+     },
+     {
+      "who": "B",
+      "text": "Every morning? That's a lot."
+     },
+     {
+      "who": "A",
+      "text": "It only takes fifteen minutes. Also, on Fridays we put new books on the display shelf."
+     },
+     {
+      "who": "B",
+      "text": "Who chooses the new books?"
+     },
+     {
+      "who": "A",
+      "text": "The librarian chooses them. We just arrange them by theme."
+     },
+     {
+      "who": "B",
+      "text": "Got it. Morning checks every day, displays on Fridays."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Arrange new books by theme",
+    "explanation": "本を選ぶのは司書＝ダミー誘導。委員の仕事はテーマ別に並べること。役割の区別（who does what）が鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "夜、アルバイト先のシフト変更を電話で頼んでいる。",
+    "speakers": "男性(大学生) / 女性(店長)",
+    "question": "Why does the man want to change his shift?",
+    "options": [
+     "He wants time to study before the exam.",
+     "Ken asked him to switch shifts.",
+     "He is not feeling well.",
+     "The exam is at the same time as his shift."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I'm sorry to call this late. Can I change my shift this Thursday?"
+     },
+     {
+      "who": "B",
+      "text": "What's wrong?"
+     },
+     {
+      "who": "A",
+      "text": "My professor moved the exam from Wednesday to Thursday morning."
+     },
+     {
+      "who": "B",
+      "text": "Your shift starts at five in the evening, right? The exam is in the morning."
+     },
+     {
+      "who": "A",
+      "text": "Yes, but I need the afternoon to review my notes. I haven't studied at all."
+     },
+     {
+      "who": "B",
+      "text": "All right, I'll ask Ken to cover you. But you owe him one."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "He wants time to study before the exam.",
+    "explanation": "試験は午前・シフトは夕方で直接は重ならないが、午後に勉強時間が欲しい、という理由。Why型で理由の正確な把握が求められる。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "新婚旅行の行き先を決めている。",
+    "speakers": "女性(妻) / 男性(夫)",
+    "question": "Which tour will they book?",
+    "options": [
+     "Guam, three days",
+     "Guam, four days",
+     "Hawaii, four days",
+     "Hawaii, five days"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I found a great deal for Hawaii ̶ five days for 150,000 yen."
+     },
+     {
+      "who": "B",
+      "text": "I only have four days off. What about Guam? It's closer."
+     },
+     {
+      "who": "A",
+      "text": "The Guam tour is three days. Too short for a honeymoon."
+     },
+     {
+      "who": "B",
+      "text": "Then Hawaii for four days? Is that possible?"
+     },
+     {
+      "who": "A",
+      "text": "There's a four-day plan for 130,000 yen. Cheaper and fits your vacation!"
+     },
+     {
+      "who": "B",
+      "text": "Perfect. Book that one."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Hawaii, four days",
+    "explanation": "日数の条件（夫の休み4日）と価格の変化を組み合わせる。5日プラン→4日プランへの修正。数字情報の整理。",
+    "shuffled": true
+   }
+  ]
+ },
+ {
+  "set": 9,
+  "difficulty": "標準",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "雨の日の送迎を調整している。",
+    "speakers": "女性(母親) / 男性(息子・中学生)",
+    "question": "How will the boy go to school?",
+    "options": [
+     "By bus",
+     "On foot",
+     "By car",
+     "By bike"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "It's pouring. Do you want a ride to school?"
+     },
+     {
+      "who": "B",
+      "text": "The car is being repaired today, isn't it?"
+     },
+     {
+      "who": "A",
+      "text": "Right. Then take the bus from the corner stop. It comes at seven forty."
+     },
+     {
+      "who": "B",
+      "text": "That gets me there too early. My friends and I always meet at the gate at eight ten."
+     },
+     {
+      "who": "A",
+      "text": "The seven-forty bus arrives at school at eight. That's only ten minutes early. You'll survive."
+     },
+     {
+      "who": "B",
+      "text": "Fine. But I'm coming home by bike if it stops raining."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "By bus",
+    "explanation": "車は修理中→バスで登校。自転車は帰りの話（条件付き）でひっかけ。行きと帰りの手段の区別。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "レストランでアレルギーの確認をしている。",
+    "speakers": "男性(客) / 女性(店員)",
+    "question": "What will the man's wife eat?",
+    "options": [
+     "Pasta without cheese, no soup",
+     "Pasta with cheese, no soup",
+     "Pasta with cheese and corn soup",
+     "Only the corn soup"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Does the tomato pasta contain cheese? My wife can't eat dairy."
+     },
+     {
+      "who": "B",
+      "text": "It has a little cheese on top, but we can make it without."
+     },
+     {
+      "who": "A",
+      "text": "Please do. Also, is the soup of the day dairy-free?"
+     },
+     {
+      "who": "B",
+      "text": "Today's soup is corn soup. It has milk and butter."
+     },
+     {
+      "who": "A",
+      "text": "Then no soup for her. I'll have the soup myself."
+     },
+     {
+      "who": "B",
+      "text": "Certainly. One pasta without cheese, and one corn soup."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "Pasta without cheese, no soup",
+    "explanation": "妻＝チーズ抜きパスタ・スープなし、夫＝スープあり、の個別注文の整理。誰が何を食べるかの対応。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "駅のコインロッカーについて話している。",
+    "speakers": "女性(旅行者) / 男性(駅員)",
+    "question": "How much will the woman pay for the locker?",
+    "options": [
+     "400 yen",
+     "700 yen",
+     "1,100 yen",
+     "350 yen"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Are there lockers big enough for a suitcase?"
+     },
+     {
+      "who": "B",
+      "text": "Yes, on the second floor near the east exit. The ones here on the first floor are for small bags only."
+     },
+     {
+      "who": "A",
+      "text": "How much are the big ones?"
+     },
+     {
+      "who": "B",
+      "text": "700 yen per day. The small ones are 400."
+     },
+     {
+      "who": "A",
+      "text": "I only need it until this evening. Is it still 700?"
+     },
+     {
+      "who": "B",
+      "text": "Yes, the price is per calendar day, not per hour."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "700 yen",
+    "explanation": "大きいロッカー700円・時間ではなく日単位。数時間でも700円。料金体系の理解がポイント。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 4,
+    "scene": "学校の避難訓練の手順を確認している。",
+    "speakers": "男性(先生) / 女性(生徒会長)",
+    "question": "What should students do at the second bell?",
+    "options": [
+     "Go to the field",
+     "Go to the gym",
+     "Use the east stairs",
+     "Stay in the classroom"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "In this year's drill, the first bell means 'stay in your classroom.'"
+     },
+     {
+      "who": "B",
+      "text": "Last year the first bell meant 'go to the gym,' right?"
+     },
+     {
+      "who": "A",
+      "text": "That's the change this year. The second bell means move to the field, not the gym."
+     },
+     {
+      "who": "B",
+      "text": "Why the field?"
+     },
+     {
+      "who": "A",
+      "text": "The gym is being repainted. And don't use the east stairs ̶ use the main stairs and the west stairs only."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "Go to the field",
+    "explanation": "昨年との手順変更（第1ベル＝教室待機、第2ベル＝グラウンド）。東階段は使用禁止。変更点の正確な把握。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "引っ越し先の部屋の採寸をしている。",
+    "speakers": "女性(大学生) / 男性(不動産屋)",
+    "question": "Where will the bookshelf go?",
+    "options": [
+     "On the wall next to the bed",
+     "It won't fit anywhere",
+     "Next to the desk",
+     "Between the door and the window"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Will my desk fit? It's 120 centimeters wide."
+     },
+     {
+      "who": "B",
+      "text": "The wall space between the door and the window is 140 centimeters."
+     },
+     {
+      "who": "A",
+      "text": "Great. What about my bookshelf? It's 90 wide and 180 tall."
+     },
+     {
+      "who": "B",
+      "text": "The ceiling is fine, but that same wall only has 140. The desk plus the shelf would be 210."
+     },
+     {
+      "who": "A",
+      "text": "Then the bookshelf goes on the other wall, next to the bed."
+     },
+     {
+      "who": "B",
+      "text": "That wall is 200 centimeters. No problem."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "On the wall next to the bed",
+    "explanation": "寸法の計算（120+90=210 > 140 で同居不可）→別の壁へ。数字の比較による配置決定。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "友達の家でのお泊まり会の計画をしている。",
+    "speakers": "女性(高校生) / 男性(高校生)",
+    "question": "When and where will they have the movie night?",
+    "options": [
+     "Saturday night at her house",
+     "Sunday from five at her house",
+     "Saturday night at his house",
+     "Sunday from five at his house"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "My parents will be away this weekend, so we can have the movie night at my place."
+     },
+     {
+      "who": "B",
+      "text": "Nice. Saturday night?"
+     },
+     {
+      "who": "A",
+      "text": "My little brother has a friend over on Saturday. Sunday is better."
+     },
+     {
+      "who": "B",
+      "text": "Sunday night... I have school the next day. Can we start early, like five?"
+     },
+     {
+      "who": "A",
+      "text": "Sure, we'll finish by nine. Bring snacks ̶ I'll order pizza."
+     },
+     {
+      "who": "B",
+      "text": "I'll bring chips and juice. See you Sunday at five."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Sunday from five at her house",
+    "explanation": "場所（彼女の家）と曜日・時刻（日曜17時開始）の確定。土曜は弟の友人が来るため不可。複合情報の整理。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   }
+  ]
+ },
+ {
+  "set": 10,
+  "difficulty": "やや難",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "会社の健康診断の案内を読んで話している。",
+    "speakers": "女性(会社員) / 男性(同僚)",
+    "question": "What should the man do on the morning of the 14th?",
+    "options": [
+     "Take his medicine as usual",
+     "Drink only water and bring his pills",
+     "Skip both breakfast and water",
+     "Eat breakfast before six"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "The health check is on the 14th. We're supposed to skip breakfast that day."
+     },
+     {
+      "who": "B",
+      "text": "Really? Last year we could eat until six a.m."
+     },
+     {
+      "who": "A",
+      "text": "The rules changed. This year, nothing after nine p.m. the night before. Only water is OK in the morning."
+     },
+     {
+      "who": "B",
+      "text": "What about medicine? I take pills every morning."
+     },
+     {
+      "who": "A",
+      "text": "The notice says to bring them and take them after the blood test."
+     },
+     {
+      "who": "B",
+      "text": "OK. Pills come with me, breakfast stays home."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Drink only water and bring his pills",
+    "explanation": "昨年のルールとの変更点（21時以降禁食・朝は水のみ・薬は持参して検査後）。複数の新ルールの統合。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "地区の防災訓練の参加について話している。",
+    "speakers": "男性(自治会長) / 女性(住民)",
+    "question": "What should the woman bring to the drill?",
+    "options": [
+     "Nothing",
+     "Water and a towel",
+     "A helmet",
+     "A registration form"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "The disaster drill is this Sunday at the elementary school."
+     },
+     {
+      "who": "B",
+      "text": "Do I need to register in advance?"
+     },
+     {
+      "who": "A",
+      "text": "No, just come between eight thirty and nine. We'll lend you a helmet, but bring your own water and towel."
+     },
+     {
+      "who": "B",
+      "text": "My husband uses a wheelchair. Is the school accessible?"
+     },
+     {
+      "who": "A",
+      "text": "Yes, and we have a special area for wheelchair users near the exit. Ask the staff in the red jackets when you arrive."
+     },
+     {
+      "who": "B",
+      "text": "That's a relief. We'll be there before nine."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Water and a towel",
+    "explanation": "貸与品（ヘルメット）と持参品（水・タオル）の区別。事前登録不要もダミー。詳細の聞き分け。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "論文の提出方法について学生と事務員が話している。",
+    "speakers": "男性(大学院生) / 女性(事務員)",
+    "question": "How should the man submit his paper?",
+    "options": [
+     "Upload a PDF through the website form",
+     "Email a PDF to the department",
+     "Upload everything in one file",
+     "Hand in a paper copy"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Is the deadline for the paper still Friday at five?"
+     },
+     {
+      "who": "B",
+      "text": "The deadline is the same, but the submission method changed. No more paper copies ̶ email it as a PDF."
+     },
+     {
+      "who": "A",
+      "text": "To the department office address?"
+     },
+     {
+      "who": "B",
+      "text": "No, there's a new online form on the university website. Upload it there."
+     },
+     {
+      "who": "A",
+      "text": "Do I still need the signature page from my advisor?"
+     },
+     {
+      "who": "B",
+      "text": "Yes. Scan it and upload it as a separate file."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "Upload a PDF through the website form",
+    "explanation": "提出方法の変更（紙→メール→Webフォーム、の2段階の訂正）。署名ページは別ファイル、はひっかけ詳細。締切は不変。",
+    "shuffled": true
+   },
+   {
+    "q": 4,
+    "scene": "劇のチケットの取り置きを頼んでいる。",
+    "speakers": "女性(客) / 男性(劇場スタッフ)",
+    "question": "Which tickets will the woman buy?",
+    "options": [
+     "Saturday evening, front center",
+     "Saturday afternoon, front center",
+     "Sunday evening, second floor side",
+     "Sunday evening, front center"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Can I reserve two tickets for Saturday evening?"
+     },
+     {
+      "who": "B",
+      "text": "Saturday evening is sold out. We have seats for Saturday afternoon or Sunday evening."
+     },
+     {
+      "who": "A",
+      "text": "How's the view from the Sunday seats?"
+     },
+     {
+      "who": "B",
+      "text": "Saturday afternoon's seats are in the front center. Sunday evening's are on the second floor, side."
+     },
+     {
+      "who": "A",
+      "text": "The front center sounds better. But my friend works Saturday afternoons... You know what, she said evening shows only. Sunday, please."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Sunday evening, second floor side",
+    "explanation": "希望（土曜夜）は完売→座席の良さ（土曜昼・前方中央）と友人の条件（夜のみ）が競合→友人の条件優先で日曜夜。優先順位の判断。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 5,
+    "scene": "パソコンのデータ移行について相談している。",
+    "speakers": "男性(会社員) / 女性(IT担当)",
+    "question": "What will be finished by tomorrow morning?",
+    "options": [
+     "Documents and photos without videos",
+     "Everything including videos",
+     "Documents and all photos",
+     "Only the documents"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I got a new laptop. Can you move all my files today?"
+     },
+     {
+      "who": "B",
+      "text": "All the documents, yes. But your photo folder is 200 gigabytes ̶ that alone will take all night."
+     },
+     {
+      "who": "A",
+      "text": "Can you skip the videos in that folder? I have them saved elsewhere."
+     },
+     {
+      "who": "B",
+      "text": "The videos are half of it. Then it's 100 gigabytes. Still slow, but we can finish by tomorrow morning."
+     },
+     {
+      "who": "A",
+      "text": "OK. Documents first, please. I need them for a meeting at three."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "Documents and photos without videos",
+    "explanation": "容量の内訳（写真フォルダ200GB→動画除外で100GB）を除けば明朝までに完了、という計算。all / skip の対象が鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "祭りの屋台の出店申し込みについて話している。",
+    "speakers": "女性(出店希望者) / 男性(実行委員)",
+    "question": "What is true about the woman's certificate?",
+    "options": [
+     "It is valid this year but not next year.",
+     "It must be renewed this year.",
+     "It is valid for two more years.",
+     "It has already expired."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I'd like to apply for a food stall at the summer festival."
+     },
+     {
+      "who": "B",
+      "text": "Food stalls need a fire safety certificate. Do you have one?"
+     },
+     {
+      "who": "A",
+      "text": "I have one from last year. Is it still valid?"
+     },
+     {
+      "who": "B",
+      "text": "Certificates expire after two years. When exactly did you get yours?"
+     },
+     {
+      "who": "A",
+      "text": "June, two years ago."
+     },
+     {
+      "who": "B",
+      "text": "Then it's still valid this summer, but you'll need to renew it next year. Also, the application fee went up to 5,000 yen this year."
+     },
+     {
+      "who": "A",
+      "text": "That's fine. Here's the form and the fee."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "It is valid this year but not next year.",
+    "explanation": "有効期限2年・取得は2年前の6月→今年ぎりぎり有効・来年は更新必要、という時間軸の正確な計算。What is true 型。",
+    "shuffled": true
+   }
+  ]
+ },
+ {
+  "set": 11,
+  "difficulty": "標準",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "帰国子女の生徒が転校初日に話している。",
+    "speakers": "男性(生徒) / 女性(クラスメート)",
+    "question": "What is true about the boy?",
+    "options": [
+     "He returned to Japan last week.",
+     "He moved to Nagoya from Osaka.",
+     "He was born in Singapore.",
+     "His best language is Chinese."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I just moved here from Singapore last week."
+     },
+     {
+      "who": "B",
+      "text": "Were you born there?"
+     },
+     {
+      "who": "A",
+      "text": "No, I was born in Osaka. We moved to Singapore when I was six because of my dad's job."
+     },
+     {
+      "who": "B",
+      "text": "So you speak English well?"
+     },
+     {
+      "who": "A",
+      "text": "Pretty well, but my Chinese is better. My mom is from Taiwan."
+     },
+     {
+      "who": "B",
+      "text": "Wow. When did you come back to Japan?"
+     },
+     {
+      "who": "A",
+      "text": "We arrived in Tokyo last month, then moved here to Nagoya last week."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "His best language is Chinese.",
+    "explanation": "出生地（大阪）・経由地（シンガポール）・帰国先（東京→名古屋）と母語の情報が錯綜。1つ1つ検証する What is true 型。2023年問15型。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "駅前の再開発について話している。",
+    "speakers": "女性(住民) / 男性(友人)",
+    "question": "What will happen to the bookstore?",
+    "options": [
+     "It reopened last month.",
+     "It will move next to the station.",
+     "It will close permanently.",
+     "It will reopen inside the new mall."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Did you hear the old bookstore in front of the station closed?"
+     },
+     {
+      "who": "B",
+      "text": "No! I loved that place. Why?"
+     },
+     {
+      "who": "A",
+      "text": "They're building a new shopping mall there. The supermarket in the mall opens next month."
+     },
+     {
+      "who": "B",
+      "text": "What about the bookstore? Is it gone forever?"
+     },
+     {
+      "who": "A",
+      "text": "Actually, it's moving into the mall ̶ second floor, next to the café. It opens in spring."
+     },
+     {
+      "who": "B",
+      "text": "That's good news. The location is even better."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "It will reopen inside the new mall.",
+    "explanation": "閉店→モール内2階で春に再開、という経緯。時制（来月開くのはスーパー／書店は春）の区別が鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "遠足のグループ分けを確認している。",
+    "speakers": "男性(先生) / 女性(生徒)",
+    "question": "What happened to the girl?",
+    "options": [
+     "She stayed in Group 3.",
+     "She moved to Group 5 and became the leader.",
+     "She moved to Group 5 as a regular member.",
+     "She became the leader of Group 3."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "For the field trip, you'll be in groups of five. Group leaders, come get the maps."
+     },
+     {
+      "who": "B",
+      "text": "Ms. Tanaka, I'm in Group 3, but my best friend is in Group 5. Can we switch?"
+     },
+     {
+      "who": "A",
+      "text": "Group 3 already has six people because of the new student. I need someone to move."
+     },
+     {
+      "who": "B",
+      "text": "Oh, then moving to Group 5 actually helps!"
+     },
+     {
+      "who": "A",
+      "text": "Exactly. You're in Group 5 now. Take this map ̶ you're also the new leader since Ken is absent today."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "She moved to Group 5 and became the leader.",
+    "explanation": "グループ変更＋リーダー任命の2つの変化。人数調整（6人→1人移動）の背景理解も必要。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 4,
+    "scene": "ネットショッピングの返品について話している。",
+    "speakers": "女性(客) / 男性(カスタマーサービス)",
+    "question": "What will the customer receive?",
+    "options": [
+     "The same sweater in size L",
+     "A navy sweater in size M",
+     "A refund",
+     "A navy sweater in size L"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I want to return this sweater. It's too small."
+     },
+     {
+      "who": "B",
+      "text": "We can exchange it for a larger size or refund you. But returns must be within two weeks of delivery."
+     },
+     {
+      "who": "A",
+      "text": "It arrived on the first of this month. What's today... the tenth?"
+     },
+     {
+      "who": "B",
+      "text": "Then you're fine. Would you like a size M?"
+     },
+     {
+      "who": "A",
+      "text": "Actually, I checked the size chart and L is better. And a different color if possible ̶ the navy one."
+     },
+     {
+      "who": "B",
+      "text": "Size L in navy. I'll arrange it."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "A navy sweater in size L",
+    "explanation": "返金か交換か→交換、サイズ（M→Lに変更）・色（ネイビー）の指定変更。最終的な組み合わせが正解。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "朝のラジオ体操イベントに誘っている。",
+    "speakers": "男性(小学生) / 女性(祖母)",
+    "question": "How many more times does the boy need to go?",
+    "options": [
+     "Ten times",
+     "Seven times",
+     "Three times",
+     "Five times"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Grandma, will you come to radio exercises with me tomorrow?"
+     },
+     {
+      "who": "B",
+      "text": "What time does it start?"
+     },
+     {
+      "who": "A",
+      "text": "Six thirty at the park. You get a stamp card, and after ten stamps you get a prize."
+     },
+     {
+      "who": "B",
+      "text": "How many stamps do you have now?"
+     },
+     {
+      "who": "A",
+      "text": "Seven! Only three more. But it ends this Friday."
+     },
+     {
+      "who": "B",
+      "text": "Then we should go every day. I'll wake you up at six."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Three times",
+    "explanation": "10個で賞品・現在7個→あと3回。金曜終了は緊急性の情報。単純な引き算だが数字の所在（7と10）の聞き分けが鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "フリーマーケットの値段交渉をしている。",
+    "speakers": "女性(客) / 男性(出店者)",
+    "question": "How much did the woman pay in total?",
+    "options": [
+     "1,500 yen",
+     "1,800 yen",
+     "2,200 yen",
+     "2,800 yen"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "How much is this lamp?"
+     },
+     {
+      "who": "B",
+      "text": "2,000 yen. It's almost new."
+     },
+     {
+      "who": "A",
+      "text": "There's a small scratch here. Would you take 1,500?"
+     },
+     {
+      "who": "B",
+      "text": "I can do 1,800."
+     },
+     {
+      "who": "A",
+      "text": "What if I also buy this clock? It's 800 yen, right?"
+     },
+     {
+      "who": "B",
+      "text": "Tell you what ̶ the lamp and the clock together for 2,200 yen."
+     },
+     {
+      "who": "A",
+      "text": "Deal!"
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "2,200 yen",
+    "explanation": "単品の定価（2,000＋800＝2,800）と交渉経過（1,500→1,800）を経てセット2,200円で確定。最終合意額を問う。",
+    "shuffled": false,
+    "lockReason": "数値が昇順に並んでいる"
+   }
+  ]
+ },
+ {
+  "set": 12,
+  "difficulty": "標準",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "大学のオープンキャンパスへの行き方を調べている。",
+    "speakers": "女性(高校生) / 男性(父親)",
+    "question": "How will they get to the university?",
+    "options": [
+     "By car",
+     "By bus from Kyoto Station",
+     "By direct train",
+     "By train with one transfer"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "The university's open campus is on the 20th. It starts at ten."
+     },
+     {
+      "who": "B",
+      "text": "It's near Kyoto Station, right? We can drive."
+     },
+     {
+      "who": "A",
+      "text": "The website says there's no parking that day. We should use the train."
+     },
+     {
+      "who": "B",
+      "text": "OK. From our station, do we change trains?"
+     },
+     {
+      "who": "A",
+      "text": "Yes, at Osaka. The rapid train at eight fifteen gets us there at nine twenty."
+     },
+     {
+      "who": "B",
+      "text": "Let's catch the earlier one at seven fifty, just in case."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "By train with one transfer",
+    "explanation": "車は駐車場なしで不可→電車・大阪で乗換。時刻の選択（7:50発に早める）はひっかけ。交通手段の結論を問う。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "習熟度別クラスの振り分けテストについて話している。",
+    "speakers": "男性(塾講師) / 女性(生徒)",
+    "question": "What happens if the girl's retest score is lower than 68?",
+    "options": [
+     "The retest score will be used.",
+     "She can keep 68.",
+     "She will automatically enter Class A.",
+     "She can take the test a third time."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Your test result decides your class. Seventy points or above is Class A."
+     },
+     {
+      "who": "B",
+      "text": "I got sixty-eight! That's so close."
+     },
+     {
+      "who": "A",
+      "text": "You can retake the test once. The retest is next Monday."
+     },
+     {
+      "who": "B",
+      "text": "Is it the same test?"
+     },
+     {
+      "who": "A",
+      "text": "Same level, different questions. But note: if you take the retest, your new score counts even if it's lower."
+     },
+     {
+      "who": "B",
+      "text": "Risky... but I want Class A. I'll retake it."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "The retest score will be used.",
+    "explanation": "再試験のルール（低くても新スコアが採用される）という条件の正確な理解。リスクの条件文が鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "地域のラジオ番組のゲスト出演の打ち合わせをしている。",
+    "speakers": "女性(パーソナリティ) / 男性(ゲスト・高校生)",
+    "question": "What is true about the boy's appearance?",
+    "options": [
+     "It is recorded at six and airs at eight on Thursday.",
+     "He will be on the show for thirty minutes.",
+     "It airs live on Saturday at eight.",
+     "It will be broadcast live on Thursday."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "You'll be on the show next Thursday. We record at the studio at six p.m., and it airs at eight."
+     },
+     {
+      "who": "B",
+      "text": "So it's not live?"
+     },
+     {
+      "who": "A",
+      "text": "The Thursday show is recorded, but Saturday's show is live. Yours is the Thursday one."
+     },
+     {
+      "who": "B",
+      "text": "Got it. How long is my part?"
+     },
+     {
+      "who": "A",
+      "text": "Ten minutes. We'll talk about your volunteer work abroad."
+     },
+     {
+      "who": "B",
+      "text": "Should I prepare anything?"
+     },
+     {
+      "who": "A",
+      "text": "Bring photos if you have them. We'll post them on the show's website."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "It is recorded at six and airs at eight on Thursday.",
+    "explanation": "木曜＝収録（18時収録・20時放送）／土曜＝生放送、の対比。live/recorded の混同がひっかけ。",
+    "shuffled": true
+   },
+   {
+    "q": 4,
+    "scene": "家族でペットホテルを選んでいる。",
+    "speakers": "男性(父) / 女性(母)",
+    "question": "Which hotel will they choose and why?",
+    "options": [
+     "The second one because the nightly price is lower",
+     "The first one because of the photos",
+     "The second one because walks are included",
+     "The first one because it is cheaper in total"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "We need a pet hotel for Moko during our trip. Five nights."
+     },
+     {
+      "who": "B",
+      "text": "This one is 3,000 yen per night, and they send photos every day."
+     },
+     {
+      "who": "A",
+      "text": "This other one is 2,500 yen per night but charges extra for walks ̶ 500 yen each time."
+     },
+     {
+      "who": "B",
+      "text": "Moko needs a walk twice a day. So that's 1,000 yen extra per day."
+     },
+     {
+      "who": "A",
+      "text": "Right, so the second one is actually 3,500 a day. The first one is cheaper after all."
+     },
+     {
+      "who": "B",
+      "text": "And we get daily photos. Let's book the first one."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "The first one because it is cheaper in total",
+    "explanation": "単価の安い方が散歩代で割高になる計算（2,500+1,000=3,500 > 3,000）。総額比較が核心。理由付き設問。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "修学旅行の班別行動の持ち物を確認している。",
+    "speakers": "女性(先生) / 男性(生徒)",
+    "question": "What should the group members (not the leader) do with their phones?",
+    "options": [
+     "Use them only at lunch",
+     "Turn them off",
+     "Keep them on for photos",
+     "Leave them at the hotel"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Tomorrow is free time in Kyoto. Each group needs one map and one phone."
+     },
+     {
+      "who": "B",
+      "text": "Everyone has a phone. Can't we each use our own?"
+     },
+     {
+      "who": "A",
+      "text": "School rules: phones stay off except the leader's. The leader's phone is for emergencies only."
+     },
+     {
+      "who": "B",
+      "text": "So I, as the leader, keep my phone on, and the others turn theirs off?"
+     },
+     {
+      "who": "A",
+      "text": "Correct. Also, everyone needs to bring lunch money ̶ about 1,500 yen ̶ and a raincoat, not an umbrella. The streets are crowded."
+     },
+     {
+      "who": "B",
+      "text": "Raincoat, not umbrella. Got it."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Turn them off",
+    "explanation": "リーダーと一般生徒でルールが違う点が核心。傘ではなくレインコート、という指定も典型的な詳細ひっかけ。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "市民プールの利用方法を確認している。",
+    "speakers": "男性(利用者) / 女性(受付)",
+    "question": "How much will they pay in total today?",
+    "options": [
+     "400 yen",
+     "500 yen",
+     "600 yen",
+     "700 yen"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Is this your first time here?"
+     },
+     {
+      "who": "B",
+      "text": "Yes. Do I need a membership card?"
+     },
+     {
+      "who": "A",
+      "text": "No, but please write your name and address on this sheet each visit. Entry is 400 yen for adults."
+     },
+     {
+      "who": "B",
+      "text": "And my son? He's six."
+     },
+     {
+      "who": "A",
+      "text": "Children under elementary school age are 200 yen. Elementary students are free on weekends ̶ but today is Friday, so he's 200 yen... wait, is he in elementary school?"
+     },
+     {
+      "who": "B",
+      "text": "He just started first grade this April."
+     },
+     {
+      "who": "A",
+      "text": "Then 200 yen for him today. Lockers need a 100-yen coin, which you get back."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "600 yen",
+    "explanation": "大人400円＋小学生（平日なので無料ではなく）200円＝600円。ロッカーの100円は返金式でダミー。曜日条件と年齢条件の複合。",
+    "shuffled": false,
+    "lockReason": "数値が昇順に並んでいる"
+   }
+  ]
+ },
+ {
+  "set": 13,
+  "difficulty": "やや難",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "家のインターネット回線の故障について電話している。",
+    "speakers": "女性(客) / 男性(サポートセンター)",
+    "question": "What can we learn from the conversation?",
+    "options": [
+     "The technician will come in the morning.",
+     "The woman must take a day off from work.",
+     "The repair will probably be free.",
+     "The woman will pay 8,000 yen."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Our internet has been down since this morning. I've restarted the router twice."
+     },
+     {
+      "who": "B",
+      "text": "There's a cable problem in your area. A technician can come tomorrow between nine and noon, or between one and five."
+     },
+     {
+      "who": "A",
+      "text": "I work from home in the mornings, so the afternoon, please."
+     },
+     {
+      "who": "B",
+      "text": "All right. Someone must be home during the visit. Also, there's no charge if the problem is with our outside cable."
+     },
+     {
+      "who": "A",
+      "text": "And if it's inside my house?"
+     },
+     {
+      "who": "B",
+      "text": "Then it's 8,000 yen. But since the whole area is affected, it will most likely be free."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "The repair will probably be free.",
+    "explanation": "午後の訪問を選択・在宅必要・外部ケーブルの故障なら無料→地域全体の故障なのでおそらく無料、という推論。What can we learn 型。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "幼稚園のお遊戯会の衣装について話している。",
+    "speakers": "女性(母親) / 男性(保育士)",
+    "question": "What does the mother need to prepare?",
+    "options": [
+     "A short-sleeved white shirt and named white gym shoes",
+     "White gym shoes and dark pants with costumes",
+     "A long-sleeved white shirt",
+     "An animal costume"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "What should the children wear for the play?"
+     },
+     {
+      "who": "B",
+      "text": "White shirts and dark pants. We provide the animal costumes here at the kindergarten."
+     },
+     {
+      "who": "A",
+      "text": "My daughter has a white shirt, but it's short-sleeved. Is that all right?"
+     },
+     {
+      "who": "B",
+      "text": "Long sleeves are better because the costumes are sleeveless. But under the costume, short sleeves are fine."
+     },
+     {
+      "who": "A",
+      "text": "What about shoes?"
+     },
+     {
+      "who": "B",
+      "text": "Everyone wears the same white gym shoes. Please write her name inside them."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "A short-sleeved white shirt and named white gym shoes",
+    "explanation": "衣装（動物コスチューム）は園が用意・白シャツは半袖で可・上履きに記名、という細かい条件の統合。提供物と持参物の区別。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "山登りの計画を天気予報を見ながら練り直している。",
+    "speakers": "男性(大学生) / 女性(大学生)",
+    "question": "Why did they choose Saturday?",
+    "options": [
+     "The festival is on Saturday.",
+     "It will be sunny.",
+     "The ropeway will be running.",
+     "The hike is shorter on Saturday."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "The forecast says Saturday will be cloudy, and Sunday sunny but windy at the summit."
+     },
+     {
+      "who": "B",
+      "text": "Windy how?"
+     },
+     {
+      "who": "A",
+      "text": "Gusts up to 20 meters per second. The ropeway stops if it's over 15."
+     },
+     {
+      "who": "B",
+      "text": "So on Sunday the ropeway might not run. What about hiking up?"
+     },
+     {
+      "who": "A",
+      "text": "It's a three-hour hike. Doable, but we'd be tired for the festival that evening."
+     },
+     {
+      "who": "B",
+      "text": "Saturday it is, then. Cloudy is fine ̶ the ropeway will run, and we won't get sunburned."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "The ropeway will be running.",
+    "explanation": "日曜は晴れだが強風でロープウェイ運休の恐れ→曇りの土曜を選択。天気の良さより運行条件を優先する推論が鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 4,
+    "scene": "バイト先の店の閉店セールについて話している。",
+    "speakers": "女性(店員・大学生) / 男性(店長)",
+    "question": "What will the woman receive when the shop closes?",
+    "options": [
+     "Work during the cleanup days",
+     "A job at the mall shop",
+     "Two extra weeks of pay",
+     "A closing sale discount"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I heard the shop is closing at the end of March. Is that true?"
+     },
+     {
+      "who": "B",
+      "text": "Yes. The building is being torn down. But we're having a closing sale all month."
+     },
+     {
+      "who": "A",
+      "text": "Will the other shop in the mall hire the staff here?"
+     },
+     {
+      "who": "B",
+      "text": "They offered positions to full-time workers only. Part-timers like you get two extra weeks of pay instead."
+     },
+     {
+      "who": "A",
+      "text": "That's fair. When's my last shift?"
+     },
+     {
+      "who": "B",
+      "text": "The 28th. The last two days are for cleanup ̶ full-time staff only."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Two extra weeks of pay",
+    "explanation": "正社員＝別店舗へ／パート＝2週間分の手当、という区別。最終シフト（28日）と清掃日の詳細はひっかけ。身分による条件の違いが鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "家電の保証期間について話している。",
+    "speakers": "男性(客) / 女性(店員)",
+    "question": "What will the man do?",
+    "options": [
+     "Register for the warranty online",
+     "Buy a new washing machine",
+     "Get a free repair under warranty",
+     "Pay 12,000 yen for the repair"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "This washing machine broke. I bought it here about two years ago."
+     },
+     {
+      "who": "B",
+      "text": "Do you have the receipt? The standard warranty is one year, but this brand offers a free three-year warranty if you registered online within a month of purchase."
+     },
+     {
+      "who": "A",
+      "text": "Registered? I don't think I did."
+     },
+     {
+      "who": "B",
+      "text": "Then it's the one-year warranty, I'm afraid. The repair would cost about 12,000 yen."
+     },
+     {
+      "who": "A",
+      "text": "Hmm. A new basic model is 45,000 yen... I'll pay for the repair. It's cheaper."
+     },
+     {
+      "who": "B",
+      "text": "We'll pick it up on Thursday, then."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "Pay 12,000 yen for the repair",
+    "explanation": "保証の条件（購入後1か月以内のオンライン登録）を満たさず有償→修理か買替かの比較で修理を選択。条件の細かい聞き取り。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "深夜の救急病院の受付で話している。",
+    "speakers": "女性(母親) / 男性(受付)",
+    "question": "What is the boy allowed to have before the scan?",
+    "options": [
+     "Nothing at all",
+     "A light meal",
+     "Only his medicine",
+     "Small amounts of water"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "My son fell off his bike and hit his head. He seems fine now, but he vomited once."
+     },
+     {
+      "who": "B",
+      "text": "Head injury with vomiting ̶ the doctor should see him right away. Fill out this form, please."
+     },
+     {
+      "who": "A",
+      "text": "Should he eat or drink anything?"
+     },
+     {
+      "who": "B",
+      "text": "Nothing until the CT scan, in case we need to do a procedure. Sips of water are OK if he's thirsty."
+     },
+     {
+      "who": "A",
+      "text": "How long is the wait?"
+     },
+     {
+      "who": "B",
+      "text": "He's high priority, so about fifteen minutes. The scan itself takes ten."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "Small amounts of water",
+    "explanation": "飲食禁止だが水は少量OK、という例外つきの指示。優先度の高い患者＝待ち15分、という詳細も含む。例外表現（Sips of water are OK）が鍵。",
+    "shuffled": true
+   }
+  ]
+ },
+ {
+  "set": 14,
+  "difficulty": "標準",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "学校の補習授業の日程調整をしている。",
+    "speakers": "女性(先生) / 男性(生徒)",
+    "question": "What should the boy bring on Saturday?",
+    "options": [
+     "His club equipment",
+     "A new textbook",
+     "His test paper and a notebook",
+     "Lunch"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "You failed the math test, so you need to take the supplementary class."
+     },
+     {
+      "who": "B",
+      "text": "When is it?"
+     },
+     {
+      "who": "A",
+      "text": "There are two sessions: Tuesday after school or Saturday morning. Same content."
+     },
+     {
+      "who": "B",
+      "text": "I have club activities after school on Tuesday. Saturday, please."
+     },
+     {
+      "who": "A",
+      "text": "Saturday's session is from nine to eleven in Room 204. Bring your test paper and a notebook."
+     },
+     {
+      "who": "B",
+      "text": "Do I have to retake the test?"
+     },
+     {
+      "who": "A",
+      "text": "Yes, the following Monday during lunch break."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "His test paper and a notebook",
+    "explanation": "火曜（部活で不可）→土曜午前を選択。持ち物（テスト用紙とノート）が設問の対象。再テストの日程はダミー詳細。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "深夜バスの予約を変更している。",
+    "speakers": "男性(乗客) / 女性(バス会社スタッフ)",
+    "question": "Which seat did the man book?",
+    "options": [
+     "Friday, back row",
+     "Saturday, back row",
+     "Sunday, front row",
+     "Saturday, front row"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I booked the night bus to Sendai this Friday, but I need to change it to Saturday."
+     },
+     {
+      "who": "B",
+      "text": "Saturday's bus has only a few seats left ̶ in the back row."
+     },
+     {
+      "who": "A",
+      "text": "Back row... is it noisy?"
+     },
+     {
+      "who": "B",
+      "text": "It's near the restroom, so some passengers walk by. The front seats are quieter but that day they're sold out."
+     },
+     {
+      "who": "A",
+      "text": "Hmm. What about the late Sunday bus?"
+     },
+     {
+      "who": "B",
+      "text": "Sunday at 11 p.m. has front row seats available, same price."
+     },
+     {
+      "who": "A",
+      "text": "I'll take Sunday, front row, please."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Sunday, front row",
+    "explanation": "曜日変更（金→土→日）と座席（後方・トイレ近く vs前方静か）のトレードオフ。最終的な組み合わせが正解。売り切れ情報が消去の材料。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 3,
+    "scene": "植物の世話を引き受ける約束をしている。",
+    "speakers": "女性(隣人) / 男性(隣人)",
+    "question": "How will the woman give the key to the man?",
+    "options": [
+     "Give it to his wife",
+     "Leave it under the mat",
+     "Mail it to him",
+     "Hand it to him directly"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Could you water my plants while I'm abroad? I'll be gone for ten days from the third."
+     },
+     {
+      "who": "B",
+      "text": "Sure. How often?"
+     },
+     {
+      "who": "A",
+      "text": "The ones in the living room need water every two days. The cactus on the balcony, only once a week."
+     },
+     {
+      "who": "B",
+      "text": "Every two days for the indoor ones, once for the cactus. Anything else?"
+     },
+     {
+      "who": "A",
+      "text": "Please collect the mail, too. And if any package comes, just keep it inside your place."
+     },
+     {
+      "who": "B",
+      "text": "No problem. Leave me the key under the mat?"
+     },
+     {
+      "who": "A",
+      "text": "I'd rather hand it to you directly the day before I leave."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "Hand it to him directly",
+    "explanation": "水やりの頻度（2日ごと／週1回）の詳細が並ぶが、設問は鍵の受け渡し方法。I'd rather〜の希望が結論。詳細の中から設問に対応する情報だけ拾う練習。",
+    "shuffled": true
+   },
+   {
+    "q": 4,
+    "scene": "図書館の規則の変更について説明を受けている。",
+    "speakers": "男性(利用者) / 女性(司書)",
+    "question": "What is true about the new rules?",
+    "options": [
+     "DVDs can now be renewed online.",
+     "Up to eight books can be borrowed.",
+     "The borrowing period became longer.",
+     "All items can be renewed twice."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I heard the borrowing rules changed."
+     },
+     {
+      "who": "B",
+      "text": "Yes. Starting this month, you can borrow up to eight books instead of five."
+     },
+     {
+      "who": "A",
+      "text": "That's great. How long can I keep them?"
+     },
+     {
+      "who": "B",
+      "text": "Still two weeks, but now you can renew twice online. It used to be once, in person only."
+     },
+     {
+      "who": "A",
+      "text": "Wonderful. Are DVDs the same?"
+     },
+     {
+      "who": "B",
+      "text": "No. DVDs are still three items for one week, and no renewals."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "Up to eight books can be borrowed.",
+    "explanation": "変更点（冊数5→8・更新2回オンライン可）と変更なし（貸出期間2週間・DVD規則）の混在。What is true 型で全文の照合が必要。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "体育祭のリレーの選手順を決めている。",
+    "speakers": "女性(キャプテン) / 男性(部員)",
+    "question": "Why is Tomo in the middle of the relay order?",
+    "options": [
+     "He asked to run in the middle.",
+     "His ankle is not fully healed.",
+     "He is nervous about running last.",
+     "He is the fastest runner."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "For the relay, I'll run first, then Yuki, then Tomo, and you're the anchor."
+     },
+     {
+      "who": "B",
+      "text": "Me, last? But Tomo is faster than me."
+     },
+     {
+      "who": "A",
+      "text": "Tomo twisted his ankle yesterday. He can run, but not at full speed, so the middle is safer."
+     },
+     {
+      "who": "B",
+      "text": "Makes sense. But honestly, I'm nervous as the anchor."
+     },
+     {
+      "who": "A",
+      "text": "You'll be fine. If we're leading by the third runner, just keep the pace."
+     },
+     {
+      "who": "B",
+      "text": "OK. I'll do my best."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "His ankle is not fully healed.",
+    "explanation": "速いのに最終走者でない理由（足首を捻挫し完走は可能だが本調子ではない）。Why型の理由推論。表層の速さ情報がひっかけ。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "デジカメの修理の見積もりについて話している。",
+    "speakers": "男性(客) / 女性(修理店員)",
+    "question": "How much will the repair cost?",
+    "options": [
+     "4,000 yen",
+     "6,000 yen",
+     "10,000 yen",
+     "Nothing, it's under warranty"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "My camera won't turn on. Can you fix it?"
+     },
+     {
+      "who": "B",
+      "text": "Let me see... It's the battery connector. The repair is 6,000 yen, and a new battery is 4,000 yen if yours is worn out."
+     },
+     {
+      "who": "A",
+      "text": "Is my battery worn out?"
+     },
+     {
+      "who": "B",
+      "text": "No, it's fine. So just 6,000 yen. It'll take three days."
+     },
+     {
+      "who": "A",
+      "text": "That's faster than I expected. I have a trip on the 15th. Today's the 10th ̶ will it make it?"
+     },
+     {
+      "who": "B",
+      "text": "Pick it up on the 13th. One day to spare."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "6,000 yen",
+    "explanation": "コネクタ修理6,000円のみ（バッテリは劣化していないので不要）。合計1万円がひっかけ。部品の要否の確認が鍵。",
+    "shuffled": true
+   }
+  ]
+ },
+ {
+  "set": 15,
+  "difficulty": "易しめ",
+  "questions": [
+   {
+    "q": 1,
+    "scene": "昼食の場所を決めている。",
+    "speakers": "女性(高校生) / 男性(高校生)",
+    "question": "Where will they have lunch?",
+    "options": [
+     "At the sandwich shop",
+     "At the convenience store",
+     "At the cafeteria",
+     "In the park"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Where do you want to eat lunch today?"
+     },
+     {
+      "who": "B",
+      "text": "The cafeteria is closed for cleaning. Let's buy something at the convenience store."
+     },
+     {
+      "who": "A",
+      "text": "There's a new sandwich shop near the station, too."
+     },
+     {
+      "who": "B",
+      "text": "That place is expensive. Convenience store is fine ̶ we can eat in the park."
+     },
+     {
+      "who": "A",
+      "text": "Good idea. It's sunny today."
+     }
+    ],
+    "answerIndex": 4,
+    "answerText": "In the park",
+    "explanation": "買う場所（コンビニ）と食べる場所（公園）の区別が鍵。設問 Where will they have lunch?は食べる場所。近視眼的に店名を選ばせない構成。",
+    "shuffled": true
+   },
+   {
+    "q": 2,
+    "scene": "忘れ物の傘を届けている。",
+    "speakers": "男性(生徒) / 女性(事務員)",
+    "question": "What happens to the umbrella if nobody claims it?",
+    "options": [
+     "It is sold at a reuse sale.",
+     "It is returned to Classroom 2-B.",
+     "It is thrown away.",
+     "It is kept at the office forever."
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Excuse me, someone left this umbrella in Classroom 2-B."
+     },
+     {
+      "who": "B",
+      "text": "Thanks. Do you know whose it is?"
+     },
+     {
+      "who": "A",
+      "text": "There was a name tag on it, but it was too faded to read."
+     },
+     {
+      "who": "B",
+      "text": "OK. I'll keep it at the office. If no one claims it in a month, we give unclaimed items to the student council's reuse sale."
+     },
+     {
+      "who": "A",
+      "text": "A reuse sale?"
+     },
+     {
+      "who": "B",
+      "text": "Yes, they sell lost items cheaply and use the money for school events."
+     }
+    ],
+    "answerIndex": 1,
+    "answerText": "It is sold at a reuse sale.",
+    "explanation": "拾得物の行方の流れ（事務室で1か月保管→リユースセールへ）。手順の順序理解。",
+    "shuffled": true
+   },
+   {
+    "q": 3,
+    "scene": "週末のゴルフ練習の予定を立てている。",
+    "speakers": "男性(会社員) / 女性(同僚)",
+    "question": "When and where will they practice?",
+    "options": [
+     "Saturday at the outdoor range",
+     "Sunday at the outdoor range",
+     "Saturday morning at the indoor range",
+     "Weekday evening at the indoor range"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Want to practice golf this weekend?"
+     },
+     {
+      "who": "B",
+      "text": "The outdoor range is closed on Saturdays now. Sundays only."
+     },
+     {
+      "who": "A",
+      "text": "How about the indoor range near the office? It's open every day."
+     },
+     {
+      "who": "B",
+      "text": "Weekday evenings are too crowded. Let's go there Saturday morning ̶ it's empty before ten."
+     },
+     {
+      "who": "A",
+      "text": "Wait, you said Saturday is closed..."
+     },
+     {
+      "who": "B",
+      "text": "The outdoor one is. The indoor one is open Saturday."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Saturday morning at the indoor range",
+    "explanation": "2つの練習場（屋外＝日曜のみ／屋内＝毎日）の営業情報の整理と、会話中の確認（Wait, you said〜）への訂正対応。",
+    "shuffled": false,
+    "lockReason": "時刻・日付・曜日の並び"
+   },
+   {
+    "q": 4,
+    "scene": "犬の散歩の代行を頼んでいる。",
+    "speakers": "女性(依頼者) / 男性(高校生の息子)",
+    "question": "What should the boy avoid today?",
+    "options": [
+     "The small towel",
+     "The construction worker",
+     "The north gate",
+     "The park"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "I'm stuck at work late today. Can you walk Choco?"
+     },
+     {
+      "who": "B",
+      "text": "Sure. Just the usual route around the park?"
+     },
+     {
+      "who": "A",
+      "text": "Yes, but avoid the north gate ̶ there's construction today."
+     },
+     {
+      "who": "B",
+      "text": "How long should I walk him?"
+     },
+     {
+      "who": "A",
+      "text": "Thirty minutes is fine. And take the small towel by the door ̶ wipe his paws before coming in."
+     },
+     {
+      "who": "B",
+      "text": "Got it. Walk, wipe, done."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "The north gate",
+    "explanation": "avoid the north gate（工事のため）が核心。30分・足を拭く、の詳細は実行内容。avoidの対象を問う。",
+    "shuffled": true
+   },
+   {
+    "q": 5,
+    "scene": "新しいアルバイトの研修日を確認している。",
+    "speakers": "女性(高校生) / 男性(店長)",
+    "question": "What should the girl wear on Monday?",
+    "options": [
+     "The uniform",
+     "Her school uniform",
+     "Comfortable clothes",
+     "Formal clothes"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "Your training starts next Monday. Can you come at three?"
+     },
+     {
+      "who": "B",
+      "text": "School ends at three thirty on Mondays. I can be there by four."
+     },
+     {
+      "who": "A",
+      "text": "OK, four then. The training is about two hours ̶ we'll go over the register and cleaning."
+     },
+     {
+      "who": "B",
+      "text": "Do I get paid for training?"
+     },
+     {
+      "who": "A",
+      "text": "Yes, same hourly rate. And wear something you can move in ̶ no uniform needed that day."
+     }
+    ],
+    "answerIndex": 3,
+    "answerText": "Comfortable clothes",
+    "explanation": "wear something you can move in（動きやすい服装）＝制服不要。no uniform needed の否定が鍵。",
+    "shuffled": true
+   },
+   {
+    "q": 6,
+    "scene": "文化祭のチケット販売について話している。",
+    "speakers": "男性(実行委員) / 女性(実行委員)",
+    "question": "How many tickets have been sold so far?",
+    "options": [
+     "100",
+     "200",
+     "300",
+     "400"
+    ],
+    "turns": [
+     {
+      "who": "A",
+      "text": "How are ticket sales?"
+     },
+     {
+      "who": "B",
+      "text": "We sold 120 tickets yesterday and 80 today so far."
+     },
+     {
+      "who": "A",
+      "text": "The hall holds 300 people. We're selling tickets for two days, so..."
+     },
+     {
+      "who": "B",
+      "text": "We still have 100 left for this afternoon and tomorrow morning."
+     },
+     {
+      "who": "A",
+      "text": "Let's announce it in the group chat so everyone knows they can still buy."
+     },
+     {
+      "who": "B",
+      "text": "Good idea. I'll write the message now."
+     }
+    ],
+    "answerIndex": 2,
+    "answerText": "200",
+    "explanation": "120＋80＝200枚が販売済み。残り100枚は未販売。定員300との関係で soldを問われている点に注意（100を選ばせない）。",
+    "shuffled": false,
+    "lockReason": "数値が昇順に並んでいる"
+   }
+  ]
+ }
+]

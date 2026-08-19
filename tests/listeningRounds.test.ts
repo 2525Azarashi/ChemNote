@@ -89,7 +89,8 @@ describe('buildListeningRounds（回のボタン一覧を作る）', () => {
   });
 
   it('問題が無い（未収録の）大問では空配列になる（準備中の表示に使う）', () => {
-    expect(buildListeningRounds(chapterById('el3')?.practiceProblems)).toEqual([]);
+    // el3（第3問）は収録済みになったので、まだ未収録の第2問で確かめる
+    expect(buildListeningRounds(chapterById('el2')?.practiceProblems)).toEqual([]);
     expect(buildListeningRounds(undefined)).toEqual([]);
     expect(buildListeningRounds(null)).toEqual([]);
   });

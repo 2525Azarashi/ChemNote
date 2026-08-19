@@ -17,4 +17,6 @@ export { SECTION_2_3_HTML } from './section_2_3';
 // 化学（発展）のまとめプリント。化学基礎とは別の科目として扱う。
 // ADV_THERMO_PARTS は「重要事項ごとに見る」ボタン用の分割データ。
 export { ADV_THERMO_HTML, ADV_THERMO_PARTS, type LearningPart } from './adv_thermo';
+// 化学（発展）4章 電池と電気分解。adv_thermo と同じ LearningPart[] 構造。
+export { ADV_ELECTRO_HTML, ADV_ELECTRO_PARTS } from './adv_electro';
 
