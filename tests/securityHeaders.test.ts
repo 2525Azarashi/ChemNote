@@ -240,4 +240,15 @@ describe('リポジトリ衛生: 秘密情報や使い捨てスクリプトを�
       .filter((f: string) => /\.(js|cjs)$/.test(f) && f !== 'eslint.config.js');
     expect(leftovers).toEqual([]);
   });
+
+  it('未使用の Gemini API キーをブラウザバンドルへ注入しない', () => {
+    const viteConfig = readFileSync(resolve(root, 'vite.config.ts'), 'utf-8');
+    expect(viteConfig).not.toContain('GEMINI_API_KEY');
+    expect(viteConfig).not.toContain('loadEnv');
+  });
+
+  it('README で不要な秘密鍵設定を案内しない', () => {
+    const readme = readFileSync(resolve(root, 'README.md'), 'utf-8');
+    expect(readme).not.toContain('Set the `GEMINI_API_KEY`');
+  });
 });
