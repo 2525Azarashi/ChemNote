@@ -224,6 +224,17 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     });
   }, [allQuestions, singleQuestionIndex, questionRange, rangeOffset, focusSubQuestionId]);
 
+  // 数学の章か（requiresMathPalette を立てた小問を含むか）。
+  // 数学のときは解説・解答を数式フォント＋一回り大きい表示（.math-content）で描画し、
+  // ∫Σ√分数などが教科書と同じ形で読めるようにする。
+  const isMathChapter = useMemo(() => {
+    return allQuestions.some((q: any) =>
+      (q?.subQuestions || []).some((sq: any) => sq?.requiresMathPalette)
+    );
+  }, [allQuestions]);
+  // 数学のときだけ付け足すクラス（非数学は空文字＝従来と完全に同じ見た目）
+  const mathBodyClass = isMathChapter ? ' font-math math-content' : '';
+
   // 要件①：「この単元の思考の型」の本文。単元（章）に紐づくので問題ごとには作らない。
   // 内容・表現・順番・解説は従来と1文字も変えていない（エンジン側の buildUnitKataBlock がそのまま組む）。
   const unitKataBlock = useMemo(() => buildUnitKataBlock(getUnitTeaching(chapter.id)), [chapter.id]);
@@ -1437,8 +1448,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     </div>
                                   )}
                                 </div>
-                                <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
-                                  <span className={`text-xs mr-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
+                                <div className={`font-bold text-sm md:text-base${mathBodyClass} ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
+                                  <span className={`text-xs mr-1 font-modern ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
                                     {sq.type === 'descriptive' ? '模範解答:' : '正解:'}
                                   </span>
                                   {formatText(sq.correctAnswer)}
@@ -1454,13 +1465,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                       : isCorrect
                                         ? (mode === 'mini_test' ? 'bg-white border-emerald-200 text-emerald-700' : 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]')
                                         : (mode === 'mini_test' ? 'bg-white border-red-200 text-red-600 line-through opacity-80' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0] line-through opacity-80')
-                                  }`}>
+                                  }${mathBodyClass}`}>
                                     {formatText(answers[sq.id] || '未解答')}
                                   </div>
                                 </div>
                                 <div>
                                   <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>{sq.type === 'descriptive' ? '模範解答' : '正解'}</div>
-                                  <div className={`font-math font-bold text-sm md:text-base p-3 rounded-lg border break-words ${mode === 'mini_test' ? 'text-emerald-700 bg-white border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'}`}>
+                                  <div className={`font-math font-bold text-sm md:text-base p-3 rounded-lg border break-words${isMathChapter ? ' math-content' : ''} ${mode === 'mini_test' ? 'text-emerald-700 bg-white border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'}`}>
                                     {formatText(sq.correctAnswer)}
                                   </div>
                                 </div>
@@ -1518,7 +1529,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     <ExplanationBody
                                       text={sqSlice}
                                       tone={mode === 'mini_test' ? 'light' : 'dark'}
-                                      className={`font-handwriting text-xs md:text-sm leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+                                      className={`${isMathChapter ? 'font-math math-content text-sm md:text-base' : 'font-handwriting text-xs md:text-sm'} leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
                                     />
                                   ) : (
                                     <p className="text-xs text-gray-500">この小問の解説は「思考手順・答えの核心」にまとめています。</p>
@@ -1599,7 +1610,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 <ExplanationBody
                                   text={sharedExplanation}
                                   tone={mode === 'mini_test' ? 'light' : 'dark'}
-                                  className={`font-handwriting text-xs md:text-sm leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+                                  className={`${isMathChapter ? 'font-math math-content text-sm md:text-base' : 'font-handwriting text-xs md:text-sm'} leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
                                 />
                               </div>
                             )}

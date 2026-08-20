@@ -189,18 +189,21 @@ describe('F2 第3問の音声：A / B を別の声で読み上げる', () => {
 // F3 単元選択：カルーセル → 一覧
 // =====================================================================
 describe('F3 単元選択：横スクロールではなく一覧で並べる', () => {
-  it('章タブが grid（折り返し）になっていて、横スクロールしない', () => {
-    // tablist の className を取り出して検査する
+  it('章タブは「スマホ＝横スクロール／PC＝grid一覧」の両立になっている', () => {
+    // ■ 仕様変更の経緯
+    //   当初は「横スクロールをやめて grid 一覧」だったが、その後のご要望
+    //   「単元ボタンを縦に置いたら選びづらいから横に並べて横スクロールに」
+    //   （feat(navigation): make mobile chapter tabs horizontally scrollable）で
+    //   スマホは横スクロール・PC（sm以上）は grid 一覧、が現行仕様になった。
     const m = CHAPTER.match(/aria-label="章を選択"\s*\n\s*className="([^"]+)"/u);
     expect(m).toBeTruthy();
     const cls = m![1];
-    expect(cls).toContain('grid');
-    expect(cls).toContain('grid-cols-2');
-    // カルーセルの痕跡（横スクロール）が残っていないこと
-    expect(cls).not.toContain('overflow-x-auto');
-    // 縦に長くなりすぎないよう上限を付けて縦スクロールにする
-    expect(cls).toContain('overflow-y-auto');
-    expect(cls).toMatch(/max-h-\[/u);
+    // スマホ：横スクロール（スナップ付き）
+    expect(cls).toContain('overflow-x-auto');
+    expect(cls).toContain('snap-x');
+    // PC（sm以上）：grid 一覧に戻し、横スクロールは無効化
+    expect(cls).toContain('sm:grid');
+    expect(cls).toContain('sm:overflow-x-visible');
   });
 
   it('章名は折り返して全文を出す（途中で切れて見分けが付かなくなるのを防ぐ）', () => {
@@ -219,7 +222,9 @@ describe('F3 単元選択：横スクロールではなく一覧で並べる', (
   });
 
   it('ボタンの高さを揃えて一覧として読める形にしている', () => {
-    // grid の中で高さがばらつくと一覧に見えないので h-full で揃える
-    expect(CHAPTER).toMatch(/flex h-full min-h-\[3rem\] flex-col/u);
+    // grid／横スクロールのどちらでも高さがばらつくと読みにくいので h-full で揃える。
+    // （横スクロール対応で min-h と flex-col の間に幅指定が入ったため、
+    //   間に他のクラスがあっても許容する形で検査する）
+    expect(CHAPTER).toMatch(/flex h-full min-h-\[3rem\][^"]*flex-col/u);
   });
 });

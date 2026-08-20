@@ -2260,7 +2260,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           </div>
           
           <div 
-            className="flex-1 overflow-y-auto p-4 md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 font-modern break-words [overflow-wrap:anywhere]"
+            className={`flex-1 overflow-y-auto p-4 md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere] ${
+              // 数学の問題（requiresMathPalette 付き）は、数式が/や^の
+              // 生テキストではなく教科書と同じ形で出るため、
+              // 数式フォント＋一回り大きい表示（.math-content）で読みやすくする。
+              questionNeedsMathPalette ? 'font-math math-content' : 'font-modern'
+            }`}
             onMouseUp={handleTextSelection}
             onTouchEnd={handleTextSelection}
             title="テキストを選択するとハイライトできます"
@@ -2544,7 +2549,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     {/* 設問マーカー（(ア)/(1)/問2 など）。
                         リスニングでは設問文の本体は左ペインにあるので、
                         ここは「いまどの問の解答欄か」を示す目印だけ。 */}
-                    <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block">
+                    <span className={`font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block ${questionNeedsMathPalette ? 'font-math math-content' : ''}`}>
                       {formatText(sqMarker)}
                     </span>
                     
@@ -2809,7 +2814,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             <div className="flex items-center justify-between gap-2">
               {/* 表示ルール3：解答入力パネルにも設問マーカーのみを表示（設問文は左の問題文欄で読む）。
                   枝番（①②）まで含めることで、入力中の設問がひと目で分かるようにする。 */}
-              <span className="font-bold text-[#2C3E50] text-[13px] bg-blue-50/60 border border-[#A9CCE3]/40 px-3 py-1.5 rounded-lg truncate">
+              <span className={`font-bold text-[#2C3E50] text-[13px] bg-blue-50/60 border border-[#A9CCE3]/40 px-3 py-1.5 rounded-lg truncate ${questionNeedsMathPalette ? 'font-math' : ''}`}>
                 {formatText(answerCardMarker(focusedSub, focusedIndex, currentQuestion))}
               </span>
               <div className="flex items-center gap-1.5 shrink-0">

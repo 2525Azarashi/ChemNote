@@ -55,11 +55,138 @@ function normalizeScientificScripts(text: string) {
     .replace(/([A-Za-z][A-Za-z]?[0-9]*)\u2212(?![A-Za-z0-9(])/g, '$1-');
 }
 
+// ===================================================================
+// 数学記法エンジン
+// -------------------------------------------------------------------
+// 数学の問題データ（mathIntegralProblems.ts など）は
+//   ∫[0→π/2] / Σ[k=1→n] / lim[n→∞] / √(x²+y²) / x^(3/2) / x^5/5 / 7C3
+// のようなテキスト記法で書かれている。これを「教科書と同じ見た目」
+// （上下限付きの大きな∫Σ、真上に線が伸びる根号、上付き指数、縦書き分数、
+//   下付きの nCr）へ変換する。
+//
+// ■ 化学・英語の本文を壊さないための設計
+//   ・∫ Σ √ lim[ ^( はいずれも化学基礎・化学・リスニングのデータに
+//     登場しないことを確認済み（登場する場合も数学的に正しい表示になる）
+//   ・単位の g/mol・mol/L などは既存の isUnitToken で分数化を回避
+//   ・変換で生成した記号は HTML 実体参照（&#8747; など）で埋め込み、
+//     後段の正規表現に二重処理されないようにする
+// ===================================================================
+
+/** ∫・Σ など「上下限つきの大きな演算子」の HTML を組み立てる */
+function buildBigOpHtml(symbolEntity: string, upper: string, lower: string) {
+  return (
+    `<span class="math-bigop" aria-hidden="false">` +
+      `<span class="math-bigop-sym">${symbolEntity}</span>` +
+      `<span class="math-bigop-lims"><span>${upper}</span><span>${lower}</span></span>` +
+    `</span>`
+  );
+}
+
+/** 根号（√の上に横線が伸びる形）の HTML を組み立てる */
+function buildSqrtHtml(body: string) {
+  return `<span class="math-sqrt">&#8730;<span class="math-sqrt-body">${body}</span></span>`;
+}
+
+/**
+ * 数学記法をテキストから HTML へ変換する。
+ * formatText の最初（添字正規化より前）に1回だけ通す。
+ */
+export function convertMathNotation(src: string): string {
+  let t = src;
+
+  // (1) 順列・組合せ 7C3 / nCr / 7P3 → ₇C₃（前後が英数字でないときだけ）。
+  //     12C のような同位体表記は「C の後に数字が続かない」ため一致しない。
+  t = t.replace(
+    /(?<![A-Za-z0-9])([0-9]{1,2}|n)([CP])([0-9]{1,2}|[rk])(?![A-Za-z0-9])/g,
+    (_m, n: string, cp: string, r: string) =>
+      `<sub class="${SUBSCRIPT_CLASS}">${n}</sub>${cp}<sub class="${SUBSCRIPT_CLASS}">${r}</sub>`
+  );
+
+  // (2) 上下限つきの定積分 ∫[a→b]・∫[a,b]
+  t = t.replace(
+    /∫\s*\[([^\[\]]{1,24}?)\s*(?:→|,)\s*([^\[\]]{1,24}?)\]/g,
+    (_m, lo: string, hi: string) => buildBigOpHtml('&#8747;', hi.trim(), lo.trim())
+  );
+  // 上下限のない ∫ も教科書サイズに拡大
+  t = t.replace(/∫/g, '<span class="math-bigop-solo">&#8747;</span>');
+
+  // (3) 上下限つきの総和 Σ[k=1→n]
+  t = t.replace(
+    /Σ\s*\[([^\[\]]{1,24}?)\s*(?:→|,)\s*([^\[\]]{1,24}?)\]/g,
+    (_m, lo: string, hi: string) => buildBigOpHtml('&#931;', hi.trim(), lo.trim())
+  );
+  t = t.replace(/Σ/g, '<span class="math-bigop-solo">&#931;</span>');
+
+  // (4) 極限 lim[n→∞] → lim の真下に n→∞
+  t = t.replace(
+    /lim\s*\[([^\[\]]{1,24})\]/g,
+    (_m, cond: string) =>
+      `<span class="math-lim"><span class="math-lim-main">lim</span><span class="math-lim-under">${cond.trim()}</span></span>`
+  );
+
+  // (5) 根号 √(…)・√x・√25 → 中身の真上に線が伸びる根号
+  //     √(4² + (-7)²) のような「1段だけ入れ子の括弧」にも対応する。
+  t = t.replace(
+    /√\s*\(((?:[^()]|\([^()]{0,30}\)){1,60}?)\)/g,
+    (_m, body: string) => buildSqrtHtml(body.trim())
+  );
+  t = t.replace(
+    /√\s*([0-9]+(?:\.[0-9]+)?[A-Za-z]?|[A-Za-z][0-9²³]*)/g,
+    (_m, body: string) => buildSqrtHtml(body)
+  );
+
+  // (6) 括弧つき指数 x^(3/2)・e^(2x)・A^(a+) → 上付きに。
+  //     指数の中の / は分数化せず「∕」（除算スラッシュ）でコンパクトに見せる
+  //     （上付きの中にさらに縦書き分数を入れると小さすぎて読めないため）。
+  t = t.replace(
+    /([A-Za-z0-9)\]])\^\(([^()]{1,30})\)/g,
+    (_m, base: string, exp: string) =>
+      `${base}<sup class="${SUPERSCRIPT_CLASS}">${exp.replace(/\//g, '&#8725;')}</sup>`
+  );
+  // (7) 1文字の英字指数 e^x・2^n・10^k → 上付き
+  t = t.replace(
+    /([A-Za-z0-9)\]])\^([A-Za-z])(?![A-Za-z0-9])/g,
+    `$1<sup class="${SUPERSCRIPT_CLASS}">$2</sup>`
+  );
+
+  // ---- 分数（数学でよく出る形を、単位を壊さない範囲で縦書き分数にする） ----
+  // 数式として許可する中身（コンマ・スラッシュを含まない＝座標 (3, 1) や
+  // 単位 g/mol、(3/5, 4/5) のような組は変換しない）
+  const EXPR = "[A-Za-z0-9+\\-−·×*^√!'’ ._]";
+
+  // (8) 三角関数の分数 sin^5 x/5・cos 2x/2 → 関数ごと分子に含める
+  t = t.replace(
+    new RegExp(`(?<![A-Za-z])((?:sin|cos|tan)(?:\\^[0-9]{1,2})?\\s?[0-9]?x)\\s*\\/\\s*([0-9]{1,3})(?![0-9A-Za-z])`, 'g'),
+    (_m, num: string, den: string) => buildFractionHtml(num, den)
+  );
+  // (9) 累乗・階乗が分子の分数 x^5/5・6!/2
+  t = t.replace(
+    /(?<![A-Za-z0-9_])([A-Za-z]\^[0-9]{1,2}|[0-9]{1,3}!|[A-Za-z]!)\s*\/\s*([0-9]{1,3}(?:\.[0-9]+)?!?|[A-Za-z](?:\^[0-9]{1,2})?!?)(?![0-9A-Za-z])/g,
+    (_m, num: string, den: string) => buildFractionHtml(num, den)
+  );
+  // (10) 括弧が分子の分数 (a + 2b)/3・(x+1)/(x-1)（数式文字だけの中身に限定）
+  t = t.replace(
+    new RegExp(`\\((${EXPR}{1,40})\\)\\s*\\/\\s*(?:\\((${EXPR}{1,40})\\)|([0-9]{1,3}(?:\\.[0-9]+)?!?|[A-Za-z](?:\\^[0-9]{1,2})?!?))(?![0-9A-Za-z])`, 'g'),
+    (_m, num: string, denParen: string | undefined, denToken: string | undefined) =>
+      buildFractionHtml(num.trim(), (denParen ?? denToken ?? '').trim())
+  );
+  // (11) 括弧が分母の分数 -1/(2x^2)・6!/(3!·2!·1!)
+  t = t.replace(
+    new RegExp(`(?<![A-Za-z0-9_])(-?[0-9]{1,3}(?:\\.[0-9]+)?!?|[A-Za-z]!?)\\s*\\/\\s*\\((${EXPR}{1,40})\\)`, 'g'),
+    (_m, num: string, den: string) => {
+      if (isUnitToken(num)) return _m;
+      return buildFractionHtml(num, den.trim());
+    }
+  );
+
+  return t;
+}
+
 export function formatText(text: string, highlights: string[] = []) {
   if (!text) return null;
 
   // Replace * with proper math multiplication crosses
-  let processedText = normalizeScientificScripts(text).replace(
+  let processedText = normalizeScientificScripts(convertMathNotation(text)).replace(
     /([A-Za-z0-9]|\)|[％%]|\])[\s ]*\*[\s ]*([A-Za-z0-9]|\(|\[)/g,
     '$1 <span class="font-sans font-semibold text-stone-500 mx-0.5">×</span> $2'
   );
