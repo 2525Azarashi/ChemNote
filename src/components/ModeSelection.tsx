@@ -84,7 +84,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
               {isAdvanced
                 ? 'まとめプリントで基礎知識をしっかりと身につけます。（現在は理論化学「化学反応とエネルギー」を公開中）'
                 : isMath
-                  ? 'まとめプリント「積分のパターン化」で、15パターンの判断フローと全解法を体系的に学びます。'
+                  ? 'まとめプリントで「解法のパターン化」を学びます。積分・ベクトル・確率・整数の4単元、判断フローと型の早見表付き。'
                   : '基礎知識をしっかりと身につけます。'}
             </p>
           </button>
@@ -113,7 +113,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
               {isListening
                 ? '第1問A・第1問B …のように大問別（A／Bも別）に選び、回ごとに取り組みます。'
                 : isMath
-                  ? '数III積分の全パターンを、型ごとの小問で演習します。数学記号パレットで ∫ や √ もワンタップ入力。'
+                  ? '積分・ベクトル・確率・整数の全パターンを、型ごとの小問で演習します。数学記号パレットで ∫ や √ もワンタップ入力。'
                   : 'より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。'}
             </p>
           </button>
@@ -129,7 +129,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
         {/* 数学では現在の収録範囲を明示する。 */}
         {isMath && (
           <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
-            ※ まずは数III「積分法（全パターン演習）」を公開しています。他の単元は順次追加していきます。
+            ※ 現在は「数III 積分法」「ベクトル」「場合の数・確率」「整数」の4単元（各全パターン演習）を公開しています。他の単元も順次追加していきます。
           </p>
         )}
 

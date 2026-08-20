@@ -200,10 +200,10 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
       id: 'math',
       title: '数学',
       latin: 'Mathematics',
-      description: '数III「積分法」を全パターン網羅。見た瞬間に解法が浮かぶ状態を作ります。',
+      description: '積分・ベクトル・確率・整数の4単元を全パターン網羅。見た瞬間に解法が浮かぶ状態を作ります。',
       highlights: [
-        `積分${mathStats.chapters}単元・演習${mathStats.questions}問を収録（順次追加中）`,
-        '15パターン判断フローのまとめプリント付き',
+        `全${mathStats.chapters}章・演習${mathStats.questions}問を収録（順次追加中）`,
+        '単元ごとの判断フロー＋型の早見表つきまとめプリント',
         '数学記号パレットで ∫・√・π もワンタップ入力',
       ],
       available: true,

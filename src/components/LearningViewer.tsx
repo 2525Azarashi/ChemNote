@@ -19,6 +19,12 @@ import {
   ADV_ELECTRO_PARTS,
   MATH_INTEGRAL_HTML,
   MATH_INTEGRAL_PARTS,
+  MATH_VECTOR_HTML,
+  MATH_VECTOR_PARTS,
+  MATH_PROBABILITY_HTML,
+  MATH_PROBABILITY_PARTS,
+  MATH_INTEGER_HTML,
+  MATH_INTEGER_PARTS,
   type LearningPart,
 } from '../data/learningContent';
 import { MolBasicsSection } from './MolBasicsSection';
@@ -84,14 +90,20 @@ const ADVANCED_SECTION_HTML: Record<string, string> = {
   'adv-4': ADV_ELECTRO_HTML,
 };
 
-/** 数学。まずは数III 積分法から公開し、単元を順次追加していく。 */
+/** 数学。4単元（積分・ベクトル・確率・整数）を公開中。以降も順次追加していく。 */
 const MATH_SECTIONS: SectionDef[] = [
   { id: 'toc', title: '目次・使い方' },
   { id: 'math-integral', title: '数III 積分法（全パターン）' },
+  { id: 'math-vector', title: 'ベクトル（全パターン）' },
+  { id: 'math-probability', title: '場合の数・確率（全パターン）' },
+  { id: 'math-integer', title: '整数（全パターン）' },
 ];
 
 const MATH_SECTION_HTML: Record<string, string> = {
   'math-integral': MATH_INTEGRAL_HTML,
+  'math-vector': MATH_VECTOR_HTML,
+  'math-probability': MATH_PROBABILITY_HTML,
+  'math-integer': MATH_INTEGER_HTML,
 };
 
 // ===================================================================
@@ -113,6 +125,9 @@ const SECTION_PARTS: Record<string, LearningPart[]> = {
   'adv-3': ADV_THERMO_PARTS,
   'adv-4': ADV_ELECTRO_PARTS,
   'math-integral': MATH_INTEGRAL_PARTS,
+  'math-vector': MATH_VECTOR_PARTS,
+  'math-probability': MATH_PROBABILITY_PARTS,
+  'math-integer': MATH_INTEGER_PARTS,
 };
 
 /** 印刷ダイアログのタイトル（＝PDFの既定ファイル名）に使うセクション名 */
@@ -151,10 +166,16 @@ const ADVANCED_PART_LABEL: Record<string, string> = {
 const MATH_PRINT_TITLE: Record<string, string> = {
   toc: '目次・使い方',
   'math-integral': '数III 積分法（全パターン演習）',
+  'math-vector': 'ベクトル（全パターン演習）',
+  'math-probability': '場合の数・確率（全パターン演習）',
+  'math-integer': '整数（全パターン演習）',
 };
 
 const MATH_PART_LABEL: Record<string, string> = {
   'math-integral': '数学III 積分法',
+  'math-vector': '数学B・C ベクトル',
+  'math-probability': '数学A 場合の数・確率',
+  'math-integer': '数学A 整数',
 };
 
 /** 科目ごとの設定をひとまとめにする（分岐をここ1か所に閉じ込める） */

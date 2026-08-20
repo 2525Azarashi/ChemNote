@@ -26,12 +26,19 @@ const VIEWER = readFileSync('src/components/LearningViewer.tsx', 'utf8');
 const BARREL = readFileSync('src/data/learningContent/index.ts', 'utf8');
 
 describe('数III積分の章構成（15パターンの体系）', () => {
-  it('12章がすべて定義されている（不定積分10章＋定積分技巧2章）', async () => {
+  it('積分12章＋ベクトル8章＋確率8章＋整数5章＝33章がすべて定義されている', async () => {
     const { getAllMathChapters } = await import('../src/data/mathData');
     const ids = getAllMathChapters().map((c: any) => c.id);
     expect(ids).toEqual([
+      // 数III 積分
       'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5', 'm1_6',
       'm1_7', 'm1_8', 'm1_9', 'm1_10', 'm2_1', 'm2_2',
+      // ベクトル
+      'mv_1', 'mv_2', 'mv_3', 'mv_4', 'mv_5', 'mv_6', 'mv_7', 'mv_8',
+      // 場合の数・確率
+      'mp_1', 'mp_2', 'mp_3', 'mp_4', 'mp_5', 'mp_6', 'mp_7', 'mp_8',
+      // 整数
+      'mi_1', 'mi_2', 'mi_3', 'mi_4', 'mi_5',
     ]);
   });
 
@@ -46,8 +53,8 @@ describe('数III積分の章構成（15パターンの体系）', () => {
   it('収録統計がデータから計算できる（科目カードの表示に使う）', async () => {
     const { getMathStats } = await import('../src/data/mathData');
     const stats = getMathStats();
-    expect(stats.chapters).toBe(12);
-    expect(stats.questions).toBeGreaterThanOrEqual(15);
+    expect(stats.chapters).toBe(33);
+    expect(stats.questions).toBeGreaterThanOrEqual(50);
   });
 
   it('章は realTitle（1章〜7章）でグループ化されている', () => {

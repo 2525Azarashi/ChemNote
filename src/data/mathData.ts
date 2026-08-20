@@ -41,6 +41,33 @@ import {
   integralDefiniteTechProblems,
   integralFunctionEqProblems,
 } from './mathIntegralProblems';
+import {
+  vectorBasicProblems,
+  vectorDotProblems,
+  vectorPositionProblems,
+  vectorIntersectionProblems,
+  vectorAreaProblems,
+  vectorEquationProblems,
+  vectorSpaceBasicProblems,
+  vectorSpacePlaneProblems,
+} from './mathVectorProblems';
+import {
+  probCountingProblems,
+  probArrangeProblems,
+  probBasicProblems,
+  probComplementProblems,
+  probRepeatProblems,
+  probConditionalProblems,
+  probExpectationProblems,
+  probMixedProblems,
+} from './mathProbabilityProblems';
+import {
+  intDivisorProblems,
+  intEuclidProblems,
+  intFactorProblems,
+  intModProblems,
+  intBoundProblems,
+} from './mathIntegerProblems';
 
 /** 1つの単元。AdvancedChapter と同形（Quiz/ChapterSelection を流用するため）。 */
 export interface MathChapter {
@@ -146,6 +173,141 @@ export const mathData: { parts: MathPart[] } = {
         ]),
       ],
     },
+    {
+      id: 'math_vector',
+      title: 'ベクトル（全パターン演習）',
+      chapters: [
+        // ---- 1章 平面ベクトルの基本 ----
+        ch('mv_1', '1章 平面ベクトルの基本', '① 演算・成分・大きさ・単位ベクトル', [
+          '成分計算（x成分・y成分を別々に）',
+          '大きさ |a| = √(x²+y²)',
+          '単位ベクトル a/|a|・平行＝実数倍',
+        ]),
+        ch('mv_2', '1章 平面ベクトルの基本', '② 内積・なす角・垂直条件・|a+tb|の最小', [
+          '内積の2つの顔（成分の式・大きさとなす角の式）',
+          '垂直 ⇔ 内積0、平行 ⇔ x1y2-x2y1=0',
+          '|a+tb| は2乗して t の2次関数へ',
+        ]),
+        // ---- 2章 位置ベクトルと図形 ----
+        ch('mv_3', '2章 位置ベクトルと図形', '③ 内分・外分・重心', [
+          '内分点 (na+mb)/(m+n)（たすきがけ）',
+          '外分は「マイナス付き内分」で処理',
+          '重心 (a+b+c)/3',
+        ]),
+        ch('mv_4', '2章 位置ベクトルと図形', '④ 交点（係数比較）・共線条件 s+t=1', [
+          '同じ点を2通りに表して1次独立から係数比較',
+          '直線AB上 ⇔ 係数の和が1',
+          'メネラウス・チェバによる検算',
+        ]),
+        // ---- 3章 面積とベクトル方程式 ----
+        ch('mv_5', '3章 面積とベクトル方程式', '⑤ 三角形の面積・正射影ベクトル', [
+          'S = (1/2)|x1y2 - x2y1|（成分の面積公式）',
+          'S = (1/2)√(|a|²|b|²-(a·b)²)（内積の面積公式）',
+          '正射影 (a·b/|a|²)a と垂線の足',
+        ]),
+        ch('mv_6', '3章 面積とベクトル方程式', '⑥ 直線・円のベクトル方程式', [
+          'p = a + td（通る点＋方向の実数倍）',
+          '法線ベクトルは係数を並べる (a, b)',
+          '|p-c|=r は円、(p-a)·(p-b)=0 は直径の両端',
+        ]),
+        // ---- 4章 空間ベクトル ----
+        ch('mv_7', '4章 空間ベクトル', '⑦ 空間の成分・内積・垂直・距離', [
+          '公式は平面と同じ（z成分が増えるだけ）',
+          '空間のなす角・垂直条件',
+          '空間の距離・中点',
+        ]),
+        ch('mv_8', '4章 空間ベクトル', '⑧ 共面条件 s+t+u=1・球面', [
+          '平面ABC上 ⇔ 係数の和が1（共面条件）',
+          '球面 (x-a)²+(y-b)²+(z-c)²=r²',
+          '球の切り口は直角三角形で処理',
+        ]),
+      ],
+    },
+    {
+      id: 'math_probability',
+      title: '場合の数・確率（全パターン演習）',
+      chapters: [
+        // ---- 1章 場合の数の土台 ----
+        ch('mp_1', '1章 場合の数の土台', '① P と C の使い分け・最短経路', [
+          '並べる（順序あり）は P、選ぶだけは C',
+          '隣り合う→かたまり、隣り合わない→隙間',
+          '同じものを含む順列・最短経路は C で数える',
+        ]),
+        ch('mp_2', '1章 場合の数の土台', '② 円順列・重複順列・組分け', [
+          '円順列 (n-1)!・じゅず順列はさらに÷2',
+          '重複順列 n^r（空きあり）と余事象',
+          '同じ人数の組分けは組数の階乗で割る',
+        ]),
+        // ---- 2章 確率の基本 ----
+        ch('mp_3', '2章 確率の基本', '③ 同様に確からしい・サイコロ・玉', [
+          'すべてを区別して数える（同様に確からしく）',
+          '最大値・最小値は「以下」の差で数える',
+          '同時に取り出す＝組合せ C',
+        ]),
+        ch('mp_4', '2章 確率の基本', '④ 余事象・和事象', [
+          'P(A∪B) = P(A) + P(B) - P(A∩B)（重なりを引く）',
+          '「少なくとも」「〜以上」は余事象のサイン',
+          '倍数の個数は商の切り捨てで数える',
+        ]),
+        // ---- 3章 独立試行・反復試行 ----
+        ch('mp_5', '3章 独立試行・反復試行', '⑤ 反復試行・優勝決定の確率', [
+          'nCr p^r (1-p)^(n-r)（nCr は場所の選び方）',
+          '場所指定の問題では nCr を掛けない',
+          '「n回目に決着」は最後の1回を固定する',
+        ]),
+        // ---- 4章 条件付き確率・期待値 ----
+        ch('mp_6', '4章 条件付き確率・期待値', '⑥ 条件付き確率・原因の確率', [
+          'P_A(B) = P(A∩B)/P(A)（分母が縮む）',
+          '樹形図で経路の確率を足す',
+          '結果から原因をさかのぼるベイズ型',
+        ]),
+        ch('mp_7', '4章 条件付き確率・期待値', '⑦ 期待値', [
+          '期待値＝値×確率の総和',
+          '和の期待値は期待値の和（線形性）',
+          '確率の合計が1になるかで検算',
+        ]),
+        ch('mp_8', '4章 条件付き確率・期待値', '⑧ 総合問題（パターンの融合）', [
+          '数え上げ×確率×条件付きの融合',
+          '反復試行×点の移動（移動量を回数の式に）',
+          'どの型の組合せかを言語化して解く',
+        ]),
+      ],
+    },
+    {
+      id: 'math_integer',
+      title: '整数（全パターン演習）',
+      chapters: [
+        // ---- 1章 約数・倍数 ----
+        ch('mi_1', '1章 約数・倍数と素因数分解', '① 約数の個数・総和・最大公約数と最小公倍数', [
+          '約数の個数は (指数+1) の積',
+          '約数の総和は等比数列の和の積',
+          'gcd が G なら a=Gm, b=Gn（m,n 互いに素）とおく',
+        ]),
+        // ---- 2章 互除法と不定方程式 ----
+        ch('mi_2', '2章 互除法と1次不定方程式', '② ユークリッドの互除法・ax+by=c の整数解', [
+          'gcd(a, b) = gcd(b, r) で小さくする',
+          '特殊解→辺々引いて一般解',
+          '「互いに素だから倍数」の論法',
+        ]),
+        // ---- 3章 因数分解の利用 ----
+        ch('mi_3', '3章 因数分解の利用', '③ 積の形×約数の組合せ・素数条件', [
+          'xy+ax+by=c は (x+b)(y+a)=c+ab に直す',
+          '平方の差は (x+y)(x-y) に分解',
+          '素数 ⇔ 積に分解したら片方が1',
+        ]),
+        // ---- 4章 余りと絞り込み ----
+        ch('mi_4', '4章 余りによる分類と絞り込み', '④ 余りの計算・余りで分類する証明', [
+          'べき乗の余りは循環する（周期を見つける）',
+          '3で割った余りで分類（n=3k, 3k+1, 3k+2）',
+          '連続整数の積の倍数性',
+        ]),
+        ch('mi_5', '4章 余りによる分類と絞り込み', '⑤ 範囲の絞り込み・n進法', [
+          '対称式は大小を仮定して最小の文字を評価',
+          '1/x + 1/y 型は不等式で範囲を絞る',
+          'n進法の相互変換（余りを下から読む）',
+        ]),
+      ],
+    },
   ],
 };
 
@@ -167,6 +329,30 @@ const MATH_PROBLEMS: Record<string, any[]> = {
   m1_10: integralSubstitutionProblems,
   m2_1: integralDefiniteTechProblems,
   m2_2: integralFunctionEqProblems,
+  // ---- ベクトル ----
+  mv_1: vectorBasicProblems,
+  mv_2: vectorDotProblems,
+  mv_3: vectorPositionProblems,
+  mv_4: vectorIntersectionProblems,
+  mv_5: vectorAreaProblems,
+  mv_6: vectorEquationProblems,
+  mv_7: vectorSpaceBasicProblems,
+  mv_8: vectorSpacePlaneProblems,
+  // ---- 場合の数・確率 ----
+  mp_1: probCountingProblems,
+  mp_2: probArrangeProblems,
+  mp_3: probBasicProblems,
+  mp_4: probComplementProblems,
+  mp_5: probRepeatProblems,
+  mp_6: probConditionalProblems,
+  mp_7: probExpectationProblems,
+  mp_8: probMixedProblems,
+  // ---- 整数 ----
+  mi_1: intDivisorProblems,
+  mi_2: intEuclidProblems,
+  mi_3: intFactorProblems,
+  mi_4: intModProblems,
+  mi_5: intBoundProblems,
 };
 
 (() => {
