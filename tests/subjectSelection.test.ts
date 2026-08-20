@@ -5,16 +5,17 @@ import { describe, it, expect, vi } from 'vitest';
  * ===================================================================
  * 科目選択（タイトル）画面の回帰テスト
  * ===================================================================
- * ご要望：
- *   - 「英語リスニング」を科目として追加する
- *     → 後に「まずは大問（第1問〜第6問）の単元を追加」となったため、
- *       化学（発展）と同じ方針で available: true に変更した。
- *   - ウィンドウのサイズは今までと同じ
- *   - 横スクロールで選べるようにする（カルーセル方式）
+ * ご要望の変遷：
+ *   - 「英語リスニング」を科目として追加（available: true）
+ *   - 「全ての科目が一つの画面で並ぶようにして」
+ *     → カルーセル（横スクロール）を廃止し、1画面グリッドに変更
+ *   - 「数学、生物基礎を追加して」
+ *     → 数学は数III積分（全パターン演習）を公開（available: true）
+ *     → 生物基礎は準備中（available: false）として先にカードだけ出す
  *
  * レンダリング環境（jsdom）を前提にしないため、
  *   ① SubjectId / ラベル定義などの純粋なロジックは実際に import して検証
- *   ② 見た目（カード寸法・カルーセル指定）はソース文字列で検証
+ *   ② 見た目（グリッド・カード構成）はソース文字列で検証
  * の2段構えにしている。
  */
 
@@ -27,22 +28,25 @@ vi.mock('../src/firebase', () => ({
 
 const SRC = readFileSync('src/components/SubjectSelection.tsx', 'utf8');
 const APP = readFileSync('src/App.tsx', 'utf8');
-const CSS = readFileSync('src/index.css', 'utf8');
 
 describe('科目の定義', () => {
-  it('化学基礎・化学・英語リスニングの3科目が SubjectId に含まれる', async () => {
+  it('化学基礎・化学・英語リスニング・数学・生物基礎の5科目が SubjectId に含まれる', async () => {
     const { SUBJECT_LABELS } = await import('../src/components/SubjectSelection');
     expect(Object.keys(SUBJECT_LABELS).sort()).toEqual(
-      ['chemistry', 'chemistry_basic', 'english_listening'],
+      ['biology_basic', 'chemistry', 'chemistry_basic', 'english_listening', 'math'],
     );
     expect(SUBJECT_LABELS.english_listening).toBe('英語リスニング');
+    expect(SUBJECT_LABELS.math).toBe('数学');
+    expect(SUBJECT_LABELS.biology_basic).toBe('生物基礎');
   });
 
   it('getSubjectLabel は未知の値でも落ちず、化学基礎に倒す', async () => {
     const { getSubjectLabel } = await import('../src/components/SubjectSelection');
     expect(getSubjectLabel('english_listening')).toBe('英語リスニング');
     expect(getSubjectLabel('chemistry')).toBe('化学');
-    expect(getSubjectLabel('mathematics')).toBe('化学基礎');
+    expect(getSubjectLabel('math')).toBe('数学');
+    expect(getSubjectLabel('biology_basic')).toBe('生物基礎');
+    expect(getSubjectLabel('physics')).toBe('化学基礎');
     expect(getSubjectLabel(null)).toBe('化学基礎');
     expect(getSubjectLabel(undefined)).toBe('化学基礎');
     expect(getSubjectLabel('')).toBe('化学基礎');
@@ -52,88 +56,87 @@ describe('科目の定義', () => {
     const { isSubjectId } = await import('../src/components/SubjectSelection');
     expect(isSubjectId('chemistry_basic')).toBe(true);
     expect(isSubjectId('english_listening')).toBe(true);
+    expect(isSubjectId('math')).toBe(true);
+    expect(isSubjectId('biology_basic')).toBe(true);
     expect(isSubjectId('physics')).toBe(false);
     expect(isSubjectId(null)).toBe(false);
   });
 
   it('英語リスニングは available: true（＝公開中）として定義されている', () => {
-    // 大問（第1問〜第6問）の単元を先に公開し、問題は順次追加していく方針。
     const block = SRC.slice(SRC.indexOf("id: 'english_listening'"));
-    const end = block.indexOf('},');
-    const def = block.slice(0, end);
+    const def = block.slice(0, block.indexOf('},'));
     expect(def).toContain("title: '英語リスニング'");
     expect(def).toContain('available: true');
     expect(def).toContain('icon: Headphones');
   });
 
   it('化学は available: true（＝公開中）として定義されている', () => {
-    // 化学（発展）は単元だけ先に公開し、問題は順次追加していく方針。
     const block = SRC.slice(SRC.indexOf("id: 'chemistry',"));
-    const end = block.indexOf('},');
-    const def = block.slice(0, end);
+    const def = block.slice(0, block.indexOf('},'));
     expect(def).toContain("title: '化学'");
     expect(def).toContain('available: true');
     expect(def).toContain('icon: FlaskConical');
   });
 
-  it('3科目すべてが公開中（準備中の科目は無い）', () => {
+  it('数学は available: true（＝公開中）で、数III積分を案内している', () => {
+    const block = SRC.slice(SRC.indexOf("id: 'math'"));
+    const def = block.slice(0, block.indexOf('},'));
+    expect(def).toContain("title: '数学'");
+    expect(def).toContain('available: true');
+    expect(def).toContain('icon: Calculator');
+    expect(def).toContain('積分');
+  });
+
+  it('生物基礎は available: false（＝準備中）として定義されている', () => {
+    const block = SRC.slice(SRC.indexOf("id: 'biology_basic'"));
+    const def = block.slice(0, block.indexOf('},'));
+    expect(def).toContain("title: '生物基礎'");
+    expect(def).toContain('available: false');
+    expect(def).toContain('icon: Leaf');
+  });
+
+  it('公開中4科目＋準備中1科目（生物基礎のみ準備中）', () => {
     const availableTrue = (SRC.match(/available: true/g) || []).length;
     const availableFalse = (SRC.match(/available: false/g) || []).length;
-    expect(availableTrue).toBe(3);
-    expect(availableFalse).toBe(0);
+    expect(availableTrue).toBe(4);
+    expect(availableFalse).toBe(1);
+  });
+
+  it('数学の収録数はデータから算出する（数字のハードコードをしない）', () => {
+    expect(SRC).toContain("import { getMathStats } from '../data/mathData'");
+    expect(SRC).toContain('getMathStats()');
   });
 });
 
-describe('カルーセル（横スクロール）', () => {
-  it('グリッド2カラムではなく、横スクロールのトラックになっている', () => {
-    expect(SRC).not.toContain('grid grid-cols-1 md:grid-cols-2');
-    expect(SRC).toContain('overflow-x-auto');
-    expect(SRC).toContain('snap-x snap-mandatory');
-    expect(SRC).toContain('snap-center');
+describe('1画面グリッド（全科目を一望して選ぶ）', () => {
+  it('カルーセル（横スクロール）を廃止し、グリッドで並べている', () => {
+    // ご要望「全ての科目が一つの画面で並ぶようにして」
+    expect(SRC).toContain('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3');
+    expect(SRC).not.toContain('snap-x snap-mandatory');
+    expect(SRC).not.toContain('overflow-x-auto');
+    expect(SRC).not.toContain('carousel-x');
   });
 
-  it('カード1枚の寸法は従来のまま（ウィンドウのサイズを変えない）', () => {
-    // カード本体の見た目に関わる指定が従来値で残っていること
-    expect(SRC).toContain('min-h-[248px]');
-    expect(SRC).toContain('rounded-[24px]');
-    expect(SRC).toContain('p-6 md:p-7');
-    // 外枠の最大幅と間隔も 2カラム時代と同じ
-    expect(SRC).toContain('max-w-4xl');
-    expect(SRC).toContain('gap-5 md:gap-6');
-    // md以上では従来の2カラム時と同じ幅（50% − gap/2 = 50% − 12px）
-    expect(SRC).toContain('md:w-[calc(50%-12px)]');
+  it('カルーセル固有の制御（スクロール追跡・矢印・ドット・スペーサー）が残っていない', () => {
+    expect(SRC).not.toContain('scrollToIndex');
+    expect(SRC).not.toContain('activeIndex');
+    expect(SRC).not.toContain('aria-label="前の科目を表示する"');
+    expect(SRC).not.toContain('aria-label="次の科目を表示する"');
+    expect(SRC).not.toContain('role="tablist"');
+    expect(SRC).not.toContain('w-[7vw]');
+    expect(SRC).not.toMatch(/横にスワイプ/);
   });
 
-  it('矢印・ドット・案内文の操作導線がそろっている', () => {
-    expect(SRC).toContain('aria-label="前の科目を表示する"');
-    expect(SRC).toContain('aria-label="次の科目を表示する"');
-    expect(SRC).toContain('role="tablist"');
-    expect(SRC).toMatch(/横にスワイプ/);
-  });
-
-  it('←→キーでも送れる（キーボード操作の担保）', () => {
-    expect(SRC).toContain("e.key === 'ArrowRight'");
-    expect(SRC).toContain("e.key === 'ArrowLeft'");
-    expect(SRC).toContain('tabIndex={0}');
-  });
-
-  it('スクロールバーを隠す専用クラスが CSS に定義されている（既存の no-op に頼らない）', () => {
-    expect(SRC).toContain('carousel-x');
-    expect(CSS).toContain('.carousel-x');
-    expect(CSS).toContain('scrollbar-width: none');
-    expect(CSS).toContain('.carousel-x::-webkit-scrollbar');
-  });
-
-  it('端のカードも中央に寄せられるようスペーサーを置いている', () => {
-    const spacers = (SRC.match(/shrink-0 w-\[7vw\] md:hidden/g) || []).length;
-    expect(spacers).toBe(2);
-    // カード要素は data 属性で引く（スペーサーを数に含めないため）
+  it('5科目すべてのカードがマップで描画される（隠れる科目が無い）', () => {
+    expect(SRC).toContain('subjects.map((subject, index)');
     expect(SRC).toContain('data-subject-card');
-    expect(SRC).toContain("querySelectorAll<HTMLElement>('[data-subject-card]')");
+    // グループとしてアクセシブルにラベル付けされている
+    expect(SRC).toContain('aria-label="学習する科目を選択"');
   });
 
-  it('横スクロールでページ全体が動かないようにしている', () => {
-    expect(SRC).toContain('overscroll-x-contain');
+  it('準備中カードもタップでき、公開通知の受け皿に繋がる', () => {
+    expect(SRC).toContain('setNotifySubject(subject)');
+    expect(SRC).toContain('公開のお知らせを受け取る');
   });
 });
 
@@ -147,7 +150,7 @@ describe('準備中の科目を押したときの案内', () => {
 });
 
 describe('App 側の結線', () => {
-  it('科目名の表示は3科目対応のヘルパー経由になっている', () => {
+  it('科目名の表示は5科目対応のヘルパー経由になっている', () => {
     expect(APP).toContain('getSubjectLabel(selectedSubject)');
     // 2科目前提の三項演算子が残っていないこと
     expect(APP).not.toContain("selectedSubject === 'chemistry_basic' ? '化学基礎' : '化学'");
@@ -159,16 +162,18 @@ describe('App 側の結線', () => {
   });
 
   it('選択中の科目が「化学 or 化学基礎」に潰されず、そのまま各画面へ渡る', () => {
-    // 以前は 2科目前提の三項演算子で english_listening が化学基礎に丸められていた。
-    // ホーム・モード選択・単元選択は selectedSubject をそのまま受け取る。
     expect(APP).toContain('subject={selectedSubject}');
-    // まとめプリント（LearningViewer）は化学系のみなので従来の分岐を残す
-    expect(APP).toContain("subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'}");
+    // まとめプリント（LearningViewer）は化学基礎／化学／数学の3分岐
+    expect(APP).toContain("selectedSubject === 'math' ? 'math'");
   });
 
   it('英語リスニングは分野選択を挟まず、直接単元選択へ進む', () => {
     expect(APP).toContain("selectedSubject === 'english_listening'");
-    // 単元データが「選択中の単元」の探索対象に含まれている
     expect(APP).toContain('englishListeningData.parts.flatMap');
+  });
+
+  it('数学の単元が「選択中の単元」の探索対象に含まれている', () => {
+    expect(APP).toContain("import { mathData } from './data/mathData'");
+    expect(APP).toContain('mathData.parts.flatMap');
   });
 });

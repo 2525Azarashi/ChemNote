@@ -35,6 +35,8 @@ import {
   describeFeedbackSinks,
   getFeedbackEmail,
   getFeedbackWebhookUrl,
+  setFeedbackWebhookUrl,
+  isAllowedFeedbackWebhookUrl,
   FEEDBACK_EMAIL,
   FEEDBACK_MESSAGE_MAX,
   FEEDBACK_QUEUE_KEY,
@@ -42,6 +44,7 @@ import {
   FEEDBACK_CATEGORY_LABELS,
   FEEDBACK_SCREEN_LABELS,
   DEFAULT_FEEDBACK_WEBHOOK_URL,
+  FEEDBACK_WEBHOOK_OVERRIDE_KEY,
   type FeedbackInput,
 } from '../src/utils/feedback';
 
@@ -285,6 +288,24 @@ describe('収集先の案内', () => {
     expect(sinks.length).toBe(2);
     expect(sinks[0]).toContain('Firestore');
     expect(sinks[1]).toContain('スプレッドシート');
+  });
+
+  it('承認済みの Apps Script URL だけを実行時設定として保存できる', () => {
+    expect(isAllowedFeedbackWebhookUrl(DEFAULT_FEEDBACK_WEBHOOK_URL)).toBe(true);
+    expect(setFeedbackWebhookUrl(DEFAULT_FEEDBACK_WEBHOOK_URL)).toBe(true);
+    expect(storage.getItem(FEEDBACK_WEBHOOK_OVERRIDE_KEY)).toBe(DEFAULT_FEEDBACK_WEBHOOK_URL);
+  });
+
+  it('第三者の送信先・HTTP・Apps Script の別デプロイを拒否する', () => {
+    expect(setFeedbackWebhookUrl('https://attacker.example/collect')).toBe(false);
+    expect(setFeedbackWebhookUrl('http://script.google.com/macros/s/attacker/exec')).toBe(false);
+    expect(setFeedbackWebhookUrl('https://script.google.com/macros/s/attacker/exec')).toBe(false);
+    expect(storage.getItem(FEEDBACK_WEBHOOK_OVERRIDE_KEY)).toBeNull();
+  });
+
+  it('localStorage が改ざんされても不正URLを無視して既定URLへ戻る', () => {
+    storage.setItem(FEEDBACK_WEBHOOK_OVERRIDE_KEY, 'https://attacker.example/collect');
+    expect(getFeedbackWebhookUrl()).toBe(DEFAULT_FEEDBACK_WEBHOOK_URL);
   });
 });
 

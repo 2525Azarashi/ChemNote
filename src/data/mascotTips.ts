@@ -61,7 +61,12 @@ export type TipCategory =
   | 'listeningTraining';
 
 /** 画面側が渡してくる「いま開いている科目」。 */
-export type TipSubject = 'chemistry_basic' | 'chemistry' | 'english_listening';
+export type TipSubject =
+  | 'chemistry_basic'
+  | 'chemistry'
+  | 'english_listening'
+  | 'math'
+  | 'biology_basic';
 
 /**
  * 豆知識を出してよい範囲。

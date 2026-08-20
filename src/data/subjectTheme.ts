@@ -28,7 +28,12 @@
  * **完成したクラス名を文字列として持つ**（結合しない）ようにしている。
  */
 
-export type TipSubject = 'chemistry_basic' | 'chemistry' | 'english_listening';
+export type TipSubject =
+  | 'chemistry_basic'
+  | 'chemistry'
+  | 'english_listening'
+  | 'math'
+  | 'biology_basic';
 
 export interface SubjectTheme {
   /** 科目の表示名（吹き出しの見出しなどに使う） */
@@ -79,6 +84,32 @@ const THEMES: Record<TipSubject, SubjectTheme> = {
     chipTextClass: 'text-[#3C6B8A]',
     chipBgClass: 'bg-[#A9CCE3]/35',
     progressBarClass: 'bg-[#6FA8C5]',
+  },
+  // 数学：論理・構造のイメージで落ち着いたインディゴ。他科目のどの色とも離す。
+  math: {
+    label: '数学',
+    accent: '#5B5EA6',
+    accentSoft: '#C7C9E8',
+    surface: '#F7F7FD',
+    bubbleBorderClass: 'border-[#C7C9E8]/80',
+    bubbleBgClass: 'bg-[#FBFBFF]/95',
+    bubbleShadow: '0 10px 24px -14px rgba(91,94,166,0.55)',
+    chipTextClass: 'text-[#4A4D8C]',
+    chipBgClass: 'bg-[#C7C9E8]/35',
+    progressBarClass: 'bg-[#8B8ECB]',
+  },
+  // 生物基礎：生命・植物のイメージでオリーブグリーン。リスニングのミントより黄み寄り。
+  biology_basic: {
+    label: '生物基礎',
+    accent: '#7A9A4B',
+    accentSoft: '#D5E3B8',
+    surface: '#F9FCF3',
+    bubbleBorderClass: 'border-[#D5E3B8]/80',
+    bubbleBgClass: 'bg-[#FCFEF7]/95',
+    bubbleShadow: '0 10px 24px -14px rgba(122,154,75,0.55)',
+    chipTextClass: 'text-[#5F7A38]',
+    chipBgClass: 'bg-[#D5E3B8]/35',
+    progressBarClass: 'bg-[#9CBB6B]',
   },
   // 英語リスニング：音・語学のイメージでミントグリーン。化学の2色とはっきり区別する。
   english_listening: {

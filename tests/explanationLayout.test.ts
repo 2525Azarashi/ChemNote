@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 
 import { chemistryData } from '../src/data/chemistryData';
@@ -21,7 +22,7 @@ import {
  * 依頼された6項目のうち、機械的に検証できるものをここで固定する。
  *
  *   ① 「この単元の思考の型」は単元につき1回だけ（解説本文には出さない）
- *   ② 問ごとに ［解法の思考手順 → 詳しい解説］ が隣接する
+ *   ② 問ごとに［常時表示の採点結果 → 解説 → 思考手順・答えの核心］を配置する
  *   ③ 完全重複だけを1回にまとめる（計算式・反応式・表・結論は絶対に残す）
  *   ④ 採点画面の小問アコーディオンへ「その問の解説」を配れる
  *   ⑤ どの単元・どの出題形式でも同じ設計で動く
@@ -41,6 +42,38 @@ for (const chapter of allChapters) {
 }
 const bodyOf = (problem: AnyQuestion): string =>
   String(problem.explanationSupplement || problem.explanation || '');
+const explanationSource = readFileSync('src/components/Explanation.tsx', 'utf8');
+
+describe('採点結果画面の表示階層', () => {
+  it('正誤・自分の解答・正解はアコーディオンの外に常時表示する', () => {
+    expect(explanationSource).toContain('正誤・自分の解答・正解は、アコーディオンに入れず常に表示する。');
+    expect(explanationSource).toContain("<span>{isCorrect ? '正解！' : '不正解 — ここが伸びしろ'}</span>");
+    expect(explanationSource).toContain('あなたの解答');
+    expect(explanationSource).toContain("{sq.type === 'descriptive' ? '模範解答' : '正解'}");
+  });
+
+  it('解説と思考手順は小問ごとに独立して開閉する', () => {
+    expect(explanationSource).toContain('const [openExplanationBySq, setOpenExplanationBySq]');
+    expect(explanationSource).toContain('const [openThinkingBySq, setOpenThinkingBySq]');
+    expect(explanationSource).toContain('<BookOpen size={16} />解説');
+    expect(explanationSource).toContain('<KeyRound size={16} />思考手順・答えの核心');
+    expect(explanationSource).toContain('bg-sky-50 border-sky-200 text-sky-700');
+    expect(explanationSource).toContain('aria-expanded={explanationOpen}');
+    expect(explanationSource).toContain('aria-expanded={thinkingOpen}');
+  });
+
+  it('小問本文だけを解説へ配り、common/shared は大問ごとに1回だけ表示する', () => {
+    expect(explanationSource).toContain('.map((item) => item.body)');
+    expect(explanationSource).toContain('[subSlices.common, subSlices.shared]');
+    expect(explanationSource.match(/text=\{sharedExplanation\}/g)).toHaveLength(1);
+    expect(explanationSource).toContain('大問全体の流れ・共通ポイント');
+  });
+
+  it('旧「解説を全文まとめて読む」ブロックを重複表示しない', () => {
+    expect(explanationSource).not.toContain('解説を全文まとめて読む');
+    expect(explanationSource).not.toContain('fullExplanationOpen');
+  });
+});
 
 describe('① この単元の思考の型は単元につき1回だけ', () => {
   it('解説本文には「この単元の思考の型」を一切埋め込まない', () => {

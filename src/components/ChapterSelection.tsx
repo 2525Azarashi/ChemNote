@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { chemistryData } from '../data/chemistryData';
 import { chemistryAdvancedData, type AdvancedFieldId } from '../data/chemistryAdvancedData';
 import { englishListeningData } from '../data/englishListeningData';
+import { mathData } from '../data/mathData';
 import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X, Headphones } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
@@ -41,7 +42,7 @@ interface ChapterSelectionProps {
    * 'english_listening' のときは、共通テストの大問を A・B ごとの単元として表示する
    * （第1問A・第1問B …）。各単元のページには「第N回演習」のボタンを並べる。
    */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
   /** 科目が 'chemistry' のときに表示する分野 */
   field?: AdvancedFieldId;
   /** 分野名（画面見出しに出す。化学のときのみ） */
@@ -146,6 +147,13 @@ const chapterGroups = buildChapterGroups(chemistryData.parts as any[]);
 const listeningGroups = buildChapterGroups(englishListeningData.parts as any[]);
 
 /**
+ * 数学のタブ。
+ * 数III積分の各章は realTitle（'1章 不定積分の土台' など）でグループ化されるので、
+ * 化学と同じ共通処理を通すだけでタブができる。
+ */
+const mathGroups = buildChapterGroups(mathData.parts as any[]);
+
+/**
  * 単元の中に収録されている音源を、回（problem）ごとにまとめて取り出す。
  *
  * ご要望「復習用の音源を聞く場所もしっかりと作って」に対応するためのもの。
@@ -199,6 +207,7 @@ function splitTabTitle(title: string, index: number): { kicker: string; label: s
 export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'chemistry_basic', field, fieldTitle }: ChapterSelectionProps) {
   const isAdvanced = subject === 'chemistry';
   const isListening = subject === 'english_listening';
+  const isMath = subject === 'math';
   /**
    * 科目ごとの配色。
    * これまで覈しのラベル等はすべてダスティローズ直書きだったため、
@@ -215,10 +224,11 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
    */
   const groups = useMemo(() => {
     if (isListening) return listeningGroups;
+    if (isMath) return mathGroups;
     if (!isAdvanced) return chapterGroups;
     const parts = chemistryAdvancedData.parts.filter(p => !field || p.field === field);
     return buildChapterGroups(parts as any[]);
-  }, [isAdvanced, isListening, field]);
+  }, [isAdvanced, isListening, isMath, field]);
 
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null);
   /**
@@ -227,6 +237,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
    */
   const [openAudioSetId, setOpenAudioSetId] = useState<string | null>(null);
   const [activeGroupTitle, setActiveGroupTitle] = useState(groups[0]?.title || '');
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [selectedFlowchart, setSelectedFlowchart] = useState<{ id: string; title: string; questions: any[] } | null>(null);
 
   /**
@@ -255,6 +266,16 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
     setExpandedChapterId(null);
     setOpenAudioSetId(null);
   }, [groups]);
+
+  // スマホでは選択中のタブを横スクロール領域の中央付近に保つ。
+  // PC のグリッド表示では inline 方向にあふれないため、同じ処理でも位置は変わらない。
+  useEffect(() => {
+    tabRefs.current[activeGroupTitle]?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'center',
+    });
+  }, [activeGroupTitle]);
 
   const activeGroup = groups.find(group => group.title === activeGroupTitle) || groups[0];
 
@@ -321,30 +342,22 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
         {/* ================================================================
             章／大問の一覧
             ================================================================
-            ■ なぜ横スクロール（カルーセル）をやめたのか（ご要望）
-                > 単元選択をカルーセルではなく一覧にして。
-              横スクロールだと、画面の外に出ている章が「あることに気付けない」。
-              化学（発展）は1分野に17〜29章あり、右端まで何度もスワイプしないと
-              全体像がつかめなかった。一覧（折り返して並べる）にすれば
-              「どんな単元があるか」を一目で見渡してから選べる。
+            ■ スマホは横スクロールにする理由
+              2列の折り返し一覧はタブだけで縦幅を使い、下の問題を選びにくかった。
+              横並び＋スナップにして、問題一覧を見せたまま親指で単元を切り替えられるようにする。
+              タブ幅を画面の半分より少し狭くし、次のタブが一部見えることで
+              右側にも単元が続くことが分かるようにしている。
 
-            ■ 折り返しグリッドにしている理由
-              章名の長さがばらばら（'3章 化学結合' ↔ '④ 希薄溶液の性質（沸点上昇・凝固点降下）'）
-              なので、横幅を等分するグリッドにして高さで揃える。
-              whitespace-nowrap を外し、長い章名は2行に折り返して全文を出す
-              （途中で切れると別の章と見分けが付かない）。
-
-            ■ 高さに上限を付けている理由
-              29章を全部並べると一覧だけで画面が埋まり、下の単元リストが見えない。
-              上限（max-h）を付けて縦スクロールにすることで、
-              「一覧を広く見渡せる」と「選んだ先がすぐ見える」を両立させる。
-              章が少ない科目（化学基礎6・リスニング9）では上限に届かず全件が出る。
+            ■ タブレット／PCはグリッドを保つ理由
+              横幅がある画面では複数章を一度に見渡せる利点が大きいため、
+              sm 以上では従来どおり折り返しグリッドに戻す。
+              長い章名は途中で省略せず、タブ内で折り返して全文を表示する。
         */}
         <div className="mb-3 shrink-0 border-b border-slate-200/80">
           <div
             role="tablist"
             aria-label="章を選択"
-            className="grid grid-cols-2 gap-1.5 max-h-[34vh] overflow-y-auto overscroll-contain pb-2 px-0.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 [scrollbar-width:thin]"
+            className="flex touch-pan-x snap-x snap-mandatory gap-1.5 overflow-x-auto overscroll-x-contain px-0.5 pb-2 [scrollbar-width:thin] sm:grid sm:grid-cols-3 sm:overflow-x-visible sm:overscroll-auto lg:grid-cols-4 xl:grid-cols-5"
           >
             {groups.map((group, index) => {
               const isActive = group.title === activeGroup?.title;
@@ -353,6 +366,9 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
               return (
                 <button
                   key={group.title}
+                  ref={(element) => {
+                    tabRefs.current[group.title] = element;
+                  }}
                   id={`chapter-tab-${index}`}
                   type="button"
                   role="tab"
@@ -366,7 +382,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                     setOpenAudioSetId(null);
                     document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
                   }}
-                  className={`flex h-full min-h-[3rem] flex-col justify-center rounded-xl border px-2.5 py-2 text-left transition-all cursor-pointer ${
+                  className={`flex h-full min-h-[3rem] w-[42vw] min-w-[8.5rem] max-w-[11rem] shrink-0 snap-center flex-col justify-center rounded-xl border px-2.5 py-2 text-left transition-all cursor-pointer sm:w-auto sm:min-w-0 sm:max-w-none sm:shrink ${
                     isActive
                       ? 'border-[#A9CCE3] bg-[#2C3E50] text-white shadow-sm'
                       : 'border-slate-200 bg-white/75 text-slate-600 hover:border-[#A9CCE3] hover:bg-white'

@@ -451,6 +451,59 @@ export async function fetchClassSummaries(classId: string): Promise<StudentSumma
   return results.sort((a, b) => b.review.overdue - a.review.overdue);
 }
 
+// ===================================================================
+// 観点別評価レポート用：生の学習データを取る
+// ===================================================================
+
+/**
+ * 生徒1人分の「生の」学習データ（サマリーに潰す前の形）。
+ *
+ * fetchClassSummaries が返す StudentSummary は一覧表示用に
+ * 集計済みで、章別の到達状況（観点別評価の「知識・技能」の材料）を
+ * 復元できない。観点別レポートは solved マップそのものが必要なので、
+ * 別の取得口を用意する。
+ *
+ * ⚠️ 読み取り回数は fetchClassSummaries と同じ（生徒1人 = 1 read）。
+ *    同じ study_progress ドキュメントを読むだけで、
+ *    Firestore 側に新しいコレクションは増えない。
+ */
+export interface StudentRawProgress {
+  uid: string;
+  displayName: string;
+  solved: SolvedMap;
+  reviewItems: ReviewItem[];
+}
+
+/**
+ * クラス全員分の生データを取る（観点別評価タブが使う）。
+ * 1人分の取得が失敗しても全体を止めない方針は fetchClassSummaries と同じ。
+ */
+export async function fetchClassRawProgress(classId: string): Promise<StudentRawProgress[]> {
+  const members = await fetchClassMembers(classId);
+  if (members.length === 0) return [];
+
+  const results = await Promise.all(
+    members.map(async (member): Promise<StudentRawProgress> => {
+      const displayName = resolveRosterName(member);
+      try {
+        const snapshot = await getDoc(doc(db, STUDY_PROGRESS_COLLECTION, member.uid));
+        const data = snapshot.exists() ? snapshot.data() || {} : {};
+        const solved = (data.solved && typeof data.solved === 'object' ? data.solved : {}) as SolvedMap;
+        return { uid: member.uid, displayName, solved, reviewItems: fromSyncedReviewItems(data.reviewItems) };
+      } catch {
+        return { uid: member.uid, displayName, solved: {}, reviewItems: [] };
+      }
+    }),
+  );
+
+  // 名簿順（名前の五十音順）で返す。所見を書く作業は名簿と突き合わせるため、
+  // 「未処理が多い順」ではなく毎回同じ並びのほうが使いやすい。
+  return results.sort((a, b) => a.displayName.localeCompare(b.displayName, 'ja'));
+}
+
+/** 「定着した」とみなす box（観点別レポートの画面からも同じ基準を使う） */
+export const KANTEN_MASTERED_BOX = MASTERED_BOX;
+
 /** 参加コードが形式的に正しいか（画面の即時バリデーション用に再公開） */
 export { isValidJoinCode, validateJoinCodeInput, resolveRosterName };
 

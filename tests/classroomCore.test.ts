@@ -130,7 +130,13 @@ describe('クラス作成入力の検証', () => {
   });
 
   it('未知の科目を弾く', () => {
-    expect(validateClassroomInput({ ...valid, subject: 'math' as any }).ok).toBe(false);
+    // 「math」は正式な科目になったため、真に未定義の値でテストする。
+    expect(validateClassroomInput({ ...valid, subject: 'physics' as any }).ok).toBe(false);
+  });
+
+  it('追加された科目（数学・生物基礎）を受け付ける', () => {
+    expect(validateClassroomInput({ ...valid, subject: 'math' }).ok).toBe(true);
+    expect(validateClassroomInput({ ...valid, subject: 'biology_basic' }).ok).toBe(true);
   });
 });
 

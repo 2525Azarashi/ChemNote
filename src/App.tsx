@@ -29,6 +29,7 @@ import { AdvancedFieldSelection } from './components/AdvancedFieldSelection';
 import { chemistryAdvancedData, ADVANCED_FIELDS, type AdvancedFieldId } from './data/chemistryAdvancedData';
 import { chemistryData } from './data/chemistryData';
 import { englishListeningData } from './data/englishListeningData';
+import { mathData } from './data/mathData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIdleReset } from './hooks/useIdleReset';
 import { useIsMobile } from './hooks/useMediaQuery';
@@ -39,11 +40,27 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { flushFeedbackQueue, getFeedbackWebhookUrl } from './utils/feedback';
 import { recordUserPresence } from './utils/userRegistry';
 import { ensureRankingEntry } from './utils/leaderboard';
+import { parseStoredStringRecord } from './utils/progress';
 import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './utils/studySync';
 import { TeacherDashboard } from './components/TeacherDashboard';
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
+
+const APP_STATES = new Set<AppState>([
+  'home', 'mode_selection', 'chapters', 'quiz', 'explanation', 'learning', 'intro',
+  'flowchart', 'study_hub', 'note_detail', 'onboarding', 'logical_tree', 'settings',
+  'leaderboard', 'mock_exam', 'subject_selection', 'advanced_fields', 'teacher_dashboard',
+]);
+const APP_MODES = new Set<AppMode>(['mini_test', 'practice', 'learning']);
+
+export function isAppState(value: unknown): value is AppState {
+  return typeof value === 'string' && APP_STATES.has(value as AppState);
+}
+
+export function isAppMode(value: unknown): value is AppMode {
+  return typeof value === 'string' && APP_MODES.has(value as AppMode);
+}
 
 /** 科目選択の保存キー（次回起動時に前回の科目を復元する） */
 const SELECTED_SUBJECT_KEY = 'savedSelectedSubject';
@@ -60,8 +77,14 @@ const IDLE_RESET_MS = 30 * 60 * 1000;
 export default function App() {
   useGlobalClickSound();
 
-  const [appState, setAppState] = useState<AppState>(() => (localStorage.getItem('savedAppState') as AppState) || 'onboarding');
-  const [appMode, setAppMode] = useState<AppMode>(() => (localStorage.getItem('savedAppMode') as AppMode) || 'practice');
+  const [appState, setAppState] = useState<AppState>(() => {
+    const saved = localStorage.getItem('savedAppState');
+    return isAppState(saved) ? saved : 'onboarding';
+  });
+  const [appMode, setAppMode] = useState<AppMode>(() => {
+    const saved = localStorage.getItem('savedAppMode');
+    return isAppMode(saved) ? saved : 'practice';
+  });
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(() => localStorage.getItem('savedSelectedChapterId'));
   /**
    * 「今回はこの範囲だけを解く」ときの範囲（両端を含む・章内の通し番号）。
@@ -86,7 +109,9 @@ export default function App() {
       if (!raw) return null;
       const parsed = JSON.parse(raw);
       if (
-        parsed && typeof parsed.startIndex === 'number' && typeof parsed.endIndex === 'number'
+        parsed &&
+        Number.isSafeInteger(parsed.startIndex) && parsed.startIndex >= 0 &&
+        Number.isSafeInteger(parsed.endIndex) && parsed.endIndex >= parsed.startIndex
       ) return { startIndex: parsed.startIndex, endIndex: parsed.endIndex };
       return null;
     } catch {
@@ -94,13 +119,9 @@ export default function App() {
     }
   });
   const [selectedNote, setSelectedNote] = useState<any>(null);
-  const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>(() => {
-    try {
-      return JSON.parse(localStorage.getItem('savedQuizAnswers') || '{}');
-    } catch {
-      return {};
-    }
-  });
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>(() =>
+    parseStoredStringRecord(localStorage.getItem('savedQuizAnswers')),
+  );
   // スマホ端末では常にスマホ向けレイアウトで表示するため、PC/スマホ切り替えは廃止。
   // 既存の判定ロジック（shouldForceDesktopUI / isMobileExplanation）との互換のため定数 false を保持する。
   const forceDesktop = false;
@@ -257,7 +278,10 @@ export default function App() {
     };
   }, [appState, isExplanationView]);
 
-  const [lastLearnState, setLastLearnState] = useState<AppState>(() => (localStorage.getItem('savedLastLearnState') as AppState) || 'mode_selection');
+  const [lastLearnState, setLastLearnState] = useState<AppState>(() => {
+    const saved = localStorage.getItem('savedLastLearnState');
+    return isAppState(saved) ? saved : 'mode_selection';
+  });
 
   useEffect(() => { localStorage.setItem('savedAppState', appState); }, [appState]);
   useEffect(() => { localStorage.setItem('savedAppMode', appMode); }, [appMode]);
@@ -716,6 +740,7 @@ export default function App() {
     ...chemistryData.parts.flatMap(p => p.chapters as any[]),
     ...chemistryAdvancedData.parts.flatMap(p => p.chapters as any[]),
     ...englishListeningData.parts.flatMap(p => p.chapters as any[]),
+    ...mathData.parts.flatMap(p => p.chapters as any[]),
   ].find(c => (c as any).id === selectedChapterId);
 
   return (
@@ -771,7 +796,11 @@ export default function App() {
             {appState === 'learning' && (
               <LearningViewer
                 onBack={() => setAppState('mode_selection')}
-                subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'}
+                subject={
+                  selectedSubject === 'chemistry' ? 'chemistry'
+                  : selectedSubject === 'math' ? 'math'
+                  : 'chemistry_basic'
+                }
               />
             )}
             {/* 化学（発展）：理論化学・無機化学・有機化学の分野選択 */}

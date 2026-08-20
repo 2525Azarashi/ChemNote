@@ -5,6 +5,7 @@ import { auth } from '../firebase';
 import { chemistryData } from '../data/chemistryData';
 import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
 import { getAllListeningChapters } from '../data/englishListeningData';
+import { getAllMathChapters } from '../data/mathData';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
@@ -33,7 +34,7 @@ interface HomeProps {
   /** 現在選択中の科目名（表示用） */
   subjectLabel?: string;
   /** 現在選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
   isGuest: boolean;
 }
 
@@ -73,6 +74,8 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
     () => {
       if (subject === 'chemistry') return getAllAdvancedChapters() as any[];
       if (subject === 'english_listening') return getAllListeningChapters() as any[];
+      if (subject === 'math') return getAllMathChapters() as any[];
+      if (subject === 'biology_basic') return [] as any[]; // 準備中（単元未収録）
       return chemistryData.parts.flatMap((p: any) => p.chapters) as any[];
     },
     [subject],
@@ -106,6 +109,17 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         id: 'english_listening' as const,
         label: '英語リスニング',
         chapters: getAllListeningChapters() as any[],
+      },
+      {
+        id: 'math' as const,
+        label: '数学',
+        chapters: getAllMathChapters() as any[],
+      },
+      {
+        id: 'biology_basic' as const,
+        label: '生物基礎',
+        // 準備中：章が空のときは進捗バー側が「問題を準備中」と表示する
+        chapters: [] as any[],
       },
     ],
     [],
