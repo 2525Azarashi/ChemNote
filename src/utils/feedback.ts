@@ -185,9 +185,38 @@ export const FEEDBACK_WEBHOOK_OVERRIDE_KEY = 'feedback_webhook_url_v1';
 export const DEFAULT_FEEDBACK_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbxZh6AeCP6nmfdq6AUmeh_OlKQjdBJx2nZSOA02k1F_XA-a-MiKEa9CaVxDquSfDaxEtQ/exec';
 
-/** URL として妥当か（GAS の /exec を想定した緩いチェック） */
-function isHttpUrl(url: string): boolean {
-  return /^https?:\/\/\S+$/.test(url);
+/**
+ * HTTPS の Google Apps Script Web アプリURLを正規化する。
+ * URLに埋め込まれた認証情報、別ホスト、`/exec` 以外のパスは受け付けない。
+ */
+function normalizeAppsScriptWebhookUrl(url: string): string {
+  try {
+    const parsed = new URL(url.trim());
+    if (parsed.protocol !== 'https:') return '';
+    if (parsed.username || parsed.password || parsed.port) return '';
+    if (parsed.hostname !== 'script.google.com') return '';
+    if (!/^\/macros\/s\/[A-Za-z0-9_-]+\/exec\/?$/.test(parsed.pathname)) return '';
+    return `${parsed.origin}${parsed.pathname.replace(/\/$/, '')}`;
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * localStorage の上書き先として承認済みのURLか。
+ *
+ * 同じ Google Apps Script ホストでも第三者が作成した Web アプリへ差し替えられると、
+ * UID・メールアドレス・学習状況を含むフィードバックが流出する。そのため、
+ * 同梱の既定URLか、管理者がビルド時に指定したURLと完全一致するものだけを許可する。
+ */
+export function isAllowedFeedbackWebhookUrl(url: string): boolean {
+  const normalized = normalizeAppsScriptWebhookUrl(url);
+  if (!normalized) return false;
+
+  const approved = [DEFAULT_FEEDBACK_WEBHOOK_URL, readEnv('VITE_FEEDBACK_WEBHOOK_URL')]
+    .map(normalizeAppsScriptWebhookUrl)
+    .filter(Boolean);
+  return approved.includes(normalized);
 }
 
 /**
@@ -205,14 +234,14 @@ export function getFeedbackWebhookUrl(): string {
       const trimmed = override.trim();
       // 意図的に空文字を保存した場合は「既定URLも使わない」という指示として扱う
       if (trimmed === '__disabled__') return '';
-      if (isHttpUrl(trimmed)) return trimmed;
+      if (isAllowedFeedbackWebhookUrl(trimmed)) return normalizeAppsScriptWebhookUrl(trimmed);
     }
   } catch {
     // localStorage が使えない環境は環境変数／既定値へフォールバック
   }
-  const url = readEnv('VITE_FEEDBACK_WEBHOOK_URL');
-  if (isHttpUrl(url)) return url;
-  return DEFAULT_FEEDBACK_WEBHOOK_URL;
+  const url = normalizeAppsScriptWebhookUrl(readEnv('VITE_FEEDBACK_WEBHOOK_URL'));
+  if (url) return url;
+  return normalizeAppsScriptWebhookUrl(DEFAULT_FEEDBACK_WEBHOOK_URL);
 }
 
 /**
@@ -229,8 +258,8 @@ export function setFeedbackWebhookUrl(url: string): boolean {
       ls.removeItem(FEEDBACK_WEBHOOK_OVERRIDE_KEY);
       return true;
     }
-    if (!isHttpUrl(trimmed)) return false;
-    ls.setItem(FEEDBACK_WEBHOOK_OVERRIDE_KEY, trimmed);
+    if (!isAllowedFeedbackWebhookUrl(trimmed)) return false;
+    ls.setItem(FEEDBACK_WEBHOOK_OVERRIDE_KEY, normalizeAppsScriptWebhookUrl(trimmed));
     return true;
   } catch {
     return false;
