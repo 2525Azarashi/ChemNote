@@ -69,6 +69,54 @@ function storage(): Storage | null {
   return null;
 }
 
+/** localStorage 由来の JSON が、配列ではない通常のレコードかを判定する。 */
+export function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+/** 解答保存形式（設問ID → 文字列）だけを復元し、異なる形は空へ戻す。 */
+export function parseStoredStringRecord(raw: string | null): Record<string, string> {
+  if (!raw) return {};
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!isPlainRecord(parsed) || !Object.values(parsed).every((value) => typeof value === 'string')) {
+      return {};
+    }
+    return parsed as Record<string, string>;
+  } catch {
+    return {};
+  }
+}
+
+/** 消去法の保存形式（設問ID → 選択肢文字列の配列）だけを復元する。 */
+export function parseStoredStringArrayRecord(raw: string | null): Record<string, string[]> {
+  if (!raw) return {};
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (
+      !isPlainRecord(parsed) ||
+      !Object.values(parsed).every(
+        (value) => Array.isArray(value) && value.every((item) => typeof item === 'string'),
+      )
+    ) {
+      return {};
+    }
+    return parsed as Record<string, string[]>;
+  } catch {
+    return {};
+  }
+}
+
+/** 保存された添字を有限・非負の整数に限定する。 */
+export function parseStoredNonNegativeInteger(raw: string | null, max = Number.MAX_SAFE_INTEGER): number {
+  if (raw === null || raw.trim() === '') return 0;
+  const parsed = Number(raw);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) return 0;
+  return Math.min(parsed, Math.max(0, max));
+}
+
 /** uid を localStorage のキーに使える形に正規化する */
 function normalizeUid(uid: string | null | undefined): string {
   return uid && uid.trim() ? uid : 'guest';

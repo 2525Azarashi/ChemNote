@@ -20,7 +20,13 @@ import {
 } from '../utils/scoring';
 import { submitChapterScore } from '../utils/leaderboard';
 import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
-import { markProblemSolved } from '../utils/progress';
+import {
+  isPlainRecord,
+  markProblemSolved,
+  parseStoredNonNegativeInteger,
+  parseStoredStringArrayRecord,
+  parseStoredStringRecord,
+} from '../utils/progress';
 import { schedulePush } from '../utils/studySync';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
 import { answerCardMarker, buildSubQuestionList, splitQuestionLabel } from '../utils/questionDisplay';
@@ -95,13 +101,7 @@ interface ChapterRunState {
   startedAt: number;
 }
 
-function loadRun(chapterId: string, mode: string): ChapterRunState {
-  try {
-    const raw = localStorage.getItem(chapterRunKey(chapterId, mode));
-    if (raw) return JSON.parse(raw);
-  } catch {
-    /* noop */
-  }
+function emptyRun(): ChapterRunState {
   return {
     totalScore: 0,
     runningCombo: 0,
@@ -112,6 +112,37 @@ function loadRun(chapterId: string, mode: string): ChapterRunState {
     totalTimeSec: 0,
     startedAt: Date.now(),
   };
+}
+
+function nonNegativeFinite(value: unknown, fallback = 0): number {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : fallback;
+}
+
+function loadRun(chapterId: string, mode: string): ChapterRunState {
+  try {
+    const raw = localStorage.getItem(chapterRunKey(chapterId, mode));
+    if (!raw) return emptyRun();
+
+    const parsed: unknown = JSON.parse(raw);
+    if (!isPlainRecord(parsed)) return emptyRun();
+
+    return {
+      totalScore: nonNegativeFinite(parsed.totalScore),
+      runningCombo: nonNegativeFinite(parsed.runningCombo),
+      perQuestion: isPlainRecord(parsed.perQuestion)
+        ? parsed.perQuestion as ChapterRunState['perQuestion']
+        : {},
+      perStep: isPlainRecord(parsed.perStep)
+        ? parsed.perStep as NonNullable<ChapterRunState['perStep']>
+        : {},
+      totalCorrect: nonNegativeFinite(parsed.totalCorrect),
+      totalJudgeable: nonNegativeFinite(parsed.totalJudgeable),
+      totalTimeSec: nonNegativeFinite(parsed.totalTimeSec),
+      startedAt: nonNegativeFinite(parsed.startedAt, Date.now()),
+    };
+  } catch {
+    return emptyRun();
+  }
 }
 
 function saveRun(chapterId: string, mode: string, run: ChapterRunState) {
@@ -582,15 +613,17 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     },
   });
 
-  const [answers, setAnswers] = useState<Record<string, string>>(() => {
-    try {
-      return JSON.parse(localStorage.getItem(`quiz_answers_${chapter.id}_${mode}`) || '{}');
-    } catch {
-      return {};
-    }
-  });
+  const [answers, setAnswers] = useState<Record<string, string>>(() =>
+    parseStoredStringRecord(localStorage.getItem(`quiz_answers_${chapter.id}_${mode}`)),
+  );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
-    return parseInt(localStorage.getItem(`quiz_idx_${chapter.id}_${mode}`) || '0', 10);
+    const questionCount = mode === 'mini_test'
+      ? (chapter.miniTest || []).length
+      : (chapter.practiceProblems || []).length;
+    return parseStoredNonNegativeInteger(
+      localStorage.getItem(`quiz_idx_${chapter.id}_${mode}`),
+      Math.max(0, questionCount - 1),
+    );
   });
   const [showingExplanation, setShowingExplanation] = useState(() => {
     return localStorage.getItem(`quiz_expl_${chapter.id}_${mode}`) === 'true';
@@ -606,9 +639,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
    * これまでどおり「回」を指す。その中の何問目かをこの state が持つ。
    * 中断して戻ってきたときに問1からやり直しにならないよう端末に保存する。
    */
-  const [stepIndex, setStepIndex] = useState(() => {
-    return parseInt(localStorage.getItem(`quiz_step_${chapter.id}_${mode}`) || '0', 10);
-  });
+  const [stepIndex, setStepIndex] = useState(() =>
+    parseStoredNonNegativeInteger(localStorage.getItem(`quiz_step_${chapter.id}_${mode}`)),
+  );
 
   useEffect(() => {
     localStorage.setItem(`quiz_answers_${chapter.id}_${mode}`, JSON.stringify(answers));
@@ -656,13 +689,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // ■ 形
   //   { [設問ID]: 消去した選択肢の配列 }
   //   選択肢そのものの文字列で持つ（並び替えや添字ズレに影響されないため）。
-  const [eliminated, setEliminated] = useState<Record<string, string[]>>(() => {
-    try {
-      return JSON.parse(localStorage.getItem(`quiz_elim_${chapter.id}_${mode}`) || '{}');
-    } catch {
-      return {};
-    }
-  });
+  const [eliminated, setEliminated] = useState<Record<string, string[]>>(() =>
+    parseStoredStringArrayRecord(localStorage.getItem(`quiz_elim_${chapter.id}_${mode}`)),
+  );
 
   useEffect(() => {
     localStorage.setItem(`quiz_elim_${chapter.id}_${mode}`, JSON.stringify(eliminated));

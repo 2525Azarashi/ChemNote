@@ -11,6 +11,10 @@ import {
   countSolvedProblemsIn,
   countSolvedByChapter,
   backfillLegacyProgress,
+  isPlainRecord,
+  parseStoredNonNegativeInteger,
+  parseStoredStringArrayRecord,
+  parseStoredStringRecord,
 } from '../src/utils/progress';
 
 /**
@@ -51,6 +55,54 @@ let ls: ReturnType<typeof installLocalStorage>;
 
 beforeEach(() => {
   ls = installLocalStorage();
+});
+
+describe('localStorage 復元値の実行時検証', () => {
+  it('解答マップは文字列値だけを受け入れる', () => {
+    expect(parseStoredStringRecord('{"q1":"ア","q2":""}')).toEqual({ q1: 'ア', q2: '' });
+    expect(parseStoredStringRecord('{"q1":42}')).toEqual({});
+    expect(parseStoredStringRecord('["ア"]')).toEqual({});
+    expect(parseStoredStringRecord('{broken')).toEqual({});
+  });
+
+  it('消去マップは文字列配列だけを受け入れる', () => {
+    expect(parseStoredStringArrayRecord('{"q1":["ア","イ"]}')).toEqual({ q1: ['ア', 'イ'] });
+    expect(parseStoredStringArrayRecord('{"q1":"ア"}')).toEqual({});
+    expect(parseStoredStringArrayRecord('{"q1":["ア",2]}')).toEqual({});
+    expect(parseStoredStringArrayRecord('null')).toEqual({});
+  });
+
+  it('添字は有限・非負の安全な整数に限定し、上限内へ収める', () => {
+    expect(parseStoredNonNegativeInteger('3')).toBe(3);
+    expect(parseStoredNonNegativeInteger('99', 4)).toBe(4);
+    expect(parseStoredNonNegativeInteger('-1')).toBe(0);
+    expect(parseStoredNonNegativeInteger('2.5')).toBe(0);
+    expect(parseStoredNonNegativeInteger('2abc')).toBe(0);
+    expect(parseStoredNonNegativeInteger('Infinity')).toBe(0);
+  });
+
+  it('通常のレコードだけを許可し、配列や null を拒否する', () => {
+    expect(isPlainRecord({ key: 'value' })).toBe(true);
+    expect(isPlainRecord(Object.create(null))).toBe(true);
+    expect(isPlainRecord([])).toBe(false);
+    expect(isPlainRecord(null)).toBe(false);
+  });
+
+  it('App と Quiz が未検証の型キャストや JSON.parse を復元に使わない', () => {
+    const app = readFileSync('src/App.tsx', 'utf8');
+    const quiz = readFileSync('src/components/Quiz.tsx', 'utf8');
+
+    expect(app).toContain('return isAppState(saved) ? saved');
+    expect(app).toContain('return isAppMode(saved) ? saved');
+    expect(app).toContain("parseStoredStringRecord(localStorage.getItem('savedQuizAnswers'))");
+    expect(app).not.toContain("localStorage.getItem('savedAppState') as AppState");
+    expect(app).not.toContain("localStorage.getItem('savedAppMode') as AppMode");
+
+    expect(quiz).toContain('if (!isPlainRecord(parsed)) return emptyRun()');
+    expect(quiz).toContain('parseStoredStringRecord(localStorage.getItem(`quiz_answers_');
+    expect(quiz).toContain('parseStoredStringArrayRecord(localStorage.getItem(`quiz_elim_');
+    expect(quiz).toContain('parseStoredNonNegativeInteger(');
+  });
 });
 
 describe('進捗キー', () => {
