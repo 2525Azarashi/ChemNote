@@ -116,7 +116,7 @@ describe('リスニングの解説：スクリプトを最初に出す（C3）',
     const source = read('src/components/Explanation.tsx');
     expect(source).toContain('isScriptFirstExplanation');
     expect(source).toContain('const isScriptFirst = isScriptFirstExplanation(sqSlice)');
-    expect(source).toContain('{!isScriptFirst && isPracticeMode && sq.detailedExplanation.steps');
+    expect(source).toContain('{!isScriptFirst && isPracticeMode && sq.detailedExplanation?.steps?.length > 0');
   });
 });
 
