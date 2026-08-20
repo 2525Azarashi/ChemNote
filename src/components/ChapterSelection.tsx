@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { chemistryData } from '../data/chemistryData';
 import { chemistryAdvancedData, type AdvancedFieldId } from '../data/chemistryAdvancedData';
 import { englishListeningData } from '../data/englishListeningData';
+import { mathData } from '../data/mathData';
 import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X, Headphones } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
@@ -41,7 +42,7 @@ interface ChapterSelectionProps {
    * 'english_listening' のときは、共通テストの大問を A・B ごとの単元として表示する
    * （第1問A・第1問B …）。各単元のページには「第N回演習」のボタンを並べる。
    */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
   /** 科目が 'chemistry' のときに表示する分野 */
   field?: AdvancedFieldId;
   /** 分野名（画面見出しに出す。化学のときのみ） */
@@ -146,6 +147,13 @@ const chapterGroups = buildChapterGroups(chemistryData.parts as any[]);
 const listeningGroups = buildChapterGroups(englishListeningData.parts as any[]);
 
 /**
+ * 数学のタブ。
+ * 数III積分の各章は realTitle（'1章 不定積分の土台' など）でグループ化されるので、
+ * 化学と同じ共通処理を通すだけでタブができる。
+ */
+const mathGroups = buildChapterGroups(mathData.parts as any[]);
+
+/**
  * 単元の中に収録されている音源を、回（problem）ごとにまとめて取り出す。
  *
  * ご要望「復習用の音源を聞く場所もしっかりと作って」に対応するためのもの。
@@ -199,6 +207,7 @@ function splitTabTitle(title: string, index: number): { kicker: string; label: s
 export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'chemistry_basic', field, fieldTitle }: ChapterSelectionProps) {
   const isAdvanced = subject === 'chemistry';
   const isListening = subject === 'english_listening';
+  const isMath = subject === 'math';
   /**
    * 科目ごとの配色。
    * これまで覈しのラベル等はすべてダスティローズ直書きだったため、
@@ -215,10 +224,11 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
    */
   const groups = useMemo(() => {
     if (isListening) return listeningGroups;
+    if (isMath) return mathGroups;
     if (!isAdvanced) return chapterGroups;
     const parts = chemistryAdvancedData.parts.filter(p => !field || p.field === field);
     return buildChapterGroups(parts as any[]);
-  }, [isAdvanced, isListening, field]);
+  }, [isAdvanced, isListening, isMath, field]);
 
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null);
   /**

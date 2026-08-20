@@ -29,15 +29,23 @@
 import { chemistryData } from './chemistryData';
 import { chemistryAdvancedData } from './chemistryAdvancedData';
 import { englishListeningData } from './englishListeningData';
+import { mathData } from './mathData';
 import type { ChapterDefinition } from '../utils/studySummary';
 
-export type CatalogSubject = 'chemistry_basic' | 'chemistry' | 'english_listening';
+export type CatalogSubject =
+  | 'chemistry_basic'
+  | 'chemistry'
+  | 'english_listening'
+  | 'math'
+  | 'biology_basic';
 
 /** 科目の表示名（レポートの文章にも使う） */
 export const SUBJECT_LABELS: Record<CatalogSubject, string> = {
   chemistry_basic: '化学基礎',
   chemistry: '化学',
   english_listening: '英語リスニング',
+  math: '数学',
+  biology_basic: '生物基礎',
 };
 
 /** 章データの最小共通形（3科目とも id / abstractTitle / 問題配列を持つ） */
@@ -95,6 +103,13 @@ export function getChapterCatalog(subject: CatalogSubject): ChapterDefinition[] 
       break;
     case 'english_listening':
       rows = toDefinitions(englishListeningData.parts as unknown as RawPart[]);
+      break;
+    case 'math':
+      rows = toDefinitions(mathData.parts as unknown as RawPart[]);
+      break;
+    case 'biology_basic':
+      // 生物基礎は準備中（単元データ未収録）。空のカタログを返して落とさない。
+      rows = [];
       break;
     case 'chemistry_basic':
     default:

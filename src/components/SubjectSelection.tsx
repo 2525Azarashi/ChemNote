@@ -6,7 +6,7 @@
  *
  * 役割は2つ:
  *  1. アプリの「顔」＝タイトル画面（ロゴ・キャッチコピー・世界観の提示）
- *  2. 学習する科目の選択（化学基礎／化学／英語リスニング）
+ *  2. 学習する科目の選択（化学基礎／化学／英語リスニング／数学／生物基礎）
  *
  * 設計方針
  *  - Home.tsx と同じ淡いピンク基調（#D9466E / #E8688E / #FBE0E9 / #FDFBF7）と
@@ -16,19 +16,18 @@
  *  - 準備中の科目を押しても行き止まりにせず、
  *    「公開されたら知りたい」意思をフィードバック機能に接続して回収する。
  *
- * カルーセル方式にした理由
- *  - 科目が 3 つ以上になったため、従来の 2 カラムグリッドでは
- *    縦に伸びて 1 画面に収まらない。
- *  - そこで、**カード 1 枚の大きさは従来と完全に同じまま**
- *    （スマホ＝幅いっㅤい / md 以上＝从前の2カラム分の幅 = 50% - gap/2）で
- *    横スクロールとし、番号（ドット）と矢印で送れるようにした。
- *  - CSS の scroll-snap を使うので、スマホのスワイプも PC の矢印も同じ挙動になる。
- *  - カード自体はボタンなので Tab でも到達でき、フォーカス時に
- *    ブラウザが自動スクロールする。加えて←→キーでも送れる。
- *  - 全カード・全操作はタップ領域 44px 以上を確保。
+ * 1画面グリッドにした理由（カルーセルからの変更）
+ *  - 以前は横スクロールのカルーセルだったが、科目が5つに増えると
+ *    「隠れている科目」が生まれ、スワイプしないと全体が見えなかった。
+ *  - 全科目を一望して選べることが科目選択画面の本質なので、
+ *    **すべての科目カードが1つの画面に並ぶグリッド**に変更した。
+ *  - スマホ＝1カラム（縦スクロール）、md以上＝2カラム、lg以上＝3カラム。
+ *    カードは従来より少しコンパクトにし、1画面あたりの情報量を保つ。
+ *  - カードはボタンなので Tab で順に到達できる。全カードのタップ領域は
+ *    44px 以上を確保。
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import {
   ArrowRight,
@@ -37,10 +36,11 @@ import {
   BookOpen,
   FlaskConical,
   Headphones,
+  Calculator,
+  Leaf,
   Bell,
   CheckCircle2,
   ChevronLeft,
-  ChevronRight,
 } from 'lucide-react';
 import { auth } from '../firebase';
 import { MntbLogo } from './MntbLogo';
@@ -51,15 +51,18 @@ import { GoogleLinkBanner } from './GoogleLinkBanner';
 import { chemistryData } from '../data/chemistryData';
 import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
 import { getListeningStats } from '../data/englishListeningData';
+import { getMathStats } from '../data/mathData';
 
 /** アプリが扱う科目の識別子 */
-export type SubjectId = 'chemistry_basic' | 'chemistry' | 'english_listening';
+export type SubjectId = 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
 
 /** 科目ID → 画面に出す科目名（App 側のバッジ表示などでも使う） */
 export const SUBJECT_LABELS: Record<SubjectId, string> = {
   chemistry_basic: '化学基礎',
   chemistry: '化学',
   english_listening: '英語リスニング',
+  math: '数学',
+  biology_basic: '生物基礎',
 };
 
 /** 未知の値が入っていても安全に科目名を引く */
@@ -89,7 +92,7 @@ interface SubjectDefinition {
 }
 
 interface SubjectSelectionProps {
-  /** 科目を選んだとき（現状は化学基礎のみ遷移する） */
+  /** 科目を選んだとき */
   onSelectSubject: (subject: SubjectId) => void;
   /** ゲスト利用中かどうか（挨拶の出し分けに使う） */
   isGuest: boolean;
@@ -150,6 +153,9 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
    */
   const listeningStats = useMemo(() => getListeningStats(), []);
 
+  /** 数学の収録ボリューム。まずは数III積分（全パターン演習）から公開する。 */
+  const mathStats = useMemo(() => getMathStats(), []);
+
   const subjects: SubjectDefinition[] = useMemo(() => [
     {
       id: 'chemistry_basic',
@@ -181,7 +187,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
       id: 'english_listening',
       title: '英語リスニング',
       latin: 'English Listening',
-      description: '共通テスト「英語リスニング」を、本試験と同じ大問の並びで配置。第1問A・第1問B のように A／B も別のタブに分けてあります。',
+      description: '共通テスト「英語リスニング」を、本試験と同じ大問の並びで配置。',
       highlights: [
         `第1問A〜第6問Bの全${listeningStats.units}単元を本試験順で収録（問題は順次追加中）`,
         `配点${listeningStats.points}点・マーク${listeningStats.marks}個の大問構成に対応`,
@@ -190,94 +196,33 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
       available: true,
       icon: Headphones,
     },
-  ], [basicStats, advancedStats, listeningStats]);
-
-  // ===================================================================
-  // カルーセル（横スクロール）の制御
-  // ===================================================================
-  // カード1枚のサイズは従来のまま（min-h-[248px] / p-6 md:p-7 / rounded-[24px]、
-  // md以上では従来の2カラム時と同じ幅）。変えたのは「並べ方」だけ。
-  // グリッド → CSS scroll-snap の横並びにしたので、
-  // スマホのスワイプも PC の矢印クリックもまったく同じ挙動になる。
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  /**
-   * トラック内のカード要素だけを取り出す。
-   * 前後に「中央寄せ用のスペーサー」を置いているため、
-   * children の添字ではなく data 属性で引く。
-   */
-  const getCards = useCallback((): HTMLElement[] => {
-    const track = trackRef.current;
-    if (!track) return [];
-    return Array.from(track.querySelectorAll<HTMLElement>('[data-subject-card]'));
-  }, []);
-
-  /** 指定枚目のカードを表示領域の中央に寄せる */
-  const scrollToIndex = useCallback((index: number) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const cards = getCards();
-    if (cards.length === 0) return;
-    const card = cards[Math.max(0, Math.min(cards.length - 1, index))];
-    if (!card) return;
-    // scrollIntoView はページ全体を動かしてしまう環境があるため、
-    // トラックの scrollLeft を自分で計算して動かす。
-    track.scrollTo({
-      left: card.offsetLeft - (track.clientWidth - card.clientWidth) / 2,
-      behavior: 'smooth',
-    });
-  }, [getCards]);
-
-  /** スクロール位置から「今どのカードが中央か」を求め、ドット表示に反映する */
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    let frame = 0;
-    const handleScroll = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        const center = track.scrollLeft + track.clientWidth / 2;
-        let nearest = 0;
-        let nearestDistance = Number.POSITIVE_INFINITY;
-        getCards().forEach((el, i) => {
-          const cardCenter = el.offsetLeft + el.clientWidth / 2;
-          const distance = Math.abs(cardCenter - center);
-          if (distance < nearestDistance) {
-            nearestDistance = distance;
-            nearest = i;
-          }
-        });
-        setActiveIndex(nearest);
-      });
-    };
-
-    track.addEventListener('scroll', handleScroll, { passive: true });
-    // 幅が変わると中央判定もずれるため、リサイズでも再計算する
-    window.addEventListener('resize', handleScroll);
-    handleScroll();
-    return () => {
-      track.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, [subjects.length, getCards]);
-
-  /** ←→ キーでも送れるようにする（キーボード操作の救済） */
-  const handleTrackKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      scrollToIndex(activeIndex + 1);
-    } else if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      scrollToIndex(activeIndex - 1);
-    }
-  };
-
-  const canScrollPrev = activeIndex > 0;
-  const canScrollNext = activeIndex < subjects.length - 1;
+    {
+      id: 'math',
+      title: '数学',
+      latin: 'Mathematics',
+      description: '数III「積分法」を全パターン網羅。見た瞬間に解法が浮かぶ状態を作ります。',
+      highlights: [
+        `積分${mathStats.chapters}単元・演習${mathStats.questions}問を収録（順次追加中）`,
+        '15パターン判断フローのまとめプリント付き',
+        '数学記号パレットで ∫・√・π もワンタップ入力',
+      ],
+      available: true,
+      icon: Calculator,
+    },
+    {
+      id: 'biology_basic',
+      title: '生物基礎',
+      latin: 'Basic Biology',
+      description: '共通テスト「生物基礎」。現在、単元と問題を準備しています。',
+      highlights: [
+        '教科書の順番どおりの単元構成で準備中',
+        '化学基礎と同じ演習・復習のしくみに対応予定',
+        '公開時にお知らせを受け取れます',
+      ],
+      available: false,
+      icon: Leaf,
+    },
+  ], [basicStats, advancedStats, listeningStats, mathStats]);
 
   return (
     <div className="w-full min-h-[100dvh] sm:min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE]">
@@ -309,14 +254,14 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
         </button>
       )}
 
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-5 sm:px-8 md:px-12 pt-10 sm:pt-12 md:pt-14 relative z-10 flex flex-col justify-center">
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-5 sm:px-8 md:px-12 pt-10 sm:pt-12 md:pt-14 relative z-10 flex flex-col">
 
         {/* ===== タイトル（アプリの顔） ===== */}
         <motion.header
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-8 md:mb-10"
+          className="text-center mb-7 md:mb-9"
         >
           {/* ロゴのみを大きく置く。
               以前はロゴの下に「まなとび」「まなびの、とびらを開こう」の
@@ -334,55 +279,15 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
         {/* ===== Googleアカウント連携のおすすめ（ゲスト利用中のみ） ===== */}
         {isGuest && <GoogleLinkBanner />}
 
-        {/* ===== 科目カード（カルーセル：横スクロールで選ぶ） =====
-            ウィンドウ（表示領域）と1枚のカードの大きさは従来どおり。
-            max-w-4xl・gap も 2カラム時代と同じ値を保っている。 */}
-        <div className="relative max-w-4xl w-full mx-auto">
-
-          {/* 左右の矢印（PC向けの導線。スマホではスワイプで送れるので隠す） */}
-          <button
-            type="button"
-            onClick={() => scrollToIndex(activeIndex - 1)}
-            disabled={!canScrollPrev}
-            aria-label="前の科目を表示する"
-            className={`hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 w-11 h-11 rounded-full items-center justify-center border backdrop-blur-sm transition-all ${
-              canScrollPrev
-                ? 'bg-white/95 border-[#F4A9C4]/70 text-[#D9466E] shadow-[0_10px_24px_-12px_rgba(217,70,110,0.55)] hover:bg-white hover:border-[#E8688E] active:scale-95'
-                : 'bg-white/50 border-[#E4E8EC] text-[#C6CFD6] cursor-not-allowed'
-            }`}
-          >
-            <ChevronLeft className="w-5 h-5" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollToIndex(activeIndex + 1)}
-            disabled={!canScrollNext}
-            aria-label="次の科目を表示する"
-            className={`hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-20 w-11 h-11 rounded-full items-center justify-center border backdrop-blur-sm transition-all ${
-              canScrollNext
-                ? 'bg-white/95 border-[#F4A9C4]/70 text-[#D9466E] shadow-[0_10px_24px_-12px_rgba(217,70,110,0.55)] hover:bg-white hover:border-[#E8688E] active:scale-95'
-                : 'bg-white/50 border-[#E4E8EC] text-[#C6CFD6] cursor-not-allowed'
-            }`}
-          >
-            <ChevronRight className="w-5 h-5" aria-hidden="true" />
-          </button>
-
-          {/* スクロールトラック本体
-              - snap-x snap-mandatory：1枚ずつピタッと止まる
-              - carousel-x：スクロールバーを隠す（代わりに矢印・ドット・案内文を出す）
-              - overscroll-x-contain：端まで送ってもページ全体が動かない
-              - 前後のスペーサーで、1枚目と最後の1枚もきちんと中央に寄せられる */}
+        {/* ===== 科目カード（1画面グリッド：全科目を一望して選ぶ） =====
+            スマホ＝1カラム／md＝2カラム／lg＝3カラム。
+            カルーセルと違い、隠れている科目が無い。 */}
+        <div className="relative max-w-6xl w-full mx-auto">
           <div
-            ref={trackRef}
             role="group"
-            aria-label="科目を横スクロールで選択"
-            tabIndex={0}
-            onKeyDown={handleTrackKeyDown}
-            className="carousel-x flex gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth px-1 py-2 outline-none focus-visible:ring-2 focus-visible:ring-[#E8688E]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-[26px] overscroll-x-contain"
+            aria-label="学習する科目を選択"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5"
           >
-          {/* 先頭スペーサー（1枚目を中央に寄せるための余白。md以上は2枚並ぶので不要） */}
-          <div className="shrink-0 w-[7vw] md:hidden" aria-hidden="true" />
-
           {subjects.map((subject, index) => {
             const Icon = subject.icon;
             const handleClick = () => {
@@ -395,13 +300,9 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
                 key={subject.id}
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: 0.12 + index * 0.1 }}
+                transition={{ duration: 0.45, delay: 0.1 + index * 0.07 }}
                 data-subject-card
-                /* 1枚の幅は従来の見た目を維持：
-                   スマホ＝ほぼ全幅（従来1カラム相当）／
-                   md以上＝従来2カラム時とまったく同じ幅（50% − gap/2 = 50% − 12px）。
-                   shrink-0 で潰れないようにし、snap-center で中央に吸着させる。 */
-                className="shrink-0 snap-center w-[86vw] max-w-[420px] md:w-[calc(50%-12px)] md:max-w-none"
+                className="w-full"
               >
                 <button
                   onClick={handleClick}
@@ -410,7 +311,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
                       ? `${subject.title}を学習する`
                       : `${subject.title}は準備中です。公開のお知らせを希望する`
                   }
-                  className={`group relative w-full h-full text-left rounded-[24px] p-6 md:p-7 border transition-all duration-200 overflow-hidden min-h-[248px] flex flex-col ${
+                  className={`group relative w-full h-full text-left rounded-[22px] p-5 md:p-6 border transition-all duration-200 overflow-hidden min-h-[210px] flex flex-col ${
                     subject.available
                       ? 'bg-white/92 backdrop-blur-sm border-[#F4A9C4]/55 shadow-[0_16px_38px_-18px_rgba(217,70,110,0.55)] hover:border-[#E8688E] hover:shadow-[0_22px_46px_-18px_rgba(217,70,110,0.62)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.995]'
                       : 'bg-[#F7F5F3]/85 backdrop-blur-sm border-[#D7DDE3]/70 shadow-none hover:border-[#B8C4CE] hover:bg-[#F2F0EE]/90'
@@ -426,7 +327,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
 
                   {/* 右上のステータスバッジ */}
                   <span
-                    className={`absolute top-5 right-5 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold font-modern tracking-wider ${
+                    className={`absolute top-4 right-4 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold font-modern tracking-wider ${
                       subject.available
                         ? 'bg-[#FBE0E9] text-[#D9466E]'
                         : 'bg-[#E4E8EC] text-[#8895A0]'
@@ -437,36 +338,38 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
                       : (<><Lock className="w-3 h-3" aria-hidden="true" />準備中</>)}
                   </span>
 
-                  {/* アイコン */}
-                  <div
-                    className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 mb-4 mt-1 transition-transform ${
-                      subject.available
-                        ? 'bg-[#FBE0E9] text-[#D9466E] group-hover:scale-105'
-                        : 'bg-[#E4E8EC] text-[#8895A0]'
-                    }`}
-                  >
-                    <Icon className="w-7 h-7" aria-hidden="true" />
+                  {/* アイコン＋タイトル（横並びにして縦方向を節約する） */}
+                  <div className="flex items-center gap-3 mb-3 mt-1">
+                    <div
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform ${
+                        subject.available
+                          ? 'bg-[#FBE0E9] text-[#D9466E] group-hover:scale-105'
+                          : 'bg-[#E4E8EC] text-[#8895A0]'
+                      }`}
+                    >
+                      <Icon className="w-6 h-6" aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0">
+                      <h2
+                        className={`font-handwriting font-bold text-[22px] md:text-[24px] leading-tight ${
+                          subject.available ? 'text-[#1B2631]' : 'text-[#8895A0]'
+                        }`}
+                      >
+                        {subject.title}
+                      </h2>
+                      <p
+                        className={`text-[10px] font-modern tracking-[0.2em] mt-0.5 ${
+                          subject.available ? 'text-[#E8688E]' : 'text-[#B8C4CE]'
+                        }`}
+                      >
+                        {subject.latin.toUpperCase()}
+                      </p>
+                    </div>
                   </div>
-
-                  {/* タイトル */}
-                  <h2
-                    className={`font-handwriting font-bold text-[26px] md:text-[30px] leading-tight ${
-                      subject.available ? 'text-[#1B2631]' : 'text-[#8895A0]'
-                    }`}
-                  >
-                    {subject.title}
-                  </h2>
-                  <p
-                    className={`text-[10px] font-modern tracking-[0.22em] mt-1 mb-3 ${
-                      subject.available ? 'text-[#E8688E]' : 'text-[#B8C4CE]'
-                    }`}
-                  >
-                    {subject.latin.toUpperCase()}
-                  </p>
 
                   {/* 説明 */}
                   <p
-                    className={`text-xs md:text-[13px] font-modern leading-relaxed mb-4 ${
+                    className={`text-xs font-modern leading-relaxed mb-3 ${
                       subject.available ? 'text-[#5D6D7E]' : 'text-[#8895A0]'
                     }`}
                   >
@@ -474,11 +377,11 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
                   </p>
 
                   {/* 収録ハイライト */}
-                  <ul className="space-y-1.5 mb-5">
+                  <ul className="space-y-1.5 mb-4">
                     {subject.highlights.map((item) => (
                       <li
                         key={item}
-                        className={`flex items-start gap-2 text-[11px] md:text-xs font-modern leading-snug ${
+                        className={`flex items-start gap-2 text-[11px] font-modern leading-snug ${
                           subject.available ? 'text-[#5D6D7E]' : 'text-[#A3AEB8]'
                         }`}
                       >
@@ -515,35 +418,6 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
               </motion.div>
             );
           })}
-
-          {/* 末尾スペーサー（最後の1枚も中央に寄せられるようにする） */}
-          <div className="shrink-0 w-[7vw] md:hidden" aria-hidden="true" />
-          </div>
-
-          {/* ドット（今何枚目かを示し、タップで直接飛べる）
-              タップ領域 44px を確保するため、見える丸は小さくしても
-              ボタン自体には十分な余白を持たせている。 */}
-          <div className="flex items-center justify-center gap-1 mt-3" role="tablist" aria-label="科目の選択位置">
-            {subjects.map((subject, i) => (
-              <button
-                key={subject.id}
-                type="button"
-                role="tab"
-                aria-selected={i === activeIndex}
-                aria-label={`${subject.title}を表示する`}
-                onClick={() => scrollToIndex(i)}
-                className="w-11 h-11 flex items-center justify-center group"
-              >
-                <span
-                  className={`rounded-full transition-all duration-200 ${
-                    i === activeIndex
-                      ? 'w-6 h-2 bg-gradient-to-r from-[#E8688E] to-[#D9466E]'
-                      : 'w-2 h-2 bg-[#F4A9C4]/60 group-hover:bg-[#E8688E]/70'
-                  }`}
-                  aria-hidden="true"
-                />
-              </button>
-            ))}
           </div>
         </div>
 
@@ -554,7 +428,6 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
           transition={{ duration: 0.4, delay: 0.4 }}
           className="text-center text-[11px] text-[#8895A0] font-modern mt-7 leading-relaxed"
         >
-          横にスワイプ（または←→キー）で他の科目を見られます。<br className="sm:hidden" />
           科目はあとから画面下の「ホーム」からいつでも切り替えられます。
         </motion.p>
       </div>

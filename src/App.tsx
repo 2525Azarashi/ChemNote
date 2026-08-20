@@ -29,6 +29,7 @@ import { AdvancedFieldSelection } from './components/AdvancedFieldSelection';
 import { chemistryAdvancedData, ADVANCED_FIELDS, type AdvancedFieldId } from './data/chemistryAdvancedData';
 import { chemistryData } from './data/chemistryData';
 import { englishListeningData } from './data/englishListeningData';
+import { mathData } from './data/mathData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIdleReset } from './hooks/useIdleReset';
 import { useIsMobile } from './hooks/useMediaQuery';
@@ -716,6 +717,7 @@ export default function App() {
     ...chemistryData.parts.flatMap(p => p.chapters as any[]),
     ...chemistryAdvancedData.parts.flatMap(p => p.chapters as any[]),
     ...englishListeningData.parts.flatMap(p => p.chapters as any[]),
+    ...mathData.parts.flatMap(p => p.chapters as any[]),
   ].find(c => (c as any).id === selectedChapterId);
 
   return (
@@ -771,7 +773,11 @@ export default function App() {
             {appState === 'learning' && (
               <LearningViewer
                 onBack={() => setAppState('mode_selection')}
-                subject={selectedSubject === 'chemistry' ? 'chemistry' : 'chemistry_basic'}
+                subject={
+                  selectedSubject === 'chemistry' ? 'chemistry'
+                  : selectedSubject === 'math' ? 'math'
+                  : 'chemistry_basic'
+                }
               />
             )}
             {/* 化学（発展）：理論化学・無機化学・有機化学の分野選択 */}

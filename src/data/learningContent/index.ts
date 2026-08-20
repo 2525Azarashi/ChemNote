@@ -20,3 +20,5 @@ export { ADV_THERMO_HTML, ADV_THERMO_PARTS, type LearningPart } from './adv_ther
 // 化学（発展）4章 電池と電気分解。adv_thermo と同じ LearningPart[] 構造。
 export { ADV_ELECTRO_HTML, ADV_ELECTRO_PARTS } from './adv_electro';
 
+// 数学（数III 積分法）のまとめプリント。adv_thermo と同じ LearningPart[] 構造。
+export { MATH_INTEGRAL_HTML, MATH_INTEGRAL_PARTS } from './math_integral';

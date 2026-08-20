@@ -12,7 +12,7 @@ interface ModeSelectionProps {
   onBack: () => void;
   onMockExam?: () => void;
   /** 選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
 }
 
 export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic' }: ModeSelectionProps) {
@@ -30,6 +30,11 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
    * 空の画面へ連れていかないよう、「演習問題」だけを出す（カードの見た目は他科目と同じ）。
    */
   const isListening = subject === 'english_listening';
+  /**
+   * 数学は「学習(インプット)＝まとめプリント」と「演習問題」の2つを公開する。
+   * 出題傾向・予想問題は化学基礎・化学専用なので出さない。
+   */
+  const isMath = subject === 'math';
   /**
    * 科目ごとの配色。
    * この画面はどの科目でも同じダスティローズで描かれていたため、
@@ -78,7 +83,9 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
             <p className="text-sm md:text-base text-gray-600 font-handwriting leading-relaxed">
               {isAdvanced
                 ? 'まとめプリントで基礎知識をしっかりと身につけます。（現在は理論化学「化学反応とエネルギー」を公開中）'
-                : '基礎知識をしっかりと身につけます。'}
+                : isMath
+                  ? 'まとめプリント「積分のパターン化」で、15パターンの判断フローと全解法を体系的に学びます。'
+                  : '基礎知識をしっかりと身につけます。'}
             </p>
           </button>
           )}
@@ -105,7 +112,9 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
             <p className="text-sm md:text-base text-gray-600 font-handwriting leading-relaxed">
               {isListening
                 ? '第1問A・第1問B …のように大問別（A／Bも別）に選び、回ごとに取り組みます。'
-                : 'より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。'}
+                : isMath
+                  ? '数III積分の全パターンを、型ごとの小問で演習します。数学記号パレットで ∫ や √ もワンタップ入力。'
+                  : 'より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。'}
             </p>
           </button>
         </div>
@@ -114,6 +123,13 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
         {isAdvanced && (
           <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
             ※「出題傾向」「予想問題」は化学基礎のみ対応です。化学の「学習(インプット)」は順次章を追加していきます。
+          </p>
+        )}
+
+        {/* 数学では現在の収録範囲を明示する。 */}
+        {isMath && (
+          <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
+            ※ まずは数III「積分法（全パターン演習）」を公開しています。他の単元は順次追加していきます。
           </p>
         )}
 

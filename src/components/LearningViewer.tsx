@@ -17,6 +17,8 @@ import {
   ADV_THERMO_PARTS,
   ADV_ELECTRO_HTML,
   ADV_ELECTRO_PARTS,
+  MATH_INTEGRAL_HTML,
+  MATH_INTEGRAL_PARTS,
   type LearningPart,
 } from '../data/learningContent';
 import { MolBasicsSection } from './MolBasicsSection';
@@ -26,7 +28,7 @@ import {
 } from '../utils/learningAccordion';
 
 /** まとめプリントを出す科目 */
-export type LearningSubject = 'chemistry_basic' | 'chemistry';
+export type LearningSubject = 'chemistry_basic' | 'chemistry' | 'math';
 
 interface LearningViewerProps {
   onBack: () => void;
@@ -82,6 +84,16 @@ const ADVANCED_SECTION_HTML: Record<string, string> = {
   'adv-4': ADV_ELECTRO_HTML,
 };
 
+/** 数学。まずは数III 積分法から公開し、単元を順次追加していく。 */
+const MATH_SECTIONS: SectionDef[] = [
+  { id: 'toc', title: '目次・使い方' },
+  { id: 'math-integral', title: '数III 積分法（全パターン）' },
+];
+
+const MATH_SECTION_HTML: Record<string, string> = {
+  'math-integral': MATH_INTEGRAL_HTML,
+};
+
 // ===================================================================
 // 「重要事項ごとに見る」ための分割データ
 // -------------------------------------------------------------------
@@ -100,6 +112,7 @@ export const ALL_PARTS_ID = 'all';
 const SECTION_PARTS: Record<string, LearningPart[]> = {
   'adv-3': ADV_THERMO_PARTS,
   'adv-4': ADV_ELECTRO_PARTS,
+  'math-integral': MATH_INTEGRAL_PARTS,
 };
 
 /** 印刷ダイアログのタイトル（＝PDFの既定ファイル名）に使うセクション名 */
@@ -135,6 +148,15 @@ const ADVANCED_PART_LABEL: Record<string, string> = {
   'adv-4': '理論化学 4章 電池と電気分解',
 };
 
+const MATH_PRINT_TITLE: Record<string, string> = {
+  toc: '目次・使い方',
+  'math-integral': '数III 積分法（全パターン演習）',
+};
+
+const MATH_PART_LABEL: Record<string, string> = {
+  'math-integral': '数学III 積分法',
+};
+
 /** 科目ごとの設定をひとまとめにする（分岐をここ1か所に閉じ込める） */
 const SUBJECT_CONFIG: Record<
   LearningSubject,
@@ -160,6 +182,13 @@ const SUBJECT_CONFIG: Record<
     html: ADVANCED_SECTION_HTML,
     printTitle: ADVANCED_PRINT_TITLE,
     partLabel: ADVANCED_PART_LABEL,
+  },
+  math: {
+    label: '数学',
+    sections: MATH_SECTIONS,
+    html: MATH_SECTION_HTML,
+    printTitle: MATH_PRINT_TITLE,
+    partLabel: MATH_PART_LABEL,
   },
 };
 

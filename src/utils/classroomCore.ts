@@ -112,7 +112,7 @@ export interface ClassroomDoc {
   /** 参加コード */
   joinCode: string;
   /** 対象科目 */
-  subject: 'chemistry_basic' | 'chemistry' | 'english_listening';
+  subject: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
   /** 参加を受け付けているか（学期終了後に閉じられる） */
   joinOpen: boolean;
   /** 在籍数（表示用のキャッシュ。厳密な数は members を数える） */
@@ -186,7 +186,7 @@ export function validateClassroomInput(input: ClassroomInput): ValidationResult 
   if (className.length > CLASS_NAME_MAX) {
     return { ok: false, message: `クラス名は${CLASS_NAME_MAX}文字以内で入力してください。` };
   }
-  if (!['chemistry_basic', 'chemistry', 'english_listening'].includes(input.subject)) {
+  if (!['chemistry_basic', 'chemistry', 'english_listening', 'math', 'biology_basic'].includes(input.subject)) {
     return { ok: false, message: '対象科目を選んでください。' };
   }
   return { ok: true, message: '' };

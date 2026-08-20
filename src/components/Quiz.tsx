@@ -166,6 +166,9 @@ function answerNeedsPalette(ansRaw: string): boolean {
  */
 function requiresChemicalSymbols(question: any): boolean {
   if (question?.requiresChemicalPalette) return true;
+  // 数学パレットを明示した問題は、化学パレットの推定ヒューリスティックに
+  // 誤検知されないよう先に除外する（両方のパレットが並ぶのを防ぐ）。
+  if (question?.requiresMathPalette) return false;
 
   const type = String(question?.type || '');
   if (
@@ -184,6 +187,27 @@ function requiresChemicalSymbols(question: any): boolean {
 
   if (answers.length === 0) return false;
   return answers.some((a) => answerNeedsPalette(a));
+}
+
+/**
+ * この設問に「数学記号パレット」を出すか。
+ *
+ * 化学パレットと違い、数学は答えの文字列だけから確実に判定できないため
+ * データ側の明示 opt-in（requiresMathPalette）を必須とする。
+ * 数III積分の問題データ（mathIntegralProblems.ts）は全設問でこのフラグを立てている。
+ */
+function requiresMathSymbols(question: any): boolean {
+  if (!question?.requiresMathPalette) return false;
+  const type = String(question?.type || '');
+  if (
+    type === 'multiple_choice' ||
+    type === 'true_false' ||
+    type === 'select' ||
+    type === 'sorting'
+  ) {
+    return false;
+  }
+  return true;
 }
 
 type PaletteItem = { label: string; value: string; desc: string };
@@ -267,6 +291,70 @@ const chemistryPaletteGroups: PaletteGroup[] = [
       { label: 'Cl₂', value: 'Cl₂', desc: '塩素' },
       { label: 'NaCl', value: 'NaCl', desc: '塩化ナトリウム' },
       { label: 'CaCO₃', value: 'CaCO₃', desc: '炭酸カルシウム' },
+    ],
+  },
+];
+
+// 数学記号パレット（カテゴリ別）。
+// 数III積分などで、∫・√・π・分数・累乗 などをキーボードなしでワンタップ入力する。
+// 挿入する value は answerJudge の正規化と textFormatter の表示規約
+// （^ で累乗、/ で分数、log|…| など）に合わせた「打ち込み表記」で統一する。
+const mathPaletteGroups: PaletteGroup[] = [
+  {
+    group: '積分の記号',
+    items: [
+      { label: '∫', value: '∫', desc: '積分記号（インテグラル）' },
+      { label: 'dx', value: ' dx', desc: '積分変数 dx' },
+      { label: 'dt', value: ' dt', desc: '積分変数 dt' },
+      { label: 'dθ', value: ' dθ', desc: '積分変数 dθ' },
+      { label: '+ C', value: ' + C', desc: '積分定数 C（不定積分の最後に付ける）' },
+    ],
+  },
+  {
+    group: '累乗・分数・かっこ',
+    items: [
+      { label: '^', value: '^', desc: '累乗（例: x^3 は x の3乗）' },
+      { label: '/', value: '/', desc: '分数の横棒（例: 1/3）' },
+      { label: '√(', value: '√(', desc: 'ルート（例: √(x+2)）' },
+      { label: '(', value: '(', desc: '開きかっこ' },
+      { label: ')', value: ')', desc: '閉じかっこ' },
+      { label: '| |', value: '||', desc: '絶対値（例: log|x|）' },
+    ],
+  },
+  {
+    group: '定数・文字',
+    items: [
+      { label: 'π', value: 'π', desc: '円周率 π' },
+      { label: 'e', value: 'e', desc: '自然対数の底 e' },
+      { label: 'θ', value: 'θ', desc: '角度 θ（シータ）' },
+      { label: 'x', value: 'x', desc: '変数 x' },
+      { label: 't', value: 't', desc: '変数 t' },
+      { label: 'n', value: 'n', desc: '自然数 n' },
+      { label: 'C', value: 'C', desc: '積分定数 C' },
+    ],
+  },
+  {
+    group: '関数',
+    items: [
+      { label: 'sin', value: 'sin ', desc: '正弦 sin' },
+      { label: 'cos', value: 'cos ', desc: '余弦 cos' },
+      { label: 'tan', value: 'tan ', desc: '正接 tan' },
+      { label: 'log', value: 'log', desc: '対数 log（数IIIでは自然対数）' },
+      { label: 'e^', value: 'e^', desc: '指数関数 e の累乗（例: e^x）' },
+      { label: 'lim', value: 'lim', desc: '極限 lim' },
+      { label: 'Σ', value: 'Σ', desc: '総和 Σ（シグマ）' },
+    ],
+  },
+  {
+    group: '演算・その他',
+    items: [
+      { label: '+', value: ' + ', desc: '足し算' },
+      { label: '−', value: ' - ', desc: '引き算（半角マイナスで入力される）' },
+      { label: '×', value: '×', desc: '掛け算' },
+      { label: '=', value: ' = ', desc: '等号' },
+      { label: '→', value: '→', desc: '区間の矢印（例: 0→1）' },
+      { label: '[', value: '[', desc: '区間の開きかっこ' },
+      { label: ']', value: ']', desc: '区間の閉じかっこ' },
     ],
   },
 ];
@@ -378,14 +466,18 @@ function isShortAnswerType(sq: any): boolean {
  * - 入力欄の参照を受け取り、選択範囲（カーソル位置）に挿入 → キャレットを更新する。
  *   参照が無い場合は末尾に追記するフォールバック動作。
  */
-function ChemistryPalette({
+function SymbolPalette({
   value,
   onChange,
   inputRef,
+  title,
+  groups,
 }: {
   value: string;
   onChange: (next: string) => void;
   inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
+  title: string;
+  groups: PaletteGroup[];
 }) {
   const insert = (text: string) => {
     const el = inputRef.current;
@@ -412,13 +504,13 @@ function ChemistryPalette({
   return (
     <div className="bg-stone-50 border border-stone-200/80 p-2.5 md:p-3 rounded-xl flex flex-col gap-2 w-full">
       <div className="text-[11px] md:text-xs text-stone-500 font-bold select-none px-0.5 flex items-center gap-1">
-        <span>化学記号パレット</span>
+        <span>{title}</span>
         <span className="font-normal text-stone-400">（タップで入力欄のカーソル位置に挿入）</span>
       </div>
       {/* ボタンを 44px 角に拡大したぶん全体が縦に伸びるため、スマホでのスクロール
           領域を 220px → 240px に微増し、1画面に見える行数を保つ。 */}
       <div className="flex flex-col gap-2.5 max-h-[240px] md:max-h-none overflow-y-auto">
-        {chemistryPaletteGroups.map((grp) => (
+        {groups.map((grp) => (
           <div key={grp.group} className="flex flex-col gap-1.5">
             <div className="text-[11px] text-stone-400 font-bold select-none px-0.5">
               {grp.group}
@@ -446,6 +538,24 @@ function ChemistryPalette({
       </div>
     </div>
   );
+}
+
+/** 化学記号パレット（SymbolPalette の化学版ラッパー）。 */
+function ChemistryPalette(props: {
+  value: string;
+  onChange: (next: string) => void;
+  inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
+}) {
+  return <SymbolPalette {...props} title="化学記号パレット" groups={chemistryPaletteGroups} />;
+}
+
+/** 数学記号パレット（SymbolPalette の数学版ラッパー）。数III積分などの解答入力に使う。 */
+function MathPalette(props: {
+  value: string;
+  onChange: (next: string) => void;
+  inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
+}) {
+  return <SymbolPalette {...props} title="数学記号パレット" groups={mathPaletteGroups} />;
 }
 
 export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange, onScored, questionRange }: QuizProps) {
@@ -1532,6 +1642,15 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     return subs.some((sq: any) => requiresChemicalSymbols(sq));
   }, [currentQuestion]);
 
+  // この問題に数学記号パレットが必要か。
+  // データ側の明示 opt-in（requiresMathPalette）のみで判定する。
+  const questionNeedsMathPalette = useMemo(() => {
+    if (!currentQuestion) return false;
+    if ((currentQuestion as any).requiresMathPalette) return true;
+    const subs = currentQuestion.subQuestions || [];
+    return subs.some((sq: any) => requiresMathSymbols(sq));
+  }, [currentQuestion]);
+
   // 現在フォーカス中の穴埋め設問に対応する、問題文中のハイライト候補文字列。
   const focusHighlightVariants = useMemo(() => {
     if (!focusedSubId || !currentQuestion) return [] as string[];
@@ -2475,6 +2594,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                                 inputRef={getInputRef(sq.id)}
                               />
                             )}
+                            {/* 数学記号パレット（数III積分など requiresMathPalette の問題のみ） */}
+                            {requiresMathSymbols(sq) && (
+                              <MathPalette
+                                value={answers[sq.id] || ''}
+                                onChange={(next) => handleTextChange(sq.id, next)}
+                                inputRef={getInputRef(sq.id)}
+                              />
+                            )}
                           </>
                         ) : (
                           // スマホ：表示専用。タップで下部フローティングバーに入力を集約。
@@ -2516,6 +2643,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             {/* 化学記号パレット（必要な問題のみ表示・カーソル位置に挿入） */}
                             {requiresChemicalSymbols(sq) && (
                               <ChemistryPalette
+                                value={answers[sq.id] || ''}
+                                onChange={(next) => handleTextChange(sq.id, next)}
+                                inputRef={getInputRef(sq.id)}
+                              />
+                            )}
+                            {/* 数学記号パレット（requiresMathPalette の問題のみ・カーソル位置に挿入） */}
+                            {requiresMathSymbols(sq) && (
+                              <MathPalette
                                 value={answers[sq.id] || ''}
                                 onChange={(next) => handleTextChange(sq.id, next)}
                                 inputRef={getInputRef(sq.id)}
@@ -2780,6 +2915,20 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 {questionNeedsChemPalette && requiresChemicalSymbols(focusedSub) && (
                   <div className="max-h-[28vh] overflow-y-auto">
                     <ChemistryPalette
+                      value={answers[focusedSub.id] || ''}
+                      onChange={(next) => handleTextChange(focusedSub.id, next)}
+                      inputRef={{
+                        get current() { return barInputRef.current; },
+                        set current(el) { barInputRef.current = el; },
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* 数学記号パレット（数III積分など requiresMathPalette の問題のみ表示） */}
+                {questionNeedsMathPalette && requiresMathSymbols(focusedSub) && (
+                  <div className="max-h-[28vh] overflow-y-auto">
+                    <MathPalette
                       value={answers[focusedSub.id] || ''}
                       onChange={(next) => handleTextChange(focusedSub.id, next)}
                       inputRef={{
