@@ -188,6 +188,52 @@ function questionNumberOf(sq: any): number | null {
   return m ? Number(m[1]) : null;
 }
 
+/** 外から設問番号を知りたいとき用の公開版（Explanation の問スコープで使う） */
+export function listeningQuestionNumberOf(sq: any): number | null {
+  return questionNumberOf(sq);
+}
+
+/**
+ * 共通解説（大問全体の流れ・共通ポイント）から
+ * 「いま見ている問 *以外* の解答行」を取り除く。
+ *
+ * ■ なぜ必要か（ご指摘への対応）
+ *     > 問1の問題なのになぜ右側の大問全体の流れ・共通ポイントのところに
+ *     > 問4までの答えがあるのか。なくさないとだめじゃない？
+ *
+ *   buildListeningExplanation は冒頭に「解 答」一覧
+ *   （問1〜問4の正解をまとめた行）を置く。全問終えた結果画面では
+ *   便利だが、1問ずつ解く途中の解説では、まだ解いていない問の
+ *   答えがネタバレになってしまう。
+ *
+ * ■ やること
+ *   ・「問N　【解答】…」の行のうち、N ≠ いま見ている問 の行を落とす
+ *   ・一覧が「いま見ている問」1行だけになる（その問の答えは
+ *     解答カードにも出ているので隠す必要はない）
+ *   ・解答行が1つも残らなければ「解 答」の見出しごと落とす
+ *   ・「この形式の解き方」などの一般論はそのまま残す（ネタバレではない）
+ */
+export function scopeListeningCommonToQuestion(common: string, questionNo: number | null): string {
+  const source = String(common || '');
+  if (!source || questionNo === null) return source;
+
+  const lines = source.split('\n');
+  const kept = lines.filter((line) => {
+    // 「問N　…【解答】…」形式の行だけを選別対象にする
+    const m = line.match(/^\s*問\s*(\d+)\s*　/u);
+    if (!m || !line.includes('【解答】')) return true;
+    return Number(m[1]) === questionNo;
+  });
+
+  // 解答行が全部消えた場合は「解 答」見出し（LABEL）も落とす
+  const hasAnswerRow = kept.some((line) => line.includes('【解答】'));
+  const result = hasAnswerRow
+    ? kept
+    : kept.filter((line) => !(line.includes('>解 答<') || /^\s*<span[^>]*>解 答<\/span>\s*$/u.test(line)));
+
+  return result.join('\n').replace(/\n{3,}/gu, '\n\n');
+}
+
 // ---------------------------------------------------------------------
 // C4：どの単語・どの表現を聞き取れればよかったのか
 // ---------------------------------------------------------------------

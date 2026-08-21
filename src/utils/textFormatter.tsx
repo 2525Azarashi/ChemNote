@@ -124,6 +124,22 @@ export function convertMathNotation(src: string): string {
       `<span class="math-lim"><span class="math-lim-main">lim</span><span class="math-lim-under">${cond.trim()}</span></span>`
   );
 
+  // (4.5) 根号を含む分数 1/√x・√x/2・3/√(x+1) → 縦書き分数
+  //     ★√ が (5) で HTML に変換される前に分数として拾う必要がある★
+  //     （変換後は <span…>√</span> になり分数ルールが二度とマッチしないため。
+  //       実際に「∫ 1/√x dx」が横書きのまま表示される不具合の原因だった）
+  const SQRT_TOKEN = '√\\s*(?:\\([^()]{1,30}\\)|[0-9]+(?:\\.[0-9]+)?|[A-Za-z][0-9²³]*)';
+  // 分母が √…（例: 1/√x, 2/√(x+1)）
+  t = t.replace(
+    new RegExp(`(?<![0-9A-Za-z_])(-?[0-9]{1,3}(?:\\.[0-9]+)?|[A-Za-z])\\s*\\/\\s*(${SQRT_TOKEN})(?![0-9A-Za-z])`, 'g'),
+    (_m, num: string, den: string) => buildFractionHtml(num, den)
+  );
+  // 分子が √…（例: √x/2, √(x²+1)/3）
+  t = t.replace(
+    new RegExp(`(?<![0-9A-Za-z_])(${SQRT_TOKEN})\\s*\\/\\s*(-?[0-9]{1,3}(?:\\.[0-9]+)?|[A-Za-z](?:\\^[0-9]{1,2})?)(?![0-9A-Za-z])`, 'g'),
+    (_m, num: string, den: string) => buildFractionHtml(num, den)
+  );
+
   // (5) 根号 √(…)・√x・√25 → 中身の真上に線が伸びる根号
   //     √(4² + (-7)²) のような「1段だけ入れ子の括弧」にも対応する。
   t = t.replace(
@@ -162,6 +178,13 @@ export function convertMathNotation(src: string): string {
   // (9) 累乗・階乗が分子の分数 x^5/5・6!/2
   t = t.replace(
     /(?<![A-Za-z0-9_])([A-Za-z]\^[0-9]{1,2}|[0-9]{1,3}!|[A-Za-z]!)\s*\/\s*([0-9]{1,3}(?:\.[0-9]+)?!?|[A-Za-z](?:\^[0-9]{1,2})?!?)(?![0-9A-Za-z])/g,
+    (_m, num: string, den: string) => buildFractionHtml(num, den)
+  );
+  // (9.5) 累乗が分母の分数 1/x^3・2/x^2 → 分母に x^3 を丸ごと入れる。
+  //     ★ここで拾わないと、後段の一般分数ルールが「1/x」だけを分数化し、
+  //       ^3 が分数の右へはみ出す誤表示になる（∫ 1/x^3 dx で実際に発生）★
+  t = t.replace(
+    /(?<![A-Za-z0-9_])(-?[0-9]{1,3}(?:\.[0-9]+)?|[A-Za-z])\s*\/\s*([A-Za-z]\^[0-9]{1,2})(?![0-9A-Za-z])/g,
     (_m, num: string, den: string) => buildFractionHtml(num, den)
   );
   // (10) 括弧が分子の分数 (a + 2b)/3・(x+1)/(x-1)（数式文字だけの中身に限定）

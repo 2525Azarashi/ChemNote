@@ -141,6 +141,56 @@ export function stripListeningQuestionBlocks(text: string): string {
 }
 
 /**
+ * 問題文から「リード文＋指定した問Nのブロックだけ」を取り出す。
+ *
+ * ■ なぜ必要か（ご指摘への対応）
+ *     > 左側も問題をなぜ問4まで乗せるの？
+ *     > 問ごとに切ってるんだから解答と解説の方も対応させないと。
+ *
+ *   リスニングは「1画面＝1問」で解き、解説も問ごとに表示する。
+ *   ところが解説画面の左ペイン（問題文）は problem.text の全文
+ *   （問1〜問4の全ブロック）を出していたため、まだ解いていない
+ *   問の選択肢まで読めてしまっていた。
+ *   この関数で「共通のリード文 ＋ いま見ている問のブロック」だけに絞る。
+ *
+ * ■ 見つからないときは全文を返す（安全側）
+ *   問N の区切りを持たないデータ（第1問B の図問題など）では
+ *   絞り込まず従来どおり全文を出す。情報が欠けるほうが害が大きい。
+ */
+export function sliceListeningQuestionBlock(text: string, questionNo: number): string {
+  const source = String(text || '');
+  const lines = source.split('\n');
+
+  // 各「問N」行の位置を拾う
+  const marks: { index: number; no: number }[] = [];
+  lines.forEach((line, i) => {
+    const no = questionNumberOf(line);
+    if (no !== null) marks.push({ index: i, no });
+  });
+
+  const hit = marks.find((m) => m.no === questionNo);
+  if (!hit) return source; // 区切りが無い／該当問が無い → 全文（従来どおり）
+
+  // リード文＝最初の問N より前（区切り線・空行は落とす）
+  let leadEnd = marks[0].index;
+  while (leadEnd > 0 && /^[\s─―—-]*$/u.test(lines[leadEnd - 1])) leadEnd -= 1;
+  const lead = lines.slice(0, leadEnd).join('\n');
+
+  // 該当問のブロック＝問N 行から「次の問」または末尾まで
+  const next = marks.find((m) => m.index > hit.index);
+  let blockEnd = next ? next.index : lines.length;
+  // ブロック末尾の区切り線・空行は落とす
+  while (blockEnd > hit.index && /^[\s─―—-]*$/u.test(lines[blockEnd - 1])) blockEnd -= 1;
+  const block = lines.slice(hit.index, blockEnd).join('\n');
+
+  return [lead, block]
+    .filter((part) => part.trim())
+    .join('\n\n')
+    .replace(/\n{3,}/gu, '\n\n')
+    .trim();
+}
+
+/**
  * 解答中の画面から「操作の説明」の見出しブロックを落とす。
  *
  * ■ なぜ落とすのか（ご要望）

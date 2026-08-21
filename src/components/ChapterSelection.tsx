@@ -363,9 +363,18 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
               const isActive = group.title === activeGroup?.title;
               const { kicker: chapterNumber, label: shortTitle } = splitTabTitle(group.title, index);
 
+              // ★スマホ用チュートリアルタイル（化学基礎のみ）
+              //   ご要望「チュートリアルは 3章と4章の間に入れて、下は単元ボタンを
+              //   広く表示して」に対応。章タブの横スクロール列の 3章の直後に
+              //   チュートリアル入口を差し込み、画面下部の常設バナーはスマホでは
+              //   非表示にする（→ 単元一覧の縦スペースが広がる）。
+              //   章が3つ未満の科目でも壊れないよう、最後のタブの後ろに出す。
+              const tutorialSlot = subject === 'chemistry_basic'
+                && (index === 2 || (groups.length <= 3 && index === groups.length - 1));
+
               return (
+                <React.Fragment key={group.title}>
                 <button
-                  key={group.title}
                   ref={(element) => {
                     tabRefs.current[group.title] = element;
                   }}
@@ -398,6 +407,23 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                     {shortTitle}
                   </span>
                 </button>
+                {tutorialSlot && (
+                  <button
+                    type="button"
+                    onClick={() => setTutorialOpen(true)}
+                    className="flex h-full min-h-[3rem] w-[42vw] min-w-[8.5rem] max-w-[11rem] shrink-0 snap-center flex-col justify-center rounded-xl border-2 border-[#7c3aed]/40 bg-gradient-to-r from-[#f6f1ff] to-[#efe6ff] px-2.5 py-2 text-left transition-all cursor-pointer hover:border-[#7c3aed] sm:hidden"
+                    title="チュートリアル：物質量（mol）がわからない人へ"
+                  >
+                    <span className="flex items-center gap-1 text-[10px] font-bold leading-none text-[#7c3aed]">
+                      <GraduationCap size={11} />
+                      チュートリアル
+                    </span>
+                    <span className="mt-1 block text-xs font-bold leading-snug text-[#3f3352] break-words [overflow-wrap:anywhere]">
+                      mol がわからない人へ
+                    </span>
+                  </button>
+                )}
+                </React.Fragment>
               );
             })}
           </div>
@@ -774,8 +800,11 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
             物質量（mol）の考え方を配布プリントそのままの途中式で学べる
             「物質量（mol）がわからない人へ」をチュートリアルとして常設表示する。
             ※ mol は化学基礎の内容なので、化学（発展）では表示しない。 */}
+        {/* スマホでは章タブ列にチュートリアル入口を移したので、
+            この常設バナーは sm 以上（タブレット・PC）だけに表示する。
+            → スマホは単元一覧（①・②…のカード）が縦に広く使える。 */}
         {subject === 'chemistry_basic' && (
-        <div className="shrink-0 mt-3">
+        <div className="hidden sm:block shrink-0 mt-3">
           <button
             type="button"
             onClick={() => setTutorialOpen(true)}
