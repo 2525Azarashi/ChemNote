@@ -43,14 +43,16 @@ import { ensureRankingEntry } from './utils/leaderboard';
 import { parseStoredStringRecord } from './utils/progress';
 import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './utils/studySync';
 import { TeacherDashboard } from './components/TeacherDashboard';
+import { FeedbackAdminPanel } from './components/FeedbackAdminPanel';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 const APP_STATES = new Set<AppState>([
   'home', 'mode_selection', 'chapters', 'quiz', 'explanation', 'learning', 'intro',
   'flowchart', 'study_hub', 'note_detail', 'onboarding', 'logical_tree', 'settings',
   'leaderboard', 'mock_exam', 'subject_selection', 'advanced_fields', 'teacher_dashboard',
+  'feedback_admin',
 ]);
 const APP_MODES = new Set<AppMode>(['mini_test', 'practice', 'learning']);
 
@@ -768,9 +770,11 @@ export default function App() {
               （スマホ端末では常にスマホ向けレイアウトで表示する。forceDesktop は false 固定） */}
 
           <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : (isFullBleed ? 'max-w-none' : 'max-w-5xl')}`}>
-            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} onOpenTeacherDashboard={() => setAppState('teacher_dashboard')} />}
+            {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} onOpenTeacherDashboard={() => setAppState('teacher_dashboard')} onOpenFeedbackAdmin={() => setAppState('feedback_admin')} />}
             {/* 先生ダッシュボード。戻る先を設定にしているのは、入ってきた経路と揃えるため。 */}
             {appState === 'teacher_dashboard' && <TeacherDashboard onBack={() => setAppState('settings')} />}
+            {/* フィードバック管理（運営専用）。入口は設定内の運営専用ボタン。 */}
+            {appState === 'feedback_admin' && <FeedbackAdminPanel onBack={() => setAppState('settings')} />}
 
             {/* ログイン／ゲスト開始の直後は、必ず科目選択（＝タイトル）画面を経由する */}
             {/* ログイン／ゲスト開始の直後は、そのままホームへ入る。

@@ -242,6 +242,83 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   font-size: 0.72em;
 }
 
+/* =========================================================
+ * 6b. 数学記法（textFormatter の convertMathNotation が生成）
+ *  教科書と同じ見た目で ∫Σlim・根号・分数を描画するためのクラス。
+ *  数式は font-math（STIX Two Math 系）で統一する。
+ * ========================================================= */
+
+/* 上下限つきの大きな演算子（∫[a→b]・Σ[k=1→n]） */
+.math-bigop {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 0.08em;
+  font-family: var(--font-math);
+}
+.math-bigop-sym {
+  font-size: 1.9em;
+  line-height: 1;
+  font-weight: 400;
+}
+.math-bigop-lims {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: stretch;
+  font-size: 0.62em;
+  line-height: 1.15;
+  padding: 0.1em 0 0.1em 0.12em;
+  text-align: left;
+}
+/* 上下限のない ∫・Σ 単体も教科書サイズに */
+.math-bigop-solo {
+  font-family: var(--font-math);
+  font-size: 1.55em;
+  line-height: 1;
+  vertical-align: -0.12em;
+  margin: 0 0.05em;
+}
+
+/* 極限 lim（真下に n→∞） */
+.math-lim {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 0.15em;
+  font-family: var(--font-math);
+  line-height: 1;
+}
+.math-lim-main { font-size: 1.05em; }
+.math-lim-under { font-size: 0.62em; margin-top: 0.15em; }
+
+/* 根号：中身の真上に横線を伸ばす */
+.math-sqrt {
+  display: inline-flex;
+  align-items: stretch;
+  vertical-align: middle;
+  font-family: var(--font-math);
+  margin: 0 0.06em;
+}
+.math-sqrt-body {
+  border-top: 1.5px solid currentColor;
+  padding: 0.08em 0.15em 0 0.1em;
+  margin-left: -0.08em;
+  line-height: 1.25;
+}
+
+/* 数学の問題・解説を大きく読みやすくするラッパー
+ * （Quiz / Explanation で科目が数学のときに付与する） */
+.math-content {
+  font-size: 1.13em;
+  line-height: 2.05;
+}
+.math-content .math-bigop { margin: 0.1em 0.12em; }
+@media (min-width: 768px) {
+  .math-content { font-size: 1.18em; }
+}
+
 /* Marker highlight (蛍光ペン風) */
 .marker {
   background: linear-gradient(transparent 60%, var(--color-highlight) 60%);

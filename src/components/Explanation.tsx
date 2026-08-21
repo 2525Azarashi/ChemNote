@@ -32,6 +32,18 @@ function cleanQuestionText(text: string): string {
     .replace(/\n\s*(?:問\s*\d+|【\s*問?\s*\d+\s*】)\s*/gu, '\n');
 }
 
+/**
+ * その小問に「解答が入力されているか」（＝手を付けたか）。
+ *
+ * 結果画面で「解いていない問」と「解いたが間違えた問」を区別するための判定。
+ * 以前はどちらも isAnswerCorrect が false になるため一律「不正解」と
+ * 表示されており、「一問しか解いてないのに他のが全部不正解扱いになる」
+ * というご指摘につながった。空文字・空白のみは未解答として扱う。
+ */
+function isAttempted(answer: string | undefined | null): boolean {
+  return String(answer ?? '').trim().length > 0;
+}
+
 interface ExplanationProps {
   mode: 'mini_test' | 'practice';
   chapter: any;
@@ -223,6 +235,17 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       };
     });
   }, [allQuestions, singleQuestionIndex, questionRange, rangeOffset, focusSubQuestionId]);
+
+  // 数学の章か（requiresMathPalette を立てた小問を含むか）。
+  // 数学のときは解説・解答を数式フォント＋一回り大きい表示（.math-content）で描画し、
+  // ∫Σ√分数などが教科書と同じ形で読めるようにする。
+  const isMathChapter = useMemo(() => {
+    return allQuestions.some((q: any) =>
+      (q?.subQuestions || []).some((sq: any) => sq?.requiresMathPalette)
+    );
+  }, [allQuestions]);
+  // 数学のときだけ付け足すクラス（非数学は空文字＝従来と完全に同じ見た目）
+  const mathBodyClass = isMathChapter ? ' font-math math-content' : '';
 
   // 要件①：「この単元の思考の型」の本文。単元（章）に紐づくので問題ごとには作らない。
   // 内容・表現・順番・解説は従来と1文字も変えていない（エンジン側の buildUnitKataBlock がそのまま組む）。
@@ -527,6 +550,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const renderSubQuestionCheck = (sq: any, currentQuestion: any) => {
     const isMiniTest = mode === 'mini_test';
     const isCorrect = sq.type === 'descriptive' ? false : isAnswerCorrect(sq, answers[sq.id]);
+    // 未解答（手を付けていない）は不正解の赤✕ではなく灰色の○で区別する。
+    const isUnanswered = sq.type !== 'descriptive' && !isAttempted(answers[sq.id]);
     const isExpanded = expandedSq === sq.id;
     const relatedSteps = getRelatedSteps(sq.id, currentQuestion);
 
@@ -540,7 +565,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         <button 
           key={sq.id}
           onClick={() => setExpandedSq(sq.id)}
-          className={`w-full flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 gap-3 rounded-xl border transition-colors ${sq.type === 'descriptive' ? 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30' : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30')}`}
+          className={`w-full flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 gap-3 rounded-xl border transition-colors ${sq.type === 'descriptive' ? 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30' : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30' : isUnanswered ? 'bg-[#0B132B]/20 border-[#3A506B]/40' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30')}`}
         >
           <div className="flex flex-col md:flex-row md:items-start gap-3 w-full min-w-0 text-left flex-1">
             {displayLabel.length > 20 ? (
@@ -554,7 +579,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             )}
             {sq.type !== 'descriptive' && (
               <div className="shrink-0 pt-1.5 md:pt-0">
-                {isCorrect ? <CheckCircle2 className="text-[#5BC0BE] w-5 h-5" /> : <XCircle className="text-[#D9A0A0] w-5 h-5" />}
+                {isCorrect ? <CheckCircle2 className="text-[#5BC0BE] w-5 h-5" /> : isUnanswered ? <Circle className="text-[#7A8B99] w-5 h-5" /> : <XCircle className="text-[#D9A0A0] w-5 h-5" />}
               </div>
             )}
           </div>
@@ -591,7 +616,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               <div className="text-xs text-[#7A8B99] mb-1">
                 {sq.type === 'descriptive' ? '📝 自己採点記入内容' : 'あなたの解答'}
               </div>
-              <div className={`p-3 rounded-lg border ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'bg-blue-50 border-blue-200' : 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30 text-[#A9CCE3]') : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0]')}`}>
+              <div className={`p-3 rounded-lg border ${sq.type === 'descriptive' ? (mode === 'mini_test' ? 'bg-blue-50 border-blue-200' : 'bg-[#A9CCE3]/10 border-[#A9CCE3]/30 text-[#A9CCE3]') : (isCorrect ? 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]' : isUnanswered ? 'bg-[#0B132B]/30 border-[#3A506B]/40 text-[#7A8B99]' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0]')}`}>
                 {formatText(answers[sq.id] || '未解答')}
               </div>
             </div>
@@ -1273,8 +1298,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         // 客観問題は「元の並び順（ア→イ→ウ…）」のまま表示する。
                         // （以前は間違いを上・正解を折りたたみにしていたが、丸付けは上から順に行うため自然な並び順に統一）
                         const objectiveSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive');
-                        const incorrectSqs = objectiveSqs.filter((sq: any) => !isAnswerCorrect(sq, answers[sq.id]));
+                        // 「解いていない問」を「不正解」に混ぜない。
+                        // 未解答＝手を付けていないだけであり、間違えたわけではない。
                         const correctSqs = objectiveSqs.filter((sq: any) => isAnswerCorrect(sq, answers[sq.id]));
+                        const incorrectSqs = objectiveSqs.filter(
+                          (sq: any) => isAttempted(answers[sq.id]) && !isAnswerCorrect(sq, answers[sq.id]),
+                        );
+                        const unansweredSqs = objectiveSqs.filter((sq: any) => !isAttempted(answers[sq.id]));
 
                         // ─────────────────────────────────────────────
                         // 各小問は、常時表示する採点結果の直下に
@@ -1322,6 +1352,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                           : questionSlices?.common || '';
 
                         const renderSq = (sq: any, isCorrect: boolean) => {
+                        // 手を付けていない問は「不正解」ではなく「未解答」として
+                        // 灰色系の落ち着いた表示にする（赤い✕を出さない）。
+                        const attempted = isAttempted(answers[sq.id]);
+                        const isUnanswered = sq.type !== 'descriptive' && !attempted;
                         const explanationOpen = openExplanationBySq[sq.id] || false;
                         const thinkingOpen = openThinkingBySq[sq.id] || false;
                         const sqSlice = sliceForSq(sq);
@@ -1409,7 +1443,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 ? (mode === 'mini_test' ? 'border-blue-200' : 'border-[#A9CCE3]/30')
                                 : isCorrect
                                   ? (mode === 'mini_test' ? 'border-emerald-200' : 'border-[#5BC0BE]/30')
-                                  : (mode === 'mini_test' ? 'border-red-200' : 'border-[#D9A0A0]/30')
+                                  : isUnanswered
+                                    ? (mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/40')
+                                    : (mode === 'mini_test' ? 'border-red-200' : 'border-[#D9A0A0]/30')
                             }`}
                           >
                             {/* 正誤・自分の解答・正解は、アコーディオンに入れず常に表示する。 */}
@@ -1418,7 +1454,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 ? (mode === 'mini_test' ? 'bg-blue-50' : 'bg-[#A9CCE3]/10')
                                 : isCorrect
                                   ? (mode === 'mini_test' ? 'bg-emerald-50' : 'bg-[#5BC0BE]/10')
-                                  : (mode === 'mini_test' ? 'bg-red-50' : 'bg-[#D9A0A0]/10')
+                                  : isUnanswered
+                                    ? (mode === 'mini_test' ? 'bg-gray-50' : 'bg-[#0B132B]/30')
+                                    : (mode === 'mini_test' ? 'bg-red-50' : 'bg-[#D9A0A0]/10')
                             }`}>
                               <div className="flex flex-wrap items-center justify-between gap-3">
                                 <div className="flex items-center gap-3 min-w-0">
@@ -1430,6 +1468,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                       <Edit3 size={16} />
                                       <span>記述問題</span>
                                     </div>
+                                  ) : isUnanswered ? (
+                                    <div className={`flex items-center gap-1.5 font-bold text-sm ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
+                                      <Circle size={18} />
+                                      <span>未解答 — まだ解いていない問です</span>
+                                    </div>
                                   ) : (
                                     <div className={`flex items-center gap-1.5 font-bold text-sm ${isCorrect ? (mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]') : (mode === 'mini_test' ? 'text-red-600' : 'text-[#D9A0A0]')}`}>
                                       {isCorrect ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
@@ -1437,8 +1480,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     </div>
                                   )}
                                 </div>
-                                <div className={`font-bold text-sm md:text-base ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
-                                  <span className={`text-xs mr-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
+                                <div className={`font-bold text-sm md:text-base${mathBodyClass} ${mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'}`}>
+                                  <span className={`text-xs mr-1 font-modern ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
                                     {sq.type === 'descriptive' ? '模範解答:' : '正解:'}
                                   </span>
                                   {formatText(sq.correctAnswer)}
@@ -1453,14 +1496,16 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                       ? (mode === 'mini_test' ? 'bg-white border-blue-200 text-gray-800' : 'bg-[#1C2541]/50 border-[#A9CCE3]/30 text-[#E0E1DD]')
                                       : isCorrect
                                         ? (mode === 'mini_test' ? 'bg-white border-emerald-200 text-emerald-700' : 'bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]')
-                                        : (mode === 'mini_test' ? 'bg-white border-red-200 text-red-600 line-through opacity-80' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0] line-through opacity-80')
-                                  }`}>
+                                        : isUnanswered
+                                          ? (mode === 'mini_test' ? 'bg-white border-gray-200 text-gray-400' : 'bg-[#0B132B]/40 border-[#3A506B]/40 text-[#7A8B99]')
+                                          : (mode === 'mini_test' ? 'bg-white border-red-200 text-red-600 line-through opacity-80' : 'bg-[#D9A0A0]/10 border-[#D9A0A0]/30 text-[#D9A0A0] line-through opacity-80')
+                                  }${mathBodyClass}`}>
                                     {formatText(answers[sq.id] || '未解答')}
                                   </div>
                                 </div>
                                 <div>
                                   <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>{sq.type === 'descriptive' ? '模範解答' : '正解'}</div>
-                                  <div className={`font-math font-bold text-sm md:text-base p-3 rounded-lg border break-words ${mode === 'mini_test' ? 'text-emerald-700 bg-white border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'}`}>
+                                  <div className={`font-math font-bold text-sm md:text-base p-3 rounded-lg border break-words${isMathChapter ? ' math-content' : ''} ${mode === 'mini_test' ? 'text-emerald-700 bg-white border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'}`}>
                                     {formatText(sq.correctAnswer)}
                                   </div>
                                 </div>
@@ -1518,7 +1563,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     <ExplanationBody
                                       text={sqSlice}
                                       tone={mode === 'mini_test' ? 'light' : 'dark'}
-                                      className={`font-handwriting text-xs md:text-sm leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+                                      className={`${isMathChapter ? 'font-math math-content text-sm md:text-base' : 'font-handwriting text-xs md:text-sm'} leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
                                     />
                                   ) : (
                                     <p className="text-xs text-gray-500">この小問の解説は「思考手順・答えの核心」にまとめています。</p>
@@ -1579,6 +1624,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     <span className={mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}>正解 {correctSqs.length}</span>
                                     <span className="mx-1 opacity-50">/</span>
                                     <span className={mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}>不正解 {incorrectSqs.length}</span>
+                                    {unansweredSqs.length > 0 && (
+                                      <>
+                                        <span className="mx-1 opacity-50">/</span>
+                                        <span className={mode === 'mini_test' ? 'text-gray-400' : 'text-[#7A8B99]'}>未解答 {unansweredSqs.length}</span>
+                                      </>
+                                    )}
                                   </span>
                                 </div>
 
@@ -1599,7 +1650,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 <ExplanationBody
                                   text={sharedExplanation}
                                   tone={mode === 'mini_test' ? 'light' : 'dark'}
-                                  className={`font-handwriting text-xs md:text-sm leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+                                  className={`${isMathChapter ? 'font-math math-content text-sm md:text-base' : 'font-handwriting text-xs md:text-sm'} leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
                                 />
                               </div>
                             )}

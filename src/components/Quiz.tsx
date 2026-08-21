@@ -819,15 +819,26 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
 
   /**
    * 指定インデックスの問題に入力された回答を消去する。
-   * ただし、その問題が既に採点済み（run.perQuestion に記録済み）の場合は保持する
+   * ただし、その問題が既に採点済みの場合は保持する
    * （採点済みの解答は解説表示の答え合わせに必要なため）。
    * 「一度離れた未提出の問題の回答」だけをリセットし、不正な得点（解答の使い回し）を防ぐ。
+   *
+   * ★採点済みの判定は perQuestion と perStep の両方を見る★
+   *   リスニングの1問ずつモードの採点記録は run.perQuestion ではなく
+   *   run.perStep（キーは「大問ID::小問ID」）に入る。
+   *   以前は perQuestion しか見ていなかったため、リスニングで大問を
+   *   移動した瞬間に「採点済みの解答」まで削除され、結果画面で
+   *   解いたはずの問が全部「未解答→不正解」になるバグがあった。
+   *   （ご報告「一問しか解いてないのに他のが全部不正解扱いになる」の原因）
    */
   const clearAnswersForQuestionIfUnscored = (qIndex: number) => {
     const q = questions[qIndex];
     if (!q) return;
-    const scored = !!run.perQuestion[q.id];
-    if (scored) return; // 採点済みは残す
+    const scoredAsQuestion = !!run.perQuestion[q.id];
+    const scoredAsStep = Object.keys(run.perStep || {}).some(
+      (key) => key.startsWith(`${q.id}::`),
+    );
+    if (scoredAsQuestion || scoredAsStep) return; // 採点済みは残す
     const subIds: string[] = (q.subQuestions || []).map((sq: any) => sq.id);
     if (subIds.length === 0) return;
     setAnswers(prev => {
@@ -2260,7 +2271,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           </div>
           
           <div 
-            className="flex-1 overflow-y-auto p-4 md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 font-modern break-words [overflow-wrap:anywhere]"
+            className={`flex-1 overflow-y-auto p-4 md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere] ${
+              // 数学の問題（requiresMathPalette 付き）は、数式が/や^の
+              // 生テキストではなく教科書と同じ形で出るため、
+              // 数式フォント＋一回り大きい表示（.math-content）で読みやすくする。
+              questionNeedsMathPalette ? 'font-math math-content' : 'font-modern'
+            }`}
             onMouseUp={handleTextSelection}
             onTouchEnd={handleTextSelection}
             title="テキストを選択するとハイライトできます"
@@ -2544,7 +2560,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     {/* 設問マーカー（(ア)/(1)/問2 など）。
                         リスニングでは設問文の本体は左ペインにあるので、
                         ここは「いまどの問の解答欄か」を示す目印だけ。 */}
-                    <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block">
+                    <span className={`font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block ${questionNeedsMathPalette ? 'font-math math-content' : ''}`}>
                       {formatText(sqMarker)}
                     </span>
                     
@@ -2809,7 +2825,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             <div className="flex items-center justify-between gap-2">
               {/* 表示ルール3：解答入力パネルにも設問マーカーのみを表示（設問文は左の問題文欄で読む）。
                   枝番（①②）まで含めることで、入力中の設問がひと目で分かるようにする。 */}
-              <span className="font-bold text-[#2C3E50] text-[13px] bg-blue-50/60 border border-[#A9CCE3]/40 px-3 py-1.5 rounded-lg truncate">
+              <span className={`font-bold text-[#2C3E50] text-[13px] bg-blue-50/60 border border-[#A9CCE3]/40 px-3 py-1.5 rounded-lg truncate ${questionNeedsMathPalette ? 'font-math' : ''}`}>
                 {formatText(answerCardMarker(focusedSub, focusedIndex, currentQuestion))}
               </span>
               <div className="flex items-center gap-1.5 shrink-0">

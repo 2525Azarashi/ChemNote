@@ -35,6 +35,19 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == docData.uid;
     }
 
+    // ---------------------------------------------------------------
+    // 運営（フィードバック管理者）かどうか。
+    //   - Google ログイン済みで、メールアドレスが確認済み（偽装不可）
+    //   - 運営メールの一覧に完全一致
+    // クライアント側の一覧（src/utils/feedbackReply.ts の
+    // FEEDBACK_ADMIN_EMAILS）と必ず同じ内容に保つこと。
+    // ---------------------------------------------------------------
+    function isFeedbackAdmin() {
+      return isAuthenticated()
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['mntobira@gmail.com'];
+    }
+
     // 自分の friends 配下に相手が登録されているか（= フレンド関係にある）
     function isMyFriend(otherUid) {
       return isAuthenticated()
@@ -429,8 +442,72 @@ service cloud.firestore {
       // 投函のみ許可（ゲスト可）
       allow create: if isValidFeedback(request.resource.data);
 
-      // クライアントからの閲覧・改変・削除は全面禁止
-      allow read, update, delete: if false;
+      // 運営（フィードバック管理者）だけはアプリ内の管理画面から
+      // 一覧を読み、対応状況（status）を更新できる。
+      // 一般ユーザーには従来どおり一切見せない（他人の意見・連絡先を守る）。
+      allow read: if isFeedbackAdmin();
+      allow update: if isFeedbackAdmin()
+        // 変えられるのは status だけ（本文や連絡先の改変は不可）
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status is string
+        && request.resource.data.status in ['new', 'in_progress', 'replied', 'closed'];
+
+      // 削除は禁止（証跡を残す）
+      allow delete: if false;
+    }
+
+    // ============================================================
+    // フィードバックへの返信（feedback_replies）
+    //   feedback_replies/{replyId}
+    // ------------------------------------------------------------
+    // 「メッセージをくれた人に返答したい」ためのコレクション。
+    //
+    // 設計方針
+    //  - 書けるのは運営（isFeedbackAdmin）だけ。
+    //  - ログイン済みで投函した人（uid あり）には、アプリ内の
+    //    「運営からの返信」で届く。読めるのは宛先本人と運営のみ。
+    //  - ゲスト投函（uid なし）には in-app で届けられないので、
+    //    管理画面が contactEmail 宛のメール作成リンクを出す（別経路）。
+    //  - 宛先本人は readAt（既読時刻）だけ更新できる。
+    // ============================================================
+    match /feedback_replies/{replyId} {
+      function isValidReply(data) {
+        return data.keys().hasAll(['feedbackId', 'toUid', 'message', 'createdAt'])
+          && data.keys().hasOnly([
+               'feedbackId', 'toUid', 'message', 'feedbackSummary',
+               'adminName', 'createdAt', 'createdAtIso', 'readAt'
+             ])
+          && data.feedbackId is string
+          && data.feedbackId.size() > 0 && data.feedbackId.size() <= 80
+          // 宛先は「uid を残して投函した人」のみ
+          && data.toUid is string && data.toUid.size() > 0 && data.toUid.size() <= 128
+          && data.message is string
+          && data.message.size() > 0 && data.message.size() <= 2000
+          // 元の投稿の冒頭（本人が「どの意見への返信か」分かるように）
+          && (!('feedbackSummary' in data)
+              || (data.feedbackSummary is string && data.feedbackSummary.size() <= 200))
+          && (!('adminName' in data)
+              || (data.adminName is string && data.adminName.size() <= 100))
+          && (!('createdAtIso' in data)
+              || (data.createdAtIso is string && data.createdAtIso.size() <= 40))
+          // 新規作成時は未読
+          && (!('readAt' in data) || data.readAt == null)
+          && data.createdAt == request.time;
+      }
+
+      allow create: if isFeedbackAdmin() && isValidReply(request.resource.data);
+
+      // 宛先本人 or 運営だけが読める
+      allow read: if isFeedbackAdmin()
+        || (isAuthenticated() && resource.data.toUid == request.auth.uid);
+
+      // 宛先本人は既読時刻だけ記録できる
+      allow update: if isAuthenticated()
+        && resource.data.toUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt'])
+        && request.resource.data.readAt == request.time;
+
+      allow delete: if false;
     }
 
     // ============================================================
