@@ -6,6 +6,7 @@ import { ClassPanel } from './ClassPanel';
 import { DoorMascot } from './DoorMascot';
 import { GoogleMark } from './GoogleLinkBanner';
 import { signInWithGoogle, signOutGoogle, switchGoogleAccount, GOOGLE_LINK_BENEFITS } from '../utils/googleAuth';
+import { isFeedbackAdmin } from '../utils/feedbackReply';
 
 interface ProfileModalProps {
   onClose: () => void;
@@ -23,11 +24,17 @@ interface ProfileModalProps {
    *   先生は設定を探すことを苦にしないので、ここに置く。
    */
   onOpenTeacherDashboard?: () => void;
+  /**
+   * フィードバック管理画面（運営専用）を開く。
+   * 運営メールでログインしているときだけボタンを出す。
+   * （万一開いても Firestore ルールが読み取りを拒否する）
+   */
+  onOpenFeedbackAdmin?: () => void;
 }
 
 type SettingsTab = 'general' | 'friends' | 'class';
 
-export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleBgm, bgmVolume, setBgmVolume, onOpenTeacherDashboard }: ProfileModalProps) {
+export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleBgm, bgmVolume, setBgmVolume, onOpenTeacherDashboard, onOpenFeedbackAdmin }: ProfileModalProps) {
   const [tab, setTab] = useState<SettingsTab>('general');
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
@@ -227,6 +234,13 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
                   ) : (
                     <>
                       <p className="text-[10px] text-gray-400 truncate px-1">{auth.currentUser.email}</p>
+                      {/* 運営専用：フィードバック管理（返信フォーム）への入口。
+                          運営メールでログインしているときだけ見える。 */}
+                      {onOpenFeedbackAdmin && isFeedbackAdmin(auth.currentUser) && (
+                        <button onClick={onOpenFeedbackAdmin} className="compact-action bg-[#FBE0E9]/60 text-[#D9466E] border border-[#F4A9C4]/60">
+                          <ClipboardList size={15} />フィードバック管理（返信）
+                        </button>
+                      )}
                       <button onClick={logout} disabled={signing} className="compact-action bg-red-50 text-red-600 border border-red-100 disabled:opacity-50"><LogOut size={15} />ログアウト</button>
                       <button onClick={switchAccount} disabled={signing} className="compact-action bg-blue-50 text-blue-600 border border-blue-100 disabled:opacity-50">
                         {signing ? <Loader2 size={15} className="animate-spin" /> : <LogIn size={15} />}

@@ -819,15 +819,26 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
 
   /**
    * 指定インデックスの問題に入力された回答を消去する。
-   * ただし、その問題が既に採点済み（run.perQuestion に記録済み）の場合は保持する
+   * ただし、その問題が既に採点済みの場合は保持する
    * （採点済みの解答は解説表示の答え合わせに必要なため）。
    * 「一度離れた未提出の問題の回答」だけをリセットし、不正な得点（解答の使い回し）を防ぐ。
+   *
+   * ★採点済みの判定は perQuestion と perStep の両方を見る★
+   *   リスニングの1問ずつモードの採点記録は run.perQuestion ではなく
+   *   run.perStep（キーは「大問ID::小問ID」）に入る。
+   *   以前は perQuestion しか見ていなかったため、リスニングで大問を
+   *   移動した瞬間に「採点済みの解答」まで削除され、結果画面で
+   *   解いたはずの問が全部「未解答→不正解」になるバグがあった。
+   *   （ご報告「一問しか解いてないのに他のが全部不正解扱いになる」の原因）
    */
   const clearAnswersForQuestionIfUnscored = (qIndex: number) => {
     const q = questions[qIndex];
     if (!q) return;
-    const scored = !!run.perQuestion[q.id];
-    if (scored) return; // 採点済みは残す
+    const scoredAsQuestion = !!run.perQuestion[q.id];
+    const scoredAsStep = Object.keys(run.perStep || {}).some(
+      (key) => key.startsWith(`${q.id}::`),
+    );
+    if (scoredAsQuestion || scoredAsStep) return; // 採点済みは残す
     const subIds: string[] = (q.subQuestions || []).map((sq: any) => sq.id);
     if (subIds.length === 0) return;
     setAnswers(prev => {

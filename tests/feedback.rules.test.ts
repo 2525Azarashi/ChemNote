@@ -69,6 +69,23 @@ function authed(uid: string) {
   return testEnv!.authenticatedContext(uid).firestore();
 }
 
+/** 運営（フィードバック管理者）の Firestore。
+ *  firestore.rules の isFeedbackAdmin() と同じ条件（確認済み運営メール） */
+function admin() {
+  return testEnv!.authenticatedContext('uid_admin', {
+    email: 'mntobira@gmail.com',
+    email_verified: true,
+  }).firestore();
+}
+
+/** 運営メールだが未確認（なりすまし対策の検証用） */
+function unverifiedAdmin() {
+  return testEnv!.authenticatedContext('uid_admin2', {
+    email: 'mntobira@gmail.com',
+    email_verified: false,
+  }).firestore();
+}
+
 /** 未ログイン（ゲスト）の Firestore */
 function guest() {
   return testEnv!.unauthenticatedContext().firestore();
@@ -200,7 +217,7 @@ describe.skipIf(!emulatorAvailable)('firestore.rules: feedback（投函のみ許
     });
   });
 
-  describe('read / update / delete: 全面禁止', () => {
+  describe('read / update / delete: 一般ユーザーは禁止・運営のみ可', () => {
     beforeEach(async () => {
       await testEnv!.withSecurityRulesDisabled(async (ctx) => {
         await setDoc(doc(ctx.firestore(), 'feedback', 'fb_existing'), {
@@ -235,6 +252,98 @@ describe.skipIf(!emulatorAvailable)('firestore.rules: feedback（投函のみ許
     it('削除できない（都合の悪い意見を消せない）', async () => {
       await assertFails(deleteDoc(doc(authed(USER), 'feedback', 'fb_existing')));
       await assertFails(deleteDoc(doc(guest(), 'feedback', 'fb_existing')));
+    });
+
+    it('運営は読める（返信フォームの一覧表示）', async () => {
+      await assertSucceeds(getDoc(doc(admin(), 'feedback', 'fb_existing')));
+      await assertSucceeds(getDocs(collection(admin(), 'feedback')));
+    });
+
+    it('運営メールでも未確認なら読めない（なりすまし防止）', async () => {
+      await assertFails(getDoc(doc(unverifiedAdmin(), 'feedback', 'fb_existing')));
+    });
+
+    it('運営は status だけ更新できる', async () => {
+      await assertSucceeds(updateDoc(doc(admin(), 'feedback', 'fb_existing'), { status: 'replied' }));
+      // status 以外（本文）の改変は運営でも不可
+      await assertFails(updateDoc(doc(admin(), 'feedback', 'fb_existing'), { message: '書き換え' }));
+      // 想定外の status 値は不可
+      await assertFails(updateDoc(doc(admin(), 'feedback', 'fb_existing'), { status: 'spam' }));
+    });
+
+    it('運営でも削除はできない（証跡を残す）', async () => {
+      await assertFails(deleteDoc(doc(admin(), 'feedback', 'fb_existing')));
+    });
+  });
+});
+
+describe.skipIf(!emulatorAvailable)('firestore.rules: feedback_replies（運営からの返信）', () => {
+  function validReply(overrides: Record<string, unknown> = {}) {
+    return {
+      feedbackId: 'fb_existing',
+      toUid: USER,
+      message: 'ご意見ありがとうございます。次の更新で修正します。',
+      feedbackSummary: 'バグって一問しか解いてないのに…',
+      adminName: '運営',
+      createdAt: serverTimestamp(),
+      createdAtIso: new Date().toISOString(),
+      readAt: null,
+      ...overrides,
+    };
+  }
+
+  it('運営は返信を作成できる', async () => {
+    await assertSucceeds(addDoc(collection(admin(), 'feedback_replies'), validReply()));
+  });
+
+  it('一般ユーザー・ゲストは返信を作成できない', async () => {
+    await assertFails(addDoc(collection(authed(USER), 'feedback_replies'), validReply()));
+    await assertFails(addDoc(collection(guest(), 'feedback_replies'), validReply()));
+  });
+
+  it('本文が空・長すぎる返信は作成できない', async () => {
+    await assertFails(addDoc(collection(admin(), 'feedback_replies'), validReply({ message: '' })));
+    await assertFails(addDoc(collection(admin(), 'feedback_replies'), validReply({ message: 'あ'.repeat(2001) })));
+  });
+
+  describe('読み取り・既読', () => {
+    beforeEach(async () => {
+      await testEnv!.withSecurityRulesDisabled(async (ctx) => {
+        await setDoc(doc(ctx.firestore(), 'feedback_replies', 'reply1'), {
+          feedbackId: 'fb_existing',
+          toUid: USER,
+          message: '返信本文',
+          adminName: '運営',
+          readAt: null,
+        });
+      });
+    });
+
+    it('宛先本人は読める', async () => {
+      await assertSucceeds(getDoc(doc(authed(USER), 'feedback_replies', 'reply1')));
+    });
+
+    it('第三者・ゲストは読めない', async () => {
+      await assertFails(getDoc(doc(authed(OTHER), 'feedback_replies', 'reply1')));
+      await assertFails(getDoc(doc(guest(), 'feedback_replies', 'reply1')));
+    });
+
+    it('運営は読める', async () => {
+      await assertSucceeds(getDoc(doc(admin(), 'feedback_replies', 'reply1')));
+    });
+
+    it('宛先本人は readAt（既読）だけ更新できる', async () => {
+      await assertSucceeds(updateDoc(doc(authed(USER), 'feedback_replies', 'reply1'), { readAt: serverTimestamp() }));
+      await assertFails(updateDoc(doc(authed(USER), 'feedback_replies', 'reply1'), { message: '改ざん' }));
+    });
+
+    it('第三者は既読も付けられない', async () => {
+      await assertFails(updateDoc(doc(authed(OTHER), 'feedback_replies', 'reply1'), { readAt: serverTimestamp() }));
+    });
+
+    it('誰も削除できない', async () => {
+      await assertFails(deleteDoc(doc(authed(USER), 'feedback_replies', 'reply1')));
+      await assertFails(deleteDoc(doc(admin(), 'feedback_replies', 'reply1')));
     });
   });
 });

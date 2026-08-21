@@ -368,9 +368,13 @@ describe('設置場所（タイトル画面・各結果画面）', () => {
   it('firestore.rules に feedback の投函専用ルールがある', () => {
     const rules = read('firestore.rules');
     expect(rules).toContain('match /feedback/{docId}');
-    // 投函のみ許可、読み書き削除は全面禁止
+    // 投函は誰でも（ゲスト可）
     expect(rules).toContain('allow create: if isValidFeedback(request.resource.data);');
-    expect(rules).toContain('allow read, update, delete: if false;');
+    // 閲覧は運営のみ（返信フォーム対応。一般ユーザーには従来どおり見せない）
+    expect(rules).toContain('allow read: if isFeedbackAdmin();');
+    // 更新は運営が status だけ変えられる。削除は誰にもさせない
+    expect(rules).toContain("affectedKeys().hasOnly(['status'])");
+    expect(rules).toContain('allow delete: if false;');
     // 本文長の上限がクライアント側（FEEDBACK_MESSAGE_MAX）と一致していること
     expect(rules).toContain(`data.message.size() <= ${FEEDBACK_MESSAGE_MAX}`);
     // 画面・種類の許可値がラベル定義と一致していること

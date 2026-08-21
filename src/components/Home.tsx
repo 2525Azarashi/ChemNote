@@ -12,6 +12,7 @@ import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
 import { getDueCount } from '../utils/reviewList';
 import { DoorMascot } from './DoorMascot';
 import { FeedbackButton } from './FeedbackButton';
+import { FeedbackReplyInbox } from './FeedbackReplyInbox';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
 import {
   backfillLegacyProgress,
@@ -579,6 +580,10 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             context={{ streak, solvedQuestions, totalQuestions, isGuest }}
             className="sm:col-span-2 lg:col-span-1"
           />
+
+          {/* 運営からの返信（ご意見を送ってくれた人へのお返事）。
+              自分宛の返信が1件もない人には何も表示されない。 */}
+          <FeedbackReplyInbox />
         </motion.div>
       </div>
 
