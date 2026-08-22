@@ -266,3 +266,26 @@ export function stripListeningHowToBlocks(text: string): string {
 export function buildListeningLeadText(text: string): string {
   return stripListeningHowToBlocks(stripListeningQuestionBlocks(text));
 }
+
+/**
+ * リード文から【難易度：…】の表記を取り出す（無ければ null）。
+ *
+ * ■ なぜ分離するのか（ご要望）
+ *   「難易度：易しめ」等の表記は解答操作の妨げになるため、
+ *   タイトル行から外して問題文カードの末尾に小さく表示する。
+ *   タイトル行は「第2回　第1問 A（4問・2回読み）」だけになり、
+ *   限られたスマホの縦幅を本題（音源・選択肢）に使える。
+ */
+export function extractListeningDifficulty(text: string): string | null {
+  const m = String(text || '').match(/【\s*難易度\s*[:：]\s*([^】]+)】/u);
+  return m ? m[1].trim() : null;
+}
+
+/** リード文から【難易度：…】の表記を取り除く（表示位置は呼び出し側が決める）。 */
+export function stripListeningDifficulty(text: string): string {
+  return String(text || '')
+    .replace(/\s*【\s*難易度\s*[:：][^】]*】\s*/gu, ' ')
+    .replace(/[ \t]{2,}/gu, ' ')
+    .replace(/[ \t]+$/gmu, '')
+    .trim();
+}

@@ -283,3 +283,46 @@ describe('問ごと表示：共通解説のスコープ（scopeListeningCommonTo
     }
   });
 });
+
+/**
+ * ===================================================================
+ * 難易度表記の分離（extractListeningDifficulty / stripListeningDifficulty）
+ * ===================================================================
+ * ご要望：
+ *   「難易度：易しめ」等の表記は解答操作の妨げになるため、
+ *   問題文カード内の目立たない位置（末尾など）に小さく表示する。
+ */
+import {
+  extractListeningDifficulty,
+  stripListeningDifficulty,
+  buildListeningLeadText,
+} from '../src/utils/listeningOptions';
+import { EL1_A_EXTRA_PROBLEMS as EXTRA } from '../src/data/englishListeningQ1ASets';
+
+describe('難易度表記の分離', () => {
+  it('【難易度：易しめ（導入）】から中身を取り出せる', () => {
+    expect(extractListeningDifficulty('第2回　第1問 A　【難易度：易しめ（導入）】')).toBe('易しめ（導入）');
+    expect(extractListeningDifficulty('【難易度: 標準】')).toBe('標準');
+    expect(extractListeningDifficulty('難易度の表記なし')).toBeNull();
+  });
+
+  it('タイトル行から【難易度：…】が消え、他の文は残る', () => {
+    const s = stripListeningDifficulty('第2回　第1問 A（4問・2回読み）　【難易度：易しめ（導入）】');
+    expect(s).not.toContain('難易度');
+    expect(s).toContain('第2回　第1問 A（4問・2回読み）');
+  });
+
+  it('実データ：難易度つきの回はリード文から抽出・除去できる', () => {
+    let checked = 0;
+    for (const p of EXTRA) {
+      const lead = buildListeningLeadText(p.text);
+      const d = extractListeningDifficulty(lead);
+      if (d) {
+        checked += 1;
+        expect(stripListeningDifficulty(lead)).not.toContain('【難易度');
+      }
+    }
+    // PDF由来の13回分はすべて難易度表記を持っている
+    expect(checked).toBeGreaterThanOrEqual(13);
+  });
+});
