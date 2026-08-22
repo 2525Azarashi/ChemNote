@@ -264,7 +264,8 @@ describe('解答画面：音源は左（問題文）ペインに横帯で置く'
     //          問題の方（左側）においてっていったよね」
     // → 図は左ペインの「いま解いている問」ブロックにだけ置く。
     expect(QUIZ).toContain('src={activeStepSub.imageUrl}');
-    expect(QUIZ).toContain('imgClassName="max-h-[26vh] md:max-h-[42vh] object-contain"');
+    // スマホは問題ペイン 40vh の中に見出し・再生ボタンと一緒に収まるよう 22vh。
+    expect(QUIZ).toContain('imgClassName="max-h-[22vh] md:max-h-[42vh] object-contain"');
     expect(QUIZ).not.toContain('src={sq.imageUrl}');
     expect(QUIZ).not.toContain('src={focusedSub.imageUrl}');
     expect(FIGURE).toContain('imgClassName');
@@ -343,7 +344,11 @@ describe('英語リスニング：問題文（選択肢）と解答欄が同じ�
   });
 
   it('スマホでも下部パネルに飛ばさず、カード内で選択肢を表示する', () => {
-    expect(QUIZ).toContain('isDesktop || listeningUnified ?');
+    // 以前は「isDesktop || listeningUnified ? 直接表示 : 表示専用チップ」の分岐で、
+    // 化学などのスマホは下部パネルに複製の解答UIを出していた（重複解答欄）。
+    // いまは全教科・全端末で renderMultipleChoiceControl をカード内に直接描画する。
+    expect(QUIZ).not.toContain('isDesktop || listeningUnified ?');
+    expect(QUIZ).toContain('renderMultipleChoiceControl(sq)');
   });
 
   it('音源を持つ問題だけを対象にする（化学などに影響しない）', () => {

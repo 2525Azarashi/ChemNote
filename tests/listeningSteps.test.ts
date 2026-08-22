@@ -151,7 +151,11 @@ describe('D1: 1画面＝1問（問1で1つの進捗、問2で1つの進捗）', 
 
   it('解答欄には「いま解いている問」だけを描画する', () => {
     expect(QUIZ).toContain('const visibleGroupedSubQuestions');
-    expect(QUIZ).toContain('visibleGroupedSubQuestions.map(');
+    // スマホはさらに「1ページ＝1解答欄」に絞った renderedAnswerGroups を描画する
+    // （PC は renderedAnswerGroups = visibleGroupedSubQuestions のまま）。
+    expect(QUIZ).toContain('const renderedAnswerGroups');
+    expect(QUIZ).toContain('if (isDesktop) return visibleGroupedSubQuestions;');
+    expect(QUIZ).toContain('renderedAnswerGroups.map(');
   });
 });
 
@@ -205,14 +209,28 @@ describe('D1b: 解説も問ごと（先の問の正解が見えないように�
 });
 
 // =====================================================================
-// D2: 選択肢の英文と図を「スマホは上・PCは右」に置く
+// D2（改）: スマホは全教科とも「問題が上・解答が下」に統一する
 // =====================================================================
-describe('D2: 選択肢の英文・図が一目に映る（スクロール不要）', () => {
-  it('スマホでは解答ペイン（選択肢・図）を上に出す', () => {
-    // flex-col-reverse で「問題文が下・解答が上」になる。
+// ご指摘：「問題文と解答入力を逆にして。(リスニングの話)
+//         選択肢を見せるということに気が取られて問題が見えない
+//         スクロールがしにくい　図も見えない」
+// 以前はリスニングだけ flex-col-reverse（解答が上）にしていたが、
+// 問題文が「下からせり出すカード」になり問題・図が読めなくなった。
+describe('D2（改）: 問題が上・解答が下（自然な読み順）', () => {
+  it('上下を入れ替える flex-col-reverse は使わない', () => {
+    expect(QUIZ).not.toContain('flex-col-reverse');
     // PC（lg:flex-row）では従来どおり左＝問題文／右＝解答。
-    expect(QUIZ).toContain("listeningUnified ? 'flex-col-reverse' : 'flex-col'");
     expect(QUIZ).toContain('lg:flex-row');
+  });
+
+  it('リスニングの問題ペインは 40vh 上限（問題と選択肢を同時に見る）', () => {
+    // ご指摘：「一番大事なのは、問題(文章や図と解答のボタンを一緒に見れること)」
+    // 上 40vh に問N見出し＋再生＋設問文＋図、下に選択肢が収まる。
+    expect(QUIZ).toContain("'max-h-[40vh] h-auto shadow-md relative z-20'");
+    // 選択肢②以降が隠れていた旧値（32vh）にも、問題が見えない
+    // ほど狭い値（30vh）にも戻さない。
+    expect(QUIZ).not.toContain('max-h-[32vh]');
+    expect(QUIZ).not.toContain('max-h-[30vh]');
   });
 
   it('左右2画面の比は勝手に変えない（58% / 42% のまま）', () => {
@@ -226,12 +244,8 @@ describe('D2: 選択肢の英文・図が一目に映る（スクロール不要
     expect(QUIZ).not.toMatch(/listeningUnified \? 'lg:w-\[/u);
   });
 
-  it('問題文ペインの高さ上限も元の 50vh に戻す', () => {
-    // 一度 30vh に絞ってしまったが、音源と図を左（問題側）に置いたので
-    // 左ペインには十分な高さが必要。元の 50vh のまま。
+  it('化学・数学などリスニング以外は従来どおり 50vh のまま', () => {
     expect(QUIZ).toContain('max-h-[50vh]');
-    expect(QUIZ).not.toContain('max-h-[30vh]');
-    expect(QUIZ).not.toMatch(/listeningUnified \? 'max-h-\[/u);
   });
 });
 
@@ -246,7 +260,8 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
 
   it('リスニングの図は高さ上限つきで描画される（選択肢と同時に1画面）', () => {
     // 図は「問題のところ（左側）」の現在の問ブロックにだけ置く。
-    expect(QUIZ).toContain('imgClassName="max-h-[26vh] md:max-h-[42vh] object-contain"');
+    // スマホは問題ペイン 40vh の中に見出し・再生と一緒に収まるよう 22vh。
+    expect(QUIZ).toContain('imgClassName="max-h-[22vh] md:max-h-[42vh] object-contain"');
   });
 
   it('図は解答カード側・スマホ固定パネル側には残さない', () => {

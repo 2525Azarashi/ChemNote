@@ -177,9 +177,12 @@ describe('数学記号パレット（Quiz）', () => {
     expect(QUIZ).toContain('title="化学記号パレット"');
   });
 
-  it('デスクトップ2箇所＋スマホのフローティングバーの計3箇所に描画される', () => {
+  it('デスクトップ2箇所（記述・短答）＋スマホのカード内2箇所（記述・短答）の計4箇所に描画される', () => {
+    // 以前はスマホの下部フローティングバーに複製の入力欄＋パレットを出していたが、
+    // 「解答欄が重複して見える」ご指摘で撤去し、カード内の入力欄に直接付ける方式へ。
+    // → 記述（textarea）と短答（input）でそれぞれ PC/スマホ分岐があるため計4箇所。
     const renders = (QUIZ.match(/<MathPalette/g) || []).length;
-    expect(renders).toBe(3);
+    expect(renders).toBe(4);
     expect(QUIZ).toContain('questionNeedsMathPalette');
   });
 

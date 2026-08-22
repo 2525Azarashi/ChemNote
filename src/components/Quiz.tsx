@@ -599,13 +599,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // 記述/短答入力欄の参照を sub-question id 単位で保持（化学記号パレットの
   // カーソル位置挿入に使用）。
   const inputRefs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({});
-  // フローティング入力バー内の実入力要素の参照（スマホ時の唯一の編集入力）。
-  // カードはタップ選択のみの表示専用にし、実際の文字入力はこのバーで行う（要件1）。
-  const barInputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   // 「前へ/次へ」やキーボードの「次へ(next)」でフォーカスを移すとき、
   // 再レンダー後に描画前（同期）で確実に .focus() するための一時保持。
   // iOS でソフトキーボードが一瞬閉じてしまう不具合の防止に用いる。
   const pendingFocusIdRef = useRef<string | null>(null);
+  // 問題文ペインのスクロールコンテナ。スマホでキーボード表示中に
+  // 「いま入力している穴抜きのカッコ」（黄色ハイライト）へ自動スクロール
+  // させるために使う（ご要望：「問題(穴抜きなどのカッコの場所)は見えるようにしたい」）。
+  const problemScrollRef = useRef<HTMLDivElement | null>(null);
   const getInputRef = (sqId: string): React.RefObject<HTMLInputElement | HTMLTextAreaElement | null> => ({
     get current() {
       return inputRefs.current[sqId] ?? null;
@@ -806,6 +807,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   const [highlights, setHighlights] = useState<string[]>([]);
   // 現在フォーカス中の短答穴埋め設問ID（フローティング入力欄・空欄ハイライト用）
   const [focusedSubId, setFocusedSubId] = useState<string | null>(null);
+  // スマホ：解答欄に「いま表示する1設問」のインデックス（ページ送り方式）。
+  // ご指摘：「上下スクロールして(1)、(2)っていう入力欄を押して入力してく
+  //         じゃん？それやめよう。(1)の入力欄を下半分に最初固定した状態に
+  //         して。解答欄の右と左に黒の小さな矢印を置いて、固定する解答欄を
+  //         変えるようにしてくれない？解答欄のスクロールがすごいうざい」
+  // スマホでは全設問を縦に並べず、1設問ずつこの番号の欄だけを表示する。
+  const [mobileAnsIdx, setMobileAnsIdx] = useState(0);
   // ソフトキーボードが表示されているか（visualViewport で推定）。
   // 表示中のみ、短答穴埋め用のフローティング入力バーを画面下部に出す。
   const [keyboardVisible, setKeyboardVisible] = useState(false);
@@ -1000,6 +1008,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   useEffect(() => {
     setFocusedSubId(null);
     setTapSortSelect(null);
+    // 新しい問題では最初の設問（(1)・(ア) など）の解答欄から始める。
+    setMobileAnsIdx(0);
     // 問題が変わったら「問題文をたたむ」状態は解除する。
     // 新しい問題の本文を読まずに解き始めてしまう事故を防ぐ。
     setIsProblemCollapsed(false);
@@ -1032,7 +1042,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       const isText = cur && (isShortAnswerType(cur) || cur.type === 'descriptive');
       if (!isText) return;
     }
-    const el = barInputRef.current;
+    // ★入力欄は「カード内の実入力欄」1つだけ（ご指摘「タップしたらなんで
+    //   重複して解答欄が出てくるかわからん」への対応で、下部バーの複製
+    //   入力欄を廃止した）。前へ/次へでの移動先もカード内の入力欄になる。
+    const el = inputRefs.current[focusedSubId] ?? null;
     if (el) {
       el.focus({ preventScroll: true });
       try {
@@ -1044,9 +1057,17 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     }
   }, [focusedSubId, isDesktop]);
 
-  // 選択中の空欄（focusedSubId）が変わったら、フローティングバー内の入力欄へ
-  // 実フォーカスを移してソフトキーボードを開く（要件1：入力はバーに一本化）。
-  // カードのタップ→バー出現→キーボード表示、という流れを成立させる。
+  // 選択中の空欄（focusedSubId）が変わったら、そのカード内の入力欄へ
+  // 実フォーカスを移してソフトキーボードを開く。
+  //
+  // ★入力欄は「カード内」の1か所だけ（ご指摘対応）
+  // ─────────────────────────────────────────────
+  // ご指摘：「タップしたらなんで重複して解答欄が出てくるかわからん。
+  //          普通に入力できるようにしてよ。」
+  // 以前は「カード＝表示専用チップ／実入力＝下部バーの複製入力欄」の
+  // 2段構えで、同じ設問の解答欄が画面に2つ見えていた。
+  // いまはカード内の入力欄に直接書き込む方式なので、フォーカスも
+  // カード内の入力欄（inputRefs）へ移すだけでよい。
   // （移動由来の pendingFocus は上の useLayoutEffect が処理済みなのでスキップ）
   useEffect(() => {
     if (isDesktop) return;
@@ -1064,8 +1085,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       return;
     }
     const raf = requestAnimationFrame(() => {
-      const el = barInputRef.current;
-      // すでにフォーカス済み（useLayoutEffect で処理済み等）なら二重処理しない
+      const el = inputRefs.current[focusedSubId] ?? null;
+      // すでにフォーカス済み（useLayoutEffect で処理済み・ユーザーの直接タップ等）
+      // なら二重処理しない
       if (el && document.activeElement !== el) {
         el.focus({ preventScroll: true });
         try {
@@ -1075,11 +1097,40 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           /* noop */
         }
       }
-      // 選択中の空欄カードをバーの上に見えるようスクロール
-      const card = document.getElementById(`ans-card-${focusedSubId}`);
-      if (card) setTimeout(() => scrollInputIntoView(card), 320);
+      // 選択中の入力欄がキーボード・下部バーに隠れないようスクロール
+      if (el) setTimeout(() => scrollInputIntoView(el), 320);
     });
     return () => cancelAnimationFrame(raf);
+  }, [focusedSubId, isDesktop]);
+
+  // ─────────────────────────────────────────────
+  // G-3：キーボード表示中でも「いま入力している穴抜きのカッコ」が見えるようにする
+  // ─────────────────────────────────────────────
+  // ご要望：「文字の入力欄を出す時に、全体が上に上がりすぎて問題が見えなく
+  //          なるので、うまいこと工夫して問題(穴抜きなどのカッコの場所)は
+  //          見えるようにしたい」
+  // キーボード表示中は問題ペインが max-h-[24vh] に縮むが、縮んだだけでは
+  // 該当の空欄が画面外（スクロール下）にあることが多い。そこで、
+  // フォーカス中の空欄に対応する黄色ハイライト（<mark>）を問題ペイン内で
+  // 探し、ペインのスクロール位置をそのハイライトが中央に来るよう合わせる。
+  // ハイライトの描画（combinedHighlights 反映）後に走らせたいので
+  // 少し遅延させる。ページ全体は fixed なので window は動かない。
+  useEffect(() => {
+    if (isDesktop) return;
+    if (!focusedSubId) return;
+    const timer = setTimeout(() => {
+      const pane = problemScrollRef.current;
+      if (!pane) return;
+      const mark = pane.querySelector('mark');
+      if (!mark) return;
+      const paneRect = pane.getBoundingClientRect();
+      const markRect = (mark as HTMLElement).getBoundingClientRect();
+      // ペイン内でのハイライトの相対位置 → ペインの中央に来る scrollTop
+      const offsetInPane = markRect.top - paneRect.top + pane.scrollTop;
+      const target = Math.max(0, offsetInPane - pane.clientHeight / 2 + markRect.height / 2);
+      pane.scrollTo({ top: target, behavior: 'smooth' });
+    }, 200);
+    return () => clearTimeout(timer);
   }, [focusedSubId, isDesktop]);
 
   const handleTextSelection = () => {
@@ -1714,6 +1765,47 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   }, [groupedSubQuestions, perStep, activeStepSub]);
 
   // ────────────────────────────────────────────────────────────────
+  // スマホ：解答欄の「1設問ずつページ送り」表示（ご指摘対応）
+  // ────────────────────────────────────────────────────────────────
+  //
+  // ご指摘：「上下スクロールして(1)、(2)っていう入力欄を押して入力してく
+  //          じゃん？それやめよう。(1)の入力欄を下半分に最初固定した状態に
+  //          して。解答欄の右と左に黒の小さな矢印を置いて、固定する解答欄を
+  //          変えるようにして。解答欄のスクロールがすごいうざい」
+  //
+  // 全設問のカードを縦に並べる（＝スクロールさせる）のをやめ、
+  // 「いま答える1設問の解答欄」だけを下半分に固定表示する。
+  // 移動は左右の黒矢印（と、キーボード表示中は下部バーの前へ/次へ）のみ。
+  //
+  // mobileAnswerSubs はページ送りの単位となる設問のフラットな一覧。
+  // グループ（(ア)(イ)…の空欄グリッド）も1空欄＝1ページに分解し、
+  // 「どのページでも解答欄は常に1つ」を保証する。
+  const mobileAnswerSubs = useMemo(() => {
+    const list: { sq: any; groupName?: string; gType: 'single' | 'group' }[] = [];
+    visibleGroupedSubQuestions.forEach((g: any) => {
+      (g.items || []).forEach((sq: any) => {
+        list.push({ sq, groupName: g.type === 'group' ? g.groupName : undefined, gType: g.type });
+      });
+    });
+    return list;
+  }, [visibleGroupedSubQuestions]);
+
+  // データ変化でインデックスが範囲外になっても落ちないよう必ず丸める。
+  const safeMobileAnsIdx = Math.min(
+    Math.max(0, mobileAnsIdx),
+    Math.max(0, mobileAnswerSubs.length - 1),
+  );
+
+  // 実際に描画するグループ一覧。PC は従来どおり全設問を縦に並べ、
+  // スマホは「現在ページの1設問」だけを含む1グループに絞る。
+  const renderedAnswerGroups = useMemo(() => {
+    if (isDesktop) return visibleGroupedSubQuestions;
+    const cur = mobileAnswerSubs[safeMobileAnsIdx];
+    if (!cur) return visibleGroupedSubQuestions;
+    return [{ type: cur.gType, groupName: cur.groupName, items: [cur.sq] }] as any[];
+  }, [isDesktop, visibleGroupedSubQuestions, mobileAnswerSubs, safeMobileAnsIdx]);
+
+  // ────────────────────────────────────────────────────────────────
   // 要件1（解答入力方式）／要件4（化学記号パレットの出し分け）用の派生値
   // ────────────────────────────────────────────────────────────────
 
@@ -1767,13 +1859,24 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     [highlights, focusHighlightVariants]
   );
 
-  // 固定表示（フローティング解答パネル）の対象となる全設問。
-  // 要件1：問題形式によらず解答欄を画面下部に固定表示し、前へ/次へで遷移する。
-  // そのため短答穴埋め・記述/計算だけでなく、選択式（multiple_choice）・
-  // 並べ替え（sorting）も含めて「解答可能な全設問」を対象とする。
+  // 下部ナビバー（前へ/次へ）の対象となる設問。
+  //
+  // ★テキスト入力（短答穴埋め・記述/計算）だけに絞る（ご指摘対応）
+  // ─────────────────────────────────────────────
+  // ご指摘：「タップしたらなんで重複して解答欄が出てくるかわからん。
+  //          普通に入力できるようにしてよ。」
+  // 以前は選択式・並べ替えも含めて「カードをタップ→下部の固定パネルに
+  // もう1つ解答UIを出す」方式だったため、同じ設問の解答欄が
+  // 画面に2つ並んで見えていた。いまは全形式ともカード内で直接解答する
+  // 方式に統一したので、下部バーの役割は
+  //   「ソフトキーボード表示中の空欄移動（前へ/次へ）＋記号パレット」
+  // だけになった。キーボードを使うのはテキスト入力の設問だけなので、
+  // ナビ対象もテキスト入力の設問だけにする。
   const inputNavSubs = useMemo(() => {
     if (!currentQuestion) return [] as any[];
-    return (currentQuestion.subQuestions || []).slice();
+    return (currentQuestion.subQuestions || []).filter(
+      (sq: any) => isShortAnswerType(sq) || sq.type === 'descriptive',
+    );
   }, [currentQuestion]);
 
   // ────────────────────────────────────────────────────────────────
@@ -1854,6 +1957,64 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     // これにより「次へ」押下時にフォーカス（入力状態）が一瞬解除される不具合を防ぐ。
     pendingFocusIdRef.current = target.id;
     setFocusedSubId(target.id);
+    // スマホは「1ページ＝1解答欄」の固定表示なので、フォーカス移動先の
+    // 入力欄が実際に描画されるよう、ページ（mobileAnsIdx）も同じ設問に合わせる。
+    // （ページを合わせないと、フォーカス先の input が未マウントで移動できない）
+    const pageIdx = mobileAnswerSubs.findIndex((m) => m.sq.id === target.id);
+    if (pageIdx >= 0) setMobileAnsIdx(pageIdx);
+  };
+
+  /**
+   * スマホの解答欄ページ送り（解答欄の左右に置いた黒の小さな矢印）。
+   * dir=-1 で前の設問、dir=1 で次の設問へ。
+   * ご要望：「(1)の入力欄を下半分に最初固定した状態にして、右と左の矢印で
+   *          固定する解答欄を変える。解答欄のスクロールがすごいうざい」
+   * テキスト入力中（キーボード表示中）に矢印で移動した場合は、
+   * 移動先がテキスト設問ならフォーカスを引き継いでキーボードを維持する。
+   */
+  const goMobileAns = (dir: -1 | 1) => {
+    if (mobileAnswerSubs.length === 0) return;
+    const next = Math.min(mobileAnswerSubs.length - 1, Math.max(0, safeMobileAnsIdx + dir));
+    if (next === safeMobileAnsIdx) return;
+    setMobileAnsIdx(next);
+    const target = mobileAnswerSubs[next]?.sq;
+    const targetIsText = target && (isShortAnswerType(target) || target.type === 'descriptive');
+    if (focusedSubId && targetIsText) {
+      // キーボードを閉じさせないため blur せず、次フォーカス先を予約して
+      // 再レンダー直後の useLayoutEffect で実 .focus() する（moveFocus と同じ方式）。
+      pendingFocusIdRef.current = target.id;
+      setFocusedSubId(target.id);
+    } else if (focusedSubId) {
+      // 移動先が選択式など入力欄なしの設問なら、入力状態は終了する。
+      setFocusedSubId(null);
+    }
+  };
+
+  /** この設問がテキスト入力ナビ（前へ/次へ）の最後か。Enter キーのヒントに使う。 */
+  const isLastNavSub = (sq: any) => {
+    const idx = inputNavSubs.findIndex((s: any) => s.id === sq.id);
+    return idx < 0 || idx >= inputNavSubs.length - 1;
+  };
+
+  /**
+   * スマホのカード内入力欄の Enter キー処理。
+   * ・短答（input）    : Enter＝次の空欄へ移動。最後の空欄なら入力を確定して閉じる。
+   * ・記述（textarea） : Enter＝通常の改行。最後の設問でも改行を優先する
+   *                      （長い答案の途中で誤って閉じない）。
+   * 入力欄はカード内の1か所だけなので、ここで移動すれば
+   * 「解答欄が2つ出る」ことはない（ご指摘対応）。
+   */
+  const handleMobileCardKeyDown = (sq: any) => (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (e.key !== 'Enter') return;
+    if (sq.type === 'descriptive') return; // 記述は改行を許可
+    e.preventDefault();
+    const idx = inputNavSubs.findIndex((s: any) => s.id === sq.id);
+    if (idx >= 0 && idx < inputNavSubs.length - 1) {
+      moveFocus(1);
+    } else {
+      (e.currentTarget as HTMLElement).blur();
+      setFocusedSubId(null);
+    }
   };
 
   /**
@@ -2279,22 +2440,23 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
 
       {/* Main Content Area (Split on Desktop, Stacked on Mobile)
 
-          ★英語リスニング（listeningUnified）のスマホ表示は上下を入れ替える（ご要望）
+          ★スマホは全教科とも「問題文が上・解答が下」に統一する（ご要望）
           ------------------------------------------------------------------
-          ご要望：
-            「選択肢の英文と図はスマホだったら上に持ってきて、
-              パソコンだったら右に持ってきてほしい」
+          ご指摘：
+            「問題文と解答入力を逆にして。(リスニングの話)
+              選択肢を見せるということに気が取られて問題が見えない
+              スクロールがしにくい　図も見えない。」
 
-          PC では従来どおり「問題＝左 / 解答＝右」でご要望どおり。
-          一方スマホでは解答ペインが下に来るため、選択肢まで届くのに
-          スクロールが必要だった。そこで flex-col-reverse で解答ペインを
-          上（＝最初に見える場所）に出す。
-          ※ ただし「音源」と「図」は問題側（左ペイン）に置く（ご要望）。
-             スマホでは左ペインが下に回るが、それは
-             「共通リード文＋いま解いている問の見出し・音源・図」であり、
-             解答（選択肢）とセットで1画面に収まる高さに抑えている。
-          リスニング以外（化学など）は従来の flex-col のままなので影響しない。 */}
-      <div className={`flex-1 flex ${listeningUnified ? 'flex-col-reverse' : 'flex-col'} lg:flex-row overflow-hidden relative`}>
+          以前はリスニングだけ上下反転（col-reverse）で解答ペインを上に
+          出していたが、問題文が「下からせり出すカード」になってしまい
+          ・問題文・図が見えない
+          ・下のカードの中をスクロールする操作が難しい
+          という本末転倒な状態だった。
+          そこで自然な読み順（上＝問題 → 下＝解答）へ戻す。
+          「問題と選択肢を同時に見る」は、リスニング時の問題ペインの
+          高さ上限（下記 max-h-[40vh]）と再生ボタンのスリム化で満たす。
+          PC は従来どおり「問題＝左 / 解答＝右」。 */}
+      <div className={`flex-1 flex flex-col lg:flex-row overflow-hidden relative`}>
 
         {/* Section 1: Problem Text
             ★左右比は従来どおり 58% / 42%（勝手に変えない、というご指摘に対応）。
@@ -2304,11 +2466,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             ・ソフトキーボード表示中は max-h-[24vh] に自動で縮め、
               入力欄と入力内容がキーボードの上に必ず見えるようにする
             ・「たたむ」で見出しだけにして解答欄を最大化できる */}
-        {/* ★リスニング（スマホ）は問題文ペインを max-h-[32vh] に圧縮する（ご指摘：
-            「問題文カードが下からせり出して選択肢②以降が隠れる」）。
-            リスニングの左ペインは「問N見出し＋音源＋短いリード文」だけなので
-            32vh で必要十分。浮いた縦幅は選択肢（解答ペイン）に回し、
-            「今答えるべき設問の全選択肢」が追加操作なしで見えることを最優先する。
+        {/* ★リスニング（スマホ）は問題文ペインを max-h-[40vh] にする（ご指摘：
+            「一番大事なのは、問題(文章や図)と解答のボタンを一緒に見れること」）。
+            問題文ペインが上・解答（選択肢）が下の並びで、
+            ・上 40vh …… 問N見出し＋再生ボタン＋設問文＋図（あれば）
+            ・下 残り …… 選択肢（①〜④）
+            が同じ画面に収まる。図つきの問（第1問B）でも図の高さ上限
+            （22vh）と合わせて 40vh 内に見出し・再生・図が全部入る。
             化学・数学など（listeningUnified=false）は従来どおり 50vh。 */}
         <div className={`
           lg:w-[58%] flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
@@ -2321,7 +2485,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 : keyboardVisible
                   ? 'max-h-[24vh] h-auto shadow-md relative z-20'
                   : listeningUnified
-                    ? 'max-h-[32vh] h-auto shadow-md relative z-20'
+                    ? 'max-h-[40vh] h-auto shadow-md relative z-20'
                     : 'max-h-[50vh] h-auto shadow-md relative z-20'}
         `}>
           <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
@@ -2371,6 +2535,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           </div>
           
           <div 
+            ref={problemScrollRef}
             className={`${!isDesktop && !isProblemExpanded && isProblemCollapsed ? 'hidden' : ''} flex-1 overflow-y-auto p-4 md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere] ${
               // 数学の問題（requiresMathPalette 付き）は、数式が/や^の
               // 生テキストではなく教科書と同じ形で出るため、
@@ -2444,25 +2609,28 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     )}
 
                     {/* この問の音源。問題文のすぐ下＝「問題のところ」に横帯で置く。
-                        横帯なのでボタンはどれも 44px 以上あり、指で押しやすい。 */}
+                        横帯なのでボタンはどれも 44px 以上あり、指で押しやすい。
+                        ★枠つきの箱には入れない（ご指摘：「再生ボタンも置くのは
+                          いいけどそのせいで問題と選択肢のボタンが見えなくなってる」）。
+                          箱の枠と余白のぶん縦幅を食っていたので、ボタン列だけの
+                          スリムな1行にして、設問文・図・選択肢に高さを譲る。 */}
                     {hasTrackFor(activeStepSub.id) && (
-                      <div className="rounded-xl border border-[#A9CCE3]/40 bg-blue-50/50 p-2.5">
-                        <ListeningAudioPlayer
-                          tracks={listeningTracks}
-                          focusSubId={activeStepSub.id}
-                          variant="inline"
-                          orientation="horizontal"
-                          mode="practice"
-                          tone="light"
-                          readCount={(currentQuestion as any).readCount || 2}
-                        />
-                      </div>
+                      <ListeningAudioPlayer
+                        tracks={listeningTracks}
+                        focusSubId={activeStepSub.id}
+                        variant="inline"
+                        orientation="horizontal"
+                        mode="practice"
+                        tone="light"
+                        readCount={(currentQuestion as any).readCount || 2}
+                      />
                     )}
 
                     {/* この問の図（第1問B のイラスト①〜④）。
                         選択肢の中ではなく問題側に置く（ご要望）。
-                        スマホは問題ペインが 50vh なので 26vh に抑えて
-                        見出し・音源と一緒に1画面へ収め、PC は広いので
+                        スマホは問題ペインが 40vh なので 22vh に抑えて
+                        見出し・音源・図が上限内に全部収まるようにし
+                        （ご指摘「図も見えない」への対応）、PC は広いので
                         42vh まで大きく出す。タップでさらに拡大できる。 */}
                     {activeStepSub.imageUrl && (
                       <QuestionFigure
@@ -2470,7 +2638,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                         caption={activeStepSub.imageCaption}
                         tone="light"
                         className="mt-3"
-                        imgClassName="max-h-[26vh] md:max-h-[42vh] object-contain"
+                        imgClassName="max-h-[22vh] md:max-h-[42vh] object-contain"
                       />
                     )}
 
@@ -2564,12 +2732,40 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             固定バーに隠れないよう下部余白を大きめに確保する。
             ページ全体は fixed inset-0 + overflow-hidden で固定され、スワイプ/ページ
             スクロールでの問題送りは発生しない。問題送りは固定バーの前へ/次へのみ。 */}
-        {/* 下部余白：入力欄の拡大でフローティング解答バーが高くなったため、
-            最後の解答カードがバーに隠れないよう 6rem → 9rem に広げる。 */}
-        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 ${isDesktop ? 'pb-8' : 'pb-[calc(9rem+env(safe-area-inset-bottom))]'} relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
+        {/* 下部余白：フローティングバーは「マーカー＋前へ/次へ＋完了」だけの
+            細い1行になった（入力欄・パレットは撤去）ので、9rem → 6.5rem に戻す。
+            解答欄も1設問ずつの固定表示（ページャー）になり、縦に長く
+            スクロールすることは基本なくなった。 */}
+        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 ${isDesktop ? 'pb-8' : 'pb-[calc(6.5rem+env(safe-area-inset-bottom))]'} relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
           <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
-            <h3 className="font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
-            {visibleGroupedSubQuestions.map((g: any, gIdx: number) => {
+            {/* 「解答入力」見出しはスマホでは出さない（ご指摘：「左上にある
+                解答入力というボタンでスペースなくなってるから消してほしい」）。
+                各カードの先頭に (ア) や 問2 のマーカーがあるので、
+                見出しがなくても「ここが解答欄」と分かる。浮いた縦幅は
+                選択肢・入力欄の表示に回す。PC は余白が十分なので従来どおり。 */}
+            <h3 className="hidden lg:block font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
+            {/* スマホ：解答欄ページャー（要望：スクロールをやめ、1設問ずつ固定表示。
+                左右の黒い小さな矢印で表示する解答欄を切り替える）。
+                位置表示（n / 全体）で「あといくつ解答欄があるか」も分かるようにする。 */}
+            {!isDesktop && mobileAnswerSubs.length > 1 && (
+              <div className="text-center text-[11px] font-bold text-gray-400 tracking-widest select-none -mb-1">
+                {safeMobileAnsIdx + 1} / {mobileAnswerSubs.length}
+              </div>
+            )}
+            <div className={isDesktop ? 'contents' : 'flex items-stretch gap-1'}>
+              {!isDesktop && (
+                <button
+                  type="button"
+                  onClick={() => goMobileAns(-1)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  aria-label="前の解答欄へ"
+                  className={`shrink-0 flex items-center justify-center w-7 text-gray-900 active:bg-gray-200/60 rounded-lg cursor-pointer ${safeMobileAnsIdx <= 0 ? 'invisible' : ''}`}
+                >
+                  <ChevronLeft size={20} className="stroke-[2.75]" aria-hidden="true" />
+                </button>
+              )}
+              <div className={isDesktop ? 'contents' : 'flex-1 min-w-0 space-y-4'}>
+            {renderedAnswerGroups.map((g: any, gIdx: number) => {
               if (g.type === 'group') {
                 return (
                   <div key={`group-${gIdx}`} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 hover:border-[#A9CCE3]/50 transition-all duration-250 flex flex-col gap-4">
@@ -2610,32 +2806,32 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                               className="w-full py-1 text-center text-sm font-bold text-stone-800 border-none outline-none focus:ring-0 leading-none bg-transparent"
                             />
                           ) : (
-                            // スマホ：表示専用チップ。タップで当該空欄を選択し、
-                            // 下部フローティングバーで入力する（要件1：二重入力の解消）。
+                            // スマホ：この欄に直接入力する（ご指摘：「タップしたらなんで
+                            // 重複して解答欄が出てくるかわからん。普通に入力できる
+                            // ようにしてよ」）。
                             //
-                            // タップ領域について（スマホ入力UI改善）
-                            // ───────────────────────────────────────
-                            // 以前は min-h-[1.75rem]（=28px）で、iOS ヒューマンインターフェイス
-                            // ガイドラインおよび Material の推奨最小タップサイズ 44px を大きく
-                            // 下回っていた。これが「入力欄が小さくタップしづらい」の主原因。
-                            // 44px を最低ラインとして満たすだけでは指の当たり判定に余裕がない
-                            // ため 48px を確保し、文字も本文最小 16px に揃える。
-                            // 枠線と背景を与えて「ここが入力欄」であることも明示する。
-                            <button
-                              type="button"
+                            // 以前は「カード＝表示専用チップ／実入力＝下部バーの複製
+                            // 入力欄」の2段構えで、同じ設問の解答欄が画面に2つ見えて
+                            // いた。タップ＝その場でキーボードが開き、打った文字は
+                            // その欄にそのまま入る、という普通の入力に戻す。
+                            // タップ領域は 48px 以上・文字 16px（iOS の自動ズーム防止）。
+                            <input
+                              ref={(el) => { inputRefs.current[sq.id] = el; }}
                               id={`ans-card-${sq.id}`}
-                              onClick={() => setFocusedSubId(sq.id)}
+                              type="text"
+                              value={answers[sq.id] || ''}
+                              onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                              onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
+                              onKeyDown={handleMobileCardKeyDown(sq)}
+                              enterKeyHint={isLastNavSub(sq) ? 'done' : 'next'}
+                              placeholder="解答"
                               aria-label={`${sq.label} の解答を入力`}
-                              className={`w-full min-h-[3rem] px-2 py-1.5 flex items-center justify-center text-center text-[16px] font-bold text-stone-800 leading-snug rounded-lg border transition-colors cursor-text ${
+                              className={`w-full min-h-[3rem] px-2 py-1.5 text-center text-[16px] font-bold text-stone-800 leading-snug rounded-lg border outline-none transition-colors ${
                                 isFocusedBlank
-                                  ? 'bg-white border-[#A9CCE3]'
+                                  ? 'bg-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30'
                                   : 'bg-white/70 border-stone-200/70'
                               }`}
-                            >
-                              {answers[sq.id]
-                                ? <span className="break-all">{answers[sq.id]}</span>
-                                : <span className="text-stone-300 text-[15px]">タップ</span>}
-                            </button>
+                            />
                           )}
                         </div>
                         );
@@ -2681,56 +2877,19 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     </span>
                     
                     {sq.type === 'multiple_choice' ? (
-                      // ★英語リスニング（音源つき／選択肢本文つき）は、スマホでも
-                      //   選択肢をこのカード内にそのまま出す。
-                      //   下部パネルに飛ばすと「問題文はカード・解答はパネル」と
-                      //   離れてしまい、ご要望の「分離しない」に反するため。
-                      //   化学など従来の問題は、これまでどおり下部固定パネルを使う。
-                      isDesktop || listeningUnified ? (
-                        // PC版・リスニング：選択肢ボタンをインライン表示。
-                        renderMultipleChoiceControl(sq)
-                      ) : (
-                        // スマホ版：表示専用チップ。タップで下部固定パネルに選択UIを表示（要件1）。
-                        <button
-                          type="button"
-                          id={`ans-card-${sq.id}`}
-                          onClick={() => setFocusedSubId(sq.id)}
-                          aria-label={`${sq.label} の解答を選択`}
-                          // タップ領域は 48px 以上（44px の最小推奨に余裕を持たせる）。
-                          className={`relative w-full text-left px-4 py-3 min-h-[3.25rem] flex items-center text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-pointer ${
-                            focusedSubId === sq.id
-                              ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
-                              : 'border-gray-300 bg-gray-50'
-                          }`}
-                        >
-                          {describeChoiceAnswer(sq)
-                            ? <span className="text-gray-800 font-bold">{formatText(describeChoiceAnswer(sq))}</span>
-                            : <span className="text-gray-400">タップして選択...</span>}
-                        </button>
-                      )
+                      // ★全教科・全端末で選択肢をカード内に直接表示する。
+                      //   以前のスマホは「カード＝表示専用チップ → タップで下部
+                      //   固定パネルにもう1つ選択UIが出る」2段構えで、同じ設問の
+                      //   解答欄が重複して見えていた（ご指摘：「タップしたらなんで
+                      //   重複して解答欄が出てくるかわからん」）。
+                      //   選択肢はタップ1回で確定する操作なので、遷移を挟まず
+                      //   その場で押せるのが最も手数が少ない。
+                      renderMultipleChoiceControl(sq)
                     ) : sq.type === 'sorting' ? (
-                      isDesktop ? (
-                        // PC版：ドラッグ並べ替えUIをインライン表示。
-                        renderSortingControl(sq)
-                      ) : (
-                        // スマホ版：表示専用チップ。タップで下部固定パネルに並べ替えUIを表示（要件1）。
-                        <button
-                          type="button"
-                          id={`ans-card-${sq.id}`}
-                          onClick={() => setFocusedSubId(sq.id)}
-                          aria-label={`${sq.label} の順序を並べ替え`}
-                          // タップ領域は 48px 以上（44px の最小推奨に余裕を持たせる）。
-                          className={`relative w-full text-left px-4 py-3 min-h-[3.25rem] flex items-center text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-pointer ${
-                            focusedSubId === sq.id
-                              ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
-                              : 'border-gray-300 bg-gray-50'
-                          }`}
-                        >
-                          {(answers[sq.id] || '')
-                            ? <span className="text-gray-800 font-bold">{(answers[sq.id] || '').split(' > ').join(' → ')}</span>
-                            : <span className="text-gray-400">タップして並べ替え...</span>}
-                        </button>
-                      )
+                      // ★並べ替えもカード内に直接表示（重複解答欄の解消）。
+                      //   renderSortingControl はタッチ端末向けの
+                      //   タップ入れ替え＋◀▶移動ボタン UI を内蔵している。
+                      renderSortingControl(sq)
                     ) : sq.type === 'descriptive' ? (
                       <div className="flex-grow flex flex-col gap-2 w-full">
                         {isDesktop ? (
@@ -2765,24 +2924,42 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             )}
                           </>
                         ) : (
-                          // スマホ：表示専用。タップで下部フローティングバーに入力を集約。
-                          <button
-                            type="button"
-                            id={`ans-card-${sq.id}`}
-                            onClick={() => setFocusedSubId(sq.id)}
-                            aria-label={`${sq.label} の解答を入力`}
-                            // 記述・計算は複数行を書くため、他形式より広い高さ（約 80px）を確保する。
-                            className={`relative w-full text-left pl-10 pr-4 py-3 min-h-[5rem] text-[16px] rounded-xl border transition-all font-modern leading-relaxed whitespace-pre-wrap break-words cursor-text ${
-                              focusedSubId === sq.id
-                                ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
-                                : 'border-gray-300 bg-gray-50'
-                            }`}
-                          >
-                            <Edit3 className="absolute left-3 top-3.5 text-gray-400" size={17} />
-                            {answers[sq.id]
-                              ? <span className="text-gray-800">{answers[sq.id]}</span>
-                              : <span className="text-gray-400">解答を入力...</span>}
-                          </button>
+                          // スマホ：この欄に直接入力する（ご指摘：「タップしたらなんで
+                          // 重複して解答欄が出てくるかわからん」）。
+                          // 以前は表示専用チップ→下部バーの複製 textarea という
+                          // 2段構えだった。タップ＝キーボードが開きここにそのまま書ける。
+                          // 記号パレットはフォーカス中のみこの下（同じカード内）に出す。
+                          <>
+                            <div className="relative w-full">
+                              <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
+                              <textarea
+                                ref={(el) => { inputRefs.current[sq.id] = el; }}
+                                id={`ans-card-${sq.id}`}
+                                value={answers[sq.id] || ''}
+                                onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                                onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
+                                placeholder="解答を入力...（改行可）"
+                                rows={3}
+                                className="w-full pl-9 pr-4 py-3 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
+                              />
+                            </div>
+                            {/* 化学・数学記号パレット：フォーカス中の設問にだけ出す
+                                （常時表示だとカードが縦に伸びて他の設問が埋もれる）。 */}
+                            {focusedSubId === sq.id && requiresChemicalSymbols(sq) && (
+                              <ChemistryPalette
+                                value={answers[sq.id] || ''}
+                                onChange={(next) => handleTextChange(sq.id, next)}
+                                inputRef={getInputRef(sq.id)}
+                              />
+                            )}
+                            {focusedSubId === sq.id && requiresMathSymbols(sq) && (
+                              <MathPalette
+                                value={answers[sq.id] || ''}
+                                onChange={(next) => handleTextChange(sq.id, next)}
+                                inputRef={getInputRef(sq.id)}
+                              />
+                            )}
+                          </>
                         )}
                       </div>
                     ) : (
@@ -2819,24 +2996,40 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                             )}
                           </>
                         ) : (
-                          // スマホ：表示専用。タップで下部フローティングバーに入力を集約。
-                          <button
-                            type="button"
-                            id={`ans-card-${sq.id}`}
-                            onClick={() => setFocusedSubId(sq.id)}
-                            aria-label={`${sq.label} の解答を入力`}
-                            // タップ領域は 48px 以上（44px の最小推奨に余裕を持たせる）。
-                            className={`relative w-full text-left pl-10 pr-4 py-3 min-h-[3.25rem] flex items-center text-[16px] rounded-xl border shadow-sm transition-all font-modern leading-relaxed break-words cursor-text ${
-                              focusedSubId === sq.id
-                                ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40 bg-white'
-                                : 'border-gray-300 bg-gray-50'
-                            }`}
-                          >
-                            <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={17} />
-                            {answers[sq.id]
-                              ? <span className="text-gray-800">{answers[sq.id]}</span>
-                              : <span className="text-gray-400">解答を入力...</span>}
-                          </button>
+                          // スマホ：この欄に直接入力する（重複解答欄の解消）。
+                          // Enter＝次の空欄へ移動（最後なら確定）。
+                          <>
+                            <div className="relative w-full">
+                              <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                              <input
+                                ref={(el) => { inputRefs.current[sq.id] = el; }}
+                                id={`ans-card-${sq.id}`}
+                                type="text"
+                                value={answers[sq.id] || ''}
+                                onChange={(e) => handleTextChange(sq.id, e.target.value)}
+                                onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
+                                onKeyDown={handleMobileCardKeyDown(sq)}
+                                enterKeyHint={isLastNavSub(sq) ? 'done' : 'next'}
+                                placeholder="解答を入力..."
+                                className="w-full pl-9 pr-4 py-3 min-h-[3.25rem] text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
+                              />
+                            </div>
+                            {/* 記号パレットはフォーカス中の設問にだけ出す。 */}
+                            {focusedSubId === sq.id && requiresChemicalSymbols(sq) && (
+                              <ChemistryPalette
+                                value={answers[sq.id] || ''}
+                                onChange={(next) => handleTextChange(sq.id, next)}
+                                inputRef={getInputRef(sq.id)}
+                              />
+                            )}
+                            {focusedSubId === sq.id && requiresMathSymbols(sq) && (
+                              <MathPalette
+                                value={answers[sq.id] || ''}
+                                onChange={(next) => handleTextChange(sq.id, next)}
+                                inputRef={getInputRef(sq.id)}
+                              />
+                            )}
+                          </>
                         )}
                       </div>
                     )}
@@ -2844,6 +3037,19 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 </div>
               );
             })}
+              </div>
+              {!isDesktop && (
+                <button
+                  type="button"
+                  onClick={() => goMobileAns(1)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  aria-label="次の解答欄へ"
+                  className={`shrink-0 flex items-center justify-center w-7 text-gray-900 active:bg-gray-200/60 rounded-lg cursor-pointer ${safeMobileAnsIdx >= mobileAnswerSubs.length - 1 ? 'invisible' : ''}`}
+                >
+                  <ChevronRight size={20} className="stroke-[2.75]" aria-hidden="true" />
+                </button>
+              )}
+            </div>
 
             {/* Answer submission action button and back button at the bottom of the answers column
                 （PC版のみ：解答欄カラムの末尾にインライン表示。
@@ -2918,189 +3124,86 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       )}
 
       {/*
-        フローティング解答バー（要件1・スマホのみ）
+        空欄ナビバー（スマホ・テキスト入力中のみ）
         ─────────────────────────────────────────────
-        ソフトキーボード表示中に、フォーカス中の設問の入力欄を画面下部に
-        浮かせて表示する。1問ずつ集中して回答でき、前へ/次へで穴埋めを移動できる。
-        - 短答穴埋め（short_answer）: 1行の入力欄
-        - 記述/計算（descriptive）: 複数行の textarea（改行可・数式UIなし）
-        - 化学記号パレットは questionNeedsChemPalette かつ当該設問が
-          記号入力を要する場合のみ表示（要件4）。
+        ★ここには入力欄を置かない（ご指摘対応）
+        ご指摘：「タップしたらなんで重複して解答欄が出てくるかわからん。
+                 普通に入力できるようにしてよ。」
+        以前はこのバーに「複製の入力欄＋記号パレット」を出していたため、
+        カードの解答欄と合わせて同じ設問の欄が2つ見えていた。
+        いまは入力はカード内の欄に直接行うので、このバーは
+          ・いまどの空欄を入力中か（マーカー）
+          ・前へ/次へ（空欄の移動。(ア)→(イ)→… を指1本で進める）
+          ・完了（キーボードを閉じる）
+        だけの細い1行にする。キーボードの上端に追従して表示する。
+        選択式・並べ替えはカード内で直接タップするので、このバーは出ない。
       */}
-      {!isDesktop && focusedSub && (
+      {!isDesktop && focusedSub && (isShortAnswerType(focusedSub) || focusedSub.type === 'descriptive') && (
         <div
           id="floating-answer-bar"
-          className="fixed left-0 right-0 z-[60] bg-white border-t-2 border-[#A9CCE3]/60 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] px-3 pt-3 transition-[bottom] duration-150"
+          className="fixed left-0 right-0 z-[60] bg-white border-t-2 border-[#A9CCE3]/60 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] px-3 pt-2 transition-[bottom] duration-150"
           style={{
             bottom: keyboardOffset,
             // キーボード非表示時（オフセット0）はセーフエリア分の余白を確保
             paddingBottom: keyboardOffset > 0 ? '0.5rem' : 'calc(0.5rem + env(safe-area-inset-bottom))',
           }}
         >
-          <div className="max-w-2xl mx-auto flex flex-col gap-2">
-            <div className="flex items-center justify-between gap-2">
-              {/* 表示ルール3：解答入力パネルにも設問マーカーのみを表示（設問文は左の問題文欄で読む）。
-                  枝番（①②）まで含めることで、入力中の設問がひと目で分かるようにする。 */}
-              <span className={`font-bold text-[#2C3E50] text-[13px] bg-blue-50/60 border border-[#A9CCE3]/40 px-3 py-1.5 rounded-lg truncate ${questionNeedsMathPalette ? 'font-math' : ''}`}>
-                {formatText(answerCardMarker(focusedSub, focusedIndex, currentQuestion))}
-              </span>
-              <div className="flex items-center gap-1.5 shrink-0">
-                {inputNavSubs.length > 1 && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => moveFocus(-1)}
-                      disabled={focusedIndex <= 0}
-                      aria-label="前の空欄へ"
-                      // 空欄移動は入力中に最も多く押すボタン。44px 相当の高さを確保する。
-                      className={`flex items-center justify-center gap-0.5 px-3 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border transition-colors ${
-                        focusedIndex <= 0
-                          ? 'border-gray-200 text-gray-300 bg-gray-50'
-                          : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
-                      }`}
-                    >
-                      <ChevronLeft size={16} className="stroke-[2.5]" />
-                      前へ
-                    </button>
-                    <span className="text-xs text-gray-400 font-bold tabular-nums">
-                      {focusedIndex + 1}/{inputNavSubs.length}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => moveFocus(1)}
-                      disabled={focusedIndex >= inputNavSubs.length - 1}
-                      aria-label="次の空欄へ"
-                      className={`flex items-center justify-center gap-0.5 px-3 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border transition-colors ${
-                        focusedIndex >= inputNavSubs.length - 1
-                          ? 'border-gray-200 text-gray-300 bg-gray-50'
-                          : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
-                      }`}
-                    >
-                      次へ
-                      <ChevronRight size={16} className="stroke-[2.5]" />
-                    </button>
-                  </>
-                )}
-                {/* 完了：固定パネルを閉じ、下部ナビ（前へ/解答と解説）へ戻す */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    barInputRef.current?.blur();
-                    setFocusedSubId(null);
-                  }}
-                  className="flex items-center justify-center px-4 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border border-[#2C3E50] bg-[#2C3E50] text-white active:bg-[#1B2631]"
-                >
-                  完了
-                </button>
-              </div>
+          <div className="max-w-2xl mx-auto flex items-center justify-between gap-2">
+            {/* いま入力中の設問マーカー（設問文は問題文欄・入力はカード内の欄で行う）。
+                枝番（①②）まで含めて、どの空欄に書いているかをひと目で示す。 */}
+            <span className={`font-bold text-[#2C3E50] text-[13px] bg-blue-50/60 border border-[#A9CCE3]/40 px-3 py-1.5 rounded-lg truncate ${questionNeedsMathPalette ? 'font-math' : ''}`}>
+              {formatText(answerCardMarker(focusedSub, focusedIndex, currentQuestion))}
+            </span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              {inputNavSubs.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => moveFocus(-1)}
+                    disabled={focusedIndex <= 0}
+                    aria-label="前の空欄へ"
+                    // 空欄移動は入力中に最も多く押すボタン。44px 相当の高さを確保する。
+                    className={`flex items-center justify-center gap-0.5 px-3 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border transition-colors ${
+                      focusedIndex <= 0
+                        ? 'border-gray-200 text-gray-300 bg-gray-50'
+                        : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
+                    }`}
+                  >
+                    <ChevronLeft size={16} className="stroke-[2.5]" />
+                    前へ
+                  </button>
+                  <span className="text-xs text-gray-400 font-bold tabular-nums">
+                    {focusedIndex + 1}/{inputNavSubs.length}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => moveFocus(1)}
+                    disabled={focusedIndex >= inputNavSubs.length - 1}
+                    aria-label="次の空欄へ"
+                    className={`flex items-center justify-center gap-0.5 px-3 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border transition-colors ${
+                      focusedIndex >= inputNavSubs.length - 1
+                        ? 'border-gray-200 text-gray-300 bg-gray-50'
+                        : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
+                    }`}
+                  >
+                    次へ
+                    <ChevronRight size={16} className="stroke-[2.5]" />
+                  </button>
+                </>
+              )}
+              {/* 完了：キーボードを閉じ、下部ナビ（前へ/解答と解説）へ戻す */}
+              <button
+                type="button"
+                onClick={() => {
+                  const el = focusedSubId ? inputRefs.current[focusedSubId] : null;
+                  el?.blur();
+                  setFocusedSubId(null);
+                }}
+                className="flex items-center justify-center px-4 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border border-[#2C3E50] bg-[#2C3E50] text-white active:bg-[#1B2631]"
+              >
+                完了
+              </button>
             </div>
-
-            {/*
-              固定パネル内の解答UI（要件1：問題形式によらず固定表示）
-              ─────────────────────────────────────────────
-              フォーカス中の設問タイプに応じて、下記のいずれかを表示する。
-                - 選択式（multiple_choice）: 選択肢ボタン群
-                - 並べ替え（sorting）      : ドラッグ並べ替えUI
-                - それ以外（短答/記述/計算）: 統一 textarea（キーボード入力）
-              テキスト入力は「常に同じ textarea 1つ」に統一する。要素種別を
-              input/textarea で切り替えると設問移動のたびに DOM が差し替わり、
-              iOS でソフトキーボードが閉じてしまうため、textarea 1本に固定して
-              rows と改行可否のみ切り替える（課題2）。font-size は 16px を明示し、
-              タップ時の自動ズームも防止する（課題1）。
-            */}
-            {/* 選択肢・並べ替えはボタンを 48px 級に拡大したぶん縦に伸びるため、
-                スクロール領域を 42vh → 46vh に広げ、一覧性を保つ。 */}
-            {focusedSub.type === 'multiple_choice' ? (
-              <div className="max-h-[46vh] overflow-y-auto py-1">
-                {/*
-                  ★英語リスニング（スマホ・固定パネル）
-                  ──────────────────────────────────────────────
-                  ご指摘「再生ボタンはさ、左の問題の文章のところにおいてほしいよね。
-                  何で解答の方に置くの？／第１問の図も何で解答の方にあるの？
-                  問題の方（左側）においてっていったよね」を反映し、
-                  音源プレイヤーと図はこの解答パネルからは完全に取り除き、
-                  「問題」側（左ペインの現在の問ブロック）だけに置く。
-                  ここは選択肢だけを表示する。
-                  ※リスニングは isDesktop || listeningUnified の分岐により
-                  そもそもこの固定パネルへ来ないが、二重表示の再発を防ぐため
-                  実装からも除去しておく。
-                */}
-                {renderMultipleChoiceControl(focusedSub)}
-              </div>
-            ) : focusedSub.type === 'sorting' ? (
-              <div className="max-h-[46vh] overflow-y-auto py-1">
-                {renderSortingControl(focusedSub)}
-              </div>
-            ) : (
-              <>
-                <textarea
-                  key="floating-answer-input"
-                  ref={(el) => { barInputRef.current = el; if (focusedSub) inputRefs.current[focusedSub.id] = el; }}
-                  value={answers[focusedSub.id] || ''}
-                  onChange={(e) => handleTextChange(focusedSub.id, e.target.value)}
-                  placeholder={focusedSub.type === 'descriptive' ? '解答を入力...（改行可）' : '解答を入力...'}
-                  // 行数（スマホ入力UI改善）
-                  // ─────────────────────────────────────────
-                  // 短答でも rows=1 は入力域が窮屈で、化学式の上付き・下付きが
-                  // 詰まって見えるため 2 行に広げる。記述・計算は 3 行に広げ、
-                  // 書いた内容を読み返しながら続きを書けるようにする。
-                  rows={focusedSub.type === 'descriptive' ? 3 : 2}
-                  enterKeyHint={focusedIndex >= inputNavSubs.length - 1 ? 'done' : 'next'}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      // 記述/計算は改行を許可（Shift+Enter でなくても改行）。ただし
-                      // 最後の設問での Enter は「完了」として扱いキーボードを閉じる。
-                      if (focusedSub.type === 'descriptive') {
-                        if (focusedIndex >= inputNavSubs.length - 1) {
-                          e.preventDefault();
-                          barInputRef.current?.blur();
-                          setFocusedSubId(null);
-                        }
-                        return; // それ以外は通常の改行を許可
-                      }
-                      // 短答：Enter=次の空欄へ（改行はしない）。最後なら完了。
-                      e.preventDefault();
-                      if (focusedIndex < inputNavSubs.length - 1) moveFocus(1);
-                      else {
-                        barInputRef.current?.blur();
-                        setFocusedSubId(null);
-                      }
-                    }
-                  }}
-                  className={`w-full px-3.5 py-3 text-[16px] rounded-xl border-2 border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none resize-none font-modern bg-gray-50 focus:bg-white leading-relaxed ${
-                    focusedSub.type === 'descriptive' ? 'min-h-[6rem]' : 'min-h-[4.5rem]'
-                  }`}
-                />
-
-                {/* 化学記号パレット（要件4：必要な問題のみ表示） */}
-                {questionNeedsChemPalette && requiresChemicalSymbols(focusedSub) && (
-                  <div className="max-h-[28vh] overflow-y-auto">
-                    <ChemistryPalette
-                      value={answers[focusedSub.id] || ''}
-                      onChange={(next) => handleTextChange(focusedSub.id, next)}
-                      inputRef={{
-                        get current() { return barInputRef.current; },
-                        set current(el) { barInputRef.current = el; },
-                      }}
-                    />
-                  </div>
-                )}
-
-                {/* 数学記号パレット（数III積分など requiresMathPalette の問題のみ表示） */}
-                {questionNeedsMathPalette && requiresMathSymbols(focusedSub) && (
-                  <div className="max-h-[28vh] overflow-y-auto">
-                    <MathPalette
-                      value={answers[focusedSub.id] || ''}
-                      onChange={(next) => handleTextChange(focusedSub.id, next)}
-                      inputRef={{
-                        get current() { return barInputRef.current; },
-                        set current(el) { barInputRef.current = el; },
-                      }}
-                    />
-                  </div>
-                )}
-              </>
-            )}
           </div>
         </div>
       )}
