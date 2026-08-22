@@ -19,7 +19,12 @@ import {
   sliceEnhancedBySubQuestion,
   questionGroupKey,
 } from '../utils/explanationFormat';
-import { isScriptFirstExplanation } from '../utils/listeningExplanation';
+import {
+  isScriptFirstExplanation,
+  listeningQuestionNumberOf,
+  scopeListeningCommonToQuestion,
+} from '../utils/listeningExplanation';
+import { sliceListeningQuestionBlock } from '../utils/listeningOptions';
 import { getUnitTeaching } from '../data/unitTeaching';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
@@ -226,8 +231,17 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       if (hit.length === 0) return q;
       const tracks: any[] = Array.isArray(q?.audioTracks) ? q.audioTracks : [];
       const focusedTracks = tracks.filter((t: any) => t?.subId === focusSubQuestionId);
+      // ★問題文も「いま見ている問のブロックだけ」に絞る（ご指摘：
+      //   「左側も問題をなぜ問4まで乗せるの？問ごとに切ってるんだから
+      //     解答と解説の方も対応させないと」）。
+      //   問N の区切りを持たないデータでは全文のまま（安全側）。
+      const focusNo = listeningQuestionNumberOf(hit[0]);
+      const scopedText = focusNo !== null
+        ? sliceListeningQuestionBlock(String(q?.text || ''), focusNo)
+        : q?.text;
       return {
         ...q,
+        text: scopedText,
         subQuestions: hit,
         // 音源も「その問のトラックだけ」にする。復習で問1〜問4の
         // スクリプトが全部開けると、未着手の問の答えが読めてしまう。
@@ -1347,9 +1361,19 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                           return enhancedText;
                         };
 
-                        const sharedExplanation = subSlices
+                        const sharedExplanationRaw = subSlices
                           ? [subSlices.common, subSlices.shared].filter((part) => part.trim()).join('\n')
                           : questionSlices?.common || '';
+                        // ★問ごと表示（focusSubQuestionId）のときは、共通解説の
+                        //   「解 答」一覧から他の問の答えを除く（ネタバレ防止）。
+                        //   ご指摘：「問1の問題なのになぜ右側の共通ポイントの
+                        //   ところに問4までの答えがあるのか」
+                        const sharedExplanation = focusSubQuestionId
+                          ? scopeListeningCommonToQuestion(
+                              sharedExplanationRaw,
+                              listeningQuestionNumberOf((question.subQuestions || [])[0]),
+                            )
+                          : sharedExplanationRaw;
 
                         const renderSq = (sq: any, isCorrect: boolean) => {
                         // 手を付けていない問は「不正解」ではなく「未解答」として
@@ -1635,6 +1659,24 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
 
                                 {/* 要件①：「この単元の思考の型」を採点結果の直後に1回だけ（折りたたみ） */}
                                 {qIndex === 0 && kataAccordion}
+
+                                {/* ★リスニング：採点結果のすぐ下でも音声を聞き直せるようにする
+                                    （ご要望「解答等解説のところで、音声が聞けるようにボタンを用意してほしい」）。
+                                    左の問題文ペインにもプレーヤーはあるが、スマホでは
+                                    解説（右カラム相当）が先に表示され、左まで戻るのが遠い。
+                                    答え合わせ→もう一度聞く、の動線を1タップにする。
+                                    horizontal の帯型なので縦スペースをほぼ取らない。 */}
+                                {Array.isArray((question as any).audioTracks) &&
+                                  (question as any).audioTracks.length > 0 && (
+                                    <ListeningAudioPlayer
+                                      tracks={(question as any).audioTracks}
+                                      mode="practice"
+                                      variant="inline"
+                                      orientation="horizontal"
+                                      tone={mode === 'mini_test' ? 'light' : 'dark'}
+                                      readCount={(question as any).readCount || 2}
+                                    />
+                                  )}
 
                                 {/* 元の並び順（ア→イ→ウ…）のまま、正誤の色分けだけ行って上から表示 */}
                                 {objectiveSqs.map(sq => renderSq(sq, isAnswerCorrect(sq, answers[sq.id])))}

@@ -114,6 +114,47 @@ describe('convertMathNotation: 分数', () => {
     expect(out).toContain('inline-flex flex-col');
     expect(out).toContain('2x');
   });
+
+  // ─────────────────────────────────────────────────────
+  // ユーザー報告：「∫ 1/√x dx が分数になっていない」
+  // 「∫ 1/x^3 dx の正解表示もおかしい」への回帰テスト
+  // ─────────────────────────────────────────────────────
+  it('1/√x は「1 分の √x」の縦書き分数になる（根号は分母の中）', () => {
+    const out = convertMathNotation('∫ 1/√x dx');
+    expect(out).toContain('inline-flex flex-col');   // 分数化されている
+    expect(out).toContain('math-sqrt');              // 根号も描画されている
+    // 分数の HTML の中に根号が入っていること（分数の外に √x が残らない）
+    const fracIdx = out.indexOf('inline-flex flex-col');
+    const sqrtIdx = out.indexOf('math-sqrt');
+    expect(sqrtIdx).toBeGreaterThan(fracIdx);
+  });
+
+  it('1/√(x+1) の括弧つき根号分母も縦書き分数になる', () => {
+    const out = convertMathNotation('1/√(x+1)');
+    expect(out).toContain('inline-flex flex-col');
+    expect(out).toContain('math-sqrt');
+  });
+
+  it('√x/2 は「√x 分の 2」…根号が分子の縦書き分数になる', () => {
+    const out = convertMathNotation('√x/2 + C');
+    expect(out).toContain('inline-flex flex-col');
+    expect(out).toContain('math-sqrt');
+  });
+
+  it('1/x^3 は指数ごと分母に入る（^3 が分数の外にはみ出さない）', () => {
+    const out = convertMathNotation('∫ 1/x^3 dx');
+    expect(out).toContain('inline-flex flex-col');
+    // 分数 HTML の後ろに生の ^3 や孤立した <sup>3</sup> が残らないこと
+    expect(out).not.toMatch(/<\/span>\s*\^?3\s+dx/);
+    // 分母部分に x^3（後段で上付き化される生テキスト）が丸ごと入っている
+    expect(out).toContain('x^3');
+  });
+
+  it('2√x + C（正解表示で使う形）は分数化されず根号のまま', () => {
+    const out = convertMathNotation('2√x + C');
+    expect(out).not.toContain('inline-flex flex-col');
+    expect(out).toContain('math-sqrt');
+  });
 });
 
 describe('convertMathNotation: 順列・組合せ', () => {

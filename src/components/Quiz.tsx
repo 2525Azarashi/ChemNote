@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
-import { ChevronRight, ChevronLeft, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ChevronDown, ChevronUp, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { ExplanationBody } from './ExplanationBody';
 import { Explanation } from './Explanation';
@@ -782,6 +782,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
 
   // New state for layout and highlighting
   const [isProblemExpanded, setIsProblemExpanded] = useState(false);
+  // ★スマホ：問題文ペインを「見出しだけ」にたたむトグル（ご要望）。
+  // 長い問題文が画面上半分を占領して解答欄が狭くなる問題への対策。
+  // たたむと下の解答ペインがほぼ全画面になり、入力に集中できる。
+  // 短い問題（もともと h-auto で収まる）には影響しない。
+  const [isProblemCollapsed, setIsProblemCollapsed] = useState(false);
   const [highlights, setHighlights] = useState<string[]>([]);
   // 現在フォーカス中の短答穴埋め設問ID（フローティング入力欄・空欄ハイライト用）
   const [focusedSubId, setFocusedSubId] = useState<string | null>(null);
@@ -979,6 +984,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   useEffect(() => {
     setFocusedSubId(null);
     setTapSortSelect(null);
+    // 問題が変わったら「問題文をたたむ」状態は解除する。
+    // 新しい問題の本文を読まずに解き始めてしまう事故を防ぐ。
+    setIsProblemCollapsed(false);
   }, [currentQuestionIndex]);
 
   // 「次へ/前へ」やキーボードの next キーによる移動時は、再レンダー直後・描画前に
@@ -2239,9 +2247,22 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         {/* Section 1: Problem Text
             ★左右比は従来どおり 58% / 42%（勝手に変えない、というご指摘に対応）。
               スマホの高さ上限も従来どおり 50vh。 */}
+        {/* スマホの高さ制御（ご要望「問題文が占領しすぎて入力しづらい」対策）：
+            ・通常は従来どおり max-h-[50vh]（短い問題は h-auto で影響なし）
+            ・ソフトキーボード表示中は max-h-[24vh] に自動で縮め、
+              入力欄と入力内容がキーボードの上に必ず見えるようにする
+            ・「たたむ」で見出しだけにして解答欄を最大化できる */}
         <div className={`
           lg:w-[58%] flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
-          ${isDesktop ? 'h-full' : (isProblemExpanded ? 'absolute inset-0 z-30 h-full shadow-lg' : 'max-h-[50vh] h-auto shadow-md relative z-20')}
+          ${isDesktop
+            ? 'h-full'
+            : isProblemExpanded
+              ? 'absolute inset-0 z-30 h-full shadow-lg'
+              : isProblemCollapsed
+                ? 'h-auto shadow-md relative z-20'
+                : keyboardVisible
+                  ? 'max-h-[24vh] h-auto shadow-md relative z-20'
+                  : 'max-h-[50vh] h-auto shadow-md relative z-20'}
         `}>
           <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
             <div className="flex items-center gap-2 md:gap-3">
@@ -2261,17 +2282,36 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             </div>
             
             {!isDesktop && (
-              <button 
-                onClick={() => setIsProblemExpanded(!isProblemExpanded)}
-                className="text-xs font-bold text-gray-500 hover:text-[#2C3E50] underline underline-offset-2 whitespace-nowrap"
-              >
-                {isProblemExpanded ? '閉じる' : '全画面で読む'}
-              </button>
+              <div className="flex items-center gap-1.5">
+                {/* 問題文を見出しだけにたたむ／戻す。高校生が迷わないよう
+                    チップ型ボタン＋矢印で「押せる」ことを明示する。 */}
+                {!isProblemExpanded && (
+                  <button
+                    onClick={() => setIsProblemCollapsed(!isProblemCollapsed)}
+                    className="flex items-center gap-0.5 rounded-md border border-gray-200 bg-white px-2 py-1 text-[11px] font-bold text-gray-600 hover:bg-gray-50 whitespace-nowrap"
+                  >
+                    {isProblemCollapsed ? (
+                      <>問題文を表示<ChevronDown size={12} /></>
+                    ) : (
+                      <>たたむ<ChevronUp size={12} /></>
+                    )}
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setIsProblemExpanded(!isProblemExpanded);
+                    setIsProblemCollapsed(false);
+                  }}
+                  className="flex items-center rounded-md border border-gray-200 bg-white px-2 py-1 text-[11px] font-bold text-gray-600 hover:bg-gray-50 whitespace-nowrap"
+                >
+                  {isProblemExpanded ? '閉じる' : '全画面で読む'}
+                </button>
+              </div>
             )}
           </div>
           
           <div 
-            className={`flex-1 overflow-y-auto p-4 md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere] ${
+            className={`${!isDesktop && !isProblemExpanded && isProblemCollapsed ? 'hidden' : ''} flex-1 overflow-y-auto p-4 md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere] ${
               // 数学の問題（requiresMathPalette 付き）は、数式が/や^の
               // 生テキストではなく教科書と同じ形で出るため、
               // 数式フォント＋一回り大きい表示（.math-content）で読みやすくする。

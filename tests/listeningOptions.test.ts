@@ -202,3 +202,84 @@ describe('実データ検証：第1問B（イラスト選択）は本文を持�
     }
   });
 });
+
+/**
+ * ===================================================================
+ * 問ごと表示のスコープ（ネタバレ防止）のテスト
+ * ===================================================================
+ * ご指摘：
+ *   「問1の問題なのになぜ右側の共通ポイントに問4までの答えがあるのか。
+ *     左側も問題をなぜ問4まで乗せるの？問ごとに切ってるんだから
+ *     解答と解説の方も対応させないと。」
+ *
+ * ここが壊れると
+ *   ・解説画面の左ペインに、まだ解いていない問の選択肢が全部出る
+ *   ・共通ポイント欄に問1〜問4の正解一覧が出る（未着手の問のネタバレ）
+ * という「1問ずつ解く」設計を台無しにする不具合になる。
+ */
+import { sliceListeningQuestionBlock } from '../src/utils/listeningOptions';
+import {
+  buildListeningExplanation,
+  scopeListeningCommonToQuestion,
+  listeningQuestionNumberOf,
+} from '../src/utils/listeningExplanation';
+import { sliceEnhancedBySubQuestion } from '../src/utils/explanationFormat';
+
+describe('問ごと表示：問題文のスコープ（sliceListeningQuestionBlock）', () => {
+  it('問1指定なら、リード文＋問1のブロックだけが残り、問2〜問4は消える', () => {
+    for (const p of EL1_A_PROBLEMS) {
+      const scoped = sliceListeningQuestionBlock(p.text, 1);
+      expect(scoped, `${p.id}: 問1が残っていない`).toMatch(/^問\s*1/mu);
+      expect(scoped, `${p.id}: 問2が残っている（ネタバレ）`).not.toMatch(/^問\s*2/mu);
+      expect(scoped, `${p.id}: 問3が残っている（ネタバレ）`).not.toMatch(/^問\s*3/mu);
+      expect(scoped, `${p.id}: 問4が残っている（ネタバレ）`).not.toMatch(/^問\s*4/mu);
+    }
+  });
+
+  it('最後の問（問4）を指定しても、その問のブロックが取り出せる', () => {
+    for (const p of EL1_A_PROBLEMS) {
+      const scoped = sliceListeningQuestionBlock(p.text, 4);
+      expect(scoped, `${p.id}: 問4が残っていない`).toMatch(/^問\s*4/mu);
+      expect(scoped, `${p.id}: 問1が残っている`).not.toMatch(/^問\s*1（/mu);
+    }
+  });
+
+  it('問Nの区切りを持たないテキストは全文をそのまま返す（安全側）', () => {
+    const text = '区切りの無い普通の問題文です。\n選びなさい。';
+    expect(sliceListeningQuestionBlock(text, 1)).toBe(text);
+  });
+});
+
+describe('問ごと表示：共通解説のスコープ（scopeListeningCommonToQuestion）', () => {
+  it('問1指定なら、解答一覧から問2〜問4の【解答】行が消える', () => {
+    for (const p of EL1_A_PROBLEMS) {
+      const enhanced = buildListeningExplanation(p);
+      if (!enhanced) continue;
+      const slices = sliceEnhancedBySubQuestion(enhanced);
+      expect(slices, `${p.id}: 小問マーカーが無い`).not.toBeNull();
+      const common = [slices!.common, slices!.shared].filter((s) => s.trim()).join('\n');
+      const scoped = scopeListeningCommonToQuestion(common, 1);
+      // 問2〜問4 の解答行は残っていないこと
+      expect(scoped).not.toMatch(/問\s*2\s*　.*【解答】/u);
+      expect(scoped).not.toMatch(/問\s*3\s*　.*【解答】/u);
+      expect(scoped).not.toMatch(/問\s*4\s*　.*【解答】/u);
+      // 「この形式の解き方」（一般論）は残す
+      if (common.includes('この形式の解き方')) {
+        expect(scoped).toContain('この形式の解き方');
+      }
+    }
+  });
+
+  it('問番号が取れない場合（null）は何も削らない（安全側）', () => {
+    const common = '問1　【解答】①\n問2　【解答】③';
+    expect(scopeListeningCommonToQuestion(common, null)).toBe(common);
+  });
+
+  it('小問ラベルから問番号を取り出せる（listeningQuestionNumberOf）', () => {
+    for (const p of EL1_A_PROBLEMS) {
+      for (const sq of p.subQuestions as any[]) {
+        expect(listeningQuestionNumberOf(sq), `${sq.id} の問番号が取れない`).not.toBeNull();
+      }
+    }
+  });
+});
