@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
-import { ChevronRight, ChevronLeft, ChevronDown, ChevronUp, Edit3, ArrowLeft, GripVertical, Trophy } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ChevronDown, ChevronUp, Edit3, ArrowLeft, GripVertical, Trophy, HelpCircle } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { ExplanationBody } from './ExplanationBody';
 import { Explanation } from './Explanation';
@@ -33,6 +33,8 @@ import { answerCardMarker, buildSubQuestionList, splitQuestionLabel } from '../u
 import {
   buildListeningOptionTexts,
   buildListeningLeadText,
+  extractListeningDifficulty,
+  stripListeningDifficulty,
 } from '../utils/listeningOptions';
 import {
   buildListeningSteps,
@@ -693,6 +695,20 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     parseStoredStringArrayRecord(localStorage.getItem(`quiz_elim_${chapter.id}_${mode}`)),
   );
 
+  // ★消去法の操作説明（タップで選択→斜線→…）は初回だけ表示する（ご要望）。
+  //   毎問同じ説明が並ぶと選択肢の視認性を下げるので、
+  //   一度でも見たら隠し、代わりに「?」アイコンで呼び出せるようにする。
+  //   キーは章・モードに依らずアプリ全体で1回（操作はどこでも同じなので）。
+  const ELIM_HINT_SEEN_KEY = 'quiz_elim_hint_seen';
+  const [elimHintOpen, setElimHintOpen] = useState<boolean>(() => {
+    try { return localStorage.getItem(ELIM_HINT_SEEN_KEY) !== 'true'; } catch { return true; }
+  });
+  /** 初回表示を「見た」ことにして閉じる（以降は ? アイコンから開閉） */
+  const dismissElimHint = () => {
+    setElimHintOpen(false);
+    try { localStorage.setItem(ELIM_HINT_SEEN_KEY, 'true'); } catch { /* 保存不可でも表示は閉じる */ }
+  };
+
   useEffect(() => {
     localStorage.setItem(`quiz_elim_${chapter.id}_${mode}`, JSON.stringify(eliminated));
   }, [eliminated, chapter.id, mode]);
@@ -987,6 +1003,17 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     // 問題が変わったら「問題文をたたむ」状態は解除する。
     // 新しい問題の本文を読まずに解き始めてしまう事故を防ぐ。
     setIsProblemCollapsed(false);
+    // 消去法の操作説明は「初回のみ」。1問でも先へ進んだら既読として
+    // 自動で閉じる（閉じるボタンを押し忘れても2問目からは出ない）。
+    if (currentQuestionIndex > 0 && elimHintOpen) {
+      try {
+        if (localStorage.getItem('quiz_elim_hint_seen') !== 'true') {
+          localStorage.setItem('quiz_elim_hint_seen', 'true');
+          setElimHintOpen(false);
+        }
+      } catch { /* 保存不可の環境ではそのまま */ }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionIndex]);
 
   // 「次へ/前へ」やキーボードの next キーによる移動時は、再レンダー直後・描画前に
@@ -1122,23 +1149,48 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         各状態の見た目そのものを小さな見本として並べて示す。
         初見のユーザーが「斜線という段階がある」ことに気づけるようにするのが目的。
       */}
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold leading-snug text-gray-400">
-        <span className="inline-flex items-center gap-1">
-          <span className="inline-block rounded-md border-2 border-gray-200 bg-white px-1.5 py-0.5 text-gray-600">ア</span>
-          <span>タップで選択</span>
-        </span>
-        <span aria-hidden="true" className="text-gray-300">→</span>
-        <span className="inline-flex items-center gap-1">
-          <span className="inline-block rounded-md border-2 border-[#A9CCE3] bg-[#A9CCE3] px-1.5 py-0.5 text-white">ア</span>
-          <span>もう一度で斜線</span>
-        </span>
-        <span aria-hidden="true" className="text-gray-300">→</span>
-        <span className="inline-flex items-center gap-1">
-          <span className="inline-block rounded-md border-2 border-gray-200 bg-gray-100 px-1.5 py-0.5 text-gray-400 line-through decoration-2 decoration-[#E8A87C]">ア</span>
-          <span>さらにタップで元に戻る</span>
-        </span>
-        <span className="text-gray-400">／長押しでこの設問の斜線をまとめて消す</span>
-      </div>
+      {/* 操作説明は初回のみ展開し、以降は「?」アイコンで呼び出す（ご要望：
+          毎問同じ説明が常時表示され選択肢の邪魔になる、への対応）。 */}
+      {elimHintOpen ? (
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold leading-snug text-gray-400 rounded-lg border border-gray-200 bg-gray-50/80 px-2.5 py-2">
+          <span className="inline-flex items-center gap-1">
+            <span className="inline-block rounded-md border-2 border-gray-200 bg-white px-1.5 py-0.5 text-gray-600">ア</span>
+            <span>タップで選択</span>
+          </span>
+          <span aria-hidden="true" className="text-gray-300">→</span>
+          <span className="inline-flex items-center gap-1">
+            <span className="inline-block rounded-md border-2 border-[#A9CCE3] bg-[#A9CCE3] px-1.5 py-0.5 text-white">ア</span>
+            <span>もう一度で斜線</span>
+          </span>
+          <span aria-hidden="true" className="text-gray-300">→</span>
+          <span className="inline-flex items-center gap-1">
+            <span className="inline-block rounded-md border-2 border-gray-200 bg-gray-100 px-1.5 py-0.5 text-gray-400 line-through decoration-2 decoration-[#E8A87C]">ア</span>
+            <span>さらにタップで元に戻る</span>
+          </span>
+          <span className="text-gray-400">／長押しでこの設問の斜線をまとめて消す</span>
+          <button
+            type="button"
+            onClick={dismissElimHint}
+            className="ml-auto shrink-0 rounded-md border border-gray-300 bg-white px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:bg-gray-100"
+            aria-label="操作説明を閉じる（以降は ? ボタンで表示）"
+          >
+            閉じる
+          </button>
+        </div>
+      ) : (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setElimHintOpen(true)}
+            className="inline-flex items-center gap-1 text-[10px] font-bold text-gray-400 hover:text-gray-600"
+            aria-label="選択肢の操作説明を表示"
+            title="タップで選択→もう一度で斜線（消去法）の説明を見る"
+          >
+            <HelpCircle size={13} />
+            操作説明
+          </button>
+        </div>
+      )}
 
       <div className={stacked
         ? "grid grid-cols-1 gap-2.5 w-full"
@@ -2252,6 +2304,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             ・ソフトキーボード表示中は max-h-[24vh] に自動で縮め、
               入力欄と入力内容がキーボードの上に必ず見えるようにする
             ・「たたむ」で見出しだけにして解答欄を最大化できる */}
+        {/* ★リスニング（スマホ）は問題文ペインを max-h-[32vh] に圧縮する（ご指摘：
+            「問題文カードが下からせり出して選択肢②以降が隠れる」）。
+            リスニングの左ペインは「問N見出し＋音源＋短いリード文」だけなので
+            32vh で必要十分。浮いた縦幅は選択肢（解答ペイン）に回し、
+            「今答えるべき設問の全選択肢」が追加操作なしで見えることを最優先する。
+            化学・数学など（listeningUnified=false）は従来どおり 50vh。 */}
         <div className={`
           lg:w-[58%] flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
           ${isDesktop
@@ -2262,7 +2320,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 ? 'h-auto shadow-md relative z-20'
                 : keyboardVisible
                   ? 'max-h-[24vh] h-auto shadow-md relative z-20'
-                  : 'max-h-[50vh] h-auto shadow-md relative z-20'}
+                  : listeningUnified
+                    ? 'max-h-[32vh] h-auto shadow-md relative z-20'
+                    : 'max-h-[50vh] h-auto shadow-md relative z-20'}
         `}>
           <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
             <div className="flex items-center gap-2 md:gap-3">
@@ -2420,14 +2480,30 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 );
               })()}
 
-              <ExplanationBody
-                text={
-                  listeningUnified
-                    ? buildListeningLeadText(currentQuestion.text)
-                    : cleanQuestionText(currentQuestion.text)
-                }
-                highlights={combinedHighlights}
-              />
+              {/* ★リスニング：リード文から【難易度：…】を外し、末尾に小さく出す
+                  （ご要望：難易度表記は解答操作の妨げになるので目立たない位置へ）。 */}
+              {listeningUnified ? (() => {
+                const lead = buildListeningLeadText(currentQuestion.text);
+                const difficulty = extractListeningDifficulty(lead);
+                return (
+                  <>
+                    <ExplanationBody
+                      text={stripListeningDifficulty(lead)}
+                      highlights={combinedHighlights}
+                    />
+                    {difficulty && (
+                      <p className="mt-3 text-[10px] font-bold text-gray-400">
+                        難易度：{difficulty}
+                      </p>
+                    )}
+                  </>
+                );
+              })() : (
+                <ExplanationBody
+                  text={cleanQuestionText(currentQuestion.text)}
+                  highlights={combinedHighlights}
+                />
+              )}
               {currentQuestion.text.includes('図6') && (
                 <div className="mt-4">
                   <IonizationEnergyChart showDetails={false} />

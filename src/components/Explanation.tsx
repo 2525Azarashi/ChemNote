@@ -679,7 +679,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               <div className="space-y-4">
                 <div>
                   <div className="text-xs text-[#7A8B99] mb-1">正解</div>
-                  <div className="p-3 rounded-lg border bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]">
+                  {/* 数学章では正解も数式フォント＋拡大表示（問題文と表記を揃える） */}
+                  <div className={`p-3 rounded-lg border bg-[#5BC0BE]/10 border-[#5BC0BE]/30 text-[#5BC0BE]${mathBodyClass}`}>
                     {formatText(sq.correctAnswer)}
                   </div>
                 </div>
@@ -1216,7 +1217,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                     {/* Problem Restatement
                         表示ルール1・2：左側の「問題文」欄には共通リード文に加えて、
                         続く全小問の設問文を順番に表示する（左側だけで全問いが理解できる）。 */}
-                    <div className={`p-4 rounded-lg border text-sm md:text-base leading-relaxed ${
+                    {/* ★数学章では問題文にも font-math math-content を当てる（ご指摘：
+                        「問題文と解答解説での数式の表記が異なっている」）。
+                        演習画面（Quiz）の問題文は数式フォント＋拡大表示なのに、
+                        解説画面の同じ問題文だけ通常フォントで分数・√の見た目が
+                        変わってしまっていた。非数学章は空文字なので従来と同じ見た目。 */}
+                    <div className={`p-4 rounded-lg border text-sm md:text-base leading-relaxed${mathBodyClass} ${
                       mode === 'mini_test' ? 'bg-white border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]/90'
                     }`}>
                       {/* ★英語リスニング：復習用の音源をここに置く。
