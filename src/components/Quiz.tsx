@@ -814,6 +814,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   //         変えるようにしてくれない？解答欄のスクロールがすごいうざい」
   // スマホでは全設問を縦に並べず、1設問ずつこの番号の欄だけを表示する。
   const [mobileAnsIdx, setMobileAnsIdx] = useState(0);
+  // リスニング：問題の説明ページ（ブリーフィング）を表示中か。
+  // ご要望：「これらの問題の説明は第1回演習とかのボタンを押した後に、
+  //          問題を出すまえに問題の説明のページを作ってそこに書いてほしい」
+  // 流れ：回を選ぶ → 説明ページ → 問1 → 問1の解説 → 問2 → …
+  // 解答中の画面からはリード文（毎回同じ説明）を撤去し、
+  // その分のスペースを選択肢・図の表示に当てる。
+  const [showingBriefing, setShowingBriefing] = useState(false);
   // ソフトキーボードが表示されているか（visualViewport で推定）。
   // 表示中のみ、短答穴埋め用のフローティング入力バーを画面下部に出す。
   const [keyboardVisible, setKeyboardVisible] = useState(false);
@@ -1926,6 +1933,21 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
    */
   const listeningUnified = listeningTracks.length > 0;
 
+  // ────────────────────────────────────────────────────────────────
+  // リスニング：回のはじまりに「問題の説明ページ」を出す
+  // ────────────────────────────────────────────────────────────────
+  // ご要望：「これらの問題の説明は第1回演習とかのボタンを押した後に、
+  //          問題を出すまえに問題の説明のページを作ってそこに書いて欲しい。
+  //          例) 第1回演習のボタンを押す→問題の説明のページを出す
+  //              →問1のページに行く→問1の解説のページに行く」
+  // Quiz は回（演習）を選ぶたびにマウントされるので、マウント時に
+  // リスニングの回であれば説明ページから始める。化学などは従来どおり。
+  useEffect(() => {
+    if (listeningTracks.length > 0) setShowingBriefing(true);
+    // 回のマウント時のみ（問の移動では再表示しない）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // 現在フォーカス中の設問オブジェクト（全形式対象）。
   const focusedSub = useMemo(() => {
     if (!focusedSubId) return null;
@@ -2347,6 +2369,86 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     );
   }
 
+  /*
+    リスニング：問題の説明ページ（ブリーフィング）
+    ─────────────────────────────────────────────
+    ご要望：「これらの問題の説明は第1回演習とかのボタンを押した後に、
+             問題を出すまえに問題の説明のページを作ってそこに書いて欲しい。
+             例) 第1回演習のボタンを押す→問題の説明のページを出す
+                 →問1のページに行く→問1の解説のページに行く」
+
+    回を選んだ直後に1枚だけ表示する。ここに
+      ・回のタイトル（第1回　第1問 A（4問・2回読み） など）
+      ・「短い英文が2回読まれます。…①〜④のうちから1つ選びなさい」の説明
+      ・難易度
+    をまとめ、解答中の画面からはこれらを撤去する。
+    そのぶん解答画面は「問題＋選択肢が1画面に収まる」表示になる。
+  */
+  if (showingBriefing && listeningUnified && currentQuestion) {
+    const lead = buildListeningLeadText(currentQuestion.text);
+    const difficulty = extractListeningDifficulty(lead);
+    return (
+      <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40">
+        {/* ヘッダー（戻る＝単元選択へ） */}
+        <div className="flex-none flex items-center gap-2 md:gap-4 p-3 md:p-4 bg-white border-b border-gray-200">
+          <button
+            onClick={handleExit}
+            title="単元選択に戻る"
+            aria-label="単元選択に戻る"
+            className="flex items-center justify-center p-1.5 md:p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors shrink-0"
+          >
+            <ArrowLeft size={18} className="md:w-5 md:h-5" aria-hidden="true" />
+          </button>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-sm md:text-xl font-handwriting text-[#2C3E50] font-bold truncate">
+              {chapter.abstractTitle}
+            </h2>
+            <div className="text-[10px] md:text-xs text-gray-500 font-bold mt-0.5">
+              {mode === 'mini_test' ? '小テスト' : '演習問題'}
+            </div>
+          </div>
+        </div>
+
+        {/* 説明本文 */}
+        <div className="flex-1 overflow-y-auto p-5 md:p-10">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="font-bold text-white text-xs bg-[#A9CCE3] py-1 px-3 rounded-full">
+                  この回の説明
+                </span>
+                {difficulty && (
+                  <span className="text-[11px] font-bold text-gray-400">
+                    難易度：{difficulty}
+                  </span>
+                )}
+              </div>
+              <div className="text-[15px] md:text-base leading-[1.9] text-gray-800 font-modern break-words [overflow-wrap:anywhere]">
+                <ExplanationBody text={stripListeningDifficulty(lead)} />
+              </div>
+              <p className="mt-5 text-xs text-gray-400 leading-relaxed">
+                この説明は解答中の画面には出ません。落ち着いて読んでから始めてください。
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 開始ボタン（下部固定・親指で押しやすい位置） */}
+        <div className="flex-none bg-white border-t border-gray-200 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+          <div className="max-w-2xl mx-auto">
+            <button
+              onClick={() => setShowingBriefing(false)}
+              className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-bold tracking-wider text-sm bg-[#2C3E50] text-white active:bg-[#1B2631] hover:bg-[#1B2631] shadow-md transition-all duration-200 cursor-pointer"
+            >
+              <span>問題をはじめる</span>
+              <ChevronRight size={16} className="stroke-[2.5]" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40">
       
@@ -2642,31 +2744,18 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       />
                     )}
 
-                    {/* リード文（毎回同じ指示文）との区切り */}
-                    <div className="mt-4 border-t-2 border-[#A9CCE3]/40" />
                   </div>
                 );
               })()}
 
-              {/* ★リスニング：リード文から【難易度：…】を外し、末尾に小さく出す
-                  （ご要望：難易度表記は解答操作の妨げになるので目立たない位置へ）。 */}
-              {listeningUnified ? (() => {
-                const lead = buildListeningLeadText(currentQuestion.text);
-                const difficulty = extractListeningDifficulty(lead);
-                return (
-                  <>
-                    <ExplanationBody
-                      text={stripListeningDifficulty(lead)}
-                      highlights={combinedHighlights}
-                    />
-                    {difficulty && (
-                      <p className="mt-3 text-[10px] font-bold text-gray-400">
-                        難易度：{difficulty}
-                      </p>
-                    )}
-                  </>
-                );
-              })() : (
+              {/* ★リスニング：毎回同じリード文（回の説明）は解答中の画面には出さない。
+                  ご要望：「第一問Aでは・・・のところいらない。ここのスペースを
+                          解答の選択肢のスペースに当てて」
+                  回の説明は、回を選んだ直後の「問題の説明ページ」（showingBriefing）で
+                  一度だけ読む。解答中の左ペインは「いま解いている問の見出し・
+                  設問文・音源・図」だけになり、浮いた縦幅は選択肢・図の表示に回る。
+                  化学など（listeningUnified=false）は従来どおり全文を出す。 */}
+              {!listeningUnified && (
                 <ExplanationBody
                   text={cleanQuestionText(currentQuestion.text)}
                   highlights={combinedHighlights}
@@ -2870,11 +2959,18 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   */}
                   <div className="flex flex-col gap-3.5 w-full min-w-0">
                     {/* 設問マーカー（(ア)/(1)/問2 など）。
-                        リスニングでは設問文の本体は左ペインにあるので、
-                        ここは「いまどの問の解答欄か」を示す目印だけ。 */}
-                    <span className={`font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block ${questionNeedsMathPalette ? 'font-math math-content' : ''}`}>
-                      {formatText(sqMarker)}
-                    </span>
+                        ★リスニングでは出さない（ご指摘：「解答のところの問4とかって
+                          書いてあるのは問題のところに書いてあるのでいらない。
+                          もっと選択肢と問題を一画面に出すイメージで」）。
+                        左の問題ペインの見出しに 問N（全4問中N問目）が常にあるので、
+                        解答カード側の 問N は重複。浮いた縦幅は選択肢・図に回す。
+                        化学など（listeningUnified=false）は (ア)/(1) の目印が
+                        入力に必須なので従来どおり表示する。 */}
+                    {!listeningUnified && (
+                      <span className={`font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block ${questionNeedsMathPalette ? 'font-math math-content' : ''}`}>
+                        {formatText(sqMarker)}
+                      </span>
+                    )}
                     
                     {sq.type === 'multiple_choice' ? (
                       // ★全教科・全端末で選択肢をカード内に直接表示する。

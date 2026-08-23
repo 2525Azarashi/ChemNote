@@ -372,15 +372,24 @@ describe('E1: 左ペインに問1〜問4がまとまって残る不具合の修�
     expect(QUIZ).toContain('cleanQuestionText(currentQuestion.text)');
   });
 
-  it('いま解いている問のブロックは、毎回同じリード文より「前」に出す', () => {
-    // 後ろに置くと「毎回同じ指示文を読み飛ばしてから再生を押す」動線になり、
-    // ご要望「スクロールしてわざわざ答えるのめんどい」に反する。
-    // 見出し・音源・図 → リード文 の順で並んでいることを固定する。
+  it('リード文（回の説明）は解答中の画面には出さず、説明ページに移す', () => {
+    // ご要望：「第一問Aでは・・・のところいらない。ここのスペースを
+    //          解答の選択肢のスペースに当てて」
+    //         「これらの問題の説明は…問題を出すまえに問題の説明のページを
+    //          作ってそこに書いて欲しい」
+    // → リード文は showingBriefing（回を選んだ直後の説明ページ）でだけ出す。
+    //   解答中の左ペインは 問Nの見出し・設問文・音源・図 だけになる。
     const stepBlockAt = QUIZ.indexOf('stepLabelOf(activeStepSub, safeStepIndex)');
     const leadAt = QUIZ.indexOf('buildListeningLeadText(currentQuestion.text)');
     expect(stepBlockAt).toBeGreaterThan(-1);
     expect(leadAt).toBeGreaterThan(-1);
-    expect(stepBlockAt).toBeLessThan(leadAt);
+    // 説明ページ（早期 return）は解答画面の描画より前にある
+    expect(leadAt).toBeLessThan(stepBlockAt);
+    expect(QUIZ).toContain('showingBriefing');
+    expect(QUIZ).toContain('setShowingBriefing(false)');
+    expect(QUIZ).toContain('問題をはじめる');
+    // 解答中の左ペインでは化学など以外にリード全文を出さない
+    expect(QUIZ).toContain('{!listeningUnified && (');
   });
 });
 
