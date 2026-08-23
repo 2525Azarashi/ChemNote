@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, Edit3, Save, Search, Network, Circle, Trophy, KeyRound, ListOrdered, Target } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, ChevronUp, Edit3, Save, Search, Network, Circle, Trophy, KeyRound, ListOrdered, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatText } from '../utils/textFormatter';
 import { ExplanationBody } from './ExplanationBody';
@@ -159,6 +159,18 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   // スマホ/PC判定は共有フックに一元化（md=768px 未満をスマホとみなす）。
   // isMobileView が渡された場合（スマホプレビュー枠）はそれを優先する。
   const isMobile = useIsMobile(isMobileView);
+
+  // ─── スマホ専用（1問ごとの答え合わせ）の表示状態 ───
+  // ご要望：「全ての問いのあってるか間違ってるかだけ出して、その正誤ボタンを
+  //          押したらその問の解答と解説が出るようにしてほしい。
+  //          フローチャートは邪魔にならない位置に切り替えボタンを設置。
+  //          問題文は上・解答は下（演習画面と同じ2画面）。PC版は変えない。」
+  /** 正誤一覧でいま選ばれている小問ID（null＝未選択。既定は最初の不正解） */
+  const [selectedSqId, setSelectedSqId] = useState<string | null>(null);
+  /** スマホ：問題文ペインを見出しだけにたたむ（演習画面と同じ操作感） */
+  const [mobileProblemCollapsed, setMobileProblemCollapsed] = useState(false);
+  /** スマホ：解答・解説エリアを学習フローチャート表示に切り替える */
+  const [showFlowchart, setShowFlowchart] = useState(false);
 
   const stepColors: Record<string, string> = {
     "1": "bg-red-500/20 text-red-700 border-red-500/50 hover:bg-red-500/30",
@@ -328,23 +340,34 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const displayTotalScore = baseDisplayScore != null ? baseDisplayScore + selfGradeBonus : null;
   const isResultView = singleQuestionIndex === undefined;
 
-  // 【スマホ:俯瞰UI＋ピンチアウト前提】
-  // 解答解説・結果表示画面は、スマホでも PC 版と同じ俯瞰レイアウト
-  // （width=1024 viewport ＋ 全体が画面内に収まる縮小表示）で表示する。
-  // 詳細を確認したい箇所はピンチアウト（拡大操作）で自由にズームできる。
-  //
-  // 【ページ遷移ごとのズームリセット】
-  // 解答解説ページへ新たに移動する度（次の問題の解説へ移る度）に、
-  // ピンチアウトによる拡大・縮小状態をリセットして初期倍率
-  // （全体が画面に収まる俯瞰表示）へ戻す。前の問題で拡大していた状態を
-  // そのまま次の解説ページへ引き継がないようにするため、
-  // singleQuestionIndex / chapter.id の変化に応じて俯瞰用 viewport を再適用する。
-  // viewport 書き換えの実装は viewportControl.applyOverviewViewport に一元化
-  // されており、App.tsx（画面種別の切替時）と同じ関数を共有する。
+  // 【俯瞰UI（width=1024 の縮小表示）はタブレット以上のみ】
+  // 以前はスマホでも解答解説を俯瞰UIで表示していたが、
+  // 「解答と解説の文字が小さい。問題のところと同じぐらいの大きさにしたい」
+  // というご指摘のとおり初期表示が極小になるため、スマホでは適用しない。
+  // スマホは通常の device-width viewport のまま、スマホ専用レイアウト
+  // （下の reorderMobile 分岐）で表示する。ピンチズームは引き続き可能。
   useEffect(() => {
     window.scrollTo(0, 0);
-    applyOverviewViewport();
-  }, [singleQuestionIndex, chapter.id]);
+    if (!isMobile) {
+      applyOverviewViewport();
+    }
+  }, [singleQuestionIndex, chapter.id, isMobile]);
+
+  // スマホの1問ごとの答え合わせ：問題が変わったら表示状態をリセットし、
+  // 「最初の不正解の問」を自動で開く（どこを間違えたかへ最短で辿り着く）。
+  // 全問正解なら何も開かず、緑一色の正誤一覧で達成感を出す。
+  useEffect(() => {
+    if (!isMobile || isResultView) return;
+    const q: any = questions[0];
+    const subs: any[] = (q?.subQuestions || []);
+    const firstIncorrect = subs.find(
+      (sq: any) => sq.type !== 'descriptive' && isAttempted(answers[sq.id]) && !isAnswerCorrect(sq, answers[sq.id]),
+    );
+    setSelectedSqId(firstIncorrect ? firstIncorrect.id : null);
+    setShowFlowchart(false);
+    setMobileProblemCollapsed(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [singleQuestionIndex, chapter.id, isMobile]);
 
   const handleSaveNote = async (question: any, index: number) => {
     // 範囲を切り出して表示しているときは、切り出しの先頭ぶんを足して
@@ -954,7 +977,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           )}
         </div>
         {singleQuestionIndex !== undefined && onNextQuestion ? (
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          // ★スマホの1問ごとの答え合わせでは、このボタン行は画面下部の
+          //   固定ナビ（親指の届く位置・演習画面と同じ操作感）に移すため隠す。
+          <div className={`${reorderMobile ? 'hidden' : 'flex'} items-center gap-3 w-full md:w-auto`}>
             <button 
               onClick={onBack}
               className={`flex items-center gap-2 transition-colors font-bold px-4 py-2 rounded-full border flex-1 md:flex-none justify-center ${
@@ -1067,7 +1092,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       )}
 
       <div className={isMobile
-        ? `p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
+        ? reorderMobile
+          // スマホの1問ごとの答え合わせ：問題文ペインを sticky で上部に
+          // 固定するため、外側の余白は付けない（全幅の上下2ペイン）。
+          ? `relative z-10 ${mode === 'mini_test' ? 'bg-white' : ''}`
+          : `p-4 md:p-6 relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
         : isResultView
           ? `p-4 md:p-6 pb-[calc(2rem+env(safe-area-inset-bottom))] relative z-10 space-y-6 md:space-y-8 ${mode === 'mini_test' ? 'bg-white' : ''}`
           : `p-4 md:p-6 relative z-10 flex-1 overflow-hidden flex flex-col ${mode === 'mini_test' ? 'bg-white' : ''}`
@@ -1149,7 +1178,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               ページ自体を自然に縦スクロールさせる（PC・スマホともに全問が見えるように）。
               1問ごとの解説表示（!isResultView）のときだけ、2カラムの固定高さレイアウトにする。 */}
         <div className={isMobile
-          ? `rounded-2xl shadow-lg border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`
+          ? reorderMobile
+            // 1問ごとの答え合わせ（スマホ）：問題文ペインを sticky にするため
+            // 枠・角丸を付けず全幅で使う。
+            ? `${mode === 'mini_test' ? 'bg-white' : 'bg-[#1C2541]/40'}`
+            : `rounded-2xl shadow-lg border ${mode === 'mini_test' ? 'bg-white border-gray-200' : 'bg-[#1C2541]/40 border-[#3A506B]/50'}`
           : isResultView
             // 結果表示（全問の解答・解説一覧）はページ全体スクロールに任せる。
             // ここで flex-1 / h-full / overflow-hidden を付けると、スコアパネルに圧迫されて
@@ -1158,9 +1191,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             : `border-none shadow-none flex-1 flex flex-col h-full min-h-0 overflow-hidden`
         }>
           <div className={reorderMobile
-            // スマホの1問ごとの答え合わせは flex-col + order で
-            // 「問題文 → 採点結果 → 学習フローチャート」に並べ替える。
-            ? "flex flex-col gap-6 p-4 sm:p-6 md:p-8"
+            // スマホの1問ごとの答え合わせ：
+            // 「問題文（上・sticky）→ 正誤一覧＋解説（下）」の上下2ペイン。
+            // 演習画面と同じ「上＝問題文 / 下＝解答」の並びで迷わない。
+            ? "flex flex-col"
             : isMobile
             ? "grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8"
             : isResultView
@@ -1170,8 +1204,33 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             
             {/* LEFT COLUMN: Problem statements and flowcharts
                 結果表示では独自スクロール（lg:h-full/overflow-y-auto）を付けず、
-                ページ全体のスクロールに任せる。 */}
-            <div className={`space-y-6 pb-8 min-w-0 ${reorderMobile ? 'order-1' : ''} ${isResultView ? 'lg:pr-4' : 'lg:overflow-y-auto lg:h-full lg:pr-4'}`}>
+                ページ全体のスクロールに任せる。
+                ★スマホの1問ごとの答え合わせ（reorderMobile）では、演習画面と同じ
+                  「上＝問題文ペイン」として sticky で画面上部に固定する。
+                  下の解説をスクロールしても問題文が常に見える（ご要望
+                  「解答と解説・問題は一緒に一画面で見える状態で出したい」）。 */}
+            <div className={reorderMobile
+              ? 'sticky top-0 z-20 min-w-0 bg-white border-b-2 border-gray-200 shadow-md flex flex-col'
+              : `space-y-6 pb-8 min-w-0 ${isResultView ? 'lg:pr-4' : 'lg:overflow-y-auto lg:h-full lg:pr-4'}`}>
+              {/* スマホ：問題文ペインのヘッダー（演習画面と同じ「たたむ」付き） */}
+              {reorderMobile && (
+                <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100 bg-blue-50/30">
+                  <span className="font-bold text-[#2C3E50] text-sm flex items-center gap-2">
+                    <BookOpen size={15} className="text-[#A9CCE3]" />
+                    問題文
+                  </span>
+                  <button
+                    onClick={() => setMobileProblemCollapsed(v => !v)}
+                    className="flex items-center gap-0.5 rounded-md border border-gray-200 bg-white px-2 py-1 text-[11px] font-bold text-gray-600 active:bg-gray-50 whitespace-nowrap"
+                  >
+                    {mobileProblemCollapsed ? (
+                      <>問題文を表示<ChevronDown size={12} /></>
+                    ) : (
+                      <>たたむ<ChevronUp size={12} /></>
+                    )}
+                  </button>
+                </div>
+              )}
               {singleQuestionIndex === undefined && (
                 <h3 className={`text-base md:text-lg font-bold mb-4 md:mb-6 flex items-center gap-2 ${mode === 'mini_test' ? 'text-emerald-700' : 'text-[#5BC0BE]'}`}>
                   <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
@@ -1179,7 +1238,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 </h3>
               )}
               
-              <div className="space-y-8 md:space-y-12">
+              <div className={reorderMobile
+                // 問題文本体：高さ上限つきの独自スクロール。演習画面の問題文と
+                // 同じ文字サイズ（15px・行間1.85）で表示する。
+                ? `${mobileProblemCollapsed ? 'hidden' : ''} max-h-[34dvh] overflow-y-auto overscroll-contain p-3 text-[15px] leading-[1.85]`
+                : "space-y-8 md:space-y-12"}>
               {questions.length > 0 ? (
                 questions.map((question: any, qIndex: number) => {
                 const scorePercentage = calculateScore(question);
@@ -1222,8 +1285,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         演習画面（Quiz）の問題文は数式フォント＋拡大表示なのに、
                         解説画面の同じ問題文だけ通常フォントで分数・√の見た目が
                         変わってしまっていた。非数学章は空文字なので従来と同じ見た目。 */}
-                    <div className={`p-4 rounded-lg border text-sm md:text-base leading-relaxed${mathBodyClass} ${
-                      mode === 'mini_test' ? 'bg-white border-gray-200 text-gray-800' : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]/90'
+                    <div className={`${reorderMobile
+                      // スマホの1問ごとの答え合わせ：枠なし・演習画面と同じ文字サイズ
+                      //（親ペインの text-[15px] leading-[1.85] を継承）。
+                      ? ''
+                      : 'p-4 rounded-lg border text-sm md:text-base leading-relaxed'}${mathBodyClass} ${
+                      mode === 'mini_test' ? (reorderMobile ? 'text-gray-800' : 'bg-white border-gray-200 text-gray-800') : 'bg-[#0B132B]/60 border-[#3A506B]/50 text-[#E0E1DD]/90'
                     }`}>
                       {/* ★英語リスニング：復習用の音源をここに置く。
                           採点直後の画面なので、「聞き取れなかった箇所を
@@ -1306,8 +1373,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             </div>
 
             {/* RIGHT COLUMN: Answers, grading, and explanations
-                （スマホの1問ごとの答え合わせでは order-2 = 問題文の直後に表示） */}
-            <div className={`space-y-6 lg:pl-4 lg:pr-4 pb-8 min-w-0 ${reorderMobile ? 'order-2' : ''} ${isResultView ? '' : 'lg:overflow-y-auto lg:h-full'}`}>
+                （スマホの1問ごとの答え合わせでは問題文ペインの下＝下ペインとして表示） */}
+            <div className={`space-y-6 lg:pl-4 lg:pr-4 min-w-0 ${reorderMobile
+              // 下部固定ナビ（問題に戻る/次の問題へ）に最後のカードが隠れない
+              // よう、下余白を大きめに取る。
+              ? 'order-2 px-3 pt-3 pb-[calc(6rem+env(safe-area-inset-bottom))]'
+              : 'pb-8'} ${isResultView ? '' : 'lg:overflow-y-auto lg:h-full'}`}>
               {questions.length > 0 ? (
                 questions.map((question: any, qIndex: number) => {
                 return (
@@ -1593,7 +1664,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     <ExplanationBody
                                       text={sqSlice}
                                       tone={mode === 'mini_test' ? 'light' : 'dark'}
-                                      className={`${isMathChapter ? 'font-math math-content text-sm md:text-base' : 'font-handwriting text-xs md:text-sm'} leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+                                      className={`${isMathChapter ? 'font-math math-content text-sm md:text-base' : reorderMobile ? 'font-handwriting text-[15px] leading-[1.85]' : 'font-handwriting text-xs md:text-sm'} ${reorderMobile && !isMathChapter ? '' : 'leading-relaxed'} ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
                                     />
                                   ) : (
                                     <p className="text-xs text-gray-500">この小問の解説は「思考手順・答えの核心」にまとめています。</p>
@@ -1650,17 +1721,38 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     <CheckCircle2 size={18} className={mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'} />
                                     <span>採点結果</span>
                                   </h4>
-                                  <span className={`text-xs font-bold ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
-                                    <span className={mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}>正解 {correctSqs.length}</span>
-                                    <span className="mx-1 opacity-50">/</span>
-                                    <span className={mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}>不正解 {incorrectSqs.length}</span>
-                                    {unansweredSqs.length > 0 && (
-                                      <>
-                                        <span className="mx-1 opacity-50">/</span>
-                                        <span className={mode === 'mini_test' ? 'text-gray-400' : 'text-[#7A8B99]'}>未解答 {unansweredSqs.length}</span>
-                                      </>
+                                  <div className="flex items-center gap-2">
+                                    <span className={`text-xs font-bold ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
+                                      <span className={mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}>正解 {correctSqs.length}</span>
+                                      <span className="mx-1 opacity-50">/</span>
+                                      <span className={mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}>不正解 {incorrectSqs.length}</span>
+                                      {unansweredSqs.length > 0 && (
+                                        <>
+                                          <span className="mx-1 opacity-50">/</span>
+                                          <span className={mode === 'mini_test' ? 'text-gray-400' : 'text-[#7A8B99]'}>未解答 {unansweredSqs.length}</span>
+                                        </>
+                                      )}
+                                    </span>
+                                    {/* ★スマホ：学習フローチャートの切り替えボタン。
+                                        「フローチャートは消したくない＋邪魔にならない位置に
+                                          切り替えのボタンを設置」（ご要望）。
+                                        常設表示はせず、このチップで開閉する。 */}
+                                    {reorderMobile && flowchartBlock && (
+                                      <button
+                                        type="button"
+                                        onClick={() => setShowFlowchart(v => !v)}
+                                        aria-expanded={showFlowchart}
+                                        className={`flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-bold whitespace-nowrap transition-colors ${
+                                          showFlowchart
+                                            ? 'bg-[#2C3E50] border-[#2C3E50] text-white'
+                                            : 'bg-white border-gray-300 text-gray-600 active:bg-gray-50'
+                                        }`}
+                                      >
+                                        <Network size={12} />
+                                        フローチャート
+                                      </button>
                                     )}
-                                  </span>
+                                  </div>
                                 </div>
 
                                 {/* 要件①：「この単元の思考の型」を採点結果の直後に1回だけ（折りたたみ） */}
@@ -1684,8 +1776,77 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     />
                                   )}
 
-                                {/* 元の並び順（ア→イ→ウ…）のまま、正誤の色分けだけ行って上から表示 */}
-                                {objectiveSqs.map(sq => renderSq(sq, isAnswerCorrect(sq, answers[sq.id])))}
+                                {/* ★スマホの1問ごとの答え合わせ：
+                                      「全ての問いのあってるか間違ってるかだけ出して、
+                                       その正誤ボタンを押したらその問の解答と解説が出る」
+                                    （ご要望）。緑＝正解・赤＝不正解（従来どおりの色）・
+                                    灰＝未解答のチップを一覧で並べ、タップした問だけ
+                                    詳細カード（解答・解説）を下に表示する。
+                                    一覧は常に見えるので「どこを間違えたか」がひと目で分かる。 */}
+                                {reorderMobile ? (
+                                  <>
+                                    <div className="grid grid-cols-4 gap-2">
+                                      {objectiveSqs.map((sq: any) => {
+                                        const ok = isAnswerCorrect(sq, answers[sq.id]);
+                                        const attempted = isAttempted(answers[sq.id]);
+                                        const active = selectedSqId === sq.id;
+                                        const sqIdx = ((question?.subQuestions || []) as any[]).indexOf(sq);
+                                        const marker = answerCardMarker(sq, sqIdx < 0 ? 0 : sqIdx, question);
+                                        // マーカーが長い場合（係数グループなど）は先頭だけ出す
+                                        const shortMarker = marker.length > 7 ? `${marker.slice(0, 6)}…` : marker;
+                                        return (
+                                          <button
+                                            key={`chip-${sq.id}`}
+                                            type="button"
+                                            onClick={() => {
+                                              if (active) {
+                                                setSelectedSqId(null);
+                                              } else {
+                                                setSelectedSqId(sq.id);
+                                                // 「解答と解説が出るように」：チップを押したら
+                                                // 解説アコーディオンも開いた状態で表示する。
+                                                setOpenExplanationBySq(prev => ({ ...prev, [sq.id]: true }));
+                                              }
+                                            }}
+                                            aria-pressed={active}
+                                            aria-label={`${marker} ${!attempted ? '未解答' : ok ? '正解' : '不正解'}の解答・解説を${active ? '閉じる' : '見る'}`}
+                                            className={`flex flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-2 min-h-[3.25rem] transition-all ${
+                                              !attempted
+                                                ? (active ? 'bg-gray-200 border-gray-400' : 'bg-gray-50 border-gray-200')
+                                                : ok
+                                                  ? (active ? 'bg-emerald-100 border-emerald-500 shadow-sm' : 'bg-emerald-50 border-emerald-200')
+                                                  : (active ? 'bg-red-100 border-red-500 shadow-sm' : 'bg-red-50 border-red-200')
+                                            }`}
+                                          >
+                                            <span className={`font-bold text-[13px] leading-tight break-all ${
+                                              !attempted ? 'text-gray-500' : ok ? 'text-emerald-700' : 'text-red-600'
+                                            }`}>
+                                              {formatText(shortMarker)}
+                                            </span>
+                                            {!attempted
+                                              ? <Circle size={16} className="text-gray-400" />
+                                              : ok
+                                                ? <CheckCircle2 size={16} className="text-emerald-600" />
+                                                : <XCircle size={16} className="text-red-500" />}
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                    {/* タップした問だけ詳細カード（解答・解説）を出す */}
+                                    {(() => {
+                                      const sel = objectiveSqs.find((sq: any) => sq.id === selectedSqId);
+                                      if (!sel) return (
+                                        <p className="text-xs text-gray-400 font-bold text-center py-1">
+                                          上の正誤ボタンをタップすると、その問の解答・解説が開きます
+                                        </p>
+                                      );
+                                      return renderSq(sel, isAnswerCorrect(sel, answers[sel.id]));
+                                    })()}
+                                  </>
+                                ) : (
+                                  /* PC・結果表示：元の並び順（ア→イ→ウ…）のまま、正誤の色分けだけ行って上から表示 */
+                                  objectiveSqs.map(sq => renderSq(sq, isAnswerCorrect(sq, answers[sq.id])))
+                                )}
                               </div>
                             )}
 
@@ -1698,7 +1859,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 <ExplanationBody
                                   text={sharedExplanation}
                                   tone={mode === 'mini_test' ? 'light' : 'dark'}
-                                  className={`${isMathChapter ? 'font-math math-content text-sm md:text-base' : 'font-handwriting text-xs md:text-sm'} leading-relaxed ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+                                  className={`${isMathChapter ? 'font-math math-content text-sm md:text-base' : reorderMobile ? 'font-handwriting text-[15px] leading-[1.85]' : 'font-handwriting text-xs md:text-sm'} ${reorderMobile && !isMathChapter ? '' : 'leading-relaxed'} ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
                                 />
                               </div>
                             )}
@@ -1851,9 +2012,38 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         {/* 学習フローチャート（スマホの1問ごとの答え合わせのみ）
             縦積み順を「問題文 → 採点結果 → 学習フローチャート」にするため、
             order-3 として採点結果（RIGHT COLUMN）の後ろに配置する。 */}
-        {reorderMobile && flowchartBlock && (
-          <div className="order-3 min-w-0">
+        {/* ★スマホでは常設せず、採点結果ヘッダーの「フローチャート」チップで
+            開閉する（ご要望「邪魔にならない位置に切り替えのボタンを設置」）。
+            表示時は画面全幅を使えるので、縮小2カラム時代より読みやすい。 */}
+        {reorderMobile && flowchartBlock && showFlowchart && (
+          <div className="order-3 min-w-0 px-3 pb-4">
             {flowchartBlock}
+          </div>
+        )}
+
+        {/* ★スマホ：下部固定ナビ（問題に戻る / 次の問題へ）。
+            演習画面の「前へ / 解答と解説を見る」と同じ位置・同じ操作感にして、
+            親指だけで「解く→答え合わせ→次を解く」を回せるようにする。 */}
+        {reorderMobile && onNextQuestion && (
+          <div className="order-4 fixed left-0 right-0 bottom-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.10)] px-3 pt-2.5 pb-[calc(0.6rem+env(safe-area-inset-bottom))]">
+            <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
+              <button
+                onClick={onBack}
+                title="問題に戻る"
+                aria-label="問題に戻る"
+                className="flex items-center justify-center p-3 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer border-[#A9CCE3] text-[#2C3E50] active:bg-[#A9CCE3] active:text-white bg-white shadow-sm"
+              >
+                <ArrowLeft size={18} className="stroke-[2.5]" aria-hidden="true" />
+                <span className="ml-1 text-xs">問題に戻る</span>
+              </button>
+              <button
+                onClick={onNextQuestion}
+                className="flex shadow-md active:translate-y-0.5 items-center justify-center gap-1.5 px-5 py-3 rounded-xl font-bold tracking-wider transition-all duration-200 text-sm bg-[#2C3E50] text-white active:bg-[#1B2631] flex-1 cursor-pointer"
+              >
+                <span>{isLastQuestion ? '結果を見る' : '次の問題へ'}</span>
+                <ArrowLeft size={16} className="rotate-180 stroke-[2.5]" />
+              </button>
+            </div>
           </div>
         )}
       </div>
