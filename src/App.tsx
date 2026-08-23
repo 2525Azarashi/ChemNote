@@ -30,6 +30,7 @@ import { chemistryAdvancedData, ADVANCED_FIELDS, type AdvancedFieldId } from './
 import { chemistryData } from './data/chemistryData';
 import { englishListeningData } from './data/englishListeningData';
 import { mathData } from './data/mathData';
+import { biologyBasicData } from './data/biologyBasicData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIdleReset } from './hooks/useIdleReset';
 import { useIsMobile } from './hooks/useMediaQuery';
@@ -743,6 +744,7 @@ export default function App() {
     ...chemistryAdvancedData.parts.flatMap(p => p.chapters as any[]),
     ...englishListeningData.parts.flatMap(p => p.chapters as any[]),
     ...mathData.parts.flatMap(p => p.chapters as any[]),
+    ...biologyBasicData.parts.flatMap(p => p.chapters as any[]),
   ].find(c => (c as any).id === selectedChapterId);
 
   return (
@@ -803,6 +805,7 @@ export default function App() {
                 subject={
                   selectedSubject === 'chemistry' ? 'chemistry'
                   : selectedSubject === 'math' ? 'math'
+                  : selectedSubject === 'biology_basic' ? 'biology_basic'
                   : 'chemistry_basic'
                 }
               />

@@ -35,6 +35,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
    * 出題傾向・予想問題は化学基礎・化学専用なので出さない。
    */
   const isMath = subject === 'math';
+  const isBiology = subject === 'biology_basic';
   /**
    * 科目ごとの配色。
    * この画面はどの科目でも同じダスティローズで描かれていたため、
@@ -85,7 +86,9 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
                 ? 'まとめプリントで基礎知識をしっかりと身につけます。（現在は理論化学「化学反応とエネルギー」を公開中）'
                 : isMath
                   ? 'まとめプリントで「解法のパターン化」を学びます。積分・ベクトル・確率・整数の4単元、判断フローと型の早見表付き。'
-                  : '基礎知識をしっかりと身につけます。'}
+                  : isBiology
+                    ? 'まとめプリントで共通テスト生物基礎の全範囲（細胞・遺伝子・体内環境・植生・生態系）を一気に総復習できます。'
+                    : '基礎知識をしっかりと身につけます。'}
             </p>
           </button>
           )}

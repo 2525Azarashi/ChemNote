@@ -52,6 +52,7 @@ import { chemistryData } from '../data/chemistryData';
 import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
 import { getListeningStats } from '../data/englishListeningData';
 import { getMathStats } from '../data/mathData';
+import { getBiologyStats } from '../data/biologyBasicData';
 
 /** アプリが扱う科目の識別子 */
 export type SubjectId = 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
@@ -156,6 +157,9 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
   /** 数学の収録ボリューム。まずは数III積分（全パターン演習）から公開する。 */
   const mathStats = useMemo(() => getMathStats(), []);
 
+  /** 生物基礎の収録ボリューム。共通テスト全範囲を 5 章で網羅する。 */
+  const biologyStats = useMemo(() => getBiologyStats(), []);
+
   const subjects: SubjectDefinition[] = useMemo(() => [
     {
       id: 'chemistry_basic',
@@ -213,16 +217,16 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
       id: 'biology_basic',
       title: '生物基礎',
       latin: 'Basic Biology',
-      description: '共通テスト「生物基礎」。現在、単元と問題を準備しています。',
+      description: '共通テスト「生物基礎」の全範囲を5章で網羅。まとめプリント＋演習で仕上げます。',
       highlights: [
-        '教科書の順番どおりの単元構成で準備中',
-        '化学基礎と同じ演習・復習のしくみに対応予定',
-        '公開時にお知らせを受け取れます',
+        `全${biologyStats.chapters}章・演習${biologyStats.questions}問を収録（順次追加中）`,
+        '細胞・遺伝子・体内環境・植生・生態系を完全カバー',
+        '化学基礎と同じ単元画面・同じ演習の進め方',
       ],
-      available: false,
+      available: true,
       icon: Leaf,
     },
-  ], [basicStats, advancedStats, listeningStats, mathStats]);
+  ], [basicStats, advancedStats, listeningStats, mathStats, biologyStats]);
 
   return (
     <div className="w-full min-h-[100dvh] sm:min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE]">
