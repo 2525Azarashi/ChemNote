@@ -283,6 +283,55 @@ async function updateTotalScore(uid: string, nickname: string, photoURL: string)
 }
 
 // ============================================================
+// ニックネーム変更の即時反映
+// ============================================================
+
+/**
+ * プロフィールで名前を変えたとき、ランキング上の表示名をその場で同期する。
+ *
+ * ■ なぜ必要か
+ *   ランキングの名前は各ドキュメントに書き込み時点の値が保存されている
+ *   （非正規化）。そのため
+ *     ・leaderboard_total   … 次のログインかスコア更新まで旧名のまま
+ *     ・leaderboard_chapter … その章を次にプレイするまで旧名のまま
+ *   となり、「プロフィールの名前を変えたのにランキングが変わらない」
+ *   という状態になっていた。プロフィール保存時にこの関数を呼び、
+ *   自分の全ドキュメントの nickname / photoURL を最新化する。
+ *
+ * ■ leaderboard_events は更新しない
+ *   セキュリティルールが create 専用（改ざん防止）のため書き換えられない。
+ *   代わりに fetchPeriodRanking 側で「最新のプレイの名前」を採用する。
+ *
+ * ■ 失敗してもアプリは止めない（ランキングは付随機能）
+ */
+export async function syncRankingNickname(): Promise<void> {
+  const user = auth.currentUser;
+  if (!user) return;
+  const nickname = resolveNickname();
+  const photoURL = user.photoURL || '';
+  try {
+    // 全章合計（leaderboard_total）は既存の参加登録ロジックがそのまま使える
+    await ensureRankingEntry();
+
+    // 章別ベスト（leaderboard_chapter）の自分の行をすべて最新化
+    const snaps = await getDocs(
+      query(collection(db, 'leaderboard_chapter'), where('uid', '==', user.uid))
+    );
+    await Promise.all(
+      snaps.docs.map((s) => {
+        const d = s.data() as ChapterScoreEntry;
+        if (d.nickname === nickname && (d.photoURL || '') === photoURL) {
+          return Promise.resolve(); // 変化なし。無駄な書き込みをしない。
+        }
+        return setDoc(s.ref, { nickname, photoURL }, { merge: true });
+      })
+    );
+  } catch (e) {
+    console.warn('[Leaderboard] syncRankingNickname failed:', e);
+  }
+}
+
+// ============================================================
 // ランキング取得
 // ============================================================
 
@@ -399,6 +448,11 @@ export async function fetchPeriodRanking(
     const q = query(collection(db, 'leaderboard_events'), ...constraints);
     const snaps = await getDocs(q);
 
+    // イベントは playedAt 降順で届く＝各 uid の最初の1件が「最新のプレイ」。
+    // 名前・アイコンはその最新イベントの値を使う。
+    // （events はルール上 create 専用で書き換えられないため、
+    //   プロフィール改名後の名前は「いちばん新しいプレイの記録」にしか
+    //   入っていない。ベストスコア時点の古い名前で上書きしない。）
     const bucket = new Map<string, { uid: string; nickname: string; photoURL?: string; bestScore: number; playCount: number }>();
     snaps.forEach((s) => {
       const d = s.data() as any;
@@ -415,8 +469,6 @@ export async function fetchPeriodRanking(
         cur.playCount += 1;
         if ((d.score || 0) > cur.bestScore) {
           cur.bestScore = d.score;
-          cur.nickname = d.nickname || cur.nickname;
-          cur.photoURL = d.photoURL || cur.photoURL;
         }
       }
     });

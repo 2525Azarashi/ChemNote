@@ -25,6 +25,8 @@ import {
   MATH_PROBABILITY_PARTS,
   MATH_INTEGER_HTML,
   MATH_INTEGER_PARTS,
+  BIO_BASIC_HTML,
+  BIO_BASIC_PARTS,
   type LearningPart,
 } from '../data/learningContent';
 import { MolBasicsSection } from './MolBasicsSection';
@@ -34,7 +36,7 @@ import {
 } from '../utils/learningAccordion';
 
 /** まとめプリントを出す科目 */
-export type LearningSubject = 'chemistry_basic' | 'chemistry' | 'math';
+export type LearningSubject = 'chemistry_basic' | 'chemistry' | 'math' | 'biology_basic';
 
 interface LearningViewerProps {
   onBack: () => void;
@@ -106,6 +108,16 @@ const MATH_SECTION_HTML: Record<string, string> = {
   'math-integer': MATH_INTEGER_HTML,
 };
 
+/** 生物基礎。共通テスト全範囲を1本のまとめプリントで提供する。 */
+const BIOLOGY_SECTIONS: SectionDef[] = [
+  { id: 'toc', title: '目次・使い方' },
+  { id: 'bio-basic', title: '生物基礎（共通テスト完全対応）' },
+];
+
+const BIOLOGY_SECTION_HTML: Record<string, string> = {
+  'bio-basic': BIO_BASIC_HTML,
+};
+
 // ===================================================================
 // 「重要事項ごとに見る」ための分割データ
 // -------------------------------------------------------------------
@@ -128,6 +140,7 @@ const SECTION_PARTS: Record<string, LearningPart[]> = {
   'math-vector': MATH_VECTOR_PARTS,
   'math-probability': MATH_PROBABILITY_PARTS,
   'math-integer': MATH_INTEGER_PARTS,
+  'bio-basic': BIO_BASIC_PARTS,
 };
 
 /** 印刷ダイアログのタイトル（＝PDFの既定ファイル名）に使うセクション名 */
@@ -178,6 +191,15 @@ const MATH_PART_LABEL: Record<string, string> = {
   'math-integer': '数学A 整数',
 };
 
+const BIOLOGY_PRINT_TITLE: Record<string, string> = {
+  toc: '目次・使い方',
+  'bio-basic': '生物基礎（共通テスト完全対応）',
+};
+
+const BIOLOGY_PART_LABEL: Record<string, string> = {
+  'bio-basic': '生物基礎 全範囲（細胞・遺伝子・体内環境・植生・生態系）',
+};
+
 /** 科目ごとの設定をひとまとめにする（分岐をここ1か所に閉じ込める） */
 const SUBJECT_CONFIG: Record<
   LearningSubject,
@@ -210,6 +232,13 @@ const SUBJECT_CONFIG: Record<
     html: MATH_SECTION_HTML,
     printTitle: MATH_PRINT_TITLE,
     partLabel: MATH_PART_LABEL,
+  },
+  biology_basic: {
+    label: '生物基礎',
+    sections: BIOLOGY_SECTIONS,
+    html: BIOLOGY_SECTION_HTML,
+    printTitle: BIOLOGY_PRINT_TITLE,
+    partLabel: BIOLOGY_PART_LABEL,
   },
 };
 

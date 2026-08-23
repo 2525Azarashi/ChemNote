@@ -30,6 +30,7 @@ import { chemistryData } from './chemistryData';
 import { chemistryAdvancedData } from './chemistryAdvancedData';
 import { englishListeningData } from './englishListeningData';
 import { mathData } from './mathData';
+import { biologyBasicData } from './biologyBasicData';
 import type { ChapterDefinition } from '../utils/studySummary';
 
 export type CatalogSubject =
@@ -108,8 +109,7 @@ export function getChapterCatalog(subject: CatalogSubject): ChapterDefinition[] 
       rows = toDefinitions(mathData.parts as unknown as RawPart[]);
       break;
     case 'biology_basic':
-      // 生物基礎は準備中（単元データ未収録）。空のカタログを返して落とさない。
-      rows = [];
+      rows = toDefinitions(biologyBasicData.parts as unknown as RawPart[]);
       break;
     case 'chemistry_basic':
     default:

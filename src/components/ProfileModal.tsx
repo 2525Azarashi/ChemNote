@@ -7,6 +7,8 @@ import { DoorMascot } from './DoorMascot';
 import { GoogleMark } from './GoogleLinkBanner';
 import { signInWithGoogle, signOutGoogle, switchGoogleAccount, GOOGLE_LINK_BENEFITS } from '../utils/googleAuth';
 import { isFeedbackAdmin } from '../utils/feedbackReply';
+import { syncRankingNickname } from '../utils/leaderboard';
+import { ensureFriendProfile } from '../utils/friends';
 
 interface ProfileModalProps {
   onClose: () => void;
@@ -73,6 +75,14 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
       localStorage.setItem(`profile_${uid}`, JSON.stringify({
         name: name.trim(), grade: grade.trim(), stream, iconUrl: auth.currentUser?.photoURL || '',
       }));
+      // 名前を変えたら、ランキング・フレンド検索の表示名もその場で最新化する。
+      // これまでは「次にスコアを出すまで」旧名のままで、
+      // 「プロフィールを変えたのにランキングが変わらない」と混乱させていた。
+      // 通信失敗しても保存自体は成功として扱う（次回ログイン時に再同期される）。
+      if (auth.currentUser) {
+        void syncRankingNickname().catch(() => {});
+        void ensureFriendProfile().catch(() => {});
+      }
       onClose();
     } catch (error) {
       console.error('保存エラー:', error);

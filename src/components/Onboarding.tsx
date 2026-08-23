@@ -26,6 +26,7 @@ import { motion } from 'motion/react';
 import { Loader2, AlertTriangle, Check, ArrowRight } from 'lucide-react';
 import { auth } from '../firebase';
 import { signInWithGoogle, consumeGoogleRedirectResult, GOOGLE_LINK_BENEFITS, isInAppBrowser } from '../utils/googleAuth';
+import { syncRankingNickname } from '../utils/leaderboard';
 import { GoogleMark } from './GoogleLinkBanner';
 
 interface OnboardingProps {
@@ -93,6 +94,8 @@ export function Onboarding({ onComplete, onGuest }: OnboardingProps) {
         stream,
         iconUrl: auth.currentUser.photoURL || '',
       }));
+      // 初回に決めた名前もランキング側へ即反映（失敗しても進行は止めない）
+      void syncRankingNickname().catch(() => {});
       onComplete();
     } catch (saveError: any) {
       setError('プロフィールの保存に失敗しました。' + String(saveError?.message || ''));

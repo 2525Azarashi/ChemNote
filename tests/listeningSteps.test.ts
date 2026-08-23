@@ -244,8 +244,13 @@ describe('D2（改）: 問題が上・解答が下（自然な読み順）', () 
     expect(QUIZ).not.toMatch(/listeningUnified \? 'lg:w-\[/u);
   });
 
-  it('化学・数学などリスニング以外は従来どおり 50vh のまま', () => {
-    expect(QUIZ).toContain('max-h-[50vh]');
+  it('化学・数学などリスニング以外の問題文ペインは 42dvh（実表示高さ基準）', () => {
+    // ご指摘：「解答するところが問題文（上画面が長すぎて）で埋もれちゃってる」
+    // iOS Safari の vh はURLバーを含む最大高さ基準のため、50vh では実際の
+    // 表示領域の半分を大きく超え、解答入力欄が下部固定ナビに隠れていた。
+    // dvh（実際に見えている高さ）基準の 42% に変更し、解答欄を必ず見せる。
+    expect(QUIZ).toContain('max-h-[42dvh]');
+    expect(QUIZ).not.toContain("'max-h-[50vh] h-auto shadow-md relative z-20'");
   });
 });
 

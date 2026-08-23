@@ -6,6 +6,7 @@ import { chemistryData } from '../data/chemistryData';
 import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
 import { getAllListeningChapters } from '../data/englishListeningData';
 import { getAllMathChapters } from '../data/mathData';
+import { getAllBiologyChapters } from '../data/biologyBasicData';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
@@ -76,7 +77,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
       if (subject === 'chemistry') return getAllAdvancedChapters() as any[];
       if (subject === 'english_listening') return getAllListeningChapters() as any[];
       if (subject === 'math') return getAllMathChapters() as any[];
-      if (subject === 'biology_basic') return [] as any[]; // 準備中（単元未収録）
+      if (subject === 'biology_basic') return getAllBiologyChapters() as any[];
       return chemistryData.parts.flatMap((p: any) => p.chapters) as any[];
     },
     [subject],
@@ -119,8 +120,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
       {
         id: 'biology_basic' as const,
         label: '生物基礎',
-        // 準備中：章が空のときは進捗バー側が「問題を準備中」と表示する
-        chapters: [] as any[],
+        chapters: getAllBiologyChapters() as any[],
       },
     ],
     [],

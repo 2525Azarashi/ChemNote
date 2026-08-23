@@ -31,3 +31,6 @@ export { MATH_PROBABILITY_HTML, MATH_PROBABILITY_PARTS } from './math_probabilit
 
 // 数学（整数）のまとめプリント。
 export { MATH_INTEGER_HTML, MATH_INTEGER_PARTS } from './math_integer';
+
+// 生物基礎（共通テスト完全対応）のまとめプリント。adv_thermo と同じ LearningPart[] 構造。
+export { BIO_BASIC_HTML, BIO_BASIC_PARTS } from './bio_basic';

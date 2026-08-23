@@ -3,6 +3,7 @@ import { chemistryData } from '../data/chemistryData';
 import { chemistryAdvancedData, type AdvancedFieldId } from '../data/chemistryAdvancedData';
 import { englishListeningData } from '../data/englishListeningData';
 import { mathData } from '../data/mathData';
+import { biologyBasicData } from '../data/biologyBasicData';
 import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X, Headphones } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
@@ -154,6 +155,13 @@ const listeningGroups = buildChapterGroups(englishListeningData.parts as any[]);
 const mathGroups = buildChapterGroups(mathData.parts as any[]);
 
 /**
+ * 生物基礎のタブ。
+ * 各章は realTitle（'1章 生物の特徴' など）でグループ化されるので、
+ * 化学と同じ共通処理を通すだけでタブができる。
+ */
+const biologyGroups = buildChapterGroups(biologyBasicData.parts as any[]);
+
+/**
  * 単元の中に収録されている音源を、回（problem）ごとにまとめて取り出す。
  *
  * ご要望「復習用の音源を聞く場所もしっかりと作って」に対応するためのもの。
@@ -208,6 +216,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
   const isAdvanced = subject === 'chemistry';
   const isListening = subject === 'english_listening';
   const isMath = subject === 'math';
+  const isBiology = subject === 'biology_basic';
   /**
    * 科目ごとの配色。
    * これまで覈しのラベル等はすべてダスティローズ直書きだったため、
@@ -225,10 +234,11 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
   const groups = useMemo(() => {
     if (isListening) return listeningGroups;
     if (isMath) return mathGroups;
+    if (isBiology) return biologyGroups;
     if (!isAdvanced) return chapterGroups;
     const parts = chemistryAdvancedData.parts.filter(p => !field || p.field === field);
     return buildChapterGroups(parts as any[]);
-  }, [isAdvanced, isListening, isMath, field]);
+  }, [isAdvanced, isListening, isMath, isBiology, field]);
 
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null);
   /**

@@ -87,19 +87,22 @@ describe('科目の定義', () => {
     expect(def).toContain('積分');
   });
 
-  it('生物基礎は available: false（＝準備中）として定義されている', () => {
+  it('生物基礎は available: true（＝公開中）で、収録数をデータから算出している', () => {
     const block = SRC.slice(SRC.indexOf("id: 'biology_basic'"));
     const def = block.slice(0, block.indexOf('},'));
     expect(def).toContain("title: '生物基礎'");
-    expect(def).toContain('available: false');
+    expect(def).toContain('available: true');
     expect(def).toContain('icon: Leaf');
+    // 収録数は getBiologyStats() から算出（数字のハードコードをしない）
+    expect(def).toContain('biologyStats.chapters');
+    expect(def).toContain('biologyStats.questions');
   });
 
-  it('公開中4科目＋準備中1科目（生物基礎のみ準備中）', () => {
+  it('公開中5科目（全科目公開済み）', () => {
     const availableTrue = (SRC.match(/available: true/g) || []).length;
     const availableFalse = (SRC.match(/available: false/g) || []).length;
-    expect(availableTrue).toBe(4);
-    expect(availableFalse).toBe(1);
+    expect(availableTrue).toBe(5);
+    expect(availableFalse).toBe(0);
   });
 
   it('数学の収録数はデータから算出する（数字のハードコードをしない）', () => {

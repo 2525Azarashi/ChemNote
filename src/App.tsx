@@ -30,6 +30,7 @@ import { chemistryAdvancedData, ADVANCED_FIELDS, type AdvancedFieldId } from './
 import { chemistryData } from './data/chemistryData';
 import { englishListeningData } from './data/englishListeningData';
 import { mathData } from './data/mathData';
+import { biologyBasicData } from './data/biologyBasicData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIdleReset } from './hooks/useIdleReset';
 import { useIsMobile } from './hooks/useMediaQuery';
@@ -338,20 +339,16 @@ export default function App() {
   const [subjectPickerOrigin, setSubjectPickerOrigin] =
     useState<'start' | 'change'>('start');
 
-  const shouldForceDesktopUI = forceDesktop || isExplanationView || appState === 'explanation';
+  // 【スマホ解答解説：俯瞰UIの廃止 → スマホ専用レイアウトへ】
+  // 以前は解答解説ページだけスマホでも PC 版レイアウト（width=1024 を縮小した
+  // 俯瞰UI）を強制していたが、「解答と解説の文字が小さい。問題のところと同じ
+  // ぐらいの文字の大きさにしたい」というご指摘のとおり、初期表示の文字が
+  // 物理的に極小（実質6px程度）になっていた。
+  // そこで俯瞰UIをやめ、スマホでは解答解説もスマホ専用レイアウト
+  // （正誤一覧 → タップでその問の解説を開く。Explanation.tsx 側で実装）で表示する。
+  // PC のレイアウトは一切変えない。
+  const shouldForceDesktopUI = forceDesktop;
   const isMobileView = ((isMobileDevice && !shouldForceDesktopUI) || isMobilePreview) && !shouldForceDesktopUI;
-
-  // 【解答解説ページ：俯瞰UI＋ピンチズーム前提への変更】
-  // 従来はスマホ専用の「縦スクロールレイアウト」を isMobileExplanation で切り替えていたが、
-  // viewport メタタグを App / Quiz / Explanation の3箇所が競合して書き換えるため、
-  // effect の実行順序次第で「PC版レイアウト × device-width viewport」の組み合わせになり、
-  // 初回表示時のみ縦スクロール不能（リロードで解消）という不安定な挙動が発生していた。
-  // このような個別のスクロール不具合を追いかけるのではなく、スマホでも PC 版と同じ
-  // 「俯瞰レイアウト（width=1024 viewport）＋ピンチアウト前提」の UI に統一する：
-  //  - 初期表示：画面幅に全体が収まる縮小表示（initial-scale = 画面幅/1024）
-  //  - 拡大時：ピンチ操作で自由にズームイン・アウト可能（user-scalable=yes）
-  // viewport の制御は下の shouldForceDesktopUI の effect（App.tsx）に一元化し、
-  // Explanation / Quiz 側での解説表示時の viewport 書き換えは廃止した。
 
   // PC版では「学習モードを選択」(mode_selection) 以外の全画面で外側余白をなくし、
   // ノート風背景を全幅に広げる。mode_selection だけは従来通り中央寄せ＋余白を維持。
@@ -743,6 +740,7 @@ export default function App() {
     ...chemistryAdvancedData.parts.flatMap(p => p.chapters as any[]),
     ...englishListeningData.parts.flatMap(p => p.chapters as any[]),
     ...mathData.parts.flatMap(p => p.chapters as any[]),
+    ...biologyBasicData.parts.flatMap(p => p.chapters as any[]),
   ].find(c => (c as any).id === selectedChapterId);
 
   return (
@@ -803,6 +801,7 @@ export default function App() {
                 subject={
                   selectedSubject === 'chemistry' ? 'chemistry'
                   : selectedSubject === 'math' ? 'math'
+                  : selectedSubject === 'biology_basic' ? 'biology_basic'
                   : 'chemistry_basic'
                 }
               />
@@ -840,9 +839,9 @@ export default function App() {
                   answers={quizAnswers}
                   onBack={handleBackToChapters}
                   isGuest={isGuest}
-                  // スマホでも常に PC 版レイアウト（俯瞰UI）で表示する。
-                  // 縮小/拡大は viewport（width=1024 ＋ fit scale ＋ ピンチズーム許可）側で制御する。
-                  isMobileView={false}
+                  // スマホではスマホ専用レイアウト（正誤一覧→タップで解説）で表示する。
+                  // PC は従来どおり（isMobileView=false → 2カラムレイアウト）。
+                  isMobileView={isMobileView}
                   resultTotalScore={lastQuizResult?.totalScore}
                   resultTotalCorrect={lastQuizResult?.totalCorrect}
                   resultTotalJudgeable={lastQuizResult?.totalJudgeable}

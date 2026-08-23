@@ -845,10 +845,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // isMobileView が渡された場合（スマホプレビュー枠）はそれを優先する。
   const isDesktop = useIsDesktop(isMobileView !== undefined ? !isMobileView : undefined);
   // 解答解説ページに渡すスマホ判定。
-  // 【俯瞰UI＋ピンチズーム前提への変更】スマホでも常に PC 版レイアウト
-  // （俯瞰表示）で描画するため、常に false を渡す。縮小/拡大は
-  // App.tsx の viewport 制御（width=1024 ＋ fit scale ＋ ピンチズーム許可）に委ねる。
-  const isMobileForExplanation = false;
+  // 【俯瞰UIの廃止】以前はスマホでも PC 版レイアウトを縮小表示（俯瞰UI）して
+  // いたが、「解答と解説の文字が小さい」というご指摘のとおり初期表示が極小に
+  // なるため廃止。スマホでは Explanation 側のスマホ専用レイアウト
+  // （問題文を上部に固定＋正誤一覧→タップで解説）で表示する。
+  // isMobileView が未指定なら Explanation 自身のメディアクエリ判定に任せる。
+  const isMobileForExplanation = isMobileView;
 
   // 直前に表示していた問題のインデックスを保持（離脱した問題の回答リセット用）
   const prevQuestionIndexRef = useRef(currentQuestionIndex);
@@ -2561,10 +2563,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       <div className={`flex-1 flex flex-col lg:flex-row overflow-hidden relative`}>
 
         {/* Section 1: Problem Text
-            ★左右比は従来どおり 58% / 42%（勝手に変えない、というご指摘に対応）。
-              スマホの高さ上限も従来どおり 50vh。 */}
+            ★左右比は従来どおり 58% / 42%（勝手に変えない、というご指摘に対応）。 */}
         {/* スマホの高さ制御（ご要望「問題文が占領しすぎて入力しづらい」対策）：
-            ・通常は従来どおり max-h-[50vh]（短い問題は h-auto で影響なし）
+            ・通常は max-h-[42dvh]。以前は 50vh だったが、iOS Safari の vh は
+              URLバー・ツールバーを含む「最大の画面高さ」基準のため、実際の
+              表示領域では半分を大きく超えてしまい、下部固定ナビと合わさって
+              解答入力欄がほぼ隠れていた（ご指摘「解答するところが問題文で
+              埋もれちゃってる」）。dvh（実際に見えている高さ）基準の 42% に
+              して、解答欄が最初から必ず見えるようにする。短い問題は h-auto で影響なし。
             ・ソフトキーボード表示中は max-h-[24vh] に自動で縮め、
               入力欄と入力内容がキーボードの上に必ず見えるようにする
             ・「たたむ」で見出しだけにして解答欄を最大化できる */}
@@ -2588,7 +2594,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   ? 'max-h-[24vh] h-auto shadow-md relative z-20'
                   : listeningUnified
                     ? 'max-h-[40vh] h-auto shadow-md relative z-20'
-                    : 'max-h-[50vh] h-auto shadow-md relative z-20'}
+                    : 'max-h-[42dvh] h-auto shadow-md relative z-20'}
         `}>
           <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
             <div className="flex items-center gap-2 md:gap-3">
