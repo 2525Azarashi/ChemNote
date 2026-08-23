@@ -21,6 +21,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { auth } from '../firebase';
 import { fetchChapterRanking } from '../utils/leaderboard';
 import { computeLiveStanding, type LadderEntry, type LiveStanding } from '../utils/liveRank';
+import { displayNicknameForNational } from '../utils/nicknamePrivacy';
 
 export interface UseLiveStandingResult {
   /** 暫定順位の情報。取得前・ゲスト時は null */
@@ -54,7 +55,12 @@ export function useLiveStanding(
         setLadder(
           rows.map((row) => ({
             uid: row.entry.uid,
-            nickname: row.entry.nickname || '名無しの化学者',
+            // 解答中の「すぐ上の相手」表示も全国ランキング由来なので、
+            // 他人の名前は部分マスクしてから保持する（個人情報保護）。
+            nickname: displayNicknameForNational(
+              row.entry.nickname || '名無しの化学者',
+              row.entry.uid === auth.currentUser?.uid,
+            ),
             score: row.entry.bestScore || 0,
           })),
         );

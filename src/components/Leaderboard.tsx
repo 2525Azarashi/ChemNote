@@ -25,6 +25,7 @@ import { DoorMascot } from './DoorMascot';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
 import { RankingPodium } from './RankingPodium';
 import { qualifyLineFor } from '../utils/liveRank';
+import { displayNicknameForNational } from '../utils/nicknamePrivacy';
 
 interface LeaderboardProps {
   onBack: () => void;
@@ -80,7 +81,10 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
         setRows(
           list.map((r) => ({
             rank: r.rank,
-            nickname: r.entry.nickname,
+            // 全国ランキングは誰でも見られるので、本名を入れている子の
+            // 個人情報を守るため名前を部分マスクする（自分の行はそのまま）。
+            // フレンドスコープ（上の分岐）は従来どおりフル表示。
+            nickname: displayNicknameForNational(r.entry.nickname, r.isMe),
             photoURL: r.entry.photoURL,
             score: r.entry.totalScore,
             // 0pt のユーザーも掲載する（連携済みなら全員載る）ため、
@@ -101,7 +105,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
         setRows(
           list.map((r) => ({
             rank: r.rank,
-            nickname: r.entry.nickname,
+            nickname: displayNicknameForNational(r.entry.nickname, r.isMe),
             photoURL: r.entry.photoURL,
             score: r.entry.bestScore,
             sub: `正答率 ${Math.round((r.entry.correctRate || 0) * 100)}% / ${r.entry.timeUsedSec}秒`,
@@ -114,7 +118,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
         setRows(
           list.map((r) => ({
             rank: r.rank,
-            nickname: r.entry.nickname,
+            nickname: displayNicknameForNational(r.entry.nickname, r.isMe),
             photoURL: r.entry.photoURL,
             score: r.entry.bestScore,
             sub: `${r.entry.playCount} 回プレイ`,

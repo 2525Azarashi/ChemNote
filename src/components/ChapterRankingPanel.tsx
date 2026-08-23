@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { auth } from '../firebase';
 import { fetchChapterRanking } from '../utils/leaderboard';
 import { RankingPodium } from './RankingPodium';
+import { displayNicknameForNational } from '../utils/nicknamePrivacy';
 
 interface ChapterRankingPanelProps {
   chapterId: string;
@@ -55,7 +56,8 @@ export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRa
 
         const topScores = topRanking.slice(0, 3).map((row) => ({
           rank: row.rank,
-          nickname: row.entry.nickname || '名無しの化学者',
+          // 全国のランキングなので、他人の名前は部分マスク（個人情報保護）
+          nickname: displayNicknameForNational(row.entry.nickname || '名無しの化学者', row.entry.uid === uid),
           photoURL: row.entry.photoURL,
           score: row.entry.bestScore,
           isCurrentUser: row.entry.uid === uid,
@@ -77,7 +79,7 @@ export function ChapterRankingPanel({ chapterId, userScore, isGuest }: ChapterRa
                 return {
                   gap: Math.max(1, (target.entry.bestScore || 0) - userScore + 1),
                   targetRank: target.rank,
-                  targetName: target.entry.nickname || '名無しの化学者',
+                  targetName: displayNicknameForNational(target.entry.nickname || '名無しの化学者', target.entry.uid === uid),
                 };
               })()
             : null;
