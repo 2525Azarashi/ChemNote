@@ -823,6 +823,49 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   // それ以外（PC、結果表示画面）は従来どおり左カラム内にフローチャートを表示する。
   const reorderMobile = isMobile && !isResultView;
 
+  // 【スマホの結果画面：スコアと復習推奨エリアを1画面に収める】
+  // 以前は「RESULT SCORE カード（＋ランキング＋ご意見）」の後ろに
+  // 「分析結果：復習推奨エリア」が大きなカード群で続いていたため、
+  // どこが弱点かを見るのにスクロールが必要だった。
+  // スマホの結果表示では、スコア行を小さくまとめ、その直下に
+  // 復習推奨エリアを1行ずつの薄いバーで並べて同じ画面に収める。
+  const compactResult = isMobile && isResultView;
+
+  // スマホ結果画面用：復習推奨エリアのコンパクト表示（1行＝カテゴリ名＋％＋細いバー）
+  const compactWeakAreas = compactResult && weakAreas.length > 0 ? (
+    <div className="mt-3 pt-3 border-t border-[#F4D03F]/40">
+      <div className="flex items-center gap-1.5 mb-2">
+        <TrendingUp className="w-4 h-4 text-[#D9A0A0]" />
+        <span className="text-xs font-bold text-[#1B2631]">分析結果：復習推奨エリア</span>
+      </div>
+      {/* 件数が多い単元でも下の解説を押し出さないよう、必要なときだけ内部スクロールする */}
+      <div className="space-y-1.5 max-h-[38vh] overflow-y-auto overscroll-contain pr-0.5">
+        {weakAreas.map((area) => (
+          <div key={area.category} className="bg-white/80 border border-white rounded-xl px-2.5 py-1.5 shadow-xs">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1 min-w-0">
+                <AlertTriangle className="w-3 h-3 shrink-0 text-[#D9A0A0]" />
+                <span className="text-[11px] font-bold text-[#1B2631] truncate">{area.category}</span>
+              </div>
+              <span className="font-mono font-bold text-xs text-[#D9A0A0] tabular-nums shrink-0">
+                {area.percentage}<span className="text-[9px] ml-0.5">%</span>
+              </span>
+            </div>
+            <div className="relative h-1.5 mt-1 rounded-full overflow-hidden bg-gray-200/70">
+              <div
+                className="absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-[#D9A0A0] to-[#FFB7B2] transition-all duration-1000 ease-out"
+                style={{ width: `${area.percentage}%` }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-[9px] text-[#4B5563]/70 mt-1.5 text-right">
+        ※ 記述問題は自己採点チェックを入れるとスコアに反映されます
+      </p>
+    </div>
+  ) : null;
+
   const content = (
     <div
       // C6: 解答後に表示される解説領域をスクリーンリーダーが読み上げられるよう、
@@ -870,25 +913,41 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       )}
 
       {/* Header（結果画面ではスクロールしても常に「単元選択に戻る」やスコアが見えるよう上部に固定） */}
-      <div className={`p-4 md:p-6 border-b-2 z-30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 flex-none ${
+      <div className={`p-4 md:p-6 border-b-2 z-30 flex items-start justify-between gap-4 flex-none ${
+        // ★スマホの1問ごとの答え合わせ（reorderMobile）では、
+        //   「解答・解説 / 章名」の右横に Score・答え合わせ・Q番号・ノートに保存・正答率を
+        //   横並びで置き、縦方向の占有を減らす（上部の1行に集約する）。
+        reorderMobile ? 'flex-row' : 'flex-col md:flex-row md:items-center'
+      } ${
         isResultView ? 'sticky top-0 backdrop-blur-md' : 'relative'
       } ${
         mode === 'mini_test' ? 'bg-white/95 border-gray-100' : 'bg-[#0B132B]/95 border-[#1C2541]'
       }`}>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1 min-w-0 w-full md:w-auto">
+        <div className={`flex flex-1 min-w-0 ${
+          reorderMobile
+            ? 'flex-row items-start justify-between gap-2 w-full'
+            : 'flex-col sm:flex-row sm:items-center gap-4 w-full md:w-auto'
+        }`}>
           <div className="flex-shrink-0">
-            <h3 className={`text-lg md:text-xl font-bold tracking-wider ${
+            <h3 className={`font-bold tracking-wider ${reorderMobile ? 'text-base' : 'text-lg md:text-xl'} ${
               mode === 'mini_test' ? 'text-[#2C3E50]' : 'text-[#5BC0BE]'
             }`}>
               解答・解説
             </h3>
-            <div className={`text-xs md:text-sm mt-1 ${
+            <div className={`mt-0.5 md:mt-1 ${reorderMobile ? 'text-[10px]' : 'text-xs md:text-sm'} ${
               mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'
             }`}>
               {chapter.realTitle}
             </div>
           </div>
 
+          {/* ★スマホの1問ごとの答え合わせでは、Score とメタ情報（答え合わせ / Q番号 /
+              カテゴリ / ノートに保存 / 正答率）を右寄せの1ブロックにまとめる。
+              PC・結果表示では従来のレイアウトを崩さないよう display:contents で素通しする。 */}
+          <div className={reorderMobile
+            ? 'flex flex-wrap items-center justify-end gap-1.5 min-w-0 flex-1'
+            : 'contents'
+          }>
           {/* 固定ヘッダーの Score 表示は削除。
               結果表示画面（isResultView）では下部の「RESULT SCORE」カード内にのみ Score を表示し、
               固定ヘッダーには「単元選択に戻る」ボタンのみを残す。
@@ -899,37 +958,54 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               initial={{ scale: 1.15 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${
+              className={`flex items-center border shadow-sm ${
+                // スマホでは小さめのピル型にして、右横に並べても窮屈にならないようにする
+                reorderMobile ? 'gap-1 px-2 py-0.5 rounded-full' : 'gap-2 px-3 py-2 rounded-2xl'
+              } ${
                 mode === 'mini_test'
                   ? 'bg-[#F4D03F]/15 text-[#1B2631] border-[#F4D03F]/40'
                   : 'bg-[#F4D03F]/20 text-[#F9E79F] border-[#F4D03F]/40'
               }`}
             >
-              <Trophy size={16} className="text-[#D4A017]" />
-              <div className="leading-none">
-                <div className="text-[10px] font-bold opacity-70 font-modern">Score</div>
-                <div className="font-handwriting font-bold text-base md:text-lg tabular-nums">
+              <Trophy size={reorderMobile ? 12 : 16} className="text-[#D4A017]" />
+              {reorderMobile ? (
+                <div className="font-handwriting font-bold text-xs tabular-nums leading-none">
                   {displayTotalScore}
-                  <span className="text-[10px] ml-1 opacity-70">pt</span>
+                  <span className="text-[9px] ml-0.5 opacity-70">pt</span>
                 </div>
-              </div>
+              ) : (
+                <div className="leading-none">
+                  <div className="text-[10px] font-bold opacity-70 font-modern">Score</div>
+                  <div className="font-handwriting font-bold text-base md:text-lg tabular-nums">
+                    {displayTotalScore}
+                    <span className="text-[10px] ml-1 opacity-70">pt</span>
+                  </div>
+                </div>
+              )}
             </motion.div>
           )}
 
           {singleQuestionIndex !== undefined && questions[0] && (
-            <div className={`flex flex-wrap items-center gap-2 sm:gap-3 sm:border-l sm:pl-4 md:pl-6 lg:pl-8 ${
-              mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/50'
-            } w-full sm:w-auto`}>
-              <div className={`flex items-center gap-1 font-bold text-[11px] md:text-xs px-2.5 py-1 rounded-full border ${
+            <div className={reorderMobile
+              ? 'flex flex-wrap items-center justify-end gap-1.5 min-w-0'
+              : `flex flex-wrap items-center gap-2 sm:gap-3 sm:border-l sm:pl-4 md:pl-6 lg:pl-8 ${
+                  mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/50'
+                } w-full sm:w-auto`
+            }>
+              <div className={`flex items-center gap-1 font-bold rounded-full border ${
+                reorderMobile ? 'text-[10px] px-2 py-0.5' : 'text-[11px] md:text-xs px-2.5 py-1'
+              } ${
                 mode === 'mini_test' 
                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                   : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'
               }`}>
-                <CheckCircle2 className="w-3.5 h-3.5" />
+                <CheckCircle2 className={reorderMobile ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
                 <span>答え合わせ</span>
               </div>
 
-              <div className={`font-bold px-2.5 py-0.5 rounded-full text-xs shadow-sm border ${
+              <div className={`font-bold rounded-full shadow-sm border ${
+                reorderMobile ? 'text-[10px] px-2 py-0.5' : 'text-xs px-2.5 py-0.5'
+              } ${
                 mode === 'mini_test' 
                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                   : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'
@@ -937,7 +1013,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 Q{singleQuestionIndex + 1}
               </div>
 
-              <div className={`font-bold text-xs md:text-sm truncate max-w-[120px] sm:max-w-[200px] ${
+              <div className={`font-bold truncate ${
+                reorderMobile ? 'text-[10px] max-w-[92px]' : 'text-xs md:text-sm max-w-[120px] sm:max-w-[200px]'
+              } ${
                 mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'
               }`}>
                 {questions[0].category || '問題'}
@@ -945,23 +1023,25 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
 
               <button
                 onClick={(e) => { e.stopPropagation(); handleSaveNote(questions[0], singleQuestionIndex); }}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold transition-colors border ${
+                className={`flex items-center gap-1 rounded-full font-bold transition-colors border ${
+                  reorderMobile ? 'text-[10px] px-2 py-0.5' : 'text-[11px] px-2.5 py-1'
+                } ${
                   savingNote[questions[0].id] 
                     ? (mode === 'mini_test' ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-[#1C2541] text-[#7A8B99] border-[#1C2541]') 
                     : (mode === 'mini_test' ? 'bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100' : 'bg-[#F9E79F]/20 text-[#F9E79F] border-[#F9E79F]/30 hover:bg-[#F9E79F]/30')
                 }`}
                 disabled={savingNote[questions[0].id]}
               >
-                <Save size={12} />
+                <Save size={reorderMobile ? 10 : 12} />
                 <span>{savingNote[questions[0].id] ? '保存中...' : 'ノートに保存'}</span>
               </button>
 
               {(() => {
                 const scorePercentage = calculateScore(questions[0]);
                 return (
-                  <div className="flex items-center gap-1 ml-auto sm:ml-0">
-                    <span className={`text-[10px] md:text-xs font-bold ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正答率:</span>
-                    <span className={`font-mono font-bold text-xs md:text-sm ${
+                  <div className={`flex items-center gap-1 ${reorderMobile ? '' : 'ml-auto sm:ml-0'}`}>
+                    <span className={`font-bold ${reorderMobile ? 'text-[9px]' : 'text-[10px] md:text-xs'} ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正答率:</span>
+                    <span className={`font-mono font-bold ${reorderMobile ? 'text-[11px]' : 'text-xs md:text-sm'} ${
                       scorePercentage >= 80 
                         ? (mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]') 
                         : scorePercentage <= 40 
@@ -975,6 +1055,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               })()}
             </div>
           )}
+          </div>
         </div>
         {singleQuestionIndex !== undefined && onNextQuestion ? (
           // ★スマホの1問ごとの答え合わせでは、このボタン行は画面下部の
@@ -1019,44 +1100,62 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       </div>
 
       {isResultView && displayTotalScore != null && (
-        <div className="px-4 md:px-6 pt-4 relative z-10">
-          <div className="bg-gradient-to-br from-[#FFF8E1] via-white to-[#E8F4FD] border border-[#F4D03F]/60 rounded-3xl shadow-lg p-5 md:p-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#F4D03F] text-[#1B2631] flex items-center justify-center shadow-md">
-                  <Trophy size={22} />
+        <div className={`relative z-10 ${compactResult ? 'px-3 pt-3' : 'px-4 md:px-6 pt-4'}`}>
+          <div className={`bg-gradient-to-br from-[#FFF8E1] via-white to-[#E8F4FD] border border-[#F4D03F]/60 shadow-lg ${
+            compactResult ? 'rounded-2xl p-3' : 'rounded-3xl p-5 md:p-6'
+          }`}>
+            {/* スマホ（compactResult）ではスコアと Correct/Rate/Time を1行に圧縮して、
+                直下の「復習推奨エリア」まで同じ画面に収める。 */}
+            <div className={compactResult
+              ? 'flex flex-row items-center justify-between gap-2'
+              : 'flex flex-col md:flex-row md:items-center justify-between gap-4'
+            }>
+              <div className={`flex items-center ${compactResult ? 'gap-2 shrink-0' : 'gap-3'}`}>
+                <div className={`rounded-2xl bg-[#F4D03F] text-[#1B2631] flex items-center justify-center shadow-md ${
+                  compactResult ? 'w-8 h-8 rounded-xl' : 'w-12 h-12'
+                }`}>
+                  <Trophy size={compactResult ? 16 : 22} />
                 </div>
                 <div>
-                  <p className="text-[10px] md:text-xs uppercase tracking-widest text-[#1B2631]/60 font-bold font-modern">
+                  <p className={`uppercase tracking-widest text-[#1B2631]/60 font-bold font-modern ${
+                    compactResult ? 'text-[9px] leading-none' : 'text-[10px] md:text-xs'
+                  }`}>
                     Result Score
                   </p>
-                  <p className="text-3xl md:text-4xl font-handwriting font-bold text-[#1B2631] leading-none tabular-nums">
+                  <p className={`font-handwriting font-bold text-[#1B2631] leading-none tabular-nums ${
+                    compactResult ? 'text-xl' : 'text-3xl md:text-4xl'
+                  }`}>
                     {displayTotalScore}
-                    <span className="text-sm md:text-base ml-1 text-[#4B5563]">pt</span>
+                    <span className={`ml-1 text-[#4B5563] ${compactResult ? 'text-[10px]' : 'text-sm md:text-base'}`}>pt</span>
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-2 md:gap-3 text-center">
-                <div className="bg-white/70 border border-white rounded-2xl p-3 shadow-xs">
-                  <div className="text-[10px] text-[#4B5563]/70 font-bold">Correct</div>
-                  <div className="font-mono font-bold text-[#1B2631] tabular-nums">
+              <div className={`grid grid-cols-3 text-center ${compactResult ? 'gap-1.5 flex-1 min-w-0' : 'gap-2 md:gap-3'}`}>
+                <div className={`bg-white/70 border border-white shadow-xs ${compactResult ? 'rounded-xl px-1 py-1' : 'rounded-2xl p-3'}`}>
+                  <div className={`text-[#4B5563]/70 font-bold ${compactResult ? 'text-[9px] leading-none' : 'text-[10px]'}`}>Correct</div>
+                  <div className={`font-mono font-bold text-[#1B2631] tabular-nums ${compactResult ? 'text-[11px]' : ''}`}>
                     {resultTotalCorrect ?? 0}/{resultTotalJudgeable ?? 0}
                   </div>
                 </div>
-                <div className="bg-white/70 border border-white rounded-2xl p-3 shadow-xs">
-                  <div className="text-[10px] text-[#4B5563]/70 font-bold">Rate</div>
-                  <div className="font-mono font-bold text-[#1B2631] tabular-nums">
+                <div className={`bg-white/70 border border-white shadow-xs ${compactResult ? 'rounded-xl px-1 py-1' : 'rounded-2xl p-3'}`}>
+                  <div className={`text-[#4B5563]/70 font-bold ${compactResult ? 'text-[9px] leading-none' : 'text-[10px]'}`}>Rate</div>
+                  <div className={`font-mono font-bold text-[#1B2631] tabular-nums ${compactResult ? 'text-[11px]' : ''}`}>
                     {resultTotalJudgeable ? Math.round(((resultTotalCorrect ?? 0) / resultTotalJudgeable) * 100) : 0}%
                   </div>
                 </div>
-                <div className="bg-white/70 border border-white rounded-2xl p-3 shadow-xs">
-                  <div className="text-[10px] text-[#4B5563]/70 font-bold">Time</div>
-                  <div className="font-mono font-bold text-[#1B2631] tabular-nums">
+                <div className={`bg-white/70 border border-white shadow-xs ${compactResult ? 'rounded-xl px-1 py-1' : 'rounded-2xl p-3'}`}>
+                  <div className={`text-[#4B5563]/70 font-bold ${compactResult ? 'text-[9px] leading-none' : 'text-[10px]'}`}>Time</div>
+                  <div className={`font-mono font-bold text-[#1B2631] tabular-nums ${compactResult ? 'text-[11px]' : ''}`}>
                     {resultTotalTimeSec ?? 0}s
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* ★スマホ：スコアの直下に復習推奨エリア（コンパクト版）を出し、
+                1画面で「点数」と「どこを復習すべきか」が同時に見えるようにする。 */}
+            {compactWeakAreas}
+
             <ChapterRankingPanel
               chapterId={chapter.id}
               userScore={displayTotalScore}
@@ -1105,7 +1204,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           ★ 修正：問題数が多い場合（弱点エリアが多数）に desktop で潜在的にはみ出してスクロールできなかった不具合を解消。
             - ブロック自体は flex-none（縮まない）
             - 見出しは固定し、カードのグリッド部分だけを max-height 付きで縦スクロール可能にする */}
-        {singleQuestionIndex === undefined && weakAreas.length > 0 && (
+        {/* ★スマホの結果画面（compactResult）では、この大きな復習推奨エリアは
+            上のスコアカード内にコンパクト表示へ移したので重複表示しない。 */}
+        {singleQuestionIndex === undefined && weakAreas.length > 0 && !compactResult && (
           <div className={`rounded-2xl p-5 md:p-6 shadow-lg border relative flex flex-col flex-none ${
             mode === 'mini_test' ? 'bg-gray-50 border-gray-100' : 'bg-[#1C2541]/50 border-[#3A506B]/50'
           }`}>
