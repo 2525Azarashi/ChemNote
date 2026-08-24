@@ -48,6 +48,12 @@ const ALLOWED_TAGS = new Set([
   'p', 'div', 'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr',
   'details', 'summary', 'figure', 'figcaption', 'blockquote', 'pre',
+  // 数式（KaTeX）の描画に必要な最小限の図形要素。
+  // 根号の斜線、\left( の伸びる括弧、→ の矢印などは
+  // フォントの文字ではなく <svg><path d="…"/></svg> で描かれるため、
+  // これを落とすと「√ の記号だけ消える」「括弧が伸びない」という
+  // 目に見える欠落になる。下の SVG_TAG_ATTRS で属性を厳しく絞る。
+  'svg', 'path',
 ]);
 
 /**
@@ -60,14 +66,51 @@ const ALLOWED_TAGS = new Set([
  */
 const ALLOWED_ATTRS = new Set([
   'class', 'style', 'colspan', 'rowspan', 'open', 'aria-hidden', 'scope',
+  // KaTeX で組んだ数式は視覚表現を aria-hidden にするため、
+  // 読み上げ用のテキストを aria-label で持たせる（値は文字列のみで副作用なし）。
+  'aria-label',
 ]);
+
+/**
+ * SVG 要素だけに許す属性（タグごとの個別許可リスト）。
+ *
+ * ★SVG は全体を許可してはいけない★
+ *   <svg> の中には <script>, <foreignObject>, <use href="…">, <animate> など
+ *   スクリプト実行や外部参照が可能な要素がある。そこで
+ *     - 通す要素は <svg> と <path> の 2 つだけ（ALLOWED_TAGS）
+ *     - 属性も「図形の寸法とパス形状」に関わるものだけ
+ *   に限定する。d / viewBox / width / height はいずれも
+ *   数値と記号の文字列で、URL もスクリプトも表現できない。
+ *   href/xlink:href を許可していないのが要点（外部参照が入らない）。
+ */
+const SVG_TAG_ATTRS: Record<string, Set<string>> = {
+  svg: new Set(['class', 'style', 'width', 'height', 'viewbox', 'preserveaspectratio', 'xmlns', 'aria-hidden']),
+  path: new Set(['class', 'd']),
+};
 
 /** タグだけでなく中身ごと捨てるタグ（中のテキストを見せる意味がない／危険）。 */
 const DROP_WITH_CONTENT = new Set([
   'script', 'style', 'iframe', 'object', 'embed', 'template', 'noscript',
-  'svg', 'math', 'frame', 'frameset', 'applet', 'audio', 'video', 'canvas',
+  'math', 'frame', 'frameset', 'applet', 'audio', 'video', 'canvas',
   'form', 'select', 'textarea', 'button', 'option',
+  // SVG の中で危険になり得る要素は中身ごと捨てる。
+  // <svg>/<path> 自体は数式描画のため許可しているので、
+  // 「許可した器の中に危険物が入る」経路をここで閉じる。
+  'foreignobject', 'animate', 'animatetransform', 'animatemotion', 'set',
+  'use', 'image', 'handler', 'listener', 'discard',
 ]);
+
+/**
+ * SVG 属性の正しい大文字小文字。
+ *
+ * HTML の属性名は小文字化して扱うが、SVG の `viewBox` などは
+ * キャメルケースでないと効かない（HTML パーサ側にも補正表はあるが、
+ * 文字列として組み立て直す我々が正しい形で出す方が確実）。
+ */
+const SVG_ATTR_CANONICAL: Record<string, string> = {
+  viewbox: 'viewBox',
+  preserveaspectratio: 'preserveAspectRatio',
+};
 
 /**
  * 温存を許すHTMLコメントの形。
@@ -120,17 +163,23 @@ function sanitizeTag(rawTag: string, tagName: string, isClosing: boolean): strin
     .replace(/^<\s*[a-zA-Z][a-zA-Z0-9]*/, '')
     .replace(/\/?>?$/, '');
 
+  // SVG（数式の根号・伸びる括弧）はタグごとの厳しい許可リストを使う
+  const svgAttrs = SVG_TAG_ATTRS[tagName];
+
   const kept: string[] = [];
   ATTR_RE.lastIndex = 0;
   let m: RegExpExecArray | null;
   while ((m = ATTR_RE.exec(attrSource)) !== null) {
     const name = m[1].toLowerCase();
-    if (!ALLOWED_ATTRS.has(name)) continue;
+    if (svgAttrs ? !svgAttrs.has(name) : !ALLOWED_ATTRS.has(name)) continue;
+
+    // viewBox などは大文字小文字が意味を持つので正しい形に戻す
+    const outName = svgAttrs ? (SVG_ATTR_CANONICAL[name] ?? name) : name;
 
     const rawValue = m[2] ?? m[3] ?? m[4];
     if (rawValue === undefined) {
       // 値なし属性（<details open> など）
-      kept.push(name);
+      kept.push(outName);
       continue;
     }
 
@@ -143,7 +192,7 @@ function sanitizeTag(rawTag: string, tagName: string, isClosing: boolean): strin
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
-    kept.push(`${name}="${value}"`);
+    kept.push(`${outName}="${value}"`);
   }
 
   const selfClosing =

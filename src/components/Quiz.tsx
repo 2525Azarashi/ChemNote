@@ -1,6 +1,17 @@
 import React, { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
 import { ChevronRight, ChevronLeft, ChevronDown, ChevronUp, Edit3, ArrowLeft, GripVertical, Trophy, HelpCircle } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
+// 記号パレットのボタン面を「解答欄・解説と同じ組版」で描くために使う。
+// renderLatex は KaTeX（数式）／mhchem（化学式）の HTML を返すので、
+// 本文と同じ sanitizeInlineHtml を通してから貼る。
+import { renderLatex } from '../utils/mathTypeset';
+import { sanitizeInlineHtml } from '../utils/sanitizeHtml';
+import {
+  chemistryPaletteGroups,
+  mathPaletteGroups,
+  type PaletteGroup,
+  type PaletteItem,
+} from '../data/symbolPalettes';
 import { ExplanationBody } from './ExplanationBody';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
@@ -243,155 +254,6 @@ function requiresMathSymbols(question: any): boolean {
   return true;
 }
 
-type PaletteItem = { label: string; value: string; desc: string };
-type PaletteGroup = { group: string; items: PaletteItem[] };
-
-// 化学記号パレット（カテゴリ別）。
-// 反応式・化学式・イオン式の入力を、キーボードを使わずワンタップで行えるようにする。
-const chemistryPaletteGroups: PaletteGroup[] = [
-  {
-    group: '反応式の記号',
-    items: [
-      { label: '→', value: ' → ', desc: '生成（右向き矢印）' },
-      { label: '⇌', value: ' ⇌ ', desc: '可逆反応（平衡）' },
-      { label: '+', value: ' + ', desc: '化学式どうしの区切り（プラス）' },
-      { label: '↑', value: '↑', desc: '気体の発生' },
-      { label: '↓', value: '↓', desc: '沈殿の生成' },
-      { label: '·', value: '·', desc: '水和水などの中点（例: CuSO₄·5H₂O）' },
-    ],
-  },
-  {
-    group: '上付き数字（指数・べき）',
-    items: [
-      { label: '⁻', value: '⁻', desc: '上付きマイナス（指数の符号／例: 10⁻¹⁰）' },
-      { label: '⁰', value: '⁰', desc: '上付き0' },
-      { label: '¹', value: '¹', desc: '上付き1' },
-      { label: '²', value: '²', desc: '上付き2（例: 2n²）' },
-      { label: '³', value: '³', desc: '上付き3' },
-      { label: '⁴', value: '⁴', desc: '上付き4' },
-      { label: '⁵', value: '⁵', desc: '上付き5' },
-      { label: '⁶', value: '⁶', desc: '上付き6' },
-      { label: '⁷', value: '⁷', desc: '上付き7' },
-      { label: '⁸', value: '⁸', desc: '上付き8' },
-      { label: '⁹', value: '⁹', desc: '上付き9' },
-    ],
-  },
-  {
-    group: '下付き数字',
-    items: [
-      { label: '₁', value: '₁', desc: '下付き1' },
-      { label: '₂', value: '₂', desc: '下付き2' },
-      { label: '₃', value: '₃', desc: '下付き3' },
-      { label: '₄', value: '₄', desc: '下付き4' },
-      { label: '₅', value: '₅', desc: '下付き5' },
-      { label: '₆', value: '₆', desc: '下付き6' },
-      { label: '₇', value: '₇', desc: '下付き7' },
-      { label: '₈', value: '₈', desc: '下付き8' },
-    ],
-  },
-  {
-    group: 'イオンの価数（上付き）',
-    items: [
-      { label: '⁺', value: '⁺', desc: '1価陽イオン (上付きプラス)' },
-      { label: '⁻', value: '⁻', desc: '1価陰イオン (上付きマイナス)' },
-      { label: '²⁺', value: '²⁺', desc: '2価陽イオン' },
-      { label: '²⁻', value: '²⁻', desc: '2価陰イオン' },
-      { label: '³⁺', value: '³⁺', desc: '3価陽イオン' },
-      { label: '³⁻', value: '³⁻', desc: '3価陰イオン' },
-    ],
-  },
-  {
-    group: 'よく使うイオン式',
-    items: [
-      { label: 'H⁺', value: 'H⁺', desc: '水素イオン' },
-      { label: 'OH⁻', value: 'OH⁻', desc: '水酸化物イオン' },
-      { label: 'NH₄⁺', value: 'NH₄⁺', desc: 'アンモニウムイオン' },
-      { label: 'NO₃⁻', value: 'NO₃⁻', desc: '硝酸イオン' },
-      { label: 'SO₄²⁻', value: 'SO₄²⁻', desc: '硫酸イオン' },
-      { label: 'CO₃²⁻', value: 'CO₃²⁻', desc: '炭酸イオン' },
-      { label: 'PO₄³⁻', value: 'PO₄³⁻', desc: 'リン酸イオン' },
-      { label: 'Cl⁻', value: 'Cl⁻', desc: '塩化物イオン' },
-    ],
-  },
-  {
-    group: 'よく使う化学式',
-    items: [
-      { label: 'H₂O', value: 'H₂O', desc: '水' },
-      { label: 'CO₂', value: 'CO₂', desc: '二酸化炭素' },
-      { label: 'O₂', value: 'O₂', desc: '酸素' },
-      { label: 'H₂', value: 'H₂', desc: '水素' },
-      { label: 'N₂', value: 'N₂', desc: '窒素' },
-      { label: 'Cl₂', value: 'Cl₂', desc: '塩素' },
-      { label: 'NaCl', value: 'NaCl', desc: '塩化ナトリウム' },
-      { label: 'CaCO₃', value: 'CaCO₃', desc: '炭酸カルシウム' },
-    ],
-  },
-];
-
-// 数学記号パレット（カテゴリ別）。
-// 数III積分などで、∫・√・π・分数・累乗 などをキーボードなしでワンタップ入力する。
-// 挿入する value は answerJudge の正規化と textFormatter の表示規約
-// （^ で累乗、/ で分数、log|…| など）に合わせた「打ち込み表記」で統一する。
-const mathPaletteGroups: PaletteGroup[] = [
-  {
-    group: '積分の記号',
-    items: [
-      { label: '∫', value: '∫', desc: '積分記号（インテグラル）' },
-      { label: 'dx', value: ' dx', desc: '積分変数 dx' },
-      { label: 'dt', value: ' dt', desc: '積分変数 dt' },
-      { label: 'dθ', value: ' dθ', desc: '積分変数 dθ' },
-      { label: '+ C', value: ' + C', desc: '積分定数 C（不定積分の最後に付ける）' },
-    ],
-  },
-  {
-    group: '累乗・分数・かっこ',
-    items: [
-      { label: '^', value: '^', desc: '累乗（例: x^3 は x の3乗）' },
-      { label: '/', value: '/', desc: '分数の横棒（例: 1/3）' },
-      { label: '√(', value: '√(', desc: 'ルート（例: √(x+2)）' },
-      { label: '(', value: '(', desc: '開きかっこ' },
-      { label: ')', value: ')', desc: '閉じかっこ' },
-      { label: '| |', value: '||', desc: '絶対値（例: log|x|）' },
-    ],
-  },
-  {
-    group: '定数・文字',
-    items: [
-      { label: 'π', value: 'π', desc: '円周率 π' },
-      { label: 'e', value: 'e', desc: '自然対数の底 e' },
-      { label: 'θ', value: 'θ', desc: '角度 θ（シータ）' },
-      { label: 'x', value: 'x', desc: '変数 x' },
-      { label: 't', value: 't', desc: '変数 t' },
-      { label: 'n', value: 'n', desc: '自然数 n' },
-      { label: 'C', value: 'C', desc: '積分定数 C' },
-    ],
-  },
-  {
-    group: '関数',
-    items: [
-      { label: 'sin', value: 'sin ', desc: '正弦 sin' },
-      { label: 'cos', value: 'cos ', desc: '余弦 cos' },
-      { label: 'tan', value: 'tan ', desc: '正接 tan' },
-      { label: 'log', value: 'log', desc: '対数 log（数IIIでは自然対数）' },
-      { label: 'e^', value: 'e^', desc: '指数関数 e の累乗（例: e^x）' },
-      { label: 'lim', value: 'lim', desc: '極限 lim' },
-      { label: 'Σ', value: 'Σ', desc: '総和 Σ（シグマ）' },
-    ],
-  },
-  {
-    group: '演算・その他',
-    items: [
-      { label: '+', value: ' + ', desc: '足し算' },
-      { label: '−', value: ' - ', desc: '引き算（半角マイナスで入力される）' },
-      { label: '×', value: '×', desc: '掛け算' },
-      { label: '=', value: ' = ', desc: '等号' },
-      { label: '→', value: '→', desc: '区間の矢印（例: 0→1）' },
-      { label: '[', value: '[', desc: '区間の開きかっこ' },
-      { label: ']', value: ']', desc: '区間の閉じかっこ' },
-    ],
-  },
-];
-
 // iOS/Android: ソフトウェアキーボード出現時に入力欄がキーボードで隠れるのを防ぐため、
 // フォーカス時に少し遅延して入力欄を画面内へスクロールする。
 // visualViewport API が使える場合は、キーボードで狭まった実際の可視領域を基準に
@@ -494,9 +356,92 @@ function isShortAnswerType(sq: any): boolean {
 }
 
 /**
- * 化学記号パレット。
- * - カテゴリ別に記号を配置し、ワンタップで入力欄のカーソル位置へ挿入する。
- * - 入力欄の参照を受け取り、選択範囲（カーソル位置）に挿入 → キャレットを更新する。
+ * パレットのボタン1つ。
+ *
+ * ボタン面は KaTeX（数式）／mhchem（化学式）で組んだ HTML を描く。
+ * 解答欄・解説と同じ組版エンジンなので、
+ * 「押した記号」と「実際に出てくる記号」の字形が完全に一致する。
+ *
+ * ★item ごとに毎回 KaTeX を呼ぶとタップのたびに再組版してしまうため、
+ *   useMemo で LaTeX 文字列をキーに結果を固定する。★
+ */
+const PaletteButton: React.FC<{
+  item: PaletteItem;
+  onInsert: (item: PaletteItem) => void;
+}> = ({ item, onInsert }) => {
+  const faceHtml = useMemo(() => {
+    if (!item.tex) return null;
+    // renderLatex の戻りは KaTeX の HTML。本文と同じ経路でサニタイズして貼る。
+    return sanitizeInlineHtml(renderLatex(item.tex, { ariaLabel: item.desc }));
+  }, [item.tex, item.desc]);
+
+  return (
+    <button
+      type="button"
+      // マウス/タッチダウンでの入力欄フォーカス喪失を防ぐ（キャレット維持のため）。
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={() => onInsert(item)}
+      // ■ タップしやすさ（ご要望「押しやすいように」「スマホの方も」）
+      //   ・スマホは 1辺 56px 以上（Apple/Google の推奨 44px より大きく取る。
+      //     記号は連続で押すので、隣を誤爆すると入力し直しになるため）
+      //   ・押した瞬間に色と大きさが変わるので「入った」ことが分かる
+      //   ・touch-manipulation でダブルタップ拡大の遅延（約300ms）を消す
+      className={`group relative min-h-[3.5rem] md:min-h-[3.25rem] px-1.5 py-1.5 bg-white border border-stone-300
+        hover:border-[#A9CCE3] hover:bg-[#EAF3F9] active:bg-[#D6E9F5] active:border-[#7FB3D5]
+        rounded-xl shadow-xs cursor-pointer transition-colors touch-manipulation
+        flex flex-col items-center justify-center gap-0.5 overflow-hidden
+        ${item.wide ? 'col-span-2' : ''}`}
+      title={item.desc}
+      aria-label={item.desc}
+    >
+      {faceHtml ? (
+        // palette-face … ボタンの中だけ数式を一段大きく組むためのフック
+        //   （index.css の「6d. 記号パレットのボタン面」）。
+        //   pointer-events-none で、数式の中の span を押しても
+        //   クリックが必ず button 側で拾われるようにする。
+        <span
+          className="palette-face text-stone-800 leading-none pointer-events-none"
+          dangerouslySetInnerHTML={{ __html: faceHtml }}
+        />
+      ) : (
+        <span className="text-[16px] font-bold text-stone-800 font-sans leading-none pointer-events-none">
+          {item.label}
+        </span>
+      )}
+      {item.caption && (
+        <span className="text-[9px] md:text-[10px] text-stone-500 leading-none font-sans pointer-events-none whitespace-nowrap max-w-full overflow-hidden text-ellipsis">
+          {item.caption}
+        </span>
+      )}
+    </button>
+  );
+};
+
+/**
+ * 記号パレット（化学・数学で共用）。
+ *
+ * ■ ★全グループを1画面に出しっぱなしにする理由★
+ *   ご要望「探すのに時間を取らないようにしたい」。
+ *
+ *   これまで2つの方式を試して、どちらも「探す時間」が発生した。
+ *     (a) 高さ 240px の枠内スクロール
+ *         → 目的の記号がスクロールの外に隠れる。
+ *           枠内スクロールとページスクロールが競合して指が滑る。
+ *     (b) カテゴリのタブ切り替え
+ *         → 「どのタブに入っているか」を当てる手間が増える。
+ *           ₂ を押したいのに①タブ、²⁻ は②タブ…と、
+ *           1つ入れるたびにタブを行き来することになる。
+ *
+ *   そこで収録を「キーボードで打てないものだけ」に絞り込み
+ *   （化学 31個・数学 16個。symbolPalettes.ts の収録方針を参照）、
+ *   全グループを縦に並べたまま1画面に収めた。
+ *   スクロールもタブ操作もゼロで、目的の記号は常に見えている。
+ *   グループの見出しを左に小さく添えているだけなので、
+ *   探す動作は「目で1回見る」だけで済む。
+ *
+ * ■ 挿入の仕様
+ *   入力欄の選択範囲（カーソル位置）へ value を挿入し、キャレットを更新する。
+ *   item.caretBack があればその文字数だけ戻す（`√()` → かっこの内側）。
  *   参照が無い場合は末尾に追記するフォールバック動作。
  */
 function SymbolPalette({
@@ -512,15 +457,17 @@ function SymbolPalette({
   title: string;
   groups: PaletteGroup[];
 }) {
-  const insert = (text: string) => {
+  const insert = (item: PaletteItem) => {
+    const text = item.value;
+    const back = item.caretBack ?? 0;
     const el = inputRef.current;
     if (el && typeof el.selectionStart === 'number' && typeof el.selectionEnd === 'number') {
       const start = el.selectionStart;
       const end = el.selectionEnd;
       const next = value.slice(0, start) + text + value.slice(end);
       onChange(next);
-      // 挿入後、キャレットを挿入文字列の直後へ移動（次の描画後に反映）。
-      const caret = start + text.length;
+      // 挿入後、キャレットを挿入文字列の直後（caretBack があればその手前）へ移動。
+      const caret = start + Math.max(0, text.length - back);
       requestAnimationFrame(() => {
         try {
           el.focus();
@@ -535,40 +482,41 @@ function SymbolPalette({
   };
 
   return (
-    <div className="bg-stone-50 border border-stone-200/80 p-2.5 md:p-3 rounded-xl flex flex-col gap-2 w-full">
-      <div className="text-[11px] md:text-xs text-stone-500 font-bold select-none px-0.5 flex items-center gap-1">
+    <div className="bg-stone-50 border border-stone-200/80 p-2 md:p-3 rounded-xl flex flex-col gap-2 w-full">
+      <div className="text-[11px] md:text-xs text-stone-500 font-bold select-none px-0.5 flex items-center gap-1 flex-wrap">
         <span>{title}</span>
-        <span className="font-normal text-stone-400">（タップで入力欄のカーソル位置に挿入）</span>
+        <span className="font-normal text-stone-400">
+          （打ちにくい記号だけ。タップでカーソル位置に入ります）
+        </span>
       </div>
-      {/* ボタンを 44px 角に拡大したぶん全体が縦に伸びるため、スマホでのスクロール
-          領域を 220px → 240px に微増し、1画面に見える行数を保つ。 */}
-      <div className="flex flex-col gap-2.5 max-h-[240px] md:max-h-none overflow-y-auto">
-        {groups.map((grp) => (
-          <div key={grp.group} className="flex flex-col gap-1.5">
-            <div className="text-[11px] text-stone-400 font-bold select-none px-0.5">
+
+      {/*
+        ★全グループを出しっぱなしにする★
+        タブも枠内スクロールも作らない。上から下まで全部見えているので、
+        「どこにあるか探す」動作が発生しない。
+      */}
+      {groups.map((grp) => (
+        <div key={grp.group} className="flex flex-col gap-1">
+          {/* グループ見出し＋使いどころ（1行）。目で1回なぞれば場所が分かる。 */}
+          <div className="flex items-baseline gap-1.5 flex-wrap px-0.5">
+            <span className="text-[11px] md:text-[12px] font-bold text-[#2C3E50] font-sans leading-none">
               {grp.group}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {grp.items.map((item) => (
-                <button
-                  key={item.label}
-                  type="button"
-                  // マウス/タッチダウンでの入力欄フォーカス喪失を防ぐ（キャレット維持のため）。
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => insert(item.value)}
-                  // 記号は連続でタップするため、1つあたり 44px 角以上を確保する
-                  // （以前は min-h-[36px] で誤タップしやすかった）。
-                  className="min-w-[2.75rem] min-h-[2.75rem] px-3 py-2 bg-white border border-stone-200 hover:border-stone-400 hover:bg-stone-100 rounded-lg text-[15px] font-bold text-stone-700 font-sans shadow-xs cursor-pointer transition-colors flex items-center justify-center gap-1 active:scale-95"
-                  title={item.desc}
-                  aria-label={item.desc}
-                >
-                  <span>{item.label}</span>
-                </button>
-              ))}
-            </div>
+            </span>
+            {grp.hint && (
+              <span className="text-[9.5px] md:text-[10.5px] text-stone-500 font-sans leading-snug">
+                {grp.hint}
+              </span>
+            )}
           </div>
-        ))}
-      </div>
+
+          {/* 記号グリッド。1行の列数を画面幅で変え、1ボタンの幅を確保する。 */}
+          <div className="grid grid-cols-4 min-[420px]:grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-1.5 md:gap-2">
+            {grp.items.map((item) => (
+              <PaletteButton key={`${grp.group}-${item.label}`} item={item} onInsert={insert} />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

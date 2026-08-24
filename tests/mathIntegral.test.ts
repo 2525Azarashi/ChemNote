@@ -162,10 +162,23 @@ describe('数学記号パレット（Quiz）', () => {
     expect(def).toContain("'sorting'");
   });
 
-  it('数学パレットの記号グループが定義されている（∫・√・π・分数）', () => {
+  it('数学パレットの記号グループが定義されている（∫・√・π・分数）', async () => {
+    // パレットの定義は Quiz.tsx から src/data/symbolPalettes.ts に切り出した
+    // （全ボタンの組版と挿入値を機械的に検証できるようにするため）。
+    // 詳しい検証は tests/symbolPalettes.test.ts が担当し、ここでは
+    // 「数学の必須記号が揃っているか」だけを見る。
     expect(QUIZ).toContain('mathPaletteGroups');
-    for (const sym of ["'∫'", "'√('", "'π'", "'^'", "'dx'", "'sin'", "'log'"]) {
-      expect(QUIZ, `${sym} がパレットに無い`).toContain(`label: ${sym}`);
+    const { mathPaletteGroups } = await import('../src/data/symbolPalettes');
+    const labels = mathPaletteGroups.flatMap((g) => g.items.map((i) => i.label));
+
+    // ★キーボードで打てない記号／打ち方を知らないと書けない記法だけを収録する★
+    //   ご要望「基本は打つのがめんどくさい＋うちづらいものだけつくってくれたらいい」。
+    for (const sym of ['∫', '∫[ ]', '√(', 'π', 'θ', '^', '/', 'lim', 'Σ']) {
+      expect(labels, `${sym} がパレットに無い`).toContain(sym);
+    }
+    // 逆に、英字キーで普通に打てるものは置かない（探す対象を増やさないため）。
+    for (const sym of ['dx', 'dt', 'sin', 'cos', 'log', 'e^', '+ C', 'x', 'n']) {
+      expect(labels, `${sym} は英字キーで打てるので置かない`).not.toContain(sym);
     }
   });
 

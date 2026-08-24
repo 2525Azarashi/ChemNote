@@ -1,5 +1,73 @@
 import React from 'react';
 import { sanitizeInlineHtml } from './sanitizeHtml';
+import { splitMathPieces, renderLatex, mayContainMath } from './mathTypeset';
+
+/**
+ * ===================================================================
+ * 数式を KaTeX で組む（本文中の数式領域だけを差し替える）
+ * ===================================================================
+ *
+ * ■ 背景
+ *   以前は数式も「正規表現で組んだ自作 HTML」で描画していたため、
+ *   分数の横線・根号・∫ の大きさやベースラインが揃わず、
+ *   「数式が汚い」状態だった。
+ *   数式は組版の問題なので、TeX の組版アルゴリズムを実装した
+ *   KaTeX に任せ、数式専用書体で組む（Word の数式と同等の品質）。
+ *
+ * ■ 化学・英語を壊さないための設計
+ *   数式として差し替えるのは
+ *     ・$…$ / \(…\) / \ce{…} と明示的に書かれた部分
+ *     ・∫ Σ √ lim[…] 7C3 x^(n+1) (…)' など「数学にしか出ない形」
+ *   だけ（mathTypeset.ts の STRONG_TRIGGER）。
+ *   H₂O・Fe²⁺・g/mol・mol/L・リスニングの英文は従来の
+ *   化学式フォーマッタがそのまま担当する。
+ *
+ * ■ 組んだ数式を後段の処理から守る仕組み
+ *   KaTeX の出力（多数の <span>）をそのまま後段の化学式変換に流すと、
+ *   クラス名の中の英字が「化学式」と誤認されて壊れる。
+ *   そこでプレースホルダ（\u0000{n}\u0000）に退避し、
+ *   全処理が終わった最後に元の HTML へ戻す。
+ */
+const MATH_PLACEHOLDER_OPEN = '\u0000';
+
+/** 本文から数式を抜き出して KaTeX で組み、プレースホルダに退避する。 */
+function extractMath(text: string): { text: string; slots: string[] } {
+  const slots: string[] = [];
+
+  // 数式の可能性が全く無いテキスト（大多数）は走査コストを掛けずに返す。
+  // 判定条件は mathTypeset 側と共有する（ここに条件を書き写すと、
+  // トリガを増やしたときにアプリだけ古い判定のまま取り残される）。
+  if (!mayContainMath(text)) {
+    return { text, slots };
+  }
+
+  const pieces = splitMathPieces(text);
+  if (!pieces.some((p) => p.kind === 'math')) return { text, slots };
+
+  const rebuilt = pieces
+    .map((piece) => {
+      if (piece.kind === 'text') return piece.value;
+      // piece.value は splitMathPieces が変換済みの LaTeX（再変換すると壊れる）
+      const html = renderLatex(piece.value, {
+        displayMode: piece.display,
+        ariaLabel: piece.source ?? piece.value,
+      });
+      slots.push(html);
+      return `${MATH_PLACEHOLDER_OPEN}${slots.length - 1}${MATH_PLACEHOLDER_OPEN}`;
+    })
+    .join('');
+
+  return { text: rebuilt, slots };
+}
+
+/** 退避した数式 HTML を元の位置へ戻す。 */
+function restoreMath(html: string, slots: string[]): string {
+  if (slots.length === 0) return html;
+  return html.replace(
+    new RegExp(`${MATH_PLACEHOLDER_OPEN}(\\d+)${MATH_PLACEHOLDER_OPEN}`, 'g'),
+    (_m, index: string) => slots[Number(index)] ?? '',
+  );
+}
 
 // 縦書き分数の HTML を生成するヘルパー。
 // 分子・分母はそのまま埋め込み、後段の化学式処理で変数（w, M など）も適切にイタリック化される。
@@ -208,8 +276,13 @@ export function convertMathNotation(src: string): string {
 export function formatText(text: string, highlights: string[] = []) {
   if (!text) return null;
 
+  // ★最初に数式を KaTeX で組んで退避する★
+  //   ここで抜いておくことで、以降の化学式変換・添字処理・分数処理は
+  //   「数式ではない部分」だけを相手にすればよくなる。
+  const { text: withMathSlots, slots: mathSlots } = extractMath(text);
+
   // Replace * with proper math multiplication crosses
-  let processedText = normalizeScientificScripts(convertMathNotation(text)).replace(
+  let processedText = normalizeScientificScripts(convertMathNotation(withMathSlots)).replace(
     /([A-Za-z0-9]|\)|[％%]|\])[\s ]*\*[\s ]*([A-Za-z0-9]|\(|\[)/g,
     '$1 <span class="font-sans font-semibold text-stone-500 mx-0.5">×</span> $2'
   );
@@ -448,5 +521,10 @@ export function formatText(text: string, highlights: string[] = []) {
   //   出口で許可リスト方式に絞る形にしている。
   //   これで <img src=x onerror=...> や <script> のような入力は
   //   タグとして成立しなくなる（＝XSSにならない）。
-  return <span dangerouslySetInnerHTML={{ __html: sanitizeInlineHtml(htmlString) }} />;
+  //
+  //   ★数式の復元はサニタイズの前★
+  //   KaTeX の出力も許可リストで検証させる（span / class / style のみ）。
+  //   数式だから無検査で通す、という抜け道を作らない。
+  const finalHtml = restoreMath(htmlString, mathSlots);
+  return <span dangerouslySetInnerHTML={{ __html: sanitizeInlineHtml(finalHtml) }} />;
 }

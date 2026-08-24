@@ -34,6 +34,7 @@ import {
   normalizeAnswerAccordions,
   countAnswerAccordions,
 } from '../utils/learningAccordion';
+import { typesetHtmlMath } from '../utils/mathTypeset';
 
 /** まとめプリントを出す科目 */
 export type LearningSubject = 'chemistry_basic' | 'chemistry' | 'math' | 'biology_basic';
@@ -314,8 +315,17 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
   const currentPart = parts?.find(p => p.id === activePart) ?? null;
   const fullSectionHtml = SECTION_HTML[activeTab];
   const rawSectionHtml = currentPart ? currentPart.html : fullSectionHtml;
+  // まとめプリント本文の数式を KaTeX で組み直す。
+  //
+  // まとめプリントは HTML 文字列で書かれており、指数が <sup>n</sup>、
+  // 添字が <sub>2</sub>（＝本文の文字を小さくして上下に寄せただけ）だった。
+  // これでは分数・∫・根号が混ざった式が崩れて読めないため、
+  // 数式と判定できた範囲だけを TeX 品質の組版に差し替える。
+  // 化学式（H<sub>2</sub>O・Fe<sup>2+</sup>）や英文は判定から外れるので無変更。
   const sectionHtml = useMemo(
-    () => (rawSectionHtml ? normalizeAnswerAccordions(rawSectionHtml, allAnswersOpen) : rawSectionHtml),
+    () => (rawSectionHtml
+      ? typesetHtmlMath(normalizeAnswerAccordions(rawSectionHtml, allAnswersOpen))
+      : rawSectionHtml),
     [rawSectionHtml, allAnswersOpen],
   );
   const answerCount = useMemo(() => countAnswerAccordions(rawSectionHtml || ''), [rawSectionHtml]);
