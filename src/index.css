@@ -1,5 +1,10 @@
 /* src/index.css */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Yomogi&family=Klee+One:wght@400;600&family=Kaisei+Decol:wght@400;500;700&display=swap');
+/* KaTeX（数式組版）のスタイルとフォント。
+ * 数式は「文字装飾」では整わないので TeX の組版エンジンに任せる。
+ * フォント（KaTeX_Math など）は node_modules から Vite がバンドルするため
+ * CDN 依存もオフライン時の崩れも無い。 */
+@import "katex/dist/katex.min.css";
 @import "tailwindcss";
 
 /* =========================================================
@@ -308,6 +313,60 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   line-height: 1.25;
 }
 
+/* =========================================================
+ * 6c. KaTeX で組んだ数式（mathTypeset.ts → renderLatex）
+ *
+ *  ■ 方針
+ *   数式そのものの字形・配置は KaTeX（TeX の組版アルゴリズム）に任せる。
+ *   ここで足すのは「本文となじませるための調整」だけ:
+ *     ・和文本文の中で数式が浮かないサイズ・行間
+ *     ・暗い背景（演習モードの解説）でも読める色
+ *     ・長い式がスマホで画面外に切れずに横スクロールできること
+ * ========================================================= */
+.mtb-math {
+  /* 数式は本文（手書き系フォント）より少し大きい方が字形が読み取れる */
+  font-size: 1.06em;
+  /* 数式の途中で改行されないようにし、はみ出す場合だけ横スクロールさせる */
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: baseline;
+}
+.mtb-math .katex {
+  /* KaTeX 既定の 1.21em は和文の中では大きすぎるので、本文比で揃える */
+  font-size: 1.05em;
+  /* 数式の色は本文の色をそのまま継承（明背景・暗背景の両方に対応） */
+  color: inherit;
+  line-height: 1.35;
+}
+/* 別行立て（$$…$$）は中央寄せせず左揃えにする。
+ * 教科書の例題は左揃えの方が「途中式の縦の並び」が追いやすい。 */
+.mtb-math-block {
+  display: block;
+  margin: 0.5em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* スマホで横スクロールするときに端が切れて見えないよう余白を持たせる */
+  padding-bottom: 0.15em;
+}
+.mtb-math-block .katex-display {
+  margin: 0;
+  text-align: left;
+}
+.mtb-math-block .katex-display > .katex {
+  text-align: left;
+}
+/* 行内の長い数式がスマホ幅を超えたときの保険（切り捨てず横スクロール） */
+.mtb-math > .katex {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+/* KaTeX の変換に失敗した場合のフォールバック（元テキストを等幅で見せる） */
+.mtb-math-fallback {
+  font-family: var(--font-math), 'Cambria Math', 'Times New Roman', serif;
+  font-style: italic;
+}
+
 /* 数学の問題・解説を大きく読みやすくするラッパー
  * （Quiz / Explanation で科目が数学のときに付与する） */
 .math-content {
@@ -315,8 +374,39 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   line-height: 2.05;
 }
 .math-content .math-bigop { margin: 0.1em 0.12em; }
+/* 数学ページでは数式をさらに一段大きく（分数の分母・指数まで読めるように） */
+.math-content .mtb-math .katex { font-size: 1.12em; }
 @media (min-width: 768px) {
   .math-content { font-size: 1.18em; }
+}
+
+/* =========================================================
+ * 6d. 記号パレットのボタン面（化学記号パレット／数学記号パレット）
+ *
+ *  ■ 方針
+ *   パレットのボタンには「解答欄・解説に実際に出るのと同じ組版」を
+ *   KaTeX / mhchem で描いている（src/data/symbolPalettes.ts の tex）。
+ *   ただし本文用のサイズ（1.05em）だと 56px 角のボタンの中では小さく、
+ *   H₂O の添字や □² の上付きが読み取れない。
+ *   ボタンの中だけ一段大きくし、指で押す前に何の記号か分かるようにする。
+ *
+ *  ■ ボタン面では横スクロールさせない
+ *   本文の .mtb-math は長い式を横スクロールさせるが、ボタンの中に
+ *   スクロール領域があるとタップがスクロール操作に取られて反応しなくなる。
+ *   ボタン面の式はどれも短いので、スクロールを無効にする。
+ * ========================================================= */
+.palette-face .mtb-math {
+  /* ボタン内での縦位置を中央に揃える（caption と重心を合わせる） */
+  vertical-align: middle;
+}
+.palette-face .mtb-math .katex {
+  /* 本文 1.05em → 1.3em。□ の添字・上付きが視認できる最小サイズ。 */
+  font-size: 1.3em;
+  line-height: 1.2;
+}
+.palette-face .mtb-math > .katex {
+  /* ★タップを奪うスクロールを作らない★ */
+  overflow: visible;
 }
 
 /* Marker highlight (蛍光ペン風) */

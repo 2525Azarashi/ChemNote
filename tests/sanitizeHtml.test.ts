@@ -33,7 +33,14 @@ import {
  */
 function looksDangerous(html: string): boolean {
   // 実行を伴うタグが1つでも成立していたらNG
-  if (/<\s*\/?\s*(script|iframe|img|svg|object|embed|link|meta|base|style|form|input|button|audio|video|math|template|frame)\b/i.test(html)) {
+  //
+  // ★svg / path はこの一覧に入れない★
+  //   数式（KaTeX）の根号・伸びる括弧は <svg><path d="…"/></svg> で
+  //   描かれるため、許可タグにしている。空の <svg> 自体は
+  //   スクリプトも外部読み込みも起こせないので無害。
+  //   危険なのは「中に置ける実行可能要素」と「URL属性」なので、
+  //   それは下の属性検査と、SVG専用のテスト（後述）で担保する。
+  if (/<\s*\/?\s*(script|iframe|img|object|embed|link|meta|base|style|form|input|button|audio|video|math|template|frame|foreignObject|animate|use)\b/i.test(html)) {
     return true;
   }
   // 成立しているタグを取り出し、その「属性名」だけを検査する
@@ -240,12 +247,72 @@ describe('sanitizeInlineHtml — 化学表記の表示を壊さない', () => {
 describe('許可リストの健全性', () => {
   it('リソースを読み込む／スクリプトを走らせるタグは許可されていない', () => {
     const forbidden = [
-      'script', 'iframe', 'img', 'svg', 'object', 'embed', 'link', 'meta',
+      'script', 'iframe', 'img', 'object', 'embed', 'link', 'meta',
       'base', 'style', 'form', 'input', 'button', 'audio', 'video', 'a',
     ];
     for (const tag of forbidden) {
       expect(SANITIZER_ALLOWLIST.tags.has(tag), `${tag} が許可されている`).toBe(false);
     }
+  });
+
+  /**
+   * <svg>/<path> だけは数式（KaTeX）の描画に必要なので許可している。
+   * 根号の斜線・伸びる括弧・矢印はフォントの文字ではなく
+   * SVG のパスで描かれるため、落とすと「√ の記号が消える」。
+   *
+   * 危険なのは SVG そのものではなく
+   *   ・SVG の中に置ける実行可能要素（script / animate / foreignObject …）
+   *   ・URL を運ぶ属性（href / xlink:href）
+   * なので、そこを閉じてあることをここで固定する。
+   */
+  it('数式描画用の svg / path は許可されている（根号や括弧の描画に必要）', () => {
+    expect(SANITIZER_ALLOWLIST.tags.has('svg')).toBe(true);
+    expect(SANITIZER_ALLOWLIST.tags.has('path')).toBe(true);
+  });
+
+  it('SVG の中で実行可能／外部参照になる要素は中身ごと捨てる', () => {
+    const dangerousInSvg = [
+      'foreignobject', 'animate', 'animatetransform', 'animatemotion',
+      'set', 'use', 'image', 'script',
+    ];
+    for (const tag of dangerousInSvg) {
+      expect(
+        SANITIZER_ALLOWLIST.dropWithContent.has(tag),
+        `${tag} が中身ごと捨てられていない`,
+      ).toBe(true);
+    }
+  });
+
+  it('svg / path に URL 属性やイベント属性は通らない', () => {
+    const cases = [
+      '<svg onload=alert(1)><path d="M0,0"/></svg>',
+      '<path d="M0,0" onclick=alert(1)/>',
+      '<svg><use href="http://evil.example/x#a"/></svg>',
+      '<svg><image href="javascript:alert(1)"/></svg>',
+      '<svg xlink:href="javascript:alert(1)"><path d="M0"/></svg>',
+    ];
+    for (const payload of cases) {
+      const out = sanitizeInlineHtml(payload);
+      expect(/on[a-z]+\s*=/i.test(out), `イベント属性が残った: ${out}`).toBe(false);
+      expect(/href/i.test(out), `URL属性が残った: ${out}`).toBe(false);
+      expect(/javascript\s*:/i.test(out), `javascript: が残った: ${out}`).toBe(false);
+    }
+  });
+
+  it('KaTeX が描く根号の svg/path は保持される（数式が欠けない）', () => {
+    // 実際の KaTeX 出力に近い形
+    const katexSqrt =
+      '<span class="katex"><span class="sqrt"><svg xmlns="http://www.w3.org/2000/svg" '
+      + 'width="400em" height="1.08em" viewBox="0 0 400000 1080" '
+      + 'preserveAspectRatio="xMinYMin slice"><path d="M95,702c-2.7,0,-7.17,-2.7,-13.5,-8"/>'
+      + '</svg></span></span>';
+    const out = sanitizeInlineHtml(katexSqrt);
+    expect(out).toContain('<svg');
+    expect(out).toContain('<path');
+    expect(out).toContain('d="M95,702');
+    // viewBox は大文字小文字が意味を持つので保たれること
+    expect(out).toContain('viewBox=');
+    expect(out).toContain('preserveAspectRatio=');
   });
 
   it('URLを持つ属性・イベント属性は許可されていない', () => {
