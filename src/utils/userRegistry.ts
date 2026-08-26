@@ -35,6 +35,7 @@
 
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import { safeLocalStorage } from './safeLocalStorage';
 
 /** Firestore のコレクション名（1人1ドキュメント。ドキュメントID = uid） */
 export const USERS_COLLECTION = 'app_users';
@@ -99,15 +100,12 @@ function readEnv(key: string): string {
   }
 }
 
-function safeStorage(): Storage | null {
-  try {
-    const ls = (globalThis as any)?.localStorage;
-    if (ls && typeof ls.getItem === 'function') return ls as Storage;
-  } catch {
-    // プライベートブラウズ等
-  }
-  return null;
-}
+/**
+ * 使える localStorage を返す（使えなければ null）。
+ * 実装は utils/safeLocalStorage.ts が唯一の定義。
+ * 呼び出し側の書き方は今までどおり `safeStorage()` のままにしている。
+ */
+const safeStorage = safeLocalStorage;
 
 /**
  * ゲスト用の匿名端末ID。

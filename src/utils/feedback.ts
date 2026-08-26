@@ -31,6 +31,7 @@
 
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import { safeLocalStorage } from './safeLocalStorage';
 
 /** フィードバックの送付先メールアドレス（mailto フォールバック／GAS 通知先の既定値） */
 export const FEEDBACK_EMAIL = 'mntobira@gmail.com';
@@ -561,15 +562,12 @@ async function sendToWebhook(payload: FeedbackPayload, url: string): Promise<voi
 // 再送キュー（localStorage）
 // -------------------------------------------------------------------
 
-function readStorage(): Storage | null {
-  try {
-    const ls = (globalThis as any)?.localStorage;
-    if (ls && typeof ls.getItem === 'function') return ls as Storage;
-  } catch {
-    // プライベートブラウズ等で localStorage が使えない場合
-  }
-  return null;
-}
+/**
+ * 使える localStorage を返す（使えなければ null）。
+ * 実装は utils/safeLocalStorage.ts が唯一の定義。
+ * 呼び出し側の書き方は今までどおり `readStorage()` のままにしている。
+ */
+const readStorage = safeLocalStorage;
 
 /**
  * キューに積まれた1件。

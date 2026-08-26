@@ -51,6 +51,8 @@
  *   （uid ごとに分けるのは、既存の profile_/streak_/completed_ と同じ作法）
  */
 
+import { safeLocalStorage } from './safeLocalStorage';
+
 export const SOLVED_KEY_PREFIX = 'solved_problems_v1_';
 
 /** 旧データからの引き継ぎが済んだかを覚えておくキー */
@@ -59,15 +61,17 @@ const BACKFILL_DONE_PREFIX = 'solved_backfilled_v1_';
 /** クイズのモード（進捗の単位ではないが、旧データ読み出しに使う） */
 const LEGACY_MODES = ['mini_test', 'practice'] as const;
 
-function storage(): Storage | null {
-  try {
-    const ls = (globalThis as any)?.localStorage;
-    if (ls && typeof ls.getItem === 'function') return ls as Storage;
-  } catch {
-    /* プライベートブラウズ等では進捗を保存できないが、動作は続ける */
-  }
-  return null;
-}
+/**
+ * 使える localStorage を返す（使えなければ null）。
+ *
+ * 実装は utils/safeLocalStorage.ts が唯一の定義。
+ * 以前はまったく同じ関数が progress / userRegistry / updateNotices /
+ * feedback の4か所に名前だけ変えて書かれていた。
+ *
+ * 呼び出し側の書き方は今までどおり `storage()` のままにしている
+ * （このファイル内で26か所から呼ばれているため）。
+ */
+const storage = safeLocalStorage;
 
 /** localStorage 由来の JSON が、配列ではない通常のレコードかを判定する。 */
 export function isPlainRecord(value: unknown): value is Record<string, unknown> {
