@@ -43,15 +43,12 @@ import { countChapterProblems } from './problemCount';
  */
 export type CatalogSubject = SubjectKey;
 
-/** 科目の表示名（レポートの文章にも使う） */
-export const SUBJECT_LABELS: Record<CatalogSubject, string> = {
-  chemistry_basic: '化学基礎',
-  chemistry: '化学',
-  english_listening: '英語リスニング',
-  english_grammar: '英文法',
-  math: '数学',
-  biology_basic: '生物基礎',
-};
+/**
+ * 科目の表示名（レポートの文章にも使う）。
+ * 実体は allChapters.ts の SUBJECT_LABELS（SUBJECTS から作られる唯一の対応表）。
+ * ここでは今までどおりこの名前でも参照できるように再公開している。
+ */
+export { SUBJECT_LABELS } from './allChapters';
 
 /** 章データの最小共通形（どの教科の章も id / abstractTitle / 問題配列を持つ） */
 interface RawChapter {

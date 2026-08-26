@@ -139,6 +139,20 @@ export const SUBJECTS: readonly SubjectEntry[] = [
 ];
 
 /**
+ * 教科ID → 画面に出す教科名。
+ *
+ * SUBJECTS から自動で作る。以前は同じ6行の対応表が
+ * SubjectSelection.tsx と chapterCatalog.ts にも手書きされていて
+ * （SUBJECTS の label と合わせて3か所）、教科名を直すときに
+ * 直し漏れると画面ごとに違う名前が出る状態だった。
+ *
+ * 呼び出し側は今までどおり SUBJECT_LABELS[id] で引ける。
+ */
+export const SUBJECT_LABELS: Record<SubjectKey, string> = Object.fromEntries(
+  SUBJECTS.map((subject) => [subject.id, subject.label]),
+) as Record<SubjectKey, string>;
+
+/**
  * 教科データから章の配列を取り出す。
  *
  * これは各教科ファイルにある getAllAdvancedChapters() / getAllMathChapters() などと

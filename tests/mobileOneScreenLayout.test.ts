@@ -233,9 +233,16 @@ describe('L4: 科目選択／モード選択（スマホのみ compact）', () =
 // 5 科目 → 6 科目で、実測 183px はみ出した。
 // 削ってよいものと削ってはいけないものを分けて詰めた記録をここに固定する。
 describe('L4b: 6 科目でもスマホ 1 画面（英文法追加後）', () => {
-  it('英文法が科目として登録されている', () => {
+  it('英文法が科目として登録されている', async () => {
+    // 科目カードの定義（この画面が持っている）は文字列で確認する。
     expect(SUBJECT).toContain("id: 'english_grammar'");
-    expect(SUBJECT).toContain("english_grammar: '英文法'");
+
+    // 教科名の対応表は data/allChapters.ts の SUBJECTS へ集約したため、
+    // 「この画面のソースに english_grammar: '英文法' と書いてあるか」では
+    // 意図（＝英文法が科目として登録されていること）を守れなくなった。
+    // 代わりに、この画面が公開している対応表を実際に引いて確かめる。
+    const { SUBJECT_LABELS } = await import('../src/components/SubjectSelection');
+    expect(SUBJECT_LABELS.english_grammar).toBe('英文法');
   });
 
   it('カード間隔・内側余白・アイコンをスマホだけ詰め、sm 以上は元の値に戻す', () => {

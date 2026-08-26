@@ -57,8 +57,9 @@ import { getBiologyStats } from '../data/biologyBasicData';
 import { getGrammarStats } from '../data/englishGrammarData';
 // 「章に大問が何問あるか」の数え方は data/problemCount.ts に集約している
 import { countProblemsInChapters } from '../data/problemCount';
-// 教科IDの型は data/allChapters.ts の SubjectKey が唯一の定義
-import type { SubjectKey } from '../data/allChapters';
+// 教科IDの型（SubjectKey）と教科名の対応表（SUBJECT_LABELS）は
+// data/allChapters.ts が唯一の定義。このファイルの下で再公開もしている。
+import { SUBJECT_LABELS, type SubjectKey } from '../data/allChapters';
 
 /**
  * アプリが扱う科目の識別子。
@@ -68,15 +69,12 @@ import type { SubjectKey } from '../data/allChapters';
  */
 export type SubjectId = SubjectKey;
 
-/** 科目ID → 画面に出す科目名（App 側のバッジ表示などでも使う） */
-export const SUBJECT_LABELS: Record<SubjectId, string> = {
-  chemistry_basic: '化学基礎',
-  chemistry: '化学',
-  english_listening: '英語リスニング',
-  english_grammar: '英文法',
-  math: '数学',
-  biology_basic: '生物基礎',
-};
+/**
+ * 科目ID → 画面に出す科目名（App 側のバッジ表示などでも使う）。
+ * 実体は data/allChapters.ts の SUBJECT_LABELS（SUBJECTS から作られる唯一の対応表）。
+ * ここでは今までどおりこの名前でも参照できるように再公開している。
+ */
+export { SUBJECT_LABELS };
 
 /** 未知の値が入っていても安全に科目名を引く */
 export function getSubjectLabel(id: string | null | undefined): string {

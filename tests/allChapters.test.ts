@@ -217,8 +217,6 @@ describe('getChaptersOfSubject / SUBJECTS（教科レジストリ）', () => {
   });
 
   it('SUBJECTS の教科IDと表示名が SubjectSelection の定義と一致する', () => {
-    // data 層から components を参照できないため型を二重に持っている。
-    // 値がずれていないことをここで担保する。
     for (const subject of SUBJECTS) {
       expect(
         SUBJECT_LABELS[subject.id as SubjectId],
@@ -232,5 +230,32 @@ describe('getChaptersOfSubject / SUBJECTS（教科レジストリ）', () => {
         `${id} が SUBJECTS に無い（教科追加の入れ忘れ）`,
       ).toBe(true);
     }
+  });
+
+  it('章カタログの表示名も SUBJECTS と一致する（先生ダッシュボードの見出し）', async () => {
+    // 同じ6つの表示名が SubjectSelection・chapterCatalog・SUBJECTS の
+    // 3か所に書かれていた。1つに集約したあとも、
+    // 3経路すべてから同じ文字列が引けることを確かめる。
+    const { SUBJECT_LABELS: CATALOG_LABELS } = await import('../src/data/chapterCatalog');
+    for (const subject of SUBJECTS) {
+      expect(
+        CATALOG_LABELS[subject.id],
+        `${subject.id} の表示名が chapterCatalog とずれている`,
+      ).toBe(subject.label);
+    }
+    expect(Object.keys(CATALOG_LABELS).sort()).toEqual(SUBJECTS.map((s) => s.id).sort());
+  });
+
+  it('getSubjectLabel が未知の値でも化学基礎に落ちる（従来どおり）', async () => {
+    const { getSubjectLabel, isSubjectId } = await import('../src/components/SubjectSelection');
+    for (const subject of SUBJECTS) {
+      expect(getSubjectLabel(subject.id)).toBe(subject.label);
+      expect(isSubjectId(subject.id)).toBe(true);
+    }
+    expect(getSubjectLabel('__unknown__')).toBe('化学基礎');
+    expect(getSubjectLabel(null)).toBe('化学基礎');
+    expect(getSubjectLabel(undefined)).toBe('化学基礎');
+    expect(isSubjectId('__unknown__')).toBe(false);
+    expect(isSubjectId(null)).toBe(false);
   });
 });
