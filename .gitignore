@@ -61,3 +61,7 @@ __pycache__/
 # ローカル配布用の一時成果物（push 不可時のバックアップ）
 .delivery/
 chemnote_*.tar.gz
+
+# クラッシュダンプ（ビルドが OOM/SIGABRT で落ちたときに生成される。1GB超になることがある）
+core
+core.*
