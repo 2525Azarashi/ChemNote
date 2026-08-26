@@ -52,6 +52,8 @@
  */
 
 import { safeLocalStorage } from './safeLocalStorage';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { completedKey } from './userStorageKeys';
 
 export const SOLVED_KEY_PREFIX = 'solved_problems_v1_';
 
@@ -285,7 +287,9 @@ export function backfillLegacyProgress(
   // 修了済みの章（＝最後までやり切った章）を先に押さえる
   let completedChapters: string[] = [];
   try {
-    const raw = ls.getItem(`completed_${normalizeUid(uid)}`);
+    // normalizeUid はこのファイルの決め方（空なら 'guest'）。
+    // キー名の作り方だけを completedKey に任せている。
+    const raw = ls.getItem(completedKey(normalizeUid(uid)));
     const parsed = raw ? JSON.parse(raw) : [];
     if (Array.isArray(parsed)) completedChapters = parsed.map(String);
   } catch {

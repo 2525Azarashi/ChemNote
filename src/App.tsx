@@ -39,6 +39,8 @@ import { flushFeedbackQueue, getFeedbackWebhookUrl } from './utils/feedback';
 import { recordUserPresence } from './utils/userRegistry';
 import { ensureRankingEntry } from './utils/leaderboard';
 import { parseStoredStringRecord } from './utils/progress';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey, completedKey } from './utils/userStorageKeys';
 import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './utils/studySync';
 import { TeacherDashboard } from './components/TeacherDashboard';
 import { FeedbackAdminPanel } from './components/FeedbackAdminPanel';
@@ -375,7 +377,7 @@ export default function App() {
         setIsGuest(false);
         try {
           // Firestoreの代わりにlocalStorageを使用
-          const localProfile = localStorage.getItem(`profile_${user.uid}`);
+          const localProfile = localStorage.getItem(profileKey(user.uid));
           if (!localProfile) {
             setAppState('onboarding');
           } else if (!wasFirstLoad) {
@@ -658,7 +660,7 @@ export default function App() {
     // Track chapter completion if not guest
     if (!isGuest && auth.currentUser && selectedChapterId) {
       const uid = auth.currentUser.uid;
-      const key = `completed_${uid}`;
+      const key = completedKey(uid);
       try {
         const completed = JSON.parse(localStorage.getItem(key) || '[]');
         if (!completed.includes(selectedChapterId)) {

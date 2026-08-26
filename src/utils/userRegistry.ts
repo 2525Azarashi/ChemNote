@@ -36,6 +36,8 @@
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { safeLocalStorage } from './safeLocalStorage';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey, streakKey, completedKey } from './userStorageKeys';
 
 /** Firestore のコレクション名（1人1ドキュメント。ドキュメントID = uid） */
 export const USERS_COLLECTION = 'app_users';
@@ -132,10 +134,10 @@ function readLocalStats(uid: string): { streak: number; completedCount: number; 
   let profileName: string | null = null;
   let grade: string | null = null;
   try {
-    streak = parseInt(storage?.getItem(`streak_${uid}`) || '0', 10) || 0;
-    const completed = JSON.parse(storage?.getItem(`completed_${uid}`) || '[]');
+    streak = parseInt(storage?.getItem(streakKey(uid)) || '0', 10) || 0;
+    const completed = JSON.parse(storage?.getItem(completedKey(uid)) || '[]');
     completedCount = Array.isArray(completed) ? completed.length : 0;
-    const raw = storage?.getItem(`profile_${uid}`);
+    const raw = storage?.getItem(profileKey(uid));
     if (raw) {
       const parsed = JSON.parse(raw);
       profileName = parsed?.name || null;

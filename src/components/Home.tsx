@@ -20,6 +20,8 @@ import {
   countSolvedByChapter,
   countSolvedProblemsIn,
 } from '../utils/progress';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey, streakKey, lastActiveKey, completedKey } from '../utils/userStorageKeys';
 import { loadSchoolBrand } from '../utils/classroom';
 import { UpdateNoticeModal } from './UpdateNoticeModal';
 import { unreadNoticeCount } from '../utils/updateNotices';
@@ -105,7 +107,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         const uid = auth.currentUser ? auth.currentUser.uid : 'guest';
 
         // Load Profile Name/Details
-        const localProfile = localStorage.getItem(`profile_${uid}`);
+        const localProfile = localStorage.getItem(profileKey(uid));
         if (localProfile) {
           setProfile(JSON.parse(localProfile));
         } else {
@@ -113,8 +115,8 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         }
 
         // Calculate streak
-        const lastActive = localStorage.getItem(`lastActive_${uid}`);
-        const storedStreak = parseInt(localStorage.getItem(`streak_${uid}`) || '0', 10);
+        const lastActive = localStorage.getItem(lastActiveKey(uid));
+        const storedStreak = parseInt(localStorage.getItem(streakKey(uid)) || '0', 10);
 
         const today = new Date().toDateString();
         if (lastActive === today) {
@@ -125,12 +127,12 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           if (lastActive === yesterday.toDateString()) {
             const newStreak = storedStreak + 1;
             setStreak(newStreak);
-            localStorage.setItem(`streak_${uid}`, newStreak.toString());
-            localStorage.setItem(`lastActive_${uid}`, today);
+            localStorage.setItem(streakKey(uid), newStreak.toString());
+            localStorage.setItem(lastActiveKey(uid), today);
           } else {
             setStreak(1);
-            localStorage.setItem(`streak_${uid}`, '1');
-            localStorage.setItem(`lastActive_${uid}`, today);
+            localStorage.setItem(streakKey(uid), '1');
+            localStorage.setItem(lastActiveKey(uid), today);
           }
         }
 
@@ -164,7 +166,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         setSubjectProgress(perSubject);
 
         // completed chapters（次の章を求めるために継続利用）
-        const completed = JSON.parse(localStorage.getItem(`completed_${uid}`) || '[]');
+        const completed = JSON.parse(localStorage.getItem(completedKey(uid)) || '[]');
         setCompletedIds(completed);
 
       } catch (error) {

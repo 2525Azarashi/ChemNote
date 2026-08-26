@@ -60,6 +60,8 @@ import { countProblemsInChapters } from '../data/problemCount';
 // 教科IDの型（SubjectKey）と教科名の対応表（SUBJECT_LABELS）は
 // data/allChapters.ts が唯一の定義。このファイルの下で再公開もしている。
 import { SUBJECT_LABELS, type SubjectKey } from '../data/allChapters';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey } from '../utils/userStorageKeys';
 
 /**
  * アプリが扱う科目の識別子。
@@ -139,7 +141,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
   const displayName = useMemo(() => {
     try {
       const uid = auth.currentUser?.uid || 'guest';
-      const raw = localStorage.getItem(`profile_${uid}`);
+      const raw = localStorage.getItem(profileKey(uid));
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed?.name) return String(parsed.name);
