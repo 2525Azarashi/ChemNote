@@ -328,16 +328,34 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
     expect(src).not.toContain('quiz_answers_${c.id}_mini_test');
   });
 
-  it('Home.tsx が教科ごとの進捗バーを出している（化学基礎と化学を並べる）', () => {
+  it('Home.tsx が教科ごとの進捗バーを出している（化学基礎と化学を並べる）', async () => {
     const src = readFileSync('src/components/Home.tsx', 'utf8');
-    // 科目の定義（化学基礎＝chemistryData / 化学＝getAllAdvancedChapters）
-    expect(src).toContain('subjectProgressDefs');
-    expect(src).toContain('getAllAdvancedChapters');
     // 科目ID → { solved, total } を持ち、ループで並べていること
+    expect(src).toContain('subjectProgressDefs');
     expect(src).toContain('subjectProgress');
     expect(src).toMatch(/subjectProgressDefs\.map\(/);
     // 全科目合計で分母を割る旧実装（単一の progressPercent）が残っていないこと
     expect(src).not.toMatch(/const progressPercent\s*=/);
+
+    // 科目の定義そのものは data/allChapters.ts の SUBJECTS に集約したため、
+    // 「Home.tsx に getAllAdvancedChapters と書いてあるか」という文字列検査では
+    // 意図（＝化学基礎と化学が別々の進捗バーとして並ぶこと）を守れなくなった。
+    // 代わりに、進捗バーの元になるデータを実際に見て確認する。
+    const { SUBJECTS, getChaptersOfSubject } = await import('../src/data/allChapters');
+    const ids = SUBJECTS.map((s) => s.id);
+    expect(ids).toContain('chemistry_basic');
+    expect(ids).toContain('chemistry');
+
+    // それぞれ中身のある別々の章一覧であること（同じものを2本並べていない）
+    const basic = getChaptersOfSubject('chemistry_basic');
+    const advanced = getChaptersOfSubject('chemistry');
+    expect(basic.length).toBeGreaterThan(0);
+    expect(advanced.length).toBeGreaterThan(0);
+    expect(basic[0]).not.toBe(advanced[0]);
+
+    // 化学の章一覧は各教科ファイルの取り出し関数と一致していること
+    const { getAllAdvancedChapters } = await import('../src/data/chemistryAdvancedData');
+    expect(advanced.length).toBe((getAllAdvancedChapters() as any[]).length);
   });
 
   it('問題が0件の科目は「大問 0/0 問 (0%)」ではなく「準備中」と出す', () => {

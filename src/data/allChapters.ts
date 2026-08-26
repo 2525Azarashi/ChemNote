@@ -1,7 +1,14 @@
 /**
  * ===================================================================
- * 全教科の章を1本にまとめて引くためのファイル
+ * 「アプリにどの教科があるか」を1か所にまとめたファイル
  * ===================================================================
+ *
+ * このファイルが持つのは次の2つ。
+ *
+ *   1. SUBJECTS … 教科の一覧（ID・表示名・章の取り出し方）
+ *   2. findChapterById / getChaptersOfSubject … 上を使った検索
+ *
+ * どちらも「6教科ぶんを手で並べる」コードを画面側から無くすためにある。
  *
  * -------------------------------------------------------------------
  * ■ なぜこのファイルが必要なのか
@@ -27,7 +34,18 @@
  *   3. 章を選ぶたびに毎回 6 教科ぶんの flatMap が走る
  *
  * そこで「どの教科があるか」の一覧をこのファイル1か所に集約した。
- * 教科を追加するときは、下の SUBJECT_PARTS に1行足すだけでよい。
+ * 教科を追加するときは、下の SUBJECTS に1件足すだけでよい。
+ *
+ * -------------------------------------------------------------------
+ * ■ 同じ「6教科の列挙」が Home.tsx にもあった
+ * -------------------------------------------------------------------
+ * ホーム画面にも次の2か所に同じ列挙があり、教科を足すときの
+ * 修正箇所がさらに増えていた。
+ *
+ *   ・allChaptersList     … 選択中の教科の章を出す if 連鎖（6分岐）
+ *   ・subjectProgressDefs … 教科別の進捗バーを出す { id, label, chapters } の6件配列
+ *
+ * これらも SUBJECTS から作れるようにして、列挙を1か所に寄せた。
  *
  * -------------------------------------------------------------------
  * ■ 章IDが教科をまたいで衝突しないこと
@@ -61,20 +79,97 @@ interface PartsLike {
 }
 
 /**
- * 章を探す対象の教科。
+ * 教科ID。
  *
- * ★教科を追加するときは、ここに1行足すだけでよい。★
- * 並び順は元の App.tsx の連結順を保っている
- * （同じIDが複数教科にあった場合、先に書いた教科が優先される）。
+ * SubjectSelection.tsx の SubjectId と同じ値。
+ * ここで別途書いているのは、data 層から components 層を参照すると
+ * 依存が逆流してしまうため（今回のリファクタで潰した向きの逆）。
+ * 値がずれていないことは tests/allChapters.test.ts で検査している。
  */
-const SUBJECT_PARTS: PartsLike[] = [
-  chemistryData as unknown as PartsLike,
-  chemistryAdvancedData as unknown as PartsLike,
-  englishListeningData as unknown as PartsLike,
-  mathData as unknown as PartsLike,
-  biologyBasicData as unknown as PartsLike,
-  englishGrammarData as unknown as PartsLike,
+export type SubjectKey =
+  | 'chemistry_basic'
+  | 'chemistry'
+  | 'english_listening'
+  | 'english_grammar'
+  | 'math'
+  | 'biology_basic';
+
+interface SubjectEntry {
+  id: SubjectKey;
+  /** 画面に出す教科名 */
+  label: string;
+  /** この教科のデータ本体（章の取り出し元） */
+  data: PartsLike;
+}
+
+/**
+ * アプリが扱う教科の一覧。
+ *
+ * ★教科を追加するときは、ここに1件足すだけでよい。★
+ *
+ * 並び順には2つの意味がある。
+ *   1. 章IDの検索順（findChapterById）… 元の App.tsx の連結順そのまま。
+ *      同じIDが複数教科にあった場合、先に書いた教科が優先される。
+ *   2. ホーム画面の「教科ごとの進捗」の表示順（SUBJECTS の順に縦に並ぶ）。
+ * どちらも従来の並びと同じにしてあるので、順番を変えると画面の並びも変わる。
+ */
+export const SUBJECTS: readonly SubjectEntry[] = [
+  { id: 'chemistry_basic', label: '化学基礎', data: chemistryData as unknown as PartsLike },
+  { id: 'chemistry', label: '化学', data: chemistryAdvancedData as unknown as PartsLike },
+  {
+    id: 'english_listening',
+    label: '英語リスニング',
+    data: englishListeningData as unknown as PartsLike,
+  },
+  { id: 'math', label: '数学', data: mathData as unknown as PartsLike },
+  { id: 'biology_basic', label: '生物基礎', data: biologyBasicData as unknown as PartsLike },
+  {
+    id: 'english_grammar',
+    label: '英文法',
+    data: englishGrammarData as unknown as PartsLike,
+  },
 ];
+
+/**
+ * 教科データから章の配列を取り出す。
+ *
+ * これは各教科ファイルにある getAllAdvancedChapters() / getAllMathChapters() などと
+ * 完全に同じ処理（`data.parts.flatMap(p => p.chapters)`）。
+ * 同じ内容であることは tests/allChapters.test.ts で実際に突き合わせて確認している。
+ */
+function flattenChapters(data: PartsLike): ChapterLike[] {
+  return (data.parts || []).flatMap((part) => (part.chapters || []) as ChapterLike[]);
+}
+
+/**
+ * 教科ID → その教科の章配列。
+ *
+ * 教科データは起動後に変化しないため、初回だけ作って使い回す。
+ * ★返す配列を呼び出し側で書き換えない（sort / push など）こと。★
+ * 現在の呼び出し側はすべて読み取りのみ（reduce / map / find）であることを
+ * 確認したうえでキャッシュしている。
+ */
+const chaptersBySubject = new Map<SubjectKey, ChapterLike[]>();
+
+/**
+ * 指定した教科の章一覧を返す。
+ * 未知の教科IDが来た場合は、従来の Home.tsx の既定分岐に合わせて
+ * 化学基礎の章を返す（画面が空にならないようにするため）。
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getChaptersOfSubject(subjectId: string | null | undefined): any[] {
+  const entry =
+    SUBJECTS.find((subject) => subject.id === subjectId) ??
+    // 既定は化学基礎（元の Home.tsx の if 連鎖の最後の return と同じ挙動）
+    SUBJECTS[0];
+
+  const cached = chaptersBySubject.get(entry.id);
+  if (cached) return cached;
+
+  const chapters = flattenChapters(entry.data);
+  chaptersBySubject.set(entry.id, chapters);
+  return chapters;
+}
 
 /**
  * 全教科の章を連結した配列。
@@ -84,9 +179,7 @@ let cachedChapters: ChapterLike[] | null = null;
 
 function getAllChapters(): ChapterLike[] {
   if (cachedChapters) return cachedChapters;
-  cachedChapters = SUBJECT_PARTS.flatMap((subject) =>
-    (subject.parts || []).flatMap((part) => (part.chapters || []) as ChapterLike[]),
-  );
+  cachedChapters = SUBJECTS.flatMap((subject) => getChaptersOfSubject(subject.id));
   return cachedChapters;
 }
 

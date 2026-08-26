@@ -2,12 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2, Bell } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
-import { chemistryData } from '../data/chemistryData';
-import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
-import { getAllListeningChapters } from '../data/englishListeningData';
-import { getAllMathChapters } from '../data/mathData';
-import { getAllBiologyChapters } from '../data/biologyBasicData';
-import { getAllGrammarChapters } from '../data/englishGrammarData';
+// どの教科があるか・教科ごとの章一覧は data/allChapters.ts に集約している
+// （以前はこのファイルで6教科ぶんを個別に import して手で並べていた）
+import { SUBJECTS, getChaptersOfSubject } from '../data/allChapters';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
@@ -73,17 +70,8 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   //   演習（practiceProblems＝大問の大多数）が丸ごと抜け落ちていた。
   // 分子：1点でも獲得した大問の数（utils/progress の台帳を参照）。
   // 科目に応じて集計対象の章を切り替える（化学基礎の振る舞いは従来のまま）。
-  const allChaptersList = useMemo(
-    () => {
-      if (subject === 'chemistry') return getAllAdvancedChapters() as any[];
-      if (subject === 'english_listening') return getAllListeningChapters() as any[];
-      if (subject === 'math') return getAllMathChapters() as any[];
-      if (subject === 'biology_basic') return getAllBiologyChapters() as any[];
-      if (subject === 'english_grammar') return getAllGrammarChapters() as any[];
-      return chemistryData.parts.flatMap((p: any) => p.chapters) as any[];
-    },
-    [subject],
-  );
+  // 未知の科目IDが来た場合は化学基礎の章が返る（従来の if 連鎖の既定分岐と同じ）。
+  const allChaptersList = useMemo(() => getChaptersOfSubject(subject), [subject]);
   const totalQuestions = useMemo(() => {
     return allChaptersList.reduce((sum: number, c: any) => {
       return sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0);
@@ -97,39 +85,15 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   // 従来は選択中の科目の1本だけを表示していたため、
   // 他の科目の進み具合を見るには科目を切り替える必要があった。
   // ここで全科目分をまとめて作り、カード内に並べて出す。
+  // 並ぶ順・表示名・対象の章は data/allChapters.ts の SUBJECTS がそのまま決める。
+  // 教科を追加したときにここへ書き足す必要は無い。
   const subjectProgressDefs = useMemo(
-    () => [
-      {
-        id: 'chemistry_basic' as const,
-        label: '化学基礎',
-        chapters: chemistryData.parts.flatMap((p: any) => p.chapters) as any[],
-      },
-      {
-        id: 'chemistry' as const,
-        label: '化学',
-        chapters: getAllAdvancedChapters() as any[],
-      },
-      {
-        id: 'english_listening' as const,
-        label: '英語リスニング',
-        chapters: getAllListeningChapters() as any[],
-      },
-      {
-        id: 'math' as const,
-        label: '数学',
-        chapters: getAllMathChapters() as any[],
-      },
-      {
-        id: 'biology_basic' as const,
-        label: '生物基礎',
-        chapters: getAllBiologyChapters() as any[],
-      },
-      {
-        id: 'english_grammar' as const,
-        label: '英文法',
-        chapters: getAllGrammarChapters() as any[],
-      },
-    ],
+    () =>
+      SUBJECTS.map((s) => ({
+        id: s.id,
+        label: s.label,
+        chapters: getChaptersOfSubject(s.id),
+      })),
     [],
   );
   /** 科目ID → { solved, total } */
