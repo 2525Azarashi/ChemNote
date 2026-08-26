@@ -12,6 +12,10 @@ import {
   type ReviewItem,
 } from '../utils/reviewList';
 import { stripHtmlToText } from '../utils/sanitizeHtml';
+// truncate / formatDue は忘却曲線ダッシュボード（StudyHub.tsx）と
+// 同じ表示にしなければならないので、reviewSubject.ts の1つだけを使う
+// （以前はここにも同じ実装があった）。
+import { formatDue, truncate } from '../utils/reviewSubject';
 
 interface ReviewListProps {
   onBack: () => void;
@@ -27,18 +31,6 @@ type Tab = 'due' | 'all';
 //   HTMLの解析時に読み込みが走り onerror が発火し得る。
 //   DOMを一切作らない共通実装に統一した。
 const stripHtml = stripHtmlToText;
-
-function truncate(text: string, max = 90): string {
-  return text.length > max ? text.slice(0, max) + '…' : text;
-}
-
-function formatDue(dueAt: number, now: number): string {
-  const diff = dueAt - now;
-  if (diff <= 0) return '復習可能';
-  const days = Math.ceil(diff / (24 * 60 * 60 * 1000));
-  if (days <= 1) return '明日';
-  return `${days}日後`;
-}
 
 export function ReviewList({ onBack, isGuest }: ReviewListProps) {
   const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);

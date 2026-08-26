@@ -549,3 +549,137 @@ describe('改善4: 全体レイアウト', () => {
     expect(HUB).toMatch(/min-h-\[44px\]/u);
   });
 });
+
+// ===================================================================
+// 一覧カードの短縮表示（truncate / formatDue）の共通化
+// ===================================================================
+//
+// ■ 何が重複していたか
+//   復習カードの「問題文を切り詰める」truncate と、
+//   「次の復習日を日本語にする」formatDue が、まったく同じ実装で
+//   2箇所にあった。
+//     src/components/ReviewList.tsx （復習リスト画面）
+//     src/components/StudyHub.tsx   （忘却曲線ダッシュボード）
+//
+//   この2画面は「同じ復習アイテム」を並べる。片方だけ直すと、
+//   同じ問題が復習リストでは「明日」、ダッシュボードでは「1日後」と
+//   表示されるような食い違いが起きる。
+//
+// ■ このテストの方針
+//   移す前の実装をここに複製（legacy…）し、共通化後の実装と
+//   toBe() で一致することを確認する。本番コードを触る前に実行して
+//   「失敗すること」を確かめてから移した。
+// -------------------------------------------------------------------
+
+/** 移動前に ReviewList.tsx / StudyHub.tsx にあった実装（そのまま複製） */
+function legacyTruncate(text: string, max = 90): string {
+  return text.length > max ? text.slice(0, max) + '…' : text;
+}
+
+/** 移動前に ReviewList.tsx / StudyHub.tsx にあった実装（そのまま複製） */
+function legacyFormatDue(dueAt: number, now: number): string {
+  const diff = dueAt - now;
+  if (diff <= 0) return '復習可能';
+  const days = Math.ceil(diff / (24 * 60 * 60 * 1000));
+  if (days <= 1) return '明日';
+  return `${days}日後`;
+}
+
+describe('truncate / formatDue（復習カードの短縮表示）', () => {
+  const DAY = 24 * 60 * 60 * 1000;
+
+  it('truncate: 実際に使われている3つの max で移動前と同じ結果になる', async () => {
+    const { truncate } = await import('../src/utils/reviewSubject');
+    // 実際の呼び出し: ReviewList=既定90 / StudyHub=160, 70, 60
+    const maxes = [undefined, 90, 160, 70, 60, 0, 1] as const;
+    const samples = [
+      '',
+      'あ',
+      '短い問題文',
+      'あ'.repeat(59),
+      'あ'.repeat(60),
+      'あ'.repeat(61),
+      'あ'.repeat(69),
+      'あ'.repeat(70),
+      'あ'.repeat(71),
+      'あ'.repeat(89),
+      'あ'.repeat(90),
+      'あ'.repeat(91),
+      'あ'.repeat(159),
+      'あ'.repeat(160),
+      'あ'.repeat(161),
+      '（問題文なし）',
+      'H2SO4 の molar mass を求めよ。ただし有効数字は3桁とする。',
+      '改行\nを\n含む\n問題文',
+      '絵文字😀を含む問題文', // サロゲートペアの扱いも移動前と同じであること
+    ];
+    for (const s of samples) {
+      for (const m of maxes) {
+        const got = m === undefined ? truncate(s) : truncate(s, m);
+        const want = m === undefined ? legacyTruncate(s) : legacyTruncate(s, m);
+        expect(got, `truncate(${JSON.stringify(s.slice(0, 12))}…, ${m})`).toBe(want);
+      }
+    }
+  });
+
+  it('truncate: 境界のふるまい（max ちょうどは切らない／超えたら「…」が付く）', async () => {
+    const { truncate } = await import('../src/utils/reviewSubject');
+    expect(truncate('あ'.repeat(90), 90)).toBe('あ'.repeat(90)); // ちょうどは無加工
+    expect(truncate('あ'.repeat(91), 90)).toBe('あ'.repeat(90) + '…');
+    expect(truncate('', 90)).toBe('');
+    // 「…」は1文字だけ付く（二重に付かない）
+    expect(truncate('あ'.repeat(200), 10).endsWith('……')).toBe(false);
+  });
+
+  it('formatDue: 期限前後・日数の境界で移動前と同じ結果になる', async () => {
+    const { formatDue } = await import('../src/utils/reviewSubject');
+    const now = 1_700_000_000_000;
+    const offsets = [
+      -10 * DAY, -DAY, -1, 0, 1, 1000,
+      DAY - 1, DAY, DAY + 1,
+      2 * DAY - 1, 2 * DAY, 2 * DAY + 1,
+      3 * DAY, 7 * DAY, 14 * DAY, 30 * DAY, 60 * DAY,
+    ];
+    for (const off of offsets) {
+      expect(formatDue(now + off, now), `offset=${off}`).toBe(legacyFormatDue(now + off, now));
+    }
+  });
+
+  it('formatDue: 表示文言そのものが変わっていない', async () => {
+    const { formatDue } = await import('../src/utils/reviewSubject');
+    const now = 1_700_000_000_000;
+    expect(formatDue(now - DAY, now)).toBe('復習可能'); // 期限切れ
+    expect(formatDue(now, now)).toBe('復習可能');       // ちょうど
+    expect(formatDue(now + 1, now)).toBe('明日');       // 1ms 後でも「明日」
+    expect(formatDue(now + DAY, now)).toBe('明日');
+    expect(formatDue(now + DAY + 1, now)).toBe('2日後');
+    expect(formatDue(now + 7 * DAY, now)).toBe('7日後');
+  });
+
+  it('実装は reviewSubject.ts だけにある（2つに増えていない）', () => {
+    const files = ['src/components/ReviewList.tsx', 'src/components/StudyHub.tsx'];
+    for (const file of files) {
+      const src = readFileSync(resolve(__dirname, '..', file), 'utf8');
+      expect(src, `${file} に truncate の実装が復活している`).not.toMatch(/function truncate\s*\(/u);
+      expect(src, `${file} に formatDue の実装が復活している`).not.toMatch(/function formatDue\s*\(/u);
+    }
+    const home = readFileSync(resolve(__dirname, '..', 'src/utils/reviewSubject.ts'), 'utf8');
+    expect(home).toMatch(/export function truncate\s*\(/u);
+    expect(home).toMatch(/export function formatDue\s*\(/u);
+  });
+
+  it('2画面が同じ関数を使っている（呼び出し側の表示は変えていない）', () => {
+    const RL = readFileSync(resolve(__dirname, '..', 'src/components/ReviewList.tsx'), 'utf8');
+    const SH = readFileSync(resolve(__dirname, '..', 'src/components/StudyHub.tsx'), 'utf8');
+    // 既存の呼び出し形はそのまま（引数も変えていない）
+    expect(RL).toContain("truncate(stripHtml(it.questionText) || '（問題文なし）')");
+    expect(RL).toContain('formatDue(it.dueAt, now)');
+    expect(SH).toContain('truncate(stripHtml(item.questionText), 160)');
+    expect(SH).toContain('formatDue(item.dueAt, now)');
+    // 両方とも reviewSubject から取り込んでいる
+    for (const [name, src] of [['ReviewList', RL], ['StudyHub', SH]] as const) {
+      const imports = src.slice(0, src.indexOf('interface') > 0 ? src.indexOf('interface') : 3000);
+      expect(imports, `${name} が reviewSubject から取り込んでいない`).toMatch(/reviewSubject/u);
+    }
+  });
+});
