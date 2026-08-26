@@ -12,6 +12,8 @@ import { describe, it, expect, vi } from 'vitest';
  *   - 「数学、生物基礎を追加して」
  *     → 数学は数III積分（全パターン演習）を公開（available: true）
  *     → 生物基礎は準備中（available: false）として先にカードだけ出す
+ *   - 「英文法単元別に追加してください」
+ *     → 英文法（english_grammar）を6番目の科目として公開（available: true）
  *
  * レンダリング環境（jsdom）を前提にしないため、
  *   ① SubjectId / ラベル定義などの純粋なロジックは実際に import して検証
@@ -30,14 +32,15 @@ const SRC = readFileSync('src/components/SubjectSelection.tsx', 'utf8');
 const APP = readFileSync('src/App.tsx', 'utf8');
 
 describe('科目の定義', () => {
-  it('化学基礎・化学・英語リスニング・数学・生物基礎の5科目が SubjectId に含まれる', async () => {
+  it('化学基礎・化学・英語リスニング・数学・生物基礎・英文法の6科目が SubjectId に含まれる', async () => {
     const { SUBJECT_LABELS } = await import('../src/components/SubjectSelection');
     expect(Object.keys(SUBJECT_LABELS).sort()).toEqual(
-      ['biology_basic', 'chemistry', 'chemistry_basic', 'english_listening', 'math'],
+      ['biology_basic', 'chemistry', 'chemistry_basic', 'english_grammar', 'english_listening', 'math'],
     );
     expect(SUBJECT_LABELS.english_listening).toBe('英語リスニング');
     expect(SUBJECT_LABELS.math).toBe('数学');
     expect(SUBJECT_LABELS.biology_basic).toBe('生物基礎');
+    expect(SUBJECT_LABELS.english_grammar).toBe('英文法');
   });
 
   it('getSubjectLabel は未知の値でも落ちず、化学基礎に倒す', async () => {
@@ -98,10 +101,21 @@ describe('科目の定義', () => {
     expect(def).toContain('biologyStats.questions');
   });
 
-  it('公開中5科目（全科目公開済み）', () => {
+  it('英文法は available: true（＝公開中）で、収録数をデータから算出している', () => {
+    const block = SRC.slice(SRC.indexOf("id: 'english_grammar'"));
+    const def = block.slice(0, block.indexOf('},'));
+    expect(def).toContain("title: '英文法'");
+    expect(def).toContain('available: true');
+    expect(def).toContain('icon: PenLine');
+    // 収録数は getGrammarStats() から算出（数字のハードコードをしない）
+    expect(def).toContain('grammarStats.chapters');
+    expect(def).toContain('grammarStats.marks');
+  });
+
+  it('公開中6科目（全科目公開済み）', () => {
     const availableTrue = (SRC.match(/available: true/g) || []).length;
     const availableFalse = (SRC.match(/available: false/g) || []).length;
-    expect(availableTrue).toBe(5);
+    expect(availableTrue).toBe(6);
     expect(availableFalse).toBe(0);
   });
 

@@ -223,14 +223,49 @@ describe('D2（改）: 問題が上・解答が下（自然な読み順）', () 
     expect(QUIZ).toContain('lg:flex-row');
   });
 
-  it('リスニングの問題ペインは 40vh 上限（問題と選択肢を同時に見る）', () => {
-    // ご指摘：「一番大事なのは、問題(文章や図と解答のボタンを一緒に見れること)」
-    // 上 40vh に問N見出し＋再生＋設問文＋図、下に選択肢が収まる。
-    expect(QUIZ).toContain("'max-h-[40vh] h-auto shadow-md relative z-20'");
-    // 選択肢②以降が隠れていた旧値（32vh）にも、問題が見えない
-    // ほど狭い値（30vh）にも戻さない。
+  /*
+    ★方針を変えた箇所★
+    以前ここは「リスニングの問題ペインは 40vh 上限」を期待していた。
+    しかしご指摘
+      「選択肢のところが固定されてるけど、選択肢の下に空白合って無駄だから、
+        まず固定するならもっと下にもってきて、図が隠れてるのを防いでほしい」
+    により、高さの配り方を逆にした。
+
+      旧：問題ペイン = max-h-[40vh]（上限つき） ／ 解答ペイン = flex-1
+          → 図は 40vh に押し込められて隠れ、①〜④ の4ボタンしか無い
+            解答ペインが余った高さを全部受け取って下に空白ができていた。
+
+      新：問題ペイン = flex-1 min-h-0（余りを全部もらう）
+          解答ペイン = flex-none（中身の高さだけ＝空白ゼロ、位置は最下部）
+  */
+  it('リスニング（スマホ）は問題ペインが余りの高さを全部もらう', () => {
+    // ご指摘：「図が隠れてるのを防いでほしい」
+    // 上限を外して flex-1 にしたので、図は使える高さいっぱいまで伸びる。
+    // ★ご要望(7a)「他の大問のUIも変えてくれない？」で条件が1つ増えた★
+    //   図がある大問（第1問B）だけ「問題文ペイン＝flex-1」。
+    //   図が無い大問（第1問A・第3問・第2問）は flex-none にして、
+    //   余った高さは解答ペイン側へ回す（下記の別テストで固定）。
+    expect(QUIZ).toContain(
+      "${listeningMobileSplit && !listeningMobileNoFigure ? 'flex-1 min-h-0' : 'flex-none'}"
+    );
+    // 高さの連鎖（親が min-h-0 の flex）を切らないこと。
+    // これが無いと <img> の max-h-full が none 扱いになり図がはみ出す。
+    expect(QUIZ).toContain("listeningMobileSplit ? 'flex flex-col px-3 pt-2 pb-3' : 'p-4'");
+    // リスニングだけに効かせる（化学・数学の 42dvh は触らない）。
+    expect(QUIZ).toContain('const listeningMobileSplit');
+    // 旧上限には戻さない。選択肢②以降が隠れていた 32vh / 30vh も同様。
+    expect(QUIZ).not.toContain("'max-h-[40vh] h-auto shadow-md relative z-20'");
     expect(QUIZ).not.toContain('max-h-[32vh]');
     expect(QUIZ).not.toContain('max-h-[30vh]');
+  });
+
+  it('リスニングの解答ペインは中身の高さだけ取り、下部ナビの直上に置く', () => {
+    // ご指摘：「選択肢の下に空白合って無駄」
+    // 原因は解答ペインの flex-1。リスニングだけ flex-none にして空白を消す。
+    expect(QUIZ).toContain("listeningMobileSplit ? 'flex-none pt-2' : 'flex-1 pt-4'");
+    // 「もっと下にもってきて」＝下部ナビの高さ分だけ余白を残す
+    //（余らせすぎない値。iOS のノッチは safe-area-inset で確保する）。
+    expect(QUIZ).toContain('pb-[calc(4.75rem+env(safe-area-inset-bottom))]');
   });
 
   it('左右2画面の比は勝手に変えない（58% / 42% のまま）', () => {
@@ -263,10 +298,29 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
     expect(FIGURE).toContain('imgClassName = \'\'');
   });
 
-  it('リスニングの図は高さ上限つきで描画される（選択肢と同時に1画面）', () => {
+  /*
+    ★方針を変えた箇所★
+    旧：スマホも 22vh の固定上限（問題ペインが 40vh だったため）。
+    新：問題ペインが余りの高さを全部もらうようになったので、
+        図は fill モードで「もらえた高さいっぱい」に伸ばす。
+        22vh の上限は PC・非リスニング用に残す。
+  */
+  it('リスニングの図は親からもらえた高さいっぱいに伸ばす（fill）', () => {
     // 図は「問題のところ（左側）」の現在の問ブロックにだけ置く。
-    // スマホは問題ペイン 40vh の中に見出し・再生と一緒に収まるよう 22vh。
-    expect(QUIZ).toContain('imgClassName="max-h-[22vh] md:max-h-[42vh] object-contain"');
+    expect(QUIZ).toContain('fill={listeningMobileSplit}');
+    // スマホのリスニング以外（PC・化学など）は従来の高さ上限のまま。
+    expect(QUIZ).toContain("listeningMobileSplit ? '' : 'max-h-[22vh] md:max-h-[42vh] object-contain'");
+  });
+
+  it('fill は figure→button→img に高さの連鎖を通す（max-h-full を効かせる）', () => {
+    // ★percentage の max-height は親の高さが確定していないと none 扱い★
+    //   そのため flex + min-h-0 + flex-1 を全段に通す必要がある。
+    expect(FIGURE).toContain('fill?: boolean');
+    expect(FIGURE).toContain("fill ? 'flex min-h-0 flex-1 flex-col' : ''");
+    expect(FIGURE).toContain("fill ? 'flex min-h-0 flex-1 items-start justify-center' : 'block'");
+    expect(FIGURE).toContain("fill ? 'min-h-0 max-h-full object-contain' : ''");
+    // キャプションは図に押し潰されない。
+    expect(FIGURE).toContain('shrink-0');
   });
 
   it('図は解答カード側・スマホ固定パネル側には残さない', () => {

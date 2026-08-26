@@ -40,7 +40,7 @@ import {
 } from '../utils/progress';
 import { schedulePush } from '../utils/studySync';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
-import { answerCardMarker, buildSubQuestionList, splitQuestionLabel } from '../utils/questionDisplay';
+import { answerCardMarker, buildSubQuestionList, splitQuestionLabel, isSubQuestionListRedundant, extractInlineQuestionRows } from '../utils/questionDisplay';
 import {
   buildListeningOptionTexts,
   buildListeningLeadText,
@@ -1146,6 +1146,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     const stacked = isLongOptionList || !!optionTexts;
 
     return (
+      // ★スマホでは「選択肢が先・説明が後」にする（ご指摘：(ア)(イ) が欠けている）★
+      //   flex-col なので CSS order で並べ替えられる。高さを削る方式と違い、
+      //   説明文の長さや選択肢の数が変わっても選択肢が先頭に来ることは保証される。
+      //   md 以上は order を付けないので PC の並び（説明→選択肢）は元のまま。
       <div className="flex w-full flex-col gap-2">
       {/*
         消去法の操作説明。
@@ -1160,33 +1164,60 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       {/* 操作説明は初回のみ展開し、以降は「?」アイコンで呼び出す（ご要望：
           毎問同じ説明が常時表示され選択肢の邪魔になる、への対応）。 */}
       {elimHintOpen ? (
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold leading-snug text-gray-400 rounded-lg border border-gray-200 bg-gray-50/80 px-2.5 py-2">
+        /*
+          ★ご指摘「(ア)(イ)とかのボタンが欠けてる」の真因はここだった★
+
+          この操作説明は初見ユーザーには既定で開いている。
+          PC では横1行に収まるが、スマホ幅（360〜390px）では
+          「タップで選択 → もう一度で斜線 → さらにタップで元に戻る
+            ／長押しでこの設問の斜線をまとめて消す」が4行に折り返し、
+          実測で約150px を占有していた。
+
+          解答ペインの高さは端末と問題文の長さで決まる有限値なので、
+          その150px はそのまま選択肢の取り分から引かれる。
+          結果 (ア)(イ)(ウ)(エ) が下部ナビの下に押し出され、
+          初見ユーザーの画面には選択肢が1つも映らない状態になっていた
+          （実測：c5_7[0] 390x664 で 見えている選択肢 0/4）。
+
+          ★直し方の方針★
+            説明を消すのではなく、スマホだけ「見本＋2文字」に圧縮する。
+            見本チップ（白／青／斜線）は残すので
+            「斜線という段階がある」という肝心の気づきは失われない。
+            md 以上は一切変更しない（PC の見た目は元のまま）。
+        */
+        <div className="order-2 md:order-none flex flex-wrap items-center gap-x-1.5 md:gap-x-2 gap-y-1 text-[10px] font-bold leading-snug text-gray-400 rounded-lg border border-gray-200 bg-gray-50/80 px-2 py-1 md:px-2.5 md:py-2">
           <span className="inline-flex items-center gap-1">
             <span className="inline-block rounded-md border-2 border-gray-200 bg-white px-1.5 py-0.5 text-gray-600">ア</span>
-            <span>タップで選択</span>
+            <span className="hidden md:inline">タップで選択</span>
+            <span className="md:hidden">選ぶ</span>
           </span>
           <span aria-hidden="true" className="text-gray-300">→</span>
           <span className="inline-flex items-center gap-1">
             <span className="inline-block rounded-md border-2 border-[#A9CCE3] bg-[#A9CCE3] px-1.5 py-0.5 text-white">ア</span>
-            <span>もう一度で斜線</span>
+            <span className="hidden md:inline">もう一度で斜線</span>
+            <span className="md:hidden">斜線</span>
           </span>
           <span aria-hidden="true" className="text-gray-300">→</span>
           <span className="inline-flex items-center gap-1">
             <span className="inline-block rounded-md border-2 border-gray-200 bg-gray-100 px-1.5 py-0.5 text-gray-400 line-through decoration-2 decoration-[#E8A87C]">ア</span>
-            <span>さらにタップで元に戻る</span>
+            <span className="hidden md:inline">さらにタップで元に戻る</span>
+            <span className="md:hidden">戻す</span>
           </span>
-          <span className="text-gray-400">／長押しでこの設問の斜線をまとめて消す</span>
+          {/* 長押しの補足はスマホでは省く（「?」から開いた PC 幅でだけ出す）。
+              肝心の3段階はチップの見本で伝わっている。 */}
+          <span className="hidden md:inline text-gray-400">／長押しでこの設問の斜線をまとめて消す</span>
           <button
             type="button"
             onClick={dismissElimHint}
-            className="ml-auto shrink-0 rounded-md border border-gray-300 bg-white px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:bg-gray-100"
+            className="ml-auto shrink-0 rounded-md border border-gray-300 bg-white px-1.5 py-0.5 md:px-2 text-[10px] font-bold text-gray-500 hover:bg-gray-100"
             aria-label="操作説明を閉じる（以降は ? ボタンで表示）"
           >
             閉じる
           </button>
         </div>
       ) : (
-        <div className="flex justify-end">
+        // 折りたたみ状態（「?操作説明」だけ）もスマホでは選択肢の後ろへ。
+        <div className="order-2 md:order-none flex justify-end">
           <button
             type="button"
             onClick={() => setElimHintOpen(true)}
@@ -1200,14 +1231,27 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         </div>
       )}
 
-      <div className={stacked
-        ? "grid grid-cols-1 gap-2.5 w-full"
+      {/*
+        ★図が無い大問（第1問A・第3問・第2問）は選択肢の背を伸ばす★
+        余った高さを空白として捨てず、タップ領域に変える。
+          ・auto-rows-fr    … 4つの行が等分に高さを分け合う
+          ・overflow-y-auto … 端末が極端に低いときはここだけスクロール
+                              （カードが下部ナビに潜り込むのを防ぐ）
+        伸ばしすぎると1問が画面を占領して読みにくいので、
+        個々のボタン側に max-h の上限を付けている（下記 className 参照）。
+      */}
+      {/* order-1：スマホでは操作説明（order-2）より前に出す。
+          これで説明文が何行に折り返しても選択肢が先頭に残る。 */}
+      <div className={`order-1 md:order-none ${stacked
+        ? `grid grid-cols-1 gap-2.5 w-full ${
+            listeningMobileNoFigure ? 'min-h-0 flex-1 auto-rows-fr overflow-y-auto' : ''
+          }`
         // 注：以前ここに xs:grid-cols-3 があったが、Tailwind v4 の @theme に
         // xs ブレークポイントは未定義で「効かないクラス」だった。スマホで列数を
         // 増やすと1つあたりのタップ幅が狭くなり本要件（タップしづらい）に逆行する
         // ため、ブレークポイントを追加せずクラスを削除している。
         : "grid grid-cols-2 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
-      }>
+      }`}>
         {sq.options.map((opt: string, optIdx: number) => {
           const isSelected = isMultiple
             ? (answers[sq.id] || '').split(multiSep as string).map(s => s.trim()).includes(opt.trim())
@@ -1282,7 +1326,16 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 handleOptionSelect(sq.id, opt);
               }}
               // スマホは 48px 以上の高さ・幅を確保してタップしやすくする（PC は従来寸法）。
-              className={`relative px-4 py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${stacked ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3.25rem] md:min-w-[3rem] shadow-sm cursor-pointer
+              className={`relative px-4 py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${stacked ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3.25rem] md:min-w-[3rem] shadow-sm cursor-pointer ${
+                /*
+                  図が無い大問では余り高さのぶんだけ背が伸びる（押しやすくする）。
+                  ★上限（5rem）を必ず付ける★
+                    付けないと4択が画面を縦に埋め尽くし、1つのボタンが
+                    巨大な余白の塊になる。それでは「空白が無駄」を
+                    別の形で作り直すだけになってしまう。
+                */
+                listeningMobileNoFigure ? 'max-h-[5rem]' : ''
+              }
                 ${struck
                   // 消去済み：斜線＋グレーに加え、枠線を破線にして
                   // 「候補から外した（もう枠として生きていない）」ことを形でも示す。
@@ -1816,6 +1869,40 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     [highlights, focusHighlightVariants]
   );
 
+  /*
+    スマホ：小問行を横並びにできる問題かどうか（ご要望8）
+    ─────────────────────────────────────────────
+    「(1)から4問縦書きになってるけど、横書きにしたら1画面に収まるくない？」
+
+    ★科目で決め打ちしない（ご注意9）
+      全 262 問を実測すると、行頭マーカー行の本文は
+        数学     … 10〜22 文字
+        化学基礎 … 最大 157 文字
+      と問題ごとにまったく違う。「数学だから横」にすると化学基礎の
+      長い小問まで横に並べて崩れるので、判定は
+      extractInlineQuestionRows() に任せ「その問題自身が短いか」で決める。
+      条件を満たさない問題は null が返り、従来の縦積みにフォールバックする。
+
+    PC（isDesktop）では常に null にして、これまでの表示を一切変えない。
+  */
+  const inlineQuestionRows = useMemo(
+    () => (isDesktop ? null : extractInlineQuestionRows(cleanQuestionText(currentQuestion?.text || ''))),
+    [isDesktop, currentQuestion?.text]
+  );
+
+  /*
+    スマホ：設問一覧が問題文の丸写しなら出さない（ご要望8）
+    ─────────────────────────────────────────────
+    「設問一覧と問題が同じなので、同じやつはもう設問一覧いらない」
+
+    こちらも科目では決めず、「一覧の全項目が問題文に含まれるか」を
+    問題ごとに判定する（1 項目でも欠ければ一覧を残す＝情報を消さない）。
+  */
+  const hideRedundantSubQuestionList = useMemo(
+    () => !isDesktop && isSubQuestionListRedundant(currentQuestion),
+    [isDesktop, currentQuestion]
+  );
+
   // 下部ナビバー（前へ/次へ）の対象となる設問。
   //
   // ★テキスト入力（短答穴埋め・記述/計算）だけに絞る（ご指摘対応）
@@ -1882,6 +1969,56 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
    * 化学など音源が無い教科では false のままなので、従来表示に影響しない。
    */
   const listeningUnified = listeningTracks.length > 0;
+
+  /**
+   * スマホのリスニングで「高さの配り方を逆にする」レイアウトを使うか。
+   *
+   * ご指摘（第1問B のスマホ画面）：
+   *   「選択肢のところが固定されてるけど、選択肢の下に空白合って無駄だから、
+   *     まず固定するならもっと下にもってきて、図が隠れてるのを防いでほしい」
+   *
+   * true のとき
+   *   ・解答ペイン（①〜④）… 中身の高さだけ取り、画面下部（下部ナビの真上）へ
+   *   ・問題文ペイン       … 残りの高さを全部もらう ＝ 図が大きく出る
+   * となる。
+   *
+   * ★PC・キーボード表示中・問題文の全画面表示中は使わない★
+   *   ・PC は左右分割なので高さの取り合いが起きない
+   *   ・キーボード表示中は入力欄をキーボードの上に見せる従来ロジックを優先
+   *   ・全画面表示中は問題文ペインが absolute inset-0 になり無関係
+   */
+  const listeningMobileSplit =
+    !isDesktop && listeningUnified && !isProblemExpanded && !isProblemCollapsed && !keyboardVisible;
+
+  /**
+   * いま解いている問に「図」があるか。
+   *
+   * ★余った高さを誰にあげるかを、これで切り替える★
+   *   第1問B（イラスト選択）… 図がある。余りは図にあげる（大きく見せたい）
+   *   第1問A・第3問・第2問  … 図が無い。余りを問題文ペインにあげても
+   *                            「再生ボタンの下に巨大な空白」になるだけ。
+   *
+   * ご要望「他の大問のUIも変えてくれない？第1問Aも第3問もこれから入る予定の
+   * 第2問とその他も」への対応の要。第1問B 用に入れた
+   * 「問題文ペイン＝flex-1」をそのまま他の大問に適用すると、
+   * 図が無いぶんの高さが丸ごと死んだ空白になってしまう
+   *（＝ご指摘いただいた「下に空白があって無駄」が場所を変えて再発する）。
+   */
+  const activeStepHasFigure = !!activeStepSub?.imageUrl;
+
+  /**
+   * リスニング（スマホ）で「図が無い大問」のレイアウトを使うか。
+   *
+   * true のとき
+   *   ・問題文ペイン … 中身の高さだけ（設問文＋再生ボタンで十分足りる）
+   *   ・解答ペイン   … 残りの高さをもらい、選択肢を下端（下部ナビの真上）へ寄せる
+   *   ・選択肢       … 余った高さのぶんだけ背を伸ばして押しやすくする
+   *                    （ただし伸ばしすぎない上限つき）
+   *
+   * 図がある第1問B は従来どおり listeningMobileSplit の配り方
+   *（問題文ペイン＝flex-1）を使う。
+   */
+  const listeningMobileNoFigure = listeningMobileSplit && !activeStepHasFigure;
 
   // ────────────────────────────────────────────────────────────────
   // リスニング：回のはじまりに「問題の説明ページ」を出す
@@ -2513,25 +2650,57 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         {/* Section 1: Problem Text
             ★左右比は従来どおり 58% / 42%（勝手に変えない、というご指摘に対応）。 */}
         {/* スマホの高さ制御（ご要望「問題文が占領しすぎて入力しづらい」対策）：
-            ・通常は max-h-[42dvh]。以前は 50vh だったが、iOS Safari の vh は
-              URLバー・ツールバーを含む「最大の画面高さ」基準のため、実際の
-              表示領域では半分を大きく超えてしまい、下部固定ナビと合わさって
-              解答入力欄がほぼ隠れていた（ご指摘「解答するところが問題文で
-              埋もれちゃってる」）。dvh（実際に見えている高さ）基準の 42% に
-              して、解答欄が最初から必ず見えるようにする。短い問題は h-auto で影響なし。
+            ・通常は max-h-[50%]（親＝ペインを分け合う箱の半分）。
+              変遷：50vh → 42dvh → 50%。
+                50vh  … iOS Safari の vh は URLバー込みの「最大の画面高さ」
+                        基準なので、実表示領域では半分を大きく超えていた。
+                42dvh … 実表示高さ基準にはなったが、基準がビューポート全体の
+                        ままだったので、ヘッダーと下部ナビを引いた「実際に
+                        ペインが分け合える高さ」に対しては 54〜56% を先取り
+                        してしまい、解答欄が下部ナビの下へ押し出された。
+                50%   … 基準を親に変更。ヘッダー・ナビを自動的に除いた上で
+                        ちょうど半分になるので、ビューポートが変わっても、
+                        問題文が18文字でも1031文字でも取り分が変わらない。
+              短い問題は h-auto なので半分も使わず、余りは解答側に回る。
             ・ソフトキーボード表示中は max-h-[24vh] に自動で縮め、
               入力欄と入力内容がキーボードの上に必ず見えるようにする
             ・「たたむ」で見出しだけにして解答欄を最大化できる */}
-        {/* ★リスニング（スマホ）は問題文ペインを max-h-[40vh] にする（ご指摘：
-            「一番大事なのは、問題(文章や図)と解答のボタンを一緒に見れること」）。
-            問題文ペインが上・解答（選択肢）が下の並びで、
-            ・上 40vh …… 問N見出し＋再生ボタン＋設問文＋図（あれば）
-            ・下 残り …… 選択肢（①〜④）
-            が同じ画面に収まる。図つきの問（第1問B）でも図の高さ上限
-            （22vh）と合わせて 40vh 内に見出し・再生・図が全部入る。
-            化学・数学など（listeningUnified=false）は従来どおり 50vh。 */}
+        {/*
+          ★リスニング（スマホ）は「高さの取り合い」を逆向きにする★
+          ------------------------------------------------------------------
+          ご指摘：
+            「選択肢のところが固定されてるけど、選択肢の下に空白合って
+              無駄だから、まず固定するならもっと下にもってきて、
+              図が隠れてるのを防いでほしい」
+
+          ■ 何が起きていたか
+            以前は
+              ・問題文ペイン … max-h-[40vh]（上限を先に決める）
+              ・解答ペイン   … flex-1（余った高さを全部もらう）
+            だった。すると
+              ・問題文ペインは 40vh で打ち切られ、第1問B の
+                4コマイラストが下半分から切れる（ご指摘「図が隠れてる」）
+              ・一方で解答ペインは ①〜④ の4ボタンしか無いのに
+                余り高さを全部受け取るので、選択肢カードの下に
+                大きな空白が残る（ご指摘「選択肢の下に空白合って無駄」）
+            という、高さの配り方が完全に逆の状態だった。
+
+          ■ どう直したか（listeningMobileSplit）
+            取り合いを入れ替える。
+              ・解答ペイン   … flex-none（中身のぶんだけ）＋ 画面下に寄せる
+              ・問題文ペイン … flex-1（余った高さを全部もらう）
+            これで
+              ・選択肢カードは下部ナビの真上まで下がる（＝もっと下に）
+              ・カード下の空白が消える（中身の高さしか取らないため）
+              ・浮いた高さはそのまま問題文ペイン＝図に回る
+            の3つが同時に成立する。
+
+          化学・数学など（listeningUnified=false）は従来どおり
+          「問題文に上限・解答に残り」のままで、見た目は変わらない。
+        */}
         <div className={`
-          lg:w-[58%] flex-none flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
+          lg:w-[58%] flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
+          ${listeningMobileSplit && !listeningMobileNoFigure ? 'flex-1 min-h-0' : 'flex-none'}
           ${isDesktop
             ? 'h-full'
             : isProblemExpanded
@@ -2540,9 +2709,34 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 ? 'h-auto shadow-md relative z-20'
                 : keyboardVisible
                   ? 'max-h-[24vh] h-auto shadow-md relative z-20'
-                  : listeningUnified
-                    ? 'max-h-[40vh] h-auto shadow-md relative z-20'
-                    : 'max-h-[42dvh] h-auto shadow-md relative z-20'}
+                  : listeningMobileNoFigure
+                    // 図が無い大問（第1問A・第3問・第2問）は中身のぶんだけ。
+                    // 余った高さは下の解答ペインに渡して選択肢を押しやすくする。
+                    ? 'h-auto max-h-[46dvh] shadow-md relative z-20'
+                    : listeningMobileSplit
+                      ? 'shadow-md relative z-20'
+                      /*
+                        ★ご指摘「問題によって問題文の長さが違うから、コードで形式的に
+                          作ると問題によっておかしくなる可能性がある」への修正★
+
+                        以前は max-h-[42dvh]。名前は「画面の42%」だが、実際に
+                        ペインが分け合えるのはヘッダーと下部ナビを引いた残りだけ。
+                          360x600 → 使える高さ 453px なのに 42dvh = 252px（＝56%）
+                          390x664 → 使える高さ 517px なのに 42dvh = 279px（＝54%）
+                        つまり「42%」と書きながら実質は毎回 55% 前後を先取りしていた。
+                        残り 201px しか無い解答ペインに 285px の解答カードが入らず、
+                        (ア)(イ)(ウ)(エ) が下部ナビの下へ押し出されていた
+                        （実測：c5_7[0] 360x600 で 見えている選択肢 0/4）。
+
+                        ★直し方★ 基準をビューポートから「親（ペインを分け合う箱）」に
+                        変える。max-h-[50%] は親の高さの50%なので、ヘッダーと
+                        ナビを自動的に除いた上でのちょうど半分になる。
+                        解答ペインは flex-1 なので必ず残り半分以上を受け取る。
+                        これで問題文が18文字でも1031文字でも取り分は変わらない
+                        （＝問題ごとに壊れない）。短い問題は h-auto なので
+                        半分も使わず、余りは解答側に回る。
+                      */
+                      : 'max-h-[50%] h-auto shadow-md relative z-20'}
         `}>
           <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
             <div className="flex items-center gap-2 md:gap-3">
@@ -2590,9 +2784,24 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             )}
           </div>
           
+          {/*
+            ★リスニング（スマホ）は、この中も「高さの連鎖」を通す★
+            図を「余った高さいっぱい」に伸ばすには、
+              問題文ペイン（flex-1）
+                → このスクロール枠（flex-1 min-h-0）
+                  → 内側ラッパ（flex flex-col min-h-0）
+                    → 問ブロック（flex flex-col min-h-0）
+                      → QuestionFigure fill
+            の全段で flex と min-h-0 が繋がっている必要がある。
+            どこか1段でも高さ auto があると <img> の max-height:100% が
+            none 扱いになり、図が原寸で伸びて枠からはみ出す（＝隠れる）。
+            余白も p-4 → px-3 pt-2 に詰めて、そのぶんを図に回す。
+          */}
           <div 
             ref={problemScrollRef}
-            className={`${!isDesktop && !isProblemExpanded && isProblemCollapsed ? 'hidden' : ''} flex-1 overflow-y-auto p-4 md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere] ${
+            className={`${!isDesktop && !isProblemExpanded && isProblemCollapsed ? 'hidden' : ''} flex-1 min-h-0 overflow-y-auto md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere] ${
+              listeningMobileSplit ? 'flex flex-col px-3 pt-2 pb-3' : 'p-4'
+            } ${
               // 数学の問題（requiresMathPalette 付き）は、数式が/や^の
               // 生テキストではなく教科書と同じ形で出るため、
               // 数式フォント＋一回り大きい表示（.math-content）で読みやすくする。
@@ -2602,7 +2811,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             onTouchEnd={handleTextSelection}
             title="テキストを選択するとハイライトできます"
           >
-            <div className="max-w-prose md:max-w-none">
+            <div className={`max-w-prose md:max-w-none ${listeningMobileSplit ? 'flex min-h-0 flex-1 flex-col' : ''}`}>
               {/* 問題文に含まれる Markdown テーブル（実験結果の表など）は
                   ExplanationBody を通して本物の <table> として描画する。
 
@@ -2643,24 +2852,56 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               {listeningUnified && activeStepSub && (() => {
                 const stepMarker = stepLabelOf(activeStepSub, safeStepIndex);
                 const { body } = splitQuestionLabel(activeStepSub.label || '', stepMarker);
+                /*
+                  ★短い設問文は見出しと同じ行に載せる（ご要望）★
+                  ------------------------------------------------------------
+                  ご指摘：
+                    「発話に合うイラストっていう文字をさ、問4（全4問中4問目）の
+                      右にもってこれば、もう少し図を上にできるでしょ」
+
+                  第1問B の設問文は「発話に合うイラスト」の一言だけなのに、
+                  見出し行の下に独立した <p> として置かれていた。
+                  そのため
+                    ・見出し行（問4 …）
+                    ・設問文行（発話に合うイラスト）
+                  で2行ぶんの高さを使い、そのぶん図が下に押し出されて
+                  画面外で切れていた。
+
+                  そこで「1行に収まる短さ（全角20文字相当まで）」の設問文だけ
+                  見出し行へ寄せ、丸ごと1行ぶん節約して図を上げる。
+
+                  ★長い設問文（第1問A・第3問の英文の問い）は従来どおり
+                    下の段落に置く★
+                    「話者がマイクに伝えたい内容に最も近い英文」のような
+                    長い設問文まで見出し行に押し込むと、逆に見出し行が
+                    2〜3行に折り返して高さが増えてしまう（本末転倒）。
+                */
+                const inlineBody = body && body.length <= 20 ? body : '';
+                const blockBody = inlineBody ? '' : body;
                 return (
-                  <div className="mb-4">
+                  <div className={listeningMobileSplit ? 'flex min-h-0 flex-1 flex-col' : 'mb-4'}>
                     {/* いま解いている問の見出し。回の中で迷子にならないよう
                         「問2 / 全4問」まで添える。 */}
-                    <div className="flex items-center gap-2 flex-wrap mb-2.5">
-                      <span className="font-bold text-white text-sm bg-[#2C3E50] py-1.5 px-3.5 rounded-lg shadow-sm">
+                    <div className={`flex items-center gap-2 flex-wrap ${inlineBody ? 'mb-2' : 'mb-2.5'}`}>
+                      <span className="font-bold text-white text-sm bg-[#2C3E50] py-1.5 px-3.5 rounded-lg shadow-sm shrink-0">
                         {formatText(stepMarker)}
                       </span>
                       {listeningSteps.length > 1 && (
-                        <span className="text-[11px] font-bold text-gray-400">
+                        <span className="text-[11px] font-bold text-gray-400 shrink-0">
                           （全{listeningSteps.length}問中 {safeStepIndex + 1}問目）
+                        </span>
+                      )}
+                      {/* 短い設問文はここ（問N の右）に置く。行を増やさない。 */}
+                      {inlineBody && (
+                        <span className="min-w-0 text-[14px] md:text-base font-bold leading-snug text-gray-800 font-modern break-words [overflow-wrap:anywhere]">
+                          {formatText(inlineBody, combinedHighlights)}
                         </span>
                       )}
                     </div>
 
-                    {body && (
+                    {blockBody && (
                       <p className="text-[15px] md:text-base leading-relaxed text-gray-800 font-modern break-words [overflow-wrap:anywhere] mb-3">
-                        {formatText(body, combinedHighlights)}
+                        {formatText(blockBody, combinedHighlights)}
                       </p>
                     )}
 
@@ -2682,19 +2923,35 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       />
                     )}
 
-                    {/* この問の図（第1問B のイラスト①〜④）。
-                        選択肢の中ではなく問題側に置く（ご要望）。
-                        スマホは問題ペインが 40vh なので 22vh に抑えて
-                        見出し・音源・図が上限内に全部収まるようにし
-                        （ご指摘「図も見えない」への対応）、PC は広いので
-                        42vh まで大きく出す。タップでさらに拡大できる。 */}
+                    {/*
+                      この問の図（第1問B のイラスト①〜④）。
+                      選択肢の中ではなく問題側に置く（ご要望）。
+
+                      ★スマホの高さ上限をやめる（ご指摘「図が隠れてる」）★
+                      以前は max-h-[22vh] で頭打ちにしていた。問題文ペインが
+                      40vh で固定だった時代に「見出し＋音源＋図」を無理に
+                      押し込むための数字だったが、
+                        ・4コマイラストは縦にも情報があるので 22vh では
+                          下2コマがほぼ潰れる
+                        ・親側が overflow-y-auto なので、はみ出した分は
+                          スクロールしないと見えない＝実質「隠れている」
+                      という状態になっていた。
+
+                      いまは問題文ペインが flex-1（余り高さを全部もらう）に
+                      なったので、図は fill で「もらえた高さいっぱい」まで
+                      伸ばす。縦を基準に縮小されるので、4コマ全体が
+                      1画面に収まる。タップでさらに拡大できる。
+                    */}
                     {activeStepSub.imageUrl && (
                       <QuestionFigure
                         src={activeStepSub.imageUrl}
                         caption={activeStepSub.imageCaption}
                         tone="light"
                         className="mt-3"
-                        imgClassName="max-h-[22vh] md:max-h-[42vh] object-contain"
+                        fill={listeningMobileSplit}
+                        imgClassName={
+                          listeningMobileSplit ? '' : 'max-h-[22vh] md:max-h-[42vh] object-contain'
+                        }
                       />
                     )}
 
@@ -2710,10 +2967,56 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   設問文・音源・図」だけになり、浮いた縦幅は選択肢・図の表示に回る。
                   化学など（listeningUnified=false）は従来どおり全文を出す。 */}
               {!listeningUnified && (
-                <ExplanationBody
-                  text={cleanQuestionText(currentQuestion.text)}
-                  highlights={combinedHighlights}
-                />
+                inlineQuestionRows ? (
+                  /*
+                    スマホ・横並び表示（ご要望8）
+                    ─────────────────────────────────────────
+                    「(1)から4問縦書きになってるけど、横書きにしたら
+                      1画面に収まるくない？」
+
+                    リード文（次の不定積分を求めよ…）はそのまま1行で出し、
+                    (1)〜(4) だけを 2 列に並べる。4 問なら 4 行 → 2 行になり、
+                    浮いた高さが解答欄に回る。
+
+                    ★grid ではなく flex-wrap を使う理由
+                      grid は列幅を固定するので、想定より長い項目が来ると
+                      はみ出す/文字が切れる。flex-wrap なら「入らなければ
+                      次の行に折り返す」だけなので、判定をすり抜けた
+                      長い項目が来ても崩れない（二重の安全網）。
+                      basis-[calc(50%-0.25rem)] で通常は 2 列、
+                      min-w-0 で長い数式も折り返せるようにする。
+                  */
+                  <div className="flex flex-col gap-1.5">
+                    {inlineQuestionRows.lead && (
+                      <ExplanationBody
+                        text={inlineQuestionRows.lead}
+                        highlights={combinedHighlights}
+                      />
+                    )}
+                    <ul className="flex flex-wrap gap-x-2 gap-y-1.5">
+                      {inlineQuestionRows.rows.map((row, rIdx) => (
+                        <li
+                          key={rIdx}
+                          className="flex min-w-0 grow basis-[calc(50%-0.25rem)] items-baseline gap-1"
+                        >
+                          {row.marker && (
+                            <span className="shrink-0 font-bold text-gray-500">
+                              {formatText(row.marker)}
+                            </span>
+                          )}
+                          <span className="min-w-0">
+                            {formatText(row.body, combinedHighlights)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <ExplanationBody
+                    text={cleanQuestionText(currentQuestion.text)}
+                    highlights={combinedHighlights}
+                  />
+                )
               )}
               {currentQuestion.text.includes('図6') && (
                 <div className="mt-4">
@@ -2740,6 +3043,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     その場合は設問一覧を出さず、解答カード側に一本化する。 */}
               {(() => {
                 if (listeningUnified) return null;
+                /* ★スマホ：設問一覧が問題文の丸写しなら出さない（ご要望8）
+                     「設問一覧と問題が同じなので、同じやつはもう設問一覧いらない」
+                   数学の (1)〜(4) のように、設問一覧が上の問題文と一字一句
+                   同じ問題では、同じ数式が1画面に2回出て縦幅を二重に食う。
+                   科目では決めず「一覧の全項目が問題文に含まれるか」で判定し、
+                   1項目でも欠ける問題では一覧を残す（情報を消さない）。
+                   PC は横幅に余裕があるので従来どおり両方出す。 */
+                if (hideRedundantSubQuestionList) return null;
                 const sqList = buildSubQuestionList(currentQuestion);
                 if (sqList.length === 0) return null;
                 return (
@@ -2779,8 +3090,61 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
             細い1行になった（入力欄・パレットは撤去）ので、9rem → 6.5rem に戻す。
             解答欄も1設問ずつの固定表示（ページャー）になり、縦に長く
             スクロールすることは基本なくなった。 */}
-        <div className={`lg:w-[42%] flex-1 min-h-0 overflow-y-auto bg-gray-50/50 p-4 md:p-8 ${isDesktop ? 'pb-8' : 'pb-[calc(6.5rem+env(safe-area-inset-bottom))]'} relative ${!isDesktop && isProblemExpanded ? 'hidden' : 'block z-10'}`}>
-          <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
+        {/*
+          ★リスニング（スマホ）だけ、このペインを「中身の高さ」にする★
+          ------------------------------------------------------------------
+          ご指摘：「選択肢の下に空白合って無駄」
+
+          原因はここの flex-1 だった。①〜④ の4ボタンしか無いのに
+          余った高さを全部受け取るので、カードの下に何も無い空白が
+          そのまま残っていた。
+
+          リスニングでは flex-none にして中身のぶんだけ確保する。
+          余った高さは上の問題文ペイン（flex-1）＝図に回るので、
+            ・選択肢カードが画面下（下部ナビの真上）まで下がる
+            ・カード下の無駄な空白が消える
+            ・図が切れずに大きく出る
+          が一度に達成できる。paddingBottom も、リスニングでは
+          「下部ナビの高さぶん」だけに絞る（余計な空白を作らない）。
+
+          化学など（listeningUnified=false）は flex-1 のままで、
+          長い記述欄をスクロールできる従来の挙動を保つ。
+        */}
+        {/*
+          ★図が無い大問（第1問A・第3問・第2問）はここが余りを受け取る★
+          ------------------------------------------------------------------
+          ご要望：「他の大問のUIも変えてくれない？第1問Aも第3問も
+                   これから入る予定の第2問とその他も」
+
+          第1問B 用の配り方（問題文ペイン＝flex-1）をそのまま流用すると、
+          図が無いぶんの高さが「再生ボタンの下の巨大な空白」になり、
+          消したはずの無駄な空白が場所を変えて再発してしまう。
+
+          そこで図が無いときは受け取り手を入れ替える。
+            ・flex-1        … 余った高さをこのペインがもらう
+            ・justify-end   … 選択肢カードを下端（下部ナビの真上）に寄せる
+                              ＝親指の届く位置。ご要望「もっと下にもってきて」
+          もらった高さは、下の auto-rows-fr で選択肢の背を伸ばすのに使う。
+        */}
+        <div className={`lg:w-[42%] min-h-0 overflow-y-auto bg-gray-50/50 px-4 md:p-8 ${
+            listeningMobileNoFigure
+              ? 'flex-1 flex flex-col justify-end pt-2'
+              : listeningMobileSplit ? 'flex-none pt-2' : 'flex-1 pt-4'
+          } ${isDesktop
+            ? 'pb-8'
+            : listeningMobileSplit
+              // 下部ナビ（前へ/解答と解説を見る）の高さぶんだけ空ける。
+              ? 'pb-[calc(4.75rem+env(safe-area-inset-bottom))]'
+              : 'pb-[calc(6.5rem+env(safe-area-inset-bottom))]'
+          } relative ${!isDesktop && isProblemExpanded
+              ? 'hidden'
+              // 図が無い大問は flex で高さの連鎖を通す（block だと切れる）。
+              : listeningMobileNoFigure ? 'z-10' : 'block z-10'}`}>
+          {/* 図が無い大問では、この内側ラッパにも flex/min-h-0 を通しておく。
+              ここで連鎖が切れると下の auto-rows-fr が伸びる先を失う。 */}
+          <div className={`max-w-2xl mx-auto md:space-y-6 ${listeningMobileSplit ? 'space-y-2' : 'space-y-4'} ${
+            listeningMobileNoFigure ? 'flex min-h-0 flex-1 flex-col' : ''
+          }`}>
             {/* 「解答入力」見出しはスマホでは出さない（ご指摘：「左上にある
                 解答入力というボタンでスペースなくなってるから消してほしい」）。
                 各カードの先頭に (ア) や 問2 のマーカーがあるので、
@@ -2895,7 +3259,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               // そうしないと解答欄に "(1)" が並び、今どれを入力中か分からなくなる。
               const sqMarker = answerCardMarker(sq, sqAllIndex < 0 ? gIdx : sqAllIndex, currentQuestion);
               return (
-                <div key={sq.id} className={`flex flex-col gap-4 bg-white p-5 rounded-2xl shadow-sm border transition-all duration-250 ${
+                <div key={sq.id} className={`flex flex-col gap-4 bg-white rounded-2xl shadow-sm border transition-all duration-250 ${
+                  // 図が無い大問はカード自身も余り高さを受け取り、
+                  // 中の選択肢を伸ばせるようにする（内側余白も少し詰める）。
+                  listeningMobileNoFigure ? 'min-h-0 flex-1 max-h-full p-3.5' : 'p-5'
+                } ${
                   isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
                 }`}>
                   {/*
@@ -2911,7 +3279,10 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     化学など従来の問題は listeningUnified=false なので、
                     これまでどおり設問マーカー＋入力UIの形のまま。
                   */}
-                  <div className="flex flex-col gap-3.5 w-full min-w-0">
+                  <div className={`flex flex-col gap-3.5 w-full min-w-0 ${
+                    // 図が無い大問：ここも連鎖に加える（切ると選択肢が伸びない）。
+                    listeningMobileNoFigure ? 'min-h-0 flex-1' : ''
+                  }`}>
                     {/* 設問マーカー（(ア)/(1)/問2 など）。
                         ★リスニングでは出さない（ご指摘：「解答のところの問4とかって
                           書いてあるのは問題のところに書いてあるのでいらない。

@@ -45,6 +45,24 @@ interface QuestionFigureProps {
    * 拡大したいときは従来どおりタップでライトボックスが開くので情報は失われない。
    */
   imgClassName?: string;
+  /**
+   * 「親からもらえた高さいっぱいに図を伸ばす」モード。
+   *
+   * ★なぜ imgClassName に max-h-full を渡すだけでは駄目なのか★
+   *   <img> の max-height:100% は「親の高さが確定しているとき」しか効かない。
+   *   通常このコンポーネントの figure / button は高さ auto なので、
+   *   パーセント指定の max-height は none として扱われ、
+   *   画像は原寸で伸びて親からはみ出す（＝スクロールしないと見えない
+   *   ＝ご指摘の「図が隠れてる」）。
+   *
+   *   そこで fill=true のときは figure → button → img の全段に
+   *   flex と min-h-0 を通し、高さの連鎖を成立させる。
+   *   これで「余った高さだけを使って、縦を基準に縮小した図」になり、
+   *   4コマイラスト全体が切れずに 1 画面へ収まる。
+   *
+   *   使う側（親）は flex コンテナで min-h-0 を持っていること。
+   */
+  fill?: boolean;
 }
 
 export function QuestionFigure({
@@ -55,6 +73,7 @@ export function QuestionFigure({
   tone = 'light',
   className = 'mt-5',
   imgClassName = '',
+  fill = false,
 }: QuestionFigureProps) {
   const [zoomed, setZoomed] = useState(false);
 
@@ -94,20 +113,25 @@ export function QuestionFigure({
 
   return (
     <>
-      <figure className={className}>
+      <figure className={`${fill ? 'flex min-h-0 flex-1 flex-col' : ''} ${className}`}>
         {/* 画像本体（クリックで拡大） */}
         <button
           type="button"
           onClick={() => setZoomed(true)}
           aria-label={`${resolvedAlt} を拡大表示する`}
-          className="group relative block w-full cursor-zoom-in rounded-xl focus-visible:outline-2 focus-visible:outline-[#A9CCE3]"
+          className={`group relative w-full cursor-zoom-in rounded-xl focus-visible:outline-2 focus-visible:outline-[#A9CCE3] ${
+            fill ? 'flex min-h-0 flex-1 items-start justify-center' : 'block'
+          }`}
         >
           <img
             src={src}
             alt={resolvedAlt}
             loading="lazy"
             decoding="async"
-            className={`max-w-full w-auto mx-auto rounded-xl border border-gray-200 bg-white shadow-sm transition-transform duration-200 group-hover:scale-[1.01] ${imgClassName}`}
+            className={`max-w-full w-auto mx-auto rounded-xl border border-gray-200 bg-white shadow-sm transition-transform duration-200 group-hover:scale-[1.01] ${
+              // 高さの連鎖が通っているので、ここで初めて max-h-full が効く。
+              fill ? 'min-h-0 max-h-full object-contain' : ''
+            } ${imgClassName}`}
           />
           {/* 拡大ヒントのアイコン（44px 以上のタップ領域を確保） */}
           <span
@@ -119,7 +143,7 @@ export function QuestionFigure({
         </button>
 
         {(caption || figureLabel) && (
-          <figcaption className={`mt-2 text-center text-xs font-modern leading-relaxed ${captionColor}`}>
+          <figcaption className={`mt-2 shrink-0 text-center text-xs font-modern leading-relaxed ${captionColor}`}>
             {figureLabel && <span className={`font-bold ${numberColor} mr-1`}>{figureLabel}</span>}
             {caption}
           </figcaption>

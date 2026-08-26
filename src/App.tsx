@@ -31,6 +31,7 @@ import { chemistryData } from './data/chemistryData';
 import { englishListeningData } from './data/englishListeningData';
 import { mathData } from './data/mathData';
 import { biologyBasicData } from './data/biologyBasicData';
+import { englishGrammarData } from './data/englishGrammarData';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIdleReset } from './hooks/useIdleReset';
 import { useIsMobile } from './hooks/useMediaQuery';
@@ -741,12 +742,46 @@ export default function App() {
     ...englishListeningData.parts.flatMap(p => p.chapters as any[]),
     ...mathData.parts.flatMap(p => p.chapters as any[]),
     ...biologyBasicData.parts.flatMap(p => p.chapters as any[]),
+    ...englishGrammarData.parts.flatMap(p => p.chapters as any[]),
   ].find(c => (c as any).id === selectedChapterId);
 
   return (
     <>
       <MobileViewWrapper isMobileMode={isMobilePreview && !shouldForceDesktopUI} onClose={() => setIsMobilePreview(false)}>
-        <div className={`min-h-screen w-full flex justify-center relative ${
+        {/*
+          ===== アプリの外枠の高さについて =====
+          ★以前は min-h-screen（＝100vh）だった。これが「1画面に収まらない」原因★
+
+          iOS Safari の 100vh は「アドレスバー・下部ツールバーを含んだ高さ」なので、
+          実際に見えている領域より必ず大きい。しかも min-height なので
+          「最低でもこの高さ、中身が増えればいくらでも伸びる」箱になっていた。
+
+          その結果、各画面の中にある `flex-1 overflow-y-auto` は
+          高さの上限をもらえず、スクロールせずに中身のぶんだけ伸びてしまう
+          （実測：ホームの中身 1501px ＝ ペインもそのまま 1501px）。
+          スクロールするのは中のペインではなく **ページ全体** になり、
+          コンテンツが下部ナビやブラウザのツールバーの裏に潜り込んでいた。
+          （ご指摘の「マスコットの吹き出しが切れる」「この科目ではじめる が隠れる」）
+
+          そこで h-[100dvh] で高さを確定させる。
+           ・dvh … ツールバーを除いた「いま見えている高さ」
+           ・h（min-h ではない）… 中身が増えても箱は伸びない
+          これで各画面の overflow-y-auto が初めて上限を得て、
+          「ページ全体ではなく中身だけがスクロールする」形になり、
+          下部ナビは常に画面内に居座る。
+        */}
+        {/*
+          ★overflow は hidden ではなく auto にする（重要）★
+          この外枠の下には2種類の画面がぶら下がっている。
+            A) 自前のスクロール領域を持つ画面（ホーム／科目選択／単元選択）
+            B) 持たない画面（設定・ランキング・アプリ紹介・模試・
+               ロジックツリー・学習モード選択 など）
+          hidden にすると B の画面は中身がはみ出しても
+          スクロールする手段が無くなり、下の方が永久に読めなくなる。
+          auto なら A は自前ペインで完結し（外枠はスクロールしない）、
+          B は外枠がスクロールしてくれる。
+        */}
+        <div className={`h-[100dvh] w-full flex justify-center relative overflow-y-auto ${
           isFullBleed
             ? 'p-0 items-stretch'
             : `pt-6 pb-safe-lg md:py-12 px-4 md:px-8 md:pb-28 ${['onboarding', 'subject_selection', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`
@@ -767,7 +802,24 @@ export default function App() {
           {/* スマホ版の「パソコン版・スマホ版の切り替えボタン」は削除。
               （スマホ端末では常にスマホ向けレイアウトで表示する。forceDesktop は false 固定） */}
 
-          <div className={`w-full relative ${appState === 'explanation' ? 'max-w-none w-full h-full' : (isFullBleed ? 'max-w-none' : 'max-w-5xl')}`}>
+          {/*
+            外枠でせっかく高さを確定させても、この中間ラッパーが高さを
+            素通りさせないと子（各画面）は上限を受け取れない。
+            ★パーセント指定の高さ（h-full / max-h-full）は、親の高さが
+              解決していないと `none` 扱いで無視される★ため、
+              外枠 → ここ → 各画面 と高さの鎖をつなぐ必要がある。
+
+            mode_selection だけは中央寄せカード（items-center）なので、
+            伸び縮みする箱として min-h-0 + flex を渡し、
+            カード側が自分で内部スクロールを持てるようにする。
+          */}
+          <div className={`w-full relative min-h-0 ${
+            appState === 'explanation'
+              ? 'max-w-none w-full h-full'
+              : isFullBleed
+                ? 'max-w-none h-full'
+                : 'max-w-5xl max-h-full flex flex-col'
+          }`}>
             {appState === 'settings' && <ProfileModal onClose={() => setAppState(prevAppState)} isBgmEnabled={isBgmEnabled} setIsBgmEnabled={setIsBgmEnabled} onToggleBgm={handleToggleBgm} bgmVolume={bgmVolume} setBgmVolume={setBgmVolume} onOpenTeacherDashboard={() => setAppState('teacher_dashboard')} onOpenFeedbackAdmin={() => setAppState('feedback_admin')} />}
             {/* 先生ダッシュボード。戻る先を設定にしているのは、入ってきた経路と揃えるため。 */}
             {appState === 'teacher_dashboard' && <TeacherDashboard onBack={() => setAppState('settings')} />}
@@ -861,7 +913,19 @@ export default function App() {
             {appState !== 'onboarding' && appState !== 'subject_selection' && appState !== 'quiz' && appState !== 'explanation' && (
               <nav
                 aria-label="メインナビゲーション"
-                className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-2 md:px-10 pb-safe pt-3 z-[60] shadow-sm pb-6"
+                /*
+                  ★以前は `pb-safe pt-3 … pb-6` と下パディングを2つ書いていた★
+                  Tailwind（CSS）では後から出てくる pb-6 が勝つため、
+                  pb-safe の env(safe-area-inset-bottom) は黙って捨てられていた。
+                  ＝ iPhone のホームインジケータ領域ぶんの余白が確保されず、
+                    ナビのラベルがぎりぎりまで下がっていた。
+
+                  ここでは 1 つの pb に calc で統合し、
+                  「基本の余白 ＋ 端末の安全領域」を確実に両方effectiveにする。
+                  高さは各画面が余白を予約するときの基準にもなるので、
+                  --app-nav-h として公開する（下の画面側で参照する）。
+                */
+                className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-2 md:px-10 pt-3 pb-[calc(0.9rem+env(safe-area-inset-bottom))] z-[60] shadow-sm"
               >
                 <button 
                   onClick={() => setAppState('home')}

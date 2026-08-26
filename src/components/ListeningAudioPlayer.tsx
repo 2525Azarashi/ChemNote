@@ -75,6 +75,30 @@ export interface ListeningAudioPlayerProps {
    * 横帯なら 4.5rem 幅の縦列に押し込まれず、指で押しやすい大きさを保てる。
    */
   orientation?: 'vertical' | 'horizontal';
+  /**
+   * panel バリアントを「高さを詰めた形」で描くか。
+   *
+   * ★ご要望8（スマホの解答・解説画面）★
+   *   「音源のボタンと問題が上。下は合ってるか間違ってるかとスクリプトを載せて、
+   *     解説は問1のボタンを押すと出てくる感じで」
+   *
+   *   上（問題文ペイン）は inline の横帯にしたので、下は「正誤＋スクリプト」を
+   *   担当する。ところが panel は
+   *     ヘッドホンバッジ＋見出し＋サブテキスト＋速度＋各問ボタン＋もう1回
+   *     ＋スクリプト＋「◯◯を2回続けて」
+   *   を全部積むため実測で約430px あり、これだけで1画面を食い潰していた
+   *   （採点結果 top=377 / 問1チップ top=746 / 思考の型が画面外）。
+   *
+   *   compact では「聞き直す」と「スクリプトを開く」に絞る。
+   *     ・ヘッドホンバッジ／サブテキスト／もう1回／2回続けて行 … 出さない
+   *     ・各問は［▶問N］＋［スクリプト］の横1組だけ
+   *     ・スクリプト本体（和訳・押さえたい表現）は従来と同じものを開く
+   *   スクリプトを削らないのが要点。ご要望は「小さくコンパクトにする」であって
+   *   「無くす」ではない。
+   *
+   *   PC からは渡さないため、PC の見た目は完全に不変。
+   */
+  compact?: boolean;
   /** 追加クラス（余白調整） */
   className?: string;
 }
@@ -96,12 +120,15 @@ export function ListeningAudioPlayer({
   focusSubId,
   variant = 'panel',
   orientation = 'vertical',
+  compact = false,
   className = '',
 }: ListeningAudioPlayerProps) {
   const isDark = tone === 'dark';
   const isReview = mode === 'review';
   const isInline = variant === 'inline';
   const isRow = isInline && orientation === 'horizontal';
+  // compact は panel バリアントだけの装飾（inline はもともと十分小さい）
+  const isCompact = compact && !isInline;
 
   // focusSubId が指定されていればその問だけに絞る
   const list = useMemo(
@@ -394,10 +421,40 @@ export function ListeningAudioPlayer({
 
   return (
     <section
-      className={`rounded-2xl border-2 p-3 sm:p-4 shadow-sm ${panelClass} ${className}`}
+      className={`rounded-2xl border-2 ${
+        isCompact ? 'p-2' : 'p-3 sm:p-4'
+      } shadow-sm ${panelClass} ${className}`}
       aria-label={heading}
     >
-      {/* ── 見出し（ヘッドホンアイコンで「ここが音源」と即座に分かるようにする） ── */}
+      {/* ── 見出し ──
+          compact（スマホの解答・解説）は1行だけ。
+          ヘッドホンバッジ（h-9 w-9）とサブテキスト2〜3行を落とすことで
+          ここだけで約70px 節約できる。「音源」の文字は残すので
+          何のブロックかは分かる。 */}
+      {isCompact ? (
+        <div className="mb-1.5 flex items-center justify-between gap-2">
+          <h3 className={`flex items-center gap-1 text-[11px] font-bold leading-none ${headingClass}`}>
+            <Headphones size={13} className="shrink-0" />
+            <span>音源・スクリプト</span>
+          </h3>
+          <div className="flex items-center gap-1" role="group" aria-label="再生速度">
+            {[0.75, 1].map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setRate(r)}
+                aria-pressed={rate === r}
+                className={`min-h-[1.75rem] rounded-md border px-2 py-0.5 text-[10px] font-bold transition-colors cursor-pointer ${
+                  rate === r ? activeBtnClass : idleBtnClass
+                }`}
+              >
+                {r === 1 ? '標準' : '0.75倍'}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : (
+      /* ── 見出し（ヘッドホンアイコンで「ここが音源」と即座に分かるようにする） ── */
       <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#3E9C93] text-white shadow-sm">
@@ -444,48 +501,75 @@ export function ListeningAudioPlayer({
           ))}
         </div>
       </div>
+      )}
 
-      {/* ── 音源ボタン（常時表示。隠さないことが「わかりやすい場所」の条件） ── */}
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      {/* ── 音源ボタン（常時表示。隠さないことが「わかりやすい場所」の条件） ──
+          compact では ［▶問N］＋［スクリプト］を横1組にして2列に詰める
+          （縦積み3段 × 4問 → 横1段 × 4問）。 */}
+      <div
+        className={
+          isCompact ? 'grid grid-cols-2 gap-1.5' : 'grid grid-cols-2 gap-2 sm:grid-cols-4'
+        }
+      >
         {list.map((track) => {
           const isPlaying = playingId === track.subId;
           return (
-            <div key={track.subId} className="flex flex-col gap-1.5">
+            <div
+              key={track.subId}
+              className={isCompact ? 'flex items-stretch gap-1' : 'flex flex-col gap-1.5'}
+            >
               <button
                 type="button"
                 onClick={() => toggle(track.subId)}
                 aria-label={`${track.label}（${track.hint}）の音源を${isPlaying ? '停止' : '再生'}`}
-                className={`flex min-h-[3rem] w-full items-center gap-2 rounded-xl border-2 px-2.5 py-2 text-left font-bold shadow-sm transition-all cursor-pointer ${
-                  isPlaying ? activeBtnClass : idleBtnClass
-                }`}
+                className={`flex items-center font-bold shadow-sm transition-all cursor-pointer ${
+                  isCompact
+                    ? 'min-h-[2.25rem] min-w-0 flex-1 gap-1 rounded-lg border px-1.5 py-1'
+                    : 'min-h-[3rem] w-full gap-2 rounded-xl border-2 px-2.5 py-2 text-left'
+                } ${isPlaying ? activeBtnClass : idleBtnClass}`}
               >
                 <span className="shrink-0">
-                  {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+                  {isPlaying ? (
+                    <Pause size={isCompact ? 14 : 18} />
+                  ) : (
+                    <Play size={isCompact ? 14 : 18} />
+                  )}
                 </span>
-                <span className="min-w-0">
-                  <span className="block text-[13px] leading-tight">{track.label}</span>
-                  <span
-                    className={`block truncate text-[10px] font-bold leading-tight ${
-                      isPlaying ? 'text-white/80' : subTextClass
-                    }`}
-                  >
-                    {track.hint}
+                {isCompact ? (
+                  /* compact は問ラベルだけ。hint（内容の要約）は下の
+                     スクリプト側で読めるので二重に置かない。 */
+                  <span className="min-w-0 truncate text-[12px] leading-none">{track.label}</span>
+                ) : (
+                  <span className="min-w-0">
+                    <span className="block text-[13px] leading-tight">{track.label}</span>
+                    <span
+                      className={`block truncate text-[10px] font-bold leading-tight ${
+                        isPlaying ? 'text-white/80' : subTextClass
+                      }`}
+                    >
+                      {track.hint}
+                    </span>
                   </span>
-                </span>
+                )}
               </button>
 
-              {/* もう1回だけ流す（聞き取れなかったときの即リトライ） */}
-              <button
-                type="button"
-                onClick={() => play(track.subId, false)}
-                aria-label={`${track.label} をもう一度再生`}
-                className={`flex min-h-[2rem] items-center justify-center gap-1 rounded-lg border px-2 py-1 text-[10px] font-bold transition-colors cursor-pointer ${idleBtnClass}`}
-              >
-                <RotateCcw size={11} />
-                もう1回
-              </button>
+              {/* もう1回だけ流す（聞き取れなかったときの即リトライ）。
+                  compact では上の再生ボタンで足りるため出さない（高さ優先）。 */}
+              {!isCompact && (
+                <button
+                  type="button"
+                  onClick={() => play(track.subId, false)}
+                  aria-label={`${track.label} をもう一度再生`}
+                  className={`flex min-h-[2rem] items-center justify-center gap-1 rounded-lg border px-2 py-1 text-[10px] font-bold transition-colors cursor-pointer ${idleBtnClass}`}
+                >
+                  <RotateCcw size={11} />
+                  もう1回
+                </button>
+              )}
 
-              {/* 復習モードのみ：スクリプト・和訳・語句を開く */}
+              {/* 復習モードのみ：スクリプト・和訳・語句を開く
+                  ★compact でも必ず残す★ ご要望は「スクリプトを載せて」なので、
+                  ここを削ると要件そのものが消える。アイコン主体に縮めるだけ。 */}
               {isReview && (
                 <>
                   <button
@@ -494,10 +578,17 @@ export function ListeningAudioPlayer({
                       setOpenScriptId(openScriptId === track.subId ? null : track.subId)
                     }
                     aria-expanded={openScriptId === track.subId}
-                    className={`flex min-h-[2rem] items-center justify-center gap-1 rounded-lg border px-2 py-1 text-[10px] font-bold transition-colors cursor-pointer ${idleBtnClass}`}
+                    aria-label={`${track.label} のスクリプトを${
+                      openScriptId === track.subId ? '閉じる' : '開く'
+                    }`}
+                    className={`flex items-center justify-center rounded-lg border font-bold transition-colors cursor-pointer ${
+                      isCompact
+                        ? 'min-h-[2.25rem] shrink-0 gap-0.5 px-1.5 py-1 text-[10px]'
+                        : 'min-h-[2rem] gap-1 px-2 py-1 text-[10px]'
+                    } ${idleBtnClass}`}
                   >
                     <FileText size={11} />
-                    スクリプト
+                    {!isCompact && 'スクリプト'}
                     <ChevronDown
                       size={11}
                       className={`transition-transform ${
@@ -533,8 +624,12 @@ export function ListeningAudioPlayer({
         })}
       </div>
 
-      {/* ── 本番と同じ「2回続けて再生」（第1問・第2問は2回読み） ── */}
-      {readCount === 2 && list.length > 0 && (
+      {/* ── 本番と同じ「2回続けて再生」（第1問・第2問は2回読み） ──
+          compact（スマホの解答・解説）では出さない。
+          復習の目的は「正誤の確認とスクリプト照合」であり、本番条件の
+          2回読み再生は問題を解く画面（Quiz の inline プレーヤー）に
+          残してある。ここでは 4問ぶん × 約36px の行を丸ごと省ける。 */}
+      {!isCompact && readCount === 2 && list.length > 0 && (
         <div className="mt-2.5 flex flex-wrap gap-2">
           {list.map((track) => (
             <button
@@ -567,7 +662,11 @@ export function ListeningAudioPlayer({
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className={`mt-3 rounded-xl border p-3 ${scriptBoxClass}`}>
+                <div
+                  className={`rounded-xl border ${
+                    isCompact ? 'mt-1.5 p-2' : 'mt-3 p-3'
+                  } ${scriptBoxClass}`}
+                >
                   <p className={`mb-1 text-[10px] font-bold ${headingClass}`}>
                     {track.label} スクリプト
                   </p>

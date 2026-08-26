@@ -264,11 +264,29 @@ describe('解答画面：音源は左（問題文）ペインに横帯で置く'
     //          問題の方（左側）においてっていったよね」
     // → 図は左ペインの「いま解いている問」ブロックにだけ置く。
     expect(QUIZ).toContain('src={activeStepSub.imageUrl}');
-    // スマホは問題ペイン 40vh の中に見出し・再生ボタンと一緒に収まるよう 22vh。
-    expect(QUIZ).toContain('imgClassName="max-h-[22vh] md:max-h-[42vh] object-contain"');
+    // この it の本題は「図が左ペインにある」こと。
+    // 高さの与え方は fill（＝もらえた高さいっぱい）に変わった。
+    expect(QUIZ).toContain('fill={listeningMobileSplit}');
     expect(QUIZ).not.toContain('src={sq.imageUrl}');
     expect(QUIZ).not.toContain('src={focusedSub.imageUrl}');
     expect(FIGURE).toContain('imgClassName');
+  });
+
+  /*
+    ★ご要望★
+      「発話に合うイラストっていう文字をさ、問４（全４問中４問目）の右に
+        もってこれば、もう少し図を上にできるでしょ」
+    第1問B の設問文は「発話に合うイラスト」の一言だけなのに、
+    見出し行の下に独立した段落として置かれ、1行ぶん図を押し下げていた。
+  */
+  it('短い設問文は「問N（全N問中N問目）」と同じ行に置く（図を上げる）', () => {
+    // 全角20文字相当までを見出し行へ寄せる。
+    expect(QUIZ).toContain('const inlineBody = body && body.length <= 20 ? body : \'\'');
+    expect(QUIZ).toContain('const blockBody = inlineBody ? \'\' : body');
+    // 見出し行は折り返せるようにし、問Nバッジと問数表示は縮ませない。
+    expect(QUIZ).toContain('flex items-center gap-2 flex-wrap');
+    // 長い設問文（第1問A・第3問の英文の問い）は従来どおり下の段落に出す。
+    expect(QUIZ).toContain('{blockBody && (');
   });
 });
 

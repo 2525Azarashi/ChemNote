@@ -4,6 +4,7 @@ import { chemistryAdvancedData, type AdvancedFieldId } from '../data/chemistryAd
 import { englishListeningData } from '../data/englishListeningData';
 import { mathData } from '../data/mathData';
 import { biologyBasicData } from '../data/biologyBasicData';
+import { englishGrammarData } from '../data/englishGrammarData';
 import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X, Headphones } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
@@ -43,7 +44,7 @@ interface ChapterSelectionProps {
    * 'english_listening' のときは、共通テストの大問を A・B ごとの単元として表示する
    * （第1問A・第1問B …）。各単元のページには「第N回演習」のボタンを並べる。
    */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'english_grammar' | 'math' | 'biology_basic';
   /** 科目が 'chemistry' のときに表示する分野 */
   field?: AdvancedFieldId;
   /** 分野名（画面見出しに出す。化学のときのみ） */
@@ -162,6 +163,14 @@ const mathGroups = buildChapterGroups(mathData.parts as any[]);
 const biologyGroups = buildChapterGroups(biologyBasicData.parts as any[]);
 
 /**
+ * 英文法のタブ。
+ * 各章は realTitle（'1章 文型と動詞' など）でグループ化されるので、
+ * 他科目と同じ共通処理を通すだけでタブができる。
+ * なお「10章 語法」は 4 単元を抱えるので、1 つのタブに 4 単元が並ぶ。
+ */
+const grammarGroups = buildChapterGroups(englishGrammarData.parts as any[]);
+
+/**
  * 単元の中に収録されている音源を、回（problem）ごとにまとめて取り出す。
  *
  * ご要望「復習用の音源を聞く場所もしっかりと作って」に対応するためのもの。
@@ -217,6 +226,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
   const isListening = subject === 'english_listening';
   const isMath = subject === 'math';
   const isBiology = subject === 'biology_basic';
+  const isGrammar = subject === 'english_grammar';
   /**
    * 科目ごとの配色。
    * これまで覈しのラベル等はすべてダスティローズ直書きだったため、
@@ -235,10 +245,11 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
     if (isListening) return listeningGroups;
     if (isMath) return mathGroups;
     if (isBiology) return biologyGroups;
+    if (isGrammar) return grammarGroups;
     if (!isAdvanced) return chapterGroups;
     const parts = chemistryAdvancedData.parts.filter(p => !field || p.field === field);
     return buildChapterGroups(parts as any[]);
-  }, [isAdvanced, isListening, isMath, isBiology, field]);
+  }, [isAdvanced, isListening, isMath, isBiology, isGrammar, field]);
 
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null);
   /**
@@ -338,6 +349,13 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
         {isListening && (
           <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest" style={{ color: theme.accent }}>
             英語リスニング ／ 共通テスト大問別
+          </p>
+        )}
+        {/* 英文法も同形。リスニングと同じ「英語」なので、
+            この一行がないとどちらの画面にいるのか区別がつかない。 */}
+        {isGrammar && (
+          <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest" style={{ color: theme.accent }}>
+            英文法 ／ 単元別（4択演習）
           </p>
         )}
         <h2 className="text-xl md:text-3xl font-handwriting font-bold text-[#2C3E50] mb-1.5 md:mb-2">
@@ -610,9 +628,14 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                   })()
                 );
                 const trendInfo = trendUnitMap[chapter.id];
-                // 英語リスニングの単元に収録されている音源（回ごと）。
+                // 英語リスニング・英文法の単元に収録されている音源（回ごと）。
                 // 1つでもあれば「復習用音源」ボタンをカードに出す。
-                const audioSets = isListening ? collectAudioSets(chapter) : [];
+                //
+                // ★英文法を含める理由★
+                //   英文法の各問も「空所を埋めた完成文」の音源を持っている。
+                //   正しい形を音で通しておくと「音の違和感」で誤答を切れるように
+                //   なるので、問題を解き直さなくても聞き直せる入口を単元画面に置く。
+                const audioSets = isListening || isGrammar ? collectAudioSets(chapter) : [];
                 const hasAudio = audioSets.length > 0;
 
                 return (
@@ -761,7 +784,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                   グリッドの**下に全幅**で開く（スクリプトや語句が読める幅を確保）。
                 ・カード側の「音源」ボタンと連動し、押した回のパネルが開く。
                 ・問題を解かなくても再生できるので、通学中の聞き直しに使える。 */}
-            {isListening && (
+            {(isListening || isGrammar) && (
               <AnimatePresence initial={false}>
                 {(() => {
                   const sets = activeGroup.chapters.flatMap((c: any) => collectAudioSets(c));
@@ -778,7 +801,15 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                     >
                       <div className="mt-3">
                         <div className="mb-1.5 flex items-center justify-between gap-2">
-                          <p className="text-[11px] font-bold text-[#2F7C74]">
+                          {/* 色は科目テーマに揃える。
+                              リスニングは従来のミントをそのまま使い続ける（見た目不変）。 */}
+                          <p
+                            className={
+                              isGrammar
+                                ? 'text-[11px] font-bold text-[#9D5C24]'
+                                : 'text-[11px] font-bold text-[#2F7C74]'
+                            }
+                          >
                             復習用音源 ／ {target.title}
                           </p>
                           <button

@@ -394,7 +394,22 @@ export function toLatex(src: string): string {
   for (const [re, rep] of SYMBOL_REPLACEMENTS) t = t.replace(re, rep);
 
   // (8) 絶対値 |x| → \left|x\right|（縦線の高さを中身に合わせる）
-  t = t.replace(/\|([^|]{1,40})\|/g, (_m, body: string) => `\\left|${body}\\right|`);
+  //
+  // ★すでに \left| \right| になっている縦線は二度と触らない★
+  //   toLatex は √(…) や lim[…] の中身に対して自分自身を再帰で呼ぶ。
+  //   すると内側で \left|a\right| まで組み終わった文字列が
+  //   外側の (8) にもう一度渡り、`|a\right|` を新しい絶対値と誤認して
+  //   \left\left|a\right\right| という壊れた LaTeX になっていた。
+  //   （実例：√(|a|²|b|² − (a·b)²) がベクトルのまとめプリントで
+  //     KaTeX エラーになっていた。）
+  //   そこで
+  //     ・開き側は直前が \left / \right なら対象外（lookbehind）
+  //     ・中身に \right を含む並びは対象外（tempered token）
+  //   の二重のガードを掛ける。
+  t = t.replace(
+    /(?<!\\left)(?<!\\right)\|((?:(?!\\right)[^|]){1,40})\|/g,
+    (_m, body: string) => `\\left|${body}\\right|`,
+  );
 
   // (9) 分数
   t = buildFractions(t);
@@ -552,8 +567,21 @@ function unscript(text: string): string {
  * 化学式として解釈できなければ null（＝従来の描画に任せる）。
  */
 export function toChemLatex(src: string): string | null {
+  // ★HTML 由来の添字・上付きの記法をならす★
+  //   まとめプリントは <sub>2</sub> / <sup>2-</sup> で書かれており、
+  //   typesetHtmlMath はそれを論理テキスト `_{2}` / `^{2-}` に写す。
+  //   mhchem は `ZnCl2` `SO4^2-` の形（波かっこ無し）で読むので、
+  //   ここで
+  //     _{2}   → 2    （原子の数。添字の 2 は数のまま並べる）
+  //     ^{2-}  → ^2-  （電荷。^ は必ず残す＝原子数と区別する）
+  //   に直す。^ を落とすと SO4^2- が SO42- になり
+  //   「酸素が42個」という別の意味になってしまう。
+  let t = String(src ?? '')
+    .replace(/_\{([0-9]+)\}/g, '$1')
+    .replace(/\^\{([0-9]*[+-])\}/g, '^$1');
+
   // 全角のプラス・矢印を ASCII に寄せ、Unicode 添字を平文に戻す
-  let t = unscript(src).replace(/＋/g, ' + ').replace(/[（]/g, '(').replace(/[）]/g, ')');
+  t = unscript(t).replace(/＋/g, ' + ').replace(/[（]/g, '(').replace(/[）]/g, ')');
   for (const [re, rep] of CHEM_ARROWS) t = t.replace(re, rep);
 
   // 空白なしで書かれた「＋」を項の区切りとして分ける（H⁺+OH⁻→H₂O）。
@@ -585,7 +613,24 @@ export function toChemLatex(src: string): string | null {
  * 「化学式に使える文字が続く範囲」を切り出して 1 つずつ検証する。
  * 検証に落ちた範囲は触らない（＝従来の描画に任せる）。
  */
-const CHEM_CHAR = /[0-9A-Za-z()·・^+\-＋→⟶⇄⇌⟷⇔←=₀₁₂₃₄₅₆₇₈₉⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻ \t]/;
+// ★`_` `{` `}` を含めている理由★
+//   まとめプリント（HTML）の <sub>2</sub> は typesetHtmlMath が
+//   論理テキスト `_{2}` に写してから領域判定に回す。
+//   これを CHEM_CHAR に入れておかないと ZnCl_{2} が
+//   「ZnCl」と「2」に切れてしまい、反応式として組めない。
+//   ここで拾い過ぎても toChemLatex が元素記号の並びとして
+//   検証するので誤変換にはならない。
+const CHEM_CHAR = /[0-9A-Za-z()·・^_{}+\-＋→⟶⇄⇌⟷⇔←=₀₁₂₃₄₅₆₇₈₉⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻ \t]/;
+
+/**
+ * ローマ数字だけの領域（酸化数の (II) / (III) など）。
+ *
+ * ★化学式にしてはいけない★
+ *   I と V と X は元素記号（ヨウ素・バナジウム・キセノン）なので
+ *   isChemicalFormula は「(II)」を通してしまうが、
+ *   実際の意味は「銅(II)イオン」の酸化数であって化学式ではない。
+ */
+const ROMAN_ONLY = /^\(?[IVXLCDM]{1,5}\)?$/;
 
 export function scanChemRegions(text: string): MathRegion[] {
   const regions: MathRegion[] = [];
@@ -607,7 +652,7 @@ export function scanChemRegions(text: string): MathRegion[] {
       // 単独の元素記号 1 個（「O」「H」など）だけの領域は組み替えない。
       // 文章中の記号としてそのまま読めるし、囲みが増えると逆に読みにくい。
       const trivial = /^[0-9]*[A-Z][a-z]?$/.test(candidate);
-      if (latex && !trivial) {
+      if (latex && !trivial && !ROMAN_ONLY.test(candidate)) {
         regions.push({
           start: i + lead,
           end: i + lead + candidate.length,
@@ -954,12 +999,46 @@ export function typesetHtmlMath(html: string): string {
   const out: string[] = [];
   let run: Atom[] = [];
 
-  /** 溜めた run（テキスト＋sup/sub）を、数式部分だけ KaTeX にして出力する。 */
+  /**
+   * 溜めた run（テキスト＋sup/sub）を、数式・化学式部分だけ KaTeX にして出力する。
+   *
+   * ★化学式もここで組む（ご要望「化学式とか反応式も全部ね」）★
+   *   まとめプリントは
+   *     <p>Zn ＋ 2HCl → ZnCl<sub>2</sub> ＋ H<sub>2</sub></p>
+   *   のように書かれている。以前ここは scanMathRegions だけを掛けていた
+   *   ため、∫ や √ を含まない化学式・反応式は 1 つも数式領域と判定されず、
+   *   まとめプリントの化学だけが「HTML の <sub> を小さくしただけ」の
+   *   見た目で取り残されていた（解説・問題は既に mhchem で組めていた）。
+   *
+   *   splitMathPieces（プレーンテキスト用）と同じ二段構えにする：
+   *     ① まず数式領域を確定させる
+   *     ② その「隙間」だけを化学式として調べる
+   *   順序が逆だと、数式の中の英字（dx の x など）を化学式と誤認する。
+   */
   const flushRun = () => {
     if (run.length === 0) return;
 
     const logical = run.map((a) => a.text).join('');
-    const regions = scanMathRegions(logical);
+    const mathRegions = scanMathRegions(logical);
+
+    // 数式に取られなかった範囲から化学式を探す
+    const chemRegions: MathRegion[] = [];
+    let scanFrom = 0;
+    for (const r of [...mathRegions, { start: logical.length, end: logical.length, text: '' }]) {
+      if (r.start > scanFrom) {
+        const gap = logical.slice(scanFrom, r.start);
+        for (const c of scanChemRegions(gap)) {
+          chemRegions.push({ start: scanFrom + c.start, end: scanFrom + c.end, text: c.text });
+        }
+      }
+      scanFrom = Math.max(scanFrom, r.end);
+    }
+
+    type MarkedRegion = MathRegion & { chem: boolean };
+    const regions: MarkedRegion[] = [
+      ...mathRegions.map((r) => ({ ...r, chem: false })),
+      ...chemRegions.map((r) => ({ ...r, chem: true })),
+    ].sort((a, b) => a.start - b.start);
 
     if (regions.length === 0) {
       out.push(run.map((a) => a.html).join(''));
@@ -1006,6 +1085,9 @@ export function typesetHtmlMath(html: string): string {
     };
 
     for (const region of regions) {
+      // 直前の領域と重なってしまった場合は捨てる（安全側）
+      if (region.start < cursor) continue;
+
       // 数式領域が sup/sub の atom を途中で跨ぐ場合は、その atom を丸ごと含める
       // （<sup>n</sup> は指数そのものなので数式側に入れるのが正しい）
       let start = region.start;
@@ -1014,10 +1096,21 @@ export function typesetHtmlMath(html: string): string {
       const last = atomAt(Math.max(start, end - 1));
       if (!run[first].splittable) start = starts[first];
       if (!run[last].splittable) end = starts[last] + run[last].text.length;
+      if (start < cursor) start = cursor;
+      if (end <= start) continue;
+
+      const source = logical.slice(start, end);
+      // 化学式は mhchem（\ce{…}）、数式は通常の LaTeX へ。
+      const latex = region.chem ? toChemLatex(source) : toLatex(source);
 
       emitPlain(cursor, start);
-      const latex = toLatex(logical.slice(start, end));
-      pieces.push(renderLatex(latex, { ariaLabel: logical.slice(start, end) }));
+      if (latex === null) {
+        // atom を丸ごと含めた結果、化学式として組めなくなった場合は
+        // 元の HTML をそのまま出す（勝手に壊さない）。
+        emitPlain(start, end);
+      } else {
+        pieces.push(renderLatex(latex, { ariaLabel: source }));
+      }
       cursor = end;
     }
     emitPlain(cursor, logical.length);

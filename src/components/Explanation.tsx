@@ -12,7 +12,7 @@ import { ListeningAudioPlayer } from './ListeningAudioPlayer';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { isAnswerCorrect } from '../utils/answerJudge';
 import { gradingCriteriaProgress, resolveGradingCriteria } from '../utils/gradingCriteria';
-import { splitQuestionLabel, answerCardMarker, buildSubQuestionList } from '../utils/questionDisplay';
+import { splitQuestionLabel, answerCardMarker, buildSubQuestionList, isSubQuestionListRedundant, extractInlineQuestionRows } from '../utils/questionDisplay';
 import {
   buildUnitKataBlock,
   sliceEnhancedByQuestion,
@@ -273,6 +273,46 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   // 数学のときだけ付け足すクラス（非数学は空文字＝従来と完全に同じ見た目）
   const mathBodyClass = isMathChapter ? ' font-math math-content' : '';
 
+  /**
+   * ★ご要望8「解説と問題のフォントが違うところがあるのでそれを直したい」★
+   *
+   * ■ 実測でわかった本当の原因（推測ではなく Playwright の computed style）
+   *   スマホ 390x664 / 数学 m1_1[0] の解説画面で
+   *     問題文 : font-size 16.95px  line-height 34.75px
+   *     解説   : font-size 18.08px  line-height 37.06px
+   *   と 1px 強ずれていた。数式（分数・√）は文字サイズで見た目が大きく変わるので、
+   *   同じ問題の問題文と解説で分数の高さが違って見えていた。
+   *
+   *   ずれの発生源は .math-content（src/index.css）である。
+   *     .math-content { font-size: 1.13em; line-height: 2.05; }
+   *   これは @layer に入っていない素の CSS なので、Tailwind の
+   *   `text-sm`（@layer utilities）より詳細度で勝ってしまう。
+   *   つまり解説側に書いてあった `text-sm md:text-base` は無効で、
+   *   実際のサイズは常に「親の font-size × 1.13」になる。
+   *     ・問題文  … 親ペインが text-[15px] → 15 × 1.13 = 16.95px
+   *     ・解説    … 親が既定の 16px        → 16 × 1.13 = 18.08px
+   *   同じクラスを書いていたのに親が違ったせいでずれていた、というのが真相。
+   *
+   * ■ 直し方
+   *   .math-content が「親の em」で決まる以上、同じ要素に text-[15px] を
+   *   足しても効かない（実測済み：足しても 18.08px のまま）。
+   *   なので *親* の基準サイズをそろえる。
+   *   問題文が 15px 基準なのは親ペインに text-[15px] があるからなので、
+   *   解説本文も「.math-content が付いた要素の親」を 15px 基準にする。
+   *   ＝ MOBILE_BODY_BASE を包む側に置き、
+   *     MOBILE_BODY_FONT（文字サイズ指定なし）を .math-content 側に置く。
+   *   これで数学（1.13em）でも非数学（そのまま継承）でも
+   *   問題文と解説がまったく同じ計算式になる。
+   *
+   * ■ PC は変えない（ご要望「パソコン版は何も変更しないでね」）
+   *   reorderMobile（スマホの1問ごと答え合わせ）のときだけ適用し、
+   *   PC・結果画面は従来の text-xs md:text-sm / text-sm md:text-base をそのまま使う。
+   */
+  // 親側に置く基準サイズ（問題文ペインの text-[15px] leading-[1.85] と同一）
+  const MOBILE_BODY_BASE = 'text-[15px] leading-[1.85]';
+  const DESKTOP_BODY_FONT = isMathChapter ? 'text-sm md:text-base leading-relaxed' : 'text-xs md:text-sm leading-relaxed';
+  const BODY_FONT_FAMILY = isMathChapter ? 'font-math math-content' : 'font-handwriting';
+
   // 要件①：「この単元の思考の型」の本文。単元（章）に紐づくので問題ごとには作らない。
   // 内容・表現・順番・解説は従来と1文字も変えていない（エンジン側の buildUnitKataBlock がそのまま組む）。
   const unitKataBlock = useMemo(() => buildUnitKataBlock(getUnitTeaching(chapter.id)), [chapter.id]);
@@ -283,24 +323,46 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
    * ・配置は「採点結果」の直後
    * ・初期状態は閉じる（画面を圧迫させず、必要な人だけ開ける）
    */
+  /**
+   * ★ご要望8「この単元の思考の型 …も無くすのではなくて、小さくコンパクトにする」★
+   *
+   * reorderMobile は下（L864）で定義されるためここでは使えないので、
+   * 同じ条件（スマホ かつ 1問表示＝結果画面ではない）をそのまま書く。
+   *   reorderMobile === isMobile && !isResultView
+   *   isResultView  === (singleQuestionIndex === undefined)
+   * つまり isMobile && singleQuestionIndex !== undefined。
+   *
+   * コンパクト化の中身（消さずに詰める）
+   *   ・「（この単元の全問に共通・必要なときだけ開く）」の副題を隠す
+   *     … 42文字ぶんが折り返して2行になり、閉じた状態でも高さを食っていた
+   *   ・「開く／閉じる」の文字を落として山型アイコンだけにする
+   *   ・上下 padding を py-2.5 → py-1.5、アイコンを 16 → 13 に縮める
+   *   見出し「この単元の思考の型」と本文は従来のまま（内容は削らない）。
+   * PC は md: 指定と非スマホ分岐で従来の見た目を維持する。
+   */
+  const kataCompact = isMobile && singleQuestionIndex !== undefined;
+
   const kataAccordion = unitKataBlock ? (
     <div className={`rounded-xl border overflow-hidden ${mode === 'mini_test' ? 'border-pink-200 bg-pink-50/40' : 'border-[#D9466E]/40 bg-[#D9466E]/10'}`}>
       <button
         type="button"
         onClick={() => setKataOpen(prev => !prev)}
         aria-expanded={kataOpen}
-        className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 md:px-4 md:py-3 text-left transition-colors ${mode === 'mini_test' ? 'hover:bg-pink-100/70' : 'hover:bg-[#D9466E]/20'}`}
+        aria-label={`この単元の思考の型を${kataOpen ? '閉じる' : '開く'}`}
+        className={`w-full flex items-center justify-between text-left transition-colors ${kataCompact ? 'gap-2 px-2.5 py-1.5' : 'gap-3 px-3 py-2.5 md:px-4 md:py-3'} ${mode === 'mini_test' ? 'hover:bg-pink-100/70' : 'hover:bg-[#D9466E]/20'}`}
       >
-        <span className={`font-bold text-xs md:text-sm flex items-center gap-2 flex-wrap ${mode === 'mini_test' ? 'text-[#B03A5B]' : 'text-[#F4A9C4]'}`}>
-          <BookOpen size={16} className="shrink-0" />
+        <span className={`font-bold flex items-center flex-wrap ${kataCompact ? 'gap-1.5 text-[11px]' : 'gap-2 text-xs md:text-sm'} ${mode === 'mini_test' ? 'text-[#B03A5B]' : 'text-[#F4A9C4]'}`}>
+          <BookOpen size={kataCompact ? 13 : 16} className="shrink-0" />
           <span>この単元の思考の型</span>
-          <span className={`font-normal text-[10px] md:text-xs ${mode === 'mini_test' ? 'text-[#B03A5B]/70' : 'text-[#F4A9C4]/70'}`}>
-            （この単元の全問に共通・必要なときだけ開く）
-          </span>
+          {!kataCompact && (
+            <span className={`font-normal text-[10px] md:text-xs ${mode === 'mini_test' ? 'text-[#B03A5B]/70' : 'text-[#F4A9C4]/70'}`}>
+              （この単元の全問に共通・必要なときだけ開く）
+            </span>
+          )}
         </span>
-        <span className={`flex items-center gap-1 shrink-0 text-[10px] md:text-xs font-bold ${mode === 'mini_test' ? 'text-[#B03A5B]' : 'text-[#F4A9C4]'}`}>
-          <span>{kataOpen ? '閉じる' : '開く'}</span>
-          <ChevronDown size={16} className={`transition-transform duration-300 ${kataOpen ? 'rotate-180' : ''}`} />
+        <span className={`flex items-center gap-1 shrink-0 font-bold ${kataCompact ? 'text-[10px]' : 'text-[10px] md:text-xs'} ${mode === 'mini_test' ? 'text-[#B03A5B]' : 'text-[#F4A9C4]'}`}>
+          {!kataCompact && <span>{kataOpen ? '閉じる' : '開く'}</span>}
+          <ChevronDown size={kataCompact ? 14 : 16} className={`transition-transform duration-300 ${kataOpen ? 'rotate-180' : ''}`} />
         </span>
       </button>
       {kataOpen && (
@@ -822,6 +884,17 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   // 「問題文 → 採点結果 → 学習フローチャート」に組み替える。
   // それ以外（PC、結果表示画面）は従来どおり左カラム内にフローチャートを表示する。
   const reorderMobile = isMobile && !isResultView;
+
+  // ご要望8のフォント統一：解説本文の className をここ1本に集約する。
+  // スマホでは文字サイズを指定しない（＝親の explBodyBaseClass から継承する）。
+  // .math-content は 1.13em なので、親をそろえない限り一致しないため。
+  // PC・結果画面は従来の指定をそのまま使う（PCの見た目は不変）。
+  const explBodyFontClass = `${BODY_FONT_FAMILY} ${reorderMobile ? '' : DESKTOP_BODY_FONT}`;
+  // 解説本文を包む側に付ける基準サイズ（PCでは何も足さない）
+  const explBodyBaseClass = reorderMobile ? MOBILE_BODY_BASE : '';
+  // 「正解 / あなたの解答」欄も同じ数式を出す場所なので同じ基準にそろえる。
+  // （問題文の (1) ∫x^4 dx と 正解 x^5/5+C で分数の大きさが変わって見えていた）
+  const answerBoxBaseClass = reorderMobile ? MOBILE_BODY_BASE : '';
 
   // 【スマホの結果画面：スコアと復習推奨エリアを1画面に収める】
   // 以前は「RESULT SCORE カード（＋ランキング＋ご意見）」の後ろに
@@ -1397,22 +1470,98 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                           採点直後の画面なので、「聞き取れなかった箇所を
                           スクリプト・和訳つきで聞き直す」導線として最重要の位置。
                           mode='review' でスクリプト／和訳／語句を開けるようにする。 */}
+                      {/*
+                        ★ご要望8（スマホ・リスニングの解説）★
+                          「音源は問題みたいに上の端に寄せて。音源のボタンと問題が上。
+                            下は合ってるか間違ってるかとスクリプトを載せて、
+                            解説は問1のボタンを押すと出てくる感じで。」
+
+                        ■ 実測した不具合（390x664・el1_A[0]）
+                          パネル型（variant='panel' / mode='review'）の
+                          「復習用の音源を聞く」が見出し＋説明文＋速度切替＋
+                          問Nボタン＋もう1回＋スクリプト＋2回続けて…を
+                          縦に積むため、問題文ペインだけで約430px を占有し、
+                          ・スクリプトのボタンがペインの折り目で切れる
+                          ・採点結果が top=377（画面のほぼ下端）に押し出される
+                          ・この単元の思考の型は画面外（測定値 null）
+                          という状態だった。
+
+                        ■ 直し方（スマホのみ／PCは従来のパネルのまま）
+                          上（問題文ペイン）は横帯の inline に変えて
+                          「再生ボタンと問題」だけにする＝上端に寄る。
+                          スクリプトは下（採点結果の側）の review プレーヤーへ移す。
+                          ご要望どおり「上＝音源＋問題／下＝正誤＋スクリプト」になる。
+
+                        ■ 情報は消さない
+                          実測で確認したとおり、選択肢①〜④は問題文の中にしか
+                          無いので問題文は削らない（削ると答え合わせができない）。
+                          スクリプトも消さず、下に移すだけ。
+                      */}
                       {Array.isArray((question as any).audioTracks) &&
                         (question as any).audioTracks.length > 0 && (
                           <ListeningAudioPlayer
                             tracks={(question as any).audioTracks}
-                            mode="review"
+                            // スマホは「聞き直す」ボタンだけの横帯（スクリプトは下へ）
+                            mode={reorderMobile ? 'practice' : 'review'}
+                            variant={reorderMobile ? 'inline' : 'panel'}
+                            orientation={reorderMobile ? 'horizontal' : 'vertical'}
                             tone={mode === 'mini_test' ? 'light' : 'dark'}
                             readCount={(question as any).readCount || 2}
-                            className="mb-4"
+                            className={reorderMobile ? 'mb-2' : 'mb-4'}
                           />
                         )}
                       {/* 問題文にも Markdown テーブル（実験結果の表など）が含まれるため
                           ExplanationBody を通して本物の <table> で描画する。 */}
-                      <ExplanationBody
-                        text={cleanQuestionText(question.text)}
-                        tone={mode === 'mini_test' ? 'light' : 'dark'}
-                      />
+                      {/* ★スマホ：小問行を横並びにする（ご要望8）
+                          「(1)から4問縦書きになってるけど、横書きにしたら
+                            1画面に収まるくない？」
+
+                          解説画面でも演習画面とまったく同じ判定・同じ見た目にする。
+                          （実測で、解説画面では (4) が画面外に切れていた）
+                          条件は extractInlineQuestionRows に集約してあり、
+                          科目ではなく「その問題自身が短いか」で決まる。
+                          条件を満たさない問題は null が返るので、下の
+                          ExplanationBody（従来の縦積み）にそのまま落ちる。 */}
+                      {(() => {
+                        const inline = reorderMobile
+                          ? extractInlineQuestionRows(cleanQuestionText(question.text))
+                          : null;
+                        if (!inline) {
+                          return (
+                            <ExplanationBody
+                              text={cleanQuestionText(question.text)}
+                              tone={mode === 'mini_test' ? 'light' : 'dark'}
+                            />
+                          );
+                        }
+                        return (
+                          <div className="flex flex-col gap-1.5">
+                            {inline.lead && (
+                              <ExplanationBody
+                                text={inline.lead}
+                                tone={mode === 'mini_test' ? 'light' : 'dark'}
+                              />
+                            )}
+                            {/* grid ではなく flex-wrap（想定より長い項目が来ても
+                                折り返すだけで、はみ出し・文字切れにならない） */}
+                            <ul className="flex flex-wrap gap-x-2 gap-y-1.5">
+                              {inline.rows.map((row, rIdx) => (
+                                <li
+                                  key={rIdx}
+                                  className="flex min-w-0 grow basis-[calc(50%-0.25rem)] items-baseline gap-1"
+                                >
+                                  {row.marker && (
+                                    <span className="shrink-0 font-bold text-gray-500">
+                                      {formatText(row.marker)}
+                                    </span>
+                                  )}
+                                  <span className="min-w-0">{formatText(row.body)}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        );
+                      })()}
                       {question.text.includes('図6') && (
                         <div className="mt-4">
                           <IonizationEnergyChart showDetails={true} />
@@ -1429,10 +1578,26 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         />
                       )}
 
-                      {/* 全小問の設問文一覧（省略せず網羅） */}
+                      {/*
+                        全小問の設問文一覧。
+
+                        ★ご要望「設問一覧と問題が同じなので、同じやつはもう設問一覧いらない」★
+                        ただし「数学なら消す」という決め打ちはしない。
+                        全306問を走査すると、重複の有無は科目では決まらなかった
+                        （数学にも重複しない問題が6件、化学基礎にも完全重複が30件ある）。
+                        いちばん危険なのは「一部だけ重複」41件で、一覧ごと消すと
+                        問題文に載っていない設問が読めなくなる。
+                        そこで isSubQuestionListRedundant() で
+                        「一覧の全項目が問題文にある問題」だけを対象にする。
+
+                        またスマホ限定にする（PC は従来どおり一覧を出す）。
+                        スマホは高さが足りないので重複を削る価値が大きいが、
+                        PC は横に余裕があり、ご要望も「パソコン版は何も変更しないでね」。
+                      */}
                       {(() => {
                         const sqList = buildSubQuestionList(question);
                         if (sqList.length === 0) return null;
+                        if (reorderMobile && isSubQuestionListRedundant(question)) return null;
                         return (
                           <div className={`mt-4 pt-3 border-t border-dashed ${mode === 'mini_test' ? 'border-gray-300' : 'border-[#3A506B]'}`}>
                             <div className={`text-[11px] font-bold mb-2 flex items-center gap-1.5 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
@@ -1651,7 +1816,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             }`}
                           >
                             {/* 正誤・自分の解答・正解は、アコーディオンに入れず常に表示する。 */}
-                            <div className={`p-3 md:p-4 space-y-3 ${
+                            <div className={`p-3 md:p-4 space-y-3 ${answerBoxBaseClass} ${
                               sq.type === 'descriptive'
                                 ? (mode === 'mini_test' ? 'bg-blue-50' : 'bg-[#A9CCE3]/10')
                                 : isCorrect
@@ -1760,12 +1925,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 <ChevronDown size={18} className={`transition-transform ${explanationOpen ? 'rotate-180' : ''}`} />
                               </button>
                               {explanationOpen && (
-                                <div className={`rounded-lg border p-3 md:p-4 ${mode === 'mini_test' ? 'bg-sky-50/40 border-sky-100' : 'bg-[#0B132B]/60 border-[#A9CCE3]/20'}`}>
+                                <div className={`rounded-lg border p-3 md:p-4 ${explBodyBaseClass} ${mode === 'mini_test' ? 'bg-sky-50/40 border-sky-100' : 'bg-[#0B132B]/60 border-[#A9CCE3]/20'}`}>
                                   {sqSlice.trim() ? (
                                     <ExplanationBody
                                       text={sqSlice}
                                       tone={mode === 'mini_test' ? 'light' : 'dark'}
-                                      className={`${isMathChapter ? 'font-math math-content text-sm md:text-base' : reorderMobile ? 'font-handwriting text-[15px] leading-[1.85]' : 'font-handwriting text-xs md:text-sm'} ${reorderMobile && !isMathChapter ? '' : 'leading-relaxed'} ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+                                      className={`${explBodyFontClass} ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
                                     />
                                   ) : (
                                     <p className="text-xs text-gray-500">この小問の解説は「思考手順・答えの核心」にまとめています。</p>
@@ -1815,15 +1980,31 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             )}
 
                             {objectiveSqs.length > 0 && (
-                              <div className="space-y-3 md:space-y-4 mt-6">
-                                {/* 見出し：採点結果（正誤の内訳を小さく併記） */}
-                                <div className="flex items-center justify-between gap-2 flex-wrap">
-                                  <h4 className={`font-bold flex items-center gap-2 ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>
-                                    <CheckCircle2 size={18} className={mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'} />
-                                    <span>採点結果</span>
+                              <div className={`${reorderMobile ? 'space-y-2' : 'space-y-3 md:space-y-4'} mt-6`}>
+                                {/*
+                                  見出し：採点結果（正誤の内訳を小さく併記）
+
+                                  ★ご要望8★
+                                    「採点結果みたいなところと正解不正解とかも
+                                      無くすのではなくて、小さくコンパクトにする」
+                                    「☑️採点結果の右に、正解・不正解・未解答・
+                                      フローチャートのボタンを持ってくる」
+
+                                  右側の並び（正解/不正解/未解答＋フローチャート）は
+                                  すでにこの1行に入っている。スマホではさらに
+                                    ・flex-wrap を外して必ず1行に収める（min-w-0＋truncate）
+                                    ・見出し 16px→13px、アイコン 18→15
+                                    ・内訳 text-xs→text-[10px]
+                                  として高さを詰める。項目は1つも消さない。
+                                  PC（!reorderMobile）は従来のクラスをそのまま使う。
+                                */}
+                                <div className={`flex items-center justify-between gap-2 ${reorderMobile ? '' : 'flex-wrap'}`}>
+                                  <h4 className={`font-bold flex items-center ${reorderMobile ? 'min-w-0 gap-1.5 text-[13px]' : 'gap-2'} ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]'}`}>
+                                    <CheckCircle2 size={reorderMobile ? 15 : 18} className={`${reorderMobile ? 'shrink-0 ' : ''}${mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}`} />
+                                    <span className={reorderMobile ? 'truncate' : ''}>採点結果</span>
                                   </h4>
-                                  <div className="flex items-center gap-2">
-                                    <span className={`text-xs font-bold ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
+                                  <div className={`flex items-center ${reorderMobile ? 'shrink-0 gap-1.5' : 'gap-2'}`}>
+                                    <span className={`font-bold ${reorderMobile ? 'whitespace-nowrap text-[10px]' : 'text-xs'} ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
                                       <span className={mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]'}>正解 {correctSqs.length}</span>
                                       <span className="mx-1 opacity-50">/</span>
                                       <span className={mode === 'mini_test' ? 'text-red-500' : 'text-[#D9A0A0]'}>不正解 {incorrectSqs.length}</span>
@@ -1843,7 +2024,10 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                         type="button"
                                         onClick={() => setShowFlowchart(v => !v)}
                                         aria-expanded={showFlowchart}
-                                        className={`flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-bold whitespace-nowrap transition-colors ${
+                                        aria-label={`学習フローチャートを${showFlowchart ? '閉じる' : '開く'}`}
+                                        /* コンパクト化：ラベルは残し、余白と字だけ詰める。
+                                           「正解/不正解/未解答」と同じ行に必ず収めたい。 */
+                                        className={`flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-[10px] font-bold whitespace-nowrap transition-colors ${
                                           showFlowchart
                                             ? 'bg-[#2C3E50] border-[#2C3E50] text-white'
                                             : 'bg-white border-gray-300 text-gray-600 active:bg-gray-50'
@@ -1865,12 +2049,32 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     解説（右カラム相当）が先に表示され、左まで戻るのが遠い。
                                     答え合わせ→もう一度聞く、の動線を1タップにする。
                                     horizontal の帯型なので縦スペースをほぼ取らない。 */}
+                                {/*
+                                  ★ご要望8：スクリプトは「下」に置く★
+                                    「下は合ってるか間違ってるかとスクリプトを載せて」
+
+                                  スマホでは上の問題文ペインを inline（再生ボタンだけ）に
+                                  したので、スクリプト・和訳はこちらの review プレーヤーが
+                                  受け持つ。パネル型にすると採点結果の直下で
+                                  スクリプトを開けるようになり、
+                                  「正誤 → スクリプトで確認」が同じ場所で完結する。
+                                  PC は従来どおり横帯の practice（上のパネルが review）。
+                                */}
                                 {Array.isArray((question as any).audioTracks) &&
                                   (question as any).audioTracks.length > 0 && (
                                     <ListeningAudioPlayer
                                       tracks={(question as any).audioTracks}
-                                      mode="practice"
-                                      variant="inline"
+                                      mode={reorderMobile ? 'review' : 'practice'}
+                                      variant={reorderMobile ? 'panel' : 'inline'}
+                                      /* ★スマホだけ compact★
+                                         panel をそのまま出すと約430px あり、
+                                         採点結果の下にこれが入るだけで
+                                         問Nチップ（top=746）と「この単元の思考の型」が
+                                         画面外に落ちていた（実測）。
+                                         compact はスクリプトを残したまま
+                                         バッジ・サブ文・もう1回・2回続けて行を省く。
+                                         PC は compact を渡さないので不変。 */
+                                      compact={reorderMobile}
                                       orientation="horizontal"
                                       tone={mode === 'mini_test' ? 'light' : 'dark'}
                                       readCount={(question as any).readCount || 2}
@@ -1952,7 +2156,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             )}
 
                             {sharedExplanation.trim() && (
-                              <div className={`mt-6 rounded-xl border p-4 md:p-5 ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200' : 'bg-[#0B132B]/80 border-[#3A506B]/50'}`}>
+                              <div className={`mt-6 rounded-xl border p-4 md:p-5 ${explBodyBaseClass} ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200' : 'bg-[#0B132B]/80 border-[#3A506B]/50'}`}>
                                 <h4 className={`text-sm md:text-base mb-3 flex items-center gap-2 border-b-2 pb-2 ${mode === 'mini_test' ? 'text-emerald-700 border-emerald-200' : 'text-[#5BC0BE] border-[#3A506B]/50'}`}>
                                   <Lightbulb className={`w-4 h-4 ${mode === 'mini_test' ? 'text-amber-500' : 'text-[#F9E79F]'}`} />
                                   <span>大問全体の流れ・共通ポイント</span>
@@ -1960,7 +2164,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 <ExplanationBody
                                   text={sharedExplanation}
                                   tone={mode === 'mini_test' ? 'light' : 'dark'}
-                                  className={`${isMathChapter ? 'font-math math-content text-sm md:text-base' : reorderMobile ? 'font-handwriting text-[15px] leading-[1.85]' : 'font-handwriting text-xs md:text-sm'} ${reorderMobile && !isMathChapter ? '' : 'leading-relaxed'} ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+                                  className={`${explBodyFontClass} ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
                                 />
                               </div>
                             )}

@@ -200,11 +200,60 @@ describe('typesetHtmlMath: まとめプリント（HTML）の数式', () => {
     expect(html).toContain('<strong>絶対値を忘れない</strong>');
   });
 
-  it('化学式の <sub>/<sup> は変換しない（無変更で返す）', () => {
-    const chem = '<p>水 H<sub>2</sub>O のモル質量は 18 g/mol である</p>';
-    expect(typesetHtmlMath(chem)).toBe(chem);
-    const ion = '<li>Fe<sup>2+</sup> は還元剤としてはたらく</li>';
-    expect(typesetHtmlMath(ion)).toBe(ion);
+  /*
+    ★方針を変えた箇所★
+    以前ここは「化学式の <sub>/<sup> は変換しない（無変更で返す）」を
+    期待していた。しかしご要望
+      「化学式とか反応式も全部ね　問題だけじゃなくて解説とかもね」
+      「残りもしてね」
+    により、まとめプリント（HTML）の化学式・反応式も mhchem で組む。
+    問題文・解説は既に mhchem で組めていたのに、まとめプリントだけが
+    「<sub> を小さくしただけ」の見た目で取り残されていたため。
+  */
+  it('化学式の <sub>/<sup> も mhchem で組み直す（まとめプリント）', () => {
+    const chem = typesetHtmlMath('<p>水 H<sub>2</sub>O のモル質量は 18 g/mol である</p>');
+    expect(chem).toContain('class="katex"');
+    // 読み上げ用に元の並びが残る
+    expect(chem).toContain('aria-label="H_{2}O"');
+    // 数式でない地の文はそのまま
+    expect(chem).toContain('のモル質量は 18 g/mol である');
+    expect(chem).not.toContain('katex-error');
+
+    const ion = typesetHtmlMath('<li>Fe<sup>2+</sup> は還元剤としてはたらく</li>');
+    expect(ion).toContain('class="katex"');
+    expect(ion).toContain('は還元剤としてはたらく');
+    expect(ion).not.toContain('katex-error');
+  });
+
+  it('反応式（矢印つき）も1つの \\ce{…} として組む', () => {
+    const html = typesetHtmlMath(
+      '<p>Zn ＋ 2HCl → ZnCl<sub>2</sub> ＋ H<sub>2</sub> は酸化還元反応</p>',
+    );
+    expect(html).toContain('class="katex"');
+    // 式全体が1つの領域になる（左右の辺がばらばらに組まれない）
+    expect(html).toContain('aria-label="Zn ＋ 2HCl → ZnCl_{2} ＋ H_{2}"');
+    expect(html).toContain('は酸化還元反応');
+    expect(html).not.toContain('katex-error');
+  });
+
+  it('★原子の数と電荷を混同しない★ SO4²⁻ の 4 は原子数・2- は電荷', () => {
+    const html = typesetHtmlMath('<p>硫酸イオン SO<sub>4</sub><sup>2-</sup> は2価の陰イオン</p>');
+    expect(html).toContain('class="katex"');
+    // ^ が残っていること（落ちると "酸素が42個" の意味になる）
+    expect(html).toContain('aria-label="SO_{4}^{2-}"');
+    expect(html).not.toContain('katex-error');
+  });
+
+  it('英文・単位・ローマ数字（酸化数）は化学式にしない', () => {
+    // 元素記号の並びとして読めてしまう英単語（In, No, It, OK）
+    const en = '<p>In this case, No problem at all. It is OK.</p>';
+    expect(typesetHtmlMath(en)).toBe(en);
+    // 単位（mol/L, L, mol）は斜体の変数にしてはいけない
+    const unit = '<p>mol/L で表す。22.4 L は 1 mol。</p>';
+    expect(typesetHtmlMath(unit)).toBe(unit);
+    // 銅(II) の (II) は酸化数であって化学式ではない
+    const roman = typesetHtmlMath('<p>銅(II)イオンは青色</p>');
+    expect(roman).toBe('<p>銅(II)イオンは青色</p>');
   });
 
   it('数式を含まない HTML はそのまま返す（冪等・無害）', () => {

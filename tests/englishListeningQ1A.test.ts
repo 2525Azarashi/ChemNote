@@ -290,7 +290,20 @@ describe('音源ボタンが「わかりやすい場所」に置かれている'
 
   it('Explanation：復習用としてスクリプトつきで出す', () => {
     expect(EXPLANATION).toContain('ListeningAudioPlayer');
-    expect(EXPLANATION).toContain('mode="review"');
+    /*
+     * ★ご要望8でスマホの役割を入れ替えたため、mode は固定値ではなくなった★
+     *   「音源のボタンと問題が上。下は合ってるか間違ってるかとスクリプトを載せて」
+     *
+     *   スマホ：上＝practice（再生ボタンだけ）／下＝review（スクリプト）
+     *   PC    ：上＝review（従来どおり）／下＝practice（従来どおり）
+     *
+     * 以前は上のプレーヤーが常に mode="review" だったので
+     * リテラル 'mode="review"' で確かめられたが、いまは三項になっている。
+     * 大事なのは「どちらの画面幅でも review が必ず1か所ある」＝
+     * スクリプトを読む場所が失われていないこと。ここを検証する。
+     */
+    expect(EXPLANATION).toMatch(/mode=\{reorderMobile \? 'practice' : 'review'\}/);
+    expect(EXPLANATION).toMatch(/mode=\{reorderMobile \? 'review' : 'practice'\}/);
     expect(EXPLANATION).toMatch(/Array\.isArray\(\(question as any\)\.audioTracks\)/);
     // 解説ペインの配色に合わせて tone を切り替える
     expect(EXPLANATION).toMatch(/tone=\{mode === 'mini_test' \? 'light' : 'dark'\}/);
@@ -311,8 +324,28 @@ describe('単元選択に「復習用の音源を聞く場所」がある', () =
     expect(CHAPTER_SELECTION).toContain('復習用の音源を聞く（問題を解かずに音声だけ再生）');
   });
 
-  it('リスニング以外の科目では音源ボタンを出さない', () => {
-    expect(CHAPTER_SELECTION).toMatch(/isListening \? collectAudioSets\(chapter\) : \[\]/);
+  it('音源を持つ科目（リスニング・英文法）だけに音源ボタンを出す', () => {
+    // ★もとは「リスニング以外は出さない」という検査だった★
+    //   英文法を追加したとき、各問に「空所を埋めた完成文」の音源を持たせたので、
+    //   英文法の単元カードにも復習用音源の入口が要る。
+    //   （正しい形を音で通しておくと、本番で「音の違和感」で誤答を切れる。）
+    //   一方で化学・数学・生物基礎には音源が無いので、そこには出してはいけない。
+    //   つまり守りたいのは「リスニングだけ」ではなく
+    //   ★音源を持つ科目に限定されていること★なので、条件式ごと検査する。
+    expect(CHAPTER_SELECTION).toMatch(
+      /isListening \|\| isGrammar \? collectAudioSets\(chapter\) : \[\]/,
+    );
+  });
+
+  it('音源を持たない科目（化学・数学・生物基礎）には音源ボタンを出さない', () => {
+    // 条件が「常に collectAudioSets を呼ぶ」形に緩められていないことを確かめる。
+    // : [] という空配列に倒す分岐が残っていれば、音源の無い科目では出ない。
+    const line = CHAPTER_SELECTION.split('\n').find((l) =>
+      l.includes('collectAudioSets(chapter) : []'),
+    );
+    expect(line).toBeTruthy();
+    // isListening / isGrammar 以外の科目が条件に混ざっていないこと
+    expect(line).not.toMatch(/isChemistry|isMath|isBiology/u);
   });
 
   it('プレーヤー本体はグリッド下に全幅で開く（スクリプトが読める幅を確保）', () => {
