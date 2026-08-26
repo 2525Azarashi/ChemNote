@@ -39,7 +39,7 @@
  * 整形エンジンが解答の直後に差し込む方式にした。既存の解説はそのまま残る。
  */
 
-import type { UnitConversionWalk } from '../utils/explanationFormat';
+import type { UnitConversionWalk } from './teachingTypes';
 
 /** よく使う定数の表記（表記ゆれを防ぐため定数化） */
 const NA = '6.0×10²³ 個/mol';
