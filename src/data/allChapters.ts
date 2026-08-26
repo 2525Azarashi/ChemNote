@@ -172,6 +172,22 @@ export function getChaptersOfSubject(subjectId: string | null | undefined): any[
 }
 
 /**
+ * 指定した教科の parts（章のまとまり）をそのまま返す。
+ *
+ * 単元選択画面（ChapterSelection）は章をタブへまとめ直すために
+ * parts の情報（part.id / part.title / part.field）まで必要なので、
+ * 章だけを返す getChaptersOfSubject では足りない。
+ *
+ * 未知の教科IDのときは、getChaptersOfSubject と同じく化学基礎を返す。
+ * 返す配列は元データそのものなので、書き換えないこと。
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getPartsOfSubject(subjectId: string | null | undefined): any[] {
+  const entry = SUBJECTS.find((subject) => subject.id === subjectId) ?? SUBJECTS[0];
+  return (entry.data.parts || []) as any[];
+}
+
+/**
  * 全教科の章を連結した配列。
  * 教科データは起動後に変わらないので、初回だけ作って使い回す。
  */

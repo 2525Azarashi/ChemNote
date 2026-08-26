@@ -19,7 +19,12 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { findChapterById, getChaptersOfSubject, SUBJECTS } from '../src/data/allChapters';
+import {
+  findChapterById,
+  getChaptersOfSubject,
+  getPartsOfSubject,
+  SUBJECTS,
+} from '../src/data/allChapters';
 import { chemistryData } from '../src/data/chemistryData';
 import { chemistryAdvancedData, getAllAdvancedChapters } from '../src/data/chemistryAdvancedData';
 import { englishListeningData, getAllListeningChapters } from '../src/data/englishListeningData';
@@ -189,6 +194,26 @@ describe('getChaptersOfSubject / SUBJECTS（教科レジストリ）', () => {
     for (const subject of SUBJECTS) {
       expect(getChaptersOfSubject(subject.id)).toBe(getChaptersOfSubject(subject.id));
     }
+  });
+
+  it('getPartsOfSubject が各教科の parts をそのまま返す（単元選択のタブ生成用）', () => {
+    // ChapterSelection.tsx が buildChapterGroups(<教科>.parts) に渡していたものと
+    // 同じ実体が返ること。part.id / part.title / part.field を使うため、
+    // 章だけでなく parts の実体が一致している必要がある。
+    const expected: [string, any][] = [
+      ['chemistry_basic', chemistryData],
+      ['chemistry', chemistryAdvancedData],
+      ['english_listening', englishListeningData],
+      ['math', mathData],
+      ['biology_basic', biologyBasicData],
+      ['english_grammar', englishGrammarData],
+    ];
+    for (const [id, data] of expected) {
+      expect(getPartsOfSubject(id), `${id} の parts が違う`).toBe(data.parts);
+    }
+    // 未知のIDでは化学基礎（元の既定分岐と同じ）
+    expect(getPartsOfSubject('__unknown__')).toBe(chemistryData.parts);
+    expect(getPartsOfSubject(null)).toBe(chemistryData.parts);
   });
 
   it('SUBJECTS の教科IDと表示名が SubjectSelection の定義と一致する', () => {

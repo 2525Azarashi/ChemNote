@@ -1,10 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { chemistryData } from '../data/chemistryData';
-import { chemistryAdvancedData, type AdvancedFieldId } from '../data/chemistryAdvancedData';
-import { englishListeningData } from '../data/englishListeningData';
-import { mathData } from '../data/mathData';
-import { biologyBasicData } from '../data/biologyBasicData';
-import { englishGrammarData } from '../data/englishGrammarData';
+import { type AdvancedFieldId } from '../data/chemistryAdvancedData';
+// 教科ごとの parts は data/allChapters.ts から引く
+// （以前はこのファイルで6教科ぶんを個別に import していた）
+import { getPartsOfSubject } from '../data/allChapters';
 import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X, Headphones } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
@@ -138,37 +136,36 @@ function buildChapterGroups(parts: any[]) {
   });
 }
 
-/** 化学基礎のタブ（従来どおりモジュール読み込み時に一度だけ作る） */
-const chapterGroups = buildChapterGroups(chemistryData.parts as any[]);
-
 /**
- * 英語リスニングのタブ。
- * A・B が分かれる大問は realTitle も別（'第1問 A' / '第1問 B'）にしてあるので、
- * この共通処理を通すだけで A・B が独立したタブになる（ご要望）。
+ * 教科ごとのタブ（章のグループ）。
+ *
+ * どの教科も realTitle でグループ化するだけで正しいタブになるため、
+ * 処理は buildChapterGroups の1本で共通。以前は教科ごとに
+ *   const chapterGroups   = buildChapterGroups(chemistryData.parts);
+ *   const listeningGroups = buildChapterGroups(englishListeningData.parts);
+ *   …（5教科ぶん）
+ * と同じ行を並べていたが、教科を足すたびに書き足す必要があった。
+ *
+ * ★同じ教科なら必ず同じ配列（実体）を返すこと。★
+ * groups は useEffect / useMemo の依存に入っているので、
+ * 呼ぶたびに新しい配列を作るとタブが毎回作り直され、
+ * 開いているタブが勝手に先頭へ戻ってしまう。
+ * そのため一度作ったものを教科IDで覚えておく。
+ *
+ * 参考（各教科の事情はそのまま）：
+ * - 英語リスニング：A・B が分かれる大問は realTitle も別（'第1問 A' / '第1問 B'）
+ *   なので、この共通処理を通すだけで A・B が独立したタブになる
+ * - 英文法：「10章 語法」は 4 単元を抱えるので、1 つのタブに 4 単元が並ぶ
  */
-const listeningGroups = buildChapterGroups(englishListeningData.parts as any[]);
+const groupsBySubject = new Map<string, ReturnType<typeof buildChapterGroups>>();
 
-/**
- * 数学のタブ。
- * 数III積分の各章は realTitle（'1章 不定積分の土台' など）でグループ化されるので、
- * 化学と同じ共通処理を通すだけでタブができる。
- */
-const mathGroups = buildChapterGroups(mathData.parts as any[]);
-
-/**
- * 生物基礎のタブ。
- * 各章は realTitle（'1章 生物の特徴' など）でグループ化されるので、
- * 化学と同じ共通処理を通すだけでタブができる。
- */
-const biologyGroups = buildChapterGroups(biologyBasicData.parts as any[]);
-
-/**
- * 英文法のタブ。
- * 各章は realTitle（'1章 文型と動詞' など）でグループ化されるので、
- * 他科目と同じ共通処理を通すだけでタブができる。
- * なお「10章 語法」は 4 単元を抱えるので、1 つのタブに 4 単元が並ぶ。
- */
-const grammarGroups = buildChapterGroups(englishGrammarData.parts as any[]);
+function getChapterGroups(subject: string): ReturnType<typeof buildChapterGroups> {
+  const cached = groupsBySubject.get(subject);
+  if (cached) return cached;
+  const built = buildChapterGroups(getPartsOfSubject(subject));
+  groupsBySubject.set(subject, built);
+  return built;
+}
 
 /**
  * 単元の中に収録されている音源を、回（problem）ごとにまとめて取り出す。
@@ -222,10 +219,11 @@ function splitTabTitle(title: string, index: number): { kicker: string; label: s
 }
 
 export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'chemistry_basic', field, fieldTitle }: ChapterSelectionProps) {
+  // 科目ごとに画面の作りが変わる箇所だけフラグにしている。
+  // （数学・生物基礎はタブの作り方も中身の出し方も共通処理のままなので、
+  //   専用のフラグは持たない）
   const isAdvanced = subject === 'chemistry';
   const isListening = subject === 'english_listening';
-  const isMath = subject === 'math';
-  const isBiology = subject === 'biology_basic';
   const isGrammar = subject === 'english_grammar';
   /**
    * 科目ごとの配色。
@@ -242,14 +240,15 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
    * - 英語リスニング：全 parts（前半＝2回読み／後半＝1回読み）
    */
   const groups = useMemo(() => {
-    if (isListening) return listeningGroups;
-    if (isMath) return mathGroups;
-    if (isBiology) return biologyGroups;
-    if (isGrammar) return grammarGroups;
-    if (!isAdvanced) return chapterGroups;
-    const parts = chemistryAdvancedData.parts.filter(p => !field || p.field === field);
-    return buildChapterGroups(parts as any[]);
-  }, [isAdvanced, isListening, isMath, isBiology, isGrammar, field]);
+    // 化学（発展）だけは分野（理論／無機／有機）で parts を絞るため別扱い。
+    // 他の教科は parts をそのまま使うので共通処理で作れる。
+    if (isAdvanced) {
+      const parts = getPartsOfSubject('chemistry').filter((p: any) => !field || p.field === field);
+      return buildChapterGroups(parts);
+    }
+    // 化学基礎（および想定外の科目）は化学基礎のタブになる（従来どおり）。
+    return getChapterGroups(subject);
+  }, [isAdvanced, subject, field]);
 
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null);
   /**
