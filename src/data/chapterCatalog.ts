@@ -10,12 +10,15 @@
  *
  *     その科目に章がいくつあり、各章に大問が何問あるか（分母）
  *
- * が必要になる。ところが章データは科目ごとに別ファイル
- * （chemistryData / chemistryAdvancedData / englishListeningData）に
- * あり、形も微妙に違う。集計側（utils/）から科目データを
+ * が必要になる。ところが章データは科目ごとに別ファイルにあり、
+ * 形も微妙に違う。集計側（utils/）から科目データを
  * 直接 import すると依存が絡まるので、
  *
  *     「科目ID → ChapterDefinition[]」への変換をここ1か所に閉じ込める。
+ *
+ * なお「科目ID → その科目の parts」を引く部分は allChapters.ts に
+ * 集約したので、このファイルは変換（ChapterDefinition への詰め替え）
+ * だけを担当する。教科が増えてもこのファイルは変更不要。
  *
  * -------------------------------------------------------------------
  * ■ 分母の数え方（誠実さのルール）
@@ -26,15 +29,13 @@
  * 到達率は常に「実際に解ける問題」に対する割合とする。
  */
 
-import { chemistryData } from './chemistryData';
-import { chemistryAdvancedData } from './chemistryAdvancedData';
-import { englishListeningData } from './englishListeningData';
-import { mathData } from './mathData';
-import { biologyBasicData } from './biologyBasicData';
-import { englishGrammarData } from './englishGrammarData';
 import type { ChapterDefinition } from '../utils/studySummary';
-// 教科IDの型は allChapters.ts の SubjectKey が唯一の定義
-import type { SubjectKey } from './allChapters';
+// 教科ID → その教科の parts の取り出しと、教科IDの型は
+// allChapters.ts に集約している（以前はこのファイルでも6教科ぶんを
+// 個別に import し、switch で振り分けていた）
+import { getPartsOfSubject, type SubjectKey } from './allChapters';
+// 大問の数え方（ミニテスト＋演習）は problemCount.ts に集約している
+import { countChapterProblems } from './problemCount';
 
 /**
  * このカタログが扱う教科。
@@ -52,7 +53,7 @@ export const SUBJECT_LABELS: Record<CatalogSubject, string> = {
   biology_basic: '生物基礎',
 };
 
-/** 章データの最小共通形（3科目とも id / abstractTitle / 問題配列を持つ） */
+/** 章データの最小共通形（どの教科の章も id / abstractTitle / 問題配列を持つ） */
 interface RawChapter {
   id: string;
   abstractTitle?: string;
@@ -74,9 +75,7 @@ function toDefinitions(parts: RawPart[]): ChapterDefinition[] {
   const rows: ChapterDefinition[] = [];
   parts.forEach((part) => {
     (part.chapters || []).forEach((chapter) => {
-      const total =
-        (Array.isArray(chapter.practiceProblems) ? chapter.practiceProblems.length : 0) +
-        (Array.isArray(chapter.miniTest) ? chapter.miniTest.length : 0);
+      const total = countChapterProblems(chapter);
       // 問題が無い章は到達しようがないので分母に入れない
       if (total === 0) return;
       rows.push({
@@ -100,28 +99,10 @@ export function getChapterCatalog(subject: CatalogSubject): ChapterDefinition[] 
   const hit = cache.get(subject);
   if (hit) return hit;
 
-  let rows: ChapterDefinition[];
-  switch (subject) {
-    case 'chemistry':
-      rows = toDefinitions(chemistryAdvancedData.parts as unknown as RawPart[]);
-      break;
-    case 'english_listening':
-      rows = toDefinitions(englishListeningData.parts as unknown as RawPart[]);
-      break;
-    case 'math':
-      rows = toDefinitions(mathData.parts as unknown as RawPart[]);
-      break;
-    case 'biology_basic':
-      rows = toDefinitions(biologyBasicData.parts as unknown as RawPart[]);
-      break;
-    case 'english_grammar':
-      rows = toDefinitions(englishGrammarData.parts as unknown as RawPart[]);
-      break;
-    case 'chemistry_basic':
-    default:
-      rows = toDefinitions(chemistryData.parts as unknown as RawPart[]);
-      break;
-  }
+  // 以前はここに6教科ぶんの switch が並んでいたが、
+  // 「教科ID → その教科の parts」は allChapters.ts が持っているので任せる。
+  // 未知のIDのときに化学基礎へ落とす挙動も、元の default 節と同じ。
+  const rows = toDefinitions(getPartsOfSubject(subject) as unknown as RawPart[]);
   cache.set(subject, rows);
   return rows;
 }

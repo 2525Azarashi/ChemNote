@@ -84,6 +84,54 @@ describe('章カタログ（到達率の分母）', () => {
   });
 
   /**
+   * 上の合計値スナップショットだけだと、
+   * 「ある章が +1 され、別の章が -1 された」ような相殺に気づけない。
+   * 章1件ずつ（id / title / 問題数）まで固定して、
+   * 構造整理で1件もズレていないことを確かめる。
+   *
+   * 期待値はファイルに書き下すと数百行になるので、
+   * ★教科データから直接組み立てた「あるべき一覧」と突き合わせる★方式にする。
+   * カタログ側の switch 文を経由しない独立した経路で作るので、
+   * switch を消す整理をしても、この検査は影響を受けない。
+   */
+  it('章1件ずつ（id / title / 問題数）が教科データと完全に一致する', async () => {
+    const { chemistryData } = await import('../src/data/chemistryData');
+    const { chemistryAdvancedData } = await import('../src/data/chemistryAdvancedData');
+    const { englishListeningData } = await import('../src/data/englishListeningData');
+    const { mathData } = await import('../src/data/mathData');
+    const { biologyBasicData } = await import('../src/data/biologyBasicData');
+    const { englishGrammarData } = await import('../src/data/englishGrammarData');
+
+    const rawBySubject: Record<CatalogSubject, any> = {
+      chemistry_basic: chemistryData,
+      chemistry: chemistryAdvancedData,
+      english_listening: englishListeningData,
+      english_grammar: englishGrammarData,
+      math: mathData,
+      biology_basic: biologyBasicData,
+    };
+
+    for (const s of SUBJECTS) {
+      // 整理前の toDefinitions と同じ手順を、テスト側で独立に組み立てる
+      const expected: { id: string; title: string; totalProblems: number }[] = [];
+      for (const part of rawBySubject[s].parts || []) {
+        for (const chapter of part.chapters || []) {
+          const total =
+            (Array.isArray(chapter.practiceProblems) ? chapter.practiceProblems.length : 0) +
+            (Array.isArray(chapter.miniTest) ? chapter.miniTest.length : 0);
+          if (total === 0) continue;
+          expected.push({
+            id: chapter.id,
+            title: (chapter.abstractTitle || chapter.realTitle || chapter.id).trim(),
+            totalProblems: total,
+          });
+        }
+      }
+      expect(getChapterCatalog(s), `${s} の章一覧`).toEqual(expected);
+    }
+  });
+
+  /**
    * ★構造整理の前後で分母が変わっていないことを保証する本体★
    * 数値は「現在の実装の実測値」。整理でこの値が動いたら、
    * それは到達率の計算が変わったということなので必ず止めること。
