@@ -128,9 +128,19 @@ describe('D1: 1画面＝1問（問1で1つの進捗、問2で1つの進捗）', 
     expect(stepScoreKey('q1', 'a')).not.toBe(stepScoreKey('q1', 'b'));
   });
 
-  it('Quiz が step の位置を端末に保存し、再開しても続きから解ける', () => {
-    expect(QUIZ).toContain('quiz_step_');
+  it('Quiz が step の位置を端末に保存し、再開しても続きから解ける', async () => {
     expect(QUIZ).toContain('const [stepIndex, setStepIndex]');
+
+    // 保存キー名は utils/quizStorageKeys.ts へ集約したため、
+    // 「ソースに quiz_step_ と書いてあるか」では意図
+    // （＝ステップ位置が章・モードごとに端末へ保存されること）を守れない。
+    // 代わりに Quiz が使っているキー生成関数そのものを確認する。
+    expect(QUIZ).toContain('quizStepKey(chapter.id, mode)');
+    const { quizStepKey } = await import('../src/utils/quizStorageKeys');
+    expect(quizStepKey('q_el1_A', 'practice')).toBe('quiz_step_q_el1_A_practice');
+    // 章・モードが違えば別レコードになる（他の回の続きが出てこない）
+    expect(quizStepKey('q_el1_A', 'practice')).not.toBe(quizStepKey('q_el1_B', 'practice'));
+    expect(quizStepKey('q_el1_A', 'practice')).not.toBe(quizStepKey('q_el1_A', 'mini_test'));
   });
 
   it('進捗ピルの分子・分母が問単位に切り替わる', () => {

@@ -39,6 +39,15 @@ import {
   parseStoredStringRecord,
 } from '../utils/progress';
 import { schedulePush } from '../utils/studySync';
+// 章 × モードごとの保存キー名は utils/quizStorageKeys.ts が唯一の定義
+import {
+  quizAnswersKey,
+  quizElimKey,
+  quizExplKey,
+  quizIndexKey,
+  quizRunKey,
+  quizStepKey,
+} from '../utils/quizStorageKeys';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
 import { answerCardMarker, buildSubQuestionList, splitQuestionLabel, isSubQuestionListRedundant, extractInlineQuestionRows, findSubQuestionSentence } from '../utils/questionDisplay';
 import {
@@ -87,11 +96,13 @@ interface QuizProps {
 }
 
 /**
- * 章単位の累積スコアを localStorage に保持するためのキー生成
+ * 章単位の累積スコアを localStorage に保持するためのキー生成。
+ *
+ * 実体は utils/quizStorageKeys.ts の quizRunKey（唯一の定義）。
+ * このファイル内の3か所から chapterRunKey として呼ばれているので
+ * 名前はそのまま残してある。
  */
-function chapterRunKey(chapterId: string, mode: string) {
-  return `quiz_run_${chapterId}_${mode}`;
-}
+const chapterRunKey = quizRunKey;
 
 interface ChapterRunState {
   totalScore: number;
@@ -565,19 +576,19 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   });
 
   const [answers, setAnswers] = useState<Record<string, string>>(() =>
-    parseStoredStringRecord(localStorage.getItem(`quiz_answers_${chapter.id}_${mode}`)),
+    parseStoredStringRecord(localStorage.getItem(quizAnswersKey(chapter.id, mode))),
   );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
     const questionCount = mode === 'mini_test'
       ? (chapter.miniTest || []).length
       : (chapter.practiceProblems || []).length;
     return parseStoredNonNegativeInteger(
-      localStorage.getItem(`quiz_idx_${chapter.id}_${mode}`),
+      localStorage.getItem(quizIndexKey(chapter.id, mode)),
       Math.max(0, questionCount - 1),
     );
   });
   const [showingExplanation, setShowingExplanation] = useState(() => {
-    return localStorage.getItem(`quiz_expl_${chapter.id}_${mode}`) === 'true';
+    return localStorage.getItem(quizExplKey(chapter.id, mode)) === 'true';
   });
 
   /**
@@ -591,23 +602,23 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
    * 中断して戻ってきたときに問1からやり直しにならないよう端末に保存する。
    */
   const [stepIndex, setStepIndex] = useState(() =>
-    parseStoredNonNegativeInteger(localStorage.getItem(`quiz_step_${chapter.id}_${mode}`)),
+    parseStoredNonNegativeInteger(localStorage.getItem(quizStepKey(chapter.id, mode))),
   );
 
   useEffect(() => {
-    localStorage.setItem(`quiz_answers_${chapter.id}_${mode}`, JSON.stringify(answers));
+    localStorage.setItem(quizAnswersKey(chapter.id, mode), JSON.stringify(answers));
   }, [answers, chapter.id, mode]);
 
   useEffect(() => {
-    localStorage.setItem(`quiz_step_${chapter.id}_${mode}`, stepIndex.toString());
+    localStorage.setItem(quizStepKey(chapter.id, mode), stepIndex.toString());
   }, [stepIndex, chapter.id, mode]);
 
   useEffect(() => {
-    localStorage.setItem(`quiz_idx_${chapter.id}_${mode}`, currentQuestionIndex.toString());
+    localStorage.setItem(quizIndexKey(chapter.id, mode), currentQuestionIndex.toString());
   }, [currentQuestionIndex, chapter.id, mode]);
 
   useEffect(() => {
-    localStorage.setItem(`quiz_expl_${chapter.id}_${mode}`, showingExplanation.toString());
+    localStorage.setItem(quizExplKey(chapter.id, mode), showingExplanation.toString());
   }, [showingExplanation, chapter.id, mode]);
 
   // ────────────────────────────────────────────────────────────────
@@ -641,7 +652,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   //   { [設問ID]: 消去した選択肢の配列 }
   //   選択肢そのものの文字列で持つ（並び替えや添字ズレに影響されないため）。
   const [eliminated, setEliminated] = useState<Record<string, string[]>>(() =>
-    parseStoredStringArrayRecord(localStorage.getItem(`quiz_elim_${chapter.id}_${mode}`)),
+    parseStoredStringArrayRecord(localStorage.getItem(quizElimKey(chapter.id, mode))),
   );
 
   // ★消去法の操作説明（タップで選択→斜線→…）は初回だけ表示する（ご要望）。
@@ -659,7 +670,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   };
 
   useEffect(() => {
-    localStorage.setItem(`quiz_elim_${chapter.id}_${mode}`, JSON.stringify(eliminated));
+    localStorage.setItem(quizElimKey(chapter.id, mode), JSON.stringify(eliminated));
   }, [eliminated, chapter.id, mode]);
 
   /** ある設問で、その選択肢が消去済みか。 */

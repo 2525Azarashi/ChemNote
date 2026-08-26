@@ -16,6 +16,13 @@ import { ListeningAudioPlayer } from './ListeningAudioPlayer';
 import type { ListeningAudioTrack } from '../data/englishListeningQ1AProblems';
 import { buildListeningRounds } from '../utils/listeningRounds';
 import { problemKey, readSolvedMap } from '../utils/progress';
+// 章 × モードごとの保存キー名は utils/quizStorageKeys.ts が唯一の定義
+import {
+  quizAnswersKey,
+  quizExplKey,
+  quizIndexKey,
+  quizRunKey,
+} from '../utils/quizStorageKeys';
 import { auth } from '../firebase';
 
 interface ChapterSelectionProps {
@@ -615,14 +622,14 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                 const hasQuestions = questions.length > 0;
                 const savedIndex = Math.max(0, Math.min(
                   questions.length - 1,
-                  parseInt(localStorage.getItem(`quiz_idx_${chapter.id}_${mode}`) || '0', 10) || 0
+                  parseInt(localStorage.getItem(quizIndexKey(chapter.id, mode)) || '0', 10) || 0
                 ));
                 const hasSavedProgress = hasQuestions && (
                   savedIndex > 0 ||
-                  localStorage.getItem(`quiz_expl_${chapter.id}_${mode}`) === 'true' ||
-                  !!localStorage.getItem(`quiz_run_${chapter.id}_${mode}`) ||
+                  localStorage.getItem(quizExplKey(chapter.id, mode)) === 'true' ||
+                  !!localStorage.getItem(quizRunKey(chapter.id, mode)) ||
                   (() => {
-                    try { return Object.keys(JSON.parse(localStorage.getItem(`quiz_answers_${chapter.id}_${mode}`) || '{}')).length > 0; }
+                    try { return Object.keys(JSON.parse(localStorage.getItem(quizAnswersKey(chapter.id, mode)) || '{}')).length > 0; }
                     catch { return false; }
                   })()
                 );

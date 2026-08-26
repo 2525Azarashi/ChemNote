@@ -351,8 +351,20 @@ describe('解答画面：消去法（選択肢を直接タップして斜線を�
     expect(QUIZ).toContain('const struck = isEliminated(sq.id, opt)');
   });
 
-  it('消去状態は端末に保存され、戻ってきても残る', () => {
-    expect(QUIZ).toContain('quiz_elim_');
+  it('消去状態は端末に保存され、戻ってきても残る', async () => {
+    // 以前は `expect(QUIZ).toContain('quiz_elim_')` だった。
+    // ところが Quiz.tsx には別物の 'quiz_elim_hint_seen'（操作説明を見たか）
+    // もあるので、保存キーを集約したあとでもこの文字列は残ってしまい、
+    // 「消去状態が保存されているか」を確かめられていない状態だった。
+    // 実際に使っているキー生成と、読み書き両方の存在で確認する。
+    expect(QUIZ).toContain('quizElimKey(chapter.id, mode)');
+    expect(QUIZ).toContain('localStorage.setItem(quizElimKey(chapter.id, mode)');
+    expect(QUIZ).toContain('localStorage.getItem(quizElimKey(chapter.id, mode))');
+
+    const { quizElimKey } = await import('../src/utils/quizStorageKeys');
+    expect(quizElimKey('q_el1_A', 'practice')).toBe('quiz_elim_q_el1_A_practice');
+    // 操作説明のキーとは別物であること
+    expect(quizElimKey('q_el1_A', 'practice')).not.toBe('quiz_elim_hint_seen');
   });
 });
 

@@ -41,6 +41,13 @@ import { ensureRankingEntry } from './utils/leaderboard';
 import { parseStoredStringRecord } from './utils/progress';
 // ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
 import { profileKey, completedKey } from './utils/userStorageKeys';
+// 章 × モードごとの保存キー名は utils/quizStorageKeys.ts が唯一の定義
+import {
+  quizAnswersKey,
+  quizRunKey,
+  quizExplKey,
+  quizIndexKey,
+} from './utils/quizStorageKeys';
 import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './utils/studySync';
 import { TeacherDashboard } from './components/TeacherDashboard';
 import { FeedbackAdminPanel } from './components/FeedbackAdminPanel';
@@ -645,10 +652,10 @@ export default function App() {
 
     if (!resume) {
       setQuizAnswers({});
-      localStorage.removeItem(`quiz_answers_${chapterId}_${appMode}`);
-      localStorage.removeItem(`quiz_run_${chapterId}_${appMode}`);
-      localStorage.removeItem(`quiz_expl_${chapterId}_${appMode}`);
-      localStorage.setItem(`quiz_idx_${chapterId}_${appMode}`, questionIndex.toString());
+      localStorage.removeItem(quizAnswersKey(chapterId, appMode));
+      localStorage.removeItem(quizRunKey(chapterId, appMode));
+      localStorage.removeItem(quizExplKey(chapterId, appMode));
+      localStorage.setItem(quizIndexKey(chapterId, appMode), questionIndex.toString());
     }
   };
 

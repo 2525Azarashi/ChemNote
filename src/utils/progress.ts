@@ -54,6 +54,8 @@
 import { safeLocalStorage } from './safeLocalStorage';
 // ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
 import { completedKey } from './userStorageKeys';
+// 章 × モードごとの旧キー名も utils/quizStorageKeys.ts が唯一の定義
+import { quizAnswersKey, quizRunKey } from './quizStorageKeys';
 
 export const SOLVED_KEY_PREFIX = 'solved_problems_v1_';
 
@@ -311,7 +313,7 @@ export function backfillLegacyProgress(
     LEGACY_MODES.forEach((mode) => {
       // ① 点数が残っている場合（最も正確）
       try {
-        const raw = ls.getItem(`quiz_run_${chapter.id}_${mode}`);
+        const raw = ls.getItem(quizRunKey(chapter.id, mode));
         if (raw) {
           const run = JSON.parse(raw);
           const perQuestion = run?.perQuestion || {};
@@ -326,7 +328,7 @@ export function backfillLegacyProgress(
 
       // ② 解答だけ残っている場合（点数不明なので「解答済み」を根拠にする）
       try {
-        const raw = ls.getItem(`quiz_answers_${chapter.id}_${mode}`);
+        const raw = ls.getItem(quizAnswersKey(chapter.id, mode));
         if (raw) {
           const answers = JSON.parse(raw);
           if (answers && typeof answers === 'object') {
