@@ -45,6 +45,7 @@
  *  ※ 配点は大問単位（A・B合計）で公表されるため、A/B に共通の値を持たせている。
  */
 
+import { countProblemsInChapters } from './problemCount';
 import { EL1_A_PROBLEMS } from './englishListeningQ1AProblems';
 import { EL1_A_EXTRA_PROBLEMS } from './englishListeningQ1ASets';
 import { EL1_B_PROBLEMS } from './englishListeningQ1BProblems';
@@ -324,9 +325,7 @@ export function getListeningStats() {
   const points = [...pointsByQuestion.values()].reduce((a, b) => a + b, 0);
   // マーク数は単元ごとに独立しているのでそのまま合計する
   const marks = chapters.reduce((sum, c) => sum + c.marks, 0);
-  const questions = chapters.reduce(
-    (sum, c) => sum + (c.practiceProblems?.length || 0) + (c.miniTest?.length || 0),
-    0,
-  );
+  // 大問の数え方（ミニテスト＋演習）は data/problemCount.ts に集約している
+  const questions = countProblemsInChapters(chapters);
   return { sections, units: chapters.length, points, marks, questions };
 }

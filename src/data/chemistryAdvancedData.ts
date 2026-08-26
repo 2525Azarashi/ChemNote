@@ -32,6 +32,7 @@
  *    接頭辞を分けることで化学基礎の既存データを一切汚染しない。
  */
 
+import { countProblemsInChapters } from './problemCount';
 import {
   a1_1Problems,
   a3_1Problems,
@@ -572,9 +573,7 @@ export function getAdvancedFieldStats(field: AdvancedFieldId) {
   const chapters = getAdvancedChapters(field);
   // 教科書の「章」の数（realTitle のユニーク数）
   const sections = new Set(chapters.map((c) => c.realTitle)).size;
-  const questions = chapters.reduce(
-    (sum, c) => sum + (c.practiceProblems?.length || 0) + (c.miniTest?.length || 0),
-    0,
-  );
+  // 大問の数え方（ミニテスト＋演習）は data/problemCount.ts に集約している
+  const questions = countProblemsInChapters(chapters);
   return { sections, units: chapters.length, questions };
 }

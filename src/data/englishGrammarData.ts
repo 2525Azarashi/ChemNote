@@ -68,6 +68,7 @@
  *   衝突しないよう `eg`（English Grammar）接頭辞。例）`eg1_1`
  */
 
+import { countProblemsInChapters } from './problemCount';
 import {
   egSvPatternProblems,
   egTenseProblems,
@@ -425,10 +426,8 @@ export function getAllGrammarChapters(): GrammarChapter[] {
  */
 export function getGrammarStats() {
   const chapters = getAllGrammarChapters();
-  const questions = chapters.reduce(
-    (sum, c) => sum + (c.practiceProblems?.length || 0) + (c.miniTest?.length || 0),
-    0,
-  );
+  // 大問の数え方（ミニテスト＋演習）は data/problemCount.ts に集約している
+  const questions = countProblemsInChapters(chapters);
   const marks = chapters.reduce(
     (sum, c) =>
       sum +

@@ -5,6 +5,8 @@ import { auth } from '../firebase';
 // どの教科があるか・教科ごとの章一覧は data/allChapters.ts に集約している
 // （以前はこのファイルで6教科ぶんを個別に import して手で並べていた）
 import { SUBJECTS, getChaptersOfSubject } from '../data/allChapters';
+// 「章に大問が何問あるか」の数え方は data/problemCount.ts に集約している
+import { countChapterProblems, countProblemsInChapters } from '../data/problemCount';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
@@ -72,11 +74,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   // 科目に応じて集計対象の章を切り替える（化学基礎の振る舞いは従来のまま）。
   // 未知の科目IDが来た場合は化学基礎の章が返る（従来の if 連鎖の既定分岐と同じ）。
   const allChaptersList = useMemo(() => getChaptersOfSubject(subject), [subject]);
-  const totalQuestions = useMemo(() => {
-    return allChaptersList.reduce((sum: number, c: any) => {
-      return sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0);
-    }, 0);
-  }, [allChaptersList]);
+  const totalQuestions = useMemo(() => countProblemsInChapters(allChaptersList), [allChaptersList]);
   const [solvedQuestions, setSolvedQuestions] = useState(0);
   /** 章ID → その章で解いた大問数（「次の章」の算出に使う） */
   const [solvedByChapter, setSolvedByChapter] = useState<Record<string, number>>({});
@@ -156,11 +154,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         // 科目ごとの進捗（教科別に「何問中何問」を並べて出すため）
         const perSubject: Record<string, { solved: number; total: number }> = {};
         subjectProgressDefs.forEach((def) => {
-          const total = def.chapters.reduce(
-            (sum: number, c: any) =>
-              sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0),
-            0,
-          );
+          const total = countProblemsInChapters(def.chapters);
           const solved = Math.min(
             countSolvedProblemsIn(uid, def.chapters.map((c: any) => c.id)),
             total,
@@ -194,7 +188,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   //   演習の進捗を反映しないため、台帳側の章ごと件数を併せて見る）
   const nextChapter = useMemo(() => {
     const remaining = allChaptersList.find((c: any) => {
-      const total = (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0);
+      const total = countChapterProblems(c);
       if (total === 0) return false;
       return (solvedByChapter[c.id] || 0) < total;
     }) as any;

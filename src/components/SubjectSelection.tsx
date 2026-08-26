@@ -55,6 +55,8 @@ import { getListeningStats } from '../data/englishListeningData';
 import { getMathStats } from '../data/mathData';
 import { getBiologyStats } from '../data/biologyBasicData';
 import { getGrammarStats } from '../data/englishGrammarData';
+// 「章に大問が何問あるか」の数え方は data/problemCount.ts に集約している
+import { countProblemsInChapters } from '../data/problemCount';
 
 /** アプリが扱う科目の識別子 */
 export type SubjectId =
@@ -152,21 +154,13 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
   /** 化学基礎の収録ボリューム（数字をハードコードせずデータから算出する） */
   const basicStats = useMemo(() => {
     const chapters = chemistryData.parts.flatMap((p: any) => p.chapters);
-    let questions = 0;
-    chapters.forEach((c: any) => {
-      questions += (c.practiceProblems || []).length + (c.miniTest || []).length;
-    });
-    return { chapters: chapters.length, questions };
+    return { chapters: chapters.length, questions: countProblemsInChapters(chapters) };
   }, []);
 
   /** 化学（発展）の収録ボリューム。問題は順次追加するため、単元数だけ先に表示する。 */
   const advancedStats = useMemo(() => {
     const chapters = getAllAdvancedChapters();
-    let questions = 0;
-    chapters.forEach((c) => {
-      questions += (c.practiceProblems || []).length + (c.miniTest || []).length;
-    });
-    return { chapters: chapters.length, questions };
+    return { chapters: chapters.length, questions: countProblemsInChapters(chapters) };
   }, []);
 
   /**

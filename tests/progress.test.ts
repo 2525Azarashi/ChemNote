@@ -316,13 +316,24 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
     );
   });
 
-  it('Home.tsx が大問ベースの分母（miniTest＋practiceProblems）を使っている', () => {
+  it('Home.tsx が大問ベースの分母（miniTest＋practiceProblems）を使っている', async () => {
     const src = readFileSync('src/components/Home.tsx', 'utf8');
     expect(src).toContain("from '../utils/progress'");
     // 科目ごとに数える版を使う（全科目合計の countSolvedProblems ではない）
     expect(src).toContain('countSolvedProblemsIn');
     expect(src).toContain('backfillLegacyProgress');
-    expect(src).toContain('c.practiceProblems?.length');
+
+    // 分母を数える式そのものは data/problemCount.ts に集約したため、
+    // 「Home.tsx に c.practiceProblems?.length と書いてあるか」という
+    // 文字列検査では意図（＝分母が「ミニテスト＋演習」であること）を守れなくなった。
+    // 代わりに (1) Home.tsx がその共通関数を使っていること、
+    //         (2) その共通関数が実際に両方を足していること、の2点を見る。
+    expect(src).toContain('countProblemsInChapters');
+    const { countChapterProblems } = await import('../src/data/problemCount');
+    // ミニテストだけ・演習だけ・両方、いずれも正しく数えること
+    expect(countChapterProblems({ miniTest: [1, 2, 3] })).toBe(3);
+    expect(countChapterProblems({ practiceProblems: [1, 2] })).toBe(2);
+    expect(countChapterProblems({ miniTest: [1, 2, 3], practiceProblems: [1, 2] })).toBe(5);
 
     // 旧実装（mini_test の answers を数える）が残っていないこと
     expect(src).not.toContain('quiz_answers_${c.id}_mini_test');
