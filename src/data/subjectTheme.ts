@@ -32,6 +32,7 @@ export type TipSubject =
   | 'chemistry_basic'
   | 'chemistry'
   | 'english_listening'
+  | 'english_grammar'
   | 'math'
   | 'biology_basic';
 
@@ -123,6 +124,21 @@ const THEMES: Record<TipSubject, SubjectTheme> = {
     chipTextClass: 'text-[#2F7C74]',
     chipBgClass: 'bg-[#A9E0D8]/35',
     progressBarClass: 'bg-[#5BC0BE]',
+  },
+  // 英文法：同じ英語でもリスニング（ミント）と見違えられないと困るので、
+  // 色相を大きく隢して温色の琥痈（アンバー）にする。
+  // 既存 5 色（ローズ・ブルー・インディゴ・オリーブ・ミント）のどれとも衝突しない。
+  english_grammar: {
+    label: '英文法',
+    accent: '#C77B3C',
+    accentSoft: '#EFD3B4',
+    surface: '#FDF8F2',
+    bubbleBorderClass: 'border-[#EFD3B4]/80',
+    bubbleBgClass: 'bg-[#FFFBF6]/95',
+    bubbleShadow: '0 10px 24px -14px rgba(199,123,60,0.55)',
+    chipTextClass: 'text-[#9D5C24]',
+    chipBgClass: 'bg-[#EFD3B4]/35',
+    progressBarClass: 'bg-[#D9975A]',
   },
 };
 

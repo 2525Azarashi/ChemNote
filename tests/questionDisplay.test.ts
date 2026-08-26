@@ -29,6 +29,8 @@ import {
   buildSubQuestionList,
   joinMarker,
   resolveAnswerMarkers,
+  isSubQuestionListRedundant,
+  extractInlineQuestionRows,
 } from '../src/utils/questionDisplay';
 
 const card = (label: string, index = 0) => answerCardMarker({ label }, index);
@@ -334,5 +336,202 @@ describe('実データ：同じ問題内でマーカーが重複しない', () =
       });
     }
     expect(dupes).toEqual([]);
+  });
+});
+
+/**
+ * =====================================================================
+ * 設問一覧が問題文の丸写しになっている問題を見分ける
+ * =====================================================================
+ * ご要望（原文）：
+ *   > 数学の問題でさ、設問一覧と問題が同じなので、同じやつはもう設問一覧いらない
+ *
+ * ■ なぜ「数学なら消す」にしないのか
+ *   ご指摘のとおり「問題によって作りが違う」ので、科目で決め打ちすると壊れる。
+ *   全306問を実測すると、重複の有無は科目では決まらなかった。
+ *     ・数学にも重複しない問題が 6 件（消すと設問が読めなくなる）
+ *     ・化学基礎にも完全重複が 30 件（消して良い）
+ *     ・最も危険なのは「一部だけ重複」41 件
+ *       → 一覧ごと消すと、問題文に載っていない設問が読めなくなる
+ *
+ * ■ 守りたい不変条件
+ *   「1項目でも問題文に見つからなければ一覧を残す」＝ 安全側に倒す。
+ *   情報が消えるより、少し重複して表示されるほうが害が小さい。
+ */
+describe('isSubQuestionListRedundant: 一覧が問題文の繰り返しか', () => {
+  it('全項目が問題文にそのまま並んでいれば省略できる（数学の典型）', () => {
+    // mathData の実データと同じ形。label が問題文の行そのもの。
+    const q = {
+      text: '次の不定積分を求めよ。積分定数は C とする。\n\n（1）∫ x^4 dx\n（2）∫ 1/x^3 dx\n（3）∫ √x dx',
+      subQuestions: [
+        { label: '（1）∫ x^4 dx' },
+        { label: '（2）∫ 1/x^3 dx' },
+        { label: '（3）∫ √x dx' },
+      ],
+    };
+    expect(isSubQuestionListRedundant(q)).toBe(true);
+  });
+
+  it('★1項目でも問題文に無ければ残す★（情報が消えるのを防ぐ）', () => {
+    const q = {
+      text: '次の不定積分を求めよ。\n\n（1）∫ x^4 dx\n（2）∫ 1/x^3 dx',
+      subQuestions: [
+        { label: '（1）∫ x^4 dx' },
+        { label: '（2）∫ 1/x^3 dx' },
+        // ↓ 問題文に載っていない設問。ここが消えると解けなくなる。
+        { label: '（3）上の結果を使って面積を求めよ' },
+      ],
+    };
+    expect(isSubQuestionListRedundant(q)).toBe(false);
+  });
+
+  it('本文が1〜2文字でも「マーカー＋本文」で並んでいれば省略できる', () => {
+    // 化学基礎の分類問題（p_c1_1_2 と同じ形）。
+    // 本文だけだと "水" が "水溶液" 等に偶然当たるので、
+    // マーカーと連続しているかで判定する。
+    const q = {
+      text: '問2 次の物質を分類しなさい。\n\n（1） 酸素　　（2） 海水　　（3） 水',
+      subQuestions: [
+        { label: '（1） 酸素' },
+        { label: '（2） 海水' },
+        { label: '（3） 水' },
+      ],
+    };
+    expect(isSubQuestionListRedundant(q)).toBe(true);
+  });
+
+  it('★短い本文が偶然一致しただけでは省略しない★', () => {
+    // "水" はリード文の "水溶液" に含まれるが、"(1)水" の並びは無い。
+    // ここで true になってしまうと、設問が読めない問題が生まれる。
+    const q = {
+      text: '水溶液について答えよ。酸素と海水についても考える。',
+      subQuestions: [
+        { label: '（1） 水' },
+        { label: '（2） 酸素' },
+      ],
+    };
+    expect(isSubQuestionListRedundant(q)).toBe(false);
+  });
+
+  it('全角・半角の括弧と空白の違いは吸収する', () => {
+    const q = {
+      text: '次を求めよ。\n\n(1)∫x^4dx\n(2)∫1/x^3dx',
+      subQuestions: [
+        { label: '（1） ∫ x^4 dx' },   // 全角括弧＋空白あり
+        { label: '（2） ∫ 1/x^3 dx' },
+      ],
+    };
+    expect(isSubQuestionListRedundant(q)).toBe(true);
+  });
+
+  it('設問一覧が空、または問題文が空なら false（判定対象外）', () => {
+    // マーカーのみのラベル（リード文中の空欄）は一覧に載らない。
+    expect(isSubQuestionListRedundant({ text: 'なにか', subQuestions: [{ label: '(ア)' }] })).toBe(false);
+    expect(isSubQuestionListRedundant({ text: '', subQuestions: [{ label: '(1) あいうえお' }] })).toBe(false);
+    expect(isSubQuestionListRedundant({})).toBe(false);
+    expect(isSubQuestionListRedundant(null)).toBe(false);
+  });
+});
+
+/**
+ * extractInlineQuestionRows — 小問行の横並び（スマホのみ）
+ *
+ * ■ 背景
+ *   ご要望(8)「(1)から4問縦書きになってるけど、横書きにしたら
+ *   1画面に収まるくない？」
+ *
+ * ■ ここで守りたいこと（ご注意(9) への対応）
+ *   「化学基礎とかは問題によって問題文の長さが違うから、コードで
+ *     形式的に作ると問題によっておかしくなる可能性がある」
+ *
+ *   そこで「数学なら横並び」という科目での決め打ちを禁止し、
+ *   その問題自身が短いときだけ横並びにする。長い問題／表を含む問題／
+ *   小問が多い問題では null を返し、従来の縦積みに必ず戻ることを固定する。
+ */
+describe('extractInlineQuestionRows（スマホの小問横並び）', () => {
+  it('数学の実データ（4問・最長10字）は横並びできる', () => {
+    const got = extractInlineQuestionRows(
+      '次の不定積分を求めよ。積分定数は C とする。\n(1) ∫ x^4 dx\n(2) ∫ 1/x^3 dx\n(3) ∫ √x dx\n(4) ∫ 1/√x dx'
+    );
+    expect(got).not.toBeNull();
+    expect(got!.lead).toBe('次の不定積分を求めよ。積分定数は C とする。');
+    expect(got!.rows).toHaveLength(4);
+    expect(got!.rows[0]).toEqual({ marker: '(1)', body: '∫ x^4 dx' });
+    expect(got!.rows[3]).toEqual({ marker: '(4)', body: '∫ 1/√x dx' });
+  });
+
+  it('★化学基礎の長い小問（157字）は横並びにしない＝縦積みのまま', () => {
+    // 実データ p_c5_5_2 相当。形式的に横並びにすると崩れるケース。
+    const long =
+      '標準状態において2.24Lのアンモニアを水に溶かして全体を500mLとした。' +
+      'この水溶液から20mLを正確に量りとった。これを完全に中和するのに必要な' +
+      ' 0.10mol/L の塩酸は何mLか。ここでは十分に長い本文であることが重要である。';
+    expect(long.length).toBeGreaterThan(20);
+    expect(extractInlineQuestionRows(`次の問いに答えよ。\n(1) ${long}\n(2) ${long}`)).toBeNull();
+  });
+
+  it('★科目では決めない：短い化学の小問は横並びできる', () => {
+    // 実データ q_c2_4_7 相当（"F > O > N > C" など 16 字）。
+    const got = extractInlineQuestionRows(
+      '次の各組を大きい順に並べよ。\n(1) F > O > N > C\n(2) Li > Be > B > C\n(3) K > Na > Li > H'
+    );
+    expect(got).not.toBeNull();
+    expect(got!.rows).toHaveLength(3);
+    expect(got!.rows[1].body).toBe('Li > Be > B > C');
+  });
+
+  it('小問が5本以上なら横並びにしない（2列でも3段になり効果が薄い）', () => {
+    const text = '次を答えよ。\n' + [1, 2, 3, 4, 5].map(i => `(${i}) x^${i}`).join('\n');
+    expect(extractInlineQuestionRows(text)).toBeNull();
+  });
+
+  it('小問が1本だけなら横並びにしない（並べる意味がない）', () => {
+    expect(extractInlineQuestionRows('次を答えよ。\n(1) ∫ x dx')).toBeNull();
+  });
+
+  it('小問の間に地の文が挟まる問題は横並びにしない（読み順が壊れる）', () => {
+    // 実データ p_c5_6_3 のような「操作(i)…説明…操作(ii)」型。
+    expect(
+      extractInlineQuestionRows('実験を行った。\n(1) 短い操作\nこのとき溶液は白濁した。\n(2) 別の操作')
+    ).toBeNull();
+  });
+
+  it('Markdown 表を含む問題は横並びにしない（表は横幅を必要とする）', () => {
+    expect(
+      extractInlineQuestionRows('表を見よ。\n| a | b |\n| - | - |\n(1) 短い\n(2) 短い')
+    ).toBeNull();
+  });
+
+  it('本文が空（マーカーだけ）の行があれば横並びにしない', () => {
+    expect(extractInlineQuestionRows('次を答えよ。\n(1)\n(2) ∫ x dx')).toBeNull();
+  });
+
+  it('全角括弧・①・問N のマーカーも認識する', () => {
+    const zen = extractInlineQuestionRows('次を答えよ。\n（1） ∫ x dx\n（2） ∫ y dy');
+    expect(zen!.rows.map(r => r.body)).toEqual(['∫ x dx', '∫ y dy']);
+    const maru = extractInlineQuestionRows('次を答えよ。\n① ∫ x dx\n② ∫ y dy');
+    expect(maru!.rows.map(r => r.marker)).toEqual(['①', '②']);
+    const mon = extractInlineQuestionRows('次を答えよ。\n問1 ∫ x dx\n問2 ∫ y dy');
+    expect(mon!.rows.map(r => r.body)).toEqual(['∫ x dx', '∫ y dy']);
+  });
+
+  it('リード文が無い（小問だけの）問題でも横並びできる', () => {
+    const got = extractInlineQuestionRows('(1) ∫ x dx\n(2) ∫ y dy');
+    expect(got).not.toBeNull();
+    expect(got!.lead).toBe('');
+    expect(got!.rows).toHaveLength(2);
+  });
+
+  it('空文字・空白のみ・null 相当は null（安全側）', () => {
+    expect(extractInlineQuestionRows('')).toBeNull();
+    expect(extractInlineQuestionRows('   \n  ')).toBeNull();
+    expect(extractInlineQuestionRows(undefined as any)).toBeNull();
+  });
+
+  it('境界値：本文20字は横並び、21字は縦積み', () => {
+    const b20 = 'あ'.repeat(20);
+    const b21 = 'あ'.repeat(21);
+    expect(extractInlineQuestionRows(`リード\n(1) ${b20}\n(2) ${b20}`)).not.toBeNull();
+    expect(extractInlineQuestionRows(`リード\n(1) ${b20}\n(2) ${b21}`)).toBeNull();
   });
 });

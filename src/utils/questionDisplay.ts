@@ -246,3 +246,200 @@ export function buildSubQuestionList(question: any): { marker: string; body: str
 
   return list;
 }
+
+/**
+ * 「設問一覧」が問題文の丸写しになっているかを判定する。
+ *
+ * ご要望（原文）：
+ *   > 数学の問題でさ、設問一覧と問題が同じなので、同じやつはもう設問一覧いらない
+ *
+ * ■ なぜ「数学なら消す」という実装にしないのか
+ *   ご指摘のとおり、問題によって作りが違うので科目で決め打ちすると壊れる。
+ *   実際に全306問を走査して数えると、重複の有無は科目では決まらなかった。
+ *
+ *     科目        問題数  一覧なし  完全重複  一部重複  重複なし
+ *     化学基礎     153      7        30       24       92
+ *     化学(発展)    20     12         1        1        6
+ *     数学          65      0        43       16        6
+ *     生物基礎      24     23         0        1        0
+ *
+ *   ・数学にも「重複していない」問題が 6 件ある（消すと設問が読めなくなる）
+ *   ・化学基礎にも「完全に重複している」問題が 30 件ある（消して良い）
+ *   ・そして最も危険なのが「一部重複」41 件。
+ *     一覧の一部だけが問題文にあるので、一覧ごと消すと
+ *     問題文に載っていない設問が完全に読めなくなる。
+ *
+ * ■ 判定ルール
+ *   「一覧のすべての項目が問題文の中に見つかるときだけ」冗長とみなす。
+ *   1 項目でも問題文に無ければ false（＝一覧を残す）＝安全側に倒す。
+ *
+ *   比較は表記ゆれを吸収するため
+ *     ・空白（全角/半角/改行）を除去
+ *     ・全角括弧 （） を半角 () に寄せる
+ *   の正規化をしてから包含判定する。
+ *   例）問題文 "（1）∫ x^4 dx" と ラベル "（1）∫ x^4 dx" は一致し、
+ *       "(1)∫x^4dx" として突き合わせる。
+ *
+ * @returns true = 一覧は問題文の繰り返しなので省略して良い
+ */
+export function isSubQuestionListRedundant(question: any): boolean {
+  const list = buildSubQuestionList(question);
+  // 一覧が空なら「省略する/しない」を語る意味が無い（呼び出し側も描画しない）
+  if (list.length === 0) return false;
+
+  const text = normalizeForDuplicateCheck(String(question?.text || ''));
+  if (!text) return false;
+
+  return list.every(item => {
+    const body = normalizeForDuplicateCheck(item.body);
+    // 本文が無い（マーカーだけの）項目は判定材料にならないので
+    // 「重複している」側に数える（残す理由にはならない）。
+    if (!body) return true;
+
+    // 判定1：本文が十分に長ければ、本文だけで照合する。
+    //   マーカーの採番が問題文と一覧でずれている場合（自動採番など）でも
+    //   拾えるので、こちらを先に見る。
+    if (body.length >= MIN_BODY_LEN_FOR_TEXT_ONLY_MATCH && text.includes(body)) return true;
+
+    // 判定2：短い本文は「マーカー＋本文」の並びで照合する。
+    //   本文だけで照合すると偶然の一致が起きるため。
+    //     例) 分類問題の選択肢 "水" は、リード文の "水溶液" にも当たってしまう。
+    //   一方 "(11)水" のような並びは、問題文中の該当行にしか現れない。
+    //   これにより、元素記号 (Li/Na/K…) や 1文字の物質名だけが並ぶ
+    //   分類・暗記系の問題（化学基礎に多い）も正しく重複と判定できる。
+    const marker = normalizeForDuplicateCheck(item.marker);
+    if (marker && text.includes(marker + body)) return true;
+
+    // どちらでも見つからない項目が1つでもあれば「一覧を残す」。
+    return false;
+  });
+}
+
+/**
+ * 本文だけで重複照合してよい最小文字数。
+ * これより短い本文は「マーカー＋本文」の並びでのみ一致を認める。
+ */
+const MIN_BODY_LEN_FOR_TEXT_ONLY_MATCH = 3;
+
+/** 重複判定用の正規化（空白除去＋全角括弧を半角へ） */
+function normalizeForDuplicateCheck(s: string): string {
+  return String(s || '')
+    .replace(/\s+/gu, '')
+    .replace(/[（]/gu, '(')
+    .replace(/[）]/gu, ')');
+}
+
+/* ===========================================================================
+ * 小問行の横並び（スマホのみ）
+ * ===========================================================================
+ * ご要望(8)：
+ *   「(1)から4問縦書きになってるけど、横書きにしたら1画面に収まるくない？」
+ *
+ * ご注意(9)：
+ *   「特に化学基礎とかは問題によって、問題文の長さが違うから、コードで
+ *     形式的に作ると問題によっておかしくなる可能性があるから注意ね。」
+ *
+ * ■ なぜ「数学なら横並び」にしないのか
+ *   横並びが成立するのは「小問の本文が数式のように短い」ときだけで、
+ *   これは科目では決まらない。全 262 問を実測した結果が下表：
+ *
+ *     行頭マーカー（(1)/(ア)/①/問1）を持つ行の「本文の最大文字数」
+ *     ─────────────────────────────────────────────
+ *       数学      … 10〜22 文字（∫ x^4 dx など）
+ *       化学基礎  … 最大 157 文字（p_c5_5_2 の計算問題）
+ *       化学発展  … ほぼ全問 40 文字超
+ *
+ *   つまり「数学だから横並び」にすると化学基礎の 157 文字の小問まで
+ *   横に並べようとして崩れる。逆に「化学だから縦」にすると
+ *   q_c2_4_7（"F > O > N > C" など 16 文字）を縦に積んで損をする。
+ *   そこで判定は科目ではなく **その問題自身の形** で行う。
+ *
+ * ■ 判定条件（すべて満たしたときだけ横並び）
+ *   1. 問題文に Markdown 表（|）を含まない
+ *      … 表は横幅を必要とするので分割してはいけない
+ *   2. マーカー行が 2〜4 本
+ *      … 1 本なら並べる意味がない。5 本以上は 2 列でも 3 段になり効果が薄い
+ *   3. マーカー行が「問題文の末尾に連続して」並んでいる
+ *      … 間に地の文が挟まる問題（例：p_c5_6_3）を横並びにすると
+ *        読み順が壊れる。リード文＋小問リストという形だけを対象にする
+ *   4. すべての本文が 1 文字以上、かつ 20 文字以下
+ *      … 20 文字は 2 列（≒画面幅の半分＝約 170px）に 1〜2 行で収まる上限
+ *
+ *   実測結果：21 問が該当（数学 20 問／化学基礎 1 問）。
+ *   除外理由の内訳は マーカー行<2:115、本文が長い:68、マーカー行>4:37、
+ *   末尾に連続していない:15、表を含む:6。
+ *
+ * ■ 崩れないための二重の安全網
+ *   ・上記 4 条件で「短いことが確認できた問題」だけを対象にする（この関数）
+ *   ・描画側は grid ではなく flex-wrap を使い、万一 1 項目が想定より
+ *     長くなっても行が折り返すだけで、はみ出しや文字切れにならない
+ *
+ * ■ PC は対象外
+ *   呼び出し側でスマホ幅のときだけ適用する。PC の見た目は一切変えない。
+ */
+
+/** 行頭の小問マーカー：(1) (ア) (a) ① 問1 など */
+const LEADING_MARKER_RE =
+  /^\s*(?:[（(]\s*(?:[0-9０-９]{1,2}|[ア-ンa-zA-Zａ-ｚＡ-Ｚ])\s*[)）]|[①-⑳]|問\s*[0-9０-９]{1,2})\s*/u;
+
+/** 横並びを許す小問の本数の下限・上限 */
+const INLINE_ROWS_MIN = 2;
+const INLINE_ROWS_MAX = 4;
+/** 横並びを許す本文の最大文字数（2 列に 1〜2 行で収まる上限） */
+const INLINE_BODY_MAX_LEN = 20;
+
+export interface InlineQuestionRow {
+  /** 行頭のマーカー（"(1)" など）。無い場合は空文字 */
+  marker: string;
+  /** マーカーを除いた本文 */
+  body: string;
+}
+
+export interface InlineQuestionRows {
+  /** マーカー行より前の地の文（リード文）。無ければ空文字 */
+  lead: string;
+  /** 横並びにする小問行 */
+  rows: InlineQuestionRow[];
+}
+
+/**
+ * 問題文を「リード文＋横並びにできる小問行」に分解できるか判定する。
+ *
+ * 横並びの条件を満たさない問題では null を返すので、呼び出し側は
+ * 従来どおりの縦積み描画にフォールバックすればよい（安全側）。
+ */
+export function extractInlineQuestionRows(text: string): InlineQuestionRows | null {
+  const raw = String(text || '');
+  if (!raw.trim()) return null;
+  // 条件1：表を含む問題は対象外（表は横幅を必要とする）
+  if (raw.includes('|')) return null;
+
+  const lines = raw.split(/\n/u).map(s => s.trim()).filter(Boolean);
+  if (lines.length < INLINE_ROWS_MIN) return null;
+
+  const markedIdx = lines
+    .map((line, i) => (LEADING_MARKER_RE.test(line) ? i : -1))
+    .filter(i => i >= 0);
+
+  // 条件2：マーカー行が 2〜4 本
+  if (markedIdx.length < INLINE_ROWS_MIN || markedIdx.length > INLINE_ROWS_MAX) return null;
+
+  // 条件3：末尾に連続して並んでいる（間に地の文が挟まらない）
+  const last = markedIdx[markedIdx.length - 1];
+  const isContiguousTail =
+    last === lines.length - 1 && markedIdx.every((v, k) => v === markedIdx[0] + k);
+  if (!isContiguousTail) return null;
+
+  const rows: InlineQuestionRow[] = [];
+  for (const i of markedIdx) {
+    const line = lines[i];
+    const marker = (line.match(LEADING_MARKER_RE)?.[0] ?? '').trim();
+    const body = line.replace(LEADING_MARKER_RE, '').trim();
+    // 条件4：本文が空でなく、かつ十分に短い
+    if (!body || body.length > INLINE_BODY_MAX_LEN) return null;
+    rows.push({ marker, body });
+  }
+
+  const lead = lines.slice(0, markedIdx[0]).join('\n');
+  return { lead, rows };
+}

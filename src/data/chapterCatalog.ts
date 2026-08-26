@@ -31,12 +31,14 @@ import { chemistryAdvancedData } from './chemistryAdvancedData';
 import { englishListeningData } from './englishListeningData';
 import { mathData } from './mathData';
 import { biologyBasicData } from './biologyBasicData';
+import { englishGrammarData } from './englishGrammarData';
 import type { ChapterDefinition } from '../utils/studySummary';
 
 export type CatalogSubject =
   | 'chemistry_basic'
   | 'chemistry'
   | 'english_listening'
+  | 'english_grammar'
   | 'math'
   | 'biology_basic';
 
@@ -45,6 +47,7 @@ export const SUBJECT_LABELS: Record<CatalogSubject, string> = {
   chemistry_basic: '化学基礎',
   chemistry: '化学',
   english_listening: '英語リスニング',
+  english_grammar: '英文法',
   math: '数学',
   biology_basic: '生物基礎',
 };
@@ -110,6 +113,9 @@ export function getChapterCatalog(subject: CatalogSubject): ChapterDefinition[] 
       break;
     case 'biology_basic':
       rows = toDefinitions(biologyBasicData.parts as unknown as RawPart[]);
+      break;
+    case 'english_grammar':
+      rows = toDefinitions(englishGrammarData.parts as unknown as RawPart[]);
       break;
     case 'chemistry_basic':
     default:

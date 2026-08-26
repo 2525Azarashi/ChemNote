@@ -86,7 +86,10 @@ export function DoorMascot({
   return (
     <div className={`flex items-end gap-3 min-w-0 ${showSpeech ? 'w-full' : ''} ${className}`}>
       {/* マスコット画像：用途に応じて通常／ミニ表示を選べる */}
-      <div className={`relative shrink-0 flex items-end justify-center ${size === 'mini' ? 'w-11 h-12' : 'w-20 h-24 sm:w-24 sm:h-28'}`}>
+      {/* スマホでは通常サイズも一段小さくする（w-20 h-24 → w-14 h-16）。
+          ホームを1画面に収めるうえで、この画像が最も背の高い要素だった。
+          sm 以上（タブレット・PC）は従来サイズのままにする。 */}
+      <div className={`relative shrink-0 flex items-end justify-center ${size === 'mini' ? 'w-11 h-12' : 'w-14 h-16 sm:w-24 sm:h-28'}`}>
         <img
           src={mascot.src}
           alt={mascot.label}
@@ -97,7 +100,7 @@ export function DoorMascot({
       {showSpeech && tip && (
         // 吹き出しは残り幅いっぱいに広がり（flex-1 + min-w-0）、横はみ出し・テキスト切れを防ぐ
         <div
-          className={`relative ${theme.bubbleBgClass} border ${theme.bubbleBorderClass} rounded-2xl px-4 py-3 flex-1 min-w-0 mb-1`}
+          className={`relative ${theme.bubbleBgClass} border ${theme.bubbleBorderClass} rounded-2xl px-3 py-2 sm:px-4 sm:py-3 flex-1 min-w-0 mb-1`}
           style={{ boxShadow: theme.bubbleShadow }}
         >
           {/* 吹き出しの三角（左向き、マスコット側を指す） */}
@@ -110,7 +113,7 @@ export function DoorMascot({
               <span>{category.label}</span>
             </span>
           )}
-          <p className="text-[11px] sm:text-xs leading-relaxed text-[#2C3E50] font-bold font-handwriting break-words">{tip.text}</p>
+          <p className="text-[11px] sm:text-xs leading-snug sm:leading-relaxed text-[#2C3E50] font-bold font-handwriting break-words">{tip.text}</p>
         </div>
       )}
     </div>

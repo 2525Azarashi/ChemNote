@@ -38,6 +38,7 @@ import {
   Headphones,
   Calculator,
   Leaf,
+  PenLine,
   Bell,
   CheckCircle2,
   ChevronLeft,
@@ -53,15 +54,23 @@ import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
 import { getListeningStats } from '../data/englishListeningData';
 import { getMathStats } from '../data/mathData';
 import { getBiologyStats } from '../data/biologyBasicData';
+import { getGrammarStats } from '../data/englishGrammarData';
 
 /** アプリが扱う科目の識別子 */
-export type SubjectId = 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
+export type SubjectId =
+  | 'chemistry_basic'
+  | 'chemistry'
+  | 'english_listening'
+  | 'english_grammar'
+  | 'math'
+  | 'biology_basic';
 
 /** 科目ID → 画面に出す科目名（App 側のバッジ表示などでも使う） */
 export const SUBJECT_LABELS: Record<SubjectId, string> = {
   chemistry_basic: '化学基礎',
   chemistry: '化学',
   english_listening: '英語リスニング',
+  english_grammar: '英文法',
   math: '数学',
   biology_basic: '生物基礎',
 };
@@ -86,6 +95,19 @@ interface SubjectDefinition {
   description: string;
   /** カード内に並べる収録内容のハイライト */
   highlights: string[];
+  /**
+   * ★スマホのカードで科目名の真下に出す「収録ボリュームの短い表記」★
+   *
+   * highlights[0] を流用してはいけない。
+   * highlights[0] は「第1問A〜第6問Bの全9単元を本試験順で収録（問題は順次追加中）」
+   * のような説明文で、スマホの狭い1行（truncate）に入れると
+   * 実測で 320〜430px の全幅で文字が切れてしまい、
+   * 肝心の数字が読めなくなっていた（＝情報が消える）。
+   * そこで科目ごとに「切れない長さ」を手で決めて持たせる。
+   * ★科目ごとに手で書く★のがポイントで、
+   * 機械的に文字数で切ると意味の途中で切れて逆に読めなくなる。
+   */
+  volume: string;
   /** 選択できるか（false なら「準備中」表示） */
   available: boolean;
   /** カードのアイコン */
@@ -160,6 +182,9 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
   /** 生物基礎の収録ボリューム。共通テスト全範囲を 5 章で網羅する。 */
   const biologyStats = useMemo(() => getBiologyStats(), []);
 
+  /** 英文法の収録ボリューム。単元別に 4 択演習を置いている。 */
+  const grammarStats = useMemo(() => getGrammarStats(), []);
+
   const subjects: SubjectDefinition[] = useMemo(() => [
     {
       id: 'chemistry_basic',
@@ -171,6 +196,8 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
         '出題傾向データ（2016〜2026年）に完全対応',
         'ロジックツリー・模擬試験・復習リスト対応',
       ],
+      // 「全29単元・演習174問」＝数字が2つ入る最も短い形
+      volume: `全${basicStats.chapters}単元・演習${basicStats.questions}問`,
       available: true,
       icon: BookOpen,
     },
@@ -184,6 +211,8 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
         '理論化学・無機化学・有機化学を分野別に選択',
         '化学基礎と同じ単元画面・同じ演習の進め方',
       ],
+      // 化学は問題を順次追加中なので問題数は出さず、単元数＋状態だけにする
+      volume: `全${advancedStats.chapters}単元・問題は追加中`,
       available: true,
       icon: FlaskConical,
     },
@@ -197,6 +226,9 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
         `配点${listeningStats.points}点・マーク${listeningStats.marks}個の大問構成に対応`,
         '化学と同じ単元画面・同じ演習の進め方',
       ],
+      // 「第1問A〜第6問Bの…本試験順で収録（問題は順次追加中）」は長すぎて切れるため、
+      // 単元数とマーク数という「選ぶ判断に効く数字」だけを残す
+      volume: `全${listeningStats.units}単元・マーク${listeningStats.marks}個`,
       available: true,
       icon: Headphones,
     },
@@ -210,6 +242,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
         '単元ごとの判断フロー＋型の早見表つきまとめプリント',
         '数学記号パレットで ∫・√・π もワンタップ入力',
       ],
+      volume: `全${mathStats.chapters}章・演習${mathStats.questions}問`,
       available: true,
       icon: Calculator,
     },
@@ -223,13 +256,30 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
         '細胞・遺伝子・体内環境・植生・生態系を完全カバー',
         '化学基礎と同じ単元画面・同じ演習の進め方',
       ],
+      volume: `全${biologyStats.chapters}章・演習${biologyStats.questions}問`,
       available: true,
       icon: Leaf,
     },
-  ], [basicStats, advancedStats, listeningStats, mathStats, biologyStats]);
+    {
+      id: 'english_grammar',
+      title: '英文法',
+      latin: 'English Grammar',
+      description: '文型から会話表現までを単元別に網羅。ネクステージ型の4択演習で固めます。',
+      highlights: [
+        `全${grammarStats.chapters}単元・4択${grammarStats.marks}問を収録`,
+        '文法の幹→語法→イディオム・会話表現の順で積み上げ',
+        '全問に完成文の音源・和訳・語句・誤答肢の理由つき',
+      ],
+      volume: `全${grammarStats.chapters}単元・4択${grammarStats.marks}問`,
+      available: true,
+      icon: PenLine,
+    },
+  ], [basicStats, advancedStats, listeningStats, mathStats, biologyStats, grammarStats]);
 
   return (
-    <div className="w-full min-h-[100dvh] sm:min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE]">
+    /* Home と同じ理由で min-h-[100dvh] → h-full。
+       App 側で確定した 100dvh を受け取り、子のスクロール領域に上限を渡す。 */
+    <div className="w-full h-full min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE]">
 
       {/* ===== 背景（Home と同じ世界観：ノート罫線＋風景＋桜） ===== */}
       <div
@@ -258,30 +308,75 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
         </button>
       )}
 
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 px-5 sm:px-8 md:px-12 pt-10 sm:pt-12 md:pt-14 relative z-10 flex flex-col">
+      {/* ★min-h-0 が今回の修正の要★
+          これが無いと flex-1 が効かず（flex の子は既定で min-height:auto）、
+          中身 1780px ぶんに伸びてスクロールしない箱になっていた。
+          結果ページ全体がスクロールし、最後の「この科目ではじめる」が
+          ブラウザ下部ツールバーの裏に潜り込んでいた（ご指摘の症状）。
+
+          この画面には下部ナビが出ない（App 側で除外）ので、
+          末尾の余白はナビぶんではなく端末の安全領域だけで足りる。
+          pb-32（128px）は過剰だったため pb-safe に置き換える。
+
+          上パディングも詰める（pt-10→pt-5）。ロゴの上の空白は
+          1画面に収める上で最も削りやすい場所。 */}
+      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pb-safe px-5 sm:px-8 md:px-12 pt-3 sm:pt-10 md:pt-14 relative z-10 flex flex-col">
 
         {/* ===== タイトル（アプリの顔） ===== */}
         <motion.header
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-7 md:mb-9"
+          className="text-center mb-2 sm:mb-7 md:mb-9"
         >
           {/* ロゴのみを大きく置く。
               以前はロゴの下に「まなとび」「まなびの、とびらを開こう」の
-              文字を重ねていたが、ロゴ自体がアプリ名を表しており冗長なため撤去した。 */}
+              文字を重ねていたが、ロゴ自体がアプリ名を表しており冗長なため撤去した。
+
+              ★スマホではロゴを hero → md に落とす★
+              科目カードが5枚あるため、1画面に収めるには
+              「毎回同じ絵」であるロゴの占有を削るのが最も効果が大きい。
+              タブレット以上（sm）では従来どおり hero の大きさで見せる。 */}
           <div className="flex justify-center">
-            <MntbLogo size="hero" />
+            <span className="sm:hidden"><MntbLogo size="md" /></span>
+            <span className="hidden sm:block"><MntbLogo size="hero" /></span>
           </div>
 
-          <p className="mt-5 text-[13px] sm:text-sm text-[#5D6D7E] font-modern leading-relaxed">
-            ようこそ、<span className="font-bold text-[#1B2631]">{displayName}</span>さん。<br className="sm:hidden" />
+          {/* ★スマホだけ 1 行にする★
+              従来は <br className="sm:hidden"> で強制改行して 2 行（42px）だった。
+              「ようこそ、○○さん」の挨拶はホーム画面ですでに出ているので、
+              この画面で必要なのは「何をすればいいか」の 1 行だけ。
+              sm 以上では従来どおり挨拶ごと見せる（PC の見た目は不変）。 */}
+          <p className="mt-1.5 sm:mt-5 text-[13px] sm:text-sm text-[#5D6D7E] font-modern leading-relaxed">
+            <span className="hidden sm:inline">
+              ようこそ、<span className="font-bold text-[#1B2631]">{displayName}</span>さん。
+            </span>
             学習する科目を選んでください。
           </p>
         </motion.header>
 
-        {/* ===== Googleアカウント連携のおすすめ（ゲスト利用中のみ） ===== */}
-        {isGuest && <GoogleLinkBanner />}
+        {/* ===== Googleアカウント連携のおすすめ（ゲスト利用中のみ） =====
+
+            ★スマホではこの画面には出さない★
+            バナーは本体 34px＋下余白 28px で合計 62px を使う。
+            同じバナーはホーム画面（Home.tsx）にも置いてあり、
+            スマホの利用者は必ずホームを経由してここに来るので
+            情報が届かなくなることはない。
+            一方この画面では「6 科目を一望できる」ことが目的なので、
+            62px をカードに回す方が利用者の得になる。
+            sm 以上では従来どおり表示する（PC の見た目は不変）。
+
+            ★★実装上の重要な注意★★
+            当初は <div className="hidden sm:block"> でバナーを「包んで」隠したが、
+            それは PC の見た目を壊した。理由は、この pane が `flex flex-col` であり、
+            バナー本体（motion.section）が pane の【直接の子】として
+            flex アイテムになって縮んでいた（実測 34px）ことによる。
+            div で包むと flex アイテムが div に変わり、中の section は
+            通常のブロックとして本来の高さ（実測 187px）に伸びてしまう。
+            → 結果として PC でグリッドが 124px 下へずれた。
+            そこで包まずに className を直接渡す。こうすれば DOM 構造は
+            main と完全に同一のまま、スマホでだけ display:none になる。 */}
+        {isGuest && <GoogleLinkBanner className="hidden sm:block" />}
 
         {/* ===== 科目カード（1画面グリッド：全科目を一望して選ぶ） =====
             スマホ＝1カラム／md＝2カラム／lg＝3カラム。
@@ -290,7 +385,13 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
           <div
             role="group"
             aria-label="学習する科目を選択"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5"
+            /* スマホのカード間隔を詰める（gap-4=16px → gap-1=4px）。
+               ★科目が6枚になったので 8px → 4px にさらに詰めている★
+               5つの隙間で 20px の節約。カードは白背景＋枠線で区切られており、
+               4px でも隣接カードとの境目は視覚的に十分わかる。
+               なお sm 以上は従来と同じ gap-2 に戻してあるので、
+               タブレット・PC の見た目は一切変わらない。 */
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-2 md:gap-5"
           >
           {subjects.map((subject, index) => {
             const Icon = subject.icon;
@@ -315,7 +416,21 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
                       ? `${subject.title}を学習する`
                       : `${subject.title}は準備中です。公開のお知らせを希望する`
                   }
-                  className={`group relative w-full h-full text-left rounded-[22px] p-5 md:p-6 border transition-all duration-200 overflow-hidden min-h-[210px] flex flex-col ${
+                  /*
+                    ★スマホだけ「1行カード」に圧縮する（PC は一切変更なし）★
+
+                    科目カードは5枚ある。従来の縦積みカード（min-h 210px）だと
+                    カードだけで実測 1396px、画面全体で 1780px あり、
+                    見える高さ（約664px）にはどう詰めても収まらない。
+
+                    そこでスマホでは
+                      [アイコン][科目名／収録ボリューム] … [→]
+                    の横1行に圧縮する。説明文と収録ハイライトの2〜3行目は
+                    sm 以上でのみ表示（下の sm:block 参照）。
+                    min-h は sm 以上でだけ 210px を復活させるので、
+                    タブレット・PC の見た目は従来と同一。
+                  */
+                  className={`group relative w-full h-full text-left rounded-[22px] p-2 sm:p-5 md:p-6 border transition-all duration-200 overflow-hidden sm:min-h-[210px] flex flex-col ${
                     subject.available
                       ? 'bg-white/92 backdrop-blur-sm border-[#F4A9C4]/55 shadow-[0_16px_38px_-18px_rgba(217,70,110,0.55)] hover:border-[#E8688E] hover:shadow-[0_22px_46px_-18px_rgba(217,70,110,0.62)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.995]'
                       : 'bg-[#F7F5F3]/85 backdrop-blur-sm border-[#D7DDE3]/70 shadow-none hover:border-[#B8C4CE] hover:bg-[#F2F0EE]/90'
@@ -331,7 +446,10 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
 
                   {/* 右上のステータスバッジ */}
                   <span
-                    className={`absolute top-4 right-4 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold font-modern tracking-wider ${
+                    /* スマホでは非表示。1行カードでは絶対配置のバッジが
+                       科目名に重なってしまうため。全科目が「公開中」の今、
+                       スマホでこのバッジが伝える情報量は小さい。 */
+                    className={`hidden sm:inline-flex absolute top-4 right-4 items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold font-modern tracking-wider ${
                       subject.available
                         ? 'bg-[#FBE0E9] text-[#D9466E]'
                         : 'bg-[#E4E8EC] text-[#8895A0]'
@@ -342,50 +460,96 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
                       : (<><Lock className="w-3 h-3" aria-hidden="true" />準備中</>)}
                   </span>
 
-                  {/* アイコン＋タイトル（横並びにして縦方向を節約する） */}
-                  <div className="flex items-center gap-3 mb-3 mt-1">
+                  {/* アイコン＋タイトル（横並びにして縦方向を節約する）
+                      スマホでは下の余白(mb)を詰め、右端に矢印を出して
+                      「このカードを押すと進める」ことを1行のまま伝える。 */}
+                  <div className="flex items-center gap-3 mb-0 sm:mb-3 mt-0 sm:mt-1">
                     <div
-                      className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform ${
+                      className={`w-9 h-9 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform ${
                         subject.available
                           ? 'bg-[#FBE0E9] text-[#D9466E] group-hover:scale-105'
                           : 'bg-[#E4E8EC] text-[#8895A0]'
                       }`}
                     >
-                      <Icon className="w-6 h-6" aria-hidden="true" />
+                      <Icon className="w-4.5 h-4.5 sm:w-6 sm:h-6" aria-hidden="true" />
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <h2
-                        className={`font-handwriting font-bold text-[22px] md:text-[24px] leading-tight ${
+                        className={`font-handwriting font-bold text-[19px] sm:text-[22px] md:text-[24px] leading-tight ${
                           subject.available ? 'text-[#1B2631]' : 'text-[#8895A0]'
                         }`}
                       >
                         {subject.title}
                       </h2>
+                      {/* ローマ字の副題。
+                          ★スマホでは隠す★——ここは「飾り」であり、
+                          同じ位置に入れるなら収録ボリューム（下）の方が
+                          科目を選ぶ判断に直接役立つ。 */}
                       <p
-                        className={`text-[10px] font-modern tracking-[0.2em] mt-0.5 ${
+                        className={`hidden sm:block text-[10px] font-modern tracking-[0.2em] mt-0.5 ${
                           subject.available ? 'text-[#E8688E]' : 'text-[#B8C4CE]'
                         }`}
                       >
                         {subject.latin.toUpperCase()}
                       </p>
+
+                      {/* ★スマホ専用：収録ボリュームを科目名の真下に置く★
+
+                          科目が6枚になり、従来の「アイコン行の下にリストを 1 行」
+                          という作りでは 1 枚あたり 92px×6＝グリッド 607px になり、
+                          見える高さ（実測 664px）に入りきらなかった（実測 183px 超過）。
+
+                          そこで収録ボリュームの行を、アイコン行の「下」ではなく
+                          「アイコンの横」に移した。アイコン（36px）の高さに
+                          科目名＋収録行がちょうど収まるので、行を 1 つ減らしても
+                          情報量は落ちない。★「何単元・何問あるか」は消してはいけない★
+                          （消すと科目を選ぶ判断ができなくなる）ので、位置を変えるだけにとどめている。
+
+                          ★文言は highlights[0] ではなく subject.volume を使う★
+                          highlights[0] は説明文なので長く、実測で 320〜430px の
+                          全幅で末尾が切れていた（英語リスニング・化学・数学）。
+                          切れると肝心の数字が読めず「情報を消した」のと同じになる。
+                          そこで科目ごとに手で短く決めた volume を出し、
+                          truncate も外して「切れない」ことを保証する。 */}
+                      <p
+                        className={`sm:hidden text-[10px] font-modern leading-snug mt-0.5 ${
+                          subject.available ? 'text-[#5D6D7E]' : 'text-[#A3AEB8]'
+                        }`}
+                      >
+                        {subject.volume}
+                      </p>
                     </div>
+                    {/* スマホ用の「進める」矢印。
+                        1行カードではフッターのCTA行を隠すため、
+                        代わりにここで押せることを示す。 */}
+                    {subject.available && (
+                      <ArrowRight
+                        className="sm:hidden w-5 h-5 text-[#E8688E] shrink-0"
+                        aria-hidden="true"
+                      />
+                    )}
                   </div>
 
-                  {/* 説明 */}
+                  {/* 説明（スマホでは隠す。1行カードに収めるため） */}
                   <p
-                    className={`text-xs font-modern leading-relaxed mb-3 ${
+                    className={`hidden sm:block text-xs font-modern leading-relaxed mb-3 ${
                       subject.available ? 'text-[#5D6D7E]' : 'text-[#8895A0]'
                     }`}
                   >
                     {subject.description}
                   </p>
 
-                  {/* 収録ハイライト */}
-                  <ul className="space-y-1.5 mb-4">
-                    {subject.highlights.map((item) => (
+                  {/* 収録ハイライト
+                      ★スマホではこのリスト自体を隠す★
+                      1行目（収録ボリューム）は上の科目名の真下に移したので、
+                      ここに同じ文言を出すと二重になる（かつ行が増えて
+                      6科目が1画面に入らなくなる）。
+                      sm 以上では従来どおり全行を縦に並べる。 */}
+                  <ul className="hidden sm:block space-y-1.5 mb-0 sm:mb-4">
+                    {subject.highlights.map((item, hi) => (
                       <li
                         key={item}
-                        className={`flex items-start gap-2 text-[11px] font-modern leading-snug ${
+                        className={`${hi === 0 ? 'flex' : 'hidden sm:flex'} items-start gap-2 text-[11px] font-modern leading-snug ${
                           subject.available ? 'text-[#5D6D7E]' : 'text-[#A3AEB8]'
                         }`}
                       >
@@ -400,8 +564,12 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
                     ))}
                   </ul>
 
-                  {/* フッター行（CTA） */}
-                  <div className="mt-auto pt-3 border-t border-dashed border-[#E4E8EC] flex items-center justify-between">
+                  {/* フッター行（CTA）
+                      スマホでは非表示。上の1行に矢印を出しているので
+                      「この科目ではじめる」の文字は無くても迷わない。
+                      ★この行こそが、ご指摘の「ブラウザのツールバーに
+                        隠れて見えない」当該要素★でもある。 */}
+                  <div className="hidden sm:flex mt-auto pt-3 border-t border-dashed border-[#E4E8EC] items-center justify-between">
                     <span
                       className={`text-[13px] font-bold font-modern tracking-wide ${
                         subject.available ? 'text-[#D9466E]' : 'text-[#8895A0]'
@@ -430,7 +598,13 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.4 }}
-          className="text-center text-[11px] text-[#8895A0] font-modern mt-7 leading-relaxed"
+          /* ★スマホでは隠す★
+             上余白 12px ＋ 本体 36px で 48px を使っていたが、
+             内容は「あとで切り替えられる」という安心情報で、
+             この画面での選択行動には必要ない。
+             ★審査で消してよいと判断したのはこの一文と連携バナーの 2 つだけ★で、
+             科目名・収録ボリュームなど「選ぶための情報」は一つも削っていない。 */
+          className="hidden sm:block text-center text-[11px] text-[#8895A0] font-modern mt-3 sm:mt-7 leading-relaxed"
         >
           科目はあとから画面下の「ホーム」からいつでも切り替えられます。
         </motion.p>

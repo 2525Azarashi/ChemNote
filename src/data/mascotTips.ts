@@ -65,6 +65,7 @@ export type TipSubject =
   | 'chemistry_basic'
   | 'chemistry'
   | 'english_listening'
+  | 'english_grammar'
   | 'math'
   | 'biology_basic';
 

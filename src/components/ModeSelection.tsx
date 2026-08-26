@@ -12,7 +12,7 @@ interface ModeSelectionProps {
   onBack: () => void;
   onMockExam?: () => void;
   /** 選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'english_grammar' | 'math' | 'biology_basic';
 }
 
 export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic' }: ModeSelectionProps) {
@@ -37,6 +37,14 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
   const isMath = subject === 'math';
   const isBiology = subject === 'biology_basic';
   /**
+   * 英文法は「単元別の4択演習」として公開している。
+   * まとめプリント（学習インプット）・出題傾向・予想問題は未収録なので、
+   * リスニングと同じように「演習問題」だけを出す（空の画面へ連れていかない）。
+   */
+  const isGrammar = subject === 'english_grammar';
+  /** まとめプリントを持たない科目（学習カードを隠す） */
+  const hideLearning = isListening || isGrammar;
+  /**
    * 科目ごとの配色。
    * この画面はどの科目でも同じダスティローズで描かれていたため、
    * 「今どの科目のモードを選んでいるのか」が見た目から分からなかった。
@@ -51,7 +59,21 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
 
   return (
     <>
-      <div className="w-full notebook-paper rounded-2xl p-6 md:p-12 min-h-[60vh] flex flex-col items-center justify-center relative">
+      {/*
+        ★スマホで内部スクロールできる箱にする（PC は従来のまま）★
+
+        従来は min-h-[60vh] の「伸びるだけの箱」で、中身（実測 842px）が
+        見える高さ（664 − ナビ81 ＝ 583px）を超えると
+        はみ出した分がそのまま下部ナビの裏に潜り込んでいた。
+        ＝ ご指摘の「演習問題の説明文が途中で切れる」。
+
+        max-h-full＋overflow-y-auto で、超えた分はこの箱の中で
+        スクロールさせる（ページ全体は動かさない）。
+        末尾に pb-app-nav を置いて、最後の要素が固定ナビの裏に
+        残らないようにする。
+        sm 以上は max-h-none で従来の見た目に戻す。
+      */}
+      <div className="w-full notebook-paper rounded-2xl p-4 sm:p-6 md:p-12 min-h-0 sm:min-h-[60vh] max-h-full sm:max-h-none overflow-y-auto sm:overflow-visible pb-app-nav sm:pb-6 md:pb-12 flex flex-col items-center justify-start sm:justify-center relative">
         <button 
           onClick={onBack}
           className="absolute top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 text-gray-500 hover:text-[#2C3E50] transition-colors font-bold bg-white/80 px-4 py-2 rounded-full shadow-sm"
@@ -63,25 +85,32 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
         {/* Logo（従来の mntb を模したインラインロゴ） */}
         <MntbLogo size="sm" className="absolute top-4 right-4 md:top-6 md:right-6 z-30" />
 
-        <div className="flex items-center gap-2 mb-8 md:mb-12 mt-12 md:mt-0">
+        {/* mt-12 は絶対配置の「戻る」ボタンを避けるための逃げ。
+            スマホでは mt-11 まで詰め、下の余白も 8 → 4 に半減させる
+            （タイトル周りは1画面化で最も削りやすい場所）。 */}
+        <div className="flex items-center gap-2 mb-4 md:mb-12 mt-11 md:mt-0">
           <DoorMascot subject={subject} showSpeech={false} size="mini" className="w-auto" />
           <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-[#2C3E50]">
             学習モードを選択
           </h2>
         </div>
 
-        <div className={`grid grid-cols-1 gap-6 w-full ${isListening ? 'max-w-md' : 'max-w-3xl md:grid-cols-2'}`}>
-          {/* 学習(インプット)ボタン（化学基礎・化学の両方。リスニングは未収録） */}
-          {!isListening && (
+        <div className={`grid grid-cols-1 gap-3 md:gap-6 w-full ${hideLearning ? 'max-w-md' : 'max-w-3xl md:grid-cols-2'}`}>
+          {/* 学習(インプット)ボタン（化学基礎・化学の両方。リスニング・英文法は未収録） */}
+          {!hideLearning && (
           <button
             onClick={() => onSelectMode('learning')}
-            className="group bg-white p-6 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:border-[#F4D03F] hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
+            /* ★スマホは横並び1行、md以上は従来の縦積み中央寄せ★
+               縦積みだと 1枚 195px＋218px で400px超になり、
+               タイトルと合わせて画面に収まらない。 */
+            className="group bg-white p-3.5 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:border-[#F4D03F] hover:shadow-xl transition-all duration-300 flex flex-row md:flex-col items-center text-left md:text-center gap-3 md:gap-0 transform hover:-translate-y-1"
           >
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-[#F4D03F]/20 rounded-full flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
-              <FileText className="text-[#F4D03F] w-8 h-8 md:w-10 md:h-10" />
+            <div className="w-11 h-11 md:w-20 md:h-20 bg-[#F4D03F]/20 rounded-full flex items-center justify-center shrink-0 mb-0 md:mb-6 group-hover:scale-110 transition-transform">
+              <FileText className="text-[#F4D03F] w-6 h-6 md:w-10 md:h-10" />
             </div>
-            <h3 className="text-xl md:text-2xl font-bold font-handwriting text-[#2C3E50] mb-3 md:mb-4">学習(インプット)</h3>
-            <p className="text-sm md:text-base text-gray-600 font-handwriting leading-relaxed">
+            <div className="min-w-0 md:contents">
+            <h3 className="text-base md:text-2xl font-bold font-handwriting text-[#2C3E50] mb-0.5 md:mb-4">学習(インプット)</h3>
+            <p className="text-[11px] md:text-base text-gray-600 font-handwriting leading-snug md:leading-relaxed line-clamp-2 md:line-clamp-none">
               {isAdvanced
                 ? 'まとめプリントで基礎知識をしっかりと身につけます。（現在は理論化学「化学反応とエネルギー」を公開中）'
                 : isMath
@@ -90,13 +119,16 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
                     ? 'まとめプリントで共通テスト生物基礎の全範囲（細胞・遺伝子・体内環境・植生・生態系）を一気に総復習できます。'
                     : '基礎知識をしっかりと身につけます。'}
             </p>
+            </div>
           </button>
           )}
 
           {/* 演習問題ボタン */}
           <button
             onClick={() => onSelectMode('practice')}
-            className="group bg-white p-6 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center transform hover:-translate-y-1"
+            /* 学習カードと同じ理由でスマホは横並び1行にする。
+               ★ご指摘の「演習問題の説明文が途中で切れる」当該カード★ */
+            className="group bg-white p-3.5 md:p-8 rounded-2xl shadow-md border-2 border-transparent hover:shadow-xl transition-all duration-300 flex flex-row md:flex-col items-center text-left md:text-center gap-3 md:gap-0 transform hover:-translate-y-1"
             /* hover の枠線色は科目ごとに変わるため、Tailwind ではなく直接指定する
                （クラス名を動的に組み立てると JIT がクラスを生成できない） */
             style={{ borderColor: 'transparent' }}
@@ -106,46 +138,57 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
             onBlur={(event) => { event.currentTarget.style.borderColor = 'transparent'; }}
           >
             <div
-              className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform"
+              className="w-11 h-11 md:w-20 md:h-20 rounded-full flex items-center justify-center shrink-0 mb-0 md:mb-6 group-hover:scale-110 transition-transform"
               style={{ backgroundColor: `${theme.accentSoft}55` }}
             >
-              <BookOpen className="w-8 h-8 md:w-10 md:h-10" style={{ color: theme.accent }} />
+              <BookOpen className="w-6 h-6 md:w-10 md:h-10" style={{ color: theme.accent }} />
             </div>
-            <h3 className="text-xl md:text-2xl font-bold font-handwriting text-[#2C3E50] mb-3 md:mb-4">演習問題</h3>
-            <p className="text-sm md:text-base text-gray-600 font-handwriting leading-relaxed">
+            <div className="min-w-0 md:contents">
+            <h3 className="text-base md:text-2xl font-bold font-handwriting text-[#2C3E50] mb-0.5 md:mb-4">演習問題</h3>
+            <p className="text-[11px] md:text-base text-gray-600 font-handwriting leading-snug md:leading-relaxed line-clamp-2 md:line-clamp-none">
               {isListening
                 ? '第1問A・第1問B …のように大問別（A／Bも別）に選び、回ごとに取り組みます。'
+                : isGrammar
+                ? '文型・時制・準動詞…の単元別に4択を解きます。全問に完成文の音源と誤答肢の理由がつきます。'
                 : isMath
                   ? '積分・ベクトル・確率・整数の全パターンを、型ごとの小問で演習します。数学記号パレットで ∫ や √ もワンタップ入力。'
                   : 'より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。'}
             </p>
+            </div>
           </button>
         </div>
 
         {/* 化学（発展）で準備中のコンテンツがあることを明示する。 */}
         {isAdvanced && (
-          <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
+          <p className="mt-3 md:mt-6 text-[10px] md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
             ※「出題傾向」「予想問題」は化学基礎のみ対応です。化学の「学習(インプット)」は順次章を追加していきます。
           </p>
         )}
 
         {/* 数学では現在の収録範囲を明示する。 */}
         {isMath && (
-          <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
+          <p className="mt-3 md:mt-6 text-[10px] md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
             ※ 現在は「数III 積分法」「ベクトル」「場合の数・確率」「整数」の4単元（各全パターン演習）を公開しています。他の単元も順次追加していきます。
           </p>
         )}
 
         {/* 英語リスニングで準備中のコンテンツがあることを明示する。 */}
         {isListening && (
-          <p className="mt-6 text-xs md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
+          <p className="mt-3 md:mt-6 text-[10px] md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
             ※ まずは大問（第1問A〜第6問B）の単元を公開しています。問題・音声・「学習(インプット)」は順次追加していきます。
+          </p>
+        )}
+
+        {/* 英文法で準備中のコンテンツを明示する。 */}
+        {isGrammar && (
+          <p className="mt-3 md:mt-6 text-[10px] md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
+            ※ 全20単元の4択演習（各単元5問）を公開しています。「学習(インプット)」は順次追加していきます。
           </p>
         )}
 
         {/* 演習問題ボタンの下に追加ボタンを配置（化学基礎・化学） */}
         {(subject === 'chemistry_basic' || isAdvanced) && (
-        <div className="w-full max-w-3xl mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="w-full max-w-3xl mt-3 md:mt-6 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           {/* 全体出題傾向ボタン */}
           <button
             onClick={() => setShowOverallTrend(true)}

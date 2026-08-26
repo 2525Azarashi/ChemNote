@@ -7,6 +7,7 @@ import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
 import { getAllListeningChapters } from '../data/englishListeningData';
 import { getAllMathChapters } from '../data/mathData';
 import { getAllBiologyChapters } from '../data/biologyBasicData';
+import { getAllGrammarChapters } from '../data/englishGrammarData';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
@@ -36,7 +37,7 @@ interface HomeProps {
   /** 現在選択中の科目名（表示用） */
   subjectLabel?: string;
   /** 現在選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'math' | 'biology_basic';
+  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'english_grammar' | 'math' | 'biology_basic';
   isGuest: boolean;
 }
 
@@ -78,6 +79,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
       if (subject === 'english_listening') return getAllListeningChapters() as any[];
       if (subject === 'math') return getAllMathChapters() as any[];
       if (subject === 'biology_basic') return getAllBiologyChapters() as any[];
+      if (subject === 'english_grammar') return getAllGrammarChapters() as any[];
       return chemistryData.parts.flatMap((p: any) => p.chapters) as any[];
     },
     [subject],
@@ -121,6 +123,11 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         id: 'biology_basic' as const,
         label: '生物基礎',
         chapters: getAllBiologyChapters() as any[],
+      },
+      {
+        id: 'english_grammar' as const,
+        label: '英文法',
+        chapters: getAllGrammarChapters() as any[],
       },
     ],
     [],
@@ -242,7 +249,16 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
 
   return (
     // タイトル画面：他ページと馴染む淡いピンク基調＋ノート罫線の柔らかい背景を全面に広げる
-    <div className="w-full min-h-[100dvh] sm:min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE]">
+    /*
+      ★min-h-[100dvh] → h-full に変更した理由★
+      min-height は「最低これだけ、中身が増えれば伸びる」箱なので、
+      中の overflow-y-auto に高さの上限を渡せない（＝スクロールしない）。
+      App 側で外枠の高さを 100dvh に確定させたので、
+      ここは h-full でその高さをそのまま受け取り、子に渡す。
+      これで下の flex-1 ペインが初めて「余った高さ」を正しく計算でき、
+      ページ全体ではなくペインの中だけがスクロールするようになる。
+    */
+    <div className="w-full h-full min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE]">
 
       {/* 背景：うっすらノート罫線（手書き風の余韻を残す） */}
       <div
@@ -259,13 +275,36 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
       <SakuraPetals count={48} />
 
       {/* PC（lg以上）ではスクロールせず1画面に収める：縦パディングを詰め、はみ出しを隠す。
-          スマホ/タブレットは従来どおり縦スクロール可能。 */}
-      <div className="flex-1 overflow-y-auto lg:overflow-hidden no-scrollbar pb-32 lg:pb-24 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 lg:pt-6 relative z-10 lg:flex lg:flex-col lg:justify-center">
+          スマホ/タブレットは縦スクロール可能。
+
+          ★min-h-0 と pb-app-nav を足したのが今回の修正★
+          ・min-h-0 … flex の子は既定で min-height:auto（＝中身より縮まない）。
+            これを外さないと flex-1 が効かず、中身のぶんだけ伸びて
+            スクロールしない箱になってしまう。高さの鎖の要。
+          ・pb-app-nav … 固定ナビは高さを占めないので、末尾に同じだけ
+            余白を作らないと最後の要素（＝マスコットの吹き出し）が
+            ナビの裏に隠れる。以前の pb-32 は実際のナビ高さより
+            大きすぎて、逆に1画面に収まらない一因にもなっていた。 */}
+      {/*
+        ★スマホでも flex flex-col にした理由★
+        「学習を始める」を必ず1画面目に入れたい（ご要望）。
+        しかし進捗カードの高さは科目数・進捗テキストで伸び縮みするため、
+        高さを詰める方向だけで押し込むのは端末やデータ次第で必ず破綻する。
+        そこで flex の order で「並び順」を変え、
+          挨拶 → 学習を始める → カード群 → サブ導線
+        とする。順番で保証すれば、カードが何px になっても
+        CTA が画面外に出ることはない。
+        lg 以上は order を戻し、従来の見た目を維持する。
+      */}
+      <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden no-scrollbar pb-app-nav lg:pb-24 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 lg:pt-6 relative z-10 flex flex-col lg:justify-center">
 
         {/* ===== 挨拶 ＋ カウントダウン =====
             ※ 左上の「まなとび」ワードマークは表示しない（ユーザー要望）。 */}
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-7 md:mb-8 lg:mb-4">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting">
+        {/* スマホでは挨拶とカウントダウンを横並びにする。
+            縦積みだと実測 216px を占め、1画面化の最大の障害だった。
+            横並びなら約110pxで収まる。md 以上は従来どおり。 */}
+        <div className="order-1 shrink-0 flex flex-row md:items-start md:justify-between gap-3 md:gap-5 mb-3 md:mb-8 lg:mb-4">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting min-w-0 flex-1">
             {/* 学校名（クラスに参加している生徒のみ。学校の教材として見えるようにする） */}
             {schoolBrand && (
               <p className="text-[11px] font-modern font-bold text-[#5D6D7E] tracking-wide mb-1">
@@ -285,10 +324,12 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                 <Repeat2 className="w-3.5 h-3.5 text-[#8895A0] group-hover:text-[#E8688E] transition-colors" aria-hidden="true" />
               </button>
             )}
-            <h1 className="text-[22px] md:text-[30px] text-[#1B2631] font-bold tracking-wide">
+            {/* スマホでは 22px → 18px に落として1行に収める。
+                2行に折り返すと、それだけで約40pxを失っていた。 */}
+            <h1 className="text-[18px] md:text-[30px] text-[#1B2631] font-bold tracking-wide truncate">
               おかえり、{greetingName}さん
             </h1>
-            <p className="text-xs md:text-sm text-[#5D6D7E] mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
+            <p className="text-[11px] md:text-sm text-[#5D6D7E] mt-0.5 md:mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
           </motion.div>
 
           {/* 共通テストまでのカウントダウンカード（ピンクテーマ）＋ お知らせベル */}
@@ -311,10 +352,12 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   ? `お知らせを開く（未読 ${unreadCount} 件）`
                   : 'お知らせを開く'
               }
-              className="relative flex h-[68px] w-[52px] shrink-0 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-[18px] border border-[#F4A9C4]/50 bg-white/90 shadow-[0_10px_26px_-12px_rgba(217,70,110,0.5)] backdrop-blur-sm transition-colors hover:bg-white"
+              /* スマホでは正方形の小さなボタンにし、「お知らせ」の文字は
+                 ベルのアイコンで十分伝わるので隠す（aria-label は残す）。 */
+              className="relative flex h-[44px] w-[44px] md:h-[68px] md:w-[52px] shrink-0 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-[14px] md:rounded-[18px] border border-[#F4A9C4]/50 bg-white/90 shadow-[0_10px_26px_-12px_rgba(217,70,110,0.5)] backdrop-blur-sm transition-colors hover:bg-white"
             >
               <Bell className="h-5 w-5 text-[#E8688E]" aria-hidden="true" />
-              <span className="font-modern text-[9px] font-bold tracking-wide text-[#5D6D7E]">
+              <span className="hidden md:block font-modern text-[9px] font-bold tracking-wide text-[#5D6D7E]">
                 お知らせ
               </span>
               {unreadCount > 0 && (
@@ -327,16 +370,19 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
               )}
             </button>
 
-            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] px-5 py-4 shadow-[0_10px_26px_-12px_rgba(217,70,110,0.5)] border border-[#F4A9C4]/50 flex items-center gap-4 min-w-[210px]">
+            {/* スマホでは幅・余白を詰め、日付ラベルとカレンダーアイコンを隠す。
+                「あと何日か」という数字が主役なので、そこだけ残せば伝わる。
+                md 以上は従来の見た目のまま。 */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] px-3 py-2.5 md:px-5 md:py-4 shadow-[0_10px_26px_-12px_rgba(217,70,110,0.5)] border border-[#F4A9C4]/50 flex items-center gap-2 md:gap-4 min-w-0 md:min-w-[210px]">
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold tracking-widest text-[#5D6D7E] font-modern">共通テストまで</span>
+                <span className="text-[10px] md:text-[11px] font-bold tracking-widest text-[#5D6D7E] font-modern whitespace-nowrap">共通テストまで</span>
                 <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-3xl md:text-4xl font-bold font-handwriting text-[#D9466E] leading-none tabular-nums">{daysUntilExam}</span>
+                  <span className="text-2xl md:text-4xl font-bold font-handwriting text-[#D9466E] leading-none tabular-nums">{daysUntilExam}</span>
                   <span className="text-sm font-modern font-bold text-[#D9466E]">日</span>
                 </div>
-                <span className="text-[10px] text-[#8895A0] font-modern mt-1 tracking-wide">{EXAM_DATE_LABEL}</span>
+                <span className="hidden md:block text-[10px] text-[#8895A0] font-modern mt-1 tracking-wide">{EXAM_DATE_LABEL}</span>
               </div>
-              <div className="ml-auto w-11 h-11 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
+              <div className="hidden md:flex ml-auto w-11 h-11 rounded-2xl bg-[#FBE0E9] items-center justify-center shrink-0">
                 <CalendarDays className="w-6 h-6 text-[#E8688E]" aria-hidden="true" />
               </div>
             </div>
@@ -347,28 +393,36 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             ゲストのままだと記録が端末に閉じてしまうため、
             ホームでも一行の細い帯で連携を案内する（×で当面非表示にできる）。 */}
         {isGuest && !auth.currentUser && (
-          <div className="mb-5 md:mb-6 lg:mb-4">
+          /* order-4：CTA の後ろに置く。ゲスト案内は大事だが、
+             これが CTA を画面外へ押し出してはいけない。 */
+          <div className="order-4 lg:order-2 shrink-0 mb-3 md:mb-6 lg:mb-4">
             <GoogleLinkBanner variant="inline" dismissible />
           </div>
         )}
 
         {/* ===== メインカード群 ===== */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6 lg:gap-5">
+        <div className="order-3 grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6 lg:gap-5">
 
           {/* 連続学習カード（とびら君マスコット＋化学豆知識付き） */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] p-5 md:p-6 shadow-[0_10px_26px_-14px_rgba(217,70,110,0.45)] border border-[#F4A9C4]/40 relative overflow-hidden h-full flex flex-col">
-              {/* 上段：連続日数とマイルストーン */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] p-3.5 md:p-6 shadow-[0_10px_26px_-14px_rgba(217,70,110,0.45)] border border-[#F4A9C4]/40 relative overflow-hidden h-full flex flex-col">
+              {/* 上段：連続日数とマイルストーン
+                  スマホでは「連続学習」の見出しと日数を横1行に並べ、
+                  巨大な数字（text-5xl=48px）も 3xl に落として高さを削る。 */}
               <div className="flex flex-col gap-1 w-full min-w-0">
-                <div className="flex items-center gap-2">
+                <div className="flex items-baseline gap-2">
                   <span className="font-bold text-sm tracking-widest text-[#1B2631] font-modern">連続学習</span>
+                  <span className="md:hidden ml-auto flex items-baseline gap-1">
+                    <span className="text-3xl font-bold font-handwriting text-[#D9466E] leading-none">{streak}</span>
+                    <span className="text-xs font-modern text-[#1B2631] font-medium">{streak > 0 ? '日連続' : '日目'}</span>
+                  </span>
                 </div>
-                <div className="flex items-baseline gap-1 mt-1.5">
+                <div className="hidden md:flex items-baseline gap-1 mt-1.5">
                   <span className="text-5xl md:text-6xl font-bold font-handwriting text-[#D9466E] leading-none">{streak}</span>
                   <span className="text-sm font-modern text-[#1B2631] font-medium">{streak > 0 ? '日連続' : '日目'}</span>
                 </div>
                 {nextMilestone && (
-                  <div className="mt-3 pt-3 border-t border-[#F4A9C4]/30">
+                  <div className="mt-2 pt-2 md:mt-3 md:pt-3 border-t border-[#F4A9C4]/30">
                     <p className="text-[11px] md:text-xs text-[#5D6D7E] font-modern tracking-wide leading-snug">
                       <span className="opacity-80">次のマイルストーン：</span>
                       <span className="font-bold text-[#1B2631]">{nextMilestone.target}日連続</span>
@@ -389,19 +443,23 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
               </div>
               {/* 下段：とびら君マスコット＋豆知識（カード内に収まる横並び）
                   科目を渡して、いま開いている科目の豆知識と配色にする。 */}
+              {/* ★ご指摘の「吹き出しが切れる」当該要素★
+                  クリップ自体は外枠の高さ確定（App 側）とスクロール領域の
+                  末尾余白（pb-app-nav）で解消済み。ここでは上余白を詰めて
+                  1画面に収まりやすくする。 */}
               <DoorMascot
                 subject={subject}
                 showCategory
-                className="mt-4 pt-4 border-t border-[#F4A9C4]/25"
+                className="mt-2.5 pt-2.5 md:mt-4 md:pt-4 border-t border-[#F4A9C4]/25"
               />
             </div>
           </motion.div>
 
           {/* 学習進捗カード */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }}>
-            <div className="border border-[#F4A9C4]/40 rounded-[20px] p-5 md:p-6 bg-white/90 backdrop-blur-sm shadow-[0_10px_26px_-14px_rgba(217,70,110,0.45)] h-full flex flex-col justify-between">
+            <div className="border border-[#F4A9C4]/40 rounded-[20px] p-3.5 md:p-6 bg-white/90 backdrop-blur-sm shadow-[0_10px_26px_-14px_rgba(217,70,110,0.45)] h-full flex flex-col justify-between">
               <div>
-                <h2 className="font-bold text-[16px] mb-3 text-[#1B2631] font-modern flex items-center gap-2">
+                <h2 className="font-bold text-[15px] md:text-[16px] mb-2 md:mb-3 text-[#1B2631] font-modern flex items-center gap-2">
                   <BarChart3 className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
                   学習進捗
                 </h2>
@@ -412,14 +470,14 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                     </p>
                     <button
                       onClick={onStart}
-                      className="inline-flex items-center gap-1.5 text-[13px] md:text-sm font-bold font-modern text-[#1B2631] hover:text-[#D9466E] transition-colors mb-6 group"
+                      className="inline-flex items-center gap-1.5 text-[13px] md:text-sm font-bold font-modern text-[#1B2631] hover:text-[#D9466E] transition-colors mb-3 md:mb-6 group"
                     >
                       まず第1章から始めよう
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
                     </button>
                   </>
                 ) : (
-                  <p className="text-xs md:text-sm text-[#5D6D7E] font-modern leading-relaxed mb-6">
+                  <p className="text-xs md:text-sm text-[#5D6D7E] font-modern leading-relaxed mb-3 md:mb-6">
                     {solvedQuestions < totalQuestions ? (
                       <>
                         次の章：{/* 未完了の大問が残っている最初の章 */}
@@ -442,7 +500,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   進み具合を見るには科目を切り替える必要があった。
                   ここで全科目を縦に並べ、いま選んでいる科目を強調する。
                   単位は「大問」（小問数と混ざらないよう明記する）。 */}
-              <div className="space-y-3">
+              <div className="space-y-1.5 md:space-y-3">
                 {subjectProgressDefs.map((def, i) => {
                   const p = subjectProgress[def.id] || { solved: 0, total: 0 };
                   const percent = p.total > 0 ? Math.round((p.solved / p.total) * 100) : 0;
@@ -515,10 +573,13 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         </div>
 
         {/* ===== メインCTA：学習を始める（空色グラデのワイドピル） ===== */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} className="mt-6 lg:mt-5">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} /* ★order-2：スマホでは進捗カードより前に出す★
+             これで「学習を始める」は常に画面上部＝1画面目に居る。
+             lg 以上は order-4 で従来の位置（カードの下）に戻す。 */
+          className="order-2 lg:order-4 shrink-0 mt-0 md:mt-6 lg:mt-5 mb-3 lg:mb-0">
           <button
             onClick={onStart}
-            className="w-full bg-gradient-to-r from-[#E89AAF] to-[#D98AA0] text-white py-4 md:py-5 lg:py-3.5 px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#E38EA6] hover:to-[#CC7890] transition-colors shadow-[0_12px_28px_-10px_rgba(217,138,160,0.55)] min-h-[60px] lg:min-h-[54px]"
+            className="w-full bg-gradient-to-r from-[#E89AAF] to-[#D98AA0] text-white py-3 md:py-5 lg:py-3.5 px-5 md:px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#E38EA6] hover:to-[#CC7890] transition-colors shadow-[0_12px_28px_-10px_rgba(217,138,160,0.55)] min-h-[52px] md:min-h-[60px] lg:min-h-[54px]"
           >
             <div className="flex items-center gap-3">
               <BookOpen className="w-6 h-6" aria-hidden="true" />
@@ -529,14 +590,14 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         </motion.div>
 
         {/* ===== セカンダリ：学習ノート（ノート＋復習を統合）/ アプリ紹介 / ご意見 ===== */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="order-5 mt-3 md:mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
           {/* ノートと復習リストを1つの入口「学習ノート」に統合。今日の復習件数をバッジで提示 */}
           <button
             onClick={onNoteList}
             aria-label={`学習ノートを開く（ノートと復習）${reviewDueCount > 0 ? `。今日の復習${reviewDueCount}件` : ''}`}
-            className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
+            className="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
           >
-            <div className="relative w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
+            <div className="relative w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
               <Edit3 className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
               {reviewDueCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-[#E8688E] text-white text-[11px] font-bold flex items-center justify-center border-2 border-white">
@@ -556,9 +617,9 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           <button
             onClick={onIntro}
             aria-label="アプリ紹介を開く"
-            className="flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
+            className="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
           >
-            <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
               <ShieldCheck className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
             </div>
             <div className="flex-1 min-w-0">
