@@ -12,7 +12,9 @@ import { ListeningAudioPlayer } from './ListeningAudioPlayer';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { isAnswerCorrect } from '../utils/answerJudge';
 import { gradingCriteriaProgress, resolveGradingCriteria } from '../utils/gradingCriteria';
-import { answerCardMarker, buildSubQuestionList, isSubQuestionListRedundant, extractInlineQuestionRows, extractListeningQuestionRows } from '../utils/questionDisplay';
+// cleanQuestionText は演習画面（Quiz.tsx）と同じ実装が必要なので
+// questionDisplay.ts の1つだけを使う（以前はここにも同じ実装があった）。
+import { answerCardMarker, buildSubQuestionList, isSubQuestionListRedundant, extractInlineQuestionRows, extractListeningQuestionRows, cleanQuestionText } from '../utils/questionDisplay';
 import {
   buildUnitKataBlock,
   sliceEnhancedByQuestion,
@@ -29,13 +31,6 @@ import { getUnitTeaching } from '../data/unitTeaching';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
 import { applyOverviewViewport } from '../utils/viewportControl';
-
-/** 表示上の問題番号（問1/【問1】/先頭の 1 など）を消して、進捗表示に統一する。 */
-function cleanQuestionText(text: string): string {
-  return String(text || '')
-    .replace(/^\s*(?:【\s*問?\s*\d+\s*】|問\s*\d+|第\s*\d+\s*問|\d+[.．、\s]+)\s*/u, '')
-    .replace(/\n\s*(?:問\s*\d+|【\s*問?\s*\d+\s*】)\s*/gu, '\n');
-}
 
 /**
  * その小問に「解答が入力されているか」（＝手を付けたか）。

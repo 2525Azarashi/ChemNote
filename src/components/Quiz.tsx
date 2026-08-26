@@ -49,7 +49,9 @@ import {
   quizStepKey,
 } from '../utils/quizStorageKeys';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
-import { answerCardMarker, buildSubQuestionList, splitQuestionLabel, isSubQuestionListRedundant, extractInlineQuestionRows, findSubQuestionSentence } from '../utils/questionDisplay';
+// cleanQuestionText は解説画面（Explanation.tsx）と同じ実装が必要なので
+// questionDisplay.ts の1つだけを使う（以前はここにも同じ実装があった）。
+import { answerCardMarker, buildSubQuestionList, splitQuestionLabel, isSubQuestionListRedundant, extractInlineQuestionRows, findSubQuestionSentence, cleanQuestionText } from '../utils/questionDisplay';
 import {
   buildListeningOptionTexts,
   buildListeningLeadText,
@@ -321,13 +323,6 @@ const handleInputFocusScroll = (e: React.FocusEvent<HTMLInputElement | HTMLTextA
     setTimeout(() => vv.removeEventListener('resize', onResize), 1000);
   }
 };
-
-/** 表示上の問題番号（問1/【問1】/先頭の 1 など）を消して、進捗表示に統一する。 */
-function cleanQuestionText(text: string): string {
-  return String(text || '')
-    .replace(/^\s*(?:【\s*問?\s*\d+\s*】|問\s*\d+|第\s*\d+\s*問|\d+[.．、\s]+)\s*/u, '')
-    .replace(/\n\s*(?:問\s*\d+|【\s*問?\s*\d+\s*】)\s*/gu, '\n');
-}
 
 /**
  * 設問ラベル（例: "問1 (ア)" / "(ア)" / "問3 (1) A"）から、
