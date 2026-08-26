@@ -488,10 +488,38 @@ describe('D5: 音源は問題ブロックに横帯で置く（押しやすさ）
     expect(QUIZ).not.toContain("'flex flex-row items-start gap-3'");
   });
 
-  it('横帯のボタンは 44px 以上のタップ領域を持つ', () => {
-    expect(PLAYER).toContain('min-h-[3rem] min-w-[6rem] flex-1 flex-row');
-    expect(PLAYER).toContain('min-h-[2.75rem] min-w-[4.25rem]');
-    expect(PLAYER).toContain('min-h-[2.75rem] min-w-[3.5rem]');
+  /**
+   * ★このテストが守るのは「高さ44px」だけ★
+   *
+   * もとは min-h と min-w をひとつなぎの文字列で照合していたが、
+   * それだと「幅を詰める」修正まで落ちてしまう。
+   * 実際、ご指摘11
+   *   「再生ボタンがまた少し大きくなったせいで、④の選択肢みたいに
+   *     少し下に隠れちゃってる」
+   * の対策は「横幅を詰めて 2 段の折り返しを 1 段に戻す」ことであり、
+   * 高さ 44px は据え置きたい（＝落としてはいけないのは高さのほう）。
+   *
+   * 44px は「選択肢のところに設置しても押しずらい」というご指摘を受けて
+   * 確保した指で押せる下限なので、ここは幅と切り離して固定する。
+   */
+  it('横帯のボタンはどれも高さ 44px 以上のタップ領域を持つ', () => {
+    /*
+     * 計測対象は「isRow（横帯）のときに選ばれる側」の min-h だけ。
+     *
+     * 同じファイルには isCompact（panel バリアントを小さく畳んだ表示）の
+     * min-h-[2.25rem]=36px もあるが、あれは解説側の折りたたみチップで、
+     * ここで言う「押しやすさを確保したい音源ボタン」ではない。
+     * 条件名を見ずに min-h を拾うと、その無関係なチップまで巻き込んで
+     * 誤って落ちる（実際に一度そうなった）。
+     */
+    const rowMinHeights = [...PLAYER.matchAll(/isRow\s*\n?\s*\?\s*'min-h-\[([0-9.]+)rem\]/g)].map(
+      (m) => parseFloat(m[1]),
+    );
+    // 再生／2回／速度 の3種はいずれも横帯分岐を持つ
+    expect(rowMinHeights.length).toBeGreaterThanOrEqual(3);
+    for (const rem of rowMinHeights) {
+      expect(rem * 16).toBeGreaterThanOrEqual(44);
+    }
   });
 
   it('見出しつきパネル（panel）は復活していない', () => {

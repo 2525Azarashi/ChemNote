@@ -99,6 +99,20 @@ export interface ListeningAudioPlayerProps {
    *   PC からは渡さないため、PC の見た目は完全に不変。
    */
   compact?: boolean;
+  /**
+   * スクリプトを最初から開いた状態で出すか（＝ボタンを押さなくても読める）。
+   *
+   * ★ご要望11★
+   *   「スクリプトを押さなくても直で下に出てるようにしたい」
+   *   「パソコン版の方も、スクリプトとかは絶対に出して欲しい。今たたまれとるけど」
+   *
+   *   受験生が解説画面で最初に見たいのは「読まれた英文そのもの（スクリプト）」で、
+   *   そこが1タップ隠れているのは順序として逆だった、というご指摘。
+   *   true のときは開閉ボタンを出さず、常に開いた状態で描画する。
+   *   （開閉ボタンを残すと「閉じられる＝また隠せる」ことになり、
+   *     「絶対に出して欲しい」というご要望と食い違うため出さない。）
+   */
+  alwaysOpenScript?: boolean;
   /** 追加クラス（余白調整） */
   className?: string;
 }
@@ -121,6 +135,7 @@ export function ListeningAudioPlayer({
   variant = 'panel',
   orientation = 'vertical',
   compact = false,
+  alwaysOpenScript = false,
   className = '',
 }: ListeningAudioPlayerProps) {
   const isDark = tone === 'dark';
@@ -302,9 +317,29 @@ export function ListeningAudioPlayer({
   if (isInline) {
     return (
       <div
+        /*
+          ★ご指摘11「再生ボタンがまた少し大きくなったせいで、④の選択肢みたいに
+            少し下に隠れちゃってるから少しだけ再生ボタン小さくして補ったほうがいい」★
+
+          ■ 実際に高さを食っていた原因は「ボタンの高さ」ではなく「折り返し」
+            gap-2（8px）だとボタンの合計幅が画面幅をわずかに超え、
+            flex-wrap で 2 段に折り返していた。
+            1段=44px なので、折り返すと 44px＋gap ぶん丸ごと余分に高さを取り、
+            そのぶん選択肢が下に押し出されて ④ が画面外に切れていた。
+
+          ■ だから「高さを削る」のではなく「1段に収める」ことで補う
+            gap（8px→6px）と、2回／速度ボタンの左右余白・文字を一回り小さくして
+            合計幅を画面内に収め、折り返しを消す。
+            これで実質 44px ぶん（＋gap）の高さが選択肢に戻る。
+            ★高さ（min-h-[2.75rem]=44px）は削らない★
+              以前ご指摘のあった「選択肢のところに設置しても押しずらい」を
+              受けて 44px（指で押せる下限）を確保した経緯がある。
+              高さを 40px に削ると今度は押しにくさが再発するので、
+              折り返しの解消だけで高さを取り戻す。
+        */
         className={`flex ${
           isRow
-            ? 'w-full flex-row flex-wrap items-center gap-2'
+            ? 'w-full flex-row flex-wrap items-center gap-1.5'
             : 'shrink-0 flex-col gap-1.5'
         } ${className}`}
         aria-label={`${list[0]?.label ?? ''}の音源`}
@@ -321,7 +356,7 @@ export function ListeningAudioPlayer({
                 aria-label={`${track.label}（${track.hint}）の音源を${isPlaying ? '停止' : '再生'}`}
                 className={`flex items-center justify-center rounded-xl border-2 font-bold shadow-sm transition-all ${
                   isRow
-                    ? 'min-h-[3rem] min-w-[6rem] flex-1 flex-row gap-1.5 px-3 py-2'
+                    ? 'min-h-[2.75rem] min-w-[5rem] flex-1 flex-row gap-1 px-2.5 py-1.5'
                     : 'min-h-[3rem] w-[4.5rem] flex-col gap-0.5 px-1 py-1.5 sm:w-20'
                 } ${
                   speechBlocked
@@ -329,8 +364,10 @@ export function ListeningAudioPlayer({
                     : `cursor-pointer ${isPlaying ? activeBtnClass : idleBtnClass}`
                 }`}
               >
-                {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-                <span className={isRow ? 'text-[13px] leading-none' : 'text-[10px] leading-none'}>
+                {isPlaying
+                  ? <Pause size={isRow ? 15 : 18} />
+                  : <Play size={isRow ? 15 : 18} />}
+                <span className={isRow ? 'text-[12px] leading-none' : 'text-[10px] leading-none'}>
                   {isPlaying ? '停止' : '再生'}
                 </span>
               </button>
@@ -342,9 +379,9 @@ export function ListeningAudioPlayer({
                   onClick={() => play(track.subId, true)}
                   disabled={speechBlocked}
                   aria-label={`${track.label} を本番と同じように2回続けて再生`}
-                  className={`flex items-center justify-center gap-1 rounded-lg border font-bold transition-colors ${
+                  className={`flex items-center justify-center gap-0.5 rounded-lg border font-bold transition-colors ${
                     isRow
-                      ? 'min-h-[2.75rem] min-w-[4.25rem] px-3 py-1.5 text-[12px]'
+                      ? 'min-h-[2.75rem] min-w-[3.5rem] px-2 py-1 text-[11px]'
                       : 'min-h-[2rem] w-[4.5rem] px-1 py-1 text-[10px] sm:w-20'
                   } ${
                     speechBlocked
@@ -352,7 +389,7 @@ export function ListeningAudioPlayer({
                       : `cursor-pointer ${idleBtnClass}`
                   }`}
                 >
-                  <Repeat2 size={11} />2回
+                  <Repeat2 size={10} />2回
                 </button>
               )}
 
@@ -374,7 +411,7 @@ export function ListeningAudioPlayer({
               <div
                 className={
                   isRow
-                    ? 'flex flex-row gap-1.5'
+                    ? 'flex flex-row gap-1'
                     : 'flex w-[4.5rem] flex-col gap-1 sm:w-20'
                 }
                 role="group"
@@ -388,7 +425,7 @@ export function ListeningAudioPlayer({
                     aria-pressed={rate === r}
                     className={`rounded-lg border font-bold transition-colors cursor-pointer ${
                       isRow
-                        ? 'min-h-[2.75rem] min-w-[3.5rem] px-2.5 py-1 text-[12px]'
+                        ? 'min-h-[2.75rem] min-w-[3rem] px-1.5 py-1 text-[11px]'
                         : 'min-h-[1.75rem] px-1 py-0.5 text-[10px]'
                     } ${rate === r ? activeBtnClass : idleBtnClass}`}
                   >
@@ -570,7 +607,11 @@ export function ListeningAudioPlayer({
               {/* 復習モードのみ：スクリプト・和訳・語句を開く
                   ★compact でも必ず残す★ ご要望は「スクリプトを載せて」なので、
                   ここを削ると要件そのものが消える。アイコン主体に縮めるだけ。 */}
-              {isReview && (
+              {/* ★alwaysOpenScript のときは開閉ボタンを出さない★
+                  常に開いているので「閉じる／開く」の操作自体が要らないし、
+                  押せてしまうと「絶対に出して欲しい」というご要望に反して
+                  また隠せる状態に戻ってしまう。 */}
+              {isReview && !alwaysOpenScript && (
                 <>
                   <button
                     type="button"
@@ -646,9 +687,74 @@ export function ListeningAudioPlayer({
         </div>
       )}
 
-      {/* ── スクリプト表示（復習モード） ── */}
+      {/* ── スクリプト表示 ──
+          ★alwaysOpenScript のときは開閉アニメーションを挟まず、
+            list のすべての問のスクリプトを常に開いた状態で並べる★
+            （ご要望「スクリプトを押さなくても直で下に出てるようにしたい」／
+              「パソコン版の方も、スクリプトとかは絶対に出して欲しい」） */}
+      {isReview && alwaysOpenScript && (
+        <div className={isCompact ? 'mt-1.5 space-y-1.5' : 'mt-3 space-y-2'}>
+          {list.map((track) => (
+            <div
+              key={`open-${track.subId}`}
+              className={`rounded-xl border ${isCompact ? 'p-2' : 'p-3'} ${scriptBoxClass}`}
+            >
+              <p className={`mb-1 text-[10px] font-bold ${headingClass}`}>
+                {track.label} スクリプト
+              </p>
+              {track.turns && track.turns.length > 0 ? (
+                <ul className="space-y-1">
+                  {track.turns.map((turn, i) => (
+                    <li key={`${turn.who}-${i}`} className="flex gap-2">
+                      <span
+                        className={`mt-0.5 shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${badgeClass}`}
+                      >
+                        {turn.who}
+                      </span>
+                      <span className="text-[13px] sm:text-sm font-bold leading-relaxed">
+                        {turn.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-[13px] sm:text-sm font-bold leading-relaxed">
+                  {track.script}
+                </p>
+              )}
+              <p className={`mt-2 text-[12px] leading-relaxed ${subTextClass}`}>
+                {track.translation}
+              </p>
+              {track.keyPhrases.length > 0 && (
+                <div className="mt-2.5 border-t border-dashed border-current/20 pt-2">
+                  <p className={`mb-1.5 text-[10px] font-bold ${headingClass}`}>
+                    押さえたい表現
+                  </p>
+                  <ul className="space-y-1">
+                    {track.keyPhrases.map((kp) => (
+                      <li key={kp.phrase} className="flex flex-wrap items-baseline gap-1.5">
+                        <span
+                          className={`rounded-md border px-1.5 py-0.5 text-[11px] font-bold ${badgeClass}`}
+                        >
+                          {kp.phrase}
+                        </span>
+                        <span className={`text-[11px] leading-relaxed ${subTextClass}`}>
+                          {kp.meaning}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── スクリプト表示（開閉式・従来の挙動） ── */}
       <AnimatePresence initial={false}>
         {isReview &&
+          !alwaysOpenScript &&
           openScriptId &&
           (() => {
             const track = list.find((t) => t.subId === openScriptId);

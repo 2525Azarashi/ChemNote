@@ -273,19 +273,84 @@ export function convertMathNotation(src: string): string {
   return t;
 }
 
-export function formatText(text: string, highlights: string[] = []) {
+/**
+ * ===================================================================
+ * ★ご要望11「解説と問題でフォント違うの何？」の原因と対処★
+ * ===================================================================
+ *
+ * ■ 実測でわかった原因（推測ではなく Playwright の getComputedStyle）
+ *   スマホ 390x844／英語リスニング 第1問A の問題画面・解説画面で、
+ *   英文の 1 語 1 語がこう描画されていた。
+ *     "The" "speaker" "has" "her" "umbrella" …
+ *       → font-family: "Cambria Math", "Times New Roman", serif  (15.75px)
+ *   一方、同じ画面の日本語は 14〜15px のゴシック／手書きだった。
+ *   つまり「英文だけがセリフ体（明朝っぽい書体）で浮いていた」。
+ *
+ *   なぜそうなるか。この整形エンジンは化学式（H2O・Na+ など）を
+ *   きれいに組むために、
+ *     chemRegex = /([A-Za-z]+[0-9]*(?:[+-](?![0-9]))?)/g
+ *   で「英字の連なり」を化学式トークンとして切り出し、
+ *   その全部を必ず
+ *     <span style="font-family: 'Cambria Math','Times New Roman',serif">
+ *   で包んでいた。この正規表現は "The" も "umbrella" も等しく
+ *   通してしまうため、英文のすべての単語が化学式扱いになっていた。
+ *   しかも style 属性（インライン）なので、Tailwind の
+ *   font-modern / font-handwriting より必ず強く、上書きできない。
+ *   ＝「問題文の日本語はゴシック、英文だけセリフ」という食い違いの正体。
+ *
+ * ■ 直し方（ここが肝心）
+ *   「英語かどうかを字面から推測して自動で切り替える」ことはしない。
+ *   それをやると化学の "mol" や生物の "ATP" まで巻き込みかねず、
+ *   ご指摘の「コードで形式的に作ると問題によっておかしくなる」に
+ *   まっすぐ当てはまる。
+ *   そこで、呼び出す側が「この文章は英語の散文であって化学式ではない」と
+ *   分かっている場所だけで明示的に prose を渡す形にする。
+ *     formatText(text, highlights, { prose: true })
+ *   英語リスニング・英文法は audioTracks（英文の音源）を持つ問題だけが
+ *   対象なので、画面側はその有無で判断できる（科目名で分岐しない）。
+ *
+ * ■ prose のときに止めるのは「化学式の体裁付け」だけ
+ *   下線 <u>・ハイライト <hl>・改行・数式退避はそのまま通す。
+ *   止めるのは
+ *     ・英字トークンをセリフ体 span で包む処理
+ *     ・数字を下付き（H₂O の ₂）にする処理
+ *     ・末尾の +/- を上付き電荷にする処理
+ *   の3つ。英文にはどれも要らないし、あると害しかない。
+ */
+export type FormatTextOptions = {
+  /**
+   * true のとき「化学式・数式の体裁付け」を行わず、素の文章として組む。
+   * 英語リスニング・英文法の英文（と、その訳・解説）で使う。
+   */
+  prose?: boolean;
+};
+
+export function formatText(
+  text: string,
+  highlights: string[] = [],
+  options: FormatTextOptions = {}
+) {
   if (!text) return null;
+  const prose = options.prose === true;
 
   // ★最初に数式を KaTeX で組んで退避する★
   //   ここで抜いておくことで、以降の化学式変換・添字処理・分数処理は
   //   「数式ではない部分」だけを相手にすればよくなる。
   const { text: withMathSlots, slots: mathSlots } = extractMath(text);
 
-  // Replace * with proper math multiplication crosses
-  let processedText = normalizeScientificScripts(convertMathNotation(withMathSlots)).replace(
-    /([A-Za-z0-9]|\)|[％%]|\])[\s ]*\*[\s ]*([A-Za-z0-9]|\(|\[)/g,
-    '$1 <span class="font-sans font-semibold text-stone-500 mx-0.5">×</span> $2'
-  );
+  // ★prose では数式・化学式向けの前処理を通さない★
+  //   convertMathNotation / normalizeScientificScripts は
+  //   「a/b を分数に」「x^2 を上付きに」といった理科の組版を行うので、
+  //   英文に当てると Where's（アポストロフィ）や I'd like to のような
+  //   ごく普通の文まで巻き込む恐れがある。英文には要らないので通さない。
+  let processedText = prose
+    ? withMathSlots
+    : normalizeScientificScripts(convertMathNotation(withMathSlots)).replace(
+        /([A-Za-z0-9]|\)|[％%]|\])[\s ]*\*[\s ]*([A-Za-z0-9]|\(|\[)/g,
+        '$1 <span class="font-sans font-semibold text-stone-500 mx-0.5">×</span> $2'
+      );
+
+  if (!prose) {
 
   // (1) 明示的な分数表記 \frac{分子}{分母} を最優先で縦書き分数に変換する。
   //     入れ子は想定せず、波括弧内に } を含まないシンプルな書式に対応。
@@ -362,6 +427,7 @@ export function formatText(text: string, highlights: string[] = []) {
       ? line
       : line.replace(ISOTOPE_RE, `<sup class="${SUPERSCRIPT_CLASS} font-bold pr-[1px] select-none">$1</sup>$2`)))
     .join('\n');
+  } // ← if (!prose)：ここまでが化学式・数式向けの前処理
 
   // First, apply custom highlights to the text. We surround them with custom tags <hl>...</hl>
   let highlightedText = processedText;
@@ -434,6 +500,13 @@ export function formatText(text: string, highlights: string[] = []) {
     const startsFormula = /^<(?:sub|sup)[\s>]/i.test(nextToken.trim()) || /^<(?:sub|sup)>$/i.test(nextToken.trim());
 
     return parts.map((part, partIndex) => {
+      // ★英語の散文（prose）では化学式の体裁付けを一切しない★
+      //   ここを通すと "The" や "umbrella" が化学式トークンとみなされ、
+      //   セリフ体の span（インライン style）で包まれてしまう。
+      //   prose のときは素のテキストとして、改行だけ <br/> に置き換えて返す。
+      if (prose) {
+        return part ? part.replace(/\n/g, '<br/>') : '';
+      }
       if (part.match(/^[A-Za-z]+[0-9]*[+-]?$/)) {
         // Check if it's an ion (ends with + or -). Compact notation is ambiguous:
         // Cu2+ is Cu²⁺, NH4+ is NH₄⁺, SO42- is SO₄²⁻. Element数と末尾数字から判定する。
