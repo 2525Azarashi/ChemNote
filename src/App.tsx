@@ -23,12 +23,11 @@ import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
 import { SubjectSelection, getSubjectLabel, isSubjectId, type SubjectId } from './components/SubjectSelection';
 import { AdvancedFieldSelection } from './components/AdvancedFieldSelection';
-import { chemistryAdvancedData, ADVANCED_FIELDS, type AdvancedFieldId } from './data/chemistryAdvancedData';
+import { ADVANCED_FIELDS, type AdvancedFieldId } from './data/chemistryAdvancedData';
+// 学習ノートからの遷移（handleReviewNote）で化学基礎の章一覧を使うため、これだけは直接参照する
 import { chemistryData } from './data/chemistryData';
-import { englishListeningData } from './data/englishListeningData';
-import { mathData } from './data/mathData';
-import { biologyBasicData } from './data/biologyBasicData';
-import { englishGrammarData } from './data/englishGrammarData';
+// 全教科から章IDで引く処理は data/allChapters.ts に集約している
+import { findChapterById } from './data/allChapters';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIdleReset } from './hooks/useIdleReset';
 import { useIsMobile } from './hooks/useMediaQuery';
@@ -730,17 +729,13 @@ export default function App() {
 
   /**
    * 選択中の章（単元）。
-   * 化学基礎・化学（発展）・英語リスニングのすべてから探す。
+   * 化学基礎・化学（発展）・英語リスニングなど、全教科から探す。
    * 単元ID は接頭辞（c… / a… / el…）で重複しないため、単純な連結で安全に引ける。
+   *
+   * どの教科を探すかの一覧は data/allChapters.ts に集約している
+   * （教科を追加するときは、そのファイルに1行足すだけでよい）。
    */
-  const selectedChapter = [
-    ...chemistryData.parts.flatMap(p => p.chapters as any[]),
-    ...chemistryAdvancedData.parts.flatMap(p => p.chapters as any[]),
-    ...englishListeningData.parts.flatMap(p => p.chapters as any[]),
-    ...mathData.parts.flatMap(p => p.chapters as any[]),
-    ...biologyBasicData.parts.flatMap(p => p.chapters as any[]),
-    ...englishGrammarData.parts.flatMap(p => p.chapters as any[]),
-  ].find(c => (c as any).id === selectedChapterId);
+  const selectedChapter = findChapterById(selectedChapterId);
 
   return (
     <>

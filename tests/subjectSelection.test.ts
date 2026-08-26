@@ -31,6 +31,12 @@ vi.mock('../src/firebase', () => ({
 const SRC = readFileSync('src/components/SubjectSelection.tsx', 'utf8');
 const APP = readFileSync('src/App.tsx', 'utf8');
 
+// 「その科目の単元が探索対象に入っているか」は、ソース文字列ではなく
+// 実際に章を引けるかどうかで確かめる（探索は data/allChapters.ts に集約）
+const { findChapterById } = await import('../src/data/allChapters');
+const { englishListeningData } = await import('../src/data/englishListeningData');
+const { mathData } = await import('../src/data/mathData');
+
 describe('科目の定義', () => {
   it('化学基礎・化学・英語リスニング・数学・生物基礎・英文法の6科目が SubjectId に含まれる', async () => {
     const { SUBJECT_LABELS } = await import('../src/components/SubjectSelection');
@@ -186,11 +192,17 @@ describe('App 側の結線', () => {
 
   it('英語リスニングは分野選択を挟まず、直接単元選択へ進む', () => {
     expect(APP).toContain("selectedSubject === 'english_listening'");
-    expect(APP).toContain('englishListeningData.parts.flatMap');
+    // 「リスニングの単元が探索対象に入っているか」は
+    // App.tsx のソース文字列ではなく、実際に引けるかどうかで確かめる
+    // （探索処理は data/allChapters.ts の findChapterById に集約した）。
+    const firstListening = englishListeningData.parts.flatMap((p: any) => p.chapters)[0] as any;
+    expect(firstListening).toBeTruthy();
+    expect(findChapterById(firstListening.id)).toBe(firstListening);
   });
 
   it('数学の単元が「選択中の単元」の探索対象に含まれている', () => {
-    expect(APP).toContain("import { mathData } from './data/mathData'");
-    expect(APP).toContain('mathData.parts.flatMap');
+    const firstMath = mathData.parts.flatMap((p: any) => p.chapters)[0] as any;
+    expect(firstMath).toBeTruthy();
+    expect(findChapterById(firstMath.id)).toBe(firstMath);
   });
 });
