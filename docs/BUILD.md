@@ -127,14 +127,49 @@ Rollup 警告: Circular chunk: data-chemistry -> data-english-listening -> data-
 
 - **ファイル単位の循環依存は 0 件**（164 ファイル / 383 辺を Tarjan の SCC で検査。相互 import も 0 件）
 - つまり「教科データ同士が循環している」わけではない
-- 原因は **`src/data/chapterCatalog.ts` が全 6 教科をまとめて import しているハブ**であること
+- 原因は **`src/data` が `src/utils` を import していること**（10 本）
 
-このハブを教科別チャンクのどれかに入れると、そのチャンクが他の全教科チャンクに依存し、
-他教科がハブ側の共有物を参照して戻るため、**ファイル単位では循環していないのにチャンク単位でだけ循環**します。
-ESM はチャンク間の初期化順を決められず、初期化前の変数アクセスで落ちます。
+### 4-1. 原因の実体
 
-将来 `data` を教科別に割りたい場合は、**先に `chapterCatalog` のような「全教科を集めるハブ」を解消する**
-（章の定義を各教科側から登録する形にする）ことが前提です。ハブを残したままチャンクだけ割ると必ず真っ白になります。
+Rollup と同じチャンク割り当てを再現して全依存辺を数えた結果が次です
+（`data` を `data` / `data-chem` / `data-listen` に割った場合）。
+
+| 方向 | 本数 | 代表例 |
+| --- | --- | --- |
+| `data-chem` → `index` | 1 | `data/chemistryData.ts` → `utils/explanationFormat.ts` |
+| `index` → `data-chem` | 12 | `App.tsx`、`Explanation.tsx` ほか → `data/chemistryData.ts` |
+| `data` → `index` | 6 | `data/unitTeaching.ts` ほか → `utils/explanationFormat.ts` |
+| `index` → `data` | 40 | 多数のコンポーネント → 各教科データ |
+
+つまり循環しているのは教科データ同士ではなく、**`data 系チャンク` と `index チャンク` の間**です。
+
+```
+chemistryData.ts  →  utils/explanationFormat.ts   （data-chem → index）
+App.tsx など      →  chemistryData.ts             （index → data-chem）
+```
+
+`utils` はコンポーネントと同じ `index` チャンクに入るため、
+データ層が `utils` を1本でも参照していれば、`data` をどう細かく割っても必ず `index` を経由して環になります。
+ESM はチャンク間の初期化順を決められず、初期化前の変数アクセス（`Cannot access 'D' before initialization`）で落ちます。
+
+> **訂正**: 以前この節には「原因は `chapterCatalog` が全教科を集めるハブだから」と書いていましたが、**これは誤りでした。**
+> 実際に `chapterCatalog` を分割対象から除外してビルドしても、`Circular chunk` は解消しませんでした。
+> 上の辺の数え直しで、真因が `data → utils` であることが判明したため書き換えています。
+
+### 4-2. 現在の結論：教科別分割は行わない
+
+| 判断材料 | 実測 |
+| --- | --- |
+| メモリ削減効果 | **0**（809MB → 805MB。誤差の範囲） |
+| 失敗したときの症状 | **画面が真っ白**（致命的） |
+| 得られる利益 | 配信キャッシュの粒度が細かくなるだけ |
+| 成立させるための前提 | `data → utils` の 10 本すべてを解消する大改造 |
+
+**利益がゼロで、失敗時の被害が最大**なので、現在の単一 `data` チャンク（循環 0・ビルド成功）を維持します。
+
+将来どうしても割りたくなった場合の前提条件は、
+**教科データが `utils` に依存しないようにする**ことです（例: `explanationFormat` のうちデータが使う部分を
+`src/data` 側の純粋なヘルパーへ移す）。これを先に済ませない限り、チャンク設定だけ変えても必ず真っ白になります。
 
 ---
 
