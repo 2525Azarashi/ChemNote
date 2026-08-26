@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Target, BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical } from 'lucide-react';
+import { BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical } from 'lucide-react';
 import { TrendModal } from './TrendModal';
 import { chemistryBasicTrendDataset } from '../data/trendData';
 import { chemistryAdvancedTrendDataset } from '../data/chemistryAdvancedTrendData';

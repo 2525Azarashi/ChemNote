@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowDown, Beaker, Flame, Thermometer, Layers, Zap, ArrowRight, ChevronLeft } from 'lucide-react';
-import { InteractiveTree, NodeData } from './InteractiveTree';
+import { ArrowDown, Beaker, Flame, Thermometer, Layers, Zap, ChevronLeft } from 'lucide-react';
+import { InteractiveTree } from './InteractiveTree';
 import { substanceTreeData } from '../data/chemistryData';
 
 // 物質の分類ツリーデータ (Moved to chemistryData.ts)

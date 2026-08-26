@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Smartphone, Volume2, VolumeX, Home as HomeIcon, BookOpen, User, Settings, Trophy } from 'lucide-react';
+import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy } from 'lucide-react';
 import { Home } from './components/Home';
 import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
@@ -14,12 +14,9 @@ import { Explanation } from './components/Explanation';
 import { LearningViewer } from './components/LearningViewer';
 import { Leaderboard } from './components/Leaderboard';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { db, auth } from './firebase';
+import { auth } from './firebase';
 import { Intro } from './components/Intro';
 import { LogicalTree } from './components/LogicalTree';
-import { Flowchart } from './components/Flowchart';
-import { AuthButton } from './components/AuthButton';
 import { NoteDetail } from './components/NoteDetail';
 import { StudyHub } from './components/StudyHub';
 import { Onboarding } from './components/Onboarding';

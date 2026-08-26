@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronRight, Info, Network, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronRight, Info, Network, ChevronDown, ChevronUp } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { ExplanationBody } from './ExplanationBody';

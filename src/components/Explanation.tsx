@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, ChevronUp, Edit3, Save, Search, Network, Circle, Trophy, KeyRound, ListOrdered, Target } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { formatText } from '../utils/textFormatter';
 import { ExplanationBody } from './ExplanationBody';
 import { auth } from '../firebase';
@@ -12,7 +12,7 @@ import { ListeningAudioPlayer } from './ListeningAudioPlayer';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { isAnswerCorrect } from '../utils/answerJudge';
 import { gradingCriteriaProgress, resolveGradingCriteria } from '../utils/gradingCriteria';
-import { splitQuestionLabel, answerCardMarker, buildSubQuestionList, isSubQuestionListRedundant, extractInlineQuestionRows, extractListeningQuestionRows } from '../utils/questionDisplay';
+import { answerCardMarker, buildSubQuestionList, isSubQuestionListRedundant, extractInlineQuestionRows, extractListeningQuestionRows } from '../utils/questionDisplay';
 import {
   buildUnitKataBlock,
   sliceEnhancedByQuestion,
