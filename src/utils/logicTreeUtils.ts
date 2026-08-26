@@ -1,4 +1,4 @@
-import { NodeData } from '../components/InteractiveTree';
+import type { NodeData } from './logicTreeTypes';
 import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData } from '../data/chemistryData';
 
 export const getRelatedSteps = (sqId: string, currentQuestion: any) => {
