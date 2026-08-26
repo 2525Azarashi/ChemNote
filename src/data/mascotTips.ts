@@ -60,14 +60,14 @@ export type TipCategory =
   | 'listeningStrategy'
   | 'listeningTraining';
 
-/** 画面側が渡してくる「いま開いている科目」。 */
-export type TipSubject =
-  | 'chemistry_basic'
-  | 'chemistry'
-  | 'english_listening'
-  | 'english_grammar'
-  | 'math'
-  | 'biology_basic';
+// 教科IDの型は allChapters.ts の SubjectKey が唯一の定義
+import type { SubjectKey } from './allChapters';
+
+/**
+ * 画面側が渡してくる「いま開いている科目」。
+ * 実体は SubjectKey（アプリ全体で唯一の教科ID定義）。
+ */
+export type TipSubject = SubjectKey;
 
 /**
  * 豆知識を出してよい範囲。

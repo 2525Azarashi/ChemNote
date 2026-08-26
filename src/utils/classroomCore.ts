@@ -43,6 +43,10 @@
  * 28^6 ≒ 4.8億通り。総当りは list 禁止で防ぐ。
  */
 
+// 教科IDの型は data/allChapters.ts の SubjectKey が唯一の定義。
+// import type なのでコンパイル時に消え、実行時の依存は増えない。
+import type { SubjectKey } from '../data/allChapters';
+
 /**
  * 参加コードに使う文字集合。
  * 除外：0 O（ゼロとオー）、1 I L（イチとアイとエル）、
@@ -112,13 +116,7 @@ export interface ClassroomDoc {
   /** 参加コード */
   joinCode: string;
   /** 対象科目 */
-  subject:
-    | 'chemistry_basic'
-    | 'chemistry'
-    | 'english_listening'
-    | 'english_grammar'
-    | 'math'
-    | 'biology_basic';
+  subject: SubjectKey;
   /** 参加を受け付けているか（学期終了後に閉じられる） */
   joinOpen: boolean;
   /** 在籍数（表示用のキャッシュ。厳密な数は members を数える） */

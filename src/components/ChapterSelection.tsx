@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { type AdvancedFieldId } from '../data/chemistryAdvancedData';
 // 教科ごとの parts は data/allChapters.ts から引く
 // （以前はこのファイルで6教科ぶんを個別に import していた）
-import { getPartsOfSubject } from '../data/allChapters';
+import { getPartsOfSubject, type SubjectKey } from '../data/allChapters';
 import { ChevronRight, ArrowLeft, ChevronDown, GitBranch, TrendingUp, BarChart2, GraduationCap, X, Headphones } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChapterFlowchartModal } from './ChapterFlowchartModal';
@@ -42,7 +42,7 @@ interface ChapterSelectionProps {
    * 'english_listening' のときは、共通テストの大問を A・B ごとの単元として表示する
    * （第1問A・第1問B …）。各単元のページには「第N回演習」のボタンを並べる。
    */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'english_grammar' | 'math' | 'biology_basic';
+  subject?: SubjectKey;
   /** 科目が 'chemistry' のときに表示する分野 */
   field?: AdvancedFieldId;
   /** 分野名（画面見出しに出す。化学のときのみ） */

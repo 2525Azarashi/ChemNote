@@ -79,12 +79,20 @@ interface PartsLike {
 }
 
 /**
- * 教科ID。
+ * 教科ID。★アプリ全体で唯一の定義。★
  *
- * SubjectSelection.tsx の SubjectId と同じ値。
- * ここで別途書いているのは、data 層から components 層を参照すると
- * 依存が逆流してしまうため（今回のリファクタで潰した向きの逆）。
- * 値がずれていないことは tests/allChapters.test.ts で検査している。
+ * 以前はまったく同じ並びが9か所（components 4・data 4・utils 1）に
+ * 手書きされていて、教科を1つ増やすと9か所すべてを直す必要があった。
+ * 1か所でも漏らすと「その画面にだけ新しい教科を渡せない」状態になる。
+ *
+ * いまは各所がこの型の別名（type SubjectId = SubjectKey など）を
+ * 公開しているだけなので、教科の追加はここ1行で足りる。
+ * 別名を残しているのは、呼び出し側が今まで使ってきた名前
+ * （SubjectId / CatalogSubject / TipSubject）をそのまま使えるようにするため。
+ *
+ * この型を data 層に置いているのは、components 層に置くと
+ * data から components を参照することになり依存が逆流するため。
+ * 顔ぶれが SUBJECTS とズレていないことは tests/subjectKey.test.ts で検査している。
  */
 export type SubjectKey =
   | 'chemistry_basic'

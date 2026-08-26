@@ -57,15 +57,16 @@ import { getBiologyStats } from '../data/biologyBasicData';
 import { getGrammarStats } from '../data/englishGrammarData';
 // 「章に大問が何問あるか」の数え方は data/problemCount.ts に集約している
 import { countProblemsInChapters } from '../data/problemCount';
+// 教科IDの型は data/allChapters.ts の SubjectKey が唯一の定義
+import type { SubjectKey } from '../data/allChapters';
 
-/** アプリが扱う科目の識別子 */
-export type SubjectId =
-  | 'chemistry_basic'
-  | 'chemistry'
-  | 'english_listening'
-  | 'english_grammar'
-  | 'math'
-  | 'biology_basic';
+/**
+ * アプリが扱う科目の識別子。
+ *
+ * 実体は data/allChapters.ts の SubjectKey（アプリ全体で唯一の定義）。
+ * ここでは今までどおり SubjectId という名前でも使えるように別名を置いている。
+ */
+export type SubjectId = SubjectKey;
 
 /** 科目ID → 画面に出す科目名（App 側のバッジ表示などでも使う） */
 export const SUBJECT_LABELS: Record<SubjectId, string> = {

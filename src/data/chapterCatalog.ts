@@ -33,14 +33,14 @@ import { mathData } from './mathData';
 import { biologyBasicData } from './biologyBasicData';
 import { englishGrammarData } from './englishGrammarData';
 import type { ChapterDefinition } from '../utils/studySummary';
+// 教科IDの型は allChapters.ts の SubjectKey が唯一の定義
+import type { SubjectKey } from './allChapters';
 
-export type CatalogSubject =
-  | 'chemistry_basic'
-  | 'chemistry'
-  | 'english_listening'
-  | 'english_grammar'
-  | 'math'
-  | 'biology_basic';
+/**
+ * このカタログが扱う教科。
+ * 実体は allChapters.ts の SubjectKey（アプリ全体で唯一の教科ID定義）。
+ */
+export type CatalogSubject = SubjectKey;
 
 /** 科目の表示名（レポートの文章にも使う） */
 export const SUBJECT_LABELS: Record<CatalogSubject, string> = {

@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { auth } from '../firebase';
 // どの教科があるか・教科ごとの章一覧は data/allChapters.ts に集約している
 // （以前はこのファイルで6教科ぶんを個別に import して手で並べていた）
-import { SUBJECTS, getChaptersOfSubject } from '../data/allChapters';
+import { SUBJECTS, getChaptersOfSubject, type SubjectKey } from '../data/allChapters';
 // 「章に大問が何問あるか」の数え方は data/problemCount.ts に集約している
 import { countChapterProblems, countProblemsInChapters } from '../data/problemCount';
 import { SakuraPetals } from './SakuraPetals';
@@ -36,7 +36,7 @@ interface HomeProps {
   /** 現在選択中の科目名（表示用） */
   subjectLabel?: string;
   /** 現在選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'english_grammar' | 'math' | 'biology_basic';
+  subject?: SubjectKey;
   isGuest: boolean;
 }
 
