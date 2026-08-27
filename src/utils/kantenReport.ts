@@ -41,9 +41,7 @@ import type { SolvedMap } from './studySyncCore';
 import {
   buildChapterProgressRows,
   summarizeReviewDiscipline,
-  collectStudyDays,
-  countActiveDaysWithin,
-  calcEngagementScore,
+  buildStudyBaseMetrics,
   escapeCsvCell,
   toDateKey,
   type ChapterDefinition,
@@ -133,25 +131,20 @@ export function buildAttitudeEvidence(
   masteredBox: number,
   now: number = Date.now(),
 ): AttitudeEvidence {
-  const studyDays = collectStudyDays(solved, reviewItems);
-  const review = summarizeReviewDiscipline(reviewItems, masteredBox, now);
-  const activeDaysIn14 = countActiveDaysWithin(studyDays, 14, now);
+  // 土台の5指標は studySummary.ts の buildStudyBaseMetrics に1つだけ置いている
+  // （先生ダッシュボードと必ず同じ数値になるようにするため）。
+  const base = buildStudyBaseMetrics(solved, reviewItems, masteredBox, now);
 
   const recoveredToMastery = (Array.isArray(reviewItems) ? reviewItems : []).filter(
     (item) => Number(item?.box) >= masteredBox && (Number(item?.wrongCount) || 0) > 0,
   ).length;
 
   return {
-    activeDaysIn14,
-    totalStudyDays: studyDays.length,
-    lastStudiedAt: studyDays.length > 0 ? studyDays[studyDays.length - 1] : null,
-    review,
-    engagement: calcEngagementScore({
-      activeDaysIn14,
-      recoveryRate: review.recoveryRate,
-      overdue: review.overdue,
-      reviewTotal: review.total,
-    }),
+    activeDaysIn14: base.activeDaysIn14,
+    totalStudyDays: base.studyDays.length,
+    lastStudiedAt: base.lastStudiedAt,
+    review: base.review,
+    engagement: base.engagement,
     recoveredToMastery,
   };
 }
