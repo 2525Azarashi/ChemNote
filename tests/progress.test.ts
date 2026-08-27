@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
+import { dirname, resolve as pathResolve, sep } from 'node:path';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 import {
@@ -11,6 +12,7 @@ import {
   countSolvedProblemsIn,
   countSolvedByChapter,
   backfillLegacyProgress,
+  isLegacyProgressBackfilled,
   isPlainRecord,
   parseStoredNonNegativeInteger,
   parseStoredStringArrayRecord,
@@ -307,6 +309,79 @@ describe('backfillLegacyProgress：既存ユーザーの履歴を取りこぼさ
 
     expect(() => backfillLegacyProgress('u', chapters)).not.toThrow();
   });
+
+  /**
+   * -----------------------------------------------------------------
+   * isLegacyProgressBackfilled（引き継ぎ済みかの判定だけを取り出したもの）
+   * -----------------------------------------------------------------
+   * ホーム画面は「まだ引き継いでいない人」にだけ教科データ本体
+   * （約 2.6MB）を読み込ませたい。そのために
+   * 「もう済んでいるか」を安く判定する関数を分けた。
+   *
+   * ここで検査するのは、その判定が
+   * ★backfillLegacyProgress 本体の判定と完全に一致すること★。
+   * ここがズレると、
+   *   ・true を返しすぎる → 引き継ぎが永久に走らず、過去の記録が消えて見える
+   *   ・false を返しすぎる → 無駄に本体を読むだけ（害はない）
+   * の前者が起きる。最も取り返しがつかないので、必ず突き合わせる。
+   */
+  describe('isLegacyProgressBackfilled：本体の判定と一致する', () => {
+    it('引き継ぎ前は false、引き継ぎ後は true になる', () => {
+      expect(isLegacyProgressBackfilled('u')).toBe(false);
+
+      backfillLegacyProgress('u', chapters);
+
+      expect(isLegacyProgressBackfilled('u')).toBe(true);
+    });
+
+    it('true を返す状況では、本体を呼んでも 0 を返す（＝何もしない）', () => {
+      ls.setItem('quiz_run_c1_1_practice', JSON.stringify({ perQuestion: { p1: { finalScore: 50 } } }));
+
+      // 1回目：まだ済んでいない → 実際に引き継がれる
+      expect(isLegacyProgressBackfilled('u')).toBe(false);
+      expect(backfillLegacyProgress('u', chapters)).toBe(1);
+
+      // 2回目：済んでいる → 本体も 0 を返す
+      expect(isLegacyProgressBackfilled('u')).toBe(true);
+      expect(backfillLegacyProgress('u', chapters)).toBe(0);
+    });
+
+    it('引き継ぎ対象が何も無い人でも、1回走れば true になる（毎回読み込まないため）', () => {
+      // 旧データが1つも無い新規ユーザー。added は 0 だが、
+      // フラグは立つので次回から本体を読む必要が無くなる。
+      expect(backfillLegacyProgress('newbie', chapters)).toBe(0);
+      expect(isLegacyProgressBackfilled('newbie')).toBe(true);
+    });
+
+    it('ユーザーごとに独立している（別のユーザーの済み状態を流用しない）', () => {
+      backfillLegacyProgress('u', chapters);
+
+      expect(isLegacyProgressBackfilled('u')).toBe(true);
+      expect(isLegacyProgressBackfilled('other')).toBe(false);
+    });
+
+    it('ゲスト（uid 未指定）も本体と同じ扱いになる', () => {
+      // 本体は uid が空なら 'guest' に正規化する。判定側も同じ規則。
+      expect(isLegacyProgressBackfilled(null)).toBe(false);
+      backfillLegacyProgress(null, chapters);
+      expect(isLegacyProgressBackfilled(null)).toBe(true);
+      expect(isLegacyProgressBackfilled('guest')).toBe(true);
+    });
+
+    it('フラグが読めない状況では false を返す（安全側に倒す）', () => {
+      // 判断できないときに true を返すと引き継ぎが永久に走らず、
+      // 過去の記録が消えたように見える。だから「まだ」とみなす。
+      const original = ls.getItem;
+      try {
+        ls.getItem = () => {
+          throw new Error('読めない');
+        };
+        expect(isLegacyProgressBackfilled('u')).toBe(false);
+      } finally {
+        ls.getItem = original;
+      }
+    });
+  });
 });
 
 describe('画面側の結線（進捗が実際に記録・表示されるか）', () => {
@@ -326,22 +401,190 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
     expect(src).toContain("from '../utils/progress'");
     // 科目ごとに数える版を使う（全科目合計の countSolvedProblems ではない）
     expect(src).toContain('countSolvedProblemsIn');
-    expect(src).toContain('backfillLegacyProgress');
 
-    // 分母を数える式そのものは data/problemCount.ts に集約したため、
-    // 「Home.tsx に c.practiceProblems?.length と書いてあるか」という
-    // 文字列検査では意図（＝分母が「ミニテスト＋演習」であること）を守れなくなった。
-    // 代わりに (1) Home.tsx がその共通関数を使っていること、
-    //         (2) その共通関数が実際に両方を足していること、の2点を見る。
-    expect(src).toContain('countProblemsInChapters');
+    /*
+     * 分母を数える経路が2段になったので、検査もそれに合わせている。
+     *
+     * ■ 以前
+     *   Home.tsx が章オブジェクトを受け取り、countProblemsInChapters で数えていた。
+     *   → 起動時に教科データ本体（約2.6MB）が読み込まれていた。
+     *
+     * ■ いま
+     *   Home.tsx は軽い索引（chapterIndex.generated.ts）の problemCount を足す。
+     *   その problemCount が countChapterProblems と一致していることは
+     *   tests/chapterIndex.test.ts が全162章ぶん突き合わせて検査している。
+     *
+     * したがってここでは
+     *   (1) Home.tsx が索引の problemCount を分母にしていること
+     *   (2) countChapterProblems が実際にミニテストと演習の両方を足していること
+     * の2点を見る。意図（分母が「ミニテスト＋演習」であること）は変わっていない。
+     */
+    expect(src).toContain('chapterIndex.generated');
+    expect(src).toContain('problemCount');
+
     const { countChapterProblems } = await import('../src/data/problemCount');
     // ミニテストだけ・演習だけ・両方、いずれも正しく数えること
     expect(countChapterProblems({ miniTest: [1, 2, 3] })).toBe(3);
     expect(countChapterProblems({ practiceProblems: [1, 2] })).toBe(2);
     expect(countChapterProblems({ miniTest: [1, 2, 3], practiceProblems: [1, 2] })).toBe(5);
 
+    // 索引の分母が本体と一致していること（ホームに出る数字そのもの）
+    const { getChapterIndexOfSubject } = await import('../src/data/chapterIndex.generated');
+    const { getChaptersOfSubject } = await import('../src/data/allChapters');
+    const { countProblemsInChapters } = await import('../src/data/problemCount');
+    const indexTotal = getChapterIndexOfSubject('chemistry_basic').reduce(
+      (sum, c) => sum + c.problemCount,
+      0,
+    );
+    expect(indexTotal).toBe(countProblemsInChapters(getChaptersOfSubject('chemistry_basic') as any));
+
     // 旧実装（mini_test の answers を数える）が残っていないこと
     expect(src).not.toContain('quiz_answers_${c.id}_mini_test');
+  });
+
+  /**
+   * 引き継ぎ処理は「まだの人にだけ」走らせる形に変えたので、
+   * その結線が崩れていないことを機械的に守る。
+   *
+   * ここが崩れる（引き継ぎが呼ばれなくなる）と、
+   * 昔から使ってくれている生徒の過去の記録が消えたように見える。
+   * ★最も取り返しのつかない失敗なので、必ず検査する。★
+   */
+  it('Home.tsx が「まだ引き継いでいない人」には引き継ぎを走らせている', () => {
+    const src = readFileSync('src/components/Home.tsx', 'utf8');
+
+    // 済みかどうかを先に判定していること
+    expect(src).toContain('isLegacyProgressBackfilled');
+    // 「まだの人」のときだけ入る分岐であること（否定形で判定している）
+    expect(src).toMatch(/if\s*\(\s*!\s*isLegacyProgressBackfilled\(/);
+    // その分岐の中で、実際に引き継ぎ関数を呼んでいること
+    expect(src).toContain('backfillLegacyProgress(uid,');
+    // 引き継ぎには教科データ本体（章の実体）を渡していること
+    expect(src).toContain('getChaptersOfSubject(subject)');
+
+    // 判定より後に引き継ぎを書いていること（順序が逆だと意味が無い）
+    expect(src.indexOf('backfillLegacyProgress(uid,')).toBeGreaterThan(
+      src.indexOf('isLegacyProgressBackfilled(uid)'),
+    );
+
+    // 引き継ぎが終わってから進捗を数えること
+    // （先に数えると、引き継ぎ直後の1回だけ古い数字が出てしまう）
+    expect(src.indexOf('setSolvedQuestions(')).toBeGreaterThan(
+      src.indexOf('backfillLegacyProgress(uid,'),
+    );
+  });
+
+  it('Home.tsx が起動時に教科データ本体を静的 import していない', () => {
+    const src = readFileSync('src/components/Home.tsx', 'utf8');
+
+    /*
+     * ★これがホームを軽くしている条件そのもの★
+     *
+     * 教科データ本体（allChapters / problemCount 経由の章オブジェクト）を
+     * ファイル冒頭で import すると、起動時にまた約2.6MB を読み込むようになり、
+     * 索引を作った意味が消える。
+     *
+     * 型だけの import（import { type SubjectKey }）は実行時に消えるので許す。
+     * 引き継ぎ用の動的 import（import('../data/allChapters')）も、
+     * 起動時には読まれないので許す。
+     * 禁じるのは「値としての静的 import」だけ。
+     */
+    const staticValueImports = src
+      .split('\n')
+      .filter((line) => /^import\s/.test(line) && !/^import\s*\{?\s*type\s/.test(line));
+
+    // 章の実体を配ってくる関数を、静的 import で持ち込んでいないこと
+    staticValueImports.forEach((line) => {
+      expect(line).not.toContain('getChaptersOfSubject');
+      expect(line).not.toContain('getPartsOfSubject');
+      expect(line).not.toContain('SUBJECTS');
+    });
+
+    /*
+     * ★ここが一度実際に踏んだ落とし穴なので、機械的に固定する★
+     *
+     * 型だけを使う場合でも
+     *     import { type SubjectKey } from '../data/allChapters';
+     * と書くと、モジュールの解決自体は行われるため、バンドラは
+     * data/allChapters.ts →（6教科ぶんの教科データ）を
+     * 起動時の読み込みに含めてしまう。
+     *
+     * 実測：この書き方のままだと Home が引く src/data は
+     *       51 ファイル / 2,662,148 バイトのままだった。
+     *       `import type` に直した瞬間に 4 ファイル / 83,804 バイトになった。
+     *
+     * 見た目がほとんど同じで効果が正反対なので、必ずテストで押さえる。
+     */
+    expect(src).not.toMatch(/import\s*\{[^}]*\btype\b[^}]*\}\s*from\s*['"][^'"]*allChapters['"]/);
+    expect(src).toMatch(/import\s+type\s*\{[^}]*SubjectKey[^}]*\}\s*from\s*['"][^'"]*allChapters['"]/);
+  });
+
+  it('Home.tsx が引き込む教科データが十分小さい（起動の重さそのもの）', () => {
+    /*
+     * ホームの依存を実際に辿って、教科データ本体が混ざっていないことを見る。
+     *
+     * 文字列検査（どう import しているか）だけでは、
+     * 「別の軽そうなファイル経由で結局教科データに繋がっていた」
+     * という事故を防げない。実際に上で1度それを踏んだ
+     * （import { type ... } の書き方で allChapters が読まれていた）。
+     * そこで依存グラフを最後まで辿って、合計サイズで判定する。
+     */
+    const root = process.cwd();
+    const resolveImport = (fromFile: string, spec: string): string | null => {
+      if (!spec.startsWith('.')) return null;
+      const base = pathResolve(dirname(fromFile), spec);
+      for (const candidate of [
+        base,
+        `${base}.ts`,
+        `${base}.tsx`,
+        pathResolve(base, 'index.ts'),
+        pathResolve(base, 'index.tsx'),
+      ]) {
+        try {
+          if (statSync(candidate).isFile()) return candidate;
+        } catch {
+          /* 次の候補へ */
+        }
+      }
+      return null;
+    };
+
+    const start = pathResolve(root, 'src/components/Home.tsx');
+    const seen = new Set<string>([start]);
+    const queue = [start];
+    let dataBytes = 0;
+    let dataFiles = 0;
+
+    while (queue.length > 0) {
+      const file = queue.shift() as string;
+      const src = readFileSync(file, 'utf8');
+
+      // 静的 import / re-export だけを辿る（動的 import は起動時に読まれない）
+      const re = /^[^\S\n]*(?:import|export)\s+(?!type\s)(?:[^'"\n]*?\sfrom\s+)?['"]([^'"]+)['"]/gm;
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(src)) !== null) {
+        const resolved = resolveImport(file, m[1]);
+        if (!resolved || seen.has(resolved)) continue;
+        seen.add(resolved);
+        queue.push(resolved);
+        if (resolved.includes(`${sep}src${sep}data${sep}`)) {
+          dataFiles += 1;
+          dataBytes += statSync(resolved).size;
+        }
+      }
+    }
+
+    /*
+     * 実測（このコミット時点）: 4 ファイル / 83,804 バイト。
+     * 以前は 50 ファイル / 2,637,176 バイトだった。
+     *
+     * 上限を 300KB にしたのは、
+     *   ・現在の 84KB から多少増えても通る余裕を残しつつ、
+     *   ・教科データ本体が1つでも混ざれば必ず超える（最小のものでも 100KB 級）
+     * という幅として選んだ。
+     */
+    expect(dataBytes).toBeLessThan(300_000);
+    expect(dataFiles).toBeLessThan(15);
   });
 
   it('Home.tsx が教科ごとの進捗バーを出している（化学基礎と化学を並べる）', async () => {
