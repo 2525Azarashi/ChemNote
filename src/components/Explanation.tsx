@@ -104,20 +104,12 @@ import { IonizationEnergyChart } from './IonizationEnergyChart';
 
 // Substance Tree Data for Chapter 1 (Moved to chemistryData.ts)
 
-const filterTree = (node: NodeData, relatedNodeIds: string[]): NodeData | null => {
-  const isRelated = relatedNodeIds.includes(node.id);
-  const filteredChildren = node.children
-    ? node.children.map(child => filterTree(child, relatedNodeIds)).filter(child => child !== null) as NodeData[]
-    : [];
-  
-  if (isRelated || filteredChildren.length > 0) {
-    return {
-      ...node,
-      children: filteredChildren
-    };
-  }
-  return null;
-};
+// ここには filterTree（ツリーを関連ノードだけに絞る関数）があったが、
+// 自分自身の再帰以外どこからも呼ばれていなかったため削除した。
+// utils/logicTreeUtils.ts にも export の有無以外まったく同一のコピーが
+// あり、そちらも未使用だったので同時に消してある。
+// ツリーの絞り込みが再び必要になった場合は logicTreeUtils.ts に
+// 1つだけ置くこと（画面側に実装を戻さない）。
 
 const getDifficulty = (sqId: string) => {
   const id = sqId.replace(/^q/, 'p');
