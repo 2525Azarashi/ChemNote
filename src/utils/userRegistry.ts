@@ -38,6 +38,10 @@ import { auth, db } from '../firebase';
 import { safeLocalStorage } from './safeLocalStorage';
 // ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
 import { profileKey, streakKey, completedKey } from './userStorageKeys';
+// タイムアウト付き fetch と 15秒のタイムアウト値は、フィードバック
+// （feedback.ts）と同じ GAS へ同じ作法で送るため共通のものを使う
+// （以前はこの2ファイルに同じ実装と同じ値が別々に書かれていた）。
+import { fetchWithTimeout, WEBHOOK_TIMEOUT_MS } from './httpTimeout';
 
 /** Firestore のコレクション名（1人1ドキュメント。ドキュメントID = uid） */
 export const USERS_COLLECTION = 'app_users';
@@ -51,9 +55,6 @@ const GUEST_DEVICE_ID_KEY = 'user_registry_guest_device_v1';
 
 /** 「アクティブ」として再送する間隔（24時間） */
 const ACTIVE_RESYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
-
-/** 送信タイムアウト（フィードバックと揃える） */
-const WEBHOOK_TIMEOUT_MS = 15000;
 
 /** スプレッドシートへ送るペイロード */
 export interface UserRecordPayload {
@@ -210,16 +211,6 @@ async function saveToFirestore(payload: UserRecordPayload): Promise<void> {
 // -------------------------------------------------------------------
 // 送信口②：Google スプレッドシート（フィードバックと同じ GAS を使う）
 // -------------------------------------------------------------------
-
-async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number): Promise<Response> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    return await fetch(url, { ...init, signal: controller.signal });
-  } finally {
-    clearTimeout(timer);
-  }
-}
 
 /**
  * GAS へ送る。

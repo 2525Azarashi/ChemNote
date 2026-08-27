@@ -32,6 +32,10 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { safeLocalStorage } from './safeLocalStorage';
+// タイムアウト付き fetch と 15秒のタイムアウト値は、ユーザー記録
+// （userRegistry.ts）と同じ GAS へ同じ作法で送るため共通のものを使う
+// （以前はこの2ファイルに同じ実装と同じ値が別々に書かれていた）。
+import { fetchWithTimeout, WEBHOOK_TIMEOUT_MS } from './httpTimeout';
 
 /** フィードバックの送付先メールアドレス（mailto フォールバック／GAS 通知先の既定値） */
 export const FEEDBACK_EMAIL = 'mntobira@gmail.com';
@@ -483,20 +487,6 @@ async function sendToFirestore(payload: FeedbackPayload): Promise<void> {
 // -------------------------------------------------------------------
 // 送信口②：Google Apps Script Web アプリ（スプレッドシート／メール）
 // -------------------------------------------------------------------
-
-/** 送信のタイムアウト（ミリ秒）。無応答のまま「送信中…」で固まるのを防ぐ */
-const WEBHOOK_TIMEOUT_MS = 15000;
-
-/** AbortController でタイムアウト付きの fetch を行う */
-async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number): Promise<Response> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    return await fetch(url, { ...init, signal: controller.signal });
-  } finally {
-    clearTimeout(timer);
-  }
-}
 
 /**
  * Google Apps Script（スプレッドシート）へ送る。
