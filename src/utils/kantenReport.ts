@@ -42,7 +42,7 @@ import {
   buildChapterProgressRows,
   summarizeReviewDiscipline,
   buildStudyBaseMetrics,
-  escapeCsvCell,
+  buildCsvText,
   toDateKey,
   type ChapterDefinition,
   type ChapterProgressRow,
@@ -298,14 +298,14 @@ export const KANTEN_CSV_HEADERS = [
 ] as const;
 
 export function buildKantenCsv(reports: KantenReport[], withBom = true): string {
-  const lines: string[] = [];
-  lines.push(KANTEN_CSV_HEADERS.map(escapeCsvCell).join(','));
-
-  reports.forEach((report) => {
-    const strong = report.knowledge.strongChapters[0];
-    const weak = report.knowledge.weakChapters[0];
-    lines.push(
-      [
+  // 骨組み（見出し・CRLF・BOM・エスケープ）は studySummary.ts の
+  // buildCsvText に任せ、ここは「どの列をどの順で出すか」だけを持つ。
+  return buildCsvText(
+    KANTEN_CSV_HEADERS,
+    reports.map((report) => {
+      const strong = report.knowledge.strongChapters[0];
+      const weak = report.knowledge.weakChapters[0];
+      return [
         report.displayName,
         report.subjectLabel,
         report.knowledge.ratePercent,
@@ -320,14 +320,10 @@ export function buildKantenCsv(reports: KantenReport[], withBom = true): string 
         report.attitude.review.overdue,
         report.attitude.engagement.score,
         report.commentDraft,
-      ]
-        .map(escapeCsvCell)
-        .join(','),
-    );
-  });
-
-  const body = `${lines.join('\r\n')}\r\n`;
-  return withBom ? `\uFEFF${body}` : body;
+      ];
+    }),
+    withBom,
+  );
 }
 
 /** CSV のファイル名（クラス名＋日付。ダウンロードフォルダで迷子にならないように） */
