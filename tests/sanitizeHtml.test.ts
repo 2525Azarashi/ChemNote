@@ -15,6 +15,8 @@
  *   ソーステキストの検査ではなく実際に通して結果を見るのが確実。
  */
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import {
   sanitizeInlineHtml,
   stripHtmlToText,
@@ -373,5 +375,128 @@ describe('stripHtmlToText', () => {
 
   it('連続する空白は1つにまとめる（一覧のプレビューが崩れない）', () => {
     expect(stripHtmlToText('a   \n\n  b')).toBe('a b');
+  });
+});
+
+// ===================================================================
+// escapeHtml（生テキストを HTML に置くための最小エスケープ）の共通化
+// ===================================================================
+//
+// ■ 何が重複していたか
+//   「& < > だけを実体参照にする」最小エスケープが2箇所にあった。
+//     src/utils/listeningExplanation.ts:117 （SCRIPT枠に生の英文を置く）
+//     src/utils/mathTypeset.ts:40           （KaTeX 失敗時のフォールバック等）
+//
+//   どちらも「HTMLとして解釈されたら困る生テキスト」を埋め込む直前に
+//   通す関数で、置換する3文字も順序も同じだった。
+//   （listeningExplanation 側だけ String(text) の保険が付いていたが、
+//     呼び出し側は既に String(...) で正規化済みなので実質同じ）
+//
+// ■ ★ escapeTextNode とは統合していない（重要）★
+//   sanitizeHtml.ts には既に escapeTextNode があるが、これは
+//   KEEP_ENTITY による否定先読みを使い「すでに正しい実体参照
+//   （&nbsp; など）は二重エスケープしない」という別のふるまいを持つ。
+//   例）'a &nbsp; b'
+//        escapeTextNode → 'a &nbsp; b'      （そのまま通す）
+//        escapeHtml     → 'a &amp;nbsp; b'  （& も escape する）
+//   見た目が似ているので「まとめられそう」に見えるが、
+//   まとめると問題データ中の &nbsp; が画面に文字列として出てしまう。
+//   意図的に別関数のままにしてある。下のテストでこの差を固定する。
+// -------------------------------------------------------------------
+
+/** 移動前に listeningExplanation.ts にあった実装（そのまま複製） */
+function legacyEscapeHtmlA(text: string): string {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/** 移動前に mathTypeset.ts にあった実装（そのまま複製） */
+function legacyEscapeHtmlB(text: string): string {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+describe('escapeHtml（生テキスト用の最小エスケープ）', () => {
+  const CASES = [
+    '',
+    'a',
+    '&',
+    '<',
+    '>',
+    '&&&',
+    '<<>>',
+    'a&b<c>d',
+    '&nbsp;',
+    '&amp;',
+    '&#39;',
+    '&lt;script&gt;',
+    '<script>alert(1)</script>',
+    '<img src=x onerror=alert(1)>',
+    'A: Hello.\nB: Hi there.',
+    'H2SO4 & H2O',
+    '5 < 6 > 4',
+    'x'.repeat(200),
+    '絵文字😀と<b>タグ</b>',
+  ];
+
+  it('移動前の2つの実装と、すべての入力で同じ結果になる', async () => {
+    const { escapeHtml } = await import('../src/utils/sanitizeHtml');
+    for (const s of CASES) {
+      expect(escapeHtml(s), JSON.stringify(s)).toBe(legacyEscapeHtmlA(s));
+      expect(escapeHtml(s), JSON.stringify(s)).toBe(legacyEscapeHtmlB(s));
+    }
+  });
+
+  it('タグとして解釈される余地を消す（& を先に置換して二重にしない）', async () => {
+    const { escapeHtml } = await import('../src/utils/sanitizeHtml');
+    expect(escapeHtml('<b>')).toBe('&lt;b&gt;');
+    expect(escapeHtml('&')).toBe('&amp;');
+    // & を最初に置換しているので、後から作られた &lt; が &amp;lt; にならない
+    expect(escapeHtml('<')).toBe('&lt;');
+    expect(escapeHtml('&lt;')).toBe('&amp;lt;');
+    // 引用符は変換しない（属性値の中に入れる用途では使っていない）
+    expect(escapeHtml('"x"')).toBe('"x"');
+    expect(escapeHtml("'x'")).toBe("'x'");
+  });
+
+  it('★escapeTextNode とはふるまいが違う（統合してはいけない）★', async () => {
+    const { escapeHtml, sanitizeInlineHtml } = await import('../src/utils/sanitizeHtml');
+    // escapeHtml は & を必ずエスケープする
+    expect(escapeHtml('a &nbsp; b')).toBe('a &amp;nbsp; b');
+    expect(escapeHtml('H&amp;M')).toBe('H&amp;amp;M');
+    // 一方 sanitizeInlineHtml（内部で escapeTextNode を使う）は
+    // すでに正しい実体参照を二重エスケープしない
+    expect(sanitizeInlineHtml('a &nbsp; b')).toBe('a &nbsp; b');
+    expect(sanitizeInlineHtml('H&amp;M')).toBe('H&amp;M');
+    // つまり両者は別物。まとめると問題データの &nbsp; が文字列で出る。
+    expect(escapeHtml('a &nbsp; b')).not.toBe(sanitizeInlineHtml('a &nbsp; b'));
+  });
+
+  it('実装は sanitizeHtml.ts だけにある（2つに増えていない）', () => {
+    const decl = /function escapeHtml\s*\(/u;
+    for (const file of ['src/utils/listeningExplanation.ts', 'src/utils/mathTypeset.ts']) {
+      const src = readFileSync(resolve(__dirname, '..', file), 'utf8');
+      expect(src, `${file} に実装が復活している`).not.toMatch(decl);
+      expect(src, `${file} が sanitizeHtml から取り込んでいない`).toMatch(/from '\.\/sanitizeHtml'/u);
+    }
+    const home = readFileSync(resolve(__dirname, '..', 'src/utils/sanitizeHtml.ts'), 'utf8');
+    expect(home).toMatch(/export function escapeHtml\s*\(/u);
+    // escapeTextNode は別物として残っていること（消していない）
+    expect(home).toMatch(/function escapeTextNode\s*\(/u);
+    expect(home).toMatch(/KEEP_ENTITY/u);
+  });
+
+  it('呼び出し側の使い方は変えていない', () => {
+    const LE = readFileSync(resolve(__dirname, '..', 'src/utils/listeningExplanation.ts'), 'utf8');
+    const MT = readFileSync(resolve(__dirname, '..', 'src/utils/mathTypeset.ts'), 'utf8');
+    // SCRIPT枠：エスケープしてから改行を <br> にする順序が重要
+    expect(LE).toContain('escapeHtml(body).replace(/\\n/g, \'<br>\')');
+    expect(LE).toContain('escapeHtml(jp)');
+    // KaTeX 失敗時のフォールバック
+    expect(MT).toContain('escapeHtml(source)');
+    expect(MT).toContain('escapeHtml(piece.value)');
+    // 数式でない部分をそのまま出すところ
+    expect(MT).toContain('escapeHtml(atom.text.slice(s, e))');
   });
 });

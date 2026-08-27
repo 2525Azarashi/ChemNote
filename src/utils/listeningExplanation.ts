@@ -54,6 +54,10 @@ import {
   SQ_BODY_MARK,
   ENHANCED_MARK,
 } from './explanationFormat';
+// 生テキストの最小エスケープは、数式側（mathTypeset.ts）と同じ作法で
+// なければ表示が食い違うので、sanitizeHtml.ts の1つだけを使う
+// （以前はこのファイルにも同じ実装が書かれていた）。
+import { escapeHtml } from './sanitizeHtml';
 
 /**
  * スクリプトを入れる枠。
@@ -113,13 +117,11 @@ export function scriptBox(script: string, translation?: string): string {
   );
 }
 
-/** 枠の中に生の英文をそのまま置くので、記号が壊れないようにしておく。 */
-function escapeHtml(text: string): string {
-  return String(text)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
+// 枠の中に生の英文をそのまま置くので、記号が壊れないように
+// escapeHtml を通す。実装は sanitizeHtml.ts（このファイル冒頭で import）。
+// 以前ここにあったものは String(text) を挟んでいたが、呼び出し元の
+// scriptBox が既に String(script || '') / String(translation || '') で
+// 文字列にしてから渡しているため、結果は変わらない。
 
 // ---------------------------------------------------------------------
 // スクリプトの取り出し
