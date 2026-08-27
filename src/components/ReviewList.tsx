@@ -4,9 +4,7 @@ import { auth } from '../firebase';
 import {
   getAllReviewItems,
   getDueReviewItems,
-  markReviewedCorrect,
-  markReviewedWrong,
-  removeReviewItem,
+  createReviewActions,
   isMastered,
   REVIEW_INTERVALS_DAYS,
   type ReviewItem,
@@ -51,18 +49,11 @@ export function ReviewList({ onBack, isGuest }: ReviewListProps) {
   const dueItems = useMemo(() => getDueReviewItems(uid, now), [items, now, uid]);
   const shown = tab === 'due' ? dueItems : items;
 
-  const handleCorrect = (key: string) => {
-    markReviewedCorrect(uid, key);
-    refresh();
-  };
-  const handleWrong = (key: string) => {
-    markReviewedWrong(uid, key);
-    refresh();
-  };
-  const handleRemove = (key: string) => {
-    removeReviewItem(uid, key);
-    refresh();
-  };
+  // 「保存 → 画面を作り直す」の3操作は学習ノート画面（StudyHub.tsx）と
+  // 同じ手順なので、reviewList.ts の1つだけを使う
+  // （以前はここにも同じ実装があった）。
+  // 何を作り直すかは画面ごとに違うので refresh は上の実装を渡す。
+  const { handleCorrect, handleWrong, handleRemove } = createReviewActions(uid, refresh);
 
   const masteredCount = items.filter(isMastered).length;
 
