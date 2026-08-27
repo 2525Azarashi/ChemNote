@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
+    "gen:index": "tsx scripts/gen-chapter-index.mts",
     "lint:chem": "node scripts/lint-chem.mjs",
     "lint:chem:fix": "node scripts/lint-chem.mjs --fix",
     "verify:format": "tsx scripts/verify-explanation-format.mjs",

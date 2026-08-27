@@ -1,0 +1,225 @@
+/**
+ * ===================================================================
+ * 章インデックス（軽い索引）の生成スクリプト
+ * ===================================================================
+ *
+ * -------------------------------------------------------------------
+ * ■ 何を作るスクリプトか
+ * -------------------------------------------------------------------
+ * 教科データ本体（src/data/*.ts）から、
+ * ホーム画面が必要とする情報だけを抜き出した
+ *
+ *     src/data/chapterIndex.generated.ts
+ *
+ * を生成する。抜き出すのは次の4つだけで、問題文・選択肢・解説は含めない。
+ *
+ *     章ID / 章タイトル / 章の略称タイトル / その章の大問数
+ *
+ * -------------------------------------------------------------------
+ * ■ なぜ必要になったのか（実測）
+ * -------------------------------------------------------------------
+ * ホーム画面（Home.tsx）は起動直後に必ず表示される画面だが、
+ * 表示している内容は
+ *
+ *     ・教科ごとの「大問 12 / 174 問」という進捗
+ *     ・「次の章：○○ から始めよう」という章名
+ *
+ * だけで、★問題文は1文字も出していない★。
+ * ところが実装は教科データの章オブジェクトそのものを受け取っていたため、
+ * 依存グラフを機械的に辿ると
+ *
+ *     Home.tsx が引き込む src/data … 50 ファイル / 2,637,176 バイト
+ *
+ * が起動時に読み込まれていた。問題を増やせばこの数字がそのまま増える。
+ * 「問題数が莫大になっても耐えられるように」という要件に対して、
+ * ここが最初に効く場所になる。
+ *
+ * 画面を後から読み込む（lazy 化）では解決しない。ホームは
+ * ★必ず最初に出る画面★なので、後回しにできる相手がいない。
+ * 必要なのは「ホームが読む量そのものを減らす」ことである。
+ *
+ * -------------------------------------------------------------------
+ * ■ なぜ「生成」なのか（手書きの索引にしない理由）
+ * -------------------------------------------------------------------
+ * 索引を手で書くと、問題を1問足したときに索引の更新を忘れる。
+ * その場合ホームの分母だけが古いままになり、
+ * 「解いたのに進捗が増えない」という最も分かりにくい不具合になる。
+ *
+ * そこで索引は必ず教科データから機械的に作り、
+ * ★中身が一致しているかをテストで毎回突き合わせる★
+ * （tests/chapterIndex.test.ts）。
+ * ズレたらテストが落ちるので、古い索引が本番へ出ることはない。
+ *
+ * -------------------------------------------------------------------
+ * ■ 使い方
+ * -------------------------------------------------------------------
+ *     npm run gen:index
+ *
+ * 問題を足したあとにこれを実行して、差分をコミットする。
+ * 実行を忘れた場合は tests/chapterIndex.test.ts が落ちて教えてくれる。
+ */
+
+import { writeFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { SUBJECTS, getChaptersOfSubject } from '../src/data/allChapters';
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const OUT = resolve(HERE, '../src/data/chapterIndex.generated.ts');
+
+/**
+ * 章1つぶんの索引。
+ *
+ * フィールド名は Home.tsx が元々読んでいた名前と同じにしている
+ * （id / title / abstractTitle）。呼び出し側の書き方を変えずに
+ * 差し替えられるようにするため。
+ */
+interface ChapterIndexEntry {
+  id: string;
+  title?: string;
+  abstractTitle?: string;
+  /** この章の大問数（miniTest ＋ practiceProblems）。数え方は data/problemCount.ts と同じ。 */
+  problemCount: number;
+}
+
+/** 教科1つぶんの索引（並び順・表示名も索引側に持たせる） */
+interface SubjectIndexEntry {
+  id: string;
+  label: string;
+  chapters: ChapterIndexEntry[];
+}
+
+function buildIndex(): SubjectIndexEntry[] {
+  const index: SubjectIndexEntry[] = [];
+
+  for (const subject of SUBJECTS) {
+    const chapters = getChaptersOfSubject(subject.id).map((chapter: any) => {
+      const entry: ChapterIndexEntry = {
+        id: String(chapter.id),
+        // 大問数の数え方は data/problemCount.ts の countChapterProblems と同一。
+        // （ここで import すると生成物と実装で数え方がズレないが、
+        //   このスクリプトは Node で動くだけなので同じ式を明示的に書いている。
+        //   一致は tests/chapterIndex.test.ts が countChapterProblems と
+        //   突き合わせて検査する。）
+        problemCount:
+          (chapter.miniTest?.length || 0) + (chapter.practiceProblems?.length || 0),
+      };
+      // 無い教科もあるので、あるときだけ入れる（無いキーを "undefined" と書かない）
+      if (typeof chapter.title === 'string' && chapter.title) entry.title = chapter.title;
+      if (typeof chapter.abstractTitle === 'string' && chapter.abstractTitle) {
+        entry.abstractTitle = chapter.abstractTitle;
+      }
+      return entry;
+    });
+
+    index.push({ id: subject.id, label: subject.label, chapters });
+  }
+
+  return index;
+}
+
+const HEADER = `/**
+ * ===================================================================
+ * 章インデックス（自動生成ファイル・手で編集しないこと）
+ * ===================================================================
+ *
+ * ★このファイルは scripts/gen-chapter-index.mts が生成する。★
+ * 手で書き換えても次の生成で消えるので、直したい場合は
+ * 教科データ本体（src/data/*.ts）を直してから
+ *
+ *     npm run gen:index
+ *
+ * を実行すること。
+ *
+ * -------------------------------------------------------------------
+ * ■ これは何か
+ * -------------------------------------------------------------------
+ * 教科データから「章ID・章名・その章の大問数」だけを抜いた軽い索引。
+ * 問題文・選択肢・解説は含まない。
+ *
+ * ホーム画面（Home.tsx）は起動直後に必ず出るが、出しているのは
+ * 進捗の数字と次の章名だけで、問題文は1文字も表示していない。
+ * それにも関わらず教科データ本体を全部読み込んでいたため、
+ * 起動時に src/data から 50 ファイル・約 2.6MB を読んでいた。
+ * この索引に切り替えると、ホームが読むのはこのファイル1枚だけになる。
+ *
+ * 問題を増やしてもこのファイルは章の数（現在 162 章）ぶんしか増えない。
+ * 「問題数が莫大になっても起動が重くならない」ことがこの索引の目的である。
+ *
+ * -------------------------------------------------------------------
+ * ■ 中身が本体とズレないこと
+ * -------------------------------------------------------------------
+ * tests/chapterIndex.test.ts が、教科データ本体から数え直した結果と
+ * この索引を1件ずつ突き合わせる。問題を足して再生成を忘れると
+ * そのテストが落ちるので、古い索引のままリリースされることはない。
+ *
+ * -------------------------------------------------------------------
+ * ■ このファイルは他の src を一切 import しない（葉モジュール）
+ * -------------------------------------------------------------------
+ * ここから教科データを import してしまうと、索引にした意味が無くなる
+ * （結局本体が読み込まれる）。★何も import しないことが仕様である。★
+ */
+
+/** 章1つぶんの索引。フィールド名は Home.tsx が元々読んでいたものと同じ。 */
+export interface ChapterIndexEntry {
+  id: string;
+  title?: string;
+  abstractTitle?: string;
+  /** この章の大問数（miniTest ＋ practiceProblems） */
+  problemCount: number;
+}
+
+/** 教科1つぶんの索引。並び順・表示名も持たせて、画面が SUBJECTS を見ずに済むようにしている。 */
+export interface SubjectIndexEntry {
+  id: string;
+  /** 画面に出す教科名（data/allChapters.ts の SUBJECTS の label と同じ） */
+  label: string;
+  chapters: readonly ChapterIndexEntry[];
+}
+
+/**
+ * 教科の索引一覧。
+ *
+ * ★並び順は data/allChapters.ts の SUBJECTS と同じ★
+ * （ホーム画面の教科別進捗はこの順に縦に並ぶため、順序が意味を持つ）。
+ * 一致は tests/chapterIndex.test.ts が検査する。
+ */
+export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = `;
+
+const FOOTER = `;
+
+/**
+ * 指定した教科の章索引を返す。
+ *
+ * 未知の教科IDのときは空配列ではなく先頭の教科（化学基礎）を返す。
+ * これは data/allChapters.ts の getChaptersOfSubject と同じ既定の振る舞いで、
+ * 画面が空にならないようにするためのもの。
+ */
+export function getChapterIndexOfSubject(
+  subjectId: string | null | undefined,
+): readonly ChapterIndexEntry[] {
+  const entry = SUBJECT_INDEX.find((subject) => subject.id === subjectId) ?? SUBJECT_INDEX[0];
+  return entry ? entry.chapters : [];
+}
+`;
+
+function main(): void {
+  const index = buildIndex();
+
+  const body = JSON.stringify(index, null, 2);
+  const source = `${HEADER}${body}${FOOTER}`;
+
+  writeFileSync(OUT, source, 'utf8');
+
+  const chapters = index.reduce((sum, s) => sum + s.chapters.length, 0);
+  const problems = index.reduce(
+    (sum, s) => sum + s.chapters.reduce((n, c) => n + c.problemCount, 0),
+    0,
+  );
+  console.log(`[gen:index] ${OUT}`);
+  console.log(`[gen:index] 教科 ${index.length} / 章 ${chapters} / 大問 ${problems}`);
+  console.log(`[gen:index] 生成サイズ ${Buffer.byteLength(source, 'utf8').toLocaleString()} バイト`);
+}
+
+main();
