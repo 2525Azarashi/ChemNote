@@ -99,6 +99,8 @@ interface ExplanationProps {
 import { NodeData } from './InteractiveTree';
 import { InteractiveLogicTree } from './InteractiveLogicTree';
 import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData } from '../data/chemistryData';
+// 「その章にフローチャートがあるか」の判定は data/chapterTreeMap.ts の対応表に集約している
+import { hasChapterTree } from '../data/chapterTreeMap';
 import { PracticeExplanationTree } from './PracticeExplanationTree';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
 
@@ -892,9 +894,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   // ・スマホの「1問ごとの答え合わせ（!isResultView）」: 縦積み1カラムで
   //   「問題文 → 採点結果 → 学習フローチャート」の順にするため、
   //   採点結果より後ろ（order-3）に配置し直す。
-  const hasFlowchart = ['c1_1', 'c1_2_A', 'c1_2_B', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4', 'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapter?.id)
-    || chapter?.id === 'c5' || chapter?.id?.startsWith('c5_')
-    || chapter?.id === 'c6' || chapter?.id?.startsWith('c6_');
+  // 「その章にフローチャートがあるか」は data/chapterTreeMap.ts の対応表から導く。
+  // （以前はここに17章ぶんの章IDを直接並べた3つめのコピーがあり、
+  //   章を追加したときに「ツリーはあるのにブロックが出ない」という
+  //   食い違いが起きうる状態だった）
+  const hasFlowchart = hasChapterTree(chapter?.id);
   const flowchartBlock = hasFlowchart ? (
     <div className="mt-6 border-t pt-4 border-gray-200">
       <PracticeExplanationTree

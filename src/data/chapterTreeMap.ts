@@ -122,6 +122,20 @@ export function isSharedUnitTree(chapterId: string | undefined | null): boolean 
 }
 
 /**
+ * その章に学習フローチャート（ロジックツリー）が用意されているか。
+ *
+ * 解説画面（Explanation.tsx）が「フローチャートのブロックを描画するか」を
+ * 決めるのに使う。以前は Explanation.tsx が17章ぶんの章IDを直接並べた
+ * ★3つめのコピー★ を持っていたため、章を追加したときに
+ * 「対応表にツリーはあるのにブロックが描画されない」という
+ * 食い違いが起きうる状態だった。対応表から導出することで、
+ * ツリーを1本足せば描画側も自動的に追従する。
+ */
+export function hasChapterTree(chapterId: string | undefined | null): boolean {
+  return !!resolveChapterTree(chapterId);
+}
+
+/**
  * 章IDから、その章のフルツリー（単元共有ツリーの場合は単元全体）を引く。
  *
  * - c1〜c4 … 章ごとの専用ツリー

@@ -218,6 +218,51 @@ const MAP_FILE = resolve(ROOT, 'src/data/chapterTreeMap.ts');
 const MODAL = resolve(ROOT, 'src/components/ChapterFlowchartModal.tsx');
 const PRACTICE = resolve(ROOT, 'src/components/PracticeExplanationTree.tsx');
 
+// -------------------------------------------------------------------
+// 旧実装の複製（Explanation.tsx の hasFlowchart。3つめのコピー）
+// -------------------------------------------------------------------
+function legacyHasFlowchart(chapterId: string | undefined): boolean {
+  return !!(
+    ['c1_1', 'c1_2_A', 'c1_2_B', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4',
+     'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapterId as string)
+    || chapterId === 'c5' || chapterId?.startsWith('c5_')
+    || chapterId === 'c6' || chapterId?.startsWith('c6_')
+  );
+}
+
+describe('「その章にフローチャートがあるか」の判定', () => {
+  /**
+   * Explanation.tsx には hasFlowchart という、17章ぶんの章IDを
+   * 直接並べた3つめのコピーがあった。
+   * これは「対応表にツリーがあるか」と同じ意味なので、
+   * 対応表から導出するように変えた。
+   * （章を足したときに、ツリーはあるのにブロックが描画されない
+   *   という食い違いを防ぐため）
+   */
+  it('★新実装が旧 hasFlowchart と38パターン完全一致する★', async () => {
+    const { hasChapterTree } = await import('../src/data/chapterTreeMap');
+    for (const id of ALL_IDS) {
+      expect(hasChapterTree(id), `章ID ${id}`).toBe(legacyHasFlowchart(id));
+    }
+    expect(hasChapterTree(undefined)).toBe(legacyHasFlowchart(undefined));
+  });
+
+  it('hasChapterTree と resolveChapterTree の結果が矛盾しない', async () => {
+    const { hasChapterTree, resolveChapterTree } = await import('../src/data/chapterTreeMap');
+    for (const id of [...ALL_IDS, undefined]) {
+      expect(hasChapterTree(id), `章ID ${id}`).toBe(!!resolveChapterTree(id));
+    }
+  });
+
+  it('★Explanation.tsx に章IDを並べたコピーが残っていない★', () => {
+    const src = readFileSync(resolve(ROOT, 'src/components/Explanation.tsx'), 'utf8');
+    // 15章の羅列（'c1_1', ... 'c4_4'）が残っていないこと
+    expect(src, "Explanation.tsx に章IDの羅列が残っている").not.toMatch(/'c1_2_A',\s*'c1_2_B'/u);
+    expect(src, "Explanation.tsx に c5/c6 の startsWith 判定が残っている")
+      .not.toMatch(/startsWith\('c5_'\)/u);
+  });
+});
+
 describe('番人（共通化の維持）', () => {
   it('★2つの画面が共通の対応表を使っている★', () => {
     for (const f of [MODAL, PRACTICE]) {
