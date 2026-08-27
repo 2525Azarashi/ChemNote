@@ -159,4 +159,45 @@ describe('章インデックス：軽いままであること（これが存在�
     expect(source).toContain('自動生成');
     expect(source).toContain('gen-chapter-index');
   });
+
+  it('ビルド設定が索引を教科データのチャンクに入れていない', () => {
+    /*
+     * ★ソースを軽くしても、配信の単位が重ければ意味がない★
+     *
+     * vite.config.ts の manualChunks は
+     *   if (id.includes('/src/data/')) return 'data';
+     * で src/data 配下をまとめて 1 つの data チャンク（約 3MB）にしている。
+     * この索引も src/data にあるため、例外を書かないと
+     * 索引を読むだけで 3MB のチャンクを取得することになり、
+     * 「ホームは索引だけ読む」という変更の効果が完全に消える。
+     * （実際にビルド結果を grep して、索引の中身が data チャンク側に
+     *   入っていることを確認したうえで例外を追加した。）
+     *
+     * ここでは「例外が data 行より前に書かれている」ことまで検査する。
+     * 後ろに書くと先に data として拾われてしまい、無意味になるため。
+     */
+    const config = readFileSync('vite.config.ts', 'utf8');
+
+    /*
+     * 設定ファイルには理由を説明する長いコメントが入っており、
+     * その中にも同じ文字列が出てくる。
+     * ここで見たいのは「実際に動く行」の順序なので、
+     * コメント行を除いた実行される行だけを取り出して比べる。
+     */
+    const codeLines = config
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith('if (') && line.includes('/src/data/'));
+
+    const exceptionAt = codeLines.findIndex((line) =>
+      line.includes('/src/data/chapterIndex.generated'),
+    );
+    const dataRuleAt = codeLines.findIndex(
+      (line) => line.includes("'/src/data/'") && line.includes("'data'"),
+    );
+
+    expect(exceptionAt).toBeGreaterThan(-1);
+    expect(dataRuleAt).toBeGreaterThan(-1);
+    expect(exceptionAt).toBeLessThan(dataRuleAt);
+  });
 });
