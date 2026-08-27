@@ -40,13 +40,9 @@ import {
   a3_3Problems,
   a3_4Problems,
 } from './advancedThermoProblems';
-import {
-  buildSupplement,
-  enhanceExplanation,
-  extractFlowchartSteps,
-  isStructuredExplanation,
-} from '../utils/explanationFormat';
-import { getUnitTeaching } from './unitTeaching';
+// 解説の後処理は explanationPostProcess.ts に1つだけ置いている
+// （整形関数・単元の教え方の取得も、その中で使う）。
+import { applyExplanationPostProcess } from './explanationPostProcess';
 
 /** 1つの小単元（アプリ上の1単元＝大問の集まり）。化学基礎の chapter と同形。 */
 export interface AdvancedChapter {
@@ -509,24 +505,15 @@ const ADVANCED_PROBLEMS: Record<string, any[]> = {
 // 「解答カード → 小問ごとのアコーディオン → ココが狙われる」の体裁に揃える。
 // enhanceExplanation は冪等（整形済みマーカーで二重適用を防ぐ）なので、
 // HMR で再評価されても壊れない。
+// 章のなめ方・ロジックツリーの除外・整形の順序は化学基礎（chemistryData.ts）と
+// 同じ手順なので、explanationPostProcess.ts の1つだけを使う
+// （以前はここにも同じループがあった）。
+//
+// ★この教科では「単位変換の道順」を渡さない★
+//   物質量（mol）計算の道順は化学基礎の単元にしか無いので、
+//   ここで渡すと無関係な単元に別の内容が混ざってしまう。
 (() => {
-  const chapters = chemistryAdvancedData.parts.flatMap((p) => p.chapters);
-  for (const chapter of chapters) {
-    const teaching = getUnitTeaching(chapter.id);
-    const problems = [...(chapter.practiceProblems || []), ...(chapter.miniTest || [])];
-    for (const problem of problems) {
-      if (!problem) continue;
-      if (typeof problem.explanation === 'string' && isStructuredExplanation(problem.explanation)) {
-        problem.explanationSupplement = buildSupplement(
-          problem,
-          teaching,
-          extractFlowchartSteps(problem.explanation),
-        );
-        continue;
-      }
-      problem.explanation = enhanceExplanation(problem, teaching);
-    }
-  }
+  applyExplanationPostProcess(chemistryAdvancedData);
 })();
 
 /** 分野（理論／無機／有機）の表示情報。単元選択の入口ボタンに使う。 */

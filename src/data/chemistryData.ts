@@ -1,13 +1,9 @@
 import { acidBaseProblems } from './acidBaseProblems';
 import { redoxProblems } from './redoxProblems';
 import { pickCrystalProblems } from './crystalProblems';
-import {
-  buildSupplement,
-  enhanceExplanation,
-  extractFlowchartSteps,
-  isStructuredExplanation,
-} from '../utils/explanationFormat';
-import { getUnitTeaching } from './unitTeaching';
+// 解説の後処理は explanationPostProcess.ts に1つだけ置いている
+// （整形関数・単元の教え方の取得も、その中で使う）。
+import { applyExplanationPostProcess } from './explanationPostProcess';
 import { getMolUnitConversion } from './molUnitConversions';
 
 // ⑤ 酸と塩基 を他の単元（④-1 等）と同じ粒度のタブに分割するための補助関数。
@@ -9034,40 +9030,17 @@ const findSubQuestion = (chapterId: string, problemId: string, subQuestionId: st
 //
 // 上のパッチ群がすべて適用されたあとに実行する必要があるため、
 // この位置（最後のパッチ IIFE の直後）に置いている。
+// 章のなめ方・ロジックツリーの除外・整形の順序は化学（chemistryAdvancedData.ts）と
+// 同じ手順なので、explanationPostProcess.ts の1つだけを使う
+// （以前はここにも同じループがあった）。
+//
+// ★この教科だけ「単位変換の道順」を渡す★
+//   物質量（mol）計算の道順は化学基礎の単元にしか無いため、
+//   unitConversionOf を渡すのはこちらだけ。
 (() => {
-  const chapters = (chemistryData.parts as any[]).flatMap((part: any) => part.chapters || []);
-
-  for (const chapter of chapters) {
-    const teaching = getUnitTeaching(chapter.id);
-    const problems = [
-      ...(chapter.practiceProblems || []),
-      ...(chapter.miniTest || []),
-    ];
-
-    for (const problem of problems) {
-      if (!problem) continue;
-
-      if (typeof problem.explanation === 'string' && isStructuredExplanation(problem.explanation)) {
-        // ロジックツリー問題：explanation は描画用の構造化データなので触らず、
-        // 解答・思考手順・出題傾向は補足ブロックとして別フィールドに持たせる。
-        // 思考手順はフローチャートの STEP を参照する形で組み立てる。
-        problem.explanationSupplement = buildSupplement(
-          problem,
-          teaching,
-          extractFlowchartSteps(problem.explanation),
-        );
-        continue;
-      }
-
-      // 物質量（mol）計算問題は、まとめプリントの「単位変換の図」に沿った
-      // 道順ブロックを解答の直後に差し込む（molUnitConversions.ts が供給）。
-      problem.explanation = enhanceExplanation(
-        problem,
-        teaching,
-        getMolUnitConversion(problem.id),
-      );
-    }
-  }
+  applyExplanationPostProcess(chemistryData, {
+    unitConversionOf: (problemId) => getMolUnitConversion(problemId),
+  });
 })();
 
 export const componentDetectionTreeData = {
