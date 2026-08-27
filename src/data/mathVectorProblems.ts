@@ -21,22 +21,9 @@
  *   ・√ は √( ) または √5 のように書く。分数は /
  */
 
-import type { MathProblem } from './mathIntegralProblems';
-
-/** 短答式サブ設問（requiresMathPalette を毎回書かない） */
-const sq = (
-  id: string,
-  label: string,
-  correctAnswer: string,
-  acceptedAnswers: string[] = [],
-) => ({
-  id,
-  label,
-  type: 'short_answer',
-  correctAnswer,
-  acceptedAnswers,
-  requiresMathPalette: true,
-});
+// 型と短答式サブ設問の補助 sq() は data/mathProblemKit.ts に集約している。
+// （以前は数学4ファイルが同じ sq() をそれぞれ持っていた）
+import { sq, type MathProblem } from './mathProblemKit';
 
 // =====================================================================
 // mv_1 ① ベクトルの演算・成分・大きさ

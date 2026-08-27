@@ -22,22 +22,9 @@
  *   ・一般解は k を整数として x = 5k + 3 のように書く
  */
 
-import type { MathProblem } from './mathIntegralProblems';
-
-/** 短答式サブ設問（requiresMathPalette を毎回書かない） */
-const sq = (
-  id: string,
-  label: string,
-  correctAnswer: string,
-  acceptedAnswers: string[] = [],
-) => ({
-  id,
-  label,
-  type: 'short_answer',
-  correctAnswer,
-  acceptedAnswers,
-  requiresMathPalette: true,
-});
+// 型と短答式サブ設問の補助 sq() は data/mathProblemKit.ts に集約している。
+// （以前は数学4ファイルが同じ sq() をそれぞれ持っていた）
+import { sq, type MathProblem } from './mathProblemKit';
 
 // =====================================================================
 // mi_1 ① 約数の個数・総和と素因数分解

@@ -20,22 +20,9 @@
  *   ・場合の数は整数で答える
  */
 
-import type { MathProblem } from './mathIntegralProblems';
-
-/** 短答式サブ設問（requiresMathPalette を毎回書かない） */
-const sq = (
-  id: string,
-  label: string,
-  correctAnswer: string,
-  acceptedAnswers: string[] = [],
-) => ({
-  id,
-  label,
-  type: 'short_answer',
-  correctAnswer,
-  acceptedAnswers,
-  requiresMathPalette: true,
-});
+// 型と短答式サブ設問の補助 sq() は data/mathProblemKit.ts に集約している。
+// （以前は数学4ファイルが同じ sq() をそれぞれ持っていた）
+import { sq, type MathProblem } from './mathProblemKit';
 
 // =====================================================================
 // mp_1 ① 順列・組合せの使い分け
