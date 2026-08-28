@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 
 import {
@@ -314,6 +315,161 @@ describe('章インデックス：軽いままであること（これが存在�
       misplaced,
       'data 行より後ろに src/data の例外が書かれている（この行は永久に実行されない）:\n  ' +
         misplaced.join('\n  '),
+    ).toEqual([]);
+  });
+
+  it('★軽くした data 層のファイルに例外の書き忘れが無い★', () => {
+    /*
+     * -------------------------------------------------------------------
+     * ■ なぜこの検査を足したか（★実際に同じ穴を2回踏んだ★）
+     * -------------------------------------------------------------------
+     * 上の検査は「例外行の順序」しか見ていない。
+     * ところが実際に起きた事故は順序ではなく ★例外の書き忘れ★ だった。
+     *
+     * 教科名の対応表を1か所に集約するため src/data/subjectLabels.ts を
+     * 新設したとき、vite.config.ts に例外を書き忘れた。
+     * このファイルは実コード 443 バイトで問題データを1バイトも読まないのに、
+     *   if (id.includes('/src/data/')) return 'data';
+     * に拾われて 3MB の data チャンクへ入り、
+     * ★起動画面が data チャンクを参照する形★ になった。
+     * その結果、例外1で index 側に置いてあった索引まで data 側へ引き寄せられ、
+     *   例外を書く前 : index の problemCount   5 個 / data に 162 個
+     *   例外を書いた後 : index の problemCount 167 個 / data に   0 個
+     * と逆転していた。
+     *
+     * 上の順序検査はこれを1つも報告しなかった。
+     * 「例外を書いてある行」だけを見ているので、
+     * ★書いていないファイル★ は視界に入らないからである。
+     *
+     * -------------------------------------------------------------------
+     * ■ ★どう判定するか（判定基準を一度間違えたので、その経緯も残す）★
+     * -------------------------------------------------------------------
+     * 最初は「問題データ本体に辿り着かない軽いファイル」を
+     * 例外が必要なものとして数えた。これは間違いだった。
+     * その基準で走らせると9件を指摘したが、実測すると
+     *
+     *   chemistryAdvancedTrendData.ts  166,988 B
+     *   trendData.ts                    55,954 B
+     *   mascotTips.ts                   36,704 B
+     *   mockExamData.ts                 27,301 B
+     *   ...
+     *
+     * のように、索引（35,958 B）より重いものまで含まれていた。
+     * これらを index チャンクへ移すと ★起動時の読み込みが増える★ だけで、
+     * 事故とは何の関係もない。
+     * 「軽いから例外」ではなく「軽いかどうか」を実は見ていなかった。
+     *
+     * 事故の本質はこうである:
+     *   ★起動時に読む画面の到達先に、data チャンク行きのファイルが混ざると、
+     *     index チャンクが data チャンクを参照する形になり、
+     *     index 側に置いた索引まで data 側へ引き寄せられる★
+     *
+     * つまり見るべきなのは重さではなく
+     * ★索引と同じチャンクに居なければならない相手かどうか★ である。
+     *
+     * ここでも一度、条件を広く取りすぎた。
+     * 「起動時に読む画面の到達先すべて」を条件にすると
+     *   mascotTips.ts / subjectTheme.ts / updateNotices.ts
+     * の3件が指摘された（ホーム画面が読む）。
+     * 本当に例外が要るのかを実際にビルドして測ると:
+     *
+     *   3件を data 側のまま（現状）: index 1,052.57 kB / data 3,041.75 kB
+     *   3件を例外にして index 側へ : index 1,092.60 kB / data 3,001.62 kB
+     *
+     *   索引の配置はどちらも index 167 個 / data 0 個で ★変わらない★。
+     *   index チャンクの先頭に data の静的 import が現れることもない。
+     *   つまり ★起動時に読む index チャンクが 40 kB 重くなるだけ★ で、
+     *   得は1つも無かった。よってこの実験は取り消した。
+     *
+     * 実測から分かった正しい条件はこうである:
+     *   ★src/data の中で「索引（chapterIndex.generated）を import する」
+     *     ファイルだけが例外を必要とする★
+     * そのファイルが data 側に居ると、索引が data 側へ引きずり込まれる。
+     * mascotTips などは索引を1行も読まないので、data 側に居ても
+     * 索引の配置には影響しない（実測で確認済み）。
+     *
+     * この条件なら対象は自動で決まるので、
+     * 軽い data ファイルを新設しても検査を書き足す必要がない。
+     *
+     * ■ ★例外にしてはいけない場合もある（advancedFields.ts）★
+     *   軽い葉であっても、data チャンク側のファイルから import されていると、
+     *   例外にすると「data → index」の辺ができて
+     *   チャンク間の循環（＝真っ白画面）の恐れが出る。
+     *   advancedFields.ts は索引を読まないので、この検査の対象にならない。
+     *
+     * ■ ★設定を書いただけで満足しないこと★
+     *   この検査は vite.config.ts の文字列を見ているだけで、
+     *   実際のチャンク分けを見ているわけではない。
+     *   例外を足したら必ずビルドして dist を grep し、
+     *   索引が index 側に居ること（problemCount が index に出ること）を
+     *   自分の目で確かめる。過去に「設定を足したのに
+     *   ビルド結果が1バイトも変わらなかった」ことが実際にある。
+     */
+    const config = readFileSync('vite.config.ts', 'utf8');
+    const configCodeLines = config
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith('if (') && line.includes('/src/data/'));
+
+    /** 例外として名前が書かれている src/data のファイル（data 行より前のもの） */
+    const exceptions = configCodeLines
+      .filter((line) => !(line.includes("'/src/data/'") && line.includes("'data'")))
+      .map((line) => line.match(/'\/src\/data\/([^']+)'/)?.[1])
+      .filter((name): name is string => Boolean(name));
+
+    /*
+     * src/data の中で、索引（chapterIndex.generated）を
+     * 実行時に import しているファイルを集める。
+     * import type は実行時に消えるので数えない。
+     */
+    const indexUsers: string[] = [];
+    for (const name of readdirSync('src/data')) {
+      if (!/\.ts$/.test(name)) continue;
+      if (name.startsWith('chapterIndex.generated')) continue;
+
+      const code = readFileSync(join('src/data', name), 'utf8')
+        // 説明コメントの中にも同じ文字列が出てくるので必ず取り除く
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/^\s*\/\/.*$/gm, '');
+
+      const re = /(?:^|\n)\s*(?:import|export)\s+([^;]*?)\s*from\s*['"][^'"]*chapterIndex\.generated['"]/g;
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(code))) {
+        if (/^type\b/.test(m[1].trim())) continue;
+        indexUsers.push(`src/data/${name}`);
+        break;
+      }
+    }
+
+    // 検査そのものが空回りしていないことの確認
+    expect(
+      indexUsers.length,
+      '索引を読む src/data のファイルが1件も見つからない。この検査の探し方が壊れている',
+    ).toBeGreaterThan(0);
+
+    // 索引を読むのに例外が無い（＝data チャンク行きになる）もの
+    const missing = indexUsers.filter(
+      (relPath) => !exceptions.some((ex) => relPath.includes(`src/data/${ex}`)),
+    );
+
+    expect(
+      missing,
+      '★索引を読む data 層のファイルに vite.config.ts の例外が書かれていない★\n' +
+        missing.map((m) => '  ' + m).join('\n') +
+        '\n\n' +
+        `（索引を読む src/data のファイル: ${indexUsers.join(' , ')}）\n\n` +
+        'このままだと 3MB の data チャンクに入れられ、\n' +
+        '★索引まで data チャンク側へ引きずり込まれる★。\n' +
+        '実際にこれが起きたときの実測値:\n' +
+        '  例外を書き忘れた状態 : index の problemCount   5 個 / data に 162 個\n' +
+        '  例外を書いたあと     : index の problemCount 167 個 / data に   0 個\n' +
+        'チャンクの大きさも index -19.00 kB / data +18.98 kB とほぼ同量が移動しており、\n' +
+        '「減った」のではなく索引が重い側へ移っただけだった。\n\n' +
+        'vite.config.ts の `if (id.includes(\'/src/data/\')) return \'data\';` より前に\n' +
+        "  if (id.includes('/src/data/<ファイル名>')) return undefined;\n" +
+        'を足すこと。足したあとは必ずビルドして dist を grep し、\n' +
+        '索引が index チャンク側に居ること（problemCount が index 側に出ること）を\n' +
+        '実際に確かめる。設定を書いただけで満足しないこと。',
     ).toEqual([]);
   });
 });

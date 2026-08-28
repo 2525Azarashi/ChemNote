@@ -95,11 +95,18 @@ import { GoogleLinkBanner } from './GoogleLinkBanner';
  * 51ファイル・約2.66MB が読み込まれ続けていた（実測）。
  * 型だけの文（`import type { ... }`）にすれば完全に消える。
  */
-import {
-  SUBJECT_INDEX,
-  getSubjectStats,
-} from '../data/chapterIndex.generated';
+// 索引から使うのは各教科の集計（章数・問題数）だけ。
+// 以前は SUBJECT_INDEX も取り込んで、このファイルの中で
+// 教科名の対応表を組み立てていたが、その組み立ては
+// data/subjectLabels.ts へ移したのでもう要らない。
+// 使っていない import を残すと「この画面は索引の一覧も見ている」と
+// 読み違えられるため、消してある。
+import { getSubjectStats } from '../data/chapterIndex.generated';
 import type { SubjectKey } from '../data/allChapters';
+// 教科名の対応表は data/subjectLabels.ts が唯一の出どころ。
+// 下で再公開しているが、再エクスポート文は同じファイルの中から参照できないので、
+// このファイル内の判定（isSubjectId）で使うぶんを値としても取り込む。
+import { SUBJECT_LABELS as SUBJECT_LABELS_FOR_CHECK } from '../data/subjectLabels';
 // ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
 import { profileKey } from '../utils/userStorageKeys';
 
@@ -114,25 +121,41 @@ export type SubjectId = SubjectKey;
 /**
  * 科目ID → 画面に出す科目名（App 側のバッジ表示などでも使う）。
  *
- * ★中身の出どころは今までと同じ★
- *   もとは data/allChapters.ts の SUBJECT_LABELS（SUBJECTS から作られる表）を
- *   そのまま再公開していた。いまは軽い索引の SUBJECT_INDEX から同じ表を組み立てる。
- *   索引の id / label は SUBJECTS から自動生成したもので、
- *   一致は tests/chapterIndex.test.ts が検査している。
- *   （教科名を引くためだけに 2.5MB の教科データを読む必要はない、というのが理由）
+ * ★実体は data/subjectLabels.ts。ここは再公開しているだけ。★
+ *
+ * 以前はこのファイルの中で
+ *     Object.fromEntries(SUBJECT_INDEX.map((s) => [s.id, s.label]))
+ * を組み立てていたが、まったく同じ3行が data/chapterCatalog.ts にもあり、
+ * 「教科名の唯一の定義」が2つ存在する状態だった。
+ * 今は値が一致するが、片方の組み立て方だけを将来変えたときに
+ * 画面ごとに違う教科名が出て、しかもどちらが正しいか分からなくなる。
+ * そこで組み立てを subjectLabels.ts 1本に寄せた。
+ *
+ * 出どころは変わっていない：索引の id / label は教科データの
+ * SUBJECTS から自動生成したもので、一致は
+ * tests/chapterIndex.test.ts が検査している。
+ * （教科名を引くためだけに 2.5MB の教科データを読む必要はない、というのが理由）
  */
-export const SUBJECT_LABELS: Record<SubjectKey, string> = Object.fromEntries(
-  SUBJECT_INDEX.map((subject) => [subject.id, subject.label]),
-) as Record<SubjectKey, string>;
+export { SUBJECT_LABELS } from '../data/subjectLabels';
 
-/** 未知の値が入っていても安全に科目名を引く */
-export function getSubjectLabel(id: string | null | undefined): string {
-  return SUBJECT_LABELS[(id || '') as SubjectId] || SUBJECT_LABELS.chemistry_basic;
-}
+/**
+ * 未知の値が入っていても安全に科目名を引く。
+ *
+ * 中身は subjectLabels.ts の labelOfSubject と同一の処理だったので、
+ * そちらへ寄せた（既定を化学基礎にする振る舞いも従来どおり）。
+ * この名前（getSubjectLabel）は App.tsx などが使っているため残す。
+ */
+export { labelOfSubject as getSubjectLabel } from '../data/subjectLabels';
 
-/** 保存済みの科目ID が今の定義に存在するか */
+/**
+ * 保存済みの科目ID が今の定義に存在するか。
+ *
+ * 判定に使う表は上で再公開しているものと同一の実体
+ * （再エクスポート文は同じファイルの中からは参照できないため、
+ *   ここでは値としても取り込んでいる）。
+ */
 export function isSubjectId(value: string | null | undefined): value is SubjectId {
-  return Boolean(value && value in SUBJECT_LABELS);
+  return Boolean(value && value in SUBJECT_LABELS_FOR_CHECK);
 }
 
 interface SubjectDefinition {

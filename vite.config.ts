@@ -191,6 +191,64 @@ export default defineConfig({
            */
           if (id.includes('/src/data/chapterCatalog')) return undefined;
 
+          /*
+           * ★例外3: 教科名の対応表も data チャンクに入れない★
+           *
+           * ■ 何が起きていたか（実測。★この例外を書き忘れて実際に後退させた★）
+           *   教科名の対応表を1か所に集約するため
+           *   src/data/subjectLabels.ts を新しく作った。
+           *   このファイルの実コードはたった 443 バイトで、
+           *   実行時に読むのは chapterIndex.generated（＝何も import しない葉）
+           *   1本だけである。
+           *
+           *   ところが例外を書かなかったので、上の
+           *   `id.includes('/src/data/')` に拾われて 3MB の data チャンクへ入り、
+           *   ★起動画面（SubjectSelection）が data チャンクを参照する形★
+           *   になった。その結果、例外1で index 側に置いていた索引まで
+           *   data チャンク側へ引き寄せられた。ビルド結果を grep すると
+           *     この例外を書く前 : index の problemCount   5 個 / data に 162 個
+           *     例外を書いたあと : index の problemCount 167 個 / data に   0 個
+           *   と逆転していた。チャンクの大きさも
+           *     index 1,052.63 → 1,033.63 kB（-19.00）
+           *     data  3,041.81 → 3,060.79 kB（+18.98）
+           *   とほぼ同量が移動しており、「減った」のではなく
+           *   ★索引が重い側へ移っただけ★だった。
+           *
+           *   つまり例外2のコメントに書いてある落とし穴を、
+           *   まったく同じ形でもう一度踏んだということである。
+           *   ★軽くした data 層のファイルを新設したら、必ずこの例外も足す。★
+           *   忘れても気づけるように、
+           *   tests/chapterIndex.test.ts に「軽い data ファイルには
+           *   例外が必要」を自動判定する検査を追加した（順序だけでなく
+           *   ★例外の書き忘れそのもの★ を検出する）。
+           *
+           * ■ なぜこの例外は安全か（真っ白問題の再発根拠がない）
+           *   data チャンクを割ってはいけない理由は
+           *   「チャンク間に循環ができる」ことだった。実測すると
+           *     subjectLabels へ入ってくる辺:
+           *       SubjectSelection.tsx（index 側）
+           *       chapterCatalog.ts（例外2で index 側）
+           *       → data チャンクから来る辺は1本も無い
+           *     subjectLabels から出ていく辺:
+           *       chapterIndex.generated（例外1で index 側）
+           *       → data チャンクへ向かう辺も1本も無い
+           *   どちら向きにも辺が無いので、チャンク間の循環に加われない。
+           *
+           * ■ ★なぜ advancedFields.ts には同じ例外を付けないのか★
+           *   同じく軽い葉（実コード 600 バイト）だが、こちらは
+           *   chemistryAdvancedData.ts（＝data チャンク側）から
+           *   再公開のために import されている。
+           *   例外にすると「data チャンク → index チャンク」の辺ができ、
+           *   index → data の辺と合わせて循環になる恐れがある。
+           *   （前に per-subject 分割で出した
+           *     Cannot access 'D' before initialization がこれ。）
+           *   実際に例外を追加して測ったが、ビルド結果のハッシュは
+           *   1バイトも変わらず効果が無かったので、その設定は取り消した。
+           *   軽い葉なら何でも例外にしていい、という話ではない。
+           *   ★入ってくる辺・出ていく辺の両方を数えて判断すること。★
+           */
+          if (id.includes('/src/data/subjectLabels')) return undefined;
+
           if (id.includes('/src/data/')) return 'data';
 
           return undefined;

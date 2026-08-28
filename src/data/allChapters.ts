@@ -139,18 +139,35 @@ export const SUBJECTS: readonly SubjectEntry[] = [
 ];
 
 /**
- * 教科ID → 画面に出す教科名。
+ * ★教科名の対応表（SUBJECT_LABELS）はこのファイルには置かない★
  *
- * SUBJECTS から自動で作る。以前は同じ6行の対応表が
- * SubjectSelection.tsx と chapterCatalog.ts にも手書きされていて
- * （SUBJECTS の label と合わせて3か所）、教科名を直すときに
- * 直し漏れると画面ごとに違う名前が出る状態だった。
+ * 以前はここに
+ *     export const SUBJECT_LABELS = Object.fromEntries(
+ *       SUBJECTS.map((s) => [s.id, s.label]));
+ * があった。今の置き場所は data/subjectLabels.ts。
  *
- * 呼び出し側は今までどおり SUBJECT_LABELS[id] で引ける。
+ * なぜ移したか（消したのではなく移した）:
+ *
+ *   1. 誰も import していなかった。
+ *      画面側は SubjectSelection / chapterCatalog 経由で引いていて、
+ *      この export は実際には一度も使われていない状態だった。
+ *
+ *   2. ★残しておくと「重い入口」になる★
+ *      このファイルは冒頭で6教科ぶんの問題データを静的に読む。
+ *      つまり「教科名を1つ引きたいだけ」でもここを import すると、
+ *      約2.5MB の問題データが起動時の読み込みに入ってしまう。
+ *      軽い置き場所（subjectLabels.ts は索引だけを読む）がある以上、
+ *      重い入口を残すのは将来の踏み間違いを招くだけである。
+ *
+ * 出どころは変わっていない。subjectLabels.ts は生成済み索引
+ * （chapterIndex.generated.ts）の id / label から作り、その索引は
+ * 下の SUBJECTS から自動生成している。両者が一致することは
+ * tests/chapterIndex.test.ts と tests/allChapters.test.ts が検査する。
+ *
+ * 教科名が必要なときは:
+ *     import { SUBJECT_LABELS } from './subjectLabels';        // data 層
+ *     import { getSubjectLabel } from './components/SubjectSelection'; // 画面層
  */
-export const SUBJECT_LABELS: Record<SubjectKey, string> = Object.fromEntries(
-  SUBJECTS.map((subject) => [subject.id, subject.label]),
-) as Record<SubjectKey, string>;
 
 /**
  * 教科データから章の配列を取り出す。

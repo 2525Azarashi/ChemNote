@@ -85,16 +85,24 @@ export type CatalogSubject = SubjectKey;
 /**
  * 科目の表示名（レポートの文章にも使う）。
  *
- * ★出どころは今までと同じ★
- *   もとは allChapters.ts の SUBJECT_LABELS（SUBJECTS の label から作る表）を
- *   そのまま再公開していた。いまは同じ label を索引側から組み立てている。
- *   索引の id / label は SUBJECTS から自動生成したもので、
- *   一致は tests/chapterIndex.test.ts と tests/allChapters.test.ts が検査する。
- *   （教科名を引くためだけに 2.5MB の教科データを読む必要はない、というのが理由）
+ * ★実体は data/subjectLabels.ts。ここは再公開しているだけ。★
+ *
+ * 以前はこのファイルの中で
+ *     Object.fromEntries(SUBJECT_INDEX.map((s) => [s.id, s.label]))
+ * を組み立てていたが、まったく同じ3行が SubjectSelection.tsx にもあり、
+ * 「教科名の唯一の定義」が2つ存在する状態だった。
+ * 今は値が一致するが、片方の組み立て方だけを将来変えたときに
+ * 画面ごとに違う教科名が出て、しかもどちらが正しいか分からなくなる。
+ *
+ * そこで組み立てを subjectLabels.ts 1本に寄せた。
+ * 呼び出し側（TeacherDashboard・各テスト）は
+ * 今までどおり chapterCatalog から SUBJECT_LABELS を読める。
+ *
+ * 出どころは変わっていない：索引の id / label は教科データの
+ * SUBJECTS から自動生成したもので、一致は
+ * tests/chapterIndex.test.ts と tests/allChapters.test.ts が検査する。
  */
-export const SUBJECT_LABELS: Record<SubjectKey, string> = Object.fromEntries(
-  SUBJECT_INDEX.map((subject) => [subject.id, subject.label]),
-) as Record<SubjectKey, string>;
+export { SUBJECT_LABELS } from './subjectLabels';
 
 /**
  * 索引の章を ChapterDefinition に詰め替える。

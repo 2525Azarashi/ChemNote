@@ -90,6 +90,54 @@ function runtimeDeps(file: string): string[] {
   return out;
 }
 
+/**
+ * ★重さは「説明コメントを除いた実コード」で数える★
+ *
+ * 以前はファイルサイズ（statSync().size）をそのまま足していた。
+ * これには測り方の嘘がある。コメントはビルド時に消えるので
+ * 配信量には1バイトも入らないのに、重さとして数えられてしまう。
+ *
+ * 実測（このアプリの src/data）:
+ *
+ *   subjectLabels.ts       5,071 B 中 実コード   443 B（91% がコメント）
+ *   advancedFields.ts      8,374 B 中 実コード   600 B（93% がコメント）
+ *   chapterCatalog.ts      8,371 B 中 実コード 1,319 B（84% がコメント）
+ *   chemistryData.ts      46,838 B 中 実コード 38,633 B（18% がコメント）
+ *
+ * つまり ★なぜそう書いたかを丁寧に書いたファイルほど重いと判定される★。
+ * 実際にこの門は、教科名の対応表を1か所に集約した整理（実コード 443 B の
+ * 追加）で予算を 1,029 バイト超過したと報告した。配信物は増えていない。
+ *
+ * これを「予算を緩める」で片付けると、門の目が本当に鈍る。
+ * 数え方を直すのが正しい。コメントを消しても
+ * 教科データ本体は 38,633 B 残るので、
+ * 「問題データ本体が戻ってきた」ときは今までどおり必ず超える。
+ *
+ * 注意: ここでやっているのは行単位の素朴な除去で、
+ * 構文解析ではない（文字列の中に // が入っていても消してしまう）。
+ * それでも目的には足りる。見たいのは「桁」であって正確なバイト数ではなく、
+ * 少なく数える方向の誤差しか出ないので、
+ * ★重いものを軽いと誤判定する危険はない★（下の健康診断で確認している）。
+ */
+function codeBytesOf(absFile: string): number {
+  const kept: string[] = [];
+  let inBlock = false;
+  for (const line of readFileSync(absFile, 'utf8').split('\n')) {
+    const t = line.trim();
+    if (inBlock) {
+      if (t.includes('*/')) inBlock = false;
+      continue;
+    }
+    if (t.startsWith('/*')) {
+      if (!t.includes('*/')) inBlock = true;
+      continue;
+    }
+    if (t.startsWith('//')) continue;
+    kept.push(line);
+  }
+  return Buffer.byteLength(kept.join('\n'), 'utf8');
+}
+
 interface Reach {
   files: string[];
   dataFiles: string[];
@@ -116,7 +164,7 @@ function reachFrom(entry: string): Reach {
 
   const files = [...seen].map((f) => relative(ROOT, f)).sort();
   const dataFiles = files.filter((f) => f.startsWith('src/data/'));
-  const dataBytes = dataFiles.reduce((sum, f) => sum + statSync(join(ROOT, f)).size, 0);
+  const dataBytes = dataFiles.reduce((sum, f) => sum + codeBytesOf(join(ROOT, f)), 0);
   return { files, dataFiles, dataBytes };
 }
 
@@ -249,8 +297,8 @@ describe('画面ごとの起動時の重さ（教科データを読み込みす�
     expect(
       dataBytes,
       `${entry} の src/data が ${dataBytes.toLocaleString()} バイト（予算 ${budget.toLocaleString()}）\n` +
-        `内訳:\n  ${dataFiles
-          .map((f) => `${statSync(join(ROOT, f)).size} ${f}`)
+        `内訳（説明コメントを除いた実コードのバイト数）:\n  ${dataFiles
+          .map((f) => `${codeBytesOf(join(ROOT, f))} ${f}`)
           .join('\n  ')}`,
     ).toBeLessThanOrEqual(budget);
   });
