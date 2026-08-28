@@ -15,6 +15,12 @@
  *    これは新規の独立モジュールであり、既存の problem JSON / Firestore スキーマを変更しない。
  */
 
+import {
+  fingerprintProblem,
+  detectStale,
+  type CurrentProblemState,
+} from './problemVersion';
+
 const STORAGE_PREFIX = 'review_list_';
 
 /**
@@ -55,6 +61,24 @@ export interface ReviewItem {
   createdAt: number;
   /** 最終更新日時（Firestore マージ時の勝敗判定に使用） */
   updatedAt: number;
+  /**
+   * 登録した時点の問題本文の指紋（utils/problemVersion.ts）。
+   *
+   * ★何のためにあるか★
+   *   同じIDのまま問題を差し替えると、ここに残っている
+   *   問題文・正答が古いまま復習リストに居座る。
+   *   ユーザーから見ると「こんな問題、登録してない」になる。
+   *   指紋を持たせておけば、いま配信している問題と
+   *   食い違ったことを機械的に検知して外せる。
+   *
+   * ★任意（省略可）にしている理由★
+   *   この仕組みを入れる前に登録された分には指紋が無い。
+   *   必須にすると、導入した瞬間に全ユーザーの復習リストが
+   *   「指紋なし＝不正」として消える。指紋が無い間は
+   *   今までと完全に同じ扱いにし、次にその問題に
+   *   出会ったときに入る。
+   */
+  fingerprint?: string;
 }
 
 function storageKey(uid: string | null | undefined): string {
@@ -142,6 +166,14 @@ export function upsertWrongAnswer(items: ReviewItem[], input: WrongAnswerInput):
       correctCount: 0,
       createdAt: now,
       updatedAt: now,
+      // 登録した時点の問題の指紋を一緒に残す。
+      // あとで問題を差し替えたときに「古い内容が居座っている」ことを
+      // 機械的に検知できるようにするため（utils/problemVersion.ts）。
+      fingerprint: fingerprintProblem({
+        questionText: input.questionText,
+        correctAnswer: input.correctAnswer,
+        subLabel: input.subLabel,
+      }),
     };
     return [...items, newItem];
   }
@@ -161,6 +193,16 @@ export function upsertWrongAnswer(items: ReviewItem[], input: WrongAnswerInput):
     dueAt: boxToDue(0, now),
     wrongCount: existing.wrongCount + 1,
     updatedAt: now,
+    // 表示情報を最新で上書きしたので、指紋も同じ内容から取り直す。
+    // ★ここで取り直さないと、本文だけ新しく指紋だけ古い★
+    // という一番たちの悪い状態（検知しても直らない）になる。
+    // なお input 側が空のときは既存の表示情報がそのまま残るため、
+    // 上の ?? と同じ材料から作れば必ず整合する。
+    fingerprint: fingerprintProblem({
+      questionText: input.questionText ?? existing.questionText,
+      correctAnswer: input.correctAnswer ?? existing.correctAnswer,
+      subLabel: input.subLabel ?? existing.subLabel,
+    }),
   };
   const next = items.slice();
   next[idx] = updated;
@@ -271,6 +313,55 @@ export function getAllReviewItems(uid: string | null | undefined): ReviewItem[] 
 /** 復習対象件数（バッジ表示用） */
 export function getDueCount(uid: string | null | undefined, now: number = Date.now()): number {
   return loadReviewList(uid).reduce((n, it) => (it.dueAt <= now ? n + 1 : n), 0);
+}
+
+/**
+ * ===================================================================
+ * 差し替えられた問題を復習リストから外す
+ * ===================================================================
+ *
+ * ■ いつ呼ぶか
+ *   問題データを読み込んでいる画面（復習リスト・学習ノート）で、
+ *   一覧を出す直前に1回だけ呼ぶ。
+ *
+ * ■ ★「調べていないものは触らない」を徹底する★
+ *   getCurrent が 'unknown' を返した件は、食い違っているかどうか
+ *   判断できないので★何もしない★。
+ *   判断できないものを消すのは、ユーザーのデータを理由なく壊す行為。
+ *   （判定そのものは utils/problemVersion.ts の detectStale が持つ。
+ *     ここはストレージ側の受け口だけを担当する。）
+ *
+ * ■ 返り値
+ *   { items, removed } — removed は外した件数。
+ *   0 件なら保存もしない（書き込みを増やさない）。
+ *
+ * ■ なぜ「非表示」ではなく「削除」なのか
+ *   残したまま隠すと、件数バッジと一覧の数が食い違う。
+ *   「3件あるはずなのに開くと0件」は原因が分からない不具合の典型。
+ *   古い問題は解いても意味がないので、外すのが正しい。
+ */
+export function purgeStaleReviewItems(
+  uid: string | null | undefined,
+  getCurrent: (item: ReviewItem) => CurrentProblemState,
+): { items: ReviewItem[]; removed: number } {
+  const items = loadReviewList(uid);
+  if (items.length === 0) return { items, removed: 0 };
+
+  const kept = items.filter((it) => {
+    let current: CurrentProblemState;
+    try {
+      current = getCurrent(it);
+    } catch {
+      // 問い合わせ側が転んだ場合は「調べられなかった」扱いにして残す。
+      // ここで消すと、一時的な不具合でユーザーのデータが失われる。
+      return true;
+    }
+    return detectStale(it.fingerprint, current) === null;
+  });
+
+  const removed = items.length - kept.length;
+  if (removed > 0) saveReviewList(uid, kept);
+  return { items: kept, removed };
 }
 
 /** アイテムが「習得済み」とみなせるか（最終ボックス到達） */

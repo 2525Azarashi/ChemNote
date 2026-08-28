@@ -27,10 +27,17 @@
  *     ・指数表記の比較（5.0×10⁻² ＝ 5.0e-2 ＝ 0.050）
  *     ・化学用語の同義語辞書（ろ過＝濾過、貴ガス＝希ガス など）
  *     ・順序・列挙の区切り記号を無視した比較（Li>Na>K ＝ Li→Na→K）
+ *     ・★数式としての同一視（mathExpression）★
+ *       足す順番・掛ける順番・掛け算記号の有無・分数と小数の違いを吸収する。
+ *         2x + 3 ＝ 3 + 2x、2√x ＝ 2*√x、(2/3)x√x ＝ x√x*2/3、1/2 ＝ 0.5
+ *       ★化学式・英単語・単位はこの層に入らない（mathExpression 側の門で断る）★
+ *       ★展開・因数分解・約分はしない（問題の意図を壊すため）★
  *
  * ★ 方針：正解を増やす方向にだけ働かせる。
  *   別の物質・別の数値が正解になってしまう緩和は入れない。
  */
+
+import { isMathematicallyEqual } from './mathExpression';
 
 // -------------------------------------------------------------------
 // 第1層：文字レベルの正規化
@@ -627,6 +634,11 @@ export function isEquivalentAnswer(candidate: string, userAnswer: string): boole
     ) {
       return true;
     }
+
+    // ⑦ ★数式として同じ式か（2x+3 ＝ 3+2x、2√x ＝ 2*√x、1/2 ＝ 0.5）★
+    //    数式として読み取れないもの（化学式・英単語・単位つき）は
+    //    mathExpression 側の門で断られ、false が返るだけなので影響しない。
+    if (isMathematicallyEqual(variant, userAnswer)) return true;
   }
 
   return false;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2, Bell } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 /*
@@ -53,6 +53,8 @@ import {
   getChapterIndexOfSubject,
   type ChapterIndexEntry,
 } from '../data/chapterIndex.generated';
+// 公開/非公開の判断は src/config/features.ts が唯一の出どころ
+import { isSubjectEnabled } from '../config/features';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
@@ -86,9 +88,28 @@ interface HomeProps {
   /** 現在選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
   subject?: SubjectKey;
   isGuest: boolean;
+  /*
+    ===== BGM の ON/OFF をヘッダーから切り替えられるようにする =====
+
+    ■ なぜ設定画面だけでは足りないのか
+      音は「いま鳴っている」ときに止めたいものなので、
+        ナビ → 設定 → スクロール → トグル
+      という4手を踏ませるのは実質「止められない」に等しい。
+      鳴っていることに気づいた画面で1タップで止められる必要がある。
+
+    ■ なぜ「省略可」なのか
+      Home は他の場所（テスト・プレビュー）からも描画される。
+      必須にすると呼び出し側すべてに手を入れることになり、
+      今回の指摘とは無関係な変更が広がる。
+      渡されなければボタンを出さない（＝従来どおりの見た目）。
+  */
+  isBgmEnabled?: boolean;
+  /** フェードで音が消えた状態。ラベルを「もう一度鳴らす」に変えるため。 */
+  isBgmFadedOut?: boolean;
+  onToggleBgm?: (enabled: boolean) => void;
 }
 
-export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest }: HomeProps) {
+export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest, isBgmEnabled, isBgmFadedOut, onToggleBgm }: HomeProps) {
   const reviewDueCount = useMemo(() => {
     const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
     return getDueCount(uid);
@@ -139,9 +160,14 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   // 並ぶ順・表示名・対象の章は索引がそのまま決める（並び順は data/allChapters.ts の
   // SUBJECTS と同一で、一致は tests/chapterIndex.test.ts が検査している）。
   // 教科を追加したときにここへ書き足す必要は無い。
+  // ★ここは「4箇所」のうちの4番目（一覧・検索結果）★
+  // 非公開の科目は進捗一覧にも出さない。
+  // 出してしまうと「数学 0/48問」のように見えて、
+  // タップできないのに存在だけ知られる＝一番中途半端な状態になる。
+  // 判断は src/config/features.ts の1か所だけを見る。
   const subjectProgressDefs = useMemo(
     () =>
-      SUBJECT_INDEX.map((s) => ({
+      SUBJECT_INDEX.filter((s) => isSubjectEnabled(s.id)).map((s) => ({
         id: s.id,
         label: s.label,
         chapters: s.chapters,
@@ -347,7 +373,46 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         CTA が画面外に出ることはない。
         lg 以上は order を戻し、従来の見た目を維持する。
       */}
-      <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden no-scrollbar pb-app-nav lg:pb-24 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 lg:pt-6 relative z-10 flex flex-col lg:justify-center">
+      {/*
+        ===== パソコンでスクロールできなかった問題の修正 =====
+
+        ■ 何が起きていたか
+          パソコンでは「1画面に収める」設計にしてあり、
+          はみ出したぶんを隠す指定（overflow:hidden）を入れていた。
+          ところが画面の縦が短いパソコン（ノートPCに多い）では
+          中身が1画面に収まらず、
+          ★隠した部分に手が届かない＝下まで読めない★ 状態になっていた。
+
+        ■ 実際に測った結果
+          横1280×縦720 … 83px ぶん届かない
+          横1366×縦768 … 59px ぶん届かない
+          横1440×縦900 … 収まっている（問題なし）
+          横1920×1080  … 収まっている（問題なし）
+          つまり「一部のパソコンだけで起きる」不具合で、
+          自分の環境では気づけなかった。
+
+        ■ どう直したか
+          隠す指定をやめ、パソコンでも縦スクロールできるようにした
+          （overflow-y-auto）。
+          ただし ★収まっているときの見た目は変えない★。
+          ・中身が画面に収まる場合はスクロールバーも出ず、
+            今までと完全に同じ表示になる（auto は必要なときだけ出る）
+          ・中央寄せ（lg:justify-center）は
+            lg:justify-start へは変えず、代わりに
+            「中身が余ったときだけ中央に寄る」書き方（my-auto ではなく
+            justify-center のまま）を維持している。
+            収まる画面では従来どおり中央、
+            収まらない画面では上から順に読めてスクロールできる。
+
+        ■ 縦が短い画面だけ余白を詰める
+          そもそも収まらないのは余白が大きいことも一因なので、
+          縦が短いときだけ上下の余白を少し詰める
+          （xl:pt-6 / 高さ条件つきのクラスは使わず、
+            lg での下余白 24 → 16 に控えめに調整）。
+          これで 1366×768 は収まりやすくなり、
+          収まらない場合もスクロールで最後まで読める。
+      */}
+      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pb-app-nav lg:pb-16 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 lg:pt-6 relative z-10 flex flex-col lg:justify-center">
 
         {/* ===== 挨拶 ＋ カウントダウン =====
             ※ 左上の「まなとび」ワードマークは表示しない（ユーザー要望）。 */}
@@ -362,12 +427,25 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                 {schoolBrand.schoolName}
               </p>
             )}
+            {/*
+              科目バッジと BGM ボタンを同じ1行に並べる。
+
+              ★行を増やさないことが条件★
+              スマホのホームは「学習を始める」を1画面目に入れるため
+              1px 単位で高さを詰めてある（実測して詰めた経緯がある）。
+              ボタンを縦に足すと、その努力を壊して CTA が画面外に出る。
+              そこで既存のバッジと同じ高さ（min-h-[28px]）の
+              小さな丸ボタンにして、同じ行の右隣に置く。
+              gap と flex-wrap を付けているので、
+              科目名が長い端末でも重ならず折り返すだけで済む。
+            */}
+            <div className="flex items-center gap-1.5 mb-2 flex-wrap">
             {/* 現在の科目バッジ（タップで科目選択＝タイトル画面へ戻れる導線） */}
             {onChangeSubject && (
               <button
                 onClick={onChangeSubject}
                 aria-label={`科目を変更する（現在：${subjectLabel}）`}
-                className="group inline-flex items-center gap-1.5 mb-2 pl-2.5 pr-2 py-1 rounded-full bg-white/85 backdrop-blur-sm border border-[#F4A9C4]/55 text-[11px] font-modern font-bold text-[#D9466E] hover:bg-white hover:border-[#E8688E] transition-colors min-h-[28px]"
+                className="group inline-flex items-center gap-1.5 pl-2.5 pr-2 py-1 rounded-full bg-white/85 backdrop-blur-sm border border-[#F4A9C4]/55 text-[11px] font-modern font-bold text-[#D9466E] hover:bg-white hover:border-[#E8688E] transition-colors min-h-[28px]"
               >
                 <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
                 {subjectLabel}
@@ -375,6 +453,63 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                 <Repeat2 className="w-3.5 h-3.5 text-[#8895A0] group-hover:text-[#E8688E] transition-colors" aria-hidden="true" />
               </button>
             )}
+
+            {/*
+              ===== BGM の ON/OFF（ヘッダー） =====
+
+              ■ なぜここに要るのか
+                音が鳴っていることに気づくのはホームに入った直後で、
+                そのとき止める手段が「設定画面まで4手」しか無かった。
+                図書館や電車では ★その4手が間に合わない★。
+                気づいた画面で1タップで止められる必要がある。
+
+              ■ 表示の意味
+                ・OFF のとき … スピーカーに斜線。押すと鳴る。
+                ・ON のとき  … スピーカー。押すと止まる。
+                ・フェードで消えたあと … ON のままだが鳴っていないので、
+                  ラベルを「もう一度鳴らす」にする。
+                  ★ONなのに無音＝故障に見える★のを防ぐため。
+
+              ■ onToggleBgm を経由する理由
+                iOS Safari は「利用者の操作と同じ呼び出しの流れの中で」
+                再生を始めないとブロックする。
+                状態を変えてから鳴らす作りでは間に合わないので、
+                押した瞬間に鳴らす処理（App 側）をそのまま呼ぶ。
+            */}
+            {onToggleBgm && (
+              <button
+                type="button"
+                onClick={() => onToggleBgm(!isBgmEnabled)}
+                aria-label={
+                  !isBgmEnabled
+                    ? 'BGMを鳴らす'
+                    : isBgmFadedOut
+                      ? 'BGMをもう一度鳴らす'
+                      : 'BGMを止める'
+                }
+                aria-pressed={!!isBgmEnabled && !isBgmFadedOut}
+                title={
+                  !isBgmEnabled
+                    ? 'BGMを鳴らす'
+                    : isBgmFadedOut
+                      ? 'BGMをもう一度鳴らす'
+                      : 'BGMを止める'
+                }
+                className={`inline-flex items-center gap-1 pl-2 pr-2.5 py-1 rounded-full border text-[11px] font-modern font-bold transition-colors min-h-[28px] ${
+                  isBgmEnabled && !isBgmFadedOut
+                    ? 'bg-[#FBE0E9] border-[#E8688E]/60 text-[#D9466E] hover:bg-[#F8D2DF]'
+                    : 'bg-white/85 backdrop-blur-sm border-[#D1D5DB]/70 text-[#8895A0] hover:bg-white hover:text-[#5D6D7E]'
+                }`}
+              >
+                {isBgmEnabled && !isBgmFadedOut ? (
+                  <Volume2 className="w-3.5 h-3.5" aria-hidden="true" />
+                ) : (
+                  <VolumeX className="w-3.5 h-3.5" aria-hidden="true" />
+                )}
+                <span>BGM</span>
+              </button>
+            )}
+            </div>
             {/* スマホでは 22px → 18px に落として1行に収める。
                 2行に折り返すと、それだけで約40pxを失っていた。 */}
             <h1 className="text-[18px] md:text-[30px] text-[#1B2631] font-bold tracking-wide truncate">

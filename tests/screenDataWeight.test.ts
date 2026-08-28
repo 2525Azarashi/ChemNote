@@ -425,8 +425,18 @@ describe('画面ごとの起動時の重さ（教科データを読み込みす�
      *   59 件 / 2,971,031 B … まとめプリント（LearningViewer）を遅延読み込みにした後
      *                          ビルド実測: 起動時 5,253,265 → 4,554,851 B（−698,414 B）
      *                          遅延        0 → 699,246 B（初めて遅延チャンクができた）
+     *   16 件 /   854,132 B … 単元選択・演習・解説の3画面を遅延読み込みにし、
+     *                          さらに data チャンクを教科ごとに割った後
+     *                          ビルド実測: 起動時 4,554,851 → 2,628,864 B（−1,925,987 B / −42%）
+     *                          遅延        699,246 → 2,629,867 B
+     *                          ＝★教科の問題データが起動時から全部消えた★
+     *   12 件 /   730,467 B … 分野選択（AdvancedFieldSelection）も遅延にした後
+     *                          ビルド実測: 起動時 2,628,864 → 2,534,962 B（−93,902 B）
+     *                          合計 4,554,851 → 2,534,962 B（★−2,019,889 B / −44%★）
+     *                          この4本目は「思い込みで3本と決めていた」のを
+     *                          ★下の玄関チェックが見つけた★もの。
      */
-    const CURRENT = 59;
+    const CURRENT = 12;
 
     expect(
       dataFiles.length,
@@ -442,18 +452,64 @@ describe('画面ごとの起動時の重さ（教科データを読み込みす�
   it('この全体指標が本当に重さを見ている（監視役そのものの健康診断）', () => {
     /*
      * 上の門が「0件」を返して常に緑、という壊れ方をしていないか確かめる。
-     * 現状は教科データ本体が起動時に入ってしまっているので、
-     * 玄関に到達しているのが「正しい（＝まだ直っていない）状態」。
      *
-     * ★ここは将来わざと落ちる★
-     * 起動時から教科データ本体を追い出せたら、この期待は成り立たなくなる。
-     * そのときは「玄関に到達していないこと」に書き換える。
-     * つまりこの行は、作業が完了したことを教えてくれる目印でもある。
+     * ★この検査は前に「わざと落ちる」ように書いてあった★
+     * 以前はここに
+     *     expect(dataFiles).toContain('src/data/allChapters.ts');
+     * と書いてあり、コメントに
+     *   「起動時から教科データ本体を追い出せたら、この期待は成り立たなくなる。
+     *     そのときは『玄関に到達していないこと』に書き換える。
+     *     つまりこの行は、作業が完了したことを教えてくれる目印でもある。」
+     * と残していた。
+     *
+     * 実際にその通りに落ちた（実測ログ）:
+     *   AssertionError: expected [ 'src/data/advancedFields.ts', …(15) ]
+     *                   to include 'src/data/allChapters.ts'
+     *
+     * ★これは「テストが壊れた」のではなく「目標に到達した」という合図★
+     * なので、予定どおり逆向き（到達していないこと）に書き換える。
+     * 落ちた事実そのものが、遅延読み込みが本当に効いた証拠になっている。
      */
     const { dataFiles, dataBytes } = reachFrom('src/main.tsx');
+
+    // 門が「常に0件」を返す壊れ方をしていないこと（監視役が生きている確認）
     expect(dataFiles.length).toBeGreaterThan(0);
     expect(dataBytes).toBeGreaterThan(0);
-    // いま起動時に届いてしまっている玄関（この事実自体が未完了の証拠）
-    expect(dataFiles).toContain('src/data/allChapters.ts');
+
+    /*
+     * ★全教科を集めるハブに起動時から到達していないこと★
+     *
+     * allChapters は6教科ぜんぶの問題データを import しているので、
+     * ここに静的に届いた時点で「起動時に全教科ぶん落ちてくる」ことになる。
+     * 逆に言えば、この1行を守り続ける限り、
+     * 教科を何科目増やしても起動の重さは増えない。
+     *
+     * この行が赤くなったときは、どこかの画面が
+     *   import { findChapterById } from '../data/allChapters'
+     * のような静的 import を足したということ。
+     * その画面を React.lazy にするか、章の検索を遅延側へ移すこと
+     * （やり方は src/components/QuizScreens.tsx を参考にする）。
+     */
+    expect(dataFiles).not.toContain('src/data/allChapters.ts');
+
+    /*
+     * 各教科の問題データの「玄関」にも届いていないこと。
+     * ハブ経由でなく直接 import された場合を捕まえる。
+     */
+    for (const entry of [
+      'src/data/chemistryData.ts',
+      'src/data/chemistryAdvancedData.ts',
+      'src/data/englishListeningData.ts',
+      'src/data/englishGrammarData.ts',
+      'src/data/mathData.ts',
+      'src/data/biologyBasicData.ts',
+    ]) {
+      expect(
+        dataFiles,
+        `★起動時に ${entry} へ静的に到達している★\n` +
+          'これは「アプリを開いただけで、その教科の問題データを全部ダウンロードする」状態。\n' +
+          'その画面を React.lazy にして、問題データを触る処理を遅延側へ移すこと。',
+      ).not.toContain(entry);
+    }
   });
 });

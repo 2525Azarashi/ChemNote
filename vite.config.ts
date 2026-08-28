@@ -275,6 +275,211 @@ export default defineConfig({
            */
           if (id.includes('/src/data/learningContent/')) return 'data-learning';
 
+          /*
+           * ============================================================
+           * ★ここから: data チャンクを教科ごとに割る★
+           * ============================================================
+           *
+           * ■ なぜ割る必要があるのか（実測にもとづく）
+           *
+           * 遅延読み込み（React.lazy）で
+           *   App.tsx → allChapters / chemistryData
+           *   ChapterSelection → allChapters
+           * の3本の静的な線を切った。ソースの依存で測ると
+           * 起動時に静的到達する src/data は
+           *   59ファイル 2,971,031 B → 16ファイル 854,132 B
+           * まで落ちた。
+           *
+           * ところが dist で測ると data チャンクは
+           * ★まだ 2,368,092 B のまま起動時に落ちてきた。★
+           *   起動時 JS 4,554,851 → 4,324,446 B（−230,405 B だけ）
+           *
+           * 理由は単純で、src/data 全部を1つの data チャンクに
+           * まとめていたからである。起動時に必要な 854,132 B の部分が
+           * data チャンクの中にある限り、同じチャンクに同居している
+           * 残り 1.5 MB も一緒にダウンロードされる。
+           * ★チャンクは「まとめてダウンロードされる単位」なので、
+           *   1バイトでも必要なら全部落ちてくる。★
+           *
+           * つまり順序としては
+           *   1. 静的 import を切る（済）
+           *   2. そのうえでチャンクを割る（ここ）
+           * の2段が必要で、どちらか片方だけでは減らない。
+           * （逆順でやって −79 B しか減らなかった実験は
+           *   上の data-learning のコメントに記録してある。）
+           *
+           * ■ ★過去に同じ分割で真っ白にした。その再発を防ぐ根拠★
+           *
+           * 以前 per-subject 分割をしたときは
+           *   Cannot access 'D' before initialization
+           * で画面が真っ白になった。原因は
+           * 「チャンクAがチャンクBを待ち、BもAを待つ」＝
+           * ★チャンク間の循環★ である。
+           *
+           * 今回は設定を書く前に、実際の依存グラフ（import type を除いた
+           * 実行時の辺だけ）でグループ間の辺を全部数え、
+           * 循環が0本であることを確認してから書いている。
+           * 確認した辺の向きは次のとおりで、きれいに一方向である:
+           *
+           *   data-hub ─→ data-chem-basic ─┐
+           *            ─→ data-chem-adv   ─┤
+           *            ─→ data-english-l  ─┼─→ data-shared
+           *            ─→ data-english-g  ─┤    （problemCount など）
+           *            ─→ data-math       ─┤
+           *            ─→ data-biology    ─┘
+           *   data-chem-adv   ─→ data-leaf  (advancedFields)
+           *   data-chem-basic ─→ data-tree  (chemistryTreeData)
+           *
+           * 逆向きの辺は1本も無い（＝有向非巡回グラフ）。
+           * 循環が無いことはビルドの Circular 警告 0 でも確認する。
+           *
+           * ■ ★なぜ「教科名で振り分ける」書き方をしなかったか★
+           *
+           * 最初はファイル名のパターン（chem/english/math…）で
+           * 振り分けようとしたが、実測すると循環が5本出た。
+           *   data → data-chem-basic → data
+           * 原因は problemCount.ts のような
+           * ★複数の教科が共有している小さなファイル★ が
+           * 「教科グループ」と「その他」の両方に引っ張られること。
+           *
+           * そこで振り分け方を変えて
+           *   「その教科の入口からしか到達できないファイル」＝その教科
+           *   「2つ以上の教科から到達されるファイル」    ＝data-shared
+           * とした。これで循環が0になった。
+           * ★見た目の分類ではなく、到達可能性で分けるのが正しい。★
+           *
+           * ■ 教科を追加する人へ
+           *
+           * 新しい教科を足したときは、その教科の問題データも
+           * 下の一覧に1行足すこと。足し忘れても壊れはしない
+           * （既定の 'data' チャンクに入るだけ）が、
+           * その教科を開いていない人にもデータが届いてしまう。
+           * 忘れても気づけるように tests/screenDataWeight.test.ts が
+           * 起動時の重さを監視している。
+           */
+
+          /*
+           * 全教科を集めるハブ。ここだけ単独チャンクにする。
+           * 循環の元になり得るのはこのファイルだけなので、隔離しておくと
+           * あとで教科を足すときも安全側に倒れる。
+           */
+          if (id.includes('/src/data/allChapters')) return 'data-hub';
+
+          /*
+           * ★共通の土台（data-core）★
+           *
+           * ■ ここでも一度失敗した。その記録を残す。
+           *
+           * 最初は下の4本（problemCount / explanationPostProcess /
+           * listeningPostProcess / unitTeaching）だけをまとめて
+           * 「循環なし」と判断した。ところがビルドすると
+           *   Circular chunk: data-shared -> data -> data-shared
+           * が出た。
+           *
+           * 原因は自作の計測スクリプトが★src/data の中の辺しか見ていなかった★
+           * こと。実際の回り道はこうなっていた:
+           *   explanationPostProcess → src/utils/explanationFormat（index 側）
+           *                          → src/data/teachingTypes（data 側）
+           *   mockExamData（data 側） → unitTeaching
+           * つまり src/utils を経由して index を通り、戻ってきていた。
+           *
+           * ★依存の一部だけを見た「安全です」は信用してはいけない。★
+           * これは今回の作業で自分が実際にやってしまった誤りである。
+           * 対策として「src 配下ぜんぶを対象に、vite と同じ振り分け規則で
+           * チャンク名を決めてから循環を探す」検査を
+           * tests/chunkGraph.test.ts に常設した。
+           *
+           * ■ いまの解き方
+           *
+           * 「解説の整形」「HTMLの無害化」「単元解説」「問題数の数え上げ」は
+           * どの教科からも呼ばれる★一番下の土台★である。
+           * これらを1つのチャンク（data-core）にまとめると、
+           * このチャンクから外へ出ていく辺が0本になる（＝葉になる）。
+           * 出ていく辺が0本のチャンクは、どこから呼ばれても循環に加われない。
+           *
+           * src/utils のファイルが混ざっているのは一見ちぐはぐだが、
+           * ★チャンクは「置き場所」ではなく「一緒にダウンロードする単位」★
+           * なので、層が同じものを同じチャンクに置くのが正しい。
+           * ファイルの所在（data/ か utils/ か）は一切変えていない。
+           */
+          if (
+            id.includes('/src/data/problemCount') ||
+            id.includes('/src/data/explanationPostProcess') ||
+            id.includes('/src/data/listeningPostProcess') ||
+            id.includes('/src/data/unitTeaching') ||
+            id.includes('/src/data/teachingTypes') ||
+            id.includes('/src/utils/explanationFormat') ||
+            id.includes('/src/utils/listeningExplanation') ||
+            id.includes('/src/utils/sanitizeHtml')
+          ) {
+            return 'data-core';
+          }
+
+          /* 分野の見出しだけの軽い葉（App.tsx が起動時に使う） */
+          if (id.includes('/src/data/advancedFields')) return 'data-leaf';
+
+          /* 図（ロジックツリー・フローチャート）のデータ */
+          if (
+            id.includes('/src/data/chemistryTreeData') ||
+            id.includes('/src/data/chapterTreeMap')
+          ) {
+            return 'data-tree';
+          }
+
+          /* 出題傾向のグラフ（モード選択画面で開く） */
+          if (
+            id.includes('/src/data/chemistryAdvancedTrendData') ||
+            id.includes('/src/data/trendData')
+          ) {
+            return 'data-trend';
+          }
+
+          /* 化学基礎の問題データ */
+          if (
+            id.includes('/src/data/chemistryData') ||
+            id.includes('/src/data/chemProblemsC') ||
+            id.includes('/src/data/acidBaseProblems') ||
+            id.includes('/src/data/crystalProblems') ||
+            id.includes('/src/data/molUnitConversions') ||
+            id.includes('/src/data/redoxProblems')
+          ) {
+            return 'data-chem-basic';
+          }
+
+          /* 化学（発展）の問題データ */
+          if (
+            id.includes('/src/data/chemistryAdvancedData') ||
+            id.includes('/src/data/advancedThermoProblems')
+          ) {
+            return 'data-chem-adv';
+          }
+
+          /* 英語リスニングの問題データ */
+          if (id.includes('/src/data/englishListening')) return 'data-english-l';
+
+          /* 英文法の問題データ */
+          if (
+            id.includes('/src/data/englishGrammar') ||
+            id.includes('/src/data/egProblems')
+          ) {
+            return 'data-english-g';
+          }
+
+          /* 数学の問題データ */
+          if (
+            id.includes('/src/data/mathData') ||
+            id.includes('/src/data/mathProblemKit') ||
+            id.includes('/src/data/mathIntegerProblems') ||
+            id.includes('/src/data/mathIntegralProblems') ||
+            id.includes('/src/data/mathProbabilityProblems') ||
+            id.includes('/src/data/mathVectorProblems')
+          ) {
+            return 'data-math';
+          }
+
+          /* 生物基礎の問題データ */
+          if (id.includes('/src/data/biologyBasic')) return 'data-biology';
+
           if (id.includes('/src/data/')) return 'data';
 
           return undefined;

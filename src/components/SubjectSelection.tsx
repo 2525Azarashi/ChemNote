@@ -109,6 +109,10 @@ import type { SubjectKey } from '../data/allChapters';
 import { SUBJECT_LABELS as SUBJECT_LABELS_FOR_CHECK } from '../data/subjectLabels';
 // ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
 import { profileKey } from '../utils/userStorageKeys';
+// 公開/非公開の判断は src/config/features.ts が唯一の出どころ。
+// ★ここは「4箇所」のうちの2番目（トップのカード）★
+// 残りはナビ／ルーティング／一覧で、すべて同じ関数を見る。
+import { isSubjectEnabled } from '../config/features';
 
 /**
  * アプリが扱う科目の識別子。
@@ -351,6 +355,28 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
     },
   ], [basicStats, advancedStats, listeningStats, mathStats, biologyStats, grammarStats]);
 
+  /**
+   * ★実際に画面へ出す科目（非公開のものはカードごと作らない）★
+   *
+   * ■ なぜ「グレーで出す」ではなく「消す」なのか
+   *   この画面には元々 available:false 用の見せ方（グレー＋
+   *   「公開のお知らせを受け取る」）がある。準備中を予告したい科目には
+   *   それが適している。
+   *   一方 features.ts で false にしたものは
+   *   ★「作りかけを見せたくない」ものなので、存在自体を出さない。★
+   *   予告として出すと「いつ出るの」という期待だけが残り、
+   *   採点が直るまで答えられない。
+   *
+   * ■ ここで絞るだけでは不十分
+   *   カードを消しても、保存済みの選択が復元されれば中に入れてしまう。
+   *   その穴はルーティング側（App.tsx）で塞いでいる。
+   *   ★片方だけでは意味がない。★
+   */
+  const visibleSubjects = useMemo(
+    () => subjects.filter((subject) => isSubjectEnabled(subject.id)),
+    [subjects],
+  );
+
   return (
     /* Home と同じ理由で min-h-[100dvh] → h-full。
        App 側で確定した 100dvh を受け取り、子のスクロール領域に上限を渡す。 */
@@ -468,7 +494,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
                タブレット・PC の見た目は一切変わらない。 */
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-2 md:gap-5"
           >
-          {subjects.map((subject, index) => {
+          {visibleSubjects.map((subject, index) => {
             const Icon = subject.icon;
             const handleClick = () => {
               if (subject.available) onSelectSubject(subject.id);
