@@ -66,7 +66,19 @@ import {
   concentrationTreeData,
   acidBaseTreeData,
   redoxTreeData,
-} from './chemistryData';
+/*
+ * ★図データのファイルから直接読む★
+ *
+ * この対応表が使うのは図（ツリー）だけで、問題文・選択肢・解説は使わない。
+ * chemistryData 経由だと、この表を読み込んだ画面すべてに
+ * 化学基礎の問題データがついてきてしまっていた
+ * （13 ファイル / 1,187,105 バイト）。
+ *
+ * chemistryData 側はこれらを再公開しているだけなので、
+ * 直接読んでも ★同一のオブジェクト★ が得られる
+ * （17 ツリーすべて `===` で同一参照であることを確認済み）。
+ */
+} from './chemistryTreeData';
 import type { NodeData } from '../utils/logicTreeTypes';
 
 /**

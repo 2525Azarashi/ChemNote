@@ -169,6 +169,29 @@ const SCREEN_BUDGETS: Array<{ entry: string; budget: number; why: string }> = [
     budget: 100_000,
     why: 'ランキング。章の絞り込みプルダウンに ID と表示名を並べるだけなので索引で足りる',
   },
+  /*
+   * ここから下は「図（ロジックツリー）しか使わない」画面。
+   *
+   * 図データ（chemistryTreeData.ts）は 264,465 バイトあり索引より重いが、
+   * ★これは実際に画面に描画している中身そのもの★ なので削れない。
+   * 削れたのは「図を読むついでに問題データまで読んでいた」ぶんで、
+   * chemistryData 経由をやめたことで約 900KB が消えた。
+   */
+  {
+    entry: 'src/components/LogicalTree.tsx',
+    budget: 300_000,
+    why: 'ロジックツリー画面。描画するのは図だけなので図データのみで足りる',
+  },
+  {
+    entry: 'src/components/Flowchart.tsx',
+    budget: 300_000,
+    why: 'フローチャート画面。描画するのは図だけなので図データのみで足りる',
+  },
+  {
+    entry: 'src/data/chapterTreeMap.ts',
+    budget: 300_000,
+    why: '章ID→図の対応表。図の参照しか持たないので図データのみで足りる',
+  },
 ];
 
 describe('画面ごとの起動時の重さ（教科データを読み込みすぎていないか）', () => {

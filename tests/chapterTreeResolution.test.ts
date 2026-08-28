@@ -294,8 +294,35 @@ describe('番人（共通化の維持）', () => {
 
   it('★対応表は data 層に置く（utils → data の逆流を作らない）★', () => {
     const src = readFileSync(MAP_FILE, 'utf8');
-    // data 層なので chemistryData を import してよい。
-    expect(src).toMatch(/from '\.\/chemistryData'/u);
+
+    /*
+     * このテストが守りたいのは「対応表が data 層にあり、
+     * utils へ逆流していないこと」である。
+     *
+     * もともとは `from './chemistryData'` があることを確かめていたが、
+     * それは「data 層の隣のファイルからツリーを読んでいる」ことの
+     * 代理表現にすぎなかった。
+     *
+     * ★いまは図データ専用のファイル（chemistryTreeData）から読む★
+     * この対応表が使うのは図だけで、問題文・選択肢・解説は使わない。
+     * それなのに chemistryData 経由で読むと、この表を読み込んだ画面すべてに
+     * 化学基礎の問題データがついてきてしまっていた
+     * （13 ファイル / 1,187,105 バイト → 2 ファイル / 272,053 バイト）。
+     *
+     * chemistryData 側は再公開しているだけなので、
+     * 直接読んでも 17 ツリーすべて `===` で同一参照になる（確認済み）。
+     */
+    expect(src, '図データを data 層の隣のファイルから読んでいない')
+      .toMatch(/from '\.\/chemistryTreeData'/u);
+
+    /*
+     * ★軽さを固定する（元に戻したら赤くする）★
+     * chemistryData を読むと問題データ約 900KB がついてくるので、
+     * この対応表からは読まない。
+     */
+    expect(src, 'chemistryData を読むと問題データまでついてくる')
+      .not.toMatch(/from '\.\/chemistryData'/u);
+
     // 型以外で utils を実行時 import していないこと（型は import type のみ）
     const runtimeUtilsImport = /^import\s+(?!type)[^;]*from '\.\.\/utils\//mu;
     expect(src, 'chapterTreeMap.ts が utils を実行時 import している').not.toMatch(runtimeUtilsImport);

@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
 import { Search, Network, Info, BookOpen } from 'lucide-react';
 import { InteractiveTree } from './InteractiveTree';
-import { substanceTreeData } from '../data/chemistryData';
+/*
+ * ★図データは図データのファイルから直接読む★
+ *
+ * この画面が使うのは図（ロジックツリー）だけで、問題文・選択肢・解説は
+ * 一切使わない。それにも関わらず、これまでは chemistryData 経由で
+ * 読み込んでいたため、化学基礎の問題データまで全部ついてきていた。
+ *
+ *   付け替え前: src/data 12 ファイル / 1,180,132 バイト
+ *   付け替え後: src/data  1 ファイル /   264,465 バイト（図データのみ）
+ *
+ * chemistryData 側は `export { substanceTreeData } from './chemistryTreeData'`
+ * と再公開しているだけなので、直接読んでも ★同一のオブジェクト★ が得られる。
+ * 実際に 17 ツリーすべてについて `===` で同一参照であることを確認した
+ * （ALL IDENTICAL: true）。表示は一切変わらない。
+ */
+import { substanceTreeData } from '../data/chemistryTreeData';
 import { useIsMobile } from '../hooks/useMediaQuery';
 
 export const LogicalTree = () => {

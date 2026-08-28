@@ -98,7 +98,14 @@ interface ExplanationProps {
 
 import { NodeData } from './InteractiveTree';
 import { InteractiveLogicTree } from './InteractiveLogicTree';
-import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData } from '../data/chemistryData';
+/*
+ * 図データは図データのファイル（chemistryTreeData）から直接読む。
+ * chemistryData 経由だと、この画面がここで必要としていない
+ * 問題データまで全部ついてきてしまう。
+ * 再公開しているだけなので、直接読んでも同一オブジェクトが得られる
+ * （17 ツリーすべて `===` で同一参照であることを確認済み）。
+ */
+import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData } from '../data/chemistryTreeData';
 // 「その章にフローチャートがあるか」の判定は data/chapterTreeMap.ts の対応表に集約している
 import { hasChapterTree } from '../data/chapterTreeMap';
 import { PracticeExplanationTree } from './PracticeExplanationTree';
