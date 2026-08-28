@@ -1792,6 +1792,37 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         // 客観問題は「元の並び順（ア→イ→ウ…）」のまま表示する。
                         // （以前は間違いを上・正解を折りたたみにしていたが、丸付けは上から順に行うため自然な並び順に統一）
                         const objectiveSqs = question.subQuestions.filter((sq: any) => sq.type !== 'descriptive');
+
+                        /* ★B-2：音源・スクリプトを変数に束ねる（描く場所を出し分けるため）★
+                           スマホでは正誤ボタンの後、PC では従来位置で描く。
+                           中身はそのまま。詳しくは下の使用箇所のコメントを参照。 */
+                        const audioPlayerBlock = Array.isArray((question as any).audioTracks) &&
+                                  (question as any).audioTracks.length > 0 && (
+                                    <ListeningAudioPlayer
+                                      tracks={(question as any).audioTracks}
+                                      mode={reorderMobile ? 'review' : 'practice'}
+                                      variant={reorderMobile ? 'panel' : 'inline'}
+                                      /* ★スマホだけ compact★
+                                         panel をそのまま出すと約430px あり、
+                                         採点結果の下にこれが入るだけで
+                                         問Nチップ（top=746）と「この単元の思考の型」が
+                                         画面外に落ちていた（実測）。
+                                         compact はスクリプトを残したまま
+                                         バッジ・サブ文・もう1回・2回続けて行を省く。
+                                         PC は compact を渡さないので不変。 */
+                                      compact={reorderMobile}
+                                      orientation="horizontal"
+                                      tone={mode === 'mini_test' ? 'light' : 'dark'}
+                                      readCount={(question as any).readCount || 2}
+                                      /* ★ご要望11「スクリプトを押さなくても直で下に出てるようにしたい」
+                                           「☑️採点結果のしたはスクリプトってことね」★
+                                         スマホはここが採点結果の直下なので、
+                                         ボタンを押さずに最初からスクリプトを見せる。
+                                         受験生が最初に見たいのは「読まれた英文そのもの」であり、
+                                         そこが1タップ隠れているのは順序が逆だった、というご指摘への対応。 */
+                                      alwaysOpenScript={reorderMobile}
+                                    />
+                                  );
                         // 「解いていない問」を「不正解」に混ぜない。
                         // 未解答＝手を付けていないだけであり、間違えたわけではない。
                         const correctSqs = objectiveSqs.filter((sq: any) => isAnswerCorrect(sq, answers[sq.id]));
@@ -2198,33 +2229,42 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                   「正誤 → スクリプトで確認」が同じ場所で完結する。
                                   PC は従来どおり横帯の practice（上のパネルが review）。
                                 */}
-                                {Array.isArray((question as any).audioTracks) &&
-                                  (question as any).audioTracks.length > 0 && (
-                                    <ListeningAudioPlayer
-                                      tracks={(question as any).audioTracks}
-                                      mode={reorderMobile ? 'review' : 'practice'}
-                                      variant={reorderMobile ? 'panel' : 'inline'}
-                                      /* ★スマホだけ compact★
-                                         panel をそのまま出すと約430px あり、
-                                         採点結果の下にこれが入るだけで
-                                         問Nチップ（top=746）と「この単元の思考の型」が
-                                         画面外に落ちていた（実測）。
-                                         compact はスクリプトを残したまま
-                                         バッジ・サブ文・もう1回・2回続けて行を省く。
-                                         PC は compact を渡さないので不変。 */
-                                      compact={reorderMobile}
-                                      orientation="horizontal"
-                                      tone={mode === 'mini_test' ? 'light' : 'dark'}
-                                      readCount={(question as any).readCount || 2}
-                                      /* ★ご要望11「スクリプトを押さなくても直で下に出てるようにしたい」
-                                           「☑️採点結果のしたはスクリプトってことね」★
-                                         スマホはここが採点結果の直下なので、
-                                         ボタンを押さずに最初からスクリプトを見せる。
-                                         受験生が最初に見たいのは「読まれた英文そのもの」であり、
-                                         そこが1タップ隠れているのは順序が逆だった、というご指摘への対応。 */
-                                      alwaysOpenScript={reorderMobile}
-                                    />
-                                  )}
+                                {/*
+                                  ★B-2：音源・スクリプトの「置く場所」だけをスマホで下げる★
+                                  ─────────────────────────────────────────────────────
+                                  ご指摘：
+                                    「採点結果のところ → 問3 って書いてあるところに
+                                      問3◯ を持ってきてコンパクトにする」
+
+                                  ■ 何が起きていたか（スマホの並び順）
+                                    1. 採点結果（正解0 / 不正解0 / 未解答1）
+                                    2. 音源・スクリプト（★ここがいちばん背が高い★）
+                                    3. 問3 ○ の正誤ボタン
+                                    4. 「上の正誤ボタンをタップすると…」の案内文
+
+                                    採点結果と正誤ボタンの間に、最も背の高いブロックが
+                                    丸ごと挟まっていた。そのため
+                                      ・採点結果を見てから正誤ボタンを押すまでにスクロールが必要
+                                      ・案内文が「上の正誤ボタン」と書いているのに、
+                                        その"上"が画面外にある
+                                    という状態になっていた。
+
+                                  ■ 直し方（★PC を壊さないための形★）
+                                    JSX を変数 audioPlayerBlock に束ね、
+                                      ・スマホ（reorderMobile）… 正誤ボタンの「後」で描く
+                                      ・PC                      … 従来どおり「ここ」で描く
+                                    と描く場所だけを出し分ける。
+
+                                    ここを単純に移動させると、移動先が reorderMobile の
+                                    true 分岐の中なので PC 版でプレーヤーが消えてしまう
+                                    （＝「パソコン版は何も変更しない」に反する）。
+                                    実際に一度その形にしてしまい、PC で消えることに
+                                    気づいたのでこの形に直している。
+
+                                    プレーヤーに渡す設定（compact / alwaysOpenScript など）は
+                                    一切変えていない。並べ替えだけで、項目は1つも消していない。
+                                */}
+                                {!reorderMobile && audioPlayerBlock}
 
                                 {/* ★スマホの1問ごとの答え合わせ：
                                       「全ての問いのあってるか間違ってるかだけ出して、
@@ -2292,6 +2332,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                       );
                                       return renderSq(sel, isAnswerCorrect(sel, answers[sel.id]));
                                     })()}
+
+                                    {/* ★B-2：スマホは音源・スクリプトを正誤ボタンより「下」で描く★
+                                        これで並び順が
+                                          採点結果 → 問N○ の正誤ボタン → 案内文 → 音源・スクリプト
+                                        になり、「採点結果」と「問3○」が隣接する。
+                                        案内文の「上の正誤ボタン」も、実際に真上を指すようになる。 */}
+                                    {audioPlayerBlock}
                                   </>
                                 ) : (
                                   /* PC・結果表示：元の並び順（ア→イ→ウ…）のまま、正誤の色分けだけ行って上から表示 */

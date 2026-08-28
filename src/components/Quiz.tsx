@@ -1332,7 +1332,17 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 handleOptionSelect(sq.id, opt);
               }}
               // スマホは 48px 以上の高さ・幅を確保してタップしやすくする（PC は従来寸法）。
-              className={`relative px-4 py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${stacked ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} min-w-[3.25rem] md:min-w-[3rem] shadow-sm cursor-pointer ${
+              className={`relative ${
+                /* ★B-1：本文つき選択肢（英文）はスマホで左右余白を詰める★
+                   px-4（16px×2）→ px-2.5（10px×2）で 12px を英文に回す。
+                   md 以上では md:px-4 で元に戻すので PC の見た目は不変。
+                   マークだけの選択肢（①②③④）は幅が余っているので対象外。 */
+                stacked ? 'px-2.5 md:px-4' : 'px-4'
+              } py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${stacked ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} ${
+                /* 本文つきは w-full なので min-w は不要。
+                   min-w-[3.25rem] を残すと狭い端末で横あふれの原因になる。 */
+                stacked ? '' : 'min-w-[3.25rem] md:min-w-[3rem]'
+              } shadow-sm cursor-pointer ${
                 /*
                   図が無い大問では余り高さのぶんだけ背が伸びる（押しやすくする）。
                   ★上限（5rem）を必ず付ける★
@@ -1340,7 +1350,24 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                     巨大な余白の塊になる。それでは「空白が無駄」を
                     別の形で作り直すだけになってしまう。
                 */
-                listeningMobileNoFigure ? 'max-h-[5rem]' : ''
+                /*
+                  ★B-1：本文つき選択肢では高さ上限を外す★
+                  ─────────────────────────────────────────────
+                  max-h-[5rem]（80px）は「4択が画面を縦に埋め尽くすのを防ぐ」
+                  ために付けたもので、マークだけの選択肢（①②③④）には今も有効。
+
+                  しかし本文つき（英文）の選択肢では話が逆で、
+                  英文が3行になると 3行 × 24px + 上下余白 = 約88px 必要なのに
+                  80px で打ち切られ、本文の最後の行が隠れていた。
+                  さらに overflow-y-auto の親の中で全4つが 80px を主張するため
+                  合計が枠を超え、④ が下にはみ出して切れていた。
+                  （ご指摘「④も見えるようにしたい」の上下方向の原因）
+
+                  本文つきは stacked のときだけなので、そこだけ上限を外す。
+                  マークだけの選択肢は従来どおり 80px 上限のまま
+                  ＝「巨大な空白の塊」への逆戻りは起きない。
+                */
+                listeningMobileNoFigure && !stacked ? 'max-h-[5rem]' : ''
               }
                 ${struck
                   // 消去済み：斜線＋グレーに加え、枠線を破線にして
@@ -2569,8 +2596,50 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   return (
     <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40">
       
-      {/* Header (Fixed) */}
-      <div className="flex-none p-2 md:p-6 border-b border-gray-200 bg-white shadow-sm z-10 flex items-center justify-between gap-2 md:gap-4">
+      {/*
+        Header (Fixed)
+
+        ★B-3：解答を打っている間だけ、上部の帯を引っ込める★
+        ─────────────────────────────────────────────────────
+        ご指摘：
+          「解答打つ時にこんなに画面塞がれるとしんどい
+            (ア) 前へ 1/9 次へ 完了のところは必要だけど、
+            それ以外の☑️とか色々消せないの？
+            どちらにせよこれだと回答打ちづらい」
+
+        ■ まず画面の占有を、誰が出しているかで分けて数えた
+          （いただいた画面／844px 高さ換算）
+            アプリのヘッダー（単元名・スコア・1/4）    7%  ← アプリ側
+            タイマーバー（残り 6:10）                3%  ← アプリ側
+            問題ヘッダー（Q1 問題文・たたむ・全画面）   5%  ← アプリ側
+            問題文＋解答欄（★本体★）               25%
+            ブラウザの操作バー（< > ↻ ⇧ ⋮）          6%  ← ブラウザ側
+            キーボードの ∧ ∨ ☑️ の行                6%  ← ★ブラウザ側★
+            かなキーボード本体                      48%  ← ブラウザ側
+
+        ■ ★正直に書きます：☑️ の行はこちらから消せません★
+          お尋ねの「☑️とか」の行は、キーボード（IME）と
+          ブラウザが出している部分で、Webページ側の CSS や
+          JavaScript からは操作できません。合計 60% がここです。
+          「消せます」と書くのは嘘になるので書きません。
+
+        ■ できること＝アプリ側の 15%（約126px）を入力中だけ空ける
+          ヘッダー・タイマー・問題ヘッダーは、
+          文字を打っている最中には読む必要がないものです。
+          keyboardVisible の間だけ引っ込めると
+            本体 25% → 40%（211px → 337px、約1.6倍）
+          になります。
+
+        ■ 消さないもの
+          ・「(ア) 前へ 1/9 次へ 完了」バー … 必要と明言されたので残す
+          ・入力欄と問題文               … 本体
+          ・ヘッダーの中身そのもの         … 消さずに「隠す」だけ。
+            「完了」でキーボードが閉じれば即座に元に戻る。
+        PC（isDesktop）には一切かからない条件にしてある。
+      */}
+      <div className={`flex-none p-2 md:p-6 border-b border-gray-200 bg-white shadow-sm z-10 flex items-center justify-between gap-2 md:gap-4 ${
+        !isDesktop && keyboardVisible ? 'hidden' : ''
+      }`}>
         <div className="flex items-center text-left gap-2 md:gap-4 min-w-0">
           <button 
             onClick={handleExit}
@@ -2628,8 +2697,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         </div>
       </div>
 
-      {/* タイマーバー（ヘッダー直下、問題本文の上） ー 控えめな細いバー */}
-      <div className="flex-none bg-white border-b border-gray-100">
+      {/* タイマーバー（ヘッダー直下、問題本文の上） ー 控えめな細いバー
+          ★B-3：入力中は隠す（3%）★
+            計測は running のまま続くので、隠しても時間の進みは変わらない。
+            表示だけを止めている（＝止めたら不正になる、を避ける）。 */}
+      <div className={`flex-none bg-white border-b border-gray-100 ${
+        !isDesktop && keyboardVisible ? 'hidden' : ''
+      }`}>
         <QuizTimerBar
           timeLimit={questionTimeLimit}
           running={!showingExplanation}
@@ -2738,6 +2812,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               : isProblemCollapsed
                 ? 'h-auto shadow-md relative z-20'
                 : keyboardVisible
+                  /*
+                    ★B-3：入力中の問題文の取り分★
+                    ヘッダー・タイマー・見出しを隠して空いた約126px を、
+                    問題文と解答欄で分け合う。ここを 24vh のままにすると
+                    浮いた高さの大半が問題文側に流れてしまうため、
+                    上限は据え置きにして余りは解答欄（flex-1）へ渡す。
+                    ＝打っている欄と、直前に読んだ問題文の両方が見える。
+                  */
                   ? 'max-h-[24vh] h-auto shadow-md relative z-20'
                   : listeningMobileNoFigure
                     // 図が無い大問（第1問A・第3問・第2問）は中身のぶんだけ。
@@ -2768,7 +2850,15 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       */
                       : 'max-h-[50%] h-auto shadow-md relative z-20'}
         `}>
-          <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30">
+          {/* 問題ペインの見出し行（Q1・問題文・たたむ・全画面で読む）。
+              ★B-3：入力中は隠す（5%）★
+                打っている間は「たたむ」「全画面で読む」を押さないし、
+                Q1 の表示も読む必要がない。浮いた高さは問題文と解答欄に回る。
+                「完了」でキーボードが閉じれば元に戻るので、機能は失われない。
+                PC（isDesktop）は対象外。 */}
+          <div className={`flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30 ${
+            !isDesktop && keyboardVisible ? 'hidden' : ''
+          }`}>
             <div className="flex items-center gap-2 md:gap-3">
               <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-[#A9CCE3]/20 text-[#A9CCE3] font-bold flex items-center justify-center text-[10px] md:text-sm border-2 border-[#A9CCE3]">
                 Q{currentQuestionIndex + 1}
@@ -3200,7 +3290,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                               ＝親指の届く位置。ご要望「もっと下にもってきて」
           もらった高さは、下の auto-rows-fr で選択肢の背を伸ばすのに使う。
         */}
-        <div className={`lg:w-[42%] min-h-0 overflow-y-auto bg-gray-50/50 px-4 md:p-8 ${
+        {/* ★B-1：選択肢の本文幅を稼ぐため、リスニングのスマホだけ左右余白を詰める★
+            px-4（16px×2）→ px-2（8px×2）で 16px を本文に回す。
+            対象を listeningMobileSplit に限るのは、化学など従来の問題では
+            解答欄が小さなチップの集まりで、余白を詰めると窮屈になるため。
+            md 以上（PC）は md:p-8 が後ろで上書きするので影響しない。 */}
+        <div className={`lg:w-[42%] min-h-0 overflow-y-auto bg-gray-50/50 ${
+            listeningMobileSplit ? 'px-2' : 'px-4'
+          } md:p-8 ${
             listeningMobileNoFigure
               ? 'flex-1 flex flex-col justify-end pt-2'
               : listeningMobileSplit ? 'flex-none pt-2' : 'flex-1 pt-4'
@@ -3233,8 +3330,42 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 {safeMobileAnsIdx + 1} / {mobileAnswerSubs.length}
               </div>
             )}
+            {/*
+              ★スマホ：解答欄ページャーの矢印は「切り替える先があるとき」だけ置く★
+              ─────────────────────────────────────────────────────────────
+              ご指摘（B-1）：
+                「選択肢の文章の幅が狭い。画面の幅に合わせ、④も見えるようにしたい。」
+
+              ■ 何が起きていたか（390px 幅で実測・積算）
+                以前は !isDesktop なら常にこの矢印を描き、行き先が無いときは
+                invisible で「見えないが場所は取る」状態にしていた。
+                w-7（28px）が左右で 56px ＝ 画面幅 390px の 14% を、
+                解答欄が1つしか無い問でも占め続けていた。
+
+                横幅の内訳（390px・図なしリスニング）：
+                  解答ペイン px-4          -32px
+                  ページャー矢印 w-7 ×2    -56px  ← ★これ★
+                  カード p-3.5             -28px
+                  選択肢ボタン px-4        -32px
+                  ①と本文の gap-2.5        -10px
+                  マーク①                  -18px
+                  ────────────────────────────
+                  英文に残る幅              214px（画面幅の 55%）
+
+                英文が 55% の幅に押し込められて行数が増え、
+                その増えた行数のぶんだけ ④ が下へ押し出されて切れていた。
+                （④ が切れていたのは左右ではなく上下方向。原因は「幅」）
+
+              ■ 直し方
+                すぐ上の「n / 全体」表示と同じ条件（length > 1）でガードする。
+                解答欄が1つの問では矢印を描かないので 56px がそのまま本文に回る。
+                2つ以上ある問では従来どおり出る（切り替え手段は失わせない）。
+                invisible を残さないのは、「見えないのに場所を取る」ことが
+                今回の幅不足の直接原因だったため。
+              PC（isDesktop）は contents のままで、見た目は一切変わらない。
+            */}
             <div className={isDesktop ? 'contents' : 'flex items-stretch gap-1'}>
-              {!isDesktop && (
+              {!isDesktop && mobileAnswerSubs.length > 1 && (
                 <button
                   type="button"
                   onClick={() => goMobileAns(-1)}
@@ -3336,7 +3467,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 <div key={sq.id} className={`flex flex-col gap-4 bg-white rounded-2xl shadow-sm border transition-all duration-250 ${
                   // 図が無い大問はカード自身も余り高さを受け取り、
                   // 中の選択肢を伸ばせるようにする（内側余白も少し詰める）。
-                  listeningMobileNoFigure ? 'min-h-0 flex-1 max-h-full p-3.5' : 'p-5'
+                  /* ★B-1：カード内側も詰めて本文幅を稼ぐ★
+                     p-3.5（14px×2）→ px-2 py-3 で左右 12px を英文に回す。
+                     縦（py-3）は詰めない。縦を削ると1行あたりの余裕が減って
+                     かえって読みにくくなり、④ が見えない問題も解決しないため。 */
+                  listeningMobileNoFigure ? 'min-h-0 flex-1 max-h-full px-2 py-3' : 'p-5'
                 } ${
                   isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
                 }`}>
@@ -3533,7 +3668,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
               );
             })}
               </div>
-              {!isDesktop && (
+              {/* 右矢印も左と同じ条件でガードする（B-1）。
+                  片側だけ残すと解答欄が中央からずれるので必ず対で揃える。 */}
+              {!isDesktop && mobileAnswerSubs.length > 1 && (
                 <button
                   type="button"
                   onClick={() => goMobileAns(1)}
