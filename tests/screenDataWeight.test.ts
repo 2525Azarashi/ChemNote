@@ -43,13 +43,40 @@ import { describe, it, expect } from 'vitest';
 const ROOT = resolve(__dirname, '..');
 const EXTS = ['.ts', '.tsx'];
 
-/** 相対 import を実ファイルに解決する（node_modules は依存グラフに含めない） */
+/**
+ * 相対 import を実ファイルに解決する（node_modules は依存グラフに含めない）
+ *
+ * ★拡張子付きで書かれた import を必ず拾うこと★
+ *
+ * ここは一度、実際に取りこぼしていた。
+ *   src/main.tsx: import App from './App.tsx';
+ * のように拡張子まで書いてある場合、
+ * `base + '.ts'` / `base + '.tsx'` だけを試すと
+ * `App.tsx.ts` / `App.tsx.tsx` を探して見つからず、null を返していた。
+ *
+ * null を返すと、そのファイルから先の依存がすべて追跡されなくなる。
+ * つまり ★重いデータを './heavy.ts' の形で読んでも「0バイト」と報告される★。
+ * 落ちるのではなく緑になる壊れ方なので、いちばん危ない。
+ *
+ * そのため「そのパスがそのままファイルとして存在する場合」を
+ * 最初に見るようにしてある。
+ * この取りこぼしが起きていないことは
+ * 「監視役そのものの健康診断」のテストが見張っている
+ * （main.tsx から何も到達しなくなったら落ちる）。
+ */
 function resolveSpecifier(fromFile: string, spec: string): string | null {
   if (!spec.startsWith('.')) return null;
   const base = resolve(dirname(fromFile), spec);
+
+  // 1) 拡張子まで書かれている（'./App.tsx'）→ そのまま存在するか見る
+  if (existsSync(base) && statSync(base).isFile()) return base;
+
+  // 2) 拡張子が省略されている（'./App'）
   for (const ext of EXTS) {
     if (existsSync(base + ext)) return base + ext;
   }
+
+  // 3) ディレクトリ指定（'./learningContent'）→ index.ts(x)
   if (existsSync(base) && statSync(base).isDirectory()) {
     for (const ext of EXTS) {
       const candidate = join(base, 'index' + ext);
@@ -328,5 +355,96 @@ describe('画面ごとの起動時の重さ（教科データを読み込みす�
     // 自分自身だけ
     expect(files).toEqual(['src/data/chapterIndex.generated.ts']);
     expect(dataFiles).toEqual(['src/data/chapterIndex.generated.ts']);
+  });
+
+  /*
+   * -------------------------------------------------------------------
+   * ★アプリ全体の起動時の重さ（いちばん上位の指標）★
+   * -------------------------------------------------------------------
+   *
+   * ■ なぜこの門が必要になったのか（私自身の誤報告の記録）
+   *
+   * 上の SCREEN_BUDGETS は「画面ごと」の重さを守る。
+   * 画面を1枚ずつ軽くしていくのには有効だが、
+   * ★画面が全部軽くても、アプリ全体が軽くなったとは限らない★。
+   *
+   * 実際にそうなっていた。
+   * 私は以前、ビルド結果に対して
+   *
+   *     head -c 400 dist/assets/index-*.js | grep 'from"./data-'
+   *
+   * を実行し、何も出てこなかったことから
+   * 「起動時チャンクは data チャンクを静的に読んでいない」と報告した。
+   * これは誤りだった。head -c 400 は★先頭400バイトだけ★を見る検査で、
+   * 実際の import 文はもっと後ろにもある。
+   * ファイル全体を走査すると事実は逆で、
+   *
+   *   - index.html の modulepreload に data チャンクが入っている
+   *   - index チャンクは data チャンクを静的 import している
+   *   - 起動時に必ず落ちる JS が 5,253,265 B（5.01 MB）
+   *   - ★遅延で落ちるチャンクは 0 B（1つも無い）★
+   *
+   * だった。つまり「画面を軽くした」成果は依存関係としては正しくても、
+   * 配信量としては1バイトも遅延化できていなかった。
+   *
+   * この失敗の教訓は
+   *   「部分の指標だけを見ていると、全体が悪いことに気づけない」
+   *   「弱い測り方（先頭だけ・目視）は、嘘の安心を作る」
+   * の二つで、どちらも人間の注意力では防げない。だから門にする。
+   *
+   * ■ この門が測るもの
+   *
+   * 本当の入口（src/main.tsx）から★静的 import だけ★で辿れる src/data の総量。
+   * 動的 import（await import）は数えない。
+   * これは「manualChunks が src/data を1つのチャンクにまとめている限り、
+   * 起動時に必ずダウンロードされる量」の下限に相当する。
+   *
+   * ■ 予算の決め方
+   *
+   * 現状の実測は 75 ファイル。
+   * 予算は「今より悪化したら落ちる」位置に置く。つまりこれは
+   * ★上限であって目標ではない★。
+   * 起動時の重さを減らす作業が進んだら、この数字を下げていく
+   * （下げ忘れても悪化は検出できるが、下げれば後戻りも検出できる）。
+   *
+   * 実コードのバイト数ではなくファイル件数で見ているのは、
+   * 問題を増やすとバイト数は正当に増えるのに対し、
+   * ★「起動時に何ファイル引きずるか」は構造の性質で、問題数では増えない★ため。
+   * 問題を1問足しただけでこの門が落ちるのでは、
+   * 「問題を素早く増やせる」という目的と衝突してしまう。
+   */
+  it('★アプリ全体（main.tsx）の起動時 src/data 読み込みが悪化していない★', () => {
+    const { dataFiles } = reachFrom('src/main.tsx');
+
+    // 現状の実測値。ここを増やす変更は「起動が重くなる」変更なので止める。
+    const CURRENT = 75;
+
+    expect(
+      dataFiles.length,
+      `★起動時に静的読み込みされる src/data のファイル数が ${dataFiles.length} 件（上限 ${CURRENT} 件）★\n` +
+        'main.tsx から静的 import だけで辿れる src/data が増えている。\n' +
+        '＝ その分が起動時に必ずダウンロードされる。\n' +
+        '重い教科データを増やす場合は、静的 import ではなく\n' +
+        '動的 import（await import）にするか、軽い索引（chapterIndex.generated）を使う。\n' +
+        `到達している src/data:\n  ${dataFiles.join('\n  ')}`,
+    ).toBeLessThanOrEqual(CURRENT);
+  });
+
+  it('この全体指標が本当に重さを見ている（監視役そのものの健康診断）', () => {
+    /*
+     * 上の門が「0件」を返して常に緑、という壊れ方をしていないか確かめる。
+     * 現状は教科データ本体が起動時に入ってしまっているので、
+     * 玄関に到達しているのが「正しい（＝まだ直っていない）状態」。
+     *
+     * ★ここは将来わざと落ちる★
+     * 起動時から教科データ本体を追い出せたら、この期待は成り立たなくなる。
+     * そのときは「玄関に到達していないこと」に書き換える。
+     * つまりこの行は、作業が完了したことを教えてくれる目印でもある。
+     */
+    const { dataFiles, dataBytes } = reachFrom('src/main.tsx');
+    expect(dataFiles.length).toBeGreaterThan(0);
+    expect(dataBytes).toBeGreaterThan(0);
+    // いま起動時に届いてしまっている玄関（この事実自体が未完了の証拠）
+    expect(dataFiles).toContain('src/data/allChapters.ts');
   });
 });
