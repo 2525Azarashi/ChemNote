@@ -27,6 +27,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { readCode } from './helpers/sourceScan';
 
 import {
   ALL_SUBJECTS,
@@ -385,10 +386,28 @@ describe('改善2: 復習カードをシンプルに再設計する', () => {
   });
 
   it('カード全体をボタンで包まない（ボタンの入れ子を作らない）', () => {
-    // 開閉トリガの button が閉じたあとに、詳細の操作ボタンが来る構造
-    const trigger = HUB.indexOf('aria-controls={detailId}');
-    const triggerEnd = HUB.indexOf('</button>', trigger);
-    const detail = HUB.indexOf('{/* ===== 詳細（タップで展開）===== */}');
+    /*
+     * ★位置で構造を見る検査は、実コード（コメント除去後）で行う★
+     *
+     * 素のソースを indexOf で探すと、経緯を説明したコメントの中に
+     * 同じ JSX を書き写した瞬間にそこへ当たり、判定が狂う。
+     * 実際に learningPrint.test.ts でこの事故が起きた
+     * （詳細は tests/helpers/sourceScan.ts の冒頭）。
+     *
+     * ★あわせて目印そのものも直した★
+     *   以前は詳細ブロックの開始位置を
+     *       '{/* ===== 詳細（タップで展開）===== *\/}'
+     *   という JSX コメントで探していた。これは
+     *   「コメントの文言を書き換えただけでテストが落ちる」＝
+     *   構造を見ているつもりで文章を見ているという弱さがあり、
+     *   コメント除去後は消えてしまうので位置検査にも使えない。
+     *   実コード上の目印である id={detailId}（詳細ブロックの実体）に変えた。
+     */
+    const code = readCode('src/components/StudyHub.tsx');
+    // 開閉トリガの button が閉じたあとに、詳細ブロックが来る構造
+    const trigger = code.indexOf('aria-controls={detailId}');
+    const triggerEnd = code.indexOf('</button>', trigger);
+    const detail = code.indexOf('id={detailId}');
     expect(trigger).toBeGreaterThan(0);
     expect(triggerEnd).toBeGreaterThan(trigger);
     expect(detail).toBeGreaterThan(triggerEnd);

@@ -17,6 +17,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { readCode } from './helpers/sourceScan';
 
 const root = resolve(__dirname, '..');
 const read = (p: string) => readFileSync(resolve(root, p), 'utf8');
@@ -190,8 +191,25 @@ describe('LearningViewer の印刷UI', () => {
  * をソース上で保証する。
  * ================================================================== */
 describe('まとめプリントの科目切り替え', () => {
-  const modeSrc = read('src/components/ModeSelection.tsx');
-  const appSrc = read('src/App.tsx');
+  /*
+   * ★ここでは readCode（コメントを除いた実コード）を使う★
+   *
+   * 理由は実際に起きた事故である。
+   * App.tsx に遅延読み込みの理由を書いたとき、その説明文の中に
+   *
+   *     元のコードは {appState === 'learning' && <LearningViewer … />} で…
+   *
+   * という一行を含めた。すると下の indexOf('<LearningViewer') が
+   * ★本物の JSX ではなく、その説明文に先に当たって★ テストが落ちた。
+   * アプリは正しく動いていた（実機確認済み）。壊れていたのは見張り役のほうだった。
+   *
+   * コメントの文言を変えて緑にするのは症状隠しであり、
+   * 同じ罠が別のファイルで必ず再発する。
+   * そこで「コンパイラが見ているコードだけを見る」形に直した。
+   * 詳細は tests/helpers/sourceScan.ts の冒頭コメント。
+   */
+  const modeSrc = readCode('src/components/ModeSelection.tsx');
+  const appSrc = readCode('src/App.tsx');
 
   it('★ 化学（発展）でも「学習(インプット)」ボタンを隠さない', () => {
     // 以前は {!isAdvanced && ( でボタンごと消していた。

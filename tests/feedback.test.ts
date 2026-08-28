@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { readCode } from './helpers/sourceScan';
 
 /**
  * ユーザーフィードバック収集機能の回帰テスト。
@@ -324,9 +325,20 @@ describe('設置場所（タイトル画面・各結果画面）', () => {
   it('単元の結果画面（Explanation.tsx）に screen="chapter_result" の入口があり、結果カード内に置かれている', () => {
     const src = read('src/components/Explanation.tsx');
     expect(src).toContain("import { FeedbackButton } from './FeedbackButton'");
-    expect(src).toMatch(/<FeedbackButton[\s\S]*?screen="chapter_result"/);
+    /*
+     * ★「どこに置かれているか」を位置で見る検査は readCode（コメント除去済み）で行う★
+     *
+     * 素のソースを indexOf で探すと、経緯を説明したコメントの中に
+     * 同じ JSX を書き写した瞬間にそこへ当たってしまう。
+     * 実際に learningPrint.test.ts でこの事故が起きた
+     * （詳細は tests/helpers/sourceScan.ts の冒頭）。
+     * 「置く順番」はコメントではなく実コードだけで決まるので、
+     * 判定対象も実コードに揃える。
+     */
+    const code = readCode('src/components/Explanation.tsx');
+    expect(code).toMatch(/<FeedbackButton[\s\S]*?screen="chapter_result"/);
     // isResultView（= 結果表示時のみ）のブロック内、ランキングパネルの後に置く
-    const resultBlock = src.slice(src.indexOf('isResultView && displayTotalScore != null'));
+    const resultBlock = code.slice(code.indexOf('isResultView && displayTotalScore != null'));
     const rankingAt = resultBlock.indexOf('<ChapterRankingPanel');
     const feedbackAt = resultBlock.indexOf('<FeedbackButton');
     expect(rankingAt).toBeGreaterThan(-1);
@@ -338,9 +350,11 @@ describe('設置場所（タイトル画面・各結果画面）', () => {
   it('模擬試験の結果画面（MockExam.tsx）に screen="mock_exam_result" の入口がある', () => {
     const src = read('src/components/MockExam.tsx');
     expect(src).toContain("import { FeedbackButton } from './FeedbackButton'");
-    expect(src).toMatch(/<FeedbackButton[\s\S]*?screen="mock_exam_result"/);
+    // 位置の検査は実コードだけを見る（上と同じ理由）
+    const code = readCode('src/components/MockExam.tsx');
+    expect(code).toMatch(/<FeedbackButton[\s\S]*?screen="mock_exam_result"/);
     // phase === 'result' のブロック内に置かれていること
-    const resultBlock = src.slice(src.indexOf("if (phase === 'result')"));
+    const resultBlock = code.slice(code.indexOf("if (phase === 'result')"));
     expect(resultBlock.indexOf('<FeedbackButton')).toBeGreaterThan(-1);
     // 得点・正答率・所要時間を添付していること
     const snippet = resultBlock.slice(resultBlock.indexOf('<FeedbackButton'));

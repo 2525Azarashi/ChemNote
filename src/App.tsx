@@ -11,7 +11,45 @@ import { ModeSelection } from './components/ModeSelection';
 import { ChapterSelection } from './components/ChapterSelection';
 import { Quiz } from './components/Quiz';
 import { Explanation } from './components/Explanation';
-import { LearningViewer } from './components/LearningViewer';
+/*
+ * ★まとめプリント画面だけは「開いたときに読む」（遅延読み込み）★
+ *
+ * ■ なぜこの画面から始めたか（実測にもとづく）
+ *
+ * この画面が使う data/learningContent は、まとめプリントの HTML 文字列で
+ * 実測 710,921 バイト / 16 ファイル。しかも
+ * ★LearningViewer 以外の誰も読んでいない完全に独立した塊★ である。
+ * つまり切り離しても他の画面に影響が出ない。
+ *
+ * ■ 「チャンクを分けるだけ」では 1 バイトも減らないことを実験で確認済み
+ *
+ * 先に vite.config.ts の manualChunks で learningContent を
+ * 別チャンク（data-learning）に分ける実験をした。結果:
+ *
+ *   data 3,041.75 → 2,367.58 kB、data-learning 674.06 kB（循環 0 で成功）
+ *   しかし起動時に必ず落ちる JS は 5,253,265 → 5,253,186 B（−79 B のみ）
+ *   遅延で落ちる JS は 0 B のまま
+ *
+ * ここが静的 import のままだと、チャンクを分けても両方ダウンロードされる。
+ * ★分割は削減ではない。静的 import を切ることが先。★
+ * この実験は取り消し、こちらの順序に変えた。
+ *
+ * ■ 表示は変えていない
+ *
+ * 元のコードは
+ *     {appState === 'learning' && <LearningViewer … />}
+ * で、画面が「学習」に切り替わった瞬間に描画される形だった。
+ * lazy にしても JSX の書き方・渡す props・表示内容は同じ。
+ * 違いは「その JS を読み終わるまでのわずかな間」だけで、
+ * その間は下の Suspense fallback（何も描かない）になる。
+ *
+ * fallback をあえて空にしているのは、
+ * ローディング表示という★新しい UI を足さない★ため。
+ * 読み込み中に一瞬何かが出て消えるほうが、表示の変化としては大きい。
+ */
+const LearningViewer = React.lazy(() =>
+  import('./components/LearningViewer').then((m) => ({ default: m.LearningViewer })),
+);
 import { Leaderboard } from './components/Leaderboard';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
@@ -854,15 +892,22 @@ export default function App() {
             {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} />}
             {appState === 'mock_exam' && <MockExam onBack={() => setAppState('mode_selection')} />}
             {appState === 'learning' && (
-              <LearningViewer
-                onBack={() => setAppState('mode_selection')}
-                subject={
-                  selectedSubject === 'chemistry' ? 'chemistry'
-                  : selectedSubject === 'math' ? 'math'
-                  : selectedSubject === 'biology_basic' ? 'biology_basic'
-                  : 'chemistry_basic'
-                }
-              />
+              /*
+                まとめプリントは遅延読み込み（上の React.lazy を参照）。
+                fallback は null＝何も描かない。
+                ローディング表示を足すと「元には無かった表示」が増えてしまうため。
+              */
+              <React.Suspense fallback={null}>
+                <LearningViewer
+                  onBack={() => setAppState('mode_selection')}
+                  subject={
+                    selectedSubject === 'chemistry' ? 'chemistry'
+                    : selectedSubject === 'math' ? 'math'
+                    : selectedSubject === 'biology_basic' ? 'biology_basic'
+                    : 'chemistry_basic'
+                  }
+                />
+              </React.Suspense>
             )}
             {/* 化学（発展）：理論化学・無機化学・有機化学の分野選択 */}
             {appState === 'advanced_fields' && (

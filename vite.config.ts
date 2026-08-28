@@ -249,6 +249,32 @@ export default defineConfig({
            */
           if (id.includes('/src/data/subjectLabels')) return undefined;
 
+          /*
+           * ★まとめプリントのデータは data チャンクから切り離す★
+           *
+           * ■ この行は「LearningViewer を遅延読み込みにした後」で初めて効く
+           *
+           * 先に分割だけを試したときは効果がなかった（実測）:
+           *   data 3,041.75 → 2,367.58 kB / data-learning 674.06 kB（循環 0）
+           *   でも起動時に必ず落ちる JS は 5,253,265 → 5,253,186 B（−79 B だけ）
+           *   遅延で落ちる JS は 0 B のまま
+           * 理由は LearningViewer が静的 import されていたから。
+           * チャンクを分けても、静的に繋がっていれば両方ダウンロードされる。
+           * ★分割は削減ではない。静的 import を切るのが先。★
+           * この実験はいったん取り消し、順序を入れ替えてやり直した。
+           *
+           * いま App.tsx 側で LearningViewer を React.lazy にしたので、
+           * この 710,921 バイト / 16 ファイルの塊は
+           * 「まとめプリントを開いたときに初めて読む」ものになる。
+           *
+           * ■ 安全性（両方向の辺を数えて確認した）
+           *   - learningContent/* を読むのは LearningViewer だけ（他に 0 件・実測）
+           *   - learningContent/* から src/data の他のファイルへの辺は無い
+           *   → data チャンクとの間に循環はできない
+           * 循環が出ていないことはビルドの Circular 警告 0 で確認する。
+           */
+          if (id.includes('/src/data/learningContent/')) return 'data-learning';
+
           if (id.includes('/src/data/')) return 'data';
 
           return undefined;
