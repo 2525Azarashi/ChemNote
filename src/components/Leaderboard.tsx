@@ -18,8 +18,28 @@ import {
   type RankingPeriod,
 } from '../utils/leaderboard';
 import { auth } from '../firebase';
-import { chemistryData } from '../data/chemistryData';
-import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
+/*
+ * ★この画面は章の「ID と表示名」しか使わないので、軽い索引だけを読む★
+ *
+ * ランキングの絞り込みプルダウンに章名を並べるために、
+ * もとは chemistryData と chemistryAdvancedData を静的 import していた。
+ * しかし実際に使っていたのは
+ *
+ *     { id: c.id, title: c.abstractTitle || c.title || c.id }
+ *
+ * だけで、★問題文・選択肢・解説は1文字も使っていない★。
+ * それにも関わらず依存グラフを辿ると
+ *
+ *     Leaderboard.tsx が引き込む src/data … 17 ファイル / 1,340,750 バイト
+ *
+ * が読み込まれていた（問題を増やすとこの数字がそのまま増える）。
+ *
+ * 索引に切り替える前に、置き換えても並びと文字列が完全に同一になることを
+ * 実データで確認した（95件すべて一致）。
+ * 化学（発展）側だけ `abstractTitle || id`（title を挟まない）に
+ * なっているのも元の実装のままにしている。
+ */
+import { getChapterIndexOfSubject } from '../data/chapterIndex.generated';
 import { fetchFriendCompetition } from '../utils/friends';
 import { DoorMascot } from './DoorMascot';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
@@ -47,8 +67,8 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
   // 章ID は接頭辞（c… / a…）で衝突しないため、単純な連結で安全に並べられる。
   const allChapters = useMemo(
     () => [
-      ...chemistryData.parts.flatMap((p: any) => p.chapters.map((c: any) => ({ id: c.id, title: c.abstractTitle || c.title || c.id }))),
-      ...getAllAdvancedChapters().map((c) => ({ id: c.id, title: c.abstractTitle || c.id })),
+      ...getChapterIndexOfSubject('chemistry_basic').map((c) => ({ id: c.id, title: c.abstractTitle || c.title || c.id })),
+      ...getChapterIndexOfSubject('chemistry').map((c) => ({ id: c.id, title: c.abstractTitle || c.id })),
     ],
     []
   );
