@@ -262,8 +262,67 @@ describe('構造の固定（ガード）', () => {
     expect(m![0]).toMatch(/setNotes\s*\(/u);
   });
 
-  it('reviewList.ts は葉のまま（他モジュールを import しない）', () => {
-    // utils → components や utils → data の逆流を作らない
-    expect(read('src/utils/reviewList.ts')).not.toMatch(/^import\s/mu);
+  it('★reviewList.ts は重いものを一切 import しない（画面・教科データ・通信）★', () => {
+    /*
+      -----------------------------------------------------------------
+      ■ もともとの検査
+        「何も import しない」と書いていた。
+        目的は utils → components / utils → data / utils → firebase
+        という逆流を防ぐこと。逆流すると
+          ・復習リストを読むだけで教科データ全部が読み込まれる
+          ・起動が重くなる
+          ・循環参照でビルドが不安定になる
+        という実害が出る。
+
+      ■ なぜ条件を書き換えたか
+        問題文が差し替わったときに古い復習項目を検知するため、
+        同じ utils の中の小さな純粋関数（problemVersion）を使う必要が出た。
+        これは
+          ・他のモジュールを一切 import しない葉である
+          ・画面も教科データも通信も触らない
+        ので、防ぎたかった逆流には当たらない。
+
+        ★ただし「何も import しない」を単に緩めるのは危険。★
+        それでは次に誰かが教科データを import しても通ってしまい、
+        検査が意味を失う（＝検査があるのに守られていない状態）。
+        そこで ★禁止したい向きだけを名指しで禁止する★ 形に変えた。
+        こちらの方が元の検査より厳しい（何を守っているかが明示される）。
+      -----------------------------------------------------------------
+    */
+    const src = read('src/utils/reviewList.ts');
+
+    // import 文をすべて取り出して、行き先を1つずつ確認する。
+    const specifiers = [...src.matchAll(/^import[^'"]*['"]([^'"]+)['"]/gmu)].map((m) => m[1]);
+
+    for (const spec of specifiers) {
+      // 画面（components）への逆流は禁止
+      expect(spec, `画面を import している: ${spec}`).not.toMatch(/components/u);
+      // 教科データへの逆流は禁止（起動時の読み込み量が跳ね上がる）
+      expect(spec, `教科データを import している: ${spec}`).not.toMatch(/(^|\/)data(\/|$)/u);
+      // 通信・外部SDKへの依存は禁止（localStorage だけで完結させる）
+      expect(spec, `通信/SDK を import している: ${spec}`).not.toMatch(/firebase|firestore/iu);
+      // 同じ utils の中の相対 import だけを許す
+      expect(spec, `想定外の import 先: ${spec}`).toMatch(/^\.\/[A-Za-z0-9_]+$/u);
+    }
+  });
+
+  it('★reviewList.ts が import する相手も葉である（連鎖で重くならない）★', () => {
+    /*
+      「直接 import しているものは軽い」だけでは足りない。
+      その相手がさらに教科データを読んでいたら、結局同じことになる。
+      ★依存の一部だけを見て安全と判断してはいけない★
+      （このプロジェクトで実際にやってしまった誤りなので、
+        1段だけでなく相手側も確認する）。
+    */
+    const src = read('src/utils/reviewList.ts');
+    const specifiers = [...src.matchAll(/^import[^'"]*['"]\.\/([A-Za-z0-9_]+)['"]/gmu)].map((m) => m[1]);
+
+    // 少なくとも1件は import している状態（＝この検査が空回りしていない）
+    expect(specifiers.length).toBeGreaterThan(0);
+
+    for (const name of specifiers) {
+      const childSrc = read(`src/utils/${name}.ts`);
+      expect(childSrc, `${name}.ts が何かを import している`).not.toMatch(/^import\s/mu);
+    }
   });
 });

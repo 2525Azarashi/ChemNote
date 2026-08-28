@@ -8,9 +8,54 @@ import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy } from 'lucide
 import { Home } from './components/Home';
 import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
-import { ChapterSelection } from './components/ChapterSelection';
-import { Quiz } from './components/Quiz';
-import { Explanation } from './components/Explanation';
+/*
+ * ★単元選択画面も「開いたときに読む」（遅延読み込み）★
+ *
+ * ChapterSelection は getPartsOfSubject を使っており、
+ * これが data/allChapters（実測 2,703,107 B）に静的に届いていた。
+ * 上に書いた3本の線のうちの3本目である。
+ *
+ * この画面はホームから «学習を始める → 科目 → モード» と
+ * 何段か進んだ先にあるので、起動時に持っている必要がない。
+ *
+ * fallback は null＝何も描かない。
+ * ローディング表示を足すと「元には無かった表示」が一瞬出て消えることになり、
+ * それ自体が見た目の変化になるため、あえて足していない。
+ */
+const ChapterSelection = React.lazy(() =>
+  import('./components/ChapterSelection').then((m) => ({ default: m.ChapterSelection })),
+);
+/*
+ * ★演習画面と結果・解説画面も「開いたときに読む」（遅延読み込み）★
+ *
+ * ■ 何が起動時の重さを固定していたのか（実測）
+ *
+ * 起動時に必ず落ちてくる問題データ（data チャンク 2.37 MB）を
+ * 固定していた静的な線は、実測でたった3本だった。
+ *
+ *   1. App.tsx           → allChapters   2,703,107 B（findChapterById）
+ *   2. App.tsx           → chemistryData 1,253,813 B（handleReviewNote）
+ *   3. ChapterSelection  → allChapters   2,703,107 B（getPartsOfSubject）
+ *
+ * manualChunks が src/data をひとつの data チャンクにまとめているため、
+ * ★1本でも静的な線が残っていると 2.37 MB 全部が落ちてくる。★
+ * だから「1本だけ直して軽くなった」とは言えない。3本まとめて切る必要がある。
+ *
+ * ■ Quiz / Explanation を別ファイル（QuizScreens）に束ねた理由
+ *
+ * 1 の findChapterById は★App.tsx の描画中に同期で★呼ばれていた。
+ * App.tsx 側でこれを非同期にすると、章が解決するまでの間
+ *     appState === 'quiz' && selectedChapter && …
+ * が false になり、演習画面が一瞬まったく描かれない。
+ * 「単元を選んだのに一瞬何も出ない」という元には無かった見え方になる。
+ *
+ * そこで章を探す処理ごと遅延側（components/QuizScreens.tsx）に移した。
+ * App.tsx は章ID（文字列）だけを渡し、問題データを一切知らなくなる。
+ * 詳しい経緯は QuizScreens.tsx の冒頭コメントに書いている。
+ */
+const QuizScreens = React.lazy(() =>
+  import('./components/QuizScreens').then((m) => ({ default: m.QuizScreens })),
+);
 /*
  * ★まとめプリント画面だけは「開いたときに読む」（遅延読み込み）★
  *
@@ -60,24 +105,99 @@ import { StudyHub } from './components/StudyHub';
 import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
 import { SubjectSelection, getSubjectLabel, isSubjectId, type SubjectId } from './components/SubjectSelection';
-import { AdvancedFieldSelection } from './components/AdvancedFieldSelection';
+/*
+ * ★分野選択画面（化学・発展）も「開いたときに読む」（遅延読み込み）★
+ *
+ * ■ 見落としていた4本目の線（新しく足した検査が見つけた）
+ *
+ * 上の3本を切ったあと、起動時の重さを見張る検査
+ * （tests/screenDataWeight.test.ts）を「教科データの玄関に
+ * 到達していないこと」に書き換えたところ、こう落ちた:
+ *
+ *   ★起動時に src/data/chemistryAdvancedData.ts へ静的に到達している★
+ *
+ * 原因はこの画面である。分野を3つ並べるだけの軽い画面なのに
+ *     import { ADVANCED_FIELDS, getAdvancedFieldStats } from '../data/chemistryAdvancedData'
+ * と書かれていて、見出しの下に出す「章○／単元○／大問○」を数えるために
+ * ★化学（発展）の問題データ本体（実測 90,658 B のチャンク）★を
+ * 起動時に持ってきていた。
+ *
+ * ■ ここで大事なこと
+ *
+ * 自分では「3本で全部」と思っていたが、実際には4本目があった。
+ * ★思い込みではなく検査が見つけた。★
+ * だから検査を「上限を少し下げる」形ではなく
+ * 「玄関に届いていないこと」という★構造の条件★に書き換えたのが正しかった。
+ * 教科を増やしても条件が古くならない。
+ *
+ * ■ 数え上げを消していない（表示は変えない）
+ *
+ * 「章○／単元○／大問○」の表示はそのまま残している。
+ * 画面ごと遅延にしただけなので、出る数字も文言も同じ。
+ * fallback は null＝何も描かない。
+ * この画面へは「学習を始める → 化学 → モード選択」と進んだ先で入るので、
+ * モード選択にいる間に先読みしている（下の「先読み」の useEffect を参照）。
+ */
+const AdvancedFieldSelection = React.lazy(() =>
+  import('./components/AdvancedFieldSelection').then((m) => ({
+    default: m.AdvancedFieldSelection,
+  })),
+);
 // 分野（理論／無機／有機）の表示情報だけを持つ葉ファイルから読む。
 // ここで使うのは「保存値が正しい分野IDかの確認」と「見出しに出す分野名」だけで、
 // 化学（発展）の問題データは1問も要らない。
 // （以前は ./data/chemistryAdvancedData から読んでいたため、
 //   この2つを使うだけで問題データ本体まで読み込み対象になっていた）
 import { ADVANCED_FIELDS, type AdvancedFieldId } from './data/advancedFields';
-// 学習ノートからの遷移（handleReviewNote）で化学基礎の章一覧を使うため、これだけは直接参照する
-import { chemistryData } from './data/chemistryData';
-// 全教科から章IDで引く処理は data/allChapters.ts に集約している
-import { findChapterById } from './data/allChapters';
+/*
+  公開/非公開の判断は src/config/features.ts が唯一の出どころ。
+
+  ★このファイルが担当するのは「4箇所」のうちの
+    1番目（ナビ）と 3番目（ルーティング）である。★
+
+  3番目が一番大事で、一番忘れやすい。
+  ナビとカードから消しても、
+    ・localStorage に残った「前回選んだ科目」が復元される
+    ・別の画面の戻り先として指定されている
+  といった経路で、非公開の科目へ入れてしまうことがある。
+  ★見えないのに入れてしまう状態は、見えているより悪い。★
+  だから入口ではなく「受け口」でも必ず判定する。
+*/
+import { isSubjectEnabled, fallbackSubjectId, FEATURES } from './config/features';
+/*
+  BGM を ON にしていても一定時間で自然に消えるようにする計算。
+  「経過ミリ秒 → 音量」の対応だけを別ファイルの純粋関数に置いてある
+  （ブラウザを開かずに機械検査できるようにするため）。
+*/
+import { bgmVolumeAt, isBgmFadeComplete, BGM_FADE_END_MS } from './utils/bgmFade';
+/*
+ * ★chemistryData（1,253,813 B）の静的 import はここから外した★
+ *
+ * 使っていたのは handleReviewNote ひとつだけで、
+ * それは「学習ノートの項目をタップしたとき」に走るイベントハンドラだった。
+ * 描画中には呼ばれないので、その場で await import() して読む形にした。
+ * 詳しい理由は handleReviewNote 内のコメントに書いている。
+ */
+/*
+ * ★findChapterById（allChapters 2,703,107 B）の静的 import もここから外した★
+ *
+ * 使っていたのは演習画面・結果画面に渡す章の解決だけで、
+ * その処理ごと components/QuizScreens.tsx（遅延読み込みされる側）へ移した。
+ * 全教科から章IDで引く処理そのものは今も data/allChapters.ts に集約している。
+ */
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIdleReset } from './hooks/useIdleReset';
 import { useIsMobile } from './hooks/useMediaQuery';
 import { MobileViewWrapper } from './components/MobileViewWrapper';
 import { countIncomingFriendRequests } from './utils/friends';
 import { applyOverviewViewport } from './utils/viewportControl';
-import { ErrorBoundary } from './components/ErrorBoundary';
+/*
+ * ErrorBoundary の import もここから外した。
+ * 演習画面・結果画面を包んでいたのが唯一の用途で、
+ * その包み込みごと components/QuizScreens.tsx へ移したため。
+ * ★包む対象・ラベル・onReset の中身は変えていない★
+ * （「演習画面」「結果・解説画面」というラベルもそのまま持っていった）。
+ */
 import { flushFeedbackQueue, getFeedbackWebhookUrl } from './utils/feedback';
 import { recordUserPresence } from './utils/userRegistry';
 import { ensureRankingEntry } from './utils/leaderboard';
@@ -116,6 +236,16 @@ export function isAppMode(value: unknown): value is AppMode {
 
 /** 科目選択の保存キー（次回起動時に前回の科目を復元する） */
 const SELECTED_SUBJECT_KEY = 'savedSelectedSubject';
+/**
+ * BGM を ON にしたかどうかの保存先。
+ * 値は 'on' / 'off' の2種類だけ。
+ * ★キーを未設定のままにしておくことに意味がある★
+ *   未設定＝「まだ選んでいない」なので、
+ *   FEATURES.bgm の既定値（OFF）に従う。
+ *   0/1 や true/false を初期値として書き込んでしまうと、
+ *   あとで既定値を変えても既存ユーザーに届かなくなる。
+ */
+const BGM_ENABLED_KEY = 'bgm_enabled';
 /** 化学（発展）で最後に選んだ分野の保存キー */
 const SELECTED_FIELD_KEY = 'savedSelectedAdvancedField';
 
@@ -191,7 +321,29 @@ export default function App() {
   // 保存値が今の科目一覧に無い（＝古い/壊れた値）場合は化学基礎に戻す。
   const [selectedSubject, setSelectedSubject] = useState<SubjectId>(() => {
     const saved = localStorage.getItem(SELECTED_SUBJECT_KEY);
-    return isSubjectId(saved) ? saved : 'chemistry_basic';
+    /*
+      ★ここがルーティング側の門（4箇所のうちの3番目）★
+
+      保存値の検査を2段にしている。
+        1. isSubjectId  … そもそも科目IDとして成立しているか（従来どおり）
+        2. isSubjectEnabled … いま公開している科目か（今回追加）
+
+      2 が無いと、「数学を選んだまま非公開にした」ユーザーが
+      次に開いたときに数学の画面へ復元されてしまう。
+      カードを消しても、この経路が残っていれば意味がない。
+
+      戻す先は fallbackSubjectId が公開中のものから選ぶ。
+      「必ず化学基礎」と書かないのは、将来化学基礎を非公開にした日に
+      非公開の科目へ倒す処理になってしまうからである。
+      公開中の科目が1つも無い場合だけ 'chemistry_basic' を使う
+      （その状態はアプリとして成立していないので、
+        画面が真っ白になるのを避けるための最後の受け皿）。
+    */
+    if (isSubjectId(saved) && isSubjectEnabled(saved)) return saved;
+    const fallback = fallbackSubjectId(
+      ['chemistry_basic', 'chemistry', 'english_listening', 'english_grammar', 'biology_basic'],
+    );
+    return (fallback as SubjectId) ?? 'chemistry_basic';
   });
   // 化学（発展）で選択中の分野（理論／無機／有機）。
   // 保存値が壊れていても安全に理論化学へ倒す。
@@ -368,6 +520,53 @@ export default function App() {
     window.scrollTo(0, 0);
   }, [appState]);
 
+  /*
+   * ★「先読み」＝次に行く画面を、まだ表示していないうちに裏で読み始める★
+   *
+   * ■ なぜ必要なのか（これが無いと見え方が変わってしまう）
+   *
+   * 単元選択・演習・解説の3画面は遅延読み込みにした。
+   * 遅延読み込みは「その画面に入った瞬間に読み始める」ので、
+   * 何もしないと通信が遅い端末で★画面に入った直後に何も出ない時間★ができる。
+   * 元のアプリには無かった見え方であり、これは避けなければならない。
+   *
+   * そこで「まだその画面に入っていないが、次に行く可能性が高い」段階で
+   * 裏側で読み込みを始めておく。ユーザーがモードを選んでいる数秒間や
+   * 単元を選んでいる数秒間が、そのまま読み込み時間になる。
+   *
+   * ■ なぜ起動時（ホーム）には先読みしないのか
+   *
+   * ホームで先読みしてしまうと、結局起動と同時に問題データを取りに行くことになり、
+   * ★遅延読み込みにした意味が消える。★
+   * 「学習を始める」を押してモード選択に入った時点＝
+   * 「この人は問題を解く気がある」と分かった時点から読み始める。
+   *
+   * ■ 正直な注意
+   *
+   * これは「必ず間に合う」保証ではない。回線が極端に遅ければ待ちは残る。
+   * ただし「入った瞬間から読み始める」よりは確実に早く、
+   * 起動時に全部持ってくるよりは確実に軽い。
+   *
+   * catch は空にしている。先読みは失敗しても実害が無く
+   * （本番でその画面に入ったときに改めて読み込みが走る）、
+   * ここでエラー表示を出すと「まだ見てもいない画面のエラー」を
+   * 見せることになってしまうため。
+   */
+  useEffect(() => {
+    // モード選択・分野選択にいる ＝ 次は単元選択の可能性が高い
+    if (appState === 'mode_selection' || appState === 'advanced_fields') {
+      import('./components/ChapterSelection').catch(() => {});
+    }
+    // モード選択にいる ＝ 化学（発展）なら次は分野選択
+    if (appState === 'mode_selection') {
+      import('./components/AdvancedFieldSelection').catch(() => {});
+    }
+    // 単元選択にいる ＝ 次は演習画面の可能性が高い
+    if (appState === 'chapters') {
+      import('./components/QuizScreens').catch(() => {});
+    }
+  }, [appState]);
+
   const isFirstLoad = useRef(true);
 
   /**
@@ -410,6 +609,15 @@ export default function App() {
    *  - 「科目を変更」から来た場合 … ホーム（ダッシュボード）へ
    */
   const handleSelectSubject = (subject: SubjectId) => {
+    /*
+      ★受け口でもう一度確かめる（4箇所のうちの3番目）★
+      呼び出し側（科目カード）は非公開のカードを描いていないので、
+      通常ここに非公開の科目は来ない。
+      それでも確かめるのは、「呼ぶ側が正しいはず」に頼った作りは
+      画面を1つ足したときに静かに破れるからである。
+      入れてはいけない場所は、入口ではなく受け口で守る。
+    */
+    if (!isSubjectEnabled(subject)) return;
     setSelectedSubject(subject);
     setAppState(subjectPickerOrigin === 'start' ? 'mode_selection' : 'home');
   };
@@ -444,13 +652,59 @@ export default function App() {
   
   // BGM state
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [isBgmEnabled, setIsBgmEnabled] = useState(true);
+  /*
+    ===== BGM の初期状態について =====
+    ★以前は常に ON（useState(true)）だった。これを OFF 既定に変える。★
+
+    ■ なぜ OFF にするのか
+      学習アプリで音が勝手に鳴り始めるのは、
+        ・図書館・電車・自習室では実害になる
+        ・イヤホンを繋いだ瞬間に大音量で鳴ることがある
+        ・「まず音を止める」から始まる体験になる
+      という問題がある。音楽を聴きながらやりたい人は
+      自分の好きな曲を別に流しているので、
+      ★アプリ側が鳴らす理由は元々弱い。★
+      機能自体は消さず、設定画面のトグルからONにできる。
+
+      既定値は src/config/features.ts の FEATURES.bgm で持つ。
+      「どの機能を出すか」の判断を1か所に集めておくため
+      （このファイルに true/false を直接書かない）。
+
+    ■ 選択を覚える
+      毎回OFFに戻ると、ONにしたい人には毎回操作が必要になる。
+      localStorage に覚えるので、ONにした人は次回もON。
+      ★保存値が無い人（＝新規・これまでのユーザー全員）は
+        フラグの既定値に従うので、OFF から始まる。★
+
+    ■ 保存値の読み方
+      'on' / 'off' という文字で保存する（true/false の文字列より
+      あとから3値目を足しやすく、読んで意味が分かる）。
+      壊れた値・読めない場合は既定値に倒す。
+      localStorage が使えない環境（プライベートモード等）で
+      例外が飛んでも起動を止めないよう try で囲む。
+  */
+  const [isBgmEnabled, setIsBgmEnabled] = useState(() => {
+    try {
+      const saved = localStorage.getItem(BGM_ENABLED_KEY);
+      if (saved === 'on') return true;
+      if (saved === 'off') return false;
+    } catch {
+      /* 読めない環境では既定値に従う */
+    }
+    return FEATURES.bgm;
+  });
   const [bgmVolume, setBgmVolume] = useState(() => {
     const saved = localStorage.getItem('bgm_volume');
     return saved ? parseFloat(saved) : 0.5;
   });
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isAudioValid, setIsAudioValid] = useState(true);
+  /*
+    フェードが終わって音が消えた状態。
+    ★これを画面に出さないと「ONなのに鳴っていない」＝故障に見える。★
+    ヘッダーのボタンのラベルを「もう一度鳴らす」に変えるために使う。
+  */
+  const [isBgmFadedOut, setIsBgmFadedOut] = useState(false);
   const hasLoggedAudioError = useRef(false);
 
   useEffect(() => {
@@ -460,10 +714,75 @@ export default function App() {
     }
   }, [bgmVolume]);
 
+  // ON/OFF の選択を覚える（次回もその状態で始まる）。
+  // localStorage が使えない環境でも起動を止めない。
+  useEffect(() => {
+    try {
+      localStorage.setItem(BGM_ENABLED_KEY, isBgmEnabled ? 'on' : 'off');
+    } catch {
+      /* 保存できなくても今回のセッションでは効いているので続行する */
+    }
+  }, [isBgmEnabled]);
+
   const bgmStateRef = useRef({ isBgmEnabled, isAudioValid, appState });
   useEffect(() => {
     bgmStateRef.current = { isBgmEnabled, isAudioValid, appState };
   }, [isBgmEnabled, isAudioValid, appState]);
+
+  /*
+    ===== ONのままでも90秒で自然に消える（フェードアウト） =====
+
+    ■ 何のためか
+      ONにした人でも「鳴り続けてほしい」わけではない。
+      始めた直後は気分が乗るが、問題文を読み始めると音は邪魔になる。
+      止めたくなったときに設定画面まで戻るのは手間なので、
+      ★放っておいても消える★ようにする。
+
+    ■ 「鳴っていた時間」だけを数える
+      単に「ONにした時刻から90秒」で数えると、
+      演習中（quiz / explanation）は止まっているのに時間だけ進み、
+      演習から戻ってきた瞬間にはもう消えている、という
+      「一度も聞けていないのに終わっている」状態が起きる。
+      そこで ★実際に鳴っていた時間を足し込む★ 方式にする。
+        bgmPlayedMsRef  … これまで鳴っていた合計（一時停止中も保持）
+        bgmPlaySinceRef … いま鳴り始めた時刻（止まっているときは null）
+
+    ■ 音量の計算はこのファイルに書かない
+      「経過ミリ秒 → 音量」の対応は utils/bgmFade.ts の純粋関数に置く。
+      ここに書くと目視でしか確認できないが、
+      切り出せばブラウザを開かずに機械検査できる。
+
+    ■ 消えたあとは pause する
+      音量0のまま再生を続けると、電池を削り、
+      端末の「再生中の音楽」を占有し続けてしまう（他アプリの音楽が戻らない）。
+  */
+  const bgmPlayedMsRef = useRef(0);
+  const bgmPlaySinceRef = useRef<number | null>(null);
+
+  /** 現在までに「実際に鳴っていた」合計ミリ秒。 */
+  const bgmElapsedMs = () => {
+    const since = bgmPlaySinceRef.current;
+    return bgmPlayedMsRef.current + (since === null ? 0 : Date.now() - since);
+  };
+
+  /** 再生時間の計測をやり直す（ONに入れ直したとき＝もう一度聞きたいとき）。 */
+  const resetBgmFade = () => {
+    bgmPlayedMsRef.current = 0;
+    bgmPlaySinceRef.current = null;
+  };
+
+  /** 鳴り始めた／止まった、を計測に反映する。 */
+  const markBgmPlaying = (playing: boolean) => {
+    if (playing) {
+      if (bgmPlaySinceRef.current === null) bgmPlaySinceRef.current = Date.now();
+      return;
+    }
+    const since = bgmPlaySinceRef.current;
+    if (since !== null) {
+      bgmPlayedMsRef.current += Date.now() - since;
+      bgmPlaySinceRef.current = null;
+    }
+  };
 
   useEffect(() => {
     const handleInteraction = () => {
@@ -559,7 +878,22 @@ export default function App() {
     const shouldPlay = isBgmEnabled && hasInteracted && !['quiz', 'explanation'].includes(appState);
 
     if (shouldPlay) {
-      audio.volume = 0.1;
+      /*
+        ★ここで 0.1 を使っているのは従来どおり（挙動を変えないため）★
+        設定画面のスライダーで音量を変えたときは別の useEffect が
+        audio.volume = bgmVolume を入れ直す。この不一致は元からある
+        もので、今回の指摘とは別件なので触らない。
+        変えたのは ★フェードの倍率をかけた★ 点だけ。
+      */
+      audio.volume = bgmVolumeAt(0.1, bgmElapsedMs());
+      // すでにフェードが終わっている（＝90秒＋5秒鳴り終えた）なら鳴らさない。
+      // 画面を移動しただけで音が復活しては「消えた」ことにならない。
+      if (isBgmFadeComplete(bgmElapsedMs())) {
+        markBgmPlaying(false);
+        audio.pause();
+        return;
+      }
+      markBgmPlaying(true);
       // Play might fail if user hasn't interacted with the document yet or if source is invalid
       const playPromise = audio.play();
       if (playPromise !== undefined) {
@@ -579,9 +913,41 @@ export default function App() {
         });
       }
     } else {
+      // 止まる側でも計測を止める。演習中に進んだ時間を数えてしまうと
+      // 「演習から戻ったらもう消えていた」状態になる。
+      markBgmPlaying(false);
       audio.pause();
     }
   }, [appState, isBgmEnabled, hasInteracted, isAudioValid]);
+
+  /*
+    ===== フェードを実際に進める時計 =====
+    音量の計算式（utils/bgmFade.ts）は「経過時間を渡せば音量が出る」形なので、
+    誰かが定期的に呼んでやる必要がある。鳴っている間だけ 500ms ごとに呼ぶ。
+
+    ★鳴っていないときは時計を作らない★（依存配列に isBgmEnabled 等を入れ、
+    OFF・演習中・音源不正のときは setInterval を張らない）。
+    常時タイマーを回すと、音を切っている人の電池まで削ることになる。
+  */
+  useEffect(() => {
+    if (!isBgmEnabled || !isAudioValid || hasInteracted === false) return;
+    if (['quiz', 'explanation'].includes(appState)) return;
+
+    const id = window.setInterval(() => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      const elapsed = bgmElapsedMs();
+      audio.volume = bgmVolumeAt(0.1, elapsed);
+      if (isBgmFadeComplete(elapsed)) {
+        markBgmPlaying(false);
+        audio.pause();
+        // 「もう鳴らない」ことを画面にも伝える（ヘッダーのボタンの見た目が変わる）。
+        setIsBgmFadedOut(true);
+      }
+    }, 500);
+
+    return () => window.clearInterval(id);
+  }, [isBgmEnabled, isAudioValid, hasInteracted, appState]);
 
   // iOS/Safari では audio.play() をユーザー操作（クリック/タップ）と同一の
   // コールスタック内で呼ばないと再生がブロックされる。
@@ -590,6 +956,15 @@ export default function App() {
   const handleToggleBgm = (enabled: boolean) => {
     setIsBgmEnabled(enabled);
     setHasInteracted(true);
+    /*
+      ★ONに入れ直したら再生時間の計測をやり直す★
+      「もう一度鳴らしたい」という操作なので、
+      前回の90秒を引き継いだままだと押しても鳴らない
+      （＝ボタンが壊れているように見える）。
+      OFFにしたときも0に戻す。次にONにしたときが「始まり」だから。
+    */
+    resetBgmFade();
+    setIsBgmFadedOut(false);
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -597,6 +972,7 @@ export default function App() {
       if (!isAudioValid || hasLoggedAudioError.current) return;
       if (['quiz', 'explanation'].includes(appState)) return;
       audio.volume = bgmVolume;
+      markBgmPlaying(true);
       // iOS Safari 対策:
       // 音源がまだデコードされていない場合、ユーザー操作と同一スタックで
       // load() → play() を呼ぶことで再生ブロック/デコード失敗を回避しやすくなる。
@@ -624,6 +1000,7 @@ export default function App() {
         });
       }
     } else {
+      markBgmPlaying(false);
       audio.pause();
     }
   };
@@ -733,8 +1110,59 @@ export default function App() {
    * ノートに保存された chapterId / questionId を優先して問題位置を特定し、
    * 見つからなければ questionIndex（1始まり表示番号）でフォールバックする。
    */
-  const handleReviewNote = (note: any) => {
+  const handleReviewNote = async (note: any) => {
     if (!note) return;
+    /*
+     * ★ここだけ「押されたときに読む」（動的 import）にしている理由★
+     *
+     * chemistryData は実測 1,253,813 B ある。
+     * それをこの関数ひとつのために起動時から抱えていた。
+     *
+     * ■ なぜ非同期にしても表示が変わらないのか
+     *
+     *   この関数は「学習ノートの項目をタップしたとき」だけ走る
+     *   イベントハンドラであり、★描画中には呼ばれない★。
+     *   だから await を挟んでも、画面に出ているものが
+     *   一瞬消えたり空になったりしない。
+     *   （逆に findChapterById は描画中に呼ばれているので、
+     *     同じやり方は使えない。下の selectedChapter のコメント参照）
+     *
+     * ■ 待っている間について
+     *
+     *   読み込みが終わってから setAppMode / setAppState を呼ぶので、
+     *   画面は「まだノート一覧のまま」→「演習画面」と切り替わる。
+     *   中間状態を作らないので、途中で空の画面が出ることはない。
+     *
+     * ■ 正直な注意（これ単体では配信量は減らない）
+     *
+     *   manualChunks が src/data をひとつの data チャンクにまとめているため、
+     *   allChapters への静的な線（下の findChapterById）が残っている限り、
+     *   このファイルも同じチャンクに入って結局起動時に落ちてくる。
+     *   ★1本だけ切って「軽くなった」と言うのは嘘の改善報告になる。★
+     *   3本（ここ・findChapterById・ChapterSelection）が揃って初めて減る。
+     */
+
+    /*
+     * ★読み込みに失敗したときに「無言で何も起きない」ようにはしない★
+     *
+     * 静的 import なら、読み込み失敗はアプリ起動そのものの失敗になるので
+     * 気づけた。動的 import に変えると、失敗はこの関数の中の
+     * 拒否された Promise になる。
+     * 呼び出し側（StudyHub / NoteDetail の onReview）は戻り値を見ないので、
+     * ここで受け止めないと★ボタンを押しても何も起きない★という
+     * 原因の分からない不具合になる（電波が悪いときに実際に起こりうる）。
+     *
+     * 元の同期版でも「章が見つからない」ときは alert で伝えていたので、
+     * それに合わせて同じ伝え方にしておく（新しい UI は足さない）。
+     */
+    let chemistryData;
+    try {
+      ({ chemistryData } = await import('./data/chemistryData'));
+    } catch {
+      alert('問題データの読み込みに失敗しました。通信状況を確認して、もう一度お試しください。');
+      return;
+    }
+
     const allChapters = chemistryData.parts.flatMap(p => p.chapters) as any[];
 
     // 1) chapterId で章を特定（新しいノート）
@@ -779,15 +1207,33 @@ export default function App() {
     handleSelectChapter(chapter.id, questionIndex, false);
   };
 
-  /**
-   * 選択中の章（単元）。
-   * 化学基礎・化学（発展）・英語リスニングなど、全教科から探す。
-   * 単元ID は接頭辞（c… / a… / el…）で重複しないため、単純な連結で安全に引ける。
+  /*
+   * ★選択中の章（単元）を探す処理は、ここから components/QuizScreens.tsx へ移した★
    *
-   * どの教科を探すかの一覧は data/allChapters.ts に集約している
-   * （教科を追加するときは、そのファイルに1行足すだけでよい）。
+   * 以前はここで
+   *     const selectedChapter = findChapterById(selectedChapterId);
+   * と★描画中に同期で★呼んでいた。
+   * findChapterById は全教科の章を連結して探すので、
+   * 呼ぶだけで問題データ全部（実測 2,703,107 B）が起動時に必要になっていた。
+   *
+   * ■ ここで非同期にする案は捨てた（表示が変わってしまう）
+   *
+   *   await で章を取ろうとすると、解決するまで selectedChapter が
+   *   undefined になる。すると下の
+   *       appState === 'quiz' && selectedChapter && …
+   *   が false になり、★演習画面が一瞬まったく描かれない★。
+   *   「単元を選んだのに一瞬何も出ない」という、
+   *   元のアプリには無かった見え方が生まれる。
+   *
+   * ■ そこで「画面ごと」遅延側に移した
+   *
+   *   App.tsx は章ID（文字列）だけを持ち、章の実体を知らない。
+   *   章を探すのは QuizScreens（＝遅延読み込みされる側）の仕事にした。
+   *   これで App.tsx から data/allChapters への静的な線が切れる。
+   *
+   *   探し方そのものは変えていない（移動先でも同じ findChapterById を
+   *   同じ引数で同期に呼んでいる）。見つからないときに何も描かないのも同じ。
    */
-  const selectedChapter = findChapterById(selectedChapterId);
 
   return (
     <>
@@ -885,8 +1331,13 @@ export default function App() {
                 onBack={() => setAppState('home')}
               />
             )}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} />}
-            {appState === 'leaderboard' && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
+            {/* ★ルーティング側の門（4箇所のうちの3番目）★
+                ナビのボタンを隠すだけでは、Home の「ランキングを見る」など
+                別の導線からこの状態になれてしまう。
+                描画の受け口でも同じフラグを見て、
+                「見えないのに入れる」状態を作らない。 */}
+            {appState === 'leaderboard' && FEATURES.ranking && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
             {appState === 'logical_tree' && <LogicalTree />}
             {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} />}
@@ -911,40 +1362,60 @@ export default function App() {
             )}
             {/* 化学（発展）：理論化学・無機化学・有機化学の分野選択 */}
             {appState === 'advanced_fields' && (
-              <AdvancedFieldSelection
-                onSelectField={(field) => { setSelectedField(field); setAppState('chapters'); }}
-                onBack={() => setAppState('mode_selection')}
-              />
+              /* 分野選択画面は遅延読み込み（上の React.lazy を参照）。fallback は null＝何も描かない。 */
+              <React.Suspense fallback={null}>
+                <AdvancedFieldSelection
+                  onSelectField={(field) => { setSelectedField(field); setAppState('chapters'); }}
+                  onBack={() => setAppState('mode_selection')}
+                />
+              </React.Suspense>
             )}
             {appState === 'chapters' && (
-              <ChapterSelection
-                mode={appMode as 'mini_test' | 'practice'}
-                onSelectChapter={handleSelectChapter}
-                onBack={() => setAppState(selectedSubject === 'chemistry' ? 'advanced_fields' : 'mode_selection')}
-                subject={selectedSubject}
-                field={selectedField}
-                fieldTitle={ADVANCED_FIELDS.find(f => f.id === selectedField)?.title}
-              />
-            )}
-            {appState === 'quiz' && selectedChapter && (
-              <ErrorBoundary label="演習画面" onReset={handleBackToChapters}>
-                <Quiz mode={appMode as 'mini_test' | 'practice'} chapter={selectedChapter} onFinish={handleFinishQuiz} onBack={handleBackToChapters} isGuest={isGuest} isMobileView={isMobileView} onExplanationChange={setIsExplanationView} questionRange={quizRange} />
-              </ErrorBoundary>
-            )}
-            {appState === 'explanation' && selectedChapter && (
-              /* 結果・ランキング画面は問題データを一括で描画するため、
-                 1問でもデータ不備があると全体が表示できなくなる。
-                 エラーバウンダリで包み、真っ白な画面で操作不能にならないようにする。 */
-              <ErrorBoundary label="結果・解説画面" onReset={handleBackToChapters}>
-                <Explanation
+              /*
+                単元選択画面は遅延読み込み（上の React.lazy を参照）。
+                fallback は null＝何も描かない。
+
+                なお、この画面に入る直前のモード選択画面で
+                あらかじめ読み込みを始めている（下の「先読み」の useEffect を参照）ので、
+                実際にはここで待たされないようにしてある。
+              */
+              <React.Suspense fallback={null}>
+                <ChapterSelection
                   mode={appMode as 'mini_test' | 'practice'}
-                  chapter={selectedChapter}
+                  onSelectChapter={handleSelectChapter}
+                  onBack={() => setAppState(selectedSubject === 'chemistry' ? 'advanced_fields' : 'mode_selection')}
+                  subject={selectedSubject}
+                  field={selectedField}
+                  fieldTitle={ADVANCED_FIELDS.find(f => f.id === selectedField)?.title}
+                />
+              </React.Suspense>
+            )}
+            {(appState === 'quiz' || appState === 'explanation') && (
+              /*
+                演習画面と結果・解説画面は遅延読み込み（上の React.lazy を参照）。
+                章を探す処理も含めて QuizScreens 側に置いてあるので、
+                この画面に入るまで問題データ（2.7MB）を読まない。
+
+                fallback は null＝何も描かない。
+                元のコードも「章が見つかるまで何も描かない」挙動
+                （appState === 'quiz' && selectedChapter && …）だったので、
+                読み込み中に何も出ないのは元からの見え方と同じ。
+                ここでローディング表示を足すと、元には無かった表示が
+                一瞬出て消えることになるため、あえて足していない。
+              */
+              <React.Suspense fallback={null}>
+                <QuizScreens
+                  screen={appState === 'quiz' ? 'quiz' : 'explanation'}
+                  chapterId={selectedChapterId}
+                  mode={appMode as 'mini_test' | 'practice'}
                   answers={quizAnswers}
+                  onFinish={handleFinishQuiz}
                   onBack={handleBackToChapters}
                   isGuest={isGuest}
                   // スマホではスマホ専用レイアウト（正誤一覧→タップで解説）で表示する。
                   // PC は従来どおり（isMobileView=false → 2カラムレイアウト）。
                   isMobileView={isMobileView}
+                  onExplanationChange={setIsExplanationView}
                   resultTotalScore={lastQuizResult?.totalScore}
                   resultTotalCorrect={lastQuizResult?.totalCorrect}
                   resultTotalJudgeable={lastQuizResult?.totalJudgeable}
@@ -953,7 +1424,7 @@ export default function App() {
                   // 解いていない回まで答え合わせに並ぶと、どこまでやったか分からなくなる。
                   questionRange={quizRange}
                 />
-              </ErrorBoundary>
+              </React.Suspense>
             )}
             {appState === 'study_hub' && <StudyHub onBack={() => setAppState('home')} isGuest={isGuest} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} onReview={handleReviewNote} />}
             {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('study_hub')} onReview={handleReviewNote} />}
@@ -1004,6 +1475,14 @@ export default function App() {
                   <span className="text-[10px] tracking-wider font-modern">学習</span>
                 </button>
 
+                {/* ★ここは「4箇所」のうちの1番目（ナビ）★
+                    ランキングは現在公開中（FEATURES.ranking === true）なので
+                    見た目は今までと一切変わらない。
+                    それでもフラグを通しておくのは、
+                    ★止めたくなった日に「ここも直す」を思い出さなくて済む★
+                    ようにするため。フラグを後から足す作業が、
+                    今回の「隠したつもりで入れた」の原因そのものである。 */}
+                {FEATURES.ranking && (
                 <button 
                   onClick={() => setAppState('leaderboard')}
                   aria-label="ランキング画面へ移動"
@@ -1013,6 +1492,7 @@ export default function App() {
                   <Trophy className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">ランキング</span>
                 </button>
+                )}
 
                 <button 
                   onClick={() => {
