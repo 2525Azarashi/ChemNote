@@ -65,3 +65,4 @@ chemnote_*.tar.gz
 # クラッシュダンプ（ビルドが OOM/SIGABRT で落ちたときに生成される。1GB超になることがある）
 core
 core.*
+scripts/data/q2_raw/
