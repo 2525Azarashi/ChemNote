@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { type AdvancedFieldId } from '../data/chemistryAdvancedData';
+// ★必ず `import type` と書くこと（`import { type AdvancedFieldId }` にしないこと）★
+//   後者は「値の import 文」なので、型しか使っていなくてもモジュールの解決が起き、
+//   参照先のファイルが読み込み対象に入ってしまう。`import type` なら完全に消える。
+// あわせて参照先も、問題データ本体（chemistryAdvancedData）ではなく
+// 分野名だけを持つ葉ファイル（advancedFields）に変えている。
+import type { AdvancedFieldId } from '../data/advancedFields';
 // 教科ごとの parts は data/allChapters.ts から引く
 // （以前はこのファイルで6教科ぶんを個別に import していた）
 import { getPartsOfSubject, type SubjectKey } from '../data/allChapters';

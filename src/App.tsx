@@ -23,7 +23,12 @@ import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
 import { SubjectSelection, getSubjectLabel, isSubjectId, type SubjectId } from './components/SubjectSelection';
 import { AdvancedFieldSelection } from './components/AdvancedFieldSelection';
-import { ADVANCED_FIELDS, type AdvancedFieldId } from './data/chemistryAdvancedData';
+// 分野（理論／無機／有機）の表示情報だけを持つ葉ファイルから読む。
+// ここで使うのは「保存値が正しい分野IDかの確認」と「見出しに出す分野名」だけで、
+// 化学（発展）の問題データは1問も要らない。
+// （以前は ./data/chemistryAdvancedData から読んでいたため、
+//   この2つを使うだけで問題データ本体まで読み込み対象になっていた）
+import { ADVANCED_FIELDS, type AdvancedFieldId } from './data/advancedFields';
 // 学習ノートからの遷移（handleReviewNote）で化学基礎の章一覧を使うため、これだけは直接参照する
 import { chemistryData } from './data/chemistryData';
 // 全教科から章IDで引く処理は data/allChapters.ts に集約している
