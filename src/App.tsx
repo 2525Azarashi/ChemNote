@@ -4,34 +4,73 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Smartphone, Volume2, VolumeX, Home as HomeIcon, BookOpen, User, Settings, Trophy } from 'lucide-react';
+import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy } from 'lucide-react';
 import { Home } from './components/Home';
 import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
 import { ChapterSelection } from './components/ChapterSelection';
 import { Quiz } from './components/Quiz';
 import { Explanation } from './components/Explanation';
-import { LearningViewer } from './components/LearningViewer';
+/*
+ * ★まとめプリント画面だけは「開いたときに読む」（遅延読み込み）★
+ *
+ * ■ なぜこの画面から始めたか（実測にもとづく）
+ *
+ * この画面が使う data/learningContent は、まとめプリントの HTML 文字列で
+ * 実測 710,921 バイト / 16 ファイル。しかも
+ * ★LearningViewer 以外の誰も読んでいない完全に独立した塊★ である。
+ * つまり切り離しても他の画面に影響が出ない。
+ *
+ * ■ 「チャンクを分けるだけ」では 1 バイトも減らないことを実験で確認済み
+ *
+ * 先に vite.config.ts の manualChunks で learningContent を
+ * 別チャンク（data-learning）に分ける実験をした。結果:
+ *
+ *   data 3,041.75 → 2,367.58 kB、data-learning 674.06 kB（循環 0 で成功）
+ *   しかし起動時に必ず落ちる JS は 5,253,265 → 5,253,186 B（−79 B のみ）
+ *   遅延で落ちる JS は 0 B のまま
+ *
+ * ここが静的 import のままだと、チャンクを分けても両方ダウンロードされる。
+ * ★分割は削減ではない。静的 import を切ることが先。★
+ * この実験は取り消し、こちらの順序に変えた。
+ *
+ * ■ 表示は変えていない
+ *
+ * 元のコードは
+ *     {appState === 'learning' && <LearningViewer … />}
+ * で、画面が「学習」に切り替わった瞬間に描画される形だった。
+ * lazy にしても JSX の書き方・渡す props・表示内容は同じ。
+ * 違いは「その JS を読み終わるまでのわずかな間」だけで、
+ * その間は下の Suspense fallback（何も描かない）になる。
+ *
+ * fallback をあえて空にしているのは、
+ * ローディング表示という★新しい UI を足さない★ため。
+ * 読み込み中に一瞬何かが出て消えるほうが、表示の変化としては大きい。
+ */
+const LearningViewer = React.lazy(() =>
+  import('./components/LearningViewer').then((m) => ({ default: m.LearningViewer })),
+);
 import { Leaderboard } from './components/Leaderboard';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { db, auth } from './firebase';
+import { auth } from './firebase';
 import { Intro } from './components/Intro';
 import { LogicalTree } from './components/LogicalTree';
-import { Flowchart } from './components/Flowchart';
-import { AuthButton } from './components/AuthButton';
 import { NoteDetail } from './components/NoteDetail';
 import { StudyHub } from './components/StudyHub';
 import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
 import { SubjectSelection, getSubjectLabel, isSubjectId, type SubjectId } from './components/SubjectSelection';
 import { AdvancedFieldSelection } from './components/AdvancedFieldSelection';
-import { chemistryAdvancedData, ADVANCED_FIELDS, type AdvancedFieldId } from './data/chemistryAdvancedData';
+// 分野（理論／無機／有機）の表示情報だけを持つ葉ファイルから読む。
+// ここで使うのは「保存値が正しい分野IDかの確認」と「見出しに出す分野名」だけで、
+// 化学（発展）の問題データは1問も要らない。
+// （以前は ./data/chemistryAdvancedData から読んでいたため、
+//   この2つを使うだけで問題データ本体まで読み込み対象になっていた）
+import { ADVANCED_FIELDS, type AdvancedFieldId } from './data/advancedFields';
+// 学習ノートからの遷移（handleReviewNote）で化学基礎の章一覧を使うため、これだけは直接参照する
 import { chemistryData } from './data/chemistryData';
-import { englishListeningData } from './data/englishListeningData';
-import { mathData } from './data/mathData';
-import { biologyBasicData } from './data/biologyBasicData';
-import { englishGrammarData } from './data/englishGrammarData';
+// 全教科から章IDで引く処理は data/allChapters.ts に集約している
+import { findChapterById } from './data/allChapters';
 import { useGlobalClickSound } from './hooks/useGlobalClickSound';
 import { useIdleReset } from './hooks/useIdleReset';
 import { useIsMobile } from './hooks/useMediaQuery';
@@ -43,6 +82,15 @@ import { flushFeedbackQueue, getFeedbackWebhookUrl } from './utils/feedback';
 import { recordUserPresence } from './utils/userRegistry';
 import { ensureRankingEntry } from './utils/leaderboard';
 import { parseStoredStringRecord } from './utils/progress';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey, completedKey } from './utils/userStorageKeys';
+// 章 × モードごとの保存キー名は utils/quizStorageKeys.ts が唯一の定義
+import {
+  quizAnswersKey,
+  quizRunKey,
+  quizExplKey,
+  quizIndexKey,
+} from './utils/quizStorageKeys';
 import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './utils/studySync';
 import { TeacherDashboard } from './components/TeacherDashboard';
 import { FeedbackAdminPanel } from './components/FeedbackAdminPanel';
@@ -379,7 +427,7 @@ export default function App() {
         setIsGuest(false);
         try {
           // Firestoreの代わりにlocalStorageを使用
-          const localProfile = localStorage.getItem(`profile_${user.uid}`);
+          const localProfile = localStorage.getItem(profileKey(user.uid));
           if (!localProfile) {
             setAppState('onboarding');
           } else if (!wasFirstLoad) {
@@ -647,10 +695,10 @@ export default function App() {
 
     if (!resume) {
       setQuizAnswers({});
-      localStorage.removeItem(`quiz_answers_${chapterId}_${appMode}`);
-      localStorage.removeItem(`quiz_run_${chapterId}_${appMode}`);
-      localStorage.removeItem(`quiz_expl_${chapterId}_${appMode}`);
-      localStorage.setItem(`quiz_idx_${chapterId}_${appMode}`, questionIndex.toString());
+      localStorage.removeItem(quizAnswersKey(chapterId, appMode));
+      localStorage.removeItem(quizRunKey(chapterId, appMode));
+      localStorage.removeItem(quizExplKey(chapterId, appMode));
+      localStorage.setItem(quizIndexKey(chapterId, appMode), questionIndex.toString());
     }
   };
 
@@ -662,7 +710,7 @@ export default function App() {
     // Track chapter completion if not guest
     if (!isGuest && auth.currentUser && selectedChapterId) {
       const uid = auth.currentUser.uid;
-      const key = `completed_${uid}`;
+      const key = completedKey(uid);
       try {
         const completed = JSON.parse(localStorage.getItem(key) || '[]');
         if (!completed.includes(selectedChapterId)) {
@@ -733,17 +781,13 @@ export default function App() {
 
   /**
    * 選択中の章（単元）。
-   * 化学基礎・化学（発展）・英語リスニングのすべてから探す。
+   * 化学基礎・化学（発展）・英語リスニングなど、全教科から探す。
    * 単元ID は接頭辞（c… / a… / el…）で重複しないため、単純な連結で安全に引ける。
+   *
+   * どの教科を探すかの一覧は data/allChapters.ts に集約している
+   * （教科を追加するときは、そのファイルに1行足すだけでよい）。
    */
-  const selectedChapter = [
-    ...chemistryData.parts.flatMap(p => p.chapters as any[]),
-    ...chemistryAdvancedData.parts.flatMap(p => p.chapters as any[]),
-    ...englishListeningData.parts.flatMap(p => p.chapters as any[]),
-    ...mathData.parts.flatMap(p => p.chapters as any[]),
-    ...biologyBasicData.parts.flatMap(p => p.chapters as any[]),
-    ...englishGrammarData.parts.flatMap(p => p.chapters as any[]),
-  ].find(c => (c as any).id === selectedChapterId);
+  const selectedChapter = findChapterById(selectedChapterId);
 
   return (
     <>
@@ -848,15 +892,22 @@ export default function App() {
             {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} />}
             {appState === 'mock_exam' && <MockExam onBack={() => setAppState('mode_selection')} />}
             {appState === 'learning' && (
-              <LearningViewer
-                onBack={() => setAppState('mode_selection')}
-                subject={
-                  selectedSubject === 'chemistry' ? 'chemistry'
-                  : selectedSubject === 'math' ? 'math'
-                  : selectedSubject === 'biology_basic' ? 'biology_basic'
-                  : 'chemistry_basic'
-                }
-              />
+              /*
+                まとめプリントは遅延読み込み（上の React.lazy を参照）。
+                fallback は null＝何も描かない。
+                ローディング表示を足すと「元には無かった表示」が増えてしまうため。
+              */
+              <React.Suspense fallback={null}>
+                <LearningViewer
+                  onBack={() => setAppState('mode_selection')}
+                  subject={
+                    selectedSubject === 'chemistry' ? 'chemistry'
+                    : selectedSubject === 'math' ? 'math'
+                    : selectedSubject === 'biology_basic' ? 'biology_basic'
+                    : 'chemistry_basic'
+                  }
+                />
+              </React.Suspense>
             )}
             {/* 化学（発展）：理論化学・無機化学・有機化学の分野選択 */}
             {appState === 'advanced_fields' && (

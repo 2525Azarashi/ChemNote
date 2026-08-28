@@ -51,6 +51,12 @@
  *   （uid ごとに分けるのは、既存の profile_/streak_/completed_ と同じ作法）
  */
 
+import { safeLocalStorage } from './safeLocalStorage';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { completedKey } from './userStorageKeys';
+// 章 × モードごとの旧キー名も utils/quizStorageKeys.ts が唯一の定義
+import { quizAnswersKey, quizRunKey } from './quizStorageKeys';
+
 export const SOLVED_KEY_PREFIX = 'solved_problems_v1_';
 
 /** 旧データからの引き継ぎが済んだかを覚えておくキー */
@@ -59,15 +65,17 @@ const BACKFILL_DONE_PREFIX = 'solved_backfilled_v1_';
 /** クイズのモード（進捗の単位ではないが、旧データ読み出しに使う） */
 const LEGACY_MODES = ['mini_test', 'practice'] as const;
 
-function storage(): Storage | null {
-  try {
-    const ls = (globalThis as any)?.localStorage;
-    if (ls && typeof ls.getItem === 'function') return ls as Storage;
-  } catch {
-    /* プライベートブラウズ等では進捗を保存できないが、動作は続ける */
-  }
-  return null;
-}
+/**
+ * 使える localStorage を返す（使えなければ null）。
+ *
+ * 実装は utils/safeLocalStorage.ts が唯一の定義。
+ * 以前はまったく同じ関数が progress / userRegistry / updateNotices /
+ * feedback の4か所に名前だけ変えて書かれていた。
+ *
+ * 呼び出し側の書き方は今までどおり `storage()` のままにしている
+ * （このファイル内で26か所から呼ばれているため）。
+ */
+const storage = safeLocalStorage;
 
 /** localStorage 由来の JSON が、配列ではない通常のレコードかを判定する。 */
 export function isPlainRecord(value: unknown): value is Record<string, unknown> {
@@ -236,6 +244,57 @@ export function countSolvedByChapter(uid: string | null | undefined): Record<str
 
 /**
  * -------------------------------------------------------------------
+ * 旧データからの引き継ぎが「もう済んでいるか」だけを調べる
+ * -------------------------------------------------------------------
+ * ★これは backfillLegacyProgress の判定部分だけを取り出したもので、
+ *   引き継ぎ処理そのものは一切行わない（読むだけ・書かない）。★
+ *
+ * ■ なぜ分けたのか
+ * 引き継ぎ（backfillLegacyProgress）は大問の実体が必要なので、
+ * 呼ぶには教科データ本体（約 2.6MB）を読み込まなければならない。
+ * ところがこの処理は1人につき生涯1回しか走らない。
+ * つまり2回目以降の起動では、
+ *
+ *   「読み込んだ 2.6MB を、何もせず捨てる」
+ *
+ * ということが毎回起きていた。
+ *
+ * そこで「済んでいるか」だけを先に安く判定できるようにして、
+ * 呼び出し側が
+ *
+ *   ・まだ済んでいない人 → 本体を読み込んで引き継ぐ（今までと同じ）
+ *   ・もう済んでいる人   → 何も読み込まない
+ *
+ * と分岐できるようにした。
+ *
+ * ■ 判定の根拠は backfillLegacyProgress と同一
+ * 同じ `solved_backfilled_v1_<uid>` を見ている。
+ * ★フラグの名前も判定の仕方も変えていない。★
+ * そのため、この関数が true を返す状況は
+ * backfillLegacyProgress が「既に引き継ぎ済み」として 0 を返す状況と
+ * 完全に一致する（tests/progress.test.ts で突き合わせて検査している）。
+ *
+ * ■ 迷ったときは「まだ済んでいない」側に倒す
+ * localStorage が使えない場合など判断できないときは false を返す。
+ * こうすると呼び出し側は引き継ぎを試みることになる。
+ * 引き継ぎは追記のみ・二重計上しない作りなので、
+ * 余分に走っても害はない。
+ * 逆に true を返してしまうと引き継ぎが永久に走らず、
+ * ★過去の学習記録が消えたように見える★ という
+ * 最も取り返しのつかない失敗になる。だから安全側はこちら。
+ */
+export function isLegacyProgressBackfilled(uid: string | null | undefined): boolean {
+  const ls = storage();
+  if (!ls) return false; // 判断できないときは「まだ」とみなす（安全側）
+  try {
+    return Boolean(ls.getItem(`${BACKFILL_DONE_PREFIX}${normalizeUid(uid)}`));
+  } catch {
+    return false; // 読めないときも「まだ」とみなす（安全側）
+  }
+}
+
+/**
+ * -------------------------------------------------------------------
  * 旧データからの引き継ぎ（1回だけ実行）
  * -------------------------------------------------------------------
  * 今日までに解いてくれた分を無かったことにしないため、
@@ -281,7 +340,9 @@ export function backfillLegacyProgress(
   // 修了済みの章（＝最後までやり切った章）を先に押さえる
   let completedChapters: string[] = [];
   try {
-    const raw = ls.getItem(`completed_${normalizeUid(uid)}`);
+    // normalizeUid はこのファイルの決め方（空なら 'guest'）。
+    // キー名の作り方だけを completedKey に任せている。
+    const raw = ls.getItem(completedKey(normalizeUid(uid)));
     const parsed = raw ? JSON.parse(raw) : [];
     if (Array.isArray(parsed)) completedChapters = parsed.map(String);
   } catch {
@@ -303,7 +364,7 @@ export function backfillLegacyProgress(
     LEGACY_MODES.forEach((mode) => {
       // ① 点数が残っている場合（最も正確）
       try {
-        const raw = ls.getItem(`quiz_run_${chapter.id}_${mode}`);
+        const raw = ls.getItem(quizRunKey(chapter.id, mode));
         if (raw) {
           const run = JSON.parse(raw);
           const perQuestion = run?.perQuestion || {};
@@ -318,7 +379,7 @@ export function backfillLegacyProgress(
 
       // ② 解答だけ残っている場合（点数不明なので「解答済み」を根拠にする）
       try {
-        const raw = ls.getItem(`quiz_answers_${chapter.id}_${mode}`);
+        const raw = ls.getItem(quizAnswersKey(chapter.id, mode));
         if (raw) {
           const answers = JSON.parse(raw);
           if (answers && typeof answers === 'object') {

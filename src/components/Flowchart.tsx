@@ -1,10 +1,16 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowDown, Beaker, Flame, Thermometer, Layers, Zap, ArrowRight, ChevronLeft } from 'lucide-react';
-import { InteractiveTree, NodeData } from './InteractiveTree';
-import { substanceTreeData } from '../data/chemistryData';
+import { ArrowDown, Beaker, Flame, Thermometer, Layers, Zap, ChevronLeft } from 'lucide-react';
+import { InteractiveTree } from './InteractiveTree';
+/*
+ * 図データは図データのファイル（chemistryTreeData）から直接読む。
+ * chemistryData 経由だと、この画面が使わない問題データまで
+ * 全部ついてきてしまう（12 ファイル / 1,180,132 バイト）。
+ * 再公開しているだけなので、直接読んでも同一オブジェクトが得られる。
+ */
+import { substanceTreeData } from '../data/chemistryTreeData';
 
-// 物質の分類ツリーデータ (Moved to chemistryData.ts)
+// 物質の分類ツリーデータ (Moved to chemistryTreeData.ts)
 
 interface FlowchartProps {
   onBack: () => void;

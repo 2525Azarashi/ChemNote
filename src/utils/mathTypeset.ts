@@ -33,13 +33,14 @@
 import katex from 'katex';
 // \ce{...}（化学式・反応式）用の拡張。import した時点でマクロが登録される。
 import 'katex/dist/contrib/mhchem.mjs';
+// 生テキストの最小エスケープは、リスニング側（listeningExplanation.ts）と
+// 同じ作法でなければ表示が食い違うので、sanitizeHtml.ts の1つだけを使う
+// （以前はこのファイルにも同じ実装が書かれていた）。
+// sanitizeHtml.ts は何も import しない末端モジュールなので循環にならない。
+import { escapeHtml } from './sanitizeHtml';
 
 /** KaTeX 出力を包む目印クラス（CSS で本文となじませるために使う）。 */
 export const KATEX_WRAPPER_CLASS = 'mtb-math';
-
-function escapeHtml(text: string): string {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
 
 /**
  * LaTeX を KaTeX で HTML に組む。

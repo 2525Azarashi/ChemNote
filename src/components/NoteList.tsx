@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
-import { db, auth } from '../firebase';
-import { ArrowLeft, BookOpen, Trash2, Star, RotateCw, AlertCircle } from 'lucide-react';
+import { auth } from '../firebase';
+import { ArrowLeft, BookOpen, Star, RotateCw, AlertCircle } from 'lucide-react';
 import { stripHtmlToText } from '../utils/sanitizeHtml';
 
 interface NoteListProps {

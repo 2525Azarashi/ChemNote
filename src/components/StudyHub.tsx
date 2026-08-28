@@ -17,9 +17,7 @@ import { auth } from '../firebase';
 import {
   getAllReviewItems,
   getDueReviewItems,
-  markReviewedCorrect,
-  markReviewedWrong,
-  removeReviewItem,
+  createReviewActions,
   isMastered,
   type ReviewItem,
 } from '../utils/reviewList';
@@ -29,12 +27,14 @@ import {
   ALL_SUBJECTS,
   badgesForItem,
   filterBySubjectTab,
+  formatDue,
   formatScope,
   retentionOf,
   reviewSubjectStyle,
   subjectOfReviewItem,
   summarizeBySubject,
   summarizeQuestion,
+  truncate,
   REVIEW_SUBJECT_LABELS,
   type SubjectTabId,
 } from '../utils/reviewSubject';
@@ -77,17 +77,9 @@ type Tab = 'today' | 'notes' | 'important' | 'all';
 //   DOMを一切作らない共通実装に統一した。
 const stripHtml = stripHtmlToText;
 
-function truncate(text: string, max = 90): string {
-  return text.length > max ? text.slice(0, max) + '…' : text;
-}
-
-function formatDue(dueAt: number, now: number): string {
-  const diff = dueAt - now;
-  if (diff <= 0) return '復習可能';
-  const days = Math.ceil(diff / (24 * 60 * 60 * 1000));
-  if (days <= 1) return '明日';
-  return `${days}日後`;
-}
+// truncate / formatDue は復習リスト画面（ReviewList.tsx）と同じ表示に
+// しなければならないので、utils/reviewSubject.ts の1つだけを使う
+// （以前はここにも同じ実装があった）。
 
 // ============================================================
 // 復習アイテム カード（自動キャプチャ = 誤答）
@@ -504,18 +496,12 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
   const masteredCount = useMemo(() => reviewItems.filter(isMastered).length, [reviewItems]);
   const importantNotes = useMemo(() => notes.filter((n) => n.isImportant), [notes]);
 
-  const handleCorrect = (key: string) => {
-    markReviewedCorrect(uid, key);
-    refresh();
-  };
-  const handleWrong = (key: string) => {
-    markReviewedWrong(uid, key);
-    refresh();
-  };
-  const handleRemove = (key: string) => {
-    removeReviewItem(uid, key);
-    refresh();
-  };
+  // 「保存 → 画面を作り直す」の3操作は復習リスト画面（ReviewList.tsx）と
+  // 同じ手順なので、reviewList.ts の1つだけを使う
+  // （以前はここにも同じ実装があった）。
+  // ★この画面の refresh はノートの読み直し（setNotes）も含む★ので、
+  // refresh の中身は共通化せず、上の実装をそのまま渡す。
+  const { handleCorrect, handleWrong, handleRemove } = createReviewActions(uid, refresh);
 
   // タブごとの表示内容。
   // 復習系（今日の復習／すべて）の件数は科目タブの選択に連動させる。

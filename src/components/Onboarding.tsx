@@ -27,6 +27,8 @@ import { Loader2, AlertTriangle, Check, ArrowRight } from 'lucide-react';
 import { auth } from '../firebase';
 import { signInWithGoogle, consumeGoogleRedirectResult, GOOGLE_LINK_BENEFITS, isInAppBrowser } from '../utils/googleAuth';
 import { syncRankingNickname } from '../utils/leaderboard';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey } from '../utils/userStorageKeys';
 import { GoogleMark } from './GoogleLinkBanner';
 
 interface OnboardingProps {
@@ -57,7 +59,7 @@ export function Onboarding({ onComplete, onGuest }: OnboardingProps) {
 
   const checkProfile = (user: any) => {
     try {
-      const localProfile = localStorage.getItem(`profile_${user.uid}`);
+      const localProfile = localStorage.getItem(profileKey(user.uid));
       if (localProfile) {
         onComplete();
       } else {
@@ -88,7 +90,7 @@ export function Onboarding({ onComplete, onGuest }: OnboardingProps) {
     if (!auth.currentUser) return;
     setLoading(true);
     try {
-      localStorage.setItem(`profile_${auth.currentUser.uid}`, JSON.stringify({
+      localStorage.setItem(profileKey(auth.currentUser.uid), JSON.stringify({
         name,
         grade,
         stream,

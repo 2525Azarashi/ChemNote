@@ -1,4 +1,4 @@
-import type { UnitTeaching } from '../utils/explanationFormat';
+import type { UnitTeaching } from './teachingTypes';
 
 /**
  * ===================================================================

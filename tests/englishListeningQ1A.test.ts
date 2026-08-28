@@ -15,6 +15,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
+import { readCode } from './helpers/sourceScan';
 import { EL1_A_PROBLEMS } from '../src/data/englishListeningQ1AProblems';
 import { getAllListeningChapters } from '../src/data/englishListeningData';
 
@@ -310,9 +311,19 @@ describe('音源ボタンが「わかりやすい場所」に置かれている'
   });
 
   it('Explanation：問題文より前（採点直後に目に入る位置）に置く', () => {
-    const playerAt = EXPLANATION.indexOf('<ListeningAudioPlayer');
-    const bodyAt = EXPLANATION.indexOf('text={cleanQuestionText(question.text)}');
+    /*
+     * ★「どちらが先に書かれているか」は実コードだけで決まる★
+     *
+     * 素のソースを indexOf で探すと、経緯を説明したコメントの中に
+     * 同じ JSX を書き写した瞬間にそこへ当たり、判定が狂う。
+     * 実際に learningPrint.test.ts でこの事故が起きた
+     * （詳細は tests/helpers/sourceScan.ts の冒頭）。
+     */
+    const code = readCode('src/components/Explanation.tsx');
+    const playerAt = code.indexOf('<ListeningAudioPlayer');
+    const bodyAt = code.indexOf('text={cleanQuestionText(question.text)}');
     expect(playerAt).toBeGreaterThan(-1);
+    expect(bodyAt).toBeGreaterThan(-1);
     expect(playerAt).toBeLessThan(bodyAt);
   });
 });

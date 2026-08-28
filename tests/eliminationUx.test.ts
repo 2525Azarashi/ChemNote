@@ -139,8 +139,21 @@ describe('回帰: 既存の設計を壊していない', () => {
     expect(QUIZ).toContain('const [eliminated, setEliminated] = useState<Record<string, string[]>>');
   });
 
-  it('消去状態は端末に保存され、戻ってきても残る', () => {
-    expect(QUIZ).toContain('quiz_elim_');
+  it('消去状態は端末に保存され、戻ってきても残る', async () => {
+    // 以前は `expect(QUIZ).toContain('quiz_elim_')` だった。
+    // ところが Quiz.tsx には別物の 'quiz_elim_hint_seen'（操作説明を見たか）
+    // もあるので、保存キーを utils/quizStorageKeys.ts へ集約したあとでも
+    // この文字列は残ってしまい、「消去状態が保存されているか」を
+    // 確かめられていない状態（通っているが何も検証していない）だった。
+    // 実際に使っているキー生成と、読み書き両方の存在で確認する。
+    expect(QUIZ).toContain('quizElimKey(chapter.id, mode)');
+    expect(QUIZ).toContain('localStorage.setItem(quizElimKey(chapter.id, mode)');
+    expect(QUIZ).toContain('localStorage.getItem(quizElimKey(chapter.id, mode))');
+
+    const { quizElimKey } = await import('../src/utils/quizStorageKeys');
+    expect(quizElimKey('c1_1', 'practice')).toBe('quiz_elim_c1_1_practice');
+    // 操作説明のキー（quiz_elim_hint_seen）とは別物であること
+    expect(quizElimKey('c1_1', 'practice')).not.toBe('quiz_elim_hint_seen');
   });
 
   it('複数選択の設問では斜線を使わない（解除と消去の混同を避ける）', () => {

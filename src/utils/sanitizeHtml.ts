@@ -154,6 +154,40 @@ function escapeTextNode(text: string): string {
     .replace(/>/g, '&gt;');
 }
 
+/**
+ * 生テキストを HTML の中にそのまま置くための、最小のエスケープ。
+ *
+ * ■ 使う場面
+ *   「HTML ではない文字列」を innerHTML 用の文字列に埋め込む直前。
+ *   例）リスニングの SCRIPT 枠に英文をそのまま入れる（listeningExplanation.ts）
+ *       KaTeX が失敗したときに元の式をそのまま出す（mathTypeset.ts）
+ *
+ * ■ ★ 上の escapeTextNode とは別物。まとめてはいけない ★
+ *   escapeTextNode は KEEP_ENTITY を使い「すでに正しい実体参照
+ *   （&nbsp; や &amp; など）は二重エスケープしない」というふるまい。
+ *   一方こちらは & を必ずエスケープする。
+ *     'a &nbsp; b' → escapeTextNode : 'a &nbsp; b'      （実体参照として通す）
+ *                  → escapeHtml     : 'a &amp;nbsp; b'  （文字として見せる）
+ *
+ *   使い分けの理由：
+ *     ・escapeTextNode が扱うのは「HTML を含み得る問題データ」なので、
+ *       中に書かれた &nbsp; は実体参照として機能してほしい。
+ *     ・escapeHtml が扱うのは「HTML ではない生テキスト」なので、
+ *       & は & という文字として見えなければならない。
+ *   ここを1つにすると、どちらかの表示が必ず壊れる。
+ *   （tests/sanitizeHtml.test.ts でこの差を固定してある）
+ *
+ * ■ 変えると壊れる点
+ *   & を最初に置換すること。順序を変えると、後から作った &lt; の & が
+ *   もう一度エスケープされて &amp;lt; になり、画面に &lt; と出てしまう。
+ */
+export function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 /** 属性を許可リストで絞り込み、安全なタグ文字列を組み立て直す。 */
 function sanitizeTag(rawTag: string, tagName: string, isClosing: boolean): string {
   if (isClosing) return `</${tagName}>`;

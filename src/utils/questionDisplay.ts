@@ -24,6 +24,38 @@
  *     マーカー "(3)①" ＋ 本文 "非共有電子対を…" と並ぶ）
  */
 
+/**
+ * 表示上の問題番号（問1／【問1】／第1問／先頭の「1.」など）を消して、
+ * 進捗表示（「1 / 10」など）に統一する。
+ *
+ * ■ なぜ消すのか
+ *   問題文そのものに「問1」と書かれていると、画面上部の進捗表示と
+ *   二重に番号が出てしまう。しかも範囲を絞って解いているときは
+ *   本文の「問1」が実際の順番と食い違い、どれを解いているのか
+ *   分からなくなる。番号は進捗表示だけに任せる。
+ *
+ * ■ なぜここ（questionDisplay.ts）にあるのか
+ *   以前は Quiz.tsx（演習画面）と Explanation.tsx（解説画面）に
+ *   1文字も違わない同じ実装が2つ書かれていた。
+ *   同じ問題文を出す2画面なので、片方だけ直すと
+ *   「演習では番号が消えているのに解説では残る」という
+ *   食い違いになる。定義を1つにして、その事故の余地を無くしている。
+ *
+ * ■ 消す対象を限定している理由
+ *   本文中の「(1)〜(10)の下線部は…」や「水素と酸素」のような
+ *   数字は消してはいけない。そのため
+ *     ・1つ目の replace … 文字列の先頭だけ（^）
+ *     ・2つ目の replace … 行頭だけ（\n の直後）
+ *   に限定し、本文の途中は触らない。
+ *
+ * @param text 問題文（null / undefined / 数値が来ても落ちない）
+ */
+export function cleanQuestionText(text: string): string {
+  return String(text || '')
+    .replace(/^\s*(?:【\s*問?\s*\d+\s*】|問\s*\d+|第\s*\d+\s*問|\d+[.．、\s]+)\s*/u, '')
+    .replace(/\n\s*(?:問\s*\d+|【\s*問?\s*\d+\s*】)\s*/gu, '\n');
+}
+
 export interface SplitLabel {
   /** 設問マーカー（例: "(ア)" "(1)" "問2" "(3)①"）。抽出できない場合はフォールバック文字列 */
   marker: string;
@@ -442,4 +474,155 @@ export function extractInlineQuestionRows(text: string): InlineQuestionRows | nu
 
   const lead = lines.slice(0, markedIdx[0]).join('\n');
   return { lead, rows };
+}
+
+/**
+ * ===================================================================
+ * リスニング／英文法の「解説画面に出す問題」を組み立てる
+ * ===================================================================
+ *
+ * ★ご要望11（原文）★
+ *   「解説なんだけど、今回の写真みたいに、第1問Aではから続く文章は要らんくて、
+ *     問題ページの^問題はいらないよね。ここには上半分に音源(ボタン小さくして)と
+ *     問題を入れて、スクリプトを押さなくても直で下に出てるようにしたい。」
+ *   「一画面に収める+受験生は何をみたいか→文章(スクリプト・正誤)をまずみたい
+ *     (選択肢は問題に戻れば見れる・選択肢まで解説の方に書くと
+ *      おそらく文字が収まりきらない)→その後に解説を読みたい。」
+ *
+ * ■ この関数が返すもの
+ *   各小問の「設問文」だけ（例：問1 傘について、話者の状況に最も近い英文）。
+ *   形式説明（第1問 A では…）・操作説明（【音源の聞き方】）・
+ *   選択肢 ①〜④ は返さない。
+ *
+ * ■ なぜ問題文（question.text）を切り刻まずに subQuestions から作るのか
+ *   question.text を正規表現で削る方式にすると、
+ *   「どこまでが形式説明で、どこからが選択肢か」を字面から推測することになり、
+ *   問題ごとに書式が少し違うだけで壊れる
+ *   （ご指摘「コードで形式的に作ると問題によっておかしくなる可能性がある」）。
+ *   設問文はもともと subQuestions[].label に構造化されて入っているので、
+ *   そこから読むほうが確実で、書式のゆらぎに影響されない。
+ *
+ * ■ 適用しない問題は null を返す（安全側）
+ *   ・小問が無い問題
+ *   ・設問文が空の問題（第1問B の図選択など、label に本文が無い形）
+ *   ・設問文が長すぎて1画面に収まらない問題
+ *   これらは null を返し、呼び出し側は従来の描画にそのまま落ちる。
+ */
+/**
+ * 1問ぶんの設問文の長さの上限。
+ *
+ * ★この数字は当てずっぽうではなく実測値★
+ *   リスニング＋英文法の全64問（＝設問 計約230）を走査した結果、
+ *     設問文の最長 = 68字
+ *     「What should the group members (not the leader) do with their phones?」
+ *       （英語リスニング el3）
+ *   だった。marker 欠け 0 件・本文欠け 0 件。
+ *   最初 44 字にしていたが、それだと el3 が対象外に落ちて
+ *   従来の縦積み（形式説明＋選択肢16行）に戻ってしまうため、
+ *   実測の最長を収容できる 80 字にする。
+ *   80字はスマホ幅（390px・15px）で概ね4行に収まり、
+ *   4問ぶん並べても上半分に収まる範囲。
+ *   これを超える設問文が将来入ったら null を返して従来描画に落ちる
+ *   ＝壊れるのではなく、安全側に倒れる。
+ */
+const LISTENING_BODY_MAX_LEN = 80;
+
+export function extractListeningQuestionRows(
+  question: any
+): { marker: string; body: string }[] | null {
+  const rows = buildSubQuestionList(question);
+  if (rows.length === 0) return null;
+  // マーカー（問1 など）と本文の両方がそろっていない形は対象外。
+  // 第1問B のようにイラストを選ぶ問題は label に本文が無いのでここで外れる。
+  if (rows.some((r) => !r.marker || !r.body)) return null;
+  // 1問でも長い設問文があれば、横並び前提の「1画面」が崩れるので使わない。
+  if (rows.some((r) => r.body.length > LISTENING_BODY_MAX_LEN)) return null;
+  return rows;
+}
+
+/**
+ * ===================================================================
+ * 「問N　英文」の英文だけを小問ごとに取り出す
+ * ===================================================================
+ *
+ * ★ご要望11（原文）★
+ *   「次、英文法の問題音声つけるのはいいけどさ、英文法は普通に英文ないと
+ *     問題成立しやんのやけど　音声のボタンを少し小さくした上で、英文しっかり載せて。」
+ *
+ * ■ なぜ英文が消えていたのか（原因を実測で確定させた）
+ *   英文法の問題は音源（audioTracks）を持つ。
+ *   Quiz.tsx はリスニングと同じ扱い（listeningUnified = true）にするため、
+ *     {!listeningUnified && ( …question.text を描画… )}
+ *   の分岐で question.text を丸ごと描画しない。
+ *   リスニングは「英文は音声にしか無い」ので、これが正しい。
+ *   ところが英文法は question.text の中に
+ *     問1　I ______ to Kyoto three times, so I can show you around.
+ *   という英文があり、これが唯一の英文なので、消すと
+ *   「空所に入れるものを選べ」なのに空所のある文が無い＝問題が成立しない。
+ *   代わりに表示されている subQuestions[].label は
+ *     「問1 経験の現在完了」
+ *   という文法項目名だけで、英文はどこにも入っていない（全20問・実測）。
+ *
+ * ■ なぜ「英文法なら出す」という科目分岐にしないのか
+ *   ご指摘「コードで形式的に作ると問題によっておかしくなる可能性がある」。
+ *   科目名で分けると、将来リスニングに英文つきの問題が入ったり、
+ *   英文法に英文なしの問題が入った瞬間に壊れる。
+ *   そこで「その問題の本文に、その小問番号の本文行が実在するか」だけを見る。
+ *   これは問題ごとの事実なので、科目構成が変わっても壊れない。
+ *
+ * ■ この判定が正しく効くことの実測
+ *   正規表現 /^問\s*([0-9]{1,2})[　\s]+(.+)$/u を全問に当てた結果
+ *     英文法  ：20問すべてで一致（本文行 計100本）、英文の最長 112字
+ *               「The scientists announced the surprising fact ______ the ice
+ *                 in that region was melting far faster than expected.」（eg3_4）
+ *     リスニング：44問すべてで不一致（本文行 0本）
+ *   つまり英文を持つ問題だけで勝手に有効になり、
+ *   リスニングでは自動的に無効になる。科目分岐は要らない。
+ *
+ * ■ 選択肢（①〜④）は返さない
+ *   選択肢は解答ペインのボタンとして別に描画されているので、
+ *   ここで返すと同じ文字が二重に並ぶ。
+ *   「問N」の行だけを拾い、① で始まる行は拾わない。
+ *
+ * @returns 小問番号（"1","2",…）→ 英文 の Map。1本も取れなければ null。
+ */
+export function extractSubQuestionSentences(question: any): Map<string, string> | null {
+  const text = String(question?.text || '');
+  if (!text) return null;
+
+  // 「問1　英文」の形の行だけを拾う。
+  // 全角スペース・半角スペースどちらの区切りでも拾えるようにする
+  // （データの書式が問題ごとに少し違っても落ちないように）。
+  const HEAD_RE = /^問\s*([0-9]{1,2})[　\s]+(.+)$/u;
+
+  const map = new Map<string, string>();
+  for (const rawLine of text.split('\n')) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    const m = line.match(HEAD_RE);
+    if (!m) continue;
+    const no = m[1];
+    const body = m[2].trim();
+    if (!body) continue;
+    // 同じ番号が2回出てきたら最初のものを採用（後段の重複記述に引きずられない）
+    if (!map.has(no)) map.set(no, body);
+  }
+
+  return map.size > 0 ? map : null;
+}
+
+/**
+ * 指定の小問に対応する「問N　英文」の英文を返す。
+ *
+ * 小問の番号は label（"問1 経験の現在完了"）から読む。
+ * 番号が読めない・その番号の本文行が無い場合は null を返し、
+ * 呼び出し側は「英文は出さない」＝従来の表示のままになる（安全側）。
+ */
+export function findSubQuestionSentence(question: any, sub: any): string | null {
+  if (!sub) return null;
+  const sentences = extractSubQuestionSentences(question);
+  if (!sentences) return null;
+  const no = String(sub?.label || '').match(/問\s*([0-9]{1,2})/u)?.[1];
+  if (!no) return null;
+  return sentences.get(no) || null;
 }

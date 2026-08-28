@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, CheckCircle2, XCircle, Lightbulb, BookOpen, AlertCircle, CheckSquare, TrendingUp, AlertTriangle, ChevronDown, ChevronUp, Edit3, Save, Search, Network, Circle, Trophy, KeyRound, ListOrdered, Target } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { formatText } from '../utils/textFormatter';
 import { ExplanationBody } from './ExplanationBody';
 import { auth } from '../firebase';
@@ -12,7 +12,9 @@ import { ListeningAudioPlayer } from './ListeningAudioPlayer';
 import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
 import { isAnswerCorrect } from '../utils/answerJudge';
 import { gradingCriteriaProgress, resolveGradingCriteria } from '../utils/gradingCriteria';
-import { splitQuestionLabel, answerCardMarker, buildSubQuestionList, isSubQuestionListRedundant, extractInlineQuestionRows } from '../utils/questionDisplay';
+// cleanQuestionText は演習画面（Quiz.tsx）と同じ実装が必要なので
+// questionDisplay.ts の1つだけを使う（以前はここにも同じ実装があった）。
+import { answerCardMarker, buildSubQuestionList, isSubQuestionListRedundant, extractInlineQuestionRows, extractListeningQuestionRows, cleanQuestionText } from '../utils/questionDisplay';
 import {
   buildUnitKataBlock,
   sliceEnhancedByQuestion,
@@ -29,13 +31,6 @@ import { getUnitTeaching } from '../data/unitTeaching';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { ScoreBreakdown } from '../utils/scoring';
 import { applyOverviewViewport } from '../utils/viewportControl';
-
-/** 表示上の問題番号（問1/【問1】/先頭の 1 など）を消して、進捗表示に統一する。 */
-function cleanQuestionText(text: string): string {
-  return String(text || '')
-    .replace(/^\s*(?:【\s*問?\s*\d+\s*】|問\s*\d+|第\s*\d+\s*問|\d+[.．、\s]+)\s*/u, '')
-    .replace(/\n\s*(?:問\s*\d+|【\s*問?\s*\d+\s*】)\s*/gu, '\n');
-}
 
 /**
  * その小問に「解答が入力されているか」（＝手を付けたか）。
@@ -103,26 +98,27 @@ interface ExplanationProps {
 
 import { NodeData } from './InteractiveTree';
 import { InteractiveLogicTree } from './InteractiveLogicTree';
-import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData } from '../data/chemistryData';
+/*
+ * 図データは図データのファイル（chemistryTreeData）から直接読む。
+ * chemistryData 経由だと、この画面がここで必要としていない
+ * 問題データまで全部ついてきてしまう。
+ * 再公開しているだけなので、直接読んでも同一オブジェクトが得られる
+ * （17 ツリーすべて `===` で同一参照であることを確認済み）。
+ */
+import { substanceTreeData, separationTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData } from '../data/chemistryTreeData';
+// 「その章にフローチャートがあるか」の判定は data/chapterTreeMap.ts の対応表に集約している
+import { hasChapterTree } from '../data/chapterTreeMap';
 import { PracticeExplanationTree } from './PracticeExplanationTree';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
 
 // Substance Tree Data for Chapter 1 (Moved to chemistryData.ts)
 
-const filterTree = (node: NodeData, relatedNodeIds: string[]): NodeData | null => {
-  const isRelated = relatedNodeIds.includes(node.id);
-  const filteredChildren = node.children
-    ? node.children.map(child => filterTree(child, relatedNodeIds)).filter(child => child !== null) as NodeData[]
-    : [];
-  
-  if (isRelated || filteredChildren.length > 0) {
-    return {
-      ...node,
-      children: filteredChildren
-    };
-  }
-  return null;
-};
+// ここには filterTree（ツリーを関連ノードだけに絞る関数）があったが、
+// 自分自身の再帰以外どこからも呼ばれていなかったため削除した。
+// utils/logicTreeUtils.ts にも export の有無以外まったく同一のコピーが
+// あり、そちらも未使用だったので同時に消してある。
+// ツリーの絞り込みが再び必要になった場合は logicTreeUtils.ts に
+// 1つだけ置くこと（画面側に実装を戻さない）。
 
 const getDifficulty = (sqId: string) => {
   const id = sqId.replace(/^q/, 'p');
@@ -311,7 +307,54 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   // 親側に置く基準サイズ（問題文ペインの text-[15px] leading-[1.85] と同一）
   const MOBILE_BODY_BASE = 'text-[15px] leading-[1.85]';
   const DESKTOP_BODY_FONT = isMathChapter ? 'text-sm md:text-base leading-relaxed' : 'text-xs md:text-sm leading-relaxed';
-  const BODY_FONT_FAMILY = isMathChapter ? 'font-math math-content' : 'font-handwriting';
+  /**
+   * ★ご要望11「あと解説と問題でフォント違うの何？」★
+   *
+   * ■ 実測（Playwright の getComputedStyle、スマホ390x844・第1問A）
+   *   まったく同じ設問文「傘について、話者の状況に最も近い英文」が
+   *     問題画面 … ゴシック（font-modern）14px
+   *     解説画面 … 手書き（Yomogi）15px
+   *   と別書体で出ていた。さらに英文（The speaker has her umbrella…）は
+   *   両画面ともセリフ体（Cambria Math）になっていた。
+   *   ＝食い違いの原因は2つあった。
+   *     (1) 英字が化学式と誤判定されてセリフ体になる（textFormatter 側で対処）
+   *     (2) 解説の本文だけ手書き体で、問題画面のゴシックと揃っていない（ここ）
+   *
+   * ■ ここでの直し方
+   *   英文を含む科目（英語リスニング・英文法）は、
+   *   問題画面と同じ font-modern（ゴシック）に揃える。
+   *   手書き体は日本語の解説に温かみを出すためのものなので、
+   *   化学・生物・数学では従来どおり手書き体のまま変えない。
+   *
+   * ■ 科目名で分岐しない
+   *   英文の音源（audioTracks）を持つ問題があるかどうか、という
+   *   問題データそのものの事実で判定する。
+   *   科目名で書くと、将来ほかの科目に英文を入れたときに取り残される。
+   */
+  const isEnglishChapter = useMemo(() => {
+    return allQuestions.some((q: any) => {
+      const tracks = q?.audioTracks;
+      return Array.isArray(tracks) && tracks.length > 0;
+    });
+  }, [allQuestions]);
+
+  const BODY_FONT_FAMILY = isMathChapter
+    ? 'font-math math-content'
+    : isEnglishChapter
+      ? 'font-modern'
+      : 'font-handwriting';
+
+  /**
+   * 解説カード全体の既定書体（下位はこれを継承する）。
+   *
+   * 英語（英文を含む単元）だけゴシックにして、問題画面と一致させる。
+   * ここを変えると、プレーヤーのスクリプト欄のように
+   * 「自前で書体を持たない箇所」までまとめてそろう。
+   * 数学は本文側（BODY_FONT_FAMILY）で font-math を当てるので、
+   * カード全体は従来どおり手書き体のままにしておく
+   * （カードごと数式書体にすると見出しやボタンまで変わってしまう）。
+   */
+  const CARD_FONT_FAMILY = isEnglishChapter ? 'font-modern' : 'font-handwriting';
 
   // 要件①：「この単元の思考の型」の本文。単元（章）に紐づくので問題ごとには作らない。
   // 内容・表現・順番・解説は従来と1文字も変えていない（エンジン側の buildUnitKataBlock がそのまま組む）。
@@ -858,9 +901,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   // ・スマホの「1問ごとの答え合わせ（!isResultView）」: 縦積み1カラムで
   //   「問題文 → 採点結果 → 学習フローチャート」の順にするため、
   //   採点結果より後ろ（order-3）に配置し直す。
-  const hasFlowchart = ['c1_1', 'c1_2_A', 'c1_2_B', 'c1_3', 'c2_1', 'c2_2', 'c2_3', 'c2_4', 'c3_1', 'c3_2', 'c3_3', 'c4_1', 'c4_2', 'c4_3', 'c4_4'].includes(chapter?.id)
-    || chapter?.id === 'c5' || chapter?.id?.startsWith('c5_')
-    || chapter?.id === 'c6' || chapter?.id?.startsWith('c6_');
+  // 「その章にフローチャートがあるか」は data/chapterTreeMap.ts の対応表から導く。
+  // （以前はここに17章ぶんの章IDを直接並べた3つめのコピーがあり、
+  //   章を追加したときに「ツリーはあるのにブロックが出ない」という
+  //   食い違いが起きうる状態だった）
+  const hasFlowchart = hasChapterTree(chapter?.id);
   const flowchartBlock = hasFlowchart ? (
     <div className="mt-6 border-t pt-4 border-gray-200">
       <PracticeExplanationTree
@@ -960,13 +1005,39 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         : `fixed inset-0 w-full h-full flex flex-col bg-[#FDFBF7] overflow-hidden z-50`
     }>
       <div className={isMobile ? "w-full min-h-full flex flex-col" : (isResultView ? "w-full min-h-full flex flex-col" : "w-full h-full flex flex-col")}>
+        {/*
+          ★ご要望11「あと解説と問題でフォント違うの何？」の本体はここ★
+
+          ■ 実測で分かった、書体がずれる本当の原因
+            解説カードの最上位に font-handwriting（Yomogi）が付いていて、
+            中身は全部それを *継承* していた。
+            そのため下位で BODY_FONT_FAMILY を font-modern にしても、
+            プレーヤーのスクリプト欄など「自前で書体を持たない箇所」は
+            Yomogi のまま残っていた。
+            実測（390x844・第1問A）：
+              問題画面のスクリプト英文 … Inter 15px
+              解説画面のスクリプト英文 … Yomogi 13px
+            ＝同じ英文が別書体で出ていた。
+
+          ■ 直し方
+            英文を含む単元（＝audioTracks を持つ問題がある単元）だけ、
+            この最上位を font-modern にする。
+            継承なので、これ1か所でスクリプト・訳・語句・解説まで
+            まとめて問題画面と同じゴシックにそろう。
+
+          ■ 手書き体は日本語教科では変えない
+            手書き体は日本語の解説に温かみを出すための既存仕様なので、
+            化学・生物・数学は従来どおり font-handwriting のまま。
+            英語は筆記体風だと綴りが読みにくく、実際に問題画面側は
+            もともとゴシックなので、英語だけをそちらに寄せる。
+        */}
         <div className={isMobile 
-          ? `w-full flex flex-col font-handwriting relative ${
+          ? `w-full flex flex-col ${CARD_FONT_FAMILY} relative ${
               mode === 'mini_test' 
                 ? 'bg-white text-gray-800' 
                 : 'bg-[#0B132B] text-[#E0E1DD]'
             }`
-          : `${isResultView ? 'w-full min-h-full' : 'w-full h-full'} flex flex-col font-handwriting relative ${
+          : `${isResultView ? 'w-full min-h-full' : 'w-full h-full'} flex flex-col ${CARD_FONT_FAMILY} relative ${
               mode === 'mini_test' 
                 ? 'bg-white text-gray-800' 
                 : 'bg-[#0B132B] text-[#E0E1DD]'
@@ -1507,6 +1578,12 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             orientation={reorderMobile ? 'horizontal' : 'vertical'}
                             tone={mode === 'mini_test' ? 'light' : 'dark'}
                             readCount={(question as any).readCount || 2}
+                            /* ★ご要望11「パソコン版の方も、スクリプトとかは
+                                 絶対に出して欲しい。今たたまれとるけど」★
+                               PC はここがパネル型なので、ここを常時展開にする。
+                               スマホ側はこの上帯には出さず、下（採点結果の下）の
+                               プレーヤーで出す（ご要望「☑️採点結果のしたはスクリプト」）。 */
+                            alwaysOpenScript={!reorderMobile}
                             className={reorderMobile ? 'mb-2' : 'mb-4'}
                           />
                         )}
@@ -1523,6 +1600,58 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                           条件を満たさない問題は null が返るので、下の
                           ExplanationBody（従来の縦積み）にそのまま落ちる。 */}
                       {(() => {
+                        /**
+                         * ★ご要望11（スマホ・リスニングの解説）★
+                         *   「第1問Aではから続く文章は要らんくて、
+                         *     問題ページの^問題はいらないよね。
+                         *     ここには上半分に音源(ボタン小さくして)と問題を入れて」
+                         *   「一画面に収める＋受験生は何をみたいか
+                         *     → 文章(スクリプト・正誤)をまずみたい
+                         *       (選択肢は問題に戻れば見れる・
+                         *        選択肢まで解説の方に書くとおそらく文字が収まりきらない)
+                         *     → その後に解説を読みたい」
+                         *
+                         * ■ 何を出さないか（＝ここで削るもの）
+                         *   (a) 「第1問 A では、短い英文が2回読まれます。…」の形式説明
+                         *       … 解いた直後の人が読み返す情報ではない。
+                         *   (b) 「【音源の聞き方】…」の操作説明
+                         *       … 音源ボタンはすぐ上にあるので、説明は要らない。
+                         *   (c) 選択肢 ①〜④ の一覧
+                         *       … ご指摘どおり、選択肢を解説側に全部書くと
+                         *         4問×4択＝16行になり1画面に収まらない。
+                         *         選択肢は「問題に戻れば見れる」のでここには出さない。
+                         *
+                         * ■ 何を残すか
+                         *   各問の設問文（問1 傘について、話者の状況に最も近い英文）だけ。
+                         *   これは「何を問われたか」の思い出しに必要で、かつ1行に収まる。
+                         *   スクリプト・正誤・解説は下（採点結果以降）が担当する。
+                         *
+                         * ■ 科目名で決め打ちしない
+                         *   「英文の音源を持つ問題（audioTracks）で、かつ
+                         *     問題文が『問N ＋ ①〜④』の形をしている」という
+                         *   問題データ自身の形で判定する。
+                         *   形が違う問題（第1問Bの図選択など）はこの分岐に入らず、
+                         *   従来どおりの描画にそのまま落ちる。
+                         */
+                        const listeningRows = reorderMobile && isEnglishChapter
+                          ? extractListeningQuestionRows(question)
+                          : null;
+                        if (listeningRows) {
+                          return (
+                            <ul className="flex flex-col gap-1">
+                              {listeningRows.map((row) => (
+                                <li key={row.marker} className="flex items-baseline gap-1.5">
+                                  <span className="shrink-0 font-bold text-gray-500">
+                                    {row.marker}
+                                  </span>
+                                  <span className="min-w-0 break-words [overflow-wrap:anywhere]">
+                                    {formatText(row.body, [], { prose: true })}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          );
+                        }
                         const inline = reorderMobile
                           ? extractInlineQuestionRows(cleanQuestionText(question.text))
                           : null;
@@ -1531,6 +1660,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                             <ExplanationBody
                               text={cleanQuestionText(question.text)}
                               tone={mode === 'mini_test' ? 'light' : 'dark'}
+                              prose={isEnglishChapter}
                             />
                           );
                         }
@@ -1540,6 +1670,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                               <ExplanationBody
                                 text={inline.lead}
                                 tone={mode === 'mini_test' ? 'light' : 'dark'}
+                                prose={isEnglishChapter}
                               />
                             )}
                             {/* grid ではなく flex-wrap（想定より長い項目が来ても
@@ -1555,7 +1686,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                       {formatText(row.marker)}
                                     </span>
                                   )}
-                                  <span className="min-w-0">{formatText(row.body)}</span>
+                                  {/* 英語は散文として組む（化学式扱いのセリフ体を避ける） */}
+                                  <span className="min-w-0">{formatText(row.body, [], { prose: isEnglishChapter })}</span>
                                 </li>
                               ))}
                             </ul>
@@ -1598,6 +1730,11 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                         const sqList = buildSubQuestionList(question);
                         if (sqList.length === 0) return null;
                         if (reorderMobile && isSubQuestionListRedundant(question)) return null;
+                        /* ★ご要望11★ スマホのリスニングでは、上の「問題」ブロックが
+                           すでに同じ設問文（問1 傘について…）を出しているので、
+                           ここで「設問一覧」を出すと同じ文字が2回並ぶ。
+                           「一画面に収める」ためにも、重複する側を出さない。 */
+                        if (reorderMobile && isEnglishChapter && extractListeningQuestionRows(question)) return null;
                         return (
                           <div className={`mt-4 pt-3 border-t border-dashed ${mode === 'mini_test' ? 'border-gray-300' : 'border-[#3A506B]'}`}>
                             <div className={`text-[11px] font-bold mb-2 flex items-center gap-1.5 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>
@@ -1615,7 +1752,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     </span>
                                   )}
                                   <span className="min-w-0 leading-relaxed">
-                                    {formatText(item.body)}
+                                    {formatText(item.body, [], { prose: isEnglishChapter })}
                                   </span>
                                 </li>
                               ))}
@@ -1930,6 +2067,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                     <ExplanationBody
                                       text={sqSlice}
                                       tone={mode === 'mini_test' ? 'light' : 'dark'}
+                                      prose={isEnglishChapter}
                                       className={`${explBodyFontClass} ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
                                     />
                                   ) : (
@@ -2078,6 +2216,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                       orientation="horizontal"
                                       tone={mode === 'mini_test' ? 'light' : 'dark'}
                                       readCount={(question as any).readCount || 2}
+                                      /* ★ご要望11「スクリプトを押さなくても直で下に出てるようにしたい」
+                                           「☑️採点結果のしたはスクリプトってことね」★
+                                         スマホはここが採点結果の直下なので、
+                                         ボタンを押さずに最初からスクリプトを見せる。
+                                         受験生が最初に見たいのは「読まれた英文そのもの」であり、
+                                         そこが1タップ隠れているのは順序が逆だった、というご指摘への対応。 */
+                                      alwaysOpenScript={reorderMobile}
                                     />
                                   )}
 
@@ -2164,6 +2309,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 <ExplanationBody
                                   text={sharedExplanation}
                                   tone={mode === 'mini_test' ? 'light' : 'dark'}
+                                  prose={isEnglishChapter}
                                   className={`${explBodyFontClass} ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
                                 />
                               </div>
@@ -2252,17 +2398,21 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 <div className={`absolute top-0 left-0 w-1.5 h-full ${mode === 'mini_test' ? 'bg-blue-400' : 'bg-[#A9CCE3]'}`}></div>
                                 <div className={`inline-flex items-center gap-1.5 text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border ${mode === 'mini_test' ? 'bg-white text-blue-600 border-blue-200' : 'bg-[#A9CCE3]/10 text-[#A9CCE3] border-[#A9CCE3]/20'}`}>
                                   <BookOpen size={14} />
-                                  {formatText(titleMatch[1].replace(/[【】]/g, ''))}
+                                  {/* 見出しバッジも prose 対象。英語では見出しに英単語が
+                                      そのまま入ることがあり、ここを素の formatText に
+                                      すると見出しだけセリフ体に化けてしまう。 */}
+                                  {formatText(titleMatch[1].replace(/[【】]/g, ''), [], { prose: isEnglishChapter })}
                                 </div>
                                 <div className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
-                                  {formatText(titleMatch[2].trim())}
+                                  {/* 英語は prose で組む（英単語がセリフ体の化学式に化けるのを防ぐ） */}
+                                  {formatText(titleMatch[2].trim(), [], { prose: isEnglishChapter })}
                                 </div>
                               </div>
                             );
                           }
                           return (
                             <div key={idx} className={`p-4 md:p-5 rounded-xl border shadow-sm text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'bg-gray-50 border-gray-200 text-gray-700' : 'bg-[#1C2541]/50 border-[#3A506B]/50 text-[#E0E1DD]/90'}`}>
-                              {formatText(k)}
+                              {formatText(k, [], { prose: isEnglishChapter })}
                             </div>
                           );
                         })}
@@ -2296,10 +2446,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                               <div className={`absolute top-0 left-0 w-1.5 h-full ${mode === 'mini_test' ? 'bg-amber-400' : 'bg-[#D9A0A0]'}`}></div>
                               <div className={`inline-flex items-center gap-1.5 text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-md mb-3 border ${mode === 'mini_test' ? 'bg-white text-amber-600 border-amber-200' : 'bg-[#D9A0A0]/20 text-[#D9A0A0] border-[#D9A0A0]/30'}`}>
                                 <Lightbulb size={14} />
-                                {formatText(title)}
+                                {/* 【】が無い深掘りでは title = 1行目まるごとになり、
+                                    英文（usually / on weekdays など）を含みうる。
+                                    そのためここも prose で組む。 */}
+                                {formatText(title, [], { prose: isEnglishChapter })}
                               </div>
                               <div className={`text-xs md:text-sm leading-relaxed whitespace-pre-wrap ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}>
-                                {formatText(content)}
+                                {formatText(content, [], { prose: isEnglishChapter })}
                               </div>
                             </div>
                           );

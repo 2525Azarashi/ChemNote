@@ -28,13 +28,14 @@
  * **完成したクラス名を文字列として持つ**（結合しない）ようにしている。
  */
 
-export type TipSubject =
-  | 'chemistry_basic'
-  | 'chemistry'
-  | 'english_listening'
-  | 'english_grammar'
-  | 'math'
-  | 'biology_basic';
+// 教科IDの型は allChapters.ts の SubjectKey が唯一の定義
+import type { SubjectKey } from './allChapters';
+
+/**
+ * 配色を引くときに渡す教科ID。
+ * 実体は SubjectKey（アプリ全体で唯一の教科ID定義）。
+ */
+export type TipSubject = SubjectKey;
 
 export interface SubjectTheme {
   /** 科目の表示名（吹き出しの見出しなどに使う） */

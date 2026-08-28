@@ -49,40 +49,113 @@ import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { FeedbackModal } from './FeedbackModal';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
-import { chemistryData } from '../data/chemistryData';
-import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
-import { getListeningStats } from '../data/englishListeningData';
-import { getMathStats } from '../data/mathData';
-import { getBiologyStats } from '../data/biologyBasicData';
-import { getGrammarStats } from '../data/englishGrammarData';
+/*
+ * ★この画面は教科データ本体を読まない（軽い索引だけを読む）★
+ *
+ * -------------------------------------------------------------------
+ * ■ 直す前に何が起きていたか（実測）
+ * -------------------------------------------------------------------
+ * ここはオンボーディング直後に必ず出る「タイトル画面」だが、
+ * 教科データから取っていたのは
+ *
+ *     「全29単元・演習174問」「配点100点・マーク37個」
+ *
+ * のような★数字だけ★で、問題文は1文字も表示していない。
+ * それにも関わらず chemistryData / englishListeningData / mathData /
+ * biologyBasicData / englishGrammarData / chemistryAdvancedData を
+ * すべて静的 import していたため、依存グラフを機械的に辿ると
+ *
+ *     SubjectSelection.tsx が引き込む src/data
+ *       … 47 ファイル / 2,578,344 バイト
+ *
+ * が読み込まれていた。★問題を増やすとこの数字がそのまま増える。★
+ *
+ * -------------------------------------------------------------------
+ * ■ なぜ「画面を後から読み込む（lazy 化）」では解決しないか
+ * -------------------------------------------------------------------
+ * この画面は起動直後に出るので、後回しにできる相手がいない。
+ * 必要なのは「この画面が読む量そのものを減らす」ことである。
+ * ホーム画面（Home.tsx）に対して行ったのと同じ考え方。
+ *
+ * -------------------------------------------------------------------
+ * ■ 表示は1文字も変えない
+ * -------------------------------------------------------------------
+ * 索引の数字は生成時に★本物の集計関数をそのまま呼んで★埋め込んだもので、
+ * tests/chapterIndex.test.ts が実行時にも本物と1フィールドずつ
+ * 突き合わせている。したがってカードに出る文言は完全に同一である。
+ *
+ * -------------------------------------------------------------------
+ * ■ ★型は必ず `import type` と書くこと★
+ * -------------------------------------------------------------------
+ * `import { type SubjectKey } from '../data/allChapters'` と書くと、
+ * 型しか使っていなくてもモジュールの解決自体は行われ、
+ * バンドラは allChapters →（6教科ぶんの教科データ）を
+ * 起動時の読み込みに含めてしまう。
+ * ホーム画面ではこの書き方のせいで、索引に切り替えたのに
+ * 51ファイル・約2.66MB が読み込まれ続けていた（実測）。
+ * 型だけの文（`import type { ... }`）にすれば完全に消える。
+ */
+// 索引から使うのは各教科の集計（章数・問題数）だけ。
+// 以前は SUBJECT_INDEX も取り込んで、このファイルの中で
+// 教科名の対応表を組み立てていたが、その組み立ては
+// data/subjectLabels.ts へ移したのでもう要らない。
+// 使っていない import を残すと「この画面は索引の一覧も見ている」と
+// 読み違えられるため、消してある。
+import { getSubjectStats } from '../data/chapterIndex.generated';
+import type { SubjectKey } from '../data/allChapters';
+// 教科名の対応表は data/subjectLabels.ts が唯一の出どころ。
+// 下で再公開しているが、再エクスポート文は同じファイルの中から参照できないので、
+// このファイル内の判定（isSubjectId）で使うぶんを値としても取り込む。
+import { SUBJECT_LABELS as SUBJECT_LABELS_FOR_CHECK } from '../data/subjectLabels';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey } from '../utils/userStorageKeys';
 
-/** アプリが扱う科目の識別子 */
-export type SubjectId =
-  | 'chemistry_basic'
-  | 'chemistry'
-  | 'english_listening'
-  | 'english_grammar'
-  | 'math'
-  | 'biology_basic';
+/**
+ * アプリが扱う科目の識別子。
+ *
+ * 実体は data/allChapters.ts の SubjectKey（アプリ全体で唯一の定義）。
+ * ここでは今までどおり SubjectId という名前でも使えるように別名を置いている。
+ */
+export type SubjectId = SubjectKey;
 
-/** 科目ID → 画面に出す科目名（App 側のバッジ表示などでも使う） */
-export const SUBJECT_LABELS: Record<SubjectId, string> = {
-  chemistry_basic: '化学基礎',
-  chemistry: '化学',
-  english_listening: '英語リスニング',
-  english_grammar: '英文法',
-  math: '数学',
-  biology_basic: '生物基礎',
-};
+/**
+ * 科目ID → 画面に出す科目名（App 側のバッジ表示などでも使う）。
+ *
+ * ★実体は data/subjectLabels.ts。ここは再公開しているだけ。★
+ *
+ * 以前はこのファイルの中で
+ *     Object.fromEntries(SUBJECT_INDEX.map((s) => [s.id, s.label]))
+ * を組み立てていたが、まったく同じ3行が data/chapterCatalog.ts にもあり、
+ * 「教科名の唯一の定義」が2つ存在する状態だった。
+ * 今は値が一致するが、片方の組み立て方だけを将来変えたときに
+ * 画面ごとに違う教科名が出て、しかもどちらが正しいか分からなくなる。
+ * そこで組み立てを subjectLabels.ts 1本に寄せた。
+ *
+ * 出どころは変わっていない：索引の id / label は教科データの
+ * SUBJECTS から自動生成したもので、一致は
+ * tests/chapterIndex.test.ts が検査している。
+ * （教科名を引くためだけに 2.5MB の教科データを読む必要はない、というのが理由）
+ */
+export { SUBJECT_LABELS } from '../data/subjectLabels';
 
-/** 未知の値が入っていても安全に科目名を引く */
-export function getSubjectLabel(id: string | null | undefined): string {
-  return SUBJECT_LABELS[(id || '') as SubjectId] || SUBJECT_LABELS.chemistry_basic;
-}
+/**
+ * 未知の値が入っていても安全に科目名を引く。
+ *
+ * 中身は subjectLabels.ts の labelOfSubject と同一の処理だったので、
+ * そちらへ寄せた（既定を化学基礎にする振る舞いも従来どおり）。
+ * この名前（getSubjectLabel）は App.tsx などが使っているため残す。
+ */
+export { labelOfSubject as getSubjectLabel } from '../data/subjectLabels';
 
-/** 保存済みの科目ID が今の定義に存在するか */
+/**
+ * 保存済みの科目ID が今の定義に存在するか。
+ *
+ * 判定に使う表は上で再公開しているものと同一の実体
+ * （再エクスポート文は同じファイルの中からは参照できないため、
+ *   ここでは値としても取り込んでいる）。
+ */
 export function isSubjectId(value: string | null | undefined): value is SubjectId {
-  return Boolean(value && value in SUBJECT_LABELS);
+  return Boolean(value && value in SUBJECT_LABELS_FOR_CHECK);
 }
 
 interface SubjectDefinition {
@@ -138,7 +211,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
   const displayName = useMemo(() => {
     try {
       const uid = auth.currentUser?.uid || 'guest';
-      const raw = localStorage.getItem(`profile_${uid}`);
+      const raw = localStorage.getItem(profileKey(uid));
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed?.name) return String(parsed.name);
@@ -149,41 +222,43 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
     return auth.currentUser?.displayName || (isGuest ? 'ゲスト' : 'ユーザー');
   }, [isGuest]);
 
-  /** 化学基礎の収録ボリューム（数字をハードコードせずデータから算出する） */
-  const basicStats = useMemo(() => {
-    const chapters = chemistryData.parts.flatMap((p: any) => p.chapters);
-    let questions = 0;
-    chapters.forEach((c: any) => {
-      questions += (c.practiceProblems || []).length + (c.miniTest || []).length;
-    });
-    return { chapters: chapters.length, questions };
-  }, []);
+  /*
+   * 各教科の収録ボリューム（カードに出す数字）。
+   *
+   * ★数字は今までと同一★
+   *   もとはここで教科データ本体を読み、その場で数え直していた
+   *   （chemistryData.parts.flatMap(...) → countProblemsInChapters、
+   *     getListeningStats() など）。
+   *   いまは同じ計算を★生成時に済ませた索引★から読む。
+   *   索引は本物の集計関数を呼んで作っており、
+   *   tests/chapterIndex.test.ts が実行時にも本物と突き合わせるので、
+   *   表示される数字は完全に同じである。
+   *
+   * useMemo を外していないのは、呼び出し側（subjects の useMemo）の
+   * 依存配列をそのまま保つため。ここを素の定数にすると
+   * 依存配列の中身が変わり、無関係な差分が増える。
+   */
+  /** 化学基礎の収録ボリューム */
+  const basicStats = useMemo(() => getSubjectStats('chemistry_basic'), []);
 
   /** 化学（発展）の収録ボリューム。問題は順次追加するため、単元数だけ先に表示する。 */
-  const advancedStats = useMemo(() => {
-    const chapters = getAllAdvancedChapters();
-    let questions = 0;
-    chapters.forEach((c) => {
-      questions += (c.practiceProblems || []).length + (c.miniTest || []).length;
-    });
-    return { chapters: chapters.length, questions };
-  }, []);
+  const advancedStats = useMemo(() => getSubjectStats('chemistry'), []);
 
   /**
    * 英語リスニングの収録ボリューム。
    * 化学（発展）と同じやり方で、まずは大問（単元）だけを公開し、
-   * 問題は順次追加していく。数字はデータから算出する。
+   * 問題は順次追加していく。
    */
-  const listeningStats = useMemo(() => getListeningStats(), []);
+  const listeningStats = useMemo(() => getSubjectStats('english_listening'), []);
 
   /** 数学の収録ボリューム。まずは数III積分（全パターン演習）から公開する。 */
-  const mathStats = useMemo(() => getMathStats(), []);
+  const mathStats = useMemo(() => getSubjectStats('math'), []);
 
   /** 生物基礎の収録ボリューム。共通テスト全範囲を 5 章で網羅する。 */
-  const biologyStats = useMemo(() => getBiologyStats(), []);
+  const biologyStats = useMemo(() => getSubjectStats('biology_basic'), []);
 
   /** 英文法の収録ボリューム。単元別に 4 択演習を置いている。 */
-  const grammarStats = useMemo(() => getGrammarStats(), []);
+  const grammarStats = useMemo(() => getSubjectStats('english_grammar'), []);
 
   const subjects: SubjectDefinition[] = useMemo(() => [
     {

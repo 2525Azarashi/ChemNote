@@ -32,6 +32,7 @@
  *    接頭辞を分けることで化学基礎の既存データを一切汚染しない。
  */
 
+import { countProblemsInChapters } from './problemCount';
 import {
   a1_1Problems,
   a3_1Problems,
@@ -39,13 +40,9 @@ import {
   a3_3Problems,
   a3_4Problems,
 } from './advancedThermoProblems';
-import {
-  buildSupplement,
-  enhanceExplanation,
-  extractFlowchartSteps,
-  isStructuredExplanation,
-} from '../utils/explanationFormat';
-import { getUnitTeaching } from './unitTeaching';
+// 解説の後処理は explanationPostProcess.ts に1つだけ置いている
+// （整形関数・単元の教え方の取得も、その中で使う）。
+import { applyExplanationPostProcess } from './explanationPostProcess';
 
 /** 1つの小単元（アプリ上の1単元＝大問の集まり）。化学基礎の chapter と同形。 */
 export interface AdvancedChapter {
@@ -508,49 +505,43 @@ const ADVANCED_PROBLEMS: Record<string, any[]> = {
 // 「解答カード → 小問ごとのアコーディオン → ココが狙われる」の体裁に揃える。
 // enhanceExplanation は冪等（整形済みマーカーで二重適用を防ぐ）なので、
 // HMR で再評価されても壊れない。
+// 章のなめ方・ロジックツリーの除外・整形の順序は化学基礎（chemistryData.ts）と
+// 同じ手順なので、explanationPostProcess.ts の1つだけを使う
+// （以前はここにも同じループがあった）。
+//
+// ★この教科では「単位変換の道順」を渡さない★
+//   物質量（mol）計算の道順は化学基礎の単元にしか無いので、
+//   ここで渡すと無関係な単元に別の内容が混ざってしまう。
 (() => {
-  const chapters = chemistryAdvancedData.parts.flatMap((p) => p.chapters);
-  for (const chapter of chapters) {
-    const teaching = getUnitTeaching(chapter.id);
-    const problems = [...(chapter.practiceProblems || []), ...(chapter.miniTest || [])];
-    for (const problem of problems) {
-      if (!problem) continue;
-      if (typeof problem.explanation === 'string' && isStructuredExplanation(problem.explanation)) {
-        problem.explanationSupplement = buildSupplement(
-          problem,
-          teaching,
-          extractFlowchartSteps(problem.explanation),
-        );
-        continue;
-      }
-      problem.explanation = enhanceExplanation(problem, teaching);
-    }
-  }
+  applyExplanationPostProcess(chemistryAdvancedData);
 })();
 
-/** 分野（理論／無機／有機）の表示情報。単元選択の入口ボタンに使う。 */
-export const ADVANCED_FIELDS = [
-  {
-    id: 'theoretical' as const,
-    title: '理論化学',
-    latin: 'Theoretical',
-    description: '気体・溶液・熱・電池・反応速度・平衡',
-  },
-  {
-    id: 'inorganic' as const,
-    title: '無機化学',
-    latin: 'Inorganic',
-    description: '非金属・典型金属・遷移元素の系統的性質',
-  },
-  {
-    id: 'organic' as const,
-    title: '有機化学',
-    latin: 'Organic',
-    description: '脂肪族・芳香族・高分子と構造決定',
-  },
-];
+/**
+ * 分野（理論／無機／有機）の表示情報。
+ *
+ * ★実体は data/advancedFields.ts へ移した。ここは再エクスポート。★
+ *
+ * 中身はただの文字列3件（id / title / latin / description）で、
+ * 問題データを1問も含まない。それにも関わらずこのファイル
+ * （＝化学（発展）の問題データ本体）に同居していたため、
+ * 「分野名を出したいだけ」の画面まで問題データ全部を読み込んでいた。
+ *   ・App.tsx           … 保存値の検証と見出しの分野名だけ
+ *   ・ChapterSelection  … 型（AdvancedFieldId）だけ
+ *
+ * 実体を「何も import しない葉ファイル」へ移し、軽くしたい画面だけが
+ * そちらを直接指すようにした。
+ *
+ * ここで再エクスポートを残している理由は、
+ * 従来どおり `from './chemistryAdvancedData'` で読んでいる呼び出し側
+ * （AdvancedFieldSelection.tsx・各テスト）を1文字も変えずに動かすため。
+ * ★import 元を変えないと軽くはならないが、壊れもしない★という状態にしている。
+ */
+export { ADVANCED_FIELDS } from './advancedFields';
+export type { AdvancedFieldId } from './advancedFields';
 
-export type AdvancedFieldId = (typeof ADVANCED_FIELDS)[number]['id'];
+// このファイル内部（getAdvancedPart など）でも型を使うため、値としても取り込む。
+import { ADVANCED_FIELDS as ADVANCED_FIELDS_INTERNAL } from './advancedFields';
+type AdvancedFieldId = (typeof ADVANCED_FIELDS_INTERNAL)[number]['id'];
 
 /** 指定分野の part を返す（見つからなければ null） */
 export function getAdvancedPart(field: AdvancedFieldId): AdvancedPart | null {
@@ -572,9 +563,7 @@ export function getAdvancedFieldStats(field: AdvancedFieldId) {
   const chapters = getAdvancedChapters(field);
   // 教科書の「章」の数（realTitle のユニーク数）
   const sections = new Set(chapters.map((c) => c.realTitle)).size;
-  const questions = chapters.reduce(
-    (sum, c) => sum + (c.practiceProblems?.length || 0) + (c.miniTest?.length || 0),
-    0,
-  );
+  // 大問の数え方（ミニテスト＋演習）は data/problemCount.ts に集約している
+  const questions = countProblemsInChapters(chapters);
   return { sections, units: chapters.length, questions };
 }

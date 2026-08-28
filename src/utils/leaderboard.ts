@@ -44,6 +44,8 @@ import {
 } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { LEADERBOARD_PAGE_SIZE } from './scoring';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey } from './userStorageKeys';
 
 export interface ChapterScoreEntry {
   uid: string;
@@ -87,7 +89,7 @@ export function resolveNickname(): string {
   const user = auth.currentUser;
   if (!user) return 'ゲスト';
   try {
-    const local = localStorage.getItem(`profile_${user.uid}`);
+    const local = localStorage.getItem(profileKey(user.uid));
     if (local) {
       const p = JSON.parse(local);
       if (p && typeof p.name === 'string' && p.name.trim().length > 0) {

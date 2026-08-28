@@ -41,10 +41,8 @@ import type { SolvedMap } from './studySyncCore';
 import {
   buildChapterProgressRows,
   summarizeReviewDiscipline,
-  collectStudyDays,
-  countActiveDaysWithin,
-  calcEngagementScore,
-  escapeCsvCell,
+  buildStudyBaseMetrics,
+  buildCsvText,
   toDateKey,
   type ChapterDefinition,
   type ChapterProgressRow,
@@ -133,25 +131,20 @@ export function buildAttitudeEvidence(
   masteredBox: number,
   now: number = Date.now(),
 ): AttitudeEvidence {
-  const studyDays = collectStudyDays(solved, reviewItems);
-  const review = summarizeReviewDiscipline(reviewItems, masteredBox, now);
-  const activeDaysIn14 = countActiveDaysWithin(studyDays, 14, now);
+  // 土台の5指標は studySummary.ts の buildStudyBaseMetrics に1つだけ置いている
+  // （先生ダッシュボードと必ず同じ数値になるようにするため）。
+  const base = buildStudyBaseMetrics(solved, reviewItems, masteredBox, now);
 
   const recoveredToMastery = (Array.isArray(reviewItems) ? reviewItems : []).filter(
     (item) => Number(item?.box) >= masteredBox && (Number(item?.wrongCount) || 0) > 0,
   ).length;
 
   return {
-    activeDaysIn14,
-    totalStudyDays: studyDays.length,
-    lastStudiedAt: studyDays.length > 0 ? studyDays[studyDays.length - 1] : null,
-    review,
-    engagement: calcEngagementScore({
-      activeDaysIn14,
-      recoveryRate: review.recoveryRate,
-      overdue: review.overdue,
-      reviewTotal: review.total,
-    }),
+    activeDaysIn14: base.activeDaysIn14,
+    totalStudyDays: base.studyDays.length,
+    lastStudiedAt: base.lastStudiedAt,
+    review: base.review,
+    engagement: base.engagement,
     recoveredToMastery,
   };
 }
@@ -305,14 +298,14 @@ export const KANTEN_CSV_HEADERS = [
 ] as const;
 
 export function buildKantenCsv(reports: KantenReport[], withBom = true): string {
-  const lines: string[] = [];
-  lines.push(KANTEN_CSV_HEADERS.map(escapeCsvCell).join(','));
-
-  reports.forEach((report) => {
-    const strong = report.knowledge.strongChapters[0];
-    const weak = report.knowledge.weakChapters[0];
-    lines.push(
-      [
+  // 骨組み（見出し・CRLF・BOM・エスケープ）は studySummary.ts の
+  // buildCsvText に任せ、ここは「どの列をどの順で出すか」だけを持つ。
+  return buildCsvText(
+    KANTEN_CSV_HEADERS,
+    reports.map((report) => {
+      const strong = report.knowledge.strongChapters[0];
+      const weak = report.knowledge.weakChapters[0];
+      return [
         report.displayName,
         report.subjectLabel,
         report.knowledge.ratePercent,
@@ -327,14 +320,10 @@ export function buildKantenCsv(reports: KantenReport[], withBom = true): string 
         report.attitude.review.overdue,
         report.attitude.engagement.score,
         report.commentDraft,
-      ]
-        .map(escapeCsvCell)
-        .join(','),
-    );
-  });
-
-  const body = `${lines.join('\r\n')}\r\n`;
-  return withBom ? `\uFEFF${body}` : body;
+      ];
+    }),
+    withBom,
+  );
 }
 
 /** CSV のファイル名（クラス名＋日付。ダウンロードフォルダで迷子にならないように） */

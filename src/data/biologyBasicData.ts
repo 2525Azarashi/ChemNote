@@ -20,6 +20,7 @@
  *   オリジナルであり、既存教材・動画の転載は一切含まない。
  */
 
+import { countProblemsInChapters } from './problemCount';
 import {
   bioFeatureProblems,
   bioGeneProblems,
@@ -133,10 +134,8 @@ export function getAllBiologyChapters(): BiologyChapter[] {
 /** 収録状況（単元数・問題数）。科目選択カードの表示に使う。 */
 export function getBiologyStats() {
   const chapters = getAllBiologyChapters();
-  const questions = chapters.reduce(
-    (sum, c) => sum + (c.practiceProblems?.length || 0) + (c.miniTest?.length || 0),
-    0,
-  );
+  // 大問の数え方（ミニテスト＋演習）は data/problemCount.ts に集約している
+  const questions = countProblemsInChapters(chapters);
   // 化学側の stats と同じキー名（chapters / questions）で返す。
   return { chapters: chapters.length, questions };
 }

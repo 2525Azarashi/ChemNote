@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build",
+    "build": "sh scripts/build.sh",
+    "build:raw": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
+    "gen:index": "tsx scripts/gen-chapter-index.mts",
     "lint:chem": "node scripts/lint-chem.mjs",
     "lint:chem:fix": "node scripts/lint-chem.mjs --fix",
     "verify:format": "tsx scripts/verify-explanation-format.mjs",

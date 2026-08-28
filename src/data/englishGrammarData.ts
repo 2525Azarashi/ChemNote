@@ -68,6 +68,7 @@
  *   衝突しないよう `eg`（English Grammar）接頭辞。例）`eg1_1`
  */
 
+import { countProblemsInChapters } from './problemCount';
 import {
   egSvPatternProblems,
   egTenseProblems,
@@ -91,8 +92,9 @@ import {
   egConversationProblems,
 } from './englishGrammarProblems';
 import type { GrammarProblem } from './englishGrammarProblems';
-import { enhanceExplanation, isStructuredExplanation } from '../utils/explanationFormat';
-import { buildListeningExplanation } from '../utils/listeningExplanation';
+// 解説の後処理は listeningPostProcess.ts に1つだけ置いている
+// （リスニングとまったく同じループだったため共通化した）。
+import { applyListeningPostProcess } from './listeningPostProcess';
 
 /**
  * 1つの単元。ListeningChapter / BiologyChapter と同形。
@@ -397,18 +399,14 @@ const EG_PROBLEMS: Record<string, GrammarProblem[]> = {
  *   組み立てられる。組み立てられない場合だけ汎用エンジンに落とす。
  *   これによりご要望「リスニングのような形でつくる」を
  *   画面側の改造ゼロで実現している。
+ *
+ * ■ 中身は listeningPostProcess.ts に1つだけ置いている
+ *   リスニング（englishListeningData.ts）のループと、コメント以外は
+ *   1文字も違わなかったため共通化した。
+ *   ★化学の後処理とは分岐が違うので、化学用とは別の関数のままにしている★
  */
 (() => {
-  for (const chapter of englishGrammarData.parts.flatMap((p) => p.chapters)) {
-    const problems = [...(chapter.practiceProblems || []), ...(chapter.miniTest || [])];
-    for (const problem of problems) {
-      if (!problem) continue;
-      if (typeof problem.explanation === 'string' && isStructuredExplanation(problem.explanation)) {
-        continue;
-      }
-      problem.explanation = buildListeningExplanation(problem) || enhanceExplanation(problem);
-    }
-  }
+  applyListeningPostProcess(englishGrammarData);
 })();
 
 /** 全単元をまとめて返す（Home の進捗集計などで使う） */
@@ -425,10 +423,8 @@ export function getAllGrammarChapters(): GrammarChapter[] {
  */
 export function getGrammarStats() {
   const chapters = getAllGrammarChapters();
-  const questions = chapters.reduce(
-    (sum, c) => sum + (c.practiceProblems?.length || 0) + (c.miniTest?.length || 0),
-    0,
-  );
+  // 大問の数え方（ミニテスト＋演習）は data/problemCount.ts に集約している
+  const questions = countProblemsInChapters(chapters);
   const marks = chapters.reduce(
     (sum, c) =>
       sum +

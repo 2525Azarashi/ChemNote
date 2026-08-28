@@ -45,12 +45,14 @@
  *  ※ 配点は大問単位（A・B合計）で公表されるため、A/B に共通の値を持たせている。
  */
 
+import { countProblemsInChapters } from './problemCount';
 import { EL1_A_PROBLEMS } from './englishListeningQ1AProblems';
 import { EL1_A_EXTRA_PROBLEMS } from './englishListeningQ1ASets';
 import { EL1_B_PROBLEMS } from './englishListeningQ1BProblems';
 import { EL3_PROBLEMS } from './englishListeningQ3Problems';
-import { enhanceExplanation, isStructuredExplanation } from '../utils/explanationFormat';
-import { buildListeningExplanation } from '../utils/listeningExplanation';
+// 解説の後処理は listeningPostProcess.ts に1つだけ置いている
+// （整形関数・リスニング専用の組み立ても、その中で使う）。
+import { applyListeningPostProcess } from './listeningPostProcess';
 
 /** 1つの単元（アプリ上の1単元）。他科目の chapter と同形。 */
 export interface ListeningChapter {
@@ -258,19 +260,13 @@ const LISTENING_PROBLEMS: Record<string, any[]> = {
 //   復習で最初に見たいのは “実際には何と言っていたのか” である。
 //   そこで buildListeningExplanation が組み立てられた場合だけそれを使い、
 //   組み立てられない（スクリプトが無い）ときは従来どおり汎用エンジンに任せる。
+//
+// ■ 中身は listeningPostProcess.ts に1つだけ置いている
+//   英文法（englishGrammarData.ts）にまったく同じループが書かれていたため、
+//   片方だけ直して片方を直し忘れる事故を防ぐために共通化した。
+//   ★化学の後処理とは分岐が違うので、化学用とは別の関数のままにしている★
 (() => {
-  for (const chapter of englishListeningData.parts.flatMap((p) => p.chapters)) {
-    const problems = [...(chapter.practiceProblems || []), ...(chapter.miniTest || [])];
-    for (const problem of problems) {
-      if (!problem) continue;
-      if (typeof problem.explanation === 'string' && isStructuredExplanation(problem.explanation)) {
-        continue;
-      }
-      // スクリプトを持つリスニング問題は専用の並び（スクリプト → 決め手 → 道すじ）に、
-      // それ以外は従来の汎用エンジンに。
-      problem.explanation = buildListeningExplanation(problem) || enhanceExplanation(problem);
-    }
-  }
+  applyListeningPostProcess(englishListeningData);
 })();
 
 /** 単元選択画面などで使う「区分」の一覧 */
@@ -324,9 +320,7 @@ export function getListeningStats() {
   const points = [...pointsByQuestion.values()].reduce((a, b) => a + b, 0);
   // マーク数は単元ごとに独立しているのでそのまま合計する
   const marks = chapters.reduce((sum, c) => sum + c.marks, 0);
-  const questions = chapters.reduce(
-    (sum, c) => sum + (c.practiceProblems?.length || 0) + (c.miniTest?.length || 0),
-    0,
-  );
+  // 大問の数え方（ミニテスト＋演習）は data/problemCount.ts に集約している
+  const questions = countProblemsInChapters(chapters);
   return { sections, units: chapters.length, points, marks, questions };
 }

@@ -252,6 +252,43 @@ export function filterBySubjectTab(items: ReviewItem[], tab: SubjectTabId): Revi
  * chapterTitle が無い古いデータでも空文字を返さないよう、
  * 章IDを最後の手掛かりとして使う。
  */
+/**
+ * 一覧カード用に文字列を切り詰める。
+ *
+ * 以前は復習リスト画面（ReviewList.tsx）と忘却曲線ダッシュボード
+ * （StudyHub.tsx）に同じ実装が2つあった。この2画面は「同じ復習
+ * アイテム」を並べるため、片方だけ直すと同じ問題の見え方が食い違う。
+ * 実装は1つだけにしてある。
+ *
+ * max は呼び出し側が用途ごとに指定する（既定90／StudyHub は 160・70・60）。
+ * 文字数は String.length（UTF-16 コード単位）で数える。移動前と
+ * まったく同じ数え方にしてあるので、絵文字を含む問題文でも
+ * 切れる位置は変わらない。
+ */
+export function truncate(text: string, max = 90): string {
+  return text.length > max ? text.slice(0, max) + '…' : text;
+}
+
+/**
+ * 次の復習予定日を日本語の短い表記にする。
+ *
+ * これも上記 truncate と同じ理由で、以前は ReviewList.tsx と
+ * StudyHub.tsx に同じ実装が2つあった。「明日」と出るか「1日後」と
+ * 出るかが画面によって違う、という状態を構造的に作らないために
+ * 1つにまとめている。
+ *
+ *   期限を過ぎている（差が0以下）… 「復習可能」
+ *   1日以内                      … 「明日」
+ *   それ以降                      … 「N日後」（Math.ceil で切り上げ）
+ */
+export function formatDue(dueAt: number, now: number): string {
+  const diff = dueAt - now;
+  if (diff <= 0) return '復習可能';
+  const days = Math.ceil(diff / (24 * 60 * 60 * 1000));
+  if (days <= 1) return '明日';
+  return `${days}日後`;
+}
+
 export function formatScope(item: ReviewItem): string {
   const subject = subjectOfReviewItem(item);
   const title = (item.chapterTitle || '').trim();

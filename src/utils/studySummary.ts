@@ -290,6 +290,80 @@ export function calcEngagementScore(input: EngagementInput): EngagementScore {
 }
 
 // ===================================================================
+// 学習の基礎指標（サマリーと観点別レポートの共通の土台）
+// ===================================================================
+
+/**
+ * ★重複していたので1つにまとめた計算★
+ *
+ * -------------------------------------------------------------------
+ * ■ なぜまとめたのか
+ * -------------------------------------------------------------------
+ * 「学習した日を集める → 復習状況をまとめる → 直近14日の学習日数を数える
+ *   → 最終学習日を取る → 取り組み度を出す」という5つの導出は、
+ *
+ *   - studySummary.ts の buildStudentSummary（先生ダッシュボード用）
+ *   - kantenReport.ts  の buildAttitudeEvidence（観点別評価レポート用）
+ *
+ * の2か所に、まったく同じ順序・同じ引数で書かれていた。
+ *
+ * これは見た目が似ているだけの重複ではなく、**評価の数値そのものを出す計算**
+ * なので放置すると危険度が高い。たとえば「継続は14日中7日で満点」という
+ * 配点や、取り組み度に渡す4つの値のどれかを片方だけ直してしまうと、
+ * 同じ生徒がダッシュボードとレポートで違う点数に見えてしまう。
+ * 先生が「どちらが正しいのか」と迷う状態は評価材料として致命的なため、
+ * 土台の計算はここ1か所だけに置く。
+ *
+ * -------------------------------------------------------------------
+ * ■ まとめた範囲（意図的に狭くしている）
+ * -------------------------------------------------------------------
+ * 共通なのは「土台の5指標」だけである。その先は2つで違う：
+ *   - buildStudentSummary   … uid・表示名・solvedTotal を足す
+ *   - buildAttitudeEvidence … totalStudyDays・recoveredToMastery を足す
+ * したがって呼び出し側の関数は**まとめない**。
+ * 綺麗さのために外側まで1つにすると、片方の画面に不要な項目が
+ * 混ざって責任が曖昧になるだけなので、共通部分だけを切り出す。
+ *
+ * ※ studyDays をそのまま返しているのは、呼び出し側が
+ *    totalStudyDays（= studyDays.length）を必要とするためで、
+ *    二重に集計し直さないようにするためである。
+ */
+export interface StudyBaseMetrics {
+  /** 学習した日（YYYY-MM-DD の昇順） */
+  studyDays: string[];
+  /** 直近14日で学習した日数 */
+  activeDaysIn14: number;
+  /** 最終学習日（YYYY-MM-DD、記録が無ければ null） */
+  lastStudiedAt: string | null;
+  review: ReviewDiscipline;
+  engagement: EngagementScore;
+}
+
+export function buildStudyBaseMetrics(
+  solved: SolvedMap | null | undefined,
+  reviewItems: ReviewItem[] | null | undefined,
+  masteredBox: number,
+  now: number = Date.now(),
+): StudyBaseMetrics {
+  const studyDays = collectStudyDays(solved, reviewItems);
+  const review = summarizeReviewDiscipline(reviewItems, masteredBox, now);
+  const activeDaysIn14 = countActiveDaysWithin(studyDays, 14, now);
+
+  return {
+    studyDays,
+    activeDaysIn14,
+    lastStudiedAt: studyDays.length > 0 ? studyDays[studyDays.length - 1] : null,
+    review,
+    engagement: calcEngagementScore({
+      activeDaysIn14,
+      recoveryRate: review.recoveryRate,
+      overdue: review.overdue,
+      reviewTotal: review.total,
+    }),
+  };
+}
+
+// ===================================================================
 // 生徒1人分のサマリー
 // ===================================================================
 
@@ -315,23 +389,18 @@ export function buildStudentSummary(params: {
   now?: number;
 }): StudentSummary {
   const now = params.now ?? Date.now();
-  const studyDays = collectStudyDays(params.solved, params.reviewItems);
-  const review = summarizeReviewDiscipline(params.reviewItems, params.masteredBox, now);
-  const activeDaysIn14 = countActiveDaysWithin(studyDays, 14, now);
+  // 土台の5指標は buildStudyBaseMetrics に1つだけ置いている
+  // （観点別評価レポートと必ず同じ数値になるようにするため）。
+  const base = buildStudyBaseMetrics(params.solved, params.reviewItems, params.masteredBox, now);
 
   return {
     uid: params.uid,
     displayName: params.displayName,
     solvedTotal: params.solved ? Object.keys(params.solved).length : 0,
-    activeDaysIn14,
-    lastStudiedAt: studyDays.length > 0 ? studyDays[studyDays.length - 1] : null,
-    review,
-    engagement: calcEngagementScore({
-      activeDaysIn14,
-      recoveryRate: review.recoveryRate,
-      overdue: review.overdue,
-      reviewTotal: review.total,
-    }),
+    activeDaysIn14: base.activeDaysIn14,
+    lastStudiedAt: base.lastStudiedAt,
+    review: base.review,
+    engagement: base.engagement,
   };
 }
 
@@ -354,6 +423,42 @@ export function escapeCsvCell(value: unknown): string {
     return `"${neutralized.replace(/"/g, '""')}"`;
   }
   return neutralized;
+}
+
+/**
+ * ★重複していたので1つにまとめた組み立て★
+ *
+ * CSV の「外側の骨組み」は3か所（buildStudentCsv / buildChapterCsv /
+ * kantenReport.ts の buildKantenCsv）にまったく同じ形で書かれていた。
+ *   1. 見出し行を escapeCsvCell に通して , で連結
+ *   2. 各行も同じように連結
+ *   3. 行区切りは CRLF、最後にも改行を1つ付ける
+ *   4. withBom なら先頭に BOM を付ける
+ *
+ * これは見た目の重複ではなく、**間違えると実害が出る部分**なので
+ * 1か所にまとめる必要があった。
+ *   - BOM を落とすと Excel で日本語が文字化けする（現場で最も多い躓き）
+ *   - escapeCsvCell を通し忘れると CSV インジェクションが通る
+ *     （先頭が = + - @ のセルを Excel が数式として実行してしまう）
+ *   - 改行が LF だと古い Excel で1行に潰れる
+ * 3か所に散らしたままだと、片方だけ直して片方が穴のまま、という
+ * いちばん危ない状態になりうる。学校へ配る成果物なのでここは統一する。
+ *
+ * ※ 中身（どの列を出すか）は3つでまったく違うため、
+ *   まとめたのは骨組みだけである。列の並びは各関数に残している。
+ */
+export function buildCsvText(
+  headers: readonly unknown[],
+  rows: readonly unknown[][],
+  withBom = true,
+): string {
+  const lines: string[] = [];
+  lines.push(headers.map(escapeCsvCell).join(','));
+  rows.forEach((row) => {
+    lines.push(row.map(escapeCsvCell).join(','));
+  });
+  const body = `${lines.join('\r\n')}\r\n`;
+  return withBom ? `\uFEFF${body}` : body;
 }
 
 export const STUDENT_CSV_HEADERS = [
@@ -380,49 +485,37 @@ export const STUDENT_CSV_HEADERS = [
  * 日本語が文字化けするため（現場で最も多い躓きどころ）。
  */
 export function buildStudentCsv(rows: StudentSummary[], withBom = true): string {
-  const lines: string[] = [];
-  lines.push(STUDENT_CSV_HEADERS.map(escapeCsvCell).join(','));
-
-  rows.forEach((row) => {
-    lines.push(
-      [
-        row.displayName,
-        row.solvedTotal,
-        row.activeDaysIn14,
-        row.lastStudiedAt ?? '未学習',
-        row.review.total,
-        row.review.overdue,
-        row.review.mastered,
-        row.review.wrongCount,
-        row.review.retryCount,
-        `${Math.round(row.review.recoveryRate * 100)}%`,
-        row.engagement.score,
-        row.engagement.breakdown.continuity,
-        row.engagement.breakdown.recovery,
-        row.engagement.breakdown.upkeep,
-      ]
-        .map(escapeCsvCell)
-        .join(','),
-    );
-  });
-
-  const body = `${lines.join('\r\n')}\r\n`;
-  return withBom ? `\uFEFF${body}` : body;
+  // 骨組み（見出し・CRLF・BOM・エスケープ）は buildCsvText に任せ、
+  // ここは「どの列をどの順で出すか」だけを持つ。
+  return buildCsvText(
+    STUDENT_CSV_HEADERS,
+    rows.map((row) => [
+      row.displayName,
+      row.solvedTotal,
+      row.activeDaysIn14,
+      row.lastStudiedAt ?? '未学習',
+      row.review.total,
+      row.review.overdue,
+      row.review.mastered,
+      row.review.wrongCount,
+      row.review.retryCount,
+      `${Math.round(row.review.recoveryRate * 100)}%`,
+      row.engagement.score,
+      row.engagement.breakdown.continuity,
+      row.engagement.breakdown.recovery,
+      row.engagement.breakdown.upkeep,
+    ]),
+    withBom,
+  );
 }
 
 export const CHAPTER_CSV_HEADERS = ['単元', '大問数', 'クラス平均到達率(%)', '未処理の復習(合計)'] as const;
 
 /** 章別の到達状況を CSV に（クラス全体の弱点把握用） */
 export function buildChapterCsv(rows: ChapterProgressRow[], withBom = true): string {
-  const lines: string[] = [];
-  lines.push(CHAPTER_CSV_HEADERS.map(escapeCsvCell).join(','));
-  rows.forEach((row) => {
-    lines.push(
-      [row.chapterTitle, row.totalProblems, row.ratePercent, row.pendingReviews]
-        .map(escapeCsvCell)
-        .join(','),
-    );
-  });
-  const body = `${lines.join('\r\n')}\r\n`;
-  return withBom ? `\uFEFF${body}` : body;
+  return buildCsvText(
+    CHAPTER_CSV_HEADERS,
+    rows.map((row) => [row.chapterTitle, row.totalProblems, row.ratePercent, row.pendingReviews]),
+    withBom,
+  );
 }

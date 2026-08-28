@@ -231,10 +231,28 @@ describe('解答画面：音源は左（問題文）ペインに横帯で置く'
   });
 
   it('横帯モードではボタンが 44px 級のタップ領域を持つ（押しやすさ）', () => {
-    // 再生ボタン・2回ボタン・速度ボタンのいずれも min-h 2.75rem(44px) 以上。
-    expect(PLAYER).toContain("min-h-[3rem] min-w-[6rem] flex-1 flex-row");
-    expect(PLAYER).toContain("min-h-[2.75rem] min-w-[4.25rem]");
-    expect(PLAYER).toContain("min-h-[2.75rem] min-w-[3.5rem]");
+    /*
+     * 再生ボタン・2回ボタン・速度ボタンのいずれも高さ 44px 以上。
+     *
+     * ★幅は固定しない★
+     *   もとは min-h と min-w をつないだ文字列で照合していたが、
+     *   それだと「横幅を詰める」修正で落ちてしまう。
+     *   ご指摘11「再生ボタンがまた少し大きくなったせいで、
+     *   ④の選択肢みたいに少し下に隠れちゃってる」の対策は、
+     *   横幅を詰めて flex-wrap の 2 段折り返しを 1 段に戻すことだった。
+     *   守りたいのは高さ 44px（＝指で押せる下限）のほうなので、
+     *   幅と切り離してこちらだけを固定する。
+     *
+     *   なお isCompact（panel を畳んだ表示）の 36px ボタンは
+     *   音源ボタンではないので、条件名 isRow で絞って除外する。
+     */
+    const rowMinHeights = [...PLAYER.matchAll(/isRow\s*\n?\s*\?\s*'min-h-\[([0-9.]+)rem\]/g)].map(
+      (m) => parseFloat(m[1]),
+    );
+    expect(rowMinHeights.length).toBeGreaterThanOrEqual(3);
+    for (const rem of rowMinHeights) {
+      expect(rem * 16).toBeGreaterThanOrEqual(44);
+    }
   });
 
   it('左ペインの問ブロックで focusSubId + variant="inline" + horizontal を使っている', () => {
@@ -333,8 +351,20 @@ describe('解答画面：消去法（選択肢を直接タップして斜線を�
     expect(QUIZ).toContain('const struck = isEliminated(sq.id, opt)');
   });
 
-  it('消去状態は端末に保存され、戻ってきても残る', () => {
-    expect(QUIZ).toContain('quiz_elim_');
+  it('消去状態は端末に保存され、戻ってきても残る', async () => {
+    // 以前は `expect(QUIZ).toContain('quiz_elim_')` だった。
+    // ところが Quiz.tsx には別物の 'quiz_elim_hint_seen'（操作説明を見たか）
+    // もあるので、保存キーを集約したあとでもこの文字列は残ってしまい、
+    // 「消去状態が保存されているか」を確かめられていない状態だった。
+    // 実際に使っているキー生成と、読み書き両方の存在で確認する。
+    expect(QUIZ).toContain('quizElimKey(chapter.id, mode)');
+    expect(QUIZ).toContain('localStorage.setItem(quizElimKey(chapter.id, mode)');
+    expect(QUIZ).toContain('localStorage.getItem(quizElimKey(chapter.id, mode))');
+
+    const { quizElimKey } = await import('../src/utils/quizStorageKeys');
+    expect(quizElimKey('q_el1_A', 'practice')).toBe('quiz_elim_q_el1_A_practice');
+    // 操作説明のキーとは別物であること
+    expect(quizElimKey('q_el1_A', 'practice')).not.toBe('quiz_elim_hint_seen');
   });
 });
 

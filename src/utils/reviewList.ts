@@ -277,3 +277,59 @@ export function getDueCount(uid: string | null | undefined, now: number = Date.n
 export function isMastered(item: ReviewItem): boolean {
   return item.box >= REVIEW_INTERVALS_DAYS.length - 1;
 }
+
+/**
+ * ===================================================================
+ * 画面から使う「復習の3操作」をまとめて作る
+ * ===================================================================
+ *
+ * ■ なぜこれを置いたのか
+ *   復習リスト画面（components/ReviewList.tsx）と
+ *   学習ノート画面（components/StudyHub.tsx）に、
+ *   まったく同じ形のハンドラが3つずつ、合計6つ書かれていた。
+ *
+ *     const handleCorrect = (key) => { markReviewedCorrect(uid, key); refresh(); };
+ *     const handleWrong   = (key) => { markReviewedWrong(uid, key);   refresh(); };
+ *     const handleRemove  = (key) => { removeReviewItem(uid, key);    refresh(); };
+ *
+ *   「保存してから画面を作り直す」という手順は復習操作の要で、
+ *   順序を逆にすると更新前の内容が表示されてしまう。
+ *   2か所に写してあると、片方だけ直して食い違う危険がある。
+ *
+ * ■ ★refresh を引数で受け取る理由（ここが重要）★
+ *   2画面の refresh は**中身が違う**。
+ *
+ *     ReviewList: setNow() + setItems(getAllReviewItems(uid))
+ *     StudyHub  : setNow() + setReviewItems(getAllReviewItems(uid))
+ *                 ＋ setNotes(loadNotes())   ← ノートも読み直す
+ *
+ *   そのため「refresh の中身まで」共通化してはいけない。
+ *   （StudyHub のノート再読込が消えるという壊し方をする）
+ *   共通化するのは順序だけにとどめ、
+ *   何を作り直すかは各画面が渡す関数に任せる。
+ *
+ * @param uid     ログイン中のユーザーID（ゲストは null でよい）
+ * @param refresh 保存後に画面を作り直す処理。画面ごとに中身が違う。
+ */
+export function createReviewActions(
+  uid: string | null | undefined,
+  refresh: () => void,
+) {
+  return {
+    /** 復習で正解 → 次回予定日を先送りしてから画面を更新 */
+    handleCorrect: (key: string) => {
+      markReviewedCorrect(uid, key);
+      refresh();
+    },
+    /** 復習で不正解 → 当日再出題に戻してから画面を更新 */
+    handleWrong: (key: string) => {
+      markReviewedWrong(uid, key);
+      refresh();
+    },
+    /** 復習リストから削除してから画面を更新 */
+    handleRemove: (key: string) => {
+      removeReviewItem(uid, key);
+      refresh();
+    },
+  };
+}

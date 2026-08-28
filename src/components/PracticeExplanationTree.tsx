@@ -1,6 +1,9 @@
 import React from 'react';
 import { InteractiveTree, NodeData } from './InteractiveTree';
-import { substanceTreeData, separationTreeData, componentDetectionTreeData, thermalMotionTreeData, atomicStructureTreeData, ionTreeData, ionGenerationTreeData, ionSizeTreeData, chemicalBondTreeData, crystalTreeData, interactionTreeData, atomicWeightTreeData, amountOfSubstanceTreeData, chemicalEquationTreeData, concentrationTreeData, acidBaseTreeData, redoxTreeData } from '../data/chemistryData';
+// 章ID → ツリーの対応表は data/chapterTreeMap.ts に集約している。
+// （以前はこのファイルと ChapterFlowchartModal.tsx が同じ対応表を
+//   別々の書き方で持っていた。片方だけ直し忘れる事故を防ぐため統合した）
+import { resolveChapterTree, isSharedUnitTree } from '../data/chapterTreeMap';
 import { extractSectionByChapter } from '../utils/logicTreeUtils';
 
 interface PracticeExplanationTreeProps {
@@ -37,49 +40,19 @@ export const PracticeExplanationTree: React.FC<PracticeExplanationTreeProps> = (
   zoom = 'far',
   collapsible = false
 }) => {
-  // 章IDごとに対応するフローチャート（ロジックツリー）を明示的に対応付ける。
-  // ここに存在しない章（例: c5 酸と塩基, c6 酸化還元）は専用ツリーが無いため、
-  // 別単元のツリー（物質の分類など）を誤って表示しないよう、フローチャートを描画しない。
-  const TREE_BY_CHAPTER: Record<string, NodeData> = {
-    c1_1: substanceTreeData,
-    c1_2_A: separationTreeData,
-    c1_2_B: componentDetectionTreeData,
-    c1_3: thermalMotionTreeData,
-    c2_1: atomicStructureTreeData,
-    c2_2: ionTreeData,
-    c2_3: ionGenerationTreeData,
-    c2_4: ionSizeTreeData,
-    c3_1: chemicalBondTreeData,
-    c3_2: crystalTreeData,
-    c3_3: interactionTreeData,
-    c4_1: atomicWeightTreeData,
-    c4_2: amountOfSubstanceTreeData,
-    c4_3: chemicalEquationTreeData,
-    c4_4: concentrationTreeData,
-  };
-
-  // 酸と塩基・酸化還元は下位章（c5_1〜c5_7 / c6_1〜c6_7）をまとめて1つのツリーに対応させる。
-  const resolveTree = (chapterId: string | undefined): NodeData | undefined => {
-    if (!chapterId) return undefined;
-    if (TREE_BY_CHAPTER[chapterId]) return TREE_BY_CHAPTER[chapterId];
-    if (chapterId === 'c5' || chapterId.startsWith('c5_')) return acidBaseTreeData;
-    if (chapterId === 'c6' || chapterId.startsWith('c6_')) return redoxTreeData;
-    return undefined;
-  };
-
-  const fullTreeData: NodeData | undefined = resolveTree(chapter?.id);
+  // 章IDごとに対応するフローチャート（ロジックツリー）は
+  // data/chapterTreeMap.ts の対応表から引く。
+  // 対応表に無い章（例: 他教科・未収録章）ではツリーを返さないので、
+  // 別単元のツリー（物質の分類など）を誤って表示することはない。
+  const fullTreeData: NodeData | undefined = resolveChapterTree(chapter?.id);
 
   // c5(酸と塩基)/c6(酸化還元)は単元全体で1つの大きなツリーを共有しているため、
   // その下位章（c5_1〜c5_7 / c6_1〜c6_7）に対応する重要事項セクションのみを切り出す。
   // 添付HTML由来のフル解説（Step構成・解説付き）をそのまま表示し、
   // 単元選択画面のフローチャートと表示範囲を一致させる。
   // c1〜c4 は章ごとに専用ツリーがあるため切り出さない。
-  const isSharedUnitTree = !!chapter?.id && (
-    chapter.id === 'c5' || chapter.id.startsWith('c5_') ||
-    chapter.id === 'c6' || chapter.id.startsWith('c6_')
-  );
   let currentTreeData: NodeData | undefined = fullTreeData;
-  if (fullTreeData && isSharedUnitTree) {
+  if (fullTreeData && isSharedUnitTree(chapter?.id)) {
     currentTreeData = extractSectionByChapter(fullTreeData, chapter!.id) ?? fullTreeData;
   }
 

@@ -1,32 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronRight, Info, Network, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronRight, Info, Network, ChevronDown, ChevronUp } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { ExplanationBody } from './ExplanationBody';
 import { ExplanationChart } from './ExplanationChart';
+import type { StepType, NodeData } from '../utils/logicTreeTypes';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-type StepType = number | string | null;
-
-export interface NodeData {
-  id: string;
-  label: string;
-  step: StepType;
-  subLabel?: string;
-  isGroup?: boolean;
-  explanation?: string;
-  /**
-   * 解説に添える図・グラフの識別子（ExplanationChart の EXPLANATION_CHARTS のキー）。
-   * アスキーアートで図を描かず、SVG として構造化して描画するために用いる。
-   */
-  chart?: string;
-  relatedQuestions?: { id: string; label: string }[];
-  children?: NodeData[];
-}
+// ツリーのデータ型は utils/logicTreeTypes.ts に置いている。
+// （utils 側の純粋関数がこの型を使うため。詳しい理由はそのファイルの冒頭コメント）
+// これまでどおり `from './InteractiveTree'` でも取り出せるよう再エクスポートする。
+export type { StepType, NodeData } from '../utils/logicTreeTypes';
 
 interface TreeNodeProps {
   key?: string | number;

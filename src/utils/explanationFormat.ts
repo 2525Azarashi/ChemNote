@@ -91,76 +91,23 @@ export function circledNumber(index: number): string {
 // 型
 // -------------------------------------------------------------------
 
-/** 思考手順の1ステップ */
-export interface ThinkingStep {
-  /** ステップの見出し（「〇〇を確認する」のように動詞で終える） */
-  title: string;
-  /** なぜそう考えるのか・着眼点の短い説明 */
-  detail: string;
-}
+import type {
+  ThinkingStep,
+  TrendInsight,
+  UnitTeaching,
+  UnitConversionWalk,
+} from '../data/teachingTypes';
 
-/** 単元別の「共通テスト出題傾向」ボックスの中身 */
-export interface TrendInsight {
-  /** 出典（例：「2021年 共通テスト 本試験 第1問 問5」） */
-  sources: string[];
-  /** 過去問で実際に問われた要素 */
-  asked: string[];
-  /** 頻出のひっかけ */
-  traps: string[];
-  /** 問題と傾向をリンクさせた実践的アドバイス */
-  advice: string;
-}
-
-/** 単元（章）ごとの指導テンプレート */
-export interface UnitTeaching {
-  /** この単元の問題を解くときの標準的な思考手順 */
-  steps: ThinkingStep[];
-  /** 出題傾向ボックスの内容 */
-  trend: TrendInsight;
-}
-
-// -------------------------------------------------------------------
-// 単位変換（まとめプリントの「単位変換の図」）
-// -------------------------------------------------------------------
-
-/**
- * 単位変換の1ホップ（図の矢印1本ぶん）。
- *
- * 「単位変換の図」では、mol をハブにして
- *   個数 ←（÷ / × 6.0×10²³）→ mol ←（÷ / × M）→ 質量[g]
- *                              mol ←（÷ / × 22.4）→ 標準状態の体積[L]
- * という橋が架かっている。その1本を表す。
- */
-export interface ConversionHop {
-  /** 矢印に書く換算（例：「÷ 44 g/mol」「× 22.4 L/mol」「× 2（係数比）」） */
-  arrow: string;
-  /** 変換後に到達する単位（例：「mol」「L」「g」「個」） */
-  to: string;
-}
-
-/**
- * 1問ぶんの「単位変換による解き方」。
- *
- * 物質量（mol）がからむ計算問題は、公式の暗記ではなく
- * 「スタートの単位 → mol → ゴールの単位」という一本道の乗り換えで必ず解ける。
- * その道順をデータとして持ち、解説の先頭に図と同じ形で提示する。
- */
-export interface UnitConversionWalk {
-  /** スタートの量（例：「88 g（二酸化炭素の質量）」） */
-  start: string;
-  /** スタートの単位（ルート図の左端。例：「g」） */
-  startUnit: string;
-  /** ゴール（例：「標準状態の体積 [L]」） */
-  goal: string;
-  /** mol を経由してゴールへ向かう矢印の並び */
-  route: ConversionHop[];
-  /** ①②③ の思考手順（見出し＋理由・着眼点の2段構成） */
-  steps: ThinkingStep[];
-  /** 換算をひと続きに書いた式（省略可） */
-  oneLine?: string[];
-  /** 単位の約分などによる検算コメント（省略可） */
-  check?: string;
-}
+// 指導テンプレート・単位変換の「データの形」は data/teachingTypes.ts に置いている。
+// （実際にその形のデータを持っているのが data 側のため。理由はそのファイルの冒頭コメント）
+// これまでどおり `from '../utils/explanationFormat'` でも取り出せるよう再エクスポートする。
+export type {
+  ThinkingStep,
+  TrendInsight,
+  UnitTeaching,
+  ConversionHop,
+  UnitConversionWalk,
+} from '../data/teachingTypes';
 
 /** 整形に必要な小問の最小形 */
 interface SubQuestionLike {

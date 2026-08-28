@@ -39,8 +39,19 @@ import {
   parseStoredStringRecord,
 } from '../utils/progress';
 import { schedulePush } from '../utils/studySync';
+// 章 × モードごとの保存キー名は utils/quizStorageKeys.ts が唯一の定義
+import {
+  quizAnswersKey,
+  quizElimKey,
+  quizExplKey,
+  quizIndexKey,
+  quizRunKey,
+  quizStepKey,
+} from '../utils/quizStorageKeys';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
-import { answerCardMarker, buildSubQuestionList, splitQuestionLabel, isSubQuestionListRedundant, extractInlineQuestionRows } from '../utils/questionDisplay';
+// cleanQuestionText は解説画面（Explanation.tsx）と同じ実装が必要なので
+// questionDisplay.ts の1つだけを使う（以前はここにも同じ実装があった）。
+import { answerCardMarker, buildSubQuestionList, splitQuestionLabel, isSubQuestionListRedundant, extractInlineQuestionRows, findSubQuestionSentence, cleanQuestionText } from '../utils/questionDisplay';
 import {
   buildListeningOptionTexts,
   buildListeningLeadText,
@@ -87,11 +98,13 @@ interface QuizProps {
 }
 
 /**
- * 章単位の累積スコアを localStorage に保持するためのキー生成
+ * 章単位の累積スコアを localStorage に保持するためのキー生成。
+ *
+ * 実体は utils/quizStorageKeys.ts の quizRunKey（唯一の定義）。
+ * このファイル内の3か所から chapterRunKey として呼ばれているので
+ * 名前はそのまま残してある。
  */
-function chapterRunKey(chapterId: string, mode: string) {
-  return `quiz_run_${chapterId}_${mode}`;
-}
+const chapterRunKey = quizRunKey;
 
 interface ChapterRunState {
   totalScore: number;
@@ -310,13 +323,6 @@ const handleInputFocusScroll = (e: React.FocusEvent<HTMLInputElement | HTMLTextA
     setTimeout(() => vv.removeEventListener('resize', onResize), 1000);
   }
 };
-
-/** 表示上の問題番号（問1/【問1】/先頭の 1 など）を消して、進捗表示に統一する。 */
-function cleanQuestionText(text: string): string {
-  return String(text || '')
-    .replace(/^\s*(?:【\s*問?\s*\d+\s*】|問\s*\d+|第\s*\d+\s*問|\d+[.．、\s]+)\s*/u, '')
-    .replace(/\n\s*(?:問\s*\d+|【\s*問?\s*\d+\s*】)\s*/gu, '\n');
-}
 
 /**
  * 設問ラベル（例: "問1 (ア)" / "(ア)" / "問3 (1) A"）から、
@@ -565,19 +571,19 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   });
 
   const [answers, setAnswers] = useState<Record<string, string>>(() =>
-    parseStoredStringRecord(localStorage.getItem(`quiz_answers_${chapter.id}_${mode}`)),
+    parseStoredStringRecord(localStorage.getItem(quizAnswersKey(chapter.id, mode))),
   );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
     const questionCount = mode === 'mini_test'
       ? (chapter.miniTest || []).length
       : (chapter.practiceProblems || []).length;
     return parseStoredNonNegativeInteger(
-      localStorage.getItem(`quiz_idx_${chapter.id}_${mode}`),
+      localStorage.getItem(quizIndexKey(chapter.id, mode)),
       Math.max(0, questionCount - 1),
     );
   });
   const [showingExplanation, setShowingExplanation] = useState(() => {
-    return localStorage.getItem(`quiz_expl_${chapter.id}_${mode}`) === 'true';
+    return localStorage.getItem(quizExplKey(chapter.id, mode)) === 'true';
   });
 
   /**
@@ -591,23 +597,23 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
    * 中断して戻ってきたときに問1からやり直しにならないよう端末に保存する。
    */
   const [stepIndex, setStepIndex] = useState(() =>
-    parseStoredNonNegativeInteger(localStorage.getItem(`quiz_step_${chapter.id}_${mode}`)),
+    parseStoredNonNegativeInteger(localStorage.getItem(quizStepKey(chapter.id, mode))),
   );
 
   useEffect(() => {
-    localStorage.setItem(`quiz_answers_${chapter.id}_${mode}`, JSON.stringify(answers));
+    localStorage.setItem(quizAnswersKey(chapter.id, mode), JSON.stringify(answers));
   }, [answers, chapter.id, mode]);
 
   useEffect(() => {
-    localStorage.setItem(`quiz_step_${chapter.id}_${mode}`, stepIndex.toString());
+    localStorage.setItem(quizStepKey(chapter.id, mode), stepIndex.toString());
   }, [stepIndex, chapter.id, mode]);
 
   useEffect(() => {
-    localStorage.setItem(`quiz_idx_${chapter.id}_${mode}`, currentQuestionIndex.toString());
+    localStorage.setItem(quizIndexKey(chapter.id, mode), currentQuestionIndex.toString());
   }, [currentQuestionIndex, chapter.id, mode]);
 
   useEffect(() => {
-    localStorage.setItem(`quiz_expl_${chapter.id}_${mode}`, showingExplanation.toString());
+    localStorage.setItem(quizExplKey(chapter.id, mode), showingExplanation.toString());
   }, [showingExplanation, chapter.id, mode]);
 
   // ────────────────────────────────────────────────────────────────
@@ -641,7 +647,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   //   { [設問ID]: 消去した選択肢の配列 }
   //   選択肢そのものの文字列で持つ（並び替えや添字ズレに影響されないため）。
   const [eliminated, setEliminated] = useState<Record<string, string[]>>(() =>
-    parseStoredStringArrayRecord(localStorage.getItem(`quiz_elim_${chapter.id}_${mode}`)),
+    parseStoredStringArrayRecord(localStorage.getItem(quizElimKey(chapter.id, mode))),
   );
 
   // ★消去法の操作説明（タップで選択→斜線→…）は初回だけ表示する（ご要望）。
@@ -659,7 +665,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   };
 
   useEffect(() => {
-    localStorage.setItem(`quiz_elim_${chapter.id}_${mode}`, JSON.stringify(eliminated));
+    localStorage.setItem(quizElimKey(chapter.id, mode), JSON.stringify(eliminated));
   }, [eliminated, chapter.id, mode]);
 
   /** ある設問で、その選択肢が消去済みか。 */
@@ -1358,8 +1364,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   >
                     {opt}
                   </span>
-                  <span className="min-w-0 flex-1 text-[15px] md:text-sm font-medium leading-6 break-words [overflow-wrap:anywhere]">
-                    {formatText(body)}
+                  <span className="min-w-0 flex-1 text-[15px] md:text-sm font-medium leading-6 break-words [overflow-wrap:anywhere] font-modern">
+                    {/* 英語の選択肢は散文として組む（化学式扱いのセリフ体を避ける） */}
+                    {formatText(body, [], { prose: isEnglishProse })}
                   </span>
                 </span>
               ) : (
@@ -1851,6 +1858,29 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     if ((currentQuestion as any).requiresMathPalette) return true;
     const subs = currentQuestion.subQuestions || [];
     return subs.some((sq: any) => requiresMathSymbols(sq));
+  }, [currentQuestion]);
+
+  /**
+   * ★ご要望11「あと解説と問題でフォント違うの何？」★
+   *
+   * 英語（リスニング・英文法）の問題文・選択肢は「英語の散文」なので、
+   * 化学式の体裁付け（英字をセリフ体の span で包む処理）を通してはいけない。
+   * 通すと "The" "umbrella" のような単語まで化学式扱いになり、
+   *   font-family: 'Cambria Math','Times New Roman', serif
+   * がインライン style で当たって、日本語（ゴシック）と書体が食い違う。
+   * これが「問題と解説でフォントが違う」とご指摘いただいた現象そのもの。
+   *
+   * ★科目名で分岐しない★
+   *   'english_listening' などの科目名で切り替えると、
+   *   将来ほかの科目に英文を入れたときに取り残される。
+   *   英文を読み上げる音源（audioTracks）を持つのは英語の問題だけなので、
+   *   「その問題自身が英文の音源を持っているか」という
+   *   問題ごとの事実で判断する（ご指摘「コードで形式的に作ると
+   *   問題によっておかしくなる」を避けるため）。
+   */
+  const isEnglishProse = useMemo(() => {
+    const tracks = (currentQuestion as any)?.audioTracks;
+    return Array.isArray(tracks) && tracks.length > 0;
   }, [currentQuestion]);
 
   // 現在フォーカス中の穴埋め設問に対応する、問題文中のハイライト候補文字列。
@@ -2878,6 +2908,37 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                 */
                 const inlineBody = body && body.length <= 20 ? body : '';
                 const blockBody = inlineBody ? '' : body;
+                /*
+                  ★英文法：英文そのものを必ず出す（ご要望11）★
+                  ------------------------------------------------------------
+                  ご指摘（原文）：
+                    「英文法は普通に英文ないと問題成立しやんのやけど
+                      音声のボタンを少し小さくした上で、英文しっかり載せて。」
+
+                  ■ なぜ英文が消えていたのか
+                    英文法の問題は音源（audioTracks）を持つので、この画面は
+                    リスニングと同じ扱い（listeningUnified = true）になる。
+                    その結果、下の
+                      {!listeningUnified && ( …question.text を描画… )}
+                    の分岐で question.text が丸ごと描画されなくなっていた。
+                    リスニングは「英文は音声にしか無い・本文はリード文だけ」なので
+                    これが正しいのだが、英文法は question.text の中の
+                      問1　I ______ to Kyoto three times, so I can show you around.
+                    が唯一の英文なので、消すと空所補充なのに空所のある文が無い、
+                    つまり問題として成立しない状態になっていた。
+                    代わりに出ている設問文（label）は「経験の現在完了」という
+                    文法項目名だけで、英文はどこにも含まれない（全20問で実測）。
+
+                  ■ 科目で分岐しない
+                    ご指摘「コードで形式的に作ると問題によっておかしくなる
+                    可能性がある」を踏まえ、「英文法なら出す」ではなく
+                    「その問題の本文に、その小問番号の英文が実在するなら出す」
+                    という問題ごとの判定にする。
+                    実測では英文法20問すべてで英文が取れ、
+                    リスニング44問すべてで取れない（＝自動的に無効になる）。
+                    将来データが変わっても、英文がある問題だけで有効になる。
+                */
+                const stepSentence = findSubQuestionSentence(currentQuestion, activeStepSub);
                 return (
                   <div className={listeningMobileSplit ? 'flex min-h-0 flex-1 flex-col' : 'mb-4'}>
                     {/* いま解いている問の見出し。回の中で迷子にならないよう
@@ -2894,14 +2955,27 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       {/* 短い設問文はここ（問N の右）に置く。行を増やさない。 */}
                       {inlineBody && (
                         <span className="min-w-0 text-[14px] md:text-base font-bold leading-snug text-gray-800 font-modern break-words [overflow-wrap:anywhere]">
-                          {formatText(inlineBody, combinedHighlights)}
+                          {formatText(inlineBody, combinedHighlights, { prose: isEnglishProse })}
                         </span>
                       )}
                     </div>
 
                     {blockBody && (
                       <p className="text-[15px] md:text-base leading-relaxed text-gray-800 font-modern break-words [overflow-wrap:anywhere] mb-3">
-                        {formatText(blockBody, combinedHighlights)}
+                        {formatText(blockBody, combinedHighlights, { prose: isEnglishProse })}
+                      </p>
+                    )}
+
+                    {/*
+                      ★英文法の英文（空所つき）★
+                      これが「解く対象」そのものなので、設問文（文法項目名）より
+                      目立たせ、音源ボタンより上＝いちばん先に目に入る位置に置く。
+                      薄い枠の箱にして「ここが読むべき英文」と分かるようにする。
+                      prose: true で組むので、英単語がセリフ体に化けない。
+                    */}
+                    {stepSentence && (
+                      <p className="mb-2.5 rounded-lg border border-gray-200 bg-gray-50/80 px-3 py-2 text-[16px] md:text-base font-bold leading-relaxed text-gray-900 font-modern break-words [overflow-wrap:anywhere]">
+                        {formatText(stepSentence, combinedHighlights, { prose: true })}
                       </p>
                     )}
 

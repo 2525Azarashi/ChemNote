@@ -30,31 +30,13 @@
  *   ・表記ゆれ（係数を前に出す・分配する等）は acceptedAnswers で吸収する
  */
 
-/** 1つの大問。chemistryData の practiceProblems 要素と同形。 */
-export type MathProblem = {
-  id: string;
-  category: string;
-  text: string;
-  subQuestions: any[];
-  explanation: string;
-  surroundingKnowledge: string[];
-  deepDiveTopics: string[];
-};
+// 型 MathProblem と補助関数 sq() は data/mathProblemKit.ts に集約している。
+// （sq() は以前この4ファイルに同じ実装で4つ置かれていた）
+import { sq, type MathProblem } from './mathProblemKit';
 
-/** 短答式サブ設問を組み立てる補助（requiresMathPalette を毎回書かない） */
-const sq = (
-  id: string,
-  label: string,
-  correctAnswer: string,
-  acceptedAnswers: string[] = [],
-) => ({
-  id,
-  label,
-  type: 'short_answer',
-  correctAnswer,
-  acceptedAnswers,
-  requiresMathPalette: true,
-});
+// 既存の `import type { MathProblem } from './mathIntegralProblems'` を
+// そのまま動かすための再エクスポート（書き換え不要にするため）。
+export type { MathProblem };
 
 // =====================================================================
 // ① 基本公式（m1_1）

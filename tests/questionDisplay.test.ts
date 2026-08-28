@@ -31,6 +31,9 @@ import {
   resolveAnswerMarkers,
   isSubQuestionListRedundant,
   extractInlineQuestionRows,
+  extractListeningQuestionRows,
+  extractSubQuestionSentences,
+  findSubQuestionSentence,
 } from '../src/utils/questionDisplay';
 
 const card = (label: string, index = 0) => answerCardMarker({ label }, index);
@@ -533,5 +536,260 @@ describe('extractInlineQuestionRows（スマホの小問横並び）', () => {
     const b21 = 'あ'.repeat(21);
     expect(extractInlineQuestionRows(`リード\n(1) ${b20}\n(2) ${b20}`)).not.toBeNull();
     expect(extractInlineQuestionRows(`リード\n(1) ${b20}\n(2) ${b21}`)).toBeNull();
+  });
+});
+
+/**
+ * ===================================================================
+ * 英文法：問題文から「問N　英文」の英文を取り出す
+ * ===================================================================
+ *
+ * ★ご要望（原文）★
+ *   「英文法は普通に英文ないと問題成立しやんのやけど
+ *     音声のボタンを少し小さくした上で、英文しっかり載せて。」
+ *
+ * ■ この機能が消えると何が起きるか（＝守りたいこと）
+ *   英文法は音源を持つのでリスニングと同じ描画分岐に入り、
+ *   question.text（＝英文が書いてある唯一の場所）が描画されない。
+ *   subQuestions[].label は「問1 経験の現在完了」という文法項目名だけなので、
+ *   英文が画面上のどこにも出ず、「空所に入るものを選べ」なのに
+ *   空所のある文が無い＝問題が成立しない状態になる。
+ */
+describe('extractSubQuestionSentences — 「問N　英文」の抽出', () => {
+  /** 実データ（englishGrammarKit の buildEgSet）と同じ書式の本文 */
+  const grammarText = [
+    '第1回　③ 完了形（現在・過去・未来）（5問・4択）',
+    '',
+    '空所に入れるのに最も適切なものを、①〜④のうちから1つずつ選びなさい。',
+    '',
+    '【英文の確認のしかた】',
+    '問題文の上にある「音源を聞く」パネルから確認できます。',
+    '',
+    '────────────────────',
+    '問1　I ______ to Kyoto three times, so I can show you around.',
+    '① went',
+    '② have been',
+    '③ have gone',
+    '④ had been',
+    '',
+    '────────────────────',
+    '問2　I ______ my wallet on the train yesterday.',
+    '① have lost',
+    '② lost',
+    '③ had lost',
+    '④ have been losing',
+  ].join('\n');
+
+  it('小問番号 → 英文 の対応が取れる', () => {
+    const got = extractSubQuestionSentences({ text: grammarText });
+    expect(got).not.toBeNull();
+    expect(got!.get('1')).toBe('I ______ to Kyoto three times, so I can show you around.');
+    expect(got!.get('2')).toBe('I ______ my wallet on the train yesterday.');
+  });
+
+  it('選択肢（①〜④）は英文として拾わない（解答ボタンと二重表示になるため）', () => {
+    const got = extractSubQuestionSentences({ text: grammarText })!;
+    const all = [...got.values()].join(' / ');
+    expect(all).not.toContain('have gone');
+    expect(all).not.toContain('had been');
+    // 拾ったのは「問N」の行だけ＝小問2つぶん
+    expect(got.size).toBe(2);
+  });
+
+  it('リード文・操作説明・区切り線は英文として拾わない', () => {
+    const got = extractSubQuestionSentences({ text: grammarText })!;
+    const all = [...got.values()].join(' / ');
+    expect(all).not.toContain('空所に入れるのに最も適切なもの');
+    expect(all).not.toContain('英文の確認のしかた');
+    expect(all).not.toContain('────');
+  });
+
+  it('全角スペース区切り・半角スペース区切りのどちらでも拾える', () => {
+    const zen = extractSubQuestionSentences({ text: '問1　Alpha beta.' });
+    const han = extractSubQuestionSentences({ text: '問1 Alpha beta.' });
+    expect(zen!.get('1')).toBe('Alpha beta.');
+    expect(han!.get('1')).toBe('Alpha beta.');
+  });
+
+  it('本文行が1本も無いとき null（リスニングはこちらに落ちる）', () => {
+    // リスニングの本文は「第1問 A では…」の形式説明だけで、英文は音声にしかない
+    const listening = [
+      '第1問 A では、英語を聞き、それぞれの内容に最も近い英文を選びます。',
+      '',
+      '【音源の聞き方】',
+      '問題文の上のパネルから再生できます。',
+    ].join('\n');
+    expect(extractSubQuestionSentences({ text: listening })).toBeNull();
+  });
+
+  it('空・未定義は null（安全側）', () => {
+    expect(extractSubQuestionSentences({ text: '' })).toBeNull();
+    expect(extractSubQuestionSentences({})).toBeNull();
+    expect(extractSubQuestionSentences(undefined)).toBeNull();
+  });
+
+  it('同じ番号が2回出てきたら最初のものを採用する', () => {
+    const got = extractSubQuestionSentences({ text: '問1　First one.\n問1　Second one.' })!;
+    expect(got.get('1')).toBe('First one.');
+  });
+
+  it('2桁の小問番号も拾える', () => {
+    const got = extractSubQuestionSentences({ text: '問10　Tenth sentence.' })!;
+    expect(got.get('10')).toBe('Tenth sentence.');
+  });
+});
+
+describe('findSubQuestionSentence — 小問と英文の突き合わせ', () => {
+  const question = {
+    text: '問1　I ______ to Kyoto.\n① went\n② have been\n問2　I ______ my wallet.',
+    subQuestions: [
+      { label: '問1 経験の現在完了' },
+      { label: '問2 過去の一点は過去形' },
+      { label: '問3 番号の本文行が無い' },
+    ],
+  };
+
+  it('label の「問N」から対応する英文を引ける', () => {
+    expect(findSubQuestionSentence(question, question.subQuestions[0])).toBe('I ______ to Kyoto.');
+    expect(findSubQuestionSentence(question, question.subQuestions[1])).toBe('I ______ my wallet.');
+  });
+
+  it('対応する本文行が無い小問は null（英文を出さないだけで壊れない）', () => {
+    expect(findSubQuestionSentence(question, question.subQuestions[2])).toBeNull();
+  });
+
+  it('label から番号が読めない・小問が無い場合は null', () => {
+    expect(findSubQuestionSentence(question, { label: '発話に合うイラスト' })).toBeNull();
+    expect(findSubQuestionSentence(question, null)).toBeNull();
+    expect(findSubQuestionSentence(question, undefined)).toBeNull();
+  });
+
+  it('本文に英文が無い問題（リスニング）では常に null', () => {
+    const listening = {
+      text: '第1問 A では、英語を聞き、内容に最も近い英文を選びます。',
+      subQuestions: [{ label: '問1 傘について、話者の状況に最も近い英文' }],
+    };
+    expect(findSubQuestionSentence(listening, listening.subQuestions[0])).toBeNull();
+  });
+});
+
+// =====================================================================
+// cleanQuestionText — 表示上の問題番号を消す処理
+// =====================================================================
+//
+// ■ なぜここに移したのか
+//   この処理は Explanation.tsx と Quiz.tsx に「1文字も違わない同じ実装」で
+//   2つ書かれていた。どちらも同じ問題文を、片方は演習画面、
+//   片方は解説画面に出すためのもの。
+//
+//   片方だけを直すと「演習では消えている問題番号が、解説では残る」
+//   （またはその逆）という食い違いになる。読む人には
+//   「同じ問題文なのに画面によって見え方が違う」と映るため、
+//   実装が2つある状態そのものが事故の余地だった。
+//
+// ■ ここで守ること
+//   移動の前後で出来上がる文字列が「完全に同じ」であること。
+//   そのため旧実装をこのテスト内に再現し、toBe で1文字単位で比べている。
+describe('cleanQuestionText（問題番号の除去）', () => {
+  /**
+   * ★移動前の実装をそのまま写したもの★
+   *
+   * Explanation.tsx / Quiz.tsx にあった実装は互いに byte 単位で同一だった。
+   * これと新しい共有実装の出力が全ケースで一致することを確かめる。
+   * （この写しを消してしまうと「同じ結果か」を確認する基準が無くなる）
+   */
+  function legacyCleanQuestionText(text: string): string {
+    return String(text || '')
+      .replace(/^\s*(?:【\s*問?\s*\d+\s*】|問\s*\d+|第\s*\d+\s*問|\d+[.．、\s]+)\s*/u, '')
+      .replace(/\n\s*(?:問\s*\d+|【\s*問?\s*\d+\s*】)\s*/gu, '\n');
+  }
+
+  const CASES: unknown[] = [
+    // 先頭の問題番号（4つの書き方すべて）
+    '問1 次の文章を読みなさい。',
+    '問 12 次の文章を読みなさい。',
+    '【問3】次の文章を読みなさい。',
+    '【 問 3 】次の文章を読みなさい。',
+    '【3】次の文章を読みなさい。',
+    '第2問 次の文章を読みなさい。',
+    '第 2 問 次の文章を読みなさい。',
+    '1. 次の文章を読みなさい。',
+    '1．次の文章を読みなさい。',
+    '1、次の文章を読みなさい。',
+    '10 次の文章を読みなさい。',
+    // 行頭に空白がある場合
+    '   問1 次の文章を読みなさい。',
+    '\n問1 次の文章を読みなさい。',
+    // 途中の行にある問題番号
+    'リード文です。\n問1 最初の設問\n問2 次の設問',
+    'リード文です。\n【問1】最初の設問\n【問2】次の設問',
+    'リード文です。\n  問1  最初の設問',
+    // 消してはいけないもの（本文中の数字・番号）
+    '次の(1)〜(10)の下線部は、単体と元素のどちらか。',
+    '水は、水素と酸素からできている。',
+    'アボガドロ定数は 6.02 × 10^23 である。',
+    '第一イオン化エネルギーについて答えよ。',
+    'この問題は難しい。',
+    // 境界・異常系
+    '',
+    '問1',
+    '問1 ',
+    '\n',
+    '   ',
+    null,
+    undefined,
+    0,
+    123,
+    false,
+    NaN,
+  ];
+
+  it('移動前の実装と1文字も違わない結果になる', async () => {
+    const { cleanQuestionText } = await import('../src/utils/questionDisplay');
+    for (const input of CASES) {
+      expect(
+        cleanQuestionText(input as any),
+        `入力 ${JSON.stringify(input)} で結果が変わった`
+      ).toBe(legacyCleanQuestionText(input as any));
+    }
+  });
+
+  it('先頭の問題番号を消す（4つの書き方すべて）', async () => {
+    const { cleanQuestionText } = await import('../src/utils/questionDisplay');
+    expect(cleanQuestionText('問1 本文')).toBe('本文');
+    expect(cleanQuestionText('【問3】本文')).toBe('本文');
+    expect(cleanQuestionText('第2問 本文')).toBe('本文');
+    expect(cleanQuestionText('1. 本文')).toBe('本文');
+  });
+
+  it('本文中の数字や番号は消さない（問題文を壊さない）', async () => {
+    const { cleanQuestionText } = await import('../src/utils/questionDisplay');
+    const body = '次の(1)〜(10)の下線部は、単体と元素のどちらか。';
+    expect(cleanQuestionText(body)).toBe(body);
+    expect(cleanQuestionText('水は、水素と酸素からできている。')).toBe(
+      '水は、水素と酸素からできている。'
+    );
+  });
+
+  it('文字列でない入力でも落ちない（空文字になる）', async () => {
+    const { cleanQuestionText } = await import('../src/utils/questionDisplay');
+    expect(cleanQuestionText(null as any)).toBe('');
+    expect(cleanQuestionText(undefined as any)).toBe('');
+    expect(cleanQuestionText(0 as any)).toBe('');
+  });
+
+  it('実装は questionDisplay.ts だけにある（2つに増えていない）', () => {
+    // 2つに分かれていたことが今回の問題なので、
+    // 「また増えていないか」をここで見張る。
+    const decl = /function cleanQuestionText\s*\(/;
+    for (const file of ['src/components/Explanation.tsx', 'src/components/Quiz.tsx']) {
+      const src = readFileSync(resolve(__dirname, '..', file), 'utf8');
+      expect(src, `${file} に実装が復活している`).not.toMatch(decl);
+    }
+    const home = readFileSync(
+      resolve(__dirname, '..', 'src/utils/questionDisplay.ts'),
+      'utf8'
+    );
+    expect(home).toMatch(decl);
   });
 });

@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Target, BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical } from 'lucide-react';
+import { BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical } from 'lucide-react';
 import { TrendModal } from './TrendModal';
 import { chemistryBasicTrendDataset } from '../data/trendData';
 import { chemistryAdvancedTrendDataset } from '../data/chemistryAdvancedTrendData';
 import { MntbLogo } from './MntbLogo';
 import { DoorMascot } from './DoorMascot';
 import { subjectTheme } from '../data/subjectTheme';
+// 教科IDの型は data/allChapters.ts の SubjectKey が唯一の定義
+import type { SubjectKey } from '../data/allChapters';
 
 interface ModeSelectionProps {
   onSelectMode: (mode: 'mini_test' | 'practice' | 'learning') => void;
   onBack: () => void;
   onMockExam?: () => void;
   /** 選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'english_grammar' | 'math' | 'biology_basic';
+  subject?: SubjectKey;
 }
 
 export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic' }: ModeSelectionProps) {

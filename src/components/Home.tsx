@@ -2,12 +2,57 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2, Bell } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
-import { chemistryData } from '../data/chemistryData';
-import { getAllAdvancedChapters } from '../data/chemistryAdvancedData';
-import { getAllListeningChapters } from '../data/englishListeningData';
-import { getAllMathChapters } from '../data/mathData';
-import { getAllBiologyChapters } from '../data/biologyBasicData';
-import { getAllGrammarChapters } from '../data/englishGrammarData';
+/*
+ * 教科IDの型だけは data/allChapters.ts が唯一の定義。
+ *
+ * ★必ず `import type` と書くこと（`import { type SubjectKey }` にしないこと）★
+ * 後者の書き方だと、型しか使っていなくてもモジュールの解決自体は行われ、
+ * バンドラは data/allChapters.ts →（6教科ぶんの教科データ）を
+ * 起動時の読み込みに含めてしまう。
+ * 実測でも `import { type ... }` のままだと src/data 51 ファイル
+ * （約 2.66MB）が読み込まれ、索引にした効果が消えていた。
+ * `import type` にすると文ごと消えるので、教科データは読み込まれない。
+ */
+import type { SubjectKey } from '../data/allChapters';
+/*
+ * ★ホームは教科データ本体を読まない（軽い索引だけを読む）★
+ *
+ * ■ 以前の作り
+ *   ここで getChaptersOfSubject / SUBJECTS を呼んで章オブジェクトを
+ *   そのまま受け取っていた。章オブジェクトには問題文・選択肢・解説が
+ *   全部ぶら下がっているため、依存を辿ると起動時に
+ *     src/data から 50 ファイル / 2,637,176 バイト
+ *   が読み込まれていた。問題を1問足すたびにこの数字が増える。
+ *
+ * ■ ところがホームは問題文を1文字も表示していない
+ *   出しているのは「大問 12 / 174 問」という数字と、
+ *   「次の章：○○ から始めよう」という章名だけ。
+ *   つまり必要なのは ★章ID・章名・その章の大問数★ の3つだけである。
+ *
+ * ■ そこで軽い索引に切り替えた
+ *   data/chapterIndex.generated.ts は上の3つだけを持つ自動生成ファイルで、
+ *   全6教科・162章ぶんで 24,972 バイト（約 1/106）。
+ *   中身は章の数ぶんしか無いので、問題を何問足しても大きさは変わらない。
+ *   索引が本体とズレていないことは tests/chapterIndex.test.ts が
+ *   1件ずつ突き合わせて検査している（再生成を忘れたら落ちる）。
+ *
+ * ■ 画面の見た目は変えていない
+ *   索引のフィールド名（id / title / abstractTitle）は
+ *   章オブジェクトのものと同じにしてあるので、描画のコードは元のまま。
+ *   数え方も data/problemCount.ts と同一（索引生成時に同じ式で数え、
+ *   一致をテストで検査している）。
+ *
+ * ■ 教科データ本体が必要な処理は1つだけ残っている
+ *   旧データからの引き継ぎ（backfillLegacyProgress）は大問の実体が
+ *   必要なので索引では代われない。ただしこれは1人につき生涯1回だけの
+ *   処理なので、下の useEffect で「まだ引き継いでいない人にだけ」
+ *   その場で読み込む形にした（動的 import）。
+ */
+import {
+  SUBJECT_INDEX,
+  getChapterIndexOfSubject,
+  type ChapterIndexEntry,
+} from '../data/chapterIndex.generated';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { getDaysUntilExam, EXAM_DATE_LABEL } from '../utils/examCountdown';
@@ -17,10 +62,12 @@ import { FeedbackButton } from './FeedbackButton';
 import { FeedbackReplyInbox } from './FeedbackReplyInbox';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
 import {
-  backfillLegacyProgress,
+  isLegacyProgressBackfilled,
   countSolvedByChapter,
   countSolvedProblemsIn,
 } from '../utils/progress';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey, streakKey, lastActiveKey, completedKey } from '../utils/userStorageKeys';
 import { loadSchoolBrand } from '../utils/classroom';
 import { UpdateNoticeModal } from './UpdateNoticeModal';
 import { unreadNoticeCount } from '../utils/updateNotices';
@@ -37,7 +84,7 @@ interface HomeProps {
   /** 現在選択中の科目名（表示用） */
   subjectLabel?: string;
   /** 現在選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
-  subject?: 'chemistry_basic' | 'chemistry' | 'english_listening' | 'english_grammar' | 'math' | 'biology_basic';
+  subject?: SubjectKey;
   isGuest: boolean;
 }
 
@@ -73,22 +120,14 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   //   演習（practiceProblems＝大問の大多数）が丸ごと抜け落ちていた。
   // 分子：1点でも獲得した大問の数（utils/progress の台帳を参照）。
   // 科目に応じて集計対象の章を切り替える（化学基礎の振る舞いは従来のまま）。
-  const allChaptersList = useMemo(
-    () => {
-      if (subject === 'chemistry') return getAllAdvancedChapters() as any[];
-      if (subject === 'english_listening') return getAllListeningChapters() as any[];
-      if (subject === 'math') return getAllMathChapters() as any[];
-      if (subject === 'biology_basic') return getAllBiologyChapters() as any[];
-      if (subject === 'english_grammar') return getAllGrammarChapters() as any[];
-      return chemistryData.parts.flatMap((p: any) => p.chapters) as any[];
-    },
-    [subject],
+  // 未知の科目IDが来た場合は化学基礎の章が返る（従来の if 連鎖の既定分岐と同じ）。
+  //
+  // 中身は軽い索引（章ID・章名・大問数のみ）。教科データ本体は読まない。
+  const allChaptersList = useMemo(() => getChapterIndexOfSubject(subject), [subject]);
+  const totalQuestions = useMemo(
+    () => allChaptersList.reduce((sum, c) => sum + c.problemCount, 0),
+    [allChaptersList],
   );
-  const totalQuestions = useMemo(() => {
-    return allChaptersList.reduce((sum: number, c: any) => {
-      return sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0);
-    }, 0);
-  }, [allChaptersList]);
   const [solvedQuestions, setSolvedQuestions] = useState(0);
   /** 章ID → その章で解いた大問数（「次の章」の算出に使う） */
   const [solvedByChapter, setSolvedByChapter] = useState<Record<string, number>>({});
@@ -97,39 +136,16 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   // 従来は選択中の科目の1本だけを表示していたため、
   // 他の科目の進み具合を見るには科目を切り替える必要があった。
   // ここで全科目分をまとめて作り、カード内に並べて出す。
+  // 並ぶ順・表示名・対象の章は索引がそのまま決める（並び順は data/allChapters.ts の
+  // SUBJECTS と同一で、一致は tests/chapterIndex.test.ts が検査している）。
+  // 教科を追加したときにここへ書き足す必要は無い。
   const subjectProgressDefs = useMemo(
-    () => [
-      {
-        id: 'chemistry_basic' as const,
-        label: '化学基礎',
-        chapters: chemistryData.parts.flatMap((p: any) => p.chapters) as any[],
-      },
-      {
-        id: 'chemistry' as const,
-        label: '化学',
-        chapters: getAllAdvancedChapters() as any[],
-      },
-      {
-        id: 'english_listening' as const,
-        label: '英語リスニング',
-        chapters: getAllListeningChapters() as any[],
-      },
-      {
-        id: 'math' as const,
-        label: '数学',
-        chapters: getAllMathChapters() as any[],
-      },
-      {
-        id: 'biology_basic' as const,
-        label: '生物基礎',
-        chapters: getAllBiologyChapters() as any[],
-      },
-      {
-        id: 'english_grammar' as const,
-        label: '英文法',
-        chapters: getAllGrammarChapters() as any[],
-      },
-    ],
+    () =>
+      SUBJECT_INDEX.map((s) => ({
+        id: s.id,
+        label: s.label,
+        chapters: s.chapters,
+      })),
     [],
   );
   /** 科目ID → { solved, total } */
@@ -143,7 +159,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         const uid = auth.currentUser ? auth.currentUser.uid : 'guest';
 
         // Load Profile Name/Details
-        const localProfile = localStorage.getItem(`profile_${uid}`);
+        const localProfile = localStorage.getItem(profileKey(uid));
         if (localProfile) {
           setProfile(JSON.parse(localProfile));
         } else {
@@ -151,8 +167,8 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         }
 
         // Calculate streak
-        const lastActive = localStorage.getItem(`lastActive_${uid}`);
-        const storedStreak = parseInt(localStorage.getItem(`streak_${uid}`) || '0', 10);
+        const lastActive = localStorage.getItem(lastActiveKey(uid));
+        const storedStreak = parseInt(localStorage.getItem(streakKey(uid)) || '0', 10);
 
         const today = new Date().toDateString();
         if (lastActive === today) {
@@ -163,27 +179,61 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           if (lastActive === yesterday.toDateString()) {
             const newStreak = storedStreak + 1;
             setStreak(newStreak);
-            localStorage.setItem(`streak_${uid}`, newStreak.toString());
-            localStorage.setItem(`lastActive_${uid}`, today);
+            localStorage.setItem(streakKey(uid), newStreak.toString());
+            localStorage.setItem(lastActiveKey(uid), today);
           } else {
             setStreak(1);
-            localStorage.setItem(`streak_${uid}`, '1');
-            localStorage.setItem(`lastActive_${uid}`, today);
+            localStorage.setItem(streakKey(uid), '1');
+            localStorage.setItem(lastActiveKey(uid), today);
           }
         }
 
-        // 解いた大問数をカウント（1点でも取れた大問＝進捗）。
-        // 初回だけ旧データ（quiz_run_* / quiz_answers_* / completed_*）から引き継ぐ。
-        try {
-          backfillLegacyProgress(uid, allChaptersList);
-        } catch {
-          /* 引き継ぎに失敗しても現在の進捗表示は続行する */
+        /*
+         * 解いた大問数をカウント（1点でも取れた大問＝進捗）。
+         * 初回だけ旧データ（quiz_run_* / quiz_answers_* / completed_*）から引き継ぐ。
+         *
+         * ■ ここだけは教科データ本体が必要
+         *   引き継ぎは「小問IDから、それが属する大問IDを引く」処理なので、
+         *   大問の実体（subQuestions）が要る。軽い索引では代われない。
+         *
+         * ■ ただし1人につき生涯1回しか走らない
+         *   済んだかどうかは localStorage のフラグで覚えている。
+         *   以前は毎回この関数を呼んでいたため、2回目以降の起動では
+         *   「読み込んだ教科データ 約2.6MB を、何もせず捨てる」
+         *   ということが毎回起きていた。
+         *
+         *   そこで先にフラグだけを見て、
+         *     ・まだの人   → その場で教科データを読み込んで引き継ぐ（従来と同じ）
+         *     ・済んだ人   → 何も読み込まない
+         *   と分けた。大多数の起動は後者になる。
+         *
+         * ■ 順番は変えていない（ここが大事）
+         *   引き継ぎは「進捗を数える前」に終わっている必要がある。
+         *   先に数えてしまうと、引き継ぎ直後の1回だけ古い数字が出て、
+         *   あとから増えるという不自然な見え方になる。
+         *   そのため await して、引き継ぎが終わってから数える。
+         *   （待つのは「まだの人」の初回だけ。済んだ人は待たない）
+         *
+         * ■ 渡す章は従来と同一
+         *   以前も選択中の教科の章だけを渡していた（全教科ではない）。
+         *   getChaptersOfSubject(subject) はまさにそれと同じものを返す。
+         */
+        if (!isLegacyProgressBackfilled(uid)) {
+          try {
+            const [{ getChaptersOfSubject }, { backfillLegacyProgress }] = await Promise.all([
+              import('../data/allChapters'),
+              import('../utils/progress'),
+            ]);
+            backfillLegacyProgress(uid, getChaptersOfSubject(subject));
+          } catch {
+            /* 引き継ぎに失敗しても現在の進捗表示は続行する */
+          }
         }
         // 選択中の科目の進捗。
         // countSolvedProblems は全科目の合計を返すため、そのまま使うと
         // 「化学基礎 174問中 180問」のように分母を超えることがあった。
         // 対象の章に限って数える countSolvedProblemsIn を使う。
-        const currentChapterIds = allChaptersList.map((c: any) => c.id);
+        const currentChapterIds = allChaptersList.map((c) => c.id);
         setSolvedQuestions(
           Math.min(countSolvedProblemsIn(uid, currentChapterIds), totalQuestions),
         );
@@ -192,13 +242,11 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         // 科目ごとの進捗（教科別に「何問中何問」を並べて出すため）
         const perSubject: Record<string, { solved: number; total: number }> = {};
         subjectProgressDefs.forEach((def) => {
-          const total = def.chapters.reduce(
-            (sum: number, c: any) =>
-              sum + (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0),
-            0,
-          );
+          // 索引が持っている大問数を足すだけ（数え方は data/problemCount.ts と同一。
+          // 一致は tests/chapterIndex.test.ts が検査している）。
+          const total = def.chapters.reduce((sum, c) => sum + c.problemCount, 0);
           const solved = Math.min(
-            countSolvedProblemsIn(uid, def.chapters.map((c: any) => c.id)),
+            countSolvedProblemsIn(uid, def.chapters.map((c) => c.id)),
             total,
           );
           perSubject[def.id] = { solved, total };
@@ -206,7 +254,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         setSubjectProgress(perSubject);
 
         // completed chapters（次の章を求めるために継続利用）
-        const completed = JSON.parse(localStorage.getItem(`completed_${uid}`) || '[]');
+        const completed = JSON.parse(localStorage.getItem(completedKey(uid)) || '[]');
         setCompletedIds(completed);
 
       } catch (error) {
@@ -215,7 +263,9 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
     };
 
     fetchProfileAndStats();
-  }, [isGuest, allChaptersList, totalQuestions, subjectProgressDefs]);
+    // subject を足したのは、引き継ぎに渡す章を subject から引き直すようにしたため。
+    // allChaptersList は subject から作られているので、実際に再実行される回数は従来と同じ。
+  }, [isGuest, subject, allChaptersList, totalQuestions, subjectProgressDefs]);
 
   const todayStr = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' });
   const todayFormatted = todayStr.replace(/\//g, '.');
@@ -228,13 +278,14 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
   // 大問をすべて解き終えた章は飛ばし、まだ残っている最初の章を提示する。
   // （completed_ は「ミニテストを通した」履歴でしかなく、
   //   演習の進捗を反映しないため、台帳側の章ごと件数を併せて見る）
-  const nextChapter = useMemo(() => {
-    const remaining = allChaptersList.find((c: any) => {
-      const total = (c.miniTest?.length || 0) + (c.practiceProblems?.length || 0);
+  const nextChapter = useMemo((): ChapterIndexEntry | undefined => {
+    const remaining = allChaptersList.find((c) => {
+      // 索引が持っている大問数（数え方は countChapterProblems と同一）。
+      const total = c.problemCount;
       if (total === 0) return false;
       return (solvedByChapter[c.id] || 0) < total;
-    }) as any;
-    return remaining || (allChaptersList.find((c: any) => !completedIds.includes(c.id)) as any);
+    });
+    return remaining || allChaptersList.find((c) => !completedIds.includes(c.id));
   }, [completedIds, allChaptersList, solvedByChapter]);
 
   // 「次のマイルストーン」を算出（連続学習カード用）

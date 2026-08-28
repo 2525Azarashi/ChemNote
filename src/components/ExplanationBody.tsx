@@ -222,18 +222,25 @@ export interface ExplanationBodyProps {
   tone?: ExplanationTone;
   /** ユーザーが選択したハイライト語（formatText にそのまま渡す） */
   highlights?: string[];
+  /**
+   * ★英語（リスニング・英文法）の解説では true にする★
+   * 化学式の体裁付け（英字をセリフ体の span で包む処理）を止めるため。
+   * 付けないと "The" "umbrella" のような単語まで化学式扱いになり、
+   * 日本語（ゴシック）と書体が食い違って読みにくくなる。
+   */
+  prose?: boolean;
 }
 
 /**
  * 解説本文（テキスト＋Markdown テーブル）をレンダリングする。
  * テーブルを含まない場合は従来と完全に同じ出力（formatText のみ）になる。
  */
-export function ExplanationBody({ text, className, tone = 'light', highlights = [] }: ExplanationBodyProps) {
+export function ExplanationBody({ text, className, tone = 'light', highlights = [], prose = false }: ExplanationBodyProps) {
   if (!text) return null;
   const blocks = parseExplanationBlocks(text);
 
   if (blocks.length === 1 && blocks[0].kind === 'text') {
-    return <div className={className}>{formatText(text, highlights)}</div>;
+    return <div className={className}>{formatText(text, highlights, { prose })}</div>;
   }
 
   return (
@@ -243,7 +250,7 @@ export function ExplanationBody({ text, className, tone = 'light', highlights = 
           <ExplanationTable key={`t-${i}`} block={block} tone={tone} />
         ) : (
           // テーブル以外の地の文は改行をそのまま活かす（元の pre-wrap 相当の見た目を保つ）
-          <div key={`p-${i}`} className="whitespace-pre-wrap">{formatText(block.text, highlights)}</div>
+          <div key={`p-${i}`} className="whitespace-pre-wrap">{formatText(block.text, highlights, { prose })}</div>
         )
       )}
     </div>

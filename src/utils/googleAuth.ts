@@ -35,6 +35,8 @@ import {
   type UserCredential,
 } from 'firebase/auth';
 import { auth, provider } from '../firebase';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey } from './userStorageKeys';
 
 /** サインイン結果 */
 export interface GoogleSignInOutcome {
@@ -143,7 +145,7 @@ export async function signOutGoogle(): Promise<void> {
   await signOut(auth);
   if (uid) {
     try {
-      localStorage.removeItem(`profile_${uid}`);
+      localStorage.removeItem(profileKey(uid));
     } catch {
       /* localStorage が使えない環境は何もしない */
     }

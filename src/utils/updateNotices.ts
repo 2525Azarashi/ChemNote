@@ -22,19 +22,17 @@
  */
 
 import { UPDATE_NOTICES, type UpdateNotice } from '../data/updateNotices';
+import { safeLocalStorage } from './safeLocalStorage';
 
 /** localStorage のキー */
 const READ_KEY = 'update_notices_read_v1';
 
-function safeStorage(): Storage | null {
-  try {
-    const ls = (globalThis as any)?.localStorage;
-    if (ls && typeof ls.getItem === 'function') return ls as Storage;
-  } catch {
-    // プライベートブラウズ等で参照できない場合がある
-  }
-  return null;
-}
+/**
+ * 使える localStorage を返す（使えなければ null）。
+ * 実装は utils/safeLocalStorage.ts が唯一の定義。
+ * 呼び出し側の書き方は今までどおり `safeStorage()` のままにしている。
+ */
+const safeStorage = safeLocalStorage;
 
 /** 既読にしたお知らせIDの集合を読む。壊れた値は空として扱う。 */
 export function loadReadIds(): Set<string> {

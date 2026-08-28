@@ -2,25 +2,10 @@ import React from 'react';
 import { X, GitBranch } from 'lucide-react';
 import { InteractiveTree, type NodeData } from './InteractiveTree';
 import { motion } from 'motion/react';
-import { 
-  substanceTreeData, 
-  separationTreeData, 
-  componentDetectionTreeData,
-  thermalMotionTreeData, 
-  atomicStructureTreeData, 
-  ionTreeData, 
-  ionGenerationTreeData, 
-  ionSizeTreeData, 
-  chemicalBondTreeData, 
-  crystalTreeData, 
-  interactionTreeData,
-  atomicWeightTreeData,
-  amountOfSubstanceTreeData,
-  chemicalEquationTreeData,
-  concentrationTreeData,
-  acidBaseTreeData,
-  redoxTreeData
-} from '../data/chemistryData';
+// 章ID → ツリーの対応表は data/chapterTreeMap.ts に集約している。
+// （以前はこのファイルと PracticeExplanationTree.tsx が同じ対応表を
+//   別々の書き方で持っていた。片方だけ直し忘れる事故を防ぐため統合した）
+import { resolveChapterTree, isSharedUnitTree } from '../data/chapterTreeMap';
 import { extractSectionByChapter } from '../utils/logicTreeUtils';
 
 interface ChapterFlowchartModalProps {
@@ -44,34 +29,14 @@ export function ChapterFlowchartModal({
   //   下位章（c5_1〜c5_7 / c6_1〜c6_7）ごとに開いた場合は、
   //   「添付HTML由来のその重要事項セクション全体（フル解説ツリー）」を表示する。
   //   （確認問題プレースホルダは差し込まない）
-  let fullTreeData: NodeData | null = null;
-  if (chapterId === 'c1_1') fullTreeData = substanceTreeData;
-  if (chapterId === 'c1_2_A') fullTreeData = separationTreeData;
-  if (chapterId === 'c1_2_B') fullTreeData = componentDetectionTreeData;
-  if (chapterId === 'c1_3') fullTreeData = thermalMotionTreeData;
-  if (chapterId === 'c2_1') fullTreeData = atomicStructureTreeData;
-  if (chapterId === 'c2_2') fullTreeData = ionTreeData;
-  if (chapterId === 'c2_3') fullTreeData = ionGenerationTreeData;
-  if (chapterId === 'c2_4') fullTreeData = ionSizeTreeData;
-  if (chapterId === 'c3_1') fullTreeData = chemicalBondTreeData;
-  if (chapterId === 'c3_2') fullTreeData = crystalTreeData;
-  if (chapterId === 'c3_3') fullTreeData = interactionTreeData;
-  if (chapterId === 'c4_1') fullTreeData = atomicWeightTreeData;
-  if (chapterId === 'c4_2') fullTreeData = amountOfSubstanceTreeData;
-  if (chapterId === 'c4_3') fullTreeData = chemicalEquationTreeData;
-  if (chapterId === 'c4_4') fullTreeData = concentrationTreeData;
-  if (chapterId === 'c5' || chapterId.startsWith('c5_')) fullTreeData = acidBaseTreeData;
-  if (chapterId === 'c6' || chapterId.startsWith('c6_')) fullTreeData = redoxTreeData;
+  const fullTreeData: NodeData | null = resolveChapterTree(chapterId) ?? null;
 
   // c5/c6 は単元全体で1つの大きなツリーを共有しているため、
   // その下位章（c5_1〜c5_7 / c6_1〜c6_7）に対応する重要事項セクションのみを切り出す。
   // 添付HTML由来のフル解説（Step構成・解説付き）をそのまま表示する。
   // c1〜c4 は章ごとに専用ツリーがあるため切り出さない。
-  const isSharedUnitTree =
-    chapterId === 'c5' || chapterId.startsWith('c5_') ||
-    chapterId === 'c6' || chapterId.startsWith('c6_');
   let currentTreeData: NodeData | null = fullTreeData;
-  if (fullTreeData && isSharedUnitTree) {
+  if (fullTreeData && isSharedUnitTree(chapterId)) {
     currentTreeData = extractSectionByChapter(fullTreeData, chapterId);
   }
 

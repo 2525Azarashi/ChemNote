@@ -9,6 +9,8 @@ import { signInWithGoogle, signOutGoogle, switchGoogleAccount, GOOGLE_LINK_BENEF
 import { isFeedbackAdmin } from '../utils/feedbackReply';
 import { syncRankingNickname } from '../utils/leaderboard';
 import { ensureFriendProfile } from '../utils/friends';
+// ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
+import { profileKey, streakKey, completedKey } from '../utils/userStorageKeys';
 
 interface ProfileModalProps {
   onClose: () => void;
@@ -51,7 +53,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
   useEffect(() => {
     try {
       const uid = auth.currentUser?.uid || 'guest';
-      const localProfile = localStorage.getItem(`profile_${uid}`);
+      const localProfile = localStorage.getItem(profileKey(uid));
       if (localProfile) {
         const data = JSON.parse(localProfile);
         setName(data.name || '');
@@ -61,8 +63,8 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
         setName(auth.currentUser?.displayName || (auth.currentUser ? 'ユーザー' : 'ゲスト'));
         setGrade('高校生');
       }
-      setStreak(parseInt(localStorage.getItem(`streak_${uid}`) || '0', 10));
-      setCompletedCount(JSON.parse(localStorage.getItem(`completed_${uid}`) || '[]').length);
+      setStreak(parseInt(localStorage.getItem(streakKey(uid)) || '0', 10));
+      setCompletedCount(JSON.parse(localStorage.getItem(completedKey(uid)) || '[]').length);
     } catch (error) {
       console.error('プロフィール取得エラー:', error);
     }
@@ -72,7 +74,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
     setLoading(true);
     try {
       const uid = auth.currentUser?.uid || 'guest';
-      localStorage.setItem(`profile_${uid}`, JSON.stringify({
+      localStorage.setItem(profileKey(uid), JSON.stringify({
         name: name.trim(), grade: grade.trim(), stream, iconUrl: auth.currentUser?.photoURL || '',
       }));
       // 名前を変えたら、ランキング・フレンド検索の表示名もその場で最新化する。

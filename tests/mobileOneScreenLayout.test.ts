@@ -233,9 +233,16 @@ describe('L4: 科目選択／モード選択（スマホのみ compact）', () =
 // 5 科目 → 6 科目で、実測 183px はみ出した。
 // 削ってよいものと削ってはいけないものを分けて詰めた記録をここに固定する。
 describe('L4b: 6 科目でもスマホ 1 画面（英文法追加後）', () => {
-  it('英文法が科目として登録されている', () => {
+  it('英文法が科目として登録されている', async () => {
+    // 科目カードの定義（この画面が持っている）は文字列で確認する。
     expect(SUBJECT).toContain("id: 'english_grammar'");
-    expect(SUBJECT).toContain("english_grammar: '英文法'");
+
+    // 教科名の対応表は data/allChapters.ts の SUBJECTS へ集約したため、
+    // 「この画面のソースに english_grammar: '英文法' と書いてあるか」では
+    // 意図（＝英文法が科目として登録されていること）を守れなくなった。
+    // 代わりに、この画面が公開している対応表を実際に引いて確かめる。
+    const { SUBJECT_LABELS } = await import('../src/components/SubjectSelection');
+    expect(SUBJECT_LABELS.english_grammar).toBe('英文法');
   });
 
   it('カード間隔・内側余白・アイコンをスマホだけ詰め、sm 以上は元の値に戻す', () => {
@@ -655,9 +662,106 @@ describe('L9: 問題文と解説のフォントを一致させる（ご要望8�
     expect(stripped).not.toMatch(/DESKTOP_BODY_FONT[^\n]*text-\[15px\]/u);
   });
 
-  it('フォント系（font-math / font-handwriting）の切り替えも1か所', () => {
+  /**
+   * ★ご要望11「あと解説と問題でフォント違うの何？」で 2択→3択 になった★
+   *
+   * 実測（Playwright / 390x844・第1問A）では、まったく同じ設問文
+   * 「傘について、話者の状況に最も近い英文」が
+   *   問題画面 … ゴシック（font-modern）14px
+   *   解説画面 … 手書き（Yomogi）15px
+   * と別書体で出ていた。英語は問題画面がゴシックなので、
+   * 解説側も英語のときだけ font-modern に寄せて一致させる。
+   * 日本語教科（化学・生物）の手書き体は「温かみ」のための既存仕様なので変えない。
+   */
+  it('フォント系（font-math / font-modern / font-handwriting）の切り替えは1か所', () => {
     const stripped = stripComments(EXPL);
-    expect(stripped).toContain("const BODY_FONT_FAMILY = isMathChapter ? 'font-math math-content' : 'font-handwriting';");
+    // 数学 → font-math、英語 → font-modern（問題画面と同じ）、それ以外 → 手書き
+    expect(stripped).toMatch(
+      /const BODY_FONT_FAMILY = isMathChapter\s*\?\s*'font-math math-content'\s*:\s*isEnglishChapter\s*\?\s*'font-modern'\s*:\s*'font-handwriting';/u,
+    );
+    // 切り替えの定義は1か所だけ（問題ごとに別ロジックを作らない）
+    expect(stripped.split('const BODY_FONT_FAMILY =').length - 1).toBe(1);
+  });
+
+  /**
+   * ★英語判定は「科目名」ではなく「その問題が英文音源を持つか」で行う★
+   *
+   * ご指摘「コードで形式的に作ると問題によっておかしくなる可能性があるから注意ね」。
+   * 科目名で分岐すると、英文法を科目として増やした・リスニングに
+   * 英文なしの問題を混ぜた、といった変化のたびに壊れる。
+   * audioTracks は英語データにしか無い問題ごとの事実なので、これで判定する。
+   */
+  it('英語かどうかは audioTracks の有無で判定する（科目名で分岐しない）', () => {
+    const stripped = stripComments(EXPL);
+    expect(stripped).toContain('const isEnglishChapter =');
+    expect(stripped).toMatch(/isEnglishChapter[\s\S]{0,300}?audioTracks/u);
+    // 科目名の直書きで英語を判定していないこと
+    expect(stripped).not.toMatch(/isEnglishChapter[^\n]*'english_listening'/u);
+    expect(stripped).not.toMatch(/isEnglishChapter[^\n]*'english_grammar'/u);
+  });
+
+  /**
+   * ★カード土台の書体は継承する＝ここを直さないと BODY_FONT_FAMILY だけでは直らない★
+   *
+   * ご指摘「あと解説と問題でフォント違うの何？」を実機（Playwright の
+   * getComputedStyle）で測ったところ、BODY_FONT_FAMILY を font-modern に
+   * したのに解説の英文がまだ Yomogi 13px で出ていた。
+   * 原因は BODY_FONT_FAMILY ではなく、解説カードの一番外側の div に
+   * font-handwriting が直接付いていたこと。CSS の font-family は継承するので、
+   * 自前の書体クラスを持たない子要素（スクリプト欄など）は全部 Yomogi を
+   * 引き継いでしまい、内側だけ直しても永久に直らない構造だった。
+   *
+   * だから土台側も CARD_FONT_FAMILY で切り替える。
+   * このテストは「土台に font-handwriting を直書きへ戻す」退行を捕まえる。
+   */
+  it('解説カードの土台の書体は CARD_FONT_FAMILY で切り替える（font-handwriting を直書きしない）', () => {
+    const stripped = stripComments(EXPL);
+    // 英語ならゴシック、それ以外は従来どおり手書き
+    expect(stripped).toMatch(
+      /const CARD_FONT_FAMILY = isEnglishChapter\s*\?\s*'font-modern'\s*:\s*'font-handwriting';/u,
+    );
+    // 定義は1か所だけ
+    expect(stripped.split('const CARD_FONT_FAMILY =').length - 1).toBe(1);
+
+    // スマホ・PC 両方の土台 div で使われていること（片方だけ直すと不一致が残る）
+    expect(stripped.split('${CARD_FONT_FAMILY}').length - 1).toBeGreaterThanOrEqual(2);
+
+    // ★本題★ 土台 div に font-handwriting を直書きしていないこと。
+    // 「flex flex-col font-handwriting relative」の形が残っていたら退行。
+    expect(stripped).not.toMatch(/flex flex-col font-handwriting relative/u);
+  });
+
+  /**
+   * ★周辺知識・深掘りの本文と見出しも prose で組む★
+   *
+   * 実機計測で、解説の英文が Yomogi でなくなった後も
+   * 「usually」「on weekdays」などがセリフ体（Cambria Math）で残っていた。
+   * これは formatText が英単語を化学式と誤認して
+   * style="font-family:'Cambria Math'..." をインラインで付けるため。
+   * インライン style なので Tailwind のクラスでは絶対に上書きできない。
+   *
+   * 取りこぼしていたのは「周辺知識」「さらに深掘り」の本文と見出しバッジ。
+   * 特に深掘りは【】が無いと title = 1行目まるごとになり英文を含む。
+   * 実機のセリフ体残存数は 7 → 5 → 0 になった。
+   */
+  it('周辺知識・深掘りの formatText は prose を渡す（英単語がセリフ体に化けない）', () => {
+    const stripped = stripComments(EXPL);
+    // 周辺知識：見出しバッジ／本文（【】あり）／本文（【】なし）
+    expect(stripped).toMatch(
+      /formatText\(titleMatch\[1\]\.replace\(\/\[【】\]\/g, ''\), \[\], \{ prose: isEnglishChapter \}\)/u,
+    );
+    expect(stripped).toMatch(
+      /formatText\(titleMatch\[2\]\.trim\(\), \[\], \{ prose: isEnglishChapter \}\)/u,
+    );
+    expect(stripped).toMatch(/formatText\(k, \[\], \{ prose: isEnglishChapter \}\)/u);
+    // 深掘り：見出し（【】が無いと1行目まるごと＝英文入り）／本文
+    expect(stripped).toMatch(/formatText\(title, \[\], \{ prose: isEnglishChapter \}\)/u);
+    expect(stripped).toMatch(/formatText\(content, \[\], \{ prose: isEnglishChapter \}\)/u);
+
+    // prose を渡さない素の呼び出しに戻す退行を防ぐ
+    expect(stripped).not.toMatch(/formatText\(title\)/u);
+    expect(stripped).not.toMatch(/formatText\(content\)/u);
+    expect(stripped).not.toMatch(/formatText\(k\)/u);
   });
 
   /**
@@ -714,7 +818,10 @@ describe('L9: 問題文と解説のフォントを一致させる（ご要望8�
      * この2つが別々の条件で分岐し始めると書体がずれるので固定する。
      */
     expect(stripped).toMatch(/const mathBodyClass = isMathChapter \?/u);
-    expect(stripped).toMatch(/const BODY_FONT_FAMILY = isMathChapter \?/u);
+    // 3択になって複数行に折り返したので、改行をまたいで照合する。
+    expect(stripped).toMatch(/const BODY_FONT_FAMILY = isMathChapter\s*\n?\s*\?/u);
+    // 英語は「解説だけ手書き体」をやめ、問題画面と同じゴシックに寄せる。
+    expect(stripped).toMatch(/isEnglishChapter\s*\n?\s*\?\s*'font-modern'/u);
     // 章単位の判定は1か所だけ（問題ごとに別ロジックを作らない）。
     const decl = stripped.split('const isMathChapter =').length - 1;
     expect(decl).toBe(1);
