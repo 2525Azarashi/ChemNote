@@ -23,6 +23,8 @@ import {
   scanMathRegions,
 } from '../src/utils/mathTypeset';
 import { sanitizeInlineHtml } from '../src/utils/sanitizeHtml';
+import { formatText } from '../src/utils/textFormatter';
+import { LABEL, BOX } from '../src/utils/explanationFormat';
 
 /** テキストから数式として切り出された LaTeX の配列を得る。 */
 function mathOf(text: string): string[] {
@@ -435,5 +437,74 @@ describe('化学式・反応式を mhchem で組む', () => {
       expectNoMath('酸素 O のみに注目する');
       expectNoMath('炭素 C を含む');
     });
+  });
+});
+
+/**
+ * ===================================================================
+ * 解説データの HTML 属性を数式と誤認して壊さない（実測で見つけた不具合）
+ * ===================================================================
+ *
+ * ■ ご要望
+ *   「化学基礎・化学含め様々な科目で解答解説と問題のフォントがあっていないので
+ *     問題のフォントに合わせて。」
+ *
+ * ■ 実測でわかった原因（推測ではなく Playwright の getComputedStyle）
+ *   スマホ 390x844／化学基礎の解答・解説画面で、
+ *     「解 答」「解法の思考手順」だけが font-family: KaTeX_Main（セリフ体）
+ *   になっていた。DOM を見ると pill の HTML がこう壊れていた。
+ *
+ *     background-color:#&lt;span class=" aria-label="FFF1F5" class="katex" …>解 答</span>
+ *
+ *   つまり LABEL() が出力する style 属性の中の色コード「#FFF1F5」が
+ *   数式トークンと判定され、属性値の途中に KaTeX の HTML が
+ *   差し込まれていた。結果として
+ *     ・pill の背景色が効かない
+ *     ・class="katex" が付くのでセリフ体になる
+ *   という二重の壊れ方をしていた。
+ *
+ * ■ 直し方
+ *   formatText で「入力に元から入っている HTML タグ」を先に退避し、
+ *   数式走査はタグの外側（＝実際に表示されるテキスト）だけに掛ける。
+ *   科目名や字面で分岐する対処はしない（データ上の事実＝タグかどうかで判断）。
+ *
+ * このテストは上記の壊れ方が再発しないことを固定する。
+ */
+describe('HTML 属性の中身を数式と誤認しない（解答解説のフォント一致）', () => {
+  /** formatText の出力（React 要素）から実際の HTML 文字列を取り出す。 */
+  function htmlOf(text: string): string {
+    const out = formatText(text) as any;
+    return out?.props?.dangerouslySetInnerHTML?.__html ?? String(out ?? '');
+  }
+
+  it('LABEL() の style 属性の色コードが数式に変換されない', () => {
+    const html = htmlOf(LABEL('解 答') + '\nあいう');
+
+    // 色コードがそのまま残っている（＝属性が壊れていない）
+    expect(html).toContain('#FFF1F5');
+    expect(html).toContain('border:1.5px solid #D9466E');
+    // 属性の途中に KaTeX が差し込まれていない
+    expect(html).not.toContain('class="katex"');
+    expect(html).not.toContain('aria-label="FFF1F5"');
+    // ラベルの表示テキストと本文は残る
+    expect(html).toContain('解 答');
+    expect(html).toContain('あいう');
+  });
+
+  it('BOX() のような複数属性つきタグでも属性値が壊れない', () => {
+    const html = htmlOf(BOX('共通テストではこう出る'));
+
+    expect(html).toContain('#FFF4E5');
+    expect(html).toContain('#FB8C00');
+    expect(html).toContain('#3E2723');
+    expect(html).not.toContain('class="katex"');
+    expect(html).toContain('共通テストではこう出る');
+  });
+
+  it('タグの外側にある本物の数式はこれまで通り組まれる', () => {
+    // 退避のしすぎで数式が組まれなくなっていないことも同時に固定する。
+    const html = htmlOf(LABEL('解 答') + '\n$x^2 + 1$');
+    expect(html).toContain('#FFF1F5');
+    expect(html).toContain('katex');
   });
 });

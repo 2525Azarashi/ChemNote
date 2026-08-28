@@ -318,8 +318,34 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
   it('リスニングの図は親からもらえた高さいっぱいに伸ばす（fill）', () => {
     // 図は「問題のところ（左側）」の現在の問ブロックにだけ置く。
     expect(QUIZ).toContain('fill={listeningMobileSplit}');
-    // スマホのリスニング以外（PC・化学など）は従来の高さ上限のまま。
-    expect(QUIZ).toContain("listeningMobileSplit ? '' : 'max-h-[22vh] md:max-h-[42vh] object-contain'");
+    /*
+      ★上限を 22vh → 42vh に緩めた★
+      ご要望「画像のある問題の画像が小さいので確認して。
+              クリックしてズーム機能はいらない。」
+
+      22vh（390x844 で 186px）は「小さくてもタップで拡大できる」
+      前提の数字だった。拡大機能を外したので、最初から読める
+      大きさで出す必要がある。42vh（=354px、ほぼ横幅と同じ）まで
+      緩めても、音源バーと選択肢は同時に見える（実測で確認）。
+    */
+    expect(QUIZ).toContain("listeningMobileSplit ? '' : 'max-h-[42vh] md:max-h-[52vh] object-contain'");
+  });
+
+  /*
+    ★図が高さ上限に張り付いているときは、余白を図に譲る★
+    実測（390x844・第1問B・900x900 の4コマ）で
+      図 298x298 ／ 横幅は 366px 空いている ／ 高さの余りは 0px
+    だった。＝「小さい」の原因は高さ不足なので、高さをどこかから
+    もらう以外に方法がない。もらう先は選択肢のタップ領域ではなく
+    純粋な余白（解答カードの p-5 と図の上余白）にする。
+  */
+  it('図がある大問は解答カードの余白を詰めて図に高さを譲る（タップ領域は減らさない）', () => {
+    // 図がある大問（listeningMobileSplit かつ図あり）だけ p-5 → py-3.5。
+    expect(QUIZ).toContain("? 'px-3 py-3.5'");
+    // 図の上余白も 12px → 8px。
+    expect(QUIZ).toContain("className={listeningMobileSplit ? 'mt-2' : 'mt-3'}");
+    // 選択肢ボタン自身の最小高さ（3rem = 48px）は据え置き。
+    expect(QUIZ).toContain('min-h-[3rem]');
   });
 
   it('fill は figure→button→img に高さの連鎖を通す（max-h-full を効かせる）', () => {
@@ -328,7 +354,9 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
     expect(FIGURE).toContain('fill?: boolean');
     expect(FIGURE).toContain("fill ? 'flex min-h-0 flex-1 flex-col' : ''");
     expect(FIGURE).toContain("fill ? 'flex min-h-0 flex-1 items-start justify-center' : 'block'");
-    expect(FIGURE).toContain("fill ? 'min-h-0 max-h-full object-contain' : ''");
+    // fill のときは「高さ基準で縮める」ので幅は auto のまま
+    // （w-full にすると縦長の枠で横に伸びて比率が破綻する）。
+    expect(FIGURE).toContain("? 'w-auto max-w-full min-h-0 max-h-full object-contain'");
     // キャプションは図に押し潰されない。
     expect(FIGURE).toContain('shrink-0');
   });
@@ -342,9 +370,57 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
     expect(QUIZ).toContain('src={activeStepSub.imageUrl}');
   });
 
-  it('図はタップで拡大できる（上限を付けても情報は失わない）', () => {
-    expect(FIGURE).toContain('cursor-zoom-in');
-    expect(FIGURE).toContain('setZoomed(true)');
+  /*
+    ★ズーム（タップで拡大）は撤去した★
+    ご要望：「クリックしてズーム機能はいらない。」
+
+    以前は「小さくてもタップで拡大できるから情報は失わない」という
+    前提で強い高さ上限（22vh）を掛けていた。拡大機能を外す代わりに、
+    最初から読める大きさで出すよう上限を緩めた（上記テスト参照）。
+    ここでは拡大機能が復活していないことを固定する。
+  */
+  it('図はタップで拡大しない（ズーム機能を持たない）', () => {
+    expect(FIGURE).not.toContain('cursor-zoom-in');
+    expect(FIGURE).not.toContain('setZoomed');
+    // ライトボックス（全画面オーバーレイ）の実装が残っていないこと。
+    // 撤去の経緯は上のコメントに書いてあるので、判定はコード側の
+    // 呼び出し・import だけを見る（コメント中の語に引っかからないように）。
+    expect(FIGURE).not.toContain('createPortal(');
+    expect(FIGURE).not.toMatch(/^import .*(createPortal|ZoomIn|AnimatePresence)/mu);
+    expect(FIGURE).not.toContain('<ZoomIn');
+    /*
+      図は <button> ではないので、誤タップで全画面が開くことがない。
+      コメント中の「<button> ではなく <div>」という説明文に
+      引っかからないよう、コメントを落としたコードだけで判定する。
+    */
+    const figureCode = FIGURE.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/\/\/[^\n]*/gu, '');
+    expect(figureCode).not.toMatch(/<button/u);
+  });
+
+  /*
+    ★横長の図は「高さ基準＋横スクロール」で読める大きさにする★
+    実測（390x844・化学基礎「ろ過」）で 1024x288（比 3.56）の図が
+    358x102 になり、器具1つが約 90x100px しかなかった。
+    しきい値は「幅 366px に合わせたときに 26vh(220px) を割るか」
+    ＝ 366/220 ≒ 1.66 から決めており、マジックナンバーではない。
+  */
+  it('横長の図は画像の実寸比から判定して高さ基準に切り替える', () => {
+    // 判定はデータのフラグではなく naturalWidth/naturalHeight の実測。
+    expect(FIGURE).toContain('naturalWidth');
+    expect(FIGURE).toContain('naturalHeight');
+    expect(FIGURE).toContain('const FIG_ASPECT_THRESHOLD = 1.7');
+    expect(FIGURE).toContain('aspect >= FIG_ASPECT_THRESHOLD');
+    // スマホは高さ基準（幅は比なり）、PC は従来どおり幅基準に戻す。
+    expect(FIGURE).toContain("? 'h-[26vh] w-auto max-w-none md:h-auto md:w-full md:max-w-full'");
+    expect(FIGURE).toContain("isWide ? 'overflow-x-auto md:overflow-x-visible' : ''");
+    // 案内文は「比が大きい」ではなく「実際に溢れている」ときだけ出す。
+    expect(FIGURE).toContain('scrollWidth > el.clientWidth');
+    expect(FIGURE).toContain('isWide && overflowing');
+  });
+
+  it('横長でない図は枠の横幅いっぱいまで使う（原寸で止まらない）', () => {
+    // w-auto だと原寸より大きくならず、小さい図は枠が余っても小さいまま。
+    expect(FIGURE).toContain(": 'w-full h-auto max-w-full'");
   });
 });
 

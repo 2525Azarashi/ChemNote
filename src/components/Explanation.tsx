@@ -308,28 +308,40 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
   const MOBILE_BODY_BASE = 'text-[15px] leading-[1.85]';
   const DESKTOP_BODY_FONT = isMathChapter ? 'text-sm md:text-base leading-relaxed' : 'text-xs md:text-sm leading-relaxed';
   /**
-   * ★ご要望11「あと解説と問題でフォント違うの何？」★
+   * ★ご要望「化学基礎・化学含め様々な科目で解答解説と問題のフォントが
+   *   あっていないので問題のフォントに合わせて。」★
    *
-   * ■ 実測（Playwright の getComputedStyle、スマホ390x844・第1問A）
-   *   まったく同じ設問文「傘について、話者の状況に最も近い英文」が
-   *     問題画面 … ゴシック（font-modern）14px
-   *     解説画面 … 手書き（Yomogi）15px
-   *   と別書体で出ていた。さらに英文（The speaker has her umbrella…）は
-   *   両画面ともセリフ体（Cambria Math）になっていた。
-   *   ＝食い違いの原因は2つあった。
-   *     (1) 英字が化学式と誤判定されてセリフ体になる（textFormatter 側で対処）
-   *     (2) 解説の本文だけ手書き体で、問題画面のゴシックと揃っていない（ここ）
+   * ■ 実測（Playwright の getComputedStyle）
+   *   ・390x844 / 英語リスニング 第1問A（前回対応ぶん）
+   *       問題画面 … ゴシック（Inter）／解説画面 … 手書き（Yomogi）
+   *   ・390x844 / 化学基礎「物質の分離と精製(1. ろ過)」（今回の指摘）
+   *       問題画面 … Inter, "Hiragino Sans", "Yu Gothic", sans-serif  16px
+   *       解説画面 … Yomogi, "Klee One", …, cursive
+   *     ＝まったく同じ問題文が、画面をまたぐと別書体で出ていた。
    *
-   * ■ ここでの直し方
-   *   英文を含む科目（英語リスニング・英文法）は、
-   *   問題画面と同じ font-modern（ゴシック）に揃える。
-   *   手書き体は日本語の解説に温かみを出すためのものなので、
-   *   化学・生物・数学では従来どおり手書き体のまま変えない。
+   * ■ 直し方は「問題画面に合わせる」（ご指示どおりの向き）
+   *   問題画面（Quiz.tsx）の本文は、科目に関係なく
+   *     questionNeedsMathPalette ? 'font-math math-content' : 'font-modern'
+   *   の2択しかない。つまり
+   *     数学 → 数式書体 / それ以外 → ゴシック
+   *   が「問題のフォント」。解説側もこれと同じ式にする。
+   *   以前は英語だけをゴシックへ寄せていたが、
+   *   化学・生物でも同じずれが起きていたので、条件そのものを撤去して
+   *   「非数学はすべてゴシック」に統一する。
    *
-   * ■ 科目名で分岐しない
-   *   英文の音源（audioTracks）を持つ問題があるかどうか、という
-   *   問題データそのものの事実で判定する。
-   *   科目名で書くと、将来ほかの科目に英文を入れたときに取り残される。
+   * ■ 手書き体（Yomogi）は本文から外すが、消しはしない
+   *   ロジックツリー・フローチャート・スコア表示など
+   *   「図やバッジの装飾」では従来どおり使う。
+   *   本文＝問題文と読み比べる文字だけをゴシックにそろえる。
+   *
+   * ■ PC / スマホで分岐しない
+   *   書体のずれは画面幅と無関係（PC でも同じ問題文が別書体で出る）。
+   *   ここで reorderMobile を挟むと「PC だけ直らない」不具合が残るので、
+   *   端末に依らず同じ式にする。レイアウト（余白・段組み）は一切触っていない。
+   *
+   * ■ isEnglishChapter は書体判定以外（prose 判定など）で今も使うので残す。
+   *   英文の音源（audioTracks）を持つ問題があるかという
+   *   問題データそのものの事実で判定する（科目名で分岐しない）。
    */
   const isEnglishChapter = useMemo(() => {
     return allQuestions.some((q: any) => {
@@ -338,23 +350,21 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     });
   }, [allQuestions]);
 
-  const BODY_FONT_FAMILY = isMathChapter
-    ? 'font-math math-content'
-    : isEnglishChapter
-      ? 'font-modern'
-      : 'font-handwriting';
+  const BODY_FONT_FAMILY = isMathChapter ? 'font-math math-content' : 'font-modern';
 
   /**
    * 解説カード全体の既定書体（下位はこれを継承する）。
    *
-   * 英語（英文を含む単元）だけゴシックにして、問題画面と一致させる。
    * ここを変えると、プレーヤーのスクリプト欄のように
    * 「自前で書体を持たない箇所」までまとめてそろう。
+   * 実測で分かったとおり、本文の書体は CSS の継承でカード最上位から
+   * 降りてくるので、BODY_FONT_FAMILY だけ直しても取りこぼしが出る。
+   *
    * 数学は本文側（BODY_FONT_FAMILY）で font-math を当てるので、
-   * カード全体は従来どおり手書き体のままにしておく
+   * カード全体はゴシックにしておく
    * （カードごと数式書体にすると見出しやボタンまで変わってしまう）。
    */
-  const CARD_FONT_FAMILY = isEnglishChapter ? 'font-modern' : 'font-handwriting';
+  const CARD_FONT_FAMILY = 'font-modern';
 
   // 要件①：「この単元の思考の型」の本文。単元（章）に紐づくので問題ごとには作らない。
   // 内容・表現・順番・解説は従来と1文字も変えていない（エンジン側の buildUnitKataBlock がそのまま組む）。
@@ -413,7 +423,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
           <ExplanationBody
             text={unitKataBlock}
             tone={mode === 'mini_test' ? 'light' : 'dark'}
-            className={`font-handwriting text-xs md:text-sm leading-relaxed pt-3 ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
+            /* 本文なので、問題画面と同じゴシック（font-modern）にそろえる。
+               ここだけ手書き体で残すと、同じ解説画面の中で書体が2種類になる。 */
+            className={`font-modern text-xs md:text-sm leading-relaxed pt-3 ${mode === 'mini_test' ? 'text-gray-700' : 'text-[#E0E1DD]/90'}`}
           />
         </div>
       )}
@@ -770,7 +782,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 )}
                 
                 {isPracticeMode && (
-                  <ol className="list-decimal list-inside space-y-1 font-math">
+                  // 書体は直書きせず土台から継承する（(C) 書体統一）。
+                  <ol className={`list-decimal list-inside space-y-1${mathBodyClass}`}>
                     {sq.detailedExplanation.steps.map((step: string, idx: number) => (
                       <li key={idx}>{formatText(step)}</li>
                     ))}
@@ -778,7 +791,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 )}
 
                 {sq.type !== 'descriptive' && (
-                  <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】<span className="font-math">{formatText(sq.correctAnswer)}</span></p>
+                  <p className={`font-bold ${isMiniTest ? 'text-emerald-700' : 'text-[#5BC0BE]'} mt-3`}>【解答】<span className={mathBodyClass.trim()}>{formatText(sq.correctAnswer)}</span></p>
                 )}
 
                 {sq.type === 'descriptive' && (
@@ -1006,7 +1019,8 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     }>
       <div className={isMobile ? "w-full min-h-full flex flex-col" : (isResultView ? "w-full min-h-full flex flex-col" : "w-full h-full flex flex-col")}>
         {/*
-          ★ご要望11「あと解説と問題でフォント違うの何？」の本体はここ★
+          ★ご要望「解答解説と問題のフォントがあっていないので
+            問題のフォントに合わせて」の本体はここ★
 
           ■ 実測で分かった、書体がずれる本当の原因
             解説カードの最上位に font-handwriting（Yomogi）が付いていて、
@@ -1014,22 +1028,22 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
             そのため下位で BODY_FONT_FAMILY を font-modern にしても、
             プレーヤーのスクリプト欄など「自前で書体を持たない箇所」は
             Yomogi のまま残っていた。
-            実測（390x844・第1問A）：
-              問題画面のスクリプト英文 … Inter 15px
-              解説画面のスクリプト英文 … Yomogi 13px
-            ＝同じ英文が別書体で出ていた。
+            実測：
+              英語リスニング … 問題画面 Inter 15px / 解説画面 Yomogi 13px
+              化学基礎ろ過   … 問題画面 Inter 16px / 解説画面 Yomogi
+            ＝同じ文が画面をまたぐと別書体で出ていた。
 
           ■ 直し方
-            英文を含む単元（＝audioTracks を持つ問題がある単元）だけ、
-            この最上位を font-modern にする。
+            この最上位（CARD_FONT_FAMILY）を font-modern にする。
             継承なので、これ1か所でスクリプト・訳・語句・解説まで
             まとめて問題画面と同じゴシックにそろう。
+            以前は英語だけを対象にしていたが、化学・生物でも同じずれが
+            起きていたので科目の条件を外した（＝問題画面と同じ規則）。
 
-          ■ 手書き体は日本語教科では変えない
-            手書き体は日本語の解説に温かみを出すための既存仕様なので、
-            化学・生物・数学は従来どおり font-handwriting のまま。
-            英語は筆記体風だと綴りが読みにくく、実際に問題画面側は
-            もともとゴシックなので、英語だけをそちらに寄せる。
+          ■ 手書き体（Yomogi）自体は消していない
+            ロジックツリー・フローチャート・スコア表示などの装飾では
+            従来どおり使う。ここで統一するのは
+            「問題文と読み比べる本文の書体」だけ。
         */}
         <div className={isMobile 
           ? `w-full flex flex-col ${CARD_FONT_FAMILY} relative ${
@@ -1087,9 +1101,30 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
 
           {/* ★スマホの1問ごとの答え合わせでは、Score とメタ情報（答え合わせ / Q番号 /
               カテゴリ / ノートに保存 / 正答率）を右寄せの1ブロックにまとめる。
-              PC・結果表示では従来のレイアウトを崩さないよう display:contents で素通しする。 */}
+              PC・結果表示では従来のレイアウトを崩さないよう display:contents で素通しする。
+
+              ★ご要望「解答と解説って書いてあるところの右のトロフィーとか
+                ☑️答え合わせとかをもう少し横に並べる感じに」★
+
+              ■ 実測（Playwright / 390x844・化学基礎「ろ過」の解答・解説）
+                ヘッダーの高さ 106px。右側のチップが3段に折り返していた。
+                  y=16 … 🏆0pt
+                  y=40 … ☑答え合わせ / Q1 / カテゴリ
+                  y=67 … ノートに保存 / 正答率
+                合計幅は 50+84+30+92+47+カテゴリ ≒ 380px あり、
+                右側に使える幅（約265px）に対して flex-wrap が2回折り返していた。
+
+              ■ 直し方＝「並べる」ために幅を削る（要素は消さない）
+                折り返しを禁止（flex-nowrap）したうえで、
+                スマホでは文字ラベルを落としてアイコン＋数値だけにする。
+                  ☑答え合わせ → ☑（アイコンのみ・aria-label で読み上げは維持）
+                  ノートに保存 → 💾（同上）
+                  正答率: 0%   → 0%（「正答率:」の見出しを省く）
+                これで 50+24+30+30+26+カテゴリ ≒ 240px になり1行に収まる。
+                カテゴリだけは可変なので min-w-0 + truncate で余りに合わせて縮む。
+                PC（reorderMobile=false）はラベルもレイアウトも従来のまま。 */}
           <div className={reorderMobile
-            ? 'flex flex-wrap items-center justify-end gap-1.5 min-w-0 flex-1'
+            ? 'flex flex-nowrap items-center justify-end gap-1 min-w-0 flex-1'
             : 'contents'
           }>
           {/* 固定ヘッダーの Score 表示は削除。
@@ -1104,7 +1139,7 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
               transition={{ duration: 0.25, ease: 'easeOut' }}
               className={`flex items-center border shadow-sm ${
                 // スマホでは小さめのピル型にして、右横に並べても窮屈にならないようにする
-                reorderMobile ? 'gap-1 px-2 py-0.5 rounded-full' : 'gap-2 px-3 py-2 rounded-2xl'
+                reorderMobile ? 'shrink-0 gap-0.5 px-1.5 py-0.5 rounded-full' : 'gap-2 px-3 py-2 rounded-2xl'
               } ${
                 mode === 'mini_test'
                   ? 'bg-[#F4D03F]/15 text-[#1B2631] border-[#F4D03F]/40'
@@ -1131,24 +1166,30 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
 
           {singleQuestionIndex !== undefined && questions[0] && (
             <div className={reorderMobile
-              ? 'flex flex-wrap items-center justify-end gap-1.5 min-w-0'
+              ? 'flex flex-nowrap items-center justify-end gap-1 min-w-0 flex-1'
               : `flex flex-wrap items-center gap-2 sm:gap-3 sm:border-l sm:pl-4 md:pl-6 lg:pl-8 ${
                   mode === 'mini_test' ? 'border-gray-200' : 'border-[#3A506B]/50'
                 } w-full sm:w-auto`
             }>
-              <div className={`flex items-center gap-1 font-bold rounded-full border ${
-                reorderMobile ? 'text-[10px] px-2 py-0.5' : 'text-[11px] md:text-xs px-2.5 py-1'
-              } ${
+              {/* 「答え合わせ」チップ。
+                  スマホでは文字を落としてチェックアイコンだけにする
+                  （aria-label を付けるので読み上げは「答え合わせ」のまま）。 */}
+              <div
+                aria-label="答え合わせ"
+                title="答え合わせ"
+                className={`flex items-center font-bold rounded-full border shrink-0 ${
+                  reorderMobile ? 'gap-0 text-[10px] px-1 py-0.5' : 'gap-1 text-[11px] md:text-xs px-2.5 py-1'
+                } ${
                 mode === 'mini_test' 
                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                   : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border-[#5BC0BE]/30'
               }`}>
                 <CheckCircle2 className={reorderMobile ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
-                <span>答え合わせ</span>
+                {!reorderMobile && <span>答え合わせ</span>}
               </div>
 
-              <div className={`font-bold rounded-full shadow-sm border ${
-                reorderMobile ? 'text-[10px] px-2 py-0.5' : 'text-xs px-2.5 py-0.5'
+              <div className={`font-bold rounded-full shadow-sm border shrink-0 ${
+                reorderMobile ? 'text-[10px] px-1.5 py-0.5' : 'text-xs px-2.5 py-0.5'
               } ${
                 mode === 'mini_test' 
                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
@@ -1157,18 +1198,23 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 Q{singleQuestionIndex + 1}
               </div>
 
+              {/* カテゴリだけは長さが可変なので、1行に収める調整役にする。
+                  min-w-0 + truncate で「余った幅ぶんだけ表示」になる。 */}
               <div className={`font-bold truncate ${
-                reorderMobile ? 'text-[10px] max-w-[92px]' : 'text-xs md:text-sm max-w-[120px] sm:max-w-[200px]'
+                reorderMobile ? 'text-[10px] min-w-0 flex-1' : 'text-xs md:text-sm max-w-[120px] sm:max-w-[200px]'
               } ${
                 mode === 'mini_test' ? 'text-gray-800' : 'text-[#E0E1DD]'
               }`}>
                 {questions[0].category || '問題'}
               </div>
 
+              {/* 「ノートに保存」も同様に、スマホではアイコンだけにする。 */}
               <button
                 onClick={(e) => { e.stopPropagation(); handleSaveNote(questions[0], singleQuestionIndex); }}
-                className={`flex items-center gap-1 rounded-full font-bold transition-colors border ${
-                  reorderMobile ? 'text-[10px] px-2 py-0.5' : 'text-[11px] px-2.5 py-1'
+                aria-label={savingNote[questions[0].id] ? 'ノートに保存中' : 'ノートに保存'}
+                title={savingNote[questions[0].id] ? '保存中...' : 'ノートに保存'}
+                className={`flex items-center rounded-full font-bold transition-colors border shrink-0 ${
+                  reorderMobile ? 'gap-0 text-[10px] px-1 py-0.5' : 'gap-1 text-[11px] px-2.5 py-1'
                 } ${
                   savingNote[questions[0].id] 
                     ? (mode === 'mini_test' ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-[#1C2541] text-[#7A8B99] border-[#1C2541]') 
@@ -1176,15 +1222,23 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 }`}
                 disabled={savingNote[questions[0].id]}
               >
-                <Save size={reorderMobile ? 10 : 12} />
-                <span>{savingNote[questions[0].id] ? '保存中...' : 'ノートに保存'}</span>
+                <Save size={reorderMobile ? 12 : 12} />
+                {!reorderMobile && <span>{savingNote[questions[0].id] ? '保存中...' : 'ノートに保存'}</span>}
               </button>
 
               {(() => {
                 const scorePercentage = calculateScore(questions[0]);
                 return (
-                  <div className={`flex items-center gap-1 ${reorderMobile ? '' : 'ml-auto sm:ml-0'}`}>
-                    <span className={`font-bold ${reorderMobile ? 'text-[9px]' : 'text-[10px] md:text-xs'} ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正答率:</span>
+                  <div
+                    className={`flex items-center gap-1 shrink-0 ${reorderMobile ? '' : 'ml-auto sm:ml-0'}`}
+                    aria-label={`正答率 ${scorePercentage}%`}
+                    title={`正答率 ${scorePercentage}%`}
+                  >
+                    {/* スマホでは「正答率:」の見出しを省き、数値だけを出す
+                        （aria-label / title で意味は残す）。 */}
+                    {!reorderMobile && (
+                      <span className={`font-bold text-[10px] md:text-xs ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>正答率:</span>
+                    )}
                     <span className={`font-mono font-bold ${reorderMobile ? 'text-[11px]' : 'text-xs md:text-sm'} ${
                       scorePercentage >= 80 
                         ? (mode === 'mini_test' ? 'text-emerald-600' : 'text-[#5BC0BE]') 
@@ -1935,7 +1989,9 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                       <span className={`shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold ${mode === 'mini_test' ? 'bg-emerald-100 text-emerald-700 border border-emerald-300' : 'bg-[#5BC0BE]/20 text-[#5BC0BE] border border-[#5BC0BE]/40'}`}>
                                         {idx + 1}
                                       </span>
-                                      <span className="font-math leading-relaxed min-w-0">{formatText(step)}</span>
+                                      {/* 書体は直書きせず土台から継承する（(C) 書体統一）。
+                                          数式の単元では mathBodyClass が font-math を足す。 */}
+                                      <span className={`leading-relaxed min-w-0${mathBodyClass}`}>{formatText(step)}</span>
                                     </li>
                                   ))}
                                 </ol>
@@ -2040,7 +2096,24 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                                 </div>
                                 <div>
                                   <div className={`text-[10px] md:text-xs mb-1 ${mode === 'mini_test' ? 'text-gray-500' : 'text-[#7A8B99]'}`}>{sq.type === 'descriptive' ? '模範解答' : '正解'}</div>
-                                  <div className={`font-math font-bold text-sm md:text-base p-3 rounded-lg border break-words${isMathChapter ? ' math-content' : ''} ${mode === 'mini_test' ? 'text-emerald-700 bg-white border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'}`}>
+                                  {/*
+                                    ★「正解」と「自分の解答」で書体が違っていた★
+                                    ご要望「化学基礎・化学含め様々な科目で解答解説と
+                                            問題のフォントがあっていないので
+                                            問題のフォントに合わせて。」
+
+                                    実測（390x844・化学基礎「ろ過」）で、この2つは
+                                    左右に並んでいるのに
+                                      自分の解答 … Inter（mathBodyClass が '' で継承）
+                                      正解       … STIX Two Math（font-math を直書き）
+                                    と別書体だった。「固体と液体の混合物」という
+                                    日本語の記述解答が数式書体（セリフ体）で出ていた。
+
+                                    直書きをやめて、隣の「自分の解答」と同じ
+                                    mathBodyClass に揃える。数式の単元だけ font-math が
+                                    付き、それ以外は土台（font-modern）を継承する。
+                                  */}
+                                  <div className={`font-bold text-sm md:text-base p-3 rounded-lg border break-words${mathBodyClass} ${mode === 'mini_test' ? 'text-emerald-700 bg-white border-emerald-200' : 'text-[#5BC0BE] bg-[#5BC0BE]/10 border-[#5BC0BE]/30'}`}>
                                     {formatText(sq.correctAnswer)}
                                   </div>
                                 </div>

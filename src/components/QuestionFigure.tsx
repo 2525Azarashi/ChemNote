@@ -1,7 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'motion/react';
-import { ZoomIn, X } from 'lucide-react';
+import React from 'react';
 
 /**
  * QuestionFigure
@@ -12,9 +9,33 @@ import { ZoomIn, X } from 'lucide-react';
  * 目的（C1: 図・画像の改善）:
  *  - 図番号の自動採番（図1・図2 …）を figcaption 冒頭に付与する
  *  - alt テキストを必ず意味のある内容にする（キャプション→デフォルト文の順でフォールバック）
- *  - クリック / タップで拡大表示（ライトボックス）できるようにし、
- *    滴定曲線など細かい図をスマホでも読めるようにする
  *  - Quiz / Explanation で重複していた figure マークアップを一元化する
+ *
+ * ★ご要望「画像のある問題の画像が小さいので確認して。クリックしてズーム機能はいらない。」★
+ *
+ * ■ 実測（Playwright / getComputedStyle・390x844・化学基礎「ろ過」）
+ *     naturalSize 1024x288 の図が 358x102 で描画されていた。
+ *     リスニングの4コマ（1254x1254 の正方形）は Quiz 側の
+ *     max-h-[22vh]（=186px）に当たり、横幅が余っているのに
+ *     186px 角まで縮められていた＝「小さい」の実体。
+ *
+ * ■ 直し方（2点）
+ *   (1) <img> を w-auto → w-full h-auto にする。
+ *       w-auto だと「原寸より大きくならない」ので、原寸の小さい図は
+ *       枠が余っていても小さいまま出ていた。w-full なら
+ *       与えられた横幅いっぱいまで使う（縦は h-auto で比率維持）。
+ *   (2) 高さ上限は呼び出し側（Quiz）で緩める。
+ *       これまでは「小さくても、タップで拡大できるから情報は失わない」
+ *       という前提で上限を強くしていたが、その拡大機能を外すので
+ *       最初から読める大きさで出す必要がある。
+ *
+ * ■ ズーム（ライトボックス）は撤去した
+ *     ご要望どおり「クリックしてズーム」は無くした。
+ *     これにより
+ *       ・図が <button> でなくなる（誤タップで全画面が出ない）
+ *       ・右上の拡大アイコン（44px角）が図に重ならない
+ *       ・createPortal / body の overflow 固定が消えてスクロールが素直になる
+ *     という副作用の改善もある。
  */
 
 interface QuestionFigureProps {
@@ -39,10 +60,10 @@ interface QuestionFigureProps {
   /**
    * <img> に足すクラス。
    *
-   * ご要望「スクロールとかしなくても選択肢の英文と図が一目に映るようにしてほしい」
-   * に対応するため、リスニングの問題ブロックでは図に高さ上限
-   * （例: max-h-[34vh]）を与えて 1 画面に収める。
-   * 拡大したいときは従来どおりタップでライトボックスが開くので情報は失われない。
+   * 「スクロールとかしなくても選択肢の英文と図が一目に映るようにしてほしい」
+   * に対応するため、リスニングの問題ブロックでは図に高さ上限を与えて
+   * 1 画面に収める。ただし上限を強くしすぎると図が読めなくなるので、
+   * ズーム撤去に合わせて上限は呼び出し側で緩めている。
    */
   imgClassName?: string;
   /**
@@ -50,12 +71,12 @@ interface QuestionFigureProps {
    *
    * ★なぜ imgClassName に max-h-full を渡すだけでは駄目なのか★
    *   <img> の max-height:100% は「親の高さが確定しているとき」しか効かない。
-   *   通常このコンポーネントの figure / button は高さ auto なので、
+   *   通常このコンポーネントの figure は高さ auto なので、
    *   パーセント指定の max-height は none として扱われ、
    *   画像は原寸で伸びて親からはみ出す（＝スクロールしないと見えない
    *   ＝ご指摘の「図が隠れてる」）。
    *
-   *   そこで fill=true のときは figure → button → img の全段に
+   *   そこで fill=true のときは figure → 画像ラッパ → img の全段に
    *   flex と min-h-0 を通し、高さの連鎖を成立させる。
    *   これで「余った高さだけを使って、縦を基準に縮小した図」になり、
    *   4コマイラスト全体が切れずに 1 画面へ収まる。
@@ -75,8 +96,6 @@ export function QuestionFigure({
   imgClassName = '',
   fill = false,
 }: QuestionFigureProps) {
-  const [zoomed, setZoomed] = useState(false);
-
   // 図番号ラベル（例: 「図3」）
   const figureLabel = typeof figureNumber === 'number' ? `図${figureNumber}` : '';
 
@@ -95,109 +114,112 @@ export function QuestionFigure({
   const captionColor = tone === 'dark' ? 'text-[#E0E1DD]/70' : 'text-gray-500';
   const numberColor = tone === 'dark' ? 'text-[#5BC0BE]' : 'text-[#2C3E50]';
 
-  // Escキーでライトボックスを閉じる & 背景スクロールを固定
-  const closeZoom = useCallback(() => setZoomed(false), []);
-  useEffect(() => {
-    if (!zoomed) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeZoom();
-    };
-    document.addEventListener('keydown', onKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = prevOverflow;
-    };
-  }, [zoomed, closeZoom]);
+  /**
+   * ★横長の図がスマホで極端に潰れる問題★
+   *
+   * ■ 実測（Playwright・390x844・化学基礎「ろ過」の (ア)〜(エ)）
+   *     原寸 1024x288（比 3.56）を横幅 366px に合わせると高さ 103px。
+   *     4つの器具が横に並ぶ図なので、1つあたり約 90x100px しかなく
+   *     ガラス棒の位置・ろうとの足の接触といった判別点が読めない。
+   *     ＝これがご指摘「画像のある問題の画像が小さい」の実体。
+   *
+   * ■ 直し方：潰れる図だけ「高さ基準」に切り替えて横スクロールさせる
+   *     幅に合わせる（w-full h-auto）と、比が大きいほど高さが削られる。
+   *     そこで高さを FIG_TARGET_VH（26vh＝390x844 で約 220px）に据え、
+   *     幅は比なりに伸ばして親を溢れさせ、横スクロールで見せる。
+   *     ろ過の図なら 220px 高 x 775px 幅（実測）になり、器具1つが
+   *     約 190x220px。ズームを外しても判別できる大きさになる。
+   *
+   * ■ しきい値は「読める高さ」から逆算する（マジックナンバーにしない）
+   *     スマホの問題ペインの実効幅は実測 366px。ここに幅を合わせたときの
+   *     高さは 366/比 なので、
+   *         366/比 < 220（=26vh）  ⇔  比 > 366/220 ≒ 1.66
+   *     つまり比が約 1.7 を超える図は「幅に合わせると目標より低くなる」。
+   *     この 1 本の条件だけで、
+   *         3.56 / 3.28 / 3.16 / 2.18 / 2.11（実在する横長図）→ 高さ基準
+   *         1.61 / 1.49 / 1.43（幅に合わせても 228〜257px 出る図）→ 従来どおり
+   *     と自動的に振り分かれる。図を差し替えても閾値の再調整が要らない。
+   *
+   * ■ 判定は「画像そのものの事実」で行う（決め打ちしない）
+   *     問題データに「横長フラグ」を足す方式は、図を差し替えたときに
+   *     必ず食い違う。onLoad で naturalWidth/naturalHeight を読み、
+   *     実際の比で判断する。
+   *
+   * ■ PC は変更しない
+   *     PC は問題ペインが広く（実測 700px 超）、幅に合わせても
+   *     高さが十分に出るので従来どおり。md: で元の指定に戻す。
+   */
+  const FIG_ASPECT_THRESHOLD = 1.7;
+  const [aspect, setAspect] = React.useState<number | null>(null);
+  const isWide = !fill && aspect !== null && aspect >= FIG_ASPECT_THRESHOLD;
+
+  /**
+   * 「（横にスクロールできます）」の案内は、比ではなく
+   * 実際に溢れているかどうかで出す。
+   * 比 1.7〜2.0 の図は端末幅によっては溢れないことがあり、
+   * 溢れていないのに「スクロールできます」と書くのは嘘になる。
+   */
+  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+  const [overflowing, setOverflowing] = React.useState(false);
+  React.useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const check = () => setOverflowing(el.scrollWidth > el.clientWidth + 1);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [aspect, isWide]);
 
   return (
-    <>
-      <figure className={`${fill ? 'flex min-h-0 flex-1 flex-col' : ''} ${className}`}>
-        {/* 画像本体（クリックで拡大） */}
-        <button
-          type="button"
-          onClick={() => setZoomed(true)}
-          aria-label={`${resolvedAlt} を拡大表示する`}
-          className={`group relative w-full cursor-zoom-in rounded-xl focus-visible:outline-2 focus-visible:outline-[#A9CCE3] ${
-            fill ? 'flex min-h-0 flex-1 items-start justify-center' : 'block'
-          }`}
-        >
-          <img
-            src={src}
-            alt={resolvedAlt}
-            loading="lazy"
-            decoding="async"
-            className={`max-w-full w-auto mx-auto rounded-xl border border-gray-200 bg-white shadow-sm transition-transform duration-200 group-hover:scale-[1.01] ${
-              // 高さの連鎖が通っているので、ここで初めて max-h-full が効く。
-              fill ? 'min-h-0 max-h-full object-contain' : ''
-            } ${imgClassName}`}
-          />
-          {/* 拡大ヒントのアイコン（44px 以上のタップ領域を確保） */}
-          <span
-            aria-hidden="true"
-            className="absolute top-2 right-2 flex items-center justify-center w-11 h-11 rounded-full bg-white/85 text-[#2C3E50] shadow-sm opacity-70 group-hover:opacity-100 transition-opacity"
-          >
-            <ZoomIn size={18} />
-          </span>
-        </button>
+    <figure className={`${fill ? 'flex min-h-0 flex-1 flex-col' : ''} ${className}`}>
+      {/* 画像本体。
+          ここは <button> ではなく <div>。ズームを外したのでクリックしても何も起きない。
+          fill のときだけ高さの連鎖（flex + min-h-0 + flex-1）を通す。 */}
+      <div
+        ref={scrollerRef}
+        className={`w-full ${
+          fill ? 'flex min-h-0 flex-1 items-start justify-center' : 'block'
+        } ${
+          // 横長の図はスマホだけ横スクロールで見せる（PC は溢れないので無効）。
+          isWide ? 'overflow-x-auto md:overflow-x-visible' : ''
+        }`}
+      >
+        <img
+          src={src}
+          alt={resolvedAlt}
+          loading="lazy"
+          decoding="async"
+          onLoad={(e) => {
+            const el = e.currentTarget;
+            if (el.naturalWidth > 0 && el.naturalHeight > 0) {
+              setAspect(el.naturalWidth / el.naturalHeight);
+            }
+          }}
+          className={`mx-auto rounded-xl border border-gray-200 bg-white shadow-sm ${
+            // 高さの連鎖が通っているので、ここで初めて max-h-full が効く。
+            // fill のときは「高さ基準で縮める」モードなので幅は auto のまま
+            // （w-full にすると縦長の枠で横に伸びて比率が破綻する）。
+            fill
+              ? 'w-auto max-w-full min-h-0 max-h-full object-contain'
+              : isWide
+                // 横長：スマホは高さ基準（幅は比なり＝親を溢れる）。PC は従来どおり幅基準。
+                ? 'h-[26vh] w-auto max-w-none md:h-auto md:w-full md:max-w-full'
+                : 'w-full h-auto max-w-full'
+          } ${imgClassName}`}
+        />
+      </div>
 
-        {(caption || figureLabel) && (
-          <figcaption className={`mt-2 shrink-0 text-center text-xs font-modern leading-relaxed ${captionColor}`}>
-            {figureLabel && <span className={`font-bold ${numberColor} mr-1`}>{figureLabel}</span>}
-            {caption}
-          </figcaption>
-        )}
-      </figure>
-
-      {/* 拡大ライトボックス */}
-      {createPortal(
-        <AnimatePresence>
-          {zoomed && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1B2631]/80 backdrop-blur-sm p-4"
-              onClick={closeZoom}
-              role="dialog"
-              aria-modal="true"
-              aria-label={resolvedAlt}
-            >
-              <button
-                type="button"
-                onClick={closeZoom}
-                aria-label="拡大表示を閉じる"
-                className="absolute top-4 right-4 flex items-center justify-center w-11 h-11 rounded-full bg-white/90 text-[#1B2631] shadow-md hover:bg-white transition-colors z-10"
-              >
-                <X size={22} />
-              </button>
-              <motion.figure
-                initial={{ scale: 0.92, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.92, opacity: 0 }}
-                transition={{ duration: 0.2, ease: 'easeOut' }}
-                className="max-w-[95vw] max-h-[90vh] flex flex-col items-center"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <img
-                  src={src}
-                  alt={resolvedAlt}
-                  className="max-w-full max-h-[80vh] w-auto object-contain rounded-lg bg-white shadow-2xl"
-                />
-                {(caption || figureLabel) && (
-                  <figcaption className="mt-3 text-center text-sm text-white/90 font-modern leading-relaxed px-4">
-                    {figureLabel && <span className="font-bold text-[#F9E79F] mr-1">{figureLabel}</span>}
-                    {caption}
-                  </figcaption>
-                )}
-              </motion.figure>
-            </motion.div>
+      {(caption || figureLabel) && (
+        <figcaption className={`mt-2 shrink-0 text-center text-xs font-modern leading-relaxed ${captionColor}`}>
+          {figureLabel && <span className={`font-bold ${numberColor} mr-1`}>{figureLabel}</span>}
+          {caption}
+          {/* 横長の図はスマホで画面外に続くので、そのことを明示する。
+              （拡大ボタンを外した代わりの案内。実際に溢れているときだけ出す） */}
+          {isWide && overflowing && (
+            <span className="ml-1 md:hidden">（横にスクロールできます）</span>
           )}
-        </AnimatePresence>,
-        document.body
+        </figcaption>
       )}
-    </>
+    </figure>
   );
 }

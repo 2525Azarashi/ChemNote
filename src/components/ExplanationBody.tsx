@@ -155,7 +155,20 @@ function ExplanationTable({ block, tone }: ExplanationTableProps) {
   return (
     // 列数が多い表はスマホで横スクロールできるようにする（文字を潰して縦書きにしない）
     <div className={`my-2 -mx-1 overflow-x-auto rounded-lg border shadow-sm ${t.wrapper}`}>
-      <table className="w-full min-w-full border-collapse text-[11px] sm:text-xs font-handwriting">
+      {/*
+        ★ご要望「化学基礎・化学含め様々な科目で解答解説と問題のフォントが
+          あっていないので問題のフォントに合わせて。」★
+
+        ここは解説の中の表。以前は font-handwriting を直書きしていたので、
+        カード土台を font-modern に統一しても、表だけ Yomogi のまま残り
+        「解説の中で書体が2種類混ざる」状態になっていた。
+
+        書体は指定せず、カード土台（CARD_FONT_FAMILY = font-modern）から
+        継承させる。こうすれば「問題のフォントに合わせる」という基準が
+        1か所（土台）だけになり、将来書体を変えるときもここを触らずに済む。
+        数式の単元では土台が font-math になるので、表も自動で数式書体に揃う。
+      */}
+      <table className="w-full min-w-full border-collapse text-[11px] sm:text-xs">
         <thead>
           <tr>
             {block.header.map((cell, i) => (

@@ -30,6 +30,59 @@ import { splitMathPieces, renderLatex, mayContainMath } from './mathTypeset';
  */
 const MATH_PLACEHOLDER_OPEN = '\u0000';
 
+/**
+ * ★入力に含まれる HTML タグを、数式変換の前に退避する★
+ *
+ * ■ 直した不具合（ご要望「解答解説と問題のフォントがあっていない」の一因）
+ *   解説データには explanationFormat.ts の LABEL() などが作る
+ *   インライン style つきの <span> が最初から入っている。
+ *
+ *     <span style="... background-color:#FFF1F5; ...">解 答</span>
+ *
+ *   ところが extractMath は HTML タグを区別せずテキスト全体を走査するため、
+ *   style 属性の中の 16進カラーコード「FFF1F5」を数式トリガと誤認し、
+ *   属性値の途中を KaTeX の HTML に置き換えてしまっていた。
+ *   結果、実測（390x844・化学基礎「ろ過」）では
+ *
+ *     <span style="... background-color:#&lt;span class=" aria-label="FFF1F5"
+ *            class="katex" aria-hidden="true">解 答</span>
+ *
+ *   という壊れた DOM になり、
+ *     ・pill の背景色が消える（style が途中で切れる）
+ *     ・class="katex" が付くので KaTeX_Main（セリフ体）で描画される
+ *   ＝「解 答」という日本語の見出しだけ別書体になっていた。
+ *
+ * ■ 直し方
+ *   タグ本体（"<...>"）を先にプレースホルダへ退避してから数式を探す。
+ *   タグの中身は表示テキストではないので、数式・化学式の変換対象に
+ *   すべきものが原理的に存在しない。
+ *   後段のタグ解釈（tagRegex での分割）は復元後に行うので、
+ *   <u> や <hl> の扱いは従来どおり変わらない。
+ *
+ * ■ プレースホルダの形
+ *   数式退避と同じ \u0000 は使えない（restoreMath の正規表現と衝突する）。
+ *   \u0001{n}\u0001 を使う。どちらも本文には出現し得ない制御文字。
+ */
+const TAG_PLACEHOLDER = '\u0001';
+
+function extractTags(text: string): { text: string; tags: string[] } {
+  const tags: string[] = [];
+  if (!text.includes('<')) return { text, tags };
+  const masked = text.replace(/<!--[\s\S]*?-->|<\/?[a-z][a-z0-9]*[^>]*>/gi, (tag) => {
+    tags.push(tag);
+    return `${TAG_PLACEHOLDER}${tags.length - 1}${TAG_PLACEHOLDER}`;
+  });
+  return { text: masked, tags };
+}
+
+function restoreTags(text: string, tags: string[]): string {
+  if (tags.length === 0) return text;
+  return text.replace(
+    new RegExp(`${TAG_PLACEHOLDER}(\\d+)${TAG_PLACEHOLDER}`, 'g'),
+    (_m, index: string) => tags[Number(index)] ?? '',
+  );
+}
+
 /** 本文から数式を抜き出して KaTeX で組み、プレースホルダに退避する。 */
 function extractMath(text: string): { text: string; slots: string[] } {
   const slots: string[] = [];
@@ -333,10 +386,25 @@ export function formatText(
   if (!text) return null;
   const prose = options.prose === true;
 
-  // ★最初に数式を KaTeX で組んで退避する★
+  /*
+    ★数式より先に「入力に元から入っている HTML タグ」を退避する★
+    解説データには LABEL() が作る style つき <span> が含まれる。
+    タグの中身（属性値）は表示テキストではないので、数式・化学式の
+    変換対象になり得ない。にもかかわらず走査対象に入れていたため、
+    style の中の色コード（#FFF1F5）が数式と誤認され、属性が壊れて
+    「解 答」の pill だけセリフ体（KaTeX_Main）になっていた。
+    詳しい経緯は extractTags の説明を参照。
+  */
+  const { text: withoutTags, tags: rawTags } = extractTags(text);
+
+  // ★次に数式を KaTeX で組んで退避する★
   //   ここで抜いておくことで、以降の化学式変換・添字処理・分数処理は
   //   「数式ではない部分」だけを相手にすればよくなる。
-  const { text: withMathSlots, slots: mathSlots } = extractMath(text);
+  const { text: maskedMath, slots: mathSlots } = extractMath(withoutTags);
+
+  // タグを戻してから従来の処理に渡す。以降の tagRegex での分割や
+  // <u>/<hl> の読み替えは、これまでとまったく同じ入力を受け取る。
+  const withMathSlots = restoreTags(maskedMath, rawTags);
 
   // ★prose では数式・化学式向けの前処理を通さない★
   //   convertMathNotation / normalizeScientificScripts は
