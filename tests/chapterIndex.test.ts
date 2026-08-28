@@ -4,9 +4,16 @@ import { describe, it, expect } from 'vitest';
 import {
   SUBJECT_INDEX,
   getChapterIndexOfSubject,
+  SUBJECT_STATS,
+  getSubjectStats,
 } from '../src/data/chapterIndex.generated';
 import { SUBJECTS, getChaptersOfSubject } from '../src/data/allChapters';
 import { countChapterProblems, countProblemsInChapters } from '../src/data/problemCount';
+import { getAllAdvancedChapters } from '../src/data/chemistryAdvancedData';
+import { getListeningStats } from '../src/data/englishListeningData';
+import { getMathStats } from '../src/data/mathData';
+import { getBiologyStats } from '../src/data/biologyBasicData';
+import { getGrammarStats } from '../src/data/englishGrammarData';
 
 /**
  * ===================================================================
@@ -120,6 +127,73 @@ describe('章インデックス：教科データ本体とズレていない', (
       getChapterIndexOfSubject('chemistry_basic'),
     );
     expect(getChapterIndexOfSubject(null)).toBe(getChapterIndexOfSubject('chemistry_basic'));
+  });
+});
+
+describe('収録ボリュームの数字が本物の集計関数と一致する', () => {
+  /*
+   * ★ここが落ちたら、科目選択画面の数字だけが古いまま出ている★
+   *
+   * 索引の数字は生成時に本物の集計関数を呼んで埋め込んでいるが、
+   * 「問題を足したのに npm run gen:index を忘れた」場合は
+   * 索引だけが古くなる。タイトル画面に古い問題数が出るのは
+   * ユーザーから見て原因が全く分からない不具合なので、
+   * 実行時にも本物と1フィールドずつ突き合わせて止める。
+   */
+
+  it('化学基礎：科目選択画面が書いていた式と一致する', () => {
+    // SubjectSelection.tsx の元の式:
+    //   chemistryData.parts.flatMap(p => p.chapters) → 章数と countProblemsInChapters
+    const chapters = getChaptersOfSubject('chemistry_basic');
+    expect(SUBJECT_STATS.chemistry_basic).toEqual({
+      chapters: chapters.length,
+      questions: countProblemsInChapters(chapters as never),
+    });
+    // 実際にカードに出ている「全29単元・演習174問」と一致していること
+    expect(SUBJECT_STATS.chemistry_basic.chapters).toBe(29);
+    expect(SUBJECT_STATS.chemistry_basic.questions).toBe(174);
+  });
+
+  it('化学（発展）：getAllAdvancedChapters と一致する', () => {
+    const chapters = getAllAdvancedChapters();
+    expect(SUBJECT_STATS.chemistry).toEqual({
+      chapters: chapters.length,
+      questions: countProblemsInChapters(chapters as never),
+    });
+  });
+
+  it('英語リスニング：getListeningStats の戻り値と完全一致する', () => {
+    // 配点・マーク数・大問数まで含めて丸ごと一致していること
+    expect(SUBJECT_STATS.english_listening).toEqual(getListeningStats());
+  });
+
+  it('数学：getMathStats の戻り値と完全一致する', () => {
+    expect(SUBJECT_STATS.math).toEqual(getMathStats());
+  });
+
+  it('生物基礎：getBiologyStats の戻り値と完全一致する', () => {
+    expect(SUBJECT_STATS.biology_basic).toEqual(getBiologyStats());
+  });
+
+  it('英文法：getGrammarStats の戻り値と完全一致する', () => {
+    expect(SUBJECT_STATS.english_grammar).toEqual(getGrammarStats());
+  });
+
+  it('教科の抜け漏れがない（SUBJECTS の全教科ぶんある）', () => {
+    // 教科を追加したとき、索引側に足し忘れるとカードの数字が消える。
+    SUBJECTS.forEach((subject) => {
+      expect(SUBJECT_STATS[subject.id]).toBeDefined();
+    });
+    expect(Object.keys(SUBJECT_STATS).length).toBe(SUBJECTS.length);
+  });
+
+  it('未知の教科IDでも壊れない（空オブジェクトを返す）', () => {
+    // 画面側は数字が undefined のときの表示を持っているので、
+    // 例外を投げずに空で返すのが正しい振る舞い。
+    expect(getSubjectStats('no_such_subject')).toEqual({});
+    expect(getSubjectStats(null)).toEqual({});
+    expect(getSubjectStats(undefined)).toEqual({});
+    expect(getSubjectStats('chemistry_basic')).toEqual(SUBJECT_STATS.chemistry_basic);
   });
 });
 

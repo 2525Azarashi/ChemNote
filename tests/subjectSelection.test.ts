@@ -125,9 +125,83 @@ describe('科目の定義', () => {
     expect(availableFalse).toBe(0);
   });
 
-  it('数学の収録数はデータから算出する（数字のハードコードをしない）', () => {
-    expect(SRC).toContain("import { getMathStats } from '../data/mathData'");
-    expect(SRC).toContain('getMathStats()');
+  it('数学の収録数はデータから算出する（数字のハードコードをしない）', async () => {
+    /*
+     * ★このテストの意図は「数字を手で書かないこと」であり、それは今も守っている★
+     *
+     * もとはこの画面が mathData を直接 import して
+     * getMathStats() をその場で呼んでいたので、
+     * その import 文の存在で「手書きしていないこと」を確かめていた。
+     *
+     * いまは同じ計算を★生成時に済ませた軽い索引★から読む形に変えた。
+     * この画面はタイトル画面（起動直後に必ず出る）なのに、
+     * 数字を出すためだけに 47ファイル・2,578,344 バイトの教科データを
+     * 読み込んでいたためである（実測）。
+     *
+     * そこで検査のしかたも変える:
+     *   1) 画面が索引の getSubjectStats を使っていること（手書きでないこと）
+     *   2) 画面のソースに数字が直接書かれていないこと
+     *   3) ★索引の数字が本物の getMathStats() と一致すること★
+     * 3 を実データで確かめるので、「手書きしていない」ことの保証は
+     * 以前より強くなっている。
+     */
+    expect(SRC).toContain("from '../data/chapterIndex.generated'");
+    expect(SRC).toContain("getSubjectStats('math')");
+
+    // 数字が画面のソースに直接書かれていない（テンプレートで埋め込んでいる）
+    expect(SRC).toContain('mathStats.chapters');
+    expect(SRC).toContain('mathStats.questions');
+
+    // 索引の数字が本物と一致している（＝古い数字が表示されることはない）
+    const { getSubjectStats } = await import('../src/data/chapterIndex.generated');
+    const { getMathStats } = await import('../src/data/mathData');
+    expect(getSubjectStats('math')).toEqual(getMathStats());
+  });
+
+  it('タイトル画面が起動時に教科データ本体を読み込まない', () => {
+    /*
+     * ★これがこの変更の目的そのもの★
+     *
+     * タイトル画面はオンボーディング直後に必ず出るので、後回しにできない。
+     * ここが教科データ本体を静的 import していると、
+     * 問題を増やすたびに起動が重くなる。
+     *
+     * 型だけの import（`import type { ... }`）は実行時に消えるので許す。
+     * ただし `import { type X } from '...'` という書き方は
+     * ★モジュールの解決自体が走ってしまい消えない★ ので、別途禁止する。
+     */
+    const staticImports = SRC.split('\n').filter(
+      (line) => /^\s*import\s/.test(line) && !/^\s*import\s+type\s/.test(line),
+    );
+    const joined = staticImports.join('\n');
+
+    ['chemistryData', 'chemistryAdvancedData', 'englishListeningData', 'mathData',
+     'biologyBasicData', 'englishGrammarData'].forEach((mod) => {
+      expect(joined, `${mod} を静的 import している`).not.toContain(`/${mod}'`);
+    });
+
+    /*
+     * allChapters は型だけ（SubjectKey）なので、型専用の書き方であること。
+     *
+     * ★注意★ このファイルには「なぜ import type と書くのか」を説明する
+     * コメントがあり、その中に禁止したい書き方そのものが例として出てくる。
+     * ソース全体を検索するとその説明文を拾って誤検知するので、
+     * ★実際に動く import 文だけ★（コメント行を除いたもの）を対象にする。
+     */
+    /*
+     * import 文は複数行にまたがることがある（{ ... } を改行して書く形）。
+     * そのため「import で始まる行だけ」を集めると文が途中で切れて
+     * 別の文とつながり、これも誤検知する。
+     * ここではコメントだけを取り除いて、コードの構造は崩さない。
+     */
+    const importsOnly = SRC.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+
+    expect(importsOnly).not.toMatch(
+      /import\s*\{[^}]*\btype\b[^}]*\}\s*from\s*['"][^'"]*allChapters['"]/,
+    );
+    expect(importsOnly).toMatch(
+      /import\s+type\s*\{[^}]*SubjectKey[^}]*\}\s*from\s*['"][^'"]*allChapters['"]/,
+    );
   });
 });
 

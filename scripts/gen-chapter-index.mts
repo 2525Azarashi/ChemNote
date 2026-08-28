@@ -65,6 +65,33 @@ import { fileURLToPath } from 'node:url';
 
 import { SUBJECTS, getChaptersOfSubject } from '../src/data/allChapters';
 
+/*
+ * ★科目選択画面（タイトル画面）の「収録ボリューム」の数字も索引に入れる★
+ *
+ * ■ なぜ必要か（実測）
+ *   科目選択画面はオンボーディング直後に必ず出る画面だが、
+ *   科目データから取っているのは「全29単元・演習174問」のような
+ *   ★数字だけ★で、問題文は1文字も表示していない。
+ *   それにも関わらず6教科ぶんのデータを丸ごと読み込んでいたため、
+ *   依存グラフを辿ると
+ *     SubjectSelection.tsx が引き込む src/data … 47 ファイル / 2,578,344 バイト
+ *   になっていた。ホームと同じ問題がここにも残っていた。
+ *
+ * ■ なぜ「生成時に本物の関数を呼ぶ」形にしたか
+ *   数字を手で書き写すと、問題を追加したときに必ずズレる。
+ *   ここでは本物の getListeningStats() などをそのまま呼び、
+ *   ★戻り値をそのまま JSON にして埋め込む★。
+ *   これなら生成のたびに本体と一致することが構造的に保証される。
+ *   さらに tests/chapterIndex.test.ts が、実行時にも本物の関数と
+ *   1フィールドずつ突き合わせるので、再生成を忘れれば必ずテストが落ちる。
+ */
+import { getAllAdvancedChapters } from '../src/data/chemistryAdvancedData';
+import { getListeningStats } from '../src/data/englishListeningData';
+import { getMathStats } from '../src/data/mathData';
+import { getBiologyStats } from '../src/data/biologyBasicData';
+import { getGrammarStats } from '../src/data/englishGrammarData';
+import { countProblemsInChapters } from '../src/data/problemCount';
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(HERE, '../src/data/chapterIndex.generated.ts');
 
@@ -88,6 +115,51 @@ interface SubjectIndexEntry {
   id: string;
   label: string;
   chapters: ChapterIndexEntry[];
+}
+
+/**
+ * 科目選択画面のカードに出す「収録ボリューム」の数字。
+ *
+ * ★教科によって出す数字の種類が違う★ ので、共通の形に無理に揃えない。
+ * （リスニングは「単元数・マーク数・配点」、化学基礎は「単元数・問題数」など）
+ * 機械的に統一するとカードの文言が変わってしまうため、
+ * 教科ごとに必要なキーだけを持つ形にしている。
+ */
+interface SubjectStats {
+  chapters?: number;
+  questions?: number;
+  sections?: number;
+  units?: number;
+  points?: number;
+  marks?: number;
+}
+
+/**
+ * 科目選択画面が使う数字を、本物の集計関数から取ってくる。
+ *
+ * 化学基礎・化学（発展）は専用の stats 関数が無いので、
+ * SubjectSelection.tsx が書いていた式をそのまま再現している
+ * （章を並べて countProblemsInChapters で数える）。
+ * この一致もテストで検査する。
+ */
+function buildSubjectStats(): Record<string, SubjectStats> {
+  const basicChapters = getChaptersOfSubject('chemistry_basic');
+  const advancedChapters = getAllAdvancedChapters();
+
+  return {
+    chemistry_basic: {
+      chapters: basicChapters.length,
+      questions: countProblemsInChapters(basicChapters as any),
+    },
+    chemistry: {
+      chapters: advancedChapters.length,
+      questions: countProblemsInChapters(advancedChapters as any),
+    },
+    english_listening: getListeningStats(),
+    math: getMathStats(),
+    biology_basic: getBiologyStats(),
+    english_grammar: getGrammarStats(),
+  };
 }
 
 function buildIndex(): SubjectIndexEntry[] {
@@ -204,11 +276,70 @@ export function getChapterIndexOfSubject(
 }
 `;
 
+/** 科目選択画面の「収録ボリューム」用の数字を書き出す部分 */
+const STATS_HEADER = `
+/**
+ * 科目選択画面（タイトル画面）のカードに出す「収録ボリューム」の数字。
+ *
+ * -------------------------------------------------------------------
+ * ■ なぜここに数字を置くのか
+ * -------------------------------------------------------------------
+ * 科目選択画面はオンボーディング直後に必ず出る画面だが、
+ * 教科データから取っていたのは
+ *
+ *     「全29単元・演習174問」「配点100点・マーク37個」
+ *
+ * のような★数字だけ★で、問題文は1文字も表示していない。
+ * それにも関わらず6教科ぶんのデータを丸ごと読み込んでいたため、
+ * 依存グラフを辿ると 47 ファイル / 2,578,344 バイトになっていた。
+ * 問題を増やせばこの数字がそのまま増える場所だった。
+ *
+ * -------------------------------------------------------------------
+ * ■ 数字がズレない仕組み
+ * -------------------------------------------------------------------
+ * この値は生成時に★本物の集計関数★
+ * （getListeningStats / getMathStats / getBiologyStats /
+ *   getGrammarStats / countProblemsInChapters）を実際に呼び、
+ * その戻り値をそのまま埋め込んだものである。
+ * さらに tests/chapterIndex.test.ts が実行時にも本物の関数と
+ * 1フィールドずつ突き合わせるので、
+ * 問題を足して再生成を忘れるとテストが落ちる。
+ *
+ * 教科ごとに持っているキーが違うのは意図的で、
+ * カードに出す数字の種類が教科ごとに違うため
+ * （無理に統一するとカードの文言が変わってしまう）。
+ */
+export interface SubjectStatsEntry {
+  chapters?: number;
+  questions?: number;
+  sections?: number;
+  units?: number;
+  points?: number;
+  marks?: number;
+}
+
+export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = `;
+
+const STATS_FOOTER = `;
+
+/**
+ * 指定した教科の収録ボリュームを返す。
+ *
+ * 未知の教科IDでも画面が壊れないよう、空オブジェクトを返す
+ * （呼び出し側は数字が undefined のときの表示を持っている）。
+ */
+export function getSubjectStats(subjectId: string | null | undefined): SubjectStatsEntry {
+  return SUBJECT_STATS[String(subjectId)] ?? {};
+}
+`;
+
 function main(): void {
   const index = buildIndex();
+  const stats = buildSubjectStats();
 
   const body = JSON.stringify(index, null, 2);
-  const source = `${HEADER}${body}${FOOTER}`;
+  const statsBody = JSON.stringify(stats, null, 2);
+  const source = `${HEADER}${body}${FOOTER}${STATS_HEADER}${statsBody}${STATS_FOOTER}`;
 
   writeFileSync(OUT, source, 'utf8');
 

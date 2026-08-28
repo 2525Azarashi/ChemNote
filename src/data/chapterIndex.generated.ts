@@ -926,3 +926,84 @@ export function getChapterIndexOfSubject(
   const entry = SUBJECT_INDEX.find((subject) => subject.id === subjectId) ?? SUBJECT_INDEX[0];
   return entry ? entry.chapters : [];
 }
+
+/**
+ * 科目選択画面（タイトル画面）のカードに出す「収録ボリューム」の数字。
+ *
+ * -------------------------------------------------------------------
+ * ■ なぜここに数字を置くのか
+ * -------------------------------------------------------------------
+ * 科目選択画面はオンボーディング直後に必ず出る画面だが、
+ * 教科データから取っていたのは
+ *
+ *     「全29単元・演習174問」「配点100点・マーク37個」
+ *
+ * のような★数字だけ★で、問題文は1文字も表示していない。
+ * それにも関わらず6教科ぶんのデータを丸ごと読み込んでいたため、
+ * 依存グラフを辿ると 47 ファイル / 2,578,344 バイトになっていた。
+ * 問題を増やせばこの数字がそのまま増える場所だった。
+ *
+ * -------------------------------------------------------------------
+ * ■ 数字がズレない仕組み
+ * -------------------------------------------------------------------
+ * この値は生成時に★本物の集計関数★
+ * （getListeningStats / getMathStats / getBiologyStats /
+ *   getGrammarStats / countProblemsInChapters）を実際に呼び、
+ * その戻り値をそのまま埋め込んだものである。
+ * さらに tests/chapterIndex.test.ts が実行時にも本物の関数と
+ * 1フィールドずつ突き合わせるので、
+ * 問題を足して再生成を忘れるとテストが落ちる。
+ *
+ * 教科ごとに持っているキーが違うのは意図的で、
+ * カードに出す数字の種類が教科ごとに違うため
+ * （無理に統一するとカードの文言が変わってしまう）。
+ */
+export interface SubjectStatsEntry {
+  chapters?: number;
+  questions?: number;
+  sections?: number;
+  units?: number;
+  points?: number;
+  marks?: number;
+}
+
+export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
+  "chemistry_basic": {
+    "chapters": 29,
+    "questions": 174
+  },
+  "chemistry": {
+    "chapters": 66,
+    "questions": 20
+  },
+  "english_listening": {
+    "sections": 6,
+    "units": 9,
+    "points": 100,
+    "marks": 37,
+    "questions": 44
+  },
+  "math": {
+    "chapters": 33,
+    "questions": 65
+  },
+  "biology_basic": {
+    "chapters": 5,
+    "questions": 24
+  },
+  "english_grammar": {
+    "chapters": 20,
+    "questions": 20,
+    "marks": 100
+  }
+};
+
+/**
+ * 指定した教科の収録ボリュームを返す。
+ *
+ * 未知の教科IDでも画面が壊れないよう、空オブジェクトを返す
+ * （呼び出し側は数字が undefined のときの表示を持っている）。
+ */
+export function getSubjectStats(subjectId: string | null | undefined): SubjectStatsEntry {
+  return SUBJECT_STATS[String(subjectId)] ?? {};
+}
