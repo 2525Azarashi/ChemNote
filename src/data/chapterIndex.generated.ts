@@ -45,6 +45,15 @@ export interface ChapterIndexEntry {
   id: string;
   title?: string;
   abstractTitle?: string;
+  /**
+   * 教科書上の章名（例「1章 物質の構成」）。
+   *
+   * 先生ダッシュボードの章名は `abstractTitle || realTitle || id` で決まるため、
+   * abstractTitle が無い章のために必要。現在の実データでは全章が
+   * abstractTitle を持っているので出番は無いが、無いと将来
+   * 章名の代わりに生の章IDが表示される（しかも気づけない）。
+   */
+  realTitle?: string;
   /** この章の大問数（miniTest ＋ practiceProblems） */
   problemCount: number;
 }
@@ -72,147 +81,176 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       {
         "id": "c1_1",
         "problemCount": 8,
-        "abstractTitle": "① 純物質と混合物"
+        "abstractTitle": "① 純物質と混合物",
+        "realTitle": "1章 物質の構成"
       },
       {
         "id": "c1_2_A",
         "problemCount": 11,
-        "abstractTitle": "②-A 物質の分離と精製"
+        "abstractTitle": "②-A 物質の分離と精製",
+        "realTitle": "1章 物質の構成"
       },
       {
         "id": "c1_2_B",
         "problemCount": 10,
-        "abstractTitle": "②-B 物質の構成と成分元素の検出"
+        "abstractTitle": "②-B 物質の構成と成分元素の検出",
+        "realTitle": "1章 物質の構成"
       },
       {
         "id": "c1_3",
         "problemCount": 5,
-        "abstractTitle": "③ 粒子の熱運動と物質の三態"
+        "abstractTitle": "③ 粒子の熱運動と物質の三態",
+        "realTitle": "1章 物質の構成"
       },
       {
         "id": "c2_1",
         "problemCount": 14,
-        "abstractTitle": "① 原子の構造と電子配置・元素の周期表"
+        "abstractTitle": "① 原子の構造と電子配置・元素の周期表",
+        "realTitle": "2章 物質の構成粒子"
       },
       {
         "id": "c2_2",
         "problemCount": 5,
-        "abstractTitle": "② イオン"
+        "abstractTitle": "② イオン",
+        "realTitle": "2章 物質の構成粒子"
       },
       {
         "id": "c2_3",
         "problemCount": 4,
-        "abstractTitle": "③ イオン生成とエネルギー"
+        "abstractTitle": "③ イオン生成とエネルギー",
+        "realTitle": "2章 物質の構成粒子"
       },
       {
         "id": "c2_4",
         "problemCount": 8,
-        "abstractTitle": "④ 原子の大きさとイオンの大きさ"
+        "abstractTitle": "④ 原子の大きさとイオンの大きさ",
+        "realTitle": "2章 物質の構成粒子"
       },
       {
         "id": "c3_1",
         "problemCount": 4,
-        "abstractTitle": "① 結合の種類"
+        "abstractTitle": "① 結合の種類",
+        "realTitle": "3章 化学結合"
       },
       {
         "id": "c3_2",
         "problemCount": 18,
-        "abstractTitle": "② 結晶の種類と性質"
+        "abstractTitle": "② 結晶の種類と性質",
+        "realTitle": "3章 化学結合"
       },
       {
         "id": "c3_3",
         "problemCount": 6,
-        "abstractTitle": "③ 分子の相互作用と性質"
+        "abstractTitle": "③ 分子の相互作用と性質",
+        "realTitle": "3章 化学結合"
       },
       {
         "id": "c4_1",
         "problemCount": 7,
-        "abstractTitle": "① 原子量"
+        "abstractTitle": "① 原子量",
+        "realTitle": "4章 物質量と化学反応式"
       },
       {
         "id": "c4_2",
         "problemCount": 8,
-        "abstractTitle": "② 物質量"
+        "abstractTitle": "② 物質量",
+        "realTitle": "4章 物質量と化学反応式"
       },
       {
         "id": "c4_3",
         "problemCount": 5,
-        "abstractTitle": "③ 化学反応式とイオン反応式の作り方"
+        "abstractTitle": "③ 化学反応式とイオン反応式の作り方",
+        "realTitle": "4章 物質量と化学反応式"
       },
       {
         "id": "c4_4",
         "problemCount": 5,
-        "abstractTitle": "④ 濃度"
+        "abstractTitle": "④ 濃度",
+        "realTitle": "4章 物質量と化学反応式"
       },
       {
         "id": "c5_1",
         "problemCount": 2,
-        "abstractTitle": "① 酸と塩基の定義"
+        "abstractTitle": "① 酸と塩基の定義",
+        "realTitle": "5章 酸と塩基"
       },
       {
         "id": "c5_2",
         "problemCount": 3,
-        "abstractTitle": "② 酸と塩基の強さ"
+        "abstractTitle": "② 酸と塩基の強さ",
+        "realTitle": "5章 酸と塩基"
       },
       {
         "id": "c5_3",
         "problemCount": 9,
-        "abstractTitle": "③ pHについて"
+        "abstractTitle": "③ pHについて",
+        "realTitle": "5章 酸と塩基"
       },
       {
         "id": "c5_4",
         "problemCount": 8,
-        "abstractTitle": "④ 中和とは何か"
+        "abstractTitle": "④ 中和とは何か",
+        "realTitle": "5章 酸と塩基"
       },
       {
         "id": "c5_5",
         "problemCount": 3,
-        "abstractTitle": "⑤ 中和反応の計算"
+        "abstractTitle": "⑤ 中和反応の計算",
+        "realTitle": "5章 酸と塩基"
       },
       {
         "id": "c5_6",
         "problemCount": 3,
-        "abstractTitle": "⑥ 中和滴定の道具と方法"
+        "abstractTitle": "⑥ 中和滴定の道具と方法",
+        "realTitle": "5章 酸と塩基"
       },
       {
         "id": "c5_7",
         "problemCount": 2,
-        "abstractTitle": "⑦ 滴定曲線と二段階滴定"
+        "abstractTitle": "⑦ 滴定曲線と二段階滴定",
+        "realTitle": "5章 酸と塩基"
       },
       {
         "id": "c6_1",
         "problemCount": 6,
-        "abstractTitle": "① 酸化と還元・酸化数"
+        "abstractTitle": "① 酸化と還元・酸化数",
+        "realTitle": "6章 酸化還元反応"
       },
       {
         "id": "c6_2",
         "problemCount": 4,
-        "abstractTitle": "② 半反応式と酸化還元反応式"
+        "abstractTitle": "② 半反応式と酸化還元反応式",
+        "realTitle": "6章 酸化還元反応"
       },
       {
         "id": "c6_3",
         "problemCount": 5,
-        "abstractTitle": "③ 酸化還元滴定と量的関係"
+        "abstractTitle": "③ 酸化還元滴定と量的関係",
+        "realTitle": "6章 酸化還元反応"
       },
       {
         "id": "c6_4",
         "problemCount": 2,
-        "abstractTitle": "④ 酸化力・還元力の強さ"
+        "abstractTitle": "④ 酸化力・還元力の強さ",
+        "realTitle": "6章 酸化還元反応"
       },
       {
         "id": "c6_5",
         "problemCount": 3,
-        "abstractTitle": "⑤ 金属のイオン化傾向"
+        "abstractTitle": "⑤ 金属のイオン化傾向",
+        "realTitle": "6章 酸化還元反応"
       },
       {
         "id": "c6_6",
         "problemCount": 2,
-        "abstractTitle": "⑥ 電池"
+        "abstractTitle": "⑥ 電池",
+        "realTitle": "6章 酸化還元反応"
       },
       {
         "id": "c6_7",
         "problemCount": 4,
-        "abstractTitle": "⑦ 金属の製錬と電気分解"
+        "abstractTitle": "⑦ 金属の製錬と電気分解",
+        "realTitle": "6章 酸化還元反応"
       }
     ]
   },
@@ -223,332 +261,398 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       {
         "id": "a1_1",
         "problemCount": 1,
-        "abstractTitle": "① 粒子の熱運動と物質の三態"
+        "abstractTitle": "① 粒子の熱運動と物質の三態",
+        "realTitle": "1章 物質の状態と平衡"
       },
       {
         "id": "a1_2",
         "problemCount": 0,
-        "abstractTitle": "② 気液平衡と蒸気圧"
+        "abstractTitle": "② 気液平衡と蒸気圧",
+        "realTitle": "1章 物質の状態と平衡"
       },
       {
         "id": "a1_3",
         "problemCount": 0,
-        "abstractTitle": "③ 状態図"
+        "abstractTitle": "③ 状態図",
+        "realTitle": "1章 物質の状態と平衡"
       },
       {
         "id": "a1_4",
         "problemCount": 0,
-        "abstractTitle": "④ ボイル・シャルルの法則"
+        "abstractTitle": "④ ボイル・シャルルの法則",
+        "realTitle": "1章 物質の状態と平衡"
       },
       {
         "id": "a1_5",
         "problemCount": 0,
-        "abstractTitle": "⑤ 気体の状態方程式"
+        "abstractTitle": "⑤ 気体の状態方程式",
+        "realTitle": "1章 物質の状態と平衡"
       },
       {
         "id": "a1_6",
         "problemCount": 0,
-        "abstractTitle": "⑥ 混合気体と分圧"
+        "abstractTitle": "⑥ 混合気体と分圧",
+        "realTitle": "1章 物質の状態と平衡"
       },
       {
         "id": "a1_7",
         "problemCount": 0,
-        "abstractTitle": "⑦ 理想気体と実在気体"
+        "abstractTitle": "⑦ 理想気体と実在気体",
+        "realTitle": "1章 物質の状態と平衡"
       },
       {
         "id": "a2_1",
         "problemCount": 0,
-        "abstractTitle": "① 溶解のしくみ"
+        "abstractTitle": "① 溶解のしくみ",
+        "realTitle": "2章 溶液"
       },
       {
         "id": "a2_2",
         "problemCount": 0,
-        "abstractTitle": "② 固体の溶解度"
+        "abstractTitle": "② 固体の溶解度",
+        "realTitle": "2章 溶液"
       },
       {
         "id": "a2_3",
         "problemCount": 0,
-        "abstractTitle": "③ 気体の溶解度"
+        "abstractTitle": "③ 気体の溶解度",
+        "realTitle": "2章 溶液"
       },
       {
         "id": "a2_4",
         "problemCount": 0,
-        "abstractTitle": "④ 希薄溶液の性質（沸点上昇・凝固点降下）"
+        "abstractTitle": "④ 希薄溶液の性質（沸点上昇・凝固点降下）",
+        "realTitle": "2章 溶液"
       },
       {
         "id": "a2_5",
         "problemCount": 0,
-        "abstractTitle": "⑤ 浸透圧"
+        "abstractTitle": "⑤ 浸透圧",
+        "realTitle": "2章 溶液"
       },
       {
         "id": "a2_6",
         "problemCount": 0,
-        "abstractTitle": "⑥ コロイド"
+        "abstractTitle": "⑥ コロイド",
+        "realTitle": "2章 溶液"
       },
       {
         "id": "a3_1",
         "problemCount": 9,
-        "abstractTitle": "① 反応エンタルピー"
+        "abstractTitle": "① 反応エンタルピー",
+        "realTitle": "3章 化学反応とエネルギー"
       },
       {
         "id": "a3_2",
         "problemCount": 5,
-        "abstractTitle": "② ヘスの法則"
+        "abstractTitle": "② ヘスの法則",
+        "realTitle": "3章 化学反応とエネルギー"
       },
       {
         "id": "a3_3",
         "problemCount": 4,
-        "abstractTitle": "③ 結合エネルギー"
+        "abstractTitle": "③ 結合エネルギー",
+        "realTitle": "3章 化学反応とエネルギー"
       },
       {
         "id": "a3_4",
         "problemCount": 1,
-        "abstractTitle": "④ 光とエネルギー"
+        "abstractTitle": "④ 光とエネルギー",
+        "realTitle": "3章 化学反応とエネルギー"
       },
       {
         "id": "a4_1",
         "problemCount": 0,
-        "abstractTitle": "① 電池のしくみと種類"
+        "abstractTitle": "① 電池のしくみと種類",
+        "realTitle": "4章 電池と電気分解"
       },
       {
         "id": "a4_2",
         "problemCount": 0,
-        "abstractTitle": "② 電気分解のしくみ"
+        "abstractTitle": "② 電気分解のしくみ",
+        "realTitle": "4章 電池と電気分解"
       },
       {
         "id": "a4_3",
         "problemCount": 0,
-        "abstractTitle": "③ 電気量と物質量（ファラデーの法則）"
+        "abstractTitle": "③ 電気量と物質量（ファラデーの法則）",
+        "realTitle": "4章 電池と電気分解"
       },
       {
         "id": "a5_1",
         "problemCount": 0,
-        "abstractTitle": "① 反応速度の表し方"
+        "abstractTitle": "① 反応速度の表し方",
+        "realTitle": "5章 化学反応の速さ"
       },
       {
         "id": "a5_2",
         "problemCount": 0,
-        "abstractTitle": "② 反応速度を変える条件"
+        "abstractTitle": "② 反応速度を変える条件",
+        "realTitle": "5章 化学反応の速さ"
       },
       {
         "id": "a5_3",
         "problemCount": 0,
-        "abstractTitle": "③ 反応速度式"
+        "abstractTitle": "③ 反応速度式",
+        "realTitle": "5章 化学反応の速さ"
       },
       {
         "id": "a6_1",
         "problemCount": 0,
-        "abstractTitle": "① 可逆反応と化学平衡"
+        "abstractTitle": "① 可逆反応と化学平衡",
+        "realTitle": "6章 化学平衡"
       },
       {
         "id": "a6_2",
         "problemCount": 0,
-        "abstractTitle": "② 平衡定数"
+        "abstractTitle": "② 平衡定数",
+        "realTitle": "6章 化学平衡"
       },
       {
         "id": "a6_3",
         "problemCount": 0,
-        "abstractTitle": "③ 平衡移動（ルシャトリエの原理）"
+        "abstractTitle": "③ 平衡移動（ルシャトリエの原理）",
+        "realTitle": "6章 化学平衡"
       },
       {
         "id": "a6_4",
         "problemCount": 0,
-        "abstractTitle": "④ 電離平衡"
+        "abstractTitle": "④ 電離平衡",
+        "realTitle": "6章 化学平衡"
       },
       {
         "id": "a6_5",
         "problemCount": 0,
-        "abstractTitle": "⑤ 緩衝液と塩の加水分解"
+        "abstractTitle": "⑤ 緩衝液と塩の加水分解",
+        "realTitle": "6章 化学平衡"
       },
       {
         "id": "a6_6",
         "problemCount": 0,
-        "abstractTitle": "⑥ 溶解度積"
+        "abstractTitle": "⑥ 溶解度積",
+        "realTitle": "6章 化学平衡"
       },
       {
         "id": "a7_1",
         "problemCount": 0,
-        "abstractTitle": "① 周期表と元素の分類"
+        "abstractTitle": "① 周期表と元素の分類",
+        "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_2",
         "problemCount": 0,
-        "abstractTitle": "② 水素と希ガス"
+        "abstractTitle": "② 水素と希ガス",
+        "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_3",
         "problemCount": 0,
-        "abstractTitle": "③ ハロゲン（17族）"
+        "abstractTitle": "③ ハロゲン（17族）",
+        "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_4",
         "problemCount": 0,
-        "abstractTitle": "④ 酸素・硫黄（16族）"
+        "abstractTitle": "④ 酸素・硫黄（16族）",
+        "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_5",
         "problemCount": 0,
-        "abstractTitle": "⑤ 窒素・リン（15族）"
+        "abstractTitle": "⑤ 窒素・リン（15族）",
+        "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_6",
         "problemCount": 0,
-        "abstractTitle": "⑥ 炭素・ケイ素（14族）"
+        "abstractTitle": "⑥ 炭素・ケイ素（14族）",
+        "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_7",
         "problemCount": 0,
-        "abstractTitle": "⑦ 気体の製法と性質のまとめ"
+        "abstractTitle": "⑦ 気体の製法と性質のまとめ",
+        "realTitle": "7章 非金属元素"
       },
       {
         "id": "a8_1",
         "problemCount": 0,
-        "abstractTitle": "① アルカリ金属（1族）"
+        "abstractTitle": "① アルカリ金属（1族）",
+        "realTitle": "8章 典型金属元素"
       },
       {
         "id": "a8_2",
         "problemCount": 0,
-        "abstractTitle": "② アルカリ土類金属（2族）"
+        "abstractTitle": "② アルカリ土類金属（2族）",
+        "realTitle": "8章 典型金属元素"
       },
       {
         "id": "a8_3",
         "problemCount": 0,
-        "abstractTitle": "③ アルミニウム・亜鉛（両性金属）"
+        "abstractTitle": "③ アルミニウム・亜鉛（両性金属）",
+        "realTitle": "8章 典型金属元素"
       },
       {
         "id": "a8_4",
         "problemCount": 0,
-        "abstractTitle": "④ スズ・鉛"
+        "abstractTitle": "④ スズ・鉛",
+        "realTitle": "8章 典型金属元素"
       },
       {
         "id": "a9_1",
         "problemCount": 0,
-        "abstractTitle": "① 遷移元素の特徴"
+        "abstractTitle": "① 遷移元素の特徴",
+        "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_2",
         "problemCount": 0,
-        "abstractTitle": "② 鉄"
+        "abstractTitle": "② 鉄",
+        "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_3",
         "problemCount": 0,
-        "abstractTitle": "③ 銅・銀"
+        "abstractTitle": "③ 銅・銀",
+        "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_4",
         "problemCount": 0,
-        "abstractTitle": "④ クロム・マンガン"
+        "abstractTitle": "④ クロム・マンガン",
+        "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_5",
         "problemCount": 0,
-        "abstractTitle": "⑤ 錯イオンと配位結合"
+        "abstractTitle": "⑤ 錯イオンと配位結合",
+        "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_6",
         "problemCount": 0,
-        "abstractTitle": "⑥ 金属イオンの分離と系統分析"
+        "abstractTitle": "⑥ 金属イオンの分離と系統分析",
+        "realTitle": "9章 遷移元素"
       },
       {
         "id": "a10_1",
         "problemCount": 0,
-        "abstractTitle": "① 有機化合物の特徴と分類"
+        "abstractTitle": "① 有機化合物の特徴と分類",
+        "realTitle": "10章 有機化合物の基礎"
       },
       {
         "id": "a10_2",
         "problemCount": 0,
-        "abstractTitle": "② 元素分析と組成式の決定"
+        "abstractTitle": "② 元素分析と組成式の決定",
+        "realTitle": "10章 有機化合物の基礎"
       },
       {
         "id": "a10_3",
         "problemCount": 0,
-        "abstractTitle": "③ 異性体"
+        "abstractTitle": "③ 異性体",
+        "realTitle": "10章 有機化合物の基礎"
       },
       {
         "id": "a11_1",
         "problemCount": 0,
-        "abstractTitle": "① アルカン"
+        "abstractTitle": "① アルカン",
+        "realTitle": "11章 脂肪族炭化水素"
       },
       {
         "id": "a11_2",
         "problemCount": 0,
-        "abstractTitle": "② アルケン"
+        "abstractTitle": "② アルケン",
+        "realTitle": "11章 脂肪族炭化水素"
       },
       {
         "id": "a11_3",
         "problemCount": 0,
-        "abstractTitle": "③ アルキン"
+        "abstractTitle": "③ アルキン",
+        "realTitle": "11章 脂肪族炭化水素"
       },
       {
         "id": "a12_1",
         "problemCount": 0,
-        "abstractTitle": "① アルコールとエーテル"
+        "abstractTitle": "① アルコールとエーテル",
+        "realTitle": "12章 酸素を含む脂肪族化合物"
       },
       {
         "id": "a12_2",
         "problemCount": 0,
-        "abstractTitle": "② アルデヒドとケトン"
+        "abstractTitle": "② アルデヒドとケトン",
+        "realTitle": "12章 酸素を含む脂肪族化合物"
       },
       {
         "id": "a12_3",
         "problemCount": 0,
-        "abstractTitle": "③ カルボン酸"
+        "abstractTitle": "③ カルボン酸",
+        "realTitle": "12章 酸素を含む脂肪族化合物"
       },
       {
         "id": "a12_4",
         "problemCount": 0,
-        "abstractTitle": "④ エステルと油脂"
+        "abstractTitle": "④ エステルと油脂",
+        "realTitle": "12章 酸素を含む脂肪族化合物"
       },
       {
         "id": "a13_1",
         "problemCount": 0,
-        "abstractTitle": "① ベンゼンとその構造"
+        "abstractTitle": "① ベンゼンとその構造",
+        "realTitle": "13章 芳香族化合物"
       },
       {
         "id": "a13_2",
         "problemCount": 0,
-        "abstractTitle": "② フェノール類"
+        "abstractTitle": "② フェノール類",
+        "realTitle": "13章 芳香族化合物"
       },
       {
         "id": "a13_3",
         "problemCount": 0,
-        "abstractTitle": "③ 芳香族カルボン酸"
+        "abstractTitle": "③ 芳香族カルボン酸",
+        "realTitle": "13章 芳香族化合物"
       },
       {
         "id": "a13_4",
         "problemCount": 0,
-        "abstractTitle": "④ 芳香族アミンとアゾ化合物"
+        "abstractTitle": "④ 芳香族アミンとアゾ化合物",
+        "realTitle": "13章 芳香族化合物"
       },
       {
         "id": "a13_5",
         "problemCount": 0,
-        "abstractTitle": "⑤ 有機化合物の分離"
+        "abstractTitle": "⑤ 有機化合物の分離",
+        "realTitle": "13章 芳香族化合物"
       },
       {
         "id": "a14_1",
         "problemCount": 0,
-        "abstractTitle": "① 高分子化合物の基礎"
+        "abstractTitle": "① 高分子化合物の基礎",
+        "realTitle": "14章 高分子化合物"
       },
       {
         "id": "a14_2",
         "problemCount": 0,
-        "abstractTitle": "② 糖類（炭水化物）"
+        "abstractTitle": "② 糖類（炭水化物）",
+        "realTitle": "14章 高分子化合物"
       },
       {
         "id": "a14_3",
         "problemCount": 0,
-        "abstractTitle": "③ アミノ酸とタンパク質"
+        "abstractTitle": "③ アミノ酸とタンパク質",
+        "realTitle": "14章 高分子化合物"
       },
       {
         "id": "a14_4",
         "problemCount": 0,
-        "abstractTitle": "④ 核酸"
+        "abstractTitle": "④ 核酸",
+        "realTitle": "14章 高分子化合物"
       },
       {
         "id": "a14_5",
         "problemCount": 0,
-        "abstractTitle": "⑤ 合成高分子化合物"
+        "abstractTitle": "⑤ 合成高分子化合物",
+        "realTitle": "14章 高分子化合物"
       }
     ]
   },
@@ -559,47 +663,56 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       {
         "id": "el1_A",
         "problemCount": 14,
-        "abstractTitle": "第1問 A"
+        "abstractTitle": "第1問 A",
+        "realTitle": "第1問 A"
       },
       {
         "id": "el1_B",
         "problemCount": 15,
-        "abstractTitle": "第1問 B"
+        "abstractTitle": "第1問 B",
+        "realTitle": "第1問 B"
       },
       {
         "id": "el2",
         "problemCount": 0,
-        "abstractTitle": "第2問"
+        "abstractTitle": "第2問",
+        "realTitle": "第2問"
       },
       {
         "id": "el3",
         "problemCount": 15,
-        "abstractTitle": "第3問"
+        "abstractTitle": "第3問",
+        "realTitle": "第3問"
       },
       {
         "id": "el4_A",
         "problemCount": 0,
-        "abstractTitle": "第4問 A"
+        "abstractTitle": "第4問 A",
+        "realTitle": "第4問 A"
       },
       {
         "id": "el4_B",
         "problemCount": 0,
-        "abstractTitle": "第4問 B"
+        "abstractTitle": "第4問 B",
+        "realTitle": "第4問 B"
       },
       {
         "id": "el5",
         "problemCount": 0,
-        "abstractTitle": "第5問"
+        "abstractTitle": "第5問",
+        "realTitle": "第5問"
       },
       {
         "id": "el6_A",
         "problemCount": 0,
-        "abstractTitle": "第6問 A"
+        "abstractTitle": "第6問 A",
+        "realTitle": "第6問 A"
       },
       {
         "id": "el6_B",
         "problemCount": 0,
-        "abstractTitle": "第6問 B"
+        "abstractTitle": "第6問 B",
+        "realTitle": "第6問 B"
       }
     ]
   },
@@ -610,167 +723,200 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       {
         "id": "m1_1",
         "problemCount": 2,
-        "abstractTitle": "① 基本公式（累乗・指数・対数・三角）"
+        "abstractTitle": "① 基本公式（累乗・指数・対数・三角）",
+        "realTitle": "1章 不定積分の土台"
       },
       {
         "id": "m1_2",
         "problemCount": 2,
-        "abstractTitle": "② f(ax+b) 型（1/a 倍を忘れない）"
+        "abstractTitle": "② f(ax+b) 型（1/a 倍を忘れない）",
+        "realTitle": "1章 不定積分の土台"
       },
       {
         "id": "m1_3",
         "problemCount": 2,
-        "abstractTitle": "③ 微分接触型（置換積分の主役）"
+        "abstractTitle": "③ 微分接触型（置換積分の主役）",
+        "realTitle": "2章 置換積分と微分接触"
       },
       {
         "id": "m1_4",
         "problemCount": 2,
-        "abstractTitle": "④ log 型（分子が分母の微分）"
+        "abstractTitle": "④ log 型（分子が分母の微分）",
+        "realTitle": "2章 置換積分と微分接触"
       },
       {
         "id": "m1_5",
         "problemCount": 2,
-        "abstractTitle": "⑤ 部分積分（消去型）"
+        "abstractTitle": "⑤ 部分積分（消去型）",
+        "realTitle": "3章 部分積分"
       },
       {
         "id": "m1_6",
         "problemCount": 1,
-        "abstractTitle": "⑥ 部分積分（同形出現・2回転）"
+        "abstractTitle": "⑥ 部分積分（同形出現・2回転）",
+        "realTitle": "3章 部分積分"
       },
       {
         "id": "m1_7",
         "problemCount": 1,
-        "abstractTitle": "⑦ 部分分数分解"
+        "abstractTitle": "⑦ 部分分数分解",
+        "realTitle": "4章 分数関数と部分分数分解"
       },
       {
         "id": "m1_8",
         "problemCount": 2,
-        "abstractTitle": "⑧ sin・cos の n 乗（次数下げと接触）"
+        "abstractTitle": "⑧ sin・cos の n 乗（次数下げと接触）",
+        "realTitle": "5章 三角関数の積分"
       },
       {
         "id": "m1_9",
         "problemCount": 1,
-        "abstractTitle": "⑨ 積和公式・tan の処理"
+        "abstractTitle": "⑨ 積和公式・tan の処理",
+        "realTitle": "5章 三角関数の積分"
       },
       {
         "id": "m1_10",
         "problemCount": 3,
-        "abstractTitle": "⑩ x = a sinθ・x = a tanθ・その他の置換"
+        "abstractTitle": "⑩ x = a sinθ・x = a tanθ・その他の置換",
+        "realTitle": "6章 特殊な置換"
       },
       {
         "id": "m2_1",
         "problemCount": 2,
-        "abstractTitle": "⑪ 偶関数・奇関数と King Property"
+        "abstractTitle": "⑪ 偶関数・奇関数と King Property",
+        "realTitle": "7章 定積分の技巧"
       },
       {
         "id": "m2_2",
         "problemCount": 3,
-        "abstractTitle": "⑫ 定積分で表された関数・区分求積・漸化式"
+        "abstractTitle": "⑫ 定積分で表された関数・区分求積・漸化式",
+        "realTitle": "7章 定積分の技巧"
       },
       {
         "id": "mv_1",
         "problemCount": 2,
-        "abstractTitle": "① 演算・成分・大きさ・単位ベクトル"
+        "abstractTitle": "① 演算・成分・大きさ・単位ベクトル",
+        "realTitle": "1章 平面ベクトルの基本"
       },
       {
         "id": "mv_2",
         "problemCount": 2,
-        "abstractTitle": "② 内積・なす角・垂直条件・|a+tb|の最小"
+        "abstractTitle": "② 内積・なす角・垂直条件・|a+tb|の最小",
+        "realTitle": "1章 平面ベクトルの基本"
       },
       {
         "id": "mv_3",
         "problemCount": 2,
-        "abstractTitle": "③ 内分・外分・重心"
+        "abstractTitle": "③ 内分・外分・重心",
+        "realTitle": "2章 位置ベクトルと図形"
       },
       {
         "id": "mv_4",
         "problemCount": 2,
-        "abstractTitle": "④ 交点（係数比較）・共線条件 s+t=1"
+        "abstractTitle": "④ 交点（係数比較）・共線条件 s+t=1",
+        "realTitle": "2章 位置ベクトルと図形"
       },
       {
         "id": "mv_5",
         "problemCount": 2,
-        "abstractTitle": "⑤ 三角形の面積・正射影ベクトル"
+        "abstractTitle": "⑤ 三角形の面積・正射影ベクトル",
+        "realTitle": "3章 面積とベクトル方程式"
       },
       {
         "id": "mv_6",
         "problemCount": 2,
-        "abstractTitle": "⑥ 直線・円のベクトル方程式"
+        "abstractTitle": "⑥ 直線・円のベクトル方程式",
+        "realTitle": "3章 面積とベクトル方程式"
       },
       {
         "id": "mv_7",
         "problemCount": 2,
-        "abstractTitle": "⑦ 空間の成分・内積・垂直・距離"
+        "abstractTitle": "⑦ 空間の成分・内積・垂直・距離",
+        "realTitle": "4章 空間ベクトル"
       },
       {
         "id": "mv_8",
         "problemCount": 2,
-        "abstractTitle": "⑧ 共面条件 s+t+u=1・球面"
+        "abstractTitle": "⑧ 共面条件 s+t+u=1・球面",
+        "realTitle": "4章 空間ベクトル"
       },
       {
         "id": "mp_1",
         "problemCount": 2,
-        "abstractTitle": "① P と C の使い分け・最短経路"
+        "abstractTitle": "① P と C の使い分け・最短経路",
+        "realTitle": "1章 場合の数の土台"
       },
       {
         "id": "mp_2",
         "problemCount": 2,
-        "abstractTitle": "② 円順列・重複順列・組分け"
+        "abstractTitle": "② 円順列・重複順列・組分け",
+        "realTitle": "1章 場合の数の土台"
       },
       {
         "id": "mp_3",
         "problemCount": 2,
-        "abstractTitle": "③ 同様に確からしい・サイコロ・玉"
+        "abstractTitle": "③ 同様に確からしい・サイコロ・玉",
+        "realTitle": "2章 確率の基本"
       },
       {
         "id": "mp_4",
         "problemCount": 2,
-        "abstractTitle": "④ 余事象・和事象"
+        "abstractTitle": "④ 余事象・和事象",
+        "realTitle": "2章 確率の基本"
       },
       {
         "id": "mp_5",
         "problemCount": 2,
-        "abstractTitle": "⑤ 反復試行・優勝決定の確率"
+        "abstractTitle": "⑤ 反復試行・優勝決定の確率",
+        "realTitle": "3章 独立試行・反復試行"
       },
       {
         "id": "mp_6",
         "problemCount": 2,
-        "abstractTitle": "⑥ 条件付き確率・原因の確率"
+        "abstractTitle": "⑥ 条件付き確率・原因の確率",
+        "realTitle": "4章 条件付き確率・期待値"
       },
       {
         "id": "mp_7",
         "problemCount": 2,
-        "abstractTitle": "⑦ 期待値"
+        "abstractTitle": "⑦ 期待値",
+        "realTitle": "4章 条件付き確率・期待値"
       },
       {
         "id": "mp_8",
         "problemCount": 2,
-        "abstractTitle": "⑧ 総合問題（パターンの融合）"
+        "abstractTitle": "⑧ 総合問題（パターンの融合）",
+        "realTitle": "4章 条件付き確率・期待値"
       },
       {
         "id": "mi_1",
         "problemCount": 2,
-        "abstractTitle": "① 約数の個数・総和・最大公約数と最小公倍数"
+        "abstractTitle": "① 約数の個数・総和・最大公約数と最小公倍数",
+        "realTitle": "1章 約数・倍数と素因数分解"
       },
       {
         "id": "mi_2",
         "problemCount": 2,
-        "abstractTitle": "② ユークリッドの互除法・ax+by=c の整数解"
+        "abstractTitle": "② ユークリッドの互除法・ax+by=c の整数解",
+        "realTitle": "2章 互除法と1次不定方程式"
       },
       {
         "id": "mi_3",
         "problemCount": 2,
-        "abstractTitle": "③ 積の形×約数の組合せ・素数条件"
+        "abstractTitle": "③ 積の形×約数の組合せ・素数条件",
+        "realTitle": "3章 因数分解の利用"
       },
       {
         "id": "mi_4",
         "problemCount": 2,
-        "abstractTitle": "④ 余りの計算・余りで分類する証明"
+        "abstractTitle": "④ 余りの計算・余りで分類する証明",
+        "realTitle": "4章 余りによる分類と絞り込み"
       },
       {
         "id": "mi_5",
         "problemCount": 2,
-        "abstractTitle": "⑤ 範囲の絞り込み・n進法"
+        "abstractTitle": "⑤ 範囲の絞り込み・n進法",
+        "realTitle": "4章 余りによる分類と絞り込み"
       }
     ]
   },
@@ -781,27 +927,32 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       {
         "id": "bio1_1",
         "problemCount": 5,
-        "abstractTitle": "① 生物の共通性・細胞・代謝・酵素・顕微鏡"
+        "abstractTitle": "① 生物の共通性・細胞・代謝・酵素・顕微鏡",
+        "realTitle": "1章 生物の特徴"
       },
       {
         "id": "bio2_1",
         "problemCount": 5,
-        "abstractTitle": "② DNA・複製・転写翻訳・ゲノム"
+        "abstractTitle": "② DNA・複製・転写翻訳・ゲノム",
+        "realTitle": "2章 遺伝子とその働き"
       },
       {
         "id": "bio3_1",
         "problemCount": 6,
-        "abstractTitle": "③ 体液・肝腎・自律神経・ホルモン・免疫"
+        "abstractTitle": "③ 体液・肝腎・自律神経・ホルモン・免疫",
+        "realTitle": "3章 体内環境の維持"
       },
       {
         "id": "bio4_1",
         "problemCount": 4,
-        "abstractTitle": "④ 植生・遷移・バイオーム"
+        "abstractTitle": "④ 植生・遷移・バイオーム",
+        "realTitle": "4章 植生と遷移・バイオーム"
       },
       {
         "id": "bio5_1",
         "problemCount": 4,
-        "abstractTitle": "⑤ 生態系・物質循環・環境保全"
+        "abstractTitle": "⑤ 生態系・物質循環・環境保全",
+        "realTitle": "5章 生態系とその保全"
       }
     ]
   },
@@ -812,102 +963,122 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       {
         "id": "eg1_1",
         "problemCount": 1,
-        "abstractTitle": "① 基本5文型と自動詞・他動詞"
+        "abstractTitle": "① 基本5文型と自動詞・他動詞",
+        "realTitle": "1章 文型と動詞"
       },
       {
         "id": "eg1_2",
         "problemCount": 1,
-        "abstractTitle": "② 基本時制と時制の一致"
+        "abstractTitle": "② 基本時制と時制の一致",
+        "realTitle": "2章 時制"
       },
       {
         "id": "eg1_3",
         "problemCount": 1,
-        "abstractTitle": "③ 完了形（現在・過去・未来）"
+        "abstractTitle": "③ 完了形（現在・過去・未来）",
+        "realTitle": "2章 時制"
       },
       {
         "id": "eg1_4",
         "problemCount": 1,
-        "abstractTitle": "④ 助動詞と助動詞＋have p.p."
+        "abstractTitle": "④ 助動詞と助動詞＋have p.p.",
+        "realTitle": "3章 助動詞"
       },
       {
         "id": "eg1_5",
         "problemCount": 1,
-        "abstractTitle": "⑤ 受動態・知覚動詞・使役動詞"
+        "abstractTitle": "⑤ 受動態・知覚動詞・使役動詞",
+        "realTitle": "4章 態"
       },
       {
         "id": "eg2_1",
         "problemCount": 1,
-        "abstractTitle": "⑥ 不定詞（3用法と重要構文）"
+        "abstractTitle": "⑥ 不定詞（3用法と重要構文）",
+        "realTitle": "5章 準動詞"
       },
       {
         "id": "eg2_2",
         "problemCount": 1,
-        "abstractTitle": "⑦ 動名詞と to do / doing の使い分け"
+        "abstractTitle": "⑦ 動名詞と to do / doing の使い分け",
+        "realTitle": "5章 準動詞"
       },
       {
         "id": "eg2_3",
         "problemCount": 1,
-        "abstractTitle": "⑧ 分詞と分詞構文"
+        "abstractTitle": "⑧ 分詞と分詞構文",
+        "realTitle": "5章 準動詞"
       },
       {
         "id": "eg2_4",
         "problemCount": 1,
-        "abstractTitle": "⑨ 関係代名詞（格と what・that）"
+        "abstractTitle": "⑨ 関係代名詞（格と what・that）",
+        "realTitle": "6章 関係詞"
       },
       {
         "id": "eg2_5",
         "problemCount": 1,
-        "abstractTitle": "⑩ 関係副詞と複合関係詞"
+        "abstractTitle": "⑩ 関係副詞と複合関係詞",
+        "realTitle": "6章 関係詞"
       },
       {
         "id": "eg3_1",
         "problemCount": 1,
-        "abstractTitle": "⑪ 仮定法過去・過去完了・未来"
+        "abstractTitle": "⑪ 仮定法過去・過去完了・未来",
+        "realTitle": "7章 仮定法"
       },
       {
         "id": "eg3_2",
         "problemCount": 1,
-        "abstractTitle": "⑫ if を使わない仮定表現"
+        "abstractTitle": "⑫ if を使わない仮定表現",
+        "realTitle": "7章 仮定法"
       },
       {
         "id": "eg3_3",
         "problemCount": 1,
-        "abstractTitle": "⑬ 原級・比較級・最上級と重要表現"
+        "abstractTitle": "⑬ 原級・比較級・最上級と重要表現",
+        "realTitle": "8章 比較"
       },
       {
         "id": "eg3_4",
         "problemCount": 1,
-        "abstractTitle": "⑭ 強調・倒置・省略・同格・無生物主語"
+        "abstractTitle": "⑭ 強調・倒置・省略・同格・無生物主語",
+        "realTitle": "9章 特殊構文"
       },
       {
         "id": "eg4_1",
         "problemCount": 1,
-        "abstractTitle": "⑮ 動詞の語法（自他・語形・型）"
+        "abstractTitle": "⑮ 動詞の語法（自他・語形・型）",
+        "realTitle": "10章 語法"
       },
       {
         "id": "eg4_2",
         "problemCount": 1,
-        "abstractTitle": "⑯ 名詞・代名詞・冠詞の語法"
+        "abstractTitle": "⑯ 名詞・代名詞・冠詞の語法",
+        "realTitle": "10章 語法"
       },
       {
         "id": "eg4_3",
         "problemCount": 1,
-        "abstractTitle": "⑰ 形容詞・副詞の語法"
+        "abstractTitle": "⑰ 形容詞・副詞の語法",
+        "realTitle": "10章 語法"
       },
       {
         "id": "eg4_4",
         "problemCount": 1,
-        "abstractTitle": "⑱ 前置詞の語法"
+        "abstractTitle": "⑱ 前置詞の語法",
+        "realTitle": "10章 語法"
       },
       {
         "id": "eg5_1",
         "problemCount": 1,
-        "abstractTitle": "⑲ 動詞を含む熟語・群動詞"
+        "abstractTitle": "⑲ 動詞を含む熟語・群動詞",
+        "realTitle": "11章 イディオム"
       },
       {
         "id": "eg5_2",
         "problemCount": 1,
-        "abstractTitle": "⑳ 会話表現と多義語・語い"
+        "abstractTitle": "⑳ 会話表現と多義語・語い",
+        "realTitle": "12章 会話・語い"
       }
     ]
   }

@@ -124,15 +124,27 @@ function reachFrom(entry: string): Reach {
  * ★教科データの「玄関」★
  *
  * ここに一歩でも入ると、その教科の問題文・選択肢・解説が全部ついてくる。
- * allChapters と chapterCatalog は全教科をまとめる集約点なので、
+ * allChapters は全教科をまとめる集約点なので、
  * 触れた時点で6教科ぶん全部が来る（いちばん重い経路）。
  *
  * 「玄関に入っていないこと」を見るのが要点で、
  * 個々の問題ファイル名を並べても意味がない（増え続けるので保守できない）。
+ *
+ * -------------------------------------------------------------------
+ * ■ chapterCatalog.ts をこの一覧から外した理由
+ * -------------------------------------------------------------------
+ * 以前は chapterCatalog.ts も玄関だった（getPartsOfSubject 経由で
+ * 6教科ぶんの本体を引き込み、実測 47 ファイル / 2,578,344 バイト）。
+ * いまは軽い索引だけを読むように直したので、
+ * ここを通っても問題データは一切ついてこない（実測 2 ファイル / 43,993 バイト）。
+ *
+ * ★「重くないこと」を名前で信じているのではない★
+ * 下の SCREEN_BUDGETS に chapterCatalog.ts 自身の予算行を置いてあるので、
+ * もし将来このファイルが教科データ本体を読むように戻れば、
+ * そちらのテストが必ず落ちる。
  */
 const SUBJECT_DATA_ENTRANCES = [
   'src/data/allChapters.ts',
-  'src/data/chapterCatalog.ts',
   'src/data/chemistryData.ts',
   'src/data/chemistryAdvancedData.ts',
   'src/data/englishListeningData.ts',
@@ -191,6 +203,33 @@ const SCREEN_BUDGETS: Array<{ entry: string; budget: number; why: string }> = [
     entry: 'src/data/chapterTreeMap.ts',
     budget: 300_000,
     why: '章ID→図の対応表。図の参照しか持たないので図データのみで足りる',
+  },
+  /*
+   * ここから下は先生ダッシュボード側。
+   *
+   * 出しているのは到達率（解いた大問数 / その章の大問数）と章名だけで、
+   * 問題文・選択肢・解説は1文字も表示していない。
+   * それにも関わらず教科データ本体を読んでいたため、実測で
+   *   chapterCatalog.ts   47 ファイル / 2,589,638 バイト
+   *   TeacherDashboard    47 ファイル / 2,589,638 バイト
+   * になっていた。索引に切り替えて 43,993 / 50,474 バイトになった。
+   *
+   * ★ここは「分母」を作る場所なので、軽さより正しさが優先★
+   * 索引が古いと到達率の分母だけが古くなり、「解いたのに％が上がらない」
+   * という最も原因の分からない不具合になる。それは
+   * tests/chapterIndex.test.ts と tests/chapterCatalog.test.ts が
+   * 教科データ本体と1件ずつ突き合わせて防いでいる。
+   * この予算行が見ているのは重さだけである。
+   */
+  {
+    entry: 'src/data/chapterCatalog.ts',
+    budget: 80_000,
+    why: '章カタログ。返すのは章ID・章名・大問数の3項目だけなので索引で足りる',
+  },
+  {
+    entry: 'src/components/TeacherDashboard.tsx',
+    budget: 100_000,
+    why: '先生ダッシュボード。到達率の数字と章名しか出さないので索引＋テーマで足りる',
   },
 ];
 

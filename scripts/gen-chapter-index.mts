@@ -101,11 +101,28 @@ const OUT = resolve(HERE, '../src/data/chapterIndex.generated.ts');
  * フィールド名は Home.tsx が元々読んでいた名前と同じにしている
  * （id / title / abstractTitle）。呼び出し側の書き方を変えずに
  * 差し替えられるようにするため。
+ *
+ * ★realTitle も持たせている理由★
+ *   先生ダッシュボード（chapterCatalog.ts）が章名を出すときの式は
+ *
+ *       abstractTitle || realTitle || id
+ *
+ *   で、abstractTitle が無い章では realTitle が使われる。
+ *   実データでは現在 162 章すべてが abstractTitle を持っているため
+ *   realTitle が選ばれる章は 0 件だが、それは「今たまたまそうである」
+ *   だけで仕様ではない。索引に realTitle を入れずに切り替えると、
+ *   将来 abstractTitle の無い章を追加した瞬間に、先生の画面へ
+ *   `c99_1` のような★生の章IDが表示される★ことになる。
+ *   しかも本体を見ないので誰も気づけない。
+ *   そこで「今の実データで一致するから省く」ではなく、
+ *   ★式そのものを再現できる情報を索引に持たせる★形にしてある。
  */
 interface ChapterIndexEntry {
   id: string;
   title?: string;
   abstractTitle?: string;
+  /** 教科書上の章名（例「1章 物質の構成」）。章名の代替に使う。 */
+  realTitle?: string;
   /** この章の大問数（miniTest ＋ practiceProblems）。数え方は data/problemCount.ts と同じ。 */
   problemCount: number;
 }
@@ -182,6 +199,9 @@ function buildIndex(): SubjectIndexEntry[] {
       if (typeof chapter.abstractTitle === 'string' && chapter.abstractTitle) {
         entry.abstractTitle = chapter.abstractTitle;
       }
+      if (typeof chapter.realTitle === 'string' && chapter.realTitle) {
+        entry.realTitle = chapter.realTitle;
+      }
       return entry;
     });
 
@@ -238,6 +258,15 @@ export interface ChapterIndexEntry {
   id: string;
   title?: string;
   abstractTitle?: string;
+  /**
+   * 教科書上の章名（例「1章 物質の構成」）。
+   *
+   * 先生ダッシュボードの章名は \`abstractTitle || realTitle || id\` で決まるため、
+   * abstractTitle が無い章のために必要。現在の実データでは全章が
+   * abstractTitle を持っているので出番は無いが、無いと将来
+   * 章名の代わりに生の章IDが表示される（しかも気づけない）。
+   */
+  realTitle?: string;
   /** この章の大問数（miniTest ＋ practiceProblems） */
   problemCount: number;
 }

@@ -148,6 +148,49 @@ export default defineConfig({
            */
           if (id.includes('/src/data/chapterIndex.generated')) return undefined;
 
+          /*
+           * ★例外2: 章カタログも data チャンクに入れない★
+           *
+           * ■ 何が起きていたか（実測）
+           *   src/data/chapterCatalog.ts は先生ダッシュボードのために
+           *   「章ID・章名・大問数」を返すだけのファイルで、
+           *   もう教科データ本体を一切 import していない
+           *   （実行時 import は chapterIndex.generated の1本だけ。
+           *     allChapters と studySummary は import type なので実行時に消える）。
+           *
+           *   ところが上の `id.includes('/src/data/')` は src/data 配下を
+           *   無条件に data チャンクへ送るため、軽くしたこのファイルも
+           *   3MB の data チャンクに入れられていた。
+           *   さらに悪いことに、★このファイルが data チャンクに居ると
+           *   索引まで data チャンク側へ引き寄せられた★。
+           *   ビルド結果を grep すると
+           *     直前のビルド : index に problemCount 165 個 / data に   0 個
+           *     このビルド   : index に problemCount   3 個 / data に 164 個
+           *   と逆転していた。索引を index 側へ置く例外1が、
+           *   ★実質的に無効化されていた★ ということである。
+           *
+           *   これは前にも踏んだ落とし穴と同じで、
+           *   「ソースの依存を軽くしても、配信の単位（チャンク）が
+           *   3MB のままなら効果は出ない」。依存グラフだけを見て
+           *   満足せず、必ず dist を grep して確かめる必要がある。
+           *
+           * ■ なぜこの例外は安全か（真っ白問題の再発根拠がない）
+           *   data チャンクを割ってはいけない理由は
+           *   「全教科を集めるハブがチャンク間の循環を作る」ことだった。
+           *   chapterCatalog.ts の実行時の行き先は
+           *   chapterIndex.generated（＝何も import しない葉）だけなので、
+           *   このファイルから data チャンクへ向かう辺は1本も無い。
+           *   辺が無ければチャンク間の循環に加われないので、
+           *   Cannot access 'D' before initialization は起こり得ない。
+           *
+           *   ★この前提は思い込みではなく機械検査してある★
+           *   tests/screenDataWeight.test.ts が chapterCatalog.ts の
+           *   到達先（実行時 import のみを辿る）を測っており、
+           *   教科データ本体へ届いた時点で必ず落ちる。
+           *   落ちたときは、この例外行も一緒に見直すこと。
+           */
+          if (id.includes('/src/data/chapterCatalog')) return undefined;
+
           if (id.includes('/src/data/')) return 'data';
 
           return undefined;

@@ -249,6 +249,27 @@ describe('章インデックス：軽いままであること（これが存在�
      *
      * ここでは「例外が data 行より前に書かれている」ことまで検査する。
      * 後ろに書くと先に data として拾われてしまい、無意味になるため。
+     *
+     * -------------------------------------------------------------------
+     * ■ ★索引1件だけでなく「例外全部」を見る理由（実際に踏んだ穴）★
+     * -------------------------------------------------------------------
+     * 例外は今後も増える（軽くした data 層のファイルが増えるため）。
+     * ところが「索引の行だけ」を見る検査だと、
+     * ★別の例外行が data 行より後ろに書かれても気づけない★。
+     *
+     * さらに悪いことに、例外を書き忘れたファイルが data チャンクに残ると、
+     * そのファイルを参照している索引まで data チャンク側へ引き寄せられる。
+     * 実際に chapterCatalog.ts を軽くしたとき、例外を書く前のビルドでは
+     *     index の problemCount   3 個 / data の problemCount 164 個
+     * と逆転しており、索引の例外（例外1）が実質無効化されていた。
+     * 例外を追加したら
+     *     index の problemCount 167 個 / data の problemCount   0 個
+     * に戻った。
+     *
+     * つまり「例外が1つでも順序を間違えると、他の例外まで一緒に壊れる」。
+     * そこでこの検査は特定の1行を見るのではなく、
+     * ★src/data を判定するすべての例外行が data 行より前にあること★
+     * を見る形にしてある。例外を足しても検査を足す必要はない。
      */
     const config = readFileSync('vite.config.ts', 'utf8');
 
@@ -263,15 +284,36 @@ describe('章インデックス：軽いままであること（これが存在�
       .map((line) => line.trim())
       .filter((line) => line.startsWith('if (') && line.includes('/src/data/'));
 
-    const exceptionAt = codeLines.findIndex((line) =>
-      line.includes('/src/data/chapterIndex.generated'),
-    );
     const dataRuleAt = codeLines.findIndex(
       (line) => line.includes("'/src/data/'") && line.includes("'data'"),
     );
+    expect(dataRuleAt, 'src/data をまとめて data チャンクにする行が見つからない').toBeGreaterThan(
+      -1,
+    );
 
-    expect(exceptionAt).toBeGreaterThan(-1);
-    expect(dataRuleAt).toBeGreaterThan(-1);
-    expect(exceptionAt).toBeLessThan(dataRuleAt);
+    // 索引の例外は必ず存在していなければならない（この索引の存在意義そのもの）
+    const indexExceptionAt = codeLines.findIndex((line) =>
+      line.includes('/src/data/chapterIndex.generated'),
+    );
+    expect(indexExceptionAt, '索引を data チャンクから外す例外が無い').toBeGreaterThan(-1);
+    expect(
+      indexExceptionAt,
+      '索引の例外が data 行より後ろにある（先に data として拾われるので無意味）',
+    ).toBeLessThan(dataRuleAt);
+
+    /*
+     * data 行より後ろに書かれた「例外らしき行」が無いこと。
+     *
+     * 例外行＝src/data の中の特定ファイルを判定して data 以外を返す行。
+     * data 行そのものは除く。
+     */
+    const misplaced = codeLines
+      .slice(dataRuleAt + 1)
+      .filter((line) => !(line.includes("'/src/data/'") && line.includes("'data'")));
+    expect(
+      misplaced,
+      'data 行より後ろに src/data の例外が書かれている（この行は永久に実行されない）:\n  ' +
+        misplaced.join('\n  '),
+    ).toEqual([]);
   });
 });
