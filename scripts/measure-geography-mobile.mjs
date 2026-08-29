@@ -193,8 +193,105 @@ if (hasGeoCard) {
   for (const o of quiz.options) log(`    left=${o.left} ${o.w}x${o.h}  「${o.t}」`);
   log(`  横方向のはみ出し: ${quiz.docOverflow}px (0 が正しい)`);
 
+  // ---- 4. 今回のレイアウト改善（7項目）を実測する --------------------
+  //
+  // ★ここを「見た目の感想」ではなく数値で確認する★
+  //   ・冒頭の（配点20点）行が消えているか   → 文字列の有無
+  //   ->・資料の四角囲みが付いているか        → borderWidth / borderRadius
+  //   ・表に罫線が付いているか              → td の4辺の borderWidth
+  //   ・選択肢に丸文字が付いているか          → ボタン先頭文字
+  //   ・改行が効いているか                  → whiteSpace の計算値
+  //   ・ぶら下げインデントになっているか      → 本文 span の left が
+  //     ボタン左端より右にあるか
+  const layout = await page.evaluate(() => {
+    const bodyText = document.body.innerText;
+
+    // (a) 冒頭のメタ情報行（配点・難易度・設問数）が残っていないか
+    const leadMeta = /（配点\d+点）|難易度：|設問数：/u.test(bodyText);
+
+    // (b) 【…】の四角囲み。border が実際に描かれている要素を数える
+    const boxes = [...document.querySelectorAll('div')]
+      .filter((el) => /^【[^】]+】/u.test((el.textContent || '').trim()))
+      .map((el) => {
+        const cs = getComputedStyle(el);
+        const r = el.getBoundingClientRect();
+        return {
+          head: (el.textContent || '').trim().slice(0, 24),
+          borderW: cs.borderTopWidth,
+          radius: cs.borderTopLeftRadius,
+          bg: cs.backgroundColor,
+          w: Math.round(r.width),
+        };
+      })
+      .filter((b) => parseFloat(b.borderW) > 0);
+
+    // (c) 表の罫線（4辺すべてに線があるか）
+    const cells = [...document.querySelectorAll('table td, table th')].slice(0, 4).map((el) => {
+      const cs = getComputedStyle(el);
+      return {
+        text: (el.textContent || '').trim().slice(0, 12),
+        top: cs.borderTopWidth,
+        right: cs.borderRightWidth,
+        bottom: cs.borderBottomWidth,
+        left: cs.borderLeftWidth,
+        color: cs.borderTopColor,
+      };
+    });
+    const tableCount = document.querySelectorAll('table').length;
+
+    // (d) 選択肢の丸文字とぶら下げインデント
+    const optBtns = [...document.querySelectorAll('button')].filter((b) => {
+      const r = b.getBoundingClientRect();
+      return r.width > 100 && b.getAttribute('aria-pressed') !== null;
+    });
+    const opts = optBtns.map((b) => {
+      const br = b.getBoundingClientRect();
+      const spans = [...b.querySelectorAll('span')];
+      // 丸数字だけを持つ span がマーク、その次が本文
+      const markSpan = spans.find((s) => /^[①-⑳]$/u.test((s.textContent || '').trim()));
+      const bodySpan = markSpan ? spans.find((s) => s !== markSpan && (s.textContent || '').trim().length > 1) : null;
+      const bodyR = bodySpan ? bodySpan.getBoundingClientRect() : null;
+      return {
+        text: (b.textContent || '').trim().slice(0, 28),
+        mark: markSpan ? (markSpan.textContent || '').trim() : null,
+        align: getComputedStyle(b).alignItems,
+        h: Math.round(br.height),
+        // 本文の左端がボタン左端より何px右にあるか（＝ぶら下げ幅）
+        hangPx: bodyR ? Math.round(bodyR.left - br.left) : null,
+        bodyLines: bodyR && bodySpan
+          ? Math.round(bodyR.height / parseFloat(getComputedStyle(bodySpan).lineHeight))
+          : null,
+      };
+    });
+
+    // (e) 問題文の改行（whitespace-pre-wrap が効いているか）
+    const preWrap = [...document.querySelectorAll('div')]
+      .filter((el) => getComputedStyle(el).whiteSpace === 'pre-wrap')
+      .length;
+
+    return { leadMeta, boxes, cells, tableCount, opts, preWrap };
+  });
+
+  log(`\n===== 4. レイアウト改善の実測 =====`);
+  log(`  (3) 冒頭のメタ情報行が残っているか: ${layout.leadMeta}  ← false が正しい`);
+  log(`  (1) 【…】の四角囲み: ${layout.boxes.length}個`);
+  for (const b of layout.boxes) {
+    log(`      border=${b.borderW} radius=${b.radius} bg=${b.bg} w=${b.w}  「${b.head}」`);
+  }
+  log(`  (5) 表: ${layout.tableCount}個`);
+  for (const c of layout.cells) {
+    log(`      「${c.text}」 上${c.top}/右${c.right}/下${c.bottom}/左${c.left} 色${c.color}`);
+  }
+  log(`  (6)(7) 選択肢: ${layout.opts.length}個`);
+  for (const o of layout.opts) {
+    log(`      丸文字=${o.mark ?? 'なし'} align=${o.align} 高さ=${o.h} ぶら下げ=${o.hangPx ?? '-'}px 行数=${o.bodyLines ?? '-'}  「${o.text}」`);
+  }
+  log(`  (7) whitespace:pre-wrap の要素数: ${layout.preWrap}  ← 1以上が正しい`);
+
   await page.screenshot({ path: '/tmp/geo_quiz_mobile.png', fullPage: false });
   log(`  スクショ: /tmp/geo_quiz_mobile.png`);
+  await page.screenshot({ path: '/tmp/geo_quiz_mobile_full.png', fullPage: true });
+  log(`  スクショ(全体): /tmp/geo_quiz_mobile_full.png`);
 }
 
 log(`\n===== コンソールエラー =====`);

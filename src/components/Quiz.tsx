@@ -51,7 +51,7 @@ import {
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
 // cleanQuestionText は解説画面（Explanation.tsx）と同じ実装が必要なので
 // questionDisplay.ts の1つだけを使う（以前はここにも同じ実装があった）。
-import { answerCardMarker, buildSubQuestionList, splitQuestionLabel, isSubQuestionListRedundant, extractInlineQuestionRows, findSubQuestionSentence, cleanQuestionText } from '../utils/questionDisplay';
+import { answerCardMarker, buildSubQuestionList, splitQuestionLabel, isSubQuestionListRedundant, extractInlineQuestionRows, findSubQuestionSentence, cleanQuestionText, optionCircledMark } from '../utils/questionDisplay';
 import {
   buildListeningOptionTexts,
   buildListeningLeadText,
@@ -1266,6 +1266,8 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           // 斜線を引いた直後だけアニメーションを流す（状態変化を動きで知らせる）
           const strikeAnimating = struck && justStruck === `${sq.id}\u0000${opt}`;
           const body = optionTexts?.[optIdx];
+          // 丸文字（①②③…）。既に丸数字を持つ選択肢には付けない（実測 321件）。
+          const optionMark = body ? '' : optionCircledMark(opt, optIdx);
           return (
             <button
               key={opt}
@@ -1338,7 +1340,13 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                    md 以上では md:px-4 で元に戻すので PC の見た目は不変。
                    マークだけの選択肢（①②③④）は幅が余っているので対象外。 */
                 stacked ? 'px-2.5 md:px-4' : 'px-4'
-              } py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex items-center ${stacked ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} ${
+              } py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex ${
+                /* ★丸文字つき／本文つきは items-start にする★
+                   items-center だと本文が2行になったとき丸数字が
+                   行の中央に浮き、ぶら下げインデントが成立しない。
+                   丸数字の無い短い選択肢（「4月」など）は従来どおり中央。 */
+                optionMark || body ? 'items-start' : 'items-center'
+              } ${stacked ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} ${
                 /* 本文つきは w-full なので min-w は不要。
                    min-w-[3.25rem] を残すと狭い端末で横あふれの原因になる。 */
                 stacked ? '' : 'min-w-[3.25rem] md:min-w-[3rem]'
@@ -1394,6 +1402,49 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   <span className="min-w-0 flex-1 text-[15px] md:text-sm font-medium leading-6 break-words [overflow-wrap:anywhere] font-modern">
                     {/* 英語の選択肢は散文として組む（化学式扱いのセリフ体を避ける） */}
                     {formatText(body, [], { prose: isEnglishProse })}
+                  </span>
+                </span>
+              ) : optionMark ? (
+                /*
+                  ★ご要望「解答入力のところにも丸文字を。」＋
+                    「問題文の改行ができていない。見にくい。特に選択肢問題。」★
+
+                  ■ 実測した変更前の状態（Playwright・390x664・地理 第1回 問1）
+                      選択肢6つが1列（left=69 / 252x52px）に並び、中身は
+                      formatText(opt) だけ＝「4月 ― 7月」のような素のテキスト。
+                      ・丸数字が無いので、設問文の「次の①〜⑥のうちから一つ選べ」と
+                        画面上の選択肢が対応せず、どれが①なのか分からない。
+                      ・ボタンが flex items-center なので、テキストが2行以上に
+                        なると ★2行目が1行目の真下（左端）から始まる★。
+                        実物の冊子は「① 」の幅ぶん下げた ぶら下げインデント で、
+                        番号と本文が視覚的に分離している。
+
+                  ■ 直し方
+                      本文つき選択肢（英語）で既に使っている
+                      「丸バッジ＋本文」の2カラム構造をそのまま流用する。
+                      ・左：丸数字（shrink-0 で固定幅）
+                      ・右：本文（min-w-0 flex-1 で折り返し、2行目以降は
+                            自動的に丸数字の右端に揃う＝ぶら下げインデント）
+                      items-start にすることで、本文が2行になっても
+                      丸数字は1行目に留まる（items-center だと中央に浮く）。
+
+                  ■ 丸数字を出す条件は実測に基づく（optionCircledMark）
+                      選択肢文字列が既に丸数字で始まる英語リスニング（221問）・
+                      英文法（100問）には付けない＝「① ①」の二重表示を防ぐ。
+                      個数の不一致は全教科0件なので、設問文の「①〜⑥」と
+                      画面の番号は必ず一致する。
+                */
+                <span className="flex w-full items-start gap-2">
+                  <span
+                    className={`shrink-0 leading-6 ${
+                      struck ? 'text-gray-400' : isSelected ? 'text-white' : 'text-[#2C3E50]'
+                    }`}
+                    aria-hidden="true"
+                  >
+                    {optionMark}
+                  </span>
+                  <span className="min-w-0 flex-1 text-left leading-6 break-words [overflow-wrap:anywhere]">
+                    {formatText(opt)}
                   </span>
                 </span>
               ) : (
@@ -3190,6 +3241,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                   <ExplanationBody
                     text={cleanQuestionText(currentQuestion.text)}
                     highlights={combinedHighlights}
+                    /* ★問題文の「【会話文】」「【資料2 …】」を四角囲みにする（スマホのみ）★
+                       実物の共通テスト冊子と同じく、資料のかたまりを枠で
+                       本文から切り離して読みやすくする。PC は md: で
+                       枠を打ち消すため従来と同じ見た目。 */
+                    boxedSections
                   />
                 )
               )}
