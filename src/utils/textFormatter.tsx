@@ -30,6 +30,104 @@ import { splitMathPieces, renderLatex, mayContainMath } from './mathTypeset';
  */
 const MATH_PLACEHOLDER_OPEN = '\u0000';
 
+/**
+ * ★入力に含まれる HTML タグを、数式変換の前に退避する★
+ *
+ * ■ 直した不具合（ご要望「解答解説と問題のフォントがあっていない」の一因）
+ *   解説データには explanationFormat.ts の LABEL() などが作る
+ *   インライン style つきの <span> が最初から入っている。
+ *
+ *     <span style="... background-color:#FFF1F5; ...">解 答</span>
+ *
+ *   ところが extractMath は HTML タグを区別せずテキスト全体を走査するため、
+ *   style 属性の中の 16進カラーコード「FFF1F5」を数式トリガと誤認し、
+ *   属性値の途中を KaTeX の HTML に置き換えてしまっていた。
+ *   結果、実測（390x844・化学基礎「ろ過」）では
+ *
+ *     <span style="... background-color:#&lt;span class=" aria-label="FFF1F5"
+ *            class="katex" aria-hidden="true">解 答</span>
+ *
+ *   という壊れた DOM になり、
+ *     ・pill の背景色が消える（style が途中で切れる）
+ *     ・class="katex" が付くので KaTeX_Main（セリフ体）で描画される
+ *   ＝「解 答」という日本語の見出しだけ別書体になっていた。
+ *
+ * ■ 直し方
+ *   タグ本体（"<...>"）を先にプレースホルダへ退避してから数式を探す。
+ *   タグの中身は表示テキストではないので、数式・化学式の変換対象に
+ *   すべきものが原理的に存在しない。
+ *   後段のタグ解釈（tagRegex での分割）は復元後に行うので、
+ *   <u> や <hl> の扱いは従来どおり変わらない。
+ *
+ * ■ プレースホルダの形
+ *   数式退避と同じ \u0000 は使えない（restoreMath の正規表現と衝突する）。
+ *   \u0001{n}\u0001 を使う。どちらも本文には出現し得ない制御文字。
+ */
+const TAG_PLACEHOLDER = '\u0001';
+
+function extractTags(text: string): { text: string; tags: string[] } {
+  const tags: string[] = [];
+  if (!text.includes('<')) return { text, tags };
+  const masked = text.replace(/<!--[\s\S]*?-->|<\/?[a-z][a-z0-9]*[^>]*>/gi, (tag) => {
+    tags.push(tag);
+    return `${TAG_PLACEHOLDER}${tags.length - 1}${TAG_PLACEHOLDER}`;
+  });
+  return { text: masked, tags };
+}
+
+function restoreTags(text: string, tags: string[]): string {
+  if (tags.length === 0) return text;
+  return text.replace(
+    new RegExp(`${TAG_PLACEHOLDER}(\\d+)${TAG_PLACEHOLDER}`, 'g'),
+    (_m, index: string) => tags[Number(index)] ?? '',
+  );
+}
+
+/**
+ * ★ **…** を太字として描画する★
+ *
+ * ■ 何が起きていたか
+ *   解説データには Markdown 記法の太字（**答えはろ液**）が書かれているのに、
+ *   アプリ側に解釈する処理が無かったため、画面に
+ *
+ *     （2） **固体（不溶性の固体）と液体の混合物**
+ *
+ *   と、アスタリスクがそのまま表示されていた。
+ *   これは今回のフォント修正とは無関係の、以前から残っていた症状。
+ *
+ * ■ 「べき乗の ** と衝突しないか」を実測で確認してから入れている
+ *   コードコメントを除いた src/data 配下の全データを走査した結果：
+ *     ・**…** のペア … 64組（chemProblemsC1 5 / chemProblemsC2 17 /
+ *       mathIntegralProblems 42）
+ *     ・ペアにならない孤立した ** … 0件
+ *     ・$…$（数式）の中にある ** … 0件
+ *   数値だけを囲む5件（**-5** / **0** / **2** / **1/3** / **8/15**）も
+ *   前後を確認したところ「答えの強調」であり、べき乗ではなかった。
+ *     例：「x の係数は **-5** なので、-1/5 を掛けて」
+ *   つまり現行データに「べき乗としての **」は1つも無い。
+ *
+ * ■ それでも壊れないようにしている工夫
+ *   ① 数式（$…$）は extractMath より前に触らない。この関数は
+ *      extractTags の直後・extractMath の前に呼ぶが、$…$ の内側には
+ *      ** が存在しないことを確認済み。将来 $2**3$ のような式が来ても
+ *      困らないよう、下の正規表現は「$ を含む中身は太字にしない」。
+ *   ② 中身が空（****）や、改行をまたぐものは対象外。
+ *      「* を1個だけ使った掛け算記号（a * b）」にも触らない
+ *      （後段の × 変換はアスタリスク1個を見るので、そちらは無傷）。
+ *   ③ 既に <strong> が入っている入力には何もしない（二重適用を防ぐ）。
+ *
+ * ■ なぜ <strong> ではなく class 付きの <strong> か
+ *   font-bold を明示しないと、本文が font-medium などの場合に
+ *   ブラウザ既定の太字と噛み合わず「太くなっていない」ように見える。
+ *   サニタイザは strong と class を許可しているので、そのまま通る。
+ */
+const BOLD_MARKDOWN_RE = /\*\*(?=\S)([^*\n$]*?\S)\*\*/g;
+
+export function convertBoldMarkdown(text: string): string {
+  if (!text.includes('**')) return text;
+  return text.replace(BOLD_MARKDOWN_RE, '<strong class="font-bold">$1</strong>');
+}
+
 /** 本文から数式を抜き出して KaTeX で組み、プレースホルダに退避する。 */
 function extractMath(text: string): { text: string; slots: string[] } {
   const slots: string[] = [];
@@ -333,10 +431,41 @@ export function formatText(
   if (!text) return null;
   const prose = options.prose === true;
 
-  // ★最初に数式を KaTeX で組んで退避する★
+  /*
+    ★数式より先に「入力に元から入っている HTML タグ」を退避する★
+    解説データには LABEL() が作る style つき <span> が含まれる。
+    タグの中身（属性値）は表示テキストではないので、数式・化学式の
+    変換対象になり得ない。にもかかわらず走査対象に入れていたため、
+    style の中の色コード（#FFF1F5）が数式と誤認され、属性が壊れて
+    「解 答」の pill だけセリフ体（KaTeX_Main）になっていた。
+    詳しい経緯は extractTags の説明を参照。
+  */
+  const { text: withoutTags, tags: rawTags } = extractTags(text);
+
+  /*
+    ★**…** を <strong> にする★
+    順序に意味があるので3手に分けている。
+      ① タグを退避した状態（withoutTags）で太字変換する
+         → 元から入っている HTML の属性値（style="…" の中など）に
+           アスタリスクが現れても巻き込まない。
+      ② 元のタグを戻す
+         → ここで初めて「元のタグ」と「新しい <strong>」が同じ文章に並ぶ。
+      ③ もう一度まとめて退避する
+         → 新しい <strong …> も数式走査の対象から外れる。
+           退避は1つの配列に統一するので、プレースホルダ番号が衝突しない。
+  */
+  const { text: maskedForMath, tags: tagsForMath } = extractTags(
+    restoreTags(convertBoldMarkdown(withoutTags), rawTags),
+  );
+
+  // ★次に数式を KaTeX で組んで退避する★
   //   ここで抜いておくことで、以降の化学式変換・添字処理・分数処理は
   //   「数式ではない部分」だけを相手にすればよくなる。
-  const { text: withMathSlots, slots: mathSlots } = extractMath(text);
+  const { text: maskedMath, slots: mathSlots } = extractMath(maskedForMath);
+
+  // タグを戻してから従来の処理に渡す。以降の tagRegex での分割や
+  // <u>/<hl> の読み替えは、これまでとまったく同じ入力を受け取る。
+  const withMathSlots = restoreTags(maskedMath, tagsForMath);
 
   // ★prose では数式・化学式向けの前処理を通さない★
   //   convertMathNotation / normalizeScientificScripts は

@@ -3104,17 +3104,28 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                       いまは問題文ペインが flex-1（余り高さを全部もらう）に
                       なったので、図は fill で「もらえた高さいっぱい」まで
                       伸ばす。縦を基準に縮小されるので、4コマ全体が
-                      1画面に収まる。タップでさらに拡大できる。
+                      1画面に収まる。
+
+                      ★ご要望「画像のある問題の画像が小さいので確認して。
+                        クリックしてズーム機能はいらない。」★
+                      これまでは「小さくてもタップで拡大できる」前提で
+                      max-h-[22vh]（390x844 で 186px）という強い上限を
+                      掛けていた。拡大機能を外すので、この上限だと
+                      4コマの文字が読めなくなる。
+                      上限自体は「音源・選択肢と同時に見える」ために必要なので、
+                      22vh → 42vh（=354px、ほぼ横幅と同じ）まで緩める。
                     */}
                     {activeStepSub.imageUrl && (
                       <QuestionFigure
                         src={activeStepSub.imageUrl}
                         caption={activeStepSub.imageCaption}
                         tone="light"
-                        className="mt-3"
+                        // 図が高さ上限に張り付いている（実測で余り 0px）ので、
+                        // 上余白も 12px → 8px に詰めて図の取り分に回す。
+                        className={listeningMobileSplit ? 'mt-2' : 'mt-3'}
                         fill={listeningMobileSplit}
                         imgClassName={
-                          listeningMobileSplit ? '' : 'max-h-[22vh] md:max-h-[42vh] object-contain'
+                          listeningMobileSplit ? '' : 'max-h-[42vh] md:max-h-[52vh] object-contain'
                         }
                       />
                     )}
@@ -3471,7 +3482,42 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
                      p-3.5（14px×2）→ px-2 py-3 で左右 12px を英文に回す。
                      縦（py-3）は詰めない。縦を削ると1行あたりの余裕が減って
                      かえって読みにくくなり、④ が見えない問題も解決しないため。 */
-                  listeningMobileNoFigure ? 'min-h-0 flex-1 max-h-full px-2 py-3' : 'p-5'
+                  listeningMobileNoFigure
+                    ? 'min-h-0 flex-1 max-h-full px-2 py-3'
+                    : listeningMobileSplit
+                      /*
+                        ★図がある大問（第1問B）だけ、カードの余白を図に譲る★
+                        ご要望「画像のある問題の画像が小さいので確認して」
+
+                        ■ 実測（390x844・第1問B・900x900 の4コマ）
+                            図は 298x298。横幅は 366px 空いているのに
+                            298px 止まりで、原因は「高さが尽きている」こと。
+                            高さの内訳を測ると
+                              画面 844
+                              − ヘッダー 80 − 下部ナビ 76
+                              − 見出し行 40 − 音源バー 44 − 図の上余白 12
+                              − キャプション 28
+                              − 解答ペイン 278（うちカード p-5 の上下 40）
+                            ＝ 図に残るのは 298px で、余りは 0px（実測で確認）。
+                            つまり図を大きくするには、どこかから高さを
+                            もらう以外に方法がない。
+
+                        ■ もらう先は「選択肢そのもの」ではなくカードの余白
+                            ①〜④ のボタン高さ（52px）と行間は既出のご要望
+                            「選択肢のスペースに当てて／タップしやすく」で
+                            確保したものなので削らない。
+                            代わりに p-5（上下 40px）を py-3.5（上下 28px）に
+                            するだけにする。これは純粋な余白なので、
+                            タップ領域を一切減らさずに 12px を図へ回せる。
+                            左右も px-3 にして 16px を選択肢の幅に回す。
+
+                        ■ PC・化学は対象外
+                            listeningMobileSplit はスマホかつ音源つきのときだけ
+                            真になるので、PC（isDesktop）と化学・数学
+                            （listeningUnified=false）は従来の p-5 のまま。
+                      */
+                      ? 'px-3 py-3.5'
+                      : 'p-5'
                 } ${
                   isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
                 }`}>

@@ -233,6 +233,15 @@ const LISTENING_PROBLEMS: Record<string, any[]> = {
   el1_A: [...EL1_A_PROBLEMS, ...EL1_A_EXTRA_PROBLEMS],
   // 第1問B：配布PDF（スクリプト側）＋ イラストPDF を対応させた15セット
   el1_B: EL1_B_PROBLEMS,
+  // 第2問：問題データは src/data/englishListeningQ2Problems.ts に収録済み（16セット・48問）。
+  //   ただしここへ登録するのは「48枚のイラストが public/listening_q2/ に揃ってから」。
+  //   第2問は絵を見比べて選ぶ大問なので、絵が無い状態で公開すると
+  //   ①〜④のマークだけが並ぶ「解けない問題」になってしまう。
+  //   現在 public/listening_q2/ にあるのは el2_set1_q1.jpg の1枚だけ。
+  //   残り47枚を生成したら、上に import { EL2_PROBLEMS } を足して
+  //     el2: EL2_PROBLEMS,
+  //   の1行を有効にすれば公開される（データ側の変更は不要）。
+  //   必要な画像の内容は scripts/data/q2_prompts/*.txt（選択肢の並べ替え後のもの）。
   // 第3問：配布PDF由来の15セット（各6問・1回読み・2人の対話）
   el3: EL3_PROBLEMS,
 };

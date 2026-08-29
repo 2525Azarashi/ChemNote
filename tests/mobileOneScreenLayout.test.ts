@@ -691,24 +691,37 @@ describe('L9: 問題文と解説のフォントを一致させる（ご要望8�
   });
 
   /**
-   * ★ご要望11「あと解説と問題でフォント違うの何？」で 2択→3択 になった★
+   * ★ご要望「化学基礎・化学含め様々な科目で解答解説と問題のフォントが
+   *   あっていないので問題のフォントに合わせて。」で 3択→2択 になった★
    *
-   * 実測（Playwright / 390x844・第1問A）では、まったく同じ設問文
-   * 「傘について、話者の状況に最も近い英文」が
-   *   問題画面 … ゴシック（font-modern）14px
-   *   解説画面 … 手書き（Yomogi）15px
-   * と別書体で出ていた。英語は問題画面がゴシックなので、
-   * 解説側も英語のときだけ font-modern に寄せて一致させる。
-   * 日本語教科（化学・生物）の手書き体は「温かみ」のための既存仕様なので変えない。
+   * ■ これまでの経緯
+   *   ご要望11「あと解説と問題でフォント違うの何？」の時点では、
+   *   英語だけ font-modern に寄せ、日本語教科（化学・生物）の手書き体は
+   *   「温かみ」のための既存仕様として残していた（3択）。
+   *
+   * ■ 今回の実測（Playwright / getComputedStyle・390x844・化学基礎「ろ過」）
+   *     問題画面 … Inter, "Hiragino Sans", "Yu Gothic", sans-serif  16px
+   *     解説画面 … Yomogi, "Klee One", ..., cursive
+   *   つまり英語に限らず化学基礎でも不一致だった。
+   *   ご指示は「問題のフォントに合わせて」＝問題画面が基準なので、
+   *   科目を問わず問題画面と同じ font-modern にする。
+   *
+   * ■ 数学だけは例外
+   *   問題画面側も数式パレットのときは font-math を使っている
+   *   （Quiz.tsx: questionNeedsMathPalette ? 'font-math math-content' : 'font-modern'）。
+   *   つまり font-math に寄せることが「問題のフォントに合わせる」ことになる。
+   *   だから数学の分岐だけ残す。＝科目名ではなく問題画面の指定に合わせている。
    */
-  it('フォント系（font-math / font-modern / font-handwriting）の切り替えは1か所', () => {
+  it('フォント系（font-math / font-modern）の切り替えは1か所', () => {
     const stripped = stripComments(EXPL);
-    // 数学 → font-math、英語 → font-modern（問題画面と同じ）、それ以外 → 手書き
+    // 数式パレットの単元 → font-math、それ以外は全科目 font-modern（問題画面と同じ）
     expect(stripped).toMatch(
-      /const BODY_FONT_FAMILY = isMathChapter\s*\?\s*'font-math math-content'\s*:\s*isEnglishChapter\s*\?\s*'font-modern'\s*:\s*'font-handwriting';/u,
+      /const BODY_FONT_FAMILY = isMathChapter\s*\?\s*'font-math math-content'\s*:\s*'font-modern';/u,
     );
     // 切り替えの定義は1か所だけ（問題ごとに別ロジックを作らない）
     expect(stripped.split('const BODY_FONT_FAMILY =').length - 1).toBe(1);
+    // 「英語だけゴシック」の旧仕様に戻っていないこと（化学基礎が手書きに戻る退行）
+    expect(stripped).not.toMatch(/BODY_FONT_FAMILY[^\n]*'font-handwriting'/u);
   });
 
   /**
@@ -744,12 +757,18 @@ describe('L9: 問題文と解説のフォントを一致させる（ご要望8�
    */
   it('解説カードの土台の書体は CARD_FONT_FAMILY で切り替える（font-handwriting を直書きしない）', () => {
     const stripped = stripComments(EXPL);
-    // 英語ならゴシック、それ以外は従来どおり手書き
-    expect(stripped).toMatch(
-      /const CARD_FONT_FAMILY = isEnglishChapter\s*\?\s*'font-modern'\s*:\s*'font-handwriting';/u,
-    );
+    /*
+      ★今回の変更★
+      ご要望「化学基礎・化学含め様々な科目で……問題のフォントに合わせて」に
+      より、土台は科目を問わず font-modern（＝問題画面と同じ）に統一した。
+      土台は継承の起点なので、ここが手書きに戻ると化学基礎の解説が
+      まるごと Yomogi に逆戻りする。定数のまま固定して退行を防ぐ。
+    */
+    expect(stripped).toMatch(/const CARD_FONT_FAMILY = 'font-modern';/u);
     // 定義は1か所だけ
     expect(stripped.split('const CARD_FONT_FAMILY =').length - 1).toBe(1);
+    // 「英語だけゴシック」の旧仕様に戻っていないこと
+    expect(stripped).not.toMatch(/CARD_FONT_FAMILY[^\n]*'font-handwriting'/u);
 
     // スマホ・PC 両方の土台 div で使われていること（片方だけ直すと不一致が残る）
     expect(stripped.split('${CARD_FONT_FAMILY}').length - 1).toBeGreaterThanOrEqual(2);
@@ -841,15 +860,22 @@ describe('L9: 問題文と解説のフォントを一致させる（ご要望8�
      * 問題文側は mathBodyClass、解説側は BODY_FONT_FAMILY を使うが、
      * どちらも同じ isMathChapter から算出され、数学のときは同じ
      * 'font-math math-content' になる。
-     * 非数学のときは両方とも書体を指定せず（問題文）／
-     * font-handwriting（解説）で、カードの既定書体と一致する。
+     * 非数学のときは、問題文側は書体を指定せずカードから継承し、
+     * 解説側は font-modern。カードの既定書体（CARD_FONT_FAMILY）も
+     * font-modern なので、継承側・指定側の両方がゴシックで一致する。
      * この2つが別々の条件で分岐し始めると書体がずれるので固定する。
      */
     expect(stripped).toMatch(/const mathBodyClass = isMathChapter \?/u);
-    // 3択になって複数行に折り返したので、改行をまたいで照合する。
     expect(stripped).toMatch(/const BODY_FONT_FAMILY = isMathChapter\s*\n?\s*\?/u);
-    // 英語は「解説だけ手書き体」をやめ、問題画面と同じゴシックに寄せる。
-    expect(stripped).toMatch(/isEnglishChapter\s*\n?\s*\?\s*'font-modern'/u);
+    /*
+     * ★ご要望「化学基礎・化学含め様々な科目で解答解説と問題のフォントが
+     *   あっていないので問題のフォントに合わせて。」★
+     * 「英語だけ」という科目条件を外し、非数学は全科目 font-modern。
+     * 継承の起点（カード土台）も font-modern なので、
+     * 問題文コンテナ（書体指定なし＝継承）と解説本文が同じ書体になる。
+     */
+    expect(stripped).toMatch(/const BODY_FONT_FAMILY = isMathChapter[\s\S]{0,80}?:\s*'font-modern';/u);
+    expect(stripped).toMatch(/const CARD_FONT_FAMILY = 'font-modern';/u);
     // 章単位の判定は1か所だけ（問題ごとに別ロジックを作らない）。
     const decl = stripped.split('const isMathChapter =').length - 1;
     expect(decl).toBe(1);
@@ -1009,5 +1035,55 @@ describe('L10. リスニング解説の再配置と、消さないコンパク�
     expect(decl).toBe(1);
     // 「採点結果を常に描く」形に戻っていないこと
     expect(stripped).not.toMatch(/\{objectiveSqs\.length >= 0 && \(/u);
+  });
+});
+
+/**
+ * ===================================================================
+ * 解答・解説ヘッダーを「横に並べる」（スマホのみ）
+ * ===================================================================
+ *
+ * ■ ご要望
+ *   「化学基礎の解答解説がまだコンパクトでないので以下のように。
+ *     解答と解説って書いてあるところの右のトロフィーとか
+ *     ☑️答え合わせとかをもう少し横に並べる感じに」
+ *
+ * ■ 実測（Playwright / 390x844・化学基礎「ろ過」の解答・解説）
+ *   直す前：ヘッダー高さ 106px。右のチップが3段に折り返していた。
+ *     y=16 … 🏆0pt ／ y=40 … ☑答え合わせ・Q1・カテゴリ ／ y=67 … ノートに保存・正答率
+ *   直した後：ヘッダー高さ 75px・1段。
+ *
+ * ■ 直し方の方針（ここを固定したい）
+ *   要素は消さない。折り返しを禁止したうえで、スマホでは文字ラベルだけを
+ *   落としてアイコン＋数値にして幅を稼ぐ。読み上げ（aria-label）は必ず残す。
+ *   PC（reorderMobile=false）は従来どおり。
+ */
+describe('解答・解説ヘッダーが1行に収まる（スマホのみ・ご要望D）', () => {
+  it('スマホでは右側メタ情報を折り返さない1ブロックにまとめる', () => {
+    const stripped = stripComments(EXPL);
+
+    // 折り返し禁止 + 右寄せ + 余りに合わせて縮む
+    expect(stripped).toContain("'flex flex-nowrap items-center justify-end gap-1 min-w-0 flex-1'");
+    // PC は display:contents で素通し（レイアウトを変えない）
+    expect(stripped).toMatch(/reorderMobile[\s\S]{0,120}?:\s*'contents'/u);
+    // flex-wrap に戻していないこと（戻すと3段に折り返る）
+    expect(stripped).not.toMatch(/justify-end[^']*flex-wrap/u);
+  });
+
+  it('スコアのトロフィーはスマホだけ小さいピル型にして横に並べる', () => {
+    const stripped = stripComments(EXPL);
+    expect(stripped).toContain("reorderMobile ? 'shrink-0 gap-0.5 px-1.5 py-0.5 rounded-full'");
+    // アイコンもスマホでは小さくする
+    expect(stripped).toContain('size={reorderMobile ? 12 : 16}');
+  });
+
+  it('スマホで文字ラベルを省いても読み上げ（aria-label）は残す', () => {
+    const stripped = stripComments(EXPL);
+    // ラベルを隠す実装が「要素ごと削除」ではないこと＝aria-label / title が付いている
+    for (const label of ['答え合わせ', 'ノートに保存', '正答率']) {
+      expect(stripped, `${label} の読み上げが失われている`).toMatch(
+        new RegExp(`aria-label=[^\\n]*${label}`, 'u'),
+      );
+    }
   });
 });

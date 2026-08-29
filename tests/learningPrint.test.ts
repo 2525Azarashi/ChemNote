@@ -773,3 +773,62 @@ describe('印刷時の図の扱い（printCss.ts）', () => {
     expect(printCssSrc).toMatch(/\.figzoom-hint\s*\{\s*display:\s*none\s*!important/);
   });
 });
+
+/**
+ * ===================================================================
+ * 学習ページの図のズームを廃止した（ご要望「ズームはいらない」）
+ * ===================================================================
+ *
+ * ■ 経緯
+ *   演習画面（QuestionFigure）のズームは先に廃止したが、学習ページには
+ *   別実装のライトボックス（LearningViewer 内の全画面表示）が残っていた。
+ *   同じご要望の範囲なので、こちらも削除した。
+ *
+ * ■ 「消したら図が小さくならないか」を先に確認している
+ *   .figrow-fig img / .figfull img はいずれも
+ *     width: 100%; max-width: 100% !important;
+ *   なので、拡大表示に頼らず最初から列の幅いっぱいで表示される。
+ *   つまりズームを消しても図の表示サイズは変わらない。
+ *
+ * ■ 「タップで拡大できます」の案内について
+ *   本文データ側に14箇所埋まっている。文章を機械的に削ると前後の句読点や
+ *   <br> の位置が問題によって不自然になり得るため、CSS で非表示にしている。
+ *   ズームが無いのに案内だけ出る、という嘘の表示を防ぐのが目的。
+ */
+describe('学習ページの図のズームを廃止（ご要望）', () => {
+  const viewerSrc = read('src/components/LearningViewer.tsx');
+  /** 自分が書いた説明コメントに引っかからないよう、コメントを外して調べる */
+  const viewerCode = viewerSrc
+    .replace(/\/\*[\s\S]*?\*\//gu, '')
+    .replace(/\{\/\*[\s\S]*?\*\/\}/gu, '')
+    .replace(/\/\/[^\n]*/gu, '');
+
+  it('拡大表示の state / ハンドラが残っていない', () => {
+    expect(viewerCode).not.toContain('zoomFig');
+    expect(viewerCode).not.toContain('setZoomFig');
+    expect(viewerCode).not.toContain('handleContentClick');
+  });
+
+  it('全画面ダイアログ（ライトボックス）が残っていない', () => {
+    expect(viewerCode).not.toContain('図の拡大表示');
+    expect(viewerCode).not.toContain('ピンチ操作でさらに拡大');
+    expect(viewerCode).not.toMatch(/aria-modal/u);
+  });
+
+  it('図にズーム用のカーソルが付かない', () => {
+    expect(globalCssSrc).not.toContain('cursor: zoom-in');
+  });
+
+  it('「タップで拡大できます」の案内は画面に出ない', () => {
+    // セレクタは残す（本文データに文言が残っているため）が、非表示にする
+    expect(globalCssSrc).toMatch(/\.figzoom-hint\s*\{[^}]*display:\s*none/u);
+  });
+
+  it('図は列の幅いっぱいのまま（ズームを消しても小さくならない）', () => {
+    for (const selector of ['.learning-content .figrow-fig img', '.learning-content .figfull img']) {
+      const block = cssBlock(globalCssSrc, selector);
+      expect(block, selector).toContain('width: 100%');
+      expect(block, selector).toContain('max-width: 100% !important');
+    }
+  });
+});
