@@ -43,6 +43,12 @@ import { sanitizeInlineHtml } from '../src/utils/sanitizeHtml';
 import { normalizeAnswer, isAnswerCorrect } from '../src/utils/answerJudge';
 
 const QUIZ = readFileSync('src/components/Quiz.tsx', 'utf8');
+/*
+ * 記号パレットの見た目（ボタンのタップ領域・グリッド・組版）は
+ * Quiz.tsx から components/SymbolPalette.tsx へ切り出した。
+ * 「押しやすさの UI 契約」は移した先のソースで見張る。
+ */
+const PALETTE = readFileSync('src/components/SymbolPalette.tsx', 'utf8');
 
 /** グループを平らにして「グループ名つきの item」の一覧にする。 */
 function flatten(groups: PaletteGroup[]): Array<{ group: string; item: PaletteItem }> {
@@ -438,58 +444,61 @@ describe('分かりやすさ：ラベルと説明が全ボタンに揃ってい�
   });
 });
 
-describe('押しやすさ：スマホのタップ領域とレイアウト（Quiz.tsx の実装）', () => {
+describe('押しやすさ：スマホのタップ領域とレイアウト（SymbolPalette.tsx の実装）', () => {
   it('ボタンは 1辺 56px（3.5rem）以上のタップ領域を持つ', () => {
     // Apple/Google の推奨は 44px だが、記号は連続タップするため大きく取る。
-    expect(QUIZ).toContain('min-h-[3.5rem]');
+    expect(PALETTE).toContain('min-h-[3.5rem]');
   });
 
   it('ダブルタップ拡大の待ち（約300ms）を消す touch-manipulation が付いている', () => {
-    expect(QUIZ).toContain('touch-manipulation');
+    expect(PALETTE).toContain('touch-manipulation');
   });
 
   it('押した瞬間の見た目の変化（active 状態）がある', () => {
-    expect(QUIZ).toMatch(/active:bg-/);
+    expect(PALETTE).toMatch(/active:bg-/);
   });
 
   it('★探す時間をゼロにする：タブも枠内スクロールも作らない★', () => {
     // (a) 高さ固定の枠内スクロール … 目的の記号が隠れる
-    expect(QUIZ).not.toContain('max-h-[240px]');
+    expect(PALETTE).not.toContain('max-h-[240px]');
     // (b) カテゴリのタブ切り替え … どのタブか当てる手間が増える
-    expect(QUIZ).not.toContain('role="tablist"');
-    expect(QUIZ).not.toContain('role="tab"');
-    expect(QUIZ).not.toContain('role="tabpanel"');
+    expect(PALETTE).not.toContain('role="tablist"');
+    expect(PALETTE).not.toContain('role="tab"');
+    expect(PALETTE).not.toContain('role="tabpanel"');
     // 代わりに全グループを map でそのまま並べる
-    expect(QUIZ).toContain('groups.map((grp)');
+    expect(PALETTE).toContain('groups.map((grp)');
   });
 
   it('記号はグリッドで並べ、画面幅に応じて列数を変える', () => {
-    expect(QUIZ).toMatch(/grid-cols-4/);
-    expect(QUIZ).toMatch(/md:grid-cols-8/);
+    expect(PALETTE).toMatch(/grid-cols-4/);
+    expect(PALETTE).toMatch(/md:grid-cols-8/);
   });
 
   it('ボタン面は本文と同じ組版エンジン（renderLatex）で描く', () => {
-    expect(QUIZ).toContain("from '../utils/mathTypeset'");
-    expect(QUIZ).toContain('renderLatex(item.tex');
+    expect(PALETTE).toContain("from '../utils/mathTypeset'");
+    expect(PALETTE).toContain('renderLatex(item.tex');
     // 生成 HTML は必ずサニタイズを通す
-    expect(QUIZ).toContain('sanitizeInlineHtml(renderLatex(');
+    expect(PALETTE).toContain('sanitizeInlineHtml(renderLatex(');
   });
 
   it('タップで入力欄のフォーカス（キャレット）を失わない', () => {
-    expect(QUIZ).toContain('onMouseDown={(e) => e.preventDefault()}');
+    expect(PALETTE).toContain('onMouseDown={(e) => e.preventDefault()}');
   });
 
   it('caretBack でかっこの内側にキャレットを置ける（閉じ忘れ防止）', () => {
-    expect(QUIZ).toContain('caretBack');
-    expect(QUIZ).toContain('text.length - back');
+    expect(PALETTE).toContain('caretBack');
+    expect(PALETTE).toContain('text.length - back');
     // 雛形ボタンには実際に caretBack が設定されている
     const templates = MATH_ITEMS.filter(({ item }) => (item.caretBack ?? 0) > 0);
     expect(templates.length).toBeGreaterThanOrEqual(4);
   });
 
   it('パレットの定義は Quiz.tsx から切り出されている（テスト可能にするため）', () => {
-    expect(QUIZ).toContain("from '../data/symbolPalettes'");
-    expect(QUIZ).not.toContain('const chemistryPaletteGroups');
-    expect(QUIZ).not.toContain('const mathPaletteGroups');
+    expect(PALETTE).toContain("from '../data/symbolPalettes'");
+    expect(PALETTE).not.toContain('const chemistryPaletteGroups');
+    expect(PALETTE).not.toContain('const mathPaletteGroups');
+    // パレットの描画そのものも Quiz.tsx から出ている（Quiz は「どの設問に出すか」だけ）
+    expect(QUIZ).not.toContain('const PaletteButton');
+    expect(QUIZ).toContain("from './SymbolPalette'");
   });
 });

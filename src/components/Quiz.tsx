@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
 import { ChevronRight, ChevronLeft, ChevronDown, ChevronUp, Edit3, ArrowLeft, GripVertical, Trophy, HelpCircle } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
-// 記号パレットのボタン面を「解答欄・解説と同じ組版」で描くために使う。
-// renderLatex は KaTeX（数式）／mhchem（化学式）の HTML を返すので、
-// 本文と同じ sanitizeInlineHtml を通してから貼る。
-import { renderLatex } from '../utils/mathTypeset';
-import { sanitizeInlineHtml } from '../utils/sanitizeHtml';
-import {
-  chemistryPaletteGroups,
-  mathPaletteGroups,
-  type PaletteGroup,
-  type PaletteItem,
-} from '../data/symbolPalettes';
+// 記号パレット（解答入力の補助キーボード）は components/SymbolPalette.tsx に切り出した。
+// KaTeX / mhchem の組版とサニタイズもそちらに移したので、
+// このファイルは「どの設問に出すか」を判定して置くだけになった。
+import { ChemistryPalette, MathPalette } from './SymbolPalette';
+// 並べ替え（sorting）の解答UIは components/SortingControl.tsx に切り出した。
+import { SortingControl } from './SortingControl';
+import { MultipleChoiceControl } from './MultipleChoiceControl';
+// 消去法（斜線）のしくみ一式は hooks/useElimination.ts に集約
+import { useElimination } from '../hooks/useElimination';
 import { ExplanationBody } from './ExplanationBody';
 import { Explanation } from './Explanation';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
@@ -45,9 +43,28 @@ import {
   quizElimKey,
   quizExplKey,
   quizIndexKey,
-  quizRunKey,
   quizStepKey,
 } from '../utils/quizStorageKeys';
+// 章の途中経過（点数・コンボ・所要時間）の型と読み書きは utils/quizRunState.ts に集約
+import {
+  clearRun,
+  loadRun,
+  saveRun,
+  type ChapterRunState,
+} from '../utils/quizRunState';
+// 記号パレットを「この設問に出すか」の判定ルールは utils/quizPaletteRules.ts に集約
+import {
+  requiresChemicalSymbols,
+  requiresMathSymbols,
+} from '../utils/quizPaletteRules';
+// スマホでソフトウェアキーボードに入力欄が隠れないようにするスクロール調整
+import { handleInputFocusScroll, scrollInputIntoView } from '../utils/quizInputScroll';
+// 設問ラベルからの空欄トークン推定と短答判定（純関数）
+import {
+  blankHighlightVariants,
+  extractBlankToken,
+  isShortAnswerType,
+} from '../utils/quizBlanks';
 import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
 // cleanQuestionText は解説画面（Explanation.tsx）と同じ実装が必要なので
 // questionDisplay.ts の1つだけを使う（以前はここにも同じ実装があった）。
@@ -98,452 +115,32 @@ interface QuizProps {
 }
 
 /**
- * 章単位の累積スコアを localStorage に保持するためのキー生成。
- *
- * 実体は utils/quizStorageKeys.ts の quizRunKey（唯一の定義）。
- * このファイル内の3か所から chapterRunKey として呼ばれているので
- * 名前はそのまま残してある。
+ * 章の途中経過（点数・コンボ・所要時間）の型と localStorage 読み書きは
+ * utils/quizRunState.ts に集約した（この画面の描画とは無関係な下請け処理）。
+ * 保存キーは従来どおり quizStorageKeys.ts の quizRunKey を使う。
  */
-const chapterRunKey = quizRunKey;
-
-interface ChapterRunState {
-  totalScore: number;
-  runningCombo: number;
-  perQuestion: Record<string, ScoreBreakdown & { timeLimit: number; timeUsed: number }>;
-  /**
-   * 「1問ずつ」解くリスニング用の採点記録。キーは `大問ID::小問ID`。
-   *
-   * perQuestion と分けている理由：
-   *   perQuestion のキーは「大問ID」である前提で、進捗の引き継ぎ
-   *   （progress.ts の backfillLegacyProgress）がキーを大問IDとして数える。
-   *   小問単位のキーを混ぜると存在しない大問を「解いた」と数えてしまうため、
-   *   別のフィールドに置いて既存の集計を汚さないようにしている。
-   *   古い保存データには無いフィールドなので任意項目にしている。
-   */
-  perStep?: Record<string, ScoreBreakdown & { timeLimit: number; timeUsed: number }>;
-  totalCorrect: number;
-  totalJudgeable: number;
-  totalTimeSec: number;
-  startedAt: number;
-}
-
-function emptyRun(): ChapterRunState {
-  return {
-    totalScore: 0,
-    runningCombo: 0,
-    perQuestion: {},
-    perStep: {},
-    totalCorrect: 0,
-    totalJudgeable: 0,
-    totalTimeSec: 0,
-    startedAt: Date.now(),
-  };
-}
-
-function nonNegativeFinite(value: unknown, fallback = 0): number {
-  return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : fallback;
-}
-
-function loadRun(chapterId: string, mode: string): ChapterRunState {
-  try {
-    const raw = localStorage.getItem(chapterRunKey(chapterId, mode));
-    if (!raw) return emptyRun();
-
-    const parsed: unknown = JSON.parse(raw);
-    if (!isPlainRecord(parsed)) return emptyRun();
-
-    return {
-      totalScore: nonNegativeFinite(parsed.totalScore),
-      runningCombo: nonNegativeFinite(parsed.runningCombo),
-      perQuestion: isPlainRecord(parsed.perQuestion)
-        ? parsed.perQuestion as ChapterRunState['perQuestion']
-        : {},
-      perStep: isPlainRecord(parsed.perStep)
-        ? parsed.perStep as NonNullable<ChapterRunState['perStep']>
-        : {},
-      totalCorrect: nonNegativeFinite(parsed.totalCorrect),
-      totalJudgeable: nonNegativeFinite(parsed.totalJudgeable),
-      totalTimeSec: nonNegativeFinite(parsed.totalTimeSec),
-      startedAt: nonNegativeFinite(parsed.startedAt, Date.now()),
-    };
-  } catch {
-    return emptyRun();
-  }
-}
-
-function saveRun(chapterId: string, mode: string, run: ChapterRunState) {
-  try {
-    localStorage.setItem(chapterRunKey(chapterId, mode), JSON.stringify(run));
-  } catch {
-    /* noop */
-  }
-}
 
 /**
- * 解答文字列そのものが化学記号パレットの記号を必要とするか判定する。
- *
- * パレットは「入力補助」なので、判断材料は
- * **その設問の解答として実際に打ち込む文字列**に限るのが正しい。
- * 問題文や解説に「イオン」「酸化」などの語が含まれるだけでパレットを出すと、
- * 語句を答えるだけの設問にも大量に表示されてしまう（旧実装の問題点）。
+ * 記号パレットを出すかどうかの判定（answerNeedsPalette / requiresChemicalSymbols /
+ * requiresMathSymbols）は utils/quizPaletteRules.ts に集約した。
+ * 画面の描き方に依存しない純関数なので、単体で確かめられる場所に置く。
  */
-function answerNeedsPalette(ansRaw: string): boolean {
-  const ans = String(ansRaw);
-
-  // 1. 上付き・下付き Unicode を含む（H₂O, Cu²⁺, 10⁻³ など）。
-  //    ¹²³ は U+00B9/B2/B3 で U+2070-2079 の範囲外なので個別に列挙する。
-  if (/[₀-₉⁰-⁹⁺⁻¹²³]/.test(ans)) return true;
-  // 2. 反応式の記号（→ ⇌ ⇄ ↔）。
-  //    ただし「1族→1」のような日本語の説明文中の矢印は反応式ではないので、
-  //    元素記号になり得るラテン文字を含む場合に限る。
-  if (/[→⇌⇄↔]/.test(ans) && /[A-Za-z]/.test(ans)) return true;
-  // 3. TeX 風の上付き・下付き（e^-, ^2+, _8 など）
-  if (/\^\{?[0-9]*[+\-−]/.test(ans) || /_\{?[0-9]/.test(ans)) return true;
-  // 4. 元素記号＋数字／電荷（H2O, CaCO3, SO42- など）。
-  //    ただし単位付きの数値（25 mL, 0.10 mol/L）は除外する。
-  if (/(?:[A-Z][a-z]?\d*){1,}[\d+\-]/.test(ans) && /[A-Z]/.test(ans)) {
-    const unitOnly =
-      /^[\d.,\s×^\-+()/]*(?:mol|L|mL|g|kg|mg|cm|m|kJ|J|K|Pa|kPa|atm|%|℃|mol\/L|g\/mol|個)?[\d.,\s×^\-+()/]*$/i;
-    if (!unitOnly.test(ans)) return true;
-  }
-  // 5. イオン式の平文表記（Na+, Cl-, OH-, NH4+ など）
-  if (/[A-Z][A-Za-z]{0,3}\d*\s*[+\-]\s*$/.test(ans.trim())) return true;
-
-  return false;
-}
 
 /**
- * 設問が下付き・上付き文字パレットの表示を必要とするかどうかを判定する。
+ * ソフトウェアキーボードで入力欄が隠れないようにするスクロール調整
+ * （scrollInputIntoView / handleInputFocusScroll）は
+ * utils/quizInputScroll.ts に切り出した。
  *
- * 判定方針（要件4）：
- *  - データ側で `requiresChemicalPalette` が明示された設問は常に表示（opt-in）。
- *  - 選択式（multiple_choice / true_false / select / sorting）はタップで選ぶだけなので不要。
- *  - それ以外は correctAnswer / acceptedAnswers のいずれかが
- *    化学式・イオン式・反応式・上下付き文字を含む場合のみ表示する。
+ * 設問ラベルからの空欄トークン推定と短答判定
+ * （extractBlankToken / blankHighlightVariants / isShortAnswerType）は
+ * utils/quizBlanks.ts に切り出した。
  */
-function requiresChemicalSymbols(question: any): boolean {
-  if (question?.requiresChemicalPalette) return true;
-  // 数学パレットを明示した問題は、化学パレットの推定ヒューリスティックに
-  // 誤検知されないよう先に除外する（両方のパレットが並ぶのを防ぐ）。
-  if (question?.requiresMathPalette) return false;
-
-  const type = String(question?.type || '');
-  if (
-    type === 'multiple_choice' ||
-    type === 'true_false' ||
-    type === 'select' ||
-    type === 'sorting'
-  ) {
-    return false;
-  }
-
-  const answers: string[] = [
-    question?.correctAnswer,
-    ...(Array.isArray(question?.acceptedAnswers) ? question.acceptedAnswers : []),
-  ].filter((a: any): a is string => typeof a === 'string' && a.trim() !== '');
-
-  if (answers.length === 0) return false;
-  return answers.some((a) => answerNeedsPalette(a));
-}
-
 /**
- * この設問に「数学記号パレット」を出すか。
- *
- * 化学パレットと違い、数学は答えの文字列だけから確実に判定できないため
- * データ側の明示 opt-in（requiresMathPalette）を必須とする。
- * 数III積分の問題データ（mathIntegralProblems.ts）は全設問でこのフラグを立てている。
+ * 記号パレット（PaletteButton / SymbolPalette / ChemistryPalette / MathPalette）は
+ * components/SymbolPalette.tsx に切り出した。
+ * 解答入力欄のカーソル位置に文字を挿入するだけの独立した部品で、
+ * クイズの進行（採点・タイマー・ページ送り）とはやり取りしない。
  */
-function requiresMathSymbols(question: any): boolean {
-  if (!question?.requiresMathPalette) return false;
-  const type = String(question?.type || '');
-  if (
-    type === 'multiple_choice' ||
-    type === 'true_false' ||
-    type === 'select' ||
-    type === 'sorting'
-  ) {
-    return false;
-  }
-  return true;
-}
-
-// iOS/Android: ソフトウェアキーボード出現時に入力欄がキーボードで隠れるのを防ぐため、
-// フォーカス時に少し遅延して入力欄を画面内へスクロールする。
-// visualViewport API が使える場合は、キーボードで狭まった実際の可視領域を基準に
-// 入力欄がキーボードの上に来るよう調整する（block:'center' だとキーボード裏に隠れることがある）。
-const scrollInputIntoView = (target: HTMLElement) => {
-  const vv = (window as any).visualViewport as VisualViewport | undefined;
-  if (vv) {
-    const rect = target.getBoundingClientRect();
-    // 可視領域の下端（キーボード上端に相当）
-    const visibleBottom = vv.offsetTop + vv.height;
-    // フローティング解答バーはキーボードの上に重なって表示されるため、
-    // 「可視領域の下端」だけを基準にするとバーの裏に隠れてしまう。
-    // 実際のバーの高さを測って遮蔽領域として差し引く。
-    // （入力欄拡大でバーが高くなったぶん、この補正がないと選択中の空欄が隠れる）
-    const bar = document.getElementById('floating-answer-bar');
-    const barHeight = bar ? bar.getBoundingClientRect().height : 0;
-    // 入力欄の下端が実効可視下端より下（＝キーボード／バーに隠れている）なら、
-    // 余白 24px を確保してスクロールする。
-    const margin = 24;
-    const overflowBottom = rect.bottom - (visibleBottom - margin - barHeight);
-    if (overflowBottom > 0) {
-      window.scrollBy({ top: overflowBottom, behavior: 'smooth' });
-      return;
-    }
-    // 入力欄が可視領域の上に隠れている場合（上端側はバーの高さと無関係）
-    const overflowTop = (vv.offsetTop + margin) - rect.top;
-    if (overflowTop > 0) {
-      window.scrollBy({ top: -overflowTop, behavior: 'smooth' });
-      return;
-    }
-    return;
-  }
-  // visualViewport 非対応環境のフォールバック
-  try {
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  } catch {
-    target.scrollIntoView();
-  }
-};
-
-const handleInputFocusScroll = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-  const target = e.currentTarget;
-  // キーボードの表示アニメーション完了を待ってからスクロールする。
-  setTimeout(() => scrollInputIntoView(target), 300);
-  // visualViewport のリサイズ（キーボード出現）を捉えて再調整（iOS で確実にするため）。
-  const vv = (window as any).visualViewport as VisualViewport | undefined;
-  if (vv) {
-    const onResize = () => {
-      scrollInputIntoView(target);
-      vv.removeEventListener('resize', onResize);
-    };
-    vv.addEventListener('resize', onResize);
-    // 保険として一定時間後にリスナーを解除
-    setTimeout(() => vv.removeEventListener('resize', onResize), 1000);
-  }
-};
-
-/**
- * 設問ラベル（例: "問1 (ア)" / "(ア)" / "問3 (1) A"）から、
- * 問題文中でハイライトすべき「空欄トークン」を推定して返す。
- * 主に ( ア ) 〜 ( ス ) のような穴埋め記号を対象にする。
- * 見つからない場合は null を返す（＝ハイライトしない）。
- */
-function extractBlankToken(label: string): string | null {
-  if (!label) return null;
-  // カッコ内のカタカナ1文字（ア〜ン）や、丸数字・英字1文字などを拾う。
-  // 例: "問1 (ア)" → "ア", "(イ)" → "イ"
-  const kata = label.match(/[（(]\s*([ア-ンア-ヶ])\s*[)）]/);
-  if (kata) return kata[1];
-  return null;
-}
-
-/**
- * 問題文中に「( ア )」のように空白付きで書かれた空欄と、
- * 詰めて書かれた「(ア)」の両方に対応するため、ハイライト候補文字列を複数返す。
- */
-function blankHighlightVariants(token: string): string[] {
-  return [
-    `( ${token} )`,
-    `(${token})`,
-    `（ ${token} ）`,
-    `（${token}）`,
-  ];
-}
-
-/**
- * short_answer（短答穴埋め）かどうかの判定。
- * multiple_choice / sorting / descriptive 以外の短答入力を対象にする。
- */
-function isShortAnswerType(sq: any): boolean {
-  const t = sq?.type;
-  return t !== 'multiple_choice' && t !== 'sorting' && t !== 'descriptive';
-}
-
-/**
- * パレットのボタン1つ。
- *
- * ボタン面は KaTeX（数式）／mhchem（化学式）で組んだ HTML を描く。
- * 解答欄・解説と同じ組版エンジンなので、
- * 「押した記号」と「実際に出てくる記号」の字形が完全に一致する。
- *
- * ★item ごとに毎回 KaTeX を呼ぶとタップのたびに再組版してしまうため、
- *   useMemo で LaTeX 文字列をキーに結果を固定する。★
- */
-const PaletteButton: React.FC<{
-  item: PaletteItem;
-  onInsert: (item: PaletteItem) => void;
-}> = ({ item, onInsert }) => {
-  const faceHtml = useMemo(() => {
-    if (!item.tex) return null;
-    // renderLatex の戻りは KaTeX の HTML。本文と同じ経路でサニタイズして貼る。
-    return sanitizeInlineHtml(renderLatex(item.tex, { ariaLabel: item.desc }));
-  }, [item.tex, item.desc]);
-
-  return (
-    <button
-      type="button"
-      // マウス/タッチダウンでの入力欄フォーカス喪失を防ぐ（キャレット維持のため）。
-      onMouseDown={(e) => e.preventDefault()}
-      onClick={() => onInsert(item)}
-      // ■ タップしやすさ（ご要望「押しやすいように」「スマホの方も」）
-      //   ・スマホは 1辺 56px 以上（Apple/Google の推奨 44px より大きく取る。
-      //     記号は連続で押すので、隣を誤爆すると入力し直しになるため）
-      //   ・押した瞬間に色と大きさが変わるので「入った」ことが分かる
-      //   ・touch-manipulation でダブルタップ拡大の遅延（約300ms）を消す
-      className={`group relative min-h-[3.5rem] md:min-h-[3.25rem] px-1.5 py-1.5 bg-white border border-stone-300
-        hover:border-[#A9CCE3] hover:bg-[#EAF3F9] active:bg-[#D6E9F5] active:border-[#7FB3D5]
-        rounded-xl shadow-xs cursor-pointer transition-colors touch-manipulation
-        flex flex-col items-center justify-center gap-0.5 overflow-hidden
-        ${item.wide ? 'col-span-2' : ''}`}
-      title={item.desc}
-      aria-label={item.desc}
-    >
-      {faceHtml ? (
-        // palette-face … ボタンの中だけ数式を一段大きく組むためのフック
-        //   （index.css の「6d. 記号パレットのボタン面」）。
-        //   pointer-events-none で、数式の中の span を押しても
-        //   クリックが必ず button 側で拾われるようにする。
-        <span
-          className="palette-face text-stone-800 leading-none pointer-events-none"
-          dangerouslySetInnerHTML={{ __html: faceHtml }}
-        />
-      ) : (
-        <span className="text-[16px] font-bold text-stone-800 font-sans leading-none pointer-events-none">
-          {item.label}
-        </span>
-      )}
-      {item.caption && (
-        <span className="text-[9px] md:text-[10px] text-stone-500 leading-none font-sans pointer-events-none whitespace-nowrap max-w-full overflow-hidden text-ellipsis">
-          {item.caption}
-        </span>
-      )}
-    </button>
-  );
-};
-
-/**
- * 記号パレット（化学・数学で共用）。
- *
- * ■ ★全グループを1画面に出しっぱなしにする理由★
- *   ご要望「探すのに時間を取らないようにしたい」。
- *
- *   これまで2つの方式を試して、どちらも「探す時間」が発生した。
- *     (a) 高さ 240px の枠内スクロール
- *         → 目的の記号がスクロールの外に隠れる。
- *           枠内スクロールとページスクロールが競合して指が滑る。
- *     (b) カテゴリのタブ切り替え
- *         → 「どのタブに入っているか」を当てる手間が増える。
- *           ₂ を押したいのに①タブ、²⁻ は②タブ…と、
- *           1つ入れるたびにタブを行き来することになる。
- *
- *   そこで収録を「キーボードで打てないものだけ」に絞り込み
- *   （化学 31個・数学 16個。symbolPalettes.ts の収録方針を参照）、
- *   全グループを縦に並べたまま1画面に収めた。
- *   スクロールもタブ操作もゼロで、目的の記号は常に見えている。
- *   グループの見出しを左に小さく添えているだけなので、
- *   探す動作は「目で1回見る」だけで済む。
- *
- * ■ 挿入の仕様
- *   入力欄の選択範囲（カーソル位置）へ value を挿入し、キャレットを更新する。
- *   item.caretBack があればその文字数だけ戻す（`√()` → かっこの内側）。
- *   参照が無い場合は末尾に追記するフォールバック動作。
- */
-function SymbolPalette({
-  value,
-  onChange,
-  inputRef,
-  title,
-  groups,
-}: {
-  value: string;
-  onChange: (next: string) => void;
-  inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
-  title: string;
-  groups: PaletteGroup[];
-}) {
-  const insert = (item: PaletteItem) => {
-    const text = item.value;
-    const back = item.caretBack ?? 0;
-    const el = inputRef.current;
-    if (el && typeof el.selectionStart === 'number' && typeof el.selectionEnd === 'number') {
-      const start = el.selectionStart;
-      const end = el.selectionEnd;
-      const next = value.slice(0, start) + text + value.slice(end);
-      onChange(next);
-      // 挿入後、キャレットを挿入文字列の直後（caretBack があればその手前）へ移動。
-      const caret = start + Math.max(0, text.length - back);
-      requestAnimationFrame(() => {
-        try {
-          el.focus();
-          el.setSelectionRange(caret, caret);
-        } catch {
-          /* noop */
-        }
-      });
-    } else {
-      onChange(value + text);
-    }
-  };
-
-  return (
-    <div className="bg-stone-50 border border-stone-200/80 p-2 md:p-3 rounded-xl flex flex-col gap-2 w-full">
-      <div className="text-[11px] md:text-xs text-stone-500 font-bold select-none px-0.5 flex items-center gap-1 flex-wrap">
-        <span>{title}</span>
-        <span className="font-normal text-stone-400">
-          （打ちにくい記号だけ。タップでカーソル位置に入ります）
-        </span>
-      </div>
-
-      {/*
-        ★全グループを出しっぱなしにする★
-        タブも枠内スクロールも作らない。上から下まで全部見えているので、
-        「どこにあるか探す」動作が発生しない。
-      */}
-      {groups.map((grp) => (
-        <div key={grp.group} className="flex flex-col gap-1">
-          {/* グループ見出し＋使いどころ（1行）。目で1回なぞれば場所が分かる。 */}
-          <div className="flex items-baseline gap-1.5 flex-wrap px-0.5">
-            <span className="text-[11px] md:text-[12px] font-bold text-[#2C3E50] font-sans leading-none">
-              {grp.group}
-            </span>
-            {grp.hint && (
-              <span className="text-[9.5px] md:text-[10.5px] text-stone-500 font-sans leading-snug">
-                {grp.hint}
-              </span>
-            )}
-          </div>
-
-          {/* 記号グリッド。1行の列数を画面幅で変え、1ボタンの幅を確保する。 */}
-          <div className="grid grid-cols-4 min-[420px]:grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-1.5 md:gap-2">
-            {grp.items.map((item) => (
-              <PaletteButton key={`${grp.group}-${item.label}`} item={item} onInsert={insert} />
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/** 化学記号パレット（SymbolPalette の化学版ラッパー）。 */
-function ChemistryPalette(props: {
-  value: string;
-  onChange: (next: string) => void;
-  inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
-}) {
-  return <SymbolPalette {...props} title="化学記号パレット" groups={chemistryPaletteGroups} />;
-}
-
-/** 数学記号パレット（SymbolPalette の数学版ラッパー）。数III積分などの解答入力に使う。 */
-function MathPalette(props: {
-  value: string;
-  onChange: (next: string) => void;
-  inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
-}) {
-  return <SymbolPalette {...props} title="数学記号パレット" groups={mathPaletteGroups} />;
-}
 
 export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange, onScored, questionRange }: QuizProps) {
   // ===== タイマー & スコア用 state =====
@@ -617,139 +214,29 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   }, [showingExplanation, chapter.id, mode]);
 
   // ────────────────────────────────────────────────────────────────
-  // 消去法（elimination）― モードを持たず「選択肢の直接タップ」で行う
+  // 消去法（選択肢に斜線を引く）
   // ────────────────────────────────────────────────────────────────
+  // 消去状態・端末への保存・斜線を引く／戻す・長押しでまとめて戻す・
+  // 操作説明の初回表示、という一連の部品は hooks/useElimination.ts に
+  // まとめた（Quiz.tsx で約 110 行を占めていた）。
   //
-  // ■ 何のための状態か
-  //   リスニングやイラスト選択では「これは違う」と分かった選択肢を先に潰し、
-  //   残りに集中するのが定石（消去法）。紙の問題冊子で選択肢に斜線を引く動作を
-  //   アプリ上で再現する。
-  //
-  // ■ 消去モード（トグルボタン）を廃止した理由（ご要望）
-  //   以前は専用ボタンで消去モードに切り替え、モード中だけ
-  //   タップ＝斜線という仕様だった。しかしモードがあると
-  //     ・押す前に必ずボタンを探す手間が増える
-  //     ・「いま押したら選択なのか消去なのか」を毎回確認しないといけない
-  //   という負担が生まれる。そこでモードを無くし、
-  //   選択肢そのものを続けてタップするだけで消去できるようにした。
-  //
-  // ■ タップ1種類で3状態を回す（cycleOption）
-  //     未選択 → 選択 → 消去（斜線） → 未選択 → …
-  //   「選んだけれど、やっぱり違う」という思考の流れがそのまま指の動きになり、
-  //   どの状態からでも続けてタップすれば元に戻せるので詰まらない。
-  //
-  // ■ 解答（answers）とは完全に別の状態にしている理由
-  //   同じ state に混ぜると「消したつもりが解答になっていた」という
-  //   取り違えが起きる。採点対象は answers のみ、消去は表示だけに効く、
-  //   と役割を分けることで誤答リスクを無くす。
-  //
-  // ■ 形
-  //   { [設問ID]: 消去した選択肢の配列 }
-  //   選択肢そのものの文字列で持つ（並び替えや添字ズレに影響されないため）。
-  const [eliminated, setEliminated] = useState<Record<string, string[]>>(() =>
-    parseStoredStringArrayRecord(localStorage.getItem(quizElimKey(chapter.id, mode))),
-  );
-
-  // ★消去法の操作説明（タップで選択→斜線→…）は初回だけ表示する（ご要望）。
-  //   毎問同じ説明が並ぶと選択肢の視認性を下げるので、
-  //   一度でも見たら隠し、代わりに「?」アイコンで呼び出せるようにする。
-  //   キーは章・モードに依らずアプリ全体で1回（操作はどこでも同じなので）。
-  const ELIM_HINT_SEEN_KEY = 'quiz_elim_hint_seen';
-  const [elimHintOpen, setElimHintOpen] = useState<boolean>(() => {
-    try { return localStorage.getItem(ELIM_HINT_SEEN_KEY) !== 'true'; } catch { return true; }
-  });
-  /** 初回表示を「見た」ことにして閉じる（以降は ? アイコンから開閉） */
-  const dismissElimHint = () => {
-    setElimHintOpen(false);
-    try { localStorage.setItem(ELIM_HINT_SEEN_KEY, 'true'); } catch { /* 保存不可でも表示は閉じる */ }
-  };
-
-  useEffect(() => {
-    localStorage.setItem(quizElimKey(chapter.id, mode), JSON.stringify(eliminated));
-  }, [eliminated, chapter.id, mode]);
-
-  /** ある設問で、その選択肢が消去済みか。 */
-  const isEliminated = (sqId: string, opt: string) =>
-    (eliminated[sqId] || []).includes(opt);
-
-  /** 斜線を引く（消去する）。 */
-  const strikeOption = (sqId: string, opt: string) => {
-    setEliminated((prev) => {
-      const cur = prev[sqId] || [];
-      if (cur.includes(opt)) return prev;
-      return { ...prev, [sqId]: [...cur, opt] };
-    });
-  };
-
-  /** 斜線を消して候補に戻す。 */
-  const restoreOption = (sqId: string, opt: string) => {
-    setEliminated((prev) => {
-      const cur = prev[sqId] || [];
-      if (!cur.includes(opt)) return prev;
-      return { ...prev, [sqId]: cur.filter((o) => o !== opt) };
-    });
-  };
-
-  /**
-   * その設問の斜線をすべて消す（長押しで一気にリセット）。
-   *
-   * ご指摘「事故的に選択肢を復活させてしまうリスク」への対応。
-   * 1つずつタップして戻すと、戻す途中で別の選択肢を誤って選んでしまう
-   * （＝解答が入ってしまう）ことがある。まとめて白紙に戻す道を用意して、
-   * 「やり直したい」ときに解答を触らずに済むようにする。
-   */
-  const clearEliminated = (sqId: string) => {
-    setEliminated((prev) => {
-      if (!(prev[sqId] || []).length) return prev;
-      const next = { ...prev };
-      delete next[sqId];
-      return next;
-    });
-  };
-
-  // 直前に斜線を引いた選択肢（アニメーションを1回だけ流すためのキー）。
-  // `${設問ID}\u0000${選択肢}` の形で持つ。区切りに \u0000 を使うのは
-  // 選択肢の文字列に現れ得ない文字にして衝突を避けるため。
-  const [justStruck, setJustStruck] = useState<string | null>(null);
-
-  /** 斜線を引き、同時にアニメーション対象として記録する。 */
-  const strikeOptionAnimated = (sqId: string, opt: string) => {
-    strikeOption(sqId, opt);
-    setJustStruck(`${sqId}\u0000${opt}`);
-  };
-
-  // 長押し判定用。押し始めのタイマーと、「長押しが成立したので
-  // 指を離したときの通常タップ（onClick）は無視する」フラグを持つ。
-  const longPressTimer = useRef<number | null>(null);
-  const longPressFired = useRef(false);
-
-  /** 長押し開始（500ms 押し続けたら、その設問の斜線を全部消す）。 */
-  const beginLongPress = (sqId: string) => {
-    longPressFired.current = false;
-    if (longPressTimer.current !== null) window.clearTimeout(longPressTimer.current);
-    longPressTimer.current = window.setTimeout(() => {
-      longPressTimer.current = null;
-      // 斜線が1つも無いなら何も起きない（誤爆しても害がない）
-      if (!(eliminated[sqId] || []).length) return;
-      longPressFired.current = true;
-      clearEliminated(sqId);
-      // 端末が対応していれば触覚で「まとめて戻した」ことを伝える
-      if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-        navigator.vibrate(30);
-      }
-    }, 500);
-  };
-
-  /** 長押し解除（指を離した／指が外れた／スクロールした）。 */
-  const endLongPress = () => {
-    if (longPressTimer.current !== null) {
-      window.clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
-    }
-  };
-
-  // 設問が変わる・アンマウントされるときにタイマーを残さない
-  useEffect(() => () => endLongPress(), []);
+  // ★変えてはいけない設計：消去状態は採点対象の解答（answers）とは
+  //   完全に別に持つ。混ぜると「消したつもりが解答になっていた」という
+  //   取り違えが起きる。採点は answers のみを見る。
+  const {
+    eliminated,
+    isEliminated,
+    restoreOption,
+    clearEliminated,
+    strikeOptionAnimated,
+    justStruck,
+    beginLongPress,
+    endLongPress,
+    longPressFired,
+    elimHintOpen,
+    setElimHintOpen,
+    dismissElimHint,
+  } = useElimination(chapter.id, mode);
 
   // New state for layout and highlighting
   const [isProblemExpanded, setIsProblemExpanded] = useState(false);
@@ -1122,555 +609,57 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // これにより「問題形式によらず解答欄を固定表示・前へ/次へで遷移」を満たす。
   // ────────────────────────────────────────────────────────────────
 
-  /** 選択式（単一・複数）の選択肢ボタン群を描画する。 */
-  const renderMultipleChoiceControl = (sq: any) => {
-    const isLongOptionList = sq.options.some((opt: string) => opt.length > 5);
-    // 複数選択かどうかの判定：
-    //   correctAnswer を区切り文字で分割した「すべてのトークン」が選択肢に存在する場合のみ複数選択とみなす。
-    const optionSet = new Set(sq.options.map((o: string) => o.trim()));
-    const detectMulti = (sep: string) => {
-      if (!sq.correctAnswer || !sq.correctAnswer.includes(sep)) return false;
-      const toks = sq.correctAnswer.split(sep).map((t: string) => t.trim()).filter(Boolean);
-      return toks.length >= 2 && toks.every((t: string) => optionSet.has(t));
-    };
-    const multiSep = detectMulti('・') ? '・' : (detectMulti('、') ? '、' : (detectMulti(',') ? ',' : null));
-    const isMultiple = multiSep !== null;
-
-    /*
-      ★英語リスニング：選択肢の本文を「解答欄のボタンそのもの」に載せる（ご要望）
-      ------------------------------------------------------------------
-      第1問A のデータは options が ['①','②','③','④'] のマークだけで、
-      英文本体は problem.text 側にあった。そのため
-      「左ペインで英文を読む → 右ペインで①〜④を押す」という往復が必要だった。
-      listeningOptionTexts は problem.text から①〜④の本文を取り出した対応表で、
-      ここに本文があれば、マークと本文を1つのボタンに同居させる。
-      これで「問題文（選択肢）と解答欄が同期する」＝分離が無くなる。
-      第1問B（イラスト選択）には本文が無いので、従来どおりマークのみになる。
-    */
-    const optionTexts: string[] | undefined = listeningOptionTexts.get(sq.id);
-    // 本文つきの選択肢は必ず縦1列（英文は長いので横並びにすると読めない）。
-    const stacked = isLongOptionList || !!optionTexts;
-
-    return (
-      // ★スマホでは「選択肢が先・説明が後」にする（ご指摘：(ア)(イ) が欠けている）★
-      //   flex-col なので CSS order で並べ替えられる。高さを削る方式と違い、
-      //   説明文の長さや選択肢の数が変わっても選択肢が先頭に来ることは保証される。
-      //   md 以上は order を付けないので PC の並び（説明→選択肢）は元のまま。
-      <div className="flex w-full flex-col gap-2">
-      {/*
-        消去法の操作説明。
-        ボタン（モード切替）を置かず、選択肢を続けてタップするだけで
-        「選ぶ → 消す → 戻す」が回ることを一行で伝える。
-      */}
-      {/*
-        操作説明は「文字だけ」だと読み飛ばされるため、
-        各状態の見た目そのものを小さな見本として並べて示す。
-        初見のユーザーが「斜線という段階がある」ことに気づけるようにするのが目的。
-      */}
-      {/* 操作説明は初回のみ展開し、以降は「?」アイコンで呼び出す（ご要望：
-          毎問同じ説明が常時表示され選択肢の邪魔になる、への対応）。 */}
-      {elimHintOpen ? (
-        /*
-          ★ご指摘「(ア)(イ)とかのボタンが欠けてる」の真因はここだった★
-
-          この操作説明は初見ユーザーには既定で開いている。
-          PC では横1行に収まるが、スマホ幅（360〜390px）では
-          「タップで選択 → もう一度で斜線 → さらにタップで元に戻る
-            ／長押しでこの設問の斜線をまとめて消す」が4行に折り返し、
-          実測で約150px を占有していた。
-
-          解答ペインの高さは端末と問題文の長さで決まる有限値なので、
-          その150px はそのまま選択肢の取り分から引かれる。
-          結果 (ア)(イ)(ウ)(エ) が下部ナビの下に押し出され、
-          初見ユーザーの画面には選択肢が1つも映らない状態になっていた
-          （実測：c5_7[0] 390x664 で 見えている選択肢 0/4）。
-
-          ★直し方の方針★
-            説明を消すのではなく、スマホだけ「見本＋2文字」に圧縮する。
-            見本チップ（白／青／斜線）は残すので
-            「斜線という段階がある」という肝心の気づきは失われない。
-            md 以上は一切変更しない（PC の見た目は元のまま）。
-        */
-        <div className="order-2 md:order-none flex flex-wrap items-center gap-x-1.5 md:gap-x-2 gap-y-1 text-[10px] font-bold leading-snug text-gray-400 rounded-lg border border-gray-200 bg-gray-50/80 px-2 py-1 md:px-2.5 md:py-2">
-          <span className="inline-flex items-center gap-1">
-            <span className="inline-block rounded-md border-2 border-gray-200 bg-white px-1.5 py-0.5 text-gray-600">ア</span>
-            <span className="hidden md:inline">タップで選択</span>
-            <span className="md:hidden">選ぶ</span>
-          </span>
-          <span aria-hidden="true" className="text-gray-300">→</span>
-          <span className="inline-flex items-center gap-1">
-            <span className="inline-block rounded-md border-2 border-[#A9CCE3] bg-[#A9CCE3] px-1.5 py-0.5 text-white">ア</span>
-            <span className="hidden md:inline">もう一度で斜線</span>
-            <span className="md:hidden">斜線</span>
-          </span>
-          <span aria-hidden="true" className="text-gray-300">→</span>
-          <span className="inline-flex items-center gap-1">
-            <span className="inline-block rounded-md border-2 border-gray-200 bg-gray-100 px-1.5 py-0.5 text-gray-400 line-through decoration-2 decoration-[#E8A87C]">ア</span>
-            <span className="hidden md:inline">さらにタップで元に戻る</span>
-            <span className="md:hidden">戻す</span>
-          </span>
-          {/* 長押しの補足はスマホでは省く（「?」から開いた PC 幅でだけ出す）。
-              肝心の3段階はチップの見本で伝わっている。 */}
-          <span className="hidden md:inline text-gray-400">／長押しでこの設問の斜線をまとめて消す</span>
-          <button
-            type="button"
-            onClick={dismissElimHint}
-            className="ml-auto shrink-0 rounded-md border border-gray-300 bg-white px-1.5 py-0.5 md:px-2 text-[10px] font-bold text-gray-500 hover:bg-gray-100"
-            aria-label="操作説明を閉じる（以降は ? ボタンで表示）"
-          >
-            閉じる
-          </button>
-        </div>
-      ) : (
-        // 折りたたみ状態（「?操作説明」だけ）もスマホでは選択肢の後ろへ。
-        <div className="order-2 md:order-none flex justify-end">
-          <button
-            type="button"
-            onClick={() => setElimHintOpen(true)}
-            className="inline-flex items-center gap-1 text-[10px] font-bold text-gray-400 hover:text-gray-600"
-            aria-label="選択肢の操作説明を表示"
-            title="タップで選択→もう一度で斜線（消去法）の説明を見る"
-          >
-            <HelpCircle size={13} />
-            操作説明
-          </button>
-        </div>
-      )}
-
-      {/*
-        ★図が無い大問（第1問A・第3問・第2問）は選択肢の背を伸ばす★
-        余った高さを空白として捨てず、タップ領域に変える。
-          ・auto-rows-fr    … 4つの行が等分に高さを分け合う
-          ・overflow-y-auto … 端末が極端に低いときはここだけスクロール
-                              （カードが下部ナビに潜り込むのを防ぐ）
-        伸ばしすぎると1問が画面を占領して読みにくいので、
-        個々のボタン側に max-h の上限を付けている（下記 className 参照）。
-      */}
-      {/* order-1：スマホでは操作説明（order-2）より前に出す。
-          これで説明文が何行に折り返しても選択肢が先頭に残る。 */}
-      <div className={`order-1 md:order-none ${stacked
-        ? `grid grid-cols-1 gap-2.5 w-full ${
-            listeningMobileNoFigure ? 'min-h-0 flex-1 auto-rows-fr overflow-y-auto' : ''
-          }`
-        // 注：以前ここに xs:grid-cols-3 があったが、Tailwind v4 の @theme に
-        // xs ブレークポイントは未定義で「効かないクラス」だった。スマホで列数を
-        // 増やすと1つあたりのタップ幅が狭くなり本要件（タップしづらい）に逆行する
-        // ため、ブレークポイントを追加せずクラスを削除している。
-        : "grid grid-cols-2 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
-      }`}>
-        {sq.options.map((opt: string, optIdx: number) => {
-          const isSelected = isMultiple
-            ? (answers[sq.id] || '').split(multiSep as string).map(s => s.trim()).includes(opt.trim())
-            : (answers[sq.id] || '') === opt;
-          const struck = isEliminated(sq.id, opt);
-          // 斜線を引いた直後だけアニメーションを流す（状態変化を動きで知らせる）
-          const strikeAnimating = struck && justStruck === `${sq.id}\u0000${opt}`;
-          const body = optionTexts?.[optIdx];
-          // 丸文字（①②③…）。既に丸数字を持つ選択肢には付けない（実測 321件）。
-          const optionMark = body ? '' : optionCircledMark(opt, optIdx);
-          return (
-            <button
-              key={opt}
-              type="button"
-              aria-pressed={isSelected}
-              // 消去済みは支援技術にも「候補から外した」と伝える
-              aria-disabled={struck}
-              // 見た目（斜線・グレー）に頼らず、状態を言葉でも伝える。
-              // 「今どの状態か視覚情報だけで判断させない」ためのラベル。
-              aria-label={`${opt}${body ? ` ${body}` : ''}／${
-                struck ? '消去済み。タップで元に戻します' : isSelected ? '選択中。タップで斜線を引きます' : '未選択'
-              }`}
-              title={struck ? '消去済み（タップで元に戻す／長押しでまとめて戻す）' : undefined}
-              // 長押しで、その設問の斜線をまとめて消す。
-              // タッチ・マウスの両方を拾うため Pointer Events を使う。
-              onPointerDown={() => beginLongPress(sq.id)}
-              onPointerUp={endLongPress}
-              onPointerLeave={endLongPress}
-              onPointerCancel={endLongPress}
-              onContextMenu={(e) => {
-                // 長押しが成立した直後にモバイルの長押しメニューが出ると
-                // 操作の邪魔になるため抑制する。
-                if (longPressFired.current) e.preventDefault();
-              }}
-              onClick={() => {
-                // 長押しでまとめて消した直後は、指を離したときの
-                // 通常タップを実行しない（意図しない選択を防ぐ）。
-                if (longPressFired.current) {
-                  longPressFired.current = false;
-                  return;
-                }
-                // ────────────────────────────────────────────────
-                // 選択肢の直接タップだけで消去法まで行う（モード無し）
-                //   未選択 → 選択 → 斜線（消去）→ 未選択 → …
-                // ────────────────────────────────────────────────
-                //
-                // ① 斜線が引かれている選択肢をタップ → 斜線を消して未選択に戻す。
-                //    「間違って消した」をその場のタップ1回で取り消せる。
-                if (struck) {
-                  restoreOption(sq.id, opt);
-                  return;
-                }
-                if (isMultiple) {
-                  // 複数選択：選択中のものをタップ＝選択解除（従来どおり）。
-                  // 複数選択で斜線まで回すと「解除したのか消したのか」が
-                  // 分からなくなるため、複数選択では斜線を使わない。
-                  const separator = multiSep as string;
-                  const current = (answers[sq.id] || '').split(separator).map(s => s.trim()).filter(Boolean);
-                  const nextUnordered = isSelected
-                    ? current.filter(a => a !== opt)
-                    : [...current, opt];
-                  const ordered = sq.options.filter((o: string) => nextUnordered.includes(o));
-                  handleOptionSelect(sq.id, ordered.join(separator));
-                  return;
-                }
-                // ② 単一選択で「いま選んでいる」ものをタップ
-                //    → 解答を外し、そのまま斜線を引く（＝これは違うと判断した）。
-                if (isSelected) {
-                  handleOptionSelect(sq.id, '');
-                  strikeOptionAnimated(sq.id, opt);
-                  return;
-                }
-                // ③ それ以外（未選択）をタップ → 解答として選ぶ。
-                handleOptionSelect(sq.id, opt);
-              }}
-              // スマホは 48px 以上の高さ・幅を確保してタップしやすくする（PC は従来寸法）。
-              className={`relative ${
-                /* ★B-1：本文つき選択肢（英文）はスマホで左右余白を詰める★
-                   px-4（16px×2）→ px-2.5（10px×2）で 12px を英文に回す。
-                   md 以上では md:px-4 で元に戻すので PC の見た目は不変。
-                   マークだけの選択肢（①②③④）は幅が余っているので対象外。 */
-                stacked ? 'px-2.5 md:px-4' : 'px-4'
-              } py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex ${
-                /* ★丸文字つき／本文つきは items-start にする★
-                   items-center だと本文が2行になったとき丸数字が
-                   行の中央に浮き、ぶら下げインデントが成立しない。
-                   丸数字の無い短い選択肢（「4月」など）は従来どおり中央。 */
-                optionMark || body ? 'items-start' : 'items-center'
-              } ${stacked ? 'justify-start text-left w-full' : 'justify-center text-center w-full sm:w-auto sm:flex-none'} ${
-                /* 本文つきは w-full なので min-w は不要。
-                   min-w-[3.25rem] を残すと狭い端末で横あふれの原因になる。 */
-                stacked ? '' : 'min-w-[3.25rem] md:min-w-[3rem]'
-              } shadow-sm cursor-pointer ${
-                /*
-                  図が無い大問では余り高さのぶんだけ背が伸びる（押しやすくする）。
-                  ★上限（5rem）を必ず付ける★
-                    付けないと4択が画面を縦に埋め尽くし、1つのボタンが
-                    巨大な余白の塊になる。それでは「空白が無駄」を
-                    別の形で作り直すだけになってしまう。
-                */
-                /*
-                  ★B-1：本文つき選択肢では高さ上限を外す★
-                  ─────────────────────────────────────────────
-                  max-h-[5rem]（80px）は「4択が画面を縦に埋め尽くすのを防ぐ」
-                  ために付けたもので、マークだけの選択肢（①②③④）には今も有効。
-
-                  しかし本文つき（英文）の選択肢では話が逆で、
-                  英文が3行になると 3行 × 24px + 上下余白 = 約88px 必要なのに
-                  80px で打ち切られ、本文の最後の行が隠れていた。
-                  さらに overflow-y-auto の親の中で全4つが 80px を主張するため
-                  合計が枠を超え、④ が下にはみ出して切れていた。
-                  （ご指摘「④も見えるようにしたい」の上下方向の原因）
-
-                  本文つきは stacked のときだけなので、そこだけ上限を外す。
-                  マークだけの選択肢は従来どおり 80px 上限のまま
-                  ＝「巨大な空白の塊」への逆戻りは起きない。
-                */
-                listeningMobileNoFigure && !stacked ? 'max-h-[5rem]' : ''
-              }
-                ${struck
-                  // 消去済み：斜線＋グレーに加え、枠線を破線にして
-                  // 「候補から外した（もう枠として生きていない）」ことを形でも示す。
-                  // 色や透明度だけでは段階の違いが伝わりにくい、というご指摘への対応。
-                  // 紙の冊子で選択肢に線を引いた状態の再現。
-                  ? `bg-gray-100 text-gray-400 border-gray-300 border-dashed line-through decoration-2 decoration-[#E8A87C] opacity-70 shadow-none ${strikeAnimating ? 'animate-strike-out' : ''}`
-                  : isSelected
-                    ? 'bg-[#A9CCE3] text-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30 scale-[1.01]'
-                    : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
-                }`}
-            >
-              {body ? (
-                // マークは丸バッジで固定幅にし、英文は折り返して全文を読ませる。
-                // 「読む場所」と「押す場所」を1つにするのがこの表示の目的。
-                <span className="flex w-full items-start gap-2.5">
-                  <span
-                    className={`shrink-0 text-[15px] md:text-base leading-6 ${
-                      struck ? 'text-gray-400' : isSelected ? 'text-white' : 'text-[#2C3E50]'
-                    }`}
-                  >
-                    {opt}
-                  </span>
-                  <span className="min-w-0 flex-1 text-[15px] md:text-sm font-medium leading-6 break-words [overflow-wrap:anywhere] font-modern">
-                    {/* 英語の選択肢は散文として組む（化学式扱いのセリフ体を避ける） */}
-                    {formatText(body, [], { prose: isEnglishProse })}
-                  </span>
-                </span>
-              ) : optionMark ? (
-                /*
-                  ★ご要望「解答入力のところにも丸文字を。」＋
-                    「問題文の改行ができていない。見にくい。特に選択肢問題。」★
-
-                  ■ 実測した変更前の状態（Playwright・390x664・地理 第1回 問1）
-                      選択肢6つが1列（left=69 / 252x52px）に並び、中身は
-                      formatText(opt) だけ＝「4月 ― 7月」のような素のテキスト。
-                      ・丸数字が無いので、設問文の「次の①〜⑥のうちから一つ選べ」と
-                        画面上の選択肢が対応せず、どれが①なのか分からない。
-                      ・ボタンが flex items-center なので、テキストが2行以上に
-                        なると ★2行目が1行目の真下（左端）から始まる★。
-                        実物の冊子は「① 」の幅ぶん下げた ぶら下げインデント で、
-                        番号と本文が視覚的に分離している。
-
-                  ■ 直し方
-                      本文つき選択肢（英語）で既に使っている
-                      「丸バッジ＋本文」の2カラム構造をそのまま流用する。
-                      ・左：丸数字（shrink-0 で固定幅）
-                      ・右：本文（min-w-0 flex-1 で折り返し、2行目以降は
-                            自動的に丸数字の右端に揃う＝ぶら下げインデント）
-                      items-start にすることで、本文が2行になっても
-                      丸数字は1行目に留まる（items-center だと中央に浮く）。
-
-                  ■ 丸数字を出す条件は実測に基づく（optionCircledMark）
-                      選択肢文字列が既に丸数字で始まる英語リスニング（221問）・
-                      英文法（100問）には付けない＝「① ①」の二重表示を防ぐ。
-                      個数の不一致は全教科0件なので、設問文の「①〜⑥」と
-                      画面の番号は必ず一致する。
-                */
-                <span className="flex w-full items-start gap-2">
-                  <span
-                    className={`shrink-0 leading-6 ${
-                      struck ? 'text-gray-400' : isSelected ? 'text-white' : 'text-[#2C3E50]'
-                    }`}
-                    aria-hidden="true"
-                  >
-                    {optionMark}
-                  </span>
-                  <span className="min-w-0 flex-1 text-left leading-6 break-words [overflow-wrap:anywhere]">
-                    {formatText(opt)}
-                  </span>
-                </span>
-              ) : (
-                formatText(opt)
-              )}
-              {/*
-                消去済みを示すアイコン。
-                「取り消し線＋グレー」だけでは通常表示との差に気づきにくいため、
-                ✕ のバッジを重ねて、色が見分けにくい環境でも
-                形で「消してある」と分かるようにする。
-              */}
-              {struck && (
-                <span
-                  aria-hidden="true"
-                  className={`pointer-events-none absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#E8A87C] text-[9px] font-bold leading-none text-white shadow-sm ${
-                    strikeAnimating ? 'animate-draw-strike' : ''
-                  }`}
-                >
-                  ✕
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-      {/*
-        いま何個消したかを読み上げ・表示の両方で伝える。
-        「今どの状態か」を見た目だけで覚えなくて済むようにするのが目的。
-      */}
-      {(eliminated[sq.id] || []).length > 0 && (
-        <p className="text-[10px] font-bold text-gray-400" aria-live="polite">
-          {(eliminated[sq.id] || []).length}個を消去中（長押しでまとめて元に戻す）
-        </p>
-      )}
-      </div>
-    );
-  };
-
-  /** activeOrder 内で from→to へ要素を移動し、回答を更新する共通関数。 */
-  const reorderSort = (sqId: string, activeOrder: string[], from: number, to: number) => {
-    if (from === to || to < 0 || to >= activeOrder.length) return;
-    const nextOrder = [...activeOrder];
-    const moved = nextOrder.splice(from, 1)[0];
-    nextOrder.splice(to, 0, moved);
-    handleOptionSelect(sqId, nextOrder.join(' > '));
-  };
-
-  /** activeOrder 内で index a と b を入れ替えて回答を更新する（タップ入れ替え用）。 */
-  const swapSort = (sqId: string, activeOrder: string[], a: number, b: number) => {
-    if (a === b) return;
-    const nextOrder = [...activeOrder];
-    [nextOrder[a], nextOrder[b]] = [nextOrder[b], nextOrder[a]];
-    handleOptionSelect(sqId, nextOrder.join(' > '));
-  };
+  /**
+   * 選択式（単一・複数）の解答UIは components/MultipleChoiceControl.tsx に切り出した。
+   * 消去法（斜線）・長押しでまとめて戻す・リスニングの選択肢本文表示などを
+   * 抱えて 359 行あったため、独立したファイルへ移した。
+   * state（eliminated / elimHintOpen）は問題切り替え時のリセットや
+   * localStorage 保存が Quiz 側にあるので動かさず、props で渡している。
+   */
+  const renderMultipleChoiceControl = (sq: any) => (
+    <MultipleChoiceControl
+      sq={sq}
+      answers={answers}
+      onSelect={handleOptionSelect}
+      eliminated={eliminated}
+      isEliminated={isEliminated}
+      restoreOption={restoreOption}
+      strikeOptionAnimated={strikeOptionAnimated}
+      beginLongPress={beginLongPress}
+      endLongPress={endLongPress}
+      elimHintOpen={elimHintOpen}
+      setElimHintOpen={setElimHintOpen}
+      dismissElimHint={dismissElimHint}
+      listeningOptionTexts={listeningOptionTexts}
+      isEnglishProse={isEnglishProse}
+      justStruck={justStruck}
+      longPressFired={longPressFired}
+      listeningMobileNoFigure={listeningMobileNoFigure}
+    />
+  );
 
   /**
-   * 並べ替え（sorting）UIを描画する。
-   * - PC（isDesktop）: HTML5 ドラッグ＆ドロップで並べ替え。
-   * - スマホ（タッチ端末）: HTML5 DnD はタッチで発火しないため使えない。
-   *   代わりに「タップで選択→別要素タップで入れ替え」＋各要素の ◀▶ 移動ボタンで
-   *   確実に並べ替えできるタッチ対応UIを提供する（要件：スマホでドラッグが使えない不具合）。
+   * 並べ替え（sorting）の解答UIは components/SortingControl.tsx に切り出した。
+   * ドラッグ＆ドロップ（PC）とタップ入れ替え（スマホ）の2系統を抱えて
+   * 188 行あったため、独立したファイルへ移した。
+   * state（draggingIndex / dragOverIndex / tapSortSelect）は
+   * 問題切り替え時のリセットが下の useEffect にあるので Quiz 側に残し、
+   * props で渡している。
    */
-  const renderSortingControl = (sq: any) => {
-    const activeOrder = answers[sq.id] ? answers[sq.id].split(' > ') : [...(sq.items || [])];
-
-    // ── スマホ（タッチ）: タップ入れ替え ＋ ◀▶ 移動ボタン ──
-    if (!isDesktop) {
-      const selIdx = tapSortSelect && tapSortSelect.sqId === sq.id ? tapSortSelect.index : null;
-      return (
-        <div className="flex-grow flex flex-col gap-3 w-full">
-          <div className="text-xs text-gray-400 font-bold flex items-center justify-between">
-            <span>タップで並べ替え :</span>
-            <span className="text-[10px] text-[#A9CCE3] font-normal">左から順に並べる</span>
-          </div>
-          <div className="flex flex-col gap-2 p-3 bg-gray-50/80 border border-gray-200 rounded-2xl">
-            {activeOrder.map((item: string, idx: number) => {
-              const isSelected = selIdx === idx;
-              return (
-                <div
-                  key={`${item}-${idx}`}
-                  className={`flex items-center gap-2 px-3 py-2.5 bg-white border rounded-xl shadow-xs transition-all duration-200 select-none
-                    ${isSelected ? 'border-[#A9CCE3] bg-[#A9CCE3]/10 ring-2 ring-[#A9CCE3]/30' : 'border-gray-200'}
-                  `}
-                >
-                  {/* 番号 */}
-                  <span className="text-[11px] bg-stone-100 text-stone-500 rounded px-1.5 py-0.5 text-center select-none font-mono font-semibold shrink-0 w-6">{idx + 1}</span>
-                  {/* 本体：タップで選択／入れ替え */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (selIdx === null) {
-                        // 1つ目：選択
-                        setTapSortSelect({ sqId: sq.id, index: idx });
-                      } else if (selIdx === idx) {
-                        // 同じ要素を再タップ：選択解除
-                        setTapSortSelect(null);
-                      } else {
-                        // 2つ目：選択中の要素と入れ替え
-                        swapSort(sq.id, activeOrder, selIdx, idx);
-                        setTapSortSelect(null);
-                      }
-                    }}
-                    className="flex-1 flex items-center gap-2 text-left min-w-0 min-h-[2.75rem] cursor-pointer"
-                  >
-                    <GripVertical size={16} className={`shrink-0 ${isSelected ? 'text-[#A9CCE3]' : 'text-gray-400'}`} />
-                    <span className="font-bold text-gray-800 text-[16px] break-words">{formatText(item)}</span>
-                  </button>
-                  {/* ◀▶ 移動ボタン（確実な操作手段） */}
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button
-                      type="button"
-                      aria-label="1つ上へ移動"
-                      disabled={idx === 0}
-                      onClick={() => { reorderSort(sq.id, activeOrder, idx, idx - 1); setTapSortSelect(null); }}
-                      // ▲▼ は 32px 角では隣同士を誤タップしやすいため 44px 角に拡大。
-                      className={`flex items-center justify-center w-11 h-11 rounded-lg border transition-colors ${
-                        idx === 0 ? 'border-gray-150 text-gray-300 bg-gray-50' : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
-                      }`}
-                    >
-                      <ChevronLeft size={18} className="stroke-[2.5] -rotate-90" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="1つ下へ移動"
-                      disabled={idx === activeOrder.length - 1}
-                      onClick={() => { reorderSort(sq.id, activeOrder, idx, idx + 1); setTapSortSelect(null); }}
-                      className={`flex items-center justify-center w-11 h-11 rounded-lg border transition-colors ${
-                        idx === activeOrder.length - 1 ? 'border-gray-150 text-gray-300 bg-gray-50' : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
-                      }`}
-                    >
-                      <ChevronRight size={18} className="stroke-[2.5] rotate-90" />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex items-center justify-between gap-3 pt-0.5">
-            <span className="text-xs text-gray-400 leading-normal">
-              ※ 要素をタップで選び、もう一方をタップすると入れ替わります。▲▼でも移動できます。
-            </span>
-            {(answers[sq.id] || '') !== '' && (
-              <button
-                type="button"
-                onClick={() => { handleOptionSelect(sq.id, ''); setTapSortSelect(null); }}
-                className="text-xs text-red-400 active:text-red-500 transition-colors font-medium py-1 px-2.5 active:bg-red-50 rounded-lg cursor-pointer shrink-0"
-              >
-                やり直す (初期設定に戻す)
-              </button>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    // ── PC: HTML5 ドラッグ＆ドロップ ──
-    return (
-      <div className="flex-grow flex flex-col gap-4 w-full">
-        <div className="flex flex-col gap-2.5">
-          <div className="text-xs text-gray-400 font-bold flex items-center justify-between">
-            <span>ドラッグで順序を並べ替え :</span>
-            <span className="text-[10px] text-[#A9CCE3] font-normal">左から順に並べる</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-2.5 p-3.5 bg-gray-50/80 border border-gray-200 rounded-2xl min-h-[72px]">
-            {activeOrder.map((item: string, idx: number) => {
-              const isDragging = draggingIndex === idx;
-              const isDragOver = dragOverIndex === idx;
-              return (
-                <div
-                  key={`${item}-${idx}`}
-                  draggable
-                  onDragStart={(e) => {
-                    setDraggingIndex(idx);
-                    e.dataTransfer.effectAllowed = 'move';
-                  }}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDragEnter={(e) => {
-                    e.preventDefault();
-                    setDragOverIndex(idx);
-                  }}
-                  onDragLeave={() => setDragOverIndex(null)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setDragOverIndex(null);
-                    if (draggingIndex === null || draggingIndex === idx) return;
-                    const nextOrder = [...activeOrder];
-                    const draggedValue = nextOrder[draggingIndex];
-                    nextOrder.splice(draggingIndex, 1);
-                    nextOrder.splice(idx, 0, draggedValue);
-                    handleOptionSelect(sq.id, nextOrder.join(' > '));
-                    setDraggingIndex(null);
-                  }}
-                  onDragEnd={() => {
-                    setDraggingIndex(null);
-                    setDragOverIndex(null);
-                  }}
-                  className={`flex items-center gap-2 px-3 py-2 bg-white border rounded-xl shadow-xs transition-all duration-200 cursor-grab select-none active:cursor-grabbing
-                    ${isDragging ? 'opacity-30 border-dashed border-gray-300 scale-95' : 'opacity-100'}
-                    ${isDragOver ? 'border-[#A9CCE3] bg-[#A9CCE3]/15 scale-105 ring-2 ring-[#A9CCE3]/20' : 'border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50/50'}
-                  `}
-                >
-                  <GripVertical size={13} className="text-gray-400 font-bold shrink-0" />
-                  <span className="font-bold text-gray-800 text-sm whitespace-nowrap">{formatText(item)}</span>
-                  <span className="text-[10px] bg-stone-100 text-stone-500 rounded px-1.5 py-0.5 text-center select-none font-mono font-semibold shrink-0">{idx + 1}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="flex items-center justify-between gap-3 pt-0.5">
-          <span className="text-xs text-gray-400 leading-normal">
-            ※ 要素をドラッグして、正しい順序に並び替えてください。
-          </span>
-          {(answers[sq.id] || '') !== '' && (
-            <button
-              type="button"
-              onClick={() => handleOptionSelect(sq.id, '')}
-              className="text-xs text-red-400 hover:text-red-500 transition-colors font-medium hover:underline py-1 px-2.5 hover:bg-red-50 rounded-lg cursor-pointer shrink-0"
-            >
-              やり直す (初期設定に戻す)
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  };
+  const renderSortingControl = (sq: any) => (
+    <SortingControl
+      sq={sq}
+      answers={answers}
+      onSelect={handleOptionSelect}
+      isDesktop={isDesktop}
+      draggingIndex={draggingIndex}
+      setDraggingIndex={setDraggingIndex}
+      dragOverIndex={dragOverIndex}
+      setDragOverIndex={setDragOverIndex}
+      tapSortSelect={tapSortSelect}
+      setTapSortSelect={setTapSortSelect}
+    />
+  );
 
   /** 選択式の現在の選択内容を「表示専用チップ」用の文字列にする。 */
   const describeChoiceAnswer = (sq: any): string => {
@@ -2438,7 +1427,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         const latest = loadRun(chapter.id, mode);
         finalizeChapterRun(latest);
         // 新たな挑戦のためにラン状態リセット
-        try { localStorage.removeItem(chapterRunKey(chapter.id, mode)); } catch { /* noop */ }
+        clearRun(chapter.id, mode);
         onFinish(answers, latest);
         if (onExplanationChange) onExplanationChange(false);
       }

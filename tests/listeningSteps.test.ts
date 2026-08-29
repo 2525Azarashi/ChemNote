@@ -61,6 +61,9 @@ const ROOT = path.resolve(__dirname, '..');
 const read = (p: string) => fs.readFileSync(path.join(ROOT, p), 'utf-8');
 
 const QUIZ = read('src/components/Quiz.tsx');
+// 章の途中経過（ChapterRunState / perStep）の型は Quiz.tsx から
+// utils/quizRunState.ts へ切り出したので、型の見張りはそちらのソースで行う。
+const RUN_STATE = read('src/utils/quizRunState.ts');
 const EXPL = read('src/components/Explanation.tsx');
 const PLAYER = read('src/components/ListeningAudioPlayer.tsx');
 const FIGURE = read('src/components/QuestionFigure.tsx');
@@ -184,7 +187,7 @@ describe('D1 回帰防止：進捗台帳のキーを壊さない', () => {
     // progress.ts の backfillLegacyProgress は perQuestion のキーを
     // 「大問ID」としてそのまま読む。小問キーを混ぜると存在しない大問を
     // 解いたと数え、進捗が分母を超えてしまう。
-    expect(QUIZ).toContain('perStep?: Record<string');
+    expect(RUN_STATE).toContain('perStep?: Record<string');
     expect(QUIZ).toMatch(/perQuestion:\s*perStep\s*\?\s*run\.perQuestion/);
     expect(QUIZ).toMatch(/perStep:\s*perStep\s*\?\s*\{\s*\.\.\.\(run\.perStep \|\| \{\}\)/);
   });

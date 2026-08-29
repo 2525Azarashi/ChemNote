@@ -93,6 +93,11 @@ describe('localStorage 復元値の実行時検証', () => {
   it('App と Quiz が未検証の型キャストや JSON.parse を復元に使わない', () => {
     const app = readFileSync('src/App.tsx', 'utf8');
     const quiz = readFileSync('src/components/Quiz.tsx', 'utf8');
+    // 章の途中経過（点数）の復元は utils/quizRunState.ts へ切り出したので、
+    // 「検証付きパーサを通しているか」はそちらのソースで見張る。
+    const runState = readFileSync('src/utils/quizRunState.ts', 'utf8');
+    // 消去状態の復元は hooks/useElimination.ts へ切り出した。
+    const elim = readFileSync('src/hooks/useElimination.ts', 'utf8');
 
     expect(app).toContain('return isAppState(saved) ? saved');
     expect(app).toContain('return isAppMode(saved) ? saved');
@@ -100,14 +105,14 @@ describe('localStorage 復元値の実行時検証', () => {
     expect(app).not.toContain("localStorage.getItem('savedAppState') as AppState");
     expect(app).not.toContain("localStorage.getItem('savedAppMode') as AppMode");
 
-    expect(quiz).toContain('if (!isPlainRecord(parsed)) return emptyRun()');
+    expect(runState).toContain('if (!isPlainRecord(parsed)) return emptyRun()');
 
     // 保存キー名は utils/quizStorageKeys.ts へ集約したため、
     // 「ソースに `quiz_answers_${...}` と書いてあるか」では
     // 意図（＝復元に検証付きパーサを使っているか）を守れなくなった。
     // 代わりに「検証付きパーサに渡している」形そのものを確認する。
     expect(quiz).toContain('parseStoredStringRecord(localStorage.getItem(quizAnswersKey(');
-    expect(quiz).toContain('parseStoredStringArrayRecord(localStorage.getItem(quizElimKey(');
+    expect(elim).toContain('parseStoredStringArrayRecord(localStorage.getItem(quizElimKey(');
     expect(quiz).toContain('parseStoredNonNegativeInteger(');
   });
 });

@@ -28,18 +28,24 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 const QUIZ = readFileSync(resolve(__dirname, '../src/components/Quiz.tsx'), 'utf-8');
+// 選択肢ボタン群は components/MultipleChoiceControl.tsx へ切り出したので、
+// 「選択肢そのものの見た目・操作」に関する検査はこちらを読む。
+const MC = readFileSync(resolve(__dirname, '../src/components/MultipleChoiceControl.tsx'), 'utf-8');
+// 消去状態そのものと長押しのしくみは hooks/useElimination.ts へまとめたので、
+// 「state の持ち方・保存・タイマー」に関する検査はこちらを読む。
+const ELIM = readFileSync(resolve(__dirname, '../src/hooks/useElimination.ts'), 'utf-8');
 const CSS = readFileSync(resolve(__dirname, '../src/index.css'), 'utf-8');
 
 describe('前提: 消去の段階は1つで、循環は「未選択→選択→斜線→未選択」', () => {
   it('消去状態は配列への包含だけで表され、"薄い/完全"のような中間段階を持たない', () => {
     // 消去済み判定は「その選択肢が配列に入っているか」の2値のみ。
-    expect(QUIZ).toContain('(eliminated[sqId] || []).includes(opt)');
+    expect(ELIM).toContain('(eliminated[sqId] || []).includes(opt)');
     // 段階を数で持つ実装（0→1→2 のカウンタ）は存在しない。
     expect(QUIZ).not.toMatch(/eliminationLevel|strikeLevel|eliminateStage/);
   });
 
   it('斜線済みをタップすると、1回で未選択に戻る（段階を踏まない）', () => {
-    expect(QUIZ).toMatch(/if \(struck\) \{[\s\S]{0,160}?restoreOption\(sq\.id, opt\)/);
+    expect(MC).toMatch(/if \(struck\) \{[\s\S]{0,160}?restoreOption\(sq\.id, opt\)/);
   });
 });
 
@@ -50,22 +56,22 @@ describe('改善1: 状態ごとの見た目を強くする（気づかれない�
   });
 
   it('★消去済みには✕バッジが重なり、色が見分けにくくても形で分かる', () => {
-    expect(QUIZ).toMatch(/struck && \([\s\S]{0,400}?✕/);
+    expect(MC).toMatch(/struck && \([\s\S]{0,400}?✕/);
     // 装飾なのでスクリーンリーダーからは隠す（読み上げは aria-label 側で行う）
-    expect(QUIZ).toMatch(/struck && \([\s\S]{0,200}?aria-hidden="true"/);
+    expect(MC).toMatch(/struck && \([\s\S]{0,200}?aria-hidden="true"/);
   });
 
   it('★斜線を引いた瞬間にアニメーションが流れ、状態が変わったことを動きで伝える', () => {
-    expect(QUIZ).toContain('animate-strike-out');
-    expect(QUIZ).toContain('animate-draw-strike');
+    expect(MC).toContain('animate-strike-out');
+    expect(MC).toContain('animate-draw-strike');
     expect(CSS).toContain('@keyframes strikeOutOption');
     expect(CSS).toContain('@keyframes drawStrikeLine');
   });
 
   it('アニメーションは直前に消した1つだけに流れる（全部が同時に動かない）', () => {
     // 対象は「設問ID + 選択肢」で1つに特定される。
-    expect(QUIZ).toContain('const strikeAnimating = struck && justStruck ===');
-    expect(QUIZ).toContain('setJustStruck(`${sqId}\\u0000${opt}`)');
+    expect(MC).toContain('const strikeAnimating = struck && justStruck ===');
+    expect(ELIM).toContain('setJustStruck(`${sqId}\\u0000${opt}`)');
   });
 
   it('動きを減らす設定の端末ではアニメーションを止める', () => {
@@ -76,67 +82,67 @@ describe('改善1: 状態ごとの見た目を強くする（気づかれない�
   it('操作説明が、文字だけでなく各状態の見本付きで示される', () => {
     // 「斜線という段階がある」ことに初見で気づけるようにするため。
     expect(QUIZ).toContain('タップで選択');
-    expect(QUIZ).toContain('もう一度で斜線');
-    expect(QUIZ).toContain('さらにタップで元に戻る');
+    expect(MC).toContain('もう一度で斜線');
+    expect(MC).toContain('さらにタップで元に戻る');
   });
 });
 
 describe('改善2: 長押しで一気にリセット（事故的な復活のリスクへの対応）', () => {
   it('★その設問の斜線をまとめて消す関数がある', () => {
-    expect(QUIZ).toContain('const clearEliminated = (sqId: string)');
+    expect(ELIM).toContain('const clearEliminated = (sqId: string)');
     // その設問のキーを丸ごと落とす（他の設問には触らない）
-    expect(QUIZ).toMatch(/clearEliminated[\s\S]{0,320}?delete next\[sqId\]/);
+    expect(ELIM).toMatch(/clearEliminated[\s\S]{0,320}?delete next\[sqId\]/);
   });
 
   it('★長押し（500ms）で発動し、Pointer Events でタッチ・マウス両方に対応する', () => {
-    expect(QUIZ).toMatch(/setTimeout\([\s\S]{0,400}?clearEliminated\(sqId\)[\s\S]{0,200}?\}, 500\)/);
-    expect(QUIZ).toContain('onPointerDown={() => beginLongPress(sq.id)}');
+    expect(ELIM).toMatch(/setTimeout\([\s\S]{0,400}?clearEliminated\(sqId\)[\s\S]{0,200}?\}, 500\)/);
+    expect(MC).toContain('onPointerDown={() => beginLongPress(sq.id)}');
     // 指が離れた・外れた・キャンセルされた場合にタイマーを残さない
     for (const handler of ['onPointerUp={endLongPress}', 'onPointerLeave={endLongPress}', 'onPointerCancel={endLongPress}']) {
-      expect(QUIZ, `${handler} が必要`).toContain(handler);
+      expect(MC, `${handler} が必要`).toContain(handler);
     }
   });
 
   it('★長押しの直後に通常タップが走らない（意図しない選択を防ぐ）', () => {
     // これが無いと、指を離した瞬間に onClick が発火して選択が入ってしまう。
-    expect(QUIZ).toMatch(/if \(longPressFired\.current\) \{[\s\S]{0,160}?return;/);
+    expect(MC).toMatch(/if \(longPressFired\.current\) \{[\s\S]{0,160}?return;/);
   });
 
   it('斜線が1つも無いときは長押ししても何も起きない（誤爆しても害がない）', () => {
-    expect(QUIZ).toMatch(/if \(!\(eliminated\[sqId\] \|\| \[\]\)\.length\) return;/);
+    expect(ELIM).toMatch(/if \(!\(eliminated\[sqId\] \|\| \[\]\)\.length\) return;/);
   });
 
   it('長押し成立時は、モバイルの長押しメニューを抑制する', () => {
-    expect(QUIZ).toMatch(/onContextMenu=\{\(e\) => \{[\s\S]{0,200}?preventDefault\(\)/);
+    expect(MC).toMatch(/onContextMenu=\{\(e\) => \{[\s\S]{0,200}?preventDefault\(\)/);
   });
 
   it('アンマウント時にタイマーを片付ける（リークを残さない）', () => {
-    expect(QUIZ).toContain('useEffect(() => () => endLongPress(), [])');
+    expect(ELIM).toContain('useEffect(() => () => endLongPress(), [])');
   });
 });
 
 describe('改善3: 状態を見た目以外でも分かるようにする', () => {
   it('★各選択肢の状態が aria-label で言葉として読み上げられる', () => {
     // 「視覚情報だけで判断させない」ためのラベル。
-    expect(QUIZ).toContain('消去済み。タップで元に戻します');
-    expect(QUIZ).toContain('選択中。タップで斜線を引きます');
+    expect(MC).toContain('消去済み。タップで元に戻します');
+    expect(MC).toContain('選択中。タップで斜線を引きます');
   });
 
   it('★いま何個消しているかが件数として表示される', () => {
-    expect(QUIZ).toContain('個を消去中（長押しでまとめて元に戻す）');
+    expect(MC).toContain('個を消去中（長押しでまとめて元に戻す）');
     // 件数の変化は読み上げにも伝える
-    expect(QUIZ).toMatch(/aria-live="polite"[\s\S]{0,200}?個を消去中/);
+    expect(MC).toMatch(/aria-live="polite"[\s\S]{0,200}?個を消去中/);
   });
 
   it('消去中の表示は、1つも消していないときは出さない', () => {
-    expect(QUIZ).toMatch(/\(eliminated\[sq\.id\] \|\| \[\]\)\.length > 0 && \(/);
+    expect(MC).toMatch(/\(eliminated\[sq\.id\] \|\| \[\]\)\.length > 0 && \(/);
   });
 });
 
 describe('回帰: 既存の設計を壊していない', () => {
   it('採点対象の解答（answers）と消去状態は別に保たれている', () => {
     // 混ぜると「消したつもりが解答になっていた」取り違えが起きるため。
-    expect(QUIZ).toContain('const [eliminated, setEliminated] = useState<Record<string, string[]>>');
+    expect(ELIM).toContain('const [eliminated, setEliminated] = useState<Record<string, string[]>>');
   });
 
   it('消去状態は端末に保存され、戻ってきても残る', async () => {
@@ -146,9 +152,12 @@ describe('回帰: 既存の設計を壊していない', () => {
     // この文字列は残ってしまい、「消去状態が保存されているか」を
     // 確かめられていない状態（通っているが何も検証していない）だった。
     // 実際に使っているキー生成と、読み書き両方の存在で確認する。
-    expect(QUIZ).toContain('quizElimKey(chapter.id, mode)');
-    expect(QUIZ).toContain('localStorage.setItem(quizElimKey(chapter.id, mode)');
-    expect(QUIZ).toContain('localStorage.getItem(quizElimKey(chapter.id, mode))');
+    // 引数名はフック側では chapterId（Quiz.tsx から chapter.id を渡す）。
+    expect(ELIM).toContain('quizElimKey(chapterId, mode)');
+    expect(ELIM).toContain('localStorage.setItem(quizElimKey(chapterId, mode)');
+    expect(ELIM).toContain('localStorage.getItem(quizElimKey(chapterId, mode))');
+    // Quiz.tsx 側は「章とモードを渡すだけ」になっている。
+    expect(QUIZ).toContain('useElimination(chapter.id, mode)');
 
     const { quizElimKey } = await import('../src/utils/quizStorageKeys');
     expect(quizElimKey('c1_1', 'practice')).toBe('quiz_elim_c1_1_practice');
@@ -156,8 +165,21 @@ describe('回帰: 既存の設計を壊していない', () => {
     expect(quizElimKey('c1_1', 'practice')).not.toBe('quiz_elim_hint_seen');
   });
 
+  it('★選択肢UIの実体は MultipleChoiceControl.tsx にあり、Quiz.tsx は渡すだけ', () => {
+    // 切り出しが「コピーして両方に残っている」状態になっていないことを確かめる。
+    // 実体が両方にあると、片方だけ直して不整合が出る事故が起きる。
+    expect(QUIZ).toContain("from './MultipleChoiceControl'");
+    expect(QUIZ).not.toContain('const strikeAnimating');
+    expect(QUIZ).not.toContain('もう一度で斜線');
+    // 分担：見た目は MultipleChoiceControl.tsx、状態は useElimination.ts、
+    // Quiz.tsx はそれらをつなぐだけ。実体が2か所に増えていないことを固定する。
+    expect(ELIM).toContain('const [eliminated, setEliminated] = useState<Record<string, string[]>>');
+    expect(QUIZ).not.toContain('const [eliminated, setEliminated]');
+    expect(MC).not.toContain('useState');
+  });
+
   it('複数選択の設問では斜線を使わない（解除と消去の混同を避ける）', () => {
-    expect(QUIZ).toMatch(/if \(isMultiple\) \{[\s\S]{0,700}?return;/);
+    expect(MC).toMatch(/if \(isMultiple\) \{[\s\S]{0,700}?return;/);
   });
 
   it('消去モードの切替ボタンは復活していない', () => {

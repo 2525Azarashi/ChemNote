@@ -34,6 +34,10 @@ const ROOT = path.resolve(__dirname, '..');
 const read = (p: string) => fs.readFileSync(path.join(ROOT, p), 'utf-8');
 
 const QUIZ = read('src/components/Quiz.tsx');
+// 選択肢ボタン群は components/MultipleChoiceControl.tsx へ切り出した。
+const MC = read('src/components/MultipleChoiceControl.tsx');
+// 消去状態そのものと長押しのしくみは hooks/useElimination.ts へまとめた。
+const ELIM = read('src/hooks/useElimination.ts');
 const PLAYER = read('src/components/ListeningAudioPlayer.tsx');
 const SPEECH = read('src/utils/listeningSpeech.ts');
 const FIGURE = read('src/components/QuestionFigure.tsx');
@@ -313,7 +317,9 @@ describe('解答画面：音源は左（問題文）ペインに横帯で置く'
 // =====================================================================
 describe('解答画面：消去法（選択肢を直接タップして斜線を引く）', () => {
   it('解答とは別の state で消去を持っている（取り違え防止）', () => {
-    expect(QUIZ).toContain('const [eliminated, setEliminated]');
+    // 消去状態は hooks/useElimination.ts が持つ（解答 answers とは別の入れ物）。
+    expect(ELIM).toContain('const [eliminated, setEliminated]');
+    expect(QUIZ).toContain('useElimination(chapter.id, mode)');
   });
 
   it('消去モードの切替ボタンを持たない（ご要望：モードではなく直接タップ）', () => {
@@ -327,28 +333,28 @@ describe('解答画面：消去法（選択肢を直接タップして斜線を�
 
   it('タップだけで 未選択→選択→斜線→未選択 と巡回する', () => {
     // ① 斜線済みをタップ → 斜線を消して候補に戻す
-    expect(QUIZ).toMatch(/if \(struck\) \{[\s\S]{0,120}?restoreOption\(sq\.id, opt\)/);
+    expect(MC).toMatch(/if \(struck\) \{[\s\S]{0,120}?restoreOption\(sq\.id, opt\)/);
     // ② 選択中をタップ → 解答を外して斜線を引く
     //    （斜線を引く関数は、変化を動きで見せるため strikeOptionAnimated に変更）
-    expect(QUIZ).toMatch(
+    expect(MC).toMatch(
       /if \(isSelected\) \{[\s\S]{0,200}?handleOptionSelect\(sq\.id, ''\);[\s\S]{0,120}?strikeOptionAnimated\(sq\.id, opt\)/,
     );
     // ③ 未選択をタップ → 解答として選ぶ
-    expect(QUIZ).toContain("handleOptionSelect(sq.id, opt);");
+    expect(MC).toContain("handleOptionSelect(sq.id, opt);");
   });
 
   it('操作方法を選択肢の上に示している（モード表示の代わり）', () => {
     // 文字だけの一行説明から、各状態の見本を並べた表示に変更した。
     // 「2段階あることに気づかれない」というご指摘への対応。
     expect(QUIZ).toContain('タップで選択');
-    expect(QUIZ).toContain('もう一度で斜線');
-    expect(QUIZ).toContain('さらにタップで元に戻る');
-    expect(QUIZ).toContain('長押しでこの設問の斜線をまとめて消す');
+    expect(MC).toContain('もう一度で斜線');
+    expect(MC).toContain('さらにタップで元に戻る');
+    expect(MC).toContain('長押しでこの設問の斜線をまとめて消す');
   });
 
   it('消去済みの選択肢は取り消し線で表示される', () => {
-    expect(QUIZ).toContain('line-through');
-    expect(QUIZ).toContain('const struck = isEliminated(sq.id, opt)');
+    expect(MC).toContain('line-through');
+    expect(MC).toContain('const struck = isEliminated(sq.id, opt)');
   });
 
   it('消去状態は端末に保存され、戻ってきても残る', async () => {
@@ -357,9 +363,10 @@ describe('解答画面：消去法（選択肢を直接タップして斜線を�
     // もあるので、保存キーを集約したあとでもこの文字列は残ってしまい、
     // 「消去状態が保存されているか」を確かめられていない状態だった。
     // 実際に使っているキー生成と、読み書き両方の存在で確認する。
-    expect(QUIZ).toContain('quizElimKey(chapter.id, mode)');
-    expect(QUIZ).toContain('localStorage.setItem(quizElimKey(chapter.id, mode)');
-    expect(QUIZ).toContain('localStorage.getItem(quizElimKey(chapter.id, mode))');
+    // 引数名はフック側では chapterId（Quiz.tsx から chapter.id を渡す）。
+    expect(ELIM).toContain('quizElimKey(chapterId, mode)');
+    expect(ELIM).toContain('localStorage.setItem(quizElimKey(chapterId, mode)');
+    expect(ELIM).toContain('localStorage.getItem(quizElimKey(chapterId, mode))');
 
     const { quizElimKey } = await import('../src/utils/quizStorageKeys');
     expect(quizElimKey('q_el1_A', 'practice')).toBe('quiz_elim_q_el1_A_practice');
@@ -374,7 +381,7 @@ describe('解答画面：消去法（選択肢を直接タップして斜線を�
 describe('英語リスニング：問題文（選択肢）と解答欄が同じ場所にある', () => {
   it('選択肢の英文を problem.text から取り出して解答欄に載せている', () => {
     expect(QUIZ).toContain('buildListeningOptionTexts');
-    expect(QUIZ).toContain('listeningOptionTexts.get(sq.id)');
+    expect(MC).toContain('listeningOptionTexts.get(sq.id)');
   });
 
   it('左ペインはリード文のみ（問1〜問4をまとめて出さない）', () => {
