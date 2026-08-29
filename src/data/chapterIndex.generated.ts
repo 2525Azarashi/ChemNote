@@ -674,7 +674,7 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "el2",
-        "problemCount": 0,
+        "problemCount": 6,
         "abstractTitle": "第2問",
         "realTitle": "第2問"
       },
@@ -1152,7 +1152,7 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
     "units": 9,
     "points": 100,
     "marks": 37,
-    "questions": 44
+    "questions": 50
   },
   "math": {
     "chapters": 33,

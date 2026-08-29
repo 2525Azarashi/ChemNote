@@ -48,13 +48,29 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'scripts' / 'data' / 'q2_shuffled.json'
+
+# 「どの問を収録するか」の定義はシャッフラー側に1か所だけ置き、
+# ここでは読み込むだけにする（2か所に書くと必ず食い違うため）。
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from shuffle_listening_q2_options import (  # noqa: E402
+    EXCLUDED_PDF_ILLUSTRATIONS,
+    PDF_ILLUSTRATION_QUESTIONS,
+)
 OUT = ROOT / 'src' / 'data' / 'englishListeningQ2Problems.ts'
 IMG_DIR_REL = '/listening_q2'
 MARKS = '①②③④'
+
+# ★今回収録する問（＝配布 PDF の実物イラストがある問）★
+#
+# 絵を選ぶ大問なので、絵のない問を入れても解けない。
+# そのため 48問全部を待たず、絵が揃っている問だけを先に公開し、
+# 残りはイラストが揃ったところで追加していく。
+PUBLISHED = PDF_ILLUSTRATION_QUESTIONS
 
 
 def ts(s: str) -> str:
@@ -123,18 +139,27 @@ def image_caption(q: dict) -> str:
 
 HEAD = """/**
  * ===================================================================
- * 英語リスニング 第2問 ― 類題集（第1回〜第16回）
+ * 英語リスニング 第2問 ― 類題集（イラストが揃った回から順次公開）
  * ===================================================================
  *
  * 出典
- *   配布 PDF「共通テスト_英語リスニング_第2問_類題集_15セット_改訂版v2.pdf」の
- *   全セット（各3問）をそのまま収録している。
+ *   配布 PDF「共通テスト_英語リスニング_第2問_類題集_15セット_改訂版v2.pdf」。
  *   場面説明（日本語）・話者・設問文（英語）・対話スクリプト・解説は
  *   すべて PDF の原文どおり。
  *
  *   ※ PDF の表紙は「全15セット・45問」だが、中身は第16セットまであり
  *     48問収録されている。表紙の数字ではなく実データに合わせて16セット
- *     （第1回〜第16回）として収録した。
+ *     （第1回〜第16回）として扱っている。
+ *
+ * ★なぜ全 48 問ではなく順次公開なのか★
+ *   第2問は「絵を選ぶ」大問なので、イラストのない問は原理的に解けない。
+ *   配布 PDF「第２問.pdf」から実物のイラストが取れた問を
+ *   絵の1マスずつ拡大して選択肢の文言と突き合わせ、
+ *   絵と選択肢が完全に一致した問だけを先に公開している。
+ *   残りはイラストを用意できたところで追加する。
+ *   セット番号・問番号は PDF 原文のまま保ち、詰め直していない
+ *   （詰め直すと、後日追加したときに既存の学習記録の ID が
+ *     別の問を指してしまう）。
  *
  * 生成方法（手打ちしていない理由）
  *   48問＝選択肢192個・対話192発話・画像プロンプト48本を手で書き写すと、
@@ -144,16 +169,22 @@ HEAD = """/**
  *     scripts/gen_listening_q2_data.py         … JSON → このファイル
  *   の3段で機械的に生成している。
  *
- * 正解位置を並べ替えている理由
+ * 正解位置について
  *   PDF 原文のままだと正解が ①13問 / ②21問 / ③9問 / ④5問 と偏っており、
  *   「②を塗れば 44% 当たる」状態になる。音を聞かずに点が取れると
  *   リスニングの練習にならないため、選択肢の**並び順だけ**を入れ替えて
- *   正解位置を各12問ちょうどに均した（最頻位置を塗っても 25%）。
- *   イラストは入れ替え後の並びで生成しているので、絵・選択肢・正解・解説の
- *   4つが必ず一致する。
- *   なお「1枚の図の中に①〜④が配置される型」（14問）は、①〜④が図の中の
+ *   48問全体を ①12 / ②14 / ③11 / ④11 に均してある（44% → 29%）。
+ *
+ *   ただしこのファイルに収録した問は「実物のイラストを使う問」で、
+ *   絵の各マスの左上に ①②③④ が★絵として焼き込まれている★
+ *   （実測：マス左上22%の領域の暗ピクセル率≈10%、その右隣の帯≈0.3%）。
+ *   並べ替えると番号ごと動いて答えが消えるので、この分は
+ *   PDF 原文の並びで固定している。そのため先行公開分だけを見ると
+ *   正解位置にはまだ偏りが残っている（全部揃うと上記の分布になる）。
+ *
+ *   なお「1枚の図の中に①〜④が配置される型」は、①〜④が図の中の
  *   どこを指すかが1つの文に溶けているため、機械的に入れ替えると絵が壊れる。
- *   この14問は原文の並びのまま固定し、残る34問の割り当てで全体を均している。
+ *   この型は原文の並びのまま固定し、並べ替え可能な2×2型で全体を均している。
  *
  * 第1問B・第3問との作りの違い
  *   ・2回読み（readCount: 2）。第1問B と同じ。第3問は1回読み。
@@ -212,6 +243,23 @@ DEEP_DIVE = [
 ]
 
 
+def published_only(sets: list[dict]) -> list[dict]:
+    """
+    実物イラストがある問だけを残す。
+
+    セット番号・問番号は原文のまま保つ（詰め直さない）。
+    詰め直すと、後から残りのセットを追加したときに
+    既に保存してある学習記録の ID が別の問を指してしまう。
+    番号を固定しておけば、追加は隔間を埋めるだけで済む。
+    """
+    out = []
+    for s in sets:
+        qs = [q for q in s['questions'] if (s['set'], q['q']) in PUBLISHED]
+        if qs:
+            out.append({**s, 'questions': qs})
+    return out
+
+
 def build(sets: list[dict]) -> str:
     out = [HEAD]
     names: list[str] = []
@@ -253,7 +301,7 @@ def build(sets: list[dict]) -> str:
         # ---- 問題文（text） ----
         # 選択肢の日本語説明は載せない（絵を読み取る練習にするため）。
         body = [
-            f'第{no}回　第2問（3問・2回読み）　【難易度：{diff}】',
+            f'第{no}回　第2問（{len(qs)}問・2回読み）　【難易度：{diff}】',
             '',
             '第2問では、2人の短い対話と英語の設問が2回読まれます。'
             'その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。',
@@ -279,6 +327,18 @@ def build(sets: list[dict]) -> str:
                 f'イラスト①〜④から、対話と設問の内容に合うものを選びなさい。'
                 f'（{figure_label(q["figureType"])}）',
             ]
+
+        # 問番号に欠けがある場合（＝いまイラストがない問がある）は
+        # 「なぜ問3がないのか」が学習者に分かるように一言添える。
+        missing = sorted(q for (st, q) in EXCLUDED_PDF_ILLUSTRATIONS if st == no)
+        if missing:
+            body += [
+                '',
+                '※ '
+                + '・'.join(f'問{m}' for m in missing)
+                + ' はイラストの準備中のため、この回では出題していません。',
+            ]
+
         text = '\n'.join(body)
 
         # ---- subQuestions ----
@@ -354,8 +414,9 @@ def build(sets: list[dict]) -> str:
             '};\n'
         )
 
+    total = sum(len(s['questions']) for s in sets)
     out.append(
-        '/** 第2問の演習セット一覧（PDF 全16セット＝第1回〜第16回・各3問）。 */\n'
+        f'/** 第2問の演習セット一覧（イラストが揃っている {len(sets)} セット {total} 問）。 */\n'
         'export const EL2_PROBLEMS: ListeningProblem[] = [\n'
         + ''.join(f'  {n},\n' for n in names)
         + '];\n'
@@ -364,13 +425,16 @@ def build(sets: list[dict]) -> str:
 
 
 def main() -> int:
-    sets = json.loads(SRC.read_text(encoding='utf-8'))
+    all_sets = json.loads(SRC.read_text(encoding='utf-8'))
+
+    # 実物イラストがある問だけを収録する（絵のない問は解けないため）。
+    sets = published_only(all_sets)
 
     # 生成前に最低限の整合性を確認する（壊れたデータを TS に流さない）
     errors: list[str] = []
     for s in sets:
-        if len(s['questions']) != 3:
-            errors.append(f'第{s["set"]}セット: 問数が {len(s["questions"])}（3のはず）')
+        if not s['questions']:
+            errors.append(f'第{s["set"]}セット: 問が0問')
         for q in s['questions']:
             tag = f'第{s["set"]}セット問{q["q"]}'
             if len(q['options']) != 4:
@@ -396,7 +460,9 @@ def main() -> int:
 
     OUT.write_text(build(sets), encoding='utf-8')
     total = sum(len(s['questions']) for s in sets)
+    grand = sum(len(s['questions']) for s in all_sets)
     print(f'{OUT.name}: {len(sets)} セット / {total} 問')
+    print(f'  （PDF 全体は {len(all_sets)} セット {grand} 問。イラストが揃った分だけ収録）')
 
     import collections
 

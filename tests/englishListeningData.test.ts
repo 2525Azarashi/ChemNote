@@ -109,13 +109,14 @@ describe('他科目と同じ形（画面を流用するための約束）', () =
     }
   });
 
-  it('第1問A・第1問B・第3問 には問題が収録され、他の単元はまだ「準備中」', () => {
+  it('第1問A・第1問B・第2問・第3問 には問題が収録され、他の単元はまだ「準備中」', () => {
     // 第1問A（第1回＋配布PDF13セット）・第1問B（配布PDF15セット）・
-    // 第3問（配布PDF15セット）を差し込んだので、収録数は 0 ではなくなる。
+    // 第2問（イラストが揃った6セットだけ先行公開）・第3問（配布PDF15セット）を
+    // 差し込んだので、収録数は 0 ではなくなる。
     expect(getListeningStats().questions).toBeGreaterThan(0);
 
     // 収録済みの単元。ここに載っていない単元は「準備中」であること。
-    const RECORDED = new Set(['el1_A', 'el1_B', 'el3']);
+    const RECORDED = new Set(['el1_A', 'el1_B', 'el2', 'el3']);
 
     for (const chapter of getAllListeningChapters()) {
       if (RECORDED.has(chapter.id)) {
@@ -130,6 +131,10 @@ describe('他科目と同じ形（画面を流用するための約束）', () =
     const byId = new Map(getAllListeningChapters().map((c) => [c.id, c]));
     expect(byId.get('el1_A')!.practiceProblems.length).toBe(14); // 第1回＋13セット
     expect(byId.get('el1_B')!.practiceProblems.length).toBe(15); // 15セット
+    // 第2問は配布PDF全16セットのうち、実物イラストが使える6セットだけを先行公開。
+    // （残りはイラストを用意でき次第あとから追加する。数は増える前提なので下限で見る）
+    expect(byId.get('el2')!.practiceProblems.length).toBeGreaterThanOrEqual(6);
+    expect(byId.get('el2')!.practiceProblems.length).toBeLessThanOrEqual(16);
     expect(byId.get('el3')!.practiceProblems.length).toBe(15); // 15セット（各6問）
   });
 });

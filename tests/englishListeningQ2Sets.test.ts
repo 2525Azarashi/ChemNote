@@ -7,23 +7,27 @@ import { englishListeningData } from '../src/data/englishListeningData';
 
 /**
  * ===================================================================
- * 英語リスニング 第2問（イラスト選択・16セット48問）の回帰テスト
+ * 英語リスニング 第2問（イラスト選択）の回帰テスト
  * ===================================================================
  *
  * ■ このテストが守っていること
  *   ① データそのものの整合（選択肢・正解・音源トラックの対応）
- *   ② 正解位置が偏っていない（①〜④が各12問）
- *      → 偏っていると「②を塗れば当たる」状態になり、耳を使わずに点が取れてしまう。
- *   ③ イラストのパス命名が設問IDと1対1で対応している（絵の貼り違え防止）
- *   ④ すでに public 配下にある画像は壊れていない（空ファイル混入防止）
- *   ⑤ 画像が48枚揃うまで単元へ流し込まれない（絵のない絵選択問題を出さない）
+ *   ② 収録した全問にイラストの実ファイルがあること
+ *      → 第2問は「4枚の絵を見比べて選ぶ」大問なので、
+ *        絵が無い問を出すとマーク（①〜④）だけが並んで原理的に解けない。
+ *   ③ イラストのパスが設問IDと1対1で対応している（絵の貼り違え防止）
+ *   ④ 実物イラストを使う問が「PDF 原文の並び」で固定されていること
+ *   ⑤ 収録した全問がそのまま単元へ流し込まれていること
  *
- * ■ ④⑤について
- *   第2問は「4枚の絵を見比べて選ぶ」大問なので、絵が欠けた状態で公開すると
- *   マーク（①〜④）だけが並んで原理的に解けない。そのため
- *   englishListeningData.ts への登録は画像が全部揃ってからにしている。
- *   このテストは「揃ったら登録される／揃っていないなら登録されていない」の
- *   両方を、画像の実枚数から自動で切り替えて検査する（手で書き換えなくてよい）。
+ * ■ 「48問すべて」を要求しない理由
+ *   当初は48問ぶんの絵を自前生成する前提で、
+ *   「48枚揃うまで単元に登録しない」全か無かの設計にしていた。
+ *   その後、配布 PDF から実物のイラストが取れたため、
+ *   絵が揃った問だけを先に公開する方式へ変えた。
+ *   そこでこのテストも「収録した問には必ず絵がある」
+ *   「絵のある問は必ず公開されている」という不変条件に置き換えている。
+ *   ★問数を定数で書かない★のは、追加のたびにテストを書き換える運用にすると
+ *   「テストを数字に合わせる」だけの作業になり、検査の意味が薄れるため。
  */
 
 const ROOT = path.resolve(__dirname, '..');
@@ -32,12 +36,23 @@ const MARKS = ['①', '②', '③', '④'];
 
 const allSub = EL2_PROBLEMS.flatMap((p) => p.subQuestions as any[]);
 
-describe('第2問：16セット48問が収録されている', () => {
-  it('16セット・各3問＝48問ある', () => {
-    expect(EL2_PROBLEMS).toHaveLength(16);
-    expect(allSub).toHaveLength(48);
+/** imageUrl（/listening_q2/el2_set9_q2.jpg）から実ファイルのパスを作る。 */
+const fileOf = (imageUrl: string) =>
+  path.join(ROOT, 'public', imageUrl.replace(/^\//, ''));
+
+/** id（q_el2_set9_2）から (セット番号, 問番号) を取り出す。 */
+function idParts(id: string): { set: number; q: number } {
+  const m = /^q_el2_set(\d+)_(\d)$/.exec(id);
+  if (!m) throw new Error(`設問IDの形式が違う: ${id}`);
+  return { set: Number(m[1]), q: Number(m[2]) };
+}
+
+describe('第2問：収録データの整合', () => {
+  it('1問以上収録されており、各セットに1問以上ある', () => {
+    expect(EL2_PROBLEMS.length).toBeGreaterThan(0);
+    expect(allSub.length).toBeGreaterThan(0);
     for (const p of EL2_PROBLEMS) {
-      expect(p.subQuestions).toHaveLength(3);
+      expect(p.subQuestions.length).toBeGreaterThan(0);
     }
   });
 
@@ -72,37 +87,53 @@ describe('第2問：16セット48問が収録されている', () => {
     }
   });
 
-  it('IDがセット・問番号と一致している', () => {
-    EL2_PROBLEMS.forEach((p, si) => {
-      const setNo = si + 1;
-      expect(p.id).toBe(`q_el2_set${setNo}`);
-      (p.subQuestions as any[]).forEach((sq, qi) => {
-        expect(sq.id).toBe(`q_el2_set${setNo}_${qi + 1}`);
-      });
-    });
+  it('IDがセット・問番号と一致し、セット内で問番号が昇順である', () => {
+    // ★問番号は「1,2,3」と詰めない★
+    // イラストが揃っていない問を飛ばして公開しているため、
+    // 「問1・問2」だけ、「問2・問3」だけというセットが存在する。
+    // 詰め直すと、後日追加したときに既存の学習記録の ID が別の問を指す。
+    for (const p of EL2_PROBLEMS) {
+      const m = /^q_el2_set(\d+)$/.exec(p.id);
+      expect(m, `セットIDの形式が違う: ${p.id}`).not.toBeNull();
+      const setNo = Number(m![1]);
+
+      let prev = 0;
+      for (const sq of p.subQuestions as any[]) {
+        const { set, q } = idParts(sq.id);
+        expect(set).toBe(setNo);
+        expect(q).toBeGreaterThan(prev);
+        prev = q;
+      }
+    }
+  });
+
+  it('セット番号が重複せず昇順である', () => {
+    const nums = EL2_PROBLEMS.map((p) => Number(/^q_el2_set(\d+)$/.exec(p.id)![1]));
+    expect(new Set(nums).size).toBe(nums.length);
+    expect([...nums]).toEqual([...nums].sort((a, b) => a - b));
   });
 });
 
-describe('第2問：正解位置が偏っていない（耳を使わずに解けないようにする）', () => {
-  it('①〜④がそれぞれ12問ずつになっている', () => {
+describe('第2問：正解位置（耳を使わずに解けないようにする）', () => {
+  it('①〜④のどれかに全部集まっていない', () => {
+    // 実物イラストを使う問は ①②③④ が絵に焼き込まれているため
+    // 並べ替えられず、公開分だけを見ると偏りが残る。
+    // それでも「1つの位置だけ塗れば全部当たる」状態は避けられていること。
     const count: Record<string, number> = { '①': 0, '②': 0, '③': 0, '④': 0 };
     for (const sq of allSub) count[sq.correctAnswer] += 1;
-    expect(count).toEqual({ '①': 12, '②': 12, '③': 12, '④': 12 });
-  });
+    const used = Object.values(count).filter((n) => n > 0).length;
+    expect(used).toBeGreaterThanOrEqual(3);
 
-  it('最頻位置だけを塗っても25%しか当たらない', () => {
-    const count: Record<string, number> = { '①': 0, '②': 0, '③': 0, '④': 0 };
-    for (const sq of allSub) count[sq.correctAnswer] += 1;
     const best = Math.max(...Object.values(count));
-    // PDF 原文のままだと ② が21問で 44% 当たってしまう。並べ替えで 25% に落としてある。
-    expect(best / allSub.length).toBeLessThanOrEqual(0.25);
+    expect(best / allSub.length).toBeLessThan(0.5);
   });
 
-  it('解説に選択肢のイラスト説明が入っている（絵と聞き取りの対応が確認できる）', () => {
+  it('解説に選択肢のイラスト説明と、収録した問の見出しが入っている', () => {
     for (const p of EL2_PROBLEMS) {
       expect(p.explanation).toContain('選択肢のイラスト：');
-      for (let n = 1; n <= 3; n += 1) {
-        expect(p.explanation).toMatch(new RegExp(`^問${n}`, 'm'));
+      for (const sq of p.subQuestions as any[]) {
+        const { q } = idParts(sq.id);
+        expect(p.explanation).toMatch(new RegExp(`^問${q}`, 'm'));
       }
     }
   });
@@ -113,18 +144,31 @@ describe('第2問：正解位置が偏っていない（耳を使わずに解け
     expect(first.explanation).toContain('ミルク');
     expect(first.text).not.toContain('ミルク');
   });
+
+  it('問を飛ばしたセットには、その旨が問題文に書かれている', () => {
+    for (const p of EL2_PROBLEMS) {
+      const qs = (p.subQuestions as any[]).map((sq) => idParts(sq.id).q);
+      const skipped = [1, 2, 3].filter((n) => !qs.includes(n));
+      if (skipped.length === 0) continue;
+      // 「問3が無いのはなぜか」が学習者に分かるようにしておく。
+      expect(p.text).toContain('イラストの準備中');
+      for (const n of skipped) {
+        expect(p.text).toContain(`問${n}`);
+      }
+    }
+  });
 });
 
 describe('第2問：イラストの割り当て', () => {
   it('imageUrl が設問IDと1対1で対応している', () => {
-    EL2_PROBLEMS.forEach((p, si) => {
-      const setNo = si + 1;
-      (p.subQuestions as any[]).forEach((sq, qi) => {
-        expect(sq.imageUrl).toBe(`/listening_q2/el2_set${setNo}_q${qi + 1}.jpg`);
+    for (const p of EL2_PROBLEMS) {
+      for (const sq of p.subQuestions as any[]) {
+        const { set, q } = idParts(sq.id);
+        expect(sq.imageUrl).toBe(`/listening_q2/el2_set${set}_q${q}.jpg`);
         expect(typeof sq.imageCaption).toBe('string');
         expect(sq.imageCaption.length).toBeGreaterThan(0);
-      });
-    });
+      }
+    }
   });
 
   it('imageUrl は public 配下を指す（共有URLを資産にしない）', () => {
@@ -138,17 +182,39 @@ describe('第2問：イラストの割り当て', () => {
     expect(new Set(urls).size).toBe(urls.length);
   });
 
-  it('すでに置かれている画像は壊れていない（空ファイルを混ぜない）', () => {
+  it('★収録した全問にイラストの実ファイルがある★', () => {
+    // これが第2問でいちばん大事な条件。
+    // 絵が無い問を収録すると、マークだけが並ぶ解けない問題になる。
+    const missing = allSub
+      .filter((sq) => !fs.existsSync(fileOf(sq.imageUrl)))
+      .map((sq) => sq.imageUrl);
+    expect(missing, `イラストが無い問がある: ${missing.join(', ')}`).toEqual([]);
+  });
+
+  it('イラストが壊れていない（空ファイルを混ぜない）', () => {
     for (const sq of allSub) {
-      const file = path.join(ROOT, 'public', sq.imageUrl.replace(/^\//, ''));
-      if (!fs.existsSync(file)) continue; // 未生成のぶんはここでは問わない（下で扱う）
+      const file = fileOf(sq.imageUrl);
       expect(fs.statSync(file).size, `画像が小さすぎる: ${sq.imageUrl}`).toBeGreaterThan(5000);
     }
   });
 
-  it('並べ替え後のプロンプトが全問ぶん保存されている（同じ絵を再生成できる）', () => {
-    // 絵は「並べ替え後の並び」で作らないと、選択肢・正解・解説とズレる。
-    // そのプロンプトを1問1ファイルで残しているので、作り直しても並びが崩れない。
+  it('イラストの縦横比が保たれている（正方形に押し込んでいない）', () => {
+    // 以前は無条件に 900x900 へ resize していたため、
+    // 横長の1枚図（地図・座席表など）が縦に伸びて位置関係が読めなくなる恐れがあった。
+    // 長辺が 900 以内で、極端に潰れていないことを確かめる。
+    for (const sq of allSub) {
+      const buf = fs.readFileSync(fileOf(sq.imageUrl));
+      const size = jpegSize(buf);
+      expect(size, `JPEGのサイズが読めない: ${sq.imageUrl}`).not.toBeNull();
+      const { width, height } = size!;
+      expect(Math.max(width, height)).toBeLessThanOrEqual(900);
+      const ratio = width / height;
+      expect(ratio, `縦横比が極端: ${sq.imageUrl} (${width}x${height})`).toBeGreaterThan(0.5);
+      expect(ratio).toBeLessThan(2);
+    }
+  });
+
+  it('並べ替え後のプロンプトが収録分ぶん保存されている（同じ絵を再生成できる）', () => {
     const dir = path.join(ROOT, 'scripts/data/q2_prompts');
     expect(fs.existsSync(dir)).toBe(true);
     for (const sq of allSub) {
@@ -160,7 +226,7 @@ describe('第2問：イラストの割り当て', () => {
   });
 });
 
-describe('第2問：単元への配線は画像が揃ってから', () => {
+describe('第2問：単元への配線', () => {
   function el2Chapter(): any {
     for (const part of (englishListeningData as any).parts ?? []) {
       for (const ch of part.chapters ?? []) {
@@ -170,26 +236,45 @@ describe('第2問：単元への配線は画像が揃ってから', () => {
     return null;
   }
 
-  it('el2 の単元自体は存在する', () => {
+  it('el2 の単元が存在する', () => {
     expect(el2Chapter()).not.toBeNull();
   });
 
-  it('画像が48枚揃っているときだけ演習問題が入っている', () => {
-    const missing = allSub.filter(
-      (sq) => !fs.existsSync(path.join(ROOT, 'public', sq.imageUrl.replace(/^\//, ''))),
-    );
+  it('収録した全セットがそのまま演習問題として登録されている', () => {
     const problems = el2Chapter().practiceProblems ?? [];
-    if (missing.length === 0) {
-      // 揃った → 16回ぶんが流し込まれていること
-      expect(problems).toHaveLength(16);
-      expect(problems[0].id).toBe('q_el2_set1');
-    } else {
-      // 未生成が残っている → 絵のない絵選択問題を出さないため未登録であること
-      expect(problems).toHaveLength(0);
-    }
+    expect(problems).toHaveLength(EL2_PROBLEMS.length);
+    expect(problems.map((p: any) => p.id)).toEqual(EL2_PROBLEMS.map((p) => p.id));
   });
 
   it('画像ディレクトリが用意されている', () => {
     expect(fs.existsSync(IMG_DIR)).toBe(true);
   });
 });
+
+/**
+ * JPEG のヘッダから幅・高さを読む（画像ライブラリを足さずに寸法だけ知りたいため）。
+ * SOF0〜SOF15 マーカー（0xFFC0〜0xFFCF、ただし C4/C8/CC は除く）に寸法が入っている。
+ */
+function jpegSize(buf: Buffer): { width: number; height: number } | null {
+  if (buf.length < 4 || buf[0] !== 0xff || buf[1] !== 0xd8) return null;
+  let i = 2;
+  while (i + 9 < buf.length) {
+    if (buf[i] !== 0xff) {
+      i += 1;
+      continue;
+    }
+    const marker = buf[i + 1];
+    if (marker === 0xd8 || marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) {
+      i += 2;
+      continue;
+    }
+    const len = buf.readUInt16BE(i + 2);
+    const isSof =
+      marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc;
+    if (isSof) {
+      return { height: buf.readUInt16BE(i + 5), width: buf.readUInt16BE(i + 7) };
+    }
+    i += 2 + len;
+  }
+  return null;
+}

@@ -89,8 +89,19 @@ describe('buildListeningRounds（回のボタン一覧を作る）', () => {
   });
 
   it('問題が無い（未収録の）大問では空配列になる（準備中の表示に使う）', () => {
-    // el3（第3問）は収録済みになったので、まだ未収録の第2問で確かめる
-    expect(buildListeningRounds(chapterById('el2')?.practiceProblems)).toEqual([]);
+    // ★特定の大問IDを書かない★
+    //   以前は「まだ未収録の第2問（el2）で確かめる」と id を直接書いていたが、
+    //   第2問を収録した時点でこのテストが落ちた。収録が進むたびに
+    //   テストを書き換えるのは本質的でないので、
+    //   「その時点で practiceProblems が空の大問」を実データから探す形にする。
+    const empty = englishListeningData.parts
+      .flatMap((p) => p.chapters as any[])
+      .filter((c) => (c.practiceProblems?.length ?? 0) === 0);
+    // 全大問が埋まったらこのケースは検証不要（空配列の入力だけ確認する）
+    for (const c of empty) {
+      expect(buildListeningRounds(c.practiceProblems), `${c.id} は未収録`).toEqual([]);
+    }
+    expect(buildListeningRounds([])).toEqual([]);
     expect(buildListeningRounds(undefined)).toEqual([]);
     expect(buildListeningRounds(null)).toEqual([]);
   });
