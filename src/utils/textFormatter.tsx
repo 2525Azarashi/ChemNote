@@ -83,6 +83,51 @@ function restoreTags(text: string, tags: string[]): string {
   );
 }
 
+/**
+ * ★ **…** を太字として描画する★
+ *
+ * ■ 何が起きていたか
+ *   解説データには Markdown 記法の太字（**答えはろ液**）が書かれているのに、
+ *   アプリ側に解釈する処理が無かったため、画面に
+ *
+ *     （2） **固体（不溶性の固体）と液体の混合物**
+ *
+ *   と、アスタリスクがそのまま表示されていた。
+ *   これは今回のフォント修正とは無関係の、以前から残っていた症状。
+ *
+ * ■ 「べき乗の ** と衝突しないか」を実測で確認してから入れている
+ *   コードコメントを除いた src/data 配下の全データを走査した結果：
+ *     ・**…** のペア … 64組（chemProblemsC1 5 / chemProblemsC2 17 /
+ *       mathIntegralProblems 42）
+ *     ・ペアにならない孤立した ** … 0件
+ *     ・$…$（数式）の中にある ** … 0件
+ *   数値だけを囲む5件（**-5** / **0** / **2** / **1/3** / **8/15**）も
+ *   前後を確認したところ「答えの強調」であり、べき乗ではなかった。
+ *     例：「x の係数は **-5** なので、-1/5 を掛けて」
+ *   つまり現行データに「べき乗としての **」は1つも無い。
+ *
+ * ■ それでも壊れないようにしている工夫
+ *   ① 数式（$…$）は extractMath より前に触らない。この関数は
+ *      extractTags の直後・extractMath の前に呼ぶが、$…$ の内側には
+ *      ** が存在しないことを確認済み。将来 $2**3$ のような式が来ても
+ *      困らないよう、下の正規表現は「$ を含む中身は太字にしない」。
+ *   ② 中身が空（****）や、改行をまたぐものは対象外。
+ *      「* を1個だけ使った掛け算記号（a * b）」にも触らない
+ *      （後段の × 変換はアスタリスク1個を見るので、そちらは無傷）。
+ *   ③ 既に <strong> が入っている入力には何もしない（二重適用を防ぐ）。
+ *
+ * ■ なぜ <strong> ではなく class 付きの <strong> か
+ *   font-bold を明示しないと、本文が font-medium などの場合に
+ *   ブラウザ既定の太字と噛み合わず「太くなっていない」ように見える。
+ *   サニタイザは strong と class を許可しているので、そのまま通る。
+ */
+const BOLD_MARKDOWN_RE = /\*\*(?=\S)([^*\n$]*?\S)\*\*/g;
+
+export function convertBoldMarkdown(text: string): string {
+  if (!text.includes('**')) return text;
+  return text.replace(BOLD_MARKDOWN_RE, '<strong class="font-bold">$1</strong>');
+}
+
 /** 本文から数式を抜き出して KaTeX で組み、プレースホルダに退避する。 */
 function extractMath(text: string): { text: string; slots: string[] } {
   const slots: string[] = [];
@@ -397,14 +442,30 @@ export function formatText(
   */
   const { text: withoutTags, tags: rawTags } = extractTags(text);
 
+  /*
+    ★**…** を <strong> にする★
+    順序に意味があるので3手に分けている。
+      ① タグを退避した状態（withoutTags）で太字変換する
+         → 元から入っている HTML の属性値（style="…" の中など）に
+           アスタリスクが現れても巻き込まない。
+      ② 元のタグを戻す
+         → ここで初めて「元のタグ」と「新しい <strong>」が同じ文章に並ぶ。
+      ③ もう一度まとめて退避する
+         → 新しい <strong …> も数式走査の対象から外れる。
+           退避は1つの配列に統一するので、プレースホルダ番号が衝突しない。
+  */
+  const { text: maskedForMath, tags: tagsForMath } = extractTags(
+    restoreTags(convertBoldMarkdown(withoutTags), rawTags),
+  );
+
   // ★次に数式を KaTeX で組んで退避する★
   //   ここで抜いておくことで、以降の化学式変換・添字処理・分数処理は
   //   「数式ではない部分」だけを相手にすればよくなる。
-  const { text: maskedMath, slots: mathSlots } = extractMath(withoutTags);
+  const { text: maskedMath, slots: mathSlots } = extractMath(maskedForMath);
 
   // タグを戻してから従来の処理に渡す。以降の tagRegex での分割や
   // <u>/<hl> の読み替えは、これまでとまったく同じ入力を受け取る。
-  const withMathSlots = restoreTags(maskedMath, rawTags);
+  const withMathSlots = restoreTags(maskedMath, tagsForMath);
 
   // ★prose では数式・化学式向けの前処理を通さない★
   //   convertMathNotation / normalizeScientificScripts は

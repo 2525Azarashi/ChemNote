@@ -258,9 +258,13 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
   const [activeTab, setActiveTab] = useState(
     SECTIONS.some(s => s.id === requestedTab) ? requestedTab : 'toc',
   );
-  // 図をタップしたとき全画面で拡大表示する（自作図は情報量が多く、
-  // 2カラムに入れると文字が小さくなるため。スマホでの「読めない」を防ぐ）
-  const [zoomFig, setZoomFig] = useState<{ src: string; alt: string } | null>(null);
+  // ★図のタップ拡大（ライトボックス）は廃止した★
+  //   ご要望「クリックしてズーム機能はいらない」に合わせて、演習画面
+  //   （QuestionFigure）と同じく学習ページからも削除している。
+  //   図が小さくならないことは CSS 側で担保している：
+  //   .figrow-fig img / .figfull img は width:100% + max-width:100%!important
+  //   なので、拡大表示に頼らず最初から列の幅いっぱいで表示される。
+  //   さらに拡大したいときは端末標準のピンチ操作が使える。
   // 「解答をすべて表示」しているかどうか（タブを変えたらリセット）
   const [allAnswersOpen, setAllAnswersOpen] = useState(false);
   // 表示中の「重要事項」。ALL_PARTS_ID なら章を通して読む。
@@ -279,27 +283,11 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
     // activeTab を依存に入れると「存在するタブ」でも毎回評価するだけなので安全
   }, [SECTIONS, activeTab]);
 
-  // Esc で拡大表示を閉じる
-  useEffect(() => {
-    if (!zoomFig) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setZoomFig(null);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [zoomFig]);
-
-  // 本文HTML内の図（dangerouslySetInnerHTML で描画）はイベント委譲で拾う。
-  // 解答パネルの開閉は <details> のネイティブ挙動に任せている
-  // （JS で open を書き換えると再レンダリングで消えるため）。
-  const handleContentClick = (e: ReactMouseEvent<HTMLElement>) => {
-    const el = e.target as HTMLElement | null;
-    if (!el) return;
-    if (el.tagName !== 'IMG') return;
-    const img = el as HTMLImageElement;
-    if (!img.closest('.figrow-fig, .figfull')) return;
-    setZoomFig({ src: img.getAttribute('src') || '', alt: img.getAttribute('alt') || '図' });
-  };
+  // 図のクリックで拡大表示していた処理（Esc で閉じる effect と
+  // イベント委譲のクリックハンドラ）はズーム廃止に伴って削除した。
+  // 解答パネルの開閉は <details> のネイティブ挙動に任せているので、
+  // 本文へのクリックハンドラ自体が不要になっている
+  // （JS で open を書き換えると再レンダリングで消えるため元々触っていない）。
 
   // 原稿の <details>/<summary> を「解答パネル」に正規化する。
   // 文言のばらつき（解答を表示／解答と解説を表示…）をここで吸収するため、
@@ -800,7 +788,6 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
                 <article
                   key={`${activeTab}:${activePart}:${allAnswersOpen ? 'open' : 'closed'}`}
                   className="learning-content"
-                  onClick={handleContentClick}
                   dangerouslySetInnerHTML={{ __html: sectionHtml }}
                 />
 
@@ -856,39 +843,7 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
 
       </div>
 
-      {/* ===== 図の拡大表示（タップで開く／どこを押しても閉じる） ===== */}
-      {zoomFig && (
-        <div
-          className={`fixed inset-0 z-[60] flex flex-col bg-[#2f2740]/85 backdrop-blur-sm p-3 sm:p-6 ${NO_PRINT_CLASS}`}
-          role="dialog"
-          aria-modal="true"
-          aria-label="図の拡大表示"
-          onClick={() => setZoomFig(null)}
-        >
-          <div className="flex items-center justify-between gap-3 pb-2">
-            <span className="text-[11px] sm:text-xs font-bold text-white/85">
-              図をピンチ操作でさらに拡大できます
-            </span>
-            <button
-              type="button"
-              onClick={() => setZoomFig(null)}
-              className="rounded-xl bg-white/95 px-4 py-2 text-xs font-extrabold text-[#5b21b6] shadow-lg hover:bg-white cursor-pointer"
-            >
-              閉じる ✕
-            </button>
-          </div>
-          <div
-            className="min-h-0 flex-1 overflow-auto rounded-2xl bg-white p-2 sm:p-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              src={zoomFig.src}
-              alt={zoomFig.alt}
-              className="mx-auto block h-auto w-full max-w-[1100px]"
-            />
-          </div>
-        </div>
-      )}
+      {/* 図の拡大表示（ライトボックス）はズーム廃止に伴って削除した。 */}
     </div>
   );
 }

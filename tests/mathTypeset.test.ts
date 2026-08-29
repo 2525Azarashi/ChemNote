@@ -508,3 +508,92 @@ describe('HTML 属性の中身を数式と誤認しない（解答解説のフ�
     expect(html).toContain('katex');
   });
 });
+
+/**
+ * ===================================================================
+ * **…** を太字として描画する（ご要望「太字として表示してください」）
+ * ===================================================================
+ *
+ * ■ 何が起きていたか
+ *   解説データには Markdown 記法の太字が書かれているのに、アプリ側に
+ *   解釈する処理が無く、画面に
+ *     （2） **固体（不溶性の固体）と液体の混合物**
+ *   とアスタリスクがそのまま出ていた。
+ *
+ * ■ 入れる前に実測で確認したこと（べき乗との衝突が怖いため）
+ *   コードコメントを除いた src/data 配下の全データを走査した結果：
+ *     ・**…** のペア … 64組
+ *       （chemProblemsC1 5 / chemProblemsC2 17 / mathIntegralProblems 42）
+ *     ・ペアにならない孤立した ** … 0件
+ *     ・$…$（数式）の中にある ** … 0件
+ *   数値だけを囲む5件（**-5** / **0** / **2** / **1/3** / **8/15**）も
+ *   前後を読むと「答えの強調」で、べき乗ではなかった。
+ *
+ * ■ このテストが守ること
+ *   ① 実データの3パターンが太字になる
+ *   ② アスタリスク1個の掛け算（a * b → ×）を壊さない
+ *   ③ 「解 答」pill（style つき span）を壊さない＝フォント修正を巻き戻さない
+ *   ④ 数式・化学式と併存できる
+ *   ⑤ 空（****）・改行またぎには手を出さない
+ */
+describe('**…** を太字として表示する', () => {
+  function htmlOf(text: string, prose = false): string {
+    const out = formatText(text, [], { prose }) as any;
+    return out?.props?.dangerouslySetInnerHTML?.__html ?? String(out ?? '');
+  }
+
+  it('実データの太字がアスタリスクではなく <strong> になる', () => {
+    const html = htmlOf('（2） **固体（不溶性の固体）と液体の混合物**');
+    expect(html).toContain('<strong class="font-bold">固体（不溶性の固体）と液体の混合物</strong>');
+    // アスタリスクが画面に残らない
+    expect(html).not.toContain('**');
+  });
+
+  it('数値だけを囲む強調（数学の答え）も太字になる', () => {
+    // 「x の係数は **-5** なので」＝べき乗ではなく答えの強調
+    expect(htmlOf('計算不要で **0**。')).toContain('<strong class="font-bold">0</strong>');
+    expect(htmlOf('x の係数は **-5** なので')).toContain('<strong class="font-bold">-5</strong>');
+  });
+
+  it('アスタリスク1個の掛け算（× 変換）を壊さない', () => {
+    const html = htmlOf('a * b と 2 * 3');
+    // × に変換される従来の挙動が保たれている
+    expect(html).toContain('×');
+    expect(html).not.toContain('<strong');
+  });
+
+  it('アスタリスク1個で囲んだだけの文字列は太字にしない', () => {
+    const html = htmlOf('注意*ここ*は太字にしない');
+    expect(html).not.toContain('<strong');
+    expect(html).toContain('*ここ*');
+  });
+
+  it('「解 答」pill を壊さない（フォント修正を巻き戻さない）', () => {
+    const html = htmlOf(LABEL('解 答') + '\n**ろ液**が答え');
+    // pill の style が無傷
+    expect(html).toContain('#FFF1F5');
+    expect(html).toContain('border:1.5px solid #D9466E');
+    expect(html).not.toContain('aria-label="FFF1F5"');
+    // 本文側は太字になっている
+    expect(html).toContain('<strong class="font-bold">ろ液</strong>');
+  });
+
+  it('数式（$…$）と併存できる', () => {
+    const html = htmlOf('答えは **1/3** で、式は $\\int_0^1 x^2 dx$ です');
+    expect(html).toContain('<strong class="font-bold">');
+    expect(html).toContain('katex');
+    expect(html).not.toContain('**');
+  });
+
+  it('英文（prose）でも太字になる', () => {
+    const html = htmlOf('The answer is **milk with no sugar**.', true);
+    expect(html).toContain('<strong class="font-bold">milk with no sugar</strong>');
+  });
+
+  it('空（****）や改行をまたぐものには手を出さない', () => {
+    // 中身が無いものを太字にすると空タグが増えるだけなので変換しない
+    expect(htmlOf('****')).not.toContain('<strong');
+    // 閉じ忘れの可能性があるので改行をまたいだら変換しない（文章を巻き込まない）
+    expect(htmlOf('**開いたまま\n閉じない**')).not.toContain('<strong');
+  });
+});

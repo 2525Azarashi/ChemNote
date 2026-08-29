@@ -539,24 +539,22 @@ export const LEARNING_GLOBAL_CSS = `.learning-content {
         font-size: 0.8em;
         line-height: 1.7;
       }
-      /* ===== 図の拡大（タップ／クリックで全画面） =====
-         自作図は文字も線も多いので、2カラムに入れて縮むと読みにくい。
-         図そのものを押したら等倍以上で見られるようにして、
-         「小さくて読めない」を起こさないようにする。 */
-      .learning-content .figrow-fig img,
-      .learning-content .figfull img {
-        cursor: zoom-in;
-      }
+      /* ===== 図の拡大について =====
+         以前は図をタップすると全画面のライトボックスが開く作りだったが、
+         ご要望「クリックしてズーム機能はいらない」に合わせて廃止した。
+         図が小さくならないことは、上の .figrow-fig img / 下の .figfull img の
+         width:100% + max-width:100%!important で担保している（列の幅いっぱい）。
+         さらに拡大したいときは端末標準のピンチ操作が使える。
+
+         .figzoom-hint（「タップで拡大できます」の案内）は本文データ側に
+         14箇所残っているため、セレクタ自体は消さず display:none で隠す。
+         ・data 側の文章を機械的に削ると、前後の句読点や <br> の位置が
+           問題によって不自然になる可能性がある
+         ・逆にCSSを消すと、案内が普通の文字として本文に混ざって出てしまう
+         そのため「非表示にする」のが最も壊れにくい。
+         本文データから文言を消したあとは、このルールも削除してよい。 */
       .learning-content .figzoom-hint {
-        display: inline-block;
-        margin-top: 6px;
-        padding: 3px 10px;
-        border-radius: 999px;
-        background: #f1e9ff;
-        color: var(--lc-accent-dark, #5b21b6);
-        font-size: 0.72em;
-        font-weight: 800;
-        letter-spacing: 0.02em;
+        display: none;
       }
       /* 図だけを大きく1枚見せたいとき（文字は下） */
       .learning-content .figfull {
