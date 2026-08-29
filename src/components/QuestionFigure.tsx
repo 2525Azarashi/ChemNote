@@ -264,7 +264,28 @@ export function QuestionFigure({
               setAspect(el.naturalWidth / el.naturalHeight);
             }
           }}
-          className={`mx-auto rounded-xl border border-gray-200 bg-white shadow-sm ${
+          /*
+            ★ご要望「四角囲みなど用いてもう少し見やすくして」（図の枠）★
+
+            ■ 実測した変更前の値（390x664・地理 第1回の気候グラフ）
+                border-top-width : 1px
+                border-top-color : oklch(0.928 0.006 264.531)  ← gray-200
+                                   対白コントラスト比 約 1.2:1
+                border-radius    : 28px（rounded-xl ＝ --radius-xl: 1.75rem）
+              つまり「ほぼ見えない線の、大きく丸まった角」で、
+              図が本文に溶けていた（枠として機能していない）。
+
+            ■ 実物の冊子（添付 tiri.pdf 5ページ・図1）
+                図は ★細い黒の直線で四角く囲まれ★、角は立っている。
+              枠があることで「ここからここまでが図」が一目で分かる。
+
+            ■ 直し方（スマホのみ）
+                角  : 28px → 2px（線を残しつつ冊子の角に寄せる）
+                色  : gray-200 → slate-400（対白 約2.8:1／表の罫線と同じ濃さ）
+                影  : shadow-sm を外す。冊子は影で浮かせず線で区切るため。
+              PC は md: で従来値（rounded-xl / gray-200 / shadow-sm）へ戻す。
+          */
+          className={`mx-auto rounded-[2px] border border-slate-400 bg-white md:rounded-xl md:border-gray-200 md:shadow-sm ${
             // 高さの連鎖が通っているので、ここで初めて max-h-full が効く。
             // fill のときは「高さ基準で縮める」モードなので幅は auto のまま
             // （w-full にすると縦長の枠で横に伸びて比率が破綻する）。
@@ -279,13 +300,36 @@ export function QuestionFigure({
       </div>
 
       {(caption || figureLabel) && (
+        /*
+          ★キャプションの並べ方（実物の冊子に合わせる）★
+
+          ■ 実測した変更前の出力（390x664）
+              「図1資料1　3地点の気候グラフ（A：バンコク／…）（横にスクロールできます）」
+            図番号・資料名・操作案内が ★1行に連結★ されており、
+            さらに mr-1 の右余白が全角スペースに吸われて
+            「図1資料1」と ★くっついて読めていた★（実測の textContent どおり）。
+
+          ■ 実物の冊子（tiri.pdf 5ページ）
+              枠の下に注記が小さく置かれ、その下に「図1」だけが
+              ★独立した中央寄せの1行★ として入る。
+            図番号が単独行になることで、本文から図を参照するときの
+            目印として機能する。
+
+          ■ 直し方（スマホのみ）
+              1行目：図N（中央・太字）を独立させる
+              2行目：資料名（＝caption）
+              3行目：横スクロールの案内（溢れているときだけ）
+            PC は md: でインライン（従来の1行）に戻すため見た目は変わらない。
+        */
         <figcaption className={`mt-2 shrink-0 text-center text-xs font-modern leading-relaxed ${captionColor}`}>
-          {figureLabel && <span className={`font-bold ${numberColor} mr-1`}>{figureLabel}</span>}
-          {caption}
+          {figureLabel && (
+            <span className={`block font-bold md:mr-1 md:inline ${numberColor}`}>{figureLabel}</span>
+          )}
+          {caption && <span className="block md:inline">{caption}</span>}
           {/* 横長の図はスマホで画面外に続くので、そのことを明示する。
               （拡大ボタンを外した代わりの案内。実際に溢れているときだけ出す） */}
           {isWide && overflowing && (
-            <span className="ml-1 md:hidden">（横にスクロールできます）</span>
+            <span className="block md:hidden">（横にスクロールできます）</span>
           )}
         </figcaption>
       )}
