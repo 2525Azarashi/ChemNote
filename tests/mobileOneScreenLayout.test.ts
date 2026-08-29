@@ -252,15 +252,30 @@ describe('L4: 科目選択／モード選択（スマホのみ compact）', () =
 });
 
 // =====================================================================
-// L4b: 科目が 6 つ（英文法追加）になっても科目選択はスマホ 1 画面 ((10))
+// L4b: 科目が増えても（英文法・地理を追加）科目選択はスマホ 1 画面 ((10))
 // =====================================================================
 // ご要望（原文）：
 //   > 英文法単元別に追加してください。
 //   > スマホの方はしっかりと科目選択画面で１画面に収まるようにしてください。
 //
+//   > そして、「地理総合・地理探求」の科目を追加。
+//
 // 5 科目 → 6 科目で、実測 183px はみ出した。
 // 削ってよいものと削ってはいけないものを分けて詰めた記録をここに固定する。
-describe('L4b: 6 科目でもスマホ 1 画面（英文法追加後）', () => {
+//
+// ★科目数を数字で書かない★
+//   以前は「6 科目」と数字で書いていたため、地理を足した時点で
+//   レイアウトは何も壊れていないのにこのブロックが落ちた。
+//   守りたいのは「カード1枚あたりの高さの契約」であって科目数ではないので、
+//   数は必ずソース側（available: の個数）から数える。
+describe('L4b: 科目が増えてもスマホ 1 画面（英文法・地理の追加後）', () => {
+  /**
+   * この画面が定義している科目カードの枚数。
+   * SubjectDefinition は必ず available を1つ持つので、その個数＝科目数。
+   * （型宣言 `available: boolean;` は末尾が「;」なので "," 指定で除外される）
+   */
+  const SUBJECT_CARD_COUNT = (SUBJECT.match(/^\s*available: (?:true|false),$/gmu) ?? []).length;
+
   it('英文法が科目として登録されている', async () => {
     // 科目カードの定義（この画面が持っている）は文字列で確認する。
     expect(SUBJECT).toContain("id: 'english_grammar'");
@@ -271,6 +286,17 @@ describe('L4b: 6 科目でもスマホ 1 画面（英文法追加後）', () => 
     // 代わりに、この画面が公開している対応表を実際に引いて確かめる。
     const { SUBJECT_LABELS } = await import('../src/components/SubjectSelection');
     expect(SUBJECT_LABELS.english_grammar).toBe('英文法');
+  });
+
+  it('地理総合・地理探究が科目として登録されている', async () => {
+    expect(SUBJECT).toContain("id: 'geography'");
+    const { SUBJECT_LABELS } = await import('../src/components/SubjectSelection');
+    expect(SUBJECT_LABELS.geography).toBe('地理総合・地理探究');
+  });
+
+  it('科目カードは2枚以上あり、数え方が壊れていない', () => {
+    // 下の volume テストが「0 === 0」で通ってしまう事故を防ぐ番人。
+    expect(SUBJECT_CARD_COUNT).toBeGreaterThanOrEqual(2);
   });
 
   it('カード間隔・内側余白・アイコンをスマホだけ詰め、sm 以上は元の値に戻す', () => {
@@ -355,10 +381,11 @@ describe('L4b: 6 科目でもスマホ 1 画面（英文法追加後）', () => 
     expect(SUBJECT).not.toContain('{subject.highlights[0]}');
   });
 
-  it('6 科目すべてが volume（短い収録表記）を持つ', () => {
+  it('すべての科目が volume（短い収録表記）を持つ', () => {
     // 1 つでも欠けるとその科目だけ収録数が読めなくなる。
+    // ★科目数を直書きしない★（科目を足すたびに落ちるテストにしない）
     const volumes = SUBJECT.match(/^\s*volume: `/gmu) ?? [];
-    expect(volumes.length).toBe(6);
+    expect(volumes.length).toBe(SUBJECT_CARD_COUNT);
   });
 });
 

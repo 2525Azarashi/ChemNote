@@ -24,6 +24,14 @@ import {
   type CatalogSubject,
 } from '../src/data/chapterCatalog';
 
+/**
+ * 分母を見る対象の科目。
+ * 科目を追加したときはここと下のスナップショットの2か所を更新する
+ * （スナップショットは `npx vitest run tests/chapterCatalog.test.ts -u`）。
+ * ★新しい科目をここに足すのを忘れると、その科目の分母が
+ * このファイルの監視外になる★ので、下の「ラベルがそろっている」
+ * テストが SUBJECT_LABELS のキーと完全一致を見て検知する。
+ */
 const SUBJECTS: CatalogSubject[] = [
   'chemistry_basic',
   'chemistry',
@@ -31,10 +39,12 @@ const SUBJECTS: CatalogSubject[] = [
   'english_grammar',
   'math',
   'biology_basic',
+  // 2026-08 追加：地理総合・地理探究（第1問を回ごとに収録）
+  'geography',
 ];
 
 describe('章カタログ（到達率の分母）', () => {
-  it('科目ラベルは6科目そろっている', () => {
+  it('科目ラベルはすべての科目分そろっている', () => {
     for (const s of SUBJECTS) {
       expect(SUBJECT_LABELS[s], `${s} のラベル`).toBeTruthy();
     }
@@ -101,6 +111,7 @@ describe('章カタログ（到達率の分母）', () => {
     const { mathData } = await import('../src/data/mathData');
     const { biologyBasicData } = await import('../src/data/biologyBasicData');
     const { englishGrammarData } = await import('../src/data/englishGrammarData');
+    const { geographyData } = await import('../src/data/geographyData');
 
     const rawBySubject: Record<CatalogSubject, any> = {
       chemistry_basic: chemistryData,
@@ -109,7 +120,14 @@ describe('章カタログ（到達率の分母）', () => {
       english_grammar: englishGrammarData,
       math: mathData,
       biology_basic: biologyBasicData,
+      geography: geographyData,
     };
+
+    // ★科目を追加してここの対応表を更新し忘れると、
+    // undefined.parts で落ちて原因が分かりにくいので先に見る★
+    for (const s of SUBJECTS) {
+      expect(rawBySubject[s], `${s} の教科データが rawBySubject に登録されている`).toBeTruthy();
+    }
 
     for (const s of SUBJECTS) {
       // 整理前の toDefinitions と同じ手順を、テスト側で独立に組み立てる
@@ -159,8 +177,12 @@ describe('章カタログ（到達率の分母）', () => {
           "problems": 20,
         },
         "english_listening": {
-          "chapters": 3,
-          "problems": 44,
+          "chapters": 4,
+          "problems": 50,
+        },
+        "geography": {
+          "chapters": 5,
+          "problems": 5,
         },
         "math": {
           "chapters": 33,

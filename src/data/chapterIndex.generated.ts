@@ -674,7 +674,7 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "el2",
-        "problemCount": 0,
+        "problemCount": 6,
         "abstractTitle": "第2問",
         "realTitle": "第2問"
       },
@@ -1081,6 +1081,42 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
         "realTitle": "12章 会話・語い"
       }
     ]
+  },
+  {
+    "id": "geography",
+    "label": "地理総合・地理探究",
+    "chapters": [
+      {
+        "id": "geo_q1_r1",
+        "problemCount": 1,
+        "abstractTitle": "第1回 モンスーンアジアの気候と稲作",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_q1_r2",
+        "problemCount": 1,
+        "abstractTitle": "第2回 世界の人口構造と人口移動",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_q1_r3",
+        "problemCount": 1,
+        "abstractTitle": "第3回 地図と位置情報・地域調査",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_q1_r4",
+        "problemCount": 1,
+        "abstractTitle": "第4回 資源・エネルギーと国際関係",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_q1_r5",
+        "problemCount": 1,
+        "abstractTitle": "第5回 環境問題と食料生産の国際比較",
+        "realTitle": "第1問"
+      }
+    ]
   }
 ];
 
@@ -1152,7 +1188,7 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
     "units": 9,
     "points": 100,
     "marks": 37,
-    "questions": 44
+    "questions": 50
   },
   "math": {
     "chapters": 33,
@@ -1166,6 +1202,11 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
     "chapters": 20,
     "questions": 20,
     "marks": 100
+  },
+  "geography": {
+    "chapters": 5,
+    "questions": 5,
+    "marks": 25
   }
 };
 

@@ -141,6 +141,23 @@ const THEMES: Record<TipSubject, SubjectTheme> = {
     chipBgClass: 'bg-[#EFD3B4]/35',
     progressBarClass: 'bg-[#D9975A]',
   },
+  // 地理総合・地理探究：既存6色（ローズ10°・アンバー30°・オリーブ85°・
+  // ミント175°・ブルー203°・インディゴ238°）のどれとも色相が離れるよう、
+  // 紫寄りのモーブ（約325°）にする。
+  // ・ローズ（#C0847E）とは色相で45°離れており、彩度も高いので取り違えない
+  // ・インディゴ（#8B8ECB）とは87°離れている
+  geography: {
+    label: '地理総合・地理探究',
+    accent: '#A45C8E',
+    accentSoft: '#E7C4DB',
+    surface: '#FCF6FA',
+    bubbleBorderClass: 'border-[#E7C4DB]/80',
+    bubbleBgClass: 'bg-[#FFFAFD]/95',
+    bubbleShadow: '0 10px 24px -14px rgba(164,92,142,0.55)',
+    chipTextClass: 'text-[#7E3F6C]',
+    chipBgClass: 'bg-[#E7C4DB]/35',
+    progressBarClass: 'bg-[#BC7BA6]',
+  },
 };
 
 /** 科目に対応する配色を返す。未知の値でも化学基礎にフォールバックして画面を落とさない。 */

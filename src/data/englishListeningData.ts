@@ -49,6 +49,7 @@ import { countProblemsInChapters } from './problemCount';
 import { EL1_A_PROBLEMS } from './englishListeningQ1AProblems';
 import { EL1_A_EXTRA_PROBLEMS } from './englishListeningQ1ASets';
 import { EL1_B_PROBLEMS } from './englishListeningQ1BProblems';
+import { EL2_PROBLEMS } from './englishListeningQ2Problems';
 import { EL3_PROBLEMS } from './englishListeningQ3Problems';
 // 解説の後処理は listeningPostProcess.ts に1つだけ置いている
 // （整形関数・リスニング専用の組み立ても、その中で使う）。
@@ -233,15 +234,19 @@ const LISTENING_PROBLEMS: Record<string, any[]> = {
   el1_A: [...EL1_A_PROBLEMS, ...EL1_A_EXTRA_PROBLEMS],
   // 第1問B：配布PDF（スクリプト側）＋ イラストPDF を対応させた15セット
   el1_B: EL1_B_PROBLEMS,
-  // 第2問：問題データは src/data/englishListeningQ2Problems.ts に収録済み（16セット・48問）。
-  //   ただしここへ登録するのは「48枚のイラストが public/listening_q2/ に揃ってから」。
-  //   第2問は絵を見比べて選ぶ大問なので、絵が無い状態で公開すると
+  // 第2問：配布PDF「第２問.pdf」から取り出した実物イラストが揃った回だけを公開。
+  //   第2問は絵を見比べて選ぶ大問なので、絵が無い問を出すと
   //   ①〜④のマークだけが並ぶ「解けない問題」になってしまう。
-  //   現在 public/listening_q2/ にあるのは el2_set1_q1.jpg の1枚だけ。
-  //   残り47枚を生成したら、上に import { EL2_PROBLEMS } を足して
-  //     el2: EL2_PROBLEMS,
-  //   の1行を有効にすれば公開される（データ側の変更は不要）。
-  //   必要な画像の内容は scripts/data/q2_prompts/*.txt（選択肢の並べ替え後のもの）。
+  //   そこで48問すべてを待たず、イラストが揃った問だけを先に出している。
+  //   いま公開しているのは 6セット15問（第1・6・9・11・12・13回）。
+  //   イラストは1マスずつ拡大して選択肢の文言と突き合わせ、
+  //   絵と選択肢が完全に一致することを確認した分だけを収録している
+  //   （見送った問とその理由は scripts/shuffle_listening_q2_options.py に記録）。
+  //   追加するときは実物イラストを public/listening_q2/ に置き、
+  //     python3 scripts/extract_q2_illustrations.py --pdf <PDF>
+  //     python3 scripts/gen_listening_q2_data.py
+  //   を回すだけでよい（この行は変更不要）。
+  el2: EL2_PROBLEMS,
   // 第3問：配布PDF由来の15セット（各6問・1回読み・2人の対話）
   el3: EL3_PROBLEMS,
 };

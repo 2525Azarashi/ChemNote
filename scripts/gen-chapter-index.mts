@@ -90,6 +90,7 @@ import { getListeningStats } from '../src/data/englishListeningData';
 import { getMathStats } from '../src/data/mathData';
 import { getBiologyStats } from '../src/data/biologyBasicData';
 import { getGrammarStats } from '../src/data/englishGrammarData';
+import { getGeographyStats } from '../src/data/geographyData';
 import { countProblemsInChapters } from '../src/data/problemCount';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -176,6 +177,7 @@ function buildSubjectStats(): Record<string, SubjectStats> {
     math: getMathStats(),
     biology_basic: getBiologyStats(),
     english_grammar: getGrammarStats(),
+    geography: getGeographyStats(),
   };
 }
 

@@ -10,9 +10,9 @@
         "figureType": "2×2の4枚から選択",
         "options": [
           "ミルクなし・砂糖入りのホットコーヒー",
+          "ミルク入り・砂糖なしのホットコーヒー",
           "ミルク入り・砂糖なしのアイスコーヒー",
-          "ミルクなし・砂糖なしのホットティー",
-          "ミルク入り・砂糖なしのホットコーヒー"
+          "ミルクなし・砂糖なしのホットティー"
         ],
         "turns": [
           {
@@ -33,18 +33,11 @@
           }
         ],
         "question": "What will the man drink?",
-        "answerMark": "④",
+        "answerMark": "②",
         "answerText": "ミルク入り・砂糖なしのホットコーヒー",
-        "explanation": "No sugar, but with milk（砂糖なし・ミルクあり）と Hot の3条件を統合。①は砂糖・ミルクの逆転、②は温度違い。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a coffee/tea cup with clear icons indicating temperature and additions. Panel 1: hot coffee (steam rising) with a sugar cube icon next to it, no milk. Panel 2: iced coffee (glass with ice cubes and a straw) with a small milk pitcher icon. Panel 3: hot tea (teacup with steam and a teabag tag) with nothing beside it. Panel 4: hot coffee (steam rising) with a small milk pitcher icon, no sugar cube.",
-        "answerIndex": 4,
-        "shuffled": true,
-        "shufflePerm": [
-          0,
-          2,
-          3,
-          1
-        ]
+        "explanation": "No sugar, but with milk（砂糖なし・ミルクあり）と Hot の3条件を統合。①は砂糖・ミルクの逆転、③は温度違い。",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a coffee/tea cup with clear icons indicating temperature and additions. Panel 1: hot coffee (steam rising) with a sugar cube icon next to it, no milk. Panel 2: hot coffee (steam rising) with a small milk pitcher icon, no sugar cube. Panel 3: iced coffee (glass with ice cubes and a straw) with a small milk pitcher icon. Panel 4: hot tea (teacup with steam and a teabag tag) with nothing beside it.",
+        "answerIndex": 2
       },
       {
         "q": 2,
@@ -52,10 +45,10 @@
         "speakers": "母親 / 息子(高校生)",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "机の上",
-          "一番下の棚",
+          "一番上の棚",
           "真ん中の棚",
-          "一番上の棚"
+          "一番下の棚",
+          "机の上"
         ],
         "turns": [
           {
@@ -76,18 +69,11 @@
           }
         ],
         "question": "Where will Ken put the books?",
-        "answerMark": "③",
+        "answerMark": "②",
         "answerText": "真ん中の棚",
         "explanation": "最初 top shelf と言われるが No, the middle one. で訂正される。訂正のパターンは第2問の典型。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a three-shelf bookcase and books being placed. Panel 1: books being placed on a desk beside the bookcase. Panel 2: books being placed on the BOTTOM shelf. Panel 3: books being placed on the MIDDLE shelf. Panel 4: books being placed on the TOP shelf.",
-        "answerIndex": 3,
-        "shuffled": true,
-        "shufflePerm": [
-          3,
-          2,
-          1,
-          0
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a three-shelf bookcase and books being placed. Panel 1: books being placed on the TOP shelf. Panel 2: books being placed on the MIDDLE shelf. Panel 3: books being placed on the BOTTOM shelf. Panel 4: books being placed on a desk beside the bookcase.",
+        "answerIndex": 2
       },
       {
         "q": 3,
@@ -96,9 +82,9 @@
         "figureType": "2×2の4枚から選択",
         "options": [
           "青のSサイズのシャツ",
-          "青のMサイズのシャツ",
           "青のXSサイズのシャツ",
-          "白のSサイズのシャツ"
+          "白のSサイズのシャツ",
+          "青のMサイズのシャツ"
         ],
         "turns": [
           {
@@ -122,15 +108,8 @@
         "answerMark": "①",
         "answerText": "青のSサイズのシャツ",
         "explanation": "色（blue）・サイズ（small）の2条件。XSと迷わせるが Small, please で確定。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a folded shirt with a size tag. Panel 1: a shirt with diagonal hatch pattern (representing blue) and a tag labeled 'S'. Panel 2: a hatched shirt with tag 'M'. Panel 3: a similar hatched shirt with tag 'XS'. Panel 4: a plain outlined shirt (white) with tag 'S'.",
-        "answerIndex": 1,
-        "shuffled": true,
-        "shufflePerm": [
-          0,
-          3,
-          1,
-          2
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a folded shirt with a size tag. Panel 1: a shirt with diagonal hatch pattern (representing blue) and a tag labeled 'S'. Panel 2: a similar hatched shirt with tag 'XS'. Panel 3: a plain outlined shirt (white) with tag 'S'. Panel 4: a hatched shirt with tag 'M'.",
+        "answerIndex": 1
       }
     ]
   },
@@ -144,10 +123,10 @@
         "speakers": "男性(大学生) / 女性(大学生)",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "猫柄のマグ(箱入り)",
-          "猫柄のマグ(箱なし)",
+          "犬柄のマグ(箱入り)",
           "犬柄のマグ(箱なし)",
-          "犬柄のマグ(箱入り)"
+          "猫柄のマグ(箱なし)",
+          "猫柄のマグ(箱入り)"
         ],
         "turns": [
           {
@@ -168,17 +147,17 @@
           }
         ],
         "question": "Which item will they buy?",
-        "answerMark": "④",
+        "answerMark": "①",
         "answerText": "犬柄のマグ(箱入り)",
         "explanation": "cats→dogs への訂正＋gift box の確認。柄と包装の2軸で選ぶ。2023年問9型（否定→訂正）。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a mug and possibly a gift box. Panel 1: a mug with a cat drawing, sitting inside a gift box. Panel 2: a mug with a cat drawing on its side, no gift box. Panel 3: a mug with a dog drawing, no gift box. Panel 4: a mug with a dog drawing on its side, sitting inside an opened gift box with a ribbon.",
-        "answerIndex": 4,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a mug and possibly a gift box. Panel 1: a mug with a dog drawing on its side, sitting inside an opened gift box with a ribbon. Panel 2: a mug with a dog drawing, no gift box. Panel 3: a mug with a cat drawing on its side, no gift box. Panel 4: a mug with a cat drawing, sitting inside a gift box.",
+        "answerIndex": 1,
         "shuffled": true,
         "shufflePerm": [
-          2,
-          0,
+          1,
           3,
-          1
+          0,
+          2
         ]
       },
       {
@@ -380,9 +359,9 @@
         "figureType": "2×2の4枚から選択",
         "options": [
           "遊具そばのベンチ",
-          "駐車場",
+          "噴水",
           "池のそばの大きな木の下",
-          "噴水"
+          "駐車場"
         ],
         "turns": [
           {
@@ -406,14 +385,14 @@
         "answerMark": "③",
         "answerText": "池のそばの大きな木の下",
         "explanation": "提案→却下を2回繰り返し、女性の How about〜 で確定。2023年問11型の場所選択。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a park landmark viewed from above or side. Panel 1: a wooden bench next to playground equipment (slide/swings). Panel 2: a parking lot with several parked cars. Panel 3: a large tree beside a small pond, its shade covering part of the pond. Panel 4: a fountain with water splashing.",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a park landmark viewed from above or side. Panel 1: a wooden bench next to playground equipment (slide/swings). Panel 2: a fountain with water splashing. Panel 3: a large tree beside a small pond, its shade covering part of the pond. Panel 4: a parking lot with several parked cars.",
         "answerIndex": 3,
         "shuffled": true,
         "shufflePerm": [
           1,
-          3,
+          0,
           2,
-          0
+          3
         ]
       },
       {
@@ -458,9 +437,9 @@
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
+          "1階イルカ→2階ペンギン(サメなし)",
           "2階ペンギン→1階イルカ→サメ",
           "1階イルカ→2階ペンギン→サメ",
-          "1階イルカ→2階ペンギン(サメなし)",
           "1階ペンギン→2階イルカ"
         ],
         "turns": [
@@ -482,16 +461,16 @@
           }
         ],
         "question": "Which route will they take?",
-        "answerMark": "③",
+        "answerMark": "①",
         "answerText": "1階イルカ→2階ペンギン(サメなし)",
         "explanation": "順序（dolphins→penguins）＋サメを飛ばす、の2条件。動線と除外の複合。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a two-floor aquarium diagram with arrows indicating a route. Panel 1: arrow from Penguin (2F) to Dolphin (1F) to Shark tank. Panel 2: arrow from Dolphin (1F) to Penguin (2F) to Shark tank. Panel 3: arrow from Dolphin (1F) to Penguin (2F), Shark tank marked with an X. Panel 4: arrow from Penguin (1F) to Dolphin (2F).",
-        "answerIndex": 3,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a two-floor aquarium diagram with arrows indicating a route. Panel 1: arrow from Dolphin (1F) to Penguin (2F), Shark tank marked with an X. Panel 2: arrow from Penguin (2F) to Dolphin (1F) to Shark tank. Panel 3: arrow from Dolphin (1F) to Penguin (2F) to Shark tank. Panel 4: arrow from Penguin (1F) to Dolphin (2F).",
+        "answerIndex": 1,
         "shuffled": true,
         "shufflePerm": [
+          1,
           3,
           0,
-          1,
           2
         ]
       }
@@ -587,9 +566,9 @@
         "figureType": "2×2の4枚から選択",
         "options": [
           "パーティー帽子をかぶり、ろうそくを吹き消す男の子",
+          "パーティー帽子をかぶり、ケーキを見ている男の子",
           "帽子なしで、プレゼントを持つ男の子",
-          "帽子なしで、ろうそくを吹き消す男の子",
-          "パーティー帽子をかぶり、ケーキを見ている男の子"
+          "帽子なしで、ろうそくを吹き消す男の子"
         ],
         "turns": [
           {
@@ -610,17 +589,17 @@
           }
         ],
         "question": "Which boy is the woman's nephew?",
-        "answerMark": "③",
+        "answerMark": "④",
         "answerText": "帽子なしで、ろうそくを吹き消す男の子",
         "explanation": "帽子なし＋ろうそくを吹き消す の2条件。第一候補（帽子の子）を否定→訂正の型。2024年問9型。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a birthday party scene with one boy circled. Panel 1: a boy wearing a cone-shaped party hat blowing out candles on a cake. Panel 2: a boy without a hat holding a wrapped gift. Panel 3: a boy WITHOUT a hat blowing out candles on the cake. Panel 4: a boy wearing a party hat just looking at the cake.",
-        "answerIndex": 3,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a birthday party scene with one boy circled. Panel 1: a boy wearing a cone-shaped party hat blowing out candles on a cake. Panel 2: a boy wearing a party hat just looking at the cake. Panel 3: a boy without a hat holding a wrapped gift. Panel 4: a boy WITHOUT a hat blowing out candles on the cake.",
+        "answerIndex": 4,
         "shuffled": true,
         "shufflePerm": [
           0,
+          1,
           3,
-          2,
-          1
+          2
         ]
       }
     ]
@@ -635,9 +614,9 @@
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "曇り(雨なし)",
           "雨",
           "晴れ",
+          "曇り(雨なし)",
           "雪"
         ],
         "turns": [
@@ -659,18 +638,11 @@
           }
         ],
         "question": "What will the weather be on Sunday?",
-        "answerMark": "①",
+        "answerMark": "③",
         "answerText": "曇り(雨なし)",
         "explanation": "Saturday（雨）は誤答誘導。Sunday の情報 Cloudy, but no rain を正確に。2つの日の混同がひっかけ。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a weather forecast card labeled 'SUN' with a large weather icon. Panel 1: a plain cloud with no rain drops. Panel 2: rain drops falling from a cloud. Panel 3: bright sun with rays. Panel 4: snowflakes falling from a cloud.",
-        "answerIndex": 1,
-        "shuffled": true,
-        "shufflePerm": [
-          2,
-          0,
-          1,
-          3
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a weather forecast card labeled 'SUN' with a large weather icon. Panel 1: rain drops falling from a cloud. Panel 2: bright sun with rays. Panel 3: a plain cloud with no rain drops. Panel 4: snowflakes falling from a cloud.",
+        "answerIndex": 3
       },
       {
         "q": 2,
@@ -678,10 +650,10 @@
         "speakers": "女性(客) / 男性(店員)",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "プラスチック製30cmで、cmとmm両方",
           "プラスチック製30cmで、cm目盛のみ",
           "金属製30cmで、cm目盛のみ",
-          "金属製30cmで、cmとmm両方の目盛"
+          "金属製30cmで、cmとmm両方の目盛",
+          "プラスチック製30cmで、cmとmm両方"
         ],
         "turns": [
           {
@@ -702,18 +674,11 @@
           }
         ],
         "question": "Which ruler will the woman buy?",
-        "answerMark": "④",
+        "answerMark": "③",
         "answerText": "金属製30cmで、cmとmm両方の目盛",
         "explanation": "材質（metal）・長さ（30cm）・目盛（cm+mm）の3条件。2024年問10型の詳細指定。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a straight ruler with markings. Panel 1: a plastic ruler with both cm and mm markings. Panel 2: a plastic-looking ruler with only large centimeter tick marks (few, thick lines). Panel 3: a metallic-shaded ruler with only cm tick marks. Panel 4: a metallic-shaded ruler with both large cm and small mm tick marks (very dense).",
-        "answerIndex": 4,
-        "shuffled": true,
-        "shufflePerm": [
-          3,
-          0,
-          1,
-          2
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a straight ruler with markings. Panel 1: a plastic-looking ruler with only large centimeter tick marks (few, thick lines). Panel 2: a metallic-shaded ruler with only cm tick marks. Panel 3: a metallic-shaded ruler with both large cm and small mm tick marks (very dense). Panel 4: a plastic ruler with both cm and mm markings.",
+        "answerIndex": 3
       },
       {
         "q": 3,
@@ -843,9 +808,9 @@
         "figureType": "2×2の4枚から選択",
         "options": [
           "窓側の席",
-          "真ん中の席",
+          "非常口横の席",
           "通路側の席",
-          "非常口横の席"
+          "真ん中の席"
         ],
         "turns": [
           {
@@ -869,14 +834,14 @@
         "answerMark": "①",
         "answerText": "窓側の席",
         "explanation": "迷いながらも Window, please. で最終確定。前半の逡巡で誤答を誘う。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an airplane cabin cross-section with three seats in a row and one seat circled. Panel 1: the WINDOW seat is circled. Panel 2: the MIDDLE seat is circled. Panel 3: the AISLE seat is circled. Panel 4: an emergency exit row with the seat next to the exit door circled.",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an airplane cabin cross-section with three seats in a row and one seat circled. Panel 1: the WINDOW seat is circled. Panel 2: an emergency exit row with the seat next to the exit door circled. Panel 3: the AISLE seat is circled. Panel 4: the MIDDLE seat is circled.",
         "answerIndex": 1,
         "shuffled": true,
         "shufflePerm": [
           0,
-          2,
+          3,
           1,
-          3
+          2
         ]
       }
     ]
@@ -891,10 +856,10 @@
         "speakers": "母親 / 息子",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "ブルーベリー・チョコ文字・側面プレーン",
-          "苺・チョコ文字・側面プレーンクリーム",
           "苺・チョコ文字・側面チョコフレーク",
-          "苺のみ、文字なし、側面プレーン"
+          "ブルーベリー・チョコ文字・側面プレーン",
+          "苺のみ、文字なし、側面プレーン",
+          "苺・チョコ文字・側面プレーンクリーム"
         ],
         "turns": [
           {
@@ -915,17 +880,17 @@
           }
         ],
         "question": "Which cake matches the boy's request?",
-        "answerMark": "②",
+        "answerMark": "④",
         "answerText": "苺・チョコ文字・側面プレーンクリーム",
         "explanation": "苺＋チョコ文字＋側面プレーンの3条件。side はチョコを断る点に注意。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a birthday cake. Panel 1: cake with blueberries on top, 'Happy Birthday' letters, plain cream sides. Panel 2: cake with strawberries on top, 'Happy Birthday' letters, plain smooth cream sides. Panel 3: cake with strawberries on top, 'Happy Birthday' letters, chocolate flake sprinkles on the sides. Panel 4: cake with only strawberries on top, no letters, plain cream sides.",
-        "answerIndex": 2,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a birthday cake. Panel 1: cake with strawberries on top, 'Happy Birthday' letters, chocolate flake sprinkles on the sides. Panel 2: cake with blueberries on top, 'Happy Birthday' letters, plain cream sides. Panel 3: cake with only strawberries on top, no letters, plain cream sides. Panel 4: cake with strawberries on top, 'Happy Birthday' letters, plain smooth cream sides.",
+        "answerIndex": 4,
         "shuffled": true,
         "shufflePerm": [
-          1,
-          0,
           2,
-          3
+          1,
+          3,
+          0
         ]
       },
       {
@@ -971,9 +936,9 @@
         "figureType": "2×2の4枚から選択",
         "options": [
           "本→寝室、服→クローゼット、台所用品→台所",
+          "本→寝室、服→台所、台所用品→クローゼット",
           "本→クローゼット、服→寝室、台所用品→台所",
-          "本→台所、服→クローゼット、台所用品→寝室",
-          "本→寝室、服→台所、台所用品→クローゼット"
+          "本→台所、服→クローゼット、台所用品→寝室"
         ],
         "turns": [
           {
@@ -997,14 +962,14 @@
         "answerMark": "①",
         "answerText": "本→寝室、服→クローゼット、台所用品→台所",
         "explanation": "3対応（本／服／台所用品）を正確に。1つでも入れ替えると不正解になる典型型。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a house floor plan with three rooms labeled 'BEDROOM', 'CLOSET', 'KITCHEN' and three boxes labeled 'BOOKS', 'CLOTHES', 'KITCHEN'. Panel 1: Books arrow to Bedroom, Clothes arrow to Closet, Kitchen box arrow to Kitchen. Panel 2: Books to Closet, Clothes to Bedroom, Kitchen to Kitchen. Panel 3: Books to Kitchen, Clothes to Closet, Kitchen to Bedroom. Panel 4: Books to Bedroom, Clothes to Kitchen, Kitchen to Closet.",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a house floor plan with three rooms labeled 'BEDROOM', 'CLOSET', 'KITCHEN' and three boxes labeled 'BOOKS', 'CLOTHES', 'KITCHEN'. Panel 1: Books arrow to Bedroom, Clothes arrow to Closet, Kitchen box arrow to Kitchen. Panel 2: Books to Bedroom, Clothes to Kitchen, Kitchen to Closet. Panel 3: Books to Closet, Clothes to Bedroom, Kitchen to Kitchen. Panel 4: Books to Kitchen, Clothes to Closet, Kitchen to Bedroom.",
         "answerIndex": 1,
         "shuffled": true,
         "shufflePerm": [
           0,
+          2,
           1,
-          3,
-          2
+          3
         ]
       }
     ]
@@ -1021,8 +986,8 @@
         "options": [
           "ランニング",
           "水泳",
-          "ヨガ",
-          "サイクリング"
+          "サイクリング",
+          "ヨガ"
         ],
         "turns": [
           {
@@ -1043,18 +1008,11 @@
           }
         ],
         "question": "Which exercise will she start?",
-        "answerMark": "④",
+        "answerMark": "③",
         "answerText": "サイクリング",
         "explanation": "3段階の候補絞り込み（running不可→swimming不可→cycling）。除外の連鎖。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an exercise icon. Panel 1: a person running. Panel 2: a person swimming in a pool lane. Panel 3: a person doing a yoga pose on a mat. Panel 4: a person cycling on a stationary bike.",
-        "answerIndex": 4,
-        "shuffled": true,
-        "shufflePerm": [
-          0,
-          1,
-          3,
-          2
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an exercise icon. Panel 1: a person running. Panel 2: a person swimming in a pool lane. Panel 3: a person cycling on a stationary bike. Panel 4: a person doing a yoga pose on a mat.",
+        "answerIndex": 3
       },
       {
         "q": 2,
@@ -1064,8 +1022,8 @@
         "options": [
           "前列VIP・中央左メディア・後列学生",
           "前列学生・中央メディア・後列VIP",
-          "前列メディア・中央VIP・後列学生",
-          "前列VIP・後列メディア・中央学生"
+          "前列VIP・後列メディア・中央学生",
+          "前列メディア・中央VIP・後列学生"
         ],
         "turns": [
           {
@@ -1089,15 +1047,8 @@
         "answerMark": "①",
         "answerText": "前列VIP・中央左メディア・後列学生",
         "explanation": "3グループ×3位置の対応関係の把握。会場図と英語表現（front/middle/back rows, left side）の整合。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an event hall seating chart with rows labeled and shaded groups. Panel 1: front row labeled VIP, middle-left labeled MEDIA, back rows labeled STUDENTS. Panel 2: front row STUDENTS, middle MEDIA, back VIP. Panel 3: front MEDIA, middle VIP, back STUDENTS. Panel 4: front VIP, back MEDIA, middle STUDENTS.",
-        "answerIndex": 1,
-        "shuffled": true,
-        "shufflePerm": [
-          0,
-          1,
-          3,
-          2
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an event hall seating chart with rows labeled and shaded groups. Panel 1: front row labeled VIP, middle-left labeled MEDIA, back rows labeled STUDENTS. Panel 2: front row STUDENTS, middle MEDIA, back VIP. Panel 3: front VIP, back MEDIA, middle STUDENTS. Panel 4: front MEDIA, middle VIP, back STUDENTS.",
+        "answerIndex": 1
       },
       {
         "q": 3,
@@ -1105,10 +1056,10 @@
         "speakers": "女性 / 男性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "メリーゴーラウンド",
-          "お化け屋敷",
+          "ジェットコースター",
           "観覧車",
-          "ジェットコースター"
+          "お化け屋敷",
+          "メリーゴーラウンド"
         ],
         "turns": [
           {
@@ -1129,18 +1080,11 @@
           }
         ],
         "question": "Which ride will they go on first?",
-        "answerMark": "①",
+        "answerMark": "④",
         "answerText": "メリーゴーラウンド",
         "explanation": "最終的に let's do the merry-go-round first で確定。first の語が正解の決め手。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a theme park ride icon. Panel 1: a merry-go-round (carousel) with horses. Panel 2: a haunted house with a ghost above it. Panel 3: a Ferris wheel with cabins. Panel 4: a roller coaster with loops.",
-        "answerIndex": 1,
-        "shuffled": true,
-        "shufflePerm": [
-          3,
-          2,
-          1,
-          0
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a theme park ride icon. Panel 1: a roller coaster with loops. Panel 2: a Ferris wheel with cabins. Panel 3: a haunted house with a ghost above it. Panel 4: a merry-go-round (carousel) with horses.",
+        "answerIndex": 4
       }
     ]
   },
@@ -1233,10 +1177,10 @@
         "speakers": "女性 / 男性(店主)",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "1200円",
-          "1000円",
+          "800円",
           "500円",
-          "800円"
+          "1200円",
+          "1000円"
         ],
         "turns": [
           {
@@ -1257,17 +1201,17 @@
           }
         ],
         "question": "How much will the woman pay?",
-        "answerMark": "②",
+        "answerMark": "④",
         "answerText": "1000円",
         "explanation": "最初は teapot 単体（800）→ 店主の提案（両方で1000）を受け入れる流れ。値段変化を追う。2022年問9型。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows items with a price total displayed on a receipt or price tag. Panel 1: both vase and teapot with a receipt showing '1200 yen'. Panel 2: both vase and teapot together with a receipt showing '1000 yen'. Panel 3: only a vase with tag '500 yen'. Panel 4: only a teapot with tag '800 yen'.",
-        "answerIndex": 2,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows items with a price total displayed on a receipt or price tag. Panel 1: only a teapot with tag '800 yen'. Panel 2: only a vase with tag '500 yen'. Panel 3: both vase and teapot with a receipt showing '1200 yen'. Panel 4: both vase and teapot together with a receipt showing '1000 yen'.",
+        "answerIndex": 4,
         "shuffled": true,
         "shufflePerm": [
-          3,
-          2,
+          1,
           0,
-          1
+          3,
+          2
         ]
       }
     ]
@@ -1282,10 +1226,10 @@
         "speakers": "女性 / 男性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "ジュース6本のみ",
-          "ジュース6本＋水6本＝12本",
+          "水6本のみ",
           "ジュース10本＋水10本＝20本",
-          "水6本のみ"
+          "ジュース6本＋水6本＝12本",
+          "ジュース6本のみ"
         ],
         "turns": [
           {
@@ -1306,17 +1250,17 @@
           }
         ],
         "question": "How many bottles in total?",
-        "answerMark": "②",
+        "answerMark": "③",
         "answerText": "ジュース6本＋水6本＝12本",
         "explanation": "Same number as juice の代名詞的な数量表現。合計を求める計算型。ゲスト数10はダミー。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows bottles on a counter with clear labels. Panel 1: six juice bottles only. Panel 2: six juice bottles plus six water bottles, total 12. Panel 3: ten juice bottles plus ten water bottles, total 20. Panel 4: six water bottles only.",
-        "answerIndex": 2,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows bottles on a counter with clear labels. Panel 1: six water bottles only. Panel 2: ten juice bottles plus ten water bottles, total 20. Panel 3: six juice bottles plus six water bottles, total 12. Panel 4: six juice bottles only.",
+        "answerIndex": 3,
         "shuffled": true,
         "shufflePerm": [
-          0,
-          2,
+          1,
           3,
-          1
+          2,
+          0
         ]
       },
       {
@@ -1325,10 +1269,10 @@
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "TV上:風景、ソファ上:結婚式、棚:家族",
+          "TV上:風景、ソファ上:家族、棚:結婚式",
           "TV上:家族、ソファ上:風景、棚:結婚式",
           "TV上:結婚式、ソファ上:家族、棚:風景",
-          "TV上:風景、ソファ上:家族、棚:結婚式"
+          "TV上:風景、ソファ上:結婚式、棚:家族"
         ],
         "turns": [
           {
@@ -1349,18 +1293,11 @@
           }
         ],
         "question": "Which arrangement matches?",
-        "answerMark": "④",
+        "answerMark": "①",
         "answerText": "TV上:風景、ソファ上:家族、棚:結婚式",
         "explanation": "3枚の写真（風景／家族／結婚式）と3か所（TV上／ソファ上／棚）の対応。位置指定の連続。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a living room with a TV, a sofa, and a shelf, plus three photo frames placed as labels indicate. Panel 1: landscape above TV, wedding above sofa, family on shelf. Panel 2: family above TV, landscape above sofa, wedding on shelf. Panel 3: wedding above TV, family above sofa, landscape on shelf. Panel 4: mountain landscape above TV, family group above sofa, wedding photo on the shelf.",
-        "answerIndex": 4,
-        "shuffled": true,
-        "shufflePerm": [
-          3,
-          1,
-          2,
-          0
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a living room with a TV, a sofa, and a shelf, plus three photo frames placed as labels indicate. Panel 1: mountain landscape above TV, family group above sofa, wedding photo on the shelf. Panel 2: family above TV, landscape above sofa, wedding on shelf. Panel 3: wedding above TV, family above sofa, landscape on shelf. Panel 4: landscape above TV, wedding above sofa, family on shelf.",
+        "answerIndex": 1
       },
       {
         "q": 3,
@@ -1368,10 +1305,10 @@
         "speakers": "女性 / 男性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "木曜4時30分 体育館",
-          "金曜4時 体育館",
+          "金曜4時 音楽室",
           "木曜4時30分 音楽室",
-          "金曜4時 音楽室"
+          "木曜4時30分 体育館",
+          "金曜4時 体育館"
         ],
         "turns": [
           {
@@ -1392,18 +1329,11 @@
           }
         ],
         "question": "Which notice is correct?",
-        "answerMark": "③",
+        "answerMark": "②",
         "answerText": "木曜4時30分 音楽室",
         "explanation": "曜日・時刻・場所の3つが訂正される連鎖型。古い掲示と新しい掲示のひっかけ。2026年問9型。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a school notice board poster with 'MUSIC CLUB' header and three lines: day, time, place. Panel 1: 'THU / 4:30 / GYM'. Panel 2: 'FRI / 4:00 / GYM'. Panel 3: 'THU / 4:30 / MUSIC ROOM'. Panel 4: 'FRI / 4:00 / MUSIC ROOM'.",
-        "answerIndex": 3,
-        "shuffled": true,
-        "shufflePerm": [
-          2,
-          3,
-          1,
-          0
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a school notice board poster with 'MUSIC CLUB' header and three lines: day, time, place. Panel 1: 'FRI / 4:00 / MUSIC ROOM'. Panel 2: 'THU / 4:30 / MUSIC ROOM'. Panel 3: 'THU / 4:30 / GYM'. Panel 4: 'FRI / 4:00 / GYM'.",
+        "answerIndex": 2
       }
     ]
   },
@@ -1417,9 +1347,9 @@
         "speakers": "女性(店員) / 男性(客)",
         "figureType": "2×2の4枚から選択",
         "options": [
+          "有線・ノイズキャンセルなし",
           "無線・ノイズキャンセル＋マイク",
           "無線・ノイズキャンセルなし",
-          "有線・ノイズキャンセルなし",
           "有線・ノイズキャンセルあり"
         ],
         "turns": [
@@ -1441,18 +1371,11 @@
           }
         ],
         "question": "Which earphones will the man buy?",
-        "answerMark": "①",
+        "answerMark": "②",
         "answerText": "無線・ノイズキャンセル＋マイク",
         "explanation": "接続（wireless）・機能（noise cancelling）・付属（microphone）の3属性。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a pair of earphones with feature icons underneath. Panel 1: WIRELESS earbuds (no wire visible), icon set showing 'NC' (noise cancelling) and a microphone. Panel 2: WIRELESS earbuds, no NC, no mic. Panel 3: earphones with a WIRE, icon set: no NC, no mic. Panel 4: WIRED earphones with an NC icon only.",
-        "answerIndex": 1,
-        "shuffled": true,
-        "shufflePerm": [
-          1,
-          2,
-          0,
-          3
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a pair of earphones with feature icons underneath. Panel 1: earphones with a WIRE, icon set: no NC, no mic. Panel 2: WIRELESS earbuds (no wire visible), icon set showing 'NC' (noise cancelling) and a microphone. Panel 3: WIRELESS earbuds, no NC, no mic. Panel 4: WIRED earphones with an NC icon only.",
+        "answerIndex": 2
       },
       {
         "q": 2,
@@ -1460,9 +1383,9 @@
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
+          "3点セット、900円",
           "サラダとサンドイッチ、700円",
           "スープとサンドイッチ、700円",
-          "3点セット、900円",
           "サンドイッチのみ、500円"
         ],
         "turns": [
@@ -1484,18 +1407,11 @@
           }
         ],
         "question": "What will the woman order and pay?",
-        "answerMark": "①",
+        "answerMark": "②",
         "answerText": "サラダとサンドイッチ、700円",
         "explanation": "減算型（900−200＝700）＋メニュー内容の変更（スープ抜き）の同時把握。2022年問11型（条件付 き）。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a tray with food and a price tag. Panel 1: tray with salad + sandwich only (no soup), price tag '700 yen'. Panel 2: tray with soup + sandwich (no salad), price tag '700 yen'. Panel 3: tray with soup bowl + salad + sandwich, price tag '900 yen'. Panel 4: tray with sandwich only, price tag '500 yen'.",
-        "answerIndex": 1,
-        "shuffled": true,
-        "shufflePerm": [
-          1,
-          2,
-          0,
-          3
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a tray with food and a price tag. Panel 1: tray with soup bowl + salad + sandwich, price tag '900 yen'. Panel 2: tray with salad + sandwich only (no soup), price tag '700 yen'. Panel 3: tray with soup + sandwich (no salad), price tag '700 yen'. Panel 4: tray with sandwich only, price tag '500 yen'.",
+        "answerIndex": 2
       },
       {
         "q": 3,
@@ -1504,9 +1420,9 @@
         "figureType": "2×2の4枚から選択",
         "options": [
           "長髪・赤いドレス",
-          "短髪・ピンクドレス",
           "長髪・ピンクドレス",
-          "短髪・赤いドレス"
+          "短髪・赤いドレス",
+          "短髪・ピンクドレス"
         ],
         "turns": [
           {
@@ -1527,18 +1443,11 @@
           }
         ],
         "question": "Which doll will the woman likely take?",
-        "answerMark": "③",
+        "answerMark": "②",
         "answerText": "長髪・ピンクドレス",
         "explanation": "希望条件が揃わず、closest（一番近い）で妥協する型。優先順位の判断。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a doll standing upright. Panel 1: doll with LONG hair and a dress with dense hatch pattern (representing red). Panel 2: doll with SHORT hair and light-dot (pink) dress. Panel 3: doll with LONG hair and a dress with light dot pattern (representing pink). Panel 4: doll with SHORT hair and dense hatched (red) dress.",
-        "answerIndex": 3,
-        "shuffled": true,
-        "shufflePerm": [
-          0,
-          3,
-          1,
-          2
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a doll standing upright. Panel 1: doll with LONG hair and a dress with dense hatch pattern (representing red). Panel 2: doll with LONG hair and a dress with light dot pattern (representing pink). Panel 3: doll with SHORT hair and dense hatched (red) dress. Panel 4: doll with SHORT hair and light-dot (pink) dress.",
+        "answerIndex": 2
       }
     ]
   },
@@ -1588,9 +1497,9 @@
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "一定の上昇→急下降→横ばい",
-          "急上昇→ゆるやかに下降→急上昇",
           "急上昇→横ばい→ゆるやかに下降→横ばい",
+          "急上昇→ゆるやかに下降→急上昇",
+          "一定の上昇→急下降→横ばい",
           "横ばい→急上昇→急下降"
         ],
         "turns": [
@@ -1612,18 +1521,11 @@
           }
         ],
         "question": "Which graph matches?",
-        "answerMark": "③",
+        "answerMark": "①",
         "answerText": "急上昇→横ばい→ゆるやかに下降→横ばい",
         "explanation": "グラフの4段階変化（rose sharply → stayed the same → dropped slightly → stayed flat）を順番通り。2026年問11型のグラフ・段階選択。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an XY line graph with 'Time' x-axis and 'Temp' y-axis. Panel 1: line rises gradually and steadily, then drops sharply, then flat. Panel 2: line rises steeply, then a gentle downward slope, then rises steeply again. Panel 3: line rises steeply, then flat plateau, then slight downward slope, then flat again. Panel 4: line flat, then rises sharply, then drops sharply.",
-        "answerIndex": 3,
-        "shuffled": true,
-        "shufflePerm": [
-          2,
-          1,
-          0,
-          3
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an XY line graph with 'Time' x-axis and 'Temp' y-axis. Panel 1: line rises steeply, then flat plateau, then slight downward slope, then flat again. Panel 2: line rises steeply, then a gentle downward slope, then rises steeply again. Panel 3: line rises gradually and steadily, then drops sharply, then flat. Panel 4: line flat, then rises sharply, then drops sharply.",
+        "answerIndex": 1
       },
       {
         "q": 3,
@@ -1631,10 +1533,10 @@
         "speakers": "女性 / 男性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "月・水:水泳、金:ヨガ",
-          "月・水・金:ヨガ",
           "月・水:ヨガ、金:水泳",
-          "火・木:水泳"
+          "月・水・金:ヨガ",
+          "火・木:水泳",
+          "月・水:水泳、金:ヨガ"
         ],
         "turns": [
           {
@@ -1655,18 +1557,11 @@
           }
         ],
         "question": "Which schedule shows the woman's plan?",
-        "answerMark": "③",
+        "answerMark": "①",
         "answerText": "月・水:ヨガ、金:水泳",
         "explanation": "男性のスケジュール（火・木）と混同させる。「女性の予定」を問う設問文の把握。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a weekly planner (Mon-Fri) with icons on some days. Panel 1: swim icon on Mon and Wed, yoga icon on Fri. Panel 2: yoga icon on Mon, Wed, and Fri. Panel 3: yoga icon on Mon and Wed, swim icon on Fri. Panel 4: swim icon on Tue and Thu.",
-        "answerIndex": 3,
-        "shuffled": true,
-        "shufflePerm": [
-          3,
-          1,
-          0,
-          2
-        ]
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a weekly planner (Mon-Fri) with icons on some days. Panel 1: yoga icon on Mon and Wed, swim icon on Fri. Panel 2: yoga icon on Mon, Wed, and Fri. Panel 3: swim icon on Tue and Thu. Panel 4: swim icon on Mon and Wed, yoga icon on Fri.",
+        "answerIndex": 1
       }
     ]
   },
@@ -1680,8 +1575,8 @@
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "上部にロゴ・中央にタイトル・下部に日付",
           "上部に場所・中央にタイトル・下部に日付",
+          "上部にロゴ・中央にタイトル・下部に日付",
           "上部に日付・中央にタイトル・下部にロゴ",
           "上部にタイトル・その下に日付・下部に場所・隅にロゴ"
         ],
@@ -1707,12 +1602,12 @@
         "answerMark": "④",
         "answerText": "上部にタイトル・その下に日付・下部に場所・隅にロゴ",
         "explanation": "4要素（タイトル／日付／場所／ロゴ）の位置指定。上→下、隅の位置関係を統合。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a poster layout mockup with placeholder blocks labeled TITLE, DATE, PLACE, LOGO. Panel 1: LOGO at top, TITLE in middle, DATE at bottom. Panel 2: PLACE at top, TITLE in middle, DATE at bottom. Panel 3: DATE at top, TITLE in middle, LOGO at bottom. Panel 4: TITLE at top (big), DATE just below title, PLACE at bottom, small LOGO in a corner.",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a poster layout mockup with placeholder blocks labeled TITLE, DATE, PLACE, LOGO. Panel 1: PLACE at top, TITLE in middle, DATE at bottom. Panel 2: LOGO at top, TITLE in middle, DATE at bottom. Panel 3: DATE at top, TITLE in middle, LOGO at bottom. Panel 4: TITLE at top (big), DATE just below title, PLACE at bottom, small LOGO in a corner.",
         "answerIndex": 4,
         "shuffled": true,
         "shufflePerm": [
-          2,
           3,
+          2,
           1,
           0
         ]
@@ -1759,8 +1654,8 @@
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "パスポート・カメラ・地図・傘",
           "カメラ・サングラス・地図・傘",
+          "パスポート・カメラ・地図・傘",
           "パスポート・カメラ・サングラス・ガイドブック(地図・傘なし)",
           "パスポート・カメラ・サングラス・ガイドブック・地図"
         ],
@@ -1786,12 +1681,12 @@
         "answerMark": "③",
         "answerText": "パスポート・カメラ・サングラス・ガイドブック(地図・傘なし)",
         "explanation": "含む物と除外物の複合。not the map と no umbrella の2つの否定を正確に。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an open suitcase with items inside. Panel 1: passport, camera, folded paper map, umbrella. Panel 2: camera, sunglasses, paper map, umbrella. Panel 3: passport, camera, sunglasses, guidebook only (no map, no umbrella). Panel 4: passport, camera, sunglasses, guidebook, and a folded paper map inside.",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an open suitcase with items inside. Panel 1: camera, sunglasses, paper map, umbrella. Panel 2: passport, camera, folded paper map, umbrella. Panel 3: passport, camera, sunglasses, guidebook only (no map, no umbrella). Panel 4: passport, camera, sunglasses, guidebook, and a folded paper map inside.",
         "answerIndex": 3,
         "shuffled": true,
         "shufflePerm": [
-          2,
           3,
+          2,
           1,
           0
         ]
@@ -1887,9 +1782,9 @@
         "speakers": "女性(客) / 男性(係員)",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "大きなスーツケース1つ",
           "大きなスーツケースとリュックの2つ",
           "3つとも預ける",
+          "大きなスーツケース1つ",
           "キャリーオンとリュック"
         ],
         "turns": [
@@ -1911,16 +1806,16 @@
           }
         ],
         "question": "Which is checked in (預け入れ) ?",
-        "answerMark": "①",
+        "answerMark": "③",
         "answerText": "大きなスーツケース1つ",
         "explanation": "預け入れ／機内持ち込みの区別。large one goes to check-in が核心。他は機内持ち込み。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an airport check-in counter with a conveyor belt receiving specific bags. Panel 1: only a LARGE suitcase on the belt going to check-in, a small carry-on and a backpack stay with the passenger. Panel 2: a large suitcase AND a backpack on the belt. Panel 3: all three items (large suitcase, carry-on, backpack) on the belt. Panel 4: a carry-on AND a backpack on the belt.",
-        "answerIndex": 1,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an airport check-in counter with a conveyor belt receiving specific bags. Panel 1: a large suitcase AND a backpack on the belt. Panel 2: all three items (large suitcase, carry-on, backpack) on the belt. Panel 3: only a LARGE suitcase on the belt going to check-in, a small carry-on and a backpack stay with the passenger. Panel 4: a carry-on AND a backpack on the belt.",
+        "answerIndex": 3,
         "shuffled": true,
         "shufflePerm": [
-          0,
           1,
           3,
+          0,
           2
         ]
       }
@@ -1937,8 +1832,8 @@
         "figureType": "2×2の4枚から選択",
         "options": [
           "チーズケーキ",
-          "桃のケーキ",
           "苺のショートケーキ",
+          "桃のケーキ",
           "チョコレートケーキ"
         ],
         "turns": [
@@ -1960,16 +1855,16 @@
           }
         ],
         "question": "Which cake will the man buy?",
-        "answerMark": "②",
+        "answerMark": "③",
         "answerText": "桃のケーキ",
         "explanation": "「フルーツは好きだが苺はアレルギー」の情報から桃を新たに提案。3択→アレルギー→新提案の流 れ。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a whole cake on a plate with fruit/topping identifiable. Panel 1: cheesecake (plain, smooth top). Panel 2: cake topped with peach slices. Panel 3: strawberry shortcake with whole strawberries on top. Panel 4: chocolate cake with chocolate curls on top.",
-        "answerIndex": 2,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a whole cake on a plate with fruit/topping identifiable. Panel 1: cheesecake (plain, smooth top). Panel 2: strawberry shortcake with whole strawberries on top. Panel 3: cake topped with peach slices. Panel 4: chocolate cake with chocolate curls on top.",
+        "answerIndex": 3,
         "shuffled": true,
         "shufflePerm": [
           2,
-          3,
           1,
+          3,
           0
         ]
       },
@@ -1979,10 +1874,10 @@
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
+          "B列 上から2番目 左側",
           "A列 上から3番目 右側",
-          "B列 上から3番目 左側",
           "B列 上から3番目 右側",
-          "B列 上から2番目 左側"
+          "B列 上から3番目 左側"
         ],
         "turns": [
           {
@@ -2006,14 +1901,14 @@
         "answerMark": "③",
         "answerText": "B列 上から3番目 右側",
         "explanation": "列（B）＋段（third from top）＋左右（right side）の3座標。訂正あり（2番目→3番目）。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a grid of shoe lockers labeled A, B, C columns and numbered rows, with one specific locker highlighted. Panel 1: column A, third row from top, right-side locker highlighted. Panel 2: column B, third row from top, left-side locker highlighted. Panel 3: column B, third row from top, right-side locker highlighted. Panel 4: column B, second row from top, left-side locker highlighted.",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a grid of shoe lockers labeled A, B, C columns and numbered rows, with one specific locker highlighted. Panel 1: column B, second row from top, left-side locker highlighted. Panel 2: column A, third row from top, right-side locker highlighted. Panel 3: column B, third row from top, right-side locker highlighted. Panel 4: column B, third row from top, left-side locker highlighted.",
         "answerIndex": 3,
         "shuffled": true,
         "shufflePerm": [
+          0,
           3,
-          1,
           2,
-          0
+          1
         ]
       },
       {
@@ -2022,10 +1917,10 @@
         "speakers": "女性(客) / 男性(店員)",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "重量級・ヘッド小さめ",
+          "重量級・ヘッド大きめ",
           "軽量・ヘッド小さめ",
           "軽量・ヘッド大きめ",
-          "重量級・ヘッド大きめ"
+          "重量級・ヘッド小さめ"
         ],
         "turns": [
           {
@@ -2049,14 +1944,14 @@
         "answerMark": "③",
         "answerText": "軽量・ヘッド大きめ",
         "explanation": "色は「どれでもよい」ため無関係。lightweight + larger head の2条件で決定。属性の掛け合わせ。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a tennis racket with a small label for weight and head size. Panel 1: racket with a small head, label 'HEAVY'. Panel 2: racket with a SMALL head, label 'LIGHT'. Panel 3: racket with a LARGE oval head, label 'LIGHT'. Panel 4: racket with a large head, label 'HEAVY'.",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a tennis racket with a small label for weight and head size. Panel 1: racket with a large head, label 'HEAVY'. Panel 2: racket with a SMALL head, label 'LIGHT'. Panel 3: racket with a LARGE oval head, label 'LIGHT'. Panel 4: racket with a small head, label 'HEAVY'.",
         "answerIndex": 3,
         "shuffled": true,
         "shufflePerm": [
-          3,
+          1,
           2,
           0,
-          1
+          3
         ]
       }
     ]

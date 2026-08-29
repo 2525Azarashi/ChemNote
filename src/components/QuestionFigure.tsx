@@ -151,7 +151,77 @@ export function QuestionFigure({
    */
   const FIG_ASPECT_THRESHOLD = 1.7;
   const [aspect, setAspect] = React.useState<number | null>(null);
-  const isWide = !fill && aspect !== null && aspect >= FIG_ASPECT_THRESHOLD;
+
+  /**
+   * ★しきい値 1.7 だけでは「縦の短い端末」で逆に小さくなる★
+   *
+   * ■ 実測で見つけた不具合（地理 第4回「エネルギー自給率」900x524 / 比 1.718）
+   *     390x844（26vh=219px）… 高さ基準 375x219  ／ 幅基準なら 358x208 → 高さ基準が正しい
+   *     390x664（26vh=173px）… 高さ基準 295x173  ／ 幅基準なら 358x208 → ★幅基準の方が大きい★
+   *   26vh は端末の高さで変わるのに、しきい値 1.7 は
+   *   390x844（26vh=219px）だけを前提に 366/220 から逆算した固定値だった。
+   *   画面の低い端末（iPhone SE や、URL バーが出ている状態）では
+   *   26vh が 173px まで縮むため、
+   *   「大きく見せるための切り替え」が ★かえって図を縮める★ ことになる。
+   *   実測すると 295x173（面積 51,000px²）＜ 358x208（74,500px²）で、
+   *   1.4 倍ほど小さい。しかも横スクロールという手間まで増える。
+   *
+   * ■ 直し方：比の固定値ではなく「どちらが実際に大きいか」で決める
+   *     高さ基準の幅 = 26vh * 比
+   *     幅基準の高さ = 枠の幅 / 比
+   *   高さ基準が有利なのは 26vh > 枠の幅 / 比、すなわち
+   *       比 > 枠の幅 / (26vh)
+   *   という関係で、これは元の 366/220≒1.66 と同じ式である。
+   *   違うのは ★分母の 26vh を実際の window.innerHeight から採る★ 点だけ。
+   *   これで端末の高さが変わっても自動で正しい側に倒れる。
+   *
+   *   実測での振り分け（枠 358px）：
+   *     844px 端末（26vh=219）→ しきい値 1.63：比 3.0 / 2.57 / 1.718 が高さ基準
+   *     664px 端末（26vh=173）→ しきい値 2.07：比 3.0 / 2.57 が高さ基準、
+   *                                            1.718（第4回）は幅基準＝大きい方
+   *   どちらの端末でも「大きく表示される側」が選ばれる。
+   *
+   * ■ FIG_ASPECT_THRESHOLD は下限として残す
+   *   計算式だけにすると、極端に横幅の狭い枠で比 1.2 の図まで
+   *   高さ基準に倒れてしまう。元の意図（横長の図だけを対象にする）は
+   *   保ちたいので、1.7 は「これ未満は対象にしない」下限として使う。
+   */
+  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+  const [frameWidth, setFrameWidth] = React.useState<number | null>(null);
+  const [viewportH, setViewportH] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    const read = () => {
+      const el = scrollerRef.current;
+      // 枠の幅は「横スクロールしない状態での見えている幅」＝clientWidth
+      if (el) setFrameWidth(el.clientWidth);
+      setViewportH(window.innerHeight);
+    };
+    read();
+    window.addEventListener('resize', read);
+    return () => window.removeEventListener('resize', read);
+  }, [aspect]);
+
+  /**
+   * 高さ基準に切り替えると本当に大きくなるか（実測値から判定）。
+   * 測れていないあいだ（初回描画）は従来どおり幅基準にしておく。
+   * ＝図が一瞬横スクロールしてから戻る、という揺れを起こさない。
+   */
+  const heightBasedIsBigger =
+    aspect !== null &&
+    frameWidth !== null &&
+    viewportH !== null &&
+    frameWidth > 0 &&
+    // 高さ基準で得られる高さ（26vh）が、幅基準の高さ（枠幅/比）より大きいか
+    viewportH * 0.26 > frameWidth / aspect;
+
+  const isWide =
+    !fill &&
+    aspect !== null &&
+    // 横長の図だけを対象にする（下限）
+    aspect >= FIG_ASPECT_THRESHOLD &&
+    // かつ、実際に高さ基準の方が大きくなる端末のときだけ
+    heightBasedIsBigger;
 
   /**
    * 「（横にスクロールできます）」の案内は、比ではなく
@@ -159,7 +229,6 @@ export function QuestionFigure({
    * 比 1.7〜2.0 の図は端末幅によっては溢れないことがあり、
    * 溢れていないのに「スクロールできます」と書くのは嘘になる。
    */
-  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const [overflowing, setOverflowing] = React.useState(false);
   React.useEffect(() => {
     const el = scrollerRef.current;

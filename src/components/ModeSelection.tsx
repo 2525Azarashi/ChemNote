@@ -44,8 +44,14 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
    * リスニングと同じように「演習問題」だけを出す（空の画面へ連れていかない）。
    */
   const isGrammar = subject === 'english_grammar';
+  /**
+   * 地理総合・地理探究はまず「第1問の模擬問題（全回）」を公開した段階。
+   * まとめプリント（学習インプット）・出題傾向・予想問題は未収録なので、
+   * リスニング・英文法と同じく「演習問題」だけを出す（空の画面へ連れていかない）。
+   */
+  const isGeography = subject === 'geography';
   /** まとめプリントを持たない科目（学習カードを隠す） */
-  const hideLearning = isListening || isGrammar;
+  const hideLearning = isListening || isGrammar || isGeography;
   /**
    * 科目ごとの配色。
    * この画面はどの科目でも同じダスティローズで描かれていたため、
@@ -152,6 +158,8 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
                 ? '第1問A・第1問B …のように大問別（A／Bも別）に選び、回ごとに取り組みます。'
                 : isGrammar
                 ? '文型・時制・準動詞…の単元別に4択を解きます。全問に完成文の音源と誤答肢の理由がつきます。'
+                : isGeography
+                ? '会話文と資料（気候グラフ・統計表・地形図）を行き来して考える、共通テスト型の大問を回ごとに解きます。'
                 : isMath
                   ? '積分・ベクトル・確率・整数の全パターンを、型ごとの小問で演習します。数学記号パレットで ∫ や √ もワンタップ入力。'
                   : 'より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。'}
@@ -185,6 +193,13 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
         {isGrammar && (
           <p className="mt-3 md:mt-6 text-[10px] md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
             ※ 全20単元の4択演習（各単元5問）を公開しています。「学習(インプット)」は順次追加していきます。
+          </p>
+        )}
+
+        {/* 地理で準備中のコンテンツを明示する。 */}
+        {isGeography && (
+          <p className="mt-3 md:mt-6 text-[10px] md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
+            ※ まずは「第1問」の模擬問題（第1回〜第5回・計25設問）を公開しています。第2問以降と「学習(インプット)」は順次追加していきます。
           </p>
         )}
 

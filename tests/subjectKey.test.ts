@@ -52,6 +52,8 @@ const LEGACY_SUBJECT_IDS = [
   'english_grammar',
   'math',
   'biology_basic',
+  // 2026-08 追加：地理総合・地理探究（第1問セット 第1回〜第5回）
+  'geography',
 ] as const;
 
 /**
@@ -66,6 +68,7 @@ const DISPLAY_ORDER = [
   'math',
   'biology_basic',
   'english_grammar',
+  'geography',
 ] as const;
 
 describe('SubjectKey（教科IDの型）の集約', () => {
@@ -80,13 +83,14 @@ describe('SubjectKey（教科IDの型）の集約', () => {
     expect([...LEGACY_SUBJECT_IDS].sort()).toEqual(SUBJECTS.map((s) => s.id).sort());
   });
 
-  it('6つの教科IDすべてが SubjectKey として扱える（欠けたら型エラーになる）', () => {
+  it('すべての教科IDが SubjectKey として扱える（欠けたら型エラーになる）', () => {
     // 実際に代入してみることで、型から教科が抜け落ちていないことを確かめる。
+    // 件数は LEGACY_SUBJECT_IDS 自身から取る（教科が増えても直す場所を1つに保つ）。
     const all: SubjectKey[] = [...LEGACY_SUBJECT_IDS];
-    expect(all).toHaveLength(6);
+    expect(all).toHaveLength(LEGACY_SUBJECT_IDS.length);
   });
 
-  it('集約対象の各ファイルの型が、同じ6つの教科IDを受け取れる', () => {
+  it('集約対象の各ファイルの型が、同じ顔ぶれの教科IDを受け取れる', () => {
     // 型エイリアスにしただけなので、どれも SubjectKey と同じものを指すはず。
     // 1つでも別物になっていれば、この代入でコンパイルが落ちる。
     const asSubjectId: SubjectId[] = [...LEGACY_SUBJECT_IDS];

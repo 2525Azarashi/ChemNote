@@ -89,6 +89,7 @@ const SUBJECT_OPTIONS: Array<{ value: ClassroomDoc['subject']; label: string }> 
   { value: 'math', label: '数学' },
   { value: 'biology_basic', label: '生物基礎' },
   { value: 'english_grammar', label: '英文法' },
+  { value: 'geography', label: '地理総合・地理探究' },
 ];
 
 export function TeacherDashboard({ onBack }: TeacherDashboardProps) {
