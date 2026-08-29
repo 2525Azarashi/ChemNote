@@ -238,6 +238,12 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
   const isListening = subject === 'english_listening';
   const isGrammar = subject === 'english_grammar';
   /**
+   * 地理はリスニングと同じく「大問別のタブ（第1問）→ 回ごとの単元」という
+   * 2階層なので、この一行がないと今どの科目の画面なのか分からない。
+   * タブの作り方（realTitle でまとめる）と中身の出し方は共通処理のまま。
+   */
+  const isGeography = subject === 'geography';
+  /**
    * 科目ごとの配色。
    * これまで覈しのラベル等はすべてダスティローズ直書きだったため、
    * 化学でもリスニングでも同じ色に見えてしまっていた。
@@ -367,6 +373,13 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
         {isGrammar && (
           <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest" style={{ color: theme.accent }}>
             英文法 ／ 単元別（4択演習）
+          </p>
+        )}
+        {/* 地理も同形。リスニングと同じ「大問別タブ」の見た目なので、
+            この一行がないとどちらの画面にいるのか区別がつかない。 */}
+        {isGeography && (
+          <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest" style={{ color: theme.accent }}>
+            地理総合・地理探究 ／ 共通テスト大問別
           </p>
         )}
         <h2 className="text-xl md:text-3xl font-handwriting font-bold text-[#2C3E50] mb-1.5 md:mb-2">

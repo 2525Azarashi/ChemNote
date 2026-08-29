@@ -71,6 +71,13 @@ export const FEATURES = {
   english_grammar: true,
   /** 生物基礎：問題・採点あり */
   biology_basic: true,
+  /**
+   * 地理総合・地理探究：※true（公開）※
+   * 第1問の模擬問題（第1回〜第5回・計25設問）を収録済み。
+   * すべて選択式（選択肢の本文をそのままボタンにする）なので採点は確実に動く。
+   * 図（資料1）は第1回〜第4回だけにある（第5回は数値が本文にあるため図なし）。
+   */
+  geography: true,
 
   /**
    * 数学：★true（公開）★
@@ -171,6 +178,7 @@ const SUBJECT_FEATURE_KEY: Record<string, FeatureKey> = {
   english_listening: 'listening',
   english_grammar: 'english_grammar',
   biology_basic: 'biology_basic',
+  geography: 'geography',
   math: 'math',
   physics: 'physics',
 };

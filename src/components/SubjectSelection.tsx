@@ -39,6 +39,7 @@ import {
   Calculator,
   Leaf,
   PenLine,
+  Globe2,
   Bell,
   CheckCircle2,
   ChevronLeft,
@@ -264,6 +265,19 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
   /** 英文法の収録ボリューム。単元別に 4 択演習を置いている。 */
   const grammarStats = useMemo(() => getSubjectStats('english_grammar'), []);
 
+  /**
+   * 地理総合・地理探究の収録ボリューム。
+   * リスニングと同じく「大問（第1問）→ 回」の2階層で、
+   * 1単元＝1回（大問1つ）を抱える。
+   *
+   * ★表示に使うのは marks（設問数）★
+   *   この科目の questions は「大問の数＝回数」なので、
+   *   生徒が実際に解く問数としては marks（subQuestions の合計）を見る。
+   *   chapters * 5 のような掛け算はしない（設問数が5問でない回を
+   *   足した瞬間に表示が嘘になる）。
+   */
+  const geographyStats = useMemo(() => getSubjectStats('geography'), []);
+
   const subjects: SubjectDefinition[] = useMemo(() => [
     {
       id: 'chemistry_basic',
@@ -353,7 +367,21 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
       available: true,
       icon: PenLine,
     },
-  ], [basicStats, advancedStats, listeningStats, mathStats, biologyStats, grammarStats]);
+    {
+      id: 'geography',
+      title: '地理総合・地理探究',
+      latin: 'Geography',
+      description: '会話文と資料を行き来して考える、共通テスト型の大問を回ごとに演習します。',
+      highlights: [
+        `第1問全${geographyStats.chapters}回・設問${geographyStats.marks}問を収録（順次追加中）`,
+        '気候グラフ・人口ピラミッド・地形図・統計表の読み取り',
+        '全問に「誤答肢のなぜ違うか」まで入った詳しい解説つき',
+      ],
+      volume: `第1問全${geographyStats.chapters}回・設問${geographyStats.marks}問`,
+      available: true,
+      icon: Globe2,
+    },
+  ], [basicStats, advancedStats, listeningStats, mathStats, biologyStats, grammarStats, geographyStats]);
 
   /**
    * ★実際に画面へ出す科目（非公開のものはカードごと作らない）★

@@ -418,6 +418,38 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
     expect(FIGURE).toContain('isWide && overflowing');
   });
 
+  /*
+    ★しきい値 1.7 だけで切り替えると、縦の短い端末で逆に小さくなる★
+
+    実測で見つけた不具合（地理 第4回 900x524 / 比 1.718・枠 358px）：
+      390x844（26vh=219px）… 高さ基準 375x219 ／ 幅基準 358x208 → 高さ基準が大きい
+      390x664（26vh=173px）… 高さ基準 295x173 ／ 幅基準 358x208 → ★幅基準が大きい★
+    26vh は端末の高さで変わるのに、1.7 は 844px 端末だけを前提に
+    366/220 から逆算した固定値だったため、画面の低い端末では
+    「大きく見せるための切り替え」が図を 1.4 倍ほど縮めていた。
+
+    直したあとの実測（同じ図・390x664）: 358x209（横スクロールも消えた）。
+    比の固定値ではなく「高さ基準の方が実際に大きいか」で決めるようにした。
+  */
+  it('高さ基準に切り替えるのは「実際に大きくなるとき」だけ（端末の高さを見る）', () => {
+    // 端末の高さを実測して使っていること（26vh の実寸を知るため）
+    expect(FIGURE).toContain('window.innerHeight');
+    // 枠の実効幅も実測（clientWidth）で採る
+    expect(FIGURE).toContain('setFrameWidth(el.clientWidth)');
+    // 判定式そのもの：26vh の実寸 > 幅基準にしたときの高さ
+    expect(FIGURE).toContain('viewportH * 0.26 > frameWidth / aspect');
+    // 「比が下限以上」かつ「高さ基準の方が大きい」の両方を満たすときだけ切り替える
+    expect(FIGURE).toContain('heightBasedIsBigger');
+
+    // ★測れていないあいだは従来どおり幅基準★（横スクロールしてから戻る揺れの防止）
+    expect(FIGURE).toContain('aspect !== null &&');
+    expect(FIGURE).toContain('frameWidth !== null &&');
+    expect(FIGURE).toContain('viewportH !== null &&');
+
+    // resize で測り直す（縦横回転・URL バーの出入りに追従する）
+    expect(FIGURE).toContain("window.addEventListener('resize', read)");
+  });
+
   it('横長でない図は枠の横幅いっぱいまで使う（原寸で止まらない）', () => {
     // w-auto だと原寸より大きくならず、小さい図は枠が余っても小さいまま。
     expect(FIGURE).toContain(": 'w-full h-auto max-w-full'");

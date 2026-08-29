@@ -191,7 +191,15 @@ export function validateClassroomInput(input: ClassroomInput): ValidationResult 
     return { ok: false, message: `クラス名は${CLASS_NAME_MAX}文字以内で入力してください。` };
   }
   if (
-    !['chemistry_basic', 'chemistry', 'english_listening', 'english_grammar', 'math', 'biology_basic'].includes(
+    ![
+      'chemistry_basic',
+      'chemistry',
+      'english_listening',
+      'english_grammar',
+      'math',
+      'biology_basic',
+      'geography',
+    ].includes(
       input.subject,
     )
   ) {

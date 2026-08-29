@@ -31,6 +31,7 @@ import { englishListeningData, getAllListeningChapters } from '../src/data/engli
 import { mathData, getAllMathChapters } from '../src/data/mathData';
 import { biologyBasicData, getAllBiologyChapters } from '../src/data/biologyBasicData';
 import { englishGrammarData, getAllGrammarChapters } from '../src/data/englishGrammarData';
+import { geographyData, getAllGeographyChapters } from '../src/data/geographyData';
 import { SUBJECT_LABELS, type SubjectId } from '../src/components/SubjectSelection';
 
 /** リファクタ前に App.tsx が行っていた計算をそのまま再現したもの */
@@ -89,6 +90,7 @@ describe('findChapterById（全教科横断の章引き）', () => {
       ['数学', mathData as any],
       ['生物基礎', biologyBasicData as any],
       ['英文法', englishGrammarData as any],
+      ['地理総合・地理探究', geographyData as any],
     ];
     for (const [label, data] of subjects) {
       const first = data.parts.flatMap((p) => p.chapters as any[])[0];
@@ -120,6 +122,7 @@ function legacyAllChaptersList(subject: string | null | undefined): any[] {
   if (subject === 'math') return getAllMathChapters() as any[];
   if (subject === 'biology_basic') return getAllBiologyChapters() as any[];
   if (subject === 'english_grammar') return getAllGrammarChapters() as any[];
+  if (subject === 'geography') return getAllGeographyChapters() as any[];
   return chemistryData.parts.flatMap((p: any) => p.chapters) as any[];
 }
 
@@ -139,6 +142,11 @@ const legacySubjectProgressDefs = [
   { id: 'math', label: '数学', chapters: getAllMathChapters() as any[] },
   { id: 'biology_basic', label: '生物基礎', chapters: getAllBiologyChapters() as any[] },
   { id: 'english_grammar', label: '英文法', chapters: getAllGrammarChapters() as any[] },
+  {
+    id: 'geography',
+    label: '地理総合・地理探究',
+    chapters: getAllGeographyChapters() as any[],
+  },
 ];
 
 describe('getChaptersOfSubject / SUBJECTS（教科レジストリ）', () => {
@@ -207,6 +215,7 @@ describe('getChaptersOfSubject / SUBJECTS（教科レジストリ）', () => {
       ['math', mathData],
       ['biology_basic', biologyBasicData],
       ['english_grammar', englishGrammarData],
+      ['geography', geographyData],
     ];
     for (const [id, data] of expected) {
       expect(getPartsOfSubject(id), `${id} の parts が違う`).toBe(data.parts);
@@ -233,7 +242,7 @@ describe('getChaptersOfSubject / SUBJECTS（教科レジストリ）', () => {
   });
 
   it('章カタログの表示名も SUBJECTS と一致する（先生ダッシュボードの見出し）', async () => {
-    // 同じ6つの表示名が SubjectSelection・chapterCatalog・SUBJECTS の
+    // 同じ表示名が SubjectSelection・chapterCatalog・SUBJECTS の
     // 3か所に書かれていた。1つに集約したあとも、
     // 3経路すべてから同じ文字列が引けることを確かめる。
     const { SUBJECT_LABELS: CATALOG_LABELS } = await import('../src/data/chapterCatalog');

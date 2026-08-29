@@ -14,6 +14,14 @@ import { describe, it, expect, vi } from 'vitest';
  *     → 生物基礎は準備中（available: false）として先にカードだけ出す
  *   - 「英文法単元別に追加してください」
  *     → 英文法（english_grammar）を6番目の科目として公開（available: true）
+ *   - 「「地理総合・地理探求」の科目を追加。まずは第一問の5セットを追加。」
+ *     → 地理総合・地理探究（geography）を7番目の科目として公開（available: true）
+ *
+ * ★科目数を直書きしないこと★
+ *   以前は toBe(6) のように数字を書いていたため、科目を1つ足すたびに
+ *   ここが落ちていた。「増えたら落ちる」のは回帰テストとして正しくない
+ *   （増やすことは仕様変更ではなく想定内の追加）ので、
+ *   科目数は SUBJECT_IDS の長さから引くようにした。
  *
  * レンダリング環境（jsdom）を前提にしないため、
  *   ① SubjectId / ラベル定義などの純粋なロジックは実際に import して検証
@@ -34,19 +42,33 @@ const APP = readFileSync('src/App.tsx', 'utf8');
 // 「その科目の単元が探索対象に入っているか」は、ソース文字列ではなく
 // 実際に章を引けるかどうかで確かめる（探索は data/allChapters.ts に集約）
 const { findChapterById } = await import('../src/data/allChapters');
+
+/**
+ * 公開されている科目 id の一覧（増えたらここに足すだけで済むようにする）。
+ * 「ソート済み配列との一致」と「available: true の個数」の両方が
+ * この1か所を見るので、科目追加時の直し漏れが起きない。
+ */
+const SUBJECT_IDS = [
+  'biology_basic',
+  'chemistry',
+  'chemistry_basic',
+  'english_grammar',
+  'english_listening',
+  'geography',
+  'math',
+] as const;
 const { englishListeningData } = await import('../src/data/englishListeningData');
 const { mathData } = await import('../src/data/mathData');
 
 describe('科目の定義', () => {
-  it('化学基礎・化学・英語リスニング・数学・生物基礎・英文法の6科目が SubjectId に含まれる', async () => {
+  it('化学基礎・化学・英語リスニング・数学・生物基礎・英文法・地理の各科目が SubjectId に含まれる', async () => {
     const { SUBJECT_LABELS } = await import('../src/components/SubjectSelection');
-    expect(Object.keys(SUBJECT_LABELS).sort()).toEqual(
-      ['biology_basic', 'chemistry', 'chemistry_basic', 'english_grammar', 'english_listening', 'math'],
-    );
+    expect(Object.keys(SUBJECT_LABELS).sort()).toEqual([...SUBJECT_IDS]);
     expect(SUBJECT_LABELS.english_listening).toBe('英語リスニング');
     expect(SUBJECT_LABELS.math).toBe('数学');
     expect(SUBJECT_LABELS.biology_basic).toBe('生物基礎');
     expect(SUBJECT_LABELS.english_grammar).toBe('英文法');
+    expect(SUBJECT_LABELS.geography).toBe('地理総合・地理探究');
   });
 
   it('getSubjectLabel は未知の値でも落ちず、化学基礎に倒す', async () => {
@@ -118,10 +140,21 @@ describe('科目の定義', () => {
     expect(def).toContain('grammarStats.marks');
   });
 
-  it('公開中6科目（全科目公開済み）', () => {
+  it('地理総合・地理探究は available: true（＝公開中）で、収録数をデータから算出している', () => {
+    const block = SRC.slice(SRC.indexOf("id: 'geography'"));
+    const def = block.slice(0, block.indexOf('},'));
+    expect(def).toContain("title: '地理総合・地理探究'");
+    expect(def).toContain('available: true');
+    expect(def).toContain('icon: Globe2');
+    // 収録数は getGeographyStats() 由来の geographyStats から算出（数字のハードコードをしない）
+    expect(def).toContain('geographyStats.chapters');
+  });
+
+  it('カードはすべて公開中（available: false が残っていない）', () => {
     const availableTrue = (SRC.match(/available: true/g) || []).length;
     const availableFalse = (SRC.match(/available: false/g) || []).length;
-    expect(availableTrue).toBe(6);
+    // 科目数は SUBJECT_IDS に合わせる（科目を足しても数字を直さなくて済む）
+    expect(availableTrue).toBe(SUBJECT_IDS.length);
     expect(availableFalse).toBe(0);
   });
 

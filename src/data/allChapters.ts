@@ -68,6 +68,7 @@ import { englishListeningData } from './englishListeningData';
 import { mathData } from './mathData';
 import { biologyBasicData } from './biologyBasicData';
 import { englishGrammarData } from './englishGrammarData';
+import { geographyData } from './geographyData';
 
 /** 章の最小共通形（教科をまたいで確実にあるのは id だけ） */
 interface ChapterLike {
@@ -100,7 +101,8 @@ export type SubjectKey =
   | 'english_listening'
   | 'english_grammar'
   | 'math'
-  | 'biology_basic';
+  | 'biology_basic'
+  | 'geography';
 
 interface SubjectEntry {
   id: SubjectKey;
@@ -135,6 +137,11 @@ export const SUBJECTS: readonly SubjectEntry[] = [
     id: 'english_grammar',
     label: '英文法',
     data: englishGrammarData as unknown as PartsLike,
+  },
+  {
+    id: 'geography',
+    label: '地理総合・地理探究',
+    data: geographyData as unknown as PartsLike,
   },
 ];
 

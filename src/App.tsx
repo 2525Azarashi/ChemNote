@@ -341,7 +341,7 @@ export default function App() {
     */
     if (isSubjectId(saved) && isSubjectEnabled(saved)) return saved;
     const fallback = fallbackSubjectId(
-      ['chemistry_basic', 'chemistry', 'english_listening', 'english_grammar', 'biology_basic'],
+      ['chemistry_basic', 'chemistry', 'english_listening', 'english_grammar', 'biology_basic', 'geography'],
     );
     return (fallback as SubjectId) ?? 'chemistry_basic';
   });
