@@ -216,6 +216,8 @@ describe('src の中にキー名の手書きが残っていない', () => {
     'src/App.tsx',
     'src/components/ChapterSelection.tsx',
     'src/components/Quiz.tsx',
+    // Quiz.tsx から切り出した「章の途中経過の保存/復元」も同じ見張りの対象にする
+    'src/utils/quizRunState.ts',
     'src/utils/progress.ts',
   ];
 

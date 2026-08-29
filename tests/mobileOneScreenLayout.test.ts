@@ -51,6 +51,8 @@ const SUBJECT = read('src/components/SubjectSelection.tsx');
 const MODE = read('src/components/ModeSelection.tsx');
 const MASCOT = read('src/components/DoorMascot.tsx');
 const QUIZ = read('src/components/Quiz.tsx');
+// 選択肢ボタン群は components/MultipleChoiceControl.tsx へ切り出した。
+const MC = read('src/components/MultipleChoiceControl.tsx');
 const EXPL = read('src/components/Explanation.tsx');
 
 /**
@@ -419,7 +421,7 @@ describe('L5: 図の有無で余った高さの受け取り手を入れ替える
   it('選択肢は伸ばしすぎない上限を持つ（auto-rows-fr の暴走防止）', () => {
     // auto-rows-fr は高さ上限が無いと 1 ボタンが画面の半分まで伸びる。
     expect(QUIZ).toContain('auto-rows-fr');
-    expect(QUIZ).toContain('max-h-[5rem]');
+    expect(MC).toContain('max-h-[5rem]');
   });
 
   it('★PC は従来のまま★（lg の 58/42 と h-full 分岐は不変）', () => {
@@ -498,30 +500,34 @@ describe('L6: 高さの取り分を「文字数に依存しない基準」で決
 
 describe('L6: 選択肢は CSS order で必ず操作説明より前に出す', () => {
   it('選択肢グリッドが order-1（スマホのみ）', () => {
-    expect(QUIZ).toContain('order-1 md:order-none');
+    expect(MC).toContain('order-1 md:order-none');
   });
 
   it('操作説明パネル（展開時）が order-2（スマホのみ）', () => {
-    expect(QUIZ).toMatch(/className="order-2 md:order-none flex flex-wrap items-center/u);
+    expect(MC).toMatch(/className="order-2 md:order-none flex flex-wrap items-center/u);
   });
 
   it('操作説明の折りたたみ表示（?ボタンだけ）も order-2', () => {
     // 展開・折りたたみのどちらの状態でも選択肢が先、という対称性が必要。
-    expect(QUIZ).toContain('className="order-2 md:order-none flex justify-end"');
+    expect(MC).toContain('className="order-2 md:order-none flex justify-end"');
   });
 
   it('order が効くように親が flex-col である', () => {
     // order は flex/grid コンテナの子にしか効かない。
     // 親が block のままだと上の order-1/2 は黙って無視される。
-    expect(QUIZ).toContain('<div className="flex w-full flex-col gap-2">');
+    expect(MC).toContain('<div className="flex w-full flex-col gap-2">');
   });
 
   it('★PC は従来の並び★（md 以上で order を解除している）', () => {
     // md:order-none が無い order-* はスマホ用の並びを PC に漏らす。
-    const orders = QUIZ.match(/(?<![\w:-])order-\d(?![\w-])/gu) ?? [];
+    // 選択肢UIを MultipleChoiceControl.tsx に切り出したので、
+    // 「order-* を書いてよい場所」は Quiz.tsx と切り出し先の両方になった。
+    // どちらかだけを見ると漏れを見逃すため、両方を連結して走査する。
+    const SOURCES = QUIZ + '\n' + MC;
+    const orders = SOURCES.match(/(?<![\w:-])order-\d(?![\w-])/gu) ?? [];
     expect(orders.length).toBeGreaterThan(0);
-    // Quiz.tsx 内の order-* はすべて md:order-none と同じ className に同居する。
-    const attrsWithOrder = (QUIZ.match(/className=(?:"[^"]*"|\{`[\s\S]*?`\})/gu) ?? [])
+    // order-* はすべて md:order-none と同じ className に同居する。
+    const attrsWithOrder = (SOURCES.match(/className=(?:"[^"]*"|\{`[\s\S]*?`\})/gu) ?? [])
       .filter(a => /(?<![\w:-])order-\d(?![\w-])/u.test(a));
     expect(attrsWithOrder.length).toBeGreaterThan(0);
     for (const attr of attrsWithOrder) {
@@ -533,24 +539,24 @@ describe('L6: 選択肢は CSS order で必ず操作説明より前に出す', (
 describe('L6: 操作説明はスマホだけ圧縮する（消さない）', () => {
   it('3段階（選ぶ→斜線→戻す）の説明はスマホでも短縮版が残る', () => {
     // ご要望(8)の「無くすのではなくて、小さくコンパクトにする」と同じ方針。
-    expect(QUIZ).toContain('<span className="md:hidden">選ぶ</span>');
-    expect(QUIZ).toContain('<span className="md:hidden">斜線</span>');
-    expect(QUIZ).toContain('<span className="md:hidden">戻す</span>');
+    expect(MC).toContain('<span className="md:hidden">選ぶ</span>');
+    expect(MC).toContain('<span className="md:hidden">斜線</span>');
+    expect(MC).toContain('<span className="md:hidden">戻す</span>');
   });
 
   it('★PC の文言は従来のまま★（hidden md:inline で温存されている）', () => {
-    expect(QUIZ).toContain('<span className="hidden md:inline">タップで選択</span>');
-    expect(QUIZ).toContain('<span className="hidden md:inline">もう一度で斜線</span>');
-    expect(QUIZ).toContain('<span className="hidden md:inline">さらにタップで元に戻る</span>');
+    expect(MC).toContain('<span className="hidden md:inline">タップで選択</span>');
+    expect(MC).toContain('<span className="hidden md:inline">もう一度で斜線</span>');
+    expect(MC).toContain('<span className="hidden md:inline">さらにタップで元に戻る</span>');
   });
 
   it('長押しの補足はスマホでは出さない（3段階はチップ見本で伝わる）', () => {
-    expect(QUIZ).toContain('<span className="hidden md:inline text-gray-400">／長押しでこの設問の斜線をまとめて消す</span>');
+    expect(MC).toContain('<span className="hidden md:inline text-gray-400">／長押しでこの設問の斜線をまとめて消す</span>');
   });
 
   it('パネルの余白もスマホだけ詰める（md: で元の余白に戻す）', () => {
-    expect(QUIZ).toContain('px-2 py-1 md:px-2.5 md:py-2');
-    expect(QUIZ).toContain('gap-x-1.5 md:gap-x-2');
+    expect(MC).toContain('px-2 py-1 md:px-2.5 md:py-2');
+    expect(MC).toContain('gap-x-1.5 md:gap-x-2');
   });
 });
 

@@ -46,6 +46,8 @@ function stripComments(src: string): string {
 }
 
 const QUIZ = stripComments(read('src/components/Quiz.tsx'));
+// 選択肢ボタン群は components/MultipleChoiceControl.tsx へ切り出した。
+const MC = stripComments(read('src/components/MultipleChoiceControl.tsx'));
 const EXPL = stripComments(read('src/components/Explanation.tsx'));
 
 describe('B-1 選択肢の文章の幅（スマホ）', () => {
@@ -79,20 +81,20 @@ describe('B-1 選択肢の文章の幅（スマホ）', () => {
 
   it('本文つき選択肢（英文）はスマホで左右余白を詰め、PC では元に戻す', () => {
     // px-4 → px-2.5、md 以上は md:px-4 で従来寸法に戻す。
-    expect(QUIZ).toContain("stacked ? 'px-2.5 md:px-4' : 'px-4'");
+    expect(MC).toContain("stacked ? 'px-2.5 md:px-4' : 'px-4'");
   });
 
   it('★本文つき選択肢では高さ上限 max-h-[5rem] を外す（④が切れる直接原因）★', () => {
     // 英文が3行になると約88px 必要なのに 80px で打ち切られ、
     // 4つ合計が枠を超えて ④ がはみ出していた。
-    expect(QUIZ).toContain("listeningMobileNoFigure && !stacked ? 'max-h-[5rem]' : ''");
+    expect(MC).toContain("listeningMobileNoFigure && !stacked ? 'max-h-[5rem]' : ''");
   });
 
   it('★マークだけの選択肢（①②③④）には高さ上限を残す★', () => {
     // ここを一緒に外すと4択が画面を縦に埋め尽くし、
     // 「空白が無駄」を別の形で作り直すことになる。
     // !stacked のときだけ上限が付く、という形であることを確認する。
-    expect(QUIZ).toMatch(/!stacked \? 'max-h-\[5rem\]'/);
+    expect(MC).toMatch(/!stacked \? 'max-h-\[5rem\]'/);
   });
 
   it('リスニングのスマホでは解答ペインの左右余白を詰める（PC は md:p-8 のまま）', () => {

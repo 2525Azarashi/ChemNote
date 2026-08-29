@@ -22,6 +22,12 @@ import { describe, it, expect } from 'vitest';
 
 const MATH_DATA = readFileSync('src/data/mathData.ts', 'utf8');
 const QUIZ = readFileSync('src/components/Quiz.tsx', 'utf8');
+// パレットを「この設問に出すか」の判定ルールは Quiz.tsx から
+// utils/quizPaletteRules.ts へ切り出した（React に依らない純関数）。
+const PALETTE_RULES = readFileSync('src/utils/quizPaletteRules.ts', 'utf8');
+// パレットの描画（SymbolPalette / ChemistryPalette / MathPalette）は
+// components/SymbolPalette.tsx へ切り出した。
+const PALETTE = readFileSync('src/components/SymbolPalette.tsx', 'utf8');
 const VIEWER = readFileSync('src/components/LearningViewer.tsx', 'utf8');
 const BARREL = readFileSync('src/data/learningContent/index.ts', 'utf8');
 
@@ -153,8 +159,8 @@ describe('まとめプリント（積分のパターン化）の配線', () => {
 
 describe('数学記号パレット（Quiz）', () => {
   it('requiresMathSymbols は opt-in（requiresMathPalette）でのみ有効', () => {
-    expect(QUIZ).toContain('function requiresMathSymbols');
-    const block = QUIZ.slice(QUIZ.indexOf('function requiresMathSymbols'));
+    expect(PALETTE_RULES).toContain('function requiresMathSymbols');
+    const block = PALETTE_RULES.slice(PALETTE_RULES.indexOf('function requiresMathSymbols'));
     const def = block.slice(0, block.indexOf('\n}'));
     expect(def).toContain("if (!question?.requiresMathPalette) return false");
     // 選択式には出さない
@@ -167,7 +173,7 @@ describe('数学記号パレット（Quiz）', () => {
     // （全ボタンの組版と挿入値を機械的に検証できるようにするため）。
     // 詳しい検証は tests/symbolPalettes.test.ts が担当し、ここでは
     // 「数学の必須記号が揃っているか」だけを見る。
-    expect(QUIZ).toContain('mathPaletteGroups');
+    expect(PALETTE).toContain('mathPaletteGroups');
     const { mathPaletteGroups } = await import('../src/data/symbolPalettes');
     const labels = mathPaletteGroups.flatMap((g) => g.items.map((i) => i.label));
 
@@ -183,11 +189,13 @@ describe('数学記号パレット（Quiz）', () => {
   });
 
   it('MathPalette は化学パレットと同じ挿入基盤（SymbolPalette）を共有する', () => {
-    expect(QUIZ).toContain('function SymbolPalette');
-    expect(QUIZ).toContain('function MathPalette');
-    expect(QUIZ).toContain('function ChemistryPalette');
-    expect(QUIZ).toContain('title="数学記号パレット"');
-    expect(QUIZ).toContain('title="化学記号パレット"');
+    expect(PALETTE).toContain('function SymbolPalette');
+    expect(PALETTE).toContain('function MathPalette');
+    expect(PALETTE).toContain('function ChemistryPalette');
+    expect(PALETTE).toContain('title="数学記号パレット"');
+    expect(PALETTE).toContain('title="化学記号パレット"');
+    // Quiz.tsx 側は「どの設問に出すか」を決めて置くだけ
+    expect(QUIZ).toContain("from './SymbolPalette'");
   });
 
   it('デスクトップ2箇所（記述・短答）＋スマホのカード内2箇所（記述・短答）の計4箇所に描画される', () => {
@@ -201,7 +209,7 @@ describe('数学記号パレット（Quiz）', () => {
 
   it('数学の設問では化学パレットの誤検知を抑止する', () => {
     // requiresChemicalSymbols は requiresMathPalette の設問を先に除外する
-    const block = QUIZ.slice(QUIZ.indexOf('function requiresChemicalSymbols'));
+    const block = PALETTE_RULES.slice(PALETTE_RULES.indexOf('function requiresChemicalSymbols'));
     const def = block.slice(0, block.indexOf('\n}'));
     expect(def).toContain('if (question?.requiresMathPalette) return false');
   });
