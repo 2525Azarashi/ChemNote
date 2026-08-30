@@ -178,7 +178,7 @@ describe('章カタログ（到達率の分母）', () => {
         },
         "english_listening": {
           "chapters": 4,
-          "problems": 50,
+          "problems": 58,
         },
         "geography": {
           "chapters": 5,

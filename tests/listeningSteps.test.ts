@@ -61,9 +61,23 @@ const ROOT = path.resolve(__dirname, '..');
 const read = (p: string) => fs.readFileSync(path.join(ROOT, p), 'utf-8');
 
 const QUIZ = read('src/components/Quiz.tsx');
+// 問題文ペイン（左58%／スマホ上）の JSX は components/ProblemPane.tsx へ切り出した。
+const PROBLEM = read('src/components/ProblemPane.tsx');
+// 解答ペイン（右42%／スマホ下）の JSX は components/AnswerPane.tsx へ切り出した。
+const ANSWER = read('src/components/AnswerPane.tsx');
 // 章の途中経過（ChapterRunState / perStep）の型は Quiz.tsx から
 // utils/quizRunState.ts へ切り出したので、型の見張りはそちらのソースで行う。
 const RUN_STATE = read('src/utils/quizRunState.ts');
+// 採点処理の本体は utils/quizScoring.ts へ切り出した（Quiz.tsx から137行）
+const SCORING = read('src/utils/quizScoring.ts');
+// 解答解説の画面（早期 return の JSX 50行）は components/ExplanationScreen.tsx へ
+const EXPL_SCREEN = read('src/components/ExplanationScreen.tsx');
+// リスニングの「問題の説明ページ」（早期 return の JSX 64行）は
+// components/ListeningBriefing.tsx へ
+const BRIEFING = read('src/components/ListeningBriefing.tsx');
+// 設問から作る「表示用の派生値」（useMemo 17個）は
+// hooks/useQuestionDerived.ts へ切り出した。
+const DERIVED = read('src/hooks/useQuestionDerived.ts');
 const EXPL = read('src/components/Explanation.tsx');
 const PLAYER = read('src/components/ListeningAudioPlayer.tsx');
 const FIGURE = read('src/components/QuestionFigure.tsx');
@@ -163,12 +177,12 @@ describe('D1: 1画面＝1問（問1で1つの進捗、問2で1つの進捗）', 
   });
 
   it('解答欄には「いま解いている問」だけを描画する', () => {
-    expect(QUIZ).toContain('const visibleGroupedSubQuestions');
+    expect(DERIVED).toContain('const visibleGroupedSubQuestions');
     // スマホはさらに「1ページ＝1解答欄」に絞った renderedAnswerGroups を描画する
     // （PC は renderedAnswerGroups = visibleGroupedSubQuestions のまま）。
-    expect(QUIZ).toContain('const renderedAnswerGroups');
-    expect(QUIZ).toContain('if (isDesktop) return visibleGroupedSubQuestions;');
-    expect(QUIZ).toContain('renderedAnswerGroups.map(');
+    expect(DERIVED).toContain('const renderedAnswerGroups');
+    expect(DERIVED).toContain('if (isDesktop) return visibleGroupedSubQuestions;');
+    expect(ANSWER).toContain('renderedAnswerGroups.map(');
   });
 });
 
@@ -188,8 +202,11 @@ describe('D1 回帰防止：進捗台帳のキーを壊さない', () => {
     // 「大問ID」としてそのまま読む。小問キーを混ぜると存在しない大問を
     // 解いたと数え、進捗が分母を超えてしまう。
     expect(RUN_STATE).toContain('perStep?: Record<string');
-    expect(QUIZ).toMatch(/perQuestion:\s*perStep\s*\?\s*run\.perQuestion/);
-    expect(QUIZ).toMatch(/perStep:\s*perStep\s*\?\s*\{\s*\.\.\.\(run\.perStep \|\| \{\}\)/);
+    // 採点の記録先の振り分けは utils/quizScoring.ts が持っている。
+    expect(SCORING).toMatch(/perQuestion:\s*perStep\s*\?\s*run\.perQuestion/);
+    expect(SCORING).toMatch(/perStep:\s*perStep\s*\?\s*\{\s*\.\.\.\(run\.perStep \|\| \{\}\)/);
+    // Quiz.tsx に古い採点コードが残って二重になっていないことも見る。
+    expect(QUIZ).not.toMatch(/perQuestion:\s*perStep\s*\?/);
   });
 });
 
@@ -212,12 +229,19 @@ describe('D1b: 解説も問ごと（先の問の正解が見えないように�
     expect(EXPL).toContain("tracks.filter((t: any) => t?.subId === focusSubQuestionId)");
   });
 
-  it('Quiz が解説へ「いま解いた問」を渡している', () => {
-    expect(QUIZ).toContain('focusSubQuestionId={perStep && activeStepSub ? activeStepSub.id : null}');
+  it('解説へ「いま解いた問」を渡している', () => {
+    // 解答解説の画面は components/ExplanationScreen.tsx へ切り出した。
+    expect(EXPL_SCREEN).toContain('focusSubQuestionId={perStep && activeStepSub ? activeStepSub.id : null}');
+    // Quiz.tsx に古い JSX が残って二重になっていないことも見る。
+    expect(QUIZ).not.toContain('focusSubQuestionId=');
+    // Quiz.tsx は「切り出した画面を1回だけ呼ぶ」形になっている。
+    expect(QUIZ).toContain('<ExplanationScreen');
+    expect((QUIZ.match(/<ExplanationScreen/g) || []).length).toBe(1);
   });
 
   it('解説のスコアも問ごとの記録（perStep）から引く', () => {
-    expect(QUIZ).toMatch(/run\.perStep\?\.\[stepScoreKey\(currentQuestion\.id, activeStepSub\.id\)\]/);
+    expect(EXPL_SCREEN).toMatch(/run\.perStep\?\.\[stepScoreKey\(currentQuestion\.id, activeStepSub\.id\)\]/);
+    expect(QUIZ).not.toMatch(/run\.perStep\?\.\[stepScoreKey\(/);
   });
 });
 
@@ -258,14 +282,14 @@ describe('D2（改）: 問題が上・解答が下（自然な読み順）', () 
     //   図がある大問（第1問B）だけ「問題文ペイン＝flex-1」。
     //   図が無い大問（第1問A・第3問・第2問）は flex-none にして、
     //   余った高さは解答ペイン側へ回す（下記の別テストで固定）。
-    expect(QUIZ).toContain(
+    expect(PROBLEM).toContain(
       "${listeningMobileSplit && !listeningMobileNoFigure ? 'flex-1 min-h-0' : 'flex-none'}"
     );
     // 高さの連鎖（親が min-h-0 の flex）を切らないこと。
     // これが無いと <img> の max-h-full が none 扱いになり図がはみ出す。
-    expect(QUIZ).toContain("listeningMobileSplit ? 'flex flex-col px-3 pt-2 pb-3' : 'p-4'");
+    expect(PROBLEM).toContain("listeningMobileSplit ? 'flex flex-col px-3 pt-2 pb-3' : 'p-4'");
     // リスニングだけに効かせる（化学・数学の 42dvh は触らない）。
-    expect(QUIZ).toContain('const listeningMobileSplit');
+    expect(DERIVED).toContain('const listeningMobileSplit');
     // 旧上限には戻さない。選択肢②以降が隠れていた 32vh / 30vh も同様。
     expect(QUIZ).not.toContain("'max-h-[40vh] h-auto shadow-md relative z-20'");
     expect(QUIZ).not.toContain('max-h-[32vh]');
@@ -275,18 +299,18 @@ describe('D2（改）: 問題が上・解答が下（自然な読み順）', () 
   it('リスニングの解答ペインは中身の高さだけ取り、下部ナビの直上に置く', () => {
     // ご指摘：「選択肢の下に空白合って無駄」
     // 原因は解答ペインの flex-1。リスニングだけ flex-none にして空白を消す。
-    expect(QUIZ).toContain("listeningMobileSplit ? 'flex-none pt-2' : 'flex-1 pt-4'");
+    expect(ANSWER).toContain("listeningMobileSplit ? 'flex-none pt-2' : 'flex-1 pt-4'");
     // 「もっと下にもってきて」＝下部ナビの高さ分だけ余白を残す
     //（余らせすぎない値。iOS のノッチは safe-area-inset で確保する）。
-    expect(QUIZ).toContain('pb-[calc(4.75rem+env(safe-area-inset-bottom))]');
+    expect(ANSWER).toContain('pb-[calc(4.75rem+env(safe-area-inset-bottom))]');
   });
 
   it('左右2画面の比は勝手に変えない（58% / 42% のまま）', () => {
     // ご指摘：「勝手に左右の２画面の比も変えないでよ」
     // 一度 46% / 54% に変えてしまったので、元の比に戻したことを固定する。
     // listeningUnified による幅の分岐が復活していないことも確認する。
-    expect(QUIZ).toContain('lg:w-[58%]');
-    expect(QUIZ).toContain('lg:w-[42%]');
+    expect(PROBLEM).toContain('lg:w-[58%]');
+    expect(ANSWER).toContain('lg:w-[42%]');
     expect(QUIZ).not.toContain('lg:w-[46%]');
     expect(QUIZ).not.toContain('lg:w-[54%]');
     expect(QUIZ).not.toMatch(/listeningUnified \? 'lg:w-\[/u);
@@ -297,7 +321,7 @@ describe('D2（改）: 問題が上・解答が下（自然な読み順）', () 
     // iOS Safari の vh はURLバーを含む最大高さ基準のため、50vh では実際の
     // 表示領域の半分を大きく超え、解答入力欄が下部固定ナビに隠れていた。
     // dvh（実際に見えている高さ）基準の 42% に変更し、解答欄を必ず見せる。
-    expect(QUIZ).toContain('max-h-[42dvh]');
+    expect(PROBLEM).toContain('max-h-[42dvh]');
     expect(QUIZ).not.toContain("'max-h-[50vh] h-auto shadow-md relative z-20'");
   });
 });
@@ -320,7 +344,7 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
   */
   it('リスニングの図は親からもらえた高さいっぱいに伸ばす（fill）', () => {
     // 図は「問題のところ（左側）」の現在の問ブロックにだけ置く。
-    expect(QUIZ).toContain('fill={listeningMobileSplit}');
+    expect(PROBLEM).toContain('fill={listeningMobileSplit}');
     /*
       ★上限を 22vh → 42vh に緩めた★
       ご要望「画像のある問題の画像が小さいので確認して。
@@ -331,7 +355,7 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
       大きさで出す必要がある。42vh（=354px、ほぼ横幅と同じ）まで
       緩めても、音源バーと選択肢は同時に見える（実測で確認）。
     */
-    expect(QUIZ).toContain("listeningMobileSplit ? '' : 'max-h-[42vh] md:max-h-[52vh] object-contain'");
+    expect(PROBLEM).toContain("listeningMobileSplit ? '' : 'max-h-[42vh] md:max-h-[52vh] object-contain'");
   });
 
   /*
@@ -344,11 +368,11 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
   */
   it('図がある大問は解答カードの余白を詰めて図に高さを譲る（タップ領域は減らさない）', () => {
     // 図がある大問（listeningMobileSplit かつ図あり）だけ p-5 → py-3.5。
-    expect(QUIZ).toContain("? 'px-3 py-3.5'");
+    expect(ANSWER).toContain("? 'px-3 py-3.5'");
     // 図の上余白も 12px → 8px。
-    expect(QUIZ).toContain("className={listeningMobileSplit ? 'mt-2' : 'mt-3'}");
+    expect(PROBLEM).toContain("className={listeningMobileSplit ? 'mt-2' : 'mt-3'}");
     // 選択肢ボタン自身の最小高さ（3rem = 48px）は据え置き。
-    expect(QUIZ).toContain('min-h-[3rem]');
+    expect(ANSWER).toContain('min-h-[3rem]');
   });
 
   it('fill は figure→button→img に高さの連鎖を通す（max-h-full を効かせる）', () => {
@@ -370,7 +394,7 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
     expect(QUIZ).not.toContain('src={sq.imageUrl}');
     expect(QUIZ).not.toContain('src={focusedSub.imageUrl}');
     // 図は activeStepSub（＝いま解いている問）に紐づけて左ペインに出す。
-    expect(QUIZ).toContain('src={activeStepSub.imageUrl}');
+    expect(PROBLEM).toContain('src={activeStepSub.imageUrl}');
   });
 
   /*
@@ -498,7 +522,7 @@ describe('D4: 「音源の聞き方」等の定型説明を問題文から落と
 
   it('Quiz の問題文描画に組み込まれている（書いただけで未配線を防ぐ）', () => {
     // 呼び出し順を間違えないよう buildListeningLeadText に閉じ込めた（E1 の修正）。
-    expect(QUIZ).toContain('buildListeningLeadText(currentQuestion.text)');
+    expect(BRIEFING).toContain('buildListeningLeadText(currentQuestion.text)');
   });
 });
 
@@ -543,13 +567,13 @@ describe('E1: 左ペインに問1〜問4がまとまって残る不具合の修�
   });
 
   it('左ペインにいま解いている問の見出しと「全N問中M問目」を出す', () => {
-    expect(QUIZ).toContain('stepLabelOf(activeStepSub, safeStepIndex)');
-    expect(QUIZ).toContain('splitQuestionLabel(activeStepSub.label');
-    expect(QUIZ).toContain('全{listeningSteps.length}問中');
+    expect(PROBLEM).toContain('stepLabelOf(activeStepSub, safeStepIndex)');
+    expect(PROBLEM).toContain('splitQuestionLabel(activeStepSub.label');
+    expect(PROBLEM).toContain('全{listeningSteps.length}問中');
   });
 
   it('リスニング以外（化学など）は従来どおり全文を出す', () => {
-    expect(QUIZ).toContain('cleanQuestionText(currentQuestion.text)');
+    expect(PROBLEM).toContain('cleanQuestionText(currentQuestion.text)');
   });
 
   it('リード文（回の説明）は解答中の画面には出さず、説明ページに移す', () => {
@@ -559,17 +583,21 @@ describe('E1: 左ペインに問1〜問4がまとまって残る不具合の修�
     //          作ってそこに書いて欲しい」
     // → リード文は showingBriefing（回を選んだ直後の説明ページ）でだけ出す。
     //   解答中の左ペインは 問Nの見出し・設問文・音源・図 だけになる。
-    const stepBlockAt = QUIZ.indexOf('stepLabelOf(activeStepSub, safeStepIndex)');
-    const leadAt = QUIZ.indexOf('buildListeningLeadText(currentQuestion.text)');
-    expect(stepBlockAt).toBeGreaterThan(-1);
-    expect(leadAt).toBeGreaterThan(-1);
-    // 説明ページ（早期 return）は解答画面の描画より前にある
-    expect(leadAt).toBeLessThan(stepBlockAt);
+    // 問題文ペインを ProblemPane.tsx へ切り出したので、
+    // 「前にある／後ろにある」ではなく「どのファイルに居るか」で固定する。
+    //   ・リード文（回の説明）… Quiz.tsx の説明ページ（早期 return）だけ
+    //   ・問Nの見出し        … ProblemPane.tsx（解答中の左ペイン）だけ
+    expect(PROBLEM).toContain('stepLabelOf(activeStepSub, safeStepIndex)');
+    expect(BRIEFING).toContain('buildListeningLeadText(currentQuestion.text)');
+    // 解答中の左ペインにリード文は無い（切り出し先に漏れていない）
+    expect(PROBLEM).not.toContain('buildListeningLeadText(');
+    // 説明ページの見出しは Quiz.tsx 側に残っている
+    expect(QUIZ).not.toContain('stepLabelOf(activeStepSub, safeStepIndex)');
     expect(QUIZ).toContain('showingBriefing');
     expect(QUIZ).toContain('setShowingBriefing(false)');
-    expect(QUIZ).toContain('問題をはじめる');
+    expect(BRIEFING).toContain('問題をはじめる');
     // 解答中の左ペインでは化学など以外にリード全文を出さない
-    expect(QUIZ).toContain('{!listeningUnified && (');
+    expect(ANSWER).toContain('{!listeningUnified && (');
   });
 });
 
@@ -578,8 +606,8 @@ describe('E1: 左ペインに問1〜問4がまとまって残る不具合の修�
 // =====================================================================
 describe('E2: 音源プレイヤーは問題文ペイン（左側）に置く', () => {
   it('いま解いている問（activeStepSub）の音源を左ペインに出す', () => {
-    expect(QUIZ).toContain('hasTrackFor(activeStepSub.id)');
-    expect(QUIZ).toContain('focusSubId={activeStepSub.id}');
+    expect(PROBLEM).toContain('hasTrackFor(activeStepSub.id)');
+    expect(PROBLEM).toContain('focusSubId={activeStepSub.id}');
   });
 
   it('解答カード・スマホ固定パネルには音源を置かない', () => {
@@ -601,7 +629,7 @@ describe('D5: 音源は問題ブロックに横帯で置く（押しやすさ）
   });
 
   it('Quiz が横帯モードで音源を描画する', () => {
-    expect(QUIZ).toContain('orientation="horizontal"');
+    expect(PROBLEM).toContain('orientation="horizontal"');
   });
 
   it('選択肢の左に細い縦列で差し込む旧レイアウトは廃止', () => {

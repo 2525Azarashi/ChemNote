@@ -390,15 +390,28 @@ describe('backfillLegacyProgress：既存ユーザーの履歴を取りこぼさ
 });
 
 describe('画面側の結線（進捗が実際に記録・表示されるか）', () => {
-  it('Quiz.tsx が採点直後に markProblemSolved を呼んでいる', () => {
-    const src = readFileSync('src/components/Quiz.tsx', 'utf8');
-    expect(src).toContain("from '../utils/progress'");
+  it('採点直後に markProblemSolved を呼んでいる', () => {
+    // 採点処理の本体は utils/quizScoring.ts へ切り出した（Quiz.tsx から137行）。
+    // よって「採点直後に台帳へ書いているか」はそちらのソースで見張る。
+    const src = readFileSync('src/utils/quizScoring.ts', 'utf8');
+    expect(src).toContain("from './progress'");
     expect(src).toMatch(/markProblemSolved\(\s*uid,\s*chapter\.id,\s*currentQuestion\.id,\s*boostedScore\s*\)/);
 
     // saveRun より後（＝採点が確定した後）に書いていること
     expect(src.indexOf('markProblemSolved(uid')).toBeGreaterThan(
       src.indexOf('saveRun(chapter.id, mode, nextRun)'),
     );
+
+    // ★二重実装になっていないことも見る★
+    // Quiz.tsx 側に採点コードが残っていると、切り出しが中途半端で
+    // 「どちらが動いているのか分からない」状態になる。
+    const quiz = readFileSync('src/components/Quiz.tsx', 'utf8');
+    expect(quiz).not.toContain('markProblemSolved(');
+    expect(quiz).not.toContain('saveRun(chapter.id, mode, nextRun)');
+    // Quiz.tsx は「切り出した採点関数を作って呼ぶ」だけになっている。
+    expect(quiz).toContain("from '../utils/quizScoring'");
+    expect(quiz).toContain('createScoreCurrentQuestion({');
+    expect((quiz.match(/createScoreCurrentQuestion\(/g) || []).length).toBe(1);
   });
 
   it('Home.tsx が大問ベースの分母（miniTest＋practiceProblems）を使っている', async () => {

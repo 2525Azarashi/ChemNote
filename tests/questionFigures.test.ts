@@ -157,11 +157,17 @@ describe('1章②A（物質の分離と精製）の図が復活している', ()
 
 describe('QuestionFigure 経由で描画されている（配線の確認）', () => {
   const quiz = readFileSync(resolve(__dirname, '../src/components/Quiz.tsx'), 'utf-8');
+  // 問題文ペイン（図の描画を含む）は components/ProblemPane.tsx へ切り出した。
+  const problem = readFileSync(resolve(__dirname, '../src/components/ProblemPane.tsx'), 'utf-8');
   const explanation = readFileSync(resolve(__dirname, '../src/components/Explanation.tsx'), 'utf-8');
 
   it('演習画面（Quiz）が imageUrl を QuestionFigure に渡している', () => {
-    expect(quiz).toContain('QuestionFigure');
-    expect(quiz).toContain('currentQuestion.imageUrl');
+    // 図の描画は問題文ペイン（ProblemPane.tsx）が持つ。
+    // Quiz.tsx は「何番の図か」の対応表を作って props で渡すだけ。
+    expect(problem).toContain('QuestionFigure');
+    expect(problem).toContain('currentQuestion.imageUrl');
+    expect(quiz).toContain('buildFigureNumberMap');
+    expect(quiz).toContain('figureNumberMap={figureNumberMap}');
   });
 
   it('解説画面（Explanation）も同じ仕組みで図を出している', () => {
