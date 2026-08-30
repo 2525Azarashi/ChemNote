@@ -651,35 +651,35 @@
         "speakers": "男性 / 女性",
         "figureType": "1枚の図の中に①〜④",
         "options": [
-          "ソファ上に旗、ダイニングテーブルの角に風船",
-          "ドア上に旗、ソファの角に風船",
-          "ソファ上に旗、ソファの角に風船",
-          "ダイニングテーブル上に旗、ソファの角に風船"
+          "ソファの上の壁（三角旗のところ）",
+          "ダイニングテーブルのそば",
+          "ドアの上（花のアーチのところ）",
+          "ソファの肘掛け"
         ],
         "turns": [
           {
             "who": "M",
-            "text": "Where should I hang this banner?"
+            "text": "I brought the balloons. Should I put them over the door?"
           },
           {
             "who": "W",
-            "text": "On the wall above the sofa."
+            "text": "The flower arch is already there. Leave the door alone."
           },
           {
             "who": "M",
-            "text": "And these balloons?"
+            "text": "Then next to the dining table?"
           },
           {
             "who": "W",
-            "text": "Tie them to the corners of the dining table, please."
+            "text": "Yes, that corner still looks empty. Put them there."
           }
         ],
-        "question": "Which arrangement matches their plan?",
-        "answerMark": "①",
-        "answerText": "ソファ上に旗、ダイニングテーブルの角に風船",
-        "explanation": "旗（above the sofa）と風船（corners of the dining table）の2つの場所の対応。2022年問8型（位置指定）。",
+        "question": "Where will the man put the balloons?",
+        "answerMark": "②",
+        "answerText": "ダイニングテーブルのそば",
+        "explanation": "over the door という提案を The flower arch is already there. Leave the door alone. で否定し、next to the dining table? → Yes, that corner still looks empty. で場所が確定する。③はすでに花のアーチがある場所なので風船は置かない。①は旗の場所、④は話題に出ていない。提案→否定→再提案→承認の流れを追う。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single drawing of a birthday party table with a cake and several children. FOUR circled numbers 1-4 placed INSIDE the picture pointing to four boys: 1 a boy wearing a party hat blowing candles, 2 a boy with a party hat just looking at the cake, 3 a boy WITHOUT a hat blowing out candles, 4 a boy without a hat holding a gift. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 1
+        "answerIndex": 2
       }
     ]
   },
@@ -761,46 +761,39 @@
       },
       {
         "q": 3,
-        "scene": "男女が飛行機の座席を選んでいる。",
+        "scene": "男女が飛行機の座席表を見ながら席を選んでいる。",
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "窓側の席",
-          "非常口横の席",
-          "真ん中の席",
-          "通路側の席"
+          "窓のすぐ隣の窓側の席",
+          "真ん中の席（足元はふつうの広さ）",
+          "真ん中の席（足元がやや広い）",
+          "非常口の扉の隣の席（足元が最も広い）"
         ],
         "turns": [
           {
             "who": "M",
-            "text": "There are window seats and aisle seats left."
+            "text": "We can still change our seats. Do you want the window?"
           },
           {
             "who": "W",
-            "text": "I want to look outside, but I also don't want to disturb others when I stand up."
+            "text": "I'd like to see outside, but my legs really need more room."
           },
           {
             "who": "M",
-            "text": "So which one?"
+            "text": "Then the exit row has the most legroom on this plane."
           },
           {
             "who": "W",
-            "text": "Window, please. I'll try not to stand up much."
+            "text": "That settles it. I'll take the seat next to the exit door."
           }
         ],
         "question": "Which seat will the woman choose?",
-        "answerMark": "①",
-        "answerText": "窓側の席",
-        "explanation": "迷いながらも Window, please. で最終確定。前半の逡巡で誤答を誘う。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an airplane cabin cross-section with three seats in a row and one seat circled. Panel 1: the WINDOW seat is circled. Panel 2: an emergency exit row with the seat next to the exit door circled. Panel 3: the MIDDLE seat is circled. Panel 4: the AISLE seat is circled.",
-        "answerIndex": 1,
-        "shuffled": true,
-        "shufflePerm": [
-          0,
-          3,
-          2,
-          1
-        ]
+        "answerMark": "④",
+        "answerText": "非常口の扉の隣の席（足元が最も広い）",
+        "explanation": "window に惹かれつつ my legs really need more room で条件が増え、the exit row has the most legroom → the seat next to the exit door で確定。①は景色の条件は満たすが足元の条件を満たさない。②③はどちらも真ん中の席で、足元の広さが違うだけなので most legroom には届かない。前半の Do you want the window? に引かれて①を選ばないこと。",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows an airplane cabin cross-section with three seats in a row and one seat circled. Panel 1: the WINDOW seat is circled. Panel 2: the AISLE seat is circled. Panel 3: the MIDDLE seat is circled. Panel 4: an emergency exit row with the seat next to the exit door circled.",
+        "answerIndex": 4
       }
     ]
   },
@@ -882,46 +875,39 @@
       },
       {
         "q": 3,
-        "scene": "男女が引越しの荷物の整理をしている。",
+        "scene": "男女が引越しの荷物をどの部屋へ運ぶか相談している。",
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "本→台所、服→クローゼット、台所用品→寝室",
-          "本→寝室、服→台所、台所用品→クローゼット",
-          "本→クローゼット、服→寝室、台所用品→台所",
-          "本→寝室、服→クローゼット、台所用品→台所"
+          "本→寝室、服→クローゼット、台所用品→台所（1箱1部屋）",
+          "同じ3組だが、矢印が斜めに描かれている図",
+          "本→寝室、服はクローゼットと台所の2部屋に分ける",
+          "服だけを寝室・クローゼット・台所の3部屋に分ける"
         ],
         "turns": [
           {
             "who": "M",
-            "text": "This box is books, and this is clothes. Where should they go?"
+            "text": "Three boxes left: books, clothes, and kitchen things."
           },
           {
             "who": "W",
-            "text": "Books in the bedroom, clothes in the closet."
+            "text": "Books go to the bedroom, and the kitchen things stay in the kitchen."
           },
           {
             "who": "M",
-            "text": "And the kitchen items?"
+            "text": "Should I split the clothes between the closet and the kitchen?"
           },
           {
             "who": "W",
-            "text": "Leave those in the kitchen, please."
+            "text": "No, all the clothes go in the closet. One box, one room."
           }
         ],
-        "question": "Which arrangement is correct?",
-        "answerMark": "④",
-        "answerText": "本→寝室、服→クローゼット、台所用品→台所",
-        "explanation": "3対応（本／服／台所用品）を正確に。1つでも入れ替えると不正解になる典型型。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a house floor plan with three rooms labeled 'BEDROOM', 'CLOSET', 'KITCHEN' and three boxes labeled 'BOOKS', 'CLOTHES', 'KITCHEN'. Panel 1: Books to Kitchen, Clothes to Closet, Kitchen to Bedroom. Panel 2: Books to Bedroom, Clothes to Kitchen, Kitchen to Closet. Panel 3: Books to Closet, Clothes to Bedroom, Kitchen to Kitchen. Panel 4: Books arrow to Bedroom, Clothes arrow to Closet, Kitchen box arrow to Kitchen.",
-        "answerIndex": 4,
-        "shuffled": true,
-        "shufflePerm": [
-          3,
-          2,
-          1,
-          0
-        ]
+        "question": "Which arrangement matches the woman's instructions?",
+        "answerMark": "①",
+        "answerText": "本→寝室、服→クローゼット、台所用品→台所（1箱1部屋）",
+        "explanation": "Should I split the clothes …? に対する No, all the clothes go in the closet. One box, one room. が決め手。③は服を2部屋、④は服を3部屋に分けており、split を否定した内容に反する。②は同じ対応を斜めの矢印で描いただけなので、One box, one room を最も素直に表した図を選ぶ。",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a house floor plan with three rooms labeled 'BEDROOM', 'CLOSET', 'KITCHEN' and three boxes labeled 'BOOKS', 'CLOTHES', 'KITCHEN'. Panel 1: Books arrow to Bedroom, Clothes arrow to Closet, Kitchen box arrow to Kitchen. Panel 2: Books to Closet, Clothes to Bedroom, Kitchen to Kitchen. Panel 3: Books to Bedroom, Clothes to Kitchen, Kitchen to Closet. Panel 4: Books to Kitchen, Clothes to Closet, Kitchen to Bedroom.",
+        "answerIndex": 1
       }
     ]
   },
@@ -1159,46 +1145,39 @@
     "questions": [
       {
         "q": 1,
-        "scene": "男女がホームパーティーの飲み物を用意している。",
+        "scene": "男女がホームパーティーの飲み物を数えている。",
         "speakers": "女性 / 男性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "水6本のみ",
-          "ジュース6本のみ",
-          "ジュース6本＋水6本＝12本",
-          "ジュース10本＋水10本＝20本"
+          "ジュース6本だけ",
+          "水6本だけ",
+          "ジュース6本＋水7本＝13本",
+          "ジュース12本＋水12本＝24本"
         ],
         "turns": [
           {
             "who": "W",
-            "text": "How many bottles of juice should I get?"
+            "text": "I bought six bottles of juice. Is that enough?"
           },
           {
             "who": "M",
-            "text": "Ten guests, so let's say six bottles."
+            "text": "For ten guests, yes. But we need water too."
           },
           {
             "who": "W",
-            "text": "And water?"
+            "text": "The same six, then?"
           },
           {
             "who": "M",
-            "text": "Same number as juice."
+            "text": "Make it one more than the juice, just in case."
           }
         ],
-        "question": "How many bottles in total?",
+        "question": "How many bottles are there in total?",
         "answerMark": "③",
-        "answerText": "ジュース6本＋水6本＝12本",
-        "explanation": "Same number as juice の代名詞的な数量表現。合計を求める計算型。ゲスト数10はダミー。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows bottles on a counter with clear labels. Panel 1: six water bottles only. Panel 2: six juice bottles only. Panel 3: six juice bottles plus six water bottles, total 12. Panel 4: ten juice bottles plus ten water bottles, total 20.",
-        "answerIndex": 3,
-        "shuffled": true,
-        "shufflePerm": [
-          1,
-          0,
-          2,
-          3
-        ]
+        "answerText": "ジュース6本＋水7本＝13本",
+        "explanation": "Make it one more than the juice が決め手で、水は 6+1=7 本。合計は 6+7=13 本になる。The same six, then? をそのまま受け取ると12 本と数え違える。①②は片方の飲み物しか無く、④は本数が倍以上で合わない。ゲスト数 ten はダミー。",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows bottles on a counter with clear labels. Panel 1: six juice bottles only. Panel 2: six water bottles only. Panel 3: six juice bottles plus six water bottles, total 12. Panel 4: ten juice bottles plus ten water bottles, total 20.",
+        "answerIndex": 3
       },
       {
         "q": 2,
@@ -1394,39 +1373,39 @@
     "questions": [
       {
         "q": 1,
-        "scene": "男女が地図を見ながらキャンプ場までの道を確認している。",
+        "scene": "男女が地図を見ながらキャンプ場での待ち合わせ場所を決めている。",
         "speakers": "男性 / 女性",
         "figureType": "1枚の図の中に①〜④",
         "options": [
-          "最初の交差点で左折→橋を渡って直進→キャンプ場",
-          "最初の交差点で左折→橋の手前で右折→湖を通過→キャンプ場",
-          "最初の交差点で右折→湖を通過→橋を渡る→キャンプ場",
-          "最初の交差点で左折→湖を通過→橋を渡る→キャンプ場"
+          "地図の左上にある家",
+          "左側の池のそば",
+          "橋を渡った先、キャンプ場に入る道",
+          "左下の行き止まりの道"
         ],
         "turns": [
           {
             "who": "M",
-            "text": "At the first crossroads, turn left."
+            "text": "I'll drive from the house. You're coming on foot, right?"
           },
           {
             "who": "W",
-            "text": "Then straight until the bridge?"
+            "text": "Yes. Shall we meet by the lake on the way?"
           },
           {
             "who": "M",
-            "text": "No, turn right before the bridge and go past the lake."
+            "text": "The road there is a dead end for cars. Let me pick you up after the bridge."
           },
           {
             "who": "W",
-            "text": "Got it. The campsite is after the lake, right?"
+            "text": "All right, right where the road turns into the campsite."
           }
         ],
-        "question": "Which route matches?",
-        "answerMark": "②",
-        "answerText": "最初の交差点で左折→橋の手前で右折→湖を通過→キャンプ場",
-        "explanation": "複数の分岐（left→before the bridge→right→past the lake）を順番通りに追う道順型。2025年問11のルート型。",
+        "question": "Where will they meet?",
+        "answerMark": "③",
+        "answerText": "橋を渡った先、キャンプ場に入る道",
+        "explanation": "by the lake（②）という提案を The road there is a dead end for cars で否定し、after the bridge → right where the road turns into the campsite で橋の先に確定する。①は男性の出発地であって待ち合わせ場所ではなく、④は行き止まりなので車で迎えに行けない。提案→否定→言い換えの3手を追う。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single top-down map showing roads, a crossroads, a bridge, a lake, and a campsite. FOUR different walking routes drawn as lines with arrows, each labeled with a circled number 1-4 INSIDE the map: route 1 turns left then crosses the bridge straight, route 2 turns left then right before the bridge passing the lake, route 3 turns right passing the lake then the bridge, route 4 turns left passing the lake then crossing the bridge. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 2
+        "answerIndex": 3
       },
       {
         "q": 2,
@@ -1740,9 +1719,9 @@
         "speakers": "女性(店員) / 男性(客)",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "桃のケーキ",
-          "チョコレートケーキ",
           "苺のショートケーキ",
+          "チョコレートケーキ",
+          "桃のケーキ",
           "チーズケーキ"
         ],
         "turns": [
@@ -1764,16 +1743,16 @@
           }
         ],
         "question": "Which cake will the man buy?",
-        "answerMark": "①",
+        "answerMark": "③",
         "answerText": "桃のケーキ",
         "explanation": "「フルーツは好きだが苺はアレルギー」の情報から桃を新たに提案。3択→アレルギー→新提案の流 れ。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a whole cake on a plate with fruit/topping identifiable. Panel 1: cake topped with peach slices. Panel 2: chocolate cake with chocolate curls on top. Panel 3: strawberry shortcake with whole strawberries on top. Panel 4: cheesecake (plain, smooth top).",
-        "answerIndex": 1,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a whole cake on a plate with fruit/topping identifiable. Panel 1: strawberry shortcake with whole strawberries on top. Panel 2: chocolate cake with chocolate curls on top. Panel 3: cake topped with peach slices. Panel 4: cheesecake (plain, smooth top).",
+        "answerIndex": 3,
         "shuffled": true,
         "shufflePerm": [
-          3,
-          0,
           1,
+          0,
+          3,
           2
         ]
       },
@@ -1783,42 +1762,39 @@
         "speakers": "男性 / 女性",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "B列 上から3番目 左側",
-          "A列 上から3番目 右側",
-          "B列 上から2番目 左側",
-          "B列 上から3番目 右側"
+          "B列 上から2段目",
+          "B列 上から3段目",
+          "C列 上から3段目",
+          "A列 上から3段目"
         ],
         "turns": [
           {
             "who": "M",
-            "text": "My shoe locker is B-15."
+            "text": "Could you put my gym bag in my shoe locker?"
           },
           {
             "who": "W",
-            "text": "So it's in row B, right? Second from the top?"
+            "text": "Sure. It's in row B, second from the top, isn't it?"
           },
           {
             "who": "M",
-            "text": "No, third from the top. And on the right side."
+            "text": "It used to be, but they moved me to row C."
           },
           {
             "who": "W",
-            "text": "OK, I'll bring your gym bag there."
+            "text": "Row C. Which one?"
+          },
+          {
+            "who": "M",
+            "text": "Third from the top."
           }
         ],
         "question": "Which locker is the man's?",
-        "answerMark": "④",
-        "answerText": "B列 上から3番目 右側",
-        "explanation": "列（B）＋段（third from top）＋左右（right side）の3座標。訂正あり（2番目→3番目）。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a grid of shoe lockers labeled A, B, C columns and numbered rows, with one specific locker highlighted. Panel 1: column B, third row from top, left-side locker highlighted. Panel 2: column A, third row from top, right-side locker highlighted. Panel 3: column B, second row from top, left-side locker highlighted. Panel 4: column B, third row from top, right-side locker highlighted.",
-        "answerIndex": 4,
-        "shuffled": true,
-        "shufflePerm": [
-          1,
-          3,
-          0,
-          2
-        ]
+        "answerMark": "③",
+        "answerText": "C列 上から3段目",
+        "explanation": "女性の思い込み（row B, second from the top）を they moved me to row C が訂正し、Third from the top で段が確定する。列の訂正と段の指定を2段階で追う。①は訂正される前の位置、②は段だけ合っていて列が古い、④は列が違う。",
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a grid of shoe lockers labeled A, B, C columns and numbered rows, with one specific locker highlighted. Panel 1: column B, second row from top, left-side locker highlighted. Panel 2: column B, third row from top, left-side locker highlighted. Panel 3: column B, third row from top, right-side locker highlighted. Panel 4: column A, third row from top, right-side locker highlighted.",
+        "answerIndex": 3
       },
       {
         "q": 3,
@@ -1826,10 +1802,10 @@
         "speakers": "女性(客) / 男性(店員)",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "軽量・ヘッド小さめ",
           "重量級・ヘッド大きめ",
-          "軽量・ヘッド大きめ",
-          "重量級・ヘッド小さめ"
+          "重量級・ヘッド小さめ",
+          "軽量・ヘッド小さめ",
+          "軽量・ヘッド大きめ"
         ],
         "turns": [
           {
@@ -1850,17 +1826,17 @@
           }
         ],
         "question": "Which racket will the woman likely choose (based on the recommended features)?",
-        "answerMark": "③",
+        "answerMark": "④",
         "answerText": "軽量・ヘッド大きめ",
         "explanation": "色は「どれでもよい」ため無関係。lightweight + larger head の2条件で決定。属性の掛け合わせ。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a tennis racket with a small label for weight and head size. Panel 1: racket with a SMALL head, label 'LIGHT'. Panel 2: racket with a large head, label 'HEAVY'. Panel 3: racket with a LARGE oval head, label 'LIGHT'. Panel 4: racket with a small head, label 'HEAVY'.",
-        "answerIndex": 3,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a tennis racket with a small label for weight and head size. Panel 1: racket with a large head, label 'HEAVY'. Panel 2: racket with a small head, label 'HEAVY'. Panel 3: racket with a SMALL head, label 'LIGHT'. Panel 4: racket with a LARGE oval head, label 'LIGHT'.",
+        "answerIndex": 4,
         "shuffled": true,
         "shufflePerm": [
-          2,
           1,
-          0,
-          3
+          3,
+          2,
+          0
         ]
       }
     ]
