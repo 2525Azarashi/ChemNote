@@ -34,6 +34,25 @@ const MC = readFileSync(resolve(__dirname, '../src/components/MultipleChoiceCont
 // 消去状態そのものと長押しのしくみは hooks/useElimination.ts へまとめたので、
 // 「state の持ち方・保存・タイマー」に関する検査はこちらを読む。
 const ELIM = readFileSync(resolve(__dirname, '../src/hooks/useElimination.ts'), 'utf-8');
+// 問題文ペイン（左58%／スマホ上）の JSX は components/ProblemPane.tsx へ切り出した。
+const PROBLEM = readFileSync(resolve(__dirname, '../src/components/ProblemPane.tsx'), 'utf-8');
+// 解答ペイン（右42%／スマホ下）の JSX は components/AnswerPane.tsx へ切り出した。
+const ANSWER = readFileSync(resolve(__dirname, '../src/components/AnswerPane.tsx'), 'utf-8');
+// ヘッダー帯（単元名・スコア・順位・進捗）は components/QuizHeader.tsx へ切り出した。
+const HEADER = readFileSync(resolve(__dirname, '../src/components/QuizHeader.tsx'), 'utf-8');
+// スマホ下部の固定バー2本（ナビ／入力補助）は
+// components/MobileFloatingBar.tsx へ切り出した。
+const FLOAT = readFileSync(resolve(__dirname, '../src/components/MobileFloatingBar.tsx'), 'utf-8');
+// 設問から作る「表示用の派生値」（useMemo 17個）は
+// hooks/useQuestionDerived.ts へ切り出した。
+const DERIVED = readFileSync(resolve(__dirname, '../src/hooks/useQuestionDerived.ts'), 'utf-8');
+// 採点処理の本体（137行）は utils/quizScoring.ts へ
+const SCORING = readFileSync(resolve(__dirname, '../src/utils/quizScoring.ts'), 'utf-8');
+// 解答解説の画面（早期 return の JSX 50行）は components/ExplanationScreen.tsx へ
+const EXPL_SCREEN = readFileSync(resolve(__dirname, '../src/components/ExplanationScreen.tsx'), 'utf-8');
+// リスニングの「問題の説明ページ」（早期 return の JSX 64行）は
+// components/ListeningBriefing.tsx へ
+const BRIEFING = readFileSync(resolve(__dirname, '../src/components/ListeningBriefing.tsx'), 'utf-8');
 const CSS = readFileSync(resolve(__dirname, '../src/index.css'), 'utf-8');
 
 describe('前提: 消去の段階は1つで、循環は「未選択→選択→斜線→未選択」', () => {
@@ -52,7 +71,9 @@ describe('前提: 消去の段階は1つで、循環は「未選択→選択→�
 describe('改善1: 状態ごとの見た目を強くする（気づかれない・見分けにくいへの対応）', () => {
   it('★消去済みは「取り消し線＋グレー」だけでなく、破線の枠でも区別される', () => {
     // 色/透明度に依存せず、枠線の形状という別の手がかりを足している。
-    expect(QUIZ).toContain('border-dashed');
+    // 実体は選択肢ボタン（MultipleChoiceControl.tsx）側。以前は Quiz.tsx を見ていたが、
+    // 問題文ペインの区切り線にも border-dashed があり、それに当たって通ってしまっていた。
+    expect(MC).toContain('border-dashed');
   });
 
   it('★消去済みには✕バッジが重なり、色が見分けにくくても形で分かる', () => {
@@ -176,6 +197,179 @@ describe('回帰: 既存の設計を壊していない', () => {
     expect(ELIM).toContain('const [eliminated, setEliminated] = useState<Record<string, string[]>>');
     expect(QUIZ).not.toContain('const [eliminated, setEliminated]');
     expect(MC).not.toContain('useState');
+  });
+
+  it('★問題文ペインの実体は ProblemPane.tsx にあり、Quiz.tsx は渡すだけ', () => {
+    // 上と同じ考え方の逆方向ガード。切り出したのに Quiz.tsx 側に
+    // 同じ JSX が残っている（＝コピーになっている）ことを検知する。
+    expect(QUIZ).toContain("from './ProblemPane'");
+    expect(QUIZ).toContain('<ProblemPane');
+    // ペインの幅指定・高さ上限は切り出し先だけにある
+    expect(PROBLEM).toContain('lg:w-[58%]');
+    expect(QUIZ).not.toContain('lg:w-[58%]');
+    expect(PROBLEM).toContain("'max-h-[50%] h-auto shadow-md relative z-20'");
+    expect(QUIZ).not.toContain("'max-h-[50%] h-auto shadow-md relative z-20'");
+    // 切り出し先は状態を持たない（見た目だけを預かる）
+    expect(PROBLEM).not.toContain('useState');
+  });
+
+  it('★解答ペインの実体は AnswerPane.tsx にあり、Quiz.tsx は渡すだけ', () => {
+    expect(QUIZ).toContain("from './AnswerPane'");
+    expect(QUIZ).toContain('<AnswerPane');
+    // 幅・余白の指定は切り出し先だけにある（コピーになっていない）
+    expect(ANSWER).toContain('lg:w-[42%] min-h-0 overflow-y-auto');
+    expect(QUIZ).not.toContain('lg:w-[42%]');
+    // ページャーの矢印ガードも1箇所だけ
+    expect(ANSWER).toContain('!isDesktop && mobileAnswerSubs.length > 1 && (');
+    expect(QUIZ).not.toContain('!isDesktop && mobileAnswerSubs.length > 1 && (');
+    // 切り出し先は状態を持たない（見た目だけを預かる）
+    expect(ANSWER).not.toContain('useState');
+  });
+
+  it('★2つのペインは Quiz.tsx の JSX から重複なく1回ずつ呼ばれている', () => {
+    // 「切り出したのに古い JSX も残っている」を数で弾く。
+    expect((QUIZ.match(/<ProblemPane/g) || []).length).toBe(1);
+    expect((QUIZ.match(/<AnswerPane/g) || []).length).toBe(1);
+    // 記号パレット・図・音源の import は各ペインへ移り、Quiz.tsx には無い
+    expect(QUIZ).not.toContain("from './SymbolPalette'");
+    expect(QUIZ).not.toContain("from './QuestionFigure'");
+    expect(QUIZ).not.toContain("from './ListeningAudioPlayer'");
+  });
+
+  it('★ヘッダー帯の実体は QuizHeader.tsx にあり、Quiz.tsx は渡すだけ', () => {
+    expect(QUIZ).toContain("from './QuizHeader'");
+    expect(QUIZ).toContain('<QuizHeader');
+    // ★実測で分かった落とし穴★
+    // ヘッダーの見出しは chapter.title でなく chapter.abstractTitle を使っている。
+    // 形式的に chapterTitle として渡してしまうと、帯の文字が静かに変わる。
+    expect(QUIZ).toContain('chapterAbstractTitle={chapter.abstractTitle}');
+    expect(HEADER).toContain('chapterAbstractTitle');
+    // 順位バッジとスコア周りの実体はヘッダー側へ移っている
+    expect(HEADER).toContain('<LiveStandingPill');
+    expect(QUIZ).not.toContain('<LiveStandingPill');
+    // PC 向けのスコア枠の寸法もヘッダー側
+    expect(HEADER).toContain('md:px-4');
+    expect(QUIZ).not.toContain('md:px-4');
+    // 帯は表示だけ。state を自分で持ち始めたら切り出しの意味が失われる。
+    expect(HEADER).not.toContain('useState');
+  });
+
+  it('★スマホ下部の固定バー2本の実体は MobileFloatingBar.tsx にある', () => {
+    expect(QUIZ).toContain("from './MobileFloatingBar'");
+    expect(QUIZ).toContain('<MobileFloatingBar');
+    // ★消してはいけないもの★
+    // 「(ア) 前へ 1/9 次へ 完了」バーは「必要」と明言された。
+    expect(FLOAT).toContain('floating-answer-bar');
+    expect(FLOAT).toContain('{focusedIndex + 1}/{inputNavSubs.length}');
+    expect(QUIZ).not.toContain('floating-answer-bar');
+    expect(FLOAT).not.toContain('useState');
+  });
+
+  it('★ヘッダー帯と固定バーは Quiz.tsx から重複なく1回ずつ呼ばれている', () => {
+    expect((QUIZ.match(/<QuizHeader/g) || []).length).toBe(1);
+    expect((QUIZ.match(/<MobileFloatingBar/g) || []).length).toBe(1);
+  });
+
+  it('★表示用の派生値は useQuestionDerived フックが持ち、Quiz.tsx は呼ぶだけ', () => {
+    expect(QUIZ).toContain("from '../hooks/useQuestionDerived'");
+    expect(QUIZ).toContain('useQuestionDerived({');
+    // ★ここに state と副作用を持ち込まないこと★
+    // このフックは useMemo / useCallback だけの「純粋な派生値」の置き場。
+    // useState や useEffect を追加すると、問の切り替えのときに
+    // リセットされる順番が変わって、前の問の値を読み違える形で壊れる。
+    //
+    // ★コメントを除いて検査する理由★
+    // このフックのヘッダーコメント自体に「useState を置かない」と
+    // 書いてあるため、生テキストのままだと文章に引っかかって
+    // 実装とは無関係に落ちる。実装だけを見たいのでコメントを外す。
+    const derivedCode = DERIVED.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^[ \t]*\/\/.*$/gm, '');
+    expect(derivedCode).not.toContain('useState');
+    expect(derivedCode).not.toContain('useEffect');
+    expect(derivedCode).not.toContain('useLayoutEffect');
+    // 中身は useMemo / useCallback だけ
+    expect(derivedCode).toContain('useMemo');
+    expect(derivedCode).toContain('useCallback');
+  });
+
+  it('★フックの呼び出しは1回だけ（順番が崩れないことの保証）', () => {
+    // React はフックを「呼ばれた順番」で対応付ける。
+    // 条件分岐の中やループの中で呼んだり、2回呼んだりすると壊れる。
+    expect((QUIZ.match(/useQuestionDerived\(/g) || []).length).toBe(1);
+  });
+
+  it('★採点処理の実体は utils/quizScoring.ts にあり、Quiz.tsx は呼ぶだけ', () => {
+    expect(QUIZ).toContain("from '../utils/quizScoring'");
+    expect(QUIZ).toContain('createScoreCurrentQuestion({');
+    // 呼び出しは1回だけ（採点関数が2つできると二重採点の元になる）
+    expect((QUIZ.match(/createScoreCurrentQuestion\(/g) || []).length).toBe(1);
+
+    // ★変えてはいけない設計がフック側に残っていること★
+    // 1問ずつモードの記録は perQuestion に入れず perStep に分ける。
+    expect(SCORING).toMatch(/perQuestion:\s*perStep\s*\?\s*run\.perQuestion/);
+    // 学習台帳への追記は採点確定（saveRun）より後。
+    expect(SCORING.indexOf('markProblemSolved(uid')).toBeGreaterThan(
+      SCORING.indexOf('saveRun(chapter.id, mode, nextRun)'),
+    );
+    // 二重採点ガードも一緒に移っていること。
+    expect(SCORING).toContain('lastScoredQuestionRef.current === scoringKey');
+
+    // Quiz.tsx 側に採点コードが残っていない（＝二重実装になっていない）
+    expect(QUIZ).not.toContain('markProblemSolved(');
+    expect(QUIZ).not.toContain('captureWrongAnswers(');
+    expect(QUIZ).not.toContain('scoreProblem(');
+
+    // ★ここにフックを持ち込まないこと★
+    // 採点は「押した瞬間に走るただの関数」。フックを入れると
+    // 呼び出し順の制約が生まれ、切り出しの安全性が崩れる。
+    const scoringCode = SCORING.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^[ \t]*\/\/.*$/gm, '');
+    expect(scoringCode).not.toContain('useState');
+    expect(scoringCode).not.toContain('useEffect');
+    expect(scoringCode).not.toContain('useMemo');
+  });
+
+  it('★解説画面とリスニング説明ページの実体は別ファイルにあり、Quiz.tsx は渡すだけ', () => {
+    expect(QUIZ).toContain("from './ExplanationScreen'");
+    expect(QUIZ).toContain("from './ListeningBriefing'");
+    expect((QUIZ.match(/<ExplanationScreen/g) || []).length).toBe(1);
+    expect((QUIZ.match(/<ListeningBriefing/g) || []).length).toBe(1);
+
+    // ★実測で分かった落とし穴★ 見出しは chapter.title でなく chapter.abstractTitle
+    expect(QUIZ).toContain('chapterAbstractTitle={chapter.abstractTitle}');
+    expect(BRIEFING).toContain('chapterAbstractTitle');
+
+    // ★消してはいけないもの★
+    // 実況バナーは「採点した瞬間」に順位が動くので解説画面側にも必要。
+    expect(EXPL_SCREEN).toContain('<OvertakeBanner');
+    // 「問題をはじめる」ボタン（説明ページ→問1 への導線）
+    expect(BRIEFING).toContain('問題をはじめる');
+    expect(BRIEFING).toContain('この回の説明');
+
+    // Quiz.tsx に古い JSX が残っていない
+    expect(QUIZ).not.toContain('問題をはじめる');
+    expect(QUIZ).not.toContain('この回の説明');
+    expect(QUIZ).not.toContain('<Explanation ');
+
+    // どちらもフックを持たない（＝呼び出し順に影響しない）
+    for (const [name, code] of [['ExplanationScreen', EXPL_SCREEN], ['ListeningBriefing', BRIEFING]] as const) {
+      const stripped = code.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^[ \t]*\/\/.*$/gm, '');
+      expect(stripped, `${name} は state を持たない`).not.toContain('useState');
+      expect(stripped, `${name} は副作用を持たない`).not.toContain('useEffect');
+    }
+  });
+
+  it('★派生値の計算は Quiz.tsx に二重で残っていない', () => {
+    // 「切り出したのに古い計算も残っている」を弾く。
+    // 実測（grep）で、これらの宣言が Quiz.tsx から消えていることを確認済み。
+    for (const decl of [
+      'const groupedSubQuestions = useMemo',
+      'const mobileAnswerSubs = useMemo',
+      'const questionNeedsMathPalette = useMemo',
+      'const listeningOptionTexts = useMemo',
+      'const hasTrackFor = useCallback',
+    ]) {
+      expect(DERIVED, `${decl} はフック側にある`).toContain(decl);
+      expect(QUIZ, `${decl} は Quiz.tsx に残っていない`).not.toContain(decl);
+    }
   });
 
   it('複数選択の設問では斜線を使わない（解除と消去の混同を避ける）', () => {

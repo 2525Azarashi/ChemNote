@@ -58,7 +58,6 @@ SRC = ROOT / 'scripts' / 'data' / 'q2_shuffled.json'
 # ここでは読み込むだけにする（2か所に書くと必ず食い違うため）。
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from shuffle_listening_q2_options import (  # noqa: E402
-    EXCLUDED_PDF_ILLUSTRATIONS,
     PDF_ILLUSTRATION_QUESTIONS,
 )
 OUT = ROOT / 'src' / 'data' / 'englishListeningQ2Problems.ts'
@@ -173,14 +172,18 @@ HEAD = """/**
  *   PDF 原文のままだと正解が ①13問 / ②21問 / ③9問 / ④5問 と偏っており、
  *   「②を塗れば 44% 当たる」状態になる。音を聞かずに点が取れると
  *   リスニングの練習にならないため、選択肢の**並び順だけ**を入れ替えて
- *   48問全体を ①12 / ②14 / ③11 / ④11 に均してある（44% → 29%）。
+ *   偏りを均す仕組みを入れている。
  *
  *   ただしこのファイルに収録した問は「実物のイラストを使う問」で、
  *   絵の各マスの左上に ①②③④ が★絵として焼き込まれている★
  *   （実測：マス左上22%の領域の暗ピクセル率≈10%、その右隣の帯≈0.3%）。
  *   並べ替えると番号ごと動いて答えが消えるので、この分は
- *   PDF 原文の並びで固定している。そのため先行公開分だけを見ると
- *   正解位置にはまだ偏りが残っている（全部揃うと上記の分布になる）。
+ *   PDF 原文の並びで固定している。
+ *
+ *   ★実物イラストを使う問が増えるほど、並べ替えで均せる余地は減る。★
+ *   32問を実物イラストで公開した時点の実測値は下の「正解位置の実測」を参照。
+ *   ②が多いのは PDF 原文の偏りがそのまま残っているためで、
+ *   イラストを自前生成に置き換えた問だけが並べ替えの対象になる。
  *
  *   なお「1枚の図の中に①〜④が配置される型」は、①〜④が図の中の
  *   どこを指すかが1つの文に溶けているため、機械的に入れ替えると絵が壊れる。
@@ -260,8 +263,37 @@ def published_only(sets: list[dict]) -> list[dict]:
     return out
 
 
+def measured_bias_note(sets: list[dict]) -> str:
+    """正解位置の実測値をヘッダに書き込む文を作る。
+
+    ここを固定文にすると、収録する問が増えたときに
+    「①12 / ②14 …」のような古い数字がファイルに残って嘘になる。
+    実測して書くことで、数字とデータが必ず一致する。
+    """
+    import collections
+
+    bias = collections.Counter(q['answerMark'] for s in sets for q in s['questions'])
+    total = sum(bias.values())
+    parts = ' / '.join(f'{m}{bias.get(m, 0)}問' for m in MARKS)
+    top = max(bias.values()) if bias else 0
+    rate = round(top / total * 100) if total else 0
+    return (
+        ' * 正解位置の実測（このファイルに収録した分だけを数えた値）\n'
+        f' *   {parts}（計 {total}問）。'
+        f'最頻位置だけ塗った場合の正答率 {rate}%。\n'
+        ' *   実物イラストの問は並べ替えられないため、この偏りは\n'
+        ' *   PDF 原文の偏りがそのまま出たもの。自前生成の絵に\n'
+        ' *   置き換えた問から順に均していく。\n'
+        ' *\n'
+    )
+
+
 def build(sets: list[dict]) -> str:
-    out = [HEAD]
+    # 正解位置の実測値をヘッダに差し込む（固定文にすると古い数字が残るため）
+    anchor = ' * 第1問B・第3問との作りの違い\n'
+    assert HEAD.count(anchor) == 1, 'ヘッダの差し込み位置が見つかりません'
+    head = HEAD.replace(anchor, measured_bias_note(sets) + anchor)
+    out = [head]
     names: list[str] = []
 
     for s in sets:
@@ -330,7 +362,16 @@ def build(sets: list[dict]) -> str:
 
         # 問番号に欠けがある場合（＝いまイラストがない問がある）は
         # 「なぜ問3がないのか」が学習者に分かるように一言添える。
-        missing = sorted(q for (st, q) in EXCLUDED_PDF_ILLUSTRATIONS if st == no)
+        #
+        # ★EXCLUDED だけを見てはいけない★
+        # 欠ける理由は2通りある。
+        #   (1) 絵はあるが選択肢と噛み合わない（EXCLUDED に理由を記録）
+        #   (2) そもそもその問に対応する絵が PDF に無い
+        # (2) を数え忘れると、問1・問3 だけが並んだセットで
+        # 「問2 はどこへ行ったのか」が学習者に伝わらなくなる。
+        # そこで実際に収録した問番号の裏返しとして求める。
+        published_qs = {q['q'] for q in qs}
+        missing = [n for n in (1, 2, 3) if n not in published_qs]
         if missing:
             body += [
                 '',

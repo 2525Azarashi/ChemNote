@@ -22,6 +22,8 @@ import { describe, it, expect } from 'vitest';
 
 const MATH_DATA = readFileSync('src/data/mathData.ts', 'utf8');
 const QUIZ = readFileSync('src/components/Quiz.tsx', 'utf8');
+// 解答ペイン（右42%／スマホ下）の JSX は components/AnswerPane.tsx へ切り出した。
+const ANSWER = readFileSync('src/components/AnswerPane.tsx', 'utf8');
 // パレットを「この設問に出すか」の判定ルールは Quiz.tsx から
 // utils/quizPaletteRules.ts へ切り出した（React に依らない純関数）。
 const PALETTE_RULES = readFileSync('src/utils/quizPaletteRules.ts', 'utf8');
@@ -194,17 +196,21 @@ describe('数学記号パレット（Quiz）', () => {
     expect(PALETTE).toContain('function ChemistryPalette');
     expect(PALETTE).toContain('title="数学記号パレット"');
     expect(PALETTE).toContain('title="化学記号パレット"');
-    // Quiz.tsx 側は「どの設問に出すか」を決めて置くだけ
-    expect(QUIZ).toContain("from './SymbolPalette'");
+    // 実際にパレットを置いているのは解答ペイン（AnswerPane.tsx）。
+    // Quiz.tsx 側は「どの設問に出すか」を判定して props で渡すだけ。
+    expect(ANSWER).toContain("from './SymbolPalette'");
   });
 
   it('デスクトップ2箇所（記述・短答）＋スマホのカード内2箇所（記述・短答）の計4箇所に描画される', () => {
     // 以前はスマホの下部フローティングバーに複製の入力欄＋パレットを出していたが、
     // 「解答欄が重複して見える」ご指摘で撤去し、カード内の入力欄に直接付ける方式へ。
     // → 記述（textarea）と短答（input）でそれぞれ PC/スマホ分岐があるため計4箇所。
-    const renders = (QUIZ.match(/<MathPalette/g) || []).length;
+    // 入力欄ごとパレットを置いているのは解答ペイン（AnswerPane.tsx）。
+    const renders = (ANSWER.match(/<MathPalette/g) || []).length;
     expect(renders).toBe(4);
+    // 「この大問に数式パレットが要るか」の判定は Quiz.tsx が持ち、props で渡す。
     expect(QUIZ).toContain('questionNeedsMathPalette');
+    expect(ANSWER).toContain('questionNeedsMathPalette');
   });
 
   it('数学の設問では化学パレットの誤検知を抑止する', () => {

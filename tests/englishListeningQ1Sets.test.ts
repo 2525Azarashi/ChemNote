@@ -36,8 +36,17 @@ const read = (p: string) => fs.readFileSync(path.join(ROOT, p), 'utf-8');
 const QUIZ = read('src/components/Quiz.tsx');
 // 選択肢ボタン群は components/MultipleChoiceControl.tsx へ切り出した。
 const MC = read('src/components/MultipleChoiceControl.tsx');
+// 問題文ペイン（左58%／スマホ上）の JSX は components/ProblemPane.tsx へ切り出した。
+const PROBLEM = read('src/components/ProblemPane.tsx');
+// 解答ペイン（右42%／スマホ下）の JSX は components/AnswerPane.tsx へ切り出した。
+const ANSWER = read('src/components/AnswerPane.tsx');
 // 消去状態そのものと長押しのしくみは hooks/useElimination.ts へまとめた。
 const ELIM = read('src/hooks/useElimination.ts');
+// 設問から作る「表示用の派生値」（useMemo 17個）は
+// hooks/useQuestionDerived.ts へ切り出した。
+const DERIVED = read('src/hooks/useQuestionDerived.ts');
+// リスニングの「問題の説明ページ」は components/ListeningBriefing.tsx へ
+const BRIEFING = read('src/components/ListeningBriefing.tsx');
 const PLAYER = read('src/components/ListeningAudioPlayer.tsx');
 const SPEECH = read('src/utils/listeningSpeech.ts');
 const FIGURE = read('src/components/QuestionFigure.tsx');
@@ -260,16 +269,16 @@ describe('解答画面：音源は左（問題文）ペインに横帯で置く'
   });
 
   it('左ペインの問ブロックで focusSubId + variant="inline" + horizontal を使っている', () => {
-    expect(QUIZ).toContain('variant="inline"');
-    expect(QUIZ).toContain('focusSubId={activeStepSub.id}');
-    expect(QUIZ).toContain('orientation="horizontal"');
+    expect(PROBLEM).toContain('variant="inline"');
+    expect(PROBLEM).toContain('focusSubId={activeStepSub.id}');
+    expect(PROBLEM).toContain('orientation="horizontal"');
     // 音源を選択肢の左に細く差し込む縦列レイアウトは廃止した
     expect(QUIZ).not.toContain("'flex flex-row items-start gap-3'");
   });
 
   it('その問に音源がある場合だけボタン列を出す（他科目に影響しない）', () => {
-    expect(QUIZ).toContain('const hasTrackFor');
-    expect(QUIZ).toContain('hasTrackFor(activeStepSub.id)');
+    expect(DERIVED).toContain('const hasTrackFor');
+    expect(PROBLEM).toContain('hasTrackFor(activeStepSub.id)');
   });
 
   it('解答カード・スマホ固定パネルには音源を置かない（ご指摘の反映）', () => {
@@ -285,10 +294,10 @@ describe('解答画面：音源は左（問題文）ペインに横帯で置く'
     // ご指摘：「第１問の図も何で解答の方にあるの？
     //          問題の方（左側）においてっていったよね」
     // → 図は左ペインの「いま解いている問」ブロックにだけ置く。
-    expect(QUIZ).toContain('src={activeStepSub.imageUrl}');
+    expect(PROBLEM).toContain('src={activeStepSub.imageUrl}');
     // この it の本題は「図が左ペインにある」こと。
     // 高さの与え方は fill（＝もらえた高さいっぱい）に変わった。
-    expect(QUIZ).toContain('fill={listeningMobileSplit}');
+    expect(PROBLEM).toContain('fill={listeningMobileSplit}');
     expect(QUIZ).not.toContain('src={sq.imageUrl}');
     expect(QUIZ).not.toContain('src={focusedSub.imageUrl}');
     expect(FIGURE).toContain('imgClassName');
@@ -303,12 +312,12 @@ describe('解答画面：音源は左（問題文）ペインに横帯で置く'
   */
   it('短い設問文は「問N（全N問中N問目）」と同じ行に置く（図を上げる）', () => {
     // 全角20文字相当までを見出し行へ寄せる。
-    expect(QUIZ).toContain('const inlineBody = body && body.length <= 20 ? body : \'\'');
-    expect(QUIZ).toContain('const blockBody = inlineBody ? \'\' : body');
+    expect(PROBLEM).toContain('const inlineBody = body && body.length <= 20 ? body : \'\'');
+    expect(PROBLEM).toContain('const blockBody = inlineBody ? \'\' : body');
     // 見出し行は折り返せるようにし、問Nバッジと問数表示は縮ませない。
-    expect(QUIZ).toContain('flex items-center gap-2 flex-wrap');
+    expect(PROBLEM).toContain('flex items-center gap-2 flex-wrap');
     // 長い設問文（第1問A・第3問の英文の問い）は従来どおり下の段落に出す。
-    expect(QUIZ).toContain('{blockBody && (');
+    expect(PROBLEM).toContain('{blockBody && (');
   });
 });
 
@@ -380,7 +389,7 @@ describe('解答画面：消去法（選択肢を直接タップして斜線を�
 // =====================================================================
 describe('英語リスニング：問題文（選択肢）と解答欄が同じ場所にある', () => {
   it('選択肢の英文を problem.text から取り出して解答欄に載せている', () => {
-    expect(QUIZ).toContain('buildListeningOptionTexts');
+    expect(DERIVED).toContain('buildListeningOptionTexts');
     expect(MC).toContain('listeningOptionTexts.get(sq.id)');
   });
 
@@ -388,14 +397,14 @@ describe('英語リスニング：問題文（選択肢）と解答欄が同じ�
     // ご指摘：「問題のところさ、全部の問いがまとまってて
     //          どの問いを解いているかが分からない」
     // → 正しい順序を閉じ込めた buildListeningLeadText を使う。
-    expect(QUIZ).toContain('buildListeningLeadText(currentQuestion.text)');
+    expect(BRIEFING).toContain('buildListeningLeadText(currentQuestion.text)');
     // 設問一覧はリスニングでは描画しない（解答カード側に一本化）
-    expect(QUIZ).toMatch(/if \(listeningUnified\) return null;/);
+    expect(PROBLEM).toMatch(/if \(listeningUnified\) return null;/);
   });
 
   it('設問文は問題ペイン（左側）に出す（何を答えるか分からなくならないように）', () => {
     // いま解いている問（activeStepSub）の設問文を左ペインに出す。
-    expect(QUIZ).toContain('splitQuestionLabel(activeStepSub.label');
+    expect(PROBLEM).toContain('splitQuestionLabel(activeStepSub.label');
   });
 
   it('スマホでも下部パネルに飛ばさず、カード内で選択肢を表示する', () => {
@@ -403,11 +412,11 @@ describe('英語リスニング：問題文（選択肢）と解答欄が同じ�
     // 化学などのスマホは下部パネルに複製の解答UIを出していた（重複解答欄）。
     // いまは全教科・全端末で renderMultipleChoiceControl をカード内に直接描画する。
     expect(QUIZ).not.toContain('isDesktop || listeningUnified ?');
-    expect(QUIZ).toContain('renderMultipleChoiceControl(sq)');
+    expect(ANSWER).toContain('renderMultipleChoiceControl(sq)');
   });
 
   it('音源を持つ問題だけを対象にする（化学などに影響しない）', () => {
-    expect(QUIZ).toContain('const listeningUnified = listeningTracks.length > 0');
+    expect(DERIVED).toContain('const listeningUnified = listeningTracks.length > 0');
   });
 });
 
@@ -417,9 +426,12 @@ describe('英語リスニング：問題文（選択肢）と解答欄が同じ�
 describe('英語リスニング：見出しつき音源パネル（panel）は使わない', () => {
   it('Quiz は panel バリアント（見出しつきパネル）を使っていない', () => {
     // 音源は問題ブロックの横帯（inline + horizontal）だけに置く。
-    expect(QUIZ).not.toMatch(/<ListeningAudioPlayer(?![\s\S]{0,400}?variant="inline")/);
-    const inlineCount = (QUIZ.match(/variant="inline"/g) || []).length;
-    const playerCount = (QUIZ.match(/<ListeningAudioPlayer/g) || []).length;
+    // 問題文ペインを ProblemPane.tsx へ切り出したので、
+    // プレイヤーの置き場所は「Quiz.tsx と切り出し先の両方」を見る。
+    const SOURCES = QUIZ + '\n' + PROBLEM;
+    expect(SOURCES).not.toMatch(/<ListeningAudioPlayer(?![\s\S]{0,400}?variant="inline")/);
+    const inlineCount = (SOURCES.match(/variant="inline"/g) || []).length;
+    const playerCount = (SOURCES.match(/<ListeningAudioPlayer/g) || []).length;
     expect(playerCount).toBeGreaterThan(0);
     expect(inlineCount).toBe(playerCount);
   });

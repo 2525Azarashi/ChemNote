@@ -52,6 +52,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from q2_img_to_public import convert  # noqa: E402
 from shuffle_listening_q2_options import (  # noqa: E402
     EXCLUDED_PDF_ILLUSTRATIONS,
+    ILLUSTRATION_SOURCE_LABEL,
     PDF_ILLUSTRATION_QUESTIONS,
 )
 
@@ -174,15 +175,26 @@ def main() -> int:
     found = extract(args.pdf)
     print(f'{args.pdf.name}: 画像 {len(found)} 枚を検出')
 
-    written = 0
+    # 見出し（S◯Q◯）→ その見出しの位置にある画像
+    # 1つの見出しに2枚ある箇所（第2セット問2）は最後の1枚を採る。
+    by_label: dict[tuple[int, int], dict] = {}
     for e in found:
-        key = (e['set'], e['q'])
-        if key not in PDF_ILLUSTRATION_QUESTIONS:
+        by_label[(e['set'], e['q'])] = e
+
+    written = 0
+    for key in sorted(PDF_ILLUSTRATION_QUESTIONS):
+        # 絵と問がずれている問は、実際に絵が入っている見出しから取る。
+        label = ILLUSTRATION_SOURCE_LABEL.get(key, key)
+        e = by_label.get(label)
+        if e is None:
+            print(f'  ! 第{key[0]}セット問{key[1]} の絵が PDF に見つかりません')
             continue
 
         im = Image.open(io.BytesIO(e['bytes']))
-        name = f'el2_set{e["set"]}_q{e["q"]}'
+        name = f'el2_set{key[0]}_q{key[1]}'
         note = f'{name}  p{e["page"]}  {e["width"]}x{e["height"]}'
+        if label != key:
+            note += f'  ← 見出し S{label[0]}Q{label[1]}'
 
         if args.verify:
             pairs = verify_numbers_baked(im)

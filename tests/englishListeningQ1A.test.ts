@@ -24,7 +24,12 @@ const read = (p: string) => fs.readFileSync(path.join(ROOT, p), 'utf-8');
 
 const PLAYER = read('src/components/ListeningAudioPlayer.tsx');
 const QUIZ = read('src/components/Quiz.tsx');
+// 問題文ペイン（左58%／スマホ上）の JSX は components/ProblemPane.tsx へ切り出した。
+const PROBLEM = read('src/components/ProblemPane.tsx');
 const EXPLANATION = read('src/components/Explanation.tsx');
+// 設問から作る「表示用の派生値」（useMemo 17個）は
+// hooks/useQuestionDerived.ts へ切り出した。
+const DERIVED = read('src/hooks/useQuestionDerived.ts');
 const CHAPTER_SELECTION = read('src/components/ChapterSelection.tsx');
 
 /** 第1問A の単元（el1_A）を取り出す */
@@ -266,12 +271,15 @@ describe('音源ボタンが「わかりやすい場所」に置かれている'
     //   > 何で解答の方に置くの？
     // そこで解答カード側ではなく、問題文ペイン（左側）の
     // 「いま解いている問」ブロックに置く。
-    expect(QUIZ).toContain('ListeningAudioPlayer');
-    expect(QUIZ).toContain("mode=\"practice\"");
-    expect(QUIZ).toContain('variant="inline"');
+    // 問題文ペインは components/ProblemPane.tsx へ切り出したので、
+    // プレイヤーを実際に置いているのはそちら。
+    expect(PROBLEM).toContain('ListeningAudioPlayer');
+    expect(QUIZ).not.toContain('ListeningAudioPlayer');
+    expect(PROBLEM).toContain("mode=\"practice\"");
+    expect(PROBLEM).toContain('variant="inline"');
     // その問の音源だけを鳴らすため、必ず focusSubId を渡している。
     // 対象は「いま解いている問」= activeStepSub。
-    expect(QUIZ).toMatch(/focusSubId=\{activeStepSub\.id\}/);
+    expect(PROBLEM).toMatch(/focusSubId=\{activeStepSub\.id\}/);
     // 解答カード側（sq）に戻していないこと。
     expect(QUIZ).not.toMatch(/focusSubId=\{sq\.id\}/);
   });
@@ -280,10 +288,10 @@ describe('音源ボタンが「わかりやすい場所」に置かれている'
     // audioTracks は「問題ごとの音源リスト」を listeningTracks に正規化してから使う。
     // 配列でなければ空配列になるので、化学など音源を持たない科目では
     // listeningTracks.length === 0 となりプレーヤーは描画されない。
-    expect(QUIZ).toMatch(
+    expect(DERIVED).toMatch(
       /const listeningTracks[\s\S]{0,200}?Array\.isArray\(t\) \? t : \[\]/,
     );
-    expect(QUIZ).toMatch(/\(currentQuestion as any\)\?\.audioTracks/);
+    expect(DERIVED).toMatch(/\(currentQuestion as any\)\?\.audioTracks/);
     expect(QUIZ).toContain('listeningTracks.length > 0');
     // 小問ごとの再生ボタンも「その小問の音源があるときだけ」出す
     expect(QUIZ).toContain('hasTrackFor');

@@ -499,6 +499,10 @@ describe('押しやすさ：スマホのタップ領域とレイアウト（Symb
     expect(PALETTE).not.toContain('const mathPaletteGroups');
     // パレットの描画そのものも Quiz.tsx から出ている（Quiz は「どの設問に出すか」だけ）
     expect(QUIZ).not.toContain('const PaletteButton');
-    expect(QUIZ).toContain("from './SymbolPalette'");
+    // 実際に入力欄の横へ置いているのは解答ペイン（AnswerPane.tsx）。
+    // Quiz.tsx は questionNeedsMathPalette を渡すだけで、import も持たない。
+    const ANSWER = readFileSync('src/components/AnswerPane.tsx', 'utf8');
+    expect(ANSWER).toContain("from './SymbolPalette'");
+    expect(QUIZ).toContain('questionNeedsMathPalette');
   });
 });

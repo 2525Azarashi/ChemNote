@@ -48,6 +48,15 @@ function stripComments(src: string): string {
 const QUIZ = stripComments(read('src/components/Quiz.tsx'));
 // 選択肢ボタン群は components/MultipleChoiceControl.tsx へ切り出した。
 const MC = stripComments(read('src/components/MultipleChoiceControl.tsx'));
+// 問題文ペイン（左58%／スマホ上）の JSX は components/ProblemPane.tsx へ切り出した。
+const PROBLEM = stripComments(read('src/components/ProblemPane.tsx'));
+// 解答ペイン（右42%／スマホ下）の JSX は components/AnswerPane.tsx へ切り出した。
+const ANSWER = stripComments(read('src/components/AnswerPane.tsx'));
+// ヘッダー帯（単元名・スコア・順位・進捗）は components/QuizHeader.tsx へ切り出した。
+const HEADER = stripComments(read('src/components/QuizHeader.tsx'));
+// スマホ下部の固定バー2本（ナビ「(ア) 前へ 1/9 次へ 完了」／入力補助）は
+// components/MobileFloatingBar.tsx へ切り出した。
+const FLOAT = stripComments(read('src/components/MobileFloatingBar.tsx'));
 const EXPL = stripComments(read('src/components/Explanation.tsx'));
 
 describe('B-1 選択肢の文章の幅（スマホ）', () => {
@@ -59,7 +68,8 @@ describe('B-1 選択肢の文章の幅（スマホ）', () => {
     //   1. 「n / 全体」の位置表示（もともとガードされていた）
     //   2. 左矢印（今回ガードを追加）
     //   3. 右矢印（今回ガードを追加）
-    const guarded = QUIZ.match(
+    // 解答ペインを AnswerPane.tsx へ切り出したので、3箇所はそちらにある。
+    const guarded = ANSWER.match(
       /!isDesktop && mobileAnswerSubs\.length > 1 && \(/g,
     );
     expect(guarded, '位置表示＋左右矢印の3箇所がガードされていること').toHaveLength(3);
@@ -70,7 +80,7 @@ describe('B-1 選択肢の文章の幅（スマホ）', () => {
       const re = new RegExp(
         `!isDesktop && mobileAnswerSubs\\.length > 1 && \\([\\s\\S]{0,400}?goMobileAns\\(${dir.replace('-', '\\-')}\\)`,
       );
-      expect(QUIZ, `goMobileAns(${dir}) の矢印がガード下にあること`).toMatch(re);
+      expect(ANSWER, `goMobileAns(${dir}) の矢印がガード下にあること`).toMatch(re);
     }
   });
 
@@ -98,8 +108,11 @@ describe('B-1 選択肢の文章の幅（スマホ）', () => {
   });
 
   it('リスニングのスマホでは解答ペインの左右余白を詰める（PC は md:p-8 のまま）', () => {
-    expect(QUIZ).toContain("listeningMobileSplit ? 'px-2' : 'px-4'");
-    expect(QUIZ).toContain('md:p-8');
+    expect(ANSWER).toContain("listeningMobileSplit ? 'px-2' : 'px-4'");
+    // ★実測で分かったこと★ md:p-8 はペイン側（AnswerPane / ProblemPane）にある。
+    // Quiz.tsx は JSX をペインへ渡すだけになったので、Quiz.tsx で見張ると
+    // 「PC の余白が消えた」ことに気づけない見張り方になってしまう。
+    expect(ANSWER).toContain('md:p-8');
   });
 });
 
@@ -140,24 +153,35 @@ describe('B-2 採点結果をコンパクトに（スマホ）', () => {
 
 describe('B-3 入力時の画面占有（スマホ）', () => {
   it('★入力中に引っ込める帯は3つ（ヘッダー・タイマー・問題見出し）★', () => {
-    const hides = QUIZ.match(/!isDesktop && keyboardVisible \? 'hidden' : ''/g);
+    // 3箇所の置き場所は切り出しで分かれた（実測 grep -c の結果）。
+    //   Quiz.tsx          1箇所 … タイマー帯
+    //   QuizHeader.tsx    1箇所 … ヘッダー帯
+    //   ProblemPane.tsx   1箇所 … 問題ペイン見出し
+    // 合計が3であることを、3ファイルまとめて数える。
+    const SOURCES = QUIZ + '\n' + HEADER + '\n' + PROBLEM;
+    const hides = SOURCES.match(/!isDesktop && keyboardVisible \? 'hidden' : ''/g);
     expect(hides, 'ヘッダー／タイマー／問題ペイン見出しの3箇所').toHaveLength(3);
+    // どのファイルにも1つずつ在ることを個別にも押さえる（1ファイルに寄っても
+    // 合計3なら通ってしまうのを防ぐ）。
+    expect(QUIZ, 'タイマー帯').toContain("!isDesktop && keyboardVisible ? 'hidden' : ''");
+    expect(HEADER, 'ヘッダー帯').toContain("!isDesktop && keyboardVisible ? 'hidden' : ''");
+    expect(PROBLEM, '問題ペイン見出し').toContain("!isDesktop && keyboardVisible ? 'hidden' : ''");
   });
 
   it('★「(ア) 前へ 1/9 次へ 完了」バーは消していない★', () => {
     // ここは「必要」と明言された。消したら要件違反。
-    expect(QUIZ).toContain('floating-answer-bar');
-    expect(QUIZ).toContain('前へ');
-    expect(QUIZ).toContain('次へ');
-    expect(QUIZ).toContain('完了');
-    expect(QUIZ).toContain('{focusedIndex + 1}/{inputNavSubs.length}');
+    expect(FLOAT).toContain('floating-answer-bar');
+    expect(FLOAT).toContain('前へ');
+    expect(FLOAT).toContain('次へ');
+    expect(FLOAT).toContain('完了');
+    expect(FLOAT).toContain('{focusedIndex + 1}/{inputNavSubs.length}');
   });
 
   it('★入力バーを keyboardVisible で隠す条件が付いていない★', () => {
     // 上の3箇所と同じ書き方を、うっかり入力バーにも足すと
     // 「必要」と言われたものを消すことになる。
     // 入力バーの描画条件が focusedSub 基準のままであることを確認する。
-    expect(QUIZ).toContain(
+    expect(FLOAT).toContain(
       "{!isDesktop && focusedSub && (isShortAnswerType(focusedSub) || focusedSub.type === 'descriptive') && (",
     );
   });
@@ -170,7 +194,9 @@ describe('B-3 入力時の画面占有（スマホ）', () => {
   it('PC には keyboardVisible での非表示がかからない', () => {
     // 3箇所すべて !isDesktop が前置されていること。
     // isDesktop を外した書き方が混ざっていないかを見る。
-    const bare = QUIZ.match(/(?<!!isDesktop && )keyboardVisible \? 'hidden'/g);
+    const bare = (QUIZ + '\n' + HEADER + '\n' + PROBLEM).match(
+      /(?<!!isDesktop && )keyboardVisible \? 'hidden'/g,
+    );
     expect(bare, 'isDesktop ガードなしの hidden が無いこと').toBeNull();
   });
 });
@@ -181,14 +207,20 @@ describe('健全性', () => {
     expect(QUIZ).not.toContain('★B-1：選択肢の本文幅を稼ぐため');
     expect(QUIZ).not.toContain('★B-3：解答を打っている間だけ');
     // それでも実装は残っている
-    expect(QUIZ).toContain("listeningMobileSplit ? 'px-2' : 'px-4'");
+    expect(ANSWER).toContain("listeningMobileSplit ? 'px-2' : 'px-4'");
     expect(QUIZ).toContain("!isDesktop && keyboardVisible ? 'hidden' : ''");
+    expect(PROBLEM).toContain("!isDesktop && keyboardVisible ? 'hidden' : ''");
   });
 
   it('PC 版の寸法クラスを消していない（md: / lg: の指定が生きている）', () => {
-    expect(QUIZ).toContain('md:px-4');
-    expect(QUIZ).toContain('md:p-8');
-    expect(QUIZ).toContain('lg:w-[42%]');
-    expect(QUIZ).toContain('lg:w-[58%]');
+    // md:px-4 はヘッダー帯のスコア枠にある（QuizHeader.tsx へ移動、実測 grep で確認）。
+    expect(HEADER).toContain('md:px-4');
+    // md:p-8 は問題文ペインと解答ペインの両方にある（実測 grep で確認：
+    // AnswerPane.tsx:161 と ProblemPane.tsx:278）。どちらかが消えても
+    // PC の余白が崩れるので、両方を個別に見張る。
+    expect(ANSWER).toContain('md:p-8');
+    expect(PROBLEM).toContain('md:p-8');
+    expect(ANSWER).toContain('lg:w-[42%]');
+    expect(PROBLEM).toContain('lg:w-[58%]');
   });
 });

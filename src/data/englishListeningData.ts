@@ -238,10 +238,15 @@ const LISTENING_PROBLEMS: Record<string, any[]> = {
   //   第2問は絵を見比べて選ぶ大問なので、絵が無い問を出すと
   //   ①〜④のマークだけが並ぶ「解けない問題」になってしまう。
   //   そこで48問すべてを待たず、イラストが揃った問だけを先に出している。
-  //   いま公開しているのは 6セット15問（第1・6・9・11・12・13回）。
+  //   いま公開しているのは 16セット38問（PDF全体は16セット48問）。
   //   イラストは1マスずつ拡大して選択肢の文言と突き合わせ、
-  //   絵と選択肢が完全に一致することを確認した分だけを収録している
-  //   （見送った問とその理由は scripts/shuffle_listening_q2_options.py に記録）。
+  //   絵と選択肢が完全に一致することを確認した分だけを収録している。
+  //   絵と文がズレていた6問（6-3 / 7-3 / 8-3 / 11-1 / 13-1 / 16-2）は、
+  //   絵を作り直すのではなく「文章側を絵に合わせて書き直す」方法で解決した
+  //   （書き換えの根拠は scripts/data/q2_figure_audit.md、
+  //     実体は scripts/q2_figure_fixes.py に記録）。
+  //   また見出しと中身がズレていた6問は
+  //   ILLUSTRATION_SOURCE_LABEL で正しいPDF見出しへ張り替えている。
   //   追加するときは実物イラストを public/listening_q2/ に置き、
   //     python3 scripts/extract_q2_illustrations.py --pdf <PDF>
   //     python3 scripts/gen_listening_q2_data.py

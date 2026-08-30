@@ -1,88 +1,65 @@
-import React, { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
-import { ChevronRight, ChevronLeft, ChevronDown, ChevronUp, Edit3, ArrowLeft, GripVertical, Trophy, HelpCircle } from 'lucide-react';
-import { formatText } from '../utils/textFormatter';
-// 記号パレット（解答入力の補助キーボード）は components/SymbolPalette.tsx に切り出した。
-// KaTeX / mhchem の組版とサニタイズもそちらに移したので、
-// このファイルは「どの設問に出すか」を判定して置くだけになった。
-import { ChemistryPalette, MathPalette } from './SymbolPalette';
+import React, { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { ArrowLeft } from 'lucide-react';
+// 記号パレット（解答入力の補助キーボード）は components/SymbolPalette.tsx にある。
+// 実際に置いているのは解答ペイン（AnswerPane.tsx）なので、
+// このファイルは「どの設問に出すか」の判定（questionNeedsMathPalette）だけを持つ。
 // 並べ替え（sorting）の解答UIは components/SortingControl.tsx に切り出した。
 import { SortingControl } from './SortingControl';
 import { MultipleChoiceControl } from './MultipleChoiceControl';
 // 消去法（斜線）のしくみ一式は hooks/useElimination.ts に集約
 import { useElimination } from '../hooks/useElimination';
-import { ExplanationBody } from './ExplanationBody';
-import { Explanation } from './Explanation';
-import { IonizationEnergyChart } from './IonizationEnergyChart';
-import { QuestionFigure } from './QuestionFigure';
-import { ListeningAudioPlayer } from './ListeningAudioPlayer';
-import { buildFigureNumberMap, getFigureNumber } from '../utils/figureNumbering';
+// 設問から作る表示用の派生値（useMemo 17個）は hooks/useQuestionDerived.ts へ
+import { useQuestionDerived } from '../hooks/useQuestionDerived';
+// 問題文ペイン（左58%／スマホ上）の JSX は components/ProblemPane.tsx へ
+import { ProblemPane } from './ProblemPane';
+// 解答ペイン（右42%／スマホ下）の JSX は components/AnswerPane.tsx へ
+import { AnswerPane } from './AnswerPane';
+// ヘッダー帯（単元名・スコア・順位・進捗）は components/QuizHeader.tsx へ
+import { QuizHeader } from './QuizHeader';
+// スマホ下部の固定バー2本（ナビ／入力）は components/MobileFloatingBar.tsx へ
+import { MobileFloatingBar } from './MobileFloatingBar';
+// 図・音源プレイヤー・イオン化エネルギーのグラフは、いずれも
+// 問題文ペイン（ProblemPane.tsx）が直接 import して描画している。
+// このファイルは「何番の図か」の対応表を作って渡すだけ。
+import { buildFigureNumberMap } from '../utils/figureNumbering';
+// 解答解説の画面（早期 return の JSX 50行）は components/ExplanationScreen.tsx へ
+import { ExplanationScreen } from './ExplanationScreen';
+// リスニングの「問題の説明ページ」（早期 return の JSX 64行）は
+// components/ListeningBriefing.tsx へ
+import { ListeningBriefing } from './ListeningBriefing';
+// 「解答と解説を見る」を押した瞬間の採点処理（137行）は utils/quizScoring.ts へ
+import { createScoreCurrentQuestion } from '../utils/quizScoring';
 import { QuizTimerBar } from './QuizTimerBar';
 import { FloatingScoreAnimation } from './FloatingScoreAnimation';
-import { LiveStandingPill, OvertakeBanner } from './LiveStandingPill';
+import { OvertakeBanner } from './LiveStandingPill';
 import { useLiveStanding } from '../hooks/useLiveStanding';
-import {
-  calcQuestionTimeLimit,
-  scoreProblem,
-  calcMaxCombo,
-  comboMultiplier,
-  type ScoreBreakdown,
-} from '../utils/scoring';
+import { calcQuestionTimeLimit, type ScoreBreakdown } from '../utils/scoring';
 import { submitChapterScore } from '../utils/leaderboard';
-import { captureWrongAnswers, type WrongAnswerInput } from '../utils/reviewList';
 import {
-  isPlainRecord,
-  markProblemSolved,
   parseStoredNonNegativeInteger,
-  parseStoredStringArrayRecord,
   parseStoredStringRecord,
 } from '../utils/progress';
-import { schedulePush } from '../utils/studySync';
 // 章 × モードごとの保存キー名は utils/quizStorageKeys.ts が唯一の定義
 import {
   quizAnswersKey,
-  quizElimKey,
   quizExplKey,
   quizIndexKey,
   quizStepKey,
 } from '../utils/quizStorageKeys';
 // 章の途中経過（点数・コンボ・所要時間）の型と読み書きは utils/quizRunState.ts に集約
-import {
-  clearRun,
-  loadRun,
-  saveRun,
-  type ChapterRunState,
-} from '../utils/quizRunState';
-// 記号パレットを「この設問に出すか」の判定ルールは utils/quizPaletteRules.ts に集約
-import {
-  requiresChemicalSymbols,
-  requiresMathSymbols,
-} from '../utils/quizPaletteRules';
-// スマホでソフトウェアキーボードに入力欄が隠れないようにするスクロール調整
-import { handleInputFocusScroll, scrollInputIntoView } from '../utils/quizInputScroll';
+import { clearRun, loadRun, type ChapterRunState } from '../utils/quizRunState';
+// 記号パレットを「この設問に出すか」の判定ルールは utils/quizPaletteRules.ts に集約。
+// 実際に呼ぶのは派生値フック（hooks/useQuestionDerived.ts）なので、
+// このファイルからは import しなくなった。
+// スマホでソフトウェアキーボードに入力欄が隠れないようにするスクロール調整。
+// focus 時の調整（handleInputFocusScroll）は入力欄を持つ AnswerPane.tsx 側。
+import { scrollInputIntoView } from '../utils/quizInputScroll';
 // 設問ラベルからの空欄トークン推定と短答判定（純関数）
-import {
-  blankHighlightVariants,
-  extractBlankToken,
-  isShortAnswerType,
-} from '../utils/quizBlanks';
-import { isAnswerCorrect, isDescriptive } from '../utils/answerJudge';
+import { isShortAnswerType } from '../utils/quizBlanks';
 // cleanQuestionText は解説画面（Explanation.tsx）と同じ実装が必要なので
-// questionDisplay.ts の1つだけを使う（以前はここにも同じ実装があった）。
-import { answerCardMarker, buildSubQuestionList, splitQuestionLabel, isSubQuestionListRedundant, extractInlineQuestionRows, findSubQuestionSentence, cleanQuestionText, optionCircledMark } from '../utils/questionDisplay';
-import {
-  buildListeningOptionTexts,
-  buildListeningLeadText,
-  extractListeningDifficulty,
-  stripListeningDifficulty,
-} from '../utils/listeningOptions';
-import {
-  buildListeningSteps,
-  isPerSubQuestionListening,
-  stepLabelOf,
-  stepScoreKey,
-} from '../utils/listeningSteps';
+// questionDisplay.ts の1つだけを使う。呼ぶ場所は派生値フックへ移った。
+import { buildListeningSteps, isPerSubQuestionListening } from '../utils/listeningSteps';
 import { useIsDesktop } from '../hooks/useMediaQuery';
-import { auth } from '../firebase';
 
 interface QuizProps {
   mode: 'mini_test' | 'practice';
@@ -808,314 +785,46 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     isGuest,
   );
 
-  // Group subQuestions if they have a group property
-  const groupedSubQuestions = useMemo(() => {
-    if (!currentQuestion) return [];
-    const list: { type: 'single' | 'group'; groupName?: string; items: any[] }[] = [];
-    let lastGroup: any = null;
-
-    (currentQuestion.subQuestions || []).forEach((sq: any) => {
-      if (sq.group) {
-        if (lastGroup && lastGroup.groupName === sq.group) {
-          lastGroup.items.push(sq);
-        } else {
-          lastGroup = { type: 'group', groupName: sq.group, items: [sq] };
-          list.push(lastGroup);
-        }
-      } else {
-        lastGroup = null;
-        list.push({ type: 'single', items: [sq] });
-      }
-    });
-    return list;
-  }, [currentQuestion]);
-
-  /**
-   * 解答欄に実際に描画するグループ一覧。
-   *
-   * ご要望「問1で1つの進捗、問2で1つの進捗みたいな感じにしてほしい」に対応し、
-   * 1問ずつモード（perStep）では、いま解いている問だけを解答欄に出す。
-   * 以前は問1〜問4のカードが4枚縦に並んでいたため、
-   * 「今どれを解いているのか」が分からず、スマホでは選択肢まで
-   * スクロールが必要だった。
-   *
-   * 化学など従来の問題（perStep=false）は groupedSubQuestions をそのまま使う。
-   */
-  const visibleGroupedSubQuestions = useMemo(() => {
-    if (!perStep || !activeStepSub) return groupedSubQuestions;
-    return groupedSubQuestions.filter((g: any) =>
-      (g.items || []).some((sq: any) => sq?.id === activeStepSub.id),
-    );
-  }, [groupedSubQuestions, perStep, activeStepSub]);
-
   // ────────────────────────────────────────────────────────────────
-  // スマホ：解答欄の「1設問ずつページ送り」表示（ご指摘対応）
+  // 設問から作る「表示用の派生値」は hooks/useQuestionDerived.ts へ
   // ────────────────────────────────────────────────────────────────
+  // ここに 308 行ぶんの useMemo（17個）が並んでいた。すべて
+  // currentQuestion から表示に必要な値を計算するだけで、state も
+  // 副作用も持っていなかったので、まとめてフックへ移した。
   //
-  // ご指摘：「上下スクロールして(1)、(2)っていう入力欄を押して入力してく
-  //          じゃん？それやめよう。(1)の入力欄を下半分に最初固定した状態に
-  //          して。解答欄の右と左に黒の小さな矢印を置いて、固定する解答欄を
-  //          変えるようにして。解答欄のスクロールがすごいうざい」
-  //
-  // 全設問のカードを縦に並べる（＝スクロールさせる）のをやめ、
-  // 「いま答える1設問の解答欄」だけを下半分に固定表示する。
-  // 移動は左右の黒矢印（と、キーボード表示中は下部バーの前へ/次へ）のみ。
-  //
-  // mobileAnswerSubs はページ送りの単位となる設問のフラットな一覧。
-  // グループ（(ア)(イ)…の空欄グリッド）も1空欄＝1ページに分解し、
-  // 「どのページでも解答欄は常に1つ」を保証する。
-  const mobileAnswerSubs = useMemo(() => {
-    const list: { sq: any; groupName?: string; gType: 'single' | 'group' }[] = [];
-    visibleGroupedSubQuestions.forEach((g: any) => {
-      (g.items || []).forEach((sq: any) => {
-        list.push({ sq, groupName: g.type === 'group' ? g.groupName : undefined, gType: g.type });
-      });
-    });
-    return list;
-  }, [visibleGroupedSubQuestions]);
-
-  // データ変化でインデックスが範囲外になっても落ちないよう必ず丸める。
-  const safeMobileAnsIdx = Math.min(
-    Math.max(0, mobileAnsIdx),
-    Math.max(0, mobileAnswerSubs.length - 1),
-  );
-
-  // 実際に描画するグループ一覧。PC は従来どおり全設問を縦に並べ、
-  // スマホは「現在ページの1設問」だけを含む1グループに絞る。
-  const renderedAnswerGroups = useMemo(() => {
-    if (isDesktop) return visibleGroupedSubQuestions;
-    const cur = mobileAnswerSubs[safeMobileAnsIdx];
-    if (!cur) return visibleGroupedSubQuestions;
-    return [{ type: cur.gType, groupName: cur.groupName, items: [cur.sq] }] as any[];
-  }, [isDesktop, visibleGroupedSubQuestions, mobileAnswerSubs, safeMobileAnsIdx]);
-
-  // ────────────────────────────────────────────────────────────────
-  // 要件1（解答入力方式）／要件4（化学記号パレットの出し分け）用の派生値
-  // ────────────────────────────────────────────────────────────────
-
-  // この問題に含まれる「短答穴埋め（short_answer）」の設問リスト。
-  // フローティング入力バーの 前へ/次へ ナビゲーションで使う。
-  const shortAnswerSubs = useMemo(() => {
-    if (!currentQuestion) return [] as any[];
-    return (currentQuestion.subQuestions || []).filter((sq: any) => isShortAnswerType(sq));
-  }, [currentQuestion]);
-
-  // インライン穴埋め（問題文中に入力欄を埋め込む）モードを使うか。
-  // データ側で inlineBlanks が明示され、かつ短答穴埋めが存在する場合のみ有効。
-  const useInlineBlanks = useMemo(() => {
-    if (!currentQuestion) return false;
-    if (!(currentQuestion as any).inlineBlanks) return false;
-    return shortAnswerSubs.length > 0;
-  }, [currentQuestion, shortAnswerSubs]);
-
-  // この問題に化学記号パレットが必要か（要件4）。
-  // 「解答として実際に打ち込む文字列」が化学式・イオン式・反応式・上下付き文字を
-  // 含む設問が1つでもあれば true。問題データ側の明示 opt-in も尊重する。
-  const questionNeedsChemPalette = useMemo(() => {
-    if (!currentQuestion) return false;
-    if ((currentQuestion as any).requiresChemicalPalette) return true;
-    const subs = currentQuestion.subQuestions || [];
-    return subs.some((sq: any) => requiresChemicalSymbols(sq));
-  }, [currentQuestion]);
-
-  // この問題に数学記号パレットが必要か。
-  // データ側の明示 opt-in（requiresMathPalette）のみで判定する。
-  const questionNeedsMathPalette = useMemo(() => {
-    if (!currentQuestion) return false;
-    if ((currentQuestion as any).requiresMathPalette) return true;
-    const subs = currentQuestion.subQuestions || [];
-    return subs.some((sq: any) => requiresMathSymbols(sq));
-  }, [currentQuestion]);
-
-  /**
-   * ★ご要望11「あと解説と問題でフォント違うの何？」★
-   *
-   * 英語（リスニング・英文法）の問題文・選択肢は「英語の散文」なので、
-   * 化学式の体裁付け（英字をセリフ体の span で包む処理）を通してはいけない。
-   * 通すと "The" "umbrella" のような単語まで化学式扱いになり、
-   *   font-family: 'Cambria Math','Times New Roman', serif
-   * がインライン style で当たって、日本語（ゴシック）と書体が食い違う。
-   * これが「問題と解説でフォントが違う」とご指摘いただいた現象そのもの。
-   *
-   * ★科目名で分岐しない★
-   *   'english_listening' などの科目名で切り替えると、
-   *   将来ほかの科目に英文を入れたときに取り残される。
-   *   英文を読み上げる音源（audioTracks）を持つのは英語の問題だけなので、
-   *   「その問題自身が英文の音源を持っているか」という
-   *   問題ごとの事実で判断する（ご指摘「コードで形式的に作ると
-   *   問題によっておかしくなる」を避けるため）。
-   */
-  const isEnglishProse = useMemo(() => {
-    const tracks = (currentQuestion as any)?.audioTracks;
-    return Array.isArray(tracks) && tracks.length > 0;
-  }, [currentQuestion]);
-
-  // 現在フォーカス中の穴埋め設問に対応する、問題文中のハイライト候補文字列。
-  const focusHighlightVariants = useMemo(() => {
-    if (!focusedSubId || !currentQuestion) return [] as string[];
-    const sub = (currentQuestion.subQuestions || []).find((sq: any) => sq.id === focusedSubId);
-    if (!sub) return [] as string[];
-    const token = extractBlankToken(sub.label || '');
-    if (!token) return [] as string[];
-    return blankHighlightVariants(token);
-  }, [focusedSubId, currentQuestion]);
-
-  // ユーザー選択のハイライトと、フォーカス穴埋めのハイライトを結合。
-  const combinedHighlights = useMemo(
-    () => Array.from(new Set([...highlights, ...focusHighlightVariants])),
-    [highlights, focusHighlightVariants]
-  );
-
-  /*
-    スマホ：小問行を横並びにできる問題かどうか（ご要望8）
-    ─────────────────────────────────────────────
-    「(1)から4問縦書きになってるけど、横書きにしたら1画面に収まるくない？」
-
-    ★科目で決め打ちしない（ご注意9）
-      全 262 問を実測すると、行頭マーカー行の本文は
-        数学     … 10〜22 文字
-        化学基礎 … 最大 157 文字
-      と問題ごとにまったく違う。「数学だから横」にすると化学基礎の
-      長い小問まで横に並べて崩れるので、判定は
-      extractInlineQuestionRows() に任せ「その問題自身が短いか」で決める。
-      条件を満たさない問題は null が返り、従来の縦積みにフォールバックする。
-
-    PC（isDesktop）では常に null にして、これまでの表示を一切変えない。
-  */
-  const inlineQuestionRows = useMemo(
-    () => (isDesktop ? null : extractInlineQuestionRows(cleanQuestionText(currentQuestion?.text || ''))),
-    [isDesktop, currentQuestion?.text]
-  );
-
-  /*
-    スマホ：設問一覧が問題文の丸写しなら出さない（ご要望8）
-    ─────────────────────────────────────────────
-    「設問一覧と問題が同じなので、同じやつはもう設問一覧いらない」
-
-    こちらも科目では決めず、「一覧の全項目が問題文に含まれるか」を
-    問題ごとに判定する（1 項目でも欠ければ一覧を残す＝情報を消さない）。
-  */
-  const hideRedundantSubQuestionList = useMemo(
-    () => !isDesktop && isSubQuestionListRedundant(currentQuestion),
-    [isDesktop, currentQuestion]
-  );
-
-  // 下部ナビバー（前へ/次へ）の対象となる設問。
-  //
-  // ★テキスト入力（短答穴埋め・記述/計算）だけに絞る（ご指摘対応）
-  // ─────────────────────────────────────────────
-  // ご指摘：「タップしたらなんで重複して解答欄が出てくるかわからん。
-  //          普通に入力できるようにしてよ。」
-  // 以前は選択式・並べ替えも含めて「カードをタップ→下部の固定パネルに
-  // もう1つ解答UIを出す」方式だったため、同じ設問の解答欄が
-  // 画面に2つ並んで見えていた。いまは全形式ともカード内で直接解答する
-  // 方式に統一したので、下部バーの役割は
-  //   「ソフトキーボード表示中の空欄移動（前へ/次へ）＋記号パレット」
-  // だけになった。キーボードを使うのはテキスト入力の設問だけなので、
-  // ナビ対象もテキスト入力の設問だけにする。
-  const inputNavSubs = useMemo(() => {
-    if (!currentQuestion) return [] as any[];
-    return (currentQuestion.subQuestions || []).filter(
-      (sq: any) => isShortAnswerType(sq) || sq.type === 'descriptive',
-    );
-  }, [currentQuestion]);
-
-  // ────────────────────────────────────────────────────────────────
-  // 英語リスニング：問ごとの音源トラック
-  // ────────────────────────────────────────────────────────────────
-  //
-  // ご要望「1問題とそれに該当する再生ボタンを横に配置して」に対応するため、
-  // 「この設問(subId)に対応するトラックがあるか」を O(1) で引けるようにする。
-  // 解答カード側は subId で引いて、そのカードの横に再生ボタンを描く。
-  const listeningTracks: any[] = useMemo(() => {
-    const t = (currentQuestion as any)?.audioTracks;
-    return Array.isArray(t) ? t : [];
-  }, [currentQuestion]);
-
-  /** 設問IDに対応する音源トラックがあるか（無ければ再生ボタンを出さない）。 */
-  const hasTrackFor = useCallback(
-    (sqId: string) => listeningTracks.some((t) => t?.subId === sqId),
-    [listeningTracks],
-  );
-
-  // ────────────────────────────────────────────────────────────────
-  // 英語リスニング：選択肢の本文（問題文と解答欄を分離しないための対応表）
-  // ────────────────────────────────────────────────────────────────
-  //
-  // ご要望「問題文と解答欄を分離しないで／問題文(選択肢)と解答欄が同期するように」
-  // に対応するため、problem.text に書かれている ①〜④ の英文を
-  // 「設問ID → 選択肢本文の配列」に組み替える。
-  // 解答欄の選択肢ボタンがこの本文を表示するので、
-  // 読む場所と押す場所が一致し、左右のペインを往復する必要が無くなる。
-  //
-  // 元データは書き換えない（解説側では従来どおり問題文全文を見せたいため）。
-  const listeningOptionTexts = useMemo(
-    () => buildListeningOptionTexts(currentQuestion),
-    [currentQuestion],
-  );
-
-  /**
-   * 「問題文と解答欄を1つにまとめる」表示にするか（ご要望：分離しないで）。
-   *
-   * 音源つきの問題（＝英語リスニング）が対象。
-   *   ・第1問A … 選択肢の英文を解答カードのボタンに載せる
-   *   ・第1問B … 判断材料のイラストを解答カードに載せる（既にそうなっている）
-   * どちらも「設問文・選択肢・解答」を1枚のカードに揃え、
-   * 左ペインには共通のリード文（指示文・解き方のコツ）だけを残す。
-   *
-   * 化学など音源が無い教科では false のままなので、従来表示に影響しない。
-   */
-  const listeningUnified = listeningTracks.length > 0;
-
-  /**
-   * スマホのリスニングで「高さの配り方を逆にする」レイアウトを使うか。
-   *
-   * ご指摘（第1問B のスマホ画面）：
-   *   「選択肢のところが固定されてるけど、選択肢の下に空白合って無駄だから、
-   *     まず固定するならもっと下にもってきて、図が隠れてるのを防いでほしい」
-   *
-   * true のとき
-   *   ・解答ペイン（①〜④）… 中身の高さだけ取り、画面下部（下部ナビの真上）へ
-   *   ・問題文ペイン       … 残りの高さを全部もらう ＝ 図が大きく出る
-   * となる。
-   *
-   * ★PC・キーボード表示中・問題文の全画面表示中は使わない★
-   *   ・PC は左右分割なので高さの取り合いが起きない
-   *   ・キーボード表示中は入力欄をキーボードの上に見せる従来ロジックを優先
-   *   ・全画面表示中は問題文ペインが absolute inset-0 になり無関係
-   */
-  const listeningMobileSplit =
-    !isDesktop && listeningUnified && !isProblemExpanded && !isProblemCollapsed && !keyboardVisible;
-
-  /**
-   * いま解いている問に「図」があるか。
-   *
-   * ★余った高さを誰にあげるかを、これで切り替える★
-   *   第1問B（イラスト選択）… 図がある。余りは図にあげる（大きく見せたい）
-   *   第1問A・第3問・第2問  … 図が無い。余りを問題文ペインにあげても
-   *                            「再生ボタンの下に巨大な空白」になるだけ。
-   *
-   * ご要望「他の大問のUIも変えてくれない？第1問Aも第3問もこれから入る予定の
-   * 第2問とその他も」への対応の要。第1問B 用に入れた
-   * 「問題文ペイン＝flex-1」をそのまま他の大問に適用すると、
-   * 図が無いぶんの高さが丸ごと死んだ空白になってしまう
-   *（＝ご指摘いただいた「下に空白があって無駄」が場所を変えて再発する）。
-   */
-  const activeStepHasFigure = !!activeStepSub?.imageUrl;
-
-  /**
-   * リスニング（スマホ）で「図が無い大問」のレイアウトを使うか。
-   *
-   * true のとき
-   *   ・問題文ペイン … 中身の高さだけ（設問文＋再生ボタンで十分足りる）
-   *   ・解答ペイン   … 残りの高さをもらい、選択肢を下端（下部ナビの真上）へ寄せる
-   *   ・選択肢       … 余った高さのぶんだけ背を伸ばして押しやすくする
-   *                    （ただし伸ばしすぎない上限つき）
-   *
-   * 図がある第1問B は従来どおり listeningMobileSplit の配り方
-   *（問題文ペイン＝flex-1）を使う。
-   */
-  const listeningMobileNoFigure = listeningMobileSplit && !activeStepHasFigure;
+  // ★この呼び出し位置は動かさないこと★
+  // React はフックを「呼ばれた順番」で対応付ける。元の 17 個が
+  // あった場所でそのまま1回呼んでいるので、全体の呼び出し順は
+  // 切り出す前と完全に同じになっている。上下に動かすと順番が
+  // 変わって、別の問題の状態を読み違える形で静かに壊れる。
+  const {
+    mobileAnswerSubs,
+    safeMobileAnsIdx,
+    renderedAnswerGroups,
+    questionNeedsMathPalette,
+    isEnglishProse,
+    combinedHighlights,
+    inlineQuestionRows,
+    hideRedundantSubQuestionList,
+    inputNavSubs,
+    listeningTracks,
+    hasTrackFor,
+    listeningOptionTexts,
+    listeningUnified,
+    listeningMobileSplit,
+    listeningMobileNoFigure,
+  } = useQuestionDerived({
+    currentQuestion,
+    perStep,
+    activeStepSub,
+    focusedSubId,
+    highlights,
+    isDesktop,
+    isProblemExpanded,
+    isProblemCollapsed,
+    keyboardVisible,
+    mobileAnsIdx,
+  });
 
   // ────────────────────────────────────────────────────────────────
   // リスニング：回のはじまりに「問題の説明ページ」を出す
@@ -1228,143 +937,20 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
    * 解説画面に入る瞬間 = 解答提出の瞬間 として扱う。
    * 同じ問題を2度採点しないよう lastScoredQuestionRef でガード。
    */
-  const scoreCurrentQuestionIfNeeded = () => {
-    if (!currentQuestion) return null;
-
-    // ────────────────────────────────────────────────────────────────
-    // 採点の単位（ご要望「問1で1つの進捗、問2で1つの進捗」）
-    // ────────────────────────────────────────────────────────────────
-    //
-    // ・1問ずつモード（リスニング）… いま表示している1問だけを採点する。
-    //     「解答と解説を見る」を押すたびにその問の点が出るので、
-    //     4問まとめて採点されて何が合っていたのか分からない状態を解消する。
-    // ・従来モード（化学など）      … 大問の全小問をまとめて採点する。
-    //
-    // 二重採点のガードも単位に合わせる。大問IDだけで見ていると、
-    // 1問ずつモードでは問1を採点した時点で問2〜問4が
-    // 「もう採点済み」と判定されて0点のまま飛ばされてしまう。
-    const scoringKey = perStep && activeStepSub
-      ? stepScoreKey(currentQuestion.id, activeStepSub.id)
-      : currentQuestion.id;
-
-    if (perStep) {
-      if (run.perStep?.[scoringKey]) return null;
-    } else if (run.perQuestion[scoringKey]) {
-      return null;
-    }
-    if (lastScoredQuestionRef.current === scoringKey) return null;
-    lastScoredQuestionRef.current = scoringKey;
-
-    // 採点対象の小問。1問ずつモードでは表示中の1問だけ。
-    const subQuestions = perStep && activeStepSub
-      ? [activeStepSub]
-      : (currentQuestion.subQuestions || []);
-    const timeUsed = Math.max(0, Math.round(timeUsedRef.current));
-    const maxCombo = calcMaxCombo(subQuestions, answers);
-    const breakdown = scoreProblem(subQuestions, answers, {
-      timeLimit: questionTimeLimit,
-      timeUsed,
-      maxCombo,
-      runningCombo: run.runningCombo,
-    });
-
-    // 章コンボ倍率を適用
-    const multiplier = comboMultiplier(run.runningCombo);
-    const boostedScore = Math.floor(breakdown.finalScore * multiplier);
-    const finalBreakdown: ScoreBreakdown = { ...breakdown, finalScore: boostedScore };
-
-    // 章全体の状態を更新
-    const isAllCorrect =
-      breakdown.judgeableCount > 0 && breakdown.correctCount === breakdown.judgeableCount;
-    const nextRunningCombo = isAllCorrect ? run.runningCombo + 1 : 0;
-
-    // 採点済みの記録先。
-    //
-    // ★1問ずつモードの記録は perQuestion に入れない★
-    //   perQuestion のキーは「大問ID」であることを前提に、
-    //   進捗の引き継ぎ処理（progress.ts の backfillLegacyProgress）が
-    //   キーをそのまま大問IDとして数えている。ここに小問単位のキーを混ぜると
-    //   存在しない大問を「解いた」と数えて進捗が分母を超えてしまう。
-    //   そのため小問単位は perStep という別の入れ物に分ける。
-    const scoreRecord = { ...finalBreakdown, timeLimit: questionTimeLimit, timeUsed };
-    const nextRun: ChapterRunState = {
-      ...run,
-      totalScore: run.totalScore + boostedScore,
-      runningCombo: nextRunningCombo,
-      totalCorrect: run.totalCorrect + breakdown.correctCount,
-      totalJudgeable: run.totalJudgeable + breakdown.judgeableCount,
-      totalTimeSec: run.totalTimeSec + timeUsed,
-      perQuestion: perStep
-        ? run.perQuestion
-        : { ...run.perQuestion, [scoringKey]: scoreRecord },
-      perStep: perStep
-        ? { ...(run.perStep || {}), [scoringKey]: scoreRecord }
-        : run.perStep,
-    };
-    setRun(nextRun);
-    saveRun(chapter.id, mode, nextRun);
-
-    // ===== 学習進捗の記録（1点でも取れた大問は「解いた」として永続化） =====
-    // run state（quiz_run_*）は章を解き終えた時点で削除され、
-    // quiz_answers_* も章に入り直すと消えるため、
-    // 「採点したこの瞬間」に別台帳（solved_problems_v1_*）へ追記しておく。
-    // こうしないと、やり切った章ほど進捗から消えるという逆転が起きる。
-    //
-    // ★1問ずつモードでも記録の単位は「大問（回）」のまま★
-    //   画面の進み方を問単位にしても、台帳のキーは `章ID::大問ID` を変えない。
-    //   ここを小問単位に変えると、ホームの分母（章あたり14問・15問）と
-    //   分子の単位が食い違い、これまでの学習記録も全部「未着手」に戻ってしまう。
-    //   ご要望は「解き方・見え方」の話なので、記録の互換性は保つ。
-    try {
-      const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
-      markProblemSolved(uid, chapter.id, currentQuestion.id, boostedScore);
-
-      // localStorage への記録が済んだので、クラウドへの送信を予約する。
-      // 1問ごとに通信すると1授業で数千書き込みになるため、
-      // studySync 側でまとめて（デバウンスして）送る。
-      // 通信できなくても localStorage には残っているので学習は続く。
-      schedulePush();
-    } catch (e) {
-      // 進捗記録の失敗で学習そのものを止めない
-      console.error('[Quiz] markProblemSolved failed:', e);
-    }
-
-    // 復習リスト：この問題で間違えた設問（自動採点可能なもの）をキャプチャする。
-    // 記述式（descriptive）は自動採点不可なため対象外。
-    try {
-      const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
-      if (uid) {
-        const questionIndex = currentQuestionIndex + 1;
-        const wrongInputs: WrongAnswerInput[] = subQuestions
-          .filter((sq: any) => !isDescriptive(sq))
-          .filter((sq: any) => !isAnswerCorrect(sq, answers[sq.id]))
-          .map((sq: any) => ({
-            chapterId: chapter.id,
-            chapterTitle: chapter.title,
-            questionIndex,
-            questionId: currentQuestion.id,
-            subQuestionId: sq.id,
-            subLabel: sq.label,
-            questionText: currentQuestion.text,
-            correctAnswer: sq.correctAnswer,
-            wrongAnswer: (answers[sq.id] || '').trim(),
-          }));
-        if (wrongInputs.length > 0) captureWrongAnswers(uid, wrongInputs);
-      }
-    } catch (e) {
-      console.error('[Quiz] captureWrongAnswers failed:', e);
-    }
-
-    if (onScored) {
-      onScored(finalBreakdown, {
-        timeLimit: questionTimeLimit,
-        timeUsed,
-        questionId: currentQuestion.id,
-      });
-    }
-
-    return { breakdown: finalBreakdown, nextRun, addedScore: boostedScore };
-  };
+  // ────────────────────────────────────────────────────────────────
+  // 採点処理の本体は utils/quizScoring.ts へ
+  // ────────────────────────────────────────────────────────────────
+  // ここに 137 行の採点コードが並んでいた。フックを1つも含まない
+  // ただの関数だったので（実測：フック呼び出し0件）、切り出しても
+  // フックの呼び出し順には影響しない。
+  //
+  // 呼び出し方は切り出す前とまったく同じ（scoreCurrentQuestionIfNeeded()）。
+  const scoreCurrentQuestionIfNeeded = createScoreCurrentQuestion({
+    currentQuestion, perStep, activeStepSub,
+    run, setRun, lastScoredQuestionRef, timeUsedRef,
+    answers, questionTimeLimit, chapter, mode, isGuest,
+    currentQuestionIndex, onScored,
+  });
 
   /**
    * 章のラン全体が終わった時に Firestore へ章ベストを送る
@@ -1502,54 +1088,36 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     onBack();
   };
 
+  // ────────────────────────────────────────────────────────────────
+  // 解答解説の画面の JSX は components/ExplanationScreen.tsx へ
+  // ────────────────────────────────────────────────────────────────
+  // ここに 50 行の JSX が並んでいた。フックを1つも含まない
+  // ただの JSX だったので（実測：フック呼び出し0件）、
+  // 切り出してもフックの呼び出し順には影響しない。
   if (showingExplanation) {
-    /*
-      解説に渡すスコア。
-      ─────────────────────────────────────────────
-      1問ずつモード（リスニング）では、採点も「問ごと」に
-      run.perStep へ記録している（run.perQuestion は大問単位の台帳のまま）。
-      解説画面のスコア表示もその問の記録を出さないと、
-      「問2を解いたのに問1の点数が出る」ことになる。
-    */
-    const stored = perStep && activeStepSub
-      ? run.perStep?.[stepScoreKey(currentQuestion.id, activeStepSub.id)]
-      : run.perQuestion[currentQuestion?.id];
     return (
-      <>
-        <Explanation 
-          mode={mode} 
-          chapter={chapter} 
-          answers={answers} 
-          onBack={() => { setShowingExplanation(false); if (onExplanationChange) onExplanationChange(false); }} 
-          isGuest={isGuest}
-          singleQuestionIndex={currentQuestionIndex}
-          onNextQuestion={handleNext}
-          isLastQuestion={isLastQuestion}
-          isMobileView={isMobileForExplanation}
-          /* ご要望「だから解説も修正な」：1問ずつ解いたのだから、
-             解説もその問だけに絞る（問2以降の正解が先に見えないようにする）。 */
-          focusSubQuestionId={perStep && activeStepSub ? activeStepSub.id : null}
-          scoreBreakdown={stored || null}
-          scoreMeta={stored ? { timeLimit: stored.timeLimit, timeUsed: stored.timeUsed } : null}
-          totalScore={run.totalScore}
-          runningCombo={run.runningCombo}
-        />
-        {scoreAnimationData && (
-          <FloatingScoreAnimation
-            breakdown={scoreAnimationData.breakdown}
-            totalScore={scoreAnimationData.totalScore}
-            isVisible={showScoreAnimation}
-          />
-        )}
-        {/* 順位が動くのは「採点した瞬間」＝この解説画面へ切り替わる瞬間なので、
-            実況バナーは解説画面側にも置く。ここに無いと肝心の順位変動が
-            一度も表示されないことになる。 */}
-        <OvertakeBanner
-          delta={rankDeltaValue}
-          rank={liveStanding?.rank ?? 0}
-          triggerKey={run.totalScore}
-        />
-      </>
+      <ExplanationScreen
+        mode={mode}
+        chapter={chapter}
+        answers={answers}
+        isGuest={isGuest}
+        currentQuestion={currentQuestion}
+        currentQuestionIndex={currentQuestionIndex}
+        perStep={perStep}
+        activeStepSub={activeStepSub}
+        run={run}
+        isLastQuestion={isLastQuestion}
+        isMobileForExplanation={isMobileForExplanation}
+        handleNext={handleNext}
+        onBackFromExplanation={() => {
+          setShowingExplanation(false);
+          if (onExplanationChange) onExplanationChange(false);
+        }}
+        scoreAnimationData={scoreAnimationData}
+        showScoreAnimation={showScoreAnimation}
+        rankDeltaValue={rankDeltaValue}
+        liveStanding={liveStanding}
+      />
     );
   }
 
@@ -1568,174 +1136,42 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     をまとめ、解答中の画面からはこれらを撤去する。
     そのぶん解答画面は「問題＋選択肢が1画面に収まる」表示になる。
   */
+  // ────────────────────────────────────────────────────────────────
+  // リスニングの「問題の説明ページ」の JSX は components/ListeningBriefing.tsx へ
+  // ────────────────────────────────────────────────────────────────
+  // ここに 64 行の JSX が並んでいた。フックを1つも含まない
+  // ただの JSX だったので（実測：フック呼び出し0件）、
+  // 切り出してもフックの呼び出し順には影響しない。
   if (showingBriefing && listeningUnified && currentQuestion) {
-    const lead = buildListeningLeadText(currentQuestion.text);
-    const difficulty = extractListeningDifficulty(lead);
     return (
-      <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40">
-        {/* ヘッダー（戻る＝単元選択へ） */}
-        <div className="flex-none flex items-center gap-2 md:gap-4 p-3 md:p-4 bg-white border-b border-gray-200">
-          <button
-            onClick={handleExit}
-            title="単元選択に戻る"
-            aria-label="単元選択に戻る"
-            className="flex items-center justify-center p-1.5 md:p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors shrink-0"
-          >
-            <ArrowLeft size={18} className="md:w-5 md:h-5" aria-hidden="true" />
-          </button>
-          <div className="min-w-0 flex-1">
-            <h2 className="text-sm md:text-xl font-handwriting text-[#2C3E50] font-bold truncate">
-              {chapter.abstractTitle}
-            </h2>
-            <div className="text-[10px] md:text-xs text-gray-500 font-bold mt-0.5">
-              {mode === 'mini_test' ? '小テスト' : '演習問題'}
-            </div>
-          </div>
-        </div>
-
-        {/* 説明本文 */}
-        <div className="flex-1 overflow-y-auto p-5 md:p-10">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="font-bold text-white text-xs bg-[#A9CCE3] py-1 px-3 rounded-full">
-                  この回の説明
-                </span>
-                {difficulty && (
-                  <span className="text-[11px] font-bold text-gray-400">
-                    難易度：{difficulty}
-                  </span>
-                )}
-              </div>
-              <div className="text-[15px] md:text-base leading-[1.9] text-gray-800 font-modern break-words [overflow-wrap:anywhere]">
-                <ExplanationBody text={stripListeningDifficulty(lead)} />
-              </div>
-              <p className="mt-5 text-xs text-gray-400 leading-relaxed">
-                この説明は解答中の画面には出ません。落ち着いて読んでから始めてください。
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* 開始ボタン（下部固定・親指で押しやすい位置） */}
-        <div className="flex-none bg-white border-t border-gray-200 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-          <div className="max-w-2xl mx-auto">
-            <button
-              onClick={() => setShowingBriefing(false)}
-              className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-bold tracking-wider text-sm bg-[#2C3E50] text-white active:bg-[#1B2631] hover:bg-[#1B2631] shadow-md transition-all duration-200 cursor-pointer"
-            >
-              <span>問題をはじめる</span>
-              <ChevronRight size={16} className="stroke-[2.5]" />
-            </button>
-          </div>
-        </div>
-      </div>
+      <ListeningBriefing
+        currentQuestion={currentQuestion}
+        chapterAbstractTitle={chapter.abstractTitle}
+        mode={mode}
+        handleExit={handleExit}
+        onStart={() => setShowingBriefing(false)}
+      />
     );
   }
 
   return (
     <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40">
       
-      {/*
-        Header (Fixed)
+      {/* ヘッダー帯（単元名・スコア・順位・進捗）の JSX は
+          components/QuizHeader.tsx へ切り出した。
+          「入力中だけ隠す」条件もあちらが持っている（PC には掛からない）。 */}
+      <QuizHeader
+        chapterAbstractTitle={chapter.abstractTitle}
+        mode={mode}
+        isDesktop={isDesktop}
+        keyboardVisible={keyboardVisible}
+        handleExit={handleExit}
+        run={run}
+        liveStanding={liveStanding}
+        progressPosition={progressPosition}
+        progressTotal={progressTotal}
+      />
 
-        ★B-3：解答を打っている間だけ、上部の帯を引っ込める★
-        ─────────────────────────────────────────────────────
-        ご指摘：
-          「解答打つ時にこんなに画面塞がれるとしんどい
-            (ア) 前へ 1/9 次へ 完了のところは必要だけど、
-            それ以外の☑️とか色々消せないの？
-            どちらにせよこれだと回答打ちづらい」
-
-        ■ まず画面の占有を、誰が出しているかで分けて数えた
-          （いただいた画面／844px 高さ換算）
-            アプリのヘッダー（単元名・スコア・1/4）    7%  ← アプリ側
-            タイマーバー（残り 6:10）                3%  ← アプリ側
-            問題ヘッダー（Q1 問題文・たたむ・全画面）   5%  ← アプリ側
-            問題文＋解答欄（★本体★）               25%
-            ブラウザの操作バー（< > ↻ ⇧ ⋮）          6%  ← ブラウザ側
-            キーボードの ∧ ∨ ☑️ の行                6%  ← ★ブラウザ側★
-            かなキーボード本体                      48%  ← ブラウザ側
-
-        ■ ★正直に書きます：☑️ の行はこちらから消せません★
-          お尋ねの「☑️とか」の行は、キーボード（IME）と
-          ブラウザが出している部分で、Webページ側の CSS や
-          JavaScript からは操作できません。合計 60% がここです。
-          「消せます」と書くのは嘘になるので書きません。
-
-        ■ できること＝アプリ側の 15%（約126px）を入力中だけ空ける
-          ヘッダー・タイマー・問題ヘッダーは、
-          文字を打っている最中には読む必要がないものです。
-          keyboardVisible の間だけ引っ込めると
-            本体 25% → 40%（211px → 337px、約1.6倍）
-          になります。
-
-        ■ 消さないもの
-          ・「(ア) 前へ 1/9 次へ 完了」バー … 必要と明言されたので残す
-          ・入力欄と問題文               … 本体
-          ・ヘッダーの中身そのもの         … 消さずに「隠す」だけ。
-            「完了」でキーボードが閉じれば即座に元に戻る。
-        PC（isDesktop）には一切かからない条件にしてある。
-      */}
-      <div className={`flex-none p-2 md:p-6 border-b border-gray-200 bg-white shadow-sm z-10 flex items-center justify-between gap-2 md:gap-4 ${
-        !isDesktop && keyboardVisible ? 'hidden' : ''
-      }`}>
-        <div className="flex items-center text-left gap-2 md:gap-4 min-w-0">
-          <button 
-            onClick={handleExit}
-            title="単元選択に戻る"
-            aria-label="単元選択に戻る"
-            className="flex items-center justify-center p-1.5 md:p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors shrink-0"
-          >
-            <ArrowLeft size={18} className="md:w-5 md:h-5" aria-hidden="true" />
-          </button>
-          <div className="min-w-0 flex-1">
-            <h2 className="text-sm md:text-xl font-handwriting text-[#2C3E50] font-bold truncate">
-              {chapter.abstractTitle}
-            </h2>
-            <div className="text-[10px] md:text-xs text-gray-500 font-bold mt-0.5">
-              {mode === 'mini_test' ? '小テスト' : '演習問題'}
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2 shrink-0">
-          {/* 現在順位ピル（臨場感）。
-              既存のスコアピル・進捗ピルと同じ「丸いピル」の形・同じ色域にそろえ、
-              並べても違和感が出ないようにしている。ゲスト時は standing が null で非表示。 */}
-          <LiveStandingPill standing={liveStanding} />
-
-          {/* 現在の累積スコアピル（スコア機能の視覚フィードバック） */}
-          <div className="flex items-center gap-1.5 bg-[#F4D03F]/15 border border-[#F4D03F]/30 rounded-full px-2 py-1 md:px-3 md:py-1.5" title={`累積スコア / 連続正解 ${run.runningCombo}`}>
-            <Trophy size={12} className="text-[#D4A017]" />
-            <div className="font-mono font-bold text-[#1B2631] text-xs md:text-sm tabular-nums">
-              {run.totalScore}
-            </div>
-            {run.runningCombo >= 3 && (
-              <span className="text-[10px] font-bold text-orange-500 ml-0.5">🔥{run.runningCombo}</span>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2 md:gap-3 bg-gray-100 rounded-full px-3 py-1 md:px-4 md:py-1.5 shrink-0">
-            <div className="text-[10px] md:text-sm text-gray-500 font-bold hidden sm:block">進捗</div>
-            {/* 分母は「今回解く範囲の問題数」。
-                1回分（例：第3回演習）だけを選んで解いているときに
-                章全体の 14 が分母になると、あと13回残っているように見えて
-                いつまでも終わらない印象になるため。
-
-                ★リスニング（1問ずつモード）では「問」を数える★
-                ご要望「問1で1つの進捗、問2で1つの進捗」に合わせ、
-                4問ある回では 1/4 → 2/4 → 3/4 → 4/4 と動く。
-                以前は4問まとめて1件だったので 1/1 のまま動かず、
-                解いた実感がまったく残らなかった。 */}
-            <div className="font-mono font-bold text-[#2C3E50] text-xs md:text-base">
-              <span className="text-sm md:text-lg">{progressPosition}</span>
-              <span className="text-gray-400 mx-1">/</span>
-              <span>{progressTotal}</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* タイマーバー（ヘッダー直下、問題本文の上） ー 控えめな細いバー
           ★B-3：入力中は隠す（3%）★
@@ -1791,1145 +1227,92 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           PC は従来どおり「問題＝左 / 解答＝右」。 */}
       <div className={`flex-1 flex flex-col lg:flex-row overflow-hidden relative`}>
 
-        {/* Section 1: Problem Text
-            ★左右比は従来どおり 58% / 42%（勝手に変えない、というご指摘に対応）。 */}
-        {/* スマホの高さ制御（ご要望「問題文が占領しすぎて入力しづらい」対策）：
-            ・通常は max-h-[50%]（親＝ペインを分け合う箱の半分）。
-              変遷：50vh → 42dvh → 50%。
-                50vh  … iOS Safari の vh は URLバー込みの「最大の画面高さ」
-                        基準なので、実表示領域では半分を大きく超えていた。
-                42dvh … 実表示高さ基準にはなったが、基準がビューポート全体の
-                        ままだったので、ヘッダーと下部ナビを引いた「実際に
-                        ペインが分け合える高さ」に対しては 54〜56% を先取り
-                        してしまい、解答欄が下部ナビの下へ押し出された。
-                50%   … 基準を親に変更。ヘッダー・ナビを自動的に除いた上で
-                        ちょうど半分になるので、ビューポートが変わっても、
-                        問題文が18文字でも1031文字でも取り分が変わらない。
-              短い問題は h-auto なので半分も使わず、余りは解答側に回る。
-            ・ソフトキーボード表示中は max-h-[24vh] に自動で縮め、
-              入力欄と入力内容がキーボードの上に必ず見えるようにする
-            ・「たたむ」で見出しだけにして解答欄を最大化できる */}
         {/*
-          ★リスニング（スマホ）は「高さの取り合い」を逆向きにする★
-          ------------------------------------------------------------------
-          ご指摘：
-            「選択肢のところが固定されてるけど、選択肢の下に空白合って
-              無駄だから、まず固定するならもっと下にもってきて、
-              図が隠れてるのを防いでほしい」
-
-          ■ 何が起きていたか
-            以前は
-              ・問題文ペイン … max-h-[40vh]（上限を先に決める）
-              ・解答ペイン   … flex-1（余った高さを全部もらう）
-            だった。すると
-              ・問題文ペインは 40vh で打ち切られ、第1問B の
-                4コマイラストが下半分から切れる（ご指摘「図が隠れてる」）
-              ・一方で解答ペインは ①〜④ の4ボタンしか無いのに
-                余り高さを全部受け取るので、選択肢カードの下に
-                大きな空白が残る（ご指摘「選択肢の下に空白合って無駄」）
-            という、高さの配り方が完全に逆の状態だった。
-
-          ■ どう直したか（listeningMobileSplit）
-            取り合いを入れ替える。
-              ・解答ペイン   … flex-none（中身のぶんだけ）＋ 画面下に寄せる
-              ・問題文ペイン … flex-1（余った高さを全部もらう）
-            これで
-              ・選択肢カードは下部ナビの真上まで下がる（＝もっと下に）
-              ・カード下の空白が消える（中身の高さしか取らないため）
-              ・浮いた高さはそのまま問題文ペイン＝図に回る
-            の3つが同時に成立する。
-
-          化学・数学など（listeningUnified=false）は従来どおり
-          「問題文に上限・解答に残り」のままで、見た目は変わらない。
+          Section 1: 問題文ペイン（左 58% ／スマホでは上）
+          実体は components/ProblemPane.tsx に切り出した。
+          高さの取り合い（listeningMobileSplit）や max-h の根拠コメントも
+          そちらに一緒に移してある。
         */}
-        <div className={`
-          lg:w-[58%] flex flex-col bg-white border-b lg:border-b-0 lg:border-r border-gray-200 transition-all duration-300
-          ${listeningMobileSplit && !listeningMobileNoFigure ? 'flex-1 min-h-0' : 'flex-none'}
-          ${isDesktop
-            ? 'h-full'
-            : isProblemExpanded
-              ? 'absolute inset-0 z-30 h-full shadow-lg'
-              : isProblemCollapsed
-                ? 'h-auto shadow-md relative z-20'
-                : keyboardVisible
-                  /*
-                    ★B-3：入力中の問題文の取り分★
-                    ヘッダー・タイマー・見出しを隠して空いた約126px を、
-                    問題文と解答欄で分け合う。ここを 24vh のままにすると
-                    浮いた高さの大半が問題文側に流れてしまうため、
-                    上限は据え置きにして余りは解答欄（flex-1）へ渡す。
-                    ＝打っている欄と、直前に読んだ問題文の両方が見える。
-                  */
-                  ? 'max-h-[24vh] h-auto shadow-md relative z-20'
-                  : listeningMobileNoFigure
-                    // 図が無い大問（第1問A・第3問・第2問）は中身のぶんだけ。
-                    // 余った高さは下の解答ペインに渡して選択肢を押しやすくする。
-                    ? 'h-auto max-h-[46dvh] shadow-md relative z-20'
-                    : listeningMobileSplit
-                      ? 'shadow-md relative z-20'
-                      /*
-                        ★ご指摘「問題によって問題文の長さが違うから、コードで形式的に
-                          作ると問題によっておかしくなる可能性がある」への修正★
+        <ProblemPane
+          currentQuestion={currentQuestion}
+          currentQuestionIndex={currentQuestionIndex}
+          isDesktop={isDesktop}
+          isProblemExpanded={isProblemExpanded}
+          setIsProblemExpanded={setIsProblemExpanded}
+          isProblemCollapsed={isProblemCollapsed}
+          setIsProblemCollapsed={setIsProblemCollapsed}
+          keyboardVisible={keyboardVisible}
+          listeningUnified={listeningUnified}
+          listeningMobileSplit={listeningMobileSplit}
+          listeningMobileNoFigure={listeningMobileNoFigure}
+          listeningSteps={listeningSteps}
+          safeStepIndex={safeStepIndex}
+          activeStepSub={activeStepSub}
+          listeningTracks={listeningTracks}
+          hasTrackFor={hasTrackFor}
+          isEnglishProse={isEnglishProse}
+          questionNeedsMathPalette={questionNeedsMathPalette}
+          figureNumberMap={figureNumberMap}
+          combinedHighlights={combinedHighlights}
+          highlights={highlights}
+          setHighlights={setHighlights}
+          handleTextSelection={handleTextSelection}
+          inlineQuestionRows={inlineQuestionRows}
+          hideRedundantSubQuestionList={hideRedundantSubQuestionList}
+          problemScrollRef={problemScrollRef}
+        />
 
-                        以前は max-h-[42dvh]。名前は「画面の42%」だが、実際に
-                        ペインが分け合えるのはヘッダーと下部ナビを引いた残りだけ。
-                          360x600 → 使える高さ 453px なのに 42dvh = 252px（＝56%）
-                          390x664 → 使える高さ 517px なのに 42dvh = 279px（＝54%）
-                        つまり「42%」と書きながら実質は毎回 55% 前後を先取りしていた。
-                        残り 201px しか無い解答ペインに 285px の解答カードが入らず、
-                        (ア)(イ)(ウ)(エ) が下部ナビの下へ押し出されていた
-                        （実測：c5_7[0] 360x600 で 見えている選択肢 0/4）。
-
-                        ★直し方★ 基準をビューポートから「親（ペインを分け合う箱）」に
-                        変える。max-h-[50%] は親の高さの50%なので、ヘッダーと
-                        ナビを自動的に除いた上でのちょうど半分になる。
-                        解答ペインは flex-1 なので必ず残り半分以上を受け取る。
-                        これで問題文が18文字でも1031文字でも取り分は変わらない
-                        （＝問題ごとに壊れない）。短い問題は h-auto なので
-                        半分も使わず、余りは解答側に回る。
-                      */
-                      : 'max-h-[50%] h-auto shadow-md relative z-20'}
-        `}>
-          {/* 問題ペインの見出し行（Q1・問題文・たたむ・全画面で読む）。
-              ★B-3：入力中は隠す（5%）★
-                打っている間は「たたむ」「全画面で読む」を押さないし、
-                Q1 の表示も読む必要がない。浮いた高さは問題文と解答欄に回る。
-                「完了」でキーボードが閉じれば元に戻るので、機能は失われない。
-                PC（isDesktop）は対象外。 */}
-          <div className={`flex items-center justify-between p-2 md:p-4 border-b border-gray-100 bg-blue-50/30 ${
-            !isDesktop && keyboardVisible ? 'hidden' : ''
-          }`}>
-            <div className="flex items-center gap-2 md:gap-3">
-              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-[#A9CCE3]/20 text-[#A9CCE3] font-bold flex items-center justify-center text-[10px] md:text-sm border-2 border-[#A9CCE3]">
-                Q{currentQuestionIndex + 1}
-              </div>
-              <span className="font-bold text-[#2C3E50] text-sm md:text-base">問題文</span>
-              
-              {highlights.length > 0 && (
-                <button 
-                  onClick={() => setHighlights([])} 
-                  className="text-[10px] md:text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-200 hover:bg-amber-100 transition-colors whitespace-nowrap"
-                >
-                  ハイライト消去
-                </button>
-              )}
-            </div>
-            
-            {!isDesktop && (
-              <div className="flex items-center gap-1.5">
-                {/* 問題文を見出しだけにたたむ／戻す。高校生が迷わないよう
-                    チップ型ボタン＋矢印で「押せる」ことを明示する。 */}
-                {!isProblemExpanded && (
-                  <button
-                    onClick={() => setIsProblemCollapsed(!isProblemCollapsed)}
-                    className="flex items-center gap-0.5 rounded-md border border-gray-200 bg-white px-2 py-1 text-[11px] font-bold text-gray-600 hover:bg-gray-50 whitespace-nowrap"
-                  >
-                    {isProblemCollapsed ? (
-                      <>問題文を表示<ChevronDown size={12} /></>
-                    ) : (
-                      <>たたむ<ChevronUp size={12} /></>
-                    )}
-                  </button>
-                )}
-                <button
-                  onClick={() => {
-                    setIsProblemExpanded(!isProblemExpanded);
-                    setIsProblemCollapsed(false);
-                  }}
-                  className="flex items-center rounded-md border border-gray-200 bg-white px-2 py-1 text-[11px] font-bold text-gray-600 hover:bg-gray-50 whitespace-nowrap"
-                >
-                  {isProblemExpanded ? '閉じる' : '全画面で読む'}
-                </button>
-              </div>
-            )}
-          </div>
-          
-          {/*
-            ★リスニング（スマホ）は、この中も「高さの連鎖」を通す★
-            図を「余った高さいっぱい」に伸ばすには、
-              問題文ペイン（flex-1）
-                → このスクロール枠（flex-1 min-h-0）
-                  → 内側ラッパ（flex flex-col min-h-0）
-                    → 問ブロック（flex flex-col min-h-0）
-                      → QuestionFigure fill
-            の全段で flex と min-h-0 が繋がっている必要がある。
-            どこか1段でも高さ auto があると <img> の max-height:100% が
-            none 扱いになり、図が原寸で伸びて枠からはみ出す（＝隠れる）。
-            余白も p-4 → px-3 pt-2 に詰めて、そのぶんを図に回す。
-          */}
-          <div 
-            ref={problemScrollRef}
-            className={`${!isDesktop && !isProblemExpanded && isProblemCollapsed ? 'hidden' : ''} flex-1 min-h-0 overflow-y-auto md:p-8 text-[15px] leading-[1.85] md:text-base md:leading-relaxed text-gray-800 break-words [overflow-wrap:anywhere] ${
-              listeningMobileSplit ? 'flex flex-col px-3 pt-2 pb-3' : 'p-4'
-            } ${
-              // 数学の問題（requiresMathPalette 付き）は、数式が/や^の
-              // 生テキストではなく教科書と同じ形で出るため、
-              // 数式フォント＋一回り大きい表示（.math-content）で読みやすくする。
-              questionNeedsMathPalette ? 'font-math math-content' : 'font-modern'
-            }`}
-            onMouseUp={handleTextSelection}
-            onTouchEnd={handleTextSelection}
-            title="テキストを選択するとハイライトできます"
-          >
-            <div className={`max-w-prose md:max-w-none ${listeningMobileSplit ? 'flex min-h-0 flex-1 flex-col' : ''}`}>
-              {/* 問題文に含まれる Markdown テーブル（実験結果の表など）は
-                  ExplanationBody を通して本物の <table> として描画する。
-
-                  ★英語リスニング：ここに出すのは「共通のリード文」だけ。
-                    問1〜問4のブロックは落とす。
-
-                    ■ 不具合だった点（ご指摘：「全部の問いがまとまってて
-                      どの問いを解いているかが分からない」）
-                      以前は cleanQuestionText を先に通していた。これは
-                      「行頭の 問N を消す」処理なので、切り落とす目印である
-                      問N が先に消えてしまい、問1〜問4が全部残っていた。
-                      buildListeningLeadText が正しい順序
-                      （問Nで切る → 定型ブロックを落とす）を保証する。
-                    いま解いている問の見出し・音源・図は、このリード文より
-                    「上」に出す（下記）。
-                    リスニング以外（listeningUnified=false）は従来どおり全文。 */}
-
-              {/*
-                ★英語リスニング：いま解いている問の「問題」をペインの先頭に出す
-                ------------------------------------------------------------------
-                ご指摘：
-                  「再生ボタンはさ、左の問題の文章のところにおいてほしいよね。
-                    何で解答の方に置くの？第１問の図も何で解答の方にあるの？
-                    問題の方（左側）においてっていったよね」
-
-                そこで
-                  ・いま解いている問の見出し（問2 …）
-                  ・その問の音源（再生／2回／速度）
-                  ・その問の図（第1問B のイラスト）
-                をすべて問題文ペイン＝左側にまとめる。
-                右の解答ペインには選択肢（①〜④）だけが残るので、
-                「どの問を解いているのか」も左を見れば必ず分かる。
-
-                さらに、毎回同じ指示文（リード文）より前に置く。
-                後ろに置くと「スクロールしてから再生を押す」ことになり、
-                ご要望「スクロールしてわざわざ答えるのめんどい」に反する。
-              */}
-              {listeningUnified && activeStepSub && (() => {
-                const stepMarker = stepLabelOf(activeStepSub, safeStepIndex);
-                const { body } = splitQuestionLabel(activeStepSub.label || '', stepMarker);
-                /*
-                  ★短い設問文は見出しと同じ行に載せる（ご要望）★
-                  ------------------------------------------------------------
-                  ご指摘：
-                    「発話に合うイラストっていう文字をさ、問4（全4問中4問目）の
-                      右にもってこれば、もう少し図を上にできるでしょ」
-
-                  第1問B の設問文は「発話に合うイラスト」の一言だけなのに、
-                  見出し行の下に独立した <p> として置かれていた。
-                  そのため
-                    ・見出し行（問4 …）
-                    ・設問文行（発話に合うイラスト）
-                  で2行ぶんの高さを使い、そのぶん図が下に押し出されて
-                  画面外で切れていた。
-
-                  そこで「1行に収まる短さ（全角20文字相当まで）」の設問文だけ
-                  見出し行へ寄せ、丸ごと1行ぶん節約して図を上げる。
-
-                  ★長い設問文（第1問A・第3問の英文の問い）は従来どおり
-                    下の段落に置く★
-                    「話者がマイクに伝えたい内容に最も近い英文」のような
-                    長い設問文まで見出し行に押し込むと、逆に見出し行が
-                    2〜3行に折り返して高さが増えてしまう（本末転倒）。
-                */
-                const inlineBody = body && body.length <= 20 ? body : '';
-                const blockBody = inlineBody ? '' : body;
-                /*
-                  ★英文法：英文そのものを必ず出す（ご要望11）★
-                  ------------------------------------------------------------
-                  ご指摘（原文）：
-                    「英文法は普通に英文ないと問題成立しやんのやけど
-                      音声のボタンを少し小さくした上で、英文しっかり載せて。」
-
-                  ■ なぜ英文が消えていたのか
-                    英文法の問題は音源（audioTracks）を持つので、この画面は
-                    リスニングと同じ扱い（listeningUnified = true）になる。
-                    その結果、下の
-                      {!listeningUnified && ( …question.text を描画… )}
-                    の分岐で question.text が丸ごと描画されなくなっていた。
-                    リスニングは「英文は音声にしか無い・本文はリード文だけ」なので
-                    これが正しいのだが、英文法は question.text の中の
-                      問1　I ______ to Kyoto three times, so I can show you around.
-                    が唯一の英文なので、消すと空所補充なのに空所のある文が無い、
-                    つまり問題として成立しない状態になっていた。
-                    代わりに出ている設問文（label）は「経験の現在完了」という
-                    文法項目名だけで、英文はどこにも含まれない（全20問で実測）。
-
-                  ■ 科目で分岐しない
-                    ご指摘「コードで形式的に作ると問題によっておかしくなる
-                    可能性がある」を踏まえ、「英文法なら出す」ではなく
-                    「その問題の本文に、その小問番号の英文が実在するなら出す」
-                    という問題ごとの判定にする。
-                    実測では英文法20問すべてで英文が取れ、
-                    リスニング44問すべてで取れない（＝自動的に無効になる）。
-                    将来データが変わっても、英文がある問題だけで有効になる。
-                */
-                const stepSentence = findSubQuestionSentence(currentQuestion, activeStepSub);
-                return (
-                  <div className={listeningMobileSplit ? 'flex min-h-0 flex-1 flex-col' : 'mb-4'}>
-                    {/* いま解いている問の見出し。回の中で迷子にならないよう
-                        「問2 / 全4問」まで添える。 */}
-                    <div className={`flex items-center gap-2 flex-wrap ${inlineBody ? 'mb-2' : 'mb-2.5'}`}>
-                      <span className="font-bold text-white text-sm bg-[#2C3E50] py-1.5 px-3.5 rounded-lg shadow-sm shrink-0">
-                        {formatText(stepMarker)}
-                      </span>
-                      {listeningSteps.length > 1 && (
-                        <span className="text-[11px] font-bold text-gray-400 shrink-0">
-                          （全{listeningSteps.length}問中 {safeStepIndex + 1}問目）
-                        </span>
-                      )}
-                      {/* 短い設問文はここ（問N の右）に置く。行を増やさない。 */}
-                      {inlineBody && (
-                        <span className="min-w-0 text-[14px] md:text-base font-bold leading-snug text-gray-800 font-modern break-words [overflow-wrap:anywhere]">
-                          {formatText(inlineBody, combinedHighlights, { prose: isEnglishProse })}
-                        </span>
-                      )}
-                    </div>
-
-                    {blockBody && (
-                      <p className="text-[15px] md:text-base leading-relaxed text-gray-800 font-modern break-words [overflow-wrap:anywhere] mb-3">
-                        {formatText(blockBody, combinedHighlights, { prose: isEnglishProse })}
-                      </p>
-                    )}
-
-                    {/*
-                      ★英文法の英文（空所つき）★
-                      これが「解く対象」そのものなので、設問文（文法項目名）より
-                      目立たせ、音源ボタンより上＝いちばん先に目に入る位置に置く。
-                      薄い枠の箱にして「ここが読むべき英文」と分かるようにする。
-                      prose: true で組むので、英単語がセリフ体に化けない。
-                    */}
-                    {stepSentence && (
-                      <p className="mb-2.5 rounded-lg border border-gray-200 bg-gray-50/80 px-3 py-2 text-[16px] md:text-base font-bold leading-relaxed text-gray-900 font-modern break-words [overflow-wrap:anywhere]">
-                        {formatText(stepSentence, combinedHighlights, { prose: true })}
-                      </p>
-                    )}
-
-                    {/* この問の音源。問題文のすぐ下＝「問題のところ」に横帯で置く。
-                        横帯なのでボタンはどれも 44px 以上あり、指で押しやすい。
-                        ★枠つきの箱には入れない（ご指摘：「再生ボタンも置くのは
-                          いいけどそのせいで問題と選択肢のボタンが見えなくなってる」）。
-                          箱の枠と余白のぶん縦幅を食っていたので、ボタン列だけの
-                          スリムな1行にして、設問文・図・選択肢に高さを譲る。 */}
-                    {hasTrackFor(activeStepSub.id) && (
-                      <ListeningAudioPlayer
-                        tracks={listeningTracks}
-                        focusSubId={activeStepSub.id}
-                        variant="inline"
-                        orientation="horizontal"
-                        mode="practice"
-                        tone="light"
-                        readCount={(currentQuestion as any).readCount || 2}
-                      />
-                    )}
-
-                    {/*
-                      この問の図（第1問B のイラスト①〜④）。
-                      選択肢の中ではなく問題側に置く（ご要望）。
-
-                      ★スマホの高さ上限をやめる（ご指摘「図が隠れてる」）★
-                      以前は max-h-[22vh] で頭打ちにしていた。問題文ペインが
-                      40vh で固定だった時代に「見出し＋音源＋図」を無理に
-                      押し込むための数字だったが、
-                        ・4コマイラストは縦にも情報があるので 22vh では
-                          下2コマがほぼ潰れる
-                        ・親側が overflow-y-auto なので、はみ出した分は
-                          スクロールしないと見えない＝実質「隠れている」
-                      という状態になっていた。
-
-                      いまは問題文ペインが flex-1（余り高さを全部もらう）に
-                      なったので、図は fill で「もらえた高さいっぱい」まで
-                      伸ばす。縦を基準に縮小されるので、4コマ全体が
-                      1画面に収まる。
-
-                      ★ご要望「画像のある問題の画像が小さいので確認して。
-                        クリックしてズーム機能はいらない。」★
-                      これまでは「小さくてもタップで拡大できる」前提で
-                      max-h-[22vh]（390x844 で 186px）という強い上限を
-                      掛けていた。拡大機能を外すので、この上限だと
-                      4コマの文字が読めなくなる。
-                      上限自体は「音源・選択肢と同時に見える」ために必要なので、
-                      22vh → 42vh（=354px、ほぼ横幅と同じ）まで緩める。
-                    */}
-                    {activeStepSub.imageUrl && (
-                      <QuestionFigure
-                        src={activeStepSub.imageUrl}
-                        caption={activeStepSub.imageCaption}
-                        tone="light"
-                        // 図が高さ上限に張り付いている（実測で余り 0px）ので、
-                        // 上余白も 12px → 8px に詰めて図の取り分に回す。
-                        className={listeningMobileSplit ? 'mt-2' : 'mt-3'}
-                        fill={listeningMobileSplit}
-                        imgClassName={
-                          listeningMobileSplit ? '' : 'max-h-[42vh] md:max-h-[52vh] object-contain'
-                        }
-                      />
-                    )}
-
-                  </div>
-                );
-              })()}
-
-              {/* ★リスニング：毎回同じリード文（回の説明）は解答中の画面には出さない。
-                  ご要望：「第一問Aでは・・・のところいらない。ここのスペースを
-                          解答の選択肢のスペースに当てて」
-                  回の説明は、回を選んだ直後の「問題の説明ページ」（showingBriefing）で
-                  一度だけ読む。解答中の左ペインは「いま解いている問の見出し・
-                  設問文・音源・図」だけになり、浮いた縦幅は選択肢・図の表示に回る。
-                  化学など（listeningUnified=false）は従来どおり全文を出す。 */}
-              {!listeningUnified && (
-                inlineQuestionRows ? (
-                  /*
-                    スマホ・横並び表示（ご要望8）
-                    ─────────────────────────────────────────
-                    「(1)から4問縦書きになってるけど、横書きにしたら
-                      1画面に収まるくない？」
-
-                    リード文（次の不定積分を求めよ…）はそのまま1行で出し、
-                    (1)〜(4) だけを 2 列に並べる。4 問なら 4 行 → 2 行になり、
-                    浮いた高さが解答欄に回る。
-
-                    ★grid ではなく flex-wrap を使う理由
-                      grid は列幅を固定するので、想定より長い項目が来ると
-                      はみ出す/文字が切れる。flex-wrap なら「入らなければ
-                      次の行に折り返す」だけなので、判定をすり抜けた
-                      長い項目が来ても崩れない（二重の安全網）。
-                      basis-[calc(50%-0.25rem)] で通常は 2 列、
-                      min-w-0 で長い数式も折り返せるようにする。
-                  */
-                  <div className="flex flex-col gap-1.5">
-                    {inlineQuestionRows.lead && (
-                      <ExplanationBody
-                        text={inlineQuestionRows.lead}
-                        highlights={combinedHighlights}
-                      />
-                    )}
-                    <ul className="flex flex-wrap gap-x-2 gap-y-1.5">
-                      {inlineQuestionRows.rows.map((row, rIdx) => (
-                        <li
-                          key={rIdx}
-                          className="flex min-w-0 grow basis-[calc(50%-0.25rem)] items-baseline gap-1"
-                        >
-                          {row.marker && (
-                            <span className="shrink-0 font-bold text-gray-500">
-                              {formatText(row.marker)}
-                            </span>
-                          )}
-                          <span className="min-w-0">
-                            {formatText(row.body, combinedHighlights)}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : (
-                  <ExplanationBody
-                    text={cleanQuestionText(currentQuestion.text)}
-                    highlights={combinedHighlights}
-                    /* ★問題文の「【会話文】」「【資料2 …】」を四角囲みにする（スマホのみ）★
-                       実物の共通テスト冊子と同じく、資料のかたまりを枠で
-                       本文から切り離して読みやすくする。PC は md: で
-                       枠を打ち消すため従来と同じ見た目。 */
-                    boxedSections
-                  />
-                )
-              )}
-              {currentQuestion.text.includes('図6') && (
-                <div className="mt-4">
-                  <IonizationEnergyChart showDetails={false} />
-                </div>
-              )}
-              {/* 問題に付随する図・イラスト（PDF由来の図版など） */}
-              {currentQuestion.imageUrl && (
-                <QuestionFigure
-                  src={currentQuestion.imageUrl}
-                  caption={currentQuestion.imageCaption}
-                  figureNumber={getFigureNumber(figureNumberMap, currentQuestion.id)}
-                  tone="light"
-                  className="mt-5"
-                />
-              )}
-              {/* 表示ルール1・2：左側の「問題文」欄には共通リード文に加えて、
-                  続く全小問の設問文（問1、問2、…）を順番に表示する。
-                  左側だけ読めば全設問が理解できるようにする。
-
-                  ★ただし英語リスニングのように「選択肢本文を解答カードに移した」
-                    問題では、設問一覧を出すと設問文が左右2か所に分かれてしまう。
-                    ご要望「問題文と解答欄を分離しないで」に反するため、
-                    その場合は設問一覧を出さず、解答カード側に一本化する。 */}
-              {(() => {
-                if (listeningUnified) return null;
-                /* ★スマホ：設問一覧が問題文の丸写しなら出さない（ご要望8）
-                     「設問一覧と問題が同じなので、同じやつはもう設問一覧いらない」
-                   数学の (1)〜(4) のように、設問一覧が上の問題文と一字一句
-                   同じ問題では、同じ数式が1画面に2回出て縦幅を二重に食う。
-                   科目では決めず「一覧の全項目が問題文に含まれるか」で判定し、
-                   1項目でも欠ける問題では一覧を残す（情報を消さない）。
-                   PC は横幅に余裕があるので従来どおり両方出す。 */
-                if (hideRedundantSubQuestionList) return null;
-                const sqList = buildSubQuestionList(currentQuestion);
-                if (sqList.length === 0) return null;
-                return (
-                  <div className="mt-4 pt-3 border-t border-dashed border-gray-300">
-                    <div className="text-[11px] font-bold mb-2 text-gray-500">設問一覧</div>
-                    <ol className="space-y-2">
-                      {sqList.map((item, sIdx) => (
-                        <li key={sIdx} className="flex items-start gap-2">
-                          {item.marker && (
-                            <span className="shrink-0 font-bold text-xs px-2 py-0.5 rounded-md border mt-0.5 bg-gray-50 text-gray-600 border-gray-200">
-                              {formatText(item.marker)}
-                            </span>
-                          )}
-                          <span className="min-w-0 leading-relaxed">
-                            {formatText(item.body, combinedHighlights)}
-                          </span>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                );
-              })()}
-              {/* 問題解答画面（回答入力中）にはロジックツリーを表示しない。
-                  ロジックツリーは「単元選択・学習フローチャート」画面と
-                  「解答解説ページ」にのみ表示する。 */}
-            </div>
-          </div>
-        </div>
-
-        {/* Section 2: Answers Area
-            スマホ（!isDesktop）では、下部の「前へ / 解答と解説を見る」ナビゲーションを
-            画面下に固定バーとして常時表示する（要件1）。そのぶん、解答欄の内容が
-            固定バーに隠れないよう下部余白を大きめに確保する。
-            ページ全体は fixed inset-0 + overflow-hidden で固定され、スワイプ/ページ
-            スクロールでの問題送りは発生しない。問題送りは固定バーの前へ/次へのみ。 */}
-        {/* 下部余白：フローティングバーは「マーカー＋前へ/次へ＋完了」だけの
-            細い1行になった（入力欄・パレットは撤去）ので、9rem → 6.5rem に戻す。
-            解答欄も1設問ずつの固定表示（ページャー）になり、縦に長く
-            スクロールすることは基本なくなった。 */}
-        {/*
-          ★リスニング（スマホ）だけ、このペインを「中身の高さ」にする★
-          ------------------------------------------------------------------
-          ご指摘：「選択肢の下に空白合って無駄」
-
-          原因はここの flex-1 だった。①〜④ の4ボタンしか無いのに
-          余った高さを全部受け取るので、カードの下に何も無い空白が
-          そのまま残っていた。
-
-          リスニングでは flex-none にして中身のぶんだけ確保する。
-          余った高さは上の問題文ペイン（flex-1）＝図に回るので、
-            ・選択肢カードが画面下（下部ナビの真上）まで下がる
-            ・カード下の無駄な空白が消える
-            ・図が切れずに大きく出る
-          が一度に達成できる。paddingBottom も、リスニングでは
-          「下部ナビの高さぶん」だけに絞る（余計な空白を作らない）。
-
-          化学など（listeningUnified=false）は flex-1 のままで、
-          長い記述欄をスクロールできる従来の挙動を保つ。
-        */}
-        {/*
-          ★図が無い大問（第1問A・第3問・第2問）はここが余りを受け取る★
-          ------------------------------------------------------------------
-          ご要望：「他の大問のUIも変えてくれない？第1問Aも第3問も
-                   これから入る予定の第2問とその他も」
-
-          第1問B 用の配り方（問題文ペイン＝flex-1）をそのまま流用すると、
-          図が無いぶんの高さが「再生ボタンの下の巨大な空白」になり、
-          消したはずの無駄な空白が場所を変えて再発してしまう。
-
-          そこで図が無いときは受け取り手を入れ替える。
-            ・flex-1        … 余った高さをこのペインがもらう
-            ・justify-end   … 選択肢カードを下端（下部ナビの真上）に寄せる
-                              ＝親指の届く位置。ご要望「もっと下にもってきて」
-          もらった高さは、下の auto-rows-fr で選択肢の背を伸ばすのに使う。
-        */}
-        {/* ★B-1：選択肢の本文幅を稼ぐため、リスニングのスマホだけ左右余白を詰める★
-            px-4（16px×2）→ px-2（8px×2）で 16px を本文に回す。
-            対象を listeningMobileSplit に限るのは、化学など従来の問題では
-            解答欄が小さなチップの集まりで、余白を詰めると窮屈になるため。
-            md 以上（PC）は md:p-8 が後ろで上書きするので影響しない。 */}
-        <div className={`lg:w-[42%] min-h-0 overflow-y-auto bg-gray-50/50 ${
-            listeningMobileSplit ? 'px-2' : 'px-4'
-          } md:p-8 ${
-            listeningMobileNoFigure
-              ? 'flex-1 flex flex-col justify-end pt-2'
-              : listeningMobileSplit ? 'flex-none pt-2' : 'flex-1 pt-4'
-          } ${isDesktop
-            ? 'pb-8'
-            : listeningMobileSplit
-              // 下部ナビ（前へ/解答と解説を見る）の高さぶんだけ空ける。
-              ? 'pb-[calc(4.75rem+env(safe-area-inset-bottom))]'
-              : 'pb-[calc(6.5rem+env(safe-area-inset-bottom))]'
-          } relative ${!isDesktop && isProblemExpanded
-              ? 'hidden'
-              // 図が無い大問は flex で高さの連鎖を通す（block だと切れる）。
-              : listeningMobileNoFigure ? 'z-10' : 'block z-10'}`}>
-          {/* 図が無い大問では、この内側ラッパにも flex/min-h-0 を通しておく。
-              ここで連鎖が切れると下の auto-rows-fr が伸びる先を失う。 */}
-          <div className={`max-w-2xl mx-auto md:space-y-6 ${listeningMobileSplit ? 'space-y-2' : 'space-y-4'} ${
-            listeningMobileNoFigure ? 'flex min-h-0 flex-1 flex-col' : ''
-          }`}>
-            {/* 「解答入力」見出しはスマホでは出さない（ご指摘：「左上にある
-                解答入力というボタンでスペースなくなってるから消してほしい」）。
-                各カードの先頭に (ア) や 問2 のマーカーがあるので、
-                見出しがなくても「ここが解答欄」と分かる。浮いた縦幅は
-                選択肢・入力欄の表示に回す。PC は余白が十分なので従来どおり。 */}
-            <h3 className="hidden lg:block font-bold text-gray-400 text-sm md:text-base mb-2 md:mb-4">解答入力</h3>
-            {/* スマホ：解答欄ページャー（要望：スクロールをやめ、1設問ずつ固定表示。
-                左右の黒い小さな矢印で表示する解答欄を切り替える）。
-                位置表示（n / 全体）で「あといくつ解答欄があるか」も分かるようにする。 */}
-            {!isDesktop && mobileAnswerSubs.length > 1 && (
-              <div className="text-center text-[11px] font-bold text-gray-400 tracking-widest select-none -mb-1">
-                {safeMobileAnsIdx + 1} / {mobileAnswerSubs.length}
-              </div>
-            )}
-            {/*
-              ★スマホ：解答欄ページャーの矢印は「切り替える先があるとき」だけ置く★
-              ─────────────────────────────────────────────────────────────
-              ご指摘（B-1）：
-                「選択肢の文章の幅が狭い。画面の幅に合わせ、④も見えるようにしたい。」
-
-              ■ 何が起きていたか（390px 幅で実測・積算）
-                以前は !isDesktop なら常にこの矢印を描き、行き先が無いときは
-                invisible で「見えないが場所は取る」状態にしていた。
-                w-7（28px）が左右で 56px ＝ 画面幅 390px の 14% を、
-                解答欄が1つしか無い問でも占め続けていた。
-
-                横幅の内訳（390px・図なしリスニング）：
-                  解答ペイン px-4          -32px
-                  ページャー矢印 w-7 ×2    -56px  ← ★これ★
-                  カード p-3.5             -28px
-                  選択肢ボタン px-4        -32px
-                  ①と本文の gap-2.5        -10px
-                  マーク①                  -18px
-                  ────────────────────────────
-                  英文に残る幅              214px（画面幅の 55%）
-
-                英文が 55% の幅に押し込められて行数が増え、
-                その増えた行数のぶんだけ ④ が下へ押し出されて切れていた。
-                （④ が切れていたのは左右ではなく上下方向。原因は「幅」）
-
-              ■ 直し方
-                すぐ上の「n / 全体」表示と同じ条件（length > 1）でガードする。
-                解答欄が1つの問では矢印を描かないので 56px がそのまま本文に回る。
-                2つ以上ある問では従来どおり出る（切り替え手段は失わせない）。
-                invisible を残さないのは、「見えないのに場所を取る」ことが
-                今回の幅不足の直接原因だったため。
-              PC（isDesktop）は contents のままで、見た目は一切変わらない。
-            */}
-            <div className={isDesktop ? 'contents' : 'flex items-stretch gap-1'}>
-              {!isDesktop && mobileAnswerSubs.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => goMobileAns(-1)}
-                  onMouseDown={(e) => e.preventDefault()}
-                  aria-label="前の解答欄へ"
-                  className={`shrink-0 flex items-center justify-center w-7 text-gray-900 active:bg-gray-200/60 rounded-lg cursor-pointer ${safeMobileAnsIdx <= 0 ? 'invisible' : ''}`}
-                >
-                  <ChevronLeft size={20} className="stroke-[2.75]" aria-hidden="true" />
-                </button>
-              )}
-              <div className={isDesktop ? 'contents' : 'flex-1 min-w-0 space-y-4'}>
-            {renderedAnswerGroups.map((g: any, gIdx: number) => {
-              if (g.type === 'group') {
-                return (
-                  <div key={`group-${gIdx}`} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 hover:border-[#A9CCE3]/50 transition-all duration-250 flex flex-col gap-4">
-                    <span className="font-bold text-[#2C3E50] text-sm text-left bg-blue-50/50 border border-[#A9CCE3]/30 py-2.5 px-4 rounded-xl leading-relaxed shadow-xs w-full block">
-                      {formatText(g.groupName)}
-                    </span>
-                    
-                    {/*
-                      空欄グリッドの列数（スマホ入力UI改善）
-                      ─────────────────────────────────────────────
-                      以前は grid-cols-3（＋効いていない xs:grid-cols-4）で、375px 幅の
-                      端末では 1 セルが約 90px しかなく、タップ・視認ともに窮屈だった。
-                      スマホでは 2 列に減らして 1 セルあたりの幅を約 1.5 倍に広げる。
-                      sm 以上は従来どおり列数を増やし、PC の見た目は変えない。
-                    */}
-                    <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-6 gap-2.5 sm:gap-3 w-full">
-                      {g.items.map((sq: any) => {
-                        const isFocusedBlank = focusedSubId === sq.id;
-                        return (
-                        <div
-                          key={sq.id}
-                          className={`flex flex-col gap-1.5 min-w-[50px] p-2.5 sm:p-2 border rounded-xl shadow-2xs transition-colors ${
-                            isFocusedBlank
-                              ? 'bg-[#A9CCE3]/20 border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40'
-                              : 'bg-stone-50/80 border-stone-200/60'
-                          }`}
-                        >
-                          <span className="font-bold text-stone-500 text-[13px] sm:text-xs text-center border-b border-stone-200/60 pb-1.5 sm:pb-1 select-none font-sans">
-                            {sq.label}
-                          </span>
-                          {isDesktop ? (
-                            <input
-                              type="text"
-                              value={answers[sq.id] || ''}
-                              onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                              onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
-                              placeholder="..."
-                              className="w-full py-1 text-center text-sm font-bold text-stone-800 border-none outline-none focus:ring-0 leading-none bg-transparent"
-                            />
-                          ) : (
-                            // スマホ：この欄に直接入力する（ご指摘：「タップしたらなんで
-                            // 重複して解答欄が出てくるかわからん。普通に入力できる
-                            // ようにしてよ」）。
-                            //
-                            // 以前は「カード＝表示専用チップ／実入力＝下部バーの複製
-                            // 入力欄」の2段構えで、同じ設問の解答欄が画面に2つ見えて
-                            // いた。タップ＝その場でキーボードが開き、打った文字は
-                            // その欄にそのまま入る、という普通の入力に戻す。
-                            // タップ領域は 48px 以上・文字 16px（iOS の自動ズーム防止）。
-                            <input
-                              ref={(el) => { inputRefs.current[sq.id] = el; }}
-                              id={`ans-card-${sq.id}`}
-                              type="text"
-                              value={answers[sq.id] || ''}
-                              onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                              onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
-                              onKeyDown={handleMobileCardKeyDown(sq)}
-                              enterKeyHint={isLastNavSub(sq) ? 'done' : 'next'}
-                              placeholder="解答"
-                              aria-label={`${sq.label} の解答を入力`}
-                              className={`w-full min-h-[3rem] px-2 py-1.5 text-center text-[16px] font-bold text-stone-800 leading-snug rounded-lg border outline-none transition-colors ${
-                                isFocusedBlank
-                                  ? 'bg-white border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30'
-                                  : 'bg-white/70 border-stone-200/70'
-                              }`}
-                            />
-                          )}
-                        </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              }
-
-              const sq = g.items[0];
-              // 要件1：全形式でカードをタップ→固定パネル表示に統一するため、
-              // フォーカス中カードのハイライトも全形式で有効にする。
-              const isFocusedCard = !isDesktop && focusedSubId === sq.id;
-              // 表示ルール3：右側の解答欄カードには設問文自体は含めず、
-              // 設問マーカー（(ア)/(1)/問2 など）のみを表示する。
-              const sqAllIndex = ((currentQuestion?.subQuestions || []) as any[]).indexOf(sq);
-              // (1) の中が ①② に分かれている設問では "(1)①" のように枝番まで出す。
-              // そうしないと解答欄に "(1)" が並び、今どれを入力中か分からなくなる。
-              const sqMarker = answerCardMarker(sq, sqAllIndex < 0 ? gIdx : sqAllIndex, currentQuestion);
-              return (
-                <div key={sq.id} className={`flex flex-col gap-4 bg-white rounded-2xl shadow-sm border transition-all duration-250 ${
-                  // 図が無い大問はカード自身も余り高さを受け取り、
-                  // 中の選択肢を伸ばせるようにする（内側余白も少し詰める）。
-                  /* ★B-1：カード内側も詰めて本文幅を稼ぐ★
-                     p-3.5（14px×2）→ px-2 py-3 で左右 12px を英文に回す。
-                     縦（py-3）は詰めない。縦を削ると1行あたりの余裕が減って
-                     かえって読みにくくなり、④ が見えない問題も解決しないため。 */
-                  listeningMobileNoFigure
-                    ? 'min-h-0 flex-1 max-h-full px-2 py-3'
-                    : listeningMobileSplit
-                      /*
-                        ★図がある大問（第1問B）だけ、カードの余白を図に譲る★
-                        ご要望「画像のある問題の画像が小さいので確認して」
-
-                        ■ 実測（390x844・第1問B・900x900 の4コマ）
-                            図は 298x298。横幅は 366px 空いているのに
-                            298px 止まりで、原因は「高さが尽きている」こと。
-                            高さの内訳を測ると
-                              画面 844
-                              − ヘッダー 80 − 下部ナビ 76
-                              − 見出し行 40 − 音源バー 44 − 図の上余白 12
-                              − キャプション 28
-                              − 解答ペイン 278（うちカード p-5 の上下 40）
-                            ＝ 図に残るのは 298px で、余りは 0px（実測で確認）。
-                            つまり図を大きくするには、どこかから高さを
-                            もらう以外に方法がない。
-
-                        ■ もらう先は「選択肢そのもの」ではなくカードの余白
-                            ①〜④ のボタン高さ（52px）と行間は既出のご要望
-                            「選択肢のスペースに当てて／タップしやすく」で
-                            確保したものなので削らない。
-                            代わりに p-5（上下 40px）を py-3.5（上下 28px）に
-                            するだけにする。これは純粋な余白なので、
-                            タップ領域を一切減らさずに 12px を図へ回せる。
-                            左右も px-3 にして 16px を選択肢の幅に回す。
-
-                        ■ PC・化学は対象外
-                            listeningMobileSplit はスマホかつ音源つきのときだけ
-                            真になるので、PC（isDesktop）と化学・数学
-                            （listeningUnified=false）は従来の p-5 のまま。
-                      */
-                      ? 'px-3 py-3.5'
-                      : 'p-5'
-                } ${
-                  isFocusedCard ? 'border-[#A9CCE3] ring-2 ring-[#A9CCE3]/30' : 'border-gray-200 hover:border-[#A9CCE3]/50'
-                }`}>
-                  {/*
-                    ★リスニング：この解答カードには「解答」だけを置く
-                    ------------------------------------------------------------
-                    ご指摘：
-                      「再生ボタンはさ、左の問題の文章のところにおいてほしいよね。
-                        何で解答の方に置くの？第１問の図も何で解答の方にあるの？
-                        問題の方（左側）においてっていったよね」
-
-                    そこで音源・図・設問文はすべて問題文ペイン（左側）へ移した。
-                    ここに残すのは 問N のマーカーと選択肢（①〜④）だけ。
-                    化学など従来の問題は listeningUnified=false なので、
-                    これまでどおり設問マーカー＋入力UIの形のまま。
-                  */}
-                  <div className={`flex flex-col gap-3.5 w-full min-w-0 ${
-                    // 図が無い大問：ここも連鎖に加える（切ると選択肢が伸びない）。
-                    listeningMobileNoFigure ? 'min-h-0 flex-1' : ''
-                  }`}>
-                    {/* 設問マーカー（(ア)/(1)/問2 など）。
-                        ★リスニングでは出さない（ご指摘：「解答のところの問4とかって
-                          書いてあるのは問題のところに書いてあるのでいらない。
-                          もっと選択肢と問題を一画面に出すイメージで」）。
-                        左の問題ペインの見出しに 問N（全4問中N問目）が常にあるので、
-                        解答カード側の 問N は重複。浮いた縦幅は選択肢・図に回す。
-                        化学など（listeningUnified=false）は (ア)/(1) の目印が
-                        入力に必須なので従来どおり表示する。 */}
-                    {!listeningUnified && (
-                      <span className={`font-bold text-[#2C3E50] text-sm text-left bg-blue-50/45 border border-[#A9CCE3]/25 py-2 px-4 rounded-xl leading-relaxed shadow-xs w-fit block ${questionNeedsMathPalette ? 'font-math math-content' : ''}`}>
-                        {formatText(sqMarker)}
-                      </span>
-                    )}
-                    
-                    {sq.type === 'multiple_choice' ? (
-                      // ★全教科・全端末で選択肢をカード内に直接表示する。
-                      //   以前のスマホは「カード＝表示専用チップ → タップで下部
-                      //   固定パネルにもう1つ選択UIが出る」2段構えで、同じ設問の
-                      //   解答欄が重複して見えていた（ご指摘：「タップしたらなんで
-                      //   重複して解答欄が出てくるかわからん」）。
-                      //   選択肢はタップ1回で確定する操作なので、遷移を挟まず
-                      //   その場で押せるのが最も手数が少ない。
-                      renderMultipleChoiceControl(sq)
-                    ) : sq.type === 'sorting' ? (
-                      // ★並べ替えもカード内に直接表示（重複解答欄の解消）。
-                      //   renderSortingControl はタッチ端末向けの
-                      //   タップ入れ替え＋◀▶移動ボタン UI を内蔵している。
-                      renderSortingControl(sq)
-                    ) : sq.type === 'descriptive' ? (
-                      <div className="flex-grow flex flex-col gap-2 w-full">
-                        {isDesktop ? (
-                          <>
-                            <div className="relative w-full">
-                              <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
-                              <textarea
-                                ref={(el) => { inputRefs.current[sq.id] = el; }}
-                                value={answers[sq.id] || ''}
-                                onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                                onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
-                                placeholder="解答を入力...（改行可）"
-                                rows={3}
-                                className="w-full pl-9 pr-4 py-2 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
-                              />
-                            </div>
-                            {/* 化学記号パレット（反応式・化学式の記述が必要な問題のみ表示） */}
-                            {requiresChemicalSymbols(sq) && (
-                              <ChemistryPalette
-                                value={answers[sq.id] || ''}
-                                onChange={(next) => handleTextChange(sq.id, next)}
-                                inputRef={getInputRef(sq.id)}
-                              />
-                            )}
-                            {/* 数学記号パレット（数III積分など requiresMathPalette の問題のみ） */}
-                            {requiresMathSymbols(sq) && (
-                              <MathPalette
-                                value={answers[sq.id] || ''}
-                                onChange={(next) => handleTextChange(sq.id, next)}
-                                inputRef={getInputRef(sq.id)}
-                              />
-                            )}
-                          </>
-                        ) : (
-                          // スマホ：この欄に直接入力する（ご指摘：「タップしたらなんで
-                          // 重複して解答欄が出てくるかわからん」）。
-                          // 以前は表示専用チップ→下部バーの複製 textarea という
-                          // 2段構えだった。タップ＝キーボードが開きここにそのまま書ける。
-                          // 記号パレットはフォーカス中のみこの下（同じカード内）に出す。
-                          <>
-                            <div className="relative w-full">
-                              <Edit3 className="absolute left-3 top-3 text-gray-400" size={16} />
-                              <textarea
-                                ref={(el) => { inputRefs.current[sq.id] = el; }}
-                                id={`ans-card-${sq.id}`}
-                                value={answers[sq.id] || ''}
-                                onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                                onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
-                                placeholder="解答を入力...（改行可）"
-                                rows={3}
-                                className="w-full pl-9 pr-4 py-3 text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern resize-none bg-gray-50 focus:bg-white leading-relaxed"
-                              />
-                            </div>
-                            {/* 化学・数学記号パレット：フォーカス中の設問にだけ出す
-                                （常時表示だとカードが縦に伸びて他の設問が埋もれる）。 */}
-                            {focusedSubId === sq.id && requiresChemicalSymbols(sq) && (
-                              <ChemistryPalette
-                                value={answers[sq.id] || ''}
-                                onChange={(next) => handleTextChange(sq.id, next)}
-                                inputRef={getInputRef(sq.id)}
-                              />
-                            )}
-                            {focusedSubId === sq.id && requiresMathSymbols(sq) && (
-                              <MathPalette
-                                value={answers[sq.id] || ''}
-                                onChange={(next) => handleTextChange(sq.id, next)}
-                                inputRef={getInputRef(sq.id)}
-                              />
-                            )}
-                          </>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="flex-grow flex flex-col gap-2 w-full">
-                        {isDesktop ? (
-                          <>
-                            <div className="relative w-full">
-                              <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                              <input
-                                ref={(el) => { inputRefs.current[sq.id] = el; }}
-                                type="text"
-                                value={answers[sq.id] || ''}
-                                onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                                onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
-                                placeholder="解答を入力..."
-                                className="w-full pl-9 pr-4 py-2.5 md:py-2.5 text-[16px] md:text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
-                              />
-                            </div>
-                            {/* 化学記号パレット（必要な問題のみ表示・カーソル位置に挿入） */}
-                            {requiresChemicalSymbols(sq) && (
-                              <ChemistryPalette
-                                value={answers[sq.id] || ''}
-                                onChange={(next) => handleTextChange(sq.id, next)}
-                                inputRef={getInputRef(sq.id)}
-                              />
-                            )}
-                            {/* 数学記号パレット（requiresMathPalette の問題のみ・カーソル位置に挿入） */}
-                            {requiresMathSymbols(sq) && (
-                              <MathPalette
-                                value={answers[sq.id] || ''}
-                                onChange={(next) => handleTextChange(sq.id, next)}
-                                inputRef={getInputRef(sq.id)}
-                              />
-                            )}
-                          </>
-                        ) : (
-                          // スマホ：この欄に直接入力する（重複解答欄の解消）。
-                          // Enter＝次の空欄へ移動（最後なら確定）。
-                          <>
-                            <div className="relative w-full">
-                              <Edit3 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                              <input
-                                ref={(el) => { inputRefs.current[sq.id] = el; }}
-                                id={`ans-card-${sq.id}`}
-                                type="text"
-                                value={answers[sq.id] || ''}
-                                onChange={(e) => handleTextChange(sq.id, e.target.value)}
-                                onFocus={(e) => { setFocusedSubId(sq.id); handleInputFocusScroll(e); }}
-                                onKeyDown={handleMobileCardKeyDown(sq)}
-                                enterKeyHint={isLastNavSub(sq) ? 'done' : 'next'}
-                                placeholder="解答を入力..."
-                                className="w-full pl-9 pr-4 py-3 min-h-[3.25rem] text-[16px] rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#A9CCE3] focus:border-[#A9CCE3] outline-none transition-all font-modern bg-gray-50 focus:bg-white shadow-sm leading-relaxed"
-                              />
-                            </div>
-                            {/* 記号パレットはフォーカス中の設問にだけ出す。 */}
-                            {focusedSubId === sq.id && requiresChemicalSymbols(sq) && (
-                              <ChemistryPalette
-                                value={answers[sq.id] || ''}
-                                onChange={(next) => handleTextChange(sq.id, next)}
-                                inputRef={getInputRef(sq.id)}
-                              />
-                            )}
-                            {focusedSubId === sq.id && requiresMathSymbols(sq) && (
-                              <MathPalette
-                                value={answers[sq.id] || ''}
-                                onChange={(next) => handleTextChange(sq.id, next)}
-                                inputRef={getInputRef(sq.id)}
-                              />
-                            )}
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-              </div>
-              {/* 右矢印も左と同じ条件でガードする（B-1）。
-                  片側だけ残すと解答欄が中央からずれるので必ず対で揃える。 */}
-              {!isDesktop && mobileAnswerSubs.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => goMobileAns(1)}
-                  onMouseDown={(e) => e.preventDefault()}
-                  aria-label="次の解答欄へ"
-                  className={`shrink-0 flex items-center justify-center w-7 text-gray-900 active:bg-gray-200/60 rounded-lg cursor-pointer ${safeMobileAnsIdx >= mobileAnswerSubs.length - 1 ? 'invisible' : ''}`}
-                >
-                  <ChevronRight size={20} className="stroke-[2.75]" aria-hidden="true" />
-                </button>
-              )}
-            </div>
-
-            {/* Answer submission action button and back button at the bottom of the answers column
-                （PC版のみ：解答欄カラムの末尾にインライン表示。
-                　スマホ版では下部固定ナビゲーションバーに置き換える＝要件1） */}
-            {isDesktop && (
-              <div className="pt-6 border-t border-gray-200/60 flex items-center justify-between gap-3">
-                <button
-                  onClick={handlePrevious}
-                  disabled={!canGoPrevious}
-                  title="前の問題へ（←キー）"
-                  aria-label="前の問題へ"
-                  className={`flex items-center justify-center p-2.5 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer
-                    ${!canGoPrevious 
-                      ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50' 
-                      : 'border-[#A9CCE3] text-[#A9CCE3] hover:bg-[#A9CCE3] hover:text-white bg-white shadow-sm'}`}
-                >
-                  <ChevronLeft size={16} className="stroke-[2.5]" aria-hidden="true" />
-                </button>
-
-                <button
-                  onClick={handleNext}
-                  className="flex shadow-md hover:shadow-lg hover:-translate-y-0.5 items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl font-bold tracking-wider transition-all duration-300 text-xs md:text-sm bg-[#2C3E50] text-white hover:bg-[#1B2631] flex-1 sm:flex-none sm:w-[180px] cursor-pointer"
-                >
-                  <span>解答と解説を見る</span>
-                  <ChevronRight size={14} className="stroke-[2.5]" />
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+        {/* 解答ペイン（右42%／スマホ下）の JSX は components/AnswerPane.tsx へ切り出した。
+            渡しているのは「状態」と「判定」だけで、見た目はあちらが持っている。 */}
+        <AnswerPane
+          currentQuestion={currentQuestion}
+          isDesktop={isDesktop}
+          answers={answers}
+          handleTextChange={handleTextChange}
+          getInputRef={getInputRef}
+          inputRefs={inputRefs}
+          listeningUnified={listeningUnified}
+          listeningMobileSplit={listeningMobileSplit}
+          listeningMobileNoFigure={listeningMobileNoFigure}
+          focusedSubId={focusedSubId}
+          setFocusedSubId={setFocusedSubId}
+          mobileAnswerSubs={mobileAnswerSubs}
+          safeMobileAnsIdx={safeMobileAnsIdx}
+          goMobileAns={goMobileAns}
+          handleMobileCardKeyDown={handleMobileCardKeyDown}
+          isLastNavSub={isLastNavSub}
+          renderedAnswerGroups={renderedAnswerGroups}
+          renderMultipleChoiceControl={renderMultipleChoiceControl}
+          renderSortingControl={renderSortingControl}
+          questionNeedsMathPalette={questionNeedsMathPalette}
+          isProblemExpanded={isProblemExpanded}
+          canGoPrevious={canGoPrevious}
+          handlePrevious={handlePrevious}
+          handleNext={handleNext}
+        />
       </div>
 
-      {/*
-        スマホ版・下部固定ナビゲーションバー（要件1）
-        ─────────────────────────────────────────────
-        「前へ」「解答と解説を見る（次へ）」ボタンを画面下部に固定表示する。
-        - 解答欄の内容量に関わらず常に同じ位置に表示され、位置ズレしない。
-        - 問題の移動はこのボタンのみで行う（スワイプ／ページスクロールでの
-          問題送りは実装しない。ページ自体は fixed + overflow-hidden で固定）。
-        - 問題文の全画面表示中（isProblemExpanded）は非表示。
-        - ソフトキーボード表示中（keyboardVisible）は、穴埋め移動用の
-          フローティング解答バーを優先するため非表示にして重なりを防ぐ。
-      */}
-      {!isDesktop && !isProblemExpanded && !focusedSub && (
-        <div
-          className="fixed left-0 right-0 bottom-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.10)] px-3 pt-2.5 pb-[calc(0.6rem+env(safe-area-inset-bottom))]"
-        >
-          <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
-            <button
-              onClick={handlePrevious}
-              disabled={!canGoPrevious}
-              title="前の問題へ"
-              aria-label="前の問題へ"
-              className={`flex items-center justify-center p-3 rounded-xl font-bold transition-all duration-200 border-2 shrink-0 cursor-pointer
-                ${!canGoPrevious
-                  ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50/50'
-                  : 'border-[#A9CCE3] text-[#A9CCE3] active:bg-[#A9CCE3] active:text-white bg-white shadow-sm'}`}
-            >
-              <ChevronLeft size={18} className="stroke-[2.5]" aria-hidden="true" />
-              <span className="ml-1 text-xs">前へ</span>
-            </button>
-
-            <button
-              onClick={handleNext}
-              className="flex shadow-md active:translate-y-0.5 items-center justify-center gap-1.5 px-5 py-3 rounded-xl font-bold tracking-wider transition-all duration-200 text-sm bg-[#2C3E50] text-white active:bg-[#1B2631] flex-1 cursor-pointer"
-            >
-              <span>解答と解説を見る</span>
-              <ChevronRight size={16} className="stroke-[2.5]" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/*
-        空欄ナビバー（スマホ・テキスト入力中のみ）
-        ─────────────────────────────────────────────
-        ★ここには入力欄を置かない（ご指摘対応）
-        ご指摘：「タップしたらなんで重複して解答欄が出てくるかわからん。
-                 普通に入力できるようにしてよ。」
-        以前はこのバーに「複製の入力欄＋記号パレット」を出していたため、
-        カードの解答欄と合わせて同じ設問の欄が2つ見えていた。
-        いまは入力はカード内の欄に直接行うので、このバーは
-          ・いまどの空欄を入力中か（マーカー）
-          ・前へ/次へ（空欄の移動。(ア)→(イ)→… を指1本で進める）
-          ・完了（キーボードを閉じる）
-        だけの細い1行にする。キーボードの上端に追従して表示する。
-        選択式・並べ替えはカード内で直接タップするので、このバーは出ない。
-      */}
-      {!isDesktop && focusedSub && (isShortAnswerType(focusedSub) || focusedSub.type === 'descriptive') && (
-        <div
-          id="floating-answer-bar"
-          className="fixed left-0 right-0 z-[60] bg-white border-t-2 border-[#A9CCE3]/60 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] px-3 pt-2 transition-[bottom] duration-150"
-          style={{
-            bottom: keyboardOffset,
-            // キーボード非表示時（オフセット0）はセーフエリア分の余白を確保
-            paddingBottom: keyboardOffset > 0 ? '0.5rem' : 'calc(0.5rem + env(safe-area-inset-bottom))',
-          }}
-        >
-          <div className="max-w-2xl mx-auto flex items-center justify-between gap-2">
-            {/* いま入力中の設問マーカー（設問文は問題文欄・入力はカード内の欄で行う）。
-                枝番（①②）まで含めて、どの空欄に書いているかをひと目で示す。 */}
-            <span className={`font-bold text-[#2C3E50] text-[13px] bg-blue-50/60 border border-[#A9CCE3]/40 px-3 py-1.5 rounded-lg truncate ${questionNeedsMathPalette ? 'font-math' : ''}`}>
-              {formatText(answerCardMarker(focusedSub, focusedIndex, currentQuestion))}
-            </span>
-            <div className="flex items-center gap-1.5 shrink-0">
-              {inputNavSubs.length > 1 && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => moveFocus(-1)}
-                    disabled={focusedIndex <= 0}
-                    aria-label="前の空欄へ"
-                    // 空欄移動は入力中に最も多く押すボタン。44px 相当の高さを確保する。
-                    className={`flex items-center justify-center gap-0.5 px-3 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border transition-colors ${
-                      focusedIndex <= 0
-                        ? 'border-gray-200 text-gray-300 bg-gray-50'
-                        : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
-                    }`}
-                  >
-                    <ChevronLeft size={16} className="stroke-[2.5]" />
-                    前へ
-                  </button>
-                  <span className="text-xs text-gray-400 font-bold tabular-nums">
-                    {focusedIndex + 1}/{inputNavSubs.length}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => moveFocus(1)}
-                    disabled={focusedIndex >= inputNavSubs.length - 1}
-                    aria-label="次の空欄へ"
-                    className={`flex items-center justify-center gap-0.5 px-3 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border transition-colors ${
-                      focusedIndex >= inputNavSubs.length - 1
-                        ? 'border-gray-200 text-gray-300 bg-gray-50'
-                        : 'border-[#A9CCE3] text-[#2C3E50] bg-white active:bg-[#A9CCE3]/20'
-                    }`}
-                  >
-                    次へ
-                    <ChevronRight size={16} className="stroke-[2.5]" />
-                  </button>
-                </>
-              )}
-              {/* 完了：キーボードを閉じ、下部ナビ（前へ/解答と解説）へ戻す */}
-              <button
-                type="button"
-                onClick={() => {
-                  const el = focusedSubId ? inputRefs.current[focusedSubId] : null;
-                  el?.blur();
-                  setFocusedSubId(null);
-                }}
-                className="flex items-center justify-center px-4 py-2.5 min-h-[2.75rem] rounded-lg text-[13px] font-bold border border-[#2C3E50] bg-[#2C3E50] text-white active:bg-[#1B2631]"
-              >
-                完了
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* スマホの下部固定バー2本（ナビ／入力）の JSX は
+          components/MobileFloatingBar.tsx へ切り出した。
+          「(ア) 前へ 1/9 次へ 完了」バーは必要と明言されたもの。消さないこと。 */}
+      <MobileFloatingBar
+        currentQuestion={currentQuestion}
+        isDesktop={isDesktop}
+        isProblemExpanded={isProblemExpanded}
+        keyboardVisible={keyboardVisible}
+        keyboardOffset={keyboardOffset}
+        focusedSub={focusedSub}
+        focusedSubId={focusedSubId}
+        setFocusedSubId={setFocusedSubId}
+        inputNavSubs={inputNavSubs}
+        focusedIndex={focusedIndex}
+        moveFocus={moveFocus}
+        inputRefs={inputRefs}
+        questionNeedsMathPalette={questionNeedsMathPalette}
+        canGoPrevious={canGoPrevious}
+        handlePrevious={handlePrevious}
+        handleNext={handleNext}
+      />
     </div>
   );
 }

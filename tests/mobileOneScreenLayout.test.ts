@@ -53,7 +53,14 @@ const MASCOT = read('src/components/DoorMascot.tsx');
 const QUIZ = read('src/components/Quiz.tsx');
 // 選択肢ボタン群は components/MultipleChoiceControl.tsx へ切り出した。
 const MC = read('src/components/MultipleChoiceControl.tsx');
+// 問題文ペイン（左58%／スマホ上）の JSX は components/ProblemPane.tsx へ切り出した。
+const PROBLEM = read('src/components/ProblemPane.tsx');
+// 解答ペイン（右42%／スマホ下）の JSX は components/AnswerPane.tsx へ切り出した。
+const ANSWER = read('src/components/AnswerPane.tsx');
 const EXPL = read('src/components/Explanation.tsx');
+// 設問から作る「表示用の派生値」（useMemo 17個）は
+// hooks/useQuestionDerived.ts へ切り出した。
+const DERIVED = read('src/hooks/useQuestionDerived.ts');
 
 /**
  * ソースから「コメントを除いた実コード」を取り出す。
@@ -399,35 +406,36 @@ describe('L5: 図の有無で余った高さの受け取り手を入れ替える
     // ★真の差分は大問番号ではなく imageUrl の有無★
     //   第1問B は図あり（余った高さを図が吸う）、
     //   第1問A・第3問は図なし（吸う相手がいない＝空白になる）。
-    expect(QUIZ).toContain('const activeStepHasFigure = !!activeStepSub?.imageUrl');
-    expect(QUIZ).toContain('const listeningMobileNoFigure = listeningMobileSplit && !activeStepHasFigure');
+    expect(DERIVED).toContain('const activeStepHasFigure = !!activeStepSub?.imageUrl');
+    expect(DERIVED).toContain('const listeningMobileNoFigure = listeningMobileSplit && !activeStepHasFigure');
   });
 
   it('図が無いときは問題文ペインが flex-none になる', () => {
-    expect(QUIZ).toContain(
+    expect(PROBLEM).toContain(
       "${listeningMobileSplit && !listeningMobileNoFigure ? 'flex-1 min-h-0' : 'flex-none'}"
     );
   });
 
   it('図が無いときは解答ペインが余りをもらい、選択肢を下端へ寄せる', () => {
-    expect(QUIZ).toContain("'flex-1 flex flex-col justify-end pt-2'");
+    expect(ANSWER).toContain("'flex-1 flex flex-col justify-end pt-2'");
   });
 
   it('図が無いときの問題文ペインには実表示高さ基準の上限を付ける', () => {
     // 長い設問文（化学基礎の長文など）でも解答欄を必ず残すための上限。
-    expect(QUIZ).toContain("'h-auto max-h-[46dvh] shadow-md relative z-20'");
+    expect(PROBLEM).toContain("'h-auto max-h-[46dvh] shadow-md relative z-20'");
   });
 
   it('選択肢は伸ばしすぎない上限を持つ（auto-rows-fr の暴走防止）', () => {
     // auto-rows-fr は高さ上限が無いと 1 ボタンが画面の半分まで伸びる。
-    expect(QUIZ).toContain('auto-rows-fr');
+    expect(ANSWER).toContain('auto-rows-fr');
     expect(MC).toContain('max-h-[5rem]');
   });
 
   it('★PC は従来のまま★（lg の 58/42 と h-full 分岐は不変）', () => {
-    expect(QUIZ).toContain('lg:w-[58%]');
-    expect(QUIZ).toContain('lg:w-[42%]');
-    expect(QUIZ).toContain("isDesktop\n            ? 'h-full'");
+    expect(PROBLEM).toContain('lg:w-[58%]');
+    expect(ANSWER).toContain('lg:w-[42%]');
+    // 切り出しで JSX のインデントが 12 → 8 スペースになった（中身は同じ）。
+    expect(PROBLEM).toContain("isDesktop\n        ? 'h-full'");
   });
 });
 
@@ -472,7 +480,7 @@ describe('L5: 図の有無で余った高さの受け取り手を入れ替える
 describe('L6: 高さの取り分を「文字数に依存しない基準」で決める', () => {
   it('問題文ペインの上限は親基準（%）であり、ビューポート基準(dvh)ではない', () => {
     // 親基準なのでヘッダー・下部ナビは自動的に差し引かれる。
-    expect(QUIZ).toContain("'max-h-[50%] h-auto shadow-md relative z-20'");
+    expect(PROBLEM).toContain("'max-h-[50%] h-auto shadow-md relative z-20'");
   });
 
   it('★退行防止★ 実際のクラス指定に max-h-[42dvh] を復活させない', () => {
@@ -483,18 +491,21 @@ describe('L6: 高さの取り分を「文字数に依存しない基準」で決
       /* ... *​/ コメントが入るため「className だけ抜き出す」でも足りない。
       よって「コメントを取り除いたソース」を作ってから判定する。
     */
-    const stripped = stripComments(QUIZ);
+    // 問題文ペインは components/ProblemPane.tsx へ切り出したので、そちらを見る。
+    const stripped = stripComments(PROBLEM);
     // 取り除きすぎ／取り除けていないことの検知（番兵）
     expect(stripped).toContain("'max-h-[50%] h-auto shadow-md relative z-20'"); // 実コードは残る
     expect(stripped).not.toContain('ご指摘「問題によって問題文の長さが違うから'); // コメントは消える
 
     expect(stripped).not.toContain('42dvh');
+    // Quiz.tsx 側にも復活していないこと（2か所に増えていない）
+    expect(stripComments(QUIZ)).not.toContain('42dvh');
   });
 
   it('解答ペインは flex-1 で「残り」を受け取る（上限を先取りしない）', () => {
     // 問題文側が割合で上限を持ち、解答側が残りを取る、という向きを固定する。
     // これが逆だと長文問題で解答欄が消える。
-    expect(QUIZ).toContain('lg:w-[42%] min-h-0 overflow-y-auto');
+    expect(ANSWER).toContain('lg:w-[42%] min-h-0 overflow-y-auto');
   });
 });
 
@@ -565,19 +576,24 @@ describe('L7: 小問の横並び・設問一覧の重複除去（ご要望8／�
     // 「パソコン版は何も変更しないでね」を構造で保証する。
     // isDesktop が true の間は extractInlineQuestionRows を呼ばず null を返すので、
     // PC は必ず従来の ExplanationBody（縦積み）を通る。
-    const stripped = stripComments(QUIZ);
+    // ★この判定は派生値フック（hooks/useQuestionDerived.ts）へ移した。
+    //   実測（grep）で確認済み。Quiz.tsx 側にはもう無い。
+    const stripped = stripComments(DERIVED);
     expect(stripped).toContain('isDesktop ? null : extractInlineQuestionRows(');
+    // Quiz.tsx に古い判定が残って二重になっていないことも見る。
+    expect(stripComments(QUIZ)).not.toContain('extractInlineQuestionRows(');
   });
 
   it('設問一覧の省略もスマホのときだけ（!isDesktop と AND されている）', () => {
-    const stripped = stripComments(QUIZ);
+    const stripped = stripComments(DERIVED);
     expect(stripped).toContain('!isDesktop && isSubQuestionListRedundant(currentQuestion)');
+    expect(stripComments(QUIZ)).not.toContain('isSubQuestionListRedundant(');
   });
 
   it('★判定を科目で決め打ちしていない★（isMathChapter 等で分岐していない）', () => {
     // ご注意(9)「コードで形式的に作ると問題によっておかしくなる」への対応。
     // 横並び・一覧省略の判定に科目名や単元フラグを使っていないことを固定する。
-    const stripped = stripComments(QUIZ);
+    const stripped = stripComments(DERIVED);
     const inlineDecl = stripped.match(/const inlineQuestionRows[\s\S]{0,400}?\]\);/u)?.[0] ?? '';
     expect(inlineDecl).not.toBe('');
     for (const forbidden of ['isMathChapter', 'requiresMathPalette', '数学', 'math']) {
@@ -588,22 +604,22 @@ describe('L7: 小問の横並び・設問一覧の重複除去（ご要望8／�
   it('横並びは grid ではなく flex-wrap（長い項目が来ても折り返すだけ）', () => {
     // grid は列幅を固定するため、判定をすり抜けた長い数式がはみ出す。
     // flex-wrap + basis-[calc(50%-0.25rem)] なら折り返しで済む。
-    expect(QUIZ).toContain('<ul className="flex flex-wrap gap-x-2 gap-y-1.5">');
-    expect(QUIZ).toContain('basis-[calc(50%-0.25rem)]');
+    expect(PROBLEM).toContain('<ul className="flex flex-wrap gap-x-2 gap-y-1.5">');
+    expect(PROBLEM).toContain('basis-[calc(50%-0.25rem)]');
   });
 
   it('横並びの各項目に min-w-0 があり、長い数式でも折り返せる', () => {
     // min-w-0 が無いと flex 子要素は縮まず、横にはみ出して文字が切れる。
-    expect(QUIZ).toContain('flex min-w-0 grow basis-[calc(50%-0.25rem)] items-baseline gap-1');
+    expect(PROBLEM).toContain('flex min-w-0 grow basis-[calc(50%-0.25rem)] items-baseline gap-1');
   });
 
   it('横並びでもリード文は残る（情報を消さない）', () => {
-    const stripped = stripComments(QUIZ);
+    const stripped = stripComments(PROBLEM);
     expect(stripped).toContain('inlineQuestionRows.lead &&');
   });
 
   it('条件を満たさない問題は従来の ExplanationBody にフォールバックする', () => {
-    const stripped = stripComments(QUIZ);
+    const stripped = stripComments(PROBLEM);
     // 三項演算子の else 側に、元の描画がそのまま残っていること。
     expect(stripped).toMatch(/inlineQuestionRows \?[\s\S]*?<ExplanationBody[\s\S]*?cleanQuestionText\(currentQuestion\.text\)/u);
   });
