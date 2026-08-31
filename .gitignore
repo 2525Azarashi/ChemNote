@@ -75,3 +75,8 @@ chemnote_*.tar.gz
 /core
 /core.*
 scripts/data/q2_raw/
+
+# 地理探究パーサの中間生成物（scripts/geo/src の HTML から
+# `python3 scripts/geo/parse.py` でいつでも作り直せる 740KB の JSON）。
+# 元データの HTML は scripts/geo/src/ に置いてあるので、これは追跡しない。
+scripts/geo/raw.json

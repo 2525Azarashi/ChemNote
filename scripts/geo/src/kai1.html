@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地理探究 実戦模擬問題 第1回（標準）</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="toolbar" aria-label="操作">
+  <span class="tb-title">地理探究 実戦模擬 第1回</span>
+  <button id="toggle-answers" type="button">解答・解説を表示</button>
+  <button id="print-page" type="button">PDFとして保存／印刷</button>
+  <a href="index.html">目次へ</a>
+</nav>
+
+<main class="paper">
+
+<h1>地理探究 模擬問題 第1回</h1>
+<p class="exam-meta">
+  <span class="badge lv3">難易度：標準</span>
+  <span class="badge">解答時間 60分</span>
+  <span class="badge">配点 100点</span>
+  <span class="badge">小問16問</span><br>
+  第1問 気候・河川流出と自然災害の地域性（34点）／第2問 エネルギー資源と工業立地の変化（33点）／第3問 地方都市の地域調査（33点）<br>
+  ※統計値は公表資料をもとに作問上簡略化した教材用の数値である。
+</p>
+
+<!-- ===================== 第1問 ===================== -->
+<h2>第1問　気候・河川流出と自然災害の地域性（配点34点）</h2>
+
+<p class="lead">高校生のカエデとリクは、「水はどこで、いつ、どれだけ流れているのか」というテーマで探究学習を行った。次の会話文と資料1〜6を読み、後の問い（問1〜問6）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">カエデ：</span>まず世界の4地点（資料1のA〜D）を選んで、月ごとの気温と降水量を集めてみたの（資料2）。並べてみると、雨の多い時期が地点によってまるで違うのが面白い。</p>
+  <p><span class="spk">リク：</span>ぼくは同じ4地点のうち3か所の流域を流れる河川の月別流量を調べた（資料3）。この表は各河川の年平均を100とした指数なので、実際の年平均流量も同じ資料の下段に控えておいた。降った雨がいつ川に出てくるかは、雨の降り方だけでは決まらないみたいだ。雪や地下水、それに人の取水も関わってくる。</p>
+  <p><span class="spk">カエデ：</span>気になったのが資料2のDね。<u>年降水量が310mmしかない</u>のに、まわりは砂漠というわけでもなくて、ぶどうやオリーブの畑が広がっているらしい。<span class="box">Ｘ</span>ので、夏はほとんど雨が降らないの。</p>
+  <p><span class="spk">リク：</span>逆にCは、資料1で見ると低緯度にあるのに、最暖月でも23℃台にとどまっている。これは<span class="box">Ｙ</span>からだね。地図上の位置だけで気温を判断すると間違えるところだった。</p>
+  <p><span class="spk">カエデ：</span>最後に、水にかかわる災害（資料4）と、将来の降水量の予測（資料2の参考欄）も見て、地域ごとに何が起こりうるかを考えてみましょう。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　調査した4地点（A〜D）の位置（模式図）</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：世界の模式白地図＋地点記号（グレースケール／試験冊子体裁）</p>
+    <pre>A plain black-and-white schematic world map for a Japanese university entrance
+examination booklet. Equirectangular projection, coastlines drawn as simplified
+outlines only, land filled with very light gray (#e6e6e0), ocean white.
+Thin light-gray graticule every 30 degrees of latitude and longitude.
+The equator drawn as a bolder dashed black line, labelled 赤道 at the left edge;
+also label 北緯30° and 南緯30° at the left edge.
+Mark exactly four point locations with solid black dots, each connected by a short
+leader line to a small white box with a black border containing a single bold letter:
+  A = Iberian Peninsula, around 40N 4W
+  B = interior of West Africa, around 15N 0
+  C = Brazilian Highlands, around 20S 45W
+  D = central Chile, around 33S 71W
+No other labels, no country names, no colour, no shading, no legend, no title.
+Flat vector style, crisp thin black strokes, sans-serif labels, high contrast,
+pure white background, printable at 300dpi in monochrome.</pre>
+    <p class="zu-note">注記として図内に入れる文：「緯線・経線は30°間隔。海岸線は模式的に示している。」／この図は<strong>問1・問2で位置と緯度を読み取るためだけ</strong>に使う。国名・地名は入れないこと（入れると問1が知識問題になり、資料照合の設問として成立しなくなる）。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　4地点（ア〜エ）の気温と降水量</figcaption>
+  <table class="data">
+    <thead>
+      <tr>
+        <th rowspan="2" class="l">地点</th><th rowspan="2">標高<br>(m)</th>
+        <th colspan="2">1月</th><th colspan="2">4月</th><th colspan="2">7月</th><th colspan="2">10月</th>
+        <th rowspan="2">年降水量<br>(mm)</th><th rowspan="2">気温の<br>年較差(℃)</th>
+      </tr>
+      <tr>
+        <th>気温<br>℃</th><th>降水<br>mm</th><th>気温<br>℃</th><th>降水<br>mm</th>
+        <th>気温<br>℃</th><th>降水<br>mm</th><th>気温<br>℃</th><th>降水<br>mm</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">ア</td><td>95</td><td>11.5</td><td>100</td><td>14.5</td><td>60</td><td>22.5</td><td>5</td><td>18.0</td><td>100</td><td>725</td><td>11.0</td></tr>
+      <tr><td class="l">イ</td><td>350</td><td>24.5</td><td>0</td><td>32.5</td><td>15</td><td>27.5</td><td>220</td><td>27.5</td><td>45</td><td>1,000</td><td>8.0</td></tr>
+      <tr><td class="l">ウ</td><td>1,100</td><td>22.5</td><td>250</td><td>22.0</td><td>120</td><td>19.5</td><td>5</td><td>23.5</td><td>160</td><td>1,550</td><td>4.0</td></tr>
+      <tr><td class="l">エ</td><td>520</td><td>20.5</td><td>1</td><td>15.0</td><td>13</td><td>8.5</td><td>70</td><td>13.5</td><td>15</td><td>310</td><td>12.0</td></tr>
+    </tbody>
+  </table>
+  <p class="src">ア〜エは資料1のA〜Dのいずれかである（順序は一致しない）。</p>
+
+  <p class="src" style="margin-top:10px"><strong>［参考］21世紀末における年降水量の変化予測</strong></p>
+  <table class="data" style="max-width:430px">
+    <thead><tr><th class="l">地点</th><th>ア</th><th>イ</th><th>ウ</th><th>エ</th></tr></thead>
+    <tbody>
+      <tr><td class="l">年降水量の変化率（％）</td><td>−14</td><td>＋12</td><td>−8</td><td>−25</td></tr>
+    </tbody>
+  </table>
+  <p class="src">変化率は上表の現在の年降水量に対する百分率。ある気候モデルによる想定値（教材用）。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　3河川（P・Q・R）の月別流量指数と年平均流量</figcaption>
+
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：折れ線グラフ3系列（グレースケール／試験冊子体裁）</p>
+    <pre>A black-and-white line chart for a Japanese university entrance examination booklet.
+X axis: months 1 to 12, labelled 月. Y axis: 0 to 300, gridlines at 100 / 200 / 300,
+axis title 流量指数（年平均＝100） written vertically on the left.
+Plot exactly three series, distinguished ONLY by line style and marker shape
+(no colour), each labelled with a bold letter next to its peak:
+  P - solid line, filled circle markers:
+      240, 250, 191, 105, 55, 32, 16, 10, 9, 36, 98, 181
+  Q - dashed line, open square markers:
+      12, 10, 10, 15, 31, 100, 230, 300, 265, 150, 55, 23
+  R - fine dotted line, filled triangle markers:
+      55, 35, 28, 32, 66, 133, 169, 151, 112, 143, 181, 99
+Values are in the order January to December.
+Thin black strokes, light gray gridlines, sans-serif labels, white background,
+flat vector style, no legend box, no title, no colour, printable at 300dpi.</pre>
+    <p class="zu-note">正確さが最優先の図です。<strong>上の数値列を必ずそのまま再現</strong>してください（問2・問3がこの値の大小関係で解かれるため、形だけ似せた図では設問が成立しません）。とくに P の8月＝10、R の11月＝181、R の3月＝28 は正誤判定に直結します。</p>
+  </div>
+  <p class="src">流量指数は、各河川の年平均流量を100としたときの各月の平均流量の値。P・Q・Rは、資料1のA〜Dのうち3地点の周辺を流れる河川である。</p>
+
+  <p class="src" style="margin-top:10px"><strong>［下段］3河川の年平均流量（＝上のグラフの指数100に相当する実際の流量）</strong></p>
+  <table class="data" style="max-width:430px">
+    <thead><tr><th class="l">河川</th><th>P</th><th>Q</th><th>R</th></tr></thead>
+    <tbody><tr><td class="l">年平均流量（m³/秒）</td><td>2,800</td><td>1,400</td><td>95</td></tr></tbody>
+  </table>
+  <p class="src">上のグラフの指数にこの値を乗じて100で割れば、各月の実流量（m³/秒）が得られる。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料4　地域別の自然災害の状況（2000〜2020年の累計）</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th class="l">地域</th><th>発生件数<br>（件）</th><th>死者数<br>（千人）</th><th>被災者数<br>（百万人）</th><th>被害額<br>（億ドル）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">アジア</td><td>3,050</td><td>490</td><td>3,180</td><td>6,900</td></tr>
+      <tr><td class="l">南北アメリカ</td><td>1,480</td><td>26</td><td>190</td><td>8,200</td></tr>
+      <tr><td class="l">アフリカ</td><td>1,620</td><td>42</td><td>460</td><td>130</td></tr>
+      <tr><td class="l">ヨーロッパ</td><td>780</td><td>145</td><td>25</td><td>1,900</td></tr>
+      <tr><td class="l">オセアニア</td><td>190</td><td>1.5</td><td>8</td><td>350</td></tr>
+    </tbody>
+  </table>
+  <p class="src">気象災害・地震・火山災害等を含む。被害額は当時の名目値。国際災害データベースをもとに作成（教材用に簡略化）。</p>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1のA〜Dと、資料2のア〜エとの組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">1</span></p>
+  <table class="data">
+    <thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td>ア</td><td>イ</td><td>ウ</td><td>エ</td></tr>
+      <tr><td>②</td><td>ア</td><td>イ</td><td>エ</td><td>ウ</td></tr>
+      <tr><td>③</td><td>ア</td><td>ウ</td><td>イ</td><td>エ</td></tr>
+      <tr><td>④</td><td>エ</td><td>イ</td><td>ウ</td><td>ア</td></tr>
+      <tr><td>⑤</td><td>イ</td><td>ア</td><td>エ</td><td>ウ</td></tr>
+      <tr><td>⑥</td><td>イ</td><td>ア</td><td>ウ</td><td>エ</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料3のP・Q・Rの河川が流れる地域は、資料1のA〜Dのうちの3地点の周辺にあたる。P・Q・Rと地点との組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">2</span></p>
+  <table class="data">
+    <thead><tr><th></th><th>P</th><th>Q</th><th>R</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td>B</td><td>C</td><td>D</td></tr>
+      <tr><td>②</td><td>B</td><td>D</td><td>C</td></tr>
+      <tr><td>③</td><td>C</td><td>B</td><td>D</td></tr>
+      <tr><td>④</td><td>C</td><td>D</td><td>B</td></tr>
+      <tr><td>⑤</td><td>D</td><td>B</td><td>C</td></tr>
+      <tr><td>⑥</td><td>D</td><td>C</td><td>B</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料3（グラフと下段の年平均流量）について述べた次の文K〜Mの正誤の組合せとして最も適当なものを、後の①〜⑧のうちから一つ選べ。<span class="mark">3</span></p>
+  <div class="q-body">
+    <p style="margin:4px 0">K　Rの河川では、流量が最も少ない月の流量が最も多い月の約6分の1にとどまっており、P・Qの河川に比べて年間の流量の変動が小さい。</p>
+    <p style="margin:4px 0">L　Pの8月の流量は、Rの11月の流量よりも少ない。</p>
+    <p style="margin:4px 0">M　Rの河川では、冬の降水と、春から初夏にかけての融雪の両方が流量に影響しており、流量の多い時期が年に2回現れている。</p>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th>①</th><th>②</th><th>③</th><th>④</th><th>⑤</th><th>⑥</th><th>⑦</th><th>⑧</th></tr></thead>
+    <tbody>
+      <tr><td>K</td><td>正</td><td>正</td><td>正</td><td>正</td><td>誤</td><td>誤</td><td>誤</td><td>誤</td></tr>
+      <tr><td>L</td><td>正</td><td>正</td><td>誤</td><td>誤</td><td>正</td><td>正</td><td>誤</td><td>誤</td></tr>
+      <tr><td>M</td><td>正</td><td>誤</td><td>正</td><td>誤</td><td>正</td><td>誤</td><td>正</td><td>誤</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料4から読み取れることとして最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">4</span></p>
+  <ol class="choices">
+    <li>①　発生件数が最も多い地域は、被害額も最も大きい。</li>
+    <li>②　1件当たりの死者数が最も多い地域は、ヨーロッパである。</li>
+    <li>③　被災者1人当たりの被害額が最も小さい地域は、アジアである。</li>
+    <li>④　5地域の合計に占めるアフリカの割合は、被災者数よりも死者数において大きい。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料2の『［参考］21世紀末における年降水量の変化予測』について、年降水量の変化量（mm）の絶対値が最も大きい地点と、その地点で懸念される事象との組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">5</span></p>
+  <ol class="choices">
+    <li>①　ウ　―　乾季がさらに長期化し、草原（サバナ）における牧草の再生が遅れる。</li>
+    <li>②　ウ　―　冬季の積雪量が増加し、春の融雪出水の規模が大きくなる。</li>
+    <li>③　イ　―　雨季の集中豪雨が激化し、土壌侵食や洪水の危険が高まる。</li>
+    <li>④　エ　―　山地の積雪が減少し、夏季の灌漑用水が不足する。</li>
+    <li>⑤　ア　―　夏季の乾燥がいっそう強まり、森林火災の危険が高まる。</li>
+    <li>⑥　エ　―　年降水量が増加に転じ、内陸部の塩害が解消される。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問6　会話文中の空欄<span class="box">Ｘ</span>・<span class="box">Ｙ</span>に入る語句の組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">6</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｘ</th><th class="l">Ｙ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">夏に亜熱帯高圧帯（中緯度高圧帯）に覆われる</td><td class="l">標高が高い</td></tr>
+      <tr><td>②</td><td class="l">夏に亜熱帯高圧帯（中緯度高圧帯）に覆われる</td><td class="l">寒流の影響を受ける</td></tr>
+      <tr><td>③</td><td class="l">夏に熱帯収束帯（赤道低圧帯）が北上する</td><td class="l">標高が高い</td></tr>
+      <tr><td>④</td><td class="l">夏に熱帯収束帯（赤道低圧帯）が北上する</td><td class="l">隔海度が大きい</td></tr>
+      <tr><td>⑤</td><td class="l">大陸東岸に位置し季節風が卓越する</td><td class="l">標高が高い</td></tr>
+      <tr><td>⑥</td><td class="l">大陸東岸に位置し季節風が卓越する</td><td class="l">寒流の影響を受ける</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===================== 第2問 ===================== -->
+<h2>第2問　エネルギー資源と工業立地の変化（配点33点）</h2>
+
+<p class="lead">次の会話文と資料1〜3は、「エネルギーはどこで作られ、工場はなぜ動くのか」というテーマの探究学習で用いられたものである。これらを読み、後の問い（問1〜問5）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">ハルカ：</span>一次エネルギーの供給構成を4か国について調べました（資料1）。同じ「先進国」でも中身がまったく違うのに驚きました。</p>
+  <p><span class="spk">ソウタ：</span>発電電力量の長期変化も調べました（資料2）。<u>縦軸が対数目盛</u>なので、読み方に注意が必要だと先生に言われました。</p>
+  <p><span class="spk">ハルカ：</span>アルミニウムの精錬は「電気の缶詰」と呼ばれるほど電力を使うので、立地が変わりやすいはずです。生産量と電力価格、原料の産出を並べてみました（資料3）。</p>
+  <p><span class="spk">ソウタ：</span>日本国内でも、再生可能エネルギーの導入は県によってまったく違いますね（資料3の下段）。自然条件との対応を確かめてみましょう。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　4か国の一次エネルギー国内供給の構成と関連指標（2020年前後）</figcaption>
+  <table class="data">
+    <thead>
+      <tr>
+        <th rowspan="2" class="l">国</th>
+        <th colspan="6">一次エネルギー国内供給の構成（％）</th>
+        <th rowspan="2">1人当たり<br>供給量<br>(石油換算t)</th>
+        <th rowspan="2">一次エネルギー<br>自給率（％）</th>
+      </tr>
+      <tr><th>石炭</th><th>石油</th><th>天然ガス</th><th>原子力</th><th>水力</th><th>その他<br>再生可能等</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">W</td><td>61</td><td>19</td><td>8</td><td>2</td><td>8</td><td>2</td><td>2.4</td><td>80</td></tr>
+      <tr><td class="l">X</td><td>3</td><td>29</td><td>16</td><td>40</td><td>5</td><td>7</td><td>3.6</td><td>55</td></tr>
+      <tr><td class="l">Y</td><td>5</td><td>37</td><td>9</td><td>1</td><td>29</td><td>19</td><td>1.4</td><td>105</td></tr>
+      <tr><td class="l">Z</td><td>17</td><td>34</td><td>26</td><td>5</td><td>1</td><td>17</td><td>3.5</td><td>35</td></tr>
+    </tbody>
+  </table>
+  <p class="src">「その他再生可能等」には風力・太陽光・地熱・バイオ燃料等を含む。自給率は国内生産量／国内供給量。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　4か国の発電電力量の変化（1990〜2020年、縦軸は対数目盛）</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：折れ線グラフ4系列・縦軸対数目盛（グレースケール／試験冊子体裁）</p>
+    <pre>A black-and-white line chart with a LOGARITHMIC y axis, for a Japanese university
+entrance examination booklet.
+X axis: four year ticks, 1990 / 2000 / 2010 / 2020, evenly spaced.
+Y axis: logarithmic, decade gridlines labelled 1, 10, 100, 1000, 10000.
+Axis title on the left, written vertically: 発電電力量（TWh、対数目盛）
+Plot exactly four series, distinguished ONLY by line style and marker shape
+(no colour), each labelled in Japanese next to the right end of its line:
+  中国     - solid line, filled circle markers:      620, 1100, 4200, 7600
+  インド   - dashed line, open square markers:       290, 560, 960, 1560
+  ドイツ   - thin solid line, filled triangle markers: 550, 577, 630, 570
+  ベトナム - dotted line, filled diamond markers:     9, 27, 92, 235
+Values are TWh for 1990 / 2000 / 2010 / 2020 in that order.
+Thin black strokes, light gray gridlines, sans-serif labels, white background,
+flat vector style, no legend box, no title, no colour, printable at 300dpi.</pre>
+    <p class="zu-note">図内の注記：「縦軸は対数目盛であり、目盛の間隔が等しくても差が等しいことを意味しない。」／<strong>対数目盛であることが設問の核心</strong>です。等差目盛で描くと問2が成立しません。ドイツがほぼ水平、ベトナムが最も急な傾きになる関係を必ず保ってください。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　アルミニウム精錬に関する4か国の指標</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th rowspan="2" class="l">国</th><th colspan="2">アルミニウム地金生産量（万t）</th><th rowspan="2">産業用電力価格<br>(米セント/kWh)</th><th rowspan="2">発電量に占める<br>水力の割合（％）</th><th rowspan="2">ボーキサイト<br>産出量（万t）</th></tr>
+      <tr><th>2000年</th><th>2020年</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">あ</td><td>280</td><td>3,700</td><td>8.5</td><td>17</td><td>9,300</td></tr>
+      <tr><td class="l">い</td><td>105</td><td>130</td><td>4.0</td><td>92</td><td>0</td></tr>
+      <tr><td class="l">う</td><td>1</td><td>0</td><td>16.0</td><td>8</td><td>0</td></tr>
+      <tr><td class="l">え</td><td>173</td><td>157</td><td>7.5</td><td>6</td><td>10,500</td></tr>
+    </tbody>
+  </table>
+  <p class="src">あ〜えは、オーストラリア・中国・日本・ノルウェーのいずれかである。</p>
+
+  <p class="src" style="margin-top:10px"><strong>［下段］日本の4県における再生可能エネルギー等の発電設備容量（万kW）</strong></p>
+  <table class="data">
+    <thead><tr><th class="l">県</th><th>太陽光</th><th>風力</th><th>地熱</th><th>水力</th></tr></thead>
+    <tbody>
+      <tr><td class="l">K</td><td>15</td><td>0.5</td><td>15.1</td><td>3</td></tr>
+      <tr><td class="l">L</td><td>12</td><td>45.0</td><td>0.1</td><td>1</td></tr>
+      <tr><td class="l">M</td><td>5</td><td>0.2</td><td>0.0</td><td>90</td></tr>
+      <tr><td class="l">N</td><td>120</td><td>1.0</td><td>0.0</td><td>25</td></tr>
+    </tbody>
+  </table>
+  <p class="src">K〜Nは、青森県・大分県・岡山県・富山県のいずれかである。数値は教材用に簡略化した。</p>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1のW〜Zは、ドイツ・フランス・ブラジル・中国のいずれかである。WとZに該当する国名の組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">7</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">W</th><th class="l">Z</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">中国</td><td class="l">ドイツ</td></tr>
+      <tr><td>②</td><td class="l">中国</td><td class="l">フランス</td></tr>
+      <tr><td>③</td><td class="l">ドイツ</td><td class="l">中国</td></tr>
+      <tr><td>④</td><td class="l">ドイツ</td><td class="l">ブラジル</td></tr>
+      <tr><td>⑤</td><td class="l">ブラジル</td><td class="l">ドイツ</td></tr>
+      <tr><td>⑥</td><td class="l">フランス</td><td class="l">中国</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2について述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">8</span></p>
+  <ol class="choices">
+    <li>①　1990年から2020年にかけての発電電力量の増加量が4か国中で最も大きいのは、ベトナムである。</li>
+    <li>②　図中で線の傾きが最も急なベトナムは、1990年から2020年にかけての発電電力量の増加率（倍率）が4か国中で最も高い。</li>
+    <li>③　ドイツの発電電力量は、2010年から2020年にかけてほぼ半減した。</li>
+    <li>④　図中で2本の線が接近していることから、2020年のインドの発電電力量は同年の中国の8割程度である。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料3（上段）のあ〜えと国名との組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">9</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">あ</th><th class="l">い</th><th class="l">え</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">中国</td><td class="l">ノルウェー</td><td class="l">オーストラリア</td></tr>
+      <tr><td>②</td><td class="l">中国</td><td class="l">オーストラリア</td><td class="l">ノルウェー</td></tr>
+      <tr><td>③</td><td class="l">オーストラリア</td><td class="l">ノルウェー</td><td class="l">中国</td></tr>
+      <tr><td>④</td><td class="l">オーストラリア</td><td class="l">中国</td><td class="l">ノルウェー</td></tr>
+      <tr><td>⑤</td><td class="l">ノルウェー</td><td class="l">中国</td><td class="l">オーストラリア</td></tr>
+      <tr><td>⑥</td><td class="l">ノルウェー</td><td class="l">オーストラリア</td><td class="l">中国</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料3（上段）から、アルミニウム精錬業の立地について読み取れることとして最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">10</span></p>
+  <ol class="choices">
+    <li>①　ボーキサイトの産出量が多い国ほど、アルミニウム地金の生産量が多い。</li>
+    <li>②　産業用電力価格が4か国中で最も高い国では、2000年以降にアルミニウム地金の生産が事実上停止した。</li>
+    <li>③　発電量に占める水力の割合が高い国ほど、アルミニウム地金の生産量が多い。</li>
+    <li>④　2000年から2020年にかけて生産量の増加量が最も大きい国は、産業用電力価格が4か国中で最も安い。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料3の下段のNに該当する県名と、その表について述べた文ｐ・ｑのうち正しいものとの組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">11</span></p>
+  <div class="memo">
+  <ul>
+    <li><strong>ｐ</strong>　4県のうち、示された4つの電源の設備容量の合計が最も大きいのはNであり、その合計の8割以上を1つの電源が占めている。</li>
+    <li><strong>ｑ</strong>　風力の設備容量が4県中最大であるLは、示された4つの電源の設備容量の合計でも4県中最大である。</li>
+  </ul>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Nに該当する県</th><th class="l">正しい文</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">青森県</td><td class="l">ｐ</td></tr>
+      <tr><td>②</td><td class="l">青森県</td><td class="l">ｑ</td></tr>
+      <tr><td>③</td><td class="l">岡山県</td><td class="l">ｐ</td></tr>
+      <tr><td>④</td><td class="l">岡山県</td><td class="l">ｑ</td></tr>
+      <tr><td>⑤</td><td class="l">富山県</td><td class="l">ｐ</td></tr>
+      <tr><td>⑥</td><td class="l">富山県</td><td class="l">ｑ</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===================== 第3問 ===================== -->
+<h2>第3問　地方都市の地域調査（配点33点）</h2>
+
+<p class="lead">次の資料1・資料2は、内陸の盆地に位置するM市について、高校生が地域調査を行った際に用いたものである。これらを読み、後の問い（問1〜問5）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">ユイ：</span>M市の地形は、山地から流れ出る川がつくった扇状地と、盆地の中央を流れる大河川の氾濫平野に大きく分かれます（資料1の図Ⅰ）。土地の使い方が場所によってきれいに分かれているのが不思議でした。</p>
+  <p><span class="spk">タケル：</span>市役所で土地利用の統計をもらってきました（資料2）。100年で何が増えて何が減ったのかが数字でわかります。</p>
+  <p><span class="spk">ユイ：</span>人口の統計（資料2の下段）と、市が公開している浸水想定のデータ（資料1の図Ⅱ）も重ねてみました。GISを使うと、「どこに何があるか」だけでなく「どこが危ないか」も見えてきますね。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　M市中心部周辺の地形・土地利用（図Ⅰ）と洪水浸水想定区域（図Ⅱ）</figcaption>
+
+  <p class="src"><strong>［図Ⅰ］M市中心部周辺の地形と土地利用（模式図）</strong></p>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：地形模式図（扇状地＋氾濫平野／グレースケール・試験冊子体裁）</p>
+    <pre>A black-and-white schematic landform map of a Japanese inland basin town,
+drawn in the flat vector style of a university entrance examination booklet.
+Landscape orientation, about 3:2, thin black outlines, light gray fills only.
+
+Layout from top (north) to bottom (south):
+1. MOUNTAINS along the top edge, light gray tone, labelled 山地 twice.
+2. A VALLEY MOUTH (labelled 谷口) at the top centre, marked with a small black dot.
+3. An ALLUVIAL FAN spreading south from the valley mouth: draw four smooth
+   arc-shaped contour lines bulging downward (south), labelled from the top
+   250m / 200m / 150m / 100m, with a note that the contour interval is 50 m.
+4. The fan's river runs from the valley mouth straight south: SOLID blue-black
+   line in the upper part, then a DASHED segment across the middle of the fan
+   annotated （水無川）, then SOLID again near the bottom. This dashed part is
+   essential - it shows the stream sinking underground on the fan centre.
+5. A large river labelled M川 flowing WEST to EAST across the lower third,
+   thick line. Below/south of it a thin DASHED meander line labelled 旧河道.
+6. Land-use annotations placed in Japanese, at these positions:
+   - upper fan (fan centre, both left and right of the river): 果樹園
+   - a horizontal band across the middle of the fan toe: 集落・湧水帯
+   - between the fan toe and M川: 水田
+   - south of M川 and around the old channel: 後背湿地（水田）
+7. Two dashed-outline built-up rectangles: 旧市街地 on the fan toe just north of
+   the railway, and 新興住宅地 lower right, between the railway and M川.
+8. A RAILWAY as a horizontal line with short tick marks crossing the middle of
+   the map, with a small white square station symbol labelled M駅 near the centre.
+9. Four white circles with bold black outlines, labelled ア イ ウ エ:
+   ア = middle of the alluvial fan (fan centre), left of the dashed river
+   イ = fan toe, inside 旧市街地, on the spring line
+   ウ = a slight natural levee ridge immediately along M川, left side
+   エ = on the old channel / back marsh, south-east of M川
+10. A north arrow (N) in the upper right and a scale bar reading 2 km in the
+    lower right.
+
+No colour except neutral gray, no country or real place names, no legend box
+other than the notes described, sans-serif Japanese labels, white background,
+printable at 300 dpi.</pre>
+    <p class="zu-note">図内の注記：「等高線は50m間隔。」／<strong>扇央の破線区間（水無川）と、扇端の湧水帯・集落の帯</strong>が問1の根拠です。ア＝扇央、イ＝扇端、ウ＝自然堤防、エ＝後背湿地（旧河道沿い）という4地点の位置関係を必ず保ってください。また新興住宅地は<strong>鉄道の南・M川側（氾濫平野）</strong>に置くこと（問5の根拠）。</p>
+  </div>
+
+  <p class="src" style="margin-top:14px"><strong>［図Ⅱ］M川の洪水浸水想定区域と主な施設（GISによる重ね合わせ、模式図）</strong></p>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：ハザードマップ風オーバーレイ図（1kmメッシュ／グレースケール）</p>
+    <pre>A black-and-white GIS overlay map for a Japanese university entrance
+examination booklet. Landscape orientation, about 2:1, flat vector style.
+
+Base: a rectangular map frame divided by thin light-gray grid lines into
+1 km square mesh cells (6 columns x 4 rows). A note reads 1メッシュ＝1km四方.
+
+Hazard zones, drawn as two hatched bands across the LOWER HALF of the frame,
+following a gently wavy river that runs west to east near the bottom:
+ - outer band, FINE sparse diagonal hatching  = 浸水深 0.5〜3.0m
+ - inner band, COARSE dense diagonal hatching = 浸水深 3.0m以上 (closest to the river)
+The river itself is a thick dark line inside the inner band.
+A small legend strip below the frame shows both hatch patterns with those labels.
+
+Six facility symbols, each a small white symbol with a bold black outline and a
+Japanese label, placed EXACTLY as follows:
+ OUTSIDE the hazard zones, in the upper half:
+   square   市役所        (upper left-centre)
+   circle   総合病院      (upper centre)
+   triangle 高等学校      (upper right-centre)
+ INSIDE the hazard zones, in the lower half:
+   triangle 小学校（指定避難所）  - inside the FINE-hatched band, near its lower edge
+   square   支所・防災倉庫        - inside the COARSE-hatched band
+   circle   介護老人施設          - inside the COARSE-hatched band, right side
+
+Symbol shapes must match: square / circle / triangle as listed.
+No colour, thin black strokes, sans-serif Japanese labels, white background,
+no title, printable at 300 dpi.</pre>
+    <p class="zu-note"><strong>施設の内外の配置が問4の全根拠</strong>です。浸水深3.0m以上に入るのは「支所・防災倉庫」と「介護老人施設」の2つだけ、小学校は0.5〜3.0mの帯の中、市役所・総合病院・高等学校は区域外——この対応を必ず守ってください。浸水域が<strong>南半分に広がる</strong>ことも問4②・問5の判定に必要です。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　M市中心部の土地利用面積の変化（ha）と人口等の推移</figcaption>
+  <table class="data">
+    <thead><tr><th class="l">地目</th><th>1900年頃</th><th>1975年</th><th>2020年</th></tr></thead>
+    <tbody>
+      <tr><td class="l">水田</td><td>2,150</td><td>1,780</td><td>980</td></tr>
+      <tr><td class="l">畑</td><td>640</td><td>420</td><td>260</td></tr>
+      <tr><td class="l">果樹園</td><td>180</td><td>760</td><td>1,120</td></tr>
+      <tr><td class="l">宅地</td><td>210</td><td>690</td><td>1,240</td></tr>
+      <tr><td class="l">工業用地</td><td>0</td><td>180</td><td>310</td></tr>
+      <tr><td class="l">山林・原野</td><td>820</td><td>170</td><td>90</td></tr>
+      <tr><td class="l"><strong>合計</strong></td><td><strong>4,000</strong></td><td><strong>4,000</strong></td><td><strong>4,000</strong></td></tr>
+    </tbody>
+  </table>
+  <p class="src" style="margin-top:10px"><strong>［下段］M市の人口等の推移</strong></p>
+  <table class="data">
+    <thead><tr><th class="l">項目</th><th>1980年</th><th>2000年</th><th>2020年</th></tr></thead>
+    <tbody>
+      <tr><td class="l">総人口（人）</td><td>78,500</td><td>84,200</td><td>71,300</td></tr>
+      <tr><td class="l">65歳以上人口（人）</td><td>7,850</td><td>15,160</td><td>22,100</td></tr>
+      <tr><td class="l">15歳未満人口（人）</td><td>18,840</td><td>12,630</td><td>7,840</td></tr>
+      <tr><td class="l">世帯数（世帯）</td><td>21,200</td><td>28,600</td><td>28,900</td></tr>
+      <tr><td class="l">DID（人口集中地区）人口（人）</td><td>39,000</td><td>37,000</td><td>30,600</td></tr>
+      <tr><td class="l">空き家率（％）</td><td>5.2</td><td>9.8</td><td>18.5</td></tr>
+    </tbody>
+  </table>
+</figure>
+
+<div class="memo">
+  <h5>調査メモ（生徒作成）</h5>
+  <ul>
+    <li>旧市街地の古老の話：「昔は<u>この段差の下に沿って泉が湧いていて、そこに家が並んだ</u>。上の方の畑は水が引けず、桑や果樹に向いていた。」</li>
+    <li>1970年代以降、M駅の南側で農地の宅地化が進み、その多くが市の南部に広がった。</li>
+    <li>市は2023年、市役所の建て替え候補地として、鉄道の南側で地価の安い地区を検討している。</li>
+  </ul>
+</div>
+
+<div class="q">
+  <p class="q-head">問1　資料1の図Ⅰのア〜エの地点の説明として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">12</span></p>
+  <ol class="choices">
+    <li>①　アは扇状地の中央部にあたり、河床の下を水が流れて地表水が得にくいため、水田よりも果樹園や畑として利用されてきた。</li>
+    <li>②　イは扇状地の末端にあたり、地下を流れてきた水が湧き出すため、これに沿って集落が列状に立地してきた。</li>
+    <li>③　ウは大河川に沿ってわずかに高くなった自然堤防上にあたり、砂質で水はけがよいため、古くから集落や畑に利用されてきた。</li>
+    <li>④　エは旧河道に近い後背湿地にあたり、水はけがよく地盤も安定しているため、宅地として最も適した土地である。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2（上段の土地利用面積）から読み取れることとして最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">13</span></p>
+  <ol class="choices">
+    <li>①　1900年頃から2020年にかけて、面積の増加量が最も大きい地目は果樹園である。</li>
+    <li>②　1900年頃から2020年にかけて、面積が最も大きく減少した地目は山林・原野である。</li>
+    <li>③　1975年から2020年にかけて、水田の減少面積は宅地の増加面積を上回っている。</li>
+    <li>④　1975年から2020年にかけての果樹園の増加率は、同期間の宅地の増加率を上回っている。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2の下段（人口等の推移）から読み取れることとして<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">14</span></p>
+  <ol class="choices">
+    <li>①　1980年から2020年にかけて総人口は減少したが世帯数は増加し、1世帯当たり人員は3.7人から2.5人程度に減少した。</li>
+    <li>②　2000年から2020年にかけて65歳以上人口は約1.5倍になり、老年人口率は13ポイント上昇した。</li>
+    <li>③　2020年の15歳未満人口は、1980年の半分以下に減少している。</li>
+    <li>④　DID人口は1980年から2020年にかけて減少しており、総人口に占めるDID人口の割合も半分以下に低下した。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料1の図Ⅱを用いた分析や提案として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">15</span></p>
+  <ol class="choices">
+    <li>①　浸水深3.0m以上の区域に立地する施設は、支所・防災倉庫と介護老人施設であり、災害時に支援が必要な人々の避難と物資の拠点が同時に機能しなくなるおそれがある。</li>
+    <li>②　浸水想定区域は市域の南半分に限られるため、市役所を鉄道の南側に移せば、市域全体からのアクセスが改善し、防災上も有利になる。</li>
+    <li>③　指定避難所である小学校は浸水想定区域の外にあるので、周辺住民は徒歩で確実に避難できる。</li>
+    <li>④　総合病院は浸水想定区域の外にあるため、M川が氾濫しても市内の道路網が使えなくなることはない。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　この調査についての次の会話文中の空欄<span class="box">Ｓ</span>・<span class="box">Ｔ</span>に入る語句の組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">16</span></p>
+  <div class="dialogue">
+    <p><span class="spk">ユイ：</span>「新興住宅地の住民は災害への意識が低い」と結論づけたいのだけれど、手元の資料からは言えないわね。これを示すには<span class="box">Ｓ</span>が必要だと思う。</p>
+    <p><span class="spk">タケル：</span>それに、資料1の図Ⅰと図Ⅱを重ねると、新興住宅地は<span class="box">Ｔ</span>ことがわかる。市役所の移転候補地を考えるときは、地価だけでなくこの点も評価する必要があるね。</p>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｓ</th><th class="l">Ｔ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">住民を対象とした防災意識のアンケートや聞き取り調査</td><td class="l">扇状地の扇央に位置し、洪水の危険は小さい</td></tr>
+      <tr><td>②</td><td class="l">住民を対象とした防災意識のアンケートや聞き取り調査</td><td class="l">氾濫平野側に広がっており、浸水想定区域と重なる部分がある</td></tr>
+      <tr><td>③</td><td class="l">国勢調査による年齢別人口の集計</td><td class="l">氾濫平野側に広がっており、浸水想定区域と重なる部分がある</td></tr>
+      <tr><td>④</td><td class="l">国勢調査による年齢別人口の集計</td><td class="l">旧市街地よりも標高が高く、浸水の危険はない</td></tr>
+      <tr><td>⑤</td><td class="l">空中写真の判読による建物棟数の計測</td><td class="l">旧市街地よりも標高が高く、浸水の危険はない</td></tr>
+      <tr><td>⑥</td><td class="l">空中写真の判読による建物棟数の計測</td><td class="l">扇状地の扇央に位置し、洪水の危険は小さい</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===================== 解答と解説 ===================== -->
+<section class="answers">
+<h1>解答と解説（第1回）</h1>
+
+<table class="ans-table">
+  <thead><tr><th>大問</th><th>問</th><th>解答番号</th><th>正解</th><th>配点</th><th>想定正答率</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="6">第1問</td><td>問1</td><td>1</td><td class="correct">④</td><td>6</td><td>55%</td></tr>
+    <tr><td>問2</td><td>2</td><td class="correct">④</td><td>6</td><td>45%</td></tr>
+    <tr><td>問3</td><td>3</td><td class="correct">③</td><td>6</td><td>38%</td></tr>
+    <tr><td>問4</td><td>4</td><td class="correct">②</td><td>5</td><td>50%</td></tr>
+    <tr><td>問5</td><td>5</td><td class="correct">①</td><td>5</td><td>42%</td></tr>
+    <tr><td>問6</td><td>6</td><td class="correct">①</td><td>6</td><td>60%</td></tr>
+    <tr><td rowspan="5">第2問</td><td>問1</td><td>7</td><td class="correct">①</td><td>7</td><td>62%</td></tr>
+    <tr><td>問2</td><td>8</td><td class="correct">②</td><td>7</td><td>52%</td></tr>
+    <tr><td>問3</td><td>9</td><td class="correct">①</td><td>6</td><td>65%</td></tr>
+    <tr><td>問4</td><td>10</td><td class="correct">②</td><td>6</td><td>58%</td></tr>
+    <tr><td>問5</td><td>11</td><td class="correct">③</td><td>7</td><td>44%</td></tr>
+    <tr><td rowspan="5">第3問</td><td>問1</td><td>12</td><td class="correct">④</td><td>7</td><td>70%</td></tr>
+    <tr><td>問2</td><td>13</td><td class="correct">③</td><td>7</td><td>55%</td></tr>
+    <tr><td>問3</td><td>14</td><td class="correct">④</td><td>6</td><td>48%</td></tr>
+    <tr><td>問4</td><td>15</td><td class="correct">①</td><td>6</td><td>62%</td></tr>
+    <tr><td>問5</td><td>16</td><td class="correct">②</td><td>7</td><td>72%</td></tr>
+  </tbody>
+</table>
+
+<div class="ans-detail">
+
+<h2>第1問の解説</h2>
+
+<h3>問1　正解 ④</h3>
+<p class="exp">この設問の核心は、<strong>「南北両半球に、同じ気候型のペアを置いた」</strong>点にある。資料2だけを見ても、また資料1だけを見ても解けない。両者を往復する必要がある。</p>
+<ul class="exp-list">
+  <li>資料1の位置：A＝イベリア半島付近（北緯約40°）、B＝アフリカ西部内陸（北緯約15°）、C＝ブラジル高原（南緯約20°）、D＝チリ中部（南緯約33°）。</li>
+  <li>資料2のア：1月が低温（11.5℃）で多雨、7月が高温（22.5℃）で少雨（5mm）。＝<strong>北半球の地中海性気候（Cs）</strong>→ A。</li>
+  <li>資料2のエ：1月が高温（20.5℃）で降水1mm、7月が低温（8.5℃）で降水70mm。＝<strong>南半球の地中海性気候（Cs）</strong>→ D。年降水量310mmは同気候の中でも少ない側で、チリ中部の内陸的な条件に対応する。</li>
+  <li>資料2のイ：7月に降水が集中（220mm）し1月が0mm、最暖月が4月（32.5℃）。＝<strong>北半球のサバナ気候（Aw）</strong>。雨季の前に最高気温が現れるのは低緯度内陸の典型 → B。</li>
+  <li>資料2のウ：1月に降水が集中（250mm）し7月が5mm。＝<strong>南半球のサバナ気候（Aw）</strong> → C。</li>
+</ul>
+<div class="tip"><strong>よくある誤解：</strong>「1月に雨が多い＝冬雨＝地中海性気候」と機械的に処理すると、南半球のウ（1月は夏）をアと入れ替えてしまう（①②③のような誤答）。気温の値を必ず併読し、<strong>1月が暑いのか寒いのか</strong>で半球を判定すること。⑤⑥は、B（低緯度）に年較差11.0℃・最寒月11.5℃のアを当てており、緯度と気温の対応から即座に除外できる。</div>
+
+<h3>問2　正解 ④</h3>
+<p class="exp">流量の「季節のずれ」と「変動の幅」の二段階で判定する。</p>
+<ul class="exp-list">
+  <li><strong>P</strong>：1〜2月に最大（240〜250）、8〜9月に最小（8〜10）。年最大／年最小が約30倍という激しい変動で、雨季と乾季が明瞭な<strong>南半球のサバナ気候</strong>＝C（＝資料2のウ、1月250mm・7月5mm）に対応。</li>
+  <li><strong>Q</strong>：8月に最大（300）、1〜3月がほぼ枯渇（10〜12）。<strong>北半球のサバナ気候</strong>＝B（＝イ、7月220mm・1月0mm）に対応。</li>
+  <li><strong>R</strong>：7月（168）と11月（180）に二つの山があり、2〜4月が最小。南半球で6〜8月が冬（降雨期）、9〜12月が春〜初夏（山地の融雪期）にあたる<strong>チリ中部＝D</strong>に対応。</li>
+  <li>したがって P＝C、Q＝B、R＝D で ④。</li>
+</ul>
+<div class="tip"><strong>よくある誤解：</strong>「二つの山があるから熱帯収束帯が年2回通過する赤道付近の河川」と早合点すると①②に流れる。しかし赤道付近であれば最小月でも流量は大きく残るはずで、R の最小値（22〜28）や、資料2に赤道付近の地点が存在しないことと矛盾する。<strong>選択肢の前に「候補地点は資料1の4地点に限られる」という制約を確認</strong>するのが速い。</div>
+
+<h3>問3　正解 ③（K＝正、L＝誤、M＝正）</h3>
+<ul class="exp-list">
+  <li><strong>K＝正</strong>：Rは最大180（11月）／最小28（3月）で約6.4倍、およそ6分の1。一方Pは250／8で約31倍、Qは300／10で約30倍。したがってRの変動は相対的に小さい。「変動が小さい」という表現は、絶対量ではなく<strong>指数（＝比）</strong>で比べる限り妥当である。</li>
+  <li><strong>L＝誤　これが本問の罠</strong>：指数だけを見るとPの8月（10）＜Rの11月（180）に見える。しかし指数は<strong>各河川の年平均流量を100とした相対値</strong>であり、河川間の実流量の比較には使えない。<strong>資料3下段の年平均流量を使って</strong>実数に換算すると、Pの8月＝2,800×0.10＝約280 m³/秒、Rの11月＝95×1.80＝約171 m³/秒。したがってPの8月の方が<strong>多い</strong>。</li>
+  <li><strong>M＝正</strong>：Rは南半球中緯度に位置し、6〜8月（冬）の降水による出水と、9〜12月（春〜初夏）の山地の融雪による出水の二つの山をもつ。7月と11月の極大がこれに対応する。</li>
+</ul>
+<div class="tip"><strong>共通テストの定番の罠：</strong>「指数・構成比・1人当たり」といった<strong>相対値の表を、絶対量の比較に使わせる</strong>誤りは頻出。表の下の注記（本問では資料3の「年平均流量を100とした値」と、実数を与える同じ資料の下段）を必ず読むこと。逆に、注記に絶対量が併記されているときは「換算して比べさせる意図がある」と考えてよい。</div>
+
+<h3>問4　正解 ②</h3>
+<ul class="exp-list">
+  <li><strong>②＝正</strong>：1件当たり死者数は、ヨーロッパ 145,000÷780＝<strong>約186人</strong>、アジア 490,000÷3,050＝約161人、アフリカ約26人、南北アメリカ約18人、オセアニア約8人。ヨーロッパが最大。2003年の熱波のように、<strong>件数は少ないが1件の死者が極端に多い災害</strong>が含まれるためである。</li>
+  <li><strong>①＝誤</strong>：発生件数最多はアジア（3,050件）だが、被害額最大は南北アメリカ（8,200億ドル）。件数と被害額は比例しない（高い資産価値の地域で被害額が膨らむ）。</li>
+  <li><strong>③＝誤</strong>：被災者1人当たり被害額はアジア約217ドル（6,900億ドル÷31.8億人）、アフリカ約28ドル（130億ドル÷4.6億人）。最小はアフリカ。</li>
+  <li><strong>④＝誤</strong>：アフリカの割合は、死者数で42÷704.5≒<strong>6.0％</strong>、被災者数で460÷3,863≒<strong>11.9％</strong>。死者数における割合の方が小さい（文は逆）。</li>
+</ul>
+<div class="tip"><strong>思考の型：</strong>この種の表では「件数」「死者」「被災者」「被害額」の4指標が<strong>それぞれ別の地域で最大になる</strong>ように作られている。①のように「一つの指標の順位を他の指標に流用する」選択肢は原則として誤り。割り算（1件当たり・1人当たり）を要求する選択肢が正解になりやすい。</div>
+
+<h3>問5　正解 ①</h3>
+<p class="exp">まず変化量を計算する。<strong>変化率が最大の地点＝変化量が最大の地点ではない</strong>。</p>
+<table class="data" style="max-width:520px">
+  <thead><tr><th class="l">地点</th><th>現在(mm)</th><th>変化率</th><th>変化量(mm)</th></tr></thead>
+  <tbody>
+    <tr><td class="l">ア（イベリア）</td><td>725</td><td>−14％</td><td>−101.5</td></tr>
+    <tr><td class="l">イ（西アフリカ）</td><td>1,000</td><td>＋12％</td><td>＋120</td></tr>
+    <tr><td class="l">ウ（ブラジル高原）</td><td>1,550</td><td>−8％</td><td><strong>−124</strong></td></tr>
+    <tr><td class="l">エ（チリ中部）</td><td>310</td><td>−25％</td><td>−77.5</td></tr>
+  </tbody>
+</table>
+<ul class="exp-list">
+  <li>絶対値が最大なのは<strong>ウ（−124mm）</strong>。ウは南半球のサバナ気候であり、降水量の減少は<strong>乾季の長期化</strong>としてあらわれ、サバナの牧草の再生や火入れ後の植生回復が遅れる。よって①が正しい。</li>
+  <li><strong>②＝誤</strong>：地点は正しいが内容が誤り。ウは低緯度の高原（標高1,100m、最寒月19.5℃）で積雪・融雪は生じない。</li>
+  <li><strong>③④⑤＝誤（重要）</strong>：<strong>記述内容そのものは地理的に正しい</strong>。③（イ＝サヘル地域の集中豪雨と土壌侵食）、④（エ＝チリ中部でアンデスの積雪減少により夏の灌漑用水が不足）、⑤（ア＝地中海沿岸の夏の乾燥と森林火災）はいずれも実際に懸念されている事象である。しかし本問が問うているのは「<strong>変化量の絶対値が最大の地点</strong>」であり、地点が一致しないため誤答となる。</li>
+  <li><strong>⑥＝誤</strong>：エは−25％で減少予測であり、「増加に転じ」が資料と矛盾する。また塩害は灌漑と蒸発の問題で、降水増加で「解消される」と断定できない。</li>
+</ul>
+<div class="tip"><strong>設問文の読み方：</strong>本問のように「地点＋説明」の組合せでは、<strong>もっともらしい正しい説明に誤った地点を貼り付ける</strong>のが標準的なダミーの作り方である。まず計算で地点を1つに絞り、そのうえで内容を検証する二段構えで処理すること。逆順に読むと、③④⑤の正しさに引っ張られて失点する。</div>
+
+<h3>問6　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>Ｘ</strong>：地点D（＝エ、南緯33°付近のチリ中部）は地中海性気候であり、夏（南半球では1月頃）に<strong>亜熱帯高圧帯（中緯度高圧帯）に覆われて下降気流が卓越し</strong>、ほとんど降水がない。冬は高圧帯が低緯度側に移動し、寒帯前線帯や偏西風の影響で降水がある。よって「夏に亜熱帯高圧帯に覆われる」が適当。</li>
+  <li><strong>Ｙ</strong>：地点C（＝ウ）は南緯20°前後の低緯度だが、標高1,100mのため気温が低い。乾燥断熱減率・湿潤断熱減率を考えれば標高1,100mで平地より6〜7℃低くなる計算で、最暖月23.5℃という値と整合する。よって「標高が高い」。</li>
+  <li><strong>「熱帯収束帯が北上する」（③④）</strong>：これは地点B（北半球サバナ気候）で夏に雨季をもたらす仕組みの説明であり、Xの「夏に雨が降らない」理由にならない。<strong>正しい知識を誤った場所に当てる型</strong>の誤答。</li>
+  <li><strong>「大陸東岸に位置し季節風が卓越する」（⑤⑥）</strong>：Dは南アメリカ大陸の<strong>西岸</strong>であり、位置の誤り。</li>
+  <li><strong>「寒流の影響」（②⑥）</strong>：チリ沖のペルー（フンボルト）海流は沿岸の気温を下げ乾燥を強めるが、Yが問うているのは<strong>地点Cの気温</strong>であり、Cは内陸の高原で寒流の影響を受けない。</li>
+  <li><strong>「隔海度が大きい」（④）</strong>：隔海度は気温の年較差を大きくする要因。Cの年較差は4.0℃と小さく、むしろ矛盾する。</li>
+</ul>
+
+<h2>第2問の解説</h2>
+
+<h3>問1　正解 ①</h3>
+<p class="exp">1列だけで決めず、<strong>構成比・1人当たり供給量・自給率の3列を組み合わせる</strong>。</p>
+<ul class="exp-list">
+  <li><strong>W＝中国</strong>：石炭61％という高い依存と、自給率80％（石炭を自給）が対応。1人当たり供給量2.4tは先進国より低い。</li>
+  <li><strong>X＝フランス</strong>：原子力40％は他に該当国がない。自給率55％は、原子力を国産扱いする統計上の特徴による。</li>
+  <li><strong>Y＝ブラジル</strong>：水力29％＋その他再生可能等19％（サトウキビ由来のバイオエタノールを含む）で再生可能の比率が突出し、自給率105％（石油の純輸出国化）。1人当たり1.4tは新興国の水準。</li>
+  <li><strong>Z＝ドイツ</strong>：石油34％・天然ガス26％で化石燃料の輸入依存が大きく、自給率35％と最低。その他再生可能等17％は風力・太陽光の拡大を反映し、水力1％は大河の勾配が緩く適地が少ないことに対応。</li>
+  <li>よって W＝中国、Z＝ドイツ で①。</li>
+</ul>
+<div class="tip"><strong>差がつくポイント：</strong>XとZはともに石油・天然ガスが多く、原子力の数値だけを見て取り違えやすい。<strong>水力の割合（Z＝1％）</strong>と<strong>自給率（Z＝35％で最低）</strong>が決定的な手がかりになる。「原子力といえばフランス」という一問一答的な処理では、WとZを問う本問には答えられない。</div>
+
+<h3>問2　正解 ②</h3>
+<ul class="exp-list">
+  <li><strong>②＝正</strong>：対数目盛のグラフでは、<strong>線の傾き＝変化率（比の変化）</strong>を表す。ベトナムは9→235TWhで約26倍、中国は620→7,600TWhで約12倍、インドは約5.4倍、ドイツはほぼ横ばい。したがって傾きが最も急なベトナムが増加率最大で、記述は正しい。</li>
+  <li><strong>①＝誤</strong>：増加<strong>量</strong>は中国が＋約6,980TWhで最大。ベトナムは＋226TWhにすぎない。対数グラフでは「傾きの急さ」と「増加量の大きさ」が一致しないことを見抜けるかが分かれ目。</li>
+  <li><strong>③＝誤</strong>：ドイツは630→570TWhで約10％の減少。対数目盛では小さな下降でも線の位置が見た目に動くため「半減」と誤読しやすいが、目盛を読めば1,000未満の同じ区間内での微減である。</li>
+  <li><strong>④＝誤</strong>：対数目盛では大きな比の差が小さな見た目の差に圧縮される。実際は1,560÷7,600≒<strong>21％</strong>で、8割どころか約5分の1にすぎない。</li>
+</ul>
+<div class="tip"><strong>対数目盛の攻略法：</strong>①目盛の数字（1・10・100・1000）を必ず確認する。②「線が近い＝値が近い」ではない。③「傾きが同じ＝伸び率が同じ」。この3点を機械的に確認するだけで、この種の設問は安定して取れる。</div>
+
+<h3>問3　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>あ＝中国</strong>：280→3,700万tへの激増と、ボーキサイト産出9,300万tという規模から判断。電力価格は最安ではないが、国内需要の急増と石炭火力による大量供給で世界の過半を占めるに至った。</li>
+  <li><strong>い＝ノルウェー</strong>：ボーキサイト産出0にもかかわらず生産を維持・増加させ、水力92％・電力価格4.0セントと最安。<strong>原料を全量輸入しても安価な電力があれば立地が成立する</strong>という、アルミ精錬の本質を示す。</li>
+  <li><strong>う＝日本</strong>：電力価格16.0セントで最高、生産量は1→0万tで事実上撤退。1970年代の石油危機以降、国内精錬から地金輸入へ転換した経緯に対応する。</li>
+  <li><strong>え＝オーストラリア</strong>：ボーキサイト産出10,500万tで最大だが、生産量は173→157万tで停滞。原料産地であっても電力条件が抜群でなければ精錬は伸びない。</li>
+</ul>
+
+<h3>問4　正解 ②</h3>
+<ul class="exp-list">
+  <li><strong>②＝正</strong>：産業用電力価格が最も高い「う」（16.0セント）は、2000年の1万tから2020年に0万tとなり、生産が事実上停止している。電力多消費型工業が電力価格に強く規定されることを表と整合的に述べている。</li>
+  <li><strong>①＝誤</strong>：ボーキサイト産出量最大の「え」（10,500万t）の地金生産は157万tで、産出0の「い」（130万t）と大差ない。一方産出9,300万tの「あ」は3,700万t。<strong>相関は成立していない</strong>。「原料産地立地」という一般論を資料で検証せずに当てはめる誤り。</li>
+  <li><strong>③＝誤</strong>：水力比率92％の「い」の生産量は130万t、17％の「あ」は3,700万t。傾向は逆。<strong>「水力＝アルミ」という覚え方は、絶対量ではなく「安価な電力の確保手段」として理解すべき</strong>。</li>
+  <li><strong>④＝誤</strong>：増加量最大は「あ」（＋3,420万t）だが、その電力価格8.5セントは4か国中2番目に高い。最安は「い」の4.0セント。<strong>電力価格だけで生産量が決まるわけではなく、国内需要の規模も効く</strong>ことを示す。②と④は一見似ているが、②は「最高価格→撤退」という表に完全に合致する記述、④は「最大増加→最安」という表に反する記述である。</li>
+</ul>
+
+<h3>問5　正解 ③（N＝岡山県、正しい文＝ｐ）</h3>
+<p class="exp">本問は<strong>「県名の同定」と「行の合計の計算」を同時に要求する</strong>。同定だけでは答えにたどり着けない。まず各行の合計を出してしまうのが早い。</p>
+<ul class="exp-list">
+  <li><strong>K＝大分県</strong>：地熱15.1万kWは全国最大級。九州は火山（八丁原・大岳など）が多く地熱開発の適地。</li>
+  <li><strong>L＝青森県</strong>：風力45万kWが突出。下北・津軽の日本海側〜太平洋側は年間の風況が良く、平坦な土地も確保しやすい。</li>
+  <li><strong>M＝富山県</strong>：水力90万kWが突出。黒部川など急峻な河川と豊富な積雪による安定した流量が背景にあり、これがアルミ精錬など電力多消費型工業の立地要因にもなった（第2問前半との関連）。</li>
+  <li><strong>N＝岡山県</strong>：太陽光120万kWが突出。瀬戸内は年間日照時間が長く降水量が少ないため、太陽光の適地となる。</li>
+  <li>よって K＝大分、L＝青森、M＝富山、N＝岡山。</li>
+  <li><strong>各行の合計（万kW）：</strong>K＝15＋0.5＋15.1＋3＝<strong>33.6</strong>、L＝12＋45.0＋0.1＋1＝<strong>58.1</strong>、M＝5＋0.2＋0.0＋90＝<strong>95.2</strong>、N＝120＋1.0＋0.0＋25＝<strong>146.0</strong>。</li>
+  <li><strong>ｐ＝正</strong>：合計が最大なのはN（146.0）で、うち太陽光が120。120÷146.0＝<strong>約82％</strong>で確かに8割以上を占めている。日照に恵まれ、かつ平坦な用地が得やすい地域では、<strong>特定の電源に強く偏った構成</strong>になりやすい。</li>
+  <li><strong>ｑ＝誤</strong>：風力が最大なのはL（45.0）で前半は正しいが、Lの合計58.1はMの95.2とNの146.0を<strong>下回る</strong>ので「合計でも最大」は誤り。<strong>1列での首位は合計での首位を意味しない</strong>。</li>
+  <li>よって N＝岡山県、正しい文はｐなので<strong>③</strong>。</li>
+</ul>
+<div class="tip"><strong>よくある誤解：</strong>「風力が多い青森県は再生可能エネルギー全体でも先進県のはずだ」というイメージ。実際には太陽光や水力の規模が大きい県の方が合計容量は大きい。<br><strong>似ているが違う概念：</strong>「設備容量（万kW）」と「発電量（kWh）」。太陽光は設備利用率が低く（目安12〜15％）、地熱は高い（70％前後）ため、容量比と発電量比は大きくずれる。本問の数値はすべて「容量」であることを見落とさないこと。<br><strong>解法の型：</strong>まず<strong>数値が突出している行から自然条件を逆算</strong>して同定を終え、そのうえで<strong>合計・比率という別の演算</strong>に進む。同定と計算が二重になっている設問では、片方だけで選択肢を絞ろうとすると必ず二択で迷う。</div>
+
+<h2>第3問の解説</h2>
+
+<h3>問1　正解 ④（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>④＝適当でない</strong>：エは旧河道に近い<strong>後背湿地</strong>で、粘土質・排水不良・軟弱地盤という特徴をもつ（資料1の図Ⅰ）。「水はけがよく地盤も安定」は逆であり、宅地としては液状化や浸水の危険が高い。旧河道は周囲よりわずかに低く、地震時の液状化の危険も指摘される。</li>
+  <li><strong>①＝適当</strong>：扇状地の扇央では河川水が伏流し（資料1の図Ⅰの破線＝水無川）、地表水を得にくい。かつては桑畑、現在は果樹園として利用されるのが典型（甲府盆地・山形盆地など）。</li>
+  <li><strong>②＝適当</strong>：扇端では伏流水が湧出するため、湧水線に沿って<strong>列状の集落</strong>が形成される。調査メモの「段差の下に沿って泉が湧いていて、そこに家が並んだ」という古老の証言と一致する。</li>
+  <li><strong>③＝適当</strong>：自然堤防は洪水時の運搬物が河岸に堆積した微高地で、砂質・排水良好。集落・畑・道路に利用される（後背湿地の水田と対をなす）。</li>
+</ul>
+<div class="tip"><strong>資料と証言の照合：</strong>本問は「地形の知識」だけでも一部処理できるが、②の判定には調査メモの証言、④の判定には図Ⅱの浸水想定との整合が効く。<strong>本試験では、聞き取りメモに正解の根拠が埋め込まれている</strong>ことが多い。</div>
+
+<h3>問2　正解 ③</h3>
+<ul class="exp-list">
+  <li><strong>③＝正</strong>：1975→2020年で水田は1,780→980haで<strong>−800ha</strong>、宅地は690→1,240haで<strong>＋550ha</strong>。減少面積が増加面積を上回る。差の400ha相当は果樹園（760→1,120ha、＋360ha）と工業用地（＋130ha）への転換が吸収している。</li>
+  <li><strong>①＝誤</strong>：1900年頃→2020年の増加量は、果樹園＋940ha、<strong>宅地＋1,030ha</strong>。最大は宅地。増加「率」では果樹園6.2倍・宅地5.9倍で果樹園が上だが、問われているのは増加<strong>量</strong>である。</li>
+  <li><strong>②＝誤</strong>：減少量は水田−1,170ha、山林・原野−730ha。最大は水田。「割合として最も激しく減ったのは山林・原野（−89％）」は正しいが、面積の減少量ではない。</li>
+  <li><strong>④＝誤</strong>：1975→2020年の増加率は、果樹園 1,120÷760＝<strong>1.47倍</strong>、宅地 1,240÷690＝<strong>1.80倍</strong>。宅地の方が高い。なお<strong>1900年頃→1975年</strong>であれば果樹園4.22倍＞宅地3.29倍で逆転する。<strong>期間を1〜2行ずらすだけで正誤が反転する</strong>ため、比較する列を指で押さえて確認すること。</li>
+</ul>
+<div class="tip"><strong>この設問の罠の構造：</strong>①は「量」を問い（正解は宅地なのに果樹園を提示）、②は「量」と「率」の混同（山林・原野は率では最大の減少）、④は<strong>期間のすり替え</strong>を仕掛けている。「率」か「量」か、「どの年からどの年か」——この2点に設問文で線を引く習慣が、この種の失点を確実に防ぐ。</div>
+
+<h3>問3　正解 ④（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>④＝適当でない</strong>：DID人口は39,000→30,600人で確かに減少している。しかし総人口に占める割合は、1980年 39,000÷78,500＝<strong>49.7％</strong>、2020年 30,600÷71,300＝<strong>42.9％</strong>で、約7ポイントの低下にとどまる。「半分以下に低下」（＝25％未満になった、の意）は誤り。<strong>総人口自体も減っているため、実数の減少ほど割合は下がらない</strong>点が要点。</li>
+  <li><strong>①＝適当</strong>：1世帯当たり人員は 78,500÷21,200＝3.70人 → 71,300÷28,900＝2.47人。総人口減・世帯数増（＝世帯の小規模化、単身高齢者世帯の増加）という日本の地方都市の典型像。</li>
+  <li><strong>②＝適当</strong>：22,100÷15,160＝1.46倍（約1.5倍）。老年人口率は 15,160÷84,200＝18.0％ → 22,100÷71,300＝31.0％で13.0ポイント上昇。<strong>「％」と「ポイント」を正しく使い分けている</strong>記述。</li>
+  <li><strong>③＝適当</strong>：7,840÷18,840＝0.416で半分以下。</li>
+</ul>
+<div class="tip"><strong>「半分以下」の解釈：</strong>④は「割合が半分以下に低下」という表現で、49.7％→24.9％未満を意味する。この種の設問では<strong>「○ポイント低下」と「○％に低下」と「半分に低下」を区別</strong>して読むこと。あわせて、空き家率が5.2→18.5％と3.6倍になっていることは、人口減・高齢化・世帯小規模化の帰結として整合的である。</div>
+
+<h3>問4　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：資料1の図Ⅱで浸水深3.0m以上（濃い斜線）の範囲にあるのは、支所・防災倉庫（□）と介護老人施設（○）。<strong>要配慮者の施設と、災害時の物資拠点が同時に被災する</strong>という指摘は、重ね合わせから直接読み取れる妥当な分析である。</li>
+  <li><strong>②＝誤</strong>：図Ⅱによれば浸水想定区域は南半分に広がっている。市役所を鉄道の<strong>南側</strong>へ移すことは、浸水想定区域に接近させることを意味し「防災上有利」とは言えない。調査メモの「地価が安い土地」が浸水想定区域と重なることこそが、この調査の最大の発見である。<strong>「地価が安い理由」を問う視点が抜けている</strong>のが典型的な誤り。</li>
+  <li><strong>③＝誤</strong>：小学校（△）は浸水想定区域の<strong>内側</strong>（0.5〜3.0mの帯の中）に描かれている。また、たとえ避難所自体が区域外でも、避難<strong>経路</strong>が浸水すれば徒歩避難は困難であり、「確実に避難できる」という断定は資料から導けない。</li>
+  <li><strong>④＝誤</strong>：施設が区域外であることと、道路網が使えることは別問題。総合病院へ至る道路が浸水すればアクセスは断たれる。<strong>点（施設）の情報から線（経路）の安全を推論する飛躍</strong>にあたる。</li>
+</ul>
+<div class="tip"><strong>GIS的な考え方：</strong>「重ね合わせ（オーバーレイ）」で分かるのは<strong>位置の一致</strong>までである。避難のしやすさを評価するには、道路ネットワークを使った到達圏解析や、避難所からのバッファ（一定距離圏）の作成が必要になる。「資料から言えること」と「言えないこと」の線引きが得点差になる。</div>
+
+<h3>問5　正解 ②</h3>
+<ul class="exp-list">
+  <li><strong>Ｓ＝住民を対象とした防災意識のアンケートや聞き取り調査</strong>：「意識が低い」という主張は、人口統計や土地利用統計、空中写真からは絶対に導けない。<strong>意識・態度を扱うには質問紙調査や聞き取りという社会調査の手法が必要</strong>である。国勢調査（③④）は年齢・就業などの属性を示すが意識は測れず、空中写真の判読（⑤⑥）は建物や土地被覆の物理的情報にとどまる。</li>
+  <li><strong>Ｔ＝氾濫平野側に広がっており、浸水想定区域と重なる部分がある</strong>：図Ⅰで新興住宅地は鉄道の南側、扇端より低いM川側（＝氾濫平野）に位置し、図Ⅱの浸水想定区域と重なる。したがって「扇央に位置し洪水の危険は小さい」（①⑥）や「旧市街地より標高が高く浸水の危険はない」（④⑤）は、図Ⅰ・図Ⅱの双方と矛盾する。</li>
+  <li>これは、日本の多くの地方都市で1970年代以降に起きた<strong>「水田の宅地化＝低平地への市街地拡大」</strong>という共通の課題であり、近年の水害で被害が集中している地域と一致する。</li>
+</ul>
+
+<div class="tip">
+<strong>第1回の総括（復習の指針）</strong>
+<ul>
+  <li><strong>半球の反転</strong>（第1問 問1・問2・問6）：気温の月変化で必ず半球を確定する。</li>
+  <li><strong>相対値と絶対値</strong>（第1問 問3・問5、第2問 問2、第3問 問2・問3）：指数・％・率で示された資料を絶対量の比較に流用しない。逆に絶対量が併記されていたら換算を要求されている。</li>
+  <li><strong>正しい説明＋誤った場所</strong>（第1問 問5・問6）：選択肢の内容の正しさだけで選ばない。設問が特定した対象と一致するかを最後に照合する。</li>
+  <li><strong>資料から言えることの範囲</strong>（第3問 問4・問5）：位置の一致（重ね合わせ）から経路の安全や住民の意識を推論してはいけない。手法と結論の対応を意識する。</li>
+</ul>
+</div>
+
+</div><!-- /ans-detail -->
+</section>
+
+<nav class="pager">
+  <a href="index.html">◀ 目次</a>
+  <a href="kai2.html">第2回（やや易）▶</a>
+</nav>
+
+</main>
+<script src="js/main.js"></script>
+<script src="https://www.genspark.ai/sandbox_inspect.js"></script></body>
+</html>

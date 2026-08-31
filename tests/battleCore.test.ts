@@ -680,6 +680,123 @@ describe('buildQuestionOrder — 出題順の決定', () => {
   });
 });
 
+describe('buildQuestionOrder — 選択式とかな入力の混在（kanaShare）', () => {
+  // 利用者の指定は「1文字ずつ押していく方式をもっと入れてほしい。
+  // ただし全ての問題をみんはや形式にしなくてもよい。四択問題も含めて」。
+  // ＝ 2つの形式が ★混ざって★ 出るのが正解で、
+  //    どちらかに偏った（0問 or 全問）ら不具合。
+  const kanaIds = Array.from({ length: 30 }, (_, i) => `k:${i}`);
+  const otherIds = Array.from({ length: 30 }, (_, i) => `c:${i}`);
+  const mixed = [...kanaIds, ...otherIds];
+  const isKana = (id: string) => id.startsWith('k:');
+  const groupOf = (id: string) => id;
+
+  it('★0.3 を指定すると10問中3問がかな入力になる★', () => {
+    const picked = buildQuestionOrder(mixed, 10, 'room-1', groupOf, {
+      isKana,
+      kanaShare: 0.3,
+    });
+    expect(picked).toHaveLength(10);
+    expect(picked.filter(isKana)).toHaveLength(3);
+  });
+
+  it('★0.4 を指定すると10問中4問（生物基礎の設定）★', () => {
+    const picked = buildQuestionOrder(mixed, 10, 'room-2', groupOf, {
+      isKana,
+      kanaShare: 0.4,
+    });
+    expect(picked.filter(isKana)).toHaveLength(4);
+  });
+
+  it('★kanaShare: 0 ならかな入力が1問も出ない（リスニング・英文法）★', () => {
+    // 英語の答えを五十音で書かせることになってしまうので、
+    // これらの教科では0を指定している。
+    const picked = buildQuestionOrder(mixed, 10, 'room-3', groupOf, {
+      isKana,
+      kanaShare: 0,
+    });
+    expect(picked.filter(isKana)).toHaveLength(0);
+    expect(picked).toHaveLength(10);
+  });
+
+  it('★かな入力が1問も無い教科でも問題数が減らない（地理）★', () => {
+    // 地理はカタカナの答えが0件なので、0.3 を指定しても
+    // 「3問足りない試合」にはならず、選択式で埋まる必要がある。
+    const picked = buildQuestionOrder(otherIds, 10, 'room-4', groupOf, {
+      isKana,
+      kanaShare: 0.3,
+    });
+    expect(picked).toHaveLength(10);
+    expect(picked.filter(isKana)).toHaveLength(0);
+  });
+
+  it('★選択式が足りないときはかな入力で埋める★', () => {
+    // 選択式が2問しか無い状況。7問ぶんの取り分は満たせないので、
+    // 残りをかな入力で埋めて10問にする必要がある。
+    const thin = [...kanaIds, 'c:0', 'c:1'];
+    const picked = buildQuestionOrder(thin, 10, 'room-5', groupOf, {
+      isKana,
+      kanaShare: 0.3,
+    });
+    expect(picked).toHaveLength(10);
+    expect(picked.filter((id) => !isKana(id)).length).toBeLessThanOrEqual(2);
+  });
+
+  it('★混在指定があっても決定的（両端末で同じ出題順）★', () => {
+    // ここが崩れると、相手の端末と違う問題が出て試合が成立しない。
+    const a = buildQuestionOrder(mixed, 10, 'room-Z', groupOf, { isKana, kanaShare: 0.3 });
+    const b = buildQuestionOrder(mixed, 10, 'room-Z', groupOf, { isKana, kanaShare: 0.3 });
+    expect(a).toEqual(b);
+  });
+
+  it('★かな入力が前半に固まらない（形式が散らばる）★', () => {
+    // 「かな入力3問 → 選択式7問」と固めて出すと、
+    // 前半だけ極端に難しい試合になる。
+    // 30通の部屋で試し、かな入力が必ず先頭に固まる並びが
+    // 起きていないことを確かめる。
+    let clustered = 0;
+    for (let i = 0; i < 30; i += 1) {
+      const picked = buildQuestionOrder(mixed, 10, `room-mix-${i}`, groupOf, {
+        isKana,
+        kanaShare: 0.3,
+      });
+      const positions = picked.map((id, idx) => (isKana(id) ? idx : -1)).filter((n) => n >= 0);
+      // 先頭3問がすべてかな入力なら「固まっている」と数える
+      if (positions.join(',') === '0,1,2') clustered += 1;
+    }
+    expect(clustered).toBeLessThan(5);
+  });
+
+  it('重複しない（同じ問題が2回出ない）', () => {
+    const picked = buildQuestionOrder(mixed, 10, 'room-6', groupOf, {
+      isKana,
+      kanaShare: 0.3,
+    });
+    expect(new Set(picked).size).toBe(picked.length);
+  });
+
+  it('★kanaShare が範囲外でも落ちない（1超・負の数）★', () => {
+    // Firestore は運用者が手で編集する場所なので、
+    // 3 や -1 が入ることがある。0〜1 に丸められること。
+    const over = buildQuestionOrder(mixed, 10, 'room-7', groupOf, { isKana, kanaShare: 3 });
+    expect(over).toHaveLength(10);
+    expect(over.filter(isKana)).toHaveLength(10);
+
+    const under = buildQuestionOrder(mixed, 10, 'room-8', groupOf, { isKana, kanaShare: -1 });
+    expect(under).toHaveLength(10);
+    expect(under.filter(isKana)).toHaveLength(0);
+  });
+
+  it('★groupOf 無しでも混在が効く★', () => {
+    const picked = buildQuestionOrder(mixed, 10, 'room-9', undefined, {
+      isKana,
+      kanaShare: 0.5,
+    });
+    expect(picked).toHaveLength(10);
+    expect(picked.filter(isKana)).toHaveLength(5);
+  });
+});
+
 // ============================================================
 // ルール
 // ============================================================
@@ -730,11 +847,58 @@ describe('battleRules — 教科ごとのルール', () => {
   it('★手打ち入力の形式は存在しない★', () => {
     // 利用者の指示「さすがに手打ち入力は現実見ないので」に対応。
     // 形式の集合に typing / input のような値が混ざらないことを固定する。
+    //
+    // ★kana（五十音キーボード）は手打ち入力ではない★
+    // アプリが描いたキーを押す形なのでIMEの変換が入らず、
+    // 端末やIMEの差で勝敗が決まることがない。
     for (const subject of Object.keys(BATTLE_RULES)) {
       for (const format of BATTLE_RULES[subject].formats) {
-        expect(['choice4', 'word', 'panel']).toContain(format);
+        expect(['choice4', 'choice', 'kana', 'word', 'panel']).toContain(format);
       }
     }
+  });
+
+  it('★kanaShare が 0〜1 に収まっている★', () => {
+    // 1を超えると「10問中12問がかな入力」という計算になり、
+    // 取り分の計算が壊れる。
+    for (const subject of Object.keys(BATTLE_RULES)) {
+      const share = BATTLE_RULES[subject].kanaShare;
+      expect(share, `${subject} の kanaShare`).toBeGreaterThanOrEqual(0);
+      expect(share, `${subject} の kanaShare`).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it('★英語の教科は kanaShare が 0★', () => {
+    // 英語の答え（cat / have been など）を五十音キーボードで書かせると
+    // 「キャット」なのか「cat」なのか正解が1通りに定まらない。
+    // ここが0でなくなったら、それは事故として気づく必要がある。
+    for (const subject of ['english_listening', 'english_grammar']) {
+      expect(BATTLE_RULES[subject].kanaShare, `${subject}`).toBe(0);
+    }
+  });
+
+  it('★kanaShare は小数のまま保たれる（整数に丸められない）★', () => {
+    // normalizeRule の num() は Math.round するので、
+    // それを流用すると 0.3 が 0 になり ★かな入力が1問も出なくなる★。
+    const rule = normalizeRule('chemistry_basic', { kanaShare: 0.35 });
+    expect(rule.kanaShare).toBeCloseTo(0.35);
+  });
+
+  it('★kanaShare が範囲外なら 0〜1 に丸める★', () => {
+    expect(normalizeRule('chemistry_basic', { kanaShare: 5 }).kanaShare).toBe(1);
+    expect(normalizeRule('chemistry_basic', { kanaShare: -2 }).kanaShare).toBe(0);
+    // 数値でない値は既定に戻す（打ち間違い対策）
+    expect(normalizeRule('chemistry_basic', { kanaShare: 'たくさん' }).kanaShare).toBe(
+      BATTLE_RULES.chemistry_basic!.kanaShare,
+    );
+  });
+
+  it('★normalizeRule が kana 形式を捨てない★', () => {
+    // フィルタに列挙し忘れると、運用者が Firestore に kana を指定しても
+    // 静かに捨てられ、「設定したのに出ない」という原因の分かりにくい
+    // 不具合になる。
+    const rule = normalizeRule('chemistry_basic', { formats: ['kana'] });
+    expect(rule.formats).toEqual(['kana']);
   });
 });
 

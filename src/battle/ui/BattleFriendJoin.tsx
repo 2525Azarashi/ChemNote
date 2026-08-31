@@ -24,12 +24,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, LogIn } from 'lucide-react';
 import { joinRoomByCode } from '../data/battle';
 import {
+  AMBER,
   BattleButton,
   BattleNotice,
   BattleShell,
   BattleTitle,
   GOLD,
-  NAVY,
+  INK,
+  INK_SUB,
+  LINE,
 } from './BattleParts';
 
 const CODE_LENGTH = 4;
@@ -102,7 +105,10 @@ export function BattleFriendJoin({
       <BattleTitle subtitle="合言葉で参加する" />
 
       <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
-        <p className="text-center text-xs font-bold leading-relaxed text-white/60">
+        <p
+          className="text-center text-xs font-bold leading-relaxed"
+          style={{ color: INK_SUB }}
+        >
           相手に画面を見せてもらって、
           <br />
           4文字の合言葉を入れてください。
@@ -119,11 +125,16 @@ export function BattleFriendJoin({
           {cells.map((ch, i) => (
             <span
               key={i}
-              className="flex h-16 w-14 items-center justify-center rounded-2xl border-2 text-3xl font-black tabular-nums"
+              // ★入力済みのマスを一瞬跳ねさせる★
+              //   合言葉は口で伝えてもらいながら入れるので、
+              //   画面を見ずに打っても 1文字入ったことが周辺視で分かる。
+              className={`flex h-16 w-14 items-center justify-center rounded-2xl border-2 text-3xl font-black tabular-nums ${
+                ch ? 'battle-pop' : ''
+              }`}
               style={{
-                borderColor: ch ? GOLD : 'rgba(255,255,255,0.22)',
-                background: ch ? `${GOLD}18` : 'rgba(255,255,255,0.05)',
-                color: ch ? GOLD : 'rgba(255,255,255,0.3)',
+                borderColor: ch ? '#E5B93C' : LINE,
+                background: ch ? `${GOLD}3D` : '#FFFFFF',
+                color: ch ? INK : `${INK_SUB}66`,
               }}
             >
               {ch || '・'}
@@ -150,17 +161,15 @@ export function BattleFriendJoin({
 
         <p
           className="rounded-xl px-3 py-2 text-center text-[10px] font-bold leading-relaxed"
-          style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.45)' }}
+          style={{ background: '#F1EDE4', border: `1px solid ${LINE}`, color: INK_SUB }}
         >
           合言葉には
-          <span style={{ color: GOLD }}> 0 / O / 1 / I / L </span>
+          <span style={{ color: AMBER }}> 0 / O / 1 / I / L </span>
           を使いません。
           <br />
           読み間違いを起こさない文字だけで作っています。
         </p>
       </div>
-
-      <span className="sr-only" style={{ color: NAVY }} />
     </BattleShell>
   );
 }

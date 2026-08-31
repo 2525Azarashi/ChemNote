@@ -18,6 +18,7 @@
  * 黙って0のままにすると「レートが反映されないバグ」に見える。
  */
 
+import type { CSSProperties } from 'react';
 import { ArrowLeft, Minus, RotateCcw, TrendingDown, TrendingUp } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
@@ -28,11 +29,16 @@ import type {
 } from '../core/types';
 import { ratingTitle } from '../data/battleRanking';
 import {
+  AMBER,
   BattleButton,
   BattleShell,
   GOLD,
+  INK,
+  INK_SUB,
+  LINE,
   OutcomeBanner,
   PlayerBadge,
+  WRONG,
 } from './BattleParts';
 
 function ScoreColumn({
@@ -46,11 +52,13 @@ function ScoreColumn({
 }) {
   return (
     <div className="flex-1 text-center">
-      <p className="text-[10px] font-black text-white/45">{label}</p>
-      <p className="text-3xl font-black tabular-nums" style={{ color }}>
+      <p className="text-[10px] font-black" style={{ color: INK_SUB }}>
+        {label}
+      </p>
+      <p className="battle-pop text-3xl font-black tabular-nums" style={{ color }}>
         {score?.score ?? 0}
       </p>
-      <p className="text-[10px] font-bold text-white/45">
+      <p className="text-[10px] font-bold" style={{ color: INK_SUB }}>
         {score ? `${score.correctCount}問せいかい` : '—'}
       </p>
     </div>
@@ -90,7 +98,9 @@ export function BattleResult({
 
   const deltaIcon =
     delta > 0 ? <TrendingUp size={16} /> : delta < 0 ? <TrendingDown size={16} /> : <Minus size={16} />;
-  const deltaColor = delta > 0 ? GOLD : delta < 0 ? '#E74C3C' : '#8FA5B8';
+  // ★ライト地なので「増えた」の色にゴールドを使わない★
+  //   アイボリーの上では #F4D03F の数字が読めない。琥珀に置き換える。
+  const deltaColor = delta > 0 ? AMBER : delta < 0 ? WRONG : INK_SUB;
 
   return (
     <BattleShell
@@ -112,7 +122,7 @@ export function BattleResult({
       {byForfeit && (
         <p
           className="mb-3 rounded-xl px-3 py-2 text-center text-[11px] font-bold"
-          style={{ background: `${GOLD}18`, color: GOLD }}
+          style={{ background: `${GOLD}2E`, color: AMBER }}
         >
           相手の通信が切れたため、不戦勝あつかいになりました
           <br />
@@ -123,7 +133,7 @@ export function BattleResult({
       {result.decidedByTime && (
         <p
           className="mb-3 rounded-xl px-3 py-2 text-center text-[11px] font-bold"
-          style={{ background: 'rgba(93,173,226,0.16)', color: '#5DADE2' }}
+          style={{ background: '#2E86C114', color: '#2E86C1' }}
         >
           同点だったので、解答時間の合計で決まりました
         </p>
@@ -131,8 +141,8 @@ export function BattleResult({
 
       {/* 点数 */}
       <section
-        className="mb-4 rounded-3xl border p-4"
-        style={{ borderColor: 'rgba(255,255,255,0.14)', background: 'rgba(255,255,255,0.05)' }}
+        className="battle-card-in mb-4 rounded-3xl border-2 p-4"
+        style={{ borderColor: LINE, background: '#FFFFFF' }}
       >
         <div className="mb-3 flex items-center gap-2">
           <PlayerBadge
@@ -141,7 +151,10 @@ export function BattleResult({
             rating={rating?.before ?? 1500}
             isMe
           />
-          <span className="shrink-0 text-xs font-black" style={{ color: GOLD }}>
+          <span
+            className="battle-vs-pulse shrink-0 rounded-lg px-1.5 py-0.5 text-xs font-black"
+            style={{ background: GOLD, color: INK }}
+          >
             VS
           </span>
           <PlayerBadge
@@ -153,9 +166,11 @@ export function BattleResult({
           />
         </div>
         <div className="flex items-center">
-          <ScoreColumn score={result.me} label="あなた" color={GOLD} />
-          <span className="px-2 text-white/25">—</span>
-          <ScoreColumn score={result.opponent} label="あいて" color="#8FA5B8" />
+          <ScoreColumn score={result.me} label="あなた" color={AMBER} />
+          <span className="px-2" style={{ color: LINE }}>
+            —
+          </span>
+          <ScoreColumn score={result.opponent} label="あいて" color={INK_SUB} />
         </div>
       </section>
 
@@ -165,17 +180,27 @@ export function BattleResult({
         style={{ borderColor: `${title.color}44`, background: `${title.color}10` }}
       >
         <div>
-          <p className="text-[10px] font-black text-white/45">レート</p>
+          <p className="text-[10px] font-black" style={{ color: INK_SUB }}>
+            レート
+          </p>
           {rating ? (
             <p className="flex items-baseline gap-1.5">
-              <span className="text-sm font-bold tabular-nums text-white/45">{rating.before}</span>
-              <span className="text-white/30">→</span>
-              <span className="text-2xl font-black tabular-nums" style={{ color: title.color }}>
+              <span
+                className="text-sm font-bold tabular-nums"
+                style={{ color: INK_SUB }}
+              >
+                {rating.before}
+              </span>
+              <span style={{ color: INK_SUB }}>→</span>
+              <span
+                className="battle-pop text-2xl font-black tabular-nums"
+                style={{ color: title.color, '--pop-delay': '0.2s' } as CSSProperties}
+              >
                 {rating.after}
               </span>
             </p>
           ) : (
-            <p className="text-xs font-bold text-white/55">
+            <p className="text-xs font-bold" style={{ color: INK_SUB }}>
               反映されませんでした（無効試合）
             </p>
           )}
@@ -193,7 +218,9 @@ export function BattleResult({
 
       {/* 1問ずつの内訳 */}
       <section id="battle-result-detail" className="mb-4">
-        <h2 className="mb-2 text-xs font-black text-white/65">1問ずつのけっか</h2>
+        <h2 className="mb-2 text-xs font-black" style={{ color: INK_SUB }}>
+          1問ずつのけっか
+        </h2>
         <div className="grid gap-1.5">
           {result.me.perQuestion.map((q) => {
             const question = questions[q.index];
@@ -201,43 +228,47 @@ export function BattleResult({
             return (
               <div
                 key={q.index}
-                className="rounded-xl border px-3 py-2"
+                className="rounded-xl border-2 px-3 py-2"
                 style={{
-                  borderColor: q.correct ? `${theme.accent}55` : 'rgba(255,255,255,0.10)',
-                  background: q.correct ? `${theme.accent}12` : 'rgba(255,255,255,0.03)',
+                  borderColor: q.correct ? `${theme.accent}55` : LINE,
+                  background: q.correct ? `${theme.accent}12` : '#FFFFFF',
                 }}
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="flex min-w-0 items-center gap-2">
-                    <span className="w-5 shrink-0 text-[11px] font-black tabular-nums text-white/45">
+                    <span
+                      className="w-5 shrink-0 text-[11px] font-black tabular-nums"
+                      style={{ color: INK_SUB }}
+                    >
                       {q.index + 1}
                     </span>
                     <span
                       className="shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-black"
                       style={{
-                        background: q.correct ? theme.accent : 'rgba(255,255,255,0.12)',
-                        color: q.correct ? '#1B2631' : 'rgba(255,255,255,0.55)',
+                        background: q.correct ? theme.accent : `${WRONG}14`,
+                        color: q.correct ? '#FFFFFF' : WRONG,
                       }}
                     >
                       {q.correct ? 'せいかい' : 'ちがう'}
                     </span>
-                    <span className="truncate text-[11px] font-bold text-white/55">
+                    <span className="truncate text-[11px] font-bold" style={{ color: INK }}>
                       {question
                         ? question.options[question.answerIndex] ??
                           question.panelOrder.map((i) => question.options[i]).join('')
                         : ''}
                     </span>
                   </span>
-                  <span className="shrink-0 text-right text-[10px] font-bold tabular-nums text-white/45">
-                    <span style={{ color: q.correct ? GOLD : 'rgba(255,255,255,0.35)' }}>
-                      {q.total}
-                    </span>
-                    <span className="text-white/25"> / </span>
+                  <span
+                    className="shrink-0 text-right text-[10px] font-bold tabular-nums"
+                    style={{ color: INK_SUB }}
+                  >
+                    <span style={{ color: q.correct ? AMBER : INK_SUB }}>{q.total}</span>
+                    <span style={{ color: LINE }}> / </span>
                     {other?.total ?? 0}
                   </span>
                 </div>
                 {q.correct && (
-                  <p className="mt-0.5 pl-7 text-[9px] font-bold text-white/35">
+                  <p className="mt-0.5 pl-7 text-[9px] font-bold" style={{ color: INK_SUB }}>
                     {q.timeUsed.toFixed(1)}秒 ／ 速さ +{q.speed}
                     {q.streak > 0 && ` ／ 連続 +${q.streak}`}
                   </p>
@@ -248,7 +279,10 @@ export function BattleResult({
         </div>
       </section>
 
-      <p className="mb-2 text-center text-[10px] font-bold leading-relaxed text-white/30">
+      <p
+        className="mb-2 text-center text-[10px] font-bold leading-relaxed"
+        style={{ color: INK_SUB }}
+      >
         点数は両方の端末で同じ計算をして、
         <br />
         一致したときだけレートに反映されます。

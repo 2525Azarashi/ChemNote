@@ -19,6 +19,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { ArrowLeft, Crown, Users, Wifi } from 'lucide-react';
 import { auth } from '../../firebase';
 import { maskNickname } from '../../utils/nicknamePrivacy';
@@ -35,13 +36,21 @@ import {
   BattleShell,
   BattleTitle,
   GOLD,
-  NAVY,
+  INK,
+  INK_SUB,
+  LINE,
 } from './BattleParts';
 
 type Tab = 'friend' | 'national';
 
-/** 上位3位の色（金・銀・銅） */
-const MEDALS = ['#F4D03F', '#BDC3C7', '#CD7F32'];
+/**
+ * 上位3位の色（金・銀・銅）。
+ *
+ * ★ライト地なので銀を少し濃くしている★
+ * #BDC3C7 の上に濃紺の数字を置くのは読めるが、アイボリー地の上で
+ * 「地の色」として見ると境目が消える。銀と銅を1段濃めにした。
+ */
+const MEDALS = ['#F4D03F', '#A9AFB4', '#C0803A'];
 
 export function BattleRanking({ onBack }: { onBack: () => void }) {
   const uid = auth.currentUser?.uid || '';
@@ -83,8 +92,8 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
       {/* タブ */}
       <div
         id="battle-ranking-tabs"
-        className="mb-3 flex gap-1 rounded-2xl p-1"
-        style={{ background: 'rgba(255,255,255,0.07)' }}
+        className="mb-3 flex gap-1 rounded-2xl border p-1"
+        style={{ background: '#F1EDE4', borderColor: LINE }}
       >
         {(
           [
@@ -101,8 +110,8 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
               className="flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-black transition"
               style={
                 on
-                  ? { background: GOLD, color: NAVY }
-                  : { background: 'transparent', color: 'rgba(255,255,255,0.6)' }
+                  ? { background: GOLD, color: INK, boxShadow: '0 2px 0 #D9A72E' }
+                  : { background: 'transparent', color: INK_SUB }
               }
             >
               {t.icon}
@@ -115,7 +124,10 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
       {loading ? (
         <BattleLoading message="ランキングを読みこんでいます…" />
       ) : rows.length === 0 ? (
-        <p className="py-12 text-center text-xs font-bold leading-relaxed text-white/50">
+        <p
+          className="whitespace-pre-line py-12 text-center text-xs font-bold leading-relaxed"
+          style={{ color: INK_SUB }}
+        >
           {tab === 'friend'
             ? 'フレンドの中に、まだ対戦した人がいません。\n合言葉で1戦すればここに並びます。'
             : 'まだ対戦記録がありません。'}
@@ -132,18 +144,23 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
             return (
               <li
                 key={row.uid}
-                className="flex items-center gap-2.5 rounded-2xl border px-3 py-2.5"
-                style={{
-                  borderColor: isMe ? `${GOLD}77` : 'rgba(255,255,255,0.10)',
-                  background: isMe ? `${GOLD}14` : 'rgba(255,255,255,0.04)',
-                }}
+                className="battle-card-in flex items-center gap-2.5 rounded-2xl border-2 px-3 py-2.5"
+                style={
+                  {
+                    borderColor: isMe ? `${GOLD}AA` : LINE,
+                    background: isMe ? `${GOLD}1F` : '#FFFFFF',
+                    // ★上から順に立ち上げる（順位表は上から読むもの）★
+                    //   1件あたり 24ms。多すぎると待たされるので 10件で止める。
+                    '--card-delay': `${Math.min(i, 10) * 0.024}s`,
+                  } as CSSProperties
+                }
               >
                 {/* 順位 */}
                 <span
                   className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-black tabular-nums"
                   style={{
-                    background: medal ? medal : 'rgba(255,255,255,0.10)',
-                    color: medal ? NAVY : 'rgba(255,255,255,0.6)',
+                    background: medal ? medal : '#F1EDE4',
+                    color: medal ? INK : INK_SUB,
                   }}
                 >
                   {i < 3 ? <Crown size={13} /> : i + 1}
@@ -169,17 +186,19 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
                 {/* 名前と戦績 */}
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-1.5">
-                    <span className="truncate text-sm font-black text-white">{shown}</span>
+                    <span className="truncate text-sm font-black" style={{ color: INK }}>
+                      {shown}
+                    </span>
                     {isMe && (
                       <span
                         className="shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-black"
-                        style={{ background: GOLD, color: NAVY }}
+                        style={{ background: GOLD, color: INK }}
                       >
                         あなた
                       </span>
                     )}
                   </span>
-                  <span className="block text-[10px] font-bold text-white/45">
+                  <span className="block text-[10px] font-bold" style={{ color: INK_SUB }}>
                     {row.wins || 0}勝 {row.losses || 0}敗 {row.draws || 0}分
                   </span>
                 </span>
@@ -202,7 +221,10 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
         </ol>
       )}
 
-      <p className="mt-auto pt-6 text-center text-[10px] font-bold leading-relaxed text-white/30">
+      <p
+        className="mt-auto pt-6 text-center text-[10px] font-bold leading-relaxed"
+        style={{ color: INK_SUB }}
+      >
         このランキングは対戦専用です。
         <br />
         学習量のランキングとは別に集計しています。

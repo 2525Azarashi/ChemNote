@@ -29,6 +29,8 @@ import {
   BattleShell,
   BattleTitle,
   GOLD,
+  INK,
+  LINE,
   PlayerBadge,
 } from './BattleParts';
 
@@ -75,6 +77,8 @@ export function BattleRoomScreen({
     choose,
     pushPanel,
     popPanel,
+    cyclePanel,
+    commitKana,
     start,
     leave,
     dismissResumeMessage,
@@ -213,8 +217,8 @@ export function BattleRoomScreen({
       {/* 得点表（常に見える位置に固定） */}
       <section
         id="battle-scoreboard"
-        className="mb-3 flex items-center gap-2 rounded-2xl border px-3 py-2"
-        style={{ borderColor: 'rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)' }}
+        className="mb-3 flex items-center gap-2 rounded-2xl border-2 px-3 py-2"
+        style={{ borderColor: LINE, background: '#FFFFFF' }}
       >
         <PlayerBadge
           nickname={me?.nickname || 'あなた'}
@@ -224,7 +228,11 @@ export function BattleRoomScreen({
           answered={answered}
           score={myScore?.score ?? 0}
         />
-        <span className="shrink-0 text-[10px] font-black" style={{ color: GOLD }}>
+        {/* ★VS を金地にしている★ ライト地では金の文字は読めないので、面に使う */}
+        <span
+          className="battle-vs-pulse shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-black"
+          style={{ background: GOLD, color: INK }}
+        >
           VS
         </span>
         <PlayerBadge
@@ -283,6 +291,8 @@ export function BattleRoomScreen({
         onChoose={choose}
         onPushPanel={pushPanel}
         onPopPanel={popPanel}
+        onCyclePanel={cyclePanel}
+        onCommitKana={commitKana}
       />
 
       {error && (

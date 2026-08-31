@@ -708,3 +708,140 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   height: 0;
   display: none;                  /* Chrome / Safari */
 }
+
+/* =========================================================
+ * 14. 対戦モードの演出（アイボリー地のまま「ゲームらしさ」を出す）
+ * ---------------------------------------------------------
+ * ★なぜ専用のクラスを足したのか★
+ * 利用者から「マッチングのところがフレンドと全国で少しわかんない」
+ * 「ポケポケとかイーフットボールみたいにすごい感じにして」と要望があった。
+ *
+ * それらのゲームの「すごい感じ」の正体は、暗い背景ではなく
+ *   ① 主動線が画面の主役として大きく置かれている
+ *   ② 待ち時間に「何かが動いている」＝ゲームが生きている合図がある
+ *   ③ 押したとき／始まるときに一瞬の光や震えがある
+ * という3点にある。だから ①②③ を CSS で用意し、
+ * 地色は既存アプリ（アイボリー・ノート罫線）から一切変えない。
+ *
+ * ★アニメーションを CSS 側に置いた理由★
+ * 各画面の JSX に style で書くと prefers-reduced-motion への配慮が
+ * 抜け落ちる。ここに集めれば、末尾の1ブロックで全部止められる。
+ * ========================================================= */
+
+/* --- ① 主動線カードの光沢（ゆっくり左から右へ流れる帯） ------------- */
+@keyframes battleSheen {
+  0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  18%  { opacity: 0.9; }
+  60%  { opacity: 0.55; }
+  100% { transform: translateX(230%) skewX(-18deg); opacity: 0; }
+}
+.battle-sheen {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.battle-sheen::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 42%;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(255, 255, 255, 0.72) 50%,
+    rgba(255, 255, 255, 0.05) 70%,
+    transparent 100%);
+  animation: battleSheen 4.2s ease-in-out infinite;
+  animation-delay: var(--sheen-delay, 0s);
+  z-index: 1;
+}
+
+/* --- ② レーダー：全国対戦の「探している感」 ----------------------- */
+@keyframes battleRadarRing {
+  0%   { transform: scale(0.45); opacity: 0.75; }
+  100% { transform: scale(1.6);  opacity: 0; }
+}
+.battle-radar-ring {
+  animation: battleRadarRing 2.4s ease-out infinite;
+  animation-delay: var(--ring-delay, 0s);
+}
+
+/* レーダーの走査線（円の中をぐるぐる回る扇形） */
+@keyframes battleRadarSweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.battle-radar-sweep {
+  animation: battleRadarSweep 2.6s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+/* --- ③ VS の鼓動（対戦カードの中央） ----------------------------- */
+@keyframes battleVsPulse {
+  0%, 100% { transform: scale(1)    rotate(-4deg); }
+  50%      { transform: scale(1.12) rotate(-4deg); }
+}
+.battle-vs-pulse { animation: battleVsPulse 1.5s ease-in-out infinite; }
+
+/* --- ④ 見つかった瞬間の閃光（マッチ成立の合図） -------------------- */
+@keyframes battleFlash {
+  0%   { opacity: 0; transform: scale(0.7); }
+  35%  { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+.battle-flash { animation: battleFlash 0.9s ease-out both; }
+
+/* --- ⑤ 画面に入るときのカードの立ち上がり ------------------------- */
+@keyframes battleCardIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.battle-card-in {
+  animation: battleCardIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--card-delay, 0s);
+}
+
+/* --- ⑥ 待機中の点々（相手を待っている合図） ---------------------- */
+@keyframes battleDot {
+  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+  40%           { opacity: 1;    transform: translateY(-3px); }
+}
+.battle-dot {
+  animation: battleDot 1.2s ease-in-out infinite;
+  animation-delay: var(--dot-delay, 0s);
+}
+
+/* --- ⑦ 数字カウントの跳ね（レート増減・スコア） ------------------- */
+@keyframes battlePop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  55%  { transform: scale(1.14); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+.battle-pop {
+  animation: battlePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: var(--pop-delay, 0s);
+}
+
+/*
+ * ★動きを減らす設定では全部止める★
+ * 対戦は「制限時間つきで文字を読む」場面が続くので、
+ * 動きに酔う人にとっては読みづらさが直接不利につながる。
+ * 光沢・レーダー・鼓動は装飾なので、止めても情報は失われない
+ * （待っていることは秒数の表示で分かる）。
+ */
+@media (prefers-reduced-motion: reduce) {
+  .battle-sheen::after,
+  .battle-radar-ring,
+  .battle-radar-sweep,
+  .battle-vs-pulse,
+  .battle-flash,
+  .battle-card-in,
+  .battle-dot,
+  .battle-pop {
+    animation: none !important;
+  }
+  .battle-sheen::after { display: none; }
+}

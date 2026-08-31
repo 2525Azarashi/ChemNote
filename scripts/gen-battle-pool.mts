@@ -36,30 +36,72 @@
  * 古いプールが本番に出ることはない。
  *
  * -------------------------------------------------------------------
- * ■ 「記述の手打ち入力」を1つも作らない方針
+ * ■ ★出題するのは「演習でそのまま解ける問題」だけ★（最重要の方針）
  * -------------------------------------------------------------------
- * 対戦は制限時間が短い。日本語IMEの変換確定が入ると、
- * 端末やIMEの差で実力と無関係に勝敗が決まってしまう。
- * そこで、元が記述・短答の設問も ★押すだけで答えられる形★ に変換する。
+ * 以前は、元が短答・記述の設問も対戦向けに作り替えて出題していた。
  *
- *   choice4 … 元から4択（そのまま使う）
- *   word    … 4つの語句カードから選ぶ（元が短答・記述）
- *   panel   … 文字パネルを順に押して語を組み立てる（元が短答の2〜6文字）
+ *   word  … 答えの代わりに「同じ章の他の設問の正解」を誤答として3つ並べる
+ *   panel … 答えの文字をばらして、文字パネルを押して組み立てさせる
+ *
+ * この2つは数を稼げた（1428問のうち1064問）が、
+ * ★問いとして成り立たない問題が大量に混ざった★。
+ *
+ *   ・借りてきた誤答が、その問いに対しても実は正しい
+ *     （「代謝」の誤答に「同化」を借りると、文脈によってはどちらも正しい）
+ *   ・穴埋めのリード文を切り出す過程で前提の文が落ち、答えが一意でなくなる
+ *   ・文字パネルは答えの表記ゆれ（送り仮名・カタカナ・記号）を1つに固定できない
+ *
+ * 利用者からも「問題が論理的に破綻している場合が多い。
+ * 現段階では演習問題と同じものを利用するようにして」と指摘された。
+ * そこで、現在は
+ *
+ *   ★元データが選択肢を持っている設問だけを、選択肢をいじらずに出す★
+ *
+ * という一本の方針にしている。対戦に出る問題は、演習で解ける問題と
+ * まったく同じ内容・同じ選択肢である（＝答えが一意であることを
+ * 出題者がすでに保証している）。
+ *
+ * 変換系のコードは USE_SYNTHESIZED_FORMATS で丸ごと止めてある。
+ * 消していないのは、上の3点を解決できたときに戻せるようにするため。
  *
  * -------------------------------------------------------------------
- * ■ 誤答選択肢（ダミー）の作り方
+ * ■ 選択肢を「足さない・削らない・並べ替えない」
  * -------------------------------------------------------------------
- * ★同じ章の他の設問の正解を誤答として使う。★
+ * 元データの選択肢は2〜6個ある（実測: 2択109件・3択49件・4択484件・5〜6択30件）。
  *
- * これは「それっぽい嘘を作る」より確実で、かつ学習効果が高い。
- * 例: 「2種類以上の物質が混じり合ったものを何というか」の答え「混合物」に対して、
- * 同じ章にある「純物質」「単体」「化合物」が誤答として並ぶ。
- * どれも紛らわしいので、当てずっぽうでは当たらない。
+ * ★2択を4択に膨らませない★
+ *   「元素／単体」の2択に他の設問の答えを2つ足すと
+ *   「元素／単体／中和／モル」のように毛色の違う語が並び、
+ *   消去法だけで当たる問題になる（＝元の設問より簡単になる）。
  *
- * 同じ章に足りないときは、同じ教科の中から文字数の近いものを補う。
- * それでも4つに満たない設問は ★プールに入れない★（無理に出題しない）。
+ * ★5〜6択を4択に切り詰めない★
+ *   切り詰めると、出題者が「紛らわしいから並べた」選択肢が消える。
  *
- * 実測: 短答1036件のうち1021件は同じ章の中だけで誤答3つが確保できる。
+ * ★並べ替えもしない★
+ *   演習で見た並びと同じにしておけば、対戦で覚えた位置が演習でも通じる。
+ *   （並べ替えても両者に同じ並びを配れるが、そこに利点が無い）
+ *
+ * よって回答形式は次の2つだけになる。
+ *
+ *   choice4 … 選択肢がちょうど4つ
+ *   choice  … 選択肢が2・3・5・6個（元データのまま）
+ *
+ * -------------------------------------------------------------------
+ * ■ 記号だけの選択肢は、問題文の凡例から本文に戻す
+ * -------------------------------------------------------------------
+ * 元データには options が
+ *
+ *     ['①','②','③','④']      （英文法・リスニング）
+ *     ['(イ)','(ウ)','(エ)']    （化学基礎の分類問題）
+ *     ['A','B','C']            （同上）
+ *
+ * という★記号だけ★のものがある。選択肢の本文は問題文の中にある。
+ * そのまま出すと「①」「②」と書かれたカードが並ぶだけの画面になるので、
+ *
+ *   ・「問N ＋ ①〜④」の行構造から取り出す（parseNumberedBlocks）
+ *   ・「(イ) 混合物　(ウ) 単体」「【A：単体】」の凡例から取り出す（buildLegend）
+ *
+ * の2通りで本文に戻す。★どちらでも戻せない設問は出題しない。★
  */
 
 import { writeFileSync } from 'node:fs';
@@ -69,6 +111,12 @@ import { fileURLToPath } from 'node:url';
 import { SUBJECTS, getChaptersOfSubject } from '../src/data/allChapters';
 import { calcSubQuestionTimeLimit } from '../src/utils/scoring';
 import { normalizeAnswer } from '../src/utils/answerJudge';
+/**
+ * ★五十音キーボードの番号表は画面と共有する★
+ * ここで独自に文字表を持つと、生成した番号と画面の文字がズレて
+ * 「正しく答えたのに不正解」になる。必ず同じファイルを参照する。
+ */
+import { kanaKeysOf, KANA_MAX_INPUT } from '../src/battle/core/kanaKeyboard';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 /** 生成物の出力先ディレクトリ（教科ごとに1ファイル＋索引1ファイルを置く） */
@@ -94,6 +142,42 @@ const OUT_DIR = resolve(HERE, '../src/battle/data');
 const BATTLE_TIME_MIN = 8;
 const BATTLE_TIME_MAX = 30;
 const BATTLE_TIME_RATIO = 0.42;
+
+/**
+ * ★合成形式（word / panel）を作るか★
+ *
+ * false = 元データが選択肢を持っている設問だけを出す（現在の方針）。
+ * true に戻すと、短答・記述から誤答を借りて4択を作る動作が復活する。
+ *
+ * 戻す前に、ファイル冒頭に書いた3つの破綻（誤答が実は正しい／
+ * 切り出しで前提が落ちる／表記ゆれを固定できない）を必ず解決すること。
+ * 解決していない状態で戻すと、対戦に「誰も正解できない問題」が混ざる。
+ */
+const USE_SYNTHESIZED_FORMATS = false;
+
+/**
+ * 出題に使える選択肢の数の範囲。
+ *
+ * 下限2 … 元データが意図して作った2択（「元素／単体」など109件）を認める。
+ * 上限6 … 7択以上は、スマホの1画面に収めると1つあたりが読めない大きさになる。
+ *         実測で7択は2件しか無いので、切り詰めるより外すほうが素直。
+ */
+const MIN_OPTIONS = 2;
+const MAX_OPTIONS = 6;
+
+/**
+ * ★五十音キーボード形式（kana）にできる答えの文字数★
+ *
+ * 下限2 … 1文字の答え（「鐵」「水」など）は、押した瞬間に確定する形になり
+ *          誤タップがそのまま誤答になる。手直しの余地が欲しいので2字以上。
+ * 上限8 … 制限時間が8〜30秒しかないので、9字以上は思い出せていても
+ *          押し終わらない（実測の最長は8字「デオキシリボース」）。
+ *
+ * なお Firestore のルールが panel.size() <= 12 で受け付けを制限しているので、
+ * 上限はいずれにしろ12を超えられない。
+ */
+const KANA_MIN_CHARS = 2;
+const KANA_MAX_CHARS = 8;
 
 /** 文字パネル形式にできる答えの文字数 */
 const PANEL_MIN_CHARS = 2;
@@ -146,7 +230,7 @@ const BLANK_MARK = '［　？　］';
 // 型
 // ============================================================
 
-type Format = 'choice4' | 'word' | 'panel';
+type Format = 'choice4' | 'choice' | 'kana' | 'word' | 'panel';
 
 interface PoolQuestion {
   id: string;
@@ -335,12 +419,92 @@ function parseNumberedBlocks(text: string): Map<number, { stem: string; options:
   return out;
 }
 
-/** 選択肢が記号だけ（①②③④ / アイウエ / abcd）かどうか */
+/** 選択肢が記号だけ（①②③④ / (イ)(ウ)(エ) / A B C）かどうか */
 function isSymbolOnlyOptions(options: string[]): boolean {
   if (options.length === 0) return false;
-  return options.every(
-    (o) => /^[①-⑩\s]+$/.test(o) || /^[ア-ン]$/.test(o) || /^[a-dA-D]$/.test(o),
-  );
+  return options.every((o) => symbolKeyOf(o) !== null);
+}
+
+/**
+ * 記号だけの選択肢から「記号そのもの」を取り出す。記号でなければ null。
+ *
+ * 「(イ)」→「イ」、「① 」→「①」、「A」→「A」。
+ * ★括弧を外して比べる理由★
+ * 元データでは選択肢が「(イ)」なのに凡例が「( イ ) 混合物」だったり、
+ * 逆に選択肢が「A」で凡例が「【A：単体】」だったりする。
+ * 記号だけを取り出しておけば、括弧・空白の違いに影響されずに突き合わせられる。
+ */
+function symbolKeyOf(option: string): string | null {
+  const s = option.replace(/\s+/g, '').replace(/^[（(【]/, '').replace(/[)）】]$/, '');
+  if (/^[①-⑩]$/.test(s)) return s;
+  if (/^[ア-ン]$/.test(s)) return s;
+  if (/^[A-Za-z]$/.test(s)) return s.toUpperCase();
+  return null;
+}
+
+/**
+ * 問題文の中の「凡例」から、記号 → 本文の対応を作る。
+ *
+ * ★これが無いと出せない設問がある（実測40件）★
+ * 化学基礎の分類問題は、選択肢が記号だけで本文が問題文の凡例にある。
+ *
+ *     問2 次の (1)〜(6) の物質は、文章中の( イ )～（ エ ）のどれに分類されるか答えよ。
+ *     (イ) 混合物　(ウ) 単体　(エ) 化合物
+ *
+ *     問2 次の（1）〜（15）の物質を、【A：単体】【B：化合物】【C：混合物】に分類しなさい。
+ *
+ * どちらも「記号 ＋ 区切り ＋ 短い語」という同じ形をしている。
+ * 拾えれば「空気 → 混合物／単体／化合物」という、演習とまったく同じ
+ * 3択の設問として出せる。拾えなければ「(イ)/(ウ)/(エ)」と書かれた
+ * カードが並ぶだけの画面になるので、そのときは出題しない。
+ *
+ * -------------------------------------------------------------------
+ * ■ 拾い間違いを防ぐための条件
+ * -------------------------------------------------------------------
+ * 「(1) 空気　(2) 酸素」のような ★設問の通し番号★ を凡例と誤認すると、
+ * 選択肢に「空気／酸素／食塩水」が並ぶ別の問題になってしまう。そこで
+ *
+ *   ・数字の記号（(1) など）は凡例として採らない
+ *   ・本文が長い（LEGEND_MAX_CHARS 超）ものは採らない
+ *   ・記号が2つ以上そろわないと採用しない
+ *
+ * の3つで絞る。
+ */
+const LEGEND_MAX_CHARS = 20;
+
+function buildLegend(text: string): Map<string, string> {
+  const out = new Map<string, string>();
+  const src = String(text || '');
+
+  const add = (rawKey: string, rawBody: string): void => {
+    const key = symbolKeyOf(rawKey);
+    if (!key) return;
+    // 数字は設問の通し番号なので凡例として扱わない
+    if (/^[0-9０-９]+$/.test(rawKey.replace(/\s+/g, ''))) return;
+    const body = rawBody
+      .replace(/\s+/g, ' ')
+      .replace(/[、。，．]+$/, '')
+      .trim();
+    if (!body || body.length > LEGEND_MAX_CHARS) return;
+    // 本文が別の記号だけ（「(イ) (ウ)」のような列挙）なら凡例ではない
+    if (symbolKeyOf(body) !== null) return;
+    if (!out.has(key)) out.set(key, body);
+  };
+
+  // 形①「【A：単体】【B：化合物】」
+  for (const m of src.matchAll(/【\s*([A-Za-zア-ン①-⑩])\s*[：:]\s*([^】]+)】/g)) {
+    add(m[1], m[2]);
+  }
+
+  // 形②「(イ) 混合物　(ウ) 単体」／「① sounds」
+  //   本文は「次の記号が始まるまで」または「全角空白・改行まで」。
+  for (const m of src.matchAll(
+    /[（(]\s*([A-Za-zア-ン])\s*[)）]\s*([^（()）\n　]{1,20})/g,
+  )) {
+    add(m[1], m[2]);
+  }
+
+  return out;
 }
 
 /** 正解の選択肢が options の何番目かを求める（記号・本文の両方に対応） */
@@ -423,62 +587,91 @@ function collectAll(): RawSub[] {
 }
 
 // ============================================================
-// 変換: 元から4択のもの
+// 変換: 元データが選択肢を持っている設問（★これが唯一の出題元★）
 // ============================================================
 
 /**
- * 元から選択肢を持つ設問を choice4 に変換する。
+ * 元データの選択肢をそのまま使って出題1問を作る。
  *
- * ・選択肢が5つ以上 → 正解＋誤答3つを選んで4つに切り詰める
- * ・選択肢が3つ以下 → 対戦では使わない（4択に揃えられないため）
- * ・選択肢が記号だけ → 問題文から本文を取り出して差し替える
+ * ★この関数は選択肢を1つも足さず・削らず・並べ替えない。★
+ * 演習で解ける問題と、対戦に出る問題を同一にするための中核である。
+ *
+ * -------------------------------------------------------------------
+ * ■ 処理の流れ
+ * -------------------------------------------------------------------
+ *  1. 選択肢が記号だけなら、本文に戻す（戻せなければ出題しない）
+ *  2. 選択肢の数が 2〜6 の範囲に無ければ出題しない
+ *  3. 正解が選択肢の何番目かを特定できなければ出題しない
+ *  4. 選択肢が重複していたら出題しない（正解が2つある状態になる）
+ *  5. 画面を見て何を答えるか分からない設問は出題しない
+ *
+ * どの段階でも「無理に成立させない」。数が減っても、
+ * 出た問題がすべて正しく解ける状態のほうが対戦としては健全である。
  */
-function convertChoice(row: RawSub, blocks: Map<number, { stem: string; options: string[] }>): PoolQuestion | null {
-  let options = row.options;
+function convertChoice(
+  row: RawSub,
+  blocks: Map<number, { stem: string; options: string[] }>,
+  legend: Map<string, string>,
+): PoolQuestion | null {
+  let options = row.options.map((o) => o.trim()).filter((o) => o.length > 0);
+  if (options.length === 0) return null;
+
   let stem = '';
+  /** 正解が「記号」で書かれている場合の、記号での位置合わせに使う元の並び */
+  let symbolOptions: string[] | null = null;
 
   if (isSymbolOnlyOptions(options)) {
-    // 選択肢の本文が問題文の中にある形式（英文法・リスニング）
+    symbolOptions = options;
+
+    // 経路① 「問N ＋ ①〜④」の行構造から取る（英文法・リスニング）
     const m = row.label.match(/問\s*(\d+)/);
-    if (!m) return null;
-    const block = blocks.get(Number(m[1]));
-    if (!block || block.options.length < 4) return null;
-    options = block.options;
-    stem = block.stem;
+    const block = m ? blocks.get(Number(m[1])) : undefined;
+
+    if (block && block.options.length === options.length) {
+      options = block.options.map((o) => o.trim());
+      stem = block.stem;
+    } else {
+      // 経路② 問題文の凡例から取る（「(イ) 混合物」「【A：単体】」）
+      const mapped = options.map((o) => {
+        const key = symbolKeyOf(o);
+        return key ? legend.get(key) : undefined;
+      });
+      // ★1つでも引けない記号があれば出題しない★
+      //   一部だけ本文に置き換えると「混合物／単体／(エ)」という
+      //   意味不明な選択肢が並ぶ。全部揃うか、出さないかの二択にする。
+      if (mapped.some((v) => !v)) return null;
+      options = mapped.map((v) => String(v));
+    }
   }
 
-  if (options.length < 4) return null;
+  if (options.length < MIN_OPTIONS || options.length > MAX_OPTIONS) return null;
 
-  const answerIndex = findAnswerIndex(options, row.correctAnswer);
-  if (answerIndex < 0) return null;
+  // 正解の位置。記号だった場合は「記号の並び」で位置を求める
+  // （本文に置き換えたあとの配列と添字は一致している）。
+  const answerIndex = findAnswerIndex(symbolOptions || options, row.correctAnswer);
+  if (answerIndex < 0 || answerIndex >= options.length) return null;
 
-  const random = createRandom(hashString(`c4:${uniqueKey(row)}`));
-
-  // 4つに絞る（正解は必ず含める）
-  let finalOptions = options;
-  if (options.length > 4) {
-    const wrong = options.filter((_, i) => i !== answerIndex);
-    const picked = shuffleWith(wrong, random).slice(0, 3);
-    finalOptions = shuffleWith([options[answerIndex], ...picked], random);
-  }
-
-  const finalAnswer = finalOptions.findIndex(
-    (o) => normalizeAnswer(o) === normalizeAnswer(options[answerIndex]),
-  );
-  if (finalAnswer < 0) return null;
+  // 選択肢の重複は「正解が2つある」状態。正しく答えたのに不正解になる人が出る。
+  const uniq = new Set(options.map((o) => normalizeAnswer(o)));
+  if (uniq.size !== options.length) return null;
 
   // 対戦画面に出す問題文と設問文。
   //
   // ★stem（問題文から切り出したその設問だけの文）があれば最優先★
   //   リード文全体より短く、かつその設問の内容そのものなので確実。
   // ★無ければ穴埋め問題と同じ組み立てを使う★
-  //   4択でも「リード文の(ア)に入る語を選べ」型があり、
+  //   選択式でも「リード文の(ア)に入る語を選べ」型があり、
   //   リード文を先頭から切ると空欄が消える。また地理・生物には
   //   「問いはラベルにあり、リード文は資料の導入だけ」という型があるので、
   //   buildBlankPrompt に判定を任せる（同じ規則を2箇所に書かない）。
   const display = stem
-    ? { prompt: cleanPrompt(stem), label: formatLabel(row.label) }
+    ? { prompt: cleanPrompt(stem), label: formatLabel(row.label), answerable: true }
     : buildBlankPrompt(row);
+
+  // ★何を答えるか分からない設問は出さない★
+  //   ラベルが「(1)」だけ・リード文にも空欄が見つからない、という設問が
+  //   元データに一定数ある。出すと両者にとって運の問題になる。
+  if (!isAnswerable(display)) return null;
 
   return {
     id: `q:${uniqueKey(row)}`,
@@ -486,11 +679,13 @@ function convertChoice(row: RawSub, blocks: Map<number, { stem: string; options:
     chapterId: row.chapterId,
     problemId: row.problemId,
     subQuestionId: row.id,
-    format: 'choice4',
+    // 4つだけ choice4、それ以外（2・3・5・6）は choice。
+    // 画面の並べ方を切り替えるための区別で、採点の扱いは同じ。
+    format: options.length === 4 ? 'choice4' : 'choice',
     prompt: display.prompt,
     label: display.label,
-    options: finalOptions.map((o) => trimOption(o)),
-    answerIndex: finalAnswer,
+    options: options.map((o) => trimOption(o)),
+    answerIndex,
     panelOrder: [],
     timeLimit: battleTimeLimit(row),
     imageUrl: row.imageUrl,
@@ -573,6 +768,90 @@ function convertWord(
     options: options.map((o) => trimOption(o)),
     answerIndex,
     panelOrder: [],
+    timeLimit: battleTimeLimit(row),
+    imageUrl: row.imageUrl,
+  };
+}
+
+/**
+ * ★五十音キーボードで1文字ずつ押して答える形式（「みんはや」方式）★
+ *
+ * 例: 答えが「ダイヤモンド」なら、画面には五十音表だけが出て、
+ *     ダ→イ→ヤ→モ→ン→ド と押す。ヒントは一切出ない。
+ *
+ * -------------------------------------------------------------------
+ * ■ ★カタカナの答えだけに限定している★
+ * -------------------------------------------------------------------
+ * これがこの形式の成否を決める一点である。
+ *
+ * 漢字の答え（「酸化」）をかなで入力させると、
+ *   ・「さんか」なのか「サンカ」なのか
+ *   ・「酸化」と書きたいのに書けない
+ * という具合に ★正解が1通りに定まらない★。
+ * かな入力を許すと、正しく理解している人が表記の違いで落ちる。
+ * これは以前の文字パネル形式が「表記ゆれを固定できない」と言われて
+ * 止まった理由とまったく同じなので、繰り返さない。
+ *
+ * カタカナ語（「ダイヤモンド」「ミトコンドリア」「フラーレン」）は
+ * ★元データの答えがそのまま唯一の書き方★なので、この問題が起きない。
+ * 実測で72件（化学基礎31・生物基礎40・化学1）ある。
+ *
+ * -------------------------------------------------------------------
+ * ■ ひらがなの答えを外している理由
+ * -------------------------------------------------------------------
+ * 実データのひらがな答えは「にくい」1件だけで、しかも
+ * 「溶けにくい」の一部を切り出したものだった。
+ * 文の一部を答えさせる形はキーボード入力に向かない（区切りが曖昧）ので外す。
+ *
+ * -------------------------------------------------------------------
+ * ■ 同じ文字が2回出てもよい
+ * -------------------------------------------------------------------
+ * 文字パネル形式では「同じ文字が2回出る語」を外していた
+ * （並んだパネルのどちらを押したか判別できないため）。
+ * 五十音キーボードは同じキーを2回押せばよいだけなので、この制限は要らない。
+ * 「バリウム」「アルミニウム」のような語が出せるようになる。
+ */
+function convertKana(row: RawSub): PoolQuestion | null {
+  const answer = row.correctAnswer.trim();
+
+  // ★カタカナ（＋長音）だけで書かれた答えに限る★
+  if (!/^[ァ-ヶー]+$/.test(answer)) return null;
+
+  const chars = Array.from(answer);
+  if (chars.length < KANA_MIN_CHARS || chars.length > KANA_MAX_CHARS) return null;
+  // Firestore のルールが panel.size() <= 12 で拒否するので、念のため二重に見る
+  if (chars.length > KANA_MAX_INPUT) return null;
+
+  /**
+   * ★画面のキーボードから実際に押せる文字か★
+   * 番号表（KANA_KEYS）に載っているだけで五十音表に置いていない文字
+   * （現在は「ヲ」）が混ざると、誰も入力できない＝両者0点確定の問題になる。
+   * kanaKeysOf が到達可能性まで見て null を返す。
+   */
+  const keys = kanaKeysOf(answer);
+  if (!keys) return null;
+
+  const display = buildBlankPrompt(row);
+  if (!isAnswerable(display)) return null;
+
+  return {
+    id: `k:${uniqueKey(row)}`,
+    subject: row.subject,
+    chapterId: row.chapterId,
+    problemId: row.problemId,
+    subQuestionId: row.id,
+    format: 'kana',
+    prompt: display.prompt,
+    label: display.label,
+    /**
+     * ★選択肢は持たない★
+     * 持たせると、プールを見ただけで「答えは6文字」「ダとイを使う」と
+     * 分かってしまう。キーボードは画面側が描くので、データは要らない。
+     */
+    options: [],
+    answerIndex: -1,
+    /** ★五十音キーボードのキー番号の並び★（options の添字ではない） */
+    panelOrder: keys,
     timeLimit: battleTimeLimit(row),
     imageUrl: row.imageUrl,
   };
@@ -864,9 +1143,12 @@ function build(): { pool: PoolQuestion[]; stats: Record<string, Record<string, n
 
   // 問題文の解析結果は大問ごとに1回だけ行う（同じ大問の設問で共有する）
   const blocksByProblem = new Map<string, Map<number, { stem: string; options: string[] }>>();
+  /** 記号 → 本文 の凡例。同じ大問の設問がすべて同じ凡例を参照する */
+  const legendByProblem = new Map<string, Map<string, string>>();
   for (const row of rows) {
     if (!blocksByProblem.has(row.problemId)) {
       blocksByProblem.set(row.problemId, parseNumberedBlocks(row.problemText));
+      legendByProblem.set(row.problemId, buildLegend(row.problemText));
     }
   }
 
@@ -906,7 +1188,7 @@ function build(): { pool: PoolQuestion[]; stats: Record<string, Record<string, n
   const pool: PoolQuestion[] = [];
   const stats: Record<string, Record<string, number>> = {};
   const bump = (subject: string, key: string): void => {
-    stats[subject] ??= { choice4: 0, word: 0, panel: 0, skipped: 0 };
+    stats[subject] ??= { choice4: 0, choice: 0, kana: 0, word: 0, panel: 0, skipped: 0 };
     stats[subject][key] = (stats[subject][key] || 0) + 1;
   };
 
@@ -914,17 +1196,53 @@ function build(): { pool: PoolQuestion[]; stats: Record<string, Record<string, n
     let made = 0;
 
     if (row.type === 'multiple_choice') {
-      const q = convertChoice(row, blocksByProblem.get(row.problemId) || new Map());
+      // 元データが選択肢を持っている設問を、選択肢をいじらずに出す。
+      const q = convertChoice(
+        row,
+        blocksByProblem.get(row.problemId) || new Map(),
+        legendByProblem.get(row.problemId) || new Map(),
+      );
       if (q) {
         pool.push(q);
-        bump(row.subject, 'choice4');
+        bump(row.subject, q.format);
         made += 1;
       }
-    } else if (
-      row.type === 'short_answer' ||
-      row.type === 'descriptive' ||
-      row.type === 'text'
+    } else if (row.type === 'short_answer') {
+      /**
+       * ★五十音キーボード形式（「みんはや」方式）★
+       *
+       * これは下の USE_SYNTHESIZED_FORMATS で止めてある word / panel とは違い、
+       * ★誤答を1つも作っていない★ので常に有効にしている。
+       *
+       * word / panel が壊れていたのは「同じ章の他の設問の正解を
+       * 誤答として借りていた」ためで、借りた誤答が実は正しいことがあった。
+       * kana は問いと正解を元データからそのまま使い、
+       * 画面には五十音表しか出さない。★演習と同じ問題のまま★である。
+       *
+       * さらにカタカナの答えに限定してあるので、
+       * 表記ゆれ（送り仮名・かな/漢字）で落とす事故も起きない。
+       */
+      const k = convertKana(row);
+      if (k) {
+        pool.push(k);
+        bump(row.subject, 'kana');
+        made += 1;
+      }
+    }
+
+    if (
+      made === 0 &&
+      USE_SYNTHESIZED_FORMATS &&
+      (row.type === 'short_answer' || row.type === 'descriptive' || row.type === 'text')
     ) {
+      // ------------------------------------------------------------
+      // ★以下は現在動いていない（USE_SYNTHESIZED_FORMATS === false）★
+      //
+      // 短答・記述から「同じ章の他の設問の正解」を誤答として借り、
+      // 4択（word）や文字パネル（panel）を作る処理。
+      // 問いとして成り立たない問題が混ざるため止めている。
+      // 詳細はファイル冒頭の方針と、この定数の説明を参照。
+      // ------------------------------------------------------------
       const sameChapter = (answersByChapter.get(row.chapterId) || []).filter(
         (a) => a !== row.correctAnswer,
       );
@@ -950,7 +1268,7 @@ function build(): { pool: PoolQuestion[]; stats: Record<string, Record<string, n
       }
     }
     // 'sorting' は対戦では使わない（並び替えは操作時間が長く、
-    //  4択・パネルに変換すると元の設問の意図が失われる）
+    //  選択式に変換すると元の設問の意図が失われる）
 
     if (made === 0) bump(row.subject, 'skipped');
   }
@@ -1000,7 +1318,7 @@ type Tuple = [
   chapterId: string,
   problemId: string,
   subQuestionId: string,
-  format: number, // 0=choice4 1=word 2=panel
+  format: number, // 0=choice4 1=word 2=panel 3=choice
   prompt: string,
   label: string,
   options: string[],
@@ -1010,7 +1328,22 @@ type Tuple = [
   imageUrl: string, // 無いときは ''
 ];
 
-const FORMAT_CODE: Record<Format, number> = { choice4: 0, word: 1, panel: 2 };
+/**
+ * 形式 → 番号。
+ *
+ * ★番号は append-only。既存の番号を動かすのは禁止。★
+ * 番号は生成ファイルの中に数字として書かれるので、
+ * 途中に割り込ませると全問の形式が総入れ替わりになる。
+ * （choice を 3、kana を 4 と末尾に足しているのはこのため）
+ * battlePool.ts 側の FORMATS 配列も同じ並びであること。
+ */
+const FORMAT_CODE: Record<Format, number> = {
+  choice4: 0,
+  word: 1,
+  panel: 2,
+  choice: 3,
+  kana: 4,
+};
 
 function toTuple(q: PoolQuestion): Tuple {
   return [
@@ -1080,7 +1413,11 @@ function fileNameOf(subject: string): string {
  * import() を使うと Vite が教科ごとに別チャンクを作り、
  * 選ばれた教科だけがネットワークを流れる。
  */
-function renderIndexFile(subjects: string[], counts: Record<string, number>): string {
+function renderIndexFile(
+  subjects: string[],
+  counts: Record<string, number>,
+  formatCounts: Record<string, Record<string, number>>,
+): string {
   const cases = subjects
     .map(
       (s) =>
@@ -1089,6 +1426,18 @@ function renderIndexFile(subjects: string[], counts: Record<string, number>): st
     .join('\n');
 
   const countLines = subjects.map((s) => `  ${s}: ${counts[s] || 0},`).join('\n');
+
+  // 形式別の数。0 の形式は書かない（読む人が「使える形式」を一目で分かるように）。
+  const formatCountLines = subjects
+    .map((s) => {
+      const byFormat = formatCounts[s] || {};
+      const inner = (['choice4', 'choice', 'kana', 'word', 'panel'] as const)
+        .filter((f) => (byFormat[f] || 0) > 0)
+        .map((f) => `${f}: ${byFormat[f]}`)
+        .join(', ');
+      return `  ${s}: { ${inner} },`;
+    })
+    .join('\n');
 
   return `/**
  * ===================================================================
@@ -1123,7 +1472,56 @@ export const POOL_COUNTS: Readonly<Record<string, number>> = {
 ${countLines}
 };
 
-const FORMATS: readonly BattleAnswerFormat[] = ['choice4', 'word', 'panel'];
+/**
+ * 教科ごと・回答形式ごとの収録数。
+ *
+ * -------------------------------------------------------------------
+ * ■ ★POOL_COUNTS（総数）だけでは足りない理由★
+ * -------------------------------------------------------------------
+ * 教科ごとのルール（battleRules.ts の formats）は「使う回答形式」を絞る。
+ * 総数だけを見て教科カードを出すと、
+ *
+ *   ・カードには「収録 348 問」と書いてある
+ *   ・でもルールが使う形式の問題は 1 問しか無い
+ *   ・押すと対戦が始められない
+ *
+ * という ★選べるのに対戦できない★ 状態が起こる。
+ * 実際に過去そうなりかけた（生物基礎が該当）。
+ *
+ * 形式別の数をここに持っておけば、画面は問題データ本体（数百KB）を
+ * 読まずに「この教科でいま出せる数」を出せる。
+ */
+export const POOL_FORMAT_COUNTS: Readonly<
+  Record<string, Readonly<Partial<Record<BattleAnswerFormat, number>>>>
+> = {
+${formatCountLines}
+};
+
+/**
+ * その教科で「指定の形式のうち」何問使えるかを数える。
+ *
+ * ★画面の「収録N問」はこの数を出すこと。★
+ * 総数（POOL_COUNTS）を出すと、上に書いたとおり嘘になる場合がある。
+ */
+export function poolCountOf(
+  subject: string,
+  formats: readonly BattleAnswerFormat[],
+): number {
+  const byFormat = POOL_FORMAT_COUNTS[subject];
+  if (!byFormat) return 0;
+  let total = 0;
+  for (const f of formats) total += byFormat[f] || 0;
+  return total;
+}
+
+/**
+ * 形式番号 → 形式名。
+ *
+ * ★番号は生成器の FORMAT_CODE と同じ並びでなければならない。★
+ * choice が末尾（3）にいるのは、あとから追加したときに
+ * 既存の 0/1/2 を動かさなかったためである。並べ替えてはいけない。
+ */
+const FORMATS: readonly BattleAnswerFormat[] = ['choice4', 'word', 'panel', 'choice', 'kana'];
 
 /**
  * タプルを BattleQuestion に戻す。
@@ -1138,7 +1536,10 @@ function expand(subject: string, t: readonly unknown[]): BattleQuestion {
     chapterId: t[1] as string,
     problemId: t[2] as string,
     subQuestionId: t[3] as string,
-    format: FORMATS[t[4] as number],
+    // 形式番号が範囲外なら choice4 に寄せる。
+    // 生成ファイルが古い（新しい形式番号を知らない）状態で
+    // 画面だけ新しくなったときに、undefined が入って落ちるのを防ぐ。
+    format: FORMATS[t[4] as number] ?? 'choice4',
     prompt: t[5] as string,
     label: t[6] as string,
     options: t[7] as string[],
@@ -1233,12 +1634,22 @@ function main(): void {
   // 教科の並びは SUBJECTS の定義順（生成の再現性のため）
   const subjects = SUBJECTS.map((s) => s.id).filter((id) => bySubject.has(id));
   const counts: Record<string, number> = {};
+  /** 教科 → 形式 → 件数。索引ファイルの POOL_FORMAT_COUNTS になる */
+  const formatCounts: Record<string, Record<string, number>> = {};
   let totalBytes = 0;
   const perFile: Array<[string, number, number]> = [];
 
   for (const subject of subjects) {
     const list = bySubject.get(subject)!;
     counts[subject] = list.length;
+
+    // ★stats ではなく実際に出力する配列から数える★
+    //   stats は「作った回数」なので、あとで並びやフィルタを足したときに
+    //   出力内容とズレうる。索引に書く数は必ず出力そのものから数える。
+    const byFormat: Record<string, number> = {};
+    for (const q of list) byFormat[q.format] = (byFormat[q.format] || 0) + 1;
+    formatCounts[subject] = byFormat;
+
     const source = renderSubjectFile(subject, list);
     const path = resolve(OUT_DIR, fileNameOf(subject));
     writeFileSync(path, source, 'utf8');
@@ -1247,17 +1658,31 @@ function main(): void {
     perFile.push([subject, list.length, bytes]);
   }
 
-  const indexSource = renderIndexFile(subjects, counts);
+  const indexSource = renderIndexFile(subjects, counts, formatCounts);
   writeFileSync(resolve(OUT_DIR, 'battlePool.ts'), indexSource, 'utf8');
   totalBytes += Buffer.byteLength(indexSource, 'utf8');
 
   console.log(`[gen:battle-pool] 出題 ${pool.length} 件 / 合計 ${totalBytes.toLocaleString()} バイト`);
+  if (!USE_SYNTHESIZED_FORMATS) {
+    console.log(
+      '[gen:battle-pool] ★誤答を借りて作る形式（語句選択・文字パネル）は停止中★',
+    );
+    console.log(
+      '[gen:battle-pool]   出題は「元データの選択肢をそのまま使う問題」と' +
+        '「カタカナの答えを五十音キーボードで書く問題」だけです。',
+    );
+  }
+  const kanaTotal = Object.values(formatCounts).reduce((s, f) => s + (f.kana || 0), 0);
+  console.log(`[gen:battle-pool] うち五十音キーボード（みんはや方式）: ${kanaTotal} 問`);
   console.log('[gen:battle-pool] 教科別（★対戦時はこのうち1教科だけを読み込む★）:');
   for (const [subject, count, bytes] of perFile) {
     const s = stats[subject] || {};
+    const f = formatCounts[subject] || {};
     console.log(
       `  ${subject.padEnd(20)} ${String(count).padStart(4)}問 ${String(Math.round(bytes / 1024)).padStart(4)}KB  ` +
-        `(4択 ${String(s.choice4 || 0).padStart(3)} / 語句 ${String(s.word || 0).padStart(3)} / パネル ${String(s.panel || 0).padStart(3)})  ` +
+        `(4択 ${String(f.choice4 || 0).padStart(3)} / 2〜3・5〜6択 ${String(f.choice || 0).padStart(3)}` +
+        ` / かな入力 ${String(f.kana || 0).padStart(3)}` +
+        `${f.word || f.panel ? ` / 語句 ${f.word || 0} / パネル ${f.panel || 0}` : ''})  ` +
         `未使用 ${s.skipped || 0}`,
     );
   }

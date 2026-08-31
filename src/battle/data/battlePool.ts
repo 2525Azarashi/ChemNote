@@ -28,16 +28,69 @@ import type { BattleAnswerFormat, BattleQuestion } from '../core/types';
 
 /** 教科ごとの収録数（UIで「この教科は◯問あります」と出すために使う） */
 export const POOL_COUNTS: Readonly<Record<string, number>> = {
-  chemistry_basic: 763,
-  chemistry: 46,
+  chemistry_basic: 159,
+  chemistry: 10,
   english_listening: 146,
-  math: 100,
-  biology_basic: 348,
+  biology_basic: 62,
   english_grammar: 100,
   geography: 25,
 };
 
-const FORMATS: readonly BattleAnswerFormat[] = ['choice4', 'word', 'panel'];
+/**
+ * 教科ごと・回答形式ごとの収録数。
+ *
+ * -------------------------------------------------------------------
+ * ■ ★POOL_COUNTS（総数）だけでは足りない理由★
+ * -------------------------------------------------------------------
+ * 教科ごとのルール（battleRules.ts の formats）は「使う回答形式」を絞る。
+ * 総数だけを見て教科カードを出すと、
+ *
+ *   ・カードには「収録 348 問」と書いてある
+ *   ・でもルールが使う形式の問題は 1 問しか無い
+ *   ・押すと対戦が始められない
+ *
+ * という ★選べるのに対戦できない★ 状態が起こる。
+ * 実際に過去そうなりかけた（生物基礎が該当）。
+ *
+ * 形式別の数をここに持っておけば、画面は問題データ本体（数百KB）を
+ * 読まずに「この教科でいま出せる数」を出せる。
+ */
+export const POOL_FORMAT_COUNTS: Readonly<
+  Record<string, Readonly<Partial<Record<BattleAnswerFormat, number>>>>
+> = {
+  chemistry_basic: { choice4: 72, choice: 58, kana: 29 },
+  chemistry: { choice: 9, kana: 1 },
+  english_listening: { choice4: 146 },
+  biology_basic: { choice4: 1, choice: 21, kana: 40 },
+  english_grammar: { choice4: 100 },
+  geography: { choice4: 23, choice: 2 },
+};
+
+/**
+ * その教科で「指定の形式のうち」何問使えるかを数える。
+ *
+ * ★画面の「収録N問」はこの数を出すこと。★
+ * 総数（POOL_COUNTS）を出すと、上に書いたとおり嘘になる場合がある。
+ */
+export function poolCountOf(
+  subject: string,
+  formats: readonly BattleAnswerFormat[],
+): number {
+  const byFormat = POOL_FORMAT_COUNTS[subject];
+  if (!byFormat) return 0;
+  let total = 0;
+  for (const f of formats) total += byFormat[f] || 0;
+  return total;
+}
+
+/**
+ * 形式番号 → 形式名。
+ *
+ * ★番号は生成器の FORMAT_CODE と同じ並びでなければならない。★
+ * choice が末尾（3）にいるのは、あとから追加したときに
+ * 既存の 0/1/2 を動かさなかったためである。並べ替えてはいけない。
+ */
+const FORMATS: readonly BattleAnswerFormat[] = ['choice4', 'word', 'panel', 'choice', 'kana'];
 
 /**
  * タプルを BattleQuestion に戻す。
@@ -53,8 +106,8 @@ function expand(subject: string, t: readonly unknown[]): BattleQuestion {
     problemId: t[2] as string,
     subQuestionId: t[3] as string,
     // 形式番号が範囲外なら choice4 に寄せる。
-    // 生成データが壊れていた場合でも「画面が真っ白」にはしない
-    // （4択として描画すれば、少なくとも問題文と選択肢は読める）。
+    // 生成ファイルが古い（新しい形式番号を知らない）状態で
+    // 画面だけ新しくなったときに、undefined が入って落ちるのを防ぐ。
     format: FORMATS[t[4] as number] ?? 'choice4',
     prompt: t[5] as string,
     label: t[6] as string,
@@ -74,8 +127,6 @@ async function loadRaw(subject: string): Promise<readonly unknown[][]> {
       return (await import('./pool.chemistry.generated')).POOL;
     case 'english_listening':
       return (await import('./pool.english_listening.generated')).POOL;
-    case 'math':
-      return (await import('./pool.math.generated')).POOL;
     case 'biology_basic':
       return (await import('./pool.biology_basic.generated')).POOL;
     case 'english_grammar':

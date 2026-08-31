@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地理探究 実戦模擬問題 第2回（やや易）</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="toolbar" aria-label="操作">
+  <span class="tb-title">地理探究 実戦模擬 第2回</span>
+  <button id="toggle-answers" type="button">解答・解説を表示</button>
+  <button id="print-page" type="button">PDFとして保存／印刷</button>
+  <a href="index.html">目次へ</a>
+</nav>
+
+<main class="paper">
+
+<h1>地理探究 模擬問題 第2回</h1>
+<p class="exam-meta">
+  <span class="badge lv2">難易度：やや易</span>
+  <span class="badge">解答時間 60分</span>
+  <span class="badge">配点 100点</span>
+  <span class="badge">小問16問</span><br>
+  第1問 世界の農業地域と食料需給（34点）／第2問 人口転換・人口移動と都市問題（33点）／第3問 沿岸都市の地域調査（33点）<br>
+  ※統計値は公表資料をもとに作問上簡略化した教材用の数値である。
+</p>
+
+<!-- ===================== 第1問 ===================== -->
+<h2>第1問　世界の農業地域と食料需給（配点34点）</h2>
+
+<p class="lead">高校生のミナとタクは、「わたしたちの食卓は世界とどうつながっているか」というテーマで探究学習を行った。次の会話文と資料1〜3を読み、後の問い（問1〜問6）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">ミナ：</span>まず、世界の4か国について農業の姿を比べてみました（資料1）。同じ「農業国」と言っても、1人が耕す面積や1haからの収量がまったく違うんですね。</p>
+  <p><span class="spk">タク：</span>ぼくは小麦・米・とうもろこしの生産と貿易を調べました（資料2の上段・下段）。生産量が多い国が輸出も多いとは限らない、というのが最大の発見でした。</p>
+  <p><span class="spk">ミナ：</span>日本の食料自給率（資料3）も見ました。<u>品目によって差が大きい</u>のはなぜでしょう。</p>
+  <p><span class="spk">タク：</span>そして、農業は気候条件に強く縛られます。資料3の下段にある3地点の気候を見ると、それぞれ<span class="box">Ｘ</span>という制約のもとで作物が選ばれているのがわかります。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　4か国の農業関連指標（2020年前後）</figcaption>
+  <table class="data">
+    <thead>
+      <tr>
+        <th class="l">国</th>
+        <th>農林水産業<br>就業人口率<br>（％）</th>
+        <th>農地面積<br>（万ha）</th>
+        <th>農業就業者<br>1人当たり<br>農地（ha）</th>
+        <th>穀物の<br>単位収量<br>（t/ha）</th>
+        <th>農業付加<br>価値額の<br>GDP比（％）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">Ａ</td><td>1.3</td><td>39,600</td><td>135.0</td><td>2.1</td><td>2.3</td></tr>
+      <tr><td class="l">Ｂ</td><td>3.4</td><td>44,000</td><td>28.5</td><td>8.5</td><td>0.9</td></tr>
+      <tr><td class="l">Ｃ</td><td>42.6</td><td>17,900</td><td>0.9</td><td>3.3</td><td>18.3</td></tr>
+      <tr><td class="l">Ｄ</td><td>3.2</td><td>440</td><td>2.0</td><td>6.0</td><td>1.0</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Ａ〜Ｄは、アメリカ合衆国・インド・オーストラリア・日本のいずれかである。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　小麦の生産量・輸出量の上位国（2020年前後）と主な穀物の貿易率</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th>順位</th><th class="l">生産量（万t）</th><th class="l">輸出量（万t）</th><th class="l">輸入量（万t）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td class="l">中国　13,400</td><td class="l">ロシア　3,700</td><td class="l">インドネシア　1,050</td></tr>
+      <tr><td>2</td><td class="l">インド　10,750</td><td class="l">アメリカ合衆国　2,600</td><td class="l">エジプト　1,300</td></tr>
+      <tr><td>3</td><td class="l">ロシア　8,550</td><td class="l">カナダ　2,600</td><td class="l">トルコ　980</td></tr>
+      <tr><td>4</td><td class="l">アメリカ合衆国　4,950</td><td class="l">フランス　1,950</td><td class="l">中国　950</td></tr>
+      <tr><td>5</td><td class="l">カナダ　3,500</td><td class="l">ウクライナ　1,800</td><td class="l">アルジェリア　700</td></tr>
+      <tr><td>6</td><td class="l">フランス　3,050</td><td class="l">オーストラリア　1,650</td><td class="l">日本　540</td></tr>
+    </tbody>
+  </table>
+  <p class="src" style="margin-top:10px"><strong>［下段］3つの穀物の世界の生産量・貿易率・主な用途</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th class="l">穀物</th><th>世界生産量<br>（億t）</th><th>貿易率<br>（％）</th><th class="l">主な用途と特徴</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">小麦</td><td>7.6</td><td>25</td><td class="l">主食用（製粉）が中心。冷涼・半乾燥地でも栽培可能。</td></tr>
+      <tr><td class="l">米</td><td>7.8</td><td>9</td><td class="l">主食用が中心。生産国内での消費が多い。</td></tr>
+      <tr><td class="l">とうもろこし</td><td>11.6</td><td>16</td><td class="l">飼料用が約6割。ほかに工業原料・バイオ燃料。</td></tr>
+    </tbody>
+  </table>
+  <p class="src">貿易率は、世界の輸出量÷世界の生産量×100。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　日本の品目別食料自給率の推移（％、重量ベース）と3地点の気候</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：折れ線グラフ4系列（グレースケール／試験冊子体裁）</p>
+    <pre>A black-and-white line chart for a Japanese university entrance examination
+booklet, showing the change in Japan's food self-sufficiency ratio by item.
+Landscape orientation, about 2.2:1, flat vector style, white background.
+
+X axis: six ticks labelled 1965 / 1980 / 1995 / 2005 / 2015 / 2022,
+spaced proportionally to the years (the gaps are NOT equal).
+Y axis: 0 to 100, gridlines and labels at 0, 20, 40, 60, 80, 100.
+Y axis title written vertically on the left: 自給率（％）
+
+Plot exactly four series, distinguished ONLY by line style (no colour),
+each labelled in Japanese with a single bold hiragana letter placed next to
+the line, NOT with the item name:
+  ａ - thick solid line:        95, 100, 104,  95,  98,  99
+  ｂ - long-dashed line:       100,  97,  85,  79,  80,  79
+  ｃ - fine dotted line:        90,  81,  57,  54,  54,  53
+  ｄ - dash-dot line:           28,  10,   7,  14,  15,  15
+Values are for 1965 / 1980 / 1995 / 2005 / 2015 / 2022 in that order.
+Note that ａ exceeds 100 in 1995, so the plot area must extend slightly
+above the 100 gridline.
+
+A note in small type under the axis reads:
+ａ〜ｄは、小麦・米・肉類・野菜のいずれか。肉類は飼料自給率を考慮しない値。
+
+Thin black strokes, light gray gridlines, sans-serif Japanese labels,
+no legend box, no title, no colour, printable at 300 dpi.</pre>
+    <p class="zu-note"><strong>ａ〜ｄは品目名を出さないこと</strong>（品目の同定が問4）。ａが1995年に104で100を超える点、ｃが1965→1995年に90→57と大きく下げてその後横ばいになる点、ｄが1995年に7まで下がってから15に持ち直す点は、いずれも設問の判定に直結します。</p>
+  </div>
+
+  <p class="src" style="margin-top:12px"><strong>［下段］3地点（Ｅ〜Ｇ）の気候と主な農業</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th class="l">地点</th><th>最暖月<br>平均気温<br>（℃）</th><th>最寒月<br>平均気温<br>（℃）</th><th>年降水量<br>（mm）</th><th>降水の<br>季節的集中</th><th class="l">主にみられる農業</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">Ｅ</td><td>26.5</td><td>−12.0</td><td>480</td><td>夏に集中</td><td class="l">春小麦の大規模栽培</td></tr>
+      <tr><td class="l">Ｆ</td><td>28.5</td><td>25.0</td><td>2,300</td><td>年間を通じて多い</td><td class="l">油やしのプランテーション</td></tr>
+      <tr><td class="l">Ｇ</td><td>24.0</td><td>8.5</td><td>620</td><td>冬に集中</td><td class="l">オリーブ・ぶどうの栽培</td></tr>
+    </tbody>
+  </table>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1のＡ〜Ｄと国名との組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">1</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ａ</th><th class="l">Ｂ</th><th class="l">Ｃ</th><th class="l">Ｄ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">オーストラリア</td><td class="l">アメリカ合衆国</td><td class="l">インド</td><td class="l">日本</td></tr>
+      <tr><td>②</td><td class="l">オーストラリア</td><td class="l">インド</td><td class="l">アメリカ合衆国</td><td class="l">日本</td></tr>
+      <tr><td>③</td><td class="l">アメリカ合衆国</td><td class="l">オーストラリア</td><td class="l">インド</td><td class="l">日本</td></tr>
+      <tr><td>④</td><td class="l">アメリカ合衆国</td><td class="l">日本</td><td class="l">インド</td><td class="l">オーストラリア</td></tr>
+      <tr><td>⑤</td><td class="l">インド</td><td class="l">アメリカ合衆国</td><td class="l">オーストラリア</td><td class="l">日本</td></tr>
+      <tr><td>⑥</td><td class="l">オーストラリア</td><td class="l">アメリカ合衆国</td><td class="l">日本</td><td class="l">インド</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2（上段・下段）について述べた次の文Ｋ〜Ｍの正誤の組合せとして最も適当なものを、後の①〜⑧のうちから一つ選べ。<span class="mark">2</span></p>
+  <div class="memo">
+  <ul>
+    <li><strong>Ｋ</strong>　上段に示された輸出量上位6か国の輸出量の合計は、下段から求められる小麦の世界の輸出総量の7割を超えている。</li>
+    <li><strong>Ｌ</strong>　生産量第1位の国の生産量は、下段から求められる小麦の世界の輸出総量を上回っている。</li>
+    <li><strong>Ｍ</strong>　輸出量第1位の国は、自国の生産量の4割を超える量を輸出している。</li>
+  </ul>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th>Ｋ</th><th>Ｌ</th><th>Ｍ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td>正</td><td>正</td><td>正</td></tr>
+      <tr><td>②</td><td>正</td><td>正</td><td>誤</td></tr>
+      <tr><td>③</td><td>正</td><td>誤</td><td>正</td></tr>
+      <tr><td>④</td><td>正</td><td>誤</td><td>誤</td></tr>
+      <tr><td>⑤</td><td>誤</td><td>正</td><td>正</td></tr>
+      <tr><td>⑥</td><td>誤</td><td>正</td><td>誤</td></tr>
+      <tr><td>⑦</td><td>誤</td><td>誤</td><td>正</td></tr>
+      <tr><td>⑧</td><td>誤</td><td>誤</td><td>誤</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2の上段と下段を関連づけた説明として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">3</span></p>
+  <ol class="choices">
+    <li>①　米は世界生産量が小麦とほぼ同じであるが、貿易率が小麦より低い。これは米が生産国内で主食として消費される割合が高いことによる。</li>
+    <li>②　とうもろこしは3つの穀物のうち世界生産量が最大で貿易率も最大である。これは飼料としての国際需要が大きいことによる。</li>
+    <li>③　小麦は貿易率が3つの穀物のうち最も高い。これは、栽培に高温多湿な気候が必要で、生産できる国が少数に限られることによる。</li>
+    <li>④　中国は小麦の生産量が世界第1位であるため、小麦の輸入国にはなっていない。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料3のグラフのｃに該当する品目と、その品目について述べた次の文ｖ・ｗのうち適切なものとの組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">4</span></p>
+  <div class="memo">
+  <ul>
+    <li><strong>ｖ</strong>　この品目の自給率は1965年から2022年にかけて減少したが、その減少幅（ポイント）は、同じ期間に減少した他の品目の中で最も大きい。</li>
+    <li><strong>ｗ</strong>　この品目の自給率は、輸入された飼料によって生産された分を国内生産から除いて計算すると、グラフに示された値を大きく下回る。</li>
+  </ul>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th class="l">ｃに該当する品目</th><th class="l">適切な文</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">野菜</td><td class="l">ｖのみ</td></tr>
+      <tr><td>②</td><td class="l">野菜</td><td class="l">ｖとｗの両方</td></tr>
+      <tr><td>③</td><td class="l">肉類</td><td class="l">ｖのみ</td></tr>
+      <tr><td>④</td><td class="l">肉類</td><td class="l">ｗのみ</td></tr>
+      <tr><td>⑤</td><td class="l">肉類</td><td class="l">ｖとｗの両方</td></tr>
+      <tr><td>⑥</td><td class="l">小麦</td><td class="l">ｗのみ</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料3の下段のＥ〜Ｇに該当する地域の組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">5</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｅ</th><th class="l">Ｆ</th><th class="l">Ｇ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">カナダ南部の内陸</td><td class="l">マレー半島</td><td class="l">イタリア南部</td></tr>
+      <tr><td>②</td><td class="l">カナダ南部の内陸</td><td class="l">イタリア南部</td><td class="l">マレー半島</td></tr>
+      <tr><td>③</td><td class="l">マレー半島</td><td class="l">カナダ南部の内陸</td><td class="l">イタリア南部</td></tr>
+      <tr><td>④</td><td class="l">イタリア南部</td><td class="l">マレー半島</td><td class="l">カナダ南部の内陸</td></tr>
+      <tr><td>⑤</td><td class="l">イギリス南部</td><td class="l">マレー半島</td><td class="l">イタリア南部</td></tr>
+      <tr><td>⑥</td><td class="l">カナダ南部の内陸</td><td class="l">マレー半島</td><td class="l">イギリス南部</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問6　会話文中の空欄<span class="box">Ｘ</span>に入る文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">6</span></p>
+  <ol class="choices">
+    <li>①　いずれの地点も年降水量が1,000mmを超えており、水分条件よりも気温条件が作物選択を決めている</li>
+    <li>②　Ｅでは冬の低温、Ｇでは夏の乾燥がそれぞれ制約となり、その季節を避けて生育する作物や乾燥に強い樹木作物が選ばれている</li>
+    <li>③　いずれの地点も夏に降水が集中するため、夏の高温多雨を利用する作物が選ばれている</li>
+    <li>④　Ｆでは気温の年較差が大きいため、生育期間の短い作物に限られている</li>
+  </ol>
+</div>
+
+<!-- ===================== 第2問 ===================== -->
+<h2>第2問　人口転換・人口移動と都市問題（配点33点）</h2>
+
+<p class="lead">次の資料1〜3は、「人口が変わると都市はどう変わるか」というテーマの探究学習で用いられたものである。これらを読み、後の問い（問1〜問5）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">レン：</span>4つの国・地域の人口ピラミッド（資料1）を作りました。形が全然違うので、社会の課題も違うはずです。</p>
+  <p><span class="spk">サキ：</span>出生率と死亡率の長期変化（資料2）も見ました。<u>両方が下がる順序</u>に注目すると、人口が急増する時期がある理由が説明できますね。</p>
+  <p><span class="spk">レン：</span>それと、都市人口率と1人当たりGNI（資料2の下段）、それに大都市圏の人口移動とその背景のメモ（資料3）もつくりました。日本の場合、「都市に人が集まる」時代と「郊外から都心に戻る」時代があるみたいです。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　4つの国・地域の人口ピラミッド（模式図）</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：人口ピラミッド4枚並置（グレースケール／試験冊子体裁）</p>
+    <pre>Four population pyramids side by side in one horizontal row, black-and-white,
+flat vector style, for a Japanese university entrance examination booklet.
+
+Each pyramid: a vertical centre axis, horizontal bars for MALE on the LEFT and
+FEMALE on the RIGHT, 10 age classes stacked from bottom (0-4 years) to top
+(45 years and over). Bars are light gray with thin black outlines.
+Under each pyramid write 男 on the left end and 女 on the right end of the
+base line, a bold katakana label above it, and a small caption below it.
+
+Pyramid 1, labelled ア, caption 老年人口率 3％:
+  A classic wide-based PYRAMID (Mt. Fuji) shape - the bottom bar is by far the
+  widest and each bar above is clearly narrower, tapering to a very thin top.
+  Nearly symmetric left and right.
+
+Pyramid 2, labelled イ, caption 老年人口率 29％:
+  A POT / URN shape - the bottom three bars are the NARROWEST, the widest bars
+  are in the upper-middle (the 35-44 range), and the top bars stay fairly wide.
+  The female (right) side is visibly wider than the male side in the top three
+  bars.
+
+Pyramid 3, labelled ウ, caption 老年人口率 17％:
+  A BELL shape - the lower six bars are all of similar, moderate width, then the
+  top four taper gradually. Nearly symmetric.
+
+Pyramid 4, labelled エ, caption 老年人口率 1.5％:
+  A STAR / asymmetric shape - the MALE (left) side bulges enormously in the
+  three working-age classes in the middle (roughly 20-34), reaching about three
+  times the width of the female bars at the same ages. The bottom bars and the
+  top bars are all narrow. This male bulge is the defining feature.
+
+A note in small type at the bottom reads:
+縦軸は年齢（下が0〜4歳、上が45歳以上を10階級で示す）、横軸は各性・年齢階級の人口の割合。
+
+No colour, no country names anywhere, sans-serif Japanese labels,
+white background, printable at 300 dpi.</pre>
+    <p class="zu-note"><strong>エの「男性側だけが働き盛りで極端に膨らむ」形</strong>が、外国人労働力の流入を示す決定的な手がかりです（問1⑥・問3の根拠）。イは<strong>底辺が最も狭い</strong>点、ウは<strong>下6階級がほぼ等幅</strong>である点を必ず守ってください。国名は絶対に図中に書かないこと。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　ある国の出生率・死亡率と人口増加率の推移と、5か国の都市人口率</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th class="l">時期</th><th>Ⅰ期</th><th>Ⅱ期</th><th>Ⅲ期</th><th>Ⅳ期</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">出生率（‰）</td><td>42</td><td>41</td><td>26</td><td>9</td></tr>
+      <tr><td class="l">死亡率（‰）</td><td>39</td><td>17</td><td>9</td><td>11</td></tr>
+      <tr><td class="l">自然増加率（‰）</td><td>3</td><td>24</td><td>17</td><td>−2</td></tr>
+      <tr><td class="l">合計特殊出生率</td><td>6.2</td><td>5.8</td><td>2.9</td><td>1.3</td></tr>
+    </tbody>
+  </table>
+  <p class="src">‰（パーミル）は人口1,000人当たりの値。Ⅰ期→Ⅳ期は時代順である。</p>
+
+  <p class="src" style="margin-top:10px"><strong>［下段］5か国の都市人口率と1人当たりGNI</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th class="l">国</th><th>都市人口率<br>（％）</th><th>1人当たりGNI<br>（ドル）</th><th>最大都市の人口が<br>全人口に占める割合（％）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">アルゼンチン</td><td>92</td><td>10,600</td><td>34</td></tr>
+      <tr><td class="l">ドイツ</td><td>77</td><td>51,000</td><td>4</td></tr>
+      <tr><td class="l">エチオピア</td><td>22</td><td>940</td><td>4</td></tr>
+      <tr><td class="l">韓国</td><td>81</td><td>33,000</td><td>19</td></tr>
+      <tr><td class="l">ナイジェリア</td><td>52</td><td>2,100</td><td>7</td></tr>
+    </tbody>
+  </table>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　東京大都市圏の圏域別人口増減率（％、5年間）と背景メモ</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th class="l">圏域</th><th>1970〜75年</th><th>1990〜95年</th><th>2005〜10年</th><th>2015〜20年</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">都心3区</td><td>−13.5</td><td>−9.8</td><td>＋12.5</td><td>＋14.2</td></tr>
+      <tr><td class="l">23区（都心3区を除く）</td><td>−1.2</td><td>−1.5</td><td>＋4.6</td><td>＋5.1</td></tr>
+      <tr><td class="l">30〜50km圏</td><td>＋18.6</td><td>＋4.2</td><td>＋1.0</td><td>＋0.2</td></tr>
+      <tr><td class="l">50〜70km圏</td><td>＋12.4</td><td>＋5.8</td><td>−0.5</td><td>−2.4</td></tr>
+    </tbody>
+  </table>
+  <div class="memo" style="margin-top:10px">
+    <h5>［下段］背景についてのメモ（生徒作成）</h5>
+    <ul>
+      <li>1960〜70年代：地方から三大都市圏への大規模な人口移動。都心の地価上昇と住宅不足により、通勤圏が急速に外側へ拡大した。</li>
+      <li>1990年代後半以降：工場や倉庫の跡地、埋立地に高層集合住宅が建設された。都心3区の住宅供給が増加。</li>
+      <li>2020年前後：一部でテレワークの普及により郊外・地方への移住も注目されたが、圏域全体の傾向を変えるほどではない。</li>
+    </ul>
+  </div>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1のア〜エのうち、資料2の上段のⅡ期の状況にある国・地域の人口ピラミッドとして最も適当なものと、その形が示す社会的課題との組合せを、次の①〜⑥のうちから一つ選べ。<span class="mark">7</span></p>
+  <table class="data">
+    <thead><tr><th></th><th>ピラミッド</th><th class="l">課題</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td>ア</td><td class="l">年少人口の急増により、学校や保健医療の整備が追いつかない。</td></tr>
+      <tr><td>②</td><td>ア</td><td class="l">労働力人口の減少により、社会保障の担い手が不足する。</td></tr>
+      <tr><td>③</td><td>イ</td><td class="l">年少人口の急増により、学校や保健医療の整備が追いつかない。</td></tr>
+      <tr><td>④</td><td>イ</td><td class="l">労働力人口の減少により、社会保障の担い手が不足する。</td></tr>
+      <tr><td>⑤</td><td>ウ</td><td class="l">若年層の流出により、地域の産業の担い手が不足する。</td></tr>
+      <tr><td>⑥</td><td>エ</td><td class="l">労働力人口の減少により、社会保障の担い手が不足する。</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料1のエのような人口ピラミッドが現れる地域の説明として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">8</span></p>
+  <ol class="choices">
+    <li>①　高齢化が進んだ農村で、若年層が都市へ流出した地域。</li>
+    <li>②　建設業などに従事する外国人労働者が多数流入した産油国。</li>
+    <li>③　医療水準が低く、乳幼児死亡率が極端に高い地域。</li>
+    <li>④　大学が集中し、進学のために若年層が集まる学園都市。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2の上段について述べた文として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">9</span></p>
+  <ol class="choices">
+    <li>①　Ⅰ期からⅡ期にかけて自然増加率が大きく高まったのは、出生率が高い水準を保ったまま死亡率が急速に低下したためである。</li>
+    <li>②　Ⅱ期からⅢ期にかけての出生率の低下には、乳幼児死亡率の低下や女性の教育水準の向上、都市化などが関係している。</li>
+    <li>③　Ⅳ期では出生率が死亡率を下回っており、国際的な人口移動がなければ総人口は減少する。</li>
+    <li>④　Ⅳ期の死亡率がⅢ期より高いのは、医療水準が低下し平均寿命が短くなったためである。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料2の下段から読み取れることとして最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">10</span></p>
+  <ol class="choices">
+    <li>①　1人当たりGNIが高い国ほど都市人口率が高く、両者はきれいな比例関係にある。</li>
+    <li>②　1人当たりGNIが最も高いドイツよりも都市人口率が高い国があり、都市人口率の高さは必ずしも経済水準を示さない。</li>
+    <li>③　都市人口率が50％を超える国では、いずれも最大都市に全人口の2割以上が集中している。</li>
+    <li>④　最大都市への人口集中の程度は、都市人口率が高い国ほど小さい。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料3（表と下段のメモ）から読み取れる東京大都市圏の変化について述べた次の文中の空欄<span class="box">Ｙ</span>・<span class="box">Ｚ</span>に入る語句の組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">11</span></p>
+  <p style="margin:8px 0">1970〜75年には都心3区の人口が減少する一方、30〜50km圏が大幅に増加しており、<span class="box">Ｙ</span>が進んでいたことがわかる。これに対し2005年以降は都心3区の増加率が最も高く、<span class="box">Ｚ</span>と呼ばれる現象が生じている。</p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｙ</th><th class="l">Ｚ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">ドーナツ化現象</td><td class="l">都心回帰</td></tr>
+      <tr><td>②</td><td class="l">ドーナツ化現象</td><td class="l">スプロール現象</td></tr>
+      <tr><td>③</td><td class="l">都心回帰</td><td class="l">ドーナツ化現象</td></tr>
+      <tr><td>④</td><td class="l">インナーシティ問題</td><td class="l">都心回帰</td></tr>
+      <tr><td>⑤</td><td class="l">ドーナツ化現象</td><td class="l">プライメートシティ化</td></tr>
+      <tr><td>⑥</td><td class="l">スプロール現象</td><td class="l">インナーシティ問題</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===================== 第3問 ===================== -->
+<h2>第3問　沿岸都市の地域調査（配点33点）</h2>
+
+<p class="lead">次の資料は、太平洋に面するS市について高校生が地域調査を行った際に用いたものである。これらを読み、後の問い（問1〜問5）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">アオイ：</span>S市は、リアス海岸の湾奥に発達した港町です。地形図（資料1）を見ると、平地が狭く、市街地が谷筋に沿って細長く伸びています。</p>
+  <p><span class="spk">ケイタ：</span>産業構造の変化（資料2の上段）を調べると、水産業からの転換が読み取れます。観光客の統計（同じ資料の下段）と、津波の想定（資料3）も市の資料から集めました。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　S市中心部の地形図（模式図）</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：地形図風の模式図（リアス海岸の湾奥／グレースケール・試験冊子体裁）</p>
+    <pre>A black-and-white schematic topographic map of a small Japanese port town at
+the head of a ria coast inlet, in the flat vector style of a university
+entrance examination booklet. Landscape orientation, about 3:2.
+
+Composition:
+- The SEA occupies the upper part of the frame as a deep V-shaped inlet that
+  narrows toward the LEFT-CENTRE (the head of the bay) and opens toward the
+  RIGHT. Label the inlet Ｓ湾 in the upper left and 外洋（太平洋） in the
+  upper right. Very light gray tone for the water, thin outline for the
+  coastline.
+- Three smooth CONTOUR LINES run roughly parallel to the coast in the lower
+  half, labelled from the top 20m / 50m / 100m. A note reads
+  等高線は主曲線30m相当で模式的に示す。
+- Label 丘陵地 twice, in the lower left and the lower right.
+- A narrow VALLEY-FLOOR BUILT-UP AREA drawn as a long thin dashed-outline
+  strip running from the bay head down toward the lower centre, labelled 市街地.
+  It must look clearly elongated and narrow.
+- Two short thick breakwater lines at the bay head, annotated 漁港（防波堤）.
+- A small rectangle on the seaward (right) side of the bay labelled
+  埋立地・工業用地.
+- A RAILWAY drawn as a thin line with tick marks curving from the left across
+  the middle to the right, with a small white square station symbol labelled Ｓ駅.
+- A thick DASHED road running from the lower centre to the right across the
+  hills, labelled 高規格道路（2015年開通）.
+- Four white circles with bold outlines labelled ア イ ウ エ, placed:
+   ア = at the bay head, in the lowest ground next to the fishing port
+   イ = in the middle of the valley-floor built-up strip
+   ウ = on the hills to the right, next to the hospital symbol
+   エ = on the hillside to the left, above the 20 m contour
+- A triangle symbol labelled 小学校（避難所）, on the upper part of the valley
+  floor, and a square symbol labelled 市民病院（2018年移転）, on the hills at
+  the right, beside ウ.
+- A north arrow (N) in the upper right and a 1 km scale bar in the lower right.
+
+No colour, thin black strokes, sans-serif Japanese labels, white background,
+printable at 300 dpi.</pre>
+    <p class="zu-note"><strong>「湾奥が狭く、平地が谷筋に細長い」形と、ア〜エの高さの順（ア＝最低地／イ＝谷底中腹／ウ・エ＝丘陵）</strong>が問1・問4の根拠です。市民病院を必ず丘陵側（ウの隣）に、Ｓ駅を谷底の低い側に置いてください。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　S市の産業別就業者数（人）と観光入込客数</figcaption>
+  <table class="data">
+    <thead><tr><th class="l">産業</th><th>1980年</th><th>2000年</th><th>2020年</th></tr></thead>
+    <tbody>
+      <tr><td class="l">漁業・養殖業</td><td>3,600</td><td>1,700</td><td>620</td></tr>
+      <tr><td class="l">水産加工業</td><td>2,900</td><td>2,100</td><td>1,050</td></tr>
+      <tr><td class="l">その他の製造業</td><td>1,800</td><td>2,300</td><td>1,900</td></tr>
+      <tr><td class="l">宿泊・飲食サービス業</td><td>900</td><td>1,400</td><td>1,780</td></tr>
+      <tr><td class="l">医療・福祉</td><td>700</td><td>1,600</td><td>2,650</td></tr>
+      <tr><td class="l">その他</td><td>6,100</td><td>7,400</td><td>6,000</td></tr>
+      <tr><td class="l"><strong>合計</strong></td><td><strong>16,000</strong></td><td><strong>16,500</strong></td><td><strong>14,000</strong></td></tr>
+    </tbody>
+  </table>
+  <p class="src" style="margin-top:10px"><strong>［下段］S市の観光入込客数（万人）と宿泊者の内訳</strong></p>
+  <table class="data">
+    <thead><tr><th class="l">項目</th><th>2010年</th><th>2015年</th><th>2019年</th><th>2021年</th></tr></thead>
+    <tbody>
+      <tr><td class="l">観光入込客数（万人）</td><td>62</td><td>78</td><td>105</td><td>41</td></tr>
+      <tr><td class="l">うち宿泊客数（万人）</td><td>21</td><td>24</td><td>32</td><td>11</td></tr>
+      <tr><td class="l">うち外国人宿泊客数（万人）</td><td>0.8</td><td>2.4</td><td>7.5</td><td>0.1</td></tr>
+    </tbody>
+  </table>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　S市の津波浸水想定（市公表資料をもとに作成）</figcaption>
+  <table class="data">
+    <thead><tr><th class="l">区域</th><th>標高の目安<br>（m）</th><th>想定浸水深<br>（m）</th><th class="l">主な土地利用・施設</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">湾奥の低地（漁港周辺）</td><td>0〜3</td><td>8〜12</td><td class="l">漁港・水産加工場・住宅</td></tr>
+      <tr><td class="l">谷底の市街地（下部）</td><td>3〜10</td><td>3〜8</td><td class="l">商店街・住宅・Ｓ駅</td></tr>
+      <tr><td class="l">谷底の市街地（上部）</td><td>10〜20</td><td>0〜2</td><td class="l">住宅・小学校</td></tr>
+      <tr><td class="l">丘陵地</td><td>20以上</td><td>浸水なし</td><td class="l">住宅・市民病院・高規格道路</td></tr>
+    </tbody>
+  </table>
+  <p class="src">湾の形状により、外洋よりも湾奥で波高が大きくなると想定されている。</p>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1について述べた文として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">12</span></p>
+  <ol class="choices">
+    <li>①　S湾は、起伏の大きい山地が沈水してできた入り江であり、湾内は波が穏やかで水深が深いため、漁港や養殖の適地となっている。</li>
+    <li>②　市街地は平地が狭いため谷筋に沿って細長く伸びており、標高の高い丘陵地へも住宅が広がっている。</li>
+    <li>③　埋立地は湾の入口側に造成されており、地形の制約から用地を確保しにくいことへの対応と考えられる。</li>
+    <li>④　S湾は、氷河の侵食を受けた谷が沈水してできた入り江であり、湾奥では大きな三角州が発達している。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2の上段（産業別就業者数）から読み取れることとして最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">13</span></p>
+  <ol class="choices">
+    <li>①　1980年から2020年にかけて就業者数の減少数が最も大きい産業は、水産加工業である。</li>
+    <li>②　2020年の就業者数が1980年の2倍以上になっている産業は、医療・福祉と宿泊・飲食サービス業の2つである。</li>
+    <li>③　1980年から2020年にかけて、漁業・養殖業と水産加工業の合計が総就業者数に占める割合は、40％台から10％台へ低下した。</li>
+    <li>④　2000年から2020年にかけて、すべての産業で就業者数が減少している。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2の下段（観光入込客数）から読み取れることとして最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">14</span></p>
+  <ol class="choices">
+    <li>①　2010年から2019年にかけて、宿泊客数に占める外国人宿泊客の割合は約4％から約12％へ上昇した。</li>
+    <li>②　2021年に観光入込客数が大きく減少したのは、宿泊施設が減少したためである。</li>
+    <li>③　2019年の外国人宿泊客数は2010年の約9倍であり、観光入込客数全体の伸び（約1.7倍）を大きく上回っている。</li>
+    <li>④　2010年から2019年にかけて、観光入込客数に占める宿泊客の割合は一貫して上昇している。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料1・資料3をふまえた防災上の判断として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">15</span></p>
+  <ol class="choices">
+    <li>①　地点アは想定浸水深が最も大きい区域にあたるため、水産加工場では従業員が短時間で丘陵地側へ避難できる経路と、複数の避難先の確保が必要である。</li>
+    <li>②　地点イは標高が10mを超えるため、津波の到達は想定されておらず、避難の必要はない。</li>
+    <li>③　地点ウの市民病院は丘陵地にあるため、津波の際にも患者や職員の避難は不要であり、平常時と同じ体制で診療を続けられる。</li>
+    <li>④　高規格道路は丘陵地を通るため、災害時の輸送路として期待できるが、S駅は浸水想定区域の外にあるので鉄道による輸送も維持される。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　S市の今後についての次の会話文中の空欄<span class="box">Ｐ</span>・<span class="box">Ｑ</span>に入る語句の組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">16</span></p>
+  <div class="dialogue">
+    <p><span class="spk">アオイ：</span>資料2の上段で医療・福祉の就業者が最も多くなっているのは、<span class="box">Ｐ</span>を反映していると考えられます。</p>
+    <p><span class="spk">ケイタ：</span>観光に力を入れるとしても、資料2下段の2021年の値を見ると<span class="box">Ｑ</span>という課題があるね。特定の客層に頼りすぎない工夫が必要だと思う。</p>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｐ</th><th class="l">Ｑ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">人口の高齢化の進行</td><td class="l">外国人宿泊客が特に大きく減少しており、国際的な移動の制約に弱い</td></tr>
+      <tr><td>②</td><td class="l">人口の高齢化の進行</td><td class="l">日帰り客のみが減少し、宿泊客は影響を受けていない</td></tr>
+      <tr><td>③</td><td class="l">若年層の流入の増加</td><td class="l">外国人宿泊客が特に大きく減少しており、国際的な移動の制約に弱い</td></tr>
+      <tr><td>④</td><td class="l">若年層の流入の増加</td><td class="l">宿泊施設の収容力が不足し、客を受け入れられない</td></tr>
+      <tr><td>⑤</td><td class="l">水産業の生産量の増加</td><td class="l">外国人宿泊客が特に大きく減少しており、国際的な移動の制約に弱い</td></tr>
+      <tr><td>⑥</td><td class="l">水産業の生産量の増加</td><td class="l">日帰り客のみが減少し、宿泊客は影響を受けていない</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===================== 解答と解説 ===================== -->
+<section class="answers">
+<h1>解答と解説（第2回）</h1>
+
+<table class="ans-table">
+  <thead><tr><th>大問</th><th>問</th><th>解答番号</th><th>正解</th><th>配点</th><th>想定正答率</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="6">第1問</td><td>問1</td><td>1</td><td class="correct">①</td><td>6</td><td>70%</td></tr>
+    <tr><td>問2</td><td>2</td><td class="correct">③</td><td>6</td><td>34%</td></tr>
+    <tr><td>問3</td><td>3</td><td class="correct">①</td><td>6</td><td>72%</td></tr>
+    <tr><td>問4</td><td>4</td><td class="correct">⑤</td><td>5</td><td>46%</td></tr>
+    <tr><td>問5</td><td>5</td><td class="correct">①</td><td>5</td><td>78%</td></tr>
+    <tr><td>問6</td><td>6</td><td class="correct">②</td><td>6</td><td>68%</td></tr>
+    <tr><td rowspan="5">第2問</td><td>問1</td><td>7</td><td class="correct">①</td><td>7</td><td>66%</td></tr>
+    <tr><td>問2</td><td>8</td><td class="correct">②</td><td>7</td><td>60%</td></tr>
+    <tr><td>問3</td><td>9</td><td class="correct">④</td><td>6</td><td>64%</td></tr>
+    <tr><td>問4</td><td>10</td><td class="correct">②</td><td>6</td><td>70%</td></tr>
+    <tr><td>問5</td><td>11</td><td class="correct">①</td><td>7</td><td>80%</td></tr>
+    <tr><td rowspan="5">第3問</td><td>問1</td><td>12</td><td class="correct">④</td><td>7</td><td>78%</td></tr>
+    <tr><td>問2</td><td>13</td><td class="correct">③</td><td>7</td><td>58%</td></tr>
+    <tr><td>問3</td><td>14</td><td class="correct">③</td><td>6</td><td>62%</td></tr>
+    <tr><td>問4</td><td>15</td><td class="correct">①</td><td>6</td><td>74%</td></tr>
+    <tr><td>問5</td><td>16</td><td class="correct">①</td><td>7</td><td>82%</td></tr>
+  </tbody>
+</table>
+
+<div class="ans-detail">
+
+<h2>第1問の解説</h2>
+
+<h3>問1　正解 ①</h3>
+<p class="exp">4つの列のうち、<strong>まず極端な値をもつ行から確定する</strong>のが最短経路である。</p>
+<ul class="exp-list">
+  <li><strong>Ａ＝オーストラリア</strong>：農業就業者1人当たり農地135.0haは他を大きく引き離す。国土の大部分が乾燥地で、粗放的な牧羊・牧牛と企業的穀物農業が広がるため、1人が扱う面積が極端に大きい。同時に穀物単位収量2.1t/haは4か国中<strong>最低</strong>で、これは技術水準が低いのではなく<strong>降水量が乏しく粗放的だから</strong>である。</li>
+  <li><strong>Ｂ＝アメリカ合衆国</strong>：農地44,000万haで最大、単位収量8.5t/haで最高（とうもろこしの高収量が寄与）、就業人口率3.4％。「大規模かつ集約的（資本集約的）」という特徴が現れている。</li>
+  <li><strong>Ｃ＝インド</strong>：農林水産業就業人口率42.6％、農業のGDP比18.3％、1人当たり農地0.9ha。<strong>就業者は多いが1人当たりの農地と付加価値が小さい</strong>という発展途上国型。</li>
+  <li><strong>Ｄ＝日本</strong>：農地440万haで最小、1人当たり2.0ha、単位収量6.0t/ha。<strong>狭い農地に労働と資本を投入する集約的農業</strong>。</li>
+</ul>
+<div class="tip"><strong>誤答のねらい：</strong>③はＡとＢを入れ替えたもの。「アメリカ＝大規模だから1人当たり農地も最大」と考えると引っかかる。<strong>大規模＝1経営体の規模、粗放＝単位面積当たりの投入量が少ない</strong>という区別が要点で、1人当たり135haという値は「乾燥した放牧地」でなければ成立しない。②⑤はＣとＤ（または他）の入れ替えで、就業人口率42.6％を日本やオーストラリアに当てることになり明らかに不適。</div>
+
+<h3>問2　正解 ③</h3>
+<p class="exp">本問は<strong>資料2下段の「率」から絶対量を復元し、それを上段の実数と突き合わせる</strong>という二段階の作業を要求する。まず共通の土台となる数値を作るのが定石である。<br>下段の注記より、貿易率＝世界の輸出量÷世界の生産量×100。小麦は生産量7.6億t＝76,000万t、貿易率25％なので、<strong>小麦の世界の輸出総量＝76,000×0.25＝19,000万t</strong>。この1つの値を出せば、Ｋ・Ｌ・Ｍはすべて機械的に判定できる。</p>
+<ul class="exp-list">
+  <li><strong>Ｋ＝正</strong>：輸出量上位6か国の合計は 3,700＋2,600＋2,600＋1,950＋1,800＋1,650＝<strong>14,300万t</strong>。14,300÷19,000＝<strong>約75％</strong>で7割を超える。上位6か国だけで世界の小麦貿易の4分の3を占めるという、<strong>小麦の輸出が少数の国に強く集中している</strong>事実を確認させる文である。ロシア・ウクライナの2か国で約29％を占めることは、2022年以降の穀物価格高騰の背景としても重要。</li>
+  <li><strong>Ｌ＝誤</strong>：生産量第1位は中国の<strong>13,400万t</strong>。これは世界の輸出総量<strong>19,000万t</strong>を<strong>下回る</strong>ので「上回っている」は誤り。ここは「1国の生産量」と「世界全体の輸出量」という<strong>集計の範囲が異なる量</strong>を比べさせる設計になっている。なお「世界最大の生産国だから世界の貿易量より多いはずだ」という直感は、貿易率が25％しかない（＝生産の4分の3は生産国内で消費される）ことを踏まえれば成り立たない。ただし中国1国の生産量が世界貿易量の約7割に相当することは、<strong>中国の需給が少し崩れるだけで国際市場が大きく動く</strong>ことを意味する。</li>
+  <li><strong>Ｍ＝正</strong>：輸出量第1位はロシア（3,700万t）で、ロシアの生産量は8,550万t（生産量第3位）。3,700÷8,550＝<strong>約43％</strong>で4割を超える。<strong>生産の半分近くを輸出に回せる</strong>のは、黒土地帯の大規模な冬小麦・春小麦生産に対して国内人口が相対的に少なく、余剰が大きいためである。同じ表で中国は生産13,400万tでありながら輸入量第4位（950万t）に登場しており、<strong>生産規模ではなく「生産量と国内消費の差」が輸出力を決める</strong>という対比が読み取れる。</li>
+</ul>
+<div class="tip"><strong>読み方のコツ：</strong>率（貿易率）と実数（万t）が別々の資料に分かれて与えられたら、まず<strong>率を実数に直して共通の土台を作る</strong>。本問の19,000万tがそれである。<br><strong>よくある誤解：</strong>「生産量が多い国＝輸出が多い国」。中国・インドは生産1位・2位だが輸出上位6か国に入らず、中国はむしろ輸入国でもある。<br><strong>似ているが違う概念：</strong>「世界の生産量」「世界の輸出総量」「1国の生産量」「1国の輸出量」の4つ。Ｌはこのうち2つを取り違えさせる、Ｍは正しく1国内で比をとらせる文で、対になっている。</div>
+
+<h3>問3　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：米の世界生産量7.8億tは小麦7.6億tとほぼ同じだが、貿易率は米9％＜小麦25％。これはモンスーンアジアの人口稠密地域で<strong>生産＝自給的消費に直結</strong>しており、国際市場に出る量が限られるためである。米が「国際商品」になりにくいことは、価格が急騰しやすい（輸出規制の影響を受けやすい）という食料安全保障上の論点にもつながる。</li>
+  <li><strong>②＝誤</strong>：世界生産量が最大なのはとうもろこし（11.6億t）で正しいが、貿易率は16％で<strong>小麦の25％より低い</strong>。「生産最大だから貿易率も最大」という推論は資料と矛盾する。前半が正しいだけに引っかかりやすい。</li>
+  <li><strong>③＝誤</strong>：貿易率が最も高いのは小麦（25％）で前半は正しいが、理由が誤り。小麦は<strong>冷涼・半乾燥地でも栽培可能</strong>（資料2下段の記述）であり、「高温多湿が必要」は米の性質と混同したもの。</li>
+  <li><strong>④＝誤</strong>：資料2上段の輸入量欄に中国が第4位（950万t）として明記されている。生産量世界1位でありながら輸入国でもあるという事実は、①の論点（人口規模と国内消費）と表裏の関係にある。</li>
+</ul>
+
+<h3>問4　正解 ⑤（ｃ＝肉類、適切な文＝ｖとｗの両方）</h3>
+<p class="exp">本問は<strong>グラフの線の同定だけでなく、「減少幅の比較」と「自給率という指標自体の注意点」まで問う</strong>。線を当てられても、ｖ・ｗの判定を誤ると不正解になる。</p>
+<ul class="exp-list">
+  <li><strong>ａ＝米</strong>：一貫して95〜100％前後。1970年代には100％を超え（生産調整の対象になった）、現在も自給できているほぼ唯一の主要穀物。</li>
+  <li><strong>ｂ＝野菜</strong>：1965年にほぼ100％だったが、加工・業務用の輸入増加により80％前後まで低下。<strong>鮮度が重視されるため輸入は限定的で、比較的高い水準を保つ</strong>。</li>
+  <li><strong>ｃ＝肉類</strong>：90％→53％へ大きく低下。食生活の洋風化で消費が急増した一方、生産の増加が追いつかなかった。なお図の注記にあるように、<strong>飼料の輸入を考慮した自給率は8％程度</strong>まで下がる（この点が重要）。</li>
+  <li><strong>ｄ＝小麦</strong>：28％→10％前後→15％。最も低い水準で推移。資料2上段で日本が小麦輸入量世界第6位（540万t）である事実と整合する。</li>
+  <li><strong>ｖ＝適切</strong>：1965年→2022年の変化幅は、米 95→99（＋4で増加）、野菜 100→79（<strong>−21</strong>）、肉類 90→53（<strong>−37</strong>）、小麦 28→15（<strong>−13</strong>）。減少した3品目のうち減少幅が最大なのは肉類であり適切。背景は、食生活の洋風化で<strong>消費が急増した一方で国内生産の伸びが追いつかなかった</strong>ことである。</li>
+  <li><strong>ｗ＝適切</strong>：資料3の図中注記に「肉類は飼料自給率を考慮しない値」とある。飼料の大部分（とうもろこし等）は輸入であるため、飼料を考慮すると肉類の自給率は53％から<strong>8％前後</strong>まで下がる。このような大きなギャップが生じるのは4品目のうち肉類だけであり、適切。<strong>国内で育てても、その食べ物を輸入に依存していれば食料安全保障上の自給とは言えない</strong>という、自給率という指標の重要な限界である。</li>
+  <li>よってｃ＝肉類、ｖ・ｗとも適切なので<strong>⑤</strong>。</li>
+</ul>
+<div class="tip"><strong>よくある誤解：</strong>「自給率が最も低い品目＝減少幅が最も大きい品目」。小麦は水準は最低（15％）だが、<strong>1965年の時点ですでに28％と低かった</strong>ため減少幅（−13）は小さい。「水準」と「変化幅」は別の量である。<br><strong>似ているが違う概念：</strong>「重量ベースの自給率」「カロリーベースの自給率」「飼料自給率を考慮した自給率」の3つ。同じ「自給率」という語でも分母・分子の定義が違うので、注記の確認が必須。<br><strong>資料間のつながり：</strong>資料2上段の「日本＝小麦輸入量世界6位（540万t）」と、資料3の「ｄ＝最低水準の自給率」は同じ事実の別表現である。<strong>一方の資料で確認した事実を他方の判定に使う</strong>のが共通テストの基本動作。</div>
+
+<h3>問5　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>Ｅ＝カナダ南部の内陸</strong>：最寒月−12.0℃という厳しい冬、最暖月26.5℃、年降水量480mmで夏に集中。<strong>冬に播種できないため春に播く「春小麦」</strong>が栽培される（プレーリー）。</li>
+  <li><strong>Ｆ＝マレー半島</strong>：最暖月28.5℃・最寒月25.0℃で年較差3.5℃、年降水量2,300mmが年間を通じて多い＝<strong>熱帯雨林気候（Af）</strong>。油やしのプランテーションはこの気候帯の代表的な土地利用。</li>
+  <li><strong>Ｇ＝イタリア南部</strong>：最暖月24.0℃・最寒月8.5℃で温暖、年降水量620mmが<strong>冬に集中</strong>＝地中海性気候（Cs）。夏の乾燥に耐える硬葉樹（オリーブ）やぶどうが栽培される。</li>
+  <li><strong>⑤⑥の「イギリス南部」</strong>：西岸海洋性気候（Cfb）で、年降水量は600〜700mm程度だが<strong>季節的な偏りが小さい</strong>のが特徴。「夏に集中」（Ｅ）や「冬に集中」（Ｇ）とは合わない。また最寒月−12℃という値はイギリスではありえない（北大西洋海流と偏西風の影響で冬も温和）。</li>
+</ul>
+
+<h3>問6　正解 ②</h3>
+<ul class="exp-list">
+  <li><strong>②＝正</strong>：Ｅ（カナダ内陸）では最寒月−12.0℃という<strong>冬の低温</strong>が制約となり、冬を越せないため春播きの小麦が選ばれる。Ｇ（イタリア南部）では<strong>夏の乾燥</strong>が制約となり、深い根や厚い葉で乾燥に耐えるオリーブ・ぶどうなどの樹木作物が選ばれる。いずれも「制約に合わせた作物選択」という説明として資料と整合する。</li>
+  <li><strong>①＝誤</strong>：年降水量が1,000mmを超えるのはＦ（2,300mm）のみで、Ｅは480mm、Ｇは620mm。<strong>資料の数値を確認せずに「いずれも」と一般化した誤り</strong>。</li>
+  <li><strong>③＝誤</strong>：夏に集中するのはＥのみ。Ｇは冬に集中、Ｆは年間を通じて多い。</li>
+  <li><strong>④＝誤</strong>：Ｆの気温の年較差は28.5−25.0＝<strong>3.5℃</strong>で極端に小さい。「年較差が大きい」はＥ（26.5−(−12.0)＝38.5℃）の特徴であり、<strong>地点をすり替えた誤答</strong>。</li>
+</ul>
+
+<h2>第2問の解説</h2>
+
+<h3>問1　正解 ①</h3>
+<ul class="exp-list">
+  <li>資料2上段のⅡ期は、出生率41‰と高いまま死亡率が39→17‰へ急減し、自然増加率24‰・合計特殊出生率5.8という<strong>人口爆発期</strong>にあたる。</li>
+  <li>この時期の人口ピラミッドは、年少人口の割合が極端に大きく、老年人口率が低い<strong>富士山型（ピラミッド型）＝ア</strong>（老年人口率3％）。</li>
+  <li>課題としては、<strong>年少人口の急増に対する学校・保健医療の整備の遅れ</strong>が最も適当。したがって①。</li>
+  <li><strong>②＝誤</strong>：アの形と「労働力人口の減少」は矛盾する（今後労働力人口は急増する）。形は正しいが課題が誤り、という組合せの罠。</li>
+  <li><strong>③④＝誤</strong>：イは老年人口率29％のつぼ型で、Ⅳ期（出生率9‰、合計特殊出生率1.3）に対応する。時期が違う。</li>
+  <li><strong>⑤＝誤</strong>：ウは釣鐘型（老年人口率17％）でⅢ期に近く、また「若年層の流出」は国レベルではなく地域スケールの課題。</li>
+  <li><strong>⑥＝誤</strong>：エは後述のとおり特殊な形（労働力の流入）で、人口転換の段階を示すものではない。</li>
+</ul>
+<div class="tip"><strong>本問の作り：</strong>「人口ピラミッドの名称を選べ」という一問一答にせず、<strong>資料2上段の数値からⅡ期の性格を読み、それに対応する形を選び、さらに課題まで結びつける</strong>3段構えにしてある。名称（富士山型）を知らなくても、数値と形の対応から解ける設計である。</div>
+
+<h3>問2　正解 ②</h3>
+<ul class="exp-list">
+  <li><strong>②＝正</strong>：エは20〜40歳代（下から4〜6段目）の<strong>男性側のみが極端に突出</strong>し、老年人口率1.5％と極端に低い。これは、<strong>建設業などに従事する若年男性の外国人労働者が多数流入した産油国</strong>（アラブ首長国連邦、カタール、クウェートなど）の典型的な形。就労目的の一時的な移住であるため高齢者はほとんど含まれない。</li>
+  <li><strong>①＝誤</strong>：若年層が流出した農村では、若年層が<strong>凹み</strong>、高齢層が厚くなる（ひょうたん型・つぼ型）。エとは逆。</li>
+  <li><strong>③＝誤</strong>：乳幼児死亡率が高い地域では最下段（0〜4歳）の上に向かって急激に細くなる富士山型になる。エは最下段が細く、この説明と合わない。また男女差は生じない。</li>
+  <li><strong>④＝誤</strong>：学園都市では18〜22歳前後の狭い階級に突出が生じ、<strong>男女ともに</strong>増える。エのように20〜40歳代の広い範囲で男性のみが突出する形にはならない。</li>
+</ul>
+<div class="tip"><strong>ピラミッドの読み方の要点：</strong>①どの年齢層が突出／凹んでいるか、②男女差があるか、③最下段（0〜4歳）が広いか狭いか。この3点で判定する。<strong>男女差の有無は「労働移動」を示す最も強いサイン</strong>である。</div>
+
+<h3>問3　正解 ④（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>④＝適当でない</strong>：Ⅳ期の死亡率11‰がⅢ期の9‰より高いのは、<strong>人口の年齢構成が高齢化したため</strong>（高齢者が多い社会では、平均寿命が延びていても人口1,000人当たりの死亡数は増える）。医療水準の低下ではない。これを<strong>粗死亡率の罠</strong>という。日本も同様で、平均寿命が世界最高水準にありながら死亡率は上昇している。</li>
+  <li><strong>①＝適当</strong>：出生率が高水準のまま死亡率が急落する（衛生・医療の改善、食料供給の安定による）ことで自然増加率が跳ね上がる。これが「人口爆発」の仕組み。</li>
+  <li><strong>②＝適当</strong>：乳幼児死亡率の低下により多産の必要が薄れ、女性の教育水準向上・就業機会の拡大、都市化による子育て費用の増大などが出生率を押し下げる。多産多死→多産少死→少産少死という人口転換の説明として妥当。</li>
+  <li><strong>③＝適当</strong>：出生率9‰＜死亡率11‰で自然増加率−2‰。社会増加（国際人口移動）がなければ総人口は減少する。</li>
+</ul>
+
+<h3>問4　正解 ②</h3>
+<ul class="exp-list">
+  <li><strong>②＝正</strong>：ドイツは1人当たりGNI 51,000ドルで最高だが都市人口率77％。一方アルゼンチンは10,600ドルで都市人口率92％と最高。<strong>都市人口率は経済水準の指標ではない</strong>。アルゼンチンでは乾燥・半乾燥の広大な国土で農村人口が少なく、ブエノスアイレスに人口の34％が集中している。</li>
+  <li><strong>①＝誤</strong>：上記のとおり比例関係にない。ナイジェリア（2,100ドル）の都市人口率52％はエチオピア（940ドル）の22％より高いが、アルゼンチンの例が比例関係を崩している。</li>
+  <li><strong>③＝誤</strong>：都市人口率50％超はアルゼンチン（34％）、ドイツ（4％）、韓国（19％）、ナイジェリア（7％）。ドイツ・ナイジェリア・韓国は2割未満で、「いずれも」が成立しない。<strong>ドイツは歴史的に多くの都市が分散して発達した多核構造</strong>のため、最大都市（ベルリン）の集中度が低い。</li>
+  <li><strong>④＝誤</strong>：都市人口率が高いドイツ（77％）は集中度4％、韓国（81％）は19％、アルゼンチン（92％）は34％。むしろ<strong>逆の傾向</strong>にも見えるが、いずれにせよ一定の関係は読み取れない。</li>
+</ul>
+<div class="tip"><strong>プライメートシティ：</strong>最大都市に人口・政治・経済機能が過度に集中した都市を「首位都市（プライメートシティ）」という。第2位都市の数倍の規模をもち、発展途上国や、国土の一部にのみ人口が集まる国でみられる。アルゼンチン（ブエノスアイレス）、タイ（バンコク）などが例。ドイツのように分散型の国と対比して覚えるとよい。</div>
+
+<h3>問5　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>Ｙ＝ドーナツ化現象</strong>：1970〜75年に都心3区が−13.5％と大幅減少し、30〜50km圏が＋18.6％と急増。<strong>都心の人口が減り周辺が膨らむ</strong>ため「ドーナツ化」と呼ばれる。地価高騰と住宅不足が背景（資料3下段のメモ）。</li>
+  <li><strong>Ｚ＝都心回帰</strong>：2005年以降、都心3区が＋12.5％→＋14.2％と最も高い増加率に転じた。工場・倉庫跡地や埋立地への高層集合住宅の供給（資料3下段のメモ）が背景である。</li>
+  <li><strong>スプロール現象（②⑥）</strong>：市街地が計画性なく無秩序に郊外へ広がる現象で、郊外の側で起きる土地利用の問題を指す。都心の人口減少そのものを指す語ではない。Ｙとしては「郊外の増加」の一側面しか説明できず、都心3区の−13.5％と対にならない。</li>
+  <li><strong>インナーシティ問題（④⑥）</strong>：都心周辺の旧市街地で、人口減少・高齢化・住環境の悪化・低所得層の集中などが生じる問題。Ｙの空欄は「人口分布の変化の名称」を求めているため不適。</li>
+  <li><strong>プライメートシティ化（⑤）</strong>：一国内の最大都市への一極集中を指す語で、大都市圏内部の圏域間の変化を指す語ではない。</li>
+</ul>
+
+<h2>第3問の解説</h2>
+
+<h3>問1　正解 ④（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>④＝適当でない</strong>：2か所に誤りがある。(1) <strong>リアス海岸</strong>は河川が刻んだ<strong>V字谷</strong>の沈水によって形成される（氷河の侵食したU字谷の沈水はフィヨルド）。(2) 湾奥に「大きな三角州」は発達しない。リアス海岸の湾奥は流域が小さく土砂供給が限られ、平地が狭いことが資料1でも示されている（市街地が谷筋に細長く伸びる）。</li>
+  <li><strong>①＝適当</strong>：沈水海岸のため水深が深く、湾内は外洋の波が届きにくいため静穏である。天然の良港となり、養殖にも適する（三陸海岸・志摩半島・若狭湾など）。</li>
+  <li><strong>②＝適当</strong>：資料1で市街地が谷底に沿って南北に細長く描かれ、丘陵地側にも住宅が広がっている（資料3の「丘陵地：住宅」も対応）。</li>
+  <li><strong>③＝適当</strong>：埋立地は湾の入口側（外洋に近い側）に造成されている。平地が狭いという地形の制約への対応として妥当。</li>
+</ul>
+<div class="tip"><strong>フィヨルドとリアス海岸の区別：</strong>いずれも沈水海岸だが、成因（氷河／河川）と断面形（U字／V字）、分布（高緯度／中緯度も含む）が異なる。ノルウェー・チリ南部・ニュージーランド南島＝フィヨルド、三陸・志摩・スペイン北西部（語源のリアスバハス地方）＝リアス海岸。</div>
+
+<h3>問2　正解 ③</h3>
+<ul class="exp-list">
+  <li><strong>③＝正</strong>：1980年 (3,600＋2,900)÷16,000＝6,500÷16,000＝<strong>40.6％</strong>、2020年 (620＋1,050)÷14,000＝1,670÷14,000＝<strong>11.9％</strong>。40％台から10％台への低下で正しい。<strong>2つの行を合算し、そのつど変化する総数で割る</strong>二段階の処理が必要になる。</li>
+  <li><strong>①＝誤</strong>：減少数は漁業・養殖業 3,600→620で<strong>−2,980人</strong>、水産加工業 2,900→1,050で−1,850人。最大は漁業・養殖業であり、水産加工業ではない。なお<strong>減少率</strong>で比べても漁業・養殖業−82.8％＞水産加工業−63.8％で、どちらの尺度でも成立しない。</li>
+  <li><strong>②＝誤</strong>：2倍以上は医療・福祉 2,650÷700＝<strong>3.79倍</strong>のみ。宿泊・飲食サービス業は 1,780÷900＝<strong>1.98倍</strong>で、わずかに2倍に届かない。<strong>「約2倍」と「2倍以上」の差</strong>を突く選択肢で、1,780を1,800と丸めると引っかかる。</li>
+  <li><strong>④＝誤</strong>：2000→2020年で医療・福祉は1,600→2,650、宿泊・飲食サービス業は1,400→1,780へ<strong>増加</strong>している。「すべての産業で」という全称的な記述は、反例が1つあれば崩れる。</li>
+</ul>
+<div class="tip"><strong>学習上の要点：</strong>「減少数（量）」「倍率（率）」「構成比」はそれぞれ別の尺度である。③のように2行を合算して構成比を求める操作は共通テストで頻出。総数が16,000→14,000へ減っているにもかかわらず構成比が40.6％→11.9％まで落ちた点は、<strong>分母が縮む中でこれだけ下がった＝水産業の縮小がそれだけ急激だった</strong>ことを意味する。</div>
+
+<h3>問3　正解 ③</h3>
+<ul class="exp-list">
+  <li><strong>③＝正</strong>：外国人宿泊客は0.8→7.5万人で<strong>9.4倍</strong>。観光入込客数全体は62→105万人で<strong>1.69倍</strong>。訪日外国人旅行者の急増（2013年以降のビザ緩和、LCC就航、円安など）を反映しており、地方都市でも伸び率が突出した。</li>
+  <li><strong>①＝誤</strong>：宿泊客に占める外国人の割合は、2010年 0.8÷21＝<strong>3.8％</strong>（約4％で前半は正しい）だが、2019年は 7.5÷32＝<strong>23.4％</strong>であり「約12％」ではない。<strong>前半を正しくして後半だけをずらす</strong>のは定番の作り。なお7.5を観光入込客数105で割ると7.1％、宿泊客と日帰り客の平均のような曖昧な分母で割ると12％前後の値が出る。<strong>「〜に占める」の直前の語が分母</strong>である、と機械的に確認すること。</li>
+</ul>
+<ul class="exp-list">
+  <li><strong>②＝誤</strong>：2021年の減少は感染症の世界的流行に伴う移動制限が主因と考えられ、「宿泊施設が減少したため」という因果は資料から読み取れない。<strong>もっともらしい原因を資料の根拠なく断定する型</strong>の誤答。</li>
+  <li><strong>④＝誤</strong>：宿泊率は 2010年 21÷62＝33.9％、2015年 24÷78＝30.8％、2019年 32÷105＝30.5％。<strong>低下傾向</strong>であり「一貫して上昇」は誤り。日帰り客の増加（交通の改善＝資料1の高規格道路2015年開通）が背景にあると考えられ、これは観光消費額の伸び悩みという課題につながる。</li>
+</ul>
+
+<h3>問4　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：地点ア（漁港周辺、標高0〜3m）は想定浸水深8〜12mで最大。水産加工場が立地しており、<strong>短時間での高所避難と、経路が塞がれた場合に備えた複数の避難先</strong>の確保は妥当な対策。湾奥で波高が大きくなるという注記も根拠になる。</li>
+  <li><strong>②＝誤</strong>：地点イは谷底の市街地。資料3によれば標高10〜20mの区域でも想定浸水深0〜2mであり、<strong>浸水が想定されている</strong>。「標高10m超なら安全」という単純な線引きは危険で、想定は標高ではなく浸水深で示されていることを読み取る。</li>
+  <li><strong>③＝誤</strong>：市民病院が浸水想定区域外にあることは正しいが、「平常時と同じ体制で診療を続けられる」は言えない。断水・停電、職員の参集困難、低地からの多数の傷病者の搬入などにより、<strong>平常時とは異なる体制（災害医療）が必要</strong>になる。施設の位置の安全＝機能の維持ではない。</li>
+  <li><strong>④＝誤</strong>：資料3により、S駅は「谷底の市街地（下部）」に含まれ想定浸水深3〜8m、すなわち<strong>浸水想定区域の内側</strong>である。前半（高規格道路への期待）が正しいだけに、後半の誤りを見落としやすい。</li>
+</ul>
+
+<h3>問5　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>Ｐ＝人口の高齢化の進行</strong>：資料2上段で医療・福祉が700→2,650人へ約3.8倍に増え、2020年には最大の就業先となっている。総就業者数が減少するなかでの増加であり、<strong>高齢化に伴う介護・医療需要の拡大</strong>を反映している。「若年層の流入」（③④）であれば総人口・総就業者数が増えるはずで、16,500→14,000という減少と矛盾する。「水産業の生産量の増加」（⑤⑥）は漁業・養殖業3,600→620人という激減と矛盾する。</li>
+  <li><strong>Ｑ＝外国人宿泊客が特に大きく減少しており、国際的な移動の制約に弱い</strong>：2019→2021年で、観光入込客数は105→41万人（−61％）、宿泊客は32→11万人（−66％）、外国人宿泊客は7.5→0.1万人（<strong>−99％</strong>）。外国人客の落ち込みが際立っており、インバウンドに依存した観光振興のリスクを示す。</li>
+  <li><strong>②⑥の「日帰り客のみが減少し、宿泊客は影響を受けていない」</strong>：宿泊客も32→11万人へ減少しており資料と矛盾する。</li>
+  <li><strong>④の「宿泊施設の収容力が不足」</strong>：資料2下段からは収容力に関する情報は得られない。<strong>資料の範囲外の推論</strong>。</li>
+</ul>
+
+<div class="tip">
+<strong>第2回の総括（復習の指針）</strong>
+<ul>
+  <li><strong>「生産が多い＝輸出が多い」ではない</strong>（第1問 問2・問3）：人口規模と国内消費、貿易率という指標の意味を押さえる。</li>
+  <li><strong>大規模と集約・粗放の区別</strong>（第1問 問1）：1人当たり農地面積と単位収量は別の軸を測っている。</li>
+  <li><strong>粗死亡率の罠</strong>（第2問 問3）：高齢化が進むと平均寿命が延びても死亡率は上がる。</li>
+  <li><strong>都市人口率は経済水準の指標ではない</strong>（第2問 問4）：国土の自然条件と人口分布から考える。</li>
+  <li><strong>位置の安全≠機能の維持</strong>（第3問 問4）：施設が区域外でも、経路・電力・人員の問題が残る。</li>
+</ul>
+</div>
+
+</div><!-- /ans-detail -->
+</section>
+
+<nav class="pager">
+  <a href="kai1.html">◀ 第1回</a>
+  <a href="kai3.html">第3回（難）▶</a>
+</nav>
+
+</main>
+<script src="js/main.js"></script>
+<script src="https://www.genspark.ai/sandbox_inspect.js"></script></body>
+</html>

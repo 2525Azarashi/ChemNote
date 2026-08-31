@@ -56,6 +56,7 @@ import {
   trailingNoAnswerCount,
 } from '../core/battleCore';
 import { normalizeRule } from '../core/battleRules';
+import { cycleKanaKey } from '../core/kanaKeyboard';
 import { isClockSkewed, serverNow, toMillis } from '../core/serverClock';
 import {
   canSubmitAnswer,
@@ -125,12 +126,26 @@ export interface BattleRoomState {
 }
 
 export interface BattleRoomActions {
-  /** 選択肢を押す（4択・語句選択） */
+  /** 選択肢を押す（4択・2〜3択・5〜6択） */
   choose: (index: number) => void;
-  /** パネルを押す（文字パネル） */
+  /** パネル／五十音キーボードのキーを押す */
   pushPanel: (index: number) => void;
-  /** パネルを1つ戻す */
+  /** 1つ戻す */
   popPanel: () => void;
+  /**
+   * かな入力: 最後の1文字を「゛゜小」で切り替える。
+   * カ→ガ→カ のように一周して戻るので、押しすぎても詰まらない。
+   */
+  cyclePanel: () => void;
+  /**
+   * かな入力: 「けってい」で解答を送る。
+   *
+   * ★文字パネルには対応する操作が無い★
+   * 文字パネルは札が揃った瞬間に自動で送っている（1タップぶん速い）。
+   * かな入力は最後の文字に濁点を付ける余地があるので、
+   * 自動で送ると「ダイヤモント」で確定してしまう。だから明示的に送る。
+   */
+  commitKana: () => void;
   /** 部屋主が対戦を開始する */
   start: () => void;
   /** 部屋を離脱する */
@@ -629,22 +644,71 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
 
   const pushPanel = useCallback(
     (index: number) => {
-      // ★圏外ではパノルも押せないようにする★
+      // ★圏外ではパネルも押せないようにする★
       // 押せてしまうと、揃った瞬間に自動で送信を試みて
       // 「答えたのに消えた」が起きる。入力の段階で止める。
       if (!current || !submittable) return;
       const need = current.panelOrder.length;
+      const isKana = current.format === 'kana';
       setPanel((prev) => {
-        if (prev.includes(index)) return prev;
+        /**
+         * ★同じキーを2回押せるかどうかは形式で変わる★
+         *
+         * 文字パネル（panel）は「画面に並んだ札を取る」形なので、
+         * 一度取った札をもう一度取ることはできない。
+         *
+         * 五十音キーボード（kana）は札ではなくキーなので、
+         * 同じキーを何度でも押せる必要がある。ここを塞ぐと
+         * 「バリウム」「アルミニウム」のように同じ文字を2回使う語が
+         * ★入力しようとしても入らない★ という不具合になる。
+         */
+        if (!isKana && prev.includes(index)) return prev;
         if (prev.length >= need) return prev;
         const next = [...prev, index];
-        // 揃った瞬間に送る（setState の外で送ると1描画ぶん遅れる）
-        if (next.length === need) commitPanel(next);
+        /**
+         * ★かな入力では「揃った瞬間の自動送信」をしない★
+         *
+         * かな入力の最後の1文字が「゛゜小」で作る文字であることがある
+         * （実測9語：ダイヤモン「ド」／ステッ「プ」／アミラー「ゼ」など）。
+         * 自動で送ってしまうと、濁点を付ける前の「ダイヤモント」で
+         * 確定してしまい、正しく覚えている人が誤答になる。
+         * そこで、かな入力だけは利用者が「けってい」を押すまで待つ。
+         *
+         * 文字パネルは札を取るだけで後から変化しないので、
+         * 今まで通り揃った瞬間に送る（1タップぶん速い）。
+         */
+        if (!isKana && next.length === need) commitPanel(next);
         return next;
       });
     },
     [current, submittable, commitPanel],
   );
+
+  /**
+   * かな入力の最後の1文字を「゛゜小」で切り替える。
+   *
+   * ★最後の1文字だけを対象にしている理由★
+   * 途中の文字を選んで直せるようにすると、どの文字を選んでいるかを
+   * 示す仕組みが必要になり、短い制限時間の中で操作が増える。
+   * 「押した直後に切り替える」形なら、キーボードの流れが途切れない。
+   */
+  const cyclePanel = useCallback(() => {
+    if (!current || current.format !== 'kana' || !submittable) return;
+    setPanel((prev) => {
+      if (prev.length === 0) return prev;
+      const last = prev[prev.length - 1];
+      if (last === undefined) return prev;
+      const next = cycleKanaKey(last);
+      if (next === last) return prev;
+      return [...prev.slice(0, -1), next];
+    });
+  }, [current, submittable]);
+
+  /** かな入力の「けってい」（文字パネルは自動確定なので使わない） */
+  const commitKana = useCallback(() => {
+    if (!current || current.format !== 'kana') return;
+    commitPanel(panel);
+  }, [current, commitPanel, panel]);
 
   const popPanel = useCallback(() => {
     if (answered) return;
@@ -689,6 +753,8 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
     choose,
     pushPanel,
     popPanel,
+    cyclePanel,
+    commitKana,
     start,
     leave,
     dismissResumeMessage,
