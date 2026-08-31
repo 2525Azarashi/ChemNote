@@ -1,0 +1,172 @@
+{
+  "batch": 6,
+  "stem": "batch06",
+  "markerWord": "Number",
+  "count": 6,
+  "chars": 1689,
+  "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = an adult female native English speaker, voice Adeline. Speaker 2 = an adult male native English speaker, voice Mark. Speaker 3 = a calm neutral exam narrator, voice Daniel, clearly distinct in timbre from both dialogue speakers, slightly slower and more formal than the dialogue. ★CRITICAL: this recording contains several independent short dialogues. Each one starts with the narrator saying \"Number one.\", \"Number two.\", and so on. Use exactly the SAME three voices for the WHOLE recording. Do NOT change any voice, accent, age or tone between the dialogues, even though the scenes are different. Leave a clear pause of about one second before each \"Number ...\" line, and a clear pause before each \"Question.\" line. Do not add any words that are not in the script.★ Scenes for context only (do not read aloud): Number one = 男女が科学実験のグラフを見ている。; Number two = 男女がスポーツクラブで週間スケジュールを組んでいる。; Number three = 男女が学校祭のポスターを作成中。; Number four = 男女が旅行の持ち物を確認している。; Number five = 男女が電車の遅延情報を確認している。; Number six = 男女が写真を見ながら誰が誰かを話している。",
+  "questions": [
+    {
+      "name": "el2_set13_q2",
+      "marker": "Number one",
+      "markerWord": "one",
+      "markerIndex": 0,
+      "set": 13,
+      "q": 2,
+      "scene": "男女が科学実験のグラフを見ている。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: The temperature rose sharply for the first 10 minutes.",
+        "Speaker 1: Yes, then it stayed the same for a while.",
+        "Speaker 2: And after 20 minutes, it dropped slightly.",
+        "Speaker 1: Right, and then it stayed flat again.",
+        "Speaker 3: Question. Which graph matches?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set13_q3",
+      "marker": "Number two",
+      "markerWord": "two",
+      "markerIndex": 1,
+      "set": 13,
+      "q": 3,
+      "scene": "男女がスポーツクラブで週間スケジュールを組んでいる。",
+      "speakers": "女性 / 男性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "女性（記号 W）",
+        "Speaker 2": "男性（記号 M）"
+      },
+      "lines": [
+        "Speaker 1: I'll do yoga on Mondays and Wednesdays.",
+        "Speaker 2: Both days? That's a lot.",
+        "Speaker 1: And swimming on Fridays. What about you?",
+        "Speaker 2: I'll swim on Tuesdays and Thursdays.",
+        "Speaker 3: Question. Which schedule shows the woman's plan?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set14_q1",
+      "marker": "Number three",
+      "markerWord": "three",
+      "markerIndex": 2,
+      "set": 14,
+      "q": 1,
+      "scene": "男女が学校祭のポスターを作成中。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: The title 'School Festival' should be at the top.",
+        "Speaker 1: In big letters, right? And the date underneath.",
+        "Speaker 2: Yes. And put the location at the bottom.",
+        "Speaker 1: How about a small logo in the corner?",
+        "Speaker 3: Question. Which poster layout matches?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set14_q3",
+      "marker": "Number four",
+      "markerWord": "four",
+      "markerIndex": 3,
+      "set": 14,
+      "q": 3,
+      "scene": "男女が旅行の持ち物を確認している。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: Passport, camera, and sunglasses. What else?",
+        "Speaker 1: We need the guidebook, not the map. My phone has the map.",
+        "Speaker 2: OK. And an umbrella?",
+        "Speaker 1: No, it won't rain there.",
+        "Speaker 3: Question. Which set matches their packing list?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set15_q1",
+      "marker": "Number five",
+      "markerWord": "five",
+      "markerIndex": 4,
+      "set": 15,
+      "q": 1,
+      "scene": "男女が電車の遅延情報を確認している。",
+      "speakers": "男性(駅員) / 女性(乗客)",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性(駅員)（記号 M）",
+        "Speaker 2": "女性(乗客)（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: The 10:15 train is delayed by 30 minutes.",
+        "Speaker 1: So it leaves at 10:45?",
+        "Speaker 2: Yes. But the 10:30 express is on time and stops at your station.",
+        "Speaker 1: Great, I'll take the express.",
+        "Speaker 3: Question. Which train will the woman take?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set15_q2",
+      "marker": "Number six",
+      "markerWord": "six",
+      "markerIndex": 5,
+      "set": 15,
+      "q": 2,
+      "scene": "男女が写真を見ながら誰が誰かを話している。",
+      "speakers": "女性 / 男性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "女性（記号 M）",
+        "Speaker 2": "男性（記号 W）"
+      },
+      "lines": [
+        "Speaker 1: Is that your mother on the left?",
+        "Speaker 2: No, that's my aunt. My mother is next to her, holding the baby.",
+        "Speaker 1: And the tall man behind them?",
+        "Speaker 2: That's my father.",
+        "Speaker 3: Question. Which person is the woman's mother?"
+      ],
+      "rewritten": false
+    }
+  ]
+}

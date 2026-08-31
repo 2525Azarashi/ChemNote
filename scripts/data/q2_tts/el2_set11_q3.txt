@@ -1,0 +1,5 @@
+Speaker 1: The music club meeting is on Friday at 4.
+Speaker 2: No, the poster says Thursday at 4:30.
+Speaker 1: Oh, I read the old one. Where does it meet?
+Speaker 2: In the music room, not the gym.
+Speaker 3: Question. Which notice is correct?

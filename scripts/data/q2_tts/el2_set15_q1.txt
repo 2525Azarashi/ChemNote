@@ -1,0 +1,5 @@
+Speaker 1: The 10:15 train is delayed by 30 minutes.
+Speaker 2: So it leaves at 10:45?
+Speaker 1: Yes. But the 10:30 express is on time and stops at your station.
+Speaker 2: Great, I'll take the express.
+Speaker 3: Question. Which train will the woman take?

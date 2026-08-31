@@ -1,0 +1,5 @@
+Speaker 1: Let's see the penguins first.
+Speaker 2: They're on the second floor. The dolphins are on the first floor.
+Speaker 1: Then let's start with dolphins and then go up to penguins.
+Speaker 2: OK, but let's skip the shark tank. We saw it last time.
+Speaker 3: Question. Which route will they take?

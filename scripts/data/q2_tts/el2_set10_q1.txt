@@ -1,0 +1,5 @@
+Speaker 1: How do we get to the museum?
+Speaker 2: Take bus 5 to City Hall, then transfer to bus 12.
+Speaker 1: Isn't bus 8 direct?
+Speaker 2: Yes, but it only runs on weekends. Today is Wednesday.
+Speaker 3: Question. Which route will they take today?

@@ -1,0 +1,172 @@
+{
+  "batch": 5,
+  "stem": "batch05",
+  "markerWord": "Number",
+  "count": 6,
+  "chars": 1787,
+  "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = an adult female native English speaker, voice Adeline. Speaker 2 = an adult male native English speaker, voice Mark. Speaker 3 = a calm neutral exam narrator, voice Daniel, clearly distinct in timbre from both dialogue speakers, slightly slower and more formal than the dialogue. ★CRITICAL: this recording contains several independent short dialogues. Each one starts with the narrator saying \"Number one.\", \"Number two.\", and so on. Use exactly the SAME three voices for the WHOLE recording. Do NOT change any voice, accent, age or tone between the dialogues, even though the scenes are different. Leave a clear pause of about one second before each \"Number ...\" line, and a clear pause before each \"Question.\" line. Do not add any words that are not in the script.★ Scenes for context only (do not read aloud): Number one = 男女が壁掛け写真の位置を決めている。; Number two = 男女が学校の掲示板の告知を見ている。; Number three = 男女がイヤホンを試している。; Number four = 男女がカフェのメニューを見ている。; Number five = 男女がおもちゃ屋で人形を選んでいる。; Number six = 男女が地図を見ながらキャンプ場での待ち合わせ場所を決めている。",
+  "questions": [
+    {
+      "name": "el2_set11_q2",
+      "marker": "Number one",
+      "markerWord": "one",
+      "markerIndex": 0,
+      "set": 11,
+      "q": 2,
+      "scene": "男女が壁掛け写真の位置を決めている。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: Should the landscape photo go above the sofa or above the TV?",
+        "Speaker 1: Above the TV. And the family photo above the sofa.",
+        "Speaker 2: Where's the wedding photo, then?",
+        "Speaker 1: On the shelf, not on the wall.",
+        "Speaker 3: Question. Which arrangement matches?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set11_q3",
+      "marker": "Number two",
+      "markerWord": "two",
+      "markerIndex": 1,
+      "set": 11,
+      "q": 3,
+      "scene": "男女が学校の掲示板の告知を見ている。",
+      "speakers": "女性 / 男性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "女性（記号 W）",
+        "Speaker 2": "男性（記号 M）"
+      },
+      "lines": [
+        "Speaker 1: The music club meeting is on Friday at 4.",
+        "Speaker 2: No, the poster says Thursday at 4:30.",
+        "Speaker 1: Oh, I read the old one. Where does it meet?",
+        "Speaker 2: In the music room, not the gym.",
+        "Speaker 3: Question. Which notice is correct?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set12_q1",
+      "marker": "Number three",
+      "markerWord": "three",
+      "markerIndex": 2,
+      "set": 12,
+      "q": 1,
+      "scene": "男女がイヤホンを試している。",
+      "speakers": "女性(店員) / 男性(客)",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "女性(店員)（記号 W）",
+        "Speaker 2": "男性(客)（記号 M）"
+      },
+      "lines": [
+        "Speaker 1: We have wired earphones and wireless ones.",
+        "Speaker 2: Wireless, please. With noise cancelling if possible.",
+        "Speaker 1: Yes, this one has it. It also has a microphone.",
+        "Speaker 2: Great, I'll take it.",
+        "Speaker 3: Question. Which earphones will the man buy?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set12_q2",
+      "marker": "Number four",
+      "markerWord": "four",
+      "markerIndex": 3,
+      "set": 12,
+      "q": 2,
+      "scene": "男女がカフェのメニューを見ている。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: The set menu with soup, salad, and sandwich is 900 yen.",
+        "Speaker 1: I don't want the soup.",
+        "Speaker 2: Then it's 700 without the soup.",
+        "Speaker 1: OK, I'll take that.",
+        "Speaker 3: Question. What will the woman order and pay?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set12_q3",
+      "marker": "Number five",
+      "markerWord": "five",
+      "markerIndex": 4,
+      "set": 12,
+      "q": 3,
+      "scene": "男女がおもちゃ屋で人形を選んでいる。",
+      "speakers": "女性(客) / 男性(店員)",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "女性(客)（記号 W）",
+        "Speaker 2": "男性(店員)（記号 M）"
+      },
+      "lines": [
+        "Speaker 1: I'd like a doll with long hair and a red dress.",
+        "Speaker 2: We have long hair with pink dress or short hair with red dress.",
+        "Speaker 1: Any long hair with red dress?",
+        "Speaker 2: Not now. How about long hair, pink dress? It's the closest.",
+        "Speaker 3: Question. Which doll will the woman likely take?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set13_q1",
+      "marker": "Number six",
+      "markerWord": "six",
+      "markerIndex": 5,
+      "set": 13,
+      "q": 1,
+      "scene": "男女が地図を見ながらキャンプ場での待ち合わせ場所を決めている。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: I'll drive from the house. You're coming on foot, right?",
+        "Speaker 1: Yes. Shall we meet by the lake on the way?",
+        "Speaker 2: The road there is a dead end for cars. Let me pick you up after the bridge.",
+        "Speaker 1: All right, right where the road turns into the campsite.",
+        "Speaker 3: Question. Where will they meet?"
+      ],
+      "rewritten": true
+    }
+  ]
+}

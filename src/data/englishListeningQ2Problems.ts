@@ -95,6 +95,7 @@ const EL2_SET1_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set1_1',
     label: '問1',
     hint: '男女がカフェで注文について話している。（話者：女性（店員） / 男性（客））',
+    audioUrl: '/listening_audio/el2_set1_q1.mp3',
     script: 'W: Would you like anything to drink with your sandwich?\nM: I\'ll have coffee, please. No sugar, but with milk.\nW: Ice or hot?\nM: Hot, please.',
     turns: [
       { who: 'W', text: 'Would you like anything to drink with your sandwich?' },
@@ -109,6 +110,7 @@ const EL2_SET1_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set1_2',
     label: '問2',
     hint: '母と息子が息子の部屋の片付けについて話している。（話者：母親 / 息子（高校生））',
+    audioUrl: '/listening_audio/el2_set1_q2.mp3',
     script: 'M: Ken, please put your books on the shelf.\nK: OK. On the top shelf?\nM: No, the middle one. The top is for the photo albums.\nK: Got it.',
     turns: [
       { who: 'M', text: 'Ken, please put your books on the shelf.' },
@@ -123,6 +125,7 @@ const EL2_SET1_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set1_3',
     label: '問3',
     hint: '店員と客が服のサイズについて話している。（話者：女性（客） / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set1_q3.mp3',
     script: 'W: Do you have this shirt in a smaller size?\nM: We have small and extra-small. Which would you like?\nW: Small, please. And in blue if possible.\nM: Sure, here\'s a small blue one.',
     turns: [
       { who: 'W', text: 'Do you have this shirt in a smaller size?' },
@@ -298,6 +301,7 @@ const EL2_SET2_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set2_1',
     label: '問1',
     hint: '男女が友人へのプレゼントを選んでいる。（話者：男性（大学生） / 女性（大学生））',
+    audioUrl: '/listening_audio/el2_set2_q1.mp3',
     script: 'M: How about this mug with cats on it?\nW: She likes dogs, not cats.\nM: Then this mug with a dog?\nW: Perfect. And it comes in a gift box, right?',
     turns: [
       { who: 'M', text: 'How about this mug with cats on it?' },
@@ -312,6 +316,7 @@ const EL2_SET2_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set2_3',
     label: '問3',
     hint: '男女がクラス写真の中で友人を探している。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set2_q3.mp3',
     script: 'M: Which one is your brother?\nW: He\'s the tallest one in the back row.\nM: The one with glasses?\nW: No, next to him. He\'s wearing a striped shirt.',
     turns: [
       { who: 'M', text: 'Which one is your brother?' },
@@ -447,6 +452,7 @@ const EL2_SET3_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set3_2',
     label: '問2',
     hint: '男女がホテルの部屋を選んでいる。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set3_q2.mp3',
     script: 'M: There\'s a room with a mountain view and one with a sea view.\nW: The sea view sounds nice.\nM: But it\'s twice the price.\nW: Then let\'s go with the mountain view.',
     turns: [
       { who: 'M', text: 'There\'s a room with a mountain view and one with a sea view.' },
@@ -540,6 +546,7 @@ const EL2_SET4_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set4_1',
     label: '問1',
     hint: '男女が公園の案内図を見ながら待ち合わせ場所を決めている。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set4_q1.mp3',
     script: 'M: Should we meet at the fountain?\nW: It\'s too crowded there on Sundays.\nM: The bench near the playground, then?\nW: How about under the big tree by the pond? It\'s quiet.',
     turns: [
       { who: 'M', text: 'Should we meet at the fountain?' },
@@ -554,6 +561,7 @@ const EL2_SET4_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set4_2',
     label: '問2',
     hint: '男女がリサイクル用のごみを分別している。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set4_q2.mp3',
     script: 'W: This empty juice bottle goes in the plastic bin, right?\nM: Actually, that\'s a glass bottle. It has a different bin.\nW: Oh, so where does it go?\nM: See the one with the wine glass symbol on it? Over there.',
     turns: [
       { who: 'W', text: 'This empty juice bottle goes in the plastic bin, right?' },
@@ -568,6 +576,7 @@ const EL2_SET4_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set4_3',
     label: '問3',
     hint: '男女が水族館の館内図を見ている。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set4_q3.mp3',
     script: 'M: Let\'s see the penguins first.\nW: They\'re on the second floor. The dolphins are on the first floor.\nM: Then let\'s start with dolphins and then go up to penguins.\nW: OK, but let\'s skip the shark tank. We saw it last time.',
     turns: [
       { who: 'M', text: 'Let\'s see the penguins first.' },
@@ -743,6 +752,7 @@ const EL2_SET5_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set5_2',
     label: '問2',
     hint: '父と娘が娘の自転車のパンクについて話している。（話者：父親 / 娘（中学生））',
+    audioUrl: '/listening_audio/el2_set5_q2.mp3',
     script: 'F: Which tire is flat, the front or the back?\nD: The back one. And the light on the front is broken too.\nF: OK, I\'ll fix both this weekend.\nD: Thanks, Dad.',
     turns: [
       { who: 'F', text: 'Which tire is flat, the front or the back?' },
@@ -757,6 +767,7 @@ const EL2_SET5_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set5_3',
     label: '問3',
     hint: '女性が写真の中の子供を紹介している。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set5_q3.mp3',
     script: 'W: This is my nephew\'s birthday party. Can you guess which is my nephew?\nM: The boy with the party hat?\nW: No, he\'s my nephew\'s friend. My nephew is the one blowing out the candles.\nM: Oh, the one without a hat!',
     turns: [
       { who: 'W', text: 'This is my nephew\'s birthday party. Can you guess which is my nephew?' },
@@ -892,6 +903,7 @@ const EL2_SET6_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set6_1',
     label: '問1',
     hint: '男女が旅行先の天気予報を見ている。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set6_q1.mp3',
     script: 'M: It\'s going to rain on Saturday, our first day.\nW: And Sunday?\nM: Cloudy, but no rain.\nW: Good, we can go hiking on Sunday, then.',
     turns: [
       { who: 'M', text: 'It\'s going to rain on Saturday, our first day.' },

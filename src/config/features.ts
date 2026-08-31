@@ -142,6 +142,25 @@ export const FEATURES = {
 
   /** ランキング：動いており、評判も良いので公開 */
   ranking: true,
+
+  /**
+   * 対戦モード：★false（非公開）★
+   *
+   * 理由：Firestore のルール（battle_* の追記ぶん）を
+   * 本番へ反映するまでは、画面を出しても全員が
+   * 「権限がありません」で止まるため。
+   *
+   * ★公開の順番★
+   *   1. firestore.rules に追記して deploy
+   *   2. Firebase コンソールで動作を1回確認
+   *   3. ここを true にする
+   *
+   * この順番を守らないと、押した人全員がエラーを見ることになる。
+   *
+   * ★これは「科目」ではなく「機能」★
+   * SUBJECT_FEATURE_KEY には追加しない（科目一覧に出てしまう）。
+   */
+  battle: false,
 } as const;
 
 export type FeatureKey = keyof typeof FEATURES;

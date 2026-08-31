@@ -64,6 +64,36 @@ OUT = ROOT / 'src' / 'data' / 'englishListeningQ2Problems.ts'
 IMG_DIR_REL = '/listening_q2'
 MARKS = '①②③④'
 
+# ------------------------------------------------------------------
+# 音源（MP3）の置き場所
+# ------------------------------------------------------------------
+# この類題集には MP3 が付属しないので、既定では audioUrl を持たせず、
+# ListeningAudioPlayer がブラウザの音声合成で turns を読み上げる。
+#
+# 将来 TTS で MP3 を作ったら public/listening_audio/ に置くだけでよい。
+# このスクリプトは「実際にファイルがある問だけ」audioUrl を埋める。
+# 存在しないファイルを指すと再生ボタンを押した瞬間に 404 で無音になり、
+# 音声合成のフォールバックすら働かなくなるため、実在確認を必須にする。
+#
+#   台本の作り方: python3 scripts/gen_q2_tts_scripts.py
+#                 → scripts/data/q2_tts/manifest.json
+AUDIO_DIR_REL = '/listening_audio'
+AUDIO_DIR = ROOT / 'public' / 'listening_audio'
+
+
+def audio_url_for(set_no: int, q_no: int) -> str | None:
+    """
+    その問の MP3 が実在すれば公開URLを返し、無ければ None を返す。
+
+    None のときは audioUrl を出力しない（＝音声合成へフォールバックする）。
+    """
+    name = f'el2_set{set_no}_q{q_no}.mp3'
+    path = AUDIO_DIR / name
+    # 0バイトや極端に小さいファイルは生成失敗の残骸なので採用しない。
+    if path.exists() and path.stat().st_size > 1000:
+        return f'{AUDIO_DIR_REL}/{name}'
+    return None
+
 # ★今回収録する問（＝配布 PDF の実物イラストがある問）★
 #
 # 絵を選ぶ大問なので、絵のない問を入れても解けない。
@@ -313,11 +343,15 @@ def build(sets: list[dict]) -> str:
                 for t in q['turns']
             )
             hint = f'{tidy(q["scene"])}（話者：{speaker_label(q["speakers"])}）'
+            # MP3 が実在する問だけ audioUrl を出す。無ければ音声合成に任せる。
+            url = audio_url_for(no, q['q'])
+            audio_row = f"    audioUrl: '{url}',\n" if url else ''
             tracks.append(
                 '  {\n'
                 f"    subId: '{base}',\n"
                 f"    label: '問{q['q']}',\n"
                 f"    hint: '{ts(hint)}',\n"
+                f'{audio_row}'
                 f"    script: '{ts(script)}',\n"
                 '    turns: [\n'
                 f'{turn_rows}'
@@ -510,6 +544,18 @@ def main() -> int:
     bias = collections.Counter(q['answerMark'] for s in sets for q in s['questions'])
     print('  正解位置:', dict(sorted(bias.items())))
     print(f'  必要な画像: public{IMG_DIR_REL}/el2_set<N>_q<M>.jpg （{total} 枚）')
+
+    # 音源の実装状況を毎回はっきり出す（「入っているつもり」を防ぐ）
+    with_audio = sum(
+        1 for s in sets for q in s['questions'] if audio_url_for(s['set'], q['q'])
+    )
+    print(f'  MP3 を貼れた問: {with_audio} / {total} 問')
+    if with_audio < total:
+        print(
+            f'    残り {total - with_audio} 問はブラウザの音声合成で読み上げる。'
+            'MP3 を作るなら scripts/gen_q2_tts_scripts.py で台本を出してから、'
+            f'public{AUDIO_DIR_REL}/ に置いてこのスクリプトを再実行する。'
+        )
     return 0
 
 

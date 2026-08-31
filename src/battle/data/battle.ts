@@ -1,0 +1,946 @@
+/**
+ * ===================================================================
+ * 対戦モード: Firestore とのやりとり
+ * ===================================================================
+ *
+ * ■ このファイルの責務
+ * 「部屋を作る・入る・答えを出す・結果を確定する」だけ。
+ * 点数の計算は一切しない（core/battleCore.ts が担当）。
+ *
+ * -------------------------------------------------------------------
+ * ■ コレクション設計
+ * -------------------------------------------------------------------
+ *
+ *   battle_rooms/{roomId}
+ *     1試合＝1ドキュメント。★これが設計の中心★
+ *     両者はこの1件だけを onSnapshot で購読する。
+ *     問題ごとにドキュメントを分けると読み取り回数が問題数倍になり、
+ *     無料枠（1日5万読み取り）で1日あたり数十試合しかできなくなる。
+ *     1件にまとめれば1試合あたり約80読み取りで済む（約600試合/日）。
+ *
+ *   battle_codes/{joinCode}
+ *     フレンド対戦の合言葉 → 部屋IDの逆引き。
+ *     部屋を where 検索する設計にすると、ルール上
+ *     battle_rooms 全体の list を開放することになり、
+ *     他人の対戦を全部覗けてしまうので採用しない
+ *     （既存の friend_codes と同じ考え方）。
+ *
+ *   battle_queue/{uid}
+ *     全国ランダムマッチの待機列。1人1件。
+ *     ★フレンド対戦が主役なので、こちらは副次的な入口★
+ *
+ *   battle_ranking/{uid}
+ *     レート（Elo）と戦績。既存の leaderboard_* とは完全に別物。
+ *     既存ランキングの集計・ルールには一切触らない。
+ *
+ *   battle_history/{uid}/items/{roomId}
+ *     自分の対戦履歴。相手には書けない（自分の下にだけ書く）。
+ *
+ * -------------------------------------------------------------------
+ * ■ 不正対策の考え方（Cloud Functions が使えない前提）
+ * -------------------------------------------------------------------
+ * 無料枠なのでサーバ側で判定するコードが置けない。
+ * 「クライアントを信用しない」ではなく
+ * ★クライアントが嘘をついても得をしない構造★ にする。
+ *
+ *   1. 点数を Firestore に保存しない
+ *      保存するのは「何番を押したか」と「押した時刻」だけ。
+ *      点数は両者が同じ純関数で計算する。
+ *      → 点数を書き換える攻撃が、そもそも書く場所がない。
+ *
+ *   2. 時刻はサーバ時刻で刻む
+ *      answeredAt には request.time（サーバ時刻）しか書けないよう
+ *      ルールで縛る。端末の時計を巻き戻しても無意味。
+ *
+ *   3. 締切を過ぎた解答は書き込めない
+ *      ルールで request.time < deadlineAt を要求する。
+ *      「あとから答えを入れる」ができない。
+ *
+ *   4. 問題は部屋作成時に確定し、以後変更不可
+ *      questionIds はルールで更新禁止。
+ *      さらに部屋IDを種にした決定論的抽選なので、
+ *      相手側で「この並びは本当にこの部屋の種から出たか」を検算できる。
+ *
+ *   5. 結果は両者の申告が一致したときだけ採用（相互確認）
+ *      食い違ったら無効試合にしてレートを動かさない。
+ *      片方が嘘をついても、相手のレートを下げられない。
+ */
+
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  runTransaction,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+  type Timestamp,
+  type Unsubscribe,
+} from 'firebase/firestore';
+
+import { auth, db } from '../../firebase';
+import { resolveNickname } from '../../utils/leaderboard';
+import {
+  buildQuestionOrder,
+  RATING_INITIAL,
+} from '../core/battleCore';
+import { normalizeRule } from '../core/battleRules';
+import type {
+  BattleAnswerFormat,
+  BattleAttestation,
+  BattlePlayer,
+  BattleRoom,
+  BattleRule,
+} from '../core/types';
+import { answerKeyOf } from '../core/types';
+import {
+  observeLowerBound,
+  observeRoundTrip,
+  serverNow,
+  toMillis,
+} from '../core/serverClock';
+import { loadPool, poolIdsOf } from './battlePool';
+
+// ============================================================
+// コレクション名（1箇所にまとめる）
+// ============================================================
+
+export const COL_ROOMS = 'battle_rooms';
+export const COL_CODES = 'battle_codes';
+export const COL_QUEUE = 'battle_queue';
+export const COL_RANKING = 'battle_ranking';
+export const COL_HISTORY = 'battle_history';
+
+/**
+ * 合言葉の文字集合。
+ *
+ * ★紛らわしい文字を外している★
+ * 0/O、1/I/L は口頭やスクショで伝えるときに必ず取り違える。
+ * 「入れたのに部屋が無い」という問い合わせの大半がこれなので、
+ * 最初から候補に入れない。
+ */
+const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const CODE_LENGTH = 4;
+
+/** 合言葉の有効時間（分）。放置された部屋を掃除する目安 */
+export const ROOM_STALE_MINUTES = 30;
+
+// ============================================================
+// 小さなヘルパ
+// ============================================================
+
+function requireUid(): string {
+  const uid = auth.currentUser?.uid;
+  if (!uid) {
+    // ゲスト参加は仕様として不可（uid が無いとルールで守れない）
+    throw new Error('対戦にはGoogleアカウントでのログインが必要です。');
+  }
+  return uid;
+}
+
+function myProfile(rating: number): BattlePlayer {
+  const user = auth.currentUser;
+  return {
+    uid: user?.uid || '',
+    nickname: resolveNickname(),
+    photoURL: user?.photoURL || '',
+    rating,
+  };
+}
+
+function randomCode(): string {
+  let out = '';
+  const bytes = new Uint8Array(CODE_LENGTH);
+  crypto.getRandomValues(bytes);
+  for (let i = 0; i < CODE_LENGTH; i += 1) {
+    // bytes[i] は Uint8Array の範囲内なので必ず存在する。
+    // ?? 0 は型の都合（noUncheckedIndexedAccess）で置いているだけで、
+    // 実行時に効くことはない。
+    out += CODE_ALPHABET[(bytes[i] ?? 0) % CODE_ALPHABET.length];
+  }
+  return out;
+}
+
+/** Firestore の権限エラーを利用者向けの日本語にする */
+function friendlyError(error: unknown, fallback: string): Error {
+  const code = (error as { code?: string })?.code || '';
+  if (code === 'permission-denied') {
+    return new Error('この操作は許可されていません。部屋がすでに閉じている可能性があります。');
+  }
+  if (code === 'unavailable' || code === 'deadline-exceeded') {
+    return new Error('通信が不安定です。電波の良い場所でもう一度お試しください。');
+  }
+  if (error instanceof Error && error.message) return error;
+  return new Error(fallback);
+}
+
+// ============================================================
+// レート（読み取りだけ。書き込みは battleRanking.ts）
+// ============================================================
+
+/**
+ * 自分のレートを読む。無ければ初期値。
+ *
+ * ★部屋に rating を焼き込む理由★
+ * 対戦後にレートを計算するとき、相手のレートが必要になる。
+ * そのとき battle_ranking を読みに行くと、
+ *   ・相手のドキュメントが読める権限が必要になる
+ *   ・試合中に相手が別の試合でレートを変えると計算がズレる
+ * ので、★試合開始時点の値を部屋にコピーして固定する★。
+ */
+export async function fetchMyRating(): Promise<number> {
+  const uid = auth.currentUser?.uid;
+  if (!uid) return RATING_INITIAL;
+  try {
+    const snap = await getDoc(doc(db, COL_RANKING, uid));
+    const value = snap.exists() ? Number(snap.get('rating')) : NaN;
+    return Number.isFinite(value) ? value : RATING_INITIAL;
+  } catch {
+    // レートが読めなくても対戦自体はできるようにする
+    return RATING_INITIAL;
+  }
+}
+
+// ============================================================
+// 出題の抽選
+// ============================================================
+
+/**
+ * 部屋IDを種にして出題を決める。
+ *
+ * ★同じ小問から作られた別形式を混ぜない★
+ * プールには1つの小問から「語句選択」と「文字パネル」の
+ * 2問が作られているものがある。そのまま抽選すると
+ * 同じ問いが1試合に2回出るので、グループキーで間引く
+ * （battleCore.buildQuestionOrder の groupOf）。
+ */
+export async function drawQuestionIds(
+  subject: string,
+  rules: BattleRule,
+  seed: string,
+): Promise<string[]> {
+  const ids = await poolIdsOf(subject, rules.formats as BattleAnswerFormat[]);
+  if (ids.length === 0) return [];
+
+  const pool = await loadPool(subject);
+  const groupById = new Map<string, string>();
+  for (const q of pool) groupById.set(q.id, `${q.chapterId}:${q.subQuestionId}`);
+
+  return buildQuestionOrder(
+    ids,
+    rules.questionCount,
+    seed,
+    (id) => groupById.get(id) || id,
+  );
+}
+
+/** その教科で対戦が成立するか（問題数が足りているか） */
+export async function canPlaySubject(subject: string, rules: BattleRule): Promise<boolean> {
+  const ids = await poolIdsOf(subject, rules.formats as BattleAnswerFormat[]);
+  return ids.length >= Math.min(rules.questionCount, 3);
+}
+
+// ============================================================
+// フレンド対戦（★これが主役の入口★）
+// ============================================================
+
+export interface CreatedRoom {
+  roomId: string;
+  joinCode: string;
+}
+
+/**
+ * フレンド対戦の部屋を作る。
+ *
+ * ★合言葉方式にした理由★
+ * フレンド一覧から相手を選んで招待を送る方式は、
+ *   ・相手が通知に気づくまで待つ
+ *   ・相手が別の画面にいると届かない
+ * ので「今すぐ一緒にやる」用途に向かない。
+ * 目の前にいる友達・通話中の友達と遊ぶには、
+ * 4文字を口で伝えるのが一番速い。
+ * フレンド登録済みかどうかも問わないので、
+ * 「クラスの子と今すぐ1戦」ができる。
+ */
+export async function createFriendRoom(
+  subject: string,
+  ruleOverride?: Partial<BattleRule>,
+): Promise<CreatedRoom> {
+  const uid = requireUid();
+  const rules = normalizeRule(subject, { ...loadRuleSync(subject), ...ruleOverride });
+  const rating = await fetchMyRating();
+
+  // 合言葉が既に使われていたら引き直す。
+  // 31^4 = 約92万通りなので、同時に開いている部屋が数百でも衝突はまれ。
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    const joinCode = randomCode();
+    const roomRef = doc(collection(db, COL_ROOMS));
+    const codeRef = doc(db, COL_CODES, joinCode);
+
+    const questionIds = await drawQuestionIds(subject, rules, roomRef.id);
+    if (questionIds.length === 0) {
+      throw new Error('この教科は対戦できる問題がまだ足りません。');
+    }
+
+    try {
+      await runTransaction(db, async (tx) => {
+        const existing = await tx.get(codeRef);
+        if (existing.exists()) throw new Error('CODE_TAKEN');
+
+        const room: Record<string, unknown> = {
+          id: roomRef.id,
+          status: 'waiting',
+          mode: 'friend',
+          subject,
+          joinCode,
+          hostUid: uid,
+          players: [uid],
+          profiles: { [uid]: myProfile(rating) },
+          questionIds,
+          rules,
+          currentIndex: 0,
+          deadlineAt: null,
+          answers: { [uid]: {} },
+          attest: {},
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        };
+
+        tx.set(roomRef, room);
+        tx.set(codeRef, {
+          roomId: roomRef.id,
+          hostUid: uid,
+          subject,
+          createdAt: serverTimestamp(),
+        });
+      });
+
+      return { roomId: roomRef.id, joinCode };
+    } catch (error) {
+      if ((error as Error).message === 'CODE_TAKEN') continue;
+      throw friendlyError(error, '部屋を作れませんでした。');
+    }
+  }
+
+  throw new Error('部屋を作れませんでした。もう一度お試しください。');
+}
+
+/**
+ * 合言葉で部屋に入る。
+ *
+ * ★トランザクションにする理由★
+ * 3人目が同時に入ろうとしたとき、単純な update だと
+ * players が3人になって試合が壊れる。
+ * トランザクションの中で人数を確認してから追加する。
+ */
+export async function joinRoomByCode(rawCode: string): Promise<string> {
+  const uid = requireUid();
+  const joinCode = rawCode.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (joinCode.length !== CODE_LENGTH) {
+    throw new Error(`合言葉は${CODE_LENGTH}文字です。`);
+  }
+
+  const codeSnap = await getDoc(doc(db, COL_CODES, joinCode));
+  if (!codeSnap.exists()) {
+    throw new Error('その合言葉の部屋は見つかりませんでした。');
+  }
+  const roomId = String(codeSnap.get('roomId') || '');
+  if (!roomId) throw new Error('その合言葉の部屋は見つかりませんでした。');
+
+  const rating = await fetchMyRating();
+
+  try {
+    await runTransaction(db, async (tx) => {
+      const roomRef = doc(db, COL_ROOMS, roomId);
+      const snap = await tx.get(roomRef);
+      if (!snap.exists()) throw new Error('ROOM_GONE');
+
+      const players: string[] = (snap.get('players') as string[]) || [];
+      const status = String(snap.get('status') || '');
+
+      // すでに入っている（再入室）ならそのまま通す
+      if (players.includes(uid)) return;
+
+      if (status !== 'waiting') throw new Error('ROOM_STARTED');
+      if (players.length >= 2) throw new Error('ROOM_FULL');
+
+      const profiles = (snap.get('profiles') as Record<string, BattlePlayer>) || {};
+      const answers = (snap.get('answers') as Record<string, object>) || {};
+
+      tx.update(roomRef, {
+        players: [...players, uid],
+        profiles: { ...profiles, [uid]: myProfile(rating) },
+        // ★空のマップで場所だけ作る（配列ではない）★
+        //   回答は後から `answers.{uid}.q0` のパス指定で1問ずつ足していく。
+        answers: { ...answers, [uid]: {} },
+        updatedAt: serverTimestamp(),
+      });
+    });
+  } catch (error) {
+    const message = (error as Error).message;
+    if (message === 'ROOM_GONE') throw new Error('その部屋はもう存在しません。');
+    if (message === 'ROOM_FULL') throw new Error('その部屋はもう満員です。');
+    if (message === 'ROOM_STARTED') throw new Error('その部屋はもう対戦が始まっています。');
+    throw friendlyError(error, '部屋に入れませんでした。');
+  }
+
+  return roomId;
+}
+
+// ============================================================
+// 全国ランダムマッチ（副次的な入口）
+// ============================================================
+
+/**
+ * ランダムマッチ。
+ *
+ * ★仕組み★
+ *   1. 自分と同じ教科で待っている人を1人探す
+ *   2. 見つかったら、その人の待機票を消して部屋を作る（トランザクション）
+ *   3. 見つからなければ自分の待機票を置いて待つ
+ *
+ * ★待機票を「消してから部屋を作る」順にする理由★
+ * 逆にすると、2人が同時に相手を見つけて部屋を2つ作り、
+ * 片方が誰も来ない部屋で待ち続ける。
+ * 待機票の削除をトランザクションの成立条件にすれば、
+ * 先に消せた側だけが部屋を作れる。
+ */
+export async function findOrEnqueue(
+  subject: string,
+): Promise<{ roomId: string | null }> {
+  const uid = requireUid();
+  const rules = normalizeRule(subject, loadRuleSync(subject));
+  const rating = await fetchMyRating();
+
+  // 1. 待っている人を探す（自分以外・同じ教科）
+  const waiting = await getDocs(
+    query(
+      collection(db, COL_QUEUE),
+      where('subject', '==', subject),
+      orderBy('createdAt', 'asc'),
+      limit(5),
+    ),
+  );
+
+  const candidate = waiting.docs.find((d) => d.id !== uid);
+
+  if (candidate) {
+    const opponentUid = candidate.id;
+    const opponentProfile = candidate.get('profile') as BattlePlayer | undefined;
+    const roomRef = doc(collection(db, COL_ROOMS));
+    const questionIds = await drawQuestionIds(subject, rules, roomRef.id);
+    if (questionIds.length === 0) {
+      throw new Error('この教科は対戦できる問題がまだ足りません。');
+    }
+
+    try {
+      await runTransaction(db, async (tx) => {
+        const queueRef = doc(db, COL_QUEUE, opponentUid);
+        const queueSnap = await tx.get(queueRef);
+        // 先に他の人が拾っていたら失敗させる（二重マッチの防止）
+        if (!queueSnap.exists()) throw new Error('TAKEN');
+
+        tx.delete(queueRef);
+        // 自分の待機票が残っていたら消す
+        tx.delete(doc(db, COL_QUEUE, uid));
+
+        tx.set(roomRef, {
+          id: roomRef.id,
+          status: 'waiting',
+          mode: 'random',
+          subject,
+          joinCode: '',
+          hostUid: uid,
+          players: [uid, opponentUid],
+          profiles: {
+            [uid]: myProfile(rating),
+            [opponentUid]: opponentProfile || {
+              uid: opponentUid,
+              nickname: '対戦相手',
+              photoURL: '',
+              rating: RATING_INITIAL,
+            },
+          },
+          questionIds,
+          rules,
+          currentIndex: 0,
+          deadlineAt: null,
+          answers: { [uid]: {}, [opponentUid]: {} },
+          attest: {},
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      });
+
+      return { roomId: roomRef.id };
+    } catch (error) {
+      if ((error as Error).message !== 'TAKEN') {
+        throw friendlyError(error, 'マッチングに失敗しました。');
+      }
+      // 拾われていたので、次に進んで自分が待つ側になる
+    }
+  }
+
+  // 2. 自分が待つ
+  try {
+    await setDoc(doc(db, COL_QUEUE, uid), {
+      uid,
+      subject,
+      profile: myProfile(rating),
+      createdAt: serverTimestamp(),
+    });
+  } catch (error) {
+    throw friendlyError(error, '待機列に入れませんでした。');
+  }
+
+  return { roomId: null };
+}
+
+/** 待機をやめる（画面を離れるときは必ず呼ぶ） */
+export async function leaveQueue(): Promise<void> {
+  const uid = auth.currentUser?.uid;
+  if (!uid) return;
+  try {
+    await deleteDoc(doc(db, COL_QUEUE, uid));
+  } catch {
+    // 消せなくても致命的ではない（相手が拾った時に消える）
+  }
+}
+
+/**
+ * 待機中に「誰かが自分を拾って作った部屋」を待ち受ける。
+ *
+ * ★players に自分が入っている部屋を購読する★
+ * 相手が部屋を作る側なので、自分は部屋IDを知らない。
+ * array-contains で自分が含まれる待機中の部屋を1件だけ購読する。
+ */
+export function watchMatched(
+  onMatched: (roomId: string) => void,
+): Unsubscribe {
+  const uid = auth.currentUser?.uid;
+  if (!uid) return () => {};
+
+  return onSnapshot(
+    query(
+      collection(db, COL_ROOMS),
+      where('players', 'array-contains', uid),
+      where('status', '==', 'waiting'),
+      orderBy('createdAt', 'desc'),
+      limit(1),
+    ),
+    (snap) => {
+      const first = snap.docs[0];
+      if (first) onMatched(first.id);
+    },
+    () => {
+      // 権限や索引のエラーでも待機画面を壊さない
+    },
+  );
+}
+
+// ============================================================
+// 試合の進行
+// ============================================================
+
+/**
+ * 対戦を開始する（部屋主だけが呼ぶ）。
+ *
+ * ★deadlineAt を1回だけ書く理由★
+ * 「残り時間」を秒ごとに書き込むと、1問10秒で
+ * 1試合あたり100回の書き込みになり無料枠を食い潰す。
+ * 締切時刻を1回書いて、あとは各端末が自分の時計で引き算する。
+ * 書き込みは1問1回（進行のときだけ）に収まる。
+ */
+export async function startBattle(roomId: string, firstTimeLimitSec: number): Promise<void> {
+  requireUid();
+  try {
+    await timedWrite(() =>
+      updateDoc(doc(db, COL_ROOMS, roomId), {
+        status: 'playing',
+        currentIndex: 0,
+        deadlineAt: deadlineFromNow(firstTimeLimitSec),
+        startedAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      }),
+    );
+  } catch (error) {
+    throw friendlyError(error, '対戦を開始できませんでした。');
+  }
+}
+
+/**
+ * 締切時刻を作る。
+ *
+ * ★サーバ時刻ではなく「推定サーバ時刻＋秒数」で作る理由★
+ * serverTimestamp() は「書き込んだ瞬間のサーバ時刻」しか作れず、
+ * 「サーバ時刻＋10秒」は表現できない（Cloud Functions が無いため）。
+ * そこで端末側で作るしかないが、★Date.now() を直接使ってはいけない★。
+ *
+ * かつてここは Date.now() を使っており、
+ * 「両者が同じ deadlineAt を見るので不公平は生じない」と書いていた。
+ * これは誤りだった。実際には次の2つが壊れる:
+ *
+ *   ① ルールは「締切は request.time（サーバ時刻）より未来で、
+ *      かつ60秒以内」しか許さない。
+ *      部屋主の時計が1分以上ずれていると★この書き込みが必ず拒否される★。
+ *      利用者に出るのは「この操作は許可されていません」だけで、
+ *      対戦が始まらない理由が誰にも分からない。
+ *
+ *   ② 残り時間は各端末が「締切 − 自分の時計」で出している。
+ *      時計が遅れている側は「残り3秒」と見えている時点で
+ *      サーバ上ではもう締切を過ぎており、
+ *      ★答えたのに解答が消える★。
+ *
+ * serverNow() は既存の通信から推定したサーバ時刻を返すので、
+ * 端末の時計がずれていても正しい締切が書ける。
+ * 受付の可否はルール側で request.time と比べて決まるため、
+ * 端末時計を操作して締切を伸ばすことはできない（安全性は変わらない）。
+ */
+function deadlineFromNow(seconds: number): Date {
+  // 通信の往復ぶん（両者への配信遅延）を少しだけ足す。
+  // これが無いと、電波の悪い側が毎回わずかに不利になる。
+  const NETWORK_GRACE_MS = 700;
+  return new Date(serverNow() + seconds * 1000 + NETWORK_GRACE_MS);
+}
+
+/**
+ * 書き込みの往復からサーバ時刻を観測する。
+ *
+ * ★専用の通信を足さない★
+ * 時刻合わせのために読み書きを増やすと無料枠を食う。
+ * 対戦の書き込みはどれも updatedAt: serverTimestamp() を含んでいるので、
+ * 「書いた直後にその1件を読む」のではなく、
+ * ★送信前後の端末時刻だけを測っておき、
+ *   購読（onSnapshot）で返ってくるサーバ時刻と突き合わせる★。
+ * これで追加の通信は0のまま観測できる。
+ *
+ * ここでは送信の前後を測る部分だけを受け持つ。
+ */
+async function timedWrite(run: () => Promise<void>): Promise<void> {
+  const sentAt = Date.now();
+  await run();
+  // 応答が返った時刻を覚えておく。サーバが刻んだ時刻そのものは
+  // 購読側（watchRoom）で受け取るので、そこで突き合わせる。
+  lastWrite = { sentAt, ackAt: Date.now() };
+}
+
+/**
+ * 直近の書き込みの送信・応答時刻。
+ * watchRoom がサーバ時刻を受け取ったときに突き合わせて使う。
+ */
+let lastWrite: { sentAt: number; ackAt: number } | null = null;
+
+/**
+ * 解答を記録する。
+ *
+ * ★点数を送らない★
+ * 送るのは「何番を押したか（choice）」「どの順に押したか（panel）」だけ。
+ * 正解かどうかも送らない。両者が同じ関数で判定する。
+ */
+export async function submitAnswer(
+  roomId: string,
+  index: number,
+  payload: { choice: number; panel: number[] },
+  answered: boolean,
+): Promise<void> {
+  const uid = requireUid();
+
+  // 同じ問題に2回答えるのを防ぐ（連打・再描画対策）。
+  // ★これは通信を無駄にしないための予防で、防御の本体ではない★
+  //   本体は Firestore ルール側（すでに q{index} があれば書き込み拒否）。
+  //   ここだけに頼ると、開発者ツールから直接呼ばれた時に防げない。
+  if (answered) return;
+
+  try {
+    // ★1問ぶんを「1フィールド」として書く★
+    //
+    // パス指定（`answers.{uid}.q{index}`）で書くと、
+    // ・同じマップ内の他の問題（q0, q1 …）はサーバ側で保持される
+    //   → 相手や自分の他の回答を消さずに済む
+    // ・answeredAt が配列の中に入らない
+    //   → serverTimestamp() が使える（配列の中では使えない）
+    //
+    // ここを配列（`answers.{uid}` に配列を丸ごと入れる）でやっていたときは、
+    //   serverTimestamp() is not currently supported inside arrays
+    // で必ず例外になり、★1問も回答できなかった★。
+    await timedWrite(() =>
+      updateDoc(doc(db, COL_ROOMS, roomId), {
+        [`answers.${uid}.${answerKeyOf(index)}`]: {
+          index,
+          choice: payload.choice,
+          panel: payload.panel,
+          // ★時刻はサーバに刻ませる★（端末時計を信用しない）
+          //   ルール側で `== request.time` を強制しているので、
+          //   ここを固定値に書き換えても書き込みが通らない。
+          answeredAt: serverTimestamp(),
+        },
+        updatedAt: serverTimestamp(),
+      }),
+    );
+  } catch (error) {
+    throw friendlyError(error, '解答を送信できませんでした。');
+  }
+}
+
+/**
+ * 次の問題に進める。
+ *
+ * ★両者が呼んでも壊れない形にする★
+ * 「部屋主だけが進める」設計にすると、部屋主の回線が切れた瞬間に
+ * 試合が永久に止まる。そこで
+ *   ・進める条件（次の番号が今より大きい）をルールで縛り
+ *   ・両者が呼べるようにする
+ * 二人が同時に呼んでも、同じ値を書くだけなので結果は同じになる。
+ */
+export async function advanceQuestion(
+  roomId: string,
+  nextIndex: number,
+  nextTimeLimitSec: number,
+): Promise<void> {
+  requireUid();
+  try {
+    await timedWrite(() =>
+      updateDoc(doc(db, COL_ROOMS, roomId), {
+        currentIndex: nextIndex,
+        deadlineAt: deadlineFromNow(nextTimeLimitSec),
+        updatedAt: serverTimestamp(),
+      }),
+    );
+  } catch (error) {
+    // 相手が先に進めていた場合の競合は無視してよい（同じ状態になる）
+    if ((error as { code?: string }).code !== 'permission-denied') {
+      throw friendlyError(error, '次の問題に進めませんでした。');
+    }
+  }
+}
+
+/**
+ * 自分が計算した結果を申告する（相互確認）。
+ *
+ * ★両者の申告が一致したときだけレートを動かす★
+ * 片方が「自分の勝ち」と嘘をついても、相手の申告と食い違うので
+ * 無効試合になる。相手のレートを下げることはできない。
+ */
+export async function attestResult(
+  roomId: string,
+  attestation: BattleAttestation,
+): Promise<void> {
+  const uid = requireUid();
+  try {
+    await timedWrite(() =>
+      updateDoc(doc(db, COL_ROOMS, roomId), {
+        [`attest.${uid}`]: {
+          myScore: attestation.myScore,
+          opponentScore: attestation.opponentScore,
+          outcome: attestation.outcome,
+          at: serverTimestamp(),
+        },
+        status: 'finished',
+        updatedAt: serverTimestamp(),
+      }),
+    );
+  } catch (error) {
+    throw friendlyError(error, '結果を送信できませんでした。');
+  }
+}
+
+/**
+ * 部屋を購読する（★1試合＝1ドキュメント＝購読1本★）
+ *
+ * @param onConnection 通信の状態が分かったときに呼ばれる。
+ *   ★これを渡す理由★
+ *   Firestore は圏外でも端末内の控えを返して購読を続けるので、
+ *   画面だけ見ていると通信が切れたことに気付けない。
+ *   気付けないまま解答すると、書き込みは端末に溜まり、
+ *   通信が戻ったときには締切を過ぎていてルールに拒否される
+ *   （＝答えたのに消える）。
+ *   そこでスナップショットが端末内の控えかどうか（fromCache）を
+ *   そのまま上に伝え、画面で「通信が切れています」と出せるようにする。
+ */
+export function watchRoom(
+  roomId: string,
+  onChange: (room: BattleRoom | null) => void,
+  onError?: (error: Error) => void,
+  onConnection?: (state: 'online' | 'offline') => void,
+): Unsubscribe {
+  return onSnapshot(
+    doc(db, COL_ROOMS, roomId),
+    { includeMetadataChanges: true },
+    (snap) => {
+      // ★通信の状態を先に伝える★
+      //
+      // fromCache は「この内容は端末内の控えで、サーバとは同期していない」印。
+      // 圏外・機内モード・通信の一時停止で真になる。
+      // hasPendingWrites は「自分の書き込みがまだサーバに届いていない」印で、
+      // これ自体は通常の書き込み直後にも立つので、切断の判断には使わない。
+      //
+      // ★metadata を先に取り出しておく理由★
+      // exists() は型を絞り込む述語なので、否定側（存在しない場合）では
+      // 型が never になり snap.metadata を参照できない。
+      // 判定より前に控えておく。
+      const fromCache = snap.metadata.fromCache;
+      const hasPendingWrites = snap.metadata.hasPendingWrites;
+      onConnection?.(fromCache ? 'offline' : 'online');
+
+      if (!snap.exists()) {
+        // ★端末内の控えが空なだけの可能性がある★
+        // 圏外で購読を始めた直後は控えが無いので「無い」と返ってくる。
+        // これを「部屋が消えた」と扱うと、電波が悪いだけで
+        // 対戦から追い出されてしまう。控えの場合は判断を保留する。
+        if (fromCache) return;
+        onChange(null);
+        return;
+      }
+      const data = snap.data() as { updatedAt?: unknown };
+
+      // ★ここでサーバ時刻を観測する（追加の通信は0）★
+      //
+      // 部屋への書き込みはすべて updatedAt: serverTimestamp() を含んでいるので、
+      // 届いたスナップショットにはサーバが刻んだ時刻が乗っている。
+      // これと端末時刻を突き合わせれば、時計のずれが分かる。
+      //
+      // ただし ★保留状態（fromCache / hasPendingWrites）のスナップショットは使えない★。
+      // 自分の書き込みが反映される前の段階では updatedAt がまだ
+      // 端末側の推定値（null や直前の値）なので、これを採用すると
+      // 「自分の時計を自分で確認する」ことになり、ずれが永久に消えない。
+      const settled = !hasPendingWrites && !fromCache;
+      const serverMs = settled ? toMillis(data.updatedAt) : null;
+
+      if (serverMs != null) {
+        const pending = lastWrite;
+        if (pending && serverMs >= pending.sentAt - 1) {
+          // 自分の書き込みが返ってきた場合。送信と応答の間に
+          // サーバが刻んだと分かるので、往復から誤差を絞れる（本命）。
+          observeRoundTrip(serverMs, pending.sentAt, pending.ackAt);
+          lastWrite = null;
+        } else {
+          // 相手の書き込みが届いた場合。いつ送られたかは分からないので
+          // 「サーバ時刻はこれ以上」という下限としてだけ使う。
+          // 数分単位の大きなずれはこれで最初の1通で見つかる。
+          observeLowerBound(serverMs, Date.now());
+        }
+      }
+
+      onChange({ id: snap.id, ...(snap.data() as object) } as BattleRoom);
+    },
+    (error) => onError?.(friendlyError(error, '対戦の通信が切れました。')),
+  );
+}
+
+/** 部屋を離脱する（相手には不戦勝として見える） */
+export async function abortRoom(roomId: string): Promise<void> {
+  const uid = auth.currentUser?.uid;
+  if (!uid) return;
+  try {
+    await updateDoc(doc(db, COL_ROOMS, roomId), {
+      [`left.${uid}`]: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+  } catch {
+    // 離脱の記録に失敗しても、相手側は無応答から不戦勝を判定できる
+  }
+}
+
+// ============================================================
+// ルール（Firestore で上書きできるようにする）
+// ============================================================
+
+/**
+ * ルールの上書き値を覚えておく場所。
+ *
+ * ★同期版を用意する理由★
+ * 部屋を作る処理の中でルールが必要になるが、
+ * そこで毎回 Firestore を読むと待ち時間が増える。
+ * 起動時に1回だけ読んで、以後はここから同期的に取る。
+ */
+const ruleCache = new Map<string, Partial<BattleRule>>();
+let ruleLoaded = false;
+
+function loadRuleSync(subject: string): Partial<BattleRule> {
+  return ruleCache.get(subject) || {};
+}
+
+/**
+ * ルールの上書きを読み込む（起動時に1回だけ）。
+ *
+ * ★なぜ Firestore からルールを読むのか★
+ * 「1試合の問題数」「配点」は運用しながら調整したい値である。
+ * コードに埋めるとアプリの更新が必要になり、
+ * 更新前後の端末で違うルールの試合が起きてしまう。
+ * Firestore に置けば、全員が同じ値を即座に共有できる。
+ *
+ * 読めなかった場合はコード側の既定値で動く（対戦が止まらないこと優先）。
+ */
+export async function loadBattleRuleOverrides(): Promise<void> {
+  if (ruleLoaded) return;
+  ruleLoaded = true;
+  try {
+    const snap = await getDocs(collection(db, 'battle_rules'));
+    for (const d of snap.docs) {
+      ruleCache.set(d.id, d.data() as Partial<BattleRule>);
+    }
+  } catch {
+    // 既定値のまま動かす
+  }
+}
+
+/** 教科の実効ルール（Firestore の上書きを反映した最終形） */
+export function effectiveRule(subject: string): BattleRule {
+  return normalizeRule(subject, loadRuleSync(subject));
+}
+
+// ============================================================
+// 履歴
+// ============================================================
+
+export interface BattleHistoryItem {
+  roomId: string;
+  subject: string;
+  outcome: string;
+  myScore: number;
+  opponentScore: number;
+  opponentNickname: string;
+  ratingBefore: number;
+  ratingAfter: number;
+  playedAt?: Timestamp | null;
+}
+
+/** 自分の履歴に1件書く（自分の下にしか書けない） */
+export async function saveHistory(item: BattleHistoryItem): Promise<void> {
+  const uid = auth.currentUser?.uid;
+  if (!uid) return;
+  try {
+    await setDoc(
+      doc(db, COL_HISTORY, uid, 'items', item.roomId),
+      { ...item, uid, playedAt: serverTimestamp() },
+      { merge: true },
+    );
+  } catch {
+    // 履歴は補助情報なので、失敗しても対戦結果には影響させない
+  }
+}
+
+/** 自分の履歴を新しい順に読む */
+export async function fetchHistory(max = 20): Promise<BattleHistoryItem[]> {
+  const uid = auth.currentUser?.uid;
+  if (!uid) return [];
+  try {
+    const snap = await getDocs(
+      query(
+        collection(db, COL_HISTORY, uid, 'items'),
+        orderBy('playedAt', 'desc'),
+        limit(max),
+      ),
+    );
+    return snap.docs.map((d) => ({ roomId: d.id, ...(d.data() as object) } as BattleHistoryItem));
+  } catch {
+    return [];
+  }
+}

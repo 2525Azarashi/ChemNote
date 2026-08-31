@@ -1,0 +1,172 @@
+{
+  "batch": 3,
+  "stem": "batch03",
+  "markerWord": "Number",
+  "count": 6,
+  "chars": 2004,
+  "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = an adult female native English speaker, voice Adeline. Speaker 2 = an adult male native English speaker, voice Mark. Speaker 3 = a calm neutral exam narrator, voice Daniel, clearly distinct in timbre from both dialogue speakers, slightly slower and more formal than the dialogue. ★CRITICAL: this recording contains several independent short dialogues. Each one starts with the narrator saying \"Number one.\", \"Number two.\", and so on. Use exactly the SAME three voices for the WHOLE recording. Do NOT change any voice, accent, age or tone between the dialogues, even though the scenes are different. Leave a clear pause of about one second before each \"Number ...\" line, and a clear pause before each \"Question.\" line. Do not add any words that are not in the script.★ Scenes for context only (do not read aloud): Number one = 文房具店で客が定規を買っている。; Number two = 男女がホームパーティーの飾り付けをしている。; Number three = 男女がスマートフォンの新機種を比較している。; Number four = 男女が飛行機の座席表を見ながら席を選んでいる。; Number five = 母と息子が誕生日ケーキのデザインを決めている。; Number six = 男女が引越しの荷物をどの部屋へ運ぶか相談している。",
+  "questions": [
+    {
+      "name": "el2_set6_q2",
+      "marker": "Number one",
+      "markerWord": "one",
+      "markerIndex": 0,
+      "set": 6,
+      "q": 2,
+      "scene": "文房具店で客が定規を買っている。",
+      "speakers": "女性(客) / 男性(店員)",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "女性(客)（記号 W）",
+        "Speaker 2": "男性(店員)（記号 M）"
+      },
+      "lines": [
+        "Speaker 1: Do you have a 30-centimeter ruler?",
+        "Speaker 2: We have plastic ones and metal ones. Which do you prefer?",
+        "Speaker 1: Metal, please. And I need one with millimeter markings.",
+        "Speaker 2: OK, this one has both centimeters and millimeters.",
+        "Speaker 3: Question. Which ruler will the woman buy?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set6_q3",
+      "marker": "Number two",
+      "markerWord": "two",
+      "markerIndex": 1,
+      "set": 6,
+      "q": 3,
+      "scene": "男女がホームパーティーの飾り付けをしている。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: I brought the balloons. Should I put them over the door?",
+        "Speaker 1: The flower arch is already there. Leave the door alone.",
+        "Speaker 2: Then next to the dining table?",
+        "Speaker 1: Yes, that corner still looks empty. Put them there.",
+        "Speaker 3: Question. Where will the man put the balloons?"
+      ],
+      "rewritten": true
+    },
+    {
+      "name": "el2_set7_q1",
+      "marker": "Number three",
+      "markerWord": "three",
+      "markerIndex": 2,
+      "set": 7,
+      "q": 1,
+      "scene": "男女がスマートフォンの新機種を比較している。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: Model A has a bigger screen, but Model B has a better camera.",
+        "Speaker 1: I take a lot of photos, so the camera matters.",
+        "Speaker 2: But Model B is heavier.",
+        "Speaker 1: That's OK. Photos are the priority.",
+        "Speaker 3: Question. Which model will the woman probably choose?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set7_q3",
+      "marker": "Number four",
+      "markerWord": "four",
+      "markerIndex": 3,
+      "set": 7,
+      "q": 3,
+      "scene": "男女が飛行機の座席表を見ながら席を選んでいる。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: We can still change our seats. Do you want the window?",
+        "Speaker 1: I'd like to see outside, but my legs really need more room.",
+        "Speaker 2: Then the exit row has the most legroom on this plane.",
+        "Speaker 1: That settles it. I'll take the seat next to the exit door.",
+        "Speaker 3: Question. Which seat will the woman choose?"
+      ],
+      "rewritten": true
+    },
+    {
+      "name": "el2_set8_q1",
+      "marker": "Number five",
+      "markerWord": "five",
+      "markerIndex": 4,
+      "set": 8,
+      "q": 1,
+      "scene": "母と息子が誕生日ケーキのデザインを決めている。",
+      "speakers": "母親 / 息子",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "母親（記号 M）",
+        "Speaker 2": "息子（記号 S）"
+      },
+      "lines": [
+        "Speaker 1: Do you want strawberries or blueberries on top?",
+        "Speaker 2: Strawberries! And chocolate letters that say 'Happy Birthday'.",
+        "Speaker 1: How about chocolate flakes on the side, too?",
+        "Speaker 2: No, just plain cream on the side.",
+        "Speaker 3: Question. Which cake matches the boy's request?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set8_q3",
+      "marker": "Number six",
+      "markerWord": "six",
+      "markerIndex": 5,
+      "set": 8,
+      "q": 3,
+      "scene": "男女が引越しの荷物をどの部屋へ運ぶか相談している。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: Three boxes left: books, clothes, and kitchen things.",
+        "Speaker 1: Books go to the bedroom, and the kitchen things stay in the kitchen.",
+        "Speaker 2: Should I split the clothes between the closet and the kitchen?",
+        "Speaker 1: No, all the clothes go in the closet. One box, one room.",
+        "Speaker 3: Question. Which arrangement matches the woman's instructions?"
+      ],
+      "rewritten": true
+    }
+  ]
+}
