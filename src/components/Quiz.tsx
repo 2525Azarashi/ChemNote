@@ -612,6 +612,12 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
       justStruck={justStruck}
       longPressFired={longPressFired}
       listeningMobileNoFigure={listeningMobileNoFigure}
+      /*
+        図つきのスマホ（第1問B・第2問など）では、マークだけの選択肢を
+        4列×1行にして、浮いた約60pxを図の高さに回す。
+        listeningMobileNoFigure の裏返しなので、両方が同時に真になることはない。
+      */
+      listeningMobileWithFigure={listeningMobileSplit && !listeningMobileNoFigure}
     />
   );
 

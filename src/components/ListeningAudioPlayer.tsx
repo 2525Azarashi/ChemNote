@@ -336,6 +336,38 @@ export function ListeningAudioPlayer({
               受けて 44px（指で押せる下限）を確保した経緯がある。
               高さを 40px に削ると今度は押しにくさが再発するので、
               折り返しの解消だけで高さを取り戻す。
+
+          ★★上の「44pxは削らない」を、44px → 36px に改める★★
+            ------------------------------------------------------------
+            新しいご指摘（手書きの指示書）：
+              音源ボタン列（▷再生／▷2回再生／▷0.75倍再生／標準）に
+              「小さめに」、図に「大きめに」。
+
+            ■ なぜ前回の判断を変えるのか
+              44px を確保した当時、このボタン列は★解答ペイン側★＝
+              ①〜④ の選択肢と同じ場所にあった。だから「選択肢と
+              まぎれて押しにくい」が問題になり、44px が必要だった。
+              いまボタン列は問題文ペインに移り、上下に見出しと図しか
+              無い独立した1行になっている。まぎれる相手がいないので、
+              44px まで確保する理由が無くなった。
+
+            ■ 36px（min-h-[2.25rem]）で止める理由
+              実測（390x664・第2問）で、この列は h=44px を占め、
+              一方で図は 96x96 しか出ていなかった。
+              36px にすると 8px が図に回る。
+              ここからさらに 32px・28px と削ることもできるが、
+              ★指で押す下限（実測でボタン高 36px＝指の腹とほぼ同じ）を
+                下回らせない★。ご要望は「小さめに」であって
+                「押せなくしてよい」ではないので、
+              　図の取り分（8px）と押しやすさの釣り合う 36px にする。
+
+            ■ 幅も同時に詰める（折り返しを絶対に起こさないため）
+              上の通り、この列で本当に高さを食うのは「折り返し」。
+              高さを36pxに下げても、幅が画面を超えて2段になったら
+              36px 丸ごと損して逆効果になる。だから
+                再生 min-w 5rem→4.25rem / 2回 3.5rem→3rem /
+                速度 3rem→2.5rem、文字も 11px→10px
+              まで一緒に詰め、1段に収まる余裕を広げてから高さを下げる。
         */
         className={`flex ${
           isRow
@@ -356,7 +388,7 @@ export function ListeningAudioPlayer({
                 aria-label={`${track.label}（${track.hint}）の音源を${isPlaying ? '停止' : '再生'}`}
                 className={`flex items-center justify-center rounded-xl border-2 font-bold shadow-sm transition-all ${
                   isRow
-                    ? 'min-h-[2.75rem] min-w-[5rem] flex-1 flex-row gap-1 px-2.5 py-1.5'
+                    ? 'min-h-[2.25rem] min-w-[4.25rem] flex-1 flex-row gap-1 px-2 py-1'
                     : 'min-h-[3rem] w-[4.5rem] flex-col gap-0.5 px-1 py-1.5 sm:w-20'
                 } ${
                   speechBlocked
@@ -381,7 +413,7 @@ export function ListeningAudioPlayer({
                   aria-label={`${track.label} を本番と同じように2回続けて再生`}
                   className={`flex items-center justify-center gap-0.5 rounded-lg border font-bold transition-colors ${
                     isRow
-                      ? 'min-h-[2.75rem] min-w-[3.5rem] px-2 py-1 text-[11px]'
+                      ? 'min-h-[2.25rem] min-w-[3rem] px-1.5 py-0.5 text-[10px]'
                       : 'min-h-[2rem] w-[4.5rem] px-1 py-1 text-[10px] sm:w-20'
                   } ${
                     speechBlocked
@@ -425,7 +457,7 @@ export function ListeningAudioPlayer({
                     aria-pressed={rate === r}
                     className={`rounded-lg border font-bold transition-colors cursor-pointer ${
                       isRow
-                        ? 'min-h-[2.75rem] min-w-[3rem] px-1.5 py-1 text-[11px]'
+                        ? 'min-h-[2.25rem] min-w-[2.5rem] px-1 py-0.5 text-[10px]'
                         : 'min-h-[1.75rem] px-1 py-0.5 text-[10px]'
                     } ${rate === r ? activeBtnClass : idleBtnClass}`}
                   >

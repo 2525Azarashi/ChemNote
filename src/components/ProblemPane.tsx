@@ -352,7 +352,35 @@ export function ProblemPane({
                 長い設問文まで見出し行に押し込むと、逆に見出し行が
                 2〜3行に折り返して高さが増えてしまう（本末転倒）。
             */
-            const inlineBody = body && body.length <= 20 ? body : '';
+            /*
+              ★「20文字」を「見た目の幅20文字ぶん」に改める★
+              ------------------------------------------------------------
+              ご指摘（手書きの指示書）：第2問の図が小さすぎる。
+
+              ■ 何が起きていたか（390x664・第2問・問1 で実測）
+                第2問の設問文は英語の一言
+                  「What will the man drink?」
+                で、日本語なら一目で1行と分かる短さなのに、
+                body.length は★24★。しきい値20を超えるので
+                blockBody（見出しの下の独立した段落）に落ちていた。
+                その結果
+                  見出し 32px ＋ 設問文 24px ＋ 下余白 12px
+                と2行ぶんを使い、図の取り分が 36px 減っていた
+                （実測：第1問B の図 134px に対し第2問は 96px）。
+
+              ■ 直し方：文字数ではなく「表示上の幅」で測る
+                英数字・記号は日本語のほぼ半分の幅しか取らない。
+                そこで ASCII は 0.5 文字、それ以外は 1 文字として
+                合計幅を出し、これが 20 以下なら見出し行に載せる。
+                  「What will the man drink?」 → 幅 12 → 見出し行へ
+                  「発話に合うイラスト」        → 幅 9  → 見出し行へ（従来どおり）
+                  長い英文の問い（60文字超）    → 幅 30〜 → 従来どおり段落へ
+                しきい値そのもの（20）は動かさないので、
+                日本語の設問文の振り分けは一切変わらない。
+            */
+            const displayWidthOf = (t: string) =>
+              [...t].reduce((w, ch) => w + (ch.charCodeAt(0) < 0x80 ? 0.5 : 1), 0);
+            const inlineBody = body && displayWidthOf(body) <= 20 ? body : '';
             const blockBody = inlineBody ? '' : body;
             /*
               ★英文法：英文そのものを必ず出す（ご要望11）★
@@ -389,7 +417,10 @@ export function ProblemPane({
               <div className={listeningMobileSplit ? 'flex min-h-0 flex-1 flex-col' : 'mb-4'}>
                 {/* いま解いている問の見出し。回の中で迷子にならないよう
                     「問2 / 全4問」まで添える。 */}
-                <div className={`flex items-center gap-2 flex-wrap ${inlineBody ? 'mb-2' : 'mb-2.5'}`}>
+                <div className={`flex items-center gap-2 flex-wrap ${
+                  // 図つきのスマホでは、この 8px も図に回す。
+                  listeningMobileSplit ? 'mb-1.5' : inlineBody ? 'mb-2' : 'mb-2.5'
+                }`}>
                   <span className="font-bold text-white text-sm bg-[#2C3E50] py-1.5 px-3.5 rounded-lg shadow-sm shrink-0">
                     {formatText(stepMarker)}
                   </span>
@@ -474,11 +505,38 @@ export function ProblemPane({
                 {activeStepSub.imageUrl && (
                   <QuestionFigure
                     src={activeStepSub.imageUrl}
-                    caption={activeStepSub.imageCaption}
+                    /*
+                      ★スマホの図つきリスニングでは図の説明を出さない★
+                      ご指摘（手書きの指示書）：
+                        「図の説明はいらない」「なにもなし」
+
+                      実測（390x664・第2問）で、figcaption
+                      「問1 の選択肢イラスト（①〜④の4枚）」は 20px を
+                      占めていた。図の中身（①〜④のイラスト）を見れば
+                      「選択肢のイラストが4枚ある」ことは自明なので、
+                      この20pxは説明として払う価値がない。
+                      figure は fill（余り高さいっぱい）なので、
+                      消した20pxはそのまま図の高さに変わる。
+
+                      ★データ側（imageCaption）は消さない★
+                        解説画面（Explanation.tsx）や PC では図が小さく
+                        並ぶので説明が要る。ここで渡さないだけにして、
+                        影響範囲をこの画面に閉じる。
+
+                      ★alt は必ず明示する★
+                        QuestionFigure は alt が無いとき caption を
+                        代わりに使う実装なので、caption を落とすだけだと
+                        スクリーンリーダー向けの説明も同時に消えてしまう。
+                        画面には出さず、alt にだけ残す。
+                    */
+                    caption={listeningMobileSplit ? undefined : activeStepSub.imageCaption}
+                    alt={activeStepSub.imageCaption || undefined}
                     tone="light"
                     // 図が高さ上限に張り付いている（実測で余り 0px）ので、
                     // 上余白も 12px → 8px に詰めて図の取り分に回す。
-                    className={listeningMobileSplit ? 'mt-2' : 'mt-3'}
+                    // 図は「余り高さいっぱい」なので、上余白を削ったぶんは
+                    // そのまま図の高さに変わる。8px → 4px。
+                    className={listeningMobileSplit ? 'mt-1' : 'mt-3'}
                     fill={listeningMobileSplit}
                     imgClassName={
                       listeningMobileSplit ? '' : 'max-h-[42vh] md:max-h-[52vh] object-contain'

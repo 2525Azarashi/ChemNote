@@ -81,6 +81,9 @@ const DERIVED = read('src/hooks/useQuestionDerived.ts');
 const EXPL = read('src/components/Explanation.tsx');
 const PLAYER = read('src/components/ListeningAudioPlayer.tsx');
 const FIGURE = read('src/components/QuestionFigure.tsx');
+// 選択肢ボタンの並べ方（①②③④ のグリッド／本文つき選択肢の縦積み）は
+// components/MultipleChoiceControl.tsx が持つ。
+const CHOICE = read('src/components/MultipleChoiceControl.tsx');
 
 const chapter = (id: string) => {
   const c = getAllListeningChapters().find((x) => x.id === id);
@@ -369,8 +372,17 @@ describe('D3: 図を選択肢の中に載せない（見にくさの解消）', 
   it('図がある大問は解答カードの余白を詰めて図に高さを譲る（タップ領域は減らさない）', () => {
     // 図がある大問（listeningMobileSplit かつ図あり）だけ p-5 → py-3.5。
     expect(ANSWER).toContain("? 'px-3 py-3.5'");
-    // 図の上余白も 12px → 8px。
-    expect(PROBLEM).toContain("className={listeningMobileSplit ? 'mt-2' : 'mt-3'}");
+    /*
+      図の上余白は 12px → 8px → ★4px★ と段階的に詰めてきた。
+
+      ★8px → 4px にした理由★
+        ご指摘（手書きの指示書）「第1問B・第2問の図を大きめに」。
+        figure は fill（余り高さいっぱい）なので、上余白を削った分は
+        そのまま図の高さに変わる。見出しと図のあいだは 4px でも
+        「別のもの」と分かる（見出しは太字・図は枠付き）ので、
+        ここは払う価値のない余白と判断した。
+    */
+    expect(PROBLEM).toContain("className={listeningMobileSplit ? 'mt-1' : 'mt-3'}");
     // 選択肢ボタン自身の最小高さ（3rem = 48px）は据え置き。
     expect(ANSWER).toContain('min-h-[3rem]');
   });
@@ -638,20 +650,41 @@ describe('D5: 音源は問題ブロックに横帯で置く（押しやすさ）
   });
 
   /**
-   * ★このテストが守るのは「高さ44px」だけ★
+   * ★このテストが守るのは「高さの下限」だけ（幅は対象外）★
    *
    * もとは min-h と min-w をひとつなぎの文字列で照合していたが、
    * それだと「幅を詰める」修正まで落ちてしまう。
    * 実際、ご指摘11
    *   「再生ボタンがまた少し大きくなったせいで、④の選択肢みたいに
    *     少し下に隠れちゃってる」
-   * の対策は「横幅を詰めて 2 段の折り返しを 1 段に戻す」ことであり、
-   * 高さ 44px は据え置きたい（＝落としてはいけないのは高さのほう）。
+   * の対策は「横幅を詰めて 2 段の折り返しを 1 段に戻す」ことだった。
+   * だから幅は固定せず、高さの下限だけをここで守る。
    *
-   * 44px は「選択肢のところに設置しても押しずらい」というご指摘を受けて
-   * 確保した指で押せる下限なので、ここは幅と切り離して固定する。
+   * ★★下限を 44px → 36px に改める★★
+   * ------------------------------------------------------------------
+   * ご指摘（手書きの指示書）：
+   *   ▷再生／▷2回再生／▷0.75倍再生／標準再生 の列を「小さめに」。
+   *   あわせて第1問B・第2問の図を「大きめに」。
+   *
+   * ■ 44px を確保した当時の前提は、いまは成り立たない
+   *     44px は「選択肢のところに設置しても押しずらい」というご指摘への
+   *     対策だった。当時この列は★解答ペイン側★にあり、①〜④のすぐ隣で
+   *     「選択肢とまぎれて押しにくい」ことが問題だった。
+   *     いまはこの列は問題文ペインに移り、上下に見出しと図しかない
+   *     独立した1行になっている。まぎれる相手がいないので、
+   *     44px を確保していた理由そのものが消えた。
+   *
+   * ■ なぜ 36px で止めるのか（0 まで下げないのか）
+   *     「小さめに」は「押せなくしてよい」ではない。36px は
+   *     指で押せる実用上の下限（Material のタッチターゲット下限 36dp）で、
+   *     実測（390x664・第1問B / 第2問）でも 1行のまま折り返さずに収まり、
+   *     押し間違いは起きなかった。ここより下げるのは根拠がない。
+   *
+   * ■ 削った 8px は図に変わる
+   *     figure は fill（余り高さいっぱい）なので、この列が縮んだ分は
+   *     そのまま図の高さになる。実測で図は 96x96 → 236x236 になった。
    */
-  it('横帯のボタンはどれも高さ 44px 以上のタップ領域を持つ', () => {
+  it('横帯のボタンはどれも高さ 36px 以上のタップ領域を持つ', () => {
     /*
      * 計測対象は「isRow（横帯）のときに選ばれる側」の min-h だけ。
      *
@@ -667,11 +700,159 @@ describe('D5: 音源は問題ブロックに横帯で置く（押しやすさ）
     // 再生／2回／速度 の3種はいずれも横帯分岐を持つ
     expect(rowMinHeights.length).toBeGreaterThanOrEqual(3);
     for (const rem of rowMinHeights) {
-      expect(rem * 16).toBeGreaterThanOrEqual(44);
+      // 指で押せる下限。これ未満に縮めるのは「小さめに」を通り越して
+      // 「押せない」になるので、ここで止める。
+      expect(rem * 16).toBeGreaterThanOrEqual(36);
+    }
+  });
+
+  /*
+    ★退行防止：この列を 44px に戻さない★
+    「タップ領域は 44px 以上」という一般論だけを根拠に戻されやすいので、
+    上限側も固定しておく。44px が必要だったのは
+    ★解答ペインで①〜④とまぎれていたとき★の話で、
+    いまは問題文ペインの独立した1行なので当てはまらない。
+    戻すと図が 8px ぶん小さくなり、ご指摘（「図が小さすぎて見づらい」）に
+    逆行する。
+  */
+  it('★退行防止★ 横帯のボタンを 44px まで戻さない（図に高さを譲る）', () => {
+    const rowMinHeights = [...PLAYER.matchAll(/isRow\s*\n?\s*\?\s*'min-h-\[([0-9.]+)rem\]/g)].map(
+      (m) => parseFloat(m[1]),
+    );
+    expect(rowMinHeights.length).toBeGreaterThanOrEqual(3);
+    for (const rem of rowMinHeights) {
+      expect(rem * 16).toBeLessThanOrEqual(36);
     }
   });
 
   it('見出しつきパネル（panel）は復活していない', () => {
     expect(QUIZ).not.toMatch(/<ListeningAudioPlayer(?![\s\S]{0,400}?variant="inline")/);
+  });
+});
+
+// =====================================================================
+// D6: 図つきスマホでは「図に高さを譲る」
+// =====================================================================
+/**
+ * ご指摘（手書きの指示書・逐語）：
+ *   > 第１問Bと第２問のすまほのUi 変えてほしい
+ *   > 普通に図が小さすぎてみずらいからね
+ * 添付のワイヤーフレームには
+ *   ・2x2グリッド（①②③④）の縦横に「大きめに」
+ *   ・▷再生／▷2回再生／▷0.75倍再生／標準再生 の右に「小さめに」
+ *   ・赤字で「図の説明はいらない」「なにもなし」
+ * と書かれていた。
+ *
+ * ★この画面で図を大きくする唯一の方法は「枠の高さを増やす」こと★
+ *   img は max-h-full ＋ object-contain が必須（枠から溢れさせないため）で、
+ *   このとき絵の実寸は min(枠の幅 / 比, 枠の高さ) ＝ 高さで律速されている。
+ *   だから w-full を足しても絵は 1px も大きくならない
+ *   （実測で確認し、撤回した。詳細は QuestionFigure.tsx のコメント）。
+ *   高さを食っている兄弟要素を削る以外に手がない。
+ *
+ * ここでは、その「削った先」が元に戻されないように固定する。
+ * 実測（390x664）：図 第1問B 134x134 → 236x236 ／ 第2問 96x96 → 236x236。
+ */
+describe('D6: 図つきスマホでは図に高さを譲る（図が小さすぎる問題）', () => {
+  /*
+    ★図の説明（figcaption）は画面に出さない★
+    実測で「問1 の選択肢イラスト（①〜④の4枚）」は 20px を占めていた。
+    図の中身を見れば自明な説明なので、この20pxは払う価値がない。
+  */
+  it('図の説明（キャプション）はスマホの図つきリスニングでは出さない', () => {
+    expect(PROBLEM).toContain('caption={listeningMobileSplit ? undefined : activeStepSub.imageCaption}');
+  });
+
+  /*
+    ★データ側（imageCaption）は消していない★
+    解説画面や PC では図が小さく並ぶので説明が要る。
+    ここで渡さないだけにして、影響範囲をこの画面に閉じている。
+  */
+  it('キャプションはデータから消さない（解説側では従来どおり出す）', () => {
+    expect(EXPL).toContain('imageCaption');
+  });
+
+  /*
+    ★alt は必ず明示する★
+    QuestionFigure は alt が無いとき caption を代わりに使う実装なので、
+    caption を落とすだけだとスクリーンリーダー向けの説明も同時に消える。
+    画面には出さず、alt にだけ残す。
+  */
+  it('画面から消したキャプションは alt に残す（読み上げを失わない）', () => {
+    expect(PROBLEM).toContain('alt={activeStepSub.imageCaption || undefined}');
+  });
+
+  /*
+    ★短い設問文は見出し行に載せる（36px を図へ）★
+    第2問の設問文は英語の一言「What will the man drink?」で、
+    日本語なら一目で1行と分かる短さなのに body.length は 24。
+    文字数のしきい値20を超えるので独立した段落（h=24＋下余白12px）に
+    落ちて、図の取り分が 36px 減っていた
+    （実測：第1問B の図 134px に対し第2問は 96px）。
+    ASCII を 0.5 文字として数える「表示幅」に変えて解決した。
+    しきい値そのもの（20）は動かしていないので、
+    日本語の設問文の振り分けは一切変わらない。
+  */
+  it('設問文の長短は「文字数」ではなく「表示上の幅」で判定する', () => {
+    expect(PROBLEM).toContain('const displayWidthOf =');
+    expect(PROBLEM).toContain('displayWidthOf(body) <= 20');
+    // ASCII は半分の幅として数える（英語の一言が長文扱いされないように）
+    expect(PROBLEM).toContain('0x80');
+  });
+
+  it('表示幅の判定は英語の一言を見出し行に載せ、長い英文は段落に落とす', () => {
+    // ソースと同じ式をここでも組み、境界の振り分けを数値で確かめる。
+    const displayWidthOf = (t: string) =>
+      [...t].reduce((w, ch) => w + (ch.charCodeAt(0) < 0x80 ? 0.5 : 1), 0);
+    // 第2問の設問文：文字数は24（=旧しきい値20超）だが表示幅は12
+    expect('What will the man drink?'.length).toBeGreaterThan(20);
+    expect(displayWidthOf('What will the man drink?')).toBeLessThanOrEqual(20);
+    // 日本語の短い設問文は従来どおり見出し行
+    expect(displayWidthOf('発話に合うイラスト')).toBeLessThanOrEqual(20);
+    // 長い英文の問いは従来どおり段落へ
+    expect(
+      displayWidthOf('Which of the following best describes the speaker attitude toward the plan?'),
+    ).toBeGreaterThan(20);
+  });
+
+  /*
+    ★①②③④ は図つきスマホだけ4列1行にする（64px を図へ）★
+    実測：grid-cols-2 は 52px×2行＋行間8px＝112px、
+          grid-cols-4 は 48px×1行＝48px。
+    4列でも 1つ 88x48px あり、指で押す下限（44x44px）を上下とも超える。
+  */
+  it('マークだけの選択肢は図つきスマホで4列1行に並べる', () => {
+    expect(CHOICE).toContain('listeningMobileWithFigure');
+    expect(CHOICE).toContain("listeningMobileWithFigure ? 'grid-cols-4 md:grid-cols-2' : 'grid-cols-2'");
+    // PC は従来の2列に戻す（md: 以上）
+    expect(CHOICE).toContain('md:grid-cols-2');
+  });
+
+  it('4列にしても選択肢ボタンの最小高さ（3rem=48px）は据え置く', () => {
+    expect(ANSWER).toContain('min-h-[3rem]');
+  });
+
+  /*
+    ★図あり／図なしで選択肢の扱いは逆になる★
+    図なし大問（listeningMobileNoFigure）は逆に「背を伸ばして押しやすく」が
+    正解なので、両者を同じ分岐にまとめてはいけない。
+    Quiz.tsx の式で、両方が同時に真にならないことを担保している。
+  */
+  it('図つき用の分岐は図なし用の分岐と排他にする', () => {
+    expect(QUIZ).toContain('listeningMobileWithFigure={listeningMobileSplit && !listeningMobileNoFigure}');
+  });
+
+  /*
+    ★退行防止：fill モードの img を w-full に戻さない★
+    「横幅が空いているのだから幅基準に倒せば大きくなる」という発想で
+    戻されやすいが、max-h-full ＋ object-contain がある限り
+    絵の実寸は高さで律速されたままで 1px も大きくならない。
+    実測では 236x236 の絵に 366px 幅の枠が付き、
+    「枠の中で絵が中央に浮く」不自然な見た目になった
+    （枠は冊子の図枠の再現なので、絵より広いと意味が壊れる）。
+  */
+  it('★退行防止★ fill の img を幅基準（w-full）に切り替えない', () => {
+    expect(FIGURE).toContain("? 'w-auto max-w-full min-h-0 max-h-full object-contain'");
+    expect(FIGURE).not.toContain("? 'w-full max-w-full min-h-0 max-h-full object-contain'");
   });
 });
