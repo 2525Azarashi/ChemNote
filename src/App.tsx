@@ -214,15 +214,16 @@ import {
 import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './utils/studySync';
 import { TeacherDashboard } from './components/TeacherDashboard';
 import { FeedbackAdminPanel } from './components/FeedbackAdminPanel';
+import { BattleMode } from './battle/ui/BattleMode';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin' | 'battle';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 const APP_STATES = new Set<AppState>([
   'home', 'mode_selection', 'chapters', 'quiz', 'explanation', 'learning', 'intro',
   'flowchart', 'study_hub', 'note_detail', 'onboarding', 'logical_tree', 'settings',
   'leaderboard', 'mock_exam', 'subject_selection', 'advanced_fields', 'teacher_dashboard',
-  'feedback_admin',
+  'feedback_admin', 'battle',
 ]);
 const APP_MODES = new Set<AppMode>(['mini_test', 'practice', 'learning']);
 
@@ -1331,13 +1332,23 @@ export default function App() {
                 onBack={() => setAppState('home')}
               />
             )}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
             {/* ★ルーティング側の門（4箇所のうちの3番目）★
                 ナビのボタンを隠すだけでは、Home の「ランキングを見る」など
                 別の導線からこの状態になれてしまう。
                 描画の受け口でも同じフラグを見て、
                 「見えないのに入れる」状態を作らない。 */}
             {appState === 'leaderboard' && FEATURES.ranking && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
+            {/* ★対戦モード（ルーティング側の門）★
+                ホームのボタンを隠すだけでは、localStorage に残った
+                appState='battle' から復元して入れてしまう。
+                描画の受け口でも同じフラグを見る（既存のランキングと同じ作り）。 */}
+            {appState === 'battle' && FEATURES.battle && (
+              <BattleMode
+                onExit={() => setAppState('home')}
+                onRequireLogin={() => setAppState('onboarding')}
+              />
+            )}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
             {appState === 'logical_tree' && <LogicalTree />}
             {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} />}

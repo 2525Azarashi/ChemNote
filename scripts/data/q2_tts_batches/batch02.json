@@ -1,0 +1,172 @@
+{
+  "batch": 2,
+  "stem": "batch02",
+  "markerWord": "Number",
+  "count": 6,
+  "chars": 1757,
+  "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = an adult female native English speaker, voice Adeline. Speaker 2 = an adult male native English speaker, voice Mark. Speaker 3 = a calm neutral exam narrator, voice Daniel, clearly distinct in timbre from both dialogue speakers, slightly slower and more formal than the dialogue. ★CRITICAL: this recording contains several independent short dialogues. Each one starts with the narrator saying \"Number one.\", \"Number two.\", and so on. Use exactly the SAME three voices for the WHOLE recording. Do NOT change any voice, accent, age or tone between the dialogues, even though the scenes are different. Leave a clear pause of about one second before each \"Number ...\" line, and a clear pause before each \"Question.\" line. Do not add any words that are not in the script.★ Scenes for context only (do not read aloud): Number one = 男女が公園の案内図を見ながら待ち合わせ場所を決めている。; Number two = 男女がリサイクル用のごみを分別している。; Number three = 男女が水族館の館内図を見ている。; Number four = 父と娘が娘の自転車のパンクについて話している。; Number five = 女性が写真の中の子供を紹介している。; Number six = 男女が旅行先の天気予報を見ている。",
+  "questions": [
+    {
+      "name": "el2_set4_q1",
+      "marker": "Number one",
+      "markerWord": "one",
+      "markerIndex": 0,
+      "set": 4,
+      "q": 1,
+      "scene": "男女が公園の案内図を見ながら待ち合わせ場所を決めている。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: Should we meet at the fountain?",
+        "Speaker 1: It's too crowded there on Sundays.",
+        "Speaker 2: The bench near the playground, then?",
+        "Speaker 1: How about under the big tree by the pond? It's quiet.",
+        "Speaker 3: Question. Where will they meet?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set4_q2",
+      "marker": "Number two",
+      "markerWord": "two",
+      "markerIndex": 1,
+      "set": 4,
+      "q": 2,
+      "scene": "男女がリサイクル用のごみを分別している。",
+      "speakers": "女性 / 男性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "女性（記号 W）",
+        "Speaker 2": "男性（記号 M）"
+      },
+      "lines": [
+        "Speaker 1: This empty juice bottle goes in the plastic bin, right?",
+        "Speaker 2: Actually, that's a glass bottle. It has a different bin.",
+        "Speaker 1: Oh, so where does it go?",
+        "Speaker 2: See the one with the wine glass symbol on it? Over there.",
+        "Speaker 3: Question. Which bin will the woman use?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set4_q3",
+      "marker": "Number three",
+      "markerWord": "three",
+      "markerIndex": 2,
+      "set": 4,
+      "q": 3,
+      "scene": "男女が水族館の館内図を見ている。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: Let's see the penguins first.",
+        "Speaker 1: They're on the second floor. The dolphins are on the first floor.",
+        "Speaker 2: Then let's start with dolphins and then go up to penguins.",
+        "Speaker 1: OK, but let's skip the shark tank. We saw it last time.",
+        "Speaker 3: Question. Which route will they take?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set5_q2",
+      "marker": "Number four",
+      "markerWord": "four",
+      "markerIndex": 3,
+      "set": 5,
+      "q": 2,
+      "scene": "父と娘が娘の自転車のパンクについて話している。",
+      "speakers": "父親 / 娘(中学生)",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "父親（記号 F）",
+        "Speaker 2": "娘(中学生)（記号 D）"
+      },
+      "lines": [
+        "Speaker 2: Which tire is flat, the front or the back?",
+        "Speaker 1: The back one. And the light on the front is broken too.",
+        "Speaker 2: OK, I'll fix both this weekend.",
+        "Speaker 1: Thanks, Dad.",
+        "Speaker 3: Question. What is the condition of the bicycle?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set5_q3",
+      "marker": "Number five",
+      "markerWord": "five",
+      "markerIndex": 4,
+      "set": 5,
+      "q": 3,
+      "scene": "女性が写真の中の子供を紹介している。",
+      "speakers": "女性 / 男性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "女性（記号 W）",
+        "Speaker 2": "男性（記号 M）"
+      },
+      "lines": [
+        "Speaker 1: This is my nephew's birthday party. Can you guess which is my nephew?",
+        "Speaker 2: The boy with the party hat?",
+        "Speaker 1: No, he's my nephew's friend. My nephew is the one blowing out the candles.",
+        "Speaker 2: Oh, the one without a hat!",
+        "Speaker 3: Question. Which boy is the woman's nephew?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set6_q1",
+      "marker": "Number six",
+      "markerWord": "six",
+      "markerIndex": 5,
+      "set": 6,
+      "q": 1,
+      "scene": "男女が旅行先の天気予報を見ている。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: It's going to rain on Saturday, our first day.",
+        "Speaker 1: And Sunday?",
+        "Speaker 2: Cloudy, but no rain.",
+        "Speaker 1: Good, we can go hiking on Sunday, then.",
+        "Speaker 3: Question. What will the weather be on Sunday?"
+      ],
+      "rewritten": false
+    }
+  ]
+}

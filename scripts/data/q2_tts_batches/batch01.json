@@ -1,0 +1,172 @@
+{
+  "batch": 1,
+  "stem": "batch01",
+  "markerWord": "Number",
+  "count": 6,
+  "chars": 1552,
+  "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = an adult female native English speaker, voice Adeline. Speaker 2 = an adult male native English speaker, voice Mark. Speaker 3 = a calm neutral exam narrator, voice Daniel, clearly distinct in timbre from both dialogue speakers, slightly slower and more formal than the dialogue. ★CRITICAL: this recording contains several independent short dialogues. Each one starts with the narrator saying \"Number one.\", \"Number two.\", and so on. Use exactly the SAME three voices for the WHOLE recording. Do NOT change any voice, accent, age or tone between the dialogues, even though the scenes are different. Leave a clear pause of about one second before each \"Number ...\" line, and a clear pause before each \"Question.\" line. Do not add any words that are not in the script.★ Scenes for context only (do not read aloud): Number one = 男女がカフェで注文について話している。; Number two = 母と息子が息子の部屋の片付けについて話している。; Number three = 店員と客が服のサイズについて話している。; Number four = 男女が友人へのプレゼントを選んでいる。; Number five = 男女がクラス写真の中で友人を探している。; Number six = 男女がホテルの部屋を選んでいる。",
+  "questions": [
+    {
+      "name": "el2_set1_q1",
+      "marker": "Number one",
+      "markerWord": "one",
+      "markerIndex": 0,
+      "set": 1,
+      "q": 1,
+      "scene": "男女がカフェで注文について話している。",
+      "speakers": "女性(店員) / 男性(客)",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "女性(店員)（記号 W）",
+        "Speaker 2": "男性(客)（記号 M）"
+      },
+      "lines": [
+        "Speaker 1: Would you like anything to drink with your sandwich?",
+        "Speaker 2: I'll have coffee, please. No sugar, but with milk.",
+        "Speaker 1: Ice or hot?",
+        "Speaker 2: Hot, please.",
+        "Speaker 3: Question. What will the man drink?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set1_q2",
+      "marker": "Number two",
+      "markerWord": "two",
+      "markerIndex": 1,
+      "set": 1,
+      "q": 2,
+      "scene": "母と息子が息子の部屋の片付けについて話している。",
+      "speakers": "母親 / 息子(高校生)",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "母親（記号 M）",
+        "Speaker 2": "息子(高校生)（記号 K）"
+      },
+      "lines": [
+        "Speaker 1: Ken, please put your books on the shelf.",
+        "Speaker 2: OK. On the top shelf?",
+        "Speaker 1: No, the middle one. The top is for the photo albums.",
+        "Speaker 2: Got it.",
+        "Speaker 3: Question. Where will Ken put the books?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set1_q3",
+      "marker": "Number three",
+      "markerWord": "three",
+      "markerIndex": 2,
+      "set": 1,
+      "q": 3,
+      "scene": "店員と客が服のサイズについて話している。",
+      "speakers": "女性(客) / 男性(店員)",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "女性(客)（記号 W）",
+        "Speaker 2": "男性(店員)（記号 M）"
+      },
+      "lines": [
+        "Speaker 1: Do you have this shirt in a smaller size?",
+        "Speaker 2: We have small and extra-small. Which would you like?",
+        "Speaker 1: Small, please. And in blue if possible.",
+        "Speaker 2: Sure, here's a small blue one.",
+        "Speaker 3: Question. Which shirt did the woman get?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set2_q1",
+      "marker": "Number four",
+      "markerWord": "four",
+      "markerIndex": 3,
+      "set": 2,
+      "q": 1,
+      "scene": "男女が友人へのプレゼントを選んでいる。",
+      "speakers": "男性(大学生) / 女性(大学生)",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性(大学生)（記号 M）",
+        "Speaker 2": "女性(大学生)（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: How about this mug with cats on it?",
+        "Speaker 1: She likes dogs, not cats.",
+        "Speaker 2: Then this mug with a dog?",
+        "Speaker 1: Perfect. And it comes in a gift box, right?",
+        "Speaker 3: Question. Which item will they buy?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set2_q3",
+      "marker": "Number five",
+      "markerWord": "five",
+      "markerIndex": 4,
+      "set": 2,
+      "q": 3,
+      "scene": "男女がクラス写真の中で友人を探している。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: Which one is your brother?",
+        "Speaker 1: He's the tallest one in the back row.",
+        "Speaker 2: The one with glasses?",
+        "Speaker 1: No, next to him. He's wearing a striped shirt.",
+        "Speaker 3: Question. Which boy is the woman's brother?"
+      ],
+      "rewritten": false
+    },
+    {
+      "name": "el2_set3_q2",
+      "marker": "Number six",
+      "markerWord": "six",
+      "markerIndex": 5,
+      "set": 3,
+      "q": 2,
+      "scene": "男女がホテルの部屋を選んでいる。",
+      "speakers": "男性 / 女性",
+      "voices": {
+        "Speaker 1": "Adeline（女性役）",
+        "Speaker 2": "Mark（男性役）",
+        "Speaker 3": "Daniel（ナレーター）"
+      },
+      "originalVoiceMap": {
+        "Speaker 1": "男性（記号 M）",
+        "Speaker 2": "女性（記号 W）"
+      },
+      "lines": [
+        "Speaker 2: There's a room with a mountain view and one with a sea view.",
+        "Speaker 1: The sea view sounds nice.",
+        "Speaker 2: But it's twice the price.",
+        "Speaker 1: Then let's go with the mountain view.",
+        "Speaker 3: Question. Which room will they choose?"
+      ],
+      "rewritten": false
+    }
+  ]
+}

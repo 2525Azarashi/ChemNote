@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 /*
@@ -80,6 +80,8 @@ interface HomeProps {
   onNoteList: () => void;
   onLogicalTree: () => void;
   onLeaderboard?: () => void;
+  /** 対戦モードを開く。FEATURES.battle が false のときは渡されない */
+  onBattle?: () => void;
   onReviewList?: () => void;
   /** 科目選択（タイトル）画面へ戻る */
   onChangeSubject?: () => void;
@@ -109,7 +111,7 @@ interface HomeProps {
   onToggleBgm?: (enabled: boolean) => void;
 }
 
-export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest, isBgmEnabled, isBgmFadedOut, onToggleBgm }: HomeProps) {
+export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onBattle, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest, isBgmEnabled, isBgmFadedOut, onToggleBgm }: HomeProps) {
   const reviewDueCount = useMemo(() => {
     const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
     return getDueCount(uid);
@@ -814,6 +816,29 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             </div>
             <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
           </button>
+
+          {/* ===== 対戦モード =====
+              フラグが false のとき、または onBattle が渡されていないときは
+              このカード自体を描かない（「見えるのに入れない」を作らない）。
+              見た目は既存のセカンダリカードと同じ樣式に揃えている。 */}
+          {onBattle && (
+            <button
+              onClick={onBattle}
+              aria-label="対戦モードを開く"
+              className="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
+            >
+              <div className="w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
+                <Swords className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">対戦モード</div>
+                <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">
+                  友だちと1对1で早解き
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
+            </button>
+          )}
 
           {/* ご意見・ご要望（タイトル画面からの意見収集入口）
               学習ノート／アプリ紹介と同じカード様式に揃え、

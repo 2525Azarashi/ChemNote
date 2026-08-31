@@ -1,0 +1,5 @@
+Speaker 1: The temperature rose sharply for the first 10 minutes.
+Speaker 2: Yes, then it stayed the same for a while.
+Speaker 1: And after 20 minutes, it dropped slightly.
+Speaker 2: Right, and then it stayed flat again.
+Speaker 3: Question. Which graph matches?

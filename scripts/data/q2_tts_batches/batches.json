@@ -1,0 +1,96 @@
+[
+  {
+    "batch": 1,
+    "stem": "batch01",
+    "count": 6,
+    "chars": 1552,
+    "names": [
+      "el2_set1_q1",
+      "el2_set1_q2",
+      "el2_set1_q3",
+      "el2_set2_q1",
+      "el2_set2_q3",
+      "el2_set3_q2"
+    ]
+  },
+  {
+    "batch": 2,
+    "stem": "batch02",
+    "count": 6,
+    "chars": 1757,
+    "names": [
+      "el2_set4_q1",
+      "el2_set4_q2",
+      "el2_set4_q3",
+      "el2_set5_q2",
+      "el2_set5_q3",
+      "el2_set6_q1"
+    ]
+  },
+  {
+    "batch": 3,
+    "stem": "batch03",
+    "count": 6,
+    "chars": 2004,
+    "names": [
+      "el2_set6_q2",
+      "el2_set6_q3",
+      "el2_set7_q1",
+      "el2_set7_q3",
+      "el2_set8_q1",
+      "el2_set8_q3"
+    ]
+  },
+  {
+    "batch": 4,
+    "stem": "batch04",
+    "count": 6,
+    "chars": 1714,
+    "names": [
+      "el2_set9_q1",
+      "el2_set9_q2",
+      "el2_set9_q3",
+      "el2_set10_q1",
+      "el2_set10_q3",
+      "el2_set11_q1"
+    ]
+  },
+  {
+    "batch": 5,
+    "stem": "batch05",
+    "count": 6,
+    "chars": 1787,
+    "names": [
+      "el2_set11_q2",
+      "el2_set11_q3",
+      "el2_set12_q1",
+      "el2_set12_q2",
+      "el2_set12_q3",
+      "el2_set13_q1"
+    ]
+  },
+  {
+    "batch": 6,
+    "stem": "batch06",
+    "count": 6,
+    "chars": 1689,
+    "names": [
+      "el2_set13_q2",
+      "el2_set13_q3",
+      "el2_set14_q1",
+      "el2_set14_q3",
+      "el2_set15_q1",
+      "el2_set15_q2"
+    ]
+  },
+  {
+    "batch": 7,
+    "stem": "batch07",
+    "count": 2,
+    "chars": 598,
+    "names": [
+      "el2_set15_q3",
+      "el2_set16_q2"
+    ]
+  }
+]

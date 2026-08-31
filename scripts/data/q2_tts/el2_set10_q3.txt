@@ -1,0 +1,5 @@
+Speaker 1: How much for this vase and this teapot?
+Speaker 2: The vase is 500 yen, the teapot 800. Both together, 1200 yen.
+Speaker 1: I'll take just the teapot.
+Speaker 2: Actually, if you take both, I'll make it 1000.
+Speaker 3: Question. How much will the woman pay?

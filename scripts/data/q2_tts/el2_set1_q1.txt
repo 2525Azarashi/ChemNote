@@ -1,0 +1,5 @@
+Speaker 1: Would you like anything to drink with your sandwich?
+Speaker 2: I'll have coffee, please. No sugar, but with milk.
+Speaker 1: Ice or hot?
+Speaker 2: Hot, please.
+Speaker 3: Question. What will the man drink?

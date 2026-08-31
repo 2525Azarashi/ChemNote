@@ -63,6 +63,15 @@ __pycache__/
 chemnote_*.tar.gz
 
 # クラッシュダンプ（ビルドが OOM/SIGABRT で落ちたときに生成される。1GB超になることがある）
-core
-core.*
+#
+# ★先頭の / は必須★
+#   / を付けないと「どの階層の core という名前でも無視」になり、
+#   src/battle/core/ のような ★ソースのディレクトリまで丸ごと消える★。
+#   実際に対戦モードを入れたとき、純ロジック5ファイル
+#   （battleCore.ts / types.ts / battleRules.ts / serverClock.ts / connection.ts）が
+#   git add されず、テストだけ緑でアプリが動かない状態になりかけた。
+#   クラッシュダンプはビルドを実行したリポジトリ直下にしか出ないので、
+#   / でルート限定にするのが正しい。
+/core
+/core.*
 scripts/data/q2_raw/

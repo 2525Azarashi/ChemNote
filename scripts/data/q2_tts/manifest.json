@@ -1,0 +1,572 @@
+[
+  {
+    "name": "el2_set1_q1",
+    "audioUrl": "/listening_audio/el2_set1_q1.mp3",
+    "set": 1,
+    "q": 1,
+    "scene": "男女がカフェで注文について話している。",
+    "speakers": "女性(店員) / 男性(客)",
+    "voiceMap": {
+      "Speaker 1": "女性(店員)（記号 W）",
+      "Speaker 2": "男性(客)（記号 M）"
+    },
+    "script": "Speaker 1: Would you like anything to drink with your sandwich?\nSpeaker 2: I'll have coffee, please. No sugar, but with milk.\nSpeaker 1: Ice or hot?\nSpeaker 2: Hot, please.\nSpeaker 3: Question. What will the man drink?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性(店員)（記号 W） の英語ネイティブの声. Speaker 2 = 男性(客)（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がカフェで注文について話している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set1_q2",
+    "audioUrl": "/listening_audio/el2_set1_q2.mp3",
+    "set": 1,
+    "q": 2,
+    "scene": "母と息子が息子の部屋の片付けについて話している。",
+    "speakers": "母親 / 息子(高校生)",
+    "voiceMap": {
+      "Speaker 1": "母親（記号 M）",
+      "Speaker 2": "息子(高校生)（記号 K）"
+    },
+    "script": "Speaker 1: Ken, please put your books on the shelf.\nSpeaker 2: OK. On the top shelf?\nSpeaker 1: No, the middle one. The top is for the photo albums.\nSpeaker 2: Got it.\nSpeaker 3: Question. Where will Ken put the books?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 母親（記号 M） の英語ネイティブの声. Speaker 2 = 息子(高校生)（記号 K） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 母と息子が息子の部屋の片付けについて話している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set1_q3",
+    "audioUrl": "/listening_audio/el2_set1_q3.mp3",
+    "set": 1,
+    "q": 3,
+    "scene": "店員と客が服のサイズについて話している。",
+    "speakers": "女性(客) / 男性(店員)",
+    "voiceMap": {
+      "Speaker 1": "女性(客)（記号 W）",
+      "Speaker 2": "男性(店員)（記号 M）"
+    },
+    "script": "Speaker 1: Do you have this shirt in a smaller size?\nSpeaker 2: We have small and extra-small. Which would you like?\nSpeaker 1: Small, please. And in blue if possible.\nSpeaker 2: Sure, here's a small blue one.\nSpeaker 3: Question. Which shirt did the woman get?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性(客)（記号 W） の英語ネイティブの声. Speaker 2 = 男性(店員)（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 店員と客が服のサイズについて話している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set2_q1",
+    "audioUrl": "/listening_audio/el2_set2_q1.mp3",
+    "set": 2,
+    "q": 1,
+    "scene": "男女が友人へのプレゼントを選んでいる。",
+    "speakers": "男性(大学生) / 女性(大学生)",
+    "voiceMap": {
+      "Speaker 1": "男性(大学生)（記号 M）",
+      "Speaker 2": "女性(大学生)（記号 W）"
+    },
+    "script": "Speaker 1: How about this mug with cats on it?\nSpeaker 2: She likes dogs, not cats.\nSpeaker 1: Then this mug with a dog?\nSpeaker 2: Perfect. And it comes in a gift box, right?\nSpeaker 3: Question. Which item will they buy?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性(大学生)（記号 M） の英語ネイティブの声. Speaker 2 = 女性(大学生)（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が友人へのプレゼントを選んでいる。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set2_q3",
+    "audioUrl": "/listening_audio/el2_set2_q3.mp3",
+    "set": 2,
+    "q": 3,
+    "scene": "男女がクラス写真の中で友人を探している。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: Which one is your brother?\nSpeaker 2: He's the tallest one in the back row.\nSpeaker 1: The one with glasses?\nSpeaker 2: No, next to him. He's wearing a striped shirt.\nSpeaker 3: Question. Which boy is the woman's brother?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がクラス写真の中で友人を探している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set3_q2",
+    "audioUrl": "/listening_audio/el2_set3_q2.mp3",
+    "set": 3,
+    "q": 2,
+    "scene": "男女がホテルの部屋を選んでいる。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: There's a room with a mountain view and one with a sea view.\nSpeaker 2: The sea view sounds nice.\nSpeaker 1: But it's twice the price.\nSpeaker 2: Then let's go with the mountain view.\nSpeaker 3: Question. Which room will they choose?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がホテルの部屋を選んでいる。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set4_q1",
+    "audioUrl": "/listening_audio/el2_set4_q1.mp3",
+    "set": 4,
+    "q": 1,
+    "scene": "男女が公園の案内図を見ながら待ち合わせ場所を決めている。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: Should we meet at the fountain?\nSpeaker 2: It's too crowded there on Sundays.\nSpeaker 1: The bench near the playground, then?\nSpeaker 2: How about under the big tree by the pond? It's quiet.\nSpeaker 3: Question. Where will they meet?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が公園の案内図を見ながら待ち合わせ場所を決めている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set4_q2",
+    "audioUrl": "/listening_audio/el2_set4_q2.mp3",
+    "set": 4,
+    "q": 2,
+    "scene": "男女がリサイクル用のごみを分別している。",
+    "speakers": "女性 / 男性",
+    "voiceMap": {
+      "Speaker 1": "女性（記号 W）",
+      "Speaker 2": "男性（記号 M）"
+    },
+    "script": "Speaker 1: This empty juice bottle goes in the plastic bin, right?\nSpeaker 2: Actually, that's a glass bottle. It has a different bin.\nSpeaker 1: Oh, so where does it go?\nSpeaker 2: See the one with the wine glass symbol on it? Over there.\nSpeaker 3: Question. Which bin will the woman use?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性（記号 W） の英語ネイティブの声. Speaker 2 = 男性（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がリサイクル用のごみを分別している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set4_q3",
+    "audioUrl": "/listening_audio/el2_set4_q3.mp3",
+    "set": 4,
+    "q": 3,
+    "scene": "男女が水族館の館内図を見ている。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: Let's see the penguins first.\nSpeaker 2: They're on the second floor. The dolphins are on the first floor.\nSpeaker 1: Then let's start with dolphins and then go up to penguins.\nSpeaker 2: OK, but let's skip the shark tank. We saw it last time.\nSpeaker 3: Question. Which route will they take?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が水族館の館内図を見ている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set5_q2",
+    "audioUrl": "/listening_audio/el2_set5_q2.mp3",
+    "set": 5,
+    "q": 2,
+    "scene": "父と娘が娘の自転車のパンクについて話している。",
+    "speakers": "父親 / 娘(中学生)",
+    "voiceMap": {
+      "Speaker 1": "父親（記号 F）",
+      "Speaker 2": "娘(中学生)（記号 D）"
+    },
+    "script": "Speaker 1: Which tire is flat, the front or the back?\nSpeaker 2: The back one. And the light on the front is broken too.\nSpeaker 1: OK, I'll fix both this weekend.\nSpeaker 2: Thanks, Dad.\nSpeaker 3: Question. What is the condition of the bicycle?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 父親（記号 F） の英語ネイティブの声. Speaker 2 = 娘(中学生)（記号 D） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 父と娘が娘の自転車のパンクについて話している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set5_q3",
+    "audioUrl": "/listening_audio/el2_set5_q3.mp3",
+    "set": 5,
+    "q": 3,
+    "scene": "女性が写真の中の子供を紹介している。",
+    "speakers": "女性 / 男性",
+    "voiceMap": {
+      "Speaker 1": "女性（記号 W）",
+      "Speaker 2": "男性（記号 M）"
+    },
+    "script": "Speaker 1: This is my nephew's birthday party. Can you guess which is my nephew?\nSpeaker 2: The boy with the party hat?\nSpeaker 1: No, he's my nephew's friend. My nephew is the one blowing out the candles.\nSpeaker 2: Oh, the one without a hat!\nSpeaker 3: Question. Which boy is the woman's nephew?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性（記号 W） の英語ネイティブの声. Speaker 2 = 男性（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 女性が写真の中の子供を紹介している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set6_q1",
+    "audioUrl": "/listening_audio/el2_set6_q1.mp3",
+    "set": 6,
+    "q": 1,
+    "scene": "男女が旅行先の天気予報を見ている。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: It's going to rain on Saturday, our first day.\nSpeaker 2: And Sunday?\nSpeaker 1: Cloudy, but no rain.\nSpeaker 2: Good, we can go hiking on Sunday, then.\nSpeaker 3: Question. What will the weather be on Sunday?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が旅行先の天気予報を見ている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set6_q2",
+    "audioUrl": "/listening_audio/el2_set6_q2.mp3",
+    "set": 6,
+    "q": 2,
+    "scene": "文房具店で客が定規を買っている。",
+    "speakers": "女性(客) / 男性(店員)",
+    "voiceMap": {
+      "Speaker 1": "女性(客)（記号 W）",
+      "Speaker 2": "男性(店員)（記号 M）"
+    },
+    "script": "Speaker 1: Do you have a 30-centimeter ruler?\nSpeaker 2: We have plastic ones and metal ones. Which do you prefer?\nSpeaker 1: Metal, please. And I need one with millimeter markings.\nSpeaker 2: OK, this one has both centimeters and millimeters.\nSpeaker 3: Question. Which ruler will the woman buy?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性(客)（記号 W） の英語ネイティブの声. Speaker 2 = 男性(店員)（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 文房具店で客が定規を買っている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set6_q3",
+    "audioUrl": "/listening_audio/el2_set6_q3.mp3",
+    "set": 6,
+    "q": 3,
+    "scene": "男女がホームパーティーの飾り付けをしている。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: I brought the balloons. Should I put them over the door?\nSpeaker 2: The flower arch is already there. Leave the door alone.\nSpeaker 1: Then next to the dining table?\nSpeaker 2: Yes, that corner still looks empty. Put them there.\nSpeaker 3: Question. Where will the man put the balloons?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がホームパーティーの飾り付けをしている。",
+    "rewritten": true
+  },
+  {
+    "name": "el2_set7_q1",
+    "audioUrl": "/listening_audio/el2_set7_q1.mp3",
+    "set": 7,
+    "q": 1,
+    "scene": "男女がスマートフォンの新機種を比較している。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: Model A has a bigger screen, but Model B has a better camera.\nSpeaker 2: I take a lot of photos, so the camera matters.\nSpeaker 1: But Model B is heavier.\nSpeaker 2: That's OK. Photos are the priority.\nSpeaker 3: Question. Which model will the woman probably choose?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がスマートフォンの新機種を比較している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set7_q3",
+    "audioUrl": "/listening_audio/el2_set7_q3.mp3",
+    "set": 7,
+    "q": 3,
+    "scene": "男女が飛行機の座席表を見ながら席を選んでいる。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: We can still change our seats. Do you want the window?\nSpeaker 2: I'd like to see outside, but my legs really need more room.\nSpeaker 1: Then the exit row has the most legroom on this plane.\nSpeaker 2: That settles it. I'll take the seat next to the exit door.\nSpeaker 3: Question. Which seat will the woman choose?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が飛行機の座席表を見ながら席を選んでいる。",
+    "rewritten": true
+  },
+  {
+    "name": "el2_set8_q1",
+    "audioUrl": "/listening_audio/el2_set8_q1.mp3",
+    "set": 8,
+    "q": 1,
+    "scene": "母と息子が誕生日ケーキのデザインを決めている。",
+    "speakers": "母親 / 息子",
+    "voiceMap": {
+      "Speaker 1": "母親（記号 M）",
+      "Speaker 2": "息子（記号 S）"
+    },
+    "script": "Speaker 1: Do you want strawberries or blueberries on top?\nSpeaker 2: Strawberries! And chocolate letters that say 'Happy Birthday'.\nSpeaker 1: How about chocolate flakes on the side, too?\nSpeaker 2: No, just plain cream on the side.\nSpeaker 3: Question. Which cake matches the boy's request?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 母親（記号 M） の英語ネイティブの声. Speaker 2 = 息子（記号 S） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 母と息子が誕生日ケーキのデザインを決めている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set8_q3",
+    "audioUrl": "/listening_audio/el2_set8_q3.mp3",
+    "set": 8,
+    "q": 3,
+    "scene": "男女が引越しの荷物をどの部屋へ運ぶか相談している。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: Three boxes left: books, clothes, and kitchen things.\nSpeaker 2: Books go to the bedroom, and the kitchen things stay in the kitchen.\nSpeaker 1: Should I split the clothes between the closet and the kitchen?\nSpeaker 2: No, all the clothes go in the closet. One box, one room.\nSpeaker 3: Question. Which arrangement matches the woman's instructions?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が引越しの荷物をどの部屋へ運ぶか相談している。",
+    "rewritten": true
+  },
+  {
+    "name": "el2_set9_q1",
+    "audioUrl": "/listening_audio/el2_set9_q1.mp3",
+    "set": 9,
+    "q": 1,
+    "scene": "女性がジムのインストラクターと運動プランを相談している。",
+    "speakers": "女性 / 男性(インストラクター)",
+    "voiceMap": {
+      "Speaker 1": "女性（記号 W）",
+      "Speaker 2": "男性(インストラクター)（記号 M）"
+    },
+    "script": "Speaker 1: I want to start running, but my knees are not strong.\nSpeaker 2: Then swimming or cycling would be better.\nSpeaker 1: I can't swim well, so cycling it is.\nSpeaker 2: Great. Let's start with 20 minutes a day.\nSpeaker 3: Question. Which exercise will she start?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性（記号 W） の英語ネイティブの声. Speaker 2 = 男性(インストラクター)（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 女性がジムのインストラクターと運動プランを相談している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set9_q2",
+    "audioUrl": "/listening_audio/el2_set9_q2.mp3",
+    "set": 9,
+    "q": 2,
+    "scene": "男女がイベントの席割りを決めている。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: VIP guests should be in the front row.\nSpeaker 2: Yes, and the media people on the left side of the middle rows.\nSpeaker 1: What about students?\nSpeaker 2: Students in the back rows.\nSpeaker 3: Question. Which seating chart is correct?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がイベントの席割りを決めている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set9_q3",
+    "audioUrl": "/listening_audio/el2_set9_q3.mp3",
+    "set": 9,
+    "q": 3,
+    "scene": "男女がテーマパークで乗り物を選んでいる。",
+    "speakers": "女性 / 男性",
+    "voiceMap": {
+      "Speaker 1": "女性（記号 W）",
+      "Speaker 2": "男性（記号 M）"
+    },
+    "script": "Speaker 1: How about the roller coaster?\nSpeaker 2: I feel sick on those. Let's try the Ferris wheel.\nSpeaker 1: Too slow. What about the haunted house?\nSpeaker 2: OK, but let's do the merry-go-round first.\nSpeaker 3: Question. Which ride will they go on first?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性（記号 W） の英語ネイティブの声. Speaker 2 = 男性（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がテーマパークで乗り物を選んでいる。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set10_q1",
+    "audioUrl": "/listening_audio/el2_set10_q1.mp3",
+    "set": 10,
+    "q": 1,
+    "scene": "男女がバス路線図を見ながら行き方を相談している。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: How do we get to the museum?\nSpeaker 2: Take bus 5 to City Hall, then transfer to bus 12.\nSpeaker 1: Isn't bus 8 direct?\nSpeaker 2: Yes, but it only runs on weekends. Today is Wednesday.\nSpeaker 3: Question. Which route will they take today?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がバス路線図を見ながら行き方を相談している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set10_q3",
+    "audioUrl": "/listening_audio/el2_set10_q3.mp3",
+    "set": 10,
+    "q": 3,
+    "scene": "男女がフリーマーケットで買い物をしている。",
+    "speakers": "女性 / 男性(店主)",
+    "voiceMap": {
+      "Speaker 1": "女性（記号 W）",
+      "Speaker 2": "男性(店主)（記号 M）"
+    },
+    "script": "Speaker 1: How much for this vase and this teapot?\nSpeaker 2: The vase is 500 yen, the teapot 800. Both together, 1200 yen.\nSpeaker 1: I'll take just the teapot.\nSpeaker 2: Actually, if you take both, I'll make it 1000.\nSpeaker 3: Question. How much will the woman pay?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性（記号 W） の英語ネイティブの声. Speaker 2 = 男性(店主)（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がフリーマーケットで買い物をしている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set11_q1",
+    "audioUrl": "/listening_audio/el2_set11_q1.mp3",
+    "set": 11,
+    "q": 1,
+    "scene": "男女がホームパーティーの飲み物を数えている。",
+    "speakers": "女性 / 男性",
+    "voiceMap": {
+      "Speaker 1": "女性（記号 W）",
+      "Speaker 2": "男性（記号 M）"
+    },
+    "script": "Speaker 1: I bought six bottles of juice. Is that enough?\nSpeaker 2: For ten guests, yes. But we need water too.\nSpeaker 1: The same six, then?\nSpeaker 2: Make it one more than the juice, just in case.\nSpeaker 3: Question. How many bottles are there in total?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性（記号 W） の英語ネイティブの声. Speaker 2 = 男性（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がホームパーティーの飲み物を数えている。",
+    "rewritten": true
+  },
+  {
+    "name": "el2_set11_q2",
+    "audioUrl": "/listening_audio/el2_set11_q2.mp3",
+    "set": 11,
+    "q": 2,
+    "scene": "男女が壁掛け写真の位置を決めている。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: Should the landscape photo go above the sofa or above the TV?\nSpeaker 2: Above the TV. And the family photo above the sofa.\nSpeaker 1: Where's the wedding photo, then?\nSpeaker 2: On the shelf, not on the wall.\nSpeaker 3: Question. Which arrangement matches?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が壁掛け写真の位置を決めている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set11_q3",
+    "audioUrl": "/listening_audio/el2_set11_q3.mp3",
+    "set": 11,
+    "q": 3,
+    "scene": "男女が学校の掲示板の告知を見ている。",
+    "speakers": "女性 / 男性",
+    "voiceMap": {
+      "Speaker 1": "女性（記号 W）",
+      "Speaker 2": "男性（記号 M）"
+    },
+    "script": "Speaker 1: The music club meeting is on Friday at 4.\nSpeaker 2: No, the poster says Thursday at 4:30.\nSpeaker 1: Oh, I read the old one. Where does it meet?\nSpeaker 2: In the music room, not the gym.\nSpeaker 3: Question. Which notice is correct?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性（記号 W） の英語ネイティブの声. Speaker 2 = 男性（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が学校の掲示板の告知を見ている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set12_q1",
+    "audioUrl": "/listening_audio/el2_set12_q1.mp3",
+    "set": 12,
+    "q": 1,
+    "scene": "男女がイヤホンを試している。",
+    "speakers": "女性(店員) / 男性(客)",
+    "voiceMap": {
+      "Speaker 1": "女性(店員)（記号 W）",
+      "Speaker 2": "男性(客)（記号 M）"
+    },
+    "script": "Speaker 1: We have wired earphones and wireless ones.\nSpeaker 2: Wireless, please. With noise cancelling if possible.\nSpeaker 1: Yes, this one has it. It also has a microphone.\nSpeaker 2: Great, I'll take it.\nSpeaker 3: Question. Which earphones will the man buy?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性(店員)（記号 W） の英語ネイティブの声. Speaker 2 = 男性(客)（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がイヤホンを試している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set12_q2",
+    "audioUrl": "/listening_audio/el2_set12_q2.mp3",
+    "set": 12,
+    "q": 2,
+    "scene": "男女がカフェのメニューを見ている。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: The set menu with soup, salad, and sandwich is 900 yen.\nSpeaker 2: I don't want the soup.\nSpeaker 1: Then it's 700 without the soup.\nSpeaker 2: OK, I'll take that.\nSpeaker 3: Question. What will the woman order and pay?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がカフェのメニューを見ている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set12_q3",
+    "audioUrl": "/listening_audio/el2_set12_q3.mp3",
+    "set": 12,
+    "q": 3,
+    "scene": "男女がおもちゃ屋で人形を選んでいる。",
+    "speakers": "女性(客) / 男性(店員)",
+    "voiceMap": {
+      "Speaker 1": "女性(客)（記号 W）",
+      "Speaker 2": "男性(店員)（記号 M）"
+    },
+    "script": "Speaker 1: I'd like a doll with long hair and a red dress.\nSpeaker 2: We have long hair with pink dress or short hair with red dress.\nSpeaker 1: Any long hair with red dress?\nSpeaker 2: Not now. How about long hair, pink dress? It's the closest.\nSpeaker 3: Question. Which doll will the woman likely take?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性(客)（記号 W） の英語ネイティブの声. Speaker 2 = 男性(店員)（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がおもちゃ屋で人形を選んでいる。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set13_q1",
+    "audioUrl": "/listening_audio/el2_set13_q1.mp3",
+    "set": 13,
+    "q": 1,
+    "scene": "男女が地図を見ながらキャンプ場での待ち合わせ場所を決めている。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: I'll drive from the house. You're coming on foot, right?\nSpeaker 2: Yes. Shall we meet by the lake on the way?\nSpeaker 1: The road there is a dead end for cars. Let me pick you up after the bridge.\nSpeaker 2: All right, right where the road turns into the campsite.\nSpeaker 3: Question. Where will they meet?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が地図を見ながらキャンプ場での待ち合わせ場所を決めている。",
+    "rewritten": true
+  },
+  {
+    "name": "el2_set13_q2",
+    "audioUrl": "/listening_audio/el2_set13_q2.mp3",
+    "set": 13,
+    "q": 2,
+    "scene": "男女が科学実験のグラフを見ている。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: The temperature rose sharply for the first 10 minutes.\nSpeaker 2: Yes, then it stayed the same for a while.\nSpeaker 1: And after 20 minutes, it dropped slightly.\nSpeaker 2: Right, and then it stayed flat again.\nSpeaker 3: Question. Which graph matches?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が科学実験のグラフを見ている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set13_q3",
+    "audioUrl": "/listening_audio/el2_set13_q3.mp3",
+    "set": 13,
+    "q": 3,
+    "scene": "男女がスポーツクラブで週間スケジュールを組んでいる。",
+    "speakers": "女性 / 男性",
+    "voiceMap": {
+      "Speaker 1": "女性（記号 W）",
+      "Speaker 2": "男性（記号 M）"
+    },
+    "script": "Speaker 1: I'll do yoga on Mondays and Wednesdays.\nSpeaker 2: Both days? That's a lot.\nSpeaker 1: And swimming on Fridays. What about you?\nSpeaker 2: I'll swim on Tuesdays and Thursdays.\nSpeaker 3: Question. Which schedule shows the woman's plan?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性（記号 W） の英語ネイティブの声. Speaker 2 = 男性（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女がスポーツクラブで週間スケジュールを組んでいる。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set14_q1",
+    "audioUrl": "/listening_audio/el2_set14_q1.mp3",
+    "set": 14,
+    "q": 1,
+    "scene": "男女が学校祭のポスターを作成中。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: The title 'School Festival' should be at the top.\nSpeaker 2: In big letters, right? And the date underneath.\nSpeaker 1: Yes. And put the location at the bottom.\nSpeaker 2: How about a small logo in the corner?\nSpeaker 3: Question. Which poster layout matches?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が学校祭のポスターを作成中。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set14_q3",
+    "audioUrl": "/listening_audio/el2_set14_q3.mp3",
+    "set": 14,
+    "q": 3,
+    "scene": "男女が旅行の持ち物を確認している。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: Passport, camera, and sunglasses. What else?\nSpeaker 2: We need the guidebook, not the map. My phone has the map.\nSpeaker 1: OK. And an umbrella?\nSpeaker 2: No, it won't rain there.\nSpeaker 3: Question. Which set matches their packing list?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が旅行の持ち物を確認している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set15_q1",
+    "audioUrl": "/listening_audio/el2_set15_q1.mp3",
+    "set": 15,
+    "q": 1,
+    "scene": "男女が電車の遅延情報を確認している。",
+    "speakers": "男性(駅員) / 女性(乗客)",
+    "voiceMap": {
+      "Speaker 1": "男性(駅員)（記号 M）",
+      "Speaker 2": "女性(乗客)（記号 W）"
+    },
+    "script": "Speaker 1: The 10:15 train is delayed by 30 minutes.\nSpeaker 2: So it leaves at 10:45?\nSpeaker 1: Yes. But the 10:30 express is on time and stops at your station.\nSpeaker 2: Great, I'll take the express.\nSpeaker 3: Question. Which train will the woman take?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性(駅員)（記号 M） の英語ネイティブの声. Speaker 2 = 女性(乗客)（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が電車の遅延情報を確認している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set15_q2",
+    "audioUrl": "/listening_audio/el2_set15_q2.mp3",
+    "set": 15,
+    "q": 2,
+    "scene": "男女が写真を見ながら誰が誰かを話している。",
+    "speakers": "女性 / 男性",
+    "voiceMap": {
+      "Speaker 1": "女性（記号 M）",
+      "Speaker 2": "男性（記号 W）"
+    },
+    "script": "Speaker 1: Is that your mother on the left?\nSpeaker 2: No, that's my aunt. My mother is next to her, holding the baby.\nSpeaker 1: And the tall man behind them?\nSpeaker 2: That's my father.\nSpeaker 3: Question. Which person is the woman's mother?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性（記号 M） の英語ネイティブの声. Speaker 2 = 男性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が写真を見ながら誰が誰かを話している。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set15_q3",
+    "audioUrl": "/listening_audio/el2_set15_q3.mp3",
+    "set": 15,
+    "q": 3,
+    "scene": "男女が空港で荷物を預ける手続きをしている。",
+    "speakers": "女性(客) / 男性(係員)",
+    "voiceMap": {
+      "Speaker 1": "女性(客)（記号 W）",
+      "Speaker 2": "男性(係員)（記号 M）"
+    },
+    "script": "Speaker 1: I have one large suitcase and this small carry-on.\nSpeaker 2: Only the large one goes to check-in. The carry-on stays with you.\nSpeaker 1: And this backpack?\nSpeaker 2: Backpack too, if it fits under the seat.\nSpeaker 3: Question. Which is checked in (預け入れ) ?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 女性(客)（記号 W） の英語ネイティブの声. Speaker 2 = 男性(係員)（記号 M） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が空港で荷物を預ける手続きをしている。",
+    "rewritten": false
+  },
+  {
+    "name": "el2_set16_q2",
+    "audioUrl": "/listening_audio/el2_set16_q2.mp3",
+    "set": 16,
+    "q": 2,
+    "scene": "男女が学校の靴箱の位置を確認している。",
+    "speakers": "男性 / 女性",
+    "voiceMap": {
+      "Speaker 1": "男性（記号 M）",
+      "Speaker 2": "女性（記号 W）"
+    },
+    "script": "Speaker 1: Could you put my gym bag in my shoe locker?\nSpeaker 2: Sure. It's in row B, second from the top, isn't it?\nSpeaker 1: It used to be, but they moved me to row C.\nSpeaker 2: Row C. Which one?\nSpeaker 1: Third from the top.\nSpeaker 3: Question. Which locker is the man's?",
+    "requirements": "Japanese university entrance exam (共通テスト) English listening audio. Clear standard American English, moderate and even pace, no background music, no sound effects, no emotional exaggeration. Speaker 1 = 男性（記号 M） の英語ネイティブの声. Speaker 2 = 女性（記号 W） の英語ネイティブの声. Speaker 3 = a calm neutral narrator reading the exam question, slightly slower and more formal than the dialogue, clearly separated from it by a short pause. Scene for context (do not read aloud): 男女が学校の靴箱の位置を確認している。",
+    "rewritten": true
+  }
+]
