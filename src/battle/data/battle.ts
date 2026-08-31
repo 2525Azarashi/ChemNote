@@ -441,38 +441,45 @@ export async function joinRoomByCode(rawCode: string): Promise<string> {
  * 「なぜかマッチしない」に化けて原因が追えなくなる。
  */
 async function fetchWaitingQueue(subject: string) {
-  try {
-    const snap = await getDocs(
-      query(
-        collection(db, COL_QUEUE),
-        where('subject', '==', subject),
-        orderBy('createdAt', 'asc'),
-        limit(5),
-      ),
-    );
-    return snap.docs;
-  } catch (error) {
-    const code = (error as { code?: string })?.code || '';
-    if (code !== 'failed-precondition') throw error;
+  // ★条件は「教科が一致」の1つだけ★
+  //
+  //   以前は where('subject') + orderBy('createdAt') と書いていた。
+  //   これは「等式 + 並べ替え」の組み合わせなので複合索引が必須で、
+  //   索引を宣言していなかったため本番で
+  //   「The query requires an index.」が出て全国対戦が動かなかった。
+  //
+  //   Firestore は ★条件が1つだけの検索なら索引を自動で作る★
+  //   （単一フィールド索引。`==` も `array-contains` も対象）。
+  //   手で用意しないといけないのは組み合わせた検索だけである。
+  //   参考: https://firebase.google.com/docs/firestore/query-data/index-overview
+  //
+  //   そこで組み合わせをやめ、並べ替えは手元で行う形にした。
+  //   これなら ★索引を一切デプロイしなくても動く★。
+  //
+  // ★「まず索引つきで試して、失敗したら retry」にしなかった理由★
+  //   索引を作らない運用だと毎回1回目が必ず失敗するので、
+  //   通信が毎回2往復になり、待ち時間とエラーログが無駄に増える。
+  //   最初から索引の要らない形で投げるほうが速く、確実。
+  //
+  // ★手元で並べ替えても問題にならない理由★
+  //   ここで扱うのは「今この教科で待っている人」だけ。
+  //   同時に待つ人数はごく少数（多くて数人）なので、
+  //   20件取って手元で並べても負荷にならない。
+  const snap = await getDocs(
+    query(collection(db, COL_QUEUE), where('subject', '==', subject), limit(20)),
+  );
 
-    // 索引がまだ無い（または構築中）。索引の要らない形で引き直す。
-    console.warn(
-      '[battle] battle_queue の複合索引がまだ有効ではありません。' +
-        'firestore.indexes.json をデプロイしてください' +
-        '（firebase deploy --only firestore:indexes）。' +
-        '暫定として索引不要の方法でマッチングを続けます。',
-    );
-    const snap = await getDocs(
-      query(collection(db, COL_QUEUE), where('subject', '==', subject), limit(20)),
-    );
-    return [...snap.docs]
-      .sort((a, b) => {
-        const at = toMillis(a.get('createdAt') as Timestamp | null) || 0;
-        const bt = toMillis(b.get('createdAt') as Timestamp | null) || 0;
-        return at - bt; // 古い順（待っている人が先）
-      })
-      .slice(0, 5);
-  }
+  // ★「古い順」に並べ直す★
+  //   長く待っている人から先にマッチさせるため。
+  //   ここを崩すと、後から来た人が先に対戦できてしまい、
+  //   混雑時に待ち続ける人が出る。
+  return [...snap.docs]
+    .sort((a, b) => {
+      const at = toMillis(a.get('createdAt') as Timestamp | null) || 0;
+      const bt = toMillis(b.get('createdAt') as Timestamp | null) || 0;
+      return at - bt; // 古い順（待っている人が先）
+    })
+    .slice(0, 5);
 }
 
 export async function findOrEnqueue(
@@ -493,20 +500,22 @@ export async function findOrEnqueue(
   // firestore.indexes.json が空のままデプロイされていたため、
   // 全国対戦を押した全員がこのエラーに当たっていた。
   //
-  // ■ 直し方（2段構え）
-  //   1. 索引を firestore.indexes.json に宣言した（本筋）
-  //   2. ★索引がまだ構築中でも動くように退避経路を足した★
-  //      索引はデプロイ後に数分かけて構築されるため、
-  //      その間ここが失敗し続けると「公開したのに誰も対戦できない」
-  //      時間帯が生まれる。
-  //      退避経路では orderBy を外して（単一条件なら索引が不要）
-  //      並べ替えを手元で行う。結果は索引ありの場合と同じ。
+  // ■ 直し方
+  //   ★索引に頼らない形に書き換えた★（下の fetchWaitingQueue）
+  //   組み合わせをやめて条件1つにすれば、Firestore が索引を
+  //   自動で作るので、索引のデプロイが要らなくなる。
   //
-  // ■ 「古い順」を守る理由
+  //   索引の宣言（firestore.indexes.json）も入れてあるが、
+  //   それは将来のための備えで、★無くても動く★。
+  //   索引のデプロイには開発ツールが必要で、
+  //   「ルールを公開する」だけでは作られない。
+  //   実際その手順が抜けていたのが今回の事故の原因なので、
+  //   そもそも要らない形にするのが確実である。
+  //
+  // ■ 「古い順」は fetchWaitingQueue が手元で保証する
   //   長く待っている人から先にマッチさせるため。
   //   ここを崩すと、後から来た人が先に対戦できてしまい、
   //   混雑時に待ち続ける人が出る。
-  //   だから退避経路でも createdAt の昇順に必ず並べ直す。
   const waitingDocs = await fetchWaitingQueue(subject);
 
   const candidate = waitingDocs.find((d) => d.id !== uid);
