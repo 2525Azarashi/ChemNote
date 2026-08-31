@@ -13,10 +13,24 @@
 ```
    ① ルールを Firebase に公開する
               ↓
+   ①' ★索引（インデックス）も公開する★  ← 最初の版で抜けていた
+              ↓
    ② 公開できたことを確認する
               ↓
    ③ 最後に FEATURES.battle = true にする
 ```
+
+> ### ★この手順書の最初の版には ①' が無く、実際に事故が起きた★
+>
+> ルールだけを公開して対戦モードを開けたところ、
+>
+> - 全国対戦 → `The query requires an index.`（英語のまま画面に出た）
+> - フレンド対戦 → 「この操作は許可されていません」
+>
+> の 2 つが起きた。
+> Firestore は **ルールと索引が別物**で、
+> 別々にデプロイしなければならない。
+> 手順 ①' を必ず行うこと（詳細は「手順①' 索引を公開する」）。
 
 **逆にすると壊れる。**
 `battle = true` を先にすると、画面には対戦モードが出るのに
@@ -36,7 +50,7 @@ Firestore 側は書き込みを全部拒否するので、
 |---|---|
 | Firebase プロジェクトID | `mntb-4ef06` |
 | ルールのファイル | `firestore.rules`（このリポジトリのルート） |
-| ルールの行数 | **1931 行**（v3 適用後） |
+| ルールの行数 | **1988 行**（v3 + 入室修正の適用後） |
 
 ルール画面の直リンク:
 <https://console.firebase.google.com/project/mntb-4ef06/firestore/rules>
@@ -98,9 +112,10 @@ GitHub で `firestore.rules` を開く:
 
 **確認1：行数**
 エディタの左端の行番号を一番下までスクロールして、
-**1931** で終わっていること。
+**1988** で終わっていること。
 
-- 1738 で終わっている → v2 の古い内容を貼っている（v3 になっていない）
+- 1931 で終わっている → 入室修正の前の版（フレンド対戦が使えない）
+- 1738 で終わっている → v2 の古い内容を貼っている
 - それ以外 → コピーが途中で切れている
 
 **確認2：最後の3行**
@@ -162,12 +177,77 @@ firebase deploy --only firestore:rules --project mntb-4ef06
 |---|---|---|
 | `Failed to get Firebase project mntb-4ef06` | ログインしたアカウントに権限が無い | プロジェクトのオーナーの Google アカウントで `firebase login` をやり直す |
 | `Cannot run login in non-interactive mode` | ブラウザが開けない環境 | `firebase login --no-localhost` を使う |
-| `compilation errors` | ルールの構文エラー | `firestore.rules` が 1931 行か確認（`wc -l firestore.rules`） |
+| `compilation errors` | ルールの構文エラー | `firestore.rules` が 1988 行か確認（`wc -l firestore.rules`） |
 | `command not found: firebase` | CLI が入っていない | 手順1をやる。または `npx firebase deploy ...` |
 
 > ⚠️ このサンドボックス（AI 側）からはデプロイできない。
 > あなたの Google アカウントの認証情報が必要で、
 > それを AI 側に渡してはいけないからである。
+
+---
+
+# 手順①' 索引（インデックス）を公開する
+
+## なぜ必要か
+
+Firestore は「条件を組み合わせた検索」をするとき、
+あらかじめ用意された**索引**を必要とする。
+対戦モードでは次の 2 つの検索を使う。
+
+| どこで使うか | 検索の内容 | 無いとどうなるか |
+|---|---|---|
+| 全国対戦：相手を探す | `battle_queue` を教科で絞り、古い順に並べる | ★画面に英語のエラーが出る★ |
+| 全国対戦：拾われるのを待つ | 自分が入っている待機中の部屋を探す | ★エラーが出ないまま永遠にマッチしない★ |
+
+**ルールを公開しても索引は作られない。** 別の操作が必要である。
+
+宣言してあるファイル：`firestore.indexes.json`（このリポジトリのルート）
+
+## 方法A：CLI で公開する（推奨・確実）
+
+```bash
+# リポジトリのルートで
+firebase deploy --only firestore:indexes
+```
+
+成功するとこう出る。
+
+```
+✔  firestore: deployed indexes in firestore.indexes.json successfully
+✔  Deploy complete!
+```
+
+## 方法B：エラーメッセージのリンクを押す
+
+対戦を試して出たエラーの中に
+`https://console.firebase.google.com/...create_composite=...`
+というリンクが含まれている。
+これを開いて「作成」を押すと、その 1 つだけが作られる。
+
+- 手軽だが、**エラーが出た索引しか作られない**。
+- 上の表の 2 つ目（待機の購読）は**エラーが画面に出ない**ため、
+  この方法では気付けず作り忘れる。
+- したがって **方法A を使うこと**。
+
+## ★作成には数分かかる★
+
+索引は「作成」した瞬間には使えない。
+Firestore が裏側で構築するため、数分かかる。
+
+進み具合はここで見る:
+<https://console.firebase.google.com/project/mntb-4ef06/firestore/indexes>
+
+| 状態の表示 | 意味 |
+|---|---|
+| `Building` / `構築中` | まだ使えない。待つ。 |
+| `Enabled` / `有効` | ★使える★ |
+
+なお、アプリ側には
+**索引がまだ構築中でも動く逃げ道**を入れてある
+（`fetchWaitingQueue` / `watchMatched`）。
+そのため構築を待っている間も対戦はできるが、
+索引が有効になるまでは検索の効率が落ちる。
+**必ず有効になったことを確認すること。**
 
 ---
 
@@ -188,7 +268,7 @@ firebase deploy --only firestore:rules --project mntb-4ef06
 Web アプリの API キーは公開前提の値なので、これは秘密ではない）
 
 ```
-https://firestore.googleapis.com/v1/projects/mntb-4ef06/databases/(default)/documents/leaderboard_total?pageSize=1&key=AIzaSyCAzgkmwE77KMWt2gY1ca63DmIa-dZA5CY
+https://firestore.googleapis.com/v1/projects/mntb-4ef06/databases/(default)/documents/battle_ranking?pageSize=1&key=AIzaSyCAzgkmwE77KMWt2gY1ca63DmIa-dZA5CY
 ```
 
 | 返ってきたもの | 判定 |
@@ -196,8 +276,31 @@ https://firestore.googleapis.com/v1/projects/mntb-4ef06/databases/(default)/docu
 | `{}` または `{ "documents": [...] }` | ★成功★ |
 | `403` / `PERMISSION_DENIED` | ★失敗★ ルールが反映されていない |
 
-`leaderboard_total` はルール上「誰でも読める」設定なので、
-ここが 403 なら**ルールが古いまま**という決定的な証拠になる。
+### ★見るのは `battle_ranking` であること（この手順書の訂正）★
+
+最初の版では `leaderboard_total` を見るように書いていたが、
+**これは判定に使えない。**
+
+`leaderboard_total`（章ランキング）の
+「誰でも読める」設定は**対戦モードとは別の、前からあるブロック**にある。
+つまり対戦のルールが 1 行も入っていなくても 200 が返る。
+＝**古いルールのままでも成功に見えてしまう**。
+
+`battle_ranking` の `allow read: if true` は
+★対戦のルールブロックの中にしか存在しない★。
+だからここが 200 なら「対戦のルールが確かに反映された」証拠になる。
+
+### 併せて 403 も確認する（全部 200 は異常）
+
+```
+https://firestore.googleapis.com/v1/projects/mntb-4ef06/databases/(default)/documents/battle_rooms?pageSize=1&key=AIzaSyCAzgkmwE77KMWt2gY1ca63DmIa-dZA5CY
+```
+
+これは **403 が正しい**。
+`battle_rooms` は参加者しか読めないので、
+ログインしていない問い合わせは拒否されなければならない。
+ここが 200 になったら、
+★誰でも他人の部屋を覗ける危険な状態★なので即座に公開を取り消すこと。
 
 ## 確認3：対戦のルールが入ったかを見る
 
@@ -263,9 +366,12 @@ npm run build
 | 症状 | 原因 | 対処 |
 |---|---|---|
 | 「この操作は許可されていません」 | ルールが未公開なのにフラグを true にした | 手順① を実行。または一旦 `battle: false` に戻す |
-| ランキングが真っ白 | 同上（`leaderboard_total` が読めていない） | 手順②の確認2で 403 かどうか見る |
+| ★フレンド対戦で合言葉を入れると「この操作は許可されていません。部屋がすでに閉じている可能性があります。」★ | ルールは公開済みだが**古い版**。入室しようとする人が部屋を**読めなかった**（`allow get` が参加者限定だった） | 修正済みの `firestore.rules` を再公開する。`battleOpenForJoin` が含まれているか `Ctrl+F` で確認 |
+| ★全国対戦で `The query requires an index.`★ | **索引が未公開**（手順①' を飛ばした） | `firebase deploy --only firestore:indexes` を実行し、`Enabled` になるまで待つ |
+| ★全国対戦がエラーも出ずに永遠に「相手を探しています」★ | 待機の購読に索引が無く、エラーが画面に出ないまま失敗していた | 同上（手順①'）。修正版アプリではエラーが表示される |
+| ランキングが真っ白 | 同上（`battle_ranking` が読めていない） | 手順②の確認2で 403 かどうか見る |
 | Console で「公開」が押せない | 変更が認識されていない／構文エラー | A-4 の確認3 を見る |
-| 行数が 1738 | v2 の古いルールを貼っている | v3 の `firestore.rules`（1931行）を貼る |
+| 行数が 1931 や 1738 | 古いルールを貼っている | 最新の `firestore.rules`（1988行）を貼る |
 | `battleRoomProof` が無い | 同上 | 同上 |
 | レートだけ異常に高い生徒がいる | v2 のルールで不正された残骸 | v3 公開後は不可能。既存データは Console で手直しする |
 
@@ -317,12 +423,40 @@ v3 では `get()` で部屋を実際に読み、次の5点を全部要求する
 あなたが手順①を実行する前に、こちらで次を確認済みである。
 
 ```
-firestore.rules                   … 1931 行（v3 / 括弧の対応も検証済み）
-battle.rules.test + exploit.test  … 157 passed（エミュレータ実行）
-battleCore/Pool/connection/clock  … 158 passed
+firestore.rules                   … 1988 行（v3 + 入室修正 / 括弧 120対120）
+firestore.indexes.json            … 索引 2 件を宣言（firebase-tools の検証器で VALID）
+battle.rules.test + exploit.test  … 163 passed（エミュレータ実行 / 入室の再発防止 6 件を追加）
+battleCore/Pool/featureFlags      … 133 passed
+connection/serverClock            … 47 passed
 leaderboard/friends/feedback      … 114 passed（既存機能に影響なし）
 tsc --noEmit                      … exit 0
 npm run build                     … 成功
 ```
 
-つまり **ルールの中身は正しい。** あとは公開するだけである。
+## ★今回の修正が本当に効いていることの確かめ方★
+
+フレンド対戦の不具合は、直す前に**わざとテストを赤くして**再現した。
+
+```
+修正前: FAIL ★これから入る人は「待機中で1人だけの部屋」を読める★
+        FirebaseError: false for 'get' @ L1036   ← 読み取りで拒否されていた
+修正後: PASS（7 passed）
+```
+
+つまりこのテストは「見張り役として本当に働く」ことが確認できている。
+今後また入室経路を壊したら、必ず赤くなる。
+
+---
+
+# あなたがやること（まとめ）
+
+| # | やること | 所要 |
+|---|---|---|
+| 1 | `firestore.rules`（1988行）を公開 | 数分 |
+| 2 | **`firebase deploy --only firestore:indexes`** | 数分＋構築待ち |
+| 3 | 索引が `Enabled` になるのを確認 | 数分待つ |
+| 4 | 手順②の確認（`battle_ranking` が 200） | 1分 |
+| 5 | 最新のアプリをデプロイ（PR をマージ） | — |
+
+`FEATURES.battle = true` は**すでに設定済み**なので、
+今回あなたがやるのは **1〜5** である。

@@ -80,10 +80,25 @@ export function BattleMatching({
           return;
         }
         // 待機票を置いた側。拾われるのを待つ
-        stopWatch = watchMatched((matchedRoomId) => {
-          if (!alive) return;
-          finish(matchedRoomId);
-        });
+        stopWatch = watchMatched(
+          (matchedRoomId) => {
+            if (!alive) return;
+            finish(matchedRoomId);
+          },
+          // ★購読が失敗したら利用者に伝える★
+          //
+          // 以前はここでエラーを黙って捨てていた。
+          // そのため索引が無い環境では購読が即失敗し、
+          // 画面は「対戦相手を探しています…」のまま
+          // ★永遠に何も起きない★状態になっていた。
+          // 待っても無駄だと分かるようにしておく。
+          () => {
+            if (!alive) return;
+            setError(
+              '対戦相手の検索に失敗しました。通信を確かめて、もう一度お試しください。',
+            );
+          },
+        );
       })
       .catch((e: Error) => {
         if (alive) setError(e.message);

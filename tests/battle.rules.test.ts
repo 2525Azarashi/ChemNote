@@ -438,6 +438,70 @@ describe('battle_rooms — 読み取り', () => {
     await seedPlayingRoom();
     await assertFails(getDocs(collection(ctxFor(OUTSIDER), 'battle_rooms')));
   });
+
+  // -----------------------------------------------------------------
+  // ★本番で出た不具合の再発防止★
+  //
+  // 症状:
+  //   フレンド対戦で合言葉を入れると
+  //   「この操作は許可されていません。部屋がすでに閉じている可能性があります。」
+  //
+  // 原因:
+  //   joinRoomByCode() は入室の update より先に、
+  //   トランザクションの中で ★部屋を読む★（tx.get）。
+  //   ところが読み取りは「players に入っている人だけ」だったので、
+  //   これから入る人は必ず読めず、update に到達する前に
+  //   permission-denied になっていた。
+  //
+  // なぜ 157 件のテストが緑だったのか:
+  //   参加のテストが updateDoc だけを試していて、
+  //   ★その手前の読み取りを誰も試していなかった★。
+  //   本番と同じ順番（読む→書く）を再現するテストが無かった。
+  //
+  // ここでは「待機中で1人しか居ない部屋」＝これから入れる部屋に限り
+  // 読めることを確かめる。進行中・決着済み・満員の部屋は読めないままである
+  // （そちらは相手の解答が入っているので覗けてはいけない）。
+  // -----------------------------------------------------------------
+  it('★これから入る人は「待機中で1人だけの部屋」を読める（合言葉入室の前提）★', async () => {
+    await seed(['battle_rooms', ROOM], {
+      ...roomPayload({ createdAt: new Date(), updatedAt: new Date() }),
+    });
+    await assertSucceeds(getDoc(doc(ctxFor(GUEST), 'battle_rooms', ROOM)));
+  });
+
+  it('★満員の待機部屋・進行中の部屋は、参加者以外は読めない★', async () => {
+    // 待機中を読めるようにした副作用で、
+    // 「2人揃った部屋」まで読めるようになっていないことを確認する。
+    await seedPlayingRoom();
+    await assertFails(getDoc(doc(ctxFor(OUTSIDER), 'battle_rooms', ROOM)));
+
+    await seed(['battle_rooms', 'room_waiting_full'], {
+      ...roomPayload({
+        id: 'room_waiting_full',
+        players: [HOST, GUEST],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }),
+    });
+    await assertFails(getDoc(doc(ctxFor(OUTSIDER), 'battle_rooms', 'room_waiting_full')));
+  });
+
+  it('★待機中でも、一覧で開いている部屋を漁ることはできない★', async () => {
+    // get を緩めても list は緩めない。
+    // list が通ると、合言葉を知らない人が
+    // 「今開いている部屋」を全部見つけて割り込めてしまう。
+    await seed(['battle_rooms', ROOM], {
+      ...roomPayload({ createdAt: new Date(), updatedAt: new Date() }),
+    });
+    await assertFails(getDocs(collection(ctxFor(OUTSIDER), 'battle_rooms')));
+  });
+
+  it('★未ログインは待機中の部屋も読めない★', async () => {
+    await seed(['battle_rooms', ROOM], {
+      ...roomPayload({ createdAt: new Date(), updatedAt: new Date() }),
+    });
+    await assertFails(getDoc(doc(guestCtx(), 'battle_rooms', ROOM)));
+  });
 });
 
 // ===================================================================
@@ -490,6 +554,81 @@ describe('battle_rooms — 参加する', () => {
       updateDoc(doc(ctxFor(GUEST), 'battle_rooms', ROOM), {
         players: [HOST, GUEST],
         questionIds: ['easy1', 'easy2', 'easy3', 'easy4', 'easy5'],
+        updatedAt: serverTimestamp(),
+      }),
+    );
+  });
+
+  // -----------------------------------------------------------------
+  // ★本番と同じ順番を通すテスト★
+  //
+  // これまでの参加テストは updateDoc だけを試していた。
+  // しかし本番の joinRoomByCode() は
+  //   ① battle_codes を get して部屋IDを引く
+  //   ② トランザクションの中で部屋を get する
+  //   ③ players / profiles / answers に自分を足して update する
+  // という3段階で、★①②のどこかで落ちると③には届かない★。
+  // 実際に②で落ちて「フレンド対戦が一切できない」状態になっていたのに、
+  // ③だけを試すテストは緑のままだった。
+  //
+  // ここではクライアントと同じ順番・同じ内容で3段階すべてを実行する。
+  // 以後、途中のどの段で権限が足りなくなっても、このテストが赤くなる。
+  // -----------------------------------------------------------------
+  it('★合言葉入室の全経路（コード引き→部屋を読む→自分を足す）が通る★', async () => {
+    await seedWaitingRoom();
+    await seed(['battle_codes', CODE], {
+      roomId: ROOM,
+      hostUid: HOST,
+      subject: SUBJECT,
+      createdAt: new Date(),
+    });
+
+    const db = ctxFor(GUEST);
+
+    // ① 合言葉 → 部屋ID
+    const codeSnap = await assertSucceeds(getDoc(doc(db, 'battle_codes', CODE)));
+    expect(codeSnap.get('roomId')).toBe(ROOM);
+
+    // ② 部屋を読む（★ここが本番で落ちていた段★）
+    const roomSnap = await assertSucceeds(getDoc(doc(db, 'battle_rooms', ROOM)));
+    const players = (roomSnap.get('players') as string[]) || [];
+    const profiles = (roomSnap.get('profiles') as Record<string, unknown>) || {};
+    const answers = (roomSnap.get('answers') as Record<string, unknown>) || {};
+    expect(players).toEqual([HOST]);
+
+    // ③ 自分を足す（クライアントが送るものと同じ形）
+    await assertSucceeds(
+      updateDoc(doc(db, 'battle_rooms', ROOM), {
+        players: [...players, GUEST],
+        profiles: {
+          ...profiles,
+          [GUEST]: { uid: GUEST, nickname: 'ゲスト', photoURL: '', rating: 1500 },
+        },
+        answers: { ...answers, [GUEST]: {} },
+        updatedAt: serverTimestamp(),
+      }),
+    );
+  });
+
+  it('★満員の部屋には、読むところから入れない（3人目の割り込み防止）★', async () => {
+    // 2人揃った部屋は読めない＝クライアントの tx.get が失敗する。
+    // 「読めないので入れない」という形で3人目が弾かれることを確認する。
+    await seed(['battle_rooms', 'room_full'], {
+      ...roomPayload({
+        id: 'room_full',
+        players: [HOST, GUEST],
+        profiles: {
+          [HOST]: { uid: HOST, nickname: 'ホスト', photoURL: '', rating: 1500 },
+          [GUEST]: { uid: GUEST, nickname: 'ゲスト', photoURL: '', rating: 1500 },
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }),
+    });
+    await assertFails(getDoc(doc(ctxFor(OUTSIDER), 'battle_rooms', 'room_full')));
+    await assertFails(
+      updateDoc(doc(ctxFor(OUTSIDER), 'battle_rooms', 'room_full'), {
+        players: [HOST, GUEST, OUTSIDER],
         updatedAt: serverTimestamp(),
       }),
     );

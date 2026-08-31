@@ -177,6 +177,22 @@ function friendlyError(error: unknown, fallback: string): Error {
   if (code === 'unavailable' || code === 'deadline-exceeded') {
     return new Error('通信が不安定です。電波の良い場所でもう一度お試しください。');
   }
+  // ★索引不足のときに英語のままだった問題への対処★
+  //
+  // 本番で利用者に
+  //   「The query requires an index. You can create it here: https://…」
+  // という英語のメッセージがそのまま表示された。
+  // これは Firestore が failed-precondition で返すもので、
+  // ・利用者には意味が分からない
+  // ・管理用の URL（コンソールへのリンク）を利用者に見せてしまう
+  // という二重に良くない状態だった。
+  // 原因の詳細は console に残し、画面には日本語の案内だけを出す。
+  if (code === 'failed-precondition') {
+    console.error('[battle] Firestore の索引が不足しています', error);
+    return new Error(
+      '対戦の準備がまだ整っていません。少し待ってからもう一度お試しください。',
+    );
+  }
   if (error instanceof Error && error.message) return error;
   return new Error(fallback);
 }
@@ -412,6 +428,53 @@ export async function joinRoomByCode(rawCode: string): Promise<string> {
  * 待機票の削除をトランザクションの成立条件にすれば、
  * 先に消せた側だけが部屋を作れる。
  */
+/**
+ * 待機列を「古い順」で取り出す。
+ *
+ * ★複合索引が無い／構築中でも動くようにする★
+ * まず索引を使う速い形で試し、索引が無いと言われたときだけ
+ * 索引の要らない形（等式1つだけ）で引き直して手元で並べ替える。
+ *
+ * 索引不足を表す Firestore のエラーコードは 'failed-precondition'。
+ * ★それ以外のエラー（権限など）は握り潰さずに投げ直す★
+ * ここで全部飲み込むと、別の原因の不具合が
+ * 「なぜかマッチしない」に化けて原因が追えなくなる。
+ */
+async function fetchWaitingQueue(subject: string) {
+  try {
+    const snap = await getDocs(
+      query(
+        collection(db, COL_QUEUE),
+        where('subject', '==', subject),
+        orderBy('createdAt', 'asc'),
+        limit(5),
+      ),
+    );
+    return snap.docs;
+  } catch (error) {
+    const code = (error as { code?: string })?.code || '';
+    if (code !== 'failed-precondition') throw error;
+
+    // 索引がまだ無い（または構築中）。索引の要らない形で引き直す。
+    console.warn(
+      '[battle] battle_queue の複合索引がまだ有効ではありません。' +
+        'firestore.indexes.json をデプロイしてください' +
+        '（firebase deploy --only firestore:indexes）。' +
+        '暫定として索引不要の方法でマッチングを続けます。',
+    );
+    const snap = await getDocs(
+      query(collection(db, COL_QUEUE), where('subject', '==', subject), limit(20)),
+    );
+    return [...snap.docs]
+      .sort((a, b) => {
+        const at = toMillis(a.get('createdAt') as Timestamp | null) || 0;
+        const bt = toMillis(b.get('createdAt') as Timestamp | null) || 0;
+        return at - bt; // 古い順（待っている人が先）
+      })
+      .slice(0, 5);
+  }
+}
+
 export async function findOrEnqueue(
   subject: string,
 ): Promise<{ roomId: string | null }> {
@@ -420,16 +483,33 @@ export async function findOrEnqueue(
   const rating = await fetchMyRating();
 
   // 1. 待っている人を探す（自分以外・同じ教科）
-  const waiting = await getDocs(
-    query(
-      collection(db, COL_QUEUE),
-      where('subject', '==', subject),
-      orderBy('createdAt', 'asc'),
-      limit(5),
-    ),
-  );
+  //
+  // ===================================================================
+  // ★ここが本番で「The query requires an index.」を出した箇所★
+  // ===================================================================
+  //
+  //   where('subject','==',...) + orderBy('createdAt','asc')
+  // は等式と並べ替えの組み合わせなので Firestore の複合索引が必須。
+  // firestore.indexes.json が空のままデプロイされていたため、
+  // 全国対戦を押した全員がこのエラーに当たっていた。
+  //
+  // ■ 直し方（2段構え）
+  //   1. 索引を firestore.indexes.json に宣言した（本筋）
+  //   2. ★索引がまだ構築中でも動くように退避経路を足した★
+  //      索引はデプロイ後に数分かけて構築されるため、
+  //      その間ここが失敗し続けると「公開したのに誰も対戦できない」
+  //      時間帯が生まれる。
+  //      退避経路では orderBy を外して（単一条件なら索引が不要）
+  //      並べ替えを手元で行う。結果は索引ありの場合と同じ。
+  //
+  // ■ 「古い順」を守る理由
+  //   長く待っている人から先にマッチさせるため。
+  //   ここを崩すと、後から来た人が先に対戦できてしまい、
+  //   混雑時に待ち続ける人が出る。
+  //   だから退避経路でも createdAt の昇順に必ず並べ直す。
+  const waitingDocs = await fetchWaitingQueue(subject);
 
-  const candidate = waiting.docs.find((d) => d.id !== uid);
+  const candidate = waitingDocs.find((d) => d.id !== uid);
 
   if (candidate) {
     const opponentUid = candidate.id;
@@ -519,10 +599,46 @@ export async function leaveQueue(): Promise<void> {
  *
  * ★players に自分が入っている部屋を購読する★
  * 相手が部屋を作る側なので、自分は部屋IDを知らない。
- * array-contains で自分が含まれる待機中の部屋を1件だけ購読する。
+ * array-contains で自分が含まれる待機中の部屋を購読する。
+ *
+ * ===================================================================
+ * ★以前この関数が原因で「全国対戦が永遠にマッチしない」状態になった★
+ * ===================================================================
+ *
+ * 元の実装は
+ *     where('players','array-contains', uid)
+ *   + where('status','==','waiting')
+ *   + orderBy('createdAt','desc')
+ * という組み合わせだった。これは Firestore の複合索引が必須で、
+ * firestore.indexes.json が空だったため索引が存在せず、
+ * 購読が failed-precondition で即座に落ちていた。
+ *
+ * さらに悪いことに、エラー側のコールバックが空
+ *     () => { /* 待機画面を壊さない *\/ }
+ * だったので、★画面には何も出ないまま黙って壊れた★。
+ * 「エラーを出さない」ことが「不具合を隠す」ことになっていた。
+ *
+ * ■ 今回の直し方（2段構え）
+ *
+ *   1. 索引を firestore.indexes.json に宣言した（本筋の修正）
+ *
+ *   2. ★それでも索引に頼らない形に変えた★
+ *      理由: 索引はデプロイして構築が終わるまで数分効かない。
+ *            また将来ルールやクエリを触った人が索引の追加を
+ *            忘れると、また同じ「黙って壊れる」に戻る。
+ *      具体的には orderBy を外し、status の絞り込みも
+ *      クライアント側で行う。array-contains の1条件だけなら
+ *      ★単一フィールド索引（自動作成）で動く★ので、
+ *      複合索引が無くても、構築中でも機能する。
+ *      待機中の自分の部屋は多くて1〜2件なので、
+ *      並べ替えと絞り込みを手元でやっても負荷にならない。
+ *
+ *   3. エラーを握り潰すのをやめ、呼び出し側に伝えられるようにした。
+ *      画面を壊さない配慮は残しつつ、原因が分かるようにする。
  */
 export function watchMatched(
   onMatched: (roomId: string) => void,
+  onError?: (error: unknown) => void,
 ): Unsubscribe {
   const uid = auth.currentUser?.uid;
   if (!uid) return () => {};
@@ -530,17 +646,30 @@ export function watchMatched(
   return onSnapshot(
     query(
       collection(db, COL_ROOMS),
+      // ★条件は array-contains の1つだけ★
+      //   これなら複合索引が要らない（上の解説を参照）。
       where('players', 'array-contains', uid),
-      where('status', '==', 'waiting'),
-      orderBy('createdAt', 'desc'),
-      limit(1),
+      // 自分が関わる待機中の部屋はごく少数なので、
+      // 上限を少し多めに取って手元で絞る。
+      limit(10),
     ),
     (snap) => {
-      const first = snap.docs[0];
+      // status と作成時刻の判定は手元で行う。
+      const rooms = snap.docs
+        .filter((d) => String(d.get('status') || '') === 'waiting')
+        .sort((a, b) => {
+          const at = toMillis(a.get('createdAt') as Timestamp | null) || 0;
+          const bt = toMillis(b.get('createdAt') as Timestamp | null) || 0;
+          return bt - at; // 新しい順
+        });
+      const first = rooms[0];
       if (first) onMatched(first.id);
     },
-    () => {
-      // 権限や索引のエラーでも待機画面を壊さない
+    (error) => {
+      // 待機画面自体は壊さないが、★黙って捨てない★。
+      // 以前ここが空だったため、索引不足に気付けなかった。
+      console.error('[battle] 待機中の購読に失敗しました', error);
+      onError?.(error);
     },
   );
 }
