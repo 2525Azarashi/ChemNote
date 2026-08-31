@@ -177,6 +177,47 @@ async function seedPlayingRoom(over: Record<string, unknown> = {}) {
   });
 }
 
+/**
+ * 「決着済みで、両者の申告が入っている部屋」を用意する。
+ *
+ * ★これが必要になった理由★
+ * battle_ranking / battle_history のルールは、
+ * lastRoomId（またはドキュメントID）が指す部屋を get() で読み、
+ *   ・実在する
+ *   ・自分が参加者である
+ *   ・2人部屋である
+ *   ・decided（status == 'finished'）
+ *   ・自分の申告が入っている
+ * ことを要求する。
+ * これが無かった頃は、架空の部屋IDを交互に書くだけで
+ * ★1試合もせずにレートを上限まで上げられた★。
+ *
+ * 正常系のテストも、この「実在する試合」を先に置かないと通らない。
+ * ＝テストの前提が本番の前提と同じになる。
+ */
+async function seedFinishedRoom(roomId: string = ROOM, over: Record<string, unknown> = {}) {
+  await seed(['battle_rooms', roomId], {
+    ...roomPayload({
+      id: roomId,
+      status: 'finished',
+      players: [HOST, GUEST],
+      profiles: {
+        [HOST]: { uid: HOST, nickname: 'ホスト', photoURL: '', rating: 1500 },
+        [GUEST]: { uid: GUEST, nickname: 'ゲスト', photoURL: '', rating: 1500 },
+      },
+      currentIndex: 4,
+      deadlineAt: new Date(Date.now() - 1000),
+      attest: {
+        [HOST]: { myScore: 300, opponentScore: 200, outcome: 'win', at: new Date() },
+        [GUEST]: { myScore: 200, opponentScore: 300, outcome: 'lose', at: new Date() },
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }),
+    ...over,
+  });
+}
+
 // ===================================================================
 // battle_rules（運用者がコンソールから触る設定）
 // ===================================================================
@@ -808,6 +849,8 @@ describe('battle_ranking — レート', () => {
   });
 
   it('1試合ぶんの変動は反映できる', async () => {
+    // ★実在する決着済みの部屋が必要★（ルールが get() で確かめる）
+    await seedFinishedRoom();
     await seed(['battle_ranking', HOST], { ...rankPayload(HOST), updatedAt: new Date() });
     await assertSucceeds(
       updateDoc(doc(ctxFor(HOST), 'battle_ranking', HOST), {
@@ -888,6 +931,9 @@ describe('battle_ranking — レート', () => {
   });
 
   it('別の試合なら続けて反映できる', async () => {
+    // 2試合ぶんの部屋を両方実在させる
+    await seedFinishedRoom();
+    await seedFinishedRoom('room_test_2');
     await seed(['battle_ranking', HOST], {
       ...rankPayload(HOST, { lastRoomId: ROOM, rating: 1512, wins: 1 }),
       updatedAt: new Date(),
@@ -959,6 +1005,8 @@ describe('battle_history — 対戦履歴', () => {
   }
 
   it('自分の履歴は書ける', async () => {
+    // ★履歴も実在する自分の試合ぶんだけ書ける★
+    await seedFinishedRoom();
     await assertSucceeds(
       setDoc(doc(ctxFor(HOST), 'battle_history', HOST, 'items', ROOM), histPayload(HOST, ROOM)),
     );
@@ -971,6 +1019,7 @@ describe('battle_history — 対戦履歴', () => {
   });
 
   it('★他人の履歴は読めない（誰と何回やったかは私的情報）★', async () => {
+    await seedFinishedRoom();
     await seed(['battle_history', HOST, 'items', ROOM], {
       ...histPayload(HOST, ROOM),
       playedAt: new Date(),
@@ -1007,6 +1056,7 @@ describe('battle_history — 対戦履歴', () => {
   });
 
   it('自分の履歴は消せる（消してもレートは残る）', async () => {
+    await seedFinishedRoom();
     await seed(['battle_history', HOST, 'items', ROOM], {
       ...histPayload(HOST, ROOM),
       playedAt: new Date(),

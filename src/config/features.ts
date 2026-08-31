@@ -151,11 +151,15 @@ export const FEATURES = {
    * 「権限がありません」で止まるため。
    *
    * ★公開の順番★
-   *   1. firestore.rules に追記して deploy
-   *   2. Firebase コンソールで動作を1回確認
+   *   1. firestore.rules を Firebase に公開（deploy / Console 貼り付け）
+   *   2. 反映されたかを実際に確認する
    *   3. ここを true にする
    *
    * この順番を守らないと、押した人全員がエラーを見ることになる。
+   *
+   * ★1手ずつの具体的な手順は docs/BATTLE_RELEASE_STEPS.md にある★
+   *   （Console のどこを押すか、成功をどう判定するか、
+   *     エラーの逆引き表まで書いてある）
    *
    * ★これは「科目」ではなく「機能」★
    * SUBJECT_FEATURE_KEY には追加しない（科目一覧に出てしまう）。
