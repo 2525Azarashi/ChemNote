@@ -1089,32 +1089,158 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       {
         "id": "geo_q1_r1",
         "problemCount": 1,
-        "abstractTitle": "第1回 モンスーンアジアの気候と稲作",
+        "abstractTitle": "第1回 モンスーンアジアの気候と稲作（単元演習）",
         "realTitle": "第1問"
       },
       {
         "id": "geo_q1_r2",
         "problemCount": 1,
-        "abstractTitle": "第2回 世界の人口構造と人口移動",
+        "abstractTitle": "第2回 世界の人口構造と人口移動（単元演習）",
         "realTitle": "第1問"
       },
       {
         "id": "geo_q1_r3",
         "problemCount": 1,
-        "abstractTitle": "第3回 地図と位置情報・地域調査",
+        "abstractTitle": "第3回 地図と位置情報・地域調査（単元演習）",
         "realTitle": "第1問"
       },
       {
         "id": "geo_q1_r4",
         "problemCount": 1,
-        "abstractTitle": "第4回 資源・エネルギーと国際関係",
+        "abstractTitle": "第4回 資源・エネルギーと国際関係（単元演習）",
         "realTitle": "第1問"
       },
       {
         "id": "geo_q1_r5",
         "problemCount": 1,
-        "abstractTitle": "第5回 環境問題と食料生産の国際比較",
+        "abstractTitle": "第5回 環境問題と食料生産の国際比較（単元演習）",
         "realTitle": "第1問"
+      },
+      {
+        "id": "geo_exam_r1_1",
+        "problemCount": 1,
+        "abstractTitle": "第1回 気候・河川流出と自然災害の地域性（模試）",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_exam_r1_2",
+        "problemCount": 1,
+        "abstractTitle": "第1回 エネルギー資源と工業立地の変化（模試）",
+        "realTitle": "第2問"
+      },
+      {
+        "id": "geo_exam_r1_3",
+        "problemCount": 1,
+        "abstractTitle": "第1回 地方都市の地域調査（模試）",
+        "realTitle": "第3問"
+      },
+      {
+        "id": "geo_exam_r2_1",
+        "problemCount": 1,
+        "abstractTitle": "第2回 世界の農業地域と食料需給（模試）",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_exam_r2_2",
+        "problemCount": 1,
+        "abstractTitle": "第2回 人口転換・人口移動と都市問題（模試）",
+        "realTitle": "第2問"
+      },
+      {
+        "id": "geo_exam_r2_3",
+        "problemCount": 1,
+        "abstractTitle": "第2回 沿岸都市の地域調査（模試）",
+        "realTitle": "第3問"
+      },
+      {
+        "id": "geo_exam_r3_1",
+        "problemCount": 1,
+        "abstractTitle": "第3回 地図投影法・地理情報（GIS）と空間データ分析（模試）",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_exam_r3_2",
+        "problemCount": 1,
+        "abstractTitle": "第3回 交通・通信・国際貿易とサプライチェーン（模試）",
+        "realTitle": "第2問"
+      },
+      {
+        "id": "geo_exam_r3_3",
+        "problemCount": 1,
+        "abstractTitle": "第3回 サブサハラアフリカの開発課題と都市化（模試）",
+        "realTitle": "第3問"
+      },
+      {
+        "id": "geo_exam_r4_1",
+        "problemCount": 1,
+        "abstractTitle": "第4回 世界の地形環境と水資源の利用・管理（模試）",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_exam_r4_2",
+        "problemCount": 1,
+        "abstractTitle": "第4回 産業構造の転換とグローバル経済（模試）",
+        "realTitle": "第2問"
+      },
+      {
+        "id": "geo_exam_r4_3",
+        "problemCount": 1,
+        "abstractTitle": "第4回 中山間地域の地域調査（模試）",
+        "realTitle": "第3問"
+      },
+      {
+        "id": "geo_exam_r5_1",
+        "problemCount": 1,
+        "abstractTitle": "第5回 気候変動・植生帯と生態系サービス（模試）",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_exam_r5_2",
+        "problemCount": 1,
+        "abstractTitle": "第5回 民族・宗教・国家間の結合と地域紛争（模試）",
+        "realTitle": "第2問"
+      },
+      {
+        "id": "geo_exam_r5_3",
+        "problemCount": 1,
+        "abstractTitle": "第5回 日本の工業都市の変容（模試）",
+        "realTitle": "第3問"
+      },
+      {
+        "id": "geo_exam_r6_1",
+        "problemCount": 1,
+        "abstractTitle": "第6回 大気大循環・海洋と気候の年々変動（模試）",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_exam_r6_2",
+        "problemCount": 1,
+        "abstractTitle": "第6回 乾燥地域の水・資源・人口——西アジアと中央アジア（模試）",
+        "realTitle": "第2問"
+      },
+      {
+        "id": "geo_exam_r6_3",
+        "problemCount": 1,
+        "abstractTitle": "第6回 離島Ａ町の地域調査（模試）",
+        "realTitle": "第3問"
+      },
+      {
+        "id": "geo_exam_yo_1",
+        "problemCount": 1,
+        "abstractTitle": "予想問題 エネルギー転換と資源の地理（模試）",
+        "realTitle": "第1問"
+      },
+      {
+        "id": "geo_exam_yo_2",
+        "problemCount": 1,
+        "abstractTitle": "予想問題 島嶼・海洋地域の自然と持続可能性（模試）",
+        "realTitle": "第2問"
+      },
+      {
+        "id": "geo_exam_yo_3",
+        "problemCount": 1,
+        "abstractTitle": "予想問題 温泉観光都市Ｂ市の地域調査（模試）",
+        "realTitle": "第3問"
       }
     ]
   }
@@ -1204,9 +1330,9 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
     "marks": 100
   },
   "geography": {
-    "chapters": 5,
-    "questions": 5,
-    "marks": 25
+    "chapters": 26,
+    "questions": 26,
+    "marks": 137
   }
 };
 
