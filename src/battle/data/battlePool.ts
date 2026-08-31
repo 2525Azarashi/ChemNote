@@ -33,7 +33,7 @@ export const POOL_COUNTS: Readonly<Record<string, number>> = {
   english_listening: 146,
   biology_basic: 62,
   english_grammar: 100,
-  geography: 25,
+  geography: 127,
 };
 
 /**
@@ -63,7 +63,7 @@ export const POOL_FORMAT_COUNTS: Readonly<
   english_listening: { choice4: 146 },
   biology_basic: { choice4: 1, choice: 21, kana: 40 },
   english_grammar: { choice4: 100 },
-  geography: { choice4: 23, choice: 2 },
+  geography: { choice4: 77, choice: 50 },
 };
 
 /**

@@ -45,7 +45,8 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
    */
   const isGrammar = subject === 'english_grammar';
   /**
-   * 地理総合・地理探究はまず「第1問の模擬問題（全回）」を公開した段階。
+   * 地理総合・地理探究は第1問〜第3問の演習（単元演習5回＋模試7回ぶん）を
+   * 公開した段階。
    * まとめプリント（学習インプット）・出題傾向・予想問題は未収録なので、
    * リスニング・英文法と同じく「演習問題」だけを出す（空の画面へ連れていかない）。
    */
@@ -196,10 +197,14 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           </p>
         )}
 
-        {/* 地理で準備中のコンテンツを明示する。 */}
+        {/* 地理で準備中のコンテンツを明示する。
+            ★「第2問以降は準備中」と書いてはいけない★
+              模擬問題（第1回〜第6回＋予想問題）を入れたことで
+              第1問・第2問・第3問がすべて揃った。古い案内文を残すと
+              「まだ第1問しか無い」と誤解させてしまう。 */}
         {isGeography && (
           <p className="mt-3 md:mt-6 text-[10px] md:text-sm text-gray-500 font-handwriting text-center max-w-3xl">
-            ※ まずは「第1問」の模擬問題（第1回〜第5回・計25設問）を公開しています。第2問以降と「学習(インプット)」は順次追加していきます。
+            ※ 第1問〜第3問の演習を公開しています（単元演習5回＋模試7回ぶん・全26単元）。第4問以降と「学習(インプット)」は順次追加していきます。
           </p>
         )}
 

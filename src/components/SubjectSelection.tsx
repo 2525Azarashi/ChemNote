@@ -371,13 +371,18 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
       id: 'geography',
       title: '地理総合・地理探究',
       latin: 'Geography',
-      description: '会話文と資料を行き来して考える、共通テスト型の大問を回ごとに演習します。',
+      description: '会話文と資料を行き来して考える、共通テスト型の大問を単元ごとに演習します。',
       highlights: [
-        `第1問全${geographyStats.chapters}回・設問${geographyStats.marks}問を収録（順次追加中）`,
+        // ★「第1問全○回」と書いてはいけない★
+        //   模擬問題（第1回〜第6回＋予想問題）を入れて第1問・第2問・第3問が
+        //   揃ったので、第1問だけの科目ではなくなった。また chapters は
+        //   「回数」ではなく「単元数（= 大問の数）」なので、
+        //   「全26回」と書くと回数を26回だと誤解させてしまう。
+        `第1問〜第3問・全${geographyStats.chapters}単元／設問${geographyStats.marks}問を収録（順次追加中）`,
         '気候グラフ・人口ピラミッド・地形図・統計表の読み取り',
         '全問に「誤答肢のなぜ違うか」まで入った詳しい解説つき',
       ],
-      volume: `第1問全${geographyStats.chapters}回・設問${geographyStats.marks}問`,
+      volume: `全${geographyStats.chapters}単元・設問${geographyStats.marks}問`,
       available: true,
       icon: Globe2,
     },
