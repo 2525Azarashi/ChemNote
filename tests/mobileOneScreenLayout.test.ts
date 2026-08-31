@@ -159,7 +159,81 @@ describe('L2: fixed ナビはレイアウト高さ 0 なので余白は各ペイ
 describe('L3: ホームの CTA は order で構造的に画面内へ', () => {
   it('スクロールペインは min-h-0 + flex-col（order を効かせるため）', () => {
     expect(HOME).toContain('flex-1 min-h-0 overflow-y-auto');
-    expect(HOME).toContain('flex flex-col lg:justify-center');
+    expect(HOME).toContain('flex flex-col');
+  });
+
+  it('★スクロールする箱に中央寄せを付けない（上へ届かなくなる）★', () => {
+    /*
+      -----------------------------------------------------------------
+      この検査を足した理由（実際に起きた不具合・ご指摘の原文）
+      -----------------------------------------------------------------
+        > PCバージョンのタイトル画面で上にスクロールできず、
+        > お知らせや科目変更ができません。
+
+      ■ 何が起きていたか
+        スクロールする箱（overflow-y-auto）に中央寄せ
+        （justify-content:center / align-items:center）を付けると、
+        中身が箱より高いとき、はみ出しを ★上下へ半分ずつ★ 押し出す。
+        ところがブラウザがスクロールで見せてくれるのは ★下側だけ★。
+        上側はスクロール位置の最小値が 0（＝箱の上辺）なので、
+        どれだけ上へスクロールしても到達できない。
+
+      ■ 実際にブラウザ（Chromium）で測った結果
+        箱 300px ／ 中身 600px のとき
+          justify-content:center → 上に 150px 到達不能
+                                   （しかも中身の高さが 450 に減って報告される
+                                     ＝はみ出しが「無いもの」として扱われるので
+                                     JavaScript で無理にスクロールさせても届かない）
+          margin-top/bottom:auto → 上まで到達できる（中身 600 のまま）
+
+        箱 800px ／ 中身 600px（収まる）のとき
+          justify-content:center の先頭位置 … 100px
+          margin auto の先頭位置          … 100px  ← ★完全一致＝見た目は変わらない★
+
+      ■ どう直したか
+        中央寄せを「箱の指定」から ★中身側の auto マージン★ に移した。
+          収まるとき   … 余った高さを上下の auto が分け合う ＝ 従来どおり中央
+          収まらないとき … auto マージンは 0 に潰れる ＝ 上端から始まる
+
+      これで、ホーム画面の
+        ・お知らせのベル（更新履歴）
+        ・現在の科目バッジ（押すと科目を変更できる導線）
+      が、縦の短いパソコンでも必ず押せるようになる。
+      -----------------------------------------------------------------
+    */
+    // 経緯を書いたコメントの中に lg:justify-center という語が出てくるので、
+    // 「実際に効く指定」= className の中だけを見る。
+    const homeClassNames = (HOME.match(/className="[^"]*"/gu) ?? []).join('\n');
+    expect(homeClassNames).not.toContain('lg:justify-center');
+    // 代わりに、先頭の子と末尾の子の auto マージンで中央に見せる。
+    expect(HOME).toContain('lg:mt-auto');
+    expect(HOME).toContain('lg:mb-auto');
+  });
+
+  it('★App シェルも safe 付き中央寄せにする（同じ罠）★', () => {
+    // シェル自身が overflow-y-auto なので、items-center だと
+    // 初回登録・科目選択・アプリ紹介・モード選択の4画面で
+    // 中身が縦に長いときに上端へ到達できなくなる。
+    expect(APP).toContain('items-safe-center');
+    expect(APP).not.toContain("? 'items-center'");
+  });
+
+  it('.items-safe-center は未対応ブラウザ向けに flex-start を先に書く', () => {
+    /*
+      safe は比較的新しいキーワードなので、未対応ブラウザは
+      その宣言ごと無視する。したがって
+        align-items: flex-start;   ← 未対応ブラウザ用（安全側）
+        align-items: safe center;  ← 対応ブラウザはこちらで上書き
+      の順で書かなければならない。
+      ★逆順に書くと、未対応ブラウザで center が残り不具合が再発する★
+    */
+    expect(CSS).toContain('.items-safe-center');
+    const block = CSS.slice(CSS.indexOf('.items-safe-center'));
+    const fallback = block.indexOf('align-items: flex-start');
+    const safe = block.indexOf('align-items: safe center');
+    expect(fallback).toBeGreaterThanOrEqual(0);
+    expect(safe).toBeGreaterThanOrEqual(0);
+    expect(fallback).toBeLessThan(safe);
   });
 
   it('★パソコンで「はみ出しを隠す」指定を復活させない★', () => {

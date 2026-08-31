@@ -1272,10 +1272,35 @@ export default function App() {
           auto なら A は自前ペインで完結し（外枠はスクロールしない）、
           B は外枠がスクロールしてくれる。
         */}
+        {/*
+          ★items-center → items-safe-center に変えた理由★
+
+          ご指摘（原文）:
+            > PCバージョンのタイトル画面で上にスクロールできず、
+            > お知らせや科目変更ができません。
+
+          この外枠はスクロールする箱（overflow-y-auto）なのに、
+          科目選択・アプリ紹介・学習モード選択・初回登録では
+          中央寄せ（items-center）を付けていた。
+
+          スクロールする箱に中央寄せを付けると、中身が箱より高いとき
+          はみ出しを上下へ半分ずつ押し出すが、
+          ★ブラウザがスクロールで見せてくれるのは下側だけ★。
+          上側はスクロール位置の最小値が 0（箱の上辺）なので到達できない。
+          実測では箱300px・中身600pxのとき上に150px 届かず、
+          しかも scrollHeight が 450 に減っていた
+          （＝はみ出しが「無いもの」として扱われるので JS でも到達不能）。
+
+          items-safe-center は「収まるなら中央、はみ出すなら上端」に
+          自動で切り替わる（実測で両方を確認）。
+          収まる画面の見た目は今までと同じままで、
+          縦の短いパソコンでも一番上まで読めるようになる。
+          定義は index.css の 13.5 節（未対応ブラウザ用の保険つき）。
+        */}
         <div className={`h-[100dvh] w-full flex justify-center relative overflow-y-auto ${
           isFullBleed
             ? 'p-0 items-stretch'
-            : `pt-6 pb-safe-lg md:py-12 px-4 md:px-8 md:pb-28 ${['onboarding', 'subject_selection', 'intro', 'mode_selection'].includes(appState) ? 'items-center' : 'items-start'}`
+            : `pt-6 pb-safe-lg md:py-12 px-4 md:px-8 md:pb-28 ${['onboarding', 'subject_selection', 'intro', 'mode_selection'].includes(appState) ? 'items-safe-center' : 'items-start'}`
         }`}>
           {/* iOS Safari では crossOrigin="anonymous" が付いていると
               同一オリジン音源でもデコードがブロックされ再生できないことがあるため付与しない。

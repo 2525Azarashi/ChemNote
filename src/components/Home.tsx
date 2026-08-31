@@ -414,14 +414,65 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           これで 1366×768 は収まりやすくなり、
           収まらない場合もスクロールで最後まで読める。
       */}
-      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pb-app-nav lg:pb-16 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 lg:pt-6 relative z-10 flex flex-col lg:justify-center">
+      {/*
+        ===== パソコンで「上に」スクロールできなかった問題の修正 =====
+
+        ■ ご指摘（原文）
+          > PCバージョンのタイトル画面で上にスクロールできず、
+          > お知らせや科目変更ができません。
+
+        ■ 何が起きていたか
+          上の修正で overflow-y-auto にしてスクロールできるようにしたが、
+          中央寄せの指定（lg:justify-center）を そのまま残していた。
+
+          ★スクロールする箱に justify-center を付けてはいけない★
+          中身が箱より高いとき、justify-center は はみ出したぶんを
+          上と下に「半分ずつ」押し出す。ところが
+          ブラウザがスクロールで見せてくれるのは ★下にはみ出した側だけ★。
+          上にはみ出した側は、スクロール位置の最小値が 0（＝箱の上辺）
+          なので、どれだけ上へスクロールしようとしても到達できない。
+          これは CSS の仕様で、Chrome も Safari も同じ挙動になる。
+
+          その結果、ホーム画面の一番上に置いてある
+            ・お知らせのベル（更新履歴）
+            ・現在の科目バッジ（押すと科目を変更できる導線）
+          が、縦の短いパソコンでは ★永久に押せない★ 状態だった。
+          「下は読めるのに上だけ届かない」というご指摘のとおりの症状。
+
+        ■ どう直したか
+          中央寄せを justify-center（箱の指定）から
+          ★中身側の auto マージン★ に移した。
+
+            収まるとき   … 余った高さを上下の auto が分け合う ＝ 従来どおり中央
+            収まらないとき … auto マージンは 0 に潰れる ＝ 上端から始まる
+
+          auto マージンは「余りを分ける」だけで ★足りないときに
+          はみ出しを作らない★ ので、上に届かない領域が生まれない。
+          つまり「収まっている画面の見た目は完全に従来のまま」で、
+          収まらない画面だけが上から順に読めるようになる。
+
+          具体的には
+            ・箱   … lg:justify-center を外す（justify-start 相当）
+            ・中身 … 先頭の要素に lg:mt-auto、末尾の要素に lg:mb-auto
+          を付ける。order で並び替えているので、
+          「先頭／末尾」は order 番号ではなく ★DOM の最初と最後★ に付ける
+          必要がある点に注意（auto マージンは視覚順ではなく
+          flex の配置計算に効くため、order 済みの実際の並びで先頭・末尾に
+          来るものに付ける）。ここでは order-1 の挨拶行が先頭、
+          order-5 のサブ導線が末尾になる。
+      */}
+      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pb-app-nav lg:pb-16 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 lg:pt-6 relative z-10 flex flex-col">
 
         {/* ===== 挨拶 ＋ カウントダウン =====
             ※ 左上の「まなとび」ワードマークは表示しない（ユーザー要望）。 */}
         {/* スマホでは挨拶とカウントダウンを横並びにする。
             縦積みだと実測 216px を占め、1画面化の最大の障害だった。
             横並びなら約110pxで収まる。md 以上は従来どおり。 */}
-        <div className="order-1 shrink-0 flex flex-row md:items-start md:justify-between gap-3 md:gap-5 mb-3 md:mb-8 lg:mb-4">
+        {/* lg:mt-auto … パソコンで中身が余ったときだけ上に余白を作り、
+            末尾の lg:mb-auto と対になって「結果的に中央」に見せる。
+            中身が収まらないときは 0 に潰れるので、
+            ★上にはみ出して押せなくなる領域が生まれない★。 */}
+        <div className="order-1 shrink-0 lg:mt-auto flex flex-row md:items-start md:justify-between gap-3 md:gap-5 mb-3 md:mb-8 lg:mb-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting min-w-0 flex-1">
             {/* 学校名（クラスに参加している生徒のみ。学校の教材として見えるようにする） */}
             {schoolBrand && (
@@ -778,7 +829,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         </motion.div>
 
         {/* ===== セカンダリ：学習ノート（ノート＋復習を統合）/ アプリ紹介 / ご意見 ===== */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="order-5 mt-3 md:mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="order-5 lg:mb-auto mt-3 md:mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
           {/* ノートと復習リストを1つの入口「学習ノート」に統合。今日の復習件数をバッジで提示 */}
           <button
             onClick={onNoteList}

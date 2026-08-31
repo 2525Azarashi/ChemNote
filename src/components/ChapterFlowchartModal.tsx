@@ -57,8 +57,14 @@ export function ChapterFlowchartModal({
     }
   };
 
+    /* items-center → items-safe-center。
+        フローチャートは章によって縦に長くなるため、
+        中央寄せのままだと ★上端の見出しにスクロールで到達できない★
+        （はみ出した上半分がスクロール範囲から外れる CSS の仕様）。
+        safe 付きで「収まるときは中央・はみ出すときは上端」にする。
+        （定義は index.css 13.5 節） */
   return (
-    <div className="fixed inset-0 bg-[#1B2631]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 z-[100] overflow-y-auto font-handwriting">
+    <div className="fixed inset-0 bg-[#1B2631]/60 backdrop-blur-xs flex items-safe-center justify-center p-3 sm:p-6 z-[100] overflow-y-auto font-handwriting">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
