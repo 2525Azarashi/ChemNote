@@ -21,16 +21,20 @@
 
 import { Check, Copy, Share2, X } from 'lucide-react';
 import { useState } from 'react';
+import type { CSSProperties } from 'react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
 import type { BattleRoom } from '../core/types';
 import {
+  AMBER,
   BattleButton,
   BattleNotice,
   BattleShell,
   BattleTitle,
   GOLD,
-  NAVY,
+  INK,
+  INK_SUB,
+  LINE,
   PlayerBadge,
 } from './BattleParts';
 
@@ -109,25 +113,40 @@ export function BattleLobby({
       {room.joinCode ? (
         <section
           id="battle-join-code"
-          className="mb-5 rounded-3xl border-2 p-5 text-center"
-          style={{ borderColor: `${GOLD}55`, background: `${GOLD}12` }}
+          className="battle-card-in battle-sheen mb-5 rounded-3xl border-2 p-5 text-center"
+          style={{
+            borderColor: `${GOLD}AA`,
+            background: '#FFFFFF',
+            boxShadow: `0 6px 0 ${GOLD}33`,
+          }}
         >
-          <p className="text-[10px] font-black tracking-widest text-white/50">あいことば</p>
           <p
-            className="my-1 text-5xl font-black tracking-[0.2em] tabular-nums"
-            style={{ color: GOLD }}
+            className="relative z-[2] text-[10px] font-black tracking-widest"
+            style={{ color: INK_SUB }}
+          >
+            あいことば
+          </p>
+          {/*
+            ★合言葉の文字色をゴールドにしない★
+            アイボリー地の上の #F4D03F は輝度が近すぎて読めない。
+            この4文字は「相手に読み上げてもらう」のが全てなので、
+            視認性を優先して濃紺にし、ゴールドは下地に使う。
+          */}
+          <p
+            className="relative z-[2] my-1 inline-block rounded-2xl px-4 py-1 text-5xl font-black tracking-[0.2em] tabular-nums"
+            style={{ background: `${GOLD}3D`, color: INK }}
           >
             {room.joinCode}
           </p>
-          <p className="mb-3 text-[11px] font-bold text-white/50">
+          <p className="relative z-[2] mb-3 text-[11px] font-bold" style={{ color: INK_SUB }}>
             相手に伝えて「合言葉で参加する」から入ってもらってください
           </p>
-          <div className="flex justify-center gap-2">
+          <div className="relative z-[2] flex justify-center gap-2">
             <button
               type="button"
               onClick={() => void copyCode()}
-              className="flex items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-black transition active:scale-95"
-              style={{ borderColor: `${GOLD}66`, color: GOLD }}
+              className="flex items-center gap-1.5 rounded-xl border-2 px-3 py-2 text-[11px] font-black transition active:translate-y-[2px] active:scale-95"
+              style={{ borderColor: LINE, background: '#FFFFFF', color: INK }}
             >
               {copied ? <Check size={13} /> : <Copy size={13} />}
               {copied ? 'コピーしました' : 'コピー'}
@@ -136,8 +155,8 @@ export function BattleLobby({
               <button
                 type="button"
                 onClick={() => void share()}
-                className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-[11px] font-black transition active:scale-95"
-                style={{ background: GOLD, color: NAVY }}
+                className="flex items-center gap-1.5 rounded-xl border-2 px-3 py-2 text-[11px] font-black transition active:translate-y-[2px] active:scale-95"
+                style={{ background: GOLD, borderColor: '#E5B93C', color: INK }}
               >
                 <Share2 size={13} />
                 おくる
@@ -153,8 +172,10 @@ export function BattleLobby({
 
       {/* 対戦カード */}
       <section
-        className="rounded-3xl border p-4"
-        style={{ borderColor: 'rgba(255,255,255,0.14)', background: 'rgba(255,255,255,0.05)' }}
+        className="battle-card-in rounded-3xl border-2 p-4"
+        style={
+          { borderColor: LINE, background: '#FFFFFF', '--card-delay': '0.08s' } as CSSProperties
+        }
       >
         <div className="flex items-center gap-2">
           <PlayerBadge
@@ -163,7 +184,10 @@ export function BattleLobby({
             rating={me?.rating ?? 1500}
             isMe
           />
-          <span className="shrink-0 text-xs font-black" style={{ color: GOLD }}>
+          <span
+            className="battle-vs-pulse shrink-0 rounded-lg px-1.5 py-0.5 text-xs font-black"
+            style={{ background: GOLD, color: INK }}
+          >
             VS
           </span>
           {opponent ? (
@@ -176,10 +200,27 @@ export function BattleLobby({
             />
           ) : (
             <div className="flex min-w-0 flex-1 flex-row-reverse items-center gap-2 text-right">
-              <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-white/12" />
+              <div
+                className="h-9 w-9 shrink-0 animate-pulse rounded-full border-2"
+                style={{ background: '#F1EDE4', borderColor: LINE }}
+              />
               <div className="min-w-0">
-                <p className="truncate text-xs font-black text-white/40">まだ来ていません</p>
-                <p className="text-[10px] font-bold text-white/25">…</p>
+                <p className="truncate text-xs font-black" style={{ color: INK_SUB }}>
+                  相手を待っています
+                  {/* ★点々で「この画面は生きている」と伝える★ */}
+                  {['0s', '0.15s', '0.3s'].map((d) => (
+                    <span
+                      key={d}
+                      className="battle-dot inline-block"
+                      style={{ '--dot-delay': d } as CSSProperties}
+                    >
+                      .
+                    </span>
+                  ))}
+                </p>
+                <p className="text-[10px] font-bold" style={{ color: INK_SUB }}>
+                  合言葉を伝えましたか？
+                </p>
               </div>
             </div>
           )}
@@ -187,13 +228,16 @@ export function BattleLobby({
       </section>
 
       {room.rules.note && (
-        <p className="mt-4 text-center text-[11px] font-bold leading-relaxed" style={{ color: GOLD }}>
+        <p className="mt-4 text-center text-[11px] font-bold leading-relaxed" style={{ color: AMBER }}>
           {room.rules.note}
         </p>
       )}
 
       <div className="mt-auto pt-6">
-        <p className="text-center text-[10px] font-bold leading-relaxed text-white/35">
+        <p
+          className="text-center text-[10px] font-bold leading-relaxed"
+          style={{ color: INK_SUB }}
+        >
           先に押した方が勝ちではありません。
           <br />
           同じ問題が2人に同時に出て、正解と速さで点が決まります。

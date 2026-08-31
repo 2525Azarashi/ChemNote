@@ -242,8 +242,18 @@ export function isBattleAnswerCorrect(
 ): boolean {
   if (!record) return false;
 
-  if (question.format === 'panel') {
-    // 文字パネル: 押した順が正解の順と完全に一致していること
+  /**
+   * 文字パネル・五十音キーボード: 押した順が正解の順と完全に一致していること。
+   *
+   * ★2つを同じ式で判定できる理由★
+   * どちらも「番号の並び」を答えとして送る。違うのは番号の意味だけで、
+   *   panel … options（画面に並んだ文字パネル）の添字
+   *   kana  … KANA_KEYS（五十音キーボードの文字表）の添字
+   * 判定は「送られた並びが正解の並びと同じか」しか見ないので、
+   * 番号の意味を知る必要がない。★ここで文字列に戻して比べてはいけない★
+   * （戻すには文字表が必要になり、この葉モジュールが kanaKeyboard に依存する）。
+   */
+  if (question.format === 'panel' || question.format === 'kana') {
     const expected = question.panelOrder;
     const actual = record.panel || [];
     if (expected.length === 0) return false;
@@ -636,6 +646,23 @@ export function pickRandom<T>(items: readonly T[], count: number, random: () => 
 }
 
 /**
+ * buildQuestionOrder の追加指定（省略可）。
+ *
+ * ★なぜ引数を増やすのではなくまとめた形にしたのか★
+ * 引数を並べていくと呼び出し側が
+ *   buildQuestionOrder(ids, 10, seed, groupOf, isKana, 0.3)
+ * のようになり、真ん中の値が何なのか読めなくなる。
+ * また、あとで「かな入力以外の混ぜ方」を足したくなったときに
+ * 既存の呼び出しを全部書き換えることになる。
+ */
+export interface QuestionOrderMix {
+  /** その出題IDがかな入力（五十音キーボード）かどうか */
+  isKana: (id: string) => boolean;
+  /** かな入力にしたい問題の割合（0〜1）。0.3 なら10問中3問 */
+  kanaShare: number;
+}
+
+/**
  * 出題IDの並びを「種」から決定論的に作る。
  *
  * ★同じ種・同じプールなら、誰の端末で計算しても同じ並びになる。★
@@ -647,17 +674,20 @@ export function pickRandom<T>(items: readonly T[], count: number, random: () => 
  * @param poolIds 抽選対象の出題ID（教科・形式で絞り込んだ後のもの）
  * @param count   選ぶ数
  * @param seed    種（部屋IDなど）
+ * @param groupOf 同じ小問から作られた問題をまとめるキー（省略可）
+ * @param mix     かな入力を何割混ぜるか（省略可）
  */
 export function buildQuestionOrder(
   poolIds: readonly string[],
   count: number,
   seed: string,
   groupOf?: (id: string) => string,
+  mix?: QuestionOrderMix,
 ): string[] {
   const random = createRandom(hashString(seed));
 
-  // グループ指定が無ければ単純に抽選する
-  if (!groupOf) return pickRandom(poolIds, count, random);
+  // 何の指定も無ければ単純に抽選する
+  if (!groupOf && !mix) return pickRandom(poolIds, count, random);
 
   // ★同じ小問から作られた別形式を1試合に混ぜない★
   //
@@ -675,15 +705,75 @@ export function buildQuestionOrder(
   // どの形式が採用されるかも種によって決まり、決定論性が保たれる。
   const shuffled = pickRandom(poolIds, poolIds.length, random);
   const usedGroups = new Set<string>();
-  const picked: string[] = [];
+  const unique: string[] = [];
 
   for (const id of shuffled) {
-    if (picked.length >= count) break;
-    const group = groupOf(id);
+    const group = groupOf ? groupOf(id) : id;
     if (usedGroups.has(group)) continue;
     usedGroups.add(group);
-    picked.push(id);
+    unique.push(id);
+    // 混ぜる指定が無いときは、必要な数が揃った時点で打ち切ってよい。
+    // 混ぜる指定があるときは、後ろの方にしか無い形式（かな入力）を
+    // 拾う必要があるので ★最後まで見る★。
+    if (!mix && unique.length >= count) break;
   }
 
-  return picked;
+  if (!mix) return unique;
+
+  // ------------------------------------------------------------
+  // ★選択式とかな入力を混ぜる★
+  // ------------------------------------------------------------
+  // 利用者の指定は「みんはや形式（1文字ずつ押す）をもっと入れてほしい。
+  // ただし全部をそうしなくてよい。四択問題も含めて」だった。
+  //
+  // ■ なぜ「形式で絞ってから抽選」ではだめなのか
+  //   形式で絞ると 0問か全問かにしかならない。
+  //   「10問中3問だけかな入力」は、抽選のあとに
+  //   ★形式ごとの取り分を決める★ことでしか作れない。
+  //
+  // ■ 足りないときは自動で振り替える
+  //   例：地理はかな入力が0問なので、0.3 を指定しても
+  //   かな入力の取り分が0になり、全問が選択式で埋まる。
+  //   逆に生物基礎のようにかな入力が多い教科では、
+  //   選択式が足りなければかな入力で埋める。
+  //   ★どちらの場合も「問題数が足りない」で試合が短くなることはない。★
+  const kanaIds: string[] = [];
+  const otherIds: string[] = [];
+  for (const id of unique) {
+    if (mix.isKana(id)) kanaIds.push(id);
+    else otherIds.push(id);
+  }
+
+  const share = Math.min(1, Math.max(0, mix.kanaShare));
+  const total = Math.min(count, unique.length);
+  // 四捨五入。0.3 × 10問 = 3問。0.3 × 5問 = 2問（1.5 → 2）。
+  let wantKana = Math.min(Math.round(total * share), kanaIds.length);
+  let wantOther = total - wantKana;
+
+  // 選択式が足りなければ、その分をかな入力で埋める（逆も同じ）。
+  if (wantOther > otherIds.length) {
+    const short = wantOther - otherIds.length;
+    wantOther = otherIds.length;
+    wantKana = Math.min(kanaIds.length, wantKana + short);
+  }
+
+  const chosen = [...kanaIds.slice(0, wantKana), ...otherIds.slice(0, wantOther)];
+
+  /**
+   * ★取り分を決めたあと、もう一度並べ直す★
+   *
+   * ■ なぜ「unique の順で拾い直す」ではだめなのか（実測で判明）
+   * 上で取っているのは「シャッフル列に先に現れたかな入力3問」と
+   * 「先に現れた選択式7問」である。かな入力は30問中3問（上位10%）しか
+   * 取らないので選ばれる3問は列のかなり前方に集まるが、
+   * 選択式は30問中7問（上位23%）なので後ろまで取る。
+   * その結果 ★かな入力が試合の前半に固まる★。
+   * 30部屋で試したところ、8部屋で1〜3問目が全部かな入力になった
+   * （前半だけ極端に難しい試合になる）。
+   *
+   * 取り分を決めてから並べ直すと、どの位置に来るかが形式と無関係になる。
+   * 同じ種なら同じ並びになるので、両端末で同じ出題順という前提も保たれる
+   * （random は上のシャッフルの続きなので、種だけで決まる）。
+   */
+  return pickRandom(chosen, chosen.length, random);
 }

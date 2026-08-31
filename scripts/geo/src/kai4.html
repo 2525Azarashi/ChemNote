@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地理探究 実戦模擬問題 第4回（標準）</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="toolbar" aria-label="操作">
+  <span class="tb-title">地理探究 実戦模擬 第4回</span>
+  <button id="toggle-answers" type="button">解答・解説を表示</button>
+  <button id="print-page" type="button">PDFとして保存／印刷</button>
+  <a href="index.html">目次へ</a>
+</nav>
+
+<main class="paper">
+
+<h1>地理探究 模擬問題 第4回</h1>
+<p class="exam-meta">
+  <span class="badge lv3">難易度：標準</span>
+  <span class="badge">解答時間 60分</span>
+  <span class="badge">配点 100点</span>
+  <span class="badge">小問16問</span><br>
+  第1問 世界の地形環境と水資源の利用・管理（34点）／第2問 産業構造の転換とグローバル経済（33点）／第3問 中山間地域の地域調査（33点）<br>
+  ※統計値は公表資料をもとに作問上簡略化した教材用の数値である。
+</p>
+
+<!-- ===================== 第1問 ===================== -->
+<h2>第1問　世界の地形環境と水資源の利用・管理（配点34点）</h2>
+
+<p class="lead">高校生のアオイとリクは、「水は足りているのか」というテーマで探究学習に取り組んだ。次の会話文と資料1〜3を読み、後の問い（問1〜問6）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">アオイ：</span>世界の大きな河川を4つ選んで、流域を地図に示してみました（資料1の上段）。地図で見ると大きさの違いがはっきりしますね。</p>
+  <p><span class="spk">リク：</span>ところが数字を並べると（資料1の下段）、<u>流域が大きいことと水が多いことは別</u>だとわかります。流域がどんな気候帯を流れているかで、まったく変わってしまう。</p>
+  <p><span class="spk">アオイ：</span>河川Ｃはダムがたくさんつくられている川ですね。ダムができる前と今の流量を比べてみました（資料2の上段）。</p>
+  <p><span class="spk">リク：</span>使い方のほうも見ておきたいです。地域ごとに、何にどれだけ水を使っているかを整理しました（資料2の下段）。<span class="box">Ｅ</span>と<span class="box">Ｈ</span>は農業用水の割合がよく似ているのに、1人当たりの取水量はまるで違うんです。</p>
+  <p><span class="spk">アオイ：</span>最後は身近な話です。日本の平野の断面と地下水の関係を模式図にしました（資料3）。地形ごとに水の得やすさも、災害の起こり方も違うのですね。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　4つの河川Ａ〜Ｄの位置（模式図）と、4つの河川ア〜エの特性</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：世界の模式地図（河川の位置）／グレースケール／試験冊子体裁</p>
+    <pre>A clean black-and-white schematic world map for a Japanese university-entrance
+geography exam booklet. Simplified, low-detail continent outlines filled with a
+very light grey, on a white background inside a thin rectangular border. No
+colour, no relief shading, no country borders.
+
+GRATICULE: thin light-grey straight meridians and parallels at 30-degree
+intervals. Draw the EQUATOR as a slightly thicker solid black horizontal line
+labelled 赤道 at its left end, and the PRIME MERIDIAN as a dashed vertical line
+labelled 本初子午線 at its top.
+
+CONTINENTS (very simplified blobs, correct relative positions):
+North America, South America, Eurasia, Africa, Australia, and the Indian
+subcontinent shown as a distinct downward-pointing peninsula.
+
+Draw FOUR rivers as thick dark solid lines, each labelled with a single bold
+capital letter only:
+- Ａ : a long river in NORTH-EAST AFRICA flowing from near the equator
+       NORTHWARD to the Mediterranean coast. Label Ａ beside its middle course.
+- Ｂ : a shorter river in SOUTH-WEST ASIA (the Middle East), flowing from the
+       northern highlands SOUTH-EAST to a gulf. Label Ｂ.
+- Ｃ : a river in the SOUTH-WEST of NORTH AMERICA, flowing from inland
+       mountains SOUTH-WEST to the sea. Label Ｃ.
+- Ｄ : a river on the NORTHERN side of the Indian subcontinent, flowing from
+       the mountains EAST/SOUTH-EAST to a bay. Label Ｄ.
+
+Do NOT write any river name, country name, sea name or city name anywhere in
+the image — only the four letters Ａ Ｂ Ｃ Ｄ.
+
+Small note along the bottom:
+太線は各河川の本流のおおよその位置を示す。経線・緯線は30度間隔。
+
+Typography: Japanese sans-serif; river letters bold ~13px equivalent.
+Canvas ratio about 700 : 350.</pre>
+    <p class="zu-note">河川名・国名を図中に書かないことが必須です（Ａ〜Ｄの同定が問1・問2）。<strong>Ａ＝北アフリカを北流／Ｂ＝西アジア／Ｃ＝北米南西部／Ｄ＝インド北部</strong>という大まかな位置関係だけが手がかりになるようにしてください。</p>
+  </div>
+  <p class="src">太線は各河川の本流のおおよその位置を示す。経線・緯線は30度間隔。</p>
+
+  <p class="src" style="margin-top:14px"><strong>［下段］4つの河川ア〜エの特性</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>流域面積<br>（千km²）</th><th>年平均流量<br>（m³/秒）</th><th>流域内人口<br>（百万人）</th><th>流域内の<br>国数</th><th>取水量に占める<br>農業用水の割合（％）</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>ア</th><td>1,090</td><td>12,000</td><td>500</td><td>4</td><td>90</td></tr>
+      <tr><th>イ</th><td>3,255</td><td>2,830</td><td>260</td><td>11</td><td>84</td></tr>
+      <tr><th>ウ</th><td>817</td><td>6,500</td><td>80</td><td>19</td><td>25</td></tr>
+      <tr><th>エ</th><td>637</td><td>360</td><td>40</td><td>2</td><td>78</td></tr>
+    </tbody>
+  </table>
+  <p class="src">年平均流量は河口付近の値。ア〜エは上段のＡ〜Ｄのいずれかである。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　河川Ｃの月別平均流量（ダム建設前と現在）と、4つの地域における水の利用</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：月別流量の折れ線グラフ（2系列）／グレースケール／試験冊子体裁</p>
+    <pre>A clean black-and-white line graph for a Japanese university-entrance geography
+exam booklet. White background, thin black axes, light grey horizontal
+gridlines, no colour.
+
+AXES:
+- Y axis, unit label at top-left: （m³/秒）. Ticks at 0, 500, 1,000, 1,500, 2,000.
+- X axis, twelve equally spaced ticks labelled 1 to 12, unit label （月） at the
+  right end.
+
+Plot TWO series with these EXACT monthly values (Jan to Dec):
+
+SERIES 1 — ダム建設前（1930年代）: SOLID thick black line with small filled
+circle markers.
+  200, 210, 300, 700, 1600, 2000, 900, 400, 300, 250, 220, 200
+
+SERIES 2 — 現在（2010年代）: DASHED thick line with small square markers.
+  350, 350, 330, 320, 330, 380, 420, 400, 360, 340, 340, 350
+
+The contrast is the whole point: series 1 has a huge spike in June, while
+series 2 is nearly FLAT across all twelve months and never rises above about
+430. Series 2 must sit ABOVE series 1 in the dry months (Jan–Mar, Oct–Dec) and
+far BELOW it in May–July.
+
+LEGEND inside the plot area, upper right: a solid line sample labelled
+ダム建設前（1930年代） and a dashed line sample labelled 現在（2010年代）.
+
+Small note at the bottom left:
+年平均流量は、ダム建設前が約610m³/秒、現在が約360m³/秒である。
+
+Typography: Japanese sans-serif, ~11px equivalent. Canvas ratio about 640 : 330.</pre>
+    <p class="zu-note"><strong>「建設前は季節変動が大きく、現在は年間を通じてほぼ平坦」</strong>という形の対比と、<strong>渇水期には現在の方が流量が多い</strong>という交差関係が設問の根拠です。上記の12か月分の数値どおりに打点してください。年平均流量の注記も必ず入れてください。</p>
+  </div>
+
+  <p class="src" style="margin-top:14px"><strong>［下段］4つの地域における水の利用（2020年前後）</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>農業用水<br>（％）</th><th>工業用水<br>（％）</th><th>生活用水<br>（％）</th><th>1人当たり<br>年取水量（m³）</th><th>水ストレス<br>（％）</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>Ｅ</th><td>91</td><td>2</td><td>7</td><td>600</td><td>62</td></tr>
+      <tr><th>Ｆ</th><td>40</td><td>46</td><td>14</td><td>1,210</td><td>16</td></tr>
+      <tr><th>Ｇ</th><td>25</td><td>53</td><td>22</td><td>480</td><td>9</td></tr>
+      <tr><th>Ｈ</th><td>82</td><td>5</td><td>13</td><td>130</td><td>3</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Ｅ〜Ｈは、北アメリカ、サブサハラアフリカ、南アジア、ヨーロッパのいずれかである。水ストレスは、利用可能な水資源量に対する取水量の割合。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　沖積平野の地形と地下水の模式断面図</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：地形・地下水の模式断面図／グレースケール／試験冊子体裁</p>
+    <pre>A clean black-and-white schematic CROSS-SECTION diagram for a Japanese
+university-entrance geography exam booklet. One wide rectangular frame, white
+background, thin line art, grey hatch/stipple fills only, no colour.
+
+The section runs from MOUNTAINS on the far LEFT down to the SEA on the far
+RIGHT. The ground surface is one thick black line that descends steeply from
+the mountains, then flattens gradually toward the sea.
+
+LABEL the mountains 山地 at the far left, and 海 at the far right where a thin
+horizontal water line meets the land.
+
+SUBSURFACE LAYERS (drawn in section, with a legend box in the upper right):
+- A thick GRAVEL/SAND layer (stipple pattern of small dots) spanning the whole
+  width beneath the surface. Legend label: 礫・砂の層（帯水層）
+- A CLAY layer (fine diagonal hatching) that exists ONLY in the downstream
+  half, lying on top of the gravel layer. Legend label: 粘土の層
+- A SALT-WATER WEDGE (cross-hatching) intruding from the sea side, thin at its
+  landward tip and thickening toward the sea, with a dashed boundary.
+  Legend label: 塩水（海水）
+
+GROUNDWATER TABLE: a DASHED line inside the gravel layer, running roughly
+parallel to but BELOW the ground surface. It lies deep below the surface in the
+upstream (fan) part and comes very close to the surface downstream. Label it
+地下水面.
+
+RIVER: near the top of the fan, draw the channel as a line and mark the middle
+part of the fan with the small note （水無川）, indicating the channel is dry
+there.
+
+ZONE BAR along the bottom: four labelled segments, left to right —
+  扇状地 ／ 氾濫原（自然堤防・後背湿地） ／ 三角州 ／ 海岸低地
+On the floodplain segment, add a small mound on the surface labelled 自然堤防
+and a slightly lower area behind it labelled 後背湿地.
+
+FOUR POINTS on the ground surface, each a small white circle with a bold
+outline and a bold hiragana label:
+  ａ on the 扇状地 (fan)
+  ｂ on the 氾濫原 (floodplain)
+  ｃ on the 三角州 (delta)
+  ｄ on the 海岸低地 (coastal lowland), closest to the sea
+Do NOT write the landform name next to the letters themselves — the letters and
+the zone bar must be read together.
+
+Typography: Japanese sans-serif, ~10–12px equivalent; point letters bold.
+Canvas ratio about 700 : 320.</pre>
+    <p class="zu-note">設問の根拠は、①<strong>扇状地では地下水面が深く、扇端・三角州では浅い</strong>こと、②<strong>粘土層が下流側にだけ存在する</strong>こと、③<strong>塩水くさびが海側から入り込んでいる</strong>こと、④ａ〜ｄが扇状地・氾濫原・三角州・海岸低地に1つずつ置かれていることです。ａ〜ｄの近くに地形名を書かないでください（対応づけが設問です）。</p>
+  </div>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1の上段のＡ〜Ｄと下段のア〜エとの組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">1</span></p>
+  <table class="data">
+    <thead><tr><th></th><th>Ａ</th><th>Ｂ</th><th>Ｃ</th><th>Ｄ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td>ア</td><td>ウ</td><td>エ</td><td>イ</td></tr>
+      <tr><td>②</td><td>イ</td><td>ウ</td><td>エ</td><td>ア</td></tr>
+      <tr><td>③</td><td>イ</td><td>エ</td><td>ウ</td><td>ア</td></tr>
+      <tr><td>④</td><td>ウ</td><td>イ</td><td>エ</td><td>ア</td></tr>
+      <tr><td>⑤</td><td>ア</td><td>エ</td><td>ウ</td><td>イ</td></tr>
+      <tr><td>⑥</td><td>イ</td><td>ウ</td><td>ア</td><td>エ</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料1の下段から読み取れることについて述べた文として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">2</span></p>
+  <ol class="choices">
+    <li>①　流域面積が最も大きい河川は、年平均流量では4河川中3番目である。これは流域の大部分が乾燥した地域を流れ、蒸発によって失われる水が多いことによる。</li>
+    <li>②　流域内の国数が最も多い河川は、流域面積も4河川中で最も大きい。</li>
+    <li>③　流域内人口が最も多い河川では、取水量に占める農業用水の割合も4河川中で最も高い。</li>
+    <li>④　流域面積1,000km²当たりの年平均流量が最も小さいのは、エである。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2の上段から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">3</span></p>
+  <ol class="choices">
+    <li>①　ダム建設後は1月から3月の流量が建設前を上回っているため、年間の総流量も建設前を上回っている。</li>
+    <li>②　ダム建設前の最大流量は、建設後の最大流量の約2倍である。</li>
+    <li>③　ダム建設前は5〜6月に流量が最大となっており、これは流域の山地に積もった雪が融ける時期にあたる。建設後はこの時期の流量が大幅に減り、月ごとの変動が小さくなった。</li>
+    <li>④　ダム建設後に流量が最も多い月は6月であり、建設前と同じ月に最大となっている。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料2の下段のＥ〜Ｈと地域名との組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">4</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｅ</th><th class="l">Ｆ</th><th class="l">Ｇ</th><th class="l">Ｈ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">南アジア</td><td class="l">ヨーロッパ</td><td class="l">北アメリカ</td><td class="l">サブサハラアフリカ</td></tr>
+      <tr><td>②</td><td class="l">サブサハラアフリカ</td><td class="l">北アメリカ</td><td class="l">ヨーロッパ</td><td class="l">南アジア</td></tr>
+      <tr><td>③</td><td class="l">南アジア</td><td class="l">北アメリカ</td><td class="l">サブサハラアフリカ</td><td class="l">ヨーロッパ</td></tr>
+      <tr><td>④</td><td class="l">南アジア</td><td class="l">北アメリカ</td><td class="l">ヨーロッパ</td><td class="l">サブサハラアフリカ</td></tr>
+      <tr><td>⑤</td><td class="l">サブサハラアフリカ</td><td class="l">ヨーロッパ</td><td class="l">北アメリカ</td><td class="l">南アジア</td></tr>
+      <tr><td>⑥</td><td class="l">ヨーロッパ</td><td class="l">北アメリカ</td><td class="l">南アジア</td><td class="l">サブサハラアフリカ</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料2の下段について述べた次の文中の空欄<span class="box">Ｘ</span>・<span class="box">Ｙ</span>に入る語句の組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">5</span></p>
+  <p style="margin:8px 0">ＥとＨは、取水量に占める農業用水の割合がともに8割を超えており、水の使い方は似ているようにみえる。しかし1人当たり年取水量はＥが600m³、Ｈが130m³であり、これをもとに計算すると、Ｈの1人当たりの農業用取水量はＥの約<span class="box">Ｘ</span>にとどまる。Ｈで食料生産を増やすために灌漑を広げていくには、<span class="box">Ｙ</span>が大きな課題となる。</p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｘ</th><th class="l">Ｙ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">2分の1</td><td class="l">ダムや用水路などの施設整備と、それを維持する資金・技術の確保</td></tr>
+      <tr><td>②</td><td class="l">2分の1</td><td class="l">工業用水との競合の解消</td></tr>
+      <tr><td>③</td><td class="l">10分の1</td><td class="l">ダムや用水路などの施設整備と、それを維持する資金・技術の確保</td></tr>
+      <tr><td>④</td><td class="l">10分の1</td><td class="l">取水量の削減による水資源の保全</td></tr>
+      <tr><td>⑤</td><td class="l">5分の1</td><td class="l">ダムや用水路などの施設整備と、それを維持する資金・技術の確保</td></tr>
+      <tr><td>⑥</td><td class="l">5分の1</td><td class="l">取水量の削減による水資源の保全</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問6　資料3の地点ａ〜ｄについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">6</span></p>
+  <ol class="choices">
+    <li>①　地点ｂの自然堤防上は、周囲の後背湿地よりも低いため、古くから水田として利用されてきた。</li>
+    <li>②　地点ｃでは地下水の過剰な揚水によって地盤沈下が生じやすいが、揚水を止めて地下水位が回復すれば、沈下した地盤も元の高さに戻る。</li>
+    <li>③　地点ｄでは海面より高い位置に地下水面があるため、揚水量をどれだけ増やしても塩水が侵入することはない。</li>
+    <li>④　地点ａでは礫や砂が厚く堆積して透水性が高いため、河川の水が地下に伏流して水無川となることがあり、扇端では湧水がみられる。</li>
+  </ol>
+</div>
+
+<!-- ===================== 第2問 ===================== -->
+<h2>第2問　産業構造の転換とグローバル経済（配点33点）</h2>
+
+<p class="lead">次の資料1〜4は、産業構造の転換について調べた探究レポートの一部である。レポート冒頭の「用語の整理」とともに読み、後の問い（問1〜問5）に答えよ。</p>
+
+<div class="memo">
+  <p style="margin:0 0 6px;font-weight:700;font-family:'Hiragino Kaku Gothic ProN',sans-serif;font-size:14.5px">レポート冒頭の「用語の整理」</p>
+  <ul>
+    <li>1つの製品は、設計・部品生産・組立・販売が複数の国に分かれて行われることが多い。この連鎖を<strong>グローバル・バリューチェーン</strong>という。</li>
+    <li>企業が業務の一部を海外の拠点や企業に移すことを<strong>オフショアリング</strong>、いったん海外に移した生産を自国に戻すことを<strong>リショアリング</strong>という。</li>
+    <li>賃金の上昇や地政学的なリスクを避けるため、生産拠点を中国以外にも分散させる動き（チャイナ・プラスワン）や、消費地の近くに移す動き（ニアショアリング）がみられる。</li>
+    <li>インターネットの普及によって、コールセンター業務、ソフトウェア開発、会計処理などのサービスが国境を越えて取引されるようになった。</li>
+  </ul>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　4か国の産業別就業者割合の変化と関連指標</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th rowspan="2"></th><th colspan="2">第1次産業（％）</th><th colspan="2">第2次産業（％）</th><th colspan="2">第3次産業（％）</th><th rowspan="2">1人当たり<br>GNI（ドル）<br>2020年</th><th rowspan="2">輸出額に占める<br>機械類の割合<br>（％）2020年</th></tr>
+      <tr><th>1980年</th><th>2020年</th><th>1980年</th><th>2020年</th><th>1980年</th><th>2020年</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>Ａ</th><td>34.0</td><td>5.4</td><td>28.7</td><td>24.6</td><td>37.3</td><td>70.0</td><td>32,000</td><td>40</td></tr>
+      <tr><th>Ｂ</th><td>3.6</td><td>1.4</td><td>30.5</td><td>19.4</td><td>65.9</td><td>79.2</td><td>64,000</td><td>24</td></tr>
+      <tr><th>Ｃ</th><td>73.0</td><td>29.0</td><td>10.0</td><td>33.0</td><td>17.0</td><td>38.0</td><td>3,400</td><td>42</td></tr>
+      <tr><th>Ｄ</th><td>36.7</td><td>9.1</td><td>24.4</td><td>20.0</td><td>38.9</td><td>70.9</td><td>7,800</td><td>8</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Ａ〜Ｄは、アメリカ合衆国、韓国、ブラジル、ベトナムのいずれかである。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　Ｂ国の製造業における付加価値額（実質、1980年＝100）と就業者数の推移</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：2軸の折れ線グラフ（指数と実数）／グレースケール／試験冊子体裁</p>
+    <pre>A clean black-and-white dual-axis line graph for a Japanese university-entrance
+geography exam booklet. White background, thin black axes on BOTH left and
+right, light grey horizontal gridlines, no colour.
+
+AXES:
+- LEFT axis, unit （指数）, ticks 0, 50, 100, 150, 200, 250.
+- RIGHT axis, unit （万人）, ticks 0, 400, 800, 1,200, 1,600, 2,000.
+- X axis, five equally spaced ticks: 1980, 1990, 2000, 2010, 2020, unit （年）.
+
+SERIES 1 — 製造業の付加価値額（実質、左軸）: SOLID thick black line with round
+markers, plotted against the LEFT axis. Values:
+  1980 = 100, 1990 = 135, 2000 = 190, 2010 = 200, 2020 = 235
+Print each value as a small number beside its marker.
+
+SERIES 2 — 製造業の就業者数（右軸）: DASHED thick line with square markers,
+plotted against the RIGHT axis. Values:
+  1980 = 1,830, 1990 = 1,760, 2000 = 1,730, 2010 = 1,150, 2020 = 1,240
+Print each value as a small number beside its marker.
+
+The essential visual message: the solid line rises steadily throughout, while
+the dashed line is nearly flat until 2000 and then FALLS SHARPLY between 2000
+and 2010, recovering only slightly by 2020. The two lines must cross.
+
+LEGEND inside the plot area, lower left: solid sample labelled
+製造業の付加価値額（実質、左軸）, dashed sample labelled 製造業の就業者数（右軸）.
+
+Small note at the bottom left: Ｂ国は資料1のＢと同じ国である。
+
+Typography: Japanese sans-serif, ~11px equivalent. Canvas ratio about 660 : 330.</pre>
+    <p class="zu-note">設問の根拠は<strong>「生産額は増えているのに就業者数は減っている」という2本の線の向きの食い違い</strong>です。左右2つの軸があること、各点の数値ラベルが読めることを必ず維持してください（数値を使って計算させる設問があります）。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　4か国のサービス輸出額と、その内訳（2019年）</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>サービス輸出額<br>（億ドル）</th><th>旅行<br>（％）</th><th>輸送<br>（％）</th><th>知的財産権等<br>使用料（％）</th><th>通信・コンピュータ・<br>情報サービス（％）</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>Ｅ</th><td>2,030</td><td>4</td><td>10</td><td>1</td><td>55</td></tr>
+      <tr><th>Ｆ</th><td>7,260</td><td>10</td><td>8</td><td>16</td><td>9</td></tr>
+      <tr><th>Ｇ</th><td>1,180</td><td>48</td><td>15</td><td>2</td><td>8</td></tr>
+      <tr><th>Ｈ</th><td>1,620</td><td>6</td><td>13</td><td>27</td><td>5</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Ｅ〜Ｈは、アメリカ合衆国、インド、スペイン、日本のいずれかである。内訳の合計は100％にならない。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料4　4か国の製造業の月平均賃金と製造業従業者数の変化</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th class="l"></th><th>月平均賃金<br>2010年（ドル）</th><th>月平均賃金<br>2020年（ドル）</th><th>製造業従業者数の変化<br>2010年→2020年（％）</th></tr>
+    </thead>
+    <tbody>
+      <tr><th class="l">中国</th><td>400</td><td>1,050</td><td>＋5</td></tr>
+      <tr><th class="l">ベトナム</th><td>130</td><td>300</td><td>＋90</td></tr>
+      <tr><th class="l">バングラデシュ</th><td>90</td><td>130</td><td>＋60</td></tr>
+      <tr><th class="l">メキシコ</th><td>480</td><td>520</td><td>＋20</td></tr>
+    </tbody>
+  </table>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1について、韓国に該当する国と、資料1から読み取れることとして次の文Ｋ・Ｌの正誤との組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">7</span></p>
+  <div class="memo">
+  <ul>
+    <li><strong>Ｋ</strong>　1980年から2020年にかけて第1次産業の就業者割合の低下幅（ポイント）が最も大きい国は、同じ期間に第2次産業の割合も低下させている。</li>
+    <li><strong>Ｌ</strong>　2020年に第3次産業の就業者割合が7割以上である国は3か国あるが、そのうち最も低い1人当たりGNIは、最も高い国の5分の1未満である。</li>
+  </ul>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th class="l">韓国</th><th class="l">Ｋ</th><th class="l">Ｌ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">Ａ</td><td class="l">正</td><td class="l">正</td></tr>
+      <tr><td>②</td><td class="l">Ａ</td><td class="l">正</td><td class="l">誤</td></tr>
+      <tr><td>③</td><td class="l">Ａ</td><td class="l">誤</td><td class="l">正</td></tr>
+      <tr><td>④</td><td class="l">Ｄ</td><td class="l">正</td><td class="l">正</td></tr>
+      <tr><td>⑤</td><td class="l">Ｄ</td><td class="l">正</td><td class="l">誤</td></tr>
+      <tr><td>⑥</td><td class="l">Ｄ</td><td class="l">誤</td><td class="l">正</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">8</span></p>
+  <ol class="choices">
+    <li>①　付加価値額の指数が最も大きく伸びた10年間は、2010年から2020年である。</li>
+    <li>②　就業者数は1980年から2020年まで一貫して減少しており、10年間の区切りで増加した時期はない。</li>
+    <li>③　就業者数は約590万人減少した一方、付加価値額（実質）は2.35倍に増加しており、就業者1人当たりの付加価値が大きく高まったことがわかる。</li>
+    <li>④　2000年から2010年にかけて就業者数が大きく減少したのは、同じ期間に付加価値額も減少したためである。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料3から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">9</span></p>
+  <ol class="choices">
+    <li>①　知的財産権等使用料の受取額が4か国中最も多いのは、Ｈである。</li>
+    <li>②　Ｅの通信・コンピュータ・情報サービスの輸出額は、Ｆの同じ項目の輸出額を上回っている。</li>
+    <li>③　Ｇは旅行の割合が4か国中最も高いため、旅行による輸出額も4か国中最大である。</li>
+    <li>④　サービス輸出額が2番目に多いのはＥであり、その内訳は輸送が中心となっている。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料4と「用語の整理」について述べた次の文中の空欄<span class="box">Ｓ</span>・<span class="box">Ｔ</span>に入る語句の組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">10</span></p>
+  <p style="margin:8px 0">2010年から2020年にかけて、中国の製造業の月平均賃金は約<span class="box">Ｓ</span>になった。これにともない、衣類の縫製のように労働費の割合が高い産業では、より賃金の低い国への生産の移転が進んだ。一方、メキシコは賃金水準が4か国中2番目に高いにもかかわらず製造業従業者数が増加しており、これは<span class="box">Ｔ</span>が重視されたためと考えられる。</p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｓ</th><th class="l">Ｔ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">1.6倍</td><td class="l">アメリカ合衆国の市場への地理的な近さと、輸送に要する時間の短さ</td></tr>
+      <tr><td>②</td><td class="l">1.6倍</td><td class="l">豊富な地下資源と、それを利用した素材産業の集積</td></tr>
+      <tr><td>③</td><td class="l">4倍</td><td class="l">4か国中で最も低い賃金水準</td></tr>
+      <tr><td>④</td><td class="l">2.6倍</td><td class="l">アメリカ合衆国の市場への地理的な近さと、輸送に要する時間の短さ</td></tr>
+      <tr><td>⑤</td><td class="l">2.6倍</td><td class="l">4か国中で最も低い賃金水準</td></tr>
+      <tr><td>⑥</td><td class="l">4倍</td><td class="l">アメリカ合衆国の市場への地理的な近さと、輸送に要する時間の短さ</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料1〜4および「用語の整理」をふまえた考察として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">11</span></p>
+  <ol class="choices">
+    <li>①　Ｃは第2次産業の就業者割合が10.0％から33.0％へ上昇し、輸出額に占める機械類の割合も4割を超えている。資料4に示された賃金水準の低さが、電子機器などの組立工程の受け入れを支えたと考えられる。</li>
+    <li>②　Ｄは第1次産業の就業者割合が大きく低下して第3次産業が7割を超えたが、輸出額に占める機械類の割合は8％にとどまり、1人当たりGNIもＡの4分の1程度である。十分な工業化を経ないまま第3次産業の比重が高まった面がある。</li>
+    <li>③　Ｂは第2次産業の就業者割合が30.5％から19.4％へ低下しており、資料2からも、製造業が生み出す付加価値そのものが1980年より縮小していることが確認できる。</li>
+    <li>④　Ｅのように通信・コンピュータ・情報サービスの輸出が大きい国では、英語を用いる人材が豊富であることや、欧米との時差を活かして業務を受託できることが成長を支えている。</li>
+  </ol>
+</div>
+
+<!-- ===================== 第3問 ===================== -->
+<h2>第3問　中山間地域の地域調査（配点33点）</h2>
+
+<p class="lead">次の資料1〜4は、山間部に位置するＡ町について調べた地域調査報告の一部である。これらを読み、後の問い（問1〜問5）に答えよ。</p>
+
+<figure class="material">
+  <figcaption>資料1　Ａ町の中心部周辺の模式図</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：中山間地域の土地利用模式図（鳥瞰ではなく平面）／グレースケール／試験冊子体裁</p>
+    <pre>A clean black-and-white schematic land-use map of a small Japanese mountain
+town, for a university-entrance geography exam booklet. Plan view (not
+bird's-eye). One rectangular frame, white background, thin line art, grey
+hatch patterns only, no colour, no photographic texture.
+
+OVERALL LAYOUT: a valley running left-to-right across the middle of the frame.
+Forested slopes occupy the TOP band and the BOTTOM band; a flat valley floor
+runs across the MIDDLE.
+
+CONTOUR LINES: thin wavy lines running roughly left-to-right, closely spaced in
+the top and bottom bands (steep) and absent on the valley floor. Note at the
+bottom: 等高線の間隔は50m。
+
+FEATURES to draw and label:
+- Ｂ川 : a thick line meandering left-to-right along the valley floor.
+- A TRIBUTARY joining Ｂ川 from the TOP (north) at about the horizontal centre.
+- At the mouth of that tributary, a small fan-shaped gently sloping patch of
+  land (a debris/alluvial fan), drawn as a rounded lobe.
+- 主要道路 : a thick road line running left-to-right along the valley floor,
+  just below the river.
+- 中心部（役場・診療所）: a cluster of about eight small white building
+  rectangles on the valley floor, LEFT of centre.
+- 棚田 : a hatched patch of TERRACED PADDY FIELDS on the lower (south-facing)
+  slope, drawn with fine horizontal step lines. Label 棚田.
+- 耕作放棄地 : a cross-hatched patch of ABANDONED FARMLAND high up on the
+  UPPER slope, right of centre. Label 耕作放棄地.
+- 道の駅・交流施設（旧小学校）: one rectangle with a thicker outline on the
+  valley floor, right of the town centre.
+- A small cluster of three buildings HIGH on the lower slope, at the far RIGHT,
+  near a dashed ridge line labelled 尾根.
+
+FOUR POINTS, each a white circle with a bold outline and a bold katakana label:
+  ア on the valley floor, inside the 中心部 building cluster area
+  イ on the 棚田 (terraced paddy) slope
+  ウ on the fan at the mouth of the tributary
+  エ next to the three-building cluster high near the 尾根
+Do NOT write any explanation of the landform next to the letters themselves.
+
+LEGEND box in the upper left with four swatches: 森林 ／ 水田（棚田を含む）／
+耕作放棄地 ／ 建物
+
+Bottom note: 地点エは標高約620m、地点アは標高約210m。等高線の間隔は50m。
+
+Typography: Japanese sans-serif, ~10–11px equivalent. Canvas ratio about 700 : 350.</pre>
+    <p class="zu-note">問1の根拠は、<strong>ア＝谷底の低地で道路と川に近い／イ＝斜面の棚田／ウ＝支谷の出口の扇状の緩傾斜地（土石流の危険）／エ＝標高が高く尾根近くで耕作放棄地に近い</strong>という4点の立地です。この位置関係を崩さないでください。等高線が谷底で疎・斜面で密になっていることも必須です。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　Ａ町の人口・世帯の推移と土地利用の変化</figcaption>
+  <p class="src"><strong>［上段］Ａ町の人口と世帯の推移</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>総人口<br>（人）</th><th>15歳未満<br>人口率（％）</th><th>65歳以上<br>人口率（％）</th><th>世帯数<br>（世帯）</th><th>1世帯当たり<br>人員（人）</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>1970年</th><td>8,600</td><td>26.5</td><td>9.0</td><td>1,950</td><td>4.41</td></tr>
+      <tr><th>1990年</th><td>5,400</td><td>15.0</td><td>21.0</td><td>1,700</td><td>3.18</td></tr>
+      <tr><th>2010年</th><td>3,600</td><td>9.5</td><td>38.0</td><td>1,420</td><td>2.54</td></tr>
+      <tr><th>2020年</th><td>2,700</td><td>7.0</td><td>46.0</td><td>1,240</td><td>2.18</td></tr>
+    </tbody>
+  </table>
+  <p class="src" style="margin-top:14px"><strong>［下段］Ａ町の土地利用の変化（単位：ha）</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>田</th><th>畑・樹園地</th><th>耕作放棄地</th><th>森林</th><th>宅地</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>1975年</th><td>620</td><td>180</td><td>20</td><td>8,900</td><td>90</td></tr>
+      <tr><th>2000年</th><td>430</td><td>120</td><td>190</td><td>8,950</td><td>105</td></tr>
+      <tr><th>2020年</th><td>250</td><td>70</td><td>400</td><td>8,980</td><td>110</td></tr>
+    </tbody>
+  </table>
+  <p class="src">水面・道路等の「その他」を含まないため、合計は町の総面積と一致しない。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　Ａ町の主な5集落の状況と、中心部からの距離・人口減少率の関係</figcaption>
+  <p class="src"><strong>［上段］Ａ町の主な5集落の状況</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>中心部からの<br>距離（km）</th><th>標高<br>（m）</th><th>2000年<br>人口（人）</th><th>2020年<br>人口（人）</th><th>65歳以上<br>人口率（％）</th><th>空き家率<br>（％）</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>Ｐ（中心部）</th><td>0</td><td>210</td><td>1,180</td><td>900</td><td>38</td><td>9</td></tr>
+      <tr><th>Ｑ</th><td>3</td><td>260</td><td>640</td><td>430</td><td>45</td><td>14</td></tr>
+      <tr><th>Ｔ</th><td>6</td><td>300</td><td>290</td><td>250</td><td>40</td><td>11</td></tr>
+      <tr><th>Ｒ</th><td>8</td><td>420</td><td>380</td><td>190</td><td>58</td><td>26</td></tr>
+      <tr><th>Ｓ</th><td>14</td><td>620</td><td>210</td><td>70</td><td>71</td><td>41</td></tr>
+    </tbody>
+  </table>
+
+  <p class="src" style="margin-top:14px"><strong>［下段］中心部からの距離と人口減少率の関係</strong></p>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：散布図（グレースケール／試験冊子体裁）</p>
+    <pre>Create a clean, flat, grayscale scatter plot in the style of a Japanese university entrance examination booklet. White background, thin black axes, no 3D effect, no colour, no drop shadow, no decorative elements.
+
+Title (above the plot, Japanese): 中心部からの距離と人口減少率の関係
+
+X axis: label 中心部からの距離（km）, range 0 to 15, tick marks and numbers at 0, 4, 8, 12, 15.
+Y axis: label 人口減少率（％）, range 0 to 70, tick marks and numbers at 0, 20, 40, 60. Draw faint light-grey horizontal gridlines at 20, 40 and 60 only.
+
+Plot exactly FIVE data points as solid black filled circles (all the same size, about 6 px diameter). Place each point at these exact coordinates and print the bold Japanese full-width letter shown, just beside the circle (upper-left of the circle), NOT inside it:
+
+Ｐ : x = 0,  y = 23.7
+Ｑ : x = 3,  y = 32.8
+Ｔ : x = 6,  y = 13.8
+Ｒ : x = 8,  y = 50.0
+Ｓ : x = 14, y = 66.7
+
+Accuracy of the vertical positions is essential: Ｔ must clearly be the LOWEST point of the five (well below Ｐ and Ｑ even though it is farther from the centre), and Ｓ must clearly be the highest. Four of the five points (Ｐ, Ｑ, Ｒ, Ｓ) rise from left to right; Ｔ alone sits far below that rising trend.
+
+Do NOT draw any regression line, trend line or connecting line between the points.
+Do NOT write any numeric value next to the points.
+Do NOT add any comment about which point is an exception.
+
+Bottom note (small grey text, Japanese): 人口減少率は、2000年から2020年にかけての人口減少数を2000年人口で割った値。
+
+Typography: Japanese sans-serif, ~11px equivalent. Canvas ratio about 640 : 320.</pre>
+    <p class="zu-note">問4のＫ、および問5の④は<strong>「Ｔだけが傾向から外れて下に位置する」</strong>ことが根拠です。Ｔ（6km, 13.8％）がＰ（0km, 23.7％）・Ｑ（3km, 32.8％）より<strong>下</strong>に来ていることを必ず守ってください。上段の表の数値から計算できる値なので、図と表の食い違いが生じないようにします。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料4　聞き取り調査のメモ</figcaption>
+  <div class="memo">
+  <ul>
+    <li>「棚田は、水路の掃除や水の管理を近所の数戸で分担してきた。担い手が減ると、1戸あたりの負担が重くなり、まとまって耕作をやめることになる。」（Ｑ集落・80代男性）</li>
+    <li>「イノシシやシカの被害がこの20年で目立って増えた。柵を立てても、隣が耕作をやめると自分の畑だけでは守りきれない。」（Ｒ集落・70代女性）</li>
+    <li>「2015年に廃校を改修して交流施設と道の駅を整備した。Ｔ集落では町が移住者向けの住宅を用意し、子育て世帯が数世帯入居した。」（町役場職員）</li>
+    <li>「路線バスは1日3往復まで減便された。通院は予約制の乗合タクシー（デマンド交通）に切り替えている。」（町役場職員）</li>
+    <li>「空き家バンクへの登録がなかなか進まない。所有者が遠方に住んでいたり、相続の権利者が複数いて話がまとまらない例が多い。」（町役場職員）</li>
+  </ul>
+  </div>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1の地点ア〜エについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">12</span></p>
+  <ol class="choices">
+    <li>①　地点アはＢ川沿いの谷底の低地にあたり、洪水の危険をともなう一方で、水の利用や道路による移動に便利なため、古くから集落や役場などの施設が集まってきた。</li>
+    <li>②　地点イの階段状の土地は、傾斜地の水はけをよくするために造られたものであり、水田としては利用されない。</li>
+    <li>③　地点ウは支谷の出口にあたる緩やかな傾斜地であり、上流から土砂が運ばれてくることがないため、土石流の危険は小さい。</li>
+    <li>④　地点エは標高が高く傾斜も緩やかであるため、町内で最も農地が集積しており、耕作放棄地はほとんどみられない。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2の上段から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">13</span></p>
+  <ol class="choices">
+    <li>①　1970年から2020年にかけて総人口は約3分の1に減少したが、世帯数の減少はそれよりも緩やかであり、単独世帯や夫婦のみの世帯が増えたことがうかがえる。</li>
+    <li>②　65歳以上人口率が一貫して上昇していることから、65歳以上人口の実数も一貫して増加していることがわかる。</li>
+    <li>③　15歳未満人口率は26.5％から7.0％へ低下したが、これは主に総人口の減少によるものであり、15歳未満人口の実数の減少は約1,000人にとどまる。</li>
+    <li>④　1世帯当たり人員の減少幅が最も大きかったのは、2010年から2020年にかけての期間である。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2の下段について述べた次の文中の空欄<span class="box">Ｘ</span>・<span class="box">Ｙ</span>に入る語句の組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">14</span></p>
+  <p style="margin:8px 0">1975年から2020年にかけて、田と畑・樹園地の合計面積は800haから320haへ減少し、かわって耕作放棄地が20haから400haへ増加した。田・畑・樹園地と耕作放棄地の合計を「かつて農地として利用されていた土地」とみなすと、2020年にそのうち耕作放棄地が占める割合は約<span class="box">Ｘ</span>である。また、森林面積は8,900haから8,980haへとほとんど変化していないが、<span class="box">Ｙ</span>。</p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｘ</th><th class="l">Ｙ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">4％</td><td class="l">面積の統計だけでは、間伐や下草刈りといった手入れが行われているかどうかは読み取れない</td></tr>
+      <tr><td>②</td><td class="l">4％</td><td class="l">これは耕作放棄地の大部分が森林に転換されたことを示している</td></tr>
+      <tr><td>③</td><td class="l">56％</td><td class="l">面積の統計だけでは、間伐や下草刈りといった手入れが行われているかどうかは読み取れない</td></tr>
+      <tr><td>④</td><td class="l">56％</td><td class="l">これは耕作放棄地の大部分が森林に転換されたことを示している</td></tr>
+      <tr><td>⑤</td><td class="l">56％</td><td class="l">これは町の総面積が拡大したことを示している</td></tr>
+      <tr><td>⑥</td><td class="l">19％</td><td class="l">面積の統計だけでは、間伐や下草刈りといった手入れが行われているかどうかは読み取れない</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料3（上段・下段）について述べた次の文Ｋ〜Ｍの正誤の組合せとして最も適当なものを、後の①〜⑧のうちから一つ選べ。<span class="mark">15</span></p>
+  <div class="memo">
+  <ul>
+    <li><strong>Ｋ</strong>　中心部からの距離が遠い集落ほど人口減少率が大きく、空き家率も高いという関係が、5集落のすべてに当てはまる。</li>
+    <li><strong>Ｌ</strong>　Ｓでは2020年人口の7割以上が65歳以上であり、住民の多くが高齢者となっている。</li>
+    <li><strong>Ｍ</strong>　Ｒの2020年人口は2000年の半分であり、この20年間に減少した人数はＳで減少した人数より多い。</li>
+  </ul>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th>Ｋ</th><th>Ｌ</th><th>Ｍ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td>正</td><td>正</td><td>正</td></tr>
+      <tr><td>②</td><td>正</td><td>正</td><td>誤</td></tr>
+      <tr><td>③</td><td>正</td><td>誤</td><td>正</td></tr>
+      <tr><td>④</td><td>正</td><td>誤</td><td>誤</td></tr>
+      <tr><td>⑤</td><td>誤</td><td>正</td><td>正</td></tr>
+      <tr><td>⑥</td><td>誤</td><td>正</td><td>誤</td></tr>
+      <tr><td>⑦</td><td>誤</td><td>誤</td><td>正</td></tr>
+      <tr><td>⑧</td><td>誤</td><td>誤</td><td>誤</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料1〜4をふまえてＡ町の課題と対策を考察した文として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">16</span></p>
+  <ol class="choices">
+    <li>①　棚田の維持には水路管理などの共同作業が不可欠であるが、集落内の数戸だけでこれを担うことは難しくなっている。都市住民や企業と連携した棚田オーナー制度など、集落外の力を組み込む仕組みが選択肢となる。</li>
+    <li>②　空き家バンクの登録が進まない要因には、所有者が遠方に住んでいることや相続関係の複雑さがある。したがって、移住希望者を集めることだけでなく、所有者の把握や相続の整理を支援する仕組みが必要である。</li>
+    <li>③　獣害が増えた背景の一つに、耕作放棄地の拡大によって人の生活空間と野生動物の生息域との境界があいまいになったことがある。防護柵の整備とあわせて、放棄地の草刈りなど緩衝帯の管理を集落単位で進めることが有効である。</li>
+    <li>④　Ｔで人口減少率が小さいのは中心部からの距離が近いためであり、資料4にある移住者向け住宅の整備は人口の維持には結びついていない。</li>
+  </ol>
+</div>
+
+<!-- ===================== 解答と解説 ===================== -->
+<section class="answers">
+<h1>解答と解説（第4回）</h1>
+
+<table class="ans-table">
+  <thead><tr><th>大問</th><th>問</th><th>解答番号</th><th>正解</th><th>配点</th><th>想定正答率</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="6">第1問</td><td>問1</td><td>1</td><td class="correct">②</td><td>6</td><td>55%</td></tr>
+    <tr><td>問2</td><td>2</td><td class="correct">②</td><td>6</td><td>52%</td></tr>
+    <tr><td>問3</td><td>3</td><td class="correct">③</td><td>5</td><td>62%</td></tr>
+    <tr><td>問4</td><td>4</td><td class="correct">④</td><td>6</td><td>60%</td></tr>
+    <tr><td>問5</td><td>5</td><td class="correct">⑤</td><td>5</td><td>50%</td></tr>
+    <tr><td>問6</td><td>6</td><td class="correct">④</td><td>6</td><td>64%</td></tr>
+    <tr><td rowspan="5">第2問</td><td>問1</td><td>7</td><td class="correct">③</td><td>7</td><td>40%</td></tr>
+    <tr><td>問2</td><td>8</td><td class="correct">③</td><td>7</td><td>58%</td></tr>
+    <tr><td>問3</td><td>9</td><td class="correct">②</td><td>6</td><td>48%</td></tr>
+    <tr><td>問4</td><td>10</td><td class="correct">④</td><td>6</td><td>55%</td></tr>
+    <tr><td>問5</td><td>11</td><td class="correct">③</td><td>7</td><td>52%</td></tr>
+    <tr><td rowspan="5">第3問</td><td>問1</td><td>12</td><td class="correct">①</td><td>7</td><td>66%</td></tr>
+    <tr><td>問2</td><td>13</td><td class="correct">①</td><td>7</td><td>56%</td></tr>
+    <tr><td>問3</td><td>14</td><td class="correct">③</td><td>6</td><td>54%</td></tr>
+    <tr><td>問4</td><td>15</td><td class="correct">⑤</td><td>6</td><td>50%</td></tr>
+    <tr><td>問5</td><td>16</td><td class="correct">④</td><td>7</td><td>62%</td></tr>
+  </tbody>
+</table>
+<p class="exp" style="font-family:var(--sans);font-size:13.5px">想定正答率の平均は約57％で、「標準」レベルの設計に対応する。</p>
+
+<div class="ans-detail">
+
+<h2>第1問の解説</h2>
+
+<h3>問1　正解 ②</h3>
+<p class="exp">位置（資料1）と数値（資料2）を往復して確定する。<strong>流域面積・流量・流域内国数の3つを別々の手がかりとして使う</strong>のが要点。</p>
+<ul class="exp-list">
+  <li><strong>Ｂ＝ウ（ドナウ川）</strong>：資料1のＢはヨーロッパに位置する。ウは<strong>流域内の国数が19か国</strong>で圧倒的に多く、これはヨーロッパの国境が密であることの反映である。取水量に占める農業用水が25％と低いのも、工業・生活用水の比重が高いヨーロッパの特徴。まずここを確定すると一気に絞れる。</li>
+  <li><strong>Ｄ＝ア（ガンジス川）</strong>：Ｄは南アジアに位置する。アは<strong>流域内人口5億人</strong>と世界最大級、農業用水90％。流域面積は1,090千km²でイより小さいが、モンスーンの降水を受けて<strong>年平均流量は12,000m³/秒で最大</strong>。</li>
+  <li><strong>Ａ＝イ（ナイル川）</strong>：Ａはアフリカを南から北へ流れる。イは<strong>流域面積3,255千km²で最大なのに流量は2,830m³/秒</strong>と小さい。流域の大半が砂漠・サバナで、蒸発や取水によって水が失われるためである。11か国が流域を共有し、上流のダム建設が国際問題となっている。</li>
+  <li><strong>Ｃ＝エ（コロラド川）</strong>：Ｃは北アメリカ西部。エは流域面積637千km²、流量360m³/秒で最小、流域内国数2（アメリカ合衆国とメキシコ）。</li>
+  <li>したがって Ａ＝イ、Ｂ＝ウ、Ｃ＝エ、Ｄ＝ア で<strong>②</strong>。</li>
+</ul>
+<div class="tip"><strong>よくある誤解：</strong>「流域面積が大きい川は水量も多い」——これは成り立たない。水量を決めるのは<strong>流域に降る雨の量と蒸発の量</strong>である。ナイル川（面積最大・流量小）とガンジス川（面積3分の1・流量4倍）の対比は、この原則を確認する典型例。①⑤のようにＡ＝ア（ナイル＝流量最大）とする選択肢は、この誤解を突いている。</div>
+
+<h3>問2　正解 ②（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>②＝適当でない</strong>：流域内の国数が最も多いのは<strong>ウ（19か国）</strong>だが、ウの流域面積は817千km²で、<strong>4河川中で最も小さい</strong>（最大はイの3,255千km²）。「国数が多い＝流域が広い」という思い込みを突いた選択肢で、<strong>表の別の列を確認せずに関連づける</strong>誤りである。</li>
+  <li><strong>①＝適当</strong>：流域面積最大はイ（3,255千km²）、その流量2,830m³/秒は ア12,000 ＞ ウ6,500 ＞ <strong>イ2,830</strong> ＞ エ360 で3番目。乾燥地域を流れることによる蒸発の説明も妥当。</li>
+  <li><strong>③＝適当</strong>：流域内人口最大はア（500百万人）で、農業用水の割合も90％で最高。人口を養うための灌漑農業が水利用の中心であることを示す。</li>
+  <li><strong>④＝適当</strong>：流域面積1,000km²当たりの流量（＝流量÷流域面積〔千km²〕）を計算すると、ア11.0、イ0.87、ウ8.0、<strong>エ0.57</strong>。エが最小。<strong>比の計算を要求する選択肢は、面倒でも実際に割ってみる</strong>こと。</li>
+</ul>
+
+<h3>問3　正解 ③</h3>
+<ul class="exp-list">
+  <li><strong>③＝正</strong>：建設前は5月約1,600、6月約2,000m³/秒と突出し、これは<strong>ロッキー山脈の融雪</strong>による初夏の増水である。建設後は6月が約380m³/秒に激減し、月ごとの変動幅は建設前（約200〜2,000）から建設後（約320〜420）へと大幅に縮小した。<strong>ダムの機能は「流量の平準化（河川流量の季節変動の抑制）」</strong>である。</li>
+  <li><strong>①＝誤</strong>：1〜3月に建設後の流量が建設前を上回るのは正しい（例：1月約200→約350）。しかし<strong>年平均流量は建設前約610、現在約360</strong>で、年間の総流量は大きく減っている。増水期の水を貯めて灌漑・都市用水に取水しているためである。<strong>一部の月の関係を年間全体に拡大する誤り</strong>で、注記の年平均値を見落とすと引っかかる。</li>
+  <li><strong>②＝誤</strong>：建設前の最大約2,000、建設後の最大約420で、約<strong>4.8倍</strong>。「約2倍」は倍率の読み違い。</li>
+  <li><strong>④＝誤</strong>：建設後に流量が最も多い月は<strong>7月（約420）</strong>であり、建設前の最大月（6月）とは異なる。<strong>1か月分のずれを見落とさない</strong>ことが要求されている。</li>
+</ul>
+<div class="tip"><strong>ダムがもたらす変化の整理：</strong>①季節変動の平準化、②年間総流量の減少（取水・貯留・蒸発）、③土砂の下流への供給の減少（三角州の縮小、海岸侵食）、④魚類の移動の阻害。コロラド川では下流のメキシコ側で河口まで水が届かない年もあり、国際的な水配分（1944年の米墨水利条約）が問題となっている。</div>
+
+<h3>問4　正解 ④</h3>
+<ul class="exp-list">
+  <li><strong>Ｅ＝南アジア</strong>：農業用水91％、1人当たり取水量600m³、<strong>水ストレス62％</strong>が決定的。地下水を含む水資源の大部分を灌漑に使い、インド北西部などでは地下水位の低下が深刻である。</li>
+  <li><strong>Ｆ＝北アメリカ</strong>：1人当たり年取水量1,210m³で最大。農業40％・工業46％で、工業（火力発電の冷却水を含む）が大きい。</li>
+  <li><strong>Ｇ＝ヨーロッパ</strong>：農業25％と最も低く、生活用水22％が最も高い。水ストレス9％と低いのは、降水が年間を通じて比較的安定しているためである。</li>
+  <li><strong>Ｈ＝サブサハラアフリカ</strong>：1人当たり年取水量<strong>130m³</strong>と極端に少ない。灌漑施設が未整備で、農業も天水（雨水）に依存する割合が高い。水ストレス3％は「水が余っている」のではなく、<strong>そもそも取水する手段が乏しい</strong>ことを意味する。</li>
+</ul>
+<div class="tip"><strong>「水ストレスが低い＝水に困っていない」ではない：</strong>水ストレスは〔取水量÷利用可能な水資源量〕であり、<strong>取水できない地域では分子が小さくなるため、指標上は低く出る</strong>。Ｈのように1人当たり取水量が極端に少ない地域では、指標の低さは「未開発」の表れである。指標の定義を確かめる姿勢が問われる。</div>
+
+<h3>問5　正解 ⑤</h3>
+<ul class="exp-list">
+  <li><strong>Ｘ＝5分の1</strong>：1人当たりの農業用取水量を計算すると、Ｅ＝600×0.91＝<strong>546m³</strong>、Ｈ＝130×0.82＝<strong>約107m³</strong>。107÷546＝<strong>約0.20</strong>で、およそ5分の1である。「農業用水の割合が同じくらい」でも、<strong>もとの取水量が4〜5倍違えば実際に使える水の量はまったく違う</strong>。</li>
+  <li><strong>Ｙ＝ダムや用水路などの施設整備と、それを維持する資金・技術の確保</strong>：Ｈ（サブサハラアフリカ）では、水資源そのものは水ストレス3％と余裕があるにもかかわらず取水量が少ない。つまり<strong>制約は水の量ではなく、貯める・運ぶ・配る施設と、その維持管理の体制</strong>にある。</li>
+  <li><strong>②の「工業用水との競合」＝誤</strong>：Ｈの工業用水は5％にすぎず、競合は主要な問題になっていない。</li>
+  <li><strong>④⑥の「取水量の削減による水資源の保全」＝誤</strong>：これは水ストレスの高いＥ（62％）に当てはまる課題であり、取水量が130m³しかないＨに対する処方ではない。<strong>正しい政策論を誤った地域に当てる型</strong>のダミーである。</li>
+</ul>
+<div class="tip"><strong>割合が同じでも実数は違う：</strong>本問は「％が似ている2地域を、実数に直すと差が明確になる」構造。共通テストで繰り返し問われる<strong>「割合と絶対量」</strong>の関係である。①の「2分の1」は600と130の比を大きく見誤ったもの、③の「10分の1」は逆に過大に見積もったもの。</div>
+
+<h3>問6　正解 ④</h3>
+<ul class="exp-list">
+  <li><strong>④＝正</strong>：地点ａは<strong>扇状地</strong>にあたり、礫や砂が厚く堆積して透水性が高い。このため河川水が地下に浸透して<strong>伏流</strong>し、扇央部では水無川（間欠河川）となることがある。地下水は<strong>扇端</strong>で地表に現れて<strong>湧水帯</strong>をつくり、古くから集落や水田が立地してきた。資料3でも地点ａの下に礫・砂の層（帯水層）が厚く描かれ、地下水面が地表よりかなり下にあることが示されている。</li>
+  <li><strong>①＝誤</strong>：自然堤防は洪水時に運ばれた砂が河道の両側に積み重なった<strong>周囲より高い微高地</strong>であり、水はけがよいため<strong>畑や集落・道路</strong>に利用される。水田として利用されるのは、その背後の低湿な<strong>後背湿地</strong>である。<strong>高低と土地利用を入れ替えた典型的な誤り</strong>。</li>
+  <li><strong>②＝誤</strong>：地盤沈下の主な原因は<strong>粘土層の圧縮</strong>である。粘土は圧縮されると粒子の配列が変わり、<strong>地下水位が回復しても元の厚さには戻らない（不可逆的）</strong>。東京の江東地区や大阪、濃尾平野では、揚水規制によって沈下はほぼ止まったが、沈下した土地は戻っておらず、ゼロメートル地帯が残されている。</li>
+  <li><strong>③＝誤</strong>：海岸部では、密度の大きい塩水が地下の淡水の下に楔（くさび）状に入り込んでいる（資料3の塩水の分布）。<strong>揚水を増やして淡水の水位が下がると、塩水楔が内陸側・上方へ移動して井戸が塩水化する</strong>。「地下水面が海面より高いから安全」という説明は、量の限度を無視した<strong>過剰一般化</strong>である。</li>
+</ul>
+
+<h2>第2問の解説</h2>
+
+<h3>問1　正解 ③（韓国＝Ａ、Ｋ＝誤、Ｌ＝正）</h3>
+<p class="exp">本問は<strong>国名の同定と、表全体を差分・比で読み直す作業を同時に問う</strong>。同定だけでは2択までしか絞れない。</p>
+<ul class="exp-list">
+  <li><strong>Ｂ＝アメリカ合衆国</strong>：1980年の第1次産業が3.6％と、すでに極端に低い。1人当たりGNI 64,000ドルで最高。ここが最も確定しやすい。</li>
+  <li><strong>Ｃ＝ベトナム</strong>：1980年の第1次産業73.0％が突出し、第2次産業が10.0％→33.0％へ<strong>上昇</strong>している唯一の国。1人当たりGNI 3,400ドル、輸出額の42％が機械類——これは近年、電子機器の組立工程が集積したことによる。</li>
+  <li><strong>Ａ＝韓国</strong>：1980年に第1次産業34.0％だったが2020年には5.4％に激減し、1人当たりGNI 32,000ドルへ到達した。<strong>短期間で工業化と高所得化を実現した</strong>点が特徴で、輸出の40％が機械類（半導体・自動車・船舶）。</li>
+  <li><strong>Ｄ＝ブラジル</strong>：第3次産業70.9％に達しながら、1人当たりGNIは7,800ドル、輸出の機械類はわずか8％（大豆・鉄鉱石・原油・肉類が主）。</li>
+  <li>したがって<strong>韓国＝Ａ</strong>。</li>
+  <li><strong>Ｋ＝誤</strong>：第1次産業の低下幅は、Ａ 34.0→5.4（−28.6）、Ｂ 3.6→1.4（−2.2）、Ｃ 73.0→29.0（<strong>−44.0</strong>）、Ｄ 36.7→9.1（−27.6）で、最大はＣ（ベトナム）。しかしＣの第2次産業は10.0％→33.0％と<strong>大幅に上昇</strong>しているので、「第2次産業も低下」は誤り。<strong>「脈絡を離れて第1次→第3次へ直行する」という固定観念</strong>を突いたダミーで、工業化の途上にある国では第2次産業は伸びる。</li>
+  <li><strong>Ｌ＝正</strong>：2020年に第3次産業が7割以上なのはＡ（70.0）・Ｂ（79.2）・Ｄ（70.9）の3か国。このうち1人当たりGNIが最低なのはＤの7,800ドル、最高はＢの64,000ドル。<strong>7,800÷64,000＝約12％</strong>で確かに5分の1（20％）未満である。同じ「第3次産業7割超」という見た目の下に、所得水準で約8倍の開きがあることを示しており、これが「<strong>早すぎる脱工業化</strong>」の論点につながる。</li>
+  <li>よって韓国＝Ａ、Ｋ＝誤、Ｌ＝正なので<strong>③</strong>。</li>
+</ul>
+<div class="tip"><strong>よくある誤解：</strong>「産業高度化とは第1次が減って第3次が増えることなので、第1次が大きく減った国では第2次も減っているはずだ」。ベトナムのような工業化途上国では<strong>第1次が減った分が主に第2次へ流れる</strong>。<br><strong>似ているが違う概念：</strong>「脱工業化（工業化を経てサービス経済へ）」と「早すぎる脱工業化（工業化が不十分なまま第3次産業の比重が高まる）」。ＡとＤの対比がまさにこれである。<br><strong>ＡとＤの識別が勘所：</strong>両国は1980年の第1次産業（34.0％と36.7％）も2020年の第3次産業（70.0％と70.9％）も酷似しており、<strong>産業別就業者割合だけでは区別できない</strong>。決定打は<strong>1人当たりGNI（32,000 vs 7,800）と機械類の割合（40％ vs 8％）</strong>。Ａ＝Ｄと取り違えると、ＫもＬも判定の前提が崩れる。</div>
+
+<h3>問2　正解 ③</h3>
+<ul class="exp-list">
+  <li><strong>③＝正</strong>：就業者数は1,830万人→1,240万人で<strong>590万人の減少</strong>、付加価値額（実質）は指数100→235で<strong>2.35倍</strong>。両者を組み合わせると、1人当たりの付加価値は 2.35÷（1,240÷1,830）＝2.35÷0.678＝<strong>約3.5倍</strong>になったと計算できる。自動化・IT化と、高付加価値分野への特化の結果である。</li>
+  <li><strong>①＝誤</strong>：指数の増加幅は、1980年代＋35、<strong>1990年代＋55</strong>、2000年代＋10、2010年代＋35。最大は1990年代である。<strong>グラフの右端が最も高い＝そこで最も伸びた、という錯覚</strong>を突いている。「水準の高さ」と「変化の大きさ」は別物。</li>
+  <li><strong>②＝誤</strong>：<strong>2010年から2020年にかけて1,150万人→1,240万人へ増加</strong>している。「製造業の就業者は減り続けている」という思い込みで折れ線の右端を確認しないと誤る。この増加は、金融危機後の回復と一部のリショアリング（生産の国内回帰）を反映している。</li>
+  <li><strong>④＝誤</strong>：2000年から2010年にかけて付加価値額の指数は190→200へ<strong>増加</strong>している。就業者の大幅減（1,730→1,150万人）は、生産の縮小ではなく<strong>労働生産性の上昇と海外移転</strong>によるもの。<strong>因果を取り違えた選択肢</strong>で、実線を確認すれば否定できる。</li>
+</ul>
+<div class="tip"><strong>2軸グラフの読み方：</strong>左軸と右軸で単位が異なるため、<strong>2本の線の上下関係や交差そのものには意味がない</strong>。読み取るべきは各線の「向き」と「変化の幅」である。本問はこの点を意識できているかを試している。</div>
+
+<h3>問3　正解 ②</h3>
+<p class="exp">すべて<strong>「割合×総額」で実数に直す</strong>ことで判定できる。</p>
+<ul class="exp-list">
+  <li><strong>②＝正</strong>：Ｅ（インド）の通信・コンピュータ・情報サービス＝2,030×0.55＝<strong>約1,117億ドル</strong>、Ｆ（アメリカ合衆国）＝7,260×0.09＝<strong>約653億ドル</strong>。総額ではＦが3.6倍大きいが、この項目ではＥが上回る。インドがソフトウェア開発・IT関連業務の受託（オフショアリング）の拠点となっていることを示す。</li>
+  <li><strong>①＝誤</strong>：知的財産権等使用料は、Ｈ（日本）＝1,620×0.27＝<strong>約437億ドル</strong>、Ｆ（アメリカ合衆国）＝7,260×0.16＝<strong>約1,162億ドル</strong>。<strong>割合はＨが最高だが、実額ではＦが約2.7倍多い</strong>。割合と絶対量の混同を狙った選択肢。</li>
+  <li><strong>③＝誤</strong>：旅行は、Ｇ（スペイン）＝1,180×0.48＝<strong>約566億ドル</strong>、Ｆ＝7,260×0.10＝<strong>約726億ドル</strong>。①と同じ構造の誤りで、<strong>「割合が最高」から「額も最大」を導けない</strong>。</li>
+  <li><strong>④＝誤</strong>：サービス輸出額が2番目に多いのはＥ（2,030億ドル）で前半は正しいが、Ｅの内訳の中心は輸送（10％）ではなく<strong>通信・コンピュータ・情報サービス（55％）</strong>。<strong>前半を正しくして後半で入れ替える</strong>形のダミー。</li>
+</ul>
+
+<h3>問4　正解 ④</h3>
+<ul class="exp-list">
+  <li><strong>Ｓ＝2.6倍</strong>：中国の月平均賃金は400ドル→1,050ドルで、1,050÷400＝<strong>2.625倍</strong>。①②の「1.6倍」は、増加分650ドル÷400ドル＝1.6を「1.6倍になった」と取り違えたもの——<strong>「1.6倍増加した（＝2.6倍になった）」と「1.6倍になった」の混同</strong>で、統計の読み取りで最も頻出する誤りの一つ。</li>
+  <li><strong>Ｔ＝アメリカ合衆国の市場への地理的な近さと、輸送に要する時間の短さ</strong>：メキシコの賃金520ドルは中国1,050ドルより低いものの、ベトナム300ドル・バングラデシュ130ドルより高い（4か国中2番目）。それでも従業者数が20％増えたのは、<strong>ニアショアリング</strong>——消費地であるアメリカ合衆国に隣接し、陸送で数日で届く立地の利点が重視されたためである。自動車・家電のように部品点数が多く、在庫や納期の管理が重要な産業で顕著。</li>
+  <li><strong>③⑤の「4か国中で最も低い賃金水準」＝誤</strong>：メキシコは4か国中2番目に<strong>高い</strong>。設問文自身が「賃金水準が4か国中2番目に高いにもかかわらず」と述べており、これと矛盾する。<strong>設問文と選択肢の整合性を確認すれば消せる</strong>。</li>
+  <li><strong>②の「豊富な地下資源と素材産業の集積」＝誤</strong>：メキシコの製造業従業者増を支えているのは自動車・電機の組立であり、素材産業の集積ではない。</li>
+</ul>
+
+<h3>問5　正解 ③（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>③＝適当でない</strong>：Ｂ（アメリカ合衆国）の第2次産業就業者割合が30.5％→19.4％へ低下したのは正しい。しかし資料2の実線を見ると、製造業の付加価値額（実質）は指数100→235へ<strong>増加</strong>しており、「付加価値そのものが縮小している」は資料と正反対である。<strong>就業者の減少を生産の縮小と同一視する</strong>のが、この選択肢の誤り。脱工業化は「製造業がなくなること」ではなく、<strong>製造業の雇用の比重が下がること</strong>を意味する。</li>
+  <li><strong>①＝適当</strong>：Ｃ（ベトナム）は第2次産業10.0％→33.0％、機械類42％。資料4のベトナムの賃金（2020年300ドル）は中国の約3割で、労働集約的な組立工程の受け入れを支えた。<strong>大問内の複数資料を接続した正しい推論</strong>。</li>
+  <li><strong>②＝適当</strong>：Ｄ（ブラジル）は1人当たりGNI 7,800ドルでＡ（韓国32,000ドル）の約4分の1、機械類8％。工業化が十分進まないまま第3次産業の比重が高まる構造は、第3回で扱った「早すぎる脱工業化」と同じ論点である。</li>
+  <li><strong>④＝適当</strong>：Ｅ（インド）では、英語運用力のある人材が豊富で、欧米との<strong>時差（インドの昼が欧米の夜）</strong>を利用して夜間の業務を受託できる。これがソフトウェア開発やコールセンター業務の集積を支えている。</li>
+</ul>
+
+<h2>第3問の解説</h2>
+
+<h3>問1　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：地点アはＢ川沿いの谷底の低地で、資料1では役場・診療所を含む中心部の建物が集まり、主要道路も通る。<strong>山間部では平坦地が谷底にしかないため、洪水の危険を承知の上で谷底に集落が発達する</strong>。水利と交通の便という立地の利点と、洪水の危険という不利益が同時に存在する、というトレードオフの理解が問われている。</li>
+  <li><strong>②＝誤</strong>：階段状の土地は<strong>棚田</strong>であり、凡例でも「水田（棚田を含む）」に区分されている。棚田は傾斜地に平坦な面と畦（あぜ）をつくって<strong>水を保ち、稲作を可能にする</strong>ための工夫である。「水はけをよくする」「水田としては利用されない」はいずれも逆。</li>
+  <li><strong>③＝誤</strong>：支谷の出口にできる緩傾斜地は<strong>小規模な扇状地（土石流扇状地）</strong>であり、そこに堆積した土砂そのものが、過去に上流から土砂が流れ出した証拠である。<strong>「土砂が運ばれてこない」は地形の成り立ちと矛盾する</strong>。集中豪雨時には土石流の危険が高く、土砂災害警戒区域に指定されることが多い。</li>
+  <li><strong>④＝誤</strong>：地点エは標高約620mの尾根近くにあり、資料1では周囲に<strong>耕作放棄地</strong>が広がる。資料3の上段のＳ（距離14km・標高620m）に対応し、人口減少率66.7％・空き家率41％と最も厳しい状況にある。<strong>資料をまたいで対応関係を確認すれば即座に否定できる</strong>。</li>
+</ul>
+
+<h3>問2　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：総人口は8,600人→2,700人で<strong>2,700÷8,600＝31.4％＝約3分の1</strong>。一方、世帯数は1,950→1,240で<strong>63.6％が残存</strong>しており、減少は明らかに緩やか。この結果、1世帯当たり人員は4.41人→2.18人へ縮小した。<strong>人口が減っても世帯数がそれほど減らないのは、三世代同居が解体して単独世帯・夫婦のみ世帯が増えるため</strong>である。空き家対策や見守りが「世帯単位」で必要になる根拠でもある。</li>
+  <li><strong>②＝誤</strong>：65歳以上人口の実数を計算すると、1970年 8,600×0.09＝774人、1990年 5,400×0.21＝1,134人、2010年 3,600×0.38＝1,368人、<strong>2020年 2,700×0.46＝1,242人</strong>。<strong>率は上昇し続けているのに、実数は2010年から2020年にかけて減少している</strong>。高齢者自身の死亡による減少が、新たに高齢期に入る人数を上回る段階に達したためで、この局面では福祉サービスの需要も頭打ちから減少へ向かう。<strong>本問最大の狙い</strong>。</li>
+  <li><strong>③＝誤</strong>：15歳未満人口は 1970年 8,600×0.265＝<strong>約2,280人</strong>、2020年 2,700×0.07＝<strong>約190人</strong>で、減少は<strong>約2,090人</strong>。「約1,000人」は倍以上の見誤り。<strong>率の低下は総人口減少の結果にすぎない、という一見もっともらしい説明に、数値の裏づけが伴っていない</strong>点を見抜く。</li>
+  <li><strong>④＝誤</strong>：1世帯当たり人員の減少幅は、1970→1990年が<strong>−1.23人</strong>、1990→2010年が−0.64人、2010→2020年が−0.36人。最大は1970→1990年である（この期間は20年であることにも注意）。<strong>「近年ほど変化が大きい」という思い込み</strong>を突いている。</li>
+</ul>
+<div class="tip"><strong>率と実数の関係（重要）：</strong>高齢化率＝〔65歳以上人口〕÷〔総人口〕。<strong>分母（総人口）が急減すれば、分子が減っても率は上がる</strong>。過疎地域の高齢化率上昇には、この「分母の縮小による見かけの上昇」が大きく寄与している。率だけを見て「高齢者が増え続けている」と判断しないこと。</div>
+
+<h3>問3　正解 ③</h3>
+<ul class="exp-list">
+  <li><strong>Ｘ＝56％</strong>：「かつて農地として利用されていた土地」＝田250＋畑・樹園地70＋耕作放棄地400＝<strong>720ha</strong>。このうち耕作放棄地は400haなので、400÷720＝<strong>55.6％≒56％</strong>。1975年には20÷820＝2.4％にすぎなかったので、45年間で農地の半分以上が耕作されなくなったことになる。</li>
+  <li><strong>①②の「4％」＝誤</strong>：これは400haを町の土地利用の合計（約9,810ha）で割った4.1％を計算したもの。設問文は「田・畑・樹園地と耕作放棄地の合計を分母とみなす」と明示しており、<strong>分母の取り違え</strong>である。<strong>「〜に占める割合」は、必ず分母が何かを設問文で確認する</strong>。</li>
+  <li><strong>⑥の「19％」＝誤</strong>：これは2000年時点の値（190÷740＝25.7％）や、1975年の農地800haを分母にした計算などに引きずられたもので、いずれにせよ2020年の値ではない。</li>
+  <li><strong>Ｙ＝面積の統計だけでは手入れの状況は読み取れない</strong>：森林面積は8,900→8,980haでほぼ横ばいだが、<strong>面積という指標は森林の「質」を何も語らない</strong>。林業の担い手が減れば、間伐や下草刈りが行われない人工林が増え、日光が届かず下層植生の乏しい森林となる。こうした森林は根の張りが弱く保水力が低下し、<strong>土砂災害の危険が高まる</strong>。「面積が変わらないから森林は健全」とは言えない。</li>
+  <li><strong>④の「耕作放棄地の大部分が森林に転換された」＝誤</strong>：森林の増加はわずか80haで、耕作放棄地の増加380haを説明できない。<strong>数値の整合性で否定できる</strong>。</li>
+  <li><strong>⑤の「町の総面積が拡大」＝誤</strong>：市町村の総面積は合併等がなければ変化しない。</li>
+</ul>
+
+<h3>問4　正解 ⑤（Ｋ＝誤、Ｌ＝正、Ｍ＝正）</h3>
+<ul class="exp-list">
+  <li><strong>Ｋ＝誤</strong>：人口減少率を計算すると、Ｐ（0km）23.7％、Ｑ（3km）32.8％、<strong>Ｔ（6km）13.8％</strong>、Ｒ（8km）50.0％、Ｓ（14km）66.7％。<strong>Ｔは距離6kmでＱ（3km）より遠いのに、減少率は5集落中で最も小さい</strong>。散布図でもＴだけが下方に外れて位置しており、<strong>「距離が遠いほど衰退する」という一般的傾向の例外</strong>である。空き家率も11％でＱ（14％）より低い。<strong>「すべてに当てはまる」という全称の主張は、1つの反例で崩れる</strong>。</li>
+  <li><strong>Ｌ＝正</strong>：Ｓの65歳以上人口率は71％で7割を超える。実数では70人×0.71＝約50人が高齢者。集落機能（冠婚葬祭、道路や水路の共同管理、消防団）の維持が困難な段階にある。</li>
+  <li><strong>Ｍ＝正</strong>：Ｒは380人→190人で<strong>ちょうど半分</strong>、減少数は<strong>190人</strong>。Ｓは210人→70人で減少数は<strong>140人</strong>。よってＲの減少数（190人）がＳ（140人）より多い。<strong>減少率ではＳ（66.7％）がＲ（50.0％）を上回るが、減少人数では逆転する</strong>——率と実数が逆の順序になる典型例で、対策を考える際にはどちらの視点も必要になる。</li>
+</ul>
+<div class="tip"><strong>「率」で見るか「数」で見るか：</strong>集落の存続可能性を測るには率（残存の度合い、高齢化の度合い）が重要だが、必要な施設・サービスの量を見積もるには実数が必要である。本問はこの両面を1問の中で往復させている。散布図では<strong>「傾向から外れた点」に必ず理由がある</strong>——Ｔの例外は資料4の移住者向け住宅の記述で説明され、問5につながっている。</div>
+
+<h3>問5　正解 ④（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>④＝適当でない</strong>：2つの点で資料と矛盾する。第一に、<strong>Ｔ（6km）はＱ（3km）より中心部から遠い</strong>のに減少率は小さく、「距離が近いため」では説明できない。第二に、資料4には「Ｔ集落では町が移住者向けの住宅を用意し、子育て世帯が数世帯入居した」と明記されており、<strong>Ｔの65歳以上人口率が40％とＱ（45％）・Ｒ（58％）より低いことも、若い世代の流入と整合する</strong>。散布図の例外を距離で説明しようとした点が誤りで、<strong>資料4の記述を無視している</strong>。</li>
+  <li><strong>①＝適当</strong>：資料4の「水路の掃除や水の管理を数戸で分担」「担い手が減ると1戸あたりの負担が重くなり、まとまって耕作をやめる」に対応する。棚田の維持には<strong>個々の農家の努力では代替できない共同作業（コモンズの管理）</strong>が必要であり、集落外からの参加を制度化する棚田オーナー制度や、企業の社会貢献活動との連携などが現実の対策として行われている。</li>
+  <li><strong>②＝適当</strong>：資料4の「所有者が遠方」「相続の権利者が複数」に対応。空き家問題は<strong>需要（移住希望者）ではなく供給（貸せる・売れる状態にすること）が制約</strong>になっている典型で、所有者の意向調査、相続登記の支援、改修費の補助などが対策となる（2024年から相続登記が義務化された）。</li>
+  <li><strong>③＝適当</strong>：資料2の下段の耕作放棄地の増加（20→400ha）と資料4の獣害の記述を結びつけた推論。<strong>耕作放棄地や手入れされない森林が人里まで迫ることで、野生動物が人の生活空間に入りやすくなる</strong>。柵の設置は個々の農地では効果が限定的で、集落単位での面的な対策（緩衝帯の草刈り、放棄地の管理、集落柵）が必要という点も、聞き取りの「隣が耕作をやめると自分の畑だけでは守りきれない」と整合する。</li>
+</ul>
+
+<div class="tip">
+<strong>第4回の総括（復習の指針）</strong>
+<ul>
+  <li><strong>流域面積と流量は別物</strong>（第1問 問1・問2）：水量を決めるのは降水と蒸発。ナイル川とガンジス川の対比で確認する。</li>
+  <li><strong>ダムは流量を平準化するが総量は増やさない</strong>（第1問 問3）：一部の月の増加を年間全体に拡大しない。</li>
+  <li><strong>指標の定義を疑う</strong>（第1問 問4）：水ストレスが低い＝水に困っていない、ではない。取水手段の不足でも低く出る。</li>
+  <li><strong>就業者の減少≠生産の縮小</strong>（第2問 問2・問5）：脱工業化は「雇用の比重の低下」。付加価値は増えていることが多い。</li>
+  <li><strong>「1.6倍増加」と「1.6倍になった」</strong>（第2問 問4）：倍率の表現を厳密に読む。</li>
+  <li><strong>率は分母で動く</strong>（第3問 問2・問3）：高齢化率の上昇には分母（総人口）の縮小が効いている。「〜に占める割合」は分母を必ず確認する。</li>
+  <li><strong>散布図の例外に理由を探す</strong>（第3問 問4・問5）：傾向から外れた点こそ、地域の取り組みや条件を読み解く手がかりになる。</li>
+</ul>
+</div>
+
+</div><!-- /ans-detail -->
+</section>
+
+<nav class="pager">
+  <a href="kai3.html">◀ 第3回</a>
+  <a href="kai5.html">第5回（やや難）▶</a>
+</nav>
+
+</main>
+<script src="js/main.js"></script>
+<script src="https://www.genspark.ai/sandbox_inspect.js"></script></body>
+</html>

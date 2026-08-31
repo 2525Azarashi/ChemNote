@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地理探究 実戦模擬問題 第3回（難）</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="toolbar" aria-label="操作">
+  <span class="tb-title">地理探究 実戦模擬 第3回</span>
+  <button id="toggle-answers" type="button">解答・解説を表示</button>
+  <button id="print-page" type="button">PDFとして保存／印刷</button>
+  <a href="index.html">目次へ</a>
+</nav>
+
+<main class="paper">
+
+<h1>地理探究 模擬問題 第3回</h1>
+<p class="exam-meta">
+  <span class="badge lv5">難易度：難</span>
+  <span class="badge">解答時間 60分</span>
+  <span class="badge">配点 100点</span>
+  <span class="badge">小問16問</span><br>
+  第1問 地図投影法・地理情報（GIS）と空間データ分析（34点）／第2問 交通・通信・国際貿易とサプライチェーン（33点）／第3問 サブサハラアフリカの開発課題と都市化（33点）<br>
+  ※統計値は公表資料をもとに作問上簡略化した教材用の数値である。
+</p>
+
+<!-- ===================== 第1問 ===================== -->
+<h2>第1問　地図投影法・地理情報（GIS）と空間データ分析（配点34点）</h2>
+
+<p class="lead">高校の課題研究で、生徒が「地図とデータで世界の見え方はどう変わるか」というテーマに取り組んだ。次の会話文と資料1〜3、および学習メモを読み、後の問い（問1〜問6）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">ヒナ：</span>同じ世界を3種類の投影法で描いてみました（資料1）。面積・角・距離のすべてを同時に正しく表せる平面地図はない、というのが出発点ですね。</p>
+  <p><span class="spk">ジュン：</span>航空路の計画をするときは、地図上の直線が最短経路になるかどうかが問題になります。東京からの距離と方位を調べました（資料2）。</p>
+  <p><span class="spk">ヒナ：</span>GISでは同じデータでも<u>階級区分の切り方</u>で地図の印象が変わります（資料3の上段）。それに、市区町村単位のデータをそのまま使うと、面積の大きな区域が目立ってしまう問題もあります。</p>
+  <p><span class="spk">ジュン：</span>そこで、人口密度や単位面積当たりの値に直したり、階級区分図ではなく<span class="box">Ｘ</span>を使う方法もあると習いました。実際に、都道府県のデータで確かめてみます（資料3の下段）。使えそうな機能は、先に作った学習メモにまとめてあります。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　3種類の図法で描いた世界（模式図）</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：地図投影法の比較模式図（3枚並置／グレースケール／試験冊子体裁）</p>
+    <pre>A clean black-and-white schematic diagram for a Japanese university-entrance
+geography exam booklet. Three world-map frames side by side on a white
+background. Thin black line art only, no colour, no shading except a light
+grey fill for the islands. Each frame has a bold caption above it reading only
+"図法Ａ", "図法Ｂ", "図法Ｃ". Do NOT print the real name of any map projection
+anywhere in the image.
+
+FRAME 1 — 図法Ａ (left):
+- A tall rectangle. Inside, five vertical straight thin grey lines and four
+  horizontal straight thin grey lines meeting at right angles: a perfect
+  rectangular grid.
+- One extra horizontal line across the middle, thicker and DASHED. Do not
+  label it.
+- An oval island, light grey fill with a black outline, in the UPPER part of
+  the frame (high latitude). It is WIDE AND LARGE, about 40 x 24 units.
+  Label it 「Ｇ島」 in small type.
+- A second oval island, light grey, just below the dashed middle line.
+  It is SMALL, about 18 x 12 units — clearly less than a quarter of the area
+  of the first island. Label it 「Ｈ島」.
+- Small caption inside the bottom of the frame: 経線・緯線は直交する直線
+
+FRAME 2 — 図法Ｂ (middle):
+- A perfect circle outlined in black.
+- Four thin grey straight lines through the centre (horizontal, vertical, two
+  diagonals) plus two thin grey concentric circles at 1/3 and 2/3 of the radius.
+- A solid black dot exactly at the centre, labelled 中心（東京）.
+- One THICK black straight line running from the centre to the upper-right of
+  the circle, labelled 直線＝最短経路
+- Small caption inside the bottom of the frame: 外周は中心の対極点
+- No islands in this frame.
+
+FRAME 3 — 図法Ｃ (right):
+- A rounded oval world outline.
+- Inside, the parallels are perfectly HORIZONTAL straight thin grey lines; the
+  meridians are thin grey lines that CURVE, bowing outward from a straight
+  central meridian.
+- One thicker DASHED horizontal line across the middle.
+- An oval island, light grey, in the upper part (high latitude), about
+  18 x 12 units, labelled 「Ｇ島」.
+- A second oval island, light grey, just below the dashed middle line, ALSO
+  about 18 x 12 units, labelled 「Ｈ島」. The two islands must be drawn at
+  EXACTLY the same size as each other.
+- Small caption inside the bottom of the frame: 緯線は水平、経線は曲線
+
+Typography: Japanese sans-serif; frame captions bold ~13px equivalent, other
+labels ~9.5px. Line weights: outlines 1.2, grid 0.7, emphasised lines 1.8.
+Canvas ratio about 700 : 250 (wide and short).</pre>
+    <p class="zu-note">図法Ａで<strong>Ｇ島がＨ島よりはっきり大きく</strong>描かれ、図法Ｃでは<strong>両島が同じ大きさ</strong>であることが問1の根拠です。図法Ｂの「中心（東京）」の点・放射状の直線・「外周は中心の対極点」の注記も省略しないでください。投影法の正式名称（メルカトル／正距方位／サンソンなど）は図中に一切書かないこと（それ自体が問1で問う内容です）。</p>
+  </div>
+  <p class="src">Ｇ島は北緯70°付近、Ｈ島は赤道付近に位置し、実際の面積はほぼ等しい。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　東京からの大圏距離と初期方位</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th class="l">都市</th><th>おおよその位置</th><th>東京からの<br>大圏距離（km）</th><th>東京からの<br>初期方位（真北から時計回り、°）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">ａ</td><td>北緯 41°／西経 74°</td><td>10,800</td><td>26</td></tr>
+      <tr><td class="l">ｂ</td><td>北緯 52°／東経 0°</td><td>9,600</td><td>335</td></tr>
+      <tr><td class="l">ｃ</td><td>南緯 34°／東経 151°</td><td>7,800</td><td>176</td></tr>
+      <tr><td class="l">ｄ</td><td>北緯 30°／東経 31°</td><td>9,600</td><td>310</td></tr>
+    </tbody>
+  </table>
+  <p class="src">ａ〜ｄは、カイロ・シドニー・ニューヨーク・ロンドンのいずれかである。初期方位は出発時に進む方向。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　同一データを異なる階級区分で描いた2つの地図（模式図）と、4つの都道府県の指標</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：階級区分図（コロプレスマップ）の比較模式図／グレースケール／試験冊子体裁</p>
+    <pre>A clean black-and-white schematic figure for a Japanese university-entrance
+geography exam booklet. Two square choropleth maps side by side on a white
+background, each a 3 x 3 grid of nine equal rectangular cells with thin black
+borders. No colour: use only these four fill patterns.
+
+PATTERN SET (identical in both maps):
+  P1 = plain WHITE (lightest)
+  P2 = fine DOT stipple on white
+  P3 = 45-degree fine DIAGONAL HATCHING on white
+  P4 = solid MEDIUM GREY (darkest)
+
+LEFT MAP — bold caption above: 地図Ｋ（区分法Ⅰ）
+Cell fills, reading each row left to right:
+  row 1 (top)   : P1, P1, P2
+  row 2 (middle): P1, P1, P1
+  row 3 (bottom): P1, P1, P4
+So seven of the nine cells are plain white. This is essential.
+
+RIGHT MAP — bold caption above: 地図Ｌ（区分法Ⅱ）
+Cell fills, reading each row left to right:
+  row 1 (top)   : P2, P3, P4
+  row 2 (middle): P1, P2, P3
+  row 3 (bottom): P1, P1, P4
+The nine cells are spread roughly evenly over the four patterns.
+
+LEGENDS: below each map, a two-row legend of four small swatches with labels.
+  Under the left map, heading 凡例（区分法Ⅰ）:
+    P1 = 0〜25   P2 = 25〜50   P3 = 50〜75   P4 = 75〜100
+  Under the right map, heading 凡例（区分法Ⅱ）:
+    P1 = 0〜4    P2 = 4〜9     P3 = 9〜20    P4 = 20〜100
+Note that in the left legend the pattern P3 (diagonal hatching) appears in the
+legend but is NOT used on the left map. Keep it in the legend anyway.
+
+Do NOT write any numeric value inside the map cells, and do NOT draw any
+coastline, place name or real geography — the nine cells are abstract regions.
+
+Typography: Japanese sans-serif; map captions bold ~12.5px equivalent, legend
+text ~9.5px. Cell borders 0.9. Canvas ratio about 660 : 250 (wide and short).</pre>
+    <p class="zu-note">両地図の<strong>9マスの模様の並びと2つの凡例の数値</strong>が問4の全根拠です。とくに地図Ｋで<strong>9マス中7マスが最も薄い階級（0〜25）</strong>になっていること、区分法Ⅱの階級幅が<strong>不均等（0〜4／4〜9／9〜20／20〜100）</strong>であることは必ず再現してください。マス内に数値を書き込むと問4④が成立しなくなります。</p>
+  </div>
+  <p class="src">地図Ｋ・Ｌは同一の9区域の同一データを描いたもの。区分法Ⅰは値の範囲を4等分、区分法Ⅱは各階級に含まれる区域数がほぼ等しくなるように区分した。</p>
+
+  <p class="src" style="margin-top:14px"><strong>［下段］4つの都道府県の指標</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th class="l">県</th><th>面積<br>（km²）</th><th>人口<br>（万人）</th><th>製造品出荷額等<br>（兆円）</th><th>65歳以上<br>人口率（％）</th><th>昼夜間<br>人口比率</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">Ｐ</td><td>2,194</td><td>1,404</td><td>7.4</td><td>22.7</td><td>1.19</td></tr>
+      <tr><td class="l">Ｑ</td><td>5,173</td><td>750</td><td>48.0</td><td>25.5</td><td>1.02</td></tr>
+      <tr><td class="l">Ｒ</td><td>83,424</td><td>514</td><td>6.1</td><td>32.8</td><td>1.00</td></tr>
+      <tr><td class="l">Ｓ</td><td>4,466</td><td>105</td><td>1.1</td><td>37.6</td><td>0.99</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Ｐ〜Ｓは、愛知県・秋田県・東京都・北海道のいずれかである。昼夜間人口比率は昼間人口÷夜間人口。</p>
+</figure>
+
+<div class="memo" style="border-style:solid">
+  <p style="margin:0 0 8px;font-weight:700;font-family:'Hiragino Kaku Gothic ProN',sans-serif;font-size:14.5px">二人があらかじめ作成していたGISの機能の学習メモ</p>
+  <table class="data">
+    <thead><tr><th class="l">機能</th><th class="l">内容</th></tr></thead>
+    <tbody>
+      <tr><td class="l">オーバーレイ</td><td class="l">複数の主題図を重ね合わせ、条件を同時に満たす場所を抽出する。</td></tr>
+      <tr><td class="l">バッファ</td><td class="l">点・線・面から一定距離の範囲を作成する。</td></tr>
+      <tr><td class="l">ネットワーク解析</td><td class="l">道路網に沿った最短経路や到達圏を求める。</td></tr>
+      <tr><td class="l">ジオコーディング</td><td class="l">住所などの文字情報を緯度経度の座標に変換する。</td></tr>
+      <tr><td class="l">図形表現図（比例シンボル）</td><td class="l">絶対量を、円などの大きさで各地点に表現する。</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問1　資料1の図法Ａ〜Ｃについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">1</span></p>
+  <ol class="choices">
+    <li>①　図法Ａでは、Ｇ島がＨ島より大きく描かれているが、これは高緯度ほど東西方向のみが拡大されるためである。</li>
+    <li>②　図法Ａ上で任意の2点を結んだ直線は、常に2点間の最短経路を示す。</li>
+    <li>③　図法Ｂでは、中心から任意の点までの距離と方位が正しく表されるが、中心以外の2点間の距離や方位は正しくない。</li>
+    <li>④　図法Ｃでは、面積が正しく表されるため、緯線・経線の交わる角度も地球上と等しく保たれる。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2のａ〜ｄと都市名との組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">2</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">ａ</th><th class="l">ｂ</th><th class="l">ｄ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">ニューヨーク</td><td class="l">ロンドン</td><td class="l">カイロ</td></tr>
+      <tr><td>②</td><td class="l">ニューヨーク</td><td class="l">カイロ</td><td class="l">ロンドン</td></tr>
+      <tr><td>③</td><td class="l">ロンドン</td><td class="l">ニューヨーク</td><td class="l">カイロ</td></tr>
+      <tr><td>④</td><td class="l">カイロ</td><td class="l">ロンドン</td><td class="l">ニューヨーク</td></tr>
+      <tr><td>⑤</td><td class="l">ロンドン</td><td class="l">カイロ</td><td class="l">ニューヨーク</td></tr>
+      <tr><td>⑥</td><td class="l">ニューヨーク</td><td class="l">ロンドン</td><td class="l">シドニー</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2について述べた次の文Ｋ・Ｌの正誤の組合せとして最も適当なものを、後の①〜④のうちから一つ選べ。<span class="mark">3</span></p>
+  <div class="q-body">
+    <p style="margin:4px 0">Ｋ　ｂとｄは東京からの大圏距離が等しいので、東京からみて同じ方向にあり、同一の大圏航路で結ばれる。</p>
+    <p style="margin:4px 0">Ｌ　ａへ向かう航空機は、出発時に北北東へ進む。これは、東京とａを結ぶ大圏航路が高緯度側を通るためである。</p>
+  </div>
+  <table class="data" style="max-width:420px">
+    <thead><tr><th></th><th>①</th><th>②</th><th>③</th><th>④</th></tr></thead>
+    <tbody>
+      <tr><td>Ｋ</td><td>正</td><td>正</td><td>誤</td><td>誤</td></tr>
+      <tr><td>Ｌ</td><td>正</td><td>誤</td><td>正</td><td>誤</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料3の上段（2つの階級区分図）について述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">4</span></p>
+  <ol class="choices">
+    <li>①　地図Ｋと地図Ｌで模様が異なるのは、もとのデータが異なるためである。</li>
+    <li>②　区分法Ⅰでは、値が小さい範囲に多くの区域が集まっているため、大半の区域が最も低い階級に入り、地域差が見えにくくなっている。</li>
+    <li>③　区分法Ⅱでは階級の幅が均等であるため、値の分布が偏っていても地域差を正確に示すことができる。</li>
+    <li>④　地図Ｋで最も濃い模様の区域は1つだけなので、この区域の値は他の区域の4倍以上であるといえる。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料3の下段のＰ〜Ｓと都道府県名との組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">5</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｐ</th><th class="l">Ｑ</th><th class="l">Ｒ</th><th class="l">Ｓ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">東京都</td><td class="l">愛知県</td><td class="l">北海道</td><td class="l">秋田県</td></tr>
+      <tr><td>②</td><td class="l">東京都</td><td class="l">北海道</td><td class="l">愛知県</td><td class="l">秋田県</td></tr>
+      <tr><td>③</td><td class="l">愛知県</td><td class="l">東京都</td><td class="l">北海道</td><td class="l">秋田県</td></tr>
+      <tr><td>④</td><td class="l">東京都</td><td class="l">愛知県</td><td class="l">秋田県</td><td class="l">北海道</td></tr>
+      <tr><td>⑤</td><td class="l">愛知県</td><td class="l">東京都</td><td class="l">秋田県</td><td class="l">北海道</td></tr>
+      <tr><td>⑥</td><td class="l">北海道</td><td class="l">愛知県</td><td class="l">東京都</td><td class="l">秋田県</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問6　会話文中の空欄<span class="box">Ｘ</span>に入る語句と、それを用いる理由との組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">6</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｘ</th><th class="l">理由</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">図形表現図（比例シンボル）</td><td class="l">絶対量は面の塗り分けでは面積の大きい区域が過大に見えるため、点の大きさで示す。</td></tr>
+      <tr><td>②</td><td class="l">図形表現図（比例シンボル）</td><td class="l">相対値は面の塗り分けでは表現できないため、点の大きさで示す。</td></tr>
+      <tr><td>③</td><td class="l">バッファ</td><td class="l">区域ごとの絶対量を一定距離の範囲に分散させて示すため。</td></tr>
+      <tr><td>④</td><td class="l">ドットマップ</td><td class="l">階級区分図では階級の切り方によって印象が変わるため、階級を用いずに絶対量の分布密度を示す。</td></tr>
+      <tr><td>⑤</td><td class="l">ジオコーディング</td><td class="l">住所を座標に変換すると、面のデータを点として扱えるため。</td></tr>
+      <tr><td>⑥</td><td class="l">流線図</td><td class="l">区域間の移動量を線の太さで示すことで、面積の影響を除けるため。</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:14px;margin-top:6px">※①と④はいずれも面積の影響を避ける方法だが、会話文の文脈（「人口密度や単位面積当たりの値に直したり、階級区分図ではなく〜を使う」）と、学習メモに挙げられた機能とを照らして判断せよ。</p>
+</div>
+
+<!-- ===================== 第2問 ===================== -->
+<h2>第2問　交通・通信・国際貿易とサプライチェーン（配点33点）</h2>
+
+<p class="lead">次の資料1〜4は、「モノと情報はどのように国境を越えるか」というテーマの探究学習で用いられたものである。これらを読み、後の問い（問1〜問5）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">カズキ：</span>まず、4か国の貿易の中身を比べました（資料1）。同じ「貿易大国」でも輸出品目の構成はまったく違います。</p>
+  <p><span class="spk">アヤ：</span>私は輸送手段ごとの特徴と、世界の主要港・空港の取扱量（資料2）を調べました。<u>重量では船が圧倒的でも、金額では航空機の役割が大きい</u>のが意外でした。</p>
+  <p><span class="spk">カズキ：</span>それと、1つの製品が複数の国をまたいでつくられる仕組み（資料3）も調べました。付加価値がどこで生まれているかを見ると、「どこで組み立てられたか」だけでは経済の姿がわからないですね。</p>
+  <p><span class="spk">アヤ：</span>通信の面では、国ごとに固定回線と携帯電話の普及の順序が違います（資料4）。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　4か国の輸出額と主要輸出品目の構成（％）</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th class="l">国</th><th>輸出額<br>（億ドル）</th><th class="l">第1位</th><th class="l">第2位</th><th class="l">第3位</th><th>輸出額の<br>GDP比（％）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">Ａ</td><td>33,600</td><td class="l">機械類 44.1</td><td class="l">衣類 5.0</td><td class="l">繊維品 3.4</td><td>19</td></tr>
+      <tr><td class="l">Ｂ</td><td>17,540</td><td class="l">機械類 26.5</td><td class="l">自動車 14.6</td><td class="l">医薬品 7.6</td><td>44</td></tr>
+      <tr><td class="l">Ｃ</td><td>2,830</td><td class="l">原油 40.5</td><td class="l">石油製品 15.8</td><td class="l">プラスチック 6.4</td><td>32</td></tr>
+      <tr><td class="l">Ｄ</td><td>3,190</td><td class="l">鉄鉱石 32.9</td><td class="l">石炭 13.3</td><td class="l">天然ガス 11.6</td><td>21</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Ａ〜Ｄは、オーストラリア・サウジアラビア・中国・ドイツのいずれかである。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　日本の輸出入における輸送手段別の割合（％）と、世界の主要港湾・空港の貨物取扱量</figcaption>
+  <p class="src"><strong>［上段］日本の輸出入における輸送手段別の割合（％）</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th rowspan="2" class="l">輸送手段</th><th colspan="2">輸出</th><th colspan="2">輸入</th></tr>
+      <tr><th>重量ベース</th><th>金額ベース</th><th>重量ベース</th><th>金額ベース</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">海上輸送</td><td>99.7</td><td>75.8</td><td>99.8</td><td>78.9</td></tr>
+      <tr><td class="l">航空輸送</td><td>0.3</td><td>24.2</td><td>0.2</td><td>21.1</td></tr>
+    </tbody>
+  </table>
+
+  <p class="src" style="margin-top:14px"><strong>［下段］世界の主要港湾・空港の貨物取扱量（上位、2020年前後）</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th>順位</th><th class="l">コンテナ取扱量（万TEU）</th><th class="l">航空貨物取扱量（万t）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td class="l">上海（中国）　4,350</td><td class="l">香港（中国）　500</td></tr>
+      <tr><td>2</td><td class="l">シンガポール　3,690</td><td class="l">メンフィス（アメリカ合衆国）　460</td></tr>
+      <tr><td>3</td><td class="l">寧波・舟山（中国）　2,870</td><td class="l">上海（中国）　370</td></tr>
+      <tr><td>4</td><td class="l">深圳（中国）　2,660</td><td class="l">アンカレジ（アメリカ合衆国）　340</td></tr>
+      <tr><td>5</td><td class="l">広州（中国）　2,320</td><td class="l">仁川（韓国）　280</td></tr>
+      <tr><td>—</td><td class="l">東京（日本）　450</td><td class="l">成田（日本）　210</td></tr>
+    </tbody>
+  </table>
+  <p class="src">TEUは20フィートコンテナ換算の個数。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　ある携帯電話端末（小売価格 1台 1,000ドル）の付加価値の配分（模式）</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th class="l">工程・機能</th><th class="l">主な担当国・地域</th><th>1台当たり<br>付加価値（ドル）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">企画・設計・ブランド・ソフトウェア</td><td class="l">アメリカ合衆国</td><td>420</td></tr>
+      <tr><td class="l">高機能部品（半導体・画像素子等）</td><td class="l">韓国・台湾・日本</td><td>230</td></tr>
+      <tr><td class="l">その他部品・素材</td><td class="l">中国・東南アジア等</td><td>110</td></tr>
+      <tr><td class="l">最終組立</td><td class="l">中国・インド・ベトナム</td><td>18</td></tr>
+      <tr><td class="l">流通・小売・その他</td><td class="l">各国</td><td>222</td></tr>
+    </tbody>
+  </table>
+  <p class="src">貿易統計上、この端末は最終組立国からの「輸出」として全額（1台約700ドル相当）が計上される。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料4　4か国の固定電話・携帯電話・固定ブロードバンドの普及（人口100人当たり契約数）</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th class="l">国</th><th>固定電話<br>（1995年）</th><th>固定電話<br>（2020年）</th><th>携帯電話<br>（2020年）</th><th>固定ブロード<br>バンド（2020年）</th><th>インターネット<br>利用率（％）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">Ｅ</td><td>0.3</td><td>0.4</td><td>91</td><td>0.4</td><td>29</td></tr>
+      <tr><td class="l">Ｆ</td><td>48.9</td><td>32.4</td><td>129</td><td>40.5</td><td>90</td></tr>
+      <tr><td class="l">Ｇ</td><td>3.3</td><td>13.0</td><td>120</td><td>33.6</td><td>70</td></tr>
+      <tr><td class="l">Ｈ</td><td>1.3</td><td>1.6</td><td>84</td><td>1.9</td><td>43</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Ｅ〜Ｈは、インド・ケニア・中国・日本のいずれかである。</p>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1のＡ〜Ｄと国名との組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">7</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ａ</th><th class="l">Ｂ</th><th class="l">Ｃ</th><th class="l">Ｄ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">中国</td><td class="l">ドイツ</td><td class="l">サウジアラビア</td><td class="l">オーストラリア</td></tr>
+      <tr><td>②</td><td class="l">中国</td><td class="l">ドイツ</td><td class="l">オーストラリア</td><td class="l">サウジアラビア</td></tr>
+      <tr><td>③</td><td class="l">ドイツ</td><td class="l">中国</td><td class="l">サウジアラビア</td><td class="l">オーストラリア</td></tr>
+      <tr><td>④</td><td class="l">中国</td><td class="l">サウジアラビア</td><td class="l">ドイツ</td><td class="l">オーストラリア</td></tr>
+      <tr><td>⑤</td><td class="l">ドイツ</td><td class="l">中国</td><td class="l">オーストラリア</td><td class="l">サウジアラビア</td></tr>
+      <tr><td>⑥</td><td class="l">オーストラリア</td><td class="l">ドイツ</td><td class="l">サウジアラビア</td><td class="l">中国</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2（上段・下段）から読み取れることとして最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">8</span></p>
+  <ol class="choices">
+    <li>①　輸出において、航空輸送は重量では0.3％だが金額では24.2％を占める。これは、単位重量当たりの価格が高い品目が航空輸送に向くためである。</li>
+    <li>②　輸入において海上輸送の金額割合が輸出より高いのは、日本が半導体などの軽量・高価格の製品を主に輸入しているためである。</li>
+    <li>③　航空貨物取扱量の上位に、コンテナ取扱量の上位港をもつ都市が一つも含まれていないことから、両者の拠点は完全に分離しているといえる。</li>
+    <li>④　東京港のコンテナ取扱量は上海港の約4分の1であり、日本の港湾はアジアの主要港と同規模の中継機能をもっている。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2の下段のメンフィス、アンカレジが航空貨物取扱量の上位に入る理由の組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">9</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">メンフィス</th><th class="l">アンカレジ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">国際貨物航空会社の中継拠点（ハブ）が置かれている</td><td class="l">北太平洋航路の給油・積替え地点にあたる</td></tr>
+      <tr><td>②</td><td class="l">国際貨物航空会社の中継拠点（ハブ）が置かれている</td><td class="l">周辺人口が多く、旺盛な消費需要がある</td></tr>
+      <tr><td>③</td><td class="l">周辺に大規模な自動車工場が集積している</td><td class="l">北太平洋航路の給油・積替え地点にあたる</td></tr>
+      <tr><td>④</td><td class="l">大都市圏に隣接し、国際旅客便が多い</td><td class="l">石油・天然ガスの積出港である</td></tr>
+      <tr><td>⑤</td><td class="l">周辺に大規模な自動車工場が集積している</td><td class="l">周辺人口が多く、旺盛な消費需要がある</td></tr>
+      <tr><td>⑥</td><td class="l">大都市圏に隣接し、国際旅客便が多い</td><td class="l">北太平洋航路の給油・積替え地点にあたる</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料3について述べた文として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">10</span></p>
+  <ol class="choices">
+    <li>①　最終組立を担う国が得る付加価値は1台18ドルで、小売価格の2％に満たない。一方、企画・設計等を担う国は420ドルを得ており、工程間で付加価値の格差が大きい。</li>
+    <li>②　貿易統計では最終組立国からの輸出額として全額が計上されるため、組立国の輸出額は、その国で実際に生み出された付加価値よりも大きく示される。</li>
+    <li>③　最終組立国は輸出額が大きくなるため、貿易統計上の黒字が拡大しやすい。この点は、二国間の貿易収支だけで経済関係を評価することの限界を示している。</li>
+    <li>④　高機能部品を供給する国・地域の付加価値は合計230ドルであり、最終組立国の付加価値より小さい。これは部品産業が労働集約的であることを示す。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料4について、ケニアに該当する国と、その国を選んだ根拠として次の文Ｓ・Ｔのうち適切なものとの組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">11</span></p>
+  <div class="memo">
+  <ul>
+    <li><strong>Ｓ</strong>　固定電話の契約数が1995年から2020年にかけてほとんど変化していない2か国のうち携帯電話の契約数が多い方であり、かつ携帯電話の契約数に対するインターネット利用率の比が4か国中最も低い。</li>
+    <li><strong>Ｔ</strong>　携帯電話の契約数が人口100人当たり100を下回る2か国のうち、1995年の固定電話の契約数が多い方である。</li>
+  </ul>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th class="l">ケニア</th><th class="l">適切な根拠</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">Ｅ</td><td class="l">Ｓのみ</td></tr>
+      <tr><td>②</td><td class="l">Ｅ</td><td class="l">Ｔのみ</td></tr>
+      <tr><td>③</td><td class="l">Ｅ</td><td class="l">ＳとＴの両方</td></tr>
+      <tr><td>④</td><td class="l">Ｈ</td><td class="l">Ｓのみ</td></tr>
+      <tr><td>⑤</td><td class="l">Ｈ</td><td class="l">Ｔのみ</td></tr>
+      <tr><td>⑥</td><td class="l">Ｈ</td><td class="l">ＳとＴの両方</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===================== 第3問 ===================== -->
+<h2>第3問　サブサハラアフリカの開発課題と都市化（配点33点）</h2>
+
+<p class="lead">次の資料1〜4は、「アフリカの成長と課題」というテーマの探究学習で用いられたものである。これらを読み、後の問い（問1〜問5）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">ソラ：</span>サブサハラアフリカ（サハラ砂漠以南のアフリカ）の4か国について、経済と社会の指標を集めました（資料1）。1人当たりGNIが近い国でも、社会の姿はかなり違います。</p>
+  <p><span class="spk">ミオ：</span>輸出の中身（資料2）を見ると、特定の産品に依存する構造が読み取れます。国際価格が変動すると経済全体が揺れる、という話につながりますね。</p>
+  <p><span class="spk">ソラ：</span>都市化の進み方（資料3）と、大都市の内部構造（資料4）も調べました。「都市に人が集まるのに、工場が増えていない」という指摘が気になりました。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　サブサハラアフリカ4か国の基本指標と産業別GDP構成</figcaption>
+  <p class="src"><strong>［上段］基本指標</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th class="l">国</th><th>人口<br>（万人）</th><th>1人当たり<br>GNI（ドル）</th><th>合計特殊<br>出生率</th><th>都市人口率<br>（％）</th><th>成人識字率<br>（％）</th><th>電化率<br>（％）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">Ｊ</td><td>21,400</td><td>2,100</td><td>5.3</td><td>52</td><td>62</td><td>59</td></tr>
+      <tr><td class="l">Ｋ</td><td>6,000</td><td>6,000</td><td>2.4</td><td>68</td><td>95</td><td>85</td></tr>
+      <tr><td class="l">Ｌ</td><td>11,700</td><td>940</td><td>4.2</td><td>22</td><td>52</td><td>51</td></tr>
+      <tr><td class="l">Ｍ</td><td>3,300</td><td>1,050</td><td>4.5</td><td>29</td><td>83</td><td>43</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Ｊ〜Ｍは、エチオピア・ケニア・南アフリカ共和国・ナイジェリアのいずれかである。</p>
+
+  <p class="src" style="margin-top:14px"><strong>［下段］産業別GDP構成（％）と若年人口</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th class="l">国</th><th>第1次<br>産業</th><th>第2次<br>産業</th><th>第3次<br>産業</th><th>15歳未満<br>人口率（％）</th><th>製造業の<br>GDP比（％）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">Ｊ</td><td>23.4</td><td>27.7</td><td>48.9</td><td>43</td><td>12.7</td></tr>
+      <tr><td class="l">Ｋ</td><td>2.5</td><td>24.5</td><td>73.0</td><td>28</td><td>12.0</td></tr>
+      <tr><td class="l">Ｌ</td><td>37.6</td><td>21.3</td><td>41.1</td><td>39</td><td>5.4</td></tr>
+      <tr><td class="l">Ｍ</td><td>21.2</td><td>17.0</td><td>61.8</td><td>38</td><td>7.6</td></tr>
+    </tbody>
+  </table>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　4か国の主要輸出品目（％）と輸出額</figcaption>
+  <table class="data">
+    <thead>
+      <tr><th class="l">国</th><th>輸出額<br>（億ドル）</th><th class="l">第1位</th><th class="l">第2位</th><th class="l">第3位</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="l">Ｊ</td><td>468</td><td class="l">原油 75.4</td><td class="l">液化天然ガス 11.2</td><td class="l">石油製品 3.5</td></tr>
+      <tr><td class="l">Ｋ</td><td>1,235</td><td class="l">白金族 17.8</td><td class="l">鉄鉱石 9.5</td><td class="l">自動車 8.6</td></tr>
+      <tr><td class="l">Ｌ</td><td>39</td><td class="l">コーヒー豆 27.0</td><td class="l">野菜・切り花 17.5</td><td class="l">ごま 9.2</td></tr>
+      <tr><td class="l">Ｍ</td><td>62</td><td class="l">茶 21.3</td><td class="l">切り花 12.9</td><td class="l">石油製品 6.2</td></tr>
+    </tbody>
+  </table>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　地域別の都市人口率と製造業のGDP比の変化</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：散布図（1990→2020の矢印付き）／グレースケール／試験冊子体裁</p>
+    <pre>A clean black-and-white scatter plot for a Japanese university-entrance
+geography exam booklet. White background, thin black axes, light grey
+gridlines, no colour.
+
+AXES:
+- X axis, label below: 都市人口率（％）. Ticks at 20, 35, 50, 65, 80, 95.
+- Y axis, rotated label at left: 製造業のGDP比（％）. Ticks at 0, 10, 20, 30, 40.
+
+Plot FOUR regions. Each region is drawn as two markers joined by an arrow that
+points from the 1990 position to the 2020 position. Plot these exact
+coordinates (x = 都市人口率, y = 製造業のGDP比):
+
+1) 東アジア      1990 (30, 28) -> 2020 (65, 27)
+   markers: SOLID BLACK filled circles; arrow: solid thick line.
+   Put the small year labels 1990 and 2020 next to its two markers.
+2) 東南アジア    1990 (32, 22) -> 2020 (50, 21)
+   markers: WHITE circles with a black outline; arrow: long-dashed line.
+3) サブサハラアフリカ 1990 (28, 16) -> 2020 (42, 10)
+   markers: MID-GREY filled circles with a black outline; arrow: fine dotted
+   line, clearly sloping DOWNWARD to the right.
+4) ラテンアメリカ 1990 (71, 19) -> 2020 (81, 13)
+   markers: small WHITE SQUARES with a black outline; arrow: solid thin line,
+   clearly sloping DOWNWARD to the right.
+
+Write each region name in bold Japanese sans-serif next to its pair of markers.
+Do not add a separate legend box and do not add any other data points.
+Small note at the bottom left: 矢印は1990年から2020年への変化を示す。
+
+Typography: Japanese sans-serif, axis numbers ~10.5px equivalent, region names
+~11px bold. Canvas ratio about 640 : 300.</pre>
+    <p class="zu-note">問3は<strong>縦方向（製造業GDP比）の下がり幅</strong>で判定します。サブサハラアフリカ（16→10）とラテンアメリカ（19→13）の矢印が<strong>はっきり右下がり</strong>に、東アジア（28→27）と東南アジア（22→21）が<strong>ほぼ水平</strong>に見えることが必須です。座標は上記の数値どおりに打ってください。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料4　サブサハラアフリカの大都市の内部構造（模式図）</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：都市内部構造の模式図／グレースケール／試験冊子体裁</p>
+    <pre>A clean black-and-white schematic diagram of the internal structure of a large
+sub-Saharan African city, for a Japanese university-entrance geography exam
+booklet. White background, thin black line art, light grey fills only, no
+colour, no photographic texture, no real place names.
+
+FRAME: one wide rectangle enclosing the whole city.
+
+ZONES (concentric ovals, all centred LEFT OF CENTRE of the frame):
+- innermost oval, light grey fill, labelled 中心業務地区（CBD）
+- a middle oval outline, dashed
+- an outer oval outline, finely dotted
+- label 旧植民地期の官庁・高級住宅地 placed in the north-west inner area
+- label 既成市街地 placed in the middle ring on the right-hand side
+
+MAIN ROADS: one thick straight horizontal line crossing the whole frame and
+one thick straight vertical line through the CBD. Label one of them 幹線道路.
+
+INDUSTRY: one small grey-outlined rectangle in the north-west, labelled 工業団地
+
+Ⅹ地区 — THREE separate irregular quadrilateral patches, MID-GREY fill with a
+black outline, each labelled 「Ⅹ地区」. Their placement is essential:
+  (1) one close to the CBD, in the lower-left inner area
+  (2) one at the far NORTH-EAST edge of the frame (outer fringe)
+  (3) one at the far EAST / lower-right edge of the frame (outer fringe)
+So Ⅹ地区 must appear BOTH near the centre AND on the outer fringe.
+
+Ｙ地区 — ONE small rectangle with a distinctly THICK black border, very light
+fill, placed in the north-east middle ring, separate from all Ⅹ地区 patches.
+Label it 「Ｙ地区（壁と門で囲む）」.
+
+Note along the bottom edge, small grey type:
+Ⅹ地区は、上下水道・電気などの整備が不十分で、土地の権利が不明確な住宅が密集する地区。Ｙ地区は近年開発された住宅地。
+
+Typography: Japanese sans-serif, ~10–11.5px equivalent.
+Canvas ratio about 640 : 300.</pre>
+    <p class="zu-note">問4の根拠は<strong>Ⅹ地区が「都心近く」と「縁辺部」の両方に描かれていること</strong>（①「縁辺部にのみ」を否定するため）と、<strong>Ｙ地区が壁で囲まれた独立の区画としてＸ地区とは別に描かれていること</strong>です。Ⅹ地区は必ず3か所、うち1か所はCBDのすぐ近くに置いてください。</p>
+  </div>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1（上段・下段）・資料2のＪ〜Ｍと国名との組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">12</span></p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｊ</th><th class="l">Ｋ</th><th class="l">Ｌ</th><th class="l">Ｍ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">ナイジェリア</td><td class="l">南アフリカ共和国</td><td class="l">エチオピア</td><td class="l">ケニア</td></tr>
+      <tr><td>②</td><td class="l">ナイジェリア</td><td class="l">南アフリカ共和国</td><td class="l">ケニア</td><td class="l">エチオピア</td></tr>
+      <tr><td>③</td><td class="l">南アフリカ共和国</td><td class="l">ナイジェリア</td><td class="l">エチオピア</td><td class="l">ケニア</td></tr>
+      <tr><td>④</td><td class="l">ナイジェリア</td><td class="l">ケニア</td><td class="l">エチオピア</td><td class="l">南アフリカ共和国</td></tr>
+      <tr><td>⑤</td><td class="l">エチオピア</td><td class="l">南アフリカ共和国</td><td class="l">ナイジェリア</td><td class="l">ケニア</td></tr>
+      <tr><td>⑥</td><td class="l">南アフリカ共和国</td><td class="l">ケニア</td><td class="l">エチオピア</td><td class="l">ナイジェリア</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2から読み取れる輸出構造の特徴と、その課題について述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">13</span></p>
+  <ol class="choices">
+    <li>①　Ｊは輸出額が4か国中最大であり、鉱産資源の輸出によって工業化が進んでいることを示している。</li>
+    <li>②　Ｌ・Ｍはいずれも上位3品目が農産物中心で、国際価格の変動や天候不良の影響を受けやすい。ただし切り花のように航空輸送を前提とした高付加価値の品目も育っている。</li>
+    <li>③　Ｋは上位3品目の合計が4か国中最も高く、モノカルチャー経済の典型といえる。</li>
+    <li>④　Ｍは石油製品を輸出しているため、産油国として石油価格の上昇による恩恵を最も強く受ける。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料3について述べた次の文中の空欄<span class="box">Ｐ</span>・<span class="box">Ｑ</span>に入る語句の組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">14</span></p>
+  <p style="margin:8px 0">1990年から2020年にかけて、4地域はいずれも都市人口率が上昇した。このうち<span class="box">Ｐ</span>では、都市人口率の上昇にもかかわらず製造業のGDP比が大きく低下している。都市に人口が集まっても製造業の雇用が十分に生まれない状況は、<span class="box">Ｑ</span>と関係が深い。</p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｐ</th><th class="l">Ｑ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">サブサハラアフリカとラテンアメリカ</td><td class="l">インフォーマルセクターへの就業の集中</td></tr>
+      <tr><td>②</td><td class="l">サブサハラアフリカとラテンアメリカ</td><td class="l">製造業の海外進出による産業の空洞化</td></tr>
+      <tr><td>③</td><td class="l">東アジアと東南アジア</td><td class="l">インフォーマルセクターへの就業の集中</td></tr>
+      <tr><td>④</td><td class="l">サブサハラアフリカと東南アジア</td><td class="l">インフォーマルセクターへの就業の集中</td></tr>
+      <tr><td>⑤</td><td class="l">東アジアとラテンアメリカ</td><td class="l">プランテーション農業への労働力の集中</td></tr>
+      <tr><td>⑥</td><td class="l">サブサハラアフリカとラテンアメリカ</td><td class="l">プランテーション農業への労働力の集中</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料4のⅩ地区・Ｙ地区について述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">15</span></p>
+  <ol class="choices">
+    <li>①　Ⅹ地区は都市の縁辺部にのみ形成されるため、都市の拡大にともなって外側へ移動していく。</li>
+    <li>②　Ⅹ地区は中心部の近くにも縁辺部にも分布しており、就業機会への近さや土地の入手しやすさに応じて立地している。Ｙ地区の増加とあわせて、都市内部の分断が進んでいることが読み取れる。</li>
+    <li>③　Ｙ地区は低所得層向けの公営住宅であり、Ⅹ地区の居住環境を改善するために建設されたものである。</li>
+    <li>④　Ⅹ地区の住民は都市の経済活動に参加していないため、都市の経済成長には影響しない。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料1〜4をふまえた考察として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">16</span></p>
+  <ol class="choices">
+    <li>①　Ｌのように第1次産業のGDP比が高く電化率が低い国では、農業生産性の向上とあわせて電力・輸送の基盤整備が課題となる。</li>
+    <li>②　Ｊのように人口規模が大きく15歳未満人口率が高い国では、今後の労働力人口の増加を成長につなげるために、教育と雇用機会の拡大が重要になる。</li>
+    <li>③　Ｋは1人当たりGNIが4か国中最も高く、第3次産業のGDP比も高いため、都市のインフォーマル居住区や失業といった課題は解消されている。</li>
+    <li>④　Ｍのように識字率が比較的高い一方で電化率が低い国では、携帯電話網を利用した金融・情報サービスが、固定インフラの不足を補う手段となりうる。</li>
+  </ol>
+</div>
+
+<!-- ===================== 解答と解説 ===================== -->
+<section class="answers">
+<h1>解答と解説（第3回）</h1>
+
+<table class="ans-table">
+  <thead><tr><th>大問</th><th>問</th><th>解答番号</th><th>正解</th><th>配点</th><th>想定正答率</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="6">第1問</td><td>問1</td><td>1</td><td class="correct">③</td><td>6</td><td>48%</td></tr>
+    <tr><td>問2</td><td>2</td><td class="correct">①</td><td>6</td><td>42%</td></tr>
+    <tr><td>問3</td><td>3</td><td class="correct">③</td><td>6</td><td>35%</td></tr>
+    <tr><td>問4</td><td>4</td><td class="correct">②</td><td>5</td><td>40%</td></tr>
+    <tr><td>問5</td><td>5</td><td class="correct">①</td><td>5</td><td>52%</td></tr>
+    <tr><td>問6</td><td>6</td><td class="correct">①</td><td>6</td><td>38%</td></tr>
+    <tr><td rowspan="5">第2問</td><td>問1</td><td>7</td><td class="correct">①</td><td>7</td><td>55%</td></tr>
+    <tr><td>問2</td><td>8</td><td class="correct">①</td><td>7</td><td>50%</td></tr>
+    <tr><td>問3</td><td>9</td><td class="correct">①</td><td>6</td><td>44%</td></tr>
+    <tr><td>問4</td><td>10</td><td class="correct">④</td><td>6</td><td>46%</td></tr>
+    <tr><td>問5</td><td>11</td><td class="correct">①</td><td>7</td><td>32%</td></tr>
+    <tr><td rowspan="5">第3問</td><td>問1</td><td>12</td><td class="correct">①</td><td>7</td><td>45%</td></tr>
+    <tr><td>問2</td><td>13</td><td class="correct">②</td><td>7</td><td>52%</td></tr>
+    <tr><td>問3</td><td>14</td><td class="correct">①</td><td>6</td><td>42%</td></tr>
+    <tr><td>問4</td><td>15</td><td class="correct">②</td><td>6</td><td>56%</td></tr>
+    <tr><td>問5</td><td>16</td><td class="correct">③</td><td>7</td><td>60%</td></tr>
+  </tbody>
+</table>
+
+<div class="ans-detail">
+
+<h2>第1問の解説</h2>
+
+<h3>問1　正解 ③</h3>
+<ul class="exp-list">
+  <li><strong>③＝正</strong>：図法Ｂは<strong>正距方位図法</strong>。中心（東京）から任意の点までの距離と方位が正しく表され、中心を通る直線が大圏航路（最短経路）になる。しかし<strong>中心以外の2点間の距離・方位は正しくない</strong>。この「中心限定」という条件が最重要である。</li>
+  <li><strong>①＝誤</strong>：前半は正しい（メルカトル図法では高緯度のＧ島が拡大される）が、後半が誤り。メルカトル図法は<strong>正角図法</strong>であり、形が保たれるように<strong>東西・南北の両方向が同じ倍率で拡大</strong>される。東西のみが拡大されるなら島の形は横に潰れて変形してしまい、正角ではなくなる。緯度φでの拡大率は東西・南北ともに1/cosφである。</li>
+  <li><strong>②＝誤</strong>：メルカトル図法上の直線は<strong>等角航路（航程線）</strong>であり、常に同じ方位に進む線である。最短経路（大圏航路）とは一致しない（赤道と子午線に沿う場合を除く）。「メルカトル図法は航海図に使われる」という知識を「最短経路が引ける」と取り違える誤り。</li>
+  <li><strong>④＝誤</strong>：正積図法では面積が正しく表されるが、その代償として角（形）が歪む。<strong>面積と角の両方を同時に正しくすることはできない</strong>（正積かつ正角な図法は存在しない）。図法Ｃで経線が曲線になっているのは、緯線の長さを正しくしながら面積を保つために形を犠牲にしている結果である。</li>
+</ul>
+<div class="tip"><strong>図法の整理：</strong>①正角（メルカトル）＝形が正しい／面積が歪む・高緯度で拡大、②正積（サンソン、モルワイデ、グード）＝面積が正しい／形が歪む、③正距方位＝中心からの距離と方位が正しい／中心以外は不正確。<strong>「すべてを同時に満たす平面地図は存在しない」</strong>が大原則。</div>
+
+<h3>問2　正解 ①</h3>
+<p class="exp">経度・緯度と初期方位を組み合わせて判定する。<strong>方位の数値を「地図の上下左右」で処理せず、真北からの角度として読む</strong>ことが必須。</p>
+<ul class="exp-list">
+  <li><strong>ｃ＝シドニー</strong>：南緯34°／東経151°は東京とほぼ同経度で南半球。初期方位176°（ほぼ真南）と整合。設問では問われていないが、これを最初に確定すると残り3つに絞れる。</li>
+  <li><strong>ａ＝ニューヨーク</strong>：北緯41°／西経74°。初期方位26°（北北東）は、大圏航路が<strong>北太平洋の高緯度側を通る</strong>ことに対応する。距離10,800kmで4都市中最長。</li>
+  <li><strong>ｂ＝ロンドン</strong>：北緯52°／東経0°（本初子午線）。初期方位335°（北北西）で、シベリア上空を通る大圏航路に対応。</li>
+  <li><strong>ｄ＝カイロ</strong>：北緯30°／東経31°。距離はロンドンと同じ9,600kmだが、初期方位310°（北西）でロンドンより西寄り・低緯度寄りの航路になる。</li>
+  <li>よって ａ＝ニューヨーク、ｂ＝ロンドン、ｄ＝カイロ で①。</li>
+</ul>
+<div class="tip"><strong>差がつくポイント：</strong>ｂとｄは<strong>距離が同一（9,600km）</strong>に設定されている。距離だけでは判別できず、緯度・経度と初期方位を使う必要がある。<strong>ロンドン（北緯52°）の方が高緯度なので、初期方位はより北寄り（335°）になる</strong>——この推論が本問の核心。⑤のようにｂとｄを入れ替えた選択肢は、距離が同じことに気づいた受験生を狙っている。</div>
+
+<h3>問3　正解 ③（Ｋ＝誤、Ｌ＝正）</h3>
+<ul class="exp-list">
+  <li><strong>Ｋ＝誤</strong>：距離が等しいことは、<strong>東京を中心とする同一の同心円上にある</strong>ことしか意味しない。方位はｂ＝335°、ｄ＝310°で25°異なり、別方向にある。「距離が同じ＝同じ場所・同じ航路」は、正距方位図法の性質（中心から等距離の点は円周上に無数にある）を理解していれば即座に否定できる。</li>
+  <li><strong>Ｌ＝正</strong>：初期方位26°は北北東。東京（北緯35.7°）とニューヨーク（北緯41°）を結ぶ大圏航路は、両地点よりも高緯度側（アラスカ・カナダ北部付近、最高緯度は約北緯50°弱）を通る。<strong>球面上では、同緯度付近の2点を最短で結ぶ経路は高緯度側へ膨らむ</strong>ため、出発時の方位が真東（90°）ではなく北北東になる。</li>
+</ul>
+<div class="tip"><strong>「大圏航路が高緯度側に膨らむ」理由：</strong>地球上の2点間の最短経路は、その2点と地球の中心を通る平面が地表と交わる線（大圏）である。北半球中緯度の2点を結ぶ大圏は、両地点の緯度より高緯度を通る。これが、東京→ニューヨーク便がアラスカ・カナダ上空を飛ぶ理由であり、メルカトル図法の地図上では大きく北へ弧を描いて見える。</div>
+
+<h3>問4　正解 ②</h3>
+<ul class="exp-list">
+  <li><strong>②＝正</strong>：地図Ｋ（区分法Ⅰ＝値の範囲を4等分する<strong>等間隔分類</strong>）では、9区域のうち7区域が最低階級（0〜25）になっている。これは、区分法Ⅱの凡例（0〜4、4〜9、9〜20、20〜100）から、<strong>実際のデータが小さい値の側に密集している</strong>ことがわかるためである。等間隔分類は、分布が偏った（歪んだ）データでは大半が1階級に入り、<strong>地域差が塗りつぶされてしまう</strong>。</li>
+  <li><strong>①＝誤</strong>：注記に「同一の9区域の同一データを描いたもの」と明記されている。<strong>同じデータでも階級区分を変えると印象が変わる</strong>ことが本問の主題であり、これを否定する記述。</li>
+  <li><strong>③＝誤</strong>：階級の幅が均等なのは区分法<strong>Ⅰ</strong>である（区分法Ⅱは0〜4、4〜9、9〜20、20〜100と幅が不均等）。さらに「正確に示す」という評価も不適切で、区分法Ⅱ（等量分類＝各階級の区域数を揃える）は地域差を強調して見せる一方、<strong>階級の幅が不均等なため値の差の大きさを誤解させる</strong>危険がある。どちらの分類が「正しい」ということはなく、目的に応じた選択が必要。</li>
+  <li><strong>④＝誤</strong>：地図Ｋの最濃階級は「75〜100」という<strong>範囲</strong>を示すだけで、他の区域との具体的な倍率は決まらない。仮に当該区域が80、他が26であれば約3倍にすぎない。<strong>階級区分図から個々の値や比を読み取ることはできない</strong>という限界を突いた選択肢。</li>
+</ul>
+
+<h3>問5　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>Ｐ＝東京都</strong>：面積2,194km²で最小、人口1,404万人で最大、昼夜間人口比率1.19（周辺県から大量に通勤・通学者が流入）。65歳以上人口率22.7％は4つの中で<strong>最も低い</strong>——若年層が全国から流入し続けているためである。</li>
+  <li><strong>Ｑ＝愛知県</strong>：製造品出荷額等48.0兆円が突出（自動車産業を中心に全国1位）。昼夜間人口比率1.02は、県内での通勤が中心であることを示す。</li>
+  <li><strong>Ｒ＝北海道</strong>：面積83,424km²が圧倒的（日本の約22％）。人口514万人、65歳以上32.8％。</li>
+  <li><strong>Ｓ＝秋田県</strong>：面積4,466km²、人口105万人と少なく、65歳以上人口率37.6％で<strong>全国最高水準</strong>。製造品出荷額1.1兆円と小さい。</li>
+</ul>
+<div class="tip"><strong>ひっかけの構造：</strong>③⑤はＰとＱを入れ替えたもの。「愛知＝人口が多い（約750万人）」という印象と「東京＝製造業も盛ん」という漠然とした理解から入れ替えると誤答する。決定打は<strong>面積（東京2,194 ＜ 愛知5,173）と昼夜間人口比率（東京1.19）</strong>。東京都の製造品出荷額が7.4兆円と愛知の6分の1程度である点も、東京の産業構造が第3次産業中心であることを示している。</div>
+
+<h3>問6　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：会話文は「人口密度や単位面積当たりの値に直したり、階級区分図ではなく〜を使う方法」と述べている。階級区分図（コロプレスマップ）は<strong>相対値を表現するための図法</strong>であり、絶対量（人口、生産額など）を塗り分けると、面積の大きい区域が視覚的に過大に見える。絶対量は<strong>図形表現図（比例シンボル）</strong>で、円などの大きさによって表現するのが原則である。学習メモにもこの機能が挙げられている。</li>
+  <li><strong>②＝誤</strong>：「相対値は面の塗り分けでは表現できない」が誤り。相対値こそ階級区分図に適している。<strong>絶対量と相対値の対応を逆にした</strong>誤答。</li>
+  <li><strong>③＝誤</strong>：バッファは点・線・面から一定距離の範囲を作る機能で、統計量の表現手法ではない。</li>
+  <li><strong>④＝誤（最も紛らわしい）</strong>：ドットマップも絶対量を点の数で表現し、面積の影響を受けにくい優れた手法である。しかし、(1) <strong>学習メモに挙げられた機能の一覧に含まれていない</strong>（会話文の「習った」内容に対応しない）、(2) 記述中の「絶対量の分布密度を示す」は妥当だが「階級を用いずに」という点でドットマップと図形表現図のどちらにも当てはまり決定打にならない、(3) 設問の注記が「学習メモに挙げられた機能とを照らして判断せよ」と指示している——以上より①が最適。<strong>設問文・注記の指示に従って選択肢を絞る</strong>のは共通テストの重要な技術である。</li>
+  <li><strong>⑤＝誤</strong>：ジオコーディングは住所→座標の変換機能で、表現手法ではない。</li>
+  <li><strong>⑥＝誤</strong>：流線図は移動量（人・モノの流れ）を表現する図法。本問は各区域の統計量の表現が主題であり、移動は扱っていない。</li>
+</ul>
+
+<h2>第2問の解説</h2>
+
+<h3>問1　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>Ａ＝中国</strong>：輸出額33,600億ドルで世界最大。機械類44.1％に加え、<strong>衣類5.0％・繊維品3.4％</strong>という労働集約的品目が上位に残るのが中国の特徴。輸出額のGDP比19％は、巨大な国内市場をもつため相対的に低い。</li>
+  <li><strong>Ｂ＝ドイツ</strong>：機械類26.5％・自動車14.6％・医薬品7.6％という高付加価値の工業製品構成。輸出額のGDP比44％と高いのは、<strong>EU域内の緊密な分業</strong>のなかで貿易が経済に占める比重が大きいため。</li>
+  <li><strong>Ｃ＝サウジアラビア</strong>：原油40.5％＋石油製品15.8％＋プラスチック6.4％で、<strong>石油とその関連製品に集中</strong>。プラスチックは石油化学工業による下流製品で、産油国の産業多角化の一環である。</li>
+  <li><strong>Ｄ＝オーストラリア</strong>：鉄鉱石32.9％・石炭13.3％・天然ガス11.6％という<strong>鉱産資源の輸出構成</strong>。輸出額3,190億ドルはサウジアラビアより多い。</li>
+</ul>
+<div class="tip"><strong>ＣとＤの識別：</strong>両者はともに一次産品輸出国だが、Ｃは<strong>液体燃料（原油・石油製品）</strong>、Ｄは<strong>固体・気体の鉱産資源（鉄鉱石・石炭・天然ガス）</strong>という違いがある。②⑤のようにＣとＤを入れ替えると、「オーストラリアの第1位が原油」という明らかな誤りになる。輸出額の大小（Ｄ 3,190 ＞ Ｃ 2,830）も手がかりだが、これは石油価格の変動で年により入れ替わるため、品目構成で判断する方が確実。</div>
+
+<h3>問2　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：重量0.3％に対し金額24.2％という乖離は、航空輸送が<strong>単位重量当たりの価格が高い品目</strong>（半導体・電子部品、精密機器、医薬品、生鮮品など）に特化していることを示す。航空運賃は重量に対して高いため、価格の高い軽量品でなければ採算が合わない。</li>
+  <li><strong>②＝誤</strong>：日本が主に輸入するのは<strong>原油・石炭・LNG・鉄鉱石・穀物など重量の大きい低単価品</strong>であり、海上輸送の金額割合が高いのはこのためである。「半導体などの軽量・高価格品を主に輸入」は事実に反し、また軽量高価格品が多いなら<strong>航空の金額割合が上がる</strong>はずで、論理も逆。</li>
+  <li><strong>③＝誤</strong>：上海が<strong>コンテナ第1位かつ航空貨物第3位</strong>、香港も両方で上位（航空第1位）である。「一つも含まれていない」が事実に反する。<strong>表を上から下まで見比べる作業を怠ると引っかかる</strong>。</li>
+  <li><strong>④＝誤</strong>：450÷4,350＝<strong>約10分の1</strong>で「4分の1」は誤り。また日本の港湾は1980年代には世界上位だったが、現在はシンガポール・上海などのハブ港に中継機能を奪われており、「同規模の中継機能」も誤り。<strong>数値の桁を誤読させる典型</strong>。</li>
+</ul>
+
+<h3>問3　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>メンフィス＝国際貨物航空会社の中継拠点（ハブ）</strong>：大手国際宅配便会社（FedEx）の世界最大のハブ空港（スーパーハブ）が立地する。夜間に全米・世界から貨物を集め、仕分けて再び送り出す<strong>ハブ・アンド・スポーク方式</strong>の中心。人口約63万人の都市が航空貨物で世界2位になるのは、都市の規模ではなく<strong>物流企業の戦略的立地</strong>によるためである。アメリカ本土のほぼ中央に位置し、悪天候が少ないことも選定理由とされる。</li>
+  <li><strong>アンカレジ＝北太平洋航路の給油・積替え地点</strong>：アラスカに位置し、<strong>東アジアと北アメリカ東部を結ぶ大圏航路上のほぼ中間点</strong>（第1問 問3のＬと同じ論点）。かつては航続距離の制約で給油地として不可欠だった。現在は航空機の性能向上で給油の必要は減ったが、<strong>貨物の積替え・重量調整の拠点</strong>として機能し続けている。人口約29万人で消費需要は小さい（②⑤の誤り）。</li>
+  <li><strong>③⑤の「自動車工場の集積」</strong>：自動車は重量が大きく単価の割に容積を取るため、<strong>航空輸送には向かない</strong>（海上輸送の自動車専用船を使う）。資料2の論点と矛盾する。</li>
+  <li><strong>④⑥の「大都市圏に隣接し国際旅客便が多い」</strong>：旅客便の腹部（ベリー）に載せる貨物も存在するが、メンフィスは大都市圏に隣接しておらず、貨物専用便が主体である。</li>
+</ul>
+<div class="tip"><strong>資料間の連携：</strong>アンカレジが上位に入る理由は、第1問 問3で扱った<strong>「大圏航路は高緯度側を通る」</strong>という原理の応用である。共通テストでは、大問をまたいで同じ地理的原理が異なる文脈で問われることがある。</div>
+
+<h3>問4　正解 ④（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>④＝適当でない</strong>：2か所に誤りがある。(1) 高機能部品の付加価値230ドルは、最終組立の18ドルより<strong>はるかに大きい</strong>（大小関係が逆）。(2) 半導体・画像素子の製造は巨額の設備投資を要する<strong>資本集約的・技術集約的</strong>な産業であり、「労働集約的」とは正反対である。労働集約的なのは最終組立工程の方で、だからこそ賃金水準の低い国に移転する。</li>
+  <li><strong>①＝適当</strong>：18÷1,000＝1.8％で2％未満。420ドルとの格差は約23倍。この構造は「<strong>スマイルカーブ</strong>」（工程を上流→下流に並べると、両端の企画・設計とブランド・販売で付加価値が高く、中間の組立で低くなる曲線）として知られる。</li>
+  <li><strong>②＝適当</strong>：注記のとおり、貿易統計は<strong>製品の総額</strong>を最終組立国の輸出として計上する（総額主義）。組立国が実際に生み出した付加価値は18ドルにすぎないため、統計上の輸出額は実際の稼ぎを大きく上回る。これを補正した統計が「<strong>付加価値貿易（TiVA）</strong>」である。</li>
+  <li><strong>③＝適当</strong>：②の帰結として、組立国は二国間の貿易統計上で大きな黒字を示す。実際の付加価値の帰属を見れば、利益の多くは設計国や部品供給国に渡っている。<strong>二国間の貿易収支の不均衡を根拠に通商政策を論じることの限界</strong>を示す重要な論点である。</li>
+</ul>
+
+<h3>問5　正解 ①（ケニア＝Ｅ、適切な根拠＝Ｓのみ）</h3>
+<p class="exp">本問は<strong>「どの国か」と「その根拠が正しい手続きになっているか」を別々に問う</strong>。国名を当てられても、根拠の文が別の国を指していれば不正解になる。まず4か国を同定し、次にＳ・Ｔが実際にどの行を一意に指すかを検算する。</p>
+<ul class="exp-list">
+  <li><strong>Ｆ＝日本</strong>：1995年に固定電話48.9で最も普及していたが、2020年には32.4へ減少。固定ブロードバンド40.5、インターネット利用率90％。<strong>「固定電話が先に普及した先進国」</strong>の典型。</li>
+  <li><strong>Ｇ＝中国</strong>：固定電話が1995年3.3→2020年13.0へ<strong>増加</strong>している点が決定的。1990年代以降に固定回線の整備と携帯の普及が並行して進んだ。固定ブロードバンド33.6、インターネット利用率70％で、Ｆに次ぐ水準。</li>
+  <li><strong>Ｅ＝ケニア</strong>：固定電話は0.3→0.4でほぼ皆無のまま、携帯電話91まで普及。<strong>固定回線の段階を飛び越えて携帯へ移行した「リープフロッグ（蛙飛び）型発展」</strong>の代表例で、携帯電話を用いたモバイル送金サービス（M-PESA）が広く普及している。インターネット利用率29％は、携帯普及率91に比べて低く、通話・SMS中心の利用が多いことを示す。</li>
+  <li><strong>Ｈ＝インド</strong>：固定電話1.3→1.6、携帯84、インターネット利用率43％。Ｅと似た構造だが、<strong>インターネット利用率43％＞ケニア29％</strong>で判別する。したがって<strong>ケニア＝Ｅ</strong>。</li>
+  <li><strong>Ｓ＝適切</strong>：固定電話がほとんど変化していないのはＥ（0.3→0.4）とＨ（1.3→1.6）の2か国で、このうち携帯が多いのはＥ（91＞84）。また携帯契約数に対するインターネット利用率の比は、Ｅ＝29÷91＝<strong>0.32</strong>、Ｆ＝90÷129＝0.70、Ｇ＝70÷120＝0.58、Ｈ＝43÷84＝0.51で、最低はＥ。どちらの条件もＥを一意に指すので適切。この比が低いことは、<strong>端末は行き渡っても、データ通信ではなく通話・SMS・モバイル送金（M-PESAなど）中心の利用にとどまる層が厚い</strong>ことを意味する。</li>
+  <li><strong>Ｔ＝不適切</strong>：携帯が100を下回るのはＥ（91）とＨ（84）の2か国で前半の絞り込みは正しい。しかし1995年の固定電話が多い方はＨ（1.3＞0.3）であり、Ｔが一意に指すのはケニアではなく<strong>インド</strong>である。<strong>途中まで正しい手続きの最後の1手だけを別の行に着地させたダミー</strong>で、Ｔを根拠に選ぶと自動的にケニア＝Ｈという誤答（⑤）に導かれる。</li>
+  <li>よってケニア＝Ｅ、適切な根拠はＳのみなので<strong>①</strong>。</li>
+</ul>
+<div class="tip"><strong>よくある誤解：</strong>「携帯電話が普及しているならインターネットも同じくらい使われているはずだ」。Ｅは携帯91に対しネット利用は29％しかない。<br><strong>似ているが違う概念：</strong>「携帯電話の契約数」と「インターネット利用率」。1人で複数回線を持てる前者は100を超えうるが、人の割合である後者は100を超えない。<br><strong>ＥとＨの識別が最難関：</strong>両国とも固定電話が普及せず携帯が主体という「リープフロッグ型」で、数値が近い。決定打は<strong>インターネット利用率（Ｅ29％ ＜ Ｈ43％）</strong>と<strong>携帯普及率（Ｅ91 ＞ Ｈ84）</strong>。ケニアは人口が少なく都市部への集中度が高いため携帯普及率が比較的高い一方、IT産業を擁するインドの方がインターネット利用は進んでいる。なお<strong>文Ｔだけを読むとＨが答えのように見える</strong>ため、国の同定を先に済ませずに根拠の文から逆算すると⑤に吸い込まれる。<strong>「資料から国を決める」→「文が本当にその国を指すか検算する」の順序</strong>を崩さないこと。</div>
+
+<h2>第3問の解説</h2>
+
+<h3>問1　正解 ①</h3>
+<p class="exp">3つの資料を横断して確定する。<strong>資料2（輸出品目）が最も決定的</strong>なので、ここから入るのが速い。</p>
+<ul class="exp-list">
+  <li><strong>Ｊ＝ナイジェリア</strong>：資料2で原油75.4％＋LNG11.2％＝86.6％。資料1の上段で人口21,400万人はアフリカ最大。下段で製造業12.7％、15歳未満43％。<strong>産油国だが1人当たりGNIは2,100ドルにとどまる</strong>（人口が多く、石油収入が広く行き渡らない）。</li>
+  <li><strong>Ｋ＝南アフリカ共和国</strong>：資料2で白金族・鉄鉱石・<strong>自動車</strong>が上位。自動車の輸出はサブサハラアフリカでほぼこの国のみ。資料1の上段で1人当たりGNI 6,000ドル・都市人口率68％・識字率95％・電化率85％と最も高く、下段で第3次産業73.0％・合計特殊出生率2.4。</li>
+  <li><strong>Ｌ＝エチオピア</strong>：資料2でコーヒー豆27.0％（原産地）。資料1で人口11,700万人（アフリカ第2位）、都市人口率22％で<strong>最も低い</strong>、識字率52％。下段で第1次産業37.6％・製造業5.4％。近年高成長を続けるが、内陸国で農業依存が強い。</li>
+  <li><strong>Ｍ＝ケニア</strong>：資料2で茶21.3％・切り花12.9％。<strong>茶と切り花の輸出はケニアの代名詞</strong>（高原の気候と航空便を利用）。資料1の上段で識字率83％はＬ（52％）より格段に高い一方、電化率43％は最低。</li>
+</ul>
+<div class="tip"><strong>ＬとＭの識別：</strong>1人当たりGNIは940ドルと1,050ドルでほぼ同じ。ここで<strong>識字率（52％ vs 83％）</strong>と<strong>輸出品（コーヒー vs 茶・切り花）</strong>が効く。会話文でソラが述べた「1人当たりGNIが近い国でも社会の姿はかなり違う」がヒントになっている。<strong>会話文は単なる飾りではなく、資料の見方を指示している</strong>。</div>
+
+<h3>問2　正解 ②</h3>
+<ul class="exp-list">
+  <li><strong>②＝正</strong>：Ｌ（エチオピア）はコーヒー豆・野菜・切り花・ごま、Ｍ（ケニア）は茶・切り花で農産物中心。国際価格の変動と天候（干ばつ）の影響を受けやすい。一方で<strong>切り花は鮮度が価値を左右するため航空輸送を前提とした高付加価値品目</strong>であり、赤道直下の高原の冷涼な気候と、ヨーロッパ市場への航空便を活かした新しい輸出産業である。「課題」と「可能性」の両面を正確に述べている。</li>
+  <li><strong>①＝誤</strong>：Ｊの輸出額468億ドルは、Ｋの1,235億ドルより<strong>少ない</strong>（4か国中最大ではない）。また原油輸出は工業化を示すものではなく、資料1の下段でＪの製造業GDP比は12.7％にとどまる。<strong>数値の確認を怠り「産油国だから輸出額最大」と思い込む</strong>誤り。</li>
+  <li><strong>③＝誤</strong>：Ｋの上位3品目の合計は17.8＋9.5＋8.6＝<strong>35.9％</strong>で4か国中<strong>最も低い</strong>（Ｊは86.6％、Ｌは53.7％、Ｍは40.4％）。むしろＫは輸出品目が最も多様化しており、モノカルチャー経済から最も遠い。<strong>「最も高い」と「最も低い」を反転させた典型的なダミー</strong>。</li>
+  <li><strong>④＝誤</strong>：Ｍの石油製品6.2％は第3位にすぎず、Ｍは産油国ではない（近隣国から輸入した原油を精製して再輸出している、あるいは中継的な取引による）。石油価格の上昇による恩恵を最も受けるのは、原油75.4％のＪである。<strong>「石油製品」と「原油」を同一視し、輸出品目の一つを国の性格に短絡させる</strong>誤り。</li>
+</ul>
+
+<h3>問3　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>Ｐ＝サブサハラアフリカとラテンアメリカ</strong>：資料3を読むと、サブサハラアフリカは都市人口率28→42％に対し製造業GDP比16→<strong>10％</strong>（−6ポイント）、ラテンアメリカは71→81％に対し19→<strong>13％</strong>（−6ポイント）。いずれも大きく低下している。一方、東アジアは28→27％、東南アジアは22→21％でほぼ横ばい。<strong>散布図の縦方向の移動量を読む</strong>のが要点。</li>
+  <li><strong>Ｑ＝インフォーマルセクターへの就業の集中</strong>：都市に人口が流入しても製造業の雇用が生まれない場合、人々は路上での物売り、廃品回収、日雇い、無許可の運送業など、<strong>公式の統計や社会保障の枠外にある就業（インフォーマルセクター）</strong>に吸収される。これは低所得・不安定雇用・社会保障の欠如という課題を伴い、資料4のⅩ地区（インフォーマル居住区）の拡大とも直結する。この現象は「<strong>脱工業化なき都市化</strong>」「早すぎる脱工業化（premature deindustrialization）」と呼ばれる。</li>
+  <li><strong>②の「製造業の海外進出による産業の空洞化」</strong>：これは<strong>日本・アメリカ・西ヨーロッパなど、いったん工業化を達成した先進国</strong>で生じた現象。サブサハラアフリカは十分な工業化を経ていないため、「空洞化」という語は当てはまらない。<strong>正しい用語を誤った地域に当てる型</strong>の誤答で、本問最大の落とし穴。</li>
+  <li><strong>③＝誤</strong>：東アジア・東南アジアは製造業比率がほぼ横ばいで、Ｐの条件（大きく低下）を満たさない。</li>
+  <li><strong>⑤⑥の「プランテーション農業への労働力の集中」</strong>：プランテーションは農村部の産業であり、<strong>都市の就業構造</strong>を説明する語ではない。設問文の「都市に人口が集まっても…」という文脈と噛み合わない。</li>
+</ul>
+
+<h3>問4　正解 ②</h3>
+<ul class="exp-list">
+  <li><strong>②＝正</strong>：資料4でⅩ地区は<strong>3か所（都心近く・北東の縁辺部・東の縁辺部）</strong>に描かれている。中心部近くに立地するのは<strong>就業機会（インフォーマルな仕事、家事労働など）への近さ</strong>を求めるため、縁辺部に立地するのは<strong>土地を入手しやすい</strong>ためである。同時に、壁と門で囲まれたＹ地区（ゲーテッドコミュニティ）が増加しており、<strong>富裕層の空間的な囲い込みと貧困層の居住区が同一都市内に並存する「分断された都市」</strong>の構造が読み取れる。</li>
+  <li><strong>①＝誤</strong>：「縁辺部にのみ」が資料と矛盾する（都心近くにも描かれている）。<strong>「〜のみ」「すべて」といった限定・全称の表現は、図の1か所の反例で崩れる</strong>。</li>
+  <li><strong>③＝誤</strong>：Ｙ地区は「壁と門で囲む」近年開発された住宅地であり、これは<strong>富裕層向けのゲーテッドコミュニティ</strong>の特徴。低所得層向け公営住宅が高い壁と門で囲まれることはなく、注記の内容とも整合しない。</li>
+  <li><strong>④＝誤</strong>：インフォーマルセクターは統計に十分に表れないだけで、都市の物流・小売・建設・家事労働などを実質的に支えている。<strong>「統計に表れない＝存在しない・影響がない」ではない</strong>。この見方は、都市政策においてインフォーマル居住区を単に排除すべき対象とみなす誤りにもつながる。</li>
+</ul>
+
+<h3>問5　正解 ③（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>③＝適当でない</strong>：Ｋ（南アフリカ共和国）が4か国中で最も高い所得水準にあることは資料1のとおりだが、「課題は解消されている」は誤り。同国は<strong>世界で最も所得格差が大きい国の一つ</strong>とされ、アパルトヘイト（人種隔離政策）の歴史的影響により、大都市周辺には広大なインフォーマル居住区（タウンシップ）が存在し、失業率も高い。<strong>1人当たりGNIという平均値は、その内部の分布（格差）を一切示さない</strong>——これが本問の核心。資料4がまさにこうした都市の分断を示していることと合わせて考えたい。</li>
+  <li><strong>①＝適当</strong>：Ｌ（エチオピア）は第1次産業37.6％（資料1の下段）・電化率51％。農業の生産性向上には、灌漑・貯蔵・輸送・電力といった基盤が不可欠であり、収穫後の損失（ポストハーベストロス）の削減にもつながる。</li>
+  <li><strong>②＝適当</strong>：Ｊ（ナイジェリア）は人口21,400万人・15歳未満43％。若年人口の増加は、教育と雇用が整えば「<strong>人口ボーナス</strong>」として成長を後押しするが、整わなければ失業と社会不安の要因になる。</li>
+  <li><strong>④＝適当</strong>：Ｍ（ケニア）は識字率83％・電化率43％。第2問 問5で扱ったとおり、ケニアはモバイル送金サービスが世界的に普及した国であり、<strong>固定インフラ（銀行の支店網、固定回線）の不足を携帯電話網で補う「リープフロッグ型発展」</strong>の代表例。大問をまたいだ資料の連携で判断できる。</li>
+</ul>
+
+<div class="tip">
+<strong>第3回の総括（復習の指針）</strong>
+<ul>
+  <li><strong>図法の性質は「何が正しいか」で整理</strong>（第1問 問1・問3）：正角・正積・正距方位は両立しない。大圏航路は高緯度側に膨らむ。</li>
+  <li><strong>階級区分図の限界</strong>（第1問 問4・問6）：階級の切り方で印象が変わる。絶対量は図形表現図、相対値は階級区分図。</li>
+  <li><strong>貿易統計と付加価値</strong>（第2問 問4）：「どこで組み立てたか」と「どこが稼いだか」は別。総額主義の統計の限界を理解する。</li>
+  <li><strong>正しい用語を誤った地域に当てる罠</strong>（第3問 問3）：「空洞化」は工業化を達成した国の現象。用語の適用範囲まで押さえる。</li>
+  <li><strong>平均値は分布を示さない</strong>（第3問 問5）：1人当たりGNIが高い国にも深刻な格差と貧困が存在しうる。</li>
+</ul>
+</div>
+
+</div><!-- /ans-detail -->
+</section>
+
+<nav class="pager">
+  <a href="kai2.html">◀ 第2回</a>
+  <a href="kai4.html">第4回（標準）▶</a>
+</nav>
+
+</main>
+<script src="js/main.js"></script>
+<script src="https://www.genspark.ai/sandbox_inspect.js"></script></body>
+</html>

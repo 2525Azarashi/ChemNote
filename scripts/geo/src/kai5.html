@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地理探究 実戦模擬問題 第5回（やや難）</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="toolbar" aria-label="操作">
+  <span class="tb-title">地理探究 実戦模擬 第5回</span>
+  <button id="toggle-answers" type="button">解答・解説を表示</button>
+  <button id="print-page" type="button">PDFとして保存／印刷</button>
+  <a href="index.html">目次へ</a>
+</nav>
+
+<main class="paper">
+
+<h1>地理探究 模擬問題 第5回</h1>
+<p class="exam-meta">
+  <span class="badge lv4">難易度：やや難</span>
+  <span class="badge">解答時間 60分</span>
+  <span class="badge">配点 100点</span>
+  <span class="badge">小問16問</span><br>
+  第1問 気候変動・植生帯と生態系サービス（34点）／第2問 民族・宗教・国家間の結合と地域紛争（33点）／第3問 日本の工業都市の変容（33点）<br>
+  ※統計値は公表資料をもとに作問上簡略化した教材用の数値である。
+</p>
+
+<!-- ===================== 第1問 ===================== -->
+<h2>第1問　気候変動・植生帯と生態系サービス（配点34点）</h2>
+
+<p class="lead">高校生のカナとソウタは、「気候が変わると森はどうなるか」というテーマで探究学習に取り組んだ。次の会話文と資料1・資料2、および二人の学習メモを読み、後の問い（問1〜問6）に答えよ。</p>
+
+<div class="dialogue">
+  <p><span class="spk">カナ：</span>世界の4地点を選んで、気候の数値を並べました（資料1の上段・下段）。緯度が近くても、降水がいつ多いかで植生はまったく違いますね。</p>
+  <p><span class="spk">ソウタ：</span>次に気温の変化を調べました（資料2の上段）。世界平均と<u>北極域</u>を分けて描くと、様子がかなり違います。</p>
+  <p><span class="spk">カナ：</span>森が蓄えている炭素も調べました（資料2の下段）。木の幹や枝だけでなく、<span class="box">Ｘ</span>に入っている炭素がとても大きいのが意外でした。</p>
+  <p><span class="spk">ソウタ：</span>森が私たちに与えてくれるはたらきは、木材の供給だけではありません。授業で習った内容を学習メモに整理してあるので、あわせて見てください。</p>
+</div>
+
+<figure class="material">
+  <figcaption>資料1　4地点Ｐ〜Ｓの位置（模式図）と、4地点ア〜エの気候</figcaption>
+  <p class="src"><strong>［上段］4地点Ｐ〜Ｓの位置（模式図）</strong></p>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：世界の模式地図（グレースケール／試験冊子体裁）</p>
+    <pre>Create a simple, flat, grayscale schematic world map in the style of a Japanese university entrance examination booklet. White background, thin black frame around the whole map, no colour, no relief shading, no 3D effect.
+
+Map content:
+- Draw the continents as SIMPLIFIED light-grey silhouettes with thin dark outlines: North America, South America, Eurasia, Africa, Oceania. No country borders, no place names, no coastline detail.
+- Draw thin light-grey graticule lines (meridians and parallels) at 30-degree intervals.
+- Draw the Equator as a solid darker horizontal line and label it 赤道 at the left edge.
+- Draw the Tropic of Cancer and the Tropic of Capricorn as thin dashed grey lines, labelled 北回帰線 and 南回帰線 at the left edge.
+
+Mark exactly FOUR point locations. Each is a small WHITE circle with a thick dark outline, with the bold Japanese full-width letter printed just beside it (not inside):
+
+Ｐ : on the EQUATOR, in central Africa (equatorial Africa).
+Ｑ : in NORTH AFRICA, roughly on the Tropic of Cancer / just north of it (the Sahel–Sahara transition side).
+Ｒ : in SOUTHERN EUROPE, on the northern shore of the Mediterranean (about 38°N, 15°E).
+Ｓ : in CENTRAL SIBERIA, far north in inland Eurasia (about 62°N, 105°E).
+
+Do NOT write any country name, city name, sea name, climate name or vegetation name anywhere on the map. Only the four full-width letters Ｐ Ｑ Ｒ Ｓ and the three latitude labels may appear inside the frame.
+
+Bottom note (small grey text, Japanese): 経線・緯線は30度間隔（一部を除く）。Ｒは北緯38度・東経15度付近、Ｓは北緯62度・東経105度付近に位置する。
+
+Typography: Japanese sans-serif, ~10–11px equivalent. Canvas ratio about 700 : 340.</pre>
+    <p class="zu-note">問1・問6の根拠は<strong>4地点の緯度と大陸上の位置</strong>だけです。Ｐ＝赤道直下のアフリカ（熱帯雨林）、Ｑ＝北回帰線付近の北アフリカ（サバナ〜ステップ側）、Ｒ＝地中海北岸（地中海性）、Ｓ＝内陸シベリア（亜寒帯）という位置関係を必ず守り、気候区名や植生名は図に一切書かないでください。</p>
+  </div>
+  <p class="src" style="margin-top:14px"><strong>［下段］4地点ア〜エの気候</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>最暖月平均<br>気温（℃）</th><th>最寒月平均<br>気温（℃）</th><th>年降水量<br>（mm）</th><th>最少雨月の<br>降水量（mm）</th><th>最少雨月<br>が属する月</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>ア</th><td>24.6</td><td>9.8</td><td>580</td><td>5</td><td>7月</td></tr>
+      <tr><th>イ</th><td>26.8</td><td>25.9</td><td>2,300</td><td>130</td><td>7月</td></tr>
+      <tr><th>ウ</th><td>17.5</td><td>−26.0</td><td>310</td><td>8</td><td>2月</td></tr>
+      <tr><th>エ</th><td>28.4</td><td>21.2</td><td>1,050</td><td>2</td><td>1月</td></tr>
+    </tbody>
+  </table>
+  <p class="src">ア〜エは、上段のＰ〜Ｓのいずれかである。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　世界平均気温と北極域平均気温の偏差の推移と、森林タイプ別の面積・炭素蓄積</figcaption>
+  <p class="src"><strong>［上段］世界平均気温と北極域平均気温の偏差の推移</strong></p>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：折れ線グラフ（2系列／グレースケール／試験冊子体裁）</p>
+    <pre>Create a clean, flat, grayscale line chart in the style of a Japanese university entrance examination booklet. White background, thin black axes, no colour, no 3D effect, no drop shadow.
+
+Title (above the chart, Japanese): 世界平均気温と北極域平均気温の偏差の推移
+
+X axis: label （年） at the right end. Tick marks and numbers at 1900, 1920, 1940, 1960, 1980, 2000, 2020 (equally spaced).
+Y axis: label 気温偏差（℃）. Range −1.0 to +3.0, ticks and numbers at −1.0, 0, +1.0, +2.0, +3.0. Draw a slightly darker horizontal reference line at 0.
+
+Plot exactly TWO series through these seven year points. Use the EXACT values below.
+
+Series A "世界平均" — SOLID black line, small filled circle markers:
+1900 = −0.2, 1920 = −0.25, 1940 = −0.05, 1960 = −0.02, 1980 = +0.16, 2000 = +0.42, 2020 = +1.0
+
+Series B "北極域（北緯66度以北）" — LONG-DASHED dark line, small filled SQUARE markers:
+1900 = −0.4, 1920 = −0.3, 1940 = +0.3, 1960 = −0.2, 1980 = +0.1, 2000 = +0.9, 2020 = +2.6
+
+Critical shape requirements:
+- Series B must rise to a local peak around 1940 that is ABOVE series A at that year, then FALL to a clear dip around 1960 that is BELOW series A at that year, then rise steeply and end far above series A in 2020.
+- Series A must rise almost monotonically and smoothly with no large dip.
+- Print the value labels only at these places: +2.6 next to the 2020 point of series B, +1.0 next to the 2020 point of series A, +0.3 next to the 1940 point of series B, −0.2 next to the 1960 point of series B, and −0.2 next to the 1900 point of series A. No other numeric labels on the plot.
+
+Legend inside the plot area near the top, two entries: a solid line sample labelled 世界平均, and a long-dashed line sample labelled 北極域（北緯66度以北）.
+
+Bottom note (small grey text, Japanese): 偏差は1850〜1900年の平均を基準（0℃）とした値。各点は前後20年の平均。
+
+Do NOT write the word 北極増幅 or any explanation of the cause anywhere in the image.
+
+Typography: Japanese sans-serif, ~11px equivalent. Canvas ratio about 660 : 330.</pre>
+    <p class="zu-note">問2の根拠は、<strong>①世界平均が−0.2→+1.0で上昇幅約1.2℃、②1940年前後は北極域が世界平均を上回り、1960年前後には下回る（＝一貫した上昇ではない）</strong>の2点です。とくに<strong>1940年の山と1960年の谷</strong>は正誤判定に直結するので必ず再現してください。</p>
+  </div>
+  <p class="src" style="margin-top:14px"><strong>［下段］森林タイプ別の面積と炭素蓄積</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>森林面積<br>2020年<br>（百万ha）</th><th>1990→2020年の<br>面積変化率<br>（％）</th><th>地上部バイオマスの<br>炭素蓄積量<br>（t/ha）</th><th>土壌の<br>炭素蓄積量<br>（t/ha）</th></tr>
+    </thead>
+    <tbody>
+      <tr><th class="l">熱帯林</th><td>1,770</td><td>−10.4</td><td>120</td><td>90</td></tr>
+      <tr><th class="l">温帯林</th><td>660</td><td>＋2.5</td><td>90</td><td>120</td></tr>
+      <tr><th class="l">亜寒帯林</th><td>1,240</td><td>＋0.5</td><td>45</td><td>300</td></tr>
+    </tbody>
+  </table>
+  <p class="src">面積変化率は、1990年の面積を基準とした2020年までの変化の割合。土壌の炭素蓄積量には、永久凍土や泥炭地に含まれるものを含む。</p>
+</figure>
+
+<div class="memo" style="border-style:solid">
+  <p style="margin:0 0 8px;font-weight:700;font-family:'Hiragino Kaku Gothic ProN',sans-serif;font-size:14.5px">二人の学習メモ（生態系サービスと森林の炭素）</p>
+  <div>
+  <ul>
+    <li><strong>供給サービス</strong>…食料、木材、燃料、繊維、医薬品の原料、水など、人が直接利用できるものを生み出すはたらき。</li>
+    <li><strong>調整サービス</strong>…気候の安定、洪水の緩和、水質の浄化、土壌侵食の抑制、花粉の媒介など、環境を整えるはたらき。</li>
+    <li><strong>文化的サービス</strong>…景観の美しさ、レクリエーション、信仰の対象、教育や研究の場としての価値。</li>
+    <li><strong>基盤サービス</strong>…土壌の形成、養分の循環、光合成による酸素の生成など、他のすべてのサービスを支えるはたらき。</li>
+    <li>森林の炭素は、幹や枝などの<strong>地上部バイオマス</strong>のほか、<strong>土壌</strong>（落葉・腐植・泥炭・永久凍土中の有機物）に大量に蓄えられている。</li>
+  </ul>
+  </div>
+</div>
+
+<div class="q">
+  <p class="q-head">問1　資料1の上段のＰ〜Ｓと下段のア〜エとの組合せとして最も適当なものを、次の①〜⑥のうちから一つ選べ。<span class="mark">1</span></p>
+  <table class="data">
+    <thead><tr><th></th><th>Ｐ</th><th>Ｑ</th><th>Ｒ</th><th>Ｓ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td>イ</td><td>ア</td><td>エ</td><td>ウ</td></tr>
+      <tr><td>②</td><td>エ</td><td>イ</td><td>ア</td><td>ウ</td></tr>
+      <tr><td>③</td><td>イ</td><td>エ</td><td>ア</td><td>ウ</td></tr>
+      <tr><td>④</td><td>イ</td><td>エ</td><td>ウ</td><td>ア</td></tr>
+      <tr><td>⑤</td><td>エ</td><td>イ</td><td>ウ</td><td>ア</td></tr>
+      <tr><td>⑥</td><td>ア</td><td>エ</td><td>イ</td><td>ウ</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2の上段から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">2</span></p>
+  <ol class="choices">
+    <li>①　世界平均の偏差は1900年の−0.2℃から2020年の＋1.0℃へと変化しており、この間の上昇幅は約1.2℃である。</li>
+    <li>②　2020年の北極域の偏差は世界平均の約2.6倍であるが、1940年前後には北極域の偏差が世界平均を下回った時期がある。</li>
+    <li>③　北極域の偏差は1900年以降一貫して上昇を続けており、前の時点を下回った期間はない。</li>
+    <li>④　世界平均の偏差が0℃を上回るようになったのは、2000年以降のことである。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2の上段にみられる北極域の変化について述べた次の文中の空欄<span class="box">Ｙ</span>・<span class="box">Ｚ</span>に入る語句の組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">3</span></p>
+  <p style="margin:8px 0">北極域で気温上昇が世界平均を大きく上回る現象は「北極増幅」とよばれる。その主な原因の一つは、<span class="box">Ｙ</span>ことである。さらに、<span class="box">Ｚ</span>ことによって、温暖化をいっそう進める正のフィードバックがはたらくと考えられている。</p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｙ</th><th class="l">Ｚ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">海氷や積雪が融けて地表面の反射率（アルベド）が低下し、太陽放射をより多く吸収するようになる</td><td class="l">永久凍土が融解して、そこに含まれるメタンや二酸化炭素が大気中に放出される</td></tr>
+      <tr><td>②</td><td class="l">海氷や積雪が融けて地表面の反射率（アルベド）が低下し、太陽放射をより多く吸収するようになる</td><td class="l">偏西風の蛇行が弱まり、中緯度の気温の変動が小さくなる</td></tr>
+      <tr><td>③</td><td class="l">海氷や積雪が融けて地表面の反射率（アルベド）が低下し、太陽放射をより多く吸収するようになる</td><td class="l">海面が上昇して、低平な島々が水没する</td></tr>
+      <tr><td>④</td><td class="l">上空のオゾン層が破壊され、紫外線が地表に多く届くようになる</td><td class="l">永久凍土が融解して、そこに含まれるメタンや二酸化炭素が大気中に放出される</td></tr>
+      <tr><td>⑤</td><td class="l">上空のオゾン層が破壊され、紫外線が地表に多く届くようになる</td><td class="l">偏西風の蛇行が弱まり、中緯度の気温の変動が小さくなる</td></tr>
+      <tr><td>⑥</td><td class="l">上空のオゾン層が破壊され、紫外線が地表に多く届くようになる</td><td class="l">海面が上昇して、低平な島々が水没する</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料2の下段から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">4</span></p>
+  <ol class="choices">
+    <li>①　亜寒帯林は地上部バイオマスの炭素蓄積量の合計が3タイプ中最も少ないが、土壌を含めた炭素蓄積量の合計では3タイプ中最も大きい。</li>
+    <li>②　熱帯林は単位面積当たりの地上部バイオマスの炭素蓄積量が最も大きいため、土壌を含めた炭素蓄積量の合計でも3タイプ中最も大きい。</li>
+    <li>③　1990年から2020年にかけて面積が減少したのは熱帯林のみであり、その減少面積は約180百万haである。</li>
+    <li>④　温帯林と亜寒帯林はいずれも面積が増加しているが、両者を合わせた炭素蓄積量の合計は熱帯林を上回っていない。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料2（上段・下段）をふまえた次の文Ｋ〜Ｍの正誤の組合せとして最も適当なものを、後の①〜⑧のうちから一つ選べ。<span class="mark">5</span></p>
+  <div class="memo">
+  <ul>
+    <li><strong>Ｋ</strong>　亜寒帯林が広く分布する高緯度地域は、世界平均を大きく上回る速さで気温が上昇しており、土壌に蓄えられた炭素が放出されるおそれがある。</li>
+    <li><strong>Ｌ</strong>　熱帯林の面積は1990年から2020年にかけて1割以上減少しており、これは地上部バイオマスに蓄えられた炭素の減少に直結する。</li>
+    <li><strong>Ｍ</strong>　温帯林と亜寒帯林の面積が増加しているため、3タイプを合わせた世界の森林面積も1990年から2020年にかけて増加した。</li>
+  </ul>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th>Ｋ</th><th>Ｌ</th><th>Ｍ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td>正</td><td>正</td><td>正</td></tr>
+      <tr><td>②</td><td>正</td><td>正</td><td>誤</td></tr>
+      <tr><td>③</td><td>正</td><td>誤</td><td>正</td></tr>
+      <tr><td>④</td><td>正</td><td>誤</td><td>誤</td></tr>
+      <tr><td>⑤</td><td>誤</td><td>正</td><td>正</td></tr>
+      <tr><td>⑥</td><td>誤</td><td>正</td><td>誤</td></tr>
+      <tr><td>⑦</td><td>誤</td><td>誤</td><td>正</td></tr>
+      <tr><td>⑧</td><td>誤</td><td>誤</td><td>誤</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問6　資料1・資料2および学習メモをふまえた考察として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">6</span></p>
+  <ol class="choices">
+    <li>①　地点イが位置する地域では、森林の伐採が進むと蒸発散量が減って地域の降水が減少するおそれがある。これは学習メモの調整サービスが損なわれる例である。</li>
+    <li>②　地点アが位置する地域では夏の乾燥がいっそう厳しくなると予想され、森林火災の増加や、乾燥に強い硬葉樹林の分布の変化が懸念される。</li>
+    <li>③　地点エが位置する地域では、雨季と乾季の差が大きく、降水の年変動が大きくなると、放牧と農耕の圧力が重なって土地の劣化（砂漠化）が進みやすい。</li>
+    <li>④　地点ウが位置する地域では、気温の上昇によって森林の分布が低緯度側へ拡大し、これまで森林がなかった地域が新たに森林におおわれると考えられる。</li>
+  </ol>
+</div>
+
+<!-- ===================== 第2問 ===================== -->
+<h2>第2問　民族・宗教・国家間の結合と地域紛争（配点33点）</h2>
+
+<p class="lead">次の資料1〜4は、「人々のまとまりと国家のかたち」というテーマで作成された探究レポートの一部である。これらを読み、後の問い（問1〜問5）に答えよ。</p>
+
+<figure class="material">
+  <figcaption>資料1　4か国の言語・宗教の構成と、4つの地域経済統合の比較</figcaption>
+  <p class="src"><strong>［上段］4か国の言語・宗教の構成</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th class="l">主な言語（％）</th><th class="l">主な宗教（％）</th><th>公用語<br>の数</th><th>人口<br>（百万人）</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>Ｊ</th><td class="l">ヒンディー語44、ベンガル語8、マラーティー語7</td><td class="l">ヒンドゥー教80、イスラーム14</td><td>22</td><td>1,408</td></tr>
+      <tr><th>Ｋ</th><td class="l">マレー語58、中国語23、タミル語7</td><td class="l">イスラーム64、仏教19、キリスト教9</td><td>1</td><td>33</td></tr>
+      <tr><th>Ｌ</th><td class="l">オランダ語59、フランス語40、ドイツ語1</td><td class="l">カトリック57、無宗教28、イスラーム7</td><td>3</td><td>12</td></tr>
+      <tr><th>Ｍ</th><td class="l">ズールー語23、コサ語16、アフリカーンス語14、英語10</td><td class="l">キリスト教80</td><td>11</td><td>60</td></tr>
+    </tbody>
+  </table>
+  <p class="src">言語は家庭で主に使用する言語の割合。Ｊ〜Ｍは、インド、南アフリカ共和国、ベルギー、マレーシアのいずれかである。</p>
+  <p class="src" style="margin-top:14px"><strong>［下段］4つの地域経済統合の比較（2022年前後）</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>加盟国数</th><th>人口<br>（百万人）</th><th>域内の総GDP<br>（兆ドル）</th><th>域内貿易比率<br>（％）</th><th class="l">統合の主な段階</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>Ｅ</th><td>27</td><td>450</td><td>17.0</td><td>63</td><td class="l">共同市場（一部は通貨統合）</td></tr>
+      <tr><th>Ｆ</th><td>3</td><td>500</td><td>26.6</td><td>41</td><td class="l">自由貿易協定</td></tr>
+      <tr><th>Ｇ</th><td>10</td><td>670</td><td>3.3</td><td>22</td><td class="l">自由貿易地域</td></tr>
+      <tr><th>Ｈ</th><td>5</td><td>310</td><td>2.4</td><td>13</td><td class="l">関税同盟</td></tr>
+    </tbody>
+  </table>
+  <p class="src">域内貿易比率は、加盟国の貿易総額に占める域内の貿易額の割合。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　ある地域の民族分布と国境（模式図）</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：民族分布の模式図（グレースケール／試験冊子体裁）</p>
+    <pre>Create a simple, flat, grayscale schematic map in the style of a Japanese university entrance examination booklet. White background, thin black frame around the whole map, no colour, no 3D effect, no relief.
+
+The map shows an imaginary region divided into THREE countries by straight, ruler-like borders, and THREE ethnic groups whose distribution does NOT match those borders.
+
+Borders (draw as THICK solid black straight lines, perfectly straight, clearly artificial):
+- One horizontal line across the whole map at about 45% of the height.
+- One vertical line from the top edge to the bottom edge at about 52% of the width, but only in the area, so that the map is divided into: upper-left = 国Ⅰ, lower-left = 国Ⅱ, and the whole right side = 国Ⅲ.
+Print the bold labels 国Ⅰ (upper-left corner), 国Ⅱ (lower-left corner), 国Ⅲ (upper-right corner).
+
+Ethnic areas (draw as smooth irregular blobs filled with THREE clearly different black-and-white patterns, thin outlines):
+- 民族 甲 : diagonal hatching. Its area occupies most of the upper-left region AND continues ACROSS the horizontal border into the upper part of the lower-left region. It must visibly STRADDLE the border between 国Ⅰ and 国Ⅱ. Print the label 民族 甲 twice: once above the border and once below it.
+- 民族 乙 : dotted pattern. Its area occupies the lower-left region below 甲, entirely inside 国Ⅱ, and is the largest group there. Label 民族 乙.
+- 民族 丙 : cross-hatching. Its main area occupies almost the whole right side (国Ⅲ). Label 民族 丙. IN ADDITION, draw ONE SEPARATE, CLEARLY DETACHED patch of the SAME cross-hatch pattern well inside the LEFT side of the map, in the upper-left / 国Ⅰ area, away from the right-hand main area — an exclave. Label it 民族 丙 as well.
+
+Also draw a small chain of simple triangular mountain symbols in the lower-left region, well AWAY from any border line (it must not run along a border), with the small label 山脈.
+
+Legend along the bottom: three pattern swatches labelled 民族 甲 / 民族 乙 / 民族 丙, a thick black line labelled 国境, and the grey note 国境は植民地時代に引かれたものである。
+
+Do NOT write any real country name, real ethnic-group name or real place name.
+Do NOT write any sentence explaining the conflict or the relation between borders and ethnic groups.
+
+Typography: Japanese sans-serif, ~11–13px equivalent. Canvas ratio about 660 : 340.</pre>
+    <p class="zu-note">問3の根拠は、<strong>①民族甲が国Ⅰと国Ⅱにまたがること、②民族丙の飛び地が国Ⅰ側（＝国Ⅲ以外）にも存在すること、③国境の直線が山脈と一致していないこと</strong>の3点です。とくに<strong>丙の飛び地</strong>と<strong>山脈が国境から離れていること</strong>は選択肢②③を否定する根拠なので、必ず描いてください。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　難民を多く受け入れている上位5か国と、難民の主な出身国（2022年）</figcaption>
+  <p class="src"><strong>［上段］難民を多く受け入れている上位5か国</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th class="l">国</th><th>受け入れている<br>難民の数（万人）</th><th>1人当たりGNI<br>（ドル）</th><th class="l">世界銀行による<br>所得分類</th></tr>
+    </thead>
+    <tbody>
+      <tr><th class="l">トルコ</th><td>360</td><td>10,600</td><td class="l">高中所得国</td></tr>
+      <tr><th class="l">イラン</th><td>340</td><td>3,900</td><td class="l">低中所得国</td></tr>
+      <tr><th class="l">コロンビア</th><td>250</td><td>6,500</td><td class="l">高中所得国</td></tr>
+      <tr><th class="l">ドイツ</th><td>210</td><td>51,000</td><td class="l">高所得国</td></tr>
+      <tr><th class="l">パキスタン</th><td>170</td><td>1,500</td><td class="l">低中所得国</td></tr>
+    </tbody>
+  </table>
+  <p class="src">「難民」には、条約上の難民のほか、それに準じる保護を受けている人を含む。世界銀行の所得分類は、高所得国・高中所得国・低中所得国・低所得国の4区分。</p>
+  <p class="src" style="margin-top:14px"><strong>［下段］難民の主な出身国と、隣接国での滞留</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th class="l">出身国</th><th>国外にいる難民の数<br>（万人）</th><th>うち隣接国に滞留する<br>割合（％）</th><th class="l">主な受け入れ国</th></tr>
+    </thead>
+    <tbody>
+      <tr><th class="l">シリア</th><td>650</td><td>82</td><td class="l">トルコ、レバノン、ヨルダン</td></tr>
+      <tr><th class="l">ウクライナ</th><td>570</td><td>71</td><td class="l">ポーランド、ドイツ、チェコ</td></tr>
+      <tr><th class="l">アフガニスタン</th><td>570</td><td>93</td><td class="l">イラン、パキスタン</td></tr>
+      <tr><th class="l">ベネズエラ</th><td>550</td><td>84</td><td class="l">コロンビア、ペルー、エクアドル</td></tr>
+      <tr><th class="l">南スーダン</th><td>230</td><td>96</td><td class="l">ウガンダ、スーダン、エチオピア</td></tr>
+    </tbody>
+  </table>
+  <p class="src">「隣接国」は、出身国と国境を接する国を指す。四捨五入のため、内訳の合計は一致しないことがある。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料4　レポートのまとめのメモ</figcaption>
+  <div class="memo">
+  <ul>
+    <li>国家の枠組みと民族・言語・宗教のまとまりは一致しないことが多い。1つの国に複数の民族が含まれる例も、1つの民族が複数の国に分かれる例もある。</li>
+    <li>国内の地域差に対応するため、連邦制や地域自治の制度がとられることがある。ベルギーやスペイン、カナダなどが例である。</li>
+    <li>マレーシアでは、経済的に不利な立場にあったマレー系住民を優遇する<strong>ブミプトラ政策</strong>がとられてきた。</li>
+    <li>世界の難民の大半は、出身国の近隣の国に滞在している。受け入れ国の負担をどう分かち合うかが国際的な課題である。</li>
+    <li>地域経済統合は、加盟国間の貿易や人の移動を活発にする一方、域内の経済格差や、域外からの流入をめぐる摩擦を生むこともある。</li>
+  </ul>
+  </div>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1の上段について、ベルギーに該当する国と、資料1の上段から読み取れることとして次の文ｘ・ｙの正誤との組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">7</span></p>
+  <div class="memo">
+  <ul>
+    <li><strong>ｘ</strong>　表に示された主な言語の割合の合計が最も小さい国は、公用語の数が4か国中最も多い国でもある。</li>
+    <li><strong>ｙ</strong>　主な言語のうち最も割合の高い言語が5割を超える国は2か国あり、そのいずれも最も割合の高い宗教が6割を超えている。</li>
+  </ul>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th class="l">ベルギー</th><th class="l">ｘ</th><th class="l">ｙ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">Ｋ</td><td class="l">正</td><td class="l">正</td></tr>
+      <tr><td>②</td><td class="l">Ｋ</td><td class="l">誤</td><td class="l">正</td></tr>
+      <tr><td>③</td><td class="l">Ｌ</td><td class="l">正</td><td class="l">正</td></tr>
+      <tr><td>④</td><td class="l">Ｌ</td><td class="l">正</td><td class="l">誤</td></tr>
+      <tr><td>⑤</td><td class="l">Ｌ</td><td class="l">誤</td><td class="l">誤</td></tr>
+      <tr><td>⑥</td><td class="l">Ｍ</td><td class="l">正</td><td class="l">誤</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料1の下段から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">8</span></p>
+  <ol class="choices">
+    <li>①　1人当たりGDPが4組織中で最も高いのはＥである。</li>
+    <li>②　域内貿易比率が最も高いＥは、1人当たりGDPも4組織中で最も高い。</li>
+    <li>③　加盟国数が最も多いＥは、人口も4組織中で最も多い。</li>
+    <li>④　人口が最も多いＧは、1人当たりGDPが4組織中で最も低く、Ｅの約8分の1にとどまる。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">9</span></p>
+  <ol class="choices">
+    <li>①　民族甲の居住域は国Ⅰと国Ⅱにまたがっており、国境が民族の分布に基づいて引かれていないことがわかる。国Ⅱで少数派となる甲の集団が、自治や国Ⅰへの帰属を求める運動を起こす可能性がある。</li>
+    <li>②　国境が直線的に引かれているのは、山脈などの地形の障壁に沿って境界が定められた結果である。</li>
+    <li>③　民族丙は国Ⅲに集中して分布しているため、国Ⅱの領域内に丙の居住地域は存在しない。</li>
+    <li>④　民族乙は国Ⅱで多数派を占めているため、国Ⅱでは民族間の対立が生じることはないと考えられる。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料3・資料4について述べた次の文中の空欄<span class="box">Ｓ</span>・<span class="box">Ｔ</span>に入る語句の組合せとして最も適当なものを、後の①〜⑥のうちから一つ選べ。<span class="mark">10</span></p>
+  <p style="margin:8px 0">難民を多く受け入れている上位5か国のうち、世界銀行の分類で高所得国にあたるのは<span class="box">Ｓ</span>である。このことは、世界の難民の多くが<span class="box">Ｔ</span>という実態を反映している。</p>
+  <table class="data">
+    <thead><tr><th></th><th class="l">Ｓ</th><th class="l">Ｔ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td class="l">1か国</td><td class="l">出身国の近隣にある中・低所得の国に滞在している</td></tr>
+      <tr><td>②</td><td class="l">1か国</td><td class="l">欧米の高所得国へ移動している</td></tr>
+      <tr><td>③</td><td class="l">3か国</td><td class="l">出身国の近隣にある中・低所得の国に滞在している</td></tr>
+      <tr><td>④</td><td class="l">3か国</td><td class="l">欧米の高所得国へ移動している</td></tr>
+      <tr><td>⑤</td><td class="l">4か国</td><td class="l">出身国の近隣にある中・低所得の国に滞在している</td></tr>
+      <tr><td>⑥</td><td class="l">1か国</td><td class="l">国際機関が設けた第三国の施設に収容されている</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料1〜4をふまえた考察として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">11</span></p>
+  <ol class="choices">
+    <li>①　Ｍのように公用語が11ある国では、行政文書や学校教育でどの言語を用いるかが常に課題となる。一方で、言語の多様性を国家統合の理念に位置づける取り組みもみられる。</li>
+    <li>②　Ｌでは言語の境界にそって地域の権限が強められ、連邦制のもとで言語共同体ごとに教育や文化に関する自治が認められている。</li>
+    <li>③　Ｋでは、経済的に不利な立場にあった多数派の民族を優遇する政策がとられてきたが、こうした政策は他の民族との間に新たな不公平感を生むこともある。</li>
+    <li>④　難民の受け入れは主に高所得国が担っており、Ｅの域内貿易比率が4組織中で最も高いことは、Ｅの加盟国間で難民受け入れの負担分担が最も進んでいることを示している。</li>
+  </ol>
+  <p style="font-size:14px;margin-top:6px">※資料3の下段の「隣接国に滞留する割合」と、上段の受け入れ国の所得分類とを必ず照合せよ。</p>
+</div>
+
+<!-- ===================== 第3問 ===================== -->
+<h2>第3問　日本の工業都市の変容（配点33点）</h2>
+
+<p class="lead">次の資料1〜3は、臨海部に大規模な製鉄所が立地してきたＡ市について調べた地域調査報告の一部である。これらを読み、後の問い（問1〜問5）に答えよ。</p>
+
+<figure class="material">
+  <figcaption>資料1　Ａ市の土地利用の変化（模式図）</figcaption>
+  <div class="zu-prompt">
+    <span class="zu-tag">図の生成プロンプト</span>
+    <p class="zu-kind">種類：土地利用の新旧比較模式図（グレースケール／試験冊子体裁）</p>
+    <pre>Create a simple, flat, grayscale schematic land-use map in the style of a Japanese university entrance examination booklet. White background, no colour, no 3D effect, no photographic texture. Two square panels placed SIDE BY SIDE, each with a thin black frame, headed 1975年 (left panel) and 2020年 (right panel). Both panels show the SAME city area at the same scale and the same orientation: the SEA is at the TOP, the inland/suburbs at the BOTTOM.
+
+Common elements in BOTH panels:
+- A narrow band of sea along the top edge, labelled 海.
+- A horizontal RAILWAY line running left-to-right across the middle, drawn as a black line with white dashes, with one small white station circle labelled Ａ駅.
+
+LEFT panel (1975年), from top to bottom:
+- Between the sea and the railway: ONE VERY LARGE block filling almost the entire reclaimed waterfront, filled with the 工業用地 pattern (vertical hatching), labelled 製鉄所（埋立地）.
+- Below the railway, LEFT half: a block with the 住宅地 pattern (small squares), labelled 旧市街地.
+- Below the railway, RIGHT half: a block with the 工業用地 pattern, labelled 関連工場.
+- Bottom strip across the full width: a plain white block labelled 農地・小規模な集落.
+
+RIGHT panel (2020年), from top to bottom:
+- A thick black horizontal line just below the sea, labelled 高速道路（2005年開通）.
+- Between the sea and the railway, the former steelworks block is now divided into THREE blocks, left to right:
+  (1) 物流施設（Ⅰ地区）, filled with the 物流施設 pattern (horizontal hatching) — the WIDEST of the three;
+  (2) 製鉄所（縮小）, filled with the 工業用地 pattern — clearly MUCH NARROWER than the 1975 steelworks block;
+  (3) 緑地・公園, filled with the 緑地 pattern (dots).
+- Below the railway, LEFT: 旧市街地（Ⅱ地区） with the 住宅地 pattern (slightly smaller than in 1975).
+- Below the railway, RIGHT — replacing the 関連工場 block and located CLOSE TO THE STATION on the waterfront side: 高層住宅・商業施設（Ⅲ地区）, drawn as a white block with a thick outline containing three simple tall rectangles representing high-rise towers.
+- Bottom strip across the full width: 郊外住宅地（Ⅳ地区）, filled with the 住宅地 pattern (replacing the former farmland).
+
+Legend along the bottom of the whole image, five swatches: 工業用地 ／ 住宅地 ／ 物流施設 ／ 緑地 ／ 高層住宅・商業施設.
+
+Do NOT write any year other than 1975年, 2020年 and 2005年.
+Do NOT write any sentence explaining why the land use changed, and do NOT write any population or output figure.
+
+Typography: Japanese sans-serif, ~10–12px equivalent. Canvas ratio about 700 : 320.</pre>
+    <p class="zu-note">問1の根拠は、<strong>①1975年に埋立地のほぼ全域を占めた製鉄所が2020年には大きく縮小し、跡地が物流施設と緑地になっていること、②1975年の「農地・小規模な集落」が2020年に郊外住宅地になっていること（＝工業用地ではない）、③Ⅲ地区が内陸ではなくＡ駅に近い臨海寄りに立地していること</strong>の3点です。この3点の位置・面積関係を必ず守ってください。</p>
+  </div>
+</figure>
+
+<figure class="material">
+  <figcaption>資料2　Ａ市の製造業の推移と、製造品出荷額等に占める業種別の割合</figcaption>
+  <p class="src"><strong>［上段］Ａ市の製造業の推移</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>製造品出荷額等<br>（億円）</th><th>従業者数<br>（人）</th><th>事業所数</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>1980年</th><td>18,000</td><td>42,000</td><td>1,250</td></tr>
+      <tr><th>2000年</th><td>15,500</td><td>26,000</td><td>780</td></tr>
+      <tr><th>2020年</th><td>16,800</td><td>19,000</td><td>520</td></tr>
+    </tbody>
+  </table>
+  <p class="src" style="margin-top:14px"><strong>［下段］Ａ市の製造品出荷額等に占める業種別の割合（％）</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th></th><th>鉄鋼</th><th>化学</th><th>輸送用<br>機械</th><th>電子部品・<br>デバイス</th><th>食料品</th><th>その他</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>1980年</th><td>42.0</td><td>15.0</td><td>10.0</td><td>3.0</td><td>8.0</td><td>22.0</td></tr>
+      <tr><th>2020年</th><td>18.0</td><td>22.0</td><td>14.0</td><td>16.0</td><td>8.5</td><td>21.5</td></tr>
+    </tbody>
+  </table>
+  <p class="src">各年の製造品出荷額等の総額は上段による。</p>
+</figure>
+
+<figure class="material">
+  <figcaption>資料3　Ａ市の地区別の人口・高齢化と、調査のメモ</figcaption>
+  <p class="src"><strong>［上段］Ａ市の地区別の人口と高齢化</strong></p>
+  <table class="data">
+    <thead>
+      <tr><th class="l">地区</th><th>1980年<br>人口（人）</th><th>2020年<br>人口（人）</th><th>2020年の<br>65歳以上人口率（％）</th><th class="l">2020年の主な土地利用</th></tr>
+    </thead>
+    <tbody>
+      <tr><th class="l">Ⅰ（臨海）</th><td>12,000</td><td>6,500</td><td>42</td><td class="l">物流施設・工業用地</td></tr>
+      <tr><th class="l">Ⅱ（旧市街）</th><td>38,000</td><td>29,000</td><td>38</td><td class="l">住宅地・商店街</td></tr>
+      <tr><th class="l">Ⅲ（埋立再開発）</th><td>0</td><td>14,000</td><td>12</td><td class="l">高層住宅・商業施設</td></tr>
+      <tr><th class="l">Ⅳ（郊外）</th><td>25,000</td><td>31,000</td><td>31</td><td class="l">住宅地</td></tr>
+      <tr><th class="l">市全体</th><td>75,000</td><td>80,500</td><td>31</td><td class="l">―</td></tr>
+    </tbody>
+  </table>
+  <p class="src" style="margin-top:14px"><strong>［下段］調査のメモ</strong></p>
+  <div class="memo">
+  <ul>
+    <li>製鉄所は高炉を1基に集約し、跡地の一部を市と共同で物流施設・緑地に転換した。高速道路の開通（2005年）と港湾の利用が、物流業の立地を後押ししている。</li>
+    <li>Ⅲ地区は、旧貨物ヤードと埋立地を再開発したもので、2005年以降に高層住宅の建設が相次いだ。市内の保育所の待機児童は、この地区に集中している。</li>
+    <li>Ⅰ地区・Ⅲ地区の大部分は、GISのハザードマップ上で液状化の可能性が高い区域に含まれる。指定緊急避難場所はⅡ地区と内陸側に多く、臨海部からの距離が課題である。</li>
+    <li>市は「工業都市から、住・商・物流が共存する都市へ」を掲げ、市街地の再編を進めている。</li>
+  </ul>
+  </div>
+</figure>
+
+<div class="q">
+  <p class="q-head">問1　資料1から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">12</span></p>
+  <ol class="choices">
+    <li>①　1975年に埋立地の大部分を占めていた製鉄所の敷地は、2020年には物流施設や緑地に転換されており、臨海部の工業用地は縮小した。</li>
+    <li>②　1975年の埋立地は、2020年にはすべて緑地と公園に転換されている。</li>
+    <li>③　1975年に農地と小規模な集落であった地域は、2020年には工業用地に転換されている。</li>
+    <li>④　2020年の高層住宅・商業施設は、鉄道の駅から離れた内陸の郊外に立地している。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問2　資料2の上段から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">13</span></p>
+  <ol class="choices">
+    <li>①　1980年から2020年にかけて製造品出荷額等は約7％の減少にとどまる一方、従業者数は約55％減少しており、従業者1人当たりの出荷額は2倍以上になった。</li>
+    <li>②　事業所数は1980年から2020年にかけて半分以下になり、1事業所当たりの製造品出荷額等も減少した。</li>
+    <li>③　製造品出荷額等は1980年から2000年にかけて減少し、2000年から2020年にかけても減少を続けている。</li>
+    <li>④　従業者数の減少率が最も大きかったのは、2000年から2020年にかけての期間である。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問3　資料2（上段・下段）から読み取れることについて述べた文として最も適当なものを、次の①〜④のうちから一つ選べ。<span class="mark">14</span></p>
+  <ol class="choices">
+    <li>①　鉄鋼の割合は42.0％から18.0％へ低下したが、出荷額の実額でみると7,560億円から3,024億円へと、約6割の減少である。</li>
+    <li>②　食料品は割合が8.0％から8.5％へ上昇しているため、出荷額の実額も増加している。</li>
+    <li>③　電子部品・デバイスの割合は3.0％から16.0％へと13ポイント上昇しており、これは出荷額の実額が13倍になったことを意味する。</li>
+    <li>④　化学は割合が15.0％から22.0％へ上昇したが、出荷額の実額でみると減少している。</li>
+  </ol>
+</div>
+
+<div class="q">
+  <p class="q-head">問4　資料3の上段について述べた次の文Ｋ〜Ｍの正誤の組合せとして最も適当なものを、後の①〜⑧のうちから一つ選べ。<span class="mark">15</span></p>
+  <div class="memo">
+  <ul>
+    <li><strong>Ｋ</strong>　市全体の人口は1980年から2020年にかけて増加したが、4地区のうち2地区では人口が減少している。</li>
+    <li><strong>Ｌ</strong>　2020年の人口が4地区中で最も多い地区は、65歳以上人口率も4地区中で最も高い。</li>
+    <li><strong>Ｍ</strong>　Ⅲ地区は1980年には人口がなかったが、2020年には市全体の人口の約17％を占めている。</li>
+  </ul>
+  </div>
+  <table class="data">
+    <thead><tr><th></th><th>Ｋ</th><th>Ｌ</th><th>Ｍ</th></tr></thead>
+    <tbody>
+      <tr><td>①</td><td>正</td><td>正</td><td>正</td></tr>
+      <tr><td>②</td><td>正</td><td>正</td><td>誤</td></tr>
+      <tr><td>③</td><td>正</td><td>誤</td><td>正</td></tr>
+      <tr><td>④</td><td>正</td><td>誤</td><td>誤</td></tr>
+      <tr><td>⑤</td><td>誤</td><td>正</td><td>正</td></tr>
+      <tr><td>⑥</td><td>誤</td><td>正</td><td>誤</td></tr>
+      <tr><td>⑦</td><td>誤</td><td>誤</td><td>正</td></tr>
+      <tr><td>⑧</td><td>誤</td><td>誤</td><td>誤</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="q">
+  <p class="q-head">問5　資料1〜3をふまえた考察として<strong>適当でないもの</strong>を、次の①〜④のうちから一つ選べ。<span class="mark">16</span></p>
+  <ol class="choices">
+    <li>①　臨海部の工場跡地が物流施設に転換されたのは、高速道路の開通と港湾へのアクセスのよさが、広い用地を必要とする物流業にとって有利にはたらいたためと考えられる。</li>
+    <li>②　Ⅲ地区は65歳以上人口率が12％と4地区中で最も低く、保育所の需要が短期間に高まっている。一方、同時期に入居した世代がやがて一斉に高齢化するため、将来の需要の変化を見越した計画が必要である。</li>
+    <li>③　Ⅰ地区は人口がほぼ半減し65歳以上人口率も最も高いうえ、液状化の可能性が高く避難場所までの距離もある。日常の生活サービスの維持と、災害時の避難支援の両面で対策が求められる。</li>
+    <li>④　Ａ市の製造品出荷額等は1980年の水準に戻っておらず従業者数も大きく減少していることから、Ａ市の製造業は競争力を失い、産業構造の転換にも失敗したといえる。</li>
+  </ol>
+</div>
+
+<!-- ===================== 解答と解説 ===================== -->
+<section class="answers">
+<h1>解答と解説（第5回）</h1>
+
+<table class="ans-table">
+  <thead><tr><th>大問</th><th>問</th><th>解答番号</th><th>正解</th><th>配点</th><th>想定正答率</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="6">第1問</td><td>問1</td><td>1</td><td class="correct">③</td><td>6</td><td>48%</td></tr>
+    <tr><td>問2</td><td>2</td><td class="correct">①</td><td>6</td><td>52%</td></tr>
+    <tr><td>問3</td><td>3</td><td class="correct">①</td><td>5</td><td>55%</td></tr>
+    <tr><td>問4</td><td>4</td><td class="correct">①</td><td>6</td><td>40%</td></tr>
+    <tr><td>問5</td><td>5</td><td class="correct">②</td><td>5</td><td>45%</td></tr>
+    <tr><td>問6</td><td>6</td><td class="correct">④</td><td>6</td><td>58%</td></tr>
+    <tr><td rowspan="5">第2問</td><td>問1</td><td>7</td><td class="correct">④</td><td>7</td><td>34%</td></tr>
+    <tr><td>問2</td><td>8</td><td class="correct">④</td><td>7</td><td>42%</td></tr>
+    <tr><td>問3</td><td>9</td><td class="correct">①</td><td>6</td><td>60%</td></tr>
+    <tr><td>問4</td><td>10</td><td class="correct">①</td><td>6</td><td>46%</td></tr>
+    <tr><td>問5</td><td>11</td><td class="correct">④</td><td>7</td><td>55%</td></tr>
+    <tr><td rowspan="5">第3問</td><td>問1</td><td>12</td><td class="correct">①</td><td>7</td><td>62%</td></tr>
+    <tr><td>問2</td><td>13</td><td class="correct">①</td><td>7</td><td>50%</td></tr>
+    <tr><td>問3</td><td>14</td><td class="correct">①</td><td>6</td><td>44%</td></tr>
+    <tr><td>問4</td><td>15</td><td class="correct">③</td><td>6</td><td>48%</td></tr>
+    <tr><td>問5</td><td>16</td><td class="correct">④</td><td>7</td><td>58%</td></tr>
+  </tbody>
+</table>
+<p class="exp" style="font-family:var(--sans);font-size:13.5px">想定正答率の平均は約51％で、「やや難」レベルの設計に対応する。</p>
+
+<div class="ans-detail">
+
+<h2>第1問の解説</h2>
+
+<h3>問1　正解 ③</h3>
+<p class="exp">気温の年較差でおおよその緯度を、降水の季節配分で気候区を決める。<strong>「最少雨月が属する月」の列が最大の手がかり</strong>である。</p>
+<ul class="exp-list">
+  <li><strong>Ｐ＝イ</strong>：Ｐは赤道直下（コンゴ盆地付近）。イは最暖月26.8℃・最寒月25.9℃で<strong>年較差わずか0.9℃</strong>、年降水量2,300mm、最少雨月でも130mm——<strong>熱帯雨林気候（Af）</strong>。年較差の小ささが低緯度の決定的な指標。</li>
+  <li><strong>Ｑ＝エ</strong>：Ｑは北回帰線付近のアフリカ（サヘル南縁）。エは年降水量1,050mmだが<strong>最少雨月（1月）はわずか2mm</strong>——雨季と乾季がはっきり分かれる<strong>サバナ気候（Aw）</strong>。北半球なので乾季は北半球の冬（1月）である。</li>
+  <li><strong>Ｒ＝ア</strong>：Ｒは北緯38度・東経15度付近（地中海沿岸）。アは年降水量580mmと少なく、<strong>最少雨月が7月</strong>で5mm——<strong>夏に乾燥する地中海性気候（Cs）</strong>。最寒月9.8℃で温暖。</li>
+  <li><strong>Ｓ＝ウ</strong>：Ｓは北緯62度・東経105度付近（シベリア中央部）。ウは最暖月17.5℃・最寒月−26.0℃で<strong>年較差43.5℃</strong>——大陸内部の<strong>亜寒帯冬季少雨気候（Dw）</strong>。年降水量310mmと少ないのも内陸性の特徴。</li>
+  <li>よって Ｐ＝イ、Ｑ＝エ、Ｒ＝ア、Ｓ＝ウ で<strong>③</strong>。</li>
+</ul>
+<div class="tip"><strong>アとエの識別が勘所：</strong>両者とも「最少雨月がごく少ない」乾季をもつ。区別するのは<strong>最少雨月がいつか</strong>である。ア＝<strong>7月</strong>（夏に乾く）＝地中海性気候、エ＝<strong>1月</strong>（冬に乾く）＝北半球のサバナ気候。年降水量（580 vs 1,050）と最寒月気温（9.8 vs 21.2℃）も傍証になる。<strong>「乾季がある」だけで判断せず、季節を確認する</strong>。①④⑤はこの2つを入れ替えている。</div>
+
+<h3>問2　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：1900年の偏差は−0.2℃、2020年は＋1.0℃。<strong>偏差の値そのもの（＋1.0℃）と、この120年間の上昇幅（1.0−（−0.2）＝1.2℃）は別物</strong>である。この区別ができているかを問う選択肢で、正しく述べている。</li>
+  <li><strong>②＝誤</strong>：北極域が世界平均を下回ったのは<strong>1960年前後（北極−0.2℃ ＜ 世界平均−0.02℃）</strong>であり、1940年前後には北極域＋0.3℃が世界平均−0.05℃を<strong>上回っている</strong>。前半（2.6÷1.0＝2.6倍）は正しく、<strong>後半で時期を20年ずらした</strong>ダミーである。グラフの2本の線が接近・交差する箇所は、年代を必ず確認すること。</li>
+  <li><strong>③＝誤</strong>：北極域は1940年（＋0.3℃）から1960年（−0.2℃）にかけて<strong>低下</strong>している。地球温暖化は長期の傾向であり、<strong>短期には自然の変動によって上下する</strong>。「一貫して」「例外なく」という表現は、グラフの一部の逆行で崩れる。</li>
+  <li><strong>④＝誤</strong>：世界平均が0℃を上回るのは<strong>1980年（＋0.16℃）から</strong>である。2000年（＋0.42℃）だけを見て判断すると誤る。</li>
+</ul>
+<div class="tip"><strong>「偏差」の意味を押さえる：</strong>偏差は<strong>ある基準期間の平均からの差</strong>であり、絶対的な気温ではない。したがって「偏差が＋1.0℃」＝「1.0℃上昇した」ではなく、「基準期間より1.0℃高い」である。基準の取り方（この図では1850〜1900年平均）が変われば数値も変わるため、注記を必ず読む。</div>
+
+<h3>問3　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>Ｙ＝海氷や積雪が融けて反射率（アルベド）が低下する</strong>：白い雪や氷は太陽放射の大部分を反射するが、融けて現れる海面や地面は<strong>暗色で放射をよく吸収する</strong>。吸収が増えるとさらに気温が上がり、さらに氷が融ける——これが<strong>アイス・アルベド・フィードバック</strong>で、北極増幅の主要な原因である。このほか、大気の対流が弱く熱が下層にとどまりやすいことも寄与している。</li>
+  <li><strong>Ｚ＝永久凍土の融解によるメタン・二酸化炭素の放出</strong>：永久凍土には、長期間凍結したまま分解されずに残った膨大な有機物が含まれる。融解して微生物に分解されると<strong>二酸化炭素とメタン（二酸化炭素より温室効果が強い）</strong>が放出され、温暖化をさらに進める。資料2の下段で亜寒帯林の土壌炭素が300t/haと突出していることが、この危険の大きさを裏づけている。</li>
+  <li><strong>④⑤⑥の「オゾン層の破壊」＝誤</strong>：オゾン層破壊（フロン類による）と地球温暖化（温室効果ガスによる）は<strong>原因も仕組みも異なる別の環境問題</strong>である。紫外線量の増加は皮膚がんや生態系への影響をもたらすが、北極増幅の主因ではない。<strong>環境問題どうしの混同</strong>は頻出の誤り。</li>
+  <li><strong>②⑤の「偏西風の蛇行が弱まり、中緯度の気温変動が小さくなる」＝誤</strong>：北極と中緯度の気温差が縮まると偏西風（ジェット気流）は弱まって<strong>蛇行が大きくなる</strong>とされ、その結果、寒波や熱波など中緯度の気温変動は<strong>大きくなる</strong>と考えられている。方向が逆。</li>
+  <li><strong>③⑥の「海面上昇による島の水没」＝誤</strong>：温暖化の重大な帰結ではあるが、<strong>温暖化をさらに進める仕組み（正のフィードバック）ではない</strong>。設問文が「正のフィードバック」と限定していることを読み落とすと選んでしまう。</li>
+</ul>
+
+<h3>問4　正解 ①</h3>
+<p class="exp">面積〔百万ha〕×単位面積当たり蓄積量〔t/ha〕で総量を計算する。単位は「百万t」となる。</p>
+<table class="ans-table">
+  <thead><tr><th></th><th>地上部バイオマス</th><th>土壌</th><th>合計</th></tr></thead>
+  <tbody>
+    <tr><th>熱帯林</th><td>1,770×120＝212,400</td><td>1,770×90＝159,300</td><td>371,700</td></tr>
+    <tr><th>温帯林</th><td>660×90＝59,400</td><td>660×120＝79,200</td><td>138,600</td></tr>
+    <tr><th>亜寒帯林</th><td>1,240×45＝<strong>55,800</strong></td><td>1,240×300＝372,000</td><td><strong>427,800</strong></td></tr>
+  </tbody>
+</table>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：地上部バイオマスの合計は亜寒帯林が55,800百万tで<strong>最少</strong>（温帯林59,400をわずかに下回る）。一方、土壌を含めた合計は427,800百万tで<strong>最大</strong>となり、熱帯林（371,700）を上回る。<strong>森林の炭素の大半は目に見える樹木ではなく土壌にある</strong>という、この問題の核心を述べている。</li>
+  <li><strong>②＝誤</strong>：熱帯林は単位面積当たりの地上部バイオマス（120t/ha）が最大なのは正しいが、合計では亜寒帯林に及ばない。<strong>「単位量が最大＝総量も最大」ではない</strong>し、<strong>「地上部が最大＝土壌を含めても最大」でもない</strong>。二重の飛躍を含む。</li>
+  <li><strong>③＝誤</strong>：面積変化率−10.4％は<strong>1990年の面積を基準</strong>とした値（注記に明記）。1990年の面積は 1,770÷（1−0.104）＝1,770÷0.896＝<strong>約1,976百万ha</strong>で、減少面積は約<strong>206百万ha</strong>。「約180」は<strong>2020年の面積1,770に10.4％を掛けた値（184）</strong>で、<strong>基準年を取り違えた</strong>誤りである。「面積が減少したのは熱帯林のみ」という前半は正しいだけに紛らわしい。</li>
+  <li><strong>④＝誤</strong>：温帯林138,600＋亜寒帯林427,800＝<strong>566,400</strong>で、熱帯林371,700を大きく<strong>上回る</strong>。</li>
+</ul>
+<div class="tip"><strong>③の「増減率の基準年」は超重要：</strong>「1990→2020年に10.4％減少」とは〔(1990年−2020年)÷<strong>1990年</strong>〕＝0.104のこと。2020年の値に掛けても元の減少量は出ない。<strong>x％減少した後の値がAなら、元の値は A÷(1−x/100)</strong>。逆に「x％増加した後がA」なら元は A÷(1＋x/100)。この復元計算は共通テストで繰り返し問われる。</div>
+
+<h3>問5　正解 ②（Ｋ＝正、Ｌ＝正、Ｍ＝誤）</h3>
+<ul class="exp-list">
+  <li><strong>Ｋ＝正</strong>：亜寒帯林（タイガ）は北緯50〜70度に広く分布し、資料2の上段の北極域は2020年に＋2.6℃と世界平均＋1.0℃の2.6倍の偏差を示す。亜寒帯林の土壌炭素は300t/haと突出しており、<strong>永久凍土の融解によってこれが放出される危険</strong>がある。<strong>資料2の上段と下段を接続する</strong>ことで導かれる。</li>
+  <li><strong>Ｌ＝正</strong>：熱帯林は−10.4％で1割以上の減少。地上部バイオマス120t/haを蓄えた森林が失われれば、その炭素は伐採・焼失によって大気に放出される。熱帯林の減少は森林由来の温室効果ガス排出の主要因である。</li>
+  <li><strong>Ｍ＝誤</strong>：面積の増減を実数で計算する。熱帯林は<strong>約206百万haの減少</strong>、温帯林は 660−660÷1.025＝660−643.9＝<strong>約16百万haの増加</strong>、亜寒帯林は 1,240−1,240÷1.005＝1,240−1,233.8＝<strong>約6百万haの増加</strong>。合計すると<strong>約184百万haの減少</strong>で、世界の森林面積は<strong>減少</strong>している。<strong>「2つが増えて1つが減った」から全体が増えたとは言えない</strong>——変化率の符号だけでなく、規模を掛け合わせて判断する必要がある。</li>
+</ul>
+
+<h3>問6　正解 ④（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>④＝適当でない</strong>：気温が上昇すれば、寒さに規定されていた森林の分布限界（森林限界）は<strong>高緯度側（および高標高側）へ移動する</strong>。「低緯度側へ拡大」は方向が逆である。なお実際には、低緯度側では乾燥や火災の増加によって亜寒帯林が後退し、高緯度側ではツンドラへの侵入が進むという<strong>分布帯全体の北上</strong>が観測されている。移動速度が気候変化に追いつかず、樹木の枯死が先行することも懸念される。</li>
+  <li><strong>①＝適当</strong>：熱帯雨林では、蒸発散した水分が上昇して雨となり再び森に降る<strong>水の再循環</strong>が働いている。森林が失われると降水が減り、さらに森林が維持できなくなる（アマゾンの「ティッピング・ポイント」論）。気候の安定は学習メモの<strong>調整サービス</strong>にあたる。</li>
+  <li><strong>②＝適当</strong>：地中海性気候（地点ア）では夏の高温乾燥が強まり、森林火災の大規模化が地中海沿岸・カリフォルニア・オーストラリア南部などで現実に進行している。硬葉樹（オリーブ、コルクガシなど）は乾燥に適応した厚い葉をもつが、その分布も変化しうる。</li>
+  <li><strong>③＝適当</strong>：サバナ気候（地点エ）の周辺、とくにサヘル地域では、降水の年変動の大きさに加え、人口増加にともなう過放牧・過耕作・薪炭材の過剰採取が重なって<strong>土地の劣化（砂漠化）</strong>が進む。<strong>自然要因と人為要因の複合</strong>として理解することが重要である。</li>
+</ul>
+
+<h2>第2問の解説</h2>
+
+<h3>問1　正解 ④（ベルギー＝Ｌ、ｘ＝正、ｙ＝誤）</h3>
+<p class="exp">同定だけでなく、<strong>表の数値を自分で加算・比較して文の正誤を判定する</strong>ことが求められる。まず4か国を確定し、次にｘ・ｙを検算する。</p>
+<ul class="exp-list">
+  <li><strong>Ｊ＝インド</strong>：人口1,408百万人が決定的。ヒンドゥー教80％、公用語（憲法の指定言語）22。</li>
+  <li><strong>Ｋ＝マレーシア</strong>：<strong>イスラーム64％・仏教19％・キリスト教9％</strong>という宗教の組合せと、マレー語・中国語・タミル語という言語構成が、マレー系・華人系・インド系からなる複合社会を示す。公用語は<strong>マレー語1つ</strong>。</li>
+  <li><strong>Ｌ＝ベルギー</strong>：人口12百万人と小さく、<strong>オランダ語59％（北部フランデレン）とフランス語40％（南部ワロン）にほぼ二分</strong>される。公用語3（オランダ語・フランス語・ドイツ語）。</li>
+  <li><strong>Ｍ＝南アフリカ共和国</strong>：<strong>公用語11</strong>は世界的にも突出。ズールー語・コサ語などのアフリカ諸語に加え、アフリカーンス語と英語が並ぶ。英語を家庭で使う人は10％にすぎないが、行政・ビジネスの共通語となっている。</li>
+  <li>したがって<strong>ベルギー＝Ｌ</strong>であり、選択肢は③・④・⑤に絞られる。</li>
+  <li><strong>ｘ＝正</strong>：示された言語の割合をそれぞれ足し上げると、<strong>Ｊ＝44＋8＋7＝59％</strong>、Ｋ＝58＋23＋7＝88％、Ｌ＝59＋40＋1＝100％、Ｍ＝23＋16＋14＋10＝63％。最小はＪ（インド）であり、公用語の数もＪの<strong>22</strong>が4か国中最多であるから、両方とも同じ国を指して正しい。合計が小さいことは、<strong>上位3言語では国民の4割以上をカバーできないほど言語が多極化している</strong>ことを意味し、公用語の数の多さと整合する。</li>
+  <li><strong>ｙ＝誤</strong>：最上位言語が5割を超えるのはＫ（マレー語58％）とＬ（オランダ語59％）の<strong>2か国</strong>で、前半の絞り込みは正しい。しかし最上位の宗教はＫがイスラーム64％（＞60％）である一方、<strong>Ｌはカトリック57％で、無宗敉28％が続くために6割に届かない</strong>。よって「いずれも」は成り立たない。</li>
+  <li>以上より<strong>④</strong>。</li>
+</ul>
+<div class="tip"><strong>よくある誤解：</strong>「公用語が世界で最も多い国は南アフリカ共和国（11）だ」と覚えていると、ｘを誤と判定して⑤を選んでしまう。<strong>この資料の中ではＪ（インド）の22が最多</strong>である。設問はあくまで「4か国中」を問っているので、<strong>知識でなく表の列を見て答える</strong>こと。<br><strong>似ているが違う概念：</strong>「最上位言語の割合」と「示された言語の割合の合計」。前者が高いことは「多数派が強い」ことを、後者が低いことは「上位に入らない少数語が多数存在する」ことを示す。Ｌは前者も後者も高い（二分型）、Ｊは前者が低く後者も低い（多極型）と、タイプがはっきり分かれる。<br><strong>無宗教の扱い：</strong>ヨーロッパの先進国では無宗教層が厚く、これが「多数宗教の割合」を押し下げる。宗教ごとの割合を読むときは、<strong>無宗教が項目に含まれるか</strong>を必ず確かめる。</div>
+<div class="tip"><strong>ＬとＭを混同しないために：</strong>どちらも「複数言語が公用語」という点で似ているが、<strong>Ｌは2言語がほぼ拮抗（59：40）してブロックごとに住み分ける「二分型」、Ｍは11言語が並存し最大でも23％という「多極型」</strong>。前者は連邦制による地域自治、後者は多言語主義の理念という異なる制度対応につながっている。<strong>公用語の数（3 vs 11）と人口（12 vs 60百万人）</strong>で確定できる。</div>
+
+<h3>問2　正解 ④</h3>
+<p class="exp">1人当たりGDP＝〔域内総GDP〕÷〔人口〕を4つとも計算してから判定する。</p>
+<table class="ans-table">
+  <thead><tr><th></th><th>Ｅ</th><th>Ｆ</th><th>Ｇ</th><th>Ｈ</th></tr></thead>
+  <tbody>
+    <tr><th>1人当たりGDP</th><td>17.0兆÷4.5億<br>＝約37,800ドル</td><td>26.6兆÷5.0億<br>＝<strong>約53,200ドル</strong></td><td>3.3兆÷6.7億<br>＝<strong>約4,900ドル</strong></td><td>2.4兆÷3.1億<br>＝約7,700ドル</td></tr>
+  </tbody>
+</table>
+<ul class="exp-list">
+  <li><strong>④＝正</strong>：人口最多はＧ（670百万人）で、1人当たりGDPは約4,900ドルと4組織中最低。37,800÷4,900＝<strong>約7.7倍</strong>で「約8分の1」と表現できる。Ｅ＝EU、Ｆ＝USMCA、Ｇ＝ASEAN、Ｈ＝MERCOSURである。</li>
+  <li><strong>①②＝誤</strong>：1人当たりGDP最高は<strong>Ｆ（約53,200ドル）</strong>で、Ｅ（約37,800ドル）ではない。②はさらに「域内貿易比率が高い＝豊か」という<strong>誤った因果</strong>を重ねている。域内貿易比率は統合の深さや地理的な近接性を反映する指標であり、所得水準を直接示すものではない。</li>
+  <li><strong>③＝誤</strong>：加盟国数最多はＥ（27か国）だが、人口最多は<strong>Ｇ（670百万人）</strong>である。<strong>「国の数が多い＝人口が多い」ではない</strong>——Ｅには人口の小さい国が多く含まれ、Ｇにはインドネシア・フィリピン・ベトナムなど人口大国が含まれる。</li>
+</ul>
+<div class="tip"><strong>域内貿易比率の意味：</strong>Ｅ（63％）が高いのは、①統合が最も深い（関税撤廃に加えて人・資本・サービスの移動も自由）、②加盟国が地理的に密集し工程間分業が進んでいる、③域内に大市場がある、という条件が重なるため。Ｈ（13％）が低いのは、加盟国の産業構造が似ており（一次産品輸出）互いに補完しにくく、主要な貿易相手が域外（中国・アメリカ・EU）であるためである。</div>
+
+<h3>問3　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：資料2で民族甲の分布域（斜線）は国境線をまたいで国Ⅰと国Ⅱの両方に広がっている。<strong>国境が民族分布と無関係に引かれた</strong>ことが読み取れ、国Ⅱ側の甲は少数派として不利な立場に置かれやすい。こうした状況は、自治要求、分離独立運動、隣国（同じ民族が多数派の国）による介入といった<strong>国境をまたぐ紛争</strong>の構造的な背景となる（クルド人、バスク人などが実例）。</li>
+  <li><strong>②＝誤</strong>：図の山脈は国Ⅱの内部（国境線の南側）にあり、<strong>国境線とは一致していない</strong>。国境が直線的なのは、緯線・経線や協定上の線に沿って人為的に引かれたためであり、注記の「植民地時代に引かれた」とも整合する。<strong>直線的な国境（数理的国境）は自然の境界ではない</strong>ことを図で確認させる問題。</li>
+  <li><strong>③＝誤</strong>：図では国Ⅱ（正しくは国Ⅰ）の領域内、中央部に丙の分布域が独立して描かれている。<strong>「〜に集中しているから他には存在しない」という推論は図の1か所の反例で崩れる</strong>。こうした<strong>飛び地状の少数民族地域</strong>は、しばしば緊張の焦点となる。</li>
+  <li><strong>④＝誤</strong>：多数派であることは、対立が生じないことを意味しない。実際には多数派と少数派の間の権力や資源の配分をめぐって対立が生じる。<strong>「〜ため、…ことはない」という断定は過剰一般化</strong>。</li>
+</ul>
+
+<h3>問4　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>Ｓ＝1か国</strong>：資料3の上段の所得分類の列を数えると、高所得国は<strong>ドイツのみ</strong>。トルコとコロンビアは「高中所得国」、イランとパキスタンは「低中所得国」である。③④の「3か国」は、<strong>「高中所得国」を「高所得国」に数え入れた</strong>誤り——世界銀行の4区分（高所得／高中所得／低中所得／低所得）を正確に扱えるかが問われている。<strong>資料の注記に区分名が明示されている</strong>ので、必ず確認する。</li>
+  <li><strong>Ｔ＝出身国の近隣にある中・低所得の国に滞在している</strong>：資料4のメモに「世界の難民の大半は、出身国の近隣の国に滞在している」と明記され、さらに<strong>資料3の下段では隣接国に滞留する割合がすべての出身国で71〜96％に達することが数値で裏づけられている</strong>。上段の上位5か国のうち4か国が中・低所得国であることとも整合する。トルコ・イラン・パキスタンはそれぞれシリア、アフガニスタンの隣国であり、コロンビアはベネズエラの隣国である。</li>
+  <li><strong>②④の「欧米の高所得国へ移動している」＝誤</strong>：報道で目にする機会が多いためこの印象をもちやすいが、資料3の下段の数値（アフガニスタン93％・南スーダン96％が隣接国に滞留）によって明確に否定される。なお、ウクライナの71％は他より低いが、隣接国のポーランド等が高所得国であるためで、<strong>「隣接国」と「低所得国」は同義ではない</strong>点に注意。</li><strong>「見聞きする頻度」と「実際の分布」を混同しない</strong>。</li>
+  <li><strong>⑥の「第三国の施設に収容されている」＝誤</strong>：難民の多くはキャンプではなく都市部で生活しており、また「第三国定住」は限られた人数の制度である。</li>
+</ul>
+<div class="tip"><strong>この構造が生む課題：</strong>受け入れの負担が、財政・行政能力の限られた近隣の中・低所得国に集中する。教育・医療・住宅・雇用への圧力が受け入れ地域の住民との摩擦を生むこともあり、<strong>国際的な資金支援と負担の分かち合い（責任分担）</strong>が課題とされる。</div>
+
+<h3>問5　正解 ④（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>④＝適当でない</strong>：二重に誤っている。第一に、資料3の上段の所得分類（高所得国はドイツのみ）と下段の隣接国滞留率（71〜96％）をあわせれば、<strong>難民受け入れの上位は中・低所得の隣接国</strong>であり、「主に高所得国が担っている」は事実に反する。第二に、<strong>域内貿易比率は財やサービスの取引の指標</strong>であって、難民受け入れの負担分担とは何の関係もない。<strong>無関係な2つの指標を因果で結ぶ</strong>典型的な誤りで、実際にはEU域内でも難民の受け入れ数の偏りと分担をめぐる対立が続いている。</li>
+  <li><strong>①＝適当</strong>：Ｍ（南アフリカ共和国）の公用語11は、アパルトヘイト撤廃後の1996年憲法で、それまで排除されてきたアフリカ諸語を公的な地位に引き上げたことによる。実務上は英語に集中しがちで、教育言語の選択は今も論争的である。</li>
+  <li><strong>②＝適当</strong>：Ｌ（ベルギー）は1993年に連邦制へ移行し、地域（フランデレン、ワロン、ブリュッセル首都圏）と<strong>言語共同体（オランダ語・フランス語・ドイツ語）</strong>という2系統の自治単位をもつ。教育・文化は言語共同体の権限である。</li>
+  <li><strong>③＝適当</strong>：Ｋ（マレーシア）のブミプトラ政策は、経済的に華人系より不利な立場にあったマレー系（人口では多数派）を、大学入学枠・公務員採用・企業の株式保有などで優遇するもの。<strong>「多数派を優遇する積極的差別是正措置」</strong>という点が特徴で、他民族の不公平感や頭脳流出という副作用も指摘されている。</li>
+</ul>
+
+<h2>第3問の解説</h2>
+
+<h3>問1　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：1975年に埋立地のほぼ全域（幅270）を占めていた製鉄所は、2020年には縮小（幅70）し、跡地は物流施設（Ⅰ地区）と緑地・公園に転換されている。関連工場の区画も高層住宅・商業施設（Ⅲ地区）に変わっており、<strong>臨海部の工業用地は明確に縮小</strong>している。資料3の下段の「高炉を1基に集約し、跡地の一部を市と共同で物流施設・緑地に転換」とも整合する。</li>
+  <li><strong>②＝誤</strong>：2020年も製鉄所（縮小）と物流施設が残っており、「すべて緑地と公園」ではない。<strong>「すべて」という全称表現は図の1か所で崩れる</strong>。</li>
+  <li><strong>③＝誤</strong>：1975年に「農地・小規模な集落」であった南部は、2020年には<strong>郊外住宅地（Ⅳ地区）</strong>になっており、工業用地ではない。資料3の上段でもⅣ地区の人口は25,000→31,000人と増加している。</li>
+  <li><strong>④＝誤</strong>：Ⅲ地区（高層住宅・商業施設）は<strong>Ａ駅の東側、鉄道沿いの臨海寄り</strong>に立地している。資料3の下段にも「旧貨物ヤードと埋立地を再開発した」とあり、<strong>鉄道用地の跡地であるからこそ駅に近い</strong>。「郊外の内陸」は図と逆。</li>
+</ul>
+<div class="tip"><strong>工場跡地の再開発の立地論理：</strong>①<strong>駅前・都心部の跡地</strong>→高層住宅・商業施設（アクセスのよさが地価に反映される）、②<strong>臨海部・高速道路インターチェンジ付近</strong>→物流施設（広い平坦地と大型車のアクセスが必要）、③<strong>残余の土地</strong>→緑地・公園（防災機能も兼ねる）。同じ「工場跡地」でも、立地条件によって転用先が分かれる。</div>
+
+<h3>問2　正解 ①</h3>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：出荷額は18,000→16,800億円で <strong>−6.7％（約7％減）</strong>。従業者数は42,000→19,000人で <strong>−54.8％（約55％減）</strong>。従業者1人当たり出荷額は、1980年 18,000億÷42,000人＝<strong>約4,286万円</strong>、2020年 16,800億÷19,000人＝<strong>約8,842万円</strong>で<strong>約2.06倍</strong>。「2倍以上」は正しい。</li>
+  <li><strong>②＝誤</strong>：事業所数 1,250→520は41.6％で「半分以下」は正しいが、1事業所当たり出荷額は 18,000÷1,250＝<strong>14.4億円</strong>→16,800÷520＝<strong>32.3億円</strong>と<strong>増加</strong>している。小規模な事業所が退出し、大規模なものに集約された結果である。<strong>前半を正しくして後半で逆にする</strong>形のダミー。</li>
+  <li><strong>③＝誤</strong>：2000年15,500→2020年16,800で<strong>増加</strong>している。「工業都市は衰退の一途」という先入観で右端を確認しないと誤る。</li>
+  <li><strong>④＝誤</strong>：減少率は 1980→2000年が （42,000−26,000）÷42,000＝<strong>38.1％</strong>、2000→2020年が （26,000−19,000）÷26,000＝<strong>26.9％</strong>。前半期の方が大きい。<strong>減少「数」（16,000人 vs 7,000人）でも前半期が大きい</strong>ので、どちらで比べても④は誤り。</li>
+</ul>
+
+<h3>問3　正解 ①</h3>
+<p class="exp">割合を実額に直す。<strong>総額が1980年18,000億円→2020年16,800億円と6.7％減っている</strong>点が全体の鍵である。</p>
+<table class="ans-table">
+  <thead><tr><th></th><th>1980年（18,000億円×割合）</th><th>2020年（16,800億円×割合）</th><th>変化</th></tr></thead>
+  <tbody>
+    <tr><th>鉄鋼</th><td>42.0％→7,560億円</td><td>18.0％→3,024億円</td><td>−60.0％</td></tr>
+    <tr><th>化学</th><td>15.0％→2,700億円</td><td>22.0％→3,696億円</td><td>＋36.9％</td></tr>
+    <tr><th>輸送用機械</th><td>10.0％→1,800億円</td><td>14.0％→2,352億円</td><td>＋30.7％</td></tr>
+    <tr><th>電子部品等</th><td>3.0％→540億円</td><td>16.0％→2,688億円</td><td>約5.0倍</td></tr>
+    <tr><th>食料品</th><td>8.0％→1,440億円</td><td>8.5％→<strong>1,428億円</strong></td><td><strong>−0.8％</strong></td></tr>
+  </tbody>
+</table>
+<ul class="exp-list">
+  <li><strong>①＝正</strong>：7,560→3,024億円で、3,024÷7,560＝0.40、すなわち<strong>60％の減少</strong>。計算どおりである。</li>
+  <li><strong>②＝誤</strong>：食料品は割合が8.0％→8.5％と<strong>上昇したのに、実額は1,440→1,428億円とわずかに減少</strong>している。<strong>総額そのものが6.7％減っているため、割合が0.5ポイント（相対的には6.3％）上がっても実額は増えない</strong>。本問最大の狙いで、<strong>「割合の上昇＝実額の増加」ではない</strong>ことを数値で確認させる。</li>
+  <li><strong>③＝誤</strong>：3.0％→16.0％の上昇は<strong>13ポイント</strong>だが、実額は540→2,688億円で<strong>約5.0倍</strong>である。<strong>「ポイント」と「倍率」は別の概念</strong>——ポイントは割合どうしの差、倍率は比。「13ポイント上昇」を「13倍」と読み替えるのは典型的な誤りである。</li>
+  <li><strong>④＝誤</strong>：化学は2,700→3,696億円で<strong>増加</strong>している。②と対をなす、逆向きのダミー。</li>
+</ul>
+<div class="tip"><strong>構成比の変化を読む3原則：</strong>①<strong>総額が変化していれば、割合の変化と実額の変化は一致しないことがある</strong>。②<strong>「ポイント」は差、「％」「倍」は比</strong>。③<strong>ある項目の割合が下がっても、他の項目が急増しただけで実額は変わらない場合がある</strong>（今回の食料品は総額減の影響）。表に総額の欄がある問題では、必ず実額に直す。</div>
+
+<h3>問4　正解 ③（Ｋ＝正、Ｌ＝誤、Ｍ＝正）</h3>
+<ul class="exp-list">
+  <li><strong>Ｋ＝正</strong>：市全体は75,000→80,500人で<strong>＋5,500人の増加</strong>。しかし地区別では、Ⅰ（12,000→6,500、−5,500人）とⅡ（38,000→29,000、−9,000人）の<strong>2地区が減少</strong>している。増加はⅢ（＋14,000）とⅣ（＋6,000）。<strong>市全体の合計値は、内部の大きな地域差を覆い隠す</strong>——地域調査で地区別データを見る意義がここにある。</li>
+  <li><strong>Ｌ＝誤</strong>：2020年の人口が最も多いのは<strong>Ⅳ地区（31,000人）</strong>だが、その65歳以上人口率は31％で、最も高いのは<strong>Ⅰ地区の42％</strong>である。<strong>「最も多い」と「最も高い」を別の地区について確認する</strong>——2つの列を独立に見る必要がある。なお2番目に人口が多いⅡ地区（29,000人）の38％も、Ⅰ地区には及ばない。</li>
+  <li><strong>Ｍ＝正</strong>：14,000÷80,500＝<strong>17.4％</strong>で「約17％」。1980年に人口ゼロだった埋立再開発地区が、40年で市の人口の6分の1を占めるまでになった。</li>
+</ul>
+
+<h3>問5　正解 ④（適当でないもの）</h3>
+<ul class="exp-list">
+  <li><strong>④＝適当でない</strong>：出荷額が1980年水準に戻っていないこと、従業者数が減ったことは事実だが、そこから「競争力を失い、産業構造の転換にも失敗した」と結論づけるのは資料と整合しない。<strong>従業者1人当たり出荷額は約2.06倍（問2）</strong>、<strong>1事業所当たり出荷額は14.4→32.3億円</strong>と生産性は大きく向上し、<strong>業種構成は鉄鋼42％→18％、電子部品3％→16％、化学15％→22％へと明確に転換</strong>している（問3）。出荷額も2000年を底に増加に転じた。<strong>1つの指標（総額・従業者数）だけで全体を評価する</strong>のが、この選択肢の誤りである。</li>
+  <li><strong>①＝適当</strong>：物流施設は広い平坦な用地、大型車のアクセス、港湾・高速道路への近接を必要とする。資料3の下段の「高速道路の開通（2005年）と港湾の利用が物流業の立地を後押し」と整合する。<strong>工場跡地はまとまった平坦地として得がたい資源</strong>である。</li>
+  <li><strong>②＝適当</strong>：Ⅲ地区の65歳以上人口率12％は突出して低く、資料3の下段の「待機児童はこの地区に集中」とも整合する。<strong>同時期に同世代が一斉に入居した地区は、40〜50年後に一斉に高齢化する</strong>——1960〜70年代のニュータウンが今まさに直面している問題であり、施設整備を「今の需要」だけで決めない視点が必要になる。</li>
+  <li><strong>③＝適当</strong>：Ⅰ地区は人口12,000→6,500人（ほぼ半減）、65歳以上42％で最も高い。加えて資料3の下段から、液状化の可能性が高く、指定緊急避難場所はⅡ地区と内陸側に多い。<strong>高齢者が多い地区ほど遠くまで避難しにくい</strong>ため、避難行動要支援者名簿の整備、近接する高い建物との津波避難ビル協定、地区内への避難場所の追加指定などが具体的な課題となる。</li>
+</ul>
+
+<div class="tip">
+<strong>第5回の総括（復習の指針）</strong>
+<ul>
+  <li><strong>乾季の「季節」を確認する</strong>（第1問 問1）：地中海性気候＝夏乾燥、サバナ気候＝冬乾燥（北半球）。年較差で緯度をつかむ。</li>
+  <li><strong>「偏差の値」と「上昇幅」は別</strong>（第1問 問2）：基準期間を注記で確認する。</li>
+  <li><strong>増減率の基準年を取り違えない</strong>（第1問 問4・問5）：x％減少後がAなら、元は A÷(1−x/100)。</li>
+  <li><strong>森林の炭素の大半は土壌にある</strong>（第1問 問4）：見える部分だけで判断しない。</li>
+  <li><strong>域内貿易比率と所得水準は別の指標</strong>（第2問 問2・問5）：無関係な指標を因果で結ばない。</li>
+  <li><strong>難民の大半は近隣の中・低所得国にいる</strong>（第2問 問4）：印象ではなく統計で確認する。</li>
+  <li><strong>割合の上昇≠実額の増加</strong>（第3問 問3）：総額が減っていれば起こりうる。「ポイント」と「倍」を区別する。</li>
+  <li><strong>合計値は地域差を覆い隠す</strong>（第3問 問4・問5）：市全体が増えていても、減少している地区がある。複数の指標で評価する。</li>
+</ul>
+</div>
+
+</div><!-- /ans-detail -->
+</section>
+
+<nav class="pager">
+  <a href="kai4.html">◀ 第4回</a>
+  <a href="index.html">目次へ</a>
+  <a href="kai6.html">第6回 ▶</a>
+</nav>
+
+</main>
+<script src="js/main.js"></script>
+<script src="https://www.genspark.ai/sandbox_inspect.js"></script></body>
+</html>

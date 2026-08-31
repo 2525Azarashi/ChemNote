@@ -236,6 +236,12 @@ export async function fetchMyRating(): Promise<number> {
  * 2問が作られているものがある。そのまま抽選すると
  * 同じ問いが1試合に2回出るので、グループキーで間引く
  * （battleCore.buildQuestionOrder の groupOf）。
+ *
+ * ★選択式とかな入力（みんはや方式）を混ぜる★
+ * ルールの kanaShare（既定 0.3 = 10問中3問）だけをかな入力にする。
+ * 「どの問題がかな入力か」はプール本体を見ないと分からないので、
+ * ここで形式表を作って battleCore に渡している
+ * （battleCore は葉モジュールなのでプールを読めない）。
  */
 export async function drawQuestionIds(
   subject: string,
@@ -247,13 +253,18 @@ export async function drawQuestionIds(
 
   const pool = await loadPool(subject);
   const groupById = new Map<string, string>();
-  for (const q of pool) groupById.set(q.id, `${q.chapterId}:${q.subQuestionId}`);
+  const kanaIds = new Set<string>();
+  for (const q of pool) {
+    groupById.set(q.id, `${q.chapterId}:${q.subQuestionId}`);
+    if (q.format === 'kana') kanaIds.add(q.id);
+  }
 
   return buildQuestionOrder(
     ids,
     rules.questionCount,
     seed,
     (id) => groupById.get(id) || id,
+    { isKana: (id) => kanaIds.has(id), kanaShare: rules.kanaShare },
   );
 }
 

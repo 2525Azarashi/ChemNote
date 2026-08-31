@@ -3,15 +3,27 @@
  * 対戦モード: 出題と解答の画面
  * ===================================================================
  *
- * ■ 3つの解答形式を1画面で扱う
+ * ■ 解答形式を1画面で扱う
  *   choice4 … 4つの選択肢から選ぶ（元から4択の問題）
- *   word    … 4つの語句カードから選ぶ（元が短答・記述）
- *   panel   … 文字パネルを順に押して語を組み立てる（元が短答の2〜5文字）
+ *   choice  … 2〜3択・5〜6択（元データがその数で作られている問題）
+ *   kana    … 五十音キーボードで1文字ずつ押して書く（「みんはや」方式）
+ *   word    … 4つの語句カードから選ぶ（元が短答・記述／現在は停止中）
+ *   panel   … 文字パネルを順に押して語を組み立てる（現在は停止中）
  *
  * ★手で入力する形式を1つも作っていない★
  * 制限時間が10〜30秒しかないところに日本語IMEの変換が入ると、
  * 端末やIMEの差で実力と関係なく勝敗が決まってしまう。
  * 「押すだけ」で答えられる形に統一している。
+ * 五十音キーボード（kana）も ★アプリが描いたキーを押す★ 方式なので、
+ * 変換の確定を待つ必要がなく、この方針から外れていない。
+ *
+ * -------------------------------------------------------------------
+ * ■ 選択式とかな入力を混ぜて出す
+ * -------------------------------------------------------------------
+ * 利用者の指定は「1文字ずつ押していく方式をもっと入れてほしい。
+ * ただし全ての問題をそうしなくてよい。四択問題も含めて」だった。
+ * 何割をかな入力にするかは ルールの kanaShare（既定 0.3）で決まり、
+ * この画面は ★1問ごとに question.format を見て出し分けるだけ★ にしている。
  *
  * -------------------------------------------------------------------
  * ■ 答えた直後に正解を見せない
@@ -28,7 +40,11 @@ import { Check, Hourglass, RotateCcw } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
 import type { BattleQuestion } from '../core/types';
-import { GOLD, NAVY, TimeBar } from './BattleParts';
+import { KANA_LAYOUT, kanaTextOf } from '../core/kanaKeyboard';
+import { AMBER, GOLD, INK, INK_SUB, LINE, TimeBar, WRONG } from './BattleParts';
+
+/** 正解の色（ライトUIの緑） */
+const CORRECT = '#1E7D46';
 
 /** 空欄の目印（生成スクリプトと同じ文字列） */
 const BLANK_MARK = '［　？　］';
@@ -55,13 +71,17 @@ interface Props {
   locked?: boolean;
   /** 自分が選んだ選択肢 */
   myChoice: number;
-  /** 自分が押したパネルの順 */
+  /** 自分が押したパネル／キーの順 */
   myPanel: number[];
   /** 正解を見せてよい状態か（両者解答済み／締切後） */
   reveal: boolean;
   onChoose: (index: number) => void;
   onPushPanel: (index: number) => void;
   onPopPanel: () => void;
+  /** かな入力: 最後の1文字を「゛゜小」で切り替える */
+  onCyclePanel: () => void;
+  /** かな入力: 「けってい」 */
+  onCommitKana: () => void;
 }
 
 export function BattleQuestionView({
@@ -77,6 +97,8 @@ export function BattleQuestionView({
   onChoose,
   onPushPanel,
   onPopPanel,
+  onCyclePanel,
+  onCommitKana,
 }: Props) {
   const theme = subjectTheme(question.subject as SubjectKey);
 
@@ -85,8 +107,8 @@ export function BattleQuestionView({
       {/* 進捗と残り時間 */}
       <div className="mb-3">
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-xs font-black text-white/70">
-            <span style={{ color: GOLD }} className="text-base tabular-nums">
+          <p className="text-xs font-black" style={{ color: INK_SUB }}>
+            <span style={{ color: '#B7791F' }} className="text-base tabular-nums">
               {index + 1}
             </span>
             <span className="mx-0.5">/</span>
@@ -94,9 +116,9 @@ export function BattleQuestionView({
           </p>
           <span
             className="rounded-full px-2 py-0.5 text-[10px] font-black"
-            style={{ background: `${theme.accent}33`, color: '#FFFFFF' }}
+            style={{ background: `${theme.accent}26`, color: theme.accent }}
           >
-            {formatLabel(question.format)}
+            {formatLabel(question.format, question.options.length)}
           </span>
         </div>
         <TimeBar remainMs={remainMs} limitSec={question.timeLimit} />
@@ -104,22 +126,39 @@ export function BattleQuestionView({
 
       {/* 問題文 */}
       <article
-        className="mb-3 rounded-2xl border px-4 py-3.5"
+        className="mb-3 rounded-2xl border-2 px-4 py-3.5"
         style={{
-          borderColor: `${theme.accent}55`,
-          background: 'rgba(255,255,255,0.05)',
+          borderColor: `${theme.accent}44`,
+          background: theme.surface,
         }}
       >
         {question.prompt && (
-          <p className="mb-2 text-[13px] leading-relaxed text-white/80">
+          <p
+            className="mb-2 whitespace-pre-wrap text-[13px] leading-relaxed"
+            style={{ color: INK_SUB }}
+          >
             {renderWithBlank(question.prompt)}
           </p>
         )}
-        <p className="text-[15px] font-bold leading-relaxed text-white">{question.label}</p>
+        <p className="text-[15px] font-bold leading-relaxed" style={{ color: INK }}>
+          {question.label}
+        </p>
       </article>
 
       {/* 解答欄 */}
-      {question.format === 'panel' ? (
+      {question.format === 'kana' ? (
+        <KanaAnswer
+          question={question}
+          answered={answered}
+          locked={locked}
+          myPanel={myPanel}
+          reveal={reveal}
+          onPush={onPushPanel}
+          onPop={onPopPanel}
+          onCycle={onCyclePanel}
+          onCommit={onCommitKana}
+        />
+      ) : question.format === 'panel' ? (
         <PanelAnswer
           question={question}
           answered={answered}
@@ -142,7 +181,10 @@ export function BattleQuestionView({
 
       {/* 待ちの案内 */}
       {answered && !reveal && (
-        <p className="mt-3 flex items-center justify-center gap-1.5 text-xs font-bold text-white/50">
+        <p
+          className="mt-3 flex items-center justify-center gap-1.5 text-xs font-bold"
+          style={{ color: INK_SUB }}
+        >
           <Hourglass size={13} className="animate-pulse" />
           あいてを まっています
         </p>
@@ -152,13 +194,24 @@ export function BattleQuestionView({
 }
 
 // ============================================================
-// 4択・語句選択
+// 選択式（4択・2〜3択・5〜6択）
 // ============================================================
 
 /**
- * 4つのカードから選ぶ。
+ * 選択肢から選ぶ（choice4 と choice の両方）。
  *
- * ★2列固定にしている理由★
+ * ★選択肢の数は4つとは限らない★
+ * 元データをそのまま出す方針にしたので、
+ * 2択（109件）・3択（49件）・5〜6択 もそのまま届く。
+ * 「四択に揃えるために誘いを追加する」のは問題を作り直すことなので、やらない。
+ *
+ * ★列数の決め方★
+ *   2択・3択   … 1列（「元素／単体」のような短い対置を横に並べると、
+ *                 どちらを選んだのか見違えやすい）
+ *   4択以上   … 2列
+ *   長い選択肢 … 1列
+ *
+ * ★もとの2列固定の理由（4択以上では今も同じ）★
  * 縦1列にすると、選択肢が長いとき下2つが画面外になり、
  * スクロールした人だけ不利になる。
  * 2列なら文字数の多い選択肢でも1画面に収まる。
@@ -178,9 +231,12 @@ function ChoiceAnswer({
   reveal: boolean;
   onChoose: (index: number) => void;
 }) {
-  // 選択肢が長いときは1列に落とす（2列だと1文字ずつ折り返して読めない）
-  const longest = Math.max(...question.options.map((o) => o.length));
-  const single = longest > 14;
+  // ★options が空のときに Math.max(...[]) は -Infinity になる★
+  // kana 形式は options を持たないので、万一ここに落ちてきても
+  // 画面が壊れないように 0 を混ぜておく。
+  const longest = Math.max(0, ...question.options.map((o) => o.length));
+  const few = question.options.length <= 3;
+  const single = longest > 14 || few;
 
   return (
     <div className={`grid gap-2 ${single ? 'grid-cols-1' : 'grid-cols-2'}`}>
@@ -193,19 +249,20 @@ function ChoiceAnswer({
         //   正解が見えてよい状態 → 正解を金、自分の誤答を赤
         //   まだ見せない状態     → 自分が押したものだけ金枠
         const border = correct
-          ? GOLD
+          ? CORRECT
           : wrongPick
-            ? '#E74C3C'
+            ? WRONG
             : picked
-              ? GOLD
-              : 'rgba(255,255,255,0.2)';
+              ? '#E5B93C'
+              : LINE;
         const background = correct
-          ? `${GOLD}22`
+          ? `${CORRECT}14`
           : wrongPick
-            ? '#E74C3C22'
+            ? `${WRONG}12`
             : picked
-              ? `${GOLD}18`
-              : 'rgba(255,255,255,0.05)';
+              ? `${GOLD}40`
+              : '#FFFFFF';
+        const textColor = correct ? CORRECT : wrongPick ? WRONG : INK;
 
         return (
           <button
@@ -213,13 +270,18 @@ function ChoiceAnswer({
             type="button"
             disabled={answered || locked}
             onClick={() => onChoose(i)}
-            className="flex min-h-[58px] items-center justify-center gap-1.5 rounded-2xl border-2 px-3 py-2.5 text-center text-[13px] font-bold leading-snug text-white transition active:scale-[0.97] disabled:active:scale-100"
+            className="flex min-h-[58px] items-center justify-center gap-1.5 rounded-2xl border-2 px-3 py-2.5 text-center text-[13px] font-bold leading-snug shadow-sm transition active:scale-[0.97] disabled:active:scale-100"
             // ★圏外のときだけ薄くする★
             // 解答済み（answered）では自分の選択を見せ続けたいので薄くしない。
             // 押せない理由（圏外）のときは、見た目でも伝わる必要がある。
-            style={{ borderColor: border, background, opacity: locked && !answered ? 0.45 : 1 }}
+            style={{
+              borderColor: border,
+              background,
+              color: textColor,
+              opacity: locked && !answered ? 0.45 : 1,
+            }}
           >
-            {correct && <Check size={15} style={{ color: GOLD }} className="shrink-0" />}
+            {correct && <Check size={15} style={{ color: CORRECT }} className="shrink-0" />}
             <span className="break-words">{option}</span>
           </button>
         );
@@ -273,8 +335,8 @@ function PanelAnswer({
       <div
         className="flex items-center justify-center gap-1.5 rounded-2xl border-2 px-3 py-3"
         style={{
-          borderColor: reveal ? (isCorrect ? GOLD : '#E74C3C') : `${GOLD}66`,
-          background: 'rgba(255,255,255,0.05)',
+          borderColor: reveal ? (isCorrect ? CORRECT : WRONG) : `${GOLD}AA`,
+          background: '#FFFFFF',
         }}
       >
         {Array.from({ length: need }).map((_, slot) => {
@@ -285,9 +347,9 @@ function PanelAnswer({
               key={`slot-${slot}`}
               className="flex h-11 w-11 items-center justify-center rounded-xl text-lg font-black"
               style={{
-                background: filled ? GOLD : 'rgba(255,255,255,0.08)',
-                color: filled ? NAVY : 'rgba(255,255,255,0.3)',
-                border: filled ? 'none' : '2px dashed rgba(255,255,255,0.2)',
+                background: filled ? GOLD : '#F4F1EA',
+                color: filled ? INK : INK_SUB,
+                border: filled ? 'none' : `2px dashed ${LINE}`,
               }}
             >
               {filled ? question.options[optionIndex] : ''}
@@ -298,7 +360,7 @@ function PanelAnswer({
 
       {/* 正解の表示（両者が答えた後だけ） */}
       {reveal && !isCorrect && (
-        <p className="text-center text-xs font-bold" style={{ color: GOLD }}>
+        <p className="text-center text-xs font-bold" style={{ color: CORRECT }}>
           こたえ: {correctText}
         </p>
       )}
@@ -313,10 +375,11 @@ function PanelAnswer({
               type="button"
               disabled={answered || locked || used}
               onClick={() => onPush(i)}
-              className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 text-xl font-black text-white transition active:scale-[0.94] disabled:opacity-25 disabled:active:scale-100"
+              className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 text-xl font-black shadow-sm transition active:scale-[0.94] disabled:opacity-25 disabled:active:scale-100"
               style={{
-                borderColor: 'rgba(255,255,255,0.25)',
-                background: 'rgba(255,255,255,0.07)',
+                borderColor: LINE,
+                background: '#FFFFFF',
+                color: INK,
               }}
             >
               {char}
@@ -330,8 +393,8 @@ function PanelAnswer({
         <button
           type="button"
           onClick={onPop}
-          className="mx-auto flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-bold text-white/70"
-          style={{ borderColor: 'rgba(255,255,255,0.25)' }}
+          className="mx-auto flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-bold"
+          style={{ borderColor: LINE, background: '#FFFFFF', color: INK_SUB }}
         >
           <RotateCcw size={13} />
           1つもどす
@@ -342,13 +405,221 @@ function PanelAnswer({
 }
 
 // ============================================================
+// 五十音キーボード（「みんはや」方式）
+// ============================================================
+
+/**
+ * 五十音表を1文字ずつ押して用語を書く。
+ *
+ * -------------------------------------------------------------------
+ * ■ 文字パネル（PanelAnswer）との決定的な違い
+ * -------------------------------------------------------------------
+ * 文字パネルは「答えの文字＋同じ章から借りたダミー3枚」を並べて
+ * 選ばせていたので、★並んだ文字を見れば答えが絞れた★
+ * （「酸」「化」が並んでいれば答えは酸化しかない）。
+ *
+ * 五十音キーボードは画面がいつも同じ表なので、ヒントが一切出ない。
+ * 「思い出して書く」を、入力速度に左右されずに問える唯一の形になっている。
+ *
+ * -------------------------------------------------------------------
+ * ■ 手打ち入力（IME）ではない
+ * -------------------------------------------------------------------
+ * アプリが描いたキーを押すだけなので、変換の確定を待つ必要がない。
+ * 制限時間が10〜30秒しかないところに日本語IMEを持ち込むと、
+ * 端末やIMEの差で実力と関係なく勝敗が決まってしまう。
+ *
+ * -------------------------------------------------------------------
+ * ■ ★「けってい」ボタンを置いている理由（文字パネルとは逆）★
+ * -------------------------------------------------------------------
+ * 文字パネルは文字数が揃った瞬間に自動で送っていた（1タップぶん速い）。
+ * かな入力で同じことをすると壊れる。
+ *
+ * かな入力の最後の1文字が「゛゜小」で作る文字である語が実測で9つある
+ * （ダイヤモン「ド」／ステッ「プ」／アミラー「ゼ」／ヌクレオチ「ド」など）。
+ * 文字数が揃った瞬間に送ると、濁点を付ける前の「ダイヤモント」で確定し、
+ * ★正しく覚えている人が誤答になる★。
+ * そのため、かな入力だけは利用者が「けってい」を押すまで待つ。
+ *
+ * -------------------------------------------------------------------
+ * ■ 文字数のマスを見せている理由
+ * -------------------------------------------------------------------
+ * 答えが何文字かは出題データに元から入っているので、隠しても
+ * 画面の裏側を見れば分かってしまう（隠す意味がない）。
+ * それなら見せて「あと何文字か」が分かるようにした方が、
+ * 押し間違いに気づけて公平になる。
+ */
+function KanaAnswer({
+  question,
+  answered,
+  locked,
+  myPanel,
+  reveal,
+  onPush,
+  onPop,
+  onCycle,
+  onCommit,
+}: {
+  question: BattleQuestion;
+  answered: boolean;
+  locked: boolean;
+  myPanel: number[];
+  reveal: boolean;
+  onPush: (index: number) => void;
+  onPop: () => void;
+  onCycle: () => void;
+  onCommit: () => void;
+}) {
+  const need = question.panelOrder.length;
+  const correctText = kanaTextOf(question.panelOrder);
+  const myText = kanaTextOf(myPanel);
+  const isCorrect = reveal && myText === correctText;
+  const full = myPanel.length >= need;
+  const disabled = answered || locked;
+
+  return (
+    <div className="flex flex-col gap-2.5">
+      {/* 書いている途中の欄 */}
+      <div
+        className="flex flex-wrap items-center justify-center gap-1.5 rounded-2xl border-2 px-3 py-2.5"
+        style={{
+          borderColor: reveal ? (isCorrect ? CORRECT : WRONG) : `${GOLD}AA`,
+          background: '#FFFFFF',
+        }}
+      >
+        {Array.from({ length: need }).map((_, slot) => {
+          const key = myPanel[slot];
+          const filled = key !== undefined;
+          // ★いま書き換えられるのは最後の1文字だけ★
+          // 「゛゜小」が効く場所を枠線で示しておくと、
+          // どこが変わるのか押す前に分かる。
+          const isLast = filled && slot === myPanel.length - 1;
+          return (
+            <span
+              key={`kana-slot-${slot}`}
+              className="flex h-10 w-10 items-center justify-center rounded-xl text-lg font-black"
+              style={{
+                background: filled ? GOLD : '#F4F1EA',
+                color: filled ? INK : INK_SUB,
+                border: filled
+                  ? isLast && !answered
+                    ? `2px solid ${AMBER}`
+                    : '2px solid transparent'
+                  : `2px dashed ${LINE}`,
+              }}
+            >
+              {filled ? kanaTextOf([key]) : ''}
+            </span>
+          );
+        })}
+      </div>
+
+      {/* 正解の表示（両者が答えた後だけ） */}
+      {reveal && !isCorrect && (
+        <p className="text-center text-xs font-bold" style={{ color: CORRECT }}>
+          こたえ: {correctText}
+        </p>
+      )}
+
+      {/* ★答え終わった後はキーボードを消す★
+          押せないキーを並べたままにすると、
+          「反応しない」と受け取られて何度も押されることになる。 */}
+      {!answered && !reveal && (
+        <>
+          {/* 五十音表（5段 × 10行） */}
+          <div className="flex flex-col gap-1">
+            {KANA_LAYOUT.map((row, r) => (
+              <div key={`kana-row-${r}`} className="grid grid-cols-10 gap-1">
+                {row.map((key, c) => {
+                  if (key === null) {
+                    // ★空きマスは詰めずに空けておく★
+                    // 詰めると行がずれて、五十音表として読めなくなる。
+                    return <span key={`kana-gap-${r}-${c}`} />;
+                  }
+                  return (
+                    <button
+                      key={`kana-key-${key}`}
+                      type="button"
+                      disabled={disabled || full}
+                      onClick={() => onPush(key)}
+                      className="flex aspect-square items-center justify-center rounded-lg border text-base font-black shadow-sm transition active:scale-[0.9] disabled:opacity-30 disabled:active:scale-100"
+                      style={{ borderColor: LINE, background: '#FFFFFF', color: INK }}
+                    >
+                      {kanaTextOf([key])}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+
+          {/* 操作ボタン */}
+          <div className="flex items-stretch justify-center gap-2">
+            {/* ★濁点・半濁点・小書きは1つのボタンで回す★
+                82文字すべてを並べるとスマホで1キーが指より小さくなる。
+                押すごとに カ→ガ→カ のように一周して戻るので、
+                押しすぎても詰まらない。 */}
+            <button
+              type="button"
+              disabled={disabled || myPanel.length === 0}
+              onClick={onCycle}
+              className="rounded-xl border-2 px-4 py-2.5 text-sm font-black shadow-sm transition active:scale-[0.95] disabled:opacity-30 disabled:active:scale-100"
+              style={{ borderColor: AMBER, background: '#FFFFFF', color: AMBER }}
+            >
+              ゛゜小
+            </button>
+            <button
+              type="button"
+              disabled={disabled || myPanel.length === 0}
+              onClick={onPop}
+              className="flex items-center gap-1.5 rounded-xl border px-4 py-2.5 text-xs font-bold transition active:scale-[0.95] disabled:opacity-30 disabled:active:scale-100"
+              style={{ borderColor: LINE, background: '#FFFFFF', color: INK_SUB }}
+            >
+              <RotateCcw size={13} />
+              1つけす
+            </button>
+            {/* ★文字数が揃うまで押せない★
+                足りない状態で送ると必ず不正解になるので、
+                誤タップで解答権を失わないようにしている。 */}
+            <button
+              type="button"
+              disabled={disabled || !full}
+              onClick={onCommit}
+              className="flex items-center gap-1.5 rounded-xl px-5 py-2.5 text-sm font-black shadow transition active:scale-[0.95] disabled:opacity-30 disabled:active:scale-100"
+              style={{ background: full ? GOLD : LINE, color: INK }}
+            >
+              <Check size={15} />
+              けってい
+            </button>
+          </div>
+
+          <p className="text-center text-[10px] font-bold leading-snug" style={{ color: INK_SUB }}>
+            だくてん・はんだくてん・ちいさい もじ は
+            <span style={{ color: AMBER }}> ゛゜小 </span>
+            で つけます
+          </p>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
 // 表示のヘルパ
 // ============================================================
 
-function formatLabel(format: string): string {
-  if (format === 'choice4') return '4つから えらぶ';
+/**
+ * 画面右上の形式バッジの文言。
+ *
+ * ★選択肢の数をそのまま書く★
+ * 2択なのに「4つから えらぶ」と出ていると、
+ * 「選択肢が消えている＝壊れている」と誤解される。
+ */
+function formatLabel(format: string, optionCount: number): string {
+  if (format === 'kana') return 'もじを 1つずつ おす';
   if (format === 'word') return 'ことばを えらぶ';
-  return 'もじを ならべる';
+  if (format === 'panel') return 'もじを ならべる';
+  if (optionCount > 0) return `${optionCount}つから えらぶ`;
+  return 'えらぶ';
 }
 
 /**
@@ -369,7 +640,7 @@ function renderWithBlank(text: string): ReactNode {
       {i < parts.length - 1 && (
         <mark
           className="mx-0.5 rounded px-1.5 py-0.5 text-[13px] font-black"
-          style={{ background: GOLD, color: NAVY }}
+          style={{ background: GOLD, color: INK }}
         >
           ？
         </mark>

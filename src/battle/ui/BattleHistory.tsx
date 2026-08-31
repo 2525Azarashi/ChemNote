@@ -22,11 +22,15 @@ import type { SubjectKey } from '../../data/allChapters';
 import { fetchHistory } from '../data/battle';
 import type { BattleHistoryItem } from '../data/battle';
 import {
+  AMBER,
   BattleButton,
   BattleLoading,
   BattleShell,
   BattleTitle,
-  GOLD,
+  INK,
+  INK_SUB,
+  LINE,
+  WRONG,
 } from './BattleParts';
 
 interface OutcomeConf {
@@ -47,11 +51,16 @@ interface OutcomeConf {
  *
  * 引き分けを独立した定数にすれば、フォールバックは型として必ず存在する。
  */
-const DRAW_CONF: OutcomeConf = { label: 'ひきわけ', color: '#5DADE2' };
+const DRAW_CONF: OutcomeConf = { label: 'ひきわけ', color: '#2E86C1' };
 
+/**
+ * ★「かち」にゴールド（#F4D03F）を使わない★
+ * ここは小さな札の中の 11px の文字なので、アイボリー地の上では
+ * 金色の文字がほぼ読めない。既存の hint 色（琥珀）に置き換えている。
+ */
 const OUTCOME_CONF: Record<string, OutcomeConf | undefined> = {
-  win: { label: 'かち', color: '#F4D03F' },
-  lose: { label: 'まけ', color: '#8FA5B8' },
+  win: { label: 'かち', color: AMBER },
+  lose: { label: 'まけ', color: INK_SUB },
   draw: DRAW_CONF,
 };
 
@@ -98,7 +107,10 @@ export function BattleHistory({ onBack }: { onBack: () => void }) {
       {loading ? (
         <BattleLoading message="履歴を読みこんでいます…" />
       ) : items.length === 0 ? (
-        <p className="py-12 text-center text-xs font-bold leading-relaxed text-white/50">
+        <p
+          className="py-12 text-center text-xs font-bold leading-relaxed"
+          style={{ color: INK_SUB }}
+        >
           まだ対戦していません。
           <br />
           合言葉で友達と1戦してみましょう。
@@ -114,16 +126,16 @@ export function BattleHistory({ onBack }: { onBack: () => void }) {
             return (
               <li
                 key={item.roomId}
-                className="flex items-center gap-2.5 rounded-2xl border px-3 py-2.5"
+                className="flex items-center gap-2.5 rounded-2xl border-2 px-3 py-2.5"
                 style={{
-                  borderColor: `${conf.color}33`,
-                  background: 'rgba(255,255,255,0.04)',
+                  borderColor: `${conf.color}44`,
+                  background: '#FFFFFF',
                 }}
               >
                 {/* 勝敗 */}
                 <span
                   className="flex h-9 w-11 shrink-0 items-center justify-center rounded-xl text-[11px] font-black"
-                  style={{ background: `${conf.color}22`, color: conf.color }}
+                  style={{ background: `${conf.color}1F`, color: conf.color }}
                 >
                   {conf.label}
                 </span>
@@ -137,14 +149,19 @@ export function BattleHistory({ onBack }: { onBack: () => void }) {
                     >
                       {labelOfSubject(item.subject)}
                     </span>
-                    <span className="truncate text-[11px] font-bold text-white/70">
+                    <span className="truncate text-[11px] font-bold" style={{ color: INK }}>
                       vs {item.opponentNickname || '対戦相手'}
                     </span>
                   </span>
-                  <span className="block text-[10px] font-bold tabular-nums text-white/40">
+                  <span
+                    className="block text-[10px] font-bold tabular-nums"
+                    style={{ color: INK_SUB }}
+                  >
                     {item.myScore} — {item.opponentScore}
                     {formatDate(item.playedAt) && (
-                      <span className="ml-1.5 text-white/25">{formatDate(item.playedAt)}</span>
+                      <span className="ml-1.5" style={{ color: `${INK_SUB}AA` }}>
+                        {formatDate(item.playedAt)}
+                      </span>
                     )}
                   </span>
                 </span>
@@ -153,7 +170,7 @@ export function BattleHistory({ onBack }: { onBack: () => void }) {
                 {applied ? (
                   <span
                     className="flex shrink-0 items-center gap-0.5 text-xs font-black tabular-nums"
-                    style={{ color: delta > 0 ? GOLD : delta < 0 ? '#E74C3C' : '#8FA5B8' }}
+                    style={{ color: delta > 0 ? AMBER : delta < 0 ? WRONG : INK_SUB }}
                   >
                     {delta > 0 ? (
                       <TrendingUp size={13} />
@@ -165,7 +182,12 @@ export function BattleHistory({ onBack }: { onBack: () => void }) {
                     {delta > 0 ? `+${delta}` : delta}
                   </span>
                 ) : (
-                  <span className="shrink-0 text-[9px] font-bold text-white/30">未反映</span>
+                  <span
+                    className="shrink-0 rounded px-1 py-0.5 text-[9px] font-bold"
+                    style={{ background: '#F1EDE4', border: `1px solid ${LINE}`, color: INK_SUB }}
+                  >
+                    未反映
+                  </span>
                 )}
               </li>
             );
