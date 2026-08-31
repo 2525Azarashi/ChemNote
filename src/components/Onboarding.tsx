@@ -106,8 +106,16 @@ export function Onboarding({ onComplete, onGuest }: OnboardingProps) {
     }
   };
 
+    /* items-center → items-safe-center。
+        スクロールする箱（overflow-y-auto）に中央寄せを付けると、
+        中身が画面より高いとき ★上にはみ出した分へスクロールで到達できない★。
+        ここは名前・学年などの入力欄が並ぶので、縦の短いパソコンや
+        キーボードが出た状態では実際にはみ出す。
+        safe 付きなら「収まるときは中央・はみ出すときは上端」に自動で
+        切り替わるので、見た目を変えずに一番上まで読める。
+        （定義は index.css 13.5 節） */
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE] p-4 font-handwriting">
+    <div className="fixed inset-0 z-[100] flex items-safe-center justify-center overflow-y-auto bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE] p-4 font-handwriting">
       {/* ノート罫線の背景 */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.18]"

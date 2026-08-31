@@ -13,14 +13,41 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Chembasis">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <!-- ===== アプリのアイコン =====================================
+         ご指摘（原文）
+           > アプリケーションのアイコンが横に圧縮されているので
+           > 正常な比に直してください。
+
+         ■ 原因
+           アイコンの枠は OS もブラウザも必ず「正方形」なのに、
+           ここで指していたのは
+             ・/icons/icon-192.png  … ★ファイルが存在しなかった★
+             ・/manatob_bg.png      … 1000x358（横:縦 = 2.79:1 の横長ロゴ）
+             ・/favicon.ico         … 中身が 1x1 の空画像
+           だった。横長の絵を正方形の枠に入れれば、当然横に潰れる。
+
+         ■ 直し方
+           ロゴの比は一切変えず、正方形のキャンバスの中央に置いて
+           上下に余白を足した（写真のレターボックスと同じ）。
+             python3 scripts/make-icons.py
+           でいつでも作り直せる。ロゴを差し替えたら再実行するだけ。
+
+         ■ favicon だけ絵柄が違う理由
+           タブのアイコンは 16px しかなく、横長ロゴ全体を入れると
+           高さ 5px の帯になって読めない。
+           そこでロゴ左端の「m」（山のマーク・実測 305x305 の正方形）
+           だけを切り出して使っている。
+         ============================================================ -->
+    <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+    <link rel="icon" sizes="any" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon-180.png">
     
     <!-- Preconnect for fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <title>マナトビ　化学基礎</title>
-    <link rel="icon" href="/manatob_bg.png" />
   </head>
   <body>
     <div id="root"></div>
