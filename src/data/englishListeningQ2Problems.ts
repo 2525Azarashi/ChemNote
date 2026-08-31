@@ -918,6 +918,7 @@ const EL2_SET6_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set6_2',
     label: '問2',
     hint: '文房具店で客が定規を買っている。（話者：女性（客） / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set6_q2.mp3',
     script: 'W: Do you have a 30-centimeter ruler?\nM: We have plastic ones and metal ones. Which do you prefer?\nW: Metal, please. And I need one with millimeter markings.\nM: OK, this one has both centimeters and millimeters.',
     turns: [
       { who: 'W', text: 'Do you have a 30-centimeter ruler?' },
@@ -932,6 +933,7 @@ const EL2_SET6_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set6_3',
     label: '問3',
     hint: '男女がホームパーティーの飾り付けをしている。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set6_q3.mp3',
     script: 'M: I brought the balloons. Should I put them over the door?\nW: The flower arch is already there. Leave the door alone.\nM: Then next to the dining table?\nW: Yes, that corner still looks empty. Put them there.',
     turns: [
       { who: 'M', text: 'I brought the balloons. Should I put them over the door?' },
@@ -1107,6 +1109,7 @@ const EL2_SET7_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set7_1',
     label: '問1',
     hint: '男女がスマートフォンの新機種を比較している。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set7_q1.mp3',
     script: 'M: Model A has a bigger screen, but Model B has a better camera.\nW: I take a lot of photos, so the camera matters.\nM: But Model B is heavier.\nW: That\'s OK. Photos are the priority.',
     turns: [
       { who: 'M', text: 'Model A has a bigger screen, but Model B has a better camera.' },
@@ -1121,6 +1124,7 @@ const EL2_SET7_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set7_3',
     label: '問3',
     hint: '男女が飛行機の座席表を見ながら席を選んでいる。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set7_q3.mp3',
     script: 'M: We can still change our seats. Do you want the window?\nW: I\'d like to see outside, but my legs really need more room.\nM: Then the exit row has the most legroom on this plane.\nW: That settles it. I\'ll take the seat next to the exit door.',
     turns: [
       { who: 'M', text: 'We can still change our seats. Do you want the window?' },
@@ -1256,6 +1260,7 @@ const EL2_SET8_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set8_1',
     label: '問1',
     hint: '母と息子が誕生日ケーキのデザインを決めている。（話者：母親 / 息子）',
+    audioUrl: '/listening_audio/el2_set8_q1.mp3',
     script: 'M: Do you want strawberries or blueberries on top?\nS: Strawberries! And chocolate letters that say \'Happy Birthday\'.\nM: How about chocolate flakes on the side, too?\nS: No, just plain cream on the side.',
     turns: [
       { who: 'M', text: 'Do you want strawberries or blueberries on top?' },
@@ -1270,6 +1275,7 @@ const EL2_SET8_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set8_3',
     label: '問3',
     hint: '男女が引越しの荷物をどの部屋へ運ぶか相談している。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set8_q3.mp3',
     script: 'M: Three boxes left: books, clothes, and kitchen things.\nW: Books go to the bedroom, and the kitchen things stay in the kitchen.\nM: Should I split the clothes between the closet and the kitchen?\nW: No, all the clothes go in the closet. One box, one room.',
     turns: [
       { who: 'M', text: 'Three boxes left: books, clothes, and kitchen things.' },
@@ -1405,6 +1411,7 @@ const EL2_SET9_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set9_1',
     label: '問1',
     hint: '女性がジムのインストラクターと運動プランを相談している。（話者：女性 / 男性（インストラクター））',
+    audioUrl: '/listening_audio/el2_set9_q1.mp3',
     script: 'W: I want to start running, but my knees are not strong.\nM: Then swimming or cycling would be better.\nW: I can\'t swim well, so cycling it is.\nM: Great. Let\'s start with 20 minutes a day.',
     turns: [
       { who: 'W', text: 'I want to start running, but my knees are not strong.' },
@@ -1419,6 +1426,7 @@ const EL2_SET9_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set9_2',
     label: '問2',
     hint: '男女がイベントの席割りを決めている。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set9_q2.mp3',
     script: 'M: VIP guests should be in the front row.\nW: Yes, and the media people on the left side of the middle rows.\nM: What about students?\nW: Students in the back rows.',
     turns: [
       { who: 'M', text: 'VIP guests should be in the front row.' },
@@ -1433,6 +1441,7 @@ const EL2_SET9_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set9_3',
     label: '問3',
     hint: '男女がテーマパークで乗り物を選んでいる。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set9_q3.mp3',
     script: 'W: How about the roller coaster?\nM: I feel sick on those. Let\'s try the Ferris wheel.\nW: Too slow. What about the haunted house?\nM: OK, but let\'s do the merry-go-round first.',
     turns: [
       { who: 'W', text: 'How about the roller coaster?' },
@@ -1608,6 +1617,7 @@ const EL2_SET10_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set10_1',
     label: '問1',
     hint: '男女がバス路線図を見ながら行き方を相談している。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set10_q1.mp3',
     script: 'M: How do we get to the museum?\nW: Take bus 5 to City Hall, then transfer to bus 12.\nM: Isn\'t bus 8 direct?\nW: Yes, but it only runs on weekends. Today is Wednesday.',
     turns: [
       { who: 'M', text: 'How do we get to the museum?' },
@@ -1622,6 +1632,7 @@ const EL2_SET10_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set10_3',
     label: '問3',
     hint: '男女がフリーマーケットで買い物をしている。（話者：女性 / 男性（店主））',
+    audioUrl: '/listening_audio/el2_set10_q3.mp3',
     script: 'W: How much for this vase and this teapot?\nM: The vase is 500 yen, the teapot 800. Both together, 1200 yen.\nW: I\'ll take just the teapot.\nM: Actually, if you take both, I\'ll make it 1000.',
     turns: [
       { who: 'W', text: 'How much for this vase and this teapot?' },
@@ -1757,6 +1768,7 @@ const EL2_SET11_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set11_1',
     label: '問1',
     hint: '男女がホームパーティーの飲み物を数えている。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set11_q1.mp3',
     script: 'W: I bought six bottles of juice. Is that enough?\nM: For ten guests, yes. But we need water too.\nW: The same six, then?\nM: Make it one more than the juice, just in case.',
     turns: [
       { who: 'W', text: 'I bought six bottles of juice. Is that enough?' },
@@ -1771,6 +1783,7 @@ const EL2_SET11_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set11_2',
     label: '問2',
     hint: '男女が壁掛け写真の位置を決めている。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set11_q2.mp3',
     script: 'M: Should the landscape photo go above the sofa or above the TV?\nW: Above the TV. And the family photo above the sofa.\nM: Where\'s the wedding photo, then?\nW: On the shelf, not on the wall.',
     turns: [
       { who: 'M', text: 'Should the landscape photo go above the sofa or above the TV?' },
@@ -1785,6 +1798,7 @@ const EL2_SET11_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set11_3',
     label: '問3',
     hint: '男女が学校の掲示板の告知を見ている。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set11_q3.mp3',
     script: 'W: The music club meeting is on Friday at 4.\nM: No, the poster says Thursday at 4:30.\nW: Oh, I read the old one. Where does it meet?\nM: In the music room, not the gym.',
     turns: [
       { who: 'W', text: 'The music club meeting is on Friday at 4.' },
@@ -1960,6 +1974,7 @@ const EL2_SET12_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set12_1',
     label: '問1',
     hint: '男女がイヤホンを試している。（話者：女性（店員） / 男性（客））',
+    audioUrl: '/listening_audio/el2_set12_q1.mp3',
     script: 'W: We have wired earphones and wireless ones.\nM: Wireless, please. With noise cancelling if possible.\nW: Yes, this one has it. It also has a microphone.\nM: Great, I\'ll take it.',
     turns: [
       { who: 'W', text: 'We have wired earphones and wireless ones.' },
@@ -1974,6 +1989,7 @@ const EL2_SET12_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set12_2',
     label: '問2',
     hint: '男女がカフェのメニューを見ている。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set12_q2.mp3',
     script: 'M: The set menu with soup, salad, and sandwich is 900 yen.\nW: I don\'t want the soup.\nM: Then it\'s 700 without the soup.\nW: OK, I\'ll take that.',
     turns: [
       { who: 'M', text: 'The set menu with soup, salad, and sandwich is 900 yen.' },
@@ -1988,6 +2004,7 @@ const EL2_SET12_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set12_3',
     label: '問3',
     hint: '男女がおもちゃ屋で人形を選んでいる。（話者：女性（客） / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set12_q3.mp3',
     script: 'W: I\'d like a doll with long hair and a red dress.\nM: We have long hair with pink dress or short hair with red dress.\nW: Any long hair with red dress?\nM: Not now. How about long hair, pink dress? It\'s the closest.',
     turns: [
       { who: 'W', text: 'I\'d like a doll with long hair and a red dress.' },
@@ -2163,6 +2180,7 @@ const EL2_SET13_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set13_1',
     label: '問1',
     hint: '男女が地図を見ながらキャンプ場での待ち合わせ場所を決めている。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set13_q1.mp3',
     script: 'M: I\'ll drive from the house. You\'re coming on foot, right?\nW: Yes. Shall we meet by the lake on the way?\nM: The road there is a dead end for cars. Let me pick you up after the bridge.\nW: All right, right where the road turns into the campsite.',
     turns: [
       { who: 'M', text: 'I\'ll drive from the house. You\'re coming on foot, right?' },
@@ -2177,6 +2195,7 @@ const EL2_SET13_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set13_2',
     label: '問2',
     hint: '男女が科学実験のグラフを見ている。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set13_q2.mp3',
     script: 'M: The temperature rose sharply for the first 10 minutes.\nW: Yes, then it stayed the same for a while.\nM: And after 20 minutes, it dropped slightly.\nW: Right, and then it stayed flat again.',
     turns: [
       { who: 'M', text: 'The temperature rose sharply for the first 10 minutes.' },
@@ -2191,6 +2210,7 @@ const EL2_SET13_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set13_3',
     label: '問3',
     hint: '男女がスポーツクラブで週間スケジュールを組んでいる。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set13_q3.mp3',
     script: 'W: I\'ll do yoga on Mondays and Wednesdays.\nM: Both days? That\'s a lot.\nW: And swimming on Fridays. What about you?\nM: I\'ll swim on Tuesdays and Thursdays.',
     turns: [
       { who: 'W', text: 'I\'ll do yoga on Mondays and Wednesdays.' },
@@ -2366,6 +2386,7 @@ const EL2_SET14_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set14_1',
     label: '問1',
     hint: '男女が学校祭のポスターを作成中。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set14_q1.mp3',
     script: 'M: The title \'School Festival\' should be at the top.\nW: In big letters, right? And the date underneath.\nM: Yes. And put the location at the bottom.\nW: How about a small logo in the corner?',
     turns: [
       { who: 'M', text: 'The title \'School Festival\' should be at the top.' },
@@ -2380,6 +2401,7 @@ const EL2_SET14_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set14_3',
     label: '問3',
     hint: '男女が旅行の持ち物を確認している。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set14_q3.mp3',
     script: 'M: Passport, camera, and sunglasses. What else?\nW: We need the guidebook, not the map. My phone has the map.\nM: OK. And an umbrella?\nW: No, it won\'t rain there.',
     turns: [
       { who: 'M', text: 'Passport, camera, and sunglasses. What else?' },
@@ -2515,6 +2537,7 @@ const EL2_SET15_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set15_1',
     label: '問1',
     hint: '男女が電車の遅延情報を確認している。（話者：男性（駅員） / 女性（乗客））',
+    audioUrl: '/listening_audio/el2_set15_q1.mp3',
     script: 'M: The 10:15 train is delayed by 30 minutes.\nW: So it leaves at 10:45?\nM: Yes. But the 10:30 express is on time and stops at your station.\nW: Great, I\'ll take the express.',
     turns: [
       { who: 'M', text: 'The 10:15 train is delayed by 30 minutes.' },
@@ -2529,6 +2552,7 @@ const EL2_SET15_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set15_2',
     label: '問2',
     hint: '男女が写真を見ながら誰が誰かを話している。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set15_q2.mp3',
     script: 'M: Is that your mother on the left?\nW: No, that\'s my aunt. My mother is next to her, holding the baby.\nM: And the tall man behind them?\nW: That\'s my father.',
     turns: [
       { who: 'M', text: 'Is that your mother on the left?' },
@@ -2543,6 +2567,7 @@ const EL2_SET15_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set15_3',
     label: '問3',
     hint: '男女が空港で荷物を預ける手続きをしている。（話者：女性（客） / 男性（係員））',
+    audioUrl: '/listening_audio/el2_set15_q3.mp3',
     script: 'W: I have one large suitcase and this small carry-on.\nM: Only the large one goes to check-in. The carry-on stays with you.\nW: And this backpack?\nM: Backpack too, if it fits under the seat.',
     turns: [
       { who: 'W', text: 'I have one large suitcase and this small carry-on.' },
@@ -2718,6 +2743,7 @@ const EL2_SET16_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set16_2',
     label: '問2',
     hint: '男女が学校の靴箱の位置を確認している。（話者：男性 / 女性）',
+    audioUrl: '/listening_audio/el2_set16_q2.mp3',
     script: 'M: Could you put my gym bag in my shoe locker?\nW: Sure. It\'s in row B, second from the top, isn\'t it?\nM: It used to be, but they moved me to row C.\nW: Row C. Which one?\nM: Third from the top.',
     turns: [
       { who: 'M', text: 'Could you put my gym bag in my shoe locker?' },
