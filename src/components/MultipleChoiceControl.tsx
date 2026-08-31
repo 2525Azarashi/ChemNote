@@ -44,6 +44,19 @@ export interface MultipleChoiceControlProps {
   longPressFired: React.MutableRefObject<boolean>;
   /** リスニングのスマホ表示で図がない場合のレイアウト分岐。 */
   listeningMobileNoFigure: boolean;
+  /**
+   * リスニングのスマホ表示で「図がある」場合のレイアウト分岐。
+   *
+   * ★これを足した理由（ご指摘：第1問B・第2問の図が小さすぎる）★
+   *   図つきの大問では、図と選択肢が縦に高さを取り合う。
+   *   ①②③④ のようにマークだけの選択肢は2列×2行に並んでいて、
+   *   実測（390x664・第2問）で 112px（52px×2行＋行間8px）を
+   *   占めていた。マークだけなら4列×1行でも1つ 88x48px あって
+   *   指で押せるので、1行にするだけで約 60px を図に回せる。
+   *   図が無い大問（listeningMobileNoFigure）では逆に
+   *   「背を伸ばして押しやすくする」のが正解なので、両者は別扱いにする。
+   */
+  listeningMobileWithFigure?: boolean;
 }
 
 export function MultipleChoiceControl({
@@ -64,6 +77,7 @@ export function MultipleChoiceControl({
   justStruck,
   longPressFired,
   listeningMobileNoFigure,
+  listeningMobileWithFigure = false,
 }: MultipleChoiceControlProps) {
   // Quiz.tsx にあったときの呼び名をそのまま残す（下の JSX を書き換えないため）
   const handleOptionSelect = onSelect;
@@ -201,7 +215,28 @@ export function MultipleChoiceControl({
         // xs ブレークポイントは未定義で「効かないクラス」だった。スマホで列数を
         // 増やすと1つあたりのタップ幅が狭くなり本要件（タップしづらい）に逆行する
         // ため、ブレークポイントを追加せずクラスを削除している。
-        : "grid grid-cols-2 gap-2 md:gap-3 w-full sm:flex sm:flex-wrap"
+        /*
+          ★図つきのスマホだけ、マークだけの選択肢を1行に並べる★
+          ご指摘（手書きの指示書）：図を「大きめに」。
+
+          ■ 実測（390x664・第2問・①②③④）
+              grid-cols-2 → 52px × 2行 ＋ 行間 8px ＝ 112px
+              grid-cols-4 → 48px × 1行              ＝  48px
+            差の 64px がそのまま図の高さに変わる
+            （左ペインは flex-1 で「解答ペインが取らなかった分」を全部もらう）。
+
+          ■ 押しやすさは落とさない
+              4列にしても 1つあたり 390px ÷ 4 − 余白 ≒ 88px 幅。
+              高さは min-h-[3rem]（48px）が生きるので 88x48px。
+              指で押す下限（44x44px）を上下とも超えている。
+
+          ■ 本文つき（英文）の選択肢は対象外
+              stacked（本文つき・長い選択肢）はこの分岐に入らないので、
+              英文が4列に潰れることはない。
+        */
+        : `grid gap-2 md:gap-3 w-full sm:flex sm:flex-wrap ${
+            listeningMobileWithFigure ? 'grid-cols-4 md:grid-cols-2' : 'grid-cols-2'
+          }`
       }`}>
         {sq.options.map((opt: string, optIdx: number) => {
           const isSelected = isMultiple
