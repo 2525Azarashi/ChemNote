@@ -1291,6 +1291,8 @@ service cloud.firestore {
       function battleAttestOnlyMine() {
         return request.resource.data.attest is map
           && request.resource.data.attest.keys().hasOnly(resource.data.players)
+          // ★自分の申告の中身も検査する★（下の battleMyAttestSane）
+          && battleMyAttestSane()
           && (
                resource.data.players.size() < 2
                || battleOpponentAttestKept()
@@ -1312,6 +1314,78 @@ service cloud.firestore {
             : (otherUid in request.resource.data.attest
                && request.resource.data.attest[otherUid] == resource.data.attest[otherUid])
         );
+      }
+
+      // ===========================================================
+      // ★自分の申告が正しい形か★
+      // ===========================================================
+      //
+      // ──────────────────────────────────────────────
+      // この検査が無かったときに、実際に何ができたか
+      // ──────────────────────────────────────────────
+      // 解答（answers）は battleMyAnswerSane() で中身まで検査していたのに、
+      // ★申告（attest）は「相手の欄が変わっていないか」しか見ていなかった★。
+      // つまり自分の欄には何でも置けた。
+      //
+      //   ・at に過去の時刻を書く
+      //     → 申告時刻が証拠にならなくなる。
+      //   ・outcome に 'win' 以外の勝手な文字列や数値を書く
+      //     → 「一致しているか」を判定する側が想定外の値を扱う。
+      //   ・一度出した申告を、相手の申告を見てから書き換える
+      //     → ★相手が 'lose' と申告したのを見てから自分を 'win' に直せば、
+      //       常に一致が成立して勝ちを確定できる★。
+      //   ・巨大な文字列を入れてドキュメント上限（1MiB）を狙う
+      //
+      // レートは「両者の申告が一致したときだけ動く」設計なので、
+      // 申告の書き換えが通ると相互確認そのものが無意味になる。
+      //
+      // ──────────────────────────────────────────────
+      // 検査の方針
+      // ──────────────────────────────────────────────
+      // 解答と同じ考え方にそろえる。
+      //   ・1回の更新で書き足せるのは「自分の申告」1件だけ
+      //   ・★まだ自分の申告が無いときだけ書ける★（上書き・取り下げ禁止）
+      //   ・at はサーバ時刻そのもの
+      //   ・outcome は 3 種類のみ、点数は数値で上限つき
+      //
+      // 申告を触らない更新（解答・進行・離脱）は先に素通りさせる。
+      function battleMyAttestSane() {
+        return (
+          request.resource.data.attest == resource.data.attest
+            ? true
+            : battleMyAttestAdded()
+        );
+      }
+
+      function battleMyAttestAdded() {
+        return
+          // ── 変わったキーが「自分」1つだけ ──
+          //    ★相手の申告の追加・削除・書き換えを同時に封じる★
+          request.resource.data.attest.diff(resource.data.attest).affectedKeys()
+            == [request.auth.uid].toSet()
+
+          // ── まだ自分の申告が無い ──
+          //    ★これが「相手を見てから直す」を封じる本体★
+          //    上の affectedKeys だけだと「値の書き換え」も1キーなので通る。
+          && !(request.auth.uid in resource.data.attest)
+          && request.auth.uid in request.resource.data.attest
+
+          && battleAttestRecSane(
+               request.resource.data.attest[request.auth.uid]
+             );
+      }
+
+      function battleAttestRecSane(rec) {
+        return rec is map
+          && rec.keys().hasOnly(['myScore', 'opponentScore', 'outcome', 'at'])
+          && rec.keys().hasAll(['myScore', 'opponentScore', 'outcome', 'at'])
+          && rec.myScore is number
+          && rec.myScore >= 0 && rec.myScore <= 100000
+          && rec.opponentScore is number
+          && rec.opponentScore >= 0 && rec.opponentScore <= 100000
+          && (rec.outcome == 'win' || rec.outcome == 'lose' || rec.outcome == 'draw')
+          // ★時刻はサーバに刻ませる★（端末時刻を書けない）
+          && rec.at == request.time;
       }
 
       // status の遷移を一方向に限る。
@@ -1632,6 +1706,90 @@ service cloud.firestore {
         return 60;
       }
 
+      // ===========================================================
+      // ★申告した試合が本当に存在したかを確かめる★
+      // ===========================================================
+      //
+      // ──────────────────────────────────────────────
+      // この検査が無かったときに、実際に何ができたか
+      // ──────────────────────────────────────────────
+      // src/battle/data/battleRanking.ts の冒頭には
+      //     「2. ルールで ★試合の相互確認が済んだ部屋IDを要求★ する
+      //       → 架空の試合では書けない」
+      // と書かれていたが、★その検査は実装されていなかった★。
+      // ルールが見ていたのは
+      //     lastRoomId != 前回の lastRoomId
+      // だけ。つまり「前回と違う文字列」であれば何でも通った。
+      //
+      // 結果として、次の手順でレートを無限に上げられた:
+      //   1. lastRoomId: 'a' で rating +60 を書く
+      //   2. lastRoomId: 'b' で rating +60 を書く
+      //   3. lastRoomId: 'a' に戻して rating +60 を書く …
+      // 2つの架空の部屋IDを交互に書くだけで、
+      // 1回も対戦せずに上限（4000）まで到達できてしまう。
+      // 変化量の上限（60）は「1回あたり」しか縛っていないので、
+      // 回数を防いでいなければ意味が無い。
+      // ＝またしても★コメントが嘘をついていた★（インシデント②と同型）。
+      //
+      // ──────────────────────────────────────────────
+      // 検査の方針
+      // ──────────────────────────────────────────────
+      // Firestore ルールは get() で他のドキュメントを読める。
+      // そこで lastRoomId が指す部屋を実際に読み、次を全部確かめる。
+      //   ・その部屋が存在する
+      //   ・自分がその部屋の参加者である
+      //   ・2人部屋である（1人部屋の自作自演を防ぐ）
+      //   ・試合が終わっている（status == 'finished'）
+      //   ・自分の申告が入っている
+      // これで「架空の部屋ID」「他人の部屋」「まだ終わっていない部屋」
+      // 「1人で作った部屋」が全部落ちる。
+      //
+      // ★勝敗数の増加が1件までという既存の検査と組み合わせる★
+      // 実在する部屋1つにつき1回しか書けない（lastRoomId が変わらないと
+      // 2回目が通らない）ので、
+      // 「レートを上げるには実際に対戦を1試合こなす」以外の道が無くなる。
+      //
+      // ──────────────────────────────────────────────
+      // なぜ「相手の申告も揃っていること」を要求しないのか
+      // ──────────────────────────────────────────────
+      // 相手が離脱した場合（不戦勝）は相手の申告が永久に来ない。
+      // ここで相手の申告を必須にすると、
+      // ★逃げられた側がレートを反映できなくなる★（逃げ得になる）。
+      // 申告の一致はアプリ側で判定し、
+      // ルールは「実在する自分が参加した決着済みの試合」までを保証する。
+      //
+      // ──────────────────────────────────────────────
+      // get() の追加コストについて
+      // ──────────────────────────────────────────────
+      // ルール内の get() は 1 回につき読み取り 1 回として課金される。
+      // ただし発生するのは★1試合の終了時に1回だけ★なので、
+      // 無料枠（1日5万読み取り）に対して無視できる。
+      function battleRoomProof() {
+        return battleRoomProofOn(request.resource.data.lastRoomId);
+      }
+
+      function battleRoomProofOn(roomId) {
+        return exists(/databases/$(database)/documents/battle_rooms/$(roomId))
+          && battleRoomProofData(
+               get(/databases/$(database)/documents/battle_rooms/$(roomId)).data
+             );
+      }
+
+      function battleRoomProofData(room) {
+        return room.players is list
+          // 自分が参加していた試合であること
+          && uid in room.players
+          // ★1人部屋を弾く★
+          //   1人で部屋を作って自分だけ申告すれば
+          //   「実在する決着済みの部屋」が作れてしまう。
+          && room.players.size() == 2
+          // 決着していること
+          && room.status == 'finished'
+          // 自分が結果を申告していること
+          && room.attest is map
+          && uid in room.attest;
+      }
+
       function battleValidRankingRow(d) {
         return d.keys().hasOnly([
                  'uid', 'nickname', 'photoURL', 'rating',
@@ -1660,10 +1818,12 @@ service cloud.firestore {
 
       // 更新（1 試合の反映）。
       //
-      // ★3 つの条件で「1 試合ぶんしか動かない」ことを保証する★
+      // ★4 つの条件で「実際の 1 試合ぶんしか動かない」ことを保証する★
       //   1. レートの変化量が上限以内
-      //   2. 勝敗数の増加が合計 1 だけ
+      //   2. 勝敗数の増加が ★ちょうど 1★
       //   3. lastRoomId が必ず変わる（同じ試合の二重反映を防ぐ）
+      //   4. lastRoomId の部屋が実在し、自分が参加して決着している
+      //      （これが無いと 1〜3 は全部回避できる。上の battleRoomProof 参照）
       allow update: if isOwner(uid)
         && battleValidRankingRow(request.resource.data)
         // 1. 変化量
@@ -1671,16 +1831,24 @@ service cloud.firestore {
            <= resource.data.rating + battleRatingDelta()
         && request.resource.data.rating
            >= resource.data.rating - battleRatingDelta()
-        // 2. 勝敗数は減らせない／増えるのは合計 1
+        // 2. 勝敗数は減らせない／増えるのはちょうど 1
+        //
+        //    ★「<= 1」ではなく「== 1」にする理由★
+        //    以前は <= 1 だったので「0 件」も通っていた。
+        //    つまり勝敗数を一切増やさずに
+        //    レートだけを毎回 +60 する更新が許されていた。
+        //    正しい反映は必ず勝ち・負け・引き分けのどれかが1増える。
         && request.resource.data.wins >= resource.data.wins
         && request.resource.data.losses >= resource.data.losses
         && request.resource.data.draws >= resource.data.draws
         && (request.resource.data.wins - resource.data.wins)
            + (request.resource.data.losses - resource.data.losses)
-           + (request.resource.data.draws - resource.data.draws) <= 1
+           + (request.resource.data.draws - resource.data.draws) == 1
         // 3. 同じ試合を 2 回反映できない
         && request.resource.data.lastRoomId != resource.data.lastRoomId
-        && request.resource.data.lastRoomId.size() > 0;
+        && request.resource.data.lastRoomId.size() > 0
+        // 4. その試合が本当にあったか
+        && battleRoomProof();
 
       // ★削除を禁止する理由★
       // 負けたレートを消して作り直せると、レートが意味を失う。
@@ -1698,7 +1866,32 @@ service cloud.firestore {
     match /battle_history/{uid}/items/{roomId} {
       allow read: if isOwner(uid);
 
+      // ★履歴も「実在した自分の試合」だけに限る★
+      //
+      // 履歴は自分しか読めないので、捏造しても他人に迷惑は掛からない
+      // ……と考えて以前は形の検査だけにしていた。
+      // しかし次の実害がある。
+      //   ・架空の履歴を大量に書いて保存量と書き込み枠を食い潰せる
+      //     （無料枠は全利用者で共有なので、他の人が対戦できなくなる）
+      //   ・将来「履歴から戦績を集計して表示する」機能を足したときに、
+      //     捏造された履歴を正しい数字として信じてしまう
+      // レート側と同じ検査を通しておけば、どちらも起きない。
+      function battleHistoryRoomProof() {
+        return exists(/databases/$(database)/documents/battle_rooms/$(roomId))
+          && battleHistoryRoomOk(
+               get(/databases/$(database)/documents/battle_rooms/$(roomId)).data
+             );
+      }
+
+      function battleHistoryRoomOk(room) {
+        return room.players is list
+          && uid in room.players
+          && room.attest is map
+          && uid in room.attest;
+      }
+
       allow create, update: if isOwner(uid)
+        && battleHistoryRoomProof()
         && request.resource.data.keys().hasOnly([
              'uid', 'roomId', 'subject', 'outcome',
              'myScore', 'opponentScore', 'opponentNickname',
