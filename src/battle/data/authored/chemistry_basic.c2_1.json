@@ -2300,6 +2300,633 @@
       "oneLine": "化学的性質を決めるのは電子。同位体は電子数が同じなので性質もほぼ同じ。",
       "timeLimit": 22,
       "grounding": "原子番号＝陽子数＝（中性のとき）電子数"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_a1:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_a1"
+      },
+      "format": "choice4",
+      "prompt": "Aは周期表の第3周期1族にある元素である。Aの価電子数はいくつか。",
+      "label": "Aの価電子数",
+      "options": [
+        {
+          "text": "1",
+          "correct": true,
+          "why": "族番号の一の位が価電子数。1族なので価電子は1個である。"
+        },
+        {
+          "text": "3",
+          "why": "3は周期の番号であって、価電子数ではない。周期は電子殻の数を表す。"
+        },
+        {
+          "text": "8",
+          "why": "8個の価電子をもつのは18族の貴ガスだが、貴ガスは価電子0とみなす。"
+        },
+        {
+          "text": "2",
+          "why": "価電子2個は2族の元素。1族と2族を取りちがえている。"
+        }
+      ],
+      "oneLine": "族＝最外殻電子の数なので、1族のAの価電子数は1個。",
+      "timeLimit": 14,
+      "grounding": "族＝最外殻電子の数"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_a1:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_a1"
+      },
+      "format": "choice4",
+      "prompt": "Aは第3周期1族の元素である。Aの元素記号として正しいものはどれか。",
+      "label": "Aの元素記号",
+      "options": [
+        {
+          "text": "Na",
+          "correct": true,
+          "why": "第3周期の1族はナトリウム Na である。"
+        },
+        {
+          "text": "Li",
+          "why": "Li も1族だが、第2周期にあるので第3周期ではない。"
+        },
+        {
+          "text": "K",
+          "why": "K も1族だが、第4周期にあるので第3周期ではない。"
+        },
+        {
+          "text": "Mg",
+          "why": "Mg は第3周期だが2族であり、1族ではない。"
+        }
+      ],
+      "oneLine": "第3周期・1族の交点にある元素はナトリウム Na。",
+      "timeLimit": 14,
+      "grounding": "A(Na)"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_a1:3",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_a1"
+      },
+      "format": "choice4",
+      "prompt": "Aが属する1族の元素（水素を除く）をまとめて何とよぶか。",
+      "label": "1族の呼び名",
+      "options": [
+        {
+          "text": "アルカリ金属",
+          "correct": true,
+          "why": "1族（水素を除く）はアルカリ金属とよばれる。"
+        },
+        {
+          "text": "ハロゲン",
+          "why": "ハロゲンは17族の元素の呼び名である。"
+        },
+        {
+          "text": "貴ガス",
+          "why": "貴ガスは18族の元素の呼び名である。"
+        },
+        {
+          "text": "遷移元素",
+          "why": "遷移元素は3〜12族の元素をさす呼び名である。"
+        }
+      ],
+      "oneLine": "1族はアルカリ金属、17族はハロゲン、18族は貴ガスとよぶ。",
+      "timeLimit": 14,
+      "grounding": "1族はアルカリ金属"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_a1:4",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_a1"
+      },
+      "format": "choice4",
+      "prompt": "Aは第3周期にある。Aの原子がもつ電子殻はいくつか。",
+      "label": "Aの電子殻の数",
+      "options": [
+        {
+          "text": "3",
+          "correct": true,
+          "why": "周期＝電子殻の数なので、第3周期なら電子殻はK殻・L殻・M殻の3つ。"
+        },
+        {
+          "text": "1",
+          "why": "1は族の番号であって、電子殻の数ではない。"
+        },
+        {
+          "text": "2",
+          "why": "電子殻が2つなのは第2周期の元素である。"
+        },
+        {
+          "text": "4",
+          "why": "電子殻が4つなのは第4周期の元素である。"
+        }
+      ],
+      "oneLine": "周期の数字がそのまま、その原子がもつ電子殻の数になる。",
+      "timeLimit": 14,
+      "grounding": "周期＝電子殻の数"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_b1:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_b1"
+      },
+      "format": "choice4",
+      "prompt": "Bは周期表の第2周期16族にある元素である。Bの価電子数はいくつか。",
+      "label": "Bの価電子数",
+      "options": [
+        {
+          "text": "6",
+          "correct": true,
+          "why": "13族以降は族番号から10を引いた数が価電子数。16族なので6個である。"
+        },
+        {
+          "text": "2",
+          "why": "2は周期の番号であって、価電子数ではない。"
+        },
+        {
+          "text": "4",
+          "why": "価電子4個は14族の元素。族番号から10を引く計算をまちがえている。"
+        },
+        {
+          "text": "8",
+          "why": "価電子8個になるのは18族だが、貴ガスは価電子0とみなす。"
+        }
+      ],
+      "oneLine": "16族は族番号−10＝6個が価電子数になる。",
+      "timeLimit": 16,
+      "grounding": "族＝最外殻電子の数"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_b1:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_b1"
+      },
+      "format": "choice4",
+      "prompt": "Bは第2周期16族の元素である。Bの元素記号として正しいものはどれか。",
+      "label": "Bの元素記号",
+      "options": [
+        {
+          "text": "O",
+          "correct": true,
+          "why": "第2周期の16族は酸素 O である。"
+        },
+        {
+          "text": "S",
+          "why": "S も16族だが、第3周期にあるので第2周期ではない。"
+        },
+        {
+          "text": "N",
+          "why": "N は第2周期だが15族であり、16族ではない。"
+        },
+        {
+          "text": "C",
+          "why": "C は第2周期だが14族であり、16族ではない。"
+        }
+      ],
+      "oneLine": "第2周期・16族の交点にある元素は酸素 O。",
+      "timeLimit": 16,
+      "grounding": "B(O)"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_b1:3",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_b1"
+      },
+      "format": "choice4",
+      "prompt": "Bと同じ族に属し、化学的性質が似ている元素はどれか。",
+      "label": "Bと同族の元素",
+      "options": [
+        {
+          "text": "S",
+          "correct": true,
+          "why": "S は16族で、B（O）と同族なので価電子数が同じで性質が似る。"
+        },
+        {
+          "text": "Na",
+          "why": "Na は1族であり、16族のBとは族がちがう。"
+        },
+        {
+          "text": "Cl",
+          "why": "Cl は17族であり、16族のBとは族がちがう。"
+        },
+        {
+          "text": "Ar",
+          "why": "Ar は18族であり、16族のBとは族がちがう。"
+        }
+      ],
+      "oneLine": "同族は最外殻電子数が同じなので性質が似る。Oと同族は S。",
+      "timeLimit": 16,
+      "grounding": "S, Se（16族）"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_c1:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_c1"
+      },
+      "format": "choice4",
+      "prompt": "Cは周期表の第3周期17族にある元素である。Cの価電子数はいくつか。",
+      "label": "Cの価電子数",
+      "options": [
+        {
+          "text": "7",
+          "correct": true,
+          "why": "族番号から10を引いた数が価電子数。17族なので7個である。"
+        },
+        {
+          "text": "1",
+          "why": "価電子1個は1族の元素。族番号の十の位だけを見てしまっている。"
+        },
+        {
+          "text": "3",
+          "why": "3は周期の番号であって、価電子数ではない。"
+        },
+        {
+          "text": "5",
+          "why": "価電子5個は15族の元素であり、17族ではない。"
+        }
+      ],
+      "oneLine": "17族は族番号−10＝7個が価電子数になる。",
+      "timeLimit": 16,
+      "grounding": "族＝最外殻電子の数"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_c1:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_c1"
+      },
+      "format": "choice4",
+      "prompt": "Cは第3周期17族の元素である。Cの元素記号として正しいものはどれか。",
+      "label": "Cの元素記号",
+      "options": [
+        {
+          "text": "Cl",
+          "correct": true,
+          "why": "第3周期の17族は塩素 Cl である。"
+        },
+        {
+          "text": "Br",
+          "why": "Br も17族だが、第4周期にあるので第3周期ではない。"
+        },
+        {
+          "text": "I",
+          "why": "I も17族だが、第5周期にあるので第3周期ではない。"
+        },
+        {
+          "text": "F",
+          "why": "F も17族だが、第2周期にあるので第3周期ではない。"
+        }
+      ],
+      "oneLine": "第3周期・17族の交点にある元素は塩素 Cl。",
+      "timeLimit": 16,
+      "grounding": "C(Cl)"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_c1:3",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_c1"
+      },
+      "format": "choice4",
+      "prompt": "Cが属する17族の元素をまとめて何とよぶか。",
+      "label": "17族の呼び名",
+      "options": [
+        {
+          "text": "ハロゲン",
+          "correct": true,
+          "why": "17族はハロゲンとよばれ、Cl のほかに F, Br, I などがある。"
+        },
+        {
+          "text": "貴ガス",
+          "why": "貴ガスは18族の元素の呼び名である。"
+        },
+        {
+          "text": "アルカリ金属",
+          "why": "アルカリ金属は1族の元素の呼び名である。"
+        },
+        {
+          "text": "両性元素",
+          "why": "両性元素は酸とも塩基とも反応する Al や Zn などをさす。"
+        }
+      ],
+      "oneLine": "17族はハロゲン。同族なので価電子7個で性質が似る。",
+      "timeLimit": 14,
+      "grounding": "17族はハロゲン"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_d1:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_d1"
+      },
+      "format": "choice4",
+      "prompt": "Dは周期表の第4周期2族にある元素である。Dの価電子数はいくつか。",
+      "label": "Dの価電子数",
+      "options": [
+        {
+          "text": "2",
+          "correct": true,
+          "why": "族＝最外殻電子の数。2族なので価電子は2個である。"
+        },
+        {
+          "text": "4",
+          "why": "4は周期の番号であって、価電子数ではない。"
+        },
+        {
+          "text": "8",
+          "why": "価電子8個になるのは18族だが、貴ガスは価電子0とみなす。"
+        },
+        {
+          "text": "6",
+          "why": "価電子6個は16族の元素であり、2族ではない。"
+        }
+      ],
+      "oneLine": "族＝最外殻電子の数なので、2族のDの価電子数は2個。",
+      "timeLimit": 14,
+      "grounding": "族＝最外殻電子の数"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_d1:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_d1"
+      },
+      "format": "choice4",
+      "prompt": "Dは第4周期2族の元素である。Dの元素記号として正しいものはどれか。",
+      "label": "Dの元素記号",
+      "options": [
+        {
+          "text": "Ca",
+          "correct": true,
+          "why": "第4周期の2族はカルシウム Ca である。"
+        },
+        {
+          "text": "Mg",
+          "why": "Mg も2族だが、第3周期にあるので第4周期ではない。"
+        },
+        {
+          "text": "Be",
+          "why": "Be も2族だが、第2周期にあるので第4周期ではない。"
+        },
+        {
+          "text": "Sr",
+          "why": "Sr も2族だが、第5周期にあるので第4周期ではない。"
+        }
+      ],
+      "oneLine": "第4周期・2族の交点にある元素はカルシウム Ca。",
+      "timeLimit": 16,
+      "grounding": "D(Ca)"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_d1:3",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_d1"
+      },
+      "format": "choice4",
+      "prompt": "Dと同じ族に属し、化学的性質が似ている元素はどれか。",
+      "label": "Dと同族の元素",
+      "options": [
+        {
+          "text": "Mg",
+          "correct": true,
+          "why": "Mg は2族で、D（Ca）と同族なので価電子数が同じで性質が似る。"
+        },
+        {
+          "text": "Na",
+          "why": "Na は1族であり、2族のDとは族がちがう。"
+        },
+        {
+          "text": "Cl",
+          "why": "Cl は17族であり、2族のDとは族がちがう。"
+        },
+        {
+          "text": "S",
+          "why": "S は16族であり、2族のDとは族がちがう。"
+        }
+      ],
+      "oneLine": "同族は最外殻電子数が同じなので性質が似る。Caと同族は Mg。",
+      "timeLimit": 16,
+      "grounding": "Mg,"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_e1:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_e1"
+      },
+      "format": "choice4",
+      "prompt": "Eは周期表の第2周期14族にある元素である。Eの価電子数はいくつか。",
+      "label": "Eの価電子数",
+      "options": [
+        {
+          "text": "4",
+          "correct": true,
+          "why": "族番号から10を引いた数が価電子数。14族なので4個である。"
+        },
+        {
+          "text": "2",
+          "why": "2は周期の番号であって、価電子数ではない。"
+        },
+        {
+          "text": "6",
+          "why": "価電子6個は16族の元素であり、14族ではない。"
+        },
+        {
+          "text": "8",
+          "why": "価電子8個になるのは18族だが、貴ガスは価電子0とみなす。"
+        }
+      ],
+      "oneLine": "14族は族番号−10＝4個が価電子数になる。",
+      "timeLimit": 16,
+      "grounding": "族＝最外殻電子の数"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_e1:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_e1"
+      },
+      "format": "choice4",
+      "prompt": "Eは第2周期14族の元素である。Eの元素記号として正しいものはどれか。",
+      "label": "Eの元素記号",
+      "options": [
+        {
+          "text": "C",
+          "correct": true,
+          "why": "第2周期の14族は炭素 C である。"
+        },
+        {
+          "text": "Si",
+          "why": "Si も14族だが、第3周期にあるので第2周期ではない。"
+        },
+        {
+          "text": "Ge",
+          "why": "Ge も14族だが、第4周期にあるので第2周期ではない。"
+        },
+        {
+          "text": "N",
+          "why": "N は第2周期だが15族であり、14族ではない。"
+        }
+      ],
+      "oneLine": "第2周期・14族の交点にある元素は炭素 C。",
+      "timeLimit": 16,
+      "grounding": "E(C)"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_e1:3",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_e1"
+      },
+      "format": "choice4",
+      "prompt": "Eと同じ族に属し、化学的性質が似ている元素はどれか。",
+      "label": "Eと同族の元素",
+      "options": [
+        {
+          "text": "Si",
+          "correct": true,
+          "why": "Si は14族で、E（C）と同族なので価電子数が同じで性質が似る。"
+        },
+        {
+          "text": "O",
+          "why": "O は16族であり、14族のEとは族がちがう。"
+        },
+        {
+          "text": "Na",
+          "why": "Na は1族であり、14族のEとは族がちがう。"
+        },
+        {
+          "text": "Cl",
+          "why": "Cl は17族であり、14族のEとは族がちがう。"
+        }
+      ],
+      "oneLine": "同族は最外殻電子数が同じなので性質が似る。Cと同族は Si。",
+      "timeLimit": 16,
+      "grounding": "Si, Ge（14族）"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_f1:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_f1"
+      },
+      "format": "choice4",
+      "prompt": "Fは周期表の第3周期18族にある元素である。Fの価電子数はいくつか。",
+      "label": "Fの価電子数",
+      "options": [
+        {
+          "text": "0",
+          "correct": true,
+          "why": "18族の貴ガスは安定で他の原子と結びつきにくいため、価電子は0とみなす。"
+        },
+        {
+          "text": "8",
+          "why": "最外殻電子は8個あるが、貴ガスの価電子は0とみなす約束である。"
+        },
+        {
+          "text": "3",
+          "why": "3は周期の番号であって、価電子数ではない。"
+        },
+        {
+          "text": "2",
+          "why": "価電子2個は2族の元素であり、18族ではない。"
+        }
+      ],
+      "oneLine": "貴ガスは最外殻が満たされて安定なので、価電子は0とみなす。",
+      "timeLimit": 18,
+      "grounding": "(1) 0 (2) 非金属（貴ガス、単原子分子）"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_f1:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_f1"
+      },
+      "format": "choice4",
+      "prompt": "Fは第3周期18族の元素である。Fの元素記号として正しいものはどれか。",
+      "label": "Fの元素記号",
+      "options": [
+        {
+          "text": "Ar",
+          "correct": true,
+          "why": "第3周期の18族はアルゴン Ar である。"
+        },
+        {
+          "text": "Ne",
+          "why": "Ne も18族だが、第2周期にあるので第3周期ではない。"
+        },
+        {
+          "text": "Kr",
+          "why": "Kr も18族だが、第4周期にあるので第3周期ではない。"
+        },
+        {
+          "text": "He",
+          "why": "He も18族だが、第1周期にあるので第3周期ではない。"
+        }
+      ],
+      "oneLine": "第3周期・18族の交点にある元素はアルゴン Ar。",
+      "timeLimit": 16,
+      "grounding": "F(Ar)"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_6:q_c2_1_6_f1:3",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_6",
+        "subQuestionId": "q_c2_1_6_f1"
+      },
+      "format": "choice4",
+      "prompt": "Fが属する18族の元素をまとめて何とよぶか。",
+      "label": "18族の呼び名",
+      "options": [
+        {
+          "text": "貴ガス",
+          "correct": true,
+          "why": "18族は貴ガスとよばれ、単原子分子として存在する。"
+        },
+        {
+          "text": "ハロゲン",
+          "why": "ハロゲンは17族の元素の呼び名である。"
+        },
+        {
+          "text": "アルカリ金属",
+          "why": "アルカリ金属は1族の元素の呼び名である。"
+        },
+        {
+          "text": "遷移元素",
+          "why": "遷移元素は3〜12族の元素をさす呼び名である。"
+        }
+      ],
+      "oneLine": "18族は貴ガス。安定なので価電子は0とみなす。",
+      "timeLimit": 14,
+      "grounding": "18族は貴ガス"
     }
   ]
 }
