@@ -600,6 +600,696 @@
       "oneLine": "多原子イオンで3価の陰イオンは PO₄³⁻ のリン酸イオン。",
       "timeLimit": 20,
       "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_1a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_1a"
+      },
+      "format": "choice4",
+      "prompt": "Na⁺ と Cl⁻ からなる化合物の組成式はどれか。",
+      "label": "(1) Na⁺ と Cl⁻ [組成式]",
+      "options": [
+        {
+          "text": "NaCl",
+          "correct": true,
+          "why": "1価と1価だから1:1。そのままNaCl。"
+        },
+        {
+          "text": "Na2Cl2",
+          "why": "比は最小整数比にするので2:2は不可。"
+        },
+        {
+          "text": "Na3Cl",
+          "why": "＋3に対して−1では中性にならない。"
+        },
+        {
+          "text": "Na2Cl3",
+          "why": "どちらも1価なので2:3にはならない。"
+        }
+      ],
+      "oneLine": "Na⁺は1価、Cl⁻は1価。1:1でそろうのでNaCl。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_1b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_1b"
+      },
+      "format": "choice4",
+      "prompt": "NaCl の名称はどれか。",
+      "label": "(1) Na⁺ と Cl⁻ [名称]",
+      "options": [
+        {
+          "text": "塩化ナトリウム",
+          "correct": true,
+          "why": "陰イオン→陽イオンの順に読む。"
+        },
+        {
+          "text": "ナトリウム塩化物",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "塩素化ナトリウム",
+          "why": "Cl⁻の名称は「塩化物イオン」なので塩化。"
+        },
+        {
+          "text": "フッ化ナトリウム",
+          "why": "これはNaFの名称。"
+        }
+      ],
+      "oneLine": "名称は陰イオン→陽イオンの順で「塩化ナトリウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_2a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_2a"
+      },
+      "format": "choice4",
+      "prompt": "Ca²⁺ と Cl⁻ からなる化合物の組成式はどれか。",
+      "label": "(2) Ca²⁺ と Cl⁻ [組成式]",
+      "options": [
+        {
+          "text": "CaCl2",
+          "correct": true,
+          "why": "＋2を−1が2個で打ち消すので1:2。"
+        },
+        {
+          "text": "Ca2Cl2",
+          "why": "最小整数比にすると1:2になる。"
+        },
+        {
+          "text": "CaCl3",
+          "why": "−3では＋2とつり合わない。"
+        },
+        {
+          "text": "Ca3Cl2",
+          "why": "＋6と−2では中性にならない。"
+        }
+      ],
+      "oneLine": "Ca²⁺は2価、Cl⁻は1価。1:2でそろうのでCaCl2。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_2b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_2b"
+      },
+      "format": "choice4",
+      "prompt": "CaCl2 の名称はどれか。",
+      "label": "(2) Ca²⁺ と Cl⁻ [名称]",
+      "options": [
+        {
+          "text": "塩化カルシウム",
+          "correct": true,
+          "why": "陰イオン→陽イオンの順に読む。"
+        },
+        {
+          "text": "カルシウム塩化物",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "塩素化カルシウム",
+          "why": "Cl⁻は「塩化物イオン」なので塩化。"
+        },
+        {
+          "text": "炭酸カルシウム",
+          "why": "これはCaCO3の名称。"
+        }
+      ],
+      "oneLine": "数の2は読まない。名称は「塩化カルシウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_3a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_3a"
+      },
+      "format": "choice4",
+      "prompt": "Al³⁺ と O²⁻ からなる化合物の組成式はどれか。",
+      "label": "(3) Al³⁺ と O²⁻ [組成式]",
+      "options": [
+        {
+          "text": "Al2O3",
+          "correct": true,
+          "why": "価数3と2の最小公倍数6にそろえて2:3。"
+        },
+        {
+          "text": "Al3O2",
+          "why": "＋9と−4では中性にならない。"
+        },
+        {
+          "text": "Al2O2",
+          "why": "＋6と−4ではつり合わない。"
+        },
+        {
+          "text": "Al3O3",
+          "why": "＋9と−6ではつり合わない。"
+        }
+      ],
+      "oneLine": "3価と2価は最小公倍数6にそろえて2:3。Al2O3。",
+      "timeLimit": 14,
+      "grounding": "最小公倍数6にそろえてAl₂O₃"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_3b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_3b"
+      },
+      "format": "choice4",
+      "prompt": "Al2O3 の名称はどれか。",
+      "label": "(3) Al³⁺ と O²⁻ [名称]",
+      "options": [
+        {
+          "text": "酸化アルミニウム",
+          "correct": true,
+          "why": "O²⁻は酸化物イオンなので「酸化」。"
+        },
+        {
+          "text": "アルミニウム酸化物",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "三酸化二アルミニウム",
+          "why": "組成式の数は名称に入れない。"
+        },
+        {
+          "text": "塩化アルミニウム",
+          "why": "これはAlCl3の名称。"
+        }
+      ],
+      "oneLine": "O²⁻は酸化物イオン。名称は「酸化アルミニウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_4a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_4a"
+      },
+      "format": "choice4",
+      "prompt": "NH₄⁺ と SO₄²⁻ からなる化合物の組成式はどれか。",
+      "label": "(4) NH₄⁺ と SO₄²⁻ [組成式]",
+      "options": [
+        {
+          "text": "(NH4)2SO4",
+          "correct": true,
+          "why": "＋1が2個で−2を打ち消す。括弧が必要。"
+        },
+        {
+          "text": "NH42SO4",
+          "why": "括弧を付け忘れたミス。"
+        },
+        {
+          "text": "(NH4)SO4",
+          "why": "＋1と−2ではつり合わない。"
+        },
+        {
+          "text": "(NH4)2(SO4)2",
+          "why": "最小整数比にすると2:1になる。"
+        }
+      ],
+      "oneLine": "1価が2個で2価とつり合う。括弧を付けて(NH4)2SO4。",
+      "timeLimit": 14,
+      "grounding": "多原子イオンが2個以上のときに括弧を付け忘れるミス"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_4b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_4b"
+      },
+      "format": "choice4",
+      "prompt": "(NH4)2SO4 の名称はどれか。",
+      "label": "(4) NH₄⁺ と SO₄²⁻ [名称]",
+      "options": [
+        {
+          "text": "硫酸アンモニウム",
+          "correct": true,
+          "why": "SO₄²⁻は硫酸イオン。陰イオンから読む。"
+        },
+        {
+          "text": "アンモニウム硫酸塩",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "硝酸アンモニウム",
+          "why": "これはNH4NO3の名称。"
+        },
+        {
+          "text": "硫酸アンモニア",
+          "why": "イオンの名称はアンモニウム。"
+        }
+      ],
+      "oneLine": "SO₄²⁻は硫酸イオン。名称は「硫酸アンモニウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_5a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_5a"
+      },
+      "format": "choice4",
+      "prompt": "Na⁺ と CO₃²⁻ からなる化合物の組成式はどれか。",
+      "label": "(5) Na⁺ と CO₃²⁻ [組成式]",
+      "options": [
+        {
+          "text": "Na2CO3",
+          "correct": true,
+          "why": "＋1が2個で−2を打ち消すので2:1。"
+        },
+        {
+          "text": "NaCO3",
+          "why": "＋1と−2ではつり合わない。"
+        },
+        {
+          "text": "Na3CO3",
+          "why": "＋3と−2ではつり合わない。"
+        },
+        {
+          "text": "Na2(CO3)2",
+          "why": "最小整数比にすると2:1になる。"
+        }
+      ],
+      "oneLine": "Na⁺2個でCO₃²⁻1個とつり合う。Na2CO3。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_5b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_5b"
+      },
+      "format": "choice4",
+      "prompt": "Na2CO3 の名称はどれか。",
+      "label": "(5) Na⁺ と CO₃²⁻ [名称]",
+      "options": [
+        {
+          "text": "炭酸ナトリウム",
+          "correct": true,
+          "why": "CO₃²⁻は炭酸イオン。陰イオンから読む。"
+        },
+        {
+          "text": "炭酸水素ナトリウム",
+          "why": "これはNaHCO3の名称。"
+        },
+        {
+          "text": "ナトリウム炭酸塩",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "硝酸ナトリウム",
+          "why": "これはNaNO3の名称。"
+        }
+      ],
+      "oneLine": "CO₃²⁻は炭酸イオン。名称は「炭酸ナトリウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_6a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_6a"
+      },
+      "format": "choice4",
+      "prompt": "Mg²⁺ と OH⁻ からなる化合物の組成式はどれか。",
+      "label": "(6) Mg²⁺ と OH⁻ [組成式]",
+      "options": [
+        {
+          "text": "Mg(OH)2",
+          "correct": true,
+          "why": "＋2を−1が2個で打ち消す。括弧が必要。"
+        },
+        {
+          "text": "MgOH2",
+          "why": "括弧を付け忘れたミス。"
+        },
+        {
+          "text": "Mg(OH)3",
+          "why": "−3では＋2とつり合わない。"
+        },
+        {
+          "text": "Mg2(OH)2",
+          "why": "最小整数比にすると1:2になる。"
+        }
+      ],
+      "oneLine": "多原子イオンが2個なので括弧でくくってMg(OH)2。",
+      "timeLimit": 14,
+      "grounding": "多原子イオンが2個以上のときに括弧を付け忘れるミス"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_6b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_6b"
+      },
+      "format": "choice4",
+      "prompt": "Mg(OH)2 の名称はどれか。",
+      "label": "(6) Mg²⁺ と OH⁻ [名称]",
+      "options": [
+        {
+          "text": "水酸化マグネシウム",
+          "correct": true,
+          "why": "OH⁻は水酸化物イオン。"
+        },
+        {
+          "text": "マグネシウム水酸化物",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "塩化マグネシウム",
+          "why": "これはMgCl2の名称。"
+        },
+        {
+          "text": "硫酸マグネシウム",
+          "why": "これはMgSO4の名称。"
+        }
+      ],
+      "oneLine": "OH⁻は水酸化物イオン。「水酸化マグネシウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_7a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_7a"
+      },
+      "format": "choice4",
+      "prompt": "Ca²⁺ と PO₄³⁻ からなる化合物の組成式はどれか。",
+      "label": "(7) Ca²⁺ と PO₄³⁻ [組成式]",
+      "options": [
+        {
+          "text": "Ca3(PO4)2",
+          "correct": true,
+          "why": "価数2と3の最小公倍数6にそろえて3:2。"
+        },
+        {
+          "text": "Ca2(PO4)3",
+          "why": "＋4と−9では中性にならない。"
+        },
+        {
+          "text": "Ca3PO42",
+          "why": "括弧を付け忘れたミス。"
+        },
+        {
+          "text": "Ca(PO4)2",
+          "why": "＋2と−6ではつり合わない。"
+        }
+      ],
+      "oneLine": "2価と3価は最小公倍数6にそろえて3:2。Ca3(PO4)2。",
+      "timeLimit": 15,
+      "grounding": "組成式は陽イオン × m、陰イオン × n として、価数の積が等しくなる最小整数比 m:n をとる。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_7b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_7b"
+      },
+      "format": "choice4",
+      "prompt": "Ca3(PO4)2 の名称はどれか。",
+      "label": "(7) Ca²⁺ と PO₄³⁻ [名称]",
+      "options": [
+        {
+          "text": "リン酸カルシウム",
+          "correct": true,
+          "why": "PO₄³⁻はリン酸イオン。"
+        },
+        {
+          "text": "リン化カルシウム",
+          "why": "これはリン化物イオンの化合物の名称。"
+        },
+        {
+          "text": "カルシウムリン酸塩",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "硫酸カルシウム",
+          "why": "これはCaSO4の名称。"
+        }
+      ],
+      "oneLine": "PO₄³⁻はリン酸イオン。「リン酸カルシウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_8a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_8a"
+      },
+      "format": "choice4",
+      "prompt": "Al³⁺ と SO₄²⁻ からなる化合物の組成式はどれか。",
+      "label": "(8) Al³⁺ と SO₄²⁻ [組成式]",
+      "options": [
+        {
+          "text": "Al2(SO4)3",
+          "correct": true,
+          "why": "価数3と2の最小公倍数6にそろえて2:3。"
+        },
+        {
+          "text": "Al3(SO4)2",
+          "why": "＋9と−4では中性にならない。"
+        },
+        {
+          "text": "Al2SO43",
+          "why": "括弧を付け忘れたミス。"
+        },
+        {
+          "text": "Al(SO4)3",
+          "why": "＋3と−6ではつり合わない。"
+        }
+      ],
+      "oneLine": "3価と2価は最小公倍数6にそろえて2:3。Al2(SO4)3。",
+      "timeLimit": 15,
+      "grounding": "組成式は陽イオン × m、陰イオン × n として、価数の積が等しくなる最小整数比 m:n をとる。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_8b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_8b"
+      },
+      "format": "choice4",
+      "prompt": "Al2(SO4)3 の名称はどれか。",
+      "label": "(8) Al³⁺ と SO₄²⁻ [名称]",
+      "options": [
+        {
+          "text": "硫酸アルミニウム",
+          "correct": true,
+          "why": "SO₄²⁻は硫酸イオン。"
+        },
+        {
+          "text": "アルミニウム硫酸塩",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "硝酸アルミニウム",
+          "why": "これはAl(NO3)3の名称。"
+        },
+        {
+          "text": "硫化アルミニウム",
+          "why": "これはS²⁻の化合物の名称。"
+        }
+      ],
+      "oneLine": "SO₄²⁻は硫酸イオン。「硫酸アルミニウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_1a:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_1a"
+      },
+      "format": "choice4",
+      "prompt": "イオンからなる化合物の組成式は、何がつり合う最小整数比で作るか。",
+      "label": "",
+      "options": [
+        {
+          "text": "陽イオンと陰イオンの電気量の総和",
+          "correct": true,
+          "why": "イオン結晶は全体で電気的に中性。"
+        },
+        {
+          "text": "陽イオンと陰イオンの原子量の和",
+          "why": "質量ではなく電荷でそろえる。"
+        },
+        {
+          "text": "陽イオンと陰イオンの個数",
+          "why": "個数が等しくなるとは限らない。"
+        },
+        {
+          "text": "陽イオンと陰イオンの電子殻の数",
+          "why": "電子殻の数は組成式に関係しない。"
+        }
+      ],
+      "oneLine": "＋の総量＝−の総量になる最小整数比で組成式を作る。",
+      "timeLimit": 14,
+      "grounding": "＋の総量＝−の総量"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_1b:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_1b"
+      },
+      "format": "choice4",
+      "prompt": "イオンからなる化合物の名称は、どの順に読むか。",
+      "label": "",
+      "options": [
+        {
+          "text": "陰イオン→陽イオンの順",
+          "correct": true,
+          "why": "塩化ナトリウムのように陰イオンから読む。"
+        },
+        {
+          "text": "陽イオン→陰イオンの順",
+          "why": "ナトリウム塩化物という読み方はしない。"
+        },
+        {
+          "text": "原子番号の小さい順",
+          "why": "原子番号は名称の順に関係しない。"
+        },
+        {
+          "text": "価数の大きい順",
+          "why": "価数は名称の順に関係しない。"
+        }
+      ],
+      "oneLine": "名称は陰イオン→陽イオンの順。例：塩化ナトリウム。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_3a:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_3a"
+      },
+      "format": "choice4",
+      "prompt": "Al³⁺ と O²⁻ の化合物を AlO と書くのは、なぜ誤りか。",
+      "label": "",
+      "options": [
+        {
+          "text": "電荷の総和が0にならないから",
+          "correct": true,
+          "why": "＋3と−2では中性にならない。"
+        },
+        {
+          "text": "原子量の和が合わないから",
+          "why": "質量ではなく電荷の問題。"
+        },
+        {
+          "text": "括弧が付いていないから",
+          "why": "単原子イオンなので括弧は不要。"
+        },
+        {
+          "text": "元素記号の順序が逆だから",
+          "why": "陽イオンを先に書くのは正しい。"
+        }
+      ],
+      "oneLine": "＋3と−2はつり合わない。2:3にそろえてAl2O3。",
+      "timeLimit": 15,
+      "grounding": "電荷の総和が0になる比（2:3）にそろえる必要がある"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_6a:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_6a"
+      },
+      "format": "choice4",
+      "prompt": "多原子イオンが2個以上あるとき、組成式の書き方で注意することは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "多原子イオンを括弧でくくって数を書く",
+          "correct": true,
+          "why": "Ca(OH)₂をCaOH₂と書くのは誤り。"
+        },
+        {
+          "text": "多原子イオンの元素記号を2回書く",
+          "why": "同じ式を並べて書くことはしない。"
+        },
+        {
+          "text": "多原子イオンの数を左下に書く",
+          "why": "数は括弧の右下に書く。"
+        },
+        {
+          "text": "多原子イオンは括弧を付けずに書く",
+          "why": "括弧を付け忘れるのが典型的なミス。"
+        }
+      ],
+      "oneLine": "多原子イオンが2個以上なら括弧でくくる。Mg(OH)2。",
+      "timeLimit": 15,
+      "grounding": "多原子イオンが2個以上のときに括弧を付け忘れるミス"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_3a:3",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_3a"
+      },
+      "format": "choice4",
+      "prompt": "Al³⁺ と O²⁻ から組成式を作るとき、価数をそろえる最小公倍数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "6",
+          "correct": true,
+          "why": "3と2の最小公倍数は6。2:3になる。"
+        },
+        {
+          "text": "5",
+          "why": "3と2の和であって最小公倍数ではない。"
+        },
+        {
+          "text": "4",
+          "why": "2の倍数だが3の倍数ではない。"
+        },
+        {
+          "text": "9",
+          "why": "3の倍数だが2の倍数ではない。"
+        }
+      ],
+      "oneLine": "3と2の最小公倍数6にそろえるとAl2O3になる。",
+      "timeLimit": 12,
+      "grounding": "最小公倍数6にそろえてAl₂O₃"
     }
   ]
 }
