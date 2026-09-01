@@ -1574,6 +1574,567 @@
       "oneLine": "⁴⁰Ar の質量数は左肩の40。",
       "timeLimit": 12,
       "grounding": "質量数は陽子数＋中性子数"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_1:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_1"
+      },
+      "format": "choice4",
+      "prompt": "He（原子番号2）の電子2個は、どの電子殻に入るか。",
+      "label": "He の電子配置",
+      "options": [
+        {
+          "text": "K2",
+          "correct": true,
+          "why": "電子は内側から詰めるので、2個ともK殻に入って K2。"
+        },
+        {
+          "text": "L2",
+          "why": "電子は内側のK殻から詰める。L殻から始めてはいけない。"
+        },
+        {
+          "text": "M2",
+          "why": "M殻は3番目の殻で、電子2個しかない原子では使わない。"
+        },
+        {
+          "text": "N2",
+          "why": "N殻は4番目の殻で、カリウム以降でようやく使う。"
+        }
+      ],
+      "oneLine": "He は電子2個がすべてK殻に入り K2。",
+      "timeLimit": 16,
+      "grounding": "K殻2個、L殻8個、M殻8個（カルシウムまで）"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_1:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_1"
+      },
+      "format": "choice4",
+      "prompt": "K殻に入る電子の最大数は何個か。",
+      "label": "K殻の最大数",
+      "options": [
+        {
+          "text": "2個",
+          "correct": true,
+          "why": "K殻は n＝1 なので 2×1²＝2 個。"
+        },
+        {
+          "text": "8個",
+          "why": "これはL殻に入る最大数である。"
+        },
+        {
+          "text": "4個",
+          "why": "2n² ではなく 2n と計算した値である。"
+        },
+        {
+          "text": "1個",
+          "why": "K殻には2個まで入る。"
+        }
+      ],
+      "oneLine": "K殻の最大は2個。2n² に n＝1 を入れた値。",
+      "timeLimit": 14,
+      "grounding": "K殻2個、L殻8個、M殻8個（カルシウムまで）"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_2:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_2"
+      },
+      "format": "choice4",
+      "prompt": "C（原子番号6）の電子配置として正しいものはどれか。",
+      "label": "C の電子配置",
+      "options": [
+        {
+          "text": "K2L4",
+          "correct": true,
+          "why": "K殻に2個、残り4個がL殻に入る。"
+        },
+        {
+          "text": "K2L6",
+          "why": "電子が8個になってしまい、酸素の配置である。"
+        },
+        {
+          "text": "K4L2",
+          "why": "K殻には2個までしか入らない。"
+        },
+        {
+          "text": "K6",
+          "why": "K殻に6個は入らない。最大は2個である。"
+        }
+      ],
+      "oneLine": "C は電子6個で K2L4。",
+      "timeLimit": 18,
+      "grounding": "電子殻に内側から詰めて電子配置を書く"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_2:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_2"
+      },
+      "format": "choice4",
+      "prompt": "C の最外殻電子は何個か。",
+      "label": "C の最外殻電子",
+      "options": [
+        {
+          "text": "4個",
+          "correct": true,
+          "why": "K2L4 なので、いちばん外のL殻に4個ある。"
+        },
+        {
+          "text": "2個",
+          "why": "K殻の電子の数であって、最外殻ではない。"
+        },
+        {
+          "text": "6個",
+          "why": "電子の総数であって、最外殻電子の数ではない。"
+        },
+        {
+          "text": "8個",
+          "why": "L殻の最大数であって、炭素の最外殻電子の数ではない。"
+        }
+      ],
+      "oneLine": "C は K2L4 なので最外殻電子は4個。",
+      "timeLimit": 18,
+      "grounding": "電子殻に内側から詰めて電子配置を書く"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_3:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_3"
+      },
+      "format": "choice4",
+      "prompt": "O（原子番号8）の電子配置として正しいものはどれか。",
+      "label": "O の電子配置",
+      "options": [
+        {
+          "text": "K2L6",
+          "correct": true,
+          "why": "K殻に2個、残り6個がL殻に入る。"
+        },
+        {
+          "text": "K2L4",
+          "why": "電子が6個になってしまい、炭素の配置である。"
+        },
+        {
+          "text": "K2L9",
+          "why": "L殻には8個までしか入らないので、9個は誤り。"
+        },
+        {
+          "text": "K8",
+          "why": "K殻には2個までしか入らない。"
+        }
+      ],
+      "oneLine": "O は電子8個で K2L6。",
+      "timeLimit": 18,
+      "grounding": "電子殻に内側から詰めて電子配置を書く"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_4:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_4"
+      },
+      "format": "choice4",
+      "prompt": "F（原子番号9）の電子配置として正しいものはどれか。",
+      "label": "F の電子配置",
+      "options": [
+        {
+          "text": "K2L7",
+          "correct": true,
+          "why": "K殻に2個、残り7個がL殻に入る。"
+        },
+        {
+          "text": "K2L6",
+          "why": "電子が8個になってしまい、酸素の配置である。"
+        },
+        {
+          "text": "K2L9",
+          "why": "L殻には8個までしか入らないので、9個は誤り。"
+        },
+        {
+          "text": "K2L5",
+          "why": "電子が7個になってしまい、窒素の配置である。"
+        }
+      ],
+      "oneLine": "F は電子9個で K2L7。",
+      "timeLimit": 18,
+      "grounding": "電子殻に内側から詰めて電子配置を書く"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_4:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_4"
+      },
+      "format": "choice4",
+      "prompt": "F の最外殻電子が7個であることから、Fは何族と考えられるか。",
+      "label": "F の族",
+      "options": [
+        {
+          "text": "17族",
+          "correct": true,
+          "why": "価電子7個は族番号の一の位が7、すなわち17族のハロゲン。"
+        },
+        {
+          "text": "2族",
+          "why": "最外殻電子が2個の元素の族である。"
+        },
+        {
+          "text": "1族",
+          "why": "最外殻電子が1個の元素の族である。"
+        },
+        {
+          "text": "18族",
+          "why": "最外殻電子が8個で価電子0とみなす貴ガスの族である。"
+        }
+      ],
+      "oneLine": "最外殻電子7個 → 17族のハロゲン。",
+      "timeLimit": 20,
+      "grounding": "17族はハロゲン"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_5:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_5"
+      },
+      "format": "choice4",
+      "prompt": "Ne（原子番号10）の電子配置として正しいものはどれか。",
+      "label": "Ne の電子配置",
+      "options": [
+        {
+          "text": "K2L8",
+          "correct": true,
+          "why": "K殻に2個、L殻に8個が入って満たされる。"
+        },
+        {
+          "text": "K2L7",
+          "why": "電子が9個になってしまい、フッ素の配置である。"
+        },
+        {
+          "text": "K2L6M2",
+          "why": "電子は内側から詰めるので、L殻を満たす前にM殻へ入れてはいけない。"
+        },
+        {
+          "text": "K10",
+          "why": "K殻には2個までしか入らない。"
+        }
+      ],
+      "oneLine": "Ne は電子10個で K2L8。L殻が満たされた安定な配置。",
+      "timeLimit": 18,
+      "grounding": "K殻2個、L殻8個、M殻8個（カルシウムまで）"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_5:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_5"
+      },
+      "format": "choice4",
+      "prompt": "Ne 型（電子10個）の電子配置をもつイオンとして正しいものはどれか。",
+      "label": "Ne 型のイオン",
+      "options": [
+        {
+          "text": "Na⁺",
+          "correct": true,
+          "why": "ナトリウム原子は電子11個。1個失って10個になり Ne 型。"
+        },
+        {
+          "text": "Cl⁻",
+          "why": "塩素は電子17個。1個受け取って18個になり Ar 型である。"
+        },
+        {
+          "text": "K⁺",
+          "why": "カリウムは電子19個。1個失って18個で Ar 型である。"
+        },
+        {
+          "text": "Ca²⁺",
+          "why": "カルシウムは電子20個。2個失って18個で Ar 型である。"
+        }
+      ],
+      "oneLine": "Ne 型（電子10個）は N³⁻・O²⁻・F⁻・Na⁺・Mg²⁺・Al³⁺。",
+      "timeLimit": 22,
+      "grounding": "Ne型（電子10個）＝N³⁻・O²⁻・F⁻・Na⁺・Mg²⁺・Al³⁺"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_6:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_6"
+      },
+      "format": "choice4",
+      "prompt": "Mg（原子番号12）の電子配置として正しいものはどれか。",
+      "label": "Mg の電子配置",
+      "options": [
+        {
+          "text": "K2L8M2",
+          "correct": true,
+          "why": "K殻2個、L殻8個、残り2個がM殻に入る。"
+        },
+        {
+          "text": "K2L8M1",
+          "why": "電子が11個で、ナトリウムの配置である。"
+        },
+        {
+          "text": "K2L10",
+          "why": "L殻には8個までしか入らない。"
+        },
+        {
+          "text": "K2L4M6",
+          "why": "L殻を満たす前にM殻へ入れてはいけない。"
+        }
+      ],
+      "oneLine": "Mg は電子12個で K2L8M2。",
+      "timeLimit": 18,
+      "grounding": "電子殻に内側から詰めて電子配置を書く"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_6:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_6"
+      },
+      "format": "choice4",
+      "prompt": "Mg の最外殻電子は何個か。",
+      "label": "Mg の最外殻電子",
+      "options": [
+        {
+          "text": "2個",
+          "correct": true,
+          "why": "K2L8M2 なので、いちばん外のM殻に2個ある。"
+        },
+        {
+          "text": "8個",
+          "why": "L殻の電子の数であって、最外殻ではない。"
+        },
+        {
+          "text": "6個",
+          "why": "価電子と混同している。マグネシウムの最外殻電子は2個である。"
+        },
+        {
+          "text": "4個",
+          "why": "炭素の最外殻電子の数で、マグネシウムのものではない。"
+        }
+      ],
+      "oneLine": "Mg は K2L8M2 なので最外殻電子は2個。2族。",
+      "timeLimit": 18,
+      "grounding": "電子殻に内側から詰めて電子配置を書く"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_7:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_7"
+      },
+      "format": "choice4",
+      "prompt": "Cl（原子番号17）の電子配置として正しいものはどれか。",
+      "label": "Cl の電子配置",
+      "options": [
+        {
+          "text": "K2L8M7",
+          "correct": true,
+          "why": "K殻2個、L殻8個、残り7個がM殻に入る。"
+        },
+        {
+          "text": "K2L8M2",
+          "why": "電子が12個で、マグネシウムの配置である。"
+        },
+        {
+          "text": "K2L8M5",
+          "why": "電子が15個で、リンの配置である。"
+        },
+        {
+          "text": "K2L7M8",
+          "why": "L殻を先に満たしてからM殻に入れる。順番が逆である。"
+        }
+      ],
+      "oneLine": "Cl は電子17個で K2L8M7。",
+      "timeLimit": 20,
+      "grounding": "電子殻に内側から詰めて電子配置を書く"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_7:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_7"
+      },
+      "format": "choice4",
+      "prompt": "Cl⁻ の電子配置は、どの原子と同じになるか。",
+      "label": "Cl⁻ の電子配置",
+      "options": [
+        {
+          "text": "Ar",
+          "correct": true,
+          "why": "Cl は電子17個。1個受け取って18個となり Ar と同じになる。"
+        },
+        {
+          "text": "Ne",
+          "why": "Ne の電子は10個で、18個とは合わない。"
+        },
+        {
+          "text": "He",
+          "why": "He の電子は2個しかない。"
+        },
+        {
+          "text": "Kr",
+          "why": "Kr の電子は36個で、多すぎる。"
+        }
+      ],
+      "oneLine": "Cl⁻ は電子18個で Ar 型の電子配置。",
+      "timeLimit": 20,
+      "grounding": "Ar型（電子18個）＝S²⁻・Cl⁻・K⁺・Ca²⁺"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_8:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_8"
+      },
+      "format": "choice4",
+      "prompt": "K（原子番号19）の電子配置として正しいものはどれか。",
+      "label": "K の電子配置",
+      "options": [
+        {
+          "text": "K2L8M8N1",
+          "correct": true,
+          "why": "M殻は8個で止め、19個目はN殻に入る。"
+        },
+        {
+          "text": "K2L8M9",
+          "why": "M殻はカルシウムまで8個で止まるので、9個は入らない。"
+        },
+        {
+          "text": "K2L8M8N3",
+          "why": "電子が21個になってしまい、多すぎる。"
+        },
+        {
+          "text": "K2L8M8N2",
+          "why": "電子が20個で、カルシウムの配置である。"
+        }
+      ],
+      "oneLine": "K は電子19個で K2L8M8N1。M殻は8個で止める。",
+      "timeLimit": 22,
+      "grounding": "K殻2個、L殻8個、M殻8個（カルシウムまで）"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_8:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_8"
+      },
+      "format": "choice4",
+      "prompt": "カリウムの電子がM殻に9個入らないのはなぜか。",
+      "label": "M殻で止まる理由",
+      "options": [
+        {
+          "text": "M殻はカルシウムまで8個で止まるから",
+          "correct": true,
+          "why": "M殻は8個（カルシウムまで）で止め、次はN殻に入れる。"
+        },
+        {
+          "text": "M殻の最大が2個だから",
+          "why": "2個が最大なのはK殻である。"
+        },
+        {
+          "text": "M殻には電子が入らないから",
+          "why": "マグネシウムなどではM殻に電子が入っている。"
+        },
+        {
+          "text": "N殻のほうが内側にあるから",
+          "why": "N殻はM殻より外側である。"
+        }
+      ],
+      "oneLine": "M殻はカルシウムまで8個で止め、19個目からN殻に入る。",
+      "timeLimit": 22,
+      "grounding": "K殻2個、L殻8個、M殻8個（カルシウムまで）"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_9:1",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_9"
+      },
+      "format": "choice4",
+      "prompt": "Ca（原子番号20）の電子配置として正しいものはどれか。",
+      "label": "Ca の電子配置",
+      "options": [
+        {
+          "text": "K2L8M8N2",
+          "correct": true,
+          "why": "M殻を8個で止め、残り2個がN殻に入る。"
+        },
+        {
+          "text": "K2L8M10",
+          "why": "M殻はカルシウムまで8個で止まるので、10個は入らない。"
+        },
+        {
+          "text": "K2L8M8N1",
+          "why": "電子が19個で、カリウムの配置である。"
+        },
+        {
+          "text": "K2L10M8",
+          "why": "L殻には8個までしか入らないので、10個は誤り。"
+        }
+      ],
+      "oneLine": "Ca は電子20個で K2L8M8N2。",
+      "timeLimit": 22,
+      "grounding": "K殻2個、L殻8個、M殻8個（カルシウムまで）"
+    },
+    {
+      "id": "a:c2_1:q_c2_1_3:q_c2_1_3_9:2",
+      "source": {
+        "chapterId": "c2_1",
+        "problemId": "q_c2_1_3",
+        "subQuestionId": "q_c2_1_3_9"
+      },
+      "format": "choice4",
+      "prompt": "Ca²⁺ の電子の数は何個か。",
+      "label": "Ca²⁺ の電子数",
+      "options": [
+        {
+          "text": "18個",
+          "correct": true,
+          "why": "原子番号20から電荷2を引いて18個。Ar 型になる。"
+        },
+        {
+          "text": "20個",
+          "why": "電子を2個失ったあとの数を答える必要がある。"
+        },
+        {
+          "text": "22個",
+          "why": "失うのに足してしまっている。"
+        },
+        {
+          "text": "10個",
+          "why": "Ne 型の電子数で、カルシウムイオンのものではない。"
+        }
+      ],
+      "oneLine": "イオンの電子数は「原子番号−電荷」。Ca²⁺ は18個で Ar 型。",
+      "timeLimit": 22,
+      "grounding": "イオンの電子数は必ず「原子番号−電荷」で計算する"
     }
   ]
 }
