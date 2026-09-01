@@ -2169,6 +2169,501 @@
       "oneLine": "電子2個を失ったので、その分だけ正に帯電して＋2。",
       "timeLimit": 14,
       "grounding": "X²⁺は電子を 2個失ってこの状態になっているため、原子のときの電子数（=陽子数＝原子番号）は 18 + 2 = 20 個となります。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_1:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_1"
+      },
+      "format": "choice4",
+      "prompt": "H₃O⁺ の名称はどれか。",
+      "label": "(1) H₃O⁺ の名称",
+      "options": [
+        {
+          "text": "オキソニウムイオン",
+          "correct": true,
+          "why": "水素イオンが水と結びついた形。"
+        },
+        {
+          "text": "アンモニウムイオン",
+          "why": "これはNH₄⁺の名称。"
+        },
+        {
+          "text": "水酸化物イオン",
+          "why": "これはOH⁻の名称。"
+        },
+        {
+          "text": "過酸化物イオン",
+          "why": "これはO₂²⁻の名称。"
+        }
+      ],
+      "oneLine": "H₃O⁺はオキソニウムイオン。多原子イオンの名称は丸暗記。",
+      "timeLimit": 12,
+      "grounding": "(1) オキソニウムイオン。(2) 酢酸イオン。(3) 炭酸水素イオン。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_1:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_1"
+      },
+      "format": "choice4",
+      "prompt": "多原子イオンの名称と化学式の対応は、どう身につけるのが必須とされているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "丸暗記する",
+          "correct": true,
+          "why": "頻出なので丸暗記が必須。"
+        },
+        {
+          "text": "その場で計算して導く",
+          "why": "計算では名称は出てこない。"
+        },
+        {
+          "text": "周期表から読み取る",
+          "why": "周期表には多原子イオンは載っていない。"
+        },
+        {
+          "text": "実験で確かめる",
+          "why": "名称は実験で決まるものではない。"
+        }
+      ],
+      "oneLine": "多原子イオンの名称と化学式の対応は頻出。丸暗記が必須。",
+      "timeLimit": 14,
+      "grounding": "多原子イオンの名称と化学式の対応は頻出なので丸暗記が必須。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_2:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_2"
+      },
+      "format": "choice4",
+      "prompt": "CH₃COO⁻ の名称はどれか。",
+      "label": "(2) CH₃COO⁻ の名称",
+      "options": [
+        {
+          "text": "酢酸イオン",
+          "correct": true,
+          "why": "酢酸CH₃COOHが水素イオンを失った形。"
+        },
+        {
+          "text": "炭酸イオン",
+          "why": "これはCO₃²⁻の名称。"
+        },
+        {
+          "text": "硫酸イオン",
+          "why": "これはSO₄²⁻の名称。"
+        },
+        {
+          "text": "硝酸イオン",
+          "why": "これはNO₃⁻の名称。"
+        }
+      ],
+      "oneLine": "CH₃COO⁻は酢酸イオン。1価の陰イオン。",
+      "timeLimit": 12,
+      "grounding": "(1) オキソニウムイオン。(2) 酢酸イオン。(3) 炭酸水素イオン。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_2:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_2"
+      },
+      "format": "choice4",
+      "prompt": "CH₃COO⁻ の価数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1価の陰イオン",
+          "correct": true,
+          "why": "−が1個ぶんなので1価。"
+        },
+        {
+          "text": "2価の陰イオン",
+          "why": "これはSO₄²⁻などの価数。"
+        },
+        {
+          "text": "3価の陰イオン",
+          "why": "これはPO₄³⁻の価数。"
+        },
+        {
+          "text": "1価の陽イオン",
+          "why": "＋ではなく−に帯電している。"
+        }
+      ],
+      "oneLine": "CH₃COO⁻の電荷は−1なので1価の陰イオン。",
+      "timeLimit": 13,
+      "grounding": "(1) オキソニウムイオン。(2) 酢酸イオン。(3) 炭酸水素イオン。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_3:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_3"
+      },
+      "format": "choice4",
+      "prompt": "HCO₃⁻ の名称はどれか。",
+      "label": "(3) HCO₃⁻ の名称",
+      "options": [
+        {
+          "text": "炭酸水素イオン",
+          "correct": true,
+          "why": "CO₃²⁻に水素イオンが1個ついた形。"
+        },
+        {
+          "text": "硫酸水素イオン",
+          "why": "これはHSO₄⁻の名称。"
+        },
+        {
+          "text": "シュウ酸イオン",
+          "why": "これはC₂O₄²⁻の名称。"
+        },
+        {
+          "text": "亜硫酸イオン",
+          "why": "これはSO₃²⁻の名称。"
+        }
+      ],
+      "oneLine": "HCO₃⁻は炭酸水素イオン。重炭酸イオンとも呼ぶ。",
+      "timeLimit": 12,
+      "grounding": "(1) オキソニウムイオン。(2) 酢酸イオン。(3) 炭酸水素イオン。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_3:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_3"
+      },
+      "format": "choice4",
+      "prompt": "必ず即答できるようにしておくべき多原子イオンは、いくつあるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "7種",
+          "correct": true,
+          "why": "NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻の7つ。"
+        },
+        {
+          "text": "4種",
+          "why": "4つでは足りない。"
+        },
+        {
+          "text": "5種",
+          "why": "5つでは足りない。"
+        },
+        {
+          "text": "9種",
+          "why": "9つも挙げられてはいない。"
+        }
+      ],
+      "oneLine": "多原子イオン7種を価数ごと即答できる状態にしておく。",
+      "timeLimit": 14,
+      "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_4:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_4"
+      },
+      "format": "choice4",
+      "prompt": "K⁺ 1個がもつ電子の数はいくつか。",
+      "label": "(4) K⁺ の電子数",
+      "options": [
+        {
+          "text": "18個",
+          "correct": true,
+          "why": "19-1 = 18個。Arと同じ。"
+        },
+        {
+          "text": "19個",
+          "why": "これはK原子の電子数。"
+        },
+        {
+          "text": "20個",
+          "why": "1個得たと考えてしまった場合。"
+        },
+        {
+          "text": "17個",
+          "why": "2個失ったと考えてしまった場合。"
+        }
+      ],
+      "oneLine": "K原子の電子19個から1個失って18個。Arと同じ配置。",
+      "timeLimit": 12,
+      "grounding": "(4) K⁺：19-1 = 18個（Arと同じ）。(5) Mg²⁺：12-2 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_4:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_4"
+      },
+      "format": "choice4",
+      "prompt": "K⁺ の電子配置と同じ配置をもつ貴ガスはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "Ar",
+          "correct": true,
+          "why": "電子18個で一致する。"
+        },
+        {
+          "text": "Ne",
+          "why": "電子10個なので合わない。"
+        },
+        {
+          "text": "He",
+          "why": "電子2個なので合わない。"
+        },
+        {
+          "text": "Kr",
+          "why": "電子36個なので合わない。"
+        }
+      ],
+      "oneLine": "K⁺は電子18個。Arと同じ電子配置になる。",
+      "timeLimit": 12,
+      "grounding": "(4) K⁺：19-1 = 18個（Arと同じ）。(5) Mg²⁺：12-2 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_5:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_5"
+      },
+      "format": "choice4",
+      "prompt": "Mg²⁺ 1個がもつ電子の数はいくつか。",
+      "label": "(5) Mg²⁺ の電子数",
+      "options": [
+        {
+          "text": "10個",
+          "correct": true,
+          "why": "12-2 = 10個。Neと同じ。"
+        },
+        {
+          "text": "12個",
+          "why": "これはMg原子の電子数。"
+        },
+        {
+          "text": "14個",
+          "why": "2個得たと考えてしまった場合。"
+        },
+        {
+          "text": "11個",
+          "why": "1個しか失っていないと考えた場合。"
+        }
+      ],
+      "oneLine": "Mg原子の電子12個から2個失って10個。Neと同じ配置。",
+      "timeLimit": 12,
+      "grounding": "(4) K⁺：19-1 = 18個（Arと同じ）。(5) Mg²⁺：12-2 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_5:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_5"
+      },
+      "format": "choice4",
+      "prompt": "Mg²⁺ の電子配置と同じ配置をもつ貴ガスはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "Ne",
+          "correct": true,
+          "why": "電子10個で一致する。"
+        },
+        {
+          "text": "Ar",
+          "why": "電子18個なので合わない。"
+        },
+        {
+          "text": "He",
+          "why": "電子2個なので合わない。"
+        },
+        {
+          "text": "Kr",
+          "why": "電子36個なので合わない。"
+        }
+      ],
+      "oneLine": "Mg²⁺は電子10個。Neと同じ電子配置になる。",
+      "timeLimit": 12,
+      "grounding": "(4) K⁺：19-1 = 18個（Arと同じ）。(5) Mg²⁺：12-2 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_6:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_6"
+      },
+      "format": "choice4",
+      "prompt": "S²⁻ 1個がもつ電子の数はいくつか。",
+      "label": "(6) S²⁻ の電子数",
+      "options": [
+        {
+          "text": "18個",
+          "correct": true,
+          "why": "16+2 = 18個。Arと同じ。"
+        },
+        {
+          "text": "16個",
+          "why": "これはS原子の電子数。"
+        },
+        {
+          "text": "14個",
+          "why": "2個失ったと考えてしまった場合。"
+        },
+        {
+          "text": "17個",
+          "why": "1個しか受け取っていないと考えた場合。"
+        }
+      ],
+      "oneLine": "S原子の電子16個に2個加わって18個。Arと同じ配置。",
+      "timeLimit": 12,
+      "grounding": "(6) S²⁻：16+2 = 18個（Arと同じ）。(7) NH₄⁺：(7+4×1)-1 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_6:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_6"
+      },
+      "format": "choice4",
+      "prompt": "陰イオンの電子数を求めるとき、原子の電子数に対してどうするか。",
+      "label": "",
+      "options": [
+        {
+          "text": "価数の分だけ足す",
+          "correct": true,
+          "why": "電子を受け取っているので足す。"
+        },
+        {
+          "text": "価数の分だけ引く",
+          "why": "引くのは陽イオンのとき。"
+        },
+        {
+          "text": "価数の分だけかける",
+          "why": "かけ算はしない。"
+        },
+        {
+          "text": "価数の分だけ割る",
+          "why": "わり算はしない。"
+        }
+      ],
+      "oneLine": "陰イオンは電子を受け取るので、価数の分を足す。",
+      "timeLimit": 14,
+      "grounding": "(6) S²⁻：16+2 = 18個（Arと同じ）。(7) NH₄⁺：(7+4×1)-1 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_7:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_7"
+      },
+      "format": "choice4",
+      "prompt": "NH₄⁺ 1個がもつ電子の数はいくつか。",
+      "label": "(7) NH₄⁺ の電子数",
+      "options": [
+        {
+          "text": "10個",
+          "correct": true,
+          "why": "(7+4×1)-1 = 10個。Neと同じ。"
+        },
+        {
+          "text": "11個",
+          "why": "1個失うのを忘れた場合。"
+        },
+        {
+          "text": "12個",
+          "why": "2個失ったと考えてしまった場合。"
+        },
+        {
+          "text": "18個",
+          "why": "これはArと同じ配置の電子数。"
+        }
+      ],
+      "oneLine": "N7個＋H4個で11個、1個失って10個。Neと同じ。",
+      "timeLimit": 14,
+      "grounding": "(6) S²⁻：16+2 = 18個（Arと同じ）。(7) NH₄⁺：(7+4×1)-1 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_7:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_7"
+      },
+      "format": "choice4",
+      "prompt": "多原子イオンの電子数を求めるとき、最初に何をするか。",
+      "label": "",
+      "options": [
+        {
+          "text": "構成する原子の電子数をすべて足す",
+          "correct": true,
+          "why": "NH₄⁺なら7+4×1 = 11個。"
+        },
+        {
+          "text": "価数だけを見て決める",
+          "why": "原子の電子数を数えないと出ない。"
+        },
+        {
+          "text": "中性子数をすべて足す",
+          "why": "電子数と中性子数は別。"
+        },
+        {
+          "text": "質量数をすべて足す",
+          "why": "質量数からは電子数は出ない。"
+        }
+      ],
+      "oneLine": "構成原子の電子数を合計し、そこから価数の分を増減する。",
+      "timeLimit": 15,
+      "grounding": "(6) S²⁻：16+2 = 18個（Arと同じ）。(7) NH₄⁺：(7+4×1)-1 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_7:3",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_7"
+      },
+      "format": "choice4",
+      "prompt": "イオンが電子をやり取りするのは、何と同じ電子配置になろうとするからか。",
+      "label": "",
+      "options": [
+        {
+          "text": "最も近い貴ガス",
+          "correct": true,
+          "why": "安定な電子配置になろうとする。"
+        },
+        {
+          "text": "最も近いアルカリ金属",
+          "why": "アルカリ金属は安定な配置ではない。"
+        },
+        {
+          "text": "最も近いハロゲン",
+          "why": "ハロゲンは安定な配置ではない。"
+        },
+        {
+          "text": "同じ周期のすべての元素",
+          "why": "特定の元素の配置をめざす。"
+        }
+      ],
+      "oneLine": "イオンは最も近い貴ガスと同じ安定な電子配置になろうとする。",
+      "timeLimit": 15,
+      "grounding": "イオンは最も近い貴ガスと同じ安定な電子配置になろうとする。"
     }
   ]
 }
