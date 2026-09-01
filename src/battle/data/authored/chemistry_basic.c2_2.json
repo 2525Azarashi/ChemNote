@@ -1290,6 +1290,588 @@
       "oneLine": "3と2の最小公倍数6にそろえるとAl2O3になる。",
       "timeLimit": 12,
       "grounding": "最小公倍数6にそろえてAl₂O₃"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_1:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_1"
+      },
+      "format": "choice",
+      "prompt": "Li⁺ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "Li⁺ の電子配置",
+      "options": [
+        {
+          "text": "ヘリウム型",
+          "correct": true,
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "ネオン型",
+          "why": "K2 L8。電子10個。"
+        },
+        {
+          "text": "アルゴン型",
+          "why": "K2 L8 M8。電子18個。"
+        }
+      ],
+      "oneLine": "Liが電子1個を失って電子2個。K2でヘリウム型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_2:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_2"
+      },
+      "format": "choice",
+      "prompt": "Na⁺ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "Na⁺ の電子配置",
+      "options": [
+        {
+          "text": "ネオン型",
+          "correct": true,
+          "why": "K2 L8。電子10個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "アルゴン型",
+          "why": "K2 L8 M8。電子18個。"
+        }
+      ],
+      "oneLine": "Naが電子1個を失って電子10個。K2 L8でネオン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_3:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_3"
+      },
+      "format": "choice",
+      "prompt": "Mg²⁺ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "Mg²⁺ の電子配置",
+      "options": [
+        {
+          "text": "ネオン型",
+          "correct": true,
+          "why": "K2 L8。電子10個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "アルゴン型",
+          "why": "K2 L8 M8。電子18個。"
+        }
+      ],
+      "oneLine": "Mgが電子2個を失って電子10個。ネオン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_4:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_4"
+      },
+      "format": "choice",
+      "prompt": "F⁻ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "F⁻ の電子配置",
+      "options": [
+        {
+          "text": "ネオン型",
+          "correct": true,
+          "why": "K2 L8。電子10個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "アルゴン型",
+          "why": "K2 L8 M8。電子18個。"
+        }
+      ],
+      "oneLine": "Fが電子1個を受け取って電子10個。ネオン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_5:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_5"
+      },
+      "format": "choice",
+      "prompt": "Cl⁻ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "Cl⁻ の電子配置",
+      "options": [
+        {
+          "text": "アルゴン型",
+          "correct": true,
+          "why": "K2 L8 M8。電子18個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "ネオン型",
+          "why": "K2 L8。電子10個。"
+        }
+      ],
+      "oneLine": "Clが電子1個を受け取って電子18個。アルゴン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_6:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_6"
+      },
+      "format": "choice",
+      "prompt": "K⁺ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "K⁺ の電子配置",
+      "options": [
+        {
+          "text": "アルゴン型",
+          "correct": true,
+          "why": "K2 L8 M8。電子18個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "ネオン型",
+          "why": "K2 L8。電子10個。"
+        }
+      ],
+      "oneLine": "Kが電子1個を失って電子18個。アルゴン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_7:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_7"
+      },
+      "format": "choice",
+      "prompt": "Ca²⁺ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "Ca²⁺ の電子配置",
+      "options": [
+        {
+          "text": "アルゴン型",
+          "correct": true,
+          "why": "K2 L8 M8。電子18個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "ネオン型",
+          "why": "K2 L8。電子10個。"
+        }
+      ],
+      "oneLine": "Caが電子2個を失って電子18個。アルゴン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_8:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_8"
+      },
+      "format": "choice",
+      "prompt": "S²⁻ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "S²⁻ の電子配置",
+      "options": [
+        {
+          "text": "アルゴン型",
+          "correct": true,
+          "why": "K2 L8 M8。電子18個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "ネオン型",
+          "why": "K2 L8。電子10個。"
+        }
+      ],
+      "oneLine": "Sが電子2個を受け取って電子18個。アルゴン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_9:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_9"
+      },
+      "format": "choice",
+      "prompt": "O²⁻ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "O²⁻ の電子配置",
+      "options": [
+        {
+          "text": "ネオン型",
+          "correct": true,
+          "why": "K2 L8。電子10個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "アルゴン型",
+          "why": "K2 L8 M8。電子18個。"
+        }
+      ],
+      "oneLine": "Oが電子2個を受け取って電子10個。ネオン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_1:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_1"
+      },
+      "format": "choice4",
+      "prompt": "Li⁺ がもつ電子の数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2個",
+          "correct": true,
+          "why": "ヘリウム型 (K2) だから電子2個。"
+        },
+        {
+          "text": "3個",
+          "why": "Li原子の電子数。1個失っている。"
+        },
+        {
+          "text": "10個",
+          "why": "これはネオン型の電子数。"
+        },
+        {
+          "text": "18個",
+          "why": "これはアルゴン型の電子数。"
+        }
+      ],
+      "oneLine": "ヘリウム型はK2なので電子2個。Li原子の3個から1個失った。",
+      "timeLimit": 12,
+      "grounding": "ヘリウム型 (K2)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_2:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_2"
+      },
+      "format": "choice4",
+      "prompt": "Na⁺ がもつ電子の数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "10個",
+          "correct": true,
+          "why": "ネオン型 (K2 L8) だから電子10個。"
+        },
+        {
+          "text": "11個",
+          "why": "Na原子の電子数。1個失っている。"
+        },
+        {
+          "text": "18個",
+          "why": "これはアルゴン型の電子数。"
+        },
+        {
+          "text": "2個",
+          "why": "これはヘリウム型の電子数。"
+        }
+      ],
+      "oneLine": "ネオン型はK2 L8なので電子10個。Na原子の11個から1個失った。",
+      "timeLimit": 12,
+      "grounding": "ネオン型 (K2 L8)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_5:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_5"
+      },
+      "format": "choice4",
+      "prompt": "Cl⁻ がもつ電子の数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "18個",
+          "correct": true,
+          "why": "アルゴン型 (K2 L8 M8) だから電子18個。"
+        },
+        {
+          "text": "17個",
+          "why": "Cl原子の電子数。1個受け取っている。"
+        },
+        {
+          "text": "10個",
+          "why": "これはネオン型の電子数。"
+        },
+        {
+          "text": "36個",
+          "why": "クリプトン型の電子数。"
+        }
+      ],
+      "oneLine": "アルゴン型はK2 L8 M8なので電子18個。Cl原子の17個に1個加わる。",
+      "timeLimit": 12,
+      "grounding": "アルゴン型 (K2 L8 M8)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_3:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_3"
+      },
+      "format": "choice4",
+      "prompt": "Mg が Mg²⁺ になるとき、電子を何個失ったか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2個",
+          "correct": true,
+          "why": "2価の陽イオンなので電子2個を失った。"
+        },
+        {
+          "text": "1個",
+          "why": "1価なら1個だが、Mg²⁺は2価。"
+        },
+        {
+          "text": "3個",
+          "why": "3個失うとAl³⁺のような3価になる。"
+        },
+        {
+          "text": "10個",
+          "why": "これはできたイオンの電子数。"
+        }
+      ],
+      "oneLine": "2価の陽イオン＝電子2個を失った。残る電子は10個。",
+      "timeLimit": 12,
+      "grounding": "貴ガスと同じ電子配置になるには、電子を何個やり取りすればよいかを考える"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_4:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_4"
+      },
+      "format": "choice4",
+      "prompt": "F が F⁻ になるとき、電子を何個受け取ったか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1個",
+          "correct": true,
+          "why": "1価の陰イオンなので電子1個を受け取った。"
+        },
+        {
+          "text": "2個",
+          "why": "2個受け取るとO²⁻のような2価になる。"
+        },
+        {
+          "text": "3個",
+          "why": "3個は多すぎる。17族は1個で足りる。"
+        },
+        {
+          "text": "7個",
+          "why": "これはFの価電子の数。"
+        }
+      ],
+      "oneLine": "17族は電子1個を受け取ればネオン型になる。1価の陰イオン。",
+      "timeLimit": 12,
+      "grounding": "1〜3族は電子を失って陽イオン、16〜17族は電子を受け取って陰イオンになるほうが近道"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_8:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_8"
+      },
+      "format": "choice4",
+      "prompt": "S が S²⁻ になるとき、電子を何個受け取ったか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2個",
+          "correct": true,
+          "why": "2価の陰イオンなので電子2個を受け取った。"
+        },
+        {
+          "text": "1個",
+          "why": "1個ではアルゴン型に届かない。"
+        },
+        {
+          "text": "3個",
+          "why": "3個は多すぎる。16族は2個で足りる。"
+        },
+        {
+          "text": "6個",
+          "why": "これはSの価電子の数。"
+        }
+      ],
+      "oneLine": "16族は電子2個を受け取ればアルゴン型になる。2価の陰イオン。",
+      "timeLimit": 12,
+      "grounding": "1〜3族は電子を失って陽イオン、16〜17族は電子を受け取って陰イオンになるほうが近道"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_7:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_7"
+      },
+      "format": "choice4",
+      "prompt": "Ca²⁺ の電子配置を殻ごとに表すとどうなるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "K2 L8 M8",
+          "correct": true,
+          "why": "アルゴン型と同じ。電子18個。"
+        },
+        {
+          "text": "K2 L8 M2",
+          "why": "これはCa原子ではなくMg原子の配置。"
+        },
+        {
+          "text": "K2 L8 M6",
+          "why": "電子16個でアルゴン型に届かない。"
+        },
+        {
+          "text": "K2 L8 M4",
+          "why": "電子14個でアルゴン型に届かない。"
+        }
+      ],
+      "oneLine": "Ca²⁺はアルゴン型なのでK2 L8 M8。電子は18個。",
+      "timeLimit": 13,
+      "grounding": "アルゴン型 (K2 L8 M8)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_9:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_9"
+      },
+      "format": "choice4",
+      "prompt": "O²⁻ と同じ電子配置をもつイオンはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "F⁻",
+          "correct": true,
+          "why": "どちらもネオン型で電子10個。"
+        },
+        {
+          "text": "Cl⁻",
+          "why": "こちらはアルゴン型で電子18個。"
+        },
+        {
+          "text": "K⁺",
+          "why": "こちらはアルゴン型で電子18個。"
+        },
+        {
+          "text": "S²⁻",
+          "why": "こちらはアルゴン型で電子18個。"
+        }
+      ],
+      "oneLine": "O²⁻とF⁻はどちらもネオン型（電子10個）で同じ配置。",
+      "timeLimit": 13,
+      "grounding": "ネオン型 (K2 L8)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_5:3",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_5"
+      },
+      "format": "choice4",
+      "prompt": "Cl⁻ と同じ電子配置をもつイオンはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "K⁺",
+          "correct": true,
+          "why": "どちらもアルゴン型で電子18個。"
+        },
+        {
+          "text": "Na⁺",
+          "why": "こちらはネオン型で電子10個。"
+        },
+        {
+          "text": "F⁻",
+          "why": "こちらはネオン型で電子10個。"
+        },
+        {
+          "text": "Li⁺",
+          "why": "こちらはヘリウム型で電子2個。"
+        }
+      ],
+      "oneLine": "Cl⁻とK⁺はどちらもアルゴン型（電子18個）で同じ配置。",
+      "timeLimit": 13,
+      "grounding": "アルゴン型 (K2 L8 M8)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_1:3",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_1"
+      },
+      "format": "choice4",
+      "prompt": "いくつかのイオンが貴ガスと同じ電子配置になっている状態を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "等電子配置",
+          "correct": true,
+          "why": "電子数が同じで配置も同じ状態のこと。"
+        },
+        {
+          "text": "同位体",
+          "why": "陽子数が同じで中性子数が違う原子どうしのこと。"
+        },
+        {
+          "text": "同素体",
+          "why": "同じ元素からできた性質の違う単体のこと。"
+        },
+        {
+          "text": "価電子",
+          "why": "最外殻にあって結合に使われる電子のこと。"
+        }
+      ],
+      "oneLine": "貴ガスと同じ電子配置になることを等電子配置という。",
+      "timeLimit": 13,
+      "grounding": "いずれも貴ガスと同じ電子配置（等電子配置）になっている点が重要です。"
     }
   ]
 }
