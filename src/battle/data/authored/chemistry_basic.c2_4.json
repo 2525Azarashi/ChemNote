@@ -415,6 +415,303 @@
       "oneLine": "まず同周期・同族・等電子体のどれかを判定する。取り違えると逆になる。",
       "timeLimit": 16,
       "grounding": "「殻の数が違えば殻の数で勝負、殻が同じなら陽子数で勝負」"
+    },
+    {
+      "id": "a:c2_4:q_c2_4_2:q_c2_4_2_1:1",
+      "source": {
+        "chapterId": "c2_4",
+        "problemId": "q_c2_4_2",
+        "subQuestionId": "q_c2_4_2_1"
+      },
+      "format": "choice4",
+      "prompt": "Li, Na, K を原子半径の大きい順に並べたものはどれか。",
+      "label": "(1) Li, Na, K",
+      "options": [
+        {
+          "text": "K > Na > Li",
+          "correct": true,
+          "why": "同族・原子番号大ほど大：電子殻が増えるため。"
+        },
+        {
+          "text": "Li > Na > K",
+          "why": "同族なのに逆に並べている。"
+        },
+        {
+          "text": "Na > K > Li",
+          "why": "中央の元素を最大にしており誤り。"
+        },
+        {
+          "text": "Na > Li > K",
+          "why": "原子番号の順序を無視した並び。"
+        }
+      ],
+      "oneLine": "同族のLi・Na・Kは原子番号が大きいKが最大。",
+      "timeLimit": 14,
+      "grounding": "(1) K > Na > Li （同族・原子番号大ほど大：電子殻が増えるため）"
+    },
+    {
+      "id": "a:c2_4:q_c2_4_2:q_c2_4_2_1:2",
+      "source": {
+        "chapterId": "c2_4",
+        "problemId": "q_c2_4_2",
+        "subQuestionId": "q_c2_4_2_1"
+      },
+      "format": "choice4",
+      "prompt": "Li, Na, K の比較は、どの土俵での比較か。",
+      "label": "(1) 比較の土俵",
+      "options": [
+        {
+          "text": "同じ族どうしの比較",
+          "correct": true,
+          "why": "いずれも1族のアルカリ金属。"
+        },
+        {
+          "text": "同じ周期どうしの比較",
+          "why": "周期は第2・第3・第4でそれぞれ異なる。"
+        },
+        {
+          "text": "等電子体どうしの比較",
+          "why": "電子数はそれぞれ異なる。"
+        },
+        {
+          "text": "原子とそのイオンの比較",
+          "why": "どれも中性の原子で電荷を持たない。"
+        }
+      ],
+      "oneLine": "Li・Na・Kはいずれも1族なので同族の比較。電子殻の数で決める。",
+      "timeLimit": 14,
+      "grounding": "同族は下にいくほど電子殻が増えて大きくなる（He＜Ne＜Ar）。"
+    },
+    {
+      "id": "a:c2_4:q_c2_4_2:q_c2_4_2_2:1",
+      "source": {
+        "chapterId": "c2_4",
+        "problemId": "q_c2_4_2",
+        "subQuestionId": "q_c2_4_2_2"
+      },
+      "format": "choice4",
+      "prompt": "Na, Mg, Al を原子半径の大きい順に並べたものはどれか。",
+      "label": "(2) Na, Mg, Al",
+      "options": [
+        {
+          "text": "Na > Mg > Al",
+          "correct": true,
+          "why": "同周期・原子番号大ほど小：陽子数が増え電子を強く引きつけるため。"
+        },
+        {
+          "text": "Al > Mg > Na",
+          "why": "同周期なのに逆に並べている。"
+        },
+        {
+          "text": "Mg > Al > Na",
+          "why": "中央の元素を最大にしており誤り。"
+        },
+        {
+          "text": "Mg > Na > Al",
+          "why": "原子番号の順序を無視した並び。"
+        }
+      ],
+      "oneLine": "同周期のNa・Mg・Alは原子番号が小さいNaが最大。",
+      "timeLimit": 14,
+      "grounding": "(2) Na > Mg > Al （同周期・原子番号大ほど小：陽子数が増え電子を強く引きつけるため）"
+    },
+    {
+      "id": "a:c2_4:q_c2_4_2:q_c2_4_2_2:2",
+      "source": {
+        "chapterId": "c2_4",
+        "problemId": "q_c2_4_2",
+        "subQuestionId": "q_c2_4_2_2"
+      },
+      "format": "choice4",
+      "prompt": "Na, Mg, Al で原子番号が大きいほど半径が小さくなる理由はどれか。",
+      "label": "(2) 小さくなる理由",
+      "options": [
+        {
+          "text": "陽子数が増え電子を強く引きつけるため",
+          "correct": true,
+          "why": "核の正電荷が増えるほど電子を近く引き寄せる。"
+        },
+        {
+          "text": "電子殻の数が減るため",
+          "why": "同周期では最外殻は同じで殻の数は減らない。"
+        },
+        {
+          "text": "中性子の数が増えるため",
+          "why": "中性子は電子を引きつけない。"
+        },
+        {
+          "text": "電子間の反発が増えるため",
+          "why": "これは陰イオンが大きくなる理由。"
+        }
+      ],
+      "oneLine": "同周期は陽子数が増えて引力が強まるため小さくなる。",
+      "timeLimit": 16,
+      "grounding": "(2) Na > Mg > Al （同周期・原子番号大ほど小：陽子数が増え電子を強く引きつけるため）"
+    },
+    {
+      "id": "a:c2_4:q_c2_4_2:q_c2_4_2_3:1",
+      "source": {
+        "chapterId": "c2_4",
+        "problemId": "q_c2_4_2",
+        "subQuestionId": "q_c2_4_2_3"
+      },
+      "format": "choice4",
+      "prompt": "F, Cl, Br を原子半径の大きい順に並べたものはどれか。",
+      "label": "(3) F, Cl, Br",
+      "options": [
+        {
+          "text": "Br > Cl > F",
+          "correct": true,
+          "why": "同族・原子番号大ほど大。"
+        },
+        {
+          "text": "F > Cl > Br",
+          "why": "同族なのに逆に並べている。"
+        },
+        {
+          "text": "Cl > Br > F",
+          "why": "中央の元素を最大にしており誤り。"
+        },
+        {
+          "text": "Cl > F > Br",
+          "why": "原子番号の順序を無視した並び。"
+        }
+      ],
+      "oneLine": "同族のハロゲンは原子番号が大きいBrが最大。",
+      "timeLimit": 14,
+      "grounding": "(3) Br > Cl > F （同族・原子番号大ほど大）"
+    },
+    {
+      "id": "a:c2_4:q_c2_4_2:q_c2_4_2_3:2",
+      "source": {
+        "chapterId": "c2_4",
+        "problemId": "q_c2_4_2",
+        "subQuestionId": "q_c2_4_2_3"
+      },
+      "format": "choice4",
+      "prompt": "同じ族で原子番号が大きいほど原子半径が大きくなる理由はどれか。",
+      "label": "(3) 大きくなる理由",
+      "options": [
+        {
+          "text": "電子殻が外側に増えるため",
+          "correct": true,
+          "why": "下にいくほど電子殻が増えて大きくなる。"
+        },
+        {
+          "text": "陽子数が減るため",
+          "why": "原子番号が大きいほど陽子数は増える。"
+        },
+        {
+          "text": "電子を失って最外殻が減るため",
+          "why": "これは陽イオンになるときの説明。"
+        },
+        {
+          "text": "中性子の数が減るため",
+          "why": "中性子の数は半径の大小に関係しない。"
+        }
+      ],
+      "oneLine": "同族は下にいくほど電子殻が増えて半径が大きくなる。",
+      "timeLimit": 16,
+      "grounding": "同族は下にいくほど電子殻が増えて大きくなる（He＜Ne＜Ar）。"
+    },
+    {
+      "id": "a:c2_4:q_c2_4_2:q_c2_4_2_4:1",
+      "source": {
+        "chapterId": "c2_4",
+        "problemId": "q_c2_4_2",
+        "subQuestionId": "q_c2_4_2_4"
+      },
+      "format": "choice4",
+      "prompt": "O, F, Ne を原子半径の大きい順に並べたものはどれか。",
+      "label": "(4) O, F, Ne",
+      "options": [
+        {
+          "text": "Ne > F > O",
+          "correct": true,
+          "why": "同周期・原子番号大ほど小の傾向とは逆になる点に注意。"
+        },
+        {
+          "text": "O > F > Ne",
+          "why": "この設問の解答とは逆の並び。"
+        },
+        {
+          "text": "F > Ne > O",
+          "why": "中央の元素を最大にしており誤り。"
+        },
+        {
+          "text": "F > O > Ne",
+          "why": "原子番号の順序を無視した並び。"
+        }
+      ],
+      "oneLine": "O・F・NeはNe > F > Oの順。貴ガスの半径の定義に注意する。",
+      "timeLimit": 16,
+      "grounding": "(4) Ne > F > O （同周期・原子番号大ほど小。"
+    },
+    {
+      "id": "a:c2_4:q_c2_4_2:q_c2_4_2_4:2",
+      "source": {
+        "chapterId": "c2_4",
+        "problemId": "q_c2_4_2",
+        "subQuestionId": "q_c2_4_2_4"
+      },
+      "format": "choice4",
+      "prompt": "O, F, Ne はいずれも第何周期の元素か。",
+      "label": "(4) 周期の判定",
+      "options": [
+        {
+          "text": "第2周期",
+          "correct": true,
+          "why": "K殻2個の外側にL殻が入る周期。"
+        },
+        {
+          "text": "第1周期",
+          "why": "水素とヘリウムだけの周期。"
+        },
+        {
+          "text": "第3周期",
+          "why": "NaからArまでの周期。"
+        },
+        {
+          "text": "第4周期",
+          "why": "KからKrまでの周期。"
+        }
+      ],
+      "oneLine": "O・F・Neはいずれも第2周期。同周期どうしの比較になる。",
+      "timeLimit": 12,
+      "grounding": "同周期は右にいくほど陽子数が増えて電子を強く引き付け、小さくなる。"
+    },
+    {
+      "id": "a:c2_4:q_c2_4_2:q_c2_4_2_4:3",
+      "source": {
+        "chapterId": "c2_4",
+        "problemId": "q_c2_4_2",
+        "subQuestionId": "q_c2_4_2_4"
+      },
+      "format": "choice4",
+      "prompt": "同周期の元素を「原子番号が大きいほど半径が大きい」と並べてしまうのは何のミスか。",
+      "label": "(4) 頻出ミス",
+      "options": [
+        {
+          "text": "同周期の傾向を逆に覚えたミス",
+          "correct": true,
+          "why": "同周期は右へ行くほど小さくなる。"
+        },
+        {
+          "text": "同族の傾向を逆に覚えたミス",
+          "why": "同族は下へ行くほど大きくなるので別の話。"
+        },
+        {
+          "text": "等電子体の陽子数を無視したミス",
+          "why": "等電子体の比較ではこの並びは出てこない。"
+        },
+        {
+          "text": "陽イオンと陰イオンを混同したミス",
+          "why": "中性の原子どうしの比較なので該当しない。"
+        }
+      ],
+      "oneLine": "同周期は右へ行くほど小さい。逆に覚えるのが頻出ミス。",
+      "timeLimit": 16,
+      "grounding": "同周期で「原子番号が大きいほど大きい」としてしまうミス。同周期は右へ行くほど小さくなる。"
     }
   ]
 }
