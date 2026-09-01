@@ -698,6 +698,402 @@
       "oneLine": "ハロゲンは電子親和力が大きく、陰イオンになりやすい。",
       "timeLimit": 15,
       "grounding": "電子親和力が「大きい」ほど電子を取り込んで安定化し、陰イオンになりやすい。"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_1:1",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_1"
+      },
+      "format": "choice4",
+      "prompt": "Na, K, Li を第1イオン化エネルギーの大きい順に並べるとどうなるか。",
+      "label": "(1) Na, K, Li",
+      "options": [
+        {
+          "text": "Li > Na > K",
+          "correct": true,
+          "why": "同族では原子番号が大きいほど小さい。"
+        },
+        {
+          "text": "K > Na > Li",
+          "why": "原子番号の大きい順にしてしまった誤り。"
+        },
+        {
+          "text": "Na > Li > K",
+          "why": "周期表の並びと大小が対応しない。"
+        },
+        {
+          "text": "Na > K > Li",
+          "why": "同族の傾向と合わない。"
+        }
+      ],
+      "oneLine": "同族なので原子番号が小さいLiが最大。Li > Na > K。",
+      "timeLimit": 15,
+      "grounding": "(1) Li > Na > K  （同族では原子番号大ほど小：電子殻が外側に広がる）"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_1:2",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_1"
+      },
+      "format": "choice4",
+      "prompt": "同族元素で、原子番号が大きくなるとイオン化エネルギーはどうなるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "小さくなる",
+          "correct": true,
+          "why": "電子殻が外側に広がるため。"
+        },
+        {
+          "text": "大きくなる",
+          "why": "同周期での傾向と混同した誤り。"
+        },
+        {
+          "text": "変わらない",
+          "why": "原子番号によって変化する。"
+        },
+        {
+          "text": "周期ごとに増減をくり返す",
+          "why": "同族では単調に小さくなる。"
+        }
+      ],
+      "oneLine": "同族では原子番号が大きいほどイオン化エネルギーは小さい。",
+      "timeLimit": 15,
+      "grounding": "(1) Li > Na > K  （同族では原子番号大ほど小：電子殻が外側に広がる）"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_1:3",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_1"
+      },
+      "format": "choice4",
+      "prompt": "同族で原子番号が大きいほどイオン化エネルギーが小さくなるのは、なぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "最外殻が原子核から遠くなるから",
+          "correct": true,
+          "why": "引きつける力が弱まって離れやすい。"
+        },
+        {
+          "text": "陽子の数が減るから",
+          "why": "原子番号が大きいほど陽子は増える。"
+        },
+        {
+          "text": "中性子の数が減るから",
+          "why": "中性子はイオン化に関係しない。"
+        },
+        {
+          "text": "最外殻電子の数が増えるから",
+          "why": "同族では最外殻電子の数は同じ。"
+        }
+      ],
+      "oneLine": "最外殻が原子核から遠くなるので電子が離れやすくなる。",
+      "timeLimit": 15,
+      "grounding": "最外殻が原子核から遠くなる"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_2:1",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_2"
+      },
+      "format": "choice4",
+      "prompt": "Li, C, F, Ne を第1イオン化エネルギーの大きい順に並べるとどうなるか。",
+      "label": "(2) Li, C, F, Ne",
+      "options": [
+        {
+          "text": "Ne > F > C > Li",
+          "correct": true,
+          "why": "同周期では原子番号大ほど大、貴ガス最大。"
+        },
+        {
+          "text": "Li > C > F > Ne",
+          "why": "原子番号の小さい順にしてしまった誤り。"
+        },
+        {
+          "text": "F > Ne > C > Li",
+          "why": "貴ガスが最大になるはず。"
+        },
+        {
+          "text": "C > Li > F > Ne",
+          "why": "同周期の傾向と合わない。"
+        }
+      ],
+      "oneLine": "同周期は原子番号が大きいほど大。貴ガスNeが最大。",
+      "timeLimit": 15,
+      "grounding": "(2) Ne > F > C > Li （同周期では原子番号大ほど大、貴ガス最大）"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_2:2",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_2"
+      },
+      "format": "choice4",
+      "prompt": "同周期の元素で、原子番号が大きくなるとイオン化エネルギーはどうなるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "大きくなる",
+          "correct": true,
+          "why": "同周期では原子番号大ほど大きい。"
+        },
+        {
+          "text": "小さくなる",
+          "why": "同族での傾向と混同した誤り。"
+        },
+        {
+          "text": "変わらない",
+          "why": "原子番号によって変化する。"
+        },
+        {
+          "text": "族ごとに増減をくり返す",
+          "why": "同周期ではおおむね単調に大きくなる。"
+        }
+      ],
+      "oneLine": "同周期では原子番号が大きいほどイオン化エネルギーは大きい。",
+      "timeLimit": 15,
+      "grounding": "(2) Ne > F > C > Li （同周期では原子番号大ほど大、貴ガス最大）"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_2:3",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_2"
+      },
+      "format": "choice4",
+      "prompt": "Li, C, F, Ne の中で、第1イオン化エネルギーが最も大きいのはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "Ne",
+          "correct": true,
+          "why": "貴ガスなので最大。"
+        },
+        {
+          "text": "F",
+          "why": "17族だが貴ガスより小さい。"
+        },
+        {
+          "text": "C",
+          "why": "14族なので中ほど。"
+        },
+        {
+          "text": "Li",
+          "why": "1族なので最小。"
+        }
+      ],
+      "oneLine": "貴ガスのNeが最大。同周期の右端にあたる。",
+      "timeLimit": 12,
+      "grounding": "(2) Ne > F > C > Li （同周期では原子番号大ほど大、貴ガス最大）"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_3:1",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_3"
+      },
+      "format": "choice4",
+      "prompt": "Na, Mg, Al を第1イオン化エネルギーの大きい順に並べるとどうなるか。",
+      "label": "(3) Na, Mg, Al",
+      "options": [
+        {
+          "text": "Mg > Al > Na",
+          "correct": true,
+          "why": "MgはM2で安定。AlはNaより大きい。"
+        },
+        {
+          "text": "Al > Mg > Na",
+          "why": "原子番号の大きい順にしてしまった誤り。"
+        },
+        {
+          "text": "Na > Mg > Al",
+          "why": "原子番号の小さい順にしてしまった誤り。"
+        },
+        {
+          "text": "Al > Na > Mg",
+          "why": "Naが最小になるはず。"
+        }
+      ],
+      "oneLine": "MgはM2で安定なので最大。Mg > Al > Na。",
+      "timeLimit": 15,
+      "grounding": "(3) Mg > Al > Na  （Mg は閉殻型 M2 で安定、Al はM3 で1 個多いがNa よりは大）"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_3:2",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_3"
+      },
+      "format": "choice4",
+      "prompt": "Mg の第1イオン化エネルギーが Al より大きいのは、なぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "Mg は閉殻型 M2 で安定だから",
+          "correct": true,
+          "why": "安定な配置なので電子を離しにくい。"
+        },
+        {
+          "text": "Mg のほうが原子番号が大きいから",
+          "why": "原子番号はAlのほうが大きい。"
+        },
+        {
+          "text": "Mg のほうが電子殻の数が多いから",
+          "why": "どちらも同じ第3周期。"
+        },
+        {
+          "text": "Mg は貴ガスと同じ配置だから",
+          "why": "Mg原子は貴ガス型の配置ではない。"
+        }
+      ],
+      "oneLine": "Mgは閉殻型M2で安定なため、Alより離しにくい。",
+      "timeLimit": 15,
+      "grounding": "(3) Mg > Al > Na  （Mg は閉殻型 M2 で安定、Al はM3 で1 個多いがNa よりは大）"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_3:3",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_3"
+      },
+      "format": "choice4",
+      "prompt": "Al の最外殻の電子配置は、Mg と比べてどうなっているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "M3 で1個多い",
+          "correct": true,
+          "why": "AlはM3、MgはM2。"
+        },
+        {
+          "text": "M1 で1個少ない",
+          "why": "M1ではなくM3。"
+        },
+        {
+          "text": "M8 で満員になっている",
+          "why": "満員なら貴ガス型になる。"
+        },
+        {
+          "text": "M2 でMgと同じ",
+          "why": "MgがM2、AlはM3。"
+        }
+      ],
+      "oneLine": "AlはM3でMgのM2より1個多い。それでもNaより大きい。",
+      "timeLimit": 14,
+      "grounding": "(3) Mg > Al > Na  （Mg は閉殻型 M2 で安定、Al はM3 で1 個多いがNa よりは大）"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_4:1",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_4"
+      },
+      "format": "choice4",
+      "prompt": "F, Cl, Br, I を第1イオン化エネルギーの大きい順に並べるとどうなるか。",
+      "label": "(4) F, Cl, Br, I",
+      "options": [
+        {
+          "text": "F > Cl > Br > I",
+          "correct": true,
+          "why": "同族ハロゲンも原子番号大ほど小。"
+        },
+        {
+          "text": "I > Br > Cl > F",
+          "why": "原子番号の大きい順にしてしまった誤り。"
+        },
+        {
+          "text": "Cl > F > Br > I",
+          "why": "電子親和力の順と混同した誤り。"
+        },
+        {
+          "text": "Br > Cl > I > F",
+          "why": "同族の傾向と合わない。"
+        }
+      ],
+      "oneLine": "ハロゲンも同族なので原子番号が小さいFが最大。",
+      "timeLimit": 15,
+      "grounding": "(4) F > Cl > Br > I （同族 ハロゲンも原子番号大ほど小）"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_4:2",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_4"
+      },
+      "format": "choice4",
+      "prompt": "ハロゲンの第1イオン化エネルギーは、同族の傾向にしたがうか。",
+      "label": "",
+      "options": [
+        {
+          "text": "したがう。原子番号大ほど小さい",
+          "correct": true,
+          "why": "同族ハロゲンも原子番号大ほど小。"
+        },
+        {
+          "text": "したがわない。原子番号大ほど大きい",
+          "why": "同族の傾向は原子番号大ほど小。"
+        },
+        {
+          "text": "したがわない。すべて同じ値になる",
+          "why": "元素ごとに値は違う。"
+        },
+        {
+          "text": "したがわない。周期ごとに逆転する",
+          "why": "逆転はしない。"
+        }
+      ],
+      "oneLine": "ハロゲンも同族なので原子番号が大きいほど小さい。",
+      "timeLimit": 15,
+      "grounding": "(4) F > Cl > Br > I （同族 ハロゲンも原子番号大ほど小）"
+    },
+    {
+      "id": "a:c2_3:q_c2_3_2:q_c2_3_2_4:3",
+      "source": {
+        "chapterId": "c2_3",
+        "problemId": "q_c2_3_2",
+        "subQuestionId": "q_c2_3_2_4"
+      },
+      "format": "choice4",
+      "prompt": "第1イオン化エネルギーの大小は、周期表のどの位置で決まるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "右上ほど大きく、左下ほど小さい",
+          "correct": true,
+          "why": "貴ガスで最大になる。"
+        },
+        {
+          "text": "左上ほど大きく、右下ほど小さい",
+          "why": "左端は1族で小さいほう。"
+        },
+        {
+          "text": "右下ほど大きく、左上ほど小さい",
+          "why": "下にいくほど小さくなる。"
+        },
+        {
+          "text": "中央ほど大きく、両端ほど小さい",
+          "why": "貴ガスのある右端が最大。"
+        }
+      ],
+      "oneLine": "イオン化エネルギーは右上ほど大きく、左下ほど小さい。",
+      "timeLimit": 15,
+      "grounding": "イオン化エネルギーは右上ほど大きく（貴ガスで最大）、左下ほど小さい。"
     }
   ]
 }
