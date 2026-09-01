@@ -104,13 +104,27 @@
  * の2通りで本文に戻す。★どちらでも戻せない設問は出題しない。★
  */
 
-import { writeFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { writeFileSync, readFileSync, readdirSync, existsSync } from 'node:fs';
+import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { SUBJECTS, getChaptersOfSubject } from '../src/data/allChapters';
 import { calcSubQuestionTimeLimit } from '../src/utils/scoring';
 import { normalizeAnswer } from '../src/utils/answerJudge';
+/**
+ * ★手書き問題（authored）の型は画面・検証器と共有する★
+ * ここで独自に型を書くと、検証器が通した JSON を生成器が別の形だと思って
+ * 静かに落とす、という一番気づきにくい壊れ方をする。必ず同じファイルを見る。
+ */
+import type { AuthoredFile, AuthoredQuestion } from '../src/battle/core/authoredTypes';
+/**
+ * ★手書き問題の変換の判断は共有モジュールに置く★
+ * ここに書くとテストから呼べないため（このファイルは import すると main() が走る）。
+ */
+import {
+  convertAuthoredQuestion,
+  authoredRejectMessage,
+} from '../src/battle/core/authoredConvert';
 /**
  * ★五十音キーボードの番号表は画面と共有する★
  * ここで独自に文字表を持つと、生成した番号と画面の文字がズレて
@@ -121,6 +135,12 @@ import { kanaKeysOf, KANA_MAX_INPUT } from '../src/battle/core/kanaKeyboard';
 const HERE = dirname(fileURLToPath(import.meta.url));
 /** 生成物の出力先ディレクトリ（教科ごとに1ファイル＋索引1ファイルを置く） */
 const OUT_DIR = resolve(HERE, '../src/battle/data');
+/**
+ * 別の作業場が書いた手書き問題の置き場。
+ * `npm run import:authored -- <zip>` だけがここに書き込む。
+ * ★中身は検証器（verify-authored-battle.mts）を通ったものだけ★という前提で読む。
+ */
+const AUTHORED_DIR = resolve(HERE, '../src/battle/data/authored');
 
 // ============================================================
 // 生成に使う設定
@@ -1135,6 +1155,99 @@ function trimOption(option: string): string {
 }
 
 // ============================================================
+// 合流: 手書き問題（authored）
+// ============================================================
+
+/**
+ * ===================================================================
+ * 別の作業場が書いた問題を、機械生成のプールに合流させる
+ * ===================================================================
+ *
+ * ■ なぜ「置き換え」ではなく「合流」なのか
+ *
+ * 元データが選択肢を持っている設問（＝機械生成が今出せている 604 問）は、
+ * 誰かが書き直す必要がない。★選択肢を元データからそのまま持ってきているので、
+ * 人が触るほうがむしろ誤りが入る。★
+ *
+ * 手書きが要るのは、機械生成が「出せない」と判断して落とした設問である。
+ * だから両者は競合しない。競合するのは
+ *
+ *     ・作業場が「機械生成でも出せている設問」を、あえて書き直した場合
+ *
+ * のときだけで、そのときは ★手書きを優先する★。人が読んで書いたほうが、
+ * 元データの記号選択肢を機械が本文に戻したものより正確だからである。
+ *
+ * ■ 優先の判定は「小問の3つのID」で行う
+ *
+ * chapterId / problemId / subQuestionId が同じなら、同じ小問から来ている。
+ * 同じ小問に手書きが1問でもあれば、その小問の機械生成は全部落とす。
+ * ★一部だけ残すと、同じ小問が対戦で2回出る（抽選は id で重複を見るので防げない）。★
+ *
+ * ■ 選択肢の並びはここで決める
+ *
+ * JSON では `correct: true` が選択肢自身にくっついていて、順番に意味がない。
+ * 人が書くと正解が2番目に偏ることが知られているので、
+ * ★ID を種にした決定論的なシャッフル★で並べ替えてから answerIndex を求める。
+ * 種が ID なので、何度生成しても同じ並びになる（差分レビューができる）。
+ */
+/** 教科名は問題ごとではなくファイルが持つので、読み込み時にくっつけておく */
+type AuthoredRow = AuthoredQuestion & { __subject: string };
+
+function loadAuthored(): AuthoredRow[] {
+  if (!existsSync(AUTHORED_DIR)) return [];
+  const files = readdirSync(AUTHORED_DIR)
+    .filter((f) => f.endsWith('.json'))
+    // ★見本（.example.）は読まない★
+    //   見本は docs/battle-authoring/ に置く決まりだが、
+    //   間違って authored/ に混ざったときに本番の出題に紛れ込ませない。
+    .filter((f) => !f.includes('.example.'))
+    .sort();
+
+  const out: AuthoredRow[] = [];
+  for (const f of files) {
+    const raw = readFileSync(join(AUTHORED_DIR, f), 'utf8');
+    let parsed: AuthoredFile;
+    try {
+      parsed = JSON.parse(raw) as AuthoredFile;
+    } catch (e) {
+      // ★ここで黙って飛ばさない★
+      //   作業場が丸一日かけて書いたものが「なぜか出題されない」のが
+      //   一番たちが悪い。壊れていたら生成そのものを止める。
+      throw new Error(`[authored] JSON として読めない: ${f} (${String(e)})`);
+    }
+    if (!parsed || !Array.isArray(parsed.questions)) {
+      throw new Error(`[authored] questions 配列が無い: ${f}`);
+    }
+    for (const q of parsed.questions) {
+      // subject はファイルが持っている。問題ごとには持たせない
+      // （1ファイル＝1章＝1教科なので、問題ごとに書かせると食い違いが起きる）。
+      out.push({ ...q, source: { ...q.source }, __subject: String(parsed.subject || '') });
+    }
+  }
+  return out;
+}
+
+/**
+ * 手書き1問を、対戦プールの1問に変換する。
+ *
+ * ★判断そのものは src/battle/core/authoredConvert.ts にある★
+ * ここに書くとテストから呼べない（このスクリプトは import した瞬間に
+ * main() が走って全教科データを読み、生成ファイルを書き換えてしまう）。
+ * 過去の事故（USE_SYNTHESIZED_FORMATS）は「生成器の中だけにあって
+ * 誰にも検査されないロジック」が原因だった。同じ形にはしない。
+ *
+ * この関数がやるのは「教科名をくっつける」ことだけである。
+ */
+function convertAuthored(q: AuthoredRow): { question: PoolQuestion | null; reason: string } {
+  const subject = String(q.__subject || '');
+  if (!subject) return { question: null, reason: '教科名がファイルに書かれていない' };
+
+  const r = convertAuthoredQuestion(q);
+  if (r.ok === false) return { question: null, reason: authoredRejectMessage(r.reason) };
+  return { question: { ...r.question, subject }, reason: '' };
+}
+
+// ============================================================
 // 本体
 // ============================================================
 
@@ -1271,6 +1384,83 @@ function build(): { pool: PoolQuestion[]; stats: Record<string, Record<string, n
     //  選択式に変換すると元の設問の意図が失われる）
 
     if (made === 0) bump(row.subject, 'skipped');
+  }
+
+  // ------------------------------------------------------------
+  // 手書き問題（authored）の合流
+  // ------------------------------------------------------------
+  //
+  // ★ここが「別の作業場が書いたものが対戦に出る」唯一の経路★
+  // これが無いと、作業場が何問書いても対戦画面には1問も出ない。
+  //
+  const authored = loadAuthored();
+  if (authored.length > 0) {
+    /**
+     * 元データに実在する小問の集合。
+     *
+     * ★存在しない小問を指す手書きは落とす★
+     * 検証器も同じことを見ているが、検証器を通ったあとに元データ側が
+     * 消えた／IDが変わった場合、ここが最後の砦になる。
+     * 「元の演習に飛べない対戦問題」は、①→②の橋が切れているのと同じ。
+     */
+    const realSubs = new Set(rows.map((r) => `${r.chapterId}:${r.problemId}:${r.id}`));
+
+    const converted: PoolQuestion[] = [];
+    /** 落とした問題の理由（生成の最後にまとめて表示する） */
+    const dropNotes: string[] = [];
+    /** 手書きが1問でもある小問（機械生成をここから取り除くために使う） */
+    const takenOver = new Set<string>();
+    const seenIds = new Set(pool.map((q) => q.id));
+
+    for (const a of authored) {
+      const key = `${a.source.chapterId}:${a.source.problemId}:${a.source.subQuestionId}`;
+      if (!realSubs.has(key)) {
+        bump(a.__subject || '?', 'authored_orphan');
+        dropNotes.push(`${a.id || '(id なし)'}: 元データに存在しない小問を指している (${key})`);
+        continue;
+      }
+      const { question: q, reason } = convertAuthored(a);
+      if (!q) {
+        bump(a.__subject || '?', 'authored_dropped');
+        // ★落とした理由をその場で出す★
+        //   「なぜか出題されない」が作業場にとって一番たちが悪い。
+        dropNotes.push(`${a.id || '(id なし)'}: ${reason}`);
+        continue;
+      }
+      /**
+       * ★IDの重複は最悪の不具合★
+       * 部屋には questionIds しか保存しないので、同じIDが2問あると
+       * 対戦相手と違う問題が表示される。あとから来たほうを捨てる。
+       */
+      if (seenIds.has(q.id)) {
+        bump(q.subject, 'authored_dup_id');
+        dropNotes.push(`${q.id}: 同じ id が既にある（あとから来たほうを捨てた）`);
+        continue;
+      }
+      seenIds.add(q.id);
+      takenOver.add(key);
+      converted.push(q);
+      bump(q.subject, `authored_${q.format}`);
+    }
+
+    // 手書きが担当した小問の機械生成を取り除く（同じ小問が2回出るのを防ぐ）
+    if (takenOver.size > 0) {
+      for (let i = pool.length - 1; i >= 0; i -= 1) {
+        const q = pool[i];
+        const key = `${q.chapterId}:${q.problemId}:${q.subQuestionId}`;
+        if (takenOver.has(key)) {
+          pool.splice(i, 1);
+          bump(q.subject, 'replaced_by_authored');
+        }
+      }
+    }
+
+    for (const q of converted) pool.push(q);
+
+    if (dropNotes.length > 0) {
+      console.log(`[gen:battle-pool] ★手書きのうち ${dropNotes.length} 問を落とした★`);
+      for (const note of dropNotes) console.log(`  - ${note}`);
+    }
   }
 
   // 出力の並びを安定させる（生成のたびに差分が出ないように）
@@ -1622,6 +1812,23 @@ export function loadedPool(subject: string): readonly BattleQuestion[] {
 `;
 }
 
+/**
+ * 1教科ぶんの統計から「実際に出題になった手書き問題」の数を数える。
+ * 落としたもの（orphan / dropped / dup_id）は出題ではないので数に入れない。
+ */
+function authoredOf(st: Record<string, number>): number {
+  return Object.entries(st).reduce(
+    (n, [k, v]) =>
+      k.startsWith('authored_') &&
+      !k.endsWith('_orphan') &&
+      !k.endsWith('_dropped') &&
+      !k.endsWith('_dup_id')
+        ? n + v
+        : n,
+    0,
+  );
+}
+
 function main(): void {
   const { pool, stats } = build();
 
@@ -1674,6 +1881,34 @@ function main(): void {
   }
   const kanaTotal = Object.values(formatCounts).reduce((s, f) => s + (f.kana || 0), 0);
   console.log(`[gen:battle-pool] うち五十音キーボード（みんはや方式）: ${kanaTotal} 問`);
+
+  /**
+   * ★手書き問題の合流結果を必ず表示する★
+   * 作業場が書いた JSON を取り込んだのに、書式の取り違えなどで
+   * 静かに0問になっていた、という事故を目で止めるための行。
+   */
+  const authoredTotal = Object.values(stats).reduce((sum, st) => sum + authoredOf(st), 0);
+  const authoredBad = Object.values(stats).reduce(
+    (sum, st) =>
+      sum + (st.authored_orphan || 0) + (st.authored_dropped || 0) + (st.authored_dup_id || 0),
+    0,
+  );
+  const replaced = Object.values(stats).reduce((sum, st) => sum + (st.replaced_by_authored || 0), 0);
+  if (authoredTotal > 0 || authoredBad > 0) {
+    console.log(
+      `[gen:battle-pool] うち手書き（別の作業場が書いたもの）: ${authoredTotal} 問` +
+        `${replaced > 0 ? `（うち ${replaced} 問は機械生成を置き換えた）` : ''}`,
+    );
+    if (authoredBad > 0) {
+      console.log(
+        `[gen:battle-pool] ★手書きのうち ${authoredBad} 問を落とした★ ` +
+          '（元データに無い小問／形式が不正／IDの重複）。' +
+          'npm run verify:authored で内訳が出ます。',
+      );
+    }
+  } else {
+    console.log('[gen:battle-pool] 手書き問題（src/battle/data/authored/）: 0 問');
+  }
   console.log('[gen:battle-pool] 教科別（★対戦時はこのうち1教科だけを読み込む★）:');
   for (const [subject, count, bytes] of perFile) {
     const s = stats[subject] || {};
@@ -1683,7 +1918,8 @@ function main(): void {
         `(4択 ${String(f.choice4 || 0).padStart(3)} / 2〜3・5〜6択 ${String(f.choice || 0).padStart(3)}` +
         ` / かな入力 ${String(f.kana || 0).padStart(3)}` +
         `${f.word || f.panel ? ` / 語句 ${f.word || 0} / パネル ${f.panel || 0}` : ''})  ` +
-        `未使用 ${s.skipped || 0}`,
+        `未使用 ${s.skipped || 0}` +
+        `${authoredOf(s) > 0 ? `  手書き ${authoredOf(s)}` : ''}`,
     );
   }
 }
