@@ -1755,6 +1755,1128 @@
       "oneLine": "分子の問題は、まず価電子の数（H:1、C:4、N:5、O:6）を書き出すのが出発点。",
       "timeLimit": 18,
       "grounding": "（H:1、C:4、N:5、O:6）。ここを飛ばすと必ず事故る。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_1a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_1a"
+      },
+      "format": "choice4",
+      "prompt": "1個の炭素原子が隣の4個の炭素原子と結合し、正四面体形の配列が立体的に繰り返された構造をもつ炭素の同素体は何か。",
+      "label": "(1) (A) の名称",
+      "options": [
+        {
+          "text": "ダイヤモンド",
+          "correct": true,
+          "why": "正四面体形が立体的に繰り返される構造をもつ炭素の単体はダイヤモンド。"
+        },
+        {
+          "text": "黒鉛",
+          "why": "黒鉛は正六角形の平面層が積み重なった構造。"
+        },
+        {
+          "text": "フラーレン",
+          "why": "フラーレンは球殻状の分子で、立体網目ではない。"
+        },
+        {
+          "text": "カーボンナノチューブ",
+          "why": "筒状の構造であり、正四面体の立体網目ではない。"
+        }
+      ],
+      "oneLine": "正四面体形が立体的に繰り返される炭素の同素体はダイヤモンド。",
+      "timeLimit": 12,
+      "grounding": "　(A)：1個の炭素原子が隣の4個の炭素原子と結合し、正四面体形の配列が立体的に繰り返された構造をもつ。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_1a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_1a"
+      },
+      "format": "choice4",
+      "prompt": "(A) の名称を答えるとき、リード文から拾うべきキーワードはどれか。",
+      "label": "(1) (A) の決め手",
+      "options": [
+        {
+          "text": "正四面体形が立体的に繰り返される",
+          "correct": true,
+          "why": "この一文が立体網目構造＝ダイヤモンドの決め手になる。"
+        },
+        {
+          "text": "正六角形の平面層が積み重なる",
+          "why": "こちらは黒鉛のキーワード。"
+        },
+        {
+          "text": "球状の分子が規則正しく並ぶ",
+          "why": "リード文にそのような記述はない。"
+        },
+        {
+          "text": "陽イオンと陰イオンが交互に並ぶ",
+          "why": "イオン結晶の説明であり炭素の同素体ではない。"
+        }
+      ],
+      "oneLine": "キーワードは「正四面体形が立体的に繰り返される」。ここでダイヤモンドと決まる。",
+      "timeLimit": 12,
+      "grounding": "　　└ 「正四面体形が立体的に繰り返される」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_1a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_1a"
+      },
+      "format": "choice4",
+      "prompt": "「正四面体形が立体的に繰り返される」という記述から思い出すべき構造はどれか。",
+      "label": "(1) (A) の構造",
+      "options": [
+        {
+          "text": "立体網目構造",
+          "correct": true,
+          "why": "4方向に結合が伸びるので3次元の網目になる。"
+        },
+        {
+          "text": "層状構造",
+          "why": "層状は黒鉛の構造。"
+        },
+        {
+          "text": "鎖状構造",
+          "why": "1方向にしか伸びない構造ではない。"
+        },
+        {
+          "text": "球殻状構造",
+          "why": "フラーレンのような閉じた殻ではない。"
+        }
+      ],
+      "oneLine": "正四面体が立体的に繰り返される＝立体網目構造をもつ炭素の単体を思い出す。",
+      "timeLimit": 12,
+      "grounding": "② 立体網目構造をもつ炭素の単体を思い出す"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_1b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_1b"
+      },
+      "format": "choice4",
+      "prompt": "正六角形が連なった平面の層が、何層も積み重なった構造をもつ炭素の同素体は何か。",
+      "label": "(1) (B) の名称",
+      "options": [
+        {
+          "text": "黒鉛",
+          "correct": true,
+          "why": "平面の層が積み重なる構造をもつ炭素の単体は黒鉛。"
+        },
+        {
+          "text": "ダイヤモンド",
+          "why": "ダイヤモンドは正四面体形の立体網目。"
+        },
+        {
+          "text": "フラーレン",
+          "why": "フラーレンは球殻状の分子。"
+        },
+        {
+          "text": "活性炭",
+          "why": "活性炭は同素体の名称ではない。"
+        }
+      ],
+      "oneLine": "正六角形の平面層が積み重なった炭素の同素体は黒鉛。",
+      "timeLimit": 12,
+      "grounding": "　(B)：正六角形が連なった平面の層が、何層も積み重なった構造をもつ。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_1b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_1b"
+      },
+      "format": "choice4",
+      "prompt": "(B) の名称を答えるとき、リード文から拾うべきキーワードはどれか。",
+      "label": "(1) (B) の決め手",
+      "options": [
+        {
+          "text": "正六角形の平面層が積み重なる",
+          "correct": true,
+          "why": "この一文が層状構造＝黒鉛の決め手。"
+        },
+        {
+          "text": "正四面体形が立体的に繰り返される",
+          "why": "こちらはダイヤモンドのキーワード。"
+        },
+        {
+          "text": "自由電子が全体を動き回る",
+          "why": "金属結晶の説明であり、リード文の記述ではない。"
+        },
+        {
+          "text": "分子が分子間力で並ぶ",
+          "why": "分子結晶の説明であり、リード文の記述ではない。"
+        }
+      ],
+      "oneLine": "キーワードは「正六角形の平面層が積み重なる」。ここで黒鉛と決まる。",
+      "timeLimit": 12,
+      "grounding": "　　└ 「正六角形の平面層が積み重なる」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_1b:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_1b"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛の別名（英語由来の呼び名）はどれか。",
+      "label": "(1) (B) の別名",
+      "options": [
+        {
+          "text": "グラファイト",
+          "correct": true,
+          "why": "黒鉛（グラファイト）と併記される。"
+        },
+        {
+          "text": "ダイヤモンド",
+          "why": "ダイヤモンドは別の同素体。"
+        },
+        {
+          "text": "フラーレン",
+          "why": "球殻状分子の名前であり黒鉛の別名ではない。"
+        },
+        {
+          "text": "シリカ",
+          "why": "シリカは二酸化ケイ素のことで炭素ではない。"
+        }
+      ],
+      "oneLine": "黒鉛はグラファイトとも呼ばれる。同じ物質の別名。",
+      "timeLimit": 10,
+      "grounding": "③ 黒鉛（グラファイト）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_2:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_2"
+      },
+      "format": "choice4",
+      "prompt": "同素体の説明として正しいものはどれか。",
+      "label": "(2) 同素体の定義",
+      "options": [
+        {
+          "text": "同じ元素からなる単体で、原子の結合のしかた（構造）が異なるため性質が異なる物質どうし",
+          "correct": true,
+          "why": "同素体の定義そのもの。"
+        },
+        {
+          "text": "同じ元素の原子で、中性子の数が異なるものどうし",
+          "why": "これは同位体の定義。"
+        },
+        {
+          "text": "異なる元素からできた化合物で、組成が同じものどうし",
+          "why": "これは異性体などの説明で同素体ではない。"
+        },
+        {
+          "text": "同じ物質が温度によって固体・液体・気体に変わる関係",
+          "why": "これは状態変化であり同素体ではない。"
+        }
+      ],
+      "oneLine": "同素体＝同じ元素からなる単体で、構造が違うため性質が異なる物質どうし。",
+      "timeLimit": 16,
+      "grounding": "同素体とは、同じ元素からなる単体で、原子の結合のしかた（構造）が異なるため性質が異なる物質どうしのこと。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_2:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_2"
+      },
+      "format": "choice4",
+      "prompt": "同素体と同位体の違いとして正しいものはどれか。",
+      "label": "(2) 同素体と同位体",
+      "options": [
+        {
+          "text": "同素体は単体どうしの関係、同位体は原子どうしの関係",
+          "correct": true,
+          "why": "同素体は「単体」、同位体は「原子」の関係である。"
+        },
+        {
+          "text": "同素体も同位体もどちらも原子どうしの関係",
+          "why": "同素体は単体どうしの関係なので誤り。"
+        },
+        {
+          "text": "同素体は化合物どうしの関係、同位体は単体どうしの関係",
+          "why": "同素体は化合物ではなく単体どうしの関係。"
+        },
+        {
+          "text": "同素体は中性子数の違い、同位体は構造の違い",
+          "why": "説明が入れ替わっている。"
+        }
+      ],
+      "oneLine": "同素体は単体どうしの関係、同位体は原子どうしの関係。ここを混同しない。",
+      "timeLimit": 16,
+      "grounding": "① 同素体は「単体」どうしの関係であることを確認する"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_2:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_2"
+      },
+      "format": "choice4",
+      "prompt": "硫黄 S の同素体の組合せとして正しいものはどれか。",
+      "label": "(2) 硫黄の同素体",
+      "options": [
+        {
+          "text": "斜方硫黄と単斜硫黄",
+          "correct": true,
+          "why": "硫黄の代表的な同素体の組合せ。"
+        },
+        {
+          "text": "黄リンと赤リン",
+          "why": "これはリン P の同素体。"
+        },
+        {
+          "text": "酸素とオゾン",
+          "why": "これは酸素 O の同素体。"
+        },
+        {
+          "text": "ダイヤモンドと黒鉛",
+          "why": "これは炭素 C の同素体。"
+        }
+      ],
+      "oneLine": "硫黄 S の同素体は斜方硫黄と単斜硫黄。元素ごとに組を覚える。",
+      "timeLimit": 14,
+      "grounding": "例：硫黄 S の斜方硫黄と単斜硫黄（酸素 O の O₂ とオゾン O₃、リン P の黄リンと赤リンでもよい）。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_2:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_2"
+      },
+      "format": "choice4",
+      "prompt": "同素体をもつ代表的な元素の覚え方「スコップ」が表す4元素はどれか。",
+      "label": "(2) スコップ",
+      "options": [
+        {
+          "text": "S・C・O・P",
+          "correct": true,
+          "why": "スコップ＝硫黄・炭素・酸素・リン。"
+        },
+        {
+          "text": "S・C・O・N",
+          "why": "N は含まれない。"
+        },
+        {
+          "text": "S・K・O・P",
+          "why": "K は含まれない。"
+        },
+        {
+          "text": "H・C・O・P",
+          "why": "H は含まれない。"
+        }
+      ],
+      "oneLine": "同素体をもつ代表元素は S・C・O・P、覚え方は「スコップ」。",
+      "timeLimit": 12,
+      "grounding": "③ 覚え方「スコップ（S・C・O・P）」から炭素以外を1つ選び、具体例を2つ書く"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_3a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_3a"
+      },
+      "format": "choice4",
+      "prompt": "ダイヤモンドの炭素原子間 (a) の結合の種類はどれか。",
+      "label": "(3) (a) の結合",
+      "options": [
+        {
+          "text": "共有結合",
+          "correct": true,
+          "why": "非金属原子どうしが価電子を共有してできる結合。"
+        },
+        {
+          "text": "イオン結合",
+          "why": "陽イオンと陰イオンの間の結合であり炭素原子間ではない。"
+        },
+        {
+          "text": "金属結合",
+          "why": "自由電子による結合で、炭素原子間の結合ではない。"
+        },
+        {
+          "text": "水素結合",
+          "why": "H を介した分子間の引力であり、炭素原子間の結合ではない。"
+        }
+      ],
+      "oneLine": "ダイヤモンドの炭素原子どうしは共有結合で結ばれている。",
+      "timeLimit": 12,
+      "grounding": "① (a) は炭素原子どうしの結合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_3a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_3a"
+      },
+      "format": "choice4",
+      "prompt": "非金属原子どうしが結びつくときの一般的なしくみはどれか。",
+      "label": "(3) 共有結合のしくみ",
+      "options": [
+        {
+          "text": "価電子を共有して結合する",
+          "correct": true,
+          "why": "非金属どうしは価電子を出し合って共有する。"
+        },
+        {
+          "text": "電子を完全に受け渡してイオンになる",
+          "why": "これは金属と非金属の間のイオン結合。"
+        },
+        {
+          "text": "自由電子が全体を動き回る",
+          "why": "これは金属結合のしくみ。"
+        },
+        {
+          "text": "分子どうしが弱い引力で集まる",
+          "why": "これは分子間力であり結合ではない。"
+        }
+      ],
+      "oneLine": "非金属原子どうしは価電子を共有して結合する。これが共有結合の原理。",
+      "timeLimit": 14,
+      "grounding": "② 非金属原子どうしは価電子を共有して結合する"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_3b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_3b"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛の同一平面内にある炭素原子間 (b) の結合の種類はどれか。",
+      "label": "(3) (b) の結合",
+      "options": [
+        {
+          "text": "共有結合",
+          "correct": true,
+          "why": "層の中の結合はダイヤモンドと同じ強い共有結合。"
+        },
+        {
+          "text": "イオン結合",
+          "why": "イオンが存在しないので誤り。"
+        },
+        {
+          "text": "金属結合",
+          "why": "構成粒子は原子であり金属の陽イオンではない。"
+        },
+        {
+          "text": "分子間力",
+          "why": "これは層と層の間にはたらく力。"
+        }
+      ],
+      "oneLine": "黒鉛の層の中の炭素原子どうしも共有結合。層自体は非常に強い。",
+      "timeLimit": 12,
+      "grounding": "① (b) は黒鉛の同一平面内、炭素原子どうしの結合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_3b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_3b"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛の層の中の結合の強さについて正しいものはどれか。",
+      "label": "(3) 層内の強さ",
+      "options": [
+        {
+          "text": "ダイヤモンドと同じ性質の強い結合である",
+          "correct": true,
+          "why": "層内はダイヤモンドと同じ共有結合で非常に強い。"
+        },
+        {
+          "text": "層と層の間の力と同じくらい弱い",
+          "why": "層間の分子間力よりずっと強い。"
+        },
+        {
+          "text": "温度によって結合の種類が変わる",
+          "why": "結合の種類が温度で変わるという記述はない。"
+        },
+        {
+          "text": "自由電子によるゆるい結合である",
+          "why": "層内の結合は共有結合である。"
+        }
+      ],
+      "oneLine": "黒鉛の層内はダイヤモンドと同じ強い共有結合。だから層そのものは非常に強い。",
+      "timeLimit": 14,
+      "grounding": "② 層の中の結合はダイヤモンドと同じ性質の強い結合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_3c:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_3c"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛の層と層の間 (c) にはたらく力の名称はどれか。",
+      "label": "(3) (c) の力",
+      "options": [
+        {
+          "text": "分子間力",
+          "correct": true,
+          "why": "層間は結合ではなく弱い引力＝分子間力。"
+        },
+        {
+          "text": "共有結合",
+          "why": "共有結合は層の中の結合。"
+        },
+        {
+          "text": "イオン結合",
+          "why": "イオンが存在しないので誤り。"
+        },
+        {
+          "text": "金属結合",
+          "why": "自由電子による結合ではない。"
+        }
+      ],
+      "oneLine": "黒鉛の層と層の間にはたらくのは弱い分子間力。",
+      "timeLimit": 12,
+      "grounding": "② 共有結合ではないので、弱い引力＝分子間力"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_3c:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_3c"
+      },
+      "format": "choice4",
+      "prompt": "分子間力の別名として正しいものはどれか。",
+      "label": "(3) 分子間力の別名",
+      "options": [
+        {
+          "text": "ファンデルワールス力",
+          "correct": true,
+          "why": "分子間力（ファンデルワールス力）と併記される。"
+        },
+        {
+          "text": "クーロン力",
+          "why": "クーロン力は電荷どうしの静電気力でイオン結合の力。"
+        },
+        {
+          "text": "遠心力",
+          "why": "化学結合とは無関係の力。"
+        },
+        {
+          "text": "浮力",
+          "why": "化学結合とは無関係の力。"
+        }
+      ],
+      "oneLine": "分子間力はファンデルワールス力とも呼ばれる。",
+      "timeLimit": 10,
+      "grounding": "分子間力（ファンデルワールス力）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_3c:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_3c"
+      },
+      "format": "choice4",
+      "prompt": "層間の力が弱いことが原因で説明できる黒鉛の性質はどれか。",
+      "label": "(3) 層間の力の帰結",
+      "options": [
+        {
+          "text": "薄くはがれやすい",
+          "correct": true,
+          "why": "層間の力が弱いので層に沿ってずれてはがれる。"
+        },
+        {
+          "text": "きわめて硬い",
+          "why": "硬いのは立体網目をもつダイヤモンド。"
+        },
+        {
+          "text": "電気を通さない",
+          "why": "黒鉛は例外的に電気を通す。"
+        },
+        {
+          "text": "水によく溶ける",
+          "why": "層間の力の強弱とは無関係。"
+        }
+      ],
+      "oneLine": "層間の力が弱いから、黒鉛は薄くはがれやすい。",
+      "timeLimit": 12,
+      "grounding": "③ この力が弱いことが (7) のはがれやすさの原因になる"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_4:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_4"
+      },
+      "format": "choice4",
+      "prompt": "ダイヤモンドや黒鉛のように、原子が共有結合で連続してできた結晶を何というか。",
+      "label": "(4) 結晶の名称",
+      "options": [
+        {
+          "text": "共有結合の結晶",
+          "correct": true,
+          "why": "原子が共有結合で連続した結晶の呼び名。"
+        },
+        {
+          "text": "イオン結晶",
+          "why": "陽イオンと陰イオンからなる結晶。"
+        },
+        {
+          "text": "金属結晶",
+          "why": "金属の陽イオンと自由電子からなる結晶。"
+        },
+        {
+          "text": "分子結晶",
+          "why": "分子が分子間力で集まった結晶。"
+        }
+      ],
+      "oneLine": "原子が共有結合で連続してできた結晶を共有結合の結晶という。",
+      "timeLimit": 14,
+      "grounding": "③ 原子が共有結合で連続した結晶＝共有結合の結晶"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_4:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_4"
+      },
+      "format": "choice4",
+      "prompt": "ダイヤモンドや黒鉛の結晶の構成粒子はどれか。",
+      "label": "(4) 構成粒子",
+      "options": [
+        {
+          "text": "原子",
+          "correct": true,
+          "why": "共有結合の結晶の構成粒子は原子。"
+        },
+        {
+          "text": "分子",
+          "why": "分子は存在しない。"
+        },
+        {
+          "text": "陽イオンと陰イオン",
+          "why": "イオン結晶の構成粒子。"
+        },
+        {
+          "text": "金属の陽イオンと自由電子",
+          "why": "金属結晶の構成粒子。"
+        }
+      ],
+      "oneLine": "共有結合の結晶の構成粒子は原子。分子でもイオンでもない。",
+      "timeLimit": 12,
+      "grounding": "① 構成粒子は「原子」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_4:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_4"
+      },
+      "format": "choice4",
+      "prompt": "「共有結合の結晶は分子からできている」という記述の正誤とその理由はどれか。",
+      "label": "(4) 分子ではない",
+      "options": [
+        {
+          "text": "誤り。分子は存在せず組成式で表す",
+          "correct": true,
+          "why": "共有結合の結晶に分子の単位はないので組成式で表す。"
+        },
+        {
+          "text": "正しい。分子が共有結合で並んでいる",
+          "why": "分子の単位が存在しないので誤り。"
+        },
+        {
+          "text": "正しい。分子式で表すことができる",
+          "why": "分子式ではなく組成式で表す。"
+        },
+        {
+          "text": "誤り。イオンからできているため",
+          "why": "構成粒子はイオンではなく原子。"
+        }
+      ],
+      "oneLine": "共有結合の結晶に分子は存在しない。だから組成式で表す。",
+      "timeLimit": 14,
+      "grounding": "③「共有結合の結晶は分子からできている」→ 誤り（分子は存在せず組成式で表す）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_5a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_5a"
+      },
+      "format": "choice4",
+      "prompt": "ダイヤモンドと黒鉛のうち、結晶がきわめて硬いのはどちらか。",
+      "label": "(5) 硬いのはどちらか",
+      "options": [
+        {
+          "text": "(A) ダイヤモンド",
+          "correct": true,
+          "why": "立体網目構造なのでどの向きの力にも耐える。"
+        },
+        {
+          "text": "(B) 黒鉛",
+          "why": "黒鉛はやわらかく、はがれやすい。"
+        },
+        {
+          "text": "どちらも同じ硬さ",
+          "why": "硬さは大きく異なる。"
+        },
+        {
+          "text": "温度によって入れ替わる",
+          "why": "そのような記述はない。"
+        }
+      ],
+      "oneLine": "きわめて硬いのは立体網目構造をもつダイヤモンドのほう。",
+      "timeLimit": 12,
+      "grounding": "③ 立体網目構造をもつ (A) ダイヤモンド"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_5a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_5a"
+      },
+      "format": "choice4",
+      "prompt": "結晶が「硬い」とはどういうことか、最も適切なものはどれか。",
+      "label": "(5) 硬さの意味",
+      "options": [
+        {
+          "text": "どの方向に力を加えても結合を切りにくいこと",
+          "correct": true,
+          "why": "硬さは結合の切りにくさで決まる。"
+        },
+        {
+          "text": "融点がとても低いこと",
+          "why": "融点の高低と硬さの定義は別。"
+        },
+        {
+          "text": "電気をよく通すこと",
+          "why": "電気伝導性は硬さとは別の性質。"
+        },
+        {
+          "text": "水に溶けにくいこと",
+          "why": "溶解性は硬さの定義ではない。"
+        }
+      ],
+      "oneLine": "硬さ＝どの方向に力を加えても結合を切りにくいこと。",
+      "timeLimit": 12,
+      "grounding": "① 硬さ＝どの方向に力を加えても結合を切りにくいこと"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_5a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_5a"
+      },
+      "format": "choice4",
+      "prompt": "「硬い」という性質に対応する構造はどれか。",
+      "label": "(5) 硬さと構造",
+      "options": [
+        {
+          "text": "立体的（3次元）な網目",
+          "correct": true,
+          "why": "どの向きにも結合が走るので硬い。"
+        },
+        {
+          "text": "平面（2次元）の層",
+          "why": "層に沿ってずれるのでやわらかい。"
+        },
+        {
+          "text": "1方向に伸びた鎖",
+          "why": "1方向だけでは硬さにならない。"
+        },
+        {
+          "text": "ばらばらの分子の集まり",
+          "why": "分子どうしは弱い力で集まるだけ。"
+        }
+      ],
+      "oneLine": "硬さに対応する構造は立体的（3次元）な網目。",
+      "timeLimit": 12,
+      "grounding": "② それに対応する構造は「立体的（3次元）な網目」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_5b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_5b"
+      },
+      "format": "choice4",
+      "prompt": "ダイヤモンドがきわめて硬い理由として最も適切なものはどれか。",
+      "label": "(5) 硬い理由",
+      "options": [
+        {
+          "text": "4個の価電子すべてを使い、隣り合う4個の炭素原子と共有結合して立体的な網目構造をつくっているから",
+          "correct": true,
+          "why": "価電子4個をすべて使った3次元網目が硬さの原因。"
+        },
+        {
+          "text": "3個の価電子だけを使い、平面の層をつくっているから",
+          "why": "これは黒鉛の説明。"
+        },
+        {
+          "text": "自由電子が全体を動き回っているから",
+          "why": "これは金属結晶の説明。"
+        },
+        {
+          "text": "分子どうしが弱い分子間力で集まっているから",
+          "why": "これは分子結晶の説明。"
+        }
+      ],
+      "oneLine": "ダイヤモンドは価電子4個すべてを共有結合に使い、立体的な網目をつくるから硬い。",
+      "timeLimit": 18,
+      "grounding": "すべての炭素原子が4個の価電子すべてを使い、隣り合う4個の炭素原子と強い共有結合で正四面体状に結ばれ、立体的な網目構造をつくっているから。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_5b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_5b"
+      },
+      "format": "choice4",
+      "prompt": "ダイヤモンドで結合に使われる炭素の価電子の数はどれか。",
+      "label": "(5) 使う価電子",
+      "options": [
+        {
+          "text": "4個すべて",
+          "correct": true,
+          "why": "C の価電子4個をすべて結合に使う。"
+        },
+        {
+          "text": "3個だけ",
+          "why": "3個だけ使うのは黒鉛。"
+        },
+        {
+          "text": "2個だけ",
+          "why": "価電子の使い方として正しくない。"
+        },
+        {
+          "text": "1個だけ",
+          "why": "価電子の使い方として正しくない。"
+        }
+      ],
+      "oneLine": "ダイヤモンドは C の価電子4個をすべて結合に使い切る。",
+      "timeLimit": 12,
+      "grounding": "　　└ C の価電子は4個で、ダイヤモンドはその4個すべてを結合に使う"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_6a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_6a"
+      },
+      "format": "choice4",
+      "prompt": "ダイヤモンドと黒鉛のうち、結晶が電気をよく通すのはどちらか。",
+      "label": "(6) 通すのはどちらか",
+      "options": [
+        {
+          "text": "(B) 黒鉛",
+          "correct": true,
+          "why": "価電子1個が余って層に沿って動けるので電気を通す。"
+        },
+        {
+          "text": "(A) ダイヤモンド",
+          "why": "価電子がすべて結合に固定されて動けないので通さない。"
+        },
+        {
+          "text": "どちらも通さない",
+          "why": "黒鉛は例外的に電気を通す。"
+        },
+        {
+          "text": "どちらも同じくらいよく通す",
+          "why": "ダイヤモンドは電気を通さない。"
+        }
+      ],
+      "oneLine": "電気をよく通すのは黒鉛。共有結合の結晶のなかの例外。",
+      "timeLimit": 12,
+      "grounding": "③ 黒鉛は価電子1個が余って動ける → (B)"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_6a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_6a"
+      },
+      "format": "choice4",
+      "prompt": "物質が電気を通すための条件として正しいものはどれか。",
+      "label": "(6) 通す条件",
+      "options": [
+        {
+          "text": "電荷を運ぶ粒子（電子やイオン）が動けること",
+          "correct": true,
+          "why": "動ける荷電粒子があれば電流が流れる。"
+        },
+        {
+          "text": "結合がすべて共有結合であること",
+          "why": "共有結合であることは条件ではない。"
+        },
+        {
+          "text": "融点が高いこと",
+          "why": "融点の高低は電気伝導性の条件ではない。"
+        },
+        {
+          "text": "結晶が硬いこと",
+          "why": "硬さは電気伝導性の条件ではない。"
+        }
+      ],
+      "oneLine": "電気を通す条件は、電荷を運ぶ粒子が動けること。",
+      "timeLimit": 12,
+      "grounding": "① 電気を通す条件＝電荷を運ぶ粒子（電子やイオン）が動けること"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_6a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_6a"
+      },
+      "format": "choice4",
+      "prompt": "ダイヤモンドが電気を通さない理由はどれか。",
+      "label": "(6) ダイヤは通さない",
+      "options": [
+        {
+          "text": "価電子4個すべてが結合に固定されて動けないから",
+          "correct": true,
+          "why": "動ける電子がないので電流が流れない。"
+        },
+        {
+          "text": "価電子が3個しかないから",
+          "why": "C の価電子は4個。"
+        },
+        {
+          "text": "自由電子が多すぎるから",
+          "why": "ダイヤモンドに自由電子はない。"
+        },
+        {
+          "text": "イオンが層に沿って動くから",
+          "why": "イオンは存在しない。"
+        }
+      ],
+      "oneLine": "ダイヤモンドは価電子がすべて結合に固定されているので電気を通さない。",
+      "timeLimit": 16,
+      "grounding": "② ダイヤモンドは価電子4個すべてが結合に固定されて動けない"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_6b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_6b"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛が電気をよく通す理由として最も適切なものはどれか。",
+      "label": "(6) 通す理由",
+      "options": [
+        {
+          "text": "価電子4個のうち3個だけが共有結合に使われ、残りの1個が層に沿って自由に動くことができるから",
+          "correct": true,
+          "why": "余った価電子1個が電荷を運ぶ。"
+        },
+        {
+          "text": "価電子4個すべてが結合に使われ、電子が固定されているから",
+          "why": "これはダイヤモンドの説明。"
+        },
+        {
+          "text": "金属の陽イオンと自由電子からできているから",
+          "why": "黒鉛は金属結晶ではない。"
+        },
+        {
+          "text": "層と層の間をイオンが移動できるから",
+          "why": "黒鉛にイオンは存在しない。"
+        }
+      ],
+      "oneLine": "黒鉛は価電子4個のうち3個が結合に使われ、余った1個が層に沿って動くので電気を通す。",
+      "timeLimit": 18,
+      "grounding": "炭素原子の4個の価電子のうち3個だけが共有結合に使われ、残りの1個が層に沿って自由に動くことができるから。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_6b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_6b"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛で平面内の共有結合に使われる価電子の数はどれか。",
+      "label": "(6) 使う価電子",
+      "options": [
+        {
+          "text": "3個",
+          "correct": true,
+          "why": "4個のうち3個が平面内の共有結合に使われる。"
+        },
+        {
+          "text": "4個すべて",
+          "why": "4個すべて使うのはダイヤモンド。"
+        },
+        {
+          "text": "2個",
+          "why": "価電子の使い方として正しくない。"
+        },
+        {
+          "text": "0個",
+          "why": "結合に価電子を使わないことはない。"
+        }
+      ],
+      "oneLine": "黒鉛では C の価電子4個のうち3個が平面内の共有結合に使われる。",
+      "timeLimit": 14,
+      "grounding": "　　└ C の価電子4個のうち、黒鉛では3個が平面内の共有結合に使われる"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_6b:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_6b"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛が「共有結合の結晶なのに電気を通す」ことは何と位置づけられるか。",
+      "label": "(6) 例外の位置づけ",
+      "options": [
+        {
+          "text": "唯一の例外である",
+          "correct": true,
+          "why": "共有結合の結晶で電気を通すのは黒鉛だけの例外。"
+        },
+        {
+          "text": "すべての共有結合の結晶に共通する性質である",
+          "why": "ほかの共有結合の結晶は通さない。"
+        },
+        {
+          "text": "黒鉛が金属結晶である証拠である",
+          "why": "構成粒子は原子であり金属結晶ではない。"
+        },
+        {
+          "text": "層間の分子間力によるものである",
+          "why": "電気を通す原因は余った価電子。"
+        }
+      ],
+      "oneLine": "共有結合の結晶なのに電気を通すのは黒鉛だけ。唯一の例外として覚える。",
+      "timeLimit": 16,
+      "grounding": "共有結合の結晶なのに電気を通す唯一の例外"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_7:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_7"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛が薄くはがれやすくやわらかい理由として最も適切なものはどれか。",
+      "label": "(7) はがれる理由",
+      "options": [
+        {
+          "text": "層の内部は強い共有結合だが、層と層の間は弱い分子間力で積み重なっているだけだから",
+          "correct": true,
+          "why": "弱い層間で滑ってはがれる。"
+        },
+        {
+          "text": "層の内部も層の間もすべて弱い分子間力だから",
+          "why": "層内は強い共有結合である。"
+        },
+        {
+          "text": "自由電子が結晶全体を動き回っているから",
+          "why": "これは金属の展性・延性の説明。"
+        },
+        {
+          "text": "イオンの配列がずれて反発するから",
+          "why": "これはイオン結晶のへき開の説明。"
+        }
+      ],
+      "oneLine": "層内は強い共有結合、層間は弱い分子間力。だから層に沿ってはがれる。",
+      "timeLimit": 18,
+      "grounding": "層の内部では炭素原子が強い共有結合で結ばれているが、層と層の間は弱い分子間力で積み重なっているだけなので、層に沿って簡単にずれてはがれるから。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_7:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_7"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛の層内の結合と層間の力の強さを比べたものとして正しいものはどれか。",
+      "label": "(7) 強さの比較",
+      "options": [
+        {
+          "text": "共有結合（強い） ≫ 分子間力（弱い）",
+          "correct": true,
+          "why": "層内の共有結合のほうが圧倒的に強い。"
+        },
+        {
+          "text": "分子間力のほうが共有結合より強い",
+          "why": "強弱が逆である。"
+        },
+        {
+          "text": "どちらもほぼ同じ強さである",
+          "why": "大きな差がある。"
+        },
+        {
+          "text": "層内も層間もどちらもイオン結合である",
+          "why": "イオンは存在しない。"
+        }
+      ],
+      "oneLine": "層内の共有結合は層間の分子間力よりはるかに強い。",
+      "timeLimit": 14,
+      "grounding": "　　└ 共有結合（強い） ≫ 分子間力（弱い）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_covalent:p_c3_2_covalent_7:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_covalent",
+        "subQuestionId": "p_c3_2_covalent_7"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛が層に沿って滑ってはがれる原理を身近な例で表したものはどれか。",
+      "label": "(7) 身近な例",
+      "options": [
+        {
+          "text": "鉛筆の芯が紙に付く原理",
+          "correct": true,
+          "why": "層がはがれて紙に残るのが鉛筆の原理。"
+        },
+        {
+          "text": "氷が水に浮く原理",
+          "why": "密度の話であり層のはがれとは無関係。"
+        },
+        {
+          "text": "金属が電気を通す原理",
+          "why": "自由電子の話であり層のはがれとは無関係。"
+        },
+        {
+          "text": "食塩が水に溶ける原理",
+          "why": "溶解の話であり層のはがれとは無関係。"
+        }
+      ],
+      "oneLine": "黒鉛の層がはがれる原理は、鉛筆の芯が紙に付くのと同じ。",
+      "timeLimit": 14,
+      "grounding": "　　└ 鉛筆の芯が紙に付く原理"
     }
   ]
 }
