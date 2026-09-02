@@ -9722,6 +9722,1491 @@
       "oneLine": "4種類の結晶は対比して覚えるのが最重要。",
       "timeLimit": 14,
       "grounding": "4つの主要な結晶（イオン、分子、共有結合、金属）の特徴を対比して覚えることが基礎でありもっとも重要なポイントです。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1a"
+      },
+      "format": "choice4",
+      "prompt": "金属結晶のでき方を A群 から選べ。",
+      "label": "(1) 金属結晶 ─ A群",
+      "options": [
+        {
+          "text": "(エ) 自由電子が原子どうしを結びつけてできる結合",
+          "correct": true,
+          "why": "自由電子が結びつけるのが金属結合。"
+        },
+        {
+          "text": "(ア) 陽イオンと陰イオンが静電気力で引き合ってできる結合",
+          "why": "これはイオン結合。"
+        },
+        {
+          "text": "(イ) 原子どうしが価電子を出し合い電子対を共有してできる結合",
+          "why": "これは共有結合。"
+        },
+        {
+          "text": "(ウ) 分子どうしが弱い分子間力で引き合ってできる集合",
+          "why": "これは分子結晶のでき方。"
+        }
+      ],
+      "oneLine": "金属結晶は自由電子が原子どうしを結びつけてできる。",
+      "timeLimit": 13,
+      "grounding": "自由電子が原子どうしを結びつけてできる結合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1a"
+      },
+      "format": "choice4",
+      "prompt": "金属結晶の構成粒子は何か。",
+      "label": "(1) 金属結晶 ─ A群",
+      "options": [
+        {
+          "text": "金属原子",
+          "correct": true,
+          "why": "金属結晶の構成粒子は金属原子。"
+        },
+        {
+          "text": "陽イオンと陰イオン",
+          "why": "これはイオン結晶の構成粒子。"
+        },
+        {
+          "text": "分子",
+          "why": "これは分子結晶の構成粒子。"
+        },
+        {
+          "text": "自由電子だけ",
+          "why": "自由電子は結合を担うが、構成粒子は金属原子。"
+        }
+      ],
+      "oneLine": "金属結晶の構成粒子は金属原子。",
+      "timeLimit": 12,
+      "grounding": "金属結晶の構成粒子は金属原子"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1a"
+      },
+      "format": "choice4",
+      "prompt": "金属原子が放出した価電子はどうなるか。",
+      "label": "(1) 金属結晶 ─ A群",
+      "options": [
+        {
+          "text": "自由電子になる",
+          "correct": true,
+          "why": "結晶全体を動き回って原子を結びつける。"
+        },
+        {
+          "text": "陰イオンに受け渡される",
+          "why": "これはイオン結合のしくみ。"
+        },
+        {
+          "text": "共有電子対になる",
+          "why": "これは共有結合のしくみ。"
+        },
+        {
+          "text": "原子核に取り込まれる",
+          "why": "電子が原子核に入ることはない。"
+        }
+      ],
+      "oneLine": "放出した価電子は自由電子になる。",
+      "timeLimit": 12,
+      "grounding": "放出した価電子は自由電子になる"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1a:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1a"
+      },
+      "format": "choice4",
+      "prompt": "自由電子はどのようにして結晶を保っているか。",
+      "label": "(1) 金属結晶 ─ A群",
+      "options": [
+        {
+          "text": "全体を動き回って原子どうしを結びつける",
+          "correct": true,
+          "why": "特定の2原子に固定されない。"
+        },
+        {
+          "text": "2個の原子の間だけに固定される",
+          "why": "それは共有電子対のしくみ。"
+        },
+        {
+          "text": "陽イオンの内側に閉じこもる",
+          "why": "自由電子は結晶全体を動く。"
+        },
+        {
+          "text": "分子の外側を弱く引き合う",
+          "why": "これは分子間力の説明。"
+        }
+      ],
+      "oneLine": "自由電子は結晶全体を動き回って原子を結びつける。",
+      "timeLimit": 13,
+      "grounding": "自由電子が全体を動き回って原子どうしを結びつける"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1b"
+      },
+      "format": "choice4",
+      "prompt": "金属結晶の性質を B群 から選べ。",
+      "label": "(1) 金属結晶 ─ B群",
+      "options": [
+        {
+          "text": "(キ) 固体でも液体でも電気を通し、展性・延性を示す",
+          "correct": true,
+          "why": "自由電子はどの状態でも動けるので金属結晶。"
+        },
+        {
+          "text": "(オ) きわめて硬く、融点が非常に高い。電気を通さないものが多い",
+          "why": "これは共有結合の結晶。"
+        },
+        {
+          "text": "(カ) 固体では電気を通さないが、融解や水溶液にすると電気を通す",
+          "why": "これはイオン結晶。"
+        },
+        {
+          "text": "(ク) やわらかく融点が低いものが多く、昇華するものもある",
+          "why": "これは分子結晶。"
+        }
+      ],
+      "oneLine": "金属結晶は固体でも液体でも電気を通し、展性・延性を示す。",
+      "timeLimit": 14,
+      "grounding": "固体でも液体でも電気を通し、展性・延性を示す。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1b"
+      },
+      "format": "choice4",
+      "prompt": "金属が固体でも液体でも電気を通すのはなぜか。",
+      "label": "(1) 金属結晶 ─ B群",
+      "options": [
+        {
+          "text": "自由電子は固体でも液体でも動けるから",
+          "correct": true,
+          "why": "状態を問わず電気を通す。"
+        },
+        {
+          "text": "イオンが固体でも動けるから",
+          "why": "イオン結晶の固体ではイオンは動けない。"
+        },
+        {
+          "text": "分子間力が強いから",
+          "why": "分子間力は電気伝導性と無関係。"
+        },
+        {
+          "text": "共有電子対が移動するから",
+          "why": "共有電子対は結合に固定されている。"
+        }
+      ],
+      "oneLine": "自由電子は状態を問わず動けるので金属は必ず電気を通す。",
+      "timeLimit": 14,
+      "grounding": "自由電子は固体でも液体でも動ける → 状態を問わず電気を通す"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1b:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1b"
+      },
+      "format": "choice4",
+      "prompt": "金属が展性・延性を示すのはなぜか。",
+      "label": "(1) 金属結晶 ─ B群",
+      "options": [
+        {
+          "text": "原子の配列がずれても自由電子が結合を保つから",
+          "correct": true,
+          "why": "だから割れずに変形する。"
+        },
+        {
+          "text": "配列がずれると同符号のイオンが向かい合うから",
+          "why": "それはイオン結晶が割れる理由。"
+        },
+        {
+          "text": "分子が層に沿ってすべるから",
+          "why": "それは黒鉛の説明。"
+        },
+        {
+          "text": "共有結合が立体網目をつくるから",
+          "why": "それは共有結合の結晶の説明。"
+        }
+      ],
+      "oneLine": "配列がずれても自由電子が結合を保つので展性・延性を示す。",
+      "timeLimit": 14,
+      "grounding": "原子の配列がずれても自由電子が結合を保つ → 展性・延性"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1b:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1b"
+      },
+      "format": "choice4",
+      "prompt": "「金属結晶は液体では電気を通さない」という記述はどう扱うべきか。",
+      "label": "(1) 金属結晶 ─ B群",
+      "options": [
+        {
+          "text": "頻出のワナであり誤りである",
+          "correct": true,
+          "why": "金属は固体でも液体でも通す。"
+        },
+        {
+          "text": "正しい記述である",
+          "why": "液体でも通すので誤り。"
+        },
+        {
+          "text": "黒鉛だけに当てはまる",
+          "why": "黒鉛は共有結合の結晶の話。"
+        },
+        {
+          "text": "分子結晶にだけ当てはまる",
+          "why": "分子結晶はどの状態でも通さない。"
+        }
+      ],
+      "oneLine": "「金属は液体では通さない」は誤り。頻出のワナ。",
+      "timeLimit": 15,
+      "grounding": "①黒鉛（共有結合の結晶だが電気を通す）を「例外」と知らずに誤答、②イオン結晶を「固体でも電気を通す」とする、③分子結晶の融点を「高い」とする、④「金属結晶は液体では電気を通さない」とする。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1c:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1c"
+      },
+      "format": "choice4",
+      "prompt": "金属結晶の例を C群 から選べ。",
+      "label": "(1) 金属結晶 ─ C群",
+      "options": [
+        {
+          "text": "(サ) アルミニウム",
+          "correct": true,
+          "why": "Al は典型的な金属なので金属結晶。"
+        },
+        {
+          "text": "(ケ) ケイ素",
+          "why": "Si は共有結合の結晶。"
+        },
+        {
+          "text": "(コ) ナフタレン",
+          "why": "昇華する分子結晶。"
+        },
+        {
+          "text": "(シ) 塩化カリウム",
+          "why": "K⁺ と Cl⁻ からなるイオン結晶。"
+        }
+      ],
+      "oneLine": "金属結晶の例はアルミニウム Al。",
+      "timeLimit": 13,
+      "grounding": "アルミニウム Al は典型的な金属"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1c:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1c"
+      },
+      "format": "choice4",
+      "prompt": "代表物質を当てはめるときの対応として正しいのはどれか。",
+      "label": "(1) 金属結晶 ─ C群",
+      "options": [
+        {
+          "text": "金属＝Al、共有結合＝Si、分子＝ナフタレン、イオン＝KCl",
+          "correct": true,
+          "why": "解説にある4つの代表物質の対応。"
+        },
+        {
+          "text": "金属＝Si、共有結合＝Al、分子＝KCl、イオン＝ナフタレン",
+          "why": "すべて入れ替わっている。"
+        },
+        {
+          "text": "金属＝KCl、共有結合＝ナフタレン、分子＝Al、イオン＝Si",
+          "why": "すべて入れ替わっている。"
+        },
+        {
+          "text": "金属＝ナフタレン、共有結合＝KCl、分子＝Si、イオン＝Al",
+          "why": "すべて入れ替わっている。"
+        }
+      ],
+      "oneLine": "金属＝Al／共有結合＝Si／分子＝ナフタレン／イオン＝KCl。",
+      "timeLimit": 16,
+      "grounding": "最後に代表物質を当てはめる（金属＝Al、共有結合＝Si、分子＝ナフタレン、イオン＝KCl）。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_1c:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_1c"
+      },
+      "format": "choice4",
+      "prompt": "金属結晶の融点について比較表はどう書いているか。",
+      "label": "(1) 金属結晶 ─ C群",
+      "options": [
+        {
+          "text": "さまざま",
+          "correct": true,
+          "why": "金属の融点は物質によって大きく違う。"
+        },
+        {
+          "text": "必ず最も低い",
+          "why": "最も低いのは分子結晶。"
+        },
+        {
+          "text": "必ず最も高い",
+          "why": "最も高いのは共有結合の結晶。"
+        },
+        {
+          "text": "すべて同じ値になる",
+          "why": "融点が全部同じになることはない。"
+        }
+      ],
+      "oneLine": "金属結晶の融点は「さまざま」。",
+      "timeLimit": 12,
+      "grounding": "金属結晶 | 金属原子 | 金属結合（自由電子） | さまざま | 固体○・液体○ | Al, Fe, Cu |"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2a"
+      },
+      "format": "choice4",
+      "prompt": "共有結合の結晶のでき方を A群 から選べ。",
+      "label": "(2) 共有結合の結晶 ─ A群",
+      "options": [
+        {
+          "text": "(イ) 原子どうしが価電子を出し合い電子対を共有してできる結合",
+          "correct": true,
+          "why": "これは共有結合。"
+        },
+        {
+          "text": "(ウ) 分子どうしが弱い分子間力で引き合ってできる集合",
+          "why": "これは分子結晶のでき方。"
+        },
+        {
+          "text": "(エ) 自由電子が原子どうしを結びつけてできる結合",
+          "why": "自由電子が結びつけるのが金属結合。"
+        },
+        {
+          "text": "(ア) 陽イオンと陰イオンが静電気力で引き合ってできる結合",
+          "why": "これはイオン結合。"
+        }
+      ],
+      "oneLine": "原子どうしが価電子を出し合い電子対を共有してできる。",
+      "timeLimit": 14,
+      "grounding": "原子どうしが価電子を出し合い、電子対を共有してできる結合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2a"
+      },
+      "format": "choice4",
+      "prompt": "共有結合の結晶で、どの原子どうしが結合しているか。",
+      "label": "(2) 共有結合の結晶 ─ A群",
+      "options": [
+        {
+          "text": "非金属原子どうし",
+          "correct": true,
+          "why": "価電子を出し合って電子対を共有する。"
+        },
+        {
+          "text": "金属原子と自由電子",
+          "why": "金属原子と自由電子の組は金属結合。"
+        },
+        {
+          "text": "陽イオンと陰イオン",
+          "why": "これはイオン結合。"
+        },
+        {
+          "text": "分子と分子",
+          "why": "分子どうしを結ぶのは分子間力。"
+        }
+      ],
+      "oneLine": "共有結合は非金属原子どうしが電子対を共有してできる。",
+      "timeLimit": 13,
+      "grounding": "非金属原子どうしが価電子を出し合って電子対を共有する"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2a"
+      },
+      "format": "choice4",
+      "prompt": "結晶の分類でまず言うべきことは何か。",
+      "label": "(2) 共有結合の結晶 ─ A群",
+      "options": [
+        {
+          "text": "構成粒子は何か",
+          "correct": true,
+          "why": "ここが分類の出発点。"
+        },
+        {
+          "text": "結晶の色は何か",
+          "why": "色は分類の基準にならない。"
+        },
+        {
+          "text": "結晶の値段はいくらか",
+          "why": "化学の判断材料ではない。"
+        },
+        {
+          "text": "結晶の大きさは何 cm か",
+          "why": "大きさは分類に関係ない。"
+        }
+      ],
+      "oneLine": "結晶の分類はまず構成粒子を言うことから始める。",
+      "timeLimit": 12,
+      "grounding": "構成粒子は何か"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2a:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2a"
+      },
+      "format": "choice4",
+      "prompt": "A群（でき方）は分類の3ステップのどの段階に対応するか。",
+      "label": "(2) 共有結合の結晶 ─ A群",
+      "options": [
+        {
+          "text": "粒子をつなぐ力を言う段階",
+          "correct": true,
+          "why": "A群はこの段階の言い換えなので即決できる。"
+        },
+        {
+          "text": "性質から融点を導く段階",
+          "why": "それはB群にあたる段階。"
+        },
+        {
+          "text": "代表物質を当てはめる段階",
+          "why": "それはC群にあたる段階。"
+        },
+        {
+          "text": "単位格子の粒子数を数える段階",
+          "why": "この問題では出てこない。"
+        }
+      ],
+      "oneLine": "A群は「粒子をつなぐ力」の言い換え。",
+      "timeLimit": 15,
+      "grounding": "を言う（イオン結合／共有結合／分子間力／金属結合）。A群はこの段階の言い換えなので即決できる。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2b"
+      },
+      "format": "choice4",
+      "prompt": "共有結合の結晶の性質を B群 から選べ。",
+      "label": "(2) 共有結合の結晶 ─ B群",
+      "options": [
+        {
+          "text": "(オ) きわめて硬く、融点が非常に高い。電気を通さないものが多い",
+          "correct": true,
+          "why": "これは共有結合の結晶。"
+        },
+        {
+          "text": "(カ) 固体では電気を通さないが、融解や水溶液にすると電気を通す",
+          "why": "これはイオン結晶。"
+        },
+        {
+          "text": "(ク) やわらかく融点が低いものが多く、昇華するものもある",
+          "why": "これは分子結晶。"
+        },
+        {
+          "text": "(キ) 固体でも液体でも電気を通し、展性・延性を示す",
+          "why": "自由電子はどの状態でも動けるので金属結晶。"
+        }
+      ],
+      "oneLine": "きわめて硬く融点が非常に高く、電気を通さないものが多い。",
+      "timeLimit": 14,
+      "grounding": "きわめて硬く、融点が非常に高い。電気を通さないものが多い。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2b"
+      },
+      "format": "choice4",
+      "prompt": "共有結合の結晶が硬く融点が非常に高いのはなぜか。",
+      "label": "(2) 共有結合の結晶 ─ B群",
+      "options": [
+        {
+          "text": "結合を切るのに大きなエネルギーが必要だから",
+          "correct": true,
+          "why": "強い共有結合が結晶全体に張りめぐらされている。"
+        },
+        {
+          "text": "分子間力が弱いから",
+          "why": "分子間力が弱いと融点は低くなる。"
+        },
+        {
+          "text": "自由電子が動き回るから",
+          "why": "自由電子は硬さの理由にならない。"
+        },
+        {
+          "text": "イオンが静電気力で並ぶだけだから",
+          "why": "それはイオン結晶の説明。"
+        }
+      ],
+      "oneLine": "強い共有結合を切るのに大きなエネルギーが必要だから。",
+      "timeLimit": 15,
+      "grounding": "結合を切るのに大きなエネルギーが必要 → きわめて硬く融点が非常に高い"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2b:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2b"
+      },
+      "format": "choice4",
+      "prompt": "共有結合の結晶が電気を通さないものが多いのはなぜか。",
+      "label": "(2) 共有結合の結晶 ─ B群",
+      "options": [
+        {
+          "text": "電子が結合に固定されて動けないから",
+          "correct": true,
+          "why": "動ける荷電粒子がないので通さない。"
+        },
+        {
+          "text": "イオンが固定されているから",
+          "why": "イオンは共有結合の結晶に存在しない。"
+        },
+        {
+          "text": "自由電子が多すぎるから",
+          "why": "自由電子は存在しない。"
+        },
+        {
+          "text": "分子間力で結ばれているから",
+          "why": "分子間力ではなく共有結合で結ばれている。"
+        }
+      ],
+      "oneLine": "電子が結合に固定されて動けないので電気を通さない。",
+      "timeLimit": 15,
+      "grounding": "電子は結合に固定されて動けない → 電気を通さないものが多い"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2b:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2b"
+      },
+      "format": "choice4",
+      "prompt": "比較表では共有結合の結晶の電気伝導性はどう書かれているか。",
+      "label": "(2) 共有結合の結晶 ─ B群",
+      "options": [
+        {
+          "text": "×（黒鉛のみ○）",
+          "correct": true,
+          "why": "黒鉛だけが例外で電気を通す。"
+        },
+        {
+          "text": "固体○・液体○",
+          "why": "これは金属結晶。"
+        },
+        {
+          "text": "固体×・融解液と水溶液○",
+          "why": "これはイオン結晶。"
+        },
+        {
+          "text": "どの物質も例外なく○",
+          "why": "ダイヤモンドや SiO₂ は通さない。"
+        }
+      ],
+      "oneLine": "共有結合の結晶は×だが黒鉛のみ○。",
+      "timeLimit": 14,
+      "grounding": "共有結合の結晶 | 原子 | 共有結合 | 非常に高い | ×（黒鉛のみ○） | C, Si, SiO₂ |"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2b:5",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2b"
+      },
+      "format": "choice4",
+      "prompt": "性質の文章だけを見て結晶を特定させる形式についてどう書かれているか。",
+      "label": "(2) 共有結合の結晶 ─ B群",
+      "options": [
+        {
+          "text": "本番でもそのまま出る形式である",
+          "correct": true,
+          "why": "双方向の対応が問われる。"
+        },
+        {
+          "text": "本番ではまず出ない形式である",
+          "why": "本番でもそのまま出ると書かれている。"
+        },
+        {
+          "text": "計算問題としてだけ出る",
+          "why": "計算ではなく分類の問題。"
+        },
+        {
+          "text": "記述問題としてしか出ない",
+          "why": "正誤・選択でも出る。"
+        }
+      ],
+      "oneLine": "性質の文章から結晶を特定させる形式は本番でもそのまま出る。",
+      "timeLimit": 16,
+      "grounding": "性質の文章だけを見て結晶を特定させる"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2c:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2c"
+      },
+      "format": "choice4",
+      "prompt": "共有結合の結晶の例を C群 から選べ。",
+      "label": "(2) 共有結合の結晶 ─ C群",
+      "options": [
+        {
+          "text": "(ケ) ケイ素",
+          "correct": true,
+          "why": "Si は共有結合の結晶。"
+        },
+        {
+          "text": "(コ) ナフタレン",
+          "why": "昇華する分子結晶。"
+        },
+        {
+          "text": "(シ) 塩化カリウム",
+          "why": "K⁺ と Cl⁻ からなるイオン結晶。"
+        },
+        {
+          "text": "(サ) アルミニウム",
+          "why": "Al は典型的な金属なので金属結晶。"
+        }
+      ],
+      "oneLine": "共有結合の結晶の例はケイ素 Si。",
+      "timeLimit": 13,
+      "grounding": "選択肢の「ケイ素」は Si"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2c:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2c"
+      },
+      "format": "choice4",
+      "prompt": "共有結合の結晶として覚えるべき物質はいくつあるか。",
+      "label": "(2) 共有結合の結晶 ─ C群",
+      "options": [
+        {
+          "text": "C（ダイヤモンド・黒鉛）・Si・SiO₂・SiC の4つ",
+          "correct": true,
+          "why": "これ以外は出てこないので丸暗記でよい。"
+        },
+        {
+          "text": "NaCl・KCl・CaCO₃ の3つ",
+          "why": "これらはイオン結晶。"
+        },
+        {
+          "text": "CO₂・I₂・ナフタレンの3つ",
+          "why": "これらは分子結晶。"
+        },
+        {
+          "text": "Al・Fe・Cu の3つ",
+          "why": "これらは金属結晶。"
+        }
+      ],
+      "oneLine": "共有結合の結晶は C・Si・SiO₂・SiC の4つだけ。",
+      "timeLimit": 16,
+      "grounding": "共有結合の結晶は C（ダイヤモンド・黒鉛）・Si・SiO₂・SiC の4つ"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_2c:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_2c"
+      },
+      "format": "choice4",
+      "prompt": "2027年の共通テストで本命とされているテーマはどれか。",
+      "label": "(2) 共有結合の結晶 ─ C群",
+      "options": [
+        {
+          "text": "共有結合の結晶の性質正誤、または4種の結晶の比較",
+          "correct": true,
+          "why": "傾向データからの予想。"
+        },
+        {
+          "text": "原子量の計算だけ",
+          "why": "この単元の本命ではない。"
+        },
+        {
+          "text": "酸化還元の半反応式だけ",
+          "why": "別の単元の話。"
+        },
+        {
+          "text": "中和滴定の計算だけ",
+          "why": "別の単元の話。"
+        }
+      ],
+      "oneLine": "本命は共有結合の結晶の正誤か4種の結晶の比較。",
+      "timeLimit": 16,
+      "grounding": "2027年も「共有結合の結晶の性質正誤」または「4種の結晶の比較」が本命。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_3a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_3a"
+      },
+      "format": "choice4",
+      "prompt": "分子結晶のでき方を A群 から選べ。",
+      "label": "(3) 分子結晶 ─ A群",
+      "options": [
+        {
+          "text": "(ウ) 分子どうしが弱い分子間力で引き合ってできる集合",
+          "correct": true,
+          "why": "これは分子結晶のでき方。"
+        },
+        {
+          "text": "(エ) 自由電子が原子どうしを結びつけてできる結合",
+          "why": "自由電子が結びつけるのが金属結合。"
+        },
+        {
+          "text": "(ア) 陽イオンと陰イオンが静電気力で引き合ってできる結合",
+          "why": "これはイオン結合。"
+        },
+        {
+          "text": "(イ) 原子どうしが価電子を出し合い電子対を共有してできる結合",
+          "why": "これは共有結合。"
+        }
+      ],
+      "oneLine": "分子どうしが弱い分子間力で引き合ってできる。",
+      "timeLimit": 13,
+      "grounding": "分子どうしが弱い分子間力で引き合ってできる集合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_3a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_3a"
+      },
+      "format": "choice4",
+      "prompt": "分子どうしを引きつけている力は何か。",
+      "label": "(3) 分子結晶 ─ A群",
+      "options": [
+        {
+          "text": "弱い分子間力",
+          "correct": true,
+          "why": "分子結晶は分子間力で集まっている。"
+        },
+        {
+          "text": "静電気力（クーロン力）",
+          "why": "これはイオン結合の力。"
+        },
+        {
+          "text": "自由電子による結合",
+          "why": "これは金属結合。"
+        },
+        {
+          "text": "共有電子対による結合",
+          "why": "これは分子の内部の結合。"
+        }
+      ],
+      "oneLine": "分子どうしを引きつけるのは弱い分子間力。",
+      "timeLimit": 12,
+      "grounding": "分子どうしを引きつけるのは弱い分子間力"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_3a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_3a"
+      },
+      "format": "choice4",
+      "prompt": "分子間力は化学結合に数えるか。",
+      "label": "(3) 分子結晶 ─ A群",
+      "options": [
+        {
+          "text": "化学結合ではない",
+          "correct": true,
+          "why": "分子間力は化学結合には数えない。"
+        },
+        {
+          "text": "最も強い化学結合である",
+          "why": "分子間力は弱く化学結合でもない。"
+        },
+        {
+          "text": "共有結合の一種である",
+          "why": "共有結合とは別物。"
+        },
+        {
+          "text": "イオン結合の一種である",
+          "why": "イオン結合とも別物。"
+        }
+      ],
+      "oneLine": "分子間力は化学結合には数えない。",
+      "timeLimit": 12,
+      "grounding": "化学結合ではない"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_3b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_3b"
+      },
+      "format": "choice4",
+      "prompt": "分子結晶の性質を B群 から選べ。",
+      "label": "(3) 分子結晶 ─ B群",
+      "options": [
+        {
+          "text": "(ク) やわらかく融点が低いものが多く、昇華するものもある",
+          "correct": true,
+          "why": "これは分子結晶。"
+        },
+        {
+          "text": "(キ) 固体でも液体でも電気を通し、展性・延性を示す",
+          "why": "自由電子はどの状態でも動けるので金属結晶。"
+        },
+        {
+          "text": "(オ) きわめて硬く、融点が非常に高い。電気を通さないものが多い",
+          "why": "これは共有結合の結晶。"
+        },
+        {
+          "text": "(カ) 固体では電気を通さないが、融解や水溶液にすると電気を通す",
+          "why": "これはイオン結晶。"
+        }
+      ],
+      "oneLine": "やわらかく融点が低く、昇華するものもある。",
+      "timeLimit": 14,
+      "grounding": "やわらかく融点が低いものが多く、昇華するものもある。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_3b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_3b"
+      },
+      "format": "choice4",
+      "prompt": "分子結晶が少しの熱で崩れるのはなぜか。",
+      "label": "(3) 分子結晶 ─ B群",
+      "options": [
+        {
+          "text": "粒子をつなぐ力が弱いから",
+          "correct": true,
+          "why": "分子間力が弱いので低温で崩れる。"
+        },
+        {
+          "text": "粒子をつなぐ力が強いから",
+          "why": "強ければ崩れにくい。"
+        },
+        {
+          "text": "自由電子が熱を運ぶから",
+          "why": "自由電子は存在しない。"
+        },
+        {
+          "text": "イオンが動けるから",
+          "why": "分子結晶にイオンはない。"
+        }
+      ],
+      "oneLine": "分子間力が弱いので少しの熱で崩れる。",
+      "timeLimit": 13,
+      "grounding": "粒子をつなぐ力が弱い → 少しの熱で崩れる"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_3b:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_3b"
+      },
+      "format": "choice4",
+      "prompt": "分子結晶で起こることがある状態変化はどれか。",
+      "label": "(3) 分子結晶 ─ B群",
+      "options": [
+        {
+          "text": "固体から直接気体になる昇華",
+          "correct": true,
+          "why": "ドライアイスやヨウ素で起こる。"
+        },
+        {
+          "text": "固体のまま電気を通す変化",
+          "why": "分子結晶は電気を通さない。"
+        },
+        {
+          "text": "たたくと薄く広がる変化",
+          "why": "それは金属の展性。"
+        },
+        {
+          "text": "特定の面に沿って割れるへき開",
+          "why": "それはイオン結晶の性質。"
+        }
+      ],
+      "oneLine": "分子結晶では固体から直接気体になる昇華が起こる。",
+      "timeLimit": 13,
+      "grounding": "固体から直接気体になる昇華も起こる"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_3b:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_3b"
+      },
+      "format": "choice4",
+      "prompt": "「分子結晶の融点は高い」という記述はどう扱うべきか。",
+      "label": "(3) 分子結晶 ─ B群",
+      "options": [
+        {
+          "text": "頻出のワナであり誤りである",
+          "correct": true,
+          "why": "分子結晶の融点は低い。"
+        },
+        {
+          "text": "正しい記述である",
+          "why": "融点は低いので誤り。"
+        },
+        {
+          "text": "金属結晶にだけ当てはまる",
+          "why": "金属の融点はさまざま。"
+        },
+        {
+          "text": "共有結合の結晶と同じ意味である",
+          "why": "共有結合の結晶は融点が非常に高い。"
+        }
+      ],
+      "oneLine": "「分子結晶の融点は高い」は誤り。頻出のワナ。",
+      "timeLimit": 15,
+      "grounding": "①黒鉛（共有結合の結晶だが電気を通す）を「例外」と知らずに誤答、②イオン結晶を「固体でも電気を通す」とする、③分子結晶の融点を「高い」とする、④「金属結晶は液体では電気を通さない」とする。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_3c:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_3c"
+      },
+      "format": "choice4",
+      "prompt": "分子結晶の例を C群 から選べ。",
+      "label": "(3) 分子結晶 ─ C群",
+      "options": [
+        {
+          "text": "(コ) ナフタレン",
+          "correct": true,
+          "why": "昇華する分子結晶。"
+        },
+        {
+          "text": "(シ) 塩化カリウム",
+          "why": "K⁺ と Cl⁻ からなるイオン結晶。"
+        },
+        {
+          "text": "(サ) アルミニウム",
+          "why": "Al は典型的な金属なので金属結晶。"
+        },
+        {
+          "text": "(ケ) ケイ素",
+          "why": "Si は共有結合の結晶。"
+        }
+      ],
+      "oneLine": "分子結晶の例はナフタレン。",
+      "timeLimit": 13,
+      "grounding": "選択肢の「ナフタレン」は防虫剤で昇華する"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_3c:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_3c"
+      },
+      "format": "choice4",
+      "prompt": "昇華する物質はどの結晶に分類されるか。",
+      "label": "(3) 分子結晶 ─ C群",
+      "options": [
+        {
+          "text": "すべて分子結晶",
+          "correct": true,
+          "why": "ドライアイス・ヨウ素・ナフタレンはすべて分子結晶。"
+        },
+        {
+          "text": "すべてイオン結晶",
+          "why": "イオン結晶は昇華しない。"
+        },
+        {
+          "text": "すべて共有結合の結晶",
+          "why": "共有結合の結晶は昇華しない。"
+        },
+        {
+          "text": "すべて金属結晶",
+          "why": "金属は昇華しない。"
+        }
+      ],
+      "oneLine": "昇華する物質はすべて分子結晶。",
+      "timeLimit": 13,
+      "grounding": "昇華する物質（ドライアイス・ヨウ素・ナフタレン）はすべて分子結晶。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_3c:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_3c"
+      },
+      "format": "choice4",
+      "prompt": "比較表で分子結晶の代表例として挙げられているのはどれか。",
+      "label": "(3) 分子結晶 ─ C群",
+      "options": [
+        {
+          "text": "CO₂, I₂, ナフタレン",
+          "correct": true,
+          "why": "いずれも分子結晶。"
+        },
+        {
+          "text": "Al, Fe, Cu",
+          "why": "これらは金属結晶。"
+        },
+        {
+          "text": "C, Si, SiO₂",
+          "why": "これらは共有結合の結晶。"
+        },
+        {
+          "text": "NaCl, KCl",
+          "why": "これらはイオン結晶。"
+        }
+      ],
+      "oneLine": "分子結晶の代表例は CO₂・I₂・ナフタレン。",
+      "timeLimit": 13,
+      "grounding": "分子結晶 | 分子 | 分子間力（弱い） | 低い | × | CO₂, I₂, ナフタレン |"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4a"
+      },
+      "format": "choice4",
+      "prompt": "イオン結晶のでき方を A群 から選べ。",
+      "label": "(4) イオン結晶 ─ A群",
+      "options": [
+        {
+          "text": "(ア) 陽イオンと陰イオンが静電気力で引き合ってできる結合",
+          "correct": true,
+          "why": "これはイオン結合。"
+        },
+        {
+          "text": "(イ) 原子どうしが価電子を出し合い電子対を共有してできる結合",
+          "why": "これは共有結合。"
+        },
+        {
+          "text": "(ウ) 分子どうしが弱い分子間力で引き合ってできる集合",
+          "why": "これは分子結晶のでき方。"
+        },
+        {
+          "text": "(エ) 自由電子が原子どうしを結びつけてできる結合",
+          "why": "自由電子が結びつけるのが金属結合。"
+        }
+      ],
+      "oneLine": "陽イオンと陰イオンが静電気力で引き合ってできる。",
+      "timeLimit": 13,
+      "grounding": "陽イオンと陰イオンが静電気力（クーロン力）で引き合ってできる結合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4a"
+      },
+      "format": "choice4",
+      "prompt": "イオン結合の力を別の呼び方でいうと何か。",
+      "label": "(4) イオン結晶 ─ A群",
+      "options": [
+        {
+          "text": "クーロン力",
+          "correct": true,
+          "why": "静電気力（クーロン力）と呼ばれる。"
+        },
+        {
+          "text": "分子間力",
+          "why": "これは分子結晶の力。"
+        },
+        {
+          "text": "金属結合",
+          "why": "これは金属結晶の結合。"
+        },
+        {
+          "text": "共有結合",
+          "why": "これは電子対を共有する結合。"
+        }
+      ],
+      "oneLine": "イオン結合の力は静電気力（クーロン力）。",
+      "timeLimit": 12,
+      "grounding": "陽イオンと陰イオンが静電気力（クーロン力）で引き合ってできる結合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4a"
+      },
+      "format": "choice4",
+      "prompt": "力の強さから性質を導く段階では何を考えるか。",
+      "label": "(4) イオン結晶 ─ A群",
+      "options": [
+        {
+          "text": "その力の強さ・電子の動きやすさから性質を導く",
+          "correct": true,
+          "why": "3ステップの③にあたる。"
+        },
+        {
+          "text": "結晶の産地と価格を調べる",
+          "why": "化学の判断材料ではない。"
+        },
+        {
+          "text": "結晶の色から結合を決める",
+          "why": "色では決まらない。"
+        },
+        {
+          "text": "原子番号の大小だけを比べる",
+          "why": "原子番号では性質は決まらない。"
+        }
+      ],
+      "oneLine": "力の強さと電子の動きやすさから性質を導く。",
+      "timeLimit": 15,
+      "grounding": "その力の強さ・電子の動きやすさから性質を導く"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4a:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4a"
+      },
+      "format": "choice4",
+      "prompt": "力の強さと性質の対応として正しいのはどれか。",
+      "label": "(4) イオン結晶 ─ A群",
+      "options": [
+        {
+          "text": "力が強い→高融点・硬い、力が弱い→低融点・やわらかい",
+          "correct": true,
+          "why": "解説の対応そのまま。"
+        },
+        {
+          "text": "力が強い→低融点・やわらかい",
+          "why": "逆になっている。"
+        },
+        {
+          "text": "力が弱い→高融点・硬い",
+          "why": "逆になっている。"
+        },
+        {
+          "text": "力の強さと融点は無関係である",
+          "why": "力の強さで融点が決まる。"
+        }
+      ],
+      "oneLine": "力が強いと高融点で硬く、弱いと低融点でやわらかい。",
+      "timeLimit": 16,
+      "grounding": "力が強い→高融点・硬い、力が弱い→低融点・やわらかい・昇華。動ける荷電粒子がある→電気を通す。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4b"
+      },
+      "format": "choice4",
+      "prompt": "イオン結晶の性質を B群 から選べ。",
+      "label": "(4) イオン結晶 ─ B群",
+      "options": [
+        {
+          "text": "(カ) 固体では電気を通さないが、融解や水溶液にすると電気を通す",
+          "correct": true,
+          "why": "これはイオン結晶。"
+        },
+        {
+          "text": "(ク) やわらかく融点が低いものが多く、昇華するものもある",
+          "why": "これは分子結晶。"
+        },
+        {
+          "text": "(キ) 固体でも液体でも電気を通し、展性・延性を示す",
+          "why": "自由電子はどの状態でも動けるので金属結晶。"
+        },
+        {
+          "text": "(オ) きわめて硬く、融点が非常に高い。電気を通さないものが多い",
+          "why": "これは共有結合の結晶。"
+        }
+      ],
+      "oneLine": "固体では通さないが、融解や水溶液にすると電気を通す。",
+      "timeLimit": 14,
+      "grounding": "固体では電気を通さないが、融解したり水に溶かしたりすると電気を通す。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4b"
+      },
+      "format": "choice4",
+      "prompt": "イオン結晶の固体が電気を通さないのはなぜか。",
+      "label": "(4) イオン結晶 ─ B群",
+      "options": [
+        {
+          "text": "電気を運ぶイオンの位置が固定されて動けないから",
+          "correct": true,
+          "why": "固体ではイオンが動けない。"
+        },
+        {
+          "text": "イオンがそもそも存在しないから",
+          "why": "イオン結晶にはイオンがある。"
+        },
+        {
+          "text": "自由電子が結合に固定されているから",
+          "why": "イオン結晶に自由電子はない。"
+        },
+        {
+          "text": "分子間力が強すぎるから",
+          "why": "分子間力は関係しない。"
+        }
+      ],
+      "oneLine": "固体ではイオンの位置が固定されて動けないから通さない。",
+      "timeLimit": 15,
+      "grounding": "電気を運ぶのはイオンだが、固体では位置が固定されて動けない"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4b:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4b"
+      },
+      "format": "choice4",
+      "prompt": "イオン結晶が電気を通すようになる操作はどれか。",
+      "label": "(4) イオン結晶 ─ B群",
+      "options": [
+        {
+          "text": "融解する、または水に溶かす",
+          "correct": true,
+          "why": "イオンが自由に動けるようになる。"
+        },
+        {
+          "text": "低温に冷やして固める",
+          "why": "固めるとイオンは動けない。"
+        },
+        {
+          "text": "たたいて薄く延ばす",
+          "why": "延ばしても通さない。"
+        },
+        {
+          "text": "こまかく砕いて粉にする",
+          "why": "粉にしても固体のままなので通さない。"
+        }
+      ],
+      "oneLine": "融解するか水に溶かすとイオンが動けて電気を通す。",
+      "timeLimit": 14,
+      "grounding": "融解・水に溶かすとイオンが自由に動ける"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4b:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4b"
+      },
+      "format": "choice4",
+      "prompt": "「固体×／液体○」という電気伝導性はどの結晶だけの特徴か。",
+      "label": "(4) イオン結晶 ─ B群",
+      "options": [
+        {
+          "text": "イオン結晶だけ",
+          "correct": true,
+          "why": "金属は固体でも液体でも通す。"
+        },
+        {
+          "text": "金属結晶だけ",
+          "why": "金属はどちらの状態でも通す。"
+        },
+        {
+          "text": "分子結晶だけ",
+          "why": "分子結晶はどちらの状態でも通さない。"
+        },
+        {
+          "text": "共有結合の結晶だけ",
+          "why": "共有結合の結晶は基本的に通さない。"
+        }
+      ],
+      "oneLine": "「固体×／液体○」はイオン結晶だけの特徴。",
+      "timeLimit": 14,
+      "grounding": "電気伝導性の「固体×／液体○」はイオン結晶だけの特徴。金属は固体でも液体でも○。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4c:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4c"
+      },
+      "format": "choice4",
+      "prompt": "イオン結晶の例を C群 から選べ。",
+      "label": "(4) イオン結晶 ─ C群",
+      "options": [
+        {
+          "text": "(シ) 塩化カリウム",
+          "correct": true,
+          "why": "K⁺ と Cl⁻ からなるイオン結晶。"
+        },
+        {
+          "text": "(サ) アルミニウム",
+          "why": "Al は典型的な金属なので金属結晶。"
+        },
+        {
+          "text": "(ケ) ケイ素",
+          "why": "Si は共有結合の結晶。"
+        },
+        {
+          "text": "(コ) ナフタレン",
+          "why": "昇華する分子結晶。"
+        }
+      ],
+      "oneLine": "イオン結晶の例は塩化カリウム KCl。",
+      "timeLimit": 13,
+      "grounding": "塩化カリウム KCl は K⁺ と Cl⁻"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4c:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4c"
+      },
+      "format": "choice4",
+      "prompt": "イオン結晶の代表物質を選ぶときの目印はどれか。",
+      "label": "(4) イオン結晶 ─ C群",
+      "options": [
+        {
+          "text": "金属元素と非金属元素の組合せを探す",
+          "correct": true,
+          "why": "陽イオンと陰イオンになる組合せ。"
+        },
+        {
+          "text": "非金属元素だけの組合せを探す",
+          "why": "非金属だけなら共有結合の結晶か分子結晶。"
+        },
+        {
+          "text": "同じ元素だけの組合せを探す",
+          "why": "同じ元素だけなら単体。イオン結晶は2種類の元素からなる。"
+        },
+        {
+          "text": "元素記号が1文字のものを探す",
+          "why": "文字数は目印にならない。"
+        }
+      ],
+      "oneLine": "イオン結晶は金属元素＋非金属元素の組合せ。",
+      "timeLimit": 14,
+      "grounding": "金属元素（陽イオン）＋非金属元素（陰イオン）の組合せを探す"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4c:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4c"
+      },
+      "format": "choice4",
+      "prompt": "比較表でイオン結晶の構成粒子はどう書かれているか。",
+      "label": "(4) イオン結晶 ─ C群",
+      "options": [
+        {
+          "text": "陽イオン・陰イオン",
+          "correct": true,
+          "why": "イオン結晶の構成粒子はイオン。"
+        },
+        {
+          "text": "金属イオンだけ",
+          "why": "金属イオンだけからなる結晶はない。"
+        },
+        {
+          "text": "分子",
+          "why": "これは分子結晶。"
+        },
+        {
+          "text": "原子",
+          "why": "これは共有結合の結晶。"
+        }
+      ],
+      "oneLine": "イオン結晶の構成粒子は陽イオンと陰イオン。",
+      "timeLimit": 12,
+      "grounding": "イオン結晶 | 陽イオン・陰イオン | イオン結合（静電気力） | 高い | 固体×・融解液と水溶液○ | NaCl, KCl |"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_classify:p_c3_2_classify_4c:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_classify",
+        "subQuestionId": "p_c3_2_classify_4c"
+      },
+      "format": "choice4",
+      "prompt": "テスト前の練習としてすすめられているのはどれか。",
+      "label": "(4) イオン結晶 ─ C群",
+      "options": [
+        {
+          "text": "4×4 の比較表を毎回白紙に書く練習",
+          "correct": true,
+          "why": "表を書ければどんな聞き方でも解ける。"
+        },
+        {
+          "text": "元素記号だけを50回書く練習",
+          "why": "分類の練習にはならない。"
+        },
+        {
+          "text": "計算問題だけを解く練習",
+          "why": "分類の練習にはならない。"
+        },
+        {
+          "text": "結晶の写真を眺める練習",
+          "why": "見た目では分類できない。"
+        }
+      ],
+      "oneLine": "4×4 の比較表を白紙に書けるようにするのが最短。",
+      "timeLimit": 16,
+      "grounding": "4×4 の比較表を毎回白紙に書く練習"
     }
   ]
 }
