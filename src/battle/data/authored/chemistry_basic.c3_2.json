@@ -2877,6 +2877,831 @@
       "oneLine": "黒鉛の層がはがれる原理は、鉛筆の芯が紙に付くのと同じ。",
       "timeLimit": 14,
       "grounding": "　　└ 鉛筆の芯が紙に付く原理"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_1a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_1a"
+      },
+      "format": "choice4",
+      "prompt": "H₂O・NaCl・Cu・C（ダイヤモンド）・N₂・SiO₂ のうち、分子式で表されているものの組合せはどれか。",
+      "label": "問1① 分子式",
+      "options": [
+        {
+          "text": "H₂O と N₂",
+          "correct": true,
+          "why": "分子として存在するのはこの2つだけ。"
+        },
+        {
+          "text": "NaCl と Cu",
+          "why": "イオン結晶と金属結晶なので組成式。"
+        },
+        {
+          "text": "C（ダイヤモンド）と SiO₂",
+          "why": "どちらも共有結合の結晶なので組成式。"
+        },
+        {
+          "text": "NaCl と SiO₂",
+          "why": "どちらも分子が存在しないので組成式。"
+        }
+      ],
+      "oneLine": "分子として存在するのは H₂O と N₂ だけ。だからこの2つが分子式。",
+      "timeLimit": 16,
+      "grounding": "　③ 分子として存在するのは H₂O と N₂ → (ア)・(オ)"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_1a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_1a"
+      },
+      "format": "choice4",
+      "prompt": "分子式が使える条件として正しいものはどれか。",
+      "label": "問1① 分子式の条件",
+      "options": [
+        {
+          "text": "独立した「分子」という粒子が存在する物質だけ",
+          "correct": true,
+          "why": "分子が存在してはじめて分子式が使える。"
+        },
+        {
+          "text": "どんな物質でも常に使える",
+          "why": "分子が存在しない物質には使えない。"
+        },
+        {
+          "text": "金属を含む物質だけ",
+          "why": "金属結晶は組成式で表す。"
+        },
+        {
+          "text": "イオンからできた物質だけ",
+          "why": "イオン結晶は組成式で表す。"
+        }
+      ],
+      "oneLine": "分子式が使えるのは、独立した分子という粒子が存在する物質だけ。",
+      "timeLimit": 14,
+      "grounding": "　　└ 独立した「分子」という粒子が存在する物質だけ"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_1a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_1a"
+      },
+      "format": "choice4",
+      "prompt": "NaCl・Cu・C・SiO₂ の結晶の種類の組合せとして正しいものはどれか。",
+      "label": "問1① 結晶の判定",
+      "options": [
+        {
+          "text": "NaCl＝イオン結晶、Cu＝金属結晶、C・SiO₂＝共有結合の結晶",
+          "correct": true,
+          "why": "いずれも分子が存在しない結晶。"
+        },
+        {
+          "text": "NaCl＝分子結晶、Cu＝イオン結晶、C・SiO₂＝金属結晶",
+          "why": "結晶の種類がすべてずれている。"
+        },
+        {
+          "text": "NaCl＝金属結晶、Cu＝イオン結晶、C・SiO₂＝分子結晶",
+          "why": "NaCl と Cu が入れ替わっている。"
+        },
+        {
+          "text": "4つともすべて分子結晶である",
+          "why": "どれも分子が存在しないので分子結晶ではない。"
+        }
+      ],
+      "oneLine": "NaCl＝イオン結晶、Cu＝金属結晶、C と SiO₂＝共有結合の結晶。どれも分子なし。",
+      "timeLimit": 18,
+      "grounding": "　　└ NaCl＝イオン結晶、Cu＝金属結晶、C・SiO₂＝共有結合の結晶（いずれも分子なし）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_1a:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_1a"
+      },
+      "format": "choice4",
+      "prompt": "化学式の種類を判定するとき、いちばん最初に確かめるべきことはどれか。",
+      "label": "問1① 判定の初手",
+      "options": [
+        {
+          "text": "その物質に分子が存在するかどうか",
+          "correct": true,
+          "why": "分子の有無で分子式か組成式かが決まる。"
+        },
+        {
+          "text": "その物質の融点が高いかどうか",
+          "why": "融点は化学式の種類を決めない。"
+        },
+        {
+          "text": "その物質が水に溶けるかどうか",
+          "why": "溶解性は化学式の種類を決めない。"
+        },
+        {
+          "text": "その物質が電気を通すかどうか",
+          "why": "電気伝導性は化学式の種類を決めない。"
+        }
+      ],
+      "oneLine": "化学式の種類は「分子が存在するか」で決まる。ここが最初の分かれ道。",
+      "timeLimit": 14,
+      "grounding": "　① 分子式が使える条件を確認"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_1b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_1b"
+      },
+      "format": "choice4",
+      "prompt": "NaCl・Cu・C・SiO₂ が組成式で表される理由として最も適切なものはどれか。",
+      "label": "問1② 組成式の理由",
+      "options": [
+        {
+          "text": "粒子が連続的に結合していて分子が存在しないから",
+          "correct": true,
+          "why": "分子の単位がないので数の比で表す。"
+        },
+        {
+          "text": "分子が大きすぎて書ききれないから",
+          "why": "分子そのものが存在しないので理由にならない。"
+        },
+        {
+          "text": "すべて金属元素からできているから",
+          "why": "C や SiO₂ は金属ではない。"
+        },
+        {
+          "text": "分子間力が強すぎて分子が壊れるから",
+          "why": "分子が壊れるという説明は誤り。"
+        }
+      ],
+      "oneLine": "これらは粒子が連続的につながっていて分子が存在しないから、組成式で表す。",
+      "timeLimit": 18,
+      "grounding": "NaCl はイオン結晶、Cu は金属結晶、C と SiO₂ は共有結合の結晶であり、いずれも粒子が連続的に結合していて分子が存在しないから。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_1b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_1b"
+      },
+      "format": "choice4",
+      "prompt": "イオン結晶・金属結晶・共有結合の結晶に共通する構造上の特徴はどれか。",
+      "label": "問1② 共通点",
+      "options": [
+        {
+          "text": "粒子が果てしなくつながった巨大な集合体である",
+          "correct": true,
+          "why": "1個の分子として切り出せる単位がない。"
+        },
+        {
+          "text": "小さな分子がばらばらに集まっている",
+          "why": "分子として独立していない。"
+        },
+        {
+          "text": "必ず2種類の元素からできている",
+          "why": "元素の種類数は共通点ではない。"
+        },
+        {
+          "text": "必ず電気をよく通す",
+          "why": "電気伝導性は共通点ではない。"
+        }
+      ],
+      "oneLine": "3つの結晶に共通するのは、粒子が果てしなくつながった巨大な集合体であること。",
+      "timeLimit": 18,
+      "grounding": "　　└ どれも粒子が果てしなくつながった巨大な集合体"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_1b:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_1b"
+      },
+      "format": "choice4",
+      "prompt": "組成式が表しているものはどれか。",
+      "label": "問1② 組成式の意味",
+      "options": [
+        {
+          "text": "構成粒子の数の比",
+          "correct": true,
+          "why": "組成式は粒子の数の比を表す。"
+        },
+        {
+          "text": "分子1個に含まれる原子の実数",
+          "why": "これは分子式が表す内容。"
+        },
+        {
+          "text": "結晶1個に含まれる原子の総数",
+          "why": "総数ではなく比を表す。"
+        },
+        {
+          "text": "結合の強さの順番",
+          "why": "結合の強さは化学式が表す内容ではない。"
+        }
+      ],
+      "oneLine": "組成式が表すのは構成粒子の数の比。実数ではない。",
+      "timeLimit": 12,
+      "grounding": "　③ よって粒子の数の比で表す＝組成式"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_1b:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_1b"
+      },
+      "format": "choice4",
+      "prompt": "「NaCl という分子が存在する」という記述の正誤はどれか。",
+      "label": "問1② NaCl のワナ",
+      "options": [
+        {
+          "text": "誤り。NaCl はイオン結晶で分子は存在しない",
+          "correct": true,
+          "why": "分子の単位がないので組成式で表す。"
+        },
+        {
+          "text": "正しい。NaCl は分子式である",
+          "why": "NaCl は組成式であり分子式ではない。"
+        },
+        {
+          "text": "正しい。塩化ナトリウム分子が並んでいる",
+          "why": "そのような分子は存在しない。"
+        },
+        {
+          "text": "誤り。NaCl は金属結晶だから",
+          "why": "NaCl はイオン結晶であり金属結晶ではない。"
+        }
+      ],
+      "oneLine": "NaCl に分子は存在しない。「NaCl という分子がある」は頻出のワナ。",
+      "timeLimit": 18,
+      "grounding": "②「NaCl という分子が存在する」と言わせる"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2a"
+      },
+      "format": "choice4",
+      "prompt": "ドライアイス CO₂ の結晶中に存在する化学結合はどれか。",
+      "label": "問2 (a) CO₂",
+      "options": [
+        {
+          "text": "共有結合のみ",
+          "correct": true,
+          "why": "分子内は共有結合、分子間力は化学結合に含めない。"
+        },
+        {
+          "text": "共有結合と分子間力",
+          "why": "分子間力は化学結合に含めない。"
+        },
+        {
+          "text": "イオン結合のみ",
+          "why": "イオンは存在しない。"
+        },
+        {
+          "text": "金属結合のみ",
+          "why": "金属原子ではない。"
+        }
+      ],
+      "oneLine": "ドライアイスの結晶中の化学結合は共有結合のみ。分子間力は数えない。",
+      "timeLimit": 16,
+      "grounding": "　③ 分子と分子の間は「分子間力」で、化学結合には含めない → 共有結合のみ"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2a"
+      },
+      "format": "choice4",
+      "prompt": "ドライアイス CO₂ の結晶の構成粒子はどれか。",
+      "label": "問2 (a) 構成粒子",
+      "options": [
+        {
+          "text": "CO₂ 分子",
+          "correct": true,
+          "why": "分子が分子間力で集まった分子結晶。"
+        },
+        {
+          "text": "炭素原子と酸素原子がばらばらに並んだもの",
+          "why": "原子が連続して並ぶわけではない。"
+        },
+        {
+          "text": "炭素の陽イオンと酸素の陰イオン",
+          "why": "イオンは存在しない。"
+        },
+        {
+          "text": "金属の陽イオンと自由電子",
+          "why": "金属結晶ではない。"
+        }
+      ],
+      "oneLine": "ドライアイスの構成粒子は CO₂ 分子。だから分子結晶。",
+      "timeLimit": 14,
+      "grounding": "　　└ CO₂ 分子"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2a"
+      },
+      "format": "choice4",
+      "prompt": "CO₂ 分子の内部で C と O を結ぶ結合はどれか。",
+      "label": "問2 (a) 分子内",
+      "options": [
+        {
+          "text": "共有結合（二重結合）",
+          "correct": true,
+          "why": "C＝O が2本の二重結合。"
+        },
+        {
+          "text": "イオン結合",
+          "why": "イオンではないので誤り。"
+        },
+        {
+          "text": "金属結合",
+          "why": "金属原子ではないので誤り。"
+        },
+        {
+          "text": "水素結合",
+          "why": "H を含まないので誤り。"
+        }
+      ],
+      "oneLine": "CO₂ 分子の内部は C＝O の共有結合（二重結合）。",
+      "timeLimit": 14,
+      "grounding": "　　└ C と O は共有結合（二重結合）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2a:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2a"
+      },
+      "format": "choice4",
+      "prompt": "ドライアイスを「共有結合の結晶」と答えるのが誤りである理由はどれか。",
+      "label": "問2 (a) 頻出のワナ",
+      "options": [
+        {
+          "text": "分子の内部は共有結合だが、分子どうしは分子間力なので分子結晶だから",
+          "correct": true,
+          "why": "結晶の種類は粒子どうしをつなぐ力で決まる。"
+        },
+        {
+          "text": "分子の内部がイオン結合だから",
+          "why": "分子内は共有結合である。"
+        },
+        {
+          "text": "炭素を含むので必ず金属結晶になるから",
+          "why": "金属結晶ではない。"
+        },
+        {
+          "text": "固体にならず気体のままだから",
+          "why": "ドライアイスは固体である。"
+        }
+      ],
+      "oneLine": "分子内は共有結合でも、分子どうしは分子間力。だからドライアイスは分子結晶。",
+      "timeLimit": 20,
+      "grounding": "ドライアイス（CO₂）を共有結合の結晶と誤答するミス。分子の内部は共有結合だが、分子どうしは分子間力なので分子結晶。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2b"
+      },
+      "format": "choice4",
+      "prompt": "鉄 Fe の結晶中に存在する化学結合はどれか。",
+      "label": "問2 (b) Fe",
+      "options": [
+        {
+          "text": "金属結合のみ",
+          "correct": true,
+          "why": "金属原子が自由電子で結びついている。"
+        },
+        {
+          "text": "共有結合のみ",
+          "why": "共有結合ではない。"
+        },
+        {
+          "text": "イオン結合のみ",
+          "why": "イオンは存在しない。"
+        },
+        {
+          "text": "配位結合のみ",
+          "why": "配位結合ではない。"
+        }
+      ],
+      "oneLine": "鉄の結晶中の化学結合は金属結合のみ。",
+      "timeLimit": 12,
+      "grounding": "　① 構成粒子は金属原子だけ"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2b"
+      },
+      "format": "choice4",
+      "prompt": "金属結合ができるしくみとして正しいものはどれか。",
+      "label": "問2 (b) 金属結合",
+      "options": [
+        {
+          "text": "金属原子が価電子を放出して自由電子となり、全体で結びつく",
+          "correct": true,
+          "why": "放出された価電子が全体を動き回って結合をつくる。"
+        },
+        {
+          "text": "非金属原子どうしが価電子を共有する",
+          "why": "これは共有結合のしくみ。"
+        },
+        {
+          "text": "陽イオンと陰イオンが静電気力で引き合う",
+          "why": "これはイオン結合のしくみ。"
+        },
+        {
+          "text": "片方の原子だけが非共有電子対を提供する",
+          "why": "これは配位結合のしくみ。"
+        }
+      ],
+      "oneLine": "金属原子は価電子を放出して自由電子となり、全体で結びつく。",
+      "timeLimit": 18,
+      "grounding": "　② 金属原子は価電子を放出して自由電子となり、全体で結びつく"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2c:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2c"
+      },
+      "format": "choice4",
+      "prompt": "塩化アンモニウム NH₄Cl の結晶中に存在する化学結合をすべて挙げたものはどれか。",
+      "label": "問2 (c) NH₄Cl",
+      "options": [
+        {
+          "text": "イオン結合・共有結合・配位結合",
+          "correct": true,
+          "why": "NH₄⁺ と Cl⁻ の間、N−H 3本、配位結合1本の3種類。"
+        },
+        {
+          "text": "共有結合のみ",
+          "why": "イオン結合と配位結合を書き落としている。"
+        },
+        {
+          "text": "イオン結合と共有結合",
+          "why": "配位結合を書き落としている。"
+        },
+        {
+          "text": "イオン結合と配位結合",
+          "why": "共有結合を書き落としている。"
+        }
+      ],
+      "oneLine": "NH₄Cl の結晶には イオン結合・共有結合・配位結合 の3種類が共存する。",
+      "timeLimit": 20,
+      "grounding": "　　└ N−H のうち3本は共有結合、1本は N の非共有電子対を H⁺ に提供した配位結合 → 合計3種類"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2c:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2c"
+      },
+      "format": "choice4",
+      "prompt": "NH₄Cl の結晶を部品に分けたときの組合せはどれか。",
+      "label": "問2 (c) 部品分け",
+      "options": [
+        {
+          "text": "NH₄⁺ と Cl⁻",
+          "correct": true,
+          "why": "アンモニウムイオンと塩化物イオンに分かれる。"
+        },
+        {
+          "text": "NH₃ と HCl",
+          "why": "結晶中では分子ではなくイオンとして存在する。"
+        },
+        {
+          "text": "N と H と Cl の原子がばらばら",
+          "why": "原子がばらばらに並ぶわけではない。"
+        },
+        {
+          "text": "金属の陽イオンと自由電子",
+          "why": "金属結晶ではない。"
+        }
+      ],
+      "oneLine": "NH₄Cl は NH₄⁺ と Cl⁻ という2つの部品に分けて考える。",
+      "timeLimit": 16,
+      "grounding": "① まず結晶を部品（構成粒子）に分解する。CO₂ なら CO₂ 分子、NH₄Cl なら NH₄⁺ と Cl⁻。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2c:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2c"
+      },
+      "format": "choice4",
+      "prompt": "NH₄⁺ と Cl⁻ の間にはたらく結合はどれか。",
+      "label": "問2 (c) 部品の外側",
+      "options": [
+        {
+          "text": "イオン結合",
+          "correct": true,
+          "why": "陽イオンと陰イオンの間なのでイオン結合。"
+        },
+        {
+          "text": "共有結合",
+          "why": "部品の内部の結合であり部品どうしではない。"
+        },
+        {
+          "text": "配位結合",
+          "why": "NH₄⁺ の内部にある結合。"
+        },
+        {
+          "text": "金属結合",
+          "why": "金属原子ではないので誤り。"
+        }
+      ],
+      "oneLine": "NH₄⁺（陽イオン）と Cl⁻（陰イオン）の間はイオン結合。",
+      "timeLimit": 14,
+      "grounding": "　　└ 陽イオンと陰イオン → イオン結合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2c:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2c"
+      },
+      "format": "choice4",
+      "prompt": "NH₄Cl が化学結合の問題で最重要とされる理由はどれか。",
+      "label": "問2 (c) 重要性",
+      "options": [
+        {
+          "text": "1つの結晶に3種類の結合が共存する唯一級の例だから",
+          "correct": true,
+          "why": "網羅性を問う「すべて選べ」で狙われる。"
+        },
+        {
+          "text": "結合が1種類しかなくて簡単だから",
+          "why": "3種類あるので誤り。"
+        },
+        {
+          "text": "金属結合を含む珍しい例だから",
+          "why": "金属結合は含まれない。"
+        },
+        {
+          "text": "水素結合だけでできているから",
+          "why": "水素結合ではない。"
+        }
+      ],
+      "oneLine": "NH₄Cl は1つの結晶に3種類の結合が共存する唯一級の例。だから最重要。",
+      "timeLimit": 20,
+      "grounding": "・さらに NH₄⁺ と Cl⁻ がイオン結合で結晶をつくる。→ 1つの結晶に3種類の結合が共存する唯一級の例。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2c:5",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2c"
+      },
+      "format": "choice4",
+      "prompt": "配位結合の代表例として必ずセットで覚えるべき2つはどれか。",
+      "label": "問2 (c) 配位結合の例",
+      "options": [
+        {
+          "text": "NH₄⁺ と H₃O⁺",
+          "correct": true,
+          "why": "配位結合の2大例。"
+        },
+        {
+          "text": "NaCl と CaCl₂",
+          "why": "どちらもイオン結合の例。"
+        },
+        {
+          "text": "CO₂ と N₂",
+          "why": "どちらも共有結合だけの分子。"
+        },
+        {
+          "text": "Fe と Cu",
+          "why": "どちらも金属結合の例。"
+        }
+      ],
+      "oneLine": "配位結合の2大例は NH₄⁺ と H₃O⁺。セットで暗記する。",
+      "timeLimit": 14,
+      "grounding": "・配位結合の2大例は NH₄⁺ と H₃O⁺。この2つはセットで暗記する。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2c:6",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2c"
+      },
+      "format": "choice4",
+      "prompt": "配位結合を「特別な弱い結合」と考えるのが誤りである理由はどれか。",
+      "label": "問2 (c) 配位結合のワナ",
+      "options": [
+        {
+          "text": "できたあとは普通の共有結合と同等だから",
+          "correct": true,
+          "why": "でき方が違うだけで、性質は区別できない。"
+        },
+        {
+          "text": "配位結合はイオン結合より弱いから",
+          "why": "弱さの比較の話ではない。"
+        },
+        {
+          "text": "配位結合は分子間力の一種だから",
+          "why": "分子間力ではない。"
+        },
+        {
+          "text": "配位結合は熱を加えるとすぐ切れるから",
+          "why": "そのような説明は誤り。"
+        }
+      ],
+      "oneLine": "配位結合はでき方が違うだけで、できたあとは普通の共有結合と同等。",
+      "timeLimit": 18,
+      "grounding": "③配位結合を「特別な弱い結合」と誤認させる（できたあとは普通の共有結合と同等が正しい）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2d:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2d"
+      },
+      "format": "choice4",
+      "prompt": "二酸化ケイ素 SiO₂ の結晶中に存在する化学結合はどれか。",
+      "label": "問2 (d) SiO₂",
+      "options": [
+        {
+          "text": "共有結合のみ",
+          "correct": true,
+          "why": "Si 1個が O 4個と共有結合した立体網目構造。"
+        },
+        {
+          "text": "イオン結合のみ",
+          "why": "イオンは存在しない。"
+        },
+        {
+          "text": "金属結合のみ",
+          "why": "金属結晶ではない。"
+        },
+        {
+          "text": "配位結合のみ",
+          "why": "配位結合ではない。"
+        }
+      ],
+      "oneLine": "SiO₂ の結晶中の化学結合は共有結合のみ。",
+      "timeLimit": 12,
+      "grounding": "　② Si 1個が O 4個と共有結合し、立体網目構造をつくる"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2d:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2d"
+      },
+      "format": "choice4",
+      "prompt": "SiO₂ の結合が共有結合になる理由はどれか。",
+      "label": "問2 (d) 理由",
+      "options": [
+        {
+          "text": "Si と O がどちらも非金属元素だから",
+          "correct": true,
+          "why": "非金属どうしなので共有結合になる。"
+        },
+        {
+          "text": "Si が金属元素で O が非金属元素だから",
+          "why": "Si は半金属だが結合は共有結合。"
+        },
+        {
+          "text": "どちらもイオンになりやすいから",
+          "why": "イオン結合にはならない。"
+        },
+        {
+          "text": "自由電子を放出するから",
+          "why": "自由電子は生じない。"
+        }
+      ],
+      "oneLine": "Si と O はどちらも非金属元素なので、結合は共有結合になる。",
+      "timeLimit": 16,
+      "grounding": "　① Si と O はどちらも非金属元素"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2d:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2d"
+      },
+      "format": "choice4",
+      "prompt": "二酸化ケイ素 SiO₂ の結晶として身近なものはどれか。",
+      "label": "問2 (d) 身近な例",
+      "options": [
+        {
+          "text": "水晶・石英",
+          "correct": true,
+          "why": "SiO₂ の結晶の正体。"
+        },
+        {
+          "text": "鉛筆の芯",
+          "why": "これは黒鉛。"
+        },
+        {
+          "text": "食塩",
+          "why": "これは NaCl のイオン結晶。"
+        },
+        {
+          "text": "ドライアイス",
+          "why": "これは CO₂ の分子結晶。"
+        }
+      ],
+      "oneLine": "SiO₂ の結晶は水晶・石英として身近に存在する。",
+      "timeLimit": 12,
+      "grounding": "　　└ 水晶・石英の正体"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2d:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2d"
+      },
+      "format": "choice4",
+      "prompt": "結晶中の結合を数えるときの手順として正しいものはどれか。",
+      "label": "問2 結合の数え方",
+      "options": [
+        {
+          "text": "部品と部品の間の力を見てから、次に部品の内部を見る",
+          "correct": true,
+          "why": "外側→内側の2段で見ると書き落とさない。"
+        },
+        {
+          "text": "部品の内部だけを見れば十分である",
+          "why": "部品どうしの間の結合を落とす。"
+        },
+        {
+          "text": "部品どうしの間だけを見れば十分である",
+          "why": "部品の内部の結合を落とす。"
+        },
+        {
+          "text": "融点の高さから直接判断する",
+          "why": "融点からは結合の種類を数えられない。"
+        }
+      ],
+      "oneLine": "結合を数えるときは「外側（部品どうし）→ 内側（部品の中）」の2段で見る。",
+      "timeLimit": 20,
+      "grounding": "② 部品と部品の間の力を見る。イオンどうしならイオン結合、分子どうしなら分子間力。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_formula:p_c3_2_formula_2d:5",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_formula",
+        "subQuestionId": "p_c3_2_formula_2d"
+      },
+      "format": "choice4",
+      "prompt": "化学結合を数えるとき、分子間力の扱いとして正しいものはどれか。",
+      "label": "問2 分子間力の扱い",
+      "options": [
+        {
+          "text": "分子間力は化学結合に含めない",
+          "correct": true,
+          "why": "だから CO₂ の答えは共有結合のみになる。"
+        },
+        {
+          "text": "分子間力も化学結合の一種として数える",
+          "why": "化学結合には含めないのが約束。"
+        },
+        {
+          "text": "分子間力はイオン結合として数える",
+          "why": "イオン結合ではない。"
+        },
+        {
+          "text": "分子間力は金属結合として数える",
+          "why": "金属結合ではない。"
+        }
+      ],
+      "oneLine": "分子間力は化学結合に含めない。これが CO₂ の答えを決めるルール。",
+      "timeLimit": 18,
+      "grounding": "というルールで仕上げる。だから (a) は共有結合のみが答え。"
     }
   ]
 }
