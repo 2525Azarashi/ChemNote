@@ -798,6 +798,963 @@
       "oneLine": "組成式はイオン結晶・金属結晶・共有結合の結晶に使う。",
       "timeLimit": 16,
       "grounding": "| 組成式 | 粒子（イオン・原子）の数の比 | イオン結晶・金属結晶・共有結合の結晶 |"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_1:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_1"
+      },
+      "format": "choice4",
+      "prompt": "H₂・N₂・CO₂・H₂O・NH₃・CH₄ のうち、三重結合をもつ分子はどれか。",
+      "label": "(1) 三重結合をもつ分子",
+      "options": [
+        {
+          "text": "窒素 N₂",
+          "correct": true,
+          "why": "N は不対電子3個なので、3組の電子対を共有して三重結合になる。"
+        },
+        {
+          "text": "二酸化炭素 CO₂",
+          "why": "O＝C＝O で共有電子対2組ずつの二重結合。"
+        },
+        {
+          "text": "水 H₂O",
+          "why": "O−H はどちらも共有電子対1組の単結合。"
+        },
+        {
+          "text": "メタン CH₄",
+          "why": "C−H はすべて共有電子対1組の単結合。"
+        }
+      ],
+      "oneLine": "N₂ は共有電子対3組の三重結合。N の不対電子が3個だから。",
+      "timeLimit": 14,
+      "grounding": "　② N は価電子5個・不対電子3個 → 3組の電子対を共有する必要がある"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_1:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_1"
+      },
+      "format": "choice4",
+      "prompt": "共有電子対が3組あるとき、その結合を何というか。",
+      "label": "(1) 結合の名前",
+      "options": [
+        {
+          "text": "三重結合",
+          "correct": true,
+          "why": "共有電子対3組による結合。N₂ が代表例。"
+        },
+        {
+          "text": "二重結合",
+          "why": "共有電子対2組による結合。CO₂ が代表例。"
+        },
+        {
+          "text": "単結合",
+          "why": "共有電子対1組による結合。H₂ が代表例。"
+        },
+        {
+          "text": "配位結合",
+          "why": "電子対が一方的に提供されてできる結合で、組数の呼び名ではない。"
+        }
+      ],
+      "oneLine": "共有電子対3組＝三重結合。N₂ がその代表例。",
+      "timeLimit": 12,
+      "grounding": "　③ 共有電子対3組＝三重結合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_1:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_1"
+      },
+      "format": "choice4",
+      "prompt": "窒素原子 N の価電子と不対電子の数の組合せはどれか。",
+      "label": "(1) N の電子の数",
+      "options": [
+        {
+          "text": "価電子5個・不対電子3個",
+          "correct": true,
+          "why": "だから3組の電子対を共有して三重結合になる。"
+        },
+        {
+          "text": "価電子4個・不対電子4個",
+          "why": "それは炭素 C の数。"
+        },
+        {
+          "text": "価電子6個・不対電子2個",
+          "why": "それは酸素 O の数。"
+        },
+        {
+          "text": "価電子1個・不対電子1個",
+          "why": "それは水素 H の数。"
+        }
+      ],
+      "oneLine": "N は価電子5個・不対電子3個。だから共有電子対3組が必要になる。",
+      "timeLimit": 16,
+      "grounding": "　② N は価電子5個・不対電子3個 → 3組の電子対を共有する必要がある"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_2:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_2"
+      },
+      "format": "choice4",
+      "prompt": "H₂・N₂・CO₂・H₂O・NH₃・CH₄ のうち、二重結合をもつ分子はどれか。",
+      "label": "(2) 二重結合をもつ分子",
+      "options": [
+        {
+          "text": "二酸化炭素 CO₂",
+          "correct": true,
+          "why": "O＝C＝O と両側で2組ずつ共有し、全員の最外殻が閉じる。"
+        },
+        {
+          "text": "窒素 N₂",
+          "why": "共有電子対3組の三重結合。"
+        },
+        {
+          "text": "アンモニア NH₃",
+          "why": "N−H はすべて単結合。"
+        },
+        {
+          "text": "水素 H₂",
+          "why": "共有電子対1組の単結合。"
+        }
+      ],
+      "oneLine": "CO₂ は O＝C＝O で、共有電子対2組ずつの二重結合をもつ。",
+      "timeLimit": 14,
+      "grounding": "　② O＝C＝O と両側で2組ずつ共有すると全員の最外殻が閉じる"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_2:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_2"
+      },
+      "format": "choice4",
+      "prompt": "共有電子対が2組あるとき、その結合を何というか。",
+      "label": "(2) 結合の名前",
+      "options": [
+        {
+          "text": "二重結合",
+          "correct": true,
+          "why": "共有電子対2組による結合。CO₂ が代表例。"
+        },
+        {
+          "text": "単結合",
+          "why": "共有電子対1組による結合。"
+        },
+        {
+          "text": "三重結合",
+          "why": "共有電子対3組による結合。"
+        },
+        {
+          "text": "イオン結合",
+          "why": "電子対の共有ではなく静電気的引力による結合。"
+        }
+      ],
+      "oneLine": "共有電子対2組＝二重結合。CO₂ がその代表例。",
+      "timeLimit": 12,
+      "grounding": "　③ 共有電子対2組＝二重結合"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_3a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_3a"
+      },
+      "format": "choice4",
+      "prompt": "H₂・N₂・CO₂・H₂O・NH₃・CH₄ のうち、非共有電子対を最も多くもつ分子はどれか。",
+      "label": "(3)① 非共有電子対が最多",
+      "options": [
+        {
+          "text": "二酸化炭素 CO₂",
+          "correct": true,
+          "why": "O 1個につき2組で、2組×2個＝4組。これが最多。"
+        },
+        {
+          "text": "水 H₂O",
+          "why": "非共有電子対は2組。CO₂ より少ない。"
+        },
+        {
+          "text": "アンモニア NH₃",
+          "why": "非共有電子対は1組しかない。"
+        },
+        {
+          "text": "メタン CH₄",
+          "why": "非共有電子対は0組。"
+        }
+      ],
+      "oneLine": "CO₂ の非共有電子対は O 1個に2組ずつで計4組。これが最多。",
+      "timeLimit": 16,
+      "grounding": "　② CO₂ は O 1個につき2組 → 2組×2個＝4組"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_3a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_3a"
+      },
+      "format": "choice4",
+      "prompt": "二酸化炭素 CO₂ がもつ非共有電子対の数はいくつか。",
+      "label": "(3)① CO₂ の組数",
+      "options": [
+        {
+          "text": "4組",
+          "correct": true,
+          "why": "O 1個につき2組で、2組×2個＝4組。"
+        },
+        {
+          "text": "2組",
+          "why": "それは H₂O や N₂ の数。"
+        },
+        {
+          "text": "1組",
+          "why": "それは NH₃ の数。"
+        },
+        {
+          "text": "0組",
+          "why": "それは H₂ や CH₄ の数。"
+        }
+      ],
+      "oneLine": "CO₂ の非共有電子対は 2組×O 2個＝4組。",
+      "timeLimit": 12,
+      "grounding": "　② CO₂ は O 1個につき2組 → 2組×2個＝4組"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_3a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_3a"
+      },
+      "format": "choice4",
+      "prompt": "非共有電子対とは何か。",
+      "label": "(3)① 非共有電子対の定義",
+      "options": [
+        {
+          "text": "結合に使われていない電子対（孤立電子対）",
+          "correct": true,
+          "why": "原子に残っている電子対のこと。"
+        },
+        {
+          "text": "2つの原子が共有している電子対",
+          "why": "それは共有電子対のこと。"
+        },
+        {
+          "text": "金属の中を自由に動く電子",
+          "why": "それは自由電子のこと。"
+        },
+        {
+          "text": "原子から完全に離れていった電子",
+          "why": "電子が離れると陽イオンになる。電子対の話ではない。"
+        }
+      ],
+      "oneLine": "非共有電子対は、結合に使われていない電子対（孤立電子対）。",
+      "timeLimit": 16,
+      "grounding": "　① 非共有電子対＝結合に使われていない電子対（孤立電子対）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_3a:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_3a"
+      },
+      "format": "choice4",
+      "prompt": "水 H₂O・アンモニア NH₃・窒素 N₂ の非共有電子対の数の組合せはどれか。",
+      "label": "(3)① 各分子の組数",
+      "options": [
+        {
+          "text": "H₂O が2組、NH₃ が1組、N₂ が2組",
+          "correct": true,
+          "why": "この3つはいずれも非共有電子対をもつ。"
+        },
+        {
+          "text": "H₂O が1組、NH₃ が2組、N₂ が1組",
+          "why": "H₂O と NH₃ の数が入れ替わっている。"
+        },
+        {
+          "text": "H₂O が4組、NH₃ が2組、N₂ が0組",
+          "why": "4組は CO₂ の数。"
+        },
+        {
+          "text": "H₂O が0組、NH₃ が0組、N₂ が2組",
+          "why": "H₂O と NH₃ はどちらも非共有電子対をもつ。"
+        }
+      ],
+      "oneLine": "H₂O は2組、NH₃ は1組、N₂ は2組。CO₂ の4組が最多。",
+      "timeLimit": 18,
+      "grounding": "　③ H₂O は2組、NH₃ は1組、N₂ は2組、H₂・CH₄ は0組"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_3b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_3b"
+      },
+      "format": "choice4",
+      "prompt": "H₂・N₂・CO₂・H₂O・NH₃・CH₄ のうち、非共有電子対をもたない分子の組合せはどれか。",
+      "label": "(3)② 非共有電子対0の分子",
+      "options": [
+        {
+          "text": "H₂ と CH₄",
+          "correct": true,
+          "why": "H₂ は共有電子対1組だけ、CH₄ は価電子を使い切るので0組。"
+        },
+        {
+          "text": "N₂ と CO₂",
+          "why": "N₂ は2組、CO₂ は4組もっている。"
+        },
+        {
+          "text": "H₂O と NH₃",
+          "why": "H₂O は2組、NH₃ は1組もっている。"
+        },
+        {
+          "text": "CO₂ と CH₄",
+          "why": "CO₂ は4組もっている。"
+        }
+      ],
+      "oneLine": "H₂ と CH₄ は非共有電子対0組。どちらも余る電子対がない。",
+      "timeLimit": 16,
+      "grounding": "　③ CH₄ は C の価電子4個すべてを4本の C−H に使い切る → 0組"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_3b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_3b"
+      },
+      "format": "choice4",
+      "prompt": "水素 H₂ が非共有電子対をもたないのはなぜか。",
+      "label": "(3)② H₂ の理由",
+      "options": [
+        {
+          "text": "H は電子1個しかもたず、共有すれば余りが出ないから",
+          "correct": true,
+          "why": "共有電子対1組だけで、余る電子対がない。"
+        },
+        {
+          "text": "H が2個しかない小さな分子だから",
+          "why": "分子の大きさではなく、電子の数が理由。"
+        },
+        {
+          "text": "H が金属元素だから",
+          "why": "H は非金属元素として扱う。"
+        },
+        {
+          "text": "H₂ が無極性分子だから",
+          "why": "極性の有無と非共有電子対の数は別の話。"
+        }
+      ],
+      "oneLine": "H は電子1個だけなので、共有すると余る電子対がなくなる。",
+      "timeLimit": 18,
+      "grounding": "　① H は電子1個しかもたず、共有すれば余りが出ない"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_3b:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_3b"
+      },
+      "format": "choice4",
+      "prompt": "メタン CH₄ が非共有電子対をもたないのはなぜか。",
+      "label": "(3)② CH₄ の理由",
+      "options": [
+        {
+          "text": "C の価電子4個すべてを4本の C−H に使い切るから",
+          "correct": true,
+          "why": "余る電子対がないので0組になる。"
+        },
+        {
+          "text": "C の価電子が2個しかないから",
+          "why": "C の価電子は4個である。"
+        },
+        {
+          "text": "CH₄ が正四面体形だから",
+          "why": "形と非共有電子対の数は別の話（むしろ形は結果）。"
+        },
+        {
+          "text": "H が4個もあって電子が足りないから",
+          "why": "電子が足りないのではなく、ちょうど使い切る。"
+        }
+      ],
+      "oneLine": "CH₄ は C の価電子4個を4本の C−H に使い切るので、非共有電子対は0組。",
+      "timeLimit": 18,
+      "grounding": "　③ CH₄ は C の価電子4個すべてを4本の C−H に使い切る → 0組"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_4:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_4"
+      },
+      "format": "choice4",
+      "prompt": "H₂・N₂・CO₂・H₂O・NH₃・CH₄ のうち、極性分子の組合せはどれか。",
+      "label": "(4) 極性分子",
+      "options": [
+        {
+          "text": "H₂O と NH₃",
+          "correct": true,
+          "why": "折れ線形・三角錐形で非対称なので、極性が打ち消されずに残る。"
+        },
+        {
+          "text": "CO₂ と CH₄",
+          "why": "直線形・正四面体形で対称なので極性が打ち消される。"
+        },
+        {
+          "text": "H₂ と N₂",
+          "why": "同じ元素どうしの結合なので結合自体に極性がない。"
+        },
+        {
+          "text": "CO₂ と H₂O",
+          "why": "CO₂ は直線形で打ち消されるため無極性。"
+        }
+      ],
+      "oneLine": "極性分子は H₂O（折れ線形）と NH₃（三角錐形）。形が非対称だから。",
+      "timeLimit": 16,
+      "grounding": "③ CO₂（直線形）・CH₄（正四面体形）は打ち消して無極性、H₂O（折れ線形）・NH₃（三角錐形）は残る → (d)・(e)"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_4:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_4"
+      },
+      "format": "choice4",
+      "prompt": "分子の極性を判定するとき、結合の極性のあとに見るべきことはどれか。",
+      "label": "(4) 判定の2段目",
+      "options": [
+        {
+          "text": "分子の形（対称性）",
+          "correct": true,
+          "why": "対称なら極性が打ち消し合って無極性になる。"
+        },
+        {
+          "text": "分子の質量",
+          "why": "質量は極性の判定に使わない。"
+        },
+        {
+          "text": "分子に含まれる原子の数",
+          "why": "原子の数だけでは対称性は決まらない。"
+        },
+        {
+          "text": "非共有電子対の数",
+          "why": "非共有電子対の数は形を決める材料だが、判定の第2段はあくまで形。"
+        }
+      ],
+      "oneLine": "極性は「結合の極性 → 分子の形（対称性）」の2段で判定する。",
+      "timeLimit": 16,
+      "grounding": "　② 次に分子の形（対称性）を見る"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_4:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_4"
+      },
+      "format": "choice4",
+      "prompt": "CO₂ が無極性である理由はどれか。",
+      "label": "(4) CO₂ が無極性の理由",
+      "options": [
+        {
+          "text": "直線形で左右の極性が打ち消されるから",
+          "correct": true,
+          "why": "C＝O 結合に極性はあるが、対称なので全体では消える。"
+        },
+        {
+          "text": "C＝O 結合に極性がないから",
+          "why": "電気陰性度が違うので結合には極性がある。"
+        },
+        {
+          "text": "折れ線形で極性が残るから",
+          "why": "折れ線形は H₂O の形で、CO₂ は直線形。"
+        },
+        {
+          "text": "非共有電子対が4組もあるから",
+          "why": "非共有電子対の数は極性の理由にならない。"
+        }
+      ],
+      "oneLine": "CO₂ は C＝O に極性があるが、直線形なので左右で打ち消されて無極性。",
+      "timeLimit": 18,
+      "grounding": "「C＝O 結合に極性があるから CO₂ は極性分子」と誤らせる選択肢が繰り返し登場します。直線形で左右の極性が打ち消される、が正解の論理。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_4:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_4"
+      },
+      "format": "choice4",
+      "prompt": "極性の判定でよく問われる、対で覚えるべき2分子の組合せはどれか。",
+      "label": "(4) 対で覚える組合せ",
+      "options": [
+        {
+          "text": "CO₂（直線形・無極性）と H₂O（折れ線形・極性）",
+          "correct": true,
+          "why": "この対を覚えるとこの単元の正誤問題はほぼ即答できる。"
+        },
+        {
+          "text": "N₂（直線形）と H₂（直線形）",
+          "why": "どちらも同元素どうしで無極性なので、対比にならない。"
+        },
+        {
+          "text": "CH₄（正四面体形）と CCl₄（正四面体形）",
+          "why": "どちらも無極性なので、極性との対比にならない。"
+        },
+        {
+          "text": "NH₃（三角錐形）と H₂O（折れ線形）",
+          "why": "どちらも極性分子なので、無極性との対比にならない。"
+        }
+      ],
+      "oneLine": "CO₂（直線形・無極性）と H₂O（折れ線形・極性）を対で覚えるのが定石。",
+      "timeLimit": 18,
+      "grounding": "・実戦アドバイス：CO₂（直線形・無極性）と H₂O（折れ線形・極性）を対で覚えると、この単元の正誤問題はほぼ即答できます。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_5a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_5a"
+      },
+      "format": "choice4",
+      "prompt": "水素 H₂ の分子の形はどれか。",
+      "label": "(5)(a) H₂ の形",
+      "options": [
+        {
+          "text": "(ア) 直線形",
+          "correct": true,
+          "why": "原子が2個しかなく、2点を結べば必ず直線になる。"
+        },
+        {
+          "text": "(イ) 折れ線形",
+          "why": "H₂O の形。中心原子がないので H₂ では起こらない。"
+        },
+        {
+          "text": "(ウ) 三角錐形",
+          "why": "NH₃ の形。原子4個の分子の形。"
+        },
+        {
+          "text": "(エ) 正四面体形",
+          "why": "CH₄ の形。原子5個の分子の形。"
+        }
+      ],
+      "oneLine": "H₂ は原子2個だけなので、必ず直線形になる。",
+      "timeLimit": 12,
+      "grounding": "　② 二原子分子はすべて直線形"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_5b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_5b"
+      },
+      "format": "choice4",
+      "prompt": "窒素 N₂ の分子の形はどれか。",
+      "label": "(5)(b) N₂ の形",
+      "options": [
+        {
+          "text": "(ア) 直線形",
+          "correct": true,
+          "why": "二原子分子はすべて直線形。HCl も同じ。"
+        },
+        {
+          "text": "(イ) 折れ線形",
+          "why": "H₂O の形。二原子分子では起こらない。"
+        },
+        {
+          "text": "(ウ) 三角錐形",
+          "why": "NH₃ の形。"
+        },
+        {
+          "text": "(エ) 正四面体形",
+          "why": "CH₄ の形。"
+        }
+      ],
+      "oneLine": "二原子分子はすべて直線形。N₂ も HCl も同じ。",
+      "timeLimit": 12,
+      "grounding": "　② 二原子分子はすべて直線形"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_5c:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_5c"
+      },
+      "format": "choice4",
+      "prompt": "二酸化炭素 CO₂ の分子の形はどれか。",
+      "label": "(5)(c) CO₂ の形",
+      "options": [
+        {
+          "text": "(ア) 直線形",
+          "correct": true,
+          "why": "中心 C のまわりに電子対のかたまりが2方向だけで、180°の配置になる。"
+        },
+        {
+          "text": "(イ) 折れ線形",
+          "why": "H₂O と混同した誤り。CO₂ は直線形。"
+        },
+        {
+          "text": "(ウ) 三角錐形",
+          "why": "NH₃ の形。"
+        },
+        {
+          "text": "(エ) 正四面体形",
+          "why": "CH₄ の形。"
+        }
+      ],
+      "oneLine": "CO₂ は中心 C のまわりが2方向だけなので180°、つまり直線形。",
+      "timeLimit": 14,
+      "grounding": "　② 2方向の反発が最小になるのは180°の配置"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_5d:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_5d"
+      },
+      "format": "choice4",
+      "prompt": "水 H₂O の分子の形はどれか。",
+      "label": "(5)(d) H₂O の形",
+      "options": [
+        {
+          "text": "(イ) 折れ線形",
+          "correct": true,
+          "why": "電子対4組が正四面体状に反発し、見えるのは O−H 2本だけ。約104.5°。"
+        },
+        {
+          "text": "(ア) 直線形",
+          "why": "CO₂ と混同した誤り。H₂O は折れ線形。"
+        },
+        {
+          "text": "(ウ) 三角錐形",
+          "why": "NH₃ の形。非共有電子対が1組の場合。"
+        },
+        {
+          "text": "(エ) 正四面体形",
+          "why": "CH₄ の形。非共有電子対が0組の場合。"
+        }
+      ],
+      "oneLine": "H₂O は電子対4組（共有2組＋非共有2組）で、見える形は折れ線形。",
+      "timeLimit": 14,
+      "grounding": "　③ 見えるのは O−H 2本だけなので、折れ線形"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_5d:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_5d"
+      },
+      "format": "choice4",
+      "prompt": "水 H₂O の中心原子 O のまわりにある電子対の組合せはどれか。",
+      "label": "(5)(d) 電子対の内訳",
+      "options": [
+        {
+          "text": "共有電子対2組と非共有電子対2組の計4組",
+          "correct": true,
+          "why": "4組が正四面体状に反発し合い、見える形は折れ線形。"
+        },
+        {
+          "text": "共有電子対3組と非共有電子対1組の計4組",
+          "why": "それは NH₃ の場合で、形は三角錐形。"
+        },
+        {
+          "text": "共有電子対4組と非共有電子対0組の計4組",
+          "why": "それは CH₄ の場合で、形は正四面体形。"
+        },
+        {
+          "text": "共有電子対2組と非共有電子対0組の計2組",
+          "why": "O には非共有電子対が2組残っている。"
+        }
+      ],
+      "oneLine": "H₂O は共有2組＋非共有2組の計4組。だから折れ線形になる。",
+      "timeLimit": 18,
+      "grounding": "　① 中心 O のまわりに電子対が4組"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_5e:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_5e"
+      },
+      "format": "choice4",
+      "prompt": "アンモニア NH₃ の分子の形はどれか。",
+      "label": "(5)(e) NH₃ の形",
+      "options": [
+        {
+          "text": "(ウ) 三角錐形",
+          "correct": true,
+          "why": "電子対4組のうち1つが非共有電子対なので、N−H 3本が三角錐をつくる。"
+        },
+        {
+          "text": "(エ) 正四面体形",
+          "why": "CH₄ の形。非共有電子対が0組の場合。"
+        },
+        {
+          "text": "(イ) 折れ線形",
+          "why": "H₂O の形。非共有電子対が2組の場合。"
+        },
+        {
+          "text": "(ア) 直線形",
+          "why": "二原子分子や CO₂ の形。"
+        }
+      ],
+      "oneLine": "NH₃ は電子対4組のうち1組が非共有なので、三角錐形。平面三角形ではない。",
+      "timeLimit": 14,
+      "grounding": "　③ 残る N−H 3本が作る形は三角錐形"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_5e:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_5e"
+      },
+      "format": "choice4",
+      "prompt": "アンモニア NH₃ の中心原子 N のまわりの電子対4組のうち、頂点の1つを占めるのは何か。",
+      "label": "(5)(e) 頂点の1つ",
+      "options": [
+        {
+          "text": "非共有電子対",
+          "correct": true,
+          "why": "4組が正四面体状に配置し、頂点の1つが非共有電子対になる。"
+        },
+        {
+          "text": "自由電子",
+          "why": "自由電子は金属結合の中にあるもの。"
+        },
+        {
+          "text": "水素イオン",
+          "why": "NH₃ の中に H⁺ が独立して存在してはいない。"
+        },
+        {
+          "text": "配位結合の価標",
+          "why": "配位結合ができるのは NH₄⁺ になったとき。"
+        }
+      ],
+      "oneLine": "NH₃ は電子対4組が正四面体状に並び、頂点の1つが非共有電子対。",
+      "timeLimit": 18,
+      "grounding": "　② 4組が正四面体状に配置し、頂点の1つが非共有電子対"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_5f:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_5f"
+      },
+      "format": "choice4",
+      "prompt": "メタン CH₄ の分子の形はどれか。",
+      "label": "(5)(f) CH₄ の形",
+      "options": [
+        {
+          "text": "(エ) 正四面体形",
+          "correct": true,
+          "why": "共有電子対4組が最も離れる配置は正四面体。結合角109.5°。"
+        },
+        {
+          "text": "(ウ) 三角錐形",
+          "why": "NH₃ の形。非共有電子対が1組の場合。"
+        },
+        {
+          "text": "(イ) 折れ線形",
+          "why": "H₂O の形。非共有電子対が2組の場合。"
+        },
+        {
+          "text": "(ア) 直線形",
+          "why": "二原子分子や CO₂ の形。"
+        }
+      ],
+      "oneLine": "CH₄ は共有電子対4組・非共有0組なので、正四面体形（109.5°）。",
+      "timeLimit": 14,
+      "grounding": "　② 4組が最も離れる配置は正四面体"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_5f:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_5f"
+      },
+      "format": "choice4",
+      "prompt": "中心原子のまわりの電子対が4組のとき、非共有電子対の数と見える形の対応で正しいのはどれか。",
+      "label": "形の決まり方",
+      "options": [
+        {
+          "text": "0個→正四面体形、1個→三角錐形、2個→折れ線形",
+          "correct": true,
+          "why": "非共有電子対の数だけ「見える形」が変わる。"
+        },
+        {
+          "text": "0個→折れ線形、1個→正四面体形、2個→三角錐形",
+          "why": "対応が入れ替わっている。"
+        },
+        {
+          "text": "0個→三角錐形、1個→折れ線形、2個→正四面体形",
+          "why": "対応が入れ替わっている。"
+        },
+        {
+          "text": "個数によらずすべて直線形になる",
+          "why": "直線形になるのは電子対のかたまりが2方向のとき。"
+        }
+      ],
+      "oneLine": "電子対4組では、非共有0個→正四面体形、1個→三角錐形、2個→折れ線形。",
+      "timeLimit": 18,
+      "grounding": "④ 中心原子まわりの電子対の総数（共有＋非共有）から形を決める。4組なら正四面体を基準に、非共有電子対の数だけ「見える形」が変わる（0個→正四面体形、1個→三角錐形、2個→折れ線形）。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_6:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_6"
+      },
+      "format": "choice4",
+      "prompt": "電子式と構造式のちがいについて、正しいのはどれか。",
+      "label": "(6) 電子式と構造式",
+      "options": [
+        {
+          "text": "電子式は電子対をすべて「：」で書き、構造式は共有電子対だけを価標で書く",
+          "correct": true,
+          "why": "構造式では非共有電子対は書かない。"
+        },
+        {
+          "text": "電子式は共有電子対だけを書き、構造式はすべての電子対を書く",
+          "why": "説明が逆になっている。"
+        },
+        {
+          "text": "どちらも非共有電子対を書かない",
+          "why": "電子式では非共有電子対も書く。"
+        },
+        {
+          "text": "どちらも価標（−、＝、≡）だけで書く",
+          "why": "電子式は点（：）で書く。"
+        }
+      ],
+      "oneLine": "電子式は全部の電子対を「：」で、構造式は共有電子対だけを価標で書く。",
+      "timeLimit": 18,
+      "grounding": "| 構造式 | 共有電子対だけを価標（−、＝、≡）で書く。非共有電子対は書かない | CO₂・NH₃ |"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_6:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_6"
+      },
+      "format": "choice4",
+      "prompt": "窒素 N₂ の電子式で書くべき内容はどれか。",
+      "label": "(6) N₂ の電子式",
+      "options": [
+        {
+          "text": "共有電子対3組と、両端の N に非共有電子対1組ずつ",
+          "correct": true,
+          "why": "三重結合と、余った電子対を書く。"
+        },
+        {
+          "text": "共有電子対3組だけ",
+          "why": "電子式なので非共有電子対も書く必要がある。"
+        },
+        {
+          "text": "共有電子対2組と、両端の N に非共有電子対2組ずつ",
+          "why": "N₂ は共有電子対3組の三重結合。"
+        },
+        {
+          "text": "価標 ≡ だけ",
+          "why": "価標だけで書くのは構造式のほう。"
+        }
+      ],
+      "oneLine": "N₂ の電子式は共有電子対3組＋両端の N に非共有電子対1組ずつ。",
+      "timeLimit": 18,
+      "grounding": "N と N の間に共有電子対3組（三重結合）、両端の N に非共有電子対1組ずつ"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_6:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_6"
+      },
+      "format": "choice4",
+      "prompt": "アンモニア NH₃ の構造式で書くべき内容はどれか。",
+      "label": "(6) NH₃ の構造式",
+      "options": [
+        {
+          "text": "N から H へ単結合3本だけを書き、非共有電子対は書かない",
+          "correct": true,
+          "why": "構造式は共有電子対だけを価標で表す。"
+        },
+        {
+          "text": "N から H へ単結合3本と、N の非共有電子対1組",
+          "why": "構造式では非共有電子対は書かない。"
+        },
+        {
+          "text": "N から H へ二重結合3本",
+          "why": "N−H は単結合である。"
+        },
+        {
+          "text": "N と H の間に「：」を並べて書く",
+          "why": "点で書くのは電子式のほう。"
+        }
+      ],
+      "oneLine": "NH₃ の構造式は N−H 単結合3本だけ。非共有電子対は書かない。",
+      "timeLimit": 18,
+      "grounding": "NH₃ の構造式：N から H へ単結合3本（H−N(−H)−H、非共有電子対は書かない）。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_molecule:p_c3_2_molecule_6:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_molecule",
+        "subQuestionId": "p_c3_2_molecule_6"
+      },
+      "format": "choice4",
+      "prompt": "分子の問題を解くとき、最初に書き出すべきものはどれか。",
+      "label": "分子の問題の第一歩",
+      "options": [
+        {
+          "text": "各原子の価電子の数（H:1、C:4、N:5、O:6）",
+          "correct": true,
+          "why": "ここを飛ばすと必ず事故る、と解説にある出発点。"
+        },
+        {
+          "text": "各原子の質量数",
+          "why": "質量数は結合の組み立てには使わない。"
+        },
+        {
+          "text": "分子の融点",
+          "why": "融点は結果として現れる性質。"
+        },
+        {
+          "text": "分子の形の名前",
+          "why": "形は電子対を配置したあとに決まる結果。"
+        }
+      ],
+      "oneLine": "分子の問題は、まず価電子の数（H:1、C:4、N:5、O:6）を書き出すのが出発点。",
+      "timeLimit": 18,
+      "grounding": "（H:1、C:4、N:5、O:6）。ここを飛ばすと必ず事故る。"
     }
   ]
 }
