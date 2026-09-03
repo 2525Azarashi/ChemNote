@@ -1,0 +1,265 @@
+{
+  "subject": "math",
+  "chapterId": "mp_2",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:mp_2:q_mp_2_circle:q_mp_2_circle_1:1",
+      "source": {
+        "chapterId": "mp_2",
+        "problemId": "q_mp_2_circle",
+        "subQuestionId": "q_mp_2_circle_1"
+      },
+      "format": "choice4",
+      "prompt": "6人が円卓に座る方法は何通りか（回転して同じものは同一視する）。",
+      "label": "",
+      "options": [
+        {
+          "text": "120",
+          "correct": true,
+          "why": "円順列は 1 人を固定して残りを並べる。(6-1)! = 5! = 120。"
+        },
+        {
+          "text": "1列に並べた 720 通り",
+          "why": "6! は席に区別があるときの数。回転を同一視するので 5!。"
+        },
+        {
+          "text": "さらに 2 で割った 60 通り",
+          "why": "2 で割るのはじゅず順列（裏返しも同一視するとき）。"
+        },
+        {
+          "text": "6 で割った 24 通り",
+          "why": "5! = 120 が答え。720 を 6 で割る形は 4! に対応する。"
+        }
+      ],
+      "oneLine": "120 通り。円順列は 1 人固定で (6-1)! = 5!。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:mp_2:q_mp_2_circle:q_mp_2_circle_2:1",
+      "source": {
+        "chapterId": "mp_2",
+        "problemId": "q_mp_2_circle",
+        "subQuestionId": "q_mp_2_circle_2"
+      },
+      "format": "choice4",
+      "prompt": "6人のうち A、B が隣り合うように円卓に座る方法は何通りか。",
+      "label": "",
+      "options": [
+        {
+          "text": "48",
+          "correct": true,
+          "why": "A・B をかたまりにして 5 個の円順列 (5-1)! = 24、中の並び 2! を掛けて 48。"
+        },
+        {
+          "text": "かたまりの中を数え忘れた 24 通り",
+          "why": "4! で止めた形。A・B の並び方 2! を掛ける。"
+        },
+        {
+          "text": "1列に並べて考えた 240 通り",
+          "why": "円順列なので 1 人固定の考え方を使う。"
+        },
+        {
+          "text": "条件なしと同じ 120 通り",
+          "why": "隣り合う条件を使っていない。全体は 120 通り。"
+        }
+      ],
+      "oneLine": "48 通り。かたまりにして 4! × 2! = 48。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mp_2:q_mp_2_circle:q_mp_2_circle_3:1",
+      "source": {
+        "chapterId": "mp_2",
+        "problemId": "q_mp_2_circle",
+        "subQuestionId": "q_mp_2_circle_3"
+      },
+      "format": "choice4",
+      "prompt": "6個の異なる玉で輪を作る方法は何通りか（回転と裏返しを同一視する）。",
+      "label": "",
+      "options": [
+        {
+          "text": "60",
+          "correct": true,
+          "why": "じゅず順列は円順列をさらに 2 で割る。5!/2 = 60。"
+        },
+        {
+          "text": "円順列のままの 120 通り",
+          "why": "裏返しも同一視するので 2 で割る必要がある。"
+        },
+        {
+          "text": "1列に並べた 720 通り",
+          "why": "回転も裏返しも同一視していない形。"
+        },
+        {
+          "text": "4 で割った 30 通り",
+          "why": "割るのは裏返しのぶんの 2 だけ。"
+        }
+      ],
+      "oneLine": "60 通り。じゅず順列は円順列 ÷ 2。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:mp_2:q_mp_2_circle:q_mp_2_circle_1:2",
+      "source": {
+        "chapterId": "mp_2",
+        "problemId": "q_mp_2_circle",
+        "subQuestionId": "q_mp_2_circle_1"
+      },
+      "format": "choice4",
+      "prompt": "円卓の席に席番号が付いていて区別できる場合、6人の座り方は何通りか。",
+      "label": "",
+      "options": [
+        {
+          "text": "720",
+          "correct": true,
+          "why": "席に区別があるなら回転を同一視しないので、ただの順列 6! = 720。"
+        },
+        {
+          "text": "円順列と同じ 120 通り",
+          "why": "回転を同一視するときの数。席に区別があるなら 6!。"
+        },
+        {
+          "text": "じゅず順列と同じ 60 通り",
+          "why": "裏返しまで同一視した数。席に区別があるなら同一視しない。"
+        },
+        {
+          "text": "6 で割った 5 通り",
+          "why": "並べ方の数え方が合っていない。6! が答え。"
+        }
+      ],
+      "oneLine": "720 通り。席に区別があればただの順列 6! になる。",
+      "timeLimit": 18,
+      "grounding": "円卓でも席に区別がある（席番号が付いている）場合はただの順列 6! になる"
+    },
+    {
+      "id": "a:mp_2:q_mp_2_dup:q_mp_2_dup_1:1",
+      "source": {
+        "chapterId": "mp_2",
+        "problemId": "q_mp_2_dup",
+        "subQuestionId": "q_mp_2_dup_1"
+      },
+      "format": "choice4",
+      "prompt": "5人を A、B の2部屋に分ける方法は何通りか（空き部屋があってもよい）。",
+      "label": "",
+      "options": [
+        {
+          "text": "32",
+          "correct": true,
+          "why": "各生徒に A か B の 2 択が独立にあるので重複順列 2^5 = 32。"
+        },
+        {
+          "text": "指数を逆にした 25 通り",
+          "why": "5^2 とした形。人ごとに 2 択なので 2^5。"
+        },
+        {
+          "text": "空き部屋を除いた 30 通り",
+          "why": "空き部屋を許すので、全員同じ部屋の 2 通りも含める。"
+        },
+        {
+          "text": "5! を計算した 120 通り",
+          "why": "並べる問題ではない。各人の 2 択を掛け合わせる。"
+        }
+      ],
+      "oneLine": "32 通り。各人 2 択の重複順列 2^5。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:mp_2:q_mp_2_dup:q_mp_2_dup_2:1",
+      "source": {
+        "chapterId": "mp_2",
+        "problemId": "q_mp_2_dup",
+        "subQuestionId": "q_mp_2_dup_2"
+      },
+      "format": "choice4",
+      "prompt": "5人を A、B の2部屋に分ける方法は何通りか（どちらの部屋にも1人以上入る）。",
+      "label": "",
+      "options": [
+        {
+          "text": "30",
+          "correct": true,
+          "why": "空き部屋になるのは全員 A・全員 B の 2 通りだけ。余事象で 32 - 2 = 30。"
+        },
+        {
+          "text": "空き部屋を許した 32 通り",
+          "why": "全員同じ部屋の 2 通りを除く必要がある。"
+        },
+        {
+          "text": "1 通りだけ引いた 31 通り",
+          "why": "除くのは全員 A と全員 B の 2 通り。"
+        },
+        {
+          "text": "半分にした 16 通り",
+          "why": "部屋に区別があるので 2 で割らない。"
+        }
+      ],
+      "oneLine": "30 通り。32 から全員同じ部屋の 2 通りを引く。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:mp_2:q_mp_2_dup:q_mp_2_dup_3:1",
+      "source": {
+        "chapterId": "mp_2",
+        "problemId": "q_mp_2_dup",
+        "subQuestionId": "q_mp_2_dup_3"
+      },
+      "format": "choice4",
+      "prompt": "6人を2人ずつの3組に分ける方法は何通りか（組に区別はない）。",
+      "label": "",
+      "options": [
+        {
+          "text": "15",
+          "correct": true,
+          "why": "6C2 × 4C2 × 2C2 = 90。組に区別がないので 3! = 6 で割って 15。"
+        },
+        {
+          "text": "3! で割り忘れた 90 通り",
+          "why": "組に区別がないので、3 組の並べ替え 6 で割る。"
+        },
+        {
+          "text": "2! で割った 45 通り",
+          "why": "組は 3 つあるので 3! で割る。"
+        },
+        {
+          "text": "掛け算を誤った 30 通り",
+          "why": "6C2 × 4C2 × 2C2 = 15 × 6 × 1 = 90 が出発点。"
+        }
+      ],
+      "oneLine": "15 通り。90 を組数の階乗 3! で割る。",
+      "timeLimit": 24
+    },
+    {
+      "id": "a:mp_2:q_mp_2_dup:q_mp_2_dup_3:2",
+      "source": {
+        "chapterId": "mp_2",
+        "problemId": "q_mp_2_dup",
+        "subQuestionId": "q_mp_2_dup_3"
+      },
+      "format": "choice4",
+      "prompt": "組分けで組数の階乗で割る必要があるのはどんなときか。",
+      "label": "",
+      "options": [
+        {
+          "text": "同じ人数の組に区別がないとき",
+          "correct": true,
+          "why": "同じ人数の組は入れ替えても同じ分け方になるので、組数の階乗で割る。"
+        },
+        {
+          "text": "人数が異なる組に分けるとき",
+          "why": "人数が違えば自動的に区別できるので割らない。"
+        },
+        {
+          "text": "組に名前が付いているとき",
+          "why": "名前があれば区別できるので割らない。"
+        },
+        {
+          "text": "組の数が 2 つ以下のとき",
+          "why": "組数ではなく「同じ人数で区別がないか」で判断する。"
+        }
+      ],
+      "oneLine": "同じ人数の組に区別がないときだけ、組数の階乗で割る。",
+      "timeLimit": 18,
+      "grounding": "同じ人数の組に区別がないときは、組数の階乗で割る"
+    }
+  ]
+}

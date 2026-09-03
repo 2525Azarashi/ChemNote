@@ -28,10 +28,11 @@ import type { BattleAnswerFormat, BattleQuestion } from '../core/types';
 
 /** 教科ごとの収録数（UIで「この教科は◯問あります」と出すために使う） */
 export const POOL_COUNTS: Readonly<Record<string, number>> = {
-  chemistry_basic: 1605,
-  chemistry: 10,
+  chemistry_basic: 1776,
+  chemistry: 101,
   english_listening: 146,
-  biology_basic: 62,
+  math: 240,
+  biology_basic: 290,
   english_grammar: 100,
   geography: 127,
 };
@@ -58,10 +59,11 @@ export const POOL_COUNTS: Readonly<Record<string, number>> = {
 export const POOL_FORMAT_COUNTS: Readonly<
   Record<string, Readonly<Partial<Record<BattleAnswerFormat, number>>>>
 > = {
-  chemistry_basic: { choice4: 1424, choice: 157, kana: 24 },
-  chemistry: { choice: 9, kana: 1 },
+  chemistry_basic: { choice4: 1574, choice: 178, kana: 24 },
+  chemistry: { choice4: 78, choice: 22, kana: 1 },
   english_listening: { choice4: 146 },
-  biology_basic: { choice4: 1, choice: 21, kana: 40 },
+  math: { choice4: 239, choice: 1 },
+  biology_basic: { choice4: 228, choice: 21, kana: 41 },
   english_grammar: { choice4: 100 },
   geography: { choice4: 77, choice: 50 },
 };
@@ -127,6 +129,8 @@ async function loadRaw(subject: string): Promise<readonly unknown[][]> {
       return (await import('./pool.chemistry.generated')).POOL;
     case 'english_listening':
       return (await import('./pool.english_listening.generated')).POOL;
+    case 'math':
+      return (await import('./pool.math.generated')).POOL;
     case 'biology_basic':
       return (await import('./pool.biology_basic.generated')).POOL;
     case 'english_grammar':
@@ -210,10 +214,11 @@ export function loadedPool(subject: string): readonly BattleQuestion[] {
  * データ本体を読まずに判断するために置いてある。
  */
 export const ANSWER_COUNTS: Readonly<Record<string, number>> = {
-  chemistry_basic: 1524,
-  chemistry: 0,
+  chemistry_basic: 1695,
+  chemistry: 91,
   english_listening: 0,
-  biology_basic: 0,
+  math: 240,
+  biology_basic: 249,
   english_grammar: 0,
   geography: 0,
 };
@@ -226,6 +231,8 @@ async function loadAnswerRaw(subject: string): Promise<readonly (readonly [strin
       return (await import('./answer.chemistry.generated')).ANSWERS;
     case 'english_listening':
       return (await import('./answer.english_listening.generated')).ANSWERS;
+    case 'math':
+      return (await import('./answer.math.generated')).ANSWERS;
     case 'biology_basic':
       return (await import('./answer.biology_basic.generated')).ANSWERS;
     case 'english_grammar':

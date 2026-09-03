@@ -1,0 +1,232 @@
+{
+  "subject": "math",
+  "chapterId": "mv_5",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:mv_5:q_mv_5_area:q_mv_5_area_1:1",
+      "source": {
+        "chapterId": "mv_5",
+        "problemId": "q_mv_5_area",
+        "subQuestionId": "q_mv_5_area_1"
+      },
+      "format": "choice4",
+      "prompt": "O(0,0)、A(4, 1)、B(2, 3) のとき、内積 OA·OB はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "11",
+          "correct": true,
+          "why": "4·2 + 1·3 = 8 + 3 = 11。x どうし・y どうしの積を足す。"
+        },
+        {
+          "text": "たすきがけした 4·3 - 1·2 の値",
+          "why": "これは面積公式に使う x1y2 - x2y1 の形。内積は積を足す。"
+        },
+        {
+          "text": "成分をすべて掛けた 4·1·2·3 の値",
+          "why": "4 つ全部を掛けるのではない。"
+        },
+        {
+          "text": "座標をすべて足した 4+1+2+3 の値",
+          "why": "足すのは 2 つの積。座標そのものではない。"
+        }
+      ],
+      "oneLine": "11。OA·OB = 4·2 + 1·3 = 11。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:mv_5:q_mv_5_area:q_mv_5_area_2:1",
+      "source": {
+        "chapterId": "mv_5",
+        "problemId": "q_mv_5_area",
+        "subQuestionId": "q_mv_5_area_2"
+      },
+      "format": "choice4",
+      "prompt": "O(0,0)、A(4, 1)、B(2, 3) でできる三角形 OAB の面積はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "5",
+          "correct": true,
+          "why": "成分の面積公式 S = (1/2)|4·3 - 1·2| = (1/2)·10 = 5。"
+        },
+        {
+          "text": "1/2 を掛け忘れた 10 という値",
+          "why": "|x1y2 - x2y1| = 10 はここでは平行四辺形の面積。三角形は半分。"
+        },
+        {
+          "text": "内積 11 をそのまま面積とした値",
+          "why": "内積は面積ではない。面積は (1/2)|x1y2 - x2y1|。"
+        },
+        {
+          "text": "たすきがけを足して (1/2)(12+2) とした値",
+          "why": "面積公式は引く形。足すと内積系の値になる。"
+        }
+      ],
+      "oneLine": "5。S = (1/2)|4·3 - 1·2| = 5。成分の面積公式が最速。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:mv_5:q_mv_5_area:q_mv_5_area_3:1",
+      "source": {
+        "chapterId": "mv_5",
+        "problemId": "q_mv_5_area",
+        "subQuestionId": "q_mv_5_area_3"
+      },
+      "format": "choice4",
+      "prompt": "A(1, 1)、B(4, 2)、C(2, 5) でできる三角形 ABC の面積はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "11/2",
+          "correct": true,
+          "why": "AB = (3, 1)、AC = (1, 4) として S = (1/2)|3·4 - 1·1| = 11/2。"
+        },
+        {
+          "text": "座標をそのまま入れた (1/2)|4·5 - 2·2| の値",
+          "why": "原点が頂点でないときは 1 頂点を始点に平行移動してから使う。"
+        },
+        {
+          "text": "1/2 を掛け忘れた 11 という値",
+          "why": "|3·4 - 1·1| = 11 は平行四辺形の面積。三角形は半分。"
+        },
+        {
+          "text": "たすきがけを足した (1/2)(12+1) の値",
+          "why": "面積公式は引く形。足してはいけない。"
+        }
+      ],
+      "oneLine": "11/2。まず 1 頂点 A を始点にして AB、AC を作るのが要点。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mv_5:q_mv_5_area:q_mv_5_area_3:2",
+      "source": {
+        "chapterId": "mv_5",
+        "problemId": "q_mv_5_area",
+        "subQuestionId": "q_mv_5_area_3"
+      },
+      "format": "choice4",
+      "prompt": "頂点が原点でない三角形の面積を求めるとき、最初にする一手はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1つの頂点を始点にしたベクトルを作る",
+          "correct": true,
+          "why": "原点以外の三角形は、まず 1 頂点を始点に平行移動して 2 本のベクトルにする。"
+        },
+        {
+          "text": "座標をそのまま面積公式に入れる",
+          "why": "これが典型ミス。公式は始点が原点の 2 ベクトル用。"
+        },
+        {
+          "text": "3 頂点の座標の平均を求める",
+          "why": "それは重心の計算。面積には直結しない。"
+        },
+        {
+          "text": "各辺の長さを全部求めてから足す",
+          "why": "周の長さになる。面積はたすきがけで一発。"
+        }
+      ],
+      "oneLine": "1 頂点を始点にしてベクトル 2 本を作る。これが最初の一手。",
+      "timeLimit": 16,
+      "grounding": "原点以外の三角形は、まず1頂点を始点に平行移動"
+    },
+    {
+      "id": "a:mv_5:q_mv_5_proj:q_mv_5_proj_1:1",
+      "source": {
+        "chapterId": "mv_5",
+        "problemId": "q_mv_5_proj",
+        "subQuestionId": "q_mv_5_proj_1"
+      },
+      "format": "choice4",
+      "prompt": "A(2, 1)、B(3, 4) のとき、内積 OA·OB はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "10",
+          "correct": true,
+          "why": "2·3 + 1·4 = 6 + 4 = 10。"
+        },
+        {
+          "text": "たすきがけした 2·4 - 1·3 の値",
+          "why": "面積公式に使う形。内積は積を足す。"
+        },
+        {
+          "text": "成分をすべて掛けた 2·1·3·4 の値",
+          "why": "4 つ全部を掛けるのではない。"
+        },
+        {
+          "text": "|OA|² にあたる 5 という値",
+          "why": "OA の大きさの 2 乗。内積 OA·OB は 10。"
+        }
+      ],
+      "oneLine": "10。OA·OB = 2·3 + 1·4 = 10。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:mv_5:q_mv_5_proj:q_mv_5_proj_2:1",
+      "source": {
+        "chapterId": "mv_5",
+        "problemId": "q_mv_5_proj",
+        "subQuestionId": "q_mv_5_proj_2"
+      },
+      "format": "choice4",
+      "prompt": "A(2, 1)、B(3, 4) のとき、OB の OA への正射影ベクトル OH の成分はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(4, 2)",
+          "correct": true,
+          "why": "OH = (OA·OB/|OA|²)OA = (10/5)(2, 1) = (4, 2)。内積を大きさの 2 乗で割る。"
+        },
+        {
+          "text": "|OA| で割った (10/√5)(2, 1) の成分",
+          "why": "割るのは大きさの 2 乗 |OA|²。1 段階多く割る形。"
+        },
+        {
+          "text": "OB をそのまま写した (3, 4)",
+          "why": "H は直線 OA 上の点なので OA の実数倍になる。"
+        },
+        {
+          "text": "係数を掛けずに (2, 1) とした成分",
+          "why": "係数 OA·OB/|OA|² = 2 を掛ける必要がある。"
+        }
+      ],
+      "oneLine": "(4, 2)。内積 10 を |OA|² = 5 で割った 2 を OA に掛ける。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mv_5:q_mv_5_proj:q_mv_5_proj_3:1",
+      "source": {
+        "chapterId": "mv_5",
+        "problemId": "q_mv_5_proj",
+        "subQuestionId": "q_mv_5_proj_3"
+      },
+      "format": "choice4",
+      "prompt": "OH = (4, 2)、B(3, 4) のとき、垂線 BH の長さはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "√5",
+          "correct": true,
+          "why": "BH = OH - OB = (1, -2) なので |BH| = √(1+4) = √5。BH·OA = 0 で垂直も確認できる。"
+        },
+        {
+          "text": "根号を外した 5 という値",
+          "why": "1 + 4 = 5 の平方根が長さ。根号を残す。"
+        },
+        {
+          "text": "成分を足した 1 + (-2) の値",
+          "why": "長さは 2 乗して足してから根号をとる。"
+        },
+        {
+          "text": "OB の長さ 5 にあたる値",
+          "why": "|OB| = √(9+16) = 5 は別の長さ。BH は √5。"
+        }
+      ],
+      "oneLine": "√5。BH = OH - OB = (1, -2) の大きさをとる。",
+      "timeLimit": 20
+    }
+  ]
+}

@@ -1,0 +1,1235 @@
+{
+  "subject": "biology_basic",
+  "chapterId": "bio2_1",
+  "authoredBy": "room-bio",
+  "questions": [
+    {
+      "id": "a:bio2_1:q_bio2_dna:bio2_d_o:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_dna",
+        "subQuestionId": "bio2_d_o"
+      },
+      "format": "choice4",
+      "prompt": "DNAの2本の鎖で、AとT、GとCの塩基どうしを結びつけている結合は何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "水素結合",
+          "correct": true,
+          "why": "解説にあるとおり、2本の鎖は塩基の部分でA-T、G-Cの塩基対を水素結合でつくって向かい合う。"
+        },
+        {
+          "text": "共有結合",
+          "why": "共有結合は糖とリン酸が交互につながって1本鎖をつくる部分の結合。塩基対の結合ではない。"
+        },
+        {
+          "text": "イオン結合",
+          "why": "イオン結合はDNAの塩基対には使われない。塩基対は水素結合という弱い結合である。"
+        },
+        {
+          "text": "ペプチド結合",
+          "why": "ペプチド結合はアミノ酸どうしをつなぐ結合で、タンパク質の結合。DNAとは無関係。"
+        }
+      ],
+      "oneLine": "水素結合。塩基対A-T、G-Cは水素結合で結ばれ、糖とリン酸の鎖は共有結合でつながる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_dna:bio2_d_ka:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_dna",
+        "subQuestionId": "bio2_d_ka"
+      },
+      "format": "choice4",
+      "prompt": "2本のヌクレオチド鎖が塩基の部分で向かい合ってはしご状になり、全体がねじれた立体構造を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "二重らせん構造",
+          "correct": true,
+          "why": "解説の【立体構造】。2本鎖が相補的な塩基対をつくり、ねじれた二重らせん構造になる（1953年）。"
+        },
+        {
+          "text": "三重らせん構造",
+          "why": "DNAは2本の鎖からできているので「三重」ではない。鎖の本数は2本と覚える。"
+        },
+        {
+          "text": "平面はしご構造",
+          "why": "塩基対がはしご状に並ぶのは正しいが、全体はねじれている。平面のままではない。"
+        },
+        {
+          "text": "一本鎖構造",
+          "why": "1本鎖はRNAの特徴。DNAは2本鎖で、鎖の数がDNAとRNAの違いの一つ。"
+        }
+      ],
+      "oneLine": "二重らせん構造。2本鎖が塩基対で向かい合い、ねじれた形になる。提唱はワトソンとクリック。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_dna:bio2_d_ku:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_dna",
+        "subQuestionId": "bio2_d_ku"
+      },
+      "format": "choice4",
+      "prompt": "AはTと、GはCとしか塩基対をつくらない。この決まった組み合わせになる塩基の性質を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "相補性",
+          "correct": true,
+          "why": "解説の【立体構造】にあるA-T、G-Cという相補的な塩基対のこと。塩基の相補性という。"
+        },
+        {
+          "text": "特異性",
+          "why": "特異性は酵素が決まった基質にだけ働くことを表す語。塩基対の呼び方ではない。"
+        },
+        {
+          "text": "多様性",
+          "why": "多様性は生物の種類や形質の幅を表す語。決まった組み合わせという意味にはならない。"
+        },
+        {
+          "text": "均一性",
+          "why": "均一性は同じであることを表す語。AとT、GとCという対応関係を表す語ではない。"
+        }
+      ],
+      "oneLine": "相補性。A-T、G-Cという決まった塩基対をつくる性質で、複製や転写の正確さの土台になる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_dna:bio2_d_ke:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_dna",
+        "subQuestionId": "bio2_d_ke"
+      },
+      "format": "choice4",
+      "prompt": "ある生物のDNAを解析すると、全塩基中のアデニンの割合が30%であった。このときグアニンの割合は何%か。",
+      "label": "",
+      "options": [
+        {
+          "text": "20%",
+          "correct": true,
+          "why": "A=30%ならT=30%。残りのG+Cが40%で、G=Cだから20%ずつ。解説の計算どおり。"
+        },
+        {
+          "text": "30%",
+          "why": "30%はAとTの割合。GをAと同じにしてしまう誤り。等しくなるのはAとT、GとCの組。"
+        },
+        {
+          "text": "40%",
+          "why": "40%はG+Cの合計。ここから半分にしてGを出す最後の一歩を忘れた答え。"
+        },
+        {
+          "text": "70%",
+          "why": "100-30をそのままG扱いした誤り。まずT=30%を出し、残り40%をGとCで分ける。"
+        }
+      ],
+      "oneLine": "20%。A=30%→T=30%→G+C=40%→G=C=20%。シャルガフの規則A=T、G=Cで解く。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio2_1:q_bio2_dna:bio2_d_ke:2",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_dna",
+        "subQuestionId": "bio2_d_ke"
+      },
+      "format": "choice4",
+      "prompt": "「AとTの数、GとCの数がそれぞれ等しい」という塩基の規則性は、どの範囲で成り立つか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2本鎖全体でのみ成り立つ",
+          "correct": true,
+          "why": "解説の注意点そのまま。片方の鎖だけの塩基組成を問う応用問題への備えになる。"
+        },
+        {
+          "text": "1本鎖の中でも成り立つ",
+          "why": "解説が「1本鎖の中ではA=Tは成り立たない」と明記している、まさに引っかかる誤り。"
+        },
+        {
+          "text": "RNAでも2本鎖と同じように成り立つ",
+          "why": "RNAは1本鎖でTの代わりにUをもつ。この規則性の対象ではない。"
+        },
+        {
+          "text": "どの生物でもA=G、T=Cが成り立つ",
+          "why": "組み合わせが違う。等しくなるのは塩基対をつくるAとT、GとCである。"
+        }
+      ],
+      "oneLine": "2本鎖全体でのみ成り立つ。片方の鎖だけを見るとA=Tにはならない点が頻出の落とし穴。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio2_1:q_bio2_history:bio2_h_i:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_history",
+        "subQuestionId": "bio2_h_i"
+      },
+      "format": "choice4",
+      "prompt": "加熱殺菌したS型菌と生きたR型菌を混ぜるとS型菌が現れた。このように外部からの物質で形質が変わる現象を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "形質転換",
+          "correct": true,
+          "why": "1928年グリフィスが発見した現象。死んだS型菌の物質がR型菌をS型菌に変えた。"
+        },
+        {
+          "text": "突然変異",
+          "why": "突然変異はDNAの塩基配列自体が変化すること。外部から物質が入って変わるのではない。"
+        },
+        {
+          "text": "形質分離",
+          "why": "形質分離は交雑で子に形質が分かれて現れる遺伝の話。細菌の実験の用語ではない。"
+        },
+        {
+          "text": "遺伝子組換え",
+          "why": "人がDNAを操作する技術のこと。グリフィスの実験は自然に起こった現象である。"
+        }
+      ],
+      "oneLine": "形質転換。1928年グリフィスが発見。この時点では原因物質の正体はまだ不明だった。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_history:bio2_h_e:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_history",
+        "subQuestionId": "bio2_h_e"
+      },
+      "format": "choice4",
+      "prompt": "エイブリーらの実験で、S型菌の抽出液をある酵素で処理すると形質転換が起こらなくなった。その酵素は何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "DNA分解酵素",
+          "correct": true,
+          "why": "解説の対照実験。DNA分解酵素で処理すると形質転換しない→原因物質はDNAだと決まる。"
+        },
+        {
+          "text": "タンパク質分解酵素",
+          "why": "これで処理しても形質転換は起こる。だからタンパク質は原因物質ではないと分かる。"
+        },
+        {
+          "text": "RNA分解酵素",
+          "why": "この実験で形質転換を止めたのはDNAをこわす酵素。RNAではない。"
+        },
+        {
+          "text": "脂質分解酵素",
+          "why": "脂質は形質転換の原因物質ではなく、エイブリーの対照実験の要点でもない。"
+        }
+      ],
+      "oneLine": "DNA分解酵素。これで処理すると形質転換が起こらない＝形質転換物質はDNAという証拠。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio2_1:q_bio2_history:bio2_h_ka:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_history",
+        "subQuestionId": "bio2_h_ka"
+      },
+      "format": "choice4",
+      "prompt": "1952年、ハーシーとチェイスが実験に用いた「細菌に感染するウイルス」を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "バクテリオファージ",
+          "correct": true,
+          "why": "細菌に感染するウイルスの総称。実験に使われたのはT2ファージである。"
+        },
+        {
+          "text": "肺炎双球菌",
+          "why": "肺炎双球菌はグリフィスやエイブリーが使った細菌。ウイルスではない。"
+        },
+        {
+          "text": "大腸菌",
+          "why": "大腸菌はファージが感染した相手（宿主）の細菌。感染する側ではない。"
+        },
+        {
+          "text": "インフルエンザウイルス",
+          "why": "ウイルスではあるが感染先はヒトなどの動物。細菌に感染するウイルスではない。"
+        }
+      ],
+      "oneLine": "バクテリオファージ。細菌に感染するウイルスで、実験ではT2ファージが用いられた。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_history:bio2_h_ka:2",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_history",
+        "subQuestionId": "bio2_h_ka"
+      },
+      "format": "choice4",
+      "prompt": "ハーシーとチェイスの実験でT2ファージが使いやすかったのは、からだが何と何だけでできているからか。",
+      "label": "",
+      "options": [
+        {
+          "text": "DNAとタンパク質",
+          "correct": true,
+          "why": "解説どおりファージは内部のDNAと外殻のタンパク質だけ。だからどちらが入るか区別できた。"
+        },
+        {
+          "text": "DNAと脂質",
+          "why": "ファージの外殻は脂質ではなくタンパク質。標識して比べたのはDNAとタンパク質である。"
+        },
+        {
+          "text": "タンパク質と多糖類",
+          "why": "多糖類は含まれない。またDNAが入っていなければ遺伝子の本体を調べる実験にならない。"
+        },
+        {
+          "text": "DNAのみ",
+          "why": "DNAだけなら比べる相手がない。外殻のタンパク質があるからこそ対照実験ができた。"
+        }
+      ],
+      "oneLine": "DNAとタンパク質。内部がDNA、外殻がタンパク質だけなので、どちらが菌に入るか比べられる。",
+      "timeLimit": 14,
+      "grounding": "ファージはDNA（内部）とタンパク質（外殻）だけでできている。"
+    },
+    {
+      "id": "a:bio2_1:q_bio2_history:bio2_h_ki:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_history",
+        "subQuestionId": "bio2_h_ki"
+      },
+      "format": "choice4",
+      "prompt": "ハーシーとチェイスの実験で、ファージから大腸菌の内部に注入されたのはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "DNA",
+          "correct": true,
+          "why": "菌内に入るのはDNAのみ。そのDNAから子ファージが作られ、遺伝子の本体はDNAと確定した。"
+        },
+        {
+          "text": "タンパク質",
+          "why": "タンパク質の外殻は菌の外に残る。標識実験でこの区別がついたことが決定的だった。"
+        },
+        {
+          "text": "糖と脂質",
+          "why": "ファージはDNAとタンパク質だけでできており、糖や脂質を注入するわけではない。"
+        },
+        {
+          "text": "RNA",
+          "why": "ファージが注入したのはDNA。核酸ではあるが種類が違う。"
+        }
+      ],
+      "oneLine": "DNA。菌内に入るのはDNAだけで、そこから子ファージができる＝遺伝子の本体はDNA。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_replication:bio2_r_a:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_replication",
+        "subQuestionId": "bio2_r_a"
+      },
+      "format": "choice4",
+      "prompt": "DNAの複製で二重らせんがほどけたとき、ほどけた1本ずつの鎖は新しい鎖をつくるときの何になるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "鋳型",
+          "correct": true,
+          "why": "解説の【半保存的複製】。各鎖が鋳型となり、相補的な塩基をもつヌクレオチドがつながる。"
+        },
+        {
+          "text": "基質",
+          "why": "基質は酵素が働きかける相手の物質。ほどけた鎖は写し取る元になる型である。"
+        },
+        {
+          "text": "酵素",
+          "why": "酵素は反応を進めるタンパク質。ほどけた鎖はDNAであって酵素ではない。"
+        },
+        {
+          "text": "触媒",
+          "why": "触媒は反応を速めるもの。鎖は情報の型として使われる側で、はたらきが違う。"
+        }
+      ],
+      "oneLine": "鋳型。ほどけた各鎖が鋳型となり、相補的な塩基をもつヌクレオチドがつながって新しい鎖ができる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_replication:bio2_r_i:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_replication",
+        "subQuestionId": "bio2_r_i"
+      },
+      "format": "choice4",
+      "prompt": "できあがった2分子のDNAがどちらも「古い鎖1本＋新しい鎖1本」になる複製のしくみを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "半保存的複製",
+          "correct": true,
+          "why": "もとの鎖が半分だけ残るので半保存的。メセルソンとスタールが実験で証明した。"
+        },
+        {
+          "text": "全保存的複製",
+          "why": "もとの2本鎖がそのまま1分子に残り、もう1分子は全部新しい、という誤ったモデル。"
+        },
+        {
+          "text": "分散的複製",
+          "why": "古い鎖と新しい鎖が細かく混ざるという誤ったモデル。実験で否定された。"
+        },
+        {
+          "text": "逆転写",
+          "why": "逆転写はRNAからDNAをつくる反応。DNAが2分子に増える複製の様式ではない。"
+        }
+      ],
+      "oneLine": "半保存的複製。新しいDNAはどちらも古い鎖1本と新しい鎖1本からできている。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_replication:bio2_r_i:2",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_replication",
+        "subQuestionId": "bio2_r_i"
+      },
+      "format": "choice4",
+      "prompt": "重い窒素で標識した大腸菌をふつうの窒素の培地に移して1回分裂させると、DNAの重さはどうなるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "全て中間の重さ",
+          "correct": true,
+          "why": "1回目はどのDNAも重い鎖1本＋軽い鎖1本になるため、密度は全て中間になる。"
+        },
+        {
+          "text": "中間と軽いが1:1",
+          "why": "これは2回分裂後の結果。回数を1回ずらして覚えていると必ず取り違える。"
+        },
+        {
+          "text": "重いと軽いが1:1",
+          "why": "全保存的複製ならこうなる。半保存的複製ではこの結果は出ない。"
+        },
+        {
+          "text": "全て軽い",
+          "why": "もとの重い鎖は分解されずに残って鋳型になるので、軽いDNAだけにはならない。"
+        }
+      ],
+      "oneLine": "全て中間の重さ。2回分裂後は中間と軽いが1:1。回数と結果の対応で覚える。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio2_1:q_bio2_replication:bio2_r_e:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_replication",
+        "subQuestionId": "bio2_r_e"
+      },
+      "format": "choice4",
+      "prompt": "体細胞分裂を繰り返す細胞は、分裂期（M期）とある時期を交互に繰り返す。この時期を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "間期",
+          "correct": true,
+          "why": "間期＝G1期＋S期＋G2期。分裂期との間にある時期という意味で間期という。"
+        },
+        {
+          "text": "静止期",
+          "why": "静止期は分裂をやめた細胞の状態。周期の中でM期と交互に繰り返す時期ではない。"
+        },
+        {
+          "text": "休止期",
+          "why": "「休んでいる時期」という発想の誤り。間期はDNA複製が進む活動的な時期である。"
+        },
+        {
+          "text": "成長期",
+          "why": "成長期は細胞周期の正式な区分名ではない。M期の相手になるのは間期。"
+        }
+      ],
+      "oneLine": "間期。G1期・S期・G2期からなり、分裂期（M期）と交互に繰り返される。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_replication:bio2_r_e:2",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_replication",
+        "subQuestionId": "bio2_r_e"
+      },
+      "format": "choice4",
+      "prompt": "細胞周期の間期についての説明として正しいのはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "DNA複製が行われる活動期",
+          "correct": true,
+          "why": "解説が強調する点。間期こそDNAが複製される活動的な時期である。"
+        },
+        {
+          "text": "細胞が休んでいる時期",
+          "why": "解説が「この選択肢は誤り」と明記している定番のひっかけ。"
+        },
+        {
+          "text": "染色体が両極に分配される時期",
+          "why": "染色体の分配は分裂期（M期）に起こる。間期のはたらきではない。"
+        },
+        {
+          "text": "細胞質が2つに分かれる時期",
+          "why": "細胞質の分裂も分裂期の後半に起こる。間期は分裂の準備と複製の時期。"
+        }
+      ],
+      "oneLine": "間期はDNA複製が行われる活動期。「休んでいる時期」と書かれた選択肢は誤り。",
+      "timeLimit": 14,
+      "grounding": "間期こそDNA複製が行われる活動期です"
+    },
+    {
+      "id": "a:bio2_1:q_bio2_replication:bio2_r_o:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_replication",
+        "subQuestionId": "bio2_r_o"
+      },
+      "format": "choice4",
+      "prompt": "G1期→S期→G2期→M期という一連の流れを繰り返すこの周期を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "細胞周期",
+          "correct": true,
+          "why": "分裂期と間期を交互に繰り返す周期のこと。各期の細胞数から所要時間を求める計算も頻出。"
+        },
+        {
+          "text": "細胞分裂",
+          "why": "細胞分裂はM期に起こる出来事。準備期間を含む一巡全体の呼び名ではない。"
+        },
+        {
+          "text": "生活環",
+          "why": "生活環は生物が世代を繰り返す一生のサイクル。細胞1個の分裂周期とは別。"
+        },
+        {
+          "text": "発生",
+          "why": "発生は受精卵が個体になる過程。分裂の周期そのものを指す語ではない。"
+        }
+      ],
+      "oneLine": "細胞周期。G1期→S期→G2期→M期の一巡で、間期＝G1＋S＋G2にあたる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_replication:bio2_r_ka:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_replication",
+        "subQuestionId": "bio2_r_ka"
+      },
+      "format": "choice4",
+      "prompt": "間期のうち、DNAの複製（合成）が行われるのはどの期か。",
+      "label": "",
+      "options": [
+        {
+          "text": "S期",
+          "correct": true,
+          "why": "S期＝DNA合成期。ここでDNA量が2から4へ増える。"
+        },
+        {
+          "text": "G1期",
+          "why": "G1期はDNA合成の準備期。まだ複製は始まっていない。"
+        },
+        {
+          "text": "G2期",
+          "why": "G2期は複製が終わったあとの分裂準備期。DNA量は4のまま変わらない。"
+        },
+        {
+          "text": "M期",
+          "why": "M期は分裂期で、複製済みのDNAを分配する時期。合成する時期ではない。"
+        }
+      ],
+      "oneLine": "S期。DNA合成期でDNA量が2→4に増える。G1は準備、G2は分裂準備。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_replication:bio2_r_ki:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_replication",
+        "subQuestionId": "bio2_r_ki"
+      },
+      "format": "choice4",
+      "prompt": "G1期の細胞1個あたりのDNA量を2とすると、G2期の細胞のDNA量はいくらになるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "4",
+          "correct": true,
+          "why": "S期で2→4に増え、G2期とM期前半は4のまま。解説のDNA量グラフどおり。"
+        },
+        {
+          "text": "2",
+          "why": "2はG1期と分裂直後の値。S期の複製で増えた分を見落とした誤り。"
+        },
+        {
+          "text": "1",
+          "why": "1になる時期はない。DNAは複製で増えるので、G1の2より少なくはならない。"
+        },
+        {
+          "text": "8",
+          "why": "複製は1回で2倍まで。1周期で4倍になるわけではない。"
+        }
+      ],
+      "oneLine": "4。S期で2→4に増え、G2期・M期前半は4のまま。分裂完了で2に戻る。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio2_1:q_bio2_replication:bio2_r_ku:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_replication",
+        "subQuestionId": "bio2_r_ku"
+      },
+      "format": "choice4",
+      "prompt": "G1期の細胞1個あたりのDNA量を2とすると、体細胞分裂が完了した直後の細胞のDNA量はいくらか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2",
+          "correct": true,
+          "why": "分裂完了で4が2つの細胞に分けられ、1個あたりは2に戻る。だから周期が成り立つ。"
+        },
+        {
+          "text": "4",
+          "why": "4はG2期とM期前半の値。分配される前の量で止めてしまった誤り。"
+        },
+        {
+          "text": "1",
+          "why": "半分の半分にしてしまった誤り。分けるのは4を2つにするので1個あたり2。"
+        },
+        {
+          "text": "8",
+          "why": "分裂でDNA量が増えることはない。増えるのはS期の複製のときだけ。"
+        }
+      ],
+      "oneLine": "2。4が2個の細胞に分配されるので、分裂直後は1個あたりG1期と同じ2に戻る。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio2_1:q_bio2_expression:bio2_x_a:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_expression",
+        "subQuestionId": "bio2_x_a"
+      },
+      "format": "choice4",
+      "prompt": "遺伝子の情報にもとづいてタンパク質が合成されることを、遺伝子の何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "発現",
+          "correct": true,
+          "why": "遺伝子の発現＝転写と翻訳の2段階でタンパク質がつくられること。"
+        },
+        {
+          "text": "複製",
+          "why": "複製はDNAが同じものを2つに増やすこと。タンパク質はできない。"
+        },
+        {
+          "text": "分化",
+          "why": "分化は細胞が特定の形やはたらきをもつようになること。結果であって過程の名ではない。"
+        },
+        {
+          "text": "変異",
+          "why": "変異はDNAの塩基配列が変わること。情報からタンパク質をつくることではない。"
+        }
+      ],
+      "oneLine": "発現。遺伝子の情報から転写・翻訳を経てタンパク質がつくられる一連の流れ。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_expression:bio2_x_i:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_expression",
+        "subQuestionId": "bio2_x_i"
+      },
+      "format": "choice4",
+      "prompt": "DNAの塩基配列が写し取られて合成され、アミノ酸配列の情報を運ぶRNAはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "mRNA",
+          "correct": true,
+          "why": "伝令RNA。DNAから写し取られ、その塩基配列にもとづいてアミノ酸がつながれる。"
+        },
+        {
+          "text": "tRNA",
+          "why": "tRNAはアミノ酸を運ぶRNA。情報を写し取る側ではなく、翻訳で運搬を担う。"
+        },
+        {
+          "text": "rRNA",
+          "why": "rRNAはリボソームをつくるRNA。アミノ酸配列の情報そのものは運ばない。"
+        },
+        {
+          "text": "デオキシリボース",
+          "why": "これはDNAに含まれる糖の名前で、RNAの種類ではない。RNAの糖はリボース。"
+        }
+      ],
+      "oneLine": "mRNA。DNAの塩基配列を写し取り、アミノ酸配列の情報を翻訳の場へ運ぶ。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_expression:bio2_x_i:2",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_expression",
+        "subQuestionId": "bio2_x_i"
+      },
+      "format": "choice4",
+      "prompt": "mRNAがDNAと異なる点として正しいのはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1本鎖",
+          "correct": true,
+          "why": "解説の3点セットの一つ。DNAは2本鎖、RNAは1本鎖である。"
+        },
+        {
+          "text": "2本鎖",
+          "why": "2本鎖はDNAの特徴。異なる点を聞かれているのに同じ側を答えてしまう誤り。"
+        },
+        {
+          "text": "糖がデオキシリボース",
+          "why": "デオキシリボースはDNAの糖。RNAの糖はリボースである。"
+        },
+        {
+          "text": "塩基にチミンを含む",
+          "why": "チミンをもつのはDNA。RNAはチミンの代わりにウラシルをもつ。"
+        }
+      ],
+      "oneLine": "1本鎖。DNAとRNAの違いは鎖の数・糖・塩基の3点セットで整理する。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio2_1:q_bio2_expression:bio2_x_u:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_expression",
+        "subQuestionId": "bio2_x_u"
+      },
+      "format": "choice4",
+      "prompt": "DNAの塩基配列が写し取られてmRNAが合成される過程を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "転写",
+          "correct": true,
+          "why": "鋳型鎖に相補的なRNAのヌクレオチドがつながってmRNAができる過程が転写。"
+        },
+        {
+          "text": "翻訳",
+          "why": "翻訳はmRNAの情報からアミノ酸をつなぐ次の段階。順番を取り違えた誤り。"
+        },
+        {
+          "text": "複製",
+          "why": "複製はDNAからDNAをつくること。できるものがmRNAなら複製ではない。"
+        },
+        {
+          "text": "分化",
+          "why": "分化は細胞が特定の形やはたらきをもつこと。RNA合成の過程名ではない。"
+        }
+      ],
+      "oneLine": "転写。DNA→mRNAの段階で、対応はA→U、T→A、G→C、C→G。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_expression:bio2_x_ka:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_expression",
+        "subQuestionId": "bio2_x_ka"
+      },
+      "format": "choice4",
+      "prompt": "mRNAの塩基配列にもとづいてアミノ酸が順につながれ、タンパク質が合成される過程を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "翻訳",
+          "correct": true,
+          "why": "mRNAの3塩基（コドン）が1つのアミノ酸を指定し、順につながっていく段階。"
+        },
+        {
+          "text": "転写",
+          "why": "転写はDNAからmRNAをつくる前の段階。できるものがタンパク質なら翻訳。"
+        },
+        {
+          "text": "複製",
+          "why": "複製はDNAを2つに増やすこと。アミノ酸をつなぐ過程ではない。"
+        },
+        {
+          "text": "分化",
+          "why": "分化は細胞が特定の形やはたらきをもつようになること。合成過程の名ではない。"
+        }
+      ],
+      "oneLine": "翻訳。mRNAのコドンにしたがってアミノ酸がつながり、タンパク質ができる段階。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_expression:bio2_x_ka:2",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_expression",
+        "subQuestionId": "bio2_x_ka"
+      },
+      "format": "choice4",
+      "prompt": "翻訳が行われる場となる細胞の構造はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "リボソーム",
+          "correct": true,
+          "why": "解説に「場はリボソームです」とある。ここでmRNAとtRNAが働いてアミノ酸がつながる。"
+        },
+        {
+          "text": "核",
+          "why": "核は転写が行われる場所。DNAがあるのは核で、翻訳の場ではない。"
+        },
+        {
+          "text": "ミトコンドリア",
+          "why": "ミトコンドリアは呼吸でATPをつくる場。タンパク質合成の主役ではない。"
+        },
+        {
+          "text": "ゴルジ体",
+          "why": "ゴルジ体はできたタンパク質の加工や輸送に関わる。合成そのものの場ではない。"
+        }
+      ],
+      "oneLine": "リボソーム。翻訳の場で、mRNAのコドンにtRNAが結合してアミノ酸がつながれる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_expression:bio2_x_ki:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_expression",
+        "subQuestionId": "bio2_x_ki"
+      },
+      "format": "choice4",
+      "prompt": "mRNAの連続する何個の塩基の並びが、1つのアミノ酸を指定するか。",
+      "label": "",
+      "options": [
+        {
+          "text": "3個",
+          "correct": true,
+          "why": "連続する3塩基＝コドンが1つのアミノ酸を指定する。塩基n個→アミノ酸n/3個。"
+        },
+        {
+          "text": "1個",
+          "why": "1塩基では4通りしかなく、20種類のアミノ酸を指定できない。"
+        },
+        {
+          "text": "2個",
+          "why": "2塩基では16通りで、20種類のアミノ酸に足りない。3塩基で64通りになる。"
+        },
+        {
+          "text": "4個",
+          "why": "4は塩基の種類の数と混同した誤り。1アミノ酸を指定するのは3塩基。"
+        }
+      ],
+      "oneLine": "3個。連続する3塩基がコドンで、アミノ酸n個にはmRNAの塩基3n個が必要。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_expression:bio2_x_ke:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_expression",
+        "subQuestionId": "bio2_x_ke"
+      },
+      "format": "choice4",
+      "prompt": "翻訳のとき、コドンに対応するアミノ酸を運んでくるRNAはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "tRNA",
+          "correct": true,
+          "why": "tRNAがアンチコドンでコドンと結合し、対応するアミノ酸を運んでくる。"
+        },
+        {
+          "text": "mRNA",
+          "why": "mRNAはアミノ酸の並び順の情報を運ぶ側。アミノ酸そのものは運ばない。"
+        },
+        {
+          "text": "rRNA",
+          "why": "rRNAはリボソームを構成するRNA。アミノ酸の運搬役ではない。"
+        },
+        {
+          "text": "DNA",
+          "why": "DNAは核にあって情報を保存する物質。翻訳の場でアミノ酸を運ぶことはない。"
+        }
+      ],
+      "oneLine": "tRNA。アンチコドンでmRNAのコドンと結合し、対応するアミノ酸を運んでくる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_i:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_i"
+      },
+      "format": "choice4",
+      "prompt": "ヒトの体細胞には、父方と母方に由来するゲノムが何組含まれているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2組",
+          "correct": true,
+          "why": "父方と母方から1組ずつで2組。だから体細胞のDNAは約60億塩基対になる。"
+        },
+        {
+          "text": "1組",
+          "why": "1組は精子や卵などの生殖細胞。体細胞は父方・母方の2組をもつ。"
+        },
+        {
+          "text": "4組",
+          "why": "両親から受け取るのは1組ずつなので合計2組。4組にはならない。"
+        },
+        {
+          "text": "23組",
+          "why": "23は染色体の組の数（ヒトは23対）。ゲノムの組数と混同した誤り。"
+        }
+      ],
+      "oneLine": "2組。父方＋母方で2組、約60億塩基対。ゲノム1組は約30億塩基対。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_i:2",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_i"
+      },
+      "format": "choice4",
+      "prompt": "「染色体」の説明として正しいのはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "DNAとタンパク質の複合体",
+          "correct": true,
+          "why": "解説の【概念の区別】。染色体はDNAがタンパク質と結びついた構造体である。"
+        },
+        {
+          "text": "DNA上の遺伝情報の単位",
+          "why": "これは遺伝子の説明。染色体は構造体、遺伝子は情報の単位で階層が違う。"
+        },
+        {
+          "text": "生物に必要な遺伝情報ひとそろい",
+          "why": "これはゲノムの説明。ゲノムは情報のセットで、染色体という物ではない。"
+        },
+        {
+          "text": "リン酸と糖と塩基が結合した単位",
+          "why": "これはヌクレオチドの説明。DNAの部品であって染色体ではない。"
+        }
+      ],
+      "oneLine": "染色体＝DNAとタンパク質の複合体。DNA・遺伝子・ゲノム・染色体の区別は毎年出る。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_u:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_u"
+      },
+      "format": "choice4",
+      "prompt": "ヒトのゲノム1組は、約何億塩基対のDNAからなると推定されているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "約30億",
+          "correct": true,
+          "why": "解説の数値整理どおり、ゲノム1組は約30億塩基対。体細胞では2組で約60億。"
+        },
+        {
+          "text": "約60億",
+          "why": "約60億は体細胞（2組）の合計。1組と2組の区別を忘れた誤り。"
+        },
+        {
+          "text": "約3億",
+          "why": "桁を1つ落とした誤り。ヒトのゲノム1組は約30億塩基対である。"
+        },
+        {
+          "text": "約300億",
+          "why": "桁を1つ増やした誤り。約2万個の遺伝子数とあわせて数値で覚える。"
+        }
+      ],
+      "oneLine": "約30億塩基対。体細胞はゲノム2組なので約60億塩基対になる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_e:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_e"
+      },
+      "format": "choice4",
+      "prompt": "ヒトのゲノムに含まれる遺伝子の数は、約何個と推定されているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "約2万個",
+          "correct": true,
+          "why": "解説の数値整理どおり遺伝子数は約2万個。塩基対数約30億とセットで覚える。"
+        },
+        {
+          "text": "約20万個",
+          "why": "桁が1つ大きい。塩基対の数の多さに引っぱられやすい誤り。"
+        },
+        {
+          "text": "約2000個",
+          "why": "桁が1つ小さい。ヒトの遺伝子数は約2万個である。"
+        },
+        {
+          "text": "約60億個",
+          "why": "約60億は体細胞の塩基対の数。塩基対の数と遺伝子の数の混同。"
+        }
+      ],
+      "oneLine": "約2万個。ゲノム1組＝約30億塩基対、遺伝子数＝約2万個と対で暗記する。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_o:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_o"
+      },
+      "format": "choice",
+      "prompt": "ヒトのゲノムの塩基配列のうち、タンパク質のアミノ酸配列を指定する部分が全体に占める割合はどちらといえるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "ごく一部にすぎない",
+          "correct": true,
+          "why": "タンパク質を指定する部分はゲノム全体の約1〜2%だけ。残りは指定に使われない。"
+        },
+        {
+          "text": "大部分を占める",
+          "why": "遺伝子の数が多いイメージからの誤り。実際に指定に使われるのは数%にすぎない。"
+        }
+      ],
+      "oneLine": "ごく一部にすぎない。タンパク質を指定する部分はゲノム全体の約1〜2%だけ。",
+      "timeLimit": 12,
+      "grounding": "全体のごく一部"
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_ka:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_ka"
+      },
+      "format": "choice",
+      "prompt": "多細胞生物の個体をつくる細胞は、ゲノムについてどちらといえるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "同じゲノムをもつ",
+          "correct": true,
+          "why": "どの体細胞も基本的に同じゲノムをもつ。違うのは発現する遺伝子の組み合わせ。"
+        },
+        {
+          "text": "細胞ごとに異なるゲノムをもつ",
+          "why": "形や働きが違うのはゲノムが違うからだと考える誤り。ゲノムは同じである。"
+        }
+      ],
+      "oneLine": "同じゲノムをもつ。筋細胞も神経細胞も遺伝情報のセット自体は共通している。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_ki:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_ki"
+      },
+      "format": "choice",
+      "prompt": "同じゲノムをもつ細胞が筋細胞や神経細胞など形や働きの違う細胞になるのは、なぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "細胞の種類によって発現する遺伝子が異なるから",
+          "correct": true,
+          "why": "発現する遺伝子の組み合わせが細胞ごとに違うため、形や働きに差が出る。"
+        },
+        {
+          "text": "どの細胞でも発現する遺伝子が同じだから",
+          "why": "全部同じなら細胞の差は生まれない。発現する遺伝子が違うことが分化の理由。"
+        }
+      ],
+      "oneLine": "発現する遺伝子が細胞ごとに違うから。例：インスリン遺伝子は全身にあるが発現はすい臓だけ。",
+      "timeLimit": 14,
+      "grounding": "細胞の種類によって発現する遺伝子が"
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_ku:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_ku"
+      },
+      "format": "choice4",
+      "prompt": "細胞が特定の形やはたらきをもつようになることを、細胞の何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "分化",
+          "correct": true,
+          "why": "発現する遺伝子の組み合わせが変わることで、筋細胞や神経細胞になっていく現象。"
+        },
+        {
+          "text": "分裂",
+          "why": "分裂は細胞が2つに分かれること。形やはたらきが決まっていくことではない。"
+        },
+        {
+          "text": "分泌",
+          "why": "分泌は細胞が物質を細胞外に出すはたらき。細胞の性質が定まることではない。"
+        },
+        {
+          "text": "変性",
+          "why": "変性はタンパク質の立体構造がこわれること。細胞の話ではない。"
+        }
+      ],
+      "oneLine": "分化。同じゲノムでも発現する遺伝子の組み合わせが違うため、違う細胞になる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_ku:2",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_ku"
+      },
+      "format": "choice4",
+      "prompt": "インスリン遺伝子は全身の細胞にあるが、実際にインスリンをつくっているのはどこの細胞か。",
+      "label": "",
+      "options": [
+        {
+          "text": "すい臓のB細胞",
+          "correct": true,
+          "why": "解説の例。遺伝子はどの細胞にもあるが、発現するのはすい臓のB細胞だけ。"
+        },
+        {
+          "text": "肝臓の細胞",
+          "why": "肝臓はインスリンの作用を受ける側。インスリン遺伝子を発現させる細胞ではない。"
+        },
+        {
+          "text": "筋細胞",
+          "why": "筋細胞もインスリンの作用を受ける側で、合成はしていない。"
+        },
+        {
+          "text": "神経細胞",
+          "why": "神経細胞にもインスリン遺伝子はあるが発現しない。あることと発現することは別。"
+        }
+      ],
+      "oneLine": "すい臓のB細胞。遺伝子が「ある」ことと「発現する」ことは別だという典型例。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_ke:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_ke"
+      },
+      "format": "choice4",
+      "prompt": "ユスリカやショウジョウバエの幼虫で、パフをもつ巨大な染色体が見られるのはどこの細胞か。",
+      "label": "",
+      "options": [
+        {
+          "text": "だ腺",
+          "correct": true,
+          "why": "だ腺の細胞に巨大な染色体（だ腺染色体）が見られ、ふくらみのパフが観察できる。"
+        },
+        {
+          "text": "すい臓",
+          "why": "すい臓はインスリンの合成で出てくる器官。だ腺染色体の観察部位ではない。"
+        },
+        {
+          "text": "小腸",
+          "why": "小腸は消化吸収の器官。巨大染色体が観察される代表的な部位ではない。"
+        },
+        {
+          "text": "気管",
+          "why": "気管は呼吸に関わる器官。だ腺染色体の観察には使われない。"
+        }
+      ],
+      "oneLine": "だ腺。だ腺染色体には、染色体がほどけて転写が盛んなパフというふくらみがある。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_ke:2",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_ke"
+      },
+      "format": "choice4",
+      "prompt": "DNAを青緑色に染め分ける染色液はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "メチルグリーン",
+          "correct": true,
+          "why": "解説の染め分け実験。メチルグリーンはDNAを青緑に、ピロニンはRNAを赤桃に染める。"
+        },
+        {
+          "text": "ピロニン",
+          "why": "ピロニンが染めるのはRNAで、色は赤桃色。DNAとRNAで役割が逆になる誤り。"
+        },
+        {
+          "text": "酢酸カーミン",
+          "why": "酢酸カーミンは核や染色体を赤く染める。青緑に染め分ける染色液ではない。"
+        },
+        {
+          "text": "ヤヌスグリーン",
+          "why": "ヤヌスグリーンはミトコンドリアを染める染色液。DNAの染め分けには使わない。"
+        }
+      ],
+      "oneLine": "メチルグリーン（DNA・青緑）。ピロニン（RNA・赤桃）と対で覚える染め分け実験。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio2_1:q_bio2_genome:bio2_g_sa:1",
+      "source": {
+        "chapterId": "bio2_1",
+        "problemId": "q_bio2_genome",
+        "subQuestionId": "bio2_g_sa"
+      },
+      "format": "choice4",
+      "prompt": "だ腺染色体のパフの位置が発生の段階によって移り変わることは、何を示す証拠となるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "時期によって発現する遺伝子が変わる",
+          "correct": true,
+          "why": "パフは転写が盛んな場所。その位置が動く＝働く遺伝子が時期で変わるということ。"
+        },
+        {
+          "text": "細胞ごとにゲノムが異なる",
+          "why": "どの細胞もゲノムは同じ。違うのは発現する遺伝子の組み合わせである。"
+        },
+        {
+          "text": "パフでは染色体が分解されている",
+          "why": "パフは染色体がほどけた場所で、こわれているのではない。ほどけて転写が進む。"
+        },
+        {
+          "text": "だ腺染色体では複製が起こらない",
+          "why": "パフが示すのは転写の活発さ。複製の有無を示す証拠ではない。"
+        }
+      ],
+      "oneLine": "時期によって発現する遺伝子が変わること。パフ＝染色体がほどけて転写が盛んな場所。",
+      "timeLimit": 16
+    }
+  ]
+}
