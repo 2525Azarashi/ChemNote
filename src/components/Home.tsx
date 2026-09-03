@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope } from 'lucide-react';
 import { motion } from 'motion/react';
 import { auth } from '../firebase';
 /*
@@ -82,6 +82,22 @@ interface HomeProps {
   onLeaderboard?: () => void;
   /** 対戦モードを開く。FEATURES.battle が false のときは渡されない */
   onBattle?: () => void;
+  /**
+   * 高校入試 理科（演習・まとめ・出題傾向）を開く。
+   *
+   * ★科目カードではなくホームの入口にした理由★
+   *   理科は本体の「章→大問→小問」の形を持っていない。
+   *   単元の絞り込みも問題の出し方も理科の画面が自分で持っているので、
+   *   科目選択のカードに並べると、押した先で1問も出せない状態になる。
+   *   （詳しくは src/features/rika/RikaHome.tsx）
+   *
+   * ★省略可にしてある理由★
+   *   Home はテストやプレビューからも描画される。
+   *   必須にすると呼び出し側すべてに手を入れることになる。
+   *   渡されなければカードを出さない（＝従来どおりの見た目）。
+   *   FEATURES.rika が false のときは App 側で渡さない。
+   */
+  onRika?: () => void;
   onReviewList?: () => void;
   /** 科目選択（タイトル）画面へ戻る */
   onChangeSubject?: () => void;
@@ -111,7 +127,7 @@ interface HomeProps {
   onToggleBgm?: (enabled: boolean) => void;
 }
 
-export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onBattle, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest, isBgmEnabled, isBgmFadedOut, onToggleBgm }: HomeProps) {
+export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onBattle, onRika, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest, isBgmEnabled, isBgmFadedOut, onToggleBgm }: HomeProps) {
   const reviewDueCount = useMemo(() => {
     const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
     return getDueCount(uid);
@@ -888,6 +904,34 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
+            </button>
+          )}
+
+          {/* ===== 高校入試 理科 =====
+              渡されていないときはカード自体を描かない（対戦モードと同じ扱い）。
+
+              ★色だけ他のカードと違えている理由★
+              このカードだけは「いま選んでいる科目」とは無関係な別の教科へ入る。
+              他のカードと同じローズ色にすると、化学基礎の続きに見えてしまう。
+              対戦の教科選択・結果・履歴でも理科はバイオレット #7B4FA8 で
+              出るようにしてあるので（src/data/externalSubjects.ts）、
+              ★入口から中まで同じ色でつながる★ようにしている。 */}
+          {onRika && (
+            <button
+              onClick={onRika}
+              aria-label="高校入試 理科を開く"
+              className="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#D6C4E7]/70 bg-white/90 backdrop-blur-sm hover:bg-[#FAF6FD] hover:border-[#7B4FA8]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(123,79,168,0.45)] text-left group"
+            >
+              <div className="w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#D6C4E7]/45 flex items-center justify-center shrink-0">
+                <Microscope className="w-5 h-5 text-[#7B4FA8]" aria-hidden="true" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">高校入試 理科</div>
+                <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">
+                  32単元の演習・まとめ・出題傾向
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#7B4FA8] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
             </button>
           )}
 
