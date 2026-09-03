@@ -131,6 +131,12 @@ import {
  * 「正しく答えたのに不正解」になる。必ず同じファイルを参照する。
  */
 import { kanaKeysOf, KANA_MAX_INPUT } from '../src/battle/core/kanaKeyboard';
+/**
+ * ★対戦ルールは画面と同じ定義を見る★
+ * 外部プールが「1試合ぶんを組めるか」を確かめるのに questionCount が要る。
+ * ここで独自に 10 と書くと、ルールを変えたときに検査だけ古い値で通ってしまう。
+ */
+import { defaultRuleOf } from '../src/battle/core/battleRules';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 /** 生成物の出力先ディレクトリ（教科ごとに1ファイル＋索引1ファイルを置く） */
@@ -141,6 +147,33 @@ const OUT_DIR = resolve(HERE, '../src/battle/data');
  * ★中身は検証器（verify-authored-battle.mts）を通ったものだけ★という前提で読む。
  */
 const AUTHORED_DIR = resolve(HERE, '../src/battle/data/authored');
+
+/**
+ * ★外部プール（別リポジトリで作られた教科まるごと）の置き場所★
+ *
+ * ■ authored/ と何が違うのか
+ *   authored/ は「本体の教科データ（src/data/*.ts）に既にある小問」に対して
+ *   作業場が選択肢と解説を書いたものである。だから元の小問が無いと孤児になる。
+ *
+ *   external/ は ★本体に教科データが1行も無い教科★ を丸ごと受け取るための口。
+ *   高校入試理科（三重県後期選抜入試対策理科最終プリント由来・1117問）が
+ *   これに当たる。理科は演習・まとめ・出題傾向の画面を
+ *   src/features/rika/ に自前で持っており、
+ *   本体の章・大問・小問の形（miniTest / practiceProblems）を持っていない。
+ *
+ * ■ なぜ pool.rika.generated.ts を手で置かないのか
+ *   索引（battlePool.ts）は ★このスクリプトが丸ごと生成する★。
+ *   手で置いたファイルは loadPool() の switch にも POOL_COUNTS にも現れず、
+ *   どこからも読まれない孤立ファイルになる（次の生成で気づかないまま残る）。
+ *   ここから読めば、索引・形式別件数・解答ファイルまで全部そろう。
+ *
+ * ■ 中身の形（rika.json）
+ *   { subject, label, source, questions: [ { id, chapterId, problemId,
+ *     subQuestionId, format, prompt, label, options, answerIndex,
+ *     panelOrder, timeLimit, imageUrl } ] }
+ *   ★PoolQuestion とそろえてある★ ので、そのままプールに足せる。
+ */
+const EXTERNAL_DIR = resolve(HERE, '../src/battle/data/external');
 
 // ============================================================
 // 生成に使う設定
@@ -1259,6 +1292,225 @@ function convertAuthored(q: AuthoredRow): { question: PoolQuestion | null; reaso
 // 本体
 // ============================================================
 
+/**
+ * ===================================================================
+ * 外部プールを読む（src/battle/data/external/*.json）
+ * ===================================================================
+ *
+ * ■ 何を読むのか
+ *   本体に教科データ（章・大問・小問）が無い教科を、
+ *   「出題プールの形そのまま」で受け取るためのファイル。
+ *   いま入っているのは高校入試理科（rika）1本だけ。
+ *
+ * ■ ★検証してから通す（黙って壊れたデータを入れない）★
+ *   外部プールは別リポジトリの生成物なので、こちらの決まりを知らない。
+ *   tests/battlePool.test.ts が見ている条件と同じものを、ここで先に見る。
+ *   1件でも外れていたら ★その1問だけを捨てて、必ず画面に出す★。
+ *   （全部止めると、直せない相手側の1問のせいで生成できなくなる）
+ *
+ *   見ている条件:
+ *     ・id / chapterId / problemId / subQuestionId が空でない
+ *     ・prompt と label が両方空でない（何も表示されない問題を防ぐ）
+ *     ・format が choice4 / choice / kana のどれか
+ *     ・choice4 は選択肢ちょうど4つ・answerIndex が 0〜3
+ *     ・choice は選択肢2〜6つ・answerIndex が範囲内
+ *     ・選択肢に空文字が無い／重複が無い（重複＝正解が2つある状態）
+ *     ・選択肢が記号（①ア A）だけになっていない
+ *     ・制限時間が 8〜40 秒
+ *
+ * ■ ★panelOrder は 4択では空にする★
+ *   本体の機械生成が空で出しているので、そこにそろえる。
+ *   （パネル形式でしか使わない欄）
+ */
+function loadExternalPools(): PoolQuestion[] {
+  if (!existsSync(EXTERNAL_DIR)) return [];
+
+  const out: PoolQuestion[] = [];
+  /** 記号だけの選択肢（tests/battlePool.test.ts と同じ式） */
+  const symbolOnly = /^[（(【]?[①-⑩ア-ンA-Za-z][)）】]?$/;
+  const files = readdirSync(EXTERNAL_DIR)
+    .filter((f) => f.endsWith('.json'))
+    .sort();
+
+  for (const file of files) {
+    const raw = JSON.parse(readFileSync(join(EXTERNAL_DIR, file), 'utf8')) as {
+      subject?: string;
+      label?: string;
+      source?: string;
+      questions?: unknown[];
+    };
+    const subject = String(raw.subject || '').trim();
+    if (!subject) {
+      console.log(`[gen:battle-pool] ★${file} に subject が無いので読み飛ばした★`);
+      continue;
+    }
+
+    const list = Array.isArray(raw.questions) ? raw.questions : [];
+    const dropped: string[] = [];
+    let taken = 0;
+
+    for (const item of list) {
+      const q = item as Record<string, unknown>;
+      const id = String(q.id || '').trim();
+      const chapterId = String(q.chapterId || '').trim();
+      const problemId = String(q.problemId || '').trim();
+      const subQuestionId = String(q.subQuestionId || '').trim();
+      const format = String(q.format || '').trim();
+      const prompt = String(q.prompt || '');
+      const label = String(q.label || '');
+      const options = Array.isArray(q.options) ? q.options.map((o) => String(o)) : [];
+      const answerIndex = Number(q.answerIndex);
+      const timeLimit = Number(q.timeLimit);
+
+      const bad = (why: string): void => {
+        dropped.push(`${id || '(idなし)'}: ${why}`);
+      };
+
+      if (!id) {
+        bad('id が無い');
+        continue;
+      }
+      if (!chapterId || !problemId || !subQuestionId) {
+        bad('章ID・大問ID・小問IDのどれかが空（結果画面から復習に飛べない）');
+        continue;
+      }
+      if (!prompt.trim() && !label.trim()) {
+        bad('prompt と label が両方空（画面に何も出ない）');
+        continue;
+      }
+      if (format !== 'choice4' && format !== 'choice' && format !== 'kana') {
+        bad(`format が対応外（${format}）`);
+        continue;
+      }
+      if (!Number.isFinite(timeLimit) || timeLimit < 8 || timeLimit > 40) {
+        bad(`制限時間が範囲外（${q.timeLimit}）`);
+        continue;
+      }
+      if (format === 'kana') {
+        /**
+         * ★かな入力は options を持ってはいけない★
+         * 持つと五十音キーボードの画面に答えの一覧が出てしまう。
+         */
+        if (options.length > 0) {
+          bad('kana なのに選択肢を持っている（答えが漏れる）');
+          continue;
+        }
+      } else {
+        if (options.some((o) => !o.trim())) {
+          bad('選択肢に空文字がある');
+          continue;
+        }
+        if (new Set(options).size !== options.length) {
+          bad('選択肢が重複している（正解が2つある状態）');
+          continue;
+        }
+        if (format === 'choice4' && options.length !== 4) {
+          bad(`choice4 なのに選択肢が ${options.length} 個`);
+          continue;
+        }
+        if (format === 'choice' && (options.length < 2 || options.length > 6)) {
+          bad(`choice の選択肢が ${options.length} 個（2〜6でなければならない）`);
+          continue;
+        }
+        if (!Number.isInteger(answerIndex) || answerIndex < 0 || answerIndex >= options.length) {
+          bad(`answerIndex が選択肢の範囲外（${q.answerIndex}）`);
+          continue;
+        }
+        if (options.every((o) => symbolOnly.test(o.trim()))) {
+          bad('選択肢が記号（①ア A）だけで、何を選ぶのか分からない');
+          continue;
+        }
+      }
+
+      out.push({
+        id,
+        subject,
+        chapterId,
+        problemId,
+        subQuestionId,
+        format: format as Format,
+        prompt,
+        label,
+        options,
+        answerIndex: format === 'kana' ? -1 : answerIndex,
+        // ★4択・選択では空（パネル形式でしか使わない欄）★
+        panelOrder: [],
+        timeLimit,
+        imageUrl: q.imageUrl ? String(q.imageUrl) : undefined,
+        /**
+         * ★試合後の1行解答は持たせない★
+         * 外部プールは原典（配布プリント）の言い回しをそのまま出しており、
+         * 「答え＋ひと言の理由」を書き足すと原典に無い説明を足すことになる。
+         * 理科は演習画面（RikaPractice）が原典どおりの答えを出す作りなので、
+         * 対戦のリザルトからその画面へ渡す（＝答えはそちらで見せる）。
+         */
+      });
+      taken += 1;
+    }
+
+    /**
+     * ============================================================
+     * ★★ グループキーが足りているかを必ず確かめる ★★
+     * ============================================================
+     *
+     * ■ ここで何が起きたのか（実際に踏んだ罠）
+     *   本番の抽選（src/battle/data/battle.ts の drawQuestionIds）は
+     *
+     *       groupById.set(q.id, `${q.chapterId}:${q.subQuestionId}`)
+     *
+     *   をグループキーにして、★同じキーの問題は1試合に1問しか出さない★。
+     *   これは「1つの小問から語句選択版と文字パネル版を作っている」
+     *   本体のプールで、同じ問いが1試合に2回出るのを防ぐための仕組み。
+     *
+     *   ところが受け取った理科のデータは、全1117問が
+     *   subQuestionId = 1 だった（原典に小問番号が無いため）。
+     *   そのまま入れると 章 × 1 の31グループにしかならず、
+     *   ★1117問あるのに1試合10問すら組めない★
+     *   （実測では 1 問しか並ばなかった）。
+     *
+     * ■ なぜ「件数」の検査では気づけないのか
+     *   収録数・形式・選択肢・答えの位置はすべて正しかった。
+     *   壊れていたのは「1問1問が別の問題であること」を
+     *   本体に伝える欄だけで、これは1問ずつ見ても分からない。
+     *   ★プール全体を見て初めて分かる種類の欠陥★ なので、
+     *   1問ずつの検査とは別にここで見る。
+     *
+     * ■ 落とさずに知らせる理由
+     *   ここで止めても直せるのは相手側なので、生成は続ける。
+     *   ただし ★対戦が成立しない★ という重い話なので、
+     *   見逃せない形で警告を出す。
+     */
+    {
+      const groups = new Set<string>();
+      for (const q of out) {
+        if (q.subject !== subject) continue;
+        groups.add(`${q.chapterId}:${q.subQuestionId}`);
+      }
+      const rule = defaultRuleOf(subject);
+      if (rule.enabled && groups.size < rule.questionCount) {
+        console.log(
+          `[gen:battle-pool] ★★警告★★ ${file}: ` +
+            `${taken} 問あるのに、章ID:小問ID の組が ${groups.size} 種しかない。\n` +
+            `  本番の抽選は同じ組から1問しか出さないため、` +
+            `1試合 ${rule.questionCount} 問を組めない（${groups.size} 問で打ち切られる）。\n` +
+            `  → ★1問ごとに違う subQuestionId を持たせること★` +
+            `（原典に小問番号が無い場合は問題番号をそのまま使う）。`,
+        );
+      }
+    }
+
+    console.log(
+      `[gen:battle-pool] 外部プール ${file}: ${taken} 問を取り込み` +
+        `${dropped.length > 0 ? ` / ★${dropped.length} 問を捨てた★` : ''}` +
+        `${raw.source ? `（原典: ${raw.source}）` : ''}`,
+    );
+    for (const note of dropped.slice(0, 20)) console.log(`  - ${note}`);
+    if (dropped.length > 20) console.log(`  - …ほか ${dropped.length - 20} 件`);
+  }
+
+  return out;
+}
+
 function build(): { pool: PoolQuestion[]; stats: Record<string, Record<string, number>> } {
   const rows = collectAll();
 
@@ -1468,6 +1720,44 @@ function build(): { pool: PoolQuestion[]; stats: Record<string, Record<string, n
     if (dropNotes.length > 0) {
       console.log(`[gen:battle-pool] ★手書きのうち ${dropNotes.length} 問を落とした★`);
       for (const note of dropNotes) console.log(`  - ${note}`);
+    }
+  }
+
+  /**
+   * ===================================================================
+   * 外部プール（src/battle/data/external/*.json）を合流させる
+   * ===================================================================
+   *
+   * ★ここで足す理由★
+   * このあと main() が「pool を教科ごとに分けて」ファイルと索引を作る。
+   * その手前で足しておけば、外部教科も他の教科と同じ扱いで
+   *   ・pool.<教科>.generated.ts
+   *   ・answer.<教科>.generated.ts
+   *   ・battlePool.ts（loadPool の switch / POOL_COUNTS / POOL_FORMAT_COUNTS）
+   * が自動でそろう。手作業の置き忘れが起きない。
+   *
+   * ★機械生成の加工は一切かけない★
+   * 外部プールは向こう側で選択肢まで作り終えているので、
+   * 誤答の借用や凡例の復元（このスクリプトの前半の処理）を通す必要がない。
+   * 通すと、向こうが意図して並べた選択肢を壊すおそれがある。
+   */
+  {
+    // ここまでに入っている全出題のID（機械生成＋手書き）
+    const seenAll = new Set(pool.map((q) => q.id));
+    for (const q of loadExternalPools()) {
+      /**
+       * ★IDの重複は必ず捨てる★
+       * 部屋には questionIds しか保存しないので、同じIDが2問あると
+       * 対戦相手の端末と違う問題が表示され、対戦が成立しない。
+       */
+      if (seenAll.has(q.id)) {
+        bump(q.subject, 'external_dup_id');
+        console.log(`[gen:battle-pool] ★外部プールの id が重複したので捨てた★ ${q.id}`);
+        continue;
+      }
+      seenAll.add(q.id);
+      pool.push(q);
+      bump(q.subject, `external_${q.format}`);
     }
   }
 
@@ -2001,8 +2291,19 @@ function main(): void {
     bySubject.get(q.subject)!.push(q);
   }
 
-  // 教科の並びは SUBJECTS の定義順（生成の再現性のため）
-  const subjects = SUBJECTS.map((s) => s.id).filter((id) => bySubject.has(id));
+  /**
+   * 教科の並びは SUBJECTS の定義順（生成の再現性のため）。
+   *
+   * ★そのあとに「外部プールだけの教科」を足す★
+   * 高校入試理科（rika）は本体の教科データを持たないので SUBJECTS にいない。
+   * ここで拾い落とすと、プールは作られるのに索引（battlePool.ts）に載らず、
+   * loadPool() から読めない孤立ファイルになる。
+   * 並びは最後に固めるので、既存教科の順番（＝画面の並び）は動かない。
+   */
+  const known: string[] = SUBJECTS.map((s) => String(s.id)).filter((id) => bySubject.has(id));
+  const knownSet = new Set(known);
+  const extra = [...bySubject.keys()].filter((id) => !knownSet.has(id)).sort();
+  const subjects: string[] = [...known, ...extra];
   const counts: Record<string, number> = {};
   /** 教科 → 形式 → 件数。索引ファイルの POOL_FORMAT_COUNTS になる */
   const formatCounts: Record<string, Record<string, number>> = {};

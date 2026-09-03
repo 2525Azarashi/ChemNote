@@ -108,7 +108,7 @@ describe('教科名（表示名）の出どころ', () => {
     );
   });
 
-  it('subjectLabels.ts は索引しか読まない（問題データへ辿れない）', () => {
+  it('subjectLabels.ts は葉しか読まない（問題データへ辿れない）', () => {
     const code = stripComments(readFileSync(join(SRC, 'data/subjectLabels.ts'), 'utf-8'));
     const froms = [...code.matchAll(/from\s+'([^']+)'/g)].map((m) => m[1]);
 
@@ -117,15 +117,53 @@ describe('教科名（表示名）の出どころ', () => {
       (m) => m[1],
     );
 
-    expect(
-      valueImports,
-      '教科名を引くためのファイルが索引以外を読み込んでいる。\n' +
-        '見つかった読み込み: ' +
-        froms.join(' , ') +
-        '\n' +
-        'chapterIndex.generated.ts（何も import しない葉）以外を値として読むと、\n' +
-        '教科名を1つ引くだけで問題データ本体まで読み込まれる恐れがある。',
-    ).toEqual(['./chapterIndex.generated']);
+    /**
+     * 値として読んでよい相手。
+     *
+     * ★この門が守りたいのは「ファイル名」ではなく★
+     * ★「教科名を1つ引くだけで問題データ本体まで読み込まれないこと」★
+     * なので、判定の要点は「相手が葉かどうか」である。
+     * そのため許可した相手が本当に葉であることを、下でもう一度検査する
+     * （名前を並べるだけだと、その相手が重くなったときに気づけない）。
+     *
+     *   ./chapterIndex.generated … 教科名の対応表のもと（生成物）
+     *   ./externalSubjects        … 本体に教科データを持たない教科の
+     *                               教科名（高校入試 理科など）。
+     *                               索引には載らないので、こちらから引く。
+     */
+    const ALLOWED_LEAVES = ['./chapterIndex.generated', './externalSubjects'];
+
+    for (const target of valueImports) {
+      expect(
+        ALLOWED_LEAVES,
+        '教科名を引くためのファイルが、許可されていない相手を読み込んでいる。\n' +
+          '見つかった読み込み: ' +
+          froms.join(' , ') +
+          '\n' +
+          '値として読んでよいのは★何も import しない葉★だけ。\n' +
+          'それ以外を読むと、教科名を1つ引くだけで\n' +
+          '問題データ本体（約2.6MB）まで読み込まれる恐れがある。',
+      ).toContain(target);
+    }
+
+    // ★許可した相手が本当に葉であることを確かめる★
+    // ここを省くと「許可リストに載っているから」という理由だけで
+    // 重いファイルを読めるようになってしまい、門の意味が無くなる。
+    for (const leaf of ALLOWED_LEAVES) {
+      const leafPath = join(SRC, 'data', `${leaf.replace('./', '')}.ts`);
+      const leafCode = stripComments(readFileSync(leafPath, 'utf-8'));
+      const leafValueImports = [
+        ...leafCode.matchAll(/^import\s+(?!type\b)[^;]*?from\s+'([^']+)'/gm),
+      ].map((m) => m[1]);
+
+      expect(
+        leafValueImports,
+        `${leaf} が値の import を持っている。\n` +
+          'このファイルは「教科名を引くための軽い入口」として\n' +
+          'subjectLabels.ts から読まれるので、★何も import しない葉★' +
+          'でなければならない。',
+      ).toEqual([]);
+    }
   });
 
   it('★allChapters.ts に重い SUBJECT_LABELS が復活していない★', () => {

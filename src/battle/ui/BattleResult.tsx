@@ -57,6 +57,8 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
+// 外部教科（本体に教科データを持たない教科）の単元名
+import { externalChapterTitleOf } from '../../data/externalSubjects';
 import type { SubjectKey } from '../../data/allChapters';
 import type {
   BattlePlayerScore,
@@ -187,10 +189,19 @@ export function BattleResult({
    * 全問正解した試合でも「もっとやる」入口は要る。
    * ただし ★間違えた章を先に並べる★（下の sort）。いま直したいのはそこだから。
    */
-  /** 章ID → 章名（軽い索引から作る。無い章は章IDをそのまま出す） */
+  /**
+   * 章ID → 章名（軽い索引から作る。無い章は章IDをそのまま出す）
+   *
+   * ★外部教科（本体に教科データを持たない教科）もここで拾う★
+   * 高校入試 理科は本体の索引に載らないため、拾わないと
+   * ★「ch01 を演習する」という生の記号がそのまま画面に出る★。
+   * 何の単元なのか生徒に伝わらないので、外部教科の登録簿から名前を引く。
+   */
   const chapterTitleOf = (chapterId: string): string => {
     const entry = getChapterIndexOfSubject(subject).find((c) => c.id === chapterId);
-    return entry?.abstractTitle || entry?.realTitle || entry?.title || chapterId;
+    const known = entry?.abstractTitle || entry?.realTitle || entry?.title;
+    if (known) return known;
+    return externalChapterTitleOf(subject, chapterId) || chapterId;
   };
 
   const chapterRows = (() => {
