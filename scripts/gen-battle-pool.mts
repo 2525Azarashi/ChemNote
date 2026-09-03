@@ -266,6 +266,14 @@ interface PoolQuestion {
   panelOrder: number[];
   timeLimit: number;
   imageUrl?: string;
+  /**
+   * ★試合後にだけ出す「答え＋ひと言の理由」（請求⑦-A）★
+   * 手書き問題（authored）だけが持つ。機械生成は空文字。
+   * ★出題プール（pool.*.generated.ts）には書き出さない。★
+   *   別ファイル（answer.*.generated.ts）に分けて出す。理由は
+   *   renderAnswerFile() のコメントに書いた。
+   */
+  oneLine?: string;
 }
 
 interface RawSub {
@@ -1594,6 +1602,86 @@ function fileNameOf(subject: string): string {
   return `pool.${subject}.generated.ts`;
 }
 
+/** 教科ID → 解答ファイル（試合後に読む）の名前 */
+function answerFileNameOf(subject: string): string {
+  return `answer.${subject}.generated.ts`;
+}
+
+/**
+ * ===================================================================
+ * 解答ファイル（answer.<教科>.generated.ts）を出す
+ * ===================================================================
+ *
+ * ■ ★なぜ出題プールと同じファイルに入れないのか★
+ *
+ * 出題プール（pool.*.generated.ts）は ★対戦が始まる前に★ 読み込まれる。
+ * そこに「答え＋ひと言の理由（oneLine）」を混ぜると、
+ * 開発者ツールのネットワークタブを開くだけで全問の答えが読める。
+ * この対戦はレートが動くので、それは不正の入口になる。
+ *
+ * 出題プールが correctAnswer を持たない（answerIndex しか持たない）のは
+ * まさにこの理由であり、oneLine は「答えそのもの」なので同じ扱いにする。
+ *
+ * ■ ★では、いつ読むのか★
+ *
+ * 試合が終わったあと、リザルト画面が出たときだけ読む（動的 import）。
+ * 試合が終わっていればもう答えを隠す意味はないし、
+ * 逆に隠したままにすると「対戦 ⇒ 演習」の橋がかからない。
+ *
+ * ■ サイズ
+ *
+ * 化学基礎で約 120KB。リザルト画面が出てから落ちてくるので、
+ * 対戦開始までの待ち時間には一切影響しない。
+ *
+ * ■ 中身の形
+ *
+ * [出題ID, oneLine] の2要素タプルの配列。
+ * oneLine を持つ問題（＝手書き問題）だけを入れる。
+ * 機械生成の問題は元データに1行解答が無いので入らない。
+ */
+function renderAnswerFile(subject: string, pool: PoolQuestion[]): string {
+  const rows = pool
+    .filter((q) => (q.oneLine || '').trim().length > 0)
+    .map((q) => `  ${JSON.stringify([q.id, q.oneLine])},`)
+    .join('\n');
+  const count = pool.filter((q) => (q.oneLine || '').trim().length > 0).length;
+
+  return `/**
+ * ===================================================================
+ * 対戦の解答（試合後に出す1行解答）: ${subject}（自動生成・手で編集しないこと）
+ * ===================================================================
+ *
+ * ★このファイルは scripts/gen-battle-pool.mts が生成する。★
+ * 手で書き換えても次の生成で消える。直したいときは
+ * src/battle/data/authored/*.json の oneLine を直してから
+ *
+ *     npm run gen:battle-pool
+ *
+ * を実行すること。
+ *
+ * -------------------------------------------------------------------
+ * ■ ★これは出題プールとは別のファイルである★
+ * -------------------------------------------------------------------
+ * 出題プール（pool.${subject}.generated.ts）は対戦が始まる前に読み込まれる。
+ * そこに答えを混ぜると、通信を覗くだけで全問の答えが分かってしまう。
+ * このファイルは ★試合が終わってリザルト画面が出たときだけ★ 読み込む。
+ *
+ * -------------------------------------------------------------------
+ * ■ 収録数: ${count} 問（oneLine を持つ問題だけ）
+ * -------------------------------------------------------------------
+ * 機械生成の問題は元データに1行解答が無いので入っていない。
+ * 画面側は「無い問題は答えの行を出さない」作りにしてある。
+ *
+ * ■ このファイルは何も import しない（型すら import しない）。
+ */
+
+/** [出題ID, 試合後に出す1行解答] */
+export const ANSWERS: readonly (readonly [string, string])[] = [
+${rows}
+];
+`;
+}
+
 /**
  * 教科ファイルをまとめる索引を作る。
  *
@@ -1607,6 +1695,7 @@ function renderIndexFile(
   subjects: string[],
   counts: Record<string, number>,
   formatCounts: Record<string, Record<string, number>>,
+  answerCounts: Record<string, number>,
 ): string {
   const cases = subjects
     .map(
@@ -1614,6 +1703,16 @@ function renderIndexFile(
         `    case '${s}':\n      return (await import('./${fileNameOf(s).replace(/\.ts$/, '')}')).POOL;`,
     )
     .join('\n');
+
+  /** 解答ファイル（試合後だけ読む）の分岐 */
+  const answerCases = subjects
+    .map(
+      (s) =>
+        `    case '${s}':\n      return (await import('./${answerFileNameOf(s).replace(/\.ts$/, '')}')).ANSWERS;`,
+    )
+    .join('\n');
+
+  const answerCountLines = subjects.map((s) => `  ${s}: ${answerCounts[s] || 0},`).join('\n');
 
   const countLines = subjects.map((s) => `  ${s}: ${counts[s] || 0},`).join('\n');
 
@@ -1809,6 +1908,70 @@ export async function poolIdsOf(
 export function loadedPool(subject: string): readonly BattleQuestion[] {
   return cache.get(subject) || [];
 }
+
+// ============================================================
+// 試合後の解答（請求⑦-A）
+// ============================================================
+
+/**
+ * 教科ごとの「1行解答を持つ問題」の数。
+ * リザルト画面が「この教科は解答が出ます／出ません」を
+ * データ本体を読まずに判断するために置いてある。
+ */
+export const ANSWER_COUNTS: Readonly<Record<string, number>> = {
+${answerCountLines}
+};
+
+async function loadAnswerRaw(subject: string): Promise<readonly (readonly [string, string])[]> {
+  switch (subject) {
+${answerCases}
+    default:
+      return [];
+  }
+}
+
+/** 読み込み済みの解答（教科ID → 出題ID → 1行解答） */
+const answerCache = new Map<string, ReadonlyMap<string, string>>();
+const answerInflight = new Map<string, Promise<ReadonlyMap<string, string>>>();
+
+/**
+ * その教科の「試合後の1行解答」を読み込む。
+ *
+ * ★★ここは「試合が終わってから」しか呼んではいけない★★
+ *
+ * 出題プール（loadPool）と別のファイルに分けているのは、
+ * 対戦前に答えが端末に落ちてくるのを防ぐためである。
+ * 対戦画面や待機画面からこれを呼ぶと、その意味がまるごと消える。
+ * 呼び出しているのはリザルト画面（BattleResult）だけであり、
+ * tests/battleAnswers.test.ts がそれを検査している。
+ *
+ * 解答が1問も無い教科（機械生成だけの教科）では空の Map が返る。
+ * 画面側は「無ければ答えの行を出さない」作りなので、それで正しく動く。
+ */
+export async function loadBattleAnswers(
+  subject: string,
+): Promise<ReadonlyMap<string, string>> {
+  const cached = answerCache.get(subject);
+  if (cached) return cached;
+
+  const running = answerInflight.get(subject);
+  if (running) return running;
+
+  const promise = loadAnswerRaw(subject)
+    .then((rows) => {
+      const map: ReadonlyMap<string, string> = new Map(rows.map(([id, one]) => [id, one]));
+      answerCache.set(subject, map);
+      answerInflight.delete(subject);
+      return map;
+    })
+    .catch((error) => {
+      answerInflight.delete(subject);
+      throw error;
+    });
+
+  answerInflight.set(subject, promise);
+  return promise;
+}
 `;
 }
 
@@ -1843,8 +2006,12 @@ function main(): void {
   const counts: Record<string, number> = {};
   /** 教科 → 形式 → 件数。索引ファイルの POOL_FORMAT_COUNTS になる */
   const formatCounts: Record<string, Record<string, number>> = {};
+  /** 教科 → 1行解答を持つ問題の数（索引の ANSWER_COUNTS になる） */
+  const answerCounts: Record<string, number> = {};
   let totalBytes = 0;
   const perFile: Array<[string, number, number]> = [];
+  /** 解答ファイルの合計バイト数（対戦前には落ちてこない分） */
+  let answerBytes = 0;
 
   for (const subject of subjects) {
     const list = bySubject.get(subject)!;
@@ -1863,9 +2030,19 @@ function main(): void {
     const bytes = Buffer.byteLength(source, 'utf8');
     totalBytes += bytes;
     perFile.push([subject, list.length, bytes]);
+
+    /**
+     * ★解答（oneLine）は必ず別ファイルに出す★
+     * 出題プールに混ぜると対戦前に答えが端末に落ちる。
+     * 理由は renderAnswerFile() のコメントに書いた。
+     */
+    answerCounts[subject] = list.filter((q) => (q.oneLine || '').trim().length > 0).length;
+    const answerSource = renderAnswerFile(subject, list);
+    writeFileSync(resolve(OUT_DIR, answerFileNameOf(subject)), answerSource, 'utf8');
+    answerBytes += Buffer.byteLength(answerSource, 'utf8');
   }
 
-  const indexSource = renderIndexFile(subjects, counts, formatCounts);
+  const indexSource = renderIndexFile(subjects, counts, formatCounts, answerCounts);
   writeFileSync(resolve(OUT_DIR, 'battlePool.ts'), indexSource, 'utf8');
   totalBytes += Buffer.byteLength(indexSource, 'utf8');
 
@@ -1881,6 +2058,16 @@ function main(): void {
   }
   const kanaTotal = Object.values(formatCounts).reduce((s, f) => s + (f.kana || 0), 0);
   console.log(`[gen:battle-pool] うち五十音キーボード（みんはや方式）: ${kanaTotal} 問`);
+
+  /**
+   * ★試合後の解答（請求⑦-A）の件数を必ず表示する★
+   * ここが 0 のまま気づかないと、リザルト画面に答えが1問も出ない。
+   */
+  const answerTotal = Object.values(answerCounts).reduce((s, n) => s + n, 0);
+  console.log(
+    `[gen:battle-pool] 試合後の1行解答: ${answerTotal} 問 / ` +
+      `${Math.round(answerBytes / 1024)}KB（★対戦前には読み込まれない別ファイル★）`,
+  );
 
   /**
    * ★手書き問題の合流結果を必ず表示する★

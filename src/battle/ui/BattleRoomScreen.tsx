@@ -44,12 +44,15 @@ export function BattleRoomScreen({
   roomId,
   onExit,
   onRematch,
+  onPractice,
 }: {
   roomId: string;
   /** 対戦メニューに戻る。message があれば入口に伝える */
   onExit: (message?: string) => void;
   /** 同じ設定でもう1回（フレンド戦のみ渡す） */
   onRematch?: (subject: string) => void;
+  /** ★リザルトの「この単元を演習する」（請求⑦-A）★ そのまま下に渡すだけ */
+  onPractice?: (subject: string, chapterId: string) => void;
 }) {
   const uid = auth.currentUser?.uid || '';
   const {
@@ -179,6 +182,7 @@ export function BattleRoomScreen({
         maskOpponent={!room.joinCode}
         onRematch={onRematch && room.joinCode ? () => onRematch(room.subject) : undefined}
         onExit={() => onExit()}
+        onPractice={onPractice}
       />
     );
   }

@@ -1080,6 +1080,49 @@ export default function App() {
     }
   };
 
+  /**
+   * ★対戦のリザルトから、その単元の演習へ移る（請求⑦-A）★
+   *
+   * -------------------------------------------------------------------
+   * ■ これが「① 対戦 ⇒ ② 演習」の橋である
+   * -------------------------------------------------------------------
+   * 対戦は「表側＝楽しい」を担い、演習は「裏側＝つまずきを直す」を担う。
+   * 負けた直後・間違えた直後がいちばん学ぶ気になっている瞬間なので、
+   * リザルト画面からワンタップでその単元の演習に入れるようにする。
+   *
+   * -------------------------------------------------------------------
+   * ■ ★教科も一緒に切り替える理由★
+   * -------------------------------------------------------------------
+   * 対戦の教科は、アプリで選んでいる教科（selectedSubject）と違うことがある
+   * （化学基礎を選んだまま、対戦だけ生物基礎で遊ぶ、など）。
+   * 章IDだけ渡して演習に飛ばすと、教科が食い違って
+   * ★単元選択に戻ったときに別教科の一覧が出る★ という迷子になる。
+   * 章と教科は必ずセットで切り替える。
+   *
+   * -------------------------------------------------------------------
+   * ■ 演習モード（practice）に固定する理由
+   * -------------------------------------------------------------------
+   * 対戦で出しているのは演習問題（practiceProblems）を割ったものなので、
+   * 対応する問題があるのは演習モードである。
+   * ミニテストに飛ばすと「対戦で間違えた問題が出てこない」ことになる。
+   * 既存の復習ノートからの遷移（handleReviewNote）と同じ扱いにしている。
+   */
+  const handlePracticeFromBattle = (subject: string, chapterId: string) => {
+    /**
+     * ★知らない教科IDが来たら教科は変えない★
+     * 対戦の教科IDは Firestore の部屋データから来るので、
+     * 将来アプリ側で公開をやめた教科の文字列が届くことがありうる。
+     * 既存の復元処理（selectedSubject の useState）と同じ isSubjectId で見る。
+     */
+    if (isSubjectId(subject)) {
+      setSelectedSubject(subject as SubjectId);
+    }
+    setAppMode('practice');
+    // 画面の切り替え（setAppState('quiz')）と答案の初期化は
+    // handleSelectChapter が中でやるので、ここでは呼ぶだけでよい。
+    handleSelectChapter(chapterId, 0, false);
+  };
+
   const handleFinishQuiz = (answers: Record<string, string>, result?: any) => {
     setQuizAnswers(answers);
     setLastQuizResult(result || null);
@@ -1372,6 +1415,8 @@ export default function App() {
               <BattleMode
                 onExit={() => setAppState('home')}
                 onRequireLogin={() => setAppState('onboarding')}
+                /* ★対戦 ⇒ 演習 の橋（請求⑦-A）★ */
+                onPractice={handlePracticeFromBattle}
               />
             )}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}

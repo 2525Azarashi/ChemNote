@@ -199,3 +199,83 @@ export async function poolIdsOf(
 export function loadedPool(subject: string): readonly BattleQuestion[] {
   return cache.get(subject) || [];
 }
+
+// ============================================================
+// 試合後の解答（請求⑦-A）
+// ============================================================
+
+/**
+ * 教科ごとの「1行解答を持つ問題」の数。
+ * リザルト画面が「この教科は解答が出ます／出ません」を
+ * データ本体を読まずに判断するために置いてある。
+ */
+export const ANSWER_COUNTS: Readonly<Record<string, number>> = {
+  chemistry_basic: 1524,
+  chemistry: 0,
+  english_listening: 0,
+  biology_basic: 0,
+  english_grammar: 0,
+  geography: 0,
+};
+
+async function loadAnswerRaw(subject: string): Promise<readonly (readonly [string, string])[]> {
+  switch (subject) {
+    case 'chemistry_basic':
+      return (await import('./answer.chemistry_basic.generated')).ANSWERS;
+    case 'chemistry':
+      return (await import('./answer.chemistry.generated')).ANSWERS;
+    case 'english_listening':
+      return (await import('./answer.english_listening.generated')).ANSWERS;
+    case 'biology_basic':
+      return (await import('./answer.biology_basic.generated')).ANSWERS;
+    case 'english_grammar':
+      return (await import('./answer.english_grammar.generated')).ANSWERS;
+    case 'geography':
+      return (await import('./answer.geography.generated')).ANSWERS;
+    default:
+      return [];
+  }
+}
+
+/** 読み込み済みの解答（教科ID → 出題ID → 1行解答） */
+const answerCache = new Map<string, ReadonlyMap<string, string>>();
+const answerInflight = new Map<string, Promise<ReadonlyMap<string, string>>>();
+
+/**
+ * その教科の「試合後の1行解答」を読み込む。
+ *
+ * ★★ここは「試合が終わってから」しか呼んではいけない★★
+ *
+ * 出題プール（loadPool）と別のファイルに分けているのは、
+ * 対戦前に答えが端末に落ちてくるのを防ぐためである。
+ * 対戦画面や待機画面からこれを呼ぶと、その意味がまるごと消える。
+ * 呼び出しているのはリザルト画面（BattleResult）だけであり、
+ * tests/battleAnswers.test.ts がそれを検査している。
+ *
+ * 解答が1問も無い教科（機械生成だけの教科）では空の Map が返る。
+ * 画面側は「無ければ答えの行を出さない」作りなので、それで正しく動く。
+ */
+export async function loadBattleAnswers(
+  subject: string,
+): Promise<ReadonlyMap<string, string>> {
+  const cached = answerCache.get(subject);
+  if (cached) return cached;
+
+  const running = answerInflight.get(subject);
+  if (running) return running;
+
+  const promise = loadAnswerRaw(subject)
+    .then((rows) => {
+      const map: ReadonlyMap<string, string> = new Map(rows.map(([id, one]) => [id, one]));
+      answerCache.set(subject, map);
+      answerInflight.delete(subject);
+      return map;
+    })
+    .catch((error) => {
+      answerInflight.delete(subject);
+      throw error;
+    });
+
+  answerInflight.set(subject, promise);
+  return promise;
+}

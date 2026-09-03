@@ -76,6 +76,13 @@ const PROMPT_MAX = 150;
 /** 選択肢カードに収まる長さ */
 const OPTION_MAX = 60;
 
+/**
+ * 試合後に出す1行解答の上限。
+ * 検証器（verify-authored-battle.mts の ONELINE_MAX）と同じ 120。
+ * ここを超えるものは落とさずに末尾を切る（解答が出ないより短いほうがよい）。
+ */
+const ONELINE_MAX = 120;
+
 // ============================================================
 // 変換の結果
 // ============================================================
@@ -99,6 +106,19 @@ export interface AuthoredConverted {
   answerIndex: number;
   panelOrder: number[];
   timeLimit: number;
+  /**
+   * ★試合後にだけ出す「答え＋ひと言の理由」（請求⑦-A）★
+   *
+   * ここは ★出題プール本体には入れない★。
+   * 入れると、プールを配った時点で全問の答えが読めてしまう
+   * （このファイル冒頭の correctAnswer を持たない理由と同じ）。
+   * 生成器は出題プールと別のファイル（answer.<教科>.generated.ts）に分けて出し、
+   * 画面は ★試合が終わってから★ そのファイルだけを動的に読む。
+   *
+   * 空文字になりうる（古い JSON が oneLine を持っていない場合）。
+   * 空のときは画面側が「ひと言の理由」の行を出さない。
+   */
+  oneLine: string;
 }
 
 /**
@@ -218,6 +238,14 @@ export function convertAuthoredQuestion(q: AuthoredQuestion): AuthoredConvertRes
     prompt,
     label,
     timeLimit: clampTime(q.timeLimit),
+    /**
+     * ★ここで落とさない（空でも通す）★
+     * oneLine は検証器（verify:authored）が 10〜120 文字で必須にしている欄だが、
+     * 検証器を通さずに置かれた古い JSON もありうる。
+     * 「解答が出ない」は出題できないほどの欠陥ではないので、
+     * 空文字にして出題そのものは生かす（画面側が行を出さないだけ）。
+     */
+    oneLine: trimText(q.oneLine || '', ONELINE_MAX),
   };
 
   // ------------------------------------------------------------
