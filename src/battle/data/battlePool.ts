@@ -28,7 +28,7 @@ import type { BattleAnswerFormat, BattleQuestion } from '../core/types';
 
 /** 教科ごとの収録数（UIで「この教科は◯問あります」と出すために使う） */
 export const POOL_COUNTS: Readonly<Record<string, number>> = {
-  chemistry_basic: 733,
+  chemistry_basic: 1455,
   chemistry: 10,
   english_listening: 146,
   biology_basic: 62,
@@ -58,7 +58,7 @@ export const POOL_COUNTS: Readonly<Record<string, number>> = {
 export const POOL_FORMAT_COUNTS: Readonly<
   Record<string, Readonly<Partial<Record<BattleAnswerFormat, number>>>>
 > = {
-  chemistry_basic: { choice4: 571, choice: 134, kana: 28 },
+  chemistry_basic: { choice4: 1297, choice: 136, kana: 22 },
   chemistry: { choice: 9, kana: 1 },
   english_listening: { choice4: 146 },
   biology_basic: { choice4: 1, choice: 21, kana: 40 },
