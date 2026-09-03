@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy } from 'lucide-react';
+import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy, Swords } from 'lucide-react';
 import { Home } from './components/Home';
 import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
@@ -1646,6 +1646,38 @@ export default function App() {
                   <BookOpen className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">学習</span>
                 </button>
+
+                {/* ===== 対戦（オンライン） =====
+
+                    ★ナビに足した理由★
+                      利用者の指示「オンラインをメインにするUIにしていかんと
+                      だめよね？…ボタンの配置変えるぐらい」。
+                      それまで対戦への入口は★ホームの小カード1つだけ★で、
+                      ナビには席が無かった。つまり
+                        「対戦したい」→ ホームへ戻る → 下までスクロール → 押す
+                      という道しかなく、学習中に思い立っても2手かかる。
+                      ナビはどの画面からでも1タップで届く唯一の場所なので、
+                      主機能はここに席を持っていなければならない。
+
+                    ★ランキングより前に置いている理由★
+                      ランキングは「対戦した結果」を見る画面なので、
+                      対戦より先に並んでいると順序が逆になる。
+
+                    ★フラグで消せるようにしてある★
+                      FEATURES.battle が false のときは席ごと消える。
+                      ホームのカード（Home.tsx の主CTA）と同じ条件なので、
+                      片方だけ残って「見えるのに入れない」にはならない。 */}
+                {FEATURES.battle && (
+                <button
+                  onClick={() => setAppState('battle')}
+                  aria-label="オンライン対戦へ移動"
+                  aria-current={appState === 'battle' ? 'page' : undefined}
+                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'battle' ? 'text-[#2E86C1] font-bold' : 'text-[#4B5563]/60 hover:text-[#2E86C1]/80'}`}
+                >
+                  <Swords className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
+                  <span className="text-[10px] tracking-wider font-modern">対戦</span>
+                </button>
+                )}
 
                 {/* ★ここは「4箇所」のうちの1番目（ナビ）★
                     ランキングは現在公開中（FEATURES.ranking === true）なので

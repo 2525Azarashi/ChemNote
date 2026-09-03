@@ -827,20 +827,86 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           </motion.div>
         </div>
 
-        {/* ===== メインCTA：学習を始める（空色グラデのワイドピル） ===== */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} /* ★order-2：スマホでは進捗カードより前に出す★
-             これで「学習を始める」は常に画面上部＝1画面目に居る。
+        {/* =================================================================
+            メインCTA：対戦（1番目） ＋ 学習（2番目）
+            =================================================================
+
+            ★並びを入れ替えた理由★
+              利用者の指示：「オンラインをメインにするUIにしていかんとだめよね？
+              取り組めるところから頼む　でも問題をなくすとかはダメだよ
+              ボタンの配置変えるぐらい」
+
+              それまでのホームは
+                主CTA        ＝「学習を始める」（幅いっぱいのピル）
+                対戦への入口  ＝ 下のセカンダリ小カードの3番目
+              になっていた。対戦は
+                ・相手が要る（＝思い立ったときにすぐ押せないと成立しない）
+                ・1試合が短い（＝入口が遠いと割に合わない）
+              性質の機能なので、主動線から2段下がっているのは構造の誤り。
+
+            ★「問題をなくすのはダメ」を守っている点★
+              学習の入口は消していない。同じ位置に、同じ文言（学習を始める／
+              続きから開く）で残してある。変えたのは
+                ・順番（対戦を先に）
+                ・大きさの比（対戦を主役の大きさ、学習を並の大きさ）
+              だけで、行ける場所は1つも減っていない。
+              下のセカンダリからは対戦カードを外したが、これは
+              ★ここに昇格したぶんの重複を消しただけ★（入口の数は同じ）。
+
+            ★対戦が使えないときは学習が主役に戻る★
+              onBattle が渡されない（FEATURES.battle が false／ビルドから
+              外した）ときは、対戦の枠を描かず、学習のボタンを従来どおりの
+              主CTA の大きさで出す。「見えるのに入れない」を作らない。 */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }}
+          /* ★order-2：スマホでは進捗カードより前に出す★
+             これで主CTA は常に画面上部＝1画面目に居る。
              lg 以上は order-4 で従来の位置（カードの下）に戻す。 */
-          className="order-2 lg:order-4 shrink-0 mt-0 md:mt-6 lg:mt-5 mb-3 lg:mb-0">
+          className="order-2 lg:order-4 shrink-0 mt-0 md:mt-6 lg:mt-5 mb-3 lg:mb-0 space-y-2 md:space-y-2.5">
+
+          {/* --- 1番目：対戦（主役） ---
+              色は対戦モードの中と同じ青系（#2E86C1 系）にしてある。
+              ホームのローズ色のままだと「学習の続き」に見えて、
+              いま押しているものが別の機能だと分からない。
+              入口から中まで色でつながるようにする。 */}
+          {onBattle && (
+            <button
+              onClick={onBattle}
+              aria-label="オンライン対戦を開く"
+              className="battle-sheen relative w-full overflow-hidden bg-gradient-to-r from-[#3D9BD9] to-[#2E86C1] text-white py-3.5 md:py-5 lg:py-4 px-5 md:px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#3691D2] hover:to-[#2678AF] transition-colors shadow-[0_14px_30px_-10px_rgba(46,134,193,0.6)] min-h-[60px] md:min-h-[68px] lg:min-h-[62px]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
+                  <Swords className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />
+                </div>
+                <div className="min-w-0 text-left">
+                  <div className="font-modern tracking-widest text-[16px] md:text-[18px] leading-tight">オンライン対戦</div>
+                  {/* 何ができるかを1行で。人数や待ち時間は入口では約束できないので
+                      「すぐ始まる」とは書かない（待たされたときに嘘になる）。 */}
+                  <div className="text-[11px] md:text-xs text-white/80 font-modern mt-0.5 truncate">
+                    友だちと1対1で早解き・全国とレート戦
+                  </div>
+                </div>
+              </div>
+              <ArrowRight className="w-6 h-6 text-white/70 group-hover:text-white transition-all group-hover:translate-x-1 shrink-0" aria-hidden="true" />
+            </button>
+          )}
+
+          {/* --- 2番目：学習（残す。消していない） ---
+              対戦が出ているときは一段控えめな高さにして主従を作る。
+              対戦が無いときは従来どおりの主CTA の大きさに戻す。 */}
           <button
             onClick={onStart}
-            className="w-full bg-gradient-to-r from-[#E89AAF] to-[#D98AA0] text-white py-3 md:py-5 lg:py-3.5 px-5 md:px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#E38EA6] hover:to-[#CC7890] transition-colors shadow-[0_12px_28px_-10px_rgba(217,138,160,0.55)] min-h-[52px] md:min-h-[60px] lg:min-h-[54px]"
+            className={`w-full bg-gradient-to-r from-[#E89AAF] to-[#D98AA0] text-white px-5 md:px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#E38EA6] hover:to-[#CC7890] transition-colors shadow-[0_12px_28px_-10px_rgba(217,138,160,0.55)] ${
+              onBattle
+                ? 'py-2.5 md:py-3.5 lg:py-3 min-h-[48px] md:min-h-[54px] lg:min-h-[50px]'
+                : 'py-3 md:py-5 lg:py-3.5 min-h-[52px] md:min-h-[60px] lg:min-h-[54px]'
+            }`}
           >
             <div className="flex items-center gap-3">
-              <BookOpen className="w-6 h-6" aria-hidden="true" />
-              <span className="font-modern tracking-widest text-[16px] md:text-[17px]">{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</span>
+              <BookOpen className={onBattle ? 'w-5 h-5 md:w-6 md:h-6' : 'w-6 h-6'} aria-hidden="true" />
+              <span className={`font-modern tracking-widest ${onBattle ? 'text-[15px] md:text-[16px]' : 'text-[16px] md:text-[17px]'}`}>{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</span>
             </div>
-            <ArrowRight className="w-6 h-6 text-white/70 group-hover:text-white transition-all group-hover:translate-x-1" aria-hidden="true" />
+            <ArrowRight className={`text-white/70 group-hover:text-white transition-all group-hover:translate-x-1 ${onBattle ? 'w-5 h-5 md:w-6 md:h-6' : 'w-6 h-6'}`} aria-hidden="true" />
           </button>
         </motion.div>
 
@@ -884,28 +950,16 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
           </button>
 
-          {/* ===== 対戦モード =====
-              フラグが false のとき、または onBattle が渡されていないときは
-              このカード自体を描かない（「見えるのに入れない」を作らない）。
-              見た目は既存のセカンダリカードと同じ樣式に揃えている。 */}
-          {onBattle && (
-            <button
-              onClick={onBattle}
-              aria-label="対戦モードを開く"
-              className="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
-            >
-              <div className="w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
-                <Swords className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">対戦モード</div>
-                <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">
-                  友だちと1对1で早解き
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
-            </button>
-          )}
+          {/* ===== 対戦モードのカードは、ここから主CTA へ昇格させた =====
+              （このファイル内の「メインCTA：対戦（1番目）＋学習（2番目）」を参照）
+
+              ★ここに残さなかった理由★
+                主CTA と同じ行き先のカードを下にも置くと、
+                「押した先が違うのでは」と考えさせる（同じ場所へ2つの扉）。
+                入口の数は減っていない＝上に移しただけ。
+
+              ★注意：ここに戻すなら主CTA 側を消すこと★
+                両方に置くと重複になる。 */}
 
           {/* ===== 高校入試 理科 =====
               渡されていないときはカード自体を描かない（対戦モードと同じ扱い）。
