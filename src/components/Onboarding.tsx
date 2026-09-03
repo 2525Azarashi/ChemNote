@@ -135,8 +135,22 @@ export function Onboarding({ onComplete, onGuest }: OnboardingProps) {
         {step === 'login' ? (
           <>
             <h2 className="text-center text-2xl font-bold text-[#1B2631] sm:text-[28px]">ようこそ！</h2>
+            {/* ★説明文を書き換えた理由★
+                以前は「学習記録を守るため、連携をおすすめしています」だけで、
+                ★アプリの主機能である対戦に一言も触れていなかった★。
+
+                対戦は Firestore のルール上、uid を持たないゲストでは
+                どうやっても部屋に入れない（＝連携しないと存在しない機能）。
+                「おすすめ」ではなく「対戦するなら必要」なので、
+                そう書く。おすすめだと思って断った人が、あとで
+                対戦を押して弾かれるのが一番よくない。
+
+                ★「学習だけならゲストでもできる」も明記している★
+                対戦を前に出すことと、学習を隠すことは別。
+                連携したくない人の逃げ道を隠すと、ただの強制になる。 */}
             <p className="mt-2 text-center text-[12px] font-modern leading-relaxed text-[#5D6D7E]">
-              学習記録を守るため、<b className="text-[#D9466E]">Google アカウントでの連携</b>をおすすめしています。
+              <b className="text-[#2E86C1]">オンライン対戦</b>と学習記録の引き継ぎには
+              <b className="text-[#D9466E]">Google アカウントでの連携</b>が必要です。
             </p>
 
             {/* 連携で得られること（抽象論にせず具体的に示す） */}
@@ -192,11 +206,17 @@ export function Onboarding({ onComplete, onGuest }: OnboardingProps) {
                 </button>
               ) : (
                 <div className="rounded-2xl border border-[#E4E8EC] bg-[#F7F9FA] px-3.5 py-3">
+                  {/* ★「対戦は使えない」を先頭に出した理由★
+                      以前は「ランキングやフレンドは使えません」だけで、
+                      対戦が使えないことを書いていなかった。
+                      ゲストで始めた人はホームの一番上に対戦のボタンを
+                      見つけて押し、そこで初めて弾かれることになる。
+                      ★押す前に分かるようにするのが正しい★ */}
                   <p className="text-[11px] font-modern leading-relaxed text-[#5D6D7E]">
-                    ゲスト利用では、学習記録は<b className="text-[#1B2631]">この端末の中だけ</b>に保存されます。
-                    ブラウザのデータを消すと記録も消え、ランキングやフレンドは使えません。
+                    ゲスト利用では<b className="text-[#1B2631]">オンライン対戦・ランキング・フレンドが使えません</b>。
+                    学習記録も<b className="text-[#1B2631]">この端末の中だけ</b>に保存され、ブラウザのデータを消すと消えます。
                     <br />
-                    <span className="text-[#8895A0]">※ あとから設定画面でいつでも連携でき、記録はそのまま引き継がれます。</span>
+                    <span className="text-[#8895A0]">※ 学習（問題を解く・解説を読む）はゲストのままでも全部できます。あとから設定画面でいつでも連携でき、記録はそのまま引き継がれます。</span>
                   </p>
                   <div className="mt-2.5 grid grid-cols-2 gap-2">
                     <button
@@ -261,9 +281,18 @@ export function Onboarding({ onComplete, onGuest }: OnboardingProps) {
               disabled={loading}
               className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#E8688E] to-[#D9466E] py-3.5 text-[14px] font-bold text-white shadow-[0_12px_28px_-14px_rgba(217,70,110,0.9)] transition-colors hover:from-[#E0567F] hover:to-[#C93C61] disabled:opacity-50"
             >
+              {/* ★文言を変えた理由★
+                  連携まで済ませた人が最後に押すボタンが
+                  「学習をはじめる」だった。
+                  ここまでの画面で「オンライン対戦には連携が必要です」と
+                  説明して同意してもらったのに、
+                  最後の一押しだけ学習の話に戻っていた。
+                  行き先はホーム（対戦と学習の両方がある）なので、
+                  ★両方あることが分かる言葉にする★。
+                  学習を消したわけではない（両方書いている）。 */}
               {loading
                 ? <><Loader2 size={17} className="animate-spin" aria-hidden="true" />保存中…</>
-                : <>学習をはじめる<ArrowRight size={17} aria-hidden="true" /></>}
+                : <>対戦と学習をはじめる<ArrowRight size={17} aria-hidden="true" /></>}
             </button>
           </>
         )}

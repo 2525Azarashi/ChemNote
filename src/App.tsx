@@ -1480,7 +1480,7 @@ export default function App() {
                 別の導線からこの状態になれてしまう。
                 描画の受け口でも同じフラグを見て、
                 「見えないのに入れる」状態を作らない。 */}
-            {appState === 'leaderboard' && FEATURES.ranking && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
+            {appState === 'leaderboard' && FEATURES.ranking && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
             {/* ★対戦モード（ルーティング側の門）★
                 ホームのボタンを隠すだけでは、localStorage に残った
                 appState='battle' から復元して入れてしまう。
@@ -1510,9 +1510,9 @@ export default function App() {
                 <RikaHome onBack={() => setAppState('home')} initialTab={rikaTab} />
               </React.Suspense>
             )}
-            {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
+            {appState === 'intro' && <Intro onBack={() => setAppState('home')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
             {appState === 'logical_tree' && <LogicalTree />}
-            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} />}
+            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
             {appState === 'mock_exam' && <MockExam onBack={() => setAppState('mode_selection')} />}
             {appState === 'learning' && (
               /*
