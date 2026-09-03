@@ -17807,6 +17807,2151 @@
       "oneLine": "A は固体では通さず、融解・水溶液にすると通す。",
       "timeLimit": 13,
       "grounding": "固体の状態では電気を通さないが、①融解したり水に溶かしたりすると電気を通すようになる。"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1a"
+      },
+      "format": "choice4",
+      "prompt": "固体 A の結晶を決めるとき、まず探すべき「決め手」はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "「固体では電気を通さないが、融解・水溶液では通す」という電気伝導性",
+          "correct": true,
+          "why": "この電気伝導性のパターンをもつのはイオン結晶だけ。"
+        },
+        {
+          "text": "無色であるという見た目の色",
+          "why": "色は最後の絞り込みに使う情報で、種類の決め手ではない。"
+        },
+        {
+          "text": "きわめて硬いという硬さ",
+          "why": "硬さが決め手になるのは共有結合の結晶。"
+        },
+        {
+          "text": "常圧で昇華するという状態変化",
+          "why": "昇華が決め手になるのは分子結晶。"
+        }
+      ],
+      "oneLine": "固体 A の決め手は「固体×／融解・水溶液○」の電気伝導性。",
+      "timeLimit": 14,
+      "grounding": "「固体では電気を通さないが、融解・水溶液では通す」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1a"
+      },
+      "format": "choice4",
+      "prompt": "A の「固体では通さないが融解・水溶液では通す」は、粒子について何を意味するか。",
+      "label": "",
+      "options": [
+        {
+          "text": "荷電粒子がイオンで、固体では動けないこと",
+          "correct": true,
+          "why": "電荷を運ぶのがイオンで、固体では固定されて動けない。"
+        },
+        {
+          "text": "荷電粒子が自由電子で、いつでも動けること",
+          "why": "それは金属結晶。固体でも電気を通す。"
+        },
+        {
+          "text": "電荷を運ぶ粒子がまったく存在しないこと",
+          "why": "それなら融解しても通さない。"
+        },
+        {
+          "text": "分子が弱い力で集まっているだけであること",
+          "why": "分子結晶は融解しても電気を通さない。"
+        }
+      ],
+      "oneLine": "イオンが電荷を運ぶが、固体では固定されて動けない。",
+      "timeLimit": 14,
+      "grounding": "これは荷電粒子がイオンで、固体では動けないことを意味する"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1a"
+      },
+      "format": "choice4",
+      "prompt": "A の電気伝導性のパターンについて正しい説明はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "このパターンをもつのはイオン結晶だけである",
+          "correct": true,
+          "why": "固体×／融解・水溶液○ はイオン結晶に固有。"
+        },
+        {
+          "text": "このパターンをもつのは金属結晶だけである",
+          "why": "金属は固体でも通す。"
+        },
+        {
+          "text": "このパターンは分子結晶にも共通している",
+          "why": "分子結晶はどの状態でも通さない。"
+        },
+        {
+          "text": "このパターンは共有結合の結晶の特徴である",
+          "why": "共有結合の結晶も基本的に通さない。"
+        }
+      ],
+      "oneLine": "固体×／融解・水溶液○ の電気伝導性はイオン結晶に固有。",
+      "timeLimit": 13,
+      "grounding": "この電気伝導性のパターンはイオン結晶だけ"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1b"
+      },
+      "format": "choice4",
+      "prompt": "固体 B の結晶を決める決め手として挙げられている4点はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "きわめて硬い・融点が非常に高い・電気を通さない・水晶",
+          "correct": true,
+          "why": "この4点が共有結合の結晶を指し示す。"
+        },
+        {
+          "text": "やわらかい・融点が低い・昇華する・無色",
+          "why": "これは分子結晶の特徴。"
+        },
+        {
+          "text": "金属光沢・展性・延性・電気をよく導く",
+          "why": "これは金属結晶の特徴。"
+        },
+        {
+          "text": "固体では通さないが融解すると通す・無色・へき開",
+          "why": "これはイオン結晶の特徴。"
+        }
+      ],
+      "oneLine": "B の決め手は「きわめて硬い・超高融点・電気を通さない・水晶」。",
+      "timeLimit": 14,
+      "grounding": "「きわめて硬い・融点が非常に高い・電気を通さない・水晶」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1b"
+      },
+      "format": "choice4",
+      "prompt": "B の「きわめて硬く融点が非常に高い」という事実から、結合について何が言えるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "強い共有結合が結晶全体に張りめぐらされている",
+          "correct": true,
+          "why": "だから硬く、融点が非常に高い。"
+        },
+        {
+          "text": "弱い分子間力で分子が集まっているだけである",
+          "why": "それなら軟らかく融点が低い。"
+        },
+        {
+          "text": "自由電子が原子を結びつけている",
+          "why": "それは金属結合で、電気をよく通す。"
+        },
+        {
+          "text": "陽イオンと陰イオンが静電気力で並んでいる",
+          "why": "それはイオン結合で、融解すると電気を通す。"
+        }
+      ],
+      "oneLine": "硬く超高融点なのは共有結合が結晶全体に張りめぐらされているため。",
+      "timeLimit": 14,
+      "grounding": "強い共有結合が結晶全体に張りめぐらされていると考えられる"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1b:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1b"
+      },
+      "format": "choice4",
+      "prompt": "固体 B の結晶の種類はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "共有結合の結晶",
+          "correct": true,
+          "why": "原子×共有結合の結晶。きわめて硬く融点が非常に高い。"
+        },
+        {
+          "text": "分子結晶",
+          "why": "分子×分子間力の結晶。軟らかく融点が低く、昇華するものがある。"
+        },
+        {
+          "text": "金属結晶",
+          "why": "金属原子×自由電子の結晶。展性・延性があり固体でも電気を通す。"
+        },
+        {
+          "text": "イオン結晶",
+          "why": "イオン×静電気力の結晶。固体では電気を通さず、融解・水溶液では通す。"
+        }
+      ],
+      "oneLine": "B は共有結合の結晶。水晶（石英）が代表例。",
+      "timeLimit": 12,
+      "grounding": "B は共有結合の結晶で「天然には水晶（石英）」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1c:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1c"
+      },
+      "format": "choice4",
+      "prompt": "固体 C の結晶を決める決め手として挙げられている2点はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "「昇華する」「構成粒子が分子」",
+          "correct": true,
+          "why": "この2点から分子結晶と決まる。"
+        },
+        {
+          "text": "「きわめて硬い」「融点が非常に高い」",
+          "why": "これは共有結合の結晶の決め手。"
+        },
+        {
+          "text": "「金属光沢」「電気・熱をよく導く」",
+          "why": "これは金属結晶の決め手。"
+        },
+        {
+          "text": "「固体では通さない」「融解すると通す」",
+          "why": "これはイオン結晶の決め手。"
+        }
+      ],
+      "oneLine": "C の決め手は「昇華する」「構成粒子が分子」の2点。",
+      "timeLimit": 13,
+      "grounding": "「昇華する」「構成粒子が分子」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1c:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1c"
+      },
+      "format": "choice4",
+      "prompt": "C が昇華することから、粒子間の力についてどう判断できるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "粒子間の力が弱い、すなわち分子間力である",
+          "correct": true,
+          "why": "弱い力しか切らずに済むので昇華できる。"
+        },
+        {
+          "text": "粒子間の力が非常に強い共有結合である",
+          "why": "それなら昇華せず超高融点になる。"
+        },
+        {
+          "text": "粒子間の力が静電気力（イオン結合）である",
+          "why": "それならへき開性をもち融点も高い。"
+        },
+        {
+          "text": "粒子間の力が自由電子による金属結合である",
+          "why": "それなら電気をよく通し展性・延性をもつ。"
+        }
+      ],
+      "oneLine": "昇華するのは粒子間の力が弱い分子間力だから。",
+      "timeLimit": 13,
+      "grounding": "粒子間の力が弱い＝分子間力"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1c:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1c"
+      },
+      "format": "choice4",
+      "prompt": "固体 C の結晶の種類はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "分子結晶",
+          "correct": true,
+          "why": "分子×分子間力の結晶。軟らかく融点が低く、昇華するものがある。"
+        },
+        {
+          "text": "金属結晶",
+          "why": "金属原子×自由電子の結晶。展性・延性があり固体でも電気を通す。"
+        },
+        {
+          "text": "イオン結晶",
+          "why": "イオン×静電気力の結晶。固体では電気を通さず、融解・水溶液では通す。"
+        },
+        {
+          "text": "共有結合の結晶",
+          "why": "原子×共有結合の結晶。きわめて硬く融点が非常に高い。"
+        }
+      ],
+      "oneLine": "C は分子結晶。昇華する無極性分子の固体。",
+      "timeLimit": 12,
+      "grounding": "「昇華する」「構成粒子が分子」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1d:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1d"
+      },
+      "format": "choice4",
+      "prompt": "固体 D の結晶を決める決め手として挙げられている3点はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "「金属光沢」「展性・延性」「電気・熱をよく導く」",
+          "correct": true,
+          "why": "この3点がそろえば金属結晶。"
+        },
+        {
+          "text": "「昇華する」「無色」「構成粒子が分子」",
+          "why": "これは分子結晶の決め手。"
+        },
+        {
+          "text": "「きわめて硬い」「水晶」「電気を通さない」",
+          "why": "これは共有結合の結晶の決め手。"
+        },
+        {
+          "text": "「へき開」「融解すると通す」「無色の結晶」",
+          "why": "これはイオン結晶の決め手。"
+        }
+      ],
+      "oneLine": "D の決め手は金属光沢・展性延性・電気熱の伝導の3点。",
+      "timeLimit": 14,
+      "grounding": "「金属光沢」「展性・延性」「電気・熱をよく導く」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1d:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1d"
+      },
+      "format": "choice4",
+      "prompt": "D の3つの性質は、共通して何によるものか。",
+      "label": "",
+      "options": [
+        {
+          "text": "すべて自由電子による性質である",
+          "correct": true,
+          "why": "金属光沢・展性延性・電気熱伝導はすべて自由電子が原因。"
+        },
+        {
+          "text": "すべて分子間力による性質である",
+          "why": "分子間力では電気を通さない。"
+        },
+        {
+          "text": "すべてイオンの静電気力による性質である",
+          "why": "静電気力では固体で電気を通さない。"
+        },
+        {
+          "text": "すべて共有結合の強さによる性質である",
+          "why": "共有結合の結晶は基本的に電気を通さない。"
+        }
+      ],
+      "oneLine": "金属の3大性質はいずれも自由電子に由来する。",
+      "timeLimit": 13,
+      "grounding": "すべて自由電子による性質"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1d:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1d"
+      },
+      "format": "choice4",
+      "prompt": "固体 D の結晶の種類はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "金属結晶",
+          "correct": true,
+          "why": "金属原子×自由電子の結晶。展性・延性があり固体でも電気を通す。"
+        },
+        {
+          "text": "イオン結晶",
+          "why": "イオン×静電気力の結晶。固体では電気を通さず、融解・水溶液では通す。"
+        },
+        {
+          "text": "共有結合の結晶",
+          "why": "原子×共有結合の結晶。きわめて硬く融点が非常に高い。"
+        },
+        {
+          "text": "分子結晶",
+          "why": "分子×分子間力の結晶。軟らかく融点が低く、昇華するものがある。"
+        }
+      ],
+      "oneLine": "D は金属結晶。自由電子が性質のすべてを説明する。",
+      "timeLimit": 12,
+      "grounding": "「金属光沢」「展性・延性」「電気・熱をよく導く」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1e:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1e"
+      },
+      "format": "choice4",
+      "prompt": "固体 E を判定するとき、まず注意すべきことはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "「電気を通す」だけで金属結晶と即断しないこと",
+          "correct": true,
+          "why": "ここが本問最大の分かれ目。"
+        },
+        {
+          "text": "「黒色」だけで金属結晶と即断しないこと",
+          "why": "注意点として挙げられているのは電気伝導性の即断。"
+        },
+        {
+          "text": "「やわらかい」だけで分子結晶と即断すること",
+          "why": "即断してよいとは書かれていない。"
+        },
+        {
+          "text": "「はがれやすい」だけでイオン結晶と即断すること",
+          "why": "へき開とは別で、これも即断は誤り。"
+        }
+      ],
+      "oneLine": "「電気を通す＝金属」の即断が E の最大のワナ。",
+      "timeLimit": 14,
+      "grounding": "「電気を通す」だけで金属結晶と即断しないこと"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1e:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1e"
+      },
+      "format": "choice4",
+      "prompt": "固体 E の判定は、この大問でどのように位置づけられているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "本問最大の分かれ目",
+          "correct": true,
+          "why": "E を金属としてしまう誤答が最も多い。"
+        },
+        {
+          "text": "もっとも易しい確認問題",
+          "why": "逆に最大の山場とされている。"
+        },
+        {
+          "text": "リード文を読まなくても解ける設問",
+          "why": "リード文の色・硬さの情報が不可欠。"
+        },
+        {
+          "text": "結晶の種類とは無関係な設問",
+          "why": "結晶の種類そのものを問う設問。"
+        }
+      ],
+      "oneLine": "E の判定は本問最大の分かれ目とされている。",
+      "timeLimit": 12,
+      "grounding": "本問最大の分かれ目"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1e:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1e"
+      },
+      "format": "choice4",
+      "prompt": "E の「金属ではない」「黒色でやわらかく薄くはがれやすい」という記述は何の特徴か。",
+      "label": "",
+      "options": [
+        {
+          "text": "黒鉛の特徴",
+          "correct": true,
+          "why": "黒鉛は層状構造で層がはがれやすい。"
+        },
+        {
+          "text": "銅の特徴",
+          "why": "銅は赤みを帯びた金属光沢をもつ。"
+        },
+        {
+          "text": "ドライアイスの特徴",
+          "why": "ドライアイスは無色で昇華する。"
+        },
+        {
+          "text": "二酸化ケイ素の特徴",
+          "why": "二酸化ケイ素はきわめて硬い無色の結晶。"
+        }
+      ],
+      "oneLine": "E の記述は黒鉛の特徴そのもの。",
+      "timeLimit": 12,
+      "grounding": "「金属ではない」「黒色でやわらかく薄くはがれやすい」＝黒鉛の特徴"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1e:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1e"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛が電気を通すのに金属結晶ではない理由として正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "黒鉛は原子が共有結合でつながった共有結合の結晶であり、電気を通す例外にあたる",
+          "correct": true,
+          "why": "共有結合の結晶なのに電気を通す唯一の例外。"
+        },
+        {
+          "text": "黒鉛は分子が分子間力で集まった分子結晶だから",
+          "why": "黒鉛は分子結晶ではない。"
+        },
+        {
+          "text": "黒鉛は陽イオンと陰イオンからなるイオン結晶だから",
+          "why": "黒鉛は単体の炭素でイオンからならない。"
+        },
+        {
+          "text": "黒鉛は自由電子をもつので金属結晶に分類されるから",
+          "why": "金属ではないと明記されている。"
+        }
+      ],
+      "oneLine": "黒鉛は共有結合の結晶で、電気を通す例外。",
+      "timeLimit": 15,
+      "grounding": "黒鉛は原子が共有結合でつながった共有結合の結晶"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1e:5",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1e"
+      },
+      "format": "choice4",
+      "prompt": "固体 E の結晶の種類はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "共有結合の結晶",
+          "correct": true,
+          "why": "原子×共有結合の結晶。きわめて硬く融点が非常に高い。"
+        },
+        {
+          "text": "分子結晶",
+          "why": "分子×分子間力の結晶。軟らかく融点が低く、昇華するものがある。"
+        },
+        {
+          "text": "金属結晶",
+          "why": "金属原子×自由電子の結晶。展性・延性があり固体でも電気を通す。"
+        },
+        {
+          "text": "イオン結晶",
+          "why": "イオン×静電気力の結晶。固体では電気を通さず、融解・水溶液では通す。"
+        }
+      ],
+      "oneLine": "E は黒鉛で共有結合の結晶。電気を通す例外。",
+      "timeLimit": 12,
+      "grounding": "電気を通す例外"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1a:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1a"
+      },
+      "format": "choice4",
+      "prompt": "この大問の判定手順で、いちばん最初に使う情報はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "電気伝導性",
+          "correct": true,
+          "why": "固体○→金属または黒鉛、固体×だが融解・水溶液○→イオン結晶。"
+        },
+        {
+          "text": "物質の色",
+          "why": "色は同じ結晶の候補が2つ残ったときの絞り込みに使う。"
+        },
+        {
+          "text": "語群にある物質名",
+          "why": "種類が決まってから物質名を選ぶ。"
+        },
+        {
+          "text": "分子の形と極性",
+          "why": "極性は問4 で使う別の観点。"
+        }
+      ],
+      "oneLine": "判定は電気伝導性から始めて大きく分けるのが定石。",
+      "timeLimit": 13,
+      "grounding": "固体○→金属（または黒鉛）、固体×だが融解・水溶液○→イオン結晶、どちらも×→共有結合の結晶か分子結晶"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1b:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1b"
+      },
+      "format": "choice4",
+      "prompt": "電気伝導性で「どちらも×」となった固体を分けるとき、次に使う観点はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "融点・硬さ",
+          "correct": true,
+          "why": "非常に高い・硬い→共有結合の結晶、低い・やわらかい・昇華→分子結晶。"
+        },
+        {
+          "text": "金属光沢の有無",
+          "why": "電気を通さない段階で金属の可能性は消えている。"
+        },
+        {
+          "text": "へき開するかどうか",
+          "why": "へき開はイオン結晶の話で、この段階では使わない。"
+        },
+        {
+          "text": "価数のたすき掛け",
+          "why": "これは組成式をつくるときの手順。"
+        }
+      ],
+      "oneLine": "電気を通さない組は融点・硬さで共有結合の結晶と分子結晶に分ける。",
+      "timeLimit": 14,
+      "grounding": "非常に高い・硬い→共有結合の結晶、低い・やわらかい・昇華→分子結晶"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1c:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1c"
+      },
+      "format": "choice4",
+      "prompt": "語群から物質を選ぶ順序について正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "結晶の種類が決まってから物質名を選ぶ",
+          "correct": true,
+          "why": "順序を逆にすると語群に引っかかる。"
+        },
+        {
+          "text": "先に物質名を語群から選び、その後で結晶の種類を決める",
+          "why": "逆順は語群のワナに引っかかる。"
+        },
+        {
+          "text": "物質名と結晶の種類を同時に当てずっぽうで決める",
+          "why": "手順として推奨されていない。"
+        },
+        {
+          "text": "物質の色だけで物質名を先に決める",
+          "why": "色は最後の絞り込み条件。"
+        }
+      ],
+      "oneLine": "種類 → 物質名 の順序を守る。逆順は語群のワナに引っかかる。",
+      "timeLimit": 14,
+      "grounding": "結晶の種類が決まってから物質名を選ぶ"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1c:5",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1c"
+      },
+      "format": "choice4",
+      "prompt": "語群に同じ結晶の候補が2つあるとき、どう絞るか。",
+      "label": "",
+      "options": [
+        {
+          "text": "色や形などの追加条件で絞る",
+          "correct": true,
+          "why": "C は無色・直線形で CO₂、D は赤みを帯びた色で銅。"
+        },
+        {
+          "text": "先に出てくる候補を機械的に選ぶ",
+          "why": "根拠がなく、正答にならない。"
+        },
+        {
+          "text": "融点の数値だけで機械的に選ぶ",
+          "why": "リード文に数値は与えられていない。"
+        },
+        {
+          "text": "価数のたすき掛けで絞る",
+          "why": "これは組成式のつくり方。"
+        }
+      ],
+      "oneLine": "同種の候補が2つ残ったら色や形の追加条件で絞る。",
+      "timeLimit": 13,
+      "grounding": "色や形などの追加条件で絞る"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1e:6",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1e"
+      },
+      "format": "choice4",
+      "prompt": "この大問の判定手順で、最後に確認すべきことはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "例外を確認する",
+          "correct": true,
+          "why": "E は「電気を通すのに金属ではない」→ 黒鉛。"
+        },
+        {
+          "text": "物質の色を確認する",
+          "why": "色は途中の絞り込み条件。"
+        },
+        {
+          "text": "電気伝導性を確認する",
+          "why": "電気伝導性は最初の観点。"
+        },
+        {
+          "text": "融点と硬さを確認する",
+          "why": "融点・硬さは2番目の観点。"
+        }
+      ],
+      "oneLine": "最後に例外（黒鉛）を確認して仕上げる。",
+      "timeLimit": 12,
+      "grounding": "最後に例外を確認する"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_1e:7",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_1e"
+      },
+      "format": "choice4",
+      "prompt": "例外の確認で E について確認する内容はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "E は「電気を通すのに金属ではない」",
+          "correct": true,
+          "why": "だから黒鉛（共有結合の結晶の例外）と決まる。"
+        },
+        {
+          "text": "E は「電気を通さないのに金属である」",
+          "why": "E は電気を通すと書かれている。"
+        },
+        {
+          "text": "E は「昇華するのに分子結晶ではない」",
+          "why": "E に昇華の記述はない。"
+        },
+        {
+          "text": "E は「硬いのに共有結合の結晶ではない」",
+          "why": "E はやわらかい固体。"
+        }
+      ],
+      "oneLine": "E は電気を通すのに金属ではない、が例外確認のポイント。",
+      "timeLimit": 12,
+      "grounding": "E は「電気を通すのに金属ではない」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_2a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_2a"
+      },
+      "format": "choice4",
+      "prompt": "A（イオン結晶）に当てはまる物質を語群から選ぶ理由はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "語群でイオン結晶なのは塩化マグネシウムだけだから",
+          "correct": true,
+          "why": "金属＋非金属の組合せはこれだけ。"
+        },
+        {
+          "text": "語群でイオン結晶なのはドライアイスだけだから",
+          "why": "ドライアイスは分子結晶。"
+        },
+        {
+          "text": "語群でイオン結晶なのは黒鉛だけだから",
+          "why": "黒鉛は共有結合の結晶。"
+        },
+        {
+          "text": "語群でイオン結晶なのはアルミニウムだけだから",
+          "why": "アルミニウムは金属結晶。"
+        }
+      ],
+      "oneLine": "語群でイオン結晶に該当するのは塩化マグネシウムだけ。",
+      "timeLimit": 14,
+      "grounding": "語群でイオン結晶なのは塩化マグネシウムだけ"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_2a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_2a"
+      },
+      "format": "choice4",
+      "prompt": "塩化マグネシウムがイオン結晶である理由を組合せで言うとどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "金属＋非金属",
+          "correct": true,
+          "why": "マグネシウム（金属）と塩素（非金属）の組合せ。"
+        },
+        {
+          "text": "非金属どうしの組合せ",
+          "why": "これは分子や共有結合の結晶になる組合せ。"
+        },
+        {
+          "text": "金属＋金属",
+          "why": "これは合金で、金属結合になる。"
+        },
+        {
+          "text": "同じ元素の単体どうし",
+          "why": "単体では同素体の話になる。"
+        }
+      ],
+      "oneLine": "イオン結晶は金属＋非金属の組合せが目印。",
+      "timeLimit": 12,
+      "grounding": "金属＋非金属"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_2b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_2b"
+      },
+      "format": "choice4",
+      "prompt": "B に当てはまる物質を決める根拠はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "水晶・石英の化学組成は SiO₂ である",
+          "correct": true,
+          "why": "だから B は二酸化ケイ素。"
+        },
+        {
+          "text": "水晶・石英の化学組成は CaCO₃ である",
+          "why": "それは石灰石の成分。"
+        },
+        {
+          "text": "水晶・石英の化学組成は NaCl である",
+          "why": "それは岩塩の成分。"
+        },
+        {
+          "text": "水晶・石英の化学組成は C である",
+          "why": "それはダイヤモンドや黒鉛。"
+        }
+      ],
+      "oneLine": "水晶（石英）の組成は SiO₂ なので B は二酸化ケイ素。",
+      "timeLimit": 13,
+      "grounding": "水晶・石英の化学組成は SiO₂"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_2c:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_2c"
+      },
+      "format": "choice4",
+      "prompt": "C の候補が2つに絞られたあと、ドライアイスに決まる理由はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "ヨウ素 I₂ は黒紫色なので除外されるから",
+          "correct": true,
+          "why": "C は無色なのでヨウ素は不適。"
+        },
+        {
+          "text": "ヨウ素 I₂ は昇華しないので除外されるから",
+          "why": "ヨウ素も昇華する。"
+        },
+        {
+          "text": "ヨウ素 I₂ は金属なので除外されるから",
+          "why": "ヨウ素は非金属。"
+        },
+        {
+          "text": "ヨウ素 I₂ は電気をよく通すので除外されるから",
+          "why": "分子結晶は電気を通さない。"
+        }
+      ],
+      "oneLine": "色で絞ってヨウ素を除外し、C はドライアイスと決まる。",
+      "timeLimit": 14,
+      "grounding": "ヨウ素 I₂ は黒紫色なので除外 → ドライアイス"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_2c:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_2c"
+      },
+      "format": "choice4",
+      "prompt": "C の絞り込みで使われた追加条件はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "無色・直線形の無極性分子であること",
+          "correct": true,
+          "why": "無色でヨウ素を除外し、直線形で CO₂ と確定。"
+        },
+        {
+          "text": "黒紫色で昇華すること",
+          "why": "黒紫色はヨウ素の特徴で C ではない。"
+        },
+        {
+          "text": "赤みを帯びた金属光沢をもつこと",
+          "why": "それは D の条件。"
+        },
+        {
+          "text": "きわめて硬く融点が非常に高いこと",
+          "why": "それは B の条件。"
+        }
+      ],
+      "oneLine": "C は無色・直線形の無極性分子という条件で確定する。",
+      "timeLimit": 14,
+      "grounding": "C はドライアイスとヨウ素が候補だが「無色・直線形の無極性分子」→ CO₂（ヨウ素 I₂ は黒紫色）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_2d:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_2d"
+      },
+      "format": "choice4",
+      "prompt": "D の候補が2つに絞られたあと、銅に決まる理由はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "アルミニウムは銀白色なので除外されるから",
+          "correct": true,
+          "why": "D は赤みを帯びているので銅。"
+        },
+        {
+          "text": "アルミニウムは電気を通さないので除外されるから",
+          "why": "アルミニウムも電気をよく通す。"
+        },
+        {
+          "text": "アルミニウムは展性をもたないので除外されるから",
+          "why": "アルミニウムにも展性がある。"
+        },
+        {
+          "text": "アルミニウムは非金属なので除外されるから",
+          "why": "アルミニウムは金属。"
+        }
+      ],
+      "oneLine": "色で絞ってアルミニウムを除外し、D は銅と決まる。",
+      "timeLimit": 14,
+      "grounding": "アルミニウムは銀白色なので除外 → 銅"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_2d:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_2d"
+      },
+      "format": "choice4",
+      "prompt": "語群のうち金属結晶の候補は何と何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "銅とアルミニウムの2つ",
+          "correct": true,
+          "why": "この2つから色で銅に絞る。"
+        },
+        {
+          "text": "銅と黒鉛の2つ",
+          "why": "黒鉛は金属ではない。"
+        },
+        {
+          "text": "アルミニウムとヨウ素の2つ",
+          "why": "ヨウ素は分子結晶。"
+        },
+        {
+          "text": "銅と二酸化ケイ素の2つ",
+          "why": "二酸化ケイ素は共有結合の結晶。"
+        }
+      ],
+      "oneLine": "語群の金属は銅とアルミニウムの2つ。色で絞る。",
+      "timeLimit": 13,
+      "grounding": "語群の金属は銅とアルミニウムの2つ"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_2d:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_2d"
+      },
+      "format": "choice4",
+      "prompt": "D が銅であると確定させた記述はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "赤みを帯びた色であること",
+          "correct": true,
+          "why": "銅は赤みを帯び、アルミニウムは銀白色。"
+        },
+        {
+          "text": "黒色でやわらかいこと",
+          "why": "それは E（黒鉛）の記述。"
+        },
+        {
+          "text": "昇華すること",
+          "why": "それは C の記述。"
+        },
+        {
+          "text": "きわめて硬いこと",
+          "why": "それは B の記述。"
+        }
+      ],
+      "oneLine": "「赤みを帯びた」が銅を確定させる決め手。",
+      "timeLimit": 13,
+      "grounding": "D は銅とアルミニウムが候補だが「赤みを帯びた」→ 銅（Al は銀白色）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_2e:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_2e"
+      },
+      "format": "choice4",
+      "prompt": "E に当てはまる物質を決めるとき、判定済みの結晶の種類はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "共有結合の結晶",
+          "correct": true,
+          "why": "E は共有結合の結晶で、電気を通す例外の黒鉛。"
+        },
+        {
+          "text": "金属結晶",
+          "why": "金属ではないと明記されている。"
+        },
+        {
+          "text": "イオン結晶",
+          "why": "イオンからなる物質ではない。"
+        },
+        {
+          "text": "分子結晶",
+          "why": "層状の共有結合の結晶で分子結晶ではない。"
+        }
+      ],
+      "oneLine": "E は共有結合の結晶と判定してから黒鉛を選ぶ。",
+      "timeLimit": 13,
+      "grounding": "黒鉛は原子が共有結合でつながった共有結合の結晶"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_3a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_3a"
+      },
+      "format": "choice4",
+      "prompt": "A の組成式をつくるとき、最初に確認することはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "電気的中性の条件を確認すること",
+          "correct": true,
+          "why": "陽イオンと陰イオンの電荷の合計が 0 になるようにする。"
+        },
+        {
+          "text": "分子の形を確認すること",
+          "why": "イオン結晶に分子は存在しない。"
+        },
+        {
+          "text": "融点の高さを確認すること",
+          "why": "融点は組成式のつくり方には関係しない。"
+        },
+        {
+          "text": "金属光沢の有無を確認すること",
+          "why": "金属光沢は金属結晶の話。"
+        }
+      ],
+      "oneLine": "組成式づくりは電気的中性の条件を確認することから始める。",
+      "timeLimit": 14,
+      "grounding": "電気的中性の条件を確認"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_3a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_3a"
+      },
+      "format": "choice4",
+      "prompt": "Mg²⁺ と Cl⁻ から組成式をつくる操作はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "価数をたすき掛けして個数比 1 : 2 にする",
+          "correct": true,
+          "why": "Mg²⁺ 1 個に Cl⁻ 2 個で電荷が打ち消し合う。"
+        },
+        {
+          "text": "価数をたすき掛けして個数比 2 : 1 にする",
+          "why": "Mg の方が価数が大きいので Cl が2個必要。"
+        },
+        {
+          "text": "価数を足して個数比 3 : 1 にする",
+          "why": "たすき掛けであり足し算ではない。"
+        },
+        {
+          "text": "価数を無視して個数比 1 : 1 にする",
+          "why": "それでは電荷が 1＋ 残ってしまう。"
+        }
+      ],
+      "oneLine": "2 価と 1 価をたすき掛けして Mg : Cl ＝ 1 : 2。",
+      "timeLimit": 15,
+      "grounding": "価数をたすき掛けして個数比 1 : 2"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_3a:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_3a"
+      },
+      "format": "choice4",
+      "prompt": "A の組成式として正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "MgCl₂ （Mg : Cl ＝ 1 : 2）",
+          "correct": true,
+          "why": "2＋ と 1− をたすき掛けして 1 : 2。"
+        },
+        {
+          "text": "MgCl （Mg : Cl ＝ 1 : 1）",
+          "why": "電荷が 1＋ 余る。"
+        },
+        {
+          "text": "Mg₂Cl （Mg : Cl ＝ 2 : 1）",
+          "why": "たすき掛けの向きが逆。"
+        },
+        {
+          "text": "Mg₃Cl₂ （Mg : Cl ＝ 3 : 2）",
+          "why": "この比では電気的に中性にならない。"
+        }
+      ],
+      "oneLine": "A の組成式は MgCl₂。たすき掛けで 1 : 2。",
+      "timeLimit": 13,
+      "grounding": "（Mg²⁺ の 2+ と Cl⁻ の 1− をたすき掛けして 1 : 2）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_3b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_3b"
+      },
+      "format": "choice4",
+      "prompt": "電気を通すために必要な条件はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "電荷を運ぶ粒子が動けること",
+          "correct": true,
+          "why": "イオンでも自由電子でも、動けることが条件。"
+        },
+        {
+          "text": "電荷を運ぶ粒子が固定されていること",
+          "why": "固定されていると電気は流れない。"
+        },
+        {
+          "text": "結晶が硬く融点が高いこと",
+          "why": "硬さや融点は電気伝導と直結しない。"
+        },
+        {
+          "text": "分子間力が弱いこと",
+          "why": "分子間力の強弱は電気伝導と無関係。"
+        }
+      ],
+      "oneLine": "電気伝導の条件は「電荷を運ぶ粒子が動ける」こと。",
+      "timeLimit": 13,
+      "grounding": "電荷を運ぶ粒子が動けること"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_3b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_3b"
+      },
+      "format": "choice4",
+      "prompt": "固体の A が電気を通さない理由はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "イオンが規則正しく並んで固定され、動けないから",
+          "correct": true,
+          "why": "固体ではイオンが動けないので電気を運べない。"
+        },
+        {
+          "text": "イオンがそもそも存在しないから",
+          "why": "A は Mg²⁺ と Cl⁻ からなる。"
+        },
+        {
+          "text": "自由電子が結晶中に存在しないから",
+          "why": "自由電子の有無ではなくイオンが動けるかで説明する。"
+        },
+        {
+          "text": "分子間力が弱くて分子が離れているから",
+          "why": "A に分子は存在しない。"
+        }
+      ],
+      "oneLine": "固体ではイオンが固定されて動けないので通さない。",
+      "timeLimit": 14,
+      "grounding": "イオンは規則正しく並んで固定 → 動けない"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_3b:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_3b"
+      },
+      "format": "choice4",
+      "prompt": "電気伝導のカギとして常に確認すべきことはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "電荷を運ぶ粒子が動けるか",
+          "correct": true,
+          "why": "状態が変わっても、この一点で判断できる。"
+        },
+        {
+          "text": "結晶が無色かどうか",
+          "why": "色は電気伝導と無関係。"
+        },
+        {
+          "text": "結晶がへき開するかどうか",
+          "why": "へき開は力学的性質。"
+        },
+        {
+          "text": "分子が直線形かどうか",
+          "why": "分子の形は極性の話。"
+        }
+      ],
+      "oneLine": "電気伝導のカギは常に「電荷を運ぶ粒子が動けるか」。",
+      "timeLimit": 12,
+      "grounding": "電荷を運ぶ粒子が動けるか"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_3b:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_3b"
+      },
+      "format": "choice4",
+      "prompt": "イオン結晶と金属の電気伝導性を対比した記述として正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "イオン結晶は固体では動けず融解液・水溶液で動ける、金属はいつでも自由電子が動ける",
+          "correct": true,
+          "why": "状態による違いがあるかどうかが対比のポイント。"
+        },
+        {
+          "text": "イオン結晶はいつでも動ける、金属は固体だけ動ける",
+          "why": "逆になっている。"
+        },
+        {
+          "text": "どちらも固体では動けず、融解すると動ける",
+          "why": "金属は固体でも電気を通す。"
+        },
+        {
+          "text": "どちらもどの状態でも電気を通さない",
+          "why": "いずれも条件次第で通す。"
+        }
+      ],
+      "oneLine": "イオン結晶は状態依存、金属は常に自由電子が動ける。",
+      "timeLimit": 16,
+      "grounding": "イオン結晶＝固体は動けない／融解液・水溶液は動ける、金属＝いつでも自由電子が動ける"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_4:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_4"
+      },
+      "format": "choice4",
+      "prompt": "CO₂ の極性を矢印（ベクトル）で描いて考えると、どうなるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "左右で逆向き・同じ大きさなので和はゼロになり無極性",
+          "correct": true,
+          "why": "打ち消し合って分子全体では極性が消える。"
+        },
+        {
+          "text": "左右で同じ向きなので和は大きくなり極性分子になる",
+          "why": "直線形なので向きは互いに逆。"
+        },
+        {
+          "text": "矢印の大きさが左右で異なるので打ち消せない",
+          "why": "2 本の C＝O は同じ結合で大きさも等しい。"
+        },
+        {
+          "text": "矢印を描いても結合に極性がないので考える必要がない",
+          "why": "C と O の間には電気陰性度の差があり極性がある。"
+        }
+      ],
+      "oneLine": "極性ベクトルが左右逆向き・同大きさで和がゼロ → 無極性。",
+      "timeLimit": 16,
+      "grounding": "極性を矢印（ベクトル）で描くと左右で逆向き・同じ大きさ → 和はゼロ → 無極性"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_4:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_4"
+      },
+      "format": "choice4",
+      "prompt": "この設問が確認している考え方はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "結合に極性があっても、形によって分子全体では無極性になりうること",
+          "correct": true,
+          "why": "結合の極性と分子の極性は別。"
+        },
+        {
+          "text": "結合に極性があれば分子は必ず極性分子になること",
+          "why": "CO₂ が反例になる。"
+        },
+        {
+          "text": "結合に極性がなければ分子は必ず極性分子になること",
+          "why": "逆の内容で誤り。"
+        },
+        {
+          "text": "分子の形は極性とはまったく関係しないこと",
+          "why": "形が打ち消しの有無を決める。"
+        }
+      ],
+      "oneLine": "結合の極性と分子の極性は別。形が打ち消しを決める。",
+      "timeLimit": 16,
+      "grounding": "極性を矢印（ベクトル）で描くと左右で逆向き・同じ大きさ → 和はゼロ → 無極性"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_5a:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_5a"
+      },
+      "format": "choice4",
+      "prompt": "たたくと薄く広がる性質の名称と、その代表例の組合せはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "展性（金箔がその例）",
+          "correct": true,
+          "why": "「展」は広げる意味。"
+        },
+        {
+          "text": "延性（金箔がその例）",
+          "why": "延性は引っ張って細く延びる性質。"
+        },
+        {
+          "text": "昇華性（金箔がその例）",
+          "why": "昇華性は固体が直接気体になる性質。"
+        },
+        {
+          "text": "へき開（金箔がその例）",
+          "why": "へき開は特定の面に沿って割れる性質。"
+        }
+      ],
+      "oneLine": "たたくと薄く広がるのが展性。代表例は金箔。",
+      "timeLimit": 13,
+      "grounding": "展性（金箔がその例）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_5a:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_5a"
+      },
+      "format": "choice4",
+      "prompt": "「展性」の「展」という字が表す意味はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "広げるという意味",
+          "correct": true,
+          "why": "たたいて薄く広げるのが展性。"
+        },
+        {
+          "text": "延ばすという意味",
+          "why": "それは「延性」の「延」。"
+        },
+        {
+          "text": "割れるという意味",
+          "why": "割れる性質はへき開。"
+        },
+        {
+          "text": "溶けるという意味",
+          "why": "溶ける性質は溶解性。"
+        }
+      ],
+      "oneLine": "「展」は広げる意味で、たたいて広がる展性を表す。",
+      "timeLimit": 12,
+      "grounding": "「展」は広げる意味"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_5b:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_5b"
+      },
+      "format": "choice4",
+      "prompt": "引っ張ると細く延びる性質の名称と、その代表例の組合せはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "延性（銅線・金線がその例）",
+          "correct": true,
+          "why": "「延」は延ばす意味。"
+        },
+        {
+          "text": "展性（銅線・金線がその例）",
+          "why": "展性はたたくと薄く広がる性質。"
+        },
+        {
+          "text": "潮解性（銅線・金線がその例）",
+          "why": "潮解性は空気中の水分を吸って溶ける性質。"
+        },
+        {
+          "text": "風解性（銅線・金線がその例）",
+          "why": "風解性は結晶水を失って粉になる性質。"
+        }
+      ],
+      "oneLine": "引っ張ると細く延びるのが延性。代表例は銅線・金線。",
+      "timeLimit": 14,
+      "grounding": "延性（銅線・金線がその例）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_5b:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_5b"
+      },
+      "format": "choice4",
+      "prompt": "「延性」の「延」という字が表す意味はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "延ばすという意味",
+          "correct": true,
+          "why": "引っ張って細く延ばすのが延性。"
+        },
+        {
+          "text": "広げるという意味",
+          "why": "それは「展性」の「展」。"
+        },
+        {
+          "text": "積み重ねるという意味",
+          "why": "積層は結晶構造の話。"
+        },
+        {
+          "text": "燃えるという意味",
+          "why": "燃焼とは無関係。"
+        }
+      ],
+      "oneLine": "「延」は延ばす意味で、引っ張って延びる延性を表す。",
+      "timeLimit": 12,
+      "grounding": "「延」は延ばす意味"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_5c:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_5c"
+      },
+      "format": "choice4",
+      "prompt": "力を加えて配列がずれたとき、イオン結晶で起こることはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "同符号のイオンが隣り合って反発する",
+          "correct": true,
+          "why": "だから割れる（へき開・脆い）。"
+        },
+        {
+          "text": "自由電子が位置を選ばず原子を結びつけ続ける",
+          "why": "それは金属結晶で起こること。"
+        },
+        {
+          "text": "分子間力がいっそう強くなって固まる",
+          "why": "分子間力はずれに強く抵抗しない。"
+        },
+        {
+          "text": "共有結合が組み替わって自己修復する",
+          "why": "そのような仕組みはない。"
+        }
+      ],
+      "oneLine": "イオン結晶はずれると同符号イオンが反発する。",
+      "timeLimit": 14,
+      "grounding": "同符号のイオンが隣り合って反発する"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_5c:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_5c"
+      },
+      "format": "choice4",
+      "prompt": "ずれたときのイオン結晶の結果はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "割れる（へき開・脆い）",
+          "correct": true,
+          "why": "同符号イオンの反発で割れてしまう。"
+        },
+        {
+          "text": "割れずに変形する（展性・延性）",
+          "why": "それは金属結晶の結果。"
+        },
+        {
+          "text": "昇華して気体になる",
+          "why": "ずれと昇華は無関係。"
+        },
+        {
+          "text": "電気を通すようになる",
+          "why": "ずれても固体では通さない。"
+        }
+      ],
+      "oneLine": "イオン結晶はずれると割れる。へき開・脆さの原因。",
+      "timeLimit": 12,
+      "grounding": "割れる（へき開・脆い）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_5c:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_5c"
+      },
+      "format": "choice4",
+      "prompt": "力を加えて配列がずれたとき、金属結晶で起こることはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "自由電子が位置を選ばず原子を結びつけ続ける",
+          "correct": true,
+          "why": "だから割れずに変形できる。"
+        },
+        {
+          "text": "同符号のイオンが隣り合って反発する",
+          "why": "それはイオン結晶で起こること。"
+        },
+        {
+          "text": "共有結合が一斉に切れて粉々になる",
+          "why": "金属に共有結合の骨組みはない。"
+        },
+        {
+          "text": "分子が離れて気体になる",
+          "why": "金属に分子は存在しない。"
+        }
+      ],
+      "oneLine": "金属は自由電子が原子を結びつけ続けるのでずれても壊れない。",
+      "timeLimit": 15,
+      "grounding": "自由電子が位置を選ばず原子を結びつけ続ける"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_5c:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_5c"
+      },
+      "format": "choice4",
+      "prompt": "ずれたときの金属結晶の結果はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "割れずに変形する（展性・延性）",
+          "correct": true,
+          "why": "自由電子のおかげで結合が保たれる。"
+        },
+        {
+          "text": "割れる（へき開・脆い）",
+          "why": "それはイオン結晶の結果。"
+        },
+        {
+          "text": "電気を通さなくなる",
+          "why": "ずれても自由電子は動ける。"
+        },
+        {
+          "text": "融点が急に下がる",
+          "why": "ずれと融点は無関係。"
+        }
+      ],
+      "oneLine": "金属はずれても割れずに変形する（展性・延性）。",
+      "timeLimit": 13,
+      "grounding": "割れずに変形（展性・延性）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_6:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_6"
+      },
+      "format": "choice4",
+      "prompt": "C が昇華しやすい理由を考えるとき、分子間力の強さをどう評価するか。",
+      "label": "",
+      "options": [
+        {
+          "text": "共有結合・イオン結合と比べてけた違いに弱い",
+          "correct": true,
+          "why": "だから弱い力だけ切れば気体になれる。"
+        },
+        {
+          "text": "共有結合・イオン結合と同じくらい強い",
+          "why": "それなら昇華せず高融点になる。"
+        },
+        {
+          "text": "共有結合より強くイオン結合より弱い",
+          "why": "分子間力は両者よりはるかに弱い。"
+        },
+        {
+          "text": "強さを比べることはできない",
+          "why": "比較して弱いと評価できる。"
+        }
+      ],
+      "oneLine": "分子間力は化学結合に比べてけた違いに弱い。",
+      "timeLimit": 15,
+      "grounding": "その力の強さを共有結合・イオン結合と比べる → けた違いに弱い"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_6:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_6"
+      },
+      "format": "choice4",
+      "prompt": "分子間力が弱いことから、昇華についてどう説明できるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "弱い力しか切る必要がないので、固体から直接気体になれる",
+          "correct": true,
+          "why": "これが昇華の説明。"
+        },
+        {
+          "text": "強い結合を切る必要があるので、まず液体になる",
+          "why": "分子結晶では強い結合を切る必要がない。"
+        },
+        {
+          "text": "分子内部の共有結合が切れて気体になる",
+          "why": "分子内部の結合は切れない。"
+        },
+        {
+          "text": "イオンが動けるようになって気体になる",
+          "why": "分子結晶にイオンは存在しない。"
+        }
+      ],
+      "oneLine": "弱い分子間力だけを切ればよいので固体から直接気体になれる。",
+      "timeLimit": 15,
+      "grounding": "弱い力しか切る必要がないので、固体から直接気体になれる（昇華）"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:1",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "(ア)「塩化ナトリウムの結晶中には NaCl という分子が存在する」の評価はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "誤り。NaCl はイオン結晶で分子は存在せず、組成式（イオンの数の比）で表す",
+          "correct": true,
+          "why": "イオン結晶に分子は存在しない。"
+        },
+        {
+          "text": "正しい。NaCl は分子式で表される分子性物質である",
+          "why": "NaCl は分子ではない。"
+        },
+        {
+          "text": "誤り。NaCl は共有結合の結晶なので分子式で表す",
+          "why": "NaCl はイオン結晶。"
+        },
+        {
+          "text": "正しい。イオン結晶でも分子として振る舞う",
+          "why": "イオン結晶に分子単位はない。"
+        }
+      ],
+      "oneLine": "(ア) は誤り。NaCl に分子はなく組成式で表す。",
+      "timeLimit": 16,
+      "grounding": "NaCl はイオン結晶で分子は存在せず、組成式（イオンの数の比）で表す"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:2",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "(イ) の配位結合についての評価はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "正しい。電子対の出どころが違うだけで、できあがれば他の共有結合と区別できない",
+          "correct": true,
+          "why": "これが配位結合の要点。"
+        },
+        {
+          "text": "誤り。配位結合はできあがった後も他の共有結合より弱い",
+          "why": "強さの区別はできない。"
+        },
+        {
+          "text": "誤り。配位結合はイオン結合の一種である",
+          "why": "配位結合は共有結合の一種。"
+        },
+        {
+          "text": "正しい。配位結合は電子対を両方の原子が出し合ってできる",
+          "why": "出すのは一方の原子。"
+        }
+      ],
+      "oneLine": "(イ) は正しい。できあがった配位結合は共有結合と区別できない。",
+      "timeLimit": 16,
+      "grounding": "配位結合は電子対の出どころが違うだけで、できあがれば他の共有結合と区別できない"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:3",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "(ウ)「ダイヤモンドと黒鉛は互いに同位体である」の評価はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "誤り。両者は同素体で、同位体は中性子数が異なる原子どうしのこと",
+          "correct": true,
+          "why": "同素体と同位体を混同させるワナ。"
+        },
+        {
+          "text": "正しい。どちらも炭素からできているので同位体である",
+          "why": "同じ元素の別の単体は同素体。"
+        },
+        {
+          "text": "誤り。両者は同族体で、同位体は電子数が異なる原子どうしのこと",
+          "why": "正しい語は同素体で、同位体は中性子数の違い。"
+        },
+        {
+          "text": "正しい。同素体と同位体は同じ意味である",
+          "why": "まったく別の概念。"
+        }
+      ],
+      "oneLine": "(ウ) は誤り。同素体であり、同位体は中性子数の違い。",
+      "timeLimit": 16,
+      "grounding": "ダイヤモンドと黒鉛は同素体。同位体は中性子数が異なる原子どうし"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:4",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "(エ)「水分子は直線形の分子なので無極性分子である」の評価はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "誤り。水分子は折れ線形なので極性が打ち消されず、極性分子である",
+          "correct": true,
+          "why": "形が違うので結論も逆になる。"
+        },
+        {
+          "text": "正しい。水分子は直線形で極性が打ち消される",
+          "why": "水分子は折れ線形。"
+        },
+        {
+          "text": "誤り。水分子は正四面体形なので無極性分子である",
+          "why": "分子の形は折れ線形。"
+        },
+        {
+          "text": "正しい。水分子は極性結合をもたないので無極性である",
+          "why": "O–H 結合には極性がある。"
+        }
+      ],
+      "oneLine": "(エ) は誤り。水は折れ線形で極性分子。",
+      "timeLimit": 15,
+      "grounding": "水分子は折れ線形なので極性が打ち消されず、極性分子である"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:5",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "(オ)「氷は水分子が分子間力で集まってできた分子結晶であり、融点は低い」の評価はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "正しい。氷は水分子が分子間力（水素結合）で集まった分子結晶で、融点は低い",
+          "correct": true,
+          "why": "分子間力の中身は水素結合。"
+        },
+        {
+          "text": "誤り。氷は水分子が共有結合でつながった共有結合の結晶である",
+          "why": "分子間の結びつきは共有結合ではない。"
+        },
+        {
+          "text": "誤り。氷はイオン結晶なので融点は非常に高い",
+          "why": "水はイオンからならない。"
+        },
+        {
+          "text": "正しいが、氷の融点は金属より高い",
+          "why": "氷の融点は低い。"
+        }
+      ],
+      "oneLine": "(オ) は正しい。氷は水素結合による分子結晶で融点が低い。",
+      "timeLimit": 16,
+      "grounding": "氷は水分子が分子間力（水素結合）で集まった分子結晶で、融点は低い"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:6",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "正誤判定の設問を解くとき、各選択肢についてまずすべきことはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "各選択肢のキーワードを1つに絞る",
+          "correct": true,
+          "why": "(ア)分子の存在、(イ)配位結合…のように1点に絞る。"
+        },
+        {
+          "text": "各選択肢を全文暗記する",
+          "why": "暗記ではなく論点の特定が要る。"
+        },
+        {
+          "text": "選択肢の長さで正誤を推測する",
+          "why": "長さは根拠にならない。"
+        },
+        {
+          "text": "選択肢の順番どおりに2つ選ぶ",
+          "why": "根拠のない選び方。"
+        }
+      ],
+      "oneLine": "正誤判定はまず各選択肢のキーワードを1つに絞る。",
+      "timeLimit": 13,
+      "grounding": "各選択肢のキーワードを1つに絞る"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:7",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "この設問で各選択肢に対応するキーワードの組合せはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(ア)分子の存在、(イ)配位結合、(ウ)同素体か同位体か、(エ)水分子の形、(オ)氷の結晶",
+          "correct": true,
+          "why": "1文につき論点は1つに絞れる。"
+        },
+        {
+          "text": "(ア)水分子の形、(イ)氷の結晶、(ウ)分子の存在、(エ)配位結合、(オ)同素体か同位体か",
+          "why": "対応がずれている。"
+        },
+        {
+          "text": "すべての選択肢が電気伝導性についての記述である",
+          "why": "電気伝導性の記述は含まれない。"
+        },
+        {
+          "text": "すべての選択肢が結晶の融点についての記述である",
+          "why": "融点だけの話ではない。"
+        }
+      ],
+      "oneLine": "各文の論点は分子の存在・配位結合・同素体・水の形・氷の結晶。",
+      "timeLimit": 18,
+      "grounding": "(ア)分子の存在、(イ)配位結合、(ウ)同素体か同位体か、(エ)水分子の形、(オ)氷の結晶"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:8",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "この大問で挙げられている「最頻出のワナ3種」はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "「電気を通す＝金属」で黒鉛を金属結晶にする／「NaCl 分子が存在する」／「H₂O は直線形」",
+          "correct": true,
+          "why": "いずれも過去問に繰り返し登場する。"
+        },
+        {
+          "text": "「昇華する＝金属」／「金属は水に溶ける」／「NaCl は共有結合」",
+          "why": "挙げられている3種とは異なる。"
+        },
+        {
+          "text": "「硬い＝イオン結晶」／「黒鉛は分子結晶」／「CO₂ は極性分子」",
+          "why": "これらは挙げられていない。"
+        },
+        {
+          "text": "「金属は電気を通さない」／「氷は金属結晶」／「水晶は分子結晶」",
+          "why": "これらも挙げられていない。"
+        }
+      ],
+      "oneLine": "最頻出のワナは黒鉛の即断・NaCl 分子・H₂O 直線形の3種。",
+      "timeLimit": 20,
+      "grounding": "①「電気を通す＝金属」と決めつけて黒鉛（E）を金属結晶にする、②「NaCl 分子が存在する」、③「H₂O は直線形」"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:9",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "共通テストの正誤判定問題について、この大問で述べられていることはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "「正しいものを2つ選べ」「誤りを含むものを選べ」という正誤判定が主戦場",
+          "correct": true,
+          "why": "だから1文ごとの○×訓練が直結する。"
+        },
+        {
+          "text": "記述式の計算問題が主戦場である",
+          "why": "述べられているのは正誤判定。"
+        },
+        {
+          "text": "用語の穴埋めだけが出題される",
+          "why": "正誤判定が中心とされている。"
+        },
+        {
+          "text": "図の作成が主戦場である",
+          "why": "図の作成については述べられていない。"
+        }
+      ],
+      "oneLine": "共通テストは正誤判定が主戦場。1文ごとの○×訓練が効く。",
+      "timeLimit": 18,
+      "grounding": "共通テストは「正しいものを2つ選べ」「誤りを含むものを選べ」という正誤判定が主戦場"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:10",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "この大問は学習フローチャートのどの位置づけとされているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "STEP 3「結晶の比較・見分け方」を1題で総点検する内容",
+          "correct": true,
+          "why": "間違えた項目は STEP 2 に戻って復習する。"
+        },
+        {
+          "text": "STEP 1「原子の構造」を確認する内容",
+          "why": "扱っているのは結晶の比較。"
+        },
+        {
+          "text": "STEP 4「化学反応の量的関係」の導入",
+          "why": "量的関係は扱っていない。"
+        },
+        {
+          "text": "学習フローチャートとは無関係な補充問題",
+          "why": "総点検として位置づけられている。"
+        }
+      ],
+      "oneLine": "この大問は STEP 3「結晶の比較・見分け方」の総点検。",
+      "timeLimit": 18,
+      "grounding": "学習フローチャートの STEP 3「結晶の比較・見分け方」を1題で総点検する内容です"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:11",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "この大問で間違えた設問があったときに勧められている復習法はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "その項目だけフローチャートの STEP 2 に戻って復習する",
+          "correct": true,
+          "why": "範囲を絞って戻るのが効率的。"
+        },
+        {
+          "text": "全範囲を最初からやり直す",
+          "why": "その項目だけ戻ればよい。"
+        },
+        {
+          "text": "答えを暗記して次に進む",
+          "why": "理解の穴を残してしまう。"
+        },
+        {
+          "text": "別の教科に切り替える",
+          "why": "復習法として挙げられていない。"
+        }
+      ],
+      "oneLine": "間違えた項目だけ STEP 2 に戻って復習する。",
+      "timeLimit": 15,
+      "grounding": "間違えた設問があれば、その項目だけ フローチャートの STEP 2 に戻って復習しましょう"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:12",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "テスト直前にこの大問を解き直すと点検できる項目はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "結晶4分類・組成式・分子の形と極性・同素体・配位結合",
+          "correct": true,
+          "why": "これらが一度に点検できる。"
+        },
+        {
+          "text": "気体の状態方程式・中和滴定・酸化還元",
+          "why": "この大問では扱っていない。"
+        },
+        {
+          "text": "原子の電子配置・イオン化エネルギーのみ",
+          "why": "ここでの点検項目とは異なる。"
+        },
+        {
+          "text": "モル計算と化学反応式の量的関係のみ",
+          "why": "量的関係は扱っていない。"
+        }
+      ],
+      "oneLine": "結晶4分類・組成式・極性・同素体・配位結合が一度に点検できる。",
+      "timeLimit": 18,
+      "grounding": "テスト直前はこの大問6だけを解き直せば、結晶4分類・組成式・分子の形と極性・同素体・配位結合が一度に点検できます"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:13",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "この大問で勧められている「口で言えるようにしておく」手順はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "問1の判定手順（電気伝導性→融点・硬さ→色などの追加条件）",
+          "correct": true,
+          "why": "言えるようになれば初見の物質でも解ける。"
+        },
+        {
+          "text": "組成式のたすき掛けの手順のみ",
+          "why": "勧められているのは問1の判定手順。"
+        },
+        {
+          "text": "分子の形を暗記する手順のみ",
+          "why": "判定手順全体が対象。"
+        },
+        {
+          "text": "同素体の代表元素の覚え方のみ",
+          "why": "ここで挙げられている手順とは違う。"
+        }
+      ],
+      "oneLine": "問1の判定手順を口で言えるようにするのが仕上げ。",
+      "timeLimit": 16,
+      "grounding": "問1の判定手順（電気伝導性→融点・硬さ→色などの追加条件）を口で言えるようにしておく"
+    },
+    {
+      "id": "a:c3_2:p_c3_2_synthesis:p_c3_2_synthesis_7:14",
+      "source": {
+        "chapterId": "c3_2",
+        "problemId": "p_c3_2_synthesis",
+        "subQuestionId": "p_c3_2_synthesis_7"
+      },
+      "format": "choice4",
+      "prompt": "この大問と同型の選択肢について述べられていることはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "いずれも本問と同型の選択肢が過去問に繰り返し登場している",
+          "correct": true,
+          "why": "だから同じワナを潰す価値が大きい。"
+        },
+        {
+          "text": "本問と同型の選択肢は過去問には出ていない",
+          "why": "繰り返し登場していると述べられている。"
+        },
+        {
+          "text": "同型の選択肢は記述問題としてのみ出題される",
+          "why": "正誤判定の選択肢として登場する。"
+        },
+        {
+          "text": "同型の選択肢は今後は出題されない",
+          "why": "繰り返し登場するとされている。"
+        }
+      ],
+      "oneLine": "同型の選択肢は過去問に繰り返し登場している。",
+      "timeLimit": 16,
+      "grounding": "いずれも本問と同型の選択肢が過去問に繰り返し登場しています"
     }
   ]
 }
