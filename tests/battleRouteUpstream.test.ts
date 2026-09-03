@@ -69,6 +69,7 @@ const INTRO = read('src/components/Intro.tsx');
 const MODE = read('src/components/ModeSelection.tsx');
 const SUBJECT = read('src/components/SubjectSelection.tsx');
 const LEADER = read('src/components/Leaderboard.tsx');
+const BANNER = read('src/components/GoogleLinkBanner.tsx');
 
 describe('① アプリの入口（オンボーディング）が対戦を説明している', () => {
   it('連携の利点に対戦が入っている', () => {
@@ -117,6 +118,42 @@ describe('① アプリの入口（オンボーディング）が対戦を説明
     // 対戦を前に出すことと、学習の逃げ道を隠すことは別。
     // 隠すとただの連携の強制になる。
     expect(ONBOARDING).toMatch(/ゲストのまま/u);
+  });
+});
+
+describe('①-2 ゲストが実際に見る連携バナーが対戦に触れている', () => {
+  /**
+   * ★この検査が必要な理由★
+   *   ゲストがホームで見る案内は GoogleLinkBanner の inline 版だけ
+   *   （Home.tsx で variant="inline" として order-4 に置いている）。
+   *   ここに書いてあったのは「記録が端末を変えても残ります」だけで、
+   *   ★対戦ができないことに触れていなかった★。
+   *
+   *   しかも前回の変更でホームの一番上が対戦のボタンになった。
+   *   つまりこの帯のすぐ上に「押しても入れないボタン」がある状態で、
+   *   同じ画面の中で話が矛盾していた。
+   */
+  it('細い帯（ホームでゲストが見る版）が対戦に触れている', () => {
+    const m = BANNER.match(/ゲストで利用中です。<\/b>([\s\S]{0,200})/u);
+    expect(m, 'inline 版の文言が見つからない').toBeTruthy();
+    expect(m![1]).toMatch(/対戦/u);
+  });
+
+  it('カード版も対戦に触れている', () => {
+    const m = BANNER.match(/ゲスト利用<\/b>([\s\S]{0,200})/u);
+    expect(m, 'card 版の文言が見つからない').toBeTruthy();
+    expect(m![1]).toMatch(/対戦/u);
+  });
+
+  it('★記録が端末を変えても残るという説明は消していない★', () => {
+    // 対戦を足すことと、元の利点を削ることは別。
+    expect(BANNER).toMatch(/端末/u);
+    expect(BANNER).toMatch(/学習記録/u);
+  });
+
+  it('★帯を閉じられる作りと連携ボタンは残っている★', () => {
+    expect(BANNER).toContain('aria-label="この案内を閉じる"');
+    expect(BANNER).toMatch(/連携する/u);
   });
 });
 
