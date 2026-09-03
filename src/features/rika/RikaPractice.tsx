@@ -47,6 +47,17 @@ function Style() {
   border:1px solid #9dbdea;border-radius:6px;padding:1px 8px;
   font-size:12px;font-weight:700;margin-right:4px}
 .rika-body{white-space:pre-wrap;font-size:15px;margin:4px 0}
+.rika-figs{margin:8px 0}
+/* ★図の大きさについて★
+   原典の図はスキャンした線画で、原寸が 338〜743px しかない。
+   width:auto にすると原寸より大きくならないため、
+   スマホの狭い幅でも余白を残して小さく出てしまう（本体でも
+   同じ症状を実測して直した経緯がある。src/components/QuestionFigure.tsx）。
+   ここでは width:100% で与えられた幅いっぱいまで使い、
+   height:auto で縦横比を保つ。max-width も 100% にして
+   原寸の大きい図がはみ出さないようにする。 */
+.rika-fig{display:block;width:100%;height:auto;max-width:100%;
+  border:1px solid #94a3b8;border-radius:2px;background:#fff;margin:6px 0}
 .rika-ans{background:#f5f7fa;border-radius:8px;padding:12px;margin-top:8px;
   font-size:15px}
 .rika-note{font-size:13px;color:#5b6672}
@@ -310,6 +321,26 @@ const Question = (props: {
             {t}
           </p>
         ))}
+        {/* ★原典の図★
+            この形式（原典の練習問題）の設問は「図1のように」「表は」と
+            図を指して書かれているものがある。図が無いと解けない。
+            ファイルは public/rika/ に置いてある（原典の rId をそのまま名前に使う）。
+            図を持つのは 17 問のうち 4 問だけなので、
+            imgs が空の問題では 1 枚も読み込まない。 */}
+        {item.imgs.length > 0 && (
+          <div className="rika-figs">
+            {item.imgs.map((rid) => (
+              <img
+                className="rika-fig"
+                key={rid}
+                src={'/rika/' + rid + '.png'}
+                alt={item.prompt + 'の図'}
+                loading="lazy"
+                decoding="async"
+              />
+            ))}
+          </div>
+        )}
         {judged === null ? (
           <div className="rika-row">
             <button className="rika-btn2" onClick={() => setJudged(false)}>
