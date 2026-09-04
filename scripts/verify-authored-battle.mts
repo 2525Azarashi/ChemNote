@@ -460,10 +460,65 @@ function readableOnScreen(sq: any, problemText: string): boolean {
   return bareLabel(label).length >= 6; // 生成器の SELF_CONTAINED_MIN_CHARS
 }
 
+/**
+ * ★すでに手書き済みの小問を数える★
+ *
+ * -------------------------------------------------------------------
+ * ■ なぜこれが必要なのか（--survey だけでは足りない理由）
+ * -------------------------------------------------------------------
+ * --survey は「機械生成が出せない小問」を数えているだけで、
+ * ★手書きで既に埋めた分を引いていなかった★。
+ *
+ * その結果、化学基礎は全29章を手書きし終えた後でも
+ *
+ *     合計 809 件が手書きの対象
+ *
+ * と出続けていた。これを作業の入口にすると、
+ * ★すでに問題がある小問をもう一度作らせる★ ことになる。
+ * 手書きは1問ずつ人が読んで作るので、重複はそのまま無駄になる。
+ *
+ * 台帳（ASSIGNMENTS.md）は「章を割り当てたか」しか記録していないので、
+ * 章の中のどの小問が埋まったかは authored/ の JSON を読むしかない。
+ * それをここでやる。
+ *
+ * -------------------------------------------------------------------
+ * ■ 検証はしない（読むだけ）
+ * -------------------------------------------------------------------
+ * ここでの目的は「もう作った小問はどれか」を知ることだけなので、
+ * JSON が壊れていても数えるのを止めない（検証は本来の実行パスがやる）。
+ * 壊れたファイルを黙って無視すると「埋まっているはずが数えられない」
+ * ＝重複作問に戻ってしまうので、★読めなかったファイルは必ず報告する★。
+ */
+function loadAuthoredCoverage(): { covered: Set<string>; broken: string[] } {
+  const covered = new Set<string>();
+  const broken: string[] = [];
+  if (!existsSync(AUTHORED_DIR)) return { covered, broken };
+  for (const f of readdirSync(AUTHORED_DIR).filter((x) => x.endsWith('.json'))) {
+    try {
+      const data = JSON.parse(readFileSync(join(AUTHORED_DIR, f), 'utf8')) as AuthoredFile;
+      for (const q of data.questions ?? []) {
+        const s = (q as AuthoredQuestion).source;
+        if (!s) continue;
+        covered.add(`${s.chapterId}/${s.problemId}/${s.subQuestionId}`);
+      }
+    } catch (e) {
+      broken.push(`${f} (${String(e)})`);
+    }
+  }
+  return { covered, broken };
+}
+
 function survey(subjectFilter: string): void {
   const reasons: Record<string, number> = {};
   const rows: string[] = [];
-  const byChapter = new Map<string, { total: number; done: number }>();
+  const byChapter = new Map<string, { total: number; done: number; authored: number; left: number }>();
+  const { covered, broken } = loadAuthoredCoverage();
+  /** 手書き済みを引いた「本当に残っている小問」 */
+  let leftTotal = 0;
+  /** 残りの理由別内訳（reasons は手書き済みも含む数なので別に持つ） */
+  const leftReasons: Record<string, number> = {};
+  /** 残りの小問1件ずつ（--list で出す。作業範囲を切るのに使う） */
+  const leftRows: string[] = [];
 
   for (const subject of SUBJECTS) {
     if (subjectFilter && subject.id !== subjectFilter) continue;
@@ -472,6 +527,8 @@ function survey(subjectFilter: string): void {
       const seen = new Set<string>();
       let total = 0;
       let done = 0;
+      let authored = 0;
+      let left = 0;
       for (const p of [...(ch.miniTest || []), ...(ch.practiceProblems || [])]) {
         for (const sq of p.subQuestions || []) {
           const key = `${ch.id}/${p.id}/${sq.id}`;
@@ -498,29 +555,71 @@ function survey(subjectFilter: string): void {
           } else {
             reason = `${type}（生成器が見ない）`;
           }
+          // ★手書き済みかどうかを先に見る★
+          // 機械生成で出せる小問（reason なし）であっても、手書きが
+          // あるなら手書きが優先される（gen-battle-pool の既定）。
+          // 「残り」を数えるうえでは、どちらで埋まったかは関係ない。
+          const isAuthored = covered.has(key);
+          if (isAuthored) authored += 1;
+
           if (reason) {
             reasons[reason] = (reasons[reason] || 0) + 1;
             rows.push(`${key}\t${type}\t${reason}\t${String(sq.label || '').slice(0, 40)}\t${ans.slice(0, 30)}`);
+            // ★手書きで埋まっていない分だけが「これから作る対象」★
+            if (!isAuthored) {
+              left += 1;
+              leftTotal += 1;
+              leftReasons[reason] = (leftReasons[reason] || 0) + 1;
+              leftRows.push(
+                `${key}\t${type}\t${reason}\t${String(sq.label || '').slice(0, 40)}\t${ans.slice(0, 30)}`,
+              );
+            }
           } else {
             done += 1;
           }
         }
       }
-      byChapter.set(ch.id, { total, done });
+      byChapter.set(ch.id, { total, done, authored, left });
     }
+  }
+
+  if (broken.length > 0) {
+    // 読めなかったファイルを黙って無視すると、埋まっている小問を
+    // 「まだ空いている」と誤って報告してしまう（＝重複作問に戻る）。
+    console.log('\n★authored/ の中で読めなかったファイルがある（数え落としの原因になる）★');
+    for (const b of broken) console.log(`  - ${b}`);
   }
 
   console.log(`\n=== ${subjectFilter || '全教科'}：機械生成では対戦に出せない小問 ===\n`);
   for (const [k, v] of Object.entries(reasons).sort((a, b) => b[1] - a[1])) {
     console.log(`  ${String(v).padStart(4)}  ${k}`);
   }
-  console.log(`\n  合計 ${rows.length} 件が手書きの対象\n`);
-  console.log('=== 章別（機械生成で出せる見込み / 総小問） ===');
+  console.log(`\n  合計 ${rows.length} 件（うち手書き済みを除いた ★残り ${leftTotal} 件★ が作業対象）\n`);
+
+  if (leftTotal > 0) {
+    console.log('=== ★これから作る分だけ★ の内訳（手書き済みを引いた後） ===\n');
+    for (const [k, v] of Object.entries(leftReasons).sort((a, b) => b[1] - a[1])) {
+      console.log(`  ${String(v).padStart(4)}  ${k}`);
+    }
+    console.log('');
+  }
+
+  console.log('=== 章別 ===');
+  console.log('  章ID       機械/総小問   手書き   ★残り★');
   for (const [ch, v] of byChapter) {
     const info = CHAPTERS.get(ch);
+    const mark = v.left === 0 ? '  ✅' : `  ${String(v.left).padStart(4)}`;
     console.log(
-      `  ${ch.padEnd(8)} ${String(v.done).padStart(3)} / ${String(v.total).padStart(4)}   ${info?.realTitle || ''} ${info?.abstractTitle || ''}`,
+      `  ${ch.padEnd(10)} ${String(v.done).padStart(3)} /${String(v.total).padStart(4)}   ` +
+        `${String(v.authored).padStart(5)}  ${mark}   ${info?.realTitle || ''} ${info?.abstractTitle || ''}`,
     );
+  }
+
+  // ★--list を付けたら、残っている小問のIDを実際に並べる★
+  //   作業場に渡す範囲を切るときに、章だけでは粒度が粗すぎるため。
+  if (process.argv.includes('--list')) {
+    console.log('\n=== 残っている小問の一覧（chapterId/problemId/subQuestionId） ===');
+    for (const r of leftRows) console.log(`  ${r}`);
   }
 }
 
