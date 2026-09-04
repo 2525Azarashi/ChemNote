@@ -446,13 +446,13 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a7_3",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "③ ハロゲン（17族）",
         "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_4",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "④ 酸素・硫黄（16族）",
         "realTitle": "7章 非金属元素"
       },
@@ -1307,7 +1307,7 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
   },
   "chemistry": {
     "chapters": 66,
-    "questions": 20
+    "questions": 28
   },
   "english_listening": {
     "sections": 6,

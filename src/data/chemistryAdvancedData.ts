@@ -40,6 +40,9 @@ import {
   a3_3Problems,
   a3_4Problems,
 } from './advancedThermoProblems';
+// 無機化学の演習問題。無機は章の枠だけで practiceProblems が全章 [] だったため、
+// 「解ける・解説が読める・対戦の出題元にできる」状態にするために実体を書き起こした。
+import { a7_3Problems, a7_4Problems } from './inorganicProblems';
 // 解説の後処理は explanationPostProcess.ts に1つだけ置いている
 // （整形関数・単元の教え方の取得も、その中で使う）。
 import { applyExplanationPostProcess } from './explanationPostProcess';
@@ -487,6 +490,9 @@ const ADVANCED_PROBLEMS: Record<string, any[]> = {
   a3_2: a3_2Problems,
   a3_3: a3_3Problems,
   a3_4: a3_4Problems,
+  // 7章 非金属元素（無機化学）
+  a7_3: a7_3Problems,
+  a7_4: a7_4Problems,
 };
 
 (() => {

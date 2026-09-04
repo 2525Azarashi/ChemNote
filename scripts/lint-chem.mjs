@@ -30,6 +30,8 @@ const TARGET_FILES = [
   'src/data/trendData.ts',
   // 化学（発展）の問題データ。化学基礎と同じ表記ルールで書く。
   'src/data/advancedThermoProblems.ts',
+  // 無機化学の演習問題。理論化学と同じ表記ルールを機械で守らせる。
+  'src/data/inorganicProblems.ts',
 ];
 
 // ------------------------------------------------------------------
