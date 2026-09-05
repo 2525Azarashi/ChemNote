@@ -40,6 +40,7 @@ import {
   sliceEnhancedBySubQuestion,
   sliceEnhancedByQuestion,
   questionGroupKey,
+  buildUnitKataBlock,
 } from '../src/utils/explanationFormat';
 
 /** 演習問題を収録した無機化学の章ID（収録が進んだらここに足す） */
@@ -1052,5 +1053,130 @@ describe('無機化学 収録した章に指導テンプレートがある', () 
             '\n章IDの綴りが unitTeaching のキーと一致しているか確認する。'
         : '',
     ).toEqual([]);
+  });
+});
+
+
+/**
+ * 内容監査で見つけた「長さや項目数では検知できない誤説明」の再発防止。
+ * これは自然言語の正しさを万能に判定するテストではない。
+ * 実際に確認した論点を、該当する手順だけで検査する仕様テストである。
+ * 他の手順に正しい用語があっても救済しない。正しい説明を残したまま
+ * 電子の向き・条件・単位だけを壊す変異テストで、検査が効くことも確かめる。
+ * 変異は文字列のコピー上だけで行い、共有データや生成物を書き換えない。
+ */
+describe('無機化学 指導内容の因果関係と適用条件', () => {
+  type Rule = {
+    name: string;
+    chapter: (typeof INORGANIC_DONE)[number];
+    step: number;
+    required: RegExp[];
+    mutation: [string, string];
+  };
+  const rules: Rule[] = [
+    {
+      name: 'HF：分子間の水素結合と分子内の結合を区別する',
+      chapter: 'a7_3', step: 1,
+      required: [/分子間に水素結合/, /分子内の H–F 結合が強く/, /水中で電離/],
+      mutation: ['分子内の H–F', '分子間の H–F'],
+    },
+    {
+      name: '洗気瓶：逆順では最後に水蒸気が混ざる',
+      chapter: 'a7_3', step: 3,
+      required: [/水→濃硫酸/, /塩化水素を除/, /乾燥後に水を通すため再び水蒸気が混ざり/],
+      mutation: ['再び水蒸気が混ざり', '再び塩化水素が混ざり'],
+    },
+    {
+      name: '周期表：典型元素は縦（同族）で性質が似る',
+      chapter: 'a9_1', step: 1,
+      required: [/典型元素は縦に似る/, /典型元素は同族（縦）で性質が似る/],
+      mutation: ['典型元素は縦に似る', '典型元素は横に似る'],
+    },
+    {
+      name: '滴定：過マンガン酸は受け取り、シュウ酸は放出する',
+      chapter: 'a9_4', step: 1,
+      required: [/硫酸酸性/, /過マンガン酸イオン 1 mol は電子 5 mol を受け取り/, /シュウ酸 1 mol は電子 2 mol を放出/, /5n\(MnO₄⁻\) = 2n\(H₂C₂O₄\)/],
+      mutation: ['電子 5 mol を受け取り', '電子 5 mol を放出し'],
+    },
+    {
+      name: '希硫酸：H⁺の酸化作用と銅を酸化できないことを区別する',
+      chapter: 'a7_4', step: 3,
+      required: [/H⁺ が酸化剤/, /銅を酸化する力はない/, /熱濃硫酸/, /SO₂/],
+      mutation: ['H⁺ が酸化剤', 'H⁺ が還元剤'],
+    },
+    {
+      name: 'ソルベー法：全体式の比は収率100%の理論量',
+      chapter: 'a8_1', step: 0,
+      required: [/他の原料が十分/, /収率100%/, /途中の物質を問う場合はその工程の反応式/],
+      mutation: ['収率100%', '収率50%'],
+    },
+    {
+      name: '製鉄：kgをkg/kmolで割った物質量はkmol',
+      chapter: 'a9_2', step: 1,
+      required: [/160 kg ÷ 160 kg\/kmol = 1\.00 kmol/, /56 kg\/kmol = 112 kg/],
+      mutation: ['= 1.00 kmol', '= 1.00 mol'],
+    },
+    {
+      name: 'オストワルト法：全工程と一度の吸収工程を区別する',
+      chapter: 'a7_5', step: 0,
+      required: [/NO を再酸化して再利用/, /収率100%/, /NH₃ : HNO₃ = 1 : 1/, /吸収工程の比 3 : 2/],
+      mutation: ['吸収工程の比 3 : 2', '吸収工程の比 1 : 1'],
+    },
+  ];
+  const failures = (text: string, rule: Rule) =>
+    rule.required.filter((pattern) => !pattern.test(text)).map(String);
+
+  for (const rule of rules) {
+    it(rule.name, () => {
+      const step = getUnitTeaching(rule.chapter)?.steps[rule.step];
+      expect(step, `${rule.chapter} の対象手順が欠落`).toBeDefined();
+      const text = `${step!.title}\n${step!.detail}`;
+      expect(failures(text, rule), rule.name).toEqual([]);
+    });
+
+    it(`変異検査：${rule.name}`, () => {
+      const step = getUnitTeaching(rule.chapter)!.steps[rule.step];
+      const text = `${step.title}\n${step.detail}`;
+      const [before, after] = rule.mutation;
+      // 置換が0件なら「壊したつもり」の偽の変異検査になるので必ず1件を確認する。
+      expect(text.split(before).length - 1).toBe(1);
+      const broken = text.replace(before, after);
+      expect(failures(text, rule)).toEqual([]);
+      expect(failures(broken, rule).length).toBeGreaterThan(0);
+    });
+  }
+
+  it('修正した手順が画面の「この単元の思考の型」に出力される', () => {
+    // Explanation.tsx は採点結果の直後に buildUnitKataBlock を直接描画する。
+    // enhanceExplanation の小問側に共通手順を要求すると、同じ説明を全問に
+    // 重複表示させる旧仕様へ戻すことになるため、実際の表示経路を検査する。
+    for (const rule of rules) {
+      const teaching = getUnitTeaching(rule.chapter)!;
+      const step = teaching.steps[rule.step];
+      const html = buildUnitKataBlock(teaching);
+      expect(html, `${rule.chapter}: ${rule.name}`).toContain(step.title);
+      expect(html, `${rule.chapter}: ${rule.name}`).toContain(step.detail);
+      expect(failures(html, rule)).toEqual([]);
+    }
+  });
+
+  it('問題文・傾向画面・指導テンプレートで典型元素の縦横が一致する', () => {
+    const chapter = chaptersById.get('a9_1')!;
+    const trend = chapterTrendsAdvanced.flatMap((group) => group.units).find((unit) => unit.id === 'a9_1');
+    for (const data of [chapter.practiceProblems, trend, getUnitTeaching('a9_1')]) {
+      const text = JSON.stringify(data);
+      expect(text).toContain('典型元素は縦に似る');
+      expect(text).not.toContain('典型元素は横に似る');
+    }
+  });
+
+  it('希硫酸の採点基準がH⁺の酸化作用を否定しない', () => {
+    const problem = chaptersById.get('a7_4')!.practiceProblems.find((p) => p.id === 'q_a7_4_ex3');
+    expect(problem).toBeDefined();
+    const sq = problem!.subQuestions.find((s) => s.id === 'q_a7_4_ex3_5');
+    expect(sq).toBeDefined();
+    expect(sq!.correctAnswer).toContain('H⁺ では銅を酸化できない');
+    expect(JSON.stringify(sq)).not.toContain('希硫酸に酸化力がない');
+    expect(sq!.gradingCriteria).toContain('希硫酸の水素イオンでは銅を酸化できないことを述べている');
   });
 });
