@@ -29,6 +29,9 @@
 import { describe, it, expect } from 'vitest';
 import { getAllAdvancedChapters, getAdvancedFieldStats } from '../src/data/chemistryAdvancedData';
 import { chapterTrendsAdvanced } from '../src/data/chemistryAdvancedTrendData';
+// 単元ごとの指導テンプレート。無機の章にも「思考の型」と
+// 「ココが狙われる」ボックスが出ているかを機械で確かめるために読む。
+import { getUnitTeaching } from '../src/data/unitTeaching';
 // 対戦プールの生成物。章IDが2列目に入っているので、
 // 「収録した章が対戦にも供給されているか」を機械的に確かめられる。
 // 手書き禁止の生成ファイルなので、ここでは読むだけ。
@@ -748,6 +751,305 @@ describe('無機化学 演習問題が対戦にも供給されている', () => 
         ? `次の章は対戦プールへの寄与が3問未満: ${tooFew
             .map((id) => `${id}(${countByChapter.get(id) ?? 0}問)`)
             .join(', ')}`
+        : '',
+    ).toEqual([]);
+  });
+});
+
+/**
+ * ★計算問題の数値そのものを検算する★
+ *
+ * ■ なぜこのテストを足したか
+ *   ここまでのガードは「解説が小問ごとに分割されるか」「原典の武器が
+ *   出題されているか」「解説が薄くないか」「型が正しいか」「対戦に
+ *   出ているか」しか見ていなかった。
+ *   つまり ★計算の答えが間違っていても全部緑になる★ 状態だった。
+ *   誤った数値を教えるのは学習者に対する最悪の欠陥なので、機械で検算する。
+ *
+ * ■ 検算の考え方（ここが肝心）
+ *   データに書いた答えを見てから式を作ると、同じ思い込みで同じ間違いを
+ *   するので検算にならない。
+ *   だから下の表には「問題文で与えている条件（原子量・ファラデー定数・
+ *   与えた量）だけ」を書き、そこから独立に計算する。
+ *   答えの文字列はデータ側から読み取って突き合わせるので、
+ *   あとでデータの数値をいじると、このテストが落ちる。
+ *
+ * ■ 検算漏れも防ぐ
+ *   「表に書き忘れた計算問題」は検算されないまま通ってしまう。
+ *   それを防ぐため、数値を答えにしている小問を全部数えて、
+ *   表に載っていないものがあれば落とす。
+ *   新しい計算問題を足したら、必ずこの表にも式を足すことになる。
+ */
+describe('無機化学 計算問題の数値が正しい', () => {
+  /** 問題文で与えているファラデー定数 */
+  const F = 9.65e4;
+  /** 標準状態のモル体積 L/mol */
+  const VM = 22.4;
+
+  // 問題文で与えている原子量から式量を組み立てる（データの答えは見ない）
+  const M_NaCl = 23 + 35.5; // 58.5
+  const M_Na2CO3 = 23 * 2 + 12 + 16 * 3; // 106
+  const M_NaHCO3 = 23 + 1.0 + 12 + 16 * 3; // 84
+  const M_Fe2O3 = 56 * 2 + 16 * 3; // 160
+  const M_H2SO4 = 1.0 * 2 + 32 + 16 * 4; // 98
+  const M_HNO3 = 1.0 + 14 + 16 * 3; // 63
+
+  /**
+   * 検算表。value は「問題文の条件から独立に計算した値」。
+   * how は落ちたときに原因をすぐ追えるようにするための計算手順のメモ。
+   */
+  const CALC_CHECKS: Record<string, { value: number; how: string }> = {
+    // ── a8_1 アンモニアソーダ法（Na = 23、Cl = 35.5、C = 12、O = 16）──
+    q_a8_1_ex1_2: {
+      value: (234 / M_NaCl) * 0.5 * M_Na2CO3,
+      how: 'NaCl 234 g ÷ 58.5 = 4 mol、2NaCl → 1Na₂CO₃ なので ×1/2、×106',
+    },
+    q_a8_1_ex1_3: {
+      value: (1000 / M_Na2CO3) * 2 * M_NaCl,
+      how: 'Na₂CO₃ 1000 g ÷ 106 mol、1Na₂CO₃ に NaCl 2 mol 必要なので ×2、×58.5',
+    },
+    // ── a8_1 炭酸水素ナトリウムの熱分解（2NaHCO₃ → Na₂CO₃ + H₂O + CO₂）──
+    q_a8_1_ex2_2: {
+      value: (8.4 / M_NaHCO3) * 0.5 * M_Na2CO3,
+      how: 'NaHCO₃ 8.40 g ÷ 84 = 0.100 mol、2:1 で Na₂CO₃ になるので ×1/2、×106',
+    },
+    q_a8_1_ex2_3: {
+      value: (8.4 / M_NaHCO3) * 0.5 * VM,
+      how: '0.100 mol の 1/2 が CO₂、標準状態なので ×22.4',
+    },
+    // ── a8_3 ホール・エルー法（Al = 27、F = 9.65×10⁴ C/mol）──
+    q_a8_3_ex3_4: {
+      value: 3,
+      how: 'Al³⁺ + 3e⁻ → Al なので Al 1 mol あたり電子 3 mol',
+    },
+    q_a8_3_ex3_5: {
+      value: (27000 / 27) * 3 * F,
+      how: 'Al 27.0 kg ÷ 27 = 1.00×10³ mol、×3（電子）、×9.65×10⁴',
+    },
+    // ── a9_3 銅の電解精錬（Cu = 64、F = 9.65×10⁴ C/mol）──
+    q_a9_3_ex2_5: {
+      value: (6.4 / 64) * 2 * F,
+      how: 'Cu 6.4 g ÷ 64 = 0.10 mol、Cu²⁺ + 2e⁻ → Cu なので ×2、×9.65×10⁴',
+    },
+    // ── a9_2 製鉄（Fe = 56、O = 16）──
+    q_a9_2_ex1_3: {
+      value: 2,
+      how: 'Fe₂O₃ + 3CO → 2Fe + 3CO₂ より Fe₂O₃ 1 mol から Fe 2 mol',
+    },
+    q_a9_2_ex1_4: {
+      value: (160 / M_Fe2O3) * 2 * 56,
+      how: 'Fe₂O₃ 160 kg ÷ 160 = 1.00 kmol、×2、×56',
+    },
+    // ── a9_4 過マンガン酸カリウムによる酸化還元滴定 ──
+    q_a9_4_ex2_2: {
+      value: 0.02 * (12.0 / 1000),
+      how: '0.0200 mol/L × 12.0 mL',
+    },
+    q_a9_4_ex2_3: {
+      value: (0.02 * (12.0 / 1000) * 5) / 2 / (10.0 / 1000),
+      how: 'MnO₄⁻ : H₂C₂O₄ = 2 : 5 なので ×5/2、それを 10.0 mL で割る',
+    },
+    // ── a7_4 接触法（S = 32、H = 1.0、O = 16）──
+    q_a7_4_ex1_5: {
+      value: 1,
+      how: 'S → SO₂ → SO₃ → H₂SO₄ はどの段階も S 原子 1 個ぶんなので 1 : 1',
+    },
+    q_a7_4_ex1_6: {
+      value: (32000 / 32 / 1000) * M_H2SO4,
+      how: 'S 32 kg ÷ 32 = 1.0 kmol、1 : 1 なので ×98',
+    },
+    q_a7_4_ex1_7: {
+      value: 98 / 0.98,
+      how: '純 H₂SO₄ 98 kg が質量パーセント 98% なので ÷0.98',
+    },
+    // ── a7_5 オストワルト法（N = 14、H = 1.0、O = 16）──
+    q_a7_5_ex1_5: {
+      value: 1,
+      how: 'NH₃ → NO → NO₂ → HNO₃ はどの段階も N 原子 1 個ぶんなので 1 : 1',
+    },
+    q_a7_5_ex1_6: {
+      value: (17000 / 17 / 1000) * M_HNO3,
+      how: 'NH₃ 17 kg ÷ 17 = 1.0 kmol、1 : 1 なので ×63',
+    },
+    q_a7_5_ex1_7: {
+      value: 63 / 0.63,
+      how: '純 HNO₃ 63 kg が質量パーセント 63% なので ÷0.63',
+    },
+  };
+
+  /**
+   * 答えの文字列から数値を取り出す。
+   * 「2.90×10⁸」のような上付き指数表記を JavaScript の数値にする必要がある。
+   */
+  function parseAnswerNumber(s: string): number | null {
+    const SUP: Record<string, string> = {
+      '⁰': '0',
+      '¹': '1',
+      '²': '2',
+      '³': '3',
+      '⁴': '4',
+      '⁵': '5',
+      '⁶': '6',
+      '⁷': '7',
+      '⁸': '8',
+      '⁹': '9',
+    };
+    const normalized = s
+      // 「×10⁻⁴」「× 10^4」などを e 表記に直す
+      // ※「1.93 × 10⁴」のように前後に空白が入る書き方をしているので、
+      // 空白も一緒に吸い取って e 表記と尾数を密着させないと、
+      // 「1.93 e4」のように分断して尾数だけ拾ってしまう（実際にこれで誤検知した）。
+      .replace(/\s*[×x]\s*10\s*\^?\s*([⁻-])?\s*([⁰¹²³⁴⁵⁶⁷⁸⁹0-9]+)/g, (_m, sign, digits) => {
+        const d = [...String(digits)].map((c) => SUP[c] ?? c).join('');
+        return `e${sign ? '-' : ''}${d}`;
+      })
+      // 桁区切りのカンマは邪魔なので落とす
+      .replace(/,/g, '');
+    const hit = normalized.match(/-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/i);
+    return hit ? Number(hit[0]) : null;
+  }
+
+  /** 小問ID → データに書いてある答え（生データを読むので改変を検知できる） */
+  const answerById = new Map<string, string>();
+  for (const { problem } of allProblems) {
+    for (const sq of problem.subQuestions ?? []) {
+      answerById.set(String(sq.id), String(sq.correctAnswer ?? ''));
+    }
+  }
+
+  it('★問題文の条件から独立に計算した値と、データに書いた答えが一致する★', () => {
+    const mismatches: string[] = [];
+
+    for (const [id, { value, how }] of Object.entries(CALC_CHECKS)) {
+      const raw = answerById.get(id);
+      if (raw === undefined) {
+        mismatches.push(`${id}: 検算表にあるが小問が見つからない（IDが変わった可能性）`);
+        continue;
+      }
+      const got = parseAnswerNumber(raw);
+      if (got === null) {
+        mismatches.push(`${id}: 答え「${raw}」から数値を読み取れなかった`);
+        continue;
+      }
+      // 有効数字の丸めは許すが、桁の間違いは許さないので相対誤差 0.5% で見る
+      const tolerance = Math.max(Math.abs(value), Math.abs(got)) * 0.005;
+      if (Math.abs(value - got) > tolerance) {
+        mismatches.push(
+          `${id}: データの答え「${raw}」(= ${got}) と、独立計算 ${Number(
+            value.toPrecision(4),
+          )} が合わない / 計算手順: ${how}`,
+        );
+      }
+    }
+
+    expect(
+      mismatches,
+      mismatches.length
+        ? '計算問題の数値が独立検算と一致しない:\n' +
+            mismatches.map((m) => `  - ${m}`).join('\n') +
+            '\nデータ側の答えが誤っているか、検算表の式が誤っているかのどちらか。\n' +
+            '必ず問題文に書いた条件（原子量・ファラデー定数・与えた量）に戻って確認する。'
+        : '',
+    ).toEqual([]);
+  });
+
+  it('★数値を答えにしている小問は、全部検算表に載っている（検算漏れを作らない）★', () => {
+    // 単位付きの数値、または指数表記を含む答えを「計算問題」とみなす
+    const looksNumeric = (a: string) =>
+      /[0-9]\s*(?:g|L|mol|mol\/L|kg|C|A|%|kJ)\b/.test(a) || /10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹×]/.test(a);
+
+    const numericIds: string[] = [];
+    for (const { problem } of allProblems) {
+      for (const sq of problem.subQuestions ?? []) {
+        if (looksNumeric(String(sq.correctAnswer ?? ''))) numericIds.push(String(sq.id));
+      }
+    }
+
+    const unchecked = numericIds.filter((id) => !(id in CALC_CHECKS));
+
+    expect(
+      unchecked,
+      unchecked.length
+        ? `次の計算問題が検算されていない: ${unchecked.join(', ')}\n` +
+            'CALC_CHECKS に「問題文の条件だけから計算した式」を足すこと。\n' +
+            '★データに書いた答えを写すのは禁止★（同じ間違いを見逃すので検算にならない）'
+        : '',
+    ).toEqual([]);
+  });
+});
+
+/**
+ * ★収録した章に「思考の型」と「出題傾向ボックス」があることを守る★
+ *
+ * ■ なぜこのテストを足したか
+ *   無機化学15章を書き終えたあとで数えてみたら、指導テンプレート
+ *   （data/unitTeaching.ts）を持っていたのは理論化学の5章だけで、
+ *   ★あとから書いた無機15章は全部が未登録★だった。
+ *   その結果、無機の解説には
+ *     ・単元ごとの「思考の型」（steps）
+ *     ・「ココが狙われる！」の出題傾向ボックス（trend）
+ *   がどちらも出ておらず、先に作られた理論化学の章より
+ *   機能が貧しい状態になっていた。
+ *
+ * ■ なぜ既存のテストで気づけなかったか
+ *   applyExplanationPostProcess() は getUnitTeaching() が undefined でも
+ *   エラーにせず、ボックスを省いた解説をそのまま作る。
+ *   画面も壊れないので「あるはずのものが無い」という静かな欠落になる。
+ *   理論化学側のテストには出題傾向ボックスの検査があるのに、
+ *   無機側には無かった。だから片方だけ機能が欠けていても緑だった。
+ *
+ * ■ このテストが守ること
+ *   収録した章はすべて unitTeaching を持ち、解説に
+ *   出題傾向ボックスが実際に描かれていること。
+ *   落ちたら data/unitTeaching.ts にその章の steps と trend を足す。
+ *   ★中身は chemistryAdvancedTrendData.ts の「学習の要点・出題形式・
+ *   武器・予測」から起こすこと。新しい知識を創作してはいけない。★
+ */
+describe('無機化学 収録した章に指導テンプレートがある', () => {
+  it('★収録した章はすべて unitTeaching（思考の型）を持っている★', () => {
+    const missing = INORGANIC_DONE.filter((id) => !getUnitTeaching(id));
+
+    expect(
+      missing,
+      missing.length
+        ? `次の章に指導テンプレートが無い: ${missing.join(', ')}\n` +
+            'data/unitTeaching.ts に steps（思考手順）と trend（出題傾向）を足すこと。\n' +
+            '中身は chemistryAdvancedTrendData.ts の原典から起こす（創作しない）。'
+        : '',
+    ).toEqual([]);
+  });
+
+  it('思考の型は3手順以上あり、出題傾向は4項目すべてが埋まっている', () => {
+    const problems: string[] = [];
+    for (const id of INORGANIC_DONE) {
+      const t = getUnitTeaching(id);
+      if (!t) continue; // 上のテストが検出するのでここでは飛ばす
+      // 手順が1〜2個だと「型」として使えないので、理論化学側と同じ3個以上を要求する
+      if (t.steps.length < 3) problems.push(`${id}: 思考手順が ${t.steps.length} 個（3個以上必要）`);
+      if (t.trend.sources.length === 0) problems.push(`${id}: trend.sources が空`);
+      if (t.trend.asked.length === 0) problems.push(`${id}: trend.asked が空`);
+      if (t.trend.traps.length === 0) problems.push(`${id}: trend.traps が空`);
+      if (!t.trend.advice.trim()) problems.push(`${id}: trend.advice が空`);
+    }
+
+    expect(problems, problems.join('\n')).toEqual([]);
+  });
+
+  it('★出題傾向ボックスが解説に実際に描かれている（登録しただけで満足しない）★', () => {
+    // unitTeaching に足しても、章IDが1文字違えば解説には出ない。
+    // 出力側を見ることで「登録したつもり」の事故を防ぐ。
+    const missing: string[] = [];
+    for (const { chapterId, problem } of allProblems) {
+      const text = String((problem as any).explanationSupplement || problem.explanation);
+      if (!text.includes('ココが狙われる')) missing.push(`${chapterId}/${problem.id}`);
+    }
+
+    expect(
+      missing,
+      missing.length
+        ? `次の大問の解説に出題傾向ボックスが出ていない: ${missing.slice(0, 10).join(', ')}` +
+            (missing.length > 10 ? ` ほか${missing.length - 10}件` : '') +
+            '\n章IDの綴りが unitTeaching のキーと一致しているか確認する。'
         : '',
     ).toEqual([]);
   });
