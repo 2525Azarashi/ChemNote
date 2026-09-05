@@ -500,7 +500,7 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a9_1",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "① 遷移元素の特徴",
         "realTitle": "9章 遷移元素"
       },
@@ -518,7 +518,7 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a9_4",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "④ クロム・マンガン",
         "realTitle": "9章 遷移元素"
       },
@@ -1307,7 +1307,7 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
   },
   "chemistry": {
     "chapters": 66,
-    "questions": 64
+    "questions": 72
   },
   "english_listening": {
     "sections": 6,
