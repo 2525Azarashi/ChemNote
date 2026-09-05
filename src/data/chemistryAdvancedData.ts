@@ -42,7 +42,23 @@ import {
 } from './advancedThermoProblems';
 // 無機化学の演習問題。無機は章の枠だけで practiceProblems が全章 [] だったため、
 // 「解ける・解説が読める・対戦の出題元にできる」状態にするために実体を書き起こした。
-import { a7_3Problems, a7_4Problems, a7_5Problems } from './inorganicProblems';
+import {
+  a7_3Problems,
+  a7_4Problems,
+  a7_5Problems,
+  a7_7Problems,
+} from './inorganicProblems';
+// 金属元素（8章・9章）は別ファイルに分けてある。
+// 理由：非金属（7章）だけで 1486 行に達し、同じファイルに足すと
+// 1ファイル 5000 行超になり、編集のたびに全体を読み直す必要が出て
+// 意図しない箇所を書き換える事故が起きやすくなるため。
+import {
+  a8_3Problems,
+  a9_5Problems,
+  a9_6Problems,
+  a9_3Problems,
+  a9_2Problems,
+} from './inorganicMetalProblems';
 // 解説の後処理は explanationPostProcess.ts に1つだけ置いている
 // （整形関数・単元の教え方の取得も、その中で使う）。
 import { applyExplanationPostProcess } from './explanationPostProcess';
@@ -496,6 +512,34 @@ const ADVANCED_PROBLEMS: Record<string, any[]> = {
   // 7-5 窒素・リン：オストワルト法の量的計算、NO と NO₂ の対比、不動態・王水、リンの同素体と乾燥剤。
   // 原典（chemistryAdvancedTrendData の a7_5）は高頻度・prediction2027 が「◎ 確実」なので優先して作問した。
   a7_5: a7_5Problems,
+  // 7-7 気体の製法と性質のまとめ：原典の学習の要点が
+  // 「『製法・捕集法・乾燥剤・色・臭い・液性』の6列の表を自力で埋め切る力」
+  // なので、大問をその6列に一対一で対応させてある。
+  //   演習1 捕集法 / 演習2 乾燥剤 / 演習3 色・臭い・液性 / 演習4 製法＋装置図
+  // 原典が「NH₃ の乾燥剤の例外は毎年どこかで狙われる」と書いているので、
+  // 塩化カルシウムが中性なのに NH₃ には使えないという例外を
+  // 演習2 の detailedExplanation で明示的に扱っている。
+  a7_7: a7_7Problems,
+  // 8章 典型金属元素（無機化学）
+  // 8-3 アルミニウム・亜鉛：原典の frequency が「超高頻度（本章No.1）」で
+  // 未着手のなかで最優先だった。製錬の電気量計算を入れて第4章との融合にしてある。
+  a8_3: a8_3Problems,
+  // 9章 遷移元素（無機化学）
+  // 9-2 鉄：原典の武器が「製鉄の量的計算」と「Fe²⁺/Fe³⁺ の識別」の二本柱なので、
+  // 大問1で Fe₂O₃ 1 mol → Fe 2 mol の比を、大問2で4試薬の識別表を扱っている。
+  // 濃青色沈殿は「試料の鉄と試薬の鉄の酸化数がたすき（2↔3）になったとき」という
+  // 見分け方まで detailedExplanation に書いてあるので、丸暗記にならない。
+  a9_2: a9_2Problems,
+  // 9-3 銅・銀：原典の prediction2027 が「◎ 確実」で、
+  // 「電解精錬と電気量計算の融合」または「銅と各種の酸の反応」が本命とされている。
+  // どちらが来ても答えられるよう、両方を別大問として作問した。
+  a9_3: a9_3Problems,
+  // 9-5 錯イオン：原典が「系統分析（a9_6）の前提知識」と明記しているので、
+  // 必ず a9_6 より先に学べるよう a9_5 を先に作問した。
+  a9_5: a9_5Problems,
+  // 9-6 系統分析：原典が「無機分野で最も配点が集まりやすい」とする花形テーマ。
+  // 色と順序の暗記で終わらせず、溶解度積による定量的な沈殿判定まで踏み込んである。
+  a9_6: a9_6Problems,
 };
 
 (() => {

@@ -470,7 +470,7 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a7_7",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "⑦ 気体の製法と性質のまとめ",
         "realTitle": "7章 非金属元素"
       },
@@ -488,7 +488,7 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a8_3",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "③ アルミニウム・亜鉛（両性金属）",
         "realTitle": "8章 典型金属元素"
       },
@@ -506,13 +506,13 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a9_2",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "② 鉄",
         "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_3",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "③ 銅・銀",
         "realTitle": "9章 遷移元素"
       },
@@ -524,13 +524,13 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a9_5",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "⑤ 錯イオンと配位結合",
         "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_6",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "⑥ 金属イオンの分離と系統分析",
         "realTitle": "9章 遷移元素"
       },
@@ -1307,7 +1307,7 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
   },
   "chemistry": {
     "chapters": 66,
-    "questions": 32
+    "questions": 56
   },
   "english_listening": {
     "sections": 6,

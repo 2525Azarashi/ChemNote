@@ -32,6 +32,9 @@ const TARGET_FILES = [
   'src/data/advancedThermoProblems.ts',
   // 無機化学の演習問題。理論化学と同じ表記ルールを機械で守らせる。
   'src/data/inorganicProblems.ts',
+  // 金属元素（8章・9章）は別ファイルに分けたので、これも検査対象に入れる。
+  // 入れ忘れると表記ゆれが野放しになるので、ファイルを増やしたら必ずここに足す。
+  'src/data/inorganicMetalProblems.ts',
 ];
 
 // ------------------------------------------------------------------
