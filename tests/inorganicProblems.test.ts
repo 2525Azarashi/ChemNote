@@ -29,6 +29,10 @@
 import { describe, it, expect } from 'vitest';
 import { getAllAdvancedChapters, getAdvancedFieldStats } from '../src/data/chemistryAdvancedData';
 import { chapterTrendsAdvanced } from '../src/data/chemistryAdvancedTrendData';
+// 対戦プールの生成物。章IDが2列目に入っているので、
+// 「収録した章が対戦にも供給されているか」を機械的に確かめられる。
+// 手書き禁止の生成ファイルなので、ここでは読むだけ。
+import { POOL } from '../src/battle/data/pool.chemistry.generated';
 import {
   sliceEnhancedBySubQuestion,
   sliceEnhancedByQuestion,
@@ -41,6 +45,8 @@ const INORGANIC_DONE = [
   'a7_4',
   'a7_5',
   'a7_7',
+  'a8_1',
+  'a8_2',
   'a8_3',
   'a9_2',
   'a9_3',
@@ -372,6 +378,61 @@ describe('無機化学 演習問題が原典に根ざしている', () => {
       '淡青色',
       '不揮発性',
     ],
+    // a8_1 アルカリ金属：原典の武器 5 本に一対一で対応させてある。
+    // 「アンモニアソーダ法：NaCl 2mol から Na₂CO₃ 1mol（全体式で覚える）」
+    //   → アンモニアソーダ法・ソルベー法
+    // 「NaHCO₃ は加熱で分解」→ 熱分解
+    // 「Na₂CO₃ 水溶液は加水分解で塩基性（強塩基＋弱酸の塩）」→ 加水分解
+    // 「単体は水と激しく反応→石油中に保存」→ 石油
+    // 「炎色反応：Li赤・Na黄・K紫・Cu青緑・Ca橙赤・Ba黄緑」
+    //   → 炎色反応・黄色・紫色・橙赤色・青緑色・黄緑色
+    // ※ 潮解・風解を必須にしているのは、原典の出題形式に
+    //   「水酸化ナトリウムの潮解性と CO₂ 吸収」があり、
+    //   かつ名前が似ていて逆向きの現象なので、
+    //   両方そろっていないと対比して覚える練習にならないため。
+    // ※ 「再利用」は原典が「NH₃ と CO₂ が循環して再利用される点も
+    //   正誤で問われる」と明記している要素。
+    a8_1: [
+      'アンモニアソーダ法',
+      'ソルベー法',
+      '熱分解',
+      '加水分解',
+      '潮解',
+      '風解',
+      '石油',
+      '炎色反応',
+      '再利用',
+      '橙赤色',
+      '青緑色',
+      '黄緑色',
+    ],
+    // a8_2 アルカリ土類金属：原典の武器 5 本に一対一で対応させてある。
+    // 「Be・Mg は冷水と反応しない／Ca・Sr・Ba は冷水と反応して H₂ 発生」
+    //   → 冷水・熱水（Mg は熱水なら反応する、が正誤の狙い目）
+    // 「硫酸塩：MgSO₄ は溶ける／CaSO₄・BaSO₄ は溶けない」→ 硫酸塩
+    // 「CaCO₃ は CO₂ を含む水には Ca(HCO₃)₂ として溶ける（鍾乳洞）」→ 鍾乳洞
+    // 「生石灰 CaO ＋ 水 → 消石灰 Ca(OH)₂（発熱）」→ 生石灰・消石灰
+    // 「2族の炎色反応：Ca橙赤・Sr紅・Ba黄緑」→ 炎色反応・橙赤・黄緑
+    // ※ 原典の出題形式にある「硬水・軟水」「セッコウ」「BaSO₄ の造影剤」
+    //   「CaF₂ の結晶構造」も必須にしてある。とくに面心立方格子は
+    //   原典が「結晶構造側から2族が登場する形も要注意」と警告している要素で、
+    //   ここが欠けると第1問との融合形に対応できない。
+    a8_2: [
+      '冷水',
+      '熱水',
+      '硫酸塩',
+      '炎色反応',
+      '橙赤',
+      '黄緑',
+      '生石灰',
+      '消石灰',
+      '鍾乳洞',
+      '硬水',
+      'セッコウ',
+      '造影剤',
+      '蛍石',
+      '面心立方格子',
+    ],
     // a8_3 アルミニウム・亜鉛：両性金属 / テトラヒドロキシドアルミン酸イオン /
     // 過剰のアンモニア水で Al と Zn が分かれる / ホール・エルー法と氷晶石 /
     // Al³⁺ 1 mol に電子 3 mol（ファラデーの法則）/ 不動態 / テルミット反応 / トタン・ブリキ。
@@ -489,5 +550,79 @@ describe('無機化学 演習問題が原典に根ざしている', () => {
     expect(dump).toContain('Cu + 2H₂SO₄ → CuSO₄ + SO₂ + 2H₂O');
     // 「Cu + H2SO4 → CuSO4 + H2」は典型的な誤答。正解として置いていないこと。
     expect(dump).not.toContain('CuSO₄ + H₂');
+  });
+});
+
+/**
+ * ★対戦（バトル）に1問も出ない章を作ってしまう事故を防ぐ★
+ *
+ * ■ なぜこのテストが必要になったか（実際に踏んだ）
+ *   a8_2（アルカリ土類金属）を 4大問24小問 で書き上げ、
+ *   演習側のテストもすべて緑になったのに、
+ *   npm run gen:battle-pool のあと chemistry の問題数が
+ *   203問 のまま1問も増えなかった。
+ *   内訳を見ると「未使用」が 194 → 218 と、ちょうど24件増えていた。
+ *   つまり書いた24小問すべてが対戦プールから捨てられていた。
+ *
+ * ■ 原因
+ *   scripts/gen-battle-pool.mts は
+ *   USE_SYNTHESIZED_FORMATS === false のため、
+ *   「元データの選択肢をそのまま使える問題」＝ options を持つ
+ *   multiple_choice と、答えがカタカナの short_answer しか採用しない。
+ *   （短答・記述から誤答を借りて4択を合成する処理は、
+ *     問いとして成り立たない問題が混ざるので意図的に止められている）
+ *   a8_2 は multiple_choice が 0 件で、
+ *   short_answer の答えも「熱水」「硬水」など漢字だったため、
+ *   採用条件をどれも満たさなかった。
+ *
+ * ■ なぜ既存のテストで気づけなかったか
+ *   演習側のテスト（データ形式・解説の分割・原典の武器）は
+ *   すべて通ってしまう。対戦への寄与を見ている検査が
+ *   どこにも無かったので、生成ログの数字を人間が見比べるしか
+ *   気づく方法がなかった。それは見落とすので機械化する。
+ *
+ * ■ このテストが守ること
+ *   収録した章は、対戦プールに最低1問は寄与していること。
+ *   落ちたら「その章に options を持つ設問が足りない」ということなので、
+ *   multiple_choice の小問を足して gen:battle-pool を回し直す。
+ */
+describe('無機化学 演習問題が対戦にも供給されている', () => {
+  it('★収録した章はすべて対戦プールに1問以上出ている（演習専用の章を作らない）★', () => {
+    // 章IDは生成プールの2列目に入っている。
+    // pool 側は型を持たない生の配列なので、位置で読む。
+    const chapterIdsInPool = new Set(POOL.map((row) => String(row[1])));
+
+    const missing = INORGANIC_DONE.filter((id) => !chapterIdsInPool.has(id));
+
+    expect(
+      missing,
+      missing.length
+        ? `次の章は演習には入っているが対戦プールに1問も出ていない: ${missing.join(', ')}\n` +
+            '原因はほぼ確実に「options を持つ multiple_choice の小問が無い」こと。\n' +
+            'gen-battle-pool.mts は選択肢をそのまま使える問題しか採用しない（誤答の合成は停止中）。\n' +
+            '対策: その章に multiple_choice の小問を追加し、npm run gen:battle-pool を再実行する。'
+        : '',
+    ).toEqual([]);
+  });
+
+  it('収録した章は対戦プールに複数問寄与している（1問だけの偏りを防ぐ）', () => {
+    const countByChapter = new Map<string, number>();
+    for (const row of POOL) {
+      const id = String(row[1]);
+      countByChapter.set(id, (countByChapter.get(id) ?? 0) + 1);
+    }
+
+    // 1問しか出ていない章は、対戦で同じ問題ばかり当たることになる。
+    // 4大問20小問前後を書いているのだから、最低3問は出るべき。
+    const tooFew = INORGANIC_DONE.filter((id) => (countByChapter.get(id) ?? 0) < 3);
+
+    expect(
+      tooFew,
+      tooFew.length
+        ? `次の章は対戦プールへの寄与が3問未満: ${tooFew
+            .map((id) => `${id}(${countByChapter.get(id) ?? 0}問)`)
+            .join(', ')}`
+        : '',
+    ).toEqual([]);
   });
 });
