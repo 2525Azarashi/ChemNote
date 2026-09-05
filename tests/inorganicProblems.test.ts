@@ -36,7 +36,7 @@ import {
 } from '../src/utils/explanationFormat';
 
 /** 演習問題を収録した無機化学の章ID（収録が進んだらここに足す） */
-const INORGANIC_DONE = ['a7_3', 'a7_4'] as const;
+const INORGANIC_DONE = ['a7_3', 'a7_4', 'a7_5'] as const;
 
 const chaptersById = new Map(getAllAdvancedChapters().map((c) => [c.id, c]));
 
@@ -336,6 +336,10 @@ describe('無機化学 演習問題が原典に根ざしている', () => {
     a7_3: ['酸化力', 'AgF', 'HF', '洗気瓶', 'アンモニア水'],
     // a7_4 酸素・硫黄：接触法 / V2O5 / SO2 の両性 / 濃硫酸の脱水 / オゾンの検出
     a7_4: ['接触法', 'V₂O₅', '酸化剤', '還元剤', '脱水作用', 'オゾン'],
+    // a7_5 窒素・リン：オストワルト法の量的計算 / NO と NO₂ の捕集法 /
+    // 不動態（Fe・Ni・Al）/ 王水 / リンの同素体 / P₄O₁₀ が塩基性気体に使えないこと。
+    // 原典 a7_5 の weapons 5本すべてに対応するキーワードを並べてある。
+    a7_5: ['オストワルト法', '水上置換', '下方置換', '不動態', '王水', '黄リン', '赤リン', 'P₄O₁₀'],
   };
 
   for (const [chapterId, keywords] of Object.entries(MUST_ASK)) {

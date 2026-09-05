@@ -42,7 +42,7 @@ import {
 } from './advancedThermoProblems';
 // 無機化学の演習問題。無機は章の枠だけで practiceProblems が全章 [] だったため、
 // 「解ける・解説が読める・対戦の出題元にできる」状態にするために実体を書き起こした。
-import { a7_3Problems, a7_4Problems } from './inorganicProblems';
+import { a7_3Problems, a7_4Problems, a7_5Problems } from './inorganicProblems';
 // 解説の後処理は explanationPostProcess.ts に1つだけ置いている
 // （整形関数・単元の教え方の取得も、その中で使う）。
 import { applyExplanationPostProcess } from './explanationPostProcess';
@@ -493,6 +493,9 @@ const ADVANCED_PROBLEMS: Record<string, any[]> = {
   // 7章 非金属元素（無機化学）
   a7_3: a7_3Problems,
   a7_4: a7_4Problems,
+  // 7-5 窒素・リン：オストワルト法の量的計算、NO と NO₂ の対比、不動態・王水、リンの同素体と乾燥剤。
+  // 原典（chemistryAdvancedTrendData の a7_5）は高頻度・prediction2027 が「◎ 確実」なので優先して作問した。
+  a7_5: a7_5Problems,
 };
 
 (() => {
