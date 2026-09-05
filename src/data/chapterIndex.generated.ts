@@ -434,7 +434,7 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a7_1",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "① 周期表と元素の分類",
         "realTitle": "7章 非金属元素"
       },
@@ -446,49 +446,49 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a7_3",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "③ ハロゲン（17族）",
         "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_4",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "④ 酸素・硫黄（16族）",
         "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_5",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "⑤ 窒素・リン（15族）",
         "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_6",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "⑥ 炭素・ケイ素（14族）",
         "realTitle": "7章 非金属元素"
       },
       {
         "id": "a7_7",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "⑦ 気体の製法と性質のまとめ",
         "realTitle": "7章 非金属元素"
       },
       {
         "id": "a8_1",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "① アルカリ金属（1族）",
         "realTitle": "8章 典型金属元素"
       },
       {
         "id": "a8_2",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "② アルカリ土類金属（2族）",
         "realTitle": "8章 典型金属元素"
       },
       {
         "id": "a8_3",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "③ アルミニウム・亜鉛（両性金属）",
         "realTitle": "8章 典型金属元素"
       },
@@ -500,37 +500,37 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a9_1",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "① 遷移元素の特徴",
         "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_2",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "② 鉄",
         "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_3",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "③ 銅・銀",
         "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_4",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "④ クロム・マンガン",
         "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_5",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "⑤ 錯イオンと配位結合",
         "realTitle": "9章 遷移元素"
       },
       {
         "id": "a9_6",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "⑥ 金属イオンの分離と系統分析",
         "realTitle": "9章 遷移元素"
       },
@@ -1307,7 +1307,7 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
   },
   "chemistry": {
     "chapters": 66,
-    "questions": 20
+    "questions": 80
   },
   "english_listening": {
     "sections": 6,

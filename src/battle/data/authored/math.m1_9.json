@@ -1,0 +1,87 @@
+{
+  "subject": "math",
+  "chapterId": "m1_9",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:m1_9:q_m1_9_prodsum:q_m1_9_ps_1:1",
+      "source": { "chapterId": "m1_9", "problemId": "q_m1_9_prodsum", "subQuestionId": "q_m1_9_ps_1" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ sin 5x cos 2x dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "-cos 7x/14 - cos 3x/6 + C", "correct": true,
+          "why": "積和公式で sin 5x cos 2x = (1/2){sin 7x + sin 3x}。(1/2){-cos 7x/7 - cos 3x/3} + C を整理した形。" },
+        { "text": "-cos 7x/7 - cos 3x/3 + C",
+          "why": "積和公式の外側の 1/2 を掛け忘れた形。分母はそれぞれ 14、6 になる。" },
+        { "text": "cos 7x/14 + cos 3x/6 + C",
+          "why": "sin の積分に付くマイナスを落とした形。∫sin kx dx = -cos kx/k。" },
+        { "text": "-cos 10x/20 + C",
+          "why": "角を 5x·2x = 10x と掛け算してしまった形。積和公式で現れるのは和 7x と差 3x。" }
+      ],
+      "oneLine": "-cos 7x/14 - cos 3x/6 + C。角の違う積は積和公式で和 7x と差 3x に直す。",
+      "timeLimit": 25,
+      "grounding": "= -cos 7x/14 - cos 3x/6 + C"
+    },
+    {
+      "id": "a:m1_9:q_m1_9_prodsum:q_m1_9_ps_1:2",
+      "source": { "chapterId": "m1_9", "problemId": "q_m1_9_prodsum", "subQuestionId": "q_m1_9_ps_1" },
+      "format": "choice4",
+      "prompt": "積和公式で sin A cos B を和の形に直したものはどれか。",
+      "label": "",
+      "options": [
+        { "text": "(1/2){sin(A+B) + sin(A-B)}", "correct": true,
+          "why": "解説が挙げている積和公式「sin A cos B = (1/2){sin(A+B) + sin(A-B)}」そのもの。" },
+        { "text": "(1/2){cos(A+B) + cos(A-B)}",
+          "why": "こちらは cos A cos B の形。sin×cos では右辺が sin の和になる。" },
+        { "text": "-(1/2){cos(A+B) - cos(A-B)}",
+          "why": "こちらは sin A sin B の形。sin 同士の積のときに使う。" },
+        { "text": "(1/2){sin(A+B) - sin(A-B)}",
+          "why": "差の符号を誤った形。sin A cos B では2項を足す。" }
+      ],
+      "oneLine": "(1/2){sin(A+B) + sin(A-B)}。sin×cos は sin の和に、cos×cos は cos の和になる。",
+      "timeLimit": 16,
+      "grounding": "sin A cos B = (1/2){sin(A+B) + sin(A-B)}"
+    },
+    {
+      "id": "a:m1_9:q_m1_9_prodsum:q_m1_9_ps_2:1",
+      "source": { "chapterId": "m1_9", "problemId": "q_m1_9_prodsum", "subQuestionId": "q_m1_9_ps_2" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ cos 4x cos x dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "sin 5x/10 + sin 3x/6 + C", "correct": true,
+          "why": "cos 4x cos x = (1/2){cos 5x + cos 3x}。(1/2){sin 5x/5 + sin 3x/3} + C を整理した形。" },
+        { "text": "sin 5x/5 + sin 3x/3 + C",
+          "why": "積和公式の外側の 1/2 を掛け忘れた形。分母は 10、6 になる。" },
+        { "text": "-sin 5x/10 - sin 3x/6 + C",
+          "why": "cos の積分にマイナスを付けてしまった形。∫cos kx dx = sin kx/k でマイナスは付かない。" },
+        { "text": "sin 4x·sin x + C",
+          "why": "各因子を別々に積分して掛けた形。積の積分は各因子の積分の積にはならない。" }
+      ],
+      "oneLine": "sin 5x/10 + sin 3x/6 + C。cos×cos は cos の和に直してから積分する。",
+      "timeLimit": 25,
+      "grounding": "= sin 5x/10 + sin 3x/6 + C"
+    },
+    {
+      "id": "a:m1_9:q_m1_9_prodsum:q_m1_9_ps_2:2",
+      "source": { "chapterId": "m1_9", "problemId": "q_m1_9_prodsum", "subQuestionId": "q_m1_9_ps_2" },
+      "format": "choice4",
+      "prompt": "角度の違う三角関数の積を積分するとき、最初にすべきことはどれか。",
+      "label": "",
+      "options": [
+        { "text": "積和公式で和に直す", "correct": true,
+          "why": "解説は「角度の違う三角関数の積は、そのままでは積分できないので積和公式で和に直します」と述べている。" },
+        { "text": "半角公式で次数を下げる",
+          "why": "半角は同じ角の偶数乗のときの手段。角が違う積では和に直すのが先。" },
+        { "text": "1つ残して sin²+cos²=1 で変換する",
+          "why": "こちらは同じ角の奇数乗のときの方針。角が違う積には使えない。" },
+        { "text": "そのまま各因子を積分して掛ける",
+          "why": "積の積分は各因子の積分の積にならない。だから和に直す必要がある。" }
+      ],
+      "oneLine": "積和公式で和に直す。「積のままでは積分できない → 和に直す」が本質。",
+      "timeLimit": 16,
+      "grounding": "積和公式で和に直します"
+    }
+  ]
+}

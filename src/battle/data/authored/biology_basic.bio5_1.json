@@ -1,0 +1,1537 @@
+{
+  "subject": "biology_basic",
+  "chapterId": "bio5_1",
+  "authoredBy": "room-bio",
+  "questions": [
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_a:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_a"
+      },
+      "format": "choice4",
+      "prompt": "生物を取り巻く光・水・大気・土壌などの環境を、まとめて何環境というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "非生物的環境",
+          "correct": true,
+          "why": "光・水・大気・土壌など、生物以外の環境要素をまとめてこう呼ぶ。"
+        },
+        {
+          "text": "体内環境",
+          "why": "体内環境は体液が細胞をとりまく環境。生物の外側の環境ではない。"
+        },
+        {
+          "text": "生物群集",
+          "why": "生物群集はその地域の生物のまとまり。環境要素の呼び名ではない。"
+        },
+        {
+          "text": "栄養段階",
+          "why": "栄養段階は食物連鎖の各段階。環境の呼び名ではない。"
+        }
+      ],
+      "oneLine": "非生物的環境。光・水・大気・土壌などをまとめた呼び名。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_a:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_a"
+      },
+      "format": "choice4",
+      "prompt": "非生物的環境にあたるものの組み合わせはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "光・水・大気・土壌",
+          "correct": true,
+          "why": "生物以外の環境要素がこれ。生物のまとまりとは区別する。"
+        },
+        {
+          "text": "植物・動物・菌類",
+          "why": "これらは生物であって、生物群集にあたる。非生物的環境ではない。"
+        },
+        {
+          "text": "生産者・消費者・分解者",
+          "why": "これは生態系の中での生物の役割分担。環境要素ではない。"
+        },
+        {
+          "text": "食物連鎖・食物網・栄養段階",
+          "why": "これらは生物どうしの関係を表す用語。環境要素ではない。"
+        }
+      ],
+      "oneLine": "光・水・大気・土壌。生物群集とあわせて生態系をつくる。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_i:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_i"
+      },
+      "format": "choice4",
+      "prompt": "ある地域の生物のまとまりと非生物的環境を、ひとまとまりとして捉えたものを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "生態系",
+          "correct": true,
+          "why": "生物群集と非生物的環境を、物質とエネルギーの流れで結ばれた1つのシステムとみたもの。"
+        },
+        {
+          "text": "生物群集",
+          "why": "生物群集は生物のまとまりだけ。非生物的環境は含まない。"
+        },
+        {
+          "text": "個体群",
+          "why": "個体群は同じ種の個体のまとまり。環境を含む概念ではない。"
+        },
+        {
+          "text": "バイオーム",
+          "why": "バイオームは植生と動物を含めた生物のまとまり。環境を含む語ではない。"
+        }
+      ],
+      "oneLine": "生態系。生物群集＋非生物的環境を1つのシステムとして捉えたもの。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_u:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_u"
+      },
+      "format": "choice4",
+      "prompt": "非生物的環境が生物に影響を与えることを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "作用",
+          "correct": true,
+          "why": "環境から生物へ向かう影響が作用。向きが逆の場合は別の名前になる。"
+        },
+        {
+          "text": "遷移",
+          "why": "遷移は植生が一定方向に変化していく現象。影響の向きを表す語ではない。"
+        },
+        {
+          "text": "適応",
+          "why": "適応は生物が環境に合った形質をもつこと。影響そのものの呼び名ではない。"
+        },
+        {
+          "text": "競争",
+          "why": "競争は生物どうしの関係。環境から生物への影響を指す語ではない。"
+        }
+      ],
+      "oneLine": "作用。環境→生物の向きの影響。逆向きは環境形成作用。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_e:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_e"
+      },
+      "format": "choice4",
+      "prompt": "生物の活動が非生物的環境を変えることを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "環境形成作用",
+          "correct": true,
+          "why": "生物→環境の向きの影響。環境→生物の向きは作用と呼ぶ。"
+        },
+        {
+          "text": "光合成",
+          "why": "光合成は無機物から有機物をつくるはたらき。影響の向きを表す語ではない。"
+        },
+        {
+          "text": "食物連鎖",
+          "why": "食物連鎖は生物どうしの食う−食われるのつながり。環境への影響の名ではない。"
+        },
+        {
+          "text": "自然浄化",
+          "why": "自然浄化は水質が自然に回復すること。影響の向きを表す用語ではない。"
+        }
+      ],
+      "oneLine": "環境形成作用。生物→環境の向きの影響で、作用とは向きが逆。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_e:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_e"
+      },
+      "format": "choice4",
+      "prompt": "環境形成作用とは、どちら向きの影響のことか。",
+      "label": "",
+      "options": [
+        {
+          "text": "生物から非生物的環境への影響",
+          "correct": true,
+          "why": "生物の活動が環境を変える向き。これが環境形成作用である。"
+        },
+        {
+          "text": "非生物的環境から生物への影響",
+          "why": "これは作用のほう。向きが逆なので取り違えやすい。"
+        },
+        {
+          "text": "生物どうしの食う−食われるの関係",
+          "why": "それは食物連鎖。生物間の関係であって環境との間の影響ではない。"
+        },
+        {
+          "text": "同種の個体どうしの競争",
+          "why": "個体間の関係であり、非生物的環境とのやりとりではない。"
+        }
+      ],
+      "oneLine": "生物から非生物的環境への影響が環境形成作用。逆向きが作用。",
+      "timeLimit": 20,
+      "grounding": "生物から非生物的環境への影響を環境形成作用という"
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_o:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_o"
+      },
+      "format": "choice4",
+      "prompt": "光合成によって無機物から有機物を合成する生物を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "生産者",
+          "correct": true,
+          "why": "無機物から有機物をつくる生物。植物などがあてはまる。"
+        },
+        {
+          "text": "消費者",
+          "why": "消費者は他の生物がつくった有機物を利用する生物。自分ではつくらない。"
+        },
+        {
+          "text": "分解者",
+          "why": "分解者は有機物を無機物に分解する生物。有機物を合成する側ではない。"
+        },
+        {
+          "text": "栄養段階",
+          "why": "栄養段階は食物連鎖の各段階を表す語で、生物の役割の名前ではない。"
+        }
+      ],
+      "oneLine": "生産者。無機物から有機物をつくる。植物などがあてはまる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_ka:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_ka"
+      },
+      "format": "choice4",
+      "prompt": "他の生物がつくった有機物を取り込んで利用する生物を、まとめて何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "消費者",
+          "correct": true,
+          "why": "自分で有機物をつくらず、他の生物由来の有機物を利用する生物のまとまり。"
+        },
+        {
+          "text": "生産者",
+          "why": "生産者は無機物から有機物をつくる側。取り込んで利用する側ではない。"
+        },
+        {
+          "text": "分解者",
+          "why": "分解者は消費者のうち枯死体などを利用するものを特に指す呼び名。全体の名ではない。"
+        },
+        {
+          "text": "食物網",
+          "why": "食物網は生物どうしの関係のつながり。生物の役割の呼び名ではない。"
+        }
+      ],
+      "oneLine": "消費者。動物などが代表で、分解者はこの中の特別な一群。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_ki:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_ki"
+      },
+      "format": "choice4",
+      "prompt": "枯死体・遺体・排出物中の有機物を利用する菌類・細菌などを、とくに何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "分解者",
+          "correct": true,
+          "why": "有機物を無機物に分解する役割をもつ生物。菌類・細菌が代表。"
+        },
+        {
+          "text": "消費者",
+          "why": "消費者はより広い呼び名。そのうち枯死体などを利用するものが分解者である。"
+        },
+        {
+          "text": "生産者",
+          "why": "生産者は無機物から有機物をつくる側で、役割が逆である。"
+        },
+        {
+          "text": "先駆種",
+          "why": "先駆種は遷移の初期に侵入する種。生態系での役割分担の名ではない。"
+        }
+      ],
+      "oneLine": "分解者。菌類・細菌が代表で、有機物を無機物に分解する。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_ki:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_ki"
+      },
+      "format": "choice4",
+      "prompt": "分解者にあたる生物として正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "菌類・細菌",
+          "correct": true,
+          "why": "有機物を無機物に分解する役割を担う。分解者の代表である。"
+        },
+        {
+          "text": "植物",
+          "why": "植物は無機物から有機物をつくる生産者である。"
+        },
+        {
+          "text": "草食動物",
+          "why": "草食動物は生産者を食べる一次消費者。分解者ではない。"
+        },
+        {
+          "text": "肉食動物",
+          "why": "他の動物を食べる高次消費者。分解する側ではない。"
+        }
+      ],
+      "oneLine": "菌類・細菌。有機物を無機物に分解する分解者の代表。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_ku:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_ku"
+      },
+      "format": "choice4",
+      "prompt": "生物どうしの「食う−食われる」の直線的なつながりを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "食物連鎖",
+          "correct": true,
+          "why": "食う−食われるの直線的なつながり。実際には複雑に絡み合っている。"
+        },
+        {
+          "text": "食物網",
+          "why": "食物網は多くの種が複雑に絡み合ったもの。直線的なつながりの呼び名ではない。"
+        },
+        {
+          "text": "栄養段階",
+          "why": "栄養段階はつながりの各段階のこと。つながり自体の名ではない。"
+        },
+        {
+          "text": "生態ピラミッド",
+          "why": "生態ピラミッドは段階ごとに積み上げた図の呼び名である。"
+        }
+      ],
+      "oneLine": "食物連鎖。食う−食われるの直線的なつながり。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_ke:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_ke"
+      },
+      "format": "choice4",
+      "prompt": "実際の生態系のように、多くの種が複雑に絡み合った食う−食われるの関係を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "食物網",
+          "correct": true,
+          "why": "実際の生態系では多くの種が絡み合い、網の目のようになっている。"
+        },
+        {
+          "text": "食物連鎖",
+          "why": "食物連鎖は直線的なつながり。複雑に絡み合った状態の呼び名ではない。"
+        },
+        {
+          "text": "生態ピラミッド",
+          "why": "生態ピラミッドは栄養段階ごとに積み上げた図。関係の網目のことではない。"
+        },
+        {
+          "text": "生物群集",
+          "why": "生物群集は生物のまとまり。食う−食われるの関係の呼び名ではない。"
+        }
+      ],
+      "oneLine": "食物網。実際の生態系では食物連鎖が複雑に絡み合っている。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_ko:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_ko"
+      },
+      "format": "choice4",
+      "prompt": "生産者・一次消費者・二次消費者という食物連鎖の各段階を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "栄養段階",
+          "correct": true,
+          "why": "食物連鎖の各段階のこと。段階ごとに積み上げると生態ピラミッドになる。"
+        },
+        {
+          "text": "食物連鎖",
+          "why": "食物連鎖はつながり全体のこと。各段階を指す語ではない。"
+        },
+        {
+          "text": "食物網",
+          "why": "食物網は絡み合ったつながり全体。各段階の呼び名ではない。"
+        },
+        {
+          "text": "階層構造",
+          "why": "階層構造は森林内部の層のつくり。食物連鎖の段階ではない。"
+        }
+      ],
+      "oneLine": "栄養段階。生産者→一次消費者→二次消費者という各段階。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_structure:q_bio5_structure_ko:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_structure",
+        "subQuestionId": "q_bio5_structure_ko"
+      },
+      "format": "choice4",
+      "prompt": "個体数や生物量を栄養段階ごとに積み上げると、一般にどのような形になるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "ピラミッド形",
+          "correct": true,
+          "why": "上位の栄養段階ほど小さくなるため、積み上げるとピラミッド形になる。"
+        },
+        {
+          "text": "上位ほど大きくなる形",
+          "why": "上位の栄養段階ほど小さくなるのがふつう。向きが逆である。"
+        },
+        {
+          "text": "長方形",
+          "why": "各段階が同じ大きさになることはない。上位ほど小さくなる。"
+        },
+        {
+          "text": "砂時計形",
+          "why": "中間の段階だけが小さくなる形にはならない。上位ほど小さくなる。"
+        }
+      ],
+      "oneLine": "ピラミッド形（生態ピラミッド）。上位の栄養段階ほど小さくなる。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_cycle:q_bio5_cycle_a:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_cycle",
+        "subQuestionId": "q_bio5_cycle_a"
+      },
+      "format": "choice",
+      "prompt": "炭素や窒素などの物質は、生物と非生物的環境の間を循環するか、一方向に流れるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "循環する",
+          "correct": true,
+          "why": "物質は形を変えながら生物と環境の間を行き来するので循環する。"
+        },
+        {
+          "text": "一方向に流れる",
+          "why": "一方向に流れるのはエネルギー。物質とエネルギーを取り違えた誤り。"
+        }
+      ],
+      "oneLine": "循環する。物質は形を変えながら生物と環境の間を行き来する。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio5_1:q_bio5_cycle:q_bio5_cycle_i:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_cycle",
+        "subQuestionId": "q_bio5_cycle_i"
+      },
+      "format": "choice4",
+      "prompt": "生態系に入ったエネルギーは、最終的に何エネルギーとして生態系外へ出ていくか。",
+      "label": "",
+      "options": [
+        {
+          "text": "熱エネルギー",
+          "correct": true,
+          "why": "最終的にすべて熱として出ていく。熱は再利用できない。"
+        },
+        {
+          "text": "光エネルギー",
+          "why": "光エネルギーは入ってくる側の形。出ていく側の形ではない。"
+        },
+        {
+          "text": "化学エネルギー",
+          "why": "化学エネルギーは光合成で変換された形。生態系外へ出ていく形ではない。"
+        },
+        {
+          "text": "運動エネルギー",
+          "why": "運動エネルギーは生態系の外へ出ていく形として扱われない。"
+        }
+      ],
+      "oneLine": "熱エネルギー。熱は再利用できないので、エネルギーは循環しない。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_cycle:q_bio5_cycle_u:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_cycle",
+        "subQuestionId": "q_bio5_cycle_u"
+      },
+      "format": "choice",
+      "prompt": "生態系におけるエネルギーは、循環するか、一方向に流れるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "一方向に流れる",
+          "correct": true,
+          "why": "光として入り熱として出ていくため、もとには戻らない。"
+        },
+        {
+          "text": "循環する",
+          "why": "循環するのは物質。「エネルギーは循環しない」が超頻出ポイント。"
+        }
+      ],
+      "oneLine": "一方向に流れる。「エネルギーは循環しない」が正誤問題の超頻出点。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio5_1:q_bio5_cycle:q_bio5_cycle_u:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_cycle",
+        "subQuestionId": "q_bio5_cycle_u"
+      },
+      "format": "choice4",
+      "prompt": "エネルギーが物質と違って循環しないのはなぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "熱は再利用できないから",
+          "correct": true,
+          "why": "最終的に熱になって出ていき、生産者が再び使うことができない。"
+        },
+        {
+          "text": "エネルギーは量が変わらないから",
+          "why": "量ではなく、使える形に戻らないことが理由である。"
+        },
+        {
+          "text": "光合成で消えてしまうから",
+          "why": "光合成はエネルギーを化学エネルギーに変換する過程。消えるのではない。"
+        },
+        {
+          "text": "分解者がエネルギーを使わないから",
+          "why": "分解者もエネルギーを使う。理由は熱が再利用できないことにある。"
+        }
+      ],
+      "oneLine": "熱は再利用できないから。だからエネルギーは一方向に流れる。",
+      "timeLimit": 18,
+      "grounding": "熱は再利用できないため"
+    },
+    {
+      "id": "a:bio5_1:q_bio5_cycle:q_bio5_cycle_e:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_cycle",
+        "subQuestionId": "q_bio5_cycle_e"
+      },
+      "format": "choice4",
+      "prompt": "炭素は大気中では主にどのような物質として存在しているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "二酸化炭素",
+          "correct": true,
+          "why": "大気中の炭素は主にこの形。光合成で有機物に固定される。"
+        },
+        {
+          "text": "窒素",
+          "why": "窒素は大気の主成分だが、炭素を含む物質ではない。"
+        },
+        {
+          "text": "酸素",
+          "why": "酸素も炭素を含まない。炭素循環の主役ではない。"
+        },
+        {
+          "text": "メタン",
+          "why": "メタンも炭素を含み温室効果をもつが、大気中の主な存在形ではない。"
+        }
+      ],
+      "oneLine": "二酸化炭素。大気中の炭素の主な存在形で、光合成で有機物になる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio5_1:q_bio5_cycle:q_bio5_cycle_o:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_cycle",
+        "subQuestionId": "q_bio5_cycle_o"
+      },
+      "format": "choice4",
+      "prompt": "大気中の二酸化炭素が生産者によって有機物に取り込まれるはたらきを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "光合成",
+          "correct": true,
+          "why": "生産者が二酸化炭素を有機物に固定するはたらき。炭素循環の入口。"
+        },
+        {
+          "text": "呼吸",
+          "why": "呼吸は有機物を分解して二酸化炭素を放出する側。向きが逆である。"
+        },
+        {
+          "text": "蒸散",
+          "why": "蒸散は水が水蒸気として出ていくこと。炭素の固定とは関係がない。"
+        },
+        {
+          "text": "窒素固定",
+          "why": "窒素固定は大気中の窒素を取り込むはたらき。炭素ではない。"
+        }
+      ],
+      "oneLine": "光合成。大気中のCO₂を有機物に固定する、炭素循環の入口。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_cycle:q_bio5_cycle_ka:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_cycle",
+        "subQuestionId": "q_bio5_cycle_ka"
+      },
+      "format": "choice4",
+      "prompt": "各栄養段階の生物が有機物を分解し、炭素を再び大気に戻すはたらきを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "呼吸",
+          "correct": true,
+          "why": "有機物を分解して二酸化炭素を放出する。炭素循環の出口にあたる。"
+        },
+        {
+          "text": "光合成",
+          "why": "光合成は二酸化炭素を取り込む側。向きが逆である。"
+        },
+        {
+          "text": "蒸散",
+          "why": "蒸散は水蒸気を放出するはたらき。炭素を戻すはたらきではない。"
+        },
+        {
+          "text": "自然浄化",
+          "why": "自然浄化は水質が回復すること。炭素を大気に戻すはたらきではない。"
+        }
+      ],
+      "oneLine": "呼吸。生産者も消費者も分解者も行い、炭素をCO₂として大気に戻す。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_cycle:q_bio5_cycle_ki:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_cycle",
+        "subQuestionId": "q_bio5_cycle_ki"
+      },
+      "format": "choice4",
+      "prompt": "地表から放射される熱を吸収して気温を上昇させるはたらきをもつ気体を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "温室効果ガス",
+          "correct": true,
+          "why": "二酸化炭素やメタンなどがこれにあたる。増加すると気温が上がる。"
+        },
+        {
+          "text": "希ガス",
+          "why": "希ガスは反応しにくい気体の分類。熱を吸収するはたらきによる呼び名ではない。"
+        },
+        {
+          "text": "光化学オキシダント",
+          "why": "光化学オキシダントは大気汚染物質。熱を吸収する気体の総称ではない。"
+        },
+        {
+          "text": "栄養塩類",
+          "why": "栄養塩類は窒素・リンなどの塩類で、気体ではない。"
+        }
+      ],
+      "oneLine": "温室効果ガス。CO₂やメタンが代表で、地表からの熱を吸収する。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio5_1:q_bio5_cycle:q_bio5_cycle_ku:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_cycle",
+        "subQuestionId": "q_bio5_cycle_ku"
+      },
+      "format": "choice4",
+      "prompt": "温室効果が強まることで進む、世界的な気温上昇を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "地球温暖化",
+          "correct": true,
+          "why": "温室効果ガスの増加によって進む世界規模の気温上昇。"
+        },
+        {
+          "text": "富栄養化",
+          "why": "富栄養化は水中に栄養塩類が過剰に蓄積すること。気温の問題ではない。"
+        },
+        {
+          "text": "生物濃縮",
+          "why": "生物濃縮は物質が高次消費者に高濃度で蓄積する現象である。"
+        },
+        {
+          "text": "自然浄化",
+          "why": "自然浄化は水質が自然に回復すること。気温上昇とは無関係。"
+        }
+      ],
+      "oneLine": "地球温暖化。温室効果ガスの増加によって進む世界的な気温上昇。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_cycle:q_bio5_cycle_ku:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_cycle",
+        "subQuestionId": "q_bio5_cycle_ku"
+      },
+      "format": "choice4",
+      "prompt": "化石燃料の燃焼が大気中の二酸化炭素濃度を上昇させるのはなぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "大昔に固定された炭素を短期間で大気に戻すから",
+          "correct": true,
+          "why": "長い時間をかけて地中に固定された炭素が、一気に大気へ放出される。"
+        },
+        {
+          "text": "燃焼によって新しい炭素が生じるから",
+          "why": "炭素が新たにつくられることはない。もともと固定されていた炭素が戻るだけ。"
+        },
+        {
+          "text": "光合成の量が増えるから",
+          "why": "光合成が増えれば濃度は下がる。理由が逆になっている。"
+        },
+        {
+          "text": "分解者のはたらきが止まるから",
+          "why": "分解者が止まっても濃度は上がらない。原因は化石燃料由来の放出である。"
+        }
+      ],
+      "oneLine": "大昔に固定された炭素を短期間で大気に戻すから。だから濃度が上昇する。",
+      "timeLimit": 20,
+      "grounding": "大昔に固定された炭素を短期間で大気に戻すため"
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_a:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_a"
+      },
+      "format": "choice4",
+      "prompt": "台風や山火事などのように、生態系に変化をもたらす外部からの働きかけを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "かく乱",
+          "correct": true,
+          "why": "台風・山火事などが代表。程度が小さければ生態系は元に戻る。"
+        },
+        {
+          "text": "復元力",
+          "why": "復元力はかく乱を受けても元に戻ろうとする力。働きかけそのものではない。"
+        },
+        {
+          "text": "自然浄化",
+          "why": "自然浄化は水質が微生物の分解などで回復すること。外部からの働きかけではない。"
+        },
+        {
+          "text": "富栄養化",
+          "why": "富栄養化は栄養塩類が過剰に蓄積すること。かく乱一般の呼び名ではない。"
+        }
+      ],
+      "oneLine": "かく乱。台風や山火事などが代表的な例。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_i:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_i"
+      },
+      "format": "choice4",
+      "prompt": "かく乱の程度が小さければ、生態系が元の状態に戻ろうとする性質を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "復元力",
+          "correct": true,
+          "why": "かく乱を受けても元に戻る力。これを超えると別の状態に移行してしまう。"
+        },
+        {
+          "text": "かく乱",
+          "why": "かく乱は外部からの働きかけそのもの。元に戻る力ではない。"
+        },
+        {
+          "text": "生態系サービス",
+          "why": "生態系サービスは人間が生態系から受ける恵み。復元する力ではない。"
+        },
+        {
+          "text": "生物多様性",
+          "why": "生物多様性は生物の多様さのこと。元に戻る性質そのものの名ではない。"
+        }
+      ],
+      "oneLine": "復元力（レジリエンス）。これを超えるかく乱では別の状態に移行する。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_i:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_i"
+      },
+      "format": "choice4",
+      "prompt": "生態系が復元力を超える大きなかく乱を受けると、どうなるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "別の状態へ移行してしまう",
+          "correct": true,
+          "why": "復元力の限界を超えると元には戻らず、違う状態へ移ってしまう。"
+        },
+        {
+          "text": "必ず時間をかけて元に戻る",
+          "why": "元に戻るのは復元力の範囲内のとき。超えると戻らない。"
+        },
+        {
+          "text": "復元力がさらに強くなる",
+          "why": "かく乱が大きいほど復元力が増すわけではない。限界を超えると戻らない。"
+        },
+        {
+          "text": "かく乱が起こらなくなる",
+          "why": "かく乱の発生は生態系の状態とは別。論点がずれている。"
+        }
+      ],
+      "oneLine": "別の状態へ移行してしまう。復元力には限界がある。",
+      "timeLimit": 18,
+      "grounding": "復元力を超えるかく乱が起こると別の状態へ移行してしまう"
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_u:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_u"
+      },
+      "format": "choice4",
+      "prompt": "河川や海に流入した少量の有機物が、微生物の分解などによって水質が回復することを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "自然浄化",
+          "correct": true,
+          "why": "希釈と微生物の分解によって水質が自然に回復するはたらき。"
+        },
+        {
+          "text": "富栄養化",
+          "why": "富栄養化は栄養塩類が過剰に蓄積すること。回復ではなく悪化の方向である。"
+        },
+        {
+          "text": "生物濃縮",
+          "why": "生物濃縮は物質が高次消費者に蓄積する現象。水質の回復ではない。"
+        },
+        {
+          "text": "環境形成作用",
+          "why": "環境形成作用は生物が環境を変えること。水質回復を指す専用の語ではない。"
+        }
+      ],
+      "oneLine": "自然浄化。希釈と微生物の分解によって水質が回復する。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_e:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_e"
+      },
+      "format": "choice4",
+      "prompt": "生活排水などによって水中に栄養塩類が過剰に蓄積することを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "富栄養化",
+          "correct": true,
+          "why": "窒素・リンなどの栄養塩類が過剰になること。アオコや赤潮の原因になる。"
+        },
+        {
+          "text": "自然浄化",
+          "why": "自然浄化は水質が回復すること。栄養塩類が過剰になることではない。"
+        },
+        {
+          "text": "生物濃縮",
+          "why": "生物濃縮は分解されにくい物質が食物連鎖で濃くなる現象である。"
+        },
+        {
+          "text": "地球温暖化",
+          "why": "地球温暖化は気温上昇の問題。水中の栄養塩類の話ではない。"
+        }
+      ],
+      "oneLine": "富栄養化。窒素・リンなどの栄養塩類が過剰になること。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_e:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_e"
+      },
+      "format": "choice4",
+      "prompt": "富栄養化の原因となる、生活排水に多く含まれる栄養塩類の成分はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "窒素・リン",
+          "correct": true,
+          "why": "窒素・リンなどの栄養塩類が過剰になることで富栄養化が起こる。"
+        },
+        {
+          "text": "炭素・酸素",
+          "why": "炭素や酸素は栄養塩類として扱われない。原因となるのは窒素・リンである。"
+        },
+        {
+          "text": "水銀・鉛",
+          "why": "水銀や鉛は生物濃縮を起こす有害物質。富栄養化の原因物質ではない。"
+        },
+        {
+          "text": "メタン・二酸化炭素",
+          "why": "これらは温室効果ガス。水中の栄養塩類ではない。"
+        }
+      ],
+      "oneLine": "窒素・リン。これらの栄養塩類が過剰になると富栄養化が起こる。",
+      "timeLimit": 18,
+      "grounding": "窒素・リンなどの栄養塩類が過剰になる富栄養化"
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_ka:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_ka"
+      },
+      "format": "choice4",
+      "prompt": "富栄養化により、内湾でプランクトンが異常繁殖して海水が赤褐色になる現象を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "赤潮",
+          "correct": true,
+          "why": "内湾で起こる。湖沼で起こるアオコと発生場所で区別する。"
+        },
+        {
+          "text": "アオコ",
+          "why": "アオコは湖沼で植物プランクトンが異常繁殖する現象。発生場所が違う。"
+        },
+        {
+          "text": "自然浄化",
+          "why": "自然浄化は水質が回復すること。異常繁殖の現象名ではない。"
+        },
+        {
+          "text": "生物濃縮",
+          "why": "生物濃縮は物質が高次消費者に蓄積する現象。プランクトンの繁殖ではない。"
+        }
+      ],
+      "oneLine": "赤潮。内湾で発生する。湖沼のアオコとは発生場所で区別する。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_ka:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_ka"
+      },
+      "format": "choice4",
+      "prompt": "赤潮やアオコの発生によって魚介類が大量死することがあるのはなぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "プランクトンの死骸の分解で酸素が消費されるから",
+          "correct": true,
+          "why": "分解に酸素が使われて水中の酸素が欠乏し、魚介類が死んでしまう。"
+        },
+        {
+          "text": "プランクトンが魚介類を捕食するから",
+          "why": "プランクトンが魚を食べるわけではない。原因は酸素の欠乏である。"
+        },
+        {
+          "text": "水温が急激に下がるから",
+          "why": "水温変化ではなく、分解による酸素消費が原因である。"
+        },
+        {
+          "text": "水中の栄養塩類が不足するから",
+          "why": "むしろ栄養塩類は過剰。不足ではなく酸素欠乏が原因である。"
+        }
+      ],
+      "oneLine": "死骸の分解で酸素が消費されるから。酸素欠乏が大量死を招く。",
+      "timeLimit": 20,
+      "grounding": "プランクトンの死骸の分解で酸素が消費されて魚介類の大量死を招く"
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_ki:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_ki"
+      },
+      "format": "choice4",
+      "prompt": "体内で分解・排出されにくい物質が、食物連鎖を通じて高次の消費者に高濃度で蓄積する現象を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "生物濃縮",
+          "correct": true,
+          "why": "食物連鎖の上位ほど高濃度になる。DDTやPCBが代表例。"
+        },
+        {
+          "text": "富栄養化",
+          "why": "富栄養化は水中の栄養塩類が過剰になること。体内への蓄積ではない。"
+        },
+        {
+          "text": "自然浄化",
+          "why": "自然浄化は水質が回復すること。蓄積が進む現象ではない。"
+        },
+        {
+          "text": "環境形成作用",
+          "why": "環境形成作用は生物が環境を変えること。蓄積の現象名ではない。"
+        }
+      ],
+      "oneLine": "生物濃縮。食物連鎖の上位ほど高濃度になる。DDT・PCBが代表例。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_ki:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_ki"
+      },
+      "format": "choice4",
+      "prompt": "生物濃縮を起こしやすい物質の性質として正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "体内で分解・排出されにくい",
+          "correct": true,
+          "why": "分解も排出もされにくいため体内に残り、上位の栄養段階ほど濃くなる。"
+        },
+        {
+          "text": "水に溶けやすく尿として出やすい",
+          "why": "排出されやすい物質は蓄積しない。性質が逆になっている。"
+        },
+        {
+          "text": "分解者によってすぐ無機物になる",
+          "why": "すぐ分解される物質は濃縮されない。分解されにくいことが条件である。"
+        },
+        {
+          "text": "気体として体外に放出される",
+          "why": "体外に出てしまう物質は蓄積しない。残ることが濃縮の前提である。"
+        }
+      ],
+      "oneLine": "体内で分解・排出されにくい。だから上位の栄養段階ほど高濃度になる。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_ki:3",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_ki"
+      },
+      "format": "choice4",
+      "prompt": "生物濃縮を起こす物質の例として挙げられているものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "DDT や PCB",
+          "correct": true,
+          "why": "分解されにくい物質で、食物連鎖の上位ほど高濃度になる。"
+        },
+        {
+          "text": "窒素・リン",
+          "why": "これらは富栄養化を招く栄養塩類。濃縮される物質ではない。"
+        },
+        {
+          "text": "二酸化炭素",
+          "why": "温室効果ガスであり、体内に蓄積して濃縮される物質ではない。"
+        },
+        {
+          "text": "酸素",
+          "why": "呼吸に使われる気体で、体内に蓄積しない。"
+        }
+      ],
+      "oneLine": "DDT や PCB。分解されにくく、食物連鎖の上位ほど高濃度になる。",
+      "timeLimit": 20,
+      "grounding": "DDT や PCB のような分解されにくい物質"
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_ku:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_ku"
+      },
+      "format": "choice4",
+      "prompt": "人間活動によって本来の生息場所から別の場所へ持ち込まれ、定着した生物を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "外来生物",
+          "correct": true,
+          "why": "人間が持ち込んで定着した生物。捕食や競争で在来種を脅かす。"
+        },
+        {
+          "text": "在来種",
+          "why": "在来種はもとからその地域にいる種。持ち込まれた側ではない。"
+        },
+        {
+          "text": "絶滅危惧種",
+          "why": "絶滅危惧種は絶滅のおそれがある生物。持ち込まれた生物ではない。"
+        },
+        {
+          "text": "先駆種",
+          "why": "先駆種は遷移の初期に侵入する種。人間が持ち込んだ生物ではない。"
+        }
+      ],
+      "oneLine": "外来生物（外来種）。捕食や競争を通じて在来種を脅かす。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_ku:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_ku"
+      },
+      "format": "choice4",
+      "prompt": "外来生物が在来種を脅かす主なしくみとして正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "捕食や競争",
+          "correct": true,
+          "why": "在来種を食べたり、資源をめぐって競争したりして減少させる。"
+        },
+        {
+          "text": "温室効果の増大",
+          "why": "温室効果は地球温暖化のしくみ。外来生物の影響とは別である。"
+        },
+        {
+          "text": "栄養塩類の供給",
+          "why": "栄養塩類の過剰は富栄養化の問題。外来生物の影響のしくみではない。"
+        },
+        {
+          "text": "熱エネルギーの放出",
+          "why": "熱の放出はエネルギーの流れの話。在来種への影響のしくみではない。"
+        }
+      ],
+      "oneLine": "捕食や競争。オオクチバスやマングースによる在来種の捕食が代表例。",
+      "timeLimit": 18,
+      "grounding": "捕食や競争を通じて在来種を脅かし"
+    },
+    {
+      "id": "a:bio5_1:q_bio5_balance:q_bio5_balance_ke:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_balance",
+        "subQuestionId": "q_bio5_balance_ke"
+      },
+      "format": "choice4",
+      "prompt": "外来生物のうち、影響が特に大きく、法律で飼育や輸入が規制されているものを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "特定外来生物",
+          "correct": true,
+          "why": "生態系や人間生活への影響が大きい外来生物として法律で指定される。"
+        },
+        {
+          "text": "絶滅危惧種",
+          "why": "絶滅危惧種は保護される側の生物。規制の対象ではない。"
+        },
+        {
+          "text": "在来種",
+          "why": "在来種はもとからいる種であり、規制の対象ではない。"
+        },
+        {
+          "text": "キーストーン種",
+          "why": "キーストーン種はバランス維持に大きな役割をもつ種。法規制の分類ではない。"
+        }
+      ],
+      "oneLine": "特定外来生物。影響が大きいものが法律で指定され、飼育・輸入が規制される。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio5_1:q_bio5_conservation:q_bio5_conservation_a:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_conservation",
+        "subQuestionId": "q_bio5_conservation_a"
+      },
+      "format": "choice4",
+      "prompt": "地球上の生物の多様さを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "生物多様性",
+          "correct": true,
+          "why": "生態系・種・遺伝子の3つのレベルで捉えられる。"
+        },
+        {
+          "text": "生態系サービス",
+          "why": "生態系サービスは人間が生態系から受ける恵み。多様さそのものではない。"
+        },
+        {
+          "text": "生物群集",
+          "why": "生物群集はその地域の生物のまとまり。多様さの度合いを表す語ではない。"
+        },
+        {
+          "text": "バイオーム",
+          "why": "バイオームは地域ごとの生物のまとまり。多様さの呼び名ではない。"
+        }
+      ],
+      "oneLine": "生物多様性。生態系・種・遺伝子の3つのレベルで捉えられる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio5_1:q_bio5_conservation:q_bio5_conservation_a:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_conservation",
+        "subQuestionId": "q_bio5_conservation_a"
+      },
+      "format": "choice4",
+      "prompt": "生物多様性を捉える3つのレベルは、生態系・種と、あと一つは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "遺伝子",
+          "correct": true,
+          "why": "生態系・種・遺伝子の3レベル。個体数が減ると遺伝的多様性も低下する。"
+        },
+        {
+          "text": "細胞",
+          "why": "細胞は多様性のレベルとして数えられていない。正しくは遺伝子である。"
+        },
+        {
+          "text": "個体",
+          "why": "個体ではなく遺伝子。3つのレベルは生態系・種・遺伝子である。"
+        },
+        {
+          "text": "地域",
+          "why": "地域は含まれない。生態系・種・遺伝子の3つで捉える。"
+        }
+      ],
+      "oneLine": "遺伝子。生態系・種・遺伝子の3レベルで生物多様性を捉える。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_conservation:q_bio5_conservation_i:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_conservation",
+        "subQuestionId": "q_bio5_conservation_i"
+      },
+      "format": "choice4",
+      "prompt": "食料や水の供給、気候の調節など、人間が生態系から受ける恵みを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "生態系サービス",
+          "correct": true,
+          "why": "供給・調整・文化的・基盤の4つに分類される、生態系からの恵み。"
+        },
+        {
+          "text": "生物多様性",
+          "why": "生物多様性は生物の多様さのこと。人間が受ける恵みではない。"
+        },
+        {
+          "text": "環境形成作用",
+          "why": "環境形成作用は生物が環境を変えること。人間への恵みではない。"
+        },
+        {
+          "text": "環境アセスメント",
+          "why": "環境アセスメントは開発前の影響評価の制度。恵みの呼び名ではない。"
+        }
+      ],
+      "oneLine": "生態系サービス。供給・調整・文化的・基盤の4つに分類される。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio5_1:q_bio5_conservation:q_bio5_conservation_u:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_conservation",
+        "subQuestionId": "q_bio5_conservation_u"
+      },
+      "format": "choice4",
+      "prompt": "人間の手が適度に加わることで維持されてきた、雑木林・田畑・ため池がまとまった地域を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "里山",
+          "correct": true,
+          "why": "人の適度な管理によって多様な環境が保たれてきた地域。"
+        },
+        {
+          "text": "極相林",
+          "why": "極相林は遷移の最終段階の森林。人の管理でつくられた地域ではない。"
+        },
+        {
+          "text": "原生林",
+          "why": "原生林は人の手が入っていない森林。里山とは逆の性格をもつ。"
+        },
+        {
+          "text": "国立公園",
+          "why": "国立公園は法律による保護区の制度。里山という地域の呼び名ではない。"
+        }
+      ],
+      "oneLine": "里山。雑木林・田畑・ため池がまとまり、人の管理で多様性が保たれてきた。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio5_1:q_bio5_conservation:q_bio5_conservation_e:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_conservation",
+        "subQuestionId": "q_bio5_conservation_e"
+      },
+      "format": "choice4",
+      "prompt": "里山で行われてきた伐採や草刈りなどの適度な働きかけを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "かく乱",
+          "correct": true,
+          "why": "適度なかく乱がむしろ多様な生物のすみかを生み出してきた。"
+        },
+        {
+          "text": "復元力",
+          "why": "復元力は元に戻ろうとする力。人の働きかけそのものではない。"
+        },
+        {
+          "text": "自然浄化",
+          "why": "自然浄化は水質が回復すること。伐採や草刈りの呼び名ではない。"
+        },
+        {
+          "text": "環境アセスメント",
+          "why": "環境アセスメントは開発前の影響評価の制度。管理の働きかけではない。"
+        }
+      ],
+      "oneLine": "かく乱。適度なかく乱がむしろ多様な生物のすみかを生み出す。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_conservation:q_bio5_conservation_e:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_conservation",
+        "subQuestionId": "q_bio5_conservation_e"
+      },
+      "format": "choice4",
+      "prompt": "里山の管理が放棄されると、かえって生物の多様性が低下するのはなぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "遷移が進んで明るい環境が失われるから",
+          "correct": true,
+          "why": "管理をやめると遷移が進み、明るい環境に依存する生物が減少する。"
+        },
+        {
+          "text": "外来生物が必ず侵入してくるから",
+          "why": "外来生物は別の要因。管理放棄で直接起こるのは遷移の進行である。"
+        },
+        {
+          "text": "土壌が失われて裸地になるから",
+          "why": "管理をやめても裸地にはならず、むしろ森林化が進む。"
+        },
+        {
+          "text": "富栄養化が進んで水質が悪化するから",
+          "why": "富栄養化は生活排水などによる水質の問題。管理放棄の直接の結果ではない。"
+        }
+      ],
+      "oneLine": "遷移が進んで明るい環境が失われるから。かく乱は常に悪ではない。",
+      "timeLimit": 20,
+      "grounding": "管理の放棄によって遷移が進み、明るい環境に依存する生物が減少している"
+    },
+    {
+      "id": "a:bio5_1:q_bio5_conservation:q_bio5_conservation_o:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_conservation",
+        "subQuestionId": "q_bio5_conservation_o"
+      },
+      "format": "choice4",
+      "prompt": "絶滅のおそれがある生物を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "絶滅危惧種",
+          "correct": true,
+          "why": "絶滅のおそれがある生物。レッドリストにまとめられ保護の基礎資料になる。"
+        },
+        {
+          "text": "特定外来生物",
+          "why": "特定外来生物は影響が大きい外来生物で、規制される側である。"
+        },
+        {
+          "text": "在来種",
+          "why": "在来種はもとからその地域にいる種。絶滅のおそれの有無は問わない。"
+        },
+        {
+          "text": "キーストーン種",
+          "why": "キーストーン種はバランス維持に大きな役割をもつ種。絶滅の危険度の分類ではない。"
+        }
+      ],
+      "oneLine": "絶滅危惧種。レッドリストにまとめられ、保護の基礎資料となる。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio5_1:q_bio5_conservation:q_bio5_conservation_o:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_conservation",
+        "subQuestionId": "q_bio5_conservation_o"
+      },
+      "format": "choice4",
+      "prompt": "種の絶滅を招く主な要因として挙げられていないものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "適度なかく乱",
+          "correct": true,
+          "why": "適度なかく乱はむしろ多様性を維持する。絶滅の要因には挙げられていない。"
+        },
+        {
+          "text": "生息地の破壊・分断",
+          "why": "主な要因の一つ。すみかを失うことで個体数が減る。"
+        },
+        {
+          "text": "外来生物",
+          "why": "主な要因の一つ。捕食や競争によって在来種を減らす。"
+        },
+        {
+          "text": "乱獲",
+          "why": "主な要因の一つ。とりすぎによって個体数が急激に減る。"
+        }
+      ],
+      "oneLine": "適度なかく乱。むしろ多様性を維持する側。要因は生息地の破壊・乱獲・外来生物・温暖化。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:bio5_1:q_bio5_conservation:q_bio5_conservation_ki:1",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_conservation",
+        "subQuestionId": "q_bio5_conservation_ki"
+      },
+      "format": "choice4",
+      "prompt": "大規模な開発を行う前に、その影響を調査・予測・評価する制度を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "環境アセスメント",
+          "correct": true,
+          "why": "環境影響評価とも呼ばれ、開発前に生態系への影響を事前に調べる制度。"
+        },
+        {
+          "text": "生態系サービス",
+          "why": "生態系サービスは人間が受ける恵み。制度の名前ではない。"
+        },
+        {
+          "text": "レッドリスト",
+          "why": "レッドリストは絶滅危惧種をまとめた資料。開発前の評価制度ではない。"
+        },
+        {
+          "text": "自然浄化",
+          "why": "自然浄化は水質が回復するはたらき。制度ではない。"
+        }
+      ],
+      "oneLine": "環境アセスメント（環境影響評価）。開発前に影響を調査・予測・評価する。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio5_1:q_bio5_conservation:q_bio5_conservation_ki:2",
+      "source": {
+        "chapterId": "bio5_1",
+        "problemId": "q_bio5_conservation",
+        "subQuestionId": "q_bio5_conservation_ki"
+      },
+      "format": "choice4",
+      "prompt": "環境アセスメントは、開発とどのような時期の関係で行われる制度か。",
+      "label": "",
+      "options": [
+        {
+          "text": "開発の前に行う",
+          "correct": true,
+          "why": "事前に調査・予測・評価することで、影響を避けたり小さくしたりできる。"
+        },
+        {
+          "text": "開発の後に行う",
+          "why": "後から調べても被害は防げない。事前に行うことが制度の要点である。"
+        },
+        {
+          "text": "開発と同時に毎年行う",
+          "why": "同時進行では影響を避けられない。開発前に行うことが義務づけられている。"
+        },
+        {
+          "text": "絶滅が確認された後に行う",
+          "why": "絶滅してからでは意味がない。事前の評価が制度の目的である。"
+        }
+      ],
+      "oneLine": "開発の前に行う。事前に調査・予測・評価するのが制度の要点。",
+      "timeLimit": 18,
+      "grounding": "大規模開発の前には環境アセスメント（環境影響評価）が義務づけられ"
+    }
+  ]
+}

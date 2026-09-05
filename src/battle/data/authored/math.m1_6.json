@@ -1,0 +1,67 @@
+{
+  "subject": "math",
+  "chapterId": "m1_6",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:m1_6:q_m1_6_cyc1:q_m1_6_c1_1:1",
+      "source": { "chapterId": "m1_6", "problemId": "q_m1_6_cyc1", "subQuestionId": "q_m1_6_c1_1" },
+      "format": "choice4",
+      "prompt": "I = ∫ e^x cos x dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "(1/2)e^x(sin x + cos x) + C", "correct": true,
+          "why": "2回部分積分すると I = e^x cos x + e^x sin x - I。移項して 2I = e^x(sin x + cos x) なので I = (1/2)e^x(sin x + cos x) + C。" },
+        { "text": "2e^x(sin x + cos x) + C",
+          "why": "2I = e^x(sin x + cos x) を解くとき、2 で割らずに 2 を掛けた形。両辺を 2 で割る。" },
+        { "text": "(1/2)e^x(cos x - sin x) + C",
+          "why": "2回目の部分積分で出る e^x sin x の符号を誤った形。移項後の中身は sin x + cos x になる。" },
+        { "text": "e^x sin x - e^x cos x + C",
+          "why": "2回目の式 ∫e^x sin x dx = e^x sin x - I をそのまま答えにした形。I を移項して解く手順が残っている。" }
+      ],
+      "oneLine": "(1/2)e^x(sin x + cos x) + C。2回部分積分して同形 I を出し、方程式として解く。",
+      "timeLimit": 25,
+      "grounding": "よって I = (1/2)e^x(sin x + cos x) + C"
+    },
+    {
+      "id": "a:m1_6:q_m1_6_cyc1:q_m1_6_c1_1:2",
+      "source": { "chapterId": "m1_6", "problemId": "q_m1_6_cyc1", "subQuestionId": "q_m1_6_c1_1" },
+      "format": "choice4",
+      "prompt": "e^x × 三角関数の積分で、部分積分を2回行うときの注意点はどれか。",
+      "label": "",
+      "options": [
+        { "text": "2回とも同じ側（三角関数の側）を微分する", "correct": true,
+          "why": "解説の注意点①「2回とも『同じ側』を微分すること（1回目に三角を微分したら2回目も三角。混ぜると元に戻って 0=0 になる）」。" },
+        { "text": "2回目は微分する側と積分する側を入れ替える",
+          "why": "入れ替えると元の式に戻ってしまい 0=0 になる。同形が出ないので解けない。" },
+        { "text": "2回目は部分積分ではなく置換積分を使う",
+          "why": "この型は部分積分を2回繰り返して同形を出すのが定石。置換では消えない。" },
+        { "text": "2回目のあとに +C を付けてから移項する",
+          "why": "+C は最後に付ける。順序の話ではなく、微分する側を揃えることが要点。" }
+      ],
+      "oneLine": "2回とも同じ側を微分する。混ぜると元に戻って 0=0 になり何も求まらない。",
+      "timeLimit": 17,
+      "grounding": "2回とも「同じ側」を微分すること"
+    },
+    {
+      "id": "a:m1_6:q_m1_6_cyc1:q_m1_6_c1_1:3",
+      "source": { "chapterId": "m1_6", "problemId": "q_m1_6_cyc1", "subQuestionId": "q_m1_6_c1_1" },
+      "format": "choice4",
+      "prompt": "I = ∫ e^x cos x dx で部分積分を2回行い I を移項したあとの式はどれか。",
+      "label": "",
+      "options": [
+        { "text": "2I = e^x(sin x + cos x)", "correct": true,
+          "why": "I = e^x cos x + e^x sin x - I の右辺の -I を左辺に移すと 2I = e^x(sin x + cos x)。解説のとおり。" },
+        { "text": "2I = e^x(cos x - sin x)",
+          "why": "2回目に出る e^x sin x の符号を誤った形。移項後の中身は sin x + cos x。" },
+        { "text": "I = 2e^x cos x",
+          "why": "同形の I を消しただけで、2回目の部分積分で出た e^x sin x を落としている。" },
+        { "text": "0 = e^x(sin x + cos x)",
+          "why": "微分する側を途中で入れ替えたときに起きる 0=0 型の失敗に近い形。I が消えると何も求まらない。" }
+      ],
+      "oneLine": "2I = e^x(sin x + cos x)。右辺に現れた同形の I を左辺へ移して方程式にする。",
+      "timeLimit": 18,
+      "grounding": "移項して 2I = e^x(sin x + cos x)"
+    }
+  ]
+}

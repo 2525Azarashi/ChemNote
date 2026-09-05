@@ -264,6 +264,78 @@ describe('★4箇所すべてを通っていることの検査★', () => {
   });
 });
 
+describe('★高校入試 理科（本体に教科データを持たない教科）の入口も4箇所を通っている★', () => {
+  /*
+    理科は科目選択のカードに並べていない（本体の章→大問→小問の形を持たないため）。
+    そのぶん入口が普通の科目と違う場所にあるので、
+    ★「隠したつもりで入れてしまう」経路も普通の科目と違う★。
+
+    経路は次の3本。どれか1本でもフラグを見ていないと漏れる。
+      1. ホームの入口カード
+      2. 画面そのものの描画（＝localStorage から 'rika' が復元される経路）
+      3. 対戦の結果から「この単元を演習する」で飛んでくる経路
+
+    3 が特に見落としやすい。カードを消してもナビを消しても、
+    対戦の結果画面からは飛べてしまう。
+    （対戦の出題そのものは battleRules.ts の rika.enabled で別に切れる。
+      対戦だけ出す／演習だけ出す、を別々に切れるようにしてある）
+  */
+
+  it('フラグが存在する', () => {
+    expect(Object.prototype.hasOwnProperty.call(FEATURES, 'rika')).toBe(true);
+    expect(typeof (FEATURES as Record<string, unknown>).rika).toBe('boolean');
+  });
+
+  it('科目一覧用の対応表には入れていない（カードに並べない）', () => {
+    /*
+      SUBJECT_FEATURE_KEY に載せると科目選択のカードに並ぼうとする。
+      理科は押した先で本体の演習画面が1問も出せないので、
+      ★見えるのに使えないカード★になってしまう。
+      isSubjectEnabled('rika') が false であることで、
+      本体の科目としては扱われないことが保証される。
+    */
+    expect(isSubjectEnabled('rika')).toBe(false);
+  });
+
+  it('1) ホームの入口カードがフラグの内側にある', () => {
+    const src = stripComments(readSource('src/App.tsx'));
+    const m = src.match(/onRika=\{[^}]*\}/);
+    expect(m, 'App.tsx が Home へ onRika を渡していない').not.toBeNull();
+    expect(m![0]).toContain('FEATURES.rika');
+  });
+
+  it('1-b) Home 側は渡されなければカードを描かない', () => {
+    const src = stripComments(readSource('src/components/Home.tsx'));
+    /*
+      ★props を受け取っているだけでは足りない★
+      受け取った上で「無ければ描かない」条件が必要。
+      条件を書かずに描くと、渡していないのにカードが出る。
+    */
+    expect(src).toContain('onRika');
+    expect(src).toMatch(/\{onRika\s*&&/);
+  });
+
+  it('2) 画面そのものの描画にもフラグがかかっている（保存状態の復元経路）', () => {
+    const src = stripComments(readSource('src/App.tsx'));
+    const m = src.match(/appState === 'rika'[\s\S]{0,120}/);
+    expect(m, '理科画面の描画箇所が見つからない').not.toBeNull();
+    expect(m![0]).toContain('FEATURES.rika');
+  });
+
+  it('3) 対戦の結果から飛んでくる経路にもフラグがかかっている', () => {
+    const src = stripComments(readSource('src/App.tsx'));
+    const m = src.match(/const handlePracticeFromBattle[\s\S]{0,600}/);
+    expect(m, 'handlePracticeFromBattle が見つからない').not.toBeNull();
+    /*
+      ★外部教科を先に振り分けていること★
+      これが無いと isSubjectId('rika') が false になるので教科が変わらず、
+      理科で間違えたのに★化学基礎の第1章★が開く（実際に起きた不具合）。
+    */
+    expect(m![0]).toContain('isExternalSubject');
+    expect(m![0]).toContain('FEATURES.rika');
+  });
+});
+
 describe('フラグ置き場そのものの健全性', () => {
   it('★何も import しない★（どこからでも読めるようにするため）', () => {
     /*

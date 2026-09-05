@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { chemistryData } from '../src/data/chemistryData';
@@ -178,5 +178,77 @@ describe('QuestionFigure 経由で描画されている（配線の確認）', (
   it('両画面で図番号が共有される（同じ問題は同じ図番号）', () => {
     expect(quiz).toContain('buildFigureNumberMap');
     expect(explanation).toContain('buildFigureNumberMap');
+  });
+});
+
+/**
+ * ★高校入試 理科（src/features/rika/）の図★
+ *
+ * ■ 見つけた不具合
+ *   理科の問題データ（rikaData.ts）には imgs という欄があり、
+ *   原典の図の番号（rId470 など）が入っている。ところが導入時の
+ *   仕様書（app/導入手順.md）には図の扱いが1行も書かれておらず、
+ *   画面（RikaPractice）も imgs を1度も読んでいなかった。
+ *   そのため
+ *     「図1のように炭酸水素ナトリウムを加熱して…」
+ *     「(2) 図2で、炭素粉末の質量が 0.75g のとき…」
+ *   といった設問が★図なしで出ていた★。グラフを読ませる問題なので
+ *   図が無いと答えを出す手がかりが無い。
+ *
+ * ■ 直した内容
+ *   原典の図 6 枚を public/rika/<rId>.png として置き、
+ *   RikaPractice の exam 形式で本文の直後に描くようにした。
+ *   （元は 1.11MB のスキャン画像。線画なので白黒 16 階調にして
+ *     324KB まで落としてある。文字とグラフの目盛りは読める）
+ *
+ * ■ ここで見張ること
+ *   ① imgs を持つ問題の図が public/rika に実在する（リンク切れ防止）
+ *   ② 画面が imgs を読んでいる（配線が外れたら気づく）
+ *   ③ 逆に、使っていない図をリポジトリに置いたままにしない
+ */
+describe('高校入試 理科の図が実在し、画面に配線されている', () => {
+  const rikaData = readFileSync(resolve(__dirname, '../src/features/rika/rikaData.ts'), 'utf-8');
+  const practice = readFileSync(resolve(__dirname, '../src/features/rika/RikaPractice.tsx'), 'utf-8');
+
+  /** rikaData.ts の imgs 欄に出てくる図の番号をすべて集める */
+  const usedIds = (() => {
+    const set = new Set<string>();
+    for (const m of rikaData.matchAll(/imgs:\s*\[([^\]]*)\]/g)) {
+      for (const id of m[1].matchAll(/'([^']+)'/g)) set.add(id[1]);
+    }
+    return [...set].sort();
+  })();
+
+  it('図を持つ問題が存在する（欄が空のまま放置されていない）', () => {
+    expect(usedIds.length).toBeGreaterThan(0);
+  });
+
+  it('① 使われている図がすべて public/rika に実在する', () => {
+    const missing = usedIds.filter(
+      (id) => !existsSync(resolve(__dirname, '../public/rika', `${id}.png`)),
+    );
+    expect(
+      missing,
+      `★図のファイルが無い★ public/rika/ に置いてください: ${missing.join(', ')}`,
+    ).toEqual([]);
+  });
+
+  it('② 画面（RikaPractice）が imgs を読んで図を描いている', () => {
+    expect(practice).toContain('item.imgs');
+    expect(practice).toContain("'/rika/'");
+    // 図を持たない問題では1枚も読み込まないこと（長さの条件が入っている）
+    expect(practice).toMatch(/item\.imgs\.length\s*>\s*0/);
+  });
+
+  it('③ 使っていない図をリポジトリに置いたままにしない', () => {
+    const dir = resolve(__dirname, '../public/rika');
+    const files = existsSync(dir)
+      ? readdirSync(dir).filter((f) => f.endsWith('.png')).map((f) => f.replace(/\.png$/, ''))
+      : [];
+    const unused = files.filter((f) => !usedIds.includes(f));
+    expect(
+      unused,
+      `★どの問題からも使われていない図がある★: ${unused.join(', ')}`,
+    ).toEqual([]);
   });
 });

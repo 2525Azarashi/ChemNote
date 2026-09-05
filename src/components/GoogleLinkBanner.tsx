@@ -73,9 +73,30 @@ export function GoogleLinkBanner({
       <div className={`rounded-2xl border border-[#F4A9C4]/60 bg-white/85 px-3.5 py-2.5 ${className}`}>
         <div className="flex items-center gap-2.5">
           <GoogleMark size={18} />
+          {/* ★文言に対戦を入れた理由★
+              利用者の指示「オンラインをメインにするUIにしていかんと
+              だめよね？」「対戦画面は他のところでしているので
+              そこまでのところはすべて変えて」
+
+              この帯は ★ホームでゲストが実際に見る唯一の案内★
+              （Home.tsx で variant="inline" として order-4 に置いている）。
+              なのに書いてあったのは「記録が端末を変えても残ります」だけで、
+              ★対戦ができないことに触れていなかった★。
+
+              対戦は Firestore のルール上、uid を持たない
+              ゲストではどうやっても部屋に入れない。
+              しかも前回の変更でホームの一番上が対戦のボタンになった。
+              つまりこの帯のすぐ上に、押しても入れないボタンがある状態。
+              ★同じ画面の中で矛盾している★ので、ここに書く。
+
+              ★帯の高さは変えていない★
+              この帯は1行に収まる細さが取り柄（学習を邪魔しない位置に
+              置くという、このファイル冒頭の設計方針）。
+              文を足すのではなく、既にある文の言葉を置き換えた。
+              leading-snug の1〜2行のまま。 */}
           <p className="flex-1 min-w-0 text-[11px] font-modern leading-snug text-[#5D6D7E]">
             <b className="text-[#1B2631]">ゲストで利用中です。</b>
-            Google アカウントと連携すると、記録が端末を変えても残ります。
+            連携すると<b className="text-[#2E86C1]">オンライン対戦</b>ができ、記録も端末を変えても残ります。
           </p>
           <button
             type="button"
@@ -141,9 +162,14 @@ export function GoogleLinkBanner({
               Google アカウントと連携しませんか？
             </p>
           </div>
+          {/* ★card 版にも対戦を入れる★
+              こちらは科目選択画面（PC）とランキング画面で出る大きめの版。
+              inline 版と同じ理由で、対戦ができないことを書く。
+              下の利点リスト（GOOGLE_LINK_BENEFITS）の1行目も対戦なので、
+              説明文と利点で話がつながる。 */}
           <p className="mb-2.5 text-[11px] font-modern leading-relaxed text-[#5D6D7E]">
-            いまは<b className="text-[#D9466E]">ゲスト利用</b>のため、学習記録はこの端末の中だけに保存されています。
-            ブラウザのデータを消すと記録も消えてしまいます。
+            いまは<b className="text-[#D9466E]">ゲスト利用</b>のため、<b className="text-[#1B2631]">オンライン対戦が使えません</b>。
+            学習記録もこの端末の中だけに保存され、ブラウザのデータを消すと消えてしまいます。
           </p>
           <ul className="space-y-1">
             {GOOGLE_LINK_BENEFITS.map((benefit) => (

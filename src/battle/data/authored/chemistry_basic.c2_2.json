@@ -1,0 +1,2669 @@
+{
+  "subject": "chemistry_basic",
+  "chapterId": "c2_2",
+  "authoredBy": "room-cb-1",
+  "_comment": [
+    "2章 物質の構成粒子 ② イオン — 対戦用の小問。",
+    "誤答はすべて元データの解説（解法の思考手順、詳しい解説、ひっかけ欄）から取った。"
+  ],
+  "questions": [
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_1:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_1"
+      },
+      "format": "choice4",
+      "prompt": "ナトリウムイオンを表す化学式はどれか。",
+      "label": "ナトリウムイオンの化学式",
+      "options": [
+        {
+          "text": "Na⁺",
+          "correct": true,
+          "why": "ナトリウムは1族で電子を1個失い、1価の陽イオン Na⁺ になる。"
+        },
+        {
+          "text": "Na⁻",
+          "why": "ナトリウムは電子を受け取るのではなく失うので、陰イオンにはならない。"
+        },
+        {
+          "text": "Na²⁺",
+          "why": "ナトリウムが失う電子は1個なので、2価にはならない。"
+        },
+        {
+          "text": "Mg²⁺",
+          "why": "Mg²⁺ はマグネシウムイオンであり、ナトリウムイオンではない。"
+        }
+      ],
+      "oneLine": "ナトリウムは電子1個を失って1価の陽イオン Na⁺ になる。",
+      "timeLimit": 16,
+      "grounding": "電子は負電荷なので、失えば正に、受け取れば負に帯電する。Na→Na⁺（1価の陽イオン）、O→O²⁻（2価の陰イオン）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_1:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_1"
+      },
+      "format": "choice4",
+      "prompt": "ナトリウム原子がナトリウムイオンになるとき、電子はどうなるか。",
+      "label": "ナトリウムがイオンになるとき",
+      "options": [
+        {
+          "text": "1個失う",
+          "correct": true,
+          "why": "1族のナトリウムは電子1個を失って Na⁺ になる。"
+        },
+        {
+          "text": "1個受け取る",
+          "why": "電子を受け取るのは16〜17族の原子で、陰イオンになる。"
+        },
+        {
+          "text": "2個失う",
+          "why": "ナトリウムが失う電子は1個だけである。2個失うのは2族である。"
+        },
+        {
+          "text": "まったく変化しない",
+          "why": "電子のやり取りがなければイオンにはならない。"
+        }
+      ],
+      "oneLine": "1族のナトリウムは電子1個を失って陽イオンになる。",
+      "timeLimit": 18,
+      "grounding": "1〜3族は電子を失って陽イオン、16〜17族は電子を受け取って陰イオンになるほうが近道。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_2:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_2"
+      },
+      "format": "choice4",
+      "prompt": "マグネシウムイオンを表す化学式はどれか。",
+      "label": "マグネシウムイオンの化学式",
+      "options": [
+        {
+          "text": "Mg²⁺",
+          "correct": true,
+          "why": "マグネシウムは2族で電子を2個失い、2価の陽イオン Mg²⁺ になる。"
+        },
+        {
+          "text": "Mg⁺",
+          "why": "マグネシウムが失う電子は2個なので、1価ではない。"
+        },
+        {
+          "text": "Mg²⁻",
+          "why": "マグネシウムは電子を失う側なので、陰イオンにはならない。"
+        },
+        {
+          "text": "Al³⁺",
+          "why": "Al³⁺ はアルミニウムイオンであり、マグネシウムイオンではない。"
+        }
+      ],
+      "oneLine": "マグネシウムは電子2個を失って2価の陽イオン Mg²⁺ になる。",
+      "timeLimit": 16,
+      "grounding": "電子は負電荷なので、失えば正に、受け取れば負に帯電する。Na→Na⁺（1価の陽イオン）、O→O²⁻（2価の陰イオン）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_3:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_3"
+      },
+      "format": "choice4",
+      "prompt": "アルミニウムイオンを表す化学式はどれか。",
+      "label": "アルミニウムイオンの化学式",
+      "options": [
+        {
+          "text": "Al³⁺",
+          "correct": true,
+          "why": "アルミニウムは13族で電子を3個失い、3価の陽イオン Al³⁺ になる。"
+        },
+        {
+          "text": "Al⁺",
+          "why": "アルミニウムが失う電子は3個なので、1価ではない。"
+        },
+        {
+          "text": "Al³⁻",
+          "why": "アルミニウムは電子を失う側なので、陰イオンにはならない。"
+        },
+        {
+          "text": "Mg²⁺",
+          "why": "Mg²⁺ はマグネシウムイオンであり、アルミニウムイオンではない。"
+        }
+      ],
+      "oneLine": "アルミニウムは電子3個を失って3価の陽イオン Al³⁺ になる。",
+      "timeLimit": 16,
+      "grounding": "電子は負電荷なので、失えば正に、受け取れば負に帯電する。Na→Na⁺（1価の陽イオン）、O→O²⁻（2価の陰イオン）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_3:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_3"
+      },
+      "format": "choice4",
+      "prompt": "アルミニウム原子がアルミニウムイオンになるとき、原子番号はどうなるか。",
+      "label": "イオンになったときの原子番号",
+      "options": [
+        {
+          "text": "変わらない",
+          "correct": true,
+          "why": "イオンになっても変わるのは電子数だけで、陽子数＝原子番号は変わらない。"
+        },
+        {
+          "text": "3だけ小さくなる",
+          "why": "電子を3個失うが、陽子数は減らないので原子番号は変わらない。"
+        },
+        {
+          "text": "3だけ大きくなる",
+          "why": "電子を失っても陽子は増えないので、原子番号は大きくならない。"
+        },
+        {
+          "text": "もとの3倍になる",
+          "why": "原子番号は電荷とは無関係で、倍になることはない。"
+        }
+      ],
+      "oneLine": "イオンになっても陽子数＝原子番号は変わらない。変わるのは電子数だけ。",
+      "timeLimit": 24,
+      "grounding": "変わるのは電子数だけで、陽子数＝原子番号は不変"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_4:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_4"
+      },
+      "format": "choice4",
+      "prompt": "塩化物イオンを表す化学式はどれか。",
+      "label": "塩化物イオンの化学式",
+      "options": [
+        {
+          "text": "Cl⁻",
+          "correct": true,
+          "why": "塩素は17族で電子を1個受け取り、1価の陰イオン Cl⁻ になる。"
+        },
+        {
+          "text": "Cl⁺",
+          "why": "塩素は電子を受け取る側なので、陽イオンにはならない。"
+        },
+        {
+          "text": "Cl²⁻",
+          "why": "塩素が受け取る電子は1個なので、2価にはならない。"
+        },
+        {
+          "text": "S²⁻",
+          "why": "S²⁻ は硫化物イオンであり、塩化物イオンではない。"
+        }
+      ],
+      "oneLine": "塩素は電子1個を受け取って1価の陰イオン Cl⁻ になる。",
+      "timeLimit": 16,
+      "grounding": "電子は負電荷なので、失えば正に、受け取れば負に帯電する。Na→Na⁺（1価の陽イオン）、O→O²⁻（2価の陰イオン）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_4:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_4"
+      },
+      "format": "choice4",
+      "prompt": "塩素原子が塩化物イオンになるとき、電子はどうなるか。",
+      "label": "塩素がイオンになるとき",
+      "options": [
+        {
+          "text": "1個受け取る",
+          "correct": true,
+          "why": "17族の塩素は電子1個を受け取って Cl⁻ になる。"
+        },
+        {
+          "text": "1個失う",
+          "why": "電子を失うのは1〜3族の原子で、陽イオンになる。"
+        },
+        {
+          "text": "2個受け取る",
+          "why": "塩素が受け取る電子は1個だけである。2個受け取るのは16族である。"
+        },
+        {
+          "text": "まったく変化しない",
+          "why": "電子のやり取りがなければイオンにはならない。"
+        }
+      ],
+      "oneLine": "17族の塩素は電子1個を受け取って陰イオンになる。",
+      "timeLimit": 18,
+      "grounding": "1〜3族は電子を失って陽イオン、16〜17族は電子を受け取って陰イオンになるほうが近道。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_5:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_5"
+      },
+      "format": "choice4",
+      "prompt": "酸化物イオンを表す化学式はどれか。",
+      "label": "酸化物イオンの化学式",
+      "options": [
+        {
+          "text": "O²⁻",
+          "correct": true,
+          "why": "酸素は16族で電子を2個受け取り、2価の陰イオン O²⁻ になる。"
+        },
+        {
+          "text": "O⁻",
+          "why": "酸素が受け取る電子は2個なので、1価にはならない。"
+        },
+        {
+          "text": "O²⁺",
+          "why": "酸素は電子を受け取る側なので、陽イオンにはならない。"
+        },
+        {
+          "text": "S²⁻",
+          "why": "S²⁻ は硫化物イオンであり、酸化物イオンではない。"
+        }
+      ],
+      "oneLine": "酸素は電子2個を受け取って2価の陰イオン O²⁻ になる。",
+      "timeLimit": 16,
+      "grounding": "電子は負電荷なので、失えば正に、受け取れば負に帯電する。Na→Na⁺（1価の陽イオン）、O→O²⁻（2価の陰イオン）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_6:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_6"
+      },
+      "format": "choice4",
+      "prompt": "硫化物イオンを表す化学式はどれか。",
+      "label": "硫化物イオンの化学式",
+      "options": [
+        {
+          "text": "S²⁻",
+          "correct": true,
+          "why": "硫黄は16族で電子を2個受け取り、2価の陰イオン S²⁻ になる。"
+        },
+        {
+          "text": "S⁻",
+          "why": "硫黄が受け取る電子は2個なので、1価にはならない。"
+        },
+        {
+          "text": "S²⁺",
+          "why": "硫黄は電子を受け取る側なので、陽イオンにはならない。"
+        },
+        {
+          "text": "O²⁻",
+          "why": "O²⁻ は酸化物イオンであり、硫化物イオンではない。"
+        }
+      ],
+      "oneLine": "硫黄は電子2個を受け取って2価の陰イオン S²⁻ になる。",
+      "timeLimit": 16,
+      "grounding": "電子は負電荷なので、失えば正に、受け取れば負に帯電する。Na→Na⁺（1価の陽イオン）、O→O²⁻（2価の陰イオン）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_6:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_6"
+      },
+      "format": "choice4",
+      "prompt": "硫化物イオン S²⁻ と同じ電子配置をもつイオンはどれか。",
+      "label": "S²⁻と同じ電子配置",
+      "options": [
+        {
+          "text": "Cl⁻",
+          "correct": true,
+          "why": "S²⁻ も Cl⁻ も電子18個のAr型である。"
+        },
+        {
+          "text": "Na⁺",
+          "why": "Na⁺ は電子10個のNe型であり、Ar型ではない。"
+        },
+        {
+          "text": "O²⁻",
+          "why": "O²⁻ は電子10個のNe型であり、Ar型ではない。"
+        },
+        {
+          "text": "Al³⁺",
+          "why": "Al³⁺ は電子10個のNe型であり、Ar型ではない。"
+        }
+      ],
+      "oneLine": "Ar型（電子18個）は S²⁻・Cl⁻・K⁺・Ca²⁺。",
+      "timeLimit": 22,
+      "grounding": "Ar型（電子18個）＝S²⁻・Cl⁻・K⁺・Ca²⁺"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_7:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_7"
+      },
+      "format": "choice4",
+      "prompt": "アンモニウムイオンを表す化学式はどれか。",
+      "label": "アンモニウムイオンの化学式",
+      "options": [
+        {
+          "text": "NH₄⁺",
+          "correct": true,
+          "why": "アンモニウムイオンは NH₄⁺ で、1価の陽イオンである。"
+        },
+        {
+          "text": "NH₃⁺",
+          "why": "アンモニアは NH₃ だが、アンモニウムイオンは水素が4個で NH₄⁺ である。"
+        },
+        {
+          "text": "NH₄⁻",
+          "why": "アンモニウムイオンは陽イオンなので、符号は正である。"
+        },
+        {
+          "text": "NO₃⁻",
+          "why": "NO₃⁻ は硝酸イオンであり、アンモニウムイオンではない。"
+        }
+      ],
+      "oneLine": "アンモニウムイオンは NH₄⁺、1価の陽イオンである。",
+      "timeLimit": 18,
+      "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_7:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_7"
+      },
+      "format": "choice4",
+      "prompt": "多原子イオンのうち、陽イオンであるものはどれか。",
+      "label": "陽イオンの多原子イオン",
+      "options": [
+        {
+          "text": "アンモニウムイオン",
+          "correct": true,
+          "why": "NH₄⁺ は多原子イオンのなかでめずらしい陽イオンである。"
+        },
+        {
+          "text": "水酸化物イオン",
+          "why": "OH⁻ は陰イオンである。"
+        },
+        {
+          "text": "硝酸イオン",
+          "why": "NO₃⁻ は陰イオンである。"
+        },
+        {
+          "text": "炭酸イオン",
+          "why": "CO₃²⁻ は陰イオンである。"
+        }
+      ],
+      "oneLine": "多原子イオン7種のうち陽イオンは NH₄⁺ だけ。",
+      "timeLimit": 20,
+      "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_8:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_8"
+      },
+      "format": "choice4",
+      "prompt": "水酸化物イオンを表す化学式はどれか。",
+      "label": "水酸化物イオンの化学式",
+      "options": [
+        {
+          "text": "OH⁻",
+          "correct": true,
+          "why": "水酸化物イオンは OH⁻ で、1価の陰イオンである。"
+        },
+        {
+          "text": "OH⁺",
+          "why": "水酸化物イオンは陰イオンなので、符号は負である。"
+        },
+        {
+          "text": "OH²⁻",
+          "why": "水酸化物イオンの価数は1であり、2価ではない。"
+        },
+        {
+          "text": "NO₃⁻",
+          "why": "NO₃⁻ は硝酸イオンであり、水酸化物イオンではない。"
+        }
+      ],
+      "oneLine": "水酸化物イオンは OH⁻、1価の陰イオンである。",
+      "timeLimit": 16,
+      "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_9:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_9"
+      },
+      "format": "choice4",
+      "prompt": "硝酸イオンを表す化学式はどれか。",
+      "label": "硝酸イオンの化学式",
+      "options": [
+        {
+          "text": "NO₃⁻",
+          "correct": true,
+          "why": "硝酸イオンは NO₃⁻ で、1価の陰イオンである。"
+        },
+        {
+          "text": "NO₃²⁻",
+          "why": "硝酸イオンの価数は1であり、2価ではない。"
+        },
+        {
+          "text": "NO₃⁺",
+          "why": "硝酸イオンは陰イオンなので、符号は負である。"
+        },
+        {
+          "text": "CO₃²⁻",
+          "why": "CO₃²⁻ は炭酸イオンであり、硝酸イオンではない。"
+        }
+      ],
+      "oneLine": "硝酸イオンは NO₃⁻、1価の陰イオンである。",
+      "timeLimit": 16,
+      "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_10:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_10"
+      },
+      "format": "choice4",
+      "prompt": "硫酸イオンを表す化学式はどれか。",
+      "label": "硫酸イオンの化学式",
+      "options": [
+        {
+          "text": "SO₄²⁻",
+          "correct": true,
+          "why": "硫酸イオンは SO₄²⁻ で、2価の陰イオンである。"
+        },
+        {
+          "text": "SO₄⁻",
+          "why": "硫酸イオンの価数は2であり、1価ではない。"
+        },
+        {
+          "text": "SO₃²⁻",
+          "why": "酸素が3個なのは亜硫酸イオンで、硫酸イオンは酸素4個である。"
+        },
+        {
+          "text": "PO₄³⁻",
+          "why": "PO₄³⁻ はリン酸イオンであり、硫酸イオンではない。"
+        }
+      ],
+      "oneLine": "硫酸イオンは SO₄²⁻、2価の陰イオンである。",
+      "timeLimit": 18,
+      "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_11:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_11"
+      },
+      "format": "choice4",
+      "prompt": "炭酸イオンを表す化学式はどれか。",
+      "label": "炭酸イオンの化学式",
+      "options": [
+        {
+          "text": "CO₃²⁻",
+          "correct": true,
+          "why": "炭酸イオンは CO₃²⁻ で、2価の陰イオンである。"
+        },
+        {
+          "text": "CO₃⁻",
+          "why": "炭酸イオンの価数は2であり、1価ではない。"
+        },
+        {
+          "text": "CO₄²⁻",
+          "why": "炭酸イオンの酸素は3個であり、4個ではない。"
+        },
+        {
+          "text": "NO₃⁻",
+          "why": "NO₃⁻ は硝酸イオンであり、炭酸イオンではない。"
+        }
+      ],
+      "oneLine": "炭酸イオンは CO₃²⁻、2価の陰イオンである。",
+      "timeLimit": 18,
+      "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_12:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_12"
+      },
+      "format": "choice4",
+      "prompt": "リン酸イオンを表す化学式はどれか。",
+      "label": "リン酸イオンの化学式",
+      "options": [
+        {
+          "text": "PO₄³⁻",
+          "correct": true,
+          "why": "リン酸イオンは PO₄³⁻ で、3価の陰イオンである。"
+        },
+        {
+          "text": "PO₄²⁻",
+          "why": "リン酸イオンの価数は3であり、2価ではない。"
+        },
+        {
+          "text": "PO₄⁻",
+          "why": "リン酸イオンの価数は3であり、1価ではない。"
+        },
+        {
+          "text": "SO₄²⁻",
+          "why": "SO₄²⁻ は硫酸イオンであり、リン酸イオンではない。"
+        }
+      ],
+      "oneLine": "リン酸イオンは PO₄³⁻、3価の陰イオンである。",
+      "timeLimit": 18,
+      "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_2:q_c2_2_2_12:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_2",
+        "subQuestionId": "q_c2_2_2_12"
+      },
+      "format": "choice4",
+      "prompt": "多原子イオンのうち、3価の陰イオンであるものはどれか。",
+      "label": "3価の陰イオン",
+      "options": [
+        {
+          "text": "リン酸イオン",
+          "correct": true,
+          "why": "PO₄³⁻ は3価の陰イオンである。"
+        },
+        {
+          "text": "硫酸イオン",
+          "why": "SO₄²⁻ は2価の陰イオンである。"
+        },
+        {
+          "text": "硝酸イオン",
+          "why": "NO₃⁻ は1価の陰イオンである。"
+        },
+        {
+          "text": "水酸化物イオン",
+          "why": "OH⁻ は1価の陰イオンである。"
+        }
+      ],
+      "oneLine": "多原子イオンで3価の陰イオンは PO₄³⁻ のリン酸イオン。",
+      "timeLimit": 20,
+      "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_1a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_1a"
+      },
+      "format": "choice4",
+      "prompt": "Na⁺ と Cl⁻ からなる化合物の組成式はどれか。",
+      "label": "(1) Na⁺ と Cl⁻ [組成式]",
+      "options": [
+        {
+          "text": "NaCl",
+          "correct": true,
+          "why": "1価と1価だから1:1。そのままNaCl。"
+        },
+        {
+          "text": "Na2Cl2",
+          "why": "比は最小整数比にするので2:2は不可。"
+        },
+        {
+          "text": "Na3Cl",
+          "why": "＋3に対して−1では中性にならない。"
+        },
+        {
+          "text": "Na2Cl3",
+          "why": "どちらも1価なので2:3にはならない。"
+        }
+      ],
+      "oneLine": "Na⁺は1価、Cl⁻は1価。1:1でそろうのでNaCl。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_1b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_1b"
+      },
+      "format": "choice4",
+      "prompt": "NaCl の名称はどれか。",
+      "label": "(1) Na⁺ と Cl⁻ [名称]",
+      "options": [
+        {
+          "text": "塩化ナトリウム",
+          "correct": true,
+          "why": "陰イオン→陽イオンの順に読む。"
+        },
+        {
+          "text": "ナトリウム塩化物",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "塩素化ナトリウム",
+          "why": "Cl⁻の名称は「塩化物イオン」なので塩化。"
+        },
+        {
+          "text": "フッ化ナトリウム",
+          "why": "これはNaFの名称。"
+        }
+      ],
+      "oneLine": "名称は陰イオン→陽イオンの順で「塩化ナトリウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_2a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_2a"
+      },
+      "format": "choice4",
+      "prompt": "Ca²⁺ と Cl⁻ からなる化合物の組成式はどれか。",
+      "label": "(2) Ca²⁺ と Cl⁻ [組成式]",
+      "options": [
+        {
+          "text": "CaCl2",
+          "correct": true,
+          "why": "＋2を−1が2個で打ち消すので1:2。"
+        },
+        {
+          "text": "Ca2Cl2",
+          "why": "最小整数比にすると1:2になる。"
+        },
+        {
+          "text": "CaCl3",
+          "why": "−3では＋2とつり合わない。"
+        },
+        {
+          "text": "Ca3Cl2",
+          "why": "＋6と−2では中性にならない。"
+        }
+      ],
+      "oneLine": "Ca²⁺は2価、Cl⁻は1価。1:2でそろうのでCaCl2。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_2b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_2b"
+      },
+      "format": "choice4",
+      "prompt": "CaCl2 の名称はどれか。",
+      "label": "(2) Ca²⁺ と Cl⁻ [名称]",
+      "options": [
+        {
+          "text": "塩化カルシウム",
+          "correct": true,
+          "why": "陰イオン→陽イオンの順に読む。"
+        },
+        {
+          "text": "カルシウム塩化物",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "塩素化カルシウム",
+          "why": "Cl⁻は「塩化物イオン」なので塩化。"
+        },
+        {
+          "text": "炭酸カルシウム",
+          "why": "これはCaCO3の名称。"
+        }
+      ],
+      "oneLine": "数の2は読まない。名称は「塩化カルシウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_3a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_3a"
+      },
+      "format": "choice4",
+      "prompt": "Al³⁺ と O²⁻ からなる化合物の組成式はどれか。",
+      "label": "(3) Al³⁺ と O²⁻ [組成式]",
+      "options": [
+        {
+          "text": "Al2O3",
+          "correct": true,
+          "why": "価数3と2の最小公倍数6にそろえて2:3。"
+        },
+        {
+          "text": "Al3O2",
+          "why": "＋9と−4では中性にならない。"
+        },
+        {
+          "text": "Al2O2",
+          "why": "＋6と−4ではつり合わない。"
+        },
+        {
+          "text": "Al3O3",
+          "why": "＋9と−6ではつり合わない。"
+        }
+      ],
+      "oneLine": "3価と2価は最小公倍数6にそろえて2:3。Al2O3。",
+      "timeLimit": 14,
+      "grounding": "最小公倍数6にそろえてAl₂O₃"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_3b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_3b"
+      },
+      "format": "choice4",
+      "prompt": "Al2O3 の名称はどれか。",
+      "label": "(3) Al³⁺ と O²⁻ [名称]",
+      "options": [
+        {
+          "text": "酸化アルミニウム",
+          "correct": true,
+          "why": "O²⁻は酸化物イオンなので「酸化」。"
+        },
+        {
+          "text": "アルミニウム酸化物",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "三酸化二アルミニウム",
+          "why": "組成式の数は名称に入れない。"
+        },
+        {
+          "text": "塩化アルミニウム",
+          "why": "これはAlCl3の名称。"
+        }
+      ],
+      "oneLine": "O²⁻は酸化物イオン。名称は「酸化アルミニウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_4a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_4a"
+      },
+      "format": "choice4",
+      "prompt": "NH₄⁺ と SO₄²⁻ からなる化合物の組成式はどれか。",
+      "label": "(4) NH₄⁺ と SO₄²⁻ [組成式]",
+      "options": [
+        {
+          "text": "(NH4)2SO4",
+          "correct": true,
+          "why": "＋1が2個で−2を打ち消す。括弧が必要。"
+        },
+        {
+          "text": "NH42SO4",
+          "why": "括弧を付け忘れたミス。"
+        },
+        {
+          "text": "(NH4)SO4",
+          "why": "＋1と−2ではつり合わない。"
+        },
+        {
+          "text": "(NH4)2(SO4)2",
+          "why": "最小整数比にすると2:1になる。"
+        }
+      ],
+      "oneLine": "1価が2個で2価とつり合う。括弧を付けて(NH4)2SO4。",
+      "timeLimit": 14,
+      "grounding": "多原子イオンが2個以上のときに括弧を付け忘れるミス"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_4b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_4b"
+      },
+      "format": "choice4",
+      "prompt": "(NH4)2SO4 の名称はどれか。",
+      "label": "(4) NH₄⁺ と SO₄²⁻ [名称]",
+      "options": [
+        {
+          "text": "硫酸アンモニウム",
+          "correct": true,
+          "why": "SO₄²⁻は硫酸イオン。陰イオンから読む。"
+        },
+        {
+          "text": "アンモニウム硫酸塩",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "硝酸アンモニウム",
+          "why": "これはNH4NO3の名称。"
+        },
+        {
+          "text": "硫酸アンモニア",
+          "why": "イオンの名称はアンモニウム。"
+        }
+      ],
+      "oneLine": "SO₄²⁻は硫酸イオン。名称は「硫酸アンモニウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_5a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_5a"
+      },
+      "format": "choice4",
+      "prompt": "Na⁺ と CO₃²⁻ からなる化合物の組成式はどれか。",
+      "label": "(5) Na⁺ と CO₃²⁻ [組成式]",
+      "options": [
+        {
+          "text": "Na2CO3",
+          "correct": true,
+          "why": "＋1が2個で−2を打ち消すので2:1。"
+        },
+        {
+          "text": "NaCO3",
+          "why": "＋1と−2ではつり合わない。"
+        },
+        {
+          "text": "Na3CO3",
+          "why": "＋3と−2ではつり合わない。"
+        },
+        {
+          "text": "Na2(CO3)2",
+          "why": "最小整数比にすると2:1になる。"
+        }
+      ],
+      "oneLine": "Na⁺2個でCO₃²⁻1個とつり合う。Na2CO3。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_5b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_5b"
+      },
+      "format": "choice4",
+      "prompt": "Na2CO3 の名称はどれか。",
+      "label": "(5) Na⁺ と CO₃²⁻ [名称]",
+      "options": [
+        {
+          "text": "炭酸ナトリウム",
+          "correct": true,
+          "why": "CO₃²⁻は炭酸イオン。陰イオンから読む。"
+        },
+        {
+          "text": "炭酸水素ナトリウム",
+          "why": "これはNaHCO3の名称。"
+        },
+        {
+          "text": "ナトリウム炭酸塩",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "硝酸ナトリウム",
+          "why": "これはNaNO3の名称。"
+        }
+      ],
+      "oneLine": "CO₃²⁻は炭酸イオン。名称は「炭酸ナトリウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_6a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_6a"
+      },
+      "format": "choice4",
+      "prompt": "Mg²⁺ と OH⁻ からなる化合物の組成式はどれか。",
+      "label": "(6) Mg²⁺ と OH⁻ [組成式]",
+      "options": [
+        {
+          "text": "Mg(OH)2",
+          "correct": true,
+          "why": "＋2を−1が2個で打ち消す。括弧が必要。"
+        },
+        {
+          "text": "MgOH2",
+          "why": "括弧を付け忘れたミス。"
+        },
+        {
+          "text": "Mg(OH)3",
+          "why": "−3では＋2とつり合わない。"
+        },
+        {
+          "text": "Mg2(OH)2",
+          "why": "最小整数比にすると1:2になる。"
+        }
+      ],
+      "oneLine": "多原子イオンが2個なので括弧でくくってMg(OH)2。",
+      "timeLimit": 14,
+      "grounding": "多原子イオンが2個以上のときに括弧を付け忘れるミス"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_6b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_6b"
+      },
+      "format": "choice4",
+      "prompt": "Mg(OH)2 の名称はどれか。",
+      "label": "(6) Mg²⁺ と OH⁻ [名称]",
+      "options": [
+        {
+          "text": "水酸化マグネシウム",
+          "correct": true,
+          "why": "OH⁻は水酸化物イオン。"
+        },
+        {
+          "text": "マグネシウム水酸化物",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "塩化マグネシウム",
+          "why": "これはMgCl2の名称。"
+        },
+        {
+          "text": "硫酸マグネシウム",
+          "why": "これはMgSO4の名称。"
+        }
+      ],
+      "oneLine": "OH⁻は水酸化物イオン。「水酸化マグネシウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_7a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_7a"
+      },
+      "format": "choice4",
+      "prompt": "Ca²⁺ と PO₄³⁻ からなる化合物の組成式はどれか。",
+      "label": "(7) Ca²⁺ と PO₄³⁻ [組成式]",
+      "options": [
+        {
+          "text": "Ca3(PO4)2",
+          "correct": true,
+          "why": "価数2と3の最小公倍数6にそろえて3:2。"
+        },
+        {
+          "text": "Ca2(PO4)3",
+          "why": "＋4と−9では中性にならない。"
+        },
+        {
+          "text": "Ca3PO42",
+          "why": "括弧を付け忘れたミス。"
+        },
+        {
+          "text": "Ca(PO4)2",
+          "why": "＋2と−6ではつり合わない。"
+        }
+      ],
+      "oneLine": "2価と3価は最小公倍数6にそろえて3:2。Ca3(PO4)2。",
+      "timeLimit": 15,
+      "grounding": "組成式は陽イオン × m、陰イオン × n として、価数の積が等しくなる最小整数比 m:n をとる。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_7b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_7b"
+      },
+      "format": "choice4",
+      "prompt": "Ca3(PO4)2 の名称はどれか。",
+      "label": "(7) Ca²⁺ と PO₄³⁻ [名称]",
+      "options": [
+        {
+          "text": "リン酸カルシウム",
+          "correct": true,
+          "why": "PO₄³⁻はリン酸イオン。"
+        },
+        {
+          "text": "リン化カルシウム",
+          "why": "これはリン化物イオンの化合物の名称。"
+        },
+        {
+          "text": "カルシウムリン酸塩",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "硫酸カルシウム",
+          "why": "これはCaSO4の名称。"
+        }
+      ],
+      "oneLine": "PO₄³⁻はリン酸イオン。「リン酸カルシウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_8a:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_8a"
+      },
+      "format": "choice4",
+      "prompt": "Al³⁺ と SO₄²⁻ からなる化合物の組成式はどれか。",
+      "label": "(8) Al³⁺ と SO₄²⁻ [組成式]",
+      "options": [
+        {
+          "text": "Al2(SO4)3",
+          "correct": true,
+          "why": "価数3と2の最小公倍数6にそろえて2:3。"
+        },
+        {
+          "text": "Al3(SO4)2",
+          "why": "＋9と−4では中性にならない。"
+        },
+        {
+          "text": "Al2SO43",
+          "why": "括弧を付け忘れたミス。"
+        },
+        {
+          "text": "Al(SO4)3",
+          "why": "＋3と−6ではつり合わない。"
+        }
+      ],
+      "oneLine": "3価と2価は最小公倍数6にそろえて2:3。Al2(SO4)3。",
+      "timeLimit": 15,
+      "grounding": "組成式は陽イオン × m、陰イオン × n として、価数の積が等しくなる最小整数比 m:n をとる。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_8b:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_8b"
+      },
+      "format": "choice4",
+      "prompt": "Al2(SO4)3 の名称はどれか。",
+      "label": "(8) Al³⁺ と SO₄²⁻ [名称]",
+      "options": [
+        {
+          "text": "硫酸アルミニウム",
+          "correct": true,
+          "why": "SO₄²⁻は硫酸イオン。"
+        },
+        {
+          "text": "アルミニウム硫酸塩",
+          "why": "陽イオンから読むのは誤り。"
+        },
+        {
+          "text": "硝酸アルミニウム",
+          "why": "これはAl(NO3)3の名称。"
+        },
+        {
+          "text": "硫化アルミニウム",
+          "why": "これはS²⁻の化合物の名称。"
+        }
+      ],
+      "oneLine": "SO₄²⁻は硫酸イオン。「硫酸アルミニウム」。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_1a:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_1a"
+      },
+      "format": "choice4",
+      "prompt": "イオンからなる化合物の組成式は、何がつり合う最小整数比で作るか。",
+      "label": "",
+      "options": [
+        {
+          "text": "陽イオンと陰イオンの電気量の総和",
+          "correct": true,
+          "why": "イオン結晶は全体で電気的に中性。"
+        },
+        {
+          "text": "陽イオンと陰イオンの原子量の和",
+          "why": "質量ではなく電荷でそろえる。"
+        },
+        {
+          "text": "陽イオンと陰イオンの個数",
+          "why": "個数が等しくなるとは限らない。"
+        },
+        {
+          "text": "陽イオンと陰イオンの電子殻の数",
+          "why": "電子殻の数は組成式に関係しない。"
+        }
+      ],
+      "oneLine": "＋の総量＝−の総量になる最小整数比で組成式を作る。",
+      "timeLimit": 14,
+      "grounding": "＋の総量＝−の総量"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_1b:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_1b"
+      },
+      "format": "choice4",
+      "prompt": "イオンからなる化合物の名称は、どの順に読むか。",
+      "label": "",
+      "options": [
+        {
+          "text": "陰イオン→陽イオンの順",
+          "correct": true,
+          "why": "塩化ナトリウムのように陰イオンから読む。"
+        },
+        {
+          "text": "陽イオン→陰イオンの順",
+          "why": "ナトリウム塩化物という読み方はしない。"
+        },
+        {
+          "text": "原子番号の小さい順",
+          "why": "原子番号は名称の順に関係しない。"
+        },
+        {
+          "text": "価数の大きい順",
+          "why": "価数は名称の順に関係しない。"
+        }
+      ],
+      "oneLine": "名称は陰イオン→陽イオンの順。例：塩化ナトリウム。",
+      "timeLimit": 12,
+      "grounding": "名称は陰イオン→陽イオンの順に読む"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_3a:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_3a"
+      },
+      "format": "choice4",
+      "prompt": "Al³⁺ と O²⁻ の化合物を AlO と書くのは、なぜ誤りか。",
+      "label": "",
+      "options": [
+        {
+          "text": "電荷の総和が0にならないから",
+          "correct": true,
+          "why": "＋3と−2では中性にならない。"
+        },
+        {
+          "text": "原子量の和が合わないから",
+          "why": "質量ではなく電荷の問題。"
+        },
+        {
+          "text": "括弧が付いていないから",
+          "why": "単原子イオンなので括弧は不要。"
+        },
+        {
+          "text": "元素記号の順序が逆だから",
+          "why": "陽イオンを先に書くのは正しい。"
+        }
+      ],
+      "oneLine": "＋3と−2はつり合わない。2:3にそろえてAl2O3。",
+      "timeLimit": 15,
+      "grounding": "電荷の総和が0になる比（2:3）にそろえる必要がある"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_6a:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_6a"
+      },
+      "format": "choice4",
+      "prompt": "多原子イオンが2個以上あるとき、組成式の書き方で注意することは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "多原子イオンを括弧でくくって数を書く",
+          "correct": true,
+          "why": "Ca(OH)₂をCaOH₂と書くのは誤り。"
+        },
+        {
+          "text": "多原子イオンの元素記号を2回書く",
+          "why": "同じ式を並べて書くことはしない。"
+        },
+        {
+          "text": "多原子イオンの数を左下に書く",
+          "why": "数は括弧の右下に書く。"
+        },
+        {
+          "text": "多原子イオンは括弧を付けずに書く",
+          "why": "括弧を付け忘れるのが典型的なミス。"
+        }
+      ],
+      "oneLine": "多原子イオンが2個以上なら括弧でくくる。Mg(OH)2。",
+      "timeLimit": 15,
+      "grounding": "多原子イオンが2個以上のときに括弧を付け忘れるミス"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_3:q_c2_2_3_3a:3",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_3",
+        "subQuestionId": "q_c2_2_3_3a"
+      },
+      "format": "choice4",
+      "prompt": "Al³⁺ と O²⁻ から組成式を作るとき、価数をそろえる最小公倍数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "6",
+          "correct": true,
+          "why": "3と2の最小公倍数は6。2:3になる。"
+        },
+        {
+          "text": "5",
+          "why": "3と2の和であって最小公倍数ではない。"
+        },
+        {
+          "text": "4",
+          "why": "2の倍数だが3の倍数ではない。"
+        },
+        {
+          "text": "9",
+          "why": "3の倍数だが2の倍数ではない。"
+        }
+      ],
+      "oneLine": "3と2の最小公倍数6にそろえるとAl2O3になる。",
+      "timeLimit": 12,
+      "grounding": "最小公倍数6にそろえてAl₂O₃"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_1:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_1"
+      },
+      "format": "choice",
+      "prompt": "Li⁺ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "Li⁺ の電子配置",
+      "options": [
+        {
+          "text": "ヘリウム型",
+          "correct": true,
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "ネオン型",
+          "why": "K2 L8。電子10個。"
+        },
+        {
+          "text": "アルゴン型",
+          "why": "K2 L8 M8。電子18個。"
+        }
+      ],
+      "oneLine": "Liが電子1個を失って電子2個。K2でヘリウム型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_2:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_2"
+      },
+      "format": "choice",
+      "prompt": "Na⁺ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "Na⁺ の電子配置",
+      "options": [
+        {
+          "text": "ネオン型",
+          "correct": true,
+          "why": "K2 L8。電子10個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "アルゴン型",
+          "why": "K2 L8 M8。電子18個。"
+        }
+      ],
+      "oneLine": "Naが電子1個を失って電子10個。K2 L8でネオン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_3:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_3"
+      },
+      "format": "choice",
+      "prompt": "Mg²⁺ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "Mg²⁺ の電子配置",
+      "options": [
+        {
+          "text": "ネオン型",
+          "correct": true,
+          "why": "K2 L8。電子10個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "アルゴン型",
+          "why": "K2 L8 M8。電子18個。"
+        }
+      ],
+      "oneLine": "Mgが電子2個を失って電子10個。ネオン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_4:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_4"
+      },
+      "format": "choice",
+      "prompt": "F⁻ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "F⁻ の電子配置",
+      "options": [
+        {
+          "text": "ネオン型",
+          "correct": true,
+          "why": "K2 L8。電子10個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "アルゴン型",
+          "why": "K2 L8 M8。電子18個。"
+        }
+      ],
+      "oneLine": "Fが電子1個を受け取って電子10個。ネオン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_5:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_5"
+      },
+      "format": "choice",
+      "prompt": "Cl⁻ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "Cl⁻ の電子配置",
+      "options": [
+        {
+          "text": "アルゴン型",
+          "correct": true,
+          "why": "K2 L8 M8。電子18個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "ネオン型",
+          "why": "K2 L8。電子10個。"
+        }
+      ],
+      "oneLine": "Clが電子1個を受け取って電子18個。アルゴン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_6:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_6"
+      },
+      "format": "choice",
+      "prompt": "K⁺ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "K⁺ の電子配置",
+      "options": [
+        {
+          "text": "アルゴン型",
+          "correct": true,
+          "why": "K2 L8 M8。電子18個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "ネオン型",
+          "why": "K2 L8。電子10個。"
+        }
+      ],
+      "oneLine": "Kが電子1個を失って電子18個。アルゴン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_7:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_7"
+      },
+      "format": "choice",
+      "prompt": "Ca²⁺ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "Ca²⁺ の電子配置",
+      "options": [
+        {
+          "text": "アルゴン型",
+          "correct": true,
+          "why": "K2 L8 M8。電子18個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "ネオン型",
+          "why": "K2 L8。電子10個。"
+        }
+      ],
+      "oneLine": "Caが電子2個を失って電子18個。アルゴン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_8:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_8"
+      },
+      "format": "choice",
+      "prompt": "S²⁻ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "S²⁻ の電子配置",
+      "options": [
+        {
+          "text": "アルゴン型",
+          "correct": true,
+          "why": "K2 L8 M8。電子18個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "ネオン型",
+          "why": "K2 L8。電子10個。"
+        }
+      ],
+      "oneLine": "Sが電子2個を受け取って電子18個。アルゴン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_9:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_9"
+      },
+      "format": "choice",
+      "prompt": "O²⁻ の電子配置は、ヘリウム型・ネオン型・アルゴン型のどれか。",
+      "label": "O²⁻ の電子配置",
+      "options": [
+        {
+          "text": "ネオン型",
+          "correct": true,
+          "why": "K2 L8。電子10個。"
+        },
+        {
+          "text": "ヘリウム型",
+          "why": "K2。電子2個で閉殻。"
+        },
+        {
+          "text": "アルゴン型",
+          "why": "K2 L8 M8。電子18個。"
+        }
+      ],
+      "oneLine": "Oが電子2個を受け取って電子10個。ネオン型。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_1:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_1"
+      },
+      "format": "choice4",
+      "prompt": "Li⁺ がもつ電子の数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2個",
+          "correct": true,
+          "why": "ヘリウム型 (K2) だから電子2個。"
+        },
+        {
+          "text": "3個",
+          "why": "Li原子の電子数。1個失っている。"
+        },
+        {
+          "text": "10個",
+          "why": "これはネオン型の電子数。"
+        },
+        {
+          "text": "18個",
+          "why": "これはアルゴン型の電子数。"
+        }
+      ],
+      "oneLine": "ヘリウム型はK2なので電子2個。Li原子の3個から1個失った。",
+      "timeLimit": 12,
+      "grounding": "ヘリウム型 (K2)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_2:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_2"
+      },
+      "format": "choice4",
+      "prompt": "Na⁺ がもつ電子の数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "10個",
+          "correct": true,
+          "why": "ネオン型 (K2 L8) だから電子10個。"
+        },
+        {
+          "text": "11個",
+          "why": "Na原子の電子数。1個失っている。"
+        },
+        {
+          "text": "18個",
+          "why": "これはアルゴン型の電子数。"
+        },
+        {
+          "text": "2個",
+          "why": "これはヘリウム型の電子数。"
+        }
+      ],
+      "oneLine": "ネオン型はK2 L8なので電子10個。Na原子の11個から1個失った。",
+      "timeLimit": 12,
+      "grounding": "ネオン型 (K2 L8)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_5:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_5"
+      },
+      "format": "choice4",
+      "prompt": "Cl⁻ がもつ電子の数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "18個",
+          "correct": true,
+          "why": "アルゴン型 (K2 L8 M8) だから電子18個。"
+        },
+        {
+          "text": "17個",
+          "why": "Cl原子の電子数。1個受け取っている。"
+        },
+        {
+          "text": "10個",
+          "why": "これはネオン型の電子数。"
+        },
+        {
+          "text": "36個",
+          "why": "クリプトン型の電子数。"
+        }
+      ],
+      "oneLine": "アルゴン型はK2 L8 M8なので電子18個。Cl原子の17個に1個加わる。",
+      "timeLimit": 12,
+      "grounding": "アルゴン型 (K2 L8 M8)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_3:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_3"
+      },
+      "format": "choice4",
+      "prompt": "Mg が Mg²⁺ になるとき、電子を何個失ったか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2個",
+          "correct": true,
+          "why": "2価の陽イオンなので電子2個を失った。"
+        },
+        {
+          "text": "1個",
+          "why": "1価なら1個だが、Mg²⁺は2価。"
+        },
+        {
+          "text": "3個",
+          "why": "3個失うとAl³⁺のような3価になる。"
+        },
+        {
+          "text": "10個",
+          "why": "これはできたイオンの電子数。"
+        }
+      ],
+      "oneLine": "2価の陽イオン＝電子2個を失った。残る電子は10個。",
+      "timeLimit": 12,
+      "grounding": "貴ガスと同じ電子配置になるには、電子を何個やり取りすればよいかを考える"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_4:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_4"
+      },
+      "format": "choice4",
+      "prompt": "F が F⁻ になるとき、電子を何個受け取ったか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1個",
+          "correct": true,
+          "why": "1価の陰イオンなので電子1個を受け取った。"
+        },
+        {
+          "text": "2個",
+          "why": "2個受け取るとO²⁻のような2価になる。"
+        },
+        {
+          "text": "3個",
+          "why": "3個は多すぎる。17族は1個で足りる。"
+        },
+        {
+          "text": "7個",
+          "why": "これはFの価電子の数。"
+        }
+      ],
+      "oneLine": "17族は電子1個を受け取ればネオン型になる。1価の陰イオン。",
+      "timeLimit": 12,
+      "grounding": "1〜3族は電子を失って陽イオン、16〜17族は電子を受け取って陰イオンになるほうが近道"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_8:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_8"
+      },
+      "format": "choice4",
+      "prompt": "S が S²⁻ になるとき、電子を何個受け取ったか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2個",
+          "correct": true,
+          "why": "2価の陰イオンなので電子2個を受け取った。"
+        },
+        {
+          "text": "1個",
+          "why": "1個ではアルゴン型に届かない。"
+        },
+        {
+          "text": "3個",
+          "why": "3個は多すぎる。16族は2個で足りる。"
+        },
+        {
+          "text": "6個",
+          "why": "これはSの価電子の数。"
+        }
+      ],
+      "oneLine": "16族は電子2個を受け取ればアルゴン型になる。2価の陰イオン。",
+      "timeLimit": 12,
+      "grounding": "1〜3族は電子を失って陽イオン、16〜17族は電子を受け取って陰イオンになるほうが近道"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_7:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_7"
+      },
+      "format": "choice4",
+      "prompt": "Ca²⁺ の電子配置を殻ごとに表すとどうなるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "K2 L8 M8",
+          "correct": true,
+          "why": "アルゴン型と同じ。電子18個。"
+        },
+        {
+          "text": "K2 L8 M2",
+          "why": "これはCa原子ではなくMg原子の配置。"
+        },
+        {
+          "text": "K2 L8 M6",
+          "why": "電子16個でアルゴン型に届かない。"
+        },
+        {
+          "text": "K2 L8 M4",
+          "why": "電子14個でアルゴン型に届かない。"
+        }
+      ],
+      "oneLine": "Ca²⁺はアルゴン型なのでK2 L8 M8。電子は18個。",
+      "timeLimit": 13,
+      "grounding": "アルゴン型 (K2 L8 M8)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_9:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_9"
+      },
+      "format": "choice4",
+      "prompt": "O²⁻ と同じ電子配置をもつイオンはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "F⁻",
+          "correct": true,
+          "why": "どちらもネオン型で電子10個。"
+        },
+        {
+          "text": "Cl⁻",
+          "why": "こちらはアルゴン型で電子18個。"
+        },
+        {
+          "text": "K⁺",
+          "why": "こちらはアルゴン型で電子18個。"
+        },
+        {
+          "text": "S²⁻",
+          "why": "こちらはアルゴン型で電子18個。"
+        }
+      ],
+      "oneLine": "O²⁻とF⁻はどちらもネオン型（電子10個）で同じ配置。",
+      "timeLimit": 13,
+      "grounding": "ネオン型 (K2 L8)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_5:3",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_5"
+      },
+      "format": "choice4",
+      "prompt": "Cl⁻ と同じ電子配置をもつイオンはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "K⁺",
+          "correct": true,
+          "why": "どちらもアルゴン型で電子18個。"
+        },
+        {
+          "text": "Na⁺",
+          "why": "こちらはネオン型で電子10個。"
+        },
+        {
+          "text": "F⁻",
+          "why": "こちらはネオン型で電子10個。"
+        },
+        {
+          "text": "Li⁺",
+          "why": "こちらはヘリウム型で電子2個。"
+        }
+      ],
+      "oneLine": "Cl⁻とK⁺はどちらもアルゴン型（電子18個）で同じ配置。",
+      "timeLimit": 13,
+      "grounding": "アルゴン型 (K2 L8 M8)"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_5:q_c2_2_5_1:3",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_5",
+        "subQuestionId": "q_c2_2_5_1"
+      },
+      "format": "choice4",
+      "prompt": "いくつかのイオンが貴ガスと同じ電子配置になっている状態を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "等電子配置",
+          "correct": true,
+          "why": "電子数が同じで配置も同じ状態のこと。"
+        },
+        {
+          "text": "同位体",
+          "why": "陽子数が同じで中性子数が違う原子どうしのこと。"
+        },
+        {
+          "text": "同素体",
+          "why": "同じ元素からできた性質の違う単体のこと。"
+        },
+        {
+          "text": "価電子",
+          "why": "最外殻にあって結合に使われる電子のこと。"
+        }
+      ],
+      "oneLine": "貴ガスと同じ電子配置になることを等電子配置という。",
+      "timeLimit": 13,
+      "grounding": "いずれも貴ガスと同じ電子配置（等電子配置）になっている点が重要です。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_7:q_c2_2_7_sym:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_7",
+        "subQuestionId": "q_c2_2_7_sym"
+      },
+      "format": "choice4",
+      "prompt": "電子配置 K2 L8 M8 がもつ電子の総数はいくつか。",
+      "label": "(1) 電子の総数",
+      "options": [
+        {
+          "text": "18個",
+          "correct": true,
+          "why": "2+8+8 = 18 個。"
+        },
+        {
+          "text": "16個",
+          "why": "M殻を6個と数え違えた場合。"
+        },
+        {
+          "text": "20個",
+          "why": "これは原子のときの電子数。"
+        },
+        {
+          "text": "22個",
+          "why": "足し算が合わない。"
+        }
+      ],
+      "oneLine": "殻ごとの電子を足す。2+8+8 = 18 個。",
+      "timeLimit": 12,
+      "grounding": "電子数 = 2+8+8 = 18 個。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_7:q_c2_2_7_sym:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_7",
+        "subQuestionId": "q_c2_2_7_sym"
+      },
+      "format": "choice4",
+      "prompt": "X²⁺ は、もとの原子が電子を何個失った状態か。",
+      "label": "(1) 失った電子の数",
+      "options": [
+        {
+          "text": "2個",
+          "correct": true,
+          "why": "2価の陽イオンなので電子2個を失った。"
+        },
+        {
+          "text": "1個",
+          "why": "1価なら1個だが、X²⁺は2価。"
+        },
+        {
+          "text": "3個",
+          "why": "3個失うと3価の陽イオンになる。"
+        },
+        {
+          "text": "4個",
+          "why": "4個失うと4価の陽イオンになる。"
+        }
+      ],
+      "oneLine": "価数が2＝電子2個を失ったということ。",
+      "timeLimit": 12,
+      "grounding": "X²⁺は電子を 2個失ってこの状態になっているため、原子のときの電子数（=陽子数＝原子番号）は 18 + 2 = 20 個となります。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_7:q_c2_2_7_sym:3",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_7",
+        "subQuestionId": "q_c2_2_7_sym"
+      },
+      "format": "choice4",
+      "prompt": "X 原子（イオンではない状態）がもつ電子の数はいくつか。",
+      "label": "(1) 原子の電子数",
+      "options": [
+        {
+          "text": "20個",
+          "correct": true,
+          "why": "イオンの18個に、失った2個を戻して20個。"
+        },
+        {
+          "text": "18個",
+          "why": "これはX²⁺のときの電子数。"
+        },
+        {
+          "text": "16個",
+          "why": "引き算をしてしまった場合。"
+        },
+        {
+          "text": "22個",
+          "why": "失った電子を4個としてしまった場合。"
+        }
+      ],
+      "oneLine": "18 + 2 = 20 個。失った分を足し戻す。",
+      "timeLimit": 13,
+      "grounding": "X²⁺は電子を 2個失ってこの状態になっているため、原子のときの電子数（=陽子数＝原子番号）は 18 + 2 = 20 個となります。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_7:q_c2_2_7_sym:4",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_7",
+        "subQuestionId": "q_c2_2_7_sym"
+      },
+      "format": "choice4",
+      "prompt": "X の元素記号はどれか。",
+      "label": "(1) Xの元素記号",
+      "options": [
+        {
+          "text": "Ca",
+          "correct": true,
+          "why": "原子番号20の元素はカルシウム。"
+        },
+        {
+          "text": "K",
+          "why": "こちらは原子番号19。"
+        },
+        {
+          "text": "Ar",
+          "why": "こちらは原子番号18。"
+        },
+        {
+          "text": "Mg",
+          "why": "こちらは原子番号12。"
+        }
+      ],
+      "oneLine": "原子番号20の元素はカルシウム、元素記号は Ca。",
+      "timeLimit": 12,
+      "grounding": "原子番号20の元素はカルシウム（元素記号は Ca）です。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_7:q_c2_2_7_sym:5",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_7",
+        "subQuestionId": "q_c2_2_7_sym"
+      },
+      "format": "choice4",
+      "prompt": "原子がイオンになるとき、変化しないものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "陽子数",
+          "correct": true,
+          "why": "変わるのは電子数だけで、陽子数は不変。"
+        },
+        {
+          "text": "電子数",
+          "why": "電子をやり取りするので変わる。"
+        },
+        {
+          "text": "最外殻電子の数",
+          "why": "電子数が変わるので変化する。"
+        },
+        {
+          "text": "全体の電荷",
+          "why": "＋や−に帯電するので変わる。"
+        }
+      ],
+      "oneLine": "変わるのは電子数だけ。陽子数＝原子番号は不変。",
+      "timeLimit": 13,
+      "grounding": "変わるのは電子数だけで、陽子数＝原子番号は不変"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_7:q_c2_2_7_sym:6",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_7",
+        "subQuestionId": "q_c2_2_7_sym"
+      },
+      "format": "choice4",
+      "prompt": "電子配置 K2 L8 M8 で、M殻に入っている電子の数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "8個",
+          "correct": true,
+          "why": "M8と書かれているのでM殻は8個。"
+        },
+        {
+          "text": "2個",
+          "why": "これはK殻の電子数。"
+        },
+        {
+          "text": "6個",
+          "why": "M殻が満員でないと考えた場合。"
+        },
+        {
+          "text": "4個",
+          "why": "M殻の電子数はM の右の数で読む。"
+        }
+      ],
+      "oneLine": "K2 L8 M8 のM の右の数が8。M殻は電子8個。",
+      "timeLimit": 10,
+      "grounding": "K2 L8 M8"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_7:q_c2_2_7_num:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_7",
+        "subQuestionId": "q_c2_2_7_num"
+      },
+      "format": "choice4",
+      "prompt": "X の原子番号はいくつか。",
+      "label": "(2) Xの原子番号",
+      "options": [
+        {
+          "text": "20",
+          "correct": true,
+          "why": "原子のときの電子数20＝陽子数＝原子番号。"
+        },
+        {
+          "text": "18",
+          "why": "これはX²⁺のときの電子数。"
+        },
+        {
+          "text": "22",
+          "why": "失った電子を4個としてしまった場合。"
+        },
+        {
+          "text": "16",
+          "why": "引き算をしてしまった場合。"
+        }
+      ],
+      "oneLine": "電子数20＝陽子数＝原子番号なので20。",
+      "timeLimit": 13,
+      "grounding": "X²⁺は電子を 2個失ってこの状態になっているため、原子のときの電子数（=陽子数＝原子番号）は 18 + 2 = 20 個となります。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_7:q_c2_2_7_num:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_7",
+        "subQuestionId": "q_c2_2_7_num"
+      },
+      "format": "choice4",
+      "prompt": "中性の原子で、原子番号と等しくなるものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "陽子数と電子数",
+          "correct": true,
+          "why": "原子のときは陽子数＝電子数＝原子番号。"
+        },
+        {
+          "text": "中性子数と質量数",
+          "why": "これらは原子番号とは別の量。"
+        },
+        {
+          "text": "価電子数と族番号",
+          "why": "これらは原子番号とは一致しない。"
+        },
+        {
+          "text": "電子殻の数と周期",
+          "why": "これらは原子番号とは一致しない。"
+        }
+      ],
+      "oneLine": "原子のとき、原子番号＝陽子数＝電子数が成り立つ。",
+      "timeLimit": 14,
+      "grounding": "X²⁺は電子を 2個失ってこの状態になっているため、原子のときの電子数（=陽子数＝原子番号）は 18 + 2 = 20 個となります。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_7:q_c2_2_7_num:3",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_7",
+        "subQuestionId": "q_c2_2_7_num"
+      },
+      "format": "choice4",
+      "prompt": "X²⁺ の電荷が ＋2 になっているのは、なぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "負電荷の電子を2個失ったから",
+          "correct": true,
+          "why": "電子を失うと正に帯電する。"
+        },
+        {
+          "text": "正電荷の陽子を2個得たから",
+          "why": "陽子の数は変化しない。"
+        },
+        {
+          "text": "負電荷の電子を2個得たから",
+          "why": "電子を得れば負に帯電する。"
+        },
+        {
+          "text": "中性子を2個失ったから",
+          "why": "中性子は電荷をもたない。"
+        }
+      ],
+      "oneLine": "電子2個を失ったので、その分だけ正に帯電して＋2。",
+      "timeLimit": 14,
+      "grounding": "X²⁺は電子を 2個失ってこの状態になっているため、原子のときの電子数（=陽子数＝原子番号）は 18 + 2 = 20 個となります。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_1:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_1"
+      },
+      "format": "choice4",
+      "prompt": "H₃O⁺ の名称はどれか。",
+      "label": "(1) H₃O⁺ の名称",
+      "options": [
+        {
+          "text": "オキソニウムイオン",
+          "correct": true,
+          "why": "水素イオンが水と結びついた形。"
+        },
+        {
+          "text": "アンモニウムイオン",
+          "why": "これはNH₄⁺の名称。"
+        },
+        {
+          "text": "水酸化物イオン",
+          "why": "これはOH⁻の名称。"
+        },
+        {
+          "text": "過酸化物イオン",
+          "why": "これはO₂²⁻の名称。"
+        }
+      ],
+      "oneLine": "H₃O⁺はオキソニウムイオン。多原子イオンの名称は丸暗記。",
+      "timeLimit": 12,
+      "grounding": "(1) オキソニウムイオン。(2) 酢酸イオン。(3) 炭酸水素イオン。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_1:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_1"
+      },
+      "format": "choice4",
+      "prompt": "多原子イオンの名称と化学式の対応は、どう身につけるのが必須とされているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "丸暗記する",
+          "correct": true,
+          "why": "頻出なので丸暗記が必須。"
+        },
+        {
+          "text": "その場で計算して導く",
+          "why": "計算では名称は出てこない。"
+        },
+        {
+          "text": "周期表から読み取る",
+          "why": "周期表には多原子イオンは載っていない。"
+        },
+        {
+          "text": "実験で確かめる",
+          "why": "名称は実験で決まるものではない。"
+        }
+      ],
+      "oneLine": "多原子イオンの名称と化学式の対応は頻出。丸暗記が必須。",
+      "timeLimit": 14,
+      "grounding": "多原子イオンの名称と化学式の対応は頻出なので丸暗記が必須。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_2:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_2"
+      },
+      "format": "choice4",
+      "prompt": "CH₃COO⁻ の名称はどれか。",
+      "label": "(2) CH₃COO⁻ の名称",
+      "options": [
+        {
+          "text": "酢酸イオン",
+          "correct": true,
+          "why": "酢酸CH₃COOHが水素イオンを失った形。"
+        },
+        {
+          "text": "炭酸イオン",
+          "why": "これはCO₃²⁻の名称。"
+        },
+        {
+          "text": "硫酸イオン",
+          "why": "これはSO₄²⁻の名称。"
+        },
+        {
+          "text": "硝酸イオン",
+          "why": "これはNO₃⁻の名称。"
+        }
+      ],
+      "oneLine": "CH₃COO⁻は酢酸イオン。1価の陰イオン。",
+      "timeLimit": 12,
+      "grounding": "(1) オキソニウムイオン。(2) 酢酸イオン。(3) 炭酸水素イオン。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_2:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_2"
+      },
+      "format": "choice4",
+      "prompt": "CH₃COO⁻ の価数はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1価の陰イオン",
+          "correct": true,
+          "why": "−が1個ぶんなので1価。"
+        },
+        {
+          "text": "2価の陰イオン",
+          "why": "これはSO₄²⁻などの価数。"
+        },
+        {
+          "text": "3価の陰イオン",
+          "why": "これはPO₄³⁻の価数。"
+        },
+        {
+          "text": "1価の陽イオン",
+          "why": "＋ではなく−に帯電している。"
+        }
+      ],
+      "oneLine": "CH₃COO⁻の電荷は−1なので1価の陰イオン。",
+      "timeLimit": 13,
+      "grounding": "(1) オキソニウムイオン。(2) 酢酸イオン。(3) 炭酸水素イオン。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_3:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_3"
+      },
+      "format": "choice4",
+      "prompt": "HCO₃⁻ の名称はどれか。",
+      "label": "(3) HCO₃⁻ の名称",
+      "options": [
+        {
+          "text": "炭酸水素イオン",
+          "correct": true,
+          "why": "CO₃²⁻に水素イオンが1個ついた形。"
+        },
+        {
+          "text": "硫酸水素イオン",
+          "why": "これはHSO₄⁻の名称。"
+        },
+        {
+          "text": "シュウ酸イオン",
+          "why": "これはC₂O₄²⁻の名称。"
+        },
+        {
+          "text": "亜硫酸イオン",
+          "why": "これはSO₃²⁻の名称。"
+        }
+      ],
+      "oneLine": "HCO₃⁻は炭酸水素イオン。重炭酸イオンとも呼ぶ。",
+      "timeLimit": 12,
+      "grounding": "(1) オキソニウムイオン。(2) 酢酸イオン。(3) 炭酸水素イオン。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_3:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_3"
+      },
+      "format": "choice4",
+      "prompt": "必ず即答できるようにしておくべき多原子イオンは、いくつあるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "7種",
+          "correct": true,
+          "why": "NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻の7つ。"
+        },
+        {
+          "text": "4種",
+          "why": "4つでは足りない。"
+        },
+        {
+          "text": "5種",
+          "why": "5つでは足りない。"
+        },
+        {
+          "text": "9種",
+          "why": "9つも挙げられてはいない。"
+        }
+      ],
+      "oneLine": "多原子イオン7種を価数ごと即答できる状態にしておく。",
+      "timeLimit": 14,
+      "grounding": "多原子イオン7種（NH₄⁺・OH⁻・NO₃⁻・SO₄²⁻・CO₃²⁻・HCO₃⁻・PO₄³⁻）"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_4:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_4"
+      },
+      "format": "choice4",
+      "prompt": "K⁺ 1個がもつ電子の数はいくつか。",
+      "label": "(4) K⁺ の電子数",
+      "options": [
+        {
+          "text": "18個",
+          "correct": true,
+          "why": "19-1 = 18個。Arと同じ。"
+        },
+        {
+          "text": "19個",
+          "why": "これはK原子の電子数。"
+        },
+        {
+          "text": "20個",
+          "why": "1個得たと考えてしまった場合。"
+        },
+        {
+          "text": "17個",
+          "why": "2個失ったと考えてしまった場合。"
+        }
+      ],
+      "oneLine": "K原子の電子19個から1個失って18個。Arと同じ配置。",
+      "timeLimit": 12,
+      "grounding": "(4) K⁺：19-1 = 18個（Arと同じ）。(5) Mg²⁺：12-2 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_4:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_4"
+      },
+      "format": "choice4",
+      "prompt": "K⁺ の電子配置と同じ配置をもつ貴ガスはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "Ar",
+          "correct": true,
+          "why": "電子18個で一致する。"
+        },
+        {
+          "text": "Ne",
+          "why": "電子10個なので合わない。"
+        },
+        {
+          "text": "He",
+          "why": "電子2個なので合わない。"
+        },
+        {
+          "text": "Kr",
+          "why": "電子36個なので合わない。"
+        }
+      ],
+      "oneLine": "K⁺は電子18個。Arと同じ電子配置になる。",
+      "timeLimit": 12,
+      "grounding": "(4) K⁺：19-1 = 18個（Arと同じ）。(5) Mg²⁺：12-2 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_5:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_5"
+      },
+      "format": "choice4",
+      "prompt": "Mg²⁺ 1個がもつ電子の数はいくつか。",
+      "label": "(5) Mg²⁺ の電子数",
+      "options": [
+        {
+          "text": "10個",
+          "correct": true,
+          "why": "12-2 = 10個。Neと同じ。"
+        },
+        {
+          "text": "12個",
+          "why": "これはMg原子の電子数。"
+        },
+        {
+          "text": "14個",
+          "why": "2個得たと考えてしまった場合。"
+        },
+        {
+          "text": "11個",
+          "why": "1個しか失っていないと考えた場合。"
+        }
+      ],
+      "oneLine": "Mg原子の電子12個から2個失って10個。Neと同じ配置。",
+      "timeLimit": 12,
+      "grounding": "(4) K⁺：19-1 = 18個（Arと同じ）。(5) Mg²⁺：12-2 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_5:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_5"
+      },
+      "format": "choice4",
+      "prompt": "Mg²⁺ の電子配置と同じ配置をもつ貴ガスはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "Ne",
+          "correct": true,
+          "why": "電子10個で一致する。"
+        },
+        {
+          "text": "Ar",
+          "why": "電子18個なので合わない。"
+        },
+        {
+          "text": "He",
+          "why": "電子2個なので合わない。"
+        },
+        {
+          "text": "Kr",
+          "why": "電子36個なので合わない。"
+        }
+      ],
+      "oneLine": "Mg²⁺は電子10個。Neと同じ電子配置になる。",
+      "timeLimit": 12,
+      "grounding": "(4) K⁺：19-1 = 18個（Arと同じ）。(5) Mg²⁺：12-2 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_6:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_6"
+      },
+      "format": "choice4",
+      "prompt": "S²⁻ 1個がもつ電子の数はいくつか。",
+      "label": "(6) S²⁻ の電子数",
+      "options": [
+        {
+          "text": "18個",
+          "correct": true,
+          "why": "16+2 = 18個。Arと同じ。"
+        },
+        {
+          "text": "16個",
+          "why": "これはS原子の電子数。"
+        },
+        {
+          "text": "14個",
+          "why": "2個失ったと考えてしまった場合。"
+        },
+        {
+          "text": "17個",
+          "why": "1個しか受け取っていないと考えた場合。"
+        }
+      ],
+      "oneLine": "S原子の電子16個に2個加わって18個。Arと同じ配置。",
+      "timeLimit": 12,
+      "grounding": "(6) S²⁻：16+2 = 18個（Arと同じ）。(7) NH₄⁺：(7+4×1)-1 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_6:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_6"
+      },
+      "format": "choice4",
+      "prompt": "陰イオンの電子数を求めるとき、原子の電子数に対してどうするか。",
+      "label": "",
+      "options": [
+        {
+          "text": "価数の分だけ足す",
+          "correct": true,
+          "why": "電子を受け取っているので足す。"
+        },
+        {
+          "text": "価数の分だけ引く",
+          "why": "引くのは陽イオンのとき。"
+        },
+        {
+          "text": "価数の分だけかける",
+          "why": "かけ算はしない。"
+        },
+        {
+          "text": "価数の分だけ割る",
+          "why": "わり算はしない。"
+        }
+      ],
+      "oneLine": "陰イオンは電子を受け取るので、価数の分を足す。",
+      "timeLimit": 14,
+      "grounding": "(6) S²⁻：16+2 = 18個（Arと同じ）。(7) NH₄⁺：(7+4×1)-1 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_7:1",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_7"
+      },
+      "format": "choice4",
+      "prompt": "NH₄⁺ 1個がもつ電子の数はいくつか。",
+      "label": "(7) NH₄⁺ の電子数",
+      "options": [
+        {
+          "text": "10個",
+          "correct": true,
+          "why": "(7+4×1)-1 = 10個。Neと同じ。"
+        },
+        {
+          "text": "11個",
+          "why": "1個失うのを忘れた場合。"
+        },
+        {
+          "text": "12個",
+          "why": "2個失ったと考えてしまった場合。"
+        },
+        {
+          "text": "18個",
+          "why": "これはArと同じ配置の電子数。"
+        }
+      ],
+      "oneLine": "N7個＋H4個で11個、1個失って10個。Neと同じ。",
+      "timeLimit": 14,
+      "grounding": "(6) S²⁻：16+2 = 18個（Arと同じ）。(7) NH₄⁺：(7+4×1)-1 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_7:2",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_7"
+      },
+      "format": "choice4",
+      "prompt": "多原子イオンの電子数を求めるとき、最初に何をするか。",
+      "label": "",
+      "options": [
+        {
+          "text": "構成する原子の電子数をすべて足す",
+          "correct": true,
+          "why": "NH₄⁺なら7+4×1 = 11個。"
+        },
+        {
+          "text": "価数だけを見て決める",
+          "why": "原子の電子数を数えないと出ない。"
+        },
+        {
+          "text": "中性子数をすべて足す",
+          "why": "電子数と中性子数は別。"
+        },
+        {
+          "text": "質量数をすべて足す",
+          "why": "質量数からは電子数は出ない。"
+        }
+      ],
+      "oneLine": "構成原子の電子数を合計し、そこから価数の分を増減する。",
+      "timeLimit": 15,
+      "grounding": "(6) S²⁻：16+2 = 18個（Arと同じ）。(7) NH₄⁺：(7+4×1)-1 = 10個（Neと同じ）。"
+    },
+    {
+      "id": "a:c2_2:q_c2_2_new:q_c2_2_new_7:3",
+      "source": {
+        "chapterId": "c2_2",
+        "problemId": "q_c2_2_new",
+        "subQuestionId": "q_c2_2_new_7"
+      },
+      "format": "choice4",
+      "prompt": "イオンが電子をやり取りするのは、何と同じ電子配置になろうとするからか。",
+      "label": "",
+      "options": [
+        {
+          "text": "最も近い貴ガス",
+          "correct": true,
+          "why": "安定な電子配置になろうとする。"
+        },
+        {
+          "text": "最も近いアルカリ金属",
+          "why": "アルカリ金属は安定な配置ではない。"
+        },
+        {
+          "text": "最も近いハロゲン",
+          "why": "ハロゲンは安定な配置ではない。"
+        },
+        {
+          "text": "同じ周期のすべての元素",
+          "why": "特定の元素の配置をめざす。"
+        }
+      ],
+      "oneLine": "イオンは最も近い貴ガスと同じ安定な電子配置になろうとする。",
+      "timeLimit": 15,
+      "grounding": "イオンは最も近い貴ガスと同じ安定な電子配置になろうとする。"
+    }
+  ]
+}

@@ -1,0 +1,1182 @@
+/**
+ * ===================================================================
+ * 化学（発展）・無機化学 演習問題の回帰テスト
+ * ===================================================================
+ *
+ * 何を守るテストか
+ * ----------------
+ * 無機化学のパート（adv_inorganic）は、これまで ch() ヘルパーで作られた
+ * 「章の枠だけ」で、practiceProblems が全章 [] だった。
+ * そのため
+ *   ・Quiz で解けない
+ *   ・Explanation で解説が読めない
+ *   ・対戦（バトル）の出題元にもできない
+ * という三重の行き止まりになっていた。
+ * ユーザーの指示「無機化学いこう」に従って src/data/inorganicProblems.ts に
+ * 演習問題の実体を書いたので、その収録が静かに壊れないよう機械で固定する。
+ *
+ * ここで特に守りたいのは、次の「静かな事故」の3種類。
+ *
+ *  ① 章IDのタイポで、書いた問題がどこにも刺さらない
+ *     → 画面はエラーにならず「単元はあるのに0問」になるだけなので気づけない。
+ *  ② 解説の見出しが行頭にないため、アコーディオンを開いても空になる
+ *     → enhanceExplanation() が小問ごとに切り分けられなくなる。
+ *  ③ 原典（chemistryAdvancedTrendData.ts の weapons）に無い知識を
+ *     勝手に作ってしまう
+ *     → 共通テスト対策として無意味な問題になる。
+ *       そこで「答えが原典の武器に実在するか」を照合する。
+ */
+import { describe, it, expect } from 'vitest';
+import { getAllAdvancedChapters, getAdvancedFieldStats } from '../src/data/chemistryAdvancedData';
+import { chapterTrendsAdvanced } from '../src/data/chemistryAdvancedTrendData';
+// 単元ごとの指導テンプレート。無機の章にも「思考の型」と
+// 「ココが狙われる」ボックスが出ているかを機械で確かめるために読む。
+import { getUnitTeaching } from '../src/data/unitTeaching';
+// 対戦プールの生成物。章IDが2列目に入っているので、
+// 「収録した章が対戦にも供給されているか」を機械的に確かめられる。
+// 手書き禁止の生成ファイルなので、ここでは読むだけ。
+import { POOL } from '../src/battle/data/pool.chemistry.generated';
+import {
+  sliceEnhancedBySubQuestion,
+  sliceEnhancedByQuestion,
+  questionGroupKey,
+  buildUnitKataBlock,
+} from '../src/utils/explanationFormat';
+
+/** 演習問題を収録した無機化学の章ID（収録が進んだらここに足す） */
+const INORGANIC_DONE = [
+  'a7_1',
+  'a7_3',
+  'a7_4',
+  'a7_5',
+  'a7_6',
+  'a7_7',
+  'a8_1',
+  'a8_2',
+  'a8_3',
+  'a9_1',
+  'a9_2',
+  'a9_3',
+  'a9_4',
+  'a9_5',
+  'a9_6',
+] as const;
+
+const chaptersById = new Map(getAllAdvancedChapters().map((c) => [c.id, c]));
+
+const allProblems = INORGANIC_DONE.flatMap((id) =>
+  (chaptersById.get(id)?.practiceProblems ?? []).map((p: any) => ({ chapterId: id, problem: p })),
+);
+
+/** Explanation.tsx の sliceForSq と同じ手順で、小問ぶんの解説を切り出す */
+function sliceForSq(enhanced: string, sq: any): string {
+  const sub = sliceEnhancedBySubQuestion(enhanced);
+  if (sub) {
+    const key = String(sq?.id ?? '');
+    const hit = sub.subs.filter((x) => x.id === key);
+    if (hit.length > 0) {
+      return [hit.map((x) => x.body).join('\n'), sub.shared].filter((t) => t.trim()).join('\n');
+    }
+    if (sub.shared.trim()) return sub.shared;
+  }
+  const qs = sliceEnhancedByQuestion(enhanced);
+  if (!qs) return '';
+  const key = questionGroupKey(sq?.label);
+  if (!key) return '';
+  return qs.groups
+    .filter((g) => g.key === key)
+    .map((g) => g.text)
+    .join('\n');
+}
+
+describe('無機化学 演習問題の収録', () => {
+  it('★収録した章に問題がちゃんと刺さっている（章IDのタイポ検出）★', () => {
+    for (const id of INORGANIC_DONE) {
+      const chapter = chaptersById.get(id);
+      expect(chapter, `章 ${id} が存在しない`).toBeDefined();
+      expect(
+        chapter!.practiceProblems.length,
+        `章 ${id} に問題が0問。ADVANCED_PROBLEMS への登録漏れか章IDのタイポ`,
+      ).toBeGreaterThan(0);
+    }
+  });
+
+  it('無機化学の収録問題数として集計される（単元選択のカード表示）', () => {
+    const stats = getAdvancedFieldStats('inorganic');
+    expect(stats.questions).toBe(allProblems.length);
+    expect(stats.questions).toBeGreaterThan(0);
+  });
+
+  it('大問テキストが「演習N」で始まる（理論化学と同じ体裁）', () => {
+    for (const { problem } of allProblems) {
+      expect(/^演習\s*\d+/.test(String(problem.text)), `${problem.id} の書き出し`).toBe(true);
+    }
+  });
+});
+
+describe('無機化学 演習問題のデータ形式', () => {
+  it('大問IDが一意', () => {
+    const ids = allProblems.map(({ problem }) => problem.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('大問IDが章IDを含む（どの単元の問題か追える）', () => {
+    for (const { chapterId, problem } of allProblems) {
+      expect(String(problem.id), `${problem.id}`).toContain(chapterId);
+    }
+  });
+
+  it('Explanation.tsx が参照する category が全問に入っている', () => {
+    for (const { problem } of allProblems) {
+      expect(typeof problem.category, `${problem.id} の category`).toBe('string');
+      expect(problem.category.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('小問は id / label / type / correctAnswer を持つ', () => {
+    for (const { problem } of allProblems) {
+      expect(Array.isArray(problem.subQuestions)).toBe(true);
+      expect(problem.subQuestions.length).toBeGreaterThan(0);
+      for (const sq of problem.subQuestions) {
+        expect(typeof sq.id, `${problem.id} の小問 id`).toBe('string');
+        expect(sq.id.startsWith(problem.id)).toBe(true);
+        expect(String(sq.label).length).toBeGreaterThan(0);
+        expect(typeof sq.type).toBe('string');
+        expect(String(sq.correctAnswer ?? '').trim().length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('小問IDが全体で一意（アコーディオンの切り出しキーになる）', () => {
+    const sqIds = allProblems.flatMap(({ problem }) =>
+      problem.subQuestions.map((sq: any) => sq.id),
+    );
+    expect(new Set(sqIds).size).toBe(sqIds.length);
+  });
+
+  it('Quiz.tsx が描き分けられる type だけを使っている', () => {
+    const supported = new Set(['short_answer', 'multiple_choice', 'descriptive']);
+    for (const { problem } of allProblems) {
+      for (const sq of problem.subQuestions) {
+        expect(supported.has(sq.type), `${sq.id} の type=${sq.type}`).toBe(true);
+      }
+    }
+  });
+
+  it('★選択式の正解が、必ず選択肢の中に入っている（採点が不可能にならない）★', () => {
+    for (const { problem } of allProblems) {
+      for (const sq of problem.subQuestions) {
+        if (sq.type !== 'multiple_choice') continue;
+        expect(Array.isArray(sq.options), `${sq.id} の options`).toBe(true);
+        expect(sq.options.length).toBeGreaterThan(1);
+        expect(
+          sq.options.includes(sq.correctAnswer),
+          `${sq.id} の正解「${sq.correctAnswer}」が選択肢に無い`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it('★選択肢に重複が無い（同じものが2つ並ぶと正解が2つになる）★', () => {
+    for (const { problem } of allProblems) {
+      for (const sq of problem.subQuestions) {
+        if (sq.type !== 'multiple_choice') continue;
+        expect(new Set(sq.options).size, `${sq.id} の選択肢に重複`).toBe(sq.options.length);
+      }
+    }
+  });
+
+  it('記述式には採点の観点（gradingCriteria）が付いている', () => {
+    for (const { problem } of allProblems) {
+      for (const sq of problem.subQuestions) {
+        if (sq.type !== 'descriptive') continue;
+        expect(Array.isArray(sq.gradingCriteria), `${sq.id} の gradingCriteria`).toBe(true);
+        expect(sq.gradingCriteria.length).toBeGreaterThanOrEqual(2);
+      }
+    }
+  });
+});
+
+describe('無機化学 演習問題の解説', () => {
+  it('enhanceExplanation で整形済み（解答カードが生成されている）', () => {
+    for (const { problem } of allProblems) {
+      const text: string = problem.explanationSupplement || problem.explanation;
+      expect(text.startsWith('<!--fmt-v1-->'), `${problem.id} が未整形`).toBe(true);
+      expect(text).toContain('解 答');
+    }
+  });
+
+  it('★小問アコーディオンを開けば必ず中身が出る（空にならない）★', () => {
+    for (const { problem } of allProblems) {
+      const text: string = problem.explanationSupplement || problem.explanation;
+      const subs = problem.subQuestions.filter(Boolean);
+      if (subs.length < 2) continue;
+      for (const sq of subs) {
+        expect(sliceForSq(text, sq).trim().length, `${sq.id} の解説が空`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  /**
+   * ★このテストを足した理由（実際に3小問ぶんの解説が画面から消えていた）★
+   *
+   * 上の「空にならない」テストは sliceForSq() を使うが、この関数は
+   * 自分の小問の目印が見つからなかったとき★共通解説を代わりに返す★。
+   * つまり「解説が1文字も紐付いていない小問」でも、共通解説のおかげで
+   * 中身が空にならず、テストは合格してしまう。
+   * 生徒の画面には、自分が解いた問とは無関係な共通文だけが出る。
+   *
+   * 実際に起きた事故：
+   *   接触法の大問（q_a7_4_ex1）は小問7件のうち4件しか紐付いておらず、
+   *   （3）（4）（5）の解説が丸ごと表示されなくなっていた。
+   *   原因は explanationFormat.ts の findSubAnchors() が、
+   *   マーカー直後が数字の行を見出しと認めない仕様だったこと
+   *   （「(1)」が「(10)」の先頭に一致する事故を防ぐためのガード）。
+   *   解説の見出しを「（3）1 mol」と書いていたため、"(3)" の直後が "1" で
+   *   却下され、見出しとして扱われなかった。
+   *   → 見出しを「（3）硫黄 1 mol から得られる硫酸 → 1 mol」に直して解決。
+   *
+   * ★ここで守るルール★
+   *   解説の見出し行は「（N）」の直後に数字を置いてはいけない。
+   * 人の目では絶対に見つけられない種類の事故なので、
+   * 「各小問が自分専用の目印 <!--sq:ID--> を持っているか」を直接検査する。
+   * 共通解説へのフォールバックを通さないので、紐付け漏れをそのまま検出できる。
+   */
+  it('★各小問が自分専用の解説セクションを持っている（共通解説での代替を許さない）★', () => {
+    for (const { problem } of allProblems) {
+      const text: string = problem.explanationSupplement || problem.explanation;
+      const subs = problem.subQuestions.filter(Boolean);
+      if (subs.length < 2) continue;
+
+      const sliced = sliceEnhancedBySubQuestion(text);
+      // 目印から直接引く（sliceForSq と違い、共通解説へ逃げない）
+      const own = new Map((sliced?.subs ?? []).map((s) => [s.id, s.body]));
+
+      for (const sq of subs) {
+        expect(
+          (own.get(sq.id) ?? '').trim().length,
+          `${sq.id} に自分の解説セクションが無い。` +
+            `解説本文の見出しが行頭に無いか、「（N）」の直後が数字になっている可能性がある` +
+            `（例：「（3）1 mol」は見出しと認識されない。「（3）硫黄1molから…→ 1 mol」のように書く）`,
+        ).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  /**
+   * ★このテストを足した理由（実際に穴が空いていた）★
+   * 上の「空にならない」テストは length > 0 しか見ていないため、
+   * 解説に見出しだけ書いて説明を書き忘れても通り抜けてしまう。
+   * 実際、最初に書いた a7_3 の演習4（2）は
+   *   「（2）AgCl の色 白」
+   * の一行だけで、タグを除くと本文が18文字しかなかったのに合格していた。
+   * 生徒がアコーディオンを開いて「答えの再掲だけ」が出るのは、
+   * 解説が無いのと同じで、この状態を人の目で見つけるのは不可能に近い。
+   * そこで「HTMLタグを除いた素の文字数」で下限を引いて機械に見張らせる。
+   *
+   * ★測り方の注意（ここで一度しくじった）★
+   * sliceForSq() は「その小問ぶんの本文」に「大問全体の共通解説」を
+   * 連結して返す。共通解説は毎回同じものが足されるので、
+   * 連結後の長さで測ると、本文11文字の空っぽな小問でも
+   * 共通解説79文字のおかげで合計90文字になり、しきい値を超えて素通りした。
+   * したがって★共通解説を差し引いた、その小問だけの本文★で測る必要がある。
+   *
+   * しきい値の根拠：
+   *   ・答えの再掲だけの行は 20 文字前後で終わる（上の実例が18文字、
+   *     再現テストでは11文字だった）。
+   *   ・説明が1文でも付けば、日本語では確実に 60 文字を超える
+   *     （実際に書いた小問の本文は 74〜206 文字だった）。
+   *   ・整形で必ず入る「解法の思考手順」「詳しい解説」などの
+   *     見出し語ぶんは除いてから数える（下駄を履かせないため）。
+   */
+  it('★小問の解説が「答えの再掲だけ」で終わっていない（薄い解説を弾く）★', () => {
+    /** 整形処理が必ず挿入する定型の見出し語。文字数の下駄になるので除く。 */
+    const BOILERPLATE = ['解法の思考手順', '詳しい解説', 'この大問全体の解説', '解 答'];
+    const bare = (html: string) => {
+      let t = html.replace(/<[^>]*>/g, ' ');
+      for (const w of BOILERPLATE) t = t.split(w).join(' ');
+      return t.replace(/\s+/gu, '').trim();
+    };
+
+    for (const { problem } of allProblems) {
+      const text: string = problem.explanationSupplement || problem.explanation;
+      const subs = problem.subQuestions.filter(Boolean);
+      if (subs.length < 2) continue;
+
+      // 共通解説は差し引く（下駄を履かせないため）
+      const sliced = sliceEnhancedBySubQuestion(text);
+      const sharedLen = bare(sliced?.shared ?? '').length;
+
+      for (const sq of subs) {
+        const own = bare(sliceForSq(text, sq)).length - sharedLen;
+        expect(
+          own,
+          `${sq.id} の解説が薄い（その小問だけの本文 ${own} 文字）。答えの再掲だけで、なぜそうなるかの説明が無い`,
+        ).toBeGreaterThan(60);
+      }
+    }
+  });
+
+  it('禁止スタイル（<u> による黄色マーカー）を使っていない', () => {
+    for (const { problem } of allProblems) {
+      const text: string = problem.explanationSupplement || problem.explanation;
+      expect(/<u>/i.test(text), `${problem.id}`).toBe(false);
+    }
+  });
+
+  it('禁止語「STEP」を使っていない', () => {
+    for (const { problem } of allProblems) {
+      const text: string = problem.explanationSupplement || problem.explanation;
+      expect(/STEP/i.test(text), `${problem.id}`).toBe(false);
+    }
+  });
+});
+
+describe('無機化学 演習問題が原典に根ざしている', () => {
+  /** 章IDごとの出題傾向データ（weapons が一次資料） */
+  const trendById = new Map(
+    chapterTrendsAdvanced.flatMap((group: any) => (group.units ?? []).map((u: any) => [u.id, u])),
+  );
+
+  it('収録した章には、原典（出題傾向データ）の武器がそろっている', () => {
+    for (const id of INORGANIC_DONE) {
+      const trend: any = trendById.get(id);
+      expect(trend, `${id} の出題傾向データが無い`).toBeDefined();
+      expect(Array.isArray(trend.weapons)).toBe(true);
+      expect(trend.weapons.length).toBeGreaterThan(0);
+    }
+  });
+
+  /**
+   * ★原典との照合★
+   * chemistryAdvancedTrendData.ts の weapons に書かれている
+   * 「共通テストで得点に直結する事実」が、実際に問題として出題されているかを見る。
+   * 勝手な創作知識だけで埋めていないことの機械的な証拠になる。
+   * weapons の本文は全角記号（＞など）を使っているので、
+   * 照合はキーワード単位で行う。
+   */
+  const MUST_ASK: Record<string, string[]> = {
+    // a7_1 周期表と元素の分類：原典の武器 5 本に一対一で対応させてある。
+    // 「原子半径：同周期では右へ行くほど小さい／同族では下へ行くほど大きい」
+    //   → 原子半径・電子殻・陽子数
+    // 「★等電子イオン（O²⁻ F⁻ Na⁺ Mg²⁺ Al³⁺）は原子番号が大きいほど小さい★」
+    //   → 等電子イオン
+    // 「第一イオン化エネルギー：希ガスが最大、アルカリ金属が最小」
+    //   → イオン化エネルギー・希ガス・アルカリ金属
+    // 「電気陰性度：F > O > N ≒ Cl（希ガスは定義されない）」→ 電気陰性度
+    // 「陽イオンは元の原子より小さく、陰イオンは元の原子より大きい」→ イオン半径
+    // ※ 陽子数と電子殻を必須にしているのは、原典が要点で
+    //   「電子数が同じで陽子数だけが違う＝核の引力の強さで決まる、という
+    //     原理から導けるようにすること」と、導き方まで指定しているため。
+    //   この2語が無いと「表を暗記させただけ」の作問になってしまう。
+    // ※ 電子親和力は、イオン化エネルギーと向きが逆（大きいほど陰イオンに
+    //   なりやすい）で混同されやすいので、対比のため必須にしてある。
+    a7_1: [
+      '原子半径',
+      'イオン半径',
+      '等電子イオン',
+      '陽子数',
+      '電子殻',
+      'イオン化エネルギー',
+      '電子親和力',
+      '電気陰性度',
+      '希ガス',
+      'アルカリ金属',
+      '周期律',
+      '典型元素',
+    ],
+    // a7_3 ハロゲン：酸化力の順序 / AgF の可溶性 / HF の特異性 / 洗気瓶の順序
+    a7_3: ['酸化力', 'AgF', 'HF', '洗気瓶', 'アンモニア水'],
+    // a7_4 酸素・硫黄：接触法 / V2O5 / SO2 の両性 / 濃硫酸の脱水 / オゾンの検出
+    a7_4: ['接触法', 'V₂O₅', '酸化剤', '還元剤', '脱水作用', 'オゾン'],
+    // a7_5 窒素・リン：オストワルト法の量的計算 / NO と NO₂ の捕集法 /
+    // 不動態（Fe・Ni・Al）/ 王水 / リンの同素体 / P₄O₁₀ が塩基性気体に使えないこと。
+    // 原典 a7_5 の weapons 5本すべてに対応するキーワードを並べてある。
+    a7_5: ['オストワルト法', '水上置換', '下方置換', '不動態', '王水', '黄リン', '赤リン', 'P₄O₁₀'],
+    // a7_6 炭素・ケイ素：原典の武器 5 本に一対一で対応させてある。
+    // 「黒鉛は層状で電気を通す／ダイヤモンドは正四面体で電気を通さない」
+    //   → ダイヤモンド・黒鉛
+    // 「SiO₂ + 2NaOH → Na₂SiO₃（水ガラス）→ 酸を加えるとケイ酸 → 乾燥でシリカゲル」
+    //   → 水ガラス・ケイ酸・シリカゲル
+    // 「★SiO₂ はフッ化水素酸に溶ける（ガラスの腐食）★」→ フッ化水素酸
+    // 「非晶質＝原子配列が不規則で融点が明確でない」→ 非晶質・アモルファス
+    // 「CO₂ の検出は石灰水の白濁」→ 石灰水
+    // ※ 共有結合結晶を必須にしているのは、原典が要点で
+    //   「炭素とケイ素は『共有結合結晶』というキーワードで結びつけ、
+    //     そこから硬さ・融点・電気伝導性を導く力」と、
+    //   結びつけ方そのものを指定しているため。
+    //   この語が無いと第1問の結晶分野との接続が切れる。
+    // ※ フラーレンとカーボンナノチューブは原典の出題形式に
+    //   同素体として明記されている。2つだけで済ませると
+    //   「同素体を4つ挙げよ」に答えられない。
+    // ※ 半導体は、ダイヤモンドと同じ構造なのにケイ素だけが
+    //   半導体になる理由（原子が大きく結合がやや弱い）を
+    //   扱えているかの確認。
+    a7_6: [
+      '共有結合結晶',
+      'ダイヤモンド',
+      '黒鉛',
+      'フラーレン',
+      'カーボンナノチューブ',
+      '半導体',
+      '水ガラス',
+      'ケイ酸',
+      'シリカゲル',
+      'フッ化水素酸',
+      '非晶質',
+      'アモルファス',
+      '石灰水',
+    ],
+    // a7_7 気体の製法と性質のまとめ：原典の武器 6 本に一対一で対応させてある。
+    // 「水に溶けにくい→水上置換」「溶けて重い→下方置換」「溶けて軽い→上方置換」
+    //   → 水上置換・下方置換・上方置換
+    // 「NH₃ の乾燥はソーダ石灰のみ」→ ソーダ石灰
+    // 「塩化カルシウムは NH₃ と反応する（頻出のひっかけ）」→ 塩化カルシウム
+    // 「有色気体 Cl₂ 黄緑・NO₂ 赤褐・O₃ 淡青」→ 黄緑色・赤褐色・淡青色
+    // ※ 有色の3気体を必須にしているのは、ここが同定問題の最短の手がかりで、
+    //   1つでも欠けると「色から気体を当てる」練習が成立しなくなるため。
+    // ※ 十酸化四リンは原典の乾燥剤4種の1つ。名称を漢字で書いておかないと
+    //   P₄O₁₀ という式だけを覚えて選択肢の日本語が読めなくなる。
+    a7_7: [
+      '水上置換',
+      '上方置換',
+      '下方置換',
+      'ソーダ石灰',
+      '塩化カルシウム',
+      '十酸化四リン',
+      '黄緑色',
+      '赤褐色',
+      '淡青色',
+      '不揮発性',
+    ],
+    // a8_1 アルカリ金属：原典の武器 5 本に一対一で対応させてある。
+    // 「アンモニアソーダ法：NaCl 2mol から Na₂CO₃ 1mol（全体式で覚える）」
+    //   → アンモニアソーダ法・ソルベー法
+    // 「NaHCO₃ は加熱で分解」→ 熱分解
+    // 「Na₂CO₃ 水溶液は加水分解で塩基性（強塩基＋弱酸の塩）」→ 加水分解
+    // 「単体は水と激しく反応→石油中に保存」→ 石油
+    // 「炎色反応：Li赤・Na黄・K紫・Cu青緑・Ca橙赤・Ba黄緑」
+    //   → 炎色反応・黄色・紫色・橙赤色・青緑色・黄緑色
+    // ※ 潮解・風解を必須にしているのは、原典の出題形式に
+    //   「水酸化ナトリウムの潮解性と CO₂ 吸収」があり、
+    //   かつ名前が似ていて逆向きの現象なので、
+    //   両方そろっていないと対比して覚える練習にならないため。
+    // ※ 「再利用」は原典が「NH₃ と CO₂ が循環して再利用される点も
+    //   正誤で問われる」と明記している要素。
+    a8_1: [
+      'アンモニアソーダ法',
+      'ソルベー法',
+      '熱分解',
+      '加水分解',
+      '潮解',
+      '風解',
+      '石油',
+      '炎色反応',
+      '再利用',
+      '橙赤色',
+      '青緑色',
+      '黄緑色',
+    ],
+    // a8_2 アルカリ土類金属：原典の武器 5 本に一対一で対応させてある。
+    // 「Be・Mg は冷水と反応しない／Ca・Sr・Ba は冷水と反応して H₂ 発生」
+    //   → 冷水・熱水（Mg は熱水なら反応する、が正誤の狙い目）
+    // 「硫酸塩：MgSO₄ は溶ける／CaSO₄・BaSO₄ は溶けない」→ 硫酸塩
+    // 「CaCO₃ は CO₂ を含む水には Ca(HCO₃)₂ として溶ける（鍾乳洞）」→ 鍾乳洞
+    // 「生石灰 CaO ＋ 水 → 消石灰 Ca(OH)₂（発熱）」→ 生石灰・消石灰
+    // 「2族の炎色反応：Ca橙赤・Sr紅・Ba黄緑」→ 炎色反応・橙赤・黄緑
+    // ※ 原典の出題形式にある「硬水・軟水」「セッコウ」「BaSO₄ の造影剤」
+    //   「CaF₂ の結晶構造」も必須にしてある。とくに面心立方格子は
+    //   原典が「結晶構造側から2族が登場する形も要注意」と警告している要素で、
+    //   ここが欠けると第1問との融合形に対応できない。
+    a8_2: [
+      '冷水',
+      '熱水',
+      '硫酸塩',
+      '炎色反応',
+      '橙赤',
+      '黄緑',
+      '生石灰',
+      '消石灰',
+      '鍾乳洞',
+      '硬水',
+      'セッコウ',
+      '造影剤',
+      '蛍石',
+      '面心立方格子',
+    ],
+    // a8_3 アルミニウム・亜鉛：両性金属 / テトラヒドロキシドアルミン酸イオン /
+    // 過剰のアンモニア水で Al と Zn が分かれる / ホール・エルー法と氷晶石 /
+    // Al³⁺ 1 mol に電子 3 mol（ファラデーの法則）/ 不動態 / テルミット反応 / トタン・ブリキ。
+    a8_3: [
+      '両性金属',
+      'テトラヒドロキシドアルミン酸イオン',
+      'ホール・エルー法',
+      '氷晶石',
+      '不動態',
+      'テルミット反応',
+      'トタン',
+      'ブリキ',
+      '複塩',
+    ],
+    // a9_1 遷移元素の特徴：原典の武器 5 本に一対一で対応させてある。
+    // 「遷移元素はすべて金属で、密度・融点が高い」→ 遷移元素・典型元素（対比）
+    // 「同一元素が複数の酸化数をとる（Fe/Cu/Mn）」→ 酸化数
+    // 「イオンや化合物が有色のものが多い」→ 有色・淡緑色・黄褐色・赤紫色
+    // 「錯イオンをつくりやすい／触媒として働く」→ 錯イオン・触媒
+    //   触媒の具体例（V₂O₅・Fe₃O₄・白金・ニッケル・MnO₂）は原典の出題形式に明記
+    // 「隣り合う元素どうしの性質が似ている」→ 典型元素との対比で扱う
+    // ※ 水銀を必須にしているのは、原典の要点にある
+    //   「正誤問題の選択肢を1つずつ照合する力」を鍛えるうえで、
+    //   「遷移元素はすべて融点が高い」という言い切りへの
+    //   唯一の反例だから。これが無いと言い切り表現を崩す練習ができない。
+    a9_1: [
+      '遷移元素',
+      '典型元素',
+      '酸化数',
+      '有色',
+      '錯イオン',
+      '触媒',
+      '水銀',
+      'V₂O₅',
+      'Fe₃O₄',
+      'MnO₂',
+      '淡緑色',
+      '黄褐色',
+      '赤紫色',
+    ],
+    // a9_2 鉄：原典の武器 6 本に一対一で対応させてある。
+    // 「製鉄 Fe₂O₃ ＋ 3CO → 2Fe」→ 溶鉱炉・銑鉄・転炉・鋼
+    // 「Fe³⁺ ＋ KSCN → 血赤色」→ チオシアン酸カリウム・血赤色
+    // 「Fe²⁺/Fe³⁺ ＋ 2種のシアニド錯塩 → 濃青色沈殿」→ ヘキサシアニド・濃青色
+    // 「Fe は濃硝酸で不動態」→ 不動態
+    // 「合金」→ ステンレス鋼
+    // 酸化物の酸化数（FeO・Fe₂O₃・Fe₃O₄）→ 四酸化三鉄
+    // ※「濃青色」を必須にしているのは、ここを「青色」などと書き崩すと
+    //   原典の識別表と食い違い、学習者が試験本番で選択肢を選べなくなるため。
+    a9_2: [
+      '溶鉱炉',
+      '銑鉄',
+      '転炉',
+      'チオシアン酸カリウム',
+      '血赤色',
+      'ヘキサシアニド',
+      '濃青色',
+      '不動態',
+      'ステンレス鋼',
+      '四酸化三鉄',
+    ],
+    // a9_3 銅・銀：原典の武器 5 本に一対一で対応させてある。
+    // 「銅は塩酸・希硫酸に溶けない」→ イオン化傾向
+    // 「希硝酸→NO / 濃硝酸→NO₂ / 熱濃硫酸→SO₂」→ 希硝酸・濃硝酸・熱濃硫酸
+    // 「少量 NH₃ で青白沈殿、過剰で深青色錯イオン」→ 青白色・深青色
+    // 「電解精錬で Ag・Au は陽極泥」→ 電解精錬・陽極泥
+    // 「CuSO₄·5H₂O（青）→加熱→白→水で青に戻る」→ 五水和物
+    a9_3: [
+      'イオン化傾向',
+      '希硝酸',
+      '濃硝酸',
+      '熱濃硫酸',
+      '青白色',
+      '深青色',
+      '電解精錬',
+      '陽極泥',
+      '五水和物',
+    ],
+    // a9_4 クロム・マンガン：原典の武器 5 本に一対一で対応させてある。
+    // 「MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O（酸性・電子5個）」→ 半反応式
+    // 「MnO₄⁻（赤紫）→ Mn²⁺（ほぼ無色）なので指示薬不要」→ 赤紫色・ビュレット
+    // 「CrO₄²⁻（黄）は酸性で Cr₂O₇²⁻（橙赤）に変わる」
+    //   → クロム酸・二クロム酸・黄色・橙赤色
+    // 「Cr₂O₇²⁻ + 14H⁺ + 6e⁻ → 2Cr³⁺ + 7H₂O（電子6個）」→ 半反応式
+    // 「MnO₂ は過酸化水素の分解や塩素の製法に用いる」→ MnO₂・触媒・酸化剤
+    // ※ 硫酸酸性を必須にしているのは、原典が学習の要点で
+    //   「硫酸酸性にする理由まで説明できるようにすること」と
+    //   明示的に要求している唯一の項目だから。
+    // ※ 縮合を必須にしているのは、CrO₄²⁻ → Cr₂O₇²⁻ を
+    //   「酸化還元」と誤解させる選択肢が定番で、
+    //   酸化数が +6 のまま変わらない（＝縮合である）と
+    //   説明できないとその罠を外せないため。
+    // ※ 赤褐色は Ag₂CrO₄ の色。原典の出題形式に明記されている
+    //   3つの沈殿のうち、鉛とバリウム（どちらも黄）と違う唯一の色なので、
+    //   ここが無いと「1つだけ違う」形での整理ができない。
+    a9_4: [
+      '半反応式',
+      '酸化還元滴定',
+      'ビュレット',
+      '硫酸酸性',
+      '過マンガン酸',
+      'クロム酸',
+      '二クロム酸',
+      '赤紫色',
+      '橙赤色',
+      '赤褐色',
+      'MnO₂',
+      '触媒',
+      '酸化剤',
+      '縮合',
+    ],
+    // a9_5 錯イオン：配位数と立体構造（直線形・正方形・正四面体形・正八面体形）/
+    // 配位子の名称（アンミン・アクア・シアニド・ヒドロキシド）/ 配位結合。
+    a9_5: [
+      '配位結合',
+      '直線形',
+      '正方形',
+      '正四面体形',
+      '正八面体形',
+      'アンミン',
+      'アクア',
+      'シアニド',
+      'ヒドロキシド',
+      '非共有電子対',
+    ],
+    // a9_6 系統分析：分属の6段階 / 硫化物と水酸化物の色 /
+    // 酸性では溶解度積の小さいものだけが沈殿 / 硫化水素のあと Fe²⁺ になっている。
+    a9_6: [
+      '炎色反応',
+      '溶解度積',
+      '赤褐色',
+      '青白色',
+      '深青色',
+      '黄色',
+      '淡桃色',
+      '還元剤',
+      '炎色',
+    ],
+  };
+
+  for (const [chapterId, keywords] of Object.entries(MUST_ASK)) {
+    it(`${chapterId}：原典の武器が実際に出題されている`, () => {
+      const chapter = chaptersById.get(chapterId);
+      const dump = JSON.stringify(chapter?.practiceProblems ?? []);
+      for (const kw of keywords) {
+        expect(dump, `${chapterId} で「${kw}」がどこにも問われていない`).toContain(kw);
+      }
+    });
+  }
+
+  it('a7_3：ハロゲン単体の酸化力の順序が正しい向きで書かれている', () => {
+    const dump = JSON.stringify(chaptersById.get('a7_3')?.practiceProblems ?? []);
+    // フッ素が最強・ヨウ素が最弱。逆順で書いたら即アウト。
+    expect(dump).toContain('F₂ > Cl₂ > Br₂ > I₂');
+    expect(dump).not.toContain('I₂ > Br₂ > Cl₂ > F₂');
+  });
+
+  it('a7_3：沸点と酸の強さで順序が逆転することを両方扱っている', () => {
+    const dump = JSON.stringify(chaptersById.get('a7_3')?.practiceProblems ?? []);
+    // 沸点は HF が先頭、酸の強さは HI が先頭。ここが同じ順序になっていたら誤り。
+    expect(dump).toContain('HF > HI > HBr > HCl');
+    expect(dump).toContain('HI > HBr > HCl > HF');
+  });
+
+  it('a7_4：接触法は「硫黄1molから硫酸1mol」の関係で作問されている', () => {
+    const dump = JSON.stringify(chaptersById.get('a7_4')?.practiceProblems ?? []);
+    expect(dump).toContain('S + O₂ → SO₂');
+    expect(dump).toContain('2SO₂ + O₂ → 2SO₃');
+    expect(dump).toContain('SO₃ + H₂O → H₂SO₄');
+  });
+
+  it('a7_4：熱濃硫酸で銅が溶ける反応で、水素が発生する誤りを書いていない', () => {
+    const dump = JSON.stringify(chaptersById.get('a7_4')?.practiceProblems ?? []);
+    expect(dump).toContain('Cu + 2H₂SO₄ → CuSO₄ + SO₂ + 2H₂O');
+    // 「Cu + H2SO4 → CuSO4 + H2」は典型的な誤答。正解として置いていないこと。
+    expect(dump).not.toContain('CuSO₄ + H₂');
+  });
+});
+
+/**
+ * ★対戦（バトル）に1問も出ない章を作ってしまう事故を防ぐ★
+ *
+ * ■ なぜこのテストが必要になったか（実際に踏んだ）
+ *   a8_2（アルカリ土類金属）を 4大問24小問 で書き上げ、
+ *   演習側のテストもすべて緑になったのに、
+ *   npm run gen:battle-pool のあと chemistry の問題数が
+ *   203問 のまま1問も増えなかった。
+ *   内訳を見ると「未使用」が 194 → 218 と、ちょうど24件増えていた。
+ *   つまり書いた24小問すべてが対戦プールから捨てられていた。
+ *
+ * ■ 原因
+ *   scripts/gen-battle-pool.mts は
+ *   USE_SYNTHESIZED_FORMATS === false のため、
+ *   「元データの選択肢をそのまま使える問題」＝ options を持つ
+ *   multiple_choice と、答えがカタカナの short_answer しか採用しない。
+ *   （短答・記述から誤答を借りて4択を合成する処理は、
+ *     問いとして成り立たない問題が混ざるので意図的に止められている）
+ *   a8_2 は multiple_choice が 0 件で、
+ *   short_answer の答えも「熱水」「硬水」など漢字だったため、
+ *   採用条件をどれも満たさなかった。
+ *
+ * ■ なぜ既存のテストで気づけなかったか
+ *   演習側のテスト（データ形式・解説の分割・原典の武器）は
+ *   すべて通ってしまう。対戦への寄与を見ている検査が
+ *   どこにも無かったので、生成ログの数字を人間が見比べるしか
+ *   気づく方法がなかった。それは見落とすので機械化する。
+ *
+ * ■ このテストが守ること
+ *   収録した章は、対戦プールに最低1問は寄与していること。
+ *   落ちたら「その章に options を持つ設問が足りない」ということなので、
+ *   multiple_choice の小問を足して gen:battle-pool を回し直す。
+ */
+describe('無機化学 演習問題が対戦にも供給されている', () => {
+  it('★収録した章はすべて対戦プールに1問以上出ている（演習専用の章を作らない）★', () => {
+    // 章IDは生成プールの2列目に入っている。
+    // pool 側は型を持たない生の配列なので、位置で読む。
+    const chapterIdsInPool = new Set(POOL.map((row) => String(row[1])));
+
+    const missing = INORGANIC_DONE.filter((id) => !chapterIdsInPool.has(id));
+
+    expect(
+      missing,
+      missing.length
+        ? `次の章は演習には入っているが対戦プールに1問も出ていない: ${missing.join(', ')}\n` +
+            '原因はほぼ確実に「options を持つ multiple_choice の小問が無い」こと。\n' +
+            'gen-battle-pool.mts は選択肢をそのまま使える問題しか採用しない（誤答の合成は停止中）。\n' +
+            '対策: その章に multiple_choice の小問を追加し、npm run gen:battle-pool を再実行する。'
+        : '',
+    ).toEqual([]);
+  });
+
+  it('収録した章は対戦プールに複数問寄与している（1問だけの偏りを防ぐ）', () => {
+    const countByChapter = new Map<string, number>();
+    for (const row of POOL) {
+      const id = String(row[1]);
+      countByChapter.set(id, (countByChapter.get(id) ?? 0) + 1);
+    }
+
+    // 1問しか出ていない章は、対戦で同じ問題ばかり当たることになる。
+    // 4大問20小問前後を書いているのだから、最低3問は出るべき。
+    const tooFew = INORGANIC_DONE.filter((id) => (countByChapter.get(id) ?? 0) < 3);
+
+    expect(
+      tooFew,
+      tooFew.length
+        ? `次の章は対戦プールへの寄与が3問未満: ${tooFew
+            .map((id) => `${id}(${countByChapter.get(id) ?? 0}問)`)
+            .join(', ')}`
+        : '',
+    ).toEqual([]);
+  });
+});
+
+/**
+ * ★計算問題の数値そのものを検算する★
+ *
+ * ■ なぜこのテストを足したか
+ *   ここまでのガードは「解説が小問ごとに分割されるか」「原典の武器が
+ *   出題されているか」「解説が薄くないか」「型が正しいか」「対戦に
+ *   出ているか」しか見ていなかった。
+ *   つまり ★計算の答えが間違っていても全部緑になる★ 状態だった。
+ *   誤った数値を教えるのは学習者に対する最悪の欠陥なので、機械で検算する。
+ *
+ * ■ 検算の考え方（ここが肝心）
+ *   データに書いた答えを見てから式を作ると、同じ思い込みで同じ間違いを
+ *   するので検算にならない。
+ *   だから下の表には「問題文で与えている条件（原子量・ファラデー定数・
+ *   与えた量）だけ」を書き、そこから独立に計算する。
+ *   答えの文字列はデータ側から読み取って突き合わせるので、
+ *   あとでデータの数値をいじると、このテストが落ちる。
+ *
+ * ■ 検算漏れも防ぐ
+ *   「表に書き忘れた計算問題」は検算されないまま通ってしまう。
+ *   それを防ぐため、数値を答えにしている小問を全部数えて、
+ *   表に載っていないものがあれば落とす。
+ *   新しい計算問題を足したら、必ずこの表にも式を足すことになる。
+ */
+describe('無機化学 計算問題の数値が正しい', () => {
+  /** 問題文で与えているファラデー定数 */
+  const F = 9.65e4;
+  /** 標準状態のモル体積 L/mol */
+  const VM = 22.4;
+
+  // 問題文で与えている原子量から式量を組み立てる（データの答えは見ない）
+  const M_NaCl = 23 + 35.5; // 58.5
+  const M_Na2CO3 = 23 * 2 + 12 + 16 * 3; // 106
+  const M_NaHCO3 = 23 + 1.0 + 12 + 16 * 3; // 84
+  const M_Fe2O3 = 56 * 2 + 16 * 3; // 160
+  const M_H2SO4 = 1.0 * 2 + 32 + 16 * 4; // 98
+  const M_HNO3 = 1.0 + 14 + 16 * 3; // 63
+
+  /**
+   * 検算表。value は「問題文の条件から独立に計算した値」。
+   * how は落ちたときに原因をすぐ追えるようにするための計算手順のメモ。
+   */
+  const CALC_CHECKS: Record<string, { value: number; how: string }> = {
+    // ── a8_1 アンモニアソーダ法（Na = 23、Cl = 35.5、C = 12、O = 16）──
+    q_a8_1_ex1_2: {
+      value: (234 / M_NaCl) * 0.5 * M_Na2CO3,
+      how: 'NaCl 234 g ÷ 58.5 = 4 mol、2NaCl → 1Na₂CO₃ なので ×1/2、×106',
+    },
+    q_a8_1_ex1_3: {
+      value: (1000 / M_Na2CO3) * 2 * M_NaCl,
+      how: 'Na₂CO₃ 1000 g ÷ 106 mol、1Na₂CO₃ に NaCl 2 mol 必要なので ×2、×58.5',
+    },
+    // ── a8_1 炭酸水素ナトリウムの熱分解（2NaHCO₃ → Na₂CO₃ + H₂O + CO₂）──
+    q_a8_1_ex2_2: {
+      value: (8.4 / M_NaHCO3) * 0.5 * M_Na2CO3,
+      how: 'NaHCO₃ 8.40 g ÷ 84 = 0.100 mol、2:1 で Na₂CO₃ になるので ×1/2、×106',
+    },
+    q_a8_1_ex2_3: {
+      value: (8.4 / M_NaHCO3) * 0.5 * VM,
+      how: '0.100 mol の 1/2 が CO₂、標準状態なので ×22.4',
+    },
+    // ── a8_3 ホール・エルー法（Al = 27、F = 9.65×10⁴ C/mol）──
+    q_a8_3_ex3_4: {
+      value: 3,
+      how: 'Al³⁺ + 3e⁻ → Al なので Al 1 mol あたり電子 3 mol',
+    },
+    q_a8_3_ex3_5: {
+      value: (27000 / 27) * 3 * F,
+      how: 'Al 27.0 kg ÷ 27 = 1.00×10³ mol、×3（電子）、×9.65×10⁴',
+    },
+    // ── a9_3 銅の電解精錬（Cu = 64、F = 9.65×10⁴ C/mol）──
+    q_a9_3_ex2_5: {
+      value: (6.4 / 64) * 2 * F,
+      how: 'Cu 6.4 g ÷ 64 = 0.10 mol、Cu²⁺ + 2e⁻ → Cu なので ×2、×9.65×10⁴',
+    },
+    // ── a9_2 製鉄（Fe = 56、O = 16）──
+    q_a9_2_ex1_3: {
+      value: 2,
+      how: 'Fe₂O₃ + 3CO → 2Fe + 3CO₂ より Fe₂O₃ 1 mol から Fe 2 mol',
+    },
+    q_a9_2_ex1_4: {
+      value: (160 / M_Fe2O3) * 2 * 56,
+      how: 'Fe₂O₃ 160 kg ÷ 160 = 1.00 kmol、×2、×56',
+    },
+    // ── a9_4 過マンガン酸カリウムによる酸化還元滴定 ──
+    q_a9_4_ex2_2: {
+      value: 0.02 * (12.0 / 1000),
+      how: '0.0200 mol/L × 12.0 mL',
+    },
+    q_a9_4_ex2_3: {
+      value: (0.02 * (12.0 / 1000) * 5) / 2 / (10.0 / 1000),
+      how: 'MnO₄⁻ : H₂C₂O₄ = 2 : 5 なので ×5/2、それを 10.0 mL で割る',
+    },
+    // ── a7_4 接触法（S = 32、H = 1.0、O = 16）──
+    q_a7_4_ex1_5: {
+      value: 1,
+      how: 'S → SO₂ → SO₃ → H₂SO₄ はどの段階も S 原子 1 個ぶんなので 1 : 1',
+    },
+    q_a7_4_ex1_6: {
+      value: (32000 / 32 / 1000) * M_H2SO4,
+      how: 'S 32 kg ÷ 32 = 1.0 kmol、1 : 1 なので ×98',
+    },
+    q_a7_4_ex1_7: {
+      value: 98 / 0.98,
+      how: '純 H₂SO₄ 98 kg が質量パーセント 98% なので ÷0.98',
+    },
+    // ── a7_5 オストワルト法（N = 14、H = 1.0、O = 16）──
+    q_a7_5_ex1_5: {
+      value: 1,
+      how: 'NH₃ → NO → NO₂ → HNO₃ はどの段階も N 原子 1 個ぶんなので 1 : 1',
+    },
+    q_a7_5_ex1_6: {
+      value: (17000 / 17 / 1000) * M_HNO3,
+      how: 'NH₃ 17 kg ÷ 17 = 1.0 kmol、1 : 1 なので ×63',
+    },
+    q_a7_5_ex1_7: {
+      value: 63 / 0.63,
+      how: '純 HNO₃ 63 kg が質量パーセント 63% なので ÷0.63',
+    },
+  };
+
+  /**
+   * 答えの文字列から数値を取り出す。
+   * 「2.90×10⁸」のような上付き指数表記を JavaScript の数値にする必要がある。
+   */
+  function parseAnswerNumber(s: string): number | null {
+    const SUP: Record<string, string> = {
+      '⁰': '0',
+      '¹': '1',
+      '²': '2',
+      '³': '3',
+      '⁴': '4',
+      '⁵': '5',
+      '⁶': '6',
+      '⁷': '7',
+      '⁸': '8',
+      '⁹': '9',
+    };
+    const normalized = s
+      // 「×10⁻⁴」「× 10^4」などを e 表記に直す
+      // ※「1.93 × 10⁴」のように前後に空白が入る書き方をしているので、
+      // 空白も一緒に吸い取って e 表記と尾数を密着させないと、
+      // 「1.93 e4」のように分断して尾数だけ拾ってしまう（実際にこれで誤検知した）。
+      .replace(/\s*[×x]\s*10\s*\^?\s*([⁻-])?\s*([⁰¹²³⁴⁵⁶⁷⁸⁹0-9]+)/g, (_m, sign, digits) => {
+        const d = [...String(digits)].map((c) => SUP[c] ?? c).join('');
+        return `e${sign ? '-' : ''}${d}`;
+      })
+      // 桁区切りのカンマは邪魔なので落とす
+      .replace(/,/g, '');
+    const hit = normalized.match(/-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/i);
+    return hit ? Number(hit[0]) : null;
+  }
+
+  /** 小問ID → データに書いてある答え（生データを読むので改変を検知できる） */
+  const answerById = new Map<string, string>();
+  for (const { problem } of allProblems) {
+    for (const sq of problem.subQuestions ?? []) {
+      answerById.set(String(sq.id), String(sq.correctAnswer ?? ''));
+    }
+  }
+
+  it('★問題文の条件から独立に計算した値と、データに書いた答えが一致する★', () => {
+    const mismatches: string[] = [];
+
+    for (const [id, { value, how }] of Object.entries(CALC_CHECKS)) {
+      const raw = answerById.get(id);
+      if (raw === undefined) {
+        mismatches.push(`${id}: 検算表にあるが小問が見つからない（IDが変わった可能性）`);
+        continue;
+      }
+      const got = parseAnswerNumber(raw);
+      if (got === null) {
+        mismatches.push(`${id}: 答え「${raw}」から数値を読み取れなかった`);
+        continue;
+      }
+      // 有効数字の丸めは許すが、桁の間違いは許さないので相対誤差 0.5% で見る
+      const tolerance = Math.max(Math.abs(value), Math.abs(got)) * 0.005;
+      if (Math.abs(value - got) > tolerance) {
+        mismatches.push(
+          `${id}: データの答え「${raw}」(= ${got}) と、独立計算 ${Number(
+            value.toPrecision(4),
+          )} が合わない / 計算手順: ${how}`,
+        );
+      }
+    }
+
+    expect(
+      mismatches,
+      mismatches.length
+        ? '計算問題の数値が独立検算と一致しない:\n' +
+            mismatches.map((m) => `  - ${m}`).join('\n') +
+            '\nデータ側の答えが誤っているか、検算表の式が誤っているかのどちらか。\n' +
+            '必ず問題文に書いた条件（原子量・ファラデー定数・与えた量）に戻って確認する。'
+        : '',
+    ).toEqual([]);
+  });
+
+  it('★数値を答えにしている小問は、全部検算表に載っている（検算漏れを作らない）★', () => {
+    // 単位付きの数値、または指数表記を含む答えを「計算問題」とみなす
+    const looksNumeric = (a: string) =>
+      /[0-9]\s*(?:g|L|mol|mol\/L|kg|C|A|%|kJ)\b/.test(a) || /10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹×]/.test(a);
+
+    const numericIds: string[] = [];
+    for (const { problem } of allProblems) {
+      for (const sq of problem.subQuestions ?? []) {
+        if (looksNumeric(String(sq.correctAnswer ?? ''))) numericIds.push(String(sq.id));
+      }
+    }
+
+    const unchecked = numericIds.filter((id) => !(id in CALC_CHECKS));
+
+    expect(
+      unchecked,
+      unchecked.length
+        ? `次の計算問題が検算されていない: ${unchecked.join(', ')}\n` +
+            'CALC_CHECKS に「問題文の条件だけから計算した式」を足すこと。\n' +
+            '★データに書いた答えを写すのは禁止★（同じ間違いを見逃すので検算にならない）'
+        : '',
+    ).toEqual([]);
+  });
+});
+
+/**
+ * ★収録した章に「思考の型」と「出題傾向ボックス」があることを守る★
+ *
+ * ■ なぜこのテストを足したか
+ *   無機化学15章を書き終えたあとで数えてみたら、指導テンプレート
+ *   （data/unitTeaching.ts）を持っていたのは理論化学の5章だけで、
+ *   ★あとから書いた無機15章は全部が未登録★だった。
+ *   その結果、無機の解説には
+ *     ・単元ごとの「思考の型」（steps）
+ *     ・「ココが狙われる！」の出題傾向ボックス（trend）
+ *   がどちらも出ておらず、先に作られた理論化学の章より
+ *   機能が貧しい状態になっていた。
+ *
+ * ■ なぜ既存のテストで気づけなかったか
+ *   applyExplanationPostProcess() は getUnitTeaching() が undefined でも
+ *   エラーにせず、ボックスを省いた解説をそのまま作る。
+ *   画面も壊れないので「あるはずのものが無い」という静かな欠落になる。
+ *   理論化学側のテストには出題傾向ボックスの検査があるのに、
+ *   無機側には無かった。だから片方だけ機能が欠けていても緑だった。
+ *
+ * ■ このテストが守ること
+ *   収録した章はすべて unitTeaching を持ち、解説に
+ *   出題傾向ボックスが実際に描かれていること。
+ *   落ちたら data/unitTeaching.ts にその章の steps と trend を足す。
+ *   ★中身は chemistryAdvancedTrendData.ts の「学習の要点・出題形式・
+ *   武器・予測」から起こすこと。新しい知識を創作してはいけない。★
+ */
+describe('無機化学 収録した章に指導テンプレートがある', () => {
+  it('★収録した章はすべて unitTeaching（思考の型）を持っている★', () => {
+    const missing = INORGANIC_DONE.filter((id) => !getUnitTeaching(id));
+
+    expect(
+      missing,
+      missing.length
+        ? `次の章に指導テンプレートが無い: ${missing.join(', ')}\n` +
+            'data/unitTeaching.ts に steps（思考手順）と trend（出題傾向）を足すこと。\n' +
+            '中身は chemistryAdvancedTrendData.ts の原典から起こす（創作しない）。'
+        : '',
+    ).toEqual([]);
+  });
+
+  it('思考の型は3手順以上あり、出題傾向は4項目すべてが埋まっている', () => {
+    const problems: string[] = [];
+    for (const id of INORGANIC_DONE) {
+      const t = getUnitTeaching(id);
+      if (!t) continue; // 上のテストが検出するのでここでは飛ばす
+      // 手順が1〜2個だと「型」として使えないので、理論化学側と同じ3個以上を要求する
+      if (t.steps.length < 3) problems.push(`${id}: 思考手順が ${t.steps.length} 個（3個以上必要）`);
+      if (t.trend.sources.length === 0) problems.push(`${id}: trend.sources が空`);
+      if (t.trend.asked.length === 0) problems.push(`${id}: trend.asked が空`);
+      if (t.trend.traps.length === 0) problems.push(`${id}: trend.traps が空`);
+      if (!t.trend.advice.trim()) problems.push(`${id}: trend.advice が空`);
+    }
+
+    expect(problems, problems.join('\n')).toEqual([]);
+  });
+
+  it('★出題傾向ボックスが解説に実際に描かれている（登録しただけで満足しない）★', () => {
+    // unitTeaching に足しても、章IDが1文字違えば解説には出ない。
+    // 出力側を見ることで「登録したつもり」の事故を防ぐ。
+    const missing: string[] = [];
+    for (const { chapterId, problem } of allProblems) {
+      const text = String((problem as any).explanationSupplement || problem.explanation);
+      if (!text.includes('ココが狙われる')) missing.push(`${chapterId}/${problem.id}`);
+    }
+
+    expect(
+      missing,
+      missing.length
+        ? `次の大問の解説に出題傾向ボックスが出ていない: ${missing.slice(0, 10).join(', ')}` +
+            (missing.length > 10 ? ` ほか${missing.length - 10}件` : '') +
+            '\n章IDの綴りが unitTeaching のキーと一致しているか確認する。'
+        : '',
+    ).toEqual([]);
+  });
+});
+
+
+/**
+ * 内容監査で見つけた「長さや項目数では検知できない誤説明」の再発防止。
+ * これは自然言語の正しさを万能に判定するテストではない。
+ * 実際に確認した論点を、該当する手順だけで検査する仕様テストである。
+ * 他の手順に正しい用語があっても救済しない。正しい説明を残したまま
+ * 電子の向き・条件・単位だけを壊す変異テストで、検査が効くことも確かめる。
+ * 変異は文字列のコピー上だけで行い、共有データや生成物を書き換えない。
+ */
+describe('無機化学 指導内容の因果関係と適用条件', () => {
+  type Rule = {
+    name: string;
+    chapter: (typeof INORGANIC_DONE)[number];
+    step: number;
+    required: RegExp[];
+    mutation: [string, string];
+  };
+  const rules: Rule[] = [
+    {
+      name: 'HF：分子間の水素結合と分子内の結合を区別する',
+      chapter: 'a7_3', step: 1,
+      required: [/分子間に水素結合/, /分子内の H–F 結合が強く/, /水中で電離/],
+      mutation: ['分子内の H–F', '分子間の H–F'],
+    },
+    {
+      name: '洗気瓶：逆順では最後に水蒸気が混ざる',
+      chapter: 'a7_3', step: 3,
+      required: [/水→濃硫酸/, /塩化水素を除/, /乾燥後に水を通すため再び水蒸気が混ざり/],
+      mutation: ['再び水蒸気が混ざり', '再び塩化水素が混ざり'],
+    },
+    {
+      name: '周期表：典型元素は縦（同族）で性質が似る',
+      chapter: 'a9_1', step: 1,
+      required: [/典型元素は縦に似る/, /典型元素は同族（縦）で性質が似る/],
+      mutation: ['典型元素は縦に似る', '典型元素は横に似る'],
+    },
+    {
+      name: '滴定：過マンガン酸は受け取り、シュウ酸は放出する',
+      chapter: 'a9_4', step: 1,
+      required: [/硫酸酸性/, /過マンガン酸イオン 1 mol は電子 5 mol を受け取り/, /シュウ酸 1 mol は電子 2 mol を放出/, /5n\(MnO₄⁻\) = 2n\(H₂C₂O₄\)/],
+      mutation: ['電子 5 mol を受け取り', '電子 5 mol を放出し'],
+    },
+    {
+      name: '希硫酸：H⁺の酸化作用と銅を酸化できないことを区別する',
+      chapter: 'a7_4', step: 3,
+      required: [/H⁺ が酸化剤/, /銅を酸化する力はない/, /熱濃硫酸/, /SO₂/],
+      mutation: ['H⁺ が酸化剤', 'H⁺ が還元剤'],
+    },
+    {
+      name: 'ソルベー法：全体式の比は収率100%の理論量',
+      chapter: 'a8_1', step: 0,
+      required: [/他の原料が十分/, /収率100%/, /途中の物質を問う場合はその工程の反応式/],
+      mutation: ['収率100%', '収率50%'],
+    },
+    {
+      name: '製鉄：kgをkg/kmolで割った物質量はkmol',
+      chapter: 'a9_2', step: 1,
+      required: [/160 kg ÷ 160 kg\/kmol = 1\.00 kmol/, /56 kg\/kmol = 112 kg/],
+      mutation: ['= 1.00 kmol', '= 1.00 mol'],
+    },
+    {
+      name: 'オストワルト法：全工程と一度の吸収工程を区別する',
+      chapter: 'a7_5', step: 0,
+      required: [/NO を再酸化して再利用/, /収率100%/, /NH₃ : HNO₃ = 1 : 1/, /吸収工程の比 3 : 2/],
+      mutation: ['吸収工程の比 3 : 2', '吸収工程の比 1 : 1'],
+    },
+  ];
+  const failures = (text: string, rule: Rule) =>
+    rule.required.filter((pattern) => !pattern.test(text)).map(String);
+
+  for (const rule of rules) {
+    it(rule.name, () => {
+      const step = getUnitTeaching(rule.chapter)?.steps[rule.step];
+      expect(step, `${rule.chapter} の対象手順が欠落`).toBeDefined();
+      const text = `${step!.title}\n${step!.detail}`;
+      expect(failures(text, rule), rule.name).toEqual([]);
+    });
+
+    it(`変異検査：${rule.name}`, () => {
+      const step = getUnitTeaching(rule.chapter)!.steps[rule.step];
+      const text = `${step.title}\n${step.detail}`;
+      const [before, after] = rule.mutation;
+      // 置換が0件なら「壊したつもり」の偽の変異検査になるので必ず1件を確認する。
+      expect(text.split(before).length - 1).toBe(1);
+      const broken = text.replace(before, after);
+      expect(failures(text, rule)).toEqual([]);
+      expect(failures(broken, rule).length).toBeGreaterThan(0);
+    });
+  }
+
+  it('修正した手順が画面の「この単元の思考の型」に出力される', () => {
+    // Explanation.tsx は採点結果の直後に buildUnitKataBlock を直接描画する。
+    // enhanceExplanation の小問側に共通手順を要求すると、同じ説明を全問に
+    // 重複表示させる旧仕様へ戻すことになるため、実際の表示経路を検査する。
+    for (const rule of rules) {
+      const teaching = getUnitTeaching(rule.chapter)!;
+      const step = teaching.steps[rule.step];
+      const html = buildUnitKataBlock(teaching);
+      expect(html, `${rule.chapter}: ${rule.name}`).toContain(step.title);
+      expect(html, `${rule.chapter}: ${rule.name}`).toContain(step.detail);
+      expect(failures(html, rule)).toEqual([]);
+    }
+  });
+
+  it('問題文・傾向画面・指導テンプレートで典型元素の縦横が一致する', () => {
+    const chapter = chaptersById.get('a9_1')!;
+    const trend = chapterTrendsAdvanced.flatMap((group) => group.units).find((unit) => unit.id === 'a9_1');
+    for (const data of [chapter.practiceProblems, trend, getUnitTeaching('a9_1')]) {
+      const text = JSON.stringify(data);
+      expect(text).toContain('典型元素は縦に似る');
+      expect(text).not.toContain('典型元素は横に似る');
+    }
+  });
+
+  it('希硫酸の採点基準がH⁺の酸化作用を否定しない', () => {
+    const problem = chaptersById.get('a7_4')!.practiceProblems.find((p) => p.id === 'q_a7_4_ex3');
+    expect(problem).toBeDefined();
+    const sq = problem!.subQuestions.find((s) => s.id === 'q_a7_4_ex3_5');
+    expect(sq).toBeDefined();
+    expect(sq!.correctAnswer).toContain('H⁺ では銅を酸化できない');
+    expect(JSON.stringify(sq)).not.toContain('希硫酸に酸化力がない');
+    expect(sq!.gradingCriteria).toContain('希硫酸の水素イオンでは銅を酸化できないことを述べている');
+  });
+});

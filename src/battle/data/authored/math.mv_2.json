@@ -1,0 +1,231 @@
+{
+  "subject": "math",
+  "chapterId": "mv_2",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:mv_2:q_mv_2_angle:q_mv_2_angle_1:1",
+      "source": {
+        "chapterId": "mv_2",
+        "problemId": "q_mv_2_angle",
+        "subQuestionId": "q_mv_2_angle_1"
+      },
+      "format": "choice4",
+      "prompt": "a = (3, 1)、b = (1, 2) のとき、内積 a·b はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "5",
+          "correct": true,
+          "why": "成分の式で a·b = 3·1 + 1·2 = 5。x 成分の積と y 成分の積を足す。"
+        },
+        {
+          "text": "積を引いて 3·1 - 1·2 とした値",
+          "why": "内積は 2 つの積を足す。引くのは平行条件の x1y2 - x2y1 の形。"
+        },
+        {
+          "text": "成分をすべて掛けた 3·1·1·2 の値",
+          "why": "4 つ全部を掛けるのではない。x どうし・y どうしの積を足す。"
+        },
+        {
+          "text": "大きさの積 |a||b| そのものの値",
+          "why": "|a||b| の値。内積はここに cosθ を掛けたもの。"
+        }
+      ],
+      "oneLine": "5。内積の成分の式 a·b = x1x2 + y1y2 に入れるだけ。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:mv_2:q_mv_2_angle:q_mv_2_angle_2:1",
+      "source": {
+        "chapterId": "mv_2",
+        "problemId": "q_mv_2_angle",
+        "subQuestionId": "q_mv_2_angle_2"
+      },
+      "format": "choice4",
+      "prompt": "a = (3, 1)、b = (1, 2) のなす角を θ とするとき cosθ はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1/√2",
+          "correct": true,
+          "why": "cosθ = a·b/(|a||b|) = 5/(√10·√5) = 5/√50 = 5/(5√2) = 1/√2。"
+        },
+        {
+          "text": "1/√50（分母を整理しなかった形）",
+          "why": "分子の 5 で約分していない形。5/(5√2) まで整理すると 1/√2。"
+        },
+        {
+          "text": "5/√15（大きさの計算を誤った形）",
+          "why": "|a||b| = √10·√5 = √50。√15 にはならない。"
+        },
+        {
+          "text": "1/2",
+          "why": "θ = 60° のときの値。cosθ = 1/√2 なので θ = 45°。"
+        }
+      ],
+      "oneLine": "1/√2。内積 5 を |a||b| = √50 = 5√2 で割って約分する。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:mv_2:q_mv_2_angle:q_mv_2_angle_3:1",
+      "source": {
+        "chapterId": "mv_2",
+        "problemId": "q_mv_2_angle",
+        "subQuestionId": "q_mv_2_angle_3"
+      },
+      "format": "choice4",
+      "prompt": "cosθ = 1/√2 のとき、なす角 θ は度数法でどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "45°",
+          "correct": true,
+          "why": "cos 45° = 1/√2。なす角の範囲 0°〜180° でこれを満たすのは 45° だけ。"
+        },
+        {
+          "text": "60°",
+          "why": "cos 60° = 1/2 のときの角。1/√2 とは違う。"
+        },
+        {
+          "text": "30°",
+          "why": "cos 30° = √3/2 のときの角。"
+        },
+        {
+          "text": "135°",
+          "why": "cos 135° = -1/√2。符号が負のときの角。"
+        }
+      ],
+      "oneLine": "45°。cos 45° = 1/√2 だから。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:mv_2:q_mv_2_perp:q_mv_2_perp_1:1",
+      "source": {
+        "chapterId": "mv_2",
+        "problemId": "q_mv_2_perp",
+        "subQuestionId": "q_mv_2_perp_1"
+      },
+      "format": "choice4",
+      "prompt": "a = (2, t)、b = (t-3, 1) が垂直となる実数 t はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2",
+          "correct": true,
+          "why": "垂直 ⇔ 内積 0。2(t-3) + t·1 = 0 より 3t = 6、t = 2。"
+        },
+        {
+          "text": "6（3t = 6 から割り忘れた値）",
+          "why": "3t = 6 を t で割らずに答えた形。3 で割って 2。"
+        },
+        {
+          "text": "3（b の x 成分を 0 にした値）",
+          "why": "b が零ベクトルに近づく値。条件は内積が 0 になること。"
+        },
+        {
+          "text": "平行条件から出る t = 1",
+          "why": "垂直は内積 0、平行は x1y2 - x2y1 = 0。使う条件が違う。"
+        }
+      ],
+      "oneLine": "t = 2。垂直 ⇔ 内積 0 から 2(t-3) + t = 0 を解く。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:mv_2:q_mv_2_perp:q_mv_2_perp_2:1",
+      "source": {
+        "chapterId": "mv_2",
+        "problemId": "q_mv_2_perp",
+        "subQuestionId": "q_mv_2_perp_2"
+      },
+      "format": "choice4",
+      "prompt": "a = (1, 2) と c = (x, 6) が平行となる実数 x はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "3",
+          "correct": true,
+          "why": "平行 ⇔ x1y2 - x2y1 = 0。1·6 - 2·x = 0 より x = 3。"
+        },
+        {
+          "text": "12（6 を 2 倍した値）",
+          "why": "掛ける向きを逆にした形。1·6 = 2x から x = 3。"
+        },
+        {
+          "text": "内積 0 から出る x = -12",
+          "why": "それは垂直条件。平行は成分のたすきがけが 0。"
+        },
+        {
+          "text": "y 成分をそのまま写した 6",
+          "why": "c = (6, 6) では a の実数倍にならない。"
+        }
+      ],
+      "oneLine": "x = 3。平行 ⇔ 1·6 - 2·x = 0 を解く。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:mv_2:q_mv_2_perp:q_mv_2_perp_3:1",
+      "source": {
+        "chapterId": "mv_2",
+        "problemId": "q_mv_2_perp",
+        "subQuestionId": "q_mv_2_perp_3"
+      },
+      "format": "choice4",
+      "prompt": "a = (2, 1)、b = (1, -1) のとき |a + tb| を最小にする t はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "-1/2",
+          "correct": true,
+          "why": "|a+tb|² = 2t² + 2t + 5 = 2(t + 1/2)² + 9/2 なので t = -1/2 で最小。"
+        },
+        {
+          "text": "1/2（平方完成の符号を逆にした値）",
+          "why": "2(t + 1/2)² の頂点は t = -1/2。括弧内が 0 になる値をとる。"
+        },
+        {
+          "text": "-1（2 で割るのを忘れた値）",
+          "why": "頂点は -b/(2a) = -2/4 = -1/2。分母の 2a を忘れた形。"
+        },
+        {
+          "text": "0（そのまま |a| が最小と考えた値）",
+          "why": "t を動かせるので |a| より小さくできる。2 乗して平方完成する。"
+        }
+      ],
+      "oneLine": "t = -1/2。|a+tb| は 2 乗して t の 2 次関数にして平方完成する。",
+      "timeLimit": 24
+    },
+    {
+      "id": "a:mv_2:q_mv_2_perp:q_mv_2_perp_4:1",
+      "source": {
+        "chapterId": "mv_2",
+        "problemId": "q_mv_2_perp",
+        "subQuestionId": "q_mv_2_perp_4"
+      },
+      "format": "choice4",
+      "prompt": "同じ設定で |a + tb| の最小値はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "3√2/2",
+          "correct": true,
+          "why": "最小値は √(9/2) = 3/√2 = 3√2/2。2 乗の最小値 9/2 の平方根をとる。"
+        },
+        {
+          "text": "根号を外し忘れた 9/2 という値",
+          "why": "9/2 は |a+tb|² の最小値。平方根をとる必要がある。"
+        },
+        {
+          "text": "√5（t = 0 のときの大きさ）",
+          "why": "|a| の値。t を動かせば 3√2/2 まで小さくできる。"
+        },
+        {
+          "text": "2√2（頂点の値を誤った形）",
+          "why": "2 乗の最小値は 9/2 なので √(9/2) = 3√2/2。"
+        }
+      ],
+      "oneLine": "3√2/2。2 乗の最小値 9/2 の平方根が答え。",
+      "timeLimit": 20
+    }
+  ]
+}

@@ -1,0 +1,1633 @@
+{
+  "subject": "biology_basic",
+  "chapterId": "bio4_1",
+  "authoredBy": "room-bio",
+  "questions": [
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_a:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_a"
+      },
+      "format": "choice4",
+      "prompt": "ある場所に生育する植物のまとまりを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "植生",
+          "correct": true,
+          "why": "ある場所に生育する植物のまとまりが植生。見た目そのものを指す語ではない点に注意。"
+        },
+        {
+          "text": "相観",
+          "why": "相観は植生を外から見たときの様子。植物の集まり自体を指す語ではない。"
+        },
+        {
+          "text": "優占種",
+          "why": "優占種は植生の中で最も広い面積を占める種。集まり全体の名前ではない。"
+        },
+        {
+          "text": "バイオーム",
+          "why": "バイオームは植生と動物などを含めた生物のまとまり。植物だけの集まりではない。"
+        }
+      ],
+      "oneLine": "植生。ある場所に生育する植物のまとまりのこと。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_a:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_a"
+      },
+      "format": "choice4",
+      "prompt": "相観による植生の区分は、森林・草原と、あと一つは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "荒原",
+          "correct": true,
+          "why": "相観による区分は森林・草原・荒原の3つ。砂漠やツンドラは荒原にあたる。"
+        },
+        {
+          "text": "湖沼",
+          "why": "湖沼は水域であって、植生の相観による区分には含まれない。"
+        },
+        {
+          "text": "農地",
+          "why": "農地は人の管理による土地利用の区分。相観による植生の分類ではない。"
+        },
+        {
+          "text": "果樹園",
+          "why": "果樹園も人がつくった土地利用の呼び名で、相観の区分ではない。"
+        }
+      ],
+      "oneLine": "荒原。相観による植生の区分は森林・草原・荒原の3つ。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_i:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_i"
+      },
+      "format": "choice4",
+      "prompt": "植生を外から見たときの様子（見た目）を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "相観",
+          "correct": true,
+          "why": "植生の見た目（森林・草原・荒原）が相観。植生そのものと区別する。"
+        },
+        {
+          "text": "植生",
+          "why": "植生は植物のまとまり自体。その見た目を表す語は相観である。"
+        },
+        {
+          "text": "階層構造",
+          "why": "階層構造は森林内部の層のつくり。外から見た様子を表す語ではない。"
+        },
+        {
+          "text": "優占種",
+          "why": "優占種は相観を決めている種。見た目そのものの呼び名ではない。"
+        }
+      ],
+      "oneLine": "相観。森林・草原・荒原という見た目の区分に使われる語。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_u:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_u"
+      },
+      "format": "choice4",
+      "prompt": "相観を特徴づける、最も広い面積を占める種を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "優占種",
+          "correct": true,
+          "why": "最も広く空間を占め、相観を決めている種が優占種。"
+        },
+        {
+          "text": "先駆種",
+          "why": "先駆種は遷移の最初に侵入する種。面積を最も広く占める種のことではない。"
+        },
+        {
+          "text": "極相種",
+          "why": "極相種は遷移の最終段階で優勢になる種。定義そのものの呼び名ではない。"
+        },
+        {
+          "text": "陰生植物",
+          "why": "陰生植物は弱い光で生育できる植物の分類。占有面積による呼び名ではない。"
+        }
+      ],
+      "oneLine": "優占種。最も広く空間を占め、相観を決めている種。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_u:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_u"
+      },
+      "format": "choice4",
+      "prompt": "優占種とは、その植生の中でどのような種か。",
+      "label": "",
+      "options": [
+        {
+          "text": "最も広い面積を占める種",
+          "correct": true,
+          "why": "優占種の定義は占める面積が最も広いこと。相観はこの種で決まる。"
+        },
+        {
+          "text": "最も背が高くなる種",
+          "why": "背の高さではなく占有面積で決まる。高木が必ず優占種とは限らない。"
+        },
+        {
+          "text": "最も個体数が少ない種",
+          "why": "個体数が少ない種は優占していない。定義が逆になっている。"
+        },
+        {
+          "text": "最初に侵入した先駆種",
+          "why": "先駆種は遷移の初期に入る種で、優占種の定義とは別のもの。"
+        }
+      ],
+      "oneLine": "最も広い面積を占める種。だから相観（見た目）はこの種で決まる。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_e:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_e"
+      },
+      "format": "choice4",
+      "prompt": "発達した森林の内部にみられる、高木層・低木層・草本層などの層のつくりを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "階層構造",
+          "correct": true,
+          "why": "森林内部が高さ方向に層に分かれているつくりが階層構造。"
+        },
+        {
+          "text": "相観",
+          "why": "相観は外から見た植生の様子。森林内部の層のつくりではない。"
+        },
+        {
+          "text": "水平分布",
+          "why": "水平分布は緯度に応じたバイオームの分布。森林内部の話ではない。"
+        },
+        {
+          "text": "垂直分布",
+          "why": "垂直分布は標高に応じたバイオームの変化。1つの森林の内部構造ではない。"
+        }
+      ],
+      "oneLine": "階層構造。高木層・亜高木層・低木層・草本層などに分かれる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_e:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_e"
+      },
+      "format": "choice4",
+      "prompt": "発達した森林の階層構造のうち、最も高い位置にある層を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "高木層",
+          "correct": true,
+          "why": "最上部が高木層。ここの葉が光を吸収するため下層は暗くなる。"
+        },
+        {
+          "text": "低木層",
+          "why": "低木層は中ほどの層。最上部ではない。"
+        },
+        {
+          "text": "草本層",
+          "why": "草本層は最も下に近い層。最上部ではない。"
+        },
+        {
+          "text": "地表層",
+          "why": "地表層は地面に接する最下部。順序が逆になっている。"
+        }
+      ],
+      "oneLine": "高木層。高い方から高木層・亜高木層・低木層・草本層と並ぶ。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_o:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_o"
+      },
+      "format": "choice",
+      "prompt": "発達した森林で、下層に届く光の強さは上層と比べて強くなるか、弱くなるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "弱くなる",
+          "correct": true,
+          "why": "上の層の葉が光を吸収してしまうため、下層ほど光が弱い。"
+        },
+        {
+          "text": "強くなる",
+          "why": "光は上から入るので下層が強くなることはない。向きを取り違えた誤り。"
+        }
+      ],
+      "oneLine": "弱くなる。上の層の葉が光を吸収するため、下層ほど光が弱い。",
+      "timeLimit": 10,
+      "grounding": "下層ほど光が弱い"
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_o:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_o"
+      },
+      "format": "choice4",
+      "prompt": "森林の下層ほど光が弱くなるのはなぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "林冠の葉が光を吸収するから",
+          "correct": true,
+          "why": "最上部の葉が先に光を使ってしまうため、下層に届く光が減る。"
+        },
+        {
+          "text": "下層の植物が光を反射するから",
+          "why": "反射しても届く光の量は増えない。光が減る原因は上層での吸収である。"
+        },
+        {
+          "text": "土壌が光を吸収するから",
+          "why": "土壌に届く前にすでに光は弱まっている。原因は上層の葉にある。"
+        },
+        {
+          "text": "草本層の葉が最も厚いから",
+          "why": "暗い場所の葉はむしろ薄い。原因は最上部の葉による吸収である。"
+        }
+      ],
+      "oneLine": "林冠の葉が光を吸収するから。だから下層ほど光が弱くなる。",
+      "timeLimit": 18,
+      "grounding": "林冠の葉が光を吸収するため下層ほど光が弱い"
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_ka:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_ka"
+      },
+      "format": "choice4",
+      "prompt": "光合成速度と呼吸速度がつり合い、見かけの光合成速度が0になる光の強さを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "光補償点",
+          "correct": true,
+          "why": "見かけの光合成速度が0になる光の強さ。ここより暗いと成長できない。"
+        },
+        {
+          "text": "光飽和点",
+          "why": "光飽和点はそれ以上光を強くしても光合成速度が増えない点。0になる点ではない。"
+        },
+        {
+          "text": "呼吸速度",
+          "why": "呼吸速度は光の強さの名前ではなく、消費される速さそのもの。"
+        },
+        {
+          "text": "見かけの光合成速度",
+          "why": "これは測定される速度の名前。光の強さを表す語ではない。"
+        }
+      ],
+      "oneLine": "光補償点。見かけの光合成速度が0になる光の強さ。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_ki:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_ki"
+      },
+      "format": "choice4",
+      "prompt": "それ以上光を強くしても光合成速度が増加しなくなる光の強さを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "光飽和点",
+          "correct": true,
+          "why": "光を強めても光合成速度が増えなくなる点。グラフが水平になる位置。"
+        },
+        {
+          "text": "光補償点",
+          "why": "光補償点は見かけの光合成速度が0になる点。増加が止まる点ではない。"
+        },
+        {
+          "text": "呼吸速度",
+          "why": "呼吸速度は消費の速さで、光の強さの名前ではない。"
+        },
+        {
+          "text": "真の光合成速度",
+          "why": "これは速度の名前。光の強さを表す語ではない。"
+        }
+      ],
+      "oneLine": "光飽和点。これ以上光を強めても光合成速度は増えない。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_ku:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_ku"
+      },
+      "format": "choice4",
+      "prompt": "光補償点や光飽和点が低く、弱い光でも生育できる植物を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "陰生植物",
+          "correct": true,
+          "why": "両方とも低いので、暗い林床でも生育できる。陰樹もこれにあたる。"
+        },
+        {
+          "text": "陽生植物",
+          "why": "陽生植物は両方とも高く、日なたで有利。弱い光では生育できない。"
+        },
+        {
+          "text": "先駆種",
+          "why": "先駆種は裸地に最初に入る種で、光の強さによる分類名ではない。"
+        },
+        {
+          "text": "優占種",
+          "why": "優占種は面積を最も広く占める種。光の条件による分類ではない。"
+        }
+      ],
+      "oneLine": "陰生植物（陰樹）。光補償点・光飽和点がともに低く暗い林床でも育つ。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_vegetation:q_bio4_vegetation_ku:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_vegetation",
+        "subQuestionId": "q_bio4_vegetation_ku"
+      },
+      "format": "choice4",
+      "prompt": "陽生植物の光補償点と光飽和点は、陰生植物と比べてどうなっているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "両方とも高い",
+          "correct": true,
+          "why": "陽生植物は両方とも高く、日なたで有利。だから暗い林床では育たない。"
+        },
+        {
+          "text": "両方とも低い",
+          "why": "両方とも低いのは陰生植物。逆に覚えている誤り。"
+        },
+        {
+          "text": "光補償点だけが低い",
+          "why": "片方だけ低いのではなく、陽生植物は2つともに高い。"
+        },
+        {
+          "text": "光飽和点だけが低い",
+          "why": "光飽和点が低いと強い光を生かせない。陽生植物の特徴と逆である。"
+        }
+      ],
+      "oneLine": "両方とも高い。日なたで有利だが、暗い林床では生育できない。",
+      "timeLimit": 16,
+      "grounding": "両方とも高く、日なたで有利"
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_a:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_a"
+      },
+      "format": "choice4",
+      "prompt": "植生が時間とともに一定の方向に変化していく現象を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "遷移",
+          "correct": true,
+          "why": "植生が一定方向に変化していく現象。出発点によって一次・二次に分かれる。"
+        },
+        {
+          "text": "極相",
+          "why": "極相は遷移が進んで到達した最終段階。変化していく現象そのものではない。"
+        },
+        {
+          "text": "相観",
+          "why": "相観は植生を外から見た様子。時間変化を表す語ではない。"
+        },
+        {
+          "text": "更新",
+          "why": "更新はギャップなどで部分的に世代が入れかわること。現象全体の名ではない。"
+        }
+      ],
+      "oneLine": "遷移。植生が時間とともに一定方向に変化していく現象。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_i:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_i"
+      },
+      "format": "choice4",
+      "prompt": "火山の噴火直後の溶岩台地のように、土壌も生物も存在しない場所から始まる遷移を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "一次遷移",
+          "correct": true,
+          "why": "土壌のない裸地から始まる遷移。土壌ができるまでに長い時間がかかる。"
+        },
+        {
+          "text": "二次遷移",
+          "why": "二次遷移は土壌が残った場所から始まる遷移。出発点が違う。"
+        },
+        {
+          "text": "湿性遷移",
+          "why": "湿性遷移は湖沼から始まる遷移。土壌の有無による分類ではない。"
+        },
+        {
+          "text": "乾性遷移",
+          "why": "乾性遷移は陸地から始まる遷移。土壌の有無で分けた呼び名ではない。"
+        }
+      ],
+      "oneLine": "一次遷移。土壌も生物もない裸地から始まる遷移。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_i:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_i"
+      },
+      "format": "choice4",
+      "prompt": "一次遷移で、草原の次に成立するのはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "低木林",
+          "correct": true,
+          "why": "裸地→先駆種→草原→低木林→陽樹林→混交林→陰樹林の順に進む。"
+        },
+        {
+          "text": "陽樹林",
+          "why": "陽樹林は低木林の次。1段飛ばして覚えている誤り。"
+        },
+        {
+          "text": "混交林",
+          "why": "混交林は陽樹林の次の段階。草原の直後ではない。"
+        },
+        {
+          "text": "陰樹林",
+          "why": "陰樹林は最終段階の極相林。草原の直後には成立しない。"
+        }
+      ],
+      "oneLine": "低木林。裸地→先駆種→草原→低木林→陽樹林→混交林→陰樹林の順。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_u:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_u"
+      },
+      "format": "choice4",
+      "prompt": "一次遷移で最初に侵入する地衣類やコケ植物などを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "先駆種",
+          "correct": true,
+          "why": "裸地に最初に侵入する種。パイオニア植物とも呼ばれる。"
+        },
+        {
+          "text": "極相種",
+          "why": "極相種は最終段階で優勢になる種。最初に入る種ではない。"
+        },
+        {
+          "text": "優占種",
+          "why": "優占種は最も広い面積を占める種で、侵入の順序を表す語ではない。"
+        },
+        {
+          "text": "陰樹",
+          "why": "陰樹は暗い林床で育つ樹木。裸地に最初に入る生物ではない。"
+        }
+      ],
+      "oneLine": "先駆種（パイオニア植物）。地衣類・コケ植物が代表。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_u:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_u"
+      },
+      "format": "choice4",
+      "prompt": "一次遷移の最初に侵入する先駆種の例として正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "地衣類",
+          "correct": true,
+          "why": "地衣類とコケ植物が先駆種の代表。岩の上でも生育できる。"
+        },
+        {
+          "text": "ススキ",
+          "why": "ススキは次の段階の草原をつくる植物。裸地の最初の侵入者ではない。"
+        },
+        {
+          "text": "アカマツ",
+          "why": "アカマツは陽樹で、陽樹林の段階の樹木。裸地には育たない。"
+        },
+        {
+          "text": "シイ",
+          "why": "シイは陰樹で極相林をつくる。最初に侵入する種ではない。"
+        }
+      ],
+      "oneLine": "地衣類。コケ植物とともに裸地に最初に侵入する先駆種。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_e:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_e"
+      },
+      "format": "choice4",
+      "prompt": "山火事跡や耕作放棄地のように、土壌がすでに存在する場所から始まる遷移を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "二次遷移",
+          "correct": true,
+          "why": "土壌が残った場所から始まる遷移。土壌があるので進行が速い。"
+        },
+        {
+          "text": "一次遷移",
+          "why": "一次遷移は土壌のない裸地から始まる。出発点が違う。"
+        },
+        {
+          "text": "湿性遷移",
+          "why": "湿性遷移は湖沼から始まる遷移。土壌の有無による分類ではない。"
+        },
+        {
+          "text": "乾性遷移",
+          "why": "乾性遷移は陸地から始まる遷移の呼び名で、この分類とは別の軸。"
+        }
+      ],
+      "oneLine": "二次遷移。土壌が残っているので一次遷移より速く進む。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_o:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_o"
+      },
+      "format": "choice",
+      "prompt": "二次遷移の進行は、一次遷移と比べて速いか、遅いか。",
+      "label": "",
+      "options": [
+        {
+          "text": "速い",
+          "correct": true,
+          "why": "土壌や種子・地下茎が残っているので、途中の段階から始められる。"
+        },
+        {
+          "text": "遅い",
+          "why": "遅いのは土壌づくりから始める一次遷移。向きを取り違えた誤り。"
+        }
+      ],
+      "oneLine": "速い。土壌が残っているので途中の段階から始められる。",
+      "timeLimit": 10
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_o:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_o"
+      },
+      "format": "choice4",
+      "prompt": "二次遷移の方が速く進むのはなぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "すでに土壌が残っているから",
+          "correct": true,
+          "why": "土壌づくりの段階を省けるため、途中から遷移が進む。"
+        },
+        {
+          "text": "先駆種の種子が大量に運ばれてくるから",
+          "why": "種子の量ではなく、土壌が残っていることが速さの理由である。"
+        },
+        {
+          "text": "気温が高い地域で起こるから",
+          "why": "二次遷移は気温で定義されていない。出発点の土壌の有無で決まる。"
+        },
+        {
+          "text": "光補償点の低い植物から始まるから",
+          "why": "始まりの植物の性質ではなく、土壌の存在が理由である。"
+        }
+      ],
+      "oneLine": "すでに土壌が残っているから。土壌づくりの段階を省ける。",
+      "timeLimit": 18,
+      "grounding": "土壌が残った場所から始まる二次遷移"
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_ka:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_ka"
+      },
+      "format": "choice4",
+      "prompt": "遷移の途中で強い光を好み、低木林の次に森林をつくる樹木を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "陽樹",
+          "correct": true,
+          "why": "光補償点・光飽和点が高く、明るい場所で速く成長する樹木。"
+        },
+        {
+          "text": "陰樹",
+          "why": "陰樹は暗い林床でも育つ樹木で、遷移の後半に優勢になる。"
+        },
+        {
+          "text": "先駆種",
+          "why": "先駆種は裸地に最初に入る地衣類やコケなど。森林をつくる樹木ではない。"
+        },
+        {
+          "text": "優占種",
+          "why": "優占種は面積を最も広く占める種の呼び名で、光の性質による分類ではない。"
+        }
+      ],
+      "oneLine": "陽樹。強い光を好み、低木林の次に陽樹林をつくる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_ka:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_ka"
+      },
+      "format": "choice4",
+      "prompt": "陽樹の例として正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "アカマツ",
+          "correct": true,
+          "why": "アカマツやコナラが陽樹林をつくる代表的な陽樹。"
+        },
+        {
+          "text": "シイ",
+          "why": "シイは陰樹で、極相林である陰樹林をつくる。"
+        },
+        {
+          "text": "カシ",
+          "why": "カシも陰樹。シイとともに陰樹林の代表である。"
+        },
+        {
+          "text": "ブナ",
+          "why": "ブナは陰樹で、夏緑樹林の極相をつくる。陽樹ではない。"
+        }
+      ],
+      "oneLine": "アカマツ。コナラとともに陽樹林をつくる代表的な陽樹。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_ki:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_ki"
+      },
+      "format": "choice4",
+      "prompt": "陽樹林の暗い林床でも幼木が育つことができる樹木を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "陰樹",
+          "correct": true,
+          "why": "光補償点が低いので、暗い林床でも幼木が生育できる。"
+        },
+        {
+          "text": "陽樹",
+          "why": "陽樹は光補償点が高く、暗い林床では幼木が生育できない。"
+        },
+        {
+          "text": "先駆種",
+          "why": "先駆種は明るい裸地に入る種で、暗い林床に適した樹木ではない。"
+        },
+        {
+          "text": "地衣類",
+          "why": "地衣類は樹木ではない。遷移の最初に入る先駆種である。"
+        }
+      ],
+      "oneLine": "陰樹。光補償点が低いため暗い林床でも幼木が育つ。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_ki:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_ki"
+      },
+      "format": "choice4",
+      "prompt": "陰樹の例として正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "シイ",
+          "correct": true,
+          "why": "シイとカシが陰樹林（極相林）をつくる代表的な陰樹。"
+        },
+        {
+          "text": "アカマツ",
+          "why": "アカマツは陽樹。明るい場所で速く成長する。"
+        },
+        {
+          "text": "コナラ",
+          "why": "コナラも陽樹で、陽樹林をつくる樹種である。"
+        },
+        {
+          "text": "ススキ",
+          "why": "ススキは草原の段階の草本で、樹木ではない。"
+        }
+      ],
+      "oneLine": "シイ。カシとともに陰樹林（極相林）をつくる代表的な陰樹。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_ki:3",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_ki"
+      },
+      "format": "choice4",
+      "prompt": "陽樹林がやがて陰樹林に移り変わるのはなぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "陽樹の幼木は暗い林床では育たないから",
+          "correct": true,
+          "why": "光補償点の高い陽樹の幼木は生育できず、陰樹の幼木だけが育つ。"
+        },
+        {
+          "text": "陽樹は寿命が短く一斉に枯れるから",
+          "why": "寿命ではなく、林床が暗くなって幼木が育たないことが理由である。"
+        },
+        {
+          "text": "陰樹の方が成長速度が速いから",
+          "why": "成長は陽樹の方が速い。鍵になるのは林床の光の強さである。"
+        },
+        {
+          "text": "陰樹の種子の方が風で運ばれやすいから",
+          "why": "風で運ばれやすいのは先駆種の小さい種子。移り変わりの理由ではない。"
+        }
+      ],
+      "oneLine": "陽樹の幼木は暗い林床で育たないから。鍵になるのは光補償点の差。",
+      "timeLimit": 20,
+      "grounding": "光補償点の高い陽樹の幼木は生育できず"
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_ku:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_ku"
+      },
+      "format": "choice4",
+      "prompt": "遷移が進んで到達する、それ以上大きく変化しない安定な最終段階を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "極相",
+          "correct": true,
+          "why": "陰樹を中心とした安定な森林の段階。クライマックスとも呼ばれる。"
+        },
+        {
+          "text": "遷移",
+          "why": "遷移は変化していく現象そのもの。最終段階の名前ではない。"
+        },
+        {
+          "text": "相観",
+          "why": "相観は外から見た植生の様子。段階の名前ではない。"
+        },
+        {
+          "text": "階層構造",
+          "why": "階層構造は森林内部の層のつくり。遷移の段階名ではない。"
+        }
+      ],
+      "oneLine": "極相（クライマックス）。陰樹を中心とした安定した森林の段階。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_succession:q_bio4_succession_ku:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_succession",
+        "subQuestionId": "q_bio4_succession_ku"
+      },
+      "format": "choice4",
+      "prompt": "極相に達した森林で、台風などで高木が倒れて林床に光が届く場所ができると何が起こるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "部分的に遷移がやり直される",
+          "correct": true,
+          "why": "明るくなった場所で更新が起こり、林はモザイク状の構造を保つ。"
+        },
+        {
+          "text": "植生全体が裸地に戻る",
+          "why": "土壌も周囲の森林も残るので、全体が裸地に戻ることはない。"
+        },
+        {
+          "text": "極相が変わって草原になる",
+          "why": "日本のような多雨地域では極相は森林。草原にはならない。"
+        },
+        {
+          "text": "相観が荒原に変わる",
+          "why": "荒原になるのは降水量や気温が極端な地域。倒木では起こらない。"
+        }
+      ],
+      "oneLine": "部分的に遷移がやり直される。極相林はモザイク状の構造を保つ。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_world:q_bio4_biome_world_i:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_world",
+        "subQuestionId": "q_bio4_biome_world_i"
+      },
+      "format": "choice4",
+      "prompt": "バイオームの分布を決める2つの要因は、年平均気温とあと一つは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "降水量",
+          "correct": true,
+          "why": "バイオームの分布は年平均気温と年降水量によって決まる。"
+        },
+        {
+          "text": "標高",
+          "why": "標高は気温を変える要因だが、世界のバイオームを決める2要因には数えない。"
+        },
+        {
+          "text": "日照時間",
+          "why": "日照時間ではなく降水量。水が足りるかどうかで森林か草原かが決まる。"
+        },
+        {
+          "text": "土壌の厚さ",
+          "why": "土壌の厚さは遷移の進行に関わる要因。バイオーム分布の2要因ではない。"
+        }
+      ],
+      "oneLine": "降水量。バイオームの分布は年平均気温と年降水量で決まる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_world:q_bio4_biome_world_i:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_world",
+        "subQuestionId": "q_bio4_biome_world_i"
+      },
+      "format": "choice4",
+      "prompt": "降水量が十分にある地域で、バイオームの違いを決めているのは主に何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "気温",
+          "correct": true,
+          "why": "水が足りている地域では気温に応じて森林の種類が決まる。"
+        },
+        {
+          "text": "土壌の色",
+          "why": "土壌の色はバイオームを決める要因として扱われない。"
+        },
+        {
+          "text": "風の強さ",
+          "why": "風はバイオームを決める主要因ではない。気温で森林の種類が決まる。"
+        },
+        {
+          "text": "緯度そのもの",
+          "why": "緯度は気温の目安にすぎない。直接に決めているのは気温である。"
+        }
+      ],
+      "oneLine": "気温。降水量が足りていれば、気温に応じて森林の種類が決まる。",
+      "timeLimit": 16,
+      "grounding": "降水量が十分にある地域では気温に応じて森林が成立し"
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_world:q_bio4_biome_world_u:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_world",
+        "subQuestionId": "q_bio4_biome_world_u"
+      },
+      "format": "choice4",
+      "prompt": "熱帯の多雨地域に分布し、常緑広葉樹からなるバイオームを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "熱帯多雨林",
+          "correct": true,
+          "why": "高温多雨の地域に成立する常緑広葉樹のバイオーム。森林の中で最も高温側。"
+        },
+        {
+          "text": "照葉樹林",
+          "why": "照葉樹林も常緑広葉樹だが暖温帯のバイオーム。同じ常緑でも別区分。"
+        },
+        {
+          "text": "雨緑樹林",
+          "why": "雨緑樹林は雨季と乾季がある地域の森林で、乾季に落葉する。"
+        },
+        {
+          "text": "針葉樹林",
+          "why": "針葉樹林は亜寒帯のバイオーム。熱帯には分布しない。"
+        }
+      ],
+      "oneLine": "熱帯多雨林。高温多雨の地域の常緑広葉樹林で、森林の中で最も高温側。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_world:q_bio4_biome_world_e:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_world",
+        "subQuestionId": "q_bio4_biome_world_e"
+      },
+      "format": "choice4",
+      "prompt": "森林のバイオームのうち、亜熱帯に分布するものを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "亜熱帯多雨林",
+          "correct": true,
+          "why": "高温側から並べると熱帯の次にくる森林のバイオーム。"
+        },
+        {
+          "text": "照葉樹林",
+          "why": "照葉樹林は暖温帯のバイオーム。亜熱帯より一段低温側にある。"
+        },
+        {
+          "text": "夏緑樹林",
+          "why": "夏緑樹林は冷温帯のバイオームで、冬に落葉する。"
+        },
+        {
+          "text": "硬葉樹林",
+          "why": "硬葉樹林は夏に乾燥する地中海性気候のバイオーム。気温帯の並びとは別。"
+        }
+      ],
+      "oneLine": "亜熱帯多雨林。高温側から熱帯多雨林の次にくる森林。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_world:q_bio4_biome_world_o:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_world",
+        "subQuestionId": "q_bio4_biome_world_o"
+      },
+      "format": "choice4",
+      "prompt": "雨季と乾季のある熱帯・亜熱帯地域にみられ、乾季に落葉する森林を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "雨緑樹林",
+          "correct": true,
+          "why": "乾季に落葉する森林。冬に落葉する夏緑樹林と落葉の理由が違う。"
+        },
+        {
+          "text": "夏緑樹林",
+          "why": "夏緑樹林も落葉するが、落葉するのは冬。落葉の理由が違う。"
+        },
+        {
+          "text": "照葉樹林",
+          "why": "照葉樹林は常緑広葉樹の森林で、落葉しない。"
+        },
+        {
+          "text": "硬葉樹林",
+          "why": "硬葉樹林は夏の乾燥に硬い葉で耐える常緑の森林。落葉はしない。"
+        }
+      ],
+      "oneLine": "雨緑樹林。乾季に落葉する。冬に落葉する夏緑樹林との区別が頻出。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_world:q_bio4_biome_world_o:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_world",
+        "subQuestionId": "q_bio4_biome_world_o"
+      },
+      "format": "choice4",
+      "prompt": "夏に乾燥し冬に雨が降る地中海沿岸のような地域に分布する森林を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "硬葉樹林",
+          "correct": true,
+          "why": "夏に乾燥する地域の森林で、オリーブ・コルクガシが代表。"
+        },
+        {
+          "text": "雨緑樹林",
+          "why": "雨緑樹林は熱帯・亜熱帯で乾季に落葉する森林。分布地域が違う。"
+        },
+        {
+          "text": "夏緑樹林",
+          "why": "夏緑樹林は冷温帯で冬に落葉する森林。乾燥とは無関係。"
+        },
+        {
+          "text": "照葉樹林",
+          "why": "照葉樹林は暖温帯の常緑広葉樹林。地中海性気候の森林ではない。"
+        }
+      ],
+      "oneLine": "硬葉樹林。オリーブ・コルクガシが代表で、夏に乾燥する地域に分布。",
+      "timeLimit": 18,
+      "grounding": "硬葉樹林（オリーブ・コルクガシ）"
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_world:q_bio4_biome_world_ka:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_world",
+        "subQuestionId": "q_bio4_biome_world_ka"
+      },
+      "format": "choice4",
+      "prompt": "暖温帯に分布し、葉の表面のクチクラ層が発達した常緑広葉樹からなる森林を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "照葉樹林",
+          "correct": true,
+          "why": "クスノキ・シイ・カシ類からなる暖温帯の常緑広葉樹林。"
+        },
+        {
+          "text": "夏緑樹林",
+          "why": "夏緑樹林は冷温帯で冬に落葉する森林。常緑ではない。"
+        },
+        {
+          "text": "硬葉樹林",
+          "why": "硬葉樹林は夏に乾燥する地中海性気候の森林。暖温帯一般の森林ではない。"
+        },
+        {
+          "text": "針葉樹林",
+          "why": "針葉樹林は亜寒帯の森林。広葉樹ではなく針葉樹からなる。"
+        }
+      ],
+      "oneLine": "照葉樹林。クスノキ・シイ・カシ類などクチクラ層が発達した常緑広葉樹林。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_world:q_bio4_biome_world_ki:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_world",
+        "subQuestionId": "q_bio4_biome_world_ki"
+      },
+      "format": "choice4",
+      "prompt": "冷温帯に分布し、ブナ・ミズナラなど冬に落葉する樹木からなる森林を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "夏緑樹林",
+          "correct": true,
+          "why": "夏に葉をつけ冬に落葉する森林。ブナ・ミズナラが代表。"
+        },
+        {
+          "text": "雨緑樹林",
+          "why": "雨緑樹林も落葉するが、落葉するのは乾季。熱帯・亜熱帯に分布する。"
+        },
+        {
+          "text": "照葉樹林",
+          "why": "照葉樹林は常緑広葉樹の森林で、冬にも葉をつけている。"
+        },
+        {
+          "text": "針葉樹林",
+          "why": "針葉樹林は亜寒帯の森林で、モミ類・トウヒ類が代表。"
+        }
+      ],
+      "oneLine": "夏緑樹林。ブナ・ミズナラなど冬に落葉する樹木からなる冷温帯の森林。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_world:q_bio4_biome_world_ku:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_world",
+        "subQuestionId": "q_bio4_biome_world_ku"
+      },
+      "format": "choice4",
+      "prompt": "亜寒帯に分布し、モミ類・トウヒ類などからなる森林を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "針葉樹林",
+          "correct": true,
+          "why": "森林のバイオームのうち最も低温側。モミ類・トウヒ類が代表。"
+        },
+        {
+          "text": "夏緑樹林",
+          "why": "夏緑樹林は冷温帯の落葉広葉樹林。針葉樹林より高温側にある。"
+        },
+        {
+          "text": "照葉樹林",
+          "why": "照葉樹林は暖温帯の常緑広葉樹林で、亜寒帯には分布しない。"
+        },
+        {
+          "text": "硬葉樹林",
+          "why": "硬葉樹林は地中海性気候の森林。亜寒帯のバイオームではない。"
+        }
+      ],
+      "oneLine": "針葉樹林。森林のバイオームで最も低温側。モミ類・トウヒ類が代表。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_world:q_bio4_biome_world_sa:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_world",
+        "subQuestionId": "q_bio4_biome_world_sa"
+      },
+      "format": "choice4",
+      "prompt": "草原が成立する条件よりもさらに降水量が少ない地域に成立するバイオームは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "砂漠",
+          "correct": true,
+          "why": "降水量がさらに不足すると草原も成立せず、荒原である砂漠になる。"
+        },
+        {
+          "text": "ステップ",
+          "why": "ステップは温帯の草原。砂漠より降水量が多い段階である。"
+        },
+        {
+          "text": "サバンナ",
+          "why": "サバンナは熱帯・亜熱帯の草原。砂漠より降水量が多い。"
+        },
+        {
+          "text": "ツンドラ",
+          "why": "ツンドラは低温の極地に成立する荒原。降水量不足による荒原ではない。"
+        }
+      ],
+      "oneLine": "砂漠。降水量が草原の成立条件を下回ると成立する荒原。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_a:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_a"
+      },
+      "format": "choice4",
+      "prompt": "日本のバイオームの分布が、ほぼ一つの要因だけで決まるのはどの要因か。",
+      "label": "",
+      "options": [
+        {
+          "text": "気温",
+          "correct": true,
+          "why": "日本は全域で降水量が十分に多いため、分布はほぼ気温だけで決まる。"
+        },
+        {
+          "text": "降水量",
+          "why": "降水量はどこでも十分に多いので、地域差を生む要因にならない。"
+        },
+        {
+          "text": "土壌の厚さ",
+          "why": "土壌の厚さは遷移の進行に関わる要因で、バイオーム分布を決める要因ではない。"
+        },
+        {
+          "text": "日照時間",
+          "why": "日照時間は分布を決める要因として扱われない。決めているのは気温である。"
+        }
+      ],
+      "oneLine": "気温。日本は全域で降水量が多いため、気温だけでほぼ決まる。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_a:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_a"
+      },
+      "format": "choice4",
+      "prompt": "日本で降水量がバイオームの違いを生む要因にならないのはなぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "全域で降水量が十分に多いから",
+          "correct": true,
+          "why": "どこでも水が足りているので、差を生むのは気温だけになる。"
+        },
+        {
+          "text": "全域で降水量が極端に少ないから",
+          "why": "少ないのではなく多い。少なければ草原や砂漠になってしまう。"
+        },
+        {
+          "text": "降水量は植生に影響しないから",
+          "why": "世界規模では降水量が重要な要因。日本では差が出ないだけである。"
+        },
+        {
+          "text": "降水量が季節でしか変わらないから",
+          "why": "季節変化の有無ではなく、どの地域でも十分に多いことが理由である。"
+        }
+      ],
+      "oneLine": "全域で降水量が十分に多いから。だから極相はどこでも森林になる。",
+      "timeLimit": 18,
+      "grounding": "日本は全国的に降水量が多いため"
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_i:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_i"
+      },
+      "format": "choice4",
+      "prompt": "日本の極相のバイオームは、どの相観になるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "森林",
+          "correct": true,
+          "why": "降水量が十分に多いため、日本ではどこでも極相は森林になる。"
+        },
+        {
+          "text": "草原",
+          "why": "草原になるのは降水量が不足する地域。日本ではあてはまらない。"
+        },
+        {
+          "text": "荒原",
+          "why": "荒原になるのは極端に乾燥した地域や寒冷な極地。日本の極相ではない。"
+        },
+        {
+          "text": "砂漠",
+          "why": "砂漠は降水量が極端に少ない地域の荒原。日本には成立しない。"
+        }
+      ],
+      "oneLine": "森林。降水量が十分に多いため、日本の極相はどこでも森林になる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_u:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_u"
+      },
+      "format": "choice4",
+      "prompt": "緯度に応じたバイオームの分布を何分布というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "水平分布",
+          "correct": true,
+          "why": "緯度に沿った分布。南から北へ気温が下がる並びになる。"
+        },
+        {
+          "text": "垂直分布",
+          "why": "垂直分布は標高に応じた分布。軸が緯度ではなく高さになる。"
+        },
+        {
+          "text": "階層構造",
+          "why": "階層構造は1つの森林の内部の層のつくり。地理的分布ではない。"
+        },
+        {
+          "text": "相観",
+          "why": "相観は植生を外から見た様子。分布のしかたの呼び名ではない。"
+        }
+      ],
+      "oneLine": "水平分布。緯度に沿ったバイオームの並びのこと。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_e:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_e"
+      },
+      "format": "choice4",
+      "prompt": "日本の水平分布で、沖縄などの最も南に分布するバイオームは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "亜熱帯多雨林",
+          "correct": true,
+          "why": "日本で最も高温な沖縄などに分布する。水平分布の南端。"
+        },
+        {
+          "text": "照葉樹林",
+          "why": "照葉樹林は西南日本の低地。沖縄より一段低温側にある。"
+        },
+        {
+          "text": "夏緑樹林",
+          "why": "夏緑樹林は東北日本。日本の水平分布では北寄りである。"
+        },
+        {
+          "text": "針葉樹林",
+          "why": "針葉樹林は北海道東北部。最も低温側で、南端ではない。"
+        }
+      ],
+      "oneLine": "亜熱帯多雨林。沖縄など日本の水平分布の南端にあたる。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_o:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_o"
+      },
+      "format": "choice4",
+      "prompt": "日本の水平分布で、西南日本の低地に分布するバイオームは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "照葉樹林",
+          "correct": true,
+          "why": "西南日本の低地に分布。スダジイ・アラカシなどの常緑広葉樹林。"
+        },
+        {
+          "text": "亜熱帯多雨林",
+          "why": "亜熱帯多雨林は沖縄など。西南日本の低地より南に分布する。"
+        },
+        {
+          "text": "夏緑樹林",
+          "why": "夏緑樹林は東北日本。西南日本の低地より北寄りである。"
+        },
+        {
+          "text": "針葉樹林",
+          "why": "針葉樹林は北海道東北部。西南日本には分布しない。"
+        }
+      ],
+      "oneLine": "照葉樹林。西南日本の低地に分布する常緑広葉樹林。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_ka:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_ka"
+      },
+      "format": "choice4",
+      "prompt": "日本の水平分布で、東北日本に分布するバイオームは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "夏緑樹林",
+          "correct": true,
+          "why": "東北日本に分布。ブナ・ミズナラなど冬に落葉する森林。"
+        },
+        {
+          "text": "照葉樹林",
+          "why": "照葉樹林は西南日本の低地。東北日本より南に分布する。"
+        },
+        {
+          "text": "針葉樹林",
+          "why": "針葉樹林は北海道東北部。東北日本よりさらに北である。"
+        },
+        {
+          "text": "亜熱帯多雨林",
+          "why": "亜熱帯多雨林は沖縄など。日本の南端に分布する。"
+        }
+      ],
+      "oneLine": "夏緑樹林。東北日本に分布し、ブナ・ミズナラが代表。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_ki:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_ki"
+      },
+      "format": "choice4",
+      "prompt": "日本の水平分布で、北海道東北部に分布するバイオームは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "針葉樹林",
+          "correct": true,
+          "why": "北海道東北部に分布。日本の水平分布で最も低温側にあたる。"
+        },
+        {
+          "text": "夏緑樹林",
+          "why": "夏緑樹林は東北日本。北海道東北部より南にある。"
+        },
+        {
+          "text": "照葉樹林",
+          "why": "照葉樹林は西南日本の低地。北海道には分布しない。"
+        },
+        {
+          "text": "亜熱帯多雨林",
+          "why": "亜熱帯多雨林は沖縄など。最も高温側のバイオームである。"
+        }
+      ],
+      "oneLine": "針葉樹林。北海道東北部に分布し、水平分布で最も低温側。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_ku:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_ku"
+      },
+      "format": "choice4",
+      "prompt": "標高に応じてバイオームが変化することを何分布というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "垂直分布",
+          "correct": true,
+          "why": "標高が上がるほど気温が下がるために生じる分布。水平分布を縮めたもの。"
+        },
+        {
+          "text": "水平分布",
+          "why": "水平分布は緯度に応じた分布。軸が標高ではなく緯度になる。"
+        },
+        {
+          "text": "階層構造",
+          "why": "階層構造は1つの森林の内部の層のつくり。山全体の分布ではない。"
+        },
+        {
+          "text": "相観",
+          "why": "相観は外から見た植生の様子で、分布のしかたの呼び名ではない。"
+        }
+      ],
+      "oneLine": "垂直分布。標高に応じた分布で、水平分布を縮めたものと考えられる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_ku:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_ku"
+      },
+      "format": "choice4",
+      "prompt": "標高が100m増すごとに、気温はおよそどれだけ低下するか。",
+      "label": "",
+      "options": [
+        {
+          "text": "約0.5〜0.6℃",
+          "correct": true,
+          "why": "この関係があるため、標高が上がるとバイオームが変化していく。"
+        },
+        {
+          "text": "約5〜6℃",
+          "why": "桁が1つ大きい。100mでこれだけ下がれば1000mで50℃以上下がってしまう。"
+        },
+        {
+          "text": "約0.05℃",
+          "why": "桁が1つ小さい。これでは高山でもバイオームが変わらない。"
+        },
+        {
+          "text": "約2℃",
+          "why": "実際の値より大きい。正しくは100mで約0.5〜0.6℃である。"
+        }
+      ],
+      "oneLine": "約0.5〜0.6℃。この関係から垂直分布は水平分布を縮めたものと考えられる。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_ke:1",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_ke"
+      },
+      "format": "choice4",
+      "prompt": "亜高山帯の上限にあたり、これより上では森林が成立しない境界を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "森林限界",
+          "correct": true,
+          "why": "亜高山帯の上限。本州中部では約2500mで、これより上は高山帯になる。"
+        },
+        {
+          "text": "高山帯",
+          "why": "高山帯は森林限界より上の帯そのもの。境界の名前ではない。"
+        },
+        {
+          "text": "極相",
+          "why": "極相は遷移の最終段階。標高の境界を表す語ではない。"
+        },
+        {
+          "text": "垂直分布",
+          "why": "垂直分布は標高に応じた分布全体の呼び名。境界の名前ではない。"
+        }
+      ],
+      "oneLine": "森林限界。亜高山帯の上限で、本州中部では約2500m。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_ke:2",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_ke"
+      },
+      "format": "choice4",
+      "prompt": "森林限界より上の高山帯で森林が成立しないのは、どのような条件のためか。",
+      "label": "",
+      "options": [
+        {
+          "text": "低温と強風",
+          "correct": true,
+          "why": "低温と強風のため高木が育たず、ハイマツや高山植物のお花畑になる。"
+        },
+        {
+          "text": "降水量の不足",
+          "why": "日本の高山は降水量が少なくない。成立しない理由は低温と強風である。"
+        },
+        {
+          "text": "光の不足",
+          "why": "高山帯は光が強い場所。光不足が理由ではない。"
+        },
+        {
+          "text": "土壌の酸性化",
+          "why": "土壌の酸性度ではなく、低温と強風が森林の成立を妨げている。"
+        }
+      ],
+      "oneLine": "低温と強風。だからハイマツや高山植物のお花畑がみられる。",
+      "timeLimit": 18,
+      "grounding": "低温と強風のため森林が成立せず"
+    },
+    {
+      "id": "a:bio4_1:q_bio4_biome_japan:q_bio4_biome_japan_ke:3",
+      "source": {
+        "chapterId": "bio4_1",
+        "problemId": "q_bio4_biome_japan",
+        "subQuestionId": "q_bio4_biome_japan_ke"
+      },
+      "format": "choice4",
+      "prompt": "本州中部の垂直分布で、亜高山帯に分布する代表的な樹種はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "シラビソ",
+          "correct": true,
+          "why": "亜高山帯は針葉樹林で、シラビソ・コメツガが代表的な樹種。"
+        },
+        {
+          "text": "ハイマツ",
+          "why": "ハイマツは森林限界より上の高山帯にみられる。亜高山帯の樹種ではない。"
+        },
+        {
+          "text": "スダジイ",
+          "why": "スダジイは丘陵帯の照葉樹林の樹種。標高の低い場所に分布する。"
+        },
+        {
+          "text": "ミズナラ",
+          "why": "ミズナラは山地帯の夏緑樹林の樹種。亜高山帯より下にある。"
+        }
+      ],
+      "oneLine": "シラビソ。亜高山帯は針葉樹林で、シラビソ・コメツガが代表。",
+      "timeLimit": 18,
+      "grounding": "亜高山帯（針葉樹林：シラビソ・コメツガ）"
+    }
+  ]
+}

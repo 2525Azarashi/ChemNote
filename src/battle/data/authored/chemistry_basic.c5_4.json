@@ -1,0 +1,1123 @@
+{
+  "subject": "chemistry_basic",
+  "chapterId": "c5_4",
+  "authoredBy": "room-cb-3",
+  "_comment": "5章 酸と塩基④ 中和とは何か。大問1〜8の[★要作成]小問32件を1画面完結型に書き直した。元がdescriptive（化学反応式を書かせる）の小問は、正解の反応式を1つ選ばせる選択式に変換し、誤答は係数の合わせ忘れ・水の生成有無・塩の組成の誤りなど解法の思考手順に書かれた誤りパターンから作成。記号だけで答える小問（大問5(1)・大問6）は物質名・化学式に展開しgroundingを付与した。誤答は各大問の共通ひっかけ欄（酸性塩だから水溶液は酸性という誤り／中和すれば必ず中性という誤り／CH₃COONaを中性とするミス／NaHSO₄で迷うミス）と解説内の誤答理由のみから作成。大問4の(2)〜(5)（p_c5_4_4_2〜_5）は[対戦済]のため未着手。",
+  "questions": [
+    {
+      "id": "a:c5_4:p_c5_4_1:p_c5_4_1_1:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_1",
+        "subQuestionId": "p_c5_4_1_1"
+      },
+      "format": "choice4",
+      "prompt": "塩酸に水酸化ナトリウム水溶液を加えたときの中和反応を表す化学反応式はどれか。中和は完全に進むものとする。",
+      "label": "（1） 化学反応式",
+      "options": [
+        {
+          "text": "HCl + NaOH → NaCl + H₂O",
+          "correct": true,
+          "why": "H⁺とOH⁻がそれぞれ1つずつなので水1分子ができ、残ったNa⁺とCl⁻で塩NaClができる。"
+        },
+        {
+          "text": "2HCl + NaOH → NaCl₂ + 2H₂O",
+          "correct": false,
+          "why": "NaClの組成を誤っている。Na⁺は1価なので塩はNaClであり、係数も1対1で足りる。"
+        },
+        {
+          "text": "HCl + NaOH → NaClO + H₂",
+          "correct": false,
+          "why": "生成物を取り違えている。中和ではH⁺とOH⁻から水ができ、水素は発生しない。"
+        },
+        {
+          "text": "HCl + NaOH → NaH + HClO",
+          "correct": false,
+          "why": "イオンの組み替えを誤っている。塩は酸の陰イオンと塩基の陽イオンで作る。"
+        }
+      ],
+      "oneLine": "中和は「H⁺+OH⁻→H₂O」。残った陽イオンと陰イオンを組ませて塩にする。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:c5_4:p_c5_4_1:p_c5_4_1_2:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_1",
+        "subQuestionId": "p_c5_4_1_2"
+      },
+      "format": "choice4",
+      "prompt": "硝酸水溶液に水酸化カリウム水溶液を加えたときの中和反応を表す化学反応式はどれか。中和は完全に進むものとする。",
+      "label": "（2） 化学反応式",
+      "options": [
+        {
+          "text": "HNO₃ + KOH → KNO₃ + H₂O",
+          "correct": true,
+          "why": "H⁺とOH⁻が1つずつなので水1分子ができ、K⁺とNO₃⁻で塩KNO₃ができる。"
+        },
+        {
+          "text": "HNO₃ + KOH → KNO₂ + H₂O₂",
+          "correct": false,
+          "why": "生成物を取り違えている。硝酸イオンNO₃⁻はそのまま塩に入り、水は過酸化水素ではない。"
+        },
+        {
+          "text": "2HNO₃ + KOH → K(NO₃)₂ + 2H₂O",
+          "correct": false,
+          "why": "K⁺は1価なので塩はKNO₃。係数も1対1で足りる。"
+        },
+        {
+          "text": "HNO₃ + KOH → KH + HNO₃O",
+          "correct": false,
+          "why": "イオンの組み替えを誤っている。塩は塩基の陽イオンと酸の陰イオンで作る。"
+        }
+      ],
+      "oneLine": "1価の酸と1価の塩基は1対1で中和し、水1分子と塩1つができる。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:c5_4:p_c5_4_1:p_c5_4_1_3:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_1",
+        "subQuestionId": "p_c5_4_1_3"
+      },
+      "format": "choice4",
+      "prompt": "塩酸に水酸化カルシウム水溶液を加えたときの中和反応を表す化学反応式はどれか。中和は完全に進むものとする。",
+      "label": "（3） 化学反応式",
+      "options": [
+        {
+          "text": "2HCl + Ca(OH)₂ → CaCl₂ + 2H₂O",
+          "correct": true,
+          "why": "Ca(OH)₂はOH⁻を2つ持つのでHClが2分子必要。H⁺2つとOH⁻2つで水2分子、Ca²⁺とCl⁻2つで塩CaCl₂。"
+        },
+        {
+          "text": "HCl + Ca(OH)₂ → CaClOH + H₂O",
+          "correct": false,
+          "why": "塩酸の係数を合わせ忘れている。OH⁻が2つあるので酸も2分子必要である。"
+        },
+        {
+          "text": "HCl + Ca(OH)₂ → CaCl₂ + H₂O",
+          "correct": false,
+          "why": "左辺と右辺で塩素の数が合っていない。CaCl₂を作るにはHClが2分子必要。"
+        },
+        {
+          "text": "2HCl + Ca(OH)₂ → CaH₂ + 2HClO",
+          "correct": false,
+          "why": "イオンの組み替えを誤っている。中和では酸の陰イオンCl⁻と塩基の陽イオンCa²⁺が結びつく。"
+        }
+      ],
+      "oneLine": "2価の塩基はOH⁻が2つ。酸の分子数を2倍にして数を合わせるのが第一歩。",
+      "timeLimit": 25
+    },
+    {
+      "id": "a:c5_4:p_c5_4_1:p_c5_4_1_4:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_1",
+        "subQuestionId": "p_c5_4_1_4"
+      },
+      "format": "choice4",
+      "prompt": "硫酸に水酸化ナトリウム水溶液を加えたときの中和反応を表す化学反応式はどれか。中和は完全に進むものとする。",
+      "label": "（4） 化学反応式",
+      "options": [
+        {
+          "text": "H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O",
+          "correct": true,
+          "why": "H₂SO₄はH⁺を2つ持つのでNaOHが2分子必要。水2分子ができ、Na⁺2つとSO₄²⁻で塩Na₂SO₄になる。"
+        },
+        {
+          "text": "H₂SO₄ + NaOH → NaHSO₄ + H₂O",
+          "correct": false,
+          "why": "塩基の係数を合わせ忘れている。中和が完全に進めば酸のHは残らずNa₂SO₄になる。"
+        },
+        {
+          "text": "H₂SO₄ + NaOH → Na₂SO₄ + 2H₂O",
+          "correct": false,
+          "why": "左辺と右辺でナトリウムの数が合っていない。Na₂SO₄を作るにはNaOHが2分子必要。"
+        },
+        {
+          "text": "H₂SO₄ + 2NaOH → 2NaSO₄ + 2H₂O",
+          "correct": false,
+          "why": "塩の組成を誤っている。SO₄²⁻は2価なのでNa⁺2つと結びついてNa₂SO₄になる。"
+        }
+      ],
+      "oneLine": "2価の酸はH⁺が2つ。塩基を2分子にして完全中和させると酸のHは残らない。",
+      "timeLimit": 25
+    },
+    {
+      "id": "a:c5_4:p_c5_4_2:p_c5_4_2_1:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_2",
+        "subQuestionId": "p_c5_4_2_1"
+      },
+      "format": "choice4",
+      "prompt": "酢酸水溶液に水酸化カルシウム水溶液を加えたときの中和反応を表す化学反応式はどれか。中和は完全に進むものとする。",
+      "label": "（1） 化学反応式",
+      "options": [
+        {
+          "text": "2CH₃COOH + Ca(OH)₂ → (CH₃COO)₂Ca + 2H₂O",
+          "correct": true,
+          "why": "Ca(OH)₂はOH⁻を2つ持ち酢酸はH⁺を1つなので酢酸2分子。水2分子と塩(CH₃COO)₂Caができる。"
+        },
+        {
+          "text": "CH₃COOH + Ca(OH)₂ → CH₃COOCa + H₂O",
+          "correct": false,
+          "why": "酢酸の係数を合わせ忘れている。OH⁻が2つあるので酢酸も2分子必要である。"
+        },
+        {
+          "text": "CH₃COOH + Ca(OH)₂ → (CH₃COO)₂Ca + H₂O",
+          "correct": false,
+          "why": "左辺と右辺で酢酸イオンの数も水素の数も合っていない。(CH₃COO)₂Caには酢酸2分子が必要。"
+        },
+        {
+          "text": "2CH₃COOH + Ca(OH)₂ → 2CH₃COOCa + H₂O",
+          "correct": false,
+          "why": "塩の組成と水の数を誤っている。Ca²⁺は2価なので酢酸イオン2つと結びつく。"
+        }
+      ],
+      "oneLine": "弱酸でも中和の作り方は同じ。2価の塩基にはH⁺を2つ用意して数を合わせる。",
+      "timeLimit": 28
+    },
+    {
+      "id": "a:c5_4:p_c5_4_2:p_c5_4_2_2:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_2",
+        "subQuestionId": "p_c5_4_2_2"
+      },
+      "format": "choice4",
+      "prompt": "硫酸に水酸化アルミニウムを加えたときの中和反応を表す化学反応式はどれか。中和は完全に進むものとする。",
+      "label": "（2） 化学反応式",
+      "options": [
+        {
+          "text": "3H₂SO₄ + 2Al(OH)₃ → Al₂(SO₄)₃ + 6H₂O",
+          "correct": true,
+          "why": "H⁺が2つ、OH⁻が3つなので最小公倍数6に合わせて硫酸3分子とAl(OH)₃2分子。水6分子と塩Al₂(SO₄)₃ができる。"
+        },
+        {
+          "text": "H₂SO₄ + Al(OH)₃ → AlSO₄ + H₂O",
+          "correct": false,
+          "why": "価数を無視して1対1にしている。H⁺2つとOH⁻3つの数を最小公倍数で合わせる必要がある。"
+        },
+        {
+          "text": "2H₂SO₄ + 3Al(OH)₃ → Al₃(SO₄)₂ + 6H₂O",
+          "correct": false,
+          "why": "硫酸とAl(OH)₃の係数が入れ替わっている。塩の組成もAl₂(SO₄)₃が正しい。"
+        },
+        {
+          "text": "3H₂SO₄ + 2Al(OH)₃ → Al₂(SO₄)₃ + 3H₂O",
+          "correct": false,
+          "why": "水の数が合っていない。H⁺6つとOH⁻6つから水は6分子できる。"
+        }
+      ],
+      "oneLine": "価数が違う酸と塩基は、H⁺とOH⁻の数の最小公倍数で係数を合わせる。",
+      "timeLimit": 30
+    },
+    {
+      "id": "a:c5_4:p_c5_4_2:p_c5_4_2_3:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_2",
+        "subQuestionId": "p_c5_4_2_3"
+      },
+      "format": "choice4",
+      "prompt": "塩酸にアンモニア水を加えたときの中和反応を表す化学反応式はどれか。中和は完全に進むものとする。",
+      "label": "（3） 化学反応式",
+      "options": [
+        {
+          "text": "HCl + NH₃ → NH₄Cl",
+          "correct": true,
+          "why": "アンモニアはOH⁻を含まない塩基で、NH₃がH⁺を受け取ってNH₄⁺になる。水はできず塩NH₄Clのみが生成する。"
+        },
+        {
+          "text": "NH₃ + HCl → NH₄Cl + H₂O",
+          "correct": false,
+          "why": "水を余分に書いている。アンモニアはOH⁻を持たないので中和しても水はできない。"
+        },
+        {
+          "text": "HCl + NH₄OH → NH₄Cl + H₂O",
+          "correct": false,
+          "why": "アンモニアをOH⁻を含む形に書き換えている。反応する物質はNH₃そのものである。"
+        },
+        {
+          "text": "HCl + NH₃ → NH₂Cl + H₂",
+          "correct": false,
+          "why": "生成物を取り違えている。NH₃はH⁺を受け取る側であり水素は発生しない。"
+        }
+      ],
+      "oneLine": "アンモニアはOH⁻を含まない塩基。H⁺を受け取るだけなので水はできず塩だけできる。",
+      "timeLimit": 25
+    },
+    {
+      "id": "a:c5_4:p_c5_4_3:p_c5_4_3_1:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_3",
+        "subQuestionId": "p_c5_4_3_1"
+      },
+      "format": "choice4",
+      "prompt": "塩化ナトリウム が中和で生じたものとして、もとになった「酸」と「塩基」の名称の組み合わせはどれか。",
+      "label": "（1） 塩化ナトリウム の 酸・塩基",
+      "options": [
+        {
+          "text": "酸：塩酸、塩基：水酸化ナトリウム",
+          "correct": true,
+          "why": "Na⁺にOH⁻をつけて塩基NaOH、Cl⁻にH⁺をつけて酸HClとなる。"
+        },
+        {
+          "text": "酸：硝酸、塩基：水酸化ナトリウム",
+          "correct": false,
+          "why": "陰イオンをNO₃⁻と読み違えている。塩化物なのでもとの酸は塩酸である。"
+        },
+        {
+          "text": "酸：塩酸、塩基：水酸化カリウム",
+          "correct": false,
+          "why": "陽イオンをK⁺と読み違えている。ナトリウム塩なのでもとの塩基は水酸化ナトリウム。"
+        },
+        {
+          "text": "酸：塩素、塩基：ナトリウム",
+          "correct": false,
+          "why": "単体の名称を答えている。塩を作る酸と塩基はイオンにH⁺やOH⁻をつけた化合物である。"
+        }
+      ],
+      "oneLine": "塩の陽イオンにOH⁻、陰イオンにH⁺をつければ、もとの塩基と酸がわかる。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:c5_4:p_c5_4_3:p_c5_4_3_2:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_3",
+        "subQuestionId": "p_c5_4_3_2"
+      },
+      "format": "choice4",
+      "prompt": "硫酸カリウム が中和で生じたものとして、もとになった「酸」と「塩基」の名称の組み合わせはどれか。",
+      "label": "（2） 硫酸カリウム の 酸・塩基",
+      "options": [
+        {
+          "text": "酸：硫酸、塩基：水酸化カリウム",
+          "correct": true,
+          "why": "K⁺にOH⁻をつけて塩基KOH、SO₄²⁻にH⁺を2つつけて酸H₂SO₄となる。"
+        },
+        {
+          "text": "酸：硫化水素、塩基：水酸化カリウム",
+          "correct": false,
+          "why": "陰イオンをS²⁻と読み違えている。硫酸塩なのでもとの酸は硫酸である。"
+        },
+        {
+          "text": "酸：硫酸、塩基：水酸化カルシウム",
+          "correct": false,
+          "why": "陽イオンをCa²⁺と読み違えている。カリウム塩なのでもとの塩基は水酸化カリウム。"
+        },
+        {
+          "text": "酸：硫酸、塩基：アンモニア",
+          "correct": false,
+          "why": "陽イオンをNH₄⁺と読み違えている。K⁺からできる塩基は水酸化カリウムである。"
+        }
+      ],
+      "oneLine": "塩の陽イオンにOH⁻、陰イオンにH⁺をつければ、もとの塩基と酸がわかる。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:c5_4:p_c5_4_3:p_c5_4_3_3:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_3",
+        "subQuestionId": "p_c5_4_3_3"
+      },
+      "format": "choice4",
+      "prompt": "硝酸カルシウム が中和で生じたものとして、もとになった「酸」と「塩基」の名称の組み合わせはどれか。",
+      "label": "（3） 硝酸カルシウム の 酸・塩基",
+      "options": [
+        {
+          "text": "酸：硝酸、塩基：水酸化カルシウム",
+          "correct": true,
+          "why": "Ca²⁺にOH⁻を2つつけて塩基Ca(OH)₂、NO₃⁻にH⁺をつけて酸HNO₃となる。"
+        },
+        {
+          "text": "酸：亜硝酸、塩基：水酸化カルシウム",
+          "correct": false,
+          "why": "陰イオンをNO₂⁻と読み違えている。硝酸塩なのでもとの酸は硝酸である。"
+        },
+        {
+          "text": "酸：硝酸、塩基：水酸化カリウム",
+          "correct": false,
+          "why": "陽イオンをK⁺と読み違えている。カルシウム塩なのでもとの塩基は水酸化カルシウム。"
+        },
+        {
+          "text": "酸：炭酸、塩基：水酸化カルシウム",
+          "correct": false,
+          "why": "陰イオンをCO₃²⁻と読み違えている。名称に硝酸が入っているので酸は硝酸。"
+        }
+      ],
+      "oneLine": "塩の陽イオンにOH⁻、陰イオンにH⁺をつければ、もとの塩基と酸がわかる。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:c5_4:p_c5_4_3:p_c5_4_3_4:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_3",
+        "subQuestionId": "p_c5_4_3_4"
+      },
+      "format": "choice4",
+      "prompt": "酢酸ナトリウム が中和で生じたものとして、もとになった「酸」と「塩基」の名称の組み合わせはどれか。",
+      "label": "（4） 酢酸ナトリウム の 酸・塩基",
+      "options": [
+        {
+          "text": "酸：酢酸、塩基：水酸化ナトリウム",
+          "correct": true,
+          "why": "Na⁺にOH⁻をつけて塩基NaOH、CH₃COO⁻にH⁺をつけて酸CH₃COOHとなる。"
+        },
+        {
+          "text": "酸：塩酸、塩基：水酸化ナトリウム",
+          "correct": false,
+          "why": "陰イオンをCl⁻と読み違えている。酢酸塩なのでもとの酸は酢酸である。"
+        },
+        {
+          "text": "酸：酢酸、塩基：アンモニア",
+          "correct": false,
+          "why": "陽イオンをNH₄⁺と読み違えている。ナトリウム塩なのでもとの塩基は水酸化ナトリウム。"
+        },
+        {
+          "text": "酸：炭酸、塩基：水酸化ナトリウム",
+          "correct": false,
+          "why": "陰イオンをCO₃²⁻と読み違えている。CH₃COO⁻からできる酸は酢酸。"
+        }
+      ],
+      "oneLine": "塩の陽イオンにOH⁻、陰イオンにH⁺をつければ、もとの塩基と酸がわかる。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:c5_4:p_c5_4_3:p_c5_4_3_5:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_3",
+        "subQuestionId": "p_c5_4_3_5"
+      },
+      "format": "choice4",
+      "prompt": "硫酸アンモニウム が中和で生じたものとして、もとになった「酸」と「塩基」の名称の組み合わせはどれか。",
+      "label": "（5） 硫酸アンモニウム の 酸・塩基",
+      "options": [
+        {
+          "text": "酸：硫酸、塩基：アンモニア",
+          "correct": true,
+          "why": "NH₄⁺からはOH⁻をつけずにNH₃（アンモニア）が対応し、SO₄²⁻にH⁺を2つつけて酸H₂SO₄となる。"
+        },
+        {
+          "text": "酸：硫酸、塩基：水酸化アンモニウム",
+          "correct": false,
+          "why": "塩基の名称が誤り。NH₄⁺に対応する塩基はアンモニアNH₃である。"
+        },
+        {
+          "text": "酸：硫化水素、塩基：アンモニア",
+          "correct": false,
+          "why": "陰イオンをS²⁻と読み違えている。硫酸塩なのでもとの酸は硫酸である。"
+        },
+        {
+          "text": "酸：硫酸、塩基：水酸化ナトリウム",
+          "correct": false,
+          "why": "陽イオンをNa⁺と読み違えている。アンモニウム塩なのでもとの塩基はアンモニア。"
+        }
+      ],
+      "oneLine": "塩の陽イオンにOH⁻、陰イオンにH⁺をつければ、もとの塩基と酸がわかる。",
+      "timeLimit": 25
+    },
+    {
+      "id": "a:c5_4:p_c5_4_3:p_c5_4_3_6:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_3",
+        "subQuestionId": "p_c5_4_3_6"
+      },
+      "format": "choice4",
+      "prompt": "塩化銅（II） が中和で生じたものとして、もとになった「酸」と「塩基」の名称の組み合わせはどれか。",
+      "label": "（6） 塩化銅（II） の 酸・塩基",
+      "options": [
+        {
+          "text": "酸：塩酸、塩基：水酸化銅（II）",
+          "correct": true,
+          "why": "Cu²⁺にOH⁻を2つつけて塩基Cu(OH)₂、Cl⁻にH⁺をつけて酸HClとなる。"
+        },
+        {
+          "text": "酸：塩酸、塩基：酸化銅（II）",
+          "correct": false,
+          "why": "塩基の名称が誤り。Cu²⁺に対応する塩基は水酸化銅（II）である。"
+        },
+        {
+          "text": "酸：次亜塩素酸、塩基：水酸化銅（II）",
+          "correct": false,
+          "why": "陰イオンをClO⁻と読み違えている。塩化物なのでもとの酸は塩酸である。"
+        },
+        {
+          "text": "酸：塩酸、塩基：水酸化鉄（II）",
+          "correct": false,
+          "why": "陽イオンをFe²⁺と読み違えている。銅の塩なのでもとの塩基は水酸化銅（II）。"
+        }
+      ],
+      "oneLine": "塩の陽イオンにOH⁻、陰イオンにH⁺をつければ、もとの塩基と酸がわかる。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:c5_4:p_c5_4_3:p_c5_4_3_7:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_3",
+        "subQuestionId": "p_c5_4_3_7"
+      },
+      "format": "choice4",
+      "prompt": "炭酸カルシウム が中和で生じたものとして、もとになった「酸」と「塩基」の名称の組み合わせはどれか。",
+      "label": "（7） 炭酸カルシウム の 酸・塩基",
+      "options": [
+        {
+          "text": "酸：炭酸、塩基：水酸化カルシウム",
+          "correct": true,
+          "why": "Ca²⁺にOH⁻を2つつけて塩基Ca(OH)₂、CO₃²⁻にH⁺を2つつけて酸H₂CO₃（炭酸）となる。"
+        },
+        {
+          "text": "酸：二酸化炭素、塩基：水酸化カルシウム",
+          "correct": false,
+          "why": "酸の名称が誤り。CO₃²⁻にH⁺をつけた化合物は炭酸H₂CO₃である。"
+        },
+        {
+          "text": "酸：炭酸、塩基：水酸化カリウム",
+          "correct": false,
+          "why": "陽イオンをK⁺と読み違えている。カルシウム塩なのでもとの塩基は水酸化カルシウム。"
+        },
+        {
+          "text": "酸：硝酸、塩基：水酸化カルシウム",
+          "correct": false,
+          "why": "陰イオンをNO₃⁻と読み違えている。名称に炭酸が入っているので酸は炭酸。"
+        }
+      ],
+      "oneLine": "塩の陽イオンにOH⁻、陰イオンにH⁺をつければ、もとの塩基と酸がわかる。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:c5_4:p_c5_4_3:p_c5_4_3_8:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_3",
+        "subQuestionId": "p_c5_4_3_8"
+      },
+      "format": "choice4",
+      "prompt": "硫化鉄（II） が中和で生じたものとして、もとになった「酸」と「塩基」の名称の組み合わせはどれか。",
+      "label": "（8） 硫化鉄（II） の 酸・塩基",
+      "options": [
+        {
+          "text": "酸：硫化水素、塩基：水酸化鉄（II）",
+          "correct": true,
+          "why": "Fe²⁺にOH⁻を2つつけて塩基Fe(OH)₂、S²⁻にH⁺を2つつけて酸H₂S（硫化水素）となる。"
+        },
+        {
+          "text": "酸：硫酸、塩基：水酸化鉄（II）",
+          "correct": false,
+          "why": "陰イオンをSO₄²⁻と読み違えている。硫化物なのでもとの酸は硫化水素である。"
+        },
+        {
+          "text": "酸：硫化水素、塩基：酸化鉄（II）",
+          "correct": false,
+          "why": "塩基の名称が誤り。Fe²⁺に対応する塩基は水酸化鉄（II）である。"
+        },
+        {
+          "text": "酸：硫化水素、塩基：水酸化銅（II）",
+          "correct": false,
+          "why": "陽イオンをCu²⁺と読み違えている。鉄の塩なのでもとの塩基は水酸化鉄（II）。"
+        }
+      ],
+      "oneLine": "塩の陽イオンにOH⁻、陰イオンにH⁺をつければ、もとの塩基と酸がわかる。",
+      "timeLimit": 25
+    },
+    {
+      "id": "a:c5_4:p_c5_4_4:p_c5_4_4_1:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_4",
+        "subQuestionId": "p_c5_4_4_1"
+      },
+      "format": "choice",
+      "prompt": "KHCO₃ を、正塩・酸性塩・塩基性塩のいずれかに分類するとどれになるか。",
+      "label": "（1） KHCO₃",
+      "options": [
+        {
+          "text": "酸性塩",
+          "correct": true,
+          "why": "化学式に酸由来のHが残っているので酸性塩。なお酸性塩でも水溶液が酸性とは限らない点に注意する。"
+        },
+        {
+          "text": "正塩",
+          "correct": false,
+          "why": "正塩は酸のHも塩基のOHも残らない塩。KHCO₃にはHが残っているので当てはまらない。"
+        },
+        {
+          "text": "塩基性塩",
+          "correct": false,
+          "why": "塩基性塩は化学式にOHが残る塩。KHCO₃にOHは含まれていない。"
+        }
+      ],
+      "oneLine": "分類は化学式の見た目だけで決める。酸由来のHが残れば酸性塩、OHが残れば塩基性塩。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:c5_4:p_c5_4_5:p_c5_4_5_1a:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_5",
+        "subQuestionId": "p_c5_4_5_1a"
+      },
+      "format": "choice4",
+      "prompt": "CO₂、BaO、Na₂O、SO₃ の4つの酸化物のうち、酸性酸化物である組み合わせはどれか。",
+      "label": "（1） 酸性酸化物（記号で）",
+      "options": [
+        {
+          "text": "CO₂ と SO₃",
+          "correct": true,
+          "why": "非金属元素の酸化物は酸性酸化物。炭素と硫黄はどちらも非金属である。"
+        },
+        {
+          "text": "BaO と Na₂O",
+          "correct": false,
+          "why": "バリウムとナトリウムは金属なので、これらは塩基性酸化物である。"
+        },
+        {
+          "text": "CO₂ と BaO",
+          "correct": false,
+          "why": "BaOは金属酸化物なので塩基性酸化物。酸性酸化物は非金属の酸化物のみ。"
+        },
+        {
+          "text": "Na₂O と SO₃",
+          "correct": false,
+          "why": "Na₂Oは金属酸化物なので塩基性酸化物。SO₃だけが酸性酸化物である。"
+        }
+      ],
+      "oneLine": "非金属元素の酸化物は酸性酸化物、金属元素の酸化物は塩基性酸化物。",
+      "timeLimit": 22,
+      "grounding": "・酸性酸化物：（ア）CO₂、（エ）SO₃　・塩基性酸化物：（イ）BaO、（ウ）Na₂O"
+    },
+    {
+      "id": "a:c5_4:p_c5_4_5:p_c5_4_5_1b:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_5",
+        "subQuestionId": "p_c5_4_5_1b"
+      },
+      "format": "choice4",
+      "prompt": "CO₂、BaO、Na₂O、SO₃ の4つの酸化物のうち、塩基性酸化物である組み合わせはどれか。",
+      "label": "（1） 塩基性酸化物（記号で）",
+      "options": [
+        {
+          "text": "BaO と Na₂O",
+          "correct": true,
+          "why": "金属元素の酸化物は塩基性酸化物。バリウムとナトリウムはどちらも金属である。"
+        },
+        {
+          "text": "CO₂ と SO₃",
+          "correct": false,
+          "why": "炭素と硫黄は非金属なので、これらは酸性酸化物である。"
+        },
+        {
+          "text": "BaO と SO₃",
+          "correct": false,
+          "why": "SO₃は非金属酸化物なので酸性酸化物。塩基性酸化物は金属の酸化物のみ。"
+        },
+        {
+          "text": "CO₂ と Na₂O",
+          "correct": false,
+          "why": "CO₂は非金属酸化物なので酸性酸化物。Na₂Oだけが塩基性酸化物である。"
+        }
+      ],
+      "oneLine": "金属元素の酸化物は塩基性酸化物。Al・Zn・Sn・Pbだけは両性酸化物になる。",
+      "timeLimit": 22,
+      "grounding": "・酸性酸化物：（ア）CO₂、（エ）SO₃　・塩基性酸化物：（イ）BaO、（ウ）Na₂O"
+    },
+    {
+      "id": "a:c5_4:p_c5_4_5:p_c5_4_5_2a:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_5",
+        "subQuestionId": "p_c5_4_5_2a"
+      },
+      "format": "choice4",
+      "prompt": "二酸化炭素 CO₂ と水 H₂O の反応を表す化学反応式はどれか。",
+      "label": "（2）（ア） CO₂ ＋ H₂O",
+      "options": [
+        {
+          "text": "CO₂ + H₂O → H₂CO₃",
+          "correct": true,
+          "why": "酸性酸化物に水を加えるとオキソ酸ができる。CO₂からは炭酸H₂CO₃が生じる。"
+        },
+        {
+          "text": "CO₂ + H₂O → C(OH)₄",
+          "correct": false,
+          "why": "塩基性酸化物と同じ扱いにして水酸化物を作ってしまった誤り。非金属酸化物からはオキソ酸ができる。"
+        },
+        {
+          "text": "CO₂ + H₂O → CO + H₂O₂",
+          "correct": false,
+          "why": "酸素の受け渡しを起こしている。酸化物と水の反応でCOは生じない。"
+        },
+        {
+          "text": "CO₂ + 2H₂O → H₂CO₃ + H₂",
+          "correct": false,
+          "why": "水素が発生するとしている誤り。この反応で気体の水素は生じない。"
+        }
+      ],
+      "oneLine": "酸性酸化物＋水→オキソ酸。CO₂なら炭酸、SO₃なら硫酸ができる。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:c5_4:p_c5_4_5:p_c5_4_5_2b:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_5",
+        "subQuestionId": "p_c5_4_5_2b"
+      },
+      "format": "choice4",
+      "prompt": "酸化バリウム BaO と水 H₂O の反応を表す化学反応式はどれか。",
+      "label": "（2）（イ） BaO ＋ H₂O",
+      "options": [
+        {
+          "text": "BaO + H₂O → Ba(OH)₂",
+          "correct": true,
+          "why": "塩基性酸化物に水を加えると水酸化物ができる。BaOからは水酸化バリウムが生じる。"
+        },
+        {
+          "text": "BaO + H₂O → H₂BaO₂",
+          "correct": false,
+          "why": "酸性酸化物と同じ扱いにしてオキソ酸を作ってしまった誤り。金属酸化物からは水酸化物ができる。"
+        },
+        {
+          "text": "BaO + H₂O → BaOH + H",
+          "correct": false,
+          "why": "水素原子が1つ余っている形で、化学式として成り立たない。Ba²⁺はOH⁻2つと結びつく。"
+        },
+        {
+          "text": "BaO + 2H₂O → Ba(OH)₂ + H₂",
+          "correct": false,
+          "why": "水素が発生するとしている誤り。この反応で気体の水素は生じない。"
+        }
+      ],
+      "oneLine": "塩基性酸化物＋水→水酸化物。金属の価数の分だけOHが付く。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:c5_4:p_c5_4_5:p_c5_4_5_2c:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_5",
+        "subQuestionId": "p_c5_4_5_2c"
+      },
+      "format": "choice4",
+      "prompt": "酸化ナトリウム Na₂O と水 H₂O の反応を表す化学反応式はどれか。",
+      "label": "（2）（ウ） Na₂O ＋ H₂O",
+      "options": [
+        {
+          "text": "Na₂O + H₂O → 2NaOH",
+          "correct": true,
+          "why": "塩基性酸化物に水を加えると水酸化物ができる。Na₂Oからは水酸化ナトリウムが2分子生じる。"
+        },
+        {
+          "text": "Na₂O + H₂O → Na(OH)₂",
+          "correct": false,
+          "why": "塩の組成を誤っている。Na⁺は1価なので水酸化物はNaOHであり2分子できる。"
+        },
+        {
+          "text": "Na₂O + H₂O → H₂NaO₂",
+          "correct": false,
+          "why": "酸性酸化物と同じ扱いにしてオキソ酸を作ってしまった誤り。金属酸化物からは水酸化物ができる。"
+        },
+        {
+          "text": "Na₂O + 2H₂O → 2NaOH + H₂",
+          "correct": false,
+          "why": "水素が発生するとしている誤り。この反応で気体の水素は生じない。"
+        }
+      ],
+      "oneLine": "Na₂Oは1価の金属が2つ分。水と反応してNaOHが2分子できる。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:c5_4:p_c5_4_6:p_c5_4_6_a:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_6",
+        "subQuestionId": "p_c5_4_6_a"
+      },
+      "format": "choice4",
+      "prompt": "塩化アンモニウム、硝酸ナトリウム、硫酸水素カリウム、硫酸カリウム、炭酸水素ナトリウム、酢酸ナトリウムのうち、水溶液が酸性を示すものはどれか。",
+      "label": "酸性を示す物質（化学式、記号順）",
+      "options": [
+        {
+          "text": "NH₄Cl と KHSO₄",
+          "correct": true,
+          "why": "NH₄Clは強酸＋弱塩基の正塩で酸性、KHSO₄は強酸H₂SO₄由来のHを残す酸性塩で酸性を示す。"
+        },
+        {
+          "text": "NaHCO₃ と CH₃COONa",
+          "correct": false,
+          "why": "どちらも弱酸＋強塩基の塩なので塩基性を示す。NaHCO₃は酸性塩だが例外的に塩基性。"
+        },
+        {
+          "text": "NaNO₃ と K₂SO₄",
+          "correct": false,
+          "why": "どちらも強酸＋強塩基の正塩なので中性を示す。"
+        },
+        {
+          "text": "NH₄Cl と NaHCO₃",
+          "correct": false,
+          "why": "NaHCO₃は酸性塩だが強塩基＋弱酸なので塩基性であり、酸性側には入らない。"
+        }
+      ],
+      "oneLine": "正塩はもとの酸・塩基の強弱で決める。強酸＋弱塩基なら酸性になる。",
+      "timeLimit": 28,
+      "grounding": "・酸性を示す物質：（ア）NH₄Cl、（ウ）KHSO₄"
+    },
+    {
+      "id": "a:c5_4:p_c5_4_6:p_c5_4_6_b:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_6",
+        "subQuestionId": "p_c5_4_6_b"
+      },
+      "format": "choice4",
+      "prompt": "塩化アンモニウム、硝酸ナトリウム、硫酸水素カリウム、硫酸カリウム、炭酸水素ナトリウム、酢酸ナトリウムのうち、水溶液が中性を示すものはどれか。",
+      "label": "中性を示す物質（化学式、記号順）",
+      "options": [
+        {
+          "text": "NaNO₃ と K₂SO₄",
+          "correct": true,
+          "why": "NaNO₃はHNO₃＋NaOH、K₂SO₄はH₂SO₄＋KOHで、どちらも強酸＋強塩基の正塩なので中性。"
+        },
+        {
+          "text": "NH₄Cl と KHSO₄",
+          "correct": false,
+          "why": "NH₄Clは強酸＋弱塩基で酸性、KHSO₄は強酸由来のHを残す酸性塩で酸性を示す。"
+        },
+        {
+          "text": "NaHCO₃ と CH₃COONa",
+          "correct": false,
+          "why": "どちらも弱酸＋強塩基の塩なので塩基性を示す。CH₃COONaを中性とするのは典型ミス。"
+        },
+        {
+          "text": "K₂SO₄ と CH₃COONa",
+          "correct": false,
+          "why": "CH₃COONaは弱酸＋強塩基なので塩基性であり、中性側には入らない。"
+        }
+      ],
+      "oneLine": "中性になるのは強酸＋強塩基の正塩だけ。中和すれば必ず中性ではない。",
+      "timeLimit": 28,
+      "grounding": "・中性を示す物質：（イ）NaNO₃、（エ）K₂SO₄"
+    },
+    {
+      "id": "a:c5_4:p_c5_4_6:p_c5_4_6_c:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_6",
+        "subQuestionId": "p_c5_4_6_c"
+      },
+      "format": "choice4",
+      "prompt": "塩化アンモニウム、硝酸ナトリウム、硫酸水素カリウム、硫酸カリウム、炭酸水素ナトリウム、酢酸ナトリウムのうち、水溶液が塩基性を示すものはどれか。",
+      "label": "塩基性を示す物質（化学式、記号順）",
+      "options": [
+        {
+          "text": "NaHCO₃ と CH₃COONa",
+          "correct": true,
+          "why": "CH₃COONaは弱酸＋強塩基で塩基性。NaHCO₃は酸性塩だが強塩基＋弱酸なので例外的に塩基性を示す。"
+        },
+        {
+          "text": "NH₄Cl と KHSO₄",
+          "correct": false,
+          "why": "NH₄Clは強酸＋弱塩基で酸性、KHSO₄も強酸由来で酸性を示す。"
+        },
+        {
+          "text": "NaNO₃ と K₂SO₄",
+          "correct": false,
+          "why": "どちらも強酸＋強塩基の正塩なので中性を示す。"
+        },
+        {
+          "text": "KHSO₄ と NaHCO₃",
+          "correct": false,
+          "why": "KHSO₄は酸性塩で強酸H₂SO₄由来なので酸性。塩基性側には入らない。"
+        }
+      ],
+      "oneLine": "弱酸＋強塩基の塩は塩基性。NaHCO₃は酸性塩でも塩基性という有名な例外。",
+      "timeLimit": 28,
+      "grounding": "・塩基性を示す物質：（オ）NaHCO₃、（カ）CH₃COONa"
+    },
+    {
+      "id": "a:c5_4:p_c5_4_7:p_c5_4_7_1:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_7",
+        "subQuestionId": "p_c5_4_7_1"
+      },
+      "format": "choice4",
+      "prompt": "塩化アンモニウムと水酸化ナトリウムを混合して加熱したときに進行する反応を表す化学反応式はどれか。",
+      "label": "（1）",
+      "options": [
+        {
+          "text": "NH₄Cl + NaOH → NaCl + H₂O + NH₃",
+          "correct": true,
+          "why": "弱塩基の塩に強塩基を加えると弱塩基が遊離する。加熱によりアンモニアが発生する。"
+        },
+        {
+          "text": "NH₄Cl + NaOH → NaCl + NH₄OH",
+          "correct": false,
+          "why": "生成物の書き方が誤り。遊離するのはアンモニアNH₃であり、水も同時にできる。"
+        },
+        {
+          "text": "NH₄Cl + NaOH → NH₄OH + NaCl + H₂",
+          "correct": false,
+          "why": "水素が発生するとしている誤り。この反応で気体の水素は生じない。"
+        },
+        {
+          "text": "×（反応しない）",
+          "correct": false,
+          "why": "弱塩基の塩＋強塩基という遊離の条件が揃っているので反応は進行する。"
+        }
+      ],
+      "oneLine": "弱塩基の塩＋強塩基→弱塩基が遊離。加熱でアンモニアが出る典型反応。",
+      "timeLimit": 28
+    },
+    {
+      "id": "a:c5_4:p_c5_4_7:p_c5_4_7_2:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_7",
+        "subQuestionId": "p_c5_4_7_2"
+      },
+      "format": "choice",
+      "prompt": "塩化カリウム水溶液に酢酸水溶液を加えたとき、反応は進行するか。進行する場合はその反応、進行しない場合はその旨を選べ。",
+      "label": "（2）",
+      "options": [
+        {
+          "text": "×（反応しない）",
+          "correct": true,
+          "why": "弱酸の遊離が起こるには「弱酸の塩＋強酸」が必要。KClは強酸である塩酸の塩、酢酸は弱酸で組合せが逆なので進行しない。"
+        },
+        {
+          "text": "KCl + CH₃COOH → CH₃COOK + HCl",
+          "correct": false,
+          "why": "強酸の塩に弱酸を加えても弱酸は追い出せない。組合せが逆で反応は進行しない。"
+        },
+        {
+          "text": "KCl + CH₃COOH → CH₃COOK + H₂ + Cl₂",
+          "correct": false,
+          "why": "気体が発生するとしている誤り。そもそもこの組み合わせでは反応が起こらない。"
+        }
+      ],
+      "oneLine": "弱酸の遊離は「弱酸の塩＋強酸」のときだけ。逆向きの組合せでは起こらない。",
+      "timeLimit": 25
+    },
+    {
+      "id": "a:c5_4:p_c5_4_7:p_c5_4_7_3:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_7",
+        "subQuestionId": "p_c5_4_7_3"
+      },
+      "format": "choice4",
+      "prompt": "炭酸ナトリウムに希塩酸を加えたときに進行する反応を表す化学反応式はどれか。",
+      "label": "（3）",
+      "options": [
+        {
+          "text": "Na₂CO₃ + 2HCl → 2NaCl + H₂O + CO₂",
+          "correct": true,
+          "why": "弱酸である炭酸の塩に強酸の塩酸を加えると炭酸が遊離し、炭酸はH₂OとCO₂に分解する。"
+        },
+        {
+          "text": "Na₂CO₃ + 2HCl → 2NaCl + H₂CO₃",
+          "correct": false,
+          "why": "炭酸のまま残すのは誤り。遊離した炭酸は水と二酸化炭素に分解する。"
+        },
+        {
+          "text": "Na₂CO₃ + HCl → NaCl + NaHCO₃",
+          "correct": false,
+          "why": "塩酸の係数が足りない。Na₂CO₃を完全に反応させるには塩酸2分子が必要。"
+        },
+        {
+          "text": "×（反応しない）",
+          "correct": false,
+          "why": "弱酸の塩＋強酸という遊離の条件が揃っているので反応は進行する。"
+        }
+      ],
+      "oneLine": "弱酸の塩＋強酸→弱酸が遊離。炭酸はH₂OとCO₂に分解して気体が出る。",
+      "timeLimit": 28
+    },
+    {
+      "id": "a:c5_4:p_c5_4_7:p_c5_4_7_4:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_7",
+        "subQuestionId": "p_c5_4_7_4"
+      },
+      "format": "choice4",
+      "prompt": "硫化鉄（II）に希塩酸を加えたときに進行する反応を表す化学反応式はどれか。",
+      "label": "（4）",
+      "options": [
+        {
+          "text": "FeS + 2HCl → FeCl₂ + H₂S",
+          "correct": true,
+          "why": "弱酸である硫化水素の塩に強酸の塩酸を加えると硫化水素が遊離する。"
+        },
+        {
+          "text": "FeS + HCl → FeCl + H₂S",
+          "correct": false,
+          "why": "塩の組成と係数が誤り。Fe²⁺は2価なのでFeCl₂となり塩酸は2分子必要。"
+        },
+        {
+          "text": "FeS + 2HCl → FeCl₂ + S + H₂",
+          "correct": false,
+          "why": "硫黄の単体と水素が生じるとしている誤り。遊離するのは硫化水素H₂Sである。"
+        },
+        {
+          "text": "×（反応しない）",
+          "correct": false,
+          "why": "弱酸の塩＋強酸という遊離の条件が揃っているので反応は進行する。"
+        }
+      ],
+      "oneLine": "弱酸の塩＋強酸→弱酸が遊離。硫化物に塩酸で硫化水素が発生する。",
+      "timeLimit": 28
+    },
+    {
+      "id": "a:c5_4:p_c5_4_8:p_c5_4_8_1a:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_8",
+        "subQuestionId": "p_c5_4_8_1a"
+      },
+      "format": "choice4",
+      "prompt": "塩化ナトリウム（固）に濃硫酸を加えて加熱したときに進行する反応を表す化学反応式はどれか。",
+      "label": "（1） 化学反応式",
+      "options": [
+        {
+          "text": "NaCl + H₂SO₄ → NaHSO₄ + HCl",
+          "correct": true,
+          "why": "揮発性の酸の塩に不揮発性の酸を加えると揮発性の酸が遊離する。塩化水素が気体として出る。"
+        },
+        {
+          "text": "NaCl + H₂SO₄ → Na₂SO₄ + 2HCl",
+          "correct": false,
+          "why": "左辺と右辺でナトリウムの数が合っていない。NaClが1分子なら塩はNaHSO₄になる。"
+        },
+        {
+          "text": "NaCl + H₂SO₄ → NaOH + HCl + SO₃",
+          "correct": false,
+          "why": "生成物を取り違えている。この反応では硫酸水素ナトリウムと塩化水素ができる。"
+        },
+        {
+          "text": "×（反応しない）",
+          "correct": false,
+          "why": "揮発性酸の塩＋不揮発性酸という遊離の条件が揃っているので反応は進行する。"
+        }
+      ],
+      "oneLine": "揮発性酸の塩＋不揮発性酸→揮発性酸が遊離。硫酸は不揮発性の代表。",
+      "timeLimit": 28
+    },
+    {
+      "id": "a:c5_4:p_c5_4_8:p_c5_4_8_1b:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_8",
+        "subQuestionId": "p_c5_4_8_1b"
+      },
+      "format": "choice4",
+      "prompt": "塩化ナトリウム（固）に濃硫酸を加えて加熱したとき、特有の刺激臭をもって発生する気体の名称は何か。",
+      "label": "（1） 発生する気体の名称",
+      "options": [
+        {
+          "text": "塩化水素",
+          "correct": true,
+          "why": "HClは揮発性の酸なので、加熱により塩化水素が気体として発生する。"
+        },
+        {
+          "text": "塩素",
+          "correct": false,
+          "why": "単体の塩素と混同している。遊離するのは揮発性の酸である塩化水素。"
+        },
+        {
+          "text": "二酸化硫黄",
+          "correct": false,
+          "why": "硫酸が分解したと考えた誤り。硫酸は不揮発性で塩として残る側である。"
+        },
+        {
+          "text": "硫化水素",
+          "correct": false,
+          "why": "硫化物が関わる弱酸の遊離と混同している。ここで出るのは塩化水素。"
+        }
+      ],
+      "oneLine": "揮発性の酸はHCl・HNO₃・CH₃COOH。塩化物＋濃硫酸なら塩化水素が出る。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:c5_4:p_c5_4_8:p_c5_4_8_2a:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_8",
+        "subQuestionId": "p_c5_4_8_2a"
+      },
+      "format": "choice4",
+      "prompt": "硝酸カリウム（固）に濃硫酸を加えて加熱したときに進行する反応を表す化学反応式はどれか。",
+      "label": "（2） 化学反応式",
+      "options": [
+        {
+          "text": "KNO₃ + H₂SO₄ → KHSO₄ + HNO₃",
+          "correct": true,
+          "why": "揮発性の酸HNO₃の塩に不揮発性の硫酸を加えると硝酸が遊離する。"
+        },
+        {
+          "text": "KNO₃ + H₂SO₄ → K₂SO₄ + 2HNO₃",
+          "correct": false,
+          "why": "左辺と右辺でカリウムの数が合っていない。KNO₃が1分子なら塩はKHSO₄になる。"
+        },
+        {
+          "text": "KNO₃ + H₂SO₄ → KOH + HNO₃ + SO₃",
+          "correct": false,
+          "why": "生成物を取り違えている。この反応では硫酸水素カリウムと硝酸ができる。"
+        },
+        {
+          "text": "×（反応しない）",
+          "correct": false,
+          "why": "揮発性酸の塩＋不揮発性酸という遊離の条件が揃っているので反応は進行する。"
+        }
+      ],
+      "oneLine": "硝酸も揮発性の酸。硝酸塩＋濃硫酸で硝酸が追い出される。",
+      "timeLimit": 28
+    },
+    {
+      "id": "a:c5_4:p_c5_4_8:p_c5_4_8_2b:1",
+      "source": {
+        "chapterId": "c5_4",
+        "problemId": "p_c5_4_8",
+        "subQuestionId": "p_c5_4_8_2b"
+      },
+      "format": "choice4",
+      "prompt": "硝酸カリウム（固）に濃硫酸を加えて加熱したとき、特有の刺激臭をもって発生する気体の名称は何か。",
+      "label": "（2） 発生する気体の名称",
+      "options": [
+        {
+          "text": "硝酸（の蒸気）",
+          "correct": true,
+          "why": "HNO₃は揮発性の酸なので、加熱により硝酸の蒸気が発生する。"
+        },
+        {
+          "text": "二酸化窒素",
+          "correct": false,
+          "why": "硝酸が分解した気体と混同している。遊離するのは硝酸そのものである。"
+        },
+        {
+          "text": "アンモニア",
+          "correct": false,
+          "why": "弱塩基の遊離と混同している。ここは揮発性の酸が遊離する反応である。"
+        },
+        {
+          "text": "二酸化硫黄",
+          "correct": false,
+          "why": "硫酸が分解したと考えた誤り。硫酸は不揮発性で塩として残る側である。"
+        }
+      ],
+      "oneLine": "不揮発性の硫酸が塩に残り、揮発性の硝酸が蒸気として出ていく。",
+      "timeLimit": 22
+    }
+  ]
+}

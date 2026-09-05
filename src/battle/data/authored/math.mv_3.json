@@ -1,0 +1,199 @@
+{
+  "subject": "math",
+  "chapterId": "mv_3",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:mv_3:q_mv_3_ratio:q_mv_3_ratio_1:1",
+      "source": {
+        "chapterId": "mv_3",
+        "problemId": "q_mv_3_ratio",
+        "subQuestionId": "q_mv_3_ratio_1"
+      },
+      "format": "choice4",
+      "prompt": "A、B の位置ベクトルを a、b とする。AB を 2:1 に内分する点 P はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(a + 2b)/3",
+          "correct": true,
+          "why": "m:n の内分点は (na + mb)/(m+n)。2:1 なので (1·a + 2·b)/3。比の後ろの数字が前の点に付く。"
+        },
+        {
+          "text": "係数を逆にした (2a + b)/3",
+          "why": "たすきがけを逆にした形。2:1 なら b に 2 が付く。"
+        },
+        {
+          "text": "分母を 2 とした (a + 2b)/2",
+          "why": "分母は比の和 2+1 = 3。分母の作り方を誤った形。"
+        },
+        {
+          "text": "(a + b)/2 という中点の式",
+          "why": "1:1 のときの式。比が 2:1 なので中点ではない。"
+        }
+      ],
+      "oneLine": "(a + 2b)/3。比の後ろの数字が前の点に付くたすきがけ。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:mv_3:q_mv_3_ratio:q_mv_3_ratio_2:1",
+      "source": {
+        "chapterId": "mv_3",
+        "problemId": "q_mv_3_ratio",
+        "subQuestionId": "q_mv_3_ratio_2"
+      },
+      "format": "choice4",
+      "prompt": "同じ設定で、AB を 3:1 に外分する点 Q はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(-a + 3b)/2",
+          "correct": true,
+          "why": "3:1 の外分は 3:(-1) の内分とみて (-1·a + 3·b)/(3-1) = (-a + 3b)/2。"
+        },
+        {
+          "text": "内分と同じ分母にした (-a + 3b)/4",
+          "why": "外分では分母が m - n になる。3-1 = 2。"
+        },
+        {
+          "text": "符号を付けずに計算した (a + 3b)/2",
+          "why": "外分は比の一方にマイナスを付ける。a の係数が -1 になる。"
+        },
+        {
+          "text": "係数を逆にした (3a - b)/2",
+          "why": "たすきがけを逆にした形。マイナスが付くのは a の側。"
+        }
+      ],
+      "oneLine": "(-a + 3b)/2。外分は「マイナス付きの内分」として処理する。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mv_3:q_mv_3_ratio:q_mv_3_ratio_3:1",
+      "source": {
+        "chapterId": "mv_3",
+        "problemId": "q_mv_3_ratio",
+        "subQuestionId": "q_mv_3_ratio_3"
+      },
+      "format": "choice4",
+      "prompt": "位置ベクトル a、b、c の 3 点でできる三角形の重心 G はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(a + b + c)/3",
+          "correct": true,
+          "why": "重心は 3 頂点の平均。3 つ足して 3 で割るだけ。"
+        },
+        {
+          "text": "分母を 2 とした (a + b + c)/2",
+          "why": "頂点は 3 つなので 3 で割る。"
+        },
+        {
+          "text": "(a + b)/2 という 1 辺の中点の式",
+          "why": "AB の中点。重心には c も入る。"
+        },
+        {
+          "text": "係数を付けた (a + 2b + 3c)/6",
+          "why": "重心は平等な平均なので係数は全部 1。"
+        }
+      ],
+      "oneLine": "(a + b + c)/3。重心は 3 頂点の平均。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:mv_3:q_mv_3_coord:q_mv_3_coord_1:1",
+      "source": {
+        "chapterId": "mv_3",
+        "problemId": "q_mv_3_coord",
+        "subQuestionId": "q_mv_3_coord_1"
+      },
+      "format": "choice4",
+      "prompt": "A(1, 2)、B(4, 8) のとき、AB を 1:2 に内分する点の座標はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(2, 4)",
+          "correct": true,
+          "why": "(2A + 1B)/3 = ((2·1+4)/3, (2·2+8)/3) = (2, 4)。A に近い側になる。"
+        },
+        {
+          "text": "(3, 6)",
+          "why": "2:1 に内分した形。1:2 なら A に近い側に来る。"
+        },
+        {
+          "text": "(2.5, 5)",
+          "why": "中点の座標。比が 1:2 なので中点ではない。"
+        },
+        {
+          "text": "(-2, -4)",
+          "why": "外側の点。内分点は必ず線分 AB の内部にある。"
+        }
+      ],
+      "oneLine": "(2, 4)。1:2 の内分は (2A + B)/3。A に近い側。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:mv_3:q_mv_3_coord:q_mv_3_coord_2:1",
+      "source": {
+        "chapterId": "mv_3",
+        "problemId": "q_mv_3_coord",
+        "subQuestionId": "q_mv_3_coord_2"
+      },
+      "format": "choice4",
+      "prompt": "A(1, 2)、B(4, 8) のとき、AB を 2:1 に外分する点の座標はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(7, 14)",
+          "correct": true,
+          "why": "2:(-1) の内分とみて (2·4 - 1, 2·8 - 2) = (7, 14)。分母は 2-1 = 1。"
+        },
+        {
+          "text": "(3, 6)",
+          "why": "2:1 の内分点。外分点は線分の外側に来る。"
+        },
+        {
+          "text": "(-2, -4)",
+          "why": "反対側に外分した形。2:1 の外分は B より先に出る。"
+        },
+        {
+          "text": "分母を 3 として計算した (7/3, 14/3)",
+          "why": "外分の分母は m - n = 1。3 で割ると内分の分母になる。"
+        }
+      ],
+      "oneLine": "(7, 14)。外分の分母は 2-1 = 1。B より外側に出る。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mv_3:q_mv_3_coord:q_mv_3_coord_3:1",
+      "source": {
+        "chapterId": "mv_3",
+        "problemId": "q_mv_3_coord",
+        "subQuestionId": "q_mv_3_coord_3"
+      },
+      "format": "choice4",
+      "prompt": "A(1, 2)、B(4, 8)、C(-2, -1) のとき、三角形 ABC の重心はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(1, 3)",
+          "correct": true,
+          "why": "((1+4-2)/3, (2+8-1)/3) = (3/3, 9/3) = (1, 3)。座標の平均。"
+        },
+        {
+          "text": "(3, 9)",
+          "why": "3 で割るのを忘れた形。3 頂点の和のままになっている。"
+        },
+        {
+          "text": "(1.5, 4.5)",
+          "why": "2 で割った形。頂点は 3 つなので 3 で割る。"
+        },
+        {
+          "text": "(2.5, 5)",
+          "why": "AB の中点。重心には C も入る。"
+        }
+      ],
+      "oneLine": "(1, 3)。x も y も 3 頂点の平均をとるだけ。",
+      "timeLimit": 18
+    }
+  ]
+}

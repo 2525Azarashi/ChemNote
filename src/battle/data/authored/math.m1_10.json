@@ -1,0 +1,167 @@
+{
+  "subject": "math",
+  "chapterId": "m1_10",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:m1_10:q_m1_10_sqrtLin:q_m1_10_sl_1:1",
+      "source": { "chapterId": "m1_10", "problemId": "q_m1_10_sqrtLin", "subQuestionId": "q_m1_10_sl_1" },
+      "format": "choice4",
+      "prompt": "t = √(2x+1) とおいたとき、x と dx を t で表した組はどれか。",
+      "label": "",
+      "options": [
+        { "text": "x = (t^2-1)/2、dx = t dt", "correct": true,
+          "why": "t^2 = 2x+1 より x = (t^2-1)/2。両辺を t で微分して dx = t dt。解説の置換そのまま。" },
+        { "text": "x = (t^2+1)/2、dx = t dt",
+          "why": "t^2 = 2x+1 を x について解く際の符号を誤った形。1 を引いてから 2 で割る。" },
+        { "text": "x = (t^2-1)/2、dx = 2t dt",
+          "why": "x = (t^2-1)/2 の微分は t dt。2 で割る操作を反映していない。" },
+        { "text": "x = 2t^2-1、dx = 4t dt",
+          "why": "t^2 = 2x+1 の左右を取り違えた形。x について解くと分母に 2 が来る。" }
+      ],
+      "oneLine": "x = (t^2-1)/2、dx = t dt。置換したら dx も必ず dt に取り替える。",
+      "timeLimit": 20,
+      "grounding": "つまり x = (t^2-1)/2、dx = t dt"
+    },
+    {
+      "id": "a:m1_10:q_m1_10_sqrtLin:q_m1_10_sl_1:2",
+      "source": { "chapterId": "m1_10", "problemId": "q_m1_10_sqrtLin", "subQuestionId": "q_m1_10_sl_1" },
+      "format": "choice4",
+      "prompt": "t = √(2x+1) の置換で ∫ x√(2x+1) dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "(2x+1)^2√(2x+1)/10 - (2x+1)√(2x+1)/6 + C", "correct": true,
+          "why": "(1/2)∫(t^4 - t^2)dt = t^5/10 - t^3/6 に t = √(2x+1) を戻した形。解説の計算そのまま。" },
+        { "text": "(3x-1)(2x+1)√(2x+1)/5 + C",
+          "why": "共通因数でまとめた形の分母を誤っている。正しくまとめると分母は 15。" },
+        { "text": "t^5/10 - t^3/6 + C",
+          "why": "t のまま答えている。置換したら最後に必ず x の式に戻す。" },
+        { "text": "x^2√(2x+1)/2 + C",
+          "why": "x と √(2x+1) を別々に積分して掛けた形。積の積分は各因子の積分の積にはならない。" }
+      ],
+      "oneLine": "(2x+1)^2√(2x+1)/10 - (2x+1)√(2x+1)/6 + C。t に直して多項式にしてから積分する。",
+      "timeLimit": 28,
+      "grounding": "= (2x+1)^2√(2x+1)/10 - (2x+1)√(2x+1)/6 + C"
+    },
+    {
+      "id": "a:m1_10:q_m1_10_trig:q_m1_10_t_1:1",
+      "source": { "chapterId": "m1_10", "problemId": "q_m1_10_trig", "subQuestionId": "q_m1_10_t_1" },
+      "format": "choice4",
+      "prompt": "定積分 ∫[0→2] √(4-x^2) dx を x = 2sinθ の置換で求めよ。",
+      "label": "",
+      "options": [
+        { "text": "π（半径2の円の面積の1/4）", "correct": true,
+          "why": "4∫[0→π/2] cos²θ dθ = 4·(1/2)[θ + sin2θ/2] = π。半径2の円の面積の1/4として (1/4)·π·2² = π とも確認できる。" },
+        { "text": "2π（円の面積の半分と誤った値）",
+          "why": "半径2の円の面積 4π の 1/2 と誤った形。区間 x: 0→2 は第1象限だけなので 1/4 にあたる。" },
+        { "text": "4π（半径2の円の面積そのもの）",
+          "why": "半径2の円の面積そのもの。求めるのはその 1/4。" },
+        { "text": "π/2（半径1のときの値）",
+          "why": "半径1の円の面積の1/4に相当する値。半径が 2 なので面積は 4 倍になる。" }
+      ],
+      "oneLine": "π。半径2の円の面積 4π の1/4にあたるので図形的にも検算できる。",
+      "timeLimit": 22,
+      "grounding": "この積分は「半径2の円の面積の1/4」なので、図形的に (1/4)·π·2² = π"
+    },
+    {
+      "id": "a:m1_10:q_m1_10_trig:q_m1_10_t_1:2",
+      "source": { "chapterId": "m1_10", "problemId": "q_m1_10_trig", "subQuestionId": "q_m1_10_t_1" },
+      "format": "choice4",
+      "prompt": "√(a²-x²) を含む積分で使う定番の置換はどれか。",
+      "label": "",
+      "options": [
+        { "text": "x = a sinθ とおく", "correct": true,
+          "why": "解説の「√(a²-x²) → x = a sinθ：1 - sin²θ = cos²θ でルートが外れる」のとおり。" },
+        { "text": "x = a tanθ とおく",
+          "why": "こちらは 1/(x²+a²) 型で使う置換。1 + tan²θ = 1/cos²θ で分母が消える。" },
+        { "text": "t = √(a²-x²) 全体を t とおく",
+          "why": "√の中が1次式のときの定石。中が a²-x² の形では三角置換の方が有効。" },
+        { "text": "t = e^x とおく",
+          "why": "e^x が混ざった分数のときの置換。ルート型には使わない。" }
+      ],
+      "oneLine": "x = a sinθ とおく。1 - sin²θ = cos²θ になってルートが外れる。",
+      "timeLimit": 16,
+      "grounding": "√(a²-x²) → x = a sinθ"
+    },
+    {
+      "id": "a:m1_10:q_m1_10_trig:q_m1_10_t_2:1",
+      "source": { "chapterId": "m1_10", "problemId": "q_m1_10_trig", "subQuestionId": "q_m1_10_t_2" },
+      "format": "choice4",
+      "prompt": "定積分 ∫[0→3] 1/(x^2+9) dx を x = 3tanθ の置換で求めよ。",
+      "label": "",
+      "options": [
+        { "text": "π/12", "correct": true,
+          "why": "x²+9 = 9/cos²θ、dx = 3/cos²θ dθ なので (1/3)∫[0→π/4] dθ = (1/3)·(π/4) = π/12。" },
+        { "text": "π/4",
+          "why": "θ の積分区間の長さそのまま。前に付く 1/3 を掛け忘れている。" },
+        { "text": "π/3",
+          "why": "1/3 だけを残して区間の π/4 を落とした形。両方を掛ける。" },
+        { "text": "(1/36)π",
+          "why": "1/9 倍と π/4 を掛けた形。dx の 3/cos²θ と 1/9 が約分されて 1/3 が残る。" }
+      ],
+      "oneLine": "π/12。x = 3tanθ で分母が消え、(1/3)·(π/4) になる。",
+      "timeLimit": 24,
+      "grounding": "= (1/3)·(π/4) = π/12"
+    },
+    {
+      "id": "a:m1_10:q_m1_10_trig:q_m1_10_t_2:2",
+      "source": { "chapterId": "m1_10", "problemId": "q_m1_10_trig", "subQuestionId": "q_m1_10_t_2" },
+      "format": "choice4",
+      "prompt": "置換積分で定積分を計算するときの注意点はどれか。",
+      "label": "",
+      "options": [
+        { "text": "積分区間も θ の値に取り替える", "correct": true,
+          "why": "解説は「置換したら積分区間も θ に取り替える」のが定積分での注意点だと述べている。x: 0→3 は θ: 0→π/4。" },
+        { "text": "積分区間は x のままでよい",
+          "why": "変数が変わったのに区間を変えないと値が合わない。区間も必ず換える。" },
+        { "text": "最後に必ず x の式に戻してから代入する",
+          "why": "不定積分では戻すが、定積分では区間を換えれば θ のまま計算して代入できる。" },
+        { "text": "dx はそのまま dθ に置き換えてよい",
+          "why": "dx = 3/cos²θ dθ のように微分係数を掛ける必要がある。単純な置き換えはできない。" }
+      ],
+      "oneLine": "積分区間も θ の値に取り替える。x: 0→3 なら θ: 0→π/4 になる。",
+      "timeLimit": 17,
+      "grounding": "置換したら**積分区間も θ に取り替える**"
+    },
+    {
+      "id": "a:m1_10:q_m1_10_exp:q_m1_10_e_1:1",
+      "source": { "chapterId": "m1_10", "problemId": "q_m1_10_exp", "subQuestionId": "q_m1_10_e_1" },
+      "format": "choice4",
+      "prompt": "t = e^x の置換で不定積分 ∫ 1/(e^x+1) dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "x - log(e^x+1) + C", "correct": true,
+          "why": "∫1/{t(t+1)}dt = log t - log(t+1) に t = e^x を戻し、log e^x = x を使った形。解説の計算そのまま。" },
+        { "text": "log(e^x+1) - x + C",
+          "why": "2項の符号を入れ替えた形。log t が先で log(t+1) を引く。" },
+        { "text": "x + log(e^x+1) + C",
+          "why": "部分分数分解 1/t - 1/(t+1) の引き算を足し算にした形。第2項はマイナス。" },
+        { "text": "-1/(e^x+1) + C",
+          "why": "分母を累乗の公式で処理した形。指数が -1 のときは log になる。" }
+      ],
+      "oneLine": "x - log(e^x+1) + C。置換で有理関数にし、部分分数分解して log 型に落とす。",
+      "timeLimit": 26,
+      "grounding": "= x - log(e^x+1) + C"
+    },
+    {
+      "id": "a:m1_10:q_m1_10_exp:q_m1_10_e_1:2",
+      "source": { "chapterId": "m1_10", "problemId": "q_m1_10_exp", "subQuestionId": "q_m1_10_e_1" },
+      "format": "choice4",
+      "prompt": "t = e^x とおいたとき ∫ 1/(e^x+1) dx は t のどんな積分に変わるか。",
+      "label": "",
+      "options": [
+        { "text": "∫ 1/{t(t+1)} dt", "correct": true,
+          "why": "dt = e^x dx より dx = dt/t。1/(t+1)·dt/t = 1/{t(t+1)}dt になる。解説のとおり。" },
+        { "text": "∫ 1/(t+1) dt",
+          "why": "dx = dt/t の 1/t を掛け忘れた形。置換では dx の取り替えが必須。" },
+        { "text": "∫ t/(t+1) dt",
+          "why": "dx を t dt としてしまった形。dt = e^x dx なので dx = dt/t になる。" },
+        { "text": "∫ 1/(t^2+1) dt",
+          "why": "分母を誤って t^2+1 とした形。分母は t と t+1 の積になる。" }
+      ],
+      "oneLine": "∫ 1/{t(t+1)} dt。dx = dt/t を掛けることで分母が1次式の積になる。",
+      "timeLimit": 20,
+      "grounding": "∫ 1/(t+1) · dt/t = ∫ 1/{t(t+1)} dt"
+    }
+  ]
+}

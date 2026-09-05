@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy } from 'lucide-react';
+import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy, Swords } from 'lucide-react';
 import { Home } from './components/Home';
 import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
@@ -106,6 +106,12 @@ import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
 import { SubjectSelection, getSubjectLabel, isSubjectId, type SubjectId } from './components/SubjectSelection';
 /*
+ * 本体に教科データを持たない教科（高校入試 理科など）の登録簿。
+ * ★何も import しない葉ファイルなので、ここから読んでも問題データは付いてこない★
+ * （tests/subjectLabels.test.ts が「葉であること」を機械で見張っている）
+ */
+import { isExternalSubject } from './data/externalSubjects';
+/*
  * ★分野選択画面（化学・発展）も「開いたときに読む」（遅延読み込み）★
  *
  * ■ 見落としていた4本目の線（新しく足した検査が見つけた）
@@ -143,6 +149,23 @@ const AdvancedFieldSelection = React.lazy(() =>
     default: m.AdvancedFieldSelection,
   })),
 );
+/**
+ * 高校入試 理科の入口（演習・まとめ・出題傾向）。
+ *
+ * ★必ず遅延読み込みにする★
+ * 理科のデータは合計で約900KB あり、本体の教科データとは別物。
+ * 静かに静的 import すると、理科を使わない生徒の起動時にも
+ * この900KBが読み込まれることになる。
+ * RikaHome の中で3画面をさらに分けているので、
+ * 実際に読まれるのは「開いたタブの分だけ」になる。
+ */
+const RikaHome = React.lazy(() => import('./features/rika/RikaHome'));
+/*
+ * 理科の入口で「最初に開くタブ」を指定するための型だけを読む。
+ * ★import type なので、この行では実際のコードは1バイトも読み込まれない★
+ * （型は組み立てのときに消える。遅延読み込みの効き目は保たれる）
+ */
+import type { RikaTab } from './features/rika/RikaHome';
 // 分野（理論／無機／有機）の表示情報だけを持つ葉ファイルから読む。
 // ここで使うのは「保存値が正しい分野IDかの確認」と「見出しに出す分野名」だけで、
 // 化学（発展）の問題データは1問も要らない。
@@ -216,7 +239,7 @@ import { TeacherDashboard } from './components/TeacherDashboard';
 import { FeedbackAdminPanel } from './components/FeedbackAdminPanel';
 import { BattleMode } from './battle/ui/BattleMode';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin' | 'battle';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin' | 'battle' | 'rika';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 const APP_STATES = new Set<AppState>([
@@ -224,6 +247,15 @@ const APP_STATES = new Set<AppState>([
   'flowchart', 'study_hub', 'note_detail', 'onboarding', 'logical_tree', 'settings',
   'leaderboard', 'mock_exam', 'subject_selection', 'advanced_fields', 'teacher_dashboard',
   'feedback_admin', 'battle',
+  /**
+   * 高校入試 理科の入口（演習・まとめ・出題傾向の3画面）。
+   *
+   * ★本体の教科の流れ（教科→学び方→単元→解く）に乗せていない★
+   * 理科は本体の「章・大問・小問」の形を持たず、単元の絞り込みも
+   * 問題の出し方も理科側の画面が自分で持っているため、
+   * 独立した1画面として置いている（詳しくは RikaHome.tsx）。
+   */
+  'rika',
 ]);
 const APP_MODES = new Set<AppMode>(['mini_test', 'practice', 'learning']);
 
@@ -268,6 +300,17 @@ export default function App() {
     const saved = localStorage.getItem('savedAppMode');
     return isAppMode(saved) ? saved : 'practice';
   });
+  /**
+   * 理科の入口で最初に開くタブ（演習／まとめ／出題傾向）。
+   *
+   * ★localStorage に保存しない★
+   *   本体の appState / appMode は「閉じた場所から続けられる」ように保存しているが、
+   *   理科のタブは3つ並んでいて指1本で切り替えられる。
+   *   保存すると「対戦の結果から演習を開いた次にホームから開いたとき、
+   *   なぜか演習が開いている」という、押した覚えのない状態が残る。
+   *   ここは毎回まっさらな 'practice' から始める。
+   */
+  const [rikaTab, setRikaTab] = useState<RikaTab>('practice');
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(() => localStorage.getItem('savedSelectedChapterId'));
   /**
    * 「今回はこの範囲だけを解く」ときの範囲（両端を含む・章内の通し番号）。
@@ -1080,6 +1123,80 @@ export default function App() {
     }
   };
 
+  /**
+   * ★対戦のリザルトから、その単元の演習へ移る（請求⑦-A）★
+   *
+   * -------------------------------------------------------------------
+   * ■ これが「① 対戦 ⇒ ② 演習」の橋である
+   * -------------------------------------------------------------------
+   * 対戦は「表側＝楽しい」を担い、演習は「裏側＝つまずきを直す」を担う。
+   * 負けた直後・間違えた直後がいちばん学ぶ気になっている瞬間なので、
+   * リザルト画面からワンタップでその単元の演習に入れるようにする。
+   *
+   * -------------------------------------------------------------------
+   * ■ ★教科も一緒に切り替える理由★
+   * -------------------------------------------------------------------
+   * 対戦の教科は、アプリで選んでいる教科（selectedSubject）と違うことがある
+   * （化学基礎を選んだまま、対戦だけ生物基礎で遊ぶ、など）。
+   * 章IDだけ渡して演習に飛ばすと、教科が食い違って
+   * ★単元選択に戻ったときに別教科の一覧が出る★ という迷子になる。
+   * 章と教科は必ずセットで切り替える。
+   *
+   * -------------------------------------------------------------------
+   * ■ 演習モード（practice）に固定する理由
+   * -------------------------------------------------------------------
+   * 対戦で出しているのは演習問題（practiceProblems）を割ったものなので、
+   * 対応する問題があるのは演習モードである。
+   * ミニテストに飛ばすと「対戦で間違えた問題が出てこない」ことになる。
+   * 既存の復習ノートからの遷移（handleReviewNote）と同じ扱いにしている。
+   */
+  const handlePracticeFromBattle = (subject: string, chapterId: string) => {
+    /**
+     * ★外部教科（本体に教科データを持たない教科）は専用の画面へ渡す★
+     *
+     * 高校入試 理科は本体の「章・大問・小問」の形を持たないため、
+     * 本体の演習画面（QuizScreens）では1問も表示できない。
+     *
+     * ここで分けないと、下の isSubjectId('rika') が false になるので
+     *   ・教科は化学基礎のまま変わらない
+     *   ・その状態で章ID 'ch01' を開こうとする
+     * となり、★理科で間違えたのに化学基礎の第1章が開く★。
+     * 教科を選び直したつもりも無いのに中身が変わるので、
+     * 生徒には何が起きたのか分からない。
+     *
+     * 理科は演習画面を自分で持っており、単元の絞り込みもその中にある。
+     * だから理科の入口を演習タブで開く（単元は生徒がそこで選ぶ）。
+     */
+    if (isExternalSubject(subject)) {
+      /*
+        ★ここでもフラグを見る★
+        非公開のときに理科へ飛ばすと「入れない画面」に着いて真っ白になる。
+        戻り先はホーム。対戦の結果は残っているので学習の記録は失われない。
+      */
+      if (!FEATURES.rika) {
+        setAppState('home');
+        return;
+      }
+      setRikaTab('practice');
+      setAppState('rika');
+      return;
+    }
+
+    /**
+     * ★知らない教科IDが来たら教科は変えない★
+     * 対戦の教科IDは Firestore の部屋データから来るので、
+     * 将来アプリ側で公開をやめた教科の文字列が届くことがありうる。
+     * 既存の復元処理（selectedSubject の useState）と同じ isSubjectId で見る。
+     */
+    if (isSubjectId(subject)) {
+      setSelectedSubject(subject as SubjectId);
+    }
+    setAppMode('practice');
+    // 画面の切り替え（setAppState('quiz')）と答案の初期化は
+    // handleSelectChapter が中でやるので、ここでは呼ぶだけでよい。
+    handleSelectChapter(chapterId, 0, false);
+  };
+
   const handleFinishQuiz = (answers: Record<string, string>, result?: any) => {
     setQuizAnswers(answers);
     setLastQuizResult(result || null);
@@ -1357,13 +1474,13 @@ export default function App() {
                 onBack={() => setAppState('home')}
               />
             )}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
             {/* ★ルーティング側の門（4箇所のうちの3番目）★
                 ナビのボタンを隠すだけでは、Home の「ランキングを見る」など
                 別の導線からこの状態になれてしまう。
                 描画の受け口でも同じフラグを見て、
                 「見えないのに入れる」状態を作らない。 */}
-            {appState === 'leaderboard' && FEATURES.ranking && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} />}
+            {appState === 'leaderboard' && FEATURES.ranking && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
             {/* ★対戦モード（ルーティング側の門）★
                 ホームのボタンを隠すだけでは、localStorage に残った
                 appState='battle' から復元して入れてしまう。
@@ -1372,11 +1489,30 @@ export default function App() {
               <BattleMode
                 onExit={() => setAppState('home')}
                 onRequireLogin={() => setAppState('onboarding')}
+                /* ★対戦 ⇒ 演習 の橋（請求⑦-A）★ */
+                onPractice={handlePracticeFromBattle}
               />
             )}
-            {appState === 'intro' && <Intro onBack={() => setAppState('home')} />}
+            {appState === 'rika' && FEATURES.rika && (
+              /*
+                高校入試 理科の入口（演習・まとめ・出題傾向）。
+                遅延読み込み（上の React.lazy を参照）。fallback は null＝何も描かない。
+                本体の他の遅延画面と同じ扱いにそろえてある。
+
+                ★描画の受け口でも FEATURES.rika を見る★
+                ホームのカードを消すだけでは塞げない。
+                このアプリは画面状態を localStorage に保存しているので、
+                理科を開いた状態で非公開に切り替えると
+                ★次の起動で保存値 'rika' が復元されて中に入ってしまう★。
+                （既存のランキングと同じ塞ぎ方。詳しくは src/config/features.ts）
+              */
+              <React.Suspense fallback={null}>
+                <RikaHome onBack={() => setAppState('home')} initialTab={rikaTab} />
+              </React.Suspense>
+            )}
+            {appState === 'intro' && <Intro onBack={() => setAppState('home')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
             {appState === 'logical_tree' && <LogicalTree />}
-            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} />}
+            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
             {appState === 'mock_exam' && <MockExam onBack={() => setAppState('mode_selection')} />}
             {appState === 'learning' && (
               /*
@@ -1510,6 +1646,38 @@ export default function App() {
                   <BookOpen className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">学習</span>
                 </button>
+
+                {/* ===== 対戦（オンライン） =====
+
+                    ★ナビに足した理由★
+                      利用者の指示「オンラインをメインにするUIにしていかんと
+                      だめよね？…ボタンの配置変えるぐらい」。
+                      それまで対戦への入口は★ホームの小カード1つだけ★で、
+                      ナビには席が無かった。つまり
+                        「対戦したい」→ ホームへ戻る → 下までスクロール → 押す
+                      という道しかなく、学習中に思い立っても2手かかる。
+                      ナビはどの画面からでも1タップで届く唯一の場所なので、
+                      主機能はここに席を持っていなければならない。
+
+                    ★ランキングより前に置いている理由★
+                      ランキングは「対戦した結果」を見る画面なので、
+                      対戦より先に並んでいると順序が逆になる。
+
+                    ★フラグで消せるようにしてある★
+                      FEATURES.battle が false のときは席ごと消える。
+                      ホームのカード（Home.tsx の主CTA）と同じ条件なので、
+                      片方だけ残って「見えるのに入れない」にはならない。 */}
+                {FEATURES.battle && (
+                <button
+                  onClick={() => setAppState('battle')}
+                  aria-label="オンライン対戦へ移動"
+                  aria-current={appState === 'battle' ? 'page' : undefined}
+                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'battle' ? 'text-[#2E86C1] font-bold' : 'text-[#4B5563]/60 hover:text-[#2E86C1]/80'}`}
+                >
+                  <Swords className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
+                  <span className="text-[10px] tracking-wider font-modern">対戦</span>
+                </button>
+                )}
 
                 {/* ★ここは「4箇所」のうちの1番目（ナビ）★
                     ランキングは現在公開中（FEATURES.ranking === true）なので

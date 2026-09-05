@@ -1,0 +1,238 @@
+{
+  "subject": "math",
+  "chapterId": "m2_1",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:m2_1:q_m2_1_oddEven:q_m2_1_oe_1:1",
+      "source": {
+        "chapterId": "m2_1",
+        "problemId": "q_m2_1_oddEven",
+        "subQuestionId": "q_m2_1_oe_1"
+      },
+      "format": "choice4",
+      "prompt": "定積分 ∫[-2→2] (x^5 + 4x^3 - 3x) dx の値はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "0",
+          "correct": true,
+          "why": "x^5、x^3、x はすべて奇関数で、奇関数の和も奇関数。原点対称な区間なので計算不要で 0。解説のとおり。"
+        },
+        {
+          "text": "偶関数の公式を当てて 2∫ (x^5+4x^3-3x) dx とした値",
+          "why": "偶関数のときの公式を当てた形。奇関数では2倍ではなく打ち消し合って 0 になる。"
+        },
+        {
+          "text": "48",
+          "why": "原点対称性を使わずに符号を誤って足し合わせた形。奇関数なので値は 0。"
+        },
+        {
+          "text": "-6",
+          "why": "-3x の項だけを片側で計算したような値。全体が奇関数なので合計は 0。"
+        }
+      ],
+      "oneLine": "0。x^5・4x^3・-3x はすべて奇関数なので、原点対称区間では打ち消し合う。",
+      "timeLimit": 16,
+      "grounding": "奇関数の和も奇関数なので、計算不要で **0**"
+    },
+    {
+      "id": "a:m2_1:q_m2_1_oddEven:q_m2_1_oe_1:2",
+      "source": {
+        "chapterId": "m2_1",
+        "problemId": "q_m2_1_oddEven",
+        "subQuestionId": "q_m2_1_oe_1"
+      },
+      "format": "choice4",
+      "prompt": "積分区間が [-a, a] と原点対称のとき、偶関数について成り立つ式はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "∫[-a→a] = 2∫[0→a]",
+          "correct": true,
+          "why": "解説の「偶関数（f(-x) = f(x)）：∫[-a→a] = 2∫[0→a]（半分を2倍）」のとおり。"
+        },
+        {
+          "text": "値は必ず 0 になる",
+          "why": "0 になるのは奇関数の場合。偶関数は同じ形が2つ並ぶので2倍になる。"
+        },
+        {
+          "text": "∫[-a→a] = (1/2)∫[0→a]",
+          "why": "半分と2倍を逆にした形。片側の値を2倍するのが正しい。"
+        },
+        {
+          "text": "∫[-a→a] = ∫[0→a]",
+          "why": "左右の2つ分を数え忘れた形。対称なので片側の2倍になる。"
+        }
+      ],
+      "oneLine": "∫[-a→a] = 2∫[0→a]。偶関数は左右対称なので片側の2倍になる。",
+      "timeLimit": 15,
+      "grounding": "偶関数（f(-x) = f(x)）：∫[-a→a] = 2∫[0→a]"
+    },
+    {
+      "id": "a:m2_1:q_m2_1_oddEven:q_m2_1_oe_2:1",
+      "source": {
+        "chapterId": "m2_1",
+        "problemId": "q_m2_1_oddEven",
+        "subQuestionId": "q_m2_1_oe_2"
+      },
+      "format": "choice4",
+      "prompt": "定積分 ∫[-1→1] (3x^2 + x cos x) dx の値はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2",
+          "correct": true,
+          "why": "x cos x は奇関数×偶関数=奇関数で消える。残る ∫[-1→1] 3x^2 dx = 2∫[0→1] 3x^2 dx = 2·1 = 2。"
+        },
+        {
+          "text": "1（両側ぶんに直すのを忘れた値）",
+          "why": "∫[0→1] 3x^2 dx = 1 で止めた形。偶関数なので2倍する必要がある。"
+        },
+        {
+          "text": "0（全体が奇関数と誤判定した値）",
+          "why": "3x^2 は偶関数なので消えない。消えるのは x cos x の項だけ。"
+        },
+        {
+          "text": "x cos x の項まで積分してしまった値",
+          "why": "x cos x は奇関数だから対称区間では消える。真面目に積分する必要がない。"
+        }
+      ],
+      "oneLine": "2。x cos x は奇関数で消え、偶関数 3x^2 の片側の2倍が残る。",
+      "timeLimit": 20,
+      "grounding": "残るのは ∫[-1→1] 3x^2 dx = 2∫[0→1] 3x^2 dx = 2·[x^3] = 2·1 = **2**"
+    },
+    {
+      "id": "a:m2_1:q_m2_1_oddEven:q_m2_1_oe_2:2",
+      "source": {
+        "chapterId": "m2_1",
+        "problemId": "q_m2_1_oddEven",
+        "subQuestionId": "q_m2_1_oe_2"
+      },
+      "format": "choice4",
+      "prompt": "x cos x は偶関数・奇関数のどちらか、またその理由はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "奇関数。奇関数 × 偶関数 = 奇関数だから",
+          "correct": true,
+          "why": "解説の「x cos x は『奇関数 × 偶関数 = 奇関数』なので消えます」のとおり。x が奇、cos x が偶。"
+        },
+        {
+          "text": "偶関数。奇関数 × 偶関数 = 偶関数だから",
+          "why": "積の規則を誤っている。符号の掛け算と同じで、奇×偶は奇になる。"
+        },
+        {
+          "text": "奇関数。奇関数 × 奇関数 = 奇関数だから",
+          "why": "結論は合うが理由が誤り。cos x は偶関数であり、奇×奇なら偶になる。"
+        },
+        {
+          "text": "偶関数。cos x が偶関数だから",
+          "why": "掛かっている x が奇関数なので全体は奇関数になる。片方だけでは決まらない。"
+        }
+      ],
+      "oneLine": "奇関数。x が奇・cos x が偶で、奇×偶＝奇になるため対称区間で消える。",
+      "timeLimit": 17,
+      "grounding": "x cos x は「奇関数 × 偶関数 = 奇関数」なので消えます"
+    },
+    {
+      "id": "a:m2_1:q_m2_1_king:q_m2_1_k_1:1",
+      "source": {
+        "chapterId": "m2_1",
+        "problemId": "q_m2_1_king",
+        "subQuestionId": "q_m2_1_k_1"
+      },
+      "format": "choice4",
+      "prompt": "I = ∫[0→π/2] sin x/(sin x + cos x) dx を King Property を用いて求めよ。",
+      "label": "",
+      "options": [
+        {
+          "text": "π/4",
+          "correct": true,
+          "why": "x → π/2 - x で分子が cos x になる式を作り、2つを足すと 2I = ∫[0→π/2] 1 dx = π/2。よって I = π/4。"
+        },
+        {
+          "text": "π/2（2I の値をそのまま答えた形）",
+          "why": "2I = π/2 で止めた形。最後に 2 で割る必要がある。"
+        },
+        {
+          "text": "1",
+          "why": "∫[0→π/2] sin x dx の値。分母を無視して分子だけ積分している。"
+        },
+        {
+          "text": "0",
+          "why": "被積分関数は区間内で正なので 0 にはならない。奇関数の打ち消しとは別の型。"
+        }
+      ],
+      "oneLine": "π/4。相方を作って足すと分子と分母が同じになり 2I = π/2 になる。",
+      "timeLimit": 25,
+      "grounding": "よって I = **π/4**"
+    },
+    {
+      "id": "a:m2_1:q_m2_1_king:q_m2_1_k_1:2",
+      "source": {
+        "chapterId": "m2_1",
+        "problemId": "q_m2_1_king",
+        "subQuestionId": "q_m2_1_k_1"
+      },
+      "format": "choice4",
+      "prompt": "King Property を適用して I の相方を作ったあと、次にすべき操作はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "2つの I を足して、分子と分母が同じ形になるのを利用する",
+          "correct": true,
+          "why": "解説の核心「そのままでは解けない → 相方を作って足すと分子と分母が同じになる」。2I = ∫1 dx になる。"
+        },
+        {
+          "text": "2つの I を引いて 0 にする",
+          "why": "引くと分子が sin x - cos x になり簡単にならない。足すことで分母と一致する。"
+        },
+        {
+          "text": "相方の式を微分して比べる",
+          "why": "微分は不要。King Property は等式なので、足して 2I の形にするのが手筋。"
+        },
+        {
+          "text": "部分積分を2回行って同形を出す",
+          "why": "同形出現型の部分積分とは別の技法。ここでは置換由来の等式を足し合わせる。"
+        }
+      ],
+      "oneLine": "2つの I を足す。分子が sin x + cos x になり分母と約分されて 2I = π/2。",
+      "timeLimit": 18,
+      "grounding": "**2つの I を足す**と"
+    },
+    {
+      "id": "a:m2_1:q_m2_1_king:q_m2_1_k_1:3",
+      "source": {
+        "chapterId": "m2_1",
+        "problemId": "q_m2_1_king",
+        "subQuestionId": "q_m2_1_k_1"
+      },
+      "format": "choice4",
+      "prompt": "King Property ∫[a→b] f(x)dx = ∫[a→b] f(a+b-x)dx はどの置換から導かれるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "t = a+b-x とおく置換",
+          "correct": true,
+          "why": "解説は「置換 t = a+b-x から導かれる等式」と述べている。区間の両端が入れ替わって同じ区間に戻る。"
+        },
+        {
+          "text": "t = x-a とおく置換",
+          "why": "区間を [0, b-a] に平行移動する置換で、対称性の等式は出ない。"
+        },
+        {
+          "text": "x = a sinθ とおく置換",
+          "why": "ルート型の三角置換。King Property とは無関係。"
+        },
+        {
+          "text": "t = e^x とおく置換",
+          "why": "指数が混ざった分数で使う置換。区間の対称性は生まれない。"
+        }
+      ],
+      "oneLine": "t = a+b-x とおく置換。区間の端が入れ替わるだけなので値が変わらない。",
+      "timeLimit": 18,
+      "grounding": "置換 t = a+b-x から導かれる等式"
+    }
+  ]
+}
