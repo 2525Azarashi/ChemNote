@@ -434,7 +434,7 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a7_1",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "① 周期表と元素の分類",
         "realTitle": "7章 非金属元素"
       },
@@ -464,7 +464,7 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "a7_6",
-        "problemCount": 0,
+        "problemCount": 4,
         "abstractTitle": "⑥ 炭素・ケイ素（14族）",
         "realTitle": "7章 非金属元素"
       },
@@ -1307,7 +1307,7 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
   },
   "chemistry": {
     "chapters": 66,
-    "questions": 72
+    "questions": 80
   },
   "english_listening": {
     "sections": 6,
