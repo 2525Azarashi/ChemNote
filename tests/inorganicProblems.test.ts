@@ -1180,3 +1180,172 @@ describe('無機化学 指導内容の因果関係と適用条件', () => {
     expect(sq!.gradingCriteria).toContain('希硫酸の水素イオンでは銅を酸化できないことを述べている');
   });
 });
+
+/**
+ * 演習に直接つながる復習解説（2026-09）。
+ *
+ * 単元共通の指導テンプレートが存在しても、小問を開いたときに必要な
+ * 「最初の着眼点・理由・誤答からの戻り方・再現の確認」があるとは限らない。
+ * 今回書き直した範囲だけを明示し、未改訂の問題まで完了扱いにしない。
+ * 配列は小問ID末尾の番号順で、各小問の解き直しチェック固有の着眼点を記録する。
+ * 一般的な長文を貼るだけでは合格せず、別小問との取り違えも検出する。
+ *
+ * 小問IDから直接bodyを引く。sharedを足すsliceForSqは検査に使わない。
+ * これにより「共通文が充実しただけで、小問専用の復習が空」を見逃さない。
+ * バトルの画面・ルーティング・問題ID・正解には変更を加えない。
+ */
+describe('既存演習に対応した小問別の復習解説', () => {
+  const REVIEWED: Record<string, string[]> = {
+    q_a7_3_ex3: [
+      'HF を別扱い', '自分の答案', '分子間と分子内を区別',
+      '「弱酸」と「濃度の低い酸」', '代わりの容器',
+    ],
+    q_a7_4_ex1: [
+      '名称の(V)', 'S と O の原子数', '酸素原子6個', '何に吸収',
+      '第2段階に係数2', 'Sの質量→Sのmol', '純硫酸の質量へ逆算',
+    ],
+    q_a7_4_ex2: [
+      '電子4個', 'AgBr を選べない', '自分の変化と相手への作用',
+      'H₂O が左辺に2個', '反応Aでは +4 → 0', '+4が中間→増減の両方向',
+    ],
+    q_a7_5_ex1: [
+      'NH₃からNO', '分数の係数', '無色のNO', 'N原子3個',
+      'NOの再利用', '二つのモル質量', 'g/molと%',
+    ],
+    q_a8_1_ex1: [
+      'Na原子数', '234 g → 4.00 mol', '1.10の最後の0',
+      '「回収」「再利用」', '液性とHCO₃⁻', '溶解度という語',
+    ],
+    q_a9_4_ex2: [
+      '電子の総量が両側で等しく', 'なぜ10.0 mLではなく12.0 mL',
+      'KMnO₄のmolを逆算', '余分に消費される物質',
+      '消費される物質の違い', '終点まで滴下量を読む',
+    ],
+  };
+  const headings = ['【最初の一手】', '【理由・途中式】', '【つまずき直し】', '【解き直しチェック】'];
+  const problemById = new Map(allProblems.map(({ problem }) => [problem.id, problem]));
+  const explanationOf = (id: string): string => {
+    const problem = problemById.get(id);
+    return String(problem?.explanationSupplement || problem?.explanation || '');
+  };
+  const ownBody = (html: string, id: string): string =>
+    sliceEnhancedBySubQuestion(html)?.subs.find((sub) => sub.id === id)?.body ?? '';
+  const plain = (html: string) => html.replace(/<[^>]*>/g, '');
+
+  function reviewErrors(html: string, id: string, focus: string): string[] {
+    const own = sliceEnhancedBySubQuestion(html)?.subs.filter((sub) => sub.id === id) ?? [];
+    if (own.length !== 1) return ['小問IDの対応が一意でない'];
+    // 最後の小問の末尾には出題傾向ボックスが付く。長さや着眼点の判定に混ぜない。
+    const text = plain(own[0].body).split('【ココが狙われる')[0];
+    const errors: string[] = [];
+    const positions = headings.map((heading) => text.indexOf(heading));
+    headings.forEach((heading, i) => {
+      if (text.split(heading).length - 1 !== 1) errors.push(`${heading}の欠落・重複`);
+      if (i > 0 && positions[i] <= positions[i - 1]) errors.push('復習項目の順序違い');
+    });
+    if (errors.length) return errors;
+    const parts = headings.map((heading, i) =>
+      text.slice(positions[i] + heading.length, positions[i + 1] ?? text.length).trim(),
+    );
+    // 見出しだけで合格させない。科学的な妥当性そのものは個別の検算と内容レビューで確認する。
+    parts.forEach((part, i) => {
+      if (part.replace(/\s/g, '').length < 20) errors.push(`${headings[i]}の本文不足`);
+    });
+    if (!parts[3].includes(focus)) errors.push('別小問の解き直しチェック');
+    return errors;
+  }
+
+  for (const [problemId, focuses] of Object.entries(REVIEWED)) {
+    it(`${problemId}：全小問に自分専用の復習4項目がある`, () => {
+      const problem = problemById.get(problemId);
+      expect(problem).toBeDefined();
+      expect(problem.subQuestions.map((sq: any) => sq.id)).toEqual(
+        focuses.map((_, index) => `${problemId}_${index + 1}`),
+      );
+      focuses.forEach((focus, index) => {
+        const id = `${problemId}_${index + 1}`;
+        expect(reviewErrors(explanationOf(problemId), id, focus), id).toEqual([]);
+      });
+    });
+  }
+
+  it('改訂済み37小問のチェック文は使い回しでなく、小問ごとに異なる', () => {
+    const checks: string[] = [];
+    for (const [problemId, focuses] of Object.entries(REVIEWED)) {
+      focuses.forEach((_, index) => {
+        const body = plain(ownBody(explanationOf(problemId), `${problemId}_${index + 1}`));
+        checks.push(body.split(headings[3])[1]?.split('【ココが狙われる')[0].trim() ?? '');
+      });
+    }
+    expect(checks).toHaveLength(37);
+    expect(new Set(checks).size).toBe(37);
+  });
+
+  it('ソルベー法の逆算は途中で丸めず、条件から計算した値を説明している', () => {
+    const body = plain(ownBody(explanationOf('q_a8_1_ex1'), 'q_a8_1_ex1_3'));
+    const expected = (1000 / (23 * 2 + 12 + 16 * 3)) * 2 * (23 + 35.5);
+    const intermediate = body.match(/= (\d+\.\d+)… g/);
+    expect(intermediate).not.toBeNull();
+    // 「…」は四捨五入値でなく小数展開の先頭。toBeCloseTo(3)だと
+    // 1103.773584…を1103.774に丸めた場合だけ通り、正しい省略表記を弾く。
+    // 許容誤差を広げず、記載された全桁が独立計算値の先頭と一致するかを見る。
+    expect(String(expected).startsWith(intermediate![1])).toBe(true);
+    expect(body).toContain('途中で丸めない');
+    expect(body).toContain('1.10 × 10³ g');
+    expect(Number(expected.toPrecision(3))).toBe(1100);
+  });
+
+  it('滴定の解説は元の試料体積で割り、答えから滴定量へ逆算できる', () => {
+    const body = plain(ownBody(explanationOf('q_a9_4_ex2'), 'q_a9_4_ex2_3'));
+    const permanganate = 0.0200 * (12.0 / 1000);
+    const oxalicAcid = permanganate * 5 / 2;
+    const concentration = oxalicAcid / (10.0 / 1000);
+    expect(concentration).toBeCloseTo(0.0600, 12);
+    expect(concentration * 0.0100 * 2 / 5 / 0.0200 * 1000).toBeCloseTo(12.0, 12);
+    expect(body).toContain('6.00 × 10⁻⁴ mol ÷ 0.0100 L = 0.0600 mol/L');
+    expect(body).toContain('0.0600 mol/L × 0.0100 L × 2/5 = 2.40 × 10⁻⁴ mol');
+    expect(body).toContain('元の試料10.0 mL');
+  });
+
+  it('酸の強弱・SO₂の役割・NOの再利用は、その小問の中だけでも理由が読める', () => {
+    const cases = [
+      ['q_a7_3_ex3', 3, ['水中での電離', 'H–F 結合', '水和']],
+      ['q_a7_4_ex2', 3, ['+4 → 0', '電子を受け取って還元され', '相手を酸化']],
+      ['q_a7_4_ex2', 5, ['+4 → +6', '電子を渡す', '還元剤']],
+      ['q_a7_5_ex1', 5, ['再酸化して再利用', 'n(NH₃) = n(HNO₃)', '一度の吸収工程']],
+    ] as const;
+    for (const [problemId, index, keywords] of cases) {
+      const body = plain(ownBody(explanationOf(problemId), `${problemId}_${index}`));
+      for (const keyword of keywords) expect(body, `${problemId}_${index}`).toContain(keyword);
+    }
+  });
+
+  it('変異検査：小問本文を共通解説へ移しても合格させない', () => {
+    const id = 'q_a9_4_ex2_2';
+    const source = explanationOf('q_a9_4_ex2');
+    const body = ownBody(source, id);
+    expect(body.length).toBeGreaterThan(0);
+    expect(source.split(body).length - 1).toBe(1);
+    const broken = source.replace(body, '').replace('<!--sqall-->', `<!--sqall-->${body}`);
+    expect(sliceEnhancedBySubQuestion(broken)!.shared).toContain('【解き直しチェック】');
+    expect(reviewErrors(broken, id, REVIEWED.q_a9_4_ex2[1])).not.toEqual([]);
+  });
+
+  it('変異検査：別小問の本文と交換すると、着眼点の取り違えを検出する', () => {
+    const source = explanationOf('q_a9_4_ex2');
+    const id = 'q_a9_4_ex2_2';
+    const body = ownBody(source, id);
+    const other = ownBody(source, 'q_a9_4_ex2_3');
+    const broken = source.replace(body, other);
+    expect(reviewErrors(broken, id, REVIEWED.q_a9_4_ex2[1])).toContain('別小問の解き直しチェック');
+  });
+
+  it('変異検査：誤答の理由を見出しごと消したら検出する', () => {
+    const id = 'q_a8_1_ex1_3';
+    const source = explanationOf('q_a8_1_ex1');
+    const body = ownBody(source, id);
+    const changed = body.replace(/<b>【つまずき直し】<\/b>[\s\S]*?(?=<b>【解き直しチェック】)/, '');
+    expect(changed).not.toBe(body);
+    expect(reviewErrors(source.replace(body, changed), id, REVIEWED.q_a8_1_ex1[2])).not.toEqual([]);
+  });
+});
