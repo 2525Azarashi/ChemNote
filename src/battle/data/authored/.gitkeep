@@ -1,0 +1,11 @@
+このディレクトリには、別の作業場が書いた手書き対戦問題の JSON が入る。
+
+★ここには見本を置かない★
+見本を常駐させると、作業場が同じ章を本気で書いたときに
+id が必ず重複して、正しい作業のほうが弾かれてしまう。
+見本は docs/battle-authoring/example.*.json にある。
+
+取り込み方（本体側）:
+  npm run import:authored -- <zipファイル> --dry-run
+  npm run import:authored -- <zipファイル>
+  npm run gen:battle-pool

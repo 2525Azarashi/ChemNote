@@ -1,0 +1,978 @@
+{
+  "subject": "chemistry_basic",
+  "chapterId": "c6_2",
+  "authoredBy": "room-cb-4",
+  "_comment": [
+    "room-cb-4 作成。6章② 半反応式と酸化還元反応式。",
+    "記述式（式を書く）小問24件を、完成した式を選ぶ形に改造。",
+    "誤答は解説の手順（電子数=酸化数の変化量／酸素はH2O・水素はH+／イオンを塩に戻す）から作成。"
+  ],
+  "questions": [
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_1:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_1"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 Cl2 ⟶ Cl− に e− を書き加えて完成させた半反応式はどれか。",
+      "label": "問1(1) Cl2 ⟶ Cl−",
+      "options": [
+        {
+          "text": "Cl2 + 2e− ⟶ 2Cl−",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。Cl は 0 から −1 へ、2原子分で電子2個を受け取る。"
+        },
+        {
+          "text": "Cl2 + e− ⟶ 2Cl−",
+          "why": "電荷が合わない（左 −1、右 −2）。電子の数は酸化数の変化量そのもので2個。"
+        },
+        {
+          "text": "Cl2 ⟶ 2Cl− + 2e−",
+          "why": "e− を右辺に書くのは還元剤の形。酸化剤は電子を受け取るので左辺に書く。"
+        },
+        {
+          "text": "Cl2 + 2H+ + 2e− ⟶ 2Cl−",
+          "why": "酸素を含まないので H2O も H+ も不要。H+ は水素を合わせるときだけ使う。"
+        }
+      ],
+      "oneLine": "Cl2 + 2e− ⟶ 2Cl−。0 から −1 が2原子分なので電子は2個。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_10:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_10"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 MnO4^− ⟶ Mn2+ を完成させた半反応式はどれか。",
+      "label": "問1(10) MnO4^− ⟶ Mn2+",
+      "options": [
+        {
+          "text": "MnO4^− + 8H+ + 5e− ⟶ Mn2+ + 4H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。Mn は +7 から +2 で5減るので e− は5個。"
+        },
+        {
+          "text": "MnO4^− + 4H+ + 2e− ⟶ Mn2+ + 2H2O",
+          "why": "4個と2個は MnO2 のときの数。MnO4− の Mn は +7 からなので電子は5個。"
+        },
+        {
+          "text": "MnO4^− + 8H+ + 8e− ⟶ Mn2+ + 4H2O",
+          "why": "電子の数は H+ の数ではなく酸化数の変化量で決まる。+7 から +2 で5個。"
+        },
+        {
+          "text": "MnO4^− + 8H+ + 5e− ⟶ Mn2+ + 8H2O",
+          "why": "酸素が合わない。左辺の O は4個なので H2O は4個でそろう。"
+        }
+      ],
+      "oneLine": "MnO4^− + 8H+ + 5e− ⟶ Mn2+ + 4H2O。Mn は +7 から +2 で電子5個。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_10:2",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_10"
+      },
+      "format": "choice4",
+      "prompt": "半反応式で書き加える電子 e− の数は、何によって決まるか。",
+      "label": "問1 電子の数の決め方",
+      "options": [
+        {
+          "text": "主役の原子の酸化数の変化量と同じ数になる",
+          "correct": true,
+          "why": "解説の手順①に「電子の数は酸化数の変化量そのもの」とある。"
+        },
+        {
+          "text": "書き加えた H+ の数と同じ数になる",
+          "why": "MnO4− では H+ が8個でも電子は5個。H+ の数とは一致しない。"
+        },
+        {
+          "text": "反応前の物質の係数と同じ数になる",
+          "why": "係数と電子数は無関係。酸化数の増減で決まる。"
+        },
+        {
+          "text": "酸化剤ならつねに2個と決まっている",
+          "why": "MnO2 は2個だが MnO4− は5個。物質ごとに変わる。"
+        }
+      ],
+      "oneLine": "電子の数は主役の原子の酸化数の変化量そのもの。ここが半反応式の出発点。",
+      "timeLimit": 17,
+      "grounding": "電子の数は酸化数の変化量そのもの"
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_11:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_11"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 Cr2O7^2− ⟶ Cr3+ を完成させた半反応式はどれか。",
+      "label": "問1(11) Cr2O7^2− ⟶ Cr3+",
+      "options": [
+        {
+          "text": "Cr2O7^2− + 14H+ + 6e− ⟶ 2Cr3+ + 7H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。Cr が2原子あり (+6 から +3)×2 で e− は6個。"
+        },
+        {
+          "text": "Cr2O7^2− + 14H+ + 3e− ⟶ 2Cr3+ + 7H2O",
+          "why": "1原子分の3個で止めている。Cr は2原子あるので電子は6個。"
+        },
+        {
+          "text": "Cr2O7^2− + 7H+ + 6e− ⟶ 2Cr3+ + 7H2O",
+          "why": "右辺の H は14個なので H+ も14個必要。H2O の数と混同している。"
+        },
+        {
+          "text": "Cr2O7^2− + 14H+ + 6e− ⟶ Cr3+ + 7H2O",
+          "why": "Cr の数が合わない。左辺に2個あるので右辺は 2Cr3+。"
+        }
+      ],
+      "oneLine": "Cr2O7^2− + 14H+ + 6e− ⟶ 2Cr3+ + 7H2O。Cr が2原子なので電子は6個。",
+      "timeLimit": 21
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_2:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_2"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 O2 ⟶ H2O に e−、H+、H2O を書き加えて完成させた半反応式はどれか。",
+      "label": "問1(2) O2 ⟶ H2O",
+      "options": [
+        {
+          "text": "O2 + 4H+ + 4e− ⟶ 2H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。右辺の H が4個なので H+ は4個、電荷から e− も4個。"
+        },
+        {
+          "text": "O2 + 2H+ + 2e− ⟶ 2H2O",
+          "why": "水素が合わない。右辺 2H2O の H は4個なので H+ は4個必要。"
+        },
+        {
+          "text": "O2 + 4H+ + 2e− ⟶ 2H2O",
+          "why": "電荷が合わない（左 +2、右 0）。e− は4個必要。"
+        },
+        {
+          "text": "O2 + 2H2O + 4e− ⟶ 4H+",
+          "why": "手順②は酸素を H2O、水素を H+ で合わせる。置く辺が逆になっている。"
+        }
+      ],
+      "oneLine": "O2 + 4H+ + 4e− ⟶ 2H2O。H を H+ で合わせ、電荷から e− を4個置く。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_3:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_3"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 O3 ⟶ O2 + H2O を完成させた半反応式はどれか。",
+      "label": "問1(3) O3 ⟶ O2 + H2O",
+      "options": [
+        {
+          "text": "O3 + 2H+ + 2e− ⟶ O2 + H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。右辺の H は2個なので H+ は2個、e− も2個。"
+        },
+        {
+          "text": "O3 + 2H+ + 2e− ⟶ O2 + 2H2O",
+          "why": "酸素が合わない（左3個、右4個）。H2O は1個でそろう。"
+        },
+        {
+          "text": "O3 + 4H+ + 4e− ⟶ O2 + H2O",
+          "why": "右辺の H は2個だけなので H+ は2個、電子も2個。"
+        },
+        {
+          "text": "O3 ⟶ O2 + H2O + 2e−",
+          "why": "e− を右辺に書くのは還元剤の形。O3 は酸化剤で電子を受け取る。"
+        }
+      ],
+      "oneLine": "O3 + 2H+ + 2e− ⟶ O2 + H2O。酸素は3個でそろえ、H+ と e− は2個ずつ。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_4:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_4"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 H2O2 ⟶ H2O を完成させた半反応式はどれか。",
+      "label": "問1(4) H2O2 ⟶ H2O",
+      "options": [
+        {
+          "text": "H2O2 + 2H+ + 2e− ⟶ 2H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。右辺の H は4個で左辺に2個あるので H+ は2個。"
+        },
+        {
+          "text": "H2O2 + 2e− ⟶ 2H2O",
+          "why": "水素が合わない。右辺の H は4個なので H+ を2個足す必要がある。"
+        },
+        {
+          "text": "H2O2 ⟶ O2 + 2H+ + 2e−",
+          "why": "これは H2O2 が還元剤として働くときの式。ここでは酸化剤の形を作る。"
+        },
+        {
+          "text": "H2O2 + 4H+ + 4e− ⟶ 2H2O",
+          "why": "左辺の H2O2 に H が2個あるので、足す H+ は2個で足りる。"
+        }
+      ],
+      "oneLine": "H2O2 + 2H+ + 2e− ⟶ 2H2O。O が −1 から −2 になり、電子は2個。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_5:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_5"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 SO2 ⟶ S を完成させた半反応式はどれか。",
+      "label": "問1(5) SO2 ⟶ S",
+      "options": [
+        {
+          "text": "SO2 + 4H+ + 4e− ⟶ S + 2H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。S は +4 から 0 で4減るので e− は4個。"
+        },
+        {
+          "text": "SO2 + 2H+ + 2e− ⟶ S + H2O",
+          "why": "酸素が合わない。左辺の O は2個なので H2O は2個必要。"
+        },
+        {
+          "text": "SO2 + 4H+ + 2e− ⟶ S + 2H2O",
+          "why": "電子の数は酸化数の変化量そのもの。+4 から 0 なので4個。"
+        },
+        {
+          "text": "SO2 + 4H+ + 4e− ⟶ S + 4H2O",
+          "why": "酸素が合わない。左辺の O は2個なので H2O は2個でそろう。"
+        }
+      ],
+      "oneLine": "SO2 + 4H+ + 4e− ⟶ S + 2H2O。S が +4 から 0 なので電子は4個。",
+      "timeLimit": 19
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_5:2",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_5"
+      },
+      "format": "choice4",
+      "prompt": "半反応式で酸素と水素の数を合わせる正しい進め方はどれか。",
+      "label": "問1 酸素と水素の合わせ方",
+      "options": [
+        {
+          "text": "酸素を H2O で合わせ、それによって生じた水素を H+ で合わせる",
+          "correct": true,
+          "why": "解説の手順②のとおり。「この順番を守れば必ず合う」と書かれている。"
+        },
+        {
+          "text": "水素を H+ で先に合わせ、あとから酸素を H2O で合わせる",
+          "why": "先に H+ を置くと H2O を足したときに水素がずれる。順番が逆。"
+        },
+        {
+          "text": "酸素も水素もすべて H2O だけで合わせる",
+          "why": "H2O だけでは水素の数を独立に調整できない。H+ が必要。"
+        },
+        {
+          "text": "H2O も H+ も使わず、e− の数だけで合わせる",
+          "why": "e− は電荷を合わせるためのもの。原子の数は合わせられない。"
+        }
+      ],
+      "oneLine": "まず酸素を H2O で、次に水素を H+ で合わせる。この順番を守れば必ず合う。",
+      "timeLimit": 18,
+      "grounding": "この順番を守れば必ず合う"
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_6:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_6"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 H2SO4(熱濃) ⟶ SO2 を完成させた半反応式はどれか。",
+      "label": "問1(6) H2SO4 ⟶ SO2",
+      "options": [
+        {
+          "text": "H2SO4 + 2H+ + 2e− ⟶ SO2 + 2H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。S は +6 から +4 で2減るので e− は2個。"
+        },
+        {
+          "text": "H2SO4 + 2e− ⟶ SO2 + 2H2O",
+          "why": "水素が合わない。右辺の H は4個で左辺は2個なので H+ を2個足す。"
+        },
+        {
+          "text": "H2SO4 + 4H+ + 4e− ⟶ SO2 + 2H2O",
+          "why": "S の減少分は2だけなので e− は2個。電荷も合わなくなる。"
+        },
+        {
+          "text": "H2SO4 + 2H+ + 2e− ⟶ SO2 + H2O",
+          "why": "酸素が合わない。左辺の O は4個なので H2O は2個必要。"
+        }
+      ],
+      "oneLine": "H2SO4 + 2H+ + 2e− ⟶ SO2 + 2H2O。S は +6 から +4 なので電子は2個。",
+      "timeLimit": 19
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_7:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_7"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 HNO3(希) ⟶ NO を完成させた半反応式はどれか。",
+      "label": "問1(7) 希硝酸 ⟶ NO",
+      "options": [
+        {
+          "text": "HNO3 + 3H+ + 3e− ⟶ NO + 2H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。N は +5 から +2 で3減るので e− は3個。"
+        },
+        {
+          "text": "HNO3 + H+ + e− ⟶ NO + 2H2O",
+          "why": "電子1個は濃硝酸が NO2 になるときの数。NO なら +5 から +2 で3個。"
+        },
+        {
+          "text": "HNO3 + 3H+ + 3e− ⟶ NO + H2O",
+          "why": "酸素が合わない。左辺の O は3個、NO に1個あるので H2O は2個。"
+        },
+        {
+          "text": "HNO3 + 4H+ + 3e− ⟶ NO + 2H2O",
+          "why": "左辺の HNO3 に H が1個あるので、足す H+ は3個で足りる。"
+        }
+      ],
+      "oneLine": "HNO3 + 3H+ + 3e− ⟶ NO + 2H2O。希硝酸は N が +5 から +2 で電子3個。",
+      "timeLimit": 19
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_8:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_8"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 HNO3(濃) ⟶ NO2 を完成させた半反応式はどれか。",
+      "label": "問1(8) 濃硝酸 ⟶ NO2",
+      "options": [
+        {
+          "text": "HNO3 + H+ + e− ⟶ NO2 + H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。N は +5 から +4 で1減るだけなので e− は1個。"
+        },
+        {
+          "text": "HNO3 + 3H+ + 3e− ⟶ NO2 + H2O",
+          "why": "電子3個は希硝酸が NO になるときの数。NO2 なら1個。"
+        },
+        {
+          "text": "HNO3 + H+ + e− ⟶ NO2 + 2H2O",
+          "why": "酸素が合わない。左辺の O は3個、NO2 に2個あるので H2O は1個。"
+        },
+        {
+          "text": "HNO3 + 2H+ + 2e− ⟶ NO2 + H2O",
+          "why": "右辺の H は2個で左辺 HNO3 に1個あるので、足す H+ は1個。"
+        }
+      ],
+      "oneLine": "HNO3 + H+ + e− ⟶ NO2 + H2O。濃硝酸は N が +5 から +4 で電子1個。",
+      "timeLimit": 19
+    },
+    {
+      "id": "a:c6_2:p_c6_2_1:p_c6_2_1_9:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_1",
+        "subQuestionId": "p_c6_2_1_9"
+      },
+      "format": "choice4",
+      "prompt": "酸化剤 MnO2 ⟶ Mn2+ を完成させた半反応式はどれか。",
+      "label": "問1(9) MnO2 ⟶ Mn2+",
+      "options": [
+        {
+          "text": "MnO2 + 4H+ + 2e− ⟶ Mn2+ + 2H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。Mn は +4 から +2 で2減るので e− は2個。"
+        },
+        {
+          "text": "MnO2 + 8H+ + 5e− ⟶ Mn2+ + 4H2O",
+          "why": "8個と5個は MnO4− のときの数。MnO2 の Mn は +4 からなので電子は2個。"
+        },
+        {
+          "text": "MnO2 + 2H+ + 2e− ⟶ Mn2+ + H2O",
+          "why": "酸素が合わない。左辺の O は2個なので H2O は2個、H+ は4個。"
+        },
+        {
+          "text": "MnO2 + 4H+ + 4e− ⟶ Mn2+ + 2H2O",
+          "why": "電荷が合わない（左 0、右 +2）。Mn の減少分は2なので e− は2個。"
+        }
+      ],
+      "oneLine": "MnO2 + 4H+ + 2e− ⟶ Mn2+ + 2H2O。Mn は +4 から +2 で電子2個。",
+      "timeLimit": 19
+    },
+    {
+      "id": "a:c6_2:p_c6_2_2:p_c6_2_2_1:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_2",
+        "subQuestionId": "p_c6_2_2_1"
+      },
+      "format": "choice4",
+      "prompt": "還元剤 Na ⟶ Na+ に e− を書き加えて完成させた半反応式はどれか。",
+      "label": "問2(1) Na ⟶ Na+",
+      "options": [
+        {
+          "text": "Na ⟶ Na+ + e−",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。Na は 0 から +1 で1増えるので e− は1個。"
+        },
+        {
+          "text": "Na + e− ⟶ Na+",
+          "why": "e− を左辺に書くのは酸化剤の形。還元剤は電子を放出するので右辺。"
+        },
+        {
+          "text": "Na ⟶ Na+ + 2e−",
+          "why": "電荷が合わない。Na は 0 から +1 なので放出する電子は1個。"
+        },
+        {
+          "text": "Na ⟶ Na2+ + 2e−",
+          "why": "ナトリウムは1価の陽イオンになる。Na2+ にはならない。"
+        }
+      ],
+      "oneLine": "Na ⟶ Na+ + e−。還元剤なので e− は右辺、変化量は1なので1個。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:c6_2:p_c6_2_2:p_c6_2_2_1:2",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_2",
+        "subQuestionId": "p_c6_2_2_1"
+      },
+      "format": "choice4",
+      "prompt": "還元剤の半反応式では、電子 e− を式のどこに書くか。",
+      "label": "問2 e− を書く位置",
+      "options": [
+        {
+          "text": "矢印の右側（生成物側）に書く",
+          "correct": true,
+          "why": "解説に「還元剤は電子 e− を「放出する」側なので、e− は矢印の右側（生成物側）に書きます」とある。"
+        },
+        {
+          "text": "矢印の左側（反応物側）に書く",
+          "why": "左側に書くのは電子を受け取る酸化剤の形。還元剤は放出する側。"
+        },
+        {
+          "text": "両辺に同じ数だけ書く",
+          "why": "両辺に置くと打ち消し合って意味がなくなる。放出側の1か所に書く。"
+        },
+        {
+          "text": "還元剤の半反応式には e− を書かない",
+          "why": "電子の放出を表すのが半反応式なので、e− は必ず書く。"
+        }
+      ],
+      "oneLine": "還元剤は電子を放出する側なので、e− は矢印の右側（生成物側）に書く。",
+      "timeLimit": 16,
+      "grounding": "e− は矢印の右側（生成物側）に書きます"
+    },
+    {
+      "id": "a:c6_2:p_c6_2_2:p_c6_2_2_2:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_2",
+        "subQuestionId": "p_c6_2_2_2"
+      },
+      "format": "choice4",
+      "prompt": "還元剤 Fe2+ ⟶ Fe3+ を完成させた半反応式はどれか。",
+      "label": "問2(2) Fe2+ ⟶ Fe3+",
+      "options": [
+        {
+          "text": "Fe2+ ⟶ Fe3+ + e−",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。+2 から +3 で1増えるので e− は1個で右辺。"
+        },
+        {
+          "text": "Fe2+ + e− ⟶ Fe3+",
+          "why": "e− を左辺に置くと電子を受け取る側になる。Fe2+ は放出する側。"
+        },
+        {
+          "text": "Fe2+ ⟶ Fe3+ + 2e−",
+          "why": "変化量は1だけなので e− は1個。電荷も合わなくなる。"
+        },
+        {
+          "text": "Fe3+ ⟶ Fe2+ + e−",
+          "why": "向きが逆で、酸化数が減っている。ここは Fe2+ が酸化される向き。"
+        }
+      ],
+      "oneLine": "Fe2+ ⟶ Fe3+ + e−。+2 から +3 なので放出する電子は1個。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:c6_2:p_c6_2_2:p_c6_2_2_3:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_2",
+        "subQuestionId": "p_c6_2_2_3"
+      },
+      "format": "choice4",
+      "prompt": "還元剤 I− ⟶ I2 を完成させた半反応式はどれか。",
+      "label": "問2(3) I− ⟶ I2",
+      "options": [
+        {
+          "text": "2I− ⟶ I2 + 2e−",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。I2 には I が2個必要なので左辺は 2I−、電子も2個。"
+        },
+        {
+          "text": "I− ⟶ I2 + e−",
+          "why": "ヨウ素の数が合わない。I2 を作るには I− が2個必要。"
+        },
+        {
+          "text": "2I− + 2e− ⟶ I2",
+          "why": "e− を左辺に書くのは酸化剤の形。I− は還元剤なので右辺に書く。"
+        },
+        {
+          "text": "I2 + 2e− ⟶ 2I−",
+          "why": "ヨウ素が酸化剤として働く向き。ここは I− が酸化される向き。"
+        }
+      ],
+      "oneLine": "2I− ⟶ I2 + 2e−。まず原子の数を合わせ、次に電荷から電子を2個置く。",
+      "timeLimit": 17
+    },
+    {
+      "id": "a:c6_2:p_c6_2_2:p_c6_2_2_4:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_2",
+        "subQuestionId": "p_c6_2_2_4"
+      },
+      "format": "choice4",
+      "prompt": "還元剤 H2S ⟶ S を完成させた半反応式はどれか。",
+      "label": "問2(4) H2S ⟶ S",
+      "options": [
+        {
+          "text": "H2S ⟶ S + 2H+ + 2e−",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。H は2個なので 2H+、S は −2 から 0 で e− は2個。"
+        },
+        {
+          "text": "H2S + 2H+ + 2e− ⟶ S",
+          "why": "還元剤では H+ と e− は生成物側に出る。左辺に置くと酸化剤の形。"
+        },
+        {
+          "text": "H2S ⟶ S + H+ + e−",
+          "why": "H2S の H は2個なので H+ は2個、電荷を合わせる e− も2個。"
+        },
+        {
+          "text": "H2S ⟶ S + 2H+ + 4e−",
+          "why": "電荷が合わない。S は −2 から 0 で2増えるので e− は2個。"
+        }
+      ],
+      "oneLine": "H2S ⟶ S + 2H+ + 2e−。S が −2 から 0 になり、電子2個を放出する。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:c6_2:p_c6_2_2:p_c6_2_2_5:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_2",
+        "subQuestionId": "p_c6_2_2_5"
+      },
+      "format": "choice4",
+      "prompt": "還元剤 H2 ⟶ H+ を完成させた半反応式はどれか。",
+      "label": "問2(5) H2 ⟶ H+",
+      "options": [
+        {
+          "text": "H2 ⟶ 2H+ + 2e−",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。H2 の H は2個なので 2H+、電子も2個。"
+        },
+        {
+          "text": "H2 + 2e− ⟶ 2H+",
+          "why": "還元剤は電子を放出するので e− は右辺に書く。"
+        },
+        {
+          "text": "H2 ⟶ H+ + e−",
+          "why": "水素の数が合わない。H2 には H が2個あるので 2H+。"
+        },
+        {
+          "text": "2H+ + 2e− ⟶ H2",
+          "why": "水素イオンが還元される向き。ここは H2 が酸化される向き。"
+        }
+      ],
+      "oneLine": "H2 ⟶ 2H+ + 2e−。H が2個なので H+ も電子も2個ずつ。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:c6_2:p_c6_2_2:p_c6_2_2_6:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_2",
+        "subQuestionId": "p_c6_2_2_6"
+      },
+      "format": "choice4",
+      "prompt": "還元剤 H2O2 ⟶ O2 を完成させた半反応式はどれか。",
+      "label": "問2(6) H2O2 ⟶ O2",
+      "options": [
+        {
+          "text": "H2O2 ⟶ O2 + 2H+ + 2e−",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。O は −1 から 0 で2原子分、電子は2個で右辺。"
+        },
+        {
+          "text": "H2O2 + 2H+ + 2e− ⟶ 2H2O",
+          "why": "これは H2O2 が酸化剤として働くときの式。ここでは還元剤の形。"
+        },
+        {
+          "text": "H2O2 ⟶ O2 + 2H+ + 4e−",
+          "why": "電荷が合わない。O の増加分は2原子分で合計2なので e− は2個。"
+        },
+        {
+          "text": "H2O2 ⟶ O2 + H+ + e−",
+          "why": "H2O2 の H は2個なので 2H+、電子も2個必要。"
+        }
+      ],
+      "oneLine": "H2O2 ⟶ O2 + 2H+ + 2e−。O が −1 から 0 になり、電子2個を放出する。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:c6_2:p_c6_2_2:p_c6_2_2_6:2",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_2",
+        "subQuestionId": "p_c6_2_2_6"
+      },
+      "format": "choice4",
+      "prompt": "相手によって酸化剤にも還元剤にもなる代表的な物質の組はどれか。",
+      "label": "問2 二役になる物質",
+      "options": [
+        {
+          "text": "H2O2 と SO2",
+          "correct": true,
+          "why": "解説に「H2O2 と SO2 は相手によって酸化剤にも還元剤にもなる代表的な物質です」とある。"
+        },
+        {
+          "text": "Na と H2",
+          "why": "どちらも電子を放出するだけで、還元剤にしかならない。"
+        },
+        {
+          "text": "KMnO4 と K2Cr2O7",
+          "why": "どちらも強い酸化剤として働く物質で、還元剤にはならない。"
+        },
+        {
+          "text": "I− と Fe2+",
+          "why": "どちらも電子を放出する還元剤側の物質。"
+        }
+      ],
+      "oneLine": "H2O2 と SO2 は相手次第で酸化剤にも還元剤にもなる代表的な物質。",
+      "timeLimit": 17,
+      "grounding": "相手によって酸化剤にも還元剤にもなる代表的な物質"
+    },
+    {
+      "id": "a:c6_2:p_c6_2_2:p_c6_2_2_7:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_2",
+        "subQuestionId": "p_c6_2_2_7"
+      },
+      "format": "choice4",
+      "prompt": "還元剤 SO2 ⟶ SO4^2− を完成させた半反応式はどれか。",
+      "label": "問2(7) SO2 ⟶ SO4^2−",
+      "options": [
+        {
+          "text": "SO2 + 2H2O ⟶ SO4^2− + 4H+ + 2e−",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。酸素を H2O で合わせてから H+ と e− を置く。"
+        },
+        {
+          "text": "SO2 + 2H2O ⟶ SO4^2− + 4H+ + 4e−",
+          "why": "S は +4 から +6 で2増えるだけなので e− は2個。"
+        },
+        {
+          "text": "SO2 + H2O ⟶ SO4^2− + 2H+ + 2e−",
+          "why": "酸素が合わない。右辺の O は4個なので H2O は2個必要。"
+        },
+        {
+          "text": "SO4^2− + 4H+ + 2e− ⟶ SO2 + 2H2O",
+          "why": "向きが逆で電子を受け取る形。ここは SO2 が酸化される還元剤の形。"
+        }
+      ],
+      "oneLine": "SO2 + 2H2O ⟶ SO4^2− + 4H+ + 2e−。S は +4 から +6 で電子2個。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:c6_2:p_c6_2_2:p_c6_2_2_8:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_2",
+        "subQuestionId": "p_c6_2_2_8"
+      },
+      "format": "choice4",
+      "prompt": "還元剤 H2C2O4 ⟶ CO2 を完成させた半反応式はどれか。",
+      "label": "問2(8) シュウ酸 ⟶ CO2",
+      "options": [
+        {
+          "text": "H2C2O4 ⟶ 2CO2 + 2H+ + 2e−",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。C が2個なので 2CO2、H が2個なので 2H+、電子2個。"
+        },
+        {
+          "text": "H2C2O4 ⟶ CO2 + 2H+ + 2e−",
+          "why": "炭素の数が合わない。左辺に C が2個あるので 2CO2。"
+        },
+        {
+          "text": "H2C2O4 ⟶ 2CO2 + 2H+ + 4e−",
+          "why": "電荷が合わない。C が2原子で合計2増えるので e− は2個。"
+        },
+        {
+          "text": "H2C2O4 + 2H+ + 2e− ⟶ 2CO2",
+          "why": "還元剤なので H+ と e− は生成物側に書く。"
+        }
+      ],
+      "oneLine": "H2C2O4 ⟶ 2CO2 + 2H+ + 2e−。C を2個ぶんそろえ、電子は2個を放出。",
+      "timeLimit": 19
+    },
+    {
+      "id": "a:c6_2:p_c6_2_3:p_c6_2_3_1:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_3",
+        "subQuestionId": "p_c6_2_3_1"
+      },
+      "format": "choice4",
+      "prompt": "希硝酸 HNO3 と硫酸鉄(II) FeSO4 の反応（硫酸酸性）の化学反応式はどれか。",
+      "label": "問3(1) 希硝酸と硫酸鉄(II)",
+      "options": [
+        {
+          "text": "2HNO3 + 6FeSO4 + 3H2SO4 ⟶ 2NO + 4H2O + 3Fe2(SO4)3",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。3e− と 1e− をそろえ、Fe2(SO4)3 を作るため全体を2倍する。"
+        },
+        {
+          "text": "HNO3 + 3FeSO4 + H2SO4 ⟶ NO + 2H2O + Fe2(SO4)3",
+          "why": "Fe2(SO4)3 は Fe が2個必要。電子をそろえたあとの2倍を忘れている。"
+        },
+        {
+          "text": "2HNO3 + 6FeSO4 ⟶ 2NO + 4H2O + 3Fe2(SO4)3",
+          "why": "硫酸酸性なので H+ を供給する H2SO4 を左辺に書く必要がある。"
+        },
+        {
+          "text": "2HNO3 + 6Fe2+ + 6H+ ⟶ 2NO + 4H2O + 6Fe3+",
+          "why": "イオン反応式のまま。省略したイオンを戻して塩の形にする。"
+        }
+      ],
+      "oneLine": "2HNO3 + 6FeSO4 + 3H2SO4 ⟶ 2NO + 4H2O + 3Fe2(SO4)3 が答え。",
+      "timeLimit": 24
+    },
+    {
+      "id": "a:c6_2:p_c6_2_3:p_c6_2_3_1:2",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_3",
+        "subQuestionId": "p_c6_2_3_1"
+      },
+      "format": "choice4",
+      "prompt": "2本の半反応式を足し合わせて1本にまとめるとき、まず行うことはどれか。",
+      "label": "問3 半反応式の足し合わせ",
+      "options": [
+        {
+          "text": "授受される電子の数が等しくなるように整数倍する",
+          "correct": true,
+          "why": "解説に「授受される電子の数が等しくなるように整数倍して足し合わせ」とある。"
+        },
+        {
+          "text": "両辺の H2O の数が等しくなるように整数倍する",
+          "why": "そろえるのは電子の数。H2O は結果として決まる。"
+        },
+        {
+          "text": "係数がすべて偶数になるように整数倍する",
+          "why": "偶数にする必要はない。基準は電子の数。"
+        },
+        {
+          "text": "左辺の物質の数が右辺と同じになるように整数倍する",
+          "why": "物質の個数をそろえる決まりはない。電子の数をそろえる。"
+        }
+      ],
+      "oneLine": "まず電子の数が等しくなるよう整数倍し、それから足し合わせて e− を消す。",
+      "timeLimit": 19,
+      "grounding": "授受される電子の数が等しくなるように整数倍して足し合わせ"
+    },
+    {
+      "id": "a:c6_2:p_c6_2_3:p_c6_2_3_2:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_3",
+        "subQuestionId": "p_c6_2_3_2"
+      },
+      "format": "choice4",
+      "prompt": "過酸化水素 H2O2 とヨウ化カリウム KI の反応（硫酸酸性）の化学反応式はどれか。",
+      "label": "問3(2) 過酸化水素とヨウ化カリウム",
+      "options": [
+        {
+          "text": "H2O2 + 2KI + H2SO4 ⟶ 2H2O + I2 + K2SO4",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。どちらも 2e− なので1:1で足し、K+ を K2SO4 として戻す。"
+        },
+        {
+          "text": "H2O2 + 2KI ⟶ 2H2O + I2",
+          "why": "硫酸酸性の H2SO4 と、K+ の相手になる K2SO4 が抜けている。"
+        },
+        {
+          "text": "H2O2 + 2H+ + 2I− ⟶ 2H2O + I2",
+          "why": "イオン反応式のまま。K+ と SO4^2− を戻して化学反応式にする。"
+        },
+        {
+          "text": "H2O2 + KI + H2SO4 ⟶ 2H2O + I2 + K2SO4",
+          "why": "I2 を作るには I− が2個必要なので KI の係数は2。"
+        }
+      ],
+      "oneLine": "H2O2 + 2KI + H2SO4 ⟶ 2H2O + I2 + K2SO4。電子はどちらも2個で1:1。",
+      "timeLimit": 23
+    },
+    {
+      "id": "a:c6_2:p_c6_2_3:p_c6_2_3_2:2",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_3",
+        "subQuestionId": "p_c6_2_3_2"
+      },
+      "format": "choice4",
+      "prompt": "イオン反応式を化学反応式に仕上げるために、最後に行うことはどれか。",
+      "label": "問3 化学反応式への仕上げ",
+      "options": [
+        {
+          "text": "必要なイオンを両辺に加えて塩の形に戻す",
+          "correct": true,
+          "why": "解説に「必要なイオン（K+ や SO4^2− など）を両辺に加えて化学反応式を完成させる」とある。"
+        },
+        {
+          "text": "両辺の H2O をすべて消す",
+          "why": "H2O は生成物として残る。消してしまうと原子の数が合わなくなる。"
+        },
+        {
+          "text": "両辺に e− を加えて電荷をそろえる",
+          "why": "e− は足し合わせた時点で消えている。加え直す必要はない。"
+        },
+        {
+          "text": "係数を最も大きい数にそろえる",
+          "why": "係数は最も簡単な整数比にする。大きさをそろえる決まりはない。"
+        }
+      ],
+      "oneLine": "省略していた K+ や SO4^2− を両辺に戻し、塩の形の化学反応式に仕上げる。",
+      "timeLimit": 19,
+      "grounding": "必要なイオン（K+ や SO4^2− など）を両辺に加えて化学反応式を完成させる"
+    },
+    {
+      "id": "a:c6_2:p_c6_2_3:p_c6_2_3_3:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_3",
+        "subQuestionId": "p_c6_2_3_3"
+      },
+      "format": "choice4",
+      "prompt": "二クロム酸カリウム K2Cr2O7 と硫化水素 H2S の反応（硫酸酸性）の化学反応式はどれか。",
+      "label": "問3(3) 二クロム酸カリウムと硫化水素",
+      "options": [
+        {
+          "text": "K2Cr2O7 + 3H2S + 4H2SO4 ⟶ Cr2(SO4)3 + 3S + 7H2O + K2SO4",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。6e− と 2e− をそろえるので H2S は3倍必要。"
+        },
+        {
+          "text": "K2Cr2O7 + H2S + 4H2SO4 ⟶ Cr2(SO4)3 + S + 7H2O + K2SO4",
+          "why": "電子をそろえていない。6e− に合わせるので H2S は3個。"
+        },
+        {
+          "text": "K2Cr2O7 + 3H2S + H2SO4 ⟶ Cr2(SO4)3 + 3S + 7H2O + K2SO4",
+          "why": "Cr2(SO4)3 と K2SO4 に必要な SO4^2− の数から H2SO4 は4個。"
+        },
+        {
+          "text": "Cr2O7^2− + 3H2S + 8H+ ⟶ 2Cr3+ + 3S + 7H2O",
+          "why": "イオン反応式のまま。K+ と SO4^2− を戻して塩の形にする。"
+        }
+      ],
+      "oneLine": "K2Cr2O7 + 3H2S + 4H2SO4 ⟶ Cr2(SO4)3 + 3S + 7H2O + K2SO4 が答え。",
+      "timeLimit": 25
+    },
+    {
+      "id": "a:c6_2:p_c6_2_3:p_c6_2_3_4:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_3",
+        "subQuestionId": "p_c6_2_3_4"
+      },
+      "format": "choice4",
+      "prompt": "過マンガン酸カリウム KMnO4 とシュウ酸 H2C2O4 の反応（硫酸酸性）の化学反応式はどれか。",
+      "label": "問3(4) 過マンガン酸カリウムとシュウ酸",
+      "options": [
+        {
+          "text": "2KMnO4 + 5H2C2O4 + 3H2SO4 ⟶ 2MnSO4 + 10CO2 + 8H2O + K2SO4",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。5e− と 2e− を10にそろえるので2:5になる。"
+        },
+        {
+          "text": "KMnO4 + 5H2C2O4 + 3H2SO4 ⟶ MnSO4 + 10CO2 + 8H2O + K2SO4",
+          "why": "K2SO4 には K が2個必要なので KMnO4 は2個。"
+        },
+        {
+          "text": "2KMnO4 + 2H2C2O4 + 3H2SO4 ⟶ 2MnSO4 + 4CO2 + 8H2O + K2SO4",
+          "why": "電子を10個にそろえるので H2C2O4 は5個必要。"
+        },
+        {
+          "text": "2MnO4^− + 5H2C2O4 + 6H+ ⟶ 2Mn2+ + 10CO2 + 8H2O",
+          "why": "イオン反応式のまま。K+ と SO4^2− を戻して化学反応式にする。"
+        }
+      ],
+      "oneLine": "2KMnO4 + 5H2C2O4 + 3H2SO4 ⟶ 2MnSO4 + 10CO2 + 8H2O + K2SO4 が答え。",
+      "timeLimit": 26
+    },
+    {
+      "id": "a:c6_2:p_c6_2_3:p_c6_2_3_5:1",
+      "source": {
+        "chapterId": "c6_2",
+        "problemId": "p_c6_2_3",
+        "subQuestionId": "p_c6_2_3_5"
+      },
+      "format": "choice4",
+      "prompt": "濃硝酸 HNO3 と銅 Cu の反応の化学反応式はどれか。",
+      "label": "問3(5) 濃硝酸と銅",
+      "options": [
+        {
+          "text": "Cu + 4HNO3 ⟶ Cu(NO3)2 + 2NO2 + 2H2O",
+          "correct": true,
+          "why": "解説の【解答例】がこの式。酸化剤として働く2個と塩になる2個で HNO3 は4個。"
+        },
+        {
+          "text": "Cu + 2HNO3 ⟶ Cu(NO3)2 + 2NO2 + 2H2O",
+          "why": "Cu(NO3)2 になる分の硝酸が足りない。合わせて4個必要。"
+        },
+        {
+          "text": "Cu + 4HNO3 ⟶ Cu(NO3)2 + 2NO + 2H2O",
+          "why": "濃硝酸から発生する気体は NO2。NO になるのは希硝酸。"
+        },
+        {
+          "text": "Cu + 2H+ + 2HNO3 ⟶ Cu2+ + 2NO2 + 2H2O",
+          "why": "イオンのまま。硝酸イオンを戻して Cu(NO3)2 の形にする。"
+        }
+      ],
+      "oneLine": "Cu + 4HNO3 ⟶ Cu(NO3)2 + 2NO2 + 2H2O。濃硝酸なので気体は NO2。",
+      "timeLimit": 23
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+{
+  "subject": "math",
+  "chapterId": "mv_4",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:mv_4:q_mv_4_cross:q_mv_4_cross_1:1",
+      "source": {
+        "chapterId": "mv_4",
+        "problemId": "q_mv_4_cross",
+        "subQuestionId": "q_mv_4_cross_1"
+      },
+      "format": "choice4",
+      "prompt": "三角形 OAB で OA を 2:1 に内分する M、OB の中点 N、AN と BM の交点 P。AP:PN はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1:1",
+          "correct": true,
+          "why": "AP:PN = t:(1-t) とおいて係数比較すると t = 1/2。よって 1:1。"
+        },
+        {
+          "text": "比を 2:1 とした値",
+          "why": "M の内分比をそのまま流用した形。交点の比は係数比較で決める。"
+        },
+        {
+          "text": "比を 3:1 とした値",
+          "why": "こちらは BP:PM の比。問われているのは AP:PN。"
+        },
+        {
+          "text": "比を 1:2 とした値",
+          "why": "t = 1/3 に対応する形。係数比較の結果は t = 1/2。"
+        }
+      ],
+      "oneLine": "1:1。係数比較から t = 1/2 が出るので AP:PN = 1:1。",
+      "timeLimit": 24
+    },
+    {
+      "id": "a:mv_4:q_mv_4_cross:q_mv_4_cross_2:1",
+      "source": {
+        "chapterId": "mv_4",
+        "problemId": "q_mv_4_cross",
+        "subQuestionId": "q_mv_4_cross_2"
+      },
+      "format": "choice4",
+      "prompt": "同じ設定で、交点 P の位置ベクトル OP を a、b で表すとどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(2a + b)/4",
+          "correct": true,
+          "why": "t = 1/2 より OP = (1/2)a + (1/4)b = (2a + b)/4。"
+        },
+        {
+          "text": "係数を逆にした (a + 2b)/4",
+          "why": "a の係数が 1/2、b の係数が 1/4。逆に付けた形。"
+        },
+        {
+          "text": "分母を 3 とした (2a + b)/3",
+          "why": "係数の和が 1 を超えてしまう。分母は 4。"
+        },
+        {
+          "text": "(a + b)/2 という中点の式",
+          "why": "AB の中点。P は AN と BM の交点で位置が違う。"
+        }
+      ],
+      "oneLine": "(2a + b)/4。a の係数 1/2、b の係数 1/4 をまとめた形。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mv_4:q_mv_4_cross:q_mv_4_cross_3:1",
+      "source": {
+        "chapterId": "mv_4",
+        "problemId": "q_mv_4_cross",
+        "subQuestionId": "q_mv_4_cross_3"
+      },
+      "format": "choice4",
+      "prompt": "同じ設定で BP:PM はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "3:1",
+          "correct": true,
+          "why": "BP:PM = s:(1-s) とおくと係数比較から s = 3/4。よって 3:1。"
+        },
+        {
+          "text": "比を 1:3 とした値",
+          "why": "s = 1/4 に対応する形。係数比較の結果は s = 3/4。"
+        },
+        {
+          "text": "比を 1:1 とした値",
+          "why": "こちらは AP:PN の比。BP:PM は 3:1。"
+        },
+        {
+          "text": "比を 2:1 とした値",
+          "why": "M の内分比をそのまま流用した形。"
+        }
+      ],
+      "oneLine": "3:1。係数比較から s = 3/4 が出るので BP:PM = 3:1。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mv_4:q_mv_4_cross:q_mv_4_cross_2:2",
+      "source": {
+        "chapterId": "mv_4",
+        "problemId": "q_mv_4_cross",
+        "subQuestionId": "q_mv_4_cross_2"
+      },
+      "format": "choice4",
+      "prompt": "同じ点 P を 2 通りに表したあと、係数を比較してよい理由はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "a、b が 1 次独立だから",
+          "correct": true,
+          "why": "平行でなくどちらも零ベクトルでないので、表し方は一意。だから係数がそれぞれ一致する。"
+        },
+        {
+          "text": "a、b が平行だから",
+          "why": "平行だと表し方が一意でなくなり、係数比較はできない。"
+        },
+        {
+          "text": "a、b の大きさが等しいから",
+          "why": "大きさは関係ない。必要なのは 1 次独立であること。"
+        },
+        {
+          "text": "a、b が垂直だから",
+          "why": "垂直でなくても 1 次独立なら係数比較できる。"
+        }
+      ],
+      "oneLine": "a、b が 1 次独立だから表し方は一意で、係数を比較できる。",
+      "timeLimit": 16,
+      "grounding": "1次独立だから係数比較できる"
+    },
+    {
+      "id": "a:mv_4:q_mv_4_line:q_mv_4_line_1:1",
+      "source": {
+        "chapterId": "mv_4",
+        "problemId": "q_mv_4_line",
+        "subQuestionId": "q_mv_4_line_1"
+      },
+      "format": "choice4",
+      "prompt": "A(1, 1)、B(3, 4)、P(x, 7) が一直線上にあるとき x はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "5",
+          "correct": true,
+          "why": "AB = (2, 3)、AP = (x-1, 6)。平行条件 3(x-1) - 2·6 = 0 より x = 5。"
+        },
+        {
+          "text": "内積 0 から出る x = -8",
+          "why": "それは垂直条件。一直線上は平行条件を使う。"
+        },
+        {
+          "text": "AP を 2 倍と誤った x = 4",
+          "why": "y 成分は 6 で AB の 3 の 2 倍。x 成分も 2 の 2 倍で 4 増え、x = 5。"
+        },
+        {
+          "text": "座標を足した x = 7",
+          "why": "P の y 座標を写した形。平行条件から x = 5。"
+        }
+      ],
+      "oneLine": "x = 5。AP = k·AB とみて平行条件 3(x-1) = 12 を解く。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:mv_4:q_mv_4_line:q_mv_4_line_2:1",
+      "source": {
+        "chapterId": "mv_4",
+        "problemId": "q_mv_4_line",
+        "subQuestionId": "q_mv_4_line_2"
+      },
+      "format": "choice4",
+      "prompt": "P が直線 AB 上にあり OP = (2/5)OA + t·OB と表されるとき t はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "3/5",
+          "correct": true,
+          "why": "直線 AB 上 ⇔ 係数の和が 1。2/5 + t = 1 より t = 3/5。"
+        },
+        {
+          "text": "係数をそのまま写した 2/5",
+          "why": "和が 4/5 になり 1 にならない。残りが t。"
+        },
+        {
+          "text": "和を 0 とした -2/5",
+          "why": "条件は和が 1。0 ではない。"
+        },
+        {
+          "text": "逆数をとった 5/2",
+          "why": "1 から引くのが正しい。逆数は関係ない。"
+        }
+      ],
+      "oneLine": "t = 3/5。直線 AB 上なら係数の和が 1 になる。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:mv_4:q_mv_4_line:q_mv_4_line_3:1",
+      "source": {
+        "chapterId": "mv_4",
+        "problemId": "q_mv_4_line",
+        "subQuestionId": "q_mv_4_line_3"
+      },
+      "format": "choice4",
+      "prompt": "OP = sOA + tOB の P が直線 AB 上にある条件は s + t がいくらのときか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1",
+          "correct": true,
+          "why": "内分点の係数の和が必ず 1 になることの一般化。s + t = 1 が共線条件。"
+        },
+        {
+          "text": "和が 0 になるとき",
+          "why": "0 だと直線 AB 上に来ない。内分点で確かめると和は 1。"
+        },
+        {
+          "text": "和が 2 になるとき",
+          "why": "中点 (OA + OB)/2 の係数の和は 1。2 ではない。"
+        },
+        {
+          "text": "和ではなく積で決まると考えるとき",
+          "why": "条件は s と t の和。積ではない。"
+        }
+      ],
+      "oneLine": "s + t = 1。これが直線 AB 上を表す共線条件。",
+      "timeLimit": 14
+    }
+  ]
+}

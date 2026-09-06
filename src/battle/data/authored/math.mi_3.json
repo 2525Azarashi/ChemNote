@@ -1,0 +1,247 @@
+{
+  "subject": "math",
+  "chapterId": "mi_3",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:mi_3:q_mi_3_factor:q_mi_3_factor_1:1",
+      "source": {
+        "chapterId": "mi_3",
+        "problemId": "q_mi_3_factor",
+        "subQuestionId": "q_mi_3_factor_1"
+      },
+      "format": "choice4",
+      "prompt": "xy = 18 を満たす自然数の組 (x, y) は何組あるか？",
+      "label": "（1）xy = 18 の組の個数",
+      "options": [
+        {
+          "text": "6",
+          "correct": true,
+          "why": "(1,18)(2,9)(3,6)(6,3)(9,2)(18,1)。18 の正の約数の個数と一致する。"
+        },
+        {
+          "text": "順序を区別せず3通りと数えた値",
+          "why": "(2,9) と (9,2) は別の組。x と y に区別がある。"
+        },
+        {
+          "text": "18 の約数のうち素因数だけ数えた値",
+          "why": "約数すべてが x の候補になる。素因数に限らない。"
+        },
+        {
+          "text": "18 という値そのものを組の個数とした値",
+          "why": "組の個数は約数の個数。もとの数とは違う。"
+        }
+      ],
+      "answer": "6",
+      "answerWhy": "18 = 2 × 3² より約数は (1+1)(2+1) = 6 個。順序付きなので6組。",
+      "oneLine": "xy = N の自然数解の組数は N の約数の個数。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mi_3:q_mi_3_factor:q_mi_3_factor_2:1",
+      "source": {
+        "chapterId": "mi_3",
+        "problemId": "q_mi_3_factor",
+        "subQuestionId": "q_mi_3_factor_2"
+      },
+      "format": "choice4",
+      "prompt": "(x + 2)(y - 1) = 6 を満たす自然数の組 (x, y) は何組あるか？",
+      "label": "（2）組の個数",
+      "options": [
+        {
+          "text": "2",
+          "correct": true,
+          "why": "x+2 ≥ 3 なので (3,2)(6,1) のみ。(x,y) = (1,3)(4,2) の2組。"
+        },
+        {
+          "text": "因数の範囲を絞らず 6 の約数の個数だけ数えた値",
+          "why": "x+2 は3以上でなければならない。(1,6)(2,3) は使えない。"
+        },
+        {
+          "text": "負の因数まで含めて数えた値",
+          "why": "x、y は自然数なので因数は正。負の分解は不要。"
+        },
+        {
+          "text": "解が存在しないと考えた値",
+          "why": "(1,3) と (4,2) が実際に条件を満たす。"
+        }
+      ],
+      "answer": "2",
+      "answerWhy": "x+2 ≥ 3、y-1 ≥ 0 の範囲で積が6になるのは (3,2)(6,1) の2通り。",
+      "oneLine": "因数の取り得る範囲を先に絞ってから約数を並べる。",
+      "timeLimit": 28
+    },
+    {
+      "id": "a:mi_3:q_mi_3_factor:q_mi_3_factor_3:1",
+      "source": {
+        "chapterId": "mi_3",
+        "problemId": "q_mi_3_factor",
+        "subQuestionId": "q_mi_3_factor_3"
+      },
+      "format": "choice4",
+      "prompt": "xy + 2x + 3y = 6 を満たす自然数の組 (x, y) は？",
+      "label": "（3）(x, y)",
+      "options": [
+        {
+          "text": "(1, 1)",
+          "correct": true,
+          "why": "(x+3)(y+2) = 12 に直すと (4,3) のみ。x = 1、y = 1。検算 1+2+3 = 6 ✓。"
+        },
+        {
+          "text": "定数の補い方を誤って出る組 (3, 2)",
+          "why": "代入すると 6 + 6 + 6 = 18 で 6 にならない。"
+        },
+        {
+          "text": "x と y の役割を取り違えて出る組 (2, 0)",
+          "why": "y = 0 は自然数ではない。範囲の確認が必要。"
+        },
+        {
+          "text": "積の形にせず勘で出る組 (6, 1)",
+          "why": "6 + 12 + 3 = 21 で成り立たない。必ず因数分解して調べる。"
+        }
+      ],
+      "answer": "(1, 1)",
+      "answerWhy": "xy+2x+3y = (x+3)(y+2) - 6 なので (x+3)(y+2) = 12。",
+      "oneLine": "xy + ax + by = c は (x+b)(y+a) = c+ab に直す。",
+      "timeLimit": 30
+    },
+    {
+      "id": "a:mi_3:q_mi_3_factor:q_mi_3_factor_3:2",
+      "source": {
+        "chapterId": "mi_3",
+        "problemId": "q_mi_3_factor",
+        "subQuestionId": "q_mi_3_factor_3"
+      },
+      "format": "choice4",
+      "prompt": "xy + ax + by = c 型の整数方程式は、どんな積の形に直せるか？",
+      "label": "（3）変形の型",
+      "options": [
+        {
+          "text": "(x + b)(y + a) = c + ab",
+          "correct": true,
+          "why": "x の係数 a は y 側に、y の係数 b は x 側に入る。定数 ab を両辺に足す。"
+        },
+        {
+          "text": "係数を同じ側に入れて (x + a)(y + b) = c + ab",
+          "why": "係数の入る側が逆。展開して確かめると元の式に戻らない。"
+        },
+        {
+          "text": "定数を足さずに (x + b)(y + a) = c",
+          "why": "展開すると余分な ab が出る。その分を右辺に足す必要がある。"
+        },
+        {
+          "text": "和の形にして (x + y)(a + b) = c",
+          "why": "展開しても xy の項が現れない。積の形になっていない。"
+        }
+      ],
+      "answer": "(x + b)(y + a) = c + ab",
+      "answerWhy": "解説の通り、入試整数問題の超頻出変形。",
+      "oneLine": "係数はたすきに入る。定数 ab を右辺に足す。",
+      "timeLimit": 22,
+      "grounding": "「xy + ax + by = c 型は (x + b)(y + a) = c + ab に直せる」"
+    },
+    {
+      "id": "a:mi_3:q_mi_3_diff:q_mi_3_diff_1:1",
+      "source": {
+        "chapterId": "mi_3",
+        "problemId": "q_mi_3_diff",
+        "subQuestionId": "q_mi_3_diff_1"
+      },
+      "format": "choice4",
+      "prompt": "x^2 - y^2 = 21 を満たす自然数の組 (x, y) をすべて挙げたものはどれ？",
+      "label": "（1）(x, y) をすべて",
+      "options": [
+        {
+          "text": "(5, 2), (11, 10)",
+          "correct": true,
+          "why": "21 = 7×3 と 21×1 の2通り。和と差から x, y を復元する。"
+        },
+        {
+          "text": "21 = 7×3 の分解だけを使った組 (5, 2) のみ",
+          "why": "21 × 1 の分解も条件を満たす。(11, 10) を落としている。"
+        },
+        {
+          "text": "21 = 21×1 の分解だけを使った組 (11, 10) のみ",
+          "why": "7 × 3 の分解も使える。(5, 2) を落としている。"
+        },
+        {
+          "text": "和と差を取り違えて出る組 (12, 9) と (6, 1)",
+          "why": "x は和と差の平均。足して2で割る手順を確かめること。"
+        }
+      ],
+      "answer": "(5, 2), (11, 10)",
+      "answerWhy": "(x+y)(x-y) = 21。x+y > x-y ≥ 1 なので分解は2通り。",
+      "oneLine": "平方の差は必ず (x+y)(x-y) に分解して約数の組へ。",
+      "timeLimit": 30
+    },
+    {
+      "id": "a:mi_3:q_mi_3_diff:q_mi_3_diff_2:1",
+      "source": {
+        "chapterId": "mi_3",
+        "problemId": "q_mi_3_diff",
+        "subQuestionId": "q_mi_3_diff_2"
+      },
+      "format": "choice4",
+      "prompt": "n^2 + 6n + 5 を因数分解した形はどれ？",
+      "label": "（2）因数分解",
+      "options": [
+        {
+          "text": "(n + 1)(n + 5)",
+          "correct": true,
+          "why": "足して6、掛けて5になる2数は1と5。展開して確かめられる。"
+        },
+        {
+          "text": "掛けて6になる2数を使った (n + 2)(n + 3)",
+          "why": "展開すると定数項が6になる。5 にならない。"
+        },
+        {
+          "text": "符号を負にした (n - 1)(n - 5)",
+          "why": "展開すると n の係数が -6 になる。符号が合わない。"
+        },
+        {
+          "text": "平方完成の形にした (n + 3)^2 - 4",
+          "why": "値は等しいが積の形ではない。素数の議論には積が必要。"
+        }
+      ],
+      "answer": "(n + 1)(n + 5)",
+      "answerWhy": "n が自然数なら n+1 ≥ 2、n+5 ≥ 6 でどちらも1にならず常に合成数。",
+      "oneLine": "素数条件は、積に分解して片方が1になれるか調べる。",
+      "timeLimit": 25
+    },
+    {
+      "id": "a:mi_3:q_mi_3_diff:q_mi_3_diff_2:2",
+      "source": {
+        "chapterId": "mi_3",
+        "problemId": "q_mi_3_diff",
+        "subQuestionId": "q_mi_3_diff_2"
+      },
+      "format": "choice4",
+      "prompt": "「この式が素数になる n はあるか」を調べるとき、出発点となる言い換えはどれ？",
+      "label": "（2）素数条件の言い換え",
+      "options": [
+        {
+          "text": "積に分解したとき片方の因数が ±1 になること",
+          "correct": true,
+          "why": "素数は1と自分自身しか約数を持たない。だから片方が1に限られる。"
+        },
+        {
+          "text": "積に分解したとき両方の因数が素数になること",
+          "why": "両方が2以上なら合成数になってしまう。"
+        },
+        {
+          "text": "式の値が奇数になること",
+          "why": "9 は奇数だが素数ではない。奇数であることは条件にならない。"
+        },
+        {
+          "text": "n が素数であること",
+          "why": "n が素数でも式の値が素数になる保証はない。"
+        }
+      ],
+      "answer": "積に分解したとき片方の因数が ±1 になること",
+      "answerWhy": "解説の通り、素数条件の問題すべてに共通する出発点。",
+      "oneLine": "素数 ⇔ 積に分解したら片方が ±1。",
+      "timeLimit": 22,
+      "grounding": "「素数 ⇔ 積に分解したら片方が ±1」という言い換えは、素数条件の問題すべてに共通する出発点です"
+    }
+  ]
+}

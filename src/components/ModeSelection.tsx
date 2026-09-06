@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical } from 'lucide-react';
+import { BookOpen, ArrowLeft, FileText, TrendingUp, FlaskConical, Swords, ArrowRight } from 'lucide-react';
 import { TrendModal } from './TrendModal';
 import { chemistryBasicTrendDataset } from '../data/trendData';
 import { chemistryAdvancedTrendDataset } from '../data/chemistryAdvancedTrendData';
@@ -15,9 +15,27 @@ interface ModeSelectionProps {
   onMockExam?: () => void;
   /** 選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
   subject?: SubjectKey;
+  /**
+   * オンライン対戦を開く。
+   *
+   * ★この画面に対戦の席を作った理由★
+   *   利用者の指示「オンラインをメインにするUIにしていかんとだめよね？」
+   *   「対戦画面は他のところでしているのでそこまでのところはすべて変えて」
+   *
+   *   この画面は下部ナビの「学習」を押すと必ず来る場所で、
+   *   ★対戦という語が1文字も無かった★。
+   *   モードは「学習(インプット)」と「演習問題」の2枚だけで、
+   *   ここまで来た人には対戦が存在しないように見えていた。
+   *
+   * ★任意（省略可）にしている★
+   *   FEATURES.battle が false のときは App 側から渡さない。
+   *   渡されなければ席ごと描かないので、
+   *   「見えるのに入れない」を作らない。
+   */
+  onBattle?: () => void;
 }
 
-export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic' }: ModeSelectionProps) {
+export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic', onBattle }: ModeSelectionProps) {
   /**
    * 化学（発展）では、化学基礎専用の 2027年度予想問題はまだ用意していないので隠す。
    * 化学基礎側の表示は一切変えない。
@@ -103,6 +121,45 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
             学習モードを選択
           </h2>
         </div>
+
+        {/* =====================================================================
+            オンライン対戦（★モードカードより先に置く★）
+            =====================================================================
+
+            ★ここに置いた理由★
+              この画面は下部ナビの「学習」から必ず来る場所。
+              対戦を思い立った人が学習の側に迷い込んだとき、
+              ★ホームまで戻らずに対戦へ移れる★ようにする。
+
+            ★モードカードより「上」だが「小さい」★
+              この画面の目的は学習モードを選ぶことなので、
+              主役は下の2枚（学習(インプット)／演習問題）のまま。
+              対戦は横1行の帯にして、順番だけ先にした。
+              ホーム（Home.tsx）では対戦が主役の大きさ、
+              ここでは案内の大きさ。場所ごとに主従を変えている。
+
+            ★学習のカードは1枚も消していない★
+              利用者の指示「でも問題をなくすとかはダメだよ」。
+              学習(インプット)・演習問題・出題傾向・予想問題は
+              すべて元のまま、文言も変えていない。 */}
+        {onBattle && (
+          <button
+            onClick={onBattle}
+            aria-label="オンライン対戦を開く"
+            className="battle-sheen relative overflow-hidden w-full max-w-3xl mb-3 md:mb-6 flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#3D9BD9] to-[#2E86C1] px-4 py-3 md:px-6 md:py-4 text-white shadow-[0_12px_28px_-12px_rgba(46,134,193,0.7)] transition-colors hover:from-[#3691D2] hover:to-[#2678AF] min-h-[48px]"
+          >
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+              <Swords className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />
+            </div>
+            <div className="min-w-0 flex-1 text-left">
+              <h3 className="text-base md:text-xl font-bold font-handwriting leading-tight">オンライン対戦</h3>
+              <p className="text-[11px] md:text-sm text-white/80 font-handwriting leading-snug truncate">
+                友だちと1対1で早解き・全国とレート戦
+              </p>
+            </div>
+            <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white/70 shrink-0" aria-hidden="true" />
+          </button>
+        )}
 
         <div className={`grid grid-cols-1 gap-3 md:gap-6 w-full ${hideLearning ? 'max-w-md' : 'max-w-3xl md:grid-cols-2'}`}>
           {/* 学習(インプット)ボタン（化学基礎・化学の両方。リスニング・英文法は未収録） */}

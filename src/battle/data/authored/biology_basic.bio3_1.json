@@ -1,0 +1,2106 @@
+{
+  "subject": "biology_basic",
+  "chapterId": "bio3_1",
+  "authoredBy": "room-bio",
+  "questions": [
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_a:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_a"
+      },
+      "format": "choice4",
+      "prompt": "体液は細胞にとっての環境であることから、何と呼ばれるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "体内環境",
+          "correct": true,
+          "why": "細胞をとりまく体液が細胞にとっての環境なので、体内環境（内部環境）という。"
+        },
+        {
+          "text": "体外環境",
+          "why": "体外環境は気温や湿度などからだの外の条件。細胞が浸されている液のことではない。"
+        },
+        {
+          "text": "生態系",
+          "why": "生態系は生物と環境をまとめた自然のしくみ。1個体の中の話ではない。"
+        },
+        {
+          "text": "恒常性",
+          "why": "恒常性は体内環境を一定に保つはたらきそのもの。環境の呼び名ではない。"
+        }
+      ],
+      "oneLine": "体内環境（内部環境）。体液が細胞をとりまく環境になっている、という考え方。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_i:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_i"
+      },
+      "format": "choice4",
+      "prompt": "ヒトの体液のうち、血管内を流れるものを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "血液",
+          "correct": true,
+          "why": "体液の3区分のうち血管内を流れるもの。液体成分と有形成分からできている。"
+        },
+        {
+          "text": "組織液",
+          "why": "組織液は細胞のすき間を満たす体液。血管の外にある。"
+        },
+        {
+          "text": "リンパ液",
+          "why": "リンパ液はリンパ管内を流れる体液。血管ではない。"
+        },
+        {
+          "text": "血しょう",
+          "why": "血しょうは血液の液体成分の名前。体液の3区分の1つではない。"
+        }
+      ],
+      "oneLine": "血液。体液は血液（血管内）・組織液（細胞間）・リンパ液（リンパ管内）の3つに分けられる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_u:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_u"
+      },
+      "format": "choice4",
+      "prompt": "ヒトの体液のうち、細胞のすき間を満たしているものを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "組織液",
+          "correct": true,
+          "why": "血しょうが毛細血管からしみ出たもので、細胞間を満たしている体液。"
+        },
+        {
+          "text": "血液",
+          "why": "血液は血管の中を流れる体液。細胞のすき間にあるのは組織液。"
+        },
+        {
+          "text": "リンパ液",
+          "why": "リンパ液はリンパ管内。組織液がリンパ管に入ってからの呼び名である。"
+        },
+        {
+          "text": "血ぺい",
+          "why": "血ぺいは血液凝固でできる血球のかたまり。体液の区分ではない。"
+        }
+      ],
+      "oneLine": "組織液。血しょうが毛細血管からしみ出たもので、細胞のすき間を満たす。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_u:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_u"
+      },
+      "format": "choice4",
+      "prompt": "細胞のすき間を満たしている組織液が、リンパ管に入ると何と呼ばれるようになるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "リンパ液",
+          "correct": true,
+          "why": "体液の3つは独立ではなく、組織液がリンパ管に入るとリンパ液になる。"
+        },
+        {
+          "text": "血しょう",
+          "why": "血しょうは血液の液体成分。組織液のもとであって、行き先の名ではない。"
+        },
+        {
+          "text": "血清",
+          "why": "血清は血液を放置して血ぺいができたあとに残る淡黄色の液。別の話。"
+        },
+        {
+          "text": "原尿",
+          "why": "原尿は腎臓の糸球体でこし出された液。リンパ管とは関係がない。"
+        }
+      ],
+      "oneLine": "リンパ液。血しょう→（しみ出て）組織液→（リンパ管に入って）リンパ液とつながっている。",
+      "timeLimit": 14,
+      "grounding": "組織液がリンパ管に入るとリンパ液になります"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_e:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_e"
+      },
+      "format": "choice4",
+      "prompt": "血液の液体成分を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "血しょう",
+          "correct": true,
+          "why": "血液の約55%を占める液体成分。水・タンパク質・グルコースなどを含み物質を運ぶ。"
+        },
+        {
+          "text": "組織液",
+          "why": "組織液は血管の外、細胞のすき間にある体液。血液の成分名ではない。"
+        },
+        {
+          "text": "血清",
+          "why": "血清は血液が凝固したあとに残る液。凝固前の液体成分の名前ではない。"
+        },
+        {
+          "text": "リンパ液",
+          "why": "リンパ液はリンパ管内を流れる体液で、血液の中の成分ではない。"
+        }
+      ],
+      "oneLine": "血しょう。血液の約55%を占める液体成分で、物質運搬の担い手。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_o:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_o"
+      },
+      "format": "choice4",
+      "prompt": "血液の有形成分のうち、酸素の運搬を行うものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "赤血球",
+          "correct": true,
+          "why": "ヘモグロビンをもち酸素を運ぶ。核がなく、数はもっとも多い。"
+        },
+        {
+          "text": "白血球",
+          "why": "白血球のはたらきは免疫。酸素運搬は担っていない。"
+        },
+        {
+          "text": "血小板",
+          "why": "血小板のはたらきは血液凝固。もっとも小さい有形成分である。"
+        },
+        {
+          "text": "血しょう",
+          "why": "血しょうは有形成分ではなく液体成分。分類の段階が違う。"
+        }
+      ],
+      "oneLine": "赤血球。ヘモグロビンで酸素を運ぶ。核なしで、数がもっとも多い有形成分。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_ka:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_ka"
+      },
+      "format": "choice4",
+      "prompt": "血液の有形成分のうち、免疫を担うものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "白血球",
+          "correct": true,
+          "why": "免疫を担当する有形成分。赤血球や血小板と違い核をもつ。"
+        },
+        {
+          "text": "赤血球",
+          "why": "赤血球のはたらきは酸素運搬。免疫には関わらない。"
+        },
+        {
+          "text": "血小板",
+          "why": "血小板のはたらきは血液凝固。病原体を排除する役ではない。"
+        },
+        {
+          "text": "フィブリン",
+          "why": "フィブリンは血液凝固でできる繊維状のタンパク質。細胞ではない。"
+        }
+      ],
+      "oneLine": "白血球。免疫を担い、赤血球・血小板と違って核をもつ。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_ki:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_ki"
+      },
+      "format": "choice4",
+      "prompt": "血液の有形成分のうち、核をもたず最も小さく、血液凝固に関わるものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "血小板",
+          "correct": true,
+          "why": "核なし・最小の有形成分で、凝固因子とともにフィブリンをつくるきっかけになる。"
+        },
+        {
+          "text": "白血球",
+          "why": "白血球は核をもち、はたらきは免疫。凝固の主役ではない。"
+        },
+        {
+          "text": "赤血球",
+          "why": "赤血球も核はないが数が最多で大きく、はたらきは酸素運搬である。"
+        },
+        {
+          "text": "血しょう",
+          "why": "血しょうは液体成分。有形成分の中から選ぶ問題なので当てはまらない。"
+        }
+      ],
+      "oneLine": "血小板。核なし・最小の有形成分で、血液凝固に関わる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_ke:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_ke"
+      },
+      "format": "choice",
+      "prompt": "ヘモグロビンが酸素と結合するのは、酸素濃度が高いところか低いところか。",
+      "label": "",
+      "options": [
+        {
+          "text": "酸素濃度が高いところ",
+          "correct": true,
+          "why": "肺のように酸素濃度が高い場所で結合し、組織のように低い場所で酸素を離す。"
+        },
+        {
+          "text": "酸素濃度が低いところ",
+          "why": "低いところでは逆に酸素を離す。結合と解離の向きを取り違えた誤り。"
+        }
+      ],
+      "oneLine": "酸素濃度が高いところ。肺で結合し、酸素濃度の低い組織で酸素を離す。",
+      "timeLimit": 12,
+      "grounding": "酸素濃度が高い肺で結合"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_ke:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_ke"
+      },
+      "format": "choice",
+      "prompt": "二酸化炭素濃度が高い組織では、ヘモグロビンは酸素を離しやすくなるか、離しにくくなるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "離しやすくなる",
+          "correct": true,
+          "why": "二酸化炭素濃度が高いほど酸素を離しやすいので、活動中の組織ほど酸素を多く受け取れる。"
+        },
+        {
+          "text": "離しにくくなる",
+          "why": "これでは活動している組織に酸素が届かない。実際は逆に離しやすくなる。"
+        }
+      ],
+      "oneLine": "離しやすくなる。だから二酸化炭素の多い活動中の組織ほど酸素を多く受け取れる。",
+      "timeLimit": 14,
+      "grounding": "二酸化炭素濃度が高いほど酸素を離しやすくなる"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_ko:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_ko"
+      },
+      "format": "choice4",
+      "prompt": "血管が傷つくと、フィブリンが血球をからめてかたまりをつくり傷口をふさぐ。このかたまりを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "血ぺい",
+          "correct": true,
+          "why": "フィブリンが血球をからめてできるかたまりで、これが傷口をふさいで止血する。"
+        },
+        {
+          "text": "血清",
+          "why": "血清は血ぺいができたあとに残る淡黄色の液。かたまりの側ではない。"
+        },
+        {
+          "text": "血しょう",
+          "why": "血しょうは凝固する前の血液の液体成分。かたまりの名前ではない。"
+        },
+        {
+          "text": "組織液",
+          "why": "組織液は細胞のすき間を満たす体液。凝固でできるものではない。"
+        }
+      ],
+      "oneLine": "血ぺい。血小板→凝固因子→フィブリン→血球をからめて血ぺい、という流れで止血する。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_bodyfluid:bio3_b_ko:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_bodyfluid",
+        "subQuestionId": "bio3_b_ko"
+      },
+      "format": "choice4",
+      "prompt": "試験管に採った血液を放置すると、血ぺいと何に分かれるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "血清",
+          "correct": true,
+          "why": "血液を放置すると血ぺいと淡黄色の血清に分かれる。血清療法で使う「血清」がこれ。"
+        },
+        {
+          "text": "血しょう",
+          "why": "血しょうは凝固する前の液体成分。凝固後に残る液は血清と呼ぶ。"
+        },
+        {
+          "text": "リンパ液",
+          "why": "リンパ液はリンパ管内の体液。試験管の中で分離してできるものではない。"
+        },
+        {
+          "text": "原尿",
+          "why": "原尿は腎臓でこし出された液。血液凝固とは無関係である。"
+        }
+      ],
+      "oneLine": "血清。血液を放置すると血ぺいと淡黄色の血清に分かれる。血しょうとの違いに注意。",
+      "timeLimit": 14,
+      "grounding": "血ぺいと淡黄色の血清に分かれる"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_organ:bio3_o_u:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_organ",
+        "subQuestionId": "bio3_o_u"
+      },
+      "format": "choice4",
+      "prompt": "肝臓は、タンパク質の分解で生じる有害なアンモニアを毒性の低い何につくり変えるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "尿素",
+          "correct": true,
+          "why": "アンモニア→尿素の変換が肝臓の主要なはたらきの一つ。この経路を尿素回路という。"
+        },
+        {
+          "text": "グリコーゲン",
+          "why": "グリコーゲンはグルコースを貯蔵する多糖。窒素を含む物質ではない。"
+        },
+        {
+          "text": "胆汁",
+          "why": "胆汁は脂肪の消化を助ける液。アンモニアの変換先ではない。"
+        },
+        {
+          "text": "グルコース",
+          "why": "グルコースは血糖のもとになる糖。アンモニアからつくられるものではない。"
+        }
+      ],
+      "oneLine": "尿素。有害なアンモニアを毒性の低い尿素に変える（尿素回路）のが肝臓のはたらき。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_organ:bio3_o_e:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_organ",
+        "subQuestionId": "bio3_o_e"
+      },
+      "format": "choice4",
+      "prompt": "肝臓がつくる、脂肪の消化を助ける液を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "胆汁",
+          "correct": true,
+          "why": "肝臓で生成される消化を助ける液。肝臓の主要なはたらきの一つ。"
+        },
+        {
+          "text": "すい液",
+          "why": "すい液はすい臓が出す消化液。肝臓がつくるものではない。"
+        },
+        {
+          "text": "胃液",
+          "why": "胃液は胃が分泌する強酸性の消化液。肝臓の産物ではない。"
+        },
+        {
+          "text": "だ液",
+          "why": "だ液はだ腺から出る消化液。肝臓とは別の器官のはたらきである。"
+        }
+      ],
+      "oneLine": "胆汁。肝臓の主要なはたらきは血糖調節・尿素合成・胆汁生成・解毒・発熱の5つ。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_organ:bio3_o_o:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_organ",
+        "subQuestionId": "bio3_o_o"
+      },
+      "format": "choice4",
+      "prompt": "肝臓がアルコールなどの有害な物質を分解して害の少ない物質に変えるはたらきを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "解毒作用",
+          "correct": true,
+          "why": "肝臓の主要なはたらきの一つ。アルコールや薬物などを分解して無害化する。"
+        },
+        {
+          "text": "食作用",
+          "why": "食作用は食細胞が異物を取り込んで分解する免疫のはたらき。肝臓の機能名ではない。"
+        },
+        {
+          "text": "再吸収",
+          "why": "再吸収は腎臓で必要な成分を血液へ戻すはたらき。肝臓ではない。"
+        },
+        {
+          "text": "拮抗作用",
+          "why": "拮抗作用は交感神経と副交感神経が反対に働くこと。分解とは関係がない。"
+        }
+      ],
+      "oneLine": "解毒作用。肝臓はアルコールなどの有害物質を分解して害の少ない物質に変える。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_organ:bio3_o_ki:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_organ",
+        "subQuestionId": "bio3_o_ki"
+      },
+      "format": "choice4",
+      "prompt": "腎小体で、毛細血管が球状に集まってろ過を行う構造を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "糸球体",
+          "correct": true,
+          "why": "毛細血管が球状に集まった構造で、血圧によって血しょうをこし出す。"
+        },
+        {
+          "text": "ボーマンのう",
+          "why": "ボーマンのうはこし出された液を受ける袋。毛細血管のかたまりではない。"
+        },
+        {
+          "text": "細尿管",
+          "why": "細尿管は原尿が通る管で、再吸収の場。ろ過を行う構造ではない。"
+        },
+        {
+          "text": "集合管",
+          "why": "集合管は細尿管の先で尿が集まる管。ろ過の場ではない。"
+        }
+      ],
+      "oneLine": "糸球体。毛細血管が球状に集まり、血圧で血しょうをボーマンのうへこし出す。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_organ:bio3_o_ku:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_organ",
+        "subQuestionId": "bio3_o_ku"
+      },
+      "format": "choice4",
+      "prompt": "糸球体からこし出された血しょうの一部を受け取る袋状の構造を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "ボーマンのう",
+          "correct": true,
+          "why": "糸球体を包む袋で、こし出された液（原尿）を受け取る。糸球体とあわせて腎小体。"
+        },
+        {
+          "text": "糸球体",
+          "why": "糸球体はこし出す側の毛細血管のかたまり。受け取る側ではない。"
+        },
+        {
+          "text": "細尿管",
+          "why": "細尿管は原尿を受け取ったあとに続く管。袋状の構造ではない。"
+        },
+        {
+          "text": "腎小体",
+          "why": "腎小体は糸球体と袋を合わせた全体の名前。袋そのものの名ではない。"
+        }
+      ],
+      "oneLine": "ボーマンのう。糸球体＋ボーマンのう＝腎小体、これに細尿管を加えてネフロン。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_organ:bio3_o_ke:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_organ",
+        "subQuestionId": "bio3_o_ke"
+      },
+      "format": "choice4",
+      "prompt": "原尿が細尿管や集合管を通る間に、グルコースや水などの必要な成分が毛細血管へ戻される過程を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "再吸収",
+          "correct": true,
+          "why": "細尿管・集合管で必要な成分を毛細血管へ戻すはたらき。グルコースは100%戻る。"
+        },
+        {
+          "text": "ろ過",
+          "why": "ろ過は糸球体からボーマンのうへこし出す過程。方向が逆である。"
+        },
+        {
+          "text": "分泌",
+          "why": "分泌は細胞が物質を外に出すこと。血管へ戻すはたらきの名ではない。"
+        },
+        {
+          "text": "解毒作用",
+          "why": "解毒作用は肝臓のはたらき。腎臓で成分を戻す過程の名ではない。"
+        }
+      ],
+      "oneLine": "再吸収。グルコースは100%、水は約99%が毛細血管へ戻される。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_organ:bio3_o_ke:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_organ",
+        "subQuestionId": "bio3_o_ke"
+      },
+      "format": "choice4",
+      "prompt": "健康な人の腎臓で、糸球体からろ過されないため原尿にも尿にも含まれないものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "タンパク質",
+          "correct": true,
+          "why": "血球とタンパク質は大きいのでろ過されない。だから原尿にも尿にもない。"
+        },
+        {
+          "text": "グルコース",
+          "why": "グルコースはろ過されるが100%再吸収される。原尿にはあるが尿にはない。"
+        },
+        {
+          "text": "尿素",
+          "why": "尿素はろ過され、あまり再吸収されないので尿中で濃縮される。"
+        },
+        {
+          "text": "水",
+          "why": "水はろ過されて約99%が再吸収される。尿にも含まれている。"
+        }
+      ],
+      "oneLine": "タンパク質。大きいのでろ過されない。グルコースはろ過後100%再吸収で尿には出ない。",
+      "timeLimit": 18,
+      "grounding": "血球とタンパク質は大きいのでろ過されない"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_organ:bio3_o_ki:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_organ",
+        "subQuestionId": "bio3_o_ki"
+      },
+      "format": "choice4",
+      "prompt": "ある物質の濃縮率は、どのように求められるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "尿中濃度を血しょう中濃度で割る",
+          "correct": true,
+          "why": "濃縮率＝尿中濃度÷血しょう中濃度。どれだけ濃くなったかを表す。"
+        },
+        {
+          "text": "血しょう中濃度を尿中濃度で割る",
+          "why": "割る順が逆。これでは濃縮されているほど値が小さくなってしまう。"
+        },
+        {
+          "text": "尿中濃度と血しょう中濃度を足す",
+          "why": "足し算では「何倍濃くなったか」を表せない。濃縮率は比で表す。"
+        },
+        {
+          "text": "尿量に原尿量をかける",
+          "why": "これは量の計算。原尿量＝尿量×イヌリンの濃縮率という別の式と混同している。"
+        }
+      ],
+      "oneLine": "濃縮率＝尿中濃度÷血しょう中濃度。原尿量＝尿量×イヌリンの濃縮率とセットで頻出。",
+      "timeLimit": 18,
+      "grounding": "濃縮率（＝尿中濃度÷血しょう中濃度）"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_a:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_a"
+      },
+      "format": "choice4",
+      "prompt": "自律神経系と内分泌系を協調させて体内環境を調節する統合の中枢は、間脳のどこか。",
+      "label": "",
+      "options": [
+        {
+          "text": "視床下部",
+          "correct": true,
+          "why": "間脳の視床下部が自律神経系とホルモン分泌の両方をまとめる中枢である。"
+        },
+        {
+          "text": "小脳",
+          "why": "小脳はからだの平衡や運動の調節を担う。自律神経の統合中枢ではない。"
+        },
+        {
+          "text": "延髄",
+          "why": "延髄は呼吸や心拍の中枢だが、間脳ではない。副交感神経の一部が出る場所。"
+        },
+        {
+          "text": "大脳",
+          "why": "大脳は感覚や意識・思考の中枢。無意識の体内環境調節の統合中枢ではない。"
+        }
+      ],
+      "oneLine": "視床下部。間脳にあり、自律神経系と内分泌系の両方をまとめる調節の中枢。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_i:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_i"
+      },
+      "format": "choice4",
+      "prompt": "自律神経系のうち、活動時や緊張時に働く神経を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "交感神経",
+          "correct": true,
+          "why": "活動モードの神経。心拍促進・瞳孔拡大・気管支拡張・消化抑制などを起こす。"
+        },
+        {
+          "text": "運動神経",
+          "why": "運動神経は意識して骨格筋を動かす神経。自律神経系には含まれない。"
+        },
+        {
+          "text": "感覚神経",
+          "why": "感覚神経は刺激の情報を中枢へ送る神経。器官の調節を担う自律神経ではない。"
+        },
+        {
+          "text": "介在神経",
+          "why": "介在神経は中枢内で神経どうしをつなぐ神経。内臓のはたらきを調節する神経ではない。"
+        }
+      ],
+      "oneLine": "交感神経。活動モードの神経で、脊髄から出る。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_u:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_u"
+      },
+      "format": "choice4",
+      "prompt": "自律神経系のうち、休息時やリラックス時に働く神経を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "副交感神経",
+          "correct": true,
+          "why": "休息モードの神経。心拍抑制・瞳孔縮小・気管支収縮・消化促進を起こす。"
+        },
+        {
+          "text": "運動神経",
+          "why": "運動神経は骨格筋を意識的に動かす神経で、自律神経系ではない。"
+        },
+        {
+          "text": "感覚神経",
+          "why": "感覚神経は受け取った刺激を中枢へ伝える神経。内臓の調節はしない。"
+        },
+        {
+          "text": "体性神経",
+          "why": "体性神経は運動神経と感覚神経のまとまり。自律神経系と並ぶ別のグループ。"
+        }
+      ],
+      "oneLine": "副交感神経。休息モードの神経で、中脳・延髄・脊髄下部から出る。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_u:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_u"
+      },
+      "format": "choice4",
+      "prompt": "副交感神経が出ていく場所として正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "中脳・延髄・脊髄下部",
+          "correct": true,
+          "why": "副交感神経はここから出る。交感神経が脊髄から出るのと区別して覚える。"
+        },
+        {
+          "text": "脊髄のみ",
+          "why": "脊髄から出るのは交感神経。副交感神経は中脳や延髄からも出る。"
+        },
+        {
+          "text": "大脳のみ",
+          "why": "大脳は意識的な活動の中枢で、自律神経が出ていく場所ではない。"
+        },
+        {
+          "text": "小脳のみ",
+          "why": "小脳は運動の調節を担う。自律神経の出口ではない。"
+        }
+      ],
+      "oneLine": "中脳・延髄・脊髄下部。交感神経は脊髄から出る、という対比で覚える。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_e:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_e"
+      },
+      "format": "choice4",
+      "prompt": "同じ器官に交感神経と副交感神経の両方が分布し、互いに反対の作用を及ぼすことを何作用というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "拮抗作用",
+          "correct": true,
+          "why": "同じ器官に両方が分布し、反対の作用を及ぼすことを拮抗作用という。"
+        },
+        {
+          "text": "相乗作用",
+          "why": "相乗作用は同じ向きに強め合うこと。反対に働く関係の呼び名ではない。"
+        },
+        {
+          "text": "食作用",
+          "why": "食作用は食細胞が異物を取り込むこと。神経のはたらきではない。"
+        },
+        {
+          "text": "フィードバック",
+          "why": "フィードバックは結果が原因側に影響する調節のしくみ。2つの神経の関係の名ではない。"
+        }
+      ],
+      "oneLine": "拮抗作用。ただし汗腺・立毛筋・多くの血管には交感神経だけが分布する例外もある。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_e:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_e"
+      },
+      "format": "choice4",
+      "prompt": "交感神経だけが分布し、副交感神経が分布しない器官の例として正しいものはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "汗腺",
+          "correct": true,
+          "why": "汗腺・立毛筋・多くの血管は例外で、交感神経のみが分布する。"
+        },
+        {
+          "text": "心臓",
+          "why": "心臓は両方が分布する代表例。交感神経で促進、副交感神経で抑制される。"
+        },
+        {
+          "text": "瞳孔",
+          "why": "瞳孔も両方が分布し、交感神経で拡大、副交感神経で縮小する。"
+        },
+        {
+          "text": "消化管",
+          "why": "消化管も両方が分布し、交感神経で抑制、副交感神経で促進される。"
+        }
+      ],
+      "oneLine": "汗腺。立毛筋や多くの血管と同じく、交感神経のみが分布する例外である。",
+      "timeLimit": 16,
+      "grounding": "例外的に汗腺・立毛筋・多くの血管には交感神経のみ分布"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_o:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_o"
+      },
+      "format": "choice",
+      "prompt": "交感神経が働くと、心臓の拍動は促進されるか、抑制されるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "促進される",
+          "correct": true,
+          "why": "交感神経は活動モード。活動に必要な心拍は促進される。"
+        },
+        {
+          "text": "抑制される",
+          "why": "心拍が抑制されるのは副交感神経が働くとき。役割を取り違えた誤り。"
+        }
+      ],
+      "oneLine": "促進される。交感神経は活動モードなので、心拍は速くなる。",
+      "timeLimit": 10,
+      "grounding": "心拍促進"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_ka:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_ka"
+      },
+      "format": "choice",
+      "prompt": "交感神経が働くと、瞳孔は拡大するか、縮小するか。",
+      "label": "",
+      "options": [
+        {
+          "text": "拡大する",
+          "correct": true,
+          "why": "活動時は多くの光を取り入れて情報を得たいので、瞳孔は拡大する。"
+        },
+        {
+          "text": "縮小する",
+          "why": "縮小は副交感神経が働くとき。休息時には瞳孔が小さくなる。"
+        }
+      ],
+      "oneLine": "拡大する。交感神経＝活動モードなので、瞳孔は大きくなる。",
+      "timeLimit": 10,
+      "grounding": "瞳孔拡大"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_ki:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_ki"
+      },
+      "format": "choice",
+      "prompt": "交感神経が働くと、消化管の運動は促進されるか、抑制されるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "抑制される",
+          "correct": true,
+          "why": "消化は後回しでよいはたらきなので、活動時には抑制される。"
+        },
+        {
+          "text": "促進される",
+          "why": "消化促進は副交感神経のはたらき。すべてが促進されるわけではない。"
+        }
+      ],
+      "oneLine": "抑制される。活動に必要なものは促進、後回しでよい消化は抑制と考える。",
+      "timeLimit": 12,
+      "grounding": "消化抑制"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_ku:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_ku"
+      },
+      "format": "choice",
+      "prompt": "交感神経が働くと、気管支は拡張するか、収縮するか。",
+      "label": "",
+      "options": [
+        {
+          "text": "拡張する",
+          "correct": true,
+          "why": "活動時は多くの酸素が必要なので、空気の通り道である気管支は広がる。"
+        },
+        {
+          "text": "収縮する",
+          "why": "収縮は副交感神経が働くとき。休息時には気管支が細くなる。"
+        }
+      ],
+      "oneLine": "拡張する。活動時は酸素が必要なので気管支は広がる。",
+      "timeLimit": 10,
+      "grounding": "気管支拡張"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_ke:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_ke"
+      },
+      "format": "choice4",
+      "prompt": "心臓の拍動リズムをつくり出す、ペースメーカーと呼ばれる部分を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "洞房結節",
+          "correct": true,
+          "why": "右心房にあり、自動的に電気信号を出して拍動のリズムをつくる。"
+        },
+        {
+          "text": "視床下部",
+          "why": "視床下部は調節の中枢だが、拍動そのものを生み出す場所ではない。"
+        },
+        {
+          "text": "延髄",
+          "why": "延髄は心拍を調節する中枢。リズムを生み出す心臓内の構造ではない。"
+        },
+        {
+          "text": "副腎髄質",
+          "why": "副腎髄質はアドレナリンを分泌する内分泌腺。心臓の構造ではない。"
+        }
+      ],
+      "oneLine": "洞房結節。右心房にあり自動的にリズムをつくる。自律神経は速さを調節するだけ。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_nerve:bio3_n_ke:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_nerve",
+        "subQuestionId": "bio3_n_ke"
+      },
+      "format": "choice4",
+      "prompt": "取り出した心臓が、神経がつながっていなくても拍動を続けるのはなぜか。",
+      "label": "",
+      "options": [
+        {
+          "text": "洞房結節が自動的に電気信号を出すから",
+          "correct": true,
+          "why": "拍動リズムは心臓自身の洞房結節がつくる。自律神経はその速さを変えるだけ。"
+        },
+        {
+          "text": "自律神経が心臓の中に残っているから",
+          "why": "神経がなくても拍動は続く。リズムの発生源は心臓内の洞房結節である。"
+        },
+        {
+          "text": "アドレナリンが心臓内でつくられるから",
+          "why": "アドレナリンは副腎髄質から分泌される。拍動リズムの発生源ではない。"
+        },
+        {
+          "text": "視床下部の命令が届き続けるから",
+          "why": "取り出した心臓に脳からの命令は届かない。それでも拍動する点が問題の要点。"
+        }
+      ],
+      "oneLine": "洞房結節が自動的に信号を出すから。自律神経は拍動の速さを調節するだけ。",
+      "timeLimit": 18,
+      "grounding": "洞房結節で自動的に作られ"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_a:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_a"
+      },
+      "format": "choice4",
+      "prompt": "ホルモンがつくられる腺を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "内分泌腺",
+          "correct": true,
+          "why": "ホルモンをつくり、排出管を通さず血液中に直接分泌する腺。"
+        },
+        {
+          "text": "外分泌腺",
+          "why": "外分泌腺は排出管を通して消化液などを出す腺。ホルモンの腺ではない。"
+        },
+        {
+          "text": "汗腺",
+          "why": "汗腺は汗を体表に出す外分泌腺の一つ。ホルモンをつくる腺ではない。"
+        },
+        {
+          "text": "リンパ節",
+          "why": "リンパ節は免疫の場。ホルモンを分泌する腺ではない。"
+        }
+      ],
+      "oneLine": "内分泌腺。ホルモンは排出管を通らず、血液中に直接分泌される。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_i:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_i"
+      },
+      "format": "choice4",
+      "prompt": "ホルモンは何の中に直接分泌されて全身を巡るか。",
+      "label": "",
+      "options": [
+        {
+          "text": "血液",
+          "correct": true,
+          "why": "内分泌腺から血液中に直接分泌され、全身を巡って標的細胞に届く。"
+        },
+        {
+          "text": "消化管",
+          "why": "消化管に出されるのは消化液。ホルモンは血液中に分泌される。"
+        },
+        {
+          "text": "空気",
+          "why": "ホルモンが体外に出されることはない。全身を巡るのは血液を通ってである。"
+        },
+        {
+          "text": "尿",
+          "why": "尿は排出される液。ホルモンが情報を伝えるための経路ではない。"
+        }
+      ],
+      "oneLine": "血液。内分泌腺は排出管をもたず、ホルモンを血液中に直接分泌する。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_u:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_u"
+      },
+      "format": "choice4",
+      "prompt": "ホルモンが作用する特定の細胞を何細胞というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "標的細胞",
+          "correct": true,
+          "why": "そのホルモンと結合する受容体をもつ細胞だけが作用を受ける。"
+        },
+        {
+          "text": "記憶細胞",
+          "why": "記憶細胞は獲得免疫で残るリンパ球。ホルモンの作用先ではない。"
+        },
+        {
+          "text": "形質細胞",
+          "why": "形質細胞は抗体をつくる細胞。ホルモンの受け手の呼び名ではない。"
+        },
+        {
+          "text": "食細胞",
+          "why": "食細胞は異物を取り込む白血球。ホルモンの標的の呼び名ではない。"
+        }
+      ],
+      "oneLine": "標的細胞。そのホルモンの受容体をもつ細胞だけが反応する。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_e:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_e"
+      },
+      "format": "choice4",
+      "prompt": "標的細胞が、そのホルモンと結合するためにもっているものは何か。",
+      "label": "",
+      "options": [
+        {
+          "text": "受容体",
+          "correct": true,
+          "why": "特定のホルモンと結合する受容体をもつ細胞だけが、そのホルモンに反応できる。"
+        },
+        {
+          "text": "抗体",
+          "why": "抗体は抗原と結合する免疫のタンパク質。ホルモンの受け手ではない。"
+        },
+        {
+          "text": "酵素",
+          "why": "酵素は化学反応を進める触媒。ホルモンを受け取るしくみそのものではない。"
+        },
+        {
+          "text": "染色体",
+          "why": "染色体はDNAとタンパク質の複合体。ホルモンの結合部位ではない。"
+        }
+      ],
+      "oneLine": "受容体。ホルモンは全身を巡るが、受容体をもつ標的細胞だけに作用する。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_o:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_o"
+      },
+      "format": "choice4",
+      "prompt": "健康なヒトの血糖濃度は、血液100mLあたり約何mgに保たれているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "約100mg",
+          "correct": true,
+          "why": "血液100mLあたり約100mg（0.1%）が基準値。グラフの目盛り読み取りの基準になる。"
+        },
+        {
+          "text": "約10mg",
+          "why": "桁が1つ小さい。基準値は100mLあたり約100mgである。"
+        },
+        {
+          "text": "約1000mg",
+          "why": "桁が1つ大きい。この値なら重い高血糖にあたる。"
+        },
+        {
+          "text": "約1mg",
+          "why": "極端に小さすぎる。血糖濃度の基準値は100mLあたり約100mg。"
+        }
+      ],
+      "oneLine": "約100mg（血液100mLあたり）。血糖グラフの基準線として覚える。",
+      "timeLimit": 14,
+      "grounding": "約100"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_ka:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_ka"
+      },
+      "format": "choice4",
+      "prompt": "すい臓にあって、インスリンやグルカゴンを分泌する内分泌腺の部分を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "ランゲルハンス島",
+          "correct": true,
+          "why": "すい臓内に散らばる内分泌部で、B細胞がインスリン、A細胞がグルカゴンを分泌する。"
+        },
+        {
+          "text": "副腎髄質",
+          "why": "副腎髄質はアドレナリンを分泌する。すい臓の部分ではない。"
+        },
+        {
+          "text": "副腎皮質",
+          "why": "副腎皮質は糖質コルチコイドを分泌する。すい臓ではない。"
+        },
+        {
+          "text": "脳下垂体前葉",
+          "why": "脳下垂体前葉は各種の刺激ホルモンを分泌する。すい臓の一部ではない。"
+        }
+      ],
+      "oneLine": "ランゲルハンス島。B細胞→インスリン、A細胞→グルカゴンを分泌する。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_ka:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_ka"
+      },
+      "format": "choice4",
+      "prompt": "血糖濃度を下げるはたらきをもつホルモンはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "インスリン",
+          "correct": true,
+          "why": "血糖を下げるホルモンはインスリンだけ。上げる系統は複数あるのが特徴。"
+        },
+        {
+          "text": "グルカゴン",
+          "why": "グルカゴンはグリコーゲンの分解を促し、血糖を上げる側のホルモン。"
+        },
+        {
+          "text": "アドレナリン",
+          "why": "アドレナリンもグリコーゲン分解を促進し、血糖を上げる。"
+        },
+        {
+          "text": "糖質コルチコイド",
+          "why": "糖質コルチコイドはタンパク質から糖をつくり、血糖を上げる。"
+        }
+      ],
+      "oneLine": "インスリン。下げるのはインスリンのみ、上げるのは複数という非対称性が要点。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_sa:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_sa"
+      },
+      "format": "choice4",
+      "prompt": "低血糖が続くと副腎皮質から分泌され、タンパク質からの糖の合成を促進するホルモンはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "糖質コルチコイド",
+          "correct": true,
+          "why": "副腎皮質から分泌され、タンパク質からの糖新生を促して血糖を上げる。"
+        },
+        {
+          "text": "アドレナリン",
+          "why": "アドレナリンは副腎髄質から。作用もグリコーゲンの分解促進である。"
+        },
+        {
+          "text": "グルカゴン",
+          "why": "グルカゴンはすい臓A細胞から。作用はグリコーゲンの分解促進。"
+        },
+        {
+          "text": "インスリン",
+          "why": "インスリンは血糖を下げるホルモン。低血糖のときに増える側ではない。"
+        }
+      ],
+      "oneLine": "糖質コルチコイド。副腎皮質から分泌され、タンパク質からの糖新生を促す。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_sa:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_sa"
+      },
+      "format": "choice4",
+      "prompt": "食後の血糖濃度とホルモン濃度のグラフで、血糖と同じ形で増減する曲線はどのホルモンか。",
+      "label": "",
+      "options": [
+        {
+          "text": "インスリン",
+          "correct": true,
+          "why": "血糖が上がると分泌が増えるので、血糖と同じ形の曲線になる。"
+        },
+        {
+          "text": "グルカゴン",
+          "why": "グルカゴンは血糖が下がると増えるので、血糖と逆の形の曲線になる。"
+        },
+        {
+          "text": "糖質コルチコイド",
+          "why": "低血糖が続いたときに増えるホルモン。食後に血糖と同調して増える曲線ではない。"
+        },
+        {
+          "text": "チロキシン",
+          "why": "チロキシンは代謝を高める甲状腺ホルモン。血糖と同調する曲線の主役ではない。"
+        }
+      ],
+      "oneLine": "インスリン。血糖と同じ形＝インスリン、逆の形＝グルカゴンと判定する。",
+      "timeLimit": 18,
+      "grounding": "「血糖と同じ形で増減する曲線＝インスリン」"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_si:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_si"
+      },
+      "format": "choice4",
+      "prompt": "インスリンの分泌不足や標的細胞の反応低下により、血糖濃度が高いままになる病気を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "糖尿病",
+          "correct": true,
+          "why": "インスリンが足りない、または効きにくいために血糖が下がらなくなる病気。"
+        },
+        {
+          "text": "低血糖症",
+          "why": "低血糖症は血糖が下がりすぎる状態。ここでは高いままになる病気を聞いている。"
+        },
+        {
+          "text": "アレルギー",
+          "why": "アレルギーは無害な抗原への過剰な免疫反応。血糖調節の病気ではない。"
+        },
+        {
+          "text": "拒絶反応",
+          "why": "拒絶反応は移植した他人の細胞を攻撃する免疫の反応。血糖とは無関係。"
+        }
+      ],
+      "oneLine": "糖尿病。Ⅰ型（分泌されない）とⅡ型（分泌されても下がらない）の区別が問われる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_si:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_si"
+      },
+      "format": "choice4",
+      "prompt": "Ⅱ型の糖尿病の特徴として正しいのはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "インスリンが分泌されても血糖が下がらない",
+          "correct": true,
+          "why": "Ⅱ型は標的細胞の反応が低下する型。分泌はあるのに効きにくい。"
+        },
+        {
+          "text": "インスリンがほとんど分泌されない",
+          "why": "これはⅠ型の特徴。Ⅰ型とⅡ型の入れ替えが最頻出のひっかけ。"
+        },
+        {
+          "text": "グルカゴンがまったく分泌されない",
+          "why": "糖尿病はインスリン側の問題。グルカゴンの欠乏で説明する病気ではない。"
+        },
+        {
+          "text": "血糖濃度が常に低いままになる",
+          "why": "糖尿病では血糖が高いままになる。低いままになる病気ではない。"
+        }
+      ],
+      "oneLine": "分泌されても血糖が下がらない（Ⅱ型）。Ⅰ型はインスリンがほとんど分泌されない型。",
+      "timeLimit": 18,
+      "grounding": "Ⅱ型（分泌されても血糖が下がらない）"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_hormone:bio3_h_o:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_hormone",
+        "subQuestionId": "bio3_h_o"
+      },
+      "format": "choice4",
+      "prompt": "血糖濃度のように、結果が原因側に働きかけて量を一定に保つしくみを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "フィードバック",
+          "correct": true,
+          "why": "結果（血糖濃度）が原因（分泌）に影響を与えて一定に保つしくみ。"
+        },
+        {
+          "text": "拮抗作用",
+          "why": "拮抗作用は2つの神経が反対に働くこと。結果が原因に戻るしくみではない。"
+        },
+        {
+          "text": "抗原抗体反応",
+          "why": "抗原抗体反応は抗体が抗原と結合する免疫の反応。調節のしくみではない。"
+        },
+        {
+          "text": "食作用",
+          "why": "食作用は食細胞が異物を取り込むこと。分泌量の調節とは無関係。"
+        }
+      ],
+      "oneLine": "（負の）フィードバック。チロキシンの分泌調節も同じ原理で、あわせて頻出。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_a:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_a"
+      },
+      "format": "choice4",
+      "prompt": "皮膚の角質層や粘膜によって病原体の侵入自体を防ぐ第一の防御は、何的・化学的防御と呼ばれるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "物理的",
+          "correct": true,
+          "why": "第1段階は物理的・化学的防御。角質層や粘膜で侵入させないしくみ。"
+        },
+        {
+          "text": "生物的",
+          "why": "生物的という区分は使われない。第1段階は物理的・化学的防御という。"
+        },
+        {
+          "text": "免疫的",
+          "why": "免疫は侵入後にはたらくしくみ。侵入自体を防ぐ段階の呼び名ではない。"
+        },
+        {
+          "text": "遺伝的",
+          "why": "遺伝的という区分ではない。侵入を防ぐ構造や液の性質による防御である。"
+        }
+      ],
+      "oneLine": "物理的。角質層・粘膜・繊毛運動などによる第1段階の防御。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_i:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_i"
+      },
+      "format": "choice",
+      "prompt": "病原体の繁殖を防ぐために、皮膚の表面は弱酸性と弱塩基性のどちらに保たれているか。",
+      "label": "",
+      "options": [
+        {
+          "text": "弱酸性",
+          "correct": true,
+          "why": "皮膚表面が弱酸性に保たれることは化学的防御の一つ。細菌が増えにくくなる。"
+        },
+        {
+          "text": "弱塩基性",
+          "why": "皮膚表面は弱塩基性ではない。胃酸と同じく「酸性で守る」と覚える。"
+        }
+      ],
+      "oneLine": "弱酸性。皮膚の弱酸性やリゾチーム、胃酸などが化学的防御にあたる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_e:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_e"
+      },
+      "format": "choice4",
+      "prompt": "好中球・マクロファージとともに病原体を取り込んで分解する食細胞はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "樹状細胞",
+          "correct": true,
+          "why": "食作用をもつ食細胞の一つ。取り込んだ抗原を提示して獲得免疫につなげる。"
+        },
+        {
+          "text": "赤血球",
+          "why": "赤血球のはたらきは酸素運搬。食作用はもたない。"
+        },
+        {
+          "text": "血小板",
+          "why": "血小板のはたらきは血液凝固。病原体を取り込む細胞ではない。"
+        },
+        {
+          "text": "形質細胞",
+          "why": "形質細胞は抗体をつくる細胞。食作用を行う食細胞ではない。"
+        }
+      ],
+      "oneLine": "樹状細胞。好中球・マクロファージとともに食作用を行い、抗原提示も担う。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_o:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_o"
+      },
+      "format": "choice4",
+      "prompt": "食細胞が病原体を取り込んで分解するはたらきを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "食作用",
+          "correct": true,
+          "why": "好中球・マクロファージ・樹状細胞が病原体を取り込んで分解するはたらき。"
+        },
+        {
+          "text": "抗原抗体反応",
+          "why": "抗原抗体反応は抗体が抗原と結合する反応。取り込んで分解することではない。"
+        },
+        {
+          "text": "再吸収",
+          "why": "再吸収は腎臓で必要成分を血液へ戻すこと。免疫のはたらきではない。"
+        },
+        {
+          "text": "解毒作用",
+          "why": "解毒作用は肝臓が有害物質を分解すること。食細胞のはたらきの名ではない。"
+        }
+      ],
+      "oneLine": "食作用。自然免疫の中心で、幅広い異物にすばやく反応する。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_ka:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_ka"
+      },
+      "format": "choice4",
+      "prompt": "生まれつき備わり、幅広い異物にすばやく反応する免疫を何免疫というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "自然免疫",
+          "correct": true,
+          "why": "食作用やNK細胞による攻撃が中心。特異性は低く、記憶も残らない。"
+        },
+        {
+          "text": "獲得免疫",
+          "why": "獲得免疫はリンパ球が特定の抗原を認識するしくみ。反応に数日かかる。"
+        },
+        {
+          "text": "体液性免疫",
+          "why": "体液性免疫は獲得免疫の一方。抗体で攻撃するしくみである。"
+        },
+        {
+          "text": "細胞性免疫",
+          "why": "細胞性免疫も獲得免疫の一方。キラーT細胞が直接攻撃するしくみ。"
+        }
+      ],
+      "oneLine": "自然免疫。速いが特異性は低く、記憶細胞は残らない。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_ka:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_ka"
+      },
+      "format": "choice4",
+      "prompt": "自然免疫で、ウイルスに感染した細胞を攻撃するリンパ球はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "NK細胞",
+          "correct": true,
+          "why": "自然免疫の一員で、ウイルス感染細胞を攻撃する。キラーT細胞とは別。"
+        },
+        {
+          "text": "キラーT細胞",
+          "why": "キラーT細胞は獲得免疫（細胞性免疫）の担い手。自然免疫ではない。"
+        },
+        {
+          "text": "B細胞",
+          "why": "B細胞は獲得免疫で抗体産生につながるリンパ球。自然免疫ではない。"
+        },
+        {
+          "text": "ヘルパーT細胞",
+          "why": "ヘルパーT細胞は獲得免疫の司令塔。感染細胞を直接攻撃する役ではない。"
+        }
+      ],
+      "oneLine": "NK細胞。自然免疫でウイルス感染細胞を攻撃する。キラーT細胞との区別に注意。",
+      "timeLimit": 16,
+      "grounding": "NK細胞によるウイルス感染細胞の攻撃"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_ki:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_ki"
+      },
+      "format": "choice4",
+      "prompt": "リンパ球が特定の異物を認識して排除する免疫を何免疫というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "獲得免疫",
+          "correct": true,
+          "why": "T細胞・B細胞が抗原を特異的に認識する。反応に数日かかるが記憶細胞が残る。"
+        },
+        {
+          "text": "自然免疫",
+          "why": "自然免疫は生まれつき備わり幅広い異物に速く反応するしくみ。特異性は低い。"
+        },
+        {
+          "text": "物理的防御",
+          "why": "物理的防御は皮膚や粘膜で侵入を防ぐ第1段階。リンパ球のはたらきではない。"
+        },
+        {
+          "text": "化学的防御",
+          "why": "化学的防御は皮膚の弱酸性やリゾチームなど。特定の異物を認識するものではない。"
+        }
+      ],
+      "oneLine": "獲得免疫（適応免疫）。特定の抗原を狙い撃ちし、記憶細胞が残る。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_ku:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_ku"
+      },
+      "format": "choice4",
+      "prompt": "獲得免疫で認識される異物を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "抗原",
+          "correct": true,
+          "why": "リンパ球が特異的に認識する異物を抗原という。抗体はこれに結合する側。"
+        },
+        {
+          "text": "抗体",
+          "why": "抗体は抗原と結合するタンパク質。認識される側ではなく攻撃する側。"
+        },
+        {
+          "text": "受容体",
+          "why": "受容体はホルモンや抗原を受け取る側の構造。異物そのものの呼び名ではない。"
+        },
+        {
+          "text": "記憶細胞",
+          "why": "記憶細胞は反応したリンパ球の一部が残ったもの。異物ではない。"
+        }
+      ],
+      "oneLine": "抗原。獲得免疫はこの抗原を特異的に認識して排除する。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_ke:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_ke"
+      },
+      "format": "choice4",
+      "prompt": "一度抗原に反応したリンパ球の一部が、体内に残って何細胞になるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "記憶細胞",
+          "correct": true,
+          "why": "記憶細胞が残るため、同じ抗原の2回目の侵入では速く強い反応が起こる。"
+        },
+        {
+          "text": "形質細胞",
+          "why": "形質細胞は抗体をつくる細胞。長く残って次に備える細胞ではない。"
+        },
+        {
+          "text": "食細胞",
+          "why": "食細胞は自然免疫で異物を取り込む細胞。記憶を担う細胞ではない。"
+        },
+        {
+          "text": "標的細胞",
+          "why": "標的細胞はホルモンが作用する細胞。免疫の記憶とは無関係。"
+        }
+      ],
+      "oneLine": "記憶細胞。これが残ることで二次応答が可能になる。自然免疫では残らない。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_ko:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_ko"
+      },
+      "format": "choice",
+      "prompt": "同じ抗原が再び侵入したとき、1回目と比べて反応はどうなるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "速く強い反応が起こる",
+          "correct": true,
+          "why": "記憶細胞が即座に増殖するため、1回目より速く強く反応する。"
+        },
+        {
+          "text": "遅く弱い反応が起こる",
+          "why": "記憶細胞が残っているのだから反応は速く強くなる。向きを取り違えた誤り。"
+        }
+      ],
+      "oneLine": "速く強い反応。グラフでは1回目が緩やかな小さい山、2回目が急峻で大きい山になる。",
+      "timeLimit": 12,
+      "grounding": "速く・強く反応します"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune1:bio3_i_sa:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune1",
+        "subQuestionId": "bio3_i_sa"
+      },
+      "format": "choice4",
+      "prompt": "同じ抗原の2回目の侵入で、記憶細胞のはたらきによって起こる速く強い反応を何応答というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "二次応答",
+          "correct": true,
+          "why": "記憶細胞が即座に増殖して起こる反応。予防接種はこれを利用している。"
+        },
+        {
+          "text": "一次応答",
+          "why": "一次応答は1回目の反応で、緩やかで小さい。2回目の呼び名ではない。"
+        },
+        {
+          "text": "拒絶反応",
+          "why": "拒絶反応は移植した他人の細胞を攻撃する反応。2回目の反応の名ではない。"
+        },
+        {
+          "text": "アレルギー",
+          "why": "アレルギーは無害な抗原への過剰反応。2回目に速く強く反応することの名ではない。"
+        }
+      ],
+      "oneLine": "二次応答。予防接種は弱毒化した抗原で記憶細胞を作らせ、二次応答で守るしくみ。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_ka:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_ka"
+      },
+      "format": "choice4",
+      "prompt": "予防接種（ワクチン）と血清療法の違いとして正しいのはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "ワクチンは記憶細胞をつくらせ、血清療法は抗体を注射する",
+          "correct": true,
+          "why": "ワクチンは予防、血清療法は抗体そのものを入れる即効性の治療である。"
+        },
+        {
+          "text": "ワクチンは抗体を注射し、血清療法は記憶細胞をつくらせる",
+          "why": "説明が入れ替わっている。これが最頻出のひっかけ。"
+        },
+        {
+          "text": "どちらも抗体を直接注射する方法である",
+          "why": "抗体を注射するのは血清療法だけ。ワクチンは抗原を接種する。"
+        },
+        {
+          "text": "どちらも感染後の治療専用の方法である",
+          "why": "ワクチンは感染前に行う予防法。治療専用ではない。"
+        }
+      ],
+      "oneLine": "ワクチン＝記憶細胞をつくる予防、血清療法＝抗体を注射する即効性の治療。",
+      "timeLimit": 20,
+      "grounding": "血清療法：あらかじめ動物に作らせた抗体を注射（即効性、ヘビ毒など）"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_a:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_a"
+      },
+      "format": "choice4",
+      "prompt": "獲得免疫の入口で、抗原を食作用で取り込み、その断片を細胞表面に示す食細胞はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "樹状細胞",
+          "correct": true,
+          "why": "抗原を取り込み、リンパ節で抗原提示してヘルパーT細胞を活性化する。"
+        },
+        {
+          "text": "B細胞",
+          "why": "B細胞は抗体産生につながるリンパ球。食細胞として提示の主役ではない。"
+        },
+        {
+          "text": "キラーT細胞",
+          "why": "キラーT細胞は提示を受けて感染細胞を攻撃する側。提示する側ではない。"
+        },
+        {
+          "text": "赤血球",
+          "why": "赤血球のはたらきは酸素運搬。免疫には関わらない。"
+        }
+      ],
+      "oneLine": "樹状細胞。抗原を取り込んで提示し、ヘルパーT細胞を活性化させる共通の入口。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_i:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_i"
+      },
+      "format": "choice4",
+      "prompt": "食細胞が取り込んだ抗原の断片を、細胞表面に示すことを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "抗原提示",
+          "correct": true,
+          "why": "取り込んだ抗原の断片を表面に示し、T細胞に情報を渡すはたらき。"
+        },
+        {
+          "text": "抗原抗体反応",
+          "why": "抗原抗体反応は抗体が抗原と結合する反応。情報を示すことではない。"
+        },
+        {
+          "text": "食作用",
+          "why": "食作用は取り込んで分解する段階。そのあと表面に示す段階が抗原提示。"
+        },
+        {
+          "text": "二次応答",
+          "why": "二次応答は同じ抗原の2回目の侵入で起こる反応。提示のはたらきの名ではない。"
+        }
+      ],
+      "oneLine": "抗原提示。樹状細胞がリンパ節で行い、ヘルパーT細胞が情報を受け取る。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_e:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_e"
+      },
+      "format": "choice4",
+      "prompt": "ヘルパーT細胞の助けを受けて増殖し、のちに抗体産生細胞に分化するリンパ球はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "B細胞",
+          "correct": true,
+          "why": "ヘルパーT細胞の助けで増殖し、形質細胞（抗体産生細胞）に分化する。"
+        },
+        {
+          "text": "キラーT細胞",
+          "why": "キラーT細胞は感染細胞を直接攻撃する側。抗体はつくらない。"
+        },
+        {
+          "text": "NK細胞",
+          "why": "NK細胞は自然免疫でウイルス感染細胞を攻撃する。抗体産生には至らない。"
+        },
+        {
+          "text": "マクロファージ",
+          "why": "マクロファージは食作用を行う食細胞。抗体をつくる細胞に分化しない。"
+        }
+      ],
+      "oneLine": "B細胞。ヘルパーT細胞の助けで増殖し、形質細胞に分化して抗体を出す。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_o:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_o"
+      },
+      "format": "choice4",
+      "prompt": "増殖したB細胞が分化してできる、抗体を産生する細胞を何細胞というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "形質細胞",
+          "correct": true,
+          "why": "抗体産生細胞のこと。B細胞が分化してできて、抗体を体液中に放出する。"
+        },
+        {
+          "text": "記憶細胞",
+          "why": "記憶細胞は次の侵入に備えて残る細胞。抗体を大量に出す役ではない。"
+        },
+        {
+          "text": "樹状細胞",
+          "why": "樹状細胞は抗原提示を行う食細胞。抗体をつくる細胞ではない。"
+        },
+        {
+          "text": "標的細胞",
+          "why": "標的細胞はホルモンが作用する細胞。免疫の細胞名ではない。"
+        }
+      ],
+      "oneLine": "形質細胞（抗体産生細胞）。B細胞が分化してでき、抗体を体液中に放出する。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_ka:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_ka"
+      },
+      "format": "choice4",
+      "prompt": "形質細胞が体液中に放出し、抗原と特異的に結合するタンパク質を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "抗体",
+          "correct": true,
+          "why": "免疫グロブリンとも呼ばれるタンパク質で、抗原と特異的に結合して無毒化する。"
+        },
+        {
+          "text": "抗原",
+          "why": "抗原は認識される異物の側。結合しに行くタンパク質ではない。"
+        },
+        {
+          "text": "受容体",
+          "why": "受容体は細胞表面でホルモンなどを受け取る構造。体液中に放出されない。"
+        },
+        {
+          "text": "リゾチーム",
+          "why": "リゾチームは涙やだ液に含まれる殺菌作用の酵素。抗体ではない。"
+        }
+      ],
+      "oneLine": "抗体（免疫グロブリン）。抗原と特異的に結合して無毒化し、食作用を受けやすくする。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_ki:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_ki"
+      },
+      "format": "choice4",
+      "prompt": "抗体が抗原と特異的に結合する反応を何反応というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "抗原抗体反応",
+          "correct": true,
+          "why": "抗体が抗原と特異的に結合する反応。無毒化や食作用の促進につながる。"
+        },
+        {
+          "text": "拒絶反応",
+          "why": "拒絶反応は移植された他人の細胞を攻撃する反応。細胞性免疫の話である。"
+        },
+        {
+          "text": "アレルギー反応",
+          "why": "アレルギー反応は無害な抗原への過剰な免疫反応。結合そのものの名ではない。"
+        },
+        {
+          "text": "ツベルクリン反応",
+          "why": "ツベルクリン反応は細胞性免疫を利用した検査。抗体の結合の名ではない。"
+        }
+      ],
+      "oneLine": "抗原抗体反応。抗体が抗原と特異的に結合し、無毒化や食作用の促進が起こる。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_ku:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_ku"
+      },
+      "format": "choice4",
+      "prompt": "B細胞がつくった抗体によって抗原を排除するしくみを何免疫というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "体液性免疫",
+          "correct": true,
+          "why": "抗体が体液中に放出されて抗原と結合するしくみ。主な標的は体液中の細菌や毒素。"
+        },
+        {
+          "text": "細胞性免疫",
+          "why": "細胞性免疫はキラーT細胞が細胞を直接攻撃するしくみ。抗体は使わない。"
+        },
+        {
+          "text": "自然免疫",
+          "why": "自然免疫は食作用やNK細胞が中心。抗体をつくるしくみではない。"
+        },
+        {
+          "text": "物理的防御",
+          "why": "物理的防御は皮膚や粘膜で侵入を防ぐ段階。抗体とは関係がない。"
+        }
+      ],
+      "oneLine": "体液性免疫。抗体で攻撃するしくみで、標的は体液中の細菌や毒素。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_ko:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_ko"
+      },
+      "format": "choice4",
+      "prompt": "キラーT細胞がウイルス感染細胞やがん細胞を直接攻撃して破壊するしくみを何免疫というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "細胞性免疫",
+          "correct": true,
+          "why": "抗体を使わず、キラーT細胞が細胞を直接破壊するしくみ。標的は細胞の中に隠れた敵。"
+        },
+        {
+          "text": "体液性免疫",
+          "why": "体液性免疫は抗体で攻撃するしくみ。直接攻撃するのは細胞性免疫。"
+        },
+        {
+          "text": "自然免疫",
+          "why": "自然免疫は生まれつき備わるしくみ。キラーT細胞は獲得免疫の担い手である。"
+        },
+        {
+          "text": "化学的防御",
+          "why": "化学的防御は皮膚の弱酸性やリゾチームなど。細胞の直接攻撃ではない。"
+        }
+      ],
+      "oneLine": "細胞性免疫。キラーT細胞が細胞を直接破壊する。標的は細胞の中に隠れた敵。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_sa:1",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_sa"
+      },
+      "format": "choice4",
+      "prompt": "他人の臓器を移植したときに、細胞性免疫によって移植片が攻撃される反応を何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "拒絶反応",
+          "correct": true,
+          "why": "キラーT細胞が移植された細胞を異物として直接攻撃するために起こる。"
+        },
+        {
+          "text": "抗原抗体反応",
+          "why": "抗原抗体反応は抗体が抗原と結合する体液性免疫の反応。移植片の攻撃ではない。"
+        },
+        {
+          "text": "二次応答",
+          "why": "二次応答は同じ抗原の2回目の侵入で起こる速く強い反応。移植の反応名ではない。"
+        },
+        {
+          "text": "アナフィラキシーショック",
+          "why": "これはアレルギーの重症な全身反応。移植片への攻撃の呼び名ではない。"
+        }
+      ],
+      "oneLine": "拒絶反応。細胞性免疫によるもので、ツベルクリン反応も同じ細胞性免疫のはたらき。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_sa:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_sa"
+      },
+      "format": "choice4",
+      "prompt": "エイズ（AIDS）で獲得免疫全体が働かなくなるのは、HIVがどの細胞に感染するからか。",
+      "label": "",
+      "options": [
+        {
+          "text": "ヘルパーT細胞",
+          "correct": true,
+          "why": "司令塔であるヘルパーT細胞が破壊されるため、獲得免疫全体が機能不全になる。"
+        },
+        {
+          "text": "赤血球",
+          "why": "赤血球は酸素運搬を担う。免疫の司令塔ではない。"
+        },
+        {
+          "text": "形質細胞",
+          "why": "形質細胞は抗体をつくる細胞。ここを失っても細胞性免疫までは止まらない。"
+        },
+        {
+          "text": "血小板",
+          "why": "血小板は血液凝固を担う。免疫の司令塔ではない。"
+        }
+      ],
+      "oneLine": "ヘルパーT細胞。司令塔を失うため獲得免疫全体が働かず、日和見感染が起こる。",
+      "timeLimit": 18,
+      "grounding": "HIVがヘルパーT細胞に感染・破壊 → 司令塔を失い獲得免疫全体が機能不全"
+    },
+    {
+      "id": "a:bio3_1:q_bio3_immune2:bio3_j_ku:2",
+      "source": {
+        "chapterId": "bio3_1",
+        "problemId": "q_bio3_immune2",
+        "subQuestionId": "bio3_j_ku"
+      },
+      "format": "choice4",
+      "prompt": "花粉など無害な抗原に対して過剰な免疫反応が起こることを何というか。",
+      "label": "",
+      "options": [
+        {
+          "text": "アレルギー",
+          "correct": true,
+          "why": "無害な抗原への過剰な免疫反応。重症の全身反応がアナフィラキシーショック。"
+        },
+        {
+          "text": "拒絶反応",
+          "why": "拒絶反応は移植された他人の細胞への攻撃。無害な抗原への過剰反応ではない。"
+        },
+        {
+          "text": "日和見感染",
+          "why": "日和見感染は免疫が弱ったときに弱い病原体で発病すること。過剰反応ではない。"
+        },
+        {
+          "text": "二次応答",
+          "why": "二次応答は同じ抗原の2回目に起こる正常で有益な反応。過剰反応の名ではない。"
+        }
+      ],
+      "oneLine": "アレルギー。無害な抗原への過剰な免疫反応で、重症の全身反応がアナフィラキシーショック。",
+      "timeLimit": 14
+    }
+  ]
+}

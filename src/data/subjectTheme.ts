@@ -30,6 +30,8 @@
 
 // 教科IDの型は allChapters.ts の SubjectKey が唯一の定義
 import type { SubjectKey } from './allChapters';
+// 本体に教科データを持たない教科（高校入試 理科など）の配色
+import { externalSubjectOf } from './externalSubjects';
 
 /**
  * 配色を引くときに渡す教科ID。
@@ -160,9 +162,41 @@ const THEMES: Record<TipSubject, SubjectTheme> = {
   },
 };
 
-/** 科目に対応する配色を返す。未知の値でも化学基礎にフォールバックして画面を落とさない。 */
+/**
+ * 科目に対応する配色を返す。未知の値でも化学基礎にフォールバックして画面を落とさない。
+ *
+ * ★外部教科（SubjectKey に無い教科）もここで拾う★
+ * 高校入試 理科（rika）は本体の教科データを持たないため SubjectKey に無い。
+ * 拾わないと「未知の教科」としてローズ色（化学基礎）に落ち、
+ * 対戦の教科選択・待合室・出題・結果・履歴の5画面すべてで
+ * ★理科が「化学基礎」の色で表示される★ ことになる。
+ * 呼び出し側は subject を string として渡してくる場所があるので、
+ * 引数の型は広げず、中で文字列として突き合わせる。
+ */
 export function subjectTheme(subject: TipSubject | undefined): SubjectTheme {
-  return (subject && THEMES[subject]) || THEMES.chemistry_basic;
+  if (subject) {
+    const known = THEMES[subject];
+    if (known) return known;
+    const external = externalSubjectOf(subject);
+    // 項目名を SubjectTheme と揃えてあるので、そのまま配色として使える。
+    // （食い違っていればこの代入で型エラーになる＝取り違えを機械が止める）
+    if (external) {
+      const theme: SubjectTheme = {
+        label: external.label,
+        accent: external.accent,
+        accentSoft: external.accentSoft,
+        surface: external.surface,
+        bubbleBorderClass: external.bubbleBorderClass,
+        bubbleBgClass: external.bubbleBgClass,
+        bubbleShadow: external.bubbleShadow,
+        chipTextClass: external.chipTextClass,
+        chipBgClass: external.chipBgClass,
+        progressBarClass: external.progressBarClass,
+      };
+      return theme;
+    }
+  }
+  return THEMES.chemistry_basic;
 }
 
 /** テスト・検証用に一覧を公開する（実装と期待値が乖離しないようにするため）。 */

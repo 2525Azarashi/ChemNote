@@ -1,0 +1,231 @@
+{
+  "subject": "math",
+  "chapterId": "mv_1",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:mv_1:q_mv_1_comp:q_mv_1_comp_1:1",
+      "source": {
+        "chapterId": "mv_1",
+        "problemId": "q_mv_1_comp",
+        "subQuestionId": "q_mv_1_comp_1"
+      },
+      "format": "choice4",
+      "prompt": "a = (2, -1)、b = (-1, 3) のとき、2a + b の成分はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(3, 1)",
+          "correct": true,
+          "why": "x 成分は 2·2 + (-1) = 3、y 成分は 2·(-1) + 3 = 1。成分ごとに別々に計算する。"
+        },
+        {
+          "text": "(3, 2)",
+          "why": "y 成分で -1 を 2 倍せず 3 - 1 = 2 とした形。2 倍は両成分に掛ける。"
+        },
+        {
+          "text": "(5, 1)",
+          "why": "x 成分で b の -1 を足さず 2·2 + 1 とした形。符号をそのまま足す。"
+        },
+        {
+          "text": "(1, 5)",
+          "why": "b を 2 倍して a を足した形。係数が付くのは a の方。"
+        }
+      ],
+      "oneLine": "(3, 1)。x 成分どうし・y 成分どうしを別々に計算するだけ。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:mv_1:q_mv_1_comp:q_mv_1_comp_2:1",
+      "source": {
+        "chapterId": "mv_1",
+        "problemId": "q_mv_1_comp",
+        "subQuestionId": "q_mv_1_comp_2"
+      },
+      "format": "choice4",
+      "prompt": "a = (2, -1) のとき |a| はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "√5",
+          "correct": true,
+          "why": "|a| = √(2² + (-1)²) = √(4+1) = √5。大きさは三平方の定理そのもの。"
+        },
+        {
+          "text": "√3（符号を落として 4-1 とした値）",
+          "why": "-1 を 2 乗せずに引いた形。2 乗すれば符号は消えて +1 になる。"
+        },
+        {
+          "text": "1（成分をそのまま足した値）",
+          "why": "2 + (-1) = 1 とした形。大きさは √(x²+y²) で計算する。"
+        },
+        {
+          "text": "根号を外した 5 という値",
+          "why": "根号を外し忘れた形。x²+y² = 5 の平方根が答え。"
+        }
+      ],
+      "oneLine": "√5。|a| = √(x²+y²) に 2 と -1 を入れるだけ。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:mv_1:q_mv_1_comp:q_mv_1_comp_3:1",
+      "source": {
+        "chapterId": "mv_1",
+        "problemId": "q_mv_1_comp",
+        "subQuestionId": "q_mv_1_comp_3"
+      },
+      "format": "choice4",
+      "prompt": "a = (2, -1)、b = (-1, 3) のとき、a - 2b の成分はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(4, -7)",
+          "correct": true,
+          "why": "x 成分は 2 - 2·(-1) = 4、y 成分は -1 - 2·3 = -7。マイナス × マイナスで +2 になる点が要点。"
+        },
+        {
+          "text": "(0, -7)",
+          "why": "x 成分で 2 - 2 とした形。b の x 成分は -1 なので引くと +2 増える。"
+        },
+        {
+          "text": "(4, 5)",
+          "why": "y 成分で -1 + 2·3 とした形。引き算なので -6 する。"
+        },
+        {
+          "text": "(1, -4)",
+          "why": "b を 2 倍せずに引いた形。係数 2 を両成分に掛ける。"
+        }
+      ],
+      "oneLine": "(4, -7)。2 - 2·(-1) = 4、-1 - 2·3 = -7。符号の処理が山。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:mv_1:q_mv_1_comp:q_mv_1_comp_4:1",
+      "source": {
+        "chapterId": "mv_1",
+        "problemId": "q_mv_1_comp",
+        "subQuestionId": "q_mv_1_comp_4"
+      },
+      "format": "choice4",
+      "prompt": "a - 2b = (4, -7) のとき |a - 2b| はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "√65",
+          "correct": true,
+          "why": "√(4² + (-7)²) = √(16 + 49) = √65。まず成分を出してから √(x²+y²) の順で計算する。"
+        },
+        {
+          "text": "√33（16-49 の符号を誤った形）",
+          "why": "-7 の 2 乗を引いてしまった形。2 乗すれば必ず正になる。"
+        },
+        {
+          "text": "3（成分をそのまま足した値）",
+          "why": "4 + (-7) = -3 のように成分を足した形。大きさは 2 乗して足す。"
+        },
+        {
+          "text": "根号を外した 65 という値",
+          "why": "根号を外し忘れた形。x²+y² = 65 の平方根が答え。"
+        }
+      ],
+      "oneLine": "√65。16 + 49 = 65 の平方根。2 乗を忘れないこと。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:mv_1:q_mv_1_unit:q_mv_1_unit_1:1",
+      "source": {
+        "chapterId": "mv_1",
+        "problemId": "q_mv_1_unit",
+        "subQuestionId": "q_mv_1_unit_1"
+      },
+      "format": "choice4",
+      "prompt": "a = (3, 4) のとき |a| はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "5",
+          "correct": true,
+          "why": "√(3² + 4²) = √25 = 5。3:4:5 の直角三角形の形。"
+        },
+        {
+          "text": "7（成分をそのまま足した値）",
+          "why": "3 + 4 = 7 とした形。大きさは 2 乗して足してから根号をとる。"
+        },
+        {
+          "text": "√7",
+          "why": "3 + 4 に根号をつけた形。中身は 9 + 16 = 25。"
+        },
+        {
+          "text": "12（成分の積）",
+          "why": "3 × 4 とした形。大きさは三平方の定理で求める。"
+        }
+      ],
+      "oneLine": "5。√(9+16) = √25 = 5。3:4:5 は覚えておくと速い。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:mv_1:q_mv_1_unit:q_mv_1_unit_2:1",
+      "source": {
+        "chapterId": "mv_1",
+        "problemId": "q_mv_1_unit",
+        "subQuestionId": "q_mv_1_unit_2"
+      },
+      "format": "choice4",
+      "prompt": "a = (3, 4) と同じ向きの単位ベクトルの成分はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(3/5, 4/5)",
+          "correct": true,
+          "why": "単位ベクトルは a/|a|。|a| = 5 なので各成分を 5 で割る。"
+        },
+        {
+          "text": "(5/3, 5/4)",
+          "why": "割る向きを逆にした形。ベクトルを大きさで割る。"
+        },
+        {
+          "text": "(3/25, 4/25)",
+          "why": "|a|² で割った形。割るのは大きさ 5。"
+        },
+        {
+          "text": "(4/5, 3/5)",
+          "why": "x 成分と y 成分を入れ替えた形。向きが変わってしまう。"
+        }
+      ],
+      "oneLine": "(3/5, 4/5)。元のベクトルを自分の大きさで割れば長さ 1 になる。",
+      "timeLimit": 16
+    },
+    {
+      "id": "a:mv_1:q_mv_1_unit:q_mv_1_unit_3:1",
+      "source": {
+        "chapterId": "mv_1",
+        "problemId": "q_mv_1_unit",
+        "subQuestionId": "q_mv_1_unit_3"
+      },
+      "format": "choice4",
+      "prompt": "a = (3, 4) に平行で大きさ 10、x 成分が正のベクトルの成分はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(6, 8)",
+          "correct": true,
+          "why": "単位ベクトル (3/5, 4/5) を 10 倍。x 成分が正なので +側をとる。"
+        },
+        {
+          "text": "(30, 40)",
+          "why": "元のベクトルをそのまま 10 倍した形。大きさは 50 になってしまう。"
+        },
+        {
+          "text": "(-6, -8)",
+          "why": "大きさは 10 だが x 成分が負。条件は x 成分が正のもの。"
+        },
+        {
+          "text": "(5, 5)",
+          "why": "大きさが 10 でなく、a に平行でもない。平行は実数倍で表せることが条件。"
+        }
+      ],
+      "oneLine": "(6, 8)。単位ベクトルを 10 倍し、x 成分が正の側をとる。",
+      "timeLimit": 20
+    }
+  ]
+}

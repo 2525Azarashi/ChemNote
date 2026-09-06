@@ -1,0 +1,225 @@
+{
+  "subject": "math",
+  "chapterId": "m1_1",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:m1_1:q_m1_1_pow:q_m1_1_pow_1:1",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_pow", "subQuestionId": "q_m1_1_pow_1" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ x^4 dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "x^5/5 + C", "correct": true,
+          "why": "公式 ∫ x^n dx = x^(n+1)/(n+1) + C に n = 4 を入れると x^5/5 + C。解説の「そのまま公式で、x^5/5 + C」のとおり。" },
+        { "text": "4x^3 + C",
+          "why": "これは x^4 を微分した結果。解説は「積分は微分の逆演算」と述べており、逆向きに動かしてしまうのが典型ミス。" },
+        { "text": "x^5/4 + C",
+          "why": "指数は1増やせているが、割る数を元の指数 4 のままにしている。割るのは新しい指数 n+1 = 5。" },
+        { "text": "x^5 + C",
+          "why": "指数を1増やしただけで割る操作を忘れている。微分して戻すと 5x^4 になり、元の x^4 に戻らない。" }
+      ],
+      "oneLine": "x^5/5 + C。指数を1増やして、その新しい指数で割るのが ∫x^n dx の公式。",
+      "timeLimit": 15,
+      "grounding": "そのまま公式で、x^5/5 + C。"
+    },
+    {
+      "id": "a:m1_1:q_m1_1_pow:q_m1_1_pow_2:1",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_pow", "subQuestionId": "q_m1_1_pow_2" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ 1/x^3 dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "-1/(2x^2) + C", "correct": true,
+          "why": "1/x^3 = x^(-3) と直し n = -3 を公式に入れると x^(-2)/(-2) = -1/(2x^2) + C。解説の記述そのまま。" },
+        { "text": "x^(-2)/2 + C",
+          "why": "大きさは合っているが符号が逆。解説は「分母の指数が1減って、符号がマイナス」と注意しており、この符号を落とすのが定番ミス。" },
+        { "text": "-1/(4x^4) + C",
+          "why": "指数を動かす向きを誤り x^(-4)/(-4) としてしまった形。積分では指数が1増える（-3 → -2）ので分母の指数は減る。" },
+        { "text": "log|x^3| + C",
+          "why": "1/x の積分と混同したもの。log が出るのは n = -1 のときだけで、n = -3 では累乗の公式が使える。" }
+      ],
+      "oneLine": "-1/(2x^2) + C。1/x^3 を x^(-3) に直せば累乗の公式がそのまま使える。",
+      "timeLimit": 18,
+      "grounding": "n = -3 なので x^(-2)/(-2) = -1/(2x^2) + C"
+    },
+    {
+      "id": "a:m1_1:q_m1_1_pow:q_m1_1_pow_2:2",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_pow", "subQuestionId": "q_m1_1_pow_2" },
+      "format": "choice4",
+      "prompt": "∫ 1/x^3 dx を累乗の公式で計算するために被積分関数を x^n の形に直すと、n はいくらか。",
+      "label": "",
+      "options": [
+        { "text": "n = -3", "correct": true,
+          "why": "分母の累乗は指数を負にして分子へ移すので 1/x^3 = x^(-3)。解説の「1/x^3 = x^(-3) と直します」のとおり。" },
+        { "text": "n = 3",
+          "why": "分母にあることを無視して指数の符号を付け忘れた形。x^3 と 1/x^3 は別の関数で、積分結果も変わる。" },
+        { "text": "n = 1/3",
+          "why": "分数の指数は累乗根（3乗根）を表す。ここは分母の累乗なので負の整数指数であり、累乗根とは意味が違う。" },
+        { "text": "n = -1",
+          "why": "n = -1 は 1/x のこと。この場合だけ累乗の公式が使えず log になるので、区別が必要。" }
+      ],
+      "oneLine": "n = -3。分母の x^3 は指数を負にして x^(-3) と直すと公式が使える。",
+      "timeLimit": 14,
+      "grounding": "1/x^3 = x^(-3) と直します"
+    },
+    {
+      "id": "a:m1_1:q_m1_1_pow:q_m1_1_pow_3:1",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_pow", "subQuestionId": "q_m1_1_pow_3" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ √x dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "(2/3)x√x + C", "correct": true,
+          "why": "√x = x^(1/2) と直し n = 1/2 を公式に入れると x^(3/2)/(3/2) = (2/3)x^(3/2) + C。解説は「答えの形は (2/3)x√x + C と書くと減点されにくい」としている。" },
+        { "text": "(3/2)x√x + C",
+          "why": "3/2 で割るところを 3/2 を掛けてしまった形。解説の「分数の指数で割るときは逆数を掛けるだけ」に反する典型ミス。" },
+        { "text": "2√x + C",
+          "why": "これは ∫ 1/√x dx の答え。√x と 1/√x の指数（1/2 と -1/2）を取り違えている。" },
+        { "text": "1/(2√x) + C",
+          "why": "これは √x を微分した結果。積分は微分の逆演算なので、指数は増える向きに動く。" }
+      ],
+      "oneLine": "(2/3)x√x + C。√x = x^(1/2) と直し、3/2 で割る（＝2/3 を掛ける）。",
+      "timeLimit": 18,
+      "grounding": "n = 1/2 なので x^(3/2)/(3/2) = (2/3)x^(3/2) + C"
+    },
+    {
+      "id": "a:m1_1:q_m1_1_pow:q_m1_1_pow_4:1",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_pow", "subQuestionId": "q_m1_1_pow_4" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ 1/√x dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "2√x + C", "correct": true,
+          "why": "1/√x = x^(-1/2) と直すと x^(1/2)/(1/2) = 2√x + C。解説の記述そのまま。" },
+        { "text": "(1/2)√x + C",
+          "why": "1/2 で割るところを 1/2 を掛けてしまった形。分数で割るのは逆数を掛けることなので、係数は 2 になる。" },
+        { "text": "(2/3)x√x + C",
+          "why": "これは ∫ √x dx の答え。1/√x の指数は -1/2 であり、+1/2 と取り違えている。" },
+        { "text": "-2/√x + C",
+          "why": "指数を1減らす向きに動かした形。積分では -1/2 → +1/2 と増えるので、√x は分子に出る。" }
+      ],
+      "oneLine": "2√x + C。1/√x = x^(-1/2) と直し、指数を +1/2 にして 1/2 で割る。",
+      "timeLimit": 18,
+      "grounding": "1/√x = x^(-1/2) と直します。x^(1/2)/(1/2) = 2√x + C"
+    },
+    {
+      "id": "a:m1_1:q_m1_1_expTrig:q_m1_1_et_1:1",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_expTrig", "subQuestionId": "q_m1_1_et_1" },
+      "format": "choice",
+      "prompt": "不定積分 ∫ e^x dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "e^x + C", "correct": true,
+          "why": "(e^x)' = e^x だから積分しても形が変わらない。解説は「積分しても形が変わらない唯一の関数です」と述べている。" },
+        { "text": "e^(x+1)/(x+1) + C",
+          "why": "累乗 x^n の公式（指数を1増やして割る）を指数関数に当てはめた形。底が定数で指数が変数の関数には使えない。" },
+        { "text": "e^x/x + C",
+          "why": "累乗の公式の「割る」だけを持ち込んだ形。微分して戻すと商の微分になり e^x に戻らない。" }
+      ],
+      "oneLine": "e^x + C。微分しても積分しても形が変わらない唯一の関数が e^x。",
+      "timeLimit": 13,
+      "grounding": "(e^x)' = e^x なので、∫ e^x dx = e^x + C"
+    },
+    {
+      "id": "a:m1_1:q_m1_1_expTrig:q_m1_1_et_1:2",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_expTrig", "subQuestionId": "q_m1_1_et_1" },
+      "format": "choice4",
+      "prompt": "積分しても形が変わらない（積分結果が自分自身と同じになる）関数はどれか。",
+      "label": "",
+      "options": [
+        { "text": "e^x", "correct": true,
+          "why": "(e^x)' = e^x なので積分しても e^x に戻る。解説は「積分しても形が変わらない唯一の関数です」と明記している。" },
+        { "text": "5^x",
+          "why": "∫ 5^x dx = 5^x/log5 + C となり log5 で割った形に変わる。底が e でないと log a で割る係数が付く。" },
+        { "text": "sin x",
+          "why": "∫ sin x dx = -cos x + C で cos に変わる。三角関数は積分すると sin と cos が入れ替わる。" },
+        { "text": "1/cos^2 x",
+          "why": "∫ 1/cos^2 x dx = tan x + C で tan に変わる。(tan x)' = 1/cos^2 x の逆読みなので形は保たれない。" }
+      ],
+      "oneLine": "e^x。微分も積分も e^x のままになる唯一の関数で、底が e であることが理由。",
+      "timeLimit": 14,
+      "grounding": "積分しても形が変わらない唯一の関数です"
+    },
+    {
+      "id": "a:m1_1:q_m1_1_expTrig:q_m1_1_et_2:1",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_expTrig", "subQuestionId": "q_m1_1_et_2" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ 5^x dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "5^x/log5 + C", "correct": true,
+          "why": "(a^x)' = a^x log a の両辺を log a で割ると ∫ a^x dx = a^x/log a + C。a = 5 を入れた形。" },
+        { "text": "5^x + C",
+          "why": "log5 で割るのを忘れた形。解説が「『log a で割る』のを忘れるのが定番ミスです」と明記しているつまずき。" },
+        { "text": "5^x·log5 + C",
+          "why": "log5 で割る代わりに掛けてしまった形。これは 5^x を微分した結果であり、積分とは逆向き。" },
+        { "text": "5^(x+1)/(x+1) + C",
+          "why": "累乗 x^n の公式を指数関数に当てはめた形。底が定数で指数が変数なので累乗の公式は使えない。" }
+      ],
+      "oneLine": "5^x/log5 + C。指数関数 a^x の積分は log a で割るのを忘れないこと。",
+      "timeLimit": 16,
+      "grounding": "両辺を log a で割れば ∫ a^x dx = a^x/log a + C。よって 5^x/log5 + C"
+    },
+    {
+      "id": "a:m1_1:q_m1_1_expTrig:q_m1_1_et_3:1",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_expTrig", "subQuestionId": "q_m1_1_et_3" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ (2sin x - 3cos x) dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "-2cos x - 3sin x + C", "correct": true,
+          "why": "∫ sin x dx = -cos x、∫ cos x dx = sin x を使うと 2(-cos x) - 3(sin x)。解説の計算そのまま。" },
+        { "text": "-3sin x + 2cos x + C",
+          "why": "sin を積分したときに付くマイナスを落とした形。解説は「符号が付くのは sin を積分したときだけ」と整理している。" },
+        { "text": "-2cos x + 3sin x + C",
+          "why": "第2項の係数 -3 のマイナスを掛け忘れた形。-3∫cos x dx = -3sin x なので符号はマイナスのまま。" },
+        { "text": "2sin x + 3cos x + C",
+          "why": "sin と cos が入れ替わっておらず積分できていない。積分すると sin は cos に、cos は sin に移る。" }
+      ],
+      "oneLine": "-2cos x - 3sin x + C。sin を積分するときだけマイナスが付く。",
+      "timeLimit": 18,
+      "grounding": "2∫sin x dx - 3∫cos x dx = -2cos x - 3sin x + C"
+    },
+    {
+      "id": "a:m1_1:q_m1_1_expTrig:q_m1_1_et_3:2",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_expTrig", "subQuestionId": "q_m1_1_et_3" },
+      "format": "choice4",
+      "prompt": "sin x と cos x の積分について、結果にマイナスの符号が付くのはどちらを積分したときか。",
+      "label": "",
+      "options": [
+        { "text": "sin x を積分したとき", "correct": true,
+          "why": "∫ sin x dx = -cos x + C。解説は「符号が付くのは sin を積分したときだけ」と整理している。" },
+        { "text": "cos x を積分したとき",
+          "why": "∫ cos x dx = sin x + C でマイナスは付かない。マイナスが付くのは cos を微分したときで、積分と混同している。" },
+        { "text": "どちらの積分にもマイナスが付く",
+          "why": "cos の積分は sin でマイナスは付かない。両方に付けると微分して元に戻らなくなる。" },
+        { "text": "どちらの積分にもマイナスは付かない",
+          "why": "sin の積分は -cos なので必要。(-cos x)' = sin x と微分して確認すると符号が要るとわかる。" }
+      ],
+      "oneLine": "sin x を積分したとき。∫sin x dx = -cos x、∫cos x dx = sin x と対比して覚える。",
+      "timeLimit": 14,
+      "grounding": "符号が付くのは sin を積分したときだけ"
+    },
+    {
+      "id": "a:m1_1:q_m1_1_expTrig:q_m1_1_et_4:1",
+      "source": { "chapterId": "m1_1", "problemId": "q_m1_1_expTrig", "subQuestionId": "q_m1_1_et_4" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ 1/cos^2 x dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "tan x + C", "correct": true,
+          "why": "(tan x)' = 1/cos^2 x を逆に読むと ∫ 1/cos^2 x dx = tan x + C。解説の「1/cos² を見たら tan」の反射そのもの。" },
+        { "text": "-1/(3cos^3 x) + C",
+          "why": "1/cos^2 x を cos x の累乗と見て累乗の公式を当てはめた形。cos x は x そのものではないので x^n の公式は使えない。" },
+        { "text": "1/sin x + C",
+          "why": "cos を積分すると sin になることから分母だけ機械的に置き換えた形。分数のまま項ごとに積分することはできない。" },
+        { "text": "log|cos x| + C",
+          "why": "分数を見て 1/x の積分と同じく log になると考えた形。微分すると -tan x になり 1/cos^2 x に戻らない。" }
+      ],
+      "oneLine": "tan x + C。(tan x)' = 1/cos^2 x を逆に読むだけで出る。",
+      "timeLimit": 15,
+      "grounding": "(tan x)' = 1/cos^2 x なので、逆に読んで ∫ 1/cos^2 x dx = tan x + C"
+    }
+  ]
+}

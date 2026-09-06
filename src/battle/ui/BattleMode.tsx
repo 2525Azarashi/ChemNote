@@ -64,11 +64,20 @@ type Screen =
 export function BattleMode({
   onExit,
   onRequireLogin,
+  onPractice,
 }: {
   /** 対戦モードを抜けてアプリのホームに戻る */
   onExit: () => void;
   /** ログインしていないときにログイン画面へ送る */
   onRequireLogin?: () => void;
+  /**
+   * ★対戦のリザルトから演習へ抜ける（請求⑦-A）★
+   *
+   * 「① 対戦 ⇒ ② 演習」の橋。対戦モードは自分では演習画面を持たないので、
+   * 教科と章IDをアプリ本体（App.tsx）に渡して、そちらに切り替えてもらう。
+   * 渡されなかったときはリザルトにボタンが出ない。
+   */
+  onPractice?: (subject: string, chapterId: string) => void;
 }) {
   const [screen, setScreen] = useState<Screen>('home');
   const [roomId, setRoomId] = useState<string | null>(null);
@@ -226,7 +235,12 @@ export function BattleMode({
         );
       }
       return (
-        <BattleRoomScreen roomId={roomId} onExit={leaveRoom} onRematch={rematch} />
+        <BattleRoomScreen
+          roomId={roomId}
+          onExit={leaveRoom}
+          onRematch={rematch}
+          onPractice={onPractice}
+        />
       );
 
     case 'ranking':

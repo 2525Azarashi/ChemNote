@@ -10,7 +10,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { Trophy, Crown, Medal, ChevronLeft, RefreshCw, User, BookOpen, Calendar, Globe, Users, TrendingUp } from 'lucide-react';
+import { Trophy, Crown, Medal, ChevronLeft, RefreshCw, User, BookOpen, Calendar, Globe, Users, TrendingUp, Swords, ArrowRight } from 'lucide-react';
 import {
   fetchChapterRanking,
   fetchTotalRanking,
@@ -52,11 +52,35 @@ interface LeaderboardProps {
   isGuest: boolean;
   /** 章タブを開いた時の初期 chapterId */
   initialChapterId?: string | null;
+  /**
+   * オンライン対戦を開く。
+   *
+   * ★この画面に対戦への橋を架けた理由★
+   *   利用者の指示「オンラインをメインにするUIにしていかんとだめよね？」
+   *   「対戦画面は他のところでしているのでそこまでのところはすべて変えて」
+   *
+   *   ★このアプリにはランキングが2つある★
+   *     ① この画面（leaderboard_*）… ★学習量★ を competing する
+   *     ② 対戦ランキング（BattleRanking）… ★対戦の強さ（レート）★
+   *   これは意図的に別コレクションにしてある（BattleRanking.tsx の冒頭）。
+   *
+   *   ところが下部ナビの「ランキング」はこの①へ行く。
+   *   「対戦で勝ったから順位を見よう」と思って押した人は、
+   *   ★自分のレートがどこにも無い別のランキングに着く★。
+   *   探し物が無いのに、それが別画面にあることも書いていなかった。
+   *
+   *   ①を②に置き換えることはしない（学習量のランキングは
+   *   利用者の指示「問題をなくすとかはダメだよ」の対象で、
+   *   消すべきものではない）。並べて、行けるようにする。
+   *
+   * ★任意（省略可）★ FEATURES.battle が false なら App 側から渡さない。
+   */
+  onBattle?: () => void;
 }
 
 type Tab = 'total' | 'chapter' | 'period';
 
-export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardProps) {
+export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: LeaderboardProps) {
   const [tab, setTab] = useState<Tab>('total');
   const [scope, setScope] = useState<'all' | 'friends'>('all');
   const [period, setPeriod] = useState<RankingPeriod>('week');
@@ -224,6 +248,41 @@ export function Leaderboard({ onBack, isGuest, initialChapterId }: LeaderboardPr
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
           </button>
         </div>
+
+        {/* =====================================================================
+            対戦ランキングへの橋
+            =====================================================================
+
+            ★この帯が必要な理由★
+              この画面は「学習量」のランキング。対戦の強さ（レート）は
+              別のランキング（BattleRanking）にあり、意図的に
+              別コレクションにしてある。
+              下部ナビの「ランキング」はこちらへ来るので、
+              対戦の順位を探している人はここで行き止まりになる。
+              ★探し物がどこにあるかを書いて、そこへ行けるようにする★
+
+            ★この画面の中身は1つも変えていない★
+              全国／フレンド競争、全章合計／章別ベスト／期間別、
+              表彰台、ボーダーラインの表示はすべて元のまま。
+              上に1行足しただけ。 */}
+        {onBattle && (
+          <button
+            onClick={onBattle}
+            aria-label="対戦ランキング（レート）を見る"
+            className="relative z-10 mb-3 w-full flex items-center gap-2.5 rounded-2xl border border-[#BBDCF0] bg-gradient-to-r from-[#EAF4FB] to-[#DCEBF7] px-3.5 py-2.5 text-left transition-colors hover:from-[#E0EEF9] hover:to-[#D0E4F4] min-h-[48px]"
+          >
+            <div className="w-8 h-8 rounded-xl bg-[#2E86C1]/15 text-[#1B4F72] flex items-center justify-center shrink-0">
+              <Swords size={16} aria-hidden="true" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[12px] font-bold text-[#1B4F72] leading-tight">対戦の順位（レート）はこちら</p>
+              <p className="text-[10.5px] font-modern text-[#5D6D7E] leading-snug">
+                このページは学習量のランキングです
+              </p>
+            </div>
+            <ArrowRight size={16} className="text-[#2E86C1] shrink-0" aria-hidden="true" />
+          </button>
+        )}
 
         {/* 全国／フレンド競争 */}
         <div className="relative z-10 grid grid-cols-2 gap-2 mb-3 rounded-2xl bg-white/70 border border-gray-200 p-1.5">

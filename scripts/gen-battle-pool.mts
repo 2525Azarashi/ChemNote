@@ -104,23 +104,76 @@
  * の2通りで本文に戻す。★どちらでも戻せない設問は出題しない。★
  */
 
-import { writeFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { writeFileSync, readFileSync, readdirSync, existsSync } from 'node:fs';
+import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { SUBJECTS, getChaptersOfSubject } from '../src/data/allChapters';
 import { calcSubQuestionTimeLimit } from '../src/utils/scoring';
 import { normalizeAnswer } from '../src/utils/answerJudge';
 /**
+ * ★手書き問題（authored）の型は画面・検証器と共有する★
+ * ここで独自に型を書くと、検証器が通した JSON を生成器が別の形だと思って
+ * 静かに落とす、という一番気づきにくい壊れ方をする。必ず同じファイルを見る。
+ */
+import type { AuthoredFile, AuthoredQuestion } from '../src/battle/core/authoredTypes';
+/**
+ * ★手書き問題の変換の判断は共有モジュールに置く★
+ * ここに書くとテストから呼べないため（このファイルは import すると main() が走る）。
+ */
+import {
+  convertAuthoredQuestion,
+  authoredRejectMessage,
+} from '../src/battle/core/authoredConvert';
+/**
  * ★五十音キーボードの番号表は画面と共有する★
  * ここで独自に文字表を持つと、生成した番号と画面の文字がズレて
  * 「正しく答えたのに不正解」になる。必ず同じファイルを参照する。
  */
 import { kanaKeysOf, KANA_MAX_INPUT } from '../src/battle/core/kanaKeyboard';
+/**
+ * ★対戦ルールは画面と同じ定義を見る★
+ * 外部プールが「1試合ぶんを組めるか」を確かめるのに questionCount が要る。
+ * ここで独自に 10 と書くと、ルールを変えたときに検査だけ古い値で通ってしまう。
+ */
+import { defaultRuleOf } from '../src/battle/core/battleRules';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 /** 生成物の出力先ディレクトリ（教科ごとに1ファイル＋索引1ファイルを置く） */
 const OUT_DIR = resolve(HERE, '../src/battle/data');
+/**
+ * 別の作業場が書いた手書き問題の置き場。
+ * `npm run import:authored -- <zip>` だけがここに書き込む。
+ * ★中身は検証器（verify-authored-battle.mts）を通ったものだけ★という前提で読む。
+ */
+const AUTHORED_DIR = resolve(HERE, '../src/battle/data/authored');
+
+/**
+ * ★外部プール（別リポジトリで作られた教科まるごと）の置き場所★
+ *
+ * ■ authored/ と何が違うのか
+ *   authored/ は「本体の教科データ（src/data/*.ts）に既にある小問」に対して
+ *   作業場が選択肢と解説を書いたものである。だから元の小問が無いと孤児になる。
+ *
+ *   external/ は ★本体に教科データが1行も無い教科★ を丸ごと受け取るための口。
+ *   高校入試理科（三重県後期選抜入試対策理科最終プリント由来・1117問）が
+ *   これに当たる。理科は演習・まとめ・出題傾向の画面を
+ *   src/features/rika/ に自前で持っており、
+ *   本体の章・大問・小問の形（miniTest / practiceProblems）を持っていない。
+ *
+ * ■ なぜ pool.rika.generated.ts を手で置かないのか
+ *   索引（battlePool.ts）は ★このスクリプトが丸ごと生成する★。
+ *   手で置いたファイルは loadPool() の switch にも POOL_COUNTS にも現れず、
+ *   どこからも読まれない孤立ファイルになる（次の生成で気づかないまま残る）。
+ *   ここから読めば、索引・形式別件数・解答ファイルまで全部そろう。
+ *
+ * ■ 中身の形（rika.json）
+ *   { subject, label, source, questions: [ { id, chapterId, problemId,
+ *     subQuestionId, format, prompt, label, options, answerIndex,
+ *     panelOrder, timeLimit, imageUrl } ] }
+ *   ★PoolQuestion とそろえてある★ ので、そのままプールに足せる。
+ */
+const EXTERNAL_DIR = resolve(HERE, '../src/battle/data/external');
 
 // ============================================================
 // 生成に使う設定
@@ -246,6 +299,14 @@ interface PoolQuestion {
   panelOrder: number[];
   timeLimit: number;
   imageUrl?: string;
+  /**
+   * ★試合後にだけ出す「答え＋ひと言の理由」（請求⑦-A）★
+   * 手書き問題（authored）だけが持つ。機械生成は空文字。
+   * ★出題プール（pool.*.generated.ts）には書き出さない。★
+   *   別ファイル（answer.*.generated.ts）に分けて出す。理由は
+   *   renderAnswerFile() のコメントに書いた。
+   */
+  oneLine?: string;
 }
 
 interface RawSub {
@@ -1135,8 +1196,320 @@ function trimOption(option: string): string {
 }
 
 // ============================================================
+// 合流: 手書き問題（authored）
+// ============================================================
+
+/**
+ * ===================================================================
+ * 別の作業場が書いた問題を、機械生成のプールに合流させる
+ * ===================================================================
+ *
+ * ■ なぜ「置き換え」ではなく「合流」なのか
+ *
+ * 元データが選択肢を持っている設問（＝機械生成が今出せている 604 問）は、
+ * 誰かが書き直す必要がない。★選択肢を元データからそのまま持ってきているので、
+ * 人が触るほうがむしろ誤りが入る。★
+ *
+ * 手書きが要るのは、機械生成が「出せない」と判断して落とした設問である。
+ * だから両者は競合しない。競合するのは
+ *
+ *     ・作業場が「機械生成でも出せている設問」を、あえて書き直した場合
+ *
+ * のときだけで、そのときは ★手書きを優先する★。人が読んで書いたほうが、
+ * 元データの記号選択肢を機械が本文に戻したものより正確だからである。
+ *
+ * ■ 優先の判定は「小問の3つのID」で行う
+ *
+ * chapterId / problemId / subQuestionId が同じなら、同じ小問から来ている。
+ * 同じ小問に手書きが1問でもあれば、その小問の機械生成は全部落とす。
+ * ★一部だけ残すと、同じ小問が対戦で2回出る（抽選は id で重複を見るので防げない）。★
+ *
+ * ■ 選択肢の並びはここで決める
+ *
+ * JSON では `correct: true` が選択肢自身にくっついていて、順番に意味がない。
+ * 人が書くと正解が2番目に偏ることが知られているので、
+ * ★ID を種にした決定論的なシャッフル★で並べ替えてから answerIndex を求める。
+ * 種が ID なので、何度生成しても同じ並びになる（差分レビューができる）。
+ */
+/** 教科名は問題ごとではなくファイルが持つので、読み込み時にくっつけておく */
+type AuthoredRow = AuthoredQuestion & { __subject: string };
+
+function loadAuthored(): AuthoredRow[] {
+  if (!existsSync(AUTHORED_DIR)) return [];
+  const files = readdirSync(AUTHORED_DIR)
+    .filter((f) => f.endsWith('.json'))
+    // ★見本（.example.）は読まない★
+    //   見本は docs/battle-authoring/ に置く決まりだが、
+    //   間違って authored/ に混ざったときに本番の出題に紛れ込ませない。
+    .filter((f) => !f.includes('.example.'))
+    .sort();
+
+  const out: AuthoredRow[] = [];
+  for (const f of files) {
+    const raw = readFileSync(join(AUTHORED_DIR, f), 'utf8');
+    let parsed: AuthoredFile;
+    try {
+      parsed = JSON.parse(raw) as AuthoredFile;
+    } catch (e) {
+      // ★ここで黙って飛ばさない★
+      //   作業場が丸一日かけて書いたものが「なぜか出題されない」のが
+      //   一番たちが悪い。壊れていたら生成そのものを止める。
+      throw new Error(`[authored] JSON として読めない: ${f} (${String(e)})`);
+    }
+    if (!parsed || !Array.isArray(parsed.questions)) {
+      throw new Error(`[authored] questions 配列が無い: ${f}`);
+    }
+    for (const q of parsed.questions) {
+      // subject はファイルが持っている。問題ごとには持たせない
+      // （1ファイル＝1章＝1教科なので、問題ごとに書かせると食い違いが起きる）。
+      out.push({ ...q, source: { ...q.source }, __subject: String(parsed.subject || '') });
+    }
+  }
+  return out;
+}
+
+/**
+ * 手書き1問を、対戦プールの1問に変換する。
+ *
+ * ★判断そのものは src/battle/core/authoredConvert.ts にある★
+ * ここに書くとテストから呼べない（このスクリプトは import した瞬間に
+ * main() が走って全教科データを読み、生成ファイルを書き換えてしまう）。
+ * 過去の事故（USE_SYNTHESIZED_FORMATS）は「生成器の中だけにあって
+ * 誰にも検査されないロジック」が原因だった。同じ形にはしない。
+ *
+ * この関数がやるのは「教科名をくっつける」ことだけである。
+ */
+function convertAuthored(q: AuthoredRow): { question: PoolQuestion | null; reason: string } {
+  const subject = String(q.__subject || '');
+  if (!subject) return { question: null, reason: '教科名がファイルに書かれていない' };
+
+  const r = convertAuthoredQuestion(q);
+  if (r.ok === false) return { question: null, reason: authoredRejectMessage(r.reason) };
+  return { question: { ...r.question, subject }, reason: '' };
+}
+
+// ============================================================
 // 本体
 // ============================================================
+
+/**
+ * ===================================================================
+ * 外部プールを読む（src/battle/data/external/*.json）
+ * ===================================================================
+ *
+ * ■ 何を読むのか
+ *   本体に教科データ（章・大問・小問）が無い教科を、
+ *   「出題プールの形そのまま」で受け取るためのファイル。
+ *   いま入っているのは高校入試理科（rika）1本だけ。
+ *
+ * ■ ★検証してから通す（黙って壊れたデータを入れない）★
+ *   外部プールは別リポジトリの生成物なので、こちらの決まりを知らない。
+ *   tests/battlePool.test.ts が見ている条件と同じものを、ここで先に見る。
+ *   1件でも外れていたら ★その1問だけを捨てて、必ず画面に出す★。
+ *   （全部止めると、直せない相手側の1問のせいで生成できなくなる）
+ *
+ *   見ている条件:
+ *     ・id / chapterId / problemId / subQuestionId が空でない
+ *     ・prompt と label が両方空でない（何も表示されない問題を防ぐ）
+ *     ・format が choice4 / choice / kana のどれか
+ *     ・choice4 は選択肢ちょうど4つ・answerIndex が 0〜3
+ *     ・choice は選択肢2〜6つ・answerIndex が範囲内
+ *     ・選択肢に空文字が無い／重複が無い（重複＝正解が2つある状態）
+ *     ・選択肢が記号（①ア A）だけになっていない
+ *     ・制限時間が 8〜40 秒
+ *
+ * ■ ★panelOrder は 4択では空にする★
+ *   本体の機械生成が空で出しているので、そこにそろえる。
+ *   （パネル形式でしか使わない欄）
+ */
+function loadExternalPools(): PoolQuestion[] {
+  if (!existsSync(EXTERNAL_DIR)) return [];
+
+  const out: PoolQuestion[] = [];
+  /** 記号だけの選択肢（tests/battlePool.test.ts と同じ式） */
+  const symbolOnly = /^[（(【]?[①-⑩ア-ンA-Za-z][)）】]?$/;
+  const files = readdirSync(EXTERNAL_DIR)
+    .filter((f) => f.endsWith('.json'))
+    .sort();
+
+  for (const file of files) {
+    const raw = JSON.parse(readFileSync(join(EXTERNAL_DIR, file), 'utf8')) as {
+      subject?: string;
+      label?: string;
+      source?: string;
+      questions?: unknown[];
+    };
+    const subject = String(raw.subject || '').trim();
+    if (!subject) {
+      console.log(`[gen:battle-pool] ★${file} に subject が無いので読み飛ばした★`);
+      continue;
+    }
+
+    const list = Array.isArray(raw.questions) ? raw.questions : [];
+    const dropped: string[] = [];
+    let taken = 0;
+
+    for (const item of list) {
+      const q = item as Record<string, unknown>;
+      const id = String(q.id || '').trim();
+      const chapterId = String(q.chapterId || '').trim();
+      const problemId = String(q.problemId || '').trim();
+      const subQuestionId = String(q.subQuestionId || '').trim();
+      const format = String(q.format || '').trim();
+      const prompt = String(q.prompt || '');
+      const label = String(q.label || '');
+      const options = Array.isArray(q.options) ? q.options.map((o) => String(o)) : [];
+      const answerIndex = Number(q.answerIndex);
+      const timeLimit = Number(q.timeLimit);
+
+      const bad = (why: string): void => {
+        dropped.push(`${id || '(idなし)'}: ${why}`);
+      };
+
+      if (!id) {
+        bad('id が無い');
+        continue;
+      }
+      if (!chapterId || !problemId || !subQuestionId) {
+        bad('章ID・大問ID・小問IDのどれかが空（結果画面から復習に飛べない）');
+        continue;
+      }
+      if (!prompt.trim() && !label.trim()) {
+        bad('prompt と label が両方空（画面に何も出ない）');
+        continue;
+      }
+      if (format !== 'choice4' && format !== 'choice' && format !== 'kana') {
+        bad(`format が対応外（${format}）`);
+        continue;
+      }
+      if (!Number.isFinite(timeLimit) || timeLimit < 8 || timeLimit > 40) {
+        bad(`制限時間が範囲外（${q.timeLimit}）`);
+        continue;
+      }
+      if (format === 'kana') {
+        /**
+         * ★かな入力は options を持ってはいけない★
+         * 持つと五十音キーボードの画面に答えの一覧が出てしまう。
+         */
+        if (options.length > 0) {
+          bad('kana なのに選択肢を持っている（答えが漏れる）');
+          continue;
+        }
+      } else {
+        if (options.some((o) => !o.trim())) {
+          bad('選択肢に空文字がある');
+          continue;
+        }
+        if (new Set(options).size !== options.length) {
+          bad('選択肢が重複している（正解が2つある状態）');
+          continue;
+        }
+        if (format === 'choice4' && options.length !== 4) {
+          bad(`choice4 なのに選択肢が ${options.length} 個`);
+          continue;
+        }
+        if (format === 'choice' && (options.length < 2 || options.length > 6)) {
+          bad(`choice の選択肢が ${options.length} 個（2〜6でなければならない）`);
+          continue;
+        }
+        if (!Number.isInteger(answerIndex) || answerIndex < 0 || answerIndex >= options.length) {
+          bad(`answerIndex が選択肢の範囲外（${q.answerIndex}）`);
+          continue;
+        }
+        if (options.every((o) => symbolOnly.test(o.trim()))) {
+          bad('選択肢が記号（①ア A）だけで、何を選ぶのか分からない');
+          continue;
+        }
+      }
+
+      out.push({
+        id,
+        subject,
+        chapterId,
+        problemId,
+        subQuestionId,
+        format: format as Format,
+        prompt,
+        label,
+        options,
+        answerIndex: format === 'kana' ? -1 : answerIndex,
+        // ★4択・選択では空（パネル形式でしか使わない欄）★
+        panelOrder: [],
+        timeLimit,
+        imageUrl: q.imageUrl ? String(q.imageUrl) : undefined,
+        /**
+         * ★試合後の1行解答は持たせない★
+         * 外部プールは原典（配布プリント）の言い回しをそのまま出しており、
+         * 「答え＋ひと言の理由」を書き足すと原典に無い説明を足すことになる。
+         * 理科は演習画面（RikaPractice）が原典どおりの答えを出す作りなので、
+         * 対戦のリザルトからその画面へ渡す（＝答えはそちらで見せる）。
+         */
+      });
+      taken += 1;
+    }
+
+    /**
+     * ============================================================
+     * ★★ グループキーが足りているかを必ず確かめる ★★
+     * ============================================================
+     *
+     * ■ ここで何が起きたのか（実際に踏んだ罠）
+     *   本番の抽選（src/battle/data/battle.ts の drawQuestionIds）は
+     *
+     *       groupById.set(q.id, `${q.chapterId}:${q.subQuestionId}`)
+     *
+     *   をグループキーにして、★同じキーの問題は1試合に1問しか出さない★。
+     *   これは「1つの小問から語句選択版と文字パネル版を作っている」
+     *   本体のプールで、同じ問いが1試合に2回出るのを防ぐための仕組み。
+     *
+     *   ところが受け取った理科のデータは、全1117問が
+     *   subQuestionId = 1 だった（原典に小問番号が無いため）。
+     *   そのまま入れると 章 × 1 の31グループにしかならず、
+     *   ★1117問あるのに1試合10問すら組めない★
+     *   （実測では 1 問しか並ばなかった）。
+     *
+     * ■ なぜ「件数」の検査では気づけないのか
+     *   収録数・形式・選択肢・答えの位置はすべて正しかった。
+     *   壊れていたのは「1問1問が別の問題であること」を
+     *   本体に伝える欄だけで、これは1問ずつ見ても分からない。
+     *   ★プール全体を見て初めて分かる種類の欠陥★ なので、
+     *   1問ずつの検査とは別にここで見る。
+     *
+     * ■ 落とさずに知らせる理由
+     *   ここで止めても直せるのは相手側なので、生成は続ける。
+     *   ただし ★対戦が成立しない★ という重い話なので、
+     *   見逃せない形で警告を出す。
+     */
+    {
+      const groups = new Set<string>();
+      for (const q of out) {
+        if (q.subject !== subject) continue;
+        groups.add(`${q.chapterId}:${q.subQuestionId}`);
+      }
+      const rule = defaultRuleOf(subject);
+      if (rule.enabled && groups.size < rule.questionCount) {
+        console.log(
+          `[gen:battle-pool] ★★警告★★ ${file}: ` +
+            `${taken} 問あるのに、章ID:小問ID の組が ${groups.size} 種しかない。\n` +
+            `  本番の抽選は同じ組から1問しか出さないため、` +
+            `1試合 ${rule.questionCount} 問を組めない（${groups.size} 問で打ち切られる）。\n` +
+            `  → ★1問ごとに違う subQuestionId を持たせること★` +
+            `（原典に小問番号が無い場合は問題番号をそのまま使う）。`,
+        );
+      }
+    }
+
+    console.log(
+      `[gen:battle-pool] 外部プール ${file}: ${taken} 問を取り込み` +
+        `${dropped.length > 0 ? ` / ★${dropped.length} 問を捨てた★` : ''}` +
+        `${raw.source ? `（原典: ${raw.source}）` : ''}`,
+    );
+    for (const note of dropped.slice(0, 20)) console.log(`  - ${note}`);
+    if (dropped.length > 20) console.log(`  - …ほか ${dropped.length - 20} 件`);
+  }
+
+  return out;
+}
 
 function build(): { pool: PoolQuestion[]; stats: Record<string, Record<string, number>> } {
   const rows = collectAll();
@@ -1273,6 +1646,121 @@ function build(): { pool: PoolQuestion[]; stats: Record<string, Record<string, n
     if (made === 0) bump(row.subject, 'skipped');
   }
 
+  // ------------------------------------------------------------
+  // 手書き問題（authored）の合流
+  // ------------------------------------------------------------
+  //
+  // ★ここが「別の作業場が書いたものが対戦に出る」唯一の経路★
+  // これが無いと、作業場が何問書いても対戦画面には1問も出ない。
+  //
+  const authored = loadAuthored();
+  if (authored.length > 0) {
+    /**
+     * 元データに実在する小問の集合。
+     *
+     * ★存在しない小問を指す手書きは落とす★
+     * 検証器も同じことを見ているが、検証器を通ったあとに元データ側が
+     * 消えた／IDが変わった場合、ここが最後の砦になる。
+     * 「元の演習に飛べない対戦問題」は、①→②の橋が切れているのと同じ。
+     */
+    const realSubs = new Set(rows.map((r) => `${r.chapterId}:${r.problemId}:${r.id}`));
+
+    const converted: PoolQuestion[] = [];
+    /** 落とした問題の理由（生成の最後にまとめて表示する） */
+    const dropNotes: string[] = [];
+    /** 手書きが1問でもある小問（機械生成をここから取り除くために使う） */
+    const takenOver = new Set<string>();
+    const seenIds = new Set(pool.map((q) => q.id));
+
+    for (const a of authored) {
+      const key = `${a.source.chapterId}:${a.source.problemId}:${a.source.subQuestionId}`;
+      if (!realSubs.has(key)) {
+        bump(a.__subject || '?', 'authored_orphan');
+        dropNotes.push(`${a.id || '(id なし)'}: 元データに存在しない小問を指している (${key})`);
+        continue;
+      }
+      const { question: q, reason } = convertAuthored(a);
+      if (!q) {
+        bump(a.__subject || '?', 'authored_dropped');
+        // ★落とした理由をその場で出す★
+        //   「なぜか出題されない」が作業場にとって一番たちが悪い。
+        dropNotes.push(`${a.id || '(id なし)'}: ${reason}`);
+        continue;
+      }
+      /**
+       * ★IDの重複は最悪の不具合★
+       * 部屋には questionIds しか保存しないので、同じIDが2問あると
+       * 対戦相手と違う問題が表示される。あとから来たほうを捨てる。
+       */
+      if (seenIds.has(q.id)) {
+        bump(q.subject, 'authored_dup_id');
+        dropNotes.push(`${q.id}: 同じ id が既にある（あとから来たほうを捨てた）`);
+        continue;
+      }
+      seenIds.add(q.id);
+      takenOver.add(key);
+      converted.push(q);
+      bump(q.subject, `authored_${q.format}`);
+    }
+
+    // 手書きが担当した小問の機械生成を取り除く（同じ小問が2回出るのを防ぐ）
+    if (takenOver.size > 0) {
+      for (let i = pool.length - 1; i >= 0; i -= 1) {
+        const q = pool[i];
+        const key = `${q.chapterId}:${q.problemId}:${q.subQuestionId}`;
+        if (takenOver.has(key)) {
+          pool.splice(i, 1);
+          bump(q.subject, 'replaced_by_authored');
+        }
+      }
+    }
+
+    for (const q of converted) pool.push(q);
+
+    if (dropNotes.length > 0) {
+      console.log(`[gen:battle-pool] ★手書きのうち ${dropNotes.length} 問を落とした★`);
+      for (const note of dropNotes) console.log(`  - ${note}`);
+    }
+  }
+
+  /**
+   * ===================================================================
+   * 外部プール（src/battle/data/external/*.json）を合流させる
+   * ===================================================================
+   *
+   * ★ここで足す理由★
+   * このあと main() が「pool を教科ごとに分けて」ファイルと索引を作る。
+   * その手前で足しておけば、外部教科も他の教科と同じ扱いで
+   *   ・pool.<教科>.generated.ts
+   *   ・answer.<教科>.generated.ts
+   *   ・battlePool.ts（loadPool の switch / POOL_COUNTS / POOL_FORMAT_COUNTS）
+   * が自動でそろう。手作業の置き忘れが起きない。
+   *
+   * ★機械生成の加工は一切かけない★
+   * 外部プールは向こう側で選択肢まで作り終えているので、
+   * 誤答の借用や凡例の復元（このスクリプトの前半の処理）を通す必要がない。
+   * 通すと、向こうが意図して並べた選択肢を壊すおそれがある。
+   */
+  {
+    // ここまでに入っている全出題のID（機械生成＋手書き）
+    const seenAll = new Set(pool.map((q) => q.id));
+    for (const q of loadExternalPools()) {
+      /**
+       * ★IDの重複は必ず捨てる★
+       * 部屋には questionIds しか保存しないので、同じIDが2問あると
+       * 対戦相手の端末と違う問題が表示され、対戦が成立しない。
+       */
+      if (seenAll.has(q.id)) {
+        bump(q.subject, 'external_dup_id');
+        console.log(`[gen:battle-pool] ★外部プールの id が重複したので捨てた★ ${q.id}`);
+        continue;
+      }
+      seenAll.add(q.id);
+      pool.push(q);
+      bump(q.subject, `external_${q.format}`);
+    }
+  }
+
   // 出力の並びを安定させる（生成のたびに差分が出ないように）
   pool.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
   return { pool, stats };
@@ -1404,6 +1892,86 @@ function fileNameOf(subject: string): string {
   return `pool.${subject}.generated.ts`;
 }
 
+/** 教科ID → 解答ファイル（試合後に読む）の名前 */
+function answerFileNameOf(subject: string): string {
+  return `answer.${subject}.generated.ts`;
+}
+
+/**
+ * ===================================================================
+ * 解答ファイル（answer.<教科>.generated.ts）を出す
+ * ===================================================================
+ *
+ * ■ ★なぜ出題プールと同じファイルに入れないのか★
+ *
+ * 出題プール（pool.*.generated.ts）は ★対戦が始まる前に★ 読み込まれる。
+ * そこに「答え＋ひと言の理由（oneLine）」を混ぜると、
+ * 開発者ツールのネットワークタブを開くだけで全問の答えが読める。
+ * この対戦はレートが動くので、それは不正の入口になる。
+ *
+ * 出題プールが correctAnswer を持たない（answerIndex しか持たない）のは
+ * まさにこの理由であり、oneLine は「答えそのもの」なので同じ扱いにする。
+ *
+ * ■ ★では、いつ読むのか★
+ *
+ * 試合が終わったあと、リザルト画面が出たときだけ読む（動的 import）。
+ * 試合が終わっていればもう答えを隠す意味はないし、
+ * 逆に隠したままにすると「対戦 ⇒ 演習」の橋がかからない。
+ *
+ * ■ サイズ
+ *
+ * 化学基礎で約 120KB。リザルト画面が出てから落ちてくるので、
+ * 対戦開始までの待ち時間には一切影響しない。
+ *
+ * ■ 中身の形
+ *
+ * [出題ID, oneLine] の2要素タプルの配列。
+ * oneLine を持つ問題（＝手書き問題）だけを入れる。
+ * 機械生成の問題は元データに1行解答が無いので入らない。
+ */
+function renderAnswerFile(subject: string, pool: PoolQuestion[]): string {
+  const rows = pool
+    .filter((q) => (q.oneLine || '').trim().length > 0)
+    .map((q) => `  ${JSON.stringify([q.id, q.oneLine])},`)
+    .join('\n');
+  const count = pool.filter((q) => (q.oneLine || '').trim().length > 0).length;
+
+  return `/**
+ * ===================================================================
+ * 対戦の解答（試合後に出す1行解答）: ${subject}（自動生成・手で編集しないこと）
+ * ===================================================================
+ *
+ * ★このファイルは scripts/gen-battle-pool.mts が生成する。★
+ * 手で書き換えても次の生成で消える。直したいときは
+ * src/battle/data/authored/*.json の oneLine を直してから
+ *
+ *     npm run gen:battle-pool
+ *
+ * を実行すること。
+ *
+ * -------------------------------------------------------------------
+ * ■ ★これは出題プールとは別のファイルである★
+ * -------------------------------------------------------------------
+ * 出題プール（pool.${subject}.generated.ts）は対戦が始まる前に読み込まれる。
+ * そこに答えを混ぜると、通信を覗くだけで全問の答えが分かってしまう。
+ * このファイルは ★試合が終わってリザルト画面が出たときだけ★ 読み込む。
+ *
+ * -------------------------------------------------------------------
+ * ■ 収録数: ${count} 問（oneLine を持つ問題だけ）
+ * -------------------------------------------------------------------
+ * 機械生成の問題は元データに1行解答が無いので入っていない。
+ * 画面側は「無い問題は答えの行を出さない」作りにしてある。
+ *
+ * ■ このファイルは何も import しない（型すら import しない）。
+ */
+
+/** [出題ID, 試合後に出す1行解答] */
+export const ANSWERS: readonly (readonly [string, string])[] = [
+${rows}
+];
+`;
+}
+
 /**
  * 教科ファイルをまとめる索引を作る。
  *
@@ -1417,6 +1985,7 @@ function renderIndexFile(
   subjects: string[],
   counts: Record<string, number>,
   formatCounts: Record<string, Record<string, number>>,
+  answerCounts: Record<string, number>,
 ): string {
   const cases = subjects
     .map(
@@ -1424,6 +1993,16 @@ function renderIndexFile(
         `    case '${s}':\n      return (await import('./${fileNameOf(s).replace(/\.ts$/, '')}')).POOL;`,
     )
     .join('\n');
+
+  /** 解答ファイル（試合後だけ読む）の分岐 */
+  const answerCases = subjects
+    .map(
+      (s) =>
+        `    case '${s}':\n      return (await import('./${answerFileNameOf(s).replace(/\.ts$/, '')}')).ANSWERS;`,
+    )
+    .join('\n');
+
+  const answerCountLines = subjects.map((s) => `  ${s}: ${answerCounts[s] || 0},`).join('\n');
 
   const countLines = subjects.map((s) => `  ${s}: ${counts[s] || 0},`).join('\n');
 
@@ -1619,7 +2198,88 @@ export async function poolIdsOf(
 export function loadedPool(subject: string): readonly BattleQuestion[] {
   return cache.get(subject) || [];
 }
+
+// ============================================================
+// 試合後の解答（請求⑦-A）
+// ============================================================
+
+/**
+ * 教科ごとの「1行解答を持つ問題」の数。
+ * リザルト画面が「この教科は解答が出ます／出ません」を
+ * データ本体を読まずに判断するために置いてある。
+ */
+export const ANSWER_COUNTS: Readonly<Record<string, number>> = {
+${answerCountLines}
+};
+
+async function loadAnswerRaw(subject: string): Promise<readonly (readonly [string, string])[]> {
+  switch (subject) {
+${answerCases}
+    default:
+      return [];
+  }
+}
+
+/** 読み込み済みの解答（教科ID → 出題ID → 1行解答） */
+const answerCache = new Map<string, ReadonlyMap<string, string>>();
+const answerInflight = new Map<string, Promise<ReadonlyMap<string, string>>>();
+
+/**
+ * その教科の「試合後の1行解答」を読み込む。
+ *
+ * ★★ここは「試合が終わってから」しか呼んではいけない★★
+ *
+ * 出題プール（loadPool）と別のファイルに分けているのは、
+ * 対戦前に答えが端末に落ちてくるのを防ぐためである。
+ * 対戦画面や待機画面からこれを呼ぶと、その意味がまるごと消える。
+ * 呼び出しているのはリザルト画面（BattleResult）だけであり、
+ * tests/battleAnswers.test.ts がそれを検査している。
+ *
+ * 解答が1問も無い教科（機械生成だけの教科）では空の Map が返る。
+ * 画面側は「無ければ答えの行を出さない」作りなので、それで正しく動く。
+ */
+export async function loadBattleAnswers(
+  subject: string,
+): Promise<ReadonlyMap<string, string>> {
+  const cached = answerCache.get(subject);
+  if (cached) return cached;
+
+  const running = answerInflight.get(subject);
+  if (running) return running;
+
+  const promise = loadAnswerRaw(subject)
+    .then((rows) => {
+      const map: ReadonlyMap<string, string> = new Map(rows.map(([id, one]) => [id, one]));
+      answerCache.set(subject, map);
+      answerInflight.delete(subject);
+      return map;
+    })
+    .catch((error) => {
+      answerInflight.delete(subject);
+      throw error;
+    });
+
+  answerInflight.set(subject, promise);
+  return promise;
+}
 `;
+}
+
+/**
+ * 1教科ぶんの統計から「実際に出題になった手書き問題」の数を数える。
+ * 落としたもの（orphan / dropped / dup_id）は出題ではないので数に入れない。
+ */
+function authoredOf(st: Record<string, number>): number {
+  return Object.entries(st).reduce(
+    (n, [k, v]) =>
+      k.startsWith('authored_') &&
+      !k.endsWith('_orphan') &&
+      !k.endsWith('_dropped') &&
+      !k.endsWith('_dup_id')
+        ? n + v
+        : n,
+    0,
+  );
 }
 
 function main(): void {
@@ -1631,13 +2291,28 @@ function main(): void {
     bySubject.get(q.subject)!.push(q);
   }
 
-  // 教科の並びは SUBJECTS の定義順（生成の再現性のため）
-  const subjects = SUBJECTS.map((s) => s.id).filter((id) => bySubject.has(id));
+  /**
+   * 教科の並びは SUBJECTS の定義順（生成の再現性のため）。
+   *
+   * ★そのあとに「外部プールだけの教科」を足す★
+   * 高校入試理科（rika）は本体の教科データを持たないので SUBJECTS にいない。
+   * ここで拾い落とすと、プールは作られるのに索引（battlePool.ts）に載らず、
+   * loadPool() から読めない孤立ファイルになる。
+   * 並びは最後に固めるので、既存教科の順番（＝画面の並び）は動かない。
+   */
+  const known: string[] = SUBJECTS.map((s) => String(s.id)).filter((id) => bySubject.has(id));
+  const knownSet = new Set(known);
+  const extra = [...bySubject.keys()].filter((id) => !knownSet.has(id)).sort();
+  const subjects: string[] = [...known, ...extra];
   const counts: Record<string, number> = {};
   /** 教科 → 形式 → 件数。索引ファイルの POOL_FORMAT_COUNTS になる */
   const formatCounts: Record<string, Record<string, number>> = {};
+  /** 教科 → 1行解答を持つ問題の数（索引の ANSWER_COUNTS になる） */
+  const answerCounts: Record<string, number> = {};
   let totalBytes = 0;
   const perFile: Array<[string, number, number]> = [];
+  /** 解答ファイルの合計バイト数（対戦前には落ちてこない分） */
+  let answerBytes = 0;
 
   for (const subject of subjects) {
     const list = bySubject.get(subject)!;
@@ -1656,9 +2331,19 @@ function main(): void {
     const bytes = Buffer.byteLength(source, 'utf8');
     totalBytes += bytes;
     perFile.push([subject, list.length, bytes]);
+
+    /**
+     * ★解答（oneLine）は必ず別ファイルに出す★
+     * 出題プールに混ぜると対戦前に答えが端末に落ちる。
+     * 理由は renderAnswerFile() のコメントに書いた。
+     */
+    answerCounts[subject] = list.filter((q) => (q.oneLine || '').trim().length > 0).length;
+    const answerSource = renderAnswerFile(subject, list);
+    writeFileSync(resolve(OUT_DIR, answerFileNameOf(subject)), answerSource, 'utf8');
+    answerBytes += Buffer.byteLength(answerSource, 'utf8');
   }
 
-  const indexSource = renderIndexFile(subjects, counts, formatCounts);
+  const indexSource = renderIndexFile(subjects, counts, formatCounts, answerCounts);
   writeFileSync(resolve(OUT_DIR, 'battlePool.ts'), indexSource, 'utf8');
   totalBytes += Buffer.byteLength(indexSource, 'utf8');
 
@@ -1674,6 +2359,44 @@ function main(): void {
   }
   const kanaTotal = Object.values(formatCounts).reduce((s, f) => s + (f.kana || 0), 0);
   console.log(`[gen:battle-pool] うち五十音キーボード（みんはや方式）: ${kanaTotal} 問`);
+
+  /**
+   * ★試合後の解答（請求⑦-A）の件数を必ず表示する★
+   * ここが 0 のまま気づかないと、リザルト画面に答えが1問も出ない。
+   */
+  const answerTotal = Object.values(answerCounts).reduce((s, n) => s + n, 0);
+  console.log(
+    `[gen:battle-pool] 試合後の1行解答: ${answerTotal} 問 / ` +
+      `${Math.round(answerBytes / 1024)}KB（★対戦前には読み込まれない別ファイル★）`,
+  );
+
+  /**
+   * ★手書き問題の合流結果を必ず表示する★
+   * 作業場が書いた JSON を取り込んだのに、書式の取り違えなどで
+   * 静かに0問になっていた、という事故を目で止めるための行。
+   */
+  const authoredTotal = Object.values(stats).reduce((sum, st) => sum + authoredOf(st), 0);
+  const authoredBad = Object.values(stats).reduce(
+    (sum, st) =>
+      sum + (st.authored_orphan || 0) + (st.authored_dropped || 0) + (st.authored_dup_id || 0),
+    0,
+  );
+  const replaced = Object.values(stats).reduce((sum, st) => sum + (st.replaced_by_authored || 0), 0);
+  if (authoredTotal > 0 || authoredBad > 0) {
+    console.log(
+      `[gen:battle-pool] うち手書き（別の作業場が書いたもの）: ${authoredTotal} 問` +
+        `${replaced > 0 ? `（うち ${replaced} 問は機械生成を置き換えた）` : ''}`,
+    );
+    if (authoredBad > 0) {
+      console.log(
+        `[gen:battle-pool] ★手書きのうち ${authoredBad} 問を落とした★ ` +
+          '（元データに無い小問／形式が不正／IDの重複）。' +
+          'npm run verify:authored で内訳が出ます。',
+      );
+    }
+  } else {
+    console.log('[gen:battle-pool] 手書き問題（src/battle/data/authored/）: 0 問');
+  }
   console.log('[gen:battle-pool] 教科別（★対戦時はこのうち1教科だけを読み込む★）:');
   for (const [subject, count, bytes] of perFile) {
     const s = stats[subject] || {};
@@ -1683,7 +2406,8 @@ function main(): void {
         `(4択 ${String(f.choice4 || 0).padStart(3)} / 2〜3・5〜6択 ${String(f.choice || 0).padStart(3)}` +
         ` / かな入力 ${String(f.kana || 0).padStart(3)}` +
         `${f.word || f.panel ? ` / 語句 ${f.word || 0} / パネル ${f.panel || 0}` : ''})  ` +
-        `未使用 ${s.skipped || 0}`,
+        `未使用 ${s.skipped || 0}` +
+        `${authoredOf(s) > 0 ? `  手書き ${authoredOf(s)}` : ''}`,
     );
   }
 }

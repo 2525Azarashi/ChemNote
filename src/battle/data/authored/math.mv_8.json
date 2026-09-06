@@ -1,0 +1,201 @@
+{
+  "subject": "math",
+  "chapterId": "mv_8",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:mv_8:q_mv_8_coplanar:q_mv_8_coplanar_1:1",
+      "source": {
+        "chapterId": "mv_8",
+        "problemId": "q_mv_8_coplanar",
+        "subQuestionId": "q_mv_8_coplanar_1"
+      },
+      "format": "choice4",
+      "prompt": "OP = sOA + tOB + uOC の P が平面 ABC 上にあるとき、係数の和はいくつか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1",
+          "correct": true,
+          "why": "共面条件 s + t + u = 1。平面の共線条件 s + t = 1 の空間版。"
+        },
+        {
+          "text": "和が 0 になるとき",
+          "why": "0 では平面 ABC 上に来ない。内分点で確かめると和は 1。"
+        },
+        {
+          "text": "和が 3 になるとき",
+          "why": "係数が 3 つあるから 3、ではない。和は 1。"
+        },
+        {
+          "text": "和ではなく積が決まるとき",
+          "why": "条件になるのは 3 つの係数の和。積ではない。"
+        }
+      ],
+      "oneLine": "係数の和は 1。s + t + u = 1 が共面条件。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:mv_8:q_mv_8_coplanar:q_mv_8_coplanar_2:1",
+      "source": {
+        "chapterId": "mv_8",
+        "problemId": "q_mv_8_coplanar",
+        "subQuestionId": "q_mv_8_coplanar_2"
+      },
+      "format": "choice4",
+      "prompt": "OP = (1/2)OA + (1/3)OB + k·OC の P が平面 ABC 上にあるとき k はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "1/6",
+          "correct": true,
+          "why": "1/2 + 1/3 + k = 1 より k = 1 - 5/6 = 1/6。"
+        },
+        {
+          "text": "分数の和を誤った k = 1/5",
+          "why": "1/2 + 1/3 = 5/6。分母をそろえて足す。"
+        },
+        {
+          "text": "和を 0 とした k = -5/6",
+          "why": "条件は和が 1。0 ではない。"
+        },
+        {
+          "text": "残りを 2 等分した k = 1/12",
+          "why": "残りはそのまま k になる。半分にする操作は入らない。"
+        }
+      ],
+      "oneLine": "k = 1/6。1/2 + 1/3 + k = 1 を解くだけ。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:mv_8:q_mv_8_coplanar:q_mv_8_coplanar_1:2",
+      "source": {
+        "chapterId": "mv_8",
+        "problemId": "q_mv_8_coplanar",
+        "subQuestionId": "q_mv_8_coplanar_1"
+      },
+      "format": "choice4",
+      "prompt": "共面条件 s + t + u = 1 は、どの条件の空間版として覚えられるか。",
+      "label": "",
+      "options": [
+        {
+          "text": "平面の共線条件 s + t = 1",
+          "correct": true,
+          "why": "直線 AB 上を表す s + t = 1 に、係数が 1 つ増えたのが共面条件。"
+        },
+        {
+          "text": "垂直条件の内積 0",
+          "why": "垂直は内積 0。係数の和とは別の話。"
+        },
+        {
+          "text": "平行条件の x1y2 - x2y1 = 0",
+          "why": "平行条件はたすきがけ。共面条件は係数の和。"
+        },
+        {
+          "text": "面積公式の (1/2)|x1y2 - x2y1|",
+          "why": "面積の式。条件式ではない。"
+        }
+      ],
+      "oneLine": "共線条件 s + t = 1 の空間版が共面条件 s + t + u = 1。",
+      "timeLimit": 16,
+      "grounding": "平面の共線条件「s + t = 1」の空間版が、共面条件「s + t + u = 1」です"
+    },
+    {
+      "id": "a:mv_8:q_mv_8_sphere:q_mv_8_sphere_1:1",
+      "source": {
+        "chapterId": "mv_8",
+        "problemId": "q_mv_8_sphere",
+        "subQuestionId": "q_mv_8_sphere_1"
+      },
+      "format": "choice4",
+      "prompt": "中心 (1, -2, 3)、半径 4 の球面の方程式はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "(x - 1)^2 + (y + 2)^2 + (z - 3)^2 = 16",
+          "correct": true,
+          "why": "中心は引く形で入り、右辺は半径の 2 乗 16。円の方程式の 3 次元版。"
+        },
+        {
+          "text": "右辺を 2 乗しなかった (x - 1)^2 + (y + 2)^2 + (z - 3)^2 = 4",
+          "why": "右辺は半径の 2 乗なので 16 になる。"
+        },
+        {
+          "text": "符号を誤った (x + 1)^2 + (y - 2)^2 + (z + 3)^2 = 16",
+          "why": "中心 (1, -2, 3) は (x-1)、(y+2)、(z-3) の形で入る。"
+        },
+        {
+          "text": "中心を原点とした x^2 + y^2 + z^2 = 16",
+          "why": "中心が原点の球面。中心のぶんの平行移動が抜けている。"
+        }
+      ],
+      "oneLine": "(x-1)^2 + (y+2)^2 + (z-3)^2 = 16。中心と半径をそのまま書く。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:mv_8:q_mv_8_sphere:q_mv_8_sphere_2:1",
+      "source": {
+        "chapterId": "mv_8",
+        "problemId": "q_mv_8_sphere",
+        "subQuestionId": "q_mv_8_sphere_2"
+      },
+      "format": "choice4",
+      "prompt": "中心 (1, -2, 3)、半径 4 の球面を平面 z = 6 で切った切り口の円の半径はどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "√7",
+          "correct": true,
+          "why": "中心から平面までの距離は |6-3| = 3。切り口の半径は √(4² - 3²) = √7。"
+        },
+        {
+          "text": "球の半径をそのまま答えた 4 という値",
+          "why": "切り口は中心を通らないので半径は小さくなる。"
+        },
+        {
+          "text": "距離を引いただけの 1 という値",
+          "why": "4 - 3 とした形。三平方の定理で 2 乗の差の平方根をとる。"
+        },
+        {
+          "text": "2 乗の和をとった 5 という値",
+          "why": "√(16+9) とした形。斜辺は球の半径 4 なので差をとる。"
+        }
+      ],
+      "oneLine": "√7。球の半径・中心から平面までの距離・切り口の半径で直角三角形を作る。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mv_8:q_mv_8_sphere:q_mv_8_sphere_2:2",
+      "source": {
+        "chapterId": "mv_8",
+        "problemId": "q_mv_8_sphere",
+        "subQuestionId": "q_mv_8_sphere_2"
+      },
+      "format": "choice4",
+      "prompt": "球を平面で切った切り口の半径を求めるとき、直角三角形の斜辺になるのはどれか。",
+      "label": "",
+      "options": [
+        {
+          "text": "球の半径",
+          "correct": true,
+          "why": "球の半径・中心から平面までの距離・切り口の半径で直角三角形になり、斜辺が球の半径。"
+        },
+        {
+          "text": "切り口の円の半径",
+          "why": "こちらは直角をはさむ辺。斜辺は球の半径。"
+        },
+        {
+          "text": "中心から平面までの距離",
+          "why": "こちらも直角をはさむ辺。斜辺は球の半径。"
+        },
+        {
+          "text": "切り口の円の直径",
+          "why": "直角三角形の辺に入らない量。"
+        }
+      ],
+      "oneLine": "斜辺は球の半径。距離と切り口の半径が直角をはさむ 2 辺になる。",
+      "timeLimit": 16,
+      "grounding": "球の切り口＝直角三角形（球の半径・中心から平面までの距離・切り口の半径）"
+    }
+  ]
+}

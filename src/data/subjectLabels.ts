@@ -67,6 +67,8 @@
 
 import type { SubjectKey } from './allChapters';
 import { SUBJECT_INDEX } from './chapterIndex.generated';
+// 本体に教科データを持たない教科（高校入試 理科など）の教科名
+import { externalSubjectOf } from './externalSubjects';
 
 /**
  * 教科ID → 画面に出す教科名。
@@ -85,7 +87,22 @@ export const SUBJECT_LABELS: Record<SubjectKey, string> = Object.fromEntries(
  * 既定を化学基礎にしているのは、保存された教科IDが壊れていたり
  * 古い名前だったときに画面の見出しが空になるのを避けるためで、
  * 従来（SubjectSelection.getSubjectLabel）と同じ振る舞い。
+ *
+ * ★外部教科（この表に載らない教科）を既定より先に見る★
+ * 高校入試 理科（rika）は本体の教科データを持たないので
+ * 索引（SUBJECT_INDEX）にも、そこから作るこの表にも載らない。
+ * 先に拾わないと「未知の教科」として既定に落ち、
+ * 対戦履歴などで ★理科の試合が「化学基礎」と表示される★。
+ *
+ * なお ★この分岐は表そのものを増やしていない★。
+ * 教科名の対応表を組み立てているのは今もこのファイルの
+ * SUBJECT_LABELS だけで、外部教科は別の登録簿から引くだけである
+ * （tests/subjectLabels.test.ts が守っている「出どころは1か所」を壊さない）。
  */
 export function labelOfSubject(id: string | null | undefined): string {
-  return SUBJECT_LABELS[(id || '') as SubjectKey] || SUBJECT_LABELS.chemistry_basic;
+  const known = SUBJECT_LABELS[(id || '') as SubjectKey];
+  if (known) return known;
+  const external = externalSubjectOf(id);
+  if (external) return external.label;
+  return SUBJECT_LABELS.chemistry_basic;
 }

@@ -1,0 +1,281 @@
+{
+  "subject": "math",
+  "chapterId": "mi_1",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:mi_1:q_mi_1_div:q_mi_1_div_1:1",
+      "source": {
+        "chapterId": "mi_1",
+        "problemId": "q_mi_1_div",
+        "subQuestionId": "q_mi_1_div_1"
+      },
+      "format": "choice4",
+      "prompt": "360 を素因数分解して 2^a × 3^b × 5^c と表すとき、a + b + c の値は？",
+      "label": "（1）a + b + c",
+      "options": [
+        {
+          "text": "6",
+          "correct": true,
+          "why": "360 = 2³ × 3² × 5 なので a = 3、b = 2、c = 1。足して 6。"
+        },
+        {
+          "text": "指数を足さずに素因数の種類の数を答えた値",
+          "why": "問われているのは指数の和。素因数が3種類あることとは別。"
+        },
+        {
+          "text": "2 の指数を4と誤って合計した値",
+          "why": "360 を2で割れるのは3回まで。8 × 45 の形で確かめられる。"
+        },
+        {
+          "text": "5 の指数を0と見落として合計した値",
+          "why": "360 = 8 × 45 = 8 × 9 × 5 なので5は1回現れる。"
+        }
+      ],
+      "answer": "6",
+      "answerWhy": "360 = 2³ × 3² × 5。指数は 3, 2, 1 で和は 6。",
+      "oneLine": "素因数分解は小さい素数から順に割っていく。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:mi_1:q_mi_1_div:q_mi_1_div_2:1",
+      "source": {
+        "chapterId": "mi_1",
+        "problemId": "q_mi_1_div",
+        "subQuestionId": "q_mi_1_div_2"
+      },
+      "format": "choice4",
+      "prompt": "360 の正の約数の個数は？",
+      "label": "（2）約数の個数",
+      "options": [
+        {
+          "text": "24",
+          "correct": true,
+          "why": "(3+1)(2+1)(1+1) = 4 × 3 × 2 = 24 個。"
+        },
+        {
+          "text": "指数に1を足さずに掛けた値",
+          "why": "2を0個使う場合も約数になるので、各指数に1を足してから掛ける。"
+        },
+        {
+          "text": "指数の和に1を足した値",
+          "why": "個数は積の法則で求める。和にしてはいけない。"
+        },
+        {
+          "text": "1 と自分自身を除いた値",
+          "why": "1 も 360 自身も正の約数に含める。"
+        }
+      ],
+      "answer": "24",
+      "answerWhy": "約数の個数は各指数に1を足して掛ける。4 × 3 × 2 = 24。",
+      "oneLine": "約数の個数は（指数+1）の積で求める。",
+      "timeLimit": 20
+    },
+    {
+      "id": "a:mi_1:q_mi_1_div:q_mi_1_div_3:1",
+      "source": {
+        "chapterId": "mi_1",
+        "problemId": "q_mi_1_div",
+        "subQuestionId": "q_mi_1_div_3"
+      },
+      "format": "choice4",
+      "prompt": "360 の正の約数の総和は？",
+      "label": "（3）約数の総和",
+      "options": [
+        {
+          "text": "1170",
+          "correct": true,
+          "why": "(1+2+4+8)(1+3+9)(1+5) = 15 × 13 × 6 = 1170。"
+        },
+        {
+          "text": "自分自身を除いて求めた値",
+          "why": "総和には 360 自身も含める。"
+        },
+        {
+          "text": "各素因数の等比和を足し算でつないだ値",
+          "why": "つなぐのは掛け算。積の法則で組み合わせる。"
+        },
+        {
+          "text": "1 の項を含めずに各等比和を作った値",
+          "why": "その素因数を0個使う場合、つまり 1 の項を必ず入れる。"
+        }
+      ],
+      "answer": "1170",
+      "answerWhy": "各素因数の等比数列の和の積。15 × 13 × 6 = 1170。",
+      "oneLine": "約数の総和は (1 + p + … + p^n) の積で求める。",
+      "timeLimit": 28
+    },
+    {
+      "id": "a:mi_1:q_mi_1_gcd:q_mi_1_gcd_1:1",
+      "source": {
+        "chapterId": "mi_1",
+        "problemId": "q_mi_1_gcd",
+        "subQuestionId": "q_mi_1_gcd_1"
+      },
+      "format": "choice4",
+      "prompt": "84 と 126 の最大公約数は？",
+      "label": "（1）最大公約数",
+      "options": [
+        {
+          "text": "42",
+          "correct": true,
+          "why": "84 = 2²×3×7、126 = 2×3²×7。共通因数を小さい指数で拾い 2×3×7 = 42。"
+        },
+        {
+          "text": "共通因数を大きい方の指数で拾った値",
+          "why": "大きい指数で拾うのは最小公倍数のやり方。"
+        },
+        {
+          "text": "2 の指数を2にしたまま計算した値",
+          "why": "126 には2が1個しかない。小さい方の指数に合わせる。"
+        },
+        {
+          "text": "素因数 7 を拾い忘れた値",
+          "why": "84 も 126 もどちらも7で割り切れる。"
+        }
+      ],
+      "answer": "42",
+      "answerWhy": "共通の素因数を小さい方の指数で拾って 2 × 3 × 7 = 42。",
+      "oneLine": "最大公約数は共通の素因数を小さい指数で拾う。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mi_1:q_mi_1_gcd:q_mi_1_gcd_2:1",
+      "source": {
+        "chapterId": "mi_1",
+        "problemId": "q_mi_1_gcd",
+        "subQuestionId": "q_mi_1_gcd_2"
+      },
+      "format": "choice4",
+      "prompt": "84 と 126 の最小公倍数は？",
+      "label": "（2）最小公倍数",
+      "options": [
+        {
+          "text": "252",
+          "correct": true,
+          "why": "すべての素因数を大きい方の指数で拾い 2² × 3² × 7 = 252。"
+        },
+        {
+          "text": "2つの数をそのまま掛けた値",
+          "why": "積は（最大公約数）×（最小公倍数）。最大公約数で割る必要がある。"
+        },
+        {
+          "text": "共通因数を小さい指数で拾った値",
+          "why": "それは最大公約数の求め方。"
+        },
+        {
+          "text": "3 の指数を1にしたまま計算した値",
+          "why": "126 には3が2個ある。大きい方の指数に合わせる。"
+        }
+      ],
+      "answer": "252",
+      "answerWhy": "2² × 3² × 7 = 252。検算 42 × 252 = 84 × 126 ✓。",
+      "oneLine": "最小公倍数はすべての素因数を大きい指数で拾う。",
+      "timeLimit": 22
+    },
+    {
+      "id": "a:mi_1:q_mi_1_gcd:q_mi_1_gcd_2:2",
+      "source": {
+        "chapterId": "mi_1",
+        "problemId": "q_mi_1_gcd",
+        "subQuestionId": "q_mi_1_gcd_2"
+      },
+      "format": "choice4",
+      "prompt": "2つの自然数 a、b の最大公約数 G と最小公倍数 L の間に、常に成り立つ関係はどれ？",
+      "label": "（2）G と L の関係",
+      "options": [
+        {
+          "text": "G × L = a × b",
+          "correct": true,
+          "why": "2数のときは常に成り立つ。検算に使える強力な関係。"
+        },
+        {
+          "text": "和のほうが等しく G + L = a + b になる",
+          "why": "84 と 126 では 42 + 252 と 84 + 126 が一致しない。"
+        },
+        {
+          "text": "L を G で割ると必ず素数になる",
+          "why": "252 ÷ 42 = 6 で素数ではない。"
+        },
+        {
+          "text": "G は必ず a と b の差に等しい",
+          "why": "126 - 84 = 42 は偶然の一致。一般には成り立たない。"
+        }
+      ],
+      "answer": "G × L = a × b",
+      "answerWhy": "解説の通り、2数のときこの関係は常に成り立つ。",
+      "oneLine": "（最大公約数）×（最小公倍数）＝ もとの2数の積。",
+      "timeLimit": 20,
+      "grounding": "G × L = a × b は2数のときに常に成り立つ関係です"
+    },
+    {
+      "id": "a:mi_1:q_mi_1_gcd:q_mi_1_gcd_3:1",
+      "source": {
+        "chapterId": "mi_1",
+        "problemId": "q_mi_1_gcd",
+        "subQuestionId": "q_mi_1_gcd_3"
+      },
+      "format": "choice4",
+      "prompt": "自然数 a < b の最大公約数が 6、最小公倍数が 72 であるとき、a + b の最小値は？",
+      "label": "（3）a + b の最小値",
+      "options": [
+        {
+          "text": "42",
+          "correct": true,
+          "why": "a = 6m、b = 6n で mn = 12。互いに素な (3,4) から 6 × 7 = 42。"
+        },
+        {
+          "text": "(m, n) = (1, 12) の組から出る 78 という和",
+          "why": "この組も条件は満たすが和は大きい。最小値ではない。"
+        },
+        {
+          "text": "互いに素でない (2, 6) を使って出る 48 という和",
+          "why": "m と n が互いに素でないと最大公約数が6より大きくなる。"
+        },
+        {
+          "text": "最大公約数と最小公倍数をそのまま足した 78 という和",
+          "why": "a + b は 6(m + n) の形。G と L を足すことに意味はない。"
+        }
+      ],
+      "answer": "42",
+      "answerWhy": "a = 18、b = 24 のとき最小。gcd = 6、lcm = 72 を満たす。",
+      "oneLine": "最大公約数 G なら a = Gm、b = Gn（m, n 互いに素）とおく。",
+      "timeLimit": 30
+    },
+    {
+      "id": "a:mi_1:q_mi_1_gcd:q_mi_1_gcd_3:2",
+      "source": {
+        "chapterId": "mi_1",
+        "problemId": "q_mi_1_gcd",
+        "subQuestionId": "q_mi_1_gcd_3"
+      },
+      "format": "choice4",
+      "prompt": "最大公約数が G と分かっている2数 a、b を扱うとき、定石となる置き方はどれ？",
+      "label": "（3）最大公約数問題の第一手",
+      "options": [
+        {
+          "text": "a = Gm、b = Gn とおき、m と n を互いに素とする",
+          "correct": true,
+          "why": "互いに素という条件があってはじめて最大公約数がちょうど G になる。"
+        },
+        {
+          "text": "a = Gm、b = Gn とおくが、m と n には条件をつけない",
+          "why": "共通因数が残ると最大公約数が G より大きくなってしまう。"
+        },
+        {
+          "text": "a と b をどちらも G の2乗の倍数とおく",
+          "why": "G の倍数であればよく、2乗である必要はない。"
+        },
+        {
+          "text": "a と b の差が G になるとおく",
+          "why": "差が最大公約数に一致するとは限らない。"
+        }
+      ],
+      "answer": "a = Gm、b = Gn とおき、m と n を互いに素とする",
+      "answerWhy": "解説の通り、最大公約数がらみの問題ほぼすべての第一手。",
+      "oneLine": "gcd が G なら a = Gm、b = Gn、m と n は互いに素。",
+      "timeLimit": 22,
+      "grounding": "「gcd が G なら a = Gm、b = Gn（m, n は互いに素）とおく」は、最大公約数がらみの問題ほぼすべての第一手です"
+    }
+  ]
+}

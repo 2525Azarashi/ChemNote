@@ -1,0 +1,2998 @@
+{
+  "subject": "chemistry_basic",
+  "chapterId": "c1_2_B",
+  "authoredBy": "room-cb-1",
+  "_comment": [
+    "1章 物質の構成 ②-B 同素体・成分元素の検出 — 対戦用の小問。",
+    "誤答はすべて元データの解説（解法の思考手順、詳しい解説、ひっかけ欄）から取った。"
+  ],
+  "questions": [
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_1:q_c1_2_B_1_1_1:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_1",
+        "subQuestionId": "q_c1_2_B_1_1_1"
+      },
+      "format": "choice4",
+      "prompt": "硫黄(S)の同素体のうち、常温で最も安定な黄色の結晶はどれか。",
+      "label": "(1) ①",
+      "options": [
+        {
+          "text": "斜方硫黄",
+          "correct": true,
+          "why": "常温で最も安定な黄色の結晶。硫黄の同素体の基準になる形。"
+        },
+        {
+          "text": "単斜硫黄",
+          "why": "高温で安定な形で、常温では斜方硫黄に変わっていく。"
+        },
+        {
+          "text": "ゴム状硫黄",
+          "why": "液体の硫黄を急冷して得られる弾性のある形。常温で安定ではない。"
+        },
+        {
+          "text": "黒鉛",
+          "why": "これは炭素の同素体。硫黄ではない。"
+        }
+      ],
+      "oneLine": "硫黄の同素体で常温最安定なのは斜方硫黄（黄色の結晶）。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_1:q_c1_2_B_1_1_2:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_1",
+        "subQuestionId": "q_c1_2_B_1_1_2"
+      },
+      "format": "choice4",
+      "prompt": "炭素(C)の同素体のうち、柔らかくて電気を通し、鉛筆の芯に使われるものはどれか。",
+      "label": "(1) ②",
+      "options": [
+        {
+          "text": "黒鉛",
+          "correct": true,
+          "why": "別名グラファイト。柔らかく電気をよく通す。"
+        },
+        {
+          "text": "ダイヤモンド",
+          "why": "非常に硬く電気を通さない。鉛筆の芯には使えない。"
+        },
+        {
+          "text": "フラーレン",
+          "why": "サッカーボール状の分子で、有機溶媒に溶ける。鉛筆の芯ではない。"
+        },
+        {
+          "text": "斜方硫黄",
+          "why": "これは硫黄の同素体。炭素ではない。"
+        }
+      ],
+      "oneLine": "鉛筆の芯に使う炭素の同素体は黒鉛（グラファイト）。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_1:q_c1_2_B_1_1_4_color:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_1",
+        "subQuestionId": "q_c1_2_B_1_1_4_color"
+      },
+      "format": "choice4",
+      "prompt": "酸素(O)の同素体であるオゾン(O₃)は何色か。",
+      "label": "(1) ④ 色",
+      "options": [
+        {
+          "text": "淡青色",
+          "correct": true,
+          "why": "オゾンは淡い青色の気体。"
+        },
+        {
+          "text": "無色",
+          "why": "無色なのは酸素O₂のほう。オゾンは淡青色。"
+        },
+        {
+          "text": "黄緑色",
+          "why": "黄緑色は塩素の気体の色。オゾンではない。"
+        },
+        {
+          "text": "赤褐色",
+          "why": "赤褐色は臭素などの色。オゾンではない。"
+        }
+      ],
+      "oneLine": "オゾンO₃は淡青色の気体。",
+      "timeLimit": 11
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_1:q_c1_2_B_1_1_4_smell:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_1",
+        "subQuestionId": "q_c1_2_B_1_1_4_smell"
+      },
+      "format": "choice4",
+      "prompt": "オゾン(O₃)のにおいの特徴はどれか。",
+      "label": "(1) ④ におい",
+      "options": [
+        {
+          "text": "特異臭がある",
+          "correct": true,
+          "why": "独特のにおいをもつ。無臭ではない。"
+        },
+        {
+          "text": "まったくの無臭",
+          "why": "無臭なのは酸素O₂のほう。オゾンにはにおいがある。"
+        },
+        {
+          "text": "甘いにおいがする",
+          "why": "甘いにおいとは説明されていない。特異臭である。"
+        },
+        {
+          "text": "腐卵臭がある",
+          "why": "腐卵臭は硫化水素のにおい。オゾンではない。"
+        }
+      ],
+      "oneLine": "オゾンは特異臭（独特のにおい）をもつ。",
+      "timeLimit": 12,
+      "grounding": "④ 色：淡青色、におい：特異臭"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_1:q_c1_2_B_1_1_5:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_1",
+        "subQuestionId": "q_c1_2_B_1_1_5"
+      },
+      "format": "choice4",
+      "prompt": "リン(P)の同素体のうち、猛毒で自然発火の危険があり、水中に保存するものはどれか。",
+      "label": "(1) ⑤",
+      "options": [
+        {
+          "text": "黄リン",
+          "correct": true,
+          "why": "猛毒で自然発火するため水中に保存する。"
+        },
+        {
+          "text": "赤リン",
+          "why": "ほぼ無毒で、マッチの側薬に使われる。水中保存はしない。"
+        },
+        {
+          "text": "黒鉛",
+          "why": "これは炭素の同素体。リンではない。"
+        },
+        {
+          "text": "単斜硫黄",
+          "why": "これは硫黄の同素体。リンではない。"
+        }
+      ],
+      "oneLine": "水中に保存するリンの同素体は黄リン（猛毒・自然発火）。",
+      "timeLimit": 13
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_1:q_c1_2_B_1_1_6:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_1",
+        "subQuestionId": "q_c1_2_B_1_1_6"
+      },
+      "format": "choice4",
+      "prompt": "リン(P)の同素体のうち、ほぼ無毒でマッチの側薬に使われるものはどれか。",
+      "label": "(1) ⑥",
+      "options": [
+        {
+          "text": "赤リン",
+          "correct": true,
+          "why": "ほぼ無毒で、マッチの側薬に使われる。"
+        },
+        {
+          "text": "黄リン",
+          "why": "猛毒で自然発火するため水中保存する。マッチの側薬には使わない。"
+        },
+        {
+          "text": "フラーレン",
+          "why": "これは炭素の同素体。リンではない。"
+        },
+        {
+          "text": "ゴム状硫黄",
+          "why": "これは硫黄の同素体。リンではない。"
+        }
+      ],
+      "oneLine": "マッチの側薬に使うリンの同素体は赤リン（ほぼ無毒）。",
+      "timeLimit": 13
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_1:q_c1_2_B_1_2:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_1",
+        "subQuestionId": "q_c1_2_B_1_2"
+      },
+      "format": "choice4",
+      "prompt": "次のうち、互いに同素体の関係にある組み合わせはどれか。",
+      "label": "(2) ①",
+      "options": [
+        {
+          "text": "赤リンと黄リン",
+          "correct": true,
+          "why": "どちらもリンPの単体で、性質が異なる＝同素体。"
+        },
+        {
+          "text": "ネオンとアルゴン",
+          "why": "元素そのものが違うので同素体ではない。"
+        },
+        {
+          "text": "氷と水",
+          "why": "どちらもH₂Oで、同一物質の状態変化。同素体ではない。"
+        },
+        {
+          "text": "酸素と窒素",
+          "why": "元素が違うので同素体ではない。"
+        }
+      ],
+      "oneLine": "同素体は同じ元素の単体で性質が違うもの。赤リンと黄リンが該当。",
+      "timeLimit": 14,
+      "grounding": "イ（赤リンと黄リン：リンP）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_1:q_c1_2_B_1_2:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_1",
+        "subQuestionId": "q_c1_2_B_1_2"
+      },
+      "format": "choice4",
+      "prompt": "次のうち、同素体の関係に「ない」組み合わせはどれか。",
+      "label": "(2) ②",
+      "options": [
+        {
+          "text": "氷と水",
+          "correct": true,
+          "why": "どちらもH₂Oで、同じ物質の状態変化にすぎない。"
+        },
+        {
+          "text": "ゴム状硫黄と単斜硫黄",
+          "why": "どちらも硫黄Sの単体で性質が違う＝同素体。"
+        },
+        {
+          "text": "カーボンナノチューブとダイヤモンド",
+          "why": "どちらも炭素Cの単体で性質が違う＝同素体。"
+        },
+        {
+          "text": "赤リンと黄リン",
+          "why": "どちらもリンPの単体で性質が違う＝同素体。"
+        }
+      ],
+      "oneLine": "氷と水は同じH₂Oの状態変化なので同素体ではない。",
+      "timeLimit": 15,
+      "grounding": "エは同一物質の状態変化（氷と水：いずれもH₂O）なので同素体ではありません"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_1:q_c1_2_B_1_2:3",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_1",
+        "subQuestionId": "q_c1_2_B_1_2"
+      },
+      "format": "choice4",
+      "prompt": "同素体をもつ代表的な元素4つの頭文字をまとめた語呂はどれか。",
+      "label": "(2) 代表元素",
+      "options": [
+        {
+          "text": "スコップ（S・C・O・P）",
+          "correct": true,
+          "why": "硫黄・炭素・酸素・リンの4元素が同素体の代表。"
+        },
+        {
+          "text": "ヘリウム・ネオン・アルゴン",
+          "why": "これらは貴ガスで、同素体の代表ではない。"
+        },
+        {
+          "text": "水・酸素・窒素",
+          "why": "これは同素体の語呂ではない。"
+        },
+        {
+          "text": "鉄・銅・亜鉛",
+          "why": "金属の並びで、同素体の代表4元素ではない。"
+        }
+      ],
+      "oneLine": "同素体の代表はS（硫黄）C（炭素）O（酸素）P（リン）＝スコップ。",
+      "timeLimit": 13,
+      "grounding": "頭文字「S, C, O, P（スコップ）」の4元素が代表例です"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_2:q_c1_2_B_2_1_stable:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_2",
+        "subQuestionId": "q_c1_2_B_2_1_stable"
+      },
+      "format": "choice",
+      "prompt": "斜方硫黄と単斜硫黄のうち、常温で安定なのはどちらか。",
+      "label": "問1 (1) 安定",
+      "options": [
+        {
+          "text": "斜方硫黄",
+          "correct": true,
+          "why": "常温で安定で黄色の結晶。単斜硫黄は常温では斜方硫黄に変わる。"
+        },
+        {
+          "text": "単斜硫黄",
+          "why": "淡黄色の針状結晶で、常温では安定ではない。"
+        },
+        {
+          "text": "どちらも同じくらい安定",
+          "why": "安定さは同じではない。常温では斜方硫黄が安定。"
+        }
+      ],
+      "oneLine": "常温で安定なのは斜方硫黄。単斜硫黄は針状で常温では不安定。",
+      "timeLimit": 12,
+      "grounding": "常温で安定で黄色：斜方硫黄"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_2:q_c1_2_B_2_1_needle:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_2",
+        "subQuestionId": "q_c1_2_B_2_1_needle"
+      },
+      "format": "choice4",
+      "prompt": "硫黄の同素体のうち、淡黄色で針状の結晶はどれか。",
+      "label": "問1 (1) 針状",
+      "options": [
+        {
+          "text": "単斜硫黄",
+          "correct": true,
+          "why": "淡黄色の針状結晶。硫黄の同素体のひとつ。"
+        },
+        {
+          "text": "斜方硫黄",
+          "why": "常温で安定な黄色の結晶で、針状ではない。"
+        },
+        {
+          "text": "ゴム状硫黄",
+          "why": "弾性のある無定形の固体で、針状結晶ではない。"
+        },
+        {
+          "text": "黄リン",
+          "why": "これはリンの同素体。硫黄ではない。"
+        }
+      ],
+      "oneLine": "淡黄色で針状の硫黄の同素体は単斜硫黄。",
+      "timeLimit": 12,
+      "grounding": "淡黄色で針状：単斜硫黄"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_2:q_c1_2_B_2_2_soft:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_2",
+        "subQuestionId": "q_c1_2_B_2_2_soft"
+      },
+      "format": "choice4",
+      "prompt": "ダイヤモンドと黒鉛は同じ炭素の同素体だが、電気の通しかたはどう違うか。",
+      "label": "問1 (2) 電気",
+      "options": [
+        {
+          "text": "黒鉛は電気を通すがダイヤモンドは通さない",
+          "correct": true,
+          "why": "黒鉛はやわらかく電気をよく導き、ダイヤモンドは硬く電気を通さない。"
+        },
+        {
+          "text": "ダイヤモンドは電気を通すが黒鉛は通さない",
+          "why": "逆になっている。通すのは黒鉛のほう。"
+        },
+        {
+          "text": "どちらも電気をよく通す",
+          "why": "ダイヤモンドは電気を通さない。"
+        },
+        {
+          "text": "どちらも電気をまったく通さない",
+          "why": "黒鉛は電気をよく導く。"
+        }
+      ],
+      "oneLine": "黒鉛はやわらかく電気を通し、ダイヤモンドは硬く電気を通さない。",
+      "timeLimit": 15,
+      "grounding": "非常に硬く電気を通さない：ダイヤモンド"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_2:q_c1_2_B_2_2_soft:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_2",
+        "subQuestionId": "q_c1_2_B_2_2_soft"
+      },
+      "format": "choice4",
+      "prompt": "次のうち、炭素(C)の同素体として挙げられていないものはどれか。",
+      "label": "問1 (2) 同素体",
+      "options": [
+        {
+          "text": "斜方硫黄",
+          "correct": true,
+          "why": "これは硫黄の同素体。炭素ではない。"
+        },
+        {
+          "text": "ダイヤモンド",
+          "why": "炭素の同素体。非常に硬く電気を通さない。"
+        },
+        {
+          "text": "黒鉛",
+          "why": "炭素の同素体。やわらかく電気をよく導く。"
+        },
+        {
+          "text": "カーボンナノチューブ",
+          "why": "炭素の同素体として挙げられている。"
+        }
+      ],
+      "oneLine": "炭素の同素体はダイヤモンド・黒鉛・フラーレン・カーボンナノチューブ。",
+      "timeLimit": 14,
+      "grounding": "同素体：ダイヤモンド、黒鉛、フラーレン、カーボンナノチューブ"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_2:q_c1_2_B_2_3_color:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_2",
+        "subQuestionId": "q_c1_2_B_2_3_color"
+      },
+      "format": "choice4",
+      "prompt": "同じ酸素の元素からなる酸素(O₂)とオゾン(O₃)は、色がどう違うか。",
+      "label": "問1 (3) 色",
+      "options": [
+        {
+          "text": "酸素は無色、オゾンは淡青色",
+          "correct": true,
+          "why": "同じ元素の単体でも性質が違うのが同素体の特徴。"
+        },
+        {
+          "text": "酸素は淡青色、オゾンは無色",
+          "why": "逆になっている。淡青色なのはオゾン。"
+        },
+        {
+          "text": "どちらも淡青色",
+          "why": "酸素O₂は無色である。"
+        },
+        {
+          "text": "どちらも黄緑色",
+          "why": "黄緑色は塩素の色。どちらの色でもない。"
+        }
+      ],
+      "oneLine": "酸素O₂は無色、オゾンO₃は淡青色。同素体は性質が違う。",
+      "timeLimit": 14,
+      "grounding": "色：淡青色　におい：特異臭"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_2:q_c1_2_B_2_3_smell:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_2",
+        "subQuestionId": "q_c1_2_B_2_3_smell"
+      },
+      "format": "choice4",
+      "prompt": "酸素(O₂)とオゾン(O₃)のにおいの違いとして正しいものはどれか。",
+      "label": "問1 (3) におい",
+      "options": [
+        {
+          "text": "酸素は無臭、オゾンは特異臭",
+          "correct": true,
+          "why": "同素体なので同じ元素でもにおいが違う。"
+        },
+        {
+          "text": "酸素は特異臭、オゾンは無臭",
+          "why": "逆になっている。特異臭があるのはオゾン。"
+        },
+        {
+          "text": "どちらも無臭",
+          "why": "オゾンにはにおいがある。"
+        },
+        {
+          "text": "どちらも腐卵臭",
+          "why": "腐卵臭は硫化水素のにおい。どちらでもない。"
+        }
+      ],
+      "oneLine": "酸素は無臭、オゾンは特異臭。同素体は性質が違う。",
+      "timeLimit": 14,
+      "grounding": "色：淡青色　におい：特異臭"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_2:q_c1_2_B_2_4_poison:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_2",
+        "subQuestionId": "q_c1_2_B_2_4_poison"
+      },
+      "format": "choice4",
+      "prompt": "黄リンを水中に保存するのはなぜか。",
+      "label": "問1 (4) 保存",
+      "options": [
+        {
+          "text": "空気中に置くと自然発火するから",
+          "correct": true,
+          "why": "猛毒であるうえ自然発火の危険があるため、水中で保存する。"
+        },
+        {
+          "text": "水に溶けやすく取り出しやすいから",
+          "why": "溶かすためではない。発火を防ぐためである。"
+        },
+        {
+          "text": "水中でしか赤リンに変わらないから",
+          "why": "保存の目的は変化させることではない。"
+        },
+        {
+          "text": "においが強く周囲に広がるから",
+          "why": "においを封じるための保存ではない。"
+        }
+      ],
+      "oneLine": "黄リンは自然発火するおそれがあるので、水中に保存する。",
+      "timeLimit": 14,
+      "grounding": "猛毒で自然発火するため「水中に保存」するものは何か"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_2:q_c1_2_B_2_4_match:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_2",
+        "subQuestionId": "q_c1_2_B_2_4_match"
+      },
+      "format": "choice4",
+      "prompt": "黄リンと赤リンの毒性の違いとして正しいものはどれか。",
+      "label": "問1 (4) 毒性",
+      "options": [
+        {
+          "text": "黄リンは猛毒、赤リンはほぼ無毒",
+          "correct": true,
+          "why": "だから赤リンのほうがマッチの側薬に使える。"
+        },
+        {
+          "text": "黄リンはほぼ無毒、赤リンは猛毒",
+          "why": "逆になっている。猛毒なのは黄リン。"
+        },
+        {
+          "text": "どちらも猛毒",
+          "why": "赤リンはほぼ無毒で日用品に使われる。"
+        },
+        {
+          "text": "どちらもほぼ無毒",
+          "why": "黄リンは猛毒である。"
+        }
+      ],
+      "oneLine": "黄リンは猛毒、赤リンはほぼ無毒でマッチの側薬に使われる。",
+      "timeLimit": 14,
+      "grounding": "毒性が低く「マッチの側薬」などに使われるものは何か"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_3:q_c1_2_B_3_1:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_3",
+        "subQuestionId": "q_c1_2_B_3_1"
+      },
+      "format": "choice4",
+      "prompt": "リチウム(Li)を含む物質を炎の中に入れると、炎は何色になるか。",
+      "label": "(1) Li",
+      "options": [
+        {
+          "text": "赤色",
+          "correct": true,
+          "why": "リアカー＝Li赤。炎色反応の語呂の先頭。"
+        },
+        {
+          "text": "黄色",
+          "why": "黄色はナトリウム(Na)の炎色。"
+        },
+        {
+          "text": "紫色",
+          "why": "紫色はカリウム(K)の炎色。"
+        },
+        {
+          "text": "青緑色",
+          "why": "青緑色は銅(Cu)の炎色。"
+        }
+      ],
+      "oneLine": "リチウムの炎色反応は赤色。語呂「リアカー」の「リ」がLi、「アカー」が赤。",
+      "timeLimit": 10,
+      "grounding": "(1) 赤 （赤色）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_3:q_c1_2_B_3_2:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_3",
+        "subQuestionId": "q_c1_2_B_3_2"
+      },
+      "format": "choice4",
+      "prompt": "ナトリウム(Na)を含む物質を炎の中に入れると、炎は何色になるか。",
+      "label": "(2) Na",
+      "options": [
+        {
+          "text": "黄色",
+          "correct": true,
+          "why": "無き＝Na黄。ナトリウムは黄色。"
+        },
+        {
+          "text": "赤色",
+          "why": "赤色はリチウム(Li)の炎色。"
+        },
+        {
+          "text": "紫色",
+          "why": "紫色はカリウム(K)の炎色。"
+        },
+        {
+          "text": "黄緑色",
+          "why": "黄緑色はバリウム(Ba)の炎色。黄色と混同しやすい。"
+        }
+      ],
+      "oneLine": "ナトリウムの炎色反応は黄色。バリウムの黄緑色と取り違えないこと。",
+      "timeLimit": 10,
+      "grounding": "(2) 黄 （黄色）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_3:q_c1_2_B_3_3:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_3",
+        "subQuestionId": "q_c1_2_B_3_3"
+      },
+      "format": "choice4",
+      "prompt": "カリウム(K)を含む物質を炎の中に入れると、炎は何色になるか。",
+      "label": "(3) K",
+      "options": [
+        {
+          "text": "紫色",
+          "correct": true,
+          "why": "無き＝K紫。赤紫と書かれることもある。"
+        },
+        {
+          "text": "赤色",
+          "why": "赤色はリチウム(Li)の炎色。"
+        },
+        {
+          "text": "黄色",
+          "why": "黄色はナトリウム(Na)の炎色。"
+        },
+        {
+          "text": "橙色",
+          "why": "橙色はカルシウム(Ca)の炎色。"
+        }
+      ],
+      "oneLine": "カリウムの炎色反応は紫色（赤紫）。リチウムの赤と混同しやすい。",
+      "timeLimit": 10,
+      "grounding": "(3) 紫 （紫色）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_3:q_c1_2_B_3_4:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_3",
+        "subQuestionId": "q_c1_2_B_3_4"
+      },
+      "format": "choice4",
+      "prompt": "銅(Cu)を含む物質を炎の中に入れると、炎は何色になるか。",
+      "label": "(4) Cu",
+      "options": [
+        {
+          "text": "青緑色",
+          "correct": true,
+          "why": "動力＝Cu青緑。銅は青みがかった緑。"
+        },
+        {
+          "text": "黄緑色",
+          "why": "黄緑色はバリウム(Ba)の炎色。"
+        },
+        {
+          "text": "紅色",
+          "why": "紅色はストロンチウム(Sr)の炎色。"
+        },
+        {
+          "text": "紫色",
+          "why": "紫色はカリウム(K)の炎色。"
+        }
+      ],
+      "oneLine": "銅の炎色反応は青緑色。バリウムの黄緑色と区別する。",
+      "timeLimit": 10,
+      "grounding": "(4) 青緑 （青緑色）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_3:q_c1_2_B_3_5:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_3",
+        "subQuestionId": "q_c1_2_B_3_5"
+      },
+      "format": "choice4",
+      "prompt": "カルシウム(Ca)を含む物質を炎の中に入れると、炎は何色になるか。",
+      "label": "(5) Ca",
+      "options": [
+        {
+          "text": "橙色",
+          "correct": true,
+          "why": "借りるとう＝Ca橙。橙赤と書かれることもある。"
+        },
+        {
+          "text": "紅色",
+          "why": "紅色はストロンチウム(Sr)の炎色。"
+        },
+        {
+          "text": "赤色",
+          "why": "赤色はリチウム(Li)の炎色。"
+        },
+        {
+          "text": "黄色",
+          "why": "黄色はナトリウム(Na)の炎色。"
+        }
+      ],
+      "oneLine": "カルシウムの炎色反応は橙色（橙赤）。Srの紅色と紛らわしい。",
+      "timeLimit": 10,
+      "grounding": "(5) 橙 （橙色）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_3:q_c1_2_B_3_6:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_3",
+        "subQuestionId": "q_c1_2_B_3_6"
+      },
+      "format": "choice4",
+      "prompt": "ストロンチウム(Sr)を含む物質を炎の中に入れると、炎は何色になるか。",
+      "label": "(6) Sr",
+      "options": [
+        {
+          "text": "紅色",
+          "correct": true,
+          "why": "するもくれない＝Sr紅。「くれない」が紅。"
+        },
+        {
+          "text": "橙色",
+          "why": "橙色はカルシウム(Ca)の炎色。"
+        },
+        {
+          "text": "黄緑色",
+          "why": "黄緑色はバリウム(Ba)の炎色。"
+        },
+        {
+          "text": "青緑色",
+          "why": "青緑色は銅(Cu)の炎色。"
+        }
+      ],
+      "oneLine": "ストロンチウムの炎色反応は紅色。カルシウムの橙色と区別する。",
+      "timeLimit": 10,
+      "grounding": "(6) 紅 （紅色）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_3:q_c1_2_B_3_7:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_3",
+        "subQuestionId": "q_c1_2_B_3_7"
+      },
+      "format": "choice4",
+      "prompt": "バリウム(Ba)を含む物質を炎の中に入れると、炎は何色になるか。",
+      "label": "(7) Ba",
+      "options": [
+        {
+          "text": "黄緑色",
+          "correct": true,
+          "why": "馬力＝Ba黄緑。語呂の最後。"
+        },
+        {
+          "text": "青緑色",
+          "why": "青緑色は銅(Cu)の炎色。"
+        },
+        {
+          "text": "黄色",
+          "why": "黄色はナトリウム(Na)の炎色。"
+        },
+        {
+          "text": "紫色",
+          "why": "紫色はカリウム(K)の炎色。"
+        }
+      ],
+      "oneLine": "バリウムの炎色反応は黄緑色。Cuの青緑色・Naの黄色と3つまとめて区別する。",
+      "timeLimit": 10,
+      "grounding": "(7) 黄緑 （黄緑色）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_3:q_c1_2_B_3_7:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_3",
+        "subQuestionId": "q_c1_2_B_3_7"
+      },
+      "format": "choice4",
+      "prompt": "炎色反応の暗記で使う語呂「リアカー無き…」の「動力」はどの元素を指すか。",
+      "label": "語呂",
+      "options": [
+        {
+          "text": "銅(Cu)・青緑色",
+          "correct": true,
+          "why": "動力＝Cu青緑。"
+        },
+        {
+          "text": "カリウム(K)・紫色",
+          "why": "カリウムは語呂の「無き」の後半。"
+        },
+        {
+          "text": "バリウム(Ba)・黄緑色",
+          "why": "バリウムは語呂の「馬力」。"
+        },
+        {
+          "text": "ストロンチウム(Sr)・紅色",
+          "why": "ストロンチウムは語呂の「するもくれない」。"
+        }
+      ],
+      "oneLine": "語呂「リアカー無き動力借りるとうするもくれない馬力」の「動力」はCuの青緑色。",
+      "timeLimit": 12,
+      "grounding": "「リアカー(Li赤) 無き(Na黄、K紫) 動力(Cu青緑) 借りるとう(Ca橙) するもくれない(Sr紅) 馬力(Ba黄緑)」で確実に暗記します。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_A_metal:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_A_metal"
+      },
+      "format": "choice4",
+      "prompt": "化合物Aの水溶液の炎色反応が青緑色だった。含まれる金属元素はどれか。",
+      "label": "（あ）Aの金属",
+      "options": [
+        {
+          "text": "銅（Cu）",
+          "correct": true,
+          "why": "青緑色の炎色反応を示す金属元素は銅。"
+        },
+        {
+          "text": "カルシウム（Ca）",
+          "why": "カルシウムは橙色。化合物Bのほう。"
+        },
+        {
+          "text": "カリウム（K）",
+          "why": "カリウムは赤紫色。化合物Cのほう。"
+        },
+        {
+          "text": "バリウム（Ba）",
+          "why": "バリウムは黄緑色。青緑と紛らわしいので注意。"
+        }
+      ],
+      "oneLine": "青緑色の炎色反応＝銅(Cu)。Baの黄緑色と取り違えないこと。",
+      "timeLimit": 12,
+      "grounding": "（あ）青緑色の炎色反応を示す金属元素は「銅（Cu）」です。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_A_nonmetal:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_A_nonmetal"
+      },
+      "format": "choice4",
+      "prompt": "化合物Aの水溶液に酢酸鉛(Ⅱ)水溶液を加えると黒色沈殿が生じた。含まれる非金属元素はどれか。",
+      "label": "（あ）Aの非金属",
+      "options": [
+        {
+          "text": "硫黄（S）",
+          "correct": true,
+          "why": "黒色沈殿は硫化鉛PbS。硫黄の検出反応。"
+        },
+        {
+          "text": "塩素（Cl）",
+          "why": "塩素は硝酸銀で白色沈殿（AgCl）。黒色ではない。"
+        },
+        {
+          "text": "炭素（C）",
+          "why": "炭素は燃焼させて生じた気体が石灰水を白濁させる。"
+        },
+        {
+          "text": "水素（H）",
+          "why": "水素は生じた液体が硫酸銅(Ⅱ)無水塩を青変させる。"
+        }
+      ],
+      "oneLine": "酢酸鉛(Ⅱ)で黒色沈殿＝硫黄(S)の検出。沈殿の正体は硫化鉛PbS。",
+      "timeLimit": 14,
+      "grounding": "酢酸鉛(Ⅱ)水溶液を加えて黒色沈殿（硫化鉛 PbS）が生じることから、非金属元素の「硫黄（S）」が含まれていることがわかります。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_A_nonmetal:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_A_nonmetal"
+      },
+      "format": "choice4",
+      "prompt": "酢酸鉛(Ⅱ)水溶液を加えたときに生じた黒色沈殿の正体はどれか。",
+      "label": "（あ）沈殿の正体",
+      "options": [
+        {
+          "text": "硫化鉛 PbS",
+          "correct": true,
+          "why": "黒色沈殿は硫化鉛。硫黄の存在を示す。"
+        },
+        {
+          "text": "塩化銀 AgCl",
+          "why": "塩化銀は白色沈殿。塩素の検出。"
+        },
+        {
+          "text": "炭酸カルシウム CaCO₃",
+          "why": "石灰水の白濁の正体。炭素の検出。"
+        },
+        {
+          "text": "硫酸銅(Ⅱ)五水和物 CuSO₄・5H₂O",
+          "why": "無水塩が水で青変したときの生成物。"
+        }
+      ],
+      "oneLine": "黒色沈殿の正体は硫化鉛PbS。白色沈殿のAgClと区別する。",
+      "timeLimit": 14,
+      "grounding": "黒色沈殿（硫化鉛 PbS）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_B_metal:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_B_metal"
+      },
+      "format": "choice4",
+      "prompt": "化合物Bの炎色反応は橙色だった。含まれる金属元素はどれか。",
+      "label": "（い）Bの金属",
+      "options": [
+        {
+          "text": "カルシウム（Ca）",
+          "correct": true,
+          "why": "橙色（橙赤）の炎色反応はカルシウム。"
+        },
+        {
+          "text": "ストロンチウム（Sr）",
+          "why": "ストロンチウムは紅色。橙と紛らわしい。"
+        },
+        {
+          "text": "リチウム（Li）",
+          "why": "リチウムは赤色。"
+        },
+        {
+          "text": "ナトリウム（Na）",
+          "why": "ナトリウムは黄色。"
+        }
+      ],
+      "oneLine": "橙色の炎色反応＝カルシウム(Ca)。Srの紅色と区別する。",
+      "timeLimit": 12,
+      "grounding": "元の化合物 B の炎色反応が橙色であることから、金属元素の「カルシウム（Ca）」が含まれていることがわかります。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_B_nonmetal1:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_B_nonmetal1"
+      },
+      "format": "choice4",
+      "prompt": "化合物Bを加熱して生じた気体が石灰水を白濁させた。このことからわかる元素はどれか。",
+      "label": "（い）気体",
+      "options": [
+        {
+          "text": "炭素（C）",
+          "correct": true,
+          "why": "石灰水の白濁＝二酸化炭素＝炭素の検出。"
+        },
+        {
+          "text": "水素（H）",
+          "why": "水素は液体が硫酸銅(Ⅱ)無水塩を青変させることでわかる。"
+        },
+        {
+          "text": "硫黄（S）",
+          "why": "硫黄は酢酸鉛(Ⅱ)で黒色沈殿。"
+        },
+        {
+          "text": "塩素（Cl）",
+          "why": "塩素は硝酸銀で白色沈殿。"
+        }
+      ],
+      "oneLine": "石灰水を白濁させる気体＝二酸化炭素。もとの物質に炭素(C)が含まれる。",
+      "timeLimit": 14,
+      "grounding": "発生した気体が石灰水を白濁（炭酸カルシウム CaCO₃ 生成）させたことから「炭素（C）」元素"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_B_nonmetal1:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_B_nonmetal1"
+      },
+      "format": "choice4",
+      "prompt": "石灰水が白濁したのは、何という物質ができたためか。",
+      "label": "（い）白濁の正体",
+      "options": [
+        {
+          "text": "炭酸カルシウム CaCO₃",
+          "correct": true,
+          "why": "石灰水＋二酸化炭素で炭酸カルシウムの白色沈殿ができる。"
+        },
+        {
+          "text": "硫化鉛 PbS",
+          "why": "硫黄の検出で生じる黒色沈殿。"
+        },
+        {
+          "text": "塩化銀 AgCl",
+          "why": "塩素の検出で生じる白色沈殿。石灰水とは無関係。"
+        },
+        {
+          "text": "酸化カルシウム CaO",
+          "why": "石灰水に生じるのは炭酸カルシウム。"
+        }
+      ],
+      "oneLine": "石灰水の白濁の正体は炭酸カルシウムCaCO₃。炭素の検出に使う。",
+      "timeLimit": 14,
+      "grounding": "石灰水を白濁（炭酸カルシウム CaCO₃ 生成）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_B_nonmetal2:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_B_nonmetal2"
+      },
+      "format": "choice4",
+      "prompt": "化合物Bを加熱して生じた液体が、白色の硫酸銅(Ⅱ)無水塩を青色に変えた。このことからわかる元素はどれか。",
+      "label": "（い）液体",
+      "options": [
+        {
+          "text": "水素（H）",
+          "correct": true,
+          "why": "青変は液体が水である証拠。水素が含まれる。"
+        },
+        {
+          "text": "炭素（C）",
+          "why": "炭素は気体が石灰水を白濁させることでわかる。"
+        },
+        {
+          "text": "塩素（Cl）",
+          "why": "塩素は硝酸銀で白色沈殿。"
+        },
+        {
+          "text": "硫黄（S）",
+          "why": "硫黄は酢酸鉛(Ⅱ)で黒色沈殿。"
+        }
+      ],
+      "oneLine": "硫酸銅(Ⅱ)無水塩の青変＝水の検出。もとの物質に水素(H)が含まれる。",
+      "timeLimit": 14,
+      "grounding": "ことから「水素（H）」元素が含まれていると判定できます"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_B_nonmetal2:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_B_nonmetal2"
+      },
+      "format": "choice4",
+      "prompt": "白色の硫酸銅(Ⅱ)無水塩が青色に変わるのは、何が存在するときか。",
+      "label": "（い）青変の意味",
+      "options": [
+        {
+          "text": "水",
+          "correct": true,
+          "why": "無水塩が水と結びついて五水和物になり青色になる。"
+        },
+        {
+          "text": "二酸化炭素",
+          "why": "二酸化炭素の検出は石灰水の白濁。"
+        },
+        {
+          "text": "塩化物イオン",
+          "why": "塩化物イオンの検出は硝酸銀の白色沈殿。"
+        },
+        {
+          "text": "酸素",
+          "why": "酸素の検出には使わない。"
+        }
+      ],
+      "oneLine": "硫酸銅(Ⅱ)無水塩は水があると青色の五水和物になる。水の検出試薬。",
+      "timeLimit": 14,
+      "grounding": "白色の硫酸銅(Ⅱ)無水塩を青色（硫酸銅(Ⅱ)五水和物 CuSO₄・5H₂O 生成）に変えた（=水である）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_C_metal:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_C_metal"
+      },
+      "format": "choice4",
+      "prompt": "化合物Cの水溶液の炎色反応は赤紫色（紫）だった。含まれる金属元素はどれか。",
+      "label": "（う）Cの金属",
+      "options": [
+        {
+          "text": "カリウム（K）",
+          "correct": true,
+          "why": "赤紫色（紫）の炎色反応はカリウム。"
+        },
+        {
+          "text": "リチウム（Li）",
+          "why": "リチウムは赤色。赤紫と紛らわしい。"
+        },
+        {
+          "text": "ストロンチウム（Sr）",
+          "why": "ストロンチウムは紅色。"
+        },
+        {
+          "text": "銅（Cu）",
+          "why": "銅は青緑色。化合物Aのほう。"
+        }
+      ],
+      "oneLine": "赤紫色（紫）の炎色反応＝カリウム(K)。Liの赤と区別する。",
+      "timeLimit": 12,
+      "grounding": "（う）赤紫色（紫）の炎色反応を示す金属元素は「カリウム（K）」です。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_C_nonmetal:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_C_nonmetal"
+      },
+      "format": "choice4",
+      "prompt": "化合物Cの水溶液に硝酸銀水溶液を加えると白色沈殿が生じた。含まれる非金属元素はどれか。",
+      "label": "（う）Cの非金属",
+      "options": [
+        {
+          "text": "塩素（Cl）",
+          "correct": true,
+          "why": "硝酸銀で白色沈殿（塩化銀）＝塩素の検出。"
+        },
+        {
+          "text": "硫黄（S）",
+          "why": "硫黄は酢酸鉛(Ⅱ)で黒色沈殿。"
+        },
+        {
+          "text": "炭素（C）",
+          "why": "炭素は石灰水の白濁で検出する。"
+        },
+        {
+          "text": "水素（H）",
+          "why": "水素は硫酸銅(Ⅱ)無水塩の青変で検出する。"
+        }
+      ],
+      "oneLine": "硝酸銀で白色沈殿＝塩素(Cl)の検出。沈殿の正体は塩化銀AgCl。",
+      "timeLimit": 14,
+      "grounding": "硝酸銀水溶液を加えて白色沈殿（塩化銀 AgCl）が生じたことから、非金属元素の「塩素（Cl）」が含まれていることがわかります。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_4:q_c1_2_B_4_C_nonmetal:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_4",
+        "subQuestionId": "q_c1_2_B_4_C_nonmetal"
+      },
+      "format": "choice4",
+      "prompt": "硝酸銀水溶液を加えたときに生じた白色沈殿の正体はどれか。",
+      "label": "（う）沈殿の正体",
+      "options": [
+        {
+          "text": "塩化銀 AgCl",
+          "correct": true,
+          "why": "白色沈殿は塩化銀。塩素の存在を示す。"
+        },
+        {
+          "text": "硫化鉛 PbS",
+          "why": "こちらは黒色沈殿。硫黄の検出。"
+        },
+        {
+          "text": "炭酸カルシウム CaCO₃",
+          "why": "石灰水の白濁の正体。硝酸銀では生じない。"
+        },
+        {
+          "text": "硫酸銅(Ⅱ)五水和物 CuSO₄・5H₂O",
+          "why": "無水塩が水で青変したときの生成物。"
+        }
+      ],
+      "oneLine": "硝酸銀で生じる白色沈殿は塩化銀AgCl。黒色沈殿のPbSと区別する。",
+      "timeLimit": 14,
+      "grounding": "白色沈殿（塩化銀 AgCl）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_5:q_c1_2_B_5_1_name:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_5",
+        "subQuestionId": "q_c1_2_B_5_1_name"
+      },
+      "format": "choice4",
+      "prompt": "二酸化炭素を石灰水に通すと白く濁るのはなぜか。",
+      "label": "(1) 白濁の理由",
+      "options": [
+        {
+          "text": "水に溶けにくい炭酸カルシウムの白色沈殿ができるから",
+          "correct": true,
+          "why": "沈殿が液中に散らばるので白濁して見える。"
+        },
+        {
+          "text": "水に溶けやすい塩ができて液の色が変わるから",
+          "why": "溶けてしまうなら濁らない。濁るのは沈殿だから。"
+        },
+        {
+          "text": "気体の泡が大量に発生して光を散らすから",
+          "why": "白濁の原因は泡ではなく固体の沈殿。"
+        },
+        {
+          "text": "石灰水そのものが分解して白い粉になるから",
+          "why": "石灰水が壊れるのではなく、新しい沈殿が生じる。"
+        }
+      ],
+      "oneLine": "石灰水の白濁は、水に溶けにくい炭酸カルシウムの白色沈殿が生じるため。",
+      "timeLimit": 14,
+      "grounding": "二酸化炭素を石灰水に通すと、水に溶けにくい炭酸カルシウムの白色沈殿が生じるため、全体が白く濁ります。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_5:q_c1_2_B_5_1_chem:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_5",
+        "subQuestionId": "q_c1_2_B_5_1_chem"
+      },
+      "format": "choice4",
+      "prompt": "炭酸カルシウムの化学式はどれか。",
+      "label": "(1) 化学式",
+      "options": [
+        {
+          "text": "CaCO₃",
+          "correct": true,
+          "why": "炭酸イオンCO₃²⁻とCa²⁺で CaCO₃。"
+        },
+        {
+          "text": "Ca(OH)₂",
+          "why": "これは水酸化カルシウム＝石灰水そのもの。"
+        },
+        {
+          "text": "CaCl₂",
+          "why": "塩化カルシウム。炭酸ではない。"
+        },
+        {
+          "text": "CaSO₄",
+          "why": "硫酸カルシウム。炭酸ではない。"
+        }
+      ],
+      "oneLine": "炭酸カルシウムはCaCO₃。石灰水のCa(OH)₂と取り違えないこと。",
+      "timeLimit": 12,
+      "grounding": "(1) 炭酸カルシウム 　化学式：CaCO₃"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_5:q_c1_2_B_5_2_color:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_5",
+        "subQuestionId": "q_c1_2_B_5_2_color"
+      },
+      "format": "choice4",
+      "prompt": "硫酸銅(Ⅱ)無水塩に水が触れると、色はどう変化するか。",
+      "label": "(2) 色変化",
+      "options": [
+        {
+          "text": "白色から青色",
+          "correct": true,
+          "why": "無水塩は白色粉末、水を取り込むと青色になる。"
+        },
+        {
+          "text": "青色から白色",
+          "why": "これは逆。青色の五水和物を加熱すると白色の無水塩になる。"
+        },
+        {
+          "text": "白色から赤色",
+          "why": "赤色に変わるのは塩化コバルト紙のほう。"
+        },
+        {
+          "text": "青色から赤色",
+          "why": "硫酸銅(Ⅱ)無水塩は赤色にはならない。"
+        }
+      ],
+      "oneLine": "硫酸銅(Ⅱ)無水塩は白色→青色。塩化コバルト紙（青→赤）と逆向きに覚える。",
+      "timeLimit": 14,
+      "grounding": "(2) 白色から青色"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_5:q_c1_2_B_5_2_color:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_5",
+        "subQuestionId": "q_c1_2_B_5_2_color"
+      },
+      "format": "choice4",
+      "prompt": "硫酸銅(Ⅱ)無水塩が青色になったとき、できている物質はどれか。",
+      "label": "(2) 生成物",
+      "options": [
+        {
+          "text": "硫酸銅(Ⅱ)五水和物",
+          "correct": true,
+          "why": "水分子を取り込んで五水和物の青色結晶になる。"
+        },
+        {
+          "text": "硫酸銅(Ⅱ)無水塩",
+          "why": "これは水を取り込む前の白色粉末。"
+        },
+        {
+          "text": "塩化銅(Ⅱ)",
+          "why": "無水塩が水を取り込むだけで塩化物にはならない。"
+        },
+        {
+          "text": "酸化銅(Ⅱ)",
+          "why": "酸化銅(Ⅱ)は黒色。生じない。"
+        }
+      ],
+      "oneLine": "無水塩は水分子を取り込んで硫酸銅(Ⅱ)五水和物（青色結晶）になる。",
+      "timeLimit": 14,
+      "grounding": "硫酸銅(Ⅱ)無水塩（白色粉末）は水分子を取り込むと硫酸銅(Ⅱ)五水和物（青色結晶）になります。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_5:q_c1_2_B_5_3_color:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_5",
+        "subQuestionId": "q_c1_2_B_5_3_color"
+      },
+      "format": "choice4",
+      "prompt": "青色の塩化コバルト紙は、水に触れると何色に変化するか。",
+      "label": "(3) 変化後",
+      "options": [
+        {
+          "text": "赤色（桃色）",
+          "correct": true,
+          "why": "水分を吸収して赤色（桃色）になる。"
+        },
+        {
+          "text": "黄色",
+          "why": "塩化コバルト紙は黄色にはならない。"
+        },
+        {
+          "text": "黒色",
+          "why": "黒色は硫化鉛(Ⅱ)の沈殿の色。"
+        },
+        {
+          "text": "無色",
+          "why": "色が消えるのではなく赤色に変わる。"
+        }
+      ],
+      "oneLine": "塩化コバルト紙は水に触れると青色から赤色（桃色）に変わる。水の検出。",
+      "timeLimit": 12,
+      "grounding": "(3) 赤色（または 桃色）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_5:q_c1_2_B_5_3_color:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_5",
+        "subQuestionId": "q_c1_2_B_5_3_color"
+      },
+      "format": "choice4",
+      "prompt": "塩化コバルト紙が乾燥した状態のとき、何色をしているか。",
+      "label": "(3) 乾燥時",
+      "options": [
+        {
+          "text": "青色",
+          "correct": true,
+          "why": "乾燥状態では青色。水に触れると赤色になる。"
+        },
+        {
+          "text": "赤色",
+          "why": "赤色は水に触れたあとの色。"
+        },
+        {
+          "text": "白色",
+          "why": "白色は硫酸銅(Ⅱ)無水塩のほう。"
+        },
+        {
+          "text": "緑色",
+          "why": "塩化コバルト紙は緑色にはならない。"
+        }
+      ],
+      "oneLine": "塩化コバルト紙は乾燥状態で青色。水を吸うと赤色に変わる。",
+      "timeLimit": 12,
+      "grounding": "乾燥状態では青色をしていますが、水に触れると水分を吸収して赤色（桃色）へと変化します。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_5:q_c1_2_B_5_4_name:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_5",
+        "subQuestionId": "q_c1_2_B_5_4_name"
+      },
+      "format": "choice4",
+      "prompt": "硝酸銀水溶液を加えて白色沈殿が生じるのは、水溶液中に何が存在するときか。",
+      "label": "(4) 何がある時",
+      "options": [
+        {
+          "text": "塩化物イオン Cl⁻",
+          "correct": true,
+          "why": "Cl⁻がAg⁺と結びついて塩化銀の白色沈殿になる。"
+        },
+        {
+          "text": "炭酸イオン CO₃²⁻",
+          "why": "炭酸イオンは石灰水の白濁に関わるほう。"
+        },
+        {
+          "text": "水分子",
+          "why": "水は硫酸銅(Ⅱ)無水塩や塩化コバルト紙で検出する。"
+        },
+        {
+          "text": "鉛イオン Pb²⁺",
+          "why": "鉛イオンは硫黄の検出で加えるほう。"
+        }
+      ],
+      "oneLine": "硝酸銀で白色沈殿が出る＝溶液中に塩化物イオンCl⁻がある証拠。",
+      "timeLimit": 14,
+      "grounding": "水溶液中に塩素イオン(Cl⁻)が存在する場合、硝酸銀水溶液を加えると、銀イオン(Ag⁺)と結びついて水に溶けにくい塩化銀の白色沈殿が生じます。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_5:q_c1_2_B_5_4_chem:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_5",
+        "subQuestionId": "q_c1_2_B_5_4_chem"
+      },
+      "format": "choice4",
+      "prompt": "塩化銀の化学式はどれか。",
+      "label": "(4) 化学式",
+      "options": [
+        {
+          "text": "AgCl",
+          "correct": true,
+          "why": "銀イオンAg⁺と塩化物イオンCl⁻が1:1で結びつく。"
+        },
+        {
+          "text": "AgNO₃",
+          "why": "これは加えた試薬の硝酸銀のほう。"
+        },
+        {
+          "text": "Ag₂O",
+          "why": "酸化銀。塩化銀ではない。"
+        },
+        {
+          "text": "AgBr",
+          "why": "臭化銀。ここで生じるのは塩化銀。"
+        }
+      ],
+      "oneLine": "塩化銀はAgCl。加えた試薬の硝酸銀AgNO₃と混同しないこと。",
+      "timeLimit": 12,
+      "grounding": "(4) 塩化銀 　化学式：AgCl"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_5:q_c1_2_B_5_5_color:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_5",
+        "subQuestionId": "q_c1_2_B_5_5_color"
+      },
+      "format": "choice4",
+      "prompt": "硫黄元素を含むイオンに鉛イオン(Pb²⁺)を反応させると、生じる硫化鉛(Ⅱ)は何色の沈殿か。",
+      "label": "(5) 沈殿の色",
+      "options": [
+        {
+          "text": "黒色",
+          "correct": true,
+          "why": "硫化鉛(Ⅱ)は黒色沈殿。硫黄の検出の決め手。"
+        },
+        {
+          "text": "白色",
+          "why": "白色沈殿は塩化銀や炭酸カルシウムのほう。"
+        },
+        {
+          "text": "青色",
+          "why": "青色は硫酸銅(Ⅱ)五水和物の色。沈殿の色ではない。"
+        },
+        {
+          "text": "赤色",
+          "why": "赤色は水に触れた塩化コバルト紙の色。"
+        }
+      ],
+      "oneLine": "硫化鉛(Ⅱ)は黒色沈殿。白色沈殿のAgCl・CaCO₃と区別する。",
+      "timeLimit": 14,
+      "grounding": "硫黄元素を含むイオンに鉛イオン(Pb²⁺)を反応させると、硫化鉛(Ⅱ)の黒色沈殿が生じます。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_mt_5:q_c1_2_B_5_5_chem:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_mt_5",
+        "subQuestionId": "q_c1_2_B_5_5_chem"
+      },
+      "format": "choice4",
+      "prompt": "硫化鉛(Ⅱ)の化学式はどれか。",
+      "label": "(5) 化学式",
+      "options": [
+        {
+          "text": "PbS",
+          "correct": true,
+          "why": "鉛イオンPb²⁺と硫化物イオンS²⁻が1:1で結びつく。"
+        },
+        {
+          "text": "PbO",
+          "why": "酸化鉛。硫化物ではない。"
+        },
+        {
+          "text": "PbCl₂",
+          "why": "塩化鉛。硫黄を含まない。"
+        },
+        {
+          "text": "ZnS",
+          "why": "硫化亜鉛。鉛ではない。"
+        }
+      ],
+      "oneLine": "硫化鉛(Ⅱ)はPbS。酢酸鉛(Ⅱ)を加えたときに出る黒色沈殿。",
+      "timeLimit": 12,
+      "grounding": "(5) 黒色 　化学式：PbS"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_1:q_c1_2_B_1_1_1:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_1",
+        "subQuestionId": "q_c1_2_B_1_1_1"
+      },
+      "format": "choice4",
+      "prompt": "斜方硫黄の説明として正しいものはどれか。",
+      "label": "(1) ① 斜方硫黄",
+      "options": [
+        {
+          "text": "常温で最も安定な黄色の結晶",
+          "correct": true,
+          "why": "斜方硫黄は常温で最も安定。硫黄の代表的な同素体。"
+        },
+        {
+          "text": "淡黄色の針状の結晶",
+          "why": "こちらは単斜硫黄の特徴。"
+        },
+        {
+          "text": "ゴム状で弾力のある固体",
+          "why": "こちらはゴム状硫黄の特徴。"
+        },
+        {
+          "text": "黒くてやわらかく電気を通す固体",
+          "why": "これは炭素の同素体である黒鉛の特徴。"
+        }
+      ],
+      "oneLine": "斜方硫黄は常温で最も安定な黄色の結晶。単斜硫黄（淡黄色・針状）と区別する。",
+      "timeLimit": 14,
+      "grounding": "① 斜方硫黄 （常温で最も安定な黄色の結晶です）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_1:q_c1_2_B_1_1_2:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_1",
+        "subQuestionId": "q_c1_2_B_1_1_2"
+      },
+      "format": "choice4",
+      "prompt": "鉛筆の芯に使われる炭素の同素体「黒鉛」の別名はどれか。",
+      "label": "(1) ② 別名",
+      "options": [
+        {
+          "text": "グラファイト",
+          "correct": true,
+          "why": "黒鉛の別名はグラファイト。"
+        },
+        {
+          "text": "フラーレン",
+          "why": "サッカーボール状の分子。黒鉛の別名ではない。"
+        },
+        {
+          "text": "カーボンナノチューブ",
+          "why": "筒状の炭素。黒鉛の別名ではない。"
+        },
+        {
+          "text": "ダイヤモンド",
+          "why": "非常に硬く電気を通さない炭素の同素体。"
+        }
+      ],
+      "oneLine": "黒鉛の別名はグラファイト。柔らかく電気をよく通す。",
+      "timeLimit": 12,
+      "grounding": "② 黒鉛 （別名グラファイト。柔らかく電気をよく通します）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_1:q_c1_2_B_1_1_4_color:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_1",
+        "subQuestionId": "q_c1_2_B_1_1_4_color"
+      },
+      "format": "choice4",
+      "prompt": "次の気体のうち、淡青色をしているものはどれか。",
+      "label": "(1) ④ 淡青色",
+      "options": [
+        {
+          "text": "オゾン（O₃）",
+          "correct": true,
+          "why": "オゾンは淡青色で特異臭をもつ。"
+        },
+        {
+          "text": "酸素（O₂）",
+          "why": "酸素は無色・無臭。"
+        },
+        {
+          "text": "窒素（N₂）",
+          "why": "窒素は無色・無臭。"
+        },
+        {
+          "text": "水素（H₂）",
+          "why": "水素は無色・無臭。"
+        }
+      ],
+      "oneLine": "淡青色の気体はオゾンO₃。同じ酸素元素からなる酸素O₂は無色。",
+      "timeLimit": 12,
+      "grounding": "④ 色：淡青色、におい：特異臭"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_1:q_c1_2_B_1_1_4_smell:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_1",
+        "subQuestionId": "q_c1_2_B_1_1_4_smell"
+      },
+      "format": "choice4",
+      "prompt": "オゾン（O₃）の色とにおいの組み合わせとして正しいものはどれか。",
+      "label": "(1) ④ 色とにおい",
+      "options": [
+        {
+          "text": "淡青色で特異臭がある",
+          "correct": true,
+          "why": "オゾンは淡青色・特異臭。セットで覚える。"
+        },
+        {
+          "text": "無色で無臭である",
+          "why": "無色無臭は酸素O₂のほう。"
+        },
+        {
+          "text": "黄緑色で刺激臭がある",
+          "why": "黄緑色で刺激臭なのは塩素。オゾンではない。"
+        },
+        {
+          "text": "赤褐色で腐卵臭がある",
+          "why": "腐卵臭は硫化水素。オゾンではない。"
+        }
+      ],
+      "oneLine": "オゾンは淡青色で特異臭。色とにおいをセットで問われることが多い。",
+      "timeLimit": 14,
+      "grounding": "④ 色：淡青色、におい：特異臭"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_1:q_c1_2_B_1_1_5:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_1",
+        "subQuestionId": "q_c1_2_B_1_1_5"
+      },
+      "format": "choice4",
+      "prompt": "黄リンの正しい保存方法はどれか。",
+      "label": "(1) ⑤ 保存",
+      "options": [
+        {
+          "text": "水中に入れて保存する",
+          "correct": true,
+          "why": "空気中では自然発火するため水中に保存する。"
+        },
+        {
+          "text": "空気中にそのまま置いて保存する",
+          "why": "自然発火する危険があるので不可。"
+        },
+        {
+          "text": "乾燥剤とともに密閉容器で保存する",
+          "why": "乾燥させても空気に触れれば発火する。"
+        },
+        {
+          "text": "マッチ箱の側面に塗って保存する",
+          "why": "側薬に使われるのは赤リンのほう。"
+        }
+      ],
+      "oneLine": "黄リンは猛毒で自然発火するため水中に保存する。赤リンとの最大の違い。",
+      "timeLimit": 14,
+      "grounding": "⑤ 黄リン （猛毒で自然発火するため水中に保存します）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_1:q_c1_2_B_1_1_6:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_1",
+        "subQuestionId": "q_c1_2_B_1_1_6"
+      },
+      "format": "choice4",
+      "prompt": "赤リンの主な用途として正しいものはどれか。",
+      "label": "(1) ⑥ 用途",
+      "options": [
+        {
+          "text": "マッチの側薬",
+          "correct": true,
+          "why": "赤リンはほぼ無毒でマッチの側薬に使われる。"
+        },
+        {
+          "text": "鉛筆の芯",
+          "why": "鉛筆の芯は炭素の同素体の黒鉛。"
+        },
+        {
+          "text": "乾燥剤",
+          "why": "乾燥剤に赤リンは使わない。"
+        },
+        {
+          "text": "殺虫剤の水中保存液",
+          "why": "水中保存が必要なのは黄リンのほう。"
+        }
+      ],
+      "oneLine": "赤リンはほぼ無毒でマッチの側薬に使われる。猛毒の黄リンと対比。",
+      "timeLimit": 14,
+      "grounding": "⑥ 赤リン （ほぼ無毒で、マッチの側薬に使われます）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_1:q_c1_2_B_1_2:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_1",
+        "subQuestionId": "q_c1_2_B_1_2"
+      },
+      "format": "choice4",
+      "prompt": "ネオンとアルゴンの組み合わせが同素体ではないのはなぜか。",
+      "label": "(2) ア・カ",
+      "options": [
+        {
+          "text": "互いに異なる元素だから",
+          "correct": true,
+          "why": "同素体は同じ元素の単体どうし。別元素なら成り立たない。"
+        },
+        {
+          "text": "同じ元素の単体だが性質が違うから",
+          "why": "それはむしろ同素体の定義そのもの。"
+        },
+        {
+          "text": "同一物質の状態変化だから",
+          "why": "状態変化なのは氷と水のほう。"
+        },
+        {
+          "text": "どちらも化合物だから",
+          "why": "ネオンもアルゴンも単体で、化合物ではない。"
+        }
+      ],
+      "oneLine": "ネオンとアルゴンは異なる元素なので同素体ではない。氷と水（状態変化）と理由が違う。",
+      "timeLimit": 16,
+      "grounding": "ア、カは異なる元素（ネオンとアルゴン）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_1:q_c1_2_B_1_2:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_1",
+        "subQuestionId": "q_c1_2_B_1_2"
+      },
+      "format": "choice4",
+      "prompt": "同素体の定義として正しいものはどれか。",
+      "label": "(2) 定義",
+      "options": [
+        {
+          "text": "同じ元素の単体で、性質の異なる物質どうし",
+          "correct": true,
+          "why": "これが同素体の定義。"
+        },
+        {
+          "text": "同じ元素の原子で、中性子の数が異なるもの",
+          "why": "これは同位体の定義。"
+        },
+        {
+          "text": "同じ物質が温度によって状態を変えたもの",
+          "why": "これは状態変化。氷と水の関係。"
+        },
+        {
+          "text": "2種類以上の元素が結びついた化合物",
+          "why": "これは化合物の説明。"
+        }
+      ],
+      "oneLine": "同素体＝同じ元素の単体で性質が異なる物質どうし。同位体との取り違えに注意。",
+      "timeLimit": 16,
+      "grounding": "同素体とは、同じ元素の単体で、性質の異なる物質どうしのことです"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_1:q_c1_2_B_1_2:3",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_1",
+        "subQuestionId": "q_c1_2_B_1_2"
+      },
+      "format": "choice4",
+      "prompt": "ゴム状硫黄と単斜硫黄は、どの元素の同素体か。",
+      "label": "(2) ウ",
+      "options": [
+        {
+          "text": "硫黄（S）",
+          "correct": true,
+          "why": "どちらも硫黄からなる単体。"
+        },
+        {
+          "text": "炭素（C）",
+          "why": "炭素の同素体はダイヤモンドや黒鉛など。"
+        },
+        {
+          "text": "酸素（O）",
+          "why": "酸素の同素体は酸素とオゾン。"
+        },
+        {
+          "text": "リン（P）",
+          "why": "リンの同素体は黄リンと赤リン。"
+        }
+      ],
+      "oneLine": "ゴム状硫黄と単斜硫黄はどちらも硫黄Sの同素体。",
+      "timeLimit": 12,
+      "grounding": "ウ（ゴム状硫黄と単斜硫黄：硫黄S）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_1:q_c1_2_B_1_2:4",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_1",
+        "subQuestionId": "q_c1_2_B_1_2"
+      },
+      "format": "choice4",
+      "prompt": "カーボンナノチューブとダイヤモンドは、どの元素の同素体か。",
+      "label": "(2) オ",
+      "options": [
+        {
+          "text": "炭素（C）",
+          "correct": true,
+          "why": "どちらも炭素からなる単体。"
+        },
+        {
+          "text": "硫黄（S）",
+          "why": "硫黄の同素体は斜方硫黄・単斜硫黄・ゴム状硫黄。"
+        },
+        {
+          "text": "酸素（O）",
+          "why": "酸素の同素体は酸素とオゾン。"
+        },
+        {
+          "text": "リン（P）",
+          "why": "リンの同素体は黄リンと赤リン。"
+        }
+      ],
+      "oneLine": "カーボンナノチューブとダイヤモンドはどちらも炭素Cの同素体。",
+      "timeLimit": 12,
+      "grounding": "オ（カーボンナノチューブとダイヤモンド：炭素C）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_2:q_c1_2_B_2_1_stable:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_2",
+        "subQuestionId": "q_c1_2_B_2_1_stable"
+      },
+      "format": "choice4",
+      "prompt": "硫黄(S)の同素体として挙げられている3つの組み合わせはどれか。",
+      "label": "(1) 硫黄の同素体",
+      "options": [
+        {
+          "text": "斜方硫黄・単斜硫黄・ゴム状硫黄",
+          "correct": true,
+          "why": "硫黄の同素体はこの3つ。"
+        },
+        {
+          "text": "斜方硫黄・黒鉛・フラーレン",
+          "why": "黒鉛とフラーレンは炭素の同素体。"
+        },
+        {
+          "text": "単斜硫黄・オゾン・赤リン",
+          "why": "オゾンは酸素、赤リンはリンの同素体。"
+        },
+        {
+          "text": "ゴム状硫黄・ダイヤモンド・黄リン",
+          "why": "ダイヤモンドは炭素、黄リンはリンの同素体。"
+        }
+      ],
+      "oneLine": "硫黄の同素体は斜方硫黄・単斜硫黄・ゴム状硫黄の3つ。",
+      "timeLimit": 14,
+      "grounding": "(1) 同素体：斜方硫黄、単斜硫黄、ゴム状硫黄"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_2:q_c1_2_B_2_1_needle:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_2",
+        "subQuestionId": "q_c1_2_B_2_1_needle"
+      },
+      "format": "choice4",
+      "prompt": "硫黄の同素体のうち、ゴムのような弾力をもつものはどれか。",
+      "label": "(1) ゴム状",
+      "options": [
+        {
+          "text": "ゴム状硫黄",
+          "correct": true,
+          "why": "名前のとおりゴム状で弾力がある。"
+        },
+        {
+          "text": "斜方硫黄",
+          "why": "常温で安定な黄色の結晶。弾力はない。"
+        },
+        {
+          "text": "単斜硫黄",
+          "why": "淡黄色で針状の結晶。弾力はない。"
+        },
+        {
+          "text": "黒鉛",
+          "why": "炭素の同素体。硫黄ではない。"
+        }
+      ],
+      "oneLine": "硫黄の3つの同素体のうち、弾力があるのはゴム状硫黄。",
+      "timeLimit": 12,
+      "grounding": "(1) 同素体：斜方硫黄、単斜硫黄、ゴム状硫黄"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_2:q_c1_2_B_2_2_soft:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_2",
+        "subQuestionId": "q_c1_2_B_2_2_soft"
+      },
+      "format": "choice4",
+      "prompt": "炭素(C)の同素体として、この単元では何種類が挙げられているか。",
+      "label": "(2) 種類数",
+      "options": [
+        {
+          "text": "4種類",
+          "correct": true,
+          "why": "ダイヤモンド・黒鉛・フラーレン・カーボンナノチューブの4つ。"
+        },
+        {
+          "text": "2種類",
+          "why": "2つでは足りない。フラーレンとカーボンナノチューブも入る。"
+        },
+        {
+          "text": "3種類",
+          "why": "硫黄が3種類。炭素は4種類。"
+        },
+        {
+          "text": "5種類",
+          "why": "挙げられているのは4つ。"
+        }
+      ],
+      "oneLine": "炭素の同素体はダイヤモンド・黒鉛・フラーレン・カーボンナノチューブの4種類。",
+      "timeLimit": 14,
+      "grounding": "(2) 同素体：ダイヤモンド、黒鉛、フラーレン、カーボンナノチューブ"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_2:q_c1_2_B_2_2_soft:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_2",
+        "subQuestionId": "q_c1_2_B_2_2_soft"
+      },
+      "format": "choice4",
+      "prompt": "黒鉛が電極や鉛筆の芯に使えるのは、黒鉛のどのような性質によるか。",
+      "label": "(2) 黒鉛の性質",
+      "options": [
+        {
+          "text": "やわらかく電気をよく導くから",
+          "correct": true,
+          "why": "黒鉛はやわらかく電気をよく導く。"
+        },
+        {
+          "text": "非常に硬く電気を通さないから",
+          "why": "これはダイヤモンドの性質。"
+        },
+        {
+          "text": "有機溶媒によく溶けるから",
+          "why": "これはフラーレンの特徴。"
+        },
+        {
+          "text": "猛毒で自然発火するから",
+          "why": "これは黄リンの性質。炭素とは無関係。"
+        }
+      ],
+      "oneLine": "黒鉛はやわらかく電気をよく導くので、鉛筆の芯や電極に使える。",
+      "timeLimit": 16,
+      "grounding": "やわらかく電気をよく導く：黒鉛"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_2:q_c1_2_B_2_3_color:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_2",
+        "subQuestionId": "q_c1_2_B_2_3_color"
+      },
+      "format": "choice4",
+      "prompt": "酸素(O₂)とオゾン(O₃)のように、同じ元素からなり性質が異なる単体どうしの関係を何というか。",
+      "label": "(3) 関係名",
+      "options": [
+        {
+          "text": "同素体",
+          "correct": true,
+          "why": "同じ元素の単体で性質が異なるものどうし。"
+        },
+        {
+          "text": "同位体",
+          "why": "同じ元素で中性子数が違う原子どうしのこと。"
+        },
+        {
+          "text": "化合物",
+          "why": "2種類以上の元素が結びついたもの。"
+        },
+        {
+          "text": "混合物",
+          "why": "2種類以上の物質が混ざっただけのもの。"
+        }
+      ],
+      "oneLine": "酸素とオゾンは同素体の関係。同位体（中性子数の違い）と取り違えないこと。",
+      "timeLimit": 16,
+      "grounding": "同素体は「同じ元素からなる性質の違う単体」"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_2:q_c1_2_B_2_3_smell:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_2",
+        "subQuestionId": "q_c1_2_B_2_3_smell"
+      },
+      "format": "choice4",
+      "prompt": "オゾンのにおいは、何と表現されるか。",
+      "label": "(3) におい",
+      "options": [
+        {
+          "text": "特異臭",
+          "correct": true,
+          "why": "オゾンのにおいは特異臭と表現される。"
+        },
+        {
+          "text": "腐卵臭",
+          "why": "腐卵臭は硫化水素のにおい。"
+        },
+        {
+          "text": "刺激臭",
+          "why": "刺激臭は塩素やアンモニアなど。"
+        },
+        {
+          "text": "無臭",
+          "why": "オゾンは無臭ではない。無臭は酸素のほう。"
+        }
+      ],
+      "oneLine": "オゾンのにおいは特異臭。腐卵臭・刺激臭と区別する。",
+      "timeLimit": 12,
+      "grounding": "(3) 色：淡青色　におい：特異臭"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_2:q_c1_2_B_2_4_poison:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_2",
+        "subQuestionId": "q_c1_2_B_2_4_poison"
+      },
+      "format": "choice4",
+      "prompt": "リンの2つの同素体のうち、保存方法にとくに注意が必要なのはどちらか。",
+      "label": "(4) 保存注意",
+      "options": [
+        {
+          "text": "黄リン（水中に保存する）",
+          "correct": true,
+          "why": "自然発火するため水中に保存が必要。"
+        },
+        {
+          "text": "赤リン（水中に保存する）",
+          "why": "水中保存が必要なのは黄リンのほう。"
+        },
+        {
+          "text": "黄リン（乾燥剤とともに保存する）",
+          "why": "乾燥ではなく水中に沈めて保存する。"
+        },
+        {
+          "text": "赤リン（密閉して冷凍保存する）",
+          "why": "赤リンにそこまでの注意は不要。"
+        }
+      ],
+      "oneLine": "黄リンは水中に保存する。赤リンは特別な保存が不要な点で対比される。",
+      "timeLimit": 16,
+      "grounding": "(4) 水中に保存：黄リン 　マッチの側薬：赤リン"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_2:q_c1_2_B_2_4_match:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_2",
+        "subQuestionId": "q_c1_2_B_2_4_match"
+      },
+      "format": "choice4",
+      "prompt": "この単元でとくに確実に覚えておくべき2点として挙げられているのはどれか。",
+      "label": "(4) 要点",
+      "options": [
+        {
+          "text": "リンの保存方法と、硫黄の「斜方」「単斜」の違い",
+          "correct": true,
+          "why": "解説がこの2点を名指しで挙げている。"
+        },
+        {
+          "text": "炎色反応の色と、同位体の存在比の計算",
+          "why": "これらは別の単元の頻出事項。"
+        },
+        {
+          "text": "ろ過と蒸留の使い分け",
+          "why": "これは物質の分離と精製の単元の話。"
+        },
+        {
+          "text": "化学式の書き方と原子量の求め方",
+          "why": "この単元の要点として挙げられていない。"
+        }
+      ],
+      "oneLine": "同素体では「リンの保存方法」と「硫黄の斜方・単斜の違い」がとくに頻出。",
+      "timeLimit": 18,
+      "grounding": "特にリンの保存方法と、硫黄の「斜方」「単斜」の違いは確実に覚えておきましょう。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_3:q_c1_2_B_3_1:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_3",
+        "subQuestionId": "q_c1_2_B_3_1"
+      },
+      "format": "choice4",
+      "prompt": "炎色反応で炎が赤色になった。含まれている可能性が最も高い元素はどれか。",
+      "label": "色→元素 赤",
+      "options": [
+        {
+          "text": "Li",
+          "correct": true,
+          "why": "赤色の炎色反応はリチウム。"
+        },
+        {
+          "text": "Na",
+          "why": "ナトリウムは黄色。"
+        },
+        {
+          "text": "Ba",
+          "why": "バリウムは黄緑色。"
+        },
+        {
+          "text": "Cu",
+          "why": "銅は青緑色。"
+        }
+      ],
+      "oneLine": "赤色の炎色反応からリチウムLiを判定する。色→元素の逆引き。",
+      "timeLimit": 12,
+      "grounding": "(1) 赤 （赤色）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_3:q_c1_2_B_3_2:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_3",
+        "subQuestionId": "q_c1_2_B_3_2"
+      },
+      "format": "choice4",
+      "prompt": "炎色反応で炎が黄色になった。含まれている元素はどれか。",
+      "label": "色→元素 黄",
+      "options": [
+        {
+          "text": "Na",
+          "correct": true,
+          "why": "黄色の炎色反応はナトリウム。"
+        },
+        {
+          "text": "Ba",
+          "why": "バリウムは黄緑色。黄色と紛らわしい。"
+        },
+        {
+          "text": "Ca",
+          "why": "カルシウムは橙色。"
+        },
+        {
+          "text": "K",
+          "why": "カリウムは赤紫色。"
+        }
+      ],
+      "oneLine": "黄色の炎色反応はナトリウムNa。Baの黄緑色と区別する。",
+      "timeLimit": 12,
+      "grounding": "(2) 黄 （黄色）"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_3:q_c1_2_B_3_3:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_3",
+        "subQuestionId": "q_c1_2_B_3_3"
+      },
+      "format": "choice4",
+      "prompt": "炎色反応で炎が赤紫色になった。含まれている元素はどれか。",
+      "label": "色→元素 赤紫",
+      "options": [
+        {
+          "text": "K",
+          "correct": true,
+          "why": "赤紫（紫）の炎色反応はカリウム。"
+        },
+        {
+          "text": "Li",
+          "why": "リチウムは赤色。"
+        },
+        {
+          "text": "Sr",
+          "why": "ストロンチウムは紅色。"
+        },
+        {
+          "text": "Cu",
+          "why": "銅は青緑色。"
+        }
+      ],
+      "oneLine": "赤紫色の炎色反応はカリウムK。Liの赤色と混同しやすい。",
+      "timeLimit": 12,
+      "grounding": "炎色反応の色の取り違え。Li赤・Na黄・K赤紫・Cu青緑・Ca橙赤・Sr紅・Ba黄緑。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_3:q_c1_2_B_3_4:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_3",
+        "subQuestionId": "q_c1_2_B_3_4"
+      },
+      "format": "choice4",
+      "prompt": "炎色反応の色が「青緑色」と「黄緑色」になる元素の組み合わせとして正しいものはどれか。",
+      "label": "緑系の区別",
+      "options": [
+        {
+          "text": "青緑＝Cu、黄緑＝Ba",
+          "correct": true,
+          "why": "銅が青緑、バリウムが黄緑。"
+        },
+        {
+          "text": "青緑＝Ba、黄緑＝Cu",
+          "why": "これは逆。"
+        },
+        {
+          "text": "青緑＝Cu、黄緑＝Sr",
+          "why": "ストロンチウムは紅色。"
+        },
+        {
+          "text": "青緑＝Ca、黄緑＝Ba",
+          "why": "カルシウムは橙色。"
+        }
+      ],
+      "oneLine": "青緑＝Cu、黄緑＝Ba。似た緑系の2色は必ずセットで区別する。",
+      "timeLimit": 16,
+      "grounding": "炎色反応の色の取り違え。Li赤・Na黄・K赤紫・Cu青緑・Ca橙赤・Sr紅・Ba黄緑。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_3:q_c1_2_B_3_5:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_3",
+        "subQuestionId": "q_c1_2_B_3_5"
+      },
+      "format": "choice4",
+      "prompt": "炎色反応の色が「橙色」と「紅色」になる元素の組み合わせとして正しいものはどれか。",
+      "label": "赤系の区別",
+      "options": [
+        {
+          "text": "橙＝Ca、紅＝Sr",
+          "correct": true,
+          "why": "カルシウムが橙（橙赤）、ストロンチウムが紅。"
+        },
+        {
+          "text": "橙＝Sr、紅＝Ca",
+          "why": "これは逆。"
+        },
+        {
+          "text": "橙＝Ca、紅＝Li",
+          "why": "リチウムは赤色。紅とは区別する。"
+        },
+        {
+          "text": "橙＝Li、紅＝Sr",
+          "why": "リチウムは赤色で、橙ではない。"
+        }
+      ],
+      "oneLine": "橙＝Ca、紅＝Sr。どちらも赤系なので必ずセットで覚える。",
+      "timeLimit": 16,
+      "grounding": "炎色反応の色の取り違え。Li赤・Na黄・K赤紫・Cu青緑・Ca橙赤・Sr紅・Ba黄緑。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_3:q_c1_2_B_3_6:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_3",
+        "subQuestionId": "q_c1_2_B_3_6"
+      },
+      "format": "choice4",
+      "prompt": "炎色反応の語呂「するもくれない」が表している元素と色はどれか。",
+      "label": "語呂 Sr",
+      "options": [
+        {
+          "text": "Sr・紅色",
+          "correct": true,
+          "why": "「するも」がSr、「くれない」が紅。"
+        },
+        {
+          "text": "Ca・橙色",
+          "why": "カルシウムは「借りるとう」。"
+        },
+        {
+          "text": "Ba・黄緑色",
+          "why": "バリウムは「馬力」。"
+        },
+        {
+          "text": "Li・赤色",
+          "why": "リチウムは「リアカー」。"
+        }
+      ],
+      "oneLine": "語呂の「するもくれない」はSrの紅色を表す。",
+      "timeLimit": 14,
+      "grounding": "「リアカー(Li赤) 無き(Na黄、K紫) 動力(Cu青緑) 借りるとう(Ca橙) するもくれない(Sr紅) 馬力(Ba黄緑)」で確実に暗記します。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_3:q_c1_2_B_3_7:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_3",
+        "subQuestionId": "q_c1_2_B_3_7"
+      },
+      "format": "choice4",
+      "prompt": "炎色反応の語呂「馬力」が表している元素と色はどれか。",
+      "label": "語呂 Ba",
+      "options": [
+        {
+          "text": "Ba・黄緑色",
+          "correct": true,
+          "why": "「馬(ば)」がBa、「力(りょく)」が緑。"
+        },
+        {
+          "text": "Cu・青緑色",
+          "why": "銅は「動力」。"
+        },
+        {
+          "text": "Na・黄色",
+          "why": "ナトリウムは「無き」の前半。"
+        },
+        {
+          "text": "K・紫色",
+          "why": "カリウムは「無き」の後半。"
+        }
+      ],
+      "oneLine": "語呂の「馬力」はBaの黄緑色。「動力」のCu青緑と区別する。",
+      "timeLimit": 14,
+      "grounding": "「リアカー(Li赤) 無き(Na黄、K紫) 動力(Cu青緑) 借りるとう(Ca橙) するもくれない(Sr紅) 馬力(Ba黄緑)」で確実に暗記します。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_3:q_c1_2_B_3_7:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_3",
+        "subQuestionId": "q_c1_2_B_3_7"
+      },
+      "format": "choice4",
+      "prompt": "炎色反応は、どの成分元素を検出するための実験か。",
+      "label": "検出対象",
+      "options": [
+        {
+          "text": "金属元素",
+          "correct": true,
+          "why": "金属元素の検出には炎色反応を使う。"
+        },
+        {
+          "text": "炭素",
+          "why": "炭素は燃焼で生じた気体を石灰水に通す。"
+        },
+        {
+          "text": "水素",
+          "why": "水素は生じた液体で硫酸銅(Ⅱ)無水塩を青変させる。"
+        },
+        {
+          "text": "塩素",
+          "why": "塩素は硝酸銀水溶液で白色沈殿をつくる。"
+        }
+      ],
+      "oneLine": "炎色反応は金属元素の検出法。炭素・水素・塩素は別の実験で検出する。",
+      "timeLimit": 16,
+      "grounding": "塩素→硝酸銀水溶液で白色沈殿、金属→炎色反応"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_4:q_c1_2_B_4_A_metal:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_4",
+        "subQuestionId": "q_c1_2_B_4_A_metal"
+      },
+      "format": "choice4",
+      "prompt": "化合物Aに含まれる元素をすべて挙げた組み合わせはどれか。",
+      "label": "A の元素",
+      "options": [
+        {
+          "text": "Cu, S",
+          "correct": true,
+          "why": "炎色反応が青緑でCu、黒色沈殿でS。"
+        },
+        {
+          "text": "Ca, C, H",
+          "why": "これは化合物Bの元素。"
+        },
+        {
+          "text": "K, Cl",
+          "why": "これは化合物Cの元素。"
+        },
+        {
+          "text": "Cu, Cl",
+          "why": "塩素は硝酸銀の白色沈殿で検出。Aでは行っていない。"
+        }
+      ],
+      "oneLine": "化合物AはCuとSの2元素。青緑の炎色反応＋黒色沈殿から決まる。",
+      "timeLimit": 16,
+      "grounding": "化合物A：Cu, S"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_4:q_c1_2_B_4_A_nonmetal:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_4",
+        "subQuestionId": "q_c1_2_B_4_A_nonmetal"
+      },
+      "format": "choice4",
+      "prompt": "化合物A・B・Cのうち、硫黄(S)を含むのはどれか。",
+      "label": "S を含むもの",
+      "options": [
+        {
+          "text": "Aだけ",
+          "correct": true,
+          "why": "酢酸鉛(Ⅱ)で黒色沈殿が出たのはAのみ。"
+        },
+        {
+          "text": "Bだけ",
+          "why": "Bは石灰水の白濁と青変から C と H。"
+        },
+        {
+          "text": "Cだけ",
+          "why": "Cは硝酸銀の白色沈殿から Cl。"
+        },
+        {
+          "text": "AとBの両方",
+          "why": "Bで硫黄の検出実験は行っていない。"
+        }
+      ],
+      "oneLine": "硫黄を含むのは化合物Aだけ。酢酸鉛(Ⅱ)で黒色沈殿が出たのはAのみ。",
+      "timeLimit": 16,
+      "grounding": "化合物A：Cu, S"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_4:q_c1_2_B_4_B_metal:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_4",
+        "subQuestionId": "q_c1_2_B_4_B_metal"
+      },
+      "format": "choice4",
+      "prompt": "化合物Bに含まれる元素をすべて挙げた組み合わせはどれか。",
+      "label": "B の元素",
+      "options": [
+        {
+          "text": "Ca, C, H",
+          "correct": true,
+          "why": "橙色の炎色反応でCa、白濁でC、青変でH。"
+        },
+        {
+          "text": "Cu, S",
+          "why": "これは化合物Aの元素。"
+        },
+        {
+          "text": "K, Cl",
+          "why": "これは化合物Cの元素。"
+        },
+        {
+          "text": "Ca, H",
+          "why": "炭素Cを見落としている。石灰水の白濁が炭素の証拠。"
+        }
+      ],
+      "oneLine": "化合物BはCa・C・Hの3元素。3つの実験結果をすべて拾う。",
+      "timeLimit": 18,
+      "grounding": "化合物B：Ca, C, H"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_4:q_c1_2_B_4_B_nonmetal1:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_4",
+        "subQuestionId": "q_c1_2_B_4_B_nonmetal1"
+      },
+      "format": "choice4",
+      "prompt": "化合物A・B・Cのうち、加熱によって気体と液体の両方が生じたのはどれか。",
+      "label": "加熱したもの",
+      "options": [
+        {
+          "text": "Bだけ",
+          "correct": true,
+          "why": "Bを加熱すると無色の気体と無色の液体が生じた。"
+        },
+        {
+          "text": "Aだけ",
+          "why": "Aは水溶液の炎色反応と沈殿反応だけ。"
+        },
+        {
+          "text": "Cだけ",
+          "why": "Cも水溶液の炎色反応と沈殿反応だけ。"
+        },
+        {
+          "text": "AとCの両方",
+          "why": "どちらも加熱の操作は行っていない。"
+        }
+      ],
+      "oneLine": "加熱で気体と液体が出たのはB。だからBにはCとHが含まれる。",
+      "timeLimit": 16,
+      "grounding": "化合物B：Ca, C, H"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_4:q_c1_2_B_4_B_nonmetal2:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_4",
+        "subQuestionId": "q_c1_2_B_4_B_nonmetal2"
+      },
+      "format": "choice4",
+      "prompt": "成分元素の検出で「決め手の実験」の組み合わせとして正しいものはどれか。",
+      "label": "検出法の対応",
+      "options": [
+        {
+          "text": "炭素→石灰水の白濁／水素→硫酸銅(Ⅱ)無水塩の青変",
+          "correct": true,
+          "why": "これが正しい対応。"
+        },
+        {
+          "text": "炭素→硫酸銅(Ⅱ)無水塩の青変／水素→石灰水の白濁",
+          "why": "これは逆。"
+        },
+        {
+          "text": "炭素→硝酸銀の白色沈殿／水素→炎色反応",
+          "why": "塩素と金属の検出法をあてはめた誤り。"
+        },
+        {
+          "text": "炭素→炎色反応／水素→酢酸鉛(Ⅱ)の黒色沈殿",
+          "why": "炎色反応は金属、黒色沈殿は硫黄の検出。"
+        }
+      ],
+      "oneLine": "炭素は石灰水の白濁、水素は硫酸銅(Ⅱ)無水塩の青変で検出する。",
+      "timeLimit": 18,
+      "grounding": "炭素→燃焼させて生じた気体を石灰水に通し白濁、水素→生じた液体が硫酸銅(II)無水塩を青変、塩素→硝酸銀水溶液で白色沈殿、金属→炎色反応。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_4:q_c1_2_B_4_C_metal:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_4",
+        "subQuestionId": "q_c1_2_B_4_C_metal"
+      },
+      "format": "choice4",
+      "prompt": "化合物Cに含まれる元素をすべて挙げた組み合わせはどれか。",
+      "label": "C の元素",
+      "options": [
+        {
+          "text": "K, Cl",
+          "correct": true,
+          "why": "赤紫の炎色反応でK、白色沈殿でCl。"
+        },
+        {
+          "text": "Cu, S",
+          "why": "これは化合物Aの元素。"
+        },
+        {
+          "text": "Ca, C, H",
+          "why": "これは化合物Bの元素。"
+        },
+        {
+          "text": "Na, Cl",
+          "why": "黄色ならNaだが、Cの炎色反応は赤紫色。"
+        }
+      ],
+      "oneLine": "化合物CはKとClの2元素。赤紫の炎色反応＋白色沈殿から決まる。",
+      "timeLimit": 16,
+      "grounding": "化合物C：K, Cl"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_4:q_c1_2_B_4_C_nonmetal:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_4",
+        "subQuestionId": "q_c1_2_B_4_C_nonmetal"
+      },
+      "format": "choice4",
+      "prompt": "化合物A・B・Cのうち、硝酸銀水溶液で白色沈殿を生じたのはどれか。",
+      "label": "白色沈殿",
+      "options": [
+        {
+          "text": "Cだけ",
+          "correct": true,
+          "why": "Cに硝酸銀を加えて白色沈殿（塩化銀）が生じた。"
+        },
+        {
+          "text": "Aだけ",
+          "why": "Aは酢酸鉛(Ⅱ)で黒色沈殿。"
+        },
+        {
+          "text": "Bだけ",
+          "why": "Bは加熱して気体と液体を調べた。"
+        },
+        {
+          "text": "AとCの両方",
+          "why": "Aで生じたのは黒色沈殿で、白色ではない。"
+        }
+      ],
+      "oneLine": "硝酸銀で白色沈殿が出たのはC。だからCにはClが含まれる。",
+      "timeLimit": 16,
+      "grounding": "化合物C：K, Cl"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_4:q_c1_2_B_4_C_nonmetal:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_4",
+        "subQuestionId": "q_c1_2_B_4_C_nonmetal"
+      },
+      "format": "choice4",
+      "prompt": "このような物質の識別問題を解くときの考え方として、解説が勧めているのはどれか。",
+      "label": "解き方",
+      "options": [
+        {
+          "text": "複数の実験結果を表にして消去法で1つに絞る",
+          "correct": true,
+          "why": "1つの実験で決まることはまずない。"
+        },
+        {
+          "text": "最初の実験結果だけで答えを決める",
+          "why": "1つの実験では候補が絞りきれない。"
+        },
+        {
+          "text": "炎色反応だけを頼りに判断する",
+          "why": "炎色反応は金属元素しかわからない。"
+        },
+        {
+          "text": "実験結果を無視して代表的な物質を答える",
+          "why": "根拠なく答えるのは誤り。"
+        }
+      ],
+      "oneLine": "識別問題は複数の実験結果を表にまとめ、消去法で1つに絞るのが定石。",
+      "timeLimit": 18,
+      "grounding": "識別問題は「1つの実験で決まる」ことはまずない。各実験で候補が半分に減っていく様子を追い、最後に残った物質を答えにする。"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_1_name:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_1_name"
+      },
+      "format": "choice4",
+      "prompt": "実験で使う「石灰水」とは、何の水溶液か。",
+      "label": "石灰水の正体",
+      "options": [
+        {
+          "text": "水酸化カルシウム水溶液",
+          "correct": true,
+          "why": "石灰水＝水酸化カルシウム Ca(OH)₂ の水溶液。"
+        },
+        {
+          "text": "炭酸カルシウム水溶液",
+          "why": "炭酸カルシウムは水に溶けにくく、白濁のもとになる沈殿の側。"
+        },
+        {
+          "text": "水酸化ナトリウム水溶液",
+          "why": "これは強塩基だが、二酸化炭素の検出に使う石灰水ではない。"
+        },
+        {
+          "text": "硫酸カルシウム水溶液",
+          "why": "カルシウムを含むが、石灰水とは別の物質。"
+        }
+      ],
+      "oneLine": "石灰水＝水酸化カルシウム水溶液。二酸化炭素を通すと白濁する。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_1_name:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_1_name"
+      },
+      "format": "choice4",
+      "prompt": "化学式 CaCO₃ で表される物質の名称はどれか。",
+      "label": "CaCO₃ の名称",
+      "options": [
+        {
+          "text": "炭酸カルシウム",
+          "correct": true,
+          "why": "CaCO₃＝炭酸カルシウム。石灰水の白濁のもと。"
+        },
+        {
+          "text": "水酸化カルシウム",
+          "why": "これは Ca(OH)₂ で、石灰水そのものの成分。"
+        },
+        {
+          "text": "塩化カルシウム",
+          "why": "これは CaCl₂。乾燥剤に使われる別の物質。"
+        },
+        {
+          "text": "硫酸カルシウム",
+          "why": "これは CaSO₄。石こうの成分で別の物質。"
+        }
+      ],
+      "oneLine": "CaCO₃ は炭酸カルシウム。石灰水の白濁で生じる白色沈殿。",
+      "timeLimit": 12
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_1_chem:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_1_chem"
+      },
+      "format": "choice4",
+      "prompt": "石灰水が白く濁ったことから、もとの物質に含まれていたと判断できる元素はどれか。",
+      "label": "白濁が示す元素",
+      "options": [
+        {
+          "text": "炭素",
+          "correct": true,
+          "why": "燃焼で生じた気体が二酸化炭素なので、もとの物質に炭素があった。"
+        },
+        {
+          "text": "水素",
+          "why": "水素は硫酸銅(Ⅱ)無水塩の青変で調べる。"
+        },
+        {
+          "text": "塩素",
+          "why": "塩素は硝酸銀水溶液の白色沈殿で調べる。"
+        },
+        {
+          "text": "硫黄",
+          "why": "硫黄は酢酸鉛(Ⅱ)水溶液の黒色沈殿で調べる。"
+        }
+      ],
+      "oneLine": "石灰水の白濁＝二酸化炭素の存在＝もとの物質に炭素がある。",
+      "timeLimit": 14,
+      "grounding": "炭素→燃焼させて生じた気体を石灰水に通し白濁"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_2_color:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_2_color"
+      },
+      "format": "choice4",
+      "prompt": "硫酸銅(Ⅱ)無水塩が青色に変わるのは、何を取り込んだためか。",
+      "label": "青変の原因",
+      "options": [
+        {
+          "text": "水分子",
+          "correct": true,
+          "why": "水分子を取り込んで五水和物（青色結晶）になる。"
+        },
+        {
+          "text": "二酸化炭素",
+          "why": "二酸化炭素は石灰水の白濁で調べる別の実験。"
+        },
+        {
+          "text": "酸素分子",
+          "why": "酸素を取り込む反応ではない。"
+        },
+        {
+          "text": "塩化物イオン",
+          "why": "塩化物イオンは硝酸銀で調べる別の実験。"
+        }
+      ],
+      "oneLine": "硫酸銅(Ⅱ)無水塩は水分子を取り込んで青色の五水和物になる。",
+      "timeLimit": 13
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_2_color:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_2_color"
+      },
+      "format": "choice4",
+      "prompt": "硫酸銅(Ⅱ)無水塩が青変したことで検出できる成分元素はどれか。",
+      "label": "青変が示す元素",
+      "options": [
+        {
+          "text": "水素",
+          "correct": true,
+          "why": "生じた液体が水であり、水の H はもとの物質の水素に由来する。"
+        },
+        {
+          "text": "炭素",
+          "why": "炭素は石灰水の白濁で調べる。"
+        },
+        {
+          "text": "塩素",
+          "why": "塩素は硝酸銀水溶液の白色沈殿で調べる。"
+        },
+        {
+          "text": "金属元素",
+          "why": "金属元素は炎色反応で調べる。"
+        }
+      ],
+      "oneLine": "青変＝水ができた証拠。だからもとの物質に水素が含まれる。",
+      "timeLimit": 14,
+      "grounding": "水素→生じた液体が硫酸銅(II)無水塩を青変"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_3_color:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_3_color"
+      },
+      "format": "choice4",
+      "prompt": "塩化コバルト紙を使うのは、何の存在を確認するためか。",
+      "label": "塩化コバルト紙の用途",
+      "options": [
+        {
+          "text": "液体の水",
+          "correct": true,
+          "why": "塩化コバルト紙は水の確認に用いる。"
+        },
+        {
+          "text": "二酸化炭素",
+          "why": "二酸化炭素は石灰水で確認する。"
+        },
+        {
+          "text": "塩素",
+          "why": "塩素は硝酸銀水溶液で確認する。"
+        },
+        {
+          "text": "硫黄",
+          "why": "硫黄は酢酸鉛(Ⅱ)水溶液で確認する。"
+        }
+      ],
+      "oneLine": "塩化コバルト紙は水の確認用。青色から赤色に変わる。",
+      "timeLimit": 13,
+      "grounding": "水の確認には、青色の塩化コバルト紙を用いることもできる"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_3_color:2",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_3_color"
+      },
+      "format": "choice4",
+      "prompt": "塩化コバルト紙の色変化の向きとして正しいものはどれか。",
+      "label": "色変化の向き",
+      "options": [
+        {
+          "text": "青色から赤色（桃色）へ",
+          "correct": true,
+          "why": "乾燥時は青色、水に触れると赤色（桃色）になる。"
+        },
+        {
+          "text": "赤色から青色へ",
+          "why": "向きが逆。乾燥時が青色である。"
+        },
+        {
+          "text": "白色から青色へ",
+          "why": "これは硫酸銅(Ⅱ)無水塩の変化との混同。"
+        },
+        {
+          "text": "無色から黄色へ",
+          "why": "塩化コバルト紙にそのような変化はない。"
+        }
+      ],
+      "oneLine": "塩化コバルト紙は青→赤。硫酸銅(Ⅱ)無水塩は白→青。向きを混同しない。",
+      "timeLimit": 16,
+      "grounding": "乾燥状態では青色をしていますが、水に触れると水分を吸収して赤色（桃色）へと変化します"
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_4_name:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_4_name"
+      },
+      "format": "choice4",
+      "prompt": "塩素の検出に用いる硝酸銀の化学式はどれか。",
+      "label": "硝酸銀の化学式",
+      "options": [
+        {
+          "text": "AgNO₃",
+          "correct": true,
+          "why": "硝酸銀は AgNO₃。銀イオンが塩化物イオンと結びつく。"
+        },
+        {
+          "text": "AgCl",
+          "why": "これは生じる沈殿（塩化銀）の化学式。"
+        },
+        {
+          "text": "Ag₂O",
+          "why": "酸化銀であり、検出に加える試薬ではない。"
+        },
+        {
+          "text": "NaNO₃",
+          "why": "硝酸ナトリウムで、銀を含まないので沈殿はできない。"
+        }
+      ],
+      "oneLine": "加える試薬は硝酸銀 AgNO₃、生じる沈殿は塩化銀 AgCl。",
+      "timeLimit": 13
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_4_chem:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_4_chem"
+      },
+      "format": "choice4",
+      "prompt": "硝酸銀水溶液を加えて生じた塩化銀が沈殿として現れるのは、どのような性質があるからか。",
+      "label": "沈殿ができる理由",
+      "options": [
+        {
+          "text": "水に溶けにくい",
+          "correct": true,
+          "why": "水に溶けにくいので、固体のまま白色沈殿として現れる。"
+        },
+        {
+          "text": "水によく溶ける",
+          "why": "よく溶けるなら透明のままで沈殿はできない。"
+        },
+        {
+          "text": "水と反応して気体になる",
+          "why": "気体は発生しない。生じるのは固体の沈殿。"
+        },
+        {
+          "text": "水に溶けて青色になる",
+          "why": "青色になるのは硫酸銅(Ⅱ)の水和で、別の現象。"
+        }
+      ],
+      "oneLine": "沈殿ができるのは、その物質が水に溶けにくいから。",
+      "timeLimit": 18
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_5_color:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_5_color"
+      },
+      "format": "choice4",
+      "prompt": "水溶液中の硫黄元素を検出するために加える試薬はどれか。",
+      "label": "硫黄の検出試薬",
+      "options": [
+        {
+          "text": "酢酸鉛(Ⅱ)水溶液",
+          "correct": true,
+          "why": "鉛イオンが硫黄と結びついて黒色沈殿ができる。"
+        },
+        {
+          "text": "硝酸銀水溶液",
+          "why": "これは塩素の検出に使う。"
+        },
+        {
+          "text": "石灰水",
+          "why": "これは二酸化炭素（炭素）の検出に使う。"
+        },
+        {
+          "text": "塩化コバルト紙",
+          "why": "これは水の検出に使う。"
+        }
+      ],
+      "oneLine": "硫黄の検出は酢酸鉛(Ⅱ)水溶液。黒色沈殿ができる。",
+      "timeLimit": 14
+    },
+    {
+      "id": "a:c1_2_B:q_c1_2_B_5:q_c1_2_B_5_5_chem:1",
+      "source": {
+        "chapterId": "c1_2_B",
+        "problemId": "q_c1_2_B_5",
+        "subQuestionId": "q_c1_2_B_5_5_chem"
+      },
+      "format": "choice4",
+      "prompt": "化学式 PbS で表される物質の名称はどれか。",
+      "label": "PbS の名称",
+      "options": [
+        {
+          "text": "硫化鉛(Ⅱ)",
+          "correct": true,
+          "why": "PbS＝硫化鉛(Ⅱ)。黒色沈殿として現れる。"
+        },
+        {
+          "text": "硫酸鉛(Ⅱ)",
+          "why": "これは PbSO₄ で、酸素を含む別の物質。"
+        },
+        {
+          "text": "酢酸鉛(Ⅱ)",
+          "why": "これは加えた試薬の側の物質。"
+        },
+        {
+          "text": "塩化鉛(Ⅱ)",
+          "why": "これは PbCl₂ で、硫黄を含まない別の物質。"
+        }
+      ],
+      "oneLine": "PbS は硫化鉛(Ⅱ)。硫黄検出で生じる黒色沈殿。",
+      "timeLimit": 12
+    }
+  ]
+}

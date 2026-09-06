@@ -28,12 +28,14 @@ import type { BattleAnswerFormat, BattleQuestion } from '../core/types';
 
 /** 教科ごとの収録数（UIで「この教科は◯問あります」と出すために使う） */
 export const POOL_COUNTS: Readonly<Record<string, number>> = {
-  chemistry_basic: 159,
-  chemistry: 10,
+  chemistry_basic: 1776,
+  chemistry: 270,
   english_listening: 146,
-  biology_basic: 62,
+  math: 240,
+  biology_basic: 290,
   english_grammar: 100,
   geography: 127,
+  rika: 1117,
 };
 
 /**
@@ -58,12 +60,14 @@ export const POOL_COUNTS: Readonly<Record<string, number>> = {
 export const POOL_FORMAT_COUNTS: Readonly<
   Record<string, Readonly<Partial<Record<BattleAnswerFormat, number>>>>
 > = {
-  chemistry_basic: { choice4: 72, choice: 58, kana: 29 },
-  chemistry: { choice: 9, kana: 1 },
+  chemistry_basic: { choice4: 1574, choice: 178, kana: 24 },
+  chemistry: { choice4: 235, choice: 34, kana: 1 },
   english_listening: { choice4: 146 },
-  biology_basic: { choice4: 1, choice: 21, kana: 40 },
+  math: { choice4: 239, choice: 1 },
+  biology_basic: { choice4: 228, choice: 21, kana: 41 },
   english_grammar: { choice4: 100 },
   geography: { choice4: 77, choice: 50 },
+  rika: { choice4: 1117 },
 };
 
 /**
@@ -127,12 +131,16 @@ async function loadRaw(subject: string): Promise<readonly unknown[][]> {
       return (await import('./pool.chemistry.generated')).POOL;
     case 'english_listening':
       return (await import('./pool.english_listening.generated')).POOL;
+    case 'math':
+      return (await import('./pool.math.generated')).POOL;
     case 'biology_basic':
       return (await import('./pool.biology_basic.generated')).POOL;
     case 'english_grammar':
       return (await import('./pool.english_grammar.generated')).POOL;
     case 'geography':
       return (await import('./pool.geography.generated')).POOL;
+    case 'rika':
+      return (await import('./pool.rika.generated')).POOL;
     default:
       return [];
   }
@@ -198,4 +206,90 @@ export async function poolIdsOf(
 /** 読み込み済みの出題を全部返す（テスト・検証用） */
 export function loadedPool(subject: string): readonly BattleQuestion[] {
   return cache.get(subject) || [];
+}
+
+// ============================================================
+// 試合後の解答（請求⑦-A）
+// ============================================================
+
+/**
+ * 教科ごとの「1行解答を持つ問題」の数。
+ * リザルト画面が「この教科は解答が出ます／出ません」を
+ * データ本体を読まずに判断するために置いてある。
+ */
+export const ANSWER_COUNTS: Readonly<Record<string, number>> = {
+  chemistry_basic: 1695,
+  chemistry: 91,
+  english_listening: 0,
+  math: 240,
+  biology_basic: 249,
+  english_grammar: 0,
+  geography: 0,
+  rika: 0,
+};
+
+async function loadAnswerRaw(subject: string): Promise<readonly (readonly [string, string])[]> {
+  switch (subject) {
+    case 'chemistry_basic':
+      return (await import('./answer.chemistry_basic.generated')).ANSWERS;
+    case 'chemistry':
+      return (await import('./answer.chemistry.generated')).ANSWERS;
+    case 'english_listening':
+      return (await import('./answer.english_listening.generated')).ANSWERS;
+    case 'math':
+      return (await import('./answer.math.generated')).ANSWERS;
+    case 'biology_basic':
+      return (await import('./answer.biology_basic.generated')).ANSWERS;
+    case 'english_grammar':
+      return (await import('./answer.english_grammar.generated')).ANSWERS;
+    case 'geography':
+      return (await import('./answer.geography.generated')).ANSWERS;
+    case 'rika':
+      return (await import('./answer.rika.generated')).ANSWERS;
+    default:
+      return [];
+  }
+}
+
+/** 読み込み済みの解答（教科ID → 出題ID → 1行解答） */
+const answerCache = new Map<string, ReadonlyMap<string, string>>();
+const answerInflight = new Map<string, Promise<ReadonlyMap<string, string>>>();
+
+/**
+ * その教科の「試合後の1行解答」を読み込む。
+ *
+ * ★★ここは「試合が終わってから」しか呼んではいけない★★
+ *
+ * 出題プール（loadPool）と別のファイルに分けているのは、
+ * 対戦前に答えが端末に落ちてくるのを防ぐためである。
+ * 対戦画面や待機画面からこれを呼ぶと、その意味がまるごと消える。
+ * 呼び出しているのはリザルト画面（BattleResult）だけであり、
+ * tests/battleAnswers.test.ts がそれを検査している。
+ *
+ * 解答が1問も無い教科（機械生成だけの教科）では空の Map が返る。
+ * 画面側は「無ければ答えの行を出さない」作りなので、それで正しく動く。
+ */
+export async function loadBattleAnswers(
+  subject: string,
+): Promise<ReadonlyMap<string, string>> {
+  const cached = answerCache.get(subject);
+  if (cached) return cached;
+
+  const running = answerInflight.get(subject);
+  if (running) return running;
+
+  const promise = loadAnswerRaw(subject)
+    .then((rows) => {
+      const map: ReadonlyMap<string, string> = new Map(rows.map(([id, one]) => [id, one]));
+      answerCache.set(subject, map);
+      answerInflight.delete(subject);
+      return map;
+    })
+    .catch((error) => {
+      answerInflight.delete(subject);
+      throw error;
+    });
+
+  answerInflight.set(subject, promise);
+  return promise;
 }

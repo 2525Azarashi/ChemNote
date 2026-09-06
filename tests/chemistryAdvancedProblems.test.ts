@@ -100,16 +100,25 @@ describe('化学（発展）演習問題の収録', () => {
     }
   });
 
-  it('問題を収録していない単元は空配列のまま（枠だけ先行させている）', () => {
+  // ★このテストは「理論化学の演習1〜20」だけを見張る担当★
+  //   無機化学（a7_3・a7_4 …）は別の作業で収録が進むので、
+  //   ここで「理論化学以外は必ず空」と書いてしまうと、
+  //   無機を1章足すたびに無関係なテストが落ちて作業が止まる。
+  //   そこで「理論化学の枠の中では、収録済みの5単元以外は空のまま」に限定し、
+  //   無機・有機の中身は tests/inorganicProblems.test.ts 側で見張る。
+  it('理論化学のうち、問題を収録していない単元は空配列のまま（枠だけ先行させている）', () => {
     const withProblems = getAllAdvancedChapters()
       .filter((c) => c.practiceProblems.length > 0)
+      // 理論化学の章IDだけに絞る（a1_* 〜 a6_*）
+      .filter((c) => /^a[1-6]_/.test(c.id))
       .map((c) => c.id);
     expect(withProblems.sort()).toEqual([...PROBLEM_CHAPTER_IDS].sort());
   });
 
   it('理論化学の収録問題数として集計される（単元選択のカード表示）', () => {
     expect(getAdvancedFieldStats('theoretical').questions).toBe(20);
-    expect(getAdvancedFieldStats('inorganic').questions).toBe(0);
+    // 有機化学はまだ未着手なので 0 のまま。ここが 0 でなくなったら
+    // 有機の収録が始まった合図なので、そのとき専用テストを足す。
     expect(getAdvancedFieldStats('organic').questions).toBe(0);
   });
 });

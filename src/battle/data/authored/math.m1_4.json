@@ -1,0 +1,167 @@
+{
+  "subject": "math",
+  "chapterId": "m1_4",
+  "authoredBy": "room-math",
+  "questions": [
+    {
+      "id": "a:m1_4:q_m1_4_basic:q_m1_4_b_1:1",
+      "source": { "chapterId": "m1_4", "problemId": "q_m1_4_basic", "subQuestionId": "q_m1_4_b_1" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ 2x/(x^2+3) dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "log(x^2+3) + C", "correct": true,
+          "why": "分母 x^2+3 の微分は 2x で分子そのもの。∫f'(x)/f(x)dx = log|f(x)| + C の形。解説は「x^2+3 > 0 なので絶対値は外せます」としている。" },
+        { "text": "2x·log|x^2+3| + C",
+          "why": "分子の 2x を残した形。分子が分母の微分になっているときは log の中に吸収されるので、外に残らない。" },
+        { "text": "log(2x) + C",
+          "why": "log の中身を分子にしてしまった形。log|f(x)| の f は分母であり、分子は微分になっているかを確かめるためのもの。" },
+        { "text": "-1/(x^2+3)^2·2x + C",
+          "why": "1/(x^2+3) を累乗の公式で処理した形。指数が -1 のときは累乗の公式が使えず log になる。" }
+      ],
+      "oneLine": "log(x^2+3) + C。分母の微分 2x が分子にあるので log 型で即答できる。",
+      "timeLimit": 17,
+      "grounding": "分母 x^2+3 の微分は 2x で、分子そのもの。よって log(x^2+3) + C"
+    },
+    {
+      "id": "a:m1_4:q_m1_4_basic:q_m1_4_b_1:2",
+      "source": { "chapterId": "m1_4", "problemId": "q_m1_4_basic", "subQuestionId": "q_m1_4_b_1" },
+      "format": "choice4",
+      "prompt": "分数の形の不定積分を見たとき、log 型かどうかを判定するために最初に確認することはどれか。",
+      "label": "",
+      "options": [
+        { "text": "分子が分母の微分になっていないか", "correct": true,
+          "why": "解説は「分数の積分で最初に確認するのは『分子が分母の微分になっていないか』です」と明記している。" },
+        { "text": "分母が因数分解できるか",
+          "why": "因数分解は部分分数分解の準備で、手順としてはあと。まず分母を微分して分子と比べる。" },
+        { "text": "分母が0になる x があるか",
+          "why": "定義域の話であり、積分の型の判定には使わない。判定は分子と分母の微分の関係で決まる。" },
+        { "text": "分子と分母の次数が等しいか",
+          "why": "次数のチェックは帯分数化のための判定。log 型かどうかは分母の微分と分子を比べて決める。" }
+      ],
+      "oneLine": "分子が分母の微分になっていないか。なっていれば log|f(x)| + C で即答できる。",
+      "timeLimit": 15,
+      "grounding": "分数の積分で最初に確認するのは「**分子が分母の微分になっていないか**」です"
+    },
+    {
+      "id": "a:m1_4:q_m1_4_basic:q_m1_4_b_2:1",
+      "source": { "chapterId": "m1_4", "problemId": "q_m1_4_basic", "subQuestionId": "q_m1_4_b_2" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ tan x dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "-log|cos x| + C", "correct": true,
+          "why": "tan x = sin x/cos x と直すと分母 cos x の微分は -sin x。分子と符号だけ違うので -1 倍調整する。解説の計算そのまま。" },
+        { "text": "log|cos x| + C（マイナスなし）",
+          "why": "-1 倍の調整を落とした形。分母 cos x の微分は -sin x なので、分子 sin x とは符号が逆になる。" },
+        { "text": "log|sin x| + C",
+          "why": "log の中身を分子にしてしまった形。log の中に入るのは分母であり、ここでは cos x。" },
+        { "text": "1/cos^2 x + C",
+          "why": "tan x を微分した結果。積分と微分の向きを逆にしている。" }
+      ],
+      "oneLine": "-log|cos x| + C。tan x = sin x/cos x で分母の微分が -sin x なのでマイナスが付く。",
+      "timeLimit": 18,
+      "grounding": "分子とは符号だけ違うので、-1 倍調整して -log|cos x| + C"
+    },
+    {
+      "id": "a:m1_4:q_m1_4_basic:q_m1_4_b_3:1",
+      "source": { "chapterId": "m1_4", "problemId": "q_m1_4_basic", "subQuestionId": "q_m1_4_b_3" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ e^x/(e^x+4) dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "log(e^x+4) + C", "correct": true,
+          "why": "分母 e^x+4 の微分は e^x で分子そのもの。解説は「e^x+4 > 0 なので絶対値不要です」としている。" },
+        { "text": "e^x·log|e^x+4| + C",
+          "why": "分子の e^x を残した形。分子が分母の微分なら log の中に吸収され、外には残らない。" },
+        { "text": "log(e^x) + C",
+          "why": "log の中身を分子にした形。log|f(x)| の f は分母 e^x+4 である。" },
+        { "text": "(1/4)log|e^x+4| + C",
+          "why": "定数項 4 を f(ax+b) 型の係数と誤って使った形。1/a 倍が要るのは中身が ax+b のときで、ここは分母の微分がそのまま分子にある。" }
+      ],
+      "oneLine": "log(e^x+4) + C。分母の微分 e^x が分子にあるので log 型。真数は常に正で絶対値不要。",
+      "timeLimit": 17,
+      "grounding": "分母 e^x+4 の微分は e^x で、分子そのもの。log(e^x+4) + C"
+    },
+    {
+      "id": "a:m1_4:q_m1_4_improper:q_m1_4_i_1:1",
+      "source": { "chapterId": "m1_4", "problemId": "q_m1_4_improper", "subQuestionId": "q_m1_4_i_1" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ x/(x+3) dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "x - 3log|x+3| + C", "correct": true,
+          "why": "x/(x+3) = (x+3-3)/(x+3) = 1 - 3/(x+3) と帯分数化して項別に積分する。解説の計算そのまま。" },
+        { "text": "log(x+3) + C",
+          "why": "分子が分母の微分だと思い込んで log 型として即答した形。分子は x であり、分母 x+3 の微分 1 とは違う。" },
+        { "text": "x + 3log|x+3| + C",
+          "why": "帯分数化での符号を誤った形。1 - 3/(x+3) なので第2項はマイナスのまま積分される。" },
+        { "text": "x^2/(2(x+3)) + C",
+          "why": "分子と分母を別々に積分した形。分数はそのまま項ごとに積分できないため、先に帯分数化が必要。" }
+      ],
+      "oneLine": "x - 3log|x+3| + C。分子の次数が分母以上なので、まず帯分数化して項別に積分する。",
+      "timeLimit": 20,
+      "grounding": "よって ∫(1 - 3/(x+3))dx = x - 3log|x+3| + C"
+    },
+    {
+      "id": "a:m1_4:q_m1_4_improper:q_m1_4_i_1:2",
+      "source": { "chapterId": "m1_4", "problemId": "q_m1_4_improper", "subQuestionId": "q_m1_4_i_1" },
+      "format": "choice4",
+      "prompt": "分数関数の積分で、分子の次数が分母の次数以上のときに最初にすべき操作はどれか。",
+      "label": "",
+      "options": [
+        { "text": "割り算して帯分数の形に直す", "correct": true,
+          "why": "解説の鉄則「分子の次数 ≧ 分母の次数なら、割り算して帯分数の形に直してから積分する」のとおり。" },
+        { "text": "部分分数分解する",
+          "why": "手順としては次数を下げたあと。解説は「①次数チェック（必要なら割り算）→ ②分母の微分が分子にいないか → ③部分分数分解」の順を示している。" },
+        { "text": "分母を微分して分子と比べる",
+          "why": "これは②の操作で、割り算のあとに行う。次数が高いままでは log 型の判定ができない。" },
+        { "text": "分子と分母をそれぞれ積分する",
+          "why": "分数はそのまま分子・分母別に積分できない。この誤りを避けるために帯分数化する。" }
+      ],
+      "oneLine": "割り算して帯分数の形に直す。次数を下げるのが分数関数の積分の第一手。",
+      "timeLimit": 15,
+      "grounding": "分子の次数 ≧ 分母の次数なら、割り算して帯分数の形に直してから"
+    },
+    {
+      "id": "a:m1_4:q_m1_4_improper:q_m1_4_i_2:1",
+      "source": { "chapterId": "m1_4", "problemId": "q_m1_4_improper", "subQuestionId": "q_m1_4_i_2" },
+      "format": "choice4",
+      "prompt": "不定積分 ∫ (x^2+2)/(x+1) dx を求めよ（積分定数を C とする）。",
+      "label": "",
+      "options": [
+        { "text": "x^2/2 - x + 3log|x+1| + C", "correct": true,
+          "why": "x^2+2 を x+1 で割ると商 x-1・余り 3 なので x - 1 + 3/(x+1)。項別に積分した結果。解説の計算そのまま。" },
+        { "text": "x^2/2 + x + 3log|x+1| + C",
+          "why": "商 x-1 の -1 の符号を落とした形。割り算の商が x-1 なので第2項はマイナスになる。" },
+        { "text": "x^2/2 - x + log|x+1| + C",
+          "why": "余り 3 の係数を落とした形。余りは 3 なので log の前に 3 が付く。" },
+        { "text": "log|x^2+2| - log|x+1| + C",
+          "why": "分子と分母を別々に log にした形。log の差は商の log であって、分数の積分結果ではない。" }
+      ],
+      "oneLine": "x^2/2 - x + 3log|x+1| + C。割り算で商 x-1・余り 3 に直してから項別に積分する。",
+      "timeLimit": 22,
+      "grounding": "商 x-1・余り 3。つまり (x^2+2)/(x+1) = x - 1 + 3/(x+1)"
+    },
+    {
+      "id": "a:m1_4:q_m1_4_improper:q_m1_4_i_2:2",
+      "source": { "chapterId": "m1_4", "problemId": "q_m1_4_improper", "subQuestionId": "q_m1_4_i_2" },
+      "format": "choice4",
+      "prompt": "x^2+2 を x+1 で割ったときの商と余りの組はどれか。",
+      "label": "",
+      "options": [
+        { "text": "商 x-1、余り 3", "correct": true,
+          "why": "(x+1)(x-1) = x^2-1 で、x^2+2 との差が 3。解説の「商 x-1・余り 3」のとおり。" },
+        { "text": "商 x+1、余り 1",
+          "why": "(x+1)(x+1) = x^2+2x+1 となり、x の1次の項が余ってしまう。割り算が完了していない。" },
+        { "text": "商 x、余り 2",
+          "why": "(x+1)x = x^2+x なので余りに -x+2 が残り、余りの次数が割る式の次数以上になっている。" },
+        { "text": "商 x-1、余り 1",
+          "why": "商は正しいが余りの値が違う。x^2+2 -(x^2-1) = 3 なので余りは 3。" }
+      ],
+      "oneLine": "商 x-1、余り 3。よって (x^2+2)/(x+1) = x - 1 + 3/(x+1) と帯分数化できる。",
+      "timeLimit": 18,
+      "grounding": "商 x-1・余り 3"
+    }
+  ]
+}
