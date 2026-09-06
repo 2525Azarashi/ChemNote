@@ -41,9 +41,22 @@
 export interface ListeningStep {
   /** 大問（回）の中での位置（0始まり） */
   index: number;
-  /** 小問ID（＝解答・採点・音源トラックのキー） */
+  /** 小問ID（＝解答・採点・音源トラックのキー）。複数あるときは先頭の小問 */
   subQuestionId: string;
-  /** 「問1」などの見出し。取れないときは並び順から作る */
+  /**
+   * このステップで解く小問IDの一覧。
+   *
+   * ■ なぜ複数持てるようにしたか（第4問〜第6問）
+   *   第1〜3問は「1問＝1音源」だったが、第4問以降は
+   *   「1本の音声（講義・4人の発話）に問18〜21の4つの解答欄」のように
+   *   複数の小問が同じ音源にぶら下がる。音声は1回しか流れないので、
+   *   1つの音声に属する小問は必ず同じ画面で解かせないと
+   *   「問19を解くために問18の音声をもう一度聞く」ことになり本番と違う。
+   *   そこで「1ステップ＝1音源」とし、その音源が持つ小問を全部含める。
+   *   第1〜3問では要素1つの配列になり、従来と同じ動きをする。
+   */
+  subQuestionIds: string[];
+  /** 「問1」「問18〜21」などの見出し。取れないときは並び順から作る */
   label: string;
 }
 
@@ -57,7 +70,21 @@ export function isPerSubQuestionListening(problem: any): boolean {
   const tracks = problem?.audioTracks;
   if (!Array.isArray(tracks) || tracks.length === 0) return false;
   const subs = problem?.subQuestions;
-  return Array.isArray(subs) && subs.length > 1;
+  if (!Array.isArray(subs) || subs.length === 0) return false;
+  // 小問が2つ以上あれば従来どおり。
+  // 小問が1つでも「音源1本に複数の解答欄」型（subIds を持つ）は
+  // 1問ずつモードの描画（設問文・音源・図を左に置く）を使う。
+  if (subs.length > 1) return true;
+  return tracks.some((t: any) => Array.isArray(t?.subIds));
+}
+
+/**
+ * 音源トラックが「複数の小問をまとめる」形（第4問以降）か。
+ * subIds を持つトラックが1つでもあれば、その大問は音源単位でステップを切る。
+ */
+function hasGroupedTracks(problem: any): boolean {
+  const tracks: any[] = Array.isArray(problem?.audioTracks) ? problem.audioTracks : [];
+  return tracks.some((t) => Array.isArray(t?.subIds) && t.subIds.length > 0);
 }
 
 /** 小問ラベル（'問2 話者（…）の発話に…'）から「問2」だけを取り出す。 */
@@ -77,11 +104,61 @@ export function stepLabelOf(sq: any, index: number): string {
 export function buildListeningSteps(problem: any): ListeningStep[] {
   const subs: any[] = Array.isArray(problem?.subQuestions) ? problem.subQuestions : [];
   if (subs.length === 0) return [];
-  return subs.map((sq, index) => ({
-    index,
-    subQuestionId: String(sq?.id ?? `sub_${index}`),
-    label: stepLabelOf(sq, index),
-  }));
+
+  // ---- 第4問以降：音源1本＝1ステップ（複数の解答欄） ----
+  if (hasGroupedTracks(problem)) {
+    const tracks: any[] = problem.audioTracks;
+    const steps: ListeningStep[] = [];
+    const used = new Set<string>();
+    tracks.forEach((t) => {
+      const ids: string[] = Array.isArray(t?.subIds) && t.subIds.length > 0
+        ? t.subIds.map(String)
+        : [String(t?.subId ?? '')];
+      // 音源が指す小問のうち、実際に存在するものだけ（並びは subQuestions の順）
+      const present = subs.filter((sq) => ids.includes(String(sq?.id))).map((sq) => String(sq.id));
+      if (present.length === 0) return;
+      present.forEach((id) => used.add(id));
+      steps.push({
+        index: steps.length,
+        subQuestionId: present[0],
+        subQuestionIds: present,
+        label: String(t?.label || stepLabelOf(subs.find((sq) => String(sq.id) === present[0]), steps.length)),
+      });
+    });
+    // どの音源にも属さない小問が残っていたら、従来どおり1問ずつ足す（データ欠けの安全網）
+    subs.forEach((sq) => {
+      const id = String(sq?.id ?? '');
+      if (used.has(id)) return;
+      steps.push({
+        index: steps.length,
+        subQuestionId: id,
+        subQuestionIds: [id],
+        label: stepLabelOf(sq, steps.length),
+      });
+    });
+    return steps;
+  }
+
+  // ---- 第1〜3問：1問＝1ステップ（従来どおり） ----
+  return subs.map((sq, index) => {
+    const id = String(sq?.id ?? `sub_${index}`);
+    return {
+      index,
+      subQuestionId: id,
+      subQuestionIds: [id],
+      label: stepLabelOf(sq, index),
+    };
+  });
+}
+
+/**
+ * ステップに含まれる小問オブジェクトを取り出す（subQuestions の並び順のまま）。
+ */
+export function stepSubQuestions(problem: any, step: ListeningStep | null | undefined): any[] {
+  if (!step) return [];
+  const subs: any[] = Array.isArray(problem?.subQuestions) ? problem.subQuestions : [];
+  const wanted = new Set(step.subQuestionIds);
+  return subs.filter((sq) => wanted.has(String(sq?.id)));
 }
 
 /**

@@ -235,10 +235,21 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     if (!focusSubQuestionId) return picked;
     return picked.map((q: any) => {
       const subs: any[] = Array.isArray(q?.subQuestions) ? q.subQuestions : [];
-      const hit = subs.filter((sq: any) => sq?.id === focusSubQuestionId);
-      if (hit.length === 0) return q;
       const tracks: any[] = Array.isArray(q?.audioTracks) ? q.audioTracks : [];
-      const focusedTracks = tracks.filter((t: any) => t?.subId === focusSubQuestionId);
+      // ★第4問以降：音源1本に複数の小問（問18〜21 など）★
+      //   その音源（subIds）に属する小問は全部まとめて解いたので、解説も全部出す。
+      //   第1〜3問は subIds が無いので従来どおり1問だけ。
+      const focusedTracks = tracks.filter(
+        (t: any) =>
+          t?.subId === focusSubQuestionId ||
+          (Array.isArray(t?.subIds) && t.subIds.includes(focusSubQuestionId)),
+      );
+      const focusIds = new Set<string>([focusSubQuestionId]);
+      focusedTracks.forEach((t: any) => {
+        if (Array.isArray(t?.subIds)) t.subIds.forEach((id: string) => focusIds.add(String(id)));
+      });
+      const hit = subs.filter((sq: any) => focusIds.has(String(sq?.id)));
+      if (hit.length === 0) return q;
       // ★問題文も「いま見ている問のブロックだけ」に絞る（ご指摘：
       //   「左側も問題をなぜ問4まで乗せるの？問ごとに切ってるんだから
       //     解答と解説の方も対応させないと」）。

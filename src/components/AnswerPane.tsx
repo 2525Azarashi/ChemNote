@@ -401,6 +401,28 @@ export function AnswerPane({
                     {formatText(sqMarker)}
                   </span>
                 )}
+                {/*
+                  ★第4問以降：1画面に解答欄が複数並ぶので、欄ごとに「問N＋空所の見出し」を出す★
+                  ------------------------------------------------------------
+                  第1〜3問は 1画面＝1問 なので左の問題ペインの見出しで足りるが、
+                  第4問以降は 問18〜21 の4欄が同じ画面に並ぶ。マークだけの
+                  ①〜⑤ が4段並ぶと「どの欄が問19か」が分からないので、
+                  欄の先頭に 問N と空所の見出し（1st step / Monday …）を小さく出す。
+                  この見出しは renderedAnswerGroups に小問が2つ以上あるときだけ出る
+                  （第1〜3問の見た目は変わらない）。
+                */}
+                {listeningUnified && (renderedAnswerGroups.length > 1 || mobileAnswerSubs.length > 1) && (
+                  <span className="flex items-baseline gap-2 text-[13px] font-bold text-[#2C3E50]">
+                    <span className="shrink-0 rounded-md bg-[#2C3E50] px-2 py-0.5 text-[12px] text-white">
+                      {formatText(sqMarker)}
+                    </span>
+                    {sq.blankHint && (
+                      <span className="min-w-0 text-gray-600 font-modern break-words [overflow-wrap:anywhere]">
+                        {formatText(String(sq.blankHint), [], { prose: true })}
+                      </span>
+                    )}
+                  </span>
+                )}
 
                 {sq.type === 'multiple_choice' ? (
                   // ★全教科・全端末で選択肢をカード内に直接表示する。

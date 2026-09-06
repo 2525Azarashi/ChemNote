@@ -42,8 +42,14 @@ export interface QuizScoringDeps {
   currentQuestion: any;
   /** リスニングの「1画面＝1問」モードか */
   perStep: boolean;
-  /** 1問ずつモードで、いま表示している小問 */
+  /** 1問ずつモードで、いま表示している小問（先頭） */
   activeStepSub: any;
+  /**
+   * 1問ずつモードで、いま表示しているステップの小問全部。
+   * 第4問以降は「音声1本に複数の解答欄」なのでこちらを採点する。
+   * 省略時は activeStepSub 1つとみなす（第1〜3問は从来と同じ）。
+   */
+  activeStepSubs?: any[];
   /** 章の途中経過（点数・コンボ・所要時間） */
   run: ChapterRunState;
   setRun: (next: ChapterRunState) => void;
@@ -79,6 +85,7 @@ export function createScoreCurrentQuestion({
   currentQuestion,
   perStep,
   activeStepSub,
+  activeStepSubs,
   run,
   setRun,
   lastScoredQuestionRef,
@@ -120,7 +127,7 @@ export function createScoreCurrentQuestion({
 
     // 採点対象の小問。1問ずつモードでは表示中の1問だけ。
     const subQuestions = perStep && activeStepSub
-      ? [activeStepSub]
+      ? (activeStepSubs && activeStepSubs.length > 0 ? activeStepSubs : [activeStepSub])
       : (currentQuestion.subQuestions || []);
     const timeUsed = Math.max(0, Math.round(timeUsedRef.current));
     const maxCombo = calcMaxCombo(subQuestions, answers);

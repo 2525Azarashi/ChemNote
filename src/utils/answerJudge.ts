@@ -175,6 +175,33 @@ export function isAnswerCorrect(
 }
 
 /**
+ * 「完答グループ」を考慮した正誤判定。
+ *
+ * ■ 何のためか（英語リスニング 第4問・第5問）
+ *   本番の問18〜21（完答4点）、問28・29／問30・31（完答2点）は
+ *   「グループの全問が合っていて初めて得点」で部分点が無い。
+ *   アプリの得点（正解1問100点）でこれを再現するため、
+ *   `allOrNothingGroup` を持つ小問は、同じグループの小問が
+ *   全部正解のときだけ「正解」として数える。
+ *
+ * ■ 表示（✓／✗）には使わない
+ *   解説画面の各小問の ✓／✗ は isAnswerCorrect のまま（その問自体が
+ *   合っていたかを見せる）。得点の数え方だけを変える。
+ *   グループを持たない小問は isAnswerCorrect とまったく同じ結果になる。
+ */
+export function isCountedCorrect(
+  sq: JudgeableSubQuestion & { allOrNothingGroup?: string },
+  all: (JudgeableSubQuestion & { allOrNothingGroup?: string })[],
+  answers: Record<string, string | undefined>,
+): boolean {
+  const group = sq.allOrNothingGroup;
+  if (!group) return isAnswerCorrect(sq, answers[sq.id]);
+  const members = all.filter((s) => s.allOrNothingGroup === group);
+  if (members.length === 0) return isAnswerCorrect(sq, answers[sq.id]);
+  return members.every((m) => isAnswerCorrect(m, answers[m.id]));
+}
+
+/**
  * 自動採点可能な設問だけを抽出する。
  */
 export function judgeableSubQuestions<T extends { type?: string }>(subQuestions: T[]): T[] {

@@ -326,8 +326,21 @@ export function ProblemPane({
             ご要望「スクロールしてわざわざ答えるのめんどい」に反する。
           */}
           {listeningUnified && activeStepSub && (() => {
-            const stepMarker = stepLabelOf(activeStepSub, safeStepIndex);
-            const { body } = splitQuestionLabel(activeStepSub.label || '', stepMarker);
+            /*
+              ★第4問以降：1ステップに複数の小問（問18〜21 など）★
+              見出しはステップ側のラベル（'問18〜21'）を使い、設問文の代わりに
+              音源トラックの hint（場面の日本語）を出す。個々の空所の見出しは
+              解答欄側（AnswerPane）が欄ごとに出すので、ここでは繰り返さない。
+              第1〜3問（ステップ＝小問1つ）は従来どおり小問のラベルから作る。
+            */
+            const currentStep = listeningSteps[safeStepIndex];
+            const grouped = !!currentStep && currentStep.subQuestionIds.length > 1;
+            const stepTrack = listeningTracks.find((t: any) => t?.subId === activeStepSub.id);
+            const stepMarker = grouped && currentStep
+              ? currentStep.label
+              : stepLabelOf(activeStepSub, safeStepIndex);
+            const { body: labelBody } = splitQuestionLabel(activeStepSub.label || '', stepMarker);
+            const body = grouped ? String(stepTrack?.hint || '') : labelBody;
             /*
               ★短い設問文は見出しと同じ行に載せる（ご要望）★
               ------------------------------------------------------------
@@ -471,6 +484,8 @@ export function ProblemPane({
                     mode="practice"
                     tone="light"
                     readCount={(currentQuestion as any).readCount || 2}
+                    /* 第4問以降：本番どおり1回だけ再生（データ側の playOnce） */
+                    playOnce={!!(currentQuestion as any).playOnce}
                   />
                 )}
 

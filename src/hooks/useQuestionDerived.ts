@@ -47,8 +47,13 @@ export interface UseQuestionDerivedArgs {
   currentQuestion: any;
   /** リスニングで「小問ごとに音源が分かれている回」かどうか。 */
   perStep: boolean;
-  /** 小問ごと形式のとき、いま出している小問。 */
+  /** 小問ごと形式のとき、いま出している小問（先頭）。 */
   activeStepSub: any;
+  /**
+   * いま出しているステップの小問全部（第4問以降は複数）。
+   * 省略時は activeStepSub 1つだけとみなす（第1〜3問と同じ動き）。
+   */
+  activeStepSubs?: any[];
   /** いまフォーカスしている小問の id（ハイライトの出し分けに使う）。 */
   focusedSubId: string | null;
   /** 本文のハイライト指定（ユーザーの選択由来）。 */
@@ -69,6 +74,7 @@ export function useQuestionDerived({
   currentQuestion,
   perStep,
   activeStepSub,
+  activeStepSubs,
   focusedSubId,
   highlights,
   isDesktop,
@@ -112,10 +118,17 @@ export function useQuestionDerived({
    */
   const visibleGroupedSubQuestions = useMemo(() => {
     if (!perStep || !activeStepSub) return groupedSubQuestions;
-    return groupedSubQuestions.filter((g: any) =>
-      (g.items || []).some((sq: any) => sq?.id === activeStepSub.id),
+    // 第4問以降は「音声1本に複数の解答欄」なので、ステップに属する
+    // 小問を全部出す。第1〜3問は从来どおり1つだけ。
+    const ids = new Set(
+      (activeStepSubs && activeStepSubs.length > 0 ? activeStepSubs : [activeStepSub]).map(
+        (sq: any) => sq?.id,
+      ),
     );
-  }, [groupedSubQuestions, perStep, activeStepSub]);
+    return groupedSubQuestions.filter((g: any) =>
+      (g.items || []).some((sq: any) => ids.has(sq?.id)),
+    );
+  }, [groupedSubQuestions, perStep, activeStepSub, activeStepSubs]);
 
   // ────────────────────────────────────────────────────────────────
   // スマホ：解答欄の「1設問ずつページ送り」表示（ご指摘対応）
@@ -370,7 +383,9 @@ export function useQuestionDerived({
    * 図が無いぶんの高さが丸ごと死んだ空白になってしまう
    *（＝ご指摘いただいた「下に空白があって無駄」が場所を変えて再発する）。
    */
-  const activeStepHasFigure = !!activeStepSub?.imageUrl;
+  const activeStepHasFigure =
+    !!activeStepSub?.imageUrl ||
+    (Array.isArray(activeStepSubs) && activeStepSubs.some((sq: any) => sq?.imageUrl || sq?.optionImages));
 
   /**
    * リスニング（スマホ）で「図が無い大問」のレイアウトを使うか。

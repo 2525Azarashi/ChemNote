@@ -113,6 +113,15 @@ export interface ListeningAudioPlayerProps {
    *     「絶対に出して欲しい」というご要望と食い違うため出さない。）
    */
   alwaysOpenScript?: boolean;
+  /**
+   * 本番と同じく「1回だけ再生」に制限する（第4問以降・practice のとき）。
+   *
+   * 1回読みの大問で何度も聞けると練習にならない、という配布側の指示に従う。
+   * 再生し終わった音源はボタンを押せなくし「再生済み」と表示する。
+   * review（解説）では制限しない。途中で止めた場合は最後まで聞いていないので
+   * 制限しない（一時停止→再開ができる）。
+   */
+  playOnce?: boolean;
   /** 追加クラス（余白調整） */
   className?: string;
 }
@@ -136,6 +145,7 @@ export function ListeningAudioPlayer({
   orientation = 'vertical',
   compact = false,
   alwaysOpenScript = false,
+  playOnce = false,
   className = '',
 }: ListeningAudioPlayerProps) {
   const isDark = tone === 'dark';
@@ -159,6 +169,13 @@ export function ListeningAudioPlayer({
   const repeatLeft = useRef(0);
   /** 再生速度（0.75 はゆっくり確認用） */
   const [rate, setRate] = useState(1);
+  /**
+   * 最後まで再生し終えたトラック（1回だけ再生の制限用）。
+   * practice かつ playOnce のときだけ意味を持つ。
+   */
+  const [finishedIds, setFinishedIds] = useState<Set<string>>(() => new Set());
+  const lockOnce = playOnce && !isReview;
+  const isLocked = (subId: string) => lockOnce && finishedIds.has(subId);
 
   const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({});
 
@@ -199,6 +216,8 @@ export function ListeningAudioPlayer({
     (subId: string, repeat = false) => {
       const track = list.find((t) => t.subId === subId);
       if (!track) return;
+      // 1回だけ再生：聞き終えた音源はもう鳴らさない（本番は1回読み）
+      if (lockOnce && finishedIds.has(subId)) return;
 
       // ---- MP3 が無い問題：ブラウザの音声合成で読み上げる ----
       if (!hasRealAudio(track)) {
@@ -209,11 +228,17 @@ export function ListeningAudioPlayer({
         const started = track.turns && track.turns.length > 0
           ? speakDialogue(subId, track.turns, repeat ? 2 : 1, {
               rate,
-              onEnd: () => setPlayingId(null),
+              onEnd: () => {
+                setPlayingId(null);
+                if (lockOnce) setFinishedIds((prev) => new Set(prev).add(subId));
+              },
             })
           : speak(subId, track.script, repeat ? 2 : 1, {
               rate,
-              onEnd: () => setPlayingId(null),
+              onEnd: () => {
+                setPlayingId(null);
+                if (lockOnce) setFinishedIds((prev) => new Set(prev).add(subId));
+              },
             });
         setPlayingId(started ? subId : null);
         return;
@@ -234,7 +259,7 @@ export function ListeningAudioPlayer({
         setPlayingId(subId);
       }
     },
-    [rate, list],
+    [rate, list, lockOnce, finishedIds],
   );
 
   /** 再生／一時停止のトグル（同じボタンを2回押したら止まる）。 */
@@ -280,7 +305,9 @@ export function ListeningAudioPlayer({
       }
     }
     setPlayingId(null);
-  }, []);
+    // 最後まで聞き終えた → 1回だけ再生の制限が掛かる
+    if (lockOnce) setFinishedIds((prev) => new Set(prev).add(subId));
+  }, [lockOnce]);
 
   if (list.length === 0) return null;
 
@@ -384,14 +411,18 @@ export function ListeningAudioPlayer({
               <button
                 type="button"
                 onClick={() => toggle(track.subId)}
-                disabled={speechBlocked}
-                aria-label={`${track.label}（${track.hint}）の音源を${isPlaying ? '停止' : '再生'}`}
+                disabled={speechBlocked || isLocked(track.subId)}
+                aria-label={
+                  isLocked(track.subId)
+                    ? `${track.label} は再生済み（本番は1回読みのため、もう一度は聞けません）`
+                    : `${track.label}（${track.hint}）の音源を${isPlaying ? '停止' : '再生'}`
+                }
                 className={`flex items-center justify-center rounded-xl border-2 font-bold shadow-sm transition-all ${
                   isRow
                     ? 'min-h-[2.25rem] min-w-[4.25rem] flex-1 flex-row gap-1 px-2 py-1'
                     : 'min-h-[3rem] w-[4.5rem] flex-col gap-0.5 px-1 py-1.5 sm:w-20'
                 } ${
-                  speechBlocked
+                  speechBlocked || isLocked(track.subId)
                     ? 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400'
                     : `cursor-pointer ${isPlaying ? activeBtnClass : idleBtnClass}`
                 }`}
@@ -400,7 +431,7 @@ export function ListeningAudioPlayer({
                   ? <Pause size={isRow ? 15 : 18} />
                   : <Play size={isRow ? 15 : 18} />}
                 <span className={isRow ? 'text-[12px] leading-none' : 'text-[10px] leading-none'}>
-                  {isPlaying ? '停止' : '再生'}
+                  {isPlaying ? '停止' : isLocked(track.subId) ? '再生済み（1回読み）' : lockOnce ? '再生（1回のみ）' : '再生'}
                 </span>
               </button>
 

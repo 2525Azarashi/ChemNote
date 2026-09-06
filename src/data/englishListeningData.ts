@@ -51,6 +51,13 @@ import { EL1_A_EXTRA_PROBLEMS } from './englishListeningQ1ASets';
 import { EL1_B_PROBLEMS } from './englishListeningQ1BProblems';
 import { EL2_PROBLEMS } from './englishListeningQ2Problems';
 import { EL3_PROBLEMS } from './englishListeningQ3Problems';
+import {
+  EL4_A_PROBLEMS,
+  EL4_B_PROBLEMS,
+  EL5_PROBLEMS,
+  EL6_A_PROBLEMS,
+  EL6_B_PROBLEMS,
+} from './englishListeningQ4to6Problems';
 // 解説の後処理は listeningPostProcess.ts に1つだけ置いている
 // （整形関数・リスニング専用の組み立ても、その中で使う）。
 import { applyListeningPostProcess } from './listeningPostProcess';
@@ -254,6 +261,17 @@ const LISTENING_PROBLEMS: Record<string, any[]> = {
   el2: EL2_PROBLEMS,
   // 第3問：配布PDF由来の15セット（各6問・1回読み・2人の対話）
   el3: EL3_PROBLEMS,
+  // 第4問〜第6問：配布 ZIP（listening_q4_q5_q6_all_2026-09-06_v2）の各15セット。
+  //   音声・画像ともに完成品が同梱されている（public/listening_q4〜q6/）。
+  //   問題データは JSON のまま置き、englishListeningQ4to6Problems.ts が
+  //   読み込み時にアプリの形へ組み替える（理由はそのファイル冒頭）。
+  //   第4問以降は「1本の音声に複数の小問」の構成なので、
+  //   1画面＝1音源（複数の解答欄）で進む。
+  el4_A: EL4_A_PROBLEMS,
+  el4_B: EL4_B_PROBLEMS,
+  el5: EL5_PROBLEMS,
+  el6_A: EL6_A_PROBLEMS,
+  el6_B: EL6_B_PROBLEMS,
 };
 
 (() => {

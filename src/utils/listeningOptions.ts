@@ -101,11 +101,25 @@ export function subQuestionNumber(sq: any, index: number): number {
  */
 export function buildListeningOptionTexts(problem: any): Map<string, string[]> {
   const map = new Map<string, string[]>();
+  const subs: any[] = problem?.subQuestions || [];
+
+  // ★第4問以降：小問が選択肢本文（optionTexts）を直接持っている★
+  //   6択共有・図が選択肢・日本語の選択肢など形が多く、problem.text から
+  //   機械抽出するより、データが直接持つほうが確実。options と同じ長さの
+  //   ときだけ採用する（ずれた本文を貼ると誤答を誘うため）。
+  subs.forEach((sq) => {
+    const texts = sq?.optionTexts;
+    const options: string[] = Array.isArray(sq?.options) ? sq.options : [];
+    if (Array.isArray(texts) && texts.length === options.length && options.length > 0) {
+      map.set(sq.id, texts.map((t: unknown) => String(t)));
+    }
+  });
+
   const blocks = parseListeningOptionBlocks(problem?.text || '');
   if (blocks.size === 0) return map;
 
-  const subs: any[] = problem?.subQuestions || [];
   subs.forEach((sq, i) => {
+    if (map.has(sq.id)) return; // データ側の本文を優先
     const bodies = blocks.get(subQuestionNumber(sq, i));
     if (!bodies) return;
     const options: string[] = Array.isArray(sq?.options) ? sq.options : [];
