@@ -155,6 +155,7 @@ const AI_FACTS: ModeFact[] = [
  * カードは「説明の器」、動作は中のボタンに限定する。
  */
 function ModeCard({
+  kind,
   badge,
   title,
   lead,
@@ -164,6 +165,7 @@ function ModeCard({
   children,
   delay,
 }: {
+  kind: 'friend' | 'national' | 'ai';
   /** 「おすすめ」などの札。無い場合は出さない */
   badge?: string;
   title: string;
@@ -181,12 +183,14 @@ function ModeCard({
 }) {
   return (
     <section
-      className="battle-card-in battle-sheen rounded-3xl border-2 p-4"
+      className={`lobby-mode lobby-mode-${kind} battle-card-in rounded-3xl border-2 p-4`}
+      data-battle-mode={kind}
       style={
         {
           borderColor: `${accent}66`,
           background: '#FFFFFF',
           boxShadow: `0 6px 0 ${accent}22`,
+          '--mode-accent': accent,
           '--card-delay': delay,
           '--sheen-delay': delay,
         } as CSSProperties
@@ -213,10 +217,12 @@ function ModeCard({
         )}
       </header>
 
-      <p className="relative z-[2] mb-3 text-xs font-bold leading-relaxed" style={{ color: INK_SUB }}>
-        {lead}
-      </p>
-
+      <p className="lobby-mode-caption">{kind === 'friend' ? '合言葉で、友だちと1対1。' : kind === 'national' ? '全国のライバルに挑もう。' : '待たずに、腕だめし。'}</p>
+      <div className="lobby-mode-tags"><span>{kind === 'ai' ? '強さは4段階' : 'レート変動あり'}</span><span>{kind === 'national' ? '近いレートでマッチ' : kind === 'friend' ? 'フレンド登録不要' : 'レート変動なし'}</span></div>
+      <div className="lobby-mode-actions">{children}</div>
+      <details className="lobby-mode-details">
+        <summary>ルール・相手の表示を確認</summary>
+        <p className="text-xs leading-relaxed mb-3" style={{ color: INK_SUB }}>{lead}</p>
       {/* ★4項目の対比表★ 両モードで同じ位置・同じ順番 */}
       <dl
         className="relative z-[2] mb-3.5 grid gap-1 rounded-2xl px-3 py-2.5"
@@ -241,7 +247,7 @@ function ModeCard({
         ))}
       </dl>
 
-      <div className="relative z-[2] grid gap-2">{children}</div>
+      </details>
     </section>
   );
 }
@@ -287,6 +293,7 @@ export function BattleHome({
   if (!user) {
     return (
       <BattleShell
+        className="mtb-page battle-lobby"
         footer={
           <BattleButton variant="ghost" onClick={onExit} icon={<X size={18} />}>
             もどる
@@ -294,12 +301,12 @@ export function BattleHome({
         }
       >
         <BattleTitle subtitle="1対1のリアルタイム対戦" />
-        <div className="flex flex-1 flex-col items-center justify-center gap-5 py-10 text-center">
+        <div className="battle-guest-stage">
           <div
             className="flex h-16 w-16 items-center justify-center rounded-full"
             style={{ background: `${GOLD}33`, color: AMBER }}
           >
-            <LogIn size={30} />
+            <Swords size={30} />
           </div>
           <div>
             <p className="font-handwriting text-lg font-black" style={{ color: INK }}>
@@ -332,7 +339,7 @@ export function BattleHome({
             まず AI と1試合してもらい、人と戦いたくなったらログインへ。
           */}
           <div
-            className="mt-4 w-full max-w-xs rounded-3xl border-2 p-4 text-left"
+            className="battle-guest-ai mt-4 w-full rounded-3xl border-2 p-4 text-left"
             style={{ borderColor: '#8E44AD66', background: '#FFFFFF' }}
           >
             <p className="flex items-center gap-2 font-handwriting text-lg font-black" style={{ color: INK }}>
@@ -373,6 +380,7 @@ export function BattleHome({
 
   return (
     <BattleShell
+      className="mtb-page battle-lobby"
       footer={
         <BattleButton variant="ghost" onClick={onExit} icon={<X size={18} />}>
           ホームにもどる
@@ -395,7 +403,7 @@ export function BattleHome({
       */}
       <section
         id="battle-my-rating"
-        className="battle-card-in mb-4 rounded-3xl border-2 p-4"
+        className="lobby-player-pass battle-card-in mb-4 rounded-3xl border-2 p-4"
         style={
           {
             borderColor: `${title.color}55`,
@@ -463,8 +471,9 @@ export function BattleHome({
         ★2つのモードを「同じ形のカード」で並べる★
         違いは、同じ位置にある4項目の値の差として読み取ってもらう。
       */}
-      <div className="grid gap-3">
+      <div className="lobby-match-options">
         <ModeCard
+          kind="friend"
           badge="おすすめ"
           title="フレンド対戦"
           lead="4文字の合言葉を作って、目の前の友達に伝えるだけ。フレンド登録していなくても対戦できます。"
@@ -486,6 +495,7 @@ export function BattleHome({
         </ModeCard>
 
         <ModeCard
+          kind="national"
           title="全国対戦"
           lead="ボタンひとつで、同じ教科を選んだ全国の人とつながります。相手が見つかるまで待つ画面になります。"
           facts={NATIONAL_FACTS}
@@ -503,6 +513,7 @@ export function BattleHome({
         </ModeCard>
 
         <ModeCard
+          kind="ai"
           title="AIと対戦"
           lead="相手がいなくても、いつでもすぐ1試合。よわい〜とても強いまで4段階から選べます。"
           facts={AI_FACTS}
@@ -539,7 +550,7 @@ export function BattleHome({
       </p>
 
       {/* サブ動線 */}
-      <section className="mt-auto grid grid-cols-2 gap-2.5 pt-4">
+      <section className="lobby-record-links mt-auto grid grid-cols-2 gap-2.5 pt-4">
         <button
           type="button"
           id="battle-open-ranking"

@@ -31,10 +31,9 @@
  *
  *  4. ★ホームの「学習を始める」は中身の長さに依存せず必ず画面内★
  *     カードや進捗バーの高さはデータ（科目数・履歴）で変わるので、
- *     px を削る方式では必ず破れる。CSS order で並び順を変えて構造的に保証する。
+ *     全科目の詳細は閉じておき、対戦・学習の入口の後で開ける構造にする。
  *
- *  5. ★PC（lg 以上）の見た目は変えない★
- *     order も compact 化も、必ず lg:（または md:/sm:）で元に戻す。
+ *  5. ホームは対戦中心の新配置へ更新。他画面のPCレイアウト契約は維持する。
  */
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
@@ -156,8 +155,8 @@ describe('L2: fixed ナビはレイアウト高さ 0 なので余白は各ペイ
 // =====================================================================
 // L3: ホームの「学習を始める」は中身の長さに依存せず画面内 ((9c))
 // =====================================================================
-describe('L3: ホームの CTA は order で構造的に画面内へ', () => {
-  it('スクロールペインは min-h-0 + flex-col（order を効かせるため）', () => {
+describe('L3: ホームは対戦を先頭に置き、詳細は開閉する', () => {
+  it('スクロールペインまで高さの連鎖が通っている', () => {
     expect(HOME).toContain('flex-1 min-h-0 overflow-y-auto');
     expect(HOME).toContain('flex flex-col');
   });
@@ -205,9 +204,9 @@ describe('L3: ホームの CTA は order で構造的に画面内へ', () => {
     // 「実際に効く指定」= className の中だけを見る。
     const homeClassNames = (HOME.match(/className="[^"]*"/gu) ?? []).join('\n');
     expect(homeClassNames).not.toContain('lg:justify-center');
-    // 代わりに、先頭の子と末尾の子の auto マージンで中央に見せる。
-    expect(HOME).toContain('lg:mt-auto');
-    expect(HOME).toContain('lg:mb-auto');
+    // 新ホームは上端から配置し、縦方向の中央寄せ自体を行わない。
+    expect(CSS).toMatch(/\.home-lobby-scroll\s*\{[^}]*overscroll-behavior: contain/);
+    expect(CSS).not.toMatch(/\.home-lobby-scroll\s*\{[^}]*justify-content:\s*center/);
   });
 
   it('★App シェルも safe 付き中央寄せにする（同じ罠）★', () => {
@@ -264,24 +263,24 @@ describe('L3: ホームの CTA は order で構造的に画面内へ', () => {
     expect(HOME).not.toContain('lg:overflow-hidden');
   });
 
-  it('CTA はスマホで 2 番目、lg で元の 4 番目に戻る', () => {
-    // ★px を削る方式は採らない★
-    //   カード高さは科目数・学習履歴で変わるので、削った px は必ず食われる。
-    //   並び順を変えれば CTA の位置は中身の長さから独立する。
-    expect(HOME).toContain('order-2 lg:order-4');
+  it('DOM順で対戦→学習→補助案内になり、読み上げ順も揃う', () => {
+    const arena = HOME.indexOf('data-home-arena');
+    const study = HOME.indexOf('data-home-study');
+    const footer = HOME.indexOf('className="home-lobby-footer"');
+    expect(arena).toBeGreaterThan(0);
+    expect(study).toBeGreaterThan(arena);
+    expect(footer).toBeGreaterThan(study);
   });
 
-  it('あいさつ→CTA→カード→バナー→補助 の順に order が振られている', () => {
-    expect(HOME).toContain('order-1');
-    expect(HOME).toContain('order-3');
-    expect(HOME).toContain('order-4 lg:order-2');
-    expect(HOME).toContain('order-5');
+  it('全科目の進捗一覧は初期状態で閉じ、主CTAを押し下げない', () => {
+    expect(HOME).toContain('<details className="home-all-progress">');
+    expect(HOME).not.toMatch(/<details[^>]*\bopen[\s=>]/);
+    expect(HOME.indexOf('home-all-progress')).toBeGreaterThan(HOME.indexOf('home-study-button'));
   });
 
-  it('★PC の並びは元のまま★（lg: で必ず打ち消す）', () => {
-    // order-2 / order-4 はどちらも lg: で元の位置に戻す指定が対になっている。
-    expect(HOME).toMatch(/order-2 lg:order-4/u);
-    expect(HOME).toMatch(/order-4 lg:order-2/u);
+  it('PCは対戦と学習の2カラムで、短い画面でもスクロールを維持する', () => {
+    expect(CSS).toMatch(/\.home-lobby-layout\s*\{[^}]*grid-template-columns: minmax\(0, 1\.35fr\) minmax\(0, 1fr\)/);
+    expect(HOME).not.toContain('lg:overflow-hidden');
   });
 
   it('ホーム root が高さ連鎖を受け取る', () => {
@@ -317,15 +316,15 @@ describe('L4: 科目選択／モード選択（スマホのみ compact）', () =
     expect(SUBJECT).toContain("sm:hidden w-5 h-5 text-[#E8688E] shrink-0");
   });
 
-  it('モード選択カードはスマホで横並び・md 以上で元の縦組み', () => {
-    expect(MODE).toContain('flex flex-row md:flex-col');
-    // ★md:contents★ md 以上ではラッパを消して元の中央寄せ 1 カラムに戻す。
-    expect(MODE).toContain('md:contents');
+  it('学習画面は演習ステージ・まとめノート・補助ツールに分ける', () => {
+    expect(MODE).toContain('className="mode-practice-stage"');
+    expect(MODE).toContain('className="mode-input-paper"');
+    expect(MODE).toContain('className="mode-tools"');
+    expect(MODE.indexOf('mode-practice-stage')).toBeLessThan(MODE.indexOf('mode-input-paper'));
   });
-
-  it('モード選択カードはスマホだけ内部スクロールする', () => {
-    expect(MODE).toContain('max-h-full sm:max-h-none overflow-y-auto sm:overflow-visible');
-    expect(MODE).toContain('min-h-0 sm:min-h-[60vh]');
+  it('学習画面の高さを制限してスクロールと固定ナビ余白を確保する', () => {
+    expect(MODE).toContain('min-h-0 max-h-full overflow-y-auto pb-app-nav');
+    expect(CSS).toMatch(/\.mode-desk\s*\{[^}]*padding-bottom: calc\(4\.75rem \+ env\(safe-area-inset-bottom\)\)/);
   });
 
   it('マスコットはスマホだけ小さく、sm 以上は元のサイズ', () => {
@@ -411,19 +410,17 @@ describe('L4b: 科目が増えてもスマホ 1 画面（英文法・地理の�
     expect(cardLine).toMatch(/(?<![\w:-])p-\S+\s+sm:p-\S+\s+md:p-\S+/u);
   });
 
-  it('ページ上部の余白（pt・header の mb・挨拶の mt）をスマホだけ詰める', () => {
-    expect(SUBJECT).toContain('pt-3 sm:pt-10 md:pt-14');
-    expect(SUBJECT).toContain('text-center mb-2 sm:mb-7 md:mb-9');
-    expect(SUBJECT).toContain('mt-1.5 sm:mt-5');
+  it('本棚の見出しは戻るボタンと重ならない余白を持つ', () => {
+    expect(SUBJECT).toContain('className="subject-library-heading"');
+    expect(CSS).toMatch(/\.subject-library \.subject-library-scroll\s*\{[^}]*padding-top: 68px/);
   });
-
-  it('「ようこそ、○○さん。」はスマホでは出さず（強制改行をやめる）、sm 以上で復帰する', () => {
-    // 以前は <br className="sm:hidden"> で 2 行（42px）になっていた。
-    // 挨拶はホーム画面で既に出ているので、この画面では 1 行に畳む。
-    expect(SUBJECT).toContain('<span className="hidden sm:inline">');
-    expect(SUBJECT).toMatch(/ようこそ、/u);
-    // 強制改行が復活していないこと
-    expect(SUBJECT).not.toContain('<br className="sm:hidden" />');
+  it('本棚ではホームの挨拶を繰り返さず、科目を選ぶ目的を示す', () => {
+    const start = SUBJECT.indexOf('<header className="subject-library-heading"');
+    const heading = SUBJECT.slice(start, SUBJECT.indexOf('</header>', start));
+    expect(heading).toContain('学びの本棚');
+    expect(heading).toContain('科目を選んで');
+    expect(heading).not.toContain('ようこそ');
+    expect(SUBJECT).toContain('data-subject-book');
   });
 
   it('★連携バナーは div で包まず className で隠す★（包むと PC が崩れる）', () => {
@@ -1212,35 +1209,21 @@ describe('解答・解説ヘッダーが1行に収まる（スマホのみ・ご
 });
 
 // =====================================================================
-// L6: スマホのホームは「学習進捗」を外し、セカンダリ3枚を1画面目に入れる
-// =====================================================================
-// ご要望（原文）：
-//   > スマホ版（パソコン版は除く）なんだけど、学習進捗消していいよ。
-//   > その代わり学習ノート・アプリ紹介・高校入試理科（これここじゃなくて
-//   > 科目に追加して）・ご意見・ご要望を開いたときに一画面で全部見れるようにして
-//
-// 実測（390×844、下部ナビ 71px、ゲスト帯あり）：
-//   変更前 … 学習進捗カード 404px、学習ノートの上端 1009px（1画面目に 0 枚）
-//   変更後 … 学習ノート 563px／アプリ紹介 633px／ご意見 704〜768px（ナビ上端 773px）
-//   ＝ 3 枚とも折り返し線の上に入る。
-describe('L6: スマホのホーム（学習進捗を外し、3枚を1画面目へ）', () => {
-  const FEEDBACK_BUTTON = read('src/components/FeedbackButton.tsx');
-
-  it('学習進捗カードはスマホで隠し、md 以上で従来どおり出す', () => {
-    // カードを包む motion.div に hidden md:block が付いていること
-    const idx = HOME.indexOf('学習進捗\n');
-    expect(idx).toBeGreaterThan(-1);
-    const before = HOME.slice(Math.max(0, idx - 3000), idx);
-    expect(before).toMatch(/className="hidden md:block">\s*<div className="border border-\[#F4A9C4\]\/40 rounded-\[20px\]/u);
-    // 消してはいない（PC の見た目は不変）
-    expect(HOME).toContain('学習進捗');
+// L6: 対戦中心ホームでも補助機能を常設し、学習進捗を復活させる。
+// 旧「進捗を削除して横長カード3枚を並べる」という契約は新要望で置き換えた。
+describe('L6: 対戦ステージと常設ショートカット・学習進捗', () => {
+  it('現在科目の進捗は常設、全科目の進捗も開ける', () => {
+    expect(HOME).toContain('className="home-progress-summary"');
+    expect(HOME).toContain('className="home-all-progress"');
+    expect(CSS).toMatch(/\.home-progress-summary\s*\{[^}]*display: flex/);
+    expect(HOME).toContain('subjectProgressDefs.map(');
   });
 
   it('高校入試 理科のカードはホームではスマホで隠し（md:flex）、md 以上で従来どおり出す', () => {
     const rikaLine = HOME.split('\n').find(l => l.includes('aria-label="高校入試 理科を開く"'));
     expect(rikaLine).toBeTruthy();
     const after = HOME.slice(HOME.indexOf('aria-label="高校入試 理科を開く"'), HOME.indexOf('aria-label="高校入試 理科を開く"') + 400);
-    expect(after).toMatch(/className="hidden md:flex/u);
+    expect(after).toMatch(/className="[^"]*hidden md:flex/u);
     // フラグの内側にあることは featureFlags.test.ts が見ている（{onRika &&）
     expect(HOME).toMatch(/\{onRika\s*&&/u);
   });
@@ -1265,9 +1248,13 @@ describe('L6: スマホのホーム（学習進捗を外し、3枚を1画面目�
     expect(block).toMatch(/onRika=\{FEATURES\.rika \? \(\) => \{ setRikaTab\('practice'\); setAppState\('rika'\); \} : undefined\}/u);
   });
 
-  it('ご意見カードは他のセカンダリカードと同じ高さ（スマホ py-2.5・アイコン 36px）', () => {
-    expect(FEEDBACK_BUTTON).toContain('px-4 md:px-5 py-2.5 md:py-4 lg:py-3');
-    expect(FEEDBACK_BUTTON).toContain('w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10');
+  it('補助3機能は対戦エリアの脇にラベル付きで残す', () => {
+    const start = HOME.indexOf('<aside className="home-shortcuts"');
+    const end = HOME.indexOf('</aside>', start);
+    expect(start).toBeGreaterThan(0);
+    const shortcuts = HOME.slice(start, end);
+    for (const label of ['学習ノート', 'アプリ紹介', 'ご意見・ご要望']) expect(shortcuts).toContain(label);
+    expect(shortcuts).toContain('<FeedbackButton');
   });
 
   it('豆知識の分野ラベルはスマホで隠し、sm 以上で復帰する（本文は残す）', () => {
@@ -1275,10 +1262,9 @@ describe('L6: スマホのホーム（学習進捗を外し、3枚を1画面目�
     expect(MASCOT).toContain('{tip.text}');
   });
 
-  it('スマホだけ余白を詰め、md 以上は元の値（挨拶 mb-8／CTA mb-3／サブ導線 mt-5 gap-4）', () => {
-    expect(HOME).toContain('gap-3 md:gap-5 mb-2 md:mb-8 lg:mb-4');
-    expect(HOME).toContain('mb-2 md:mb-3 lg:mb-0 space-y-2 md:space-y-2.5');
-    expect(HOME).toContain('mt-2 md:mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 md:gap-4');
-    expect(HOME).toContain('order-4 lg:order-2 shrink-0 mt-2 md:mt-0 mb-0 md:mb-6 lg:mb-4');
+  it('短い端末では装飾を縮め、操作領域は確保する', () => {
+    expect(CSS).toContain('@media (max-height: 600px) and (max-width: 767px)');
+    expect(CSS).toMatch(/\.home-subject-switch\s*\{[^}]*min-height: 44px/);
+    expect(CSS).toMatch(/\.home-all-progress > summary\s*\{[^}]*min-height: 44px/);
   });
 });

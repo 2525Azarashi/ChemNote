@@ -46,7 +46,7 @@ export function AdvancedFieldSelection({ onSelectField, onBack }: AdvancedFieldS
   }, []);
 
   return (
-    <div className="flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] min-h-0 w-full flex-col overflow-hidden notebook-paper p-3 pb-[calc(5.75rem+env(safe-area-inset-bottom))] sm:p-5 md:p-6 relative font-handwriting">
+    <div className="mtb-page field-library flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] min-h-0 w-full flex-col overflow-hidden notebook-paper p-3 pb-[calc(5.75rem+env(safe-area-inset-bottom))] sm:p-5 md:p-6 relative font-handwriting">
       <button
         onClick={onBack}
         className="absolute top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 text-gray-500 hover:text-[#2C3E50] transition-colors font-bold font-handwriting bg-white/80 px-4 py-2 rounded-full shadow-sm z-10 min-h-[2.75rem]"
@@ -69,7 +69,7 @@ export function AdvancedFieldSelection({ onSelectField, onBack }: AdvancedFieldS
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-0.5 pb-4">
-        <div className="mx-auto grid w-full max-w-4xl grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3">
+        <div className="field-folders mx-auto grid w-full max-w-4xl grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3">
           {ADVANCED_FIELDS.map((field, index) => {
             const style = FIELD_STYLE[field.id];
             const Icon = style.icon;
@@ -85,8 +85,10 @@ export function AdvancedFieldSelection({ onSelectField, onBack }: AdvancedFieldS
                 transition={{ duration: 0.35, delay: index * 0.08 }}
                 onClick={() => onSelectField(field.id)}
                 aria-label={`${field.title}の単元を表示する`}
-                className={`group flex min-h-[168px] flex-col justify-between rounded-2xl border-2 ${style.border} ${style.bg} p-4 text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-md active:translate-y-0 cursor-pointer`}
+                style={{ '--field-accent': style.accent } as React.CSSProperties}
+                className={`field-folder group flex min-h-[168px] flex-col justify-between rounded-2xl border-2 ${style.border} ${style.bg} p-4 text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-md active:translate-y-0 cursor-pointer`}
               >
+                <span className="field-folder-number" aria-hidden="true">0{index + 1}</span>
                 <div>
                   <div className="flex items-center gap-2.5">
                     <span
