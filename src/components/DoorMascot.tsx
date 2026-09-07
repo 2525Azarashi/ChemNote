@@ -105,9 +105,13 @@ export function DoorMascot({
         >
           {/* 吹き出しの三角（左向き、マスコット側を指す） */}
           <div className={`absolute left-[-7px] top-7 w-4 h-4 ${theme.bubbleBgClass} border-l border-b ${theme.bubbleBorderClass} rotate-45`} />
+          {/* 分野ラベルはスマホ（sm 未満）では出さない。
+              ホームを 1 画面に収める際、このラベル行（19px＋余白）が
+              セカンダリカードをナビの下へ押し出していた。
+              豆知識の本文は残す（消すのは飾りの分類だけ）。sm 以上は従来どおり。 */}
           {showCategory && category && (
             <span
-              className={`inline-flex items-center gap-1 mb-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${theme.chipBgClass} ${theme.chipTextClass}`}
+              className={`hidden sm:inline-flex items-center gap-1 mb-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${theme.chipBgClass} ${theme.chipTextClass}`}
             >
               <span aria-hidden>{category.emoji}</span>
               <span>{category.label}</span>

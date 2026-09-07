@@ -107,8 +107,29 @@ export function MultipleChoiceControl({
       第1問B（イラスト選択）には本文が無いので、従来どおりマークのみになる。
     */
     const optionTexts: string[] | undefined = listeningOptionTexts.get(sq.id);
+    /*
+      ★図が選択肢そのもの（英語リスニング 第6問 問37）★
+      ------------------------------------------------------------------
+      問37 は「①〜④のグラフのうちどれが根拠か」を選ぶ。文字の選択肢は無く、
+      4枚のグラフが選択肢そのもの。配布側の指示どおり 2×2 に並べて
+      見比べられるようにする（縦 1 列にすると比較できず本番より難しくなる）。
+      optionImages は options と同じ長さのときだけ使う。
+    */
+    const optionImages: string[] | undefined =
+      Array.isArray(sq.optionImages) && sq.optionImages.length === sq.options.length
+        ? sq.optionImages
+        : undefined;
+    /*
+      ★選択肢が5つ・6つで本文が短い（第4問の並べ替え・6択共有）★
+      縦1列では高さを食うので 2 列にする。
+    */
+    const twoCol =
+      !!optionTexts &&
+      !optionImages &&
+      sq.options.length >= 5 &&
+      optionTexts.every((t) => t.length <= 28);
     // 本文つきの選択肢は必ず縦1列（英文は長いので横並びにすると読めない）。
-    const stacked = isLongOptionList || !!optionTexts;
+    const stacked = (isLongOptionList || !!optionTexts) && !optionImages;
 
     return (
       // ★スマホでは「選択肢が先・説明が後」にする（ご指摘：(ア)(イ) が欠けている）★
@@ -207,9 +228,12 @@ export function MultipleChoiceControl({
       */}
       {/* order-1：スマホでは操作説明（order-2）より前に出す。
           これで説明文が何行に折り返しても選択肢が先頭に残る。 */}
-      <div className={`order-1 md:order-none ${stacked
-        ? `grid grid-cols-1 gap-2.5 w-full ${
-            listeningMobileNoFigure ? 'min-h-0 flex-1 auto-rows-fr overflow-y-auto' : ''
+      <div className={`order-1 md:order-none ${optionImages
+        // 図が選択肢：必ず 2×2（見比べて選ぶ問題なので縦1列にしない）
+        ? 'grid grid-cols-2 gap-2 w-full'
+        : stacked
+        ? `grid ${twoCol ? 'grid-cols-2 gap-2' : 'grid-cols-1 gap-2.5'} w-full ${
+            listeningMobileNoFigure && !twoCol ? 'min-h-0 flex-1 auto-rows-fr overflow-y-auto' : ''
           }`
         // 注：以前ここに xs:grid-cols-3 があったが、Tailwind v4 の @theme に
         // xs ブレークポイントは未定義で「効かないクラス」だった。スマホで列数を
@@ -314,7 +338,13 @@ export function MultipleChoiceControl({
                 handleOptionSelect(sq.id, opt);
               }}
               // スマホは 48px 以上の高さ・幅を確保してタップしやすくする（PC は従来寸法）。
-              className={`relative ${
+              className={optionImages ? `relative flex flex-col items-stretch gap-1 rounded-xl border-2 p-1.5 shadow-sm cursor-pointer transition-all ${
+                struck
+                  ? 'bg-gray-100 border-gray-300 border-dashed opacity-60'
+                  : isSelected
+                    ? 'bg-[#A9CCE3]/20 border-[#A9CCE3] ring-2 ring-[#A9CCE3]/40'
+                    : 'bg-white border-gray-200 hover:border-[#A9CCE3]/50'
+              }` : `relative ${
                 /* ★B-1：本文つき選択肢（英文）はスマホで左右余白を詰める★
                    px-4（16px×2）→ px-2.5（10px×2）で 12px を英文に回す。
                    md 以上では md:px-4 で元に戻すので PC の見た目は不変。
@@ -368,7 +398,22 @@ export function MultipleChoiceControl({
                     : 'bg-white text-gray-600 border-gray-200 hover:border-[#A9CCE3]/50 hover:bg-gray-50'
                 }`}
             >
-              {body ? (
+              {optionImages ? (
+                // 図が選択肢：左上にマーク、下に図。図はセルの幅いっぱいに広げる。
+                <>
+                  <span className={`self-start rounded-md px-1.5 text-[14px] font-bold leading-6 ${
+                    struck ? 'text-gray-400' : isSelected ? 'bg-[#A9CCE3] text-white' : 'text-[#2C3E50]'
+                  }`}>
+                    {opt}
+                  </span>
+                  <img
+                    src={optionImages[optIdx]}
+                    alt={body ? `${opt} ${body}` : `選択肢${opt}の図`}
+                    loading="lazy"
+                    className={`w-full rounded-md bg-white object-contain ${struck ? 'grayscale' : ''}`}
+                  />
+                </>
+              ) : body ? (
                 // マークは丸バッジで固定幅にし、英文は折り返して全文を読ませる。
                 // 「読む場所」と「押す場所」を1つにするのがこの表示の目的。
                 <span className="flex w-full items-start gap-2.5">

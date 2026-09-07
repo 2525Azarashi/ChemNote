@@ -16,7 +16,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
-import { LogOut } from 'lucide-react';
+import { LogOut, X } from 'lucide-react';
 import { auth } from '../../firebase';
 import { useBattleRoom } from '../hooks/useBattleRoom';
 import { BattleLobby } from './BattleLobby';
@@ -106,6 +106,8 @@ export function BattleRoomScreen({
    * 最後の問題の正解が一瞬も表示されない。
    */
   const [showResult, setShowResult] = useState(false);
+  /** 試合中の「やめる」の確認表示 */
+  const [confirmQuit, setConfirmQuit] = useState(false);
   useEffect(() => {
     if (!finished) return;
     const timer = window.setTimeout(() => setShowResult(true), REVEAL_HOLD_MS);
@@ -304,6 +306,50 @@ export function BattleRoomScreen({
           <BattleNotice message={error} />
         </div>
       )}
+
+      {/*
+        ★試合中の「やめる」★
+        以前は試合中に抜ける手段が下のナビしか無く、そこから抜けても
+        退出が記録されなかったので、相手は5問ぶん待たされていた。
+        明示的に抜ける導線を置き、押したら left を書いて即座に決着させる。
+        押し間違いで負けにならないよう、1回目は確認にする。
+      */}
+      <div className="mt-3">
+        {confirmQuit ? (
+          <div
+            className="grid gap-2 rounded-2xl border-2 p-3"
+            style={{ borderColor: LINE, background: '#FFFFFF' }}
+          >
+            <p className="text-center text-[11px] font-black" style={{ color: INK }}>
+              対戦をやめますか？ やめると<span style={{ color: '#C0392B' }}>この試合は負け</span>になります。
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <BattleButton variant="ghost" onClick={() => setConfirmQuit(false)}>
+                つづける
+              </BattleButton>
+              <BattleButton
+                variant="danger"
+                onClick={() => {
+                  leave();
+                  onExit('対戦をやめました。この試合は負けとして記録されます。');
+                }}
+                icon={<X size={16} />}
+              >
+                やめる
+              </BattleButton>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setConfirmQuit(true)}
+            className="w-full py-1 text-center text-[10px] font-bold underline-offset-2 hover:underline"
+            style={{ color: '#9A948A' }}
+          >
+            対戦をやめる
+          </button>
+        )}
+      </div>
     </BattleShell>
   );
 }

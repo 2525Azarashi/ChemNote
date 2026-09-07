@@ -80,3 +80,4 @@ scripts/data/q2_raw/
 # `python3 scripts/geo/parse.py` でいつでも作り直せる 740KB の JSON）。
 # 元データの HTML は scripts/geo/src/ に置いてあるので、これは追跡しない。
 scripts/geo/raw.json
+.tmp_e2e/

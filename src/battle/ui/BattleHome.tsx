@@ -60,6 +60,7 @@
 
 import { useEffect, useState } from 'react';
 import {
+  Bot,
   Clock,
   Eye,
   EyeOff,
@@ -92,7 +93,13 @@ import {
 import { fetchMyRankingRow, ratingProgress, ratingTitle } from '../data/battleRanking';
 import type { BattleRankingRow } from '../data/battleRanking';
 
-export type BattleHomeChoice = 'friend-create' | 'friend-join' | 'national' | 'ranking' | 'history';
+export type BattleHomeChoice =
+  | 'friend-create'
+  | 'friend-join'
+  | 'national'
+  | 'ai'
+  | 'ranking'
+  | 'history';
 
 /**
  * モードカードに並べる4項目。
@@ -124,6 +131,19 @@ const NATIONAL_FACTS: ModeFact[] = [
   { icon: <Clock size={13} />, key: 'まちじかん', value: 'あり（数十秒〜数分）' },
   { icon: <TrendingUp size={13} />, key: 'レート', value: 'うごく' },
   { icon: <EyeOff size={13} />, key: 'なまえ', value: 'かくれる（マ＊＊＊）', strong: true },
+];
+
+/**
+ * AI 対戦。
+ * ★「まちじかん なし」と「レート うごかない」を強調する★
+ * 全国対戦で待たされた人の受け皿がこれ。待たないことが売りで、
+ * その代わりレートは動かない（動いたら全国で戦う理由が無くなる）。
+ */
+const AI_FACTS: ModeFact[] = [
+  { icon: <Bot size={13} />, key: 'あいて', value: 'AI（強さを4段階からえらぶ）', strong: true },
+  { icon: <Clock size={13} />, key: 'まちじかん', value: 'なし（すぐ始まる）', strong: true },
+  { icon: <TrendingUp size={13} />, key: 'レート', value: 'うごかない（練習用）' },
+  { icon: <Eye size={13} />, key: 'なまえ', value: 'AIには見えない' },
 ];
 
 /**
@@ -302,6 +322,30 @@ export function BattleHome({
               </BattleButton>
             </div>
           )}
+
+          {/*
+            ★AI 対戦はログインなしでも遊べる★
+            AI 戦は Firestore を使わず端末の中だけで進むので、
+            uid が無くても成立する（レートも動かない）。
+            ログインを迫るだけの画面にすると、ゲストは対戦モードを
+            「使えない機能」と受け取って二度と開かない。
+            まず AI と1試合してもらい、人と戦いたくなったらログインへ。
+          */}
+          <div
+            className="mt-4 w-full max-w-xs rounded-3xl border-2 p-4 text-left"
+            style={{ borderColor: '#8E44AD66', background: '#FFFFFF' }}
+          >
+            <p className="flex items-center gap-2 font-handwriting text-lg font-black" style={{ color: INK }}>
+              <Bot size={20} style={{ color: '#8E44AD' }} />
+              AIとなら、ログインなしで対戦できます
+            </p>
+            <p className="mb-3 mt-1 text-[11px] font-bold leading-relaxed" style={{ color: INK_SUB }}>
+              強さを4段階から選べます。出題・制限時間・点数の計算は本番の対戦と同じ（レートは動きません）。
+            </p>
+            <BattleButton variant="ghost" onClick={() => onChoose('ai')} icon={<Bot size={18} />}>
+              AIと対戦する
+            </BattleButton>
+          </div>
         </div>
       </BattleShell>
     );
@@ -457,6 +501,23 @@ export function BattleHome({
             相手をさがす
           </BattleButton>
         </ModeCard>
+
+        <ModeCard
+          title="AIと対戦"
+          lead="相手がいなくても、いつでもすぐ1試合。よわい〜とても強いまで4段階から選べます。"
+          facts={AI_FACTS}
+          accent="#8E44AD"
+          facePaint={<Bot size={19} />}
+          delay="0.18s"
+        >
+          <BattleButton
+            variant="ghost"
+            onClick={() => onChoose('ai')}
+            icon={<Bot size={18} />}
+          >
+            AIと対戦する
+          </BattleButton>
+        </ModeCard>
       </div>
 
       {/*
@@ -471,10 +532,10 @@ export function BattleHome({
         className="mt-3 rounded-2xl px-3 py-2.5 text-center text-[10px] font-bold leading-relaxed"
         style={{ background: `${GOLD}1C`, color: INK_SUB, border: `1px dashed ${GOLD}` }}
       >
-        どちらも出題・制限時間・点数の計算・レートの増減は同じです。
+        どれも出題・制限時間・点数の計算は同じです。
         <br />
         ちがうのは<span style={{ color: AMBER }}>「相手の決まり方」</span>と
-        <span style={{ color: AMBER }}>「名前が見えるか」</span>だけ。
+        <span style={{ color: AMBER }}>「レートが動くか」</span>だけ。
       </p>
 
       {/* サブ動線 */}

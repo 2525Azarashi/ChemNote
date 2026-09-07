@@ -58,7 +58,7 @@ import { scrollInputIntoView } from '../utils/quizInputScroll';
 import { isShortAnswerType } from '../utils/quizBlanks';
 // cleanQuestionText は解説画面（Explanation.tsx）と同じ実装が必要なので
 // questionDisplay.ts の1つだけを使う。呼ぶ場所は派生値フックへ移った。
-import { buildListeningSteps, isPerSubQuestionListening } from '../utils/listeningSteps';
+import { buildListeningSteps, isPerSubQuestionListening, stepSubQuestions } from '../utils/listeningSteps';
 import { useIsDesktop } from '../hooks/useMediaQuery';
 
 interface QuizProps {
@@ -727,10 +727,19 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   const safeStepIndex = perStep
     ? Math.min(Math.max(0, stepIndex), Math.max(0, listeningSteps.length - 1))
     : 0;
-  /** いま表示している小問（1問ずつモードのときだけ中身が入る） */
-  const activeStepSub = perStep
-    ? (currentQuestion.subQuestions || [])[safeStepIndex] ?? null
-    : null;
+  /**
+   * いま表示しているステップの小問一覧（1問ずつモードのときだけ中身が入る）。
+   *
+   * 第1〜3問は常に1つ。第4問以降は「音声1本に複数の解答欄」なので
+   * 2〜5つになる（例：問18〜21）。ステップの位置（index）ではなく
+   * ステップが持つ subQuestionIds から引く。以前の「subQuestions[safeStepIndex]」は
+   * ステップ数＝小問数のときしか成り立たなかった。
+   */
+  const activeStepSubs: any[] = perStep
+    ? stepSubQuestions(currentQuestion, listeningSteps[safeStepIndex])
+    : [];
+  /** いま表示している小問（先頭）。音源・採点キー・解説の絞り込みはこれをキーにする */
+  const activeStepSub = perStep ? (activeStepSubs[0] ?? null) : null;
   /** この回の最後の問まで来たか */
   const isLastStep = !perStep || safeStepIndex >= listeningSteps.length - 1;
 
@@ -774,6 +783,9 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   // この問題の制限時間を計算（メモ化）
   const questionTimeLimit = useMemo(() => {
     if (!currentQuestion) return 60;
+    // 問題側で明示された制限時間（リスニング第4問以降：音声長＋解答時間）を優先
+    const explicit = Number((currentQuestion as any).timeLimitSec);
+    if (Number.isFinite(explicit) && explicit > 0) return Math.round(explicit);
     return calcQuestionTimeLimit(currentQuestion.subQuestions || []);
   }, [currentQuestion]);
 
@@ -823,6 +835,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     currentQuestion,
     perStep,
     activeStepSub,
+    activeStepSubs,
     focusedSubId,
     highlights,
     isDesktop,
@@ -952,7 +965,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   //
   // 呼び出し方は切り出す前とまったく同じ（scoreCurrentQuestionIfNeeded()）。
   const scoreCurrentQuestionIfNeeded = createScoreCurrentQuestion({
-    currentQuestion, perStep, activeStepSub,
+    currentQuestion, perStep, activeStepSub, activeStepSubs,
     run, setRun, lastScoredQuestionRef, timeUsedRef,
     answers, questionTimeLimit, chapter, mode, isGuest,
     currentQuestionIndex, onScored,

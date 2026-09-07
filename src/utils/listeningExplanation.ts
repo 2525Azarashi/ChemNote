@@ -140,10 +140,22 @@ export function scriptBox(script: string, translation?: string): string {
  *   第1問B のデータはスクリプトが "…" で囲まれている。
  *   枠の中に置くときは囲みが二重になって読みにくいので外す。
  */
-export function pickScript(problem: any, sq: any): { script: string; translation: string } {
+/**
+ * 小問に対応する音源トラックを探す。
+ * 第4問以降は1本の音源に複数の小問がぶら下がる（subIds）ので、
+ * subId が一致しなければ subIds の中も見る。
+ */
+export function trackForSubQuestion(problem: any, sq: any): any | undefined {
   const subId = String(sq?.id || '');
   const tracks: any[] = Array.isArray(problem?.audioTracks) ? problem.audioTracks : [];
-  const track = tracks.find((t) => String(t?.subId || '') === subId);
+  return (
+    tracks.find((t) => String(t?.subId || '') === subId) ||
+    tracks.find((t) => Array.isArray(t?.subIds) && t.subIds.map(String).includes(subId))
+  );
+}
+
+export function pickScript(problem: any, sq: any): { script: string; translation: string } {
+  const track = trackForSubQuestion(problem, sq);
   if (track && String(track.script || '').trim()) {
     return {
       script: unquote(String(track.script)),
@@ -467,8 +479,7 @@ export function extractDecisivePhrases(
   };
 
   // ① 手書きの keyPhrases（意味つき）＝いちばん価値が高い
-  const tracks: any[] = Array.isArray(problem?.audioTracks) ? problem.audioTracks : [];
-  const track = tracks.find((t) => String(t?.subId || '') === String(sq?.id || ''));
+  const track = trackForSubQuestion(problem, sq);
   for (const kp of (track?.keyPhrases || []) as any[]) {
     push(String(kp?.phrase || ''), String(kp?.meaning || ''), { allowCitationForm: true });
   }
@@ -674,6 +685,10 @@ export function sharedSteps(problem: any): string[] {
 function reasonLines(problem: any, sq: any): string[] {
   const lines = commentaryFor(problem, sq).split('\n');
   const kept: string[] = [];
+  // 第4問以降：小問が自分の一言解説（explainJa）を持つならそれを先頭に置く
+  if (typeof sq?.explainJa === 'string' && sq.explainJa.trim()) {
+    kept.push(...sq.explainJa.split('\n').map((l: string) => l.trim()).filter(Boolean));
+  }
   for (const raw of lines) {
     const line = raw.trim();
     if (!line) continue;

@@ -124,6 +124,7 @@ export function BattleResult({
   onRematch,
   onExit,
   onPractice,
+  ratingNote,
 }: {
   result: BattleResultSummary;
   questions: BattleQuestion[];
@@ -147,6 +148,14 @@ export function BattleResult({
    * 受け側は既存の handleSelectChapter にそのまま流せる。
    */
   onPractice?: (subject: string, chapterId: string) => void;
+  /**
+   * レートが動かない理由の説明（AI 対戦など）。
+   * 渡されると「無効試合」ではなくこの文を出す。
+   * ★無効試合と区別する理由★
+   * AI 戦でレートが動かないのは仕様であり、故障でも不正でもない。
+   * 「無効試合」と出すと、利用者は何か失敗したと受け取る。
+   */
+  ratingNote?: string;
 }) {
   const theme = subjectTheme(subject as SubjectKey);
   const delta = rating ? rating.after - rating.before : 0;
@@ -326,7 +335,7 @@ export function BattleResult({
             </p>
           ) : (
             <p className="text-xs font-bold" style={{ color: INK_SUB }}>
-              反映されませんでした（無効試合）
+              {ratingNote || '反映されませんでした（無効試合）'}
             </p>
           )}
         </div>
@@ -486,14 +495,16 @@ export function BattleResult({
         </section>
       )}
 
-      <p
-        className="mb-2 text-center text-[10px] font-bold leading-relaxed"
-        style={{ color: INK_SUB }}
-      >
-        点数は両方の端末で同じ計算をして、
-        <br />
-        一致したときだけレートに反映されます。
-      </p>
+      {!ratingNote && (
+        <p
+          className="mb-2 text-center text-[10px] font-bold leading-relaxed"
+          style={{ color: INK_SUB }}
+        >
+          点数は両方の端末で同じ計算をして、
+          <br />
+          一致したときだけレートに反映されます。
+        </p>
+      )}
     </BattleShell>
   );
 }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, CalendarDays, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope } from 'lucide-react';
-import { motion } from 'motion/react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope, Flame, Sparkles } from 'lucide-react';
 import { auth } from '../firebase';
 /*
  * 教科IDの型だけは data/allChapters.ts が唯一の定義。
@@ -342,683 +341,156 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
 
   const greetingName = profile?.name || 'ゲスト';
 
+  const progressPercent = totalQuestions > 0 ? Math.round(solvedQuestions / totalQuestions * 100) : 0;
+  const bgmPlaying = !!isBgmEnabled && !isBgmFadedOut;
+  const bgmLabel = !isBgmEnabled ? 'BGMを鳴らす' : isBgmFadedOut ? 'BGMをもう一度鳴らす' : 'BGMを止める';
+
   return (
-    // タイトル画面：他ページと馴染む淡いピンク基調＋ノート罫線の柔らかい背景を全面に広げる
-    /*
-      ★min-h-[100dvh] → h-full に変更した理由★
-      min-height は「最低これだけ、中身が増えれば伸びる」箱なので、
-      中の overflow-y-auto に高さの上限を渡せない（＝スクロールしない）。
-      App 側で外枠の高さを 100dvh に確定させたので、
-      ここは h-full でその高さをそのまま受け取り、子に渡す。
-      これで下の flex-1 ペインが初めて「余った高さ」を正しく計算でき、
-      ページ全体ではなくペインの中だけがスクロールするようになる。
-    */
-    <div className="w-full h-full min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE]">
-
-      {/* 背景：うっすらノート罫線（手書き風の余韻を残す） */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.18]"
-        style={{
-          backgroundImage: 'linear-gradient(transparent calc(2.5rem - 1px), #F0C7D2 calc(2.5rem - 1px))',
-          backgroundSize: '100% 2.5rem',
-        }}
-      />
-      <div className="absolute inset-0 pointer-events-none opacity-5 fabric-texture"></div>
-      {/* 背景の手書き風風景：桜の木と遠くの学校（罫線の裏に描く） */}
+    <div className="home-lobby w-full h-full min-h-0 flex flex-col relative overflow-hidden">
+      <div className="home-lobby-lines" aria-hidden="true" />
       <NotebookScenery />
-      {/* 桜を降らせる装飾（量を増やして春らしさを強調） */}
-      <SakuraPetals count={48} />
+      <SakuraPetals count={18} />
 
-      {/* PC（lg以上）ではスクロールせず1画面に収める：縦パディングを詰め、はみ出しを隠す。
-          スマホ/タブレットは縦スクロール可能。
-
-          ★min-h-0 と pb-app-nav を足したのが今回の修正★
-          ・min-h-0 … flex の子は既定で min-height:auto（＝中身より縮まない）。
-            これを外さないと flex-1 が効かず、中身のぶんだけ伸びて
-            スクロールしない箱になってしまう。高さの鎖の要。
-          ・pb-app-nav … 固定ナビは高さを占めないので、末尾に同じだけ
-            余白を作らないと最後の要素（＝マスコットの吹き出し）が
-            ナビの裏に隠れる。以前の pb-32 は実際のナビ高さより
-            大きすぎて、逆に1画面に収まらない一因にもなっていた。 */}
-      {/*
-        ★スマホでも flex flex-col にした理由★
-        「学習を始める」を必ず1画面目に入れたい（ご要望）。
-        しかし進捗カードの高さは科目数・進捗テキストで伸び縮みするため、
-        高さを詰める方向だけで押し込むのは端末やデータ次第で必ず破綻する。
-        そこで flex の order で「並び順」を変え、
-          挨拶 → 学習を始める → カード群 → サブ導線
-        とする。順番で保証すれば、カードが何px になっても
-        CTA が画面外に出ることはない。
-        lg 以上は order を戻し、従来の見た目を維持する。
-      */}
-      {/*
-        ===== パソコンでスクロールできなかった問題の修正 =====
-
-        ■ 何が起きていたか
-          パソコンでは「1画面に収める」設計にしてあり、
-          はみ出したぶんを隠す指定（overflow:hidden）を入れていた。
-          ところが画面の縦が短いパソコン（ノートPCに多い）では
-          中身が1画面に収まらず、
-          ★隠した部分に手が届かない＝下まで読めない★ 状態になっていた。
-
-        ■ 実際に測った結果
-          横1280×縦720 … 83px ぶん届かない
-          横1366×縦768 … 59px ぶん届かない
-          横1440×縦900 … 収まっている（問題なし）
-          横1920×1080  … 収まっている（問題なし）
-          つまり「一部のパソコンだけで起きる」不具合で、
-          自分の環境では気づけなかった。
-
-        ■ どう直したか
-          隠す指定をやめ、パソコンでも縦スクロールできるようにした
-          （overflow-y-auto）。
-          ただし ★収まっているときの見た目は変えない★。
-          ・中身が画面に収まる場合はスクロールバーも出ず、
-            今までと完全に同じ表示になる（auto は必要なときだけ出る）
-          ・中央寄せ（lg:justify-center）は
-            lg:justify-start へは変えず、代わりに
-            「中身が余ったときだけ中央に寄る」書き方（my-auto ではなく
-            justify-center のまま）を維持している。
-            収まる画面では従来どおり中央、
-            収まらない画面では上から順に読めてスクロールできる。
-
-        ■ 縦が短い画面だけ余白を詰める
-          そもそも収まらないのは余白が大きいことも一因なので、
-          縦が短いときだけ上下の余白を少し詰める
-          （xl:pt-6 / 高さ条件つきのクラスは使わず、
-            lg での下余白 24 → 16 に控えめに調整）。
-          これで 1366×768 は収まりやすくなり、
-          収まらない場合もスクロールで最後まで読める。
-      */}
-      {/*
-        ===== パソコンで「上に」スクロールできなかった問題の修正 =====
-
-        ■ ご指摘（原文）
-          > PCバージョンのタイトル画面で上にスクロールできず、
-          > お知らせや科目変更ができません。
-
-        ■ 何が起きていたか
-          上の修正で overflow-y-auto にしてスクロールできるようにしたが、
-          中央寄せの指定（lg:justify-center）を そのまま残していた。
-
-          ★スクロールする箱に justify-center を付けてはいけない★
-          中身が箱より高いとき、justify-center は はみ出したぶんを
-          上と下に「半分ずつ」押し出す。ところが
-          ブラウザがスクロールで見せてくれるのは ★下にはみ出した側だけ★。
-          上にはみ出した側は、スクロール位置の最小値が 0（＝箱の上辺）
-          なので、どれだけ上へスクロールしようとしても到達できない。
-          これは CSS の仕様で、Chrome も Safari も同じ挙動になる。
-
-          その結果、ホーム画面の一番上に置いてある
-            ・お知らせのベル（更新履歴）
-            ・現在の科目バッジ（押すと科目を変更できる導線）
-          が、縦の短いパソコンでは ★永久に押せない★ 状態だった。
-          「下は読めるのに上だけ届かない」というご指摘のとおりの症状。
-
-        ■ どう直したか
-          中央寄せを justify-center（箱の指定）から
-          ★中身側の auto マージン★ に移した。
-
-            収まるとき   … 余った高さを上下の auto が分け合う ＝ 従来どおり中央
-            収まらないとき … auto マージンは 0 に潰れる ＝ 上端から始まる
-
-          auto マージンは「余りを分ける」だけで ★足りないときに
-          はみ出しを作らない★ ので、上に届かない領域が生まれない。
-          つまり「収まっている画面の見た目は完全に従来のまま」で、
-          収まらない画面だけが上から順に読めるようになる。
-
-          具体的には
-            ・箱   … lg:justify-center を外す（justify-start 相当）
-            ・中身 … 先頭の要素に lg:mt-auto、末尾の要素に lg:mb-auto
-          を付ける。order で並び替えているので、
-          「先頭／末尾」は order 番号ではなく ★DOM の最初と最後★ に付ける
-          必要がある点に注意（auto マージンは視覚順ではなく
-          flex の配置計算に効くため、order 済みの実際の並びで先頭・末尾に
-          来るものに付ける）。ここでは order-1 の挨拶行が先頭、
-          order-5 のサブ導線が末尾になる。
-      */}
-      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pb-app-nav lg:pb-16 px-5 sm:px-8 md:px-12 pt-6 md:pt-8 lg:pt-6 relative z-10 flex flex-col">
-
-        {/* ===== 挨拶 ＋ カウントダウン =====
-            ※ 左上の「まなとび」ワードマークは表示しない（ユーザー要望）。 */}
-        {/* スマホでは挨拶とカウントダウンを横並びにする。
-            縦積みだと実測 216px を占め、1画面化の最大の障害だった。
-            横並びなら約110pxで収まる。md 以上は従来どおり。 */}
-        {/* lg:mt-auto … パソコンで中身が余ったときだけ上に余白を作り、
-            末尾の lg:mb-auto と対になって「結果的に中央」に見せる。
-            中身が収まらないときは 0 に潰れるので、
-            ★上にはみ出して押せなくなる領域が生まれない★。 */}
-        <div className="order-1 shrink-0 lg:mt-auto flex flex-row md:items-start md:justify-between gap-3 md:gap-5 mb-3 md:mb-8 lg:mb-4">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting min-w-0 flex-1">
-            {/* 学校名（クラスに参加している生徒のみ。学校の教材として見えるようにする） */}
-            {schoolBrand && (
-              <p className="text-[11px] font-modern font-bold text-[#5D6D7E] tracking-wide mb-1">
-                {schoolBrand.schoolName}
-              </p>
-            )}
-            {/*
-              科目バッジと BGM ボタンを同じ1行に並べる。
-
-              ★行を増やさないことが条件★
-              スマホのホームは「学習を始める」を1画面目に入れるため
-              1px 単位で高さを詰めてある（実測して詰めた経緯がある）。
-              ボタンを縦に足すと、その努力を壊して CTA が画面外に出る。
-              そこで既存のバッジと同じ高さ（min-h-[28px]）の
-              小さな丸ボタンにして、同じ行の右隣に置く。
-              gap と flex-wrap を付けているので、
-              科目名が長い端末でも重ならず折り返すだけで済む。
-            */}
-            <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-            {/* 現在の科目バッジ（タップで科目選択＝タイトル画面へ戻れる導線） */}
-            {onChangeSubject && (
-              <button
-                onClick={onChangeSubject}
-                aria-label={`科目を変更する（現在：${subjectLabel}）`}
-                className="group inline-flex items-center gap-1.5 pl-2.5 pr-2 py-1 rounded-full bg-white/85 backdrop-blur-sm border border-[#F4A9C4]/55 text-[11px] font-modern font-bold text-[#D9466E] hover:bg-white hover:border-[#E8688E] transition-colors min-h-[28px]"
-              >
-                <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
-                {subjectLabel}
-                <span className="text-[#B8C4CE] group-hover:text-[#E8688E] transition-colors" aria-hidden="true">|</span>
-                <Repeat2 className="w-3.5 h-3.5 text-[#8895A0] group-hover:text-[#E8688E] transition-colors" aria-hidden="true" />
-              </button>
-            )}
-
-            {/*
-              ===== BGM の ON/OFF（ヘッダー） =====
-
-              ■ なぜここに要るのか
-                音が鳴っていることに気づくのはホームに入った直後で、
-                そのとき止める手段が「設定画面まで4手」しか無かった。
-                図書館や電車では ★その4手が間に合わない★。
-                気づいた画面で1タップで止められる必要がある。
-
-              ■ 表示の意味
-                ・OFF のとき … スピーカーに斜線。押すと鳴る。
-                ・ON のとき  … スピーカー。押すと止まる。
-                ・フェードで消えたあと … ON のままだが鳴っていないので、
-                  ラベルを「もう一度鳴らす」にする。
-                  ★ONなのに無音＝故障に見える★のを防ぐため。
-
-              ■ onToggleBgm を経由する理由
-                iOS Safari は「利用者の操作と同じ呼び出しの流れの中で」
-                再生を始めないとブロックする。
-                状態を変えてから鳴らす作りでは間に合わないので、
-                押した瞬間に鳴らす処理（App 側）をそのまま呼ぶ。
-            */}
-            {onToggleBgm && (
-              <button
-                type="button"
-                onClick={() => onToggleBgm(!isBgmEnabled)}
-                aria-label={
-                  !isBgmEnabled
-                    ? 'BGMを鳴らす'
-                    : isBgmFadedOut
-                      ? 'BGMをもう一度鳴らす'
-                      : 'BGMを止める'
-                }
-                aria-pressed={!!isBgmEnabled && !isBgmFadedOut}
-                title={
-                  !isBgmEnabled
-                    ? 'BGMを鳴らす'
-                    : isBgmFadedOut
-                      ? 'BGMをもう一度鳴らす'
-                      : 'BGMを止める'
-                }
-                className={`inline-flex items-center gap-1 pl-2 pr-2.5 py-1 rounded-full border text-[11px] font-modern font-bold transition-colors min-h-[28px] ${
-                  isBgmEnabled && !isBgmFadedOut
-                    ? 'bg-[#FBE0E9] border-[#E8688E]/60 text-[#D9466E] hover:bg-[#F8D2DF]'
-                    : 'bg-white/85 backdrop-blur-sm border-[#D1D5DB]/70 text-[#8895A0] hover:bg-white hover:text-[#5D6D7E]'
-                }`}
-              >
-                {isBgmEnabled && !isBgmFadedOut ? (
-                  <Volume2 className="w-3.5 h-3.5" aria-hidden="true" />
-                ) : (
-                  <VolumeX className="w-3.5 h-3.5" aria-hidden="true" />
+      {/* 固定ナビの高さを予約。短い画面でも先頭から末尾までスクロールできる。 */}
+      <div className="home-lobby-scroll flex-1 min-h-0 overflow-y-auto pb-app-nav">
+        <div className="home-lobby-content">
+          <header className="home-lobby-header">
+            <div className="home-player">
+              {schoolBrand && <p className="home-school">{schoolBrand.schoolName}</p>}
+              <p className="home-date">{todayFormatted}</p>
+              <h1>おかえり、<span>{greetingName}さん</span></h1>
+              <div className="home-streak" title={nextMilestone ? `${nextMilestone.target}日連続まであと${nextMilestone.remaining}日` : '連続学習を継続中'}>
+                <Flame size={14} aria-hidden="true" />
+                <span>連続学習 <b>{streak}</b> 日</span>
+                {nextMilestone && <span className="home-milestone">次の目標 {nextMilestone.target}日</span>}
+              </div>
+            </div>
+            <div className="home-header-tools">
+              <div className="home-countdown" title={EXAM_DATE_LABEL}>
+                <span>共通テストまで</span>
+                <div>あと <strong>{daysUntilExam}</strong> 日</div>
+              </div>
+              <div className="home-utility-row">
+                {onToggleBgm && (
+                  <button type="button" className="home-header-icon" onClick={() => onToggleBgm(!isBgmEnabled || !!isBgmFadedOut)}
+                    aria-label={bgmLabel} title={bgmLabel} aria-pressed={bgmPlaying}>
+                    {bgmPlaying ? <Volume2 size={17} aria-hidden="true" /> : <VolumeX size={17} aria-hidden="true" />}
+                    <span>BGM</span>
+                  </button>
                 )}
-                <span>BGM</span>
-              </button>
-            )}
+                <button type="button" className="home-header-icon home-notices" onClick={() => setShowNotices(true)}
+                  aria-label={unreadCount > 0 ? `お知らせを開く（未読 ${unreadCount} 件）` : 'お知らせを開く'}>
+                  <Bell size={17} aria-hidden="true" /><span>お知らせ</span>
+                  {unreadCount > 0 && <span className="home-notice-dot" aria-hidden="true">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+                </button>
+              </div>
             </div>
-            {/* スマホでは 22px → 18px に落として1行に収める。
-                2行に折り返すと、それだけで約40pxを失っていた。 */}
-            <h1 className="text-[18px] md:text-[30px] text-[#1B2631] font-bold tracking-wide truncate">
-              おかえり、{greetingName}さん
-            </h1>
-            <p className="text-[11px] md:text-sm text-[#5D6D7E] mt-0.5 md:mt-1.5 font-modern tracking-wider">{todayFormatted}</p>
-          </motion.div>
+          </header>
 
-          {/* 共通テストまでのカウントダウンカード（ピンクテーマ）＋ お知らせベル */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.15 }}
-            className="self-start md:self-auto shrink-0 flex items-start gap-2.5"
-          >
-            {/* ===== お知らせ（更新履歴） =====
-                アプリが更新されても、利用者から見ると画面が黙って変わるだけで
-                「問題が増えた」「不具合が直った」ことに気づけない。
-                ベルを常設し、未読があれば件数を出して気づけるようにする。
-                カウントダウンの隣に置くのは、毎回必ず視線が通る位置だから。 */}
-            <button
-              type="button"
-              onClick={() => setShowNotices(true)}
-              aria-label={
-                unreadCount > 0
-                  ? `お知らせを開く（未読 ${unreadCount} 件）`
-                  : 'お知らせを開く'
-              }
-              /* スマホでは正方形の小さなボタンにし、「お知らせ」の文字は
-                 ベルのアイコンで十分伝わるので隠す（aria-label は残す）。 */
-              className="relative flex h-[44px] w-[44px] md:h-[68px] md:w-[52px] shrink-0 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-[14px] md:rounded-[18px] border border-[#F4A9C4]/50 bg-white/90 shadow-[0_10px_26px_-12px_rgba(217,70,110,0.5)] backdrop-blur-sm transition-colors hover:bg-white"
-            >
-              <Bell className="h-5 w-5 text-[#E8688E]" aria-hidden="true" />
-              <span className="hidden md:block font-modern text-[9px] font-bold tracking-wide text-[#5D6D7E]">
-                お知らせ
-              </span>
-              {unreadCount > 0 && (
-                <span
-                  className="absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-[#D9466E] px-1 text-[10px] font-bold text-white shadow-md"
-                  aria-hidden="true"
-                >
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
-              )}
-            </button>
-
-            {/* スマホでは幅・余白を詰め、日付ラベルとカレンダーアイコンを隠す。
-                「あと何日か」という数字が主役なので、そこだけ残せば伝わる。
-                md 以上は従来の見た目のまま。 */}
-            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] px-3 py-2.5 md:px-5 md:py-4 shadow-[0_10px_26px_-12px_rgba(217,70,110,0.5)] border border-[#F4A9C4]/50 flex items-center gap-2 md:gap-4 min-w-0 md:min-w-[210px]">
-              <div className="flex flex-col">
-                <span className="text-[10px] md:text-[11px] font-bold tracking-widest text-[#5D6D7E] font-modern whitespace-nowrap">共通テストまで</span>
-                <div className="flex items-baseline gap-1 mt-0.5">
-                  <span className="text-2xl md:text-4xl font-bold font-handwriting text-[#D9466E] leading-none tabular-nums">{daysUntilExam}</span>
-                  <span className="text-sm font-modern font-bold text-[#D9466E]">日</span>
+          <div className="home-lobby-layout">
+            {/* 対戦は独立したステージ。補助機能と同じカード列には戻さない。 */}
+            <section className={`home-arena ${!onBattle ? 'home-arena-study' : ''}`} aria-labelledby="home-arena-title" data-home-arena>
+              <div className="home-arena-main">
+                <p className="home-eyebrow">{onBattle ? 'ONLINE QUIZ BATTLE' : 'MY STUDY ROOM'}</p>
+                <h2 id="home-arena-title">{onBattle ? '学んだ力を、対戦で。' : '今日も、ひとつ先へ。'}</h2>
+                <div className="home-battle-emblem" aria-hidden="true">
+                  <div className="home-emblem-orbit" />
+                  <div className="home-emblem-paper home-emblem-paper-left"><BookOpen /></div>
+                  <div className="home-emblem-paper home-emblem-paper-right"><Sparkles /></div>
+                  <div className="home-emblem-core">{onBattle ? <Swords /> : <BookOpen />}</div>
+                  <span className="home-emblem-tag">{onBattle ? '1 vs 1' : 'STEP BY STEP'}</span>
+                  <Sparkles className="home-emblem-spark" />
                 </div>
-                <span className="hidden md:block text-[10px] text-[#8895A0] font-modern mt-1 tracking-wide">{EXAM_DATE_LABEL}</span>
+                {onBattle && (
+                  <button type="button" onClick={onBattle} aria-label="オンライン対戦を開く" className="home-battle-button" data-home-battle>
+                    <span><strong>オンライン対戦</strong><small>全国レート戦・友だちと1対1</small></span>
+                    <span className="home-battle-arrow"><ArrowRight size={23} aria-hidden="true" /></span>
+                  </button>
+                )}
+                <p className="home-arena-caption">{onBattle ? 'いつもの学びが、勝つ力になる。' : '自分のペースで、知識を積み重ねよう。'}</p>
               </div>
-              <div className="hidden md:flex ml-auto w-11 h-11 rounded-2xl bg-[#FBE0E9] items-center justify-center shrink-0">
-                <CalendarDays className="w-6 h-6 text-[#E8688E]" aria-hidden="true" />
-              </div>
-            </div>
-          </motion.div>
-        </div>
 
-        {/* ===== Googleアカウント連携のおすすめ（ゲスト利用中のみ） =====
-            ゲストのままだと記録が端末に閉じてしまうため、
-            ホームでも一行の細い帯で連携を案内する（×で当面非表示にできる）。 */}
-        {isGuest && !auth.currentUser && (
-          /* order-4：CTA の後ろに置く。ゲスト案内は大事だが、
-             これが CTA を画面外へ押し出してはいけない。 */
-          <div className="order-4 lg:order-2 shrink-0 mb-3 md:mb-6 lg:mb-4">
-            <GoogleLinkBanner variant="inline" dismissible />
-          </div>
-        )}
-
-        {/* ===== メインカード群 ===== */}
-        <div className="order-3 grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6 lg:gap-5">
-
-          {/* 連続学習カード（とびら君マスコット＋化学豆知識付き） */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-            <div className="bg-white/90 backdrop-blur-sm rounded-[20px] p-3.5 md:p-6 shadow-[0_10px_26px_-14px_rgba(217,70,110,0.45)] border border-[#F4A9C4]/40 relative overflow-hidden h-full flex flex-col">
-              {/* 上段：連続日数とマイルストーン
-                  スマホでは「連続学習」の見出しと日数を横1行に並べ、
-                  巨大な数字（text-5xl=48px）も 3xl に落として高さを削る。 */}
-              <div className="flex flex-col gap-1 w-full min-w-0">
-                <div className="flex items-baseline gap-2">
-                  <span className="font-bold text-sm tracking-widest text-[#1B2631] font-modern">連続学習</span>
-                  <span className="md:hidden ml-auto flex items-baseline gap-1">
-                    <span className="text-3xl font-bold font-handwriting text-[#D9466E] leading-none">{streak}</span>
-                    <span className="text-xs font-modern text-[#1B2631] font-medium">{streak > 0 ? '日連続' : '日目'}</span>
+              {/* 丸いショートカットは常設。ラベルも残し、アイコンだけにしない。 */}
+              <aside className="home-shortcuts" aria-label="ホームのショートカット">
+                <button type="button" onClick={onNoteList} className="home-shortcut"
+                  aria-label={`学習ノートを開く（ノートと復習）${reviewDueCount > 0 ? `。今日の復習${reviewDueCount}件` : ''}`}>
+                  <span className="home-shortcut-disc"><Edit3 size={23} aria-hidden="true" />
+                    {reviewDueCount > 0 && <span className="home-review-badge">{reviewDueCount > 99 ? '99+' : reviewDueCount}</span>}
                   </span>
-                </div>
-                <div className="hidden md:flex items-baseline gap-1 mt-1.5">
-                  <span className="text-5xl md:text-6xl font-bold font-handwriting text-[#D9466E] leading-none">{streak}</span>
-                  <span className="text-sm font-modern text-[#1B2631] font-medium">{streak > 0 ? '日連続' : '日目'}</span>
-                </div>
-                {nextMilestone && (
-                  <div className="mt-2 pt-2 md:mt-3 md:pt-3 border-t border-[#F4A9C4]/30">
-                    <p className="text-[11px] md:text-xs text-[#5D6D7E] font-modern tracking-wide leading-snug">
-                      <span className="opacity-80">次のマイルストーン：</span>
-                      <span className="font-bold text-[#1B2631]">{nextMilestone.target}日連続</span>
-                      <span className="opacity-80">まであと</span>
-                      <span className="font-bold text-[#1B2631]"> {nextMilestone.remaining}日</span>
-                    </p>
-                    {/* マイルストーン進捗バー */}
-                    <div className="w-full bg-[#FBE0E9] rounded-full h-1.5 mt-2 overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${Math.min(100, (streak / nextMilestone.target) * 100)}%` }}
-                        transition={{ duration: 0.9, delay: 0.4 }}
-                        className="h-full rounded-full bg-gradient-to-r from-[#E8688E] to-[#D9466E]"
-                      />
-                    </div>
-                  </div>
+                  <span>学習ノート</span>
+                </button>
+                <button type="button" onClick={onIntro} className="home-shortcut" aria-label="アプリ紹介を開く">
+                  <span className="home-shortcut-disc home-shortcut-sage"><ShieldCheck size={23} aria-hidden="true" /></span>
+                  <span>アプリ紹介</span>
+                </button>
+                <FeedbackButton screen="title" variant="text" label="ご意見・ご要望"
+                  description="アプリ全体の使い勝手・ほしい機能など、自由にお書きください"
+                  context={{ streak, solvedQuestions, totalQuestions, isGuest }} className="home-feedback-shortcut" />
+              </aside>
+            </section>
+
+            {/* 学習の入口と実際の進捗を一枚のノートにまとめる。全科目は開閉できる。 */}
+            <section className="home-study-paper" aria-label="学習と進捗" data-home-study>
+              <div className="home-paper-binding" aria-hidden="true"><i /><i /><i /></div>
+              <div className="home-study-topline">
+                <span className="home-study-kicker"><BookOpen size={13} aria-hidden="true" /> ひとりで学ぶ</span>
+                {onChangeSubject && (
+                  <button type="button" onClick={onChangeSubject} className="home-subject-switch" aria-label={`科目を変更する（現在：${subjectLabel}）`}>
+                    <span>{subjectLabel}</span><Repeat2 size={13} aria-hidden="true" />
+                  </button>
                 )}
               </div>
-              {/* 下段：とびら君マスコット＋豆知識（カード内に収まる横並び）
-                  科目を渡して、いま開いている科目の豆知識と配色にする。 */}
-              {/* ★ご指摘の「吹き出しが切れる」当該要素★
-                  クリップ自体は外枠の高さ確定（App 側）とスクロール領域の
-                  末尾余白（pb-app-nav）で解消済み。ここでは上余白を詰めて
-                  1画面に収まりやすくする。 */}
-              <DoorMascot
-                subject={subject}
-                showCategory
-                className="mt-2.5 pt-2.5 md:mt-4 md:pt-4 border-t border-[#F4A9C4]/25"
-              />
-            </div>
-          </motion.div>
-
-          {/* 学習進捗カード */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }}>
-            <div className="border border-[#F4A9C4]/40 rounded-[20px] p-3.5 md:p-6 bg-white/90 backdrop-blur-sm shadow-[0_10px_26px_-14px_rgba(217,70,110,0.45)] h-full flex flex-col justify-between">
-              <div>
-                <h2 className="font-bold text-[15px] md:text-[16px] mb-2 md:mb-3 text-[#1B2631] font-modern flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
-                  学習進捗
-                </h2>
-                {solvedQuestions === 0 ? (
-                  <>
-                    <p className="text-xs md:text-sm text-[#5D6D7E] font-modern leading-relaxed mb-3">
-                      各単元の問題を解くと、<span className="font-bold text-[#1B2631]">1点でも取れた大問</span>が進捗として自動的に記録されます。すべての問題を解いて、{subjectLabel}を完全攻略しましょう！
-                    </p>
-                    <button
-                      onClick={onStart}
-                      className="inline-flex items-center gap-1.5 text-[13px] md:text-sm font-bold font-modern text-[#1B2631] hover:text-[#D9466E] transition-colors mb-3 md:mb-6 group"
-                    >
-                      まず第1章から始めよう
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
-                    </button>
-                  </>
-                ) : (
-                  <p className="text-xs md:text-sm text-[#5D6D7E] font-modern leading-relaxed mb-3 md:mb-6">
-                    {solvedQuestions < totalQuestions ? (
-                      <>
-                        次の章：{/* 未完了の大問が残っている最初の章 */}
-                        <button
-                          onClick={onStart}
-                          className="font-bold text-[#1B2631] hover:text-[#D9466E] transition-colors underline-offset-4 hover:underline"
-                        >
-                          {nextChapter ? (nextChapter.abstractTitle || nextChapter.title || nextChapter.id) : '次の章'}
-                        </button>
-                        {' '}から始めよう
-                      </>
-                    ) : (
-                      <span className="font-bold text-[#1B2631]">全問制覇！おつかれさまでした。</span>
-                    )}
-                  </p>
-                )}
-              </div>
-              {/* ===== 教科ごとの進捗 =====
-                  以前は選択中の科目1本だけを出していたため、他の科目の
-                  進み具合を見るには科目を切り替える必要があった。
-                  ここで全科目を縦に並べ、いま選んでいる科目を強調する。
-                  単位は「大問」（小問数と混ざらないよう明記する）。 */}
-              <div className="space-y-1.5 md:space-y-3">
-                {subjectProgressDefs.map((def, i) => {
-                  const p = subjectProgress[def.id] || { solved: 0, total: 0 };
-                  const percent = p.total > 0 ? Math.round((p.solved / p.total) * 100) : 0;
-                  const isCurrent = def.id === subject;
-                  const isDone = p.total > 0 && p.solved >= p.total;
-                  // まだ問題が1問も入っていない科目（化学（発展）は章立てのみ先行実装）。
-                  // ここで「大問 0 / 0 問 (0%)」と出すと不具合に見えてしまうため、
-                  // 数字ではなく「準備中」と伝える。
-                  const isEmpty = p.total === 0;
-                  return (
-                    <div key={def.id}>
-                      <div className="flex items-baseline justify-between gap-2 mb-1">
-                        <span
-                          className={`font-modern text-[12px] md:text-[13px] flex items-center gap-1.5 ${
-                            isCurrent ? 'font-bold text-[#1B2631]' : 'font-medium text-[#7A8894]'
-                          }`}
-                        >
-                          {def.label}
-                          {isCurrent && (
-                            <span className="rounded-full bg-[#FBE0E9] px-1.5 py-0.5 text-[10px] font-bold text-[#D9466E]">
-                              選択中
-                            </span>
-                          )}
-                          {isDone && <span aria-label="全問クリア">🏆</span>}
-                        </span>
-                        <span
-                          className={`font-modern text-[12px] md:text-[13px] tabular-nums ${
-                            isEmpty
-                              ? 'font-medium text-[#A9B4BE]'
-                              : isCurrent
-                                ? 'font-bold text-[#1B2631]'
-                                : 'font-medium text-[#7A8894]'
-                          }`}
-                        >
-                          {isEmpty ? '問題を準備中' : `大問 ${p.solved} / ${p.total} 問 (${percent}%)`}
-                        </span>
-                      </div>
-                      <div
-                        role="progressbar"
-                        aria-label={`${def.label}の学習進捗`}
-                        aria-valuenow={percent}
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                        aria-valuetext={
-                          isEmpty
-                            ? `${def.label}：問題を準備中`
-                            : `${def.label}：大問 ${p.solved} / ${p.total} 問クリア（${percent}%）`
-                        }
-                        className={`w-full bg-[#FBE0E9] rounded-full overflow-hidden shadow-inner flex-shrink-0 ${
-                          isCurrent && !isEmpty ? 'h-2.5' : 'h-1.5'
-                        } ${isEmpty ? 'opacity-60' : ''}`}
-                      >
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${percent}%` }}
-                          transition={{ duration: 1, delay: 0.5 + i * 0.12 }}
-                          className={`h-full rounded-full ${
-                            isCurrent && !isEmpty
-                              ? 'bg-gradient-to-r from-[#E8688E] to-[#D9466E]'
-                              : 'bg-[#F0AFC2]'
-                          }`}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* =================================================================
-            メインCTA：対戦（1番目） ＋ 学習（2番目）
-            =================================================================
-
-            ★並びを入れ替えた理由★
-              利用者の指示：「オンラインをメインにするUIにしていかんとだめよね？
-              取り組めるところから頼む　でも問題をなくすとかはダメだよ
-              ボタンの配置変えるぐらい」
-
-              それまでのホームは
-                主CTA        ＝「学習を始める」（幅いっぱいのピル）
-                対戦への入口  ＝ 下のセカンダリ小カードの3番目
-              になっていた。対戦は
-                ・相手が要る（＝思い立ったときにすぐ押せないと成立しない）
-                ・1試合が短い（＝入口が遠いと割に合わない）
-              性質の機能なので、主動線から2段下がっているのは構造の誤り。
-
-            ★「問題をなくすのはダメ」を守っている点★
-              学習の入口は消していない。同じ位置に、同じ文言（学習を始める／
-              続きから開く）で残してある。変えたのは
-                ・順番（対戦を先に）
-                ・大きさの比（対戦を主役の大きさ、学習を並の大きさ）
-              だけで、行ける場所は1つも減っていない。
-              下のセカンダリからは対戦カードを外したが、これは
-              ★ここに昇格したぶんの重複を消しただけ★（入口の数は同じ）。
-
-            ★対戦が使えないときは学習が主役に戻る★
-              onBattle が渡されない（FEATURES.battle が false／ビルドから
-              外した）ときは、対戦の枠を描かず、学習のボタンを従来どおりの
-              主CTA の大きさで出す。「見えるのに入れない」を作らない。 */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }}
-          /* ★order-2：スマホでは進捗カードより前に出す★
-             これで主CTA は常に画面上部＝1画面目に居る。
-             lg 以上は order-4 で従来の位置（カードの下）に戻す。 */
-          className="order-2 lg:order-4 shrink-0 mt-0 md:mt-6 lg:mt-5 mb-3 lg:mb-0 space-y-2 md:space-y-2.5">
-
-          {/* --- 1番目：対戦（主役） ---
-              色は対戦モードの中と同じ青系（#2E86C1 系）にしてある。
-              ホームのローズ色のままだと「学習の続き」に見えて、
-              いま押しているものが別の機能だと分からない。
-              入口から中まで色でつながるようにする。 */}
-          {onBattle && (
-            <button
-              onClick={onBattle}
-              aria-label="オンライン対戦を開く"
-              className="battle-sheen relative w-full overflow-hidden bg-gradient-to-r from-[#3D9BD9] to-[#2E86C1] text-white py-3.5 md:py-5 lg:py-4 px-5 md:px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#3691D2] hover:to-[#2678AF] transition-colors shadow-[0_14px_30px_-10px_rgba(46,134,193,0.6)] min-h-[60px] md:min-h-[68px] lg:min-h-[62px]"
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 md:w-11 md:h-11 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
-                  <Swords className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />
-                </div>
-                <div className="min-w-0 text-left">
-                  <div className="font-modern tracking-widest text-[16px] md:text-[18px] leading-tight">オンライン対戦</div>
-                  {/* 何ができるかを1行で。人数や待ち時間は入口では約束できないので
-                      「すぐ始まる」とは書かない（待たされたときに嘘になる）。 */}
-                  <div className="text-[11px] md:text-xs text-white/80 font-modern mt-0.5 truncate">
-                    友だちと1対1で早解き・全国とレート戦
-                  </div>
-                </div>
-              </div>
-              <ArrowRight className="w-6 h-6 text-white/70 group-hover:text-white transition-all group-hover:translate-x-1 shrink-0" aria-hidden="true" />
-            </button>
-          )}
-
-          {/* --- 2番目：学習（残す。消していない） ---
-              対戦が出ているときは一段控えめな高さにして主従を作る。
-              対戦が無いときは従来どおりの主CTA の大きさに戻す。 */}
-          <button
-            onClick={onStart}
-            className={`w-full bg-gradient-to-r from-[#E89AAF] to-[#D98AA0] text-white px-5 md:px-6 rounded-[20px] font-bold flex items-center justify-between group hover:from-[#E38EA6] hover:to-[#CC7890] transition-colors shadow-[0_12px_28px_-10px_rgba(217,138,160,0.55)] ${
-              onBattle
-                ? 'py-2.5 md:py-3.5 lg:py-3 min-h-[48px] md:min-h-[54px] lg:min-h-[50px]'
-                : 'py-3 md:py-5 lg:py-3.5 min-h-[52px] md:min-h-[60px] lg:min-h-[54px]'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <BookOpen className={onBattle ? 'w-5 h-5 md:w-6 md:h-6' : 'w-6 h-6'} aria-hidden="true" />
-              <span className={`font-modern tracking-widest ${onBattle ? 'text-[15px] md:text-[16px]' : 'text-[16px] md:text-[17px]'}`}>{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</span>
-            </div>
-            <ArrowRight className={`text-white/70 group-hover:text-white transition-all group-hover:translate-x-1 ${onBattle ? 'w-5 h-5 md:w-6 md:h-6' : 'w-6 h-6'}`} aria-hidden="true" />
-          </button>
-        </motion.div>
-
-        {/* ===== セカンダリ：学習ノート（ノート＋復習を統合）/ アプリ紹介 / ご意見 ===== */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="order-5 lg:mb-auto mt-3 md:mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
-          {/* ノートと復習リストを1つの入口「学習ノート」に統合。今日の復習件数をバッジで提示 */}
-          <button
-            onClick={onNoteList}
-            aria-label={`学習ノートを開く（ノートと復習）${reviewDueCount > 0 ? `。今日の復習${reviewDueCount}件` : ''}`}
-            className="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
-          >
-            <div className="relative w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
-              <Edit3 className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
-              {reviewDueCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-[#E8688E] text-white text-[11px] font-bold flex items-center justify-center border-2 border-white">
-                  {reviewDueCount > 99 ? '99+' : reviewDueCount}
+              <button type="button" onClick={onStart} className="home-study-button">
+                <span><strong>{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</strong>
+                  <small>{solvedQuestions >= totalQuestions && totalQuestions > 0 ? '全問制覇！くり返し学んで定着させよう' : '演習・まとめプリントで、対戦の力をつけよう'}</small>
                 </span>
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">学習ノート</div>
-              <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">
-                {reviewDueCount > 0 ? `今日の復習が${reviewDueCount}件あります` : 'ノートと復習をまとめて確認'}
-              </div>
-            </div>
-            <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
-          </button>
-
-          <button
-            onClick={onIntro}
-            aria-label="アプリ紹介を開く"
-            className="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group"
-          >
-            <div className="w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">アプリ紹介</div>
-              <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">使い方や機能をチェック</div>
-            </div>
-            <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#E8688E] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
-          </button>
-
-          {/* ===== 対戦モードのカードは、ここから主CTA へ昇格させた =====
-              （このファイル内の「メインCTA：対戦（1番目）＋学習（2番目）」を参照）
-
-              ★ここに残さなかった理由★
-                主CTA と同じ行き先のカードを下にも置くと、
-                「押した先が違うのでは」と考えさせる（同じ場所へ2つの扉）。
-                入口の数は減っていない＝上に移しただけ。
-
-              ★注意：ここに戻すなら主CTA 側を消すこと★
-                両方に置くと重複になる。 */}
-
-          {/* ===== 高校入試 理科 =====
-              渡されていないときはカード自体を描かない（対戦モードと同じ扱い）。
-
-              ★色だけ他のカードと違えている理由★
-              このカードだけは「いま選んでいる科目」とは無関係な別の教科へ入る。
-              他のカードと同じローズ色にすると、化学基礎の続きに見えてしまう。
-              対戦の教科選択・結果・履歴でも理科はバイオレット #7B4FA8 で
-              出るようにしてあるので（src/data/externalSubjects.ts）、
-              ★入口から中まで同じ色でつながる★ようにしている。 */}
-          {onRika && (
-            <button
-              onClick={onRika}
-              aria-label="高校入試 理科を開く"
-              className="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#D6C4E7]/70 bg-white/90 backdrop-blur-sm hover:bg-[#FAF6FD] hover:border-[#7B4FA8]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(123,79,168,0.45)] text-left group"
-            >
-              <div className="w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#D6C4E7]/45 flex items-center justify-center shrink-0">
-                <Microscope className="w-5 h-5 text-[#7B4FA8]" aria-hidden="true" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-handwriting font-bold text-[#1B2631] text-base md:text-lg">高校入試 理科</div>
-                <div className="text-[11px] md:text-xs text-[#8895A0] font-modern mt-0.5">
-                  32単元の演習・まとめ・出題傾向
+                <span className="home-study-arrow"><ArrowRight size={21} aria-hidden="true" /></span>
+              </button>
+              <div className="home-progress-summary">
+                <div className="home-progress-ring" style={{ '--progress': `${progressPercent}%` } as React.CSSProperties} aria-hidden="true"><span>{progressPercent}<small>%</small></span></div>
+                <div className="home-progress-text">
+                  <h2><BarChart3 size={13} aria-hidden="true" /> 学習進捗 <span>{subjectLabel}</span></h2>
+                  <p>{totalQuestions > 0 ? <><strong>{solvedQuestions}</strong> / {totalQuestions} 大問クリア</> : '問題を準備中'}</p>
+                  <div className="home-progress-track" role="progressbar" aria-label={`${subjectLabel}の学習進捗`}
+                    aria-valuenow={progressPercent} aria-valuemin={0} aria-valuemax={100}
+                    aria-valuetext={`${subjectLabel}：大問 ${solvedQuestions} / ${totalQuestions} 問クリア（${progressPercent}%）`}>
+                    <span style={{ width: `${progressPercent}%` }} />
+                  </div>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-[#B8C4CE] group-hover:text-[#7B4FA8] group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
-            </button>
-          )}
+              <details className="home-all-progress">
+                <summary>全科目の進捗を見る <ChevronRight size={14} aria-hidden="true" /></summary>
+                <div className="home-progress-list">
+                  <p className="home-progress-help">1点でも取れた大問を記録しています。</p>
+                  {subjectProgressDefs.map((def) => {
+                    const p = subjectProgress[def.id] || { solved: 0, total: def.chapters.reduce((sum, c) => sum + c.problemCount, 0) };
+                    const percent = p.total > 0 ? Math.round(p.solved / p.total * 100) : 0;
+                    return (
+                      <div key={def.id} className="home-subject-progress">
+                        <div><span>{def.label}</span><span>{p.total === 0 ? '問題を準備中' : `大問 ${p.solved} / ${p.total} 問 (${percent}%)`}</span></div>
+                        <div className="home-progress-track" role="progressbar" aria-label={`${def.label}の学習進捗（一覧）`}
+                          aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}
+                          aria-valuetext={p.total === 0 ? `${def.label}：問題を準備中` : `${def.label}：大問 ${p.solved} / ${p.total} 問クリア（${percent}%）`}>
+                          <span style={{ width: `${percent}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {nextChapter && <button type="button" onClick={onStart} className="home-next-chapter">次の章：{nextChapter.abstractTitle || nextChapter.title || nextChapter.id}<ArrowRight size={14} aria-hidden="true" /></button>}
+                </div>
+              </details>
+              {onRika && <button type="button" onClick={onRika} aria-label="高校入試 理科を開く" className="home-rika-link hidden md:flex"><Microscope size={15} aria-hidden="true" />高校入試 理科<ChevronRight size={14} aria-hidden="true" /></button>}
+            </section>
+          </div>
 
-          {/* ご意見・ご要望（タイトル画面からの意見収集入口）
-              学習ノート／アプリ紹介と同じカード様式に揃え、
-              「気づいたときにすぐ書ける」場所として常設する。 */}
-          <FeedbackButton
-            screen="title"
-            variant="card"
-            label="ご意見・ご要望"
-            subLabel="気づいたことを開発者に伝える"
-            description="アプリ全体の使い勝手・ほしい機能など、自由にお書きください"
-            context={{ streak, solvedQuestions, totalQuestions, isGuest }}
-            className="sm:col-span-2 lg:col-span-1"
-          />
-
-          {/* 運営からの返信（ご意見を送ってくれた人へのお返事）。
-              自分宛の返信が1件もない人には何も表示されない。 */}
-          <FeedbackReplyInbox />
-        </motion.div>
+          <div className="home-lobby-footer">
+            <DoorMascot subject={subject} showCategory size="mini" className="home-lobby-tip" />
+            {isGuest && !auth.currentUser && <GoogleLinkBanner variant="inline" dismissible />}
+            <FeedbackReplyInbox />
+          </div>
+        </div>
       </div>
-
-      {/* ===== お知らせ（更新履歴）のモーダル =====
-          閉じたときに未読件数を読み直す。モーダル側で既読化しているので、
-          ここでは 0 件になったバッジを反映するだけで済む。 */}
-      {showNotices && (
-        <UpdateNoticeModal
-          onClose={() => {
-            setShowNotices(false);
-            setUnreadCount(unreadNoticeCount());
-          }}
-        />
-      )}
+      {showNotices && <UpdateNoticeModal onClose={() => { setShowNotices(false); setUnreadCount(unreadNoticeCount()); }} />}
     </div>
   );
 }

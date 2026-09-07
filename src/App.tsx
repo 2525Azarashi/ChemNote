@@ -1472,6 +1472,8 @@ export default function App() {
                 isGuest={isGuest}
                 // 科目選択は必ずホームから開くので、常に「ホームに戻る」を出せる
                 onBack={() => setAppState('home')}
+                /* 高校入試 理科（スマホでは科目選択に並べる。ホームの onRika と同じ条件・同じ行き先） */
+                onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined}
               />
             )}
             {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}

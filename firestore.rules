@@ -1553,6 +1553,11 @@ service cloud.firestore {
 
       function battleLeftAddedMine() {
         return battleNewLeft() is map
+          // ── 退出を書けるのは待機中・進行中だけ ──
+          //    決着後（finished）に left を足せると、
+          //    「負けた後に相手が逃げたことにする」偽装の余地が生まれる。
+          //    中断後（aborted）はもう誰も残っていないので書く意味が無い。
+          && (resource.data.status == 'waiting' || resource.data.status == 'playing')
           // 参加者以外のキーを増やせない（膨らませ攻撃も同時に防ぐ）
           && battleNewLeft().keys().hasOnly(resource.data.players)
 
@@ -1717,7 +1722,26 @@ service cloud.firestore {
                   battleIsPlayer(resource.data.players)
                   && battleUnchanged('players')
                   && battleUnchanged('profiles')
-                  && battleUnchanged('status')
+                  // ★待機中の退出は部屋を閉じる（status: aborted）ことを許す★
+                  //
+                  //   以前は status も不変を要求していた。すると待機中に
+                  //   部屋主が退出しても部屋は waiting のまま残り、
+                  //   合言葉を知る人が「誰もいない部屋」に入れてしまった
+                  //   （独立検証で再現）。
+                  //   許すのは「waiting → aborted」だけ。
+                  //   進行中（playing）の退出で status を触ることはできない。
+                  //   進行中の勝敗は残った側が left を見て決め、
+                  //   finished への遷移は (C) の申告で行う。
+                  && (
+                       battleUnchanged('status')
+                       || (
+                            resource.data.status == 'waiting'
+                            && request.resource.data.status == 'aborted'
+                            // left を足す更新であることを要求する
+                            // （status だけを aborted にする更新は通さない）
+                            && battleNewLeft() != battleOldLeft()
+                          )
+                     )
                   && battleUnchanged('currentIndex')
                   && battleUnchanged('deadlineAt')
                   && battleUnchanged('answers')

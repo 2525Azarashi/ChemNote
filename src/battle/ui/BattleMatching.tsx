@@ -43,7 +43,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { Radar, Users, Wifi, X, Zap } from 'lucide-react';
+import { Bot, Radar, Wifi, X, Zap } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
 import { findOrEnqueue, leaveQueue, watchMatched } from '../data/battle';
@@ -58,8 +58,17 @@ import {
   LINE,
 } from './BattleParts';
 
-/** これ以上待ったら「フレンド対戦にしませんか」と案内する秒数 */
-const SUGGEST_FRIEND_AFTER_SEC = 45;
+/**
+ * これ以上待ったら「AI と対戦しませんか」と案内する秒数。
+ *
+ * ★以前は「フレンド対戦にする」を案内していた★
+ * 押すと合言葉つきの部屋がその場で作られ、待機画面に飛んでいた。
+ * 利用者からは「全国対戦を押したのにフレンドの部屋にいる」と見えて
+ * 分かりにくく、しかも合言葉を誰かに伝えないと始まらないので
+ * 結局また待つことになる。
+ * 「待たずに今すぐ1試合」の受け皿は AI 対戦の方が適している。
+ */
+const SUGGEST_AI_AFTER_SEC = 45;
 
 /**
  * 経過秒数に応じて出す説明。
@@ -89,9 +98,9 @@ const PHASES: { after: number; label: string; detail: string }[] = [
     detail: 'レートの条件をゆるめて、より広く探しています',
   },
   {
-    after: SUGGEST_FRIEND_AFTER_SEC,
+    after: SUGGEST_AI_AFTER_SEC,
     label: '待っている人が少ないようです',
-    detail: 'フレンド対戦なら、待たずにすぐ始められます',
+    detail: 'AIと対戦なら、待たずにすぐ始められます',
   },
 ];
 
@@ -108,13 +117,13 @@ export function BattleMatching({
   subject,
   onMatched,
   onCancel,
-  onSwitchToFriend,
+  onSwitchToAi,
 }: {
   subject: string;
   onMatched: (roomId: string) => void;
   onCancel: () => void;
-  /** 待ちが長いときに「フレンド対戦にする」導線 */
-  onSwitchToFriend: () => void;
+  /** 待ちが長いときに「AI と対戦する」導線（同じ教科で強さ選択へ） */
+  onSwitchToAi: () => void;
 }) {
   const theme = subjectTheme(subject as SubjectKey);
   const [elapsed, setElapsed] = useState(0);
@@ -258,15 +267,15 @@ export function BattleMatching({
     <BattleShell
       footer={
         <div className="grid gap-2.5">
-          {elapsed >= SUGGEST_FRIEND_AFTER_SEC && (
+          {elapsed >= SUGGEST_AI_AFTER_SEC && (
             <BattleButton
               onClick={() => {
                 void leaveQueue();
-                onSwitchToFriend();
+                onSwitchToAi();
               }}
-              icon={<Users size={18} />}
+              icon={<Bot size={18} />}
             >
-              フレンド対戦にする
+              AIと対戦する（待たずにすぐ）
             </BattleButton>
           )}
           <BattleButton variant="danger" onClick={cancel} icon={<X size={18} />}>
@@ -369,9 +378,9 @@ export function BattleMatching({
 
         {error && <BattleNotice message={error} />}
 
-        {elapsed >= SUGGEST_FRIEND_AFTER_SEC && !error && (
+        {elapsed >= SUGGEST_AI_AFTER_SEC && !error && (
           <BattleNotice
-            message="いま対戦を待っている人が少ないようです。フレンド対戦なら、合言葉を伝えるだけですぐ始められます。"
+            message="いま対戦を待っている人が少ないようです。AIと対戦なら、同じ教科で今すぐ始められます（レートは動きません）。"
             tone="info"
           />
         )}

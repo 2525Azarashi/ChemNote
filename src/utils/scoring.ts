@@ -11,7 +11,7 @@
  *   - 記述式（descriptive）は自動採点不可なので「参加点」を付与
  */
 
-import { isAnswerCorrect, isDescriptive } from './answerJudge';
+import { isCountedCorrect, isDescriptive } from './answerJudge';
 
 export type SubQuestionType = 'multiple_choice' | 'sorting' | 'descriptive' | 'text' | string;
 
@@ -23,6 +23,11 @@ export interface ScoringSubQuestion {
   options?: string[];
   items?: string[];
   group?: string;
+  /**
+   * 完答グループ（英語リスニング 第4・5問）。
+   * 同じ値の小問が全部正解のときだけ正解数に数える（answerJudge.isCountedCorrect）。
+   */
+  allOrNothingGroup?: string;
 }
 
 // ============================================================
@@ -175,7 +180,9 @@ export function scoreProblem(
 
   let correctCount = 0;
   for (const sq of judgeables) {
-    if (isAnswerCorrect(sq, answers[sq.id])) {
+    // 完答グループを持つ小問は「グループ全員正解」のときだけ数える。
+    // グループを持たない小問（化学・第1〜3問）は従来と完全に同じ判定。
+    if (isCountedCorrect(sq, judgeables, answers)) {
       correctCount += 1;
     }
   }
@@ -230,12 +237,13 @@ export function calcMaxCombo(
 ): number {
   let max = 0;
   let cur = 0;
+  const judgeables = subQuestions.filter((sq) => !isDescriptive(sq));
   for (const sq of subQuestions) {
     if (isDescriptive(sq)) {
       // 記述はコンボ計算から除外（中断もしない）
       continue;
     }
-    if (isAnswerCorrect(sq, answers[sq.id])) {
+    if (isCountedCorrect(sq, judgeables, answers)) {
       cur += 1;
       if (cur > max) max = cur;
     } else {

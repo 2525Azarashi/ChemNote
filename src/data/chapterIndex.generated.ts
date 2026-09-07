@@ -686,31 +686,31 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "el4_A",
-        "problemCount": 0,
+        "problemCount": 15,
         "abstractTitle": "第4問 A",
         "realTitle": "第4問 A"
       },
       {
         "id": "el4_B",
-        "problemCount": 0,
+        "problemCount": 15,
         "abstractTitle": "第4問 B",
         "realTitle": "第4問 B"
       },
       {
         "id": "el5",
-        "problemCount": 0,
+        "problemCount": 15,
         "abstractTitle": "第5問",
         "realTitle": "第5問"
       },
       {
         "id": "el6_A",
-        "problemCount": 0,
+        "problemCount": 15,
         "abstractTitle": "第6問 A",
         "realTitle": "第6問 A"
       },
       {
         "id": "el6_B",
-        "problemCount": 0,
+        "problemCount": 15,
         "abstractTitle": "第6問 B",
         "realTitle": "第6問 B"
       }
@@ -1314,7 +1314,7 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
     "units": 9,
     "points": 100,
     "marks": 37,
-    "questions": 60
+    "questions": 135
   },
   "math": {
     "chapters": 33,

@@ -51,9 +51,14 @@ export function FeedbackButton({
         <button
           onClick={() => setOpen(true)}
           aria-label="ご意見・ご要望を送る"
-          className={`flex items-center gap-4 px-5 py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group w-full ${className}`}
+          /* スマホ（md 未満）ではホームの隣のカード（学習ノート／アプリ紹介）と
+             同じ高さ（px-4 py-2.5・アイコン 36px）にそろえる。
+             このカードだけ 78px で他は 64px だったため、ホームで 3 枚を
+             1 画面に収めるときにこのカードの下端だけがナビの下に潜っていた。
+             md 以上は従来どおり。 */
+          className={`flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#F4A9C4]/40 bg-white/90 backdrop-blur-sm hover:bg-[#FFF3F7] hover:border-[#E8688E]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(217,70,110,0.4)] text-left group w-full ${className}`}
         >
-          <div className="w-11 h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#FBE0E9] flex items-center justify-center shrink-0">
             <MessageSquareHeart className="w-5 h-5 text-[#E8688E]" aria-hidden="true" />
           </div>
           <div className="flex-1 min-w-0">
