@@ -1,6 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, it, expect } from 'vitest';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { ModeSelection } from '../src/components/ModeSelection';
+import { SubjectSelection } from '../src/components/SubjectSelection';
+import { SUBJECT_LABELS } from '../src/data/subjectLabels';
+import { isSubjectEnabled } from '../src/config/features';
+import type { SubjectKey } from '../src/data/allChapters';
 
 /**
  * ===================================================================
@@ -234,7 +241,7 @@ describe('③ ★学習側を1つも減らしていない★', () => {
   });
 
   it('科目選択が科目を選ぶ画面のままである', () => {
-    expect(SUBJECT).toMatch(/科目を選んでください/u);
+    expect(SUBJECT).toMatch(/科目を選んで/u);
     expect(SUBJECT).toContain('onSelectSubject');
   });
 
@@ -261,5 +268,31 @@ describe('④ 境界：対戦画面そのものは触っていない', () => {
     for (const r of reads) {
       expect(r).not.toMatch(/src\/battle\//u);
     }
+  });
+});
+
+describe('新しい本棚・学習机の実レンダー', () => {
+  it.each(Object.keys(SUBJECT_LABELS) as SubjectKey[])('%s は利用できる教材だけを出す', (subject) => {
+    const html = renderToStaticMarkup(React.createElement(ModeSelection, {
+      subject, onBack: () => {}, onSelectMode: () => {}, onMockExam: () => {}, onBattle: () => {},
+    }));
+    expect(html).toContain('演習問題の単元を選ぶ');
+    expect(html).toContain('オンライン対戦を開く');
+    expect(html.includes('class="mode-input-paper"')).toBe(!['english_listening', 'english_grammar', 'geography'].includes(subject));
+    expect(html.includes('共通テスト出題傾向')).toBe(['chemistry_basic', 'chemistry'].includes(subject));
+    expect(html.includes('2027年度 予想問題')).toBe(subject === 'chemistry_basic');
+  });
+  it('対戦が無効でも学習は使える', () => {
+    const html = renderToStaticMarkup(React.createElement(ModeSelection, {onBack: () => {}, onSelectMode: () => {}}));
+    expect(html).not.toContain('オンライン対戦を開く');
+    expect(html).toContain('演習問題の単元を選ぶ');
+  });
+  it('本棚に全公開科目と理科の入口が残る', () => {
+    const html = renderToStaticMarkup(React.createElement(SubjectSelection, { onSelectSubject: () => {}, isGuest: false, onRika: () => {} }));
+    for (const [id, label] of Object.entries(SUBJECT_LABELS)) {
+      expect(html.includes(`aria-label="${label}を学習する"`)).toBe(isSubjectEnabled(id as SubjectKey));
+    }
+    expect(html).toContain('高校入試 理科を学習する');
+    expect(html).toContain('data-subject-book');
   });
 });

@@ -124,27 +124,27 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
   };
 
   return (
-    <div className="w-full h-[100dvh] bg-[#FDFBF7] font-handwriting overflow-hidden pb-20 sm:pb-24">
+    <div className="mtb-page profile-journal w-full h-[100dvh] bg-[#FDFBF7] font-handwriting overflow-hidden pb-20 sm:pb-24">
       <div className="max-w-4xl h-full mx-auto px-3 sm:px-5 py-3 sm:py-5 flex flex-col relative">
         <div className="absolute top-4 right-8 w-40 h-40 bg-[#A9CCE3]/15 rounded-full blur-3xl pointer-events-none" />
 
-        <header className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 relative z-10 shrink-0">
+        <header className="mtb-page-header flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 relative z-10 shrink-0">
           <button onClick={onClose} className="p-2 bg-white border border-gray-200 text-gray-500 rounded-xl shadow-sm" aria-label="設定を閉じる">
             <ChevronLeft size={19} />
           </button>
           <div className="w-8 h-8 rounded-xl bg-[#2C3E50]/5 text-[#2C3E50] flex items-center justify-center"><Settings size={17} /></div>
-          <h2 className="text-lg sm:text-xl font-bold text-[#1B2631]">アプリ設定</h2>
+          <div><p className="mtb-kicker">MY ACCOUNT</p><h2 className="text-lg sm:text-xl font-bold text-[#1B2631]">アプリ設定</h2></div>
           <DoorMascot showSpeech={false} size="mini" className="w-auto ml-auto -my-2" />
         </header>
 
-        <div className="grid grid-cols-3 gap-1.5 bg-white/70 border border-gray-200 rounded-2xl p-1.5 mb-2 sm:mb-3 relative z-10 shrink-0">
-          <button onClick={() => setTab('general')} className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${tab === 'general' ? 'bg-[#1B2631] text-white shadow-sm' : 'text-gray-500'}`}>
+        <div className="profile-tabs mtb-tabs grid grid-cols-3 gap-1.5 bg-white/70 border border-gray-200 rounded-2xl p-1.5 mb-2 sm:mb-3 relative z-10 shrink-0">
+          <button aria-pressed={tab === 'general'} onClick={() => setTab('general')} className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${tab === 'general' ? 'bg-[#1B2631] text-white shadow-sm' : 'text-gray-500'}`}>
             <Settings size={14} /> 基本設定
           </button>
-          <button onClick={() => setTab('friends')} disabled={!auth.currentUser} className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all disabled:opacity-40 ${tab === 'friends' ? 'bg-[#D9466E] text-white shadow-sm' : 'text-gray-500'}`}>
+          <button aria-pressed={tab === 'friends'} onClick={() => setTab('friends')} disabled={!auth.currentUser} className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all disabled:opacity-40 ${tab === 'friends' ? 'bg-[#D9466E] text-white shadow-sm' : 'text-gray-500'}`}>
             <Users size={14} /> フレンド
           </button>
-          <button onClick={() => setTab('class')} disabled={!auth.currentUser} className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all disabled:opacity-40 ${tab === 'class' ? 'bg-[#4A7FA0] text-white shadow-sm' : 'text-gray-500'}`}>
+          <button aria-pressed={tab === 'class'} onClick={() => setTab('class')} disabled={!auth.currentUser} className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all disabled:opacity-40 ${tab === 'class' ? 'bg-[#4A7FA0] text-white shadow-sm' : 'text-gray-500'}`}>
             <School size={14} /> クラス
           </button>
         </div>
@@ -168,7 +168,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
               )}
             </div>
           ) : (
-            <div className="h-full grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 overflow-y-auto md:overflow-hidden no-scrollbar">
+            <div className="profile-workspace h-full grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 overflow-y-auto md:overflow-hidden no-scrollbar">
               <div className="space-y-2 sm:space-y-3">
                 <section className="bg-white border border-gray-150 p-3 rounded-2xl shadow-sm">
                   <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">学習状況</h3>

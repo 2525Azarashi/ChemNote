@@ -46,7 +46,7 @@ import {
   Microscope,
 } from 'lucide-react';
 import { auth } from '../firebase';
-import { MntbLogo } from './MntbLogo';
+import { subjectTheme } from '../data/subjectTheme';
 import { SakuraPetals } from './SakuraPetals';
 import { NotebookScenery } from './NotebookScenery';
 import { FeedbackModal } from './FeedbackModal';
@@ -434,7 +434,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
   return (
     /* Home と同じ理由で min-h-[100dvh] → h-full。
        App 側で確定した 100dvh を受け取り、子のスクロール領域に上限を渡す。 */
-    <div className="w-full h-full min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE]">
+    <div className="mtb-page subject-library w-full h-full min-h-0 flex flex-col relative overflow-hidden rounded-none sm:rounded-[32px] bg-gradient-to-b from-[#FFF1F5] via-[#FDFBF7] to-[#F8E7EE]">
 
       {/* ===== 背景（Home と同じ世界観：ノート罫線＋風景＋桜） ===== */}
       <div
@@ -447,7 +447,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
       />
       <div className="absolute inset-0 pointer-events-none opacity-5 fabric-texture" aria-hidden="true" />
       <NotebookScenery />
-      <SakuraPetals count={40} />
+      <SakuraPetals count={18} />
 
       {/* ===== ホームへ戻る（ホームの「学習を始める」から来たときだけ） =====
           オンボーディング直後は戻る先が無いので表示しない。 */}
@@ -475,58 +475,14 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
 
           上パディングも詰める（pt-10→pt-5）。ロゴの上の空白は
           1画面に収める上で最も削りやすい場所。 */}
-      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pb-safe px-5 sm:px-8 md:px-12 pt-3 sm:pt-10 md:pt-14 relative z-10 flex flex-col">
+      <div className="subject-library-scroll flex-1 min-h-0 overflow-y-auto no-scrollbar pb-safe px-5 sm:px-8 md:px-12 pt-3 sm:pt-10 md:pt-14 relative z-10 flex flex-col">
 
-        {/* ===== タイトル（アプリの顔） ===== */}
-        <motion.header
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-2 sm:mb-7 md:mb-9"
-        >
-          {/* ロゴのみを大きく置く。
-              以前はロゴの下に「まなとび」「まなびの、とびらを開こう」の
-              文字を重ねていたが、ロゴ自体がアプリ名を表しており冗長なため撤去した。
-
-              ★スマホではロゴを hero → md に落とす★
-              科目カードが5枚あるため、1画面に収めるには
-              「毎回同じ絵」であるロゴの占有を削るのが最も効果が大きい。
-              タブレット以上（sm）では従来どおり hero の大きさで見せる。 */}
-          <div className="flex justify-center">
-            <span className="sm:hidden"><MntbLogo size="md" /></span>
-            <span className="hidden sm:block"><MntbLogo size="hero" /></span>
-          </div>
-
-          {/* ★スマホだけ 1 行にする★
-              従来は <br className="sm:hidden"> で強制改行して 2 行（42px）だった。
-              「ようこそ、○○さん」の挨拶はホーム画面ですでに出ているので、
-              この画面で必要なのは「何をすればいいか」の 1 行だけ。
-              sm 以上では従来どおり挨拶ごと見せる（PC の見た目は不変）。 */}
-          {/* ★文言に対戦を織り込んだ理由★
-                利用者の指示「オンラインをメインにするUIにしていかんと
-                だめよね？」「対戦画面は他のところでしているので
-                そこまでのところはすべて変えて」
-
-                この画面はアプリのタイトル画面で、
-                ★対戦という語が1文字も無かった★。
-                「学習する科目を選んでください」だけだと、
-                ここで選ぶものが学習専用の設定に見える。
-                実際には選んだ科目は対戦（ホームの表示・対戦の教科選択）
-                にもつながっているので、そう書く。
-
-              ★行数を増やしていない★
-                この画面は科目カード5枚を1画面に収めるために
-                余白を削り込んである（このファイル内のコメント参照）。
-                新しい帯やボタンを足すとカードが押し出されるので、
-                ★既にある1行の中の言葉だけを変えた★。
-                スマホの「1行」も維持している。 */}
-          <p className="mt-1.5 sm:mt-5 text-[13px] sm:text-sm text-[#5D6D7E] font-modern leading-relaxed">
-            <span className="hidden sm:inline">
-              ようこそ、<span className="font-bold text-[#1B2631]">{displayName}</span>さん。
-            </span>
-            科目を選んでください（<b className="font-bold text-[#2E86C1]">対戦</b>も学習もこの科目で始まります）。
-          </p>
-        </motion.header>
+        <header className="subject-library-heading">
+          <p className="mtb-kicker">MY BOOKSHELF</p>
+          <h1>学びの本棚</h1>
+          <p>科目を選んで、学びのつづきへ。</p>
+          <span className="subject-library-note"><BookOpen size={14} aria-hidden="true" /> 演習・まとめで、対戦の力をつけよう</span>
+        </header>
 
         {/* ===== Googleアカウント連携のおすすめ（ゲスト利用中のみ） =====
 
@@ -564,7 +520,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
                4px でも隣接カードとの境目は視覚的に十分わかる。
                なお sm 以上は従来と同じ gap-2 に戻してあるので、
                タブレット・PC の見た目は一切変わらない。 */
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-2 md:gap-5"
+            className="subject-bookshelf grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-2 md:gap-5"
           >
           {visibleSubjects.map((subject, index) => {
             const Icon = subject.icon;
@@ -580,10 +536,13 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.1 + index * 0.07 }}
                 data-subject-card
+                data-subject-id={subject.id}
                 className="w-full"
               >
                 <button
                   onClick={handleClick}
+                  data-subject-book
+                  style={{ '--subject-accent': subjectTheme(subject.id).accent, '--subject-soft': subjectTheme(subject.id).accentSoft } as React.CSSProperties}
                   aria-label={
                     subject.available
                       ? `${subject.title}を学習する`
@@ -636,9 +595,9 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
                   {/* アイコン＋タイトル（横並びにして縦方向を節約する）
                       スマホでは下の余白(mb)を詰め、右端に矢印を出して
                       「このカードを押すと進める」ことを1行のまま伝える。 */}
-                  <div className="flex items-center gap-3 mb-0 sm:mb-3 mt-0 sm:mt-1">
+                  <div className="subject-book-title flex items-center gap-3 mb-0 sm:mb-3 mt-0 sm:mt-1">
                     <div
-                      className={`w-9 h-9 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform ${
+                      className={`subject-book-icon w-9 h-9 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform ${
                         subject.available
                           ? 'bg-[#FBE0E9] text-[#D9466E] group-hover:scale-105'
                           : 'bg-[#E4E8EC] text-[#8895A0]'
@@ -789,6 +748,8 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
             >
               <button
                 onClick={onRika}
+                data-subject-book
+                style={{ '--subject-accent': '#7B4FA8', '--subject-soft': '#D6C4E7' } as React.CSSProperties}
                 aria-label="高校入試 理科を学習する"
                 className="group relative w-full h-full text-left rounded-[22px] p-2 border transition-all duration-200 overflow-hidden flex flex-col bg-white/92 backdrop-blur-sm border-[#D6C4E7]/80 shadow-[0_16px_38px_-18px_rgba(123,79,168,0.55)] hover:border-[#7B4FA8] active:scale-[0.995]"
               >
@@ -796,8 +757,8 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
                   className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#9A76C0] via-[#7B4FA8] to-[#C5AEE0]"
                   aria-hidden="true"
                 />
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-[#D6C4E7]/45 text-[#7B4FA8]">
+                <div className="subject-book-title flex items-center gap-3">
+                  <div className="subject-book-icon w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-[#D6C4E7]/45 text-[#7B4FA8]">
                     <Microscope className="w-4.5 h-4.5" aria-hidden="true" />
                   </div>
                   <div className="min-w-0 flex-1">

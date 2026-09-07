@@ -249,14 +249,17 @@ export function PlayerBadge({
 export function BattleShell({
   children,
   footer,
+  className = '',
 }: {
   children: ReactNode;
   footer?: ReactNode;
+  /** Screen-specific styles; live matches retain the default shell. */
+  className?: string;
 }) {
   return (
     <div
       id="battle-shell"
-      className="fabric-texture flex min-h-[100dvh] flex-col"
+      className={`fabric-texture flex min-h-[100dvh] flex-col ${className}`}
       style={{ background: PAPER }}
     >
       <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-3 pb-4 pt-3 sm:px-4 sm:pt-4">

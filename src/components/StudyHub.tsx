@@ -12,6 +12,7 @@ import {
   NotebookPen,
   ChevronDown,
   PenLine,
+  TrendingUp,
 } from 'lucide-react';
 import { auth } from '../firebase';
 import {
@@ -370,6 +371,10 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onSelect }) => {
     <li
       className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5 cursor-pointer hover:shadow-md hover:border-[#A9CCE3]/50 transition-all"
       onClick={() => onSelect(note)}
+      role="button"
+      tabIndex={0}
+      aria-label={`ノートを開く：${truncate(stripHtml(note.question) || '問題文なし', 70)}`}
+      onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelect(note); } }}
     >
       <div className="flex flex-wrap items-center gap-2 mb-2">
         {/* 種別バッジ: 手動（ノート） */}
@@ -515,10 +520,10 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
 
   return (
     // 要件5：学習ノート画面の背景を罫線（ノートの横線）にし、手書き風フォントで統一。
-    <div className="w-full min-h-screen notebook-paper font-handwriting pb-28 md:pb-12">
+    <div className="mtb-page study-journal w-full min-h-screen notebook-paper font-handwriting pb-28 md:pb-12">
       <div className="max-w-3xl mx-auto p-4 md:p-8 space-y-5">
         {/* ヘッダー */}
-        <div className="flex items-center gap-4">
+        <div className="mtb-page-header flex items-center gap-4">
           <button
             onClick={onBack}
             aria-label="ホームに戻る"
@@ -528,6 +533,7 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
             <ArrowLeft size={20} aria-hidden="true" />
           </button>
           <div>
+            <p className="mtb-kicker">MY LEARNING JOURNAL</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#2C3E50] font-handwriting">学習ノート</h2>
             <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
               今日の復習とあなたのノートを、ここでまとめて管理できます
@@ -541,7 +547,7 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
           科目を絞っている最中でも「まだ他の科目に残っている」ことが
           分かるようにするため、あえて連動させていない。
         */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <div className="study-journal-summary grid grid-cols-3 gap-2 sm:gap-3">
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 text-center">
             <div className="text-2xl font-bold text-[#E8688E]">{dueItems.length}</div>
             <div className="text-[11px] sm:text-xs text-gray-500 mt-0.5">今日の復習（全科目）</div>
@@ -554,6 +560,25 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
             <div className="text-2xl font-bold text-emerald-600">{masteredCount}</div>
             <div className="text-[11px] sm:text-xs text-gray-500 mt-0.5">習得済み</div>
           </div>
+        </div>
+
+        {/* ===== タブ ===== */}
+        <div className="study-journal-tabs mtb-tabs flex gap-2 overflow-x-auto no-scrollbar" role="tablist" aria-label="学習ノートの表示切替">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              role="tab"
+              aria-selected={tab === t.id}
+              onClick={() => setTab(t.id)}
+              className={`shrink-0 min-h-[44px] px-4 rounded-full text-sm font-bold transition-colors border ${
+                tab === t.id
+                  ? 'bg-[#E8688E] text-white border-[#E8688E]'
+                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              {t.label}（{t.count}）
+            </button>
+          ))}
         </div>
 
         {/*
@@ -623,10 +648,13 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
         {/* 科目タブで絞られる領域（グラフ＋今日の復習） */}
         <div id="subject-scoped-panel" role="tabpanel" className="space-y-5">
           {/* ===== 忘却曲線グラフ（解答日時→定着度の可視化） ===== */}
-          <ForgettingCurveChart items={scopedItems} now={now} subjectLabel={scopedSubjectLabel} />
+          <details className="study-retention mtb-paper">
+            <summary><span><TrendingUp size={16} aria-hidden="true" /> 記憶の定着をみる</span><ChevronDown size={15} aria-hidden="true" /></summary>
+            <ForgettingCurveChart items={scopedItems} now={now} subjectLabel={scopedSubjectLabel} />
+          </details>
 
           {/* ===== 今日の復習セクション（冒頭に自動表示） ===== */}
-          {scopedDueItems.length > 0 && (
+          {tab === 'today' && scopedDueItems.length > 0 && (
             <section className="bg-gradient-to-br from-[#FFF1F5] to-[#FDFBF7] rounded-2xl border border-[#F4A9C4]/50 shadow-sm p-4 sm:p-5">
               <button
                 onClick={() => setTodayOpen((v) => !v)}
@@ -675,25 +703,6 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
               )}
             </section>
           )}
-        </div>
-
-        {/* ===== タブ ===== */}
-        <div className="flex gap-2 overflow-x-auto no-scrollbar" role="tablist" aria-label="学習ノートの表示切替">
-          {tabs.map((t) => (
-            <button
-              key={t.id}
-              role="tab"
-              aria-selected={tab === t.id}
-              onClick={() => setTab(t.id)}
-              className={`shrink-0 min-h-[44px] px-4 rounded-full text-sm font-bold transition-colors border ${
-                tab === t.id
-                  ? 'bg-[#E8688E] text-white border-[#E8688E]'
-                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
-              }`}
-            >
-              {t.label}（{t.count}）
-            </button>
-          ))}
         </div>
 
         {/* ===== タブ本体 ===== */}
@@ -803,7 +812,7 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
 
 function EmptyState({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center text-gray-500">
+    <div className="study-empty-state mtb-paper bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center text-gray-500">
       {icon}
       <p className="font-bold text-[#2C3E50]">{title}</p>
       <p className="text-sm mt-1">{desc}</p>

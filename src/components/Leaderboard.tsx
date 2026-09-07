@@ -215,13 +215,13 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
   }, [rows, myRow]);
 
   return (
-    <div className="w-full min-h-screen bg-[#FDFBF7] font-handwriting pb-32">
+    <div className="mtb-page ranking-hall w-full min-h-screen bg-[#FDFBF7] font-handwriting pb-32">
       <div className="max-w-3xl mx-auto px-4 py-6 md:py-8 relative">
         <div className="absolute top-10 right-4 w-40 h-40 bg-[#F4D03F]/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-20 left-4 w-48 h-48 bg-[#A9CCE3]/15 rounded-full blur-3xl pointer-events-none" />
 
         {/* ヘッダー */}
-        <div className="flex items-center gap-4 mb-6 relative z-10">
+        <div className="ranking-hall-header mtb-page-header flex items-center gap-4 mb-6 relative z-10">
           <button
             onClick={onBack}
             className="p-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-700 rounded-xl transition-all shadow-sm cursor-pointer"
@@ -234,7 +234,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
             <div className="w-9 h-9 rounded-xl bg-[#F4D03F]/30 text-[#1B2631] flex items-center justify-center shadow-xs">
               <Trophy size={18} />
             </div>
-            <h2 className="text-xl md:text-2xl font-bold text-[#1B2631]">ランキング</h2>
+            <div><p className="mtb-kicker">LEARNING RECORDS</p><h2 className="text-xl md:text-2xl font-bold text-[#1B2631]">ランキング</h2></div>
           </div>
 
           <DoorMascot showSpeech={false} size="mini" className="hidden sm:flex w-auto ml-1" />
@@ -284,18 +284,19 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
           </button>
         )}
 
+        <p className="ranking-hall-caption">積み重ねた学びを、次の目標に。</p>
         {/* 全国／フレンド競争 */}
-        <div className="relative z-10 grid grid-cols-2 gap-2 mb-3 rounded-2xl bg-white/70 border border-gray-200 p-1.5">
-          <button onClick={() => setScope('all')} className={`flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold transition-all ${scope === 'all' ? 'bg-[#1B2631] text-white shadow-sm' : 'text-gray-500 hover:bg-white'}`}>
+        <div className="ranking-scope relative z-10 grid grid-cols-2 gap-2 mb-3 rounded-2xl bg-white/70 border border-gray-200 p-1.5">
+          <button aria-pressed={scope === 'all'} onClick={() => setScope('all')} className={`flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold transition-all ${scope === 'all' ? 'bg-[#1B2631] text-white shadow-sm' : 'text-gray-500 hover:bg-white'}`}>
             <Globe size={14} /> 全国
           </button>
-          <button onClick={() => !isGuest && setScope('friends')} disabled={isGuest} className={`flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-40 ${scope === 'friends' ? 'bg-[#D9466E] text-white shadow-sm' : 'text-gray-500 hover:bg-white'}`}>
+          <button aria-pressed={scope === 'friends'} onClick={() => !isGuest && setScope('friends')} disabled={isGuest} className={`flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-40 ${scope === 'friends' ? 'bg-[#D9466E] text-white shadow-sm' : 'text-gray-500 hover:bg-white'}`}>
             <Users size={14} /> フレンド競争
           </button>
         </div>
 
         {/* 集計タブ */}
-        <div className="relative z-10 grid grid-cols-3 gap-2 mb-4">
+        <div className="ranking-tabs mtb-tabs relative z-10 grid grid-cols-3 gap-2 mb-4">
           <TabButton active={tab === 'total'} onClick={() => setTab('total')} icon={<Globe size={14} />} label="全章合計" />
           <TabButton active={tab === 'chapter'} onClick={() => setTab('chapter')} icon={<BookOpen size={14} />} label="章別ベスト" />
           <TabButton active={tab === 'period'} onClick={() => setTab('period')} icon={<Calendar size={14} />} label="期間別" />
@@ -430,7 +431,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
         )}
 
         {/* リスト */}
-        <div className="relative z-10 bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
+        <div className="ranking-record-paper mtb-paper relative z-10 bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
           {loading && rows.length === 0 ? (
             <div className="p-10 text-center text-sm text-gray-400">読み込み中…</div>
           ) : rows.length === 0 ? (
@@ -494,6 +495,7 @@ function TabButton({ active, onClick, icon, label }: { active: boolean; onClick:
   return (
     <button
       onClick={onClick}
+      aria-pressed={active}
       className={`flex items-center justify-center gap-1.5 py-2.5 rounded-2xl text-xs font-bold transition-all border-2 ${
         active
           ? 'bg-[#1B2631] text-white border-[#1B2631] shadow-md'

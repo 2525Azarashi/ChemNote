@@ -17,7 +17,7 @@ interface IntroProps {
 
 export function Intro({ onBack, onBattle }: IntroProps) {
   return (
-    <div className="min-h-screen bg-[#FDFBF7] p-4 md:p-8 relative font-handwriting">
+    <div className="mtb-page intro-guide min-h-screen bg-[#FDFBF7] p-4 md:p-8 relative font-handwriting">
       {/* Notebook Lines */}
       <div className="absolute inset-0 pointer-events-none opacity-20" 
            style={{ 
@@ -25,8 +25,8 @@ export function Intro({ onBack, onBattle }: IntroProps) {
              backgroundSize: '100% 2.5rem' 
            }}>
       </div>
-      <div className="w-full max-w-3xl mx-auto bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/40 p-6 md:p-10 relative z-10">
-        <div className="flex items-center mb-8">
+      <div className="intro-guide-paper w-full max-w-3xl mx-auto bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/40 p-6 md:p-10 relative z-10">
+        <div className="mtb-page-header flex items-center mb-8">
           {/* サークル型戻るボタン（aria-label追加で全画面と統一） */}
           <button 
             onClick={onBack}
@@ -41,6 +41,7 @@ export function Intro({ onBack, onBattle }: IntroProps) {
           </h2>
         </div>
 
+        <div className="intro-guide-lead"><span className="mtb-kicker">LEARN. PLAY. GROW.</span><p>勝ちたい気持ちが、<br />学ぶ力になる。</p></div>
         <div className="space-y-8">
           {/* =================================================================
               オンライン対戦の紹介（★このページの1番目★）
@@ -76,6 +77,15 @@ export function Intro({ onBack, onBattle }: IntroProps) {
               <h3 className="text-lg md:text-xl font-handwriting font-bold text-[#1B4F72] mb-4 border-b-2 border-[#2E86C1] pb-2 inline-block">
                 オンライン対戦
               </h3>
+              <button
+                onClick={onBattle}
+                aria-label="オンライン対戦を開く"
+                className="battle-sheen relative overflow-hidden mt-4 w-full md:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#3D9BD9] to-[#2E86C1] px-6 py-3.5 font-handwriting font-bold text-white shadow-[0_12px_28px_-12px_rgba(46,134,193,0.75)] transition-colors hover:from-[#3691D2] hover:to-[#2678AF] min-h-[48px]"
+              >
+                <Swords size={20} aria-hidden="true" />
+                <span className="text-lg">対戦をはじめる</span>
+                <ArrowRight size={18} aria-hidden="true" />
+              </button>
               <p
                 className="text-[#2C3E50] font-handwriting text-lg text-justify"
                 style={{ lineHeight: 1.8 }}
@@ -90,15 +100,7 @@ export function Intro({ onBack, onBattle }: IntroProps) {
               <p className="text-[#5D6D7E] font-handwriting text-base mt-2">
                 ※ 対戦には Google アカウントでの連携が必要です（学習だけならゲストのままでも全部できます）。
               </p>
-              <button
-                onClick={onBattle}
-                aria-label="オンライン対戦を開く"
-                className="battle-sheen relative overflow-hidden mt-4 w-full md:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#3D9BD9] to-[#2E86C1] px-6 py-3.5 font-handwriting font-bold text-white shadow-[0_12px_28px_-12px_rgba(46,134,193,0.75)] transition-colors hover:from-[#3691D2] hover:to-[#2678AF] min-h-[48px]"
-              >
-                <Swords size={20} aria-hidden="true" />
-                <span className="text-lg">対戦をはじめる</span>
-                <ArrowRight size={18} aria-hidden="true" />
-              </button>
+
             </motion.div>
           )}
 

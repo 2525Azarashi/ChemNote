@@ -344,7 +344,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
   }, []);
 
   return (
-    <div className="flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] min-h-0 w-full flex-col overflow-hidden notebook-paper p-3 pb-[calc(5.75rem+env(safe-area-inset-bottom))] sm:p-5 sm:pb-[calc(5.75rem+env(safe-area-inset-bottom))] md:p-6 md:pb-[calc(5.75rem+env(safe-area-inset-bottom))] relative font-handwriting">
+    <div className="mtb-page chapter-route flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] min-h-0 w-full flex-col overflow-hidden notebook-paper p-3 pb-[calc(5.75rem+env(safe-area-inset-bottom))] sm:p-5 sm:pb-[calc(5.75rem+env(safe-area-inset-bottom))] md:p-6 md:pb-[calc(5.75rem+env(safe-area-inset-bottom))] relative font-handwriting">
       <button 
         onClick={onBack}
         className="absolute top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 text-gray-500 hover:text-[#2C3E50] transition-colors font-bold font-handwriting bg-white/80 px-4 py-2 rounded-full shadow-sm z-10"
@@ -355,7 +355,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
 
       <DoorMascot subject={subject} showSpeech={false} size="mini" className="absolute top-3 right-4 md:top-5 md:right-6 w-auto z-10" />
 
-      <div className="shrink-0 text-center mb-3 mt-10 md:mt-0 font-handwriting">
+      <div className="chapter-route-heading shrink-0 text-center mb-3 mt-10 md:mt-0 font-handwriting">
         {/* 化学（発展）では、今どの分野にいるかが分かるよう分野名を添える。 */}
         {isAdvanced && fieldTitle && (
           <p className="mb-1 text-[11px] md:text-xs font-bold tracking-widest" style={{ color: theme.accent }}>
@@ -390,7 +390,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
         </p>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col font-handwriting">
+      <div className="chapter-workspace flex min-h-0 flex-1 flex-col font-handwriting">
         {/* ================================================================
             章／大問の一覧
             ================================================================
@@ -405,7 +405,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
               sm 以上では従来どおり折り返しグリッドに戻す。
               長い章名は途中で省略せず、タブ内で折り返して全文を表示する。
         */}
-        <div className="mb-3 shrink-0 border-b border-slate-200/80">
+        <div className="chapter-index mb-3 shrink-0 border-b border-slate-200/80">
           <div
             role="tablist"
             aria-label="章を選択"
@@ -634,8 +634,8 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                 })}
               </div>
             ) : (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {activeGroup.chapters.map(chapter => {
+            <div className="chapter-route-list grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {activeGroup.chapters.map((chapter, routeIndex) => {
                 const questions = mode === 'mini_test' ? (chapter.miniTest || []) : (chapter.practiceProblems || []);
                 const hasQuestions = questions.length > 0;
                 const savedIndex = Math.max(0, Math.min(
@@ -665,10 +665,13 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                 return (
                   <article
                     key={chapter.id}
-                    className="flex min-h-[148px] flex-col justify-between rounded-xl border border-yellow-200/80 bg-[#FFFDF2]/90 p-3 text-left shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md"
+                    data-unit-id={chapter.id}
+                    data-route-index={String(routeIndex + 1).padStart(2, '0')}
+                    className="chapter-route-card flex min-h-[148px] flex-col justify-between rounded-xl border border-yellow-200/80 bg-[#FFFDF2]/90 p-3 text-left shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md"
                   >
                     <div>
                       <h4 className="text-sm font-bold leading-tight text-[#2C3E50]">{chapter.abstractTitle}</h4>
+                      <p className="chapter-unit-count">{questions.length > 0 ? `演習 ${questions.length} 大問` : '問題を準備中'}</p>
                       {chapter.topics && chapter.topics.length > 0 && (
                         <p className="mt-1.5 line-clamp-2 text-[11px] font-bold leading-relaxed text-slate-500">
                           {chapter.topics.join(' ・ ')}

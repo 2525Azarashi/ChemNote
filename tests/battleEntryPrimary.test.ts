@@ -1,6 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, it, expect } from 'vitest';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { Home } from '../src/components/Home';
 
 /**
  * ===================================================================
@@ -98,22 +101,17 @@ describe('① 対戦が下部ナビに席を持っている', () => {
 });
 
 describe('② 対戦がホームの主CTA になっている', () => {
-  it('主CTA の枠（order-2 lg:order-4）に対戦がある', () => {
-    /*
-      order-2 はスマホで「あいさつの直後」＝必ず1画面目に入る位置。
-      （なぜ order で位置を決めているかは tests/mobileOneScreenLayout.test.ts）
-      対戦のボタンがこの枠の中にあることを、枠の開始位置からの
-      距離で確かめる。
-    */
-    const frame = HOME.indexOf('order-2 lg:order-4');
-    const battle = HOME.indexOf('オンライン対戦を開く');
-    expect(frame, '★主CTA の枠（order-2 lg:order-4）が見つかりません★').toBeGreaterThan(0);
-    expect(battle, '★ホームから対戦の主CTA が消えています★').toBeGreaterThan(0);
-    expect(
-      battle - frame,
-      '★対戦のボタンが主CTA の枠から離れています★ 枠の外に出ると1画面目に入りません',
-    ).toBeLessThan(3000);
+  it('独立した対戦ステージに主CTAがあり、学習ノートより先に描画される', () => {
+    const frame = HOME.indexOf('data-home-arena');
+    const battle = HOME.indexOf('data-home-battle');
+    const study = HOME.indexOf('data-home-study');
+    expect(frame).toBeGreaterThan(0);
     expect(battle).toBeGreaterThan(frame);
+    expect(battle).toBeLessThan(study);
+    const stage = HOME.slice(frame, study);
+    expect(stage).toContain('onClick={onBattle}');
+    expect(stage).toContain('オンライン対戦を開く');
+    expect(stage).toContain('home-shortcuts');
   });
 
   it('対戦が学習より前に置かれている', () => {
@@ -173,5 +171,31 @@ describe('③ ★問題（学習）の入口を消していない★', () => {
       hits.length,
       `★対戦の入口がホーム内に ${hits.length} 個あります★ 主CTA の1つだけにしてください`,
     ).toBe(1);
+  });
+});
+
+// Source contracts above are complemented by actual React rendering:
+// a missing callback must remove the button, not leave a dead affordance.
+describe('ホームの実レンダー', () => {
+  const props = {
+    onStart: () => {}, onIntro: () => {}, onNoteList: () => {},
+    onLogicalTree: () => {}, isGuest: false,
+  };
+  it('対戦・補助3機能・学習・進捗が同時に存在する', () => {
+    const html = renderToStaticMarkup(React.createElement(Home, { ...props, onBattle: () => {} }));
+    for (const label of ['オンライン対戦を開く', '学習ノートを開く', 'アプリ紹介を開く', 'ご意見を送る', '学習を始める', '全科目の進捗を見る']) {
+      expect(html).toContain(label);
+    }
+    expect(html.match(/data-home-battle=/g)).toHaveLength(1);
+    expect(html).toContain('role="progressbar"');
+    expect(html).toContain('<details class="home-all-progress">');
+  });
+  it('対戦非公開時も学習は使え、対戦を約束する表示を残さない', () => {
+    const html = renderToStaticMarkup(React.createElement(Home, props));
+    expect(html).not.toContain('data-home-battle');
+    expect(html).not.toContain('ONLINE QUIZ BATTLE');
+    expect(html).not.toContain('全国レート戦');
+    expect(html).toContain('学習を始める');
+    expect(html).toContain('MY STUDY ROOM');
   });
 });

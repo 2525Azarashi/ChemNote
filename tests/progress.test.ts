@@ -611,8 +611,11 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
     expect(src).toContain('subjectProgressDefs');
     expect(src).toContain('subjectProgress');
     expect(src).toMatch(/subjectProgressDefs\.map\(/);
-    // 全科目合計で分母を割る旧実装（単一の progressPercent）が残っていないこと
-    expect(src).not.toMatch(/const progressPercent\s*=/);
+    // 常設の現在科目は対象章だけで集計し、一覧は科目ごとの分母を使う。
+    expect(src).toContain('countSolvedProblemsIn(uid, currentChapterIds)');
+    expect(src).toContain('const progressPercent = totalQuestions > 0');
+    expect(src).toContain('const percent = p.total > 0');
+    expect(src).not.toMatch(/countSolvedProblems\(uid\)/);
 
     // 科目の定義そのものは data/allChapters.ts の SUBJECTS に集約したため、
     // 「Home.tsx に getAllAdvancedChapters と書いてあるか」という文字列検査では
@@ -641,10 +644,10 @@ describe('画面側の結線（進捗が実際に記録・表示されるか）'
     // （化学（発展）は演習問題の収録が始まったので、この分岐は
     //  今後追加される他科目のための安全網として残している。）
     const src = readFileSync('src/components/Home.tsx', 'utf8');
-    expect(src).toContain('const isEmpty = p.total === 0');
+    expect(src).toContain("p.total === 0 ? '問題を準備中'");
     expect(src).toContain('問題を準備中');
     // 分母0でゼロ除算せず 0% に落ちること（NaN% を出さない）
-    expect(src).toMatch(/p\.total > 0 \? Math\.round\(\(p\.solved \/ p\.total\) \* 100\) : 0/);
+    expect(src).toMatch(/p\.total > 0 \? Math\.round\(p\.solved \/ p\.total \* 100\) : 0/);
   });
 
   it('化学（発展）は演習問題20問が進捗の分母に入る', async () => {
