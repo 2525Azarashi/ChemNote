@@ -1,0 +1,134 @@
+{
+  "results": [
+    {
+      "name": "独立した2ブラウザで別UIDを認証しモードを選べる",
+      "status": "passed",
+      "ms": 4147,
+      "detail": {
+        "independentContexts": true
+      }
+    },
+    {
+      "name": "異なるモードの合言葉を拒否し、同じモードなら参加できる",
+      "status": "passed",
+      "ms": 1593,
+      "detail": {
+        "room": "YyOIBukHDf0aHaZky9CD"
+      }
+    },
+    {
+      "name": "通常対戦3問：片方の回答では進まず、得点・勝敗・履歴が双方で一致",
+      "status": "passed",
+      "ms": 24638,
+      "detail": {
+        "room": "ZXjXsSDpB4ZrHifI1Lsw",
+        "attest": {
+          "LdmLuQerHR4PXvEZRvGKXpdThGh7": {
+            "myScore": 200,
+            "opponentScore": 100,
+            "outcome": "win",
+            "at": {
+              "seconds": 1788690550,
+              "nanoseconds": 238000000
+            }
+          },
+          "eiBfHkFcCczXdckqUz4BDUkTsL3M": {
+            "myScore": 100,
+            "opponentScore": 200,
+            "outcome": "lose",
+            "at": {
+              "seconds": 1788690550,
+              "nanoseconds": 715000000
+            }
+          }
+        },
+        "rankingA": {
+          "uid": "LdmLuQerHR4PXvEZRvGKXpdThGh7",
+          "nickname": "alpha_1788690526320",
+          "photoURL": "",
+          "losses": 0,
+          "draws": 0,
+          "wins": 1,
+          "rating": 1512,
+          "lastRoomId": "ZXjXsSDpB4ZrHifI1Lsw",
+          "updatedAt": {
+            "seconds": 1788690551,
+            "nanoseconds": 779000000
+          }
+        },
+        "rankingB": {
+          "uid": "eiBfHkFcCczXdckqUz4BDUkTsL3M",
+          "nickname": "beta_1788690526320",
+          "photoURL": "",
+          "wins": 0,
+          "draws": 0,
+          "rating": 1488,
+          "losses": 1,
+          "lastRoomId": "ZXjXsSDpB4ZrHifI1Lsw",
+          "updatedAt": {
+            "seconds": 1788690551,
+            "nanoseconds": 768000000
+          }
+        }
+      }
+    },
+    {
+      "name": "早押し同時操作：先着1名のみ解答、相手の入力不可、誤答・無回答で進行",
+      "status": "passed",
+      "ms": 34103,
+      "detail": {
+        "room": "rAPCo5vRraKfmPukjzm5",
+        "firstOwner": "LdmLuQerHR4PXvEZRvGKXpdThGh7"
+      }
+    },
+    {
+      "name": "通常対戦の再読み込み：回答済みを維持し、二重回答できない",
+      "status": "passed",
+      "ms": 37072,
+      "detail": {
+        "room": "spNtTR88OZjEL3mGfhPD"
+      }
+    },
+    {
+      "name": "待機中の退出：退出後の部屋には新規参加できない",
+      "status": "passed",
+      "ms": 7818,
+      "detail": {
+        "room": "v9y4F00P24DFncq7PwlP"
+      }
+    },
+    {
+      "name": "対戦中の明示的退出：残った側で速やかに決着する",
+      "status": "passed",
+      "ms": 48086,
+      "detail": {
+        "room": "FbJkAnKZh94gsMWL0Gv1",
+        "outcome": "win",
+        "afterReload": true
+      }
+    },
+    {
+      "name": "全国対戦：異なるモードは混ざらず、同モードはマッチする",
+      "status": "passed",
+      "ms": 23558,
+      "detail": {
+        "roomId": "nqlt4qv8vGVOXr4I43Yw"
+      }
+    },
+    {
+      "name": "全国対戦：同時に待機を始めた2人だけで成立する",
+      "status": "failed",
+      "ms": 2045,
+      "message": "双方が待機票を置くだけで、2人ともマッチしない"
+    }
+  ],
+  "blocked": [
+    "fonts.googleapis.com"
+  ],
+  "pageErrors": [
+    {
+      "browser": 0,
+      "message": "この操作は許可されていません。部屋がすでに閉じている可能性があります。"
+    }
+  ]
+}

@@ -1,0 +1,395 @@
+/**
+ * ===================================================================
+ * AI 対戦: 端末の中だけで進む試合（Firestore を使わない）
+ * ===================================================================
+ *
+ * ■ useBattleRoom との関係
+ *   画面（BattleQuestionView / BattleResult）は同じ部品を使うので、
+ *   返す値の形はできるだけ useBattleRoom に揃えてある。
+ *   ただし通信に関するもの（connection / offlineMessage / resumeMessage /
+ *   clockSkewed）は存在しないので、常に「問題なし」の値を返す。
+ *
+ * ■ 進行
+ *   ・開始で問題 0 の締切（Date.now() + 制限時間）を置く
+ *   ・AI の行動は decideAiMove で試合開始時に全問ぶん確定する（決定論）
+ *   ・各問題で「AI の遅延が来たら AI の解答を記録」
+ *   ・両者解答 or 締切 → 1.2 秒見せてから次へ
+ *   ・最終問題が終わったら finished
+ *
+ * ■ 点数計算は本番の対戦と同じ純関数（scoreBattlePlayer / judgeBattle）
+ *   「AI 戦だけ点の付き方が違う」と練習にならないため。
+ *
+ * ■ レートは動かさない。履歴にも残さない。
+ *   Firestore ルール上、レートは「2人部屋・相手の申告つき・決着済み」の
+ *   部屋が実在するときしか更新できない。AI 戦の部屋は存在しないので
+ *   書けない（書くべきでもない）。画面にはその旨を出す。
+ */
+
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import { auth } from '../../firebase';
+import { loadPool } from '../data/battlePool';
+import { drawQuestionIds, effectiveRule } from '../data/battle';
+import { resolveNickname } from '../../utils/leaderboard';
+import {
+  aiAnswerRecord,
+  aiProfileOf,
+  aiUidOf,
+  decideAiMove,
+  type AiLevel,
+  type AiMove,
+} from '../core/aiOpponent';
+import {
+  judgeBattle,
+  NO_ANSWER,
+  resolveTimeLimit,
+  scoreBattlePlayer,
+} from '../core/battleCore';
+import { cycleKanaKey } from '../core/kanaKeyboard';
+import type {
+  BattleAnswerRecord,
+  BattleAnswerSheet,
+  BattleQuestion,
+  BattleResultSummary,
+  BattleRule,
+} from '../core/types';
+import { answerKeyOf } from '../core/types';
+
+export type AiBattlePhase = 'loading' | 'ready' | 'playing' | 'finished' | 'error';
+
+/** 両者解答／締切のあと、正解を見せておく時間 */
+const REVEAL_HOLD_MS = 1200;
+/** 締切をまたいだ判定に使う猶予（ms） */
+const DEADLINE_GRACE_MS = 150;
+
+export interface AiBattleState {
+  phase: AiBattlePhase;
+  error: string | null;
+  subject: string;
+  level: AiLevel;
+  rules: BattleRule;
+  questions: BattleQuestion[];
+  currentIndex: number;
+  current: BattleQuestion | null;
+  remainMs: number;
+  answered: boolean;
+  opponentAnswered: boolean;
+  myChoice: number;
+  myPanel: number[];
+  myScore: number;
+  opponentScore: number;
+  result: BattleResultSummary | null;
+  finished: boolean;
+  me: { uid: string; nickname: string; photoURL: string };
+  opponent: { uid: string; nickname: string; photoURL: string; rating: number };
+}
+
+export interface AiBattleActions {
+  start: () => void;
+  choose: (index: number) => void;
+  pushPanel: (index: number) => void;
+  popPanel: () => void;
+  cyclePanel: () => void;
+  commitKana: () => void;
+}
+
+export function useAiBattle(
+  subject: string,
+  level: AiLevel,
+  /** 試合番号。変わるたびに新しい試合を作る */
+  matchNo = 0,
+): AiBattleState & AiBattleActions {
+  const user = auth.currentUser;
+  const uid = user?.uid || 'me';
+  const profile = aiProfileOf(level);
+  const aiUid = aiUidOf(level);
+
+  const rules = useMemo(() => effectiveRule(subject), [subject]);
+
+  const [phase, setPhase] = useState<AiBattlePhase>('loading');
+  const [error, setError] = useState<string | null>(null);
+  const [questions, setQuestions] = useState<BattleQuestion[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [deadlineMs, setDeadlineMs] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
+  const [mySheet, setMySheet] = useState<BattleAnswerSheet>({});
+  const [aiSheet, setAiSheet] = useState<BattleAnswerSheet>({});
+  const [panel, setPanel] = useState<number[]>([]);
+
+  /** 試合ID（乱数の種）。開始ごとに新しくする */
+  const seedRef = useRef(`ai-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`);
+  /** 問題ごとの開始時刻（速さ点の計算に使う） */
+  const startsRef = useRef(new Map<number, number>());
+  /** AI の行動（開始時に全問ぶん確定） */
+  const movesRef = useRef<AiMove[]>([]);
+  /** 次へ進める処理の二重実行防止 */
+  const advancingRef = useRef(false);
+
+  // ------------------------------------------------------------
+  // 出題を用意する
+  // ------------------------------------------------------------
+  useEffect(() => {
+    let alive = true;
+    setPhase('loading');
+    setError(null);
+    // ★新しい試合ごとに種と記録を作り直す★
+    seedRef.current = `ai-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    startsRef.current = new Map();
+    movesRef.current = [];
+    advancingRef.current = false;
+    setMySheet({});
+    setAiSheet({});
+    setPanel([]);
+    setCurrentIndex(0);
+    setDeadlineMs(0);
+    (async () => {
+      const ids = await drawQuestionIds(subject, rules, seedRef.current);
+      if (ids.length === 0) throw new Error('この教科は対戦できる問題がまだ足りません。');
+      const pool = await loadPool(subject);
+      const byId = new Map(pool.map((q) => [q.id, q]));
+      const qs = ids.map((id) => byId.get(id)).filter((q): q is BattleQuestion => Boolean(q));
+      if (!alive) return;
+      setQuestions(qs);
+      movesRef.current = qs.map((q, i) =>
+        decideAiMove(profile, q, resolveTimeLimit(q, rules), seedRef.current, i),
+      );
+      setPhase('ready');
+    })().catch((e: Error) => {
+      if (!alive) return;
+      setError(e.message || '問題の読み込みに失敗しました。');
+      setPhase('error');
+    });
+    return () => {
+      alive = false;
+    };
+    // level は profile 経由で使う。subject/level/matchNo が変わったら作り直す
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subject, level, rules, matchNo]);
+
+  // ------------------------------------------------------------
+  // 時計
+  // ------------------------------------------------------------
+  useEffect(() => {
+    if (phase !== 'playing') return;
+    const timer = window.setInterval(() => setNow(Date.now()), 200);
+    return () => window.clearInterval(timer);
+  }, [phase]);
+
+  const current = questions[currentIndex] || null;
+  const remainMs = deadlineMs > 0 ? Math.max(0, deadlineMs - now) : 0;
+
+  const myRecord = mySheet[answerKeyOf(currentIndex)] || null;
+  const answered = Boolean(myRecord);
+  const aiRecord = aiSheet[answerKeyOf(currentIndex)] || null;
+  const opponentAnswered = Boolean(aiRecord);
+
+  // 問題が変わったらパネルの入力を捨てる
+  useEffect(() => {
+    setPanel([]);
+  }, [currentIndex]);
+
+  // ------------------------------------------------------------
+  // 開始
+  // ------------------------------------------------------------
+  const openQuestion = useCallback(
+    (index: number) => {
+      const q = questions[index];
+      if (!q) return;
+      const startMs = Date.now();
+      const limit = resolveTimeLimit(q, rules);
+      startsRef.current.set(index, startMs);
+      setCurrentIndex(index);
+      setDeadlineMs(startMs + limit * 1000);
+      setNow(startMs);
+      advancingRef.current = false;
+    },
+    [questions, rules],
+  );
+
+  const start = useCallback(() => {
+    if (phase !== 'ready' || questions.length === 0) return;
+    setMySheet({});
+    setAiSheet({});
+    setPhase('playing');
+    openQuestion(0);
+  }, [phase, questions.length, openQuestion]);
+
+  // ------------------------------------------------------------
+  // AI の解答（遅延が来たら記録する）
+  // ------------------------------------------------------------
+  useEffect(() => {
+    if (phase !== 'playing' || !current) return;
+    const move = movesRef.current[currentIndex];
+    const startMs = startsRef.current.get(currentIndex);
+    if (!move || startMs == null) return;
+    if (aiSheet[answerKeyOf(currentIndex)]) return;
+
+    const fireAt = startMs + move.delayMs;
+    const wait = Math.max(0, fireAt - Date.now());
+    const timer = window.setTimeout(() => {
+      const rec = aiAnswerRecord(currentIndex, move, startMs);
+      if (!rec) return;
+      setAiSheet((prev) =>
+        prev[answerKeyOf(currentIndex)] ? prev : { ...prev, [answerKeyOf(currentIndex)]: rec },
+      );
+    }, wait);
+    return () => window.clearTimeout(timer);
+    // aiSheet は「もう答えたか」の判定にだけ使うので依存に含めない
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, current, currentIndex]);
+
+  // ------------------------------------------------------------
+  // 進行（両者解答 or 締切 → 少し見せて次へ／終了）
+  // ------------------------------------------------------------
+  const bothAnswered = answered && opponentAnswered;
+  const timeUp = deadlineMs > 0 && now >= deadlineMs + DEADLINE_GRACE_MS;
+  const revealable = bothAnswered || timeUp;
+
+  useEffect(() => {
+    if (phase !== 'playing' || !current || !revealable) return;
+    if (advancingRef.current) return;
+    advancingRef.current = true;
+    const timer = window.setTimeout(() => {
+      const next = currentIndex + 1;
+      if (next >= questions.length) {
+        setPhase('finished');
+      } else {
+        openQuestion(next);
+      }
+    }, REVEAL_HOLD_MS);
+    return () => window.clearTimeout(timer);
+  }, [phase, current, revealable, currentIndex, questions.length, openQuestion]);
+
+  // ------------------------------------------------------------
+  // 採点
+  // ------------------------------------------------------------
+  const scores = useMemo(() => {
+    if (questions.length === 0) return null;
+    const starts = startsRef.current;
+    return {
+      me: scoreBattlePlayer(uid, questions, mySheet, rules, starts),
+      other: scoreBattlePlayer(aiUid, questions, aiSheet, rules, starts),
+    };
+    // startsRef は phase / currentIndex の変化と一緒に更新される
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questions, uid, aiUid, mySheet, aiSheet, rules, currentIndex, phase]);
+
+  const finished = phase === 'finished';
+  const result = useMemo(() => {
+    if (!scores || !finished) return null;
+    return judgeBattle(scores.me, scores.other, rules);
+  }, [scores, finished, rules]);
+
+  // ------------------------------------------------------------
+  // 操作
+  // ------------------------------------------------------------
+  const submittable = phase === 'playing' && !answered && remainMs > 0;
+
+  const record = useCallback(
+    (payload: { choice: number; panel: number[] }) => {
+      if (!submittable) return;
+      const rec: BattleAnswerRecord = {
+        index: currentIndex,
+        choice: payload.choice,
+        panel: payload.panel,
+        answeredAt: Date.now(),
+      };
+      setMySheet((prev) =>
+        prev[answerKeyOf(currentIndex)] ? prev : { ...prev, [answerKeyOf(currentIndex)]: rec },
+      );
+    },
+    [submittable, currentIndex],
+  );
+
+  const choose = useCallback(
+    (index: number) => {
+      if (!current) return;
+      record({ choice: index, panel: [] });
+    },
+    [current, record],
+  );
+
+  const commitPanel = useCallback(
+    (order: number[]) => {
+      if (!current) return;
+      if (order.length !== current.panelOrder.length) return;
+      record({ choice: NO_ANSWER, panel: order });
+    },
+    [current, record],
+  );
+
+  const pushPanel = useCallback(
+    (index: number) => {
+      if (!current || !submittable) return;
+      const need = current.panelOrder.length;
+      const isKana = current.format === 'kana';
+      setPanel((prev) => {
+        if (!isKana && prev.includes(index)) return prev;
+        if (prev.length >= need) return prev;
+        const next = [...prev, index];
+        if (!isKana && next.length === need) commitPanel(next);
+        return next;
+      });
+    },
+    [current, submittable, commitPanel],
+  );
+
+  const cyclePanel = useCallback(() => {
+    if (!current || current.format !== 'kana' || !submittable) return;
+    setPanel((prev) => {
+      if (prev.length === 0) return prev;
+      const last = prev[prev.length - 1];
+      if (last === undefined) return prev;
+      const next = cycleKanaKey(last);
+      if (next === last) return prev;
+      return [...prev.slice(0, -1), next];
+    });
+  }, [current, submittable]);
+
+  const commitKana = useCallback(() => {
+    if (!current || current.format !== 'kana') return;
+    commitPanel(panel);
+  }, [current, commitPanel, panel]);
+
+  const popPanel = useCallback(() => {
+    if (answered) return;
+    setPanel((prev) => prev.slice(0, -1));
+  }, [answered]);
+
+  return {
+    phase,
+    error,
+    subject,
+    level,
+    rules,
+    questions,
+    currentIndex,
+    current,
+    remainMs,
+    answered,
+    opponentAnswered,
+    myChoice: myRecord?.choice ?? NO_ANSWER,
+    myPanel: myRecord ? myRecord.panel || [] : panel,
+    myScore: scores?.me.score ?? 0,
+    opponentScore: scores?.other.score ?? 0,
+    result,
+    finished,
+    me: {
+      uid,
+      nickname: user ? resolveNickname() : 'あなた',
+      photoURL: user?.photoURL || '',
+    },
+    opponent: {
+      uid: aiUid,
+      nickname: profile.name,
+      photoURL: '',
+      rating: profile.displayRating,
+    },
+    start,
+    choose,
+    pushPanel,
+    popPanel,
+    cyclePanel,
+    commitKana,
+  };
+}

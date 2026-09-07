@@ -1,0 +1,280 @@
+--- a/firestore.rules
++++ b/firestore.rules
+@@ -1540,7 +1540,8 @@
+             : old.status == 'playing'
+               ? (next.currentIndex == old.currentIndex
+                   ? next.deadlineAt == old.deadlineAt
+-                    && (next.status != 'finished' || (old.currentIndex == old.questionIds.size() - 1 && battleTurnClosed()))
++                    && (next.status != 'finished' || old.get('left', {}).keys().hasAny(old.players)
++                      || (old.currentIndex == old.questionIds.size() - 1 && battleTurnClosed()))
+                   : next.currentIndex == old.currentIndex + 1 && next.currentIndex < old.questionIds.size()
+                     && next.status == 'playing' && battleTurnClosed()
+                     && request.time >= battleTurnEnd() + duration.value(1800, 'ms')
+@@ -1625,7 +1626,8 @@
+       }
+ 
+       function battleLeftAddedMine() {
+-        return battleNewLeft() is map
++        return resource.data.status in ['waiting', 'playing']
++          && battleNewLeft() is map
+           // 参加者以外のキーを増やせない（膨らませ攻撃も同時に防ぐ）
+           && battleNewLeft().keys().hasOnly(resource.data.players)
+ 
+--- a/src/battle/data/battle.ts
++++ b/src/battle/data/battle.ts
+@@ -509,110 +509,40 @@
+   const uid = requireUid();
+   const rules = rulesForStyle(normalizeRule(subject, loadRuleSync(subject)), playStyle);
+   const rating = await fetchMyRating();
+-
+-  // 1. 待っている人を探す（自分以外・同じ教科）
+-  //
+-  // ===================================================================
+-  // ★ここが本番で「The query requires an index.」を出した箇所★
+-  // ===================================================================
+-  //
+-  //   where('subject','==',...) + orderBy('createdAt','asc')
+-  // は等式と並べ替えの組み合わせなので Firestore の複合索引が必須。
+-  // firestore.indexes.json が空のままデプロイされていたため、
+-  // 全国対戦を押した全員がこのエラーに当たっていた。
+-  //
+-  // ■ 直し方
+-  //   ★索引に頼らない形に書き換えた★（下の fetchWaitingQueue）
+-  //   組み合わせをやめて条件1つにすれば、Firestore が索引を
+-  //   自動で作るので、索引のデプロイが要らなくなる。
+-  //
+-  //   索引の宣言（firestore.indexes.json）も入れてあるが、
+-  //   それは将来のための備えで、★無くても動く★。
+-  //   索引のデプロイには開発ツールが必要で、
+-  //   「ルールを公開する」だけでは作られない。
+-  //   実際その手順が抜けていたのが今回の事故の原因なので、
+-  //   そもそも要らない形にするのが確実である。
+-  //
+-  // ■ 「古い順」は fetchWaitingQueue が手元で保証する
+-  //   長く待っている人から先にマッチさせるため。
+-  //   ここを崩すと、後から来た人が先に対戦できてしまい、
+-  //   混雑時に待ち続ける人が出る。
+-  const waitingDocs = await fetchWaitingQueue(queueSubject(subject, playStyle));
+-
+-  const candidate = waitingDocs.find((d) => d.id !== uid);
+-
+-  if (candidate) {
+-    const opponentUid = candidate.id;
+-    const opponentProfile = candidate.get('profile') as BattlePlayer | undefined;
+-    const roomRef = doc(collection(db, COL_ROOMS));
+-    const questionIds = await drawQuestionIds(subject, rules, roomRef.id);
+-    if (questionIds.length === 0) {
+-      throw new Error('この教科は対戦できる問題がまだ足りません。');
+-    }
+-
+-    try {
+-      await runTransaction(db, async (tx) => {
+-        const queueRef = doc(db, COL_QUEUE, opponentUid);
+-        const queueSnap = await tx.get(queueRef);
+-        // 先に他の人が拾っていたら失敗させる（二重マッチの防止）
+-        if (!queueSnap.exists() || queueSnap.get('subject') !== queueSubject(subject, playStyle)) throw new Error('TAKEN');
+-
+-        tx.delete(queueRef);
+-        // 自分の待機票が残っていたら消す
+-        tx.delete(doc(db, COL_QUEUE, uid));
+-
+-        tx.set(roomRef, {
+-          id: roomRef.id,
+-          status: 'waiting',
+-          mode: 'random',
+-          playStyle,
+-          buzzes: {},
+-          subject,
+-          joinCode: '',
+-          hostUid: uid,
+-          players: [uid, opponentUid],
+-          profiles: {
+-            [uid]: myProfile(rating),
+-            [opponentUid]: opponentProfile || {
+-              uid: opponentUid,
+-              nickname: '対戦相手',
+-              photoURL: '',
+-              rating: RATING_INITIAL,
+-            },
+-          },
+-          questionIds,
+-          rules,
+-          currentIndex: 0,
+-          deadlineAt: null,
+-          answers: { [uid]: {}, [opponentUid]: {} },
+-          attest: {},
+-          createdAt: serverTimestamp(),
+-          updatedAt: serverTimestamp(),
+-        });
++  const roomRef = doc(collection(db, COL_ROOMS));
++  const questionIds = await drawQuestionIds(subject, rules, roomRef.id);
++  if (questionIds.length === 0) throw new Error('この教科は対戦できる問題がまだ足りません。');
++  const queueKey = queueSubject(subject, playStyle);
++  const ownRef = doc(db, COL_QUEUE, uid);
++  try {
++    // 先に待機票を置いてから探す。同時開始でも双方が「相手なし」で止まらない。
++    await setDoc(ownRef, { uid, subject: queueKey, profile: myProfile(rating), createdAt: serverTimestamp() });
++    const waiting = await fetchWaitingQueue(queueKey);
++    const candidate = waiting.find(d => d.id !== uid);
++    if (!candidate) return { roomId: null };
++    const otherRef = doc(db, COL_QUEUE, candidate.id);
++    const matched = await runTransaction(db, async tx => {
++      // 両方の待機票を確認・消費する。2人が互いを拾って部屋が2つできるのを防ぐ。
++      const mine = await tx.get(ownRef);
++      const other = await tx.get(otherRef);
++      if (!mine.exists() || !other.exists() || mine.get('subject') !== queueKey || other.get('subject') !== queueKey) return false;
++      const otherUid = other.id;
++      tx.delete(ownRef);
++      tx.delete(otherRef);
++      tx.set(roomRef, {
++        id: roomRef.id, status: 'waiting', mode: 'random', playStyle, buzzes: {},
++        subject, joinCode: '', hostUid: uid, players: [uid, otherUid],
++        profiles: { [uid]: myProfile(rating), [otherUid]: other.get('profile') },
++        questionIds, rules, currentIndex: 0, deadlineAt: null,
++        answers: { [uid]: {}, [otherUid]: {} }, attest: {},
++        createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+       });
+-
+-      return { roomId: roomRef.id };
+-    } catch (error) {
+-      if ((error as Error).message !== 'TAKEN') {
+-        throw friendlyError(error, 'マッチングに失敗しました。');
+-      }
+-      // 拾われていたので、次に進んで自分が待つ側になる
+-    }
+-  }
+-
+-  // 2. 自分が待つ
+-  try {
+-    await setDoc(doc(db, COL_QUEUE, uid), {
+-      uid,
+-      subject: queueSubject(subject, playStyle),
+-      profile: myProfile(rating),
+-      createdAt: serverTimestamp(),
++      return true;
+     });
++    return { roomId: matched ? roomRef.id : null };
+   } catch (error) {
+-    throw friendlyError(error, '待機列に入れませんでした。');
+-  }
+-
+-  return { roomId: null };
++    throw friendlyError(error, 'マッチングに失敗しました。');
++  }
+ }
+ 
+ /** 待機をやめる（画面を離れるときは必ず呼ぶ） */
+@@ -1041,9 +971,17 @@
+   const uid = auth.currentUser?.uid;
+   if (!uid) return;
+   try {
+-    await updateDoc(doc(db, COL_ROOMS, roomId), {
+-      [`left.${uid}`]: serverTimestamp(),
+-      updatedAt: serverTimestamp(),
++    await runTransaction(db, async tx => {
++      const ref = doc(db, COL_ROOMS, roomId);
++      const snap = await tx.get(ref);
++      if (!snap.exists()) return;
++      const room = snap.data() as BattleRoom;
++      if (!room.players.includes(uid) || room.left?.[uid] || !['waiting', 'playing'].includes(room.status)) return;
++      tx.update(ref, {
++        ...(room.status === 'waiting' ? { status: 'aborted' } : {}),
++        [`left.${uid}`]: serverTimestamp(),
++        updatedAt: serverTimestamp(),
++      });
+     });
+   } catch {
+     // 離脱の記録に失敗しても、相手側は無応答から不戦勝を判定できる
+--- a/src/battle/hooks/useBattleRoom.ts
++++ b/src/battle/hooks/useBattleRoom.ts
+@@ -539,7 +539,12 @@
+     currentIndex >= questions.length - 1 &&
+     revealable;
+ 
+-  const finished = status === 'finished' || (status === 'playing' && lastQuestionDone);
++  const leftMap = room?.left;
++  // サーバが確定した明示的退出だけで早期決着する。推測による切断と分ける。
++  const firstLeaver = (players || []).filter(p => hasLeft(leftMap, p))
++    .sort((a, b) => (toMillis(leftMap?.[a]) ?? 0) - (toMillis(leftMap?.[b]) ?? 0))[0];
++  const explicitForfeit = Boolean(firstLeaver) && (status === 'playing' || status === 'finished');
++  const finished = status === 'finished' || (status === 'playing' && (lastQuestionDone || explicitForfeit));
+ 
+   /**
+    * 復帰したときの知らせを作る。
+@@ -602,8 +607,8 @@
+    * 相手は普通に答えている可能性がある。
+    * ★自分の電波が悪いことを相手の離脱と取り違えてはいけない★。
+    */
+-  const leftMap = room?.left;
+   const byForfeit = useMemo(() => {
++    if (explicitForfeit) return firstLeaver !== uid;
+     if (status !== 'playing') return false;
+ 
+     // ① 明示的な離脱は即座に成立
+@@ -626,25 +631,31 @@
+       .filter((n): n is number => n != null);
+     const trailing = trailingNoAnswerCount(answeredIndexes, currentIndex);
+     return trailing >= FORFEIT_STREAK;
+-  }, [status, leftMap, opponentUid, connection, opponentSheet, currentIndex, isBuzz]);
++  }, [status, leftMap, opponentUid, connection, opponentSheet, currentIndex, isBuzz, explicitForfeit, firstLeaver, uid]);
+ 
+   const result = useMemo(() => {
+     if (!scores || !finished) return null;
++    if (explicitForfeit) return {
++      me: scores.me, opponent: scores.other,
++      outcome: firstLeaver === uid ? 'lose' as const : 'win' as const,
++      decidedByTime: false, needsSuddenDeath: false,
++    };
+     return judgeBattle(scores.me, scores.other, rules);
+-  }, [scores, finished, rules]);
++  }, [scores, finished, rules, explicitForfeit, firstLeaver, uid]);
+ 
+   // ------------------------------------------------------------
+   // 結果の申告
+   // ------------------------------------------------------------
+   useEffect(() => {
+     if (!roomId || !result || !scores || attestedRef.current) return;
++    if (room?.attest?.[uid]) { attestedRef.current = true; return; }
+     attestedRef.current = true;
+     void attestResult(roomId, {
+       myScore: scores.me.score,
+       opponentScore: scores.other.score,
+       outcome: result.outcome,
+-    });
+-  }, [roomId, result, scores]);
++    }).catch((e: Error) => setError(e.message));
++  }, [roomId, result, scores, room?.attest, uid]);
+ 
+   // ------------------------------------------------------------
+   // レート反映（★相互確認が揃ってから★）
+@@ -658,7 +669,7 @@
+ 
+     // 相手が離脱した場合は相手の申告が来ないので、
+     // 不戦勝として（変化量を半分にして）反映する。
+-    const forfeit = byForfeit && !theirs;
++    const forfeit = explicitForfeit || (byForfeit && !theirs);
+     if (!mine) return;
+     if (!theirs && !forfeit) return;
+ 
+@@ -690,7 +701,7 @@
+         ratingAfter: change?.after ?? 0,
+       });
+     });
+-  }, [roomId, result, scores, subject, attest, uid, opponentUid, opponent, byForfeit]);
++  }, [roomId, result, scores, subject, attest, uid, opponentUid, opponent, byForfeit, explicitForfeit]);
+ 
+   // ------------------------------------------------------------
+   // 操作
+--- a/src/battle/ui/BattleRoomScreen.tsx
++++ b/src/battle/ui/BattleRoomScreen.tsx
+@@ -190,7 +190,10 @@
+     recordedRef.current = true;
+     try {
+       // 早押しで権利がなかった問題を「間違えた穴」として保存しない。
++      const hasDeparture = room?.players.some(p => Boolean(room.left?.[p]));
+       const attempted = questions.map((q, i) => ({ q, i }))
++        // 途中退出で未出題の問題まで弱点扱いしない。
++        .filter(({ i }) => !hasDeparture || Boolean(room?.answers[uid]?.[`q${i}`]))
+         .filter(({ i }) => room?.playStyle !== 'buzz' || room.buzzes?.[`q${i}`]?.uid === uid);
+       const correct = attempted.map(({ i }) => result.me.perQuestion[i]?.correct ?? false);
+       const { opened, filled } = recordBattleResult(uid, attempted.map(({ q }) => q), correct);

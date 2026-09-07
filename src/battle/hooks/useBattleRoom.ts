@@ -448,7 +448,34 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
     ((answered && opponentAnswered) ||
       (deadlineMs > 0 && now >= deadlineMs + DEADLINE_GRACE_MS));
 
-  const finished = status === 'finished' || (status === 'playing' && lastQuestionDone);
+  /**
+   * ★明示的な退出（left）による早期決着★
+   *
+   * 相手が「対戦メニューにもどる」を押すと abortRoom() が left.{相手} を書く。
+   * 以前はこれを見ても「不戦勝の予告」を出すだけで、終了判定は
+   * 最後の問題の締切を待っていた（独立検証で指摘）。
+   * 相手はもういないので、残りの問題を1人で消化させる意味が無い。
+   *
+   * ★サーバが確定した退出だけを使う★
+   * left はルールで「自分の uid・サーバ時刻」しか書けないので、
+   * 偽装できない証拠になる。無回答からの推測（下の byForfeit ②）は
+   * 早期決着には使わない（トンネルで圏外になった人を負けにしない）。
+   *
+   * 両者が退出している（ありえないが）場合は先に抜けた方を負けにする。
+   */
+  const leftMap = room?.left;
+  const firstLeaver = useMemo(() => {
+    const leavers = (players || []).filter((p) => hasLeft(leftMap, p));
+    if (leavers.length === 0) return '';
+    return [...leavers].sort(
+      (a, b) => (toMillis(leftMap?.[a]) ?? 0) - (toMillis(leftMap?.[b]) ?? 0),
+    )[0] as string;
+  }, [players, leftMap]);
+  const explicitForfeit =
+    Boolean(firstLeaver) && (status === 'playing' || status === 'finished');
+
+  const finished =
+    status === 'finished' || (status === 'playing' && (lastQuestionDone || explicitForfeit));
 
   /**
    * 復帰したときの知らせを作る。
@@ -511,8 +538,9 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
    * 相手は普通に答えている可能性がある。
    * ★自分の電波が悪いことを相手の離脱と取り違えてはいけない★。
    */
-  const leftMap = room?.left;
   const byForfeit = useMemo(() => {
+    // 明示的な退出が確定していれば、抜けていない側の不戦勝
+    if (explicitForfeit) return firstLeaver !== uid;
     if (status !== 'playing') return false;
 
     // ① 明示的な離脱は即座に成立
@@ -532,25 +560,46 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
       .filter((n): n is number => n != null);
     const trailing = trailingNoAnswerCount(answeredIndexes, currentIndex);
     return trailing >= FORFEIT_STREAK;
-  }, [status, leftMap, opponentUid, connection, opponentSheet, currentIndex]);
+  }, [status, leftMap, opponentUid, connection, opponentSheet, currentIndex, explicitForfeit, firstLeaver, uid]);
 
   const result = useMemo(() => {
     if (!scores || !finished) return null;
+    // ★退出した側の負け★
+    //   点数で判定すると「負けそうになったら抜ける」が引き分け以上になりうる。
+    //   退出は得点に関係なく敗北にする（逃げ得を作らない）。
+    if (explicitForfeit) {
+      return {
+        me: scores.me,
+        opponent: scores.other,
+        outcome: firstLeaver === uid ? ('lose' as const) : ('win' as const),
+        decidedByTime: false,
+        needsSuddenDeath: false,
+      };
+    }
     return judgeBattle(scores.me, scores.other, rules);
-  }, [scores, finished, rules]);
+  }, [scores, finished, rules, explicitForfeit, firstLeaver, uid]);
 
   // ------------------------------------------------------------
   // 結果の申告
   // ------------------------------------------------------------
+  const myAttest = room?.attest?.[uid];
   useEffect(() => {
     if (!roomId || !result || !scores || attestedRef.current) return;
+    // ★結果画面を再読み込みしたときに再申告しない★
+    //   申告はルールで「1人1回・上書き不可」なので、2回目は必ず拒否される。
+    //   以前はここで拒否エラーが未処理例外になっていた（独立検証で指摘）。
+    //   既に自分の申告が部屋にあれば、それを結果として使う。
+    if (myAttest) {
+      attestedRef.current = true;
+      return;
+    }
     attestedRef.current = true;
     void attestResult(roomId, {
       myScore: scores.me.score,
       opponentScore: scores.other.score,
       outcome: result.outcome,
-    });
-  }, [roomId, result, scores]);
+    }).catch((e: Error) => setError(e.message));
+  }, [roomId, result, scores, myAttest]);
 
   // ------------------------------------------------------------
   // レート反映（★相互確認が揃ってから★）
@@ -564,7 +613,7 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
 
     // 相手が離脱した場合は相手の申告が来ないので、
     // 不戦勝として（変化量を半分にして）反映する。
-    const forfeit = byForfeit && !theirs;
+    const forfeit = explicitForfeit || (byForfeit && !theirs);
     if (!mine) return;
     if (!theirs && !forfeit) return;
 
@@ -596,7 +645,7 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
         ratingAfter: change?.after ?? 0,
       });
     });
-  }, [roomId, result, scores, subject, attest, uid, opponentUid, opponent, byForfeit]);
+  }, [roomId, result, scores, subject, attest, uid, opponentUid, opponent, byForfeit, explicitForfeit]);
 
   // ------------------------------------------------------------
   // 操作
@@ -725,6 +774,32 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
   const leave = useCallback(() => {
     if (!roomId) return;
     void abortRoom(roomId);
+  }, [roomId]);
+
+  /**
+   * ★試合中に画面ごと消えたら退出として記録する★
+   *
+   * 下のナビで「ホーム」に移る・タブを閉じる（pagehide）と、
+   * このフックはアンマウントされる。以前は何も書かなかったので、
+   * 相手は無回答が5問続くまで待たされていた。
+   * 進行中（playing）で、まだ試合が終わっていないときだけ書く。
+   * 決着済みの部屋に書くとルールで拒否されるだけなので害は無いが、
+   * 無駄な書き込みを避けるために条件を付ける。
+   */
+  const leavingRef = useRef<{ roomId: string | null; active: boolean }>({ roomId, active: false });
+  leavingRef.current = { roomId, active: status === 'playing' && !finished };
+  useEffect(() => {
+    const flush = () => {
+      const cur = leavingRef.current;
+      if (cur.roomId && cur.active) void abortRoom(cur.roomId);
+    };
+    window.addEventListener('pagehide', flush);
+    return () => {
+      window.removeEventListener('pagehide', flush);
+      flush();
+    };
+    // 部屋が変わったときだけ張り直す（status の変化では張り直さない）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   return {

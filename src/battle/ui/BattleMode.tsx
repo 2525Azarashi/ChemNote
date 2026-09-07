@@ -28,6 +28,9 @@ import {
 } from '../data/battle';
 import { ensureBattleRankingEntry } from '../data/battleRanking';
 import { auth } from '../../firebase';
+import type { AiLevel } from '../core/aiOpponent';
+import { BattleAiRoomScreen } from './BattleAiRoomScreen';
+import { BattleAiSelect } from './BattleAiSelect';
 import { BattleFriendJoin } from './BattleFriendJoin';
 import { BattleHistory } from './BattleHistory';
 import { BattleHome } from './BattleHome';
@@ -48,12 +51,18 @@ import { BattleSubjectSelect } from './BattleSubjectSelect';
  *  join            … 合言葉を入れる
  *  matching        … 全国の相手さがし
  *  room            … 部屋の中（待機・対戦・結果）
+ *  subject-ai      … 教科選択（AI 対戦）
+ *  ai-level        … AI の強さをえらぶ
+ *  ai-room         … AI 対戦（端末内で進む。Firestore は使わない）
  *  ranking / history
  */
 type Screen =
   | 'home'
   | 'subject-friend'
   | 'subject-national'
+  | 'subject-ai'
+  | 'ai-level'
+  | 'ai-room'
   | 'creating'
   | 'join'
   | 'matching'
@@ -82,6 +91,12 @@ export function BattleMode({
   const [screen, setScreen] = useState<Screen>('home');
   const [roomId, setRoomId] = useState<string | null>(null);
   const [subject, setSubject] = useState<string>('');
+  const [aiLevel, setAiLevel] = useState<AiLevel>('normal');
+  /**
+   * AI 対戦の「もう1回」で試合を作り直すための番号。
+   * key に使って BattleAiRoomScreen を作り直す（内部状態を捨てる）。
+   */
+  const [aiMatchNo, setAiMatchNo] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -110,6 +125,9 @@ export function BattleMode({
         break;
       case 'national':
         setScreen('subject-national');
+        break;
+      case 'ai':
+        setScreen('subject-ai');
         break;
       case 'ranking':
         setScreen('ranking');
@@ -215,7 +233,56 @@ export function BattleMode({
             setScreen('room');
           }}
           onCancel={() => setScreen('home')}
-          onSwitchToFriend={() => void createRoom(subject)}
+          // ★待ちが長いときの逃げ道は「AI と対戦」にする★
+          //
+          //   以前は「フレンド対戦にする」を押すと、その場で合言葉つきの
+          //   部屋が作られて待機画面に飛んでいた。利用者からは
+          //   「全国対戦を押したのに、なぜフレンドの部屋にいるのか」と
+          //   見えて混乱していた（誰かに合言葉を伝えないと始まらないので、
+          //   結局また待つことになる）。
+          //   代わりに AI 対戦を出す。同じ教科で、押した瞬間に始まる。
+          onSwitchToAi={() => {
+            setAiMatchNo((n) => n + 1);
+            setScreen('ai-level');
+          }}
+        />
+      );
+
+    case 'subject-ai':
+      return (
+        <BattleSubjectSelect
+          title="AIと対戦 ／ 教科をえらぶ"
+          onPick={(pick) => {
+            setSubject(pick);
+            setScreen('ai-level');
+          }}
+          onBack={() => setScreen('home')}
+        />
+      );
+
+    case 'ai-level':
+      return (
+        <BattleAiSelect
+          subject={subject}
+          onPick={(level) => {
+            setAiLevel(level);
+            setAiMatchNo((n) => n + 1);
+            setScreen('ai-room');
+          }}
+          onBack={() => setScreen('subject-ai')}
+        />
+      );
+
+    case 'ai-room':
+      return (
+        <BattleAiRoomScreen
+          matchNo={aiMatchNo}
+          subject={subject}
+          level={aiLevel}
+          onExit={leaveRoom}
+          onRematch={() => setAiMatchNo((n) => n + 1)}
+          onChangeLevel={() => setScreen('ai-level')}
+          onPractice={onPractice}
         />
       );
 

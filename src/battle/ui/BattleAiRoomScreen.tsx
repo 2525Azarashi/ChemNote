@@ -1,0 +1,288 @@
+/**
+ * ===================================================================
+ * BattleAiRoomScreen — AI 対戦の1試合（準備 → 対戦 → 結果）
+ * ===================================================================
+ *
+ * 人間どうしの BattleRoomScreen と同じ部品（BattleQuestionView / BattleResult /
+ * PlayerBadge）を使い、見た目と操作を揃える。
+ * 違いは
+ *   ・Firestore を使わない（useAiBattle が端末内で進める）
+ *   ・待機画面が「はじめる」だけ（相手を待つ必要がない）
+ *   ・レートが動かない旨を結果に出す
+ *   ・「もう1回」で同じ強さ・同じ教科の新しい試合を作れる
+ */
+
+import { useEffect, useState } from 'react';
+import { Bot, LogOut, Play, X } from 'lucide-react';
+import { subjectTheme } from '../../data/subjectTheme';
+import type { SubjectKey } from '../../data/allChapters';
+import { aiProfileOf, type AiLevel } from '../core/aiOpponent';
+import { useAiBattle } from '../hooks/useAiBattle';
+import { BattleQuestionView } from './BattleQuestionView';
+import { BattleResult } from './BattleResult';
+import {
+  BattleButton,
+  BattleLoading,
+  BattleNotice,
+  BattleShell,
+  BattleTitle,
+  GOLD,
+  INK,
+  INK_SUB,
+  LINE,
+  PlayerBadge,
+} from './BattleParts';
+
+/** 結果画面に切り替わるまでの間（最後の1問の正解を見る時間） */
+const REVEAL_HOLD_MS = 1500;
+
+export function BattleAiRoomScreen({
+  subject,
+  level,
+  matchNo,
+  onExit,
+  onRematch,
+  onChangeLevel,
+  onPractice,
+}: {
+  subject: string;
+  level: AiLevel;
+  /**
+   * 試合番号。変わると新しい試合を作る（「もう1回」）。
+   * ★key ではなく prop にしている理由★
+   * このプロジェクトの型設定では、インライン型の関数コンポーネントに
+   * key を渡すと型エラーになる。フック側で番号の変化を見て作り直す。
+   */
+  matchNo: number;
+  onExit: (message?: string) => void;
+  /** 同じ教科・同じ強さでもう1回 */
+  onRematch: () => void;
+  /** 強さを変える */
+  onChangeLevel: () => void;
+  onPractice?: (subject: string, chapterId: string) => void;
+}) {
+  const theme = subjectTheme(subject as SubjectKey);
+  const profile = aiProfileOf(level);
+  const b = useAiBattle(subject, level, matchNo);
+
+  const [showResult, setShowResult] = useState(false);
+  const [confirmQuit, setConfirmQuit] = useState(false);
+  // 新しい試合になったら結果表示を畳む
+  useEffect(() => {
+    setShowResult(false);
+    setConfirmQuit(false);
+  }, [matchNo]);
+  useEffect(() => {
+    if (!b.finished) return;
+    const timer = window.setTimeout(() => setShowResult(true), REVEAL_HOLD_MS);
+    return () => window.clearTimeout(timer);
+  }, [b.finished]);
+
+  const reveal = (b.answered && b.opponentAnswered) || b.remainMs <= 0;
+
+  const backButton = (
+    <BattleButton variant="ghost" onClick={() => onExit()} icon={<LogOut size={18} />}>
+      対戦メニューにもどる
+    </BattleButton>
+  );
+
+  // ------------------------------------------------------------
+  // 読み込み中／失敗
+  // ------------------------------------------------------------
+  if (b.phase === 'loading') {
+    return (
+      <BattleShell>
+        <BattleTitle subtitle={`${theme.label} ／ AIと対戦`} />
+        <BattleLoading message="問題を用意しています…" />
+      </BattleShell>
+    );
+  }
+  if (b.phase === 'error') {
+    return (
+      <BattleShell footer={backButton}>
+        <BattleTitle subtitle={`${theme.label} ／ AIと対戦`} />
+        <div className="flex flex-1 items-center justify-center py-16">
+          <BattleNotice message={b.error || '問題を用意できませんでした。'} />
+        </div>
+      </BattleShell>
+    );
+  }
+
+  // ------------------------------------------------------------
+  // 結果
+  // ------------------------------------------------------------
+  if (showResult && b.result) {
+    return (
+      <BattleResult
+        result={b.result}
+        questions={b.questions}
+        subject={subject}
+        opponent={b.opponent}
+        meNickname={b.me.nickname}
+        mePhotoURL={b.me.photoURL}
+        rating={null}
+        ratingNote="AI対戦ではレートは動きません（練習用）"
+        byForfeit={false}
+        maskOpponent={false}
+        onRematch={onRematch}
+        onExit={() => onExit()}
+        onPractice={onPractice}
+      />
+    );
+  }
+
+  // ------------------------------------------------------------
+  // 準備（はじめる）
+  // ------------------------------------------------------------
+  if (b.phase === 'ready') {
+    return (
+      <BattleShell
+        footer={
+          <div className="grid gap-2.5">
+            <BattleButton onClick={b.start} icon={<Play size={18} />}>
+              はじめる
+            </BattleButton>
+            <BattleButton variant="ghost" onClick={onChangeLevel}>
+              強さを変える
+            </BattleButton>
+            <BattleButton variant="danger" onClick={() => onExit()} icon={<X size={18} />}>
+              やめる
+            </BattleButton>
+          </div>
+        }
+      >
+        <BattleTitle subtitle={`${theme.label} ／ ${b.rules.questionCount}問しょうぶ`} />
+
+        <section
+          className="battle-card-in mb-4 rounded-3xl border-2 p-4"
+          style={{ borderColor: `${profile.color}66`, background: '#FFFFFF' }}
+        >
+          <div className="flex items-center gap-2">
+            <PlayerBadge nickname={b.me.nickname} photoURL={b.me.photoURL} rating={1500} isMe />
+            <span
+              className="battle-vs-pulse shrink-0 rounded-lg px-1.5 py-0.5 text-xs font-black"
+              style={{ background: GOLD, color: INK }}
+            >
+              VS
+            </span>
+            <div className="flex min-w-0 flex-1 flex-row-reverse items-center gap-2 text-right">
+              <span
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2"
+                style={{ background: `${profile.color}1F`, borderColor: `${profile.color}66`, color: profile.color }}
+              >
+                <Bot size={18} />
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-xs font-black" style={{ color: INK }}>
+                  {profile.name}
+                </p>
+                <p className="text-[10px] font-bold tabular-nums" style={{ color: INK_SUB }}>
+                  正解率 {Math.round(profile.accuracy * 100)}% ／ レート目安 {profile.displayRating}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <BattleNotice
+          message="出題・制限時間・点数の計算は全国対戦と同じです。レートは動きません。"
+          tone="info"
+        />
+
+        {b.rules.note && (
+          <p className="mt-4 text-center text-[11px] font-bold leading-relaxed" style={{ color: '#B7791F' }}>
+            {b.rules.note}
+          </p>
+        )}
+      </BattleShell>
+    );
+  }
+
+  // ------------------------------------------------------------
+  // 対戦中
+  // ------------------------------------------------------------
+  if (!b.current) {
+    return (
+      <BattleShell>
+        <BattleTitle />
+        <BattleLoading message="問題を読みこんでいます…" />
+      </BattleShell>
+    );
+  }
+
+  return (
+    <BattleShell>
+      <section
+        id="battle-scoreboard"
+        className="mb-3 flex items-center gap-2 rounded-2xl border-2 px-3 py-2"
+        style={{ borderColor: LINE, background: '#FFFFFF' }}
+      >
+        <PlayerBadge
+          nickname={b.me.nickname}
+          photoURL={b.me.photoURL}
+          rating={1500}
+          isMe
+          answered={b.answered}
+          score={b.myScore}
+        />
+        <span
+          className="battle-vs-pulse shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-black"
+          style={{ background: GOLD, color: INK }}
+        >
+          VS
+        </span>
+        <PlayerBadge
+          nickname={b.opponent.nickname}
+          photoURL=""
+          rating={b.opponent.rating}
+          answered={b.opponentAnswered}
+          score={b.opponentScore}
+          align="right"
+        />
+      </section>
+
+      <BattleQuestionView
+        question={b.current}
+        index={b.currentIndex}
+        total={b.questions.length}
+        remainMs={b.remainMs}
+        answered={b.answered}
+        myChoice={b.myChoice}
+        myPanel={b.myPanel}
+        reveal={reveal}
+        onChoose={b.choose}
+        onPushPanel={b.pushPanel}
+        onPopPanel={b.popPanel}
+        onCyclePanel={b.cyclePanel}
+        onCommitKana={b.commitKana}
+      />
+
+      <div className="mt-3">
+        {confirmQuit ? (
+          <div className="grid gap-2 rounded-2xl border-2 p-3" style={{ borderColor: LINE, background: '#FFFFFF' }}>
+            <p className="text-center text-[11px] font-black" style={{ color: INK }}>
+              対戦をやめますか？（AI対戦なので記録には残りません）
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <BattleButton variant="ghost" onClick={() => setConfirmQuit(false)}>
+                つづける
+              </BattleButton>
+              <BattleButton variant="danger" onClick={() => onExit()} icon={<X size={16} />}>
+                やめる
+              </BattleButton>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setConfirmQuit(true)}
+            className="w-full py-1 text-center text-[10px] font-bold underline-offset-2 hover:underline"
+            style={{ color: '#9A948A' }}
+          >
+            対戦をやめる
+          </button>
+        )}
+      </div>
+    </BattleShell>
+  );
+}

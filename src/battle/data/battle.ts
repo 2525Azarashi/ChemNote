@@ -500,97 +500,47 @@ export async function findOrEnqueue(
   const rules = normalizeRule(subject, loadRuleSync(subject));
   const rating = await fetchMyRating();
 
-  // 1. 待っている人を探す（自分以外・同じ教科）
-  //
   // ===================================================================
-  // ★ここが本番で「The query requires an index.」を出した箇所★
+  // ★手順：「先に自分の待機票を置く → 探す → 双方の票を1つの
+  //   トランザクションで確認して消す → 部屋を作る」★
   // ===================================================================
   //
-  //   where('subject','==',...) + orderBy('createdAt','asc')
-  // は等式と並べ替えの組み合わせなので Firestore の複合索引が必須。
-  // firestore.indexes.json が空のままデプロイされていたため、
-  // 全国対戦を押した全員がこのエラーに当たっていた。
+  // ■ 以前の手順（探す → いなければ置く）で起きていた不具合
+  //   2人がほぼ同時に「相手をさがす」を押すと、
+  //     A が探す（誰もいない）→ B が探す（誰もいない）
+  //     → A が票を置く → B が票を置く
+  //   となり、★両方が「拾われるのを待つ側」になって永遠に待つ★。
+  //   独立検証（同時待機×5回）で再現した。
   //
-  // ■ 直し方
-  //   ★索引に頼らない形に書き換えた★（下の fetchWaitingQueue）
-  //   組み合わせをやめて条件1つにすれば、Firestore が索引を
-  //   自動で作るので、索引のデプロイが要らなくなる。
+  // ■ 今の手順で解決する理由
+  //   先に票を置いてから探すので、上の順序でも
+  //   B が探す時点で A の票が必ず見える。
+  //   さらに部屋を作る側は「自分の票」と「相手の票」の★両方★を
+  //   同じトランザクションで確認して消す。
+  //   A と B が互いを同時に拾おうとしても、
+  //   片方のトランザクションが先に票を消すので、もう片方は
+  //   「票が無い」で失敗し、部屋は★ちょうど1つ★しかできない。
   //
-  //   索引の宣言（firestore.indexes.json）も入れてあるが、
-  //   それは将来のための備えで、★無くても動く★。
-  //   索引のデプロイには開発ツールが必要で、
-  //   「ルールを公開する」だけでは作られない。
-  //   実際その手順が抜けていたのが今回の事故の原因なので、
-  //   そもそも要らない形にするのが確実である。
+  // ■ 索引について
+  //   検索条件は「教科が一致」の1つだけ（fetchWaitingQueue）。
+  //   等式1つなら Firestore が索引を自動で作るので、
+  //   複合索引のデプロイは要らない。並べ替えは手元で行う。
   //
-  // ■ 「古い順」は fetchWaitingQueue が手元で保証する
-  //   長く待っている人から先にマッチさせるため。
-  //   ここを崩すと、後から来た人が先に対戦できてしまい、
-  //   混雑時に待ち続ける人が出る。
-  const waitingDocs = await fetchWaitingQueue(subject);
+  // ■ 代償
+  //   すぐ相手が見つかる場合にも、待機票の書き込みが1回発生する。
+  //   （書き込み1回 ＝ 1試合あたりの書き込み約35回に対して無視できる）
 
-  const candidate = waitingDocs.find((d) => d.id !== uid);
-
-  if (candidate) {
-    const opponentUid = candidate.id;
-    const opponentProfile = candidate.get('profile') as BattlePlayer | undefined;
-    const roomRef = doc(collection(db, COL_ROOMS));
-    const questionIds = await drawQuestionIds(subject, rules, roomRef.id);
-    if (questionIds.length === 0) {
-      throw new Error('この教科は対戦できる問題がまだ足りません。');
-    }
-
-    try {
-      await runTransaction(db, async (tx) => {
-        const queueRef = doc(db, COL_QUEUE, opponentUid);
-        const queueSnap = await tx.get(queueRef);
-        // 先に他の人が拾っていたら失敗させる（二重マッチの防止）
-        if (!queueSnap.exists()) throw new Error('TAKEN');
-
-        tx.delete(queueRef);
-        // 自分の待機票が残っていたら消す
-        tx.delete(doc(db, COL_QUEUE, uid));
-
-        tx.set(roomRef, {
-          id: roomRef.id,
-          status: 'waiting',
-          mode: 'random',
-          subject,
-          joinCode: '',
-          hostUid: uid,
-          players: [uid, opponentUid],
-          profiles: {
-            [uid]: myProfile(rating),
-            [opponentUid]: opponentProfile || {
-              uid: opponentUid,
-              nickname: '対戦相手',
-              photoURL: '',
-              rating: RATING_INITIAL,
-            },
-          },
-          questionIds,
-          rules,
-          currentIndex: 0,
-          deadlineAt: null,
-          answers: { [uid]: {}, [opponentUid]: {} },
-          attest: {},
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-      });
-
-      return { roomId: roomRef.id };
-    } catch (error) {
-      if ((error as Error).message !== 'TAKEN') {
-        throw friendlyError(error, 'マッチングに失敗しました。');
-      }
-      // 拾われていたので、次に進んで自分が待つ側になる
-    }
+  const roomRef = doc(collection(db, COL_ROOMS));
+  const questionIds = await drawQuestionIds(subject, rules, roomRef.id);
+  if (questionIds.length === 0) {
+    throw new Error('この教科は対戦できる問題がまだ足りません。');
   }
 
-  // 2. 自分が待つ
+  const ownRef = doc(db, COL_QUEUE, uid);
+
+  // 1. 先に自分の待機票を置く
   try {
-    await setDoc(doc(db, COL_QUEUE, uid), {
+    await setDoc(ownRef, {
       uid,
       subject,
       profile: myProfile(rating),
@@ -600,7 +550,73 @@ export async function findOrEnqueue(
     throw friendlyError(error, '待機列に入れませんでした。');
   }
 
-  return { roomId: null };
+  // 2. 待っている人を探す（自分以外・同じ教科・古い順）
+  let waitingDocs;
+  try {
+    waitingDocs = await fetchWaitingQueue(subject);
+  } catch (error) {
+    // 探せなかったときは票だけ残さない（次に来た人が幽霊とマッチする）
+    void leaveQueue();
+    throw friendlyError(error, 'マッチングに失敗しました。');
+  }
+  const candidate = waitingDocs.find((d) => d.id !== uid);
+  if (!candidate) {
+    // 誰もいない。票を置いたまま、拾われるのを待つ（watchMatched）
+    return { roomId: null };
+  }
+
+  // 3. 双方の票を同じトランザクションで確認・消費し、部屋を作る
+  const otherRef = doc(db, COL_QUEUE, candidate.id);
+  try {
+    const matched = await runTransaction(db, async (tx) => {
+      const mine = await tx.get(ownRef);
+      const other = await tx.get(otherRef);
+      // 自分の票が無い … 相手が先に自分を拾った（相手が部屋を作る）
+      // 相手の票が無い … 別の誰かが先に相手を拾った
+      // 教科が違う    … 票が差し替わっていた
+      if (!mine.exists() || !other.exists()) return false;
+      if (mine.get('subject') !== subject || other.get('subject') !== subject) return false;
+
+      const opponentUid = other.id;
+      const opponentProfile = other.get('profile') as BattlePlayer | undefined;
+
+      tx.delete(ownRef);
+      tx.delete(otherRef);
+      tx.set(roomRef, {
+        id: roomRef.id,
+        status: 'waiting',
+        mode: 'random',
+        subject,
+        joinCode: '',
+        hostUid: uid,
+        players: [uid, opponentUid],
+        profiles: {
+          [uid]: myProfile(rating),
+          [opponentUid]: opponentProfile || {
+            uid: opponentUid,
+            nickname: '対戦相手',
+            photoURL: '',
+            rating: RATING_INITIAL,
+          },
+        },
+        questionIds,
+        rules,
+        currentIndex: 0,
+        deadlineAt: null,
+        answers: { [uid]: {}, [opponentUid]: {} },
+        attest: {},
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return true;
+    });
+
+    // 拾えなかった場合、自分の票は（相手に拾われていなければ）残っているので
+    // そのまま拾われるのを待つ。相手に拾われていれば watchMatched が部屋を見つける。
+    return { roomId: matched ? roomRef.id : null };
+  } catch (error) {
+    throw friendlyError(error, 'マッチングに失敗しました。');
+  }
 }
 
 /** 待機をやめる（画面を離れるときは必ず呼ぶ） */
@@ -983,14 +999,46 @@ export function watchRoom(
   );
 }
 
-/** 部屋を離脱する（相手には不戦勝として見える） */
+/**
+ * 部屋を離脱する（相手には不戦勝として見える）。
+ *
+ * ★待機中の退出は部屋そのものを閉じる（status: 'aborted'）★
+ *
+ * 以前は left.{自分} を書くだけだった。すると待機中（waiting）に
+ * 部屋主が「部屋をでる」を押しても部屋は waiting のまま残り、
+ * 合言葉を知っている人が★もう誰もいない部屋★に入れてしまった
+ * （独立検証で再現。入った側は「相手を待っています…」のまま止まる）。
+ * 待機中なら相手はまだ試合を始めていないので、閉じても失うものが無い。
+ *
+ * ★トランザクションにした理由★
+ * 「部屋をでる」を押した瞬間に相手が「はじめる」を押していると、
+ * 読んだときは waiting でも書くときには playing になっている。
+ * その場合に aborted を書くと、始まった試合を消してしまう。
+ * 読み直してから書くことで、始まっていたら left だけを残す
+ * （＝相手の不戦勝になる）。
+ *
+ * 進行中（playing）の退出は従来どおり left だけを書く。
+ * 勝敗は残った側が left を見て決める（useBattleRoom の explicitForfeit）。
+ */
 export async function abortRoom(roomId: string): Promise<void> {
   const uid = auth.currentUser?.uid;
   if (!uid) return;
   try {
-    await updateDoc(doc(db, COL_ROOMS, roomId), {
-      [`left.${uid}`]: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+    await runTransaction(db, async (tx) => {
+      const ref = doc(db, COL_ROOMS, roomId);
+      const snap = await tx.get(ref);
+      if (!snap.exists()) return;
+      const room = snap.data() as BattleRoom;
+      // 参加者でない／もう退出済み／決着済み・中断済み なら何もしない
+      if (!room.players.includes(uid)) return;
+      if (room.left?.[uid]) return;
+      if (room.status !== 'waiting' && room.status !== 'playing') return;
+
+      tx.update(ref, {
+        ...(room.status === 'waiting' ? { status: 'aborted' } : {}),
+        [`left.${uid}`]: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
     });
   } catch {
     // 離脱の記録に失敗しても、相手側は無応答から不戦勝を判定できる
