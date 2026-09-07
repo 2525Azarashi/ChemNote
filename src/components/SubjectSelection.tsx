@@ -43,6 +43,7 @@ import {
   Bell,
   CheckCircle2,
   ChevronLeft,
+  Microscope,
 } from 'lucide-react';
 import { auth } from '../firebase';
 import { MntbLogo } from './MntbLogo';
@@ -114,6 +115,10 @@ import { profileKey } from '../utils/userStorageKeys';
 // ★ここは「4箇所」のうちの2番目（トップのカード）★
 // 残りはナビ／ルーティング／一覧で、すべて同じ関数を見る。
 import { isSubjectEnabled } from '../config/features';
+// 高校入試 理科（本体に教科データを持たない教科）の表示名・配色・単元一覧。
+// ★何も import しない葉★なので、この画面の起動時の重さは増えない
+// （tests/screenDataWeight.test.ts の予算内）。
+import { externalSubjectOf } from '../data/externalSubjects';
 
 /**
  * アプリが扱う科目の識別子。
@@ -203,9 +208,25 @@ interface SubjectSelectionProps {
    * 行き止まりにならないよう戻るボタン自体を出さない。
    */
   onBack?: () => void;
+  /**
+   * 高校入試 理科（演習・まとめ・出題傾向）を開く。
+   *
+   * ★スマホ（md 未満）でだけカードを出す★
+   * 利用者の指示：「高校入試理科（これここじゃなくて科目に追加して）」
+   * （スマホ版のホームを 1 画面に収める依頼の一部。PC 版は除く）。
+   *
+   * 理科は本体の章→大問→小問の形を持たないので onSelectSubject には
+   * 乗せられない（SubjectId ではない）。押したら理科の画面へ直接飛ぶ。
+   * PC（md 以上）では従来どおりホームのカードから入るので、
+   * ここでは描かない。FEATURES.rika が false のときは渡されない
+   * （渡されなければカード自体を描かない）。
+   */
+  onRika?: () => void;
 }
 
-export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSelectionProps) {
+export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: SubjectSelectionProps) {
+  /** 高校入試 理科の表示名・単元一覧（登録簿から。無ければカードを出さない） */
+  const rika = useMemo(() => externalSubjectOf('rika'), []);
   /**
    * 「公開されたら知らせて」モーダルで、どの科目が押されたかを覚えておく。
    * 以前は文面が「化学」固定だったため、科目が増えると誤った案内になってしまう。
@@ -742,6 +763,58 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack }: SubjectSe
               </motion.div>
             );
           })}
+
+          {/* ===== 高校入試 理科（スマホのみ・科目カードの最後） =====
+              ★スマホ（md 未満）でだけ出す★
+              利用者の指示：「高校入試理科（これここじゃなくて科目に追加して）」。
+              スマホのホームからは理科のカードを外し（Home.tsx 参照）、
+              代わりにここへ並べる。md 以上ではホームに従来どおり出るので、
+              ここでは描かない（PC の見た目は不変。入口は常にどこか 1 か所にある）。
+
+              ★他の科目と同じ「1 行カード」の形にそろえる★
+              ただし色は理科のバイオレット（externalSubjects.ts）にする。
+              押した先は本体の単元選択ではなく理科の専用画面なので、
+              同じローズ色だと「化学基礎の続き」に見えてしまう。
+              対戦の教科選択・結果でも理科は同じ色で出るので、
+              入口から中まで色でつながる。 */}
+          {onRika && rika && (
+            <motion.div
+              key="rika"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.1 + visibleSubjects.length * 0.07 }}
+              data-subject-card
+              data-external-subject="rika"
+              className="w-full md:hidden"
+            >
+              <button
+                onClick={onRika}
+                aria-label="高校入試 理科を学習する"
+                className="group relative w-full h-full text-left rounded-[22px] p-2 border transition-all duration-200 overflow-hidden flex flex-col bg-white/92 backdrop-blur-sm border-[#D6C4E7]/80 shadow-[0_16px_38px_-18px_rgba(123,79,168,0.55)] hover:border-[#7B4FA8] active:scale-[0.995]"
+              >
+                <span
+                  className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#9A76C0] via-[#7B4FA8] to-[#C5AEE0]"
+                  aria-hidden="true"
+                />
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-[#D6C4E7]/45 text-[#7B4FA8]">
+                    <Microscope className="w-4.5 h-4.5" aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="font-handwriting font-bold text-[19px] leading-tight text-[#1B2631]">
+                      {rika.label}
+                    </h2>
+                    {/* 収録ボリューム。単元数は登録簿の章一覧から数える
+                        （出題のある単元だけが載っている）。 */}
+                    <p className="text-[10px] font-modern leading-snug mt-0.5 text-[#5D6D7E]">
+                      全{rika.chapters.length}単元・演習／まとめ／出題傾向
+                    </p>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-[#7B4FA8] shrink-0" aria-hidden="true" />
+                </div>
+              </button>
+            </motion.div>
+          )}
           </div>
         </div>
 

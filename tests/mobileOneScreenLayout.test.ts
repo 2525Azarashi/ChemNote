@@ -1210,3 +1210,75 @@ describe('解答・解説ヘッダーが1行に収まる（スマホのみ・ご
     }
   });
 });
+
+// =====================================================================
+// L6: スマホのホームは「学習進捗」を外し、セカンダリ3枚を1画面目に入れる
+// =====================================================================
+// ご要望（原文）：
+//   > スマホ版（パソコン版は除く）なんだけど、学習進捗消していいよ。
+//   > その代わり学習ノート・アプリ紹介・高校入試理科（これここじゃなくて
+//   > 科目に追加して）・ご意見・ご要望を開いたときに一画面で全部見れるようにして
+//
+// 実測（390×844、下部ナビ 71px、ゲスト帯あり）：
+//   変更前 … 学習進捗カード 404px、学習ノートの上端 1009px（1画面目に 0 枚）
+//   変更後 … 学習ノート 563px／アプリ紹介 633px／ご意見 704〜768px（ナビ上端 773px）
+//   ＝ 3 枚とも折り返し線の上に入る。
+describe('L6: スマホのホーム（学習進捗を外し、3枚を1画面目へ）', () => {
+  const FEEDBACK_BUTTON = read('src/components/FeedbackButton.tsx');
+
+  it('学習進捗カードはスマホで隠し、md 以上で従来どおり出す', () => {
+    // カードを包む motion.div に hidden md:block が付いていること
+    const idx = HOME.indexOf('学習進捗\n');
+    expect(idx).toBeGreaterThan(-1);
+    const before = HOME.slice(Math.max(0, idx - 3000), idx);
+    expect(before).toMatch(/className="hidden md:block">\s*<div className="border border-\[#F4A9C4\]\/40 rounded-\[20px\]/u);
+    // 消してはいない（PC の見た目は不変）
+    expect(HOME).toContain('学習進捗');
+  });
+
+  it('高校入試 理科のカードはホームではスマホで隠し（md:flex）、md 以上で従来どおり出す', () => {
+    const rikaLine = HOME.split('\n').find(l => l.includes('aria-label="高校入試 理科を開く"'));
+    expect(rikaLine).toBeTruthy();
+    const after = HOME.slice(HOME.indexOf('aria-label="高校入試 理科を開く"'), HOME.indexOf('aria-label="高校入試 理科を開く"') + 400);
+    expect(after).toMatch(/className="hidden md:flex/u);
+    // フラグの内側にあることは featureFlags.test.ts が見ている（{onRika &&）
+    expect(HOME).toMatch(/\{onRika\s*&&/u);
+  });
+
+  it('★高校入試 理科は科目選択（スマホのみ）に移した★', () => {
+    expect(SUBJECT).toContain('onRika?: () => void;');
+    expect(SUBJECT).toContain("import { externalSubjectOf } from '../data/externalSubjects'");
+    expect(SUBJECT).toContain('data-external-subject="rika"');
+    expect(SUBJECT).toContain('aria-label="高校入試 理科を学習する"');
+    // スマホだけ（md 以上はホームのカードから入るので二重にしない）
+    const line = SUBJECT.split('\n').find(l => l.includes('data-external-subject="rika"'));
+    const block = SUBJECT.slice(SUBJECT.indexOf('data-external-subject="rika"'), SUBJECT.indexOf('data-external-subject="rika"') + 200);
+    expect(line).toBeTruthy();
+    expect(block).toContain('className="w-full md:hidden"');
+    // 渡されなければ描かない（FEATURES.rika が false のとき）
+    expect(SUBJECT).toMatch(/\{onRika && rika && \(/u);
+  });
+
+  it('App は科目選択にもホームと同じ条件・同じ行き先で onRika を渡す', () => {
+    const start = APP.indexOf("appState === 'subject_selection' && (");
+    const block = APP.slice(start, start + 800);
+    expect(block).toMatch(/onRika=\{FEATURES\.rika \? \(\) => \{ setRikaTab\('practice'\); setAppState\('rika'\); \} : undefined\}/u);
+  });
+
+  it('ご意見カードは他のセカンダリカードと同じ高さ（スマホ py-2.5・アイコン 36px）', () => {
+    expect(FEEDBACK_BUTTON).toContain('px-4 md:px-5 py-2.5 md:py-4 lg:py-3');
+    expect(FEEDBACK_BUTTON).toContain('w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10');
+  });
+
+  it('豆知識の分野ラベルはスマホで隠し、sm 以上で復帰する（本文は残す）', () => {
+    expect(MASCOT).toContain('hidden sm:inline-flex items-center gap-1 mb-1.5 px-2 py-0.5 rounded-full');
+    expect(MASCOT).toContain('{tip.text}');
+  });
+
+  it('スマホだけ余白を詰め、md 以上は元の値（挨拶 mb-8／CTA mb-3／サブ導線 mt-5 gap-4）', () => {
+    expect(HOME).toContain('gap-3 md:gap-5 mb-2 md:mb-8 lg:mb-4');
+    expect(HOME).toContain('mb-2 md:mb-3 lg:mb-0 space-y-2 md:space-y-2.5');
+    expect(HOME).toContain('mt-2 md:mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 md:gap-4');
+    expect(HOME).toContain('order-4 lg:order-2 shrink-0 mt-2 md:mt-0 mb-0 md:mb-6 lg:mb-4');
+  });
+});

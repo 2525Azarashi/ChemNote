@@ -488,7 +488,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             末尾の lg:mb-auto と対になって「結果的に中央」に見せる。
             中身が収まらないときは 0 に潰れるので、
             ★上にはみ出して押せなくなる領域が生まれない★。 */}
-        <div className="order-1 shrink-0 lg:mt-auto flex flex-row md:items-start md:justify-between gap-3 md:gap-5 mb-3 md:mb-8 lg:mb-4">
+        <div className="order-1 shrink-0 lg:mt-auto flex flex-row md:items-start md:justify-between gap-3 md:gap-5 mb-2 md:mb-8 lg:mb-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="font-handwriting min-w-0 flex-1">
             {/* 学校名（クラスに参加している生徒のみ。学校の教材として見えるようにする） */}
             {schoolBrand && (
@@ -650,7 +650,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         {isGuest && !auth.currentUser && (
           /* order-4：CTA の後ろに置く。ゲスト案内は大事だが、
              これが CTA を画面外へ押し出してはいけない。 */
-          <div className="order-4 lg:order-2 shrink-0 mb-3 md:mb-6 lg:mb-4">
+          <div className="order-4 lg:order-2 shrink-0 mt-2 md:mt-0 mb-0 md:mb-6 lg:mb-4">
             <GoogleLinkBanner variant="inline" dismissible />
           </div>
         )}
@@ -710,8 +710,25 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             </div>
           </motion.div>
 
-          {/* 学習進捗カード */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }}>
+          {/* 学習進捗カード
+
+              ★スマホ（md 未満）では出さない★
+              利用者の指示：「スマホ版（パソコン版は除く）なんだけど、
+              学習進捗消していいよ。その代わり学習ノート・アプリ紹介・
+              ご意見・ご要望を開いたときに一画面で全部見れるようにして」
+
+              実測（390×844、下部ナビ 71px）では、このカードが 404px を占め、
+              下のセカンダリ導線（学習ノート／アプリ紹介／ご意見）が
+              1009px から始まっていた＝1画面目に 1 枚も入っていなかった。
+              カードを外すと 3 枚とも折り返し線（773px）の上に収まる。
+
+              ★情報は消えていない★
+              同じ大問ベースの進捗は「学習」タブの単元一覧に章ごとに出るし、
+              このカードの本文（次の章へ）は主CTA「続きから開く」と同じ行き先。
+              スマホでここに置く価値は「一覧性」だけで、それより
+              3 つの入口が見えることの方が利用者の求めたもの。
+              md 以上（タブレット・PC）は従来どおり表示する。 */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} className="hidden md:block">
             <div className="border border-[#F4A9C4]/40 rounded-[20px] p-3.5 md:p-6 bg-white/90 backdrop-blur-sm shadow-[0_10px_26px_-14px_rgba(217,70,110,0.45)] h-full flex flex-col justify-between">
               <div>
                 <h2 className="font-bold text-[15px] md:text-[16px] mb-2 md:mb-3 text-[#1B2631] font-modern flex items-center gap-2">
@@ -861,7 +878,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           /* ★order-2：スマホでは進捗カードより前に出す★
              これで主CTA は常に画面上部＝1画面目に居る。
              lg 以上は order-4 で従来の位置（カードの下）に戻す。 */
-          className="order-2 lg:order-4 shrink-0 mt-0 md:mt-6 lg:mt-5 mb-3 lg:mb-0 space-y-2 md:space-y-2.5">
+          className="order-2 lg:order-4 shrink-0 mt-0 md:mt-6 lg:mt-5 mb-2 md:mb-3 lg:mb-0 space-y-2 md:space-y-2.5">
 
           {/* --- 1番目：対戦（主役） ---
               色は対戦モードの中と同じ青系（#2E86C1 系）にしてある。
@@ -911,7 +928,10 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
         </motion.div>
 
         {/* ===== セカンダリ：学習ノート（ノート＋復習を統合）/ アプリ紹介 / ご意見 ===== */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="order-5 lg:mb-auto mt-3 md:mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
+        {/* スマホでは上余白とカード間隔を 1 段詰める（mt-3→mt-2、gap-2→gap-1.5）。
+            学習進捗カードをスマホで外したあとも、ゲストの連携帯が出ていると
+            3 枚目（ご意見）の下端がナビに数 px かかっていたため。md 以上は従来どおり。 */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.45 }} className="order-5 lg:mb-auto mt-2 md:mt-5 lg:mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 md:gap-4">
           {/* ノートと復習リストを1つの入口「学習ノート」に統合。今日の復習件数をバッジで提示 */}
           <button
             onClick={onNoteList}
@@ -969,12 +989,19 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
               他のカードと同じローズ色にすると、化学基礎の続きに見えてしまう。
               対戦の教科選択・結果・履歴でも理科はバイオレット #7B4FA8 で
               出るようにしてあるので（src/data/externalSubjects.ts）、
-              ★入口から中まで同じ色でつながる★ようにしている。 */}
+              ★入口から中まで同じ色でつながる★ようにしている。
+
+              ★スマホ（md 未満）ではここに出さない★
+              利用者の指示：「高校入試理科（これここじゃなくて科目に追加して）」
+              スマホでは科目選択画面（SubjectSelection）のカードとして出す。
+              他の科目と同じ場所に並ぶので「科目のひとつ」として見つけられる。
+              ホームのこの位置は 1 画面に収める都合で外した。
+              md 以上は従来どおりここにも出す（PC の見た目は不変）。 */}
           {onRika && (
             <button
               onClick={onRika}
               aria-label="高校入試 理科を開く"
-              className="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#D6C4E7]/70 bg-white/90 backdrop-blur-sm hover:bg-[#FAF6FD] hover:border-[#7B4FA8]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(123,79,168,0.45)] text-left group"
+              className="hidden md:flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2.5 md:py-4 lg:py-3 rounded-[18px] border border-[#D6C4E7]/70 bg-white/90 backdrop-blur-sm hover:bg-[#FAF6FD] hover:border-[#7B4FA8]/50 active:scale-[0.99] transition-all shadow-[0_8px_22px_-14px_rgba(123,79,168,0.45)] text-left group"
             >
               <div className="w-9 h-9 md:w-11 md:h-11 lg:w-10 lg:h-10 rounded-2xl bg-[#D6C4E7]/45 flex items-center justify-center shrink-0">
                 <Microscope className="w-5 h-5 text-[#7B4FA8]" aria-hidden="true" />
