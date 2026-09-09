@@ -247,6 +247,10 @@ export function markReviewedCorrect(uid: string | null | undefined, key: string)
     };
   });
   saveReviewList(uid, next);
+  // Optional personal reward; never block review scheduling or add growth code to initial study load.
+  if (uid && items.some(it => it.key === key)) {
+    void import('../battle/data/growthStore').then(({ recordReviewGrowth }) => recordReviewGrowth(uid, key)).catch(() => {});
+  }
   return next;
 }
 

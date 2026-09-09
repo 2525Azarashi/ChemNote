@@ -47,6 +47,7 @@
 
 import { useEffect, useState } from 'react';
 import { BattleText } from './BattleText';
+import { BattleGrowthReward } from './BattleGrowthReward';
 import type { CSSProperties } from 'react';
 import {
   ArrowLeft,
@@ -127,6 +128,7 @@ export function BattleResult({
   onExit,
   onPractice,
   ratingNote,
+  growthMatchId, growthOwnerUid, growthEligible = false, onOpenProfile, onOpenMissions,
 }: {
   result: BattleResultSummary;
   questions: BattleQuestion[];
@@ -166,6 +168,11 @@ export function BattleResult({
    * 「無効試合」と出すと、利用者は何か失敗したと受け取る。
    */
   ratingNote?: string;
+  growthMatchId?: string;
+  growthOwnerUid?: string;
+  growthEligible?: boolean;
+  onOpenProfile?: () => void;
+  onOpenMissions?: () => void;
 }) {
   const theme = subjectTheme(subject as SubjectKey);
   const delta = rating ? rating.after - rating.before : 0;
@@ -360,6 +367,10 @@ export function BattleResult({
         )}
       </section>
 
+      {growthMatchId && growthOwnerUid && <BattleGrowthReward matchId={growthMatchId} ownerUid={growthOwnerUid}
+        eligible={growthEligible} subject={subject} subjectLabel={theme.label} result={result} rating={rating}
+        onProfile={onOpenProfile} onMissions={onOpenMissions} />}
+
       {/* 1問ずつの内訳 ＋ ★試合後の答えとひと言の理由（請求⑦-A）★ */}
       <section id="battle-result-detail" className="mb-4">
         <h2 className="mb-2 text-xs font-black" style={{ color: INK_SUB }}>
@@ -402,13 +413,13 @@ export function BattleResult({
                       {q.index + 1}
                     </span>
                     <span
-                      className="shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-black"
+                      className="shrink-0 rounded-full px-2 py-1 text-xs font-black"
                       style={{
                         background: q.correct ? theme.accent : `${WRONG}14`,
                         color: q.correct ? '#FFFFFF' : WRONG,
                       }}
                     >
-                      {q.correct ? 'せいかい' : 'ちがう'}
+                      {q.correct ? '正解' : q.answered === false ? '未回答' : '不正解'}
                     </span>
 
                   </span>
@@ -421,8 +432,12 @@ export function BattleResult({
                     {other?.total ?? 0}
                   </span>
                 </div>
-                <div className="mt-1 min-w-0 text-[13px] font-bold leading-relaxed" style={{ color: INK }}>
-                  <BattleText text={correctText} subject={question?.subject ?? subject} />
+                {q.answered !== undefined && <p className="mt-2 text-sm font-bold" style={{ color: q.correct ? '#1E7D46' : WRONG }}>
+                  あなたの回答：{q.answered
+                    ? <BattleText text={q.submittedAnswer || ''} subject={question?.subject ?? subject} /> : '未回答'}
+                </p>}
+                <div className="mt-1 min-w-0 text-sm font-bold leading-relaxed" style={{ color: INK }}>
+                  正しい答え：<BattleText text={correctText} subject={question?.subject ?? subject} />
                 </div>
                 {q.correct && (
                   <p className="mt-0.5 pl-7 text-[9px] font-bold" style={{ color: INK_SUB }}>

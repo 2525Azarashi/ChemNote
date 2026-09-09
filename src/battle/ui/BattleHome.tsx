@@ -78,6 +78,7 @@ import {
 } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { auth } from '../../firebase';
+import { GrowthHomeStrip } from './GrowthHomeStrip';
 import {
   AMBER,
   BattleButton,
@@ -99,7 +100,9 @@ export type BattleHomeChoice =
   | 'national'
   | 'ai'
   | 'ranking'
-  | 'history';
+  | 'history'
+  | 'profile'
+  | 'missions';
 
 /**
  * モードカードに並べる4項目。
@@ -353,6 +356,7 @@ export function BattleHome({
               AIと対戦する
             </BattleButton>
           </div>
+          <div className="w-full"><GrowthHomeStrip onProfile={() => onChoose('profile')} onMissions={() => onChoose('missions')} /></div>
         </div>
       </BattleShell>
     );
@@ -548,6 +552,8 @@ export function BattleHome({
         ちがうのは<span style={{ color: AMBER }}>「相手の決まり方」</span>と
         <span style={{ color: AMBER }}>「レートが動くか」</span>だけ。
       </p>
+
+      <GrowthHomeStrip onProfile={() => onChoose('profile')} onMissions={() => onChoose('missions')} />
 
       {/* サブ動線 */}
       <section className="lobby-record-links mt-auto grid grid-cols-2 gap-2.5 pt-4">

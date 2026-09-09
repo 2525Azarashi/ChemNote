@@ -34,6 +34,8 @@ import { BattleAiSelect } from './BattleAiSelect';
 import { BattleFriendJoin } from './BattleFriendJoin';
 import { BattleHistory } from './BattleHistory';
 import { BattleHome } from './BattleHome';
+import { BattleProfile } from './BattleProfile';
+import { BattleMissions } from './BattleMissions';
 import type { BattleHomeChoice } from './BattleHome';
 import { BattleLoading, BattleNotice, BattleShell, BattleTitle } from './BattleParts';
 import { BattleMatching } from './BattleMatching';
@@ -69,7 +71,9 @@ type Screen =
   | 'matching'
   | 'room'
   | 'ranking'
-  | 'history';
+  | 'history'
+  | 'profile'
+  | 'missions';
 
 export function BattleMode({
   onExit,
@@ -100,6 +104,7 @@ export function BattleMode({
    *（理由は BattleSubjectSelect の QUESTION_COUNT_CHOICES のコメント）。
    */
   const [questionCount, setQuestionCount] = useState<QuestionCountChoice | undefined>(undefined);
+  const [chapterId, setChapterId] = useState<string | undefined>(undefined);
   const [aiLevel, setAiLevel] = useState<AiLevel>('normal');
   /**
    * AI 対戦の「もう1回」で試合を作り直すための番号。
@@ -144,13 +149,15 @@ export function BattleMode({
       case 'history':
         setScreen('history');
         break;
+      case 'profile': setScreen('profile'); break;
+      case 'missions': setScreen('missions'); break;
     }
   }, []);
 
   // ------------------------------------------------------------
   // 部屋を作る
   // ------------------------------------------------------------
-  const createRoom = useCallback(async (pick: string, count?: QuestionCountChoice) => {
+  const createRoom = useCallback(async (pick: string, count?: QuestionCountChoice, unit?: string) => {
     setSubject(pick);
     setScreen('creating');
     setError(null);
@@ -161,6 +168,7 @@ export function BattleMode({
       const { roomId: created } = await createFriendRoom(
         pick,
         count ? { questionCount: count } : undefined,
+        unit,
       );
       setRoomId(created);
       setScreen('room');
@@ -183,9 +191,9 @@ export function BattleMode({
   const rematch = useCallback(
     (pick: string) => {
       setRoomId(null);
-      void createRoom(pick, questionCount);
+      void createRoom(pick, questionCount, chapterId);
     },
-    [createRoom, questionCount],
+    [createRoom, questionCount, chapterId],
   );
 
   // ------------------------------------------------------------
@@ -204,9 +212,10 @@ export function BattleMode({
             currentSubject={subject}
             title="部屋をつくる ／ 教科をえらぶ"
             allowQuestionCount
-            onPick={(pick, count) => {
+            onPick={(pick, count, unit) => {
               setQuestionCount(count);
-              void createRoom(pick, count);
+              setChapterId(unit);
+              void createRoom(pick, count, unit);
             }}
             onBack={() => setScreen('home')}
           />
@@ -222,6 +231,7 @@ export function BattleMode({
           onPick={(pick) => {
             setSubject(pick);
             setQuestionCount(undefined);
+            setChapterId(undefined);
             setScreen('matching');
           }}
           onBack={() => setScreen('home')}
@@ -240,6 +250,8 @@ export function BattleMode({
       return (
         <BattleFriendJoin
           onJoined={(id) => {
+            setChapterId(undefined);
+            setQuestionCount(undefined);
             setRoomId(id);
             setScreen('room');
           }}
@@ -277,9 +289,10 @@ export function BattleMode({
             currentSubject={subject}
           title="AIと対戦 ／ 教科をえらぶ"
           allowQuestionCount
-          onPick={(pick, count) => {
+          onPick={(pick, count, unit) => {
             setSubject(pick);
             setQuestionCount(count);
+            setChapterId(unit);
             setScreen('ai-level');
           }}
           onBack={() => setScreen('home')}
@@ -305,11 +318,14 @@ export function BattleMode({
           matchNo={aiMatchNo}
           subject={subject}
           questionCount={questionCount}
+          chapterId={chapterId}
           level={aiLevel}
           onExit={leaveRoom}
           onRematch={() => setAiMatchNo((n) => n + 1)}
           onChangeLevel={() => setScreen('ai-level')}
           onPractice={onPractice}
+          onOpenProfile={() => setScreen('profile')}
+          onOpenMissions={() => setScreen('missions')}
         />
       );
 
@@ -334,8 +350,16 @@ export function BattleMode({
           onExit={leaveRoom}
           onRematch={rematch}
           onPractice={onPractice}
+          onOpenProfile={() => setScreen('profile')}
+          onOpenMissions={() => setScreen('missions')}
         />
       );
+
+    case 'profile':
+      return <BattleProfile onBack={() => setScreen('home')} />;
+
+    case 'missions':
+      return <BattleMissions onBack={() => setScreen('home')} onBattle={() => setScreen('subject-ai')} />;
 
     case 'ranking':
       return <BattleRanking onBack={() => setScreen('home')} />;

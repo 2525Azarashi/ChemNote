@@ -40,6 +40,7 @@ import {
   type AiMove,
 } from '../core/aiOpponent';
 import {
+  BATTLE_REVEAL_HOLD_MS,
   judgeBattle,
   NO_ANSWER,
   resolveTimeLimit,
@@ -59,7 +60,7 @@ import { answerKeyOf } from '../core/types';
 export type AiBattlePhase = 'loading' | 'ready' | 'playing' | 'finished' | 'error';
 
 /** 両者解答／締切のあと、正解を見せておく時間 */
-const REVEAL_HOLD_MS = 1200;
+const REVEAL_HOLD_MS = BATTLE_REVEAL_HOLD_MS;
 /** 締切をまたいだ判定に使う猶予（ms） */
 const DEADLINE_GRACE_MS = 150;
 
@@ -114,6 +115,7 @@ export function useAiBattle(
    * AI 戦は端末内で完結するのでここでルールに上書きする。
    */
   questionCount?: number,
+  chapterId?: string,
 ): AiBattleState & AiBattleActions {
   const user = auth.currentUser;
   const uid = user?.uid || 'me';
@@ -162,7 +164,7 @@ export function useAiBattle(
     setCurrentIndex(0);
     setDeadlineMs(0);
     (async () => {
-      const ids = await drawQuestionIds(subject, rules, seedRef.current);
+      const ids = await drawQuestionIds(subject, rules, seedRef.current, chapterId);
       if (ids.length === 0) throw new Error('この教科は対戦できる問題がまだ足りません。');
       const pool = await loadPool(subject);
       const byId = new Map(pool.map((q) => [q.id, q]));
@@ -183,7 +185,7 @@ export function useAiBattle(
     };
     // level は profile 経由で使う。subject/level/matchNo が変わったら作り直す
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subject, level, rules, matchNo]);
+  }, [subject, level, rules, matchNo, chapterId]);
 
   // ------------------------------------------------------------
   // 時計

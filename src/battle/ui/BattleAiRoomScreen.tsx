@@ -12,7 +12,8 @@
  *   ・「もう1回」で同じ強さ・同じ教科の新しい試合を作れる
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { auth } from '../../firebase';
 import { Bot, LogOut, Play, X } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
@@ -35,17 +36,19 @@ import {
 } from './BattleParts';
 
 /** 結果画面に切り替わるまでの間（最後の1問の正解を見る時間） */
-const REVEAL_HOLD_MS = 1500;
+const REVEAL_HOLD_MS = 3500;
 
 export function BattleAiRoomScreen({
   subject,
   level,
   matchNo,
   questionCount,
+  chapterId,
   onExit,
   onRematch,
   onChangeLevel,
   onPractice,
+  onOpenProfile, onOpenMissions,
 }: {
   subject: string;
   level: AiLevel;
@@ -58,17 +61,23 @@ export function BattleAiRoomScreen({
   matchNo: number;
   /** 利用者が選んだ問題数。undefined なら教科の既定。 */
   questionCount?: number;
+  chapterId?: string;
   onExit: (message?: string) => void;
   /** 同じ教科・同じ強さでもう1回 */
   onRematch: () => void;
   /** 強さを変える */
   onChangeLevel: () => void;
   onPractice?: (subject: string, chapterId: string) => void;
+  onOpenProfile?: () => void;
+  onOpenMissions?: () => void;
 }) {
   const theme = subjectTheme(subject as SubjectKey);
   const profile = aiProfileOf(level);
-  const b = useAiBattle(subject, level, matchNo, questionCount);
+  const b = useAiBattle(subject, level, matchNo, questionCount, chapterId);
 
+  const [growthOwnerUid] = useState(() => auth.currentUser?.uid || 'guest');
+  const growthMatchId = useMemo(() => `ai:${crypto.randomUUID()}`, [matchNo, subject, level, chapterId]);
+  const [resultMatchNo, setResultMatchNo] = useState(-1);
   const [showResult, setShowResult] = useState(false);
   const [confirmQuit, setConfirmQuit] = useState(false);
   // 新しい試合になったら結果表示を畳む
@@ -78,9 +87,9 @@ export function BattleAiRoomScreen({
   }, [matchNo]);
   useEffect(() => {
     if (!b.finished) return;
-    const timer = window.setTimeout(() => setShowResult(true), REVEAL_HOLD_MS);
+    const timer = window.setTimeout(() => { setResultMatchNo(matchNo); setShowResult(true); }, REVEAL_HOLD_MS);
     return () => window.clearTimeout(timer);
-  }, [b.finished]);
+  }, [b.finished, matchNo]);
 
   const reveal = (b.answered && b.opponentAnswered) || b.remainMs <= 0;
 
@@ -115,7 +124,7 @@ export function BattleAiRoomScreen({
   // ------------------------------------------------------------
   // 結果
   // ------------------------------------------------------------
-  if (showResult && b.result) {
+  if (showResult && b.result && resultMatchNo === matchNo) {
     return (
       <BattleResult
         result={b.result}
@@ -131,6 +140,8 @@ export function BattleAiRoomScreen({
         onRematch={onRematch}
         onExit={() => onExit()}
         onPractice={onPractice}
+        growthMatchId={growthMatchId} growthOwnerUid={growthOwnerUid} growthEligible
+        onOpenProfile={onOpenProfile} onOpenMissions={onOpenMissions}
       />
     );
   }
@@ -155,7 +166,7 @@ export function BattleAiRoomScreen({
           </div>
         }
       >
-        <BattleTitle subtitle={`${theme.label} ／ ${b.rules.questionCount}問しょうぶ`} />
+        <BattleTitle subtitle={`${theme.label} ／ ${b.questions.length}問しょうぶ`} />
 
         <section
           className="battle-card-in mb-4 rounded-3xl border-2 p-4"

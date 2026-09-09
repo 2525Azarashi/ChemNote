@@ -601,7 +601,28 @@ export function toChemLatex(src: string): string | null {
   t = t.replace(/(?<!\^)\+(?=[A-Z(0-9])/g, ' + ');
 
   // 係数と化学式の間に空白は入れない（mhchem が 2H2O をそのまま解釈する）
-  const tokens = t.split(/\s+/).filter(Boolean);
+  const tokens = t.split(/\s+/).filter(Boolean).map((token) => {
+    // Compact charges in the verified chemistry sources must be explicit for
+    // mhchem: Fe2+ otherwise means two Fe atoms with a single positive charge.
+    // Only known ions are disambiguated; NH4+, O2+ and explicit scripts retain
+    // their atom counts. Leading reaction coefficients are kept unchanged.
+    const match = token.match(/^(\d*)(.*)$/)!;
+    const compact: Record<string, string> = {
+      'Fe2+': 'Fe^2+', 'Fe3+': 'Fe^3+', 'Cu2+': 'Cu^2+',
+      // Include charges used in distractors / hypothetical-element questions.
+      'Na2+': 'Na^2+', 'Y2+': 'Y^2+',
+      'Ca2+': 'Ca^2+', 'Mg2+': 'Mg^2+', 'Ba2+': 'Ba^2+',
+      'Sr2+': 'Sr^2+', 'Be2+': 'Be^2+', 'Zn2+': 'Zn^2+',
+      'Al3+': 'Al^3+', 'Mn2+': 'Mn^2+', 'Cr3+': 'Cr^3+',
+      'Pb2+': 'Pb^2+', 'Sn2+': 'Sn^2+', 'Sn4+': 'Sn^4+',
+      'Ni2+': 'Ni^2+', 'Co2+': 'Co^2+', 'Cd2+': 'Cd^2+',
+      'Hg2+': 'Hg^2+', 'O2-': 'O^2-', 'S2-': 'S^2-',
+      'SO42-': 'SO4^2-', 'SO32-': 'SO3^2-', 'CO32-': 'CO3^2-',
+      'PO43-': 'PO4^3-', 'CrO42-': 'CrO4^2-', 'Cr2O72-': 'Cr2O7^2-',
+      'C2O42-': 'C2O4^2-',
+    };
+    return compact[match[2]] ? match[1] + compact[match[2]] : token;
+  });
   if (tokens.length === 0) return null;
 
   let sawFormula = false;
