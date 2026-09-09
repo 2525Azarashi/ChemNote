@@ -47,6 +47,8 @@
 
 import { useEffect, useState } from 'react';
 import { BattleText } from './BattleText';
+import { BattleReviewDetails } from './BattleReviewDetails';
+import { kanaTextOf } from '../core/kanaKeyboard';
 import { BattleGrowthReward } from './BattleGrowthReward';
 import type { CSSProperties } from 'react';
 import {
@@ -159,7 +161,7 @@ export function BattleResult({
    * chapterId は BattleQuestion がそのまま持っている元データの章IDなので、
    * 受け側は既存の handleSelectChapter にそのまま流せる。
    */
-  onPractice?: (subject: string, chapterId: string) => void;
+  onPractice?: (subject: string, chapterId: string, problemId?: string, subQuestionId?: string) => void;
   /**
    * レートが動かない理由の説明（AI 対戦など）。
    * 渡されると「無効試合」ではなくこの文を出す。
@@ -185,6 +187,8 @@ export function BattleResult({
    * 読み込み前・失敗時は空の Map なので、答えの行が出ないだけで
    * 点数・レート・内訳は今までどおり表示される。
    */
+  const [answerLoadFailed, setAnswerLoadFailed] = useState(false);
+  const [answerRetry, setAnswerRetry] = useState(0);
   const [answers, setAnswers] = useState<ReadonlyMap<string, string>>(new Map());
 
   useEffect(() => {
@@ -195,17 +199,18 @@ export function BattleResult({
      * 消えた部品への更新になって React が警告を出す。
      */
     let cancelled = false;
+    setAnswerLoadFailed(false);
     loadBattleAnswers(subject)
       .then((map) => {
         if (!cancelled) setAnswers(map);
       })
       .catch(() => {
-        // 答えが出ないだけで試合結果は読める。画面は壊さない。
+        if (!cancelled) setAnswerLoadFailed(true);
       });
     return () => {
       cancelled = true;
     };
-  }, [subject]);
+  }, [subject, answerRetry]);
 
   /**
    * 出題に出た章（重複を除く・出た順）。
@@ -376,6 +381,7 @@ export function BattleResult({
         <h2 className="mb-2 text-xs font-black" style={{ color: INK_SUB }}>
           1問ずつのけっか（答えあわせ）
         </h2>
+        {answerLoadFailed && <p role="alert" className="mb-2 text-sm text-red-700">解説の読み込みに失敗しました。<button type="button" className="min-h-11 underline" onClick={() => setAnswerRetry(n => n + 1)}>再読み込み</button></p>}
         <div className="grid gap-1.5">
           {result.me.perQuestion.map((q) => {
             const question = questions[q.index];
@@ -385,10 +391,10 @@ export function BattleResult({
              * choice 系は options[answerIndex]、kana は panelOrder から組み立てる。
              * （プールは答えの文字列そのものを持たない設計なので、ここで作る）
              */
-            const correctText = question
-              ? question.options[question.answerIndex] ??
-                question.panelOrder.map((i) => question.options[i]).join('')
-              : '';
+            const correctText = !question ? '' : question.format === 'kana'
+              ? kanaTextOf(question.panelOrder)
+              : question.format === 'panel' ? question.panelOrder.map(i => question.options[i]).join('')
+              : question.options[question.answerIndex] || '';
             /**
              * ★ひと言の理由（oneLine）★
              * 手書き問題だけが持つ。機械生成の問題では undefined になるので、
@@ -432,6 +438,9 @@ export function BattleResult({
                     {other?.total ?? 0}
                   </span>
                 </div>
+                {question && <div className="mt-2 text-sm leading-7 text-slate-800" data-result-question={question.id}>
+                  <BattleText text={[question.prompt, question.label].filter(Boolean).join('\n')} subject={question.subject} />
+                </div>}
                 {q.answered !== undefined && <p className="mt-2 text-sm font-bold" style={{ color: q.correct ? '#1E7D46' : WRONG }}>
                   あなたの回答：{q.answered
                     ? <BattleText text={q.submittedAnswer || ''} subject={question?.subject ?? subject} /> : '未回答'}
@@ -468,6 +477,12 @@ export function BattleResult({
                     <BattleText text={oneLine} subject={question?.subject ?? subject} />
                   </p>
                 )}
+                {question && <BattleReviewDetails question={question} oneLine={oneLine} />}
+                {question && onPractice && <button type="button" data-practice-question={question.id}
+                  onClick={() => onPractice(subject, question.chapterId, question.problemId, question.subQuestionId)}
+                  className="mt-3 min-h-11 w-full rounded-xl bg-blue-50 px-3 py-2 text-sm font-bold text-blue-900">
+                  この問題を演習する（結果に戻れます）
+                </button>}
               </div>
             );
           })}

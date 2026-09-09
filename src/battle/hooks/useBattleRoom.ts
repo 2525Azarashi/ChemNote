@@ -835,7 +835,7 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
    * 無駄な書き込みを避けるために条件を付ける。
    */
   const leavingRef = useRef<{ roomId: string | null; active: boolean }>({ roomId, active: false });
-  leavingRef.current = { roomId, active: status === 'playing' && !finished };
+  leavingRef.current = { roomId, active: status === 'waiting' || (status === 'playing' && !finished) };
   useEffect(() => {
     const flush = () => {
       const cur = leavingRef.current;

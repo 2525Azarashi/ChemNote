@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope, Flame, Sparkles } from 'lucide-react';
 import { auth } from '../firebase';
+import { ManaCoinBalance } from '../battle/ui/ManaCoinBalance';
 /*
  * 教科IDの型だけは data/allChapters.ts が唯一の定義。
  *
@@ -357,6 +358,7 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           <header className="home-lobby-header">
             <div className="home-player">
               {schoolBrand && <p className="home-school">{schoolBrand.schoolName}</p>}
+              <ManaCoinBalance />
               <p className="home-date">{todayFormatted}</p>
               <h1>おかえり、<span>{greetingName}さん</span></h1>
               <div className="home-streak" title={nextMilestone ? `${nextMilestone.target}日連続まであと${nextMilestone.remaining}日` : '連続学習を継続中'}>

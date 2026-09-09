@@ -72,15 +72,16 @@ type Log = { item: RikaItem; ok: boolean }
  * 練習画面。
  * 出す条件を選ぶ → 1問ずつ解く → 結果 → まちがえた分だけやり直す。
  */
-export default function RikaPractice() {
+export default function RikaPractice({ initialChapterId = '', initialQuestionId }: { initialChapterId?: string; initialQuestionId?: string } = {}) {
+  const initialItem = RIKA_ITEMS.find(it => it.id === initialQuestionId && it.chapterId === initialChapterId)
   const [fields, setFields] = useState<readonly string[]>([])
-  const [chapterId, setChapterId] = useState('')
+  const [chapterId, setChapterId] = useState(initialChapterId)
   const [wordMode, setWordMode] = useState(false)
   const [count, setCount] = useState(20)
   const [onlyWrong, setOnlyWrong] = useState(false)
 
-  const [pool, setPool] = useState<readonly RikaItem[]>([])
-  const [at, setAt] = useState(-1)
+  const [pool, setPool] = useState<readonly RikaItem[]>(() => initialItem ? [initialItem] : [])
+  const [at, setAt] = useState(initialItem ? 0 : -1)
   const [log, setLog] = useState<readonly Log[]>([])
 
   const candidates = useMemo(() => {
