@@ -297,11 +297,6 @@ export function BattleHome({
     return (
       <BattleShell
         className="mtb-page battle-lobby"
-        footer={
-          <BattleButton variant="ghost" onClick={onExit} icon={<X size={18} />}>
-            もどる
-          </BattleButton>
-        }
       >
         <BattleTitle subtitle="1対1のリアルタイム対戦" />
         <div className="battle-guest-stage">
@@ -385,11 +380,6 @@ export function BattleHome({
   return (
     <BattleShell
       className="mtb-page battle-lobby"
-      footer={
-        <BattleButton variant="ghost" onClick={onExit} icon={<X size={18} />}>
-          ホームにもどる
-        </BattleButton>
-      }
     >
       <BattleTitle subtitle="1対1のリアルタイム対戦" />
 

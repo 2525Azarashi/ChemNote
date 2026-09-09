@@ -86,6 +86,7 @@ interface QuizScreensProps {
   answers: Record<string, string>;
   onFinish: (answers: Record<string, string>, result?: QuizFinishResult) => void;
   onBack: () => void;
+  onReturnToBattle?: () => void;
   isGuest: boolean;
   isMobileView?: boolean;
   onExplanationChange?: (isExplanation: boolean) => void;
@@ -112,6 +113,7 @@ export function QuizScreens({
   answers,
   onFinish,
   onBack,
+  onReturnToBattle,
   isGuest,
   isMobileView,
   onExplanationChange,
@@ -164,6 +166,7 @@ export function QuizScreens({
           chapter={chapter}
           onFinish={onFinish}
           onBack={onBack}
+          onReturnToBattle={onReturnToBattle}
           isGuest={isGuest}
           isMobileView={isMobileView}
           onExplanationChange={onExplanationChange}
@@ -183,6 +186,7 @@ export function QuizScreens({
         chapter={chapter}
         answers={answers}
         onBack={onBack}
+        onReturnToBattle={onReturnToBattle}
         isGuest={isGuest}
         // スマホではスマホ専用レイアウト（正誤一覧→タップで解説）で表示する。
         // PC は従来どおり（isMobileView=false → 2カラムレイアウト）。

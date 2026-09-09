@@ -48,7 +48,7 @@ export function BattleAiRoomScreen({
   onRematch,
   onChangeLevel,
   onPractice,
-  onOpenProfile, onOpenMissions,
+  onOpenProfile, onOpenMissions, onActiveChange,
 }: {
   subject: string;
   level: AiLevel;
@@ -67,13 +67,19 @@ export function BattleAiRoomScreen({
   onRematch: () => void;
   /** 強さを変える */
   onChangeLevel: () => void;
-  onPractice?: (subject: string, chapterId: string) => void;
+  onPractice?: (subject: string, chapterId: string, problemId?: string, subQuestionId?: string) => void;
+  onActiveChange?: (active: boolean) => void;
   onOpenProfile?: () => void;
   onOpenMissions?: () => void;
 }) {
   const theme = subjectTheme(subject as SubjectKey);
   const profile = aiProfileOf(level);
   const b = useAiBattle(subject, level, matchNo, questionCount, chapterId);
+
+  useEffect(() => {
+    onActiveChange?.(b.phase === 'playing');
+    return () => onActiveChange?.(false);
+  }, [b.phase, onActiveChange]);
 
   const [growthOwnerUid] = useState(() => auth.currentUser?.uid || 'guest');
   const growthMatchId = useMemo(() => `ai:${crypto.randomUUID()}`, [matchNo, subject, level, chapterId]);

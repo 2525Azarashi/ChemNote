@@ -57,7 +57,10 @@ describe('復習先の全科目検索（実教材のIDで確認）', () => {
 
 describe('UIの接続と保護', () => {
   it('does not let global navigation or idle timeout bypass battle exit', () => {
-    expect(app).toMatch(/appState !== 'quiz' && appState !== 'explanation' && appState !== 'battle' &&/);
+    expect(app).toMatch(/appState !== 'quiz' && appState !== 'explanation' && \(/);
+    expect(app).toContain("appState === 'battle' && next !== 'battle' && battleActive");
+    expect(app).toContain('!window.confirm(');
+    expect(app).toContain("navigateMain('home')");
     expect(app).toMatch(/const idleResetEnabled =[^;]*appState !== 'battle'/);
   });
   it('preserves study tabs and stops active learning-tab resets', () => {
@@ -65,7 +68,7 @@ describe('UIの接続と保護', () => {
     expect(app).toContain('if (!isLearningScreen(appState))');
   });
   it('resets quiz storage using an explicit mode and resets listening step', () => {
-    expect(app).toContain("handleSelectChapter(chapterId, 0, false, null, 'practice')");
+    expect(app).toContain('handleSelectChapter(chapterId, index, false, problemId ? { startIndex: index, endIndex: index } : null, mode)');
     expect(app).toContain('quizStepKey(chapterId, targetMode)');
     expect(app).toContain('quizIndexKey(chapterId, targetMode)');
   });

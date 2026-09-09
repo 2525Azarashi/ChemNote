@@ -66,6 +66,7 @@ interface QuizProps {
   chapter: any;
   onFinish: (answers: Record<string, string>, result?: ChapterRunState) => void;
   onBack: () => void;
+  onReturnToBattle?: () => void;
   isGuest: boolean;
   isMobileView?: boolean;
   onExplanationChange?: (isExplanation: boolean) => void;
@@ -119,7 +120,7 @@ interface QuizProps {
  * クイズの進行（採点・タイマー・ページ送り）とはやり取りしない。
  */
 
-export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, onExplanationChange, onScored, questionRange }: QuizProps) {
+export function Quiz({ mode, chapter, onFinish, onBack, onReturnToBattle, isGuest, isMobileView, onExplanationChange, onScored, questionRange }: QuizProps) {
   // ===== タイマー & スコア用 state =====
   const [run, setRun] = useState<ChapterRunState>(() => loadRun(chapter.id, mode));
   const timeUsedRef = useRef(0); // タイマーから250msごとに通知される最新値
@@ -1118,6 +1119,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   if (showingExplanation) {
     return (
       <ExplanationScreen
+        onReturnToBattle={onReturnToBattle}
         mode={mode}
         chapter={chapter}
         answers={answers}
@@ -1166,6 +1168,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
   if (showingBriefing && listeningUnified && currentQuestion) {
     return (
       <ListeningBriefing
+        onReturnToBattle={onReturnToBattle}
         currentQuestion={currentQuestion}
         chapterAbstractTitle={chapter.abstractTitle}
         mode={mode}
@@ -1177,6 +1180,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
 
   return (
     <div className="fixed inset-0 w-full flex flex-col bg-gray-50 overflow-hidden z-40">
+      {onReturnToBattle && <button type="button" onClick={onReturnToBattle} className="min-h-11 shrink-0 border-b border-blue-200 bg-blue-50 px-3 py-2 text-sm font-bold text-blue-900">バトル結果・解説に戻る</button>}
       
       {/* ヘッダー帯（単元名・スコア・順位・進捗）の JSX は
           components/QuizHeader.tsx へ切り出した。

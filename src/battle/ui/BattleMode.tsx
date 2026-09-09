@@ -21,8 +21,9 @@
  * 対戦モードに入ったときに1回だけ読み、以後はメモリのキャッシュを使う。
  */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  abortRoom,
   createFriendRoom,
   loadBattleRuleOverrides,
 } from '../data/battle';
@@ -79,6 +80,7 @@ export function BattleMode({
   onExit,
   onRequireLogin,
   onPractice,
+  onActiveChange,
   initialSubject = '',
 }: {
   /** 対戦モードを抜けてアプリのホームに戻る */
@@ -92,10 +94,21 @@ export function BattleMode({
    * 教科と章IDをアプリ本体（App.tsx）に渡して、そちらに切り替えてもらう。
    * 渡されなかったときはリザルトにボタンが出ない。
    */
-  onPractice?: (subject: string, chapterId: string) => void;
+  onPractice?: (subject: string, chapterId: string, problemId?: string, subQuestionId?: string) => void;
+  onActiveChange?: (active: boolean) => void;
   initialSubject?: string;
 }) {
   const [screen, setScreen] = useState<Screen>('home');
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
+  useEffect(() => {
+    if (screen !== 'creating') return;
+    onActiveChange?.(true);
+    return () => onActiveChange?.(false);
+  }, [screen, onActiveChange]);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [subject, setSubject] = useState<string>(initialSubject);
   /**
@@ -170,9 +183,11 @@ export function BattleMode({
         count ? { questionCount: count } : undefined,
         unit,
       );
+      if (!mountedRef.current) { void abortRoom(created).catch(() => {}); return; }
       setRoomId(created);
       setScreen('room');
     } catch (e) {
+      if (!mountedRef.current) return;
       setError(e instanceof Error ? e.message : '部屋を作れませんでした。');
       setScreen('subject-friend');
     }
@@ -324,6 +339,7 @@ export function BattleMode({
           onRematch={() => setAiMatchNo((n) => n + 1)}
           onChangeLevel={() => setScreen('ai-level')}
           onPractice={onPractice}
+          onActiveChange={onActiveChange}
           onOpenProfile={() => setScreen('profile')}
           onOpenMissions={() => setScreen('missions')}
         />
@@ -350,6 +366,7 @@ export function BattleMode({
           onExit={leaveRoom}
           onRematch={rematch}
           onPractice={onPractice}
+          onActiveChange={onActiveChange}
           onOpenProfile={() => setScreen('profile')}
           onOpenMissions={() => setScreen('missions')}
         />

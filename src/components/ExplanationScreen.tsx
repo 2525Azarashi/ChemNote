@@ -38,6 +38,7 @@ export interface ExplanationScreenProps {
   isLastQuestion: boolean;
   isMobileForExplanation?: boolean;
   handleNext: () => void;
+  onReturnToBattle?: () => void;
   /** 解説画面を閉じる（Quiz.tsx 側で setShowingExplanation(false) と
    *  onExplanationChange(false) の両方を行う） */
   onBackFromExplanation: () => void;
@@ -60,6 +61,7 @@ export function ExplanationScreen({
   isLastQuestion,
   isMobileForExplanation,
   handleNext,
+  onReturnToBattle,
   onBackFromExplanation,
   scoreAnimationData,
   showScoreAnimation,
@@ -82,7 +84,8 @@ export function ExplanationScreen({
     : run.perQuestion[currentQuestion?.id];
   return (
     <>
-      <Explanation 
+      <Explanation
+        onReturnToBattle={onReturnToBattle} 
         mode={mode} 
         chapter={chapter} 
         answers={answers} 

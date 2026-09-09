@@ -356,6 +356,44 @@ export default function App() {
   const [selectedNote, setSelectedNote] = useState<any>(null);
   const [studyHubView, setStudyHubView] = useState<StudyHubView>({ tab: 'today', subjectTab: 'all' });
   const [chapterGroups, setChapterGroups] = useState<Record<string, string>>({});
+  const [battleReturnActive, setBattleReturnActive] = useState(false);
+  const [battleActive, setBattleActive] = useState(false);
+  const [rikaBattleTarget, setRikaBattleTarget] = useState<{ chapterId: string; questionId?: string } | null>(null);
+  const battleScrollRef = useRef<HTMLDivElement | null>(null);
+  const savedBattleScroll = useRef(0);
+  const restoreBattleScroll = useRef(false);
+  useEffect(() => {
+    if (appState !== 'battle' || !restoreBattleScroll.current) return;
+    const frame = requestAnimationFrame(() => {
+      if (battleScrollRef.current) battleScrollRef.current.scrollTop = savedBattleScroll.current;
+      restoreBattleScroll.current = false;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [appState]);
+  useEffect(() => {
+    if (!['battle', 'quiz', 'explanation', 'rika'].includes(appState)) setBattleReturnActive(false);
+  }, [appState]);
+  useEffect(() => {
+    let owner = auth.currentUser?.uid || 'guest';
+    return onAuthStateChanged(auth, user => {
+      const next = user?.uid || 'guest';
+      if (next !== owner) { setBattleReturnActive(false); setRikaBattleTarget(null); }
+      owner = next;
+    });
+  }, []);
+  const returnToBattle = () => {
+    restoreBattleScroll.current = true;
+    setBattleReturnActive(false);
+    setAppState('battle');
+  };
+  const navigateMain = (next: AppState) => {
+    if (appState === 'battle' && next !== 'battle' && battleActive &&
+      !window.confirm('進行中の対戦・待機を終了して移動しますか？オンライン対戦では途中退出扱いになります。')) return;
+    if (next === 'settings') setPrevAppState(appState === 'battle' && battleActive ? 'home' : appState);
+    setBattleReturnActive(false);
+    setRikaBattleTarget(null);
+    setAppState(next);
+  };
   const reviewRequest = useRef(0);
   const reviewBusy = useRef(false);
   useEffect(() => { reviewRequest.current += 1; reviewBusy.current = false; }, [appState]);
@@ -1179,51 +1217,52 @@ export default function App() {
    * ミニテストに飛ばすと「対戦で間違えた問題が出てこない」ことになる。
    * 既存の復習ノートからの遷移（handleReviewNote）と同じ扱いにしている。
    */
-  const handlePracticeFromBattle = (subject: string, chapterId: string) => {
-    /**
-     * ★外部教科（本体に教科データを持たない教科）は専用の画面へ渡す★
-     *
-     * 高校入試 理科は本体の「章・大問・小問」の形を持たないため、
-     * 本体の演習画面（QuizScreens）では1問も表示できない。
-     *
-     * ここで分けないと、下の isSubjectId('rika') が false になるので
-     *   ・教科は化学基礎のまま変わらない
-     *   ・その状態で章ID 'ch01' を開こうとする
-     * となり、★理科で間違えたのに化学基礎の第1章が開く★。
-     * 教科を選び直したつもりも無いのに中身が変わるので、
-     * 生徒には何が起きたのか分からない。
-     *
-     * 理科は演習画面を自分で持っており、単元の絞り込みもその中にある。
-     * だから理科の入口を演習タブで開く（単元は生徒がそこで選ぶ）。
-     */
-    if (isExternalSubject(subject)) {
-      /*
-        ★ここでもフラグを見る★
-        非公開のときに理科へ飛ばすと「入れない画面」に着いて真っ白になる。
-        戻り先はホーム。対戦の結果は残っているので学習の記録は失われない。
-      */
-      if (!FEATURES.rika) {
-        setAppState('home');
+  const handlePracticeFromBattle = async (subject: string, chapterId: string, problemId?: string, subQuestionId?: string) => {
+    if (reviewBusy.current) return;
+    reviewBusy.current = true;
+    const request = ++reviewRequest.current;
+    try {
+      if (isExternalSubject(subject)) {
+        if (!FEATURES.rika) throw new Error('この科目の演習は現在公開されていません。');
+        const { RIKA_ITEMS } = await import('./features/rika/rikaData');
+        const found = RIKA_ITEMS.find(q => q.chapterId === chapterId && (!subQuestionId || q.id === subQuestionId));
+        if (!found) throw new Error('対応する演習問題が見つかりません。');
+        if (request !== reviewRequest.current) return;
+        savedBattleScroll.current = battleScrollRef.current?.scrollTop || 0;
+        setBattleReturnActive(true);
+        setRikaBattleTarget({ chapterId, questionId: subQuestionId });
+        setRikaTab('practice'); setAppState('rika');
         return;
       }
-      setRikaTab('practice');
-      setAppState('rika');
-      return;
-    }
-
-    /**
-     * ★知らない教科IDが来たら教科は変えない★
-     * 対戦の教科IDは Firestore の部屋データから来るので、
-     * 将来アプリ側で公開をやめた教科の文字列が届くことがありうる。
-     * 既存の復元処理（selectedSubject の useState）と同じ isSubjectId で見る。
-     */
-    if (isSubjectId(subject)) {
+      const { getPartsOfSubject } = await import('./data/allChapters');
+      if (request !== reviewRequest.current) return;
+      if (!isSubjectId(subject)) throw new Error('対応する科目が見つかりません。');
+      const parts = getPartsOfSubject(subject);
+      const part = parts.find((p: any) => p.chapters.some((c: any) => c.id === chapterId));
+      const chapter = part?.chapters.find((c: any) => c.id === chapterId);
+      if (!chapter) throw new Error('対応する単元が見つかりません。');
+      let mode: 'practice' | 'mini_test' = 'practice';
+      let problems = chapter.practiceProblems || [];
+      let index = problemId ? problems.findIndex((p: any) => p.id === problemId) : 0;
+      if (problemId && index < 0) {
+        mode = 'mini_test';
+        problems = Array.isArray(chapter.miniTest) ? chapter.miniTest : chapter.miniTest?.problems || [];
+        index = problems.findIndex((p: any) => p.id === problemId);
+      }
+      if (!problems[index] || (subQuestionId && !problems[index].subQuestions?.some((q: any) => q.id === subQuestionId))) {
+        throw new Error('対応する問題が見つかりません。教材が更新された可能性があります。');
+      }
+      savedBattleScroll.current = battleScrollRef.current?.scrollTop || 0;
+      setBattleReturnActive(true);
       setSelectedSubject(subject as SubjectId);
+      if (part?.field) setSelectedField(part.field);
+      setAppMode(mode);
+      handleSelectChapter(chapterId, index, false, problemId ? { startIndex: index, endIndex: index } : null, mode);
+    } catch (error) {
+      if (request === reviewRequest.current) alert(error instanceof Error ? error.message : '演習を読み込めませんでした。もう一度お試しください。');
+    } finally {
+      if (request === reviewRequest.current) reviewBusy.current = false;
     }
-    setAppMode('practice');
-    // 画面の切り替え（setAppState('quiz')）と答案の初期化は
-    // handleSelectChapter が中でやるので、ここでは呼ぶだけでよい。
-    handleSelectChapter(chapterId, 0, false, null, 'practice');
   };
 
   const handleFinishQuiz = (answers: Record<string, string>, result?: any) => {
@@ -1451,14 +1490,18 @@ export default function App() {
                 ホームのボタンを隠すだけでは、localStorage に残った
                 appState='battle' から復元して入れてしまう。
                 描画の受け口でも同じフラグを見る（既存のランキングと同じ作り）。 */}
-            {appState === 'battle' && FEATURES.battle && (
+            {(appState === 'battle' || battleReturnActive) && FEATURES.battle && (
+              <div id="battle-screen-scroll" ref={battleScrollRef} hidden={appState !== 'battle'}
+                className={appState === 'battle' ? 'h-full min-h-0 overflow-y-auto overscroll-contain pb-app-nav' : 'hidden'}>
               <BattleMode
                 onExit={() => setAppState('home')}
                 onRequireLogin={() => setAppState('onboarding')}
                 /* ★対戦 ⇒ 演習 の橋（請求⑦-A）★ */
                 onPractice={handlePracticeFromBattle}
+                onActiveChange={setBattleActive}
                 initialSubject={selectedSubject}
               />
+              </div>
             )}
             {appState === 'rika' && FEATURES.rika && (
               /*
@@ -1474,7 +1517,8 @@ export default function App() {
                 （既存のランキングと同じ塞ぎ方。詳しくは src/config/features.ts）
               */
               <React.Suspense fallback={<ScreenLoading />}>
-                <RikaHome onBack={() => setAppState('home')} initialTab={rikaTab} />
+                <RikaHome onBack={battleReturnActive ? returnToBattle : () => setAppState('home')} initialTab={rikaTab}
+                  battleTarget={rikaBattleTarget || undefined} onReturnToBattle={battleReturnActive ? returnToBattle : undefined} />
               </React.Suspense>
             )}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
@@ -1560,7 +1604,8 @@ export default function App() {
                   mode={appMode as 'mini_test' | 'practice'}
                   answers={quizAnswers}
                   onFinish={handleFinishQuiz}
-                  onBack={handleBackToChapters}
+                  onBack={battleReturnActive ? returnToBattle : handleBackToChapters}
+                  onReturnToBattle={battleReturnActive ? returnToBattle : undefined}
                   isGuest={isGuest}
                   // スマホではスマホ専用レイアウト（正誤一覧→タップで解説）で表示する。
                   // PC は従来どおり（isMobileView=false → 2カラムレイアウト）。
@@ -1588,7 +1633,7 @@ export default function App() {
             {/* Global Bottom Navigation Footer
                 日本語ラベル化（ホーム／学習／設定）＋aria-labelをaria-currentで現在地を明示
                 アイコンには aria-hidden を付け、ラベルだけがスクリーンリーダーに読まれるよう整理 */}
-            {appState !== 'onboarding' && appState !== 'subject_selection' && appState !== 'quiz' && appState !== 'explanation' && appState !== 'battle' && (
+            {appState !== 'onboarding' && appState !== 'subject_selection' && appState !== 'quiz' && appState !== 'explanation' && (
               <nav
                 aria-label="メインナビゲーション"
                 /*
@@ -1606,7 +1651,7 @@ export default function App() {
                 className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-2 md:px-10 pt-3 pb-[calc(0.9rem+env(safe-area-inset-bottom))] z-[60] shadow-sm"
               >
                 <button 
-                  onClick={() => setAppState('home')}
+                  onClick={() => navigateMain('home')}
                   aria-label="ホーム画面へ移動"
                   aria-current={appState === 'home' ? 'page' : undefined}
                   className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'home' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
@@ -1618,7 +1663,7 @@ export default function App() {
                 <button 
                   onClick={() => {
                     if (!isLearningScreen(appState)) {
-                      setAppState(safeStudyResume(selectedSubject, lastLearnState, selectedChapterId) as AppState);
+                      navigateMain(safeStudyResume(selectedSubject, lastLearnState, selectedChapterId) as AppState);
                     }
                   }}
                   aria-label="学習画面へ移動"
@@ -1651,7 +1696,7 @@ export default function App() {
                       片方だけ残って「見えるのに入れない」にはならない。 */}
                 {FEATURES.battle && (
                 <button
-                  onClick={() => setAppState('battle')}
+                  onClick={() => navigateMain('battle')}
                   aria-label="オンライン対戦へ移動"
                   aria-current={appState === 'battle' ? 'page' : undefined}
                   className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'battle' ? 'text-[#2E86C1] font-bold' : 'text-[#4B5563]/60 hover:text-[#2E86C1]/80'}`}
@@ -1670,7 +1715,7 @@ export default function App() {
                     今回の「隠したつもりで入れた」の原因そのものである。 */}
                 {FEATURES.ranking && (
                 <button 
-                  onClick={() => setAppState('leaderboard')}
+                  onClick={() => navigateMain('leaderboard')}
                   aria-label="ランキング画面へ移動"
                   aria-current={appState === 'leaderboard' ? 'page' : undefined}
                   className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'leaderboard' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
@@ -1681,12 +1726,7 @@ export default function App() {
                 )}
 
                 <button 
-                  onClick={() => {
-                    if (appState !== 'settings') {
-                      setPrevAppState(appState);
-                    }
-                    setAppState('settings');
-                  }}
+                  onClick={() => navigateMain('settings')}
                   aria-label={pendingFriendRequests > 0 ? `設定画面へ移動（フレンド申請が${pendingFriendRequests}件届いています）` : '設定画面へ移動'}
                   aria-current={appState === 'settings' ? 'page' : undefined}
                   className={`relative flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}

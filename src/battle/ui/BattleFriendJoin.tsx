@@ -1,173 +1,92 @@
-/**
- * ===================================================================
- * BattleFriendJoin — 合言葉を入れて部屋に入る
- * ===================================================================
- *
- * ★4つのマスに1文字ずつ表示する理由★
- * 合言葉は口で伝える前提なので「今どこまで入れたか」が見えないと、
- * 聞き取った文字を数え直すことになる。
- * 入力欄そのものは画面の外（見えない input）に置き、
- * 見た目は4つのマスにする。
- *
- * ★ソフトキーボードは英数字に固定する★
- * inputMode="text" のままだと日本語IMEが立ち上がる端末があり、
- * 「ABCD」を入れるのに変換が必要になる。
- * autoCapitalize と inputMode を指定して、大文字英数字だけを出す。
- *
- * ★教科をここで選ばせない理由★
- * 教科は部屋を作った側が決めている。
- * 入る側にも選ばせると、選んだ教科と実際の教科が違って混乱する。
- * 入室後のロビー画面で「どの教科か」を表示する。
- */
-
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, LogIn } from 'lucide-react';
-import { joinRoomByCode } from '../data/battle';
-import {
-  AMBER,
-  BattleButton,
-  BattleNotice,
-  BattleShell,
-  BattleTitle,
-  GOLD,
-  INK,
-  INK_SUB,
-  LINE,
-} from './BattleParts';
+import { abortRoom, joinRoomByCode } from '../data/battle';
+import { AMBER, BattleButton, BattleNotice, BattleShell, BattleTitle, INK, INK_SUB, LINE } from './BattleParts';
 
-const CODE_LENGTH = 4;
+/** Normalize only for validation/submission, never rewrite an active IME buffer. */
+export function normalizeJoinCode(raw: string): string {
+  return raw.normalize('NFKC').replace(/\s/g, '').toUpperCase();
+}
 
-export function BattleFriendJoin({
-  onJoined,
-  onBack,
-}: {
+export function BattleFriendJoin({ onJoined, onBack }: {
   onJoined: (roomId: string) => void;
   onBack: () => void;
 }) {
-  const [code, setCode] = useState('');
+  const [raw, setRaw] = useState('');
+  const [composing, setComposing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const composingRef = useRef(false);
+  const sendingRef = useRef(false);
+  const mountedRef = useRef(true);
+  const code = normalizeJoinCode(raw);
+  const valid = /^[A-Z0-9]{4}$/.test(code);
 
-  // 画面に来たら自動でキーボードを出す（1手はぶく）
   useEffect(() => {
+    mountedRef.current = true;
     inputRef.current?.focus();
+    return () => { mountedRef.current = false; };
   }, []);
 
-  const submit = useCallback(
-    async (value: string) => {
-      if (busy) return;
-      setBusy(true);
-      setError(null);
-      try {
-        const roomId = await joinRoomByCode(value);
-        onJoined(roomId);
-      } catch (e) {
+  const submit = async () => {
+    // Read the current DOM value: Enter and the final input event can arrive
+    // together on mobile. A synchronous lock prevents duplicate join requests.
+    if (sendingRef.current || composingRef.current) return;
+    const value = normalizeJoinCode(inputRef.current?.value ?? raw);
+    if (!/^[A-Z0-9]{4}$/.test(value)) {
+      setError('合言葉を英数字4文字で入力してください。');
+      return;
+    }
+    sendingRef.current = true;
+    setBusy(true);
+    setError(null);
+    try {
+      const roomId = await joinRoomByCode(value);
+      if (mountedRef.current) onJoined(roomId);
+      else void abortRoom(roomId).catch(() => {});
+    } catch (e) {
+      if (mountedRef.current) {
         setError(e instanceof Error ? e.message : '部屋に入れませんでした。');
         setBusy(false);
       }
-    },
-    [busy, onJoined],
-  );
-
-  const handleChange = (raw: string) => {
-    const next = raw
-      .toUpperCase()
-      .replace(/[^A-Z0-9]/g, '')
-      .slice(0, CODE_LENGTH);
-    setCode(next);
-    setError(null);
-    // ★4文字そろったら自動で送る★
-    //   「決定」を押させると、合言葉を読み上げてもらっている最中に
-    //   もう1手増える。数がそろった時点で意思は確定している。
-    if (next.length === CODE_LENGTH) void submit(next);
+      sendingRef.current = false;
+    }
   };
 
-  const cells = Array.from({ length: CODE_LENGTH }, (_, i) => code[i] || '');
-
   return (
-    <BattleShell
-      footer={
-        <div className="grid gap-2.5">
-          <BattleButton
-            onClick={() => void submit(code)}
-            disabled={code.length !== CODE_LENGTH || busy}
-            icon={<LogIn size={18} />}
-          >
-            {busy ? '入っています…' : '部屋に入る'}
-          </BattleButton>
-          <BattleButton variant="ghost" onClick={onBack} icon={<ArrowLeft size={18} />}>
-            もどる
-          </BattleButton>
-        </div>
-      }
-    >
+    <BattleShell footer={<div className="grid gap-2.5">
+      <BattleButton onClick={() => void submit()} disabled={!valid || composing || busy} icon={<LogIn size={18} />}>
+        {busy ? '入っています…' : '部屋に入る'}
+      </BattleButton>
+      <BattleButton variant="ghost" onClick={onBack} disabled={busy} icon={<ArrowLeft size={18} />}>もどる</BattleButton>
+    </div>}>
       <BattleTitle subtitle="合言葉で参加する" />
-
-      <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
-        <p
-          className="text-center text-xs font-bold leading-relaxed"
-          style={{ color: INK_SUB }}
-        >
-          相手に画面を見せてもらって、
-          <br />
-          4文字の合言葉を入れてください。
+      <div className="flex flex-1 flex-col items-center justify-center gap-5 py-6">
+        <p className="text-center text-sm font-bold leading-relaxed" style={{ color: INK_SUB }}>
+          相手の4文字の合言葉を入力して、<br />「部屋に入る」を押してください。
         </p>
-
-        {/* 見た目のマス（タップすると隠れた input にフォーカスする） */}
-        <button
-          type="button"
-          id="battle-code-cells"
-          onClick={() => inputRef.current?.focus()}
-          className="flex gap-2.5"
-          aria-label="合言葉を入力する"
-        >
-          {cells.map((ch, i) => (
-            <span
-              key={i}
-              // ★入力済みのマスを一瞬跳ねさせる★
-              //   合言葉は口で伝えてもらいながら入れるので、
-              //   画面を見ずに打っても 1文字入ったことが周辺視で分かる。
-              className={`flex h-16 w-14 items-center justify-center rounded-2xl border-2 text-3xl font-black tabular-nums ${
-                ch ? 'battle-pop' : ''
-              }`}
-              style={{
-                borderColor: ch ? '#E5B93C' : LINE,
-                background: ch ? `${GOLD}3D` : '#FFFFFF',
-                color: ch ? INK : `${INK_SUB}66`,
-              }}
-            >
-              {ch || '・'}
-            </span>
-          ))}
-        </button>
-
-        {/* 実際の入力欄（画面には出さないが、読み上げには残す） */}
-        <input
-          ref={inputRef}
-          id="battle-code-input"
-          value={code}
-          onChange={(e) => handleChange(e.target.value)}
-          inputMode="text"
-          autoCapitalize="characters"
-          autoCorrect="off"
-          spellCheck={false}
-          maxLength={CODE_LENGTH}
-          aria-label="合言葉"
-          className="absolute h-0 w-0 opacity-0"
-        />
-
+        <label htmlFor="battle-code-input" className="text-sm font-bold" style={{ color: INK }}>合言葉（4文字）</label>
+        <input ref={inputRef} id="battle-code-input" value={raw}
+          onChange={e => { setRaw(e.currentTarget.value); setError(null); }}
+          onCompositionStart={() => { composingRef.current = true; setComposing(true); }}
+          onCompositionEnd={e => { setRaw(e.currentTarget.value); composingRef.current = false; setComposing(false); }}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && !e.nativeEvent.isComposing && e.keyCode !== 229 && !composingRef.current) {
+              e.preventDefault(); void submit();
+            }
+          }}
+          type="text" inputMode="text" autoCapitalize="characters" autoCorrect="off" autoComplete="off"
+          spellCheck={false} maxLength={64} disabled={busy} enterKeyHint="go"
+          aria-label="合言葉" aria-describedby="battle-code-hint" aria-invalid={!!error}
+          className="h-20 w-full max-w-[280px] rounded-2xl border-2 bg-white px-4 text-center text-3xl font-black uppercase tracking-[0.3em] outline-none focus:ring-2 focus:ring-amber-500"
+          style={{ color: INK, borderColor: LINE }} />
+        <p id="battle-code-hint" className="text-center text-xs font-bold" style={{ color: INK_SUB }}>
+          小文字・全角英数字でも入力できます。入力後に確認して参加します。
+        </p>
         {error && <BattleNotice message={error} />}
-
-        <p
-          className="rounded-xl px-3 py-2 text-center text-[10px] font-bold leading-relaxed"
-          style={{ background: '#F1EDE4', border: `1px solid ${LINE}`, color: INK_SUB }}
-        >
-          合言葉には
-          <span style={{ color: AMBER }}> 0 / O / 1 / I / L </span>
-          を使いません。
-          <br />
-          読み間違いを起こさない文字だけで作っています。
+        <p className="rounded-xl px-3 py-2 text-center text-xs font-bold" style={{ background: '#F1EDE4', color: INK_SUB }}>
+          合言葉には<span style={{ color: AMBER }}> 0 / O / 1 / I / L </span>を使いません。
         </p>
       </div>
     </BattleShell>

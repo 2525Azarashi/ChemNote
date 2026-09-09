@@ -82,6 +82,8 @@ interface RikaHomeProps {
    * 呼び出し側が指定できるようにしている。
    */
   initialTab?: RikaTab;
+  battleTarget?: { chapterId: string; questionId?: string };
+  onReturnToBattle?: () => void;
 }
 
 /**
@@ -106,20 +108,20 @@ const TABS: readonly { id: RikaTab; label: string }[] = [
   { id: 'trend', label: '出題傾向' },
 ];
 
-export default function RikaHome({ onBack, initialTab = 'practice' }: RikaHomeProps) {
+export default function RikaHome({ onBack, initialTab = 'practice', battleTarget, onReturnToBattle }: RikaHomeProps) {
   const [tab, setTab] = useState<RikaTab>(initialTab);
 
   return (
-    <div className="w-full">
+    <div className="w-full pb-app-nav">
       {/* 見出しと「もどる」 */}
       <div className="mb-3 flex items-center gap-2">
         <button
           type="button"
           onClick={onBack}
-          className="rounded-xl border-2 px-3 py-1.5 text-[12px] font-black transition active:scale-[0.98]"
+          className="rounded-xl border-2 min-h-11 px-3 py-1.5 text-[12px] font-black transition active:scale-[0.98]"
           style={{ borderColor: `${RIKA_ACCENT}55`, color: RIKA_ACCENT, background: '#FFFFFF' }}
         >
-          もどる
+          {onReturnToBattle ? 'バトル結果・解説に戻る' : 'もどる'}
         </button>
         <span className="text-[13px] font-black" style={{ color: RIKA_ACCENT }}>
           高校入試 理科
@@ -156,7 +158,7 @@ export default function RikaHome({ onBack, initialTab = 'practice' }: RikaHomePr
         ここだけローディング表示を出すと、一瞬だけ出て消える表示が増える。
       */}
       <Suspense fallback={null}>
-        {tab === 'practice' && <RikaPractice />}
+        {tab === 'practice' && <RikaPractice initialChapterId={battleTarget?.chapterId} initialQuestionId={battleTarget?.questionId} />}
         {tab === 'summary' && <RikaSummary />}
         {tab === 'trend' && <RikaTrend />}
       </Suspense>

@@ -46,7 +46,7 @@ export function BattleRoomScreen({
   onExit,
   onRematch,
   onPractice,
-  onOpenProfile, onOpenMissions,
+  onOpenProfile, onOpenMissions, onActiveChange,
 }: {
   roomId: string;
   /** 対戦メニューに戻る。message があれば入口に伝える */
@@ -54,7 +54,8 @@ export function BattleRoomScreen({
   /** 同じ設定でもう1回（フレンド戦のみ渡す） */
   onRematch?: (subject: string) => void;
   /** ★リザルトの「この単元を演習する」（請求⑦-A）★ そのまま下に渡すだけ */
-  onPractice?: (subject: string, chapterId: string) => void;
+  onPractice?: (subject: string, chapterId: string, problemId?: string, subQuestionId?: string) => void;
+  onActiveChange?: (active: boolean) => void;
   onOpenProfile?: () => void;
   onOpenMissions?: () => void;
 }) {
@@ -91,6 +92,11 @@ export function BattleRoomScreen({
     leave,
     dismissResumeMessage,
   } = useBattleRoom(roomId);
+
+  useEffect(() => {
+    onActiveChange?.(room?.status === 'waiting' || (room?.status === 'playing' && !finished));
+    return () => onActiveChange?.(false);
+  }, [room?.status, finished, onActiveChange]);
 
   /**
    * 復帰の知らせを自動で消す。
