@@ -247,8 +247,14 @@ export async function drawQuestionIds(
   subject: string,
   rules: BattleRule,
   seed: string,
+  chapterId?: string,
 ): Promise<string[]> {
-  const ids = await poolIdsOf(subject, rules.formats as BattleAnswerFormat[]);
+  const eligible = await poolIdsOf(subject, rules.formats as BattleAnswerFormat[]);
+  const chapterIds = chapterId ? new Set((await loadPool(subject))
+    .filter(q => q.chapterId === chapterId).map(q => q.id)) : null;
+  // Filter BEFORE deterministic drawing. An unknown unit returns no questions;
+  // never silently fall back to the entire subject.
+  const ids = chapterIds ? eligible.filter(id => chapterIds.has(id)) : eligible;
   if (ids.length === 0) return [];
 
   const pool = await loadPool(subject);
@@ -299,6 +305,7 @@ export interface CreatedRoom {
 export async function createFriendRoom(
   subject: string,
   ruleOverride?: Partial<BattleRule>,
+  chapterId?: string,
 ): Promise<CreatedRoom> {
   const uid = requireUid();
   const rules = normalizeRule(subject, { ...loadRuleSync(subject), ...ruleOverride });
@@ -311,7 +318,7 @@ export async function createFriendRoom(
     const roomRef = doc(collection(db, COL_ROOMS));
     const codeRef = doc(db, COL_CODES, joinCode);
 
-    const questionIds = await drawQuestionIds(subject, rules, roomRef.id);
+    const questionIds = await drawQuestionIds(subject, rules, roomRef.id, chapterId);
     if (questionIds.length === 0) {
       throw new Error('この教科は対戦できる問題がまだ足りません。');
     }

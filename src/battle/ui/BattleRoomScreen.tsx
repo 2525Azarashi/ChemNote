@@ -36,7 +36,7 @@ import {
 } from './BattleParts';
 
 /** 結果画面に切り替わるまでの間（最後の1問の正解を見る時間） */
-const REVEAL_HOLD_MS = 1800;
+const REVEAL_HOLD_MS = 3500;
 
 /** 復帰の知らせを出しておく長さ（読める長さで、かつ邪魔にならない長さ） */
 const RESUME_NOTICE_HOLD_MS = 4000;
@@ -46,6 +46,7 @@ export function BattleRoomScreen({
   onExit,
   onRematch,
   onPractice,
+  onOpenProfile, onOpenMissions,
 }: {
   roomId: string;
   /** 対戦メニューに戻る。message があれば入口に伝える */
@@ -54,6 +55,8 @@ export function BattleRoomScreen({
   onRematch?: (subject: string) => void;
   /** ★リザルトの「この単元を演習する」（請求⑦-A）★ そのまま下に渡すだけ */
   onPractice?: (subject: string, chapterId: string) => void;
+  onOpenProfile?: () => void;
+  onOpenMissions?: () => void;
 }) {
   const uid = auth.currentUser?.uid || '';
   const {
@@ -189,6 +192,11 @@ export function BattleRoomScreen({
         rematchLabel="同じ科目で新しい部屋を作る"
         onExit={() => onExit()}
         onPractice={onPractice}
+        growthMatchId={`online:${roomId}`}
+        growthOwnerUid={uid}
+        growthEligible={room.status === 'finished' && !!rating && !byForfeit}
+        onOpenProfile={onOpenProfile}
+        onOpenMissions={onOpenMissions}
       />
     );
   }

@@ -55,6 +55,7 @@ import type {
   BattleRule,
 } from './types';
 import { answerIndexOf } from './types';
+import { kanaTextOf } from './kanaKeyboard';
 
 /**
  * 回答（マップ or 配列）を「問題番号 → 回答」の Map に正規化する。
@@ -286,55 +287,21 @@ export function isBattleAnswerCorrect(
  * 締切が来て「運で決まる」試合になってしまう。
  * 既存の scoring.ts も同じ理由で問題タイプ別に秒数を見積もっている。
  */
-/**
- * ★制限時間を一律に伸ばす倍率★（2026-09）
- *
- * ご指摘（原文）：
- *   > 後制限時間鬼すぎる。
- *
- * ■ 実測（プールの timeLimit の分布・秒）
- *   化学基礎  中央値 14  下位25% 13  上位25% 18
- *   生物基礎  中央値 14
- *   数学      中央値 20
- *   英文法    全問 17
- *   地理・理科 30（上限で張り付き）
- *
- *   化学基礎の 14 秒は「問題文（中央値 268 文字）を読んで 4 択から選ぶ」
- *   には短い。読むだけで 10 秒近く使うので、実質「読み終わった瞬間に押す」
- *   試合になっていた。しかも速さボーナスが残り時間比なので、
- *   読んでから考える人ほど不利になる構造だった。
- *
- * ■ なぜプールを作り直さず、ここで倍率をかけるのか
- *   問題ごとの秒数はプール生成時（scripts/gen-battle-pool.mts の
- *   BATTLE_TIME_RATIO = 0.42）に焼き込まれている。プールを再生成すると
- *   全教科の生成ファイルが差し替わり、差分が数万行になって
- *   「制限時間の変更」以外の変化が混ざったかどうか確認できなくなる。
- *   resolveTimeLimit は online / AI の両方が通る唯一の入口なので、
- *   ここで 1 か所だけ倍率をかければ全試合に効く。
- *   「長い問題は長め」という問題ごとの比率は倍率をかけても保たれる。
- *
- * ■ 1.6 倍にした理由
- *   化学基礎の中央値 14 → 22 秒、上位25% 18 → 29 秒。
- *   「読む 10 秒＋考える 10 秒」が入る長さになる。
- *   2 倍にすると上限が 60 秒になり、相手の解答を待つ時間が退屈になる。
- *   ★上限 45 秒★ で頭を打たせる（30 秒問題は 45 秒に。これ以上待たせない）。
- *
- * ■ 速さボーナスとの関係
- *   速さ点は「残り時間 ÷ 制限時間」の比で決まる（scoreBattleQuestion）。
- *   制限時間が伸びれば同じ解答速度でも比が上がるので、
- *   「速く押した人が有利」は維持されつつ、「読んでから答えた人が 0 点」
- *   にはならなくなる。
+/** Reading/thinking time, plus extra time for entering kana or arranging panels.
+ * Keep deadlines below the deployed Firestore 60-second bound, including the
+ * 700ms network allowance. No cloud rules change is needed.
  */
-export const BATTLE_TIME_SCALE = 1.6;
-export const BATTLE_TIME_SCALED_MAX = 45;
+export const BATTLE_TIME_SCALE = 2.2;
+export const BATTLE_TIME_SCALED_MAX = 55;
+export const BATTLE_REVEAL_HOLD_MS = 3500;
 
 export function resolveTimeLimit(question: BattleQuestion, rules: BattleRule): number {
-  if (rules.timeLimitOverride != null && rules.timeLimitOverride > 0) {
-    // 運用で明示的に固定された秒数はそのまま使う（倍率はかけない）。
-    // 「全問 20 秒にする」と書いた人は 20 秒を期待している。
-    return rules.timeLimitOverride;
-  }
-  return Math.min(BATTLE_TIME_SCALED_MAX, Math.round(question.timeLimit * BATTLE_TIME_SCALE));
+  const base = rules.timeLimitOverride != null && rules.timeLimitOverride > 0
+    ? rules.timeLimitOverride
+    : Math.max(25, Math.round(question.timeLimit * BATTLE_TIME_SCALE));
+  const input = question.format === 'kana' || question.format === 'panel';
+  return Math.min(BATTLE_TIME_SCALED_MAX,
+    input ? Math.max(base, 45 + question.panelOrder.length * 2) : base);
 }
 
 // ============================================================
@@ -467,6 +434,12 @@ export function scoreBattleQuestion(
   return {
     index,
     correct,
+    answered: !!record && (question.format === 'kana' || question.format === 'panel'
+      ? record.panel.length > 0 : record.choice >= 0 && record.choice < question.options.length),
+    submittedAnswer: !record ? '' : question.format === 'kana'
+      ? kanaTextOf(record.panel)
+      : question.format === 'panel' ? record.panel.map(i => question.options[i] || '').join('')
+      : question.options[record.choice] || '',
     timeUsed: Math.round(timeUsedMs / 100) / 10, // 0.1秒単位に丸める
     base,
     speed,

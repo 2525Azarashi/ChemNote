@@ -25,11 +25,13 @@
  * ★画面に出す数は必ず「そのルールで出せる数」でなければならない。★
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getChapterIndexOfSubject } from '../../data/chapterIndex.generated';
+import { externalChapterTitleOf } from '../../data/externalSubjects';
 import { ArrowLeft, Info } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
-import { POOL_FORMAT_COUNTS, poolCountOf } from '../data/battlePool';
+import { POOL_FORMAT_COUNTS, poolCountOf, loadPool } from '../data/battlePool';
 import { effectiveRule } from '../data/battle';
 import { AMBER, BattleButton, BattleShell, BattleTitle, INK, INK_SUB, LINE } from './BattleParts';
 import type { BattleAnswerFormat, BattleRule } from '../core/types';
@@ -88,7 +90,7 @@ export function BattleSubjectSelect({
    * questionCount は allowQuestionCount のときだけ渡る（利用者が選んだ問題数）。
    * 渡らないときは教科の既定（ルールの questionCount）を使う。
    */
-  onPick: (subject: string, questionCount?: QuestionCountChoice) => void;
+  onPick: (subject: string, questionCount?: QuestionCountChoice, chapterId?: string) => void;
   onBack: () => void;
   /**
    * 問題数の選択を出すか。フレンド対戦（部屋を作る）と AI 対戦で true。
@@ -100,6 +102,36 @@ export function BattleSubjectSelect({
 }) {
   // 選んでいる問題数。既定は 10（教科の既定と同じものが大半）。
   const [questionCount, setQuestionCount] = useState<QuestionCountChoice>(10);
+  const [unitSubject, setUnitSubject] = useState<string | null>(null);
+  const [units, setUnits] = useState<{ id: string; title: string; count: number }[] | null>(null);
+  const [unitError, setUnitError] = useState(false);
+  const [retry, setRetry] = useState(0);
+  useEffect(() => {
+    if (!unitSubject) return;
+    let alive = true;
+    setUnits(null);
+    setUnitError(false);
+    void loadPool(unitSubject).then(pool => {
+      if (!alive) return;
+      const formats = effectiveRule(unitSubject).formats;
+      const groups = new Map<string, Set<string>>();
+      for (const q of pool) {
+        if (!formats.includes(q.format)) continue;
+        const group = groups.get(q.chapterId) || new Set<string>();
+        group.add(q.subQuestionId);
+        groups.set(q.chapterId, group);
+      }
+      const index = getChapterIndexOfSubject(unitSubject);
+      const order = new Map(index.map((c, i) => [c.id, i]));
+      setUnits([...groups].map(([id, questions]) => {
+        const entry = index.find(c => c.id === id);
+        return { id, count: questions.size,
+          title: entry?.abstractTitle || entry?.realTitle || entry?.title || externalChapterTitleOf(unitSubject, id) || id };
+      }).sort((a, b) => (order.get(a.id) ?? 9999) - (order.get(b.id) ?? 9999)
+        || a.id.localeCompare(b.id, undefined, { numeric: true })));
+    }).catch(() => { if (alive) setUnitError(true); });
+    return () => { alive = false; };
+  }, [unitSubject, retry]);
   // 収録があり、かつ有効な教科だけを並べる。
   // ★POOL_COUNTS の並び順をそのまま使う★
   //   生成器が「収録数の多い順」ではなく既存 SUBJECTS の順で書き出しているので、
@@ -120,6 +152,29 @@ export function BattleSubjectSelect({
       };
     })
     .filter((e) => e.rule.enabled && e.count > 0);
+
+  if (unitSubject) {
+    const theme = subjectTheme(unitSubject as SubjectKey);
+    return <BattleShell footer={<BattleButton variant="ghost" onClick={() => setUnitSubject(null)} icon={<ArrowLeft size={18} />}>科目選択にもどる</BattleButton>}>
+      <BattleTitle subtitle={`${theme.label} ／ 単元をえらぶ`} />
+      <p className="mb-3 text-sm font-bold" style={{ color: INK }}>出題範囲を選んでください。今回は最大{questionCount}問です。</p>
+      <p className="mb-3 text-xs" style={{ color: INK_SUB }}>単元の問題が少ない場合は、同じ試合で重複させず、収録数だけ出題します。</p>
+      {unitError ? <div role="alert"><p>単元を読み込めませんでした。</p><BattleButton onClick={() => setRetry(n => n + 1)}>再読み込み</BattleButton></div>
+        : !units ? <p role="status">単元を読み込んでいます…</p>
+        : <div className="grid gap-2" aria-label="単元一覧">
+          <button type="button" data-battle-unit="all" onClick={() => onPick(unitSubject, questionCount)}
+            className="min-h-[64px] rounded-2xl border-2 p-4 text-left font-black" style={{ borderColor: theme.accent, color: INK, background: theme.surface }}>
+            全単元から出題<span className="ml-2 text-xs">{Math.min(questionCount, units.reduce((n, u) => n + u.count, 0))}問</span>
+          </button>
+          {units.map(unit => <button key={unit.id} type="button" data-battle-unit={unit.id}
+            onClick={() => onPick(unitSubject, questionCount, unit.id)}
+            className="min-h-[64px] rounded-2xl border-2 bg-white p-4 text-left" style={{ borderColor: LINE, color: INK }}>
+            <span className="block text-sm font-black">{unit.title}</span>
+            <span className="mt-1 block text-xs" style={{ color: INK_SUB }}>収録 {unit.count}問 ／ 今回 {Math.min(questionCount, unit.count)}問</span>
+          </button>)}
+        </div>}
+    </BattleShell>;
+  }
 
   return (
     <BattleShell
@@ -181,7 +236,7 @@ export function BattleSubjectSelect({
       >
         <Info size={13} className="mt-0.5 shrink-0" />
         <span>
-          制限時間は問題ごとにちがいます（およそ15〜45秒）。
+          選択式は通常25〜55秒、五十音入力は文字数に応じて47〜55秒です。
           <br />
           答え方は「えらぶ」と「五十音を おす」の2つ。
           <br />
@@ -189,6 +244,7 @@ export function BattleSubjectSelect({
         </span>
       </p>
 
+      {!allowQuestionCount && <p className="mb-3 text-xs font-bold" style={{ color: INK_SUB }}>全国対戦は全単元から出題します。単元を指定したいときはAI・フレンド対戦を選んでください。</p>}
       <div className="grid gap-2.5">
         {entries.map(({ subject, count, kanaCount, rule }) => {
           const theme = subjectTheme(subject as SubjectKey);
@@ -205,7 +261,7 @@ export function BattleSubjectSelect({
               key={subject}
               type="button"
               id={`battle-subject-${subject}`}
-              onClick={() => onPick(subject, allowQuestionCount ? questionCount : undefined)}
+              onClick={() => allowQuestionCount ? setUnitSubject(subject) : onPick(subject)}
               className="w-full rounded-2xl border-2 px-4 py-3.5 text-left transition active:scale-[0.99]"
               style={{
                 borderColor: subject === currentSubject ? theme.accent : `${theme.accent}66`,

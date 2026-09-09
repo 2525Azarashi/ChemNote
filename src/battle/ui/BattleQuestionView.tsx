@@ -36,7 +36,7 @@
 
 import type { ReactNode } from 'react';
 import { BattleText } from './BattleText';
-import { Check, Hourglass, RotateCcw } from 'lucide-react';
+import { Check, CircleCheck, CircleX, Hourglass, RotateCcw } from 'lucide-react';
 
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
@@ -116,6 +116,16 @@ export function BattleQuestionView({
 }: Props) {
   const theme = subjectTheme(question.subject as SubjectKey);
   const effectiveLimitSec = limitSec ?? question.timeLimit;
+  const isInput = question.format === 'kana' || question.format === 'panel';
+  const hasAnswer = answered && (isInput ? myPanel.length > 0 : myChoice >= 0);
+  const correct = hasAnswer && (isInput
+    ? myPanel.length === question.panelOrder.length && myPanel.every((key, i) => key === question.panelOrder[i])
+    : myChoice === question.answerIndex);
+  const answerText = (panel: number[], choice: number) => question.format === 'kana'
+    ? kanaTextOf(panel)
+    : question.format === 'panel' ? panel.map(i => question.options[i] || '').join('')
+    : question.options[choice] || '';
+  const feedbackColor = correct ? CORRECT : hasAnswer ? WRONG : INK_SUB;
 
   return (
     <section id="battle-question" className="flex min-w-0 flex-1 flex-col">
@@ -160,12 +170,29 @@ export function BattleQuestionView({
         </p>
       </article>
 
+      {reveal && (
+        <div role="status" aria-live="polite" aria-atomic="true" data-answer-feedback
+          className="mb-3 rounded-2xl border-2 px-4 py-3"
+          style={{ borderColor: feedbackColor, background: correct ? '#ECFDF3' : hasAnswer ? '#FFF1F2' : '#F5F5F4', color: feedbackColor }}>
+          <p className="flex items-center gap-2 text-xl font-black">
+            {correct ? <CircleCheck size={26} /> : hasAnswer ? <CircleX size={26} /> : <Hourglass size={26} />}
+            {correct ? '正解！' : hasAnswer ? '不正解' : '未回答・時間切れ'}
+          </p>
+          <p className="mt-1 text-sm font-bold">あなたの回答：{hasAnswer
+            ? <BattleText text={answerText(myPanel, myChoice)} subject={question.subject} />
+            : '回答が確定されていません'}</p>
+          <p className="mt-1 text-sm font-bold" style={{ color: CORRECT }}>正しい答え：
+            <BattleText text={answerText(question.panelOrder, question.answerIndex)} subject={question.subject} />
+          </p>
+        </div>
+      )}
+
       {/* 解答欄 */}
       {question.format === 'kana' ? (
         <KanaAnswer
           question={question}
           answered={answered}
-          locked={locked}
+          locked={locked || reveal}
           myPanel={myPanel}
           reveal={reveal}
           onPush={onPushPanel}
@@ -177,7 +204,7 @@ export function BattleQuestionView({
         <PanelAnswer
           question={question}
           answered={answered}
-          locked={locked}
+          locked={locked || reveal}
           myPanel={myPanel}
           reveal={reveal}
           onPush={onPushPanel}
@@ -187,7 +214,7 @@ export function BattleQuestionView({
         <ChoiceAnswer
           question={question}
           answered={answered}
-          locked={locked}
+          locked={locked || reveal}
           myChoice={myChoice}
           reveal={reveal}
           onChoose={onChoose}
@@ -297,7 +324,10 @@ function ChoiceAnswer({
             }}
           >
             {correct && <Check size={15} style={{ color: CORRECT }} className="shrink-0" />}
-            <BattleText text={option} subject={question.subject} />
+            <span>
+              {reveal && (correct || picked) && <span className="mb-1 block text-xs font-black">{correct ? '正しい答え' : 'あなたの回答'}</span>}
+              <BattleText text={option} subject={question.subject} />
+            </span>
           </button>
         );
       })}

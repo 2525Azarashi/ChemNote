@@ -455,6 +455,9 @@ export interface BattleQuestionScore {
   index: number;
   /** 正解したか */
   correct: boolean;
+  /** 表示用。旧履歴には無い場合がある。採点・レートには使わない。 */
+  answered?: boolean;
+  submittedAnswer?: string;
   /** 使った秒数（締切を超えた分は制限時間で打ち切る） */
   timeUsed: number;
   /** 基礎点 */

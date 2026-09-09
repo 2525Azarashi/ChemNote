@@ -80,11 +80,11 @@ describe('② ③ 教科選択の画面', () => {
 
 describe('④ ⑤ 選んだ数が両モードに渡る', () => {
   it('フレンド：createFriendRoom に questionCount が渡る', () => {
-    expect(MODE).toMatch(/createFriendRoom\(\s*pick,\s*count \? \{ questionCount: count \} : undefined,?\s*\)/u);
+    expect(MODE).toMatch(/createFriendRoom\(\s*pick,\s*count \? \{ questionCount: count \} : undefined,\s*unit,?\s*\)/u);
   });
 
   it('AI：useAiBattle が第4引数で questionCount を受け、ルールに上書きする', () => {
-    expect(AI_HOOK).toMatch(/questionCount\?: number,\s*\): AiBattleState & AiBattleActions/u);
+    expect(AI_HOOK).toMatch(/questionCount\?: number,\s*chapterId\?: string,\s*\): AiBattleState & AiBattleActions/u);
     expect(AI_HOOK).toContain('questionCount ? { ...base, questionCount } : base');
     expect(MODE).toContain('questionCount={questionCount}');
   });
@@ -98,6 +98,6 @@ describe('④ ⑤ 選んだ数が両モードに渡る', () => {
   });
 
   it('「もう1回」は同じ問題数を引き継ぐ', () => {
-    expect(MODE).toMatch(/void createRoom\(pick, questionCount\)/u);
+    expect(MODE).toMatch(/void createRoom\(pick, questionCount, chapterId\)/u);
   });
 });

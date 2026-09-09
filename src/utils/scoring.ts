@@ -64,14 +64,14 @@ export function calcSubQuestionTimeLimit(sq: ScoringSubQuestion): number {
     case 'descriptive': {
       const answerLen = (sq.correctAnswer || '').length || 25;
       // 記述は読む + 構成 + 入力。日本語タッチ入力1文字 ≒ 1.5秒で見積もり
-      base = 60 + Math.min(answerLen * 2.5, 120);
+      base = 90 + Math.min(answerLen * 3, 150);
       break;
     }
     case 'text':
     default: {
       // 短文記入（化学式・元素記号など）。化学記号パレット利用も考慮し少し余裕を
       const answerLen = (sq.correctAnswer || '').length || 4;
-      base = 28 + Math.min(answerLen * 3, 30);
+      base = 45 + Math.min(answerLen * 5, 90);
       break;
     }
   }
@@ -108,11 +108,12 @@ export function calcQuestionTimeLimit(subQuestions: ScoringSubQuestion[]): numbe
     total += calcSubQuestionTimeLimit(sq);
   }
   for (const [, arr] of groupBuckets) {
-    // group内は「最初の1問は全額、2問目以降は60%」とする（既に頭が回っているため）
+    // 読む文が共通でも、入力操作は各小問で必要。入力式の時間は削らない。
     const sorted = [...arr];
     sorted.forEach((sq, idx) => {
       const t = calcSubQuestionTimeLimit(sq);
-      total += idx === 0 ? t : Math.round(t * 0.6);
+      const canShareReading = sq.type === 'multiple_choice';
+      total += idx === 0 || !canShareReading ? t : Math.round(t * 0.6);
     });
   }
 

@@ -120,7 +120,7 @@ export function BattleLobby({
         </div>
       }
     >
-      <BattleTitle subtitle={`${theme.label} ／ ${room.rules.questionCount}問しょうぶ`} />
+      <BattleTitle subtitle={`${theme.label} ／ ${room.questionIds.length}問しょうぶ`} />
 
       {/* 合言葉 */}
       {room.joinCode ? (

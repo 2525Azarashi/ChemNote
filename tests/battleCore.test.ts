@@ -208,17 +208,17 @@ describe('resolveTimeLimit — 制限時間', () => {
     ほとんど使い切っていた。プールを作り直さず、全試合が通るこの関数で
     倍率をかける（理由は battleCore.ts の BATTLE_TIME_SCALE のコメント）。
   */
-  it('既定では問題ごとの秒数 × 1.6（丸め）', () => {
-    expect(BATTLE_TIME_SCALE).toBe(1.6);
-    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 17 }), RULE)).toBe(27); // 27.2 → 27
-    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 14 }), RULE)).toBe(22); // 化学基礎の中央値
-    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 10 }), RULE)).toBe(16); // プールの下限
+  it('既定では問題ごとの秒数 × 2.2（丸め）', () => {
+    expect(BATTLE_TIME_SCALE).toBe(2.2);
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 17 }), RULE)).toBe(37); // 37.4 → 37
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 14 }), RULE)).toBe(31); // 化学基礎の中央値
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 10 }), RULE)).toBe(25); // プールの下限
   });
 
-  it('上限 45 秒で頭を打つ（相手を待たせすぎない）', () => {
-    expect(BATTLE_TIME_SCALED_MAX).toBe(45);
-    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 30 }), RULE)).toBe(45); // 48 → 45
-    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 28 }), RULE)).toBe(45); // 44.8 → 45
+  it('上限 55 秒で頭を打つ（相手を待たせすぎない）', () => {
+    expect(BATTLE_TIME_SCALED_MAX).toBe(55);
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 30 }), RULE)).toBe(55); // 66 → 55
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 28 }), RULE)).toBe(55); // 61.6 → 55
   });
 
   it('長い問題は長め、という順序は倍率をかけても保たれる', () => {
@@ -235,9 +235,9 @@ describe('resolveTimeLimit — 制限時間', () => {
     expect(resolveTimeLimit(choiceQuestion({ timeLimit: 30 }), rule)).toBe(12);
   });
 
-  it('override が 0 や null のときは問題ごとの秒数（×1.6）に戻る', () => {
-    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 25 }), { ...RULE, timeLimitOverride: 0 })).toBe(40);
-    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 25 }), { ...RULE, timeLimitOverride: null })).toBe(40);
+  it('override が 0 や null のときは問題ごとの秒数（×2.2）に戻る', () => {
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 25 }), { ...RULE, timeLimitOverride: 0 })).toBe(55);
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 25 }), { ...RULE, timeLimitOverride: null })).toBe(55);
   });
 });
 

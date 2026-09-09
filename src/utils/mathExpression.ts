@@ -97,8 +97,11 @@ function prepare(input: string): string | null {
   s = s.replace(/[\u3000\s]+/g, '');
   if (!s) return null;
 
-  // 掛け算記号のゆれを * に寄せる（× ✕ ✖ ⋅ · ・）
-  s = s.replace(/[\u00D7\u2715\u2716\u22C5\u00B7\u2027\u30FB]/g, '*');
+  // Japanese middle dots separate answers (e.g. oxidation numbers
+  // +2・+3・+8/3), not multiplication. Never turn that list into 16.
+  // Multiplication can still use ×, ⋅, · or *.
+  if (s.includes('・')) return null;
+  s = s.replace(/[\u00D7\u2715\u2716\u22C5\u00B7\u2027]/g, '*');
   // ÷ → /
   s = s.replace(/\u00F7/g, '/');
   // 2**3 → 2^3

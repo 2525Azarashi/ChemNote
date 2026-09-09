@@ -47,6 +47,7 @@ import {
 import { loadPool } from '../data/battlePool';
 import { applyRatingResult } from '../data/battleRanking';
 import {
+  BATTLE_REVEAL_HOLD_MS,
   FORFEIT_STREAK,
   hasLeft,
   judgeBattle,
@@ -191,6 +192,7 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
 
   /** 二重実行を防ぐための記録（進行・申告・レート反映） */
   const advancedRef = useRef<number>(-1);
+  const revealStartedRef = useRef<{ index: number; at: number } | null>(null);
   const attestedRef = useRef(false);
   const ratedRef = useRef(false);
 
@@ -418,7 +420,16 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
 
     const bothAnswered = answered && opponentAnswered;
     const timeUp = deadlineMs > 0 && now >= deadlineMs + DEADLINE_GRACE_MS;
-    if (!bothAnswered && !timeUp) return;
+    if (!bothAnswered && !timeUp) {
+      revealStartedRef.current = null;
+      return;
+    }
+    // A timeout here would be cancelled on each clock tick. Keep the start
+    // timestamp instead, and advance only after the feedback has been visible.
+    if (revealStartedRef.current?.index !== currentIndex) {
+      revealStartedRef.current = { index: currentIndex, at: now };
+    }
+    if (now - revealStartedRef.current.at < BATTLE_REVEAL_HOLD_MS) return;
 
     // 最終問題なら進めない（結果の申告は別の useEffect が行う）
     const nextIndex = currentIndex + 1;
