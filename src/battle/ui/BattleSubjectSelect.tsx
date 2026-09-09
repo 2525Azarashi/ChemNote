@@ -27,7 +27,7 @@
 
 import { useEffect, useState } from 'react';
 import { getChapterIndexOfSubject } from '../../data/chapterIndex.generated';
-import { externalChapterTitleOf } from '../../data/externalSubjects';
+import { externalChapterTitleOf, externalSubjectOf } from '../../data/externalSubjects';
 import { ArrowLeft, Info } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
@@ -122,7 +122,9 @@ export function BattleSubjectSelect({
         groups.set(q.chapterId, group);
       }
       const index = getChapterIndexOfSubject(unitSubject);
-      const order = new Map(index.map((c, i) => [c.id, i]));
+      // 外部教科（理科・英単語）は本体の索引に無いので、登録簿の並び（単語帳の順）を使う。
+      const external = externalSubjectOf(unitSubject);
+      const order = new Map((index.length ? index : (external?.chapters || [])).map((c, i) => [c.id, i]));
       setUnits([...groups].map(([id, questions]) => {
         const entry = index.find(c => c.id === id);
         return { id, count: questions.size,

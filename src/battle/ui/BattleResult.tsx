@@ -128,7 +128,7 @@ export function BattleResult({
   onRematch,
   rematchLabel = 'もう1回たいせん',
   onExit,
-  onPractice,
+  onPractice: onPracticeProp,
   ratingNote,
   growthMatchId, growthOwnerUid, growthEligible = false, onOpenProfile, onOpenMissions,
 }: {
@@ -176,6 +176,13 @@ export function BattleResult({
   onOpenProfile?: () => void;
   onOpenMissions?: () => void;
 }) {
+  /**
+   * ★英単語・英熟語（english_vocab）には演習画面が無い★
+   * 外部プールだけで成り立つ対戦専用教科なので、「この問題を演習する」
+   * 「つづけて演習する」を出すと押しても何も起きない（App 側で例外になる）。
+   * 出さないのが正しい。答えは各問の1行解答（見出し語 ＝ 意味の全文）で見せる。
+   */
+  const onPractice = subject === 'english_vocab' ? undefined : onPracticeProp;
   const theme = subjectTheme(subject as SubjectKey);
   const delta = rating ? rating.after - rating.before : 0;
   const title = ratingTitle(rating?.after ?? 1500);

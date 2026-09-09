@@ -363,6 +363,42 @@ export const BATTLE_RULES: Readonly<Record<string, BattleRule>> = {
     kanaShare: 0,
     note: '',
   },
+
+  /**
+   * 英単語・英熟語 — ★約27,000問（全部4択）★
+   *
+   * ■ 成り立ち
+   *   理科と同じ「外部プール」方式。本体に教科データは持たず、
+   *   src/battle/data/external/english_vocab.json を丸ごと受け取る。
+   *   生成器は scripts/gen-english-vocab-pool.py。原典は ukaru-eigo.com の
+   *   単語一覧（ターゲット1900／1400・LEAP・鉄壁・シス単・パス単準1級・
+   *   速読英熟語・熟語ターゲット1000・英熟語1684）。
+   *
+   * ■ 出題形式
+   *   単語帳 … 英→日（意味を4択）と 日→英（英単語を4択）の両方
+   *   熟語帳 … 英→日のみ（熟語を日本語から選ばせると表記ゆれで成立しにくい）
+   *   誤答は同じ単語帳の中から「意味の長さが近い別の語」を決定論的に選ぶ。
+   *
+   * ■ 単元＝単語帳
+   *   chapterId が単語帳ID（target1900 / leap / teppeki …）なので、
+   *   教科選択の「単元をえらぶ」でどの単語帳から出すかを選べる。
+   *   全単元から出題にすると 9 冊が混ざる。
+   *
+   * ■ ★かな入力を 0 にする理由★
+   *   英単語の答えは英字なので五十音キーボードに載らない。
+   *
+   * ■ 試合後の1行解答
+   *   「見出し語 ＝ 意味の全文」を oneLine で持っている（4択では意味を短く
+   *   切っているので、リザルトで全文を見せる）。本体に演習画面は無いので
+   *   「この単元を演習する」は出ない（App.tsx の handlePracticeFromBattle 参照）。
+   */
+  english_vocab: {
+    ...BASE,
+    subject: 'english_vocab',
+    questionCount: 10,
+    kanaShare: 0,
+    note: '',
+  },
 };
 
 /**

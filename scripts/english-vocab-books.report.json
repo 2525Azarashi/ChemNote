@@ -1,0 +1,65 @@
+[
+ {
+  "id": "target1900",
+  "title": "英単語ターゲット1900（6訂版）（1900語）",
+  "kind": "word",
+  "count": 1900,
+  "source": "https://ukaru-eigo.com/target-1900-word-list/"
+ },
+ {
+  "id": "target1400",
+  "title": "英単語ターゲット1400（5訂版）（1400語）",
+  "kind": "word",
+  "count": 1400,
+  "source": "https://ukaru-eigo.com/target-1400-word-list/"
+ },
+ {
+  "id": "leap",
+  "title": "必携英単語 LEAP 改訂版（2300語）",
+  "kind": "word",
+  "count": 2300,
+  "source": "https://ukaru-eigo.com/leap-modified-list/"
+ },
+ {
+  "id": "teppeki",
+  "title": "鉄壁（改訂版）（2175語）",
+  "kind": "word",
+  "count": 2175,
+  "source": "https://ukaru-eigo.com/teppeki-word-list/"
+ },
+ {
+  "id": "systan",
+  "title": "システム英単語（5訂版）（2027語）",
+  "kind": "word",
+  "count": 2027,
+  "source": "https://ukaru-eigo.com/systan-word-list/"
+ },
+ {
+  "id": "passtan_p1",
+  "title": "英検準1級 でる順パス単（5訂版）（1900語）",
+  "kind": "word",
+  "count": 1900,
+  "source": "https://ukaru-eigo.com/passtan-p1-word-list/"
+ },
+ {
+  "id": "sokujuku",
+  "title": "速読英熟語［改訂版］（1084語）",
+  "kind": "idiom",
+  "count": 1084,
+  "source": "https://ukaru-eigo.com/sokujuku-list/"
+ },
+ {
+  "id": "jukugo_target1000",
+  "title": "英熟語ターゲット1000（5訂版）（1000語）",
+  "kind": "idiom",
+  "count": 1000,
+  "source": "https://ukaru-eigo.com/jukugo-target-1000-list/"
+ },
+ {
+  "id": "idiom1684",
+  "title": "大学入試 英熟語 1,684（有名熟語帳を網羅）（1684語）",
+  "kind": "idiom",
+  "count": 1684,
+  "source": "https://ukaru-eigo.com/complete-idiom-list/"
+ }
+]

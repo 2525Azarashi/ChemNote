@@ -1371,12 +1371,19 @@ function loadExternalPools(): PoolQuestion[] {
         timeLimit,
         imageUrl: q.imageUrl ? String(q.imageUrl) : undefined,
         /**
-         * ★試合後の1行解答は持たせない★
-         * 外部プールは原典（配布プリント）の言い回しをそのまま出しており、
-         * 「答え＋ひと言の理由」を書き足すと原典に無い説明を足すことになる。
-         * 理科は演習画面（RikaPractice）が原典どおりの答えを出す作りなので、
-         * 対戦のリザルトからその画面へ渡す（＝答えはそちらで見せる）。
+         * ★試合後の1行解答（oneLine）は「外部プールが持ってきた場合だけ」通す★
+         *
+         * 理科（rika.json）は持たせていない。原典（配布プリント）の言い回しを
+         * そのまま出しており、「答え＋ひと言の理由」を書き足すと原典に無い説明を
+         * 足すことになるため。理科の答えは演習画面（RikaPractice）が原典どおりに
+         * 出すので、対戦のリザルトからそちらへ渡す。
+         *
+         * 英単語・英熟語（english_vocab.json）は持たせている。中身は
+         * 「見出し語 ＝ 単語帳の意味の全文」で、原典に無いことは一切書いていない
+         * （4択ボタンでは長さの都合で意味を短く切っているので、全文をここで見せる）。
+         * 英単語には本体の演習画面が無く、リザルトの解答がここしか無い。
          */
+        oneLine: typeof q.oneLine === 'string' && q.oneLine.trim() ? String(q.oneLine) : undefined,
       });
       taken += 1;
     }
@@ -1795,8 +1802,25 @@ function toTuple(q: PoolQuestion): Tuple {
 }
 
 /** 教科ごとの生成ファイルの中身を作る */
+/**
+ * ★大きなプールは「JSON 文字列 → 実行時に parse」で書き出す★
+ *
+ * 英単語・英熟語（27,172問）を配列リテラルで書くと、tsc が要素ごとの型推論で
+ * ヒープを食い尽くして落ちる（実測：既定ヒープで Aborted）。
+ * 1本の文字列リテラルにすれば tsc は中身を見ないので、型検査の重さは 0 になる。
+ * 実行時のコストは JSON.parse 1回（5MB で数十ms）で、配列リテラルの評価と大差ない。
+ * 小さな教科は従来どおり配列リテラル（差分が読める形）のまま。
+ */
+const JSON_STRING_THRESHOLD = 5000;
+
 function renderSubjectFile(subject: string, pool: PoolQuestion[]): string {
-  const lines = pool.map((q) => `  ${JSON.stringify(toTuple(q))},`).join('\n');
+  const asJsonString = pool.length >= JSON_STRING_THRESHOLD;
+  const lines = asJsonString
+    ? ''
+    : pool.map((q) => `  ${JSON.stringify(toTuple(q))},`).join('\n');
+  const body = asJsonString
+    ? `export const POOL: readonly unknown[][] = JSON.parse(${JSON.stringify(JSON.stringify(pool.map(toTuple)))});`
+    : `export const POOL: readonly unknown[][] = [\n${lines}\n];`;
 
   return `/**
  * ===================================================================
@@ -1825,9 +1849,7 @@ function renderSubjectFile(subject: string, pool: PoolQuestion[]): string {
  */
 
 /** [id, chapterId, problemId, subQuestionId, format, prompt, label, options, answerIndex, panelOrder, timeLimit, imageUrl] */
-export const POOL: readonly unknown[][] = [
-${lines}
-];
+${body}
 `;
 }
 
@@ -1874,11 +1896,16 @@ function answerFileNameOf(subject: string): string {
  * 機械生成の問題は元データに1行解答が無いので入らない。
  */
 function renderAnswerFile(subject: string, pool: PoolQuestion[]): string {
-  const rows = pool
-    .filter((q) => (q.oneLine || '').trim().length > 0)
-    .map((q) => `  ${JSON.stringify([q.id, q.oneLine])},`)
-    .join('\n');
-  const count = pool.filter((q) => (q.oneLine || '').trim().length > 0).length;
+  const withAnswer = pool.filter((q) => (q.oneLine || '').trim().length > 0);
+  const count = withAnswer.length;
+  // 出題プールと同じ理由（tsc のヒープ）で、大きいものは JSON 文字列にする。
+  const asJsonString = count >= JSON_STRING_THRESHOLD;
+  const rows = asJsonString
+    ? ''
+    : withAnswer.map((q) => `  ${JSON.stringify([q.id, q.oneLine])},`).join('\n');
+  const answerBody = asJsonString
+    ? `export const ANSWERS: readonly (readonly [string, string])[] = JSON.parse(${JSON.stringify(JSON.stringify(withAnswer.map((q) => [q.id, q.oneLine])))});`
+    : `export const ANSWERS: readonly (readonly [string, string])[] = [\n${rows}\n];`;
 
   return `/**
  * ===================================================================
@@ -1910,9 +1937,7 @@ function renderAnswerFile(subject: string, pool: PoolQuestion[]): string {
  */
 
 /** [出題ID, 試合後に出す1行解答] */
-export const ANSWERS: readonly (readonly [string, string])[] = [
-${rows}
-];
+${answerBody}
 `;
 }
 

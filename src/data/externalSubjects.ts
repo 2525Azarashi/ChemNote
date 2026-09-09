@@ -179,6 +179,40 @@ export const EXTERNAL_SUBJECTS: readonly ExternalSubject[] = [
       { id: 'ch32', title: '化学➁〜原子・分子、化学変化' },
     ],
   },
+
+  /**
+   * 英単語・英熟語（対戦専用）
+   *
+   * 出題は src/battle/data/external/english_vocab.json（約27,000問・全部4択）。
+   * 生成器は scripts/gen-english-vocab-pool.py、原典は ukaru-eigo.com の単語一覧。
+   * 章＝単語帳。対戦の「単元をえらぶ」で単語帳を選べる。
+   * 本体に演習画面は無い（リザルトの「この単元を演習する」は出ない）。
+   * 配色は英語系（リスニング・英文法）と区別がつくネイビー。
+   */
+  {
+    id: 'english_vocab',
+    label: '英単語・英熟語',
+    accent: '#2F5D8A',
+    accentSoft: '#BFD3E6',
+    surface: '#F4F8FC',
+    bubbleBorderClass: 'border-[#BFD3E6]/80',
+    bubbleBgClass: 'bg-[#F8FBFE]/95',
+    bubbleShadow: '0 10px 24px -14px rgba(47,93,138,0.55)',
+    chipTextClass: 'text-[#274B70]',
+    chipBgClass: 'bg-[#BFD3E6]/35',
+    progressBarClass: 'bg-[#5B84AF]',
+    chapters: [
+      { id: 'target1900', title: '英単語ターゲット1900（6訂版）' },
+      { id: 'target1400', title: '英単語ターゲット1400（5訂版）' },
+      { id: 'leap', title: '必携英単語 LEAP 改訂版' },
+      { id: 'teppeki', title: '鉄壁（改訂版）' },
+      { id: 'systan', title: 'システム英単語（5訂版）' },
+      { id: 'passtan_p1', title: '英検準1級 でる順パス単（5訂版）' },
+      { id: 'sokujuku', title: '速読英熟語［改訂版］' },
+      { id: 'jukugo_target1000', title: '英熟語ターゲット1000（5訂版）' },
+      { id: 'idiom1684', title: '大学入試 英熟語1,684（有名熟語帳を網羅）' },
+    ],
+  },
 ];
 
 /** 教科ID → 外部教科。知らないIDなら undefined。 */

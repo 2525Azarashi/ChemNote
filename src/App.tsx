@@ -1223,6 +1223,10 @@ export default function App() {
     const request = ++reviewRequest.current;
     try {
       if (isExternalSubject(subject)) {
+        // 英単語・英熟語は対戦専用（本体に演習画面が無い）。
+        // リザルトは onPractice を渡されても vocab では出さない（BattleResult 側で判定）が、
+        // 履歴など別経路から来たときのためにここでも止める。
+        if (subject !== 'rika') throw new Error('この科目は対戦専用です。答えはリザルトの解答欄で確認できます。');
         if (!FEATURES.rika) throw new Error('この科目の演習は現在公開されていません。');
         const { RIKA_ITEMS } = await import('./features/rika/rikaData');
         const found = RIKA_ITEMS.find(q => q.chapterId === chapterId && (!subQuestionId || q.id === subQuestionId));
