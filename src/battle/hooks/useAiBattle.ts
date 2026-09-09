@@ -49,6 +49,7 @@ import { cycleKanaKey } from '../core/kanaKeyboard';
 import type {
   BattleAnswerRecord,
   BattleAnswerSheet,
+  BattlePlayerScore,
   BattleQuestion,
   BattleResultSummary,
   BattleRule,
@@ -72,12 +73,21 @@ export interface AiBattleState {
   currentIndex: number;
   current: BattleQuestion | null;
   remainMs: number;
+  /** いまの問の制限時間（秒・resolveTimeLimit 済み）。残り時間バーの分母。 */
+  limitSec: number;
   answered: boolean;
   opponentAnswered: boolean;
   myChoice: number;
   myPanel: number[];
   myScore: number;
   opponentScore: number;
+  /**
+   * 問題ごとの内訳（正解・不正解・時間）を含む得点。
+   * ★相手がいま何問目でどうだったかを画面に出すため★（レーストラック表示）。
+   * useBattleRoom と同じ形に揃えて、画面部品を online / AI で共有できるようにする。
+   */
+  myDetail: BattlePlayerScore | null;
+  opponentDetail: BattlePlayerScore | null;
   result: BattleResultSummary | null;
   finished: boolean;
   me: { uid: string; nickname: string; photoURL: string };
@@ -98,13 +108,22 @@ export function useAiBattle(
   level: AiLevel,
   /** 試合番号。変わるたびに新しい試合を作る */
   matchNo = 0,
+  /**
+   * 利用者が選んだ問題数。undefined なら教科の既定を使う。
+   * ご指示「問題数決めれるようにして」。フレンド対戦では部屋の rules に焼き込むが、
+   * AI 戦は端末内で完結するのでここでルールに上書きする。
+   */
+  questionCount?: number,
 ): AiBattleState & AiBattleActions {
   const user = auth.currentUser;
   const uid = user?.uid || 'me';
   const profile = aiProfileOf(level);
   const aiUid = aiUidOf(level);
 
-  const rules = useMemo(() => effectiveRule(subject), [subject]);
+  const rules = useMemo(() => {
+    const base = effectiveRule(subject);
+    return questionCount ? { ...base, questionCount } : base;
+  }, [subject, questionCount]);
 
   const [phase, setPhase] = useState<AiBattlePhase>('loading');
   const [error, setError] = useState<string | null>(null);
@@ -366,12 +385,16 @@ export function useAiBattle(
     currentIndex,
     current,
     remainMs,
+    /** いまの問の制限時間（秒）。useBattleRoom と同じ理由で resolveTimeLimit の結果を渡す。 */
+    limitSec: current ? resolveTimeLimit(current, rules) : 0,
     answered,
     opponentAnswered,
     myChoice: myRecord?.choice ?? NO_ANSWER,
     myPanel: myRecord ? myRecord.panel || [] : panel,
     myScore: scores?.me.score ?? 0,
     opponentScore: scores?.other.score ?? 0,
+    myDetail: scores?.me ?? null,
+    opponentDetail: scores?.other ?? null,
     result,
     finished,
     me: {

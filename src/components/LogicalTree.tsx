@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Network, Info, BookOpen } from 'lucide-react';
+import { Search, Network, Info, BookOpen, ArrowLeft } from 'lucide-react';
 import { InteractiveTree } from './InteractiveTree';
 /*
  * ★図データは図データのファイルから直接読む★
@@ -19,15 +19,26 @@ import { InteractiveTree } from './InteractiveTree';
 import { substanceTreeData } from '../data/chemistryTreeData';
 import { useIsMobile } from '../hooks/useMediaQuery';
 
-export const LogicalTree = () => {
+interface LogicalTreeProps {
+  /** ホームへ戻る。以前はこの画面に戻る操作が無く、下部ナビだけが出口だった。 */
+  onBack?: () => void;
+  /**
+   * ノード内の「確認問題」ボタンから、対応する演習問題を開く。
+   * 以前は console.log を出すだけで何も起きなかった
+   * （画面には「関連する演習問題を確認できます」と書かれていた）。
+   * 受け取るIDは小問ID（q_c1_2_B_1_2 など）。問題の解決は App 側で行う。
+   */
+  onOpenQuestion?: (subQuestionId: string) => void;
+}
+
+export const LogicalTree = ({ onBack, onOpenQuestion }: LogicalTreeProps = {}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
   // モバイルでは1画面に収まるよう、余白を圧縮したタイトなレイアウトにする（要件3）。
   const isMobile = useIsMobile();
 
   const handleQuestionClick = (qId: string) => {
-    console.log('Question clicked:', qId);
-    // In a real app, this might navigate to the question
+    if (onOpenQuestion) onOpenQuestion(qId);
   };
 
   return (
@@ -37,6 +48,16 @@ export const LogicalTree = () => {
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
+              {onBack && (
+                <button
+                  type="button"
+                  onClick={onBack}
+                  className="mb-3 inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-full border border-slate-200 bg-slate-50 text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors"
+                  aria-label="ホームに戻る"
+                >
+                  <ArrowLeft size={16} aria-hidden="true" /> ホーム
+                </button>
+              )}
               <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
                 <Network className="w-7 h-7 text-indigo-600" />
                 ロジックツリー

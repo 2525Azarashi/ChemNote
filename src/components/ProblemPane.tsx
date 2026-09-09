@@ -18,7 +18,7 @@
  *   数字だけを見て「キリのいい値」に直すと、解答欄が画面外へ
  *   押し出される不具合が再発する。
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { buildSubQuestionList, cleanQuestionText, findSubQuestionSentence, splitQuestionLabel, type InlineQuestionRows } from '../utils/questionDisplay';
@@ -28,6 +28,7 @@ import { QuestionFigure } from './QuestionFigure';
 import { IonizationEnergyChart } from './IonizationEnergyChart';
 import { ListeningAudioPlayer } from './ListeningAudioPlayer';
 import { ExplanationBody } from './ExplanationBody';
+import { ListeningMaterials } from './ListeningMaterials';
 
 export interface ProblemPaneProps {
   /** いま表示している大問。 */
@@ -49,6 +50,8 @@ export interface ProblemPaneProps {
   listeningMobileSplit: boolean;
   /** リスニングのスマホ表示で図が無い場合のレイアウト分岐。 */
   listeningMobileNoFigure: boolean;
+  listeningMaterialsMobile?: boolean;
+  selectedAnswerSub?: any;
   listeningSteps: any[];
   safeStepIndex: number;
   activeStepSub: any;
@@ -86,6 +89,8 @@ export function ProblemPane({
   listeningUnified,
   listeningMobileSplit,
   listeningMobileNoFigure,
+  listeningMaterialsMobile = false,
+  selectedAnswerSub,
   listeningSteps,
   safeStepIndex,
   activeStepSub,
@@ -104,6 +109,61 @@ export function ProblemPane({
 }: ProblemPaneProps) {
   // Quiz.tsx にあったときの呼び名をそのまま残す（下の JSX を書き換えないため）
   const tracks = (currentQuestion as any)?.audioTracks;
+
+  const materialTrack = listeningTracks.find(t => t.subId === activeStepSub?.id);
+  useEffect(() => {
+    const pane = problemScrollRef.current;
+    if (!pane || !materialTrack?.material || isDesktop) return;
+    // Move only the document scroller. Never remount or seek the shared audio player.
+    const number = selectedAnswerSub?.id?.match(/_(\d+)$/)?.[1];
+    const target = selectedAnswerSub?.optionImages?.length
+      ? pane.querySelector('[data-material-graph]')
+      : number && !materialTrack.material.images?.length
+        ? pane.querySelector(`[data-material-blank="${number}"]`)
+        : null;
+    if (target) {
+      const view = pane.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      if (rect.top < view.top || rect.bottom > view.bottom) {
+        pane.scrollTop += rect.top - view.top - 12;
+      }
+    } else {
+      pane.scrollTop = 0;
+    }
+  }, [selectedAnswerSub?.id, materialTrack?.subId, isDesktop]);
+
+  if (listeningUnified && materialTrack?.material) {
+    return (
+      <section data-listening-material-pane aria-label="問題の資料"
+        className={`lg:w-[58%] flex min-h-0 flex-col border-b lg:border-r border-gray-200 bg-white ${
+          isDesktop ? 'h-full' : isProblemExpanded ? 'absolute inset-0 z-30' :
+          listeningMaterialsMobile ? 'flex-[1_1_0%]' : 'max-h-[50%] flex-none'
+        }`}>
+        <div className="flex shrink-0 items-center justify-between gap-2 border-b px-3">
+          <span className="text-sm font-bold text-[#2C3E50]">{materialTrack.label} · 資料</span>
+          {!isDesktop && <button type="button"
+            onClick={() => { setIsProblemExpanded(!isProblemExpanded); setIsProblemCollapsed(false); }}
+            className="min-h-11 px-2 text-xs font-bold text-gray-600">
+            {isProblemExpanded ? '選択肢に戻る' : '全画面で読む'}
+          </button>}
+        </div>
+        <div data-listening-audio className="shrink-0 border-b bg-white px-3 py-1">
+          <ListeningAudioPlayer tracks={listeningTracks} focusSubId={activeStepSub.id}
+            variant="inline" orientation="horizontal" mode="practice" tone="light"
+            readCount={currentQuestion.readCount || 2} playOnce={!!currentQuestion.playOnce} />
+        </div>
+        <div ref={problemScrollRef} tabIndex={0} aria-label="資料をスクロール"
+          className="min-h-0 flex-1 overflow-auto overscroll-contain px-3 py-3 md:px-6">
+          <ListeningMaterials material={materialTrack.material}
+            activeSubId={!isDesktop ? selectedAnswerSub?.id : undefined} />
+          {materialTrack.hint && <details className="mt-3 text-sm leading-relaxed text-gray-600">
+            <summary className="cursor-pointer py-2 font-bold">状況・場面を確認</summary>
+            <p>{materialTrack.hint}</p>
+          </details>}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <>

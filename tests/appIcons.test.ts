@@ -107,7 +107,7 @@ function links(): { rel: string; href: string; sizes: string }[] {
 }
 
 /** /foo.png のような公開パスを public/ 配下の実ファイルパスに直す。 */
-const toPublic = (href: string) => path.posix.join('public', href.replace(/^\//u, ''));
+const toPublic = (href: string) => path.posix.join('public', href.split('?')[0].replace(/^\//u, ''));
 
 // =====================================================================
 // I1: manifest のアイコンは存在し、正方形で、寸法表記と一致する
@@ -194,7 +194,7 @@ describe('I2: index.html のアイコン指定', () => {
 
   it('★PNG のアイコンはすべて正方形★', () => {
     for (const l of iconLinks()) {
-      if (!l.href.endsWith('.png')) continue;
+      if (!l.href.split('?')[0].endsWith('.png')) continue;
       const { w, h } = pngSize(toPublic(l.href));
       expect(w, `${l.href} が正方形でない (${w}x${h})`).toBe(h);
     }
@@ -351,7 +351,7 @@ function decodePng(rel: string): Rgba {
  */
 function inkBounds(rel: string) {
   const { w, h, data } = decodePng(rel);
-  const BG = [253, 251, 247];
+  const BG = [255, 255, 255];
   let x0 = w;
   let x1 = -1;
   let y0 = h;
@@ -425,7 +425,7 @@ describe('I4: 絵の全貌が枠に収まる', () => {
     expect(m.sideMargin).toBeGreaterThanOrEqual(MIN_SIDE_MARGIN);
   });
 
-  it('favicon（「m」マーク）は四方に余白を持つ（角丸で四隅が削れるため）', () => {
+  it('favicon（ロゴ全体）は四方に余白を持つ（角丸で四隅が削れるため）', () => {
     // ★96/192 も対象に入れる★
     //   この2つは「タブに manifest 側の横長ロゴが選ばれてしまう」対策として
     //   追加したもの（index.html のコメント参照）。追加したのに余白の
@@ -455,10 +455,11 @@ describe('I4: 絵の全貌が枠に収まる', () => {
     expect(dict, 'WIDTH_RATIO の定義が見つからない').not.toBeNull();
     const m = /'any':\s*([0-9.]+)/u.exec(dict![1]);
     expect(m, "WIDTH_RATIO['any'] が見つからない").not.toBeNull();
-    return parseFloat(m![1]);
+    const source = inkBounds('scripts/assets/app-icon-source.png');
+    return parseFloat(m![1]) * source.inkW / source.w;
   }
 
-  it('「m」マークは 192px まで揃えている（タブが manifest 側へ流れないため）', () => {
+  it('同じロゴ全体のfaviconを 192px まで揃えている（タブが manifest 側へ流れないため）', () => {
     /*
       ブラウザは <link rel="icon"> の候補から必要な大きさに一番近いものを
       選ぶが、候補が小さいものしか無いと manifest.json 側の
@@ -474,7 +475,7 @@ describe('I4: 絵の全貌が枠に収まる', () => {
       expect(h).toBe(n);
     }
     // index.html からも参照されていること（作っただけで使っていないを防ぐ）
-    const hrefs = links().map((l) => l.href);
+    const hrefs = links().map((l) => l.href.split('?')[0]);
     expect(hrefs).toContain('/icons/favicon-192.png');
     expect(hrefs).toContain('/icons/favicon-96.png');
   });
@@ -507,5 +508,30 @@ describe('I4: 絵の全貌が枠に収まる', () => {
     const m = inkBounds('public/icons/icon-512.png');
     // 縮小時の反エイリアスで 1〜2px ずれるので 1.5% の許容を置く。
     expect(Math.abs(m.inkW / m.w - ratio)).toBeLessThan(0.015);
+  });
+});
+
+
+describe('I5: 添付されたロゴ全体を使う', () => {
+  it('元画像は正方形で、生成スクリプトは画面内ロゴに依存しない', () => {
+    expect(pngSize('scripts/assets/app-icon-source.png')).toEqual({ w: 820, h: 820 });
+    const script = read('scripts/make-icons.py');
+    expect(script).toContain('app-icon-source.png');
+    expect(script).not.toContain('crop_mark');
+    expect(script).not.toContain('manatob_bg.png');
+  });
+  it('faviconにもオレンジ色の部分があり、青い頭文字だけに切り出していない', () => {
+    for (const size of [32, 48, 96, 192]) {
+      const { data } = decodePng(`public/icons/favicon-${size}.png`);
+      let orange = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i] > 150 && data[i + 1] > 60 && data[i + 1] < 210 && data[i + 2] < 140 && data[i] > data[i + 2] * 1.35) orange++;
+      }
+      expect(orange).toBeGreaterThan(0);
+    }
+  });
+  it('HTMLとmanifestのアイコンURLはキャッシュ更新用の版を持つ', () => {
+    for (const icon of MANIFEST.icons) expect(icon.src).toContain('?v=logo20260907');
+    for (const link of links().filter(l => /icon/.test(l.rel))) expect(link.href).toContain('?v=logo20260907');
   });
 });

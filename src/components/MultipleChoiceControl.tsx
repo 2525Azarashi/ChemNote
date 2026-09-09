@@ -57,6 +57,7 @@ export interface MultipleChoiceControlProps {
    *   「背を伸ばして押しやすくする」のが正解なので、両者は別扱いにする。
    */
   listeningMobileWithFigure?: boolean;
+  listeningMaterialsMobile?: boolean;
 }
 
 export function MultipleChoiceControl({
@@ -78,6 +79,7 @@ export function MultipleChoiceControl({
   longPressFired,
   listeningMobileNoFigure,
   listeningMobileWithFigure = false,
+  listeningMaterialsMobile = false,
 }: MultipleChoiceControlProps) {
   // Quiz.tsx にあったときの呼び名をそのまま残す（下の JSX を書き換えないため）
   const handleOptionSelect = onSelect;
@@ -106,7 +108,9 @@ export function MultipleChoiceControl({
       これで「問題文（選択肢）と解答欄が同期する」＝分離が無くなる。
       第1問B（イラスト選択）には本文が無いので、従来どおりマークのみになる。
     */
-    const optionTexts: string[] | undefined = listeningOptionTexts.get(sq.id);
+    // Graphs are shown full-size in the shared material pane on mobile.
+    const graphMarksOnly = listeningMaterialsMobile && Array.isArray(sq.optionImages);
+    const optionTexts: string[] | undefined = graphMarksOnly ? undefined : listeningOptionTexts.get(sq.id);
     /*
       ★図が選択肢そのもの（英語リスニング 第6問 問37）★
       ------------------------------------------------------------------
@@ -116,7 +120,7 @@ export function MultipleChoiceControl({
       optionImages は options と同じ長さのときだけ使う。
     */
     const optionImages: string[] | undefined =
-      Array.isArray(sq.optionImages) && sq.optionImages.length === sq.options.length
+      !graphMarksOnly && Array.isArray(sq.optionImages) && sq.optionImages.length === sq.options.length
         ? sq.optionImages
         : undefined;
     /*
@@ -126,7 +130,7 @@ export function MultipleChoiceControl({
     const twoCol =
       !!optionTexts &&
       !optionImages &&
-      sq.options.length >= 5 &&
+      sq.options.length >= (listeningMaterialsMobile ? 4 : 5) &&
       optionTexts.every((t) => t.length <= 28);
     // 本文つきの選択肢は必ず縦1列（英文は長いので横並びにすると読めない）。
     const stacked = (isLongOptionList || !!optionTexts) && !optionImages;
@@ -136,7 +140,7 @@ export function MultipleChoiceControl({
       //   flex-col なので CSS order で並べ替えられる。高さを削る方式と違い、
       //   説明文の長さや選択肢の数が変わっても選択肢が先頭に来ることは保証される。
       //   md 以上は order を付けないので PC の並び（説明→選択肢）は元のまま。
-      <div className="flex w-full flex-col gap-2">
+      <div data-listening-compact-options={listeningMaterialsMobile || undefined} className="flex w-full flex-col gap-2">
       {/*
         消去法の操作説明。
         ボタン（モード切替）を置かず、選択肢を続けてタップするだけで

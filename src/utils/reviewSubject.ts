@@ -37,7 +37,14 @@ import { REVIEW_INTERVALS_DAYS, type ReviewItem } from './reviewList';
 import { stripHtmlToText } from './sanitizeHtml';
 
 /** ダッシュボードが扱う科目ID。SubjectSelection の SubjectId と同じ値を使う。 */
-export type ReviewSubjectId = 'chemistry_basic' | 'chemistry' | 'english_listening';
+export type ReviewSubjectId =
+  | 'chemistry_basic'
+  | 'chemistry'
+  | 'english_listening'
+  | 'math'
+  | 'biology_basic'
+  | 'english_grammar'
+  | 'geography';
 
 /** 科目が判定できなかったアイテムをまとめる擬似ID */
 export const UNKNOWN_SUBJECT = 'other' as const;
@@ -53,14 +60,22 @@ export const REVIEW_SUBJECT_LABELS: Record<ReviewSubjectKey, string> = {
   chemistry_basic: '化学基礎',
   chemistry: '化学',
   english_listening: '英語リスニング',
+  math: '数学',
+  biology_basic: '生物基礎',
+  english_grammar: '英文法',
+  geography: '地理総合・地理探究',
   other: 'その他',
 };
 
-/** タブに出す短縮名（スマホ幅でも4つ並べられる長さにする） */
+/** タブに出す短縮名（スマホ幅でも横スクロールで並べられる長さにする） */
 export const REVIEW_SUBJECT_SHORT_LABELS: Record<ReviewSubjectKey, string> = {
   chemistry_basic: '化学基礎',
   chemistry: '化学',
-  english_listening: '英語',
+  english_listening: 'リスニング',
+  math: '数学',
+  biology_basic: '生物基礎',
+  english_grammar: '英文法',
+  geography: '地理',
   other: 'その他',
 };
 
@@ -106,6 +121,35 @@ const SUBJECT_STYLES: Record<ReviewSubjectKey, ReviewSubjectStyle> = {
     activeClass: 'bg-[#3E9C93] text-white border-[#3E9C93]',
     stripeClass: 'bg-[#3E9C93]',
   },
+  // 以下は src/data/subjectTheme.ts の accent / accentSoft と同じ値。
+  math: {
+    textClass: 'text-[#4A4D8F]',
+    bgClass: 'bg-[#C7C9E8]/25',
+    borderClass: 'border-[#C7C9E8]',
+    activeClass: 'bg-[#5B5EA6] text-white border-[#5B5EA6]',
+    stripeClass: 'bg-[#5B5EA6]',
+  },
+  biology_basic: {
+    textClass: 'text-[#5F7B39]',
+    bgClass: 'bg-[#D5E3B8]/25',
+    borderClass: 'border-[#D5E3B8]',
+    activeClass: 'bg-[#7A9A4B] text-white border-[#7A9A4B]',
+    stripeClass: 'bg-[#7A9A4B]',
+  },
+  english_grammar: {
+    textClass: 'text-[#9F6230]',
+    bgClass: 'bg-[#EFD3B4]/25',
+    borderClass: 'border-[#EFD3B4]',
+    activeClass: 'bg-[#C77B3C] text-white border-[#C77B3C]',
+    stripeClass: 'bg-[#C77B3C]',
+  },
+  geography: {
+    textClass: 'text-[#864A74]',
+    bgClass: 'bg-[#E7C4DB]/25',
+    borderClass: 'border-[#E7C4DB]',
+    activeClass: 'bg-[#A45C8E] text-white border-[#A45C8E]',
+    stripeClass: 'bg-[#A45C8E]',
+  },
   other: {
     textClass: 'text-slate-600',
     bgClass: 'bg-slate-100',
@@ -140,6 +184,14 @@ export function reviewSubjectStyle(subject: ReviewSubjectKey): ReviewSubjectStyl
 const CHEMISTRY_BASIC_RE = /^c\d+_\d+(_[A-Z])?$/;
 const CHEMISTRY_ADVANCED_RE = /^a\d+_\d+(_[A-Z])?$/;
 const LISTENING_RE = /^el\d+(_[A-Z])?$/;
+// 数学 'm1_1' / 'mi_1'（積分）/ 'mv_1'（ベクトル）/ 'mp_1'（確率）、生物基礎 'bio1_1'〜、
+// 英文法 'eg1_1'〜、地理 'geo_q1_r1' / 'geo_exam_r1' など。
+// 実データの全章IDがこの規則で分類されることは tests/reviewDashboard.test.ts が
+// 章インデックス（全科目）を全件走査して検査する。
+const MATH_RE = /^m[a-z]?\d*_\d+$/;
+const BIOLOGY_RE = /^bio\d+_\d+$/;
+const GRAMMAR_RE = /^eg\d+_\d+$/;
+const GEOGRAPHY_RE = /^geo_[a-z0-9_]+$/;
 
 /**
  * 章IDから科目を判定する。判定できなければ null。
@@ -151,6 +203,10 @@ export function subjectOfChapterId(chapterId: string | null | undefined): Review
   const id = (chapterId || '').trim();
   if (!id) return null;
   if (LISTENING_RE.test(id)) return 'english_listening';
+  if (GRAMMAR_RE.test(id)) return 'english_grammar';
+  if (GEOGRAPHY_RE.test(id)) return 'geography';
+  if (BIOLOGY_RE.test(id)) return 'biology_basic';
+  if (MATH_RE.test(id)) return 'math';
   if (CHEMISTRY_ADVANCED_RE.test(id)) return 'chemistry';
   if (CHEMISTRY_BASIC_RE.test(id)) return 'chemistry_basic';
   return null;
@@ -196,11 +252,15 @@ export interface SubjectSummary {
   avgRetention: number;
 }
 
-/** 表示順（化学基礎 → 化学 → リスニング → その他）を固定する */
+/** 表示順（科目選択画面と同じ並び → その他）を固定する */
 const SUBJECT_ORDER: ReviewSubjectKey[] = [
   'chemistry_basic',
   'chemistry',
   'english_listening',
+  'math',
+  'biology_basic',
+  'english_grammar',
+  'geography',
   UNKNOWN_SUBJECT,
 ];
 

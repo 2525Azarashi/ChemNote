@@ -399,7 +399,9 @@ export function useQuestionDerived({
    * 図がある第1問B は従来どおり listeningMobileSplit の配り方
    *（問題文ペイン＝flex-1）を使う。
    */
-  const listeningMobileNoFigure = listeningMobileSplit && !activeStepHasFigure;
+  const listeningMaterial = listeningTracks.find(t => t.subId === activeStepSub?.id)?.material;
+  const listeningMaterialsMobile = listeningMobileSplit && !!listeningMaterial;
+  const listeningMobileNoFigure = listeningMobileSplit && !listeningMaterial && !activeStepHasFigure;
   // ★戻り値★
   // 実測（grep）で「区間の外から参照されている」ことを確認した 14 個だけを返す。
   // 名前は Quiz.tsx にあったときと同一にして、呼び出し側の JSX や
@@ -420,5 +422,6 @@ export function useQuestionDerived({
     listeningUnified,
     listeningMobileSplit,
     listeningMobileNoFigure,
+    listeningMaterialsMobile,
   };
 }

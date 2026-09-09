@@ -16,10 +16,9 @@
  *   問題文・選択肢・正解・スクリプト・解説はすべて PDF の原文どおり。
  *
  * 音源について
- *   この類題集には MP3 が付属しない。そこで audioUrl を持たせず、
- *   ListeningAudioPlayer 側でブラウザの音声合成（SpeechSynthesis）に
- *   フォールバックして script を読み上げる。これにより
- *   「問題ごとに再生ボタンがある」状態を全セットで維持できる。
+ *   提供された高品質MP3を audioUrl で参照する。各ファイルは原稿1回分。
+ *   再生回数は readCount に従いアプリ側で制御する。
+ *   対応原稿・SHA-256・出典は scripts/data/listening_premium_manifest.json に記録。
  *
  * 選択肢の表記
  *   options は ①〜④ のマーク（MARK_OPTIONS）だけを持ち、英文本体は text 側に置く。
@@ -35,6 +34,7 @@ const MARK_OPTIONS = ['①', '②', '③', '④'];
 const EL1_A_SET2_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set2_1',
+    audioUrl: '/listening_audio/el1A_set2_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: 'I\'m really sleepy. I think I\'ll go to bed early tonight.',
@@ -43,6 +43,7 @@ const EL1_A_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set2_2',
+    audioUrl: '/listening_audio/el1A_set2_q2.mp3',
     label: '問2',
     hint: '男性（会社員）',
     script: 'The train was crowded this morning, so I had to stand all the way to the office.',
@@ -51,6 +52,7 @@ const EL1_A_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set2_3',
+    audioUrl: '/listening_audio/el1A_set2_q3.mp3',
     label: '問3',
     hint: '女の子（小学生）',
     script: 'Dad, I\'ve finished my homework. Can I watch TV now?',
@@ -59,6 +61,7 @@ const EL1_A_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set2_4',
+    audioUrl: '/listening_audio/el1A_set2_q4.mp3',
     label: '問4',
     hint: '男性（高校生）',
     script: 'There are fifteen books on the shelf, and I\'ll add five more from the library.',
@@ -222,6 +225,7 @@ Can I〜? は許可を求める依頼表現。完了形 I've finished と③の 
 const EL1_A_SET3_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set3_1',
+    audioUrl: '/listening_audio/el1A_set3_q1.mp3',
     label: '問1',
     hint: '女性（母親）',
     script: 'Kenji, your hands are dirty. Wash them before dinner.',
@@ -230,6 +234,7 @@ const EL1_A_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set3_2',
+    audioUrl: '/listening_audio/el1A_set3_q2.mp3',
     label: '問2',
     hint: '男性（大学生）',
     script: 'I usually play tennis on Sundays, but this week I have a part-time job.',
@@ -238,6 +243,7 @@ const EL1_A_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set3_3',
+    audioUrl: '/listening_audio/el1A_set3_q3.mp3',
     label: '問3',
     hint: '女性（店員）',
     script: 'This coupon can only be used on weekdays, not on weekends.',
@@ -246,6 +252,7 @@ const EL1_A_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set3_4',
+    audioUrl: '/listening_audio/el1A_set3_q4.mp3',
     label: '問4',
     hint: '少年（中学生）',
     script: 'My sister promised to lend me her bike, so I don\'t need to walk to school tomorrow.',
@@ -409,6 +416,7 @@ don't need to walk（歩かなくてよい）の否定を正しく取れるか�
 const EL1_A_SET4_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set4_1',
+    audioUrl: '/listening_audio/el1A_set4_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: 'It\'s getting windy. Should we close the windows?',
@@ -417,6 +425,7 @@ const EL1_A_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set4_2',
+    audioUrl: '/listening_audio/el1A_set4_q2.mp3',
     label: '問2',
     hint: '男性（父親）',
     script: 'I haven\'t fixed the chair yet, but I\'ve already bought the tools.',
@@ -425,6 +434,7 @@ const EL1_A_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set4_3',
+    audioUrl: '/listening_audio/el1A_set4_q3.mp3',
     label: '問3',
     hint: '女の子（小学生）',
     script: 'Grandma sent me a sweater she made. Look, it has a cat on it!',
@@ -433,6 +443,7 @@ const EL1_A_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set4_4',
+    audioUrl: '/listening_audio/el1A_set4_q4.mp3',
     label: '問4',
     hint: '男性（高校生）',
     script: 'The museum is free for students today, but we\'ll still have to pay for the special show.',
@@ -596,6 +607,7 @@ free と have to pay for の対比。①②は全称への拡大解釈。but の
 const EL1_A_SET5_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set5_1',
+    audioUrl: '/listening_audio/el1A_set5_q1.mp3',
     label: '問1',
     hint: '女性（会社員）',
     script: 'Instead of taking the subway, why don\'t we walk? It\'s only a ten-minute walk.',
@@ -604,6 +616,7 @@ const EL1_A_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set5_2',
+    audioUrl: '/listening_audio/el1A_set5_q2.mp3',
     label: '問2',
     hint: '男性（図書館の司書）',
     script: 'You won\'t be able to enter the library after six, so please come before then.',
@@ -612,6 +625,7 @@ const EL1_A_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set5_3',
+    audioUrl: '/listening_audio/el1A_set5_q3.mp3',
     label: '問3',
     hint: '女性（高校生）',
     script: 'Not many people came to practice this morning, but almost everyone will be here in the afternoon.',
@@ -620,6 +634,7 @@ const EL1_A_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set5_4',
+    audioUrl: '/listening_audio/el1A_set5_q4.mp3',
     label: '問4',
     hint: '男性（大学生）',
     script: 'I was going to buy the blue bag, but it was sold out, so I got the black one instead.',
@@ -783,6 +798,7 @@ was going to（するつもりだった）と結果 so I got the black one の�
 const EL1_A_SET6_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set6_1',
+    audioUrl: '/listening_audio/el1A_set6_q1.mp3',
     label: '問1',
     hint: '少年（中学生）',
     script: 'Mom, can you pick me up at the station? It\'s pouring outside.',
@@ -791,6 +807,7 @@ const EL1_A_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set6_2',
+    audioUrl: '/listening_audio/el1A_set6_q2.mp3',
     label: '問2',
     hint: '女性（病院の受付係）',
     script: 'The doctor will see you in about twenty minutes. Please have a seat over there.',
@@ -799,6 +816,7 @@ const EL1_A_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set6_3',
+    audioUrl: '/listening_audio/el1A_set6_q3.mp3',
     label: '問3',
     hint: '男性（高校生）',
     script: 'I didn\'t forget my umbrella today. It\'s right here in my bag.',
@@ -807,6 +825,7 @@ const EL1_A_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set6_4',
+    audioUrl: '/listening_audio/el1A_set6_q4.mp3',
     label: '問4',
     hint: '女性（大学生）',
     script: 'There were thirty tickets this morning, but only eight are left now.',
@@ -970,6 +989,7 @@ in about twenty minutes（あと約20分で）。未来の時間を正確に取�
 const EL1_A_SET7_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set7_1',
+    audioUrl: '/listening_audio/el1A_set7_q1.mp3',
     label: '問1',
     hint: '男性（お年寄り）',
     script: 'I used to walk to the park every day, but these days my knees hurt, so I take the bus.',
@@ -978,6 +998,7 @@ const EL1_A_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set7_2',
+    audioUrl: '/listening_audio/el1A_set7_q2.mp3',
     label: '問2',
     hint: '女性（高校生）',
     script: 'Let\'s not start the movie until Yuki gets here.',
@@ -986,6 +1007,7 @@ const EL1_A_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set7_3',
+    audioUrl: '/listening_audio/el1A_set7_q3.mp3',
     label: '問3',
     hint: '男性（家電量販店の店員）',
     script: 'This camera doesn\'t come with a memory card, so you\'ll have to buy one separately.',
@@ -994,6 +1016,7 @@ const EL1_A_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set7_4',
+    audioUrl: '/listening_audio/el1A_set7_q4.mp3',
     label: '問4',
     hint: '女の子（小学生）',
     script: 'I made twenty-four cookies, and my brother ate six while I was out.',
@@ -1157,6 +1180,7 @@ doesn't come with（付属していない）の否定表現。①は反転。buy
 const EL1_A_SET8_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set8_1',
+    audioUrl: '/listening_audio/el1A_set8_q1.mp3',
     label: '問1',
     hint: '女性（マンションの管理人）',
     script: 'The elevator isn\'t working today. Could you use the stairs, please?',
@@ -1165,6 +1189,7 @@ const EL1_A_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set8_2',
+    audioUrl: '/listening_audio/el1A_set8_q2.mp3',
     label: '問2',
     hint: '男性（高校生）',
     script: 'I\'ve already read three of the five books for my report, so just two more to go.',
@@ -1173,6 +1198,7 @@ const EL1_A_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set8_3',
+    audioUrl: '/listening_audio/el1A_set8_q3.mp3',
     label: '問3',
     hint: '女性（母親）',
     script: 'Don\'t put the milk back in the fridge. I\'ll use it for the cake now.',
@@ -1181,6 +1207,7 @@ const EL1_A_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set8_4',
+    audioUrl: '/listening_audio/el1A_set8_q4.mp3',
     label: '問4',
     hint: '男性（大学生）',
     script: 'The concert starts at seven, but let\'s meet at the station at six to get good seats.',
@@ -1344,6 +1371,7 @@ Don't put back（戻さないで）の否定命令＋I'll use it now の未来�
 const EL1_A_SET9_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set9_1',
+    audioUrl: '/listening_audio/el1A_set9_q1.mp3',
     label: '問1',
     hint: '男性（教師）',
     script: 'Since everyone handed in the homework early, I\'ll return your tests a day sooner than I planned.',
@@ -1352,6 +1380,7 @@ const EL1_A_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set9_2',
+    audioUrl: '/listening_audio/el1A_set9_q2.mp3',
     label: '問2',
     hint: '女性（高校生）',
     script: 'I wonder if it\'ll snow tomorrow. The weather app says there\'s a thirty percent chance.',
@@ -1360,6 +1389,7 @@ const EL1_A_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set9_3',
+    audioUrl: '/listening_audio/el1A_set9_q3.mp3',
     label: '問3',
     hint: '少年（中学生）',
     script: 'I couldn\'t find my glove anywhere this morning, but it turned out to be under my bed.',
@@ -1368,6 +1398,7 @@ const EL1_A_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set9_4',
+    audioUrl: '/listening_audio/el1A_set9_q4.mp3',
     label: '問4',
     hint: '女性（会社員）',
     script: 'Rather than emailing the client, I\'ll call her directly. It\'s much faster that way.',
@@ -1531,6 +1562,7 @@ rather than A（Aではなく）＝instead of と同型の読み替え。手段�
 const EL1_A_SET10_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set10_1',
+    audioUrl: '/listening_audio/el1A_set10_q1.mp3',
     label: '問1',
     hint: '男性（高校生）',
     script: 'My phone battery is almost dead. Can I borrow your charger, Emma?',
@@ -1539,6 +1571,7 @@ const EL1_A_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set10_2',
+    audioUrl: '/listening_audio/el1A_set10_q2.mp3',
     label: '問2',
     hint: '女性（祖母）',
     script: 'Your grandfather grows tomatoes every summer. This year, he has more than fifty.',
@@ -1547,6 +1580,7 @@ const EL1_A_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set10_3',
+    audioUrl: '/listening_audio/el1A_set10_q3.mp3',
     label: '問3',
     hint: '女性（洋服店の店員）',
     script: 'We\'re out of the red shirts in medium, but we still have them in large.',
@@ -1555,6 +1589,7 @@ const EL1_A_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set10_4',
+    audioUrl: '/listening_audio/el1A_set10_q4.mp3',
     label: '問4',
     hint: '男性（父親）',
     script: 'I\'ll finish work at five today, so I can pick you up after practice.',
@@ -1718,6 +1753,7 @@ so I can〜 が結論。①は反転、②は時刻のすり替え、④は主�
 const EL1_A_SET11_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set11_1',
+    audioUrl: '/listening_audio/el1A_set11_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: 'How about studying at the library instead of the café? It\'s much quieter there.',
@@ -1726,6 +1762,7 @@ const EL1_A_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set11_2',
+    audioUrl: '/listening_audio/el1A_set11_q2.mp3',
     label: '問2',
     hint: '男性（大学生）',
     script: 'I\'ve lived in Osaka for three years, but I\'ve never been to the castle.',
@@ -1734,6 +1771,7 @@ const EL1_A_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set11_3',
+    audioUrl: '/listening_audio/el1A_set11_q3.mp3',
     label: '問3',
     hint: '女の子（小学生）',
     script: 'The cat isn\'t in her box. Oh, she\'s sleeping on the sofa!',
@@ -1742,6 +1780,7 @@ const EL1_A_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set11_4',
+    audioUrl: '/listening_audio/el1A_set11_q4.mp3',
     label: '問4',
     hint: '男性（高校生）',
     script: 'Only twelve students have signed up for the trip, and we need at least fifteen.',
@@ -1905,6 +1944,7 @@ isn't in her box の否定と、Oh, 〜で訂正される場所。④は「寝�
 const EL1_A_SET12_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set12_1',
+    audioUrl: '/listening_audio/el1A_set12_q1.mp3',
     label: '問1',
     hint: '女性（教師）',
     script: 'You don\'t have to bring your textbooks tomorrow. We\'ll watch a video in class instead.',
@@ -1913,6 +1953,7 @@ const EL1_A_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set12_2',
+    audioUrl: '/listening_audio/el1A_set12_q2.mp3',
     label: '問2',
     hint: '男性（高校生）',
     script: 'The bus was late again, so I missed the first ten minutes of the movie.',
@@ -1921,6 +1962,7 @@ const EL1_A_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set12_3',
+    audioUrl: '/listening_audio/el1A_set12_q3.mp3',
     label: '問3',
     hint: '女性（大学生）',
     script: 'I won\'t buy a new laptop until this old one stops working completely.',
@@ -1929,6 +1971,7 @@ const EL1_A_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set12_4',
+    audioUrl: '/listening_audio/el1A_set12_q4.mp3',
     label: '問4',
     hint: '男性（電気店の店員）',
     script: 'This washing machine was two hundred dollars last month, but it\'s on sale for one fifty now.',
@@ -2092,6 +2135,7 @@ not〜until（〜するまで〜しない）構文。「壊れたら買う」と
 const EL1_A_SET13_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set13_1',
+    audioUrl: '/listening_audio/el1A_set13_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: 'It\'s too hot in here. Do you mind if I turn on the air conditioner?',
@@ -2100,6 +2144,7 @@ const EL1_A_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set13_2',
+    audioUrl: '/listening_audio/el1A_set13_q2.mp3',
     label: '問2',
     hint: '男性（会社員）',
     script: 'My flight was supposed to leave at nine, but it\'s been delayed until noon.',
@@ -2108,6 +2153,7 @@ const EL1_A_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set13_3',
+    audioUrl: '/listening_audio/el1A_set13_q3.mp3',
     label: '問3',
     hint: '女性（母親）',
     script: 'Ken, I\'ve packed your lunch, but I forgot to put in a fork.',
@@ -2116,6 +2162,7 @@ const EL1_A_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set13_4',
+    audioUrl: '/listening_audio/el1A_set13_q4.mp3',
     label: '問4',
     hint: '男性（銀行の客）',
     script: 'There are eighteen people in line, but three clerks are working, so it shouldn\'t take long.',
@@ -2279,6 +2326,7 @@ but の後の forgot to put in a fork が核心。弁当は入っている／フ
 const EL1_A_SET14_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_A_set14_1',
+    audioUrl: '/listening_audio/el1A_set14_q1.mp3',
     label: '問1',
     hint: '女性（大学生）',
     script: 'Let\'s take the earlier train so that we won\'t be late for the ceremony.',
@@ -2287,6 +2335,7 @@ const EL1_A_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set14_2',
+    audioUrl: '/listening_audio/el1A_set14_q2.mp3',
     label: '問2',
     hint: '男性（高校生）',
     script: 'I haven\'t decided which club to join yet, but I\'ll choose one by Friday.',
@@ -2295,6 +2344,7 @@ const EL1_A_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set14_3',
+    audioUrl: '/listening_audio/el1A_set14_q3.mp3',
     label: '問3',
     hint: '女性（洋服店の店員）',
     script: 'The fitting rooms close at eight, so if you want to try that on, please hurry.',
@@ -2303,6 +2353,7 @@ const EL1_A_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_A_set14_4',
+    audioUrl: '/listening_audio/el1A_set14_q4.mp3',
     label: '問4',
     hint: '男性（父親）',
     script: 'Your mother called while you were out. She said she\'ll be home around seven.',

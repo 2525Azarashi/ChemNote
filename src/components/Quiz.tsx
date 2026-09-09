@@ -617,6 +617,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
         4列×1行にして、浮いた約60pxを図の高さに回す。
         listeningMobileNoFigure の裏返しなので、両方が同時に真になることはない。
       */
+      listeningMaterialsMobile={listeningMaterialsMobile}
       listeningMobileWithFigure={listeningMobileSplit && !listeningMobileNoFigure}
     />
   );
@@ -831,6 +832,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
     listeningUnified,
     listeningMobileSplit,
     listeningMobileNoFigure,
+    listeningMaterialsMobile,
   } = useQuestionDerived({
     currentQuestion,
     perStep,
@@ -1244,7 +1246,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           「問題と選択肢を同時に見る」は、リスニング時の問題ペインの
           高さ上限（下記 max-h-[40vh]）と再生ボタンのスリム化で満たす。
           PC は従来どおり「問題＝左 / 解答＝右」。 */}
-      <div className={`flex-1 flex flex-col lg:flex-row overflow-hidden relative`}>
+      <div className={`flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden relative ${listeningMaterialsMobile ? 'pb-[calc(4.75rem+env(safe-area-inset-bottom))]' : ''}`}>
 
         {/*
           Section 1: 問題文ペイン（左 58% ／スマホでは上）
@@ -1264,9 +1266,11 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           listeningUnified={listeningUnified}
           listeningMobileSplit={listeningMobileSplit}
           listeningMobileNoFigure={listeningMobileNoFigure}
+          listeningMaterialsMobile={listeningMaterialsMobile}
           listeningSteps={listeningSteps}
           safeStepIndex={safeStepIndex}
           activeStepSub={activeStepSub}
+          selectedAnswerSub={mobileAnswerSubs[safeMobileAnsIdx]?.sq}
           listeningTracks={listeningTracks}
           hasTrackFor={hasTrackFor}
           isEnglishProse={isEnglishProse}
@@ -1293,6 +1297,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, isGuest, isMobileView, o
           listeningUnified={listeningUnified}
           listeningMobileSplit={listeningMobileSplit}
           listeningMobileNoFigure={listeningMobileNoFigure}
+          listeningMaterialsMobile={listeningMaterialsMobile}
           focusedSubId={focusedSubId}
           setFocusedSubId={setFocusedSubId}
           mobileAnswerSubs={mobileAnswerSubs}

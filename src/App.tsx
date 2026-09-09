@@ -101,7 +101,10 @@ import { auth } from './firebase';
 import { Intro } from './components/Intro';
 import { LogicalTree } from './components/LogicalTree';
 import { NoteDetail } from './components/NoteDetail';
-import { StudyHub } from './components/StudyHub';
+import { StudyHub, type StudyHubView } from './components/StudyHub';
+import { ScreenLoading, ScreenUnavailable } from './components/ScreenStatus';
+import { studyEntry, isLearningScreen, safeStudyResume } from './utils/studyNavigation';
+import { resolveReviewTarget } from './utils/reviewTarget';
 import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
 import { SubjectSelection, getSubjectLabel, isSubjectId, type SubjectId } from './components/SubjectSelection';
@@ -233,18 +236,24 @@ import {
   quizRunKey,
   quizExplKey,
   quizIndexKey,
+  quizStepKey,
 } from './utils/quizStorageKeys';
 import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './utils/studySync';
 import { TeacherDashboard } from './components/TeacherDashboard';
 import { FeedbackAdminPanel } from './components/FeedbackAdminPanel';
 import { BattleMode } from './battle/ui/BattleMode';
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'flowchart' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin' | 'battle' | 'rika';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin' | 'battle' | 'rika';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 const APP_STATES = new Set<AppState>([
   'home', 'mode_selection', 'chapters', 'quiz', 'explanation', 'learning', 'intro',
-  'flowchart', 'study_hub', 'note_detail', 'onboarding', 'logical_tree', 'settings',
+  /*
+   * 'flowchart' は以前ここにあったが、描画する画面が無く
+   * 保存値から復元されると下部ナビしか出ない空白画面になっていた。
+   * isAppState が false を返すので、古い保存値はオンボーディングへ倒れる。
+   */
+  'study_hub', 'note_detail', 'onboarding', 'logical_tree', 'settings',
   'leaderboard', 'mock_exam', 'subject_selection', 'advanced_fields', 'teacher_dashboard',
   'feedback_admin', 'battle',
   /**
@@ -345,6 +354,11 @@ export default function App() {
     }
   });
   const [selectedNote, setSelectedNote] = useState<any>(null);
+  const [studyHubView, setStudyHubView] = useState<StudyHubView>({ tab: 'today', subjectTab: 'all' });
+  const [chapterGroups, setChapterGroups] = useState<Record<string, string>>({});
+  const reviewRequest = useRef(0);
+  const reviewBusy = useRef(false);
+  useEffect(() => { reviewRequest.current += 1; reviewBusy.current = false; }, [appState]);
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>(() =>
     parseStoredStringRecord(localStorage.getItem('savedQuizAnswers')),
   );
@@ -397,6 +411,7 @@ export default function App() {
   });
   const [isExplanationView, setIsExplanationView] = useState(false);
   const [prevAppState, setPrevAppState] = useState<AppState>('home');
+  const [subjectPickerReturnTo, setSubjectPickerReturnTo] = useState<AppState>('home');
   const [lastQuizResult, setLastQuizResult] = useState<any>(null);
   // 届いているフレンド申請件数（設定ボタンのバッジ表示用）
   const [pendingFriendRequests, setPendingFriendRequests] = useState(0);
@@ -528,7 +543,7 @@ export default function App() {
 
   const [lastLearnState, setLastLearnState] = useState<AppState>(() => {
     const saved = localStorage.getItem('savedLastLearnState');
-    return isAppState(saved) ? saved : 'mode_selection';
+    return isAppState(saved) && isLearningScreen(saved) ? saved : 'mode_selection';
   });
 
   useEffect(() => { localStorage.setItem('savedAppState', appState); }, [appState]);
@@ -553,7 +568,7 @@ export default function App() {
   useEffect(() => { localStorage.setItem(SELECTED_FIELD_KEY, selectedField); }, [selectedField]);
   
   useEffect(() => {
-    if (['mode_selection', 'learning', 'chapters', 'quiz', 'explanation', 'mock_exam'].includes(appState)) {
+    if (isLearningScreen(appState)) {
       setLastLearnState(appState);
       localStorage.setItem('savedLastLearnState', appState);
     }
@@ -662,8 +677,17 @@ export default function App() {
       入れてはいけない場所は、入口ではなく受け口で守る。
     */
     if (!isSubjectEnabled(subject)) return;
+    const entry = studyEntry(subject);
+    if (subject !== selectedSubject) {
+      setSelectedChapterId(null);
+      setQuizRange(null);
+      setLastQuizResult(null);
+      setLastLearnState(entry);
+      localStorage.setItem('savedLastLearnState', entry);
+    }
     setSelectedSubject(subject);
-    setAppState(subjectPickerOrigin === 'start' ? 'mode_selection' : 'home');
+    setAppMode('practice');
+    setAppState(subjectPickerOrigin === 'start' ? entry : 'home');
   };
 
   useEffect(() => {
@@ -1065,7 +1089,7 @@ export default function App() {
    *    ここでは画面を移すだけなので書きかけの答えは失われない。
    *    （単元に入り直せば「続きから」再開できる）
    */
-  const idleResetEnabled = appState !== 'home' && appState !== 'onboarding';
+  const idleResetEnabled = appState !== 'home' && appState !== 'onboarding' && appState !== 'battle';
 
   useIdleReset({
     enabled: idleResetEnabled,
@@ -1073,11 +1097,14 @@ export default function App() {
     onIdle: () => setAppState('home'),
   });
 
-  // ホームの「学習を始める」は、まず科目を選ばせる。
-  // 以前は学習モード選択（mode_selection）へ直行していたため、
-  // 別の科目を勉強したいときにホームの「科目を変更」を探す必要があった。
-  // 学習の入口を «科目 → モード → 単元» の一本道にそろえる。
+  // 表示中の科目で開始する。科目の変更は本人が希望したときだけ行う。
   const handleStart = () => {
+    setSubjectPickerOrigin('start');
+    setAppMode('practice');
+    setAppState(studyEntry(selectedSubject));
+  };
+  const handleChangeStudySubject = () => {
+    setSubjectPickerReturnTo(appState);
     setSubjectPickerOrigin('start');
     setAppState('subject_selection');
   };
@@ -1091,8 +1118,8 @@ export default function App() {
       // 英語リスニングは分野選択を持たず、そのまま大問（単元）選択へ進む。
       setAppState('chapters');
     } else if (selectedSubject === 'chemistry') {
-      // 化学（発展）は単元の前に「理論／無機／有機」の分野選択を挙む。
-      setAppState('advanced_fields');
+      // 分野は単元一覧内の切替で選ぶ。
+      setAppState('chapters');
     } else {
       setAppState('chapters');
     }
@@ -1108,6 +1135,7 @@ export default function App() {
      * 省略時は範囲なし＝章の全問を通しで解く（化学基礎・化学は従来のまま）。
      */
     range: { startIndex: number; endIndex: number } | null = null,
+    targetMode: AppMode = appMode,
   ) => {
     setSelectedChapterId(chapterId);
     setQuizRange(range);
@@ -1116,10 +1144,11 @@ export default function App() {
 
     if (!resume) {
       setQuizAnswers({});
-      localStorage.removeItem(quizAnswersKey(chapterId, appMode));
-      localStorage.removeItem(quizRunKey(chapterId, appMode));
-      localStorage.removeItem(quizExplKey(chapterId, appMode));
-      localStorage.setItem(quizIndexKey(chapterId, appMode), questionIndex.toString());
+      localStorage.removeItem(quizAnswersKey(chapterId, targetMode));
+      localStorage.removeItem(quizRunKey(chapterId, targetMode));
+      localStorage.removeItem(quizExplKey(chapterId, targetMode));
+      localStorage.removeItem(quizStepKey(chapterId, targetMode));
+      localStorage.setItem(quizIndexKey(chapterId, targetMode), questionIndex.toString());
     }
   };
 
@@ -1194,7 +1223,7 @@ export default function App() {
     setAppMode('practice');
     // 画面の切り替え（setAppState('quiz')）と答案の初期化は
     // handleSelectChapter が中でやるので、ここでは呼ぶだけでよい。
-    handleSelectChapter(chapterId, 0, false);
+    handleSelectChapter(chapterId, 0, false, null, 'practice');
   };
 
   const handleFinishQuiz = (answers: Record<string, string>, result?: any) => {
@@ -1229,100 +1258,33 @@ export default function App() {
    * 見つからなければ questionIndex（1始まり表示番号）でフォールバックする。
    */
   const handleReviewNote = async (note: any) => {
-    if (!note) return;
-    /*
-     * ★ここだけ「押されたときに読む」（動的 import）にしている理由★
-     *
-     * chemistryData は実測 1,253,813 B ある。
-     * それをこの関数ひとつのために起動時から抱えていた。
-     *
-     * ■ なぜ非同期にしても表示が変わらないのか
-     *
-     *   この関数は「学習ノートの項目をタップしたとき」だけ走る
-     *   イベントハンドラであり、★描画中には呼ばれない★。
-     *   だから await を挟んでも、画面に出ているものが
-     *   一瞬消えたり空になったりしない。
-     *   （逆に findChapterById は描画中に呼ばれているので、
-     *     同じやり方は使えない。下の selectedChapter のコメント参照）
-     *
-     * ■ 待っている間について
-     *
-     *   読み込みが終わってから setAppMode / setAppState を呼ぶので、
-     *   画面は「まだノート一覧のまま」→「演習画面」と切り替わる。
-     *   中間状態を作らないので、途中で空の画面が出ることはない。
-     *
-     * ■ 正直な注意（これ単体では配信量は減らない）
-     *
-     *   manualChunks が src/data をひとつの data チャンクにまとめているため、
-     *   allChapters への静的な線（下の findChapterById）が残っている限り、
-     *   このファイルも同じチャンクに入って結局起動時に落ちてくる。
-     *   ★1本だけ切って「軽くなった」と言うのは嘘の改善報告になる。★
-     *   3本（ここ・findChapterById・ChapterSelection）が揃って初めて減る。
-     */
-
-    /*
-     * ★読み込みに失敗したときに「無言で何も起きない」ようにはしない★
-     *
-     * 静的 import なら、読み込み失敗はアプリ起動そのものの失敗になるので
-     * 気づけた。動的 import に変えると、失敗はこの関数の中の
-     * 拒否された Promise になる。
-     * 呼び出し側（StudyHub / NoteDetail の onReview）は戻り値を見ないので、
-     * ここで受け止めないと★ボタンを押しても何も起きない★という
-     * 原因の分からない不具合になる（電波が悪いときに実際に起こりうる）。
-     *
-     * 元の同期版でも「章が見つからない」ときは alert で伝えていたので、
-     * それに合わせて同じ伝え方にしておく（新しい UI は足さない）。
-     */
-    let chemistryData;
+    if (!note || reviewBusy.current) return;
+    reviewBusy.current = true;
+    const request = ++reviewRequest.current;
     try {
-      ({ chemistryData } = await import('./data/chemistryData'));
+      // 問題本体は押されたときだけ読む。全科目を起動時には読み込まない。
+      const { SUBJECTS, getPartsOfSubject } = await import('./data/allChapters');
+      if (request !== reviewRequest.current) return;
+      const target = resolveReviewTarget(note, SUBJECTS
+        .filter(entry => isSubjectEnabled(entry.id))
+        .map(entry => ({ id: entry.id, parts: getPartsOfSubject(entry.id) })));
+      if (!target) {
+        alert(note.subQuestionId && !note.chapterId && !note.questionId
+          ? 'この確認問題は現在の教材に見つかりませんでした。問題が差し替えられた可能性があります。'
+          : '対応する問題を見つけられませんでした。教材が更新された可能性があります。ノートはそのまま残しています。');
+        return;
+      }
+      setSelectedSubject(target.subject);
+      if (target.field) setSelectedField(target.field);
+      setAppMode('practice');
+      handleSelectChapter(target.chapterId, target.questionIndex, false, null, 'practice');
     } catch {
-      alert('問題データの読み込みに失敗しました。通信状況を確認して、もう一度お試しください。');
-      return;
+      if (request === reviewRequest.current) {
+        alert('問題データの読み込みに失敗しました。通信状況を確認して、もう一度お試しください。');
+      }
+    } finally {
+      if (request === reviewRequest.current) reviewBusy.current = false;
     }
-
-    const allChapters = chemistryData.parts.flatMap(p => p.chapters) as any[];
-
-    // 1) chapterId で章を特定（新しいノート）
-    let chapter = note.chapterId
-      ? allChapters.find(c => c.id === note.chapterId)
-      : undefined;
-
-    // 2) chapterId が無い/一致しない場合は chapterTitle（表示名）で章を特定（古いノート）
-    if (!chapter && note.chapterTitle) {
-      chapter = allChapters.find(
-        c => c.abstractTitle === note.chapterTitle || c.realTitle === note.chapterTitle
-      );
-    }
-
-    // 3) それでも見つからない場合、questionId を全章から検索（最後の手段）
-    if (!chapter && note.questionId) {
-      chapter = allChapters.find(c =>
-        ((c.practiceProblems || []) as any[]).some((q: any) => q.id === note.questionId)
-      );
-    }
-
-    if (!chapter) {
-      alert('この復習ノートに対応する問題が見つかりませんでした。単元選択から復習してください。');
-      setAppState('chapters');
-      return;
-    }
-
-    // 練習モードへ切り替え（演習問題を開くため）。
-    setAppMode('practice');
-
-    const list: any[] = (chapter.practiceProblems || []) as any[];
-    let questionIndex = -1;
-    if (note.questionId) {
-      questionIndex = list.findIndex((q: any) => q.id === note.questionId);
-    }
-    if (questionIndex < 0 && typeof note.questionIndex === 'number' && note.questionIndex > 0) {
-      // questionIndex は 1始まりの表示番号 → 0始まりへ変換
-      questionIndex = Math.min(note.questionIndex - 1, Math.max(0, list.length - 1));
-    }
-    if (questionIndex < 0) questionIndex = 0;
-
-    handleSelectChapter(chapter.id, questionIndex, false);
   };
 
   /*
@@ -1469,20 +1431,22 @@ export default function App() {
             {appState === 'subject_selection' && (
               <SubjectSelection
                 onSelectSubject={handleSelectSubject}
+                currentSubject={selectedSubject}
                 isGuest={isGuest}
                 // 科目選択は必ずホームから開くので、常に「ホームに戻る」を出せる
-                onBack={() => setAppState('home')}
+                onBack={() => setAppState(subjectPickerReturnTo)}
+                backLabel={subjectPickerReturnTo === 'home' ? 'ホームに戻る' : '学習に戻る'}
                 /* 高校入試 理科（スマホでは科目選択に並べる。ホームの onRika と同じ条件・同じ行き先） */
                 onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined}
               />
             )}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined} onChangeSubject={() => { setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
+            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined} onChangeSubject={() => { setSubjectPickerReturnTo('home'); setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
             {/* ★ルーティング側の門（4箇所のうちの3番目）★
                 ナビのボタンを隠すだけでは、Home の「ランキングを見る」など
                 別の導線からこの状態になれてしまう。
                 描画の受け口でも同じフラグを見て、
                 「見えないのに入れる」状態を作らない。 */}
-            {appState === 'leaderboard' && FEATURES.ranking && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
+            {appState === 'leaderboard' && FEATURES.ranking && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} initialSubject={selectedSubject} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
             {/* ★対戦モード（ルーティング側の門）★
                 ホームのボタンを隠すだけでは、localStorage に残った
                 appState='battle' から復元して入れてしまう。
@@ -1493,6 +1457,7 @@ export default function App() {
                 onRequireLogin={() => setAppState('onboarding')}
                 /* ★対戦 ⇒ 演習 の橋（請求⑦-A）★ */
                 onPractice={handlePracticeFromBattle}
+                initialSubject={selectedSubject}
               />
             )}
             {appState === 'rika' && FEATURES.rika && (
@@ -1508,13 +1473,19 @@ export default function App() {
                 ★次の起動で保存値 'rika' が復元されて中に入ってしまう★。
                 （既存のランキングと同じ塞ぎ方。詳しくは src/config/features.ts）
               */
-              <React.Suspense fallback={null}>
+              <React.Suspense fallback={<ScreenLoading />}>
                 <RikaHome onBack={() => setAppState('home')} initialTab={rikaTab} />
               </React.Suspense>
             )}
             {appState === 'intro' && <Intro onBack={() => setAppState('home')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
-            {appState === 'logical_tree' && <LogicalTree />}
-            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
+            {appState === 'logical_tree' && (
+              <LogicalTree
+                onBack={() => setAppState('home')}
+                /* ツリーの「確認問題」は小問IDを持つ。学習ノートと同じ解決处理で演習へ移る。 */
+                onOpenQuestion={(subQuestionId) => handleReviewNote({ subQuestionId })}
+              />
+            )}
+            {appState === 'mode_selection' && <ModeSelection onSelectMode={handleSelectMode} onBack={() => setAppState('home')} onChangeSubject={handleChangeStudySubject} onMockExam={() => setAppState('mock_exam')} subject={selectedSubject} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
             {appState === 'mock_exam' && <MockExam onBack={() => setAppState('mode_selection')} />}
             {appState === 'learning' && (
               /*
@@ -1522,7 +1493,7 @@ export default function App() {
                 fallback は null＝何も描かない。
                 ローディング表示を足すと「元には無かった表示」が増えてしまうため。
               */
-              <React.Suspense fallback={null}>
+              <React.Suspense fallback={<ScreenLoading />}>
                 <LearningViewer
                   onBack={() => setAppState('mode_selection')}
                   subject={
@@ -1537,7 +1508,7 @@ export default function App() {
             {/* 化学（発展）：理論化学・無機化学・有機化学の分野選択 */}
             {appState === 'advanced_fields' && (
               /* 分野選択画面は遅延読み込み（上の React.lazy を参照）。fallback は null＝何も描かない。 */
-              <React.Suspense fallback={null}>
+              <React.Suspense fallback={<ScreenLoading />}>
                 <AdvancedFieldSelection
                   onSelectField={(field) => { setSelectedField(field); setAppState('chapters'); }}
                   onBack={() => setAppState('mode_selection')}
@@ -1553,11 +1524,16 @@ export default function App() {
                 あらかじめ読み込みを始めている（下の「先読み」の useEffect を参照）ので、
                 実際にはここで待たされないようにしてある。
               */
-              <React.Suspense fallback={null}>
+              <React.Suspense fallback={<ScreenLoading />}>
                 <ChapterSelection
                   mode={appMode as 'mini_test' | 'practice'}
+                  onChangeSubject={handleChangeStudySubject}
                   onSelectChapter={handleSelectChapter}
-                  onBack={() => setAppState(selectedSubject === 'chemistry' ? 'advanced_fields' : 'mode_selection')}
+                  onBack={() => setAppState(studyEntry(selectedSubject) === 'chapters' ? 'home' : 'mode_selection')}
+                  backLabel={studyEntry(selectedSubject) === 'chapters' ? 'ホーム' : '学習モード'}
+                  onChangeField={setSelectedField}
+                  rememberedGroup={chapterGroups[`${selectedSubject}:${selectedField}`]}
+                  onGroupChange={(group) => setChapterGroups(prev => ({ ...prev, [`${selectedSubject}:${selectedField}`]: group }))}
                   subject={selectedSubject}
                   field={selectedField}
                   fieldTitle={ADVANCED_FIELDS.find(f => f.id === selectedField)?.title}
@@ -1577,7 +1553,7 @@ export default function App() {
                 ここでローディング表示を足すと、元には無かった表示が
                 一瞬出て消えることになるため、あえて足していない。
               */
-              <React.Suspense fallback={null}>
+              <React.Suspense fallback={<ScreenLoading />}>
                 <QuizScreens
                   screen={appState === 'quiz' ? 'quiz' : 'explanation'}
                   chapterId={selectedChapterId}
@@ -1597,16 +1573,22 @@ export default function App() {
                   // 1回分（例：第3回演習）だけを解いたときは、その回だけを振り返る。
                   // 解いていない回まで答え合わせに並ぶと、どこまでやったか分からなくなる。
                   questionRange={quizRange}
+                  subject={selectedSubject}
+                  /* 結果画面の「次にすること」。どちらも通常の演習開始と同じ経路を通す。 */
+                  onRetryWrong={(chapterId, firstWrongIndex) => handleSelectChapter(chapterId, firstWrongIndex, false, quizRange, appMode)}
+                  onNextChapter={(chapterId) => handleSelectChapter(chapterId, 0, false, null, appMode)}
                 />
               </React.Suspense>
             )}
-            {appState === 'study_hub' && <StudyHub onBack={() => setAppState('home')} isGuest={isGuest} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} onReview={handleReviewNote} />}
-            {appState === 'note_detail' && selectedNote && <NoteDetail note={selectedNote} onBack={() => setAppState('study_hub')} onReview={handleReviewNote} />}
+            {appState === 'study_hub' && <StudyHub view={studyHubView} onViewChange={setStudyHubView} onBack={() => setAppState('home')} isGuest={isGuest} onSelectNote={(note) => { setSelectedNote(note); setAppState('note_detail'); }} onReview={handleReviewNote} />}
+            {appState === 'note_detail' && (selectedNote
+              ? <NoteDetail note={selectedNote} onBack={() => setAppState('study_hub')} onReview={handleReviewNote} />
+              : <ScreenUnavailable message="ノートを一覧から選び直してください。保存したノートは削除されていません。" onBack={() => setAppState('study_hub')} backLabel="学習ノートへ戻る" />)}
 
             {/* Global Bottom Navigation Footer
                 日本語ラベル化（ホーム／学習／設定）＋aria-labelをaria-currentで現在地を明示
                 アイコンには aria-hidden を付け、ラベルだけがスクリーンリーダーに読まれるよう整理 */}
-            {appState !== 'onboarding' && appState !== 'subject_selection' && appState !== 'quiz' && appState !== 'explanation' && (
+            {appState !== 'onboarding' && appState !== 'subject_selection' && appState !== 'quiz' && appState !== 'explanation' && appState !== 'battle' && (
               <nav
                 aria-label="メインナビゲーション"
                 /*
@@ -1635,15 +1617,13 @@ export default function App() {
                 
                 <button 
                   onClick={() => {
-                    if (appState === 'home' || appState === 'study_hub' || appState === 'note_detail' || appState === 'leaderboard') {
-                      setAppState(lastLearnState);
-                    } else {
-                      setAppState('mode_selection');
+                    if (!isLearningScreen(appState)) {
+                      setAppState(safeStudyResume(selectedSubject, lastLearnState, selectedChapterId) as AppState);
                     }
                   }}
                   aria-label="学習画面へ移動"
-                  aria-current={['mode_selection', 'chapters', 'learning', 'explanation', 'quiz', 'mock_exam'].includes(appState) ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${['mode_selection', 'chapters', 'learning', 'explanation', 'quiz', 'mock_exam'].includes(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  aria-current={isLearningScreen(appState) ? 'page' : undefined}
+                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${isLearningScreen(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <BookOpen className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">学習</span>

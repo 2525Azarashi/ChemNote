@@ -55,6 +55,7 @@ import { REVIEW_INTERVALS_DAYS, type ReviewItem } from '../src/utils/reviewList'
 import { chemistryData } from '../src/data/chemistryData';
 import { getAllAdvancedChapters } from '../src/data/chemistryAdvancedData';
 import { getAllListeningChapters } from '../src/data/englishListeningData';
+import { SUBJECT_INDEX } from '../src/data/chapterIndex.generated';
 
 const CHART = readFileSync(
   resolve(__dirname, '../src/components/ForgettingCurveChart.tsx'),
@@ -143,6 +144,18 @@ describe('改善1: 科目別に分離する', () => {
     expect(new Set(all).size).toBe(all.length);
   });
 
+  it('★公開中の全科目（数学・生物基礎・英文法・地理を含む）の章IDが「その他」に落ちない', () => {
+    // 以前は3科目しか判定できず、数学・生物基礎・英文法・地理の復習は
+    // すべて「その他」タブにまとめられていた（科目名・色が出ない）。
+    for (const subject of SUBJECT_INDEX) {
+      for (const chapter of subject.chapters) {
+        expect(subjectOfChapterId(chapter.id), `${subject.label} の章ID ${chapter.id}`).toBe(subject.id);
+      }
+    }
+    const ids = SUBJECT_INDEX.flatMap((s) => s.chapters.map((c) => c.id));
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
   it('科目が判定できないアイテムは「その他」に集約される（表示から消えない）', () => {
     const it1 = item({ key: 'x', chapterId: 'unknown_chapter' });
     expect(subjectOfReviewItem(it1)).toBe(UNKNOWN_SUBJECT);
@@ -153,8 +166,12 @@ describe('改善1: 科目別に分離する', () => {
     expect(summaries[0].label).toBe('その他');
   });
 
-  it('科目ごとに集計され、表示順は 化学基礎 → 化学 → 英語リスニング に固定される', () => {
+  it('科目ごとに集計され、表示順は科目選択と同じ並び（化学基礎 → 化学 → リスニング → 数学 → 生物基礎 → 英文法 → 地理）に固定される', () => {
     const items = [
+      item({ key: 'geo', chapterId: 'geo_q1_r1' }),
+      item({ key: 'eg', chapterId: 'eg1_1' }),
+      item({ key: 'bio', chapterId: 'bio1_1' }),
+      item({ key: 'm', chapterId: 'm1_1' }),
       item({ key: 'el', chapterId: 'el3' }),
       item({ key: 'a', chapterId: 'a1_1' }),
       item({ key: 'c', chapterId: 'c1_1' }),
@@ -163,6 +180,10 @@ describe('改善1: 科目別に分離する', () => {
       'chemistry_basic',
       'chemistry',
       'english_listening',
+      'math',
+      'biology_basic',
+      'english_grammar',
+      'geography',
     ]);
   });
 
@@ -222,11 +243,15 @@ describe('改善1: 科目別に分離する', () => {
     expect(new Set(stripes).size).toBe(3);
   });
 
-  it('タブ用の短縮ラベルが用意されている（スマホ幅で4つ並べられる長さ）', () => {
-    expect(REVIEW_SUBJECT_SHORT_LABELS.english_listening).toBe('英語');
+  it('タブ用の短縮ラベルが用意されている（スマホ幅で横に並べられる長さ・科目同士で紛れない）', () => {
+    // 英文法を追加したので「英語」だけではリスニングと区別がつかない。
+    expect(REVIEW_SUBJECT_SHORT_LABELS.english_listening).toBe('リスニング');
+    expect(REVIEW_SUBJECT_SHORT_LABELS.english_grammar).toBe('英文法');
     expect(REVIEW_SUBJECT_LABELS.english_listening).toBe('英語リスニング');
-    for (const label of Object.values(REVIEW_SUBJECT_SHORT_LABELS)) {
-      expect(label.length).toBeLessThanOrEqual(4);
+    const shorts = Object.values(REVIEW_SUBJECT_SHORT_LABELS);
+    expect(new Set(shorts).size).toBe(shorts.length);
+    for (const label of shorts) {
+      expect(label.length).toBeLessThanOrEqual(5);
     }
   });
 

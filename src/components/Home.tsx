@@ -427,6 +427,47 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
                   description="アプリ全体の使い勝手・ほしい機能など、自由にお書きください"
                   context={{ streak, solvedQuestions, totalQuestions, isGuest }} className="home-feedback-shortcut" />
               </aside>
+
+              {/*
+                ★とびら君の豆知識は「最初の画面」に置く★
+
+                ご指摘（原文）：
+                  > なんかほーむがめんのとびらくんのことば少し下隠れてて
+                  > スクロールしないといけないのもったいない
+
+                ■ 何が起きていたか（Chromium で実測・ゲスト状態のホーム初期表示）
+                  以前は画面末尾の .home-lobby-footer に置いていた。
+                  末尾の要素の位置は「その上にある全部の高さの合計」で決まるので、
+                  縦の短い端末では初期表示から押し出されていた。
+                    320x568 … 160px 隠れる（見える下端 497 / 吹き出し 589〜657）
+                    360x640 … 129px 隠れる
+                    375x667 … 103px 隠れる
+                    390x844 … 隠れない
+                  つまり「端末によって出る／出ない」が変わる状態で、
+                  出ない端末の人だけがスクロールを強いられていた。
+
+                ■ なぜ「px を詰める」直し方にしなかったか
+                  末尾に置いたままでは、位置が中身の量で動き続ける。
+                  学校名の有無・次の目標の行・連携バナー・返信の受信箱は
+                  利用者ごとに出る／出ないが変わるので、
+                  「私の端末ではちょうど収まる」値を入れても
+                  別の人・別の端末で再発する（＝直ったことにならない）。
+
+                ■ どう直したか
+                  豆知識を ★対戦ステージ（上から2番目の区画）の中★ へ移した。
+                  下に何が増えても位置が動かないので、必ず初期表示に入る。
+
+                ■ なぜ .home-arena-main の中ではなく、ステージ直下の子なのか
+                  main は中央の狭い列（右にショートカットの列がある）。
+                  そこへ入れると吹き出しが 3 行に折り返し、実測で
+                  高さが 67px → 82px に増えて「学習を始める」を
+                  320x568 で 64px ぶん画面外へ押し出した。
+                  ステージ直下に置いて grid-column: 1 / -1 で全幅にすると
+                  折り返しが減り、押し出しを起こさずに収まる。
+
+                  情報は一切減らしていない（吹き出しの文も分野ラベルもそのまま）。
+              */}
+              <DoorMascot subject={subject} showCategory size="mini" className="home-arena-tip" />
             </section>
 
             {/* 学習の入口と実際の進捗を一枚のノートにまとめる。全科目は開閉できる。 */}
@@ -483,8 +524,9 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             </section>
           </div>
 
+          {/* 末尾に残すのは「読み終わってから出会えばよいもの」だけ。
+              とびら君の豆知識は上の対戦ステージへ移した（理由はそちらのコメント）。 */}
           <div className="home-lobby-footer">
-            <DoorMascot subject={subject} showCategory size="mini" className="home-lobby-tip" />
             {isGuest && !auth.currentUser && <GoogleLinkBanner variant="inline" dismissible />}
             <FeedbackReplyInbox />
           </div>

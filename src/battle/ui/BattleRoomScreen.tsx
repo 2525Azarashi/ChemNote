@@ -22,6 +22,7 @@ import { useBattleRoom } from '../hooks/useBattleRoom';
 import { BattleLobby } from './BattleLobby';
 import { BattleQuestionView } from './BattleQuestionView';
 import { BattleResult } from './BattleResult';
+import { BattleRaceTrack } from './BattleRaceTrack';
 import {
   BattleButton,
   BattleLoading,
@@ -62,6 +63,7 @@ export function BattleRoomScreen({
     questions,
     current,
     remainMs,
+    limitSec,
     answered,
     opponentAnswered,
     myChoice,
@@ -183,6 +185,8 @@ export function BattleRoomScreen({
         byForfeit={byForfeit}
         maskOpponent={!room.joinCode}
         onRematch={onRematch && room.joinCode ? () => onRematch(room.subject) : undefined}
+        /* フレンド戦の再戦は「同じ科目で新しい部屋を作って招待し直す」動き。文言もそれに合わせる。 */
+        rematchLabel="同じ科目で新しい部屋を作る"
         onExit={() => onExit()}
         onPractice={onPractice}
       />
@@ -252,6 +256,17 @@ export function BattleRoomScreen({
         />
       </section>
 
+      {/* ★相手の位置・点差・連続正解★（理由は BattleRaceTrack.tsx の先頭） */}
+      <BattleRaceTrack
+        total={questions.length}
+        current={room.currentIndex}
+        me={myScore}
+        opponent={opponentScore}
+        meAnswered={answered}
+        opponentAnswered={opponentAnswered}
+        reveal={reveal}
+      />
+
       {/*
         ★知らせは一度に一つだけ出す★
         並べて出すと問題そのものが画面から押し出されてしまう。
@@ -287,6 +302,7 @@ export function BattleRoomScreen({
         index={room.currentIndex}
         total={questions.length}
         remainMs={remainMs}
+        limitSec={limitSec}
         answered={answered}
         // ★押しても解答が残らない状態（圏外）を画面にも伝える★
         //   answered ではないのに押せない、という状態が実際にある。

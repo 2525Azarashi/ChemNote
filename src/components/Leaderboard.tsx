@@ -39,7 +39,8 @@ import { auth } from '../firebase';
  * 化学（発展）側だけ `abstractTitle || id`（title を挟まない）に
  * なっているのも元の実装のままにしている。
  */
-import { getChapterIndexOfSubject } from '../data/chapterIndex.generated';
+import { SUBJECT_INDEX } from '../data/chapterIndex.generated';
+import { isSubjectEnabled } from '../config/features';
 import { fetchFriendCompetition } from '../utils/friends';
 import { DoorMascot } from './DoorMascot';
 import { GoogleLinkBanner } from './GoogleLinkBanner';
@@ -76,29 +77,51 @@ interface LeaderboardProps {
    * ★任意（省略可）★ FEATURES.battle が false なら App 側から渡さない。
    */
   onBattle?: () => void;
+  /** 本体で選択中の科目。章別ベストの科目を最初にこれへ合わせる。 */
+  initialSubject?: string;
 }
 
 type Tab = 'total' | 'chapter' | 'period';
 
-export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: LeaderboardProps) {
+export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle, initialSubject }: LeaderboardProps) {
   const [tab, setTab] = useState<Tab>('total');
   const [scope, setScope] = useState<'all' | 'friends'>('all');
   const [period, setPeriod] = useState<RankingPeriod>('week');
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<Array<{ rank: number; nickname: string; photoURL?: string; score: number; sub?: string; isMe: boolean; uid?: string }>>([]);
 
-  // 化学基礎の章に加えて、化学（発展）の章もランキングの選択肢に含める。
-  // 章ID は接頭辞（c… / a…）で衝突しないため、単純な連結で安全に並べられる。
-  const allChapters = useMemo(
-    () => [
-      ...getChapterIndexOfSubject('chemistry_basic').map((c) => ({ id: c.id, title: c.abstractTitle || c.title || c.id })),
-      ...getChapterIndexOfSubject('chemistry').map((c) => ({ id: c.id, title: c.abstractTitle || c.id })),
-    ],
+  /*
+   * 章別ベストの選択肢は「公開中の全科目」から作る。
+   * 以前は化学基礎・化学の章しか並ばず、英語や地理を学習している人が
+   * 章別タブを開くと自分の科目が無く、化学基礎の第1章が選択済みになっていた。
+   * 章スコアの送信（Quiz → submitChapterScore）は科目を問わず行われているので、
+   * 選択肢だけが化学系に閉じていた。
+   */
+  const subjects = useMemo(
+    () => SUBJECT_INDEX
+      .filter((s) => isSubjectEnabled(s.id) && s.chapters.length > 0)
+      .map((s) => ({
+        id: s.id,
+        label: s.label,
+        chapters: s.chapters.map((c) => ({ id: c.id, title: c.abstractTitle || c.title || c.id })),
+      })),
     []
   );
-  const [chapterId, setChapterId] = useState<string>(
-    initialChapterId || allChapters[0]?.id || ''
+  const subjectOfChapter = (id: string | null | undefined) =>
+    subjects.find((s) => s.chapters.some((c) => c.id === id))?.id;
+  const [subjectId, setSubjectId] = useState<string>(() =>
+    subjectOfChapter(initialChapterId)
+    || (initialSubject && subjects.some((s) => s.id === initialSubject) ? initialSubject : subjects[0]?.id || '')
   );
+  const chapters = subjects.find((s) => s.id === subjectId)?.chapters || [];
+  const [chapterId, setChapterId] = useState<string>(() =>
+    (initialChapterId && subjectOfChapter(initialChapterId) ? initialChapterId : null)
+    || subjects.find((s) => s.id === subjectId)?.chapters[0]?.id || ''
+  );
+  const changeSubject = (next: string) => {
+    setSubjectId(next);
+    setChapterId(subjects.find((s) => s.id === next)?.chapters[0]?.id || '');
+  };
 
   const load = async () => {
     setLoading(true);
@@ -215,8 +238,21 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
   }, [rows, myRow]);
 
   return (
+    /*
+      ★スマホでは「固定される所」と「スクロールする所」を分ける★
+      （利用者の指示：「ランキング画面も基本一画面に入るでしょ？ モンストのランキングとか、
+        固定されるところとスクロールしてるところが明確になってる」）
+
+        固定   … 見出し・対戦ランキングへの橋・全国／フレンド・集計タブ・章／期間の選択
+        スクロール … 表彰台・一覧（.ranking-scroll）
+        画面下に貼り付く … 「あなた」の順位カード（.ranking-me-card、sticky）
+
+      DOM の順番は変えていない（PC は今までと同じ見た目・同じ並び）。
+      切り替えは index.css の @media (max-width: 767px) だけで行う。
+      PC（768px 以上）では .ranking-scroll は素の div で、高さもはみ出しも今までどおり。
+    */
     <div className="mtb-page ranking-hall w-full min-h-screen bg-[#FDFBF7] font-handwriting pb-32">
-      <div className="max-w-3xl mx-auto px-4 py-6 md:py-8 relative">
+      <div className="ranking-hall-inner max-w-3xl mx-auto px-4 py-6 md:py-8 relative">
         <div className="absolute top-10 right-4 w-40 h-40 bg-[#F4D03F]/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-20 left-4 w-48 h-48 bg-[#A9CCE3]/15 rounded-full blur-3xl pointer-events-none" />
 
@@ -269,7 +305,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
           <button
             onClick={onBattle}
             aria-label="対戦ランキング（レート）を見る"
-            className="relative z-10 mb-3 w-full flex items-center gap-2.5 rounded-2xl border border-[#BBDCF0] bg-gradient-to-r from-[#EAF4FB] to-[#DCEBF7] px-3.5 py-2.5 text-left transition-colors hover:from-[#E0EEF9] hover:to-[#D0E4F4] min-h-[48px]"
+            className="ranking-battle-bridge relative z-10 mb-3 w-full flex items-center gap-2.5 rounded-2xl border border-[#BBDCF0] bg-gradient-to-r from-[#EAF4FB] to-[#DCEBF7] px-3.5 py-2.5 text-left transition-colors hover:from-[#E0EEF9] hover:to-[#D0E4F4] min-h-[48px]"
           >
             <div className="w-8 h-8 rounded-xl bg-[#2E86C1]/15 text-[#1B4F72] flex items-center justify-center shrink-0">
               <Swords size={16} aria-hidden="true" />
@@ -304,23 +340,40 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
 
         {/* サブセレクタ */}
         {tab === 'chapter' && (
-          <div className="relative z-10 mb-4 bg-white border border-gray-200 rounded-2xl shadow-xs p-2">
-            <select
-              value={chapterId}
-              onChange={(e) => setChapterId(e.target.value)}
-              className="w-full px-3 py-2 bg-transparent outline-none text-sm font-bold text-[#1B2631] cursor-pointer font-modern"
-            >
-              {allChapters.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.title}
-                </option>
-              ))}
-            </select>
+          <div className="ranking-subselect relative z-10 mb-4 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-2">
+            <label className="bg-white border border-gray-200 rounded-2xl shadow-xs p-2 flex items-center gap-2">
+              <span className="sr-only">科目</span>
+              <select
+                value={subjectId}
+                onChange={(e) => changeSubject(e.target.value)}
+                aria-label="章別ベストの科目"
+                className="w-full px-3 py-2 bg-transparent outline-none text-sm font-bold text-[#1B2631] cursor-pointer font-modern"
+              >
+                {subjects.map((s) => (
+                  <option key={s.id} value={s.id}>{s.label}</option>
+                ))}
+              </select>
+            </label>
+            <label className="bg-white border border-gray-200 rounded-2xl shadow-xs p-2 flex items-center gap-2">
+              <span className="sr-only">単元</span>
+              <select
+                value={chapterId}
+                onChange={(e) => setChapterId(e.target.value)}
+                aria-label="章別ベストの単元"
+                className="w-full px-3 py-2 bg-transparent outline-none text-sm font-bold text-[#1B2631] cursor-pointer font-modern"
+              >
+                {chapters.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.title}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
         )}
 
         {tab === 'period' && (
-          <div className="relative z-10 mb-4 grid grid-cols-3 gap-2">
+          <div className="ranking-subselect relative z-10 mb-4 grid grid-cols-3 gap-2">
             {(['week', 'month', 'all'] as RankingPeriod[]).map((p) => (
               <button
                 key={p}
@@ -337,11 +390,13 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
           </div>
         )}
 
+        {/* ここから下がスマホでスクロールする領域（PC では素の div） */}
+        <div className="ranking-scroll">
         {/* 上位3名の表彰台。
             一覧だけだと1位も4位も同じ高さの行で「頂点に立つ」感覚が出ないため、
             国際大会の順位発表と同じく台の形で見せる。下の一覧は今までどおり残す。 */}
         {rows.length > 0 && (
-          <div className="relative z-10 mb-4">
+          <div className="ranking-podium-wrap relative z-10 mb-4">
             <RankingPodium
               entries={rows.slice(0, 3).map((r) => ({
                 rank: r.rank,
@@ -359,7 +414,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative z-10 mb-4 bg-[#1B2631] text-white rounded-2xl p-4 shadow-md"
+            className="ranking-me-card relative z-10 mb-4 bg-[#1B2631] text-white rounded-2xl p-4 shadow-md"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 min-w-0">
@@ -421,7 +476,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
         {/* ゲストは順位に載れない。文言で伝えるだけだとその場で解決できないので、
             そのまま連携できるカードを置いておく。 */}
         {isGuest && (
-          <div className="relative z-10 mb-4">
+          <div className="ranking-guest-wrap relative z-10 mb-4">
             <GoogleLinkBanner
               variant="card"
               className="mb-0"
@@ -486,6 +541,8 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle }: Lea
             </ul>
           )}
         </div>
+        </div>
+        {/* .ranking-scroll ここまで */}
       </div>
     </div>
   );

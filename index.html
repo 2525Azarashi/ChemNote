@@ -12,79 +12,15 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Chembasis">
-    <link rel="manifest" href="/manifest.json">
-    <!-- ===== アプリのアイコン =====================================
-         ご指摘（原文）
-           > アプリケーションのアイコンが横に圧縮されているので
-           > 正常な比に直してください。
-
-         ■ 原因
-           アイコンの枠は OS もブラウザも必ず「正方形」なのに、
-           ここで指していたのは
-             ・/icons/icon-192.png  … ★ファイルが存在しなかった★
-             ・/manatob_bg.png      … 1000x358（横:縦 = 2.79:1 の横長ロゴ）
-             ・/favicon.ico         … 中身が 1x1 の空画像
-           だった。横長の絵を正方形の枠に入れれば、当然横に潰れる。
-
-         ■ 直し方
-           ロゴの比は一切変えず、正方形のキャンバスの中央に置いて
-           上下に余白を足した（写真のレターボックスと同じ）。
-             python3 scripts/make-icons.py
-           でいつでも作り直せる。ロゴを差し替えたら再実行するだけ。
-
-         ■ favicon だけ絵柄が違う理由
-           タブのアイコンは 16px しかなく、横長ロゴ全体を入れると
-           高さ 5px の帯になって読めない。
-           そこでロゴ左端の「m」（山のマーク・実測 305x305 の正方形）
-           だけを切り出して使っている。
-
-         ===== 追記：2回目のご指摘 ==================================
-         ご指摘（原文）
-           > アイコンをこのように縮小し、全貌が収まるようにして。
-         添付されたタブのスクリーンショットでは、ワードマークの両端
-         （左の「m」と右の「b」）が枠の縁で切れていた。
-
-         ■ 原因は「上の対策が効いていなかった」こと
-           ★ブラウザはここの <link rel="icon">（「m」マーク）ではなく、
-             manifest.json 経由の icon-192/512（横長ワードマーク）を
-             タブに使っていた★
-           推測ではなく実測で確定させた：ご提供のタブ画像から favicon の
-           領域を切り出すと 24x24 で、それを候補ファイルの 24x24 縮小版と
-           平均絶対差で比べると
-             icon-512.png  11.42 ← 最も一致
-             icon-192.png  11.79
-             favicon-48.png 59.30 ← まったく別物
-           だった。つまり favicon-48.png をいくら直しても症状は変わらない。
-
-         ■ なぜ manifest 側が選ばれたか（対策その1）
-           ここに並んでいた候補は 32px と 48px だけだった。
-           高解像度ディスプレイのタブはそれより大きい絵を欲しがるので、
-           ブラウザは候補が足りないと判断して manifest 側の
-           192/512 に流れる。
-           → 同じ「m」の絵柄で 96px / 192px も作って並べた。
-              これでタブには「m」マークが選ばれる。
-
-         ■ どちらが選ばれても切れないようにする（対策その2）
-           manifest 側の icon-192/512 は絵が枠幅の 92% を占め、
-           左右の余白が 3.6% しかなかった。ブラウザはアイコンを角丸に
-           切り抜いたり 24px まで縮めたりするので、この余白では
-           端が縁に飲まれる。
-           → scripts/make-icons.py の WIDTH_RATIO['any'] を
-              0.92 → 0.76（左右の余白 12%）に下げた。
-              「m」マーク側も 0.94 → 0.86 にして四隅の余白を確保した。
-
-           絵は前より小さくなるが、これはご指示（「縮小し、全貌が収まる
-           ように」）そのものなので意図した変更。
-           ★「アイコンが小さいので大きくしよう」と余白を削って戻さないこと★
-             tests/appIcons.test.ts の I4 が、実ファイルのピクセルを
-             読んで余白を検算し、戻したら失敗するようにしてある。
-         ============================================================ -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/icons/favicon-192.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
-    <link rel="icon" sizes="any" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon-180.png">
+    <link rel="manifest" href="/manifest.json?v=logo20260907">
+    <!-- User-supplied square icon: preserve the full logo and white margins.
+         Rebuild with python3 scripts/make-icons.py. Versioned URLs refresh caches. -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/favicon-192.png?v=logo20260907">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96.png?v=logo20260907">
+    <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png?v=logo20260907">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png?v=logo20260907">
+    <link rel="icon" sizes="any" href="/favicon.ico?v=logo20260907">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon-180.png?v=logo20260907">
     
     <!-- Preconnect for fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -35,10 +35,9 @@
  *     「男性は何をするか」型の設問が原理的に解けなくなる。
  *
  * 音源について
- *   この類題集には MP3 が付属しない。そこで audioUrl を持たせず、
- *   ListeningAudioPlayer 側でブラウザの音声合成（SpeechSynthesis）に
- *   フォールバックして turns を読み上げる。MP3 を用意したら
- *   audioUrl を埋めるだけで実音源に切り替わる。
+ *   提供された高品質MP3を audioUrl で参照する。各ファイルは原稿1回分。
+ *   再生回数は readCount に従いアプリ側で制御する。
+ *   対応原稿・SHA-256・出典は scripts/data/listening_premium_manifest.json に記録。
  *
  * 選択肢の表記
  *   options は ①〜④ のマーク（MARK_OPTIONS）だけを持ち、英文本体は text 側に置く。
@@ -54,6 +53,7 @@ const MARK_OPTIONS = ['①', '②', '③', '④'];
 const EL3_SET1_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set1_1',
+    audioUrl: '/listening_audio/el3_set1_q1.mp3',
     label: '問1',
     hint: '図書館で本を借りようとしている。',
     script: 'A: Can I borrow this book for three weeks?\nB: Usually two weeks is the limit, but new books are just one week.\nA: This one was published last month.\nB: Then it\'s one week. But you can renew it once online.\nA: OK, I\'ll do that if I need more time.',
@@ -69,6 +69,7 @@ const EL3_SET1_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set1_2',
+    audioUrl: '/listening_audio/el3_set1_q2.mp3',
     label: '問2',
     hint: '駅で切符の買い方を尋ねている。',
     script: 'A: Excuse me, how much is a ticket to Central Park Station?\nB: It\'s 350 yen for adults. Are you a student?\nA: Yes, I\'m a university student.\nB: Then it\'s 200 yen with your student ID card.\nA: Great. Here\'s my ID.',
@@ -84,6 +85,7 @@ const EL3_SET1_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set1_3',
+    audioUrl: '/listening_audio/el3_set1_q3.mp3',
     label: '問3',
     hint: '誕生日パーティーの準備について話している。',
     script: 'A: How many friends are coming to your party on Saturday?\nB: Eight friends. Oh wait, Tom can\'t come.\nA: So seven friends plus you.\nB: Right. Can you make eight sandwiches for each person?\nA: Eight each? That\'s sixty-four!\nB: Sorry, I mean eight sandwiches in total!',
@@ -100,6 +102,7 @@ const EL3_SET1_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set1_4',
+    audioUrl: '/listening_audio/el3_set1_q4.mp3',
     label: '問4',
     hint: '放課後、明日の持ち物について話している。',
     script: 'A: Do we need our gym clothes tomorrow?\nB: Let me check... Tomorrow we have math, English, and art.\nA: No PE?\nB: Right. But bring a paint set for art class.\nA: I don\'t have one. Can I borrow yours?\nB: Sure, I have two.',
@@ -116,6 +119,7 @@ const EL3_SET1_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set1_5',
+    audioUrl: '/listening_audio/el3_set1_q5.mp3',
     label: '問5',
     hint: 'ペットの世話の分担について話している。',
     script: 'A: It\'s your turn to feed the dog this week.\nB: But I fed him last week, too!\nA: Because I was sick. This week I\'ll take him for a walk every day instead.\nB: OK, deal. So I just feed him in the morning?\nA: Morning and evening, please.',
@@ -131,6 +135,7 @@ const EL3_SET1_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set1_6',
+    audioUrl: '/listening_audio/el3_set1_q6.mp3',
     label: '問6',
     hint: '映画館で席を探している。',
     script: 'A: Our seats are G-11 and G-12.\nB: This row is F. The next one must be G.\nA: Right. G-11 is here. You\'re next to me.\nB: Wait, there\'s someone in G-12 already.\nA: Let me check his ticket... Oh, he\'s in the wrong row. His seat is H-12.',
@@ -416,6 +421,7 @@ G-12に先客→その人のチケットはH-12＝その人が間違えている
 const EL3_SET2_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set2_1',
+    audioUrl: '/listening_audio/el3_set2_q1.mp3',
     label: '問1',
     hint: '喫茶店でアルバイトの面接をしている。',
     script: 'A: Can you work on weekdays after school?\nB: I can work on Mondays and Wednesdays, from four to eight.\nA: We also need someone on Saturday mornings.\nB: I have piano lessons until eleven, so I can start at noon.\nA: OK. Let\'s start with Monday, Wednesday, and Saturday afternoons.',
@@ -431,6 +437,7 @@ const EL3_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set2_2',
+    audioUrl: '/listening_audio/el3_set2_q2.mp3',
     label: '問2',
     hint: '空港で友達を待っている。',
     script: 'A: Yuki\'s flight lands at three, right?\nB: Yes, but she has to pick up her luggage. That takes about thirty minutes.\nA: And the bus from the airport to the city?\nB: Forty minutes. So she\'ll be here around... let me think.\nA: We should meet her at the bus stop at four-ten.',
@@ -446,6 +453,7 @@ const EL3_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set2_3',
+    audioUrl: '/listening_audio/el3_set2_q3.mp3',
     label: '問3',
     hint: '兄妹で祖父母への贈り物を相談している。',
     script: 'A: What should we get Grandma for her seventieth birthday?\nB: How about a scarf? She always wears one.\nA: We gave her a scarf last year. A photo album?\nB: We did that two years ago. What about flowers and a cake?\nA: She loves gardening. Let\'s get her flowers she can plant in the garden, not cut flowers.',
@@ -461,6 +469,7 @@ const EL3_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set2_4',
+    audioUrl: '/listening_audio/el3_set2_q4.mp3',
     label: '問4',
     hint: '会社で会議の変更連絡をしている。',
     script: 'A: Did you hear about tomorrow\'s meeting?\nB: It\'s at ten in Room 3, right?\nA: The time is the same, but the room changed to Room 5 on the fourth floor.\nB: Room 5? Isn\'t that the small one?\nA: Yes, but only six people are coming, so it\'s fine.',
@@ -476,6 +485,7 @@ const EL3_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set2_5',
+    audioUrl: '/listening_audio/el3_set2_q5.mp3',
     label: '問5',
     hint: '新しい携帯電話の契約について話している。',
     script: 'A: How much is this smartphone?\nB: It\'s 60,000 yen, but today we have a campaign. It\'s 50,000 yen if you pay cash.\nA: I only have my credit card.\nB: With a card it\'s the regular price, but you get 5,000 yen worth of points.\nA: OK, I\'ll use my card then.',
@@ -491,6 +501,7 @@ const EL3_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set2_6',
+    audioUrl: '/listening_audio/el3_set2_q6.mp3',
     label: '問6',
     hint: '宿題のレポートについて話している。',
     script: 'A: Have you finished the history report?\nB: Almost. I just have to write the conclusion.\nA: Isn\'t it due tomorrow?\nB: No, the teacher changed it to Friday because of the school trip.\nA: Lucky! I haven\'t even started mine.',
@@ -774,6 +785,7 @@ Question: When is the report due?
 const EL3_SET3_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set3_1',
+    audioUrl: '/listening_audio/el3_set3_q1.mp3',
     label: '問1',
     hint: '動物園での見学計画を立てている。',
     script: 'A: The pandas are the most popular. The line is already long.\nB: Can we see them last, then?\nA: Good idea. We\'ll start with the elephants near the entrance.\nB: And the monkeys after that?\nA: Sure. Then lunch, and the pandas in the afternoon when the line is shorter.',
@@ -789,6 +801,7 @@ const EL3_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set3_2',
+    audioUrl: '/listening_audio/el3_set3_q2.mp3',
     label: '問2',
     hint: '風邪をひいた生徒と先生が話している。',
     script: 'A: You look pale. Are you all right?\nB: I have a headache and a slight fever.\nA: You should go to the nurse\'s office.\nB: But we have a math test this afternoon!\nA: Your health comes first. You can take the test tomorrow.\nB: OK. I\'ll go now and take the test tomorrow.',
@@ -805,6 +818,7 @@ const EL3_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set3_3',
+    audioUrl: '/listening_audio/el3_set3_q3.mp3',
     label: '問3',
     hint: 'マンションの買い物の分担を話している。',
     script: 'A: We\'re out of milk and eggs.\nB: I\'ll stop by the supermarket on my way home.\nA: Can you also get bread? Not the white one ̶ the whole grain one.\nB: Sure. Anything else?\nA: No, that\'s all. Oh wait ̶ do we have butter?\nB: Yes, I bought some yesterday.',
@@ -821,6 +835,7 @@ const EL3_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set3_4',
+    audioUrl: '/listening_audio/el3_set3_q4.mp3',
     label: '問4',
     hint: 'オンラインで買った商品の不具合について話している。',
     script: 'A: The headphones I ordered last week arrived yesterday, but the left side doesn\'t work.\nB: I\'m sorry to hear that. We can exchange them or give you a refund.\nA: I\'d like to exchange them, please.\nB: Please send them back with the form in the box. Shipping is free.\nA: How long will it take to get the new ones?\nB: About a week after we receive yours.',
@@ -837,6 +852,7 @@ const EL3_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set3_5',
+    audioUrl: '/listening_audio/el3_set3_q5.mp3',
     label: '問5',
     hint: '博物館でガイドツアーについて尋ねている。',
     script: 'A: Are there any guided tours in English?\nB: Yes, at eleven and at two. The eleven o\'clock tour is full, I\'m afraid.\nA: Then I\'ll take the two o\'clock one. How long is it?\nB: Ninety minutes. It starts at the main hall, next to the gift shop.\nA: Where is that?\nB: Go straight down this hallway, and it\'s on your right.',
@@ -853,6 +869,7 @@ const EL3_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set3_6',
+    audioUrl: '/listening_audio/el3_set3_q6.mp3',
     label: '問6',
     hint: 'テニス部の練習日程を確認している。',
     script: 'A: This week we have practice on Tuesday and Thursday as usual.\nB: What about Friday?\nA: Friday is canceled because of the school festival.\nB: And the match on Saturday?\nA: It\'s still on. Be at the courts by eight thirty.\nB: Eight thirty? That\'s earlier than usual!\nA: The other team asked for an early start.',
@@ -1144,6 +1161,7 @@ Question: What should the woman do on Saturday?
 const EL3_SET4_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set4_1',
+    audioUrl: '/listening_audio/el3_set4_q1.mp3',
     label: '問1',
     hint: '引っ越しの段取りを話している。',
     script: 'A: The moving truck comes at nine tomorrow.\nB: I\'ll help you pack the kitchen stuff tonight.\nA: Thanks. I already packed my books and clothes.\nB: What about your piano?\nA: A special company is coming for it on Friday. It stays here until then.\nB: Got it. So tonight, just the kitchen.',
@@ -1160,6 +1178,7 @@ const EL3_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set4_2',
+    audioUrl: '/listening_audio/el3_set4_q2.mp3',
     label: '問2',
     hint: 'バスを降りる場所を確認している。',
     script: 'A: Does this bus go to the science museum?\nB: No, it goes to the art museum. For the science museum, get off at the third stop and walk five minutes.\nA: The third stop... What\'s the stop called?\nB: City Hospital. You\'ll see a big park on your left.\nA: Thanks. And which stop is this bus\'s last stop?\nB: The art museum.',
@@ -1176,6 +1195,7 @@ const EL3_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set4_3',
+    audioUrl: '/listening_audio/el3_set4_q3.mp3',
     label: '問3',
     hint: '遅れた荷物の配達について電話している。',
     script: 'A: My package was supposed to arrive yesterday, but it didn\'t.\nB: I\'m sorry. Let me check... It left our Osaka center this morning.\nA: When will it arrive in Tokyo?\nB: If it left this morning, it should arrive tomorrow before noon.\nA: I won\'t be home in the morning. Can you deliver it in the evening?\nB: Certainly. Between six and eight, then.',
@@ -1192,6 +1212,7 @@ const EL3_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set4_4',
+    audioUrl: '/listening_audio/el3_set4_q4.mp3',
     label: '問4',
     hint: '学校の文化祭の出し物を決めている。',
     script: 'A: Our class needs to decide today: a haunted house or a café.\nB: The café idea got more votes in the survey.\nA: True, but three other classes are doing cafés already.\nB: Oh. Then the haunted house would be more unique.\nA: Exactly. Let\'s go with that. I\'ll tell our teacher.',
@@ -1207,6 +1228,7 @@ const EL3_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set4_5',
+    audioUrl: '/listening_audio/el3_set4_q5.mp3',
     label: '問5',
     hint: 'レンタカーの予約変更をしている。',
     script: 'A: I reserved a compact car for this weekend, but two more people are coming.\nB: Then you\'ll need a bigger car. We have a van for seven people.\nA: How much more is it?\nB: 3,000 yen more per day.\nA: That\'s fine. Same pickup time, ten o\'clock on Saturday?\nB: Yes. I\'ll change your reservation to a van.',
@@ -1223,6 +1245,7 @@ const EL3_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set4_6',
+    audioUrl: '/listening_audio/el3_set4_q6.mp3',
     label: '問6',
     hint: '写真展の感想を話している。',
     script: 'A: What did you think of the photo exhibition?\nB: The nature photos were amazing, especially the ones of the northern lights.\nA: I liked the city photos better.\nB: Really? They were all black and white. I found them a bit dark.\nA: That\'s what I liked about them. But the entrance fee was a little high, right?\nB: Yeah, 1,800 yen is a lot for students.',
@@ -1512,6 +1535,7 @@ Question: What do both people agree on?
 const EL3_SET5_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set5_1',
+    audioUrl: '/listening_audio/el3_set5_q1.mp3',
     label: '問1',
     hint: '日本に来た留学生とホストファミリーが話している。',
     script: 'A: I want to try Japanese food while I\'m here.\nB: Do you like sushi?\nA: I love it, but I\'m allergic to shellfish, so no shrimp or crab, please.\nB: How about a conveyor-belt sushi place? You can choose only what you like.\nA: That sounds perfect. Can we go this weekend?\nB: Sure, Saturday night. I\'ll make a reservation.',
@@ -1528,6 +1552,7 @@ const EL3_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set5_2',
+    audioUrl: '/listening_audio/el3_set5_q2.mp3',
     label: '問2',
     hint: 'スマホの画面が割れた生徒同士が話している。',
     script: 'A: Oh no, I dropped my phone and the screen cracked!\nB: Is it still working?\nA: Yes, but it\'s hard to read messages.\nB: There\'s a repair shop next to the station. They fix screens in an hour.\nA: How much does it cost?\nB: My brother paid 8,000 yen last month, but with a student discount it was 6,000.',
@@ -1544,6 +1569,7 @@ const EL3_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set5_3',
+    audioUrl: '/listening_audio/el3_set5_q3.mp3',
     label: '問3',
     hint: '週末のボランティア活動について話している。',
     script: 'A: Are you joining the beach cleanup on Sunday?\nB: I want to, but I work until noon on Sundays.\nA: The cleanup starts at ten and ends at two.\nB: Then I can only join for the second half.\nA: That\'s fine. Just come when you can. Bring gloves if you have them.\nB: I don\'t, but I\'ll buy some on the way.',
@@ -1560,6 +1586,7 @@ const EL3_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set5_4',
+    audioUrl: '/listening_audio/el3_set5_q4.mp3',
     label: '問4',
     hint: '英語のスピーチコンテストの準備をしている。',
     script: 'A: My speech is five minutes long, but the limit is four.\nB: Then you need to cut about sixty seconds.\nA: Which part should I cut?\nB: The introduction is too long. The story about your grandmother is the best part, so keep it.\nA: OK. I\'ll shorten the opening and practice again tonight.',
@@ -1575,6 +1602,7 @@ const EL3_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set5_5',
+    audioUrl: '/listening_audio/el3_set5_q5.mp3',
     label: '問5',
     hint: '夜、夕食の買い出しについて話している。',
     script: 'A: I\'m going to the store. Do we need anything?\nB: We\'re out of rice. And get some fish for dinner.\nA: Salmon or tuna?\nB: Tuna is on sale today, but the kids prefer salmon.\nA: I\'ll get salmon, then. Anything sweet for dessert?\nB: The kids ate all the ice cream yesterday, so yes, please.',
@@ -1591,6 +1619,7 @@ const EL3_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set5_6',
+    audioUrl: '/listening_audio/el3_set5_q6.mp3',
     label: '問6',
     hint: '就職活動の面接の服装について相談している。',
     script: 'A: I have a job interview on Friday. Should I wear a suit?\nB: For a company interview, yes. Which company is it?\nA: A design company. My friend there said everyone wears casual clothes.\nB: Still, for the interview itself, a suit is safer. You can dress casually after you get the job.\nA: You\'re right. I\'ll wear my navy suit.',
@@ -1878,6 +1907,7 @@ Question: What will the woman wear to the interview?
 const EL3_SET6_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set6_1',
+    audioUrl: '/listening_audio/el3_set6_q1.mp3',
     label: '問1',
     hint: '町の清掃イベントの案内を確認している。',
     script: 'A: The cleanup event was moved from this Sunday to next Sunday because of the weather forecast.\nB: Oh, I already told my friends about this Sunday.\nA: Please tell them about the change. Also, the meeting place changed from the park entrance to the community center.\nB: Same time, nine o\'clock?\nA: No, thirty minutes earlier, at eight thirty.\nB: OK, new day, new place, new time. Got it.',
@@ -1894,6 +1924,7 @@ const EL3_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set6_2',
+    audioUrl: '/listening_audio/el3_set6_q2.mp3',
     label: '問2',
     hint: '祖父母の金婚式の計画を話している。',
     script: 'A: Grandma and Grandpa\'s fiftieth anniversary is next month.\nB: Are we having a party?\nA: At a restaurant on the 20th. But Grandpa\'s doctor said he should eat early, so we moved it from dinner to lunch.\nB: Can I invite my girlfriend?\nA: It\'s family only this time. Sorry.\nB: No problem. What should I bring?\nA: Just a card. Your grandfather said no gifts.',
@@ -1911,6 +1942,7 @@ const EL3_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set6_3',
+    audioUrl: '/listening_audio/el3_set6_q3.mp3',
     label: '問3',
     hint: 'ホテルのチェックインでトラブルがあった後で話している。',
     script: 'A: How was your trip?\nB: Terrible at first. The hotel couldn\'t find my reservation.\nA: Oh no. What happened?\nB: Turns out I booked it for the wrong month ̶ July instead of June.\nA: Did you find a room?\nB: Luckily they had one, but I had to pay a higher price for the same night.\nA: At least you got a room.',
@@ -1928,6 +1960,7 @@ const EL3_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set6_4',
+    audioUrl: '/listening_audio/el3_set6_q4.mp3',
     label: '問4',
     hint: '雑誌の定期購読について話している。',
     script: 'A: This cooking magazine costs 800 yen a month. That\'s almost 10,000 yen a year.\nB: Why not read it online? The digital version is half the price.\nA: I know, but I like paper. I cut out recipes and keep them.\nB: Then how about buying back issues? They\'re 500 yen each at the used bookstore.\nA: But I want to read the new recipes first. I\'ll keep the subscription but cancel the other one ̶ the travel magazine I never read.',
@@ -1943,6 +1976,7 @@ const EL3_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set6_5',
+    audioUrl: '/listening_audio/el3_set6_q5.mp3',
     label: '問5',
     hint: '夜道で拾った財布の対応を話している。',
     script: 'A: I found a wallet on my way home. There\'s no ID inside, just cash and a train pass.\nB: You should take it to the police box tonight.\nA: It\'s closed already. The one near the station closes at eight.\nB: Then take it tomorrow morning before school.\nA: But I have morning practice at seven.\nB: OK. Take it after school, then. Don\'t spend any of the money, of course.\nA: Of course not!',
@@ -1960,6 +1994,7 @@ const EL3_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set6_6',
+    audioUrl: '/listening_audio/el3_set6_q6.mp3',
     label: '問6',
     hint: 'スーパーでアレルギー対応の商品を探している。',
     script: 'A: Do you have any bread without eggs? My son is allergic.\nB: This white bread has no eggs. But it was made in a factory that also makes cakes with eggs.\nA: Then it\'s not safe for him. His allergy is serious.\nB: We also have rice-flour bread in the frozen section. It\'s made in a special factory with no eggs at all.\nA: That\'s the one. Where\'s the frozen section?\nB: At the back, next to the drinks.',
@@ -2252,6 +2287,7 @@ Question: Why doesn't the woman buy the white bread?
 const EL3_SET7_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set7_1',
+    audioUrl: '/listening_audio/el3_set7_q1.mp3',
     label: '問1',
     hint: '部活の新入部員への説明をしている。',
     script: 'A: Practice is every Monday, Wednesday, and Friday from four to six.\nB: I have a part-time job on Fridays. Can I skip Friday practice?\nA: Friday is when we practice with the coach, so it\'s the most important.\nB: Then I\'ll ask my boss to change my shift.\nA: Also, bring your own water bottle. The school doesn\'t provide drinks.',
@@ -2267,6 +2303,7 @@ const EL3_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set7_2',
+    audioUrl: '/listening_audio/el3_set7_q2.mp3',
     label: '問2',
     hint: '朝、寝坊した兄弟が話している。',
     script: 'A: It\'s already seven forty! The bus leaves at seven fifty.\nB: We\'ll never make it. It\'s a ten-minute walk to the bus stop.\nA: The next bus is at eight twenty, but then I\'ll miss the first period.\nB: Why don\'t you take my bike? It\'s faster.\nA: What about you?\nB: My first class is second period. I\'ll take the eight-twenty bus.',
@@ -2283,6 +2320,7 @@ const EL3_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set7_3',
+    audioUrl: '/listening_audio/el3_set7_q3.mp3',
     label: '問3',
     hint: 'アパートの騒音問題について話している。',
     script: 'A: The people upstairs play loud music every night until midnight.\nB: Have you talked to them directly?\nA: I did, twice. They were friendly but nothing changed.\nB: I see. I\'ll send a notice to all residents about quiet hours after ten.\nA: Could you talk to them directly instead? A general notice might not work.\nB: All right. I\'ll visit them this weekend.',
@@ -2299,6 +2337,7 @@ const EL3_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set7_4',
+    audioUrl: '/listening_audio/el3_set7_q4.mp3',
     label: '問4',
     hint: 'デパートで入学祝いを選んでいる。',
     script: 'A: I\'m looking for a gift for my daughter. She\'s starting junior high school.\nB: How about a fountain pen? These start at 3,000 yen.\nA: She already has one from her grandmother.\nB: Then maybe a desk lamp? This one changes brightness and color.\nA: That\'s nice, but a bit expensive. Do you have anything around 5,000 yen?\nB: This smaller lamp is 4,500 yen. Same functions.\nA: I\'ll take that one.',
@@ -2316,6 +2355,7 @@ const EL3_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set7_5',
+    audioUrl: '/listening_audio/el3_set7_q5.mp3',
     label: '問5',
     hint: '海外旅行前に両替について話している。',
     script: 'A: Should I exchange money at the airport?\nB: The rates there are bad. I always use the machine at the city bank ̶ better rates.\nA: But I leave at six in the morning. The bank won\'t be open.\nB: The machine is available twenty-four hours.\nA: Perfect. How much should I exchange?\nB: I took about 300 dollars for a week. Cards work almost everywhere there, so that was enough.',
@@ -2332,6 +2372,7 @@ const EL3_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set7_6',
+    audioUrl: '/listening_audio/el3_set7_q6.mp3',
     label: '問6',
     hint: '試験の結果について話している。',
     script: 'A: How did you do on the English test?\nB: Eighty-two points. I lost points on the listening section again.\nA: Same here. I got seventy-eight, and my reading score was fine but writing was terrible.\nB: Let\'s practice together. I\'ll teach you listening if you help me with... wait, actually my writing is OK.\nA: Then you teach me listening, and I\'ll ask the teacher for writing help.\nB: Deal. Let\'s start after school on Thursday.',
@@ -2622,6 +2663,7 @@ Question: What will the boy help the girl with? (※男女の発話を確認)
 const EL3_SET8_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set8_1',
+    audioUrl: '/listening_audio/el3_set8_q1.mp3',
     label: '問1',
     hint: '習い事の体験教室について電話している。',
     script: 'A: I\'d like to sign my son up for a trial piano lesson.\nB: We have trials on Saturdays at ten, one, and four.\nA: He has soccer until eleven on Saturdays. One o\'clock, please.\nB: The one o\'clock class is full. How about four?\nA: That works. Do we need to bring anything?\nB: Just indoor shoes. We provide everything else.',
@@ -2638,6 +2680,7 @@ const EL3_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set8_2',
+    audioUrl: '/listening_audio/el3_set8_q2.mp3',
     label: '問2',
     hint: '庭の手入れを手伝ってもらう約束をしている。',
     script: 'A: Can you help me in the garden this Saturday?\nB: I have a test on Monday, so I should study. How about Sunday?\nA: Sunday is supposed to rain.\nB: Then Saturday morning only. I can study in the afternoon.\nA: Deal. Come at eight ̶ it gets too hot after ten.\nB: Eight?! Grandpa, it\'s Saturday... OK, OK, eight.',
@@ -2654,6 +2697,7 @@ const EL3_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set8_3',
+    audioUrl: '/listening_audio/el3_set8_q3.mp3',
     label: '問3',
     hint: '献血会場での案内を聞いている。',
     script: 'A: Before donating blood, please fill out this form and show your ID.\nB: Here\'s my driver\'s license.\nA: Thank you. Have you eaten today?\nB: Just breakfast, around seven.\nA: It\'s past noon, so please have a snack and something to drink first. We have free cookies and juice over there.\nB: OK. How long does the whole thing take?\nA: About forty minutes after the snack.',
@@ -2671,6 +2715,7 @@ const EL3_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set8_4',
+    audioUrl: '/listening_audio/el3_set8_q4.mp3',
     label: '問4',
     hint: '図書委員の仕事の引き継ぎをしている。',
     script: 'A: As library committee members, we check the returned books every morning.\nB: Every morning? That\'s a lot.\nA: It only takes fifteen minutes. Also, on Fridays we put new books on the display shelf.\nB: Who chooses the new books?\nA: The librarian chooses them. We just arrange them by theme.\nB: Got it. Morning checks every day, displays on Fridays.',
@@ -2687,6 +2732,7 @@ const EL3_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set8_5',
+    audioUrl: '/listening_audio/el3_set8_q5.mp3',
     label: '問5',
     hint: '夜、アルバイト先のシフト変更を電話で頼んでいる。',
     script: 'A: I\'m sorry to call this late. Can I change my shift this Thursday?\nB: What\'s wrong?\nA: My professor moved the exam from Wednesday to Thursday morning.\nB: Your shift starts at five in the evening, right? The exam is in the morning.\nA: Yes, but I need the afternoon to review my notes. I haven\'t studied at all.\nB: All right, I\'ll ask Ken to cover you. But you owe him one.',
@@ -2703,6 +2749,7 @@ const EL3_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set8_6',
+    audioUrl: '/listening_audio/el3_set8_q6.mp3',
     label: '問6',
     hint: '新婚旅行の行き先を決めている。',
     script: 'A: I found a great deal for Hawaii ̶ five days for 150,000 yen.\nB: I only have four days off. What about Guam? It\'s closer.\nA: The Guam tour is three days. Too short for a honeymoon.\nB: Then Hawaii for four days? Is that possible?\nA: There\'s a four-day plan for 130,000 yen. Cheaper and fits your vacation!\nB: Perfect. Book that one.',
@@ -2994,6 +3041,7 @@ Question: Which tour will they book?
 const EL3_SET9_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set9_1',
+    audioUrl: '/listening_audio/el3_set9_q1.mp3',
     label: '問1',
     hint: '雨の日の送迎を調整している。',
     script: 'A: It\'s pouring. Do you want a ride to school?\nB: The car is being repaired today, isn\'t it?\nA: Right. Then take the bus from the corner stop. It comes at seven forty.\nB: That gets me there too early. My friends and I always meet at the gate at eight ten.\nA: The seven-forty bus arrives at school at eight. That\'s only ten minutes early. You\'ll survive.\nB: Fine. But I\'m coming home by bike if it stops raining.',
@@ -3010,6 +3058,7 @@ const EL3_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set9_2',
+    audioUrl: '/listening_audio/el3_set9_q2.mp3',
     label: '問2',
     hint: 'レストランでアレルギーの確認をしている。',
     script: 'A: Does the tomato pasta contain cheese? My wife can\'t eat dairy.\nB: It has a little cheese on top, but we can make it without.\nA: Please do. Also, is the soup of the day dairy-free?\nB: Today\'s soup is corn soup. It has milk and butter.\nA: Then no soup for her. I\'ll have the soup myself.\nB: Certainly. One pasta without cheese, and one corn soup.',
@@ -3026,6 +3075,7 @@ const EL3_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set9_3',
+    audioUrl: '/listening_audio/el3_set9_q3.mp3',
     label: '問3',
     hint: '駅のコインロッカーについて話している。',
     script: 'A: Are there lockers big enough for a suitcase?\nB: Yes, on the second floor near the east exit. The ones here on the first floor are for small bags only.\nA: How much are the big ones?\nB: 700 yen per day. The small ones are 400.\nA: I only need it until this evening. Is it still 700?\nB: Yes, the price is per calendar day, not per hour.',
@@ -3042,6 +3092,7 @@ const EL3_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set9_4',
+    audioUrl: '/listening_audio/el3_set9_q4.mp3',
     label: '問4',
     hint: '学校の避難訓練の手順を確認している。',
     script: 'A: In this year\'s drill, the first bell means \'stay in your classroom.\'\nB: Last year the first bell meant \'go to the gym,\' right?\nA: That\'s the change this year. The second bell means move to the field, not the gym.\nB: Why the field?\nA: The gym is being repainted. And don\'t use the east stairs ̶ use the main stairs and the west stairs only.',
@@ -3057,6 +3108,7 @@ const EL3_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set9_5',
+    audioUrl: '/listening_audio/el3_set9_q5.mp3',
     label: '問5',
     hint: '引っ越し先の部屋の採寸をしている。',
     script: 'A: Will my desk fit? It\'s 120 centimeters wide.\nB: The wall space between the door and the window is 140 centimeters.\nA: Great. What about my bookshelf? It\'s 90 wide and 180 tall.\nB: The ceiling is fine, but that same wall only has 140. The desk plus the shelf would be 210.\nA: Then the bookshelf goes on the other wall, next to the bed.\nB: That wall is 200 centimeters. No problem.',
@@ -3073,6 +3125,7 @@ const EL3_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set9_6',
+    audioUrl: '/listening_audio/el3_set9_q6.mp3',
     label: '問6',
     hint: '友達の家でのお泊まり会の計画をしている。',
     script: 'A: My parents will be away this weekend, so we can have the movie night at my place.\nB: Nice. Saturday night?\nA: My little brother has a friend over on Saturday. Sunday is better.\nB: Sunday night... I have school the next day. Can we start early, like five?\nA: Sure, we\'ll finish by nine. Bring snacks ̶ I\'ll order pizza.\nB: I\'ll bring chips and juice. See you Sunday at five.',
@@ -3362,6 +3415,7 @@ Question: When and where will they have the movie night?
 const EL3_SET10_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set10_1',
+    audioUrl: '/listening_audio/el3_set10_q1.mp3',
     label: '問1',
     hint: '会社の健康診断の案内を読んで話している。',
     script: 'A: The health check is on the 14th. We\'re supposed to skip breakfast that day.\nB: Really? Last year we could eat until six a.m.\nA: The rules changed. This year, nothing after nine p.m. the night before. Only water is OK in the morning.\nB: What about medicine? I take pills every morning.\nA: The notice says to bring them and take them after the blood test.\nB: OK. Pills come with me, breakfast stays home.',
@@ -3378,6 +3432,7 @@ const EL3_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set10_2',
+    audioUrl: '/listening_audio/el3_set10_q2.mp3',
     label: '問2',
     hint: '地区の防災訓練の参加について話している。',
     script: 'A: The disaster drill is this Sunday at the elementary school.\nB: Do I need to register in advance?\nA: No, just come between eight thirty and nine. We\'ll lend you a helmet, but bring your own water and towel.\nB: My husband uses a wheelchair. Is the school accessible?\nA: Yes, and we have a special area for wheelchair users near the exit. Ask the staff in the red jackets when you arrive.\nB: That\'s a relief. We\'ll be there before nine.',
@@ -3394,6 +3449,7 @@ const EL3_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set10_3',
+    audioUrl: '/listening_audio/el3_set10_q3.mp3',
     label: '問3',
     hint: '論文の提出方法について学生と事務員が話している。',
     script: 'A: Is the deadline for the paper still Friday at five?\nB: The deadline is the same, but the submission method changed. No more paper copies ̶ email it as a PDF.\nA: To the department office address?\nB: No, there\'s a new online form on the university website. Upload it there.\nA: Do I still need the signature page from my advisor?\nB: Yes. Scan it and upload it as a separate file.',
@@ -3410,6 +3466,7 @@ const EL3_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set10_4',
+    audioUrl: '/listening_audio/el3_set10_q4.mp3',
     label: '問4',
     hint: '劇のチケットの取り置きを頼んでいる。',
     script: 'A: Can I reserve two tickets for Saturday evening?\nB: Saturday evening is sold out. We have seats for Saturday afternoon or Sunday evening.\nA: How\'s the view from the Sunday seats?\nB: Saturday afternoon\'s seats are in the front center. Sunday evening\'s are on the second floor, side.\nA: The front center sounds better. But my friend works Saturday afternoons... You know what, she said evening shows only. Sunday, please.',
@@ -3425,6 +3482,7 @@ const EL3_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set10_5',
+    audioUrl: '/listening_audio/el3_set10_q5.mp3',
     label: '問5',
     hint: 'パソコンのデータ移行について相談している。',
     script: 'A: I got a new laptop. Can you move all my files today?\nB: All the documents, yes. But your photo folder is 200 gigabytes ̶ that alone will take all night.\nA: Can you skip the videos in that folder? I have them saved elsewhere.\nB: The videos are half of it. Then it\'s 100 gigabytes. Still slow, but we can finish by tomorrow morning.\nA: OK. Documents first, please. I need them for a meeting at three.',
@@ -3440,6 +3498,7 @@ const EL3_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set10_6',
+    audioUrl: '/listening_audio/el3_set10_q6.mp3',
     label: '問6',
     hint: '祭りの屋台の出店申し込みについて話している。',
     script: 'A: I\'d like to apply for a food stall at the summer festival.\nB: Food stalls need a fire safety certificate. Do you have one?\nA: I have one from last year. Is it still valid?\nB: Certificates expire after two years. When exactly did you get yours?\nA: June, two years ago.\nB: Then it\'s still valid this summer, but you\'ll need to renew it next year. Also, the application fee went up to 5,000 yen this year.\nA: That\'s fine. Here\'s the form and the fee.',
@@ -3730,6 +3789,7 @@ Question: What is true about the woman's certificate?
 const EL3_SET11_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set11_1',
+    audioUrl: '/listening_audio/el3_set11_q1.mp3',
     label: '問1',
     hint: '帰国子女の生徒が転校初日に話している。',
     script: 'A: I just moved here from Singapore last week.\nB: Were you born there?\nA: No, I was born in Osaka. We moved to Singapore when I was six because of my dad\'s job.\nB: So you speak English well?\nA: Pretty well, but my Chinese is better. My mom is from Taiwan.\nB: Wow. When did you come back to Japan?\nA: We arrived in Tokyo last month, then moved here to Nagoya last week.',
@@ -3747,6 +3807,7 @@ const EL3_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set11_2',
+    audioUrl: '/listening_audio/el3_set11_q2.mp3',
     label: '問2',
     hint: '駅前の再開発について話している。',
     script: 'A: Did you hear the old bookstore in front of the station closed?\nB: No! I loved that place. Why?\nA: They\'re building a new shopping mall there. The supermarket in the mall opens next month.\nB: What about the bookstore? Is it gone forever?\nA: Actually, it\'s moving into the mall ̶ second floor, next to the café. It opens in spring.\nB: That\'s good news. The location is even better.',
@@ -3763,6 +3824,7 @@ const EL3_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set11_3',
+    audioUrl: '/listening_audio/el3_set11_q3.mp3',
     label: '問3',
     hint: '遠足のグループ分けを確認している。',
     script: 'A: For the field trip, you\'ll be in groups of five. Group leaders, come get the maps.\nB: Ms. Tanaka, I\'m in Group 3, but my best friend is in Group 5. Can we switch?\nA: Group 3 already has six people because of the new student. I need someone to move.\nB: Oh, then moving to Group 5 actually helps!\nA: Exactly. You\'re in Group 5 now. Take this map ̶ you\'re also the new leader since Ken is absent today.',
@@ -3778,6 +3840,7 @@ const EL3_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set11_4',
+    audioUrl: '/listening_audio/el3_set11_q4.mp3',
     label: '問4',
     hint: 'ネットショッピングの返品について話している。',
     script: 'A: I want to return this sweater. It\'s too small.\nB: We can exchange it for a larger size or refund you. But returns must be within two weeks of delivery.\nA: It arrived on the first of this month. What\'s today... the tenth?\nB: Then you\'re fine. Would you like a size M?\nA: Actually, I checked the size chart and L is better. And a different color if possible ̶ the navy one.\nB: Size L in navy. I\'ll arrange it.',
@@ -3794,6 +3857,7 @@ const EL3_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set11_5',
+    audioUrl: '/listening_audio/el3_set11_q5.mp3',
     label: '問5',
     hint: '朝のラジオ体操イベントに誘っている。',
     script: 'A: Grandma, will you come to radio exercises with me tomorrow?\nB: What time does it start?\nA: Six thirty at the park. You get a stamp card, and after ten stamps you get a prize.\nB: How many stamps do you have now?\nA: Seven! Only three more. But it ends this Friday.\nB: Then we should go every day. I\'ll wake you up at six.',
@@ -3810,6 +3874,7 @@ const EL3_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set11_6',
+    audioUrl: '/listening_audio/el3_set11_q6.mp3',
     label: '問6',
     hint: 'フリーマーケットの値段交渉をしている。',
     script: 'A: How much is this lamp?\nB: 2,000 yen. It\'s almost new.\nA: There\'s a small scratch here. Would you take 1,500?\nB: I can do 1,800.\nA: What if I also buy this clock? It\'s 800 yen, right?\nB: Tell you what ̶ the lamp and the clock together for 2,200 yen.\nA: Deal!',
@@ -4102,6 +4167,7 @@ Question: How much did the woman pay in total?
 const EL3_SET12_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set12_1',
+    audioUrl: '/listening_audio/el3_set12_q1.mp3',
     label: '問1',
     hint: '大学のオープンキャンパスへの行き方を調べている。',
     script: 'A: The university\'s open campus is on the 20th. It starts at ten.\nB: It\'s near Kyoto Station, right? We can drive.\nA: The website says there\'s no parking that day. We should use the train.\nB: OK. From our station, do we change trains?\nA: Yes, at Osaka. The rapid train at eight fifteen gets us there at nine twenty.\nB: Let\'s catch the earlier one at seven fifty, just in case.',
@@ -4118,6 +4184,7 @@ const EL3_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set12_2',
+    audioUrl: '/listening_audio/el3_set12_q2.mp3',
     label: '問2',
     hint: '習熟度別クラスの振り分けテストについて話している。',
     script: 'A: Your test result decides your class. Seventy points or above is Class A.\nB: I got sixty-eight! That\'s so close.\nA: You can retake the test once. The retest is next Monday.\nB: Is it the same test?\nA: Same level, different questions. But note: if you take the retest, your new score counts even if it\'s lower.\nB: Risky... but I want Class A. I\'ll retake it.',
@@ -4134,6 +4201,7 @@ const EL3_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set12_3',
+    audioUrl: '/listening_audio/el3_set12_q3.mp3',
     label: '問3',
     hint: '地域のラジオ番組のゲスト出演の打ち合わせをしている。',
     script: 'A: You\'ll be on the show next Thursday. We record at the studio at six p.m., and it airs at eight.\nB: So it\'s not live?\nA: The Thursday show is recorded, but Saturday\'s show is live. Yours is the Thursday one.\nB: Got it. How long is my part?\nA: Ten minutes. We\'ll talk about your volunteer work abroad.\nB: Should I prepare anything?\nA: Bring photos if you have them. We\'ll post them on the show\'s website.',
@@ -4151,6 +4219,7 @@ const EL3_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set12_4',
+    audioUrl: '/listening_audio/el3_set12_q4.mp3',
     label: '問4',
     hint: '家族でペットホテルを選んでいる。',
     script: 'A: We need a pet hotel for Moko during our trip. Five nights.\nB: This one is 3,000 yen per night, and they send photos every day.\nA: This other one is 2,500 yen per night but charges extra for walks ̶ 500 yen each time.\nB: Moko needs a walk twice a day. So that\'s 1,000 yen extra per day.\nA: Right, so the second one is actually 3,500 a day. The first one is cheaper after all.\nB: And we get daily photos. Let\'s book the first one.',
@@ -4167,6 +4236,7 @@ const EL3_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set12_5',
+    audioUrl: '/listening_audio/el3_set12_q5.mp3',
     label: '問5',
     hint: '修学旅行の班別行動の持ち物を確認している。',
     script: 'A: Tomorrow is free time in Kyoto. Each group needs one map and one phone.\nB: Everyone has a phone. Can\'t we each use our own?\nA: School rules: phones stay off except the leader\'s. The leader\'s phone is for emergencies only.\nB: So I, as the leader, keep my phone on, and the others turn theirs off?\nA: Correct. Also, everyone needs to bring lunch money ̶ about 1,500 yen ̶ and a raincoat, not an umbrella. The streets are crowded.\nB: Raincoat, not umbrella. Got it.',
@@ -4183,6 +4253,7 @@ const EL3_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set12_6',
+    audioUrl: '/listening_audio/el3_set12_q6.mp3',
     label: '問6',
     hint: '市民プールの利用方法を確認している。',
     script: 'A: Is this your first time here?\nB: Yes. Do I need a membership card?\nA: No, but please write your name and address on this sheet each visit. Entry is 400 yen for adults.\nB: And my son? He\'s six.\nA: Children under elementary school age are 200 yen. Elementary students are free on weekends ̶ but today is Friday, so he\'s 200 yen... wait, is he in elementary school?\nB: He just started first grade this April.\nA: Then 200 yen for him today. Lockers need a 100-yen coin, which you get back.',
@@ -4476,6 +4547,7 @@ Question: How much will they pay in total today?
 const EL3_SET13_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set13_1',
+    audioUrl: '/listening_audio/el3_set13_q1.mp3',
     label: '問1',
     hint: '家のインターネット回線の故障について電話している。',
     script: 'A: Our internet has been down since this morning. I\'ve restarted the router twice.\nB: There\'s a cable problem in your area. A technician can come tomorrow between nine and noon, or between one and five.\nA: I work from home in the mornings, so the afternoon, please.\nB: All right. Someone must be home during the visit. Also, there\'s no charge if the problem is with our outside cable.\nA: And if it\'s inside my house?\nB: Then it\'s 8,000 yen. But since the whole area is affected, it will most likely be free.',
@@ -4492,6 +4564,7 @@ const EL3_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set13_2',
+    audioUrl: '/listening_audio/el3_set13_q2.mp3',
     label: '問2',
     hint: '幼稚園のお遊戯会の衣装について話している。',
     script: 'A: What should the children wear for the play?\nB: White shirts and dark pants. We provide the animal costumes here at the kindergarten.\nA: My daughter has a white shirt, but it\'s short-sleeved. Is that all right?\nB: Long sleeves are better because the costumes are sleeveless. But under the costume, short sleeves are fine.\nA: What about shoes?\nB: Everyone wears the same white gym shoes. Please write her name inside them.',
@@ -4508,6 +4581,7 @@ const EL3_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set13_3',
+    audioUrl: '/listening_audio/el3_set13_q3.mp3',
     label: '問3',
     hint: '山登りの計画を天気予報を見ながら練り直している。',
     script: 'A: The forecast says Saturday will be cloudy, and Sunday sunny but windy at the summit.\nB: Windy how?\nA: Gusts up to 20 meters per second. The ropeway stops if it\'s over 15.\nB: So on Sunday the ropeway might not run. What about hiking up?\nA: It\'s a three-hour hike. Doable, but we\'d be tired for the festival that evening.\nB: Saturday it is, then. Cloudy is fine ̶ the ropeway will run, and we won\'t get sunburned.',
@@ -4524,6 +4598,7 @@ const EL3_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set13_4',
+    audioUrl: '/listening_audio/el3_set13_q4.mp3',
     label: '問4',
     hint: 'バイト先の店の閉店セールについて話している。',
     script: 'A: I heard the shop is closing at the end of March. Is that true?\nB: Yes. The building is being torn down. But we\'re having a closing sale all month.\nA: Will the other shop in the mall hire the staff here?\nB: They offered positions to full-time workers only. Part-timers like you get two extra weeks of pay instead.\nA: That\'s fair. When\'s my last shift?\nB: The 28th. The last two days are for cleanup ̶ full-time staff only.',
@@ -4540,6 +4615,7 @@ const EL3_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set13_5',
+    audioUrl: '/listening_audio/el3_set13_q5.mp3',
     label: '問5',
     hint: '家電の保証期間について話している。',
     script: 'A: This washing machine broke. I bought it here about two years ago.\nB: Do you have the receipt? The standard warranty is one year, but this brand offers a free three-year warranty if you registered online within a month of purchase.\nA: Registered? I don\'t think I did.\nB: Then it\'s the one-year warranty, I\'m afraid. The repair would cost about 12,000 yen.\nA: Hmm. A new basic model is 45,000 yen... I\'ll pay for the repair. It\'s cheaper.\nB: We\'ll pick it up on Thursday, then.',
@@ -4556,6 +4632,7 @@ const EL3_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set13_6',
+    audioUrl: '/listening_audio/el3_set13_q6.mp3',
     label: '問6',
     hint: '深夜の救急病院の受付で話している。',
     script: 'A: My son fell off his bike and hit his head. He seems fine now, but he vomited once.\nB: Head injury with vomiting ̶ the doctor should see him right away. Fill out this form, please.\nA: Should he eat or drink anything?\nB: Nothing until the CT scan, in case we need to do a procedure. Sips of water are OK if he\'s thirsty.\nA: How long is the wait?\nB: He\'s high priority, so about fifteen minutes. The scan itself takes ten.',
@@ -4846,6 +4923,7 @@ Question: What is the boy allowed to have before the scan?
 const EL3_SET14_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set14_1',
+    audioUrl: '/listening_audio/el3_set14_q1.mp3',
     label: '問1',
     hint: '学校の補習授業の日程調整をしている。',
     script: 'A: You failed the math test, so you need to take the supplementary class.\nB: When is it?\nA: There are two sessions: Tuesday after school or Saturday morning. Same content.\nB: I have club activities after school on Tuesday. Saturday, please.\nA: Saturday\'s session is from nine to eleven in Room 204. Bring your test paper and a notebook.\nB: Do I have to retake the test?\nA: Yes, the following Monday during lunch break.',
@@ -4863,6 +4941,7 @@ const EL3_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set14_2',
+    audioUrl: '/listening_audio/el3_set14_q2.mp3',
     label: '問2',
     hint: '深夜バスの予約を変更している。',
     script: 'A: I booked the night bus to Sendai this Friday, but I need to change it to Saturday.\nB: Saturday\'s bus has only a few seats left ̶ in the back row.\nA: Back row... is it noisy?\nB: It\'s near the restroom, so some passengers walk by. The front seats are quieter but that day they\'re sold out.\nA: Hmm. What about the late Sunday bus?\nB: Sunday at 11 p.m. has front row seats available, same price.\nA: I\'ll take Sunday, front row, please.',
@@ -4880,6 +4959,7 @@ const EL3_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set14_3',
+    audioUrl: '/listening_audio/el3_set14_q3.mp3',
     label: '問3',
     hint: '植物の世話を引き受ける約束をしている。',
     script: 'A: Could you water my plants while I\'m abroad? I\'ll be gone for ten days from the third.\nB: Sure. How often?\nA: The ones in the living room need water every two days. The cactus on the balcony, only once a week.\nB: Every two days for the indoor ones, once for the cactus. Anything else?\nA: Please collect the mail, too. And if any package comes, just keep it inside your place.\nB: No problem. Leave me the key under the mat?\nA: I\'d rather hand it to you directly the day before I leave.',
@@ -4897,6 +4977,7 @@ const EL3_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set14_4',
+    audioUrl: '/listening_audio/el3_set14_q4.mp3',
     label: '問4',
     hint: '図書館の規則の変更について説明を受けている。',
     script: 'A: I heard the borrowing rules changed.\nB: Yes. Starting this month, you can borrow up to eight books instead of five.\nA: That\'s great. How long can I keep them?\nB: Still two weeks, but now you can renew twice online. It used to be once, in person only.\nA: Wonderful. Are DVDs the same?\nB: No. DVDs are still three items for one week, and no renewals.',
@@ -4913,6 +4994,7 @@ const EL3_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set14_5',
+    audioUrl: '/listening_audio/el3_set14_q5.mp3',
     label: '問5',
     hint: '体育祭のリレーの選手順を決めている。',
     script: 'A: For the relay, I\'ll run first, then Yuki, then Tomo, and you\'re the anchor.\nB: Me, last? But Tomo is faster than me.\nA: Tomo twisted his ankle yesterday. He can run, but not at full speed, so the middle is safer.\nB: Makes sense. But honestly, I\'m nervous as the anchor.\nA: You\'ll be fine. If we\'re leading by the third runner, just keep the pace.\nB: OK. I\'ll do my best.',
@@ -4929,6 +5011,7 @@ const EL3_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set14_6',
+    audioUrl: '/listening_audio/el3_set14_q6.mp3',
     label: '問6',
     hint: 'デジカメの修理の見積もりについて話している。',
     script: 'A: My camera won\'t turn on. Can you fix it?\nB: Let me see... It\'s the battery connector. The repair is 6,000 yen, and a new battery is 4,000 yen if yours is worn out.\nA: Is my battery worn out?\nB: No, it\'s fine. So just 6,000 yen. It\'ll take three days.\nA: That\'s faster than I expected. I have a trip on the 15th. Today\'s the 10th ̶ will it make it?\nB: Pick it up on the 13th. One day to spare.',
@@ -5222,6 +5305,7 @@ Question: How much will the repair cost?
 const EL3_SET15_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el3_set15_1',
+    audioUrl: '/listening_audio/el3_set15_q1.mp3',
     label: '問1',
     hint: '昼食の場所を決めている。',
     script: 'A: Where do you want to eat lunch today?\nB: The cafeteria is closed for cleaning. Let\'s buy something at the convenience store.\nA: There\'s a new sandwich shop near the station, too.\nB: That place is expensive. Convenience store is fine ̶ we can eat in the park.\nA: Good idea. It\'s sunny today.',
@@ -5237,6 +5321,7 @@ const EL3_SET15_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set15_2',
+    audioUrl: '/listening_audio/el3_set15_q2.mp3',
     label: '問2',
     hint: '忘れ物の傘を届けている。',
     script: 'A: Excuse me, someone left this umbrella in Classroom 2-B.\nB: Thanks. Do you know whose it is?\nA: There was a name tag on it, but it was too faded to read.\nB: OK. I\'ll keep it at the office. If no one claims it in a month, we give unclaimed items to the student council\'s reuse sale.\nA: A reuse sale?\nB: Yes, they sell lost items cheaply and use the money for school events.',
@@ -5253,6 +5338,7 @@ const EL3_SET15_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set15_3',
+    audioUrl: '/listening_audio/el3_set15_q3.mp3',
     label: '問3',
     hint: '週末のゴルフ練習の予定を立てている。',
     script: 'A: Want to practice golf this weekend?\nB: The outdoor range is closed on Saturdays now. Sundays only.\nA: How about the indoor range near the office? It\'s open every day.\nB: Weekday evenings are too crowded. Let\'s go there Saturday morning ̶ it\'s empty before ten.\nA: Wait, you said Saturday is closed...\nB: The outdoor one is. The indoor one is open Saturday.',
@@ -5269,6 +5355,7 @@ const EL3_SET15_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set15_4',
+    audioUrl: '/listening_audio/el3_set15_q4.mp3',
     label: '問4',
     hint: '犬の散歩の代行を頼んでいる。',
     script: 'A: I\'m stuck at work late today. Can you walk Choco?\nB: Sure. Just the usual route around the park?\nA: Yes, but avoid the north gate ̶ there\'s construction today.\nB: How long should I walk him?\nA: Thirty minutes is fine. And take the small towel by the door ̶ wipe his paws before coming in.\nB: Got it. Walk, wipe, done.',
@@ -5285,6 +5372,7 @@ const EL3_SET15_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set15_5',
+    audioUrl: '/listening_audio/el3_set15_q5.mp3',
     label: '問5',
     hint: '新しいアルバイトの研修日を確認している。',
     script: 'A: Your training starts next Monday. Can you come at three?\nB: School ends at three thirty on Mondays. I can be there by four.\nA: OK, four then. The training is about two hours ̶ we\'ll go over the register and cleaning.\nB: Do I get paid for training?\nA: Yes, same hourly rate. And wear something you can move in ̶ no uniform needed that day.',
@@ -5300,6 +5388,7 @@ const EL3_SET15_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el3_set15_6',
+    audioUrl: '/listening_audio/el3_set15_q6.mp3',
     label: '問6',
     hint: '文化祭のチケット販売について話している。',
     script: 'A: How are ticket sales?\nB: We sold 120 tickets yesterday and 80 today so far.\nA: The hall holds 300 people. We\'re selling tickets for two days, so...\nB: We still have 100 left for this afternoon and tomorrow morning.\nA: Let\'s announce it in the group chat so everyone knows they can still buy.\nB: Good idea. I\'ll write the message now.',

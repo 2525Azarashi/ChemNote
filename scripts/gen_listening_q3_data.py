@@ -36,6 +36,17 @@ OUT = ROOT / 'src' / 'data' / 'englishListeningQ3Problems.ts'
 MARKS = '①②③④'
 
 
+def audio_row(sub_id: str) -> str:
+    match = re.fullmatch(r'q_el(1_[AB]|3)_set(\d+)_(\d+)', sub_id)
+    if not match:
+        return ''
+    group, number, question = match.groups()
+    filename = f'el{group.replace("_", "")}_set{number}_q{question}.mp3'
+    if not (ROOT / 'public' / 'listening_audio' / filename).is_file():
+        return ''
+    return f"    audioUrl: '/listening_audio/{filename}',\n"
+
+
 def ts(s: str) -> str:
     """TypeScript のシングルクォート文字列として安全にエスケープする。"""
     return s.replace('\\', '\\\\').replace("'", "\\'").replace('\n', '\\n')
@@ -123,10 +134,9 @@ HEAD = """/**
  *     「男性は何をするか」型の設問が原理的に解けなくなる。
  *
  * 音源について
- *   この類題集には MP3 が付属しない。そこで audioUrl を持たせず、
- *   ListeningAudioPlayer 側でブラウザの音声合成（SpeechSynthesis）に
- *   フォールバックして turns を読み上げる。MP3 を用意したら
- *   audioUrl を埋めるだけで実音源に切り替わる。
+ *   提供された高品質MP3を audioUrl で参照する。各ファイルは原稿1回分。
+ *   再生回数は readCount に従いアプリ側で制御する。
+ *   対応原稿・SHA-256・出典は scripts/data/listening_premium_manifest.json に記録。
  *
  * 選択肢の表記
  *   options は ①〜④ のマーク（MARK_OPTIONS）だけを持ち、英文本体は text 側に置く。
@@ -185,6 +195,7 @@ def build(sets: list[dict]) -> str:
             tracks.append(
                 '  {\n'
                 f"    subId: '{base}',\n"
+                f"{audio_row(base)}"
                 f"    label: '問{q['q']}',\n"
                 f"    hint: '{ts(tidy(q['scene']))}',\n"
                 f"    script: '{ts(script)}',\n"

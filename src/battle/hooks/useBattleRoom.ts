@@ -50,6 +50,7 @@ import {
   FORFEIT_STREAK,
   hasLeft,
   judgeBattle,
+  nationalAutoStartDelayMs,
   NO_ANSWER,
   resolveTimeLimit,
   scoreBattlePlayer,
@@ -86,6 +87,8 @@ export interface BattleRoomState {
   current: BattleQuestion | null;
   /** 残りミリ秒（0で締切） */
   remainMs: number;
+  /** いまの問の制限時間（秒・resolveTimeLimit 済み）。残り時間バーの分母。 */
+  limitSec: number;
   /** 自分がこの問題に答えたか */
   answered: boolean;
   /** 相手が答えたか（「相手は解答済み」の表示に使う） */
@@ -771,6 +774,40 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
     );
   }, [roomId, questions, rules]);
 
+  /**
+   * ★全国対戦は揃った時点で自動開始する★
+   *
+   * findOrEnqueue が作る部屋は 2 人揃っているのに status:'waiting' なので、
+   * 以前はここで止まり、フレンド対戦と同じ待機ロビーが出ていた
+   * （利用者の指摘：「全国対戦 → 科目選択 → なぜかフレンド対戦の画面」）。
+   * 部屋主は即開始、相手側は部屋主の書き込みが来なければ 8 秒後に開始する
+   * （判断は nationalAutoStartDelayMs に集約。二重開始の考え方もそこに書いた）。
+   *
+   * 部屋ごとに 1 回しか撃たないよう roomId を記録する。
+   * status が waiting → playing に変わればタイマーは片付ける。
+   */
+  const autoStartedForRef = useRef<string | null>(null);
+  const roomStatus = room?.status;
+  const roomJoinCode = room?.joinCode;
+  const roomHostUid = room?.hostUid;
+  useEffect(() => {
+    if (!roomId || !room || questions.length === 0) return;
+    if (autoStartedForRef.current === roomId) return;
+    const delay = nationalAutoStartDelayMs(
+      { status: room.status, joinCode: room.joinCode, hostUid: room.hostUid, players: room.players },
+      uid,
+      true,
+    );
+    if (delay == null) return;
+    const timer = window.setTimeout(() => {
+      autoStartedForRef.current = roomId;
+      start();
+    }, delay);
+    return () => window.clearTimeout(timer);
+    // room 全体ではなく開始判断に関わる値だけを見る（answers 等の更新で張り直さない）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId, roomStatus, roomJoinCode, roomHostUid, players, uid, questions.length, start]);
+
   const leave = useCallback(() => {
     if (!roomId) return;
     void abortRoom(roomId);
@@ -809,6 +846,12 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
     questions,
     current,
     remainMs,
+    /**
+     * いまの問の制限時間（秒）。画面の残り時間バーの分母に使う。
+     * ★プールの素の秒数ではなく resolveTimeLimit の結果★（倍率・上書きを反映済み）。
+     * 締切（deadlineAt）も同じ値で決めているので、バーの分母と実際の締切が合う。
+     */
+    limitSec: current ? resolveTimeLimit(current, rules) : 0,
     answered,
     opponentAnswered,
     myChoice: myRecord?.choice ?? NO_ANSWER,

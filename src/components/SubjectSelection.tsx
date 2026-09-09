@@ -200,6 +200,8 @@ interface SubjectDefinition {
 interface SubjectSelectionProps {
   /** 科目を選んだとき */
   onSelectSubject: (subject: SubjectId) => void;
+  currentSubject?: SubjectId;
+  backLabel?: string;
   /** ゲスト利用中かどうか（挨拶の出し分けに使う） */
   isGuest: boolean;
   /**
@@ -224,7 +226,7 @@ interface SubjectSelectionProps {
   onRika?: () => void;
 }
 
-export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: SubjectSelectionProps) {
+export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika, currentSubject, backLabel = 'ホームに戻る' }: SubjectSelectionProps) {
   /** 高校入試 理科の表示名・単元一覧（登録簿から。無ければカードを出さない） */
   const rika = useMemo(() => externalSubjectOf('rika'), []);
   /**
@@ -455,11 +457,11 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
         <button
           type="button"
           onClick={onBack}
-          aria-label="ホームに戻る"
+          aria-label={backLabel}
           className="absolute top-4 left-4 sm:top-5 sm:left-5 z-30 flex items-center gap-1.5 rounded-full border border-[#F4A9C4]/70 bg-white/95 px-3.5 py-2 text-[12px] font-bold text-[#D9466E] shadow-[0_8px_20px_-10px_rgba(217,70,110,0.5)] backdrop-blur-sm transition-all hover:bg-white hover:border-[#E8688E] active:scale-95 min-h-[44px] cursor-pointer"
         >
           <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-          <span className="font-modern">ホーム</span>
+          <span className="font-modern">{backLabel}</span>
         </button>
       )}
 
@@ -480,7 +482,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
         <header className="subject-library-heading">
           <p className="mtb-kicker">MY BOOKSHELF</p>
           <h1>学びの本棚</h1>
-          <p>科目を選んで、学びのつづきへ。</p>
+          <p>{currentSubject ? `現在の科目：${SUBJECT_LABELS_FOR_CHECK[currentSubject]}。変更する科目を選んでください。` : '科目を選んで、学びのつづきへ。'}</p>
           <span className="subject-library-note"><BookOpen size={14} aria-hidden="true" /> 演習・まとめで、対戦の力をつけよう</span>
         </header>
 
@@ -524,6 +526,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
           >
           {visibleSubjects.map((subject, index) => {
             const Icon = subject.icon;
+            const isCurrent = subject.id === currentSubject;
             const handleClick = () => {
               if (subject.available) onSelectSubject(subject.id);
               else setNotifySubject(subject);
@@ -543,9 +546,10 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
                   onClick={handleClick}
                   data-subject-book
                   style={{ '--subject-accent': subjectTheme(subject.id).accent, '--subject-soft': subjectTheme(subject.id).accentSoft } as React.CSSProperties}
+                  aria-current={isCurrent ? 'true' : undefined}
                   aria-label={
                     subject.available
-                      ? `${subject.title}を学習する`
+                      ? (isCurrent ? `${subject.title}（現在の科目）で続ける` : `${subject.title}を学習する`)
                       : `${subject.title}は準備中です。公開のお知らせを希望する`
                   }
                   /*
@@ -566,7 +570,7 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
                     subject.available
                       ? 'bg-white/92 backdrop-blur-sm border-[#F4A9C4]/55 shadow-[0_16px_38px_-18px_rgba(217,70,110,0.55)] hover:border-[#E8688E] hover:shadow-[0_22px_46px_-18px_rgba(217,70,110,0.62)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.995]'
                       : 'bg-[#F7F5F3]/85 backdrop-blur-sm border-[#D7DDE3]/70 shadow-none hover:border-[#B8C4CE] hover:bg-[#F2F0EE]/90'
-                  }`}
+                  } ${isCurrent ? 'ring-2 ring-[#D9466E]/70 ring-offset-1 ring-offset-white' : ''}`}
                 >
                   {/* 利用可能カードだけ、上端にアクセントの帯を引く */}
                   {subject.available && (
@@ -607,11 +611,17 @@ export function SubjectSelection({ onSelectSubject, isGuest, onBack, onRika }: S
                     </div>
                     <div className="min-w-0 flex-1">
                       <h2
-                        className={`font-handwriting font-bold text-[19px] sm:text-[22px] md:text-[24px] leading-tight ${
+                        className={`font-handwriting font-bold text-[19px] sm:text-[22px] md:text-[24px] leading-tight flex items-center gap-2 flex-wrap ${
                           subject.available ? 'text-[#1B2631]' : 'text-[#8895A0]'
                         }`}
                       >
                         {subject.title}
+                        {/* 現在の科目。文言（上部）だけでなくカード自体でも分かるようにする。 */}
+                        {isCurrent && (
+                          <span className="inline-flex items-center rounded-full bg-[#D9466E] px-2 py-0.5 text-[10px] font-modern font-bold tracking-wider text-white">
+                            選択中
+                          </span>
+                        )}
                       </h2>
                       {/* ローマ字の副題。
                           ★スマホでは隠す★——ここは「飾り」であり、

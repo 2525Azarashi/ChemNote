@@ -474,10 +474,11 @@ describe('MP3 未収録の回でも音が出る（読み上げフォールバッ
     expect(PLAYER).toContain('読み上げ音声で再生します');
   });
 
-  it('新しい類題集のトラックは audioUrl を持たない（存在しないMP3を指さない）', () => {
+  it('提供音声を適用した類題集は実在するMP3を参照する', () => {
     for (const p of [...EL1_A_EXTRA_PROBLEMS, ...EL1_B_PROBLEMS]) {
       for (const track of p.audioTracks) {
-        expect(track.audioUrl).toBeUndefined();
+        expect(track.audioUrl, track.subId).toMatch(/^\/listening_audio\/el1[AB]_set\d+_q\d+\.mp3$/);
+        expect(fs.existsSync(path.join(ROOT, 'public', track.audioUrl!)), track.subId).toBe(true);
       }
     }
   });

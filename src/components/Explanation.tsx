@@ -63,6 +63,16 @@ interface ExplanationProps {
   resultTotalJudgeable?: number;
   resultTotalTimeSec?: number;
   /**
+   * 結果画面の「次にすること」。
+   *   onRetryWrong … 間違えた最初の問題から同じ単元を解き直す（章内の通し番号を渡す）
+   *   onNextChapter … 同じ科目の次の単元へ進む（全問正解のときの主操作）
+   * 以前は結果画面の出口が「単元選択に戻る」だけで、
+   * 復習するには一覧で同じ単元を探し直す必要があった。
+   */
+  onRetryWrong?: (firstWrongIndex: number) => void;
+  onNextChapter?: () => void;
+  nextChapterTitle?: string;
+  /**
    * 結果画面で振り返る範囲（両端を含む・章内の通し番号）。
    *
    * ■ 何のために足したのか（ご要望）
@@ -132,7 +142,7 @@ const getDifficulty = (sqId: string) => {
   return 1;
 };
 
-export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView, scoreBreakdown, scoreMeta, totalScore, runningCombo, resultTotalScore, resultTotalCorrect, resultTotalJudgeable, resultTotalTimeSec, questionRange, focusSubQuestionId }: ExplanationProps) {
+export function Explanation({ mode: initialMode, chapter, answers, onBack, isGuest, singleQuestionIndex, onNextQuestion, isLastQuestion, isMobileView, scoreBreakdown, scoreMeta, totalScore, runningCombo, resultTotalScore, resultTotalCorrect, resultTotalJudgeable, resultTotalTimeSec, questionRange, onRetryWrong, onNextChapter, nextChapterTitle, focusSubQuestionId }: ExplanationProps) {
   const isPracticeMode = initialMode === 'practice';
   // Virtual mode is always 'mini_test' for bright style choices!
   const mode = 'mini_test';
@@ -501,16 +511,20 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
     // 範囲を切り出して表示しているときは、切り出しの先頭ぶんを足して
     // 「章の中での本当の番号」に戻す（ノートに出る Q番号がズレないようにする）。
     const displayIndex = singleQuestionIndex !== undefined ? singleQuestionIndex : rangeOffset + index;
-    if (isGuest) {
-      alert('ゲストモードではノート機能は使用できません。');
-      return;
-    }
-    if (!auth.currentUser) return;
+    /*
+      ★ゲストもノートを保存できるようにする★
+      学習ノート画面（StudyHub）は `notes_guest` を読んでゲストにも
+      「マイノート」タブと「解説ページのノートに保存から追加できます」という
+      案内を出しているのに、ここで保存を拒んでいたため、
+      案内どおりに押しても「使用できません」と言われる行き止まりになっていた。
+      復習リスト（review_list_guest）と同じく端末内に保存する。
+    */
+    const notesKey = `notes_${auth.currentUser?.uid || 'guest'}`;
     setSavingNote(prev => ({ ...prev, [question.id]: true }));
     try {
       const newNote = {
         id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
-        uid: auth.currentUser.uid,
+        uid: auth.currentUser?.uid || 'guest',
         question: question.text,
         answer: question.subQuestions.map((sq: any) => sq.correctAnswer).join(', '),
         explanation: question.explanation,
@@ -528,11 +542,13 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
         lastReviewedAt: null
       };
       
-      const existingNotes = JSON.parse(localStorage.getItem(`notes_${auth.currentUser.uid}`) || '[]');
+      const existingNotes = JSON.parse(localStorage.getItem(notesKey) || '[]');
       existingNotes.push(newNote);
-      localStorage.setItem(`notes_${auth.currentUser.uid}`, JSON.stringify(existingNotes));
+      localStorage.setItem(notesKey, JSON.stringify(existingNotes));
       
-      alert('ノートに保存しました！');
+      alert(isGuest
+        ? 'ノートに保存しました！（ゲスト利用のため、この端末にだけ保存されます）'
+        : 'ノートに保存しました！');
     } catch (error) {
       console.error('保存エラー:', error);
       alert('保存に失敗しました。');
@@ -645,6 +661,19 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
       .filter(item => item.percentage < 100)
       .sort((a, b) => a.percentage - b.percentage);
   }, [questions, answers, selfGrades]);
+
+  /**
+   * 間違えた（＝解答したが不正解の）小問を含む最初の問題の、章内の通し番号。
+   * 未解答は「間違えた」に数えない（isAttempted と同じ考え方）。
+   * 記述問題は自己採点なので対象外。無ければ -1。
+   */
+  const firstWrongQuestionIndex = useMemo(() => {
+    if (singleQuestionIndex !== undefined) return -1;
+    const idx = questions.findIndex((q: any) =>
+      (q.subQuestions || []).some((sq: any) =>
+        sq.type !== 'descriptive' && isAttempted(answers[sq.id]) && !isAnswerCorrect(sq, answers[sq.id])));
+    return idx < 0 ? -1 : rangeOffset + idx;
+  }, [questions, answers, singleQuestionIndex, rangeOffset]);
 
   const deepThoughtData = useMemo(() => {
     for (const q of questions) {
@@ -1360,6 +1389,34 @@ export function Explanation({ mode: initialMode, chapter, answers, onBack, isGue
                 </div>
               </div>
             </div>
+
+            {/* ===== 次にすること =====
+                点数の直下に主操作を1つ置く。間違いがあれば「間違えた問題を解き直す」、
+                全問正解なら「次の単元へ」。どちらも無ければ何も出さない
+                （従来どおりヘッダーの「単元選択に戻る」を使う）。 */}
+            {(firstWrongQuestionIndex >= 0 && onRetryWrong) || (firstWrongQuestionIndex < 0 && onNextChapter) ? (
+              <div className={`${compactResult ? 'mt-3' : 'mt-4'} flex flex-col sm:flex-row gap-2`} data-result-actions>
+                {firstWrongQuestionIndex >= 0 && onRetryWrong ? (
+                  <button
+                    type="button"
+                    onClick={() => onRetryWrong(firstWrongQuestionIndex)}
+                    className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 rounded-xl bg-[#2C3E50] text-white font-bold text-sm px-4 hover:bg-[#1B2631] transition-colors"
+                  >
+                    <Target size={16} aria-hidden="true" />
+                    間違えた問題から解き直す（第{firstWrongQuestionIndex + 1}問）
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={onNextChapter}
+                    className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 rounded-xl bg-[#2C3E50] text-white font-bold text-sm px-4 hover:bg-[#1B2631] transition-colors"
+                  >
+                    <ArrowLeft size={16} className="rotate-180" aria-hidden="true" />
+                    {nextChapterTitle ? `次の単元へ：${nextChapterTitle}` : '次の単元へ'}
+                  </button>
+                )}
+              </div>
+            ) : null}
 
             {/* ★スマホ：スコアの直下に復習推奨エリア（コンパクト版）を出し、
                 1画面で「点数」と「どこを復習すべきか」が同時に見えるようにする。 */}
