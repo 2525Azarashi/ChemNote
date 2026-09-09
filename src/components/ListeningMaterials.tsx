@@ -26,7 +26,7 @@ export function ListeningMaterials({ material, activeSubId }: {
       ));
   return (
     <article data-listening-material className="min-w-0 font-modern text-[16px] leading-relaxed text-gray-900">
-      <h2 className="mb-2 text-base font-bold">{material.title}</h2>
+      <h2 className="mb-1.5 text-base font-bold leading-snug">{material.title}</h2>
       {!material.images?.length && material.instruction && <p className="mb-3 text-sm text-gray-600">{material.instruction}</p>}
       {!material.images?.length && sections}
       {material.table && <div className="mb-3 overflow-x-auto" tabIndex={0} aria-label="資料の表">
@@ -40,7 +40,8 @@ export function ListeningMaterials({ material, activeSubId }: {
       </div>}
       {material.images?.map(image => <figure data-material-graph key={image.src} className="mb-4">
         {image.caption !== material.title && <figcaption className="mb-1 text-sm font-bold">{image.caption}</figcaption>}
-        <p className="mb-1 text-xs text-gray-500">横にスクロールして図全体を確認できます</p>
+        {/* 補足は1行の小さな文字に（スマホの資料ペインは高さが限られるため） */}
+        <p className="mb-0.5 text-[11px] leading-tight text-gray-500">横にスクロールして図全体を確認できます</p>
         <div tabIndex={0} aria-label={`${image.caption}・横スクロール`}
           className="overflow-x-auto overscroll-x-contain rounded border border-gray-200 bg-white">
           <img src={image.src} alt={image.caption} className="block h-auto w-full max-w-none"
