@@ -55,7 +55,11 @@ import {
  *   - 忘却曲線の自動スケジュール（学習効率の要）は保持しつつ、入口だけを一本化する。
  */
 
+export interface StudyHubView { tab: Tab; subjectTab: SubjectTabId }
+
 interface StudyHubProps {
+  view?: StudyHubView;
+  onViewChange?: (view: StudyHubView) => void;
   onBack: () => void;
   isGuest: boolean;
   /** ノート詳細を開く（既存の NoteDetail 画面へ） */
@@ -207,6 +211,13 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
         </div>
       </button>
 
+      {onReview && (
+        <div className="px-5 pb-3">
+          <button type="button" onClick={() => onReview(item)} aria-label="答えを見ずにこの問題を解き直す" className="min-h-[44px] rounded-lg bg-[#2C3E50] px-4 text-sm font-bold text-white">
+            解き直す
+          </button>
+        </div>
+      )}
       {/* ===== 詳細（タップで展開）===== */}
       {open && (
         <div id={detailId} className="pl-5 pr-4 pb-4 sm:pl-6 sm:pr-5 sm:pb-5">
@@ -249,15 +260,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
 
             {/* アクション */}
             <div className="pt-1 flex flex-wrap gap-2">
-              {onReview && (
-                <button
-                  onClick={() => onReview(item)}
-                  aria-label="この問題を解き直す"
-                  className="inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-lg bg-[#2C3E50] text-white text-sm font-bold hover:bg-[#1B2631] transition-colors"
-                >
-                  <PenLine size={16} aria-hidden="true" /> 解いてみる
-                </button>
-              )}
+              <p className="w-full text-xs text-gray-500">答えを確認したあとの自己評価</p>
               <button
                 onClick={() => onCorrect(item.key)}
                 aria-label="復習で正解にする"
@@ -423,12 +426,12 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onSelect }) => {
 // メイン
 // ============================================================
 
-export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubProps) {
+export function StudyHub({ onBack, isGuest, onSelectNote, onReview, view, onViewChange }: StudyHubProps) {
   const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
 
-  const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
+  const [reviewItems, setReviewItems] = useState<ReviewItem[]>(() => getAllReviewItems(uid));
   const [notes, setNotes] = useState<any[]>([]);
-  const [tab, setTab] = useState<Tab>('today');
+  const [tab, setTab] = useState<Tab>(view?.tab ?? 'today');
   const [now, setNow] = useState(() => Date.now());
   const [todayOpen, setTodayOpen] = useState(true);
 
@@ -467,7 +470,9 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
   const subjectSummaries = useMemo(() => summarizeBySubject(reviewItems, now), [reviewItems, now]);
 
   // 選択中の科目タブ。既定は「すべて」（従来どおりの俯瞰表示）。
-  const [subjectTab, setSubjectTab] = useState<SubjectTabId>(ALL_SUBJECTS);
+  const [subjectTab, setSubjectTab] = useState<SubjectTabId>(view?.subjectTab ?? ALL_SUBJECTS);
+
+  useEffect(() => { onViewChange?.({ tab, subjectTab }); }, [tab, subjectTab, onViewChange]);
 
   // 表示中の科目が無くなった場合（最後の1問を削除した等）は
   // 選択が宙に浮くので「すべて」に戻す。
@@ -587,7 +592,7 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
           科目が1つしか無いユーザーには「すべて」だけを出しても意味がないので、
           2科目以上ある場合にのみタブ列を表示する。
         */}
-        {subjectSummaries.length > 1 && (
+        {(tab === 'today' || tab === 'all') && subjectSummaries.length > 1 && (
           <div
             role="tablist"
             aria-label="科目を選択"
@@ -647,11 +652,6 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
 
         {/* 科目タブで絞られる領域（グラフ＋今日の復習） */}
         <div id="subject-scoped-panel" role="tabpanel" className="space-y-5">
-          {/* ===== 忘却曲線グラフ（解答日時→定着度の可視化） ===== */}
-          <details className="study-retention mtb-paper">
-            <summary><span><TrendingUp size={16} aria-hidden="true" /> 記憶の定着をみる</span><ChevronDown size={15} aria-hidden="true" /></summary>
-            <ForgettingCurveChart items={scopedItems} now={now} subjectLabel={scopedSubjectLabel} />
-          </details>
 
           {/* ===== 今日の復習セクション（冒頭に自動表示） ===== */}
           {tab === 'today' && scopedDueItems.length > 0 && (
@@ -703,6 +703,10 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
               )}
             </section>
           )}
+          {(tab === 'today' || tab === 'all') && <details className="study-retention mtb-paper">
+            <summary className="min-h-[44px] cursor-pointer py-2 text-sm font-bold text-[#2C3E50]">学習状況のグラフを見る</summary>
+            <ForgettingCurveChart items={scopedItems} now={now} subjectLabel={scopedSubjectLabel} />
+          </details>}
         </div>
 
         {/* ===== タブ本体 ===== */}
@@ -717,11 +721,7 @@ export function StudyHub({ onBack, isGuest, onSelectNote, onReview }: StudyHubPr
               }
               desc="問題を解いて間違えると、ここに自動で追加されます。"
             />
-          ) : (
-            <p className="text-xs text-gray-400 text-center py-2">
-              今日の復習は上のセクションに表示しています。
-            </p>
-          )
+          ) : null
         )}
 
         {tab === 'notes' && (

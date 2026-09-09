@@ -48,6 +48,15 @@
  *     必ず public 配下の静的ファイルとして持つ）
  */
 
+/** Printed materials only: never include scripts, answers or explanation fields. */
+export interface ListeningMaterial {
+  title: string;
+  instruction?: string;
+  sections?: { heading?: string; rows: string[] }[];
+  table?: { headers: string[]; rows: string[][] };
+  images?: { src: string; caption: string; minWidth?: number }[];
+}
+
 /** 1問ぶんの音源とスクリプト。復習用音源パネルの1行に対応する。 */
 export type ListeningAudioTrack = {
   /** 対応する小問の id（subQuestions[].id と一致させる） */
@@ -94,6 +103,8 @@ export type ListeningAudioTrack = {
    *   無いトラックは従来どおり subId 1つだけのステップになる。
    */
   subIds?: string[];
+  /** Readable shared worksheet, tied to the audio step rather than the answer page. */
+  material?: ListeningMaterial;
   /** スクリプトの和訳 */
   translation: string;
   /** この音源で押さえたい語句・表現 */

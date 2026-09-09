@@ -71,7 +71,8 @@ import React from 'react';
 import { Quiz } from './Quiz';
 import { Explanation } from './Explanation';
 import { ErrorBoundary } from './ErrorBoundary';
-import { findChapterById } from '../data/allChapters';
+import { ScreenUnavailable } from './ScreenStatus';
+import { findChapterById, getChaptersOfSubject } from '../data/allChapters';
 
 /** Quiz が結果として返す採点内容（App.tsx 側の onFinish にそのまま渡す） */
 type QuizFinishResult = Parameters<React.ComponentProps<typeof Quiz>['onFinish']>[1];
@@ -93,6 +94,15 @@ interface QuizScreensProps {
   resultTotalJudgeable?: number;
   resultTotalTimeSec?: number;
   questionRange?: { startIndex: number; endIndex: number } | null;
+  /**
+   * 結果画面の「次にすること」用。
+   *   subject … 「次の単元」を同じ科目の中から探すために使う
+   *   onRetryWrong … 間違えた最初の問題から同じ単元を解き直す
+   *   onNextChapter … 次の単元（章ID）を新しく始める
+   */
+  subject?: string;
+  onRetryWrong?: (chapterId: string, firstWrongIndex: number) => void;
+  onNextChapter?: (chapterId: string) => void;
 }
 
 export function QuizScreens({
@@ -110,6 +120,9 @@ export function QuizScreens({
   resultTotalJudgeable,
   resultTotalTimeSec,
   questionRange,
+  subject,
+  onRetryWrong,
+  onNextChapter,
 }: QuizScreensProps) {
   /*
    * 章の解決はここで行う。
@@ -127,7 +140,21 @@ export function QuizScreens({
    *     {appState === 'quiz' && selectedChapter && …}
    * と同じ挙動（条件が false なので何も出ない）を保っている。
    */
-  if (!chapter) return null;
+  if (!chapter) return <ScreenUnavailable message="単元が見つかりません。教材の一覧から選び直してください。" onBack={onBack} />;
+
+  /*
+   * 同じ科目の中で「問題を持つ次の単元」。
+   * 1回分だけ（questionRange あり）を解いた場合は、同じ単元に次の回が残っているので
+   * 単元を飛び越えない（次の回は単元一覧で選ぶ）。
+   */
+  const nextChapter = (() => {
+    if (screen !== 'explanation' || questionRange || !subject) return null;
+    const list = getChaptersOfSubject(subject);
+    const at = list.findIndex((c: any) => c.id === chapter.id);
+    if (at < 0) return null;
+    const pool = mode === 'mini_test' ? 'miniTest' : 'practiceProblems';
+    return list.slice(at + 1).find((c: any) => (c[pool] || []).length > 0) || null;
+  })();
 
   if (screen === 'quiz') {
     return (
@@ -167,6 +194,9 @@ export function QuizScreens({
         // 1回分（例：第3回演習）だけを解いたときは、その回だけを振り返る。
         // 解いていない回まで答え合わせに並ぶと、どこまでやったか分からなくなる。
         questionRange={questionRange}
+        onRetryWrong={onRetryWrong ? (index) => onRetryWrong(chapter.id, index) : undefined}
+        onNextChapter={nextChapter && onNextChapter ? () => onNextChapter(nextChapter.id) : undefined}
+        nextChapterTitle={nextChapter?.abstractTitle || nextChapter?.realTitle || undefined}
       />
     </ErrorBoundary>
   );

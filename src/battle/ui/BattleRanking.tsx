@@ -80,7 +80,15 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
   }, [tab, load]);
 
   return (
+    /*
+      ★スマホでは「固定（見出し・タブ・もどる）」と「スクロール（一覧）」を分ける★
+      利用者の指示：「ランキング画面も基本一画面に入るでしょ？ 固定されるところと
+      スクロールしてるところが明確になってるわけでしょ」
+      DOM は変えず、className と id を足して index.css の @media (max-width: 767px)
+      だけで切り替える（PC は今までどおり）。
+    */
     <BattleShell
+      className="battle-ranking"
       footer={
         <BattleButton variant="ghost" onClick={onBack} icon={<ArrowLeft size={18} />}>
           もどる
@@ -121,6 +129,8 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
         })}
       </div>
 
+      {/* ここから下がスマホでスクロールする領域（PC では素の div） */}
+      <div id="battle-ranking-list" className="flex flex-1 flex-col">
       {loading ? (
         <BattleLoading message="ランキングを読みこんでいます…" />
       ) : rows.length === 0 ? (
@@ -222,13 +232,14 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
       )}
 
       <p
-        className="mt-auto pt-6 text-center text-[10px] font-bold leading-relaxed"
+        className="battle-ranking-note mt-auto pt-6 text-center text-[10px] font-bold leading-relaxed"
         style={{ color: INK_SUB }}
       >
         このランキングは対戦専用です。
         <br />
         学習量のランキングとは別に集計しています。
       </p>
+      </div>
     </BattleShell>
   );
 }

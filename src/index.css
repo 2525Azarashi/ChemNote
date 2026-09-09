@@ -384,6 +384,27 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   font-style: italic;
 }
 
+/* 対戦では分数の高さを確保し、長い式も省略せず読めるようにする。 */
+.battle-text {
+  display: inline-block;
+  min-width: 0;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  vertical-align: middle;
+}
+.battle-text .mtb-math {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25em 0.1em;
+  vertical-align: middle;
+  white-space: normal;
+  overflow-wrap: normal;
+}
+.battle-text .mtb-math > .katex {
+  overflow: visible;
+}
+
 /* 数学の問題・解説を大きく読みやすくするラッパー
  * （Quiz / Explanation で科目が数学のときに付与する） */
 .math-content {
@@ -991,7 +1012,12 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .home-rika-link { align-items: center; gap: 6px; min-height: 44px; width: 100%; color: #7b4fa8; font-size: 11px; border-top: 1px dashed #e9dce6; cursor: pointer; }
 .home-rika-link svg:last-child { margin-left: auto; }
 .home-lobby-footer { display: grid; gap: 10px; margin-top: 18px; }
-.home-lobby-tip { padding: 0 2px; }
+/* とびら君の豆知識。対戦ステージの中（上から2番目の区画）に置くので、
+   下に何が増えても初期表示から押し出されない。
+   ★grid-column: 1 / -1 が要点★ ステージは「本文 + ショートカット列」の
+   2 カラムなので、指定しないと狭い側に入って折り返しが増え、
+   その高さぶん「学習を始める」を画面外へ押し出す（実測 320x568 で 64px）。 */
+.home-arena-tip { grid-column: 1 / -1; margin-top: 10px; padding: 0 2px; text-align: left; }
 .home-arena-study .home-emblem-core { color: #b56984; background: #fae7ef; box-shadow: 0 7px 0 #d5adbd, 0 14px 25px #91648025; }
 /* Focus rings must stay visible on soft pastel backgrounds. */
 .home-lobby :is(button, summary):focus-visible { outline: 3px solid #287dad; outline-offset: 4px; }
@@ -1066,6 +1092,70 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   .home-arena-caption { margin-top: 9px; }
   .home-study-button { min-height: 58px; }
   .home-lobby-footer { margin-top: 14px; }
+  /* 豆知識を上へ移した分の高さは、この画面では飾りから返してもらう
+     （下の .home-battle-emblem / .home-arena-caption の縮小を参照）。
+     吹き出し自身の余白も詰めるが、文字サイズは変えない＝読めるまま。 */
+  .home-arena-tip { margin-top: 6px; }
+}
+
+/*
+ * とびら君の豆知識を「最初の画面」へ上げたことで、
+ * 縦の短いスマホでは 320x568 で 57px / 360x640 で 29px ぶん
+ * 「学習を始める」がはみ出した（実測）。
+ * その高さは ★飾りだけ★ から返してもらう。
+ *   ・紋章（対戦のイラスト）… 情報を持たない純粋な装飾
+ *   ・スローガンの余白       … 文字は残し、周りの空きだけ詰める
+ * 操作できるもの（対戦ボタン・学習を始める・進捗・ショートカット）と
+ * 読むもの（豆知識の本文）は一切縮めない。
+ * 幅 767px 以下に閉じてあるので、パソコン・タブレットの見た目は変わらない。
+ */
+@media (max-height: 700px) and (max-width: 767px) {
+  /*
+   * ★「おかえり、○○さん」を1行にする（クラス参加者だけ落ちるのを止める）★
+   *
+   * 学校名（.home-school）はクラスに参加している生徒にだけ出る要素。
+   * 出ると 1 行（実測 19px）ぶんヘッダーが高くなり、その生徒だけ
+   * 「学習を始める」が 320x568 で 10px / 360x640 で 11px
+   * 画面外へ落ちていた（実測）。★自分の端末では起きない不具合★である。
+   *
+   * ここで返してもらうのは、挨拶が使っている2行目。
+   * スマホ幅では既定で「おかえり、」と「○○さん」が改行して 2 行になる
+   * （.home-player h1 span が display:block）。
+   * 名前を横に続けて 1 行にすれば、学校名の 1 行ぶんとちょうど入れ替わる。
+   * ★情報は何も消していない★（学校名・日付・挨拶・名前はすべて残る）。
+   * 名前が長い場合は従来どおり省略記号で丸める（text-overflow: ellipsis）。
+   *
+   * 学校名を消す／小さくする選択は取らなかった。
+   * クラスの生徒にとっては「自分の学校のアプリ」であることの目印なので、
+   * そこを削るのは飾りではなく情報を削る行為になる。
+   */
+  .home-player h1 span { display: inline; }
+
+  /*
+   * ★2カラムのままにしておく（横並びにしてはいけない）★
+   *
+   * 一度ここでもショートカットを横並びにしたが、360x640 で
+   * はみ出しが 0px → 70px へ ★悪化した★（実測）。
+   *
+   * 理由：2カラムのままだと行の高さは max(本文列, ショートカット列) なので、
+   * 紋章の高さは「ショートカット列 237px の内側に隠れている」＝タダで済む。
+   * 横並びにすると
+   *     本文列（紋章込み）+ ショートカット1段
+   * が縦に足し算されるので、隠れていた紋章の高さが表に出てしまう。
+   * 縦積みが常に損、とは限らないという例なので記録しておく。
+   * （横並びが得になるのは、紋章まで畳む 600px 以下の段だけ。）
+   */
+  .home-battle-emblem { height: 88px; margin-block: 0 2px; }
+  .home-emblem-core { width: 66px; height: 66px; border-radius: 22px; }
+  .home-emblem-core svg { width: 38px; height: 38px; }
+  .home-emblem-paper { width: 45px; height: 56px; }
+  .home-emblem-paper svg { width: 22px; height: 22px; }
+  .home-emblem-orbit { width: 158px; height: 76px; }
+  .home-emblem-paper-left { transform: translate(-46px, 3px) rotate(-20deg); }
+  .home-emblem-paper-right { transform: translate(46px, -4px) rotate(17deg); }
+  .home-emblem-spark { width: 16px; right: 22px; top: 6px; }
+  .home-arena-caption { margin-top: 5px; }
+  .home-arena-tip { margin-top: 4px; }
 }
 
 @media (max-height: 600px) and (max-width: 767px) {
@@ -1084,6 +1174,64 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   .home-emblem-paper { height: 53px; width: 43px; }
   .home-emblem-orbit { width: 155px; height: 70px; }
   .home-arena-caption { font-size: 10px; }
+  /*
+   * ★いちばん縦の短い端末（iPhone SE 第1世代 320x568 など）★
+   *
+   * ここだけは、上の段階的な圧縮でもまだ 51px 足りなかった（実測）。
+   * 使える高さは（568 − ヘッダー − 下部ナビ）＝ 497px しかないのに、
+   * この画面には「対戦」「学習を始める」「進捗」「豆知識」が同居する。
+   *
+   * ■ ★最初にやって失敗した直し方を記録しておく★
+   *   「紋章（剣と紙のイラスト）を display:none にすれば 86px 空く」と考えて
+   *   実際にやってみたが、はみ出しは 51px から ★1px も減らなかった★。
+   *
+   *   理由：対戦ステージは grid で
+   *     ┌────────────┬──────────┐
+   *     │ 本文列      │ ショートカット列 │  ← 行の高さ = 高いほうに合わせられる
+   *     └────────────┴──────────┘
+   *   という2カラム。実測すると
+   *     本文列 237px ／ ショートカット列 237px（69+9+69+9+81）
+   *   で ★偶然ほぼ同じ★ だった。
+   *   紋章を隠すと本文列は 237→151px に縮むが、行の高さは
+   *   ショートカット列の 237px で決まるので、外側は縮まない。
+   *   つまり「絵を失って何も得ない」取引だったので取り消した。
+   *
+   * ■ 実際に効く場所は「ショートカット列」だった
+   *   3つのショートカット（学習ノート・アプリ紹介・ご意見）は
+   *   min-height 65px を縦に積んでいる。この端末に限り横並びにすると
+   *   列の高さが 237px → 1段ぶん（実測 69px）に減る。
+   *   ★押せる的の大きさ（44px 以上）は保つ★ので操作性は落ちない。
+   *   ボタンは3つとも残す（消さない）。
+   *
+   * ■ 併せて、余った本文列の飾りも詰める
+   *   横並びにすると本文列が行の高さを決める側になるため、
+   *   紋章と英字ラベルの圧縮が今度は実際に効く。
+   *     ・.home-battle-emblem … 剣と紙のイラスト（対戦ボタン自体が「対戦」と語っている）
+   *     ・.home-eyebrow       … "ONLINE QUIZ BATTLE"（真下の日本語見出しと同じ意味）
+   *   どちらも押せず、読む価値のある情報を持たない純粋な飾り。
+   *
+   * ■ ★絶対に畳まないもの★
+   *   対戦ボタン／学習を始める／進捗／ショートカットの3つ／豆知識の本文。
+   *   「1画面に入れる」ために操作や情報を削るのは本末転倒なので、
+   *   足りないぶんは必ず飾りと余白から返してもらう。
+   */
+  .home-arena { grid-template-columns: minmax(0, 1fr); }
+  .home-shortcuts { flex-direction: row; justify-content: space-around; gap: 4px; padding-top: 0; }
+  .home-shortcuts > * { width: auto; flex: 1; min-height: 56px; }
+  .home-shortcut-disc { width: 40px; height: 40px; }
+  .home-shortcut-disc > svg { width: 19px; height: 19px; }
+  .home-feedback-shortcut > svg { width: 18px; height: 18px; padding: 8px; }
+  .home-shortcuts .home-feedback-shortcut { align-items: center; min-height: 56px; }
+  .home-battle-emblem { display: none; }
+  .home-eyebrow { display: none; }
+  .home-arena h2 { margin-top: 0; }
+  /* 上の圧縮で残ったはみ出しは実測 5px。
+     豆知識が3行に折り返した回（＝いちばん長い文）でも入り切るように、
+     区画のあいだの空きだけを詰める。文字サイズは一切変えない。 */
+  .home-lobby-layout { gap: 9px; margin-top: 0; }
+  .home-arena-caption { margin-top: 3px; }
+  .home-arena-tip { margin-top: 2px; }
+  .home-study-topline { margin-block: -6px; }
 }
 
 /* Shared visual language for navigation screens: paper, ink, and purposeful hierarchy.
@@ -1297,6 +1445,121 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   .lobby-mode-details > summary { font-size: 9px; }
   .lobby-mode-details dl > div { flex-direction: column; }
 }
+
+/*
+ * ★対戦ロビーを「1画面」に収める（縦の短いスマホ）★
+ *
+ * ご指摘（原文）：
+ *   > この対戦画面なんだけど、全国対戦とAI対戦の下が隠れてるよね？
+ *   > 俺一画面に基本全部入れろって指示を出したはずだよね。
+ *
+ * ■ 実測（ログイン済み・レート1500・変更前）
+ *   360x640 … 全国／AI の「相手をさがす」「AIと対戦する」ボタンが
+ *             下部ナビの下に 128px / 109px 隠れる。履歴・ランキングは 392px 下。
+ *   375x667 … 同 101px / 82px
+ *   320x568 … 同 218px
+ *   390x844 … ボタンは見えるが履歴・ランキングは 169px 下
+ *
+ *   内訳（360x640）：見出し 65 ＋ レートカード 124 ＋ フレンド 253 ＋ 全国/AI 301
+ *   ＝ 743 に余白を足して 830px。使えるのは 639px。約 190px 足りない。
+ *
+ * ■ 何を詰めたか（★情報・ボタンは 1 つも消していない★）
+ *   ・見出し「対戦モード」の下線・副題まわりの余白      … 飾り
+ *   ・レートカードの内側余白と称号バーの上下              … 余白
+ *   ・各カードの見出しアイコン（58px → 40px）と余白      … 飾り
+ *   ・カードのキャッチコピー行の行間                      … 余白
+ *   ・「ルール・相手の表示を確認」（details）の高さ 44→34 … 押せる大きさは保つ
+ *   ・カード間の gap                                     … 余白
+ *   ・ランキング・履歴の丸ボタンを小さく                  … 押せる大きさは保つ
+ *   ・全国/AI カードの見出しを 1 行（アイコン＋文字を横並び）に戻す
+ *     ＝ 479px 以下で縦積みにしていたのを止める（縦積みは 1 行ぶん高い）
+ *
+ * ■ 幅 767px 以下・高さ 760px 以下に閉じる
+ *   パソコン・タブレットの見た目は変えない。
+ */
+@media (max-height: 760px) and (max-width: 767px) {
+  #battle-shell.battle-lobby > main { padding-top: 6px; }
+  .battle-lobby > main > .notebook-paper { padding-top: 8px; padding-bottom: 8px; }
+  .battle-lobby #battle-title { margin-bottom: 10px; }
+  .battle-lobby #battle-title h1 { font-size: 20px; }
+  .battle-lobby #battle-title h1 svg { width: 18px; height: 18px; }
+  .battle-lobby #battle-title > div { margin-top: 2px; height: 3px; }
+  .battle-lobby #battle-title p { margin-top: 3px; font-size: 10px; }
+  .lobby-player-pass { padding: 9px 12px; margin-bottom: 10px; }
+  .lobby-player-pass .text-3xl { font-size: 24px; line-height: 1.1; }
+  .lobby-player-pass > .mt-3 { margin-top: 6px; }
+  .lobby-player-pass .h-2 { height: 5px; }
+  .lobby-match-options { gap: 9px 8px; }
+  .lobby-mode { padding: 9px 10px 3px; }
+  .lobby-mode-friend { padding: 10px 12px 3px; }
+  .lobby-mode > header { margin-bottom: 2px; }
+  .lobby-mode > header > span:first-child { width: 34px; height: 34px; border-width: 2px; }
+  .lobby-mode > header > span:first-child svg { width: 17px; height: 17px; }
+  .lobby-mode-friend > header > span:first-child { width: 40px; height: 40px; }
+  .lobby-mode-friend > header > span:first-child svg { width: 20px; height: 20px; }
+  .lobby-mode > header h2 { font-size: 17px; }
+  .lobby-mode-friend > header h2 { font-size: 21px; }
+  /* 全国/AI の見出しは横並び 1 行に戻す（縦積みは 1 行ぶん高い） */
+  .lobby-mode:not(.lobby-mode-friend) > header { flex-direction: row; align-items: center; }
+  .lobby-mode-caption { margin-block: 3px; font-size: 12px; line-height: 1.4; }
+  .lobby-mode:not(.lobby-mode-friend) .lobby-mode-caption { font-size: 11px; }
+  .lobby-mode-tags { margin-bottom: 7px; gap: 2px 7px; }
+  .lobby-mode-actions { gap: 6px; }
+  .lobby-mode-actions > button { min-height: 44px; padding: 7px 8px; }
+  /* 「合言葉で参加する」が 360px 幅で 2 行に折れていた（実測）。
+     文字を縮めるのではなく、幅を均等（1fr 1fr）にして 1 行に収める。 */
+  .lobby-mode-friend .lobby-mode-actions { grid-template-columns: 1fr 1fr; }
+  .lobby-mode-friend .lobby-mode-actions > button { font-size: 12px; padding-inline: 6px; gap: 4px; }
+  .lobby-mode-details { margin-top: 3px; }
+  .lobby-mode-details > summary { min-height: 34px; }
+  .battle-lobby .mt-3.rounded-2xl { margin-top: 8px; padding: 6px 10px; font-size: 9px; line-height: 1.5; }
+  .lobby-record-links { margin-top: 8px; padding-top: 4px; gap: 12px; }
+  .lobby-record-links > button { padding-block: 4px; }
+  .lobby-record-links > button > svg { padding: 9px; width: 18px; height: 18px; margin-bottom: 2px; }
+}
+
+/*
+ * 縦 761〜940px のスマホ（iPhone 14/15/Pro Max・多くの Android）。
+ * ボタンは元から見えていたが、ランキング・履歴が 80〜170px 下に隠れていた（実測）。
+ * 上の段よりゆるい圧縮（余白と飾りの一部だけ）で、末尾まで 1 画面に入れる。
+ */
+@media (min-height: 761px) and (max-height: 940px) and (max-width: 767px) {
+  #battle-shell.battle-lobby > main { padding-top: 8px; }
+  .battle-lobby > main > .notebook-paper { padding-top: 10px; }
+  .battle-lobby #battle-title { margin-bottom: 12px; }
+  .lobby-player-pass { padding: 12px 14px; margin-bottom: 12px; }
+  .lobby-player-pass > .mt-3 { margin-top: 8px; }
+  .lobby-match-options { gap: 12px 10px; }
+  .lobby-mode { padding: 12px 12px 4px; }
+  .lobby-mode-friend { padding: 14px 16px 4px; }
+  .lobby-mode-friend > header > span:first-child { width: 46px; height: 46px; }
+  .lobby-mode-friend > header > span:first-child svg { width: 23px; height: 23px; }
+  .lobby-mode-caption { margin-block: 5px; }
+  .lobby-mode-tags { margin-bottom: 9px; }
+  .lobby-mode:not(.lobby-mode-friend) > header { flex-direction: row; align-items: center; }
+  .lobby-mode-details { margin-top: 4px; }
+  .lobby-mode-details > summary { min-height: 36px; }
+  .battle-lobby .mt-3.rounded-2xl { margin-top: 8px; padding: 7px 10px; }
+  .lobby-record-links { margin-top: 10px; padding-top: 6px; }
+  .lobby-record-links > button > svg { padding: 10px; width: 20px; height: 20px; }
+}
+
+/* iPhone SE 第1世代（320x568）級。上の圧縮でもまだ足りないぶんを飾りから返してもらう。 */
+@media (max-height: 600px) and (max-width: 767px) {
+  .battle-lobby #battle-title p { display: none; }         /* 副題「1対1のリアルタイム対戦」：見出しと同じ意味 */
+  .battle-lobby #battle-title > div { display: none; }     /* 見出し下の金の下線：飾り */
+  .lobby-player-pass > .mt-3 > div:first-child { display: none; } /* 「つぎ: 上級 / あと150」の文字行（バーは残す） */
+  .lobby-mode-tags { display: none; }                      /* 「レート変動あり」等のタグ：details の中に同じ情報がある */
+  .lobby-mode-caption { margin-block: 2px; }
+  .battle-lobby .mt-3.rounded-2xl { display: none; }       /* 「どれも出題・制限時間…同じです」：details の中と重複 */
+}
+
+/* 幅 320px 級では「合言葉で参加する」が横並びだと 2 行に折れる（実測 54px）。
+   上の圧縮で縦に余裕ができているので、縦に積んで 1 行ずつにする。 */
+@media (max-width: 339px) {
+  .lobby-mode-friend .lobby-mode-actions { grid-template-columns: 1fr; }
+  .lobby-mode:not(.lobby-mode-friend) .lobby-mode-details > summary { font-size: 8px; white-space: nowrap; }
+}
 /* Learning journal: the record is the content; controls become page tabs. */
 .study-journal > div { max-width: 880px; }
 .study-journal .mtb-page-header h2, .profile-journal h2, .ranking-hall h2 { color: #704f64; }
@@ -1328,6 +1591,130 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .ranking-tabs { margin-top: 20px; }
 .ranking-record-paper { border-top: 5px solid #d3b984; min-height: 180px; }
 .ranking-record-paper li { min-height: 65px; }
+
+/* =========================================================
+ * ランキング（学習量）— スマホでは「固定＋スクロール」の2層にする
+ * =========================================================
+ *
+ * 利用者の指示：
+ *   「ランキング画面も基本一画面に入るでしょ？ モンストのランキングとかそういうのって、
+ *     固定されるところとスクロールしてるところが明確になってるわけでしょ？」
+ *
+ * 以前（スマホ 390x844 実測）：見出し 52 → 橋 48 → 説明文 22px+余白 40 → 全国/フレンド 52
+ *   → タブ 46 → 表彰台 ~230 → 自分カード ~110 → 一覧（1行 65px × 100 行）で、
+ *   ページ全体が縦にスクロールし、タブも見出しも一緒に流れて消えていた。
+ *
+ * 今：
+ *   ・.ranking-hall を画面の高さ（100dvh − 下部ナビ）に固定し、縦の flex にする
+ *   ・見出し／橋／全国・フレンド／タブ／章・期間 は上に留まる（flex: none）
+ *   ・.ranking-scroll（表彰台・自分カード・一覧）だけが中でスクロールする（flex: 1, min-height: 0）
+ *   ・「あなた」のカードは .ranking-scroll の中で position: sticky; top: 0 にして、
+ *     一覧を下へ流しても自分の順位が上に貼り付いて見え続ける（既存アプリと同じ作法）
+ *   ・下部ナビ（71px + safe-area）ぶんはスクロール領域の下に余白として確保する
+ *
+ * ★PC は 1px も変えない★ … すべて max-width: 767px の中。
+ * ★情報は 1 つも消していない★ … 説明文（キャプション）は小さくするだけ。
+ */
+@media (max-width: 767px) {
+  .ranking-hall {
+    /* min-h-screen（Tailwind）を上書きして、画面の高さぴったりに固定する。
+       下部ナビは fixed なので、ここでは 100dvh をそのまま使い、
+       ナビの高さは中のスクロール領域の下余白で吸収する。 */
+    height: 100dvh;
+    min-height: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+  .ranking-hall-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    padding-top: 12px;
+    padding-bottom: 0;
+  }
+  /* 固定される部分は伸び縮みしない */
+  .ranking-hall-inner > :not(.ranking-scroll) { flex: none; }
+  .ranking-hall-header { margin-bottom: 10px; min-height: 48px; }
+  .ranking-battle-bridge { margin-bottom: 8px; min-height: 44px; padding-block: 6px; }
+  .ranking-hall-caption { font-size: 14px; line-height: 1.4; margin-block: 4px 8px; }
+  .ranking-scope { margin-bottom: 8px; }
+  .ranking-scope > button { min-height: 40px; }
+  .ranking-tabs { margin-top: 0; margin-bottom: 8px; }
+  .ranking-tabs > button { padding-block: 8px; }
+  .ranking-subselect { margin-bottom: 8px; }
+
+  /* スクロールする部分 */
+  .ranking-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    /* 下部ナビ（実測 71px）＋ safe-area のぶんだけ最後の行が隠れないようにする */
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+    /* 横方向の影が切れないように左右に 2px 余裕を持たせる */
+    margin-inline: -2px;
+    padding-inline: 2px;
+    /* 上端に薄い線を置き、「ここから下が動く」ことを目で分かるようにする */
+    border-top: 1px dashed #e4ccd6;
+    padding-top: 8px;
+  }
+  /* 「あなた」の順位カード：一覧を流しても上に貼り付く */
+  .ranking-scroll .ranking-me-card {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    box-shadow: 0 6px 14px -6px #1b263166;
+  }
+  .ranking-scroll .ranking-me-card > div:first-child > div:first-child > div:first-child {
+    width: 34px; height: 34px;
+  }
+  .ranking-podium-wrap { margin-bottom: 10px; }
+  .ranking-record-paper { min-height: 0; }
+  .ranking-record-paper li { min-height: 56px; }
+}
+
+/* 対戦ランキング（BattleRanking）— 同じ考え方。見出し・タブ・「もどる」は固定、一覧だけ中でスクロール。
+   下部ナビ（実測 71px）は fixed なので、その高さぶん shell の下余白で避ける。 */
+@media (max-width: 767px) {
+  #battle-shell.battle-ranking {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    padding-bottom: calc(71px + env(safe-area-inset-bottom));
+  }
+  #battle-shell.battle-ranking > main { min-height: 0; padding-bottom: 8px; }
+  #battle-shell.battle-ranking > main > .notebook-paper { min-height: 0; }
+  #battle-shell.battle-ranking #battle-title { margin-bottom: 10px; }
+  #battle-shell.battle-ranking #battle-ranking-tabs { margin-bottom: 8px; }
+  #battle-shell.battle-ranking #battle-ranking-list {
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    margin-inline: -4px;
+    padding-inline: 4px;
+    border-top: 1px dashed #e4ccd6;
+    padding-top: 8px;
+  }
+  #battle-shell.battle-ranking .battle-ranking-note { padding-top: 12px; padding-bottom: 4px; }
+  #battle-shell.battle-ranking > footer { padding-bottom: 8px; }
+}
+
+/* 縦の短い端末（iPhone SE 系 568〜667px）：固定部をさらに詰めて一覧の行が 2 つ以上見えるようにする */
+@media (max-width: 767px) and (max-height: 700px) {
+  .ranking-hall-inner { padding-top: 8px; }
+  .ranking-hall-header { margin-bottom: 6px; min-height: 44px; }
+  .ranking-hall-header > button { width: 40px; height: 40px; }
+  .ranking-hall-header > div:nth-child(2) > div:first-child { width: 40px; height: 40px; }
+  .ranking-hall-caption { font-size: 12px; margin-block: 2px 6px; }
+  .ranking-scope > button { min-height: 36px; }
+  .ranking-tabs > button { padding-block: 6px; }
+  .ranking-podium-wrap { transform-origin: top center; }
+}
 /* Settings: readable notebook sections, never clip controls on short desktops. */
 .profile-journal .profile-tabs { margin-top: 12px; margin-bottom: 18px; }
 .profile-journal .profile-workspace { overflow-y: auto; align-items: start; gap: 16px; padding: 1px 5px 18px 1px; }
@@ -1363,4 +1750,21 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 @media (max-width: 359px) {
   .subject-library .subject-book-title h2 { font-size: 14px; }
   .subject-library .subject-book-title p { font-size: 10px; }
+}
+
+/* Later listening: preserve text size, reclaim padding rather than shrinking worksheets. */
+[data-listening-compact-options] button[aria-pressed] {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  min-height: 44px;
+}
+[data-listening-compact-options] button[aria-pressed] span {
+  line-height: 1.45;
+}
+
+[data-listening-compact-options] > .grid {
+  gap: 6px;
+}
+[data-listening-audio] button, [data-listening-audio] select {
+  min-height: 44px;
 }

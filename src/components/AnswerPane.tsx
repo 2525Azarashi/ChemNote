@@ -21,7 +21,7 @@
  *   ・PC（md: / lg:）の指定は変更しないこと
  *   ・数値を「それらしい値」に丸めないこと
  */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Edit3 } from 'lucide-react';
 import { formatText } from '../utils/textFormatter';
 import { answerCardMarker } from '../utils/questionDisplay';
@@ -48,6 +48,7 @@ export interface AnswerPaneProps {
   listeningMobileSplit: boolean;
   /** リスニングのスマホ2分割で、かつ図が無い状態か（余りを解答側がもらう）。 */
   listeningMobileNoFigure: boolean;
+  listeningMaterialsMobile?: boolean;
   /** いまフォーカスしている設問ID（スマホの入力バーと連動）。 */
   focusedSubId: string | null;
   setFocusedSubId: (v: string | null) => void;
@@ -87,6 +88,7 @@ export function AnswerPane({
   listeningUnified,
   listeningMobileSplit,
   listeningMobileNoFigure,
+  listeningMaterialsMobile = false,
   focusedSubId,
   setFocusedSubId,
   mobileAnswerSubs,
@@ -103,6 +105,10 @@ export function AnswerPane({
   handlePrevious,
   handleNext,
 }: AnswerPaneProps) {
+  const answerScrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (listeningMaterialsMobile && answerScrollRef.current) answerScrollRef.current.scrollTop = 0;
+  }, [listeningMaterialsMobile, safeMobileAnsIdx, currentQuestion.id]);
   return (
     <>
     {/* Section 2: Answers Area
@@ -156,13 +162,14 @@ export function AnswerPane({
         対象を listeningMobileSplit に限るのは、化学など従来の問題では
         解答欄が小さなチップの集まりで、余白を詰めると窮屈になるため。
         md 以上（PC）は md:p-8 が後ろで上書きするので影響しない。 */}
-    <div className={`lg:w-[42%] min-h-0 overflow-y-auto bg-gray-50/50 ${
+    <div ref={answerScrollRef} data-listening-answer-pane={listeningMaterialsMobile || undefined}
+      className={`lg:w-[42%] min-h-0 overflow-y-auto bg-gray-50/50 ${
         listeningMobileSplit ? 'px-2' : 'px-4'
       } md:p-8 ${
-        listeningMobileNoFigure
+        listeningMaterialsMobile ? 'flex-[1_1_0%] pt-0 overscroll-contain' : listeningMobileNoFigure
           ? 'flex-1 flex flex-col justify-end pt-2'
           : listeningMobileSplit ? 'flex-none pt-2' : 'flex-1 pt-4'
-      } ${isDesktop
+      } ${listeningMaterialsMobile ? 'pb-3' : isDesktop
         ? 'pb-8'
         : listeningMobileSplit
           // 下部ナビ（前へ/解答と解説を見る）の高さぶんだけ空ける。
@@ -186,7 +193,7 @@ export function AnswerPane({
         {/* スマホ：解答欄ページャー（要望：スクロールをやめ、1設問ずつ固定表示。
             左右の黒い小さな矢印で表示する解答欄を切り替える）。
             位置表示（n / 全体）で「あといくつ解答欄があるか」も分かるようにする。 */}
-        {!isDesktop && mobileAnswerSubs.length > 1 && (
+        {!isDesktop && !listeningMaterialsMobile && mobileAnswerSubs.length > 1 && (
           <div className="text-center text-[11px] font-bold text-gray-400 tracking-widest select-none -mb-1">
             {safeMobileAnsIdx + 1} / {mobileAnswerSubs.length}
           </div>
@@ -225,8 +232,19 @@ export function AnswerPane({
             今回の幅不足の直接原因だったため。
           PC（isDesktop）は contents のままで、見た目は一切変わらない。
         */}
+        {listeningMaterialsMobile && (
+          <nav aria-label="小問の切り替え" className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b bg-gray-50">
+            <span className="text-xs font-bold text-gray-600">選択肢 · {safeMobileAnsIdx + 1}/{mobileAnswerSubs.length}</span>
+            <div className="flex gap-1">
+              <button type="button" aria-label="前の解答欄へ" disabled={safeMobileAnsIdx === 0}
+                onClick={() => goMobileAns(-1)} className="min-h-11 min-w-11 rounded border bg-white px-2 text-xs font-bold disabled:opacity-30">前の小問</button>
+              <button type="button" aria-label="次の解答欄へ" disabled={safeMobileAnsIdx >= mobileAnswerSubs.length - 1}
+                onClick={() => goMobileAns(1)} className="min-h-11 min-w-11 rounded border bg-white px-2 text-xs font-bold disabled:opacity-30">次の小問</button>
+            </div>
+          </nav>
+        )}
         <div className={isDesktop ? 'contents' : 'flex items-stretch gap-1'}>
-          {!isDesktop && mobileAnswerSubs.length > 1 && (
+          {!isDesktop && !listeningMaterialsMobile && mobileAnswerSubs.length > 1 && (
             <button
               type="button"
               onClick={() => goMobileAns(-1)}
@@ -332,7 +350,7 @@ export function AnswerPane({
                  p-3.5（14px×2）→ px-2 py-3 で左右 12px を英文に回す。
                  縦（py-3）は詰めない。縦を削ると1行あたりの余裕が減って
                  かえって読みにくくなり、④ が見えない問題も解決しないため。 */
-              listeningMobileNoFigure
+              listeningMaterialsMobile ? 'px-2 py-2' : listeningMobileNoFigure
                 ? 'min-h-0 flex-1 max-h-full px-2 py-3'
                 : listeningMobileSplit
                   /*
@@ -384,7 +402,7 @@ export function AnswerPane({
                 化学など従来の問題は listeningUnified=false なので、
                 これまでどおり設問マーカー＋入力UIの形のまま。
               */}
-              <div className={`flex flex-col gap-3.5 w-full min-w-0 ${
+              <div className={`flex flex-col ${listeningMaterialsMobile ? 'gap-2' : 'gap-3.5'} w-full min-w-0 ${
                 // 図が無い大問：ここも連鎖に加える（切ると選択肢が伸びない）。
                 listeningMobileNoFigure ? 'min-h-0 flex-1' : ''
               }`}>
@@ -588,7 +606,7 @@ export function AnswerPane({
           </div>
           {/* 右矢印も左と同じ条件でガードする（B-1）。
               片側だけ残すと解答欄が中央からずれるので必ず対で揃える。 */}
-          {!isDesktop && mobileAnswerSubs.length > 1 && (
+          {!isDesktop && !listeningMaterialsMobile && mobileAnswerSubs.length > 1 && (
             <button
               type="button"
               onClick={() => goMobileAns(1)}

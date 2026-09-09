@@ -160,6 +160,15 @@ function buildQ4A(set: Q4Set): ListeningProblem {
       subIds: frontSubIds,
       label: '問18〜21',
       hint: front.situation,
+      material: {
+        title: front.worksheetTitle,
+        instruction: front.type === 'sequence'
+          ? '①〜⑤から4つを順に選びます。1枚は使いません。'
+          : 'グラフの各空欄に当てはまる系列を選びます。',
+        images: [{ src: asset(Q4_DIR, front.image), caption: front.worksheetTitle,
+          minWidth: front.type === 'sequence' ? 640 : 600 }],
+        sections: [{ rows: front.blanks.map(b => `(${b.no}) ${b.label}`) }],
+      },
       audioUrl: asset(Q4_DIR, front.audio),
       script: front.script,
       translation: '',
@@ -170,6 +179,15 @@ function buildQ4A(set: Q4Set): ListeningProblem {
       subIds: backSubIds,
       label: '問22〜25',
       hint: back.situation,
+      material: {
+        title: back.worksheetTitle,
+        instruction: '①〜⑥から各空欄に1つ選びます。2つは使いません。',
+        table: {
+          headers: back.table.headers,
+          rows: back.table.rows.map(row => row.map(cell =>
+            typeof cell === 'string' ? cell : `(${cell.blank})`)),
+        },
+      },
       audioUrl: asset(Q4_DIR, back.audio),
       script: back.script,
       translation: '',
@@ -323,6 +341,12 @@ function buildQ4B(set: Q4Set): ListeningProblem {
     subIds: [subId],
     label: '問26',
     hint: pb.situation,
+    material: {
+      title: 'Conditions',
+      sections: [{ rows: pb.conditionsEn }],
+      table: { headers: ['Speaker', 'A', 'B', 'C'],
+        rows: pb.choices.map((choice, i) => [`${mark(i + 1)} ${choice}`, '', '', '']) },
+    },
     audioUrl: asset(Q4_DIR, `set${String(no).padStart(2, '0')}_4B.mp3`),
     script: speakerScripts,
     turns: pb.scripts.map((s: string, i: number) => ({ who: `${i + 1}`, text: s })),
@@ -438,7 +462,16 @@ function buildQ5(set: Q5Set): ListeningProblem {
       subId: idOf(27),
       subIds: lectureIds,
       label: '講義（問27〜31）',
-      hint: set.topic,
+      hint: set.situation,
+      material: {
+        title: set.worksheet.title,
+        instruction: '問28〜31は同じ選択肢を2回以上使ってもかまいません。',
+        sections: [
+          { rows: [set.worksheet.lead.text] },
+          ...set.worksheet.blocks.map(block => ({ heading: block.heading,
+            rows: block.rows.map(row => `${'label' in row ? row.label + ' ' : ''}${row.text}`) })),
+        ],
+      },
       audioUrl: asset(Q5_DIR, set.lecture.audio),
       script: set.lecture.script,
       translation: '',
@@ -449,6 +482,9 @@ function buildQ5(set: Q5Set): ListeningProblem {
       subIds: [idOf(32)],
       label: '問32',
       hint: 'グループのメンバー A・B の発言',
+      material: { title: '問32　発言と講義の内容', sections: [{ rows: [
+        'A・Bの発言を聞き、それぞれが講義の内容と一致するか判断してください。',
+      ] }] },
       audioUrl: asset(Q5_DIR, `q5set${pad}_q32.mp3`),
       script: `A: ${set.q32.statements[0]}\nB: ${set.q32.statements[1]}`,
       turns: [
@@ -463,6 +499,8 @@ function buildQ5(set: Q5Set): ListeningProblem {
       subIds: [idOf(33)],
       label: '問33',
       hint: '追加の会話と図表',
+      material: { title: set.q33.graph.title,
+        images: [{ src: asset(Q5_DIR, set.q33.image), caption: set.q33.graph.title, minWidth: 600 }] },
       audioUrl: asset(Q5_DIR, set.q33.audio),
       script: conversationScript(set.q33.conversation),
       turns: set.q33.conversation,
@@ -698,6 +736,11 @@ function buildQ6A(set: Q6Set): ListeningProblem {
     subIds: [id34, id35],
     label: '問34・35',
     hint: pa.situation,
+    material: { title: '問34・35　状況と問い', sections: [
+      { rows: [pa.situation] },
+      { heading: '問34', rows: [pa.q34.prompt] },
+      { heading: '問35', rows: [pa.q35.prompt] },
+    ] },
     audioUrl: asset(Q6_DIR, pa.audio),
     script,
     turns: pa.conversation,
@@ -817,6 +860,13 @@ function buildQ6B(set: Q6Set): ListeningProblem {
     subIds: [id36, id37],
     label: '問36・37',
     hint: pb.situation,
+    material: {
+      title: '問36・37　メモ・図表',
+      instruction: pb.memoTable.lead,
+      table: { headers: ['Speaker', 'Memo'], rows: pb.memoTable.rows.map(row => [row.who, row.note]) },
+      images: pb.q37.graphs.map(g => ({ src: asset(Q6_DIR, g.image),
+        caption: `${mark(g.no)} ${g.title}`, minWidth: 360 })),
+    },
     audioUrl: asset(Q6_DIR, pb.audio),
     script,
     turns: pb.conversation,

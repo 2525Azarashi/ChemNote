@@ -27,16 +27,16 @@ const APP = readFileSync('src/App.tsx', 'utf8');
 const HOOK = readFileSync('src/hooks/useIdleReset.ts', 'utf8');
 const SUBJECT = readFileSync('src/components/SubjectSelection.tsx', 'utf8');
 
-describe('② ホームの「学習を始める」→ 科目選択 → 学習モード選択', () => {
-  it('handleStart が科目選択画面へ進む（mode_selection へ直行しない）', () => {
+describe('② 選択済み科目で学習開始（2026-09-07 UI改善）', () => {
+  it('handleStart が選択済み科目を引き継ぎ、再選択を要求しない', () => {
     // handleStart の本体を切り出して検査する
     const m = APP.match(/const handleStart = \(\) => \{([\s\S]*?)\n  \};/);
     expect(m, 'handleStart が見つからない').toBeTruthy();
     const body = m![1];
 
-    expect(body).toContain("setAppState('subject_selection')");
-    // 旧実装（モード選択へ直行）に戻っていないこと
-    expect(body).not.toContain("setAppState('mode_selection')");
+    expect(body).not.toContain("setAppState('subject_selection')");
+    expect(body).toContain('setAppState(studyEntry(selectedSubject))');
+    expect(body).toContain("setAppMode('practice')");
   });
 
   it('「学習を始める」から来た場合は、科目を選んだあと学習モード選択へ進む', () => {
@@ -46,7 +46,8 @@ describe('② ホームの「学習を始める」→ 科目選択 → 学習モ
 
     // 入口が 'start' のときだけモード選択、それ以外はホーム
     expect(body).toContain("subjectPickerOrigin === 'start'");
-    expect(body).toContain("'mode_selection'");
+    expect(body).toContain('studyEntry(subject)');
+    expect(body).toContain('setSelectedChapterId(null)');
     expect(body).toContain("'home'");
   });
 
@@ -79,21 +80,23 @@ describe('② ホームの「学習を始める」→ 科目選択 → 学習モ
     expect(props).not.toContain('subject_selection');
   });
 
-  it('科目選択は必ずホームから開くので、常に「ホームに戻る」を出す（行き止まり防止）', () => {
+  it('科目選択を取り消すと元の画面へ戻れる（行き止まり防止）', () => {
     const m = APP.match(/\{appState === 'subject_selection' && \(([\s\S]*?)\n            \)\}/);
     expect(m, 'SubjectSelection の結線が見つからない').toBeTruthy();
     const props = m![1];
 
-    expect(props).toContain("onBack={() => setAppState('home')}");
-    // 「戻るボタンを出さない」分岐が残っていないこと
-    expect(props).not.toContain('undefined');
+    expect(props).toContain('onBack={() => setAppState(subjectPickerReturnTo)}');
+    // 理科の未公開時など、他のpropsのundefinedとは区別する。
+    expect(props).not.toMatch(/onBack=\{undefined\}/);
+    expect(props).toContain('backLabel=');
   });
 
   it('SubjectSelection が任意の onBack を受け取り、渡されたときだけ描画する', () => {
     expect(SUBJECT).toMatch(/onBack\?:\s*\(\)\s*=>\s*void/);
     // 条件付きレンダリング（undefined ならボタン自体を出さない）
     expect(SUBJECT).toMatch(/\{onBack &&/);
-    expect(SUBJECT).toContain('aria-label="ホームに戻る"');
+    expect(SUBJECT).toContain('aria-label={backLabel}');
+    expect(SUBJECT).toContain("backLabel = 'ホームに戻る'");
     // クリック音（.cursor-pointer）とタップ領域44pxの作法を守る
     expect(SUBJECT).toMatch(/min-h-\[44px\][^"]*cursor-pointer|cursor-pointer[^"]*min-h-\[44px\]/);
   });

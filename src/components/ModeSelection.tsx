@@ -12,6 +12,7 @@ import type { SubjectKey } from '../data/allChapters';
 interface ModeSelectionProps {
   onSelectMode: (mode: 'mini_test' | 'practice' | 'learning') => void;
   onBack: () => void;
+  onChangeSubject?: () => void;
   onMockExam?: () => void;
   /** 選択中の科目。省略時は従来どおり化学基礎として振る舞う。 */
   subject?: SubjectKey;
@@ -35,7 +36,7 @@ interface ModeSelectionProps {
   onBattle?: () => void;
 }
 
-export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic', onBattle }: ModeSelectionProps) {
+export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'chemistry_basic', onBattle, onChangeSubject }: ModeSelectionProps) {
   /**
    * 化学（発展）では、化学基礎専用の 2027年度予想問題はまだ用意していないので隠す。
    * 化学基礎側の表示は一切変えない。
@@ -97,6 +98,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           <h1>{labelOfSubject(subject)}</h1>
           <p>学習モードを選択</p>
         </div>
+        {onChangeSubject && <div className="mb-3 flex justify-end"><button type="button" onClick={onChangeSubject} className="min-h-[44px] rounded-full border border-gray-200 bg-white px-4 text-sm font-bold text-[#2C3E50]">科目を変更</button></div>}
         {onBattle && (
           <button type="button" onClick={onBattle} aria-label="オンライン対戦を開く" className="mode-battle-bridge">
             <Swords size={18} aria-hidden="true" /><span>対戦ロビーへ<small>友だちと1対1で早解き・全国とレート戦</small></span><ArrowRight size={16} aria-hidden="true" />

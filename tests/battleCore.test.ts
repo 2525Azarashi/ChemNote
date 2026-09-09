@@ -61,6 +61,8 @@ import {
   scoreBattleQuestion,
   trailingNoAnswerCount,
   winProbabilityPercent,
+  BATTLE_TIME_SCALE,
+  BATTLE_TIME_SCALED_MAX,
 } from '../src/battle/core/battleCore';
 import { BATTLE_RULES, defaultRuleOf, normalizeRule } from '../src/battle/core/battleRules';
 // 回答キー（q0, q1 …）の変換関数。
@@ -198,18 +200,44 @@ describe('isBattleAnswerCorrect — 正誤判定', () => {
 // ============================================================
 
 describe('resolveTimeLimit — 制限時間', () => {
-  it('既定では問題ごとの秒数を使う', () => {
-    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 17 }), RULE)).toBe(17);
+  /*
+    ★制限時間はプールの秒数 × BATTLE_TIME_SCALE（1.6）★（2026-09）
+
+    ご指摘：「制限時間鬼すぎる」
+    化学基礎のプールは中央値 14 秒で、問題文（中央値 268 文字）を読むだけで
+    ほとんど使い切っていた。プールを作り直さず、全試合が通るこの関数で
+    倍率をかける（理由は battleCore.ts の BATTLE_TIME_SCALE のコメント）。
+  */
+  it('既定では問題ごとの秒数 × 1.6（丸め）', () => {
+    expect(BATTLE_TIME_SCALE).toBe(1.6);
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 17 }), RULE)).toBe(27); // 27.2 → 27
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 14 }), RULE)).toBe(22); // 化学基礎の中央値
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 10 }), RULE)).toBe(16); // プールの下限
   });
 
-  it('rules.timeLimitOverride があればそれで固定される', () => {
+  it('上限 45 秒で頭を打つ（相手を待たせすぎない）', () => {
+    expect(BATTLE_TIME_SCALED_MAX).toBe(45);
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 30 }), RULE)).toBe(45); // 48 → 45
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 28 }), RULE)).toBe(45); // 44.8 → 45
+  });
+
+  it('長い問題は長め、という順序は倍率をかけても保たれる', () => {
+    const a = resolveTimeLimit(choiceQuestion({ timeLimit: 10 }), RULE);
+    const b = resolveTimeLimit(choiceQuestion({ timeLimit: 14 }), RULE);
+    const c = resolveTimeLimit(choiceQuestion({ timeLimit: 20 }), RULE);
+    expect(a).toBeLessThan(b);
+    expect(b).toBeLessThan(c);
+  });
+
+  it('rules.timeLimitOverride があればその秒数で固定（倍率はかけない）', () => {
+    // 「全問 12 秒にする」と書いた運用者は 12 秒を期待している。
     const rule: BattleRule = { ...RULE, timeLimitOverride: 12 };
     expect(resolveTimeLimit(choiceQuestion({ timeLimit: 30 }), rule)).toBe(12);
   });
 
-  it('override が 0 や null のときは問題ごとの秒数に戻る', () => {
-    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 25 }), { ...RULE, timeLimitOverride: 0 })).toBe(25);
-    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 25 }), { ...RULE, timeLimitOverride: null })).toBe(25);
+  it('override が 0 や null のときは問題ごとの秒数（×1.6）に戻る', () => {
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 25 }), { ...RULE, timeLimitOverride: 0 })).toBe(40);
+    expect(resolveTimeLimit(choiceQuestion({ timeLimit: 25 }), { ...RULE, timeLimitOverride: null })).toBe(40);
   });
 });
 
@@ -267,7 +295,13 @@ describe('scoreBattleQuestion — 1問の採点', () => {
   });
 
   it('★通信のゆらぎ程度の差では点差がつかない（粒度500ms）★', () => {
+    // ★timeLimitOverride で 20 秒に固定する★
+    //   この検査は「制限 20000ms のときに 500ms のバケツの境目がどこに来るか」
+    //   を見ている。制限時間に倍率（1.6）がかかるようになったので、
+    //   プールの 20 秒をそのまま使うと 32 秒になり、下の ms の計算が合わなくなる。
+    //   見たいのは粒度の性質であって倍率ではないので、override で固定して切り分ける。
     const q = choiceQuestion({ timeLimit: 20 });
+    const RULE: BattleRule = { ...defaultRuleOf('chemistry_basic'), timeLimitOverride: 20 };
     // 切り下げは「残り時間」に対してかかる。制限20秒＝20000msなので、
     // バケツの境目は使った時間が 500ms の倍数の位置にくる。
     // 3100ms と 3400ms は同じバケツ（残り16900→16500 / 残り16600→16500）。

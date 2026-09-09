@@ -159,6 +159,7 @@ export function PlayerBadge({
   answered,
   score,
   align = 'left',
+  compact = false,
 }: {
   nickname: string;
   photoURL?: string;
@@ -168,10 +169,19 @@ export function PlayerBadge({
   answered?: boolean;
   score?: number;
   align?: 'left' | 'right';
+  compact?: boolean;
 }) {
   const shown = mask && !isMe ? maskNickname(nickname) : nickname;
   const title = ratingTitle(rating);
   const right = align === 'right';
+
+  if (compact) return (
+    <div className={`flex min-h-[32px] min-w-0 flex-1 items-center gap-2 ${right ? 'flex-row-reverse text-right' : ''}`}>
+      <span className="min-w-0 flex-1 truncate text-xs font-bold" style={{ color: INK }}>{isMe ? 'あなた' : shown}</span>
+      {answered && <span className="shrink-0 text-[10px] font-bold" style={{ color: '#1E7D46' }}>解答済み</span>}
+      <strong className="shrink-0 text-lg tabular-nums" style={{ color: INK }} aria-label={`${isMe ? 'あなた' : shown}の得点 ${score ?? 0}`}>{score ?? 0}</strong>
+    </div>
+  );
 
   return (
     <div

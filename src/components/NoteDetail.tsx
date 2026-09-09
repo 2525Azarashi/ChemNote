@@ -17,18 +17,43 @@ export function NoteDetail({ note, onBack, onReview }: NoteDetailProps) {
   const [reviewCount, setReviewCount] = useState(note.reviewCount || 0);
   const [tags, setTags] = useState<string[]>(note.tags || []);
   const [tagInput, setTagInput] = useState('');
+  /**
+   * 重要・復習回数・タグの保存状態。
+   * 以前はこれらを変えても下の「メモを保存」を押すまで端末に書かれておらず、
+   * 「星を付けたのに一覧では重要になっていない」という食い違いが起きていた。
+   * これらは変更した瞬間に保存し、メモ本文だけボタンで保存する。
+   */
+  const [quickSaved, setQuickSaved] = useState<'idle' | 'saved' | 'failed'>('idle');
+
+  /** 保存済みノートの一部を書き換える（ノート一覧の保存先と同じキー）。 */
+  // 学習ノート一覧（StudyHub）が読むキーと同じ決め方にそろえる。
+  const notesKey = `notes_${auth.currentUser?.uid || 'guest'}`;
+
+  const persist = (patch: Record<string, unknown>): boolean => {
+    try {
+      const key = notesKey;
+      const localNotes = JSON.parse(localStorage.getItem(key) || '[]');
+      const updatedNotes = localNotes.map((n: any) => (n.id === note.id ? { ...n, ...patch } : n));
+      localStorage.setItem(key, JSON.stringify(updatedNotes));
+      // 一覧へ戻ったときに古い値が見えないよう、渡されたノート自体も更新する。
+      Object.assign(note, patch);
+      return true;
+    } catch (error) {
+      console.error('保存エラー:', error);
+      return false;
+    }
+  };
+
+  const quickPersist = (patch: Record<string, unknown>) => {
+    setQuickSaved(persist(patch) ? 'saved' : 'failed');
+  };
 
   const handleSave = async () => {
-    if (!auth.currentUser) return;
     setSaving(true);
     try {
-      const localNotes = JSON.parse(localStorage.getItem(`notes_${auth.currentUser.uid}`) || '[]');
-      const updatedNotes = localNotes.map((n: any) => 
-        n.id === note.id 
-          ? { ...n, memo, isImportant, reviewCount, tags, lastReviewedAt: new Date().toISOString() } 
-          : n
-      );
-      localStorage.setItem(`notes_${auth.currentUser.uid}`, JSON.stringify(updatedNotes));
+      if (!persist({ memo, isImportant, reviewCount, tags, lastReviewedAt: new Date().toISOString() })) {
+        throw new Error('persist failed');
+      }
       alert('メモを保存しました！');
     } catch (error) {
       console.error('保存エラー:', error);
@@ -39,12 +64,11 @@ export function NoteDetail({ note, onBack, onReview }: NoteDetailProps) {
   };
 
   const handleDelete = async () => {
-    if (!auth.currentUser) return;
     if (!confirm('本当に削除しますか？')) return;
     try {
-      const localNotes = JSON.parse(localStorage.getItem(`notes_${auth.currentUser.uid}`) || '[]');
+      const localNotes = JSON.parse(localStorage.getItem(notesKey) || '[]');
       const updatedNotes = localNotes.filter((n: any) => n.id !== note.id);
-      localStorage.setItem(`notes_${auth.currentUser.uid}`, JSON.stringify(updatedNotes));
+      localStorage.setItem(notesKey, JSON.stringify(updatedNotes));
       onBack();
     } catch (error) {
       console.error('削除エラー:', error);
@@ -56,18 +80,30 @@ export function NoteDetail({ note, onBack, onReview }: NoteDetailProps) {
     if (e.key === 'Enter' && tagInput.trim()) {
       e.preventDefault();
       if (!tags.includes(tagInput.trim())) {
-        setTags([...tags, tagInput.trim()]);
+        const next = [...tags, tagInput.trim()];
+        setTags(next);
+        quickPersist({ tags: next });
       }
       setTagInput('');
     }
   };
 
   const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter(t => t !== tag));
+    const next = tags.filter(t => t !== tag);
+    setTags(next);
+    quickPersist({ tags: next });
   };
 
   const handleIncreaseReviewCount = () => {
-    setReviewCount(reviewCount + 1);
+    const next = reviewCount + 1;
+    setReviewCount(next);
+    quickPersist({ reviewCount: next, lastReviewedAt: new Date().toISOString() });
+  };
+
+  const handleToggleImportant = () => {
+    const next = !isImportant;
+    setIsImportant(next);
+    quickPersist({ isImportant: next });
   };
 
   // 章ID・章名・問題IDのいずれかがあれば、対応する演習問題へ遷移できる。
@@ -82,16 +118,10 @@ export function NoteDetail({ note, onBack, onReview }: NoteDetailProps) {
           <ArrowLeft size={20} /> 戻る
         </button>
 
-        {/* 問題カード：タップで対応する演習問題へ遷移（要件5） */}
-        <div
-          role={canReview ? 'button' : undefined}
-          tabIndex={canReview ? 0 : undefined}
-          onClick={canReview ? () => onReview!(note) : undefined}
-          onKeyDown={canReview ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onReview!(note); } } : undefined}
-          className={`bg-white/70 p-5 rounded-2xl border border-[#A9CCE3] space-y-4 transition-all ${
-            canReview ? 'cursor-pointer hover:bg-white hover:shadow-md hover:border-[#2C3E50]/40 active:scale-[0.995]' : ''
-          }`}
-        >
+        {/* 問題カード。演習への移動は下の「この問題を解き直す」ボタンだけにする。
+            以前はカード全面がボタンで、解答を読み直すためにスクロールして触れただけで
+            演習画面へ飛んでしまっていた（読む場所と押す場所を分ける）。 */}
+        <div className="bg-white/70 p-5 rounded-2xl border border-[#A9CCE3] space-y-4">
           <div className="flex flex-wrap items-center gap-2 mb-1">
             {note.chapterTitle && (
               <span className="bg-[#A9CCE3]/20 text-[#2C3E50] px-3 py-1 rounded-full text-xs font-bold border border-[#A9CCE3]/50">
@@ -101,11 +131,6 @@ export function NoteDetail({ note, onBack, onReview }: NoteDetailProps) {
             {note.questionIndex && (
               <span className="bg-[#F9E79F]/30 text-[#D35400] px-3 py-1 rounded-full text-xs font-bold border border-[#F5B041]/50">
                 第{note.questionIndex}問
-              </span>
-            )}
-            {canReview && (
-              <span className="ml-auto flex items-center gap-1 text-[#2C3E50] text-xs font-bold bg-[#A9CCE3]/25 px-3 py-1 rounded-full border border-[#A9CCE3]/60">
-                <PenLine size={13} /> タップして復習
               </span>
             )}
           </div>
@@ -129,7 +154,7 @@ export function NoteDetail({ note, onBack, onReview }: NoteDetailProps) {
           {canReview && (
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onReview!(note); }}
+              onClick={() => onReview!(note)}
               className="w-full mt-2 flex items-center justify-center gap-2 px-5 py-3 bg-[#2C3E50] text-white rounded-xl font-bold hover:bg-[#1B2631] transition-colors"
             >
               <PenLine size={18} /> この問題を解き直す
@@ -139,12 +164,21 @@ export function NoteDetail({ note, onBack, onReview }: NoteDetailProps) {
 
       {/* Learning Support Features */}
       <div className="bg-white/70 p-5 rounded-2xl border border-[#A9CCE3] space-y-4">
-        <h3 className="font-bold text-[#2C3E50] text-lg">学習サポート</h3>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="font-bold text-[#2C3E50] text-lg">学習サポート</h3>
+          <span
+            role="status"
+            className={`text-xs font-bold ${quickSaved === 'failed' ? 'text-red-600' : 'text-gray-500'}`}
+          >
+            {quickSaved === 'saved' ? '変更を保存しました' : quickSaved === 'failed' ? '保存できませんでした' : '変更はすぐに保存されます'}
+          </span>
+        </div>
         
         {/* Important Flag */}
         <div className="flex items-center gap-3 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
           <button
-            onClick={() => setIsImportant(!isImportant)}
+            onClick={handleToggleImportant}
+            aria-pressed={isImportant}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all ${
               isImportant 
                 ? 'bg-yellow-400 text-white shadow-md' 
@@ -207,6 +241,7 @@ export function NoteDetail({ note, onBack, onReview }: NoteDetailProps) {
       {/* Memo Section */}
       <div className="bg-white/70 p-5 rounded-2xl border border-[#A9CCE3] space-y-4">
         <h3 className="font-bold text-[#2C3E50] text-lg">個人ノート</h3>
+        <p className="text-xs text-gray-500">メモの本文は「メモを保存」で保存されます。</p>
         <textarea
           value={memo}
           onChange={(e) => setMemo(e.target.value)}

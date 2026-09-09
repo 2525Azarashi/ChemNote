@@ -25,6 +25,7 @@
  * ★画面に出す数は必ず「そのルールで出せる数」でなければならない。★
  */
 
+import { useState } from 'react';
 import { ArrowLeft, Info } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
@@ -35,6 +36,35 @@ import type { BattleAnswerFormat, BattleRule } from '../core/types';
 
 /** 出題数に対して収録数が少ない教科の目印（1試合ぶんの3倍を下回るか） */
 const THIN_POOL_FACTOR = 3;
+
+/**
+ * ★問題数を選べる★（2026-09）
+ *
+ * ご指示（原文）：
+ *   > 後問題数決めれるようにして
+ *
+ * ■ 選べる値
+ *   5 / 10 / 15 の 3 つ。
+ *   ・5  … 休み時間に 1 試合（2〜3 分）
+ *   ・10 … 既定（教科の既定と同じ。化学基礎など）
+ *   ・15 … じっくり
+ *   Firestore のルール（battle_rooms の battleValidNewRoom）が
+ *   questionCount を 3〜20 に制限しているので、この範囲に收まっている。
+ *
+ * ■ どのモードで選べるか
+ *   フレンド対戦（部屋を作る側）と AI 対戦。
+ *   ★全国対戦では選べない★—— 待機列は「同じ教科」でマッチさせている。
+ *   問題数も条件に入れると待機列が 3 つに割れてさらにマッチしにくくなる。
+ *   全国はレートが動く公式戦なので、条件が揃っていることにも意味がある。
+ *
+ * ■ 収録数が足りない教科
+ *   地理（127問）で 15 問はプールの 12% を 1 試合で使う。
+ *   選べはするが、カードの注意書き（formatNote）が選んだ問題数で計算されるので
+   *   「同じ問題が出ることがあります」が自動でつく。
+ *   プールが問題数より少ないときは drawQuestionIds があるぶんだけ出す。
+ */
+export const QUESTION_COUNT_CHOICES = [5, 10, 15] as const;
+export type QuestionCountChoice = (typeof QUESTION_COUNT_CHOICES)[number];
 
 function formatNote(rule: BattleRule, count: number): string {
   if (rule.note) return rule.note;
@@ -48,19 +78,38 @@ export function BattleSubjectSelect({
   title,
   onPick,
   onBack,
+  allowQuestionCount = false,
+  currentSubject,
 }: {
   /** 「部屋をつくる」「相手をさがす」など、何のための選択かを出す */
   title: string;
-  onPick: (subject: string) => void;
+  /**
+   * 教科を選んだとき。
+   * questionCount は allowQuestionCount のときだけ渡る（利用者が選んだ問題数）。
+   * 渡らないときは教科の既定（ルールの questionCount）を使う。
+   */
+  onPick: (subject: string, questionCount?: QuestionCountChoice) => void;
   onBack: () => void;
+  /**
+   * 問題数の選択を出すか。フレンド対戦（部屋を作る）と AI 対戦で true。
+   * 全国対戦は false（待機列を割らないため。QUESTION_COUNT_CHOICES のコメント参照）。
+   */
+  allowQuestionCount?: boolean;
+  /** 本体で選択中の科目。該当カードの枠を濃くして「いま学習中の科目」を示す。 */
+  currentSubject?: string;
 }) {
+  // 選んでいる問題数。既定は 10（教科の既定と同じものが大半）。
+  const [questionCount, setQuestionCount] = useState<QuestionCountChoice>(10);
   // 収録があり、かつ有効な教科だけを並べる。
   // ★POOL_COUNTS の並び順をそのまま使う★
   //   生成器が「収録数の多い順」ではなく既存 SUBJECTS の順で書き出しているので、
   //   既存アプリの教科の並びと一致する（利用者が探す位置が変わらない）。
   const entries = Object.keys(POOL_FORMAT_COUNTS)
     .map((subject) => {
-      const rule = effectiveRule(subject);
+      const base = effectiveRule(subject);
+      // 問題数を選べるときは、カードの表示（○問しょうぶ・注意書き・かなの問数）も
+      // 選んだ数で計算する。表示と実際の出題数が食い違うと「嚇された」になる。
+      const rule: BattleRule = allowQuestionCount ? { ...base, questionCount } : base;
       return {
         subject,
         rule,
@@ -81,6 +130,45 @@ export function BattleSubjectSelect({
       }
     >
       <BattleTitle subtitle={title} />
+      <p className="mb-3 text-sm font-bold" style={{ color: INK }}>対戦する科目を確認してください。カードを押すと次へ進みます。</p>
+
+      {allowQuestionCount && (
+        <section
+          className="mb-3 rounded-2xl border-2 p-3"
+          style={{ borderColor: LINE, background: '#FFFFFF' }}
+          aria-label="問題数"
+        >
+          <p className="mb-2 text-[11px] font-black" style={{ color: INK_SUB }}>
+            問題数
+          </p>
+          <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="1試合の問題数">
+            {QUESTION_COUNT_CHOICES.map((n) => {
+              const selected = n === questionCount;
+              return (
+                <button
+                  key={n}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  data-question-count={n}
+                  onClick={() => setQuestionCount(n)}
+                  className="rounded-xl border-2 py-2.5 text-center transition active:scale-[0.98]"
+                  style={{
+                    borderColor: selected ? AMBER : LINE,
+                    background: selected ? `${AMBER}1A` : '#FAF8F3',
+                    color: selected ? AMBER : INK,
+                  }}
+                >
+                  <span className="block text-xl font-black tabular-nums leading-none">{n}</span>
+                  <span className="mt-1 block text-[10px] font-bold" style={{ color: INK_SUB }}>
+                    {n === 5 ? 'さっと' : n === 10 ? 'ふつう' : 'じっくり'}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ★「キーボード入力はありません」と書けなくなった★
           五十音キーボードで1文字ずつ押す形式を入れたので、
@@ -93,7 +181,7 @@ export function BattleSubjectSelect({
       >
         <Info size={13} className="mt-0.5 shrink-0" />
         <span>
-          制限時間は問題ごとにちがいます（およそ8〜30秒）。
+          制限時間は問題ごとにちがいます（およそ15〜45秒）。
           <br />
           答え方は「えらぶ」と「五十音を おす」の2つ。
           <br />
@@ -117,16 +205,17 @@ export function BattleSubjectSelect({
               key={subject}
               type="button"
               id={`battle-subject-${subject}`}
-              onClick={() => onPick(subject)}
+              onClick={() => onPick(subject, allowQuestionCount ? questionCount : undefined)}
               className="w-full rounded-2xl border-2 px-4 py-3.5 text-left transition active:scale-[0.99]"
               style={{
-                borderColor: `${theme.accent}66`,
+                borderColor: subject === currentSubject ? theme.accent : `${theme.accent}66`,
                 background: `${theme.accent}14`,
               }}
             >
               <div className="flex items-center justify-between gap-3">
                 <span className="text-base font-black" style={{ color: theme.accent }}>
                   {theme.label}
+                  {subject === currentSubject && <span className="ml-2 rounded-full bg-white px-2 py-1 text-[11px]" style={{ color: INK }}>選択中の科目</span>}
                 </span>
                 <span
                   className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black tabular-nums"

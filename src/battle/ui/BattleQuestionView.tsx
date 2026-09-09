@@ -35,6 +35,7 @@
  */
 
 import type { ReactNode } from 'react';
+import { BattleText } from './BattleText';
 import { Check, Hourglass, RotateCcw } from 'lucide-react';
 
 import { subjectTheme } from '../../data/subjectTheme';
@@ -55,6 +56,18 @@ interface Props {
   index: number;
   total: number;
   remainMs: number;
+  /**
+   * この問の制限時間（秒）。
+   *
+   * ★question.timeLimit をそのまま使ってはいけない★
+   * 実際の制限時間は core/battleCore.ts の resolveTimeLimit が決める
+   * （ルールの上書きや一律の倍率がかかる）。バーの分母だけプールの素の
+   * 秒数を見ると、残り時間が分母を超えてバーがはみ出す。
+   * 呼ぶ側（useBattleRoom / useAiBattle）はもともと resolveTimeLimit を
+   * 呼んでいるので、その値をそのまま渡してもらう。
+   * 省略時は question.timeLimit（古い呼び出しを壊さないため）。
+   */
+  limitSec?: number;
   answered: boolean;
   /**
    * 解答の受付を止めているか（★answered とは別の意味★）。
@@ -99,11 +112,13 @@ export function BattleQuestionView({
   onPopPanel,
   onCyclePanel,
   onCommitKana,
+  limitSec,
 }: Props) {
   const theme = subjectTheme(question.subject as SubjectKey);
+  const effectiveLimitSec = limitSec ?? question.timeLimit;
 
   return (
-    <section id="battle-question" className="flex flex-1 flex-col">
+    <section id="battle-question" className="flex min-w-0 flex-1 flex-col">
       {/* 進捗と残り時間 */}
       <div className="mb-3">
         <div className="mb-2 flex items-center justify-between">
@@ -121,7 +136,7 @@ export function BattleQuestionView({
             {formatLabel(question.format, question.options.length)}
           </span>
         </div>
-        <TimeBar remainMs={remainMs} limitSec={question.timeLimit} />
+        <TimeBar remainMs={remainMs} limitSec={effectiveLimitSec} />
       </div>
 
       {/* 問題文 */}
@@ -137,11 +152,11 @@ export function BattleQuestionView({
             className="mb-2 whitespace-pre-wrap text-[13px] leading-relaxed"
             style={{ color: INK_SUB }}
           >
-            {renderWithBlank(question.prompt)}
+            {renderWithBlank(question.prompt, question.subject)}
           </p>
         )}
         <p className="text-[15px] font-bold leading-relaxed" style={{ color: INK }}>
-          {question.label}
+          <BattleText text={question.label} subject={question.subject} />
         </p>
       </article>
 
@@ -270,7 +285,7 @@ function ChoiceAnswer({
             type="button"
             disabled={answered || locked}
             onClick={() => onChoose(i)}
-            className="flex min-h-[58px] items-center justify-center gap-1.5 rounded-2xl border-2 px-3 py-2.5 text-center text-[13px] font-bold leading-snug shadow-sm transition active:scale-[0.97] disabled:active:scale-100"
+            className="flex min-w-0 min-h-[58px] items-center justify-center gap-1.5 rounded-2xl border-2 px-3 py-2.5 text-center text-[13px] font-bold leading-snug shadow-sm transition active:scale-[0.97] disabled:active:scale-100"
             // ★圏外のときだけ薄くする★
             // 解答済み（answered）では自分の選択を見せ続けたいので薄くしない。
             // 押せない理由（圏外）のときは、見た目でも伝わる必要がある。
@@ -282,7 +297,7 @@ function ChoiceAnswer({
             }}
           >
             {correct && <Check size={15} style={{ color: CORRECT }} className="shrink-0" />}
-            <span className="break-words">{option}</span>
+            <BattleText text={option} subject={question.subject} />
           </button>
         );
       })}
@@ -630,21 +645,18 @@ function formatLabel(format: string, optionCount: number): string {
  * どこを答えるのかが一目で分からないと、
  * 文章を読み直す時間だけで制限時間を使ってしまう。
  */
-function renderWithBlank(text: string): ReactNode {
-  if (!text.includes(BLANK_MARK)) return text;
-
-  const parts = text.split(BLANK_MARK);
-  return parts.map((part, i) => (
-    <span key={`part-${i}`}>
-      {part}
-      {i < parts.length - 1 && (
-        <mark
-          className="mx-0.5 rounded px-1.5 py-0.5 text-[13px] font-black"
-          style={{ background: GOLD, color: INK }}
-        >
-          ？
-        </mark>
-      )}
-    </span>
-  ));
+function renderWithBlank(text: string, subject: string): ReactNode {
+  const parts = text.split(/(［\s*(?:？|[A-Za-zＡ-Ｚａ-ｚア-ン])\s*］)/u);
+  if (parts.length === 1) return <BattleText text={text} subject={subject} />;
+  return parts.map((part, i) => i % 2 === 1 ? (
+    <mark
+      key={`blank-${i}`}
+      data-answer-blank
+      aria-label={part === BLANK_MARK ? '解答する空欄' : `空欄${part.slice(1, -1).trim()}`}
+      className="mx-0.5 inline-block rounded px-1.5 py-0.5 text-[13px] font-black"
+      style={{ background: GOLD, color: INK }}
+    >
+      {part.slice(1, -1).trim()}
+    </mark>
+  ) : <BattleText key={`part-${i}`} text={part} subject={subject} />);
 }

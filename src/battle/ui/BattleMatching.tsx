@@ -90,12 +90,12 @@ const PHASES: { after: number; label: string; detail: string }[] = [
   {
     after: 12,
     label: 'まだ探しています',
-    detail: 'レートの近い人を優先して照合しています',
+    detail: '同じ教科で対戦する相手を引き続き探しています',
   },
   {
     after: 30,
-    label: '範囲をひろげました',
-    detail: 'レートの条件をゆるめて、より広く探しています',
+    label: '相手を待っています',
+    detail: 'まだ相手が見つかっていません。キャンセルして戻ることもできます',
   },
   {
     after: SUGGEST_AI_AFTER_SEC,

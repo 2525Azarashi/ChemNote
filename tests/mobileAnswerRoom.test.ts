@@ -70,7 +70,7 @@ describe('B-1 選択肢の文章の幅（スマホ）', () => {
     //   3. 右矢印（今回ガードを追加）
     // 解答ペインを AnswerPane.tsx へ切り出したので、3箇所はそちらにある。
     const guarded = ANSWER.match(
-      /!isDesktop && mobileAnswerSubs\.length > 1 && \(/g,
+      /!isDesktop && !listeningMaterialsMobile && mobileAnswerSubs\.length > 1 && \(/g,
     );
     expect(guarded, '位置表示＋左右矢印の3箇所がガードされていること').toHaveLength(3);
 
@@ -78,7 +78,7 @@ describe('B-1 選択肢の文章の幅（スマホ）', () => {
     // （位置表示だけがガードされていて矢印が素通し、という状態を弾く）
     for (const dir of ['-1', '1']) {
       const re = new RegExp(
-        `!isDesktop && mobileAnswerSubs\\.length > 1 && \\([\\s\\S]{0,400}?goMobileAns\\(${dir.replace('-', '\\-')}\\)`,
+        `!isDesktop && !listeningMaterialsMobile && mobileAnswerSubs\\.length > 1 && \\([\\s\\S]{0,400}?goMobileAns\\(${dir.replace('-', '\\-')}\\)`,
       );
       expect(ANSWER, `goMobileAns(${dir}) の矢印がガード下にあること`).toMatch(re);
     }

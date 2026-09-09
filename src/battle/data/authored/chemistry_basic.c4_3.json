@@ -18,8 +18,8 @@
         "subQuestionId": "q_c4_3_1_a"
       },
       "format": "choice4",
-      "prompt": "（a）Mg ＋ （b）O2 → （c）MgO の係数を最も簡単な整数比でそろえるとき、a に入る数はいくつか。",
-      "label": "",
+      "prompt": "［　？　］Mg ＋ 1O2 → 2MgO",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "2",
@@ -50,8 +50,8 @@
         "subQuestionId": "q_c4_3_1_b"
       },
       "format": "choice",
-      "prompt": "（a）Mg ＋ （b）O2 → （c）MgO の係数を最も簡単な整数比でそろえるとき、b に入る数はいくつか。",
-      "label": "",
+      "prompt": "2Mg ＋ ［　？　］O2 → 2MgO",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "1",
@@ -78,8 +78,8 @@
         "subQuestionId": "q_c4_3_1_c"
       },
       "format": "choice4",
-      "prompt": "（a）Mg ＋ （b）O2 → （c）MgO の係数を最も簡単な整数比でそろえるとき、c に入る数はいくつか。",
-      "label": "",
+      "prompt": "2Mg ＋ 1O2 → ［　？　］MgO",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "2",
@@ -110,8 +110,8 @@
         "subQuestionId": "q_c4_3_1_d"
       },
       "format": "choice4",
-      "prompt": "（d）FeS2 ＋ （e）O2 → （f）Fe2O3 ＋ （g）SO2 の係数を最も簡単な整数比でそろえるとき、d に入る数はいくつか。",
-      "label": "",
+      "prompt": "［　？　］FeS2 ＋ 11O2 → 2Fe2O3 ＋ 8SO2",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "4",
@@ -142,8 +142,8 @@
         "subQuestionId": "q_c4_3_1_e"
       },
       "format": "choice4",
-      "prompt": "（d）FeS2 ＋ （e）O2 → （f）Fe2O3 ＋ （g）SO2 の係数を最も簡単な整数比でそろえるとき、e に入る数はいくつか。",
-      "label": "",
+      "prompt": "4FeS2 ＋ ［　？　］O2 → 2Fe2O3 ＋ 8SO2",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "11",
@@ -174,8 +174,8 @@
         "subQuestionId": "q_c4_3_1_f"
       },
       "format": "choice4",
-      "prompt": "（d）FeS2 ＋ （e）O2 → （f）Fe2O3 ＋ （g）SO2 の係数を最も簡単な整数比でそろえるとき、f に入る数はいくつか。",
-      "label": "",
+      "prompt": "4FeS2 ＋ 11O2 → ［　？　］Fe2O3 ＋ 8SO2",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "2",
@@ -206,8 +206,8 @@
         "subQuestionId": "q_c4_3_1_g"
       },
       "format": "choice4",
-      "prompt": "（d）FeS2 ＋ （e）O2 → （f）Fe2O3 ＋ （g）SO2 の係数を最も簡単な整数比でそろえるとき、g に入る数はいくつか。",
-      "label": "",
+      "prompt": "4FeS2 ＋ 11O2 → 2Fe2O3 ＋ ［　？　］SO2",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "8",
@@ -238,8 +238,8 @@
         "subQuestionId": "q_c4_3_1_h"
       },
       "format": "choice4",
-      "prompt": "（h）Fe^2+ ＋ （i）Cl2 → （j）Fe^3+ ＋ （k）Cl^- の係数を最も簡単な整数比でそろえるとき、h に入る数はいくつか。",
-      "label": "",
+      "prompt": "［　？　］Fe^2+ ＋ 1Cl2 → 2Fe^3+ ＋ 2Cl^-",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "2",
@@ -270,8 +270,8 @@
         "subQuestionId": "q_c4_3_1_i"
       },
       "format": "choice",
-      "prompt": "（h）Fe^2+ ＋ （i）Cl2 → （j）Fe^3+ ＋ （k）Cl^- の係数を最も簡単な整数比でそろえるとき、i に入る数はいくつか。",
-      "label": "",
+      "prompt": "2Fe^2+ ＋ ［　？　］Cl2 → 2Fe^3+ ＋ 2Cl^-",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "1",
@@ -298,8 +298,8 @@
         "subQuestionId": "q_c4_3_1_j"
       },
       "format": "choice4",
-      "prompt": "（h）Fe^2+ ＋ （i）Cl2 → （j）Fe^3+ ＋ （k）Cl^- の係数を最も簡単な整数比でそろえるとき、j に入る数はいくつか。",
-      "label": "",
+      "prompt": "2Fe^2+ ＋ 1Cl2 → ［　？　］Fe^3+ ＋ 2Cl^-",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "2",
@@ -330,8 +330,8 @@
         "subQuestionId": "q_c4_3_1_k"
       },
       "format": "choice4",
-      "prompt": "（h）Fe^2+ ＋ （i）Cl2 → （j）Fe^3+ ＋ （k）Cl^- の係数を最も簡単な整数比でそろえるとき、k に入る数はいくつか。",
-      "label": "",
+      "prompt": "2Fe^2+ ＋ 1Cl2 → 2Fe^3+ ＋ ［　？　］Cl^-",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "2",
@@ -458,8 +458,8 @@
         "subQuestionId": "q_c4_3_3_a"
       },
       "format": "choice",
-      "prompt": "（ア）C3H8 ＋ （イ）O2 → （ウ）CO2 ＋ （エ）H2O の係数を最も簡単な整数比でそろえるとき、（ア）に入る数はいくつか。係数が1でも1と答える。",
-      "label": "",
+      "prompt": "［　？　］C3H8 ＋ 5O2 → 3CO2 ＋ 4H2O",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "1",
@@ -486,8 +486,8 @@
         "subQuestionId": "q_c4_3_3_b"
       },
       "format": "choice4",
-      "prompt": "（ア）C3H8 ＋ （イ）O2 → （ウ）CO2 ＋ （エ）H2O の係数を最も簡単な整数比でそろえるとき、（イ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "1C3H8 ＋ ［　？　］O2 → 3CO2 ＋ 4H2O",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "5",
@@ -518,8 +518,8 @@
         "subQuestionId": "q_c4_3_3_c"
       },
       "format": "choice4",
-      "prompt": "（ア）C3H8 ＋ （イ）O2 → （ウ）CO2 ＋ （エ）H2O の係数を最も簡単な整数比でそろえるとき、（ウ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "1C3H8 ＋ 5O2 → ［　？　］CO2 ＋ 4H2O",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "3",
@@ -550,8 +550,8 @@
         "subQuestionId": "q_c4_3_3_d"
       },
       "format": "choice4",
-      "prompt": "（ア）C3H8 ＋ （イ）O2 → （ウ）CO2 ＋ （エ）H2O の係数を最も簡単な整数比でそろえるとき、（エ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "1C3H8 ＋ 5O2 → 3CO2 ＋ ［　？　］H2O",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "4",
@@ -582,8 +582,8 @@
         "subQuestionId": "q_c4_3_3_o"
       },
       "format": "choice4",
-      "prompt": "（オ）Cu ＋ （カ）HNO3 → （キ）Cu(NO3)2 ＋ （ク）H2O ＋ （ケ）NO の係数を最も簡単な整数比でそろえるとき、（オ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "［　？　］Cu ＋ 8HNO3 → 3Cu(NO3)2 ＋ 4H2O ＋ 2NO",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "3",
@@ -614,8 +614,8 @@
         "subQuestionId": "q_c4_3_3_ka"
       },
       "format": "choice4",
-      "prompt": "（オ）Cu ＋ （カ）HNO3 → （キ）Cu(NO3)2 ＋ （ク）H2O ＋ （ケ）NO の係数を最も簡単な整数比でそろえるとき、（カ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "3Cu ＋ ［　？　］HNO3 → 3Cu(NO3)2 ＋ 4H2O ＋ 2NO",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "8",
@@ -646,8 +646,8 @@
         "subQuestionId": "q_c4_3_3_ki"
       },
       "format": "choice4",
-      "prompt": "（オ）Cu ＋ （カ）HNO3 → （キ）Cu(NO3)2 ＋ （ク）H2O ＋ （ケ）NO の係数を最も簡単な整数比でそろえるとき、（キ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "3Cu ＋ 8HNO3 → ［　？　］Cu(NO3)2 ＋ 4H2O ＋ 2NO",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "3",
@@ -678,8 +678,8 @@
         "subQuestionId": "q_c4_3_3_ku"
       },
       "format": "choice4",
-      "prompt": "（オ）Cu ＋ （カ）HNO3 → （キ）Cu(NO3)2 ＋ （ク）H2O ＋ （ケ）NO の係数を最も簡単な整数比でそろえるとき、（ク）に入る数はいくつか。",
-      "label": "",
+      "prompt": "3Cu ＋ 8HNO3 → 3Cu(NO3)2 ＋ ［　？　］H2O ＋ 2NO",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "4",
@@ -710,8 +710,8 @@
         "subQuestionId": "q_c4_3_3_ke"
       },
       "format": "choice4",
-      "prompt": "（オ）Cu ＋ （カ）HNO3 → （キ）Cu(NO3)2 ＋ （ク）H2O ＋ （ケ）NO の係数を最も簡単な整数比でそろえるとき、（ケ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "3Cu ＋ 8HNO3 → 3Cu(NO3)2 ＋ 4H2O ＋ ［　？　］NO",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "2",
@@ -742,8 +742,8 @@
         "subQuestionId": "q_c4_3_3_ko"
       },
       "format": "choice4",
-      "prompt": "（コ）MnO4^- ＋ （サ）H2O2 ＋ （シ）H^+ → （ス）Mn^2+ ＋ （セ）H2O ＋ （ソ）O2 の係数を最も簡単な整数比でそろえるとき、（コ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "［　？　］MnO4^- ＋ 5H2O2 ＋ 6H^+ → 2Mn^2+ ＋ 8H2O ＋ 5O2",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "2",
@@ -774,8 +774,8 @@
         "subQuestionId": "q_c4_3_3_sa"
       },
       "format": "choice4",
-      "prompt": "（コ）MnO4^- ＋ （サ）H2O2 ＋ （シ）H^+ → （ス）Mn^2+ ＋ （セ）H2O ＋ （ソ）O2 の係数を最も簡単な整数比でそろえるとき、（サ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "2MnO4^- ＋ ［　？　］H2O2 ＋ 6H^+ → 2Mn^2+ ＋ 8H2O ＋ 5O2",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "5",
@@ -806,8 +806,8 @@
         "subQuestionId": "q_c4_3_3_shi"
       },
       "format": "choice4",
-      "prompt": "（コ）MnO4^- ＋ （サ）H2O2 ＋ （シ）H^+ → （ス）Mn^2+ ＋ （セ）H2O ＋ （ソ）O2 の係数を最も簡単な整数比でそろえるとき、（シ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "2MnO4^- ＋ 5H2O2 ＋ ［　？　］H^+ → 2Mn^2+ ＋ 8H2O ＋ 5O2",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "6",
@@ -838,8 +838,8 @@
         "subQuestionId": "q_c4_3_3_su"
       },
       "format": "choice4",
-      "prompt": "（コ）MnO4^- ＋ （サ）H2O2 ＋ （シ）H^+ → （ス）Mn^2+ ＋ （セ）H2O ＋ （ソ）O2 の係数を最も簡単な整数比でそろえるとき、（ス）に入る数はいくつか。",
-      "label": "",
+      "prompt": "2MnO4^- ＋ 5H2O2 ＋ 6H^+ → ［　？　］Mn^2+ ＋ 8H2O ＋ 5O2",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "2",
@@ -870,8 +870,8 @@
         "subQuestionId": "q_c4_3_3_se"
       },
       "format": "choice4",
-      "prompt": "（コ）MnO4^- ＋ （サ）H2O2 ＋ （シ）H^+ → （ス）Mn^2+ ＋ （セ）H2O ＋ （ソ）O2 の係数を最も簡単な整数比でそろえるとき、（セ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "2MnO4^- ＋ 5H2O2 ＋ 6H^+ → 2Mn^2+ ＋ ［　？　］H2O ＋ 5O2",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "8",
@@ -902,8 +902,8 @@
         "subQuestionId": "q_c4_3_3_so"
       },
       "format": "choice4",
-      "prompt": "（コ）MnO4^- ＋ （サ）H2O2 ＋ （シ）H^+ → （ス）Mn^2+ ＋ （セ）H2O ＋ （ソ）O2 の係数を最も簡単な整数比でそろえるとき、（ソ）に入る数はいくつか。",
-      "label": "",
+      "prompt": "2MnO4^- ＋ 5H2O2 ＋ 6H^+ → 2Mn^2+ ＋ 8H2O ＋ ［　？　］O2",
+      "label": "空欄に入る係数を答えなさい（係数1も省略しない）。",
       "options": [
         {
           "text": "5",

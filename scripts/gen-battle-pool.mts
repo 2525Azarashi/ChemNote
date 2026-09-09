@@ -104,6 +104,7 @@
  * の2通りで本文に戻す。★どちらでも戻せない設問は出題しない。★
  */
 
+import { buildSingleBlankDisplay, singleQuestionLabel, stripExerciseHeading, hasUnresolvedBlank, type PromptSub } from '../src/battle/core/questionPrompt';
 import { writeFileSync, readFileSync, readdirSync, existsSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -255,10 +256,6 @@ const WORD_MAX_CHARS = 28;
  */
 const PROMPT_MAX_CHARS = 150;
 
-/** 空欄の前後をどれだけ残すか（文字数） */
-const BLANK_CONTEXT_BEFORE = 90;
-const BLANK_CONTEXT_AFTER = 50;
-
 /** 設問文（ラベル）の最大文字数 */
 const LABEL_MAX_CHARS = 110;
 
@@ -275,9 +272,6 @@ const SELF_CONTAINED_MIN_CHARS = 6;
  * これを超えるリード文は捨てる（肝心の問いが埋もれるため）。
  */
 const SELF_CONTAINED_LEAD_MAX = 70;
-
-/** 空欄を表す目印。対戦画面ではここを強調表示する */
-const BLANK_MARK = '［　？　］';
 
 // ============================================================
 // 型
@@ -314,6 +308,7 @@ interface RawSub {
   chapterId: string;
   problemId: string;
   problemText: string;
+  siblings: PromptSub[];
   imageUrl?: string;
   id: string;
   label: string;
@@ -629,6 +624,7 @@ function collectAll(): RawSub[] {
             chapterId: String(ch.id),
             problemId: String(problem.id),
             problemText: String(problem.text || ''),
+            siblings: problem.subQuestions || [],
             imageUrl: problem.imageUrl ? String(problem.imageUrl) : undefined,
             id: String(sq.id),
             label: String(sq.label || ''),
@@ -1034,11 +1030,11 @@ function battleTimeLimit(row: RawSub): number {
  * そこで★空欄の位置を見つけて、その前後だけを残す★。
  *
  * -------------------------------------------------------------------
- * ■ 他の空欄の答えを隠す
+ * ■ 他の空欄は元の正答から補完する
  * -------------------------------------------------------------------
  * 実データには「( エ: 蒸留 )」のように、答えが併記された空欄がある。
- * これをそのまま出すと、その空欄が別の問題として出題されたときに
- * 答えが見えてしまう。記号だけの「（エ）」に戻して隠す。
+ * 単独出題では対象だけを空欄にし、それ以外は同じ大問の正答から補完する。
+ * 別の大問の正答を流用したり、補完できないものを推測で埋めたりしない。
  */
 interface Display {
   prompt: string;
@@ -1047,29 +1043,22 @@ interface Display {
   answerable: boolean;
 }
 
+const PROMPT_REPAIRS: Record<string, { prompt: string; label: string; expectedAnswer: string }> = JSON.parse(
+  readFileSync(new URL('./data/battle_prompt_repairs.json', import.meta.url), 'utf8'),
+);
+
 function buildBlankPrompt(row: RawSub): Display {
-  const labelKey = extractBlankKey(row.label);
-  const bare = bareLabel(row.label);
+  const repair = PROMPT_REPAIRS[uniqueKey(row)];
+  if (repair) {
+    if (repair.expectedAnswer !== row.correctAnswer) throw new Error(`Stale prompt repair: ${uniqueKey(row)}`);
+    return { prompt: repair.prompt, label: repair.label, answerable: true };
+  }
+  const blank = buildSingleBlankDisplay(row.problemText, row.raw, row.siblings);
+  if (blank) return blank;
+  const bare = singleQuestionLabel(row.label);
   const selfContained = bare.length >= SELF_CONTAINED_MIN_CHARS;
   const label = formatLabel(row.label);
-
-  // 他の空欄に併記された答えを隠す
-  let text = String(row.problemText || '').replace(
-    /[（(]\s*([ア-ンA-Za-z0-9]{1,3})\s*[:：][^)）]*[)）]/g,
-    '（$1）',
-  );
-
-  if (labelKey) {
-    // この設問が答える空欄を目印に置き換える
-    const escaped = labelKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const re = new RegExp(`[（(]\\s*${escaped}\\s*[)）]`, 'g');
-    if (re.test(text)) {
-      const marked = text.replace(re, BLANK_MARK);
-      const context = extractBlankContext(marked);
-      // 空欄の位置が特定できた。これが最良の形。
-      if (context) return { prompt: context, label, answerable: true };
-    }
-  }
+  const text = String(row.problemText || '');
 
   if (selfContained) {
     // ラベル自体が問いになっている。
@@ -1077,7 +1066,7 @@ function buildBlankPrompt(row: RawSub): Display {
     // （長いリード文を付けると肝心の問いが埋もれる）。
     const lead = cleanPrompt(text);
     return {
-      prompt: lead.length <= SELF_CONTAINED_LEAD_MAX ? lead : '',
+      prompt: lead.length <= SELF_CONTAINED_LEAD_MAX && !hasUnresolvedBlank(lead) ? lead : '',
       label,
       answerable: true,
     };
@@ -1106,65 +1095,9 @@ function isAnswerable(d: Display): boolean {
   return (d.prompt.length > 0 || d.label.length > 0);
 }
 
-/**
- * 目印（BLANK_MARK）の前後だけを切り出す。
- * 目印が無ければ null を返す（呼び出し側が通常の切り出しに落とす）。
- */
-function extractBlankContext(marked: string): string | null {
-  const pos = marked.indexOf(BLANK_MARK);
-  if (pos < 0) return null;
-
-  const head = marked.slice(0, pos);
-  const tail = marked.slice(pos + BLANK_MARK.length);
-
-  // 前側: 直近の文の区切り（。改行）から始める。無ければ文字数で切る。
-  let before = head.slice(-BLANK_CONTEXT_BEFORE);
-  const sep = Math.max(before.lastIndexOf('。'), before.lastIndexOf('\n'));
-  if (sep >= 0 && before.length - sep > 12) before = before.slice(sep + 1);
-  const truncatedHead = head.length > before.length;
-
-  // 後側: 次の文の区切りまで。
-  let after = tail.slice(0, BLANK_CONTEXT_AFTER);
-  const end = after.search(/[。\n]/);
-  if (end >= 0) after = after.slice(0, end + 1);
-  const truncatedTail = tail.length > after.length && !/[。\n]$/.test(after);
-
-  const body =
-    `${truncatedHead ? '…' : ''}${before.trim()}${BLANK_MARK}${after.trim()}${truncatedTail ? '…' : ''}`;
-
-  return body.replace(/\s*\n\s*/g, ' ').trim();
-}
-
-/**
- * ラベルが「それだけで答えられる問い」になっているか。
- *
- * 「(ア)」「(1)」のような参照だけなら false。
- * 「（1） ろ紙を通過して下に落ちた液体の名称」のように
- * 参照記号を取り除いても文が残るなら true。
- */
-function bareLabel(label: string): string {
-  return label
-    .replace(/^問\s*\d+\s*/, '')
-    .replace(/^[（(]\s*[ア-ンA-Za-z0-9]{1,3}\s*[)）]\s*/, '')
-    .replace(/^[①-⑩]\s*/, '')
-    .trim();
-}
-
-/** ラベル「問1 (ア)」から空欄の記号「ア」を取り出す（数字だけの (1) は空欄参照ではない） */
-function extractBlankKey(label: string): string | null {
-  // 「(ア)」のようなカナ・英字の参照だけを空欄参照と見なす。
-  // 「(1)」「(2)」は設問の通し番号であって、リード文の空欄ではない
-  // （実測: 数字を空欄記号として探すと139件が誤検出になる）。
-  const m = label.match(/[（(]\s*([ア-ンA-Za-z])\s*[)）]/);
-  if (m) return m[1];
-  const bare = label.replace(/^問\s*\d+\s*/, '').trim();
-  if (/^[ア-ン]$/.test(bare)) return bare;
-  return null;
-}
-
 /** 設問文（ラベル）を対戦画面用に整える */
 function formatLabel(label: string): string {
-  const s = label.replace(/^問\s*\d+\s*/, '').replace(/\s+/g, ' ').trim();
+  const s = singleQuestionLabel(label);
   return s.length <= LABEL_MAX_CHARS ? s : `${s.slice(0, LABEL_MAX_CHARS - 1)}…`;
 }
 
@@ -1192,7 +1125,7 @@ function uniqueKey(row: RawSub): string {
 /** 選択肢カードに収まるように整える */
 function trimOption(option: string): string {
   const s = option.replace(/\s+/g, ' ').trim();
-  return s.length <= 60 ? s : `${s.slice(0, 59)}…`;
+  return s; // Never truncate a choice: its distinguishing clause may be at the end.
 }
 
 // ============================================================
@@ -1759,6 +1692,17 @@ function build(): { pool: PoolQuestion[]; stats: Record<string, Record<string, n
       pool.push(q);
       bump(q.subject, `external_${q.format}`);
     }
+  }
+
+  for (const q of pool) {
+    q.prompt = stripExerciseHeading(q.prompt).replace(/［\s*？\s*］/g, '［　？　］');
+    if ((q.prompt.match(/_{2,}/g) || []).length === 1) {
+      q.prompt = q.prompt.replace(/_{2,}/, '［　？　］');
+      q.label = '空欄に入るものを選びなさい。';
+    }
+    q.label = singleQuestionLabel(q.label).replace(/^(酸化還元でない反応)[（(][ア-ン][)）]$/, '$1');
+    // Authored prompts are standalone; discard leftover fragments such as の名称.
+    if (q.id.startsWith('a:') && q.prompt && /^の(?:名称|記号|道具名)$/.test(q.label)) q.label = '';
   }
 
   // 出力の並びを安定させる（生成のたびに差分が出ないように）

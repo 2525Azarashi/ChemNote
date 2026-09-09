@@ -20,6 +20,7 @@ import { aiProfileOf, type AiLevel } from '../core/aiOpponent';
 import { useAiBattle } from '../hooks/useAiBattle';
 import { BattleQuestionView } from './BattleQuestionView';
 import { BattleResult } from './BattleResult';
+import { BattleRaceTrack } from './BattleRaceTrack';
 import {
   BattleButton,
   BattleLoading,
@@ -40,6 +41,7 @@ export function BattleAiRoomScreen({
   subject,
   level,
   matchNo,
+  questionCount,
   onExit,
   onRematch,
   onChangeLevel,
@@ -54,6 +56,8 @@ export function BattleAiRoomScreen({
    * key を渡すと型エラーになる。フック側で番号の変化を見て作り直す。
    */
   matchNo: number;
+  /** 利用者が選んだ問題数。undefined なら教科の既定。 */
+  questionCount?: number;
   onExit: (message?: string) => void;
   /** 同じ教科・同じ強さでもう1回 */
   onRematch: () => void;
@@ -63,7 +67,7 @@ export function BattleAiRoomScreen({
 }) {
   const theme = subjectTheme(subject as SubjectKey);
   const profile = aiProfileOf(level);
-  const b = useAiBattle(subject, level, matchNo);
+  const b = useAiBattle(subject, level, matchNo, questionCount);
 
   const [showResult, setShowResult] = useState(false);
   const [confirmQuit, setConfirmQuit] = useState(false);
@@ -241,11 +245,24 @@ export function BattleAiRoomScreen({
         />
       </section>
 
+      {/* ★相手の位置・点差・連続正解★（理由は BattleRaceTrack.tsx の先頭） */}
+      <BattleRaceTrack
+        total={b.questions.length}
+        current={b.currentIndex}
+        me={b.myDetail}
+        opponent={b.opponentDetail}
+        meAnswered={b.answered}
+        opponentAnswered={b.opponentAnswered}
+        reveal={reveal}
+        opponentAccent={profile.color}
+      />
+
       <BattleQuestionView
         question={b.current}
         index={b.currentIndex}
         total={b.questions.length}
         remainMs={b.remainMs}
+        limitSec={b.limitSec}
         answered={b.answered}
         myChoice={b.myChoice}
         myPanel={b.myPanel}

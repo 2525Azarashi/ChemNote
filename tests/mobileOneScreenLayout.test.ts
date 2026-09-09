@@ -278,6 +278,131 @@ describe('L3: ホームは対戦を先頭に置き、詳細は開閉する', () 
     expect(HOME.indexOf('home-all-progress')).toBeGreaterThan(HOME.indexOf('home-study-button'));
   });
 
+  /*
+    =================================================================
+    ★とびら君の豆知識を「末尾」へ戻さない★
+    =================================================================
+    ご指摘（原文）：
+      > なんかほーむがめんのとびらくんのことば少し下隠れてて
+      > スクロールしないといけないのもったいない
+
+    ■ 何が起きていたか（Chromium で実測・ホーム初期表示）
+      豆知識は画面末尾（.home-lobby-footer）の中に置かれていた。
+      末尾の要素の位置は「その上にある全部の高さの合計」で決まるので、
+      縦の短い端末では初期表示から押し出されていた。
+        320x568 … 160px 隠れる
+        360x640 … 129px 隠れる
+        375x667 … 103px 隠れる
+        390x844 … 隠れない
+      ★端末によって出る／出ないが変わる★のがこの不具合の本質で、
+      「自分の端末では起きない」ため目で見て気づけない。だから機械に見張らせる。
+
+    ■ この検査が固定するもの
+      豆知識が「対戦ステージ（上から2番目の区画）の中」に在ること。
+      ここなら下に何が増えても位置が動かないので、必ず初期表示に入る。
+
+    ■ この検査が固定しないもの（意図的）
+      吹き出しの色・角丸・文言・どの絵柄のとびら君が出るか。
+      これらは調整されるべきものなので固定しない。
+  */
+  it('★とびら君の豆知識は対戦ステージの中にある（末尾に戻していない）★', () => {
+    const arena = HOME.indexOf('data-home-arena');
+    const study = HOME.indexOf('data-home-study');
+    const tip = HOME.indexOf('<DoorMascot');
+    expect(arena).toBeGreaterThan(0);
+    expect(
+      tip,
+      '★とびら君がホームから消えています★',
+    ).toBeGreaterThan(0);
+    // 対戦ステージの開始より後、学習ノートの区画より前＝ステージの中。
+    expect(
+      tip,
+      '★とびら君が対戦ステージの外（＝画面末尾）へ戻っています★ 縦の短い端末で初期表示から隠れます',
+    ).toBeGreaterThan(arena);
+    expect(tip).toBeLessThan(study);
+  });
+
+  it('★末尾（footer）に豆知識を置き直していない★', () => {
+    // コメントには経緯として home-lobby-tip の語が残るので、
+    // 「実際に描画されるコード」だけを見る。
+    const stripped = stripComments(HOME);
+    const footer = stripped.indexOf('className="home-lobby-footer"');
+    expect(footer).toBeGreaterThan(0);
+    // footer より後ろに DoorMascot が現れないこと
+    expect(stripped.indexOf('<DoorMascot', footer)).toBe(-1);
+    // 旧クラス名（末尾用）を使い回していないこと
+    expect(stripped).not.toContain('home-lobby-tip');
+  });
+
+  it('豆知識はステージの全幅を使う（狭い列で行数が増えるのを防ぐ）', () => {
+    /*
+      対戦ステージは「本文列 + ショートカット列」の2カラム。
+      grid-column を指定せず狭い側に入れると吹き出しが3行に折り返し、
+      実測で高さが 67px → 82px に増えて、その差ぶん
+      「学習を始める」を 320x568 で 64px 画面外へ押し出した。
+      ＝ 豆知識を見せるために別のものを隠す、という取引になってしまう。
+    */
+    expect(CSS).toMatch(/\.home-arena-tip\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/u);
+  });
+
+  it('★スマホで詰めるのは飾りと余白だけ（文字は縮めない）★', () => {
+    /*
+      豆知識を上へ上げたぶんの高さは、飾りから返してもらっている。
+      ここで見張るのは「返してもらう相手を間違えていないこと」。
+      ・紋章（.home-battle-emblem）… 情報を持たない純粋な装飾なので畳んでよい
+      ・豆知識の本文（font-size）  … 読むためのものなので絶対に縮めない
+    */
+    const short = CSS.slice(CSS.indexOf('@media (max-height: 700px) and (max-width: 767px)'));
+    // 飾りは縮めている
+    expect(short).toContain('.home-battle-emblem');
+    // 豆知識の文字サイズを短い画面向けに上書きしていないこと
+    expect(short).not.toMatch(/\.home-arena-tip[^}]*font-size/u);
+  });
+
+  it('★短い画面の圧縮はスマホ幅に閉じる（PCを巻き込まない）★', () => {
+    /*
+      ご要望「パソコン版は何も変更しないでね」を構造で守る。
+
+      「縦が短い」という条件だけで分岐すると、縦の短いノートPC
+      （1280x720・1366x768 など）まで一緒に圧縮されてしまう。
+      そこで高さで分岐するブロックには必ず幅の上限を同居させる。
+
+      ★上限値を 767px に固定しない★
+      md（768px）で閉じるものと sm（640px）で閉じるものが混在しており、
+      どちらも「スマホ幅に閉じる」という意図は満たしている。
+      数字を固定すると、正しいのに落ちるテストになる（実際に一度落ちた）。
+      守りたいのは「幅の上限があり、それが 768px 未満であること」。
+    */
+    const heightQueries = CSS.match(/@media \(max-height: \d+px\)[^{]*\{/gu) ?? [];
+    expect(heightQueries.length).toBeGreaterThan(0);
+    for (const q of heightQueries) {
+      const width = q.match(/max-width:\s*(\d+)px/u);
+      expect(width, `★幅の上限が無い高さ条件のメディアクエリがあります: ${q}★`).not.toBeNull();
+      expect(
+        Number(width![1]),
+        `★このメディアクエリは PC まで巻き込みます: ${q}★`,
+      ).toBeLessThan(768);
+    }
+  });
+
+  it('ショートカットは横並びにしても3つ残り、押せる大きさを保つ', () => {
+    /*
+      いちばん縦の短い端末（320x568）では、高さを決めていたのが
+      ショートカット列（実測 237px）だった。横並びにして 1 段に畳んだが、
+      ★ボタンを減らして解決してはいけない★。
+      また 44px を下回ると押しにくくなるので下限も見張る。
+    */
+    const se = CSS.slice(CSS.indexOf('@media (max-height: 600px) and (max-width: 767px)'));
+    expect(se).toMatch(/\.home-shortcuts\s*\{[^}]*flex-direction: row/u);
+    const minH = se.match(/\.home-shortcuts > \*\s*\{[^}]*min-height:\s*(\d+)px/u);
+    expect(minH, '★ショートカットの高さ下限の指定が消えています★').not.toBeNull();
+    expect(Number(minH![1])).toBeGreaterThanOrEqual(44);
+    // 3つのショートカットはホームに残っている（消していない）
+    expect(HOME).toContain('学習ノートを開く');
+    expect(HOME).toContain('アプリ紹介を開く');
+    expect(HOME).toContain('ご意見・ご要望');
+  });
+
   it('PCは対戦と学習の2カラムで、短い画面でもスクロールを維持する', () => {
     expect(CSS).toMatch(/\.home-lobby-layout\s*\{[^}]*grid-template-columns: minmax\(0, 1\.35fr\) minmax\(0, 1fr\)/);
     expect(HOME).not.toContain('lg:overflow-hidden');
@@ -597,7 +722,7 @@ describe('L6: 選択肢は CSS order で必ず操作説明より前に出す', (
   it('order が効くように親が flex-col である', () => {
     // order は flex/grid コンテナの子にしか効かない。
     // 親が block のままだと上の order-1/2 は黙って無視される。
-    expect(MC).toContain('<div className="flex w-full flex-col gap-2">');
+    expect(MC).toMatch(/<div\s+(?:data-listening-compact-options=\{[^}]+\}\s+)?className="flex w-full flex-col gap-2">/u);
   });
 
   it('★PC は従来の並び★（md 以上で order を解除している）', () => {

@@ -69,7 +69,7 @@ export function renderLatex(
       // マクロ展開の暴走（\def の再帰など）を抑える。
       maxExpand: 300,
     });
-    const label = (ariaLabel ?? source).replace(/"/g, '&quot;');
+    const label = escapeHtml(ariaLabel ?? source);
     return `<span class="${KATEX_WRAPPER_CLASS}${displayMode ? ' mtb-math-block' : ''}" aria-label="${label}">${html}</span>`;
   } catch {
     return `<span class="${KATEX_WRAPPER_CLASS}-fallback">${escapeHtml(source)}</span>`;
@@ -113,6 +113,8 @@ const SYMBOL_REPLACEMENTS: Array<[RegExp, string]> = [
   [/⇔/g, ' \\Leftrightarrow '],
   [/⇒/g, ' \\Rightarrow '],
   [/∈/g, ' \\in '],
+  [/∩/g, ' \\cap '],
+  [/∪/g, ' \\cup '],
   [/∴/g, ' \\therefore '],
   [/∵/g, ' \\because '],
   [/∠/g, ' \\angle '],
@@ -202,6 +204,7 @@ function readLeftAtom(s: string, end: number): { start: number; text: string } |
       let j = i;
       while (j > 0 && /[A-Za-z]/.test(s[j - 1])) j--;
       if (j > 0 && s[j - 1] === '\\') i = j - 1;
+      else if (c === ')' && /^[fgPQ]$/.test(s.slice(j, i))) i = j;
       // 添字・指数は基底と一体（x^{5} の {5} を読んだあと x へ続ける）
       if (i > 0 && (s[i - 1] === '^' || s[i - 1] === '_')) { i--; continue; }
       break;
@@ -257,7 +260,7 @@ function readRightAtom(s: string, start: number): { end: number; text: string } 
   if (s[i] === '-' || s[i] === '+') { sign = s[i]; i++; }
 
   // 括弧グループ → 外側の括弧は分数の中では不要なので外す
-  if (s[i] === '(') {
+  if (s[i] === '(' || s[i] === '{') {
     const close = matchForward(s, i);
     if (close < 0) return null;
     const inner = s.slice(i + 1, close);
@@ -297,6 +300,10 @@ function readRightAtom(s: string, start: number): { end: number; text: string } 
   if (!IDENT_CHAR.test(s[i])) return null;
   while (i < s.length && IDENT_CHAR.test(s[i])) i++;
   i = skipScripts(s, i);
+  if (/^[fgPQ]$/.test(s.slice(atomStart, i)) && s[i] === '(') {
+    const close = matchForward(s, i);
+    if (close >= 0) i = close + 1;
+  }
   return { end: i, text: s.slice(atomStart, i) };
 }
 
@@ -327,7 +334,9 @@ function buildFractions(src: string): string {
       continue;
     }
 
-    const numerator = left.text.replace(/^\(|\)$/g, '');
+    const numerator = left.text.startsWith('(') && matchForward(left.text, 0) === left.text.length - 1
+      ? left.text.slice(1, -1)
+      : left.text;
     const frac = `\\frac{${numerator}}{${right.text}}`;
     s = s.slice(0, left.start) + frac + s.slice(right.end);
     cursor = left.start + frac.length;
@@ -733,7 +742,7 @@ const CHEM_HINT = /[₀-₉]|[⁰-⁹⁺⁻]|[→⟶⇄⇌⟷⇔]|[A-Z][a-z]?[0-
  * 数式領域として連続して取り込める文字。
  * 日本語・全角記号・「%」「℃」などは含めない（そこで領域が切れる）。
  */
-const MATH_CHAR = /[0-9A-Za-z+\-−–—=×÷·・^_/!'’′\\()[\]{}|,.<>≠≦≧≤≥≒≈∫Σ∑√πθαβγλμωφΔδΩ∞→⟶∈∴∵∠±∓⇔⇒⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻ⁿ₀₁₂₃₄₅₆₇₈₉ \t]/;
+const MATH_CHAR = /[0-9A-Za-z+\-−–—=×÷·・^_/!'’′\\()[\]{}|,.<>≠≦≧≤≥≒≈∫Σ∑√πθαβγλμωφΔδΩ∞→⟶∈∩∪∴∵∠±∓⇔⇒⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻ⁿ₀₁₂₃₄₅₆₇₈₉ \t]/;
 
 /** 領域の端に付いた「数式ではない文字」を落とす。 */
 function trimRegion(text: string): string {
@@ -746,8 +755,10 @@ function trimRegion(text: string): string {
 }
 
 /** 領域が「実質的に数式」か（記号だけ・単語だけの誤検出を弾く）。 */
-function looksLikeMath(text: string): boolean {
-  if (!STRONG_TRIGGER.test(text)) return false;
+function looksLikeMath(text: string, mathContext = false): boolean {
+  // 数学と明示された画面だけは短い分数・指数・座標も対象にする。
+  if (!mathContext && !STRONG_TRIGGER.test(text)) return false;
+  if (mathContext && !/[A-Za-z0-9∫Σ∑√πθαβγ∞]/.test(text)) return false;
 
   // 英単語の羅列（リスニング本文など）は数式にしない。
   // 数式で使う関数名・LaTeX コマンドだけを既知語として許可する。
@@ -761,7 +772,7 @@ function looksLikeMath(text: string): boolean {
 
   // 単位を含む領域（22.4 L / 1 mol など）は化学の換算式なので数式化しない。
   // KaTeX に渡すと L や mol が斜体の変数になってしまう。
-  if ([...UNIT_TOKENS].some((u) => new RegExp(`(?<![A-Za-z])${u}(?![A-Za-z])`).test(text))) {
+  if (!mathContext && [...UNIT_TOKENS].some((u) => new RegExp(`(?<![A-Za-z])${u}(?![A-Za-z])`).test(text))) {
     return false;
   }
 
@@ -778,7 +789,7 @@ export interface MathRegion {
  * テキスト中の数式領域を列挙する。
  * 「MATH_CHAR の連続」を候補にし、強いトリガを含むものだけ採用する。
  */
-export function scanMathRegions(text: string): MathRegion[] {
+export function scanMathRegions(text: string, mathContext = false): MathRegion[] {
   const regions: MathRegion[] = [];
   let i = 0;
 
@@ -790,7 +801,7 @@ export function scanMathRegions(text: string): MathRegion[] {
 
     const raw = text.slice(i, j);
     const trimmed = trimRegion(raw);
-    if (trimmed && looksLikeMath(trimmed)) {
+    if (trimmed && looksLikeMath(trimmed, mathContext)) {
       const offset = raw.indexOf(trimmed);
       regions.push({ start: i + offset, end: i + offset + trimmed.length, text: trimmed });
     }
@@ -812,6 +823,8 @@ export function hasExplicitMath(text: string): boolean {
 export interface TypesetOptions {
   /** アプリ独自記法の自動判定を行うか（既定: true） */
   auto?: boolean;
+  /** 数学の本文と明示された場合のみ、短い分数・指数も検出する。 */
+  context?: 'math';
 }
 
 /**
@@ -840,7 +853,7 @@ export interface TypesetPiece {
 
 
 export function splitMathPieces(text: string, options: TypesetOptions = {}): TypesetPiece[] {
-  const { auto = true } = options;
+  const { auto = true, context } = options;
   const pieces: TypesetPiece[] = [];
 
   // --- (a) 明示マークアップを最優先で切り出す ---
@@ -851,7 +864,7 @@ export function splitMathPieces(text: string, options: TypesetOptions = {}): Typ
   let m: RegExpExecArray | null;
   while ((m = EXPLICIT.exec(text)) !== null) {
     if (m.index > last) {
-      pieces.push(...splitAutoPieces(text.slice(last, m.index), auto));
+      pieces.push(...splitAutoPieces(text.slice(last, m.index), auto, context === 'math'));
     }
     // 明示マークアップの中身は「著者が書いた LaTeX」なので変換しない。
     if (m[1] !== undefined) pieces.push({ kind: 'math', value: m[1], display: true });
@@ -861,7 +874,7 @@ export function splitMathPieces(text: string, options: TypesetOptions = {}): Typ
     else if (m[5] !== undefined) pieces.push({ kind: 'math', value: m[5] });
     last = m.index + m[0].length;
   }
-  if (last < text.length) pieces.push(...splitAutoPieces(text.slice(last), auto));
+  if (last < text.length) pieces.push(...splitAutoPieces(text.slice(last), auto, context === 'math'));
 
   return pieces;
 }
@@ -873,16 +886,16 @@ export function splitMathPieces(text: string, options: TypesetOptions = {}): Typ
  * 数式を先に確定させ、その「隙間」だけを化学式として調べる
  * （数式の中の英字を化学式と誤認させないため）。
  */
-function splitAutoPieces(text: string, auto: boolean): TypesetPiece[] {
+function splitAutoPieces(text: string, auto: boolean, mathContext = false): TypesetPiece[] {
   if (!auto || !text) return text ? [{ kind: 'text', value: text }] : [];
 
-  const mathRegions = scanMathRegions(text);
+  const mathRegions = scanMathRegions(text, mathContext);
 
   // 数式に取られなかった範囲から化学式を探す
   const chemRegions: MathRegion[] = [];
   let scanFrom = 0;
   for (const region of [...mathRegions, { start: text.length, end: text.length, text: '' }]) {
-    if (region.start > scanFrom) {
+    if (!mathContext && region.start > scanFrom) {
       const gap = text.slice(scanFrom, region.start);
       for (const c of scanChemRegions(gap)) {
         chemRegions.push({ start: scanFrom + c.start, end: scanFrom + c.end, text: c.text });

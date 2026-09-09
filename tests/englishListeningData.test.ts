@@ -109,22 +109,10 @@ describe('他科目と同じ形（画面を流用するための約束）', () =
     }
   });
 
-  it('第1問A・第1問B・第2問・第3問 には問題が収録され、他の単元はまだ「準備中」', () => {
-    // 第1問A（第1回＋配布PDF13セット）・第1問B（配布PDF15セット）・
-    // 第2問（イラストが揃った6セットだけ先行公開）・第3問（配布PDF15セット）を
-    // 差し込んだので、収録数は 0 ではなくなる。
+  it('全9単元に問題が収録されている', () => {
     expect(getListeningStats().questions).toBeGreaterThan(0);
-
-    // 収録済みの単元。ここに載っていない単元は「準備中」であること。
-    const RECORDED = new Set(['el1_A', 'el1_B', 'el2', 'el3']);
-
     for (const chapter of getAllListeningChapters()) {
-      if (RECORDED.has(chapter.id)) {
-        expect(chapter.practiceProblems.length).toBeGreaterThan(0);
-      } else {
-        // まだ収録していない単元は空のまま（画面上は「準備中」と出る）
-        expect(chapter.practiceProblems.length).toBe(0);
-      }
+      expect(chapter.practiceProblems.length, chapter.id).toBeGreaterThan(0);
     }
 
     // 収録数の内訳（取り込み漏れ・二重登録の検知用）
@@ -155,5 +143,31 @@ describe('集計ヘルパー', () => {
     expect(getListeningPart('first_half')).not.toBeNull();
     expect(getListeningPart('unknown' as any)).toBeNull();
     expect(getListeningChapters('unknown' as any)).toEqual([]);
+  });
+});
+
+
+describe('提供MP3全206本の対応・整合性', () => {
+  it('原稿、ID、ファイル、チェックサム、再生回数を全件照合する', async () => {
+    const { readFileSync } = await import('node:fs');
+    const { createHash } = await import('node:crypto');
+    const manifest = JSON.parse(readFileSync('scripts/data/listening_premium_manifest.json', 'utf8'));
+    const targets = getAllListeningChapters().filter(c => ['el1_A', 'el1_B', 'el3'].includes(c.id));
+    const tracks = targets.flatMap(c => c.practiceProblems.flatMap((p: any) =>
+      p.audioTracks.map((track: any) => ({ ...track, readCount: p.readCount }))));
+    expect(tracks).toHaveLength(206);
+    expect(manifest).toHaveLength(206);
+    expect(new Set(tracks.map(t => t.audioUrl)).size).toBe(206);
+    for (const reference of manifest) {
+      const matches = tracks.filter(t => t.subId === reference.subId);
+      expect(matches, reference.subId).toHaveLength(1);
+      const track = matches[0];
+      expect(track.audioUrl, reference.subId).toBe(reference.audioUrl);
+      expect(track.script, reference.subId).toBe(reference.script);
+      expect(track.readCount).toBe(reference.app_read_count);
+      expect(reference.repetitions_in_file).toBe(1);
+      const bytes = readFileSync(`public${track.audioUrl}`);
+      expect(createHash('sha256').update(bytes).digest('hex'), reference.subId).toBe(reference.sha256);
+    }
   });
 });

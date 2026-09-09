@@ -40,6 +40,7 @@ import { BattleMatching } from './BattleMatching';
 import { BattleRanking } from './BattleRanking';
 import { BattleRoomScreen } from './BattleRoomScreen';
 import { BattleSubjectSelect } from './BattleSubjectSelect';
+import type { QuestionCountChoice } from './BattleSubjectSelect';
 
 /**
  * 対戦モードの中の画面。
@@ -74,6 +75,7 @@ export function BattleMode({
   onExit,
   onRequireLogin,
   onPractice,
+  initialSubject = '',
 }: {
   /** 対戦モードを抜けてアプリのホームに戻る */
   onExit: () => void;
@@ -87,10 +89,17 @@ export function BattleMode({
    * 渡されなかったときはリザルトにボタンが出ない。
    */
   onPractice?: (subject: string, chapterId: string) => void;
+  initialSubject?: string;
 }) {
   const [screen, setScreen] = useState<Screen>('home');
   const [roomId, setRoomId] = useState<string | null>(null);
-  const [subject, setSubject] = useState<string>('');
+  const [subject, setSubject] = useState<string>(initialSubject);
+  /**
+   * 利用者が選んだ問題数（フレンド・AI でのみ）。undefined なら教科の既定。
+   * ご指示「問題数決めれるようにして」。全国対戦は待機列を割らないため対象外
+   *（理由は BattleSubjectSelect の QUESTION_COUNT_CHOICES のコメント）。
+   */
+  const [questionCount, setQuestionCount] = useState<QuestionCountChoice | undefined>(undefined);
   const [aiLevel, setAiLevel] = useState<AiLevel>('normal');
   /**
    * AI 対戦の「もう1回」で試合を作り直すための番号。
@@ -141,12 +150,18 @@ export function BattleMode({
   // ------------------------------------------------------------
   // 部屋を作る
   // ------------------------------------------------------------
-  const createRoom = useCallback(async (pick: string) => {
+  const createRoom = useCallback(async (pick: string, count?: QuestionCountChoice) => {
     setSubject(pick);
     setScreen('creating');
     setError(null);
     try {
-      const { roomId: created } = await createFriendRoom(pick);
+      // 問題数を選んでいればルールに上書きして部屋に焼き込む。
+      // 部屋の rules は参加者が変えられない（firestore.rules の battleCoreFixed）ので、
+      // 相手も同じ問題数で戦うことが保証される。
+      const { roomId: created } = await createFriendRoom(
+        pick,
+        count ? { questionCount: count } : undefined,
+      );
       setRoomId(created);
       setScreen('room');
     } catch (e) {
@@ -164,13 +179,13 @@ export function BattleMode({
     setScreen('home');
   }, []);
 
-  /** 同じ教科でもう1回（結果画面から） */
+  /** 同じ教科・同じ問題数でもう1回（結果画面から） */
   const rematch = useCallback(
     (pick: string) => {
       setRoomId(null);
-      void createRoom(pick);
+      void createRoom(pick, questionCount);
     },
-    [createRoom],
+    [createRoom, questionCount],
   );
 
   // ------------------------------------------------------------
@@ -186,8 +201,13 @@ export function BattleMode({
             </div>
           )}
           <BattleSubjectSelect
+            currentSubject={subject}
             title="部屋をつくる ／ 教科をえらぶ"
-            onPick={(pick) => void createRoom(pick)}
+            allowQuestionCount
+            onPick={(pick, count) => {
+              setQuestionCount(count);
+              void createRoom(pick, count);
+            }}
             onBack={() => setScreen('home')}
           />
         </>
@@ -196,9 +216,12 @@ export function BattleMode({
     case 'subject-national':
       return (
         <BattleSubjectSelect
+            currentSubject={subject}
           title="全国対戦 ／ 教科をえらぶ"
+          // ★全国は問題数を選べない★ 待機列は教科だけでマッチさせている。
           onPick={(pick) => {
             setSubject(pick);
+            setQuestionCount(undefined);
             setScreen('matching');
           }}
           onBack={() => setScreen('home')}
@@ -251,9 +274,12 @@ export function BattleMode({
     case 'subject-ai':
       return (
         <BattleSubjectSelect
+            currentSubject={subject}
           title="AIと対戦 ／ 教科をえらぶ"
-          onPick={(pick) => {
+          allowQuestionCount
+          onPick={(pick, count) => {
             setSubject(pick);
+            setQuestionCount(count);
             setScreen('ai-level');
           }}
           onBack={() => setScreen('home')}
@@ -278,6 +304,7 @@ export function BattleMode({
         <BattleAiRoomScreen
           matchNo={aiMatchNo}
           subject={subject}
+          questionCount={questionCount}
           level={aiLevel}
           onExit={leaveRoom}
           onRematch={() => setAiMatchNo((n) => n + 1)}

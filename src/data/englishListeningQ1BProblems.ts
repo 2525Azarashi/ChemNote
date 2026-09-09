@@ -20,8 +20,9 @@
  *   イラストの内容（PDF の日本語説明）は解説側に載せ、解答時のネタバレを防ぐ。
  *
  * 音源について
- *   MP3 は付属しないので audioUrl を持たせず、ListeningAudioPlayer 側で
- *   ブラウザの音声合成（SpeechSynthesis）が script を読み上げる。
+ *   提供された高品質MP3を audioUrl で参照する。各ファイルは原稿1回分。
+ *   再生回数は readCount に従いアプリ側で制御する。
+ *   対応原稿・SHA-256・出典は scripts/data/listening_premium_manifest.json に記録。
  */
 
 import type { ListeningAudioTrack, ListeningProblem } from './englishListeningQ1AProblems';
@@ -33,6 +34,7 @@ const MARK_OPTIONS = ['①', '②', '③', '④'];
 const EL1_B_SET1_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set1_1',
+    audioUrl: '/listening_audio/el1B_set1_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: '"Look, Mom. The cat is sleeping under the table again."',
@@ -41,6 +43,7 @@ const EL1_B_SET1_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set1_2',
+    audioUrl: '/listening_audio/el1B_set1_q2.mp3',
     label: '問2',
     hint: '男性（会社員）',
     script: '"I\'ll take this red shoulder bag with the long strap, please."',
@@ -49,6 +52,7 @@ const EL1_B_SET1_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set1_3',
+    audioUrl: '/listening_audio/el1B_set1_q3.mp3',
     label: '問3',
     hint: '女の子（小学生）',
     script: '"The bus stop is in front of the bank, next to the big tree."',
@@ -57,6 +61,7 @@ const EL1_B_SET1_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set1_4',
+    audioUrl: '/listening_audio/el1B_set1_q4.mp3',
     label: '問4',
     hint: '男性（高校生）',
     script: '"Two boys are playing soccer, and one more is just watching them."',
@@ -223,6 +228,7 @@ in front of と next to の2つの位置情報の両方を満たす絵を選ぶ�
 const EL1_B_SET2_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set2_1',
+    audioUrl: '/listening_audio/el1B_set2_q1.mp3',
     label: '問1',
     hint: '女性（母親）',
     script: '"None of the three girls is wearing a hat, but one of them has an umbrella."',
@@ -231,6 +237,7 @@ const EL1_B_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set2_2',
+    audioUrl: '/listening_audio/el1B_set2_q2.mp3',
     label: '問2',
     hint: '少年（中学生）',
     script: '"The taller boy has a basketball, and the shorter one has a book."',
@@ -239,6 +246,7 @@ const EL1_B_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set2_3',
+    audioUrl: '/listening_audio/el1B_set2_q3.mp3',
     label: '問3',
     hint: '女性（大学生）',
     script: '"The cup is between the plate and the vase on the table."',
@@ -247,6 +255,7 @@ const EL1_B_SET2_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set2_4',
+    audioUrl: '/listening_audio/el1B_set2_q4.mp3',
     label: '問4',
     hint: '男性（お年寄り）',
     script: '"That brown dog isn\'t chasing a ball. It\'s chasing its own tail!"',
@@ -413,6 +422,7 @@ isn't chasing a ball の否定の後に訂正情報（its own tail）が来る�
 const EL1_B_SET3_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set3_1',
+    audioUrl: '/listening_audio/el1B_set3_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: '"The man with glasses is watering the flowers in the garden."',
@@ -421,6 +431,7 @@ const EL1_B_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set3_2',
+    audioUrl: '/listening_audio/el1B_set3_q2.mp3',
     label: '問2',
     hint: '男性（父親）',
     script: '"Two stars are above the moon, and one is below it."',
@@ -429,6 +440,7 @@ const EL1_B_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set3_3',
+    audioUrl: '/listening_audio/el1B_set3_q3.mp3',
     label: '問3',
     hint: '女性（会社員）',
     script: '"On the bench, the girl in the white shirt is on the left, and the boy in the cap is on the right."',
@@ -437,6 +449,7 @@ const EL1_B_SET3_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set3_4',
+    audioUrl: '/listening_audio/el1B_set3_q4.mp3',
     label: '問4',
     hint: '男の子（小学生）',
     script: '"Grandma bought six apples, but she used four for a pie. Only two are left in the basket."',
@@ -603,6 +616,7 @@ const EL1_B_SET3: ListeningProblem = {
 const EL1_B_SET4_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set4_1',
+    audioUrl: '/listening_audio/el1B_set4_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: '"The bird\'s nest is not in the tallest tree. It\'s in the shorter one next to it."',
@@ -611,6 +625,7 @@ const EL1_B_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set4_2',
+    audioUrl: '/listening_audio/el1B_set4_q2.mp3',
     label: '問2',
     hint: '男性（大学生）',
     script: '"The boy is waving behind the car, not in front of it."',
@@ -619,6 +634,7 @@ const EL1_B_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set4_3',
+    audioUrl: '/listening_audio/el1B_set4_q3.mp3',
     label: '問3',
     hint: '女性（小学生の母）',
     script: '"My son is holding the round clock, and my daughter has the square one."',
@@ -627,6 +643,7 @@ const EL1_B_SET4_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set4_4',
+    audioUrl: '/listening_audio/el1B_set4_q4.mp3',
     label: '問4',
     hint: '男性（ケーキ店の店員）',
     script: '"The large cake is 800 yen, and the small one is 300 yen."',
@@ -793,6 +810,7 @@ behind と in front of の反転＋not A の否定。動作（waving）の有無
 const EL1_B_SET5_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set5_1',
+    audioUrl: '/listening_audio/el1B_set5_q1.mp3',
     label: '問1',
     hint: '女性（母親）',
     script: '"It\'s sunny now, so I hung the wet umbrella outside to dry."',
@@ -801,6 +819,7 @@ const EL1_B_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set5_2',
+    audioUrl: '/listening_audio/el1B_set5_q2.mp3',
     label: '問2',
     hint: '男性（高校生）',
     script: '"I had bread for breakfast this morning, not rice."',
@@ -809,6 +828,7 @@ const EL1_B_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set5_3',
+    audioUrl: '/listening_audio/el1B_set5_q3.mp3',
     label: '問3',
     hint: '女性（受付係）',
     script: '"The meeting room is on the second floor, right next to the elevator."',
@@ -817,6 +837,7 @@ const EL1_B_SET5_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set5_4',
+    audioUrl: '/listening_audio/el1B_set5_q4.mp3',
     label: '問4',
     hint: '男性（父親）',
     script: '"We have two cars. I use the white one, and my wife drives the black one."',
@@ -983,6 +1004,7 @@ not rice の否定が核心。A not B 型の基本問題。
 const EL1_B_SET6_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set6_1',
+    audioUrl: '/listening_audio/el1B_set6_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: '"The girl with short hair is riding a bicycle, but the girl with long hair is walking."',
@@ -991,6 +1013,7 @@ const EL1_B_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set6_2',
+    audioUrl: '/listening_audio/el1B_set6_q2.mp3',
     label: '問2',
     hint: '男性（高校生）',
     script: '"There are three clocks on the wall. The middle one shows seven o\'clock."',
@@ -999,6 +1022,7 @@ const EL1_B_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set6_3',
+    audioUrl: '/listening_audio/el1B_set6_q3.mp3',
     label: '問3',
     hint: '女の子（小学生）',
     script: '"My little brother is hiding behind the door. Can you see his shoes?"',
@@ -1007,6 +1031,7 @@ const EL1_B_SET6_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set6_4',
+    audioUrl: '/listening_audio/el1B_set6_q4.mp3',
     label: '問4',
     hint: '男性（会社員）',
     script: '"This box is too heavy for me. Let\'s put it on the floor, not on the shelf."',
@@ -1173,6 +1198,7 @@ not on the shelf の否定と on the floor の結論。重いので床に、と�
 const EL1_B_SET7_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set7_1',
+    audioUrl: '/listening_audio/el1B_set7_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: '"The poster of the mountains is above the desk, and the poster of the sea is next to the window."',
@@ -1181,6 +1207,7 @@ const EL1_B_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set7_2',
+    audioUrl: '/listening_audio/el1B_set7_q2.mp3',
     label: '問2',
     hint: '男性（お年寄り）',
     script: '"I can see two dogs in the park. The white one is running, but the black one is sleeping."',
@@ -1189,6 +1216,7 @@ const EL1_B_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set7_3',
+    audioUrl: '/listening_audio/el1B_set7_q3.mp3',
     label: '問3',
     hint: '女性（駅員）',
     script: '"To get to the platform, go up the stairs and turn right. Don\'t use the escalator today."',
@@ -1197,6 +1225,7 @@ const EL1_B_SET7_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set7_4',
+    audioUrl: '/listening_audio/el1B_set7_q4.mp3',
     label: '問4',
     hint: '男性（高校生）',
     script: '"There are more oranges than apples in the basket. I count five oranges and three apples."',
@@ -1363,6 +1392,7 @@ more A than B（Aのほうが多い）の比較と具体数。5と3の対応を�
 const EL1_B_SET8_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set8_1',
+    audioUrl: '/listening_audio/el1B_set8_q1.mp3',
     label: '問1',
     hint: '女性（大学生）',
     script: '"The girl playing the guitar is my sister. The one at the piano is her friend."',
@@ -1371,6 +1401,7 @@ const EL1_B_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set8_2',
+    audioUrl: '/listening_audio/el1B_set8_q2.mp3',
     label: '問2',
     hint: '男性（高校生）',
     script: '"I put the dictionary on the top shelf because I use it every day. The photo album is on the bottom shelf."',
@@ -1379,6 +1410,7 @@ const EL1_B_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set8_3',
+    audioUrl: '/listening_audio/el1B_set8_q3.mp3',
     label: '問3',
     hint: '女性（母親）',
     script: '"Look at the pond. There are three ducks swimming, and two more are sitting on the grass."',
@@ -1387,6 +1419,7 @@ const EL1_B_SET8_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set8_4',
+    audioUrl: '/listening_audio/el1B_set8_q4.mp3',
     label: '問4',
     hint: '男性（乗客）',
     script: '"The bus is almost full. There\'s only one seat left, next to the old man at the back."',
@@ -1553,6 +1586,7 @@ only one seat left（残り1席）＋位置（next to the old man at the back）
 const EL1_B_SET9_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set9_1',
+    audioUrl: '/listening_audio/el1B_set9_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: '"Can I have some soup, please? I don\'t want salad today."',
@@ -1561,6 +1595,7 @@ const EL1_B_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set9_2',
+    audioUrl: '/listening_audio/el1B_set9_q2.mp3',
     label: '問2',
     hint: '男性（教師）',
     script: '"The flag is on the left side of the blackboard, not the right."',
@@ -1569,6 +1604,7 @@ const EL1_B_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set9_3',
+    audioUrl: '/listening_audio/el1B_set9_q3.mp3',
     label: '問3',
     hint: '女の子（小学生）',
     script: '"I\'m wearing my new blue hat today, not the yellow one."',
@@ -1577,6 +1613,7 @@ const EL1_B_SET9_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set9_4',
+    audioUrl: '/listening_audio/el1B_set9_q4.mp3',
     label: '問4',
     hint: '男性（車掌）',
     script: '"The doors on the left side will open at the next station."',
@@ -1743,6 +1780,7 @@ left side の聞き取りのみのシンプルな問題。車内アナウンス�
 const EL1_B_SET10_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set10_1',
+    audioUrl: '/listening_audio/el1B_set10_q1.mp3',
     label: '問1',
     hint: '女性（会社員）',
     script: '"The calendar on the wall says today is Wednesday, the fifteenth."',
@@ -1751,6 +1789,7 @@ const EL1_B_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set10_2',
+    audioUrl: '/listening_audio/el1B_set10_q2.mp3',
     label: '問2',
     hint: '男性（高校生）',
     script: '"This is a photo of my family. There are five of us, including the dog."',
@@ -1759,6 +1798,7 @@ const EL1_B_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set10_3',
+    audioUrl: '/listening_audio/el1B_set10_q3.mp3',
     label: '問3',
     hint: '女性（カフェ店員）',
     script: '"Here you are. Two cups of coffee and one cup of tea. The tea is for the lady by the window."',
@@ -1767,6 +1807,7 @@ const EL1_B_SET10_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set10_4',
+    audioUrl: '/listening_audio/el1B_set10_q4.mp3',
     label: '問4',
     hint: '男の子（中学生）',
     script: '"The children are sitting under the tree because it\'s too hot in the sun."',
@@ -1933,6 +1974,7 @@ under the tree の位置と、because 以下の理由（暑いから）はダミ
 const EL1_B_SET11_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set11_1',
+    audioUrl: '/listening_audio/el1B_set11_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: '"I gave my teacher a bouquet of twelve red roses this morning."',
@@ -1941,6 +1983,7 @@ const EL1_B_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set11_2',
+    audioUrl: '/listening_audio/el1B_set11_q2.mp3',
     label: '問2',
     hint: '男性（父親）',
     script: '"There are two bicycles in front of our house. The blue one is mine."',
@@ -1949,6 +1992,7 @@ const EL1_B_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set11_3',
+    audioUrl: '/listening_audio/el1B_set11_q3.mp3',
     label: '問3',
     hint: '女性（祖母）',
     script: '"Both of my cats are sleeping. One is on the chair, and the other is on the rug."',
@@ -1957,6 +2001,7 @@ const EL1_B_SET11_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set11_4',
+    audioUrl: '/listening_audio/el1B_set11_q4.mp3',
     label: '問4',
     hint: '男性（高校生）',
     script: '"Please open the window. It\'s closed now, and the room is getting hot."',
@@ -2123,6 +2168,7 @@ open the window（依頼）＋It's closed now（現在の状態）の時間関�
 const EL1_B_SET12_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set12_1',
+    audioUrl: '/listening_audio/el1B_set12_q1.mp3',
     label: '問1',
     hint: '女性（小学生）',
     script: '"The boy holding the flag is the leader of our team."',
@@ -2131,6 +2177,7 @@ const EL1_B_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set12_2',
+    audioUrl: '/listening_audio/el1B_set12_q2.mp3',
     label: '問2',
     hint: '男性（高校生）',
     script: '"I usually take the train to school, but today I came by bus because of the rain."',
@@ -2139,6 +2186,7 @@ const EL1_B_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set12_3',
+    audioUrl: '/listening_audio/el1B_set12_q3.mp3',
     label: '問3',
     hint: '女性（母親）',
     script: '"Put the apples in the green bowl and the oranges in the white one, please."',
@@ -2147,6 +2195,7 @@ const EL1_B_SET12_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set12_4',
+    audioUrl: '/listening_audio/el1B_set12_q4.mp3',
     label: '問4',
     hint: '男性（図書館司書）',
     script: '"Please be quiet. Some students are reading books at the desks near the window."',
@@ -2313,6 +2362,7 @@ usually（いつも）と but today（今日は）の時制対比。問われる
 const EL1_B_SET13_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set13_1',
+    audioUrl: '/listening_audio/el1B_set13_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: '"Everyone in the picture is wearing glasses except the tall boy in the middle."',
@@ -2321,6 +2371,7 @@ const EL1_B_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set13_2',
+    audioUrl: '/listening_audio/el1B_set13_q2.mp3',
     label: '問2',
     hint: '男性（大学生）',
     script: '"There were five birds on the wire a minute ago, but two just flew away."',
@@ -2329,6 +2380,7 @@ const EL1_B_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set13_3',
+    audioUrl: '/listening_audio/el1B_set13_q3.mp3',
     label: '問3',
     hint: '女性（店員）',
     script: '"The clock on the wall is ten minutes fast. It says nine ten, but it\'s actually nine o\'clock."',
@@ -2337,6 +2389,7 @@ const EL1_B_SET13_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set13_4',
+    audioUrl: '/listening_audio/el1B_set13_q4.mp3',
     label: '問4',
     hint: '男の子（小学生）',
     script: '"I finished reading three books this week, so I have just one more to go before Sunday."',
@@ -2503,6 +2556,7 @@ finished three＋one more to go の数量関係。合計4冊のうち残り1冊�
 const EL1_B_SET14_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set14_1',
+    audioUrl: '/listening_audio/el1B_set14_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: '"The woman wearing a hat is carrying a heavy suitcase, but the woman without a hat has only a small bag."',
@@ -2511,6 +2565,7 @@ const EL1_B_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set14_2',
+    audioUrl: '/listening_audio/el1B_set14_q2.mp3',
     label: '問2',
     hint: '男性（高校生）',
     script: '"There are two balls under the chair. The red one is bigger than the blue one."',
@@ -2519,6 +2574,7 @@ const EL1_B_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set14_3',
+    audioUrl: '/listening_audio/el1B_set14_q3.mp3',
     label: '問3',
     hint: '女性（会社員）',
     script: '"The desks in my office are in two rows. My desk is the second one from the window."',
@@ -2527,6 +2583,7 @@ const EL1_B_SET14_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set14_4',
+    audioUrl: '/listening_audio/el1B_set14_q4.mp3',
     label: '問4',
     hint: '男性（父親）',
     script: '"Don\'t leave your umbrella by the door. Hang it on the hook on the wall."',
@@ -2693,6 +2750,7 @@ Don't leave〜by the door（否定の指示）の後に正しい場所（on the 
 const EL1_B_SET15_TRACKS: ListeningAudioTrack[] = [
   {
     subId: 'q_el1_B_set15_1',
+    audioUrl: '/listening_audio/el1B_set15_q1.mp3',
     label: '問1',
     hint: '女性（高校生）',
     script: '"Look at the sky. A plane is flying above the clouds, and a bird is flying below them."',
@@ -2701,6 +2759,7 @@ const EL1_B_SET15_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set15_2',
+    audioUrl: '/listening_audio/el1B_set15_q2.mp3',
     label: '問2',
     hint: '男性（お年寄り）',
     script: '"My dog is in the doghouse now. He was in the garden a minute ago."',
@@ -2709,6 +2768,7 @@ const EL1_B_SET15_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set15_3',
+    audioUrl: '/listening_audio/el1B_set15_q3.mp3',
     label: '問3',
     hint: '女性（教師）',
     script: '"Four students are standing in front of the whiteboard, and two are sitting at their desks."',
@@ -2717,6 +2777,7 @@ const EL1_B_SET15_TRACKS: ListeningAudioTrack[] = [
   },
   {
     subId: 'q_el1_B_set15_4',
+    audioUrl: '/listening_audio/el1B_set15_q4.mp3',
     label: '問4',
     hint: '男の子（中学生）',
     script: '"I bought the pencil case with the blue stars, not the one with the red hearts."',

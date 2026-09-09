@@ -286,11 +286,114 @@ export function isBattleAnswerCorrect(
  * 締切が来て「運で決まる」試合になってしまう。
  * 既存の scoring.ts も同じ理由で問題タイプ別に秒数を見積もっている。
  */
+/**
+ * ★制限時間を一律に伸ばす倍率★（2026-09）
+ *
+ * ご指摘（原文）：
+ *   > 後制限時間鬼すぎる。
+ *
+ * ■ 実測（プールの timeLimit の分布・秒）
+ *   化学基礎  中央値 14  下位25% 13  上位25% 18
+ *   生物基礎  中央値 14
+ *   数学      中央値 20
+ *   英文法    全問 17
+ *   地理・理科 30（上限で張り付き）
+ *
+ *   化学基礎の 14 秒は「問題文（中央値 268 文字）を読んで 4 択から選ぶ」
+ *   には短い。読むだけで 10 秒近く使うので、実質「読み終わった瞬間に押す」
+ *   試合になっていた。しかも速さボーナスが残り時間比なので、
+ *   読んでから考える人ほど不利になる構造だった。
+ *
+ * ■ なぜプールを作り直さず、ここで倍率をかけるのか
+ *   問題ごとの秒数はプール生成時（scripts/gen-battle-pool.mts の
+ *   BATTLE_TIME_RATIO = 0.42）に焼き込まれている。プールを再生成すると
+ *   全教科の生成ファイルが差し替わり、差分が数万行になって
+ *   「制限時間の変更」以外の変化が混ざったかどうか確認できなくなる。
+ *   resolveTimeLimit は online / AI の両方が通る唯一の入口なので、
+ *   ここで 1 か所だけ倍率をかければ全試合に効く。
+ *   「長い問題は長め」という問題ごとの比率は倍率をかけても保たれる。
+ *
+ * ■ 1.6 倍にした理由
+ *   化学基礎の中央値 14 → 22 秒、上位25% 18 → 29 秒。
+ *   「読む 10 秒＋考える 10 秒」が入る長さになる。
+ *   2 倍にすると上限が 60 秒になり、相手の解答を待つ時間が退屈になる。
+ *   ★上限 45 秒★ で頭を打たせる（30 秒問題は 45 秒に。これ以上待たせない）。
+ *
+ * ■ 速さボーナスとの関係
+ *   速さ点は「残り時間 ÷ 制限時間」の比で決まる（scoreBattleQuestion）。
+ *   制限時間が伸びれば同じ解答速度でも比が上がるので、
+ *   「速く押した人が有利」は維持されつつ、「読んでから答えた人が 0 点」
+ *   にはならなくなる。
+ */
+export const BATTLE_TIME_SCALE = 1.6;
+export const BATTLE_TIME_SCALED_MAX = 45;
+
 export function resolveTimeLimit(question: BattleQuestion, rules: BattleRule): number {
   if (rules.timeLimitOverride != null && rules.timeLimitOverride > 0) {
+    // 運用で明示的に固定された秒数はそのまま使う（倍率はかけない）。
+    // 「全問 20 秒にする」と書いた人は 20 秒を期待している。
     return rules.timeLimitOverride;
   }
-  return question.timeLimit;
+  return Math.min(BATTLE_TIME_SCALED_MAX, Math.round(question.timeLimit * BATTLE_TIME_SCALE));
+}
+
+// ============================================================
+// 全国対戦の自動開始
+// ============================================================
+
+/**
+ * 全国対戦で「部屋主が開始の書き込みをしない」ときに、
+ * 相手側が代わりに開始してよいと判断するまでの待ち時間（ミリ秒）。
+ *
+ * ★8秒にしている理由★
+ *   部屋主の開始は通常 1〜2 秒（問題プールの読み込み＋1回の書き込み）で届く。
+ *   これより短いと「部屋主が書いている途中」に相手も書いて deadlineAt が
+ *   2回書かれ、後の方に上書きされて片方の残り時間が数秒ずれる。
+ *   これより長いと「マッチしたのに始まらない」と感じて離脱される
+ *   （マッチング画面の AI 提案は 45 秒だが、ここは既に相手が居るので
+ *   待たせる理由が無い）。
+ */
+export const NATIONAL_AUTO_START_FALLBACK_MS = 8000;
+
+/**
+ * 全国対戦の部屋を自動で開始してよいか、また何ミリ秒待ってからか。
+ *
+ * ★背景★
+ *   findOrEnqueue は「2人揃った」部屋を status:'waiting' で作る。
+ *   以前はその後 BattleLobby（合言葉を見せて相手を待つ画面）が出て、
+ *   部屋主が「はじめる」を押すまで始まらなかった。
+ *   全国対戦を選んだ人からは★フレンド対戦の画面に飛ばされた★ように見える。
+ *   全国対戦は相手を選ばない・合言葉も無いので、揃った時点で始めてよい。
+ *
+ * 戻り値:
+ *   null … 自動開始しない（フレンド対戦・もう始まっている・自分は参加者でない
+ *           ・問題がまだ読めていない）
+ *   0    … いま開始する（部屋主）
+ *   NATIONAL_AUTO_START_FALLBACK_MS … 部屋主が開始しなければ代わりに開始する（相手側）
+ *
+ * ★フレンド対戦（joinCode あり）は対象外★
+ *   合言葉の部屋は「相手が入ってきたら、部屋主が声を掛けてから始める」
+ *   のが自然なので、自動では始めない。
+ *
+ * ★問題が読めていないうちは始めない★
+ *   開始の書き込みには最初の問題の制限時間（deadlineAt）が要る。
+ */
+export function nationalAutoStartDelayMs(
+  room: {
+    status: string;
+    joinCode: string;
+    hostUid: string;
+    players: readonly string[];
+  },
+  uid: string,
+  questionsLoaded: boolean,
+): number | null {
+  if (!uid || !questionsLoaded) return null;
+  if (room.status !== 'waiting') return null;
+  if (room.joinCode) return null;
+  if (room.players.length < 2) return null;
+  if (!room.players.includes(uid)) return null;
+  return room.hostUid === uid ? 0 : NATIONAL_AUTO_START_FALLBACK_MS;
 }
 
 // ============================================================

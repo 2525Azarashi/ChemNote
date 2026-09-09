@@ -46,6 +46,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { BattleText } from './BattleText';
 import type { CSSProperties } from 'react';
 import {
   ArrowLeft,
@@ -122,6 +123,7 @@ export function BattleResult({
   byForfeit,
   maskOpponent,
   onRematch,
+  rematchLabel = 'もう1回たいせん',
   onExit,
   onPractice,
   ratingNote,
@@ -138,6 +140,14 @@ export function BattleResult({
   /** 全国対戦なら相手の名前を隠す */
   maskOpponent: boolean;
   onRematch?: () => void;
+  /**
+   * 「もう1回」ボタンの文言。
+   * フレンド戦の onRematch は「同じ科目で新しい部屋を作る」処理で、
+   * 同じ相手との再戦ではない（相手には招待コードを渡し直す必要がある）。
+   * 押す前にそれが分かるよう、呼び出し側が実際の動きに合った文言を渡す。
+   * 省略時は AI 戦などそのまま再戦できる場合の文言。
+   */
+  rematchLabel?: string;
   onExit: () => void;
   /**
    * ★「この単元を演習する」を押したとき（請求⑦-A）★
@@ -242,7 +252,7 @@ export function BattleResult({
         <div className="grid gap-2.5">
           {onRematch && (
             <BattleButton onClick={onRematch} icon={<RotateCcw size={18} />}>
-              もう1回たいせん
+              {rematchLabel}
             </BattleButton>
           )}
           <BattleButton variant="ghost" onClick={onExit} icon={<ArrowLeft size={18} />}>
@@ -400,14 +410,7 @@ export function BattleResult({
                     >
                       {q.correct ? 'せいかい' : 'ちがう'}
                     </span>
-                    {/*
-                      ★ここは「正解」を出している欄★（試合中には出していない）
-                      kana 形式は options が空なので panelOrder から組み立てる。
-                      正解が空になることはないが、万一空でも行は崩れない。
-                    */}
-                    <span className="truncate text-[11px] font-bold" style={{ color: INK }}>
-                      {correctText}
-                    </span>
+
                   </span>
                   <span
                     className="shrink-0 text-right text-[10px] font-bold tabular-nums"
@@ -417,6 +420,9 @@ export function BattleResult({
                     <span style={{ color: LINE }}> / </span>
                     {other?.total ?? 0}
                   </span>
+                </div>
+                <div className="mt-1 min-w-0 text-[13px] font-bold leading-relaxed" style={{ color: INK }}>
+                  <BattleText text={correctText} subject={question?.subject ?? subject} />
                 </div>
                 {q.correct && (
                   <p className="mt-0.5 pl-7 text-[9px] font-bold" style={{ color: INK_SUB }}>
@@ -432,7 +438,7 @@ export function BattleResult({
                 */}
                 {oneLine && (
                   <p
-                    className="mt-1.5 flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[10px] font-bold leading-relaxed"
+                    className="mt-1.5 flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[12px] font-bold leading-relaxed"
                     style={{
                       background: q.correct ? '#FFFFFF' : `${AMBER}12`,
                       color: INK,
@@ -444,7 +450,7 @@ export function BattleResult({
                       className="mt-px shrink-0"
                       style={{ color: q.correct ? INK_SUB : AMBER }}
                     />
-                    <span>{oneLine}</span>
+                    <BattleText text={oneLine} subject={question?.subject ?? subject} />
                   </p>
                 )}
               </div>

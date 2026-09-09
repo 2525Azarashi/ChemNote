@@ -27,6 +27,25 @@
       気づかないうちに消えている状態を作る。
 */
 
+/*
+  ===== ★自動フェードは既定で OFF にした★（2026-09） =====
+
+  ご指示（原文）：
+    > BGMが自動で切れるのはオフにして
+
+  上に書いてある「90秒で消す」の理屈は、結果として利用者には
+  「勝手に切れる」と受け取られた。鳴らすか止めるかは利用者が
+  ヘッダーのボタンで 1 タップで決められるので、アプリ側が勝手に
+  判断する必要は無くなっている。
+
+  ★コードを消さずにスイッチにした理由★
+    ・計算式とテストは残す（後で「やっぱり自動で消したい」となったときに
+      1 行で戻せる）。
+    ・式の前にスイッチを見るので、OFF のときは「永遠に倍率 1」になる。
+      App.tsx 側はこの関数を呼ぶだけでよく、分岐を増やさない。
+*/
+export const BGM_AUTO_FADE_ENABLED = false;
+
 /** 鳴り始めてからフェードを開始するまでの時間（ミリ秒） */
 export const BGM_FADE_START_MS = 90_000;
 
@@ -47,6 +66,8 @@ export const BGM_FADE_END_MS = BGM_FADE_START_MS + BGM_FADE_DURATION_MS;
  * ★分からないときに勝手に音を消さない★ のが安全側だから。
  */
 export function bgmFadeFactor(elapsedMs: number): number {
+  // 自動フェードが OFF のときは、どれだけ時間が経っても音量を下げない。
+  if (!BGM_AUTO_FADE_ENABLED) return 1;
   if (!Number.isFinite(elapsedMs)) return 1;
   if (elapsedMs <= BGM_FADE_START_MS) return 1;
   const passed = elapsedMs - BGM_FADE_START_MS;
@@ -64,6 +85,8 @@ export function bgmFadeFactor(elapsedMs: number): number {
  * これが true になったら一時停止する。
  */
 export function isBgmFadeComplete(elapsedMs: number): boolean {
+  // 自動フェードが OFF のときは「完了」も永遠に来ない（つまり止まらない）。
+  if (!BGM_AUTO_FADE_ENABLED) return false;
   if (!Number.isFinite(elapsedMs)) return false;
   return elapsedMs >= BGM_FADE_END_MS;
 }

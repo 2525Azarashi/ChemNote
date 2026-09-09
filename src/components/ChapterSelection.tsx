@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 // あわせて参照先も、問題データ本体（chemistryAdvancedData）ではなく
 // 分野名だけを持つ葉ファイル（advancedFields）に変えている。
 import type { AdvancedFieldId } from '../data/advancedFields';
+import { ADVANCED_FIELDS } from '../data/advancedFields';
 // 教科ごとの parts は data/allChapters.ts から引く
 // （以前はこのファイルで6教科ぶんを個別に import していた）
 import { getPartsOfSubject, type SubjectKey } from '../data/allChapters';
@@ -48,6 +49,12 @@ interface ChapterSelectionProps {
     range?: { startIndex: number; endIndex: number } | null,
   ) => void;
   onBack: () => void;
+  onChangeSubject?: () => void;
+  onChangeField?: (field: AdvancedFieldId) => void;
+  rememberedGroup?: string;
+  onGroupChange?: (group: string) => void;
+  /** 「戻る」の行き先の名前（ホーム／学習モード）。押す前に分かるようにする。 */
+  backLabel?: string;
   /**
    * 表示する科目。省略時は従来どおり化学基礎。
    * 'chemistry' のときは、指定された分野（理論／無機／有機）の単元だけを表示する。
@@ -230,7 +237,7 @@ function splitTabTitle(title: string, index: number): { kicker: string; label: s
   return { kicker: `${index + 1}章`, label: title };
 }
 
-export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'chemistry_basic', field, fieldTitle }: ChapterSelectionProps) {
+export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'chemistry_basic', field, fieldTitle, onChangeSubject, onChangeField, rememberedGroup, onGroupChange, backLabel = '戻る' }: ChapterSelectionProps) {
   // 科目ごとに画面の作りが変わる箇所だけフラグにしている。
   // （数学・生物基礎はタブの作り方も中身の出し方も共通処理のままなので、
   //   専用のフラグは持たない）
@@ -274,7 +281,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
    * 英語リスニングのみで使う。null なら閉じている。
    */
   const [openAudioSetId, setOpenAudioSetId] = useState<string | null>(null);
-  const [activeGroupTitle, setActiveGroupTitle] = useState(groups[0]?.title || '');
+  const [activeGroupTitle, setActiveGroupTitle] = useState(groups.some(g => g.title === rememberedGroup) ? rememberedGroup! : groups[0]?.title || '');
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [selectedFlowchart, setSelectedFlowchart] = useState<{ id: string; title: string; questions: any[] } | null>(null);
 
@@ -300,7 +307,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
 
   // 分野を切り替えたときは、その分野の先頭の章を開き直す
   useEffect(() => {
-    setActiveGroupTitle(groups[0]?.title || '');
+    setActiveGroupTitle(groups.some(g => g.title === rememberedGroup) ? rememberedGroup! : groups[0]?.title || '');
     setExpandedChapterId(null);
     setOpenAudioSetId(null);
   }, [groups]);
@@ -350,7 +357,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
         className="absolute top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 text-gray-500 hover:text-[#2C3E50] transition-colors font-bold font-handwriting bg-white/80 px-4 py-2 rounded-full shadow-sm z-10"
       >
         <ArrowLeft size={20} />
-        <span className="font-handwriting">戻る</span>
+        <span className="font-handwriting">{backLabel}</span>
       </button>
 
       <DoorMascot subject={subject} showSpeech={false} size="mini" className="absolute top-3 right-4 md:top-5 md:right-6 w-auto z-10" />
@@ -390,6 +397,13 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
         </p>
       </div>
 
+      {onChangeSubject && <div className="mb-2 flex shrink-0 items-center justify-between gap-2">
+        <span className="text-sm font-bold" style={{ color: theme.accent }}>{theme.label}</span>
+        <button type="button" onClick={onChangeSubject} className="min-h-[44px] rounded-full border border-gray-200 bg-white px-4 text-sm font-bold text-[#2C3E50]">科目を変更</button>
+      </div>}
+      {isAdvanced && onChangeField && <div className="mb-2 flex shrink-0 gap-2" role="group" aria-label="化学の分野">
+        {ADVANCED_FIELDS.map(item => <button key={item.id} type="button" aria-pressed={field === item.id} onClick={() => onChangeField(item.id)} className={`min-h-[44px] flex-1 rounded-xl border px-2 text-sm font-bold ${field === item.id ? 'bg-[#2C3E50] text-white' : 'border-gray-200 bg-white text-[#2C3E50]'}`}>{item.title}</button>)}
+      </div>}
       <div className="chapter-workspace flex min-h-0 flex-1 flex-col font-handwriting">
         {/* ================================================================
             章／大問の一覧
@@ -437,6 +451,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                   aria-controls="chapter-tab-panel"
                   onClick={() => {
                     setActiveGroupTitle(group.title);
+                    onGroupChange?.(group.title);
                     setExpandedChapterId(null);
                     // 大問を切り替えたら、開いていた復習用音源パネルも閉じる
                     // （別の大問の音源が開いたまま残るのを防ぐ）

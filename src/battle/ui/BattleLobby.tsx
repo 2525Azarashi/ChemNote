@@ -17,6 +17,14 @@
  * ★相手が入るまで「はじめる」を押させない理由★
  * 1人で開始すると相手は「もう始まっている試合」に途中参加することになり、
  * 最初の数問を無回答で失う。相手の参加を待ってから開始する。
+ *
+ * ★全国対戦（joinCode が空）の部屋は別の見せ方にする★
+ * 全国対戦の部屋は findOrEnqueue が「2人揃った状態」で作り、
+ * useBattleRoom が自動で開始する（nationalAutoStartDelayMs）。
+ * ここで合言葉・「はじめる」・「相手を待っています」を出すと、
+ * 利用者には★フレンド対戦の画面に飛ばされた★ように見える（実際に指摘された）。
+ * 全国対戦では「相手が見つかった／まもなく始まる」だけを見せ、
+ * 押すものは「やめる」だけにする。
  */
 
 import { Check, Copy, Share2, X } from 'lucide-react';
@@ -57,6 +65,8 @@ export function BattleLobby({
   const me = room.profiles[myUid];
   const opponent = opponentUid ? room.profiles[opponentUid] : null;
   const ready = Boolean(opponent);
+  /** 全国対戦（合言葉なし）の部屋か。見せ方が変わる（上の説明を参照）。 */
+  const isNational = !room.joinCode;
 
   const copyCode = async () => {
     try {
@@ -91,7 +101,10 @@ export function BattleLobby({
     <BattleShell
       footer={
         <div className="grid gap-2.5">
-          {isHost ? (
+          {isNational ? (
+            // 全国対戦：開始は自動。押すものは「やめる」だけ。
+            <BattleNotice message="まもなく始まります…" tone="info" />
+          ) : isHost ? (
             <BattleButton onClick={onStart} disabled={!ready}>
               {ready ? 'はじめる' : '相手を待っています…'}
             </BattleButton>
@@ -102,7 +115,7 @@ export function BattleLobby({
             />
           )}
           <BattleButton variant="danger" onClick={onLeave} icon={<X size={18} />}>
-            部屋をでる
+            {isNational ? 'やめる' : '部屋をでる'}
           </BattleButton>
         </div>
       }
@@ -165,9 +178,28 @@ export function BattleLobby({
           </div>
         </section>
       ) : (
-        <div className="mb-5">
-          <BattleNotice message="全国対戦の部屋です" tone="info" />
-        </div>
+        <section
+          id="battle-national-matched"
+          className="battle-card-in battle-sheen mb-5 rounded-3xl border-2 p-5 text-center"
+          style={{
+            borderColor: `${GOLD}AA`,
+            background: '#FFFFFF',
+            boxShadow: `0 6px 0 ${GOLD}33`,
+          }}
+        >
+          <p
+            className="relative z-[2] text-[10px] font-black tracking-widest"
+            style={{ color: INK_SUB }}
+          >
+            ぜんこく対戦
+          </p>
+          <p className="relative z-[2] my-1 text-2xl font-black" style={{ color: INK }}>
+            相手が見つかりました！
+          </p>
+          <p className="relative z-[2] text-[11px] font-bold" style={{ color: INK_SUB }}>
+            最初の問題は自動で出ます。準備してください。
+          </p>
+        </section>
       )}
 
       {/* 対戦カード */}
@@ -218,9 +250,11 @@ export function BattleLobby({
                     </span>
                   ))}
                 </p>
-                <p className="text-[10px] font-bold" style={{ color: INK_SUB }}>
-                  合言葉を伝えましたか？
-                </p>
+                {!isNational && (
+                  <p className="text-[10px] font-bold" style={{ color: INK_SUB }}>
+                    合言葉を伝えましたか？
+                  </p>
+                )}
               </div>
             </div>
           )}
