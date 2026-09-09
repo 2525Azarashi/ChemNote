@@ -236,7 +236,7 @@ export function MultipleChoiceControl({
         // 図が選択肢：必ず 2×2（見比べて選ぶ問題なので縦1列にしない）
         ? 'grid grid-cols-2 gap-2 w-full'
         : stacked
-        ? `grid ${twoCol ? 'grid-cols-2 gap-2' : 'grid-cols-1 gap-2.5'} w-full ${
+        ? `grid ${twoCol ? 'grid-cols-2 gap-2' : listeningMaterialsMobile ? 'grid-cols-1 gap-2' : 'grid-cols-1 gap-2.5'} w-full ${
             listeningMobileNoFigure && !twoCol ? 'min-h-0 flex-1 auto-rows-fr overflow-y-auto' : ''
           }`
         // 注：以前ここに xs:grid-cols-3 があったが、Tailwind v4 の @theme に
@@ -354,7 +354,12 @@ export function MultipleChoiceControl({
                    md 以上では md:px-4 で元に戻すので PC の見た目は不変。
                    マークだけの選択肢（①②③④）は幅が余っているので対象外。 */
                 stacked ? 'px-2.5 md:px-4' : 'px-4'
-              } py-3 md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex ${
+              } ${
+                /* 資料つきリスニング（スマホ）は上下余白を 12px→8px にして
+                   4択で約 32px を選択肢・資料の表示に回す。
+                   min-h-[3rem]（48px）は残すのでタップ領域は縮まない。 */
+                listeningMaterialsMobile ? 'py-2' : 'py-3'
+              } md:py-2.5 min-h-[3rem] md:min-h-0 rounded-xl font-bold text-[16px] md:text-sm transition-all duration-200 border-2 flex ${
                 /* ★丸文字つき／本文つきは items-start にする★
                    items-center だと本文が2行になったとき丸数字が
                    行の中央に浮き、ぶら下げインデントが成立しない。
@@ -422,13 +427,14 @@ export function MultipleChoiceControl({
                 // 「読む場所」と「押す場所」を1つにするのがこの表示の目的。
                 <span className="flex w-full items-start gap-2.5">
                   <span
-                    className={`shrink-0 text-[15px] md:text-base leading-6 ${
+                    className={`shrink-0 text-[15px] md:text-base ${listeningMaterialsMobile ? 'leading-[1.4]' : 'leading-6'} ${
                       struck ? 'text-gray-400' : isSelected ? 'text-white' : 'text-[#2C3E50]'
                     }`}
                   >
                     {opt}
                   </span>
-                  <span className="min-w-0 flex-1 text-[15px] md:text-sm font-medium leading-6 break-words [overflow-wrap:anywhere] font-modern">
+                  {/* 資料つきリスニング（スマホ）は行間を 24px→21px にして、2行の選択肢で 6px 稼ぐ。 */}
+                  <span className={`min-w-0 flex-1 text-[15px] md:text-sm font-medium ${listeningMaterialsMobile ? 'leading-[1.4]' : 'leading-6'} break-words [overflow-wrap:anywhere] font-modern`}>
                     {/* 英語の選択肢は散文として組む（化学式扱いのセリフ体を避ける） */}
                     {formatText(body, [], { prose: isEnglishProse })}
                   </span>
@@ -465,14 +471,14 @@ export function MultipleChoiceControl({
                 */
                 <span className="flex w-full items-start gap-2">
                   <span
-                    className={`shrink-0 leading-6 ${
+                    className={`shrink-0 ${listeningMaterialsMobile ? 'leading-[1.4]' : 'leading-6'} ${
                       struck ? 'text-gray-400' : isSelected ? 'text-white' : 'text-[#2C3E50]'
                     }`}
                     aria-hidden="true"
                   >
                     {optionMark}
                   </span>
-                  <span className="min-w-0 flex-1 text-left leading-6 break-words [overflow-wrap:anywhere]">
+                  <span className={`min-w-0 flex-1 text-left ${listeningMaterialsMobile ? 'leading-[1.4]' : 'leading-6'} break-words [overflow-wrap:anywhere]`}>
                     {formatText(opt)}
                   </span>
                 </span>

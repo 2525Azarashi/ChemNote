@@ -166,10 +166,25 @@ export function AnswerPane({
       className={`lg:w-[42%] min-h-0 overflow-y-auto bg-gray-50/50 ${
         listeningMobileSplit ? 'px-2' : 'px-4'
       } md:p-8 ${
-        listeningMaterialsMobile ? 'flex-[1_1_0%] pt-0 overscroll-contain' : listeningMobileNoFigure
+        /*
+          ★資料つきリスニング（スマホ）の高さ配分★
+          ご指摘：「リスニングがまだ一画面に映ってない（後半パート）。見にくい」
+          以前は資料ペインも解答ペインも flex-[1_1_0%]（きっちり半々）だった。
+          実測（375x740）：
+            第4問A … 解答の中身 437px に対して枠 298px → ⑤ が隠れる
+            第4問B … 解答の中身 230px しか無いのに枠 298px → 下 70px が空白、
+                     一方で資料（条件＋表 525px）は 188px しか見えない
+          つまり「解答が足りない問」と「解答が余っている問」が同時に起きていた。
+          そこで解答ペインは「中身のぶんだけ・上限 58%」にし、残りを全部資料へ渡す。
+            ・中身が小さい問（第4問B・第6問 問37）… 余りが資料の高さになる
+            ・中身が大きい問（第4問A・第5問・第6問A）… 58% まで伸びて選択肢が
+              ほぼ全部見える（残りは従来どおりこのペイン内でスクロール）
+          資料ペイン側は flex-[1_1_0%] のままなので、常に「解答が取らなかった分」を受け取る。
+        */
+        listeningMaterialsMobile ? 'flex-[0_1_auto] max-h-[58%] pt-0 overscroll-contain' : listeningMobileNoFigure
           ? 'flex-1 flex flex-col justify-end pt-2'
           : listeningMobileSplit ? 'flex-none pt-2' : 'flex-1 pt-4'
-      } ${listeningMaterialsMobile ? 'pb-3' : isDesktop
+      } ${listeningMaterialsMobile ? 'pb-2' : isDesktop
         ? 'pb-8'
         : listeningMobileSplit
           // 下部ナビ（前へ/解答と解説を見る）の高さぶんだけ空ける。
@@ -233,9 +248,39 @@ export function AnswerPane({
           PC（isDesktop）は contents のままで、見た目は一切変わらない。
         */}
         {listeningMaterialsMobile && (
-          <nav aria-label="小問の切り替え" className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b bg-gray-50">
-            <span className="text-xs font-bold text-gray-600">選択肢 · {safeMobileAnsIdx + 1}/{mobileAnswerSubs.length}</span>
-            <div className="flex gap-1">
+          /*
+            ★問N を固定バーに出す★
+            ご指摘：「選択肢が1画面に入らないところはスクロールできるが、その時に
+            問〜のところがスクロールで上に隠れていかないように左上に固定できない？」
+            以前はカードの中に 問34 の札があり、選択肢を下へスクロールすると
+            この sticky なバーの下に潜って見えなくなっていた。
+            いま見ている小問の 問N（＋空所の見出し）をこのバーの左に置き、
+            カード側の札はスマホでは出さない（重複を避ける）。
+          */
+          <nav aria-label="小問の切り替え" className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b bg-gray-50 py-0.5">
+            <span className="flex min-w-0 items-baseline gap-1.5 text-xs font-bold text-gray-600">
+              {(() => {
+                const cur = mobileAnswerSubs[safeMobileAnsIdx]?.sq;
+                const idx = cur ? ((currentQuestion?.subQuestions || []) as any[]).indexOf(cur) : -1;
+                const marker = cur ? answerCardMarker(cur, idx < 0 ? safeMobileAnsIdx : idx, currentQuestion) : '';
+                return (
+                  <>
+                    {marker && (
+                      <span className="shrink-0 rounded-md bg-[#2C3E50] px-2 py-0.5 text-[12px] text-white">
+                        {formatText(marker)}
+                      </span>
+                    )}
+                    {cur?.blankHint && (
+                      <span className="min-w-0 truncate text-[12px] text-[#2C3E50] font-modern">
+                        {formatText(String(cur.blankHint), [], { prose: true })}
+                      </span>
+                    )}
+                    <span className="shrink-0 tabular-nums text-gray-500">{safeMobileAnsIdx + 1}/{mobileAnswerSubs.length}</span>
+                  </>
+                );
+              })()}
+            </span>
+            <div className="flex shrink-0 gap-1">
               <button type="button" aria-label="前の解答欄へ" disabled={safeMobileAnsIdx === 0}
                 onClick={() => goMobileAns(-1)} className="min-h-11 min-w-11 rounded border bg-white px-2 text-xs font-bold disabled:opacity-30">前の小問</button>
               <button type="button" aria-label="次の解答欄へ" disabled={safeMobileAnsIdx >= mobileAnswerSubs.length - 1}
@@ -429,7 +474,7 @@ export function AnswerPane({
                   この見出しは renderedAnswerGroups に小問が2つ以上あるときだけ出る
                   （第1〜3問の見た目は変わらない）。
                 */}
-                {listeningUnified && (renderedAnswerGroups.length > 1 || mobileAnswerSubs.length > 1) && (
+                {listeningUnified && !listeningMaterialsMobile && (renderedAnswerGroups.length > 1 || mobileAnswerSubs.length > 1) && (
                   <span className="flex items-baseline gap-2 text-[13px] font-bold text-[#2C3E50]">
                     <span className="shrink-0 rounded-md bg-[#2C3E50] px-2 py-0.5 text-[12px] text-white">
                       {formatText(sqMarker)}
