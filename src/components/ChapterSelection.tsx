@@ -404,6 +404,24 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
       {isAdvanced && onChangeField && <div className="mb-2 flex shrink-0 gap-2" role="group" aria-label="化学の分野">
         {ADVANCED_FIELDS.map(item => <button key={item.id} type="button" aria-pressed={field === item.id} onClick={() => onChangeField(item.id)} className={`min-h-[44px] flex-1 rounded-xl border px-2 text-sm font-bold ${field === item.id ? 'bg-[#2C3E50] text-white' : 'border-gray-200 bg-white text-[#2C3E50]'}`}>{item.title}</button>)}
       </div>}
+      {subject === 'math' && (
+        <label className="mb-2 flex shrink-0 items-center gap-2 text-sm font-bold text-[#2C3E50]">
+          <span className="shrink-0">数学の分野</span>
+          <select
+            aria-label="数学の分野へ移動"
+            value={activeGroupTitle}
+            onChange={event => {
+              setActiveGroupTitle(event.target.value);
+              onGroupChange?.(event.target.value);
+              setExpandedChapterId(null);
+              document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
+            }}
+            className="min-h-[44px] min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-2"
+          >
+            {groups.map(group => <option key={group.title} value={group.title}>{group.partTitle} ／ {group.title}</option>)}
+          </select>
+        </label>
+      )}
       <div className="chapter-workspace flex min-h-0 flex-1 flex-col font-handwriting">
         {/* ================================================================
             章／大問の一覧
@@ -423,7 +441,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
           <div
             role="tablist"
             aria-label="章を選択"
-            className="flex touch-pan-x snap-x snap-mandatory gap-1.5 overflow-x-auto overscroll-x-contain px-0.5 pb-2 [scrollbar-width:thin] sm:grid sm:grid-cols-3 sm:overflow-x-visible sm:overscroll-auto lg:grid-cols-4 xl:grid-cols-5"
+            className={`flex touch-pan-x snap-x snap-mandatory gap-1.5 overflow-x-auto overscroll-x-contain px-0.5 pb-2 [scrollbar-width:thin] ${subject === 'math' ? '' : 'sm:grid sm:grid-cols-3 sm:overflow-x-visible sm:overscroll-auto lg:grid-cols-4 xl:grid-cols-5'}`}
           >
             {groups.map((group, index) => {
               const isActive = group.title === activeGroup?.title;

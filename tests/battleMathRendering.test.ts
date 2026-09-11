@@ -138,8 +138,9 @@ describe('battle math rendering', () => {
     }
   });
 
-  it('renders all 240 existing math questions and reasons without KaTeX errors', () => {
-    expect(POOL).toHaveLength(240);
+  it('renders 240 preserved and 114 new math questions without KaTeX errors', () => {
+    expect(POOL).toHaveLength(354);
+    expect(POOL.filter(row => !(row[1] as string).startsWith('mc'))).toHaveLength(240);
     expect(ANSWERS).toHaveLength(240);
     for (const row of POOL) {
       for (const text of [row[5], row[6], ...(row[7] as string[])]) {

@@ -1060,6 +1060,13 @@ function buildBlankPrompt(row: RawSub): Display {
   const label = formatLabel(row.label);
   const text = String(row.problemText || '');
 
+  // A one-question exercise with a generic instruction needs its WHOLE stem.
+  // The instruction's character count does not make it a self-contained question.
+  if (row.siblings.length === 1 && bare === '答えを選びなさい。') {
+    const prompt = stripExerciseHeading(text);
+    return { prompt, label, answerable: !!prompt && !hasUnresolvedBlank(prompt) };
+  }
+
   if (selfContained) {
     // ラベル自体が問いになっている。
     // リード文は文脈にすぎないので、短ければ添え、長ければ捨てる

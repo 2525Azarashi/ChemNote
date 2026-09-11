@@ -30,6 +30,7 @@ import {
   type LearningPart,
 } from '../data/learningContent';
 import { MolBasicsSection } from './MolBasicsSection';
+import { MATH_CURRICULUM_SECTIONS, MATH_CURRICULUM_HTML, MATH_CURRICULUM_PARTS } from '../data/learningContent/math_curriculum';
 import {
   normalizeAnswerAccordions,
   countAnswerAccordions,
@@ -93,9 +94,10 @@ const ADVANCED_SECTION_HTML: Record<string, string> = {
   'adv-4': ADV_ELECTRO_HTML,
 };
 
-/** 数学。4単元（積分・ベクトル・確率・整数）を公開中。以降も順次追加していく。 */
+/** 現行6科目の基礎・標準教材と、既存の専門演習を併設する。 */
 const MATH_SECTIONS: SectionDef[] = [
   { id: 'toc', title: '目次・使い方' },
+  ...MATH_CURRICULUM_SECTIONS,
   { id: 'math-integral', title: '数III 積分法（全パターン）' },
   { id: 'math-vector', title: 'ベクトル（全パターン）' },
   { id: 'math-probability', title: '場合の数・確率（全パターン）' },
@@ -103,6 +105,7 @@ const MATH_SECTIONS: SectionDef[] = [
 ];
 
 const MATH_SECTION_HTML: Record<string, string> = {
+  ...MATH_CURRICULUM_HTML,
   'math-integral': MATH_INTEGRAL_HTML,
   'math-vector': MATH_VECTOR_HTML,
   'math-probability': MATH_PROBABILITY_HTML,
@@ -135,6 +138,7 @@ const BIOLOGY_SECTION_HTML: Record<string, string> = {
 export const ALL_PARTS_ID = 'all';
 
 const SECTION_PARTS: Record<string, LearningPart[]> = {
+  ...MATH_CURRICULUM_PARTS,
   'adv-3': ADV_THERMO_PARTS,
   'adv-4': ADV_ELECTRO_PARTS,
   'math-integral': MATH_INTEGRAL_PARTS,
@@ -178,6 +182,7 @@ const ADVANCED_PART_LABEL: Record<string, string> = {
 };
 
 const MATH_PRINT_TITLE: Record<string, string> = {
+  ...Object.fromEntries(MATH_CURRICULUM_SECTIONS.map(s => [s.id, s.title])),
   toc: '目次・使い方',
   'math-integral': '数III 積分法（全パターン演習）',
   'math-vector': 'ベクトル（全パターン演習）',
@@ -186,8 +191,9 @@ const MATH_PRINT_TITLE: Record<string, string> = {
 };
 
 const MATH_PART_LABEL: Record<string, string> = {
+  ...Object.fromEntries(MATH_CURRICULUM_SECTIONS.map(s => [s.id, s.title])),
   'math-integral': '数学III 積分法',
-  'math-vector': '数学B・C ベクトル',
+  'math-vector': '数学C ベクトル',
   'math-probability': '数学A 場合の数・確率',
   'math-integer': '数学A 整数',
 };
@@ -607,7 +613,21 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
                     </div>
                   )}
 
-                  {!isAdvanced && (
+                  {subject === 'math' && (
+                    <div className="space-y-4" data-math-curriculum-toc>
+                      <p className="text-sm leading-relaxed">数学Ⅰ・A・Ⅱ・B・Ⅲ・Cの基礎から標準へ。要点と例題を読んだら「演習問題」の同名単元で練習できます。入試の全パターン・全難度を網羅したものではありません。</p>
+                      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                        {MATH_SECTIONS.filter(s => s.id !== 'toc').map(section => (
+                          <button key={section.id} type="button" onClick={() => setActiveTab(section.id)} className="min-h-[44px] rounded-xl border border-[#c9bce6] bg-white p-4 text-left text-sm font-bold text-[#5b21b6]">
+                            {section.title}
+                            <span className="mt-2 block text-xs font-normal leading-relaxed text-slate-600">{SECTION_PARTS[section.id]?.map(p => p.short).join(' ／ ')}</span>
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs leading-relaxed text-slate-600">場合の数・確率と整数は数学A、ベクトルは数学Cとして既存教材を併用します。二次関数・軌跡と領域には河野玄斗さんの確認済み参考動画へのリンクがあります。問題・解説は独自作成で、監修・提携を示すものではありません。</p>
+                    </div>
+                  )}
+                  {subject === 'chemistry_basic' && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                     <div className="bg-white p-4 rounded-xl border-2 border-[#c9bce6] border-l-[6px] border-l-[#7c3aed]">
                       <h4 className="font-bold text-[#5b21b6] border-b border-dotted border-[#c9bce6] pb-1.5 mb-2 text-sm">第1部 物質の構成</h4>
