@@ -1857,3 +1857,81 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 [data-listening-audio] button, [data-listening-audio] select {
   min-height: 44px;
 }
+
+/* Reading mode is deliberately screen-only; the established A4 layouts remain intact. */
+@media screen {
+  .learning-reader { --reader-text: 16px; --reader-accent: #79566b; color: #2c3e50; }
+  .learning-reader[data-reading-size="large"] { --reader-text: 19px; }
+  .reader-header { background: #fdfbf7f5; border-bottom: 1px solid #e6dce0; box-shadow: 0 3px 12px #49374706; }
+  .reader-topbar { max-width: 1000px; margin: auto; display: flex; align-items: center; gap: 12px; padding: 12px 20px; }
+  .reader-heading { flex: 1; min-width: 0; }
+  .reader-heading > span { display: block; font-size: 10px; letter-spacing: .06em; color: #766470; }
+  .reader-heading h1 { font: 700 23px/1.4 var(--font-handwriting); color: #674c60; }
+  .reader-icon-button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 44px; height: 44px; border: 1px solid #e4d9dc; border-radius: 14px; background: #fffefa; color: #79566b; cursor: pointer; }
+  .reader-print-button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; gap: 7px; min-height: 44px; padding: 10px 13px; border-radius: 14px; border: 1px solid #d7c4ce; background: #f5eaf0; color: #674c60; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .reader-course-picker { display: none; }
+  .reader-paper { padding: 24px; background-image: none; }
+  .reader-body { padding-left: 0; max-width: 860px; }
+  .reader-margin-line { display: none; }
+  .learning-reader .learning-content { --lc-accent: #89637b; --lc-accent-d: #654b60; --lc-accent-l: #f7f0f5; --lc-line: #e5dce3; --lc-ink: #2c3e50; background: #fffefa; border: 1px solid #e8e1da; border-radius: 18px; padding: 24px; font-size: var(--reader-text); line-height: 1.9; overflow-wrap: anywhere; }
+  .learning-reader .learning-content :is(p, li) { font-size: var(--reader-text); line-height: 1.85; }
+  .learning-reader .learning-content p { margin-block: 12px; }
+  .learning-reader .learning-content :is(h1,h2,h3,h4,h5) { line-height: 1.6; scroll-margin-top: 130px; }
+  .learning-reader .learning-content h3 { font-size: 1.16em; border-left-color: #d9a0a0; }
+  .learning-reader .learning-content > :first-child { margin-top: 0; }
+  .learning-reader .learning-content .box { padding: 16px; margin-block: 20px; border-width: 1px; border-left-width: 3px; border-radius: 12px; box-shadow: none; }
+  .learning-reader .learning-content .box :is(h3,h4):first-child { margin-top: 0; }
+  .learning-reader .learning-content :is(.formula,.reaction,.katex-display) { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+  .learning-reader .learning-content .lc-ans-sum { min-height: 48px; font-size: 15px; line-height: 1.6; }
+  .learning-reader .learning-content .lc-ans-ico { display: none; }
+  .learning-reader .learning-content table { display: block; width: 100%; max-width: 100%; overflow-x: auto; font-size: max(14px, calc(var(--reader-text) - 2px)); }
+  .learning-reader .learning-content :is(th,td) { min-width: 5em; padding: 10px; }
+  .reader-topics { border: 1px solid #e5dce3; background: #fffefa; box-shadow: none; }
+  .reader-topic-select { display: none; }
+  .reader-settings { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-bottom: 14px; font-size: 13px; color: #655762; }
+  .reader-settings > span { margin-right: 8px; }
+  .reader-settings button { min-height: 44px; min-width: 64px; padding: 8px 12px; border: 1px solid #ddd2d8; border-radius: 12px; background: #fffdfa; cursor: pointer; }
+  .reader-settings button[aria-pressed="true"] { background: #79566b; color: white; border-color: #79566b; }
+  /* Native modal top layer: not clipped by transformed/sticky application ancestors. */
+  .reader-print-dialog { position: fixed; inset: 0; margin: auto; padding: 0; width: min(480px, calc(100vw - 24px)); max-width: none; max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; border: 1px solid #e0d1d8; border-radius: 24px; background: #fdfbf7; color: #2c3e50; box-shadow: 0 24px 80px #2c3e5033; }
+  .reader-print-dialog::backdrop { background: #2c334066; }
+  .reader-print-panel { padding: 24px; }
+  .reader-print-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .reader-print-heading span { color: #856777; font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+  .reader-print-heading h2 { font: 700 23px/1.6 var(--font-handwriting); color: #674c60; }
+  #reader-print-description { font-size: 14px; font-weight: 600; padding: 12px; border-radius: 12px; background: #f0e8ed; overflow-wrap: anywhere; }
+  .reader-print-help { font-size: 13px; line-height: 1.75; color: #685e67; margin-block: 14px; }
+  .reader-print-option { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 76px; padding: 14px; margin-block: 10px; text-align: left; border: 1px solid #d9c9d1; border-radius: 16px; background: #fffefa; cursor: pointer; }
+  .reader-print-option > svg { flex-shrink: 0; color: #89637b; }
+  .reader-print-option > span { flex: 1; min-width: 0; }
+  .reader-print-option strong { display: block; font-size: 16px; }
+  .reader-print-option small { display: block; font-size: 12px; line-height: 1.7; color: #6c606a; margin-top: 4px; }
+  .reader-print-option:hover { border-color: #b3829b; background: #faf2f6; }
+  .reader-print-cancel { width: 100%; min-height: 48px; border: 1px solid #e4d9dc; border-radius: 14px; background: #f3eeea; font-size: 14px; font-weight: 600; cursor: pointer; }
+  @media (max-width: 639px) {
+    .reader-topbar { padding: 8px 12px; gap: 8px; }
+    .reader-heading h1 { font-size: 19px; }
+    .reader-heading > span { font-size: 10px; letter-spacing: 0; }
+    .reader-print-button { font-size: 12px; padding-inline: 10px; gap: 5px; }
+    .reader-print-button svg { width: 15px; }
+    .reader-course-picker { display: flex; align-items: center; gap: 8px; margin: 0 12px 10px; padding: 0 10px; border: 1px solid #e0d5dd; border-radius: 12px; background: #fffefa; color: #674c60; }
+    .reader-course-picker select { min-height: 44px; flex: 1; min-width: 0; width: 0; background: transparent; font-size: 16px; }
+    .reader-desktop-tabs { display: none; }
+    .reader-paper { padding: 16px 12px 24px; }
+    .learning-reader .learning-content { padding: 16px 0; border: 0; border-radius: 0; background: transparent; }
+    .learning-reader .learning-content .box { padding: 14px 12px; }
+    .learning-reader .learning-content .figfull, .learning-reader .learning-content .figrow { padding: 10px; }
+    .learning-reader .learning-content :is(ol,ul) { padding-left: 1.6em; }
+    .learning-reader .learning-content .box ol > li::before { left: -1.7em; width: 1.7em; }
+    .reader-topics { padding: 12px; margin-bottom: 16px; }
+    .reader-topics > div:first-child, .reader-topics > p, .reader-topic-chips { display: none; }
+    .reader-topic-select { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 5px 8px; align-items: center; }
+    .reader-topic-select label { grid-column: 1/-1; font-size: 12px; font-weight: 600; color: #6e5b69; }
+    .reader-topic-select select { width: 100%; min-width: 0; min-height: 44px; font-size: 16px; background: transparent; }
+    .reader-topic-arrows { display: flex; gap: 4px; }
+    .reader-topic-arrows button { min-height: 44px; min-width: 36px; display: grid; place-items: center; border: 1px solid #e0d5dd; border-radius: 10px; background: white; color: #79566b; }
+    .reader-topic-arrows button:disabled { opacity: .3; }
+    .reader-print-dialog { margin: auto auto 12px; border-radius: 24px; max-height: calc(100dvh - 24px); }
+    .reader-print-panel { padding: 20px 16px max(16px, env(safe-area-inset-bottom)); }
+  }
+}
