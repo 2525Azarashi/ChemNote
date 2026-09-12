@@ -785,7 +785,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                           title="単元のフローチャートを確認"
                         >
                           <GitBranch size={12} className="text-emerald-600" />
-                          <span className="hidden sm:inline">フロー</span>
+                          <span>解き方</span>
                         </button>
 
                         {hasQuestions && questions.length > 1 && (
@@ -799,7 +799,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                                 : 'border-slate-200 bg-white text-[#2C3E50] hover:bg-slate-50'
                             }`}
                           >
-                            問題
+                            問題を選ぶ
                             <ChevronDown size={12} className={`transition-transform ${expandedChapterId === chapter.id ? 'rotate-180' : ''}`} />
                           </button>
                         )}
@@ -812,7 +812,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="mt-2 max-h-[126px] space-y-1 overflow-y-auto rounded-lg border border-yellow-200 bg-white/80 p-1.5 shadow-inner"
+                            className="chapter-question-list mt-3 space-y-2 rounded-xl border border-slate-200 bg-white/80 p-2"
                           >
                             {questions.map((question: any, questionIndex: number) => (
                               <button
@@ -821,7 +821,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                                 onClick={() => onSelectChapter(chapter.id, questionIndex, false)}
                                 className="flex w-full items-center justify-between rounded-md border border-transparent bg-white/70 p-1.5 text-left text-[10px] font-bold text-slate-600 transition-colors hover:border-[#A9CCE3]/40 hover:bg-[#A9CCE3]/10 cursor-pointer"
                               >
-                                <span className="truncate pr-1.5">{question.category || `問 ${questionIndex + 1}`}</span>
+                                <span className="min-w-0 whitespace-normal break-words pr-2">{question.category || `問 ${questionIndex + 1}`}</span>
                                 <ChevronRight size={11} className="shrink-0 text-[#A9CCE3]" />
                               </button>
                             ))}
