@@ -721,6 +721,234 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
     "label": "数学",
     "chapters": [
       {
+        "id": "mc1_algebra",
+        "problemCount": 4,
+        "abstractTitle": "数と式・実数",
+        "realTitle": "数学Ⅰ・基礎から標準"
+      },
+      {
+        "id": "mc1_logic",
+        "problemCount": 4,
+        "abstractTitle": "集合と命題",
+        "realTitle": "数学Ⅰ・基礎から標準"
+      },
+      {
+        "id": "mc1_inequality",
+        "problemCount": 4,
+        "abstractTitle": "一次不等式・絶対値",
+        "realTitle": "数学Ⅰ・基礎から標準"
+      },
+      {
+        "id": "mc1_quadratic",
+        "problemCount": 4,
+        "abstractTitle": "二次関数・グラフと方程式",
+        "realTitle": "数学Ⅰ・基礎から標準"
+      },
+      {
+        "id": "mc1_extrema",
+        "problemCount": 4,
+        "abstractTitle": "二次関数の最大・最小と不等式",
+        "realTitle": "数学Ⅰ・基礎から標準"
+      },
+      {
+        "id": "mc1_trigonometry",
+        "problemCount": 4,
+        "abstractTitle": "図形と計量",
+        "realTitle": "数学Ⅰ・基礎から標準"
+      },
+      {
+        "id": "mc1_data",
+        "problemCount": 4,
+        "abstractTitle": "データの分析",
+        "realTitle": "数学Ⅰ・基礎から標準"
+      },
+      {
+        "id": "mc1_hypothesis",
+        "problemCount": 4,
+        "abstractTitle": "仮説検定の考え方",
+        "realTitle": "数学Ⅰ・基礎から標準"
+      },
+      {
+        "id": "mca_triangle",
+        "problemCount": 4,
+        "abstractTitle": "三角形の性質",
+        "realTitle": "数学A・基礎から標準"
+      },
+      {
+        "id": "mca_circle",
+        "problemCount": 4,
+        "abstractTitle": "円の性質",
+        "realTitle": "数学A・基礎から標準"
+      },
+      {
+        "id": "mca_space",
+        "problemCount": 4,
+        "abstractTitle": "空間図形",
+        "realTitle": "数学A・基礎から標準"
+      },
+      {
+        "id": "mca_activity",
+        "problemCount": 4,
+        "abstractTitle": "数学と人間の活動",
+        "realTitle": "数学A・基礎から標準"
+      },
+      {
+        "id": "mc2_expression",
+        "problemCount": 4,
+        "abstractTitle": "式と証明",
+        "realTitle": "数学Ⅱ・基礎から標準"
+      },
+      {
+        "id": "mc2_complex",
+        "problemCount": 4,
+        "abstractTitle": "複素数と二次方程式",
+        "realTitle": "数学Ⅱ・基礎から標準"
+      },
+      {
+        "id": "mc2_equations",
+        "problemCount": 4,
+        "abstractTitle": "高次方程式・因数定理",
+        "realTitle": "数学Ⅱ・基礎から標準"
+      },
+      {
+        "id": "mc2_coordinate",
+        "problemCount": 4,
+        "abstractTitle": "図形と方程式",
+        "realTitle": "数学Ⅱ・基礎から標準"
+      },
+      {
+        "id": "mc2_locus",
+        "problemCount": 4,
+        "abstractTitle": "軌跡と領域",
+        "realTitle": "数学Ⅱ・基礎から標準"
+      },
+      {
+        "id": "mc2_trig",
+        "problemCount": 4,
+        "abstractTitle": "三角関数",
+        "realTitle": "数学Ⅱ・基礎から標準"
+      },
+      {
+        "id": "mc2_exponential",
+        "problemCount": 4,
+        "abstractTitle": "指数関数",
+        "realTitle": "数学Ⅱ・基礎から標準"
+      },
+      {
+        "id": "mc2_logarithm",
+        "problemCount": 4,
+        "abstractTitle": "対数関数",
+        "realTitle": "数学Ⅱ・基礎から標準"
+      },
+      {
+        "id": "mc2_derivative",
+        "problemCount": 4,
+        "abstractTitle": "微分の考え・接線と増減",
+        "realTitle": "数学Ⅱ・基礎から標準"
+      },
+      {
+        "id": "mc2_integral",
+        "problemCount": 4,
+        "abstractTitle": "積分の考え・面積",
+        "realTitle": "数学Ⅱ・基礎から標準"
+      },
+      {
+        "id": "mcb_sequences",
+        "problemCount": 4,
+        "abstractTitle": "等差数列・等比数列",
+        "realTitle": "数学B・基礎から標準"
+      },
+      {
+        "id": "mcb_sums",
+        "problemCount": 4,
+        "abstractTitle": "和の記号・階差数列",
+        "realTitle": "数学B・基礎から標準"
+      },
+      {
+        "id": "mcb_recurrence",
+        "problemCount": 4,
+        "abstractTitle": "漸化式と数学的帰納法",
+        "realTitle": "数学B・基礎から標準"
+      },
+      {
+        "id": "mcb_distribution",
+        "problemCount": 4,
+        "abstractTitle": "確率変数と確率分布",
+        "realTitle": "数学B・基礎から標準"
+      },
+      {
+        "id": "mcb_normal",
+        "problemCount": 4,
+        "abstractTitle": "正規分布と標本平均",
+        "realTitle": "数学B・基礎から標準"
+      },
+      {
+        "id": "mcb_inference",
+        "problemCount": 4,
+        "abstractTitle": "統計的な推測",
+        "realTitle": "数学B・基礎から標準"
+      },
+      {
+        "id": "mcb_society",
+        "problemCount": 4,
+        "abstractTitle": "数学と社会生活",
+        "realTitle": "数学B・基礎から標準"
+      },
+      {
+        "id": "mc3_functions",
+        "problemCount": 4,
+        "abstractTitle": "分数関数・無理関数と関数の極限",
+        "realTitle": "数学Ⅲ・基礎から標準"
+      },
+      {
+        "id": "mc3_limits",
+        "problemCount": 4,
+        "abstractTitle": "数列の極限・無限級数",
+        "realTitle": "数学Ⅲ・基礎から標準"
+      },
+      {
+        "id": "mc3_differentiation",
+        "problemCount": 4,
+        "abstractTitle": "微分法",
+        "realTitle": "数学Ⅲ・基礎から標準"
+      },
+      {
+        "id": "mc3_applications",
+        "problemCount": 4,
+        "abstractTitle": "微分法の応用",
+        "realTitle": "数学Ⅲ・基礎から標準"
+      },
+      {
+        "id": "mc3_area",
+        "problemCount": 4,
+        "abstractTitle": "定積分の応用・面積",
+        "realTitle": "数学Ⅲ・基礎から標準"
+      },
+      {
+        "id": "mc3_volume",
+        "problemCount": 4,
+        "abstractTitle": "体積・曲線の長さ",
+        "realTitle": "数学Ⅲ・基礎から標準"
+      },
+      {
+        "id": "mcc_curves",
+        "problemCount": 4,
+        "abstractTitle": "平面上の曲線",
+        "realTitle": "数学C・基礎から標準"
+      },
+      {
+        "id": "mcc_complexplane",
+        "problemCount": 4,
+        "abstractTitle": "複素数平面",
+        "realTitle": "数学C・基礎から標準"
+      },
+      {
+        "id": "mcc_representation",
+        "problemCount": 4,
+        "abstractTitle": "数学的な表現の工夫",
+        "realTitle": "数学C・基礎から標準"
+      },
+      {
         "id": "m1_1",
         "problemCount": 2,
         "abstractTitle": "① 基本公式（累乗・指数・対数・三角）",
@@ -1317,8 +1545,8 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
     "questions": 135
   },
   "math": {
-    "chapters": 33,
-    "questions": 65
+    "chapters": 71,
+    "questions": 217
   },
   "biology_basic": {
     "chapters": 5,

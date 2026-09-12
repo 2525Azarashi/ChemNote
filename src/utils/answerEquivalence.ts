@@ -573,6 +573,14 @@ export function looksLikeSequence(value: string): boolean {
   const raw = String(value ?? '').trim();
   if (!raw) return false;
 
+  // Mathematical inequalities describe sets, not lists of labels. Removing
+  // direction/sign would make x<-4, x>-4 and x>4 identical. Keep the existing
+  // chemistry ordering (Li > Na > K) but never compact a numeric/math operand.
+  const notation = normalizeNotation(raw);
+  if (/[<>]/.test(notation) && notation.split(/<=|>=|<|>/).some(
+    operand => /^[0-9a-z+\-*/^().]+$/.test(operand),
+  )) return false;
+
   // 選択肢記号（ア〜ト、①〜⑩）
   if (/[アイウエオカキクケコサシスセソタチツテト①②③④⑤⑥⑦⑧⑨⑩]/.test(raw)) return true;
 

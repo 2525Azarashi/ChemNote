@@ -117,7 +117,7 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
                 : isGeography
                 ? '会話文と資料（気候グラフ・統計表・地形図）を行き来して考える、共通テスト型の大問を回ごとに解きます。'
                 : isMath
-                  ? '積分・ベクトル・確率・整数の全パターンを、型ごとの小問で演習します。数学記号パレットで ∫ や √ もワンタップ入力。'
+                  ? '数学Ⅰ・A・Ⅱ・B・Ⅲ・Cから単元を選んで練習。解説と数式入力パレットで、一問ずつ理解を深めます。'
                   : 'より実践的な問題に取り組みます。応用力を身につけたい場合におすすめです。'}</p>
             </div>
             <button type="button" onClick={() => onSelectMode('practice')} className="mode-primary" aria-label="演習問題の単元を選ぶ"><span>演習問題をはじめる</span><ArrowRight size={21} aria-hidden="true" /></button>
@@ -125,13 +125,13 @@ export function ModeSelection({ onSelectMode, onBack, onMockExam, subject = 'che
           {!hideLearning && (
             <button type="button" onClick={() => onSelectMode('learning')} className="mode-input-paper" aria-label="学習(インプット)を開く">
               <span className="mode-page-tab">READ</span><FileText size={34} aria-hidden="true" />
-              <h2>学習(インプット)</h2><span className="mode-input-subtitle">まとめプリント</span>
+              <h2>まとめプリント</h2><span className="mode-input-subtitle">読む・理解する</span>
               <p>{isAdvanced
-                ? 'まとめプリントで基礎知識をしっかりと身につけます。（現在は理論化学「化学反応とエネルギー」を公開中）'
+                ? '熱化学・電池と電気分解の要点を、テーマごとに読む。例題の解説も確認できます。'
                 : isMath
-                  ? 'まとめプリントで「解法のパターン化」を学びます。積分・ベクトル・確率・整数の4単元、判断フローと型の早見表付き。'
+                  ? '数学Ⅰ・A・Ⅱ・B・Ⅲ・Cの要点と例題を、テーマごとに。積分・確率・整数・ベクトルの詳しい教材もあります。'
                   : isBiology
-                    ? 'まとめプリントで共通テスト生物基礎の全範囲（細胞・遺伝子・体内環境・植生・生態系）を一気に総復習できます。'
+                    ? '細胞・遺伝子・体内環境・生態系の要点を読む。必要なテーマから復習できます。'
                     : '基礎知識をしっかりと身につけます。'}</p>
               <span className="mode-input-open">ノートをひらく <ArrowRight size={18} aria-hidden="true" /></span>
             </button>

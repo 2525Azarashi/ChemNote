@@ -1,6 +1,7 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { ArrowLeft, BookOpen, Eye, EyeOff, LayoutList, Printer } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { ArrowLeft, BookOpen, Eye, EyeOff, LayoutList, Printer, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   LEARNING_GLOBAL_CSS,
   LEARNING_PRINT_CSS,
@@ -30,6 +31,7 @@ import {
   type LearningPart,
 } from '../data/learningContent';
 import { MolBasicsSection } from './MolBasicsSection';
+import { MATH_CURRICULUM_SECTIONS, MATH_CURRICULUM_HTML, MATH_CURRICULUM_PARTS } from '../data/learningContent/math_curriculum';
 import {
   normalizeAnswerAccordions,
   countAnswerAccordions,
@@ -93,9 +95,10 @@ const ADVANCED_SECTION_HTML: Record<string, string> = {
   'adv-4': ADV_ELECTRO_HTML,
 };
 
-/** 数学。4単元（積分・ベクトル・確率・整数）を公開中。以降も順次追加していく。 */
+/** 現行6科目の基礎・標準教材と、既存の専門演習を併設する。 */
 const MATH_SECTIONS: SectionDef[] = [
   { id: 'toc', title: '目次・使い方' },
+  ...MATH_CURRICULUM_SECTIONS,
   { id: 'math-integral', title: '数III 積分法（全パターン）' },
   { id: 'math-vector', title: 'ベクトル（全パターン）' },
   { id: 'math-probability', title: '場合の数・確率（全パターン）' },
@@ -103,6 +106,7 @@ const MATH_SECTIONS: SectionDef[] = [
 ];
 
 const MATH_SECTION_HTML: Record<string, string> = {
+  ...MATH_CURRICULUM_HTML,
   'math-integral': MATH_INTEGRAL_HTML,
   'math-vector': MATH_VECTOR_HTML,
   'math-probability': MATH_PROBABILITY_HTML,
@@ -135,6 +139,7 @@ const BIOLOGY_SECTION_HTML: Record<string, string> = {
 export const ALL_PARTS_ID = 'all';
 
 const SECTION_PARTS: Record<string, LearningPart[]> = {
+  ...MATH_CURRICULUM_PARTS,
   'adv-3': ADV_THERMO_PARTS,
   'adv-4': ADV_ELECTRO_PARTS,
   'math-integral': MATH_INTEGRAL_PARTS,
@@ -178,6 +183,7 @@ const ADVANCED_PART_LABEL: Record<string, string> = {
 };
 
 const MATH_PRINT_TITLE: Record<string, string> = {
+  ...Object.fromEntries(MATH_CURRICULUM_SECTIONS.map(s => [s.id, s.title])),
   toc: '目次・使い方',
   'math-integral': '数III 積分法（全パターン演習）',
   'math-vector': 'ベクトル（全パターン演習）',
@@ -186,8 +192,9 @@ const MATH_PRINT_TITLE: Record<string, string> = {
 };
 
 const MATH_PART_LABEL: Record<string, string> = {
+  ...Object.fromEntries(MATH_CURRICULUM_SECTIONS.map(s => [s.id, s.title])),
   'math-integral': '数学III 積分法',
-  'math-vector': '数学B・C ベクトル',
+  'math-vector': '数学C ベクトル',
   'math-probability': '数学A 場合の数・確率',
   'math-integer': '数学A 整数',
 };
@@ -269,9 +276,19 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
   const [allAnswersOpen, setAllAnswersOpen] = useState(false);
   // 表示中の「重要事項」。ALL_PARTS_ID なら章を通して読む。
   const [activePart, setActivePart] = useState<string>(ALL_PARTS_ID);
+  const readerTopRef = useRef<HTMLDivElement>(null);
+  const printDialogRef = useRef<HTMLDialogElement>(null);
+  const printButtonRef = useRef<HTMLButtonElement>(null);
+  const [readingSize, setReadingSize] = useState<'normal' | 'large'>(() => {
+    try { return localStorage.getItem('manatobi-reader-size') === 'large' ? 'large' : 'normal'; }
+    catch { return 'normal'; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem('manatobi-reader-size', readingSize); } catch { /* Reading still works without storage. */ }
+  }, [readingSize]);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    readerTopRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
     setAllAnswersOpen(false);
     // タブを移ったら「すべて」に戻す（前の章の①が選ばれたままにならないように）
     setActivePart(ALL_PARTS_ID);
@@ -322,7 +339,7 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
   const selectPart = useCallback((id: string) => {
     setActivePart(id);
     setAllAnswersOpen(false);
-    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+    readerTopRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
   }, []);
 
   // 「前の重要事項 / 次の重要事項」用。読み進める動線を残しておく。
@@ -352,8 +369,16 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
   //      afterprint が飛ばないブラウザもあるので、タイマーでも復帰させる。
   // ============================================================
   const [printMenuOpen, setPrintMenuOpen] = useState(false);
+  useEffect(() => {
+    const dialog = printDialogRef.current;
+    if (!dialog) return;
+    if (printMenuOpen && !dialog.open) dialog.showModal();
+    if (!printMenuOpen && dialog.open) dialog.close();
+    return () => { if (dialog.open) dialog.close(); };
+  }, [printMenuOpen]);
 
   const handlePrint = useCallback((mode: PrintMode) => {
+    printDialogRef.current?.close();
     setPrintMenuOpen(false);
     if (typeof window === 'undefined') return;
 
@@ -394,7 +419,7 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
   useEffect(() => setPrintMenuOpen(false), [activeTab]);
 
   return (
-    <div className="w-full min-h-screen bg-[#FDFBF7] font-modern pb-20 relative notebook-paper">
+    <div ref={readerTopRef} data-reading-size={readingSize} className="learning-reader w-full min-h-screen bg-[#FDFBF7] font-modern pb-app-nav relative notebook-paper">
       {/* ===== グローバル学習プリント用 CSS（ビルド時に .learning-content スコープ済み）===== */}
       <style dangerouslySetInnerHTML={{ __html: LEARNING_GLOBAL_CSS }} />
       {/* ===== 印刷（PDF書き出し）用 CSS。@media print のみなので画面表示は変わらない ===== */}
@@ -405,88 +430,40 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
         <div className={`absolute top-10 left-10 w-48 h-48 bg-[#A9CCE3]/10 rounded-full blur-3xl pointer-events-none ${NO_PRINT_CLASS}`}></div>
         <div className={`absolute bottom-20 right-10 w-64 h-64 bg-[#F9E79F]/10 rounded-full blur-3xl pointer-events-none ${NO_PRINT_CLASS}`}></div>
 
-        {/* Back and Title Header */}
-        <div className={`flex flex-col md:flex-row md:items-center justify-between gap-4 mb-0 px-4 md:px-8 py-4 md:py-5 bg-white/80 backdrop-blur-sm border-b border-gray-150 sticky top-0 z-30 ${NO_PRINT_CLASS}`}>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={onBack}
-              className="p-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-700 rounded-xl transition-all shadow-sm cursor-pointer"
-              title="戻る"
-            >
-              <ArrowLeft size={18} className="stroke-[2.5]" />
-            </button>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-[#5b21b6]">{config.label} まとめプリント</h1>
-            </div>
+        <header className={`reader-header sticky top-0 z-30 ${NO_PRINT_CLASS}`}>
+          <div className="reader-topbar">
+            <button type="button" onClick={onBack} className="reader-icon-button" aria-label="学習メニューに戻る"><ArrowLeft size={20} /></button>
+            <div className="reader-heading"><span>{config.label} ／ LEARNING NOTE</span><h1>まとめプリント</h1></div>
+            <button ref={printButtonRef} type="button" onClick={() => setPrintMenuOpen(true)} aria-haspopup="dialog" aria-expanded={printMenuOpen} className="reader-print-button"><Printer size={17} /><span>印刷 / PDF</span></button>
           </div>
+          <label className="reader-course-picker"><BookOpen size={16} aria-hidden="true" /><span className="sr-only">読む章を選ぶ</span>
+            <select value={activeTab} onChange={event => setActiveTab(event.target.value)} aria-label="読む章を選ぶ">
+              {SECTIONS.map(section => <option key={section.id} value={section.id}>{section.title}</option>)}
+            </select>
+          </label>
+        </header>
 
-          <div className="flex items-center gap-3">
-            {/* ===== 印刷 / PDF 書き出し =====
-                「解答つき」と「解答なし」を選ばせるのが要点。
-                同じ紙面を、答え合わせ用と書き込み用の2通りで使えるようにする。 */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setPrintMenuOpen(v => !v)}
-                aria-expanded={printMenuOpen}
-                aria-haspopup="menu"
-                className="flex items-center gap-1.5 rounded-xl border-2 border-[#7c3aed] bg-[#7c3aed] px-3 py-2 text-[11px] md:text-xs font-extrabold text-white shadow-sm transition-colors hover:bg-[#6d28d9] cursor-pointer"
-                title="このセクションを印刷 / PDFで保存"
-              >
-                <Printer size={14} />
-                <span>印刷 / PDF</span>
-              </button>
-
-              {printMenuOpen && (
-                <>
-                  {/* 外側タップで閉じるための透明レイヤー */}
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setPrintMenuOpen(false)}
-                    aria-hidden="true"
-                  />
-                  <div
-                    role="menu"
-                    className="absolute right-0 top-[calc(100%+8px)] z-50 w-64 rounded-xl border-2 border-[#c9bce6] bg-white p-2 shadow-xl"
-                  >
-                    <p className="px-2 pb-1.5 pt-1 text-[10px] font-extrabold tracking-wider text-[#8b81a3]">
-                      A4縦で印刷されます（PDF保存も可）
-                    </p>
-                    <button
-                      type="button"
-                      role="menuitem"
-                      onClick={() => handlePrint('answers')}
-                      className="w-full rounded-lg px-2 py-2 text-left transition-colors hover:bg-[#f3ecff] cursor-pointer"
-                    >
-                      <span className="block text-xs font-extrabold text-[#5b21b6]">解答つきで印刷</span>
-                      <span className="mt-0.5 block text-[10px] font-bold leading-relaxed text-[#6b6280]">
-                        すべての解答を開いた状態で出力（答え合わせ・保存用）
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      role="menuitem"
-                      onClick={() => handlePrint('blank')}
-                      className="mt-1 w-full rounded-lg px-2 py-2 text-left transition-colors hover:bg-[#f3ecff] cursor-pointer"
-                    >
-                      <span className="block text-xs font-extrabold text-[#5b21b6]">解答を伏せて印刷</span>
-                      <span className="mt-0.5 block text-[10px] font-bold leading-relaxed text-[#6b6280]">
-                        解答欄を空けて出力（自分で解くプリントとして使う）
-                      </span>
-                    </button>
-                  </div>
-                </>
-              )}
+        {typeof document !== 'undefined' && createPortal(
+          <dialog ref={printDialogRef} className={`reader-print-dialog ${NO_PRINT_CLASS}`} aria-labelledby="reader-print-title" aria-describedby="reader-print-description"
+            onCancel={() => setPrintMenuOpen(false)}
+            onClose={() => { setPrintMenuOpen(false); printButtonRef.current?.focus({ preventScroll: true }); }}
+            onClick={event => { if (event.target === event.currentTarget) setPrintMenuOpen(false); }}>
+            <div className="reader-print-panel">
+              <div className="reader-print-heading"><div><span>PRINT YOUR NOTE</span><h2 id="reader-print-title">印刷・PDFに保存</h2></div>
+                <button type="button" className="reader-icon-button" onClick={() => setPrintMenuOpen(false)} aria-label="印刷パネルを閉じる"><X size={20} /></button>
+              </div>
+              <p id="reader-print-description">{SECTION_PRINT_TITLE[activeTab]}{currentPart ? ` ／ ${currentPart.title}` : ''}</p>
+              <p className="reader-print-help">いま表示している範囲を印刷します。PDF保存は、この後の端末の印刷画面で選べます。</p>
+              <button type="button" onClick={() => handlePrint('answers')} className="reader-print-option"><Eye size={21} /><span><strong>解答つきで印刷</strong><small>解説も含めて、復習・答え合わせ用に</small></span><ChevronRight size={18} /></button>
+              <button type="button" onClick={() => handlePrint('blank')} className="reader-print-option"><EyeOff size={21} /><span><strong>解答を伏せて印刷</strong><small>自分で解く、書き込み用プリントに</small></span><ChevronRight size={18} /></button>
+              <p className="reader-print-help">A4縦で出力します。端末やブラウザにより印刷・保存の表示は異なります。</p>
+              <button type="button" className="reader-print-cancel" onClick={() => setPrintMenuOpen(false)}>読んでいた場所に戻る</button>
             </div>
-
-            <div className="text-right text-xs text-[#8b81a3] font-bold hidden lg:block">
-              大学入学共通テスト対策 / 2次試験対策 / 定期テスト対策
-            </div>
-          </div>
-        </div>
+          </dialog>, document.body,
+        )}
 
         {/* Responsive Topic Tab Scroll Container */}
-        <div className={`flex gap-2 overflow-x-auto py-3 mb-0 px-4 md:px-8 scrollbar-none snap-x z-20 relative bg-[#FDFBF7]/80 backdrop-blur-sm border-b border-gray-150 ${NO_PRINT_CLASS}`}>
+        <div className={`reader-desktop-tabs flex gap-2 overflow-x-auto py-3 mb-0 px-4 md:px-8 scrollbar-none snap-x z-20 relative bg-[#FDFBF7]/80 backdrop-blur-sm border-b border-gray-150 ${NO_PRINT_CLASS}`}>
           {SECTIONS.map(sec => (
             <button
               key={sec.id}
@@ -506,11 +483,11 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
         {/* The Main Notebook-Styled Paper Page Container
             背景（罫線・ノート紙）は全幅のまま、読み取り用コンテンツは読みやすい最大幅に制限して中央寄せする。
             これにより、余白を消してもPCで画像や表が巨大化しない。 */}
-        <div className="w-full notebook-paper rounded-none p-4 sm:p-8 md:p-12 relative min-h-[calc(100vh-140px)] shadow-none border-0">
+        <div className="reader-paper w-full notebook-paper rounded-none p-4 sm:p-8 md:p-12 relative min-h-[calc(100vh-140px)] shadow-none border-0">
           {/* Vertical Red Binder Line */}
-          <div className={`absolute top-0 bottom-0 left-[14px] sm:left-[36px] w-[1.5px] bg-red-200/50 pointer-events-none ${NO_PRINT_CLASS}`}></div>
+          <div className={`reader-margin-line absolute top-0 bottom-0 left-[14px] sm:left-[36px] w-[1.5px] bg-red-200/50 pointer-events-none ${NO_PRINT_CLASS}`}></div>
 
-          <div className="pl-5 sm:pl-10 relative z-10 text-[#1B2631] max-w-4xl mx-auto learning-print-area">
+          <div className="reader-body pl-5 sm:pl-10 relative z-10 text-[#1B2631] max-w-4xl mx-auto learning-print-area">
 
             {/* ====== 印刷したときだけ出る紙のヘッダー ======
                 配布プリントとして成立させるために、タイトル・セクション名と
@@ -607,7 +584,21 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
                     </div>
                   )}
 
-                  {!isAdvanced && (
+                  {subject === 'math' && (
+                    <div className="space-y-4" data-math-curriculum-toc>
+                      <p className="text-sm leading-relaxed">数学Ⅰ・A・Ⅱ・B・Ⅲ・Cの基礎から標準へ。要点と例題を読んだら「演習問題」の同名単元で練習できます。入試の全パターン・全難度を網羅したものではありません。</p>
+                      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                        {MATH_SECTIONS.filter(s => s.id !== 'toc').map(section => (
+                          <button key={section.id} type="button" onClick={() => setActiveTab(section.id)} className="min-h-[44px] rounded-xl border border-[#c9bce6] bg-white p-4 text-left text-sm font-bold text-[#5b21b6]">
+                            {section.title}
+                            <span className="mt-2 block text-xs font-normal leading-relaxed text-slate-600">{SECTION_PARTS[section.id]?.map(p => p.short).join(' ／ ')}</span>
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs leading-relaxed text-slate-600">場合の数・確率と整数は数学A、ベクトルは数学Cとして既存教材を併用します。二次関数・軌跡と領域には河野玄斗さんの確認済み参考動画へのリンクがあります。問題・解説は独自作成で、監修・提携を示すものではありません。</p>
+                    </div>
+                  )}
+                  {subject === 'chemistry_basic' && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                     <div className="bg-white p-4 rounded-xl border-2 border-[#c9bce6] border-l-[6px] border-l-[#7c3aed]">
                       <h4 className="font-bold text-[#5b21b6] border-b border-dotted border-[#c9bce6] pb-1.5 mb-2 text-sm">第1部 物質の構成</h4>
@@ -710,14 +701,25 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
                 チップで選んでピンポイントに読めるようにする。
                 印刷は選んでいる重要事項だけを刷る（＝1テーマ1枚のプリントになる）。 */}
             {parts && parts.length > 0 && (
-              <div className={`mb-5 rounded-2xl border-2 border-[#c9bce6] bg-white/90 p-3 sm:p-4 ${NO_PRINT_CLASS}`}>
+              <div className={`reader-topics mb-5 rounded-2xl border-2 border-[#c9bce6] bg-white/90 p-3 sm:p-4 ${NO_PRINT_CLASS}`}>
                 <div className="mb-2 flex items-center gap-1.5">
                   <LayoutList size={14} className="text-[#7c3aed]" />
                   <span className="text-[11px] font-extrabold tracking-widest text-[#7c3aed]">
                     重要事項ごとに見る
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="reader-topic-select">
+                  <label htmlFor="reader-topic">読むテーマ</label>
+                  <select id="reader-topic" value={activePart} onChange={event => selectPart(event.target.value)}>
+                    <option value={ALL_PARTS_ID}>章全体を読む</option>
+                    {parts.map(part => <option key={part.id} value={part.id}>{part.no}. {part.title}</option>)}
+                  </select>
+                  <div className="reader-topic-arrows">
+                    <button type="button" disabled={!prevPart} onClick={() => prevPart && selectPart(prevPart.id)} aria-label="前のテーマ"><ChevronLeft size={18} /></button>
+                    <button type="button" disabled={!nextPart && activePart !== ALL_PARTS_ID} onClick={() => selectPart(nextPart?.id || parts[0].id)} aria-label={activePart === ALL_PARTS_ID ? '最初のテーマを読む' : '次のテーマ'}><ChevronRight size={18} /></button>
+                  </div>
+                </div>
+                <div className="reader-topic-chips flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => selectPart(ALL_PARTS_ID)}
@@ -780,6 +782,11 @@ export function LearningViewer({ onBack, initialTab, subject = 'chemistry_basic'
                       </span>
                     </button>
                   )}
+                </div>
+                <div className={`reader-settings ${NO_PRINT_CLASS}`} role="group" aria-label="本文の文字サイズ">
+                  <span>文字サイズ</span>
+                  <button type="button" aria-pressed={readingSize === 'normal'} onClick={() => setReadingSize('normal')}>標準</button>
+                  <button type="button" aria-pressed={readingSize === 'large'} onClick={() => setReadingSize('large')}>大きめ</button>
                 </div>
                 {/* key に開閉状態を含めることで、一括開閉のときだけ
                     本文を作り直す（＝全アコーディオンが確実に指定状態になる）。

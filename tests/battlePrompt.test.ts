@@ -56,7 +56,7 @@ describe('単独出題の空欄変換', () => {
   });
 });
 
-describe('全4,066問の空欄・ラベル監査', () => {
+describe('全4,180問の空欄・ラベル監査', () => {
   it.each(Object.keys(POOL_COUNTS))('%s: 旧番号・対象外の穴・切断が残らない', async subject => {
     const pool = await loadPool(subject);
     for (const q of pool) {
@@ -78,7 +78,8 @@ describe('全4,066問の空欄・ラベル監査', () => {
       }
     }
     const pool = (await Promise.all(Object.keys(POOL_COUNTS).map(loadPool))).flat();
-    expect(pool).toHaveLength(4066);
+    expect(pool).toHaveLength(4180);
+    expect(pool.filter(q => !q.chapterId.startsWith('mc'))).toHaveLength(4066);
     expect(Object.keys(repairs)).toHaveLength(50);
     for (const [key, r] of Object.entries(repairs) as [string, any][]) {
       expect(source.get(key)?.correctAnswer, key).toBe(r.expectedAnswer);
