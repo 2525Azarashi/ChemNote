@@ -269,9 +269,12 @@ describe('まとめプリントの科目切り替え', () => {
   });
 
   it('★ 科目名はハードコードせず config.label を使う', () => {
-    // 画面ヘッダー・印刷ヘッダー・目次見出しの3か所
-    const hits = viewerSrc.match(/\{config\.label\} まとめプリント/g) || [];
-    expect(hits.length).toBeGreaterThanOrEqual(3);
+    // The compact reader header separates subject and title into two lines.
+    expect(viewerSrc).toMatch(/reader-heading[\s\S]{0,80}\{config\.label\}/);
+    // Printed header and contents heading still include the full subject title.
+    expect(viewerSrc).toMatch(/lc-print-title[^\n]*\{config\.label\} まとめプリント/);
+    const contents = viewerSrc.slice(viewerSrc.indexOf('{/* ====== TOC ====== */}'));
+    expect(contents).toContain('{config.label} まとめプリント');
   });
 
   it('★ その科目に無いタブIDは目次へ落とす（空白画面を出さない）', () => {
