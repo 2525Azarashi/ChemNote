@@ -1858,6 +1858,71 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   min-height: 44px;
 }
 
+/* Shared study navigation: keep the paper/mascot language, reduce visual noise.
+   Deliberately excludes Home, live quiz panes and live battle controls. */
+@media screen {
+  .mode-desk .mode-practice-copy > p, .mode-desk .mode-input-paper p { font-size: 14px; line-height: 1.8; color: #5e5560; }
+  .mode-desk .mode-heading > p:last-child { font-size: 14px; color: #695965; }
+  .mode-desk .mode-input-paper { border-radius: 6px 20px 20px 6px; transform: none; border-left-color: #c4a97a; box-shadow: 3px 4px 0 #ece3d6; }
+  .mode-desk .mode-input-open { font-size: 14px; min-height: 44px; color: #785a3a; }
+  .mode-desk .mode-primary { min-height: 48px; font-size: 15px; }
+  .mode-desk .mode-battle-bridge { min-height: 52px; border-radius: 16px; }
+  .mode-desk .mode-battle-bridge small { font-size: 12px; color: #645762; line-height: 1.6; }
+  .mode-desk .mode-footnote { font-size: 12px; line-height: 1.8; color: #756472; }
+  .chapter-route .chapter-workspace { font-family: var(--font-modern); }
+  .chapter-route-heading { margin-top: 44px; margin-bottom: 12px; }
+  .chapter-route-heading > p:last-child { font-size: 14px; color: #685663; }
+  .chapter-route .chapter-route-card { border-radius: 16px; box-shadow: 0 3px 10px #49374705; }
+  .chapter-route-card h4 { color: #443d48; font-size: 16px; line-height: 1.65; }
+  .chapter-route .chapter-unit-count { font-size: 12px; color: #765f70; margin-top: 4px; }
+  .chapter-route-card > div:first-child > p:not(.chapter-unit-count) { font-size: 13px; font-weight: 400; color: #62606b; line-height: 1.75; }
+  .chapter-route-card button { min-height: 44px; font-size: 13px; }
+  .chapter-route-card button[title="単元のフローチャートを確認"] { min-width: 44px; border-radius: 12px; padding-inline: 8px; }
+  .chapter-route-card > div:last-child > div:first-child > button:first-child { border-radius: 12px; background: #96637e; }
+  .chapter-question-list button { padding: 10px; line-height: 1.65; }
+  .chapter-route #chapter-tab-panel { border-radius: 16px; }
+  .study-journal .mtb-page-header p:not(.mtb-kicker) { font-size: 13px; }
+  .study-journal-tabs > button { min-height: 44px; font-size: 13px; }
+  .study-journal .study-subject-tabs > button { min-height: 44px; }
+  .battle-lobby .lobby-mode { border-radius: 18px; }
+  .battle-lobby .lobby-mode-caption { font-family: var(--font-modern); font-size: 15px; font-weight: 500; }
+  .battle-lobby .lobby-mode-tags { font-size: 12px; line-height: 1.7; color: #695b67; }
+  .battle-lobby .lobby-mode-details > summary { font-size: 13px; color: #695b67; }
+  .battle-lobby .lobby-mode-actions > button { min-height: 48px; font-size: 14px; border-radius: 14px; }
+  .battle-lobby .lobby-mode-details dl > div { font-size: 13px; line-height: 1.7; }
+  .battle-lobby .battle-guest-stage p:not(.font-handwriting) { font-size: 14px; font-weight: 400; }
+  .battle-lobby .battle-guest-stage { gap: 16px; }
+  @media (max-width: 639px) {
+    .mode-desk { padding-inline: 14px; }
+    .mode-desk .mode-practice-stage { grid-template-columns: 64px minmax(0,1fr); gap: 10px 14px; border: 1px solid #e7dbe1; border-radius: 20px; background: #fffdfa; padding: 16px; }
+    .mode-desk .mode-practice-art { width: 60px; height: 68px; border-width: 2px; box-shadow: 0 4px 0 #eadce6; }
+    .mode-desk .mode-practice-art > svg { width: 32px; height: 32px; }
+    .mode-desk .mode-practice-art > i { font-size: 12px; }
+    .mode-desk .mode-practice-copy h2 { font-size: 22px; }
+    .mode-desk .mode-practice-copy > p { font-size: 14px; }
+    .mode-desk .mode-primary { margin-top: 4px; }
+    .mode-desk .mode-input-paper { padding: 20px 16px 16px 60px; }
+    .mode-desk .mode-input-paper > svg { top: 22px; }
+    .mode-desk .mode-input-paper h2 { font-size: 22px; }
+    .mode-desk .mode-input-paper p { font-size: 14px; margin-block: 8px 12px; }
+    .mode-desk .mode-workspace { gap: 16px; }
+    .mode-desk .mode-tools { margin-top: 24px; }
+    .chapter-route .chapter-route-list { margin-left: 0; padding-left: 0; border-left: 0; gap: 12px; }
+    .chapter-route .chapter-route-card { padding: 14px; }
+    .chapter-route-card::before { left: 14px; top: 16px; background: #89637b; }
+    .chapter-route-card h4 { padding-left: 32px; min-height: 27px; }
+    .chapter-route-card .chapter-unit-count { padding-left: 32px; }
+    .chapter-route-card > div:last-child > div:first-child { gap: 8px; }
+    .battle-lobby .lobby-match-options { grid-template-columns: minmax(0,1fr); gap: 14px; }
+    .battle-lobby .lobby-mode:not(.lobby-mode-friend) > header { flex-direction: row; align-items: center; }
+    .battle-lobby .lobby-mode { padding: 18px 16px 10px; }
+    .battle-lobby .lobby-mode-friend > header h2 { font-size: 23px; }
+    .battle-lobby .battle-guest-stage > div:first-child { width: 64px; height: 64px; border-radius: 20px; }
+    .battle-lobby .battle-guest-stage > div:first-child svg { width: 30px; height: 30px; }
+    .study-journal-tabs > button { padding-inline: 9px; font-size: 13px; }
+  }
+}
+
 /* Reading mode is deliberately screen-only; the established A4 layouts remain intact. */
 @media screen {
   .learning-reader { --reader-text: 16px; --reader-accent: #79566b; color: #2c3e50; }
