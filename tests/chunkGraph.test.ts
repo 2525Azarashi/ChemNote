@@ -157,6 +157,7 @@ const CHUNK_RULES: { pattern: string; chunk: string }[] = [
   { pattern: '/src/data/egProblems', chunk: 'data-english-g' },
 
   { pattern: '/src/data/mathData', chunk: 'data-math' },
+  { pattern: '/src/data/mathCurriculum', chunk: 'data-math' },
   { pattern: '/src/data/mathProblemKit', chunk: 'data-math' },
   { pattern: '/src/data/mathIntegerProblems', chunk: 'data-math' },
   { pattern: '/src/data/mathIntegralProblems', chunk: 'data-math' },

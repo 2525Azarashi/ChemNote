@@ -1,7 +1,7 @@
 {
-  "name": "マナトビ 化学基礎",
-  "short_name": "Chembasis",
-  "description": "高校化学基礎を、楽しく続けられる学習体験へ。",
+  "name": "マナトビ",
+  "short_name": "マナトビ",
+  "description": "学習・復習・クイズ対戦を、楽しく続けられる学習体験へ。",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
