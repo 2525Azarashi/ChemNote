@@ -1004,8 +1004,9 @@ export default function App() {
     const audio = audioRef.current;
     if (!audio || !isAudioValid || hasLoggedAudioError.current) return;
     
-    // Play BGM except during quiz and explanation, and only after user interaction
-    const shouldPlay = isBgmEnabled && hasInteracted && !BGM_SILENT_STATES.includes(appState);
+    // Starting from the title mounts <audio>; a prior title tap may already have
+    // set hasInteracted, so hasEntered must also trigger this effect.
+    const shouldPlay = hasEntered && isBgmEnabled && hasInteracted && !BGM_SILENT_STATES.includes(appState);
 
     if (shouldPlay) {
       /*
@@ -1048,7 +1049,7 @@ export default function App() {
       markBgmPlaying(false);
       audio.pause();
     }
-  }, [appState, isBgmEnabled, hasInteracted, isAudioValid]);
+  }, [appState, isBgmEnabled, hasInteracted, isAudioValid, hasEntered]);
 
   /*
     ===== フェードを実際に進める時計 =====
