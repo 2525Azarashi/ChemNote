@@ -20,6 +20,7 @@ try {
     assert.ok(await page.locator('nav[aria-label="メインナビゲーション"] button').evaluateAll(nodes => nodes.every(n => { const r=n.getBoundingClientRect(); return r.width>=44 && r.height>=44; })), 'navigation targets under 44px');
   };
   await page.goto(url, { waitUntil: 'domcontentloaded' });
+  await page.locator('.launch-start').click();
   await page.locator('[data-mana-dashboard]').waitFor();
   await page.getByRole('button', { name: /デイリーボーナスを受け取る/ }).click();
   await page.getByRole('dialog').waitFor(); assert.equal((await wallet()).coins, 10);
@@ -45,8 +46,8 @@ try {
   assert.ok(await page.getByRole('button',{name:/ミント.*装備中/}).isDisabled());
   await home();
   assert.ok(await page.locator('[data-mana-coins]').innerText().then(t=>t.includes('40')));
-  assert.equal(await page.locator('.mana-avatar-button > div > div').evaluate(e=>getComputedStyle(e).borderTopColor),'rgb(116, 183, 163)');
-  await page.reload({waitUntil:'domcontentloaded'}); await page.locator('[data-mana-dashboard]').waitFor();
+  assert.match(await page.locator('.home-mascot-art').getAttribute('style'), /116, 183, 163|74b7a3/i);
+  await page.reload({waitUntil:'domcontentloaded'}); await page.locator('.launch-start').click(); await page.locator('[data-mana-dashboard]').waitFor();
   assert.equal((await wallet()).coins,40);
   for(const [width,height] of [[320,568],[390,844],[667,375],[1280,900]]) {
     await page.setViewportSize({width,height}); await fits();
@@ -73,9 +74,9 @@ try {
   assert.equal(await page.getByRole('button',{name:'うけとる',exact:true}).count(),0);
   await home();
   // A second tab publishes the existing wallet and the mounted home updates without reload.
-  const other=await context.newPage();await other.goto(url,{waitUntil:'domcontentloaded'});
+  const other=await context.newPage();await other.goto(url,{waitUntil:'domcontentloaded'});await other.locator('.launch-start').click();
   await other.evaluate(async()=>{const s=await import('/src/battle/data/growthStore.ts');await s.equip('frame_paper');});
-  await page.waitForFunction(()=>getComputedStyle(document.querySelector('.mana-avatar-button > div > div')).borderTopColor==='rgb(229, 231, 235)');
+  await page.waitForFunction(()=>getComputedStyle(document.querySelector('.home-mascot-art')).filter.includes('229, 231, 235'));
   await other.close();
   // Actual vocabulary selection and AI hook, including countdown and no double XP wallet.
   await page.getByRole('button',{name:'オンライン対戦へ移動',exact:true}).click();

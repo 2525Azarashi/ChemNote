@@ -129,10 +129,9 @@ describe('公開フラグ（src/config/features.ts）', () => {
     expect(FEATURES.my_words).toBe(false);
   });
 
-  it('BGM の既定値は OFF である', () => {
-    // ★「機能を消す」ではなく「最初は鳴らさない」という意味★
-    // 図書館・電車で勝手に音が出るのを止めるのが目的。
-    expect(FEATURES.bgm).toBe(false);
+  it('BGM は初回操作後の再生を既定で有効にする', () => {
+    // 明示的なOFFの保存値とブラウザの自動再生制限は別途尊重する。
+    expect(FEATURES.bgm).toBe(true);
   });
 
   it('公開中の科目は公開のままである（うっかり全部消していないこと）', () => {

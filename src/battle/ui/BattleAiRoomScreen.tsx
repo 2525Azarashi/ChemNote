@@ -271,7 +271,7 @@ export function BattleAiRoomScreen({
    * 同じ純粋関数で採点した結果を読むだけなので、見せ方が人間戦と揃う。
    */
   return (
-    <BattleShell>
+    <BattleShell className="arena-live-shell">
       <BattleLiveStage
         question={b.current}
         index={b.currentIndex}

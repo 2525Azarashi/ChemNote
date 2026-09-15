@@ -145,7 +145,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
 
   return (
     <li
-      className={`relative overflow-hidden rounded-2xl border shadow-sm transition-colors ${
+      className={`arena-review-card relative overflow-hidden rounded-2xl border shadow-sm transition-colors ${
         due ? 'bg-[#FFF6F9] border-[#F4A9C4]/60' : 'bg-white border-gray-100'
       }`}
     >
@@ -213,7 +213,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
 
       {onReview && (
         <div className="px-5 pb-3">
-          <button type="button" onClick={() => onReview(item)} aria-label="答えを見ずにこの問題を解き直す" className="min-h-[44px] rounded-lg bg-[#2C3E50] px-4 text-sm font-bold text-white">
+          <button type="button" onClick={() => onReview(item)} aria-label="答えを見ずにこの問題を解き直す" className="arena-review-start min-h-[44px] rounded-lg bg-[#2C3E50] px-4 text-sm font-bold text-white">
             解き直す
           </button>
         </div>
@@ -254,7 +254,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             {/* 問題文の続き（要約で切り落とした分をここで補う） */}
             {item.questionText && (
               <p className="text-[13px] text-gray-600 leading-relaxed break-words [overflow-wrap:anywhere]">
-                {truncate(stripHtml(item.questionText), 160)}
+                {stripHtml(item.questionText)}
               </p>
             )}
 

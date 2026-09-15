@@ -29,6 +29,13 @@ export function BattleGrowthReward({ matchId, ownerUid, eligible, subject, subje
   </div>;
   if (!reward) return <p role="status" className="mb-3 text-xs text-gray-600">成長記録を保存しています…</p>;
   return <>
+    <section className="arena-reward" aria-label="今回の獲得報酬" role="status">
+      <span>{reward.delta ? 'BATTLE REWARDS' : '受取済みの対戦'}</span>
+      <h2>{reward.delta ? `＋${reward.delta.coins?.total ?? 0} マナコイン` : `所持 ${reward.progress.coins} マナコイン`}</h2>
+      {reward.delta && <><p>完走 +{reward.delta.coins?.finish ?? 0} ／ 正解 +{reward.delta.coins?.correct ?? 0} ／ 勝利 +{reward.delta.coins?.victory ?? 0}</p>
+        <strong>＋{reward.delta.xp.total} XP</strong><p>残高 {reward.progress.coins - (reward.delta.coins?.total ?? 0)} → {reward.progress.coins} 枚</p></>}
+      <small>50枚で装飾ガチャ1回。ホームと同じおさいふです。</small>
+    </section>
     <p className="mb-2 text-[11px] text-gray-600">このブラウザ・アカウントだけの成長記録です。端末間同期・公開はありません。</p>
     <BattleGrowthCard progress={reward.progress} delta={reward.delta} onOpenProfile={onProfile} onOpenMissions={onMissions} />
     <ShareButton text={shareTextForMatch({ outcome: result.outcome, subjectLabel,

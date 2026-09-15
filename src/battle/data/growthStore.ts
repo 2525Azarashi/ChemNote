@@ -8,6 +8,8 @@ import { applyHolesFilled, applyLoginWithBonus, applyMatchToProgress, claimMissi
   emptyProgress, equipItem, equipTitle, localDateKey, normalizeProgress, purchaseItem,
   type GrowthProgress, type MatchSummaryForGrowth } from '../core/growth';
 
+import { matchCoins, rollGacha } from '../core/arenaEconomy';
+
 export const GROWTH_STORAGE_PREFIX = 'battle_growth_local_v1_';
 type Envelope = { version: 1; progress: GrowthProgress; receipts: string[]; day: string };
 const listeners = new Set<(p: GrowthProgress) => void>();
@@ -75,7 +77,9 @@ export async function applyMatchGrowth(match: MatchSummaryForGrowth, expectedUid
     if (!match.roomId || seen.has(receipt) || !match.score.perQuestion.length) return { next: p, extra: null };
     const r = applyMatchToProgress(p, match, today);
     seen.add(receipt);
-    return { next: r.next, extra: r.delta };
+    if (!r.delta) return { next: p, extra: null };
+    const coins = matchCoins(match);
+    return { next: { ...r.next, coins: r.next.coins + coins.total }, extra: r.delta ? { ...r.delta, coins } : null };
   }, expectedUid);
   return out ? { progress: out.next, delta: out.extra } : null;
 }
@@ -116,4 +120,19 @@ export async function buyItem(id: string) {
     return { next: r.ok ? equipItem(r.next, id) : p, extra: { ok: r.ok, reason: r.reason } };
   });
   return out ? { progress: out.next, ...out.extra } : null;
+}
+
+/** One receipt and one atomic write for each confirmed draw. */
+export async function drawGacha(requestId: string, expectedUid = scope()) {
+  if (!requestId || requestId.length > 100) return null;
+  const out = await mutate((p, _today, seen) => {
+    const receipt = `gacha:${requestId}`;
+    if (seen.has(receipt)) return { next: p, extra: null };
+    const values = new Uint32Array(1); crypto.getRandomValues(values);
+    const r = rollGacha(p, values[0] / 4294967296);
+    if (!r) return { next: p, extra: null };
+    seen.add(receipt);
+    return { next: r.next, extra: { item: r.item, duplicate: r.duplicate, refund: r.refund } };
+  }, expectedUid);
+  return out ? { progress: out.next, result: out.extra } : null;
 }

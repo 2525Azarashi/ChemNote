@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope, Flame, Sparkles } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope, Flame, Sparkles, Gift, Store, Shirt, Award, Target } from 'lucide-react';
 import { auth } from '../firebase';
+import { useGrowthProgress } from '../hooks/useGrowthProgress';
+import { equippedPoseSrc, equippedFrameColor, levelOf, equippedTitleLabel } from '../battle/core/growth';
+import { FriendOnlineStrip } from './FriendOnlineStrip';
 import type { GrowthPage } from './GrowthHub';
 const GrowthHomeStrip = React.lazy(() => import('../battle/ui/GrowthHomeStrip').then(m => ({ default: m.GrowthHomeStrip })));
 /*
@@ -78,6 +81,8 @@ import { unreadNoticeCount } from '../utils/updateNotices';
 interface HomeProps {
   onStart: () => void;
   onGrowth?: (page: GrowthPage) => void;
+  onPickSubject?: (subject: string) => void;
+  onStudyMode?: (mode: 'practice' | 'learning' | 'mini_test') => void;
   onIntro: () => void;
   onNoteList: () => void;
   onLogicalTree: () => void;
@@ -129,7 +134,8 @@ interface HomeProps {
   onToggleBgm?: (enabled: boolean) => void;
 }
 
-export function Home({ onGrowth, onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onBattle, onRika, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest, isBgmEnabled, isBgmFadedOut, onToggleBgm }: HomeProps) {
+export function Home({ onPickSubject, onStudyMode, onGrowth, onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onBattle, onRika, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest, isBgmEnabled, isBgmFadedOut, onToggleBgm }: HomeProps) {
+  const { progress: growth } = useGrowthProgress();
   const reviewDueCount = useMemo(() => {
     const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
     return getDueCount(uid);
@@ -349,187 +355,60 @@ export function Home({ onGrowth, onStart, onIntro, onNoteList, onLogicalTree, on
   const bgmLabel = !isBgmEnabled ? 'BGMを鳴らす' : isBgmFadedOut ? 'BGMをもう一度鳴らす' : 'BGMを止める';
 
   return (
-    <div className="home-lobby w-full h-full min-h-0 flex flex-col relative overflow-hidden">
+    <div className="home-lobby arena-home game-home h-full min-h-0 relative overflow-y-auto pb-app-nav">
       <div className="home-lobby-lines" aria-hidden="true" />
-      <NotebookScenery />
-      <SakuraPetals count={18} />
-
-      {/* 固定ナビの高さを予約。短い画面でも先頭から末尾までスクロールできる。 */}
-      <div className="home-lobby-scroll flex-1 min-h-0 overflow-y-auto pb-app-nav">
-        <div className="home-lobby-content">
-          <header className="home-lobby-header">
-            <div className="home-player">
-              {schoolBrand && <p className="home-school">{schoolBrand.schoolName}</p>}
-              <p className="home-date">{todayFormatted}</p>
-              <h1>おかえり、<span>{greetingName}さん</span></h1>
-              <div className="home-streak" title={nextMilestone ? `${nextMilestone.target}日連続まであと${nextMilestone.remaining}日` : '連続学習を継続中'}>
-                <Flame size={14} aria-hidden="true" />
-                <span>連続学習 <b>{streak}</b> 日</span>
-                {nextMilestone && <span className="home-milestone">次の目標 {nextMilestone.target}日</span>}
-              </div>
-            </div>
-            <div className="home-header-tools">
-              <div className="home-countdown" title={EXAM_DATE_LABEL}>
-                <span>共通テストまで</span>
-                <div>あと <strong>{daysUntilExam}</strong> 日</div>
-              </div>
-              <div className="home-utility-row">
-                {onToggleBgm && (
-                  <button type="button" className="home-header-icon" onClick={() => onToggleBgm(!isBgmEnabled || !!isBgmFadedOut)}
-                    aria-label={bgmLabel} title={bgmLabel} aria-pressed={bgmPlaying}>
-                    {bgmPlaying ? <Volume2 size={17} aria-hidden="true" /> : <VolumeX size={17} aria-hidden="true" />}
-                    <span>BGM</span>
-                  </button>
-                )}
-                <button type="button" className="home-header-icon home-notices" onClick={() => setShowNotices(true)}
-                  aria-label={unreadCount > 0 ? `お知らせを開く（未読 ${unreadCount} 件）` : 'お知らせを開く'}>
-                  <Bell size={17} aria-hidden="true" /><span>お知らせ</span>
-                  {unreadCount > 0 && <span className="home-notice-dot" aria-hidden="true">{unreadCount > 9 ? '9+' : unreadCount}</span>}
-                </button>
-              </div>
-            </div>
-          </header>
-
-          {onGrowth && <React.Suspense fallback={<div className="mana-dashboard" role="status">とびら君の成長を読み込み中…</div>}>
-            <GrowthHomeStrip expanded onProfile={() => onGrowth('outfit')} onShop={() => onGrowth('shop')}
-              onBadges={() => onGrowth('badges')} onMissions={() => onGrowth('missions')} onWallet={() => onGrowth('overview')} />
-          </React.Suspense>}
-          <div className="home-lobby-layout">
-            {/* 対戦は独立したステージ。補助機能と同じカード列には戻さない。 */}
-            <section className={`home-arena ${!onBattle ? 'home-arena-study' : ''}`} aria-labelledby="home-arena-title" data-home-arena>
-              <div className="home-arena-main">
-                <p className="home-eyebrow">{onBattle ? 'ONLINE QUIZ BATTLE' : 'MY STUDY ROOM'}</p>
-                <h2 id="home-arena-title">{onBattle ? '学んだ力を、対戦で。' : '今日も、ひとつ先へ。'}</h2>
-                {onBattle && (
-                  <button type="button" onClick={onBattle} aria-label="オンライン対戦を開く" className="home-battle-button" data-home-battle>
-                    <span><strong>オンライン対戦</strong><small>全国レート戦・友だちと1対1</small></span>
-                    <span className="home-battle-arrow"><ArrowRight size={23} aria-hidden="true" /></span>
-                  </button>
-                )}
-                <p className="home-arena-caption">{onBattle ? 'いつもの学びが、勝つ力になる。' : '自分のペースで、知識を積み重ねよう。'}</p>
-              </div>
-
-              {/* 丸いショートカットは常設。ラベルも残し、アイコンだけにしない。 */}
-              <aside className="home-shortcuts" aria-label="ホームのショートカット">
-                <button type="button" onClick={onNoteList} className="home-shortcut"
-                  aria-label={`学習ノートを開く（ノートと復習）${reviewDueCount > 0 ? `。今日の復習${reviewDueCount}件` : ''}`}>
-                  <span className="home-shortcut-disc"><Edit3 size={23} aria-hidden="true" />
-                    {reviewDueCount > 0 && <span className="home-review-badge">{reviewDueCount > 99 ? '99+' : reviewDueCount}</span>}
-                  </span>
-                  <span>学習ノート</span>
-                </button>
-                <button type="button" onClick={onIntro} className="home-shortcut" aria-label="アプリ紹介を開く">
-                  <span className="home-shortcut-disc home-shortcut-sage"><ShieldCheck size={23} aria-hidden="true" /></span>
-                  <span>アプリ紹介</span>
-                </button>
-                <FeedbackButton screen="title" variant="text" label="ご意見・ご要望"
-                  description="アプリ全体の使い勝手・ほしい機能など、自由にお書きください"
-                  context={{ streak, solvedQuestions, totalQuestions, isGuest }} className="home-feedback-shortcut" />
-              </aside>
-
-              {/*
-                ★とびら君の豆知識は「最初の画面」に置く★
-
-                ご指摘（原文）：
-                  > なんかほーむがめんのとびらくんのことば少し下隠れてて
-                  > スクロールしないといけないのもったいない
-
-                ■ 何が起きていたか（Chromium で実測・ゲスト状態のホーム初期表示）
-                  以前は画面末尾の .home-lobby-footer に置いていた。
-                  末尾の要素の位置は「その上にある全部の高さの合計」で決まるので、
-                  縦の短い端末では初期表示から押し出されていた。
-                    320x568 … 160px 隠れる（見える下端 497 / 吹き出し 589〜657）
-                    360x640 … 129px 隠れる
-                    375x667 … 103px 隠れる
-                    390x844 … 隠れない
-                  つまり「端末によって出る／出ない」が変わる状態で、
-                  出ない端末の人だけがスクロールを強いられていた。
-
-                ■ なぜ「px を詰める」直し方にしなかったか
-                  末尾に置いたままでは、位置が中身の量で動き続ける。
-                  学校名の有無・次の目標の行・連携バナー・返信の受信箱は
-                  利用者ごとに出る／出ないが変わるので、
-                  「私の端末ではちょうど収まる」値を入れても
-                  別の人・別の端末で再発する（＝直ったことにならない）。
-
-                ■ どう直したか
-                  豆知識を ★対戦ステージ（上から2番目の区画）の中★ へ移した。
-                  下に何が増えても位置が動かないので、必ず初期表示に入る。
-
-                ■ なぜ .home-arena-main の中ではなく、ステージ直下の子なのか
-                  main は中央の狭い列（右にショートカットの列がある）。
-                  そこへ入れると吹き出しが 3 行に折り返し、実測で
-                  高さが 67px → 82px に増えて「学習を始める」を
-                  320x568 で 64px ぶん画面外へ押し出した。
-                  ステージ直下に置いて grid-column: 1 / -1 で全幅にすると
-                  折り返しが減り、押し出しを起こさずに収まる。
-
-                  情報は一切減らしていない（吹き出しの文も分野ラベルもそのまま）。
-              */}
-              <DoorMascot subject={subject} showCategory size="mini" className="home-arena-tip" />
-            </section>
-
-            {/* 学習の入口と実際の進捗を一枚のノートにまとめる。全科目は開閉できる。 */}
-            <section className="home-study-paper" aria-label="学習と進捗" data-home-study>
-              <div className="home-paper-binding" aria-hidden="true"><i /><i /><i /></div>
-              <div className="home-study-topline">
-                <span className="home-study-kicker"><BookOpen size={13} aria-hidden="true" /> ひとりで学ぶ</span>
-                {onChangeSubject && (
-                  <button type="button" onClick={onChangeSubject} className="home-subject-switch" aria-label={`科目を変更する（現在：${subjectLabel}）`}>
-                    <span>{subjectLabel}</span><Repeat2 size={13} aria-hidden="true" />
-                  </button>
-                )}
-              </div>
-              <button type="button" onClick={onStart} className="home-study-button">
-                <span><strong>{solvedQuestions === 0 ? '学習を始める' : '続きから開く'}</strong>
-                  <small>{solvedQuestions >= totalQuestions && totalQuestions > 0 ? '全問制覇！くり返し学んで定着させよう' : '演習・まとめプリントで、対戦の力をつけよう'}</small>
-                </span>
-                <span className="home-study-arrow"><ArrowRight size={21} aria-hidden="true" /></span>
-              </button>
-              <div className="home-progress-summary">
-                <div className="home-progress-ring" style={{ '--progress': `${progressPercent}%` } as React.CSSProperties} aria-hidden="true"><span>{progressPercent}<small>%</small></span></div>
-                <div className="home-progress-text">
-                  <h2><BarChart3 size={13} aria-hidden="true" /> 学習進捗 <span>{subjectLabel}</span></h2>
-                  <p>{totalQuestions > 0 ? <><strong>{solvedQuestions}</strong> / {totalQuestions} 大問クリア</> : '問題を準備中'}</p>
-                  <div className="home-progress-track" role="progressbar" aria-label={`${subjectLabel}の学習進捗`}
-                    aria-valuenow={progressPercent} aria-valuemin={0} aria-valuemax={100}
-                    aria-valuetext={`${subjectLabel}：大問 ${solvedQuestions} / ${totalQuestions} 問クリア（${progressPercent}%）`}>
-                    <span style={{ width: `${progressPercent}%` }} />
-                  </div>
-                </div>
-              </div>
-              <details className="home-all-progress">
-                <summary>全科目の進捗を見る <ChevronRight size={14} aria-hidden="true" /></summary>
-                <div className="home-progress-list">
-                  <p className="home-progress-help">1点でも取れた大問を記録しています。</p>
-                  {subjectProgressDefs.map((def) => {
-                    const p = subjectProgress[def.id] || { solved: 0, total: def.chapters.reduce((sum, c) => sum + c.problemCount, 0) };
-                    const percent = p.total > 0 ? Math.round(p.solved / p.total * 100) : 0;
-                    return (
-                      <div key={def.id} className="home-subject-progress">
-                        <div><span>{def.label}</span><span>{p.total === 0 ? '問題を準備中' : `大問 ${p.solved} / ${p.total} 問 (${percent}%)`}</span></div>
-                        <div className="home-progress-track" role="progressbar" aria-label={`${def.label}の学習進捗（一覧）`}
-                          aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}
-                          aria-valuetext={p.total === 0 ? `${def.label}：問題を準備中` : `${def.label}：大問 ${p.solved} / ${p.total} 問クリア（${percent}%）`}>
-                          <span style={{ width: `${percent}%` }} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {nextChapter && <button type="button" onClick={onStart} className="home-next-chapter">次の章：{nextChapter.abstractTitle || nextChapter.title || nextChapter.id}<ArrowRight size={14} aria-hidden="true" /></button>}
-                </div>
-              </details>
-              {onRika && <button type="button" onClick={onRika} aria-label="高校入試 理科を開く" className="home-rika-link hidden md:flex"><Microscope size={15} aria-hidden="true" />高校入試 理科<ChevronRight size={14} aria-hidden="true" /></button>}
-            </section>
+      <div className="game-home-viewport">
+        <header className="game-home-header">
+          <div><h1><img className="game-home-logo" src="/manatobi-logo.jpg" width={1024} height={367} alt="マナトビ" /></h1><p title={`${greetingName}さんのホーム`}>{greetingName}さんのホーム</p></div>
+          <div className="game-home-tools">
+            <button type="button" onClick={() => onToggleBgm?.(!isBgmEnabled || !!isBgmFadedOut)} aria-label={bgmLabel}>{bgmPlaying ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>
+            <button type="button" onClick={() => setShowNotices(true)} aria-label="お知らせを開く"><Bell size={19} />{unreadCount > 0 && <i />}</button>
           </div>
-
-          {/* 末尾に残すのは「読み終わってから出会えばよいもの」だけ。
-              とびら君の豆知識は上の対戦ステージへ移した（理由はそちらのコメント）。 */}
-          <div className="home-lobby-footer">
-            {isGuest && !auth.currentUser && <GoogleLinkBanner variant="inline" dismissible />}
-            <FeedbackReplyInbox />
-          </div>
+        </header>
+        {onGrowth && <React.Suspense fallback={<div className="game-hud-placeholder">成長記録を読み込んでいます…</div>}>
+          <GrowthHomeStrip expanded homeLayout onProfile={() => onGrowth('outfit')} onShop={() => onGrowth('shop')} onGacha={() => onGrowth('gacha')}
+            onBadges={() => onGrowth('badges')} onMissions={() => onGrowth('missions')} onWallet={() => onGrowth('overview')} />
+        </React.Suspense>}
+        <section className="game-mascot-stage" aria-label="とびら君のホームステージ">
+          <div className="game-stage-backdrop" aria-hidden="true"><i /><i /><i /></div>
+          <p className="game-stage-caption">{growth && equippedTitleLabel(growth) || '今日も、とびら君とひとつ先へ。'}</p>
+          <div className="game-stage-floor" aria-hidden="true"><div className="game-equipped-ring" style={{borderColor: growth ? equippedFrameColor(growth) : undefined}} /><Swords /></div>
+          {growth && <button type="button" className="game-mascot-button" onClick={() => onGrowth?.('outfit')} aria-label="とびら君をきせかえる" disabled={!onGrowth}>
+            <img className="home-mascot-art" src={equippedPoseSrc(growth)} alt="あなたのとびら君" draggable={false} style={{ filter: `drop-shadow(0 6px 0 ${equippedFrameColor(growth)}55)` }} />
+            <span>MY TOBIRA <b>Lv.{levelOf(growth.xp).level}</b></span>
+          </button>}
+          {onGrowth && <div className="game-stage-shortcuts" aria-label="ゲームメニュー">
+            <button className="stage-gacha" type="button" onClick={() => onGrowth('gacha')}><Gift /><span>ガチャ</span></button>
+            <button className="stage-shop" type="button" onClick={() => onGrowth('shop')}><Store /><span>ショップ</span></button>
+            <button className="stage-outfit" type="button" onClick={() => onGrowth('outfit')}><Shirt /><span>きせかえ</span></button>
+            <button className="stage-badges" type="button" onClick={() => onGrowth('badges')}><Award /><span>称号</span></button>
+          </div>}
+        </section>
+        <section className={`game-action-deck ${!onBattle ? 'without-battle' : ''}`} aria-label="学習と対戦の入口" data-home-arena={onBattle ? '' : undefined}>
+          <button type="button" className="game-side-action game-solo" onClick={() => onStudyMode ? onStudyMode('practice') : onStart()}><Edit3 /><small>ひとりで学ぶ</small><strong>演習する</strong></button>
+          {onBattle && <button type="button" onClick={onBattle} className="home-battle-button game-main-action" aria-label="オンライン対戦を開く" data-home-battle><span className="home-battle-emblem" aria-hidden="true"><Swords /></span><strong>対戦する</strong><small>全国・フレンド・AI</small></button>}
+          <button type="button" className="game-side-action game-review" aria-label="学習ノートを開く" onClick={onNoteList}><Repeat2 /><small>苦手をなくす</small><strong>復習ノート</strong>{reviewDueCount > 0 && <b>{reviewDueCount}</b>}</button>
+        </section>
+        <section className="game-study-bar" aria-label="科目とまとめプリント" data-home-study>
+          {onPickSubject ? <label><BookOpen size={17} /><select aria-label="学習する科目" value={subject} onChange={e => onPickSubject(e.target.value)}>{SUBJECT_INDEX.filter(s => isSubjectEnabled(s.id)).map(s => <option key={s.id} value={s.id}>{s.label}</option>)}</select></label>
+            : <button type="button" onClick={onChangeSubject}>{subjectLabel}・変更</button>}
+          <button type="button" onClick={() => onStudyMode ? onStudyMode('learning') : onStart()}><BookOpen size={16} />まとめプリント</button>
+        </section>
+        <div className="game-home-utility arena-home-bottom">
+          {onGrowth && <button type="button" onClick={() => onGrowth('missions')}><Target size={17} />ミッション</button>}
+          <button type="button" onClick={onLeaderboard}><BarChart3 size={17} />ランキング</button>
+          <button type="button" aria-label="アプリ紹介を開く" onClick={onIntro}><ShieldCheck size={17} />使い方</button>
         </div>
+      </div>
+      <div className="game-home-secondary">
+        <FriendOnlineStrip />
+        <details className="arena-home-more"><summary>学習状況・その他</summary><p>連続学習 {streak}日 ／ {todayFormatted}</p><p>{EXAM_DATE_LABEL}まで {daysUntilExam}日</p>{schoolBrand && <p>{schoolBrand.schoolName}</p>}
+          <div className="game-study-progress"><span>{subjectLabel} {solvedQuestions}/{totalQuestions}大問</span><div role="progressbar" aria-label="学習進捗" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}><i style={{ width: `${progressPercent}%` }} /></div></div>
+          <details className="home-all-progress"><summary>全科目の進捗を見る</summary>{subjectProgressDefs.map(def => <p key={def.id}>{def.label} {subjectProgress[def.id]?.solved ?? 0}/{subjectProgress[def.id]?.total ?? 0}大問</p>)}</details>
+          <button type="button" onClick={onLogicalTree}>全体のつながりを見る</button>{onRika && <button type="button" onClick={onRika}>高校入試 理科を開く</button>}
+          <FeedbackButton screen="title" variant="text" label="ご意見・ご要望" /><FeedbackReplyInbox />
+          {isGuest && !auth.currentUser && <GoogleLinkBanner variant="inline" dismissible />}
+        </details>
       </div>
       {showNotices && <UpdateNoticeModal onClose={() => { setShowNotices(false); setUnreadCount(unreadNoticeCount()); }} />}
     </div>

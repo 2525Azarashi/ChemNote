@@ -223,7 +223,7 @@ describe('試合後のまとめ', () => {
 });
 
 describe('対戦の音の設定', () => {
-  it('既定は BGM OFF・効果音 ON、壊れた保存値は既定に倒す', () => {
+  it('既定は BGM ON・効果音 ON、壊れた保存値は既定に倒す', () => {
     expect(parseBattleAudioSettings(null)).toEqual(DEFAULT_BATTLE_AUDIO);
     expect(parseBattleAudioSettings('{bad')).toEqual(DEFAULT_BATTLE_AUDIO);
     const s = parseBattleAudioSettings(serializeBattleAudioSettings({ bgm: true, sfx: false, volume: 2 }));
@@ -308,8 +308,9 @@ describe('第4弾: 追加の演出と導線（コードの根拠）', () => {
     expect(r).toContain('function QuestionTimeline');
     expect(r).toContain('aria-label="1問ごとの両者の正誤"');
   });
-  it('対戦ホームに累計XPバッジがある', () => {
-    expect(read('src/battle/ui/BattleHome.tsx')).toContain('<GrowthHomeStrip');
+  it('ホームに共有XPがあり、対戦メニューは同じ成長記録を使う', () => {
+    expect(read('src/components/Home.tsx')).toContain('<GrowthHomeStrip');
+    expect(read('src/battle/ui/BattleHome.tsx')).toContain('useGrowthProgress()');
     expect(read('src/battle/ui/GrowthHomeStrip.tsx')).toContain('xp={progress.xp}');
     expect(read('src/battle/ui/BattleHome.tsx')).not.toContain('xpStorageKey');
   });

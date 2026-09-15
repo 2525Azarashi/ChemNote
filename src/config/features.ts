@@ -166,7 +166,7 @@ export const FEATURES = {
    * 理由：学習アプリで音が勝手に鳴り続けるのは前時代的で、
    * 図書館・電車・自習室では実害になる。
    */
-  bgm: false,
+  bgm: true,
 
   /** ランキング：動いており、評判も良いので公開 */
   ranking: true,

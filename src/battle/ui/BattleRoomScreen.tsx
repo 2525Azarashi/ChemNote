@@ -20,6 +20,7 @@ import { LogOut, X } from 'lucide-react';
 import { auth } from '../../firebase';
 import { useBattleRoom } from '../hooks/useBattleRoom';
 import { normalizeRule } from '../core/battleRules';
+import { ArenaFighters } from './ArenaFighters';
 import { BattleLobby } from './BattleLobby';
 import { BattleLiveStage } from './BattleLiveStage';
 import { BattleResult } from './BattleResult';
@@ -217,6 +218,7 @@ export function BattleRoomScreen({
   // 待機
   // ------------------------------------------------------------
   if (room.status === 'waiting') {
+    if (!room.joinCode) return <BattleShell className="arena-matching"><BattleTitle subtitle="全国対戦・開始準備"/><ArenaFighters matched/><p className="text-center font-bold">2人がそろいました。まもなくスタート</p>{error && <BattleNotice message={error}/>}{error && <BattleButton onClick={start}>開始を再試行</BattleButton>}<BattleButton variant="ghost" onClick={()=>{leave();onExit();}}>対戦を終了する</BattleButton></BattleShell>;
     return (
       <BattleLobby
         room={room}
@@ -324,7 +326,7 @@ export function BattleRoomScreen({
    * 進行・採点・同期は useBattleRoom のまま（ここは表示するだけ）。
    */
   return (
-    <BattleShell>
+    <BattleShell className="arena-live-shell">
       <BattleLiveStage
         question={current}
         index={room.currentIndex}
