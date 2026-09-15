@@ -128,8 +128,9 @@ describe('battle math rendering', () => {
 
   it('shares rendering between AI/online and keeps reason loading after the match', () => {
     for (const file of ['BattleAiRoomScreen', 'BattleRoomScreen']) {
-      expect(readFileSync(`src/battle/ui/${file}.tsx`, 'utf8')).toContain('<BattleQuestionView');
+      expect(readFileSync(`src/battle/ui/${file}.tsx`, 'utf8')).toContain('<BattleLiveStage');
     }
+    expect(readFileSync('src/battle/ui/BattleLiveStage.tsx', 'utf8')).toContain('<BattleQuestionView');
     const result = readFileSync('src/battle/ui/BattleResult.tsx', 'utf8');
     expect(result).toContain('<BattleText text={oneLine}');
     expect(result).toMatch(/useEffect\([\s\S]*loadBattleAnswers\(subject\)/);
@@ -138,8 +139,9 @@ describe('battle math rendering', () => {
     }
   });
 
-  it('renders all 240 existing math questions and reasons without KaTeX errors', () => {
-    expect(POOL).toHaveLength(240);
+  it('renders 240 preserved and 114 new math questions without KaTeX errors', () => {
+    expect(POOL).toHaveLength(354);
+    expect(POOL.filter(row => !(row[1] as string).startsWith('mc'))).toHaveLength(240);
     expect(ANSWERS).toHaveLength(240);
     for (const row of POOL) {
       for (const text of [row[5], row[6], ...(row[7] as string[])]) {

@@ -48,7 +48,6 @@
 import { useEffect, useState } from 'react';
 import { BattleText } from './BattleText';
 import { BattleReviewDetails } from './BattleReviewDetails';
-import { kanaTextOf } from '../core/kanaKeyboard';
 import { BattleGrowthReward } from './BattleGrowthReward';
 import type { CSSProperties } from 'react';
 import {
@@ -86,10 +85,23 @@ import {
   INK,
   INK_SUB,
   LINE,
-  OutcomeBanner,
   PlayerBadge,
   WRONG,
 } from './BattleParts';
+/**
+ * ★臨場感アップデート（試合終了演出）★
+ * WIN/LOSE/DRAW の大見出し・統計・XP・間違えた問題のまとめ・「復習する」。
+ * 既存の「1問ずつの内訳」「レート」「この単元を演習する」はそのまま残す。
+ */
+import {
+  kanaTextOf,
+  OutcomeHero,
+  pickReviewQuestions,
+  ResultActions,
+  ResultStats,
+  ReviewPicks,
+  useOutcomeJingle,
+} from './BattleResultLive';
 
 function ScoreColumn({
   score,
@@ -128,9 +140,12 @@ export function BattleResult({
   onRematch,
   rematchLabel = 'もう1回たいせん',
   onExit,
-  onPractice,
+  onPractice: onPracticeProp,
   ratingNote,
   growthMatchId, growthOwnerUid, growthEligible = false, onOpenProfile, onOpenMissions,
+  onReview,
+  myAnsweredIndexes = [],
+  matchKey,
 }: {
   result: BattleResultSummary;
   questions: BattleQuestion[];
@@ -175,8 +190,27 @@ export function BattleResult({
   growthEligible?: boolean;
   onOpenProfile?: () => void;
   onOpenMissions?: () => void;
+  /**
+   * ★「復習する」を押したとき★
+   * 間違えた問題を復習リストに入れたあと、アプリ本体の学習ノート（復習タブ）へ移る。
+   * 渡されなければボタンを出さない。
+   */
+  onReview?: () => void;
+  /** 自分が回答した問題番号（平均回答時間は回答した問題だけで出す） */
+  myAnsweredIndexes?: number[];
+  /** XP を同じ試合で2回足さないための鍵（部屋IDなど） */
+  matchKey?: string;
 }) {
+  /**
+   * ★英単語・英熟語（english_vocab）には演習画面が無い★
+   * 外部プールだけで成り立つ対戦専用教科なので、「この問題を演習する」
+   * 「つづけて演習する」を出すと押しても何も起きない（App 側で例外になる）。
+   * 出さないのが正しい。答えは各問の1行解答（見出し語 ＝ 意味の全文）で見せる。
+   */
+  const onPractice = subject === 'english_vocab' ? undefined : onPracticeProp;
   const theme = subjectTheme(subject as SubjectKey);
+  useOutcomeJingle(result.outcome);
+  const picks = pickReviewQuestions(result, questions, kanaTextOf);
   const delta = rating ? rating.after - rating.before : 0;
   const title = ratingTitle(rating?.after ?? 1500);
 
@@ -262,18 +296,21 @@ export function BattleResult({
     <BattleShell
       footer={
         <div className="grid gap-2.5">
-          {onRematch && (
-            <BattleButton onClick={onRematch} icon={<RotateCcw size={18} />}>
-              {rematchLabel}
-            </BattleButton>
-          )}
+          <ResultActions
+            onRematch={onRematch}
+            rematchLabel={rematchLabel}
+            onReview={onReview}
+            picks={picks}
+            subject={subject}
+            chapterTitleOf={chapterTitleOf}
+          />
           <BattleButton variant="ghost" onClick={onExit} icon={<ArrowLeft size={18} />}>
             対戦メニューにもどる
           </BattleButton>
         </div>
       }
     >
-      <OutcomeBanner outcome={result.outcome} />
+      <OutcomeHero outcome={result.outcome} byForfeit={byForfeit} />
 
       {byForfeit && (
         <p
@@ -329,6 +366,22 @@ export function BattleResult({
           <ScoreColumn score={result.opponent} label="あいて" color={INK_SUB} />
         </div>
       </section>
+
+      {/* ★統計と XP★ */}
+      <ResultStats
+        result={result}
+        answeredIndexes={myAnsweredIndexes}
+        matchKey={matchKey || `${subject}-${result.me.score}-${result.opponent?.score ?? 0}-${questions[0]?.id ?? ''}`}
+      />
+
+      {/* ★今回間違えた問題（相手は正解した問題を先に）★ */}
+      <ReviewPicks
+        picks={picks}
+        oneLines={answers}
+        subject={subject}
+        onPractice={onPractice}
+        chapterTitleOf={chapterTitleOf}
+      />
 
       {/* レート */}
       <section
@@ -478,7 +531,7 @@ export function BattleResult({
                   </p>
                 )}
                 {question && <BattleReviewDetails question={question} oneLine={oneLine} />}
-                {question && onPractice && <button type="button" data-practice-question={question.id}
+                {question && onPractice && subject !== 'english_vocab' && <button type="button" data-practice-question={question.id}
                   onClick={() => onPractice(subject, question.chapterId, question.problemId, question.subQuestionId)}
                   className="mt-3 min-h-11 w-full rounded-xl bg-blue-50 px-3 py-2 text-sm font-bold text-blue-900">
                   この問題を演習する（結果に戻れます）

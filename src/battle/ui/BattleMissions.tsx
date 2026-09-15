@@ -31,7 +31,7 @@ function remainLabel(ms: number): string {
   return `${m}分`;
 }
 
-export function BattleMissions({ onBack, onBattle }: { onBack: () => void; onBattle?: () => void }) {
+export function BattleMissions({ onBack, onBattle, onReview, onShop, standalone = false }: { onBack: () => void; onBattle?: () => void; onReview?: () => void; onShop?: () => void; standalone?: boolean; key?: string }) {
   const [progress, setProgress] = useState<GrowthProgress | null>(null);
   const [claiming, setClaiming] = useState<string | null>(null);
   const [justClaimed, setJustClaimed] = useState<string | null>(null);
@@ -76,7 +76,7 @@ export function BattleMissions({ onBack, onBattle }: { onBack: () => void; onBat
   if (!progress) {
     return (
       <BattleShell>
-        <BattleTitle subtitle="きょうのミッション" />
+        {standalone ? <h1 className="mb-4 text-center font-handwriting text-2xl font-black">きょうのミッション</h1> : <BattleTitle subtitle="きょうのミッション" />}
       <p className="mb-3 text-xs text-gray-600">この端末だけの成長記録です。AI対戦でも進みます。復習ミッションは「復習リスト」で「できた」にした問題を1問1日1回数えます。</p>
         <BattleLoading message="ミッションを読みこんでいます…" />
       </BattleShell>
@@ -101,13 +101,15 @@ export function BattleMissions({ onBack, onBattle }: { onBack: () => void; onBat
               対戦してミッションを進める
             </BattleButton>
           )}
+          {onReview && <BattleButton variant="ghost" onClick={onReview}>復習でミッションを進める</BattleButton>}
+          {onShop && <BattleButton variant="ghost" onClick={onShop}>マナコインをショップで使う</BattleButton>}
           <BattleButton variant="ghost" onClick={onBack} icon={<ArrowLeft size={18} />}>
             もどる
           </BattleButton>
         </div>
       }
     >
-      <BattleTitle subtitle="きょうのミッション" />
+      {standalone ? <h1 className="mb-4 text-center font-handwriting text-2xl font-black">きょうのミッション</h1> : <BattleTitle subtitle="きょうのミッション" />}
       <p className="mb-3 text-xs text-gray-600">この端末だけの成長記録です。AI対戦でも進みます。復習ミッションは「復習リスト」で「できた」にした問題を1問1日1回数えます。</p>
 
       {toast && (
@@ -175,7 +177,7 @@ export function BattleMissions({ onBack, onBattle }: { onBack: () => void; onBat
       <p className="mt-4 flex items-start gap-1.5 text-[10px] font-bold leading-relaxed" style={{ color: INK_SUB }}>
         <Sparkles size={12} className="mt-0.5 shrink-0" style={{ color: AMBER }} />
         ミッションは毎日0時に入れかわり、全員おなじ内容です。コインは「プロフィール」でとびら君の装備と交換できます。
-        「穴をうめる」は、対戦で落とした問題にもう一度正解すると進みます。
+        復習リストの「できた」で進みます。同じ問題は1日1回までです。
       </p>
     </BattleShell>
   );

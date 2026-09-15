@@ -20,7 +20,7 @@
 
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import { ArrowLeft, Award, BarChart3, Coins, Lock, Shirt, Sparkles, Trophy, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, Award, BarChart3, Coins, Lock, Shirt, Sparkles, Trophy, Store, Volume2, VolumeX } from 'lucide-react';
 import { labelOfSubject } from '../../data/subjectLabels';
 import {
   BADGES,
@@ -32,7 +32,7 @@ import {
   type GrowthProgress,
   type ItemDef,
 } from '../core/growth';
-import { buyItem, equip, equipBadgeTitle, loadMyGrowth, subscribeGrowth } from '../data/growthStore';
+import { buyItem, equip, equipBadgeTitle } from '../data/growthStore';
 import { fetchMyRankingRow, ratingTitle } from '../data/battleRanking';
 import { play, primeAudio, setSfxEnabled, sfxEnabled } from './feedback';
 import {
@@ -48,20 +48,21 @@ import {
   LINE,
   WRONG,
 } from './BattleParts';
+import { useGrowthProgress } from '../../hooks/useGrowthProgress';
 import { BadgeChip, GrowthAvatar, LevelBar, NextGoals, StatCard, TitleChip } from './GrowthParts';
 
-export type ProfileTab = 'outfit' | 'badges' | 'stats';
+export type ProfileTab = 'outfit' | 'shop' | 'badges' | 'stats';
 
 type Runner = (fn: () => Promise<unknown>, okMessage?: string) => Promise<void>;
 
 function unlockLabel(item: ItemDef): string {
   if ('level' in item.unlock) return `Lv.${item.unlock.level} で解放`;
   if ('badge' in item.unlock) return `称号「${badgeById(item.unlock.badge)?.label ?? '?'}」で解放`;
-  return `${item.unlock.coins} コイン`;
+  return `${item.unlock.coins} マナコイン`;
 }
 
-export function BattleProfile({ onBack, initialTab = 'outfit' }: { onBack: () => void; initialTab?: ProfileTab }) {
-  const [progress, setProgress] = useState<GrowthProgress | null>(null);
+export function BattleProfile({ onBack, initialTab = 'outfit', standalone = false }: { onBack: () => void; initialTab?: ProfileTab; standalone?: boolean; key?: string }) {
+  const { progress, uid } = useGrowthProgress();
   const [rating, setRating] = useState<number>(1500);
   const [tab, setTab] = useState<ProfileTab>(initialTab);
   const [busy, setBusy] = useState(false);
@@ -69,14 +70,12 @@ export function BattleProfile({ onBack, initialTab = 'outfit' }: { onBack: () =>
 
   useEffect(() => {
     let alive = true;
-    void loadMyGrowth().then((p) => alive && setProgress(p));
+    setRating(1500);
     void fetchMyRankingRow().then((r) => alive && r && setRating(r.rating)).catch(() => {});
-    const off = subscribeGrowth((p) => alive && setProgress(p));
     return () => {
       alive = false;
-      off();
     };
-  }, []);
+  }, [uid]);
 
   useEffect(() => {
     if (!notice) return;
@@ -118,12 +117,13 @@ export function BattleProfile({ onBack, initialTab = 'outfit' }: { onBack: () =>
     return (
       <BattleShell>
         <BattleTitle subtitle="プロフィール" />
-        <BattleLoading message="成長の記録を読みこんでいます…" />
+        <BattleNotice message="成長記録を読み込めません。端末の保存設定を確認してください。" /><BattleButton onClick={onBack}>もどる</BattleButton>
       </BattleShell>
     );
   }
 
   const tabs: [ProfileTab, ReactNode, string][] = [
+    ['shop', <Store size={14} />, 'ショップ'],
     ['outfit', <Shirt size={14} />, 'きせかえ'],
     ['badges', <Award size={14} />, '称号'],
     ['stats', <BarChart3 size={14} />, '教科別'],
@@ -137,7 +137,7 @@ export function BattleProfile({ onBack, initialTab = 'outfit' }: { onBack: () =>
         </BattleButton>
       }
     >
-      <BattleTitle subtitle="プロフィール ／ とびら君の成長" />
+{standalone ? <h1 className="mb-4 text-center font-handwriting text-2xl font-black">{tab === 'shop' ? 'マナコインショップ' : 'とびら君のマイページ'}</h1> : <BattleTitle subtitle="プロフィール ／ とびら君の成長" />}
 
       {notice && (
         <div className="mb-3">
@@ -146,9 +146,11 @@ export function BattleProfile({ onBack, initialTab = 'outfit' }: { onBack: () =>
       )}
 
       <p className="mb-3 text-xs leading-relaxed text-gray-600">成長記録はこのブラウザ・アカウント専用です。端末間同期や他の人への公開はありません。サイトデータを削除すると消えます。</p>
-      <ProfileHeader progress={progress} rating={rating} />
+      {tab === 'shop' ? <section className="mb-4 flex items-center gap-4 rounded-2xl border border-amber-200 bg-amber-50 p-4" aria-label="現在の装備と残高">
+        <GrowthAvatar progress={progress} size={64} /><div className="min-w-0 flex-1"><p className="text-xs text-amber-900">いまのとびら君</p><p className="text-xl font-black tabular-nums">{progress.coins.toLocaleString()} <span className="text-xs">マナコイン</span></p><LevelBar xp={progress.xp} compact /></div>
+      </section> : <ProfileHeader progress={progress} rating={rating} />}
 
-      <nav className="mb-3 grid grid-cols-3 gap-1.5" aria-label="プロフィールの切り替え">
+      {!standalone && <nav className="mb-3 grid grid-cols-4 gap-1.5" aria-label="プロフィールの切り替え">
         {tabs.map(([id, icon, label]) => (
           <button
             key={id}
@@ -166,14 +168,14 @@ export function BattleProfile({ onBack, initialTab = 'outfit' }: { onBack: () =>
             {label}
           </button>
         ))}
-      </nav>
+      </nav>}
 
-      {tab === 'outfit' && <OutfitTab progress={progress} busy={busy} run={run} setNotice={setNotice} />}
+      {(tab === 'outfit' || tab === 'shop') && <OutfitTab key={tab} shop={tab === 'shop'} progress={progress} busy={busy} run={run} setNotice={setNotice} />}
       {tab === 'badges' && <BadgesTab progress={progress} busy={busy} run={run} />}
       {tab === 'stats' && <StatsTab progress={progress} />}
 
       {/* 対戦の効果音・振動の切り替え（BGM とは別。既定 ON） */}
-      <section
+      {!standalone && <section
         id="battle-sfx-setting"
         className="mt-4 flex items-center justify-between rounded-2xl border-2 px-3 py-2.5"
         style={{ borderColor: LINE, background: '#FFFFFF' }}
@@ -201,7 +203,7 @@ export function BattleProfile({ onBack, initialTab = 'outfit' }: { onBack: () =>
           {sfxOn ? <Volume2 size={14} /> : <VolumeX size={14} />}
           {sfxOn ? 'ON' : 'OFF'}
         </button>
-      </section>
+      </section>}
     </BattleShell>
   );
 }
@@ -255,11 +257,11 @@ function ProfileHeader({ progress, rating }: { progress: GrowthProgress; rating:
 // きせかえ
 // ============================================================
 
-function OutfitTab({ progress, busy, run, setNotice }: { progress: GrowthProgress; busy: boolean; run: Runner; setNotice: (m: string) => void }) {
+function OutfitTab({ progress, busy, run, setNotice, shop = false }: { shop?: boolean; key?: string; progress: GrowthProgress; busy: boolean; run: Runner; setNotice: (m: string) => void }) {
   const level = levelOf(progress.xp).level;
   const [confirmId, setConfirmId] = useState<string | null>(null);
-  const poses = ITEMS.filter((i) => i.kind === 'pose');
-  const frames = ITEMS.filter((i) => i.kind === 'frame');
+  const poses = ITEMS.filter((i) => i.kind === 'pose' && (!shop || 'coins' in i.unlock));
+  const frames = ITEMS.filter((i) => i.kind === 'frame' && (!shop || 'coins' in i.unlock));
 
   const renderItem = (item: ItemDef) => {
     const owned = progress.owned.includes(item.id);
@@ -331,6 +333,11 @@ function OutfitTab({ progress, busy, run, setNotice }: { progress: GrowthProgres
 
   return (
     <div className="grid gap-4">
+      {shop && <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+        <p className="text-lg font-black">ためたマナコインで、自分らしく。</p>
+        <p className="mt-1 text-sm">購入は確認後に確定します。交換した装備はホーム・対戦で共通。強さは変わりません。</p>
+        <p className="mt-2 font-bold">所持マナコイン：{progress.coins.toLocaleString()} 枚</p>
+      </div>}
       <section>
         <h3 className="mb-2 flex items-center gap-1 text-[11px] font-black" style={{ color: INK_SUB }}>
           <Sparkles size={12} style={{ color: AMBER }} /> ポーズ（Lv.{level}）
@@ -344,7 +351,7 @@ function OutfitTab({ progress, busy, run, setNotice }: { progress: GrowthProgres
         <div className="grid grid-cols-3 gap-2">{frames.map(renderItem)}</div>
       </section>
       <p className="text-[10px] font-bold leading-relaxed" style={{ color: INK_SUB }}>
-        コインは日替わりボーナス・ミッションで手に入ります（課金はありません）。装備は見た目だけで、対戦の強さには影響しません。
+        マナコインは日替わりボーナス・ミッションで手に入ります（課金はありません）。装備は見た目だけで、対戦の強さには影響しません。
       </p>
     </div>
   );

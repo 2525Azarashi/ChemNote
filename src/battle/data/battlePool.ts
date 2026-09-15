@@ -31,10 +31,11 @@ export const POOL_COUNTS: Readonly<Record<string, number>> = {
   chemistry_basic: 1776,
   chemistry: 270,
   english_listening: 146,
-  math: 240,
+  math: 354,
   biology_basic: 290,
   english_grammar: 100,
   geography: 127,
+  english_vocab: 9541,
   rika: 1117,
 };
 
@@ -63,10 +64,11 @@ export const POOL_FORMAT_COUNTS: Readonly<
   chemistry_basic: { choice4: 1574, choice: 178, kana: 24 },
   chemistry: { choice4: 235, choice: 34, kana: 1 },
   english_listening: { choice4: 146 },
-  math: { choice4: 239, choice: 1 },
+  math: { choice4: 353, choice: 1 },
   biology_basic: { choice4: 228, choice: 21, kana: 41 },
   english_grammar: { choice4: 100 },
   geography: { choice4: 77, choice: 50 },
+  english_vocab: { choice4: 9541 },
   rika: { choice4: 1117 },
 };
 
@@ -139,6 +141,8 @@ async function loadRaw(subject: string): Promise<readonly unknown[][]> {
       return (await import('./pool.english_grammar.generated')).POOL;
     case 'geography':
       return (await import('./pool.geography.generated')).POOL;
+    case 'english_vocab':
+      return (await import('./pool.english_vocab.generated')).POOL;
     case 'rika':
       return (await import('./pool.rika.generated')).POOL;
     default:
@@ -225,6 +229,7 @@ export const ANSWER_COUNTS: Readonly<Record<string, number>> = {
   biology_basic: 249,
   english_grammar: 0,
   geography: 0,
+  english_vocab: 9541,
   rika: 0,
 };
 
@@ -244,6 +249,8 @@ async function loadAnswerRaw(subject: string): Promise<readonly (readonly [strin
       return (await import('./answer.english_grammar.generated')).ANSWERS;
     case 'geography':
       return (await import('./answer.geography.generated')).ANSWERS;
+    case 'english_vocab':
+      return (await import('./answer.english_vocab.generated')).ANSWERS;
     case 'rika':
       return (await import('./answer.rika.generated')).ANSWERS;
     default:

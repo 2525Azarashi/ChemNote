@@ -52,7 +52,7 @@
  * ★足さずに2択のまま出す★方針にした。それが format: 'choice' である。
  * したがって「選択肢は必ず4つ」という検査は choice には当てはまらない。
  */
-import { describe, it, expect } from 'vitest';
+import { beforeAll, describe, it, expect } from 'vitest';
 import type { BattleQuestion } from '../src/battle/core/types';
 import {
   POOL_COUNTS,
@@ -86,6 +86,17 @@ async function poolOf(subject: string): Promise<readonly BattleQuestion[]> {
   pools.set(subject, list);
   return list;
 }
+
+/**
+ * ★全教科を先に読み込んでおく★
+ * 英単語・英熟語（27,172問・5.7MB）が加わり、初回の動的 import に
+ * 数秒かかる。これを最初の it の 20 秒に押し込むと、遅い環境で
+ * その1件だけがタイムアウトする。読み込みはここで済ませ、
+ * 各 it は読み込み済みの配列を見るだけにする。
+ */
+beforeAll(async () => {
+  for (const subject of SUBJECTS) await poolOf(subject);
+}, 180_000);
 
 /**
  * 失敗したときに「どの問題か」を特定できるようにする。

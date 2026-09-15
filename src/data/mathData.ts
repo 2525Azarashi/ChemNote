@@ -30,6 +30,7 @@
  */
 
 import { countProblemsInChapters } from './problemCount';
+import { MATH_COURSES, MATH_CURRICULUM_UNITS, buildCurriculumProblems } from './mathCurriculum';
 import {
   integralBasicProblems,
   integralLinearProblems,
@@ -106,6 +107,18 @@ const ch = (
 
 export const mathData: { parts: MathPart[] } = {
   parts: [
+    ...MATH_COURSES.map(course => ({
+      id: course.id,
+      title: `${course.title}・基礎から標準`,
+      chapters: MATH_CURRICULUM_UNITS.filter(unit => unit.course === course.id).map(unit => ({
+        id: unit.id,
+        realTitle: `${course.title}・基礎から標準`,
+        abstractTitle: unit.title,
+        topics: unit.topics,
+        practiceProblems: buildCurriculumProblems(unit),
+        miniTest: [],
+      })),
+    })),
     {
       id: 'math_integral',
       title: '数III 積分法（全パターン演習）',

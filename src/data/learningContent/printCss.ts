@@ -420,6 +420,12 @@ export const LEARNING_PRINT_CSS = `
   body.${PRINT_MODE_CLASS.answers} .learning-content .lc-ans > *:not(summary) {
     display: revert !important;
   }
+  /* Modern disclosure rendering hides the anonymous content box separately.
+     The print button also temporarily opens details for older browsers. */
+  body.${PRINT_MODE_CLASS.answers} .learning-content .lc-ans::details-content,
+  body.${PRINT_MODE_CLASS.answers} .mbs-details::details-content {
+    content-visibility: visible !important;
+  }
   body.${PRINT_MODE_CLASS.answers} .learning-content .lc-ans-sum::after {
     content: '（解答）';
     font-size: 8.5pt;

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope, Flame, Sparkles } from 'lucide-react';
 import { auth } from '../firebase';
-import { ManaCoinBalance } from '../battle/ui/ManaCoinBalance';
+import type { GrowthPage } from './GrowthHub';
+const GrowthHomeStrip = React.lazy(() => import('../battle/ui/GrowthHomeStrip').then(m => ({ default: m.GrowthHomeStrip })));
 /*
  * 教科IDの型だけは data/allChapters.ts が唯一の定義。
  *
@@ -76,6 +77,7 @@ import { unreadNoticeCount } from '../utils/updateNotices';
 
 interface HomeProps {
   onStart: () => void;
+  onGrowth?: (page: GrowthPage) => void;
   onIntro: () => void;
   onNoteList: () => void;
   onLogicalTree: () => void;
@@ -127,7 +129,7 @@ interface HomeProps {
   onToggleBgm?: (enabled: boolean) => void;
 }
 
-export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onBattle, onRika, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest, isBgmEnabled, isBgmFadedOut, onToggleBgm }: HomeProps) {
+export function Home({ onGrowth, onStart, onIntro, onNoteList, onLogicalTree, onLeaderboard, onBattle, onRika, onChangeSubject, subjectLabel = '化学基礎', subject = 'chemistry_basic', isGuest, isBgmEnabled, isBgmFadedOut, onToggleBgm }: HomeProps) {
   const reviewDueCount = useMemo(() => {
     const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
     return getDueCount(uid);
@@ -358,7 +360,6 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
           <header className="home-lobby-header">
             <div className="home-player">
               {schoolBrand && <p className="home-school">{schoolBrand.schoolName}</p>}
-              <ManaCoinBalance />
               <p className="home-date">{todayFormatted}</p>
               <h1>おかえり、<span>{greetingName}さん</span></h1>
               <div className="home-streak" title={nextMilestone ? `${nextMilestone.target}日連続まであと${nextMilestone.remaining}日` : '連続学習を継続中'}>
@@ -389,20 +390,16 @@ export function Home({ onStart, onIntro, onNoteList, onLogicalTree, onLeaderboar
             </div>
           </header>
 
+          {onGrowth && <React.Suspense fallback={<div className="mana-dashboard" role="status">とびら君の成長を読み込み中…</div>}>
+            <GrowthHomeStrip expanded onProfile={() => onGrowth('outfit')} onShop={() => onGrowth('shop')}
+              onBadges={() => onGrowth('badges')} onMissions={() => onGrowth('missions')} onWallet={() => onGrowth('overview')} />
+          </React.Suspense>}
           <div className="home-lobby-layout">
             {/* 対戦は独立したステージ。補助機能と同じカード列には戻さない。 */}
             <section className={`home-arena ${!onBattle ? 'home-arena-study' : ''}`} aria-labelledby="home-arena-title" data-home-arena>
               <div className="home-arena-main">
                 <p className="home-eyebrow">{onBattle ? 'ONLINE QUIZ BATTLE' : 'MY STUDY ROOM'}</p>
                 <h2 id="home-arena-title">{onBattle ? '学んだ力を、対戦で。' : '今日も、ひとつ先へ。'}</h2>
-                <div className="home-battle-emblem" aria-hidden="true">
-                  <div className="home-emblem-orbit" />
-                  <div className="home-emblem-paper home-emblem-paper-left"><BookOpen /></div>
-                  <div className="home-emblem-paper home-emblem-paper-right"><Sparkles /></div>
-                  <div className="home-emblem-core">{onBattle ? <Swords /> : <BookOpen />}</div>
-                  <span className="home-emblem-tag">{onBattle ? '1 vs 1' : 'STEP BY STEP'}</span>
-                  <Sparkles className="home-emblem-spark" />
-                </div>
                 {onBattle && (
                   <button type="button" onClick={onBattle} aria-label="オンライン対戦を開く" className="home-battle-button" data-home-battle>
                     <span><strong>オンライン対戦</strong><small>全国レート戦・友だちと1対1</small></span>

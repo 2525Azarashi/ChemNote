@@ -81,6 +81,7 @@ export function BattleMode({
   onRequireLogin,
   onPractice,
   onActiveChange,
+  onReview,
   initialSubject = '',
 }: {
   /** 対戦モードを抜けてアプリのホームに戻る */
@@ -96,6 +97,11 @@ export function BattleMode({
    */
   onPractice?: (subject: string, chapterId: string, problemId?: string, subQuestionId?: string) => void;
   onActiveChange?: (active: boolean) => void;
+  /**
+   * ★リザルトの「復習する」（臨場感アップデート）★
+   * 間違えた問題は復習リストに登録済みなので、アプリ本体の学習ノート（復習）へ移る。
+   */
+  onReview?: () => void;
   initialSubject?: string;
 }) {
   const [screen, setScreen] = useState<Screen>('home');
@@ -342,6 +348,7 @@ export function BattleMode({
           onActiveChange={onActiveChange}
           onOpenProfile={() => setScreen('profile')}
           onOpenMissions={() => setScreen('missions')}
+          onReview={onReview}
         />
       );
 
@@ -369,6 +376,7 @@ export function BattleMode({
           onActiveChange={onActiveChange}
           onOpenProfile={() => setScreen('profile')}
           onOpenMissions={() => setScreen('missions')}
+          onReview={onReview}
         />
       );
 

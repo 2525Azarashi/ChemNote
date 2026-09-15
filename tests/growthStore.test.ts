@@ -5,6 +5,7 @@ import { applyMatchGrowth, buyItem, claimMissionReward, loadMyGrowth, recordRevi
   subscribeGrowth, touchLogin, GROWTH_STORAGE_PREFIX } from '../src/battle/data/growthStore';
 import { emptyProgress, missionsForDate, applyLoginWithBonus, claimMission, xpRequiredForLevel, BADGES, MISSION_POOL } from '../src/battle/core/growth';
 import { readFileSync } from 'node:fs';
+import { readAudioPreferences, writeAudioPreferences } from '../src/battle/audio/audioPreferences';
 const data = new Map<string, string>();
 let failWrite = false;
 const storage = { getItem: (k: string) => data.get(k) ?? null,
@@ -88,5 +89,23 @@ describe('private growth integration', () => {
   });
   it('does not show unreachable buzz missions or badges', () => {
     expect(MISSION_POOL.some(m=>m.kind==='buzz_win')).toBe(false); expect(BADGES.some(b=>b.id==='b_buzz_5')).toBe(false);
+  });
+});
+
+
+describe('shared live audio and reward preferences', () => {
+  it('preserves the previous quiet default and explicit legacy preferences', () => {
+    expect(readAudioPreferences().sfx).toBe(false);
+    data.set('battle_sfx','on'); expect(readAudioPreferences().sfx).toBe(true);
+    data.set('battle_sfx','off'); expect(readAudioPreferences().sfx).toBe(false);
+  });
+  it('uses one setting for live battles and reward sounds', () => {
+    writeAudioPreferences({sfx:true,bgm:true,volume:0.3});
+    expect(readAudioPreferences()).toEqual({sfx:true,bgm:true,volume:0.3});
+    writeAudioPreferences({sfx:false});
+    expect(readAudioPreferences()).toEqual({sfx:false,bgm:true,volume:0.3});
+  });
+  it('does not throw when sound preferences cannot be persisted', () => {
+    failWrite=true; expect(()=>writeAudioPreferences({sfx:true})).not.toThrow();
   });
 });
