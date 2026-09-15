@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import { ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { useGrowthProgress } from '../hooks/useGrowthProgress';
-import { equippedPoseSrc } from '../battle/core/growth';
+import { equippedPoseSrc, equippedFrameColor } from '../battle/core/growth';
 
 /** A visual title screen only. It never resets the saved app route or account data. */
 export function LaunchScreen({ onStart, soundEnabled, onToggleSound }: {
   onStart: () => void; soundEnabled: boolean; onToggleSound: () => void;
 }) {
   const { progress } = useGrowthProgress();
+  const [walkReady, setWalkReady] = useState(false);
   return <main className="launch-screen" aria-label="マナトビ タイトル画面" data-launch-screen>
     <div className="launch-paper-lines" aria-hidden="true" />
     <div className="launch-content">
@@ -15,8 +17,13 @@ export function LaunchScreen({ onStart, soundEnabled, onToggleSound }: {
       </button>
       <div className="launch-brand"><p>学びの扉を、ひらこう。</p><h1><img src="/manatobi-logo.jpg" width={1024} height={367} alt="マナトビ" fetchPriority="high" /></h1></div>
       <div className="launch-stage" aria-hidden="true">
-        <div className="launch-arch" /><div className="launch-stage-floor" />
-        <img src={progress ? equippedPoseSrc(progress) : '/mascots/basic.png'} alt="" draggable={false} />
+        <div className="launch-arch" /><div className="launch-stage-floor" style={{borderColor: progress ? equippedFrameColor(progress) : undefined}} />
+        <div className={`launch-arrival ${walkReady ? 'walk-ready' : ''}`}>
+          <div className="launch-gait">
+            <img className="launch-walking-pose" src="/mascots/walking.png" alt="" draggable={false} onLoad={() => setWalkReady(true)} />
+            <img className="launch-equipped-pose" src={progress ? equippedPoseSrc(progress) : '/mascots/basic.png'} alt="" draggable={false} />
+          </div>
+        </div>
         <i /><i />
       </div>
       <p className="launch-caption">ひとりでも、みんなでも。<br />とびら君と、今日もひとつ先へ。</p>

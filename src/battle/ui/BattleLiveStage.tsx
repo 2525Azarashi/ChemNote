@@ -26,6 +26,7 @@ import { useEffect, useMemo, useRef } from 'react';
 
 import type { BattlePlayerScore, BattleQuestion, BattleRule } from '../core/types';
 import { countdownLabelAt, COUNTDOWN_TOTAL_MS, gapMessage, maxPointsPerQuestion, phaseOf } from '../core/battleLive';
+import { answerNumber } from '../core/arenaRules';
 import { resolveTimeLimit } from '../core/battleCore';
 import { bgmTrackFor } from '../core/audioSettings';
 import { useBattleAudio } from '../hooks/useBattleAudio';
@@ -160,7 +161,7 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
 
   const theirAnswer = p.opponentScore?.perQuestion.find(q => q.index === p.index);
   const theirText = theirAnswer?.submittedAnswer || '';
-  const selectedNumber = p.question.format !== 'kana' && p.question.format !== 'panel' ? p.question.options.indexOf(theirText) + 1 : 0;
+  const selectedNumber = answerNumber(p.question, theirText);
   return (
     <div className={`arena-live-stage ${phase === 'final' ? 'arena-final' : ''}`}>
       <div className="arena-background-fx" aria-hidden="true"><i/><i/><i/></div>
@@ -192,7 +193,7 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
         </p>
       )}
       <LiveFeed entries={live.feed} />
-      {!counting && (p.answered || p.reveal) && p.opponentAnswered && <div className="arena-opponent-answer" role="status"><span>相手の確定回答 {selectedNumber > 0 ? `【${selectedNumber}】` : ''}</span><BattleText text={theirText || '無回答'} subject={p.question.subject}/></div>}
+      {!counting && (p.answered || p.reveal) && p.opponentAnswered && <div className="arena-opponent-answer" role="status"><span>相手の確定回答 {selectedNumber}</span><BattleText text={theirText || '無回答'} subject={p.question.subject}/></div>}
 
 
       {p.notices}

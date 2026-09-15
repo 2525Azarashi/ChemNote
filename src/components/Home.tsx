@@ -372,7 +372,7 @@ export function Home({ onPickSubject, onStudyMode, onGrowth, onStart, onIntro, o
         <section className="game-mascot-stage" aria-label="とびら君のホームステージ">
           <div className="game-stage-backdrop" aria-hidden="true"><i /><i /><i /></div>
           <p className="game-stage-caption">{growth && equippedTitleLabel(growth) || '今日も、とびら君とひとつ先へ。'}</p>
-          <div className="game-stage-floor" aria-hidden="true"><div /><Swords /></div>
+          <div className="game-stage-floor" aria-hidden="true"><div className="game-equipped-ring" style={{borderColor: growth ? equippedFrameColor(growth) : undefined}} /><Swords /></div>
           {growth && <button type="button" className="game-mascot-button" onClick={() => onGrowth?.('outfit')} aria-label="とびら君をきせかえる" disabled={!onGrowth}>
             <img className="home-mascot-art" src={equippedPoseSrc(growth)} alt="あなたのとびら君" draggable={false} style={{ filter: `drop-shadow(0 6px 0 ${equippedFrameColor(growth)}55)` }} />
             <span>MY TOBIRA <b>Lv.{levelOf(growth.xp).level}</b></span>
