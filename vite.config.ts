@@ -39,6 +39,14 @@ export default defineConfig({
      */
     reportCompressedSize: false,
     rollupOptions: {
+      // A successful build with a circular chunk can still crash before React mounts.
+      // Reject that artifact instead of shipping another blank startup screen.
+      onwarn(warning, warn) {
+        if (warning.code === 'CIRCULAR_CHUNK' || warning.code === 'CYCLIC_CROSS_CHUNK_REEXPORT') {
+          throw new Error(`Unsafe production chunk graph: ${warning.message}`);
+        }
+        warn(warning);
+      },
       // Rollup が同時に開くファイル数を絞る。既定は CPU 数に応じて増えるため、
       // 並列数がそのままメモリのピークに乗る。実測で -33MB。
       // 出力内容は並列数に影響されないので、成果物は同一。
@@ -468,6 +476,9 @@ export default defineConfig({
           /* 数学の問題データ */
           if (
             id.includes('/src/data/mathData') ||
+            // mathData reads these constants during module initialization. Keeping
+            // curriculum in the catch-all data chunk creates data-math -> data -> data-math.
+            id.includes('/src/data/mathCurriculum') ||
             id.includes('/src/data/mathProblemKit') ||
             id.includes('/src/data/mathIntegerProblems') ||
             id.includes('/src/data/mathIntegralProblems') ||
