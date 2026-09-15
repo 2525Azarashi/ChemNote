@@ -16,7 +16,7 @@ try {
   if(localStorage.getItem('mascot-audit-seeded'))return;
   localStorage.setItem('mascot-audit-seeded','true');localStorage.setItem('savedAppState','home');localStorage.setItem('isGuest','true');localStorage.setItem('bgm_enabled','off');
   // Fixture inventory only; all equips below are actual UI actions.
-  localStorage.setItem('battle_growth_local_v1_guest',JSON.stringify({version:1,progress:{uid:'guest',coins:500,xp:500,wins:1,badges:{b_first_win:'2026-09-15'},owned:['pose_basic','frame_paper','pose_cheering','pose_sleeping','frame_ocean'],equipped:{pose:'pose_basic',frame:'frame_paper',title:''}},receipts:[],day:''}));
+  localStorage.setItem('battle_growth_local_v1_guest',JSON.stringify({version:1,progress:{uid:'guest',coins:500,xp:500,wins:1,badges:{b_first_win:Date.now()},owned:['pose_basic','frame_paper','pose_cheering','pose_sleeping','frame_ocean'],equipped:{pose:'pose_basic',frame:'frame_paper',title:''}},receipts:[],day:''}));
  });
  const wallet=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('battle_growth_local_v1_guest')).progress);
  const home=async()=>{await page.getByRole('button',{name:'ホーム画面へ移動',exact:true}).click();await page.locator('.game-home-hud').waitFor();};
