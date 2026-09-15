@@ -76,6 +76,7 @@ import type {
   BattleRoom,
 } from '../core/types';
 import { answerIndexOf, answerKeyOf } from '../core/types';
+import { COUNTDOWN_TOTAL_MS } from '../core/battleLive';
 
 /** 画面が使う対戦の状態 */
 export interface BattleRoomState {
@@ -127,6 +128,14 @@ export interface BattleRoomState {
   resumeMessage: string | null;
   /** 解答を送れる状態か（選択肢を押せるかの判断に使う） */
   submittable: boolean;
+  /**
+   * ★臨場感アップデート★ 開始カウントダウン（3・2・1・START!）の残りミリ秒。
+   * 0 なら問題が始まっている。1問目の締切を「制限時間＋カウントダウン」で
+   * 置き、締切から逆算して両端末が同じタイミングで数える（追加の書き込みなし）。
+   */
+  preStartMs: number;
+  /** 自分が答えた問題番号（平均回答時間の集計に使う。無回答を除くため） */
+  myAnsweredIndexes: number[];
 }
 
 export interface BattleRoomActions {
@@ -408,8 +417,20 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
   useEffect(() => {
     if (deadlineMs <= 0 || !current) return;
     if (startsRef.current.has(currentIndex)) return;
+    // 1問目は締切に COUNTDOWN_TOTAL_MS を足して書いている（start を参照）。
+    // 「締切 − 制限時間」で出す開始時刻は、そのままカウントダウン終了の時刻になる。
     startsRef.current.set(currentIndex, deadlineMs - resolveTimeLimit(current, rules) * 1000);
   }, [deadlineMs, current, currentIndex, rules]);
+
+  /**
+   * ★開始カウントダウンの残り★
+   * 1問目だけ、問題の開始時刻（締切 − 制限時間）までの残りを返す。
+   * 両端末が同じ deadlineAt から引き算するので、同じタイミングで START! になる。
+   */
+  const preStartMs =
+    status === 'playing' && currentIndex === 0 && current && deadlineMs > 0
+      ? Math.max(0, deadlineMs - resolveTimeLimit(current, rules) * 1000 - now)
+      : 0;
 
   // ------------------------------------------------------------
   // 自動進行
@@ -674,7 +695,8 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
    * ルールが拒否し、★答えたはずの解答が黙って消える★。
    * それなら最初から「電波が戻るまで解答できません」と伝えた方が良い。
    */
-  const submittable = canSubmitAnswer({ connection, remainMs, answered });
+  // カウントダウン中は解答を受け付けない（問題文はまだ見せていない）
+  const submittable = canSubmitAnswer({ connection, remainMs, answered }) && preStartMs <= 0;
 
   const choose = useCallback(
     (index: number) => {
@@ -780,9 +802,15 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
 
   const start = useCallback(() => {
     if (!roomId || questions.length === 0) return;
-    void startBattle(roomId, resolveTimeLimit(questions[0], rules)).catch((e: Error) =>
-      setError(e.message),
-    );
+    /**
+     * ★1問目の締切にカウントダウン（約3秒）を足す★
+     * 3・2・1・START! の間は問題を隠すので、その分だけ締切を後ろに置く。
+     * ルールの上限（締切は request.time + 60秒 未満）に対して
+     * 制限時間の最大 35秒 ＋ 3秒 ＋ 通信猶予 0.7秒 なので余裕がある。
+     * 速さ点は「締切 − 制限時間」を開始時刻とするので、カウントダウンの分は入らない。
+     */
+    const first = resolveTimeLimit(questions[0], rules) + COUNTDOWN_TOTAL_MS / 1000;
+    void startBattle(roomId, first).catch((e: Error) => setError(e.message));
   }, [roomId, questions, rules]);
 
   /**
@@ -879,6 +907,10 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
     offlineMessage: offlineNotice({ connection, playing: status === 'playing' }),
     resumeMessage,
     submittable,
+    preStartMs,
+    myAnsweredIndexes: Object.keys(mySheet)
+      .map((k) => answerIndexOf(k))
+      .filter((n): n is number => n != null),
     choose,
     pushPanel,
     popPanel,

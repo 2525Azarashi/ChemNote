@@ -55,7 +55,8 @@ import type {
   BattleResultSummary,
   BattleRule,
 } from '../core/types';
-import { answerKeyOf } from '../core/types';
+import { answerKeyOf, answerIndexOf } from '../core/types';
+import { COUNTDOWN_TOTAL_MS } from '../core/battleLive';
 
 export type AiBattlePhase = 'loading' | 'ready' | 'playing' | 'finished' | 'error';
 
@@ -89,10 +90,18 @@ export interface AiBattleState {
    */
   myDetail: BattlePlayerScore | null;
   opponentDetail: BattlePlayerScore | null;
+  /** 採点の内訳（実況・HUD が問題ごとの正誤を読むため。useBattleRoom の myScore/opponentScore に当たる） */
+  scores: { me: BattlePlayerScore; other: BattlePlayerScore } | null;
   result: BattleResultSummary | null;
   finished: boolean;
   me: { uid: string; nickname: string; photoURL: string };
   opponent: { uid: string; nickname: string; photoURL: string; rating: number };
+  /** 開始カウントダウンの残りミリ秒（useBattleRoom と同じ意味） */
+  preStartMs: number;
+  /** 自分が答えた問題番号 */
+  myAnsweredIndexes: number[];
+  /** 解答を送れる状態か */
+  submittable: boolean;
 }
 
 export interface AiBattleActions {
@@ -198,6 +207,10 @@ export function useAiBattle(
 
   const current = questions[currentIndex] || null;
   const remainMs = deadlineMs > 0 ? Math.max(0, deadlineMs - now) : 0;
+  const preStartMs = (() => {
+    if (phase !== 'playing' || currentIndex !== 0 || !current || deadlineMs <= 0) return 0;
+    return Math.max(0, deadlineMs - resolveTimeLimit(current, rules) * 1000 - now);
+  })();
 
   const myRecord = mySheet[answerKeyOf(currentIndex)] || null;
   const answered = Boolean(myRecord);
@@ -216,7 +229,10 @@ export function useAiBattle(
     (index: number) => {
       const q = questions[index];
       if (!q) return;
-      const startMs = Date.now();
+      // ★1問目だけカウントダウン（3・2・1・START!）の分だけ開始を後ろに置く★
+      //   人間戦（useBattleRoom.start）と同じ見せ方にそろえる。
+      //   速さ点の基準（startsRef）はカウントダウン終了時刻なので、点の付き方は変わらない。
+      const startMs = Date.now() + (index === 0 ? COUNTDOWN_TOTAL_MS : 0);
       const limit = resolveTimeLimit(q, rules);
       startsRef.current.set(index, startMs);
       setCurrentIndex(index);
@@ -304,7 +320,7 @@ export function useAiBattle(
   // ------------------------------------------------------------
   // 操作
   // ------------------------------------------------------------
-  const submittable = phase === 'playing' && !answered && remainMs > 0;
+  const submittable = phase === 'playing' && !answered && remainMs > 0 && preStartMs <= 0;
 
   const record = useCallback(
     (payload: { choice: number; panel: number[] }) => {
@@ -397,6 +413,7 @@ export function useAiBattle(
     opponentScore: scores?.other.score ?? 0,
     myDetail: scores?.me ?? null,
     opponentDetail: scores?.other ?? null,
+    scores,
     result,
     finished,
     me: {
@@ -410,6 +427,11 @@ export function useAiBattle(
       photoURL: '',
       rating: profile.displayRating,
     },
+    preStartMs,
+    myAnsweredIndexes: Object.keys(mySheet)
+      .map((k) => answerIndexOf(k))
+      .filter((n): n is number => n != null),
+    submittable,
     start,
     choose,
     pushPanel,

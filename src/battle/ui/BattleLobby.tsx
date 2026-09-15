@@ -28,8 +28,9 @@
  */
 
 import { Check, Copy, Share2, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
+import { useBattleAudio } from '../hooks/useBattleAudio';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
 import type { BattleRoom } from '../core/types';
@@ -67,6 +68,18 @@ export function BattleLobby({
   const ready = Boolean(opponent);
   /** 全国対戦（合言葉なし）の部屋か。見せ方が変わる（上の説明を参照）。 */
   const isNational = !room.joinCode;
+
+  /**
+   * ★待機中の音★
+   * 待っている間は期待感のあるループ（BGM ON のときだけ）。
+   * 相手が入ってきた瞬間に合図の効果音を1回鳴らす（画面を見ていなくても分かる）。
+   */
+  const { play } = useBattleAudio('matching');
+  const wasReadyRef = useRef(ready);
+  useEffect(() => {
+    if (ready && !wasReadyRef.current) play('matched');
+    wasReadyRef.current = ready;
+  }, [ready, play]);
 
   const copyCode = async () => {
     try {

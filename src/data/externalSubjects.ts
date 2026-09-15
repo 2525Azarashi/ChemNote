@@ -179,6 +179,40 @@ export const EXTERNAL_SUBJECTS: readonly ExternalSubject[] = [
       { id: 'ch32', title: '化学➁〜原子・分子、化学変化' },
     ],
   },
+
+  /**
+   * 英単語・英熟語（対戦専用）
+   *
+   * 出題は src/battle/data/external/english_vocab.json（全部4択）。
+   * 生成器は scripts/gen-english-vocab-pool.py。
+   * ★マナトビ独自編成★：複数の公開語彙リストを合算して重複を除き、
+   * 「収録冊数 × 一般使用頻度」で語の重要度を独自に点数化して 4 段階に振り分けた。
+   * 特定の単語帳の選択・並び・訳語文言は再現していない（画面にも単語帳名は出さない）。
+   * 章＝レベル。対戦の「単元をえらぶ」でレベルを選べる。
+   * 本体に演習画面は無い（リザルトの「この単元を演習する」は出ない）。
+   */
+  {
+    id: 'english_vocab',
+    label: '英単語・英熟語',
+    accent: '#2F5D8A',
+    accentSoft: '#BFD3E6',
+    surface: '#F4F8FC',
+    bubbleBorderClass: 'border-[#BFD3E6]/80',
+    bubbleBgClass: 'bg-[#F8FBFE]/95',
+    bubbleShadow: '0 10px 24px -14px rgba(47,93,138,0.55)',
+    chipTextClass: 'text-[#274B70]',
+    chipBgClass: 'bg-[#BFD3E6]/35',
+    progressBarClass: 'bg-[#5B84AF]',
+    chapters: [
+      { id: 'lv1', title: '単語 Lv1　共通テスト 基礎' },
+      { id: 'lv2', title: '単語 Lv2　共通テスト 標準' },
+      { id: 'lv3', title: '単語 Lv3　二次・私大 標準' },
+      { id: 'lv4', title: '単語 Lv4　難関・最難関' },
+      { id: 'ilv1', title: '熟語 Lv1　基礎' },
+      { id: 'ilv2', title: '熟語 Lv2　標準' },
+      { id: 'ilv3', title: '熟語 Lv3　発展' },
+    ],
+  },
 ];
 
 /** 教科ID → 外部教科。知らないIDなら undefined。 */

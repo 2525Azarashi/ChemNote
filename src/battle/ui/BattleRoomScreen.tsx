@@ -19,20 +19,18 @@ import { useEffect, useMemo, useState } from 'react';
 import { LogOut, X } from 'lucide-react';
 import { auth } from '../../firebase';
 import { useBattleRoom } from '../hooks/useBattleRoom';
+import { normalizeRule } from '../core/battleRules';
 import { BattleLobby } from './BattleLobby';
-import { BattleQuestionView } from './BattleQuestionView';
+import { BattleLiveStage } from './BattleLiveStage';
 import { BattleResult } from './BattleResult';
-import { BattleRaceTrack } from './BattleRaceTrack';
 import {
   BattleButton,
   BattleLoading,
   BattleNotice,
   BattleShell,
   BattleTitle,
-  GOLD,
   INK,
   LINE,
-  PlayerBadge,
 } from './BattleParts';
 
 /** 結果画面に切り替わるまでの間（最後の1問の正解を見る時間） */
@@ -47,6 +45,7 @@ export function BattleRoomScreen({
   onRematch,
   onPractice,
   onOpenProfile, onOpenMissions, onActiveChange,
+  onReview,
 }: {
   roomId: string;
   /** 対戦メニューに戻る。message があれば入口に伝える */
@@ -58,6 +57,8 @@ export function BattleRoomScreen({
   onActiveChange?: (active: boolean) => void;
   onOpenProfile?: () => void;
   onOpenMissions?: () => void;
+  /** ★リザルトの「復習する」（間違えた問題を復習リストに入れて学習ノートへ）★ */
+  onReview?: () => void;
 }) {
   const uid = auth.currentUser?.uid || '';
   const {
@@ -83,6 +84,8 @@ export function BattleRoomScreen({
     offlineMessage,
     resumeMessage,
     submittable,
+    preStartMs,
+    myAnsweredIndexes,
     choose,
     pushPanel,
     popPanel,
@@ -203,6 +206,9 @@ export function BattleRoomScreen({
         growthEligible={room.status === 'finished' && !!rating && !byForfeit}
         onOpenProfile={onOpenProfile}
         onOpenMissions={onOpenMissions}
+        onReview={onReview}
+        myAnsweredIndexes={myAnsweredIndexes}
+        matchKey={roomId}
       />
     );
   }
@@ -236,101 +242,33 @@ export function BattleRoomScreen({
     );
   }
 
-  return (
-    <BattleShell>
-      {/* 得点表（常に見える位置に固定） */}
-      <section
-        id="battle-scoreboard"
-        className="mb-3 flex items-center gap-2 rounded-2xl border-2 px-3 py-2"
-        style={{ borderColor: LINE, background: '#FFFFFF' }}
-      >
-        <PlayerBadge
-          nickname={me?.nickname || 'あなた'}
-          photoURL={me?.photoURL}
-          rating={me?.rating ?? 1500}
-          isMe
-          answered={answered}
-          score={myScore?.score ?? 0}
-        />
-        {/* ★VS を金地にしている★ ライト地では金の文字は読めないので、面に使う */}
-        <span
-          className="battle-vs-pulse shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-black"
-          style={{ background: GOLD, color: INK }}
-        >
-          VS
-        </span>
-        <PlayerBadge
-          nickname={opponent?.nickname || '対戦相手'}
-          photoURL={opponent?.photoURL}
-          rating={opponent?.rating ?? 1500}
-          mask={!room.joinCode}
-          answered={opponentAnswered}
-          score={opponentScore?.score ?? 0}
-          align="right"
-        />
-      </section>
-
-      {/* ★相手の位置・点差・連続正解★（理由は BattleRaceTrack.tsx の先頭） */}
-      <BattleRaceTrack
-        total={questions.length}
-        current={room.currentIndex}
-        me={myScore}
-        opponent={opponentScore}
-        meAnswered={answered}
-        opponentAnswered={opponentAnswered}
-        reveal={reveal}
+  /**
+   * ★知らせは一度に一つだけ出す★（従来どおり）
+   *   ① 圏外 ② 復帰 ③ 時計のずれ ④ 不戦勝の予告
+   */
+  const notices = offlineMessage ? (
+    <div className="mb-2">
+      <BattleNotice message={offlineMessage} />
+    </div>
+  ) : resumeMessage ? (
+    <div className="mb-2">
+      <BattleNotice message={resumeMessage} tone="info" />
+    </div>
+  ) : clockSkewed ? (
+    <div className="mb-2">
+      <BattleNotice
+        message="この端末の時計が実際の時刻とずれています。対戦は正しく進みますが、端末の「日付と時刻」を自動設定にしてください。"
+        tone="info"
       />
+    </div>
+  ) : byForfeit ? (
+    <div className="mb-2">
+      <BattleNotice message="相手の応答がありません。まもなく不戦勝になります。" />
+    </div>
+  ) : null;
 
-      {/*
-        ★知らせは一度に一つだけ出す★
-        並べて出すと問題そのものが画面から押し出されてしまう。
-        「いま利用者の行動が変わるか」の順に並べ、上から最初の一つを出す。
-          ① 圏外       … 押しても解答が残らないので最優先で伝える
-          ② 復帰       … 離れていた間に何が起きたか
-          ③ 時計のずれ … 対戦は成立しているので後回しでよい
-          ④ 不戦勝の予告
-      */}
-      {offlineMessage ? (
-        <div className="mb-2">
-          <BattleNotice message={offlineMessage} />
-        </div>
-      ) : resumeMessage ? (
-        <div className="mb-2">
-          <BattleNotice message={resumeMessage} tone="info" />
-        </div>
-      ) : clockSkewed ? (
-        <div className="mb-2">
-          <BattleNotice
-            message="この端末の時計が実際の時刻とずれています。対戦は正しく進みますが、端末の「日付と時刻」を自動設定にしてください。"
-            tone="info"
-          />
-        </div>
-      ) : byForfeit ? (
-        <div className="mb-2">
-          <BattleNotice message="相手の応答がありません。まもなく不戦勝になります。" />
-        </div>
-      ) : null}
-
-      <BattleQuestionView
-        question={current}
-        index={room.currentIndex}
-        total={questions.length}
-        remainMs={remainMs}
-        limitSec={limitSec}
-        answered={answered}
-        // ★押しても解答が残らない状態（圏外）を画面にも伝える★
-        //   answered ではないのに押せない、という状態が実際にある。
-        locked={!submittable && !answered}
-        myChoice={myChoice}
-        myPanel={myPanel}
-        reveal={reveal}
-        onChoose={choose}
-        onPushPanel={pushPanel}
-        onPopPanel={popPanel}
-        onCyclePanel={cyclePanel}
-        onCommitKana={commitKana}
-      />
-
+  const footer = (
+    <>
       {error && (
         <div className="mt-2">
           <BattleNotice message={error} />
@@ -339,9 +277,6 @@ export function BattleRoomScreen({
 
       {/*
         ★試合中の「やめる」★
-        以前は試合中に抜ける手段が下のナビしか無く、そこから抜けても
-        退出が記録されなかったので、相手は5問ぶん待たされていた。
-        明示的に抜ける導線を置き、押したら left を書いて即座に決着させる。
         押し間違いで負けにならないよう、1回目は確認にする。
       */}
       <div className="mt-3">
@@ -380,6 +315,45 @@ export function BattleRoomScreen({
           </button>
         )}
       </div>
+    </>
+  );
+
+  /**
+   * ★臨場感アップデート★
+   * 得点表・実況・演出・音・カウントダウンは BattleLiveStage に集約した。
+   * 進行・採点・同期は useBattleRoom のまま（ここは表示するだけ）。
+   */
+  return (
+    <BattleShell>
+      <BattleLiveStage
+        question={current}
+        index={room.currentIndex}
+        total={questions.length}
+        rules={normalizeRule(room.subject, room.rules)}
+        remainMs={remainMs}
+        preStartMs={preStartMs}
+        answered={answered}
+        opponentAnswered={opponentAnswered}
+        // ★押しても解答が残らない状態（圏外）を画面にも伝える★
+        locked={!submittable && !answered}
+        myChoice={myChoice}
+        myPanel={myPanel}
+        reveal={reveal}
+        myScore={myScore}
+        opponentScore={opponentScore}
+        meNickname={me?.nickname || 'あなた'}
+        opponentNickname={opponent?.nickname || '対戦相手'}
+        maskOpponent={!room.joinCode}
+        finished={finished}
+        onChoose={choose}
+        onPushPanel={pushPanel}
+        onPopPanel={popPanel}
+        onCyclePanel={cyclePanel}
+        onCommitKana={commitKana}
+        notices={notices}
+        footer={footer}
+        offline={Boolean(offlineMessage)}
+      />
     </BattleShell>
   );
 }

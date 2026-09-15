@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { auth } from '../firebase';
-import { ChevronLeft, User, LogOut, Flame, BookOpen, GraduationCap, Compass, Settings, Volume2, VolumeX, LogIn, Users, Save, Check, Loader2, AlertTriangle, School, ClipboardList } from 'lucide-react';
+import { ChevronLeft, User, LogOut, Flame, BookOpen, GraduationCap, Compass, Settings, Volume2, VolumeX, LogIn, Users, Save, Check, Loader2, AlertTriangle, School, ClipboardList, Swords } from 'lucide-react';
+// ★対戦の音（BGM / 効果音 / 音量）★ 通常 BGM とは別の設定（src/battle/core/audioSettings.ts の説明を参照）
+import { useBattleAudioSettings } from '../battle/hooks/useBattleAudio';
+import { battleAudio } from '../battle/audio/battleAudio';
 import { FriendPanel } from './FriendPanel';
 import { ClassPanel } from './ClassPanel';
 import { DoorMascot } from './DoorMascot';
@@ -40,6 +43,7 @@ type SettingsTab = 'general' | 'friends' | 'class';
 
 export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleBgm, bgmVolume, setBgmVolume, onOpenTeacherDashboard, onOpenFeedbackAdmin }: ProfileModalProps) {
   const [tab, setTab] = useState<SettingsTab>('general');
+  const [battleAudioSettings, updateBattleAudio] = useBattleAudioSettings();
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
   const [stream, setStream] = useState('science');
@@ -211,6 +215,30 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
                       <span className="w-9 text-right text-[10px] font-bold text-[#5D6D7E]">{Math.round(bgmVolume * 100)}%</span>
                     </div>
                   )}
+
+                  {/* ★対戦の音（臨場感アップデート）★ 通常 BGM とは別のスイッチ */}
+                  <div className="mt-1 border-t border-gray-100 pt-2" id="battle-audio-settings">
+                    <p className="mb-1.5 flex items-center gap-1 text-[10px] font-bold text-gray-400"><Swords size={11} /> 対戦モードの音</p>
+                    <div className="flex items-center gap-2 bg-gray-50 rounded-xl p-2.5">
+                      <div className="flex-1"><p className="text-xs font-bold">対戦BGM</p><p className="text-[10px] text-gray-400">マッチング・試合中・最終問題で変化</p></div>
+                      <button type="button" onClick={() => updateBattleAudio({ bgm: !battleAudioSettings.bgm })} role="switch" aria-checked={battleAudioSettings.bgm} aria-label="対戦BGM" className={`relative h-6 w-11 rounded-full transition-colors ${battleAudioSettings.bgm ? 'bg-[#F4D03F]' : 'bg-gray-200'}`}>
+                        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${battleAudioSettings.bgm ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                      </button>
+                    </div>
+                    <div className="mt-1.5 flex items-center gap-2 bg-gray-50 rounded-xl p-2.5">
+                      <div className="flex-1"><p className="text-xs font-bold">対戦効果音</p><p className="text-[10px] text-gray-400">正解・相手の回答・逆転など</p></div>
+                      <button type="button" onClick={() => { updateBattleAudio({ sfx: !battleAudioSettings.sfx }); if (!battleAudioSettings.sfx) window.setTimeout(() => battleAudio().play('correct'), 50); }} role="switch" aria-checked={battleAudioSettings.sfx} aria-label="対戦効果音" className={`relative h-6 w-11 rounded-full transition-colors ${battleAudioSettings.sfx ? 'bg-[#F4D03F]' : 'bg-gray-200'}`}>
+                        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${battleAudioSettings.sfx ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                      </button>
+                    </div>
+                    {(battleAudioSettings.bgm || battleAudioSettings.sfx) && (
+                      <div className="mt-1.5 flex items-center gap-2 px-1">
+                        <VolumeX size={14} className="text-gray-400" />
+                        <input aria-label="対戦の音量" type="range" min="0" max="1" step="0.01" value={battleAudioSettings.volume} onChange={(event) => updateBattleAudio({ volume: parseFloat(event.target.value) })} onPointerUp={() => battleAudio().play('tap')} className="flex-1 accent-[#F4D03F]" />
+                        <span className="w-9 text-right text-[10px] font-bold text-[#5D6D7E]">{Math.round(battleAudioSettings.volume * 100)}%</span>
+                      </div>
+                    )}
+                  </div>
                 </section>
 
                 <section className="bg-white border border-gray-150 p-3 rounded-2xl shadow-sm space-y-2 flex-1">

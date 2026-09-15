@@ -19,9 +19,8 @@ import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
 import { aiProfileOf, type AiLevel } from '../core/aiOpponent';
 import { useAiBattle } from '../hooks/useAiBattle';
-import { BattleQuestionView } from './BattleQuestionView';
+import { BattleLiveStage } from './BattleLiveStage';
 import { BattleResult } from './BattleResult';
-import { BattleRaceTrack } from './BattleRaceTrack';
 import {
   BattleButton,
   BattleLoading,
@@ -49,6 +48,7 @@ export function BattleAiRoomScreen({
   onChangeLevel,
   onPractice,
   onOpenProfile, onOpenMissions, onActiveChange,
+  onReview,
 }: {
   subject: string;
   level: AiLevel;
@@ -71,6 +71,8 @@ export function BattleAiRoomScreen({
   onActiveChange?: (active: boolean) => void;
   onOpenProfile?: () => void;
   onOpenMissions?: () => void;
+  /** リザルトの「復習する」 */
+  onReview?: () => void;
 }) {
   const theme = subjectTheme(subject as SubjectKey);
   const profile = aiProfileOf(level);
@@ -148,6 +150,9 @@ export function BattleAiRoomScreen({
         onPractice={onPractice}
         growthMatchId={growthMatchId} growthOwnerUid={growthOwnerUid} growthEligible
         onOpenProfile={onOpenProfile} onOpenMissions={onOpenMissions}
+        onReview={onReview}
+        myAnsweredIndexes={b.myAnsweredIndexes}
+        matchKey={`ai-${subject}-${level}-${matchNo}`}
       />
     );
   }
@@ -231,92 +236,67 @@ export function BattleAiRoomScreen({
     );
   }
 
+  const footer = (
+    <div className="mt-3">
+      {confirmQuit ? (
+        <div className="grid gap-2 rounded-2xl border-2 p-3" style={{ borderColor: LINE, background: '#FFFFFF' }}>
+          <p className="text-center text-[11px] font-black" style={{ color: INK }}>
+            対戦をやめますか？（AI対戦なので記録には残りません）
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            <BattleButton variant="ghost" onClick={() => setConfirmQuit(false)}>
+              つづける
+            </BattleButton>
+            <BattleButton variant="danger" onClick={() => onExit()} icon={<X size={16} />}>
+              やめる
+            </BattleButton>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setConfirmQuit(true)}
+          className="w-full py-1 text-center text-[10px] font-bold underline-offset-2 hover:underline"
+          style={{ color: '#9A948A' }}
+        >
+          対戦をやめる
+        </button>
+      )}
+    </div>
+  );
+
+  /**
+   * ★臨場感アップデート★ 人間戦と同じ BattleLiveStage で描く。
+   * AI の「回答済み・正解・不正解」は useAiBattle の aiSheet から
+   * 同じ純粋関数で採点した結果を読むだけなので、見せ方が人間戦と揃う。
+   */
   return (
     <BattleShell>
-      <section
-        id="battle-scoreboard"
-        className="mb-3 flex items-center gap-2 rounded-2xl border-2 px-3 py-2"
-        style={{ borderColor: LINE, background: '#FFFFFF' }}
-      >
-        <PlayerBadge
-          nickname={b.me.nickname}
-          photoURL={b.me.photoURL}
-          rating={1500}
-          isMe
-          answered={b.answered}
-          score={b.myScore}
-        />
-        <span
-          className="battle-vs-pulse shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-black"
-          style={{ background: GOLD, color: INK }}
-        >
-          VS
-        </span>
-        <PlayerBadge
-          nickname={b.opponent.nickname}
-          photoURL=""
-          rating={b.opponent.rating}
-          answered={b.opponentAnswered}
-          score={b.opponentScore}
-          align="right"
-        />
-      </section>
-
-      {/* ★相手の位置・点差・連続正解★（理由は BattleRaceTrack.tsx の先頭） */}
-      <BattleRaceTrack
-        total={b.questions.length}
-        current={b.currentIndex}
-        me={b.myDetail}
-        opponent={b.opponentDetail}
-        meAnswered={b.answered}
-        opponentAnswered={b.opponentAnswered}
-        reveal={reveal}
-        opponentAccent={profile.color}
-      />
-
-      <BattleQuestionView
+      <BattleLiveStage
         question={b.current}
         index={b.currentIndex}
         total={b.questions.length}
+        rules={b.rules}
         remainMs={b.remainMs}
-        limitSec={b.limitSec}
+        preStartMs={b.preStartMs}
         answered={b.answered}
+        opponentAnswered={b.opponentAnswered}
         myChoice={b.myChoice}
         myPanel={b.myPanel}
         reveal={reveal}
+        myScore={b.result?.me ?? b.scores?.me ?? null}
+        opponentScore={b.result?.opponent ?? b.scores?.other ?? null}
+        meNickname={b.me.nickname}
+        opponentNickname={b.opponent.nickname}
+        maskOpponent={false}
+        finished={b.finished}
         onChoose={b.choose}
         onPushPanel={b.pushPanel}
         onPopPanel={b.popPanel}
         onCyclePanel={b.cyclePanel}
         onCommitKana={b.commitKana}
+        footer={footer}
       />
-
-      <div className="mt-3">
-        {confirmQuit ? (
-          <div className="grid gap-2 rounded-2xl border-2 p-3" style={{ borderColor: LINE, background: '#FFFFFF' }}>
-            <p className="text-center text-[11px] font-black" style={{ color: INK }}>
-              対戦をやめますか？（AI対戦なので記録には残りません）
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <BattleButton variant="ghost" onClick={() => setConfirmQuit(false)}>
-                つづける
-              </BattleButton>
-              <BattleButton variant="danger" onClick={() => onExit()} icon={<X size={16} />}>
-                やめる
-              </BattleButton>
-            </div>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setConfirmQuit(true)}
-            className="w-full py-1 text-center text-[10px] font-bold underline-offset-2 hover:underline"
-            style={{ color: '#9A948A' }}
-          >
-            対戦をやめる
-          </button>
-        )}
-      </div>
     </BattleShell>
   );
 }

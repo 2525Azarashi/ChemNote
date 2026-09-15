@@ -556,6 +556,11 @@ export const ITEMS: readonly ItemDef[] = [
   { id: 'frame_purple', kind: 'frame', label: 'すみれ', value: '#9B59B6', unlock: { level: 20 } },
   { id: 'frame_gold', kind: 'frame', label: 'ゴールド', value: '#F4D03F', unlock: { badge: 'b_wins_10' } },
   { id: 'frame_pink', kind: 'frame', label: 'さくら', value: '#D9A0A0', unlock: { coins: 80 } },
+  { id: 'frame_mint', kind: 'frame', label: 'ミント', value: '#74B7A3', unlock: { coins: 60 } },
+  { id: 'frame_ocean', kind: 'frame', label: 'マリン', value: '#4D93AE', unlock: { coins: 100 } },
+  { id: 'frame_lavender', kind: 'frame', label: 'ラベンダー', value: '#B09BC7', unlock: { coins: 140 } },
+  { id: 'frame_coral', kind: 'frame', label: 'コーラル', value: '#DD8F79', unlock: { coins: 160 } },
+  { id: 'frame_midnight', kind: 'frame', label: '星空', value: '#3F527C', unlock: { coins: 200 } },
   { id: 'frame_fire', kind: 'frame', label: 'ほのお', value: '#E67E22', unlock: { badge: 'b_streak_5' } },
 ];
 

@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy, Swords } from 'lucide-react';
+import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy, Swords, UserRound } from 'lucide-react';
 import { Home } from './components/Home';
 import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
@@ -242,8 +242,10 @@ import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './uti
 import { TeacherDashboard } from './components/TeacherDashboard';
 import { FeedbackAdminPanel } from './components/FeedbackAdminPanel';
 import { BattleMode } from './battle/ui/BattleMode';
+import type { GrowthPage } from './components/GrowthHub';
+const GrowthHub = React.lazy(() => import('./components/GrowthHub').then(m => ({ default: m.GrowthHub })));
 
-export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin' | 'battle' | 'rika';
+export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin' | 'battle' | 'rika' | 'growth';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
 
 const APP_STATES = new Set<AppState>([
@@ -255,7 +257,7 @@ const APP_STATES = new Set<AppState>([
    */
   'study_hub', 'note_detail', 'onboarding', 'logical_tree', 'settings',
   'leaderboard', 'mock_exam', 'subject_selection', 'advanced_fields', 'teacher_dashboard',
-  'feedback_admin', 'battle',
+  'feedback_admin', 'battle', 'growth',
   /**
    * 高校入試 理科の入口（演習・まとめ・出題傾向の3画面）。
    *
@@ -288,6 +290,16 @@ const SELECTED_SUBJECT_KEY = 'savedSelectedSubject';
  *   あとで既定値を変えても既存ユーザーに届かなくなる。
  */
 const BGM_ENABLED_KEY = 'bgm_enabled';
+
+/**
+ * 通常 BGM を止める画面。
+ *   quiz / explanation … 従来どおり（問題を読む場面では音を止める）
+ *   battle             … ★臨場感アップデートで追加★
+ *     対戦中は専用の BGM・効果音（src/battle/audio）が鳴るので、
+ *     通常 BGM と重なると濁る。対戦モードの間だけ通常 BGM を止め、
+ *     戻ってきたら従来どおり再開する（フェードの計測も止まる）。
+ */
+const BGM_SILENT_STATES: readonly string[] = ['quiz', 'explanation', 'battle'];
 /** 化学（発展）で最後に選んだ分野の保存キー */
 const SELECTED_FIELD_KEY = 'savedSelectedAdvancedField';
 
@@ -358,6 +370,7 @@ export default function App() {
   const [chapterGroups, setChapterGroups] = useState<Record<string, string>>({});
   const [battleReturnActive, setBattleReturnActive] = useState(false);
   const [battleActive, setBattleActive] = useState(false);
+  const [growthPage, setGrowthPage] = useState<GrowthPage>('overview');
   const [rikaBattleTarget, setRikaBattleTarget] = useState<{ chapterId: string; questionId?: string } | null>(null);
   const battleScrollRef = useRef<HTMLDivElement | null>(null);
   const savedBattleScroll = useRef(0);
@@ -898,7 +911,7 @@ export default function App() {
       const audio = audioRef.current;
       const { isBgmEnabled, isAudioValid, appState } = bgmStateRef.current;
       
-      if (audio && isAudioValid && isBgmEnabled && !['quiz', 'explanation'].includes(appState)) {
+      if (audio && isAudioValid && isBgmEnabled && !BGM_SILENT_STATES.includes(appState)) {
         audio.volume = bgmVolume;
         const playPromise = audio.play();
         if (playPromise !== undefined) {
@@ -981,7 +994,7 @@ export default function App() {
     if (!audio || !isAudioValid || hasLoggedAudioError.current) return;
     
     // Play BGM except during quiz and explanation, and only after user interaction
-    const shouldPlay = isBgmEnabled && hasInteracted && !['quiz', 'explanation'].includes(appState);
+    const shouldPlay = isBgmEnabled && hasInteracted && !BGM_SILENT_STATES.includes(appState);
 
     if (shouldPlay) {
       /*
@@ -1037,7 +1050,7 @@ export default function App() {
   */
   useEffect(() => {
     if (!isBgmEnabled || !isAudioValid || hasInteracted === false) return;
-    if (['quiz', 'explanation'].includes(appState)) return;
+    if (BGM_SILENT_STATES.includes(appState)) return;
 
     const id = window.setInterval(() => {
       const audio = audioRef.current;
@@ -1076,7 +1089,7 @@ export default function App() {
 
     if (enabled) {
       if (!isAudioValid || hasLoggedAudioError.current) return;
-      if (['quiz', 'explanation'].includes(appState)) return;
+      if (BGM_SILENT_STATES.includes(appState)) return;
       audio.volume = bgmVolume;
       markBgmPlaying(true);
       // iOS Safari 対策:
@@ -1223,6 +1236,10 @@ export default function App() {
     const request = ++reviewRequest.current;
     try {
       if (isExternalSubject(subject)) {
+        // 英単語・英熟語は対戦専用（本体に演習画面が無い）。
+        // リザルトは onPractice を渡されても vocab では出さない（BattleResult 側で判定）が、
+        // 履歴など別経路から来たときのためにここでも止める。
+        if (subject !== 'rika') throw new Error('この科目は対戦専用です。答えはリザルトの解答欄で確認できます。');
         if (!FEATURES.rika) throw new Error('この科目の演習は現在公開されていません。');
         const { RIKA_ITEMS } = await import('./features/rika/rikaData');
         const found = RIKA_ITEMS.find(q => q.chapterId === chapterId && (!subQuestionId || q.id === subQuestionId));
@@ -1479,12 +1496,17 @@ export default function App() {
                 onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined}
               />
             )}
-            {appState === 'home' && <Home onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined} onChangeSubject={() => { setSubjectPickerReturnTo('home'); setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
+            {appState === 'home' && <Home onGrowth={page => { setGrowthPage(page); navigateMain('growth'); }} onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined} onChangeSubject={() => { setSubjectPickerReturnTo('home'); setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
             {/* ★ルーティング側の門（4箇所のうちの3番目）★
                 ナビのボタンを隠すだけでは、Home の「ランキングを見る」など
                 別の導線からこの状態になれてしまう。
                 描画の受け口でも同じフラグを見て、
                 「見えないのに入れる」状態を作らない。 */}
+            {appState === 'growth' && <React.Suspense fallback={<ScreenLoading />}>
+              <GrowthHub page={growthPage} onPage={setGrowthPage} onBack={() => navigateMain('home')}
+                onBattle={FEATURES.battle ? () => navigateMain('battle') : undefined}
+                onReview={() => { setStudyHubView({ tab: 'today', subjectTab: 'all' }); navigateMain('study_hub'); }} />
+            </React.Suspense>}
             {appState === 'leaderboard' && FEATURES.ranking && <Leaderboard onBack={() => setAppState('home')} isGuest={isGuest} initialChapterId={selectedChapterId} initialSubject={selectedSubject} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} />}
             {/* ★対戦モード（ルーティング側の門）★
                 ホームのボタンを隠すだけでは、localStorage に残った
@@ -1499,6 +1521,11 @@ export default function App() {
                 /* ★対戦 ⇒ 演習 の橋（請求⑦-A）★ */
                 onPractice={handlePracticeFromBattle}
                 onActiveChange={setBattleActive}
+                /* ★対戦 ⇒ 復習（臨場感アップデート）★ 間違えた問題は復習リストに入っている */
+                onReview={() => {
+                  setStudyHubView({ tab: 'today', subjectTab: 'all' });
+                  setAppState('study_hub');
+                }}
                 initialSubject={selectedSubject}
               />
               </div>
@@ -1654,7 +1681,7 @@ export default function App() {
                   onClick={() => navigateMain('home')}
                   aria-label="ホーム画面へ移動"
                   aria-current={appState === 'home' ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'home' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  className={`flex flex-col items-center justify-center min-w-0 flex-1 gap-1.5 min-h-[44px] transition-colors ${appState === 'home' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <HomeIcon className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">ホーム</span>
@@ -1668,7 +1695,7 @@ export default function App() {
                   }}
                   aria-label="学習画面へ移動"
                   aria-current={isLearningScreen(appState) ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${isLearningScreen(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  className={`flex flex-col items-center justify-center min-w-0 flex-1 gap-1.5 min-h-[44px] transition-colors ${isLearningScreen(appState) ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <BookOpen className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">学習</span>
@@ -1699,7 +1726,7 @@ export default function App() {
                   onClick={() => navigateMain('battle')}
                   aria-label="オンライン対戦へ移動"
                   aria-current={appState === 'battle' ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'battle' ? 'text-[#2E86C1] font-bold' : 'text-[#4B5563]/60 hover:text-[#2E86C1]/80'}`}
+                  className={`flex flex-col items-center justify-center min-w-0 flex-1 gap-1.5 min-h-[44px] transition-colors ${appState === 'battle' ? 'text-[#2E86C1] font-bold' : 'text-[#4B5563]/60 hover:text-[#2E86C1]/80'}`}
                 >
                   <Swords className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">対戦</span>
@@ -1713,12 +1740,17 @@ export default function App() {
                     ★止めたくなった日に「ここも直す」を思い出さなくて済む★
                     ようにするため。フラグを後から足す作業が、
                     今回の「隠したつもりで入れた」の原因そのものである。 */}
+                <button type="button" onClick={() => { setGrowthPage('overview'); navigateMain('growth'); }}
+                  aria-label="マイページへ移動" aria-current={appState === 'growth' ? 'page' : undefined}
+                  className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1.5 min-h-[44px] ${appState === 'growth' ? 'text-amber-800 font-bold' : 'text-slate-500'}`}>
+                  <UserRound className="w-5 h-5" aria-hidden="true" /><span className="text-[10px]">マイページ</span>
+                </button>
                 {FEATURES.ranking && (
                 <button 
                   onClick={() => navigateMain('leaderboard')}
                   aria-label="ランキング画面へ移動"
                   aria-current={appState === 'leaderboard' ? 'page' : undefined}
-                  className={`flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'leaderboard' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  className={`flex flex-col items-center justify-center min-w-0 flex-1 gap-1.5 min-h-[44px] transition-colors ${appState === 'leaderboard' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <Trophy className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   <span className="text-[10px] tracking-wider font-modern">ランキング</span>
@@ -1729,7 +1761,7 @@ export default function App() {
                   onClick={() => navigateMain('settings')}
                   aria-label={pendingFriendRequests > 0 ? `設定画面へ移動（フレンド申請が${pendingFriendRequests}件届いています）` : '設定画面へ移動'}
                   aria-current={appState === 'settings' ? 'page' : undefined}
-                  className={`relative flex flex-col items-center justify-center w-14 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
+                  className={`relative flex flex-col items-center justify-center min-w-0 flex-1 gap-1.5 min-h-[44px] transition-colors ${appState === 'settings' ? 'text-[#1B2631] font-bold' : 'text-[#4B5563]/60 hover:text-[#1B2631]/80'}`}
                 >
                   <div className="relative">
                     <Settings className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />

@@ -69,7 +69,8 @@ describe('① 対戦が下部ナビに席を持っている', () => {
 
   it('押すと対戦画面へ行く', () => {
     // 席があっても行き先が違えば意味がない。
-    expect(APP).toMatch(/aria-label="オンライン対戦へ移動"[\s\S]{0,400}?setAppState\('battle'\)|setAppState\('battle'\)[\s\S]{0,400}?aria-label="オンライン対戦へ移動"/u);
+    expect(APP).toMatch(/onClick=\{\(\) => navigateMain\('battle'\)\}[\s\S]{0,200}?aria-label="オンライン対戦へ移動"/u);
+    expect(APP).toContain('setAppState(next)');
   });
 
   it('FEATURES.battle が false のときは席ごと消える（見えるのに入れないを作らない）', () => {

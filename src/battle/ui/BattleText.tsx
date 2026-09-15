@@ -52,7 +52,7 @@ import { formatText } from '../../utils/textFormatter';
  *   残り時間のカウントダウンで親が頻繫に再描画されるため、
  *   毎回 KaTeX を走らせると重い。text と subject が同じなら再計算しない。
  */
-const PROSE_SUBJECTS = new Set(['english_listening', 'english_grammar']);
+const PROSE_SUBJECTS = new Set(['english_listening', 'english_grammar', 'english_vocab']);
 
 export const BattleText = memo(function BattleText({ text, subject }: {
   text: string;

@@ -982,6 +982,71 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   animation-delay: var(--pop-delay, 0s);
 }
 
+/* =========================================================
+ * ★臨場感アップデート（対戦中の実況・演出）★
+ * 方針: 短く（0.3〜1.4秒）・小さく・pointer-events を遮らない。
+ * 問題文と選択肢の位置は動かさない（レイアウトに影響する transform のみ）。
+ * ========================================================= */
+
+/* --- ⑧ 得点の加算「+120」がふわっと浮いて消える -------------------- */
+@keyframes battleLiveDelta {
+  0%   { opacity: 0; transform: translateY(6px); }
+  20%  { opacity: 1; transform: translateY(0); }
+  70%  { opacity: 1; transform: translateY(-4px); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+.battle-live-delta { animation: battleLiveDelta 1.1s ease-out both; }
+
+/* --- ⑨ 相手の状態が変わった瞬間の小さな跳ね ------------------------ */
+@keyframes battleLivePop {
+  0%   { transform: scale(0.85); opacity: 0.4; }
+  60%  { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1);    opacity: 1; }
+}
+.battle-live-pop { animation: battleLivePop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* --- ⑩ 実況ログの1行が下から入る ----------------------------------- */
+@keyframes battleLiveFeedIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.battle-live-feed-in { animation: battleLiveFeedIn 0.28s ease-out both; }
+
+/* --- ⑪ トースト（CORRECT! / COMBO / 逆転）：出て、止まって、消える --- */
+@keyframes battleLiveToast {
+  0%   { opacity: 0; transform: scale(0.7) translateY(8px); }
+  18%  { opacity: 1; transform: scale(1.06) translateY(0); }
+  30%  { transform: scale(1); }
+  80%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(0.98) translateY(-6px); }
+}
+.battle-live-toast { animation: battleLiveToast 1.4s ease-out both; }
+
+/* --- ⑫ カウントダウンの数字 ---------------------------------------- */
+@keyframes battleLiveCount {
+  0%   { transform: scale(1.35); opacity: 0; }
+  30%  { transform: scale(1);    opacity: 1; }
+  100% { transform: scale(0.94); opacity: 1; }
+}
+.battle-live-count { animation: battleLiveCount 0.8s ease-out both; }
+
+/* --- ⑬ FINAL QUESTION の帯（ゆっくり呼吸する） ---------------------- */
+@keyframes battleLiveFinal {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(244, 208, 63, 0); }
+  50%      { box-shadow: 0 0 0 4px rgba(244, 208, 63, 0.35); }
+}
+.battle-live-final { animation: battleLiveFinal 1.6s ease-in-out infinite; }
+/* 最終問題は問題の枠だけを金の細い縁で囲む（中身の配置は変えない） */
+.battle-live-final-frame { box-shadow: 0 0 0 2px rgba(244, 208, 63, 0.75); }
+
+/* --- ⑭ リザルトの WIN / LOSE / DRAW ------------------------------- */
+@keyframes battleLiveHero {
+  0%   { transform: scale(0.8); opacity: 0; }
+  55%  { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.battle-live-hero { animation: battleLiveHero 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
 /*
  * ★動きを減らす設定では全部止める★
  * 対戦は「制限時間つきで文字を読む」場面が続くので、
@@ -997,10 +1062,21 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   .battle-flash,
   .battle-card-in,
   .battle-dot,
-  .battle-pop {
+  .battle-pop,
+  .battle-live-delta,
+  .battle-live-pop,
+  .battle-live-feed-in,
+  .battle-live-toast,
+  .battle-live-count,
+  .battle-live-final,
+  .battle-live-hero {
     animation: none !important;
   }
   .battle-sheen::after { display: none; }
+  /* トーストは動かさず、そのまま一定時間見せる。得点の「+120」も動かさず見せる */
+  .battle-live-toast { opacity: 1; }
+  .battle-live-delta { opacity: 1; }
+  .battle-live-count { opacity: 1; }
 }
 
 /* Home lobby: one battle stage, peripheral shortcuts, and a study notebook.
@@ -1856,4 +1932,226 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 }
 [data-listening-audio] button, [data-listening-audio] select {
   min-height: 44px;
+}
+
+/* Shared study navigation: keep the paper/mascot language, reduce visual noise.
+   Deliberately excludes Home, live quiz panes and live battle controls. */
+@media screen {
+  .mode-desk .mode-practice-copy > p, .mode-desk .mode-input-paper p { font-size: 14px; line-height: 1.8; color: #5e5560; }
+  .mode-desk .mode-heading > p:last-child { font-size: 14px; color: #695965; }
+  .mode-desk .mode-input-paper { border-radius: 6px 20px 20px 6px; transform: none; border-left-color: #c4a97a; box-shadow: 3px 4px 0 #ece3d6; }
+  .mode-desk .mode-input-open { font-size: 14px; min-height: 44px; color: #785a3a; }
+  .mode-desk .mode-primary { min-height: 48px; font-size: 15px; }
+  .mode-desk .mode-battle-bridge { min-height: 52px; border-radius: 16px; }
+  .mode-desk .mode-battle-bridge small { font-size: 12px; color: #645762; line-height: 1.6; }
+  .mode-desk .mode-footnote { font-size: 12px; line-height: 1.8; color: #756472; }
+  .chapter-route .chapter-workspace { font-family: var(--font-modern); }
+  .chapter-route-heading { margin-top: 44px; margin-bottom: 12px; }
+  .chapter-route-heading > p:last-child { font-size: 14px; color: #685663; }
+  .chapter-route .chapter-route-card { border-radius: 16px; box-shadow: 0 3px 10px #49374705; }
+  .chapter-route-card h4 { color: #443d48; font-size: 16px; line-height: 1.65; }
+  .chapter-route .chapter-unit-count { font-size: 12px; color: #765f70; margin-top: 4px; }
+  .chapter-route-card > div:first-child > p:not(.chapter-unit-count) { font-size: 13px; font-weight: 400; color: #62606b; line-height: 1.75; }
+  .chapter-route-card button { min-height: 44px; font-size: 13px; }
+  .chapter-route-card button[title="単元のフローチャートを確認"] { min-width: 44px; border-radius: 12px; padding-inline: 8px; }
+  .chapter-route-card > div:last-child > div:first-child > button:first-child { border-radius: 12px; background: #96637e; }
+  .chapter-question-list button { padding: 10px; line-height: 1.65; }
+  .chapter-route #chapter-tab-panel { border-radius: 16px; }
+  .study-journal .mtb-page-header p:not(.mtb-kicker) { font-size: 13px; }
+  .study-journal-tabs > button { min-height: 44px; font-size: 13px; }
+  .study-journal .study-subject-tabs > button { min-height: 44px; }
+  .battle-lobby .lobby-mode { border-radius: 18px; }
+  .battle-lobby .lobby-mode-caption { font-family: var(--font-modern); font-size: 15px; font-weight: 500; }
+  .battle-lobby .lobby-mode-tags { font-size: 12px; line-height: 1.7; color: #695b67; }
+  .battle-lobby .lobby-mode-details > summary { font-size: 13px; color: #695b67; }
+  .battle-lobby .lobby-mode-actions > button { min-height: 48px; font-size: 14px; border-radius: 14px; }
+  .battle-lobby .lobby-mode-details dl > div { font-size: 13px; line-height: 1.7; }
+  .battle-lobby .battle-guest-stage p:not(.font-handwriting) { font-size: 14px; font-weight: 400; }
+  .battle-lobby .battle-guest-stage { gap: 16px; }
+  @media (max-width: 639px) {
+    .mode-desk { padding-inline: 14px; }
+    .mode-desk .mode-practice-stage { grid-template-columns: 64px minmax(0,1fr); gap: 10px 14px; border: 1px solid #e7dbe1; border-radius: 20px; background: #fffdfa; padding: 16px; }
+    .mode-desk .mode-practice-art { width: 60px; height: 68px; border-width: 2px; box-shadow: 0 4px 0 #eadce6; }
+    .mode-desk .mode-practice-art > svg { width: 32px; height: 32px; }
+    .mode-desk .mode-practice-art > i { font-size: 12px; }
+    .mode-desk .mode-practice-copy h2 { font-size: 22px; }
+    .mode-desk .mode-practice-copy > p { font-size: 14px; }
+    .mode-desk .mode-primary { margin-top: 4px; }
+    .mode-desk .mode-input-paper { padding: 20px 16px 16px 60px; }
+    .mode-desk .mode-input-paper > svg { top: 22px; }
+    .mode-desk .mode-input-paper h2 { font-size: 22px; }
+    .mode-desk .mode-input-paper p { font-size: 14px; margin-block: 8px 12px; }
+    .mode-desk .mode-workspace { gap: 16px; }
+    .mode-desk .mode-tools { margin-top: 24px; }
+    .chapter-route .chapter-route-list { margin-left: 0; padding-left: 0; border-left: 0; gap: 12px; }
+    .chapter-route .chapter-route-card { padding: 14px; }
+    .chapter-route-card::before { left: 14px; top: 16px; background: #89637b; }
+    .chapter-route-card h4 { padding-left: 32px; min-height: 27px; }
+    .chapter-route-card .chapter-unit-count { padding-left: 32px; }
+    .chapter-route-card > div:last-child > div:first-child { gap: 8px; }
+    .battle-lobby .lobby-match-options { grid-template-columns: minmax(0,1fr); gap: 14px; }
+    .battle-lobby .lobby-mode:not(.lobby-mode-friend) > header { flex-direction: row; align-items: center; }
+    .battle-lobby .lobby-mode { padding: 18px 16px 10px; }
+    .battle-lobby .lobby-mode-friend > header h2 { font-size: 23px; }
+    .battle-lobby .battle-guest-stage > div:first-child { width: 64px; height: 64px; border-radius: 20px; }
+    .battle-lobby .battle-guest-stage > div:first-child svg { width: 30px; height: 30px; }
+    .study-journal-tabs > button { padding-inline: 9px; font-size: 13px; }
+  }
+}
+
+/* Reading mode is deliberately screen-only; the established A4 layouts remain intact. */
+@media screen {
+  .learning-reader { --reader-text: 16px; --reader-accent: #79566b; color: #2c3e50; }
+  .learning-reader[data-reading-size="large"] { --reader-text: 19px; }
+  .reader-header { background: #fdfbf7f5; border-bottom: 1px solid #e6dce0; box-shadow: 0 3px 12px #49374706; }
+  .reader-topbar { max-width: 1000px; margin: auto; display: flex; align-items: center; gap: 12px; padding: 12px 20px; }
+  .reader-heading { flex: 1; min-width: 0; }
+  .reader-heading > span { display: block; font-size: 10px; letter-spacing: .06em; color: #766470; }
+  .reader-heading h1 { font: 700 23px/1.4 var(--font-handwriting); color: #674c60; }
+  .reader-icon-button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 44px; height: 44px; border: 1px solid #e4d9dc; border-radius: 14px; background: #fffefa; color: #79566b; cursor: pointer; }
+  .reader-print-button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; gap: 7px; min-height: 44px; padding: 10px 13px; border-radius: 14px; border: 1px solid #d7c4ce; background: #f5eaf0; color: #674c60; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .reader-course-picker { display: none; }
+  .reader-paper { padding: 24px; background-image: none; }
+  .reader-body { padding-left: 0; max-width: 860px; }
+  .reader-margin-line { display: none; }
+  .learning-reader .learning-content { --lc-accent: #89637b; --lc-accent-d: #654b60; --lc-accent-l: #f7f0f5; --lc-line: #e5dce3; --lc-ink: #2c3e50; background: #fffefa; border: 1px solid #e8e1da; border-radius: 18px; padding: 24px; font-size: var(--reader-text); line-height: 1.9; overflow-wrap: anywhere; }
+  .learning-reader .learning-content :is(p, li) { font-size: var(--reader-text); line-height: 1.85; }
+  .learning-reader .learning-content p { margin-block: 12px; }
+  .learning-reader .learning-content :is(h1,h2,h3,h4,h5) { line-height: 1.6; scroll-margin-top: 130px; }
+  .learning-reader .learning-content h3 { font-size: 1.16em; border-left-color: #d9a0a0; }
+  .learning-reader .learning-content > :first-child { margin-top: 0; }
+  .learning-reader .learning-content .box { padding: 16px; margin-block: 20px; border-width: 1px; border-left-width: 3px; border-radius: 12px; box-shadow: none; }
+  .learning-reader .learning-content .box :is(h3,h4):first-child { margin-top: 0; }
+  .learning-reader .learning-content :is(.figfull,.figrow) { width: 100%; max-width: 100%; margin-inline: 0; }
+  .learning-reader .learning-content :is(.formula,.reaction,.katex-display) { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+  .learning-reader .learning-content .lc-ans-sum { min-height: 48px; font-size: 15px; line-height: 1.6; }
+  .learning-reader .learning-content .lc-ans-ico { display: none; }
+  .learning-reader .learning-content table { display: block; width: 100%; max-width: 100%; overflow-x: auto; font-size: max(14px, calc(var(--reader-text) - 2px)); }
+  .learning-reader .learning-content :is(th,td) { min-width: 5em; padding: 10px; }
+  .reader-topics { border: 1px solid #e5dce3; background: #fffefa; box-shadow: none; }
+  .reader-topic-select { display: none; }
+  .reader-settings { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-bottom: 14px; font-size: 13px; color: #655762; }
+  .reader-settings > span { margin-right: 8px; }
+  .reader-settings button { min-height: 44px; min-width: 64px; padding: 8px 12px; border: 1px solid #ddd2d8; border-radius: 12px; background: #fffdfa; cursor: pointer; }
+  .reader-settings button[aria-pressed="true"] { background: #79566b; color: white; border-color: #79566b; }
+  /* Native modal top layer: not clipped by transformed/sticky application ancestors. */
+  .reader-print-dialog { position: fixed; inset: 0; margin: auto; padding: 0; width: min(480px, calc(100vw - 24px)); max-width: none; max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; border: 1px solid #e0d1d8; border-radius: 24px; background: #fdfbf7; color: #2c3e50; box-shadow: 0 24px 80px #2c3e5033; }
+  .reader-print-dialog::backdrop { background: #2c334066; }
+  .reader-print-panel { padding: 24px; }
+  .reader-print-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .reader-print-heading span { color: #856777; font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+  .reader-print-heading h2 { font: 700 23px/1.6 var(--font-handwriting); color: #674c60; }
+  #reader-print-description { font-size: 14px; font-weight: 600; padding: 12px; border-radius: 12px; background: #f0e8ed; overflow-wrap: anywhere; }
+  .reader-print-help { font-size: 13px; line-height: 1.75; color: #685e67; margin-block: 14px; }
+  .reader-print-option { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 76px; padding: 14px; margin-block: 10px; text-align: left; border: 1px solid #d9c9d1; border-radius: 16px; background: #fffefa; cursor: pointer; }
+  .reader-print-option > svg { flex-shrink: 0; color: #89637b; }
+  .reader-print-option > span { flex: 1; min-width: 0; }
+  .reader-print-option strong { display: block; font-size: 16px; }
+  .reader-print-option small { display: block; font-size: 12px; line-height: 1.7; color: #6c606a; margin-top: 4px; }
+  .reader-print-option:hover { border-color: #b3829b; background: #faf2f6; }
+  .reader-print-cancel { width: 100%; min-height: 48px; border: 1px solid #e4d9dc; border-radius: 14px; background: #f3eeea; font-size: 14px; font-weight: 600; cursor: pointer; }
+  @media (max-width: 639px) {
+    .reader-topbar { padding: 8px 12px; gap: 8px; }
+    .reader-heading h1 { font-size: 19px; }
+    .reader-heading > span { font-size: 10px; letter-spacing: 0; }
+    .reader-print-button { font-size: 12px; padding-inline: 10px; gap: 5px; }
+    .reader-print-button svg { width: 15px; }
+    .reader-course-picker { display: flex; align-items: center; gap: 8px; margin: 0 12px 10px; padding: 0 10px; border: 1px solid #e0d5dd; border-radius: 12px; background: #fffefa; color: #674c60; }
+    .reader-course-picker select { min-height: 44px; flex: 1; min-width: 0; width: 0; background: transparent; font-size: 16px; }
+    .reader-desktop-tabs { display: none; }
+    .reader-paper { padding: 16px 12px 24px; }
+    .learning-reader .learning-content { padding: 16px 0; border: 0; border-radius: 0; background: transparent; }
+    .learning-reader .learning-content .box { padding: 14px 12px; }
+    .learning-reader .learning-content .figfull, .learning-reader .learning-content .figrow { padding: 10px; }
+    .learning-reader .learning-content :is(ol,ul) { padding-left: 1.6em; }
+    .learning-reader .learning-content .box ol > li::before { left: -1.7em; width: 1.7em; }
+    .reader-topics { padding: 12px; margin-bottom: 16px; }
+    .reader-topics > div:first-child, .reader-topics > p, .reader-topic-chips { display: none; }
+    .reader-topic-select { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 5px 8px; align-items: center; }
+    .reader-topic-select label { grid-column: 1/-1; font-size: 12px; font-weight: 600; color: #6e5b69; }
+    .reader-topic-select select { width: 100%; min-width: 0; min-height: 44px; font-size: 16px; background: transparent; }
+    .reader-topic-arrows { display: flex; gap: 4px; }
+    .reader-topic-arrows button { min-height: 44px; min-width: 44px; display: grid; place-items: center; border: 1px solid #e0d5dd; border-radius: 10px; background: white; color: #79566b; }
+    .reader-topic-arrows button:disabled { opacity: .3; }
+    .reader-print-dialog { margin: auto auto 12px; border-radius: 24px; max-height: calc(100dvh - 24px); }
+    .reader-print-panel { padding: 20px 16px max(16px, env(safe-area-inset-bottom)); }
+  }
+}
+
+/* Shared, account-scoped game dashboard. No full-screen theme change. */
+.mana-dashboard { position: relative; min-width: 0; margin-block: 12px 18px; padding: 18px; border: 1px solid #e7d4a3; border-radius: 24px; background: linear-gradient(125deg, #fffdf7 10%, #fff5d9 100%); box-shadow: 0 4px 0 #eadab455, 0 12px 28px -24px #806527; color: #2c3e50; }
+.mana-player-row { display: flex; gap: 15px; align-items: center; }
+.mana-avatar-button { flex-shrink: 0; padding: 3px; border-radius: 20px; transition: transform .2s; }
+.mana-avatar-button:hover { transform: rotate(-4deg); }
+.mana-player-info { flex: 1; min-width: 0; }
+.mana-eyebrow { color: #8c621b; font-size: 10px; letter-spacing: .15em; font-weight: 800; }
+.mana-title { font-size: 15px; font-weight: 800; margin: 3px 0 9px; overflow-wrap: anywhere; }
+.mana-player-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; font-size: 10px; color: #73634a; margin-top: 7px; }
+.mana-player-meta span { margin-left: 5px; }
+.mana-wallet { flex-shrink: 0; min-width: 110px; display: flex; align-items: center; flex-direction: column; gap: 3px; padding: 10px 14px; border: 1px solid #dfb752; border-radius: 17px; background: #fff8e3; color: #785112; box-shadow: 0 3px 0 #dfb75233; }
+.mana-wallet > span { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; }
+.mana-wallet > strong { font-size: 29px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.mana-wallet small { font-size: 10px; margin-left: 4px; }
+.mana-shortcuts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 17px; }
+.mana-shortcuts button { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 56px; padding: 8px 4px; border: 1px solid #ded6c4; border-radius: 15px; background: #ffffffd9; font-size: 12px; font-weight: 800; box-shadow: 0 2px 0 #d9d1be55; }
+.mana-shortcuts button:nth-child(1) { color: #95630f; }
+.mana-shortcuts button:nth-child(2) { color: #44738c; }
+.mana-shortcuts button:nth-child(3) { color: #945b79; }
+.mana-shortcuts button:nth-child(4) { color: #497359; }
+.mana-shortcuts svg { width: 21px; height: 21px; flex-shrink: 0; }
+.mana-shortcuts b { position: absolute; right: -4px; top: -5px; background: #a84358; color: white; min-width: 20px; border: 2px solid white; border-radius: 20px; text-align: center; font-size: 10px; }
+.mana-login { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 55px; margin-top: 12px; padding: 9px 14px; border-radius: 14px; background: #f5dfa0; border: 1px solid #e1bc60; text-align: left; color: #634813; }
+.mana-login > span:first-of-type { display: flex; flex: 1; flex-direction: column; gap: 2px; }
+.mana-login strong { font-size: 13px; }
+.mana-login small, .mana-login > span:last-child { font-size: 10px; }
+.mana-login:disabled { background: #f5f1e5; border-color: #e0dacb; color: #766e59; }
+.mana-save-note { margin-top: 8px; text-align: right; font-size: 10px; color: #766e59; }
+.mana-hub { background: #f4f1ea; color: #2c3e50; }
+.mana-hub-header { display: flex; justify-content: space-between; align-items: center; max-width: 640px; margin: auto; padding: 10px 16px 0; }
+.mana-hub-header button { display: flex; align-items: center; gap: 7px; min-height: 44px; padding: 6px 10px; border-radius: 12px; font-size: 13px; font-weight: 700; }
+.mana-hub-main { max-width: 640px; margin: auto; padding: 14px 16px 24px; }
+.mana-hub-main > h1 { font-family: var(--font-handwriting); font-size: clamp(20px, 5vw, 29px); font-weight: 800; margin: 5px 0 8px; }
+.mana-hub-card { padding: 20px; border: 1px solid #dedacd; border-radius: 22px; background: #fffdf8; margin-top: 18px; }
+.mana-hub-card h2 { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 800; margin-bottom: 10px; }
+.mana-hub-card > p, .mana-storage-info { font-size: 12px; color: #65717c; line-height: 1.8; }
+.mana-storage-info { padding: 20px 4px 0; }
+.mana-earn-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 15px; }
+.mana-earn-actions button { display: flex; align-items: flex-start; flex-direction: column; gap: 6px; min-height: 90px; padding: 14px 12px; background: #edf5f9; border: 1px solid #c2d7e2; border-radius: 16px; color: #345971; text-align: left; }
+.mana-earn-actions button:first-child { background: #eff6ef; border-color: #c4d9c7; color: #3a6443; }
+.mana-earn-actions strong { font-size: 14px; }
+.mana-earn-actions small { font-size: 11px; line-height: 1.6; }
+.mana-text-action { display: block; min-height: 44px; padding-top: 12px; font-size: 12px; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; color: #665023; text-align: left; }
+.mana-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-top: 14px; }
+.mana-week > div { display: flex; align-items: center; flex-direction: column; gap: 5px; padding: 10px 0; border-radius: 10px; background: #fcf0cb; color: #76521b; }
+.mana-week > div:last-child { background: #f4d16e; outline: 1px solid #c2963a; }
+.mana-week span { font-size: 9px; }
+.mana-week strong { font-size: 15px; }
+.mana-hub-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 600px; padding: 8px 12px; margin: auto; gap: 5px; }
+.mana-hub-tabs button { min-width: 0; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 1px solid #dedacd; border-radius: 12px; font-size: 10px; font-weight: 700; background: #fffdf8; }
+.mana-hub-tabs button[aria-current="page"] { background: #f8e4a7; border-color: #bf9740; color: #76521b; }
+.mana-hub #battle-shell { min-height: auto; background: transparent !important; }
+.mana-dashboard button:focus-visible, .mana-hub button:focus-visible { outline: 3px solid #377baa; outline-offset: 3px; }
+.mana-dashboard button:not(:disabled):active { transform: translateY(2px); }
+@media (max-width: 480px) {
+  .mana-dashboard { padding: 12px; border-radius: 20px; margin-block: 8px 14px; }
+  .mana-player-row { flex-wrap: wrap; gap: 10px; }
+  .mana-avatar-button > div { width: 64px !important; height: 64px !important; }
+  .mana-title { font-size: 13px; margin-bottom: 6px; }
+  .mana-wallet { flex-direction: row; justify-content: space-between; width: 100%; padding: 7px 12px; min-height: 44px; border-radius: 12px; }
+  .mana-wallet > strong { font-size: 24px; }
+  .mana-shortcuts { gap: 6px; margin-top: 10px; }
+  .mana-shortcuts button { flex-direction: column; gap: 4px; min-height: 58px; font-size: 10px; border-radius: 12px; }
+  .mana-login { margin-top: 10px; padding: 8px 10px; }
+  .mana-login strong { font-size: 12px; }
+  .mana-save-note { font-size: 9px; }
+  .mana-hub-card { padding: 15px; }
+  .home-arena h2 { white-space: normal; }
+}
+@media (min-width: 900px) {
+  .home-lobby-content > .mana-dashboard { max-width: none; }
+  .home-lobby-content > .mana-dashboard .mana-shortcuts { margin-top: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mana-avatar-button { transition: none; }
+  .mana-avatar-button:hover, .mana-dashboard button:not(:disabled):active { transform: none; }
 }

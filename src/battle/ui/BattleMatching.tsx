@@ -47,6 +47,7 @@ import { Bot, Radar, Wifi, X, Zap } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
 import { findOrEnqueue, leaveQueue, watchMatched } from '../data/battle';
+import { useBattleAudio } from '../hooks/useBattleAudio';
 import {
   AMBER,
   BattleButton,
@@ -126,6 +127,8 @@ export function BattleMatching({
   onSwitchToAi: () => void;
 }) {
   const theme = subjectTheme(subject as SubjectKey);
+  /** ★マッチング中の BGM（期待感のある短いループ。BGM 設定が OFF なら鳴らない）★ */
+  const { play: playSfx } = useBattleAudio('matching');
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
   /**
@@ -150,6 +153,8 @@ export function BattleMatching({
     if (doneRef.current) return;
     doneRef.current = true;
     setFound(true);
+    // ★相手が見つかった合図の音★（効果音 ON のときだけ鳴る）
+    playSfx('matched');
     // ★遷移を 0.7 秒だけ遅らせる★
     //   この間に待機票の後片付けは走らない（doneRef が立っているため）。
     flashTimerRef.current = window.setTimeout(() => onMatched(roomId), 700);

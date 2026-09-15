@@ -20,7 +20,7 @@
  * ■ 純粋な「パターン表」は下の SFX に置く。UI から呼ぶのは play() だけ。
  */
 
-const SFX_KEY = 'battle_sfx';
+import { readAudioPreferences, writeAudioPreferences } from '../audio/audioPreferences';
 
 export type SfxName =
   | 'tap' // ボタン
@@ -111,21 +111,8 @@ function context(): AudioContext | null {
   }
 }
 
-export function sfxEnabled(): boolean {
-  try {
-    return localStorage.getItem(SFX_KEY) === 'on';
-  } catch {
-    return false;
-  }
-}
-
-export function setSfxEnabled(on: boolean): void {
-  try {
-    localStorage.setItem(SFX_KEY, on ? 'on' : 'off');
-  } catch {
-    /* 保存できなくても動く */
-  }
-}
+export function sfxEnabled(): boolean { return readAudioPreferences().sfx; }
+export function setSfxEnabled(on: boolean): void { writeAudioPreferences({ sfx: on }); }
 
 /** ユーザー操作の中で先に呼ぶと、あとの音が iOS でも確実に鳴る */
 export function primeAudio(): void {

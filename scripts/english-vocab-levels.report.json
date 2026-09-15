@@ -1,0 +1,137 @@
+{
+ "levels": [
+  {
+   "id": "lv1",
+   "title": "共通テスト 基礎",
+   "count": 1185,
+   "sample": [
+    "will = 意志／遺書",
+    "do = 間に合う／良い",
+    "time = 時間／回数",
+    "good = 商品／利益",
+    "first = 第／の",
+    "way = 方法／道",
+    "even = さえも／さらに",
+    "right = 権利",
+    "work = 機能する",
+    "well-being = 健康／幸福",
+    "still = まだ／それでも",
+    "life = 人生／生活"
+   ]
+  },
+  {
+   "id": "lv2",
+   "title": "共通テスト 標準",
+   "count": 962,
+   "sample": [
+    "contact = ～と連絡する／～と連絡を取る",
+    "fair = 公正な／公平な",
+    "kid = 冗談を言う／からかう",
+    "link = 関連／つながり",
+    "throughout = いたる所に",
+    "absolutely = 絶対に",
+    "additional = 追加の／付加的な",
+    "beyond = ～の向こうに",
+    "extra = 追加の／余分な",
+    "immediately = すぐに／直接に",
+    "minute = 分／微小な",
+    "nature = 自然／性質"
+   ]
+  },
+  {
+   "id": "lv3",
+   "title": "二次・私大 標準",
+   "count": 653,
+   "sample": [
+    "aside = 脇に／わきに",
+    "assistance = 援助／支援",
+    "blow = 吹く／強打",
+    "careful = 注意深い",
+    "circumstances = 状況",
+    "danger = 危険",
+    "motion = 動き／動作",
+    "saving = 節約／倹約",
+    "universe = 宇宙",
+    "heaven = 天国／空",
+    "independence = 独立／自立",
+    "senator = 上院議員／〈米〉上院議員"
+   ]
+  },
+  {
+   "id": "lv4",
+   "title": "難関・最難関",
+   "count": 1028,
+   "sample": [
+    "acceptable = 受け入れられる／容認できる",
+    "concentration = 濃度／集中",
+    "copper = 銅",
+    "pit = 穴／くぼみ",
+    "utility = 公共事業／公共料金",
+    "clip = ～を切り抜く／～を切り取る",
+    "conspiracy = 陰謀",
+    "equality = 平等",
+    "intervention = 介入",
+    "panic = パニック／狼狽",
+    "requirement = 必要条件／必需品",
+    "terror = 恐怖"
+   ]
+  },
+  {
+   "id": "ilv1",
+   "title": "熟語 基礎",
+   "count": 1524,
+   "sample": [
+    "on and on = どんどん／引き続き",
+    "That is that = それでおしまいだ／それだけのこと",
+    "in that ～ = ～の点で",
+    "that of ～ = ～のそれ",
+    "it is ～ that ～ = することは～である",
+    "this and that = あれこれ／様々なこと",
+    "be to do = することになっている",
+    "as for ～ = ～について言えば／～に関する限り",
+    "as it is = 実際のところは／あるがままの",
+    "as of ～ = ～現在で／～の時点で",
+    "as to ～ = ～に関して／～について",
+    "but for ～ = ～を除いて／～がなければ"
+   ]
+  },
+  {
+   "id": "ilv2",
+   "title": "熟語 標準",
+   "count": 301,
+   "sample": [
+    "independent of ～ = ～に頼らない／～から独立した",
+    "for lack/want of ～ = ～がないために",
+    "speaking/talking of ～ = ～と言えば",
+    "touch on = ～に触れる／言及する",
+    "sit back = 何もしないでいる／くつろぐ",
+    "sit in = 参加する／見学する",
+    "sit in on = ～を傍聴する",
+    "trip up (A) = Aをつまずかせる／つまずく",
+    "be associated with ～ = ～と関係がある",
+    "carry over = 持ち越される／残存する",
+    "think highly of ～ = ～を高く評価する／～を重視する",
+    "think much/highly of ～ = ～を高く評価する／～を尊敬する"
+   ]
+  },
+  {
+   "id": "ilv3",
+   "title": "熟語 発展",
+   "count": 60,
+   "sample": [
+    "tropical rain forest = 熱帯雨林",
+    "contrary to ～ = ～に反して",
+    "hammer out = ～を考え出す",
+    "inform A of/about B = AにBを知らせる",
+    "pile in = どやどやと中に入る",
+    "be obsessed with ～ = ～に取りつかれている",
+    "concentrate on ～ = ～に集中する",
+    "global warming = 地球温暖化",
+    "judging from/by ～ = ～から判断すると",
+    "stack up = 渋滞する／増え続ける",
+    "transform A into B = AをBへと変化させる／変形させる",
+    "insist on/upon ～ = ～を主張する"
+   ]
+  }
+ ]
+}
