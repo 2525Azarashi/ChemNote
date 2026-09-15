@@ -640,6 +640,7 @@ export function equippedTitleLabel(progress: GrowthProgress): string | null {
 // ============================================================
 
 export interface GrowthDelta {
+  coins?: { finish: number; correct: number; victory: number; total: number };
   xp: XpBreakdown;
   levelBefore: number;
   levelAfter: number;

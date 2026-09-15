@@ -30,6 +30,8 @@ import { resolveTimeLimit } from '../core/battleCore';
 import { bgmTrackFor } from '../core/audioSettings';
 import { useBattleAudio } from '../hooks/useBattleAudio';
 import { useBattleLive } from '../hooks/useBattleLive';
+import { ArenaFighters } from './ArenaFighters';
+import { BattleText } from './BattleText';
 import { BattleQuestionView } from './BattleQuestionView';
 import {
   ClosingBanner,
@@ -156,8 +158,14 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
     p.onPushPanel(i);
   };
 
+  const theirAnswer = p.opponentScore?.perQuestion.find(q => q.index === p.index);
+  const theirText = theirAnswer?.submittedAnswer || '';
+  const selectedNumber = p.question.format !== 'kana' && p.question.format !== 'panel' ? p.question.options.indexOf(theirText) + 1 : 0;
   return (
-    <>
+    <div className={`arena-live-stage ${phase === 'final' ? 'arena-final' : ''}`}>
+      <div className="arena-background-fx" aria-hidden="true"><i/><i/><i/></div>
+      <ArenaFighters offline={p.offline} answered={p.answered} opponentAnswered={p.opponentAnswered} reveal={p.reveal} correct={!!p.myScore?.perQuestion.find(q=>q.index===p.index)?.correct}/>
+
       <LiveScoreboard
         meNickname={p.meNickname}
         opponentNickname={p.opponentNickname}
@@ -184,11 +192,13 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
         </p>
       )}
       <LiveFeed entries={live.feed} />
+      {!counting && (p.answered || p.reveal) && p.opponentAnswered && <div className="arena-opponent-answer" role="status"><span>相手の確定回答 {selectedNumber > 0 ? `【${selectedNumber}】` : ''}</span><BattleText text={theirText || '無回答'} subject={p.question.subject}/></div>}
+
 
       {p.notices}
 
       {/* ★最終問題は枠を少しだけ特別に★ 問題文・選択肢の中身は変えない */}
-      <div className={phase === 'final' && !counting ? 'battle-live-final-frame rounded-2xl' : ''}>
+      <div className={`arena-question-area ${phase === 'final' && !counting ? 'battle-live-final-frame rounded-2xl' : ''}`}>
         <BattleQuestionView
           question={p.question}
           index={p.index}
@@ -215,7 +225,7 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
 
       <CountdownOverlay label={countLabel} />
       <LiveToast toast={live.toast} />
-    </>
+    </div>
   );
 }
 

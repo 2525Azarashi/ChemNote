@@ -112,25 +112,21 @@ describe('② 対戦がホームの主CTA になっている', () => {
     const stage = HOME.slice(frame, study);
     expect(stage).toContain('onClick={onBattle}');
     expect(stage).toContain('オンライン対戦を開く');
-    expect(stage).toContain('home-shortcuts');
+    expect(stage).toContain('home-battle-emblem');
   });
 
-  it('対戦が学習より前に置かれている', () => {
-    const battle = HOME.indexOf('オンライン対戦を開く');
-    const study = HOME.search(/'学習を始める'/u);
-    expect(battle).toBeGreaterThan(0);
-    expect(study).toBeGreaterThan(0);
-    expect(
-      battle,
-      '★学習が対戦より前に来ています★「オンラインをメインに」の指示と逆です',
-    ).toBeLessThan(study);
+  it('対戦は演習と復習の間にある中央の主ボタン', () => {
+    const left = HOME.indexOf('game-side-action game-solo');
+    const main = HOME.indexOf('game-main-action');
+    const right = HOME.indexOf('game-side-action game-review');
+    expect(left).toBeGreaterThan(0); expect(main).toBeGreaterThan(left); expect(right).toBeGreaterThan(main);
+    expect(HOME).toContain('とびら君のホームステージ');
   });
 
   it('onBattle が渡されないときは対戦の枠を描かない', () => {
     // フラグ off／テストからの描画で「押せない対戦ボタン」を出さない。
-    const i = HOME.indexOf('オンライン対戦を開く');
-    const before = HOME.slice(Math.max(0, i - 600), i);
-    expect(before).toContain('{onBattle && (');
+    const html = renderToStaticMarkup(React.createElement(Home, {onStart:()=>{},onIntro:()=>{},onNoteList:()=>{},onLogicalTree:()=>{},isGuest:true}));
+    expect(html).not.toContain('data-home-arena');
   });
 });
 
@@ -144,9 +140,10 @@ describe('③ ★問題（学習）の入口を消していない★', () => {
     expect(
       HOME,
       '★学習の入口が消えています★ 配置を変えても入れる場所は減らしてはいけません',
-    ).toMatch(/'学習を始める'/u);
-    expect(HOME).toMatch(/'続きから開く'/u);
-    expect(HOME).toContain('onClick={onStart}');
+    ).toContain('ひとりで学ぶ');
+    expect(HOME).toContain("onStudyMode('practice')");
+    expect(HOME).toContain("onStudyMode('learning')");
+    expect(HOME).toContain(': onStart()');
   });
 
   it('学習ノート・アプリ紹介・理科の入口も残っている', () => {
@@ -184,7 +181,7 @@ describe('ホームの実レンダー', () => {
   };
   it('対戦・補助3機能・学習・進捗が同時に存在する', () => {
     const html = renderToStaticMarkup(React.createElement(Home, { ...props, onBattle: () => {} }));
-    for (const label of ['オンライン対戦を開く', '学習ノートを開く', 'アプリ紹介を開く', 'ご意見を送る', '学習を始める', '全科目の進捗を見る']) {
+    for (const label of ['オンライン対戦を開く', '学習ノートを開く', 'アプリ紹介を開く', 'ご意見・ご要望', '演習する', '全科目の進捗を見る']) {
       expect(html).toContain(label);
     }
     expect(html.match(/data-home-battle=/g)).toHaveLength(1);
@@ -196,7 +193,8 @@ describe('ホームの実レンダー', () => {
     expect(html).not.toContain('data-home-battle');
     expect(html).not.toContain('ONLINE QUIZ BATTLE');
     expect(html).not.toContain('全国レート戦');
-    expect(html).toContain('学習を始める');
-    expect(html).toContain('MY STUDY ROOM');
+    expect(html).toContain('演習する');
+    expect(html).toContain('ひとりで学ぶ');
+    expect(html).not.toContain('TOBIRA BATTLE');
   });
 });

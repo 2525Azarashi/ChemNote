@@ -30,6 +30,10 @@ try {
       const manifest = await context.request.get(new URL(await page.locator('link[rel="manifest"]').getAttribute('href'), url).href);
       const meta = await manifest.json();
       assert.equal(meta.name, 'マナトビ'); assert.equal(meta.short_name, 'マナトビ');
+      await page.locator('[data-launch-screen]').waitFor();
+      assert.equal(await page.locator('nav[aria-label="メインナビゲーション"]').count(), 0);
+      assert.equal(await page.getByRole('img', {name:'マナトビ',exact:true}).getAttribute('src'), '/manatobi-logo.jpg');
+      await page.locator('.launch-start').click();
       if (state === 'home') {
         await page.locator('[data-mana-dashboard]').waitFor();
         assert.match(await page.locator('[data-mana-coins]').innerText(), /137/);

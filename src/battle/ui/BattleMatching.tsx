@@ -47,6 +47,7 @@ import { Bot, Radar, Wifi, X, Zap } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
 import { findOrEnqueue, leaveQueue, watchMatched } from '../data/battle';
+import { ArenaFighters } from './ArenaFighters';
 import { useBattleAudio } from '../hooks/useBattleAudio';
 import {
   AMBER,
@@ -146,6 +147,7 @@ export function BattleMatching({
 
   /** onMatched を二重に呼ばないための記録 */
   const doneRef = useRef(false);
+  const sessionId = useRef(crypto.randomUUID());
   /** 閃光のタイマー（アンマウント時に片付ける） */
   const flashTimerRef = useRef<number | null>(null);
 
@@ -177,9 +179,12 @@ export function BattleMatching({
   // マッチング本体
   useEffect(() => {
     let alive = true;
+    const controller = new AbortController();
+    const searchId = crypto.randomUUID();
+    sessionId.current = searchId;
     let stopWatch: (() => void) | null = null;
 
-    findOrEnqueue(subject)
+    findOrEnqueue(subject, searchId, controller.signal)
       .then(({ roomId }) => {
         if (!alive) return;
         if (roomId) {
@@ -206,6 +211,7 @@ export function BattleMatching({
               '対戦相手の検索に失敗しました。通信を確かめて、もう一度お試しください。',
             );
           },
+          { subject, sessionId: searchId },
         );
       })
       .catch((e: Error) => {
@@ -214,16 +220,17 @@ export function BattleMatching({
 
     return () => {
       alive = false;
+      controller.abort();
       stopWatch?.();
       // ★成立していない場合だけ待機票を消す★
       //   成立している場合、待機票は相手が既に消している。
-      if (!doneRef.current) void leaveQueue();
+      if (!doneRef.current) void leaveQueue(searchId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subject]);
 
   const cancel = () => {
-    void leaveQueue();
+    void leaveQueue(sessionId.current);
     onCancel();
   };
 
@@ -235,8 +242,9 @@ export function BattleMatching({
   // ------------------------------------------------------------
   if (found) {
     return (
-      <BattleShell>
+      <BattleShell className="arena-matching">
         <BattleTitle subtitle={`${theme.label} ／ 全国対戦`} />
+      <ArenaFighters answered opponentAnswered />
         <div className="flex flex-1 flex-col items-center justify-center gap-6 py-10">
           <div className="relative flex h-32 w-32 items-center justify-center">
             <span
@@ -269,13 +277,13 @@ export function BattleMatching({
   // 探索中
   // ------------------------------------------------------------
   return (
-    <BattleShell
+    <BattleShell className="arena-matching"
       footer={
         <div className="grid gap-2.5">
           {elapsed >= SUGGEST_AI_AFTER_SEC && (
             <BattleButton
               onClick={() => {
-                void leaveQueue();
+                void leaveQueue(sessionId.current);
                 onSwitchToAi();
               }}
               icon={<Bot size={18} />}
@@ -290,8 +298,9 @@ export function BattleMatching({
       }
     >
       <BattleTitle subtitle={`${theme.label} ／ 全国対戦`} />
+      <ArenaFighters waiting />
 
-      <div className="flex flex-1 flex-col items-center justify-center gap-5 py-6">
+      <div className="arena-search-content flex flex-1 flex-col items-center justify-center gap-5 py-6">
         {/*
           ★レーダー★
           外側に広がる輪 3つ（時間差）＋ 中を回る走査線 ＋ 中心のアイコン。

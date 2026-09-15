@@ -55,6 +55,7 @@ import type {
   BattleRule,
 } from './types';
 import { answerIndexOf } from './types';
+import { speedCurve } from './arenaRules';
 import { kanaTextOf } from './kanaKeyboard';
 
 /**
@@ -418,7 +419,7 @@ export function scoreBattleQuestion(
     // 粒度で切り下げる（通信のゆらぎで差がつかないようにする）
     const quantized = Math.floor(remainMs / SPEED_GRANULARITY_MS) * SPEED_GRANULARITY_MS;
     const rate = Math.min(1, quantized / (timeLimit * 1000));
-    speed = Math.round(rules.pointsSpeedMax * rate);
+    speed = Math.round(rules.pointsSpeedMax * (rules.scoringVersion === 2 ? speedCurve(rate) : rate));
   }
 
   // 連続点（この問題を正解して runningStreak+1 連続になったときの加点）

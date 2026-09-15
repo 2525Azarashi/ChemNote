@@ -1,3 +1,4 @@
+import { answerNumber } from '../core/arenaRules';
 /**
  * ===================================================================
  * BattleResult — リザルト画面
@@ -311,6 +312,9 @@ export function BattleResult({
       }
     >
       <OutcomeHero outcome={result.outcome} byForfeit={byForfeit} />
+      {growthMatchId && growthOwnerUid && <BattleGrowthReward matchId={growthMatchId} ownerUid={growthOwnerUid}
+        eligible={growthEligible} subject={subject} subjectLabel={theme.label} result={result} rating={rating}
+        onProfile={onOpenProfile} onMissions={onOpenMissions} />}
 
       {byForfeit && (
         <p
@@ -377,6 +381,7 @@ export function BattleResult({
       {/* ★今回間違えた問題（相手は正解した問題を先に）★ */}
       <ReviewPicks
         picks={picks}
+        opponentScore={result.opponent}
         oneLines={answers}
         subject={subject}
         onPractice={onPractice}
@@ -425,9 +430,7 @@ export function BattleResult({
         )}
       </section>
 
-      {growthMatchId && growthOwnerUid && <BattleGrowthReward matchId={growthMatchId} ownerUid={growthOwnerUid}
-        eligible={growthEligible} subject={subject} subjectLabel={theme.label} result={result} rating={rating}
-        onProfile={onOpenProfile} onMissions={onOpenMissions} />}
+
 
       {/* 1問ずつの内訳 ＋ ★試合後の答えとひと言の理由（請求⑦-A）★ */}
       <section id="battle-result-detail" className="mb-4">
@@ -530,6 +533,7 @@ export function BattleResult({
                     <BattleText text={oneLine} subject={question?.subject ?? subject} />
                   </p>
                 )}
+                {question && <p className="arena-review-answer">相手の回答 {answerNumber(question, result.opponent?.perQuestion.find(s=>s.index===q.index)?.submittedAnswer)}：<BattleText text={result.opponent?.perQuestion.find(s=>s.index===q.index)?.submittedAnswer || '無回答'} subject={subject}/></p>}
                 {question && <BattleReviewDetails question={question} oneLine={oneLine} />}
                 {question && onPractice && subject !== 'english_vocab' && <button type="button" data-practice-question={question.id}
                   onClick={() => onPractice(subject, question.chapterId, question.problemId, question.subQuestionId)}

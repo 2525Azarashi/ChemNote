@@ -46,6 +46,7 @@ import {
   resolveTimeLimit,
   scoreBattlePlayer,
 } from '../core/battleCore';
+import { arenaRule } from '../core/arenaRules';
 import { cycleKanaKey } from '../core/kanaKeyboard';
 import type {
   BattleAnswerRecord,
@@ -132,7 +133,7 @@ export function useAiBattle(
   const aiUid = aiUidOf(level);
 
   const rules = useMemo(() => {
-    const base = effectiveRule(subject);
+    const base = arenaRule(effectiveRule(subject));
     return questionCount ? { ...base, questionCount } : base;
   }, [subject, questionCount]);
 

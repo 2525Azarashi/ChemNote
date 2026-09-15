@@ -4,8 +4,9 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy, Swords, UserRound } from 'lucide-react';
+import { Smartphone, Home as HomeIcon, BookOpen, Settings, Trophy, Swords, UserRound, Gift } from 'lucide-react';
 import { Home } from './components/Home';
+import { LaunchScreen } from './components/LaunchScreen';
 import { ProfileModal } from './components/ProfileModal';
 import { ModeSelection } from './components/ModeSelection';
 /*
@@ -241,6 +242,8 @@ import {
 import { pullStudyData, installStudySyncFlush, resetStudySyncState } from './utils/studySync';
 import { TeacherDashboard } from './components/TeacherDashboard';
 import { FeedbackAdminPanel } from './components/FeedbackAdminPanel';
+import { battleAudio } from './battle/audio/battleAudio';
+import { installFriendPresence } from './utils/friendPresence';
 import { BattleMode } from './battle/ui/BattleMode';
 import type { GrowthPage } from './components/GrowthHub';
 const GrowthHub = React.lazy(() => import('./components/GrowthHub').then(m => ({ default: m.GrowthHub })));
@@ -311,7 +314,15 @@ const SELECTED_FIELD_KEY = 'savedSelectedAdvancedField';
 const IDLE_RESET_MS = 30 * 60 * 1000;
 
 export default function App() {
+  const [hasEntered, setHasEntered] = useState(false);
   useGlobalClickSound();
+  useEffect(() => installFriendPresence(), []);
+  useEffect(() => {
+    const unlock = () => battleAudio().unlock();
+    window.addEventListener('pointerdown', unlock, { once: true });
+    window.addEventListener('keydown', unlock, { once: true });
+    return () => { window.removeEventListener('pointerdown', unlock); window.removeEventListener('keydown', unlock); };
+  }, []);
 
   const [appState, setAppState] = useState<AppState>(() => {
     const saved = localStorage.getItem('savedAppState');
@@ -1371,6 +1382,8 @@ export default function App() {
    *   同じ引数で同期に呼んでいる）。見つからないときに何も描かないのも同じ。
    */
 
+  if (!hasEntered) return <LaunchScreen soundEnabled={isBgmEnabled} onToggleSound={() => handleToggleBgm(!isBgmEnabled)} onStart={() => { battleAudio().unlock(); setHasInteracted(true); setHasEntered(true); }} />;
+
   return (
     <>
       <MobileViewWrapper isMobileMode={isMobilePreview && !shouldForceDesktopUI} onClose={() => setIsMobilePreview(false)}>
@@ -1496,7 +1509,7 @@ export default function App() {
                 onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined}
               />
             )}
-            {appState === 'home' && <Home onGrowth={page => { setGrowthPage(page); navigateMain('growth'); }} onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined} onChangeSubject={() => { setSubjectPickerReturnTo('home'); setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
+            {appState === 'home' && <Home onPickSubject={value => { if (isSubjectId(value) && isSubjectEnabled(value)) setSelectedSubject(value); }} onStudyMode={handleSelectMode} onGrowth={page => { setGrowthPage(page); navigateMain('growth'); }} onStart={handleStart} onIntro={handleIntro} onNoteList={() => setAppState('study_hub')} onLogicalTree={() => setAppState('logical_tree')} onLeaderboard={() => setAppState('leaderboard')} onBattle={FEATURES.battle ? () => setAppState('battle') : undefined} onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined} onChangeSubject={() => { setSubjectPickerReturnTo('home'); setSubjectPickerOrigin('change'); setAppState('subject_selection'); }} subjectLabel={getSubjectLabel(selectedSubject)} subject={selectedSubject} isGuest={isGuest} isBgmEnabled={isBgmEnabled} isBgmFadedOut={isBgmFadedOut} onToggleBgm={handleToggleBgm} />}
             {/* ★ルーティング側の門（4箇所のうちの3番目）★
                 ナビのボタンを隠すだけでは、Home の「ランキングを見る」など
                 別の導線からこの状態になれてしまう。
@@ -1740,10 +1753,10 @@ export default function App() {
                     ★止めたくなった日に「ここも直す」を思い出さなくて済む★
                     ようにするため。フラグを後から足す作業が、
                     今回の「隠したつもりで入れた」の原因そのものである。 */}
-                <button type="button" onClick={() => { setGrowthPage('overview'); navigateMain('growth'); }}
-                  aria-label="マイページへ移動" aria-current={appState === 'growth' ? 'page' : undefined}
+                <button type="button" onClick={() => { setGrowthPage('gacha'); navigateMain('growth'); }}
+                  aria-label="ガチャ・マイページへ移動" aria-current={appState === 'growth' ? 'page' : undefined}
                   className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1.5 min-h-[44px] ${appState === 'growth' ? 'text-amber-800 font-bold' : 'text-slate-500'}`}>
-                  <UserRound className="w-5 h-5" aria-hidden="true" /><span className="text-[10px]">マイページ</span>
+                  <Gift className="w-5 h-5" aria-hidden="true" /><span className="text-[10px]">ガチャ</span>
                 </button>
                 {FEATURES.ranking && (
                 <button 

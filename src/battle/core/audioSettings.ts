@@ -27,7 +27,7 @@ export interface BattleAudioSettings {
 export const BATTLE_AUDIO_STORAGE_KEY = 'battle_audio_settings';
 
 export const DEFAULT_BATTLE_AUDIO: BattleAudioSettings = Object.freeze({
-  bgm: false,
+  bgm: true,
   sfx: true,
   volume: 0.6,
 });

@@ -1,3 +1,4 @@
+import { answerNumber } from '../core/arenaRules';
 /**
  * ===================================================================
  * BattleResultLive — リザルトの上部（WIN / LOSE / DRAW・統計・XP・復習）
@@ -196,7 +197,9 @@ export function ReviewPicks({
   subject,
   onPractice,
   chapterTitleOf,
+  opponentScore,
 }: {
+  opponentScore?: BattleResultSummary['opponent'];
   picks: ReviewPick[];
   /** 出題ID → ひと言の理由（試合後に読み込む。無い問題は出さない） */
   oneLines?: ReadonlyMap<string, string>;
@@ -242,7 +245,7 @@ export function ReviewPicks({
                 <span style={{ color: OPP_RED }}>🔴 相手は正解していた</span>
               )}
             </p>
-            <p className="mt-0.5 line-clamp-2 text-[11px] font-bold leading-snug" style={{ color: INK }}>
+            <p className="mt-2 text-sm font-bold leading-relaxed" style={{ color: INK }}>
               <BattleText text={p.question.prompt || p.question.label} subject={subject} />
               {p.question.prompt && p.question.label && (
                 <span className="ml-1 font-black" style={{ color: INK_SUB }}>{p.question.label}</span>
@@ -251,6 +254,7 @@ export function ReviewPicks({
             <p className="mt-0.5 text-[11px] font-black" style={{ color: GREEN }}>
               こたえ: <BattleText text={p.correctText} subject={subject} />
             </p>
+            {opponentScore && <p className="arena-review-answer">相手の回答 {answerNumber(p.question, opponentScore.perQuestion.find(q=>q.index===p.index)?.submittedAnswer)}：<BattleText subject={subject} text={opponentScore.perQuestion.find(q=>q.index===p.index)?.submittedAnswer || '無回答'}/></p>}
             {oneLines?.get(p.question.id) && (
               <p className="mt-1 rounded-lg px-2 py-1 text-[10px] font-bold leading-relaxed" style={{ background: `${AMBER}12`, color: INK, border: `1px solid ${AMBER}44` }}>
                 <BattleText text={oneLines.get(p.question.id)!} subject={subject} />

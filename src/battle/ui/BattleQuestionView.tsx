@@ -151,7 +151,9 @@ export function BattleQuestionView({
 
       {/* 問題文 */}
       <article
-        className="mb-3 rounded-2xl border-2 px-4 py-3.5"
+        tabIndex={0}
+        aria-label="問題文（長い場合はスクロール）"
+        className="arena-question-prompt mb-3 rounded-2xl border-2 px-4 py-3.5"
         style={{
           borderColor: `${theme.accent}44`,
           background: theme.surface,

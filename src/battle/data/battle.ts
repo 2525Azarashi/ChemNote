@@ -92,6 +92,7 @@ import {
   RATING_INITIAL,
 } from '../core/battleCore';
 import { normalizeRule } from '../core/battleRules';
+import { arenaRule, nationalRoomMatches } from '../core/arenaRules';
 import type {
   BattleAnswerFormat,
   BattleAttestation,
@@ -308,7 +309,7 @@ export async function createFriendRoom(
   chapterId?: string,
 ): Promise<CreatedRoom> {
   const uid = requireUid();
-  const rules = normalizeRule(subject, { ...loadRuleSync(subject), ...ruleOverride });
+  const rules = arenaRule(normalizeRule(subject, { ...loadRuleSync(subject), ...ruleOverride }));
   const rating = await fetchMyRating();
 
   // 合言葉が既に使われていたら引き直す。
@@ -502,10 +503,14 @@ async function fetchWaitingQueue(subject: string) {
 
 export async function findOrEnqueue(
   subject: string,
+  sessionId = '',
+  signal?: AbortSignal,
 ): Promise<{ roomId: string | null }> {
   const uid = requireUid();
-  const rules = normalizeRule(subject, loadRuleSync(subject));
+  const rules = arenaRule(normalizeRule(subject, loadRuleSync(subject)));
+  const queueSubject = `${subject}:speed2`;
   const rating = await fetchMyRating();
+  signal?.throwIfAborted();
 
   // ===================================================================
   // ★手順：「先に自分の待機票を置く → 探す → 双方の票を1つの
@@ -544,26 +549,30 @@ export async function findOrEnqueue(
   }
 
   const ownRef = doc(db, COL_QUEUE, uid);
+  signal?.throwIfAborted();
+  if (auth.currentUser?.uid !== uid) throw new Error("ログイン状態が変わりました。");
 
   // 1. 先に自分の待機票を置く
   try {
     await setDoc(ownRef, {
       uid,
-      subject,
-      profile: myProfile(rating),
+      subject: queueSubject,
+      profile: { ...myProfile(rating), matchSessionId: sessionId },
       createdAt: serverTimestamp(),
     });
   } catch (error) {
     throw friendlyError(error, '待機列に入れませんでした。');
   }
 
+  if (signal?.aborted) { await leaveQueue(sessionId, uid); signal.throwIfAborted(); }
+
   // 2. 待っている人を探す（自分以外・同じ教科・古い順）
   let waitingDocs;
   try {
-    waitingDocs = await fetchWaitingQueue(subject);
+    waitingDocs = await fetchWaitingQueue(queueSubject);
   } catch (error) {
     // 探せなかったときは票だけ残さない（次に来た人が幽霊とマッチする）
-    void leaveQueue();
+    void leaveQueue(sessionId, uid);
     throw friendlyError(error, 'マッチングに失敗しました。');
   }
   const candidate = waitingDocs.find((d) => d.id !== uid);
@@ -582,7 +591,9 @@ export async function findOrEnqueue(
       // 相手の票が無い … 別の誰かが先に相手を拾った
       // 教科が違う    … 票が差し替わっていた
       if (!mine.exists() || !other.exists()) return false;
-      if (mine.get('subject') !== subject || other.get('subject') !== subject) return false;
+      if (signal?.aborted || auth.currentUser?.uid !== uid) return false;
+      if (mine.get('profile')?.matchSessionId !== sessionId) return false;
+      if (mine.get('subject') !== queueSubject || other.get('subject') !== queueSubject) return false;
 
       const opponentUid = other.id;
       const opponentProfile = other.get('profile') as BattlePlayer | undefined;
@@ -598,7 +609,7 @@ export async function findOrEnqueue(
         hostUid: uid,
         players: [uid, opponentUid],
         profiles: {
-          [uid]: myProfile(rating),
+          [uid]: { ...myProfile(rating), matchSessionId: sessionId },
           [opponentUid]: opponentProfile || {
             uid: opponentUid,
             nickname: '対戦相手',
@@ -627,11 +638,15 @@ export async function findOrEnqueue(
 }
 
 /** 待機をやめる（画面を離れるときは必ず呼ぶ） */
-export async function leaveQueue(): Promise<void> {
-  const uid = auth.currentUser?.uid;
+export async function leaveQueue(sessionId?: string, uid = auth.currentUser?.uid): Promise<void> {
   if (!uid) return;
   try {
-    await deleteDoc(doc(db, COL_QUEUE, uid));
+    const ref = doc(db, COL_QUEUE, uid);
+    if (sessionId) await runTransaction(db, async tx => {
+      const row = await tx.get(ref);
+      if (row.exists() && row.get("profile")?.matchSessionId === sessionId) tx.delete(ref);
+    });
+    else await deleteDoc(ref);
   } catch {
     // 消せなくても致命的ではない（相手が拾った時に消える）
   }
@@ -682,6 +697,7 @@ export async function leaveQueue(): Promise<void> {
 export function watchMatched(
   onMatched: (roomId: string) => void,
   onError?: (error: unknown) => void,
+  expected?: { subject: string; sessionId: string },
 ): Unsubscribe {
   const uid = auth.currentUser?.uid;
   if (!uid) return () => {};
@@ -692,14 +708,13 @@ export function watchMatched(
       // ★条件は array-contains の1つだけ★
       //   これなら複合索引が要らない（上の解説を参照）。
       where('players', 'array-contains', uid),
-      // 自分が関わる待機中の部屋はごく少数なので、
-      // 上限を少し多めに取って手元で絞る。
-      limit(10),
+      // 過去のフレンド部屋で上限が埋まらないよう、セッションで絞る。
+
     ),
     (snap) => {
       // status と作成時刻の判定は手元で行う。
       const rooms = snap.docs
-        .filter((d) => String(d.get('status') || '') === 'waiting')
+        .filter((d) => expected && nationalRoomMatches(d.data(), uid, expected.subject, expected.sessionId))
         .sort((a, b) => {
           const at = toMillis(a.get('createdAt') as Timestamp | null) || 0;
           const bt = toMillis(b.get('createdAt') as Timestamp | null) || 0;

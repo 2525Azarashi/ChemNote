@@ -180,6 +180,7 @@ export type BattleTiebreak = 'time' | 'sudden' | 'draw';
  * `battle_rules/{subject}` に同じ形のドキュメントがあればそちらを優先する。
  */
 export interface BattleRule {
+  scoringVersion?: 2;
   /** 教科ID */
   subject: string;
   /** 対戦を有効にするか。false ならこの教科は対戦の教科選択に出ない */

@@ -381,7 +381,7 @@ export function BattleMode({
       );
 
     case 'profile':
-      return <BattleProfile onBack={() => setScreen('home')} />;
+      return <BattleProfile onBack={() => setScreen('home')} onMissions={() => setScreen('missions')} />;
 
     case 'missions':
       return <BattleMissions onBack={() => setScreen('home')} onBattle={() => setScreen('subject-ai')} />;

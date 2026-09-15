@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { ArrowLeft, Coins, BookOpen, Swords, Award, Store, Target, Shirt, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Coins, BookOpen, Swords, Award, Store, Target, Shirt, BarChart3, Gift, UserRound } from 'lucide-react';
+import { GachaRoom } from './GachaRoom';
 import { GrowthHomeStrip } from '../battle/ui/GrowthHomeStrip';
 import { BattleProfile } from '../battle/ui/BattleProfile';
 import { BattleMissions } from '../battle/ui/BattleMissions';
@@ -7,7 +8,7 @@ import { NextGoals } from '../battle/ui/GrowthParts';
 import { loginBonusFor } from '../battle/core/growth';
 import { useGrowthProgress } from '../hooks/useGrowthProgress';
 
-export type GrowthPage = 'overview' | 'shop' | 'outfit' | 'badges' | 'stats' | 'missions';
+export type GrowthPage = 'overview' | 'gacha' | 'shop' | 'outfit' | 'badges' | 'stats' | 'missions';
 export function GrowthHub({ page, onPage, onBack, onBattle, onReview }: {
   page: GrowthPage; onPage: (page: GrowthPage) => void; onBack: () => void;
   onBattle?: () => void; onReview: () => void;
@@ -18,20 +19,24 @@ export function GrowthHub({ page, onPage, onBack, onBattle, onReview }: {
   return <div ref={scroll} className="mana-hub h-full min-h-0 overflow-y-auto pb-app-nav" data-growth-hub>
     <header className="mana-hub-header">
       <button type="button" onClick={onBack}><ArrowLeft size={18} /> ホーム</button>
-      <button type="button" onClick={() => onPage('overview')}><Coins size={18} /> マイページ</button>
+      <span className="growth-shared-label">ガチャ・マイページ</span>
     </header>
-    {page === 'overview' ? <main className="mana-hub-main">
+    <nav className="growth-shared-switch" aria-label="ガチャとマイページの切り替え">
+      <button type="button" onClick={() => onPage('gacha')} aria-current={page === 'gacha' ? 'page' : undefined}><Gift size={19} />ガチャ</button>
+      <button type="button" onClick={() => onPage('overview')} aria-current={page !== 'gacha' ? 'page' : undefined}><UserRound size={19} />マイページ</button>
+    </nav>
+    {page === 'gacha' ? <GachaRoom embedded onBack={() => onPage('overview')} onMissions={() => onPage('missions')} /> : page === 'overview' ? <main className="mana-hub-main">
       <p className="mana-eyebrow">MY GROWTH & COLLECTION</p>
       <h1>学ぶ。ためる。自分らしく。</h1>
       <p className="mb-5 text-sm text-slate-600">対戦も、復習も、とびら君の成長につながる。</p>
-      <GrowthHomeStrip expanded onProfile={() => onPage('outfit')} onShop={() => onPage('shop')}
+      <GrowthHomeStrip onGacha={() => onPage('gacha')} expanded onProfile={() => onPage('outfit')} onShop={() => onPage('shop')}
         onMissions={() => onPage('missions')} onBadges={() => onPage('badges')} onWallet={() => onPage('shop')} />
       <section className="mana-hub-card" aria-label="マナコインのため方">
         <h2><Coins size={20} /> マナコインのため方</h2>
         <p>毎日のボーナスとミッションで獲得。復習だけでも報酬を目指せます。</p>
         <div className="mana-earn-actions">
           <button type="button" onClick={onReview}><BookOpen size={20} /><strong>復習でためる</strong><small>「できた」でミッションを進める</small></button>
-          {onBattle && <button type="button" onClick={onBattle}><Swords size={20} /><strong>対戦でためる</strong><small>AI対戦も対象／報酬は受取式</small></button>}
+          {onBattle && <button type="button" onClick={onBattle}><Swords size={20} /><strong>対戦でためる</strong><small>AIも対象／対戦終了時に獲得</small></button>}
         </div>
         <button type="button" className="mana-text-action" onClick={() => onPage('missions')}>達成したミッションの報酬を受け取る</button>
       </section>
@@ -48,7 +53,7 @@ export function GrowthHub({ page, onPage, onBack, onBattle, onReview }: {
           <button type="button" key={id} onClick={() => onPage(id)} aria-current={page === id ? 'page' : undefined}><Icon size={17} />{label}</button>)}
       </nav>
       {page === 'missions' ? <BattleMissions key={uid} standalone onBack={() => onPage('overview')} onBattle={onBattle} onReview={onReview} onShop={() => onPage('shop')} />
-        : <BattleProfile key={`${uid}:${page}`} standalone initialTab={page} onBack={() => onPage('overview')} />}
+        : <BattleProfile key={`${uid}:${page}`} standalone onMissions={() => onPage('missions')} initialTab={page} onBack={() => onPage('overview')} />}
     </>}
   </div>;
 }

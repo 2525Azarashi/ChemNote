@@ -474,6 +474,7 @@ export function normalizeRule(subject: string, raw: unknown): BattleRule {
       : base.kanaShare;
 
   return {
+    ...(r.scoringVersion === 2 ? { scoringVersion: 2 as const } : {}),
     subject,
     enabled: typeof r.enabled === 'boolean' ? r.enabled : base.enabled,
     questionCount: num(r.questionCount, base.questionCount, 3, 20),

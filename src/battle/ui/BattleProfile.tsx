@@ -48,10 +48,11 @@ import {
   LINE,
   WRONG,
 } from './BattleParts';
+import { GachaRoom } from '../../components/GachaRoom';
 import { useGrowthProgress } from '../../hooks/useGrowthProgress';
 import { BadgeChip, GrowthAvatar, LevelBar, NextGoals, StatCard, TitleChip } from './GrowthParts';
 
-export type ProfileTab = 'outfit' | 'shop' | 'badges' | 'stats';
+export type ProfileTab = 'outfit' | 'shop' | 'badges' | 'stats' | 'gacha';
 
 type Runner = (fn: () => Promise<unknown>, okMessage?: string) => Promise<void>;
 
@@ -61,7 +62,7 @@ function unlockLabel(item: ItemDef): string {
   return `${item.unlock.coins} マナコイン`;
 }
 
-export function BattleProfile({ onBack, initialTab = 'outfit', standalone = false }: { onBack: () => void; initialTab?: ProfileTab; standalone?: boolean; key?: string }) {
+export function BattleProfile({ onBack, initialTab = 'outfit', standalone = false, onMissions }: { onBack: () => void; initialTab?: ProfileTab; standalone?: boolean; onMissions?: () => void; key?: string }) {
   const { progress, uid } = useGrowthProgress();
   const [rating, setRating] = useState<number>(1500);
   const [tab, setTab] = useState<ProfileTab>(initialTab);
@@ -123,6 +124,7 @@ export function BattleProfile({ onBack, initialTab = 'outfit', standalone = fals
   }
 
   const tabs: [ProfileTab, ReactNode, string][] = [
+    ['gacha', <Sparkles size={14} />, 'ガチャ'],
     ['shop', <Store size={14} />, 'ショップ'],
     ['outfit', <Shirt size={14} />, 'きせかえ'],
     ['badges', <Award size={14} />, '称号'],
@@ -150,7 +152,7 @@ export function BattleProfile({ onBack, initialTab = 'outfit', standalone = fals
         <GrowthAvatar progress={progress} size={64} /><div className="min-w-0 flex-1"><p className="text-xs text-amber-900">いまのとびら君</p><p className="text-xl font-black tabular-nums">{progress.coins.toLocaleString()} <span className="text-xs">マナコイン</span></p><LevelBar xp={progress.xp} compact /></div>
       </section> : <ProfileHeader progress={progress} rating={rating} />}
 
-      {!standalone && <nav className="mb-3 grid grid-cols-4 gap-1.5" aria-label="プロフィールの切り替え">
+      {!standalone && <nav className="mb-3 grid grid-cols-5 gap-1.5" aria-label="プロフィールの切り替え">
         {tabs.map(([id, icon, label]) => (
           <button
             key={id}
@@ -170,6 +172,7 @@ export function BattleProfile({ onBack, initialTab = 'outfit', standalone = fals
         ))}
       </nav>}
 
+      {tab === 'gacha' && <GachaRoom onBack={() => setTab('outfit')} onMissions={onMissions || onBack} />}
       {(tab === 'outfit' || tab === 'shop') && <OutfitTab key={tab} shop={tab === 'shop'} progress={progress} busy={busy} run={run} setNotice={setNotice} />}
       {tab === 'badges' && <BadgesTab progress={progress} busy={busy} run={run} />}
       {tab === 'stats' && <StatsTab progress={progress} />}
@@ -240,7 +243,7 @@ function ProfileHeader({ progress, rating }: { progress: GrowthProgress; rating:
           </p>
         </div>
       </div>
-      <div className="mt-3 grid grid-cols-4 gap-1.5">
+      <div className="mt-3 grid grid-cols-5 gap-1.5">
         <StatCard label="たいせん" value={progress.matches} />
         <StatCard label="かち" value={progress.wins} color={AMBER} />
         <StatCard label="せいとう率" value={rate === null ? '—' : `${rate}%`} />

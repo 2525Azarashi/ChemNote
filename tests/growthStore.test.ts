@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 const { auth } = vi.hoisted(() => ({ auth: { currentUser: { uid: 'a' } as { uid: string } | null } }));
 vi.mock('../src/firebase', () => ({ auth }));
-import { applyMatchGrowth, buyItem, claimMissionReward, loadMyGrowth, recordReviewGrowth,
+import { drawGacha, applyMatchGrowth, buyItem, claimMissionReward, loadMyGrowth, recordReviewGrowth,
   subscribeGrowth, touchLogin, GROWTH_STORAGE_PREFIX } from '../src/battle/data/growthStore';
 import { emptyProgress, missionsForDate, applyLoginWithBonus, claimMission, xpRequiredForLevel, BADGES, MISSION_POOL } from '../src/battle/core/growth';
 import { readFileSync } from 'node:fs';
@@ -107,5 +107,43 @@ describe('shared live audio and reward preferences', () => {
   });
   it('does not throw when sound preferences cannot be persisted', () => {
     failWrite=true; expect(()=>writeAudioPreferences({sfx:true})).not.toThrow();
+  });
+});
+
+
+describe('arena atomic rewards and draws', () => {
+  const seed = (coins = 100) => data.set(key(), JSON.stringify({version:1,progress:{...emptyProgress('a'),coins},receipts:[],day:''}));
+  beforeEach(() => { vi.stubGlobal('crypto', {getRandomValues: (a: Uint32Array) => { a[0]=0; return a; }}); });
+  it('credits item and cost only once on concurrent replay', async () => {
+    seed(); const r=await Promise.all([drawGacha('same'),drawGacha('same')]);
+    expect(r.filter(v=>v?.result)).toHaveLength(1); expect((await loadMyGrowth()).coins).toBe(50);
+    expect(JSON.parse(data.get(key())!).receipts).toEqual(['gacha:same']);
+  });
+  it('returns 20 coins on a duplicate without duplicating inventory', async () => {
+    seed(); await drawGacha('one');const before=await loadMyGrowth();
+    const r=await drawGacha('two');expect(r?.result?.duplicate).toBe(true);expect(r?.result?.refund).toBe(20);
+    expect(r?.progress.coins).toBe(20);expect(r?.progress.owned).toEqual(before.owned);
+  });
+  it('insufficient balance and malformed request leave no receipt', async () => {
+    seed(49);const before=data.get(key());expect((await drawGacha('one'))?.result).toBeNull();
+    expect(await drawGacha('')).toBeNull();expect(await drawGacha('x'.repeat(101))).toBeNull();expect(data.get(key())).toBe(before);
+  });
+  it('failed saving never spends coins and can be retried', async () => {
+    seed();const before=data.get(key());failWrite=true;expect(await drawGacha('retry')).toBeNull();expect(data.get(key())).toBe(before);
+    failWrite=false;expect((await drawGacha('retry'))?.result).toBeTruthy();expect((await loadMyGrowth()).coins).toBe(50);
+  });
+  it('does not debit a newly signed-in account for an old confirmation', async () => {
+    seed();auth.currentUser={uid:'b'};expect(await drawGacha('old','a')).toBeNull();expect(data.has(key('b'))).toBe(false);
+  });
+  it('awards exact match breakdown once, not on result replay', async () => {
+    const r=await applyMatchGrowth(match());expect(r?.delta?.coins).toEqual({finish:10,correct:2,victory:10,total:22});
+    expect(r?.progress.coins).toBe(22);await applyMatchGrowth(match());expect((await loadMyGrowth()).coins).toBe(22);
+  });
+  it('honors legacy lastRoomId even without a receipt', async () => {
+    await applyMatchGrowth(match());const e=JSON.parse(data.get(key())!);e.receipts=[];data.set(key(),JSON.stringify(e));
+    expect((await applyMatchGrowth(match()))?.delta).toBeNull();expect((await loadMyGrowth()).coins).toBe(22);
+  });
+  it('BGM defaults on but explicit off survives', () => {
+    expect(readAudioPreferences().bgm).toBe(true);writeAudioPreferences({bgm:false});expect(readAudioPreferences().bgm).toBe(false);
   });
 });
