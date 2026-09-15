@@ -244,7 +244,7 @@ export function BattleMatching({
     return (
       <BattleShell className="arena-matching">
         <BattleTitle subtitle={`${theme.label} ／ 全国対戦`} />
-      <ArenaFighters answered opponentAnswered />
+      <ArenaFighters matched />
         <div className="flex flex-1 flex-col items-center justify-center gap-6 py-10">
           <div className="relative flex h-32 w-32 items-center justify-center">
             <span

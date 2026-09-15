@@ -218,7 +218,7 @@ export function BattleRoomScreen({
   // 待機
   // ------------------------------------------------------------
   if (room.status === 'waiting') {
-    if (!room.joinCode) return <BattleShell className="arena-matching"><BattleTitle subtitle="全国対戦・開始準備"/><ArenaFighters/><p className="text-center font-bold">2人がそろいました。まもなくスタート</p>{error && <BattleNotice message={error}/>}{error && <BattleButton onClick={start}>開始を再試行</BattleButton>}<BattleButton variant="ghost" onClick={()=>{leave();onExit();}}>対戦を終了する</BattleButton></BattleShell>;
+    if (!room.joinCode) return <BattleShell className="arena-matching"><BattleTitle subtitle="全国対戦・開始準備"/><ArenaFighters matched/><p className="text-center font-bold">2人がそろいました。まもなくスタート</p>{error && <BattleNotice message={error}/>}{error && <BattleButton onClick={start}>開始を再試行</BattleButton>}<BattleButton variant="ghost" onClick={()=>{leave();onExit();}}>対戦を終了する</BattleButton></BattleShell>;
     return (
       <BattleLobby
         room={room}

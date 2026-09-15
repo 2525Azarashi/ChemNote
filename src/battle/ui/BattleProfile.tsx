@@ -354,7 +354,7 @@ function OutfitTab({ progress, busy, run, setNotice, shop = false }: { shop?: bo
         <div className="grid grid-cols-3 gap-2">{frames.map(renderItem)}</div>
       </section>
       <p className="text-[10px] font-bold leading-relaxed" style={{ color: INK_SUB }}>
-        マナコインは日替わりボーナス・ミッションで手に入ります（課金はありません）。装備は見た目だけで、対戦の強さには影響しません。
+        マナコインは対戦・日替わりボーナス・ミッションで手に入ります（課金はありません）。装備は見た目だけで、対戦の強さには影響しません。
       </p>
     </div>
   );
