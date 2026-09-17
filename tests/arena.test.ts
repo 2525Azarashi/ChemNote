@@ -80,3 +80,13 @@ describe('confirmed answer labels', () => {
     expect(answerNumber({...q,options:['B','B']},'B')).toBe('');
   });
 });
+
+
+it('allows long listening recordings in new rooms without changing saved rules', () => {
+  const saved = { ...defaultRuleOf('english_listening'), timeLimitOverride: 35 };
+  const fresh = arenaRule(saved);
+  expect(saved.timeLimitOverride).toBe(35);
+  expect(fresh.timeLimitOverride).toBe(55);
+  expect(fresh.pointsSpeedMax).toBe(20);
+  expect(resolveTimeLimit({ ...q, subject: 'english_listening' }, fresh)).toBe(55);
+});

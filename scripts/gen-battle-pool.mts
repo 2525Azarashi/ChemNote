@@ -2135,8 +2135,22 @@ export async function loadPool(subject: string): Promise<readonly BattleQuestion
   if (running) return running;
 
   const promise = loadRaw(subject)
-    .then((raw) => {
+    .then(async (raw) => {
       const list = raw.map((t) => expand(subject, t));
+      // Resolve before matchmaking starts; preserve IDs and order, expose no script/hints.
+      if (subject === 'english_listening') {
+        const { getAllListeningChapters } = await import('../../data/englishListeningData');
+        const chapters = getAllListeningChapters();
+        for (const question of list) {
+          const chapter = chapters.find(c => c.id === question.chapterId);
+          const problem = [...(chapter?.practiceProblems || []), ...(chapter?.miniTest || [])]
+            .find(p => p.id === question.problemId);
+          const track = problem?.audioTracks?.find((t: { subId: string; subIds?: string[] }) =>
+            t.subId === question.subQuestionId || t.subIds?.includes(question.subQuestionId));
+          if (!track?.audioUrl) throw new Error('Listening battle audio is missing: ' + question.id);
+          question.audioUrl = track.audioUrl;
+        }
+      }
       cache.set(subject, list);
       inflight.delete(subject);
       return list as readonly BattleQuestion[];

@@ -595,3 +595,23 @@ describe('出題プール — ルールとの対応', () => {
     expect(BATTLE_RULES.english_listening.timeLimitOverride).toBe(35);
   });
 });
+
+
+describe('listening battle audio mapping', () => {
+  it('resolves every original track without changing pool order or exposing scripts', async () => {
+    const { POOL } = await import('../src/battle/data/pool.english_listening.generated');
+    const { getAllListeningChapters } = await import('../src/data/englishListeningData');
+    const { existsSync } = await import('node:fs');
+    const questions = await loadPool('english_listening');
+    expect(questions.map(q => q.id)).toEqual(POOL.map(t => t[0]));
+    for (const q of questions) {
+      const c = getAllListeningChapters().find(c => c.id === q.chapterId)!;
+      const p = [...c.practiceProblems, ...c.miniTest].find(p => p.id === q.problemId);
+      const t = p.audioTracks.find(t => t.subId === q.subQuestionId || t.subIds?.includes(q.subQuestionId));
+      expect(q.audioUrl).toBe(t.audioUrl);
+      expect(existsSync('public' + q.audioUrl)).toBe(true);
+      expect(q).not.toHaveProperty('script');
+      expect(q).not.toHaveProperty('hint');
+    }
+  });
+});

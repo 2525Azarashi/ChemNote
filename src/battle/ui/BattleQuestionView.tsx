@@ -34,7 +34,7 @@
  * 自分が押した選択肢だけを「選択中」として示す。
  */
 
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { BattleText } from './BattleText';
 import { Check, CircleCheck, CircleX, Hourglass, RotateCcw } from 'lucide-react';
 
@@ -148,6 +148,9 @@ export function BattleQuestionView({
         </div>
         <TimeBar remainMs={remainMs} limitSec={effectiveLimitSec} />
       </div>
+
+      {question.subject === 'english_listening' && <BattleListeningAudio
+        key={question.id} src={question.audioUrl} stopped={answered || reveal} />}
 
       {/* 問題文 */}
       <article
@@ -691,4 +694,39 @@ function renderWithBlank(text: string, subject: string): ReactNode {
       {part.slice(1, -1).trim()}
     </mark>
   ) : <BattleText key={`part-${i}`} text={part} subject={subject} />);
+}
+
+/** Audio-only battle player. No script or scene hint enters the answering DOM. */
+function BattleListeningAudio({ src, stopped }: { key?: string; src?: string; stopped: boolean }) {
+  const audio = useRef<HTMLAudioElement>(null);
+  const [status, setStatus] = useState('音源を読み込み中…');
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    const el = audio.current;
+    if (!el) return;
+    let disposed = false;
+    if (stopped) el.pause();
+    else el.play().catch(() => {
+      if (!disposed) setStatus('再生ボタンを押して音源を聞いてください');
+    });
+    return () => { disposed = true; el.pause(); };
+  }, [src, stopped]);
+  if (!src) return <p role="alert">この問題の音源を読み込めませんでした。</p>;
+  return <section className="battle-listening-audio mb-2 rounded-xl border border-sky-200 bg-sky-50 p-2" aria-label="対戦の音源">
+    <div className="flex items-center justify-between gap-2 text-xs text-slate-600">
+      <strong>音源を聞く</strong><span role="status">{stopped ? '解答終了' : status}</span>
+    </div>
+    <audio ref={audio} src={src} controls preload="auto" className="h-10 w-full"
+      onPlaying={() => { setFailed(false); setStatus('再生中'); }}
+      onPause={() => setStatus('停止中・再生ボタンで再開')}
+      onEnded={() => setStatus('再生終了・答えを選んでください')}
+      onError={() => { setFailed(true); setStatus('音源を読み込めませんでした'); }} />
+    {failed && !stopped && <button type="button" className="min-h-11 px-3 text-sm underline" onClick={() => {
+      const el = audio.current;
+      if (!el) return;
+      el.load();
+      el.play().catch(() => setStatus('通信と端末の音量を確認して、もう一度再生してください'));
+    }}>音源を再読み込み</button>}
+    <p className="text-[10px] text-slate-500">音量を確認してください。音源の再生中・停止中も制限時間は進みます。</p>
+  </section>;
 }
