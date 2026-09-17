@@ -31,6 +31,7 @@ import '../src/data/englishListeningData';
 import {
   buildListeningExplanation,
   scriptBox,
+  locateListeningEvidence,
   pickScript,
   extractDecisivePhrases,
   areStepsSharedAcrossSubQuestions,
@@ -106,7 +107,7 @@ describe('リスニングの解説：スクリプトを最初に出す（C3）',
       const sub = slices.subs.find((s) => s.id === sq.id);
       expect(sub, `${sq.id} の小問セクションが無い`).toBeTruthy();
       // 記号のエスケープを戻してから照合する
-      const body = sub!.body.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+      const body = sub!.body.replace(/<sup>\d+<\/sup>/g, '').replace(/<\/?mark\b[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
       expect(body, `${sq.id} の本文にスクリプトが無い`).toContain(script);
     }
   });
@@ -338,5 +339,27 @@ describe('リスニングの解説：安全側の作り', () => {
         );
       }
     }
+  });
+});
+
+
+describe('literal listening evidence locations', () => {
+  it('matches case, whitespace and typographic apostrophes while preserving offsets', () => {
+    const script = "I’ll go\nto bed early. Only on Monday.";
+    const hits = locateListeningEvidence(script, ["I'll go to bed", 'on', 'only']);
+    expect(hits.map(hit => script.slice(hit.start,hit.end))).toEqual(['I’ll go\nto bed', 'Only', 'on']);
+  });
+  it('does not invent a location for dictionary forms or match inside another word', () => {
+    expect(locateListeningEvidence('I forgot it. Only today.', ['forget A', 'on'])).toEqual([]);
+  });
+  it('escapes regex syntax and highlights repeated literal phrases', () => {
+    const text = 'Take A+B. Then A+B.';
+    expect(locateListeningEvidence(text,['A+B'])).toHaveLength(2);
+  });
+  it('keeps numbered marks after sanitizing and escapes script HTML', () => {
+    const html = sanitizeInlineHtml(scriptBox('<img onerror=alert(1)> go home', '', ['go home']));
+    expect(html).toContain('listening-evidence');
+    expect(html).toContain('<sup>1</sup>go home');
+    expect(html).not.toContain('<img');
   });
 });

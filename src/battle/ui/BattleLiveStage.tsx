@@ -162,10 +162,16 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
   const theirAnswer = p.opponentScore?.perQuestion.find(q => q.index === p.index);
   const theirText = theirAnswer?.submittedAnswer || '';
   const selectedNumber = answerNumber(p.question, theirText);
+  // Keep questions and options out of the DOM until the shared start time.
+  if (counting) return <div className="battle-ready-stage">
+    {p.notices}
+    <CountdownOverlay label={countLabel} />
+    <div className="battle-ready-footer">{p.footer}</div>
+  </div>;
   return (
     <div className={`arena-live-stage ${phase === 'final' ? 'arena-final' : ''}`}>
       <div className="arena-background-fx" aria-hidden="true"><i/><i/><i/></div>
-      <ArenaFighters offline={p.offline} answered={p.answered} opponentAnswered={p.opponentAnswered} reveal={p.reveal} correct={!!p.myScore?.perQuestion.find(q=>q.index===p.index)?.correct}/>
+      <ArenaFighters roundKey={p.index} streak={live.myStreak} opponentCorrect={p.reveal && !!theirAnswer?.correct} offline={p.offline} answered={p.answered} opponentAnswered={p.opponentAnswered} reveal={p.reveal} correct={!!p.myScore?.perQuestion.find(q=>q.index===p.index)?.correct}/>
 
       <LiveScoreboard
         meNickname={p.meNickname}
@@ -224,7 +230,6 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
 
       {p.footer}
 
-      <CountdownOverlay label={countLabel} />
       <LiveToast toast={live.toast} />
     </div>
   );

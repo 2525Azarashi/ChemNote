@@ -16,7 +16,7 @@ export function GrowthHub({ page, onPage, onBack, onBattle, onReview }: {
   const { progress, uid } = useGrowthProgress();
   const scroll = useRef<HTMLDivElement>(null);
   useEffect(() => { scroll.current?.scrollTo(0, 0); }, [page]);
-  return <div ref={scroll} className="mana-hub h-full min-h-0 overflow-y-auto pb-app-nav" data-growth-hub>
+  return <div ref={scroll} className={`mana-hub h-full min-h-0 overflow-y-auto pb-app-nav ${page === 'gacha' ? 'mana-hub-gacha' : ''}`} data-growth-hub>
     <header className="mana-hub-header">
       <button type="button" onClick={onBack}><ArrowLeft size={18} /> ホーム</button>
       <span className="growth-shared-label">ガチャ・マイページ</span>

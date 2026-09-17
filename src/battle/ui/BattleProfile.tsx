@@ -317,7 +317,7 @@ function OutfitTab({ progress, busy, run, setNotice, shop = false }: { shop?: bo
             <img src={item.value} alt={item.label} draggable={false} className="max-h-full max-w-full object-contain" style={{ filter: owned ? undefined : 'grayscale(1)' }} />
           </span>
         ) : (
-          <span className="h-14 w-14 rounded-2xl border-[4px]" style={{ borderColor: item.value, background: `${item.value}22`, filter: owned ? undefined : 'grayscale(0.8)' }} />
+          <span data-frame-pattern={item.pattern} className="h-14 w-14 rounded-2xl border-[4px]" style={{ borderColor: item.value, background: `${item.value}22`, filter: owned ? undefined : 'grayscale(0.8)' }} />
         )}
         <span className="text-[11px] font-black" style={{ color: INK }}>
           {item.label}

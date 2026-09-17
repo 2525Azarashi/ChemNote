@@ -50,11 +50,11 @@ describe('national session admission', () => {
 
 describe('cosmetic economy', () => {
   const progress={...emptyProgress('a'),coins:100};
-  it('has eight equally sized draw intervals and does not mutate the source', () => {
-    expect(gachaItems()).toHaveLength(8);
+  it('has sixteen equally sized draw intervals and does not mutate the source', () => {
+    expect(gachaItems()).toHaveLength(16);
     for(const [i,item] of gachaItems().entries()) {
-      expect(rollGacha(progress,i/8)?.item.id).toBe(item.id);
-      expect(rollGacha(progress,(i+1)/8-Number.EPSILON)?.item.id).toBe(item.id);
+      expect(rollGacha(progress,i/gachaItems().length)?.item.id).toBe(item.id);
+      expect(rollGacha(progress,(i+1)/gachaItems().length-Number.EPSILON)?.item.id).toBe(item.id);
     }
     expect(progress.coins).toBe(100);expect(progress.owned).not.toContain(gachaItems()[0].id);
   });

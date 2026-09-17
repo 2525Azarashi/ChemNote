@@ -1446,7 +1446,7 @@ export default function App() {
           縦の短いパソコンでも一番上まで読めるようになる。
           定義は index.css の 13.5 節（未対応ブラウザ用の保険つき）。
         */}
-        <div className={`h-[100dvh] w-full flex justify-center relative overflow-y-auto ${
+        <div data-app-state={appState} className={`app-shell h-[100dvh] w-full flex justify-center relative overflow-y-auto ${
           isFullBleed
             ? 'p-0 items-stretch'
             : `pt-6 pb-safe-lg md:py-12 px-4 md:px-8 md:pb-28 ${['onboarding', 'subject_selection', 'intro', 'mode_selection'].includes(appState) ? 'items-safe-center' : 'items-start'}`
@@ -1478,7 +1478,7 @@ export default function App() {
             伸び縮みする箱として min-h-0 + flex を渡し、
             カード側が自分で内部スクロールを持てるようにする。
           */}
-          <div className={`w-full relative min-h-0 ${
+          <div className={`app-screen-stack w-full relative min-h-0 ${
             appState === 'explanation'
               ? 'max-w-none w-full h-full'
               : isFullBleed
@@ -1676,6 +1676,15 @@ export default function App() {
                 アイコンには aria-hidden を付け、ラベルだけがスクリーンリーダーに読まれるよう整理 */}
             {appState !== 'onboarding' && appState !== 'subject_selection' && appState !== 'quiz' && appState !== 'explanation' && (
               <nav
+                ref={(node: HTMLElement | null) => {
+                  if (!node) return;
+                  const shell = node.closest<HTMLElement>('.app-shell');
+                  const measure = () => shell?.style.setProperty('--app-nav-h', `${node.getBoundingClientRect().height}px`);
+                  measure();
+                  const observer = new ResizeObserver(measure);
+                  observer.observe(node);
+                  return () => observer.disconnect();
+                }}
                 aria-label="メインナビゲーション"
                 /*
                   ★以前は `pb-safe pt-3 … pb-6` と下パディングを2つ書いていた★
@@ -1689,7 +1698,7 @@ export default function App() {
                   高さは各画面が余白を予約するときの基準にもなるので、
                   --app-nav-h として公開する（下の画面側で参照する）。
                 */
-                className="fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-2 md:px-10 pt-3 pb-[calc(0.9rem+env(safe-area-inset-bottom))] z-[60] shadow-sm"
+                className="app-bottom-nav fixed bottom-0 left-0 right-0 bg-[#FDFBF7]/95 backdrop-blur-md border-t border-[#D1D5DB]/65 flex justify-around items-center px-2 md:px-10 pt-3 pb-[calc(0.9rem+env(safe-area-inset-bottom))] z-[60] shadow-sm"
               >
                 <button 
                   onClick={() => navigateMain('home')}

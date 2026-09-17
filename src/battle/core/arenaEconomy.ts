@@ -2,7 +2,7 @@ import { ITEMS, type GrowthProgress } from './growth';
 import type { MatchSummaryForGrowth } from './growth';
 export const GACHA_COST = 50;
 export const GACHA_DUPLICATE_REFUND = 20;
-export const gachaItems = () => ITEMS.filter(item => 'coins' in item.unlock);
+export const gachaItems = () => ITEMS.filter(item => 'coins' in item.unlock || item.gacha);
 export function matchCoins(match: MatchSummaryForGrowth) {
   const active = !match.forfeit && match.score.perQuestion.some(q => q.answered || q.correct);
   const finish = active ? 10 : 0;

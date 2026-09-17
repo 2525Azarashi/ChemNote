@@ -342,24 +342,25 @@ export function formatScore(n: number): string {
 }
 
 // ============================================================
-// カウントダウン（3 → 2 → 1 → START!）
+// カウントダウン（7 → 6 → … → 1 → START!）
 // ============================================================
 
 /** 1カウントの長さ */
-export const COUNTDOWN_STEP_MS = 800;
+export const COUNTDOWN_STEP_MS = 1000;
+export const COUNTDOWN_SECONDS = 7;
 /** START! を見せる長さ */
 export const COUNTDOWN_START_HOLD_MS = 600;
-/** カウントダウン全体（3,2,1 ＋ START!） */
-export const COUNTDOWN_TOTAL_MS = COUNTDOWN_STEP_MS * 3 + COUNTDOWN_START_HOLD_MS;
+/** カウントダウン全体（7秒 ＋ START!） */
+export const COUNTDOWN_TOTAL_MS = COUNTDOWN_STEP_MS * COUNTDOWN_SECONDS + COUNTDOWN_START_HOLD_MS;
 
 /**
  * 開始からの経過ミリ秒 → 表示する文字。終わったら null。
- * 「3」「2」「1」「START!」の4段階。
+ * 7秒の準備時間のあとに START! を表示する。
  */
 export function countdownLabelAt(elapsedMs: number): string | null {
-  if (elapsedMs < 0) return '3';
+  if (elapsedMs < 0) return String(COUNTDOWN_SECONDS);
   if (elapsedMs >= COUNTDOWN_TOTAL_MS) return null;
   const step = Math.floor(elapsedMs / COUNTDOWN_STEP_MS);
-  if (step >= 3) return 'START!';
-  return String(3 - step);
+  if (step >= COUNTDOWN_SECONDS) return 'START!';
+  return String(COUNTDOWN_SECONDS - step);
 }

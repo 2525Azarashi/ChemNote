@@ -99,7 +99,40 @@ export function isScriptFirstExplanation(text: unknown): boolean {
   return typeof text === 'string' && text.includes(LISTENING_SCRIPT_FIRST_MARK);
 }
 
-export function scriptBox(script: string, translation?: string): string {
+/** Literal script locations only. Dictionary forms are never guessed into a sentence. */
+export function locateListeningEvidence(script: string, phrases: readonly string[]) {
+  const candidates: { start: number; end: number; phraseIndex: number }[] = [];
+  phrases.forEach((phrase, phraseIndex) => {
+    const plain = phrase.trim().replace(/[.,!?;:]+$/u, '');
+    if (plain.length < 2) return;
+    const pattern = plain.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      .replace(/['’]/g, "['’]").split(/\s+/u).join('\\s+');
+    const regex = new RegExp(`(^|[^A-Za-z])(${pattern})(?=$|[^A-Za-z])`, 'gi');
+    for (const match of script.matchAll(regex)) {
+      const start = match.index! + match[1].length;
+      candidates.push({ start, end: start + match[2].length, phraseIndex });
+    }
+  });
+  const chosen: typeof candidates = [];
+  candidates.sort((a,b) => (b.end-b.start)-(a.end-a.start) || a.phraseIndex-b.phraseIndex);
+  for (const hit of candidates) {
+    if (!chosen.some(other => hit.start < other.end && hit.end > other.start)) chosen.push(hit);
+  }
+  return chosen.sort((a,b) => a.start-b.start);
+}
+
+function highlightedScript(script: string, phrases: readonly string[]): string {
+  let end = 0;
+  let html = '';
+  for (const hit of locateListeningEvidence(script, phrases)) {
+    html += escapeHtml(script.slice(end, hit.start));
+    html += `<mark class="listening-evidence" aria-label="聞き取りの決め手 ${hit.phraseIndex+1}"><sup>${hit.phraseIndex+1}</sup>${escapeHtml(script.slice(hit.start, hit.end))}</mark>`;
+    end = hit.end;
+  }
+  return (html + escapeHtml(script.slice(end))).replace(/\n/g, '<br>');
+}
+
+export function scriptBox(script: string, translation?: string, phrases: readonly string[] = []): string {
   const body = String(script || '').trim();
   if (!body) return '';
   const jp = String(translation || '').trim();
@@ -109,7 +142,7 @@ export function scriptBox(script: string, translation?: string): string {
     '<div style="font-size:0.78em; font-weight:bold; letter-spacing:0.08em; color:#2F7C74; margin-bottom:6px;">SCRIPT ／ 実際に流れた英文</div>' +
     // 対話（第3問）のスクリプトは 'A: …' / 'B: …' の複数行で入ってくる。
     // 改行をそのまま出すと1行に潰れて誰の発話か追えないため、<br> に置き換える。
-    `<div style="font-size:1.06em; font-weight:bold; line-height:1.85;">${escapeHtml(body).replace(/\n/g, '<br>')}</div>` +
+    `<div style="font-size:1.06em; font-weight:bold; line-height:1.85;">${highlightedScript(body, phrases)}</div>` +
     (jp
       ? `<div style="margin-top:8px; padding-top:8px; border-top:1px dashed rgba(62,156,147,0.5); font-size:0.9em; color:#2F7C74;">${escapeHtml(jp)}</div>`
       : '') +
@@ -713,7 +746,7 @@ function decisiveBlock(phrases: { phrase: string; meaning: string }[], theme: st
     rows.push(
       // 「枠の中のこの語」と結び付けて読ませる。
       // 語だけを並べても、どこの話か分からず記憶に残らない。
-      'この枠の中で、次の語句が聞き取れていれば正解が決まりました。',
+      'スクリプト内の黄色いマーカーと、次の番号を照合してください。語形・言い換えで一致しない表現にはマーカーを付けていません。',
     );
     phrases.forEach((item, index) => {
       const meaning = item.meaning ? `　… ${item.meaning}` : '';
@@ -817,10 +850,10 @@ export function buildListeningExplanation(problem: any): string {
     rows.push(SQ_BODY_MARK);
 
     // ① スクリプト（枠・英文だけ）★いちばん先に出す★
-    if (script) rows.push(scriptBox(script, translation));
+    const phrases = extractDecisivePhrases(problem, sq, script);
+    if (script) rows.push(scriptBox(script, translation, phrases.map(item => item.phrase)));
 
     // ② 聞き取りの決め手
-    const phrases = extractDecisivePhrases(problem, sq, script);
     const decisive = decisiveBlock(phrases, String(sq?.detailedExplanation?.theme || ''));
     if (decisive) rows.push(decisive);
 

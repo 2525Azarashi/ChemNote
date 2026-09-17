@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { useGrowthProgress } from '../hooks/useGrowthProgress';
-import { equippedPoseSrc, equippedFrameColor } from '../battle/core/growth';
+import { equippedPoseSrc, equippedFrameColor, equippedFramePattern } from '../battle/core/growth';
 
 /** A visual title screen only. It never resets the saved app route or account data. */
 export function LaunchScreen({ onStart, soundEnabled, onToggleSound }: {
@@ -17,7 +17,7 @@ export function LaunchScreen({ onStart, soundEnabled, onToggleSound }: {
       </button>
       <div className="launch-brand"><p>学びの扉を、ひらこう。</p><h1><img src="/manatobi-logo.jpg" width={1024} height={367} alt="マナトビ" fetchPriority="high" /></h1></div>
       <div className="launch-stage" aria-hidden="true">
-        <div className="launch-arch" /><div className="launch-stage-floor" style={{borderColor: progress ? equippedFrameColor(progress) : undefined}} />
+        <div className="launch-arch" /><div className="launch-stage-floor" data-frame-pattern={progress ? equippedFramePattern(progress) : 'plain'} style={{borderColor: progress ? equippedFrameColor(progress) : undefined}} />
         <div className={`launch-arrival ${walkReady ? 'walk-ready' : ''}`}>
           <div className="launch-gait">
             <img className="launch-walking-pose" src="/mascots/walking.png" alt="" draggable={false} onLoad={() => setWalkReady(true)} />
