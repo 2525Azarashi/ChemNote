@@ -19,6 +19,7 @@ import {
   badgeProgress,
   badgeTierColor,
   equippedFrameColor,
+  equippedFramePattern,
   equippedPoseSrc,
   equippedTitleLabel,
   levelOf,
@@ -63,6 +64,7 @@ export function GrowthAvatar({
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <div
         className="flex h-full w-full items-end justify-center overflow-hidden rounded-2xl border-[3px]"
+        data-frame-pattern={equippedFramePattern(progress)}
         style={{
           borderColor: frame,
           background: `linear-gradient(180deg, ${frame}14 0%, ${frame}30 100%)`,

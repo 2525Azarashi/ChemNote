@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope, Flame, Sparkles, Gift, Store, Shirt, Award, Target } from 'lucide-react';
 import { auth } from '../firebase';
 import { useGrowthProgress } from '../hooks/useGrowthProgress';
-import { equippedPoseSrc, equippedFrameColor, levelOf, equippedTitleLabel } from '../battle/core/growth';
+import { equippedPoseSrc, equippedFrameColor, equippedFramePattern, levelOf, equippedTitleLabel } from '../battle/core/growth';
 import { FriendOnlineStrip } from './FriendOnlineStrip';
 import type { GrowthPage } from './GrowthHub';
 const GrowthHomeStrip = React.lazy(() => import('../battle/ui/GrowthHomeStrip').then(m => ({ default: m.GrowthHomeStrip })));
@@ -155,6 +155,7 @@ export function Home({ onPickSubject, onStudyMode, onGrowth, onStart, onIntro, o
   // 未読件数は localStorage を見るだけなので同期的に初期化できる。
   // モーダルを閉じたときに 0 件へ更新してバッジを消す。
   const [showNotices, setShowNotices] = useState(false);
+  const progressDialog = useRef<HTMLDialogElement>(null);
   const [unreadCount, setUnreadCount] = useState(() => unreadNoticeCount());
 
   // Real stats state
@@ -355,7 +356,7 @@ export function Home({ onPickSubject, onStudyMode, onGrowth, onStart, onIntro, o
   const bgmLabel = !isBgmEnabled ? 'BGMを鳴らす' : isBgmFadedOut ? 'BGMをもう一度鳴らす' : 'BGMを止める';
 
   return (
-    <div className="home-lobby arena-home game-home h-full min-h-0 relative overflow-y-auto pb-app-nav">
+    <div className="home-lobby arena-home game-home h-full min-h-0 relative">
       <div className="home-lobby-lines" aria-hidden="true" />
       <div className="game-home-viewport">
         <header className="game-home-header">
@@ -372,7 +373,7 @@ export function Home({ onPickSubject, onStudyMode, onGrowth, onStart, onIntro, o
         <section className="game-mascot-stage" aria-label="とびら君のホームステージ">
           <div className="game-stage-backdrop" aria-hidden="true"><i /><i /><i /></div>
           <p className="game-stage-caption">{growth && equippedTitleLabel(growth) || '今日も、とびら君とひとつ先へ。'}</p>
-          <div className="game-stage-floor" aria-hidden="true"><div className="game-equipped-ring" style={{borderColor: growth ? equippedFrameColor(growth) : undefined}} /><Swords /></div>
+          <div className="game-stage-floor" aria-hidden="true"><div className="game-equipped-ring" data-frame-pattern={growth ? equippedFramePattern(growth) : 'plain'} style={{borderColor: growth ? equippedFrameColor(growth) : undefined}} /><Swords /></div>
           {growth && <button type="button" className="game-mascot-button" onClick={() => onGrowth?.('outfit')} aria-label="とびら君をきせかえる" disabled={!onGrowth}>
             <img className="home-mascot-art" src={equippedPoseSrc(growth)} alt="あなたのとびら君" draggable={false} style={{ filter: `drop-shadow(0 6px 0 ${equippedFrameColor(growth)}55)` }} />
             <span>MY TOBIRA <b>Lv.{levelOf(growth.xp).level}</b></span>
@@ -396,20 +397,29 @@ export function Home({ onPickSubject, onStudyMode, onGrowth, onStart, onIntro, o
         </section>
         <div className="game-home-utility arena-home-bottom">
           {onGrowth && <button type="button" onClick={() => onGrowth('missions')}><Target size={17} />ミッション</button>}
-          <button type="button" onClick={onLeaderboard}><BarChart3 size={17} />ランキング</button>
+          <button type="button" onClick={() => progressDialog.current?.showModal()} aria-haspopup="dialog"><BarChart3 size={17} />学習状況</button>
           <button type="button" aria-label="アプリ紹介を開く" onClick={onIntro}><ShieldCheck size={17} />使い方</button>
         </div>
-      </div>
-      <div className="game-home-secondary">
+        <section className="desktop-study-summary" aria-label="今日の学習状況">
+          <p>STUDY DESK</p><h2>今日の積み重ね</h2>
+          <div><span>連続学習<strong>{streak}<small>日</small></strong></span><span>復習待ち<strong>{reviewDueCount}<small>問</small></strong></span></div>
+          <label>{subjectLabel}の進捗 <b>{solvedQuestions} / {totalQuestions} 大問</b></label>
+          <progress value={solvedQuestions} max={Math.max(1,totalQuestions)} aria-label={`${subjectLabel}の学習進捗`} />
+          <button type="button" onClick={() => progressDialog.current?.showModal()}>教科別の記録を見る <ChevronRight size={16} /></button>
+        </section>
         <FriendOnlineStrip />
-        <details className="arena-home-more"><summary>学習状況・その他</summary><p>連続学習 {streak}日 ／ {todayFormatted}</p><p>{EXAM_DATE_LABEL}まで {daysUntilExam}日</p>{schoolBrand && <p>{schoolBrand.schoolName}</p>}
+      </div>
+      <dialog ref={progressDialog} className="game-details-dialog" aria-labelledby="home-progress-title">
+        <header><h2 id="home-progress-title">学習状況・その他</h2><button type="button" onClick={() => progressDialog.current?.close()} autoFocus>閉じる</button></header>
+        <div className="game-details-body arena-home-more"><p>連続学習 {streak}日 ／ {todayFormatted}</p><p>{EXAM_DATE_LABEL}まで {daysUntilExam}日</p>{schoolBrand && <p>{schoolBrand.schoolName}</p>}
           <div className="game-study-progress"><span>{subjectLabel} {solvedQuestions}/{totalQuestions}大問</span><div role="progressbar" aria-label="学習進捗" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}><i style={{ width: `${progressPercent}%` }} /></div></div>
           <details className="home-all-progress"><summary>全科目の進捗を見る</summary>{subjectProgressDefs.map(def => <p key={def.id}>{def.label} {subjectProgress[def.id]?.solved ?? 0}/{subjectProgress[def.id]?.total ?? 0}大問</p>)}</details>
           <button type="button" onClick={onLogicalTree}>全体のつながりを見る</button>{onRika && <button type="button" onClick={onRika}>高校入試 理科を開く</button>}
           <FeedbackButton screen="title" variant="text" label="ご意見・ご要望" /><FeedbackReplyInbox />
           {isGuest && !auth.currentUser && <GoogleLinkBanner variant="inline" dismissible />}
-        </details>
-      </div>
+          <button type="button" onClick={onLeaderboard}>ランキングを見る</button>
+        </div>
+      </dialog>
       {showNotices && <UpdateNoticeModal onClose={() => { setShowNotices(false); setUnreadCount(unreadNoticeCount()); }} />}
     </div>
   );

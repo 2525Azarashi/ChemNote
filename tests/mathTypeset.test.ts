@@ -597,3 +597,18 @@ describe('**…** を太字として表示する', () => {
     expect(htmlOf('**開いたまま\n閉じない**')).not.toContain('<strong');
   });
 });
+
+
+describe('reported substitution integral typography', () => {
+  it('uses explicit fractions, limits and intentional aligned steps', async () => {
+    const {integralSubstitutionProblems} = await import('../src/data/mathIntegralProblems');
+    const text = integralSubstitutionProblems.find(p=>p.id==='q_m1_10_trig')!.explanation;
+    const pieces = splitMathPieces(text).filter(p=>p.kind==='math');
+    expect(pieces.length).toBeGreaterThan(10);
+    const html = typesetMath(text);
+    expect(html).not.toContain('katex-error');
+    expect(text).toContain(String.raw`\frac{\sin(2\theta)}{2}`);
+    expect(text).toContain(String.raw`\right]_0^{\pi/2}`);
+    expect(text).toContain(String.raw`\begin{aligned}`);
+  });
+});

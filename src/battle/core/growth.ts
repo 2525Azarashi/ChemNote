@@ -526,6 +526,8 @@ export interface ItemDef {
   label: string;
   /** pose: 画像パス（public/mascots）／ frame: 色コード */
   value: string;
+  gacha?: boolean;
+  pattern?: 'dashed' | 'double' | 'dots' | 'rays' | 'stars';
   /**
    * 入手条件。どれか1つ。
    *   level  … そのレベルで自動解放
@@ -542,9 +544,9 @@ export interface ItemDef {
  */
 export const ITEMS: readonly ItemDef[] = [
   { id: 'pose_basic', kind: 'pose', label: '基本', value: '/mascots/basic.png', unlock: { level: 1 } },
-  { id: 'pose_walking', kind: 'pose', label: 'おさんぽ', value: '/mascots/walking.png', unlock: { level: 3 } },
-  { id: 'pose_studying', kind: 'pose', label: '勉強中', value: '/mascots/studying.png', unlock: { level: 5 } },
-  { id: 'pose_thinking', kind: 'pose', label: '考え中', value: '/mascots/thinking.png', unlock: { level: 8 } },
+  { id: 'pose_walking', kind: 'pose', gacha: true, label: 'おさんぽ', value: '/mascots/walking.png', unlock: { level: 3 } },
+  { id: 'pose_studying', kind: 'pose', gacha: true, label: '勉強中', value: '/mascots/studying.png', unlock: { level: 5 } },
+  { id: 'pose_thinking', kind: 'pose', gacha: true, label: '考え中', value: '/mascots/thinking.png', unlock: { level: 8 } },
   { id: 'pose_good', kind: 'pose', label: 'グッド！', value: '/mascots/good.png', unlock: { badge: 'b_first_win' } },
   { id: 'pose_cheering', kind: 'pose', label: '応援', value: '/mascots/cheering.png', unlock: { coins: 120 } },
   { id: 'pose_happy', kind: 'pose', label: 'よろこび', value: '/mascots/happy.png', unlock: { badge: 'b_perfect' } },
@@ -561,6 +563,11 @@ export const ITEMS: readonly ItemDef[] = [
   { id: 'frame_lavender', kind: 'frame', label: 'ラベンダー', value: '#B09BC7', unlock: { coins: 140 } },
   { id: 'frame_coral', kind: 'frame', label: 'コーラル', value: '#DD8F79', unlock: { coins: 160 } },
   { id: 'frame_midnight', kind: 'frame', label: '星空', value: '#3F527C', unlock: { coins: 200 } },
+  { id: 'frame_stitch', kind: 'frame', label: '手帳ステッチ', value: '#B58164', pattern: 'dashed', unlock: { coins: 120 } },
+  { id: 'frame_medal', kind: 'frame', label: '二重のメダル', value: '#BBA049', pattern: 'double', unlock: { coins: 180 } },
+  { id: 'frame_bubbles', kind: 'frame', label: 'ソーダバブル', value: '#62A8BB', pattern: 'dots', unlock: { coins: 150 } },
+  { id: 'frame_sunrise', kind: 'frame', label: '朝日のリング', value: '#DA9B65', pattern: 'rays', unlock: { coins: 180 } },
+  { id: 'frame_constellation', kind: 'frame', label: '星めぐり', value: '#7A76B0', pattern: 'stars', unlock: { coins: 220 } },
   { id: 'frame_fire', kind: 'frame', label: 'ほのお', value: '#E67E22', unlock: { badge: 'b_streak_5' } },
 ];
 
@@ -622,6 +629,10 @@ export function equippedPoseSrc(progress: GrowthProgress): string {
 }
 
 /** 身につけている枠の色 */
+export function equippedFramePattern(progress: GrowthProgress): string {
+  return itemById(progress.equipped.frame)?.pattern || 'plain';
+}
+
 export function equippedFrameColor(progress: GrowthProgress): string {
   const item = itemById(progress.equipped.frame);
   return item && item.kind === 'frame' ? item.value : '#E5E7EB';

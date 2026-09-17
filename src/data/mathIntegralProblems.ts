@@ -525,19 +525,42 @@ t を戻して
       sq('q_m1_10_t_1', '（1）∫[0→2] √(4-x^2) dx', 'π', ['π', 'pi', 'パイ']),
       sq('q_m1_10_t_2', '（2）∫[0→3] 1/(x^2+9) dx', 'π/12', ['π/12', 'pi/12', '(1/12)π', 'π/12']),
     ],
-    explanation: `ルートの中や分母に「a² と x² の組み合わせ」があるときの2大定番置換です。
+    explanation: String.raw`ルートの中や分母に「$a^2$ と $x^2$ の組み合わせ」があるときの2大定番置換です。
 
-**√(a²-x²) → x = a sinθ**：1 - sin²θ = cos²θ でルートが外れる。
-**1/(x²+a²) → x = a tanθ**：1 + tan²θ = 1/cos²θ で分母が消える。
+**ルートを外す置換**
+$$\sqrt{a^2-x^2}\quad\longrightarrow\quad x=a\sin\theta$$
+$1-\sin^2\theta=\cos^2\theta$ を使います。
 
-（1）x = 2sinθ とおくと dx = 2cosθ dθ。x: 0→2 は θ: 0→π/2。
-√(4-4sin²θ) = 2cosθ（この範囲で cosθ ≧ 0）。
-∫[0→π/2] 2cosθ·2cosθ dθ = 4∫[0→π/2] cos²θ dθ = 4·(1/2)[θ + sin2θ/2] = π。
-実はこの積分は「半径2の円の面積の1/4」なので、図形的に (1/4)·π·2² = π と即答もできます。検算に便利です。
+**分母を簡単にする置換**
+$$\frac{1}{x^2+a^2}\quad\longrightarrow\quad x=a\tan\theta$$
+$1+\tan^2\theta=1/\cos^2\theta$ を使います。
 
-（2）x = 3tanθ とおくと dx = 3/cos²θ dθ。x: 0→3 は θ: 0→π/4。
-x²+9 = 9(tan²θ+1) = 9/cos²θ。
-∫[0→π/4] (cos²θ/9)·(3/cos²θ)dθ = (1/3)∫[0→π/4] dθ = (1/3)·(π/4) = π/12。
+**（1）置換と積分区間**
+$x=2\sin\theta$ とおくと、$dx=2\cos\theta\,d\theta$。
+$x:0\to2$ に対応する区間は $\theta:0\to\pi/2$ です。
+$$\sqrt{4-4\sin^2\theta}=2\cos\theta$$
+この区間では $\cos\theta\geq0$ です。
+
+$$\begin{aligned}
+\int_0^2\sqrt{4-x^2}\,dx
+&=4\int_0^{\pi/2}\cos^2\theta\,d\theta\\
+&=2\left[\theta+\frac{\sin(2\theta)}{2}\right]_0^{\pi/2}\\
+&=\pi
+\end{aligned}$$
+実はこの積分は「半径2の円の面積の4分の1」なので、図形的にも検算できます。
+$$\frac14\cdot\pi\cdot2^2=\pi$$
+
+**（2）置換と積分区間**
+$x=3\tan\theta$ とおくと、$dx=\frac{3}{\cos^2\theta}\,d\theta$。
+$x:0\to3$ に対応する区間は $\theta:0\to\pi/4$ です。
+$$x^2+9=9(\tan^2\theta+1)=\frac9{\cos^2\theta}$$
+
+$$\begin{aligned}
+\int_0^3\frac{dx}{x^2+9}
+&=\int_0^{\pi/4}\frac{\cos^2\theta}{9}\cdot\frac3{\cos^2\theta}\,d\theta\\
+&=\frac13\int_0^{\pi/4}d\theta\\
+&=\frac13\cdot\frac\pi4=\frac\pi{12}
+\end{aligned}$$
 
 どちらも「置換したら**積分区間も θ に取り替える**」のが定積分での注意点です。`,
     surroundingKnowledge: [],

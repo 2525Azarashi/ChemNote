@@ -176,11 +176,15 @@ describe('スコアのアニメーションとカウントダウン', () => {
   it('3桁区切り', () => {
     expect(formatScore(1240)).toBe('1,240');
   });
-  it('3 → 2 → 1 → START! → null', () => {
-    expect(countdownLabelAt(0)).toBe('3');
-    expect(countdownLabelAt(800)).toBe('2');
-    expect(countdownLabelAt(1600)).toBe('1');
-    expect(countdownLabelAt(2400)).toBe('START!');
+  it('holds each number from 7 to 1 for one second, then START', () => {
+    expect(COUNTDOWN_TOTAL_MS).toBe(7600);
+    expect(countdownLabelAt(-100)).toBe('7');
+    for (let second=0; second<7; second++) {
+      expect(countdownLabelAt(second*1000)).toBe(String(7-second));
+      expect(countdownLabelAt(second*1000+999)).toBe(String(7-second));
+    }
+    expect(countdownLabelAt(7000)).toBe('START!');
+    expect(countdownLabelAt(7599)).toBe('START!');
     expect(countdownLabelAt(COUNTDOWN_TOTAL_MS)).toBeNull();
   });
 });

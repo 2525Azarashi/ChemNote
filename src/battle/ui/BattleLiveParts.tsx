@@ -23,7 +23,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { Check, Flame, Hourglass, Pencil, X } from 'lucide-react';
+import { Check, Flame, Hourglass, Pencil, FileText, X } from 'lucide-react';
 
 import { maskNickname } from '../../utils/nicknamePrivacy';
 import {
@@ -352,29 +352,15 @@ const TOAST_STYLE: Record<LiveToastData['kind'], { bg: string; fg: string; borde
 export function CountdownOverlay({ label }: { label: string | null }) {
   if (!label) return null;
   const isStart = label === 'START!';
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      // ★問題文を透かさない★ 両者が START! で同時に読み始めるのが公平
-      style={{ background: 'rgba(244, 241, 234, 0.97)' }}
-      role="status"
-      aria-live="assertive"
-    >
-      <div
-        key={label}
-        className="battle-live-count flex h-40 w-40 items-center justify-center rounded-full border-4"
-        style={{
-          background: isStart ? '#F4D03F' : '#FDFBF7',
-          borderColor: isStart ? '#FFFFFF' : '#F4D03F',
-          color: INK,
-        }}
-      >
-        <span className={`font-black ${isStart ? 'text-3xl tracking-wider' : 'text-7xl tabular-nums'}`}>
-          {label}
-        </span>
-      </div>
-    </div>
-  );
+  return <section className="battle-ready-screen" aria-label="対戦開始の準備">
+    <span className="battle-ready-kicker">BATTLE READY</span>
+    <div className="battle-ready-tools" aria-hidden="true"><FileText /><Pencil /></div>
+    <h2>紙と筆記用具を<br />用意してください</h2>
+    <p>計算やメモの準備をして、スタートを待とう。</p>
+    <div key={label} className={`battle-live-count battle-ready-count ${isStart ? 'is-start' : ''}`} role="timer" aria-live="polite" aria-atomic="true" aria-label={isStart ? '対戦開始' : `開始まで${label}秒`}><span>{label}</span></div>
+    <div className="battle-ready-dots" aria-hidden="true">{Array.from({length:7},(_,i)=><i key={i} className={isStart || i >= Number(label) ? 'elapsed' : ''}/>)}</div>
+    <small>問題はカウントダウンが終わってから表示されます。</small>
+  </section>;
 }
 
 // ============================================================
