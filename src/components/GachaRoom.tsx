@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { CinematicClip, CINEMATIC_CLIPS } from './CinematicClip';
 import { Gift, Coins, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useGrowthProgress } from '../hooks/useGrowthProgress';
 import { GACHA_COST, GACHA_DUPLICATE_REFUND, gachaItems } from '../battle/core/arenaEconomy';
@@ -20,10 +21,11 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
  const previewItem=items[previewIndex % items.length];
  const ownedCount=items.filter(item=>progress?.owned.includes(item.id)).length;
  const [confirm,setConfirm]=useState(false);const [error,setError]=useState('');
+ const [revealing,setRevealing]=useState(false);
  const [result,setResult]=useState<{item:ItemDef;duplicate:boolean;refund:number}|null>(null);
  const draw=async()=>{
   if(lock.current)return;lock.current=true;setBusy(true);setError('');setConfirm(false);primeAudio();
-  try {const r=await drawGacha(crypto.randomUUID(),owner);if(!r?.result){setError('抽選できませんでした。残高や保存設定を確認してください。');return;}setResult(r.result);play('badge',false);}
+  try {const r=await drawGacha(crypto.randomUUID(),owner);if(!r?.result){setError('抽選できませんでした。残高や保存設定を確認してください。');return;}setResult(r.result);setRevealing(true);play('badge',false);}
   catch {setError('抽選できませんでした。再度お試しください。');}finally{lock.current=false;setBusy(false);}
  };
  return <section className={`gacha-room ${result?'has-result':''}`}>{!embedded && <button type="button" className="arena-back" onClick={onBack}><ArrowLeft size={18}/>マイページ</button>}
@@ -37,7 +39,7 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
     <div className="gacha-preview-info" aria-live="polite"><strong>{previewItem.label}</strong><span>{previewIndex+1} / {items.length} · 各{100/items.length}%</span></div>
   </div>
   <p className="gacha-balance"><Coins size={20}/>所持 {progress?.coins ?? '—'} マナコイン</p>
-  {result ? <div className="gacha-result" role="status"><h2>{result.duplicate?'重複アイテム':'NEW!'} {result.item.label}</h2>
+  {revealing ? <div className="gacha-cinema"><p>コレクションが届きました</p><CinematicClip src={CINEMATIC_CLIPS.gacha.src} label="ガチャの開封動画" onComplete={()=>setRevealing(false)} /><button type="button" onClick={()=>setRevealing(false)}>結果を見る</button></div> : result ? <div className="gacha-result" role="status"><h2>{result.duplicate?'重複アイテム':'NEW!'} {result.item.label}</h2>
     <div className="gacha-result-art">{progress && <GrowthAvatar progress={{...progress,equipped:{...progress.equipped,[result.item.kind]:result.item.id}}} size={88} showLevel={false}/>}</div>
     <p>{result.duplicate?`重複分 ${result.refund} マナコイン返還（実質消費 ${GACHA_COST-result.refund}枚）`:'コレクションに追加しました'}</p>
     <button type="button" onClick={async()=>{if(await equip(result.item.id))setError('装備しました。ホームと対戦に反映されます。');else setError('装備を保存できませんでした。');}}>この装飾をつける</button>

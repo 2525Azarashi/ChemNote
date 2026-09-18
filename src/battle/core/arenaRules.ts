@@ -1,7 +1,14 @@
 import type { BattleRule, BattleQuestion } from './types';
 /** Only newly created rooms opt in. Old rooms retain their snapshotted scoring. */
 export function arenaRule(rule: BattleRule): BattleRule {
-  return { ...rule, scoringVersion: 2, pointsCorrect: 60, pointsSpeedMax: 240, pointsStreak: 5 };
+  const listening = rule.subject === 'english_listening';
+  return { ...rule, scoringVersion: 2, pointsCorrect: 60,
+    pointsSpeedMax: listening ? 20 : 240, pointsStreak: 5,
+    // Longest shipped recording is 42.27s. New rooms allow listening + answer time;
+    // existing rooms continue to use their saved rule and deadline.
+    ...(listening ? { timeLimitOverride: 55,
+      note: '音源は自動再生。鳴らない場合は再生ボタンを押してください。再生中も制限時間は進みます。' } : {}),
+  };
 }
 /** Bounded smooth curve: quick correct answers matter, late answers keep base points. */
 export function speedCurve(remainingRatio: number) {

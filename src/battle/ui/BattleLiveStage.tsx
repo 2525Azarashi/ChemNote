@@ -22,7 +22,7 @@
  */
 
 import type { ReactNode } from 'react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import type { BattlePlayerScore, BattleQuestion, BattleRule } from '../core/types';
 import { countdownLabelAt, COUNTDOWN_TOTAL_MS, gapMessage, maxPointsPerQuestion, phaseOf } from '../core/battleLive';
@@ -94,7 +94,12 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
     p.finished ? 'finished' : counting ? 'countdown' : 'playing',
     phase,
   );
-  const { play, unlock } = useBattleAudio(track);
+  const listening = p.question.subject === 'english_listening';
+  const quiet = listening && !counting && !p.reveal;
+  const { play: playSound, unlock } = useBattleAudio(listening ? null : track);
+  const play = useCallback((sound: Parameters<typeof playSound>[0]) => {
+    if (!quiet) playSound(sound);
+  }, [playSound, quiet]);
 
   const live = useBattleLive({
     playing: playing && !counting,

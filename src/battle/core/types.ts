@@ -155,6 +155,8 @@ export interface BattleQuestion {
   timeLimit: number;
   /** 画像URL（元の大問に画像があるとき。無ければ undefined） */
   imageUrl?: string;
+  /** Recorded listening audio only; no script, translation or answer hints. */
+  audioUrl?: string;
 }
 
 // ============================================================
