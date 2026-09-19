@@ -1,0 +1,28 @@
+name: Listening handoff decision
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+permissions:
+  contents: read
+jobs:
+  require-listening-decision:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate explicit handoff decision and rationale
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || '';
+            const lines = body.split(/\r?\n/).map(line => line.trim());
+            const choices = lines.filter(line => line.startsWith('リスニング配布判断:'));
+            const allowed = ['リスニング配布判断: リスニングにも送ってください。', 'リスニング配布判断: リスニングには送らないでください。'];
+            if (choices.length !== 1 || !allowed.includes(choices[0])) {
+              core.setFailed('リスニング配布判断を一つだけ明記してください。送る／送らないの判断は必須です。');
+            }
+            for (const field of ['リスニング配布理由:', 'リスニング対象:', 'リスニング受け渡し状況:']) {
+              const matches = lines.filter(line => line.startsWith(field));
+              const value = matches[0]?.slice(field.length).trim() || '';
+              if (matches.length !== 1 || value.length < 2 || /記入|選択してください|^（/.test(value)) {
+                core.setFailed(field + ' を具体的に記入してください。');
+              }
+            }
