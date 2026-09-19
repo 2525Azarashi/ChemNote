@@ -1,0 +1,27 @@
+import { readFileSync,writeFileSync,mkdirSync } from 'node:fs';
+import { getAllListeningChapters } from '../src/data/englishListeningData';
+const raw=JSON.parse(readFileSync('src/data/listeningVocabularySource.json','utf8'));
+const questions=raw.questions as {id:string;chapterId:string;subQuestionId:string;label:string;prompt:string;options:string[];answerIndex:number;oneLine:string}[];
+const levels=['lv1','lv2','lv3','lv4','ilv1','ilv2','ilv3'];
+const byId=new Map(questions.map(q=>[q.id,q]));
+const tracks=getAllListeningChapters().flatMap(chapter=>chapter.practiceProblems.flatMap((p:any,index:number)=>(p.audioTracks||[]).map((track:any)=>({chapterId:chapter.id,chapterTitle:chapter.abstractTitle,problemId:p.id,problemIndex:index,script:track.script,audioUrl:track.audioUrl,translation:track.translation}))));
+const normalize=(s:string)=>s.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
+const texts=tracks.map(t=>normalize(t.script));
+const quiz=(q:typeof questions[number])=>({id:q.id,prompt:q.prompt,label:q.label,options:q.options,answerIndex:q.answerIndex});
+const words=questions.filter(q=>q.id.endsWith(':e2j')).sort((a,b)=>levels.indexOf(a.chapterId)-levels.indexOf(b.chapterId)||Number(a.subQuestionId)-Number(b.subQuestionId)).map(q=>{
+ if(!q.options[q.answerIndex])throw new Error('Missing correct answer: '+q.id);
+ const term=normalize(q.label);const escaped=term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+ const match=new RegExp("(?<![a-z'])"+escaped+"(?![a-z'])",'i');
+ const indices=texts.flatMap((s,i)=>match.test(s)?[i]:[]);
+ const chapterIds=[...new Set(indices.map(i=>tracks[i].chapterId))];
+ const examples=chapterIds.map(id=>tracks[indices.find(i=>tracks[i].chapterId===id)!]);
+ const reverse=byId.get(q.id.replace(/:e2j$/,':j2e'));
+ return {id:q.id.replace(/:e2j$/,''),word:q.label,meaning:q.options[q.answerIndex],fullMeaning:q.oneLine.split(' ＝ ').slice(1).join(' ＝ ')||q.options[q.answerIndex],level:q.chapterId,chapterIds,examples,questions:[quiz(q),...(reverse?[quiz(reverse)]:[])]};
+});
+if(words.length!==new Set(words.map(w=>w.id)).size)throw new Error('Duplicate word ID');
+if(words.reduce((s,w)=>s+w.questions.length,0)!==questions.length)throw new Error('Vocabulary question loss');
+const data={source:raw.source,matching:'Exact surface-form match in existing listening scripts; inflections and paraphrases are not inferred.',wordCount:words.length,questionCount:questions.length,unitSize:20,chapters:getAllListeningChapters().map(c=>({id:c.id,title:c.abstractTitle})),words};
+mkdirSync('public/data',{recursive:true});
+writeFileSync('public/data/listeningVocabulary.json',JSON.stringify(data));
+writeFileSync('src/data/listeningVocabularyMeta.generated.ts',`export const VOCABULARY_COUNT = ${words.length};\n`);
+console.log(`Vocabulary: ${data.wordCount} entries / ${data.questionCount} original questions / ${words.filter(w=>w.chapterIds.length).length} entries linked to listening scripts. 20 entries per study unit.`);
