@@ -76,12 +76,16 @@ import type {
   BattleRoom,
 } from '../core/types';
 import { answerIndexOf, answerKeyOf } from '../core/types';
-import { firstDeadlineSec } from '../core/battleLive';
+import { COUNTDOWN_TOTAL_MS, firstDeadlineSec } from '../core/battleLive';
 
 /** 画面が使う対戦の状態 */
 export interface BattleRoomState {
   loading: boolean;
   error: string | null;
+  /** 開始の書き込み中 */
+  starting: boolean;
+  /** 出題プールを読み込めたか（false の間は開始できない） */
+  poolReady: boolean;
   room: BattleRoom | null;
   /** 出題（部屋の questionIds を本体に戻したもの） */
   questions: BattleQuestion[];
@@ -239,20 +243,27 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
   // 教科のプールを読み込む（★選ばれた1教科だけ★）
   // ------------------------------------------------------------
   const subject = room?.subject;
+  // 読み込みに失敗したら自動でやり直す（2秒・4秒・8秒…最大5回）。
+  // 以前は1回失敗すると問題が空のまま残り、「はじめる」を押しても何も起きなかった。
+  const [poolAttempt, setPoolAttempt] = useState(0);
   useEffect(() => {
     if (!subject) return;
     let alive = true;
+    let retry: ReturnType<typeof setTimeout> | undefined;
     loadPool(subject)
       .then((list) => {
-        if (alive) setPool(list);
+        if (alive) { setPool(list); setError((e) => (e && e.startsWith('問題の読み込み') ? null : e)); }
       })
       .catch(() => {
-        if (alive) setError('問題の読み込みに失敗しました。通信環境をご確認ください。');
+        if (!alive) return;
+        setError('問題の読み込みに失敗しました。通信環境をご確認ください（自動で再試行します）。');
+        if (poolAttempt < 5) retry = setTimeout(() => setPoolAttempt((n) => n + 1), 2000 * 2 ** poolAttempt);
       });
     return () => {
       alive = false;
+      if (retry) clearTimeout(retry);
     };
-  }, [subject]);
+  }, [subject, poolAttempt]);
 
   // ------------------------------------------------------------
   // 時計を進める（残り時間の表示用）
@@ -427,9 +438,21 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
    * 1問目だけ、問題の開始時刻（締切 − 制限時間）までの残りを返す。
    * 両端末が同じ deadlineAt から引き算するので、同じタイミングで START! になる。
    */
+  /*
+   * ★締切がまだ届いていない1問目は「カウントダウン中」として扱う★
+   * status が playing に変わった直後は、
+   *   ・自分の書き込み（serverTimestamp 待ち）で deadlineAt がまだ読めない
+   *   ・now（200ms の時計）がまだ playing 用に動き出していない
+   * ことがあり、以前はここが 0 になって ★1フレームだけ問題文が描かれ★、
+   * そのあと「7」のカウントダウンに切り替わっていた（背景に問題が一瞬見える不具合）。
+   * 開始時刻が分からない間は問題を出さない側に倒す。
+   */
+  const liveNow = Math.max(now, serverNow());
   const preStartMs =
-    status === 'playing' && currentIndex === 0 && current && deadlineMs > 0
-      ? Math.max(0, deadlineMs - resolveTimeLimit(current, rules) * 1000 - now)
+    status === 'playing' && currentIndex === 0 && current
+      ? deadlineMs > 0
+        ? Math.max(0, deadlineMs - resolveTimeLimit(current, rules) * 1000 - liveNow)
+        : COUNTDOWN_TOTAL_MS
       : 0;
 
   // ------------------------------------------------------------
@@ -800,8 +823,16 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
     setPanel((prev) => prev.slice(0, -1));
   }, [answered]);
 
+  /** 開始の書き込み中（ボタンの二度押し防止・「開始しています…」の表示） */
+  const [starting, setStarting] = useState(false);
   const start = useCallback(() => {
-    if (!roomId || questions.length === 0) return;
+    if (!roomId) return;
+    if (questions.length === 0) {
+      // ★黙って何もしないのをやめる★（押しても反応が無い不具合）
+      setError('問題を準備しています。数秒待ってからもう一度押してください。');
+      setPoolAttempt((n) => n + 1);
+      return;
+    }
     /**
      * ★1問目の締切にカウントダウン（約3秒）を足す★
      * 3・2・1・START! の間は問題を隠すので、その分だけ締切を後ろに置く。
@@ -811,7 +842,11 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
      * 速さ点は「締切 − 制限時間」を開始時刻とするので、カウントダウンの分は入らない。
      */
     const first = firstDeadlineSec(resolveTimeLimit(questions[0], rules));
-    void startBattle(roomId, first).catch((e: Error) => setError(e.message));
+    setError(null);
+    setStarting(true);
+    void startBattle(roomId, first)
+      .catch((e: Error) => setError(`${e.message} もう一度「はじめる」を押してください。`))
+      .finally(() => setStarting(false));
   }, [roomId, questions, rules]);
 
   /**
@@ -882,6 +917,8 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
   return {
     loading,
     error,
+    starting,
+    poolReady: pool.length > 0,
     room,
     questions,
     current,

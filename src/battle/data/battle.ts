@@ -303,19 +303,79 @@ export interface CreatedRoom {
  * フレンド登録済みかどうかも問わないので、
  * 「クラスの子と今すぐ1戦」ができる。
  */
+/**
+ * ★同じ相手との再戦・部屋での設定変更に使う「次の部屋の合言葉」★
+ *
+ * 前の部屋IDから決まった手順で4文字を作る。2人とも前の部屋IDを知っているので、
+ * 相手は合言葉を打たずに battle_codes/{合言葉} を get するだけで次の部屋を見つけられる。
+ * ★Firestore のルールは変えていない★（合言葉の作成・get は従来どおりの権限で足りる）。
+ * 衝突したときのために attempt 0〜(SUCCESSOR_ATTEMPTS-1) を順に使う。
+ */
+export const SUCCESSOR_ATTEMPTS = 4;
+export function successorCode(prevRoomId: string, attempt: number): string {
+  let h = 0x811c9dc5;
+  const src = `${prevRoomId}#next#${attempt}`;
+  for (let i = 0; i < src.length; i += 1) { h ^= src.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  let out = '';
+  for (let i = 0; i < CODE_LENGTH; i += 1) {
+    out += CODE_ALPHABET[h % CODE_ALPHABET.length];
+    h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) >>> 0;
+  }
+  return out;
+}
+
+/**
+ * 前の部屋の続きの部屋（同じ部屋主が作った waiting の部屋）を探す。見つからなければ null。
+ * 探すのは get だけ（list 検索はしない）ので、読み取りは最大 SUCCESSOR_ATTEMPTS 件。
+ */
+export async function findSuccessorRoom(prevRoomId: string, hostUid: string): Promise<string | null> {
+  for (let attempt = 0; attempt < SUCCESSOR_ATTEMPTS; attempt += 1) {
+    const snap = await getDoc(doc(db, COL_CODES, successorCode(prevRoomId, attempt)));
+    if (!snap.exists()) continue;
+    if (snap.get('hostUid') !== hostUid) continue;
+    const roomId = String(snap.get('roomId') || '');
+    if (roomId && roomId !== prevRoomId) return roomId;
+  }
+  return null;
+}
+
+/** 前の部屋の続きに入る（見つかるまで intervalMs ごとに探す。signal で中止） */
+export async function followSuccessorRoom(prevRoomId: string, hostUid: string, opts: { timeoutMs?: number; intervalMs?: number; signal?: AbortSignal } = {}): Promise<string | null> {
+  const until = Date.now() + (opts.timeoutMs ?? 30_000);
+  while (Date.now() < until) {
+    opts.signal?.throwIfAborted();
+    try {
+      const next = await findSuccessorRoom(prevRoomId, hostUid);
+      if (next) { await joinRoomById(next); return next; }
+    } catch (e) {
+      if ((e as Error)?.name === 'AbortError') throw e;
+    }
+    await new Promise((r) => setTimeout(r, opts.intervalMs ?? 2500));
+  }
+  return null;
+}
+
 export async function createFriendRoom(
   subject: string,
   ruleOverride?: Partial<BattleRule>,
   chapterId?: string,
+  /** 同じ相手との再戦・設定変更のときの前の部屋ID（合言葉をそこから作る） */
+  successorOf?: string,
+  /** フレンド対戦のモード（friendModes.ts）。リスニングは音源の長さがあるので時間は変えない */
+  modeRules?: Partial<Pick<BattleRule, 'pointsSpeedMax' | 'timeLimitOverride'>>,
 ): Promise<CreatedRoom> {
   const uid = requireUid();
-  const rules = arenaRule(normalizeRule(subject, { ...loadRuleSync(subject), ...ruleOverride }));
+  const arena = arenaRule(normalizeRule(subject, { ...loadRuleSync(subject), ...ruleOverride }));
+  const rules: BattleRule = modeRules
+    ? { ...arena, ...(modeRules.pointsSpeedMax != null ? { pointsSpeedMax: modeRules.pointsSpeedMax } : {}),
+        ...(modeRules.timeLimitOverride != null && subject !== 'english_listening' ? { timeLimitOverride: modeRules.timeLimitOverride } : {}) }
+    : arena;
   const rating = await fetchMyRating();
 
   // 合言葉が既に使われていたら引き直す。
   // 31^4 = 約92万通りなので、同時に開いている部屋が数百でも衝突はまれ。
   for (let attempt = 0; attempt < 6; attempt += 1) {
-    const joinCode = randomCode();
+    const joinCode = successorOf && attempt < SUCCESSOR_ATTEMPTS ? successorCode(successorOf, attempt) : randomCode();
     const roomRef = doc(collection(db, COL_ROOMS));
     const codeRef = doc(db, COL_CODES, joinCode);
 
@@ -388,7 +448,12 @@ export async function joinRoomByCode(rawCode: string): Promise<string> {
   }
   const roomId = String(codeSnap.get('roomId') || '');
   if (!roomId) throw new Error('その合言葉の部屋は見つかりませんでした。');
+  return joinRoomById(roomId);
+}
 
+/** 部屋IDで入室する（合言葉の入力なし。再戦・設定変更の追従で使う） */
+export async function joinRoomById(roomId: string): Promise<string> {
+  const uid = requireUid();
   const rating = await fetchMyRating();
 
   try {
@@ -810,9 +875,24 @@ function deadlineFromNow(seconds: number): Date {
  *
  * ここでは送信の前後を測る部分だけを受け持つ。
  */
+/**
+ * ★書き込みの待ち時間の上限★
+ * Firestore の書き込みは圏外だと「送信待ち」のまま Promise が返ってこない。
+ * 以前は「はじめる」を押しても何も起きず、ずっと待っているように見えた
+ * （フレンド対戦でカウントダウンが始まらない不具合の原因の1つ）。
+ * 上限を過ぎたら 'deadline-exceeded' として投げ、画面に再試行を出す。
+ */
+export const WRITE_TIMEOUT_MS = 12_000;
+function withWriteTimeout<T>(promise: Promise<T>, ms = WRITE_TIMEOUT_MS): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(Object.assign(new Error('timeout'), { code: 'deadline-exceeded' })), ms);
+    promise.then((v) => { clearTimeout(timer); resolve(v); }, (e) => { clearTimeout(timer); reject(e); });
+  });
+}
+
 async function timedWrite(run: () => Promise<void>): Promise<void> {
   const sentAt = Date.now();
-  await run();
+  await withWriteTimeout(run());
   // 応答が返った時刻を覚えておく。サーバが刻んだ時刻そのものは
   // 購読側（watchRoom）で受け取るので、そこで突き合わせる。
   lastWrite = { sentAt, ackAt: Date.now() };
