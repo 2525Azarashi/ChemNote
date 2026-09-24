@@ -3,6 +3,7 @@ const { auth } = vi.hoisted(() => ({ auth: { currentUser: { uid: 'a' } as { uid:
 vi.mock('../src/firebase', () => ({ auth }));
 import { drawGacha, applyMatchGrowth, buyItem, claimMissionReward, loadMyGrowth, recordReviewGrowth,
   subscribeGrowth, touchLogin, openChest, GROWTH_STORAGE_PREFIX } from '../src/battle/data/growthStore';
+import { GACHA_DUPLICATE_REFUND_BY_RARITY } from '../src/battle/core/arenaEconomy';
 import { emptyProgress, missionsForDate, allMissionsForDate, applyLoginWithBonus, claimMission, xpRequiredForLevel, BADGES, MISSION_POOL } from '../src/battle/core/growth';
 import { readFileSync } from 'node:fs';
 import { readAudioPreferences, writeAudioPreferences } from '../src/battle/audio/audioPreferences';
@@ -126,10 +127,11 @@ describe('arena atomic rewards and draws', () => {
     expect(r.filter(v=>v?.result)).toHaveLength(1); expect((await loadMyGrowth()).coins).toBe(50);
     expect(JSON.parse(data.get(key())!).receipts).toEqual(['gacha:same']);
   });
-  it('returns 20 coins on a duplicate without duplicating inventory', async () => {
+  it('returns a rarity-based refund on a duplicate without duplicating inventory', async () => {
     seed(); await drawGacha('one');const before=await loadMyGrowth();
-    const r=await drawGacha('two');expect(r?.result?.duplicate).toBe(true);expect(r?.result?.refund).toBe(20);
-    expect(r?.progress.coins).toBe(20);expect(r?.progress.owned).toEqual(before.owned);
+    const r=await drawGacha('two');expect(r?.result?.duplicate).toBe(true);
+    const refund=GACHA_DUPLICATE_REFUND_BY_RARITY[r!.result!.rarity];expect(r?.result?.refund).toBe(refund);
+    expect(r?.progress.coins).toBe(refund);expect(r?.progress.owned).toEqual(before.owned);
   });
   it('insufficient balance and malformed request leave no receipt', async () => {
     seed(49);const before=data.get(key());expect((await drawGacha('one'))?.result).toBeNull();

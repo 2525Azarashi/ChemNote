@@ -200,6 +200,14 @@ describe('5連ガチャ', () => {
     expect(r?.progress.coins).toBe(300 - GACHA_COST * GACHA_MULTI_COUNT + refund);
     expect((await drawGachaMulti('m1'))?.results).toBeNull();
   });
+  it('5連は R 以上が必ず1つ入る（乱数がすべて N 側でも最後の1回が R 以上）', async () => {
+    vi.stubGlobal('crypto', { getRandomValues: (a: Uint32Array) => { a.fill(4_294_967_295); return a; } });
+    data.set(key(), JSON.stringify({ version: 1, progress: { ...emptyProgress('a'), coins: 300 }, receipts: [], day: '' }));
+    const r = await drawGachaMulti('g1');
+    const rarities = r!.results!.map(x => x.rarity);
+    expect(rarities.slice(0, 4)).toEqual(['N', 'N', 'N', 'N']);
+    expect(rarities[4]).not.toBe('N');
+  });
   it('残高不足なら1枚も使わない', async () => {
     data.set(key(), JSON.stringify({ version: 1, progress: { ...emptyProgress('a'), coins: GACHA_COST * GACHA_MULTI_COUNT - 1 }, receipts: [], day: '' }));
     const before = data.get(key());

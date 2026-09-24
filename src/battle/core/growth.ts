@@ -704,6 +704,8 @@ export function badgeTierColor(tier: 1 | 2 | 3): string {
 // ============================================================
 
 export type ItemKind = 'pose' | 'frame';
+/** ガチャのレア度：N（ノーマル）/ R（レア）/ SR（スーパーレア） */
+export type GachaRarity = 'N' | 'R' | 'SR';
 
 export interface ItemDef {
   id: string;
@@ -712,7 +714,9 @@ export interface ItemDef {
   /** pose: 画像パス（public/mascots）／ frame: 色コード */
   value: string;
   gacha?: boolean;
-  pattern?: 'dashed' | 'double' | 'dots' | 'rays' | 'stars' | 'stripes' | 'checker' | 'wave' | 'grid' | 'sparkle' | 'rainbow' | 'aurora' | 'neon';
+  pattern?: 'dashed' | 'double' | 'dots' | 'rays' | 'stars' | 'stripes' | 'checker' | 'wave' | 'grid' | 'sparkle' | 'rainbow' | 'aurora' | 'neon' | 'prism' | 'galaxy';
+  /** ガチャのレア度。省略時は gachaRarityOf() が入手条件から決める（N / R / SR） */
+  rarity?: GachaRarity;
   /**
    * 入手条件。どれか1つ。
    *   level  … そのレベルで自動解放
@@ -743,6 +747,9 @@ export const ITEMS: readonly ItemDef[] = [
   { id: 'pose_listening', kind: 'pose', gacha: true, label: 'リスニング中', value: '/mascots/listening.webp', unlock: { gacha: true } },
   { id: 'pose_science', kind: 'pose', gacha: true, label: '実験中', value: '/mascots/science.webp', unlock: { gacha: true } },
   { id: 'pose_trophy', kind: 'pose', gacha: true, label: '優勝トロフィー', value: '/mascots/trophy.webp', unlock: { gacha: true } },
+  // ── SR（スーパーレア）限定フレーム：ガチャからだけ出る ──
+  { id: 'frame_prism', kind: 'frame', gacha: true, rarity: 'SR', label: 'プリズム', value: '#C471ED', pattern: 'prism', unlock: { gacha: true } },
+  { id: 'frame_galaxy', kind: 'frame', gacha: true, rarity: 'SR', label: 'ギャラクシー', value: '#1E1B4B', pattern: 'galaxy', unlock: { gacha: true } },
   { id: 'frame_paper', kind: 'frame', label: 'ノート', value: '#E5E7EB', unlock: { level: 1 } },
   { id: 'frame_green', kind: 'frame', label: 'わかば', value: '#2ECC71', unlock: { level: 5 } },
   { id: 'frame_blue', kind: 'frame', label: 'そら', value: '#3498DB', unlock: { level: 10 } },
@@ -778,6 +785,19 @@ export const ITEMS: readonly ItemDef[] = [
   { id: 'frame_lightning', kind: 'frame', label: 'イナズマ', value: '#E0A800', pattern: 'rays', unlock: { badge: 'b_rush_2500' } },
   { id: 'frame_comet', kind: 'frame', label: 'コメット', value: '#5A67D8', pattern: 'sparkle', unlock: { badge: 'b_rush_combo10' } },
 ];
+
+/**
+ * ガチャのレア度。
+ *   SR … ガチャ限定のもの（rarity:'SR' 指定・または unlock:{gacha:true}）
+ *   R  … 模様つきフレーム・200枚以上の交換品・称号で解放されるポーズ
+ *   N  … それ以外
+ */
+export function gachaRarityOf(item: ItemDef): GachaRarity {
+  if (item.rarity) return item.rarity;
+  if ('gacha' in item.unlock) return 'SR';
+  if (item.pattern || ('coins' in item.unlock && item.unlock.coins >= 200) || ('badge' in item.unlock)) return 'R';
+  return 'N';
+}
 
 export function itemById(id: string): ItemDef | undefined {
   return ITEMS.find((i) => i.id === id);

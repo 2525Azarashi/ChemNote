@@ -2800,3 +2800,27 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
   .mana-rush-countdown strong, .mana-rush-combo b, .mana-rush-combo em, .mana-rush-rank strong,
   .mana-rush-options button[data-state=wrong], .daily-chest.is-ready .daily-chest-icon { animation: none; }
 }
+
+/* ===== ガチャのレア枠（N / R / SR） ===== */
+.gacha-rarity { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; padding: 1px 6px; border-radius: 999px; font-size: 10px; font-weight: 900; letter-spacing: .04em; line-height: 1.5; vertical-align: middle; }
+.gacha-rarity[data-rarity=N] { background: #eef1f4; color: #5d6d7e; border: 1px solid #d5dbe1; }
+.gacha-rarity[data-rarity=R] { background: linear-gradient(135deg,#fff3c4,#f2c94c); color: #7a5200; border: 1px solid #d9a92a; }
+.gacha-rarity[data-rarity=SR] { background: linear-gradient(120deg,#ff6b9d,#ffd93d,#6bcbff,#c77dff); color: #fff; text-shadow: 0 1px 1px #0005; border: 1px solid #fff; box-shadow: 0 0 8px #c77dff99; }
+.gacha-rarity-rates { display: flex; justify-content: center; gap: 8px; margin: 6px 0 0; padding: 0; list-style: none; font-size: 12px; font-weight: 800; }
+.gacha-rarity-rates li { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 12px; background: #fff; border: 1px solid #eadfc9; }
+.gacha-rarity-rates small { font-weight: 600; color: #8b98a5; font-size: 10px; }
+.gacha-guarantee { display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 8px; background: #7a5200; color: #fff3c4; font-size: 10px; }
+.gacha-cinema[data-rarity=R] { box-shadow: 0 0 0 3px #f2c94c, 0 0 28px #f2c94c99; border-radius: 20px; }
+.gacha-cinema[data-rarity=SR] { box-shadow: 0 0 0 3px #fff, 0 0 32px #c77dffcc, 0 0 60px #6bcbff88; border-radius: 20px; animation: gacha-sr-glow 1.6s ease-in-out infinite; }
+.gacha-result[data-rarity=R] { border-color: #f2c94c; background: radial-gradient(ellipse at top,#fffbe6,#fbe7a8); }
+.gacha-result[data-rarity=SR] { border-color: transparent; background: linear-gradient(#fffaf5,#fff4fb) padding-box, conic-gradient(#ff6b9d,#ffd93d,#6bcb77,#4d96ff,#c77dff,#ff6b9d) border-box; animation: arena-reward-in .5s ease-out, gacha-sr-glow 1.8s ease-in-out infinite; }
+.gacha-sr-banner { margin: 2px 0 6px; font-size: 22px !important; font-weight: 1000; letter-spacing: .12em; background: linear-gradient(90deg,#ff6b9d,#ffb13d,#4d96ff,#c77dff); -webkit-background-clip: text; background-clip: text; color: transparent; animation: gacha-sr-pop .7s cubic-bezier(.2,1.6,.4,1) both; }
+.gacha-multi-grid li { animation: gacha-card-in .45s ease-out both; }
+.gacha-multi-grid li[data-rarity=R] { border-color: #e0a800; background: linear-gradient(#fffbe8,#fff1bf); }
+.gacha-multi-grid li[data-rarity=SR] { border: 2px solid transparent; background: linear-gradient(#fff,#fff6fd) padding-box, conic-gradient(#ff6b9d,#ffd93d,#6bcb77,#4d96ff,#c77dff,#ff6b9d) border-box; box-shadow: 0 0 14px #c77dff88; }
+[data-frame-pattern=prism] { border-color: transparent !important; background: linear-gradient(#fff,#fff) padding-box, conic-gradient(from 45deg,#ff6b9d,#ffd93d,#6bcbff,#c77dff,#ff6b9d) border-box !important; box-shadow: 0 0 12px #c77dffaa, 0 0 24px #6bcbff66 !important; }
+[data-frame-pattern=galaxy] { border-color: #1e1b4b !important; background-image: radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 70% 60%,#c7d2fe 0 1.5px,transparent 2.5px),radial-gradient(circle at 40% 80%,#f0abfc 0 1px,transparent 2px),linear-gradient(135deg,#312e8155,#7c3aed33) !important; background-size: 18px 18px,24px 24px,20px 20px,100% 100% !important; box-shadow: 0 0 0 2px #7c3aed, 0 0 18px #4338ca99 !important; }
+@keyframes gacha-sr-glow { 0%,100% { filter: drop-shadow(0 0 4px #c77dff88); } 50% { filter: drop-shadow(0 0 14px #6bcbffcc); } }
+@keyframes gacha-sr-pop { 0% { opacity: 0; transform: scale(.4) rotate(-6deg); } 100% { opacity: 1; transform: none; } }
+@keyframes gacha-card-in { 0% { opacity: 0; transform: translateY(10px) scale(.9); } 100% { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .gacha-cinema[data-rarity], .gacha-result[data-rarity=SR], .gacha-sr-banner, .gacha-multi-grid li { animation: none !important; } }

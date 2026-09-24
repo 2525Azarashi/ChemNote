@@ -7,7 +7,7 @@ import { safeLocalStorage } from '../../utils/safeLocalStorage';
 import { applyHolesFilled, applyLoginWithBonus, applyMatchToProgress, applyRushResult, applyStudySolved,
   claimMission, emptyProgress, equipItem, equipTitle, localDateKey, normalizeProgress, openCompleteChest,
   purchaseItem, RUSH_COIN_PLAYS_PER_DAY, type GrowthProgress, type ItemDef, type MatchSummaryForGrowth,
-  type RushResult } from '../core/growth';
+  type RushResult, type GachaRarity } from '../core/growth';
 
 import { matchCoins, rollGacha } from '../core/arenaEconomy';
 
@@ -181,7 +181,7 @@ export async function drawGacha(requestId: string, expectedUid = scope()) {
     const r = rollGacha(p, values[0] / 4294967296);
     if (!r) return { next: p, extra: null };
     seen.add(receipt);
-    return { next: r.next, extra: { item: r.item, duplicate: r.duplicate, refund: r.refund } };
+    return { next: r.next, extra: { item: r.item, rarity: r.rarity, duplicate: r.duplicate, refund: r.refund } };
   }, expectedUid);
   return out ? { progress: out.next, result: out.extra } : null;
 }
@@ -194,11 +194,14 @@ export async function drawGachaMulti(requestId: string, expectedUid = scope()) {
     const receipt = `gacha5:${requestId}`;
     if (seen.has(receipt)) return { next: p, extra: null };
     const values = new Uint32Array(GACHA_MULTI_COUNT); crypto.getRandomValues(values);
-    let cur = p; const results: { item: ItemDef; duplicate: boolean; refund: number }[] = [];
+    let cur = p; const results: { item: ItemDef; rarity: GachaRarity; duplicate: boolean; refund: number }[] = [];
     for (let i = 0; i < GACHA_MULTI_COUNT; i += 1) {
-      const r = rollGacha(cur, values[i] / 4294967296);
+      // 最後の1回は、それまでに R 以上が1つも出ていなければ「R以上確定」
+      const last = i === GACHA_MULTI_COUNT - 1;
+      const guaranteed = last && results.every(x => x.rarity === 'N');
+      const r = rollGacha(cur, values[i] / 4294967296, guaranteed ? 'R' : 'N');
       if (!r) break;
-      cur = r.next; results.push({ item: r.item, duplicate: r.duplicate, refund: r.refund });
+      cur = r.next; results.push({ item: r.item, rarity: r.rarity, duplicate: r.duplicate, refund: r.refund });
     }
     if (results.length < GACHA_MULTI_COUNT) return { next: p, extra: null };
     seen.add(receipt);
