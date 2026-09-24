@@ -369,9 +369,11 @@ export function BattleMode({
       }
       return (
         <BattleRoomScreen
+          key={roomId}
           roomId={roomId}
           onExit={leaveRoom}
           onRematch={rematch}
+          onSwitchRoom={(next) => setRoomId(next)}
           onPractice={onPractice}
           onActiveChange={onActiveChange}
           onOpenProfile={() => setScreen('profile')}
