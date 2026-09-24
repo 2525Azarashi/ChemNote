@@ -105,6 +105,7 @@ import { NoteDetail } from './components/NoteDetail';
 import { StudyHub, type StudyHubView } from './components/StudyHub';
 import { ScreenLoading, ScreenUnavailable } from './components/ScreenStatus';
 import { studyEntry, isLearningScreen, safeStudyResume } from './utils/studyNavigation';
+import { setFormatMathContext } from './utils/textFormatter';
 import { resolveReviewTarget } from './utils/reviewTarget';
 import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
@@ -721,6 +722,8 @@ export default function App() {
 
   // PC版では「学習モードを選択」(mode_selection) 以外の全画面で外側余白をなくし、
   // ノート風背景を全幅に広げる。mode_selection だけは従来通り中央寄せ＋余白を維持。
+  // 数学の演習・解説・まとめを開いている間だけ、数式を数学の規則で組む（書体の混在を防ぐ）。
+  setFormatMathContext(selectedSubject === 'math' && ['quiz', 'explanation', 'learning', 'mock_exam'].includes(appState));
   const isFullBleed = appState !== 'mode_selection';
 
   /**
