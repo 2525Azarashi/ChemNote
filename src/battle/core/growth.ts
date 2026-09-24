@@ -170,6 +170,12 @@ export interface GrowthProgress {
   lastLoginDate: string;
   /** 連続ログイン日数 */
   loginStreak: number;
+  /** デイリーコンプリート宝箱：連続で開けた日数 */
+  completeStreak: number;
+  /** デイリーコンプリート宝箱：開けた日数の累計 */
+  completeDays: number;
+  /** デイリーコンプリート宝箱：最後に開けた日（YYYY-MM-DD） */
+  lastCompleteDate: string;
   /** 教科ID → 成績 */
   subjects: Record<string, SubjectProgress>;
   /** 獲得したバッジID → 獲得時刻（epoch ms） */
@@ -213,6 +219,9 @@ export function emptyProgress(uid: string): GrowthProgress {
     loginDays: 0,
     lastLoginDate: '',
     loginStreak: 0,
+    completeStreak: 0,
+    completeDays: 0,
+    lastCompleteDate: '',
     subjects: {},
     badges: {},
     owned: [DEFAULT_POSE, DEFAULT_FRAME],
@@ -281,6 +290,9 @@ export function normalizeProgress(uid: string, raw: unknown): GrowthProgress {
     loginDays: num(r.loginDays, 0),
     lastLoginDate: str(r.lastLoginDate, ''),
     loginStreak: num(r.loginStreak, 0),
+    completeStreak: num(r.completeStreak, 0),
+    completeDays: num(r.completeDays, 0),
+    lastCompleteDate: str(r.lastCompleteDate, ''),
     subjects,
     badges,
     owned: [...new Set([DEFAULT_POSE, DEFAULT_FRAME, ...strList(r.owned)])],
@@ -493,6 +505,8 @@ export const BADGES: readonly BadgeDef[] = [
   { id: 'b_correct_500', label: '五百問正解', desc: '累計500問正解', emoji: '◆', tier: 2, earned: (p) => p.correct >= 500 },
   { id: 'b_login_7', label: '七日通い', desc: '7日連続でボーナスを受け取った', emoji: '◆', tier: 2, earned: (p) => p.loginStreak >= 7 },
   { id: 'b_login_30', label: '皆勤', desc: '30日ぶんボーナスを受け取った', emoji: '◆', tier: 3, earned: (p) => p.loginDays >= 30 },
+  { id: 'b_chest_7', label: '宝箱七連', desc: '7日連続でコンプリート宝箱を開けた', emoji: '◆', tier: 2, earned: (p) => p.completeStreak >= 7 },
+  { id: 'b_chest_30', label: '宝箱コレクター', desc: 'コンプリート宝箱を通算30回開けた', emoji: '◆', tier: 3, earned: (p) => p.completeDays >= 30 },
   { id: 'b_level_10', label: 'Lv.10', desc: 'レベル10に到達', emoji: '◆', tier: 1, earned: (p) => levelOf(p.xp).level >= 10 },
   { id: 'b_level_30', label: 'Lv.30', desc: 'レベル30に到達', emoji: '◆', tier: 2, earned: (p) => levelOf(p.xp).level >= 30 },
   { id: 'b_level_50', label: 'Lv.50', desc: 'レベル50に到達', emoji: '◆', tier: 3, earned: (p) => levelOf(p.xp).level >= 50 },
@@ -832,6 +846,83 @@ export function applyLoginWithBonus(
   return { next: withAchievements(next, now), bonus };
 }
 
+// ============================================================
+// デイリーコンプリート宝箱（2026-09-24 追加）
+// ============================================================
+//
+// ★目的★ 「3つのうち1つ受け取ったら満足して終わる」を防ぎ、毎日「全部」やる理由を作る。
+// その日のミッション3つをすべて受け取ると宝箱が開けられる。
+// 連続でコンプリートした日数（completeStreak）で中身が増え、7日目が大当たり。
+// 1日1回だけ。受け取り済みの記録は daily.claimed に COMPLETE_CHEST_ID を入れて表す
+// （保存形式を増やさないため。古い記録でも壊れない）。
+// 連続日数は receipts（growthStore の受領記録）ではなく progress.completeStreak / lastCompleteDate に持つ。
+
+/** 宝箱を受け取ったことを daily.claimed に記録するための ID（ミッションIDと衝突しない） */
+export const COMPLETE_CHEST_ID = 'chest_complete';
+
+export interface CompleteChest {
+  /** 連続コンプリート日数（今日を含む） */
+  streak: number;
+  xp: number;
+  coins: number;
+  /** 7日ごとの大当たり */
+  jackpot: boolean;
+}
+
+/**
+ * 宝箱の中身。1日目 60コイン・XP50 → 1日ごとに +10 コイン・+10 XP → 7日目は 200コイン・XP150。
+ * ★1回の書き込み上限（coins +200 / xp +600）に必ず収まる★
+ */
+export function completeChestFor(streak: number): CompleteChest {
+  const s = Math.max(1, streak);
+  const day = ((s - 1) % 7) + 1; // 1..7
+  const jackpot = day === 7;
+  const coins = jackpot ? COINS_PER_WRITE_MAX : 50 + day * 10; // 60..110, 200
+  const xp = jackpot ? 150 : 40 + day * 10; // 50..100, 150
+  return { streak: s, xp, coins, jackpot };
+}
+
+/** 今日のミッションをすべて受け取ったか（宝箱が開けられる条件） */
+export function allMissionsClaimed(progress: GrowthProgress, today: string): boolean {
+  if (progress.daily.date !== today) return false;
+  return missionsForDate(today).every((m) => progress.daily.claimed.includes(m.id));
+}
+
+/** 宝箱を今日すでに開けたか */
+export function chestOpenedToday(progress: GrowthProgress, today: string): boolean {
+  return progress.daily.date === today && progress.daily.claimed.includes(COMPLETE_CHEST_ID);
+}
+
+/** 宝箱を開ける。条件を満たさなければ reward は null（何も変えない） */
+export function openCompleteChest(
+  progress: GrowthProgress,
+  today: string,
+  now: number = Date.now(),
+): { next: GrowthProgress; reward: CompleteChest | null } {
+  if (!allMissionsClaimed(progress, today) || chestOpenedToday(progress, today)) return { next: progress, reward: null };
+  const streak = isNextDay(progress.lastCompleteDate, today) ? progress.completeStreak + 1 : 1;
+  const reward = completeChestFor(streak);
+  const next: GrowthProgress = {
+    ...progress,
+    xp: progress.xp + reward.xp,
+    coins: progress.coins + reward.coins,
+    completeStreak: streak,
+    completeDays: progress.completeDays + 1,
+    lastCompleteDate: today,
+    daily: { ...progress.daily, claimed: [...progress.daily.claimed, COMPLETE_CHEST_ID] },
+  };
+  return { next: withAchievements(next, now), reward };
+}
+
+/**
+ * 表示用：いまの連続コンプリート日数。
+ * 昨日も今日もコンプリートしていなければ連続は切れているので 0。
+ */
+export function currentCompleteStreak(progress: GrowthProgress, today: string): number {
+  if (progress.lastCompleteDate === today || isNextDay(progress.lastCompleteDate, today)) return progress.completeStreak;
+  return 0;
+}
+
 /** 学習で穴を埋めたときの反映（ミッション「穴を埋める」にも入る） */
 export function applyHolesFilled(
   progress: GrowthProgress,
@@ -907,6 +998,8 @@ const BADGE_COUNTERS: Record<string, (p: GrowthProgress) => { current: number; g
   b_correct_500: (p) => ({ current: p.correct, goal: 500 }),
   b_login_7: (p) => ({ current: p.loginStreak, goal: 7 }),
   b_login_30: (p) => ({ current: p.loginDays, goal: 30 }),
+  b_chest_7: (p) => ({ current: p.completeStreak, goal: 7 }),
+  b_chest_30: (p) => ({ current: p.completeDays, goal: 30 }),
   b_level_10: (p) => ({ current: levelOf(p.xp).level, goal: 10 }),
   b_level_30: (p) => ({ current: levelOf(p.xp).level, goal: 30 }),
   b_level_50: (p) => ({ current: levelOf(p.xp).level, goal: 50 }),

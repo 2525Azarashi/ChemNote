@@ -2,7 +2,7 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 const { auth } = vi.hoisted(() => ({ auth: { currentUser: { uid: 'a' } as { uid: string } | null } }));
 vi.mock('../src/firebase', () => ({ auth }));
 import { drawGacha, applyMatchGrowth, buyItem, claimMissionReward, loadMyGrowth, recordReviewGrowth,
-  subscribeGrowth, touchLogin, GROWTH_STORAGE_PREFIX } from '../src/battle/data/growthStore';
+  subscribeGrowth, touchLogin, openChest, GROWTH_STORAGE_PREFIX } from '../src/battle/data/growthStore';
 import { emptyProgress, missionsForDate, applyLoginWithBonus, claimMission, xpRequiredForLevel, BADGES, MISSION_POOL } from '../src/battle/core/growth';
 import { readFileSync } from 'node:fs';
 import { readAudioPreferences, writeAudioPreferences } from '../src/battle/audio/audioPreferences';
@@ -37,6 +37,13 @@ describe('private growth integration', () => {
     data.set(key(),JSON.stringify({version:1,progress:{...emptyProgress('a'),coins:100},receipts:[],day:''}));
     expect((await Promise.all([buyItem('frame_pink'),buyItem('frame_pink')])).filter(r=>r?.ok)).toHaveLength(1);
     const p=await loadMyGrowth(); expect(p.coins).toBe(20); expect(p.equipped.frame).toBe('frame_pink');
+  });
+  it('opens the daily complete chest only once, even concurrently', async () => {
+    const ms=missionsForDate('2026-09-09');
+    data.set(key(),JSON.stringify({version:1,progress:{...emptyProgress('a'),daily:{date:'2026-09-09',progress:Object.fromEntries(ms.map(m=>[m.id,m.goal])),claimed:ms.map(m=>m.id)}},receipts:[],day:'2026-09-09'}));
+    const r=await Promise.all([openChest(),openChest()]);
+    expect(r.filter(v=>v?.reward)).toHaveLength(1);
+    const p=await loadMyGrowth(); expect(p.coins).toBe(60); expect(p.completeDays).toBe(1);
   });
   it('does not reclaim missions after clock rollback', async () => {
     const m=missionsForDate('2026-09-09')[0];

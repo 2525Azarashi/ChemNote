@@ -5,7 +5,7 @@
 import { auth } from '../../firebase';
 import { safeLocalStorage } from '../../utils/safeLocalStorage';
 import { applyHolesFilled, applyLoginWithBonus, applyMatchToProgress, claimMission,
-  emptyProgress, equipItem, equipTitle, localDateKey, normalizeProgress, purchaseItem,
+  emptyProgress, equipItem, equipTitle, localDateKey, normalizeProgress, openCompleteChest, purchaseItem,
   type GrowthProgress, type MatchSummaryForGrowth } from '../core/growth';
 
 import { matchCoins, rollGacha } from '../core/arenaEconomy';
@@ -104,6 +104,14 @@ export async function recordReviewGrowth(uid: string, reviewKey: string) {
 export async function claimMissionReward(id: string) {
   const out = await mutate((p, today) => {
     const r = claimMission(p, id, today);
+    return { next: r.next, extra: r.reward };
+  });
+  return out ? { progress: out.next, reward: out.extra } : null;
+}
+/** デイリーコンプリート宝箱を開ける（ミッション3つ受け取り後、1日1回） */
+export async function openChest() {
+  const out = await mutate((p, today) => {
+    const r = openCompleteChest(p, today);
     return { next: r.next, extra: r.reward };
   });
   return out ? { progress: out.next, reward: out.extra } : null;
