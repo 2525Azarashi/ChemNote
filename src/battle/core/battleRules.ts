@@ -392,6 +392,21 @@ export const BATTLE_RULES: Readonly<Record<string, BattleRule>> = {
    *   「見出し語 ＝ 意味（最大3つ）」を oneLine で持っている。本体に演習画面は無いので
    *   「この単元を演習する」は出ない（BattleResult / App.tsx 参照）。
    */
+  /**
+   * 情報Ⅰ — ★450問（全部4択）★ 外部プール方式（external/joho.json）。
+   * 元データ docs/joho/joho-pool.source.json → scripts/gen-joho-pool.py → gen:battle-pool。
+   * プログラミング（DNCL のトレース）を含むので速さボーナスは少し抑える。
+   * 試合後の1行解答は「答え：…／解説」を oneLine で持つ。本体に演習画面は無い。
+   */
+  joho: {
+    ...BASE,
+    subject: 'joho',
+    questionCount: 10,
+    kanaShare: 0,
+    pointsSpeedMax: 30,
+    note: 'プログラミング問題はトレースに時間がかかります',
+  },
+
   english_vocab: {
     ...BASE,
     subject: 'english_vocab',

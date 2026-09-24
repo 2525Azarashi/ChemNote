@@ -184,11 +184,11 @@ export function reviewSubjectStyle(subject: ReviewSubjectKey): ReviewSubjectStyl
 const CHEMISTRY_BASIC_RE = /^c\d+_\d+(_[A-Z])?$/;
 const CHEMISTRY_ADVANCED_RE = /^a\d+_\d+(_[A-Z])?$/;
 const LISTENING_RE = /^el\d+(_[A-Z])?$/;
-// 数学 'm1_1' / 'mi_1'（積分）/ 'mv_1'（ベクトル）/ 'mp_1'（確率）、生物基礎 'bio1_1'〜、
+// 数学 'm1_1' / 'mi_1'（積分）/ 'mv_1'（ベクトル）/ 'mp_1'（確率）/ 'mc1_…'（カリキュラム）/ 'ia1_1'（数I・A）、生物基礎 'bio1_1'〜、
 // 英文法 'eg1_1'〜、地理 'geo_q1_r1' / 'geo_exam_r1' など。
 // 実データの全章IDがこの規則で分類されることは tests/reviewDashboard.test.ts が
 // 章インデックス（全科目）を全件走査して検査する。
-const MATH_RE = /^(?:m[a-z]?\d*_\d+|mc[123abc]_[a-z0-9_]+)$/;
+const MATH_RE = /^(?:m[a-z]?\d*_\d+|mc[123abc]_[a-z0-9_]+|ia\d*_\d+)$/;
 const BIOLOGY_RE = /^bio\d+_\d+$/;
 const GRAMMAR_RE = /^eg\d+_\d+$/;
 const GEOGRAPHY_RE = /^geo_[a-z0-9_]+$/;

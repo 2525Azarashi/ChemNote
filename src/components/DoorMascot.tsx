@@ -6,15 +6,15 @@ import { markTipSeen, pickTip, readLastTipId, readSeenTipIds, resetSeenTips } fr
 
 // 添付されたとびら君キャラクター（9種）。public/mascots に配置。
 const mascots = [
-  { src: '/mascots/basic.png', label: '基本のとびら君' },
-  { src: '/mascots/walking.png', label: '歩いているとびら君' },
-  { src: '/mascots/studying.png', label: '勉強しているとびら君' },
-  { src: '/mascots/cheering.png', label: '応援しているとびら君' },
-  { src: '/mascots/good.png', label: 'グッド！なとびら君' },
-  { src: '/mascots/thinking.png', label: '考えているとびら君' },
-  { src: '/mascots/happy.png', label: '喜んでいるとびら君' },
-  { src: '/mascots/bowing.png', label: 'おじぎしているとびら君' },
-  { src: '/mascots/sleeping.png', label: 'ねているとびら君' },
+  { src: '/mascots/basic.webp', label: '基本のとびら君' },
+  { src: '/mascots/walking.webp', label: '歩いているとびら君' },
+  { src: '/mascots/studying.webp', label: '勉強しているとびら君' },
+  { src: '/mascots/cheering.webp', label: '応援しているとびら君' },
+  { src: '/mascots/good.webp', label: 'グッド！なとびら君' },
+  { src: '/mascots/thinking.webp', label: '考えているとびら君' },
+  { src: '/mascots/happy.webp', label: '喜んでいるとびら君' },
+  { src: '/mascots/bowing.webp', label: 'おじぎしているとびら君' },
+  { src: '/mascots/sleeping.webp', label: 'ねているとびら君' },
 ] as const;
 
 export interface DoorMascotProps {

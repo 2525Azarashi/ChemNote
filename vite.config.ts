@@ -483,7 +483,9 @@ export default defineConfig({
             id.includes('/src/data/mathIntegerProblems') ||
             id.includes('/src/data/mathIntegralProblems') ||
             id.includes('/src/data/mathProbabilityProblems') ||
-            id.includes('/src/data/mathVectorProblems')
+            id.includes('/src/data/mathVectorProblems') ||
+            id.includes('/src/data/mathPlusProblems') ||
+            id.includes('/src/data/mathIAProblems')
           ) {
             return 'data-math';
           }

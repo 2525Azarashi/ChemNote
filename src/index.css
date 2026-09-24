@@ -2581,6 +2581,14 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 [data-frame-pattern=double] { border-style: double !important; border-width: 6px !important; }
 [data-frame-pattern=dots] { background-image: radial-gradient(#ffffffbb 2px, transparent 3px) !important; background-size: 12px 12px !important; }
 [data-frame-pattern=rays] { background-image: repeating-conic-gradient(from 0deg,#fff8de99 0deg 12deg,transparent 12deg 24deg) !important; }
+[data-frame-pattern=stripes] { background-image: repeating-linear-gradient(135deg,#ffffff99 0 6px,transparent 6px 12px) !important; }
+[data-frame-pattern=checker] { background-image: linear-gradient(45deg,#ffffff88 25%,transparent 25% 75%,#ffffff88 75%),linear-gradient(45deg,#ffffff88 25%,transparent 25% 75%,#ffffff88 75%) !important; background-size: 14px 14px !important; background-position: 0 0,7px 7px !important; }
+[data-frame-pattern=wave] { background-image: radial-gradient(circle at 50% 120%,#ffffffaa 0 6px,transparent 7px),radial-gradient(circle at 50% -20%,#ffffff66 0 6px,transparent 7px) !important; background-size: 16px 12px !important; }
+[data-frame-pattern=grid] { background-image: linear-gradient(#ffffff77 1px,transparent 1px),linear-gradient(90deg,#ffffff77 1px,transparent 1px) !important; background-size: 10px 10px !important; }
+[data-frame-pattern=sparkle] { background-image: radial-gradient(circle at 20% 30%,#fff7c8 0 2px,transparent 3px),radial-gradient(circle at 70% 20%,#ffffff 0 1px,transparent 2px),radial-gradient(circle at 60% 75%,#fff7c8 0 2px,transparent 3px),radial-gradient(circle at 30% 80%,#ffffff 0 1px,transparent 2px) !important; background-size: 26px 26px !important; box-shadow: 0 0 0 2px #fff3b0, 0 0 14px #f5d36a99 !important; }
+[data-frame-pattern=rainbow] { border-color: transparent !important; background: linear-gradient(#fff,#fff) padding-box, conic-gradient(#ff6b6b,#ffd93d,#6bcb77,#4d96ff,#c77dff,#ff6b6b) border-box !important; }
+[data-frame-pattern=aurora] { border-color: transparent !important; background: linear-gradient(#fff,#fff) padding-box, linear-gradient(120deg,#3fa796,#5ec8e5,#8f7be8,#3fa796) border-box !important; }
+[data-frame-pattern=neon] { box-shadow: 0 0 0 2px #7c3aed, 0 0 10px #a78bfa, 0 0 22px #7c3aed88, inset 0 0 8px #a78bfa66 !important; }
 [data-frame-pattern=stars] { background-image: radial-gradient(circle at 25% 25%,#fffad5 0 2px,transparent 3px),radial-gradient(circle at 75% 65%,#fffad5 0 1px,transparent 2px) !important; background-size: 22px 22px !important; }
 
 /* A desktop workspace, not a stretched phone. Small screens keep the game lobby. */

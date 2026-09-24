@@ -50,8 +50,10 @@ describe('national session admission', () => {
 
 describe('cosmetic economy', () => {
   const progress={...emptyProgress('a'),coins:100};
-  it('has sixteen equally sized draw intervals and does not mutate the source', () => {
-    expect(gachaItems()).toHaveLength(16);
+  it('has thirty-four equally sized draw intervals and does not mutate the source', () => {
+    expect(gachaItems()).toHaveLength(34);
+    // ガチャ限定ポーズ3種は必ずラインナップに入る
+    for(const id of ['pose_listening','pose_science','pose_trophy']) expect(gachaItems().some(i=>i.id===id)).toBe(true);
     for(const [i,item] of gachaItems().entries()) {
       expect(rollGacha(progress,i/gachaItems().length)?.item.id).toBe(item.id);
       expect(rollGacha(progress,(i+1)/gachaItems().length-Number.EPSILON)?.item.id).toBe(item.id);
@@ -89,4 +91,22 @@ it('allows long listening recordings in new rooms without changing saved rules',
   expect(fresh.timeLimitOverride).toBe(55);
   expect(fresh.pointsSpeedMax).toBe(20);
   expect(resolveTimeLimit({ ...q, subject: 'english_listening' }, fresh)).toBe(55);
+});
+
+// 2026-09-23: online listening battles could never start. The first deadline was
+// 55s + 7.6s countdown + 0.7s grace = 63.3s, but firestore.rules rejects deadlines
+// at or beyond request.time + 60s. Keep every subject's first deadline under the bound.
+it('keeps the first online deadline inside the Firestore 60-second rule for every subject', async () => {
+  const { firstDeadlineSec, COUNTDOWN_TOTAL_MS } = await import('../src/battle/core/battleLive');
+  const { BATTLE_TIME_SCALED_MAX } = await import('../src/battle/core/battleCore');
+  const NETWORK_GRACE_SEC = 0.7;
+  for (const subject of ['english_listening', 'chemistry_basic', 'math', 'english_vocab']) {
+    const rule = arenaRule(defaultRuleOf(subject));
+    const limit = resolveTimeLimit({ ...q, subject, timeLimit: 999 }, rule);
+    expect(limit).toBeLessThanOrEqual(BATTLE_TIME_SCALED_MAX);
+    const first = firstDeadlineSec(limit);
+    expect(first + NETWORK_GRACE_SEC).toBeLessThan(60);
+    expect(first).toBeGreaterThanOrEqual(limit); // answer time is never shortened
+  }
+  expect(firstDeadlineSec(20)).toBe(20 + COUNTDOWN_TOTAL_MS / 1000); // short questions keep the full countdown
 });

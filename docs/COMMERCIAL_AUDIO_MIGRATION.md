@@ -1,5 +1,7 @@
 # 商用音声への移行記録（2026-09-18）
 
+> **録り直した音源の取り込み方は [LISTENING_AUDIO_REPLACE.md](LISTENING_AUDIO_REPLACE.md)。** 差し替え状況は `npx tsx scripts/listening-audio.mts status`、音源ごとの生成元・商用根拠は `scripts/data/listening_audio_ledger.json`（2026-09-23 追加。全364本 legacy_unverified から開始）。
+
 旧ZIPは公開保留。既存音源の生成時契約を確認できていないため、商用公開可能とは扱わない。エンジン名だけで有料プランや第三者サービス経由の利用権を証明したことにしない。統合版・旧音源は比較用として保持する。
 
 ## PDF納品と追加の商用利用調査（2026-09-18）

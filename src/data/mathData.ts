@@ -70,6 +70,9 @@ import {
   intModProblems,
   intBoundProblems,
 } from './mathIntegerProblems';
+// 入試レベル強化（全33単元×2大問）と 数I・A 基礎パート（自動生成・機械検算済み）
+import { MATH_PLUS } from './mathPlusProblems';
+import { MATH_IA } from './mathIAProblems';
 
 /** 1つの単元。AdvancedChapter と同形（Quiz/ChapterSelection を流用するため）。 */
 export interface MathChapter {
@@ -119,6 +122,51 @@ export const mathData: { parts: MathPart[] } = {
         miniTest: [],
       })),
     })),
+    {
+      id: 'math_ia',
+      title: '数I・A 全範囲（土台づくり・網羅）',
+      chapters: [
+        // ---- 1章 数と式 ----
+        ch('ia1_1', '1章 数と式', '① 整式の計算・展開', ['指数法則・同類項の整理', '展開の公式（平方・和と差・(x+a)(x+b)・3乗）', 'おきかえ・計算順序の工夫']),
+        ch('ia1_2', '1章 数と式', '② 因数分解・対称式', ['共通因数・たすき掛け・おきかえ', '最低次の文字で整理', '対称式は基本対称式で表す']),
+        ch('ia1_3', '1章 数と式', '③ 実数・根号・2重根号', ['循環小数→分数、有理化', '整数部分・小数部分、√ の大小', '2重根号のはずし方']),
+        ch('ia1_4', '1章 数と式', '④ 1次方程式・1次不等式', ['文字係数は a=0 と符号で場合分け', '負の数で割ると不等号が逆転', '連立不等式は数直線で共通範囲、文章題']),
+        ch('ia1_5', '1章 数と式', '⑤ 絶対値', ['|A| の場合分け、√A² = |A|', '|A| = c、|A| < c、|A| > c の解き方', '2つの絶対値は 3 区間に分ける']),
+        ch('ia1_6', '1章 数と式', '⑥ 集合', ['要素・部分集合・共通部分・和集合', '補集合・ド・モルガンの法則', '数直線で不等式の集合を扱う']),
+        ch('ia1_7', '1章 数と式', '⑦ 命題と論理', ['逆・裏・対偶と真偽の一致', '必要条件・十分条件（包含関係）', '対偶法・背理法']),
+        // ---- 2章 2次関数 ----
+        ch('ia2_1', '2章 2次関数', '① グラフと平行移動・対称移動', ['平方完成で頂点・軸', 'x→x-p, y→y-q の平行移動', 'x軸・y軸・原点対称、絶対値つきグラフ']),
+        ch('ia2_2', '2章 2次関数', '② 最大・最小', ['定義域と軸の位置で場合分け', '文字を含む最大最小（軸が動く・区間が動く）', '変数の消去・おきかえ・2変数・図形への応用']),
+        ch('ia2_3', '2章 2次関数', '③ 2次関数の決定', ['頂点形・切片形・一般形の使い分け', '3点通過は連立方程式', 'x軸に接する条件']),
+        ch('ia2_4', '2章 2次関数', '④ 2次方程式', ['因数分解・解の公式・判別式', 'おきかえ（複2次式）', '絶対値つき2次方程式']),
+        ch('ia2_5', '2章 2次関数', '⑤ 2次不等式', ['グラフの上下で解く（内側・外側）', 'D≦0 のときの扱い、連立2次不等式', '絶対不等式（最小値≧0 / D<0）、文字係数・絶対値つき']),
+        ch('ia2_6', '2章 2次関数', '⑥ グラフと方程式（共有点・解の配置）', ['x軸・直線との共有点は D で判定、接線', '係数の符号の読み取り', '解の配置：判別式・軸・端点の値']),
+        // ---- 3章 図形と計量 ----
+        ch('ia3_1', '3章 図形と計量', '① 三角比の定義', ['sin・cos・tan の定義（直角三角形）', '30°・45°・60° の値', '測量への利用、90°-θ の公式']),
+        ch('ia3_2', '3章 図形と計量', '② 三角比の拡張・相互関係', ['0°〜180° への拡張（単位円）', '180°-θ の公式', 'sin²+cos²=1、tan=sin/cos、1+tan²=1/cos²']),
+        ch('ia3_3', '3章 図形と計量', '③ 正弦定理・余弦定理', ['正弦定理と外接円の半径', '余弦定理で辺・角を求める', '鋭角・直角・鈍角の判定']),
+        ch('ia3_4', '3章 図形と計量', '④ 面積・空間図形', ['S = (1/2)bc sinA、ヘロンの公式', '内接円の半径 S = (1/2)r(a+b+c)', '正四面体・直方体への応用']),
+        // ---- 4章 データの分析 ----
+        ch('ia4_1', '4章 データの分析', '① 代表値・四分位数', ['平均・中央値・最頻値', '四分位数・四分位範囲・箱ひげ図', '外れ値の基準']),
+        ch('ia4_2', '4章 データの分析', '② 分散・標準偏差', ['分散 = 偏差²の平均 = E[x²]-(E[x])²', '変量の変換 y=ax+b', 'データの追加・修正']),
+        ch('ia4_3', '4章 データの分析', '③ 相関・仮説検定', ['散布図・共分散・相関係数', 'r は倍率・平行移動で不変', '仮説検定の考え方（有意水準 5%）']),
+        // ---- 5章 場合の数と確率 ----
+        ch('ia5_1', '5章 場合の数と確率', '① 集合の要素の個数・数え方の法則', ['n(A∪B) = n(A)+n(B)-n(A∩B)', '和の法則・積の法則', '約数の個数・総和']),
+        ch('ia5_2', '5章 場合の数と確率', '② 順列', ['nPr、階乗', '円順列・じゅず順列・重複順列', '同じものを含む順列']),
+        ch('ia5_3', '5章 場合の数と確率', '③ 組合せ', ['nCr、組分け（区別なしは k! で割る）', '最短経路・図形の個数', '重複組合せ・整数解の個数']),
+        ch('ia5_4', '5章 場合の数と確率', '④ 確率の基本', ['同様に確からしい、P = 場合の数の比', '和事象・排反・余事象', '「少なくとも」は余事象']),
+        ch('ia5_5', '5章 場合の数と確率', '⑤ 独立試行・反復試行', ['独立なら確率の積', 'nCr p^r (1-p)^(n-r)', '優勝確率（最後は勝者が勝つ）']),
+        ch('ia5_6', '5章 場合の数と確率', '⑥ 条件付き確率・期待値', ['P_A(B) = P(A∩B)/P(A)、乗法定理', '原因の確率（ベイズ的な考え方）', '期待値 = Σ 値×確率']),
+        // ---- 6章 整数の性質 ----
+        ch('ia6_1', '6章 整数の性質', '① 約数と倍数', ['素因数分解・約数の個数と総和', '倍数の判定法', '最大公約数×最小公倍数 = 2数の積']),
+        ch('ia6_2', '6章 整数の性質', '② 互除法・1次不定方程式', ['ユークリッドの互除法', '特殊解 → 一般解（互いに素を使う）', '0 以上の整数解の個数']),
+        ch('ia6_3', '6章 整数の性質', '③ 余りと n進法', ['余りによる分類 n=3k, 3k+1, 3k+2', 'n進法 ↔ 10進法、n進小数', '桁数の条件']),
+        // ---- 7章 図形の性質 ----
+        ch('ia7_1', '7章 図形の性質', '① 三角形の性質', ['角の二等分線と比、重心・内心・外心', 'チェバ・メネラウスの定理', '辺と角の大小、三角形の成立条件']),
+        ch('ia7_2', '7章 図形の性質', '② 円の性質', ['円周角・内接四角形・接弦定理', '方べきの定理', '2円の位置関係・共通接線']),
+        ch('ia7_3', '7章 図形の性質', '③ 作図・空間図形', ['垂直二等分線・角の二等分線・内分点の作図', '2直線の位置関係（ねじれ）、直線と平面の垂直', 'オイラーの多面体定理 v-e+f=2']),
+      ],
+    },
     {
       id: 'math_integral',
       title: '数III 積分法（全パターン演習）',
@@ -331,42 +379,45 @@ export const mathData: { parts: MathPart[] } = {
 
 /** 章ID → 演習問題の配列 */
 const MATH_PROBLEMS: Record<string, any[]> = {
-  m1_1: integralBasicProblems,
-  m1_2: integralLinearProblems,
-  m1_3: integralContactProblems,
-  m1_4: integralLogTypeProblems,
-  m1_5: integralByPartsProblems.filter((p) => p.id.includes('elim')),
-  m1_6: integralByPartsProblems.filter((p) => p.id.includes('cyc')),
-  m1_7: integralPartialFractionProblems,
-  m1_8: integralTrigPowerProblems.filter((p) => !p.id.includes('prodsum')),
-  m1_9: integralTrigPowerProblems.filter((p) => p.id.includes('prodsum')),
-  m1_10: integralSubstitutionProblems,
-  m2_1: integralDefiniteTechProblems,
-  m2_2: integralFunctionEqProblems,
+  // ---- 数I・A 基礎（新設パート） ----
+  ...MATH_IA,
+  // ---- 既存 33 単元：既存問題の後ろに「入試レベル強化」2大問を追加 ----
+  m1_1: [...integralBasicProblems, ...(MATH_PLUS.m1_1 ?? [])],
+  m1_2: [...integralLinearProblems, ...(MATH_PLUS.m1_2 ?? [])],
+  m1_3: [...integralContactProblems, ...(MATH_PLUS.m1_3 ?? [])],
+  m1_4: [...integralLogTypeProblems, ...(MATH_PLUS.m1_4 ?? [])],
+  m1_5: [...integralByPartsProblems.filter((p) => p.id.includes('elim')), ...(MATH_PLUS.m1_5 ?? [])],
+  m1_6: [...integralByPartsProblems.filter((p) => p.id.includes('cyc')), ...(MATH_PLUS.m1_6 ?? [])],
+  m1_7: [...integralPartialFractionProblems, ...(MATH_PLUS.m1_7 ?? [])],
+  m1_8: [...integralTrigPowerProblems.filter((p) => !p.id.includes('prodsum')), ...(MATH_PLUS.m1_8 ?? [])],
+  m1_9: [...integralTrigPowerProblems.filter((p) => p.id.includes('prodsum')), ...(MATH_PLUS.m1_9 ?? [])],
+  m1_10: [...integralSubstitutionProblems, ...(MATH_PLUS.m1_10 ?? [])],
+  m2_1: [...integralDefiniteTechProblems, ...(MATH_PLUS.m2_1 ?? [])],
+  m2_2: [...integralFunctionEqProblems, ...(MATH_PLUS.m2_2 ?? [])],
   // ---- ベクトル ----
-  mv_1: vectorBasicProblems,
-  mv_2: vectorDotProblems,
-  mv_3: vectorPositionProblems,
-  mv_4: vectorIntersectionProblems,
-  mv_5: vectorAreaProblems,
-  mv_6: vectorEquationProblems,
-  mv_7: vectorSpaceBasicProblems,
-  mv_8: vectorSpacePlaneProblems,
+  mv_1: [...vectorBasicProblems, ...(MATH_PLUS.mv_1 ?? [])],
+  mv_2: [...vectorDotProblems, ...(MATH_PLUS.mv_2 ?? [])],
+  mv_3: [...vectorPositionProblems, ...(MATH_PLUS.mv_3 ?? [])],
+  mv_4: [...vectorIntersectionProblems, ...(MATH_PLUS.mv_4 ?? [])],
+  mv_5: [...vectorAreaProblems, ...(MATH_PLUS.mv_5 ?? [])],
+  mv_6: [...vectorEquationProblems, ...(MATH_PLUS.mv_6 ?? [])],
+  mv_7: [...vectorSpaceBasicProblems, ...(MATH_PLUS.mv_7 ?? [])],
+  mv_8: [...vectorSpacePlaneProblems, ...(MATH_PLUS.mv_8 ?? [])],
   // ---- 場合の数・確率 ----
-  mp_1: probCountingProblems,
-  mp_2: probArrangeProblems,
-  mp_3: probBasicProblems,
-  mp_4: probComplementProblems,
-  mp_5: probRepeatProblems,
-  mp_6: probConditionalProblems,
-  mp_7: probExpectationProblems,
-  mp_8: probMixedProblems,
+  mp_1: [...probCountingProblems, ...(MATH_PLUS.mp_1 ?? [])],
+  mp_2: [...probArrangeProblems, ...(MATH_PLUS.mp_2 ?? [])],
+  mp_3: [...probBasicProblems, ...(MATH_PLUS.mp_3 ?? [])],
+  mp_4: [...probComplementProblems, ...(MATH_PLUS.mp_4 ?? [])],
+  mp_5: [...probRepeatProblems, ...(MATH_PLUS.mp_5 ?? [])],
+  mp_6: [...probConditionalProblems, ...(MATH_PLUS.mp_6 ?? [])],
+  mp_7: [...probExpectationProblems, ...(MATH_PLUS.mp_7 ?? [])],
+  mp_8: [...probMixedProblems, ...(MATH_PLUS.mp_8 ?? [])],
   // ---- 整数 ----
-  mi_1: intDivisorProblems,
-  mi_2: intEuclidProblems,
-  mi_3: intFactorProblems,
-  mi_4: intModProblems,
-  mi_5: intBoundProblems,
+  mi_1: [...intDivisorProblems, ...(MATH_PLUS.mi_1 ?? [])],
+  mi_2: [...intEuclidProblems, ...(MATH_PLUS.mi_2 ?? [])],
+  mi_3: [...intFactorProblems, ...(MATH_PLUS.mi_3 ?? [])],
+  mi_4: [...intModProblems, ...(MATH_PLUS.mi_4 ?? [])],
+  mi_5: [...intBoundProblems, ...(MATH_PLUS.mi_5 ?? [])],
 };
 
 (() => {

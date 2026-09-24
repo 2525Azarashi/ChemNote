@@ -1,0 +1,3662 @@
+[
+ {
+  "audioUrl": "/listening_audio/el1A_set1_q1.mp3",
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-19。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-23T23:23:55.639Z",
+  "sourceFile": "el1A_set1_q1.flac",
+  "sha256": "5239355b19e36936451d8aeaefdf45b600796bef6a09c9c3fcdfc17a7d5b5202",
+  "durationSec": 3.74,
+  "legacyCopy": "audio_sources/legacy/listening_audio/el1A_set1_q1.mp3",
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-19_q1a-set1/listening_audio/el1A_set1_q1.flac"
+  ],
+  "note": "受領 q_el1_A_set1.mp3 (sha256 68525ac0…) を無音位置で4分割（速度・音程は無変更）。問2は Whisper で台本と完全一致を確認（2026-09-23）。"
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set1_q2.mp3",
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-19。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-23T23:23:56.963Z",
+  "sourceFile": "el1A_set1_q2.flac",
+  "sha256": "bff0f4076ed6c871b8e0d6134cc31ef6c6b1845884f2ab48633429602363c485",
+  "durationSec": 4.83,
+  "legacyCopy": "audio_sources/legacy/listening_audio/el1A_set1_q2.mp3",
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-19_q1a-set1/listening_audio/el1A_set1_q2.flac"
+  ],
+  "note": "受領 q_el1_A_set1.mp3 (sha256 68525ac0…) を無音位置で4分割（速度・音程は無変更）。問2は Whisper で台本と完全一致を確認（2026-09-23）。"
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set1_q3.mp3",
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-19。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-23T23:23:58.158Z",
+  "sourceFile": "el1A_set1_q3.flac",
+  "sha256": "4d34305b815dd48a211246cd3dc3fc383ce75f2457eac58ca9a6a736924ad4c7",
+  "durationSec": 5.77,
+  "legacyCopy": "audio_sources/legacy/listening_audio/el1A_set1_q3.mp3",
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-19_q1a-set1/listening_audio/el1A_set1_q3.flac"
+  ],
+  "note": "受領 q_el1_A_set1.mp3 (sha256 68525ac0…) を無音位置で4分割（速度・音程は無変更）。問2は Whisper で台本と完全一致を確認（2026-09-23）。"
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set1_q4.mp3",
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-19。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-23T23:24:00.176Z",
+  "sourceFile": "el1A_set1_q4.flac",
+  "sha256": "8bc6dcfa6014b5f842a8228ae02900cce4380961914380e6bd3d9c3e45028eb3",
+  "durationSec": 5.9,
+  "legacyCopy": "audio_sources/legacy/listening_audio/el1A_set1_q4.mp3",
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-19_q1a-set1/listening_audio/el1A_set1_q4.flac"
+  ],
+  "note": "受領 q_el1_A_set1.mp3 (sha256 68525ac0…) を無音位置で4分割（速度・音程は無変更）。問2は Whisper で台本と完全一致を確認（2026-09-23）。"
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set2_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set2_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set2_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set2_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set3_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set3_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set3_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set3_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set4_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set4_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set4_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set4_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set5_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set5_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set5_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set5_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set6_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set6_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set6_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set6_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set7_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set7_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set7_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set7_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set8_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set8_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set8_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set8_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set9_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set9_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set9_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set9_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set10_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set10_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set10_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set10_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set11_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set11_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set11_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set11_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set12_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set12_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set12_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set12_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set13_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set13_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set13_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set13_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set14_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set14_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set14_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1A_set14_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set1_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set1_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set1_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set1_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set2_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set2_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set2_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set2_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set3_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set3_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set3_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set3_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set4_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set4_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set4_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set4_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set5_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set5_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set5_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set5_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set6_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set6_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set6_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set6_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set7_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set7_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set7_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set7_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set8_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set8_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set8_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set8_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set9_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set9_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set9_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set9_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set10_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set10_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set10_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set10_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set11_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set11_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set11_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set11_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set12_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set12_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set12_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set12_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set13_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set13_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set13_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set13_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set14_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set14_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set14_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set14_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set15_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set15_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set15_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el1B_set15_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set1_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set1_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set1_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set2_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set2_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set3_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set4_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set4_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set4_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set5_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set5_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set6_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set6_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set6_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set7_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set7_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set8_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set8_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set9_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set9_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set9_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set10_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set10_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set11_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set11_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set11_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set12_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set12_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set12_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set13_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set13_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set13_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set14_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set14_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set15_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set15_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set15_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set16_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set1_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set1_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set1_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set1_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set1_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set1_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set2_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set2_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set2_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set2_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set2_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set2_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set3_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set3_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set3_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set3_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set3_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set3_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set4_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set4_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set4_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set4_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set4_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set4_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set5_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set5_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set5_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set5_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set5_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set5_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set6_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set6_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set6_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set6_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set6_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set6_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set7_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set7_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set7_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set7_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set7_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set7_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set8_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set8_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set8_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set8_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set8_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set8_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set9_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set9_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set9_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set9_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set9_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set9_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set10_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set10_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set10_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set10_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set10_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set10_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set11_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set11_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set11_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set11_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set11_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set11_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set12_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set12_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set12_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set12_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set12_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set12_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set13_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set13_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set13_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set13_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set13_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set13_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set14_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set14_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set14_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set14_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set14_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set14_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set15_q1.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set15_q2.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set15_q3.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set15_q4.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set15_q5.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_audio/el3_set15_q6.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set01_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set01_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set02_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set02_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set03_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set03_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set04_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set04_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set05_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set05_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set06_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set06_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set07_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set07_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set08_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set08_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set09_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set09_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set10_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set10_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set11_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set11_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set12_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set12_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set13_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set13_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set14_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set14_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set15_4A_front.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set15_4A_back.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set01_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set02_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set03_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set04_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set05_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set06_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set07_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set08_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set09_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set10_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set11_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set12_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set13_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set14_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q4/set15_4B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set01_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set01_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set01_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set02_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set02_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set02_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set03_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set03_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set03_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set04_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set04_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set04_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set05_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set05_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set05_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set06_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set06_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set06_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set07_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set07_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set07_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set08_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set08_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set08_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set09_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set09_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set09_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set10_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set10_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set10_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set11_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set11_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set11_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set12_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set12_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set12_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set13_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set13_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set13_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set14_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set14_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set14_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set15_lecture.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set15_q32.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q5/q5set15_q33.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set01_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set02_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set03_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set04_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set05_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set06_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set07_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set08_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set09_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set10_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set11_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set12_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set13_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set14_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set15_A.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set01_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set02_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set03_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set04_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set05_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set06_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set07_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set08_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set09_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set10_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set11_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set12_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set13_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set14_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ },
+ {
+  "audioUrl": "/listening_q6/q6set15_B.mp3",
+  "status": "legacy_unverified",
+  "provider": "",
+  "license": "",
+  "importedAt": "",
+  "sourceFile": "",
+  "sha256": "",
+  "durationSec": 0
+ }
+]

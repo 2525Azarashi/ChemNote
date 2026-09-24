@@ -949,200 +949,392 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
         "realTitle": "数学C・基礎から標準"
       },
       {
+        "id": "ia1_1",
+        "problemCount": 5,
+        "abstractTitle": "① 整式の計算・展開",
+        "realTitle": "1章 数と式"
+      },
+      {
+        "id": "ia1_2",
+        "problemCount": 4,
+        "abstractTitle": "② 因数分解・対称式",
+        "realTitle": "1章 数と式"
+      },
+      {
+        "id": "ia1_3",
+        "problemCount": 8,
+        "abstractTitle": "③ 実数・根号・2重根号",
+        "realTitle": "1章 数と式"
+      },
+      {
+        "id": "ia1_4",
+        "problemCount": 7,
+        "abstractTitle": "④ 1次方程式・1次不等式",
+        "realTitle": "1章 数と式"
+      },
+      {
+        "id": "ia1_5",
+        "problemCount": 6,
+        "abstractTitle": "⑤ 絶対値",
+        "realTitle": "1章 数と式"
+      },
+      {
+        "id": "ia1_6",
+        "problemCount": 4,
+        "abstractTitle": "⑥ 集合",
+        "realTitle": "1章 数と式"
+      },
+      {
+        "id": "ia1_7",
+        "problemCount": 4,
+        "abstractTitle": "⑦ 命題と論理",
+        "realTitle": "1章 数と式"
+      },
+      {
+        "id": "ia2_1",
+        "problemCount": 10,
+        "abstractTitle": "① グラフと平行移動・対称移動",
+        "realTitle": "2章 2次関数"
+      },
+      {
+        "id": "ia2_2",
+        "problemCount": 7,
+        "abstractTitle": "② 最大・最小",
+        "realTitle": "2章 2次関数"
+      },
+      {
+        "id": "ia2_3",
+        "problemCount": 3,
+        "abstractTitle": "③ 2次関数の決定",
+        "realTitle": "2章 2次関数"
+      },
+      {
+        "id": "ia2_4",
+        "problemCount": 4,
+        "abstractTitle": "④ 2次方程式",
+        "realTitle": "2章 2次関数"
+      },
+      {
+        "id": "ia2_5",
+        "problemCount": 7,
+        "abstractTitle": "⑤ 2次不等式",
+        "realTitle": "2章 2次関数"
+      },
+      {
+        "id": "ia2_6",
+        "problemCount": 7,
+        "abstractTitle": "⑥ グラフと方程式（共有点・解の配置）",
+        "realTitle": "2章 2次関数"
+      },
+      {
+        "id": "ia3_1",
+        "problemCount": 6,
+        "abstractTitle": "① 三角比の定義",
+        "realTitle": "3章 図形と計量"
+      },
+      {
+        "id": "ia3_2",
+        "problemCount": 14,
+        "abstractTitle": "② 三角比の拡張・相互関係",
+        "realTitle": "3章 図形と計量"
+      },
+      {
+        "id": "ia3_3",
+        "problemCount": 11,
+        "abstractTitle": "③ 正弦定理・余弦定理",
+        "realTitle": "3章 図形と計量"
+      },
+      {
+        "id": "ia3_4",
+        "problemCount": 6,
+        "abstractTitle": "④ 面積・空間図形",
+        "realTitle": "3章 図形と計量"
+      },
+      {
+        "id": "ia4_1",
+        "problemCount": 4,
+        "abstractTitle": "① 代表値・四分位数",
+        "realTitle": "4章 データの分析"
+      },
+      {
+        "id": "ia4_2",
+        "problemCount": 4,
+        "abstractTitle": "② 分散・標準偏差",
+        "realTitle": "4章 データの分析"
+      },
+      {
+        "id": "ia4_3",
+        "problemCount": 4,
+        "abstractTitle": "③ 相関・仮説検定",
+        "realTitle": "4章 データの分析"
+      },
+      {
+        "id": "ia5_1",
+        "problemCount": 3,
+        "abstractTitle": "① 集合の要素の個数・数え方の法則",
+        "realTitle": "5章 場合の数と確率"
+      },
+      {
+        "id": "ia5_2",
+        "problemCount": 4,
+        "abstractTitle": "② 順列",
+        "realTitle": "5章 場合の数と確率"
+      },
+      {
+        "id": "ia5_3",
+        "problemCount": 4,
+        "abstractTitle": "③ 組合せ",
+        "realTitle": "5章 場合の数と確率"
+      },
+      {
+        "id": "ia5_4",
+        "problemCount": 4,
+        "abstractTitle": "④ 確率の基本",
+        "realTitle": "5章 場合の数と確率"
+      },
+      {
+        "id": "ia5_5",
+        "problemCount": 4,
+        "abstractTitle": "⑤ 独立試行・反復試行",
+        "realTitle": "5章 場合の数と確率"
+      },
+      {
+        "id": "ia5_6",
+        "problemCount": 4,
+        "abstractTitle": "⑥ 条件付き確率・期待値",
+        "realTitle": "5章 場合の数と確率"
+      },
+      {
+        "id": "ia6_1",
+        "problemCount": 4,
+        "abstractTitle": "① 約数と倍数",
+        "realTitle": "6章 整数の性質"
+      },
+      {
+        "id": "ia6_2",
+        "problemCount": 4,
+        "abstractTitle": "② 互除法・1次不定方程式",
+        "realTitle": "6章 整数の性質"
+      },
+      {
+        "id": "ia6_3",
+        "problemCount": 4,
+        "abstractTitle": "③ 余りと n進法",
+        "realTitle": "6章 整数の性質"
+      },
+      {
+        "id": "ia7_1",
+        "problemCount": 6,
+        "abstractTitle": "① 三角形の性質",
+        "realTitle": "7章 図形の性質"
+      },
+      {
+        "id": "ia7_2",
+        "problemCount": 9,
+        "abstractTitle": "② 円の性質",
+        "realTitle": "7章 図形の性質"
+      },
+      {
+        "id": "ia7_3",
+        "problemCount": 5,
+        "abstractTitle": "③ 作図・空間図形",
+        "realTitle": "7章 図形の性質"
+      },
+      {
         "id": "m1_1",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "① 基本公式（累乗・指数・対数・三角）",
         "realTitle": "1章 不定積分の土台"
       },
       {
         "id": "m1_2",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "② f(ax+b) 型（1/a 倍を忘れない）",
         "realTitle": "1章 不定積分の土台"
       },
       {
         "id": "m1_3",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "③ 微分接触型（置換積分の主役）",
         "realTitle": "2章 置換積分と微分接触"
       },
       {
         "id": "m1_4",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "④ log 型（分子が分母の微分）",
         "realTitle": "2章 置換積分と微分接触"
       },
       {
         "id": "m1_5",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑤ 部分積分（消去型）",
         "realTitle": "3章 部分積分"
       },
       {
         "id": "m1_6",
-        "problemCount": 1,
+        "problemCount": 3,
         "abstractTitle": "⑥ 部分積分（同形出現・2回転）",
         "realTitle": "3章 部分積分"
       },
       {
         "id": "m1_7",
-        "problemCount": 1,
+        "problemCount": 3,
         "abstractTitle": "⑦ 部分分数分解",
         "realTitle": "4章 分数関数と部分分数分解"
       },
       {
         "id": "m1_8",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑧ sin・cos の n 乗（次数下げと接触）",
         "realTitle": "5章 三角関数の積分"
       },
       {
         "id": "m1_9",
-        "problemCount": 1,
+        "problemCount": 3,
         "abstractTitle": "⑨ 積和公式・tan の処理",
         "realTitle": "5章 三角関数の積分"
       },
       {
         "id": "m1_10",
-        "problemCount": 3,
+        "problemCount": 5,
         "abstractTitle": "⑩ x = a sinθ・x = a tanθ・その他の置換",
         "realTitle": "6章 特殊な置換"
       },
       {
         "id": "m2_1",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑪ 偶関数・奇関数と King Property",
         "realTitle": "7章 定積分の技巧"
       },
       {
         "id": "m2_2",
-        "problemCount": 3,
+        "problemCount": 5,
         "abstractTitle": "⑫ 定積分で表された関数・区分求積・漸化式",
         "realTitle": "7章 定積分の技巧"
       },
       {
         "id": "mv_1",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "① 演算・成分・大きさ・単位ベクトル",
         "realTitle": "1章 平面ベクトルの基本"
       },
       {
         "id": "mv_2",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "② 内積・なす角・垂直条件・|a+tb|の最小",
         "realTitle": "1章 平面ベクトルの基本"
       },
       {
         "id": "mv_3",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "③ 内分・外分・重心",
         "realTitle": "2章 位置ベクトルと図形"
       },
       {
         "id": "mv_4",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "④ 交点（係数比較）・共線条件 s+t=1",
         "realTitle": "2章 位置ベクトルと図形"
       },
       {
         "id": "mv_5",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑤ 三角形の面積・正射影ベクトル",
         "realTitle": "3章 面積とベクトル方程式"
       },
       {
         "id": "mv_6",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑥ 直線・円のベクトル方程式",
         "realTitle": "3章 面積とベクトル方程式"
       },
       {
         "id": "mv_7",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑦ 空間の成分・内積・垂直・距離",
         "realTitle": "4章 空間ベクトル"
       },
       {
         "id": "mv_8",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑧ 共面条件 s+t+u=1・球面",
         "realTitle": "4章 空間ベクトル"
       },
       {
         "id": "mp_1",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "① P と C の使い分け・最短経路",
         "realTitle": "1章 場合の数の土台"
       },
       {
         "id": "mp_2",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "② 円順列・重複順列・組分け",
         "realTitle": "1章 場合の数の土台"
       },
       {
         "id": "mp_3",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "③ 同様に確からしい・サイコロ・玉",
         "realTitle": "2章 確率の基本"
       },
       {
         "id": "mp_4",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "④ 余事象・和事象",
         "realTitle": "2章 確率の基本"
       },
       {
         "id": "mp_5",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑤ 反復試行・優勝決定の確率",
         "realTitle": "3章 独立試行・反復試行"
       },
       {
         "id": "mp_6",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑥ 条件付き確率・原因の確率",
         "realTitle": "4章 条件付き確率・期待値"
       },
       {
         "id": "mp_7",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑦ 期待値",
         "realTitle": "4章 条件付き確率・期待値"
       },
       {
         "id": "mp_8",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑧ 総合問題（パターンの融合）",
         "realTitle": "4章 条件付き確率・期待値"
       },
       {
         "id": "mi_1",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "① 約数の個数・総和・最大公約数と最小公倍数",
         "realTitle": "1章 約数・倍数と素因数分解"
       },
       {
         "id": "mi_2",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "② ユークリッドの互除法・ax+by=c の整数解",
         "realTitle": "2章 互除法と1次不定方程式"
       },
       {
         "id": "mi_3",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "③ 積の形×約数の組合せ・素数条件",
         "realTitle": "3章 因数分解の利用"
       },
       {
         "id": "mi_4",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "④ 余りの計算・余りで分類する証明",
         "realTitle": "4章 余りによる分類と絞り込み"
       },
       {
         "id": "mi_5",
-        "problemCount": 2,
+        "problemCount": 4,
         "abstractTitle": "⑤ 範囲の絞り込み・n進法",
         "realTitle": "4章 余りによる分類と絞り込み"
       }
@@ -1545,8 +1737,8 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
     "questions": 135
   },
   "math": {
-    "chapters": 71,
-    "questions": 217
+    "chapters": 103,
+    "questions": 463
   },
   "biology_basic": {
     "chapters": 5,

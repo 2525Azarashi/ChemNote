@@ -36,6 +36,7 @@ export const POOL_COUNTS: Readonly<Record<string, number>> = {
   english_grammar: 100,
   geography: 127,
   english_vocab: 9541,
+  joho: 450,
   rika: 1117,
 };
 
@@ -69,6 +70,7 @@ export const POOL_FORMAT_COUNTS: Readonly<
   english_grammar: { choice4: 100 },
   geography: { choice4: 77, choice: 50 },
   english_vocab: { choice4: 9541 },
+  joho: { choice4: 450 },
   rika: { choice4: 1117 },
 };
 
@@ -143,6 +145,8 @@ async function loadRaw(subject: string): Promise<readonly unknown[][]> {
       return (await import('./pool.geography.generated')).POOL;
     case 'english_vocab':
       return (await import('./pool.english_vocab.generated')).POOL;
+    case 'joho':
+      return (await import('./pool.joho.generated')).POOL;
     case 'rika':
       return (await import('./pool.rika.generated')).POOL;
     default:
@@ -244,6 +248,7 @@ export const ANSWER_COUNTS: Readonly<Record<string, number>> = {
   english_grammar: 0,
   geography: 0,
   english_vocab: 9541,
+  joho: 450,
   rika: 0,
 };
 
@@ -265,6 +270,8 @@ async function loadAnswerRaw(subject: string): Promise<readonly (readonly [strin
       return (await import('./answer.geography.generated')).ANSWERS;
     case 'english_vocab':
       return (await import('./answer.english_vocab.generated')).ANSWERS;
+    case 'joho':
+      return (await import('./answer.joho.generated')).ANSWERS;
     case 'rika':
       return (await import('./answer.rika.generated')).ANSWERS;
     default:

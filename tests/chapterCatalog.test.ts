@@ -147,7 +147,8 @@ describe('章カタログ（到達率の分母）', () => {
       }
       expect(getChapterCatalog(s), `${s} の章一覧`).toEqual(expected);
     }
-  });
+    // 全教科の問題データ本体（数学 Round8 で約1.6MB増）を読むので、既定20秒では足りないことがある
+  }, 90_000);
 
   /**
    * ★構造整理の前後で分母が変わっていないことを保証する本体★
@@ -158,6 +159,11 @@ describe('章カタログ（到達率の分母）', () => {
    *   geography 5 → 26：第1問セット5単元に、共通テスト形式の
    *   模擬問題（第1回〜第6回＋予想問題 × 第1問・第2問・第3問）
    *   21単元を足したため。1単元 = 大問1つなので問題数も同じ 26。
+   *   math 71/217 → 103/442：数学 Round8（2026-09-23 適用）で数I・A 全範囲 32 単元（159 大問）を新設し、
+   *   積分・ベクトル・確率・整数の既存 33 単元に入試レベル強化（66 大問）を追加したため。
+   *   先に入っていた 6 科目カリキュラム（mc*・38 単元）はそのまま。
+   *   math 442 → 463：マナトビ基本演習 Step 66〜86（三角比・図形と計量 21 大問）を追加（2026-09-24）。
+   *   chemistry / english_listening は実測値に追従（別作業で増えていた分）。
    */
   it('科目ごとの章数と大問総数が、整理前と一致する', () => {
     const actual = Object.fromEntries(
@@ -170,8 +176,8 @@ describe('章カタログ（到達率の分母）', () => {
           "problems": 24,
         },
         "chemistry": {
-          "chapters": 5,
-          "problems": 20,
+          "chapters": 20,
+          "problems": 80,
         },
         "chemistry_basic": {
           "chapters": 29,
@@ -182,16 +188,16 @@ describe('章カタログ（到達率の分母）', () => {
           "problems": 20,
         },
         "english_listening": {
-          "chapters": 4,
-          "problems": 60,
+          "chapters": 9,
+          "problems": 135,
         },
         "geography": {
           "chapters": 26,
           "problems": 26,
         },
         "math": {
-          "chapters": 33,
-          "problems": 65,
+          "chapters": 103,
+          "problems": 463,
         },
       }
     `);

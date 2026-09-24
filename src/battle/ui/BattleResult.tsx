@@ -63,7 +63,7 @@ import {
 } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 // 外部教科（本体に教科データを持たない教科）の単元名
-import { externalChapterTitleOf } from '../../data/externalSubjects';
+import { externalChapterTitleOf, isBattleOnlySubject } from '../../data/externalSubjects';
 import type { SubjectKey } from '../../data/allChapters';
 import type {
   BattlePlayerScore,
@@ -204,12 +204,12 @@ export function BattleResult({
   matchKey?: string;
 }) {
   /**
-   * ★英単語・英熟語（english_vocab）には演習画面が無い★
+   * ★英単語・英熟語（english_vocab）・情報Ⅰ（joho）には演習画面が無い★（isBattleOnlySubject）
    * 外部プールだけで成り立つ対戦専用教科なので、「この問題を演習する」
    * 「つづけて演習する」を出すと押しても何も起きない（App 側で例外になる）。
    * 出さないのが正しい。答えは各問の1行解答（見出し語 ＝ 意味の全文）で見せる。
    */
-  const onPractice = subject === 'english_vocab' ? undefined : onPracticeProp;
+  const onPractice = isBattleOnlySubject(subject) ? undefined : onPracticeProp;
   const theme = subjectTheme(subject as SubjectKey);
   useOutcomeJingle(result.outcome);
   const picks = pickReviewQuestions(result, questions, kanaTextOf);
@@ -537,7 +537,7 @@ export function BattleResult({
                 )}
                 {question && <p className="arena-review-answer">相手の回答 {answerNumber(question, result.opponent?.perQuestion.find(s=>s.index===q.index)?.submittedAnswer)}：<BattleText text={result.opponent?.perQuestion.find(s=>s.index===q.index)?.submittedAnswer || '無回答'} subject={subject}/></p>}
                 {question && <BattleReviewDetails question={question} oneLine={oneLine} />}
-                {question && onPractice && subject !== 'english_vocab' && <button type="button" data-practice-question={question.id}
+                {question && onPractice && !isBattleOnlySubject(subject) && <button type="button" data-practice-question={question.id}
                   onClick={() => onPractice(subject, question.chapterId, question.problemId, question.subQuestionId)}
                   className="mt-3 min-h-11 w-full rounded-xl bg-blue-50 px-3 py-2 text-sm font-bold text-blue-900">
                   この問題を演習する（結果に戻れます）

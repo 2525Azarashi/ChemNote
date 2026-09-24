@@ -38,6 +38,7 @@ import { useBattleAudio } from '../hooks/useBattleAudio';
 import { AMBER, BattleButton, INK, INK_SUB, LINE, WRONG } from './BattleParts';
 import { BattleText } from './BattleText';
 import { ME_BLUE, OPP_RED } from './BattleLiveParts';
+import { isBattleOnlySubject } from '../../data/externalSubjects';
 
 const GREEN = '#1E7D46';
 
@@ -260,7 +261,7 @@ export function ReviewPicks({
                 <BattleText text={oneLines.get(p.question.id)!} subject={subject} />
               </p>
             )}
-            {onPractice && subject !== 'english_vocab' && p.question.chapterId && (
+            {onPractice && !isBattleOnlySubject(subject) && p.question.chapterId && (
               <button
                 type="button"
                 onClick={() => onPractice(subject, p.question.chapterId, p.question.problemId, p.question.subQuestionId)}
@@ -331,7 +332,7 @@ export function ResultActions({
           {rematchLabel}
         </BattleButton>
       )}
-      {onReview && subject !== 'english_vocab' && (
+      {onReview && !isBattleOnlySubject(subject) && (
         <BattleButton variant="ghost" onClick={review} icon={<BookOpenCheck size={18} />}>
           {picks.length > 0 ? `復習する（${picks.length}問を復習リストへ）` : '復習リストを見る'}
         </BattleButton>

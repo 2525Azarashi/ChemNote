@@ -1,6 +1,7 @@
 # この部屋はマナトビ統合版
 
-最初に README.md と docs/LISTENING_DERIVATIVE.md を読むこと。
+最初に **AGENTS.md**（全AI共通ルール）→ **docs/CODEMAP.md**（どこに何があるか）→ docs/LISTENING_DERIVATIVE.md を読むこと。
+リスニング音源の追加・差し替えは **docs/LISTENING_AUDIO_REPLACE.md**（`scripts/listening-audio.mts` を使う）。
 
 - 2026-09-18にリスニング専用版を独立コピーとして分岐した。統合版から削除したのではない。
 - 統合版はこの部屋で維持する。リスニング独自のホーム・補助学習は scripts/listening-export/ のテンプレートで管理し、統合版のUIへ無断で上書きしない。

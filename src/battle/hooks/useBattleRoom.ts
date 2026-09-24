@@ -76,7 +76,7 @@ import type {
   BattleRoom,
 } from '../core/types';
 import { answerIndexOf, answerKeyOf } from '../core/types';
-import { COUNTDOWN_TOTAL_MS } from '../core/battleLive';
+import { firstDeadlineSec } from '../core/battleLive';
 
 /** 画面が使う対戦の状態 */
 export interface BattleRoomState {
@@ -417,7 +417,7 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
   useEffect(() => {
     if (deadlineMs <= 0 || !current) return;
     if (startsRef.current.has(currentIndex)) return;
-    // 1問目は締切に COUNTDOWN_TOTAL_MS を足して書いている（start を参照）。
+    // 1問目は締切にカウントダウン分を足して書いている（start / firstDeadlineSec を参照）。
     // 「締切 − 制限時間」で出す開始時刻は、そのままカウントダウン終了の時刻になる。
     startsRef.current.set(currentIndex, deadlineMs - resolveTimeLimit(current, rules) * 1000);
   }, [deadlineMs, current, currentIndex, rules]);
@@ -805,11 +805,12 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
     /**
      * ★1問目の締切にカウントダウン（約3秒）を足す★
      * 3・2・1・START! の間は問題を隠すので、その分だけ締切を後ろに置く。
-     * ルールの上限（締切は request.time + 60秒 未満）に対して
-     * 制限時間の最大 35秒 ＋ 3秒 ＋ 通信猶予 0.7秒 なので余裕がある。
+     * ★ルールの上限（締切は request.time + 60秒 未満）を超えないよう firstDeadlineSec で丸める★
+     * 以前は「制限時間の最大35秒」前提で足していたが、今はリスニング55秒があり
+     * 55 + 7.6 + 0.7 = 63.3秒 で開始が拒否されていた（battleLive.ts の説明を参照）。
      * 速さ点は「締切 − 制限時間」を開始時刻とするので、カウントダウンの分は入らない。
      */
-    const first = resolveTimeLimit(questions[0], rules) + COUNTDOWN_TOTAL_MS / 1000;
+    const first = firstDeadlineSec(resolveTimeLimit(questions[0], rules));
     void startBattle(roomId, first).catch((e: Error) => setError(e.message));
   }, [roomId, questions, rules]);
 

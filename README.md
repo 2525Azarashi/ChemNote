@@ -4,6 +4,12 @@
 
 # Run and deploy your AI Studio app
 
+## AIで作業する人へ（最初に読む）
+
+- **[AGENTS.md](AGENTS.md)** … 全AI共通の作業ルール（Claude / Gemini / GPT どれでも）
+- **[docs/CODEMAP.md](docs/CODEMAP.md)** … どこに何があるか
+- **[docs/LISTENING_AUDIO_REPLACE.md](docs/LISTENING_AUDIO_REPLACE.md)** … 録り直したリスニング音源の入れ方
+
 ## 重要：統合版とリスニング専用版
 
 2026-09-18にリスニング専用版を**独立コピーとして分岐**しました。この部屋の統合版は削除せず維持します。
