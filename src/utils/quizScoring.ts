@@ -188,6 +188,11 @@ export function createScoreCurrentQuestion({
     try {
       const uid = auth.currentUser?.uid || (isGuest ? 'guest' : null);
       markProblemSolved(uid, chapter.id, currentQuestion.id, boostedScore);
+      // とびら君の成長（XP・マナコイン・ミッション）。同じ大問は1日1回。学習の保存とは独立で、失敗しても学習を止めない。
+      if (uid && Number.isFinite(boostedScore) && boostedScore >= 1) {
+        const key = `${chapter.id}::${currentQuestion.id}`;
+        void import('../battle/data/growthStore').then(({ recordStudyGrowth }) => recordStudyGrowth(uid, key)).catch(() => {});
+      }
 
       // localStorage への記録が済んだので、クラウドへの送信を予約する。
       // 1問ごとに通信すると1授業で数千書き込みになるため、

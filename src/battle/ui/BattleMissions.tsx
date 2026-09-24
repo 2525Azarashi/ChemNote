@@ -17,9 +17,9 @@
  */
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, CalendarCheck, Clock, Coins, PartyPopper, Sparkles } from 'lucide-react';
-import { localDateKey, missionsForDate, msUntilNextDay, rolloverDaily, type GrowthProgress } from '../core/growth';
-import { claimMissionReward, loadMyGrowth, subscribeGrowth } from '../data/growthStore';
+import { ArrowLeft, CalendarCheck, Clock, Coins, Gift, PartyPopper, Sparkles, Zap } from 'lucide-react';
+import { allMissionsForDate, canOpenDailyChest, DAILY_CHEST_ID, DAILY_CHEST_REWARD, localDateKey, missionsForDate, msUntilNextDay, rolloverDaily, type GrowthProgress } from '../core/growth';
+import { claimMissionReward, loadMyGrowth, openChest, subscribeGrowth } from '../data/growthStore';
 import { play, primeAudio } from './feedback';
 import { AMBER, BattleButton, BattleLoading, BattleNotice, BattleShell, BattleTitle, GOLD, INK, INK_SUB, LINE } from './BattleParts';
 import { GrowthAvatar, LevelBar, MissionRow } from './GrowthParts';
@@ -31,7 +31,7 @@ function remainLabel(ms: number): string {
   return `${m}分`;
 }
 
-export function BattleMissions({ onBack, onBattle, onReview, onShop, standalone = false }: { onBack: () => void; onBattle?: () => void; onReview?: () => void; onShop?: () => void; standalone?: boolean; key?: string }) {
+export function BattleMissions({ onBack, onBattle, onReview, onShop, onRush, standalone = false }: { onBack: () => void; onBattle?: () => void; onReview?: () => void; onShop?: () => void; onRush?: () => void; standalone?: boolean; key?: string }) {
   const [progress, setProgress] = useState<GrowthProgress | null>(null);
   const [claiming, setClaiming] = useState<string | null>(null);
   const [justClaimed, setJustClaimed] = useState<string | null>(null);
@@ -73,6 +73,19 @@ export function BattleMissions({ onBack, onBattle, onReview, onShop, standalone 
     }
   };
 
+  const openTreasure = async () => {
+    primeAudio();
+    setClaiming(DAILY_CHEST_ID);
+    const r = await openChest();
+    setClaiming(null);
+    if (r?.reward) {
+      play('levelup');
+      setToast(`宝箱をひらいた！ +${r.reward.xp} XP ／ +${r.reward.coins} コイン`);
+    } else if (r === null) {
+      setToast('端末に保存できませんでした。ブラウザの保存設定・空き容量を確認してください。');
+    }
+  };
+
   if (!progress) {
     return (
       <BattleShell>
@@ -85,10 +98,15 @@ export function BattleMissions({ onBack, onBattle, onReview, onShop, standalone 
 
   // 日付が変わっていれば表示上は空で始める（書き込みは次の試合・ログイン時）
   const daily = rolloverDaily(progress.daily, today);
-  const missions = missionsForDate(today);
+  const battleMissions = missionsForDate(today);
+  const missions = allMissionsForDate(today);
+  const bonusMissions = missions.slice(battleMissions.length);
   const done = missions.filter((m) => (daily.progress[m.id] ?? 0) >= m.goal);
   const claimable = done.filter((m) => !daily.claimed.includes(m.id)).length;
-  const allClaimed = daily.claimed.length >= missions.length;
+  const allClaimed = missions.every((m) => daily.claimed.includes(m.id));
+  const chestOpened = daily.claimed.includes(DAILY_CHEST_ID);
+  const chestReady = canOpenDailyChest({ ...progress, daily }, today);
+  const claimedCount = missions.filter((m) => daily.claimed.includes(m.id)).length;
   const totalXp = missions.reduce((a, m) => a + m.rewardXp, 0);
   const totalCoins = missions.reduce((a, m) => a + m.rewardCoins, 0);
 
@@ -96,6 +114,11 @@ export function BattleMissions({ onBack, onBattle, onReview, onShop, standalone 
     <BattleShell
       footer={
         <div className="grid gap-2.5">
+          {onRush && !allClaimed && (
+            <BattleButton onClick={onRush} icon={<Zap size={18} />}>
+              マナラッシュでミッションを進める
+            </BattleButton>
+          )}
           {onBattle && !allClaimed && (
             <BattleButton onClick={onBattle} icon={<Sparkles size={18} />}>
               対戦してミッションを進める
@@ -160,8 +183,9 @@ export function BattleMissions({ onBack, onBattle, onReview, onShop, standalone 
         </div>
       </section>
 
+      <h2 className="mb-2 text-xs font-black" style={{ color: INK_SUB }}>対戦ミッション</h2>
       <div className="grid gap-2.5">
-        {missions.map((m) => (
+        {battleMissions.map((m) => (
           <MissionRow
             key={m.id}
             id={m.id}
@@ -174,9 +198,44 @@ export function BattleMissions({ onBack, onBattle, onReview, onShop, standalone 
         ))}
       </div>
 
+      <h2 className="mb-2 mt-4 text-xs font-black" style={{ color: INK_SUB }}>ボーナスミッション（演習・マナラッシュ）</h2>
+      <div className="grid gap-2.5" data-bonus-missions>
+        {bonusMissions.map((m) => (
+          <MissionRow
+            key={m.id}
+            id={m.id}
+            progress={daily.progress[m.id] ?? 0}
+            claimed={daily.claimed.includes(m.id)}
+            claiming={claiming === m.id}
+            justClaimed={justClaimed === m.id}
+            onClaim={() => void claim(m.id)}
+          />
+        ))}
+      </div>
+
+      <section className={`daily-chest mt-4 rounded-3xl border-2 p-4 ${chestReady ? 'is-ready' : ''}`} data-daily-chest
+        style={{ borderColor: chestReady ? `${GOLD}CC` : LINE, background: chestReady ? `${GOLD}1A` : '#FFFFFF' }}>
+        <div className="flex items-center gap-3">
+          <span className="daily-chest-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl" style={{ background: chestOpened ? '#EEF1F3' : `${GOLD}55`, color: chestOpened ? INK_SUB : AMBER }} aria-hidden>
+            <Gift size={26} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-black" style={{ color: INK }}>{chestOpened ? 'きょうの宝箱はひらきました' : 'コンプリート宝箱'}</p>
+            <p className="text-[11px] font-bold" style={{ color: INK_SUB }}>
+              {chestOpened ? 'また明日ちょうせんしよう' : `全${missions.length}ミッションを受け取るとひらく（${claimedCount}/${missions.length}）`}
+            </p>
+            <p className="text-[11px] font-black tabular-nums" style={{ color: AMBER }}>+{DAILY_CHEST_REWARD.xp} XP ／ +{DAILY_CHEST_REWARD.coins} コイン</p>
+          </div>
+          <button type="button" disabled={!chestReady || claiming === DAILY_CHEST_ID} onClick={() => void openTreasure()}
+            className="min-h-11 rounded-xl px-3 text-xs font-black disabled:opacity-40" style={{ background: chestReady ? GOLD : '#EEF1F3', color: INK }}>
+            {chestOpened ? '受取済' : 'ひらく'}
+          </button>
+        </div>
+      </section>
+
       <p className="mt-4 flex items-start gap-1.5 text-[10px] font-bold leading-relaxed" style={{ color: INK_SUB }}>
         <Sparkles size={12} className="mt-0.5 shrink-0" style={{ color: AMBER }} />
-        ミッションは毎日0時に入れかわり、全員おなじ内容です。コインは「プロフィール」でとびら君の装備と交換できます。
+        ミッションは毎日0時に入れかわり、全員おなじ内容です。ボーナスミッションは演習（大問に得点）とマナラッシュで進みます。コインは「プロフィール」でとびら君の装備と交換できます。
         復習リストの「できた」で進みます。同じ問題は1日1回までです。
       </p>
     </BattleShell>

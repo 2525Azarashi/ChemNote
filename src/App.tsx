@@ -1517,7 +1517,7 @@ export default function App() {
                 描画の受け口でも同じフラグを見て、
                 「見えないのに入れる」状態を作らない。 */}
             {appState === 'growth' && <React.Suspense fallback={<ScreenLoading />}>
-              <GrowthHub page={growthPage} onPage={setGrowthPage} onBack={() => navigateMain('home')}
+              <GrowthHub page={growthPage} onPage={setGrowthPage} onBack={() => navigateMain('home')} defaultSubject={selectedSubject}
                 onBattle={FEATURES.battle ? () => navigateMain('battle') : undefined}
                 onReview={() => { setStudyHubView({ tab: 'today', subjectTab: 'all' }); navigateMain('study_hub'); }} />
             </React.Suspense>}
