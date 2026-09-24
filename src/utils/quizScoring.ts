@@ -192,6 +192,9 @@ export function createScoreCurrentQuestion({
       if (uid && Number.isFinite(boostedScore) && boostedScore >= 1) {
         const key = `${chapter.id}::${currentQuestion.id}`;
         void import('../battle/data/growthStore').then(({ recordStudyGrowth }) => recordStudyGrowth(uid, key)).catch(() => {});
+      } else if (uid) {
+        // 0点だった → 演習の「れんぞく正解」ミッションの連続を切る
+        void import('../battle/data/growthStore').then(({ breakStudyStreak }) => breakStudyStreak()).catch(() => {});
       }
 
       // localStorage への記録が済んだので、クラウドへの送信を予約する。

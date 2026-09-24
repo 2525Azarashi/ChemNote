@@ -248,6 +248,7 @@ import { installFriendPresence } from './utils/friendPresence';
 import { BattleMode } from './battle/ui/BattleMode';
 import type { GrowthPage } from './components/GrowthHub';
 const GrowthHub = React.lazy(() => import('./components/GrowthHub').then(m => ({ default: m.GrowthHub })));
+const MissionToast = React.lazy(() => import('./components/MissionToast').then(m => ({ default: m.MissionToast })));
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin' | 'battle' | 'rika' | 'growth';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
@@ -1807,6 +1808,11 @@ export default function App() {
           </div>
         </div>
       </MobileViewWrapper>
+
+      {/* ミッション達成のお知らせ（どの画面でも上に出る。受け取りはミッション画面で） */}
+      <React.Suspense fallback={null}>
+        <MissionToast onOpen={() => { setGrowthPage('missions'); navigateMain('growth'); }} />
+      </React.Suspense>
 
       {/* Desktop Toggle Button for Mobile Preview
           aria-label / title を日本語で明示、アイコンには aria-hidden */}

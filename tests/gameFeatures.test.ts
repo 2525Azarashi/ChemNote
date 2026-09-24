@@ -32,17 +32,21 @@ beforeEach(() => {
 afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe('ボーナスミッション', () => {
-  it('毎日2つ（演習1・マナラッシュ1）で、対戦ミッションと合わせて5つ・ID重複なし', () => {
-    for (let d = 1; d <= 28; d += 1) {
-      const date = `2026-09-${String(d).padStart(2, '0')}`;
+  it('毎日3つ（演習1・マナラッシュ1・おたのしみ1）で、対戦ミッションと合わせて6つ・ID重複なし', () => {
+    const seenFun = new Set<string>();
+    for (let d = 1; d <= 60; d += 1) {
+      const date = new Date(2026, 8, d).toISOString().slice(0, 10);
       const b = bonusMissionsForDate(date);
-      expect(b).toHaveLength(2);
+      expect(b).toHaveLength(3);
       expect(b[0]!.kind).toBe('study');
-      expect(b[1]!.kind).not.toBe('study');
+      expect(b[1]!.kind.startsWith('rush_')).toBe(true);
+      expect(['gacha', 'equip', 'study_streak']).toContain(b[2]!.kind);
+      seenFun.add(b[2]!.kind);
       const all = allMissionsForDate(date);
-      expect(all).toHaveLength(5);
-      expect(new Set(all.map(m => m.id)).size).toBe(5);
+      expect(all).toHaveLength(6);
+      expect(new Set(all.map(m => m.id)).size).toBe(6);
     }
+    expect(seenFun.size).toBe(3);
     const ids = [...MISSION_POOL, ...BONUS_MISSION_POOL].map(m => m.id);
     expect(new Set(ids).size).toBe(ids.length);
     expect(missionById('x_study3')?.kind).toBe('study');
@@ -232,5 +236,36 @@ describe('追加の称号・フレーム', () => {
     expect(p.studySolved).toBe(0);
     expect(p.rushBest).toBe(0);
     expect(p.rushBestBy).toEqual({ math: 500 });
+  });
+});
+
+
+describe('追加ミッションと達成のお知らせ', () => {
+  it('マナラッシュのスコア・コンボ系は、ミッションごとの基準で判定する', async () => {
+    const { RUSH_SCORE_GOALS, RUSH_COMBO_GOALS } = await import('../src/battle/core/growth');
+    expect(RUSH_SCORE_GOALS.x_rush2500).toBe(2500);
+    expect(RUSH_COMBO_GOALS.x_combo10).toBe(10);
+  });
+  it('newlyCompletedMissions は「いま達成した」ものだけ返す', async () => {
+    const { newlyCompletedMissions, bumpDailyMission } = await import('../src/battle/core/growth');
+    const p0 = emptyProgress('a');
+    const fun = bonusMissionsForDate(TODAY)[2]!;
+    const p1 = bumpDailyMission(p0, fun.kind, TODAY, fun.goal);
+    expect(newlyCompletedMissions(p0, p1, TODAY).map(m => m.id)).toContain(fun.id);
+    expect(newlyCompletedMissions(p1, bumpDailyMission(p1, fun.kind, TODAY), TODAY).map(m => m.id)).not.toContain(fun.id);
+  });
+  it('ストアで達成するとトースト用のイベントが1回だけ届く', async () => {
+    const { subscribeMissionComplete } = await import('../src/battle/data/growthStore');
+    data.set(key(), JSON.stringify({ version: 1, progress: { ...emptyProgress('a'), lastLoginDate: TODAY, daily: { date: TODAY, progress: {}, claimed: [] } }, receipts: [], day: TODAY }));
+    const got: string[] = [];
+    const off = subscribeMissionComplete(ms => got.push(...ms.map(m => m.id)));
+    const study = bonusMissionsForDate(TODAY)[0]!;
+    for (let i = 0; i < study.goal + 2; i += 1) await recordStudyGrowth('a', `ch::q${i}`);
+    off();
+    expect(got.filter(id => id === study.id)).toHaveLength(1);
+  });
+  it('トーストはアプリ全体に1つ置かれ、受け取りはミッション画面で行う', () => {
+    const app = readFileSync('src/App.tsx', 'utf8');
+    expect(app).toMatch(/<MissionToast onOpen=\{\(\) => \{ setGrowthPage\('missions'\)/);
   });
 });

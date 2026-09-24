@@ -208,7 +208,7 @@ export function BattleMissions({ onBack, onBattle, onReview, onShop, onRush, sta
         ))}
       </div>
 
-      <h2 className="mb-2 mt-4 text-xs font-black" style={{ color: INK_SUB }}>ボーナスミッション（演習・マナラッシュ）</h2>
+      <h2 className="mb-2 mt-4 text-xs font-black" style={{ color: INK_SUB }}>ボーナスミッション（演習・マナラッシュ・おたのしみ）</h2>
       <div className="grid gap-2.5" data-bonus-missions>
         {bonusMissions.map((m) => (
           <MissionRow
@@ -223,7 +223,7 @@ export function BattleMissions({ onBack, onBattle, onReview, onShop, onRush, sta
         ))}
       </div>
 
-      {/* デイリーコンプリート宝箱：3つ全部うけとると開く。7日連続で大当たり */}
+      {/* デイリーコンプリート宝箱：今日のミッションを全部うけとると開く。7日連続で大当たり */}
       <section
         id="battle-missions-chest"
         className="battle-card-in mt-4 rounded-3xl border-2 p-4"
@@ -293,7 +293,7 @@ export function BattleMissions({ onBack, onBattle, onReview, onShop, onRush, sta
 
       <p className="mt-4 flex items-start gap-1.5 text-[10px] font-bold leading-relaxed" style={{ color: INK_SUB }}>
         <Sparkles size={12} className="mt-0.5 shrink-0" style={{ color: AMBER }} />
-        ミッションは毎日0時に入れかわり、全員おなじ内容です。ボーナスミッションは演習（大問に得点）とマナラッシュで進みます。コインは「プロフィール」でとびら君の装備と交換できます。
+        ミッションは毎日0時に入れかわり、全員おなじ内容です。ボーナスミッションは演習（大問に得点）・マナラッシュ・ガチャや着がえで進みます。達成すると、どの画面でも上にお知らせが出ます。コインは「プロフィール」でとびら君の装備と交換できます。
         復習リストの「できた」で進みます。同じ問題は1日1回までです。全部うけとると宝箱が開き、7日連続で大当たりです。
       </p>
     </BattleShell>

@@ -402,7 +402,10 @@ export type MissionKind =
   | 'study'
   | 'rush_play'
   | 'rush_score'
-  | 'rush_combo';
+  | 'rush_combo'
+  | 'study_streak'
+  | 'gacha'
+  | 'equip';
 
 export interface MissionDef {
   id: string;
@@ -492,16 +495,29 @@ export const BONUS_MISSION_POOL: readonly MissionDef[] = [
   { id: 'x_rush3', kind: 'rush_play', label: 'マナラッシュに3回ちょうせん', goal: 3, rewardXp: 60, rewardCoins: 30, countMatch: () => 0 },
   { id: 'x_rush1500', kind: 'rush_score', label: 'マナラッシュで1500点', goal: 1, rewardXp: 50, rewardCoins: 25, countMatch: () => 0 },
   { id: 'x_combo5', kind: 'rush_combo', label: 'マナラッシュで5コンボ', goal: 1, rewardXp: 50, rewardCoins: 25, countMatch: () => 0 },
+  // ── 追加分（演習・マナラッシュ）──
+  { id: 'x_study10', kind: 'study', label: '演習で大問を10問とく', goal: 10, rewardXp: 110, rewardCoins: 50, countMatch: () => 0 },
+  { id: 'x_rush2', kind: 'rush_play', label: 'マナラッシュに2回ちょうせん', goal: 2, rewardXp: 45, rewardCoins: 20, countMatch: () => 0 },
+  { id: 'x_rush2500', kind: 'rush_score', label: 'マナラッシュで2500点', goal: 1, rewardXp: 70, rewardCoins: 35, countMatch: () => 0 },
+  { id: 'x_combo10', kind: 'rush_combo', label: 'マナラッシュで10コンボ', goal: 1, rewardXp: 70, rewardCoins: 35, countMatch: () => 0 },
+  // ── おたのしみ枠（3つ目のボーナス。遊び方を広げるきっかけ）──
+  { id: 'x_gacha1', kind: 'gacha', label: 'ガチャを1回まわす', goal: 1, rewardXp: 20, rewardCoins: 10, countMatch: () => 0 },
+  { id: 'x_equip1', kind: 'equip', label: 'とびら君の装飾を着がえる', goal: 1, rewardXp: 20, rewardCoins: 10, countMatch: () => 0 },
+  { id: 'x_streak_study3', kind: 'study_streak', label: '演習で3問れんぞく正解', goal: 1, rewardXp: 40, rewardCoins: 20, countMatch: () => 0 },
 ];
 
-export const BONUS_MISSIONS_PER_DAY = 2;
+export const BONUS_MISSIONS_PER_DAY = 3;
+/** マナラッシュのスコア系ミッションの基準（ミッションIDごと） */
+export const RUSH_SCORE_GOALS: Record<string, number> = { x_rush1500: 1500, x_rush2500: 2500 };
+export const RUSH_COMBO_GOALS: Record<string, number> = { x_combo5: 5, x_combo10: 10 };
 
-/** その日のボーナスミッション（演習1＋マナラッシュ1）。日付だけで決まる */
+/** その日のボーナスミッション（演習1＋マナラッシュ1＋おたのしみ1）。日付だけで決まる */
 export function bonusMissionsForDate(date: string): MissionDef[] {
   const seed = hashOf(`bonus:${date}`);
   const study = BONUS_MISSION_POOL.filter((m) => m.kind === 'study');
-  const rush = BONUS_MISSION_POOL.filter((m) => m.kind !== 'study');
-  return [study[seed % study.length]!, rush[Math.floor(seed / 5) % rush.length]!];
+  const rush = BONUS_MISSION_POOL.filter((m) => m.kind.startsWith('rush_'));
+  const fun = BONUS_MISSION_POOL.filter((m) => m.kind === 'gacha' || m.kind === 'equip' || m.kind === 'study_streak');
+  return [study[seed % study.length]!, rush[Math.floor(seed / 5) % rush.length]!, fun[Math.floor(seed / 37) % fun.length]!];
 }
 
 /** 対戦3つ＋ボーナス2つ（画面に並べる全部） */
@@ -514,10 +530,10 @@ export function missionById(id: string): MissionDef | undefined {
 }
 
 /** 今日のミッションにだけ進捗を足す（対戦系以外の入口で使う） */
-function bumpMissions(daily: DailyRecord, today: string, gains: Partial<Record<MissionKind, number>>): DailyRecord {
+function bumpMissions(daily: DailyRecord, today: string, gains: Partial<Record<MissionKind, number>> | ((m: MissionDef) => number)): DailyRecord {
   const next = rolloverDaily(daily, today);
   for (const m of allMissionsForDate(today)) {
-    const gain = gains[m.kind] ?? 0;
+    const gain = typeof gains === 'function' ? gains(m) : (gains[m.kind] ?? 0);
     if (gain <= 0) continue;
     const before = next.progress[m.id] ?? 0;
     next.progress[m.id] = Math.min(m.goal, before + gain);
@@ -532,13 +548,13 @@ function bumpMissions(daily: DailyRecord, today: string, gains: Partial<Record<M
 /** 演習で大問を1問得点したときの報酬 */
 export const STUDY_REWARD = { xp: 15, coins: 3 } as const;
 
-export function applyStudySolved(progress: GrowthProgress, today: string, now: number = Date.now()): { next: GrowthProgress; reward: { xp: number; coins: number } } {
+export function applyStudySolved(progress: GrowthProgress, today: string, now: number = Date.now(), streak = 0): { next: GrowthProgress; reward: { xp: number; coins: number } } {
   const next: GrowthProgress = {
     ...progress,
     xp: progress.xp + STUDY_REWARD.xp,
     coins: progress.coins + STUDY_REWARD.coins,
     studySolved: progress.studySolved + 1,
-    daily: bumpMissions(progress.daily, today, { study: 1 }),
+    daily: bumpMissions(progress.daily, today, { study: 1, study_streak: streak >= 3 ? 1 : 0 }),
   };
   return { next: withAchievements(next, now), reward: { ...STUDY_REWARD } };
 }
@@ -595,10 +611,11 @@ export function applyRushResult(
     rushBest: Math.max(progress.rushBest, score),
     rushBestCombo: Math.max(progress.rushBestCombo, r.maxCombo),
     rushBestBy: { ...progress.rushBestBy, [r.subject]: Math.max(prevSubject, score) },
-    daily: bumpMissions(progress.daily, today, {
-      rush_play: 1,
-      rush_score: score >= RUSH_SCORE_MISSION ? 1 : 0,
-      rush_combo: r.maxCombo >= RUSH_COMBO_MISSION ? 1 : 0,
+    daily: bumpMissions(progress.daily, today, (m) => {
+      if (m.kind === 'rush_play') return 1;
+      if (m.kind === 'rush_score') return score >= (RUSH_SCORE_GOALS[m.id] ?? RUSH_SCORE_MISSION) ? 1 : 0;
+      if (m.kind === 'rush_combo') return r.maxCombo >= (RUSH_COMBO_GOALS[m.id] ?? RUSH_COMBO_MISSION) ? 1 : 0;
+      return 0;
     }),
   };
   return {
@@ -607,6 +624,19 @@ export function applyRushResult(
     newBest: score > progress.rushBest,
     newSubjectBest: score > prevSubject,
   };
+}
+
+/** ガチャ・着がえなど、報酬なしで「今日のミッション」だけ進める */
+export function bumpDailyMission(progress: GrowthProgress, kind: MissionKind, today: string, amount = 1): GrowthProgress {
+  const daily = bumpMissions(progress.daily, today, { [kind]: amount });
+  return { ...progress, daily };
+}
+
+/** before → after で「新しく達成した」ミッション（受け取り前）。通知に使う */
+export function newlyCompletedMissions(before: GrowthProgress, after: GrowthProgress, today: string): MissionDef[] {
+  if (after.daily.date !== today) return [];
+  const prev = before.daily.date === today ? before.daily.progress : {};
+  return allMissionsForDate(today).filter((m) => (after.daily.progress[m.id] ?? 0) >= m.goal && (prev[m.id] ?? 0) < m.goal && !after.daily.claimed.includes(m.id));
 }
 
 /** 受け取れる（達成済み・未受け取り）か */

@@ -2824,3 +2824,18 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 @keyframes gacha-sr-pop { 0% { opacity: 0; transform: scale(.4) rotate(-6deg); } 100% { opacity: 1; transform: none; } }
 @keyframes gacha-card-in { 0% { opacity: 0; transform: translateY(10px) scale(.9); } 100% { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .gacha-cinema[data-rarity], .gacha-result[data-rarity=SR], .gacha-sr-banner, .gacha-multi-grid li { animation: none !important; } }
+
+/* ===== ミッション達成トースト ===== */
+.mission-toast { position: fixed; top: max(12px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 10000; width: min(420px, calc(100vw - 24px)); display: flex; align-items: center; gap: 10px; padding: 12px 12px 14px; border-radius: 18px; background: linear-gradient(135deg,#fffbe8,#ffeeb8); border: 2px solid #e0a800; box-shadow: 0 10px 30px #7a520033, 0 0 0 4px #fff8; color: #5b3d00; overflow: hidden; animation: mission-toast-in .5s cubic-bezier(.2,1.4,.4,1) both; }
+.mission-toast-icon { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: #e0a800; color: #fff; box-shadow: 0 0 0 4px #fff3c4; animation: mission-toast-pop .8s ease-out .15s both; }
+.mission-toast-body { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; text-align: left; }
+.mission-toast-body strong { font-size: 13px; font-weight: 900; letter-spacing: .04em; color: #a86b00; }
+.mission-toast-body span { font-size: 14px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mission-toast-body small { font-size: 11px; color: #7a5200; }
+.mission-toast-claim { flex: none; min-height: 40px; padding: 0 12px; border-radius: 12px; background: #7a5200; color: #fff3c4; font-weight: 900; font-size: 12px; }
+.mission-toast-close { flex: none; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; color: #a86b00; }
+.mission-toast-timer { position: absolute; left: 0; bottom: 0; height: 4px; width: 100%; background: #e0a800; transform-origin: left; animation: mission-toast-timer linear forwards; }
+@keyframes mission-toast-in { 0% { opacity: 0; transform: translate(-50%, -30px) scale(.9); } 100% { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes mission-toast-pop { 0% { transform: scale(.3) rotate(-30deg); } 60% { transform: scale(1.2) rotate(8deg); } 100% { transform: none; } }
+@keyframes mission-toast-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .mission-toast, .mission-toast-icon { animation: none; } }
