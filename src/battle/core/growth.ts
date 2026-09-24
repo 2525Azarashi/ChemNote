@@ -527,31 +527,37 @@ export interface ItemDef {
   /** pose: 画像パス（public/mascots）／ frame: 色コード */
   value: string;
   gacha?: boolean;
-  pattern?: 'dashed' | 'double' | 'dots' | 'rays' | 'stars';
+  pattern?: 'dashed' | 'double' | 'dots' | 'rays' | 'stars' | 'stripes' | 'checker' | 'wave' | 'grid' | 'sparkle' | 'rainbow' | 'aurora' | 'neon';
   /**
    * 入手条件。どれか1つ。
    *   level  … そのレベルで自動解放
    *   badge  … そのバッジで自動解放
    *   coins  … コインで交換
+   *   gacha  … ガチャ限定（自動解放・コイン交換なし）
    */
-  unlock: { level: number } | { badge: string } | { coins: number };
+  unlock: { level: number } | { badge: string } | { coins: number } | { gacha: true };
 }
 
 /**
- * ★既存の9枚の扉くん画像をそのまま使う★
- * 新しい絵は描かない（絵柄の統一と容量のため）。
- * 「ポーズを選べる」こと自体が装備で、レベルや実績で順に解放する。
+ * 扉くんのポーズは public/mascots の画像。
+ * 基本9枚に、ガチャ限定の新ポーズ（リスニング・実験・トロフィー）を追加。
+ * 「ポーズを選べる」こと自体が装備で、レベルや実績・コイン・ガチャで順に解放する。
+ * gacha: true を付けたものはガチャの抽選対象にも入る（レベル解放と併用可）。
  */
 export const ITEMS: readonly ItemDef[] = [
-  { id: 'pose_basic', kind: 'pose', label: '基本', value: '/mascots/basic.png', unlock: { level: 1 } },
-  { id: 'pose_walking', kind: 'pose', gacha: true, label: 'おさんぽ', value: '/mascots/walking.png', unlock: { level: 3 } },
-  { id: 'pose_studying', kind: 'pose', gacha: true, label: '勉強中', value: '/mascots/studying.png', unlock: { level: 5 } },
-  { id: 'pose_thinking', kind: 'pose', gacha: true, label: '考え中', value: '/mascots/thinking.png', unlock: { level: 8 } },
-  { id: 'pose_good', kind: 'pose', label: 'グッド！', value: '/mascots/good.png', unlock: { badge: 'b_first_win' } },
-  { id: 'pose_cheering', kind: 'pose', label: '応援', value: '/mascots/cheering.png', unlock: { coins: 120 } },
-  { id: 'pose_happy', kind: 'pose', label: 'よろこび', value: '/mascots/happy.png', unlock: { badge: 'b_perfect' } },
-  { id: 'pose_bowing', kind: 'pose', label: 'おじぎ', value: '/mascots/bowing.png', unlock: { badge: 'b_holes_10' } },
-  { id: 'pose_sleeping', kind: 'pose', label: 'おひるね', value: '/mascots/sleeping.png', unlock: { coins: 200 } },
+  { id: 'pose_basic', kind: 'pose', label: '基本', value: '/mascots/basic.webp', unlock: { level: 1 } },
+  { id: 'pose_walking', kind: 'pose', gacha: true, label: 'おさんぽ', value: '/mascots/walking.webp', unlock: { level: 3 } },
+  { id: 'pose_studying', kind: 'pose', gacha: true, label: '勉強中', value: '/mascots/studying.webp', unlock: { level: 5 } },
+  { id: 'pose_thinking', kind: 'pose', gacha: true, label: '考え中', value: '/mascots/thinking.webp', unlock: { level: 8 } },
+  { id: 'pose_good', kind: 'pose', gacha: true, label: 'グッド！', value: '/mascots/good.webp', unlock: { badge: 'b_first_win' } },
+  { id: 'pose_cheering', kind: 'pose', label: '応援', value: '/mascots/cheering.webp', unlock: { coins: 120 } },
+  { id: 'pose_happy', kind: 'pose', gacha: true, label: 'よろこび', value: '/mascots/happy.webp', unlock: { badge: 'b_perfect' } },
+  { id: 'pose_bowing', kind: 'pose', gacha: true, label: 'おじぎ', value: '/mascots/bowing.webp', unlock: { badge: 'b_holes_10' } },
+  { id: 'pose_sleeping', kind: 'pose', label: 'おひるね', value: '/mascots/sleeping.webp', unlock: { coins: 200 } },
+  // ── ガチャ限定の新ポーズ（コイン交換不可・ガチャのみ）──
+  { id: 'pose_listening', kind: 'pose', gacha: true, label: 'リスニング中', value: '/mascots/listening.webp', unlock: { gacha: true } },
+  { id: 'pose_science', kind: 'pose', gacha: true, label: '実験中', value: '/mascots/science.webp', unlock: { gacha: true } },
+  { id: 'pose_trophy', kind: 'pose', gacha: true, label: '優勝トロフィー', value: '/mascots/trophy.webp', unlock: { gacha: true } },
   { id: 'frame_paper', kind: 'frame', label: 'ノート', value: '#E5E7EB', unlock: { level: 1 } },
   { id: 'frame_green', kind: 'frame', label: 'わかば', value: '#2ECC71', unlock: { level: 5 } },
   { id: 'frame_blue', kind: 'frame', label: 'そら', value: '#3498DB', unlock: { level: 10 } },
@@ -568,6 +574,19 @@ export const ITEMS: readonly ItemDef[] = [
   { id: 'frame_bubbles', kind: 'frame', label: 'ソーダバブル', value: '#62A8BB', pattern: 'dots', unlock: { coins: 150 } },
   { id: 'frame_sunrise', kind: 'frame', label: '朝日のリング', value: '#DA9B65', pattern: 'rays', unlock: { coins: 180 } },
   { id: 'frame_constellation', kind: 'frame', label: '星めぐり', value: '#7A76B0', pattern: 'stars', unlock: { coins: 220 } },
+  // ── 追加フレーム（ガチャ増量分）──
+  { id: 'frame_candy', kind: 'frame', label: 'キャンディ', value: '#E98BA5', pattern: 'stripes', unlock: { coins: 130 } },
+  { id: 'frame_checker', kind: 'frame', label: 'チェッカー', value: '#5B6B7F', pattern: 'checker', unlock: { coins: 140 } },
+  { id: 'frame_wave', kind: 'frame', label: 'さざなみ', value: '#4FA3C7', pattern: 'wave', unlock: { coins: 150 } },
+  { id: 'frame_graph', kind: 'frame', label: 'グラフ用紙', value: '#6FA88C', pattern: 'grid', unlock: { coins: 110 } },
+  { id: 'frame_sparkle', kind: 'frame', label: 'きらめき', value: '#C9A227', pattern: 'sparkle', unlock: { coins: 240 } },
+  { id: 'frame_rainbow', kind: 'frame', label: 'レインボー', value: '#E76F51', pattern: 'rainbow', unlock: { coins: 260 } },
+  { id: 'frame_aurora', kind: 'frame', label: 'オーロラ', value: '#3FA796', pattern: 'aurora', unlock: { coins: 280 } },
+  { id: 'frame_neon', kind: 'frame', label: 'ネオン', value: '#7C3AED', pattern: 'neon', unlock: { coins: 300 } },
+  { id: 'frame_lemon', kind: 'frame', label: 'レモン', value: '#F2D16B', unlock: { coins: 70 } },
+  { id: 'frame_grape', kind: 'frame', label: 'ぶどう', value: '#8E5EA2', unlock: { coins: 90 } },
+  { id: 'frame_chocolate', kind: 'frame', label: 'チョコ', value: '#7B4B2A', unlock: { coins: 100 } },
+  { id: 'frame_ice', kind: 'frame', label: 'アイス', value: '#A8DDE9', unlock: { coins: 90 } },
   { id: 'frame_fire', kind: 'frame', label: 'ほのお', value: '#E67E22', unlock: { badge: 'b_streak_5' } },
 ];
 
@@ -625,7 +644,7 @@ export function equipTitle(progress: GrowthProgress, badgeId: string): GrowthPro
 /** 身につけているポーズの画像パス（壊れていれば基本） */
 export function equippedPoseSrc(progress: GrowthProgress): string {
   const item = itemById(progress.equipped.pose);
-  return item && item.kind === 'pose' ? item.value : '/mascots/basic.png';
+  return item && item.kind === 'pose' ? item.value : '/mascots/basic.webp';
 }
 
 /** 身につけている枠の色 */

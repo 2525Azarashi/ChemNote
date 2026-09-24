@@ -90,12 +90,15 @@ describe('sq()（短答式サブ設問の組み立て）', () => {
 // 実データが壊れていないことの確認
 // -------------------------------------------------------------------
 describe('数学4単元の実データ', () => {
-  it('★短答式サブ設問が171個ある（変更前と同数）★', async () => {
+  it('★短答式サブ設問が 171＋256＋100 個ある（既存＋強化＋数I・A）★', async () => {
     const mods = [
       await import('../src/data/mathIntegerProblems'),
       await import('../src/data/mathIntegralProblems'),
       await import('../src/data/mathProbabilityProblems'),
       await import('../src/data/mathVectorProblems'),
+      // 入試レベル強化（66大問・256小問）＋ 数I・A 基礎（20大問・100小問）
+      await import('../src/data/mathPlusProblems'),
+      await import('../src/data/mathIAProblems'),
     ];
     let count = 0;
     const seen = new WeakSet<object>();
@@ -109,7 +112,8 @@ describe('数学4単元の実データ', () => {
       for (const k of Object.keys(rec)) walk(rec[k]);
     };
     for (const m of mods) for (const k of Object.keys(m)) walk((m as Record<string, unknown>)[k]);
-    expect(count).toBe(171);
+    // 数I・A 786 → 840（2026-09-24 マナトビ基本演習 Step 66〜86・三角比 21大問 54小問を追加）
+    expect(count).toBe(171 + 256 + 840);
   });
 
   it('全短答式サブ設問に id / label / correctAnswer が入っている', async () => {
@@ -118,6 +122,8 @@ describe('数学4単元の実データ', () => {
       await import('../src/data/mathIntegralProblems'),
       await import('../src/data/mathProbabilityProblems'),
       await import('../src/data/mathVectorProblems'),
+      await import('../src/data/mathPlusProblems'),
+      await import('../src/data/mathIAProblems'),
     ];
     const bad: string[] = [];
     const seen = new WeakSet<object>();
@@ -147,6 +153,8 @@ const MATH_FILES = [
   'src/data/mathIntegralProblems.ts',
   'src/data/mathProbabilityProblems.ts',
   'src/data/mathVectorProblems.ts',
+  'src/data/mathPlusProblems.ts',
+  'src/data/mathIAProblems.ts',
 ];
 
 describe('番人（共通化の維持）', () => {

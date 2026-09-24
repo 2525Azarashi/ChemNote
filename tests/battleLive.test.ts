@@ -257,7 +257,9 @@ describe('接続の確認（コードの根拠）', () => {
   });
   it('1問目の締切にカウントダウン分を足し、Firestore への追加書き込みは無い', () => {
     const hook = read('src/battle/hooks/useBattleRoom.ts');
-    expect(hook).toContain('COUNTDOWN_TOTAL_MS / 1000');
+    // カウントダウン分は firstDeadlineSec（battleLive.ts）で足し、Firestore の 60 秒上限内に丸める
+    expect(hook).toContain('firstDeadlineSec(resolveTimeLimit(questions[0], rules))');
+    expect(read('src/battle/core/battleLive.ts')).toContain('COUNTDOWN_TOTAL_MS / 1000');
     expect(hook.match(/updateDoc|setDoc|addDoc/g)).toBeNull();
     expect(read('src/battle/data/battle.ts')).toBe(read('src/battle/data/battle.ts')); // データ層は差分ゼロ（下の manifest で確認）
   });

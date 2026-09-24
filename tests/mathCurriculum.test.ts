@@ -109,9 +109,11 @@ describe('current six-course mathematics expansion', () => {
   it('adds 38 units and 152 exercises without removing the 33 legacy units', () => {
     expect(units).toHaveLength(38);
     expect(units.flatMap(u => u.exercises)).toHaveLength(152);
-    expect(getAllMathChapters()).toHaveLength(71);
-    expect(getAllMathChapters().filter(c => !c.id.startsWith('mc'))).toHaveLength(33);
-    expect(getMathStats()).toEqual({ chapters: 71, questions: 217 });
+    // 71 = 旧33単元＋カリキュラム38単元。Round8 で数I・A 32単元を追加して 103（2026-09-23）
+    expect(getAllMathChapters()).toHaveLength(103);
+    // 旧33単元（積分・ベクトル・確率・整数）＋ Round8 の数I・A 32単元
+    expect(getAllMathChapters().filter(c => !c.id.startsWith('mc'))).toHaveLength(65);
+    expect(getMathStats()).toEqual({ chapters: 103, questions: 463 }); // +21（基本演習 Step 66〜86）
     expect(new Set(units.map(u => u.id)).size).toBe(38);
     expect(Object.keys(numeric).sort()).toEqual(units.map(u => u.id).sort());
     for (const course of MATH_COURSES) {

@@ -354,6 +354,30 @@ export const COUNTDOWN_START_HOLD_MS = 600;
 export const COUNTDOWN_TOTAL_MS = COUNTDOWN_STEP_MS * COUNTDOWN_SECONDS + COUNTDOWN_START_HOLD_MS;
 
 /**
+ * 1問目の締切（開始の書き込みから何秒後か）の上限。
+ *
+ * ★なぜ上限が要るのか（2026-09-23 に実際に起きた不具合）★
+ * firestore.rules の battleDeadlineSane() は
+ *   deadlineAt < request.time + 60秒
+ * でないと開始・進行の書き込みを拒否する。
+ * 1問目の締切は「制限時間 ＋ カウントダウン 7.6秒」＋通信猶予 0.7秒 なので、
+ * リスニング（制限時間 55秒）は 55 + 7.6 + 0.7 = 63.3秒 になり、
+ * ★オンライン対戦が毎回開始できなかった★（AI対戦は書き込みが無いので動いていた）。
+ * 他教科でも1問目が上限 55秒 の問題だと同じく失敗していた。
+ *
+ * ルールを変えると本番への反映作業が要るので、アプリ側で
+ * 「60秒 − 通信猶予 0.7秒 − 時計ずれの余裕 1.5秒」= 57.8秒 に収める。
+ * 足りない分はカウントダウンが短くなるだけ（例：55秒の問題は「2」から始まる）。
+ * 制限時間（解答できる時間）そのものは削らない。
+ */
+export const FIRST_DEADLINE_MAX_SEC = 60 - 0.7 - 1.5;
+
+/** 1問目の締切（秒）。制限時間は必ず確保し、カウントダウンを上限内に収める。 */
+export function firstDeadlineSec(timeLimitSec: number): number {
+  return Math.max(timeLimitSec, Math.min(timeLimitSec + COUNTDOWN_TOTAL_MS / 1000, FIRST_DEADLINE_MAX_SEC));
+}
+
+/**
  * 開始からの経過ミリ秒 → 表示する文字。終わったら null。
  * 7秒の準備時間のあとに START! を表示する。
  */

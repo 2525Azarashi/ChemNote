@@ -59,6 +59,7 @@ type Runner = (fn: () => Promise<unknown>, okMessage?: string) => Promise<void>;
 function unlockLabel(item: ItemDef): string {
   if ('level' in item.unlock) return `Lv.${item.unlock.level} で解放`;
   if ('badge' in item.unlock) return `称号「${badgeById(item.unlock.badge)?.label ?? '?'}」で解放`;
+  if ('gacha' in item.unlock) return 'ガチャ限定';
   return `${item.unlock.coins} マナコイン`;
 }
 

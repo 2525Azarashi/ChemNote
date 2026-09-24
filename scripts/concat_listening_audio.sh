@@ -1,4 +1,6 @@
 #!/bin/sh
+# ※ 新しい音源の取り込みは scripts/listening-audio.mts（docs/LISTENING_AUDIO_REPLACE.md）を使う。
+#   このスクリプトは 2026-09-06 の旧配布ZIP専用。
 # 第4問B（4人の発話 s1〜s4）と 第5問 問32（A・B）の音声を 1 本に連結する。
 #
 # ■ なぜ連結するのか

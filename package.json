@@ -23,6 +23,10 @@
     "verify:coverage": "tsx scripts/verify-subquestion-coverage.mjs",
     "verify:loss": "tsx scripts/verify-no-content-loss.mjs",
     "verify": "npm run verify:format && npm run verify:coverage && npm run verify:loss",
+    "audio:list": "tsx scripts/listening-audio.mts list",
+    "audio:check": "tsx scripts/listening-audio.mts check",
+    "audio:status": "tsx scripts/listening-audio.mts status",
+    "audio:import": "tsx scripts/listening-audio.mts import",
     "test:rules": "firebase emulators:exec --only firestore --project mntb-rules-test \"vitest run\""
   },
   "dependencies": {

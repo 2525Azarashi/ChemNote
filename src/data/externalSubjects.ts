@@ -213,6 +213,38 @@ export const EXTERNAL_SUBJECTS: readonly ExternalSubject[] = [
       { id: 'ilv3', title: '熟語 Lv3　発展' },
     ],
   },
+
+  /**
+   * 情報Ⅰ（対戦専用・2026-09-24 追加）
+   *
+   * 出題は src/battle/data/external/joho.json（450問・全部4択）。
+   * 元データは docs/joho/joho-pool.source.json（配布ZIP「情報Ⅰ問題パック_マナトビ用_450問」）、
+   * 変換は scripts/gen-joho-pool.py → npm run gen:battle-pool。
+   * 本体に演習画面は無い（英単語と同じく、リザルトの「この単元を演習する」は出ない）。
+   *
+   * ★色★ グリーン（約 145°）。オリーブ（85°・生物基礎）とミント（175°・リスニング）の間で、
+   *   どちらより濃く彩度を上げてあるので並べても取り違えない。
+   */
+  {
+    id: 'joho',
+    label: '情報Ⅰ',
+    accent: '#2E7D4F',
+    accentSoft: '#BFE0CB',
+    surface: '#F3FAF5',
+    bubbleBorderClass: 'border-[#BFE0CB]/80',
+    bubbleBgClass: 'bg-[#F7FCF8]/95',
+    bubbleShadow: '0 10px 24px -14px rgba(46,125,79,0.55)',
+    chipTextClass: 'text-[#22603C]',
+    chipBgClass: 'bg-[#BFE0CB]/35',
+    progressBarClass: 'bg-[#4E9C6D]',
+    chapters: [
+      { id: 'jh1', title: '情報社会' },
+      { id: 'jh2', title: 'デジタル化' },
+      { id: 'jh3', title: 'プログラミング' },
+      { id: 'jh4', title: 'ネットワーク' },
+      { id: 'jh5', title: 'データ活用' },
+    ],
+  },
 ];
 
 /** 教科ID → 外部教科。知らないIDなら undefined。 */
@@ -245,4 +277,17 @@ export function externalChapterTitleOf(
   const subject = externalSubjectOf(subjectId);
   if (!subject) return undefined;
   return subject.chapters.find((chapter) => chapter.id === chapterId)?.title;
+}
+
+/**
+ * 本体に演習画面が無い「対戦専用」の外部教科。
+ * 対戦の結果画面は、この教科では「この問題を演習する」「つづけて演習する」「復習する」を出さない
+ * （押しても行き先が無いため）。答えは各問の1行解答で見せる。
+ * 理科（rika）は src/features/rika/ に演習画面があるので含めない。
+ */
+export const BATTLE_ONLY_SUBJECTS: readonly string[] = ['english_vocab', 'joho'];
+
+/** 対戦専用（演習画面が無い）教科か。 */
+export function isBattleOnlySubject(id: string | null | undefined): boolean {
+  return !!id && BATTLE_ONLY_SUBJECTS.includes(id);
 }

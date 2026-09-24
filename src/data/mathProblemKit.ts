@@ -52,6 +52,9 @@ export type MathProblem = {
   text: string;
   subQuestions: any[];
   explanation: string;
+  /** 問題に付随する図（public 配下の絶対パス。SVG 可）。ProblemPane が QuestionFigure で表示する */
+  imageUrl?: string;
+  imageCaption?: string;
   surroundingKnowledge: string[];
   deepDiveTopics: string[];
 };

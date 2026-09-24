@@ -163,6 +163,8 @@ const CHUNK_RULES: { pattern: string; chunk: string }[] = [
   { pattern: '/src/data/mathIntegralProblems', chunk: 'data-math' },
   { pattern: '/src/data/mathProbabilityProblems', chunk: 'data-math' },
   { pattern: '/src/data/mathVectorProblems', chunk: 'data-math' },
+  { pattern: '/src/data/mathPlusProblems', chunk: 'data-math' },
+  { pattern: '/src/data/mathIAProblems', chunk: 'data-math' },
 
   { pattern: '/src/data/biologyBasic', chunk: 'data-biology' },
 ];

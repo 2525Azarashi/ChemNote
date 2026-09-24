@@ -4,6 +4,19 @@
 
 # Run and deploy your AI Studio app
 
+## AIで作業する人へ（最初に読む）
+
+- **[AGENTS.md](AGENTS.md)** … 全AI共通の作業ルール（Claude / Gemini / GPT どれでも）
+- **[docs/CODEMAP.md](docs/CODEMAP.md)** … どこに何があるか
+- **[docs/LISTENING_AUDIO_REPLACE.md](docs/LISTENING_AUDIO_REPLACE.md)** … 録り直したリスニング音源の入れ方
+
+## 重要：統合版とリスニング専用版
+
+2026-09-18にリスニング専用版を**独立コピーとして分岐**しました。この部屋の統合版は削除せず維持します。
+**すべてのPR作成・更新で「リスニングにも送ってください。」または「リスニングには送らないでください。」を理由・対象・受け渡し状況付きで明記してください。**
+詳細は [恒久記録と引き継ぎルール](docs/LISTENING_DERIVATIVE.md)、作業開始時の指示は [CLAUDE.md](CLAUDE.md) を確認。
+
+
 ## 2026-09-07 UI改善（PR #125 / 4c26835 基準）
 
 - 選択中の科目を引き継ぎ、不要な科目・学習モードの再選択を省略。

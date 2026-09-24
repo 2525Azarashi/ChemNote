@@ -78,10 +78,12 @@ describe('全教科の空欄・ラベル監査', () => {
       }
     }
     const pool = (await Promise.all(Object.keys(POOL_COUNTS).map(loadPool))).flat();
-    expect(pool).toHaveLength(13721);
+    // 2026-09-24 情報Ⅰ（joho・外部プール 450問）を追加。本体教科の数（4180 / 4066）は変わらない。
+    expect(pool).toHaveLength(13721 + 450);
+    expect(pool.filter(q => q.subject === 'joho')).toHaveLength(450);
     expect(pool.filter(q => q.subject === 'english_vocab')).toHaveLength(9541);
-    expect(pool.filter(q => q.subject !== 'english_vocab')).toHaveLength(4180);
-    expect(pool.filter(q => q.subject !== 'english_vocab' && !q.chapterId.startsWith('mc'))).toHaveLength(4066);
+    expect(pool.filter(q => q.subject !== 'english_vocab' && q.subject !== 'joho')).toHaveLength(4180);
+    expect(pool.filter(q => q.subject !== 'english_vocab' && q.subject !== 'joho' && !q.chapterId.startsWith('mc'))).toHaveLength(4066);
     expect(Object.keys(repairs)).toHaveLength(50);
     for (const [key, r] of Object.entries(repairs) as [string, any][]) {
       expect(source.get(key)?.correctAnswer, key).toBe(r.expectedAnswer);

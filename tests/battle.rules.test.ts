@@ -815,6 +815,22 @@ describe('battle_rooms — 状態遷移', () => {
     );
   });
 
+  // 2026-09-23 リスニングのオンライン対戦が開始できなかった不具合の再現と修正の確認。
+  // 1問目の締切 = 制限時間55秒 + カウントダウン7.6秒 + 通信猶予0.7秒。
+  it('★リスニング開始：旧実装の締切（63.3秒後）は拒否される★', async () => {
+    await seed(['battle_rooms', ROOM], { ...roomPayload({ subject: 'english_listening', players: [HOST, GUEST], createdAt: new Date(), updatedAt: new Date() }) });
+    await assertFails(updateDoc(doc(ctxFor(HOST), 'battle_rooms', ROOM), {
+      status: 'playing', deadlineAt: new Date(Date.now() + 63300), updatedAt: serverTimestamp(),
+    }));
+  });
+  it('リスニング開始：firstDeadlineSec で丸めた締切（57.8+0.7秒後）は通る', async () => {
+    const { firstDeadlineSec } = await import('../src/battle/core/battleLive');
+    await seed(['battle_rooms', ROOM], { ...roomPayload({ subject: 'english_listening', players: [HOST, GUEST], createdAt: new Date(), updatedAt: new Date() }) });
+    await assertSucceeds(updateDoc(doc(ctxFor(HOST), 'battle_rooms', ROOM), {
+      status: 'playing', deadlineAt: new Date(Date.now() + firstDeadlineSec(55) * 1000 + 700), updatedAt: serverTimestamp(),
+    }));
+  });
+
   it('playing → finished は進める', async () => {
     await seedPlayingRoom();
     await assertSucceeds(

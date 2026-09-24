@@ -22,8 +22,8 @@ export function LaunchScreen({ onStart, soundEnabled, onToggleSound }: {
         <div className="launch-arch" /><div className="launch-stage-floor" data-frame-pattern={progress ? equippedFramePattern(progress) : 'plain'} style={{borderColor: progress ? equippedFrameColor(progress) : undefined}} />
         <div className={`launch-arrival ${walkReady ? 'walk-ready' : ''}`}>
           <div className="launch-gait">
-            <img className="launch-walking-pose" src="/mascots/walking.png" alt="" draggable={false} onLoad={() => setWalkReady(true)} />
-            <img className="launch-equipped-pose" src={progress ? equippedPoseSrc(progress) : '/mascots/basic.png'} alt="" draggable={false} />
+            <img className="launch-walking-pose" src="/mascots/walking.webp" alt="" draggable={false} onLoad={() => setWalkReady(true)} />
+            <img className="launch-equipped-pose" src={progress ? equippedPoseSrc(progress) : '/mascots/basic.webp'} alt="" draggable={false} />
           </div>
         </div>
         <i /><i />

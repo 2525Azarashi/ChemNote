@@ -16,7 +16,7 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
  const {progress}=useGrowthProgress();const lock=useRef(false);const [busy,setBusy]=useState(false);
  const oddsDialog=useRef<HTMLDialogElement>(null);
  const [collectionFilter,setCollectionFilter]=useState<'all'|'owned'|'missing'>('all');
- const items=gachaItems();
+ const items=gachaItems();const odds=(100/items.length).toFixed(1).replace(/\.0$/,'');
  const [previewIndex,setPreviewIndex]=useState(0);
  const previewItem=items[previewIndex % items.length];
  const ownedCount=items.filter(item=>progress?.owned.includes(item.id)).length;
@@ -36,7 +36,7 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
     <button type="button" className="gacha-preview-prev" aria-label="前の装飾をプレビュー" disabled={busy} onClick={()=>setPreviewIndex(i=>(i+items.length-1)%items.length)}><ChevronLeft /></button>
     <div className="gacha-exhibit">{progress && <GrowthAvatar progress={{...progress,equipped:{...progress.equipped,[previewItem.kind]:previewItem.id}}} size={120} showLevel={false}/>}</div>
     <button type="button" className="gacha-preview-next" aria-label="次の装飾をプレビュー" disabled={busy} onClick={()=>setPreviewIndex(i=>(i+1)%items.length)}><ChevronRight /></button>
-    <div className="gacha-preview-info" aria-live="polite"><strong>{previewItem.label}</strong><span>{previewIndex+1} / {items.length} · 各{100/items.length}%</span></div>
+    <div className="gacha-preview-info" aria-live="polite"><strong>{previewItem.label}</strong><span>{previewIndex+1} / {items.length} · 各{odds}%</span></div>
   </div>
   <p className="gacha-balance"><Coins size={20}/>所持 {progress?.coins ?? '—'} マナコイン</p>
   {revealing ? <div className="gacha-cinema"><p>コレクションが届きました</p><CinematicClip src={CINEMATIC_CLIPS.gacha.src} label="ガチャの開封動画" onComplete={()=>setRevealing(false)} /><button type="button" onClick={()=>setRevealing(false)}>結果を見る</button></div> : result ? <div className="gacha-result" role="status"><h2>{result.duplicate?'重複アイテム':'NEW!'} {result.item.label}</h2>
@@ -53,13 +53,13 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
   <dialog ref={oddsDialog} className="game-details-dialog" aria-labelledby="gacha-odds-title">
     <header><h2 id="gacha-odds-title">装飾コレクション・提供割合</h2><button type="button" autoFocus onClick={()=>oddsDialog.current?.close()}>閉じる</button></header>
     <div className="game-details-body gacha-odds">
-      <p>全{items.length}種類、各{100/items.length}%。毎回独立の抽選。重複は{GACHA_DUPLICATE_REFUND}枚返還。課金・換金なし／天井なし。フレーム・一部ポーズはショップ交換、おさんぽ・勉強中・考え中はレベルアップでも獲得できます。</p>
+      <p>全{items.length}種類、各{odds}%。毎回独立の抽選。重複は{GACHA_DUPLICATE_REFUND}枚返還。課金・換金なし／天井なし。フレーム・一部ポーズはショップ交換、おさんぽ・勉強中・考え中はレベルアップ、グッド！・よろこび・おじぎは称号でも獲得できます。「リスニング中」「実験中」「優勝トロフィー」の3ポーズはガチャ限定です。</p>
       <div className="gacha-collection-filters" role="group" aria-label="所持状況で絞り込む">{([['all','すべて'],['owned','所持済み'],['missing','未所持']] as const).map(([id,label])=><button key={id} type="button" aria-pressed={collectionFilter===id} onClick={()=>setCollectionFilter(id)}>{label}</button>)}</div>
       <ul className="gacha-collection-grid">{items.filter(item=>collectionFilter==='all'||(collectionFilter==='owned')===!!progress?.owned.includes(item.id)).map(item=>{
         const owned=!!progress?.owned.includes(item.id);
         return <li key={item.id} data-owned={owned}>
           {progress && <GrowthAvatar progress={{...progress,equipped:{...progress.equipped,[item.kind]:item.id}}} size={76} showLevel={false}/>}
-          <strong>{item.label}</strong><span>{owned?'所持済み':'未所持'} · {100/items.length}%</span>
+          <strong>{item.label}</strong><span>{owned?'所持済み':'未所持'} · {odds}%</span>
         </li>;
       })}</ul>
       {collectionFilter==='missing' && ownedCount===items.length && <p>全種類コレクション済みです。</p>}

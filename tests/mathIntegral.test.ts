@@ -34,10 +34,19 @@ const VIEWER = readFileSync('src/components/LearningViewer.tsx', 'utf8');
 const BARREL = readFileSync('src/data/learningContent/index.ts', 'utf8');
 
 describe('数III積分の章構成（15パターンの体系）', () => {
-  it('積分12章＋ベクトル8章＋確率8章＋整数5章＝33章がすべて定義されている', async () => {
+  it('数I・A 32章＋積分12章＋ベクトル8章＋確率8章＋整数5章＝65章がすべて定義されている', async () => {
     const { getAllMathChapters } = await import('../src/data/mathData');
-    const ids = getAllMathChapters().map((c: any) => c.id);
+    // 6科目カリキュラム（mc*）は tests/mathCurriculum.test.ts が検査する。ここではそれ以外の並び。
+    const ids = getAllMathChapters().map((c: any) => c.id).filter((id: string) => !id.startsWith('mc'));
     expect(ids).toEqual([
+      // 数I・A 基礎（土台づくり）
+      'ia1_1', 'ia1_2', 'ia1_3', 'ia1_4', 'ia1_5', 'ia1_6', 'ia1_7',
+      'ia2_1', 'ia2_2', 'ia2_3', 'ia2_4', 'ia2_5', 'ia2_6',
+      'ia3_1', 'ia3_2', 'ia3_3', 'ia3_4',
+      'ia4_1', 'ia4_2', 'ia4_3',
+      'ia5_1', 'ia5_2', 'ia5_3', 'ia5_4', 'ia5_5', 'ia5_6',
+      'ia6_1', 'ia6_2', 'ia6_3',
+      'ia7_1', 'ia7_2', 'ia7_3',
       // 数III 積分
       'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5', 'm1_6',
       'm1_7', 'm1_8', 'm1_9', 'm1_10', 'm2_1', 'm2_2',
@@ -61,7 +70,7 @@ describe('数III積分の章構成（15パターンの体系）', () => {
   it('収録統計がデータから計算できる（科目カードの表示に使う）', async () => {
     const { getMathStats } = await import('../src/data/mathData');
     const stats = getMathStats();
-    expect(stats.chapters).toBe(33);
+    expect(stats.chapters).toBe(103); // カリキュラム38＋数I・A 32＋積分12＋ベクトル8＋確率8＋整数5
     expect(stats.questions).toBeGreaterThanOrEqual(50);
   });
 
@@ -75,7 +84,7 @@ describe('数III積分の章構成（15パターンの体系）', () => {
 describe('問題データの品質', () => {
   it('全小問が requiresMathPalette: true（数学パレット opt-in）', async () => {
     const { getAllMathChapters } = await import('../src/data/mathData');
-    for (const c of getAllMathChapters() as any[]) {
+    for (const c of (getAllMathChapters() as any[]).filter((c: any) => !c.id.startsWith('mc'))) {
       for (const p of [...(c.practiceProblems || []), ...(c.miniTest || [])]) {
         for (const sq of p.subQuestions || []) {
           expect(sq.requiresMathPalette, `${sq.id} にパレット指定が無い`).toBe(true);
@@ -104,7 +113,7 @@ describe('問題データの品質', () => {
 
   it('全問題に explanation（解説）が付いている', async () => {
     const { getAllMathChapters } = await import('../src/data/mathData');
-    for (const c of getAllMathChapters() as any[]) {
+    for (const c of (getAllMathChapters() as any[]).filter((c: any) => !c.id.startsWith('mc'))) {
       for (const p of [...(c.practiceProblems || []), ...(c.miniTest || [])]) {
         expect(String(p.explanation || '').length, `${p.id} の解説が短すぎる`).toBeGreaterThan(50);
       }
