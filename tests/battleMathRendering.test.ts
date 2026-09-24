@@ -139,10 +139,11 @@ describe('battle math rendering', () => {
     }
   });
 
-  it('renders 240 preserved and 114 new math questions without KaTeX errors', () => {
-    expect(POOL).toHaveLength(354);
-    expect(POOL.filter(row => !(row[1] as string).startsWith('mc'))).toHaveLength(240);
-    expect(ANSWERS).toHaveLength(240);
+  // 2026-09-24 マナトビ基本演習 Step 87〜137（場合の数と確率・データの分析）の手書き4択 140問を追加（354 → 494）
+  it('renders 380 preserved and 114 new math questions without KaTeX errors', () => {
+    expect(POOL).toHaveLength(494);
+    expect(POOL.filter(row => !(row[1] as string).startsWith('mc'))).toHaveLength(380);
+    expect(ANSWERS).toHaveLength(380);
     for (const row of POOL) {
       for (const text of [row[5], row[6], ...(row[7] as string[])]) {
         expect(textHtml(text as string), `${row[0]}: ${text}`).not.toContain('katex-error');

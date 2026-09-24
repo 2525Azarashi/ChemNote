@@ -6,7 +6,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
 import integral_plus, vector_plus, probability_plus, integer_plus, ia_basic, ia_full, ia_drill, ia_drill_geo, ia_drill_trig, ia_enrich  # noqa: F401 (登録の副作用)
+import ia_drill_comb, ia_drill_comb2, ia_drill_prob, ia_drill_prob2, ia_drill_data, ia_drill_data2, ia_drill_data3  # noqa: F401 Step 87〜137
+import fig_data_svg
 from harness import PROBLEMS
+fig_data_svg.attach_figures(PROBLEMS)   # Step 87〜137 の図（imageUrl）を付ける
+print('fig svg', fig_data_svg.write_all())
 
 OUT_PLUS = os.path.join(ROOT, 'src/data/mathPlusProblems.ts')
 OUT_IA   = os.path.join(ROOT, 'src/data/mathIAProblems.ts')

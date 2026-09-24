@@ -1052,55 +1052,55 @@ export const SUBJECT_INDEX: readonly SubjectIndexEntry[] = [
       },
       {
         "id": "ia4_1",
-        "problemCount": 4,
+        "problemCount": 12,
         "abstractTitle": "① 代表値・四分位数",
         "realTitle": "4章 データの分析"
       },
       {
         "id": "ia4_2",
-        "problemCount": 4,
+        "problemCount": 10,
         "abstractTitle": "② 分散・標準偏差",
         "realTitle": "4章 データの分析"
       },
       {
         "id": "ia4_3",
-        "problemCount": 4,
+        "problemCount": 7,
         "abstractTitle": "③ 相関・仮説検定",
         "realTitle": "4章 データの分析"
       },
       {
         "id": "ia5_1",
-        "problemCount": 3,
+        "problemCount": 7,
         "abstractTitle": "① 集合の要素の個数・数え方の法則",
         "realTitle": "5章 場合の数と確率"
       },
       {
         "id": "ia5_2",
-        "problemCount": 4,
+        "problemCount": 10,
         "abstractTitle": "② 順列",
         "realTitle": "5章 場合の数と確率"
       },
       {
         "id": "ia5_3",
-        "problemCount": 4,
+        "problemCount": 10,
         "abstractTitle": "③ 組合せ",
         "realTitle": "5章 場合の数と確率"
       },
       {
         "id": "ia5_4",
-        "problemCount": 4,
+        "problemCount": 11,
         "abstractTitle": "④ 確率の基本",
         "realTitle": "5章 場合の数と確率"
       },
       {
         "id": "ia5_5",
-        "problemCount": 4,
+        "problemCount": 10,
         "abstractTitle": "⑤ 独立試行・反復試行",
         "realTitle": "5章 場合の数と確率"
       },
       {
         "id": "ia5_6",
-        "problemCount": 4,
+        "problemCount": 9,
         "abstractTitle": "⑥ 条件付き確率・期待値",
         "realTitle": "5章 場合の数と確率"
       },
@@ -1738,7 +1738,7 @@ export const SUBJECT_STATS: Readonly<Record<string, SubjectStatsEntry>> = {
   },
   "math": {
     "chapters": 103,
-    "questions": 463
+    "questions": 514
   },
   "biology_basic": {
     "chapters": 5,
