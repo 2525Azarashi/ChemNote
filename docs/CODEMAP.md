@@ -90,6 +90,7 @@ docs/                設計メモ・手順書
 | ガチャ・コイン・きせかえ | `src/components/GachaRoom.tsx`、`GrowthHub.tsx`、`src/battle/ui/ManaCoinBalance.tsx` |
 | マスコット（とびら君） | `src/components/DoorMascot.tsx`、画像 `public/mascots/`、セリフ `src/data/mascotTips.ts` |
 | 対戦 | `src/battle/ui/BattleMode.tsx`（入口）→ `BattleHome.tsx` など |
+| きょうのミッション・コンプリート宝箱 | 画面 `src/battle/ui/BattleMissions.tsx`、計算 `src/battle/core/growth.ts`（`missionsForDate`、`openCompleteChest`）、保存 `src/battle/data/growthStore.ts`（`openChest`、端末内のみ） |
 | フレンド | `src/components/FriendPanel.tsx`、`src/utils/friends.ts`（設計 `docs/FRIEND_SYSTEM.md`） |
 
 ### 保存・サーバー

@@ -5,7 +5,7 @@
 import { auth } from '../../firebase';
 import { safeLocalStorage } from '../../utils/safeLocalStorage';
 import { applyHolesFilled, applyLoginWithBonus, applyMatchToProgress, applyRushResult, applyStudySolved,
-  claimMission, emptyProgress, equipItem, equipTitle, localDateKey, normalizeProgress, openDailyChest,
+  claimMission, emptyProgress, equipItem, equipTitle, localDateKey, normalizeProgress, openCompleteChest,
   purchaseItem, RUSH_COIN_PLAYS_PER_DAY, type GrowthProgress, type ItemDef, type MatchSummaryForGrowth,
   type RushResult } from '../core/growth';
 
@@ -109,10 +109,10 @@ export async function claimMissionReward(id: string) {
   });
   return out ? { progress: out.next, reward: out.extra } : null;
 }
-/** 今日の全ミッションを受け取ったあとの宝箱 */
+/** デイリーコンプリート宝箱を開ける（ミッション3つ受け取り後、1日1回） */
 export async function openChest() {
   const out = await mutate((p, today) => {
-    const r = openDailyChest(p, today);
+    const r = openCompleteChest(p, today);
     return { next: r.next, extra: r.reward };
   });
   return out ? { progress: out.next, reward: out.extra } : null;

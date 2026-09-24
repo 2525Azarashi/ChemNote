@@ -7,8 +7,8 @@ const { auth } = vi.hoisted(() => ({ auth: { currentUser: { uid: 'a' } as { uid:
 vi.mock('../src/firebase', () => ({ auth }));
 import {
   allMissionsForDate, applyRushResult, applyStudySolved, BADGES, BONUS_MISSION_POOL, bonusMissionsForDate,
-  canOpenDailyChest, claimMission, COINS_PER_WRITE_MAX, DAILY_CHEST_REWARD, emptyProgress, ITEMS, MISSION_POOL,
-  missionById, missionsForDate, normalizeProgress, openDailyChest, rushRankOf, rushRewardFor, STUDY_REWARD,
+  allMissionsClaimed, claimMission, COINS_PER_WRITE_MAX, completeChestFor, emptyProgress, ITEMS, MISSION_POOL,
+  missionById, missionsForDate, normalizeProgress, openCompleteChest, rushRankOf, rushRewardFor, STUDY_REWARD,
   XP_PER_WRITE_MAX, badgeProgress,
 } from '../src/battle/core/growth';
 import { applyRushGrowth, drawGachaMulti, GACHA_MULTI_COUNT, GROWTH_STORAGE_PREFIX, loadMyGrowth, openChest,
@@ -164,25 +164,28 @@ describe('コンプリート宝箱', () => {
     for (const m of allMissionsForDate(TODAY)) p = claimMission(p, m.id, TODAY).next;
     return p;
   };
-  it('全ミッションを受け取るまでは開かない。開けるのは1日1回', () => {
-    const none = emptyProgress('a');
-    expect(canOpenDailyChest(none, TODAY)).toBe(false);
+  it('対戦3つ＋ボーナス2つを全部受け取るまでは開かない。開けるのは1日1回', () => {
+    expect(allMissionsClaimed(emptyProgress('a'), TODAY)).toBe(false);
+    // 対戦ミッションだけ受け取っても開かない
+    let battleOnly = { ...emptyProgress('a'), daily: { date: TODAY, progress: {} as Record<string, number>, claimed: [] as string[] } };
+    for (const m of missionsForDate(TODAY)) { battleOnly.daily.progress[m.id] = m.goal; battleOnly = claimMission(battleOnly, m.id, TODAY).next; }
+    expect(openCompleteChest(battleOnly, TODAY).reward).toBeNull();
     const p = allClaimed();
-    expect(canOpenDailyChest(p, TODAY)).toBe(true);
-    const r = openDailyChest(p, TODAY);
-    expect(r.reward).toEqual(DAILY_CHEST_REWARD);
-    expect(openDailyChest(r.next, TODAY).reward).toBeNull();
+    expect(allMissionsClaimed(p, TODAY)).toBe(true);
+    const r = openCompleteChest(p, TODAY);
+    expect(r.reward).toEqual(completeChestFor(1));
+    expect(openCompleteChest(r.next, TODAY).reward).toBeNull();
   });
   it('1日の報酬合計（対戦＋ボーナス＋宝箱）でも1回の書き込み上限を超えない', () => {
     for (const m of allMissionsForDate(TODAY)) {
       expect(m.rewardXp).toBeLessThanOrEqual(XP_PER_WRITE_MAX);
       expect(m.rewardCoins).toBeLessThanOrEqual(COINS_PER_WRITE_MAX);
     }
-    expect(DAILY_CHEST_REWARD.coins).toBeLessThanOrEqual(COINS_PER_WRITE_MAX);
+    for (let d = 1; d <= 7; d += 1) expect(completeChestFor(d).coins).toBeLessThanOrEqual(COINS_PER_WRITE_MAX);
   });
   it('ストア経由でも1回だけ', async () => {
     data.set(key(), JSON.stringify({ version: 1, progress: allClaimed(), receipts: [], day: TODAY }));
-    expect((await openChest())?.reward).toEqual(DAILY_CHEST_REWARD);
+    expect((await openChest())?.reward).toEqual(completeChestFor(1));
     expect((await openChest())?.reward).toBeNull();
   });
 });
