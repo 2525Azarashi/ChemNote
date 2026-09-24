@@ -41,7 +41,7 @@ import {
   serverTimestamp,
   addDoc,
   Timestamp,
-} from 'firebase/firestore';
+} from './firestoreMetered';
 import { db, auth } from '../firebase';
 import { LEADERBOARD_PAGE_SIZE } from './scoring';
 // ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義

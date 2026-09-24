@@ -50,7 +50,7 @@ import {
   query,
   where,
   serverTimestamp,
-} from 'firebase/firestore';
+} from './firestoreMetered';
 import { db, auth } from '../firebase';
 
 import {

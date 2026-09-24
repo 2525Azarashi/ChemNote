@@ -83,7 +83,7 @@ import {
   where,
   type Timestamp,
   type Unsubscribe,
-} from 'firebase/firestore';
+} from '../../utils/firestoreMetered';
 
 import { auth, db } from '../../firebase';
 import { resolveNickname } from '../../utils/leaderboard';

@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { doc, serverTimestamp, updateDoc } from './firestoreMetered';
 import { auth, db } from '../firebase';
 /** Visible-tab heartbeat; stale sessions expire after 90 seconds. No public user listing. */
 export function installFriendPresence() {

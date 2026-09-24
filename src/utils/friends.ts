@@ -42,7 +42,7 @@ import {
   where,
   writeBatch,
   type Timestamp,
-} from 'firebase/firestore';
+} from './firestoreMetered';
 import { auth, db } from '../firebase';
 import { resolveNickname } from './leaderboard';
 
