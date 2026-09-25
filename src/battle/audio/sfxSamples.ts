@@ -38,6 +38,9 @@ export function isSampleSfx(name: string): name is SampleSfx {
   return (SAMPLE_SFX as readonly string[]).includes(name);
 }
 
+/** 読み込み中の残り件数（全部終わったら、足りない分を次に読み直せるようにする） */
+const pendingCount = new WeakMap<BaseAudioContext, number>();
+
 type Cache = { buffers: Map<SampleSfx, AudioBuffer>; loading: boolean };
 const caches = new WeakMap<BaseAudioContext, Cache>();
 
@@ -55,7 +58,9 @@ export function preloadSamples(ctx: BaseAudioContext): void {
   const c = cacheFor(ctx);
   if (c.loading || typeof fetch !== 'function') return;
   c.loading = true;
-  for (const name of SAMPLE_SFX) {
+  const missing = SAMPLE_SFX.filter((n) => !c.buffers.has(n));
+  pendingCount.set(ctx, missing.length);
+  for (const name of missing) {
     void fetch(sampleUrl(name))
       .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))
       .then((buf) => ctx.decodeAudioData(buf))
@@ -64,6 +69,17 @@ export function preloadSamples(ctx: BaseAudioContext): void {
       })
       .catch(() => {
         /* 読み込めなければ合成音で鳴る */
+      })
+      .finally(() => {
+        // ★1つでも読めなかったら、あとで読み直せるようにする★
+        //   最初の読み込みが圏外・通信の瞬断と重なると、以前はそのまま
+        //   その端末ではずっと合成音になっていた。次に鳴らすときにもう一度読む。
+        if (SAMPLE_SFX.every((n) => c.buffers.has(n))) return;
+        pendingCount.set(ctx, (pendingCount.get(ctx) ?? 1) - 1);
+        if ((pendingCount.get(ctx) ?? 0) <= 0) {
+          pendingCount.delete(ctx);
+          c.loading = false;
+        }
       });
   }
 }
