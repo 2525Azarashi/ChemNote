@@ -58,6 +58,7 @@ import type {
 } from '../core/types';
 import { answerKeyOf, answerIndexOf } from '../core/types';
 import { COUNTDOWN_TOTAL_MS } from '../core/battleLive';
+import { preloadTargets, warmAssets } from '../core/preload';
 
 export type AiBattlePhase = 'loading' | 'ready' | 'playing' | 'finished' | 'error';
 
@@ -207,6 +208,8 @@ export function useAiBattle(
   }, [phase]);
 
   const current = questions[currentIndex] || null;
+  // 音源・絵の先読み（いまの問題と次の問題）
+  useEffect(() => { if (questions.length) warmAssets(preloadTargets(questions, currentIndex, 2)); }, [questions, currentIndex]);
   const remainMs = deadlineMs > 0 ? Math.max(0, deadlineMs - now) : 0;
   const preStartMs = (() => {
     if (phase !== 'playing' || currentIndex !== 0 || !current || deadlineMs <= 0) return 0;

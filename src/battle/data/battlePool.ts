@@ -30,7 +30,7 @@ import type { BattleAnswerFormat, BattleQuestion } from '../core/types';
 export const POOL_COUNTS: Readonly<Record<string, number>> = {
   chemistry_basic: 1776,
   chemistry: 270,
-  english_listening: 146,
+  english_listening: 244,
   math: 494,
   biology_basic: 290,
   english_grammar: 100,
@@ -64,7 +64,7 @@ export const POOL_FORMAT_COUNTS: Readonly<
 > = {
   chemistry_basic: { choice4: 1574, choice: 178, kana: 24 },
   chemistry: { choice4: 235, choice: 34, kana: 1 },
-  english_listening: { choice4: 146 },
+  english_listening: { choice4: 244 },
   math: { choice4: 493, choice: 1 },
   biology_basic: { choice4: 228, choice: 21, kana: 41 },
   english_grammar: { choice4: 100 },

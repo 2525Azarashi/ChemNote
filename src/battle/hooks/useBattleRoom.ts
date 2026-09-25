@@ -84,6 +84,7 @@ import type {
 } from '../core/types';
 import { answerIndexOf, answerKeyOf } from '../core/types';
 import { COUNTDOWN_TOTAL_MS, firstDeadlineSec } from '../core/battleLive';
+import { preloadTargets, warmAssets } from '../core/preload';
 
 /** 画面が使う対戦の状態 */
 export interface BattleRoomState {
@@ -482,6 +483,12 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
    * 日付がごろごろになる。利用者に一度は伝えた方がよい。
    */
   const clockSkewed = status === 'playing' && isClockSkewed();
+
+  // ★音源・絵の先読み★（いまの問題と次の問題。待機中・カウントダウン中から読み始める）
+  useEffect(() => {
+    if (questions.length === 0) return;
+    warmAssets(preloadTargets(questions, currentIndex, 2));
+  }, [questions, currentIndex]);
 
   // 問題が変わったらパネルの入力を捨てる
   useEffect(() => {

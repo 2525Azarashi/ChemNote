@@ -255,6 +255,8 @@ const WORD_MAX_CHARS = 28;
  * という2段構えにしている。
  */
 const PROMPT_MAX_CHARS = 150;
+/** 対戦に出す「絵を選ぶ」リスニング（第1問B・第2問）の絵の置き場所。第4問〜第6問は音声が長すぎるので入れない */
+const LISTENING_PICTURE_DIRS = ['/listening_q1b/', '/listening_q2/'];
 
 /** 設問文（ラベル）の最大文字数 */
 const LABEL_MAX_CHARS = 110;
@@ -674,6 +676,8 @@ function convertChoice(
   if (options.length === 0) return null;
 
   let stem = '';
+  /** 絵を選ぶ問題の小問ごとの絵（経路③） */
+  let pictureImage: string | undefined;
   /** 正解が「記号」で書かれている場合の、記号での位置合わせに使う元の並び */
   let symbolOptions: string[] | null = null;
 
@@ -687,6 +691,24 @@ function convertChoice(
     if (block && block.options.length === options.length) {
       options = block.options.map((o) => o.trim());
       stem = block.stem;
+    } else if (
+      row.subject === 'english_listening'
+      && typeof row.raw?.imageUrl === 'string'
+      && LISTENING_PICTURE_DIRS.some((dir) => String(row.raw.imageUrl).startsWith(dir))
+      && options.length === 4
+      && options.every((o) => /^[①②③④]$/.test(o))
+    ) {
+      // 経路③ ★リスニングの「絵を選ぶ」問題（第1問B・第2問）★
+      //   選択肢は絵（①〜④が描かれた1枚の画像）なので、本文には直せない。
+      //   以前はここで捨てていたため、対戦には第1問A・第3問しか出なかった。
+      //   選択肢は ①〜④ のまま、その小問の絵を一緒に出す（対戦画面が画像を表示する）。
+      //   問題文は「音声を聞いて絵を選ぶ」指示にする（英文の中身は音声にしかない）。
+      //   ★「①〜④から選びなさい」と書くと cleanPrompt が一括指示として消すので、その形にしない★
+      //
+      //   ★第4問〜第6問は入れない★
+      //   音声が28〜128秒あり、対戦の締切（ルールで60秒未満）の中では聞き終わらない。
+      stem = '音声を聞いて、内容に最も合う絵を選びなさい。';
+      pictureImage = String(row.raw.imageUrl);
     } else {
       // 経路② 問題文の凡例から取る（「(イ) 混合物」「【A：単体】」）
       const mapped = options.map((o) => {
@@ -745,7 +767,7 @@ function convertChoice(
     answerIndex,
     panelOrder: [],
     timeLimit: battleTimeLimit(row),
-    imageUrl: row.imageUrl,
+    imageUrl: pictureImage ?? row.imageUrl,
   };
 }
 

@@ -2857,3 +2857,16 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .math-nav-courses button small { font-size: 10px; font-weight: 700; color: #8b98a5; }
 .math-nav-courses button[aria-pressed=true] { background: #EAF2F8; border-color: #3498DB; color: #1f618d; }
 .math-nav-courses button[aria-pressed=true] small { color: #2980B9; }
+
+/* ===== 対戦の図・絵（リスニング第1問B・第2問など） ===== */
+.battle-figure { position: relative; margin: 8px 0 0; }
+.battle-figure-button { position: relative; display: block; width: 100%; padding: 0; border: 0; background: transparent; cursor: zoom-in; }
+.battle-figure img { display: block; width: 100%; max-height: min(36vh, 300px); object-fit: contain; border-radius: 12px; background: #fff; transition: opacity .2s; }
+.battle-figure[data-picture] img { aspect-ratio: 1 / 1; }
+.battle-figure-skeleton { position: relative; min-height: 160px; border-radius: 12px; background: linear-gradient(90deg,#f1f5f9,#e2e8f0,#f1f5f9); background-size: 200% 100%; animation: battle-figure-shine 1.2s linear infinite; }
+.battle-figure[data-picture] .battle-figure-skeleton { aspect-ratio: 1 / 1; max-height: min(36vh, 300px); margin: 0 auto; }
+.battle-figure.is-zoom { position: fixed; inset: 0; z-index: 10001; margin: 0; display: flex; align-items: center; justify-content: center; background: rgba(15,23,42,.85); padding: 12px; }
+.battle-figure.is-zoom .battle-figure-button { cursor: zoom-out; }
+.battle-figure.is-zoom img { max-height: 92vh; max-width: 96vw; width: auto; }
+@keyframes battle-figure-shine { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .battle-figure-skeleton { animation: none; } }
