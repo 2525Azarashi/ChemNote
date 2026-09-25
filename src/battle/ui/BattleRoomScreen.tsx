@@ -25,6 +25,7 @@ import { BattleLobby, type FriendRoomSettings } from './BattleLobby';
 import { abortRoom, createFriendRoom, followSuccessorRoom } from '../data/battle';
 import { friendModeById, friendModeOfRules } from '../core/friendModes';
 import { BattleLiveStage } from './BattleLiveStage';
+import { ConnectionMeter } from './ConnectionMeter';
 import { BattleResult } from './BattleResult';
 import {
   BattleButton,
@@ -97,6 +98,10 @@ export function BattleRoomScreen({
     clockSkewed,
     offlineMessage,
     resumeMessage,
+    reconnectMessage,
+    quality,
+    rttMs,
+    sending,
     submittable,
     preStartMs,
     myAnsweredIndexes,
@@ -142,9 +147,11 @@ export function BattleRoomScreen({
     return () => window.clearTimeout(timer);
   }, [finished]);
 
+  // ★送信中（まだ届いていない）のうちは答え合わせを出さない★
+  //   出すと、正解を見てから送信が届く形になり、見た目も不公平に見える。
   const reveal = useMemo(
-    () => (answered && opponentAnswered) || remainMs <= 0,
-    [answered, opponentAnswered, remainMs],
+    () => (answered && opponentAnswered && !sending) || remainMs <= 0,
+    [answered, opponentAnswered, remainMs, sending],
   );
 
   // ------------------------------------------------------------
@@ -329,6 +336,10 @@ export function BattleRoomScreen({
     <div className="mb-2">
       <BattleNotice message={offlineMessage} />
     </div>
+  ) : reconnectMessage ? (
+    <div className="mb-2">
+      <BattleNotice message={reconnectMessage} tone="info" />
+    </div>
   ) : resumeMessage ? (
     <div className="mb-2">
       <BattleNotice message={resumeMessage} tone="info" />
@@ -348,6 +359,7 @@ export function BattleRoomScreen({
 
   const footer = (
     <>
+      <ConnectionMeter quality={quality} rttMs={rttMs} sending={sending} />
       {error && (
         <div className="mt-2">
           <BattleNotice message={error} />

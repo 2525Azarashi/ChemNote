@@ -2839,3 +2839,12 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 @keyframes mission-toast-pop { 0% { transform: scale(.3) rotate(-30deg); } 60% { transform: scale(1.2) rotate(8deg); } 100% { transform: none; } }
 @keyframes mission-toast-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 @media (prefers-reduced-motion: reduce) { .mission-toast, .mission-toast-icon { animation: none; } }
+
+/* ===== 対戦中の電波アンテナ ===== */
+.connection-meter { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; font-size: 10px; font-weight: 800; color: #6b7785; }
+.connection-meter-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+.connection-meter-bars i { display: block; width: 4px; border-radius: 1px; }
+.connection-meter[data-quality=offline] .connection-meter-label { color: #C0392B; }
+.connection-meter-sending { padding: 1px 6px; border-radius: 8px; background: #EAF2F8; color: #2980B9; animation: connection-pulse 1s ease-in-out infinite; }
+@keyframes connection-pulse { 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .connection-meter-sending { animation: none; } }

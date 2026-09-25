@@ -107,6 +107,7 @@ import {
   serverNow,
   toMillis,
 } from '../core/serverClock';
+import { isTransientError, retryDelayMs, smoothRtt } from '../core/connection';
 import { loadPool, poolIdsOf } from './battlePool';
 
 // ============================================================
@@ -813,7 +814,8 @@ export function watchMatched(
 export async function startBattle(roomId: string, firstTimeLimitSec: number): Promise<void> {
   requireUid();
   try {
-    await timedWrite(() =>
+    // 開始は再送してよい（2回目以降の permission-denied は「最初の送信で既に始まっている」）
+    await resilientWrite(() =>
       updateDoc(doc(db, COL_ROOMS, roomId), {
         status: 'playing',
         currentIndex: 0,
@@ -821,6 +823,7 @@ export async function startBattle(roomId: string, firstTimeLimitSec: number): Pr
         startedAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       }),
+      { budgetMs: 15_000, acceptDeniedAfterRetry: true, attemptTimeoutMs: 6_000 },
     );
   } catch (error) {
     throw friendlyError(error, '対戦を開始できませんでした。');
@@ -895,7 +898,60 @@ async function timedWrite(run: () => Promise<void>): Promise<void> {
   await withWriteTimeout(run());
   // 応答が返った時刻を覚えておく。サーバが刻んだ時刻そのものは
   // 購読側（watchRoom）で受け取るので、そこで突き合わせる。
-  lastWrite = { sentAt, ackAt: Date.now() };
+  const ackAt = Date.now();
+  lastWrite = { sentAt, ackAt };
+  reportRtt(ackAt - sentAt);
+}
+
+/**
+ * ★通信が一瞬切れても諦めない書き込み★
+ *
+ * 市販の対戦ゲームは、電波が1〜2秒途切れても操作が消えない。
+ * 以前は1回失敗するとそのまま「送信できませんでした」になり、
+ * 開始・解答・進行・結果の申告が失われて試合が止まることがあった。
+ *
+ *   ・やり直して通る見込みがある失敗（unavailable / deadline-exceeded など）だけ再送する
+ *   ・0.4秒→0.8秒→1.6秒…と間隔を伸ばす（揺らぎつき）
+ *   ・全体の締切（budgetMs）を過ぎたら諦める（締切後の解答はどうせ拒否される）
+ *   ・再送のあとの permission-denied は「最初の送信が実は届いていた」ことが多い。
+ *     acceptDeniedAfterRetry のときは成功として扱う（解答の二重送信はルールが止める）
+ */
+async function resilientWrite(
+  run: () => Promise<void>,
+  opts: { budgetMs?: number; acceptDeniedAfterRetry?: boolean; attemptTimeoutMs?: number } = {},
+): Promise<void> {
+  const started = Date.now();
+  const budget = opts.budgetMs ?? 20_000;
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      const sentAt = Date.now();
+      await withWriteTimeout(run(), Math.max(1_000, Math.min(opts.attemptTimeoutMs ?? WRITE_TIMEOUT_MS, budget - (sentAt - started))));
+      const ackAt = Date.now();
+      lastWrite = { sentAt, ackAt };
+      reportRtt(ackAt - sentAt);
+      return;
+    } catch (error) {
+      const code = (error as { code?: string })?.code;
+      if (attempt > 0 && code === 'permission-denied' && opts.acceptDeniedAfterRetry) return;
+      const wait = retryDelayMs(attempt);
+      if (!isTransientError(error) || Date.now() - started + wait >= budget) throw error;
+      await new Promise((r) => setTimeout(r, wait));
+    }
+  }
+}
+
+// ---- 往復時間（アンテナ表示用）----
+let rttMs: number | null = null;
+const rttListeners = new Set<(ms: number) => void>();
+function reportRtt(sample: number) {
+  rttMs = smoothRtt(rttMs, sample);
+  for (const fn of rttListeners) { try { fn(rttMs); } catch { /* isolate */ } }
+}
+/** 直近の往復時間（ms、なめらか済み）。まだ測れていなければ null */
+export function currentRttMs(): number | null { return rttMs; }
+export function subscribeRtt(fn: (ms: number) => void): () => void {
+  rttListeners.add(fn);
+  return () => { rttListeners.delete(fn); };
 }
 
 /**
@@ -916,6 +972,7 @@ export async function submitAnswer(
   index: number,
   payload: { choice: number; panel: number[] },
   answered: boolean,
+  opts?: { budgetMs?: number },
 ): Promise<void> {
   const uid = requireUid();
 
@@ -937,7 +994,10 @@ export async function submitAnswer(
     // ここを配列（`answers.{uid}` に配列を丸ごと入れる）でやっていたときは、
     //   serverTimestamp() is not currently supported inside arrays
     // で必ず例外になり、★1問も回答できなかった★。
-    await timedWrite(() =>
+    // ★解答は締切まで再送する★（一瞬の圏外で解答が消えないように）。
+    //   締切を過ぎたらルールが拒否するので、それ以上は送らない。
+    //   再送後の permission-denied は「最初の送信が届いていた」（二重解答の拒否）とみなす。
+    await resilientWrite(() =>
       updateDoc(doc(db, COL_ROOMS, roomId), {
         [`answers.${uid}.${answerKeyOf(index)}`]: {
           index,
@@ -950,6 +1010,7 @@ export async function submitAnswer(
         },
         updatedAt: serverTimestamp(),
       }),
+      { budgetMs: Math.max(1_500, opts?.budgetMs ?? 8_000), acceptDeniedAfterRetry: true, attemptTimeoutMs: 4_000 },
     );
   } catch (error) {
     throw friendlyError(error, '解答を送信できませんでした。');
@@ -973,12 +1034,13 @@ export async function advanceQuestion(
 ): Promise<void> {
   requireUid();
   try {
-    await timedWrite(() =>
+    await resilientWrite(() =>
       updateDoc(doc(db, COL_ROOMS, roomId), {
         currentIndex: nextIndex,
         deadlineAt: deadlineFromNow(nextTimeLimitSec),
         updatedAt: serverTimestamp(),
       }),
+      { budgetMs: 10_000, acceptDeniedAfterRetry: true, attemptTimeoutMs: 5_000 },
     );
   } catch (error) {
     // 相手が先に進めていた場合の競合は無視してよい（同じ状態になる）
@@ -1001,7 +1063,7 @@ export async function attestResult(
 ): Promise<void> {
   const uid = requireUid();
   try {
-    await timedWrite(() =>
+    await resilientWrite(() =>
       updateDoc(doc(db, COL_ROOMS, roomId), {
         [`attest.${uid}`]: {
           myScore: attestation.myScore,
@@ -1012,6 +1074,7 @@ export async function attestResult(
         status: 'finished',
         updatedAt: serverTimestamp(),
       }),
+      { budgetMs: 30_000, acceptDeniedAfterRetry: true },
     );
   } catch (error) {
     throw friendlyError(error, '結果を送信できませんでした。');
