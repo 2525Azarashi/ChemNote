@@ -60,6 +60,8 @@ import { isShortAnswerType } from '../utils/quizBlanks';
 // questionDisplay.ts の1つだけを使う。呼ぶ場所は派生値フックへ移った。
 import { buildListeningSteps, isPerSubQuestionListening, stepSubQuestions } from '../utils/listeningSteps';
 import { useIsDesktop } from '../hooks/useMediaQuery';
+import { asMobileChoiceSub, useMathChoices } from '../utils/mathMobileChoices';
+import { mathCourseOfChapter } from '../data/mathNavigation';
 
 interface QuizProps {
   mode: 'mini_test' | 'practice';
@@ -594,6 +596,14 @@ export function Quiz({ mode, chapter, onFinish, onBack, onReturnToBattle, isGues
    * state（eliminated / elimHintOpen）は問題切り替え時のリセットや
    * localStorage 保存が Quiz 側にあるので動かさず、props で渡している。
    */
+  /**
+   * ★スマホの数学は4択★（PC は今までどおり入力）。
+   * 記号パレットで式を打つのはスマホだと時間がかかり、計算より入力で疲れてしまう。
+   * 選択肢が用意できない設問だけは、スマホでも入力のままにする。
+   */
+  const mathMobileChoices = useMathChoices(!isDesktop && mathCourseOfChapter(String(chapter.id)) != null);
+  const mobileChoiceSub = (sq: any) => (mathMobileChoices ? asMobileChoiceSub(sq, mathMobileChoices) : null);
+
   const renderMultipleChoiceControl = (sq: any) => (
     <MultipleChoiceControl
       sq={sq}
@@ -1311,6 +1321,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, onReturnToBattle, isGues
           isLastNavSub={isLastNavSub}
           renderedAnswerGroups={renderedAnswerGroups}
           renderMultipleChoiceControl={renderMultipleChoiceControl}
+          mobileChoiceSub={mobileChoiceSub}
           renderSortingControl={renderSortingControl}
           questionNeedsMathPalette={questionNeedsMathPalette}
           isProblemExpanded={isProblemExpanded}
