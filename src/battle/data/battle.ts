@@ -443,7 +443,9 @@ export async function joinRoomByCode(rawCode: string): Promise<string> {
     throw new Error(`合言葉は${CODE_LENGTH}文字です。`);
   }
 
-  const codeSnap = await getDoc(doc(db, COL_CODES, joinCode));
+  const codeSnap = await withRetry(() => getDoc(doc(db, COL_CODES, joinCode)), 8_000).catch((error) => {
+    throw friendlyError(error, '合言葉を確かめられませんでした。');
+  });
   if (!codeSnap.exists()) {
     throw new Error('その合言葉の部屋は見つかりませんでした。');
   }
@@ -458,7 +460,8 @@ export async function joinRoomById(roomId: string): Promise<string> {
   const rating = await fetchMyRating();
 
   try {
-    await runTransaction(db, async (tx) => {
+    // ★入室は何度やり直しても同じ結果になる（入っていればそのまま通す）ので、一時的な失敗は再送する★
+    await withRetry(() => runTransaction(db, async (tx) => {
       const roomRef = doc(db, COL_ROOMS, roomId);
       const snap = await tx.get(roomRef);
       if (!snap.exists()) throw new Error('ROOM_GONE');
@@ -483,7 +486,7 @@ export async function joinRoomById(roomId: string): Promise<string> {
         answers: { ...answers, [uid]: {} },
         updatedAt: serverTimestamp(),
       });
-    });
+    }), 12_000);
   } catch (error) {
     const message = (error as Error).message;
     if (message === 'ROOM_GONE') throw new Error('その部屋はもう存在しません。');
@@ -935,6 +938,20 @@ async function resilientWrite(
       if (attempt > 0 && code === 'permission-denied' && opts.acceptDeniedAfterRetry) return;
       const wait = retryDelayMs(attempt);
       if (!isTransientError(error) || Date.now() - started + wait >= budget) throw error;
+      await new Promise((r) => setTimeout(r, wait));
+    }
+  }
+}
+
+/** 読み取り・やり直しても同じ結果になる処理を、一時的な失敗のときだけ再試行する */
+async function withRetry<T>(run: () => Promise<T>, budgetMs: number): Promise<T> {
+  const started = Date.now();
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await withWriteTimeout(run(), Math.max(1_500, Math.min(WRITE_TIMEOUT_MS, budgetMs - (Date.now() - started))));
+    } catch (error) {
+      const wait = retryDelayMs(attempt);
+      if (!isTransientError(error) || Date.now() - started + wait >= budgetMs) throw error;
       await new Promise((r) => setTimeout(r, wait));
     }
   }
