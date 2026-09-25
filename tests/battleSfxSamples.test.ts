@@ -36,6 +36,11 @@ describe('対戦効果音ファイル（public/sfx/battle）', () => {
     expect(read('src/battle/ui/feedback.ts')).toContain('} else if (ac) {');
   });
 
+  it('勉強アプリ向けの調整：対戦中は全体のクリック音と二重に鳴らさない／カウントは 3・2・1 だけ', () => {
+    expect(read('src/hooks/useGlobalClickSound.ts')).toContain(".arena-live-stage, [data-own-sfx]");
+    expect(read('src/battle/ui/BattleLiveStage.tsx')).toContain("Number(countLabel) <= 3) play('countdown')");
+  });
+
   it('新しい場面の音が繋がっている', () => {
     expect(read('src/battle/hooks/useBattleLive.ts')).toContain("sfx.push('overtaken')");
     expect(read('src/battle/hooks/useBattleLive.ts')).toContain("sfx.push('caught-up')");

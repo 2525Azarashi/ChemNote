@@ -120,7 +120,8 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
     if (countLabel === lastCountRef.current) return;
     lastCountRef.current = countLabel;
     if (countLabel === 'START!') play('start');
-    else if (countLabel) play('countdown');
+    // 7 秒すべてで鳴らすとうるさいので、最後の 3・2・1 だけ
+    else if (countLabel && Number(countLabel) <= 3) play('countdown');
   }, [countLabel, play]);
 
   // 見せてよい範囲の確定点（reveal 前のいまの問題は入れない）

@@ -1,6 +1,11 @@
 """
-マナトビ 対戦用 効果音ジェネレーター
-===================================
+マナトビ 対戦用 効果音ジェネレーター（v2：勉強ゲーム向けに調整）
+=============================================================
+・アプリの見た目（淡いパステル）と BGM（tanjou.mp3：温かいエレピのローファイ／J-POP、ト長調）に合わせた
+  木・マリンバ・カリンバ・ベル・エレピの音だけで作る（ゲーセン風の矩形波はやめた）。
+・音程は BGM と同じト長調のペンタトニックにそろえる。
+・何度も鳴る音（選択・相手の回答・刻み）はごく小さく、1試合1回の音（勝ち・段位）だけ華やかにする。
+・不正解や負けで学習者を責めない（低くやわらかい音で、すぐ次の問題へ気持ちを切り替えられる）。
 すべての音を numpy だけで一から合成する（サンプリング素材・外部音源は一切使わない）。
 → 第三者の権利が入らないので、商用利用・改変・再配布が自由（LICENSE_SFX.md 参照）。
 
@@ -171,216 +176,260 @@ def sfx(name, label, when, peak_db):
     return deco
 
 
-C5 = hz(3)  # 523Hz
+# ------------------------------------------------------------------
+# 音色（v2：勉強アプリ向け）
+#   アプリ画面は淡いパステル、BGM（tanjou.mp3）は温かいローファイ／J-POP（ト長調）。
+#   → 矩形波・ノコギリ波のゲーセン音はやめ、マリンバ・カリンバ・木・ベル・柔らかい
+#     エレピだけで作る。高域はローパスで丸め、耳に刺さらないようにする。
+#   → 音程は BGM と同じ ト長調（G A B D E）のペンタトニックにそろえ、BGM と重なっても濁らない。
+#   → 間違い・負けは「責める音」にしない（学習者がやめたくならないよう、やわらかく短く）。
+# ------------------------------------------------------------------
+G4, A4, B4, D5, E5 = -2, 0, 2, 5, 7
+G5, A5, B5, D6, E6, G6, A6, B6, D7 = 10, 12, 14, 17, 19, 22, 24, 26, 29
 
 
-@sfx('tap', '選択', '選択肢・ボタンを押した瞬間', -12)
+def marimba(semi, dur=0.5, gain=1.0):
+    f = hz(semi)
+    n = int(dur * SR)
+    x = osc(f, dur) * expdecay(n, dur * 0.35)
+    x += 0.35 * osc(f * 4, dur) * expdecay(n, dur * 0.06)      # 木のアタック
+    x += 0.12 * osc(f * 10, dur) * expdecay(n, 0.008)
+    return lowpass(x * env(n, a=0.002, r=0.03) * gain, 6000)
+
+
+def kalimba(semi, dur=0.6, gain=1.0):
+    f = hz(semi)
+    n = int(dur * SR)
+    x = osc(f, dur) * expdecay(n, dur * 0.4)
+    x += 0.25 * osc(f * 5.4, dur) * expdecay(n, 0.03)
+    x += 0.1 * osc(f * 2, dur) * expdecay(n, dur * 0.2)
+    return lowpass(x * env(n, a=0.002, r=0.05) * gain, 5000)
+
+
+def epiano(semi, dur=0.8, gain=1.0):
+    """Rhodes 風：正弦波＋2倍音、ゆっくり減衰（BGM のエレピに寄せる）"""
+    f = hz(semi)
+    n = int(dur * SR)
+    mod = osc(f * 1.0, dur) * 1.2 * expdecay(n, 0.12)
+    ph = 2 * np.pi * f * np.arange(n) / SR + mod
+    x = np.sin(ph) * expdecay(n, dur * 0.45) + 0.15 * np.sin(2 * ph) * expdecay(n, dur * 0.2)
+    return lowpass(x * env(n, a=0.004, r=0.1) * gain, 4500)
+
+
+def chime(semi, dur=0.8, gain=1.0):
+    return lowpass(bell(hz(semi), dur, gain, tau=dur * 0.35), 7000)
+
+
+def wood(freq=900, dur=0.06, gain=1.0):
+    """ウッドブロック（カウント・刻み用）"""
+    n = int(dur * SR)
+    x = osc(freq, dur) * expdecay(n, 0.012) + 0.4 * osc(freq * 2.7, dur) * expdecay(n, 0.005)
+    x += 0.3 * bandpass(noise(dur), 800, 3000) * expdecay(n, 0.003)
+    return x * env(n, a=0.0008, r=0.01) * gain
+
+
+def arp(fn, notes, step, dur, gain=1.0, start=0.0):
+    return [(start + i * step, fn(s, dur, gain)) for i, s in enumerate(notes)]
+
+
+def soft_reverb(x, amount=0.18, length=0.6):
+    return reverb(x, amount, length, damp=3500)
+
+
+# ------------------------------------------------------------------
+# 回答まわり（1試合に何十回も鳴る → 小さく・短く・疲れない）
+# ------------------------------------------------------------------
+@sfx('tap', '選択', '選択肢・ボタンを押した瞬間', -11)
 def _tap():
-    body = note(1400, 0.045, 'sine', a=0.001, r=0.04)
-    click = bandpass(noise(0.012), 2000, 6000) * expdecay(int(0.012 * SR), 0.003) * 0.6
-    return mix(0.06, (0, body), (0, click))
+    # 木の「コッ」＋ごく短い高域クリック（BGM の上でも指先に返る手応え）
+    click = highpass(noise(0.006), 3500) * expdecay(int(0.006 * SR), 0.0012) * 0.5
+    return mix(0.05, (0, wood(1200, 0.05)), (0, click))
 
 
-@sfx('tick', 'カウント刻み', '数字のカウントアップ（XP・コイン）', -16)
+@sfx('tick', 'カウント刻み', '数字のカウントアップ（XP・コイン）', -18)
 def _tick():
-    return note(2200, 0.02, 'sine', a=0.0005, r=0.018)
+    return wood(1800, 0.03)
 
 
-@sfx('correct', '正解', '自分が正解した', -2)
+@sfx('correct', '正解', '自分が正解した（ピンポン）', -4)
 def _correct():
-    # ピンポン！（長3度上 → 完全5度）＋きらめき
-    a = note(hz(10), 0.13, 'triangle', a=0.002, r=0.1, bright=0.35)
-    b = note(hz(17), 0.34, 'triangle', a=0.002, r=0.3, bright=0.35)
-    sp = bell(hz(29), 0.3, 0.18, tau=0.12)
-    return reverb(mix(0.5, (0, a), (0.1, b), (0.12, sp)), 0.18, 0.5)
+    # 「ピン↑ポン」：マリンバ D6→G6（BGM と同じ調）＋小さなきらめき
+    ev = [(0, marimba(D6, 0.3, 0.9)), (0.09, marimba(G6, 0.42)), (0.09, chime(D7, 0.4, 0.16))]
+    return highpass(soft_reverb(mix(0.55, *ev), 0.12, 0.35), 300)
 
 
-@sfx('wrong', '不正解', '自分が不正解だった', -5)
+@sfx('wrong', '不正解', '自分が不正解だった（責めない低い2音）', -9)
 def _wrong():
-    # ブッブー（低い2打・うなり付き）
-    def buzz(d):
-        x = osc(hz(-14), d, 'saw') * 0.6 + osc(hz(-14) * 1.012, d, 'saw') * 0.6
-        return lowpass(x, 1400) * env(len(x), a=0.004, r=0.05)
-    return mix(0.45, (0, buzz(0.16)), (0.2, buzz(0.24)))
+    # ブッブーではなく、木琴の低い「ポコ…ポン」。次の問題へ気持ちを切り替えやすい音
+    ev = [(0, marimba(B4, 0.25, 0.9)), (0.14, marimba(G4 - 1, 0.45, 0.8))]
+    return lowpass(mix(0.65, *ev), 2500)
 
 
-@sfx('timeup', '時間切れ', '答える前に制限時間が来た', -6)
+@sfx('timeup', '時間切れ', '答える前に制限時間が来た', -10)
 def _timeup():
-    d = 0.55
-    f = np.linspace(hz(0), hz(-12), int(d * SR))
-    x = osc(f, d, 'triangle') * env(int(d * SR), a=0.005, r=0.3)
-    y = 0.4 * lowpass(noise(d), 800) * expdecay(int(d * SR), 0.15)
-    return reverb(mix(d, (0, x), (0, y)), 0.2, 0.4)
+    ev = [(0, wood(700, 0.08)), (0.12, epiano(D5 - 12, 0.55, 0.8))]
+    return lowpass(mix(0.7, *ev), 3000)
 
 
-@sfx('opponent-answered', '相手が回答', '相手が答えた（小さな合図）', -15)
-def _opp_answered():
-    return mix(0.08, (0, note(hz(7), 0.07, 'sine', a=0.002, r=0.06)), (0, 0.3 * note(hz(19), 0.05, 'sine', a=0.002, r=0.04)))
-
-
-@sfx('opponent-correct', '相手が正解', '相手が正解した', -8)
-def _opp_correct():
-    a = note(hz(-2), 0.1, 'triangle', a=0.003, r=0.08)
-    b = note(hz(5), 0.18, 'triangle', a=0.003, r=0.16)
-    return lowpass(mix(0.3, (0, a), (0.09, b)), 3000)
-
-
-@sfx('combo', 'コンボ', '連続正解', -2)
+@sfx('combo', 'コンボ', '連続正解', -4)
 def _combo():
-    notes = [3, 7, 10, 15, 19]
-    ev = [(i * 0.055, note(hz(s + 7), 0.16, 'square', 0.5, a=0.002, r=0.12)) for i, s in enumerate(notes)]
-    ev.append((0.28, bell(hz(34), 0.4, 0.25, tau=0.15)))
-    return reverb(mix(0.75, *ev), 0.22, 0.5)
+    ev = arp(marimba, [G5, B5, D6, G6], 0.06, 0.35, 0.8)
+    ev.append((0.2, chime(B6, 0.6, 0.18)))
+    return soft_reverb(mix(0.9, *ev), 0.18, 0.6)
 
 
-@sfx('overtake', '逆転！', '自分が相手を逆転した', -2)
+@sfx('opponent-answered', '相手が回答', '相手が答えた（ごく小さな合図）', -17)
+def _opp_answered():
+    return lowpass(kalimba(A5, 0.12, 0.8), 3000)
+
+
+@sfx('opponent-correct', '相手が正解', '相手が正解した（自分の正解とは別の音色・控えめ）', -11)
+def _opp_correct():
+    # 自分の「ピンポン」（マリンバ・上行）と取り違えないよう、カリンバで 4度下・こもった音
+    ev = [(0, kalimba(A4, 0.2, 0.8)), (0.08, kalimba(D5, 0.3, 0.8))]
+    return lowpass(mix(0.4, *ev), 2200)
+
+
+# ------------------------------------------------------------------
+# 順位の変化
+# ------------------------------------------------------------------
+@sfx('overtake', '逆転！', '自分が相手を逆転した', -4)
 def _overtake():
-    d = 0.3
-    sweep = osc(np.geomspace(300, 1800, int(d * SR)), d, 'saw') * env(int(d * SR), a=0.01, r=0.1)
-    sweep = lowpass(sweep, 5000) * 0.35
-    hits = [(0.28, note(hz(s), 0.35, 'square', 0.45, r=0.3)) for s in (10, 14, 17, 22)]
-    return reverb(mix(0.8, (0, sweep), *hits), 0.25, 0.6)
+    ev = arp(marimba, [D5, G5, B5, D6], 0.045, 0.3, 0.7)
+    ev += [(0.2, epiano(s, 0.7, 0.5)) for s in (G5, B5, D6)]
+    ev.append((0.2, chime(G6, 0.7, 0.2)))
+    return soft_reverb(mix(1.0, *ev), 0.2, 0.7)
 
 
-@sfx('overtaken', '逆転された', '相手に逆転された', -7)
+@sfx('overtaken', '逆転された', '相手に逆転された（あせらせすぎない）', -11)
 def _overtaken():
-    d = 0.5
-    f = np.geomspace(900, 250, int(d * SR))
-    x = osc(f, d, 'triangle') * env(int(d * SR), a=0.005, r=0.25)
-    y = note(hz(-9), 0.3, 'triangle', 0.5, r=0.25)
-    return mix(0.8, (0, x), (0.35, y))
+    ev = [(0, kalimba(D6, 0.25, 0.7)), (0.1, kalimba(B5, 0.25, 0.7)), (0.2, kalimba(E5, 0.45, 0.7))]
+    return lowpass(mix(0.7, *ev), 3000)
 
 
-@sfx('caught-up', '追いついた', '同点に追いついた', -5)
+@sfx('caught-up', '追いついた', '同点に追いついた', -8)
 def _caught_up():
-    return mix(0.35, (0, note(hz(5), 0.1, 'triangle', r=0.08)), (0.09, note(hz(12), 0.22, 'triangle', r=0.2, bright=0.3)))
+    return soft_reverb(mix(0.5, (0, marimba(B5, 0.25, 0.8)), (0.08, marimba(D6, 0.4, 0.8))), 0.12, 0.4)
 
 
-@sfx('matched', 'マッチング成立', '相手が見つかった／部屋に入った', -3)
+# ------------------------------------------------------------------
+# 試合の進行
+# ------------------------------------------------------------------
+@sfx('matched', 'マッチング成立', '相手が見つかった／部屋に入った', -5)
 def _matched():
-    ev = [(i * 0.08, note(hz(s), 0.3, 'triangle', 0.8, r=0.26, bright=0.3)) for i, s in enumerate((3, 8, 12, 15))]
-    ev.append((0.3, bell(hz(27), 0.6, 0.3, tau=0.25)))
-    return reverb(mix(1.0, *ev), 0.3, 0.8)
+    ev = arp(chime, [G5, B5, D6, G6], 0.09, 0.9, 0.6)
+    ev += [(0.3, epiano(s, 1.0, 0.4)) for s in (G4, D5, B5)]
+    return soft_reverb(mix(1.4, *ev), 0.25, 0.8)
 
 
-@sfx('countdown', 'カウントダウン', '試合開始前の 3・2・1', -5)
+@sfx('countdown', 'カウントダウン', '試合開始前の 3・2・1', -9)
 def _countdown():
-    return reverb(note(hz(14), 0.16, 'sine', a=0.002, r=0.14, bright=0.2), 0.15, 0.3)
+    return mix(0.3, (0, wood(880, 0.07)), (0, 0.5 * marimba(D6, 0.25, 0.6)))
 
 
-@sfx('start', 'START!', '試合開始', -1)
+@sfx('start', 'START!', '試合開始', -3)
 def _start():
-    a = note(hz(26), 0.55, 'sine', a=0.002, r=0.5, bright=0.25)
-    b = note(hz(19), 0.55, 'triangle', 0.5, a=0.002, r=0.5)
-    hit = lowpass(noise(0.15), 3000) * expdecay(int(0.15 * SR), 0.03) * 0.5
-    return reverb(mix(0.7, (0, a), (0, b), (0, hit)), 0.25, 0.6)
+    ev = [(0, marimba(G6, 0.6)), (0, epiano(G5, 0.8, 0.6)), (0, epiano(D6, 0.8, 0.5)), (0.02, chime(D7, 0.7, 0.25))]
+    return soft_reverb(mix(0.9, *ev), 0.22, 0.6)
 
 
-@sfx('hurry', '残り3秒', '残り3秒の刻み（1秒ごと）', -13)
+@sfx('hurry', '残り3秒', '残り3秒の刻み（1秒ごと）', -15)
 def _hurry():
-    x = bandpass(noise(0.04), 600, 2500) * expdecay(int(0.04 * SR), 0.008)
-    return mix(0.05, (0, x), (0, 0.5 * note(700, 0.04, 'sine', a=0.0005, r=0.035)))
+    return wood(620, 0.05)
 
 
-@sfx('final', '最終問題', '最終問題の合図', -2)
+@sfx('final', '最終問題', '最終問題の合図', -4)
 def _final():
-    ev = [(0, note(hz(-9), 0.15, 'square', 0.6, r=0.1)), (0.18, note(hz(-9), 0.15, 'square', 0.6, r=0.1))]
-    ev += [(0.36, note(hz(s), 0.55, 'square', 0.45, r=0.45, detune=0.004)) for s in (3, 7, 10)]
-    drum = lowpass(noise(0.3), 400) * expdecay(int(0.3 * SR), 0.08)
-    ev += [(0, drum * 0.6), (0.18, drum * 0.6), (0.36, drum)]
-    return reverb(mix(1.0, *ev), 0.25, 0.7)
+    ev = [(0, marimba(D5, 0.2)), (0.16, marimba(D5, 0.2)), (0.32, marimba(G5, 0.3))]
+    ev += [(0.32, epiano(s, 0.7, 0.5)) for s in (D5, G5, B5, D6)]
+    ev.append((0.34, chime(G6, 0.6, 0.2)))
+    return soft_reverb(mix(1.1, *ev), 0.14, 0.45)
 
 
-def _fanfare(melody, chord, step, kind='triangle'):
-    ev = [(i * step, note(hz(s), step * 1.3, kind, 0.8, r=step, bright=0.3)) for i, s in enumerate(melody)]
-    t0 = len(melody) * step
-    ev += [(t0, note(hz(s), 0.9, kind, 0.55, r=0.8, detune=0.003)) for s in chord]
-    return ev, t0 + 1.0
-
-
-@sfx('win', '勝利', '試合に勝った', -1)
+# ------------------------------------------------------------------
+# 試合結果（1試合1回 → 少し華やかに。ただし 2 秒以内）
+# ------------------------------------------------------------------
+@sfx('win', '勝利', '試合に勝った', -2)
 def _win():
-    ev, end = _fanfare([3, 7, 10, 15, 10, 15], [15, 19, 22, 27], 0.1)
-    ev.append((end - 0.95, bell(hz(34), 0.9, 0.3, tau=0.3)))
-    ev.append((end - 0.8, bell(hz(39), 0.8, 0.2, tau=0.25)))
-    return reverb(mix(end + 0.2, *ev), 0.3, 1.0)
+    ev = arp(marimba, [G5, B5, D6, G6], 0.1, 0.4, 0.8)
+    ev += [(0.42, epiano(s, 1.3, 0.55)) for s in (G4, D5, G5, B5, D6)]
+    ev += arp(chime, [D7 - 12 + 12, G6 + 12 - 12, B6], 0.07, 0.9, 0.2, start=0.45)
+    return soft_reverb(mix(2.0, *ev), 0.25, 0.9)
 
 
-@sfx('lose', '敗北', '試合に負けた', -4)
+@sfx('lose', '敗北', '試合に負けた（おしい！ つぎいこう）', -8)
 def _lose():
-    ev = [(i * 0.2, note(hz(s), 0.28, 'triangle', 0.8, r=0.25)) for i, s in enumerate((7, 5, 3))]
-    ev.append((0.6, note(hz(-2), 0.9, 'triangle', 0.7, r=0.8, detune=0.006)))
-    ev.append((0.6, note(hz(-14), 0.9, 'sine', 0.5, r=0.8)))
-    return reverb(mix(1.6, *ev), 0.3, 0.9)
+    # 悲しい短調の下降にはしない。「おしい！ つぎ いこう」— 軽く2音おりて、sus 和音で前向きに止める
+    ev = [(0, kalimba(D6, 0.22, 0.8)), (0.13, kalimba(A5, 0.3, 0.8))]
+    C5_ = 3  # C5（Gsus4 の4度）
+    ev += [(0.3, epiano(s, 0.9, 0.4)) for s in (G4 - 12, G4, C5_, D5)]  # Gsus4
+    return lowpass(soft_reverb(mix(1.3, *ev), 0.16, 0.6), 3500)
 
 
-@sfx('draw', '引き分け', '同点で終わった', -4)
+@sfx('draw', '引き分け', '同点で終わった', -6)
 def _draw():
-    ev = [(0, note(hz(3), 0.2, 'triangle', r=0.15)), (0.22, note(hz(3), 0.2, 'triangle', r=0.15)),
-          (0.44, note(hz(5), 0.5, 'triangle', r=0.45)), (0.44, note(hz(10), 0.5, 'triangle', 0.5, r=0.45))]
-    return reverb(mix(1.0, *ev), 0.25, 0.7)
+    ev = [(0, marimba(D6, 0.3, 0.8)), (0.2, marimba(D6, 0.3, 0.8)), (0.4, marimba(E6, 0.5, 0.8))]
+    ev += [(0.4, epiano(s, 0.9, 0.45)) for s in (A4, D5, E5)]
+    return soft_reverb(mix(1.4, *ev), 0.2, 0.7)
 
 
-@sfx('levelup', 'レベルアップ', 'レベルが上がった', -1)
-def _levelup():
-    ev = [(i * 0.07, note(hz(s), 0.18, 'square', 0.5, r=0.14)) for i, s in enumerate((3, 7, 10, 15, 19, 22))]
-    ev += [(0.45, note(hz(s), 0.8, 'triangle', 0.6, r=0.7, detune=0.003)) for s in (15, 22, 27)]
-    ev += [(0.45 + i * 0.06, bell(hz(34 + s), 0.5, 0.15, tau=0.18)) for i, s in enumerate((0, 3, 7, 12))]
-    return reverb(mix(1.5, *ev), 0.3, 0.9)
-
-
-@sfx('rankup', '段位アップ', '段位（ランク）が上がった', -1)
-def _rankup():
-    d = 0.4
-    riser = lowpass(noise(d), np.geomspace(500, 8000, int(d * SR))) * np.linspace(0, 1, int(d * SR)) ** 2 * 0.5
-    ev = [(0, riser)]
-    ev += [(0.4, note(hz(s), 1.2, 'square', 0.45, r=1.1, detune=0.004)) for s in (10, 14, 17, 22)]
-    ev += [(0.4, note(hz(-2), 1.2, 'sine', 0.6, r=1.1))]
-    ev += [(0.4 + i * 0.05, bell(hz(29 + s), 0.7, 0.18, tau=0.25)) for i, s in enumerate((0, 5, 9, 12, 17))]
-    return reverb(mix(1.9, *ev), 0.35, 1.1)
-
-
-@sfx('badge', '称号ゲット', '新しい称号・バッジを手に入れた', -3)
-def _badge():
-    ev = [(0, bell(hz(24), 0.6, 0.8, tau=0.3)), (0.08, bell(hz(31), 0.7, 0.7, tau=0.35)),
-          (0.16, bell(hz(36), 0.8, 0.5, tau=0.4))]
-    return reverb(mix(1.0, *ev), 0.3, 0.8)
-
-
-@sfx('coin', 'コイン', '報酬（XP・コイン）を受け取った', -4)
+# ------------------------------------------------------------------
+# 報酬・成長（ごほうび感はチャイム＝ベルで統一）
+# ------------------------------------------------------------------
+@sfx('coin', 'コイン', '報酬（XP・コイン）を受け取った', -7)
 def _coin():
-    return reverb(mix(0.5, (0, bell(hz(31), 0.1, 0.8, tau=0.05)), (0.07, bell(hz(36), 0.4, 0.9, tau=0.15))), 0.12, 0.3)
+    return soft_reverb(mix(0.5, (0, chime(B6, 0.2, 0.7)), (0.06, chime(E6 + 12, 0.45, 0.8))), 0.1, 0.3)
 
 
-@sfx('chest', '宝箱オープン', 'デイリー宝箱を開けた', -2)
+@sfx('badge', '称号ゲット', '新しい称号・バッジを手に入れた', -4)
+def _badge():
+    ev = arp(chime, [G6, B6, D7], 0.08, 0.9, 0.6)
+    ev += [(0.1, epiano(s, 1.0, 0.4)) for s in (G5, D6)]
+    return soft_reverb(mix(1.3, *ev), 0.25, 0.8)
+
+
+@sfx('levelup', 'レベルアップ', 'レベルが上がった', -3)
+def _levelup():
+    ev = arp(marimba, [G5, A5, B5, D6, E6, G6], 0.06, 0.35, 0.7)
+    ev += [(0.38, epiano(s, 1.2, 0.5)) for s in (G4, D5, G5, B5)]
+    ev += arp(chime, [G6, B6, D7], 0.06, 0.8, 0.2, start=0.4)
+    return soft_reverb(mix(1.8, *ev), 0.25, 0.9)
+
+
+@sfx('rankup', '段位アップ', '段位（ランク）が上がった', -2)
+def _rankup():
+    ev = arp(marimba, [D5, G5, B5, D6, G6], 0.07, 0.4, 0.7)
+    ev += [(0.4, epiano(s, 1.5, 0.5)) for s in (G4 - 12, D5 - 12, G4, B4, D5, G5)]
+    ev += arp(chime, [D6, G6, B6, D7], 0.08, 1.0, 0.25, start=0.42)
+    return soft_reverb(mix(2.2, *ev), 0.3, 1.0)
+
+
+@sfx('chest', '宝箱オープン', 'デイリー宝箱を開けた', -4)
 def _chest():
-    creak = bandpass(noise(0.25), 300, 1200) * env(int(0.25 * SR), a=0.05, r=0.1) * 0.5
-    thump = lowpass(noise(0.12), 300) * expdecay(int(0.12 * SR), 0.03)
-    ev = [(0, creak), (0.22, thump)]
-    ev += [(0.28 + i * 0.045, bell(hz(27 + s), 0.45, 0.35, tau=0.18)) for i, s in enumerate((0, 4, 7, 12, 16, 19))]
-    return reverb(mix(1.0, *ev), 0.28, 0.8)
+    d = 0.3
+    rise = lowpass(noise(d), np.geomspace(400, 6000, int(d * SR))) * np.linspace(0, 1, int(d * SR)) ** 2 * 0.25
+    ev = [(0, rise)] + arp(chime, [G5, B5, D6, G6, B6], 0.05, 0.7, 0.4, start=0.28)
+    return soft_reverb(mix(1.4, *ev), 0.22, 0.7)
 
 
-@sfx('jackpot', '大当たり', '宝箱の大当たり（7日連続）', -1)
+@sfx('jackpot', '大当たり', '宝箱の大当たり（7日連続）', -2)
 def _jackpot():
-    ev = [(i * 0.06, bell(hz(27 + s), 0.4, 0.5, tau=0.15)) for i, s in enumerate((0, 4, 7, 12, 16, 19, 24, 28))]
-    ev += [(0.5, note(hz(s), 1.1, 'square', 0.45, r=1.0, detune=0.004)) for s in (15, 19, 22, 27)]
-    ev += [(0.5 + i * 0.09, bell(hz(40 + (i % 3) * 5), 0.3, 0.2, tau=0.1)) for i in range(8)]
-    return reverb(mix(1.8, *ev), 0.35, 1.0)
+    d = 0.3
+    rise = lowpass(noise(d), np.geomspace(400, 7000, int(d * SR))) * np.linspace(0, 1, int(d * SR)) ** 2 * 0.3
+    ev = [(0, rise)] + arp(chime, [G5, B5, D6, G6, B6, D7, G6 + 12], 0.05, 0.8, 0.4, start=0.28)
+    ev += [(0.55, epiano(s, 1.4, 0.45)) for s in (G4, D5, G5, B5, D6)]
+    return soft_reverb(mix(2.2, *ev), 0.3, 1.0)
 
 
-@sfx('gacha', 'ガチャ演出', 'ガチャの結果が出る', -2)
+@sfx('gacha', 'ガチャ演出', 'ガチャの結果が出る', -4)
 def _gacha():
-    d = 0.6
-    roll = np.zeros(int(d * SR))
-    for k, t in enumerate(np.cumsum(np.geomspace(0.03, 0.1, 9))):
-        if t >= d:
-            break
-        x = note(hz(15 + (k % 4) * 2), 0.04, 'square', 0.4, a=0.001, r=0.035)
-        i = int(t * SR)
-        roll[i:i + len(x)] += x[: len(roll) - i]
-    reveal = [(d, bell(hz(31), 0.8, 0.8, tau=0.35)), (d, note(hz(19), 0.8, 'triangle', 0.5, r=0.7, bright=0.3))]
-    return reverb(mix(d + 1.0, (0, roll), *reveal), 0.3, 0.8)
+    ev = []
+    t = 0.0
+    for k, gap in enumerate(np.geomspace(0.05, 0.12, 8)):
+        ev.append((t, wood(1000 + (k % 2) * 250, 0.04, 0.7)))
+        t += gap
+    ev += [(t, chime(G6, 0.7, 0.7)), (t, epiano(G5, 0.7, 0.5)), (t, epiano(D6, 0.7, 0.4))]
+    return soft_reverb(mix(t + 0.8, *ev), 0.18, 0.5)
 
 
 # ------------------------------------------------------------------
