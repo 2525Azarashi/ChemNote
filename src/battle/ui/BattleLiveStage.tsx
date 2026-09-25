@@ -143,6 +143,14 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
     lastHurryRef.current = secondsLeft;
     play('hurry');
   }, [secondsLeft, counting, p.answered, p.reveal, p.finished, play]);
+  // 答えないまま 0 秒になったら「時間切れ」を1回だけ
+  const timeupRef = useRef<number>(-1);
+  useEffect(() => {
+    if (counting || p.answered || p.finished) return;
+    if (secondsLeft > 0 || timeupRef.current === p.index) return;
+    timeupRef.current = p.index;
+    play('timeup');
+  }, [secondsLeft, counting, p.answered, p.finished, p.index, play]);
   useEffect(() => {
     lastHurryRef.current = -1;
   }, [p.index]);

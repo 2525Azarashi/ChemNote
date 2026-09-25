@@ -32,12 +32,12 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
  const multiCost=GACHA_COST*GACHA_MULTI_COUNT;
  const drawMulti=async()=>{
   if(lock.current)return;lock.current=true;setBusy(true);setError('');setConfirmMulti(false);primeAudio();
-  try {const r=await drawGachaMulti(crypto.randomUUID(),owner);if(!r?.results){setError('抽選できませんでした。残高や保存設定を確認してください。');return;}setResult(null);setMulti(r.results);setRevealing(true);play(r.results.some(x=>x.rarity==='SR')?'levelup':'badge',false);}
+  try {const r=await drawGachaMulti(crypto.randomUUID(),owner);if(!r?.results){setError('抽選できませんでした。残高や保存設定を確認してください。');return;}setResult(null);setMulti(r.results);setRevealing(true);play(r.results.some(x=>x.rarity==='SR')?'jackpot':'gacha',false);}
   catch {setError('抽選できませんでした。再度お試しください。');}finally{lock.current=false;setBusy(false);}
  };
  const draw=async()=>{
   if(lock.current)return;lock.current=true;setBusy(true);setError('');setConfirm(false);primeAudio();
-  try {const r=await drawGacha(crypto.randomUUID(),owner);if(!r?.result){setError('抽選できませんでした。残高や保存設定を確認してください。');return;}setMulti(null);setResult(r.result);setRevealing(true);play(r.result.rarity==='SR'?'levelup':'badge',false);}
+  try {const r=await drawGacha(crypto.randomUUID(),owner);if(!r?.result){setError('抽選できませんでした。残高や保存設定を確認してください。');return;}setMulti(null);setResult(r.result);setRevealing(true);play(r.result.rarity==='SR'?'jackpot':'gacha',false);}
   catch {setError('抽選できませんでした。再度お試しください。');}finally{lock.current=false;setBusy(false);}
  };
  return <section className={`gacha-room ${result?'has-result':''}`} data-best-rarity={!revealing && bestRarity ? bestRarity : undefined}>{!embedded && <button type="button" className="arena-back" onClick={onBack}><ArrowLeft size={18}/>マイページ</button>}

@@ -82,7 +82,7 @@ export function BattleMissions({ onBack, onBattle, onReview, onShop, onRush, sta
     const r = await openChest();
     setOpening(false);
     if (r?.reward) {
-      play('coin');
+      play(r.reward.jackpot ? 'jackpot' : 'chest');
       setChestReward(r.reward);
       setToast(`${r.reward.jackpot ? '大当たり！ ' : ''}宝箱から +${r.reward.xp} XP ／ +${r.reward.coins} コイン`);
     } else if (r === null) {
