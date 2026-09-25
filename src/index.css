@@ -2848,3 +2848,12 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .connection-meter-sending { padding: 1px 6px; border-radius: 8px; background: #EAF2F8; color: #2980B9; animation: connection-pulse 1s ease-in-out infinite; }
 @keyframes connection-pulse { 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) { .connection-meter-sending { animation: none; } }
+
+/* ===== 数学の選び方（数ⅠA/ⅡB/ⅢC → 科目 → 分野） ===== */
+.math-nav-levels, .math-nav-courses { display: flex; gap: 6px; }
+.math-nav-levels button { flex: 1; min-height: 44px; border-radius: 14px; border: 2px solid #d5dbe1; background: #fff; font-weight: 900; font-size: 15px; color: #2C3E50; }
+.math-nav-levels button[aria-pressed=true] { background: #2C3E50; border-color: #2C3E50; color: #fff; box-shadow: 0 3px 0 #1b2631; }
+.math-nav-courses button { flex: 1; min-height: 40px; display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 12px; border: 1px solid #d5dbe1; background: #f8fafc; font-weight: 800; font-size: 13px; color: #34495e; }
+.math-nav-courses button small { font-size: 10px; font-weight: 700; color: #8b98a5; }
+.math-nav-courses button[aria-pressed=true] { background: #EAF2F8; border-color: #3498DB; color: #1f618d; }
+.math-nav-courses button[aria-pressed=true] small { color: #2980B9; }

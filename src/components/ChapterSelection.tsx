@@ -30,6 +30,7 @@ import {
   quizRunKey,
 } from '../utils/quizStorageKeys';
 import { auth } from '../firebase';
+import { MATH_COURSE_LABELS, MATH_LEVELS, mathCourseOfGroup, mathLevelOfCourse, mathSourceLabel, type MathCourseKey } from '../data/mathNavigation';
 
 interface ChapterSelectionProps {
   mode: 'mini_test' | 'practice';
@@ -322,6 +323,35 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
     });
   }, [activeGroupTitle]);
 
+  // ---- 数学：段階→科目で絞り込む ----
+  const isMath = subject === 'math';
+  const mathCountByCourse = useMemo(() => {
+    const out: Partial<Record<MathCourseKey, number>> = {};
+    if (!isMath) return out;
+    for (const g of groups) { const c = mathCourseOfGroup(g); if (c) out[c] = (out[c] ?? 0) + g.chapters.length; }
+    return out;
+  }, [isMath, groups]);
+  const initialCourse = useMemo<MathCourseKey>(() => {
+    const g = groups.find(x => x.title === activeGroupTitle);
+    return (g && mathCourseOfGroup(g)) || 'mc1';
+    // 最初の1回だけ（記憶していた分野の科目で開く）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groups]);
+  const [mathCourse, setMathCourse] = useState<MathCourseKey>(initialCourse);
+  useEffect(() => setMathCourse(initialCourse), [initialCourse]);
+  const mathLevel = mathLevelOfCourse(mathCourse);
+  const visibleGroups = useMemo(
+    () => (isMath ? groups.filter(g => mathCourseOfGroup(g) === mathCourse) : groups),
+    [isMath, groups, mathCourse],
+  );
+  const pickMathCourse = (course: MathCourseKey) => {
+    setMathCourse(course);
+    const first = groups.find(g => mathCourseOfGroup(g) === course);
+    if (first) { setActiveGroupTitle(first.title); onGroupChange?.(first.title); }
+    setExpandedChapterId(null);
+    document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
+  };
+
   const activeGroup = groups.find(group => group.title === activeGroupTitle) || groups[0];
 
   // 出題傾向データ（科目ごとに切り替える）。リスニングには傾向データがないのでボタンを出さない。
@@ -405,22 +435,43 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
         {ADVANCED_FIELDS.map(item => <button key={item.id} type="button" aria-pressed={field === item.id} onClick={() => onChangeField(item.id)} className={`min-h-[44px] flex-1 rounded-xl border px-2 text-sm font-bold ${field === item.id ? 'bg-[#2C3E50] text-white' : 'border-gray-200 bg-white text-[#2C3E50]'}`}>{item.title}</button>)}
       </div>}
       {subject === 'math' && (
-        <label className="mb-2 flex shrink-0 items-center gap-2 text-sm font-bold text-[#2C3E50]">
-          <span className="shrink-0">数学の分野</span>
-          <select
-            aria-label="数学の分野へ移動"
-            value={activeGroupTitle}
-            onChange={event => {
-              setActiveGroupTitle(event.target.value);
-              onGroupChange?.(event.target.value);
-              setExpandedChapterId(null);
-              document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
-            }}
-            className="min-h-[44px] min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-2"
-          >
-            {groups.map(group => <option key={group.title} value={group.title}>{group.partTitle} ／ {group.title}</option>)}
-          </select>
-        </label>
+        /* ★数学は「数ⅠA／数ⅡB／数ⅢC → 科目 → 単元」の順に選ぶ★
+           以前は教材の束（基礎から標準・全範囲・全パターン）ごとに並んでいて、
+           同じ「数学A」の単元が3か所に散らばっていた。教科書の区分で探せるようにする。 */
+        <div className="math-nav mb-2 shrink-0 space-y-1.5" data-math-nav>
+          <div className="math-nav-levels" role="group" aria-label="数学の段階">
+            {MATH_LEVELS.map(level => (
+              <button key={level.id} type="button" aria-pressed={mathLevel === level.id}
+                onClick={() => pickMathCourse(level.courses[0])}>
+                {level.label}
+              </button>
+            ))}
+          </div>
+          <div className="math-nav-courses" role="group" aria-label="数学の科目">
+            {(MATH_LEVELS.find(l => l.id === mathLevel)?.courses ?? []).map(course => (
+              <button key={course} type="button" aria-pressed={mathCourse === course} onClick={() => pickMathCourse(course)}>
+                {MATH_COURSE_LABELS[course]}
+                <small>{mathCountByCourse[course] ?? 0}単元</small>
+              </button>
+            ))}
+          </div>
+          <label className="flex items-center gap-2 text-sm font-bold text-[#2C3E50]">
+            <span className="shrink-0">分野</span>
+            <select
+              aria-label="数学の分野へ移動"
+              value={activeGroupTitle}
+              onChange={event => {
+                setActiveGroupTitle(event.target.value);
+                onGroupChange?.(event.target.value);
+                setExpandedChapterId(null);
+                document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
+              }}
+              className="min-h-[44px] min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-2"
+            >
+              {visibleGroups.map(group => <option key={`${group.partId}:${group.title}`} value={group.title}>{mathSourceLabel(group.partTitle)} ／ {group.title}</option>)}
+            </select>
+          </label>
+        </div>
       )}
       <div className="chapter-workspace flex min-h-0 flex-1 flex-col font-handwriting">
         {/* ================================================================
@@ -443,7 +494,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
             aria-label="章を選択"
             className={`flex touch-pan-x snap-x snap-mandatory gap-1.5 overflow-x-auto overscroll-x-contain px-0.5 pb-2 [scrollbar-width:thin] ${subject === 'math' ? '' : 'sm:grid sm:grid-cols-3 sm:overflow-x-visible sm:overscroll-auto lg:grid-cols-4 xl:grid-cols-5'}`}
           >
-            {groups.map((group, index) => {
+            {visibleGroups.map((group, index) => {
               const isActive = group.title === activeGroup?.title;
               const { kicker: chapterNumber, label: shortTitle } = splitTabTitle(group.title, index);
 
