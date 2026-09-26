@@ -87,7 +87,7 @@ docs/                設計メモ・手順書
 |---|---|
 | ホーム | `src/components/Home.tsx` |
 | 教科選択 | `src/components/SubjectSelection.tsx` |
-| 単元選択 | `src/components/ChapterSelection.tsx` |
+| 単元選択 | `src/components/ChapterSelection.tsx`（数学のタブは `src/data/mathNavigation.ts` の `MATH_TOPICS`＝科目→教科書の分野。タブ内の見出し（数学の段階・地理の単元演習/模試・準備中）は `src/data/unitSections.ts`） |
 | 問題を解く | `src/components/Quiz.tsx`、`ProblemPane.tsx`、`AnswerPane.tsx` |
 | 解説 | `src/components/Explanation.tsx`、`ExplanationScreen.tsx` |
 | 復習・ノート | `src/components/StudyHub.tsx`、`ReviewList.tsx`、`NoteList.tsx` |
