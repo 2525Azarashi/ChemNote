@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Check, Copy, RefreshCw, Send, UserPlus, X } from 'lucide-react';
 import {
   acceptFriendRequest,
@@ -15,11 +15,18 @@ import {
 } from '../utils/friends';
 import { auth } from '../firebase';
 import { DoorMascot } from './DoorMascot';
+import { UserSafetyMenu } from '../features/safety/UserSafetyMenu';
+import { isBlocked } from '../features/safety/userSafety';
+import { useBlockedTick } from '../features/safety/useBlockedFilter';
+import { safeAvatarUrl } from '../features/safety/avatarUrl';
 
 export function FriendPanel() {
   const [profile, setProfile] = useState<FriendProfile | null>(null);
   const [requests, setRequests] = useState<FriendRequest[]>([]);
   const [sentRequests, setSentRequests] = useState<FriendRequest[]>([]);
+  // ブロックした人からの申請は表示しない（App Store 1.2）
+  const blockedTick = useBlockedTick();
+  const visibleRequests = useMemo(() => requests.filter((r) => !isBlocked(r.fromUid)), [requests, blockedTick]);
   const [friends, setFriends] = useState<Array<{ uid: string; nickname: string; photoURL?: string }>>([]);
   const [code, setCode] = useState('');
   const [message, setMessage] = useState('');
@@ -162,10 +169,11 @@ export function FriendPanel() {
       {requests.length > 0 && (
         <div className="space-y-2 max-h-32 overflow-y-auto pr-1">
           <p className="text-[11px] text-gray-400 font-bold sticky top-0 bg-white">届いている申請</p>
-          {requests.map((req) => (
+          {visibleRequests.map((req) => (
             <div key={req.id} className="flex items-center gap-3 bg-[#F9E79F]/15 border border-[#F9E79F]/50 rounded-2xl p-3">
               <Avatar name={req.fromNickname} url={req.fromPhotoURL} />
               <span className="flex-1 text-sm font-bold text-[#1B2631] truncate">{req.fromNickname}</span>
+              <UserSafetyMenu target={{ uid: req.fromUid, nickname: req.fromNickname, where: 'friend' }} />
               <button disabled={loading} aria-label={`${req.fromNickname}さんを承認`} onClick={() => runAction(() => acceptFriendRequest(req), `${req.fromNickname} さんとフレンドになりました。`)} className="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 disabled:opacity-40"><Check size={15} /></button>
               <button disabled={loading} aria-label={`${req.fromNickname}さんを拒否`} onClick={() => runAction(() => rejectFriendRequest(req), '申請を拒否しました。')} className="p-2 rounded-xl bg-red-50 text-red-600 border border-red-100 disabled:opacity-40"><X size={15} /></button>
             </div>
@@ -200,6 +208,7 @@ export function FriendPanel() {
             <div key={f.uid} className="flex items-center gap-3 bg-gray-50 border border-gray-150 rounded-2xl p-3">
               <Avatar name={f.nickname} url={f.photoURL} />
               <span className="flex-1 text-sm font-bold text-[#1B2631] truncate">{f.nickname}</span>
+              <UserSafetyMenu target={{ uid: f.uid, nickname: f.nickname, where: 'friend' }} />
               <button disabled={loading} onClick={() => { if (window.confirm(`${f.nickname} さんとのフレンド関係を解除しますか？`)) runAction(() => removeFriend(f.uid), 'フレンドを解除しました。'); }} className="text-xs font-bold text-red-500 hover:underline disabled:opacity-40">解除</button>
             </div>
           ))
@@ -212,7 +221,7 @@ export function FriendPanel() {
 function Avatar({ name, url }: { name: string; url?: string }) {
   return (
     <div className="w-9 h-9 rounded-full bg-white border border-gray-150 overflow-hidden flex items-center justify-center text-xs font-bold text-gray-500 shrink-0">
-      {url ? <img src={url} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : name.slice(0, 1)}
+      {safeAvatarUrl(url) ? <img src={safeAvatarUrl(url)} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : name.slice(0, 1)}
     </div>
   );
 }

@@ -24,6 +24,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Crown, User } from 'lucide-react';
+import { safeAvatarUrl } from '../features/safety/avatarUrl';
 
 export interface PodiumEntry {
   rank: number;
@@ -105,9 +106,9 @@ export function RankingPodium({ entries, className = '' }: RankingPodiumProps) {
                     rank === 1 ? 'h-12 w-12 md:h-14 md:w-14' : 'h-9 w-9 md:h-11 md:w-11'
                   } ${entry ? '' : 'opacity-40'}`}
                 >
-                  {entry?.photoURL ? (
+                  {safeAvatarUrl(entry?.photoURL) ? (
                     <img
-                      src={entry.photoURL}
+                      src={safeAvatarUrl(entry?.photoURL)}
                       alt=""
                       className="h-full w-full object-cover"
                       referrerPolicy="no-referrer"

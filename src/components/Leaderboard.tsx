@@ -49,6 +49,7 @@ import { qualifyLineFor } from '../utils/liveRank';
 import { displayNicknameForNational } from '../utils/nicknamePrivacy';
 import { UserSafetyMenu } from '../features/safety/UserSafetyMenu';
 import { useWithoutBlocked } from '../features/safety/useBlockedFilter';
+import { safeAvatarUrl } from '../features/safety/avatarUrl';
 
 interface LeaderboardProps {
   onBack: () => void;
@@ -522,8 +523,8 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle, initi
                 >
                   <RankBadge rank={r.rank} />
                   <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shrink-0">
-                    {r.photoURL ? (
-                      <img src={r.photoURL} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    {safeAvatarUrl(r.photoURL) ? (
+                      <img src={safeAvatarUrl(r.photoURL)} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
                       <User size={16} className="text-gray-400" />
                     )}

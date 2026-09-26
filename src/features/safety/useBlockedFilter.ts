@@ -8,3 +8,10 @@ export function useWithoutBlocked<T extends { uid?: string | null }>(rows: reado
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo<T[]>(() => withoutBlocked<T>(rows), [rows, tick]);
 }
+
+/** ブロック一覧が変わるたびに増える数（useMemo の依存に使う） */
+export function useBlockedTick(): number {
+  const [tick, setTick] = useState(0);
+  useEffect(() => subscribeBlocked(() => setTick((t) => t + 1)), []);
+  return tick;
+}

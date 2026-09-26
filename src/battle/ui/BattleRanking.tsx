@@ -42,6 +42,7 @@ import {
 } from './BattleParts';
 import { UserSafetyMenu } from '../../features/safety/UserSafetyMenu';
 import { useWithoutBlocked } from '../../features/safety/useBlockedFilter';
+import { safeAvatarUrl } from '../../features/safety/avatarUrl';
 
 type Tab = 'friend' | 'national';
 
@@ -181,9 +182,9 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
                 </span>
 
                 {/* アイコン */}
-                {row.photoURL ? (
+                {safeAvatarUrl(row.photoURL) ? (
                   <img
-                    src={row.photoURL}
+                    src={safeAvatarUrl(row.photoURL)}
                     alt=""
                     className="h-8 w-8 shrink-0 rounded-full object-cover"
                     referrerPolicy="no-referrer"

@@ -16,6 +16,7 @@ import { ensureFriendProfile } from '../utils/friends';
 import { profileKey, streakKey, completedKey } from '../utils/userStorageKeys';
 import { checkNickname, NICKNAME_MAX } from '../features/safety/nicknameFilter';
 import { AccountSafetySection } from '../features/account/AccountSafetySection';
+import { AppleSignInButton } from '../features/auth/AppleSignInButton';
 
 interface ProfileModalProps {
   onClose: () => void;
@@ -276,6 +277,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
                         {signing ? <Loader2 size={15} className="animate-spin" /> : <GoogleMark size={17} />}
                         {signing ? '連携中…' : 'Google アカウントで連携'}
                       </button>
+                      <AppleSignInButton onResult={(o) => { if (!o.ok) setAuthError(o.message || 'ログインに失敗しました。'); }} />
                       <p className="text-[9px] text-gray-400 text-center leading-snug">
                         連携は無料です。いまの学習記録はそのまま引き継がれます。
                       </p>
