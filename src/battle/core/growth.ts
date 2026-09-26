@@ -3,6 +3,7 @@
  * Durable replay protection lives in growthStore, alongside the progress in one atomic record.
  */
 import type { BattleOutcome, BattlePlayerScore } from './types';
+import { GACHA_PRINTS, type GachaPrintDef } from '../../data/gachaPrints.generated';
 
 // ============================================================
 // 経験値（XP）
@@ -170,6 +171,12 @@ export interface GrowthProgress {
   lastLoginDate: string;
   /** 連続ログイン日数 */
   loginStreak: number;
+  /** デイリーコンプリート宝箱：連続で開けた日数 */
+  completeStreak: number;
+  /** デイリーコンプリート宝箱：開けた日数の累計 */
+  completeDays: number;
+  /** デイリーコンプリート宝箱：最後に開けた日（YYYY-MM-DD） */
+  lastCompleteDate: string;
   /** 教科ID → 成績 */
   subjects: Record<string, SubjectProgress>;
   /** 獲得したバッジID → 獲得時刻（epoch ms） */
@@ -189,6 +196,16 @@ export interface GrowthProgress {
   daily: DailyRecord;
   /** 直前に反映した部屋ID（同じ試合の二重反映を防ぐ） */
   lastRoomId: string;
+  /** 演習で得点した大問の累計（同じ大問は1日1回まで数える） */
+  studySolved: number;
+  /** マナラッシュ（60秒チャレンジ）の挑戦回数 */
+  rushPlays: number;
+  /** マナラッシュの自己ベスト（全教科） */
+  rushBest: number;
+  /** マナラッシュの最高コンボ */
+  rushBestCombo: number;
+  /** 教科ID → マナラッシュ自己ベスト */
+  rushBestBy: Record<string, number>;
 }
 
 export const DEFAULT_POSE = 'pose_basic';
@@ -213,12 +230,20 @@ export function emptyProgress(uid: string): GrowthProgress {
     loginDays: 0,
     lastLoginDate: '',
     loginStreak: 0,
+    completeStreak: 0,
+    completeDays: 0,
+    lastCompleteDate: '',
     subjects: {},
     badges: {},
     owned: [DEFAULT_POSE, DEFAULT_FRAME],
     equipped: { title: '', pose: DEFAULT_POSE, frame: DEFAULT_FRAME },
     daily: { date: '', progress: {}, claimed: [] },
     lastRoomId: '',
+    studySolved: 0,
+    rushPlays: 0,
+    rushBest: 0,
+    rushBestCombo: 0,
+    rushBestBy: {},
   };
 }
 
@@ -261,7 +286,7 @@ export function normalizeProgress(uid: string, raw: unknown): GrowthProgress {
   const progress: Record<string, number> = {};
   if (daily.progress && typeof daily.progress === 'object') {
     for (const [k, v] of Object.entries(daily.progress as Record<string, unknown>)) {
-      if (MISSION_POOL.some(m => m.id === k)) progress[k] = num(v, 0);
+      if (missionById(k)) progress[k] = num(v, 0);
     }
   }
   return {
@@ -281,6 +306,9 @@ export function normalizeProgress(uid: string, raw: unknown): GrowthProgress {
     loginDays: num(r.loginDays, 0),
     lastLoginDate: str(r.lastLoginDate, ''),
     loginStreak: num(r.loginStreak, 0),
+    completeStreak: num(r.completeStreak, 0),
+    completeDays: num(r.completeDays, 0),
+    lastCompleteDate: str(r.lastCompleteDate, ''),
     subjects,
     badges,
     owned: [...new Set([DEFAULT_POSE, DEFAULT_FRAME, ...strList(r.owned)])],
@@ -295,7 +323,23 @@ export function normalizeProgress(uid: string, raw: unknown): GrowthProgress {
       claimed: strList(daily.claimed),
     },
     lastRoomId: str(r.lastRoomId, ''),
+    studySolved: num(r.studySolved, 0),
+    rushPlays: num(r.rushPlays, 0),
+    rushBest: num(r.rushBest, 0),
+    rushBestCombo: num(r.rushBestCombo, 0),
+    rushBestBy: normalizeBestBy(r.rushBestBy, num),
   };
+}
+
+function normalizeBestBy(raw: unknown, num: (v: unknown, d: number) => number): Record<string, number> {
+  const out: Record<string, number> = {};
+  if (!raw || typeof raw !== 'object') return out;
+  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+    if (!/^[a-z][a-z0-9_]{0,40}$/.test(k) || ['constructor', 'prototype'].includes(k)) continue;
+    const n = num(v, 0);
+    if (n > 0) out[k] = n;
+  }
+  return out;
 }
 
 // ============================================================
@@ -355,7 +399,14 @@ export type MissionKind =
   | 'buzz_win'
   | 'holes'
   | 'streak'
-  | 'perfect';
+  | 'perfect'
+  | 'study'
+  | 'rush_play'
+  | 'rush_score'
+  | 'rush_combo'
+  | 'study_streak'
+  | 'gacha'
+  | 'equip';
 
 export interface MissionDef {
   id: string;
@@ -429,8 +480,164 @@ export function missionsForDate(date: string): MissionDef[] {
   return picked;
 }
 
+/**
+ * ボーナスミッション（演習・マナラッシュで進む）。毎日2つ。
+ *
+ * ★対戦用の3つ（missionsForDate）とは別枠★
+ * 対戦ミッションの組み合わせ・報酬上限の検査はそのまま残し、
+ * 「ひとりで遊ぶ」導線にも毎日の目標を置くために足した。
+ * 必ず「演習」系を1つ、「マナラッシュ」系を1つ。
+ */
+export const BONUS_MISSION_POOL: readonly MissionDef[] = [
+  { id: 'x_study3', kind: 'study', label: '演習で大問を3問とく', goal: 3, rewardXp: 40, rewardCoins: 20, countMatch: () => 0 },
+  { id: 'x_study5', kind: 'study', label: '演習で大問を5問とく', goal: 5, rewardXp: 60, rewardCoins: 30, countMatch: () => 0 },
+  { id: 'x_study8', kind: 'study', label: '演習で大問を8問とく', goal: 8, rewardXp: 90, rewardCoins: 40, countMatch: () => 0 },
+  { id: 'x_rush1', kind: 'rush_play', label: 'マナラッシュに1回ちょうせん', goal: 1, rewardXp: 30, rewardCoins: 15, countMatch: () => 0 },
+  { id: 'x_rush3', kind: 'rush_play', label: 'マナラッシュに3回ちょうせん', goal: 3, rewardXp: 60, rewardCoins: 30, countMatch: () => 0 },
+  { id: 'x_rush1500', kind: 'rush_score', label: 'マナラッシュで1500点', goal: 1, rewardXp: 50, rewardCoins: 25, countMatch: () => 0 },
+  { id: 'x_combo5', kind: 'rush_combo', label: 'マナラッシュで5コンボ', goal: 1, rewardXp: 50, rewardCoins: 25, countMatch: () => 0 },
+  // ── 追加分（演習・マナラッシュ）──
+  { id: 'x_study10', kind: 'study', label: '演習で大問を10問とく', goal: 10, rewardXp: 110, rewardCoins: 50, countMatch: () => 0 },
+  { id: 'x_rush2', kind: 'rush_play', label: 'マナラッシュに2回ちょうせん', goal: 2, rewardXp: 45, rewardCoins: 20, countMatch: () => 0 },
+  { id: 'x_rush2500', kind: 'rush_score', label: 'マナラッシュで2500点', goal: 1, rewardXp: 70, rewardCoins: 35, countMatch: () => 0 },
+  { id: 'x_combo10', kind: 'rush_combo', label: 'マナラッシュで10コンボ', goal: 1, rewardXp: 70, rewardCoins: 35, countMatch: () => 0 },
+  // ── おたのしみ枠（3つ目のボーナス。遊び方を広げるきっかけ）──
+  { id: 'x_gacha1', kind: 'gacha', label: 'ガチャを1回まわす', goal: 1, rewardXp: 20, rewardCoins: 10, countMatch: () => 0 },
+  { id: 'x_equip1', kind: 'equip', label: 'とびら君の装飾を着がえる', goal: 1, rewardXp: 20, rewardCoins: 10, countMatch: () => 0 },
+  { id: 'x_streak_study3', kind: 'study_streak', label: '演習で3問れんぞく正解', goal: 1, rewardXp: 40, rewardCoins: 20, countMatch: () => 0 },
+];
+
+export const BONUS_MISSIONS_PER_DAY = 3;
+/** マナラッシュのスコア系ミッションの基準（ミッションIDごと） */
+export const RUSH_SCORE_GOALS: Record<string, number> = { x_rush1500: 1500, x_rush2500: 2500 };
+export const RUSH_COMBO_GOALS: Record<string, number> = { x_combo5: 5, x_combo10: 10 };
+
+/** その日のボーナスミッション（演習1＋マナラッシュ1＋おたのしみ1）。日付だけで決まる */
+export function bonusMissionsForDate(date: string): MissionDef[] {
+  const seed = hashOf(`bonus:${date}`);
+  const study = BONUS_MISSION_POOL.filter((m) => m.kind === 'study');
+  const rush = BONUS_MISSION_POOL.filter((m) => m.kind.startsWith('rush_'));
+  const fun = BONUS_MISSION_POOL.filter((m) => m.kind === 'gacha' || m.kind === 'equip' || m.kind === 'study_streak');
+  return [study[seed % study.length]!, rush[Math.floor(seed / 5) % rush.length]!, fun[Math.floor(seed / 37) % fun.length]!];
+}
+
+/** 対戦3つ＋ボーナス2つ（画面に並べる全部） */
+export function allMissionsForDate(date: string): MissionDef[] {
+  return [...missionsForDate(date), ...bonusMissionsForDate(date)];
+}
+
 export function missionById(id: string): MissionDef | undefined {
-  return MISSION_POOL.find((m) => m.id === id);
+  return MISSION_POOL.find((m) => m.id === id) ?? BONUS_MISSION_POOL.find((m) => m.id === id);
+}
+
+/** 今日のミッションにだけ進捗を足す（対戦系以外の入口で使う） */
+function bumpMissions(daily: DailyRecord, today: string, gains: Partial<Record<MissionKind, number>> | ((m: MissionDef) => number)): DailyRecord {
+  const next = rolloverDaily(daily, today);
+  for (const m of allMissionsForDate(today)) {
+    const gain = typeof gains === 'function' ? gains(m) : (gains[m.kind] ?? 0);
+    if (gain <= 0) continue;
+    const before = next.progress[m.id] ?? 0;
+    next.progress[m.id] = Math.min(m.goal, before + gain);
+  }
+  return next;
+}
+
+// ============================================================
+// 演習（ひとりで解く）の報酬
+// ============================================================
+
+/** 演習で大問を1問得点したときの報酬 */
+export const STUDY_REWARD = { xp: 15, coins: 3 } as const;
+
+export function applyStudySolved(progress: GrowthProgress, today: string, now: number = Date.now(), streak = 0): { next: GrowthProgress; reward: { xp: number; coins: number } } {
+  const next: GrowthProgress = {
+    ...progress,
+    xp: progress.xp + STUDY_REWARD.xp,
+    coins: progress.coins + STUDY_REWARD.coins,
+    studySolved: progress.studySolved + 1,
+    daily: bumpMissions(progress.daily, today, { study: 1, study_streak: streak >= 3 ? 1 : 0 }),
+  };
+  return { next: withAchievements(next, now), reward: { ...STUDY_REWARD } };
+}
+
+// ============================================================
+// マナラッシュ（60秒チャレンジ）
+// ============================================================
+
+export interface RushResult {
+  /** 一意なID（二重反映の防止に使う） */
+  runId: string;
+  subject: string;
+  score: number;
+  correct: number;
+  answered: number;
+  maxCombo: number;
+}
+
+/** マナラッシュで報酬コインがもらえるのは1日この回数まで（XPは毎回） */
+export const RUSH_COIN_PLAYS_PER_DAY = 5;
+export const RUSH_SCORE_MISSION = 1500;
+export const RUSH_COMBO_MISSION = 5;
+
+/** 1回ぶんの報酬（上限つき。1回の書き込み上限に必ず収まる） */
+export function rushRewardFor(r: RushResult, coinEligible: boolean): { xp: number; coins: number } {
+  const xp = Math.min(150, 10 + r.correct * 6 + Math.floor(r.maxCombo / 3) * 5);
+  const coins = coinEligible ? Math.min(40, 5 + Math.floor(Math.max(0, r.score) / 150)) : 0;
+  return { xp, coins };
+}
+
+/** 成績のランク（S/A/B/C） */
+export function rushRankOf(score: number): 'S' | 'A' | 'B' | 'C' {
+  if (score >= 4000) return 'S';
+  if (score >= 2500) return 'A';
+  if (score >= 1200) return 'B';
+  return 'C';
+}
+
+export function applyRushResult(
+  progress: GrowthProgress,
+  r: RushResult,
+  today: string,
+  coinEligible: boolean,
+  now: number = Date.now(),
+): { next: GrowthProgress; reward: { xp: number; coins: number }; newBest: boolean; newSubjectBest: boolean } {
+  const reward = rushRewardFor(r, coinEligible);
+  const score = Math.max(0, Math.floor(r.score));
+  const prevSubject = progress.rushBestBy[r.subject] ?? 0;
+  const next: GrowthProgress = {
+    ...progress,
+    xp: progress.xp + reward.xp,
+    coins: progress.coins + reward.coins,
+    rushPlays: progress.rushPlays + 1,
+    rushBest: Math.max(progress.rushBest, score),
+    rushBestCombo: Math.max(progress.rushBestCombo, r.maxCombo),
+    rushBestBy: { ...progress.rushBestBy, [r.subject]: Math.max(prevSubject, score) },
+    daily: bumpMissions(progress.daily, today, (m) => {
+      if (m.kind === 'rush_play') return 1;
+      if (m.kind === 'rush_score') return score >= (RUSH_SCORE_GOALS[m.id] ?? RUSH_SCORE_MISSION) ? 1 : 0;
+      if (m.kind === 'rush_combo') return r.maxCombo >= (RUSH_COMBO_GOALS[m.id] ?? RUSH_COMBO_MISSION) ? 1 : 0;
+      return 0;
+    }),
+  };
+  return {
+    next: withAchievements(next, now),
+    reward,
+    newBest: score > progress.rushBest,
+    newSubjectBest: score > prevSubject,
+  };
+}
+
+/** ガチャ・着がえなど、報酬なしで「今日のミッション」だけ進める */
+export function bumpDailyMission(progress: GrowthProgress, kind: MissionKind, today: string, amount = 1): GrowthProgress {
+  const daily = bumpMissions(progress.daily, today, { [kind]: amount });
+  return { ...progress, daily };
+}
+
+/** before → after で「新しく達成した」ミッション（受け取り前）。通知に使う */
+export function newlyCompletedMissions(before: GrowthProgress, after: GrowthProgress, today: string): MissionDef[] {
+  if (after.daily.date !== today) return [];
+  const prev = before.daily.date === today ? before.daily.progress : {};
+  return allMissionsForDate(today).filter((m) => (after.daily.progress[m.id] ?? 0) >= m.goal && (prev[m.id] ?? 0) < m.goal && !after.daily.claimed.includes(m.id));
 }
 
 /** 受け取れる（達成済み・未受け取り）か */
@@ -493,11 +700,20 @@ export const BADGES: readonly BadgeDef[] = [
   { id: 'b_correct_500', label: '五百問正解', desc: '累計500問正解', emoji: '◆', tier: 2, earned: (p) => p.correct >= 500 },
   { id: 'b_login_7', label: '七日通い', desc: '7日連続でボーナスを受け取った', emoji: '◆', tier: 2, earned: (p) => p.loginStreak >= 7 },
   { id: 'b_login_30', label: '皆勤', desc: '30日ぶんボーナスを受け取った', emoji: '◆', tier: 3, earned: (p) => p.loginDays >= 30 },
+  { id: 'b_chest_7', label: '宝箱七連', desc: '7日連続でコンプリート宝箱を開けた', emoji: '◆', tier: 2, earned: (p) => p.completeStreak >= 7 },
+  { id: 'b_chest_30', label: '宝箱コレクター', desc: 'コンプリート宝箱を通算30回開けた', emoji: '◆', tier: 3, earned: (p) => p.completeDays >= 30 },
   { id: 'b_level_10', label: 'Lv.10', desc: 'レベル10に到達', emoji: '◆', tier: 1, earned: (p) => levelOf(p.xp).level >= 10 },
   { id: 'b_level_30', label: 'Lv.30', desc: 'レベル30に到達', emoji: '◆', tier: 2, earned: (p) => levelOf(p.xp).level >= 30 },
   { id: 'b_level_50', label: 'Lv.50', desc: 'レベル50に到達', emoji: '◆', tier: 3, earned: (p) => levelOf(p.xp).level >= 50 },
   { id: 'b_subject_3', label: '三刀流', desc: '3教科で対戦した', emoji: '◆', tier: 1, earned: (p) => Object.keys(p.subjects).length >= 3 },
   { id: 'b_subject_master', label: '専門家', desc: '1つの教科で10勝', emoji: '◆', tier: 2, earned: (p) => Object.values(p.subjects).some((s) => s.wins >= 10) },
+  { id: 'b_study_10', label: 'コツコツ', desc: '演習で大問を10問とけた', emoji: '◆', tier: 1, earned: (p) => p.studySolved >= 10 },
+  { id: 'b_study_50', label: '努力家', desc: '演習で大問を50問とけた', emoji: '◆', tier: 2, earned: (p) => p.studySolved >= 50 },
+  { id: 'b_study_200', label: '学びの鬼', desc: '演習で大問を200問とけた', emoji: '◆', tier: 3, earned: (p) => p.studySolved >= 200 },
+  { id: 'b_rush_first', label: 'ラッシュデビュー', desc: 'マナラッシュに初ちょうせん', emoji: '◆', tier: 1, earned: (p) => p.rushPlays >= 1 },
+  { id: 'b_rush_2500', label: '瞬速', desc: 'マナラッシュで2500点', emoji: '◆', tier: 2, earned: (p) => p.rushBest >= 2500 },
+  { id: 'b_rush_4000', label: '電光石火', desc: 'マナラッシュで4000点（Sランク）', emoji: '◆', tier: 3, earned: (p) => p.rushBest >= 4000 },
+  { id: 'b_rush_combo10', label: '十連コンボ', desc: 'マナラッシュで10コンボ', emoji: '◆', tier: 2, earned: (p) => p.rushBestCombo >= 10 },
 ];
 
 export function badgeById(id: string): BadgeDef | undefined {
@@ -518,16 +734,21 @@ export function badgeTierColor(tier: 1 | 2 | 3): string {
 // 扉くんの装備（ポーズ・枠）
 // ============================================================
 
-export type ItemKind = 'pose' | 'frame';
+/** pose / frame は扉くんの装備。print は大当たりの学習プリント（PDF・装備はしない） */
+export type ItemKind = 'pose' | 'frame' | 'print';
+/** ガチャのレア度：N（ノーマル）/ R（レア）/ SR（スーパーレア）/ UR（大当たり＝学習プリント） */
+export type GachaRarity = 'N' | 'R' | 'SR' | 'UR';
 
 export interface ItemDef {
   id: string;
   kind: ItemKind;
   label: string;
-  /** pose: 画像パス（public/mascots）／ frame: 色コード */
+  /** pose: 画像パス（public/mascots）／ frame: 色コード ／ print: PDF のパス（public/prints） */
   value: string;
   gacha?: boolean;
-  pattern?: 'dashed' | 'double' | 'dots' | 'rays' | 'stars' | 'stripes' | 'checker' | 'wave' | 'grid' | 'sparkle' | 'rainbow' | 'aurora' | 'neon';
+  pattern?: 'dashed' | 'double' | 'dots' | 'rays' | 'stars' | 'stripes' | 'checker' | 'wave' | 'grid' | 'sparkle' | 'rainbow' | 'aurora' | 'neon' | 'prism' | 'galaxy';
+  /** ガチャのレア度。省略時は gachaRarityOf() が入手条件から決める（N / R / SR）。UR は学習プリントだけ */
+  rarity?: GachaRarity;
   /**
    * 入手条件。どれか1つ。
    *   level  … そのレベルで自動解放
@@ -558,6 +779,9 @@ export const ITEMS: readonly ItemDef[] = [
   { id: 'pose_listening', kind: 'pose', gacha: true, label: 'リスニング中', value: '/mascots/listening.webp', unlock: { gacha: true } },
   { id: 'pose_science', kind: 'pose', gacha: true, label: '実験中', value: '/mascots/science.webp', unlock: { gacha: true } },
   { id: 'pose_trophy', kind: 'pose', gacha: true, label: '優勝トロフィー', value: '/mascots/trophy.webp', unlock: { gacha: true } },
+  // ── SR（スーパーレア）限定フレーム：ガチャからだけ出る ──
+  { id: 'frame_prism', kind: 'frame', gacha: true, rarity: 'SR', label: 'プリズム', value: '#C471ED', pattern: 'prism', unlock: { gacha: true } },
+  { id: 'frame_galaxy', kind: 'frame', gacha: true, rarity: 'SR', label: 'ギャラクシー', value: '#1E1B4B', pattern: 'galaxy', unlock: { gacha: true } },
   { id: 'frame_paper', kind: 'frame', label: 'ノート', value: '#E5E7EB', unlock: { level: 1 } },
   { id: 'frame_green', kind: 'frame', label: 'わかば', value: '#2ECC71', unlock: { level: 5 } },
   { id: 'frame_blue', kind: 'frame', label: 'そら', value: '#3498DB', unlock: { level: 10 } },
@@ -588,7 +812,32 @@ export const ITEMS: readonly ItemDef[] = [
   { id: 'frame_chocolate', kind: 'frame', label: 'チョコ', value: '#7B4B2A', unlock: { coins: 100 } },
   { id: 'frame_ice', kind: 'frame', label: 'アイス', value: '#A8DDE9', unlock: { coins: 90 } },
   { id: 'frame_fire', kind: 'frame', label: 'ほのお', value: '#E67E22', unlock: { badge: 'b_streak_5' } },
+  // ── 演習・マナラッシュの実績で解放（ガチャ・交換なし）──
+  { id: 'frame_scholar', kind: 'frame', label: '努力の証', value: '#2F7D6D', pattern: 'double', unlock: { badge: 'b_study_50' } },
+  { id: 'frame_lightning', kind: 'frame', label: 'イナズマ', value: '#E0A800', pattern: 'rays', unlock: { badge: 'b_rush_2500' } },
+  { id: 'frame_comet', kind: 'frame', label: 'コメット', value: '#5A67D8', pattern: 'sparkle', unlock: { badge: 'b_rush_combo10' } },
+  // ── UR（大当たり）：学習プリント PDF。ガチャからだけ出る（一覧は gachaPrints.generated.ts）──
+  ...GACHA_PRINTS.map((p): ItemDef => ({ id: p.id, kind: 'print', gacha: true, rarity: 'UR', label: p.label, value: p.file, unlock: { gacha: true } })),
 ];
+
+/** 学習プリント（UR）の詳細（サムネイル・ページ数など）。プリントでなければ undefined */
+export function printOf(id: string): GachaPrintDef | undefined {
+  return GACHA_PRINTS.find((p) => p.id === id);
+}
+
+/**
+ * ガチャのレア度。
+ *   UR … 大当たりの学習プリント（rarity:'UR' 指定のみ）
+ *   SR … ガチャ限定のもの（rarity:'SR' 指定・または unlock:{gacha:true}）
+ *   R  … 模様つきフレーム・200枚以上の交換品・称号で解放されるポーズ
+ *   N  … それ以外
+ */
+export function gachaRarityOf(item: ItemDef): GachaRarity {
+  if (item.rarity) return item.rarity;
+  if ('gacha' in item.unlock) return 'SR';
+  if (item.pattern || ('coins' in item.unlock && item.unlock.coins >= 200) || ('badge' in item.unlock)) return 'R';
+  return 'N';
+}
 
 export function itemById(id: string): ItemDef | undefined {
   return ITEMS.find((i) => i.id === id);
@@ -631,7 +880,8 @@ export function purchaseItem(
 /** 装備を身につける（持っていないものは拒否） */
 export function equipItem(progress: GrowthProgress, id: string): GrowthProgress {
   const item = itemById(id);
-  if (!item || !progress.owned.includes(id)) return progress;
+  // 学習プリントは装備ではない（equipped に入れると扉くんの表示が壊れる）
+  if (!item || item.kind === 'print' || !progress.owned.includes(id)) return progress;
   return { ...progress, equipped: { ...progress.equipped, [item.kind]: id } };
 }
 
@@ -832,6 +1082,84 @@ export function applyLoginWithBonus(
   return { next: withAchievements(next, now), bonus };
 }
 
+// ============================================================
+// デイリーコンプリート宝箱（2026-09-24 追加）
+// ============================================================
+//
+// ★目的★ 「3つのうち1つ受け取ったら満足して終わる」を防ぎ、毎日「全部」やる理由を作る。
+// その日のミッション3つをすべて受け取ると宝箱が開けられる。
+// 連続でコンプリートした日数（completeStreak）で中身が増え、7日目が大当たり。
+// 1日1回だけ。受け取り済みの記録は daily.claimed に COMPLETE_CHEST_ID を入れて表す
+// （保存形式を増やさないため。古い記録でも壊れない）。
+// 連続日数は receipts（growthStore の受領記録）ではなく progress.completeStreak / lastCompleteDate に持つ。
+
+/** 宝箱を受け取ったことを daily.claimed に記録するための ID（ミッションIDと衝突しない） */
+export const COMPLETE_CHEST_ID = 'chest_complete';
+
+export interface CompleteChest {
+  /** 連続コンプリート日数（今日を含む） */
+  streak: number;
+  xp: number;
+  coins: number;
+  /** 7日ごとの大当たり */
+  jackpot: boolean;
+}
+
+/**
+ * 宝箱の中身。1日目 60コイン・XP50 → 1日ごとに +10 コイン・+10 XP → 7日目は 200コイン・XP150。
+ * ★1回の書き込み上限（coins +200 / xp +600）に必ず収まる★
+ */
+export function completeChestFor(streak: number): CompleteChest {
+  const s = Math.max(1, streak);
+  const day = ((s - 1) % 7) + 1; // 1..7
+  const jackpot = day === 7;
+  const coins = jackpot ? COINS_PER_WRITE_MAX : 50 + day * 10; // 60..110, 200
+  const xp = jackpot ? 150 : 40 + day * 10; // 50..100, 150
+  return { streak: s, xp, coins, jackpot };
+}
+
+/** 今日のミッションをすべて受け取ったか（宝箱が開けられる条件） */
+export function allMissionsClaimed(progress: GrowthProgress, today: string): boolean {
+  if (progress.daily.date !== today) return false;
+  // 対戦3つ＋ボーナス（演習・マナラッシュ）2つ、すべて受け取ったら開く
+  return allMissionsForDate(today).every((m) => progress.daily.claimed.includes(m.id));
+}
+
+/** 宝箱を今日すでに開けたか */
+export function chestOpenedToday(progress: GrowthProgress, today: string): boolean {
+  return progress.daily.date === today && progress.daily.claimed.includes(COMPLETE_CHEST_ID);
+}
+
+/** 宝箱を開ける。条件を満たさなければ reward は null（何も変えない） */
+export function openCompleteChest(
+  progress: GrowthProgress,
+  today: string,
+  now: number = Date.now(),
+): { next: GrowthProgress; reward: CompleteChest | null } {
+  if (!allMissionsClaimed(progress, today) || chestOpenedToday(progress, today)) return { next: progress, reward: null };
+  const streak = isNextDay(progress.lastCompleteDate, today) ? progress.completeStreak + 1 : 1;
+  const reward = completeChestFor(streak);
+  const next: GrowthProgress = {
+    ...progress,
+    xp: progress.xp + reward.xp,
+    coins: progress.coins + reward.coins,
+    completeStreak: streak,
+    completeDays: progress.completeDays + 1,
+    lastCompleteDate: today,
+    daily: { ...progress.daily, claimed: [...progress.daily.claimed, COMPLETE_CHEST_ID] },
+  };
+  return { next: withAchievements(next, now), reward };
+}
+
+/**
+ * 表示用：いまの連続コンプリート日数。
+ * 昨日も今日もコンプリートしていなければ連続は切れているので 0。
+ */
+export function currentCompleteStreak(progress: GrowthProgress, today: string): number {
+  if (progress.lastCompleteDate === today || isNextDay(progress.lastCompleteDate, today)) return progress.completeStreak;
+  return 0;
+}
+
 /** 学習で穴を埋めたときの反映（ミッション「穴を埋める」にも入る） */
 export function applyHolesFilled(
   progress: GrowthProgress,
@@ -907,10 +1235,19 @@ const BADGE_COUNTERS: Record<string, (p: GrowthProgress) => { current: number; g
   b_correct_500: (p) => ({ current: p.correct, goal: 500 }),
   b_login_7: (p) => ({ current: p.loginStreak, goal: 7 }),
   b_login_30: (p) => ({ current: p.loginDays, goal: 30 }),
+  b_chest_7: (p) => ({ current: p.completeStreak, goal: 7 }),
+  b_chest_30: (p) => ({ current: p.completeDays, goal: 30 }),
   b_level_10: (p) => ({ current: levelOf(p.xp).level, goal: 10 }),
   b_level_30: (p) => ({ current: levelOf(p.xp).level, goal: 30 }),
   b_level_50: (p) => ({ current: levelOf(p.xp).level, goal: 50 }),
   b_subject_3: (p) => ({ current: Object.keys(p.subjects).length, goal: 3 }),
+  b_study_10: (p) => ({ current: p.studySolved, goal: 10 }),
+  b_study_50: (p) => ({ current: p.studySolved, goal: 50 }),
+  b_study_200: (p) => ({ current: p.studySolved, goal: 200 }),
+  b_rush_first: (p) => ({ current: p.rushPlays, goal: 1 }),
+  b_rush_2500: (p) => ({ current: p.rushBest, goal: 2500 }),
+  b_rush_4000: (p) => ({ current: p.rushBest, goal: 4000 }),
+  b_rush_combo10: (p) => ({ current: p.rushBestCombo, goal: 10 }),
   b_subject_master: (p) => ({
     current: Math.max(0, ...Object.values(p.subjects).map((s) => s.wins)),
     goal: 10,

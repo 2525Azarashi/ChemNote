@@ -45,7 +45,7 @@
  * localStorage には既に書けているので、データは失われない。
  */
 
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp } from './firestoreMetered';
 import { db, auth } from '../firebase';
 
 import { readSolvedMap, SOLVED_KEY_PREFIX } from './progress';

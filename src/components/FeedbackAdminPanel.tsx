@@ -33,6 +33,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { auth } from '../firebase';
+import { UsageMeterPanel } from './UsageMeterPanel';
 import {
   fetchFeedbackList,
   sendFeedbackReply,
@@ -171,6 +172,9 @@ export function FeedbackAdminPanel({ onBack }: FeedbackAdminPanelProps) {
             <span>この画面は運営アカウント専用です。運営メールアドレスの Google アカウントでログインしてください。</span>
           </div>
         )}
+
+        {/* Firebase 使用量（運営専用） */}
+        {admin && <UsageMeterPanel />}
 
         {/* 絞り込みタブ */}
         <div className="flex gap-1.5 overflow-x-auto no-scrollbar">

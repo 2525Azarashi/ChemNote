@@ -120,7 +120,8 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
     if (countLabel === lastCountRef.current) return;
     lastCountRef.current = countLabel;
     if (countLabel === 'START!') play('start');
-    else if (countLabel) play('countdown');
+    // 7 秒すべてで鳴らすとうるさいので、最後の 3・2・1 だけ
+    else if (countLabel && Number(countLabel) <= 3) play('countdown');
   }, [countLabel, play]);
 
   // 見せてよい範囲の確定点（reveal 前のいまの問題は入れない）
@@ -143,6 +144,14 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
     lastHurryRef.current = secondsLeft;
     play('hurry');
   }, [secondsLeft, counting, p.answered, p.reveal, p.finished, play]);
+  // 答えないまま 0 秒になったら「時間切れ」を1回だけ
+  const timeupRef = useRef<number>(-1);
+  useEffect(() => {
+    if (counting || p.answered || p.finished) return;
+    if (secondsLeft > 0 || timeupRef.current === p.index) return;
+    timeupRef.current = p.index;
+    play('timeup');
+  }, [secondsLeft, counting, p.answered, p.finished, p.index, play]);
   useEffect(() => {
     lastHurryRef.current = -1;
   }, [p.index]);

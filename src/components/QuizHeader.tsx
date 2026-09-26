@@ -17,7 +17,8 @@
  *   PC（isDesktop）には一切かからない条件にしてある。
  *   詳しい経緯は下のコメントに残してある。
  */
-import { ArrowLeft, Trophy } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowLeft, Lightbulb, Trophy, X } from 'lucide-react';
 import { LiveStandingPill } from './LiveStandingPill';
 
 export interface QuizHeaderProps {
@@ -40,6 +41,8 @@ export interface QuizHeaderProps {
   progressPosition: number;
   /** 全部で何問か。 */
   progressTotal: number;
+  /** この単元で扱う内容（chapter.topics）。解く前・迷ったときに「ポイント」で見られる */
+  topics?: string[];
 }
 
 export function QuizHeader({
@@ -52,9 +55,17 @@ export function QuizHeader({
   liveStanding,
   progressPosition,
   progressTotal,
+  topics = [],
 }: QuizHeaderProps) {
   // Quiz.tsx にあったときの呼び名をそのまま残す（下の JSX を書き換えないため）。
   const chapter = { abstractTitle: chapterAbstractTitle };
+  /**
+   * ★この単元のポイント★（ひとりで学ぶの学びやすさ）
+   * 解く前に「何を確かめる単元か」、迷ったときに「どの考え方を使うか」を
+   * 問題を離れずに確かめられるようにする。答えは見せない（扱う内容の一覧だけ）。
+   */
+  const [pointsOpen, setPointsOpen] = useState(false);
+  const points = topics.filter((t) => typeof t === 'string' && t.trim()).slice(0, 8);
   return (
     <>
     {/*
@@ -126,6 +137,15 @@ export function QuizHeader({
             並べても違和感が出ないようにしている。ゲスト時は standing が null で非表示。 */}
         <LiveStandingPill standing={liveStanding} />
 
+        {points.length > 0 && (
+          <button type="button" onClick={() => setPointsOpen(true)} data-unit-points-button
+            className="flex items-center gap-1 rounded-full border border-[#F4D03F]/50 bg-[#FFF9E0] px-2 py-1 text-[11px] font-bold text-[#8a6d00] md:px-3 md:py-1.5 md:text-xs"
+            aria-haspopup="dialog" aria-label="この単元のポイントを見る">
+            <Lightbulb size={13} aria-hidden="true" />
+            <span className="hidden sm:inline">ポイント</span>
+          </button>
+        )}
+
         {/* 現在の累積スコアピル（スコア機能の視覚フィードバック） */}
         <div className="flex items-center gap-1.5 bg-[#F4D03F]/15 border border-[#F4D03F]/30 rounded-full px-2 py-1 md:px-3 md:py-1.5" title={`累積スコア / 連続正解 ${run.runningCombo}`}>
           <Trophy size={12} className="text-[#D4A017]" />
@@ -157,6 +177,21 @@ export function QuizHeader({
         </div>
       </div>
     </div>
+    {pointsOpen && (
+      <div className="unit-points-backdrop" role="presentation" onClick={() => setPointsOpen(false)}>
+        <div className="unit-points" role="dialog" aria-modal="true" aria-labelledby="unit-points-title" data-unit-points onClick={(e) => e.stopPropagation()}>
+          <header>
+            <Lightbulb size={18} aria-hidden="true" />
+            <h3 id="unit-points-title">この単元のポイント</h3>
+            <button type="button" onClick={() => setPointsOpen(false)} aria-label="閉じる" autoFocus><X size={18} /></button>
+          </header>
+          <p className="unit-points-title">{chapter.abstractTitle}</p>
+          <ol>{points.map((t, i) => <li key={i}>{t}</li>)}</ol>
+          <p className="unit-points-note">迷ったら、どの考え方を使う問題かをここで確かめてから解いてみよう。解説は答えを出したあとに見られます。</p>
+          <button type="button" className="unit-points-close" onClick={() => setPointsOpen(false)}>問題にもどる</button>
+        </div>
+      </div>
+    )}
     </>
   );
 }

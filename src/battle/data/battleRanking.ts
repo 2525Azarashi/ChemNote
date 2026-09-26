@@ -78,7 +78,7 @@ import {
   serverTimestamp,
   where,
   type Timestamp,
-} from 'firebase/firestore';
+} from '../../utils/firestoreMetered';
 
 import { auth, db } from '../../firebase';
 import { resolveNickname } from '../../utils/leaderboard';

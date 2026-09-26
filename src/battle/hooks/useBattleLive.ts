@@ -149,10 +149,12 @@ export function useBattleLive(input: LiveInput): LiveState {
           break;
         case 'overtaken':
           if (e.text.startsWith('相手が逆転')) {
+            sfx.push('overtaken');
             nextToast = { id: e.id, kind: 'overtaken', text: '逆転された…！', sub: 'POSITION CHANGE' };
           }
           break;
         case 'caught-up':
+          sfx.push('caught-up');
           nextToast = { id: e.id, kind: 'caught-up', text: '追いついた！' };
           break;
         case 'caught':

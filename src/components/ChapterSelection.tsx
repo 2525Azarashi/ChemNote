@@ -30,6 +30,8 @@ import {
   quizRunKey,
 } from '../utils/quizStorageKeys';
 import { auth } from '../firebase';
+import { buildUnitSections } from '../data/unitSections';
+import { MATH_COURSE_LABELS, MATH_LEVELS, buildMathTopicGroups, mathCourseOfGroup, mathLevelOfCourse, type MathCourseKey, type MathStage } from '../data/mathNavigation';
 
 interface ChapterSelectionProps {
   mode: 'mini_test' | 'practice';
@@ -181,7 +183,10 @@ const groupsBySubject = new Map<string, ReturnType<typeof buildChapterGroups>>()
 function getChapterGroups(subject: string): ReturnType<typeof buildChapterGroups> {
   const cached = groupsBySubject.get(subject);
   if (cached) return cached;
-  const built = buildChapterGroups(getPartsOfSubject(subject));
+  // 数学は「科目 → 教科書の分野」のタブに組み直す（src/data/mathNavigation.ts の説明を参照）
+  const built = subject === 'math'
+    ? (buildMathTopicGroups(getPartsOfSubject('math')) as unknown as ReturnType<typeof buildChapterGroups>)
+    : buildChapterGroups(getPartsOfSubject(subject));
   groupsBySubject.set(subject, built);
   return built;
 }
@@ -224,6 +229,20 @@ function collectAudioSets(
  *   タブを横に並べたときに「Q1」が2つ続くと見分けが付かない。
  *   上段を Q1A / Q1B と書き分けることで、狭いスマホ幅でも取り違えない。
  */
+/**
+ * 見出しの上に出す「部」の名前を、生徒に分かる言葉にする。
+ * データ（chemistryData.ts）の part.title は変えない（他で使っているため）。
+ *   化学基礎：第一部・化学基礎前半 → 物質の構成（1〜3章）／ 第二部・化学基礎後半 → 物質の変化（4〜6章）
+ *   （教科書の大きな区分「物質の構成」「物質の変化」に合わせる）
+ */
+export function displayPartTitle(subject: string, partTitle: string): string {
+  if (subject === 'chemistry_basic') {
+    if (/前半/.test(partTitle)) return '化学基礎 ／ 物質の構成（1〜3章）';
+    if (/後半/.test(partTitle)) return '化学基礎 ／ 物質の変化（4〜6章）';
+  }
+  return partTitle;
+}
+
 function splitTabTitle(title: string, index: number): { kicker: string; label: string } {
   const chapterMatch = title.match(/^(\d+章)\s*(.*)$/);
   if (chapterMatch) {
@@ -322,7 +341,49 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
     });
   }, [activeGroupTitle]);
 
+  // ---- 数学：段階→科目で絞り込む ----
+  const isMath = subject === 'math';
+  const mathCountByCourse = useMemo(() => {
+    const out: Partial<Record<MathCourseKey, number>> = {};
+    if (!isMath) return out;
+    for (const g of groups) { const c = mathCourseOfGroup(g); if (c) out[c] = (out[c] ?? 0) + g.chapters.length; }
+    return out;
+  }, [isMath, groups]);
+  const initialCourse = useMemo<MathCourseKey>(() => {
+    const g = groups.find(x => x.title === activeGroupTitle);
+    return (g && mathCourseOfGroup(g)) || 'mc1';
+    // 最初の1回だけ（記憶していた分野の科目で開く）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groups]);
+  const [mathCourse, setMathCourse] = useState<MathCourseKey>(initialCourse);
+  useEffect(() => setMathCourse(initialCourse), [initialCourse]);
+  const mathLevel = mathLevelOfCourse(mathCourse);
+  const visibleGroups = useMemo(
+    () => (isMath ? groups.filter(g => mathCourseOfGroup(g) === mathCourse) : groups),
+    [isMath, groups, mathCourse],
+  );
+  const pickMathCourse = (course: MathCourseKey) => {
+    setMathCourse(course);
+    const first = groups.find(g => mathCourseOfGroup(g) === course);
+    if (first) { setActiveGroupTitle(first.title); onGroupChange?.(first.title); }
+    setExpandedChapterId(null);
+    document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
+  };
+
   const activeGroup = groups.find(group => group.title === activeGroupTitle) || groups[0];
+
+  // 章タブの中の単元を見出しつきで小分けにする（並べ方だけ。問題・IDは変えない）
+  const unitSections = useMemo(
+    () => buildUnitSections(subject, (activeGroup?.chapters ?? []) as any[], (c: any) =>
+      (mode === 'mini_test' ? (c.miniTest || []) : (c.practiceProblems || [])).length),
+    [subject, activeGroup, mode],
+  );
+  const orderedChapters = useMemo(() => unitSections.flatMap(sec => sec.chapters), [unitSections]);
+  const unitSectionByChapter = useMemo(() => {
+    const m = new Map<string, (typeof unitSections)[number]>();
+    for (const sec of unitSections) for (const c of sec.chapters) m.set(c.id, sec);
+    return m;
+  }, [unitSections]);
 
   // 出題傾向データ（科目ごとに切り替える）。リスニングには傾向データがないのでボタンを出さない。
   const trendDataset = isAdvanced ? chemistryAdvancedTrendDataset : chemistryBasicTrendDataset;
@@ -405,22 +466,43 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
         {ADVANCED_FIELDS.map(item => <button key={item.id} type="button" aria-pressed={field === item.id} onClick={() => onChangeField(item.id)} className={`min-h-[44px] flex-1 rounded-xl border px-2 text-sm font-bold ${field === item.id ? 'bg-[#2C3E50] text-white' : 'border-gray-200 bg-white text-[#2C3E50]'}`}>{item.title}</button>)}
       </div>}
       {subject === 'math' && (
-        <label className="mb-2 flex shrink-0 items-center gap-2 text-sm font-bold text-[#2C3E50]">
-          <span className="shrink-0">数学の分野</span>
-          <select
-            aria-label="数学の分野へ移動"
-            value={activeGroupTitle}
-            onChange={event => {
-              setActiveGroupTitle(event.target.value);
-              onGroupChange?.(event.target.value);
-              setExpandedChapterId(null);
-              document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
-            }}
-            className="min-h-[44px] min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-2"
-          >
-            {groups.map(group => <option key={group.title} value={group.title}>{group.partTitle} ／ {group.title}</option>)}
-          </select>
-        </label>
+        /* ★数学は「数ⅠA／数ⅡB／数ⅢC → 科目 → 単元」の順に選ぶ★
+           以前は教材の束（基礎から標準・全範囲・全パターン）ごとに並んでいて、
+           同じ「数学A」の単元が3か所に散らばっていた。教科書の区分で探せるようにする。 */
+        <div className="math-nav mb-2 shrink-0 space-y-1.5" data-math-nav>
+          <div className="math-nav-levels" role="group" aria-label="数学の段階">
+            {MATH_LEVELS.map(level => (
+              <button key={level.id} type="button" aria-pressed={mathLevel === level.id}
+                onClick={() => pickMathCourse(level.courses[0])}>
+                {level.label}
+              </button>
+            ))}
+          </div>
+          <div className="math-nav-courses" role="group" aria-label="数学の科目">
+            {(MATH_LEVELS.find(l => l.id === mathLevel)?.courses ?? []).map(course => (
+              <button key={course} type="button" aria-pressed={mathCourse === course} onClick={() => pickMathCourse(course)}>
+                {MATH_COURSE_LABELS[course]}
+                <small>{mathCountByCourse[course] ?? 0}単元</small>
+              </button>
+            ))}
+          </div>
+          <label className="flex items-center gap-2 text-sm font-bold text-[#2C3E50]">
+            <span className="shrink-0">分野</span>
+            <select
+              aria-label="数学の分野へ移動"
+              value={activeGroupTitle}
+              onChange={event => {
+                setActiveGroupTitle(event.target.value);
+                onGroupChange?.(event.target.value);
+                setExpandedChapterId(null);
+                document.getElementById('chapter-tab-panel')?.scrollTo({ top: 0 });
+              }}
+              className="min-h-[44px] min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-2"
+            >
+              {visibleGroups.map(group => <option key={`${group.partId}:${group.title}`} value={group.title}>{(group as any).label ?? group.title}（{group.chapters.length}単元）</option>)}
+            </select>
+          </label>
+        </div>
       )}
       <div className="chapter-workspace flex min-h-0 flex-1 flex-col font-handwriting">
         {/* ================================================================
@@ -443,9 +525,11 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
             aria-label="章を選択"
             className={`flex touch-pan-x snap-x snap-mandatory gap-1.5 overflow-x-auto overscroll-x-contain px-0.5 pb-2 [scrollbar-width:thin] ${subject === 'math' ? '' : 'sm:grid sm:grid-cols-3 sm:overflow-x-visible sm:overscroll-auto lg:grid-cols-4 xl:grid-cols-5'}`}
           >
-            {groups.map((group, index) => {
+            {visibleGroups.map((group, index) => {
               const isActive = group.title === activeGroup?.title;
-              const { kicker: chapterNumber, label: shortTitle } = splitTabTitle(group.title, index);
+              const { kicker: chapterNumber, label: shortTitle } = (group as any).kicker
+                ? { kicker: `${(group as any).kicker}・${group.chapters.length}単元`, label: (group as any).label as string }
+                : splitTabTitle(group.title, index);
 
               // ★スマホ用チュートリアルタイル（化学基礎のみ）
               //   ご要望「チュートリアルは 3章と4章の間に入れて、下は単元ボタンを
@@ -491,6 +575,16 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                   <span className="mt-1 block text-xs sm:text-sm font-bold leading-snug break-words [overflow-wrap:anywhere]">
                     {shortTitle}
                   </span>
+                  {(() => {
+                    // ★タブにも「問題がまだ無い章」を出す★ 開いてから準備中と分かるのでは遅い
+                    const ready = group.chapters.filter((c: any) => ((mode === 'mini_test' ? c.miniTest : c.practiceProblems) || []).length > 0).length;
+                    if (isListening || ready === group.chapters.length) return null;
+                    return (
+                      <span className="chapter-tab-status" data-ready={ready > 0}>
+                        {ready === 0 ? '準備中' : `${ready}/${group.chapters.length}単元`}
+                      </span>
+                    );
+                  })()}
                 </button>
                 {tutorialSlot && (
                   <button
@@ -524,8 +618,8 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
           >
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/70 pb-3">
               <div>
-                <p className="text-[10px] font-bold" style={{ color: theme.accent }}>{activeGroup.partTitle}</p>
-                <h3 className="mt-0.5 text-base sm:text-lg font-bold text-[#2C3E50]">{activeGroup.title}</h3>
+                <p className="text-[10px] font-bold" style={{ color: theme.accent }}>{displayPartTitle(subject, activeGroup.partTitle)}</p>
+                <h3 className="mt-0.5 text-base sm:text-lg font-bold text-[#2C3E50]">{(activeGroup as any).label ?? activeGroup.title}</h3>
               </div>
               {trendGroupMap[activeGroup.title] && (
                 <button
@@ -668,7 +762,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
               </div>
             ) : (
             <div className="chapter-route-list grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {activeGroup.chapters.map((chapter, routeIndex) => {
+              {orderedChapters.map((chapter, routeIndex) => {
                 const questions = mode === 'mini_test' ? (chapter.miniTest || []) : (chapter.practiceProblems || []);
                 const hasQuestions = questions.length > 0;
                 const savedIndex = Math.max(0, Math.min(
@@ -695,14 +789,31 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                 const audioSets = isListening || isGrammar ? collectAudioSets(chapter) : [];
                 const hasAudio = audioSets.length > 0;
 
+                // ★見出しつきの小分け（数学の段階・地理の単元演習/模試・準備中）★ src/data/unitSections.ts
+                const stage = (chapter as any).mathStage as MathStage | undefined;
+                const section = unitSectionByChapter.get(chapter.id);
+                const prevSection = routeIndex > 0 ? unitSectionByChapter.get(orderedChapters[routeIndex - 1].id) : undefined;
+                const stageHeading = section?.label && section !== prevSection ? (
+                  <h4 className="math-stage-heading col-span-full" data-stage={section.key?.split(':')[1] ?? section.key ?? ''}>
+                    <span>{section.label}</span>
+                    <small>{section.chapters.length}単元</small>
+                  </h4>
+                ) : null;
+
                 return (
+                  <React.Fragment key={chapter.id}>
+                  {stageHeading}
                   <article
-                    key={chapter.id}
                     data-unit-id={chapter.id}
                     data-route-index={String(routeIndex + 1).padStart(2, '0')}
+                    data-empty={!hasQuestions || undefined}
                     className="chapter-route-card flex min-h-[148px] flex-col justify-between rounded-xl border border-yellow-200/80 bg-[#FFFDF2]/90 p-3 text-left shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md"
                   >
                     <div>
+                      {stage && chapter.realTitle && !/基礎から標準/.test(chapter.realTitle) && (
+                        // 数学：同じ分野タブに別の教材の「①」が並ぶので、どの教材の章かを小さく添える
+                        <p className="math-unit-source">{chapter.realTitle.replace(/^\d+章\s*/, '')}</p>
+                      )}
                       <h4 className="text-sm font-bold leading-tight text-[#2C3E50]">{chapter.abstractTitle}</h4>
                       <p className="chapter-unit-count">{questions.length > 0 ? `演習 ${questions.length} 大問` : '問題を準備中'}</p>
                       {chapter.topics && chapter.topics.length > 0 && (
@@ -830,6 +941,7 @@ export function ChapterSelection({ mode, onSelectChapter, onBack, subject = 'che
                       </AnimatePresence>
                     </div>
                   </article>
+                  </React.Fragment>
                 );
               })}
             </div>

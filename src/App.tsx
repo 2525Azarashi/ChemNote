@@ -105,6 +105,7 @@ import { NoteDetail } from './components/NoteDetail';
 import { StudyHub, type StudyHubView } from './components/StudyHub';
 import { ScreenLoading, ScreenUnavailable } from './components/ScreenStatus';
 import { studyEntry, isLearningScreen, safeStudyResume } from './utils/studyNavigation';
+import { setFormatMathContext } from './utils/textFormatter';
 import { resolveReviewTarget } from './utils/reviewTarget';
 import { Onboarding } from './components/Onboarding';
 import { MockExam } from './components/MockExam';
@@ -247,6 +248,7 @@ import { installFriendPresence } from './utils/friendPresence';
 import { BattleMode } from './battle/ui/BattleMode';
 import type { GrowthPage } from './components/GrowthHub';
 const GrowthHub = React.lazy(() => import('./components/GrowthHub').then(m => ({ default: m.GrowthHub })));
+const MissionToast = React.lazy(() => import('./components/MissionToast').then(m => ({ default: m.MissionToast })));
 
 export type AppState = 'home' | 'mode_selection' | 'chapters' | 'quiz' | 'explanation' | 'learning' | 'intro' | 'study_hub' | 'note_detail' | 'onboarding' | 'logical_tree' | 'settings' | 'leaderboard' | 'mock_exam' | 'subject_selection' | 'advanced_fields' | 'teacher_dashboard' | 'feedback_admin' | 'battle' | 'rika' | 'growth';
 export type AppMode = 'mini_test' | 'practice' | 'learning';
@@ -721,6 +723,8 @@ export default function App() {
 
   // PC版では「学習モードを選択」(mode_selection) 以外の全画面で外側余白をなくし、
   // ノート風背景を全幅に広げる。mode_selection だけは従来通り中央寄せ＋余白を維持。
+  // 数学の演習・解説・まとめを開いている間だけ、数式を数学の規則で組む（書体の混在を防ぐ）。
+  setFormatMathContext(selectedSubject === 'math' && ['quiz', 'explanation', 'learning', 'mock_exam'].includes(appState));
   const isFullBleed = appState !== 'mode_selection';
 
   /**
@@ -1517,7 +1521,7 @@ export default function App() {
                 描画の受け口でも同じフラグを見て、
                 「見えないのに入れる」状態を作らない。 */}
             {appState === 'growth' && <React.Suspense fallback={<ScreenLoading />}>
-              <GrowthHub page={growthPage} onPage={setGrowthPage} onBack={() => navigateMain('home')}
+              <GrowthHub page={growthPage} onPage={setGrowthPage} onBack={() => navigateMain('home')} defaultSubject={selectedSubject}
                 onBattle={FEATURES.battle ? () => navigateMain('battle') : undefined}
                 onReview={() => { setStudyHubView({ tab: 'today', subjectTab: 'all' }); navigateMain('study_hub'); }} />
             </React.Suspense>}
@@ -1804,6 +1808,11 @@ export default function App() {
           </div>
         </div>
       </MobileViewWrapper>
+
+      {/* ミッション達成のお知らせ（どの画面でも上に出る。受け取りはミッション画面で） */}
+      <React.Suspense fallback={null}>
+        <MissionToast onOpen={() => { setGrowthPage('missions'); navigateMain('growth'); }} />
+      </React.Suspense>
 
       {/* Desktop Toggle Button for Mobile Preview
           aria-label / title を日本語で明示、アイコンには aria-hidden */}

@@ -94,7 +94,11 @@ describe('第2弾: ノート・ランキング・状態の整合', () => {
     expect(read('src/App.tsx')).toContain("backLabel={studyEntry(selectedSubject) === 'chapters' ? 'ホーム' : '学習モード'}");
   });
   it('フレンド戦の再戦ボタンは実際の動き（新しい部屋）を示す', () => {
-    expect(read('src/battle/ui/BattleRoomScreen.tsx')).toContain('rematchLabel="同じ科目で新しい部屋を作る"');
+    // 同じ相手とは合言葉なしで次の部屋へ（ホスト＝新しい部屋を作る／ゲスト＝相手の部屋に入る）。部屋切替が無い呼び出し元は従来文言
+    const src = read('src/battle/ui/BattleRoomScreen.tsx');
+    expect(src).toContain("'同じ相手ともう1回（合言葉なし）'");
+    expect(src).toContain("'同じ相手ともう1回（相手の部屋に入る）'");
+    expect(src).toContain("'同じ科目で新しい部屋を作る'");
     expect(read('src/battle/ui/BattleResult.tsx')).toContain("rematchLabel = 'もう1回たいせん'");
   });
 });

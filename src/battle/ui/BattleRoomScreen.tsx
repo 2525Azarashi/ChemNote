@@ -15,14 +15,17 @@
  * 自分が答えた直後に正解が見えると、画面を見せ合える環境で不正ができる。
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LogOut, X } from 'lucide-react';
 import { auth } from '../../firebase';
 import { useBattleRoom } from '../hooks/useBattleRoom';
 import { normalizeRule } from '../core/battleRules';
 import { ArenaFighters } from './ArenaFighters';
-import { BattleLobby } from './BattleLobby';
+import { BattleLobby, type FriendRoomSettings } from './BattleLobby';
+import { abortRoom, createFriendRoom, followSuccessorRoom } from '../data/battle';
+import { friendModeById, friendModeOfRules } from '../core/friendModes';
 import { BattleLiveStage } from './BattleLiveStage';
+import { ConnectionMeter } from './ConnectionMeter';
 import { BattleResult } from './BattleResult';
 import {
   BattleButton,
@@ -44,15 +47,24 @@ export function BattleRoomScreen({
   roomId,
   onExit,
   onRematch,
+  onSwitchRoom,
   onPractice,
   onOpenProfile, onOpenMissions, onActiveChange,
   onReview,
 }: {
   roomId: string;
+  /** 部屋が変わったら画面ごと作り直す（前の部屋の状態を持ち越さない） */
+  key?: string;
   /** 対戦メニューに戻る。message があれば入口に伝える */
   onExit: (message?: string) => void;
   /** 同じ設定でもう1回（フレンド戦のみ渡す） */
   onRematch?: (subject: string) => void;
+  /**
+   * ★同じ相手とそのまま次の部屋へ（合言葉の入力なし）★
+   * 部屋主が次の部屋を作る／相手が次の部屋に入ったときに、表示する部屋を切り替える。
+   * 渡されないときは従来どおり onRematch（新しい部屋を作って招待し直す）。
+   */
+  onSwitchRoom?: (nextRoomId: string) => void;
   /** ★リザルトの「この単元を演習する」（請求⑦-A）★ そのまま下に渡すだけ */
   onPractice?: (subject: string, chapterId: string, problemId?: string, subQuestionId?: string) => void;
   onActiveChange?: (active: boolean) => void;
@@ -65,6 +77,8 @@ export function BattleRoomScreen({
   const {
     loading,
     error,
+    starting,
+    poolReady,
     room,
     questions,
     current,
@@ -84,6 +98,10 @@ export function BattleRoomScreen({
     clockSkewed,
     offlineMessage,
     resumeMessage,
+    reconnectMessage,
+    quality,
+    rttMs,
+    sending,
     submittable,
     preStartMs,
     myAnsweredIndexes,
@@ -129,10 +147,60 @@ export function BattleRoomScreen({
     return () => window.clearTimeout(timer);
   }, [finished]);
 
+  // ★送信中（まだ届いていない）のうちは答え合わせを出さない★
+  //   出すと、正解を見てから送信が届く形になり、見た目も不公平に見える。
   const reveal = useMemo(
-    () => (answered && opponentAnswered) || remainMs <= 0,
-    [answered, opponentAnswered, remainMs],
+    () => (answered && opponentAnswered && !sending) || remainMs <= 0,
+    [answered, opponentAnswered, remainMs, sending],
   );
+
+  // ------------------------------------------------------------
+  // ★同じ相手と続けて対戦（再戦・設定変更）★
+  // ------------------------------------------------------------
+  const [moving, setMoving] = useState<null | 'host' | 'guest'>(null);
+  const [moveError, setMoveError] = useState<string | null>(null);
+  const followAbort = useRef<AbortController | null>(null);
+  useEffect(() => () => followAbort.current?.abort(), [roomId]);
+  const isHostHere = !!room && room.hostUid === uid;
+
+  /** 部屋主：次の部屋を作って移る。前の部屋は閉じる（相手はそれを見て追ってくる） */
+  const hostMove = useCallback(async (next: FriendRoomSettings) => {
+    if (!onSwitchRoom || !room) return;
+    setMoving('host'); setMoveError(null);
+    try {
+      const mode = friendModeById(next.mode);
+      const { roomId: created } = await createFriendRoom(next.subject, { questionCount: next.questionCount }, undefined, roomId, mode.rules);
+      if (room.status === 'waiting') void abortRoom(roomId).catch(() => {});
+      onSwitchRoom(created);
+    } catch (e) {
+      setMoveError(e instanceof Error ? e.message : '次の部屋を作れませんでした。');
+    } finally { setMoving(null); }
+  }, [onSwitchRoom, room, roomId]);
+
+  /** 相手：部屋主が作る次の部屋を探して自動で入る（最大60秒） */
+  const guestFollow = useCallback(async () => {
+    if (!onSwitchRoom || !room || moving) return;
+    followAbort.current?.abort();
+    const ctrl = new AbortController(); followAbort.current = ctrl;
+    setMoving('guest'); setMoveError(null);
+    try {
+      const next = await followSuccessorRoom(roomId, room.hostUid, { timeoutMs: 60_000, signal: ctrl.signal });
+      if (next) onSwitchRoom(next);
+      else setMoveError('相手の新しい部屋が見つかりませんでした。相手に「もう1回」を押してもらってください。');
+    } catch (e) {
+      if ((e as Error)?.name !== 'AbortError') setMoveError('通信が不安定です。もう一度お試しください。');
+    } finally { if (followAbort.current === ctrl) setMoving(null); }
+  }, [onSwitchRoom, room, roomId, moving]);
+
+  /** 待機中に部屋主が設定を変えた（部屋が閉じた）→ 相手は自動で次の部屋へ */
+  const autoFollowed = useRef<string | null>(null);
+  useEffect(() => {
+    if (!room || !onSwitchRoom || isHostHere || !room.joinCode) return;
+    if (room.status !== 'aborted' || !room.left?.[room.hostUid]) return;
+    if (autoFollowed.current === roomId) return;
+    autoFollowed.current = roomId;
+    void guestFollow();
+  }, [room, onSwitchRoom, isHostHere, roomId, guestFollow]);
 
   const backButton = (
     <BattleButton variant="ghost" onClick={() => onExit()} icon={<LogOut size={18} />}>
@@ -173,8 +241,11 @@ export function BattleRoomScreen({
     return (
       <BattleShell footer={backButton}>
         <BattleTitle />
-        <div className="flex flex-1 items-center justify-center py-16">
-          <BattleNotice message="この対戦は中断されました。" />
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 py-16">
+          {moving === 'guest'
+            ? <BattleLoading message="部屋が閉じられました。相手が新しい設定の部屋を作ったら自動で移動します…" />
+            : <BattleNotice message={moveError || 'この対戦は中断されました。'} />}
+          {moveError && onSwitchRoom && !isHostHere && <BattleButton onClick={() => void guestFollow()}>もう一度さがす</BattleButton>}
         </div>
       </BattleShell>
     );
@@ -197,9 +268,17 @@ export function BattleRoomScreen({
         rating={rating}
         byForfeit={byForfeit}
         maskOpponent={!room.joinCode}
-        onRematch={onRematch && room.joinCode ? () => onRematch(room.subject) : undefined}
-        /* フレンド戦の再戦は「同じ科目で新しい部屋を作って招待し直す」動き。文言もそれに合わせる。 */
-        rematchLabel="同じ科目で新しい部屋を作る"
+        onRematch={room.joinCode
+          ? onSwitchRoom
+            ? isHostHere
+              ? () => void hostMove({ subject: room.subject, questionCount: room.questionIds.length as FriendRoomSettings['questionCount'], mode: friendModeOfRules(room.rules).id })
+              : () => void guestFollow()
+            : onRematch ? () => onRematch(room.subject) : undefined
+          : undefined}
+        /* 同じ相手とそのまま次の対戦へ。合言葉の入力は要らない（相手は自動で次の部屋に入る） */
+        rematchLabel={onSwitchRoom
+          ? moving === 'host' ? '部屋を用意しています…' : moving === 'guest' ? '相手の部屋を待っています…' : isHostHere ? '同じ相手ともう1回（合言葉なし）' : '同じ相手ともう1回（相手の部屋に入る）'
+          : '同じ科目で新しい部屋を作る'}
         onExit={() => onExit()}
         onPractice={onPractice}
         growthMatchId={`online:${roomId}`}
@@ -223,6 +302,11 @@ export function BattleRoomScreen({
       <BattleLobby
         room={room}
         myUid={uid}
+        error={moveError || error}
+        starting={starting}
+        poolReady={poolReady}
+        changing={moving === 'host'}
+        onChangeSettings={onSwitchRoom ? (next) => void hostMove(next) : undefined}
         onStart={start}
         onLeave={() => {
           leave();
@@ -252,6 +336,10 @@ export function BattleRoomScreen({
     <div className="mb-2">
       <BattleNotice message={offlineMessage} />
     </div>
+  ) : reconnectMessage ? (
+    <div className="mb-2">
+      <BattleNotice message={reconnectMessage} tone="info" />
+    </div>
   ) : resumeMessage ? (
     <div className="mb-2">
       <BattleNotice message={resumeMessage} tone="info" />
@@ -271,6 +359,7 @@ export function BattleRoomScreen({
 
   const footer = (
     <>
+      <ConnectionMeter quality={quality} rttMs={rttMs} sending={sending} />
       {error && (
         <div className="mt-2">
           <BattleNotice message={error} />

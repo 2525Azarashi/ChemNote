@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope, Flame, Sparkles, Gift, Store, Shirt, Award, Target } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope, Flame, Sparkles, Gift, Store, Shirt, Award, Target, Zap } from 'lucide-react';
 import { auth } from '../firebase';
 import { useGrowthProgress } from '../hooks/useGrowthProgress';
 import { equippedPoseSrc, equippedFrameColor, equippedFramePattern, levelOf, equippedTitleLabel } from '../battle/core/growth';
@@ -395,7 +395,8 @@ export function Home({ onPickSubject, onStudyMode, onGrowth, onStart, onIntro, o
             : <button type="button" onClick={onChangeSubject}>{subjectLabel}・変更</button>}
           <button type="button" onClick={() => onStudyMode ? onStudyMode('learning') : onStart()}><BookOpen size={16} />まとめプリント</button>
         </section>
-        <div className="game-home-utility arena-home-bottom">
+        <div className={`game-home-utility arena-home-bottom ${onGrowth ? 'has-rush' : ''}`}>
+          {onGrowth && <button type="button" className="game-rush-entry" onClick={() => onGrowth('rush')} aria-label="マナラッシュ（60秒チャレンジ）を開く" data-home-rush><Zap size={17} />ラッシュ</button>}
           {onGrowth && <button type="button" onClick={() => onGrowth('missions')}><Target size={17} />ミッション</button>}
           <button type="button" onClick={() => progressDialog.current?.showModal()} aria-haspopup="dialog"><BarChart3 size={17} />学習状況</button>
           <button type="button" aria-label="アプリ紹介を開く" onClick={onIntro}><ShieldCheck size={17} />使い方</button>

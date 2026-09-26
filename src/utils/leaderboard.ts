@@ -41,11 +41,12 @@ import {
   serverTimestamp,
   addDoc,
   Timestamp,
-} from 'firebase/firestore';
+} from './firestoreMetered';
 import { db, auth } from '../firebase';
 import { LEADERBOARD_PAGE_SIZE } from './scoring';
 // ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
 import { profileKey } from './userStorageKeys';
+import { sanitizeNickname } from '../features/safety/nicknameFilter';
 
 export interface ChapterScoreEntry {
   uid: string;
@@ -88,18 +89,20 @@ export interface RankingResult<T> {
 export function resolveNickname(): string {
   const user = auth.currentUser;
   if (!user) return 'ゲスト';
+  // ★他人の画面に出る名前なので、送る直前に必ず安全チェックを通す★
+  //   （App Store 1.2。保存時にも弾くが、古い端末に残った名前もここで止める）
   try {
     const local = localStorage.getItem(profileKey(user.uid));
     if (local) {
       const p = JSON.parse(local);
       if (p && typeof p.name === 'string' && p.name.trim().length > 0) {
-        return p.name.trim().slice(0, 24);
+        return sanitizeNickname(p.name);
       }
     }
   } catch {
     // noop
   }
-  return (user.displayName || '名無しの化学者').slice(0, 24);
+  return sanitizeNickname(user.displayName || '', '名無しの化学者');
 }
 
 // ============================================================

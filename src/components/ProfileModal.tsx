@@ -14,6 +14,9 @@ import { syncRankingNickname } from '../utils/leaderboard';
 import { ensureFriendProfile } from '../utils/friends';
 // ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義
 import { profileKey, streakKey, completedKey } from '../utils/userStorageKeys';
+import { checkNickname, NICKNAME_MAX } from '../features/safety/nicknameFilter';
+import { AccountSafetySection } from '../features/account/AccountSafetySection';
+import { AppleSignInButton } from '../features/auth/AppleSignInButton';
 
 interface ProfileModalProps {
   onClose: () => void;
@@ -74,7 +77,11 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
     }
   }, []);
 
+  /** 名前の安全チェック（他人の画面に出るので、使えない名前は保存させない） */
+  const nameCheck = checkNickname(name);
+
   const handleSave = async () => {
+    if (!nameCheck.ok) return;
     setLoading(true);
     try {
       const uid = auth.currentUser?.uid || 'guest';
@@ -184,7 +191,10 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
 
                 <section className="bg-white border border-gray-150 p-3 rounded-2xl shadow-sm space-y-2">
                   <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">プロフィール</h3>
-                  <CompactField icon={<User size={15} />}><input value={name} onChange={(event) => setName(event.target.value)} placeholder="ニックネーム" className="compact-input" /></CompactField>
+                  <CompactField icon={<User size={15} />}><input value={name} maxLength={NICKNAME_MAX} onChange={(event) => setName(event.target.value)} placeholder="ニックネーム" aria-invalid={!!name.trim() && !nameCheck.ok} aria-describedby="nickname-help" className="compact-input" /></CompactField>
+                  <p id="nickname-help" role={name.trim() && !nameCheck.ok ? 'alert' : undefined} className={`px-1 text-[10px] leading-snug ${name.trim() && !nameCheck.ok ? 'text-[#C0392B] font-bold' : 'text-gray-400'}`}>
+                    {name.trim() && !nameCheck.ok ? nameCheck.message : 'ランキングや対戦で他の人にも表示されます。本名や連絡先は入れないでください。'}
+                  </p>
                   <CompactField icon={<GraduationCap size={15} />}><input value={grade} onChange={(event) => setGrade(event.target.value)} placeholder="学年（例：高校1年）" className="compact-input" /></CompactField>
                   <CompactField icon={<Compass size={15} />}>
                     <select value={stream} onChange={(event) => setStream(event.target.value)} className="compact-input appearance-none cursor-pointer">
@@ -267,6 +277,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
                         {signing ? <Loader2 size={15} className="animate-spin" /> : <GoogleMark size={17} />}
                         {signing ? '連携中…' : 'Google アカウントで連携'}
                       </button>
+                      <AppleSignInButton onResult={(o) => { if (!o.ok) setAuthError(o.message || 'ログインに失敗しました。'); }} />
                       <p className="text-[9px] text-gray-400 text-center leading-snug">
                         連携は無料です。いまの学習記録はそのまま引き継がれます。
                       </p>
@@ -296,6 +307,8 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
                   )}
                 </section>
 
+                <AccountSafetySection onDeleted={onClose} />
+
                 {/* ※「お問い合わせの送信状態」の欄は廃止した。
                     送信に失敗した分は localStorage のキューに残り、
                     App.tsx の起動時・オンライン復帰時に自動で再送されるため、
@@ -303,7 +316,7 @@ export function ProfileModal({ onClose, isBgmEnabled, setIsBgmEnabled, onToggleB
 
                 <div className="grid grid-cols-[1fr_2fr] gap-2 shrink-0">
                   <button onClick={onClose} className="py-2.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-500">キャンセル</button>
-                  <button onClick={handleSave} disabled={loading || !name.trim()} className="py-2.5 rounded-xl bg-[#2C3E50] text-white text-xs font-bold disabled:opacity-40 flex items-center justify-center gap-1.5"><Save size={14} />{loading ? '保存中…' : '設定を保存'}</button>
+                  <button onClick={handleSave} disabled={loading || !nameCheck.ok} className="py-2.5 rounded-xl bg-[#2C3E50] text-white text-xs font-bold disabled:opacity-40 flex items-center justify-center gap-1.5"><Save size={14} />{loading ? '保存中…' : '設定を保存'}</button>
                 </div>
               </div>
             </div>

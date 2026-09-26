@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { touchLogin } from '../data/growthStore';
-import { applyLoginWithBonus, localDateKey, missionsForDate, canClaimMission, equippedTitleLabel, type LoginBonus } from '../core/growth';
+import { applyLoginWithBonus, localDateKey, allMissionsForDate, canClaimMission, equippedTitleLabel, type LoginBonus } from '../core/growth';
 import { GrowthAvatar, LevelBar } from './GrowthParts';
 import { LoginBonusSheet } from './GrowthFx';
 import { useGrowthProgress } from '../../hooks/useGrowthProgress';
@@ -30,7 +30,7 @@ export function GrowthHomeStrip({ onProfile, onMissions, onShop, onBadges, onWal
   };
   const received = progress.lastLoginDate >= today;
   const nextBonus = applyLoginWithBonus(progress, today).bonus;
-  const claimable = missionsForDate(today).filter(m => canClaimMission(progress, m.id, today)).length;
+  const claimable = allMissionsForDate(today).filter(m => canClaimMission(progress, m.id, today)).length;
   if (homeLayout) return <section className="mana-dashboard game-home-hud" aria-label="マナコインととびら君の成長" data-mana-dashboard>
     <div className="game-hud-top">
       <button type="button" className="game-hud-wallet" onClick={onWallet || onShop || onProfile} aria-label="マナコインの使い道を開く" data-mana-coins><Coins /><span>マナコイン<strong>{progress.coins.toLocaleString('ja-JP')}<small>枚</small></strong></span><ChevronRight size={14} /></button>
