@@ -51,22 +51,24 @@ describe('national session admission', () => {
 
 describe('cosmetic economy', () => {
   const progress={...emptyProgress('a'),coins:100};
-  it('has thirty-six items split into N / R / SR tiers and does not mutate the source', () => {
-    expect(gachaItems()).toHaveLength(36);
+  it('has 36 decorations + the UR study prints split into N / R / SR / UR tiers and does not mutate the source', () => {
+    const tiersAll=gachaItemsByRarity();
+    expect(gachaItems().filter(i=>i.kind!=='print')).toHaveLength(36);
+    expect(gachaItems()).toHaveLength(36+tiersAll.UR.length);
     // ガチャ限定ポーズ3種＋SRフレーム2種は必ずラインナップに入り、SR 枠
     for(const id of ['pose_listening','pose_science','pose_trophy','frame_prism','frame_galaxy']) {
       const item=gachaItems().find(i=>i.id===id)!; expect(item).toBeTruthy(); expect(gachaRarityOf(item)).toBe('SR');
     }
     const tiers=gachaItemsByRarity();
     expect(tiers.SR.length+tiers.R.length+tiers.N.length).toBe(36);
-    for(const r of ['SR','R','N'] as const) expect(tiers[r].length).toBeGreaterThan(0);
+    for(const r of ['UR','SR','R','N'] as const) expect(tiers[r].length).toBeGreaterThan(0);
     // 提供割合の合計は 100%、SR は R・N より1つあたりが低い…ではなく、枠の割合どおり
     const total=gachaItems().reduce((n,i)=>n+gachaItemRate(i),0);
     expect(total).toBeCloseTo(1,9);
-    expect(GACHA_RARITY_RATES.SR+GACHA_RARITY_RATES.R+GACHA_RARITY_RATES.N).toBeCloseTo(1,9);
+    expect(GACHA_RARITY_RATES.UR+GACHA_RARITY_RATES.SR+GACHA_RARITY_RATES.R+GACHA_RARITY_RATES.N).toBeCloseTo(1,9);
     // 乱数の区間どおりにそれぞれのアイテムが出る（どのアイテムも出うる）
     let acc=0;
-    for(const tier of ['SR','R','N'] as const) for(const item of tiers[tier]) {
+    for(const tier of ['UR','SR','R','N'] as const) for(const item of tiers[tier]) {
       const w=gachaItemRate(item);
       expect(rollGacha(progress,acc+w*0.5)?.item.id).toBe(item.id);
       expect(rollGacha(progress,acc+w*0.5)?.rarity).toBe(tier);

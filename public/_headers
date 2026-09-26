@@ -31,3 +31,7 @@
 /sw.js
   Cache-Control: no-cache, no-store, must-revalidate
   Service-Worker-Allowed: /
+
+# 大当たりの学習プリント（PDF・サムネイル）。中身が変わる可能性があるので1日キャッシュ
+/prints/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

@@ -3,6 +3,7 @@
  * Durable replay protection lives in growthStore, alongside the progress in one atomic record.
  */
 import type { BattleOutcome, BattlePlayerScore } from './types';
+import { GACHA_PRINTS, type GachaPrintDef } from '../../data/gachaPrints.generated';
 
 // ============================================================
 // 経験値（XP）
@@ -733,19 +734,20 @@ export function badgeTierColor(tier: 1 | 2 | 3): string {
 // 扉くんの装備（ポーズ・枠）
 // ============================================================
 
-export type ItemKind = 'pose' | 'frame';
-/** ガチャのレア度：N（ノーマル）/ R（レア）/ SR（スーパーレア） */
-export type GachaRarity = 'N' | 'R' | 'SR';
+/** pose / frame は扉くんの装備。print は大当たりの学習プリント（PDF・装備はしない） */
+export type ItemKind = 'pose' | 'frame' | 'print';
+/** ガチャのレア度：N（ノーマル）/ R（レア）/ SR（スーパーレア）/ UR（大当たり＝学習プリント） */
+export type GachaRarity = 'N' | 'R' | 'SR' | 'UR';
 
 export interface ItemDef {
   id: string;
   kind: ItemKind;
   label: string;
-  /** pose: 画像パス（public/mascots）／ frame: 色コード */
+  /** pose: 画像パス（public/mascots）／ frame: 色コード ／ print: PDF のパス（public/prints） */
   value: string;
   gacha?: boolean;
   pattern?: 'dashed' | 'double' | 'dots' | 'rays' | 'stars' | 'stripes' | 'checker' | 'wave' | 'grid' | 'sparkle' | 'rainbow' | 'aurora' | 'neon' | 'prism' | 'galaxy';
-  /** ガチャのレア度。省略時は gachaRarityOf() が入手条件から決める（N / R / SR） */
+  /** ガチャのレア度。省略時は gachaRarityOf() が入手条件から決める（N / R / SR）。UR は学習プリントだけ */
   rarity?: GachaRarity;
   /**
    * 入手条件。どれか1つ。
@@ -814,10 +816,18 @@ export const ITEMS: readonly ItemDef[] = [
   { id: 'frame_scholar', kind: 'frame', label: '努力の証', value: '#2F7D6D', pattern: 'double', unlock: { badge: 'b_study_50' } },
   { id: 'frame_lightning', kind: 'frame', label: 'イナズマ', value: '#E0A800', pattern: 'rays', unlock: { badge: 'b_rush_2500' } },
   { id: 'frame_comet', kind: 'frame', label: 'コメット', value: '#5A67D8', pattern: 'sparkle', unlock: { badge: 'b_rush_combo10' } },
+  // ── UR（大当たり）：学習プリント PDF。ガチャからだけ出る（一覧は gachaPrints.generated.ts）──
+  ...GACHA_PRINTS.map((p): ItemDef => ({ id: p.id, kind: 'print', gacha: true, rarity: 'UR', label: p.label, value: p.file, unlock: { gacha: true } })),
 ];
+
+/** 学習プリント（UR）の詳細（サムネイル・ページ数など）。プリントでなければ undefined */
+export function printOf(id: string): GachaPrintDef | undefined {
+  return GACHA_PRINTS.find((p) => p.id === id);
+}
 
 /**
  * ガチャのレア度。
+ *   UR … 大当たりの学習プリント（rarity:'UR' 指定のみ）
  *   SR … ガチャ限定のもの（rarity:'SR' 指定・または unlock:{gacha:true}）
  *   R  … 模様つきフレーム・200枚以上の交換品・称号で解放されるポーズ
  *   N  … それ以外
@@ -870,7 +880,8 @@ export function purchaseItem(
 /** 装備を身につける（持っていないものは拒否） */
 export function equipItem(progress: GrowthProgress, id: string): GrowthProgress {
   const item = itemById(id);
-  if (!item || !progress.owned.includes(id)) return progress;
+  // 学習プリントは装備ではない（equipped に入れると扉くんの表示が壊れる）
+  if (!item || item.kind === 'print' || !progress.owned.includes(id)) return progress;
   return { ...progress, equipped: { ...progress.equipped, [item.kind]: id } };
 }
 

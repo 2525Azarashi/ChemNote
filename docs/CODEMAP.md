@@ -92,6 +92,7 @@ docs/                設計メモ・手順書
 | 解説 | `src/components/Explanation.tsx`、`ExplanationScreen.tsx` |
 | 復習・ノート | `src/components/StudyHub.tsx`、`ReviewList.tsx`、`NoteList.tsx` |
 | ガチャ・コイン・きせかえ | `src/components/GachaRoom.tsx`、`GrowthHub.tsx`、`src/battle/ui/ManaCoinBalance.tsx` |
+| ガチャ大当たり（UR）＝学習プリント PDF | 一覧 `src/data/gachaPrints.generated.ts`（自動生成）、PDF `public/prints/`、作り方 `scripts/gacha-prints/`（下の「学習プリントの作り直し」） |
 | マスコット（とびら君） | `src/components/DoorMascot.tsx`、画像 `public/mascots/`、セリフ `src/data/mascotTips.ts` |
 | 対戦 | `src/battle/ui/BattleMode.tsx`（入口）→ `BattleHome.tsx` など |
 | きょうのミッション・コンプリート宝箱 | 画面 `src/battle/ui/BattleMissions.tsx`、計算 `src/battle/core/growth.ts`（`missionsForDate`、`openCompleteChest`）、保存 `src/battle/data/growthStore.ts`（`openChest`、端末内のみ） |
@@ -162,3 +163,24 @@ docs/                設計メモ・手順書
 | 採点 | `docs/SCORING_ARCHITECTURE.md` |
 | リスニング専用版との分岐・PRルール | `docs/LISTENING_DERIVATIVE.md` |
 | ビルドとメモリ | `docs/BUILD.md` |
+
+
+## 学習プリント（ガチャ大当たり UR）の作り直し
+
+提供割合は `src/battle/core/arenaEconomy.ts` の `GACHA_RARITY_RATES`（UR 5%・SR 5%・R 25%・N 65%）。
+UR 枠の中は等確率なので、プリントを増やすと1種あたりの割合が自動で下がる（42種で約0.12%）。
+
+```bash
+# 0) 初回だけ：PDF 用の Chromium（アプリの依存には入れない）
+mkdir -p .tmpwork/pw && (cd .tmpwork/pw && npm i playwright && npx playwright install chromium)
+# 1) アプリの確認済みデータ（対戦プールの問題・正解・解説、出題傾向データ）を書き出す
+npx tsx scripts/gacha-prints/dump-data.mts .tmpwork/prints-data.json
+# 2) PDF を作る（カタログは build-prints.mjs の catalog）
+node scripts/gacha-prints/build-prints.mjs .tmpwork/prints-data.json
+# 3) 圧縮・サムネイル・一覧（src/data/gachaPrints.generated.ts）
+python3 scripts/gacha-prints/finalize.py
+```
+
+- 問題は新しく作らない（正解の誤りを配らないため、検証済みの対戦プールだけを使う）。
+- 二次関数の週課題（`scripts/gacha-prints/source/quadratic_weekly_6weeks.pdf`）はハブの教材をそのまま収録。
+- プリントは `kind: 'print'` のアイテム。装備はできず、ガチャ画面の「マイプリント」から開く・保存する。

@@ -2938,3 +2938,34 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .chapter-tab-status { margin-top:3px; align-self:flex-start; border-radius:9999px; padding:1px 6px; font-size:9px; font-weight:800; background:#EEF0F2; color:#7F8C8D; }
 .chapter-tab-status[data-ready="true"] { background:#FEF5E7; color:#B9770E; }
 [aria-selected="true"] .chapter-tab-status { background:rgba(255,255,255,.22); color:#fff; }
+
+/* ── ガチャ UR（大当たり＝学習プリント PDF）── */
+.gacha-rarity[data-rarity=UR] { background: linear-gradient(120deg,#111827,#7c3aed 35%,#f59e0b 70%,#111827); color: #fff7d6; text-shadow: 0 1px 1px #0008; border: 1px solid #fde68a; box-shadow: 0 0 10px #f59e0bcc, 0 0 4px #7c3aed; }
+.gacha-ur-lead { color: #7c3aed; }
+.gacha-print-thumb { position: relative; display: inline-flex; flex: none; overflow: hidden; border-radius: 6px; background: #fff; border: 1px solid #d8cfbd; box-shadow: 0 2px 8px #0002; }
+.gacha-print-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.gacha-print-thumb em { position: absolute; left: 0; right: 0; bottom: 0; padding: 1px 2px; font-style: normal; font-size: 9px; font-weight: 900; text-align: center; color: #fff; background: linear-gradient(90deg,#7c3aed,#f59e0b); }
+.gacha-exhibit[data-kind=print] .gacha-print-thumb { max-height: 150px; width: auto !important; aspect-ratio: 1 / 1.414; height: 100% !important; }
+.gacha-print-links { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 4px 0; }
+.gacha-print-links a { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 6px 12px; border-radius: 12px; font-weight: 800; font-size: 13px; text-decoration: none; color: #3b1d78; background: linear-gradient(135deg,#fef3c7,#ede9fe); border: 1px solid #c4b5fd; }
+.gacha-print-links.is-compact { gap: 4px; }
+.gacha-print-links.is-compact a { min-height: 32px; padding: 2px 8px; font-size: 11px; border-radius: 10px; }
+.gacha-print-links a:focus-visible { outline: 3px solid #7c3aed; outline-offset: 2px; }
+.gacha-cinema[data-rarity=UR] { box-shadow: 0 0 0 3px #fde68a, 0 0 36px #f59e0bcc, 0 0 70px #7c3aed99; border-radius: 20px; animation: gacha-sr-glow 1.2s ease-in-out infinite; }
+.gacha-result[data-rarity=UR] { border: 2px solid transparent; background: linear-gradient(#fffdf5,#faf5ff) padding-box, conic-gradient(#f59e0b,#fde68a,#7c3aed,#ec4899,#f59e0b) border-box; animation: arena-reward-in .5s ease-out, gacha-sr-glow 1.4s ease-in-out infinite; }
+.gacha-ur-banner { background: linear-gradient(90deg,#7c3aed,#f59e0b,#ec4899,#7c3aed) !important; -webkit-background-clip: text !important; background-clip: text !important; }
+.gacha-multi-grid li[data-rarity=UR] { border: 2px solid transparent; background: linear-gradient(#fffdf5,#faf5ff) padding-box, conic-gradient(#f59e0b,#fde68a,#7c3aed,#ec4899,#f59e0b) border-box; box-shadow: 0 0 16px #f59e0b99; }
+.gacha-collection-grid li[data-owned=false] .gacha-print-thumb img { filter: blur(2px) grayscale(.6); opacity: .7; }
+.gacha-my-prints { margin: 12px 0; padding: 12px; border-radius: 16px; border: 1px solid #ddd6fe; background: linear-gradient(#fffdf7,#f7f3ff); text-align: left; }
+.gacha-my-prints h2 { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font-size: 15px; font-weight: 900; color: #3b1d78; }
+.gacha-my-prints h2 small { font-size: 11px; color: #7c6f9a; }
+.gacha-my-prints ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; max-height: 320px; overflow-y: auto; }
+.gacha-my-prints li { display: flex; gap: 10px; align-items: center; padding: 6px; border-radius: 12px; background: #fff; border: 1px solid #ede9fe; }
+.gacha-my-prints li > span { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
+.gacha-my-prints li strong { font-size: 12px; line-height: 1.35; }
+.gacha-my-prints li small { font-size: 10px; color: #7c6f9a; }
+@media (prefers-reduced-motion: reduce) { .gacha-cinema[data-rarity=UR], .gacha-result[data-rarity=UR] { animation: none !important; } }
+.gacha-preview-info strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gacha-exhibit[data-kind=print] { bottom: 44px; }
+.gacha-exhibit[data-kind=print] .gacha-print-thumb { max-height: 132px; }
+.gacha-print-thumb em { white-space: nowrap; overflow: hidden; text-overflow: clip; font-size: 8px; letter-spacing: -.02em; }

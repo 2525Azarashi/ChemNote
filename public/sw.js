@@ -10,7 +10,7 @@
  *   - 容量が膨らまないよう、実行時キャッシュは件数に上限を設ける。
  *   - Range リクエスト（音声のシーク）はキャッシュしない（206 を保存すると壊れる）。
  */
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL = `manatobi-shell-${VERSION}`;
 const RUNTIME = `manatobi-runtime-${VERSION}`;
 const RUNTIME_MAX_ENTRIES = 300;
@@ -53,7 +53,8 @@ function cacheable(res) {
 async function networkFirstPage(request) {
   try {
     const res = await fetch(request);
-    if (cacheable(res)) {
+    // 画面（HTML）だけを '/' として保存する。PDF などを開いた時に '/' が上書きされないように。
+    if (cacheable(res) && (res.headers.get('content-type') || '').includes('text/html')) {
       const copy = res.clone();
       caches.open(SHELL).then((c) => c.put('/', copy)).catch(() => undefined);
     }
@@ -99,6 +100,8 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
   if (url.pathname.startsWith('/__') || url.pathname.startsWith('/_vercel')) return;
+  // 学習プリント PDF はサイズが大きいので SW では扱わない（ブラウザの通常キャッシュに任せる）
+  if (url.pathname.startsWith('/prints/') && url.pathname.endsWith('.pdf')) return;
 
   if (request.mode === 'navigate') {
     event.respondWith(networkFirstPage(request));

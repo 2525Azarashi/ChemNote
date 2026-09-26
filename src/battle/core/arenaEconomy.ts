@@ -2,17 +2,20 @@ import { ITEMS, gachaRarityOf, type GachaRarity, type GrowthProgress, type ItemD
 import type { MatchSummaryForGrowth } from './growth';
 export const GACHA_COST = 50;
 export const GACHA_DUPLICATE_REFUND = 20;
-/** SR の重複はうれしさが減らないよう多めに返す */
-export const GACHA_DUPLICATE_REFUND_BY_RARITY: Record<GachaRarity, number> = { N: 20, R: 25, SR: 40 };
+/** SR の重複はうれしさが減らないよう多めに返す。UR（学習プリント）の重複は全額返す */
+export const GACHA_DUPLICATE_REFUND_BY_RARITY: Record<GachaRarity, number> = { N: 20, R: 25, SR: 40, UR: 50 };
 export const gachaItems = () => ITEMS.filter(item => 'coins' in item.unlock || item.gacha);
 
-/** レア枠の提供割合（合計 1）。枠を決めてから、その枠の中で等確率に1つ選ぶ。 */
-export const GACHA_RARITY_RATES: Record<GachaRarity, number> = { SR: 0.05, R: 0.25, N: 0.70 };
-export const GACHA_RARITY_ORDER: readonly GachaRarity[] = ['SR', 'R', 'N'];
-export const GACHA_RARITY_LABELS: Record<GachaRarity, string> = { SR: 'スーパーレア', R: 'レア', N: 'ノーマル' };
+/**
+ * レア枠の提供割合（合計 1）。枠を決めてから、その枠の中で等確率に1つ選ぶ。
+ * UR（大当たり）＝学習プリント PDF。枠全体で 5%、プリントが多いので1種あたりは 0.1% 台。
+ */
+export const GACHA_RARITY_RATES: Record<GachaRarity, number> = { UR: 0.05, SR: 0.05, R: 0.25, N: 0.65 };
+export const GACHA_RARITY_ORDER: readonly GachaRarity[] = ['UR', 'SR', 'R', 'N'];
+export const GACHA_RARITY_LABELS: Record<GachaRarity, string> = { UR: '大当たり（学習プリント）', SR: 'スーパーレア', R: 'レア', N: 'ノーマル' };
 
 export function gachaItemsByRarity(): Record<GachaRarity, ItemDef[]> {
-  const out: Record<GachaRarity, ItemDef[]> = { SR: [], R: [], N: [] };
+  const out: Record<GachaRarity, ItemDef[]> = { UR: [], SR: [], R: [], N: [] };
   for (const item of gachaItems()) out[gachaRarityOf(item)].push(item);
   return out;
 }
