@@ -110,7 +110,7 @@ import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { SUBJECTS, getChaptersOfSubject } from '../src/data/allChapters';
-import { calcSubQuestionTimeLimit } from '../src/utils/scoring';
+import { battleTimeLimitOf } from '../src/battle/core/battleTiming';
 import { normalizeAnswer } from '../src/utils/answerJudge';
 /**
  * ★手書き問題（authored）の型は画面・検証器と共有する★
@@ -193,9 +193,7 @@ const EXTERNAL_DIR = resolve(HERE, '../src/battle/data/external');
  * 読み終わる前に締切が来てしまう。1人用の見積りは問題文の長さ・選択肢の数を
  * 見ているので、比率で縮めれば「長い問題は長め」という関係が保たれる。
  */
-const BATTLE_TIME_MIN = 8;
-const BATTLE_TIME_MAX = 30;
-const BATTLE_TIME_RATIO = 0.42;
+// 下限・上限・比率は src/battle/core/battleTiming.ts に固定（1人用の調整で対戦が変わらないように）
 
 /**
  * ★合成形式（word / panel）を作るか★
@@ -1014,16 +1012,13 @@ function convertPanel(row: RawSub, chapterChars: string[]): PoolQuestion | null 
  * 1人用の見積り（scoring.ts）を比率で圧縮し、下限・上限でクランプする。
  */
 function battleTimeLimit(row: RawSub): number {
-  const solo = calcSubQuestionTimeLimit({
-    id: row.id,
+  return battleTimeLimitOf({
     type: row.type,
     label: row.label,
     correctAnswer: row.correctAnswer,
     options: row.options,
     items: row.raw?.items,
   });
-  const scaled = Math.round(solo * BATTLE_TIME_RATIO);
-  return Math.min(BATTLE_TIME_MAX, Math.max(BATTLE_TIME_MIN, scaled));
 }
 
 /**
