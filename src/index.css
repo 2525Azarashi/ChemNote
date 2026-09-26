@@ -2870,3 +2870,19 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .battle-figure.is-zoom img { max-height: 92vh; max-width: 96vw; width: auto; }
 @keyframes battle-figure-shine { to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .battle-figure-skeleton { animation: none; } }
+
+/* ===== 演習：この単元のポイント ===== */
+.unit-points-backdrop { position: fixed; inset: 0; z-index: 60; display: flex; align-items: flex-end; justify-content: center; background: rgba(27,38,49,.4); padding: 12px; }
+@media (min-width: 768px) { .unit-points-backdrop { align-items: center; } }
+.unit-points { width: min(460px, 100%); max-height: 80vh; overflow-y: auto; border-radius: 20px; background: #fffdf5; border: 2px solid #F4D03F; padding: 16px; box-shadow: 0 16px 40px #0003; animation: unit-points-in .25s ease-out; }
+.unit-points header { display: flex; align-items: center; gap: 8px; color: #8a6d00; }
+.unit-points header h3 { flex: 1; font-size: 15px; font-weight: 900; color: #5b4700; }
+.unit-points header button { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; color: #8a6d00; }
+.unit-points-title { margin: 4px 0 10px; font-size: 13px; font-weight: 800; color: #2C3E50; }
+.unit-points ol { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; counter-reset: pt; }
+.unit-points li { counter-increment: pt; position: relative; padding: 8px 10px 8px 34px; border-radius: 12px; background: #fff; border: 1px solid #f0e3a8; font-size: 14px; font-weight: 700; color: #2C3E50; line-height: 1.5; }
+.unit-points li::before { content: counter(pt); position: absolute; left: 10px; top: 9px; width: 18px; height: 18px; border-radius: 50%; background: #F4D03F; color: #5b4700; font-size: 11px; font-weight: 900; display: grid; place-items: center; }
+.unit-points-note { margin: 10px 0; font-size: 11px; color: #7a6a2a; line-height: 1.6; }
+.unit-points-close { width: 100%; min-height: 44px; border-radius: 12px; background: #2C3E50; color: #fff; font-weight: 900; }
+@keyframes unit-points-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .unit-points { animation: none; } }

@@ -1205,6 +1205,7 @@ export function Quiz({ mode, chapter, onFinish, onBack, onReturnToBattle, isGues
         liveStanding={liveStanding}
         progressPosition={progressPosition}
         progressTotal={progressTotal}
+        topics={Array.isArray(chapter.topics) ? chapter.topics : []}
       />
 
 
