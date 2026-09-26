@@ -109,6 +109,7 @@ import {
 } from '../core/serverClock';
 import { isTransientError, retryDelayMs, smoothRtt } from '../core/connection';
 import { loadPool, poolIdsOf } from './battlePool';
+import { blockedUidSet } from '../../features/safety/userSafety';
 
 // ============================================================
 // コレクション名（1箇所にまとめる）
@@ -644,7 +645,9 @@ export async function findOrEnqueue(
     void leaveQueue(sessionId, uid);
     throw friendlyError(error, 'マッチングに失敗しました。');
   }
-  const candidate = waitingDocs.find((d) => d.id !== uid);
+  // ブロックした相手とは組まない（App Store 1.2。端末のブロック一覧で判定）
+  const blocked = blockedUidSet();
+  const candidate = waitingDocs.find((d) => d.id !== uid && !blocked.has(d.id));
   if (!candidate) {
     // 誰もいない。票を置いたまま、拾われるのを待つ（watchMatched）
     return { roomId: null };
