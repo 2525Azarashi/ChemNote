@@ -1991,6 +1991,8 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
     .chapter-route-card::before { left: 14px; top: 16px; background: #89637b; }
     .chapter-route-card h4 { padding-left: 32px; min-height: 27px; }
     .chapter-route-card .chapter-unit-count { padding-left: 32px; }
+    .chapter-route-card .math-unit-source { padding-left: 32px; }
+    .chapter-route .chapter-route-list > .math-stage-heading { margin-left: 0; padding-left: 2px; background: none; }
     .chapter-route-card > div:last-child > div:first-child { gap: 8px; }
     .battle-lobby .lobby-match-options { grid-template-columns: minmax(0,1fr); gap: 14px; }
     .battle-lobby .lobby-mode:not(.lobby-mode-friend) > header { flex-direction: row; align-items: center; }
@@ -2927,7 +2929,7 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .math-stage-heading[data-stage="basic"] { border-color:#A9CCE3; }
 .math-stage-heading[data-stage="full"] { border-color:#F4D03F; }
 .math-stage-heading[data-stage="pattern"] { border-color:#E8688E; }
-.math-unit-source { font-size:10px; font-weight:700; color:#8895A0; margin-bottom:2px; }
+.chapter-route-card .math-unit-source { font-size:10px; line-height:1.4; font-weight:700; color:#8895A0; margin-bottom:2px; }
 .math-stage-heading[data-stage="unit"] { border-color:#7FB3D5; }
 .math-stage-heading[data-stage="exam"] { border-color:#E8688E; }
 .math-stage-heading[data-stage="empty"] { border-color:#D5D8DC; color:#8895A0; }
