@@ -2920,3 +2920,19 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .apple-signin-btn { display:flex; width:100%; align-items:center; justify-content:center; gap:8px; min-height:44px; border-radius:14px; background:#000; color:#fff; font-weight:700; font-size:13px; padding:0 16px; }
 .apple-signin-btn:hover { background:#1c1c1e; }
 .apple-signin-btn:disabled { opacity:.5; }
+/* ---- 数学：分野タブの中の段階見出し ---- */
+.math-stage-heading { display:flex; align-items:baseline; gap:8px; margin-top:4px; padding:4px 2px 2px; border-bottom:2px solid #E5E1D8; font-size:13px; font-weight:800; color:#2C3E50; }
+.math-stage-heading:first-child { margin-top:0; }
+.math-stage-heading small { font-size:11px; font-weight:700; color:#8895A0; }
+.math-stage-heading[data-stage="basic"] { border-color:#A9CCE3; }
+.math-stage-heading[data-stage="full"] { border-color:#F4D03F; }
+.math-stage-heading[data-stage="pattern"] { border-color:#E8688E; }
+.math-unit-source { font-size:10px; font-weight:700; color:#8895A0; margin-bottom:2px; }
+.math-stage-heading[data-stage="unit"] { border-color:#7FB3D5; }
+.math-stage-heading[data-stage="exam"] { border-color:#E8688E; }
+.math-stage-heading[data-stage="empty"] { border-color:#D5D8DC; color:#8895A0; }
+.chapter-route .chapter-route-list > .math-stage-heading { margin-left:-24px; padding-left:24px; background:linear-gradient(90deg,#fffdf9,#fffdf900); }
+.chapter-route-card[data-empty="true"] { opacity:.62; }
+.chapter-tab-status { margin-top:3px; align-self:flex-start; border-radius:9999px; padding:1px 6px; font-size:9px; font-weight:800; background:#EEF0F2; color:#7F8C8D; }
+.chapter-tab-status[data-ready="true"] { background:#FEF5E7; color:#B9770E; }
+[aria-selected="true"] .chapter-tab-status { background:rgba(255,255,255,.22); color:#fff; }
