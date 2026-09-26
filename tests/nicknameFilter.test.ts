@@ -20,3 +20,13 @@ describe('nicknameFilter（App Store 1.2: 他人に見える名前のフィル�
     expect([...sanitizeNickname('あ'.repeat(40))].length).toBe(NICKNAME_MAX);
   });
 });
+
+import { displaySafeNickname } from '../src/features/safety/nicknameFilter';
+describe('displaySafeNickname（表示側の防波堤）', () => {
+  it('普通の名前・マスク済みはそのまま、不適切な名前は伏せる', () => {
+    expect(displaySafeNickname('たろう')).toBe('たろう');
+    expect(displaySafeNickname('山＊＊＊')).toBe('山＊＊＊');
+    expect(displaySafeNickname('しね')).toBe('（表示できない名前）');
+    expect(displaySafeNickname('')).toBe('名前なし');
+  });
+});

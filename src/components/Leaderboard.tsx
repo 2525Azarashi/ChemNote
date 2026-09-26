@@ -50,6 +50,7 @@ import { displayNicknameForNational } from '../utils/nicknamePrivacy';
 import { UserSafetyMenu } from '../features/safety/UserSafetyMenu';
 import { useWithoutBlocked } from '../features/safety/useBlockedFilter';
 import { safeAvatarUrl } from '../features/safety/avatarUrl';
+import { displaySafeNickname } from '../features/safety/nicknameFilter';
 
 interface LeaderboardProps {
   onBack: () => void;
@@ -531,7 +532,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle, initi
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className={`text-sm font-bold truncate ${r.isMe ? 'text-[#1B2631]' : 'text-[#1B2631]'}`}>
-                      {r.nickname}
+                      {r.isMe ? r.nickname : displaySafeNickname(r.nickname)}
                       {r.isMe && <span className="ml-2 text-[10px] text-[#D4A017] font-bold">YOU</span>}
                     </p>
                     {r.sub && <p className="text-[11px] text-gray-400 truncate">{r.sub}</p>}

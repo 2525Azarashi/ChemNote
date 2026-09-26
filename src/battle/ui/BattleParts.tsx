@@ -38,6 +38,7 @@ import { Crown, Loader2, Swords, Timer, Trophy, UserRound } from 'lucide-react';
 import { maskNickname } from '../../utils/nicknamePrivacy';
 import { ratingTitle } from '../data/battleRanking';
 import { safeAvatarUrl } from '../../features/safety/avatarUrl';
+import { displaySafeNickname } from '../../features/safety/nicknameFilter';
 
 /**
  * 対戦画面で使う色。
@@ -172,7 +173,7 @@ export function PlayerBadge({
   align?: 'left' | 'right';
   compact?: boolean;
 }) {
-  const shown = mask && !isMe ? maskNickname(nickname) : nickname;
+  const shown = mask && !isMe ? maskNickname(displaySafeNickname(nickname)) : isMe ? nickname : displaySafeNickname(nickname);
   const title = ratingTitle(rating);
   const right = align === 'right';
 

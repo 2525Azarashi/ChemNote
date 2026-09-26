@@ -26,6 +26,10 @@ src/
   hooks/             React フック
   battle/            オンライン対戦（core=ルール, data=出題プール, ui=画面, hooks）
   features/rika/     理科（独立した小機能）
+  features/safety/   名前フィルタ・通報・ブロック・アイコンURL制限（App Store 1.2）
+  features/account/  アカウント削除（App Store 5.1.1(v)）と設定画面の「安全とアカウント」欄
+  features/legal/    利用規約・プライバシーポリシー（アプリ内表示）
+  features/auth/     Appleでサインインのボタン（App Store 4.8）
 public/              画像・音声・マスコット・PWA アイコン
 scripts/             データ生成・検査・音源取り込み等の道具（アプリ本体には入らない）
 tests/               vitest のテスト（*.test.ts）と Playwright 用（*.browser.mjs）
@@ -57,8 +61,8 @@ docs/                設計メモ・手順書
 | 情報Ⅰ（対戦専用・450問） | 元データ `docs/joho/joho-pool.source.json` → `python3 scripts/gen-joho-pool.py docs/joho/joho-pool.source.json` → `npm run gen:battle-pool`。教科名・色・単元は `src/data/externalSubjects.ts` |
 | 対戦専用教科（演習画面なし） | `externalSubjects.ts` の `BATTLE_ONLY_SUBJECTS`（英単語・情報Ⅰ） |
 
-> ⚠ `npm run gen:battle-pool` を回すと、化学基礎・化学・生物基礎の pool も少し書き換わることがある（生成器側の既存の揺れ）。
-> 追加したい教科以外の `pool.*.generated.ts` の差分は `git checkout -- <ファイル>` で戻してからコミットする。
+> ✅ 以前は `npm run gen:battle-pool` で化学基礎・化学・生物基礎のかな問題の秒数が揺れていたが、
+> 対戦の締切を `src/battle/core/battleTiming.ts` に固定したので**もう揺れない**（1人用の `scoring.ts` を変えても対戦は変わらない）。
 | 化学の表記ルール | `docs/UNIT_GUIDE.md`（検査：`npm run lint:chem`） |
 
 ### 音声（リスニング）
@@ -99,9 +103,17 @@ docs/                設計メモ・手順書
 |---|---|
 | Firebase 設定 | `src/firebase.ts` |
 | Firestore のアクセス権 | `firestore.rules`（反映手順 `docs/いまやること.md`） |
+| ログイン（Google / Apple） | `src/utils/googleAuth.ts`（`signInWith('google' \| 'apple')`）、ボタン `src/features/auth/AppleSignInButton.tsx` |
+| 他人に見える名前のチェック | `src/features/safety/nicknameFilter.ts`（送信時 `sanitizeNickname`、表示時 `displaySafeNickname`） |
+| 通報・ブロック | `src/features/safety/userSafety.ts`、メニュー `UserSafetyMenu.tsx`（ランキング・フレンド・対戦結果） |
+| アカウント削除 | `src/features/account/accountDeletion.ts` |
+| セキュリティヘッダー（CSP） | `vercel.json` と `public/_headers`（**両方を同じ内容に**。`tests/securityHeaders.test.ts`） |
+| Service Worker | `public/sw.js`（同一オリジンの GET だけ。画面はネットワーク優先） |
+| App Store 申請の確認表 | `docs/APP_STORE.md` |
 | 学習進捗の保存 | `src/utils/progress.ts`、`studySync*.ts`、キー名 `userStorageKeys.ts` `quizStorageKeys.ts` |
 | ランキング | `src/utils/leaderboard.ts` |
 | 対戦のルール・採点 | `src/battle/core/battleRules.ts`、`battleCore.ts`（設計 `docs/BATTLE.md`） |
+| 対戦の問題ごとの秒数（生成時） | `src/battle/core/battleTiming.ts`（1人用から独立） |
 | 対戦の制限時間 | `battleCore.ts` の `resolveTimeLimit`（上限55秒）、`arenaRules.ts`（リスニング55秒）、1問目の締切は `battleLive.ts` の `firstDeadlineSec` |
 
 > ⚠ **対戦の締切は Firestore ルールで「今から60秒未満」に制限されている**（`firestore.rules` の `battleDeadlineSane`）。

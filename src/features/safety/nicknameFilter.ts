@@ -141,3 +141,16 @@ export function sanitizeNickname(raw: string, fallback = 'マナトビユーザ�
   const cut = [...trimmed].slice(0, NICKNAME_MAX).join('');
   return checkNickname(cut).ok ? cut : fallback;
 }
+
+/**
+ * 他人の名前を ★表示する直前★ に通す。
+ * 送信側（resolveNickname）で弾いていても、改造クライアントは素通りできるため、
+ * 表示側でも同じ判定をかけて使えない名前は伏せる（App Store 1.2 の二重の防波堤）。
+ */
+export function displaySafeNickname(raw: string | null | undefined): string {
+  const name = (raw || '').trim();
+  if (!name) return '名前なし';
+  // マスク済み（山＊＊＊）や定型の名前はそのまま
+  if (/＊/.test(name) || name === '退会したユーザー' || name === '対戦相手') return [...name].slice(0, NICKNAME_MAX).join('');
+  return checkNickname([...name].slice(0, NICKNAME_MAX).join('')).ok ? [...name].slice(0, NICKNAME_MAX).join('') : '（表示できない名前）';
+}

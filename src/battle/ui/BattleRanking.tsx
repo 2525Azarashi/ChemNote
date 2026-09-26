@@ -43,6 +43,7 @@ import {
 import { UserSafetyMenu } from '../../features/safety/UserSafetyMenu';
 import { useWithoutBlocked } from '../../features/safety/useBlockedFilter';
 import { safeAvatarUrl } from '../../features/safety/avatarUrl';
+import { displaySafeNickname } from '../../features/safety/nicknameFilter';
 
 type Tab = 'friend' | 'national';
 
@@ -154,7 +155,7 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
             const title = ratingTitle(row.rating || 1500);
             const medal = MEDALS[i];
             const shown =
-              tab === 'national' && !isMe ? maskNickname(row.nickname || '') : row.nickname || '名前なし';
+              tab === 'national' && !isMe ? maskNickname(displaySafeNickname(row.nickname)) : isMe ? row.nickname || '名前なし' : displaySafeNickname(row.nickname);
 
             return (
               <li

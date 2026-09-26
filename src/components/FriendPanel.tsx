@@ -19,6 +19,7 @@ import { UserSafetyMenu } from '../features/safety/UserSafetyMenu';
 import { isBlocked } from '../features/safety/userSafety';
 import { useBlockedTick } from '../features/safety/useBlockedFilter';
 import { safeAvatarUrl } from '../features/safety/avatarUrl';
+import { displaySafeNickname } from '../features/safety/nicknameFilter';
 
 export function FriendPanel() {
   const [profile, setProfile] = useState<FriendProfile | null>(null);
@@ -172,7 +173,7 @@ export function FriendPanel() {
           {visibleRequests.map((req) => (
             <div key={req.id} className="flex items-center gap-3 bg-[#F9E79F]/15 border border-[#F9E79F]/50 rounded-2xl p-3">
               <Avatar name={req.fromNickname} url={req.fromPhotoURL} />
-              <span className="flex-1 text-sm font-bold text-[#1B2631] truncate">{req.fromNickname}</span>
+              <span className="flex-1 text-sm font-bold text-[#1B2631] truncate">{displaySafeNickname(req.fromNickname)}</span>
               <UserSafetyMenu target={{ uid: req.fromUid, nickname: req.fromNickname, where: 'friend' }} />
               <button disabled={loading} aria-label={`${req.fromNickname}さんを承認`} onClick={() => runAction(() => acceptFriendRequest(req), `${req.fromNickname} さんとフレンドになりました。`)} className="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 disabled:opacity-40"><Check size={15} /></button>
               <button disabled={loading} aria-label={`${req.fromNickname}さんを拒否`} onClick={() => runAction(() => rejectFriendRequest(req), '申請を拒否しました。')} className="p-2 rounded-xl bg-red-50 text-red-600 border border-red-100 disabled:opacity-40"><X size={15} /></button>
@@ -207,7 +208,7 @@ export function FriendPanel() {
           friends.map((f) => (
             <div key={f.uid} className="flex items-center gap-3 bg-gray-50 border border-gray-150 rounded-2xl p-3">
               <Avatar name={f.nickname} url={f.photoURL} />
-              <span className="flex-1 text-sm font-bold text-[#1B2631] truncate">{f.nickname}</span>
+              <span className="flex-1 text-sm font-bold text-[#1B2631] truncate">{displaySafeNickname(f.nickname)}</span>
               <UserSafetyMenu target={{ uid: f.uid, nickname: f.nickname, where: 'friend' }} />
               <button disabled={loading} onClick={() => { if (window.confirm(`${f.nickname} さんとのフレンド関係を解除しますか？`)) runAction(() => removeFriend(f.uid), 'フレンドを解除しました。'); }} className="text-xs font-bold text-red-500 hover:underline disabled:opacity-40">解除</button>
             </div>
