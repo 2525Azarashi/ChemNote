@@ -2121,1353 +2121,2028 @@
  },
  {
   "audioUrl": "/listening_audio/el3_set1_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:15.665Z",
+  "sourceFile": "el3_set1_q1.mp3",
+  "sha256": "20226e1f2070921df2ccbab8271ff6b168620f7aee2b29a63162157ec6481f93",
+  "durationSec": 16.4,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set1_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:15.666Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set1_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:16.150Z",
+  "sourceFile": "el3_set1_q2.mp3",
+  "sha256": "ed8419dbed4a32241c4b96b0456d5560899db12dc321af9ddb45ffd7709613d4",
+  "durationSec": 16.74,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set1_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:16.153Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set1_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:16.682Z",
+  "sourceFile": "el3_set1_q3.mp3",
+  "sha256": "a3284194f6f5bf3fa15f81744d474d09a194118f1d2c1e087893ec020e0af314",
+  "durationSec": 20.01,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set1_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:16.685Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set1_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:17.117Z",
+  "sourceFile": "el3_set1_q4.mp3",
+  "sha256": "9bed5d7aeb6dca786dba9343b331e617743d5cc7b50cad36e5a252bd34401a42",
+  "durationSec": 18.1,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set1_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:17.121Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set1_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:17.568Z",
+  "sourceFile": "el3_set1_q5.mp3",
+  "sha256": "5ed79cb2f5d873994a281e0a5f02e4dec72cf7b6653519eacdf8657164160247",
+  "durationSec": 17.61,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set1_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:17.571Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set1_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:18.070Z",
+  "sourceFile": "el3_set1_q6.mp3",
+  "sha256": "9b67614da8aa4b22428e3153744729eefc3db549b9bfb5968a0e81719f3ccf5a",
+  "durationSec": 19.44,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set1_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:18.073Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set2_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:18.604Z",
+  "sourceFile": "el3_set2_q1.mp3",
+  "sha256": "ac0f92001211e2a4368a03529f58b2dd7c68e1894ff5cd8ad2bcea5c0fcc2037",
+  "durationSec": 22.18,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set2_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:18.606Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set2_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:19.067Z",
+  "sourceFile": "el3_set2_q2.mp3",
+  "sha256": "e4233d3718a847e495ea2cac21e224008a978e58e89ffb0628a42bbf6ec3fd2f",
+  "durationSec": 19.75,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set2_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:19.071Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set2_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:19.562Z",
+  "sourceFile": "el3_set2_q3.mp3",
+  "sha256": "a6f4cdb68cd031f4cb860a1b1441a352c3cceeaf7c60f92a2a2cdac4e5819275",
+  "durationSec": 22.36,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set2_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:19.566Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set2_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:20.035Z",
+  "sourceFile": "el3_set2_q4.mp3",
+  "sha256": "fbf22498f62636af95f205775397eb1befbbe35d5eb56692bfb45e6985a47fe9",
+  "durationSec": 19.88,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set2_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:20.038Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set2_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:20.537Z",
+  "sourceFile": "el3_set2_q5.mp3",
+  "sha256": "de5634d35a9a8199781f49eb8d5fa8b0f4f91e61142d02a9a021e19c776027ab",
+  "durationSec": 22.67,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set2_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:20.541Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set2_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:21.034Z",
+  "sourceFile": "el3_set2_q6.mp3",
+  "sha256": "5011313972a4662c889831c5900147ce910038610f954dcf0ee41f9a23465fe0",
+  "durationSec": 16.04,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set2_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:21.037Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set3_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:21.506Z",
+  "sourceFile": "el3_set3_q1.mp3",
+  "sha256": "c08fc3933cce5d040199d9f48d0ff0625d6a40c97c9328d618bed7e6dc4a5aae",
+  "durationSec": 17.24,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set3_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:21.509Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set3_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:22.024Z",
+  "sourceFile": "el3_set3_q2.mp3",
+  "sha256": "f0a5ed6f11c88e7c7dabd27ad951804fdc02fd1558aaca7844592365ccf63362",
+  "durationSec": 20.82,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set3_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:22.028Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set3_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:22.530Z",
+  "sourceFile": "el3_set3_q3.mp3",
+  "sha256": "e1965e5302fe3455f285f9c59361b2590ffb874c3189d6cccada82d665bad7eb",
+  "durationSec": 18.86,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set3_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:22.533Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set3_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:22.947Z",
+  "sourceFile": "el3_set3_q4.mp3",
+  "sha256": "00ed53809b7d8c3f87ce5be2f747fb524cc9e51c9c6e26857f60079db241fa63",
+  "durationSec": 18.6,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set3_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:22.950Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set3_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:23.410Z",
+  "sourceFile": "el3_set3_q5.mp3",
+  "sha256": "c9c5806c6f56fe31c4c8e16188304a70fa3a016740e6e0482a4eb2e47ef5e02c",
+  "durationSec": 21.13,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set3_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:23.411Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set3_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:23.989Z",
+  "sourceFile": "el3_set3_q6.mp3",
+  "sha256": "14343ceea5fcc3ccaf1bbfe31304b54fb2dbb80daa199c0046b348adb7b0c4a2",
+  "durationSec": 19.02,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set3_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:23.991Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set4_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:24.477Z",
+  "sourceFile": "el3_set4_q1.mp3",
+  "sha256": "883ca264a9e3d4892de5599d9824e58a1687fcc980f2487c5529fd1adb848c59",
+  "durationSec": 19.46,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set4_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:24.480Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set4_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:25.060Z",
+  "sourceFile": "el3_set4_q2.mp3",
+  "sha256": "0eb7f7bc883af83e3aa73c6c955a617c5a6a7ce8776b79d818404c4b7f513861",
+  "durationSec": 27.66,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set4_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:25.064Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set4_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:25.482Z",
+  "sourceFile": "el3_set4_q3.mp3",
+  "sha256": "9cb5ff042670d855bbe1b7453ebba6d03ffe75a67f78ec360ad0e0b04195eb5b",
+  "durationSec": 22.91,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set4_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:25.487Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set4_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:25.929Z",
+  "sourceFile": "el3_set4_q4.mp3",
+  "sha256": "6395d163cfde52e26ff7e60da67e09147005629899919d13cd94d52bb371ee50",
+  "durationSec": 23.64,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set4_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:25.933Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set4_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:26.431Z",
+  "sourceFile": "el3_set4_q5.mp3",
+  "sha256": "84f4f6e3859c4af8a4457cde8b711110e40f0f8fd57b6730380f7a9c6cd88bf3",
+  "durationSec": 21.39,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set4_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:26.436Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set4_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:26.938Z",
+  "sourceFile": "el3_set4_q6.mp3",
+  "sha256": "66a4407d65f7dc61cc8a754c6efaa47d79a56bac9c93a75b1b293c6bfbd0ff61",
+  "durationSec": 23.8,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set4_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:26.940Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set5_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:27.370Z",
+  "sourceFile": "el3_set5_q1.mp3",
+  "sha256": "f1e271453af269638d6f9dcd03d18578121b3c3ba42b626eef774ce9bf80dbaa",
+  "durationSec": 23.59,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set5_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:27.374Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set5_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:27.937Z",
+  "sourceFile": "el3_set5_q2.mp3",
+  "sha256": "d9bb3205729148e99a0ecad5350c4fdeec3222bda273acb03543178457bf2d10",
+  "durationSec": 26.8,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set5_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:27.941Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set5_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:28.481Z",
+  "sourceFile": "el3_set5_q3.mp3",
+  "sha256": "c835b76f447fbfca8bafc8deba6b2d40c6f790008a6d4beb7f5c425408775ed1",
+  "durationSec": 21.24,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set5_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:28.485Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set5_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:28.921Z",
+  "sourceFile": "el3_set5_q4.mp3",
+  "sha256": "58779992e4d62166c17b7fdaf4b90583e114af7a9e83d2636cec8166b809226c",
+  "durationSec": 20.64,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set5_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:28.926Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set5_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:29.418Z",
+  "sourceFile": "el3_set5_q5.mp3",
+  "sha256": "f2faa10906b8019aca3ce325945b7e88109fe964179cea2325573db1dd9a8565",
+  "durationSec": 21.05,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set5_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:29.421Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set5_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:30.002Z",
+  "sourceFile": "el3_set5_q6.mp3",
+  "sha256": "81ce5baacd220f41170c1b92ef728906a56630bc3ff70b6b701bf8bec58dfdc7",
+  "durationSec": 22.41,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set5_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:30.006Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set6_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:30.537Z",
+  "sourceFile": "el3_set6_q1.mp3",
+  "sha256": "a22577a8ad89e515a5f381c45ed34e7d689f2c408664803ccc2a09fd5f21dd87",
+  "durationSec": 29.81,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set6_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:30.542Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set6_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:30.977Z",
+  "sourceFile": "el3_set6_q2.mp3",
+  "sha256": "da5cd85588a371d99c950f88e4668b35115215b9bd64aaee58dd57640b67c5de",
+  "durationSec": 25.6,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set6_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:30.981Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set6_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:31.408Z",
+  "sourceFile": "el3_set6_q3.mp3",
+  "sha256": "a9b04686007e135a56a1712f62bb696884e8f996e49214f55bc42666f41779de",
+  "durationSec": 22.88,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set6_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:31.412Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set6_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:31.994Z",
+  "sourceFile": "el3_set6_q4.mp3",
+  "sha256": "1c43a6c8f27000670c7cfa57f15e97abaa60c070ff8ed598c6cb5365b02ef988",
+  "durationSec": 27.64,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set6_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:31.999Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set6_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:32.566Z",
+  "sourceFile": "el3_set6_q5.mp3",
+  "sha256": "095ec04089bb4ec4cf24680c6c380f0421c9e9e396fc92404fa3203b80480b30",
+  "durationSec": 24.84,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set6_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:32.570Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set6_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:33.155Z",
+  "sourceFile": "el3_set6_q6.mp3",
+  "sha256": "d201a47f1918f31bf080bbb5cc264cc40463e2b7e165badd9345f1b485009003",
+  "durationSec": 29.96,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set6_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:33.160Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set7_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:33.709Z",
+  "sourceFile": "el3_set7_q1.mp3",
+  "sha256": "f56fec3a46baf1f15a993cb2c6c55ce60f66b1d15dbc79fb975447aaf1a8552c",
+  "durationSec": 19.98,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set7_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:33.710Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set7_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:34.184Z",
+  "sourceFile": "el3_set7_q2.mp3",
+  "sha256": "6b553028e31b6005dc18ab11acbac790adcaf481d3d7ab8969bfd3695dfa4dd6",
+  "durationSec": 21.6,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set7_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:34.187Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set7_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:34.684Z",
+  "sourceFile": "el3_set7_q3.mp3",
+  "sha256": "b2d5b7029b2cfa22a36b9ad5117a0ef772b66064ad9e97f90eaf95e1f5ce67e0",
+  "durationSec": 26.2,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set7_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:34.688Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set7_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:35.150Z",
+  "sourceFile": "el3_set7_q4.mp3",
+  "sha256": "46ffb0932ec1161bc2631a9e9602ed63c1921f58cce0850e6ea98172b753b057",
+  "durationSec": 29.54,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set7_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:35.154Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set7_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:35.721Z",
+  "sourceFile": "el3_set7_q5.mp3",
+  "sha256": "3e3e6a61ac48b8c0f4b0d9718ea645839428112fd65f547e2e15f00b53007427",
+  "durationSec": 26.51,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set7_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:35.725Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set7_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:36.221Z",
+  "sourceFile": "el3_set7_q6.mp3",
+  "sha256": "6ebb1caafdc5a66ea9e2599f0537c871121a563ef768c7a3a73d6e85b7492bbd",
+  "durationSec": 31.58,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set7_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:36.227Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set8_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:36.718Z",
+  "sourceFile": "el3_set8_q1.mp3",
+  "sha256": "295a5fb3fdda90dc1088046980097e1f1302b2ea78e22d7bdd22b4684f328115",
+  "durationSec": 22.6,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set8_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:36.722Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set8_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:37.242Z",
+  "sourceFile": "el3_set8_q2.mp3",
+  "sha256": "8f427d86771cd9948eadd1afadc7d5e6efe1a8243dd59816e53a752f1999176f",
+  "durationSec": 25.6,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set8_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:37.247Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set8_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:37.708Z",
+  "sourceFile": "el3_set8_q3.mp3",
+  "sha256": "3f8dd2a49531720ce101999adc2f06548040c7709f0fa123909d13fdcb0c7645",
+  "durationSec": 23.35,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set8_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:37.712Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set8_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:38.205Z",
+  "sourceFile": "el3_set8_q4.mp3",
+  "sha256": "0766260c4e628aba5f95df6e3a2bdeac200fc79b3ba57d3263465de829a1a3f0",
+  "durationSec": 25.29,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set8_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:38.211Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set8_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:38.648Z",
+  "sourceFile": "el3_set8_q5.mp3",
+  "sha256": "32c82cc656c271703ea42fdc43c69a404be42decdcb557b1de63e01b083d2fe2",
+  "durationSec": 25.63,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set8_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:38.652Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set8_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:39.181Z",
+  "sourceFile": "el3_set8_q6.mp3",
+  "sha256": "0bc2fc0597d3ef0793a8b854b81f8c6708077735f09564766fbe913a08f30331",
+  "durationSec": 24.63,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set8_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:39.185Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set9_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:39.707Z",
+  "sourceFile": "el3_set9_q1.mp3",
+  "sha256": "98ffb17e92661ba5fc016b5b1b220469128f0d8524ef4ba9c57029c1a674fb83",
+  "durationSec": 27.61,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set9_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:39.712Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set9_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:40.193Z",
+  "sourceFile": "el3_set9_q2.mp3",
+  "sha256": "a535925057359b5d81f5ee2cf5adbf0bd561a0a3e6d307a75c331920f51ba587",
+  "durationSec": 25.5,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set9_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:40.198Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set9_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:40.662Z",
+  "sourceFile": "el3_set9_q3.mp3",
+  "sha256": "47bca62be90f90ca10abe41de684806c9eee510ef0c1ff4100793dee852387f4",
+  "durationSec": 24.45,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set9_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:40.666Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set9_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:41.129Z",
+  "sourceFile": "el3_set9_q4.mp3",
+  "sha256": "379e9181608a56b8f8d4c01aa4493bf7ecf15a60f9887be54fce24f07fbaee13",
+  "durationSec": 23.12,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set9_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:41.133Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set9_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:41.742Z",
+  "sourceFile": "el3_set9_q5.mp3",
+  "sha256": "c1e581ba9dc3f81f288d6930efb72091302daf1cf2e663acf248e20416101e65",
+  "durationSec": 30.01,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set9_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:41.747Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set9_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:42.284Z",
+  "sourceFile": "el3_set9_q6.mp3",
+  "sha256": "480a84a11830778c053b30bc06963678ccfc7b2f48866a0b9c8905fb8fa7989f",
+  "durationSec": 25.16,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set9_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:42.288Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set10_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:08:56.153Z",
+  "sourceFile": "el3_set10_q1.mp3",
+  "sha256": "89a665e231fde8592865793eb54629c4f7aa47ff03b6e702695e0ae3fd95b4ac",
+  "durationSec": 28.03,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set10_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:08:56.158Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set10_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:08:56.688Z",
+  "sourceFile": "el3_set10_q2.mp3",
+  "sha256": "6306353ec28c60565363eaa4a39d1e1cd5159db2bde8196df366c7167dbc232a",
+  "durationSec": 25.68,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set10_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:08:56.692Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set10_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:08:57.256Z",
+  "sourceFile": "el3_set10_q3.mp3",
+  "sha256": "fc6bd659448db2f7ddfc12bb5afed117a9d7ce79d0fa70bfb69108328ab04dc2",
+  "durationSec": 25.76,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set10_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:08:57.261Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set10_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:08:57.877Z",
+  "sourceFile": "el3_set10_q4.mp3",
+  "sha256": "8cc9d73c52ca268ea45685d599bd3188c23e1535bfcf7d78a0813237498200a3",
+  "durationSec": 29.94,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set10_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:08:57.882Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set10_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:08:58.380Z",
+  "sourceFile": "el3_set10_q5.mp3",
+  "sha256": "0df75b324464c9aa66dbf14ca7e2320f9011b90b9cbc178ea6b09e71c87807c4",
+  "durationSec": 30.56,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set10_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:08:58.385Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set10_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:08:58.956Z",
+  "sourceFile": "el3_set10_q6.mp3",
+  "sha256": "7d98203b1e84e6e6d857a0a8efb6615497ffc9cc6ea5c3be17861967d0aec559",
+  "durationSec": 36.65,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set10_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:08:58.962Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set11_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:08:59.486Z",
+  "sourceFile": "el3_set11_q1.mp3",
+  "sha256": "8b778ec1f71e3c7bf43e1ee6b49f7ee71aa9ef2e3194f06d0e6d5789d0745fb3",
+  "durationSec": 26.91,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set11_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:08:59.489Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set11_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:08:59.983Z",
+  "sourceFile": "el3_set11_q2.mp3",
+  "sha256": "813e425e781fc3ac9bd2c3b17e3a506cbcb75aa64de2dfe898369dd43ffdc06f",
+  "durationSec": 25.39,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set11_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:08:59.987Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set11_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:00.512Z",
+  "sourceFile": "el3_set11_q3.mp3",
+  "sha256": "3c1cd893230344b86558f338b5b7aa6eb20772e804f54b28a20be1dce699ae11",
+  "durationSec": 29.34,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set11_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:00.517Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set11_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:01.033Z",
+  "sourceFile": "el3_set11_q4.mp3",
+  "sha256": "8c7eafb076dce342feb373257244f71237767a77d674b5c341c8b1d668296552",
+  "durationSec": 26.93,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set11_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:01.038Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set11_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:01.605Z",
+  "sourceFile": "el3_set11_q5.mp3",
+  "sha256": "b7a2b10968f2547ffdaae81723a54a20bf8c4a28444e2399f512ee47f38cefbd",
+  "durationSec": 23.85,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set11_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:01.609Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set11_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:02.113Z",
+  "sourceFile": "el3_set11_q6.mp3",
+  "sha256": "d2e198e8b118d9a86a49eab6e6d6a9973dc4f884fe533511f4b361298c6c5ae9",
+  "durationSec": 25.65,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set11_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:02.117Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set12_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:02.574Z",
+  "sourceFile": "el3_set12_q1.mp3",
+  "sha256": "b40d94ac46240df04493b9b37f3004969bfe8420e9561ba308b3836df004f471",
+  "durationSec": 28.58,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set12_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:02.579Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set12_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:03.133Z",
+  "sourceFile": "el3_set12_q2.mp3",
+  "sha256": "70c8f7b2f40e2f04b52677642b7f6f5cd05b99920a32d5e34a5dc5a3ecad8d21",
+  "durationSec": 33.72,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set12_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:03.139Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set12_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:03.717Z",
+  "sourceFile": "el3_set12_q3.mp3",
+  "sha256": "bcbc75b7e9ac12f51e010bca65d88e13c615f146bfa33d3ac470b313fe222dd4",
+  "durationSec": 28.94,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set12_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:03.721Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set12_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:04.312Z",
+  "sourceFile": "el3_set12_q4.mp3",
+  "sha256": "4078705f7a6d442d85f0b213d0a397571d08a7d08f3d3d6505c114e3630536a4",
+  "durationSec": 33.85,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set12_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:04.315Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set12_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:04.979Z",
+  "sourceFile": "el3_set12_q5.mp3",
+  "sha256": "20d19d62bd16ff6a20b6be1b26b93db0d931f5d1d13013bbd6a9c1d14852c51d",
+  "durationSec": 38.74,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set12_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:04.985Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set12_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:05.593Z",
+  "sourceFile": "el3_set12_q6.mp3",
+  "sha256": "7406f49dad1e42f7245d7f2f04a4f846219731ff91485117a3de7890bc0c25c2",
+  "durationSec": 35.21,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set12_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:05.599Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set13_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:06.098Z",
+  "sourceFile": "el3_set13_q1.mp3",
+  "sha256": "75f771bcbcf7b5447e3f9420348353311628cb8161e7ada793b61d5552008d7b",
+  "durationSec": 29.2,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set13_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:06.102Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set13_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:06.616Z",
+  "sourceFile": "el3_set13_q2.mp3",
+  "sha256": "ecd31fd9a78521ed251ee2623f987c15c5a4ca7021b3050d8b570fb4bb0dcc7f",
+  "durationSec": 26.98,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set13_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:06.621Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set13_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:07.175Z",
+  "sourceFile": "el3_set13_q3.mp3",
+  "sha256": "31fd1a3b6946b5e5b1b3a43dbfd02180b29387d2dbb74ce9927655c373992ac9",
+  "durationSec": 27.61,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set13_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:07.180Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set13_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:07.765Z",
+  "sourceFile": "el3_set13_q4.mp3",
+  "sha256": "ddf4ac980f446921aca90a3419ca6960768f3b58a8762b90ef026f67f005aada",
+  "durationSec": 30.85,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set13_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:07.771Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set13_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:08.356Z",
+  "sourceFile": "el3_set13_q5.mp3",
+  "sha256": "3ff8ec30c0f1939678af3e95681a999f6e6999e8b7a3a72cf16dc810dd08bdc2",
+  "durationSec": 32.21,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set13_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:08.362Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set13_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:08.938Z",
+  "sourceFile": "el3_set13_q6.mp3",
+  "sha256": "2b448af707bc991a49fd52f37dc24ba03ab9f738cb6f280e3d7331db0f16040a",
+  "durationSec": 32.18,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set13_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:08.944Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set14_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:09.475Z",
+  "sourceFile": "el3_set14_q1.mp3",
+  "sha256": "06461cc57bd5b17038631a0481e9ab554a3d7924599f0b077198fa8cd87dd2d1",
+  "durationSec": 27.17,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set14_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:09.479Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set14_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:10.074Z",
+  "sourceFile": "el3_set14_q2.mp3",
+  "sha256": "fc705ac13547e6dde864a73a9d06c62169915a45aac16d34b0028340fb28f80b",
+  "durationSec": 30.64,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set14_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:10.079Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set14_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:10.599Z",
+  "sourceFile": "el3_set14_q3.mp3",
+  "sha256": "6a61e380b99a7580de2f3ad0671ac5cd71be58fc7402f656ca2b69a43624eab7",
+  "durationSec": 28.94,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set14_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:10.604Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set14_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:11.108Z",
+  "sourceFile": "el3_set14_q4.mp3",
+  "sha256": "d25e5dcfbc528b397a4fbcd60584e0528a8d6db0f22bf452b8506c8967b0c3ec",
+  "durationSec": 26.85,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set14_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:11.112Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set14_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:11.622Z",
+  "sourceFile": "el3_set14_q5.mp3",
+  "sha256": "18a29ac246e9c0b06d685001b4bddbaf62fdc21705dc35a7649576612d61924b",
+  "durationSec": 26.23,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set14_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:11.627Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set14_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:12.208Z",
+  "sourceFile": "el3_set14_q6.mp3",
+  "sha256": "526a86f80bc9c41c0016970d07817ead1139d289b9be0131890ea7811bec9d5b",
+  "durationSec": 29.28,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set14_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:12.211Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set15_q1.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:12.648Z",
+  "sourceFile": "el3_set15_q1.mp3",
+  "sha256": "0c003fd3067cd7dab687b9eae553c1aaf652b05dc18a7e83fae4c4c7f5808c6f",
+  "durationSec": 16.22,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set15_q1.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:12.651Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set15_q2.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:13.181Z",
+  "sourceFile": "el3_set15_q2.mp3",
+  "sha256": "cd6a156deff8fe91e95d9cfd37fb150afc1c36b8de2c489b52ef10558070020c",
+  "durationSec": 26.02,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set15_q2.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:13.186Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set15_q3.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:13.612Z",
+  "sourceFile": "el3_set15_q3.mp3",
+  "sha256": "b11a049ef0def182fecb4b1b52158f6dd375f579cd6a16ae3ee59c758e0cd09a",
+  "durationSec": 25.47,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set15_q3.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:13.616Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set15_q4.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:14.136Z",
+  "sourceFile": "el3_set15_q4.mp3",
+  "sha256": "be4cb4983fd8d530bde96282145fcd37e0fa6c0b4a2e813c45559c0c0e9865df",
+  "durationSec": 22.28,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set15_q4.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:14.138Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set15_q5.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:14.654Z",
+  "sourceFile": "el3_set15_q5.mp3",
+  "sha256": "f7a256e991396b51b14a990c1543e3bcba8d77511e562107cad21ece251d31bb",
+  "durationSec": 25,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set15_q5.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:14.659Z"
  },
  {
   "audioUrl": "/listening_audio/el3_set15_q6.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T16:09:15.171Z",
+  "sourceFile": "el3_set15_q6.mp3",
+  "sha256": "415d61e8b176c6bf5e03e582f53240112f834183fa2d9457400606bb72081eb7",
+  "durationSec": 23.07,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q3/listening_audio/el3_set15_q6.mp3"
+  ],
+  "note": "まとめ録り原本（receipt/・1本3問×30本）を台本×音声認識(faster-whisper)の単語時刻で照合し、問と問の間の無音中央で切り出し（速度・音程無変更）。切り出し後の全90本を再度文字起こしして台本と照合（差は数字表記・a/the など聞き取り誤差のみ）。旧音源は利用者の指示で削除（2026-09-28）。",
+  "legacyDiscardedAt": "2026-09-28T16:09:15.175Z"
  },
  {
   "audioUrl": "/listening_q4/set01_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:22.543Z",
+  "sourceFile": "set01_4A_front.mp3",
+  "sha256": "418e26f0cc77bada1bcdf06ba6ab825b5a0ffcad0f7c51f02e672fcff0a6b8b5",
+  "durationSec": 27.04,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set01_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:22.548Z"
  },
  {
   "audioUrl": "/listening_q4/set01_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:22.031Z",
+  "sourceFile": "set01_4A_back.mp3",
+  "sha256": "283d47b8b06a7cf5c1ae52b20d441dfc8dfd39c516e317482659ca7345c3e186",
+  "durationSec": 29.62,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set01_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:22.036Z"
  },
  {
   "audioUrl": "/listening_q4/set02_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:24.406Z",
+  "sourceFile": "set02_4A_front.mp3",
+  "sha256": "468beddbeb985c60f7c5a038307b2f3825008078f5bc0f7ec5312e6100768f0a",
+  "durationSec": 26.88,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set02_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:24.411Z"
  },
  {
   "audioUrl": "/listening_q4/set02_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:23.853Z",
+  "sourceFile": "set02_4A_back.mp3",
+  "sha256": "8d9ba0af5916ba25d0fc85a42a7b2f0a5747b15ca6157da07a5f6e41781e5aa5",
+  "durationSec": 29.83,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set02_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:23.858Z"
  },
  {
   "audioUrl": "/listening_q4/set03_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:26.416Z",
+  "sourceFile": "set03_4A_front.mp3",
+  "sha256": "9a7b41ea5e35dc5ce5dbc487b28c27424ad24b968ea0704da4885dba27f83b23",
+  "durationSec": 32.63,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set03_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:26.422Z"
  },
  {
   "audioUrl": "/listening_q4/set03_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:25.850Z",
+  "sourceFile": "set03_4A_back.mp3",
+  "sha256": "56cd29d3f955f3f4030c67b9b3d81423e29b692f3dde125f5a7505131cfea5b9",
+  "durationSec": 35.94,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set03_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:25.855Z"
  },
  {
   "audioUrl": "/listening_q4/set04_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:28.480Z",
+  "sourceFile": "set04_4A_front.mp3",
+  "sha256": "a892dbcb9edf73c1510f08c617fa84a2a5e300816bd15b167a1c22aa412171e3",
+  "durationSec": 35.13,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set04_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:28.485Z"
  },
  {
   "audioUrl": "/listening_q4/set04_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:27.874Z",
+  "sourceFile": "set04_4A_back.mp3",
+  "sha256": "911b60f6a39ea553f0726cc5a881640ee017831041def17b931219130f3f129d",
+  "durationSec": 36.44,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set04_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:27.880Z"
  },
  {
   "audioUrl": "/listening_q4/set05_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:30.430Z",
+  "sourceFile": "set05_4A_front.mp3",
+  "sha256": "b172d1a1044546d18acd93b60030ca47a22f2da8c8a7b0d83e5830ef9edb3d01",
+  "durationSec": 31.24,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set05_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:30.435Z"
  },
  {
   "audioUrl": "/listening_q4/set05_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:29.878Z",
+  "sourceFile": "set05_4A_back.mp3",
+  "sha256": "505a04c87ea006e572589b216981df4161d3189081297972e9a0171f9f23d516",
+  "durationSec": 32.5,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set05_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:29.883Z"
  },
  {
   "audioUrl": "/listening_q4/set06_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:32.256Z",
+  "sourceFile": "set06_4A_front.mp3",
+  "sha256": "fc01f3dabbf9bd733038c1ad1ad87ad632688adba3103d513d988ef3f725a0d5",
+  "durationSec": 25.34,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set06_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:32.261Z"
  },
  {
   "audioUrl": "/listening_q4/set06_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:31.822Z",
+  "sourceFile": "set06_4A_back.mp3",
+  "sha256": "4d1b9810b997a2c9efa8fb5d10a3b57497bd1b3df9d8ad8b73f5232d83c3f11e",
+  "durationSec": 32.13,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set06_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:31.827Z"
  },
  {
   "audioUrl": "/listening_q4/set07_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:34.178Z",
+  "sourceFile": "set07_4A_front.mp3",
+  "sha256": "aab42a30dc6dc4ca2711a3e43b575c91adeff1ea8e4daa01407b28b44c670659",
+  "durationSec": 35.74,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set07_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:34.183Z"
  },
  {
   "audioUrl": "/listening_q4/set07_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:33.585Z",
+  "sourceFile": "set07_4A_back.mp3",
+  "sha256": "638706e1caece21d93f1e1f897b6af613e57b638e93517e74eb795ad0a5fc04d",
+  "durationSec": 27.72,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set07_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:33.587Z"
  },
  {
   "audioUrl": "/listening_q4/set08_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:36.118Z",
+  "sourceFile": "set08_4A_front.mp3",
+  "sha256": "bd1b2700f1eb5c415aec892279c251a6997c2005f9034a487c4ee0e1f2459991",
+  "durationSec": 33.49,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set08_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:36.123Z"
  },
  {
   "audioUrl": "/listening_q4/set08_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:35.598Z",
+  "sourceFile": "set08_4A_back.mp3",
+  "sha256": "5cae017fd589c417e9041ddc4dc5c59ae5c9dd0a8d80a1442aa4fe30db66aa74",
+  "durationSec": 31.74,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set08_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:35.600Z"
  },
  {
   "audioUrl": "/listening_q4/set09_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:38.063Z",
+  "sourceFile": "set09_4A_front.mp3",
+  "sha256": "cda97e4f4b8963203c7cd2b8198423402c4e0ffb5aab83addd72647e57f5427b",
+  "durationSec": 36.62,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set09_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:38.065Z"
  },
  {
   "audioUrl": "/listening_q4/set09_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:37.487Z",
+  "sourceFile": "set09_4A_back.mp3",
+  "sha256": "2bc516053b2ddab8330cd740cc5ee8f973c76276883a4880dd49455e7f86fb20",
+  "durationSec": 38.84,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set09_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:37.493Z"
  },
  {
   "audioUrl": "/listening_q4/set10_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:40.072Z",
+  "sourceFile": "set10_4A_front.mp3",
+  "sha256": "c70e0b0b6dea78afbfd08c20b51a8db4c242d3f732fb48c551f3fb3bcc3fdfb6",
+  "durationSec": 31.27,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set10_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:40.077Z"
  },
  {
   "audioUrl": "/listening_q4/set10_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:39.446Z",
+  "sourceFile": "set10_4A_back.mp3",
+  "sha256": "a735b3fe077f28ddea9c681a2c3a1fb861d2bc966e65b961ff3adec88c2030fe",
+  "durationSec": 27.04,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set10_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:39.451Z"
  },
  {
   "audioUrl": "/listening_q4/set11_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:42.031Z",
+  "sourceFile": "set11_4A_front.mp3",
+  "sha256": "24ac8979f9ff8838d3773e9912304a7004572c86a814d2efb084a8f6de12c01d",
+  "durationSec": 23.8,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set11_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:42.035Z"
  },
  {
   "audioUrl": "/listening_q4/set11_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:41.454Z",
+  "sourceFile": "set11_4A_back.mp3",
+  "sha256": "bfd009131c17199d74e460fae84d411f5ab854a50a4c8de747326268f64ccc1c",
+  "durationSec": 32.03,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set11_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:41.459Z"
  },
  {
   "audioUrl": "/listening_q4/set12_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:43.979Z",
+  "sourceFile": "set12_4A_front.mp3",
+  "sha256": "9337922752da83e127c6b454ebd473097eb8b4c081e8110dc1bdd4ea75e23212",
+  "durationSec": 29.28,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set12_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:43.984Z"
  },
  {
   "audioUrl": "/listening_q4/set12_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:43.465Z",
+  "sourceFile": "set12_4A_back.mp3",
+  "sha256": "7f2234e5e3767ed64ba4f9f471efafb5a8608bfc3d66384efb1d51ee46d3e16d",
+  "durationSec": 36.08,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set12_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:43.471Z"
  },
  {
   "audioUrl": "/listening_q4/set13_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:46.050Z",
+  "sourceFile": "set13_4A_front.mp3",
+  "sha256": "242588f6a2d23676701a897061f492137ba3d9c13ad3558a8450982f59c05f1f",
+  "durationSec": 32.86,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set13_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:46.056Z"
  },
  {
   "audioUrl": "/listening_q4/set13_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:45.454Z",
+  "sourceFile": "set13_4A_back.mp3",
+  "sha256": "c74090928348174f57b0d7b8bbd76d05688788371c980e49e8f9ebd52b63e921",
+  "durationSec": 37.9,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set13_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:45.460Z"
  },
  {
   "audioUrl": "/listening_q4/set14_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:47.932Z",
+  "sourceFile": "set14_4A_front.mp3",
+  "sha256": "f8c860c68ef0c3497c7c7f1644d5d53d4f00a3730d555d2b9708a6e2fd91f070",
+  "durationSec": 34.43,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set14_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:47.937Z"
  },
  {
   "audioUrl": "/listening_q4/set14_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:47.333Z",
+  "sourceFile": "set14_4A_back.mp3",
+  "sha256": "df2b90b582652851f6076ccb2b39fc68e5a14fe86562a7933678315cc05e20e9",
+  "durationSec": 31.76,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set14_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:47.338Z"
  },
  {
   "audioUrl": "/listening_q4/set15_4A_front.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:49.900Z",
+  "sourceFile": "set15_4A_front.mp3",
+  "sha256": "6dffc6c341e4e083b4c95c8cf68bfefd45b1ba82d6558c87e1619b2b20b5aaa3",
+  "durationSec": 32.76,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set15_4A_front.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:49.906Z"
  },
  {
   "audioUrl": "/listening_q4/set15_4A_back.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:49.273Z",
+  "sourceFile": "set15_4A_back.mp3",
+  "sha256": "b859a50052cee290940a91479bf841d3dbb0196047e21cc93743d22019b3a6e6",
+  "durationSec": 31.32,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set15_4A_back.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:49.278Z"
  },
  {
   "audioUrl": "/listening_q4/set01_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:23.263Z",
+  "sourceFile": "set01_4B.mp3",
+  "sha256": "30d35d4f2723dd6944462f43ef94163c945637ecc6d3396930dc0cadff44c5da",
+  "durationSec": 55.41,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set01_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:23.267Z"
  },
  {
   "audioUrl": "/listening_q4/set02_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:25.217Z",
+  "sourceFile": "set02_4B.mp3",
+  "sha256": "24eb63727f9f6e45189c652ad022584d932f74e0efdfeea0d9eca5bf8a6fde38",
+  "durationSec": 64.13,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set02_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:25.227Z"
  },
  {
   "audioUrl": "/listening_q4/set03_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:27.239Z",
+  "sourceFile": "set03_4B.mp3",
+  "sha256": "d053f24f4abc09ccb4e5c5fa8946a9e0d15932fde0f486daa06528db4560ae4d",
+  "durationSec": 62.25,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set03_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:27.249Z"
  },
  {
   "audioUrl": "/listening_q4/set04_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:29.282Z",
+  "sourceFile": "set04_4B.mp3",
+  "sha256": "d01b008cf750f97f0808c9929064cb55b5426d6cd4a0644ccab93ebebf0ed4c9",
+  "durationSec": 59.61,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set04_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:29.291Z"
  },
  {
   "audioUrl": "/listening_q4/set05_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:31.202Z",
+  "sourceFile": "set05_4B.mp3",
+  "sha256": "314fc9bd7c01e7f1ff9f62a1d7d661bb48f0fe5203394da9289967b95ec43e36",
+  "durationSec": 59.35,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set05_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:31.212Z"
  },
  {
   "audioUrl": "/listening_q4/set06_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:33.067Z",
+  "sourceFile": "set06_4B.mp3",
+  "sha256": "ba03c4725f954a30da90671679fbd566821711bd9f8a0840648bc958fbe048b4",
+  "durationSec": 59.3,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set06_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:33.076Z"
  },
  {
   "audioUrl": "/listening_q4/set07_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:35.053Z",
+  "sourceFile": "set07_4B.mp3",
+  "sha256": "ec53d2826c225afe3698fc1eb1f506bf33337f4c6060073b2249a38e221b482b",
+  "durationSec": 60.45,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set07_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:35.063Z"
  },
  {
   "audioUrl": "/listening_q4/set08_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:36.885Z",
+  "sourceFile": "set08_4B.mp3",
+  "sha256": "253275965f0a7461cdf7d754be76cee9ea43b85c9e76056ed059143b6fba6566",
+  "durationSec": 61.73,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set08_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:36.888Z"
  },
  {
   "audioUrl": "/listening_q4/set09_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:38.882Z",
+  "sourceFile": "set09_4B.mp3",
+  "sha256": "9dd6e82c79c1ea2cf2d9ad8d7ac32ee2b74ab6791909c80d642963ddb5025080",
+  "durationSec": 53.42,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set09_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:38.891Z"
  },
  {
   "audioUrl": "/listening_q4/set10_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:40.883Z",
+  "sourceFile": "set10_4B.mp3",
+  "sha256": "426ba8f02d6b9d4b0d09928c0d5e9531e73942ec082ee8be524c5badff401ff3",
+  "durationSec": 63.24,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set10_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:40.893Z"
  },
  {
   "audioUrl": "/listening_q4/set11_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:42.904Z",
+  "sourceFile": "set11_4B.mp3",
+  "sha256": "101d52cc8f3d6aacdda58027e9ea9c6898bd1b0f740468528b625097d865d5b7",
+  "durationSec": 63.03,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set11_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:42.910Z"
  },
  {
   "audioUrl": "/listening_q4/set12_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:44.808Z",
+  "sourceFile": "set12_4B.mp3",
+  "sha256": "2383824835618a2d5ccada8d805b35e028e08a71a3df7105d8cd35490b8fde8c",
+  "durationSec": 57.86,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set12_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:44.817Z"
  },
  {
   "audioUrl": "/listening_q4/set13_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:46.877Z",
+  "sourceFile": "set13_4B.mp3",
+  "sha256": "638bffab44f8e2556e763b6c95fd2fd4e6cbe54da0a549b6044b16b83d060986",
+  "durationSec": 56.16,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set13_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:46.883Z"
  },
  {
   "audioUrl": "/listening_q4/set14_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:48.792Z",
+  "sourceFile": "set14_4B.mp3",
+  "sha256": "1c8c9b2b312a8b1f11c4fd60e2744e04d484b72a4f07bebf6ed032aa87eb0967",
+  "durationSec": 60.26,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set14_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:48.802Z"
  },
  {
   "audioUrl": "/listening_q4/set15_4B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T17:21:50.672Z",
+  "sourceFile": "set15_4B.mp3",
+  "sha256": "a1613657b6163a428bbddc6c0266ea97c3f362740192087425b48b7417acb1c0",
+  "durationSec": 57.84,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q4/listening_q4/set15_4B.mp3"
+  ],
+  "note": "第4問A/B 45本。12ファイルを台本とASRで照合して分割。set07_4A_front/back・set14_4B は利用者の取り直し（17_11_22）を採用",
+  "legacyDiscardedAt": "2026-09-28T17:21:50.682Z"
  },
  {
   "audioUrl": "/listening_q5/q5set01_lecture.mp3",

@@ -68,4 +68,32 @@ describe('リスニング音源台帳（商用音源と旧音源の分離）', (
       expect(fs.existsSync(path.join(ROOT, 'audio_sources/legacy', r.audioUrl)), r.audioUrl).toBe(false);
     }
   });
+
+  it('第3問（90本）・第4問 A/B（45本）も全部商用の新音源で、旧音源コピーは削除済み', () => {
+    const rows = ledger.filter(r => /\/el3_|\/listening_q4\/set\d+_4[AB]/.test(r.audioUrl));
+    expect(rows.length).toBe(135);
+    for (const r of rows) {
+      expect(r.status, r.audioUrl).toBe('replaced');
+      expect(r.legacyCopy, r.audioUrl).toBeUndefined();
+      expect(r.legacyDiscardedAt, r.audioUrl).toBeTruthy();
+    }
+  });
+});
+
+describe('対戦のリスニング締切と音源の長さ', () => {
+  it('対戦に出るリスニング音源は、締切（55秒）までに聞き終えて答える時間（10秒以上）が残る', async () => {
+    const { arenaRule } = await import('../src/battle/core/arenaRules');
+    const rule = arenaRule({ subject: 'english_listening' } as any);
+    const limit = Number((rule as any).timeLimitOverride);
+    expect(limit).toBeLessThan(60); // AGENTS.md：締切は60秒未満
+    const pool = fs.readFileSync(path.join(ROOT, 'src/battle/data/pool.english_listening.generated.ts'), 'utf8');
+    const chapters = new Set([...pool.matchAll(/\["q:(el\w+):/g)].map(m => m[1]));
+    const prefix: Record<string, RegExp> = { el1_A: /\/el1A_/, el1_B: /\/el1B_/, el2: /\/el2_/, el3: /\/el3_/ };
+    const replacedInPool = replaced.filter(r => [...chapters].some(c => prefix[c]?.test(r.audioUrl)));
+    expect(replacedInPool.length).toBeGreaterThan(0);
+    for (const r of replacedInPool) {
+      const sec = (r as any).durationSec as number;
+      expect(sec, `${r.audioUrl} が長すぎて対戦で答える時間が残らない（${sec}秒）`).toBeLessThanOrEqual(limit - 10);
+    }
+  });
 });

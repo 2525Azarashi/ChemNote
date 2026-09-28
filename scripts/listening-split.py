@@ -16,6 +16,7 @@
                           --out .tmpwork/<名前>/stage
      → stage/<stem>.mp3（原本のまま無劣化で切り出し）と
        audio_sources/commercial/<名前>/receipt/split_manifest.json（どこで切ったか・一致度）
+  3') 取り直しが届いたら、その原本だけ --merge で切り出す（同じ --out に上書き・記録は追記）
   4) 下見と取り込み   npx tsx scripts/listening-audio.mts import <stage> → 問題なければ --apply --batch <名前> …
 
 ■ 切り方
@@ -77,7 +78,9 @@ def load_scripts():
             "for(const t of p.audioTracks??[])if(t.audioUrl)o[t.audioUrl.split('/').pop().replace('.mp3','')]=t.turns?.length?t.turns.map((x:any)=>x.text).join(' '):t.script;"
             "console.log(JSON.stringify(o));")
     out = subprocess.check_output(['npx', 'tsx', '-e', code], cwd=ROOT, text=True)
-    return json.loads(out.strip().splitlines()[-1])
+    data = json.loads(out.strip().splitlines()[-1])
+    # 第4問B などの台本は「話者1: …」の見出しつき。見出しは読まないので照合から外す
+    return {k: re.sub(r'話者\d+\s*[:：]', ' ', v or '') for k, v in data.items()}
 
 
 def plan_cuts(path, words, stems, scripts):
@@ -103,8 +106,9 @@ def plan_cuts(path, words, stems, scripts):
         if a is None or b is None:
             warn.append(f"{segs[i]['stem']}: 台本と一致する単語が見つからない"); cuts.append(None); continue
         best = None
-        # 音声認識の単語時刻は 0.5 秒ほどずれることがあるので、段階的に細かく探す
-        for noise, d, margin in ((-40, 0.25, 0.35), (-40, 0.12, 0.8), (-35, 0.10, 1.0)):
+        # 音声認識の単語時刻は 0.5〜2 秒ほどずれることがあるので、段階的に探す
+        # （最後は「0.6秒以上の長い無音」を ±2.5 秒で探す。まとめ録りの回と回の境目はふつう長い間がある）
+        for noise, d, margin in ((-40, 0.25, 0.35), (-40, 0.12, 0.8), (-35, 0.10, 1.0), (-40, 0.6, 2.5)):
             for s0, s1 in silences(path, noise, d):
                 c = (s0 + s1) / 2
                 if min(a, b) - margin <= c <= max(a, b) + margin and (not best or s1 - s0 > best[0]):
@@ -129,6 +133,7 @@ def main():
     ap.add_argument('--plan', action='append', required=True, help='原本=words.json=stem1,stem2,…（話している順）')
     ap.add_argument('--out', required=True)
     ap.add_argument('--force', action='store_true')
+    ap.add_argument('--merge', action='store_true', help='既存の split_manifest.json に追記する（取り直し分で一部の問だけ差し替えるとき）')
     a = ap.parse_args()
     scripts = load_scripts()
     os.makedirs(a.out, exist_ok=True)
@@ -158,7 +163,19 @@ def main():
             g['output'] = os.path.basename(out)
     rdir = os.path.join(ROOT, 'audio_sources/commercial', a.batch, 'receipt')
     os.makedirs(rdir, exist_ok=True)
-    json.dump(manifest, open(os.path.join(rdir, 'split_manifest.json'), 'w'), ensure_ascii=False, indent=1)
+    mpath = os.path.join(rdir, 'split_manifest.json')
+    if a.merge and os.path.exists(mpath):
+        # 取り直し：新しい原本から切った問は、古い原本の同じ問より優先する（古い側に supersededBy を残す）
+        prev = json.load(open(mpath))
+        new_stems = {g['stem']: s['file'] for s in manifest['sources'] for g in s['tracks']}
+        keep = [s for s in prev.get('sources', []) if s['sha256'] not in {x['sha256'] for x in manifest['sources']}]
+        for s in keep:
+            for g in s['tracks']:
+                if g['stem'] in new_stems:
+                    g['supersededBy'] = new_stems[g['stem']]
+        manifest['sources'] = keep + manifest['sources']
+        manifest['history'] = prev.get('history', []) + [prev.get('createdAtUtc')]
+    json.dump(manifest, open(mpath, 'w'), ensure_ascii=False, indent=1)
     n = sum(len(s['tracks']) for s in manifest['sources'])
     print(f'{n} 本を {a.out} に切り出しました。記録: audio_sources/commercial/{a.batch}/receipt/split_manifest.json')
     print(f'次に: npx tsx scripts/listening-audio.mts import {a.out}')

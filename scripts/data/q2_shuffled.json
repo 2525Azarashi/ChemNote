@@ -309,10 +309,10 @@
         "speakers": "女性(客) / 男性(店員)",
         "figureType": "1枚の図の中に①〜④",
         "options": [
+          "ゴマ付きの小さな丸パン",
           "ポピーシード付きの大きな丸パン",
           "ポピーシード付きの小さな丸パン",
-          "ゴマ付きの大きな丸パン",
-          "ゴマ付きの小さな丸パン"
+          "ゴマ付きの大きな丸パン"
         ],
         "turns": [
           {
@@ -333,11 +333,18 @@
           }
         ],
         "question": "Which bread did the woman buy?",
-        "answerMark": "④",
+        "answerMark": "①",
         "answerText": "ゴマ付きの小さな丸パン",
         "explanation": "種類（sesame）とサイズ（smaller）の2条件。poppy と sesame の音の聞き分けが鍵。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single aquarium floor map with two floors shown, Dolphin tank on 1F, Penguin area on 2F, and a Shark tank. FOUR different visitor routes drawn with arrows, each labeled with a circled number 1-4: route 1 goes Dolphin to Penguin to Shark, route 2 goes Dolphin to Penguin only (Shark crossed out), route 3 goes Penguin then Dolphin, route 4 goes Penguin to Dolphin to Shark. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 4
+        "answerIndex": 1,
+        "shuffled": true,
+        "shufflePerm": [
+          3,
+          0,
+          1,
+          2
+        ]
       }
     ]
   },
@@ -844,9 +851,9 @@
         "figureType": "1枚の図の中に①〜④",
         "options": [
           "バラ柄・しおりリボンなし",
-          "ヒマワリ柄・しおりリボンあり",
           "ヒマワリ柄・しおりリボンなし",
-          "ユリ柄・しおりリボンあり"
+          "ユリ柄・しおりリボンあり",
+          "ヒマワリ柄・しおりリボンあり"
         ],
         "turns": [
           {
@@ -867,11 +874,18 @@
           }
         ],
         "question": "Which book cover did the woman choose?",
-        "answerMark": "②",
+        "answerMark": "④",
         "answerText": "ヒマワリ柄・しおりリボンあり",
         "explanation": "柄（sunflowers）＋機能（ribbon）の2条件。花の種類の聞き分けが要点。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single event hall seating chart seen from above with rows of seats. FOUR circled numbers 1-4 placed INSIDE the chart on four seat blocks: 1 the front row, 2 the left side of the middle rows, 3 the back rows, 4 the right side of the middle rows. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 2
+        "answerIndex": 4,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          2,
+          3,
+          1
+        ]
       },
       {
         "q": 3,
@@ -1555,7 +1569,14 @@
         "answerText": "長毛ストレートの小型テリア(メス)",
         "explanation": "種類（terrier）＋毛（straight long）＋性別（female）の3条件。プードルと迷わせる。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single family photo drawing with several relatives. FOUR circled numbers 1-4 placed INSIDE the picture pointing to four people: 1 the leftmost woman, 2 the woman holding a baby next to her, 3 a tall man behind them, 4 a woman behind the aunt. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 4
+        "answerIndex": 4,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       {
         "q": 3,

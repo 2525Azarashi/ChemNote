@@ -52,7 +52,7 @@
  *   この型は原文の並びのまま固定し、並べ替え可能な2×2型で全体を均している。
  *
  * 正解位置の実測（このファイルに収録した分だけを数えた値）
- *   ①9問 / ②18問 / ③9問 / ④3問（計 39問）。最頻位置だけ塗った場合の正答率 46%。
+ *   ①10問 / ②18問 / ③9問 / ④5問（計 42問）。最頻位置だけ塗った場合の正答率 43%。
  *   実物イラストの問は並べ替えられないため、この偏りは
  *   PDF 原文の偏りがそのまま出たもの。自前生成の絵に
  *   置き換えた問から順に均していく。
@@ -463,6 +463,20 @@ const EL2_SET3_TRACKS: ListeningAudioTrack[] = [
     translation: '',
     keyPhrases: [],
   },
+  {
+    subId: 'q_el2_set3_3',
+    label: '問3',
+    hint: '男女がベーカリーでパンを選んでいる。（話者：女性（客） / 男性（店員））',
+    script: 'W: I\'d like the round bread with sesame seeds on top.\nM: The one with poppy seeds? Or the one with sesame?\nW: Sesame, please. And the smaller one.\nM: OK, here you go.',
+    turns: [
+      { who: 'W', text: 'I\'d like the round bread with sesame seeds on top.' },
+      { who: 'M', text: 'The one with poppy seeds? Or the one with sesame?' },
+      { who: 'W', text: 'Sesame, please. And the smaller one.' },
+      { who: 'M', text: 'OK, here you go.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
 ];
 
 const EL2_SET3: ListeningProblem = {
@@ -470,7 +484,7 @@ const EL2_SET3: ListeningProblem = {
   category: '第3回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET3_TRACKS,
-  text: `第3回　第2問（1問・2回読み）　【難易度：標準】
+  text: `第3回　第2問（2問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -486,7 +500,13 @@ const EL2_SET3: ListeningProblem = {
 Question: Which room will they choose?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
 
-※ 問1・問3 はイラストの準備中のため、この回では出題していません。`,
+────────────────────
+問3（話者：女性（客） / 男性（店員））
+場面：男女がベーカリーでパンを選んでいる。
+Question: Which bread did the woman buy?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+※ 問1 はイラストの準備中のため、この回では出題していません。`,
   subQuestions: [
     {
       id: 'q_el2_set3_2',
@@ -499,6 +519,27 @@ Question: Which room will they choose?
       imageCaption: '問2 の図（①〜④の位置）',
       detailedExplanation: {
         theme: 'sea view→But it\'s twice the price→mountain view の値段による決定',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
+      id: 'q_el2_set3_3',
+      label: '問3 Which bread did the woman buy?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '①',
+      correctAnswerRate: 65,
+      imageUrl: '/listening_q2/el2_set3_q3.jpg',
+      imageCaption: '問3 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '種類（sesame）とサイズ（smaller）の2条件',
         type: 'イラスト選択型（短い対話）',
         difficulty: 3,
         steps: [
@@ -525,7 +566,22 @@ Question: Which room will they choose?
 ③ 街が見える部屋
 ④ 中庭が見える部屋
 正解の選択肢：② 山が見える部屋
-sea view→But it's twice the price→mountain view の値段による決定。2025年問11の cheaper 型。`,
+sea view→But it's twice the price→mountain view の値段による決定。2025年問11の cheaper 型。
+
+問3　正解は ①
+場面：男女がベーカリーでパンを選んでいる。（話者：女性（客） / 男性（店員））
+スクリプト：W: I'd like the round bread with sesame seeds on top.
+M: The one with poppy seeds? Or the one with sesame?
+W: Sesame, please. And the smaller one.
+M: OK, here you go.
+Question: Which bread did the woman buy?
+選択肢のイラスト：
+① ゴマ付きの小さな丸パン
+② ポピーシード付きの大きな丸パン
+③ ポピーシード付きの小さな丸パン
+④ ゴマ付きの大きな丸パン
+正解の選択肢：① ゴマ付きの小さな丸パン
+種類（sesame）とサイズ（smaller）の2条件。poppy と sesame の音の聞き分けが鍵。`,
   surroundingKnowledge: [
     '第2問は2回読み。1回目で候補を2つに絞り、2回目で決め手を確認する二段構えが基本。',
     '「訂正の型」が最頻出。No, actually … / the other one / not A but B の後ろが答えになる。',
@@ -1272,6 +1328,20 @@ const EL2_SET8_TRACKS: ListeningAudioTrack[] = [
     keyPhrases: [],
   },
   {
+    subId: 'q_el2_set8_2',
+    label: '問2',
+    hint: '男女が本のカバーを選んでいる。（話者：女性 / 男性（店員））',
+    script: 'W: I\'d like a book cover, please. Do you have any with flowers?\nM: Yes, we have roses, sunflowers, and lilies.\nW: Sunflowers, please. And do you have one with a bookmark ribbon?\nM: This one has a ribbon.',
+    turns: [
+      { who: 'W', text: 'I\'d like a book cover, please. Do you have any with flowers?' },
+      { who: 'M', text: 'Yes, we have roses, sunflowers, and lilies.' },
+      { who: 'W', text: 'Sunflowers, please. And do you have one with a bookmark ribbon?' },
+      { who: 'M', text: 'This one has a ribbon.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set8_3',
     label: '問3',
     hint: '男女が引越しの荷物をどの部屋へ運ぶか相談している。（話者：男性 / 女性）',
@@ -1293,7 +1363,7 @@ const EL2_SET8: ListeningProblem = {
   category: '第8回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET8_TRACKS,
-  text: `第8回　第2問（2問・2回読み）　【難易度：標準】
+  text: `第8回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -1310,12 +1380,16 @@ Question: Which cake matches the boy's request?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
 ────────────────────
+問2（話者：女性 / 男性（店員））
+場面：男女が本のカバーを選んでいる。
+Question: Which book cover did the woman choose?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問3（話者：男性 / 女性）
 場面：男女が引越しの荷物をどの部屋へ運ぶか相談している。
 Question: Which arrangement matches the woman's instructions?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
-
-※ 問2 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
     {
       id: 'q_el2_set8_1',
@@ -1339,12 +1413,33 @@ Question: Which arrangement matches the woman's instructions?
       },
     },
     {
+      id: 'q_el2_set8_2',
+      label: '問2 Which book cover did the woman choose?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '④',
+      correctAnswerRate: 65,
+      imageUrl: '/listening_q2/el2_set8_q2.jpg',
+      imageCaption: '問2 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '柄（sunflowers）＋機能（ribbon）の2条件',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
       id: 'q_el2_set8_3',
       label: '問3 Which arrangement matches the woman\'s instructions?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '①',
-      correctAnswerRate: 65,
+      correctAnswerRate: 62,
       imageUrl: '/listening_q2/el2_set8_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -1376,6 +1471,21 @@ Question: Which cake matches the boy's request?
 ④ 苺のみ、文字なし、側面プレーン
 正解の選択肢：① 苺・チョコ文字・側面プレーンクリーム
 苺＋チョコ文字＋側面プレーンの3条件。side はチョコを断る点に注意。
+
+問2　正解は ④
+場面：男女が本のカバーを選んでいる。（話者：女性 / 男性（店員））
+スクリプト：W: I'd like a book cover, please. Do you have any with flowers?
+M: Yes, we have roses, sunflowers, and lilies.
+W: Sunflowers, please. And do you have one with a bookmark ribbon?
+M: This one has a ribbon.
+Question: Which book cover did the woman choose?
+選択肢のイラスト：
+① バラ柄・しおりリボンなし
+② ヒマワリ柄・しおりリボンなし
+③ ユリ柄・しおりリボンあり
+④ ヒマワリ柄・しおりリボンあり
+正解の選択肢：④ ヒマワリ柄・しおりリボンあり
+柄（sunflowers）＋機能（ribbon）の2条件。花の種類の聞き分けが要点。
 
 問3　正解は ①
 場面：男女が引越しの荷物をどの部屋へ運ぶか相談している。（話者：男性 / 女性）
@@ -2398,6 +2508,20 @@ const EL2_SET14_TRACKS: ListeningAudioTrack[] = [
     keyPhrases: [],
   },
   {
+    subId: 'q_el2_set14_2',
+    label: '問2',
+    hint: '男女がペットショップで犬を選んでいる。（話者：女性 / 男性（店員））',
+    script: 'W: I like small dogs with long fur.\nM: We have a small poodle with curly fur, and a small terrier with straight long fur.\nW: The terrier sounds good. Is it a male or female?\nM: This one\'s female.',
+    turns: [
+      { who: 'W', text: 'I like small dogs with long fur.' },
+      { who: 'M', text: 'We have a small poodle with curly fur, and a small terrier with straight long fur.' },
+      { who: 'W', text: 'The terrier sounds good. Is it a male or female?' },
+      { who: 'M', text: 'This one\'s female.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set14_3',
     label: '問3',
     hint: '男女が旅行の持ち物を確認している。（話者：男性 / 女性）',
@@ -2419,7 +2543,7 @@ const EL2_SET14: ListeningProblem = {
   category: '第14回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET14_TRACKS,
-  text: `第14回　第2問（2問・2回読み）　【難易度：標準】
+  text: `第14回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -2436,12 +2560,16 @@ Question: Which poster layout matches?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
 ────────────────────
+問2（話者：女性 / 男性（店員））
+場面：男女がペットショップで犬を選んでいる。
+Question: Which dog will the woman take?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問3（話者：男性 / 女性）
 場面：男女が旅行の持ち物を確認している。
 Question: Which set matches their packing list?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
-
-※ 問2 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
     {
       id: 'q_el2_set14_1',
@@ -2465,12 +2593,33 @@ Question: Which set matches their packing list?
       },
     },
     {
+      id: 'q_el2_set14_2',
+      label: '問2 Which dog will the woman take?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '④',
+      correctAnswerRate: 65,
+      imageUrl: '/listening_q2/el2_set14_q2.jpg',
+      imageCaption: '問2 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '種類（terrier）＋毛（straight long）＋性別（female）の3条件',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
       id: 'q_el2_set14_3',
       label: '問3 Which set matches their packing list?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '②',
-      correctAnswerRate: 65,
+      correctAnswerRate: 62,
       imageUrl: '/listening_q2/el2_set14_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -2502,6 +2651,21 @@ Question: Which poster layout matches?
 ④ 上部に場所・中央にタイトル・下部に日付
 正解の選択肢：① 上部にタイトル・その下に日付・下部に場所・隅にロゴ
 4要素（タイトル／日付／場所／ロゴ）の位置指定。上→下、隅の位置関係を統合。
+
+問2　正解は ④
+場面：男女がペットショップで犬を選んでいる。（話者：女性 / 男性（店員））
+スクリプト：W: I like small dogs with long fur.
+M: We have a small poodle with curly fur, and a small terrier with straight long fur.
+W: The terrier sounds good. Is it a male or female?
+M: This one's female.
+Question: Which dog will the woman take?
+選択肢のイラスト：
+① 巻き毛の小型プードル(オス)
+② 巻き毛の小型プードル(メス)
+③ 長毛ストレートの小型テリア(オス)
+④ 長毛ストレートの小型テリア(メス)
+正解の選択肢：④ 長毛ストレートの小型テリア(メス)
+種類（terrier）＋毛（straight long）＋性別（female）の3条件。プードルと迷わせる。
 
 問3　正解は ②
 場面：男女が旅行の持ち物を確認している。（話者：男性 / 女性）
@@ -2890,7 +3054,7 @@ Question: Which locker is the man's?
   ],
 };
 
-/** 第2問の演習セット一覧（イラストが揃っている 16 セット 39 問）。 */
+/** 第2問の演習セット一覧（イラストが揃っている 16 セット 42 問）。 */
 export const EL2_PROBLEMS: ListeningProblem[] = [
   EL2_SET1,
   EL2_SET2,
