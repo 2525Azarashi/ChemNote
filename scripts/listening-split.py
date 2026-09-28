@@ -16,6 +16,8 @@
                           --out .tmpwork/<名前>/stage
      → stage/<stem>.mp3（原本のまま無劣化で切り出し）と
        audio_sources/commercial/<名前>/receipt/split_manifest.json（どこで切ったか・一致度）
+  3'') 設問文（Question. …）まで読み上げている録音は、読んだとおりの台本を --scripts x.json で渡す
+        （渡さないと設問文の前後どちらで切るかがぶれる）
   3') 取り直しが届いたら、その原本だけ --merge で切り出す（同じ --out に上書き・記録は追記）
   4) 下見と取り込み   npx tsx scripts/listening-audio.mts import <stage> → 問題なければ --apply --batch <名前> …
 
@@ -133,9 +135,12 @@ def main():
     ap.add_argument('--plan', action='append', required=True, help='原本=words.json=stem1,stem2,…（話している順）')
     ap.add_argument('--out', required=True)
     ap.add_argument('--force', action='store_true')
+    ap.add_argument('--scripts', help='台本の上書き JSON {stem: 読み上げた全文}。第2問のように設問文まで読み上げた録音や、まだアプリに音源欄が無い問を切るとき')
     ap.add_argument('--merge', action='store_true', help='既存の split_manifest.json に追記する（取り直し分で一部の問だけ差し替えるとき）')
     a = ap.parse_args()
     scripts = load_scripts()
+    if a.scripts:
+        scripts.update(json.load(open(a.scripts)))
     os.makedirs(a.out, exist_ok=True)
     manifest = dict(batch=a.batch, createdAtUtc=datetime.now(timezone.utc).isoformat(),
                     method='台本と音声認識の単語を突き合わせ、文間の無音の中央で切断。速度・音程は無変更。mp3 はストリームコピー。',

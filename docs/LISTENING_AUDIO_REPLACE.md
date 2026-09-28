@@ -27,9 +27,10 @@
 | 第1問 A（56本）・第1問 B（60本） | 116本 ✓ 全部 | ElevenLabs eleven_v3（利用者が有料契約中に直接生成・申告ベース） |
 | 第3問（90本） | 90本 ✓ 全部 | 同上（30ファイルのまとめ録りを台本照合で分割） |
 | 第4問 A（30本）・第4問 B（15本） | 45本 ✓ 全部 | 同上（12ファイルを分割。set07_4A_front/back・set14_4B は取り直し版を `--merge` で採用） |
-| それ以外（第2・5・6問） | 0 / 113 | 旧音源のまま（`legacy_unverified`） |
+| 第2問（公開43問） | 43本 ✓ 全部 | 同上（Q2_1〜5 の5ファイル＝48問を分割。設問文 Question. … まで含む。絵がまだ無い5問の分は `audio_sources/commercial/elevenlabs_2026-09-28_q2/pending_q2/` に保管し、絵ができたら import する） |
+| それ以外（第5・6問） | 0 / 75 | 旧音源のまま（`legacy_unverified`） |
 
-第1・3・4問の旧音源は **利用者の指示で削除済み**（2026-09-28。`legacyDiscardedAt` が台帳に記録される。`use-legacy` では戻らない）。
+第1〜4問の旧音源は **利用者の指示で削除済み**（2026-09-28。`legacyDiscardedAt` が台帳に記録される。`use-legacy` では戻らない）。
 
 ## ★送られてきた音声は「商用の新音源」。旧音源と絶対に混ぜない★（2026-09-28 利用者指示）
 
@@ -45,6 +46,7 @@ python3 scripts/listening-split.py --batch <同じ名前> --out .tmpwork/<名前
 #    一部だけ取り直しが届いたら、元の分割をやり直したあと --merge で上書き（古い分割は supersededBy 付きで記録に残る）
 #    python3 scripts/listening-split.py --batch <同じ名前> --out .tmpwork/<名前>/stage --merge \
 #      --plan 'audio_sources/commercial/<名前>/receipt/取り直し.mp3=words.json=set07_4A_front,set14_4B'
+#    設問文（Question. …）まで読み上げた録音は、読んだとおりの台本を --scripts x.json で渡す（{stem: 全文}）
 # 3) 下見 → 取り込み（旧音源と同じ中身のファイルは自動で弾かれる）
 npx tsx scripts/listening-audio.mts import .tmpwork/<名前>/stage
 npx tsx scripts/listening-audio.mts import .tmpwork/<名前>/stage --apply --batch <同じ名前> --provider … --license …

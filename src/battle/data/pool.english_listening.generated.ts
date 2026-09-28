@@ -12,7 +12,7 @@
  * を実行すること。
  *
  * -------------------------------------------------------------------
- * ■ 収録数: 244 問
+ * ■ 収録数: 249 問
  * -------------------------------------------------------------------
  *
  * ■ 中身は「タプルの配列」であって、読みやすさを捨てている。
@@ -154,10 +154,12 @@ export const POOL: readonly unknown[][] = [
   ["q:el2:q_el2_set13:q_el2_set13_2","el2","q_el2_set13","q_el2_set13_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which graph matches?",["①","②","③","④"],0,[],17,"/listening_q2/el2_set13_q2.jpg"],
   ["q:el2:q_el2_set13:q_el2_set13_3","el2","q_el2_set13","q_el2_set13_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which schedule shows the woman's plan?",["①","②","③","④"],0,[],17,"/listening_q2/el2_set13_q3.jpg"],
   ["q:el2:q_el2_set14:q_el2_set14_1","el2","q_el2_set14","q_el2_set14_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which poster layout matches?",["①","②","③","④"],0,[],17,"/listening_q2/el2_set14_q1.jpg"],
+  ["q:el2:q_el2_set14:q_el2_set14_2","el2","q_el2_set14","q_el2_set14_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which dog will the woman take?",["①","②","③","④"],3,[],17,"/listening_q2/el2_set14_q2.jpg"],
   ["q:el2:q_el2_set14:q_el2_set14_3","el2","q_el2_set14","q_el2_set14_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which set matches their packing list?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set14_q3.jpg"],
   ["q:el2:q_el2_set15:q_el2_set15_1","el2","q_el2_set15","q_el2_set15_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which train will the woman take?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set15_q1.jpg"],
   ["q:el2:q_el2_set15:q_el2_set15_2","el2","q_el2_set15","q_el2_set15_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which person is the woman's mother?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set15_q2.jpg"],
   ["q:el2:q_el2_set15:q_el2_set15_3","el2","q_el2_set15","q_el2_set15_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which is checked in (預け入れ) ?",["①","②","③","④"],0,[],17,"/listening_q2/el2_set15_q3.jpg"],
+  ["q:el2:q_el2_set16:q_el2_set16_1","el2","q_el2_set16","q_el2_set16_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which cake will the man buy?",["①","②","③","④"],3,[],17,"/listening_q2/el2_set16_q1.jpg"],
   ["q:el2:q_el2_set16:q_el2_set16_2","el2","q_el2_set16","q_el2_set16_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which locker is the man's?",["①","②","③","④"],2,[],17,"/listening_q2/el2_set16_q2.jpg"],
   ["q:el2:q_el2_set1:q_el2_set1_1","el2","q_el2_set1","q_el2_set1_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","What will the man drink?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set1_q1.jpg"],
   ["q:el2:q_el2_set1:q_el2_set1_2","el2","q_el2_set1","q_el2_set1_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Where will Ken put the books?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set1_q2.jpg"],
@@ -165,9 +167,11 @@ export const POOL: readonly unknown[][] = [
   ["q:el2:q_el2_set2:q_el2_set2_1","el2","q_el2_set2","q_el2_set2_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which item will they buy?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set2_q1.jpg"],
   ["q:el2:q_el2_set2:q_el2_set2_3","el2","q_el2_set2","q_el2_set2_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which boy is the woman's brother?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set2_q3.jpg"],
   ["q:el2:q_el2_set3:q_el2_set3_2","el2","q_el2_set3","q_el2_set3_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which room will they choose?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set3_q2.jpg"],
+  ["q:el2:q_el2_set3:q_el2_set3_3","el2","q_el2_set3","q_el2_set3_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which bread did the woman buy?",["①","②","③","④"],0,[],17,"/listening_q2/el2_set3_q3.jpg"],
   ["q:el2:q_el2_set4:q_el2_set4_1","el2","q_el2_set4","q_el2_set4_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Where will they meet?",["①","②","③","④"],2,[],17,"/listening_q2/el2_set4_q1.jpg"],
   ["q:el2:q_el2_set4:q_el2_set4_2","el2","q_el2_set4","q_el2_set4_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which bin will the woman use?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set4_q2.jpg"],
   ["q:el2:q_el2_set4:q_el2_set4_3","el2","q_el2_set4","q_el2_set4_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which route will they take?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set4_q3.jpg"],
+  ["q:el2:q_el2_set5:q_el2_set5_1","el2","q_el2_set5","q_el2_set5_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which cookbook will the woman probably buy?",["①","②","③","④"],0,[],17,"/listening_q2/el2_set5_q1.jpg"],
   ["q:el2:q_el2_set5:q_el2_set5_2","el2","q_el2_set5","q_el2_set5_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","What is the condition of the bicycle?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set5_q2.jpg"],
   ["q:el2:q_el2_set5:q_el2_set5_3","el2","q_el2_set5","q_el2_set5_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which boy is the woman's nephew?",["①","②","③","④"],2,[],17,"/listening_q2/el2_set5_q3.jpg"],
   ["q:el2:q_el2_set6:q_el2_set6_1","el2","q_el2_set6","q_el2_set6_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","What will the weather be on Sunday?",["①","②","③","④"],2,[],17,"/listening_q2/el2_set6_q1.jpg"],
@@ -176,6 +180,7 @@ export const POOL: readonly unknown[][] = [
   ["q:el2:q_el2_set7:q_el2_set7_1","el2","q_el2_set7","q_el2_set7_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which model will the woman probably choose?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set7_q1.jpg"],
   ["q:el2:q_el2_set7:q_el2_set7_3","el2","q_el2_set7","q_el2_set7_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which seat will the woman choose?",["①","②","③","④"],3,[],17,"/listening_q2/el2_set7_q3.jpg"],
   ["q:el2:q_el2_set8:q_el2_set8_1","el2","q_el2_set8","q_el2_set8_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which cake matches the boy's request?",["①","②","③","④"],0,[],17,"/listening_q2/el2_set8_q1.jpg"],
+  ["q:el2:q_el2_set8:q_el2_set8_2","el2","q_el2_set8","q_el2_set8_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which book cover did the woman choose?",["①","②","③","④"],3,[],17,"/listening_q2/el2_set8_q2.jpg"],
   ["q:el2:q_el2_set8:q_el2_set8_3","el2","q_el2_set8","q_el2_set8_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which arrangement matches the woman's instructions?",["①","②","③","④"],0,[],18,"/listening_q2/el2_set8_q3.jpg"],
   ["q:el2:q_el2_set9:q_el2_set9_1","el2","q_el2_set9","q_el2_set9_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which exercise will she start?",["①","②","③","④"],2,[],17,"/listening_q2/el2_set9_q1.jpg"],
   ["q:el2:q_el2_set9:q_el2_set9_2","el2","q_el2_set9","q_el2_set9_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which seating chart is correct?",["①","②","③","④"],0,[],17,"/listening_q2/el2_set9_q2.jpg"],

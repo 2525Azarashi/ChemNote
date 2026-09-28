@@ -52,7 +52,7 @@
  *   この型は原文の並びのまま固定し、並べ替え可能な2×2型で全体を均している。
  *
  * 正解位置の実測（このファイルに収録した分だけを数えた値）
- *   ①10問 / ②18問 / ③9問 / ④5問（計 42問）。最頻位置だけ塗った場合の正答率 43%。
+ *   ①11問 / ②18問 / ③9問 / ④5問（計 43問）。最頻位置だけ塗った場合の正答率 42%。
  *   実物イラストの問は並べ替えられないため、この偏りは
  *   PDF 原文の偏りがそのまま出たもの。自前生成の絵に
  *   置き換えた問から順に均していく。
@@ -467,6 +467,7 @@ const EL2_SET3_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set3_3',
     label: '問3',
     hint: '男女がベーカリーでパンを選んでいる。（話者：女性（客） / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set3_q3.mp3',
     script: 'W: I\'d like the round bread with sesame seeds on top.\nM: The one with poppy seeds? Or the one with sesame?\nW: Sesame, please. And the smaller one.\nM: OK, here you go.',
     turns: [
       { who: 'W', text: 'I\'d like the round bread with sesame seeds on top.' },
@@ -805,6 +806,21 @@ Question: Which route will they take?
 
 const EL2_SET5_TRACKS: ListeningAudioTrack[] = [
   {
+    subId: 'q_el2_set5_1',
+    label: '問1',
+    hint: '男女が本屋で本を探している。（話者：女性（客） / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set5_q1.mp3',
+    script: 'W: I\'m looking for a cookbook, especially Italian food.\nM: We have Italian, French, and Japanese cookbooks. All 20% off this week.\nW: Great. Is there one for beginners?\nM: Yes, this one has step-by-step photos.',
+    turns: [
+      { who: 'W', text: 'I\'m looking for a cookbook, especially Italian food.' },
+      { who: 'M', text: 'We have Italian, French, and Japanese cookbooks. All 20% off this week.' },
+      { who: 'W', text: 'Great. Is there one for beginners?' },
+      { who: 'M', text: 'Yes, this one has step-by-step photos.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set5_2',
     label: '問2',
     hint: '父と娘が娘の自転車のパンクについて話している。（話者：父親 / 娘（中学生））',
@@ -841,7 +857,7 @@ const EL2_SET5: ListeningProblem = {
   category: '第5回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET5_TRACKS,
-  text: `第5回　第2問（2問・2回読み）　【難易度：標準】
+  text: `第5回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -850,6 +866,12 @@ const EL2_SET5: ListeningProblem = {
 
 【解き方のコツ】
 音声が流れる前に「場面」を読み、4枚の絵を見比べて「どこが違うか」を1語で言えるようにしておきます（色・数・位置・あり／なし）。違いが分かっていれば、聞き取るべき1語が決まります。第2問は「No, actually …」「the other one」のような訂正が最頻出なので、最初に聞こえた候補で決めないことが大切です。
+
+────────────────────
+問1（話者：女性（客） / 男性（店員））
+場面：男女が本屋で本を探している。
+Question: Which cookbook will the woman probably buy?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
 
 ────────────────────
 問2（話者：父親 / 娘（中学生））
@@ -861,17 +883,36 @@ Question: What is the condition of the bicycle?
 問3（話者：女性 / 男性）
 場面：女性が写真の中の子供を紹介している。
 Question: Which boy is the woman's nephew?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
-
-※ 問1 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
+    {
+      id: 'q_el2_set5_1',
+      label: '問1 Which cookbook will the woman probably buy?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '①',
+      correctAnswerRate: 68,
+      imageUrl: '/listening_q2/el2_set5_q1.jpg',
+      imageCaption: '問1 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '料理の種類（Italian）＋レベル（for beginners）の2条件',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
     {
       id: 'q_el2_set5_2',
       label: '問2 What is the condition of the bicycle?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '②',
-      correctAnswerRate: 68,
+      correctAnswerRate: 65,
       imageUrl: '/listening_q2/el2_set5_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -892,7 +933,7 @@ Question: Which boy is the woman's nephew?
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '③',
-      correctAnswerRate: 65,
+      correctAnswerRate: 62,
       imageUrl: '/listening_q2/el2_set5_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -909,6 +950,21 @@ Question: Which boy is the woman's nephew?
     },
   ],
   explanation: `第5回（難易度：標準）の解説です。対話スクリプトと正解、そして PDF の解説をそのまま収録しています。各選択肢がどんな絵だったかも併せて載せているので、「どこを聞き分ければよかったか」を絵と対応させて確認できます。
+
+問1　正解は ①
+場面：男女が本屋で本を探している。（話者：女性（客） / 男性（店員））
+スクリプト：W: I'm looking for a cookbook, especially Italian food.
+M: We have Italian, French, and Japanese cookbooks. All 20% off this week.
+W: Great. Is there one for beginners?
+M: Yes, this one has step-by-step photos.
+Question: Which cookbook will the woman probably buy?
+選択肢のイラスト：
+① 初心者向けイタリア料理本
+② 上級者向けイタリア料理本
+③ 初心者向けフランス料理本
+④ 初心者向け日本料理本
+正解の選択肢：① 初心者向けイタリア料理本
+料理の種類（Italian）＋レベル（for beginners）の2条件。ダミー情報（20% off、French、Japanese）を排除。
 
 問2　正解は ②
 場面：父と娘が娘の自転車のパンクについて話している。（話者：父親 / 娘（中学生））
@@ -1331,6 +1387,7 @@ const EL2_SET8_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set8_2',
     label: '問2',
     hint: '男女が本のカバーを選んでいる。（話者：女性 / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set8_q2.mp3',
     script: 'W: I\'d like a book cover, please. Do you have any with flowers?\nM: Yes, we have roses, sunflowers, and lilies.\nW: Sunflowers, please. And do you have one with a bookmark ribbon?\nM: This one has a ribbon.',
     turns: [
       { who: 'W', text: 'I\'d like a book cover, please. Do you have any with flowers?' },
@@ -2511,6 +2568,7 @@ const EL2_SET14_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set14_2',
     label: '問2',
     hint: '男女がペットショップで犬を選んでいる。（話者：女性 / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set14_q2.mp3',
     script: 'W: I like small dogs with long fur.\nM: We have a small poodle with curly fur, and a small terrier with straight long fur.\nW: The terrier sounds good. Is it a male or female?\nM: This one\'s female.',
     turns: [
       { who: 'W', text: 'I like small dogs with long fur.' },
@@ -2907,6 +2965,7 @@ const EL2_SET16_TRACKS: ListeningAudioTrack[] = [
     subId: 'q_el2_set16_1',
     label: '問1',
     hint: '男女がケーキ屋でギフト用のケーキを選んでいる。（話者：女性（店員） / 男性（客））',
+    audioUrl: '/listening_audio/el2_set16_q1.mp3',
     script: 'W: We have chocolate, strawberry, and cheesecake.\nM: She loves fruits, but not strawberries. Actually, she\'s allergic to them.\nW: How about our peach cake, then?\nM: Perfect. I\'ll take that.',
     turns: [
       { who: 'W', text: 'We have chocolate, strawberry, and cheesecake.' },
@@ -3054,7 +3113,7 @@ Question: Which locker is the man's?
   ],
 };
 
-/** 第2問の演習セット一覧（イラストが揃っている 16 セット 42 問）。 */
+/** 第2問の演習セット一覧（イラストが揃っている 16 セット 43 問）。 */
 export const EL2_PROBLEMS: ListeningProblem[] = [
   EL2_SET1,
   EL2_SET2,
