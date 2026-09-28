@@ -618,6 +618,14 @@ function collectAll(): RawSub[] {
           const key = `${ch.id}/${problem.id}/${sq.id}`;
           if (seen.has(key)) continue;
           seen.add(key);
+          // ★リスニングは音源ファイル（audioUrl）がある小問だけ対戦に出す★
+          //   対戦は音源を必ず鳴らす（battlePool.ts が audioUrl 無しを例外にする）。
+          //   第2問の追加10問のように「絵はあるが録音待ち」の小問は、録音が入るまで対戦に出さない。
+          if (subject.id === 'english_listening') {
+            const track = (problem.audioTracks || []).find((t: { subId?: string; subIds?: string[] }) =>
+              t.subId === sq.id || t.subIds?.includes(sq.id));
+            if (!track?.audioUrl) continue;
+          }
 
           rows.push({
             subject: subject.id,

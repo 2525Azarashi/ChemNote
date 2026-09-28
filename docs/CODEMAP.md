@@ -69,7 +69,9 @@ docs/                設計メモ・手順書
 
 | やりたいこと | 場所 |
 |---|---|
-| **録り直した音源を入れる** | **`docs/LISTENING_AUDIO_REPLACE.md` の手順どおり `scripts/listening-audio.mts` を使う** |
+| **録り直した音源を入れる** | **`docs/LISTENING_AUDIO_REPLACE.md` の手順どおり `scripts/listening-audio.mts` を使う**（送られた音声＝商用。`receive` → まとめ録りは `scripts/listening-split.py` → `import`。旧音源と混ぜない） |
+| 第2問の絵が無い問の絵 | 画像生成で作成→確認後に `shuffle_listening_q2_options.py` の `DRAWN_ILLUSTRATION_PERMS` へ登録（並びを固定）→ `gen_listening_q2_data.py` |
+| 第2問 録り直し台本PDF | `python3 scripts/build-q2-rerecord-pdf.py` → `.delivery/` |
 | 音源ファイルの実体 | `public/listening_audio/`（第1〜3問）、`public/listening_q4/` `q5/` `q6/`（第4〜6問） |
 | 音源の商用権の状態 | `scripts/data/listening_audio_ledger.json`（ツールが自動更新。手で編集しない） |
 | 旧音源 / 新音源の元ファイル | `audio_sources/legacy/` / `audio_sources/commercial/`（アプリには入らない。`audio_sources/README.md`） |

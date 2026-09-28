@@ -58,7 +58,7 @@ SRC = ROOT / 'scripts' / 'data' / 'q2_shuffled.json'
 # ここでは読み込むだけにする（2か所に書くと必ず食い違うため）。
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from shuffle_listening_q2_options import (  # noqa: E402
-    PDF_ILLUSTRATION_QUESTIONS,
+    PUBLISHED_QUESTIONS,
 )
 OUT = ROOT / 'src' / 'data' / 'englishListeningQ2Problems.ts'
 IMG_DIR_REL = '/listening_q2'
@@ -99,7 +99,8 @@ def audio_url_for(set_no: int, q_no: int) -> str | None:
 # 絵を選ぶ大問なので、絵のない問を入れても解けない。
 # そのため 48問全部を待たず、絵が揃っている問だけを先に公開し、
 # 残りはイラストが揃ったところで追加していく。
-PUBLISHED = PDF_ILLUSTRATION_QUESTIONS
+# 配布PDFの実物イラスト ＋ 新しく生成した絵（shuffle_listening_q2_options.py の DRAWN_ILLUSTRATION_PERMS）の問
+PUBLISHED = PUBLISHED_QUESTIONS
 
 
 def ts(s: str) -> str:

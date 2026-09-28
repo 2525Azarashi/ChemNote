@@ -28,6 +28,8 @@ import {
   loadBattleRuleOverrides,
 } from '../data/battle';
 import { ensureBattleRankingEntry } from '../data/battleRanking';
+import { battleAudio } from '../audio/battleAudio';
+import { useBattleAudioSettings } from '../hooks/useBattleAudio';
 import { auth } from '../../firebase';
 import type { AiLevel } from '../core/aiOpponent';
 import { BattleAiRoomScreen } from './BattleAiRoomScreen';
@@ -115,6 +117,34 @@ export function BattleMode({
     onActiveChange?.(true);
     return () => onActiveChange?.(false);
   }, [screen, onActiveChange]);
+  /**
+   * ★対戦ボタンを押した瞬間に BGM が途切れる不具合の修正（2026-09-28）★
+   * アプリ本体の BGM は対戦モードに入ると止まる（App.tsx の BGM_SILENT_STATES）。
+   * ところが対戦ホーム・教科選び・AI 選びなどの画面は自分で BGM を鳴らさないので、
+   * 待合室（マッチング）まで無音になっていた。
+   * 自前の BGM を持たない画面では、ここで待合室の曲（'matching'）を鳴らし続ける。
+   * 自前の BGM を持つ画面（matching / room / ai-room）は、その画面の useBattleAudio に任せる。
+   */
+  const [audioSettings] = useBattleAudioSettings();
+  const ownsBgm = screen === 'matching' || screen === 'room' || screen === 'ai-room';
+  useEffect(() => {
+    if (ownsBgm) return;
+    battleAudio().playBgm('matching');
+  }, [ownsBgm, audioSettings.bgm]);
+  // ★注意★ room / ai-room に入る瞬間にここで曲を鳴らしてはいけない。
+  //   React は子の effect を親より先に走らせるので、対戦画面（BattleLiveStage）が
+  //   決めた曲を親が上書きしてしまう。所有する画面へは口を出さない。
+  useEffect(() => {
+    // 対戦モードを抜けたら止める
+    return () => battleAudio().stopBgm();
+  }, []);
+  useEffect(() => {
+    // ブラウザが音を止めている（自動再生制限）ときは、最初のタップで再開する
+    const resume = () => battleAudio().unlock();
+    resume();
+    window.addEventListener('pointerdown', resume, { once: true });
+    return () => window.removeEventListener('pointerdown', resume);
+  }, []);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [subject, setSubject] = useState<string>(initialSubject);
   /**

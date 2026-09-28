@@ -20,12 +20,38 @@
 | `audio_sources/commercial/<batch>/` | 新音源の元ファイル（FLAC など）と受領記録 |
 | `scripts/data/listening_audio_ledger.json` | どれが新音源か（`replaced`）・生成元・商用の根拠 |
 
-### 現在の差し替え状況（2026-09-23）
+### 現在の差し替え状況（2026-09-28）
 
 | 大問 | 新音源 | 生成元 |
 |---|---|---|
-| 第1問 A 第1回 問1〜4 | 4本 ✓ | ElevenLabs（利用者が有料契約中に直接生成・申告ベース） |
-| それ以外 | 0 / 360 | 旧音源のまま（`legacy_unverified`） |
+| 第1問 A（56本）・第1問 B（60本） | 116本 ✓ 全部 | ElevenLabs eleven_v3（利用者が有料契約中に直接生成・申告ベース） |
+| それ以外 | 0 / 248 | 旧音源のまま（`legacy_unverified`） |
+
+第1問の旧音源は **利用者の指示で削除済み**（2026-09-28。`legacyDiscardedAt` が台帳に記録される。`use-legacy` では戻らない）。
+
+## ★送られてきた音声は「商用の新音源」。旧音源と絶対に混ぜない★（2026-09-28 利用者指示）
+
+利用者から届くリスニング音声は **商用権のあるもの** として扱う。次の順番を必ず守る（AI が作業するときも同じ）。
+
+```bash
+# 1) 原本をそのまま受領保存（切る前。旧音源と同じ中身なら受け付けない）
+npx tsx scripts/listening-audio.mts receive 受け取り/*.mp3 --batch elevenlabs_<日付>_<範囲> --apply \
+  --provider "ElevenLabs（利用者が直接生成）" --license "ElevenLabs有料契約中に新規生成（利用者申告 <日付>）"
+# 2) まとめ録り（1ファイルに何問も）なら、文字起こし（単語時刻つき JSON）を用意して問題ごとに切り出す
+python3 scripts/listening-split.py --batch <同じ名前> --out .tmpwork/<名前>/stage \
+  --plan 'audio_sources/commercial/<名前>/receipt/原本.mp3=words.json=el2_set1_q1,el2_set1_q2,el2_set1_q3'
+# 3) 下見 → 取り込み（旧音源と同じ中身のファイルは自動で弾かれる）
+npx tsx scripts/listening-audio.mts import .tmpwork/<名前>/stage
+npx tsx scripts/listening-audio.mts import .tmpwork/<名前>/stage --apply --batch <同じ名前> --provider … --license …
+# 4) 検査（差し替え済みの音が台帳のハッシュと違えば＝あとから旧音源で上書きされていれば、ここで止まる）
+npx tsx scripts/listening-audio.mts check
+# 5) 利用者が「旧音源は消して」と言ったときだけ
+npx tsx scripts/listening-audio.mts purge-legacy <stem | chapterId> --apply
+#    （取り込みと同時に消すなら import に --discard-legacy）
+```
+
+- 取り込み前に **全文を文字起こしして台本と照合** する（数字の表記ゆれ以外の差は利用者に報告）。
+- `tests/listeningAudioLedger.test.ts` が、商用音源の上書き・旧音源との同一・元ファイルの欠け・第1問の旧音源の残りを検出する。
 
 最新は `npx tsx scripts/listening-audio.mts status` で確認する。
 
@@ -137,9 +163,9 @@ npx tsx scripts/listening-audio.mts use-legacy el1_A
 
 ### ElevenLabs でセットごとに1本にまとめて生成した場合
 
-第1問A 第1回のように「4問分が1本の mp3」で届いたら、無音位置で問題ごとに分割してから (A) 形式で取り込む。
-分割の実例と記録は `audio_sources/commercial/elevenlabs_2026-09-19_q1a-set1/receipt/split_manifest.json`
-（台本に合わせた無音の中央で切る・速度や音程は変えない・FLAC で書き出す）。
+「何問分かが1本の mp3」で届いたら、`scripts/listening-split.py` で問題ごとに切り出してから (A) 形式で取り込む（上の手順 2）。
+台本と文字起こしの単語を突き合わせ、文間の無音の中央で切る。速度・音程は変えない。mp3 は無劣化で切る。
+実例：`audio_sources/commercial/elevenlabs_2026-09-28_q1/receipt/split_manifest.json`（第1問 112本・原本10本）。
 
 ---
 

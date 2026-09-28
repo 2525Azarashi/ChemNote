@@ -52,7 +52,7 @@
  *   この型は原文の並びのまま固定し、並べ替え可能な2×2型で全体を均している。
  *
  * 正解位置の実測（このファイルに収録した分だけを数えた値）
- *   ①9問 / ②18問 / ③9問 / ④2問（計 38問）。最頻位置だけ塗った場合の正答率 47%。
+ *   ①9問 / ②18問 / ③9問 / ④3問（計 39問）。最頻位置だけ塗った場合の正答率 46%。
  *   実物イラストの問は並べ替えられないため、この偏りは
  *   PDF 原文の偏りがそのまま出たもの。自前生成の絵に
  *   置き換えた問から順に均していく。
@@ -2740,6 +2740,20 @@ Question: Which is checked in (預け入れ) ?
 
 const EL2_SET16_TRACKS: ListeningAudioTrack[] = [
   {
+    subId: 'q_el2_set16_1',
+    label: '問1',
+    hint: '男女がケーキ屋でギフト用のケーキを選んでいる。（話者：女性（店員） / 男性（客））',
+    script: 'W: We have chocolate, strawberry, and cheesecake.\nM: She loves fruits, but not strawberries. Actually, she\'s allergic to them.\nW: How about our peach cake, then?\nM: Perfect. I\'ll take that.',
+    turns: [
+      { who: 'W', text: 'We have chocolate, strawberry, and cheesecake.' },
+      { who: 'M', text: 'She loves fruits, but not strawberries. Actually, she\'s allergic to them.' },
+      { who: 'W', text: 'How about our peach cake, then?' },
+      { who: 'M', text: 'Perfect. I\'ll take that.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set16_2',
     label: '問2',
     hint: '男女が学校の靴箱の位置を確認している。（話者：男性 / 女性）',
@@ -2762,7 +2776,7 @@ const EL2_SET16: ListeningProblem = {
   category: '第16回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET16_TRACKS,
-  text: `第16回　第2問（1問・2回読み）　【難易度：標準】
+  text: `第16回　第2問（2問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -2773,20 +2787,47 @@ const EL2_SET16: ListeningProblem = {
 音声が流れる前に「場面」を読み、4枚の絵を見比べて「どこが違うか」を1語で言えるようにしておきます（色・数・位置・あり／なし）。違いが分かっていれば、聞き取るべき1語が決まります。第2問は「No, actually …」「the other one」のような訂正が最頻出なので、最初に聞こえた候補で決めないことが大切です。
 
 ────────────────────
+問1（話者：女性（店員） / 男性（客））
+場面：男女がケーキ屋でギフト用のケーキを選んでいる。
+Question: Which cake will the man buy?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
+
+────────────────────
 問2（話者：男性 / 女性）
 場面：男女が学校の靴箱の位置を確認している。
 Question: Which locker is the man's?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
-※ 問1・問3 はイラストの準備中のため、この回では出題していません。`,
+※ 問3 はイラストの準備中のため、この回では出題していません。`,
   subQuestions: [
+    {
+      id: 'q_el2_set16_1',
+      label: '問1 Which cake will the man buy?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '④',
+      correctAnswerRate: 68,
+      imageUrl: '/listening_q2/el2_set16_q1.jpg',
+      imageCaption: '問1 の選択肢イラスト（①〜④の4枚）',
+      detailedExplanation: {
+        theme: '「フルーツは好きだが苺はアレルギー」の情報から桃を新たに提案',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
     {
       id: 'q_el2_set16_2',
       label: '問2 Which locker is the man\'s?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '③',
-      correctAnswerRate: 68,
+      correctAnswerRate: 65,
       imageUrl: '/listening_q2/el2_set16_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -2803,6 +2844,21 @@ Question: Which locker is the man's?
     },
   ],
   explanation: `第16回（難易度：標準）の解説です。対話スクリプトと正解、そして PDF の解説をそのまま収録しています。各選択肢がどんな絵だったかも併せて載せているので、「どこを聞き分ければよかったか」を絵と対応させて確認できます。
+
+問1　正解は ④
+場面：男女がケーキ屋でギフト用のケーキを選んでいる。（話者：女性（店員） / 男性（客））
+スクリプト：W: We have chocolate, strawberry, and cheesecake.
+M: She loves fruits, but not strawberries. Actually, she's allergic to them.
+W: How about our peach cake, then?
+M: Perfect. I'll take that.
+Question: Which cake will the man buy?
+選択肢のイラスト：
+① チョコレートケーキ
+② 苺のショートケーキ
+③ チーズケーキ
+④ 桃のケーキ
+正解の選択肢：④ 桃のケーキ
+「フルーツは好きだが苺はアレルギー」の情報から桃を新たに提案。3択→アレルギー→新提案の流 れ。
 
 問2　正解は ③
 場面：男女が学校の靴箱の位置を確認している。（話者：男性 / 女性）
@@ -2834,7 +2890,7 @@ Question: Which locker is the man's?
   ],
 };
 
-/** 第2問の演習セット一覧（イラストが揃っている 16 セット 38 問）。 */
+/** 第2問の演習セット一覧（イラストが揃っている 16 セット 39 問）。 */
 export const EL2_PROBLEMS: ListeningProblem[] = [
   EL2_SET1,
   EL2_SET2,
