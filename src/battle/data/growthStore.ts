@@ -6,7 +6,7 @@ import { auth } from '../../firebase';
 import { safeLocalStorage } from '../../utils/safeLocalStorage';
 import { applyHolesFilled, applyLoginWithBonus, applyMatchToProgress, applyRushResult, applyStudySolved,
   bumpDailyMission, claimMission, emptyProgress, newlyCompletedMissions, equipItem, equipTitle, localDateKey, normalizeProgress, openCompleteChest,
-  purchaseItem, RUSH_COIN_PLAYS_PER_DAY, type GrowthProgress, type ItemDef, type MatchSummaryForGrowth,
+  purchaseItem, RUSH_COIN_PLAYS_PER_DAY, unequipKind, type EquipKind, type GrowthProgress, type ItemDef, type MatchSummaryForGrowth,
   type RushResult, type GachaRarity, type MissionDef } from '../core/growth';
 
 import { matchCoins, rollGacha } from '../core/arenaEconomy';
@@ -185,6 +185,10 @@ export async function equip(id: string) {
     // 実際に着がえたときだけ「着がえ」ミッションを進める
     return { next: next !== p && JSON.stringify(next.equipped) !== JSON.stringify(p.equipped) ? bumpDailyMission(next, 'equip', today) : next, extra: null };
   }))?.next || null;
+}
+/** アクセサリ・壁紙を外す */
+export async function unequip(kind: EquipKind) {
+  return (await mutate(p => ({ next: unequipKind(p, kind), extra: null })))?.next || null;
 }
 export async function equipBadgeTitle(id: string) {
   return (await mutate(p => ({ next: equipTitle(p, id), extra: null })))?.next || null;

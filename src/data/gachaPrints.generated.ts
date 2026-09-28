@@ -137,8 +137,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_cb_ch1.pdf",
     "thumb": "/prints/thumbs/print_cb_ch1.webp",
-    "pages": 10,
-    "kb": 599
+    "pages": 11,
+    "kb": 635
   },
   {
     "id": "print_cb_ch2",
@@ -147,8 +147,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_cb_ch2.pdf",
     "thumb": "/prints/thumbs/print_cb_ch2.webp",
-    "pages": 10,
-    "kb": 501
+    "pages": 11,
+    "kb": 536
   },
   {
     "id": "print_cb_ch3",
@@ -157,8 +157,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_cb_ch3.pdf",
     "thumb": "/prints/thumbs/print_cb_ch3.webp",
-    "pages": 10,
-    "kb": 549
+    "pages": 11,
+    "kb": 583
   },
   {
     "id": "print_cb_ch4",
@@ -167,8 +167,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_cb_ch4.pdf",
     "thumb": "/prints/thumbs/print_cb_ch4.webp",
-    "pages": 10,
-    "kb": 524
+    "pages": 11,
+    "kb": 559
   },
   {
     "id": "print_cb_ch5",
@@ -177,8 +177,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_cb_ch5.pdf",
     "thumb": "/prints/thumbs/print_cb_ch5.webp",
-    "pages": 11,
-    "kb": 592
+    "pages": 12,
+    "kb": 627
   },
   {
     "id": "print_cb_ch6",
@@ -187,8 +187,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_cb_ch6.pdf",
     "thumb": "/prints/thumbs/print_cb_ch6.webp",
-    "pages": 12,
-    "kb": 604
+    "pages": 13,
+    "kb": 638
   },
   {
     "id": "print_c_theoretical",
@@ -197,8 +197,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_c_theoretical.pdf",
     "thumb": "/prints/thumbs/print_c_theoretical.webp",
-    "pages": 11,
-    "kb": 596
+    "pages": 12,
+    "kb": 635
   },
   {
     "id": "print_c_inorganic",
@@ -207,8 +207,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_c_inorganic.pdf",
     "thumb": "/prints/thumbs/print_c_inorganic.webp",
-    "pages": 10,
-    "kb": 611
+    "pages": 11,
+    "kb": 649
   },
   {
     "id": "print_math_prob",
@@ -217,8 +217,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_math_prob.pdf",
     "thumb": "/prints/thumbs/print_math_prob.webp",
-    "pages": 10,
-    "kb": 546
+    "pages": 11,
+    "kb": 585
   },
   {
     "id": "print_math_int",
@@ -227,8 +227,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_math_int.pdf",
     "thumb": "/prints/thumbs/print_math_int.webp",
-    "pages": 11,
-    "kb": 523
+    "pages": 12,
+    "kb": 553
   },
   {
     "id": "print_math_data",
@@ -237,8 +237,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_math_data.pdf",
     "thumb": "/prints/thumbs/print_math_data.webp",
-    "pages": 9,
-    "kb": 487
+    "pages": 10,
+    "kb": 521
   },
   {
     "id": "print_math_integral",
@@ -247,8 +247,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_math_integral.pdf",
     "thumb": "/prints/thumbs/print_math_integral.webp",
-    "pages": 10,
-    "kb": 548
+    "pages": 11,
+    "kb": 588
   },
   {
     "id": "print_math_vector",
@@ -257,8 +257,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_math_vector.pdf",
     "thumb": "/prints/thumbs/print_math_vector.webp",
-    "pages": 10,
-    "kb": 488
+    "pages": 11,
+    "kb": 521
   },
   {
     "id": "print_math_basic_all",
@@ -267,8 +267,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_math_basic_all.pdf",
     "thumb": "/prints/thumbs/print_math_basic_all.webp",
-    "pages": 15,
-    "kb": 637
+    "pages": 17,
+    "kb": 686
   },
   {
     "id": "print_math_quadratic_weekly",
@@ -287,8 +287,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_bio_1.pdf",
     "thumb": "/prints/thumbs/print_bio_1.webp",
-    "pages": 9,
-    "kb": 637
+    "pages": 10,
+    "kb": 672
   },
   {
     "id": "print_bio_2",
@@ -297,8 +297,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_bio_2.pdf",
     "thumb": "/prints/thumbs/print_bio_2.webp",
-    "pages": 9,
-    "kb": 683
+    "pages": 10,
+    "kb": 722
   },
   {
     "id": "print_joho_jh1",
@@ -307,8 +307,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_joho_jh1.pdf",
     "thumb": "/prints/thumbs/print_joho_jh1.webp",
-    "pages": 11,
-    "kb": 668
+    "pages": 12,
+    "kb": 708
   },
   {
     "id": "print_joho_jh2",
@@ -317,8 +317,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_joho_jh2.pdf",
     "thumb": "/prints/thumbs/print_joho_jh2.webp",
-    "pages": 10,
-    "kb": 559
+    "pages": 11,
+    "kb": 599
   },
   {
     "id": "print_joho_jh3",
@@ -327,8 +327,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_joho_jh3.pdf",
     "thumb": "/prints/thumbs/print_joho_jh3.webp",
-    "pages": 10,
-    "kb": 502
+    "pages": 11,
+    "kb": 541
   },
   {
     "id": "print_joho_jh4",
@@ -337,8 +337,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_joho_jh4.pdf",
     "thumb": "/prints/thumbs/print_joho_jh4.webp",
-    "pages": 10,
-    "kb": 579
+    "pages": 11,
+    "kb": 620
   },
   {
     "id": "print_joho_jh5",
@@ -347,8 +347,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_joho_jh5.pdf",
     "thumb": "/prints/thumbs/print_joho_jh5.webp",
-    "pages": 10,
-    "kb": 589
+    "pages": 11,
+    "kb": 626
   },
   {
     "id": "print_grammar_100",
@@ -357,8 +357,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_grammar_100.pdf",
     "thumb": "/prints/thumbs/print_grammar_100.webp",
-    "pages": 18,
-    "kb": 548
+    "pages": 19,
+    "kb": 637
   },
   {
     "id": "print_vocab_lv1",
@@ -417,8 +417,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_rika_1.pdf",
     "thumb": "/prints/thumbs/print_rika_1.webp",
-    "pages": 12,
-    "kb": 685
+    "pages": 13,
+    "kb": 722
   },
   {
     "id": "print_rika_2",
@@ -427,8 +427,8 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_rika_2.pdf",
     "thumb": "/prints/thumbs/print_rika_2.webp",
-    "pages": 12,
-    "kb": 568
+    "pages": 13,
+    "kb": 605
   },
   {
     "id": "print_rika_3",
@@ -437,7 +437,87 @@ export const GACHA_PRINTS: readonly GachaPrintDef[] = [
     "category": "演習プリント",
     "file": "/prints/print_rika_3.pdf",
     "thumb": "/prints/thumbs/print_rika_3.webp",
+    "pages": 13,
+    "kb": 639
+  },
+  {
+    "id": "print_rank_cb",
+    "label": "化学基礎 共テ頻出ランキング＆直前暗記チェックシート",
+    "subject": "chemistry_basic",
+    "category": "出題傾向",
+    "file": "/prints/print_rank_cb.pdf",
+    "thumb": "/prints/thumbs/print_rank_cb.webp",
+    "pages": 9,
+    "kb": 673
+  },
+  {
+    "id": "print_rank_c",
+    "label": "化学 共テ頻出ランキング＆直前暗記チェックシート",
+    "subject": "chemistry",
+    "category": "出題傾向",
+    "file": "/prints/print_rank_c.pdf",
+    "thumb": "/prints/thumbs/print_rank_c.webp",
     "pages": 12,
-    "kb": 599
+    "kb": 754
+  },
+  {
+    "id": "print_mock_cb_1",
+    "label": "化学基礎 共テ形式ミニ模試 第1回（30問・30分）",
+    "subject": "chemistry_basic",
+    "category": "演習プリント",
+    "file": "/prints/print_mock_cb_1.pdf",
+    "thumb": "/prints/thumbs/print_mock_cb_1.webp",
+    "pages": 12,
+    "kb": 698
+  },
+  {
+    "id": "print_mock_cb_2",
+    "label": "化学基礎 共テ形式ミニ模試 第2回（30問・30分）",
+    "subject": "chemistry_basic",
+    "category": "演習プリント",
+    "file": "/prints/print_mock_cb_2.pdf",
+    "thumb": "/prints/thumbs/print_mock_cb_2.webp",
+    "pages": 12,
+    "kb": 696
+  },
+  {
+    "id": "print_mock_joho_1",
+    "label": "情報Ⅰ 共テ形式ミニ模試 第1回（40問・40分）",
+    "subject": "joho",
+    "category": "演習プリント",
+    "file": "/prints/print_mock_joho_1.pdf",
+    "thumb": "/prints/thumbs/print_mock_joho_1.webp",
+    "pages": 11,
+    "kb": 684
+  },
+  {
+    "id": "print_mock_bio_1",
+    "label": "生物基礎 共テ形式ミニ模試 第1回（40問・30分）",
+    "subject": "biology_basic",
+    "category": "演習プリント",
+    "file": "/prints/print_mock_bio_1.pdf",
+    "thumb": "/prints/thumbs/print_mock_bio_1.webp",
+    "pages": 9,
+    "kb": 755
+  },
+  {
+    "id": "print_vocab_lv2_2",
+    "label": "英単語 Lv2 共通テスト標準 100語テスト 第2集",
+    "subject": "english_vocab",
+    "category": "単語テスト",
+    "file": "/prints/print_vocab_lv2_2.pdf",
+    "thumb": "/prints/thumbs/print_vocab_lv2_2.webp",
+    "pages": 8,
+    "kb": 535
+  },
+  {
+    "id": "print_vocab_lv3_2",
+    "label": "英単語 Lv3 二次・私大標準 100語テスト 第2集",
+    "subject": "english_vocab",
+    "category": "単語テスト",
+    "file": "/prints/print_vocab_lv3_2.pdf",
+    "thumb": "/prints/thumbs/print_vocab_lv3_2.webp",
+    "pages": 8,
+    "kb": 543
   }
 ];

@@ -3,6 +3,7 @@ import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repe
 import { auth } from '../firebase';
 import { useGrowthProgress } from '../hooks/useGrowthProgress';
 import { equippedPoseSrc, equippedFrameColor, equippedFramePattern, levelOf, equippedTitleLabel } from '../battle/core/growth';
+import { TobiraAccessories } from '../battle/ui/TobiraAccessories';
 import { FriendOnlineStrip } from './FriendOnlineStrip';
 import type { GrowthPage } from './GrowthHub';
 const GrowthHomeStrip = React.lazy(() => import('../battle/ui/GrowthHomeStrip').then(m => ({ default: m.GrowthHomeStrip })));
@@ -375,7 +376,7 @@ export function Home({ onPickSubject, onStudyMode, onGrowth, onStart, onIntro, o
           <p className="game-stage-caption">{growth && equippedTitleLabel(growth) || '今日も、とびら君とひとつ先へ。'}</p>
           <div className="game-stage-floor" aria-hidden="true"><div className="game-equipped-ring" data-frame-pattern={growth ? equippedFramePattern(growth) : 'plain'} style={{borderColor: growth ? equippedFrameColor(growth) : undefined}} /><Swords /></div>
           {growth && <button type="button" className="game-mascot-button" onClick={() => onGrowth?.('outfit')} aria-label="とびら君をきせかえる" disabled={!onGrowth}>
-            <img className="home-mascot-art" src={equippedPoseSrc(growth)} alt="あなたのとびら君" draggable={false} style={{ filter: `drop-shadow(0 6px 0 ${equippedFrameColor(growth)}55)` }} />
+            <span className="home-mascot-wrap"><img className="home-mascot-art" src={equippedPoseSrc(growth)} alt="あなたのとびら君" draggable={false} style={{ filter: `drop-shadow(0 6px 0 ${equippedFrameColor(growth)}55)` }} /><TobiraAccessories progress={growth} /></span>
             <span>MY TOBIRA <b>Lv.{levelOf(growth.xp).level}</b></span>
           </button>}
           {onGrowth && <div className="game-stage-shortcuts" aria-label="ゲームメニュー">

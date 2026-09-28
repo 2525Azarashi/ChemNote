@@ -8,8 +8,9 @@ import { emptyProgress, equipItem, gachaRarityOf, itemById, printOf } from '../s
 const pub = (p: string) => path.join(process.cwd(), 'public', p.replace(/^\//, ''));
 
 describe('ガチャ大当たり（UR）＝学習プリント', () => {
-  it('たくさんある（40種以上）・id は重複しない・カテゴリは3種類', () => {
-    expect(GACHA_PRINTS.length).toBeGreaterThanOrEqual(40);
+  it('たくさんある（50種以上）・id は重複しない・カテゴリは3種類', () => {
+    expect(GACHA_PRINTS.length).toBeGreaterThanOrEqual(50);
+    for (const id of ['print_rank_cb', 'print_rank_c', 'print_mock_cb_1', 'print_mock_joho_1']) expect(GACHA_PRINTS.some(p => p.id === id), id).toBe(true);
     expect(new Set(GACHA_PRINTS.map(p => p.id)).size).toBe(GACHA_PRINTS.length);
     expect(new Set(GACHA_PRINTS.map(p => p.category))).toEqual(new Set(['出題傾向', '演習プリント', '単語テスト']));
     // 共テの出題傾向レポートと、ハブの二次関数プリントが入っている

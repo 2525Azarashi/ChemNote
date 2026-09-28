@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react';
 import App from './App.tsx';
 import './index.css';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { AppWallpaper } from './components/AppWallpaper';
 
 // PWA Service Worker 登録（パート8で sw.js を用意）
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
       <App />
+      <AppWallpaper />
     </ThemeProvider>
     {/*
       Vercel Web Analytics（画面には何も描画されず、計測用スクリプトだけを注入する）

@@ -2969,3 +2969,45 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .gacha-exhibit[data-kind=print] { bottom: 44px; }
 .gacha-exhibit[data-kind=print] .gacha-print-thumb { max-height: 132px; }
 .gacha-print-thumb em { white-space: nowrap; overflow: hidden; text-overflow: clip; font-size: 8px; letter-spacing: -.02em; }
+
+/* ── タイトル画面：動画（720×720・2秒）と静止画シーンを「同じ正方形・同じ位置」に重ねる ──
+   位置は title.mp4 の最後のコマを実測した値（LaunchScreen.tsx のコメント参照）。
+   動画の縁は背景色にぼかして、四角い「カード」が見えないようにする。 */
+.launch-box { position: relative; height: 100%; max-width: 100%; aspect-ratio: 1; margin: 0 auto; }
+.launch-scene { position: absolute; inset: 0; transition: opacity .35s ease; }
+.launch-stage[data-phase=intro] .launch-scene { opacity: 0; }
+.launch-box .launch-arch { left: 17.8%; top: 11.5%; width: 64.4%; height: auto; aspect-ratio: 1; border: 1.5px solid #dbd3c3; border-radius: 50%; background: radial-gradient(circle at 50% 60%,#fff8e3aa,#fffdf400 62%); box-shadow: none; clip-path: inset(0 0 45% 0); }
+.launch-box .launch-stage-floor { left: 13.5%; top: 76.4%; bottom: auto; width: 72.8%; height: 12.1%; background: radial-gradient(ellipse,#f1e4c6,#ecdfc1 70%); border-width: 2px; box-shadow: 0 4px 0 #e2d4b8; }
+.launch-box > .launch-scene > i { top: 20%; right: 12%; }
+.launch-box > .launch-scene > i:last-of-type { top: 58%; left: 10%; right: auto; }
+.launch-box .launch-arrival { left: 20.7%; top: 17.2%; bottom: auto; width: 58.3%; height: 62.8%; }
+.launch-arrival.is-idle .launch-walking-pose { display: none; }
+.launch-arrival.is-idle .launch-equipped-pose { opacity: 1; }
+.launch-box .cinematic-clip { inset: 0; border-radius: 0; overflow: visible; }
+.launch-box .cinematic-clip video { background: transparent; -webkit-mask-image: radial-gradient(closest-side,#000 86%,transparent 100%); mask-image: radial-gradient(closest-side,#000 86%,transparent 100%); }
+.launch-box .cinematic-clip.has-poster { opacity: 1; }
+.launch-box .cinematic-clip.is-held { opacity: 0; transition: opacity .35s ease; }
+.launch-box .cinematic-skip { bottom: 2%; right: 2%; }
+@media (prefers-reduced-motion: reduce) { .launch-scene, .launch-box .cinematic-clip.is-held { transition: none; } }
+
+/* ── 部位ごとのアクセサリ（とびら君に重ねる SVG）── */
+.tobira-accessories { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.home-mascot-wrap { position: relative; display: block; width: 100%; height: 100%; }
+.launch-gait > .tobira-accessories { inset: 0; }
+.tobira-aura-bit { animation: tobira-aura-float 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes tobira-aura-float { 0%,100% { transform: translateY(0) scale(1); opacity: .85; } 50% { transform: translateY(-6%) scale(1.12); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .tobira-aura-bit { animation: none; } }
+
+/* ── ガチャで当てた壁紙（AppWallpaper が <html> に --app-wallpaper を入れる）──
+   背景の地だけを差し替え、その上に薄い紙のベールを重ねて文字の読みやすさを保つ。 */
+html[data-wallpaper] body { background: var(--app-wallpaper) fixed; }
+html[data-wallpaper] .game-home,
+html[data-wallpaper] .launch-screen { background: linear-gradient(#fffdf8b3,#fffdf8a6), var(--app-wallpaper); background-attachment: fixed; }
+html[data-wallpaper=dark] .game-home,
+html[data-wallpaper=dark] .launch-screen { background: linear-gradient(#fffdf899,#fffdf88c), var(--app-wallpaper); background-attachment: fixed; }
+.wallpaper-swatch { display: block; width: 100%; aspect-ratio: 3 / 4; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 0 0 1px #d8cfbd; }
+html[data-wallpaper] .mana-hub { background: linear-gradient(#f4f1eab8,#f4f1eaad), var(--app-wallpaper); background-attachment: fixed; }
+.gacha-wallpaper-art { position: relative; display: inline-flex; flex: none; align-items: flex-end; justify-content: center; border-radius: 10px; border: 2px solid #fff; box-shadow: 0 0 0 1px #d8cfbd, 0 2px 8px #0002; overflow: hidden; }
+.gacha-wallpaper-art img { object-fit: contain; margin-bottom: 8%; filter: drop-shadow(0 3px 2px #0003); }
+.gacha-collection-kinds { flex-wrap: wrap; }
+.gacha-collection-kinds button { flex: 1 1 45%; }

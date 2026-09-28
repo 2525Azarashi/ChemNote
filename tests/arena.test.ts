@@ -53,14 +53,16 @@ describe('cosmetic economy', () => {
   const progress={...emptyProgress('a'),coins:100};
   it('has 36 decorations + the UR study prints split into N / R / SR / UR tiers and does not mutate the source', () => {
     const tiersAll=gachaItemsByRarity();
-    expect(gachaItems().filter(i=>i.kind!=='print')).toHaveLength(36);
-    expect(gachaItems()).toHaveLength(36+tiersAll.UR.length);
+    // 本体（ポーズ・わく）36種 ＋ 部位アクセ・壁紙はガチャ限定で別に増える
+    expect(gachaItems().filter(i=>i.kind==='pose'||i.kind==='frame')).toHaveLength(36);
+    const decorCount=gachaItems().filter(i=>i.kind!=='print').length;
+    expect(gachaItems()).toHaveLength(decorCount+tiersAll.UR.length);
     // ガチャ限定ポーズ3種＋SRフレーム2種は必ずラインナップに入り、SR 枠
     for(const id of ['pose_listening','pose_science','pose_trophy','frame_prism','frame_galaxy']) {
       const item=gachaItems().find(i=>i.id===id)!; expect(item).toBeTruthy(); expect(gachaRarityOf(item)).toBe('SR');
     }
     const tiers=gachaItemsByRarity();
-    expect(tiers.SR.length+tiers.R.length+tiers.N.length).toBe(36);
+    expect(tiers.SR.length+tiers.R.length+tiers.N.length).toBe(decorCount);
     for(const r of ['UR','SR','R','N'] as const) expect(tiers[r].length).toBeGreaterThan(0);
     // 提供割合の合計は 100%、SR は R・N より1つあたりが低い…ではなく、枠の割合どおり
     const total=gachaItems().reduce((n,i)=>n+gachaItemRate(i),0);

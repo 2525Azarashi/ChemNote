@@ -184,3 +184,17 @@ python3 scripts/gacha-prints/finalize.py
 - 問題は新しく作らない（正解の誤りを配らないため、検証済みの対戦プールだけを使う）。
 - 二次関数の週課題（`scripts/gacha-prints/source/quadratic_weekly_6weeks.pdf`）はハブの教材をそのまま収録。
 - プリントは `kind: 'print'` のアイテム。装備はできず、ガチャ画面の「マイプリント」から開く・保存する。
+
+## とびら君の部位きせかえ・壁紙
+
+- 定義: `src/battle/core/tobiraParts.ts`（部位 hat / glasses / cheek / aura、ポーズごとの取り付け位置 `POSE_ANCHORS`、壁紙 `WALLPAPERS`）
+- 描画: `src/battle/ui/TobiraAccessories.tsx`（ポーズ画像に SVG を重ねる。画像と同じ viewBox なので大きさが変わってもずれない）
+- アイテム: `src/battle/core/growth.ts` の ITEMS（`kind: 'hat' | 'glasses' | 'cheek' | 'aura' | 'wallpaper'`、すべてガチャ限定）
+- 壁紙の適用: `src/components/AppWallpaper.tsx`（`<html data-wallpaper>` と CSS 変数だけ。App.tsx には触れない）
+- ポーズ画像を追加したら `POSE_ANCHORS` に頭・目の位置を足す（tests/tobiraParts.test.ts が未登録を検出）
+
+## タイトル画面の登場演出
+
+`src/components/LaunchScreen.tsx`。動画（2秒）の1コマ目を poster にして読み込み中も絵が飛ばないようにし、
+再生後は最後のコマを残したまま、同じ位置・大きさに配置した静止画シーン（装備を反映）へクロスフェードする。
+配置の % は title.mp4 の最後のコマを実測した値。動画を差し替えたら測り直す。

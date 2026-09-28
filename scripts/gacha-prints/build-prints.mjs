@@ -211,8 +211,29 @@ ${o.intro ?? ''}
 ${questionsBlock(qs, { chapters: o.chapters })}</section>
 <section class="section"><h2 class="sec-title">解答・解説</h2>
 <p class="sec-lead">丸つけ後、間違えた番号に✓。1週間後にもう一度解き直すと定着します。</p>
-${answerKey(qs)}</section>`;
+${answerKey(qs)}</section>
+${analysisSheet(qs, o.chapters)}`;
   return page({ ...o, body, meta: [[`${qs.length}問`, '収録問題'], [o.units, '範囲'], [`約${Math.ceil(qs.length * 1.1)}分`, '目安時間']], note: `${qs.length}` });
+}
+
+/** 単元ごとの正答数を書き込む分析表 ＋ 解き直し記録（間隔をあけて3回） */
+function analysisSheet(qs, chapters) {
+  const rows = [];
+  qs.forEach((q, i) => {
+    const last = rows.at(-1);
+    if (last && last.ch === q.ch) last.nos.push(i + 1);
+    else rows.push({ ch: q.ch, nos: [i + 1] });
+  });
+  const name = (ch) => (chapters?.[ch] || ch).replace(/｜/g, '　');
+  return `<section class="section"><h2 class="sec-title">単元別 分析シート</h2>
+<p class="sec-lead">正解数を書き、正答率が 7 割未満の単元に★。★の単元から先に復習すると、同じ時間で点が一番伸びます。</p>
+<table class="t"><thead><tr><th>単元</th><th>問題番号</th><th style="width:18mm">正解数</th><th style="width:12mm">★</th></tr></thead><tbody>
+${rows.map((r) => `<tr><td>${esc(name(r.ch))}</td><td>${r.nos.length > 6 ? `${r.nos[0]}〜${r.nos.at(-1)}` : r.nos.join('・')}</td><td>　　／${r.nos.length}</td><td></td></tr>`).join('')}
+</tbody></table>
+<h3 class="unit-h">解き直し記録（間隔をあけると忘れにくい）</h3>
+<table class="t"><thead><tr><th>回</th><th>目安</th><th>日付</th><th>点数</th><th>まだ×の番号</th></tr></thead><tbody>
+${[['1回目', '今日'], ['2回目', '3日後'], ['3回目', '1週間後'], ['4回目', '1か月後']].map(([a, b]) => `<tr><td>${a}</td><td>${b}</td><td style="width:26mm"></td><td style="width:18mm"></td><td></td></tr>`).join('')}
+</tbody></table></section>`;
 }
 
 // ---- 出題傾向 ----
@@ -406,6 +427,83 @@ Object.entries(CH.joho).filter(([k]) => /^jh/.test(k)).forEach(([ch, name]) => {
   add({ id: `print_rika_${i + 1}`, subject: 'rika', category: '演習プリント', label: `高校入試 理科 ${name} 最終チェック${qs.length}題`,
     build: () => practicePrint({ subject: 'rika', kicker: 'HIGH SCHOOL ENTRANCE', title: `高校入試 理科　${name}`, sub: `最終チェック${qs.length}題（解答つき）`, questions: qs, chapters: CH.rika, units: name,
       aims: ['入試直前の「用語・しくみ」の最終確認用。1問30秒で解く。', '迷った問題は教科書の図と一緒に見直す。'] }) });
+});
+
+// ⑪ 共テ頻出ランキング＆直前暗記チェックシート（出題傾向データの頻度・武器から）
+/** 頻度の文言を並べ替え用の点数にする（文言そのものは変えずに表に出す） */
+function freqScore(f) {
+  const t = String(f || '');
+  if (/最重要|毎年複数/.test(t)) return 5;
+  if (/超高頻度|ほぼ毎年|毎年必ず/.test(t)) return 4.5;
+  const m = t.match(/(\d+)\s*\/\s*(\d+)\s*年/);
+  if (m) return 2 + 3 * (Number(m[1]) / Number(m[2]));
+  if (/急増/.test(t)) return 3.5;
+  if (/高頻度/.test(t) && !/中/.test(t)) return 3.5;
+  if (/中〜高/.test(t)) return 3;
+  if (/中/.test(t)) return 2;
+  if (/低/.test(t)) return 1;
+  return 2;
+}
+const rankLabel = (x) => (x >= 4.5 ? 'S' : x >= 3.5 ? 'A' : x >= 2.5 ? 'B' : 'C');
+function rankingBody(ds, subjectName) {
+  const units = ds.chapters.flatMap((c) => c.units.map((u) => ({ ...u, chapter: c.chapterGroupTitle, score: freqScore(u.frequency) })));
+  units.sort((a, b) => b.score - a.score);
+  const top = units.slice(0, 20);
+  return `
+<section class="section"><h2 class="sec-title">${esc(subjectName)} 頻出ランキング（全${units.length}単元）</h2>
+<p class="sec-lead">アプリ内の共通テスト分析（過去問の出題年・頻度）をもとに並べた。S＝毎年級、A＝高頻度、B＝中〜高、C＝ときどき。</p>
+<table class="t"><thead><tr><th>順位</th><th>ランク</th><th>単元</th><th>章</th><th>頻度（分析より）</th></tr></thead><tbody>
+${units.map((u, i) => `<tr><td>${i + 1}</td><td><b>${rankLabel(u.score)}</b></td><td>${esc(u.name)}</td><td>${esc(u.chapter)}</td><td>${esc(u.frequency)}</td></tr>`).join('')}
+</tbody></table></section>
+<section class="section"><h2 class="sec-title">直前暗記チェックシート（上位20単元の「武器」）</h2>
+<p class="sec-lead">試験前日〜当日の朝に使う。言えたら□に✓。✓が付かなかった行だけを最後にもう一度。</p>
+${top.map((u, i) => `<div class="card"><h3>${i + 1}. ${esc(u.name)} <span class="tag">${rankLabel(u.score)}</span><span class="tag">${esc(u.chapter)}</span></h3>
+<ul class="check">${(u.weapons || []).map((w) => `<li>${esc(w)}</li>`).join('')}</ul>
+<div class="pred"><b>2027 予想：</b>${esc(u.prediction2027)}</div></div>`).join('')}
+</section>`;
+}
+[['chemistry_basic', 'cb', '化学基礎'], ['chemistry', 'c', '化学']].forEach(([subject, key, name]) => {
+  const ds = T[subject];
+  const n = ds.chapters.reduce((k, c) => k + c.units.length, 0);
+  add({ id: `print_rank_${key}`, subject, category: '出題傾向', label: `${name} 共テ頻出ランキング＆直前暗記チェックシート`,
+    build: () => page({ subject, kicker: 'RANKING × LAST CHECK', title: `${name} 共テ頻出ランキング`, sub: `全${n}単元を出題頻度順に並べ、上位20単元の暗記事項をチェックシートに`,
+      meta: [[`${n}単元`, '頻度順'], ['20単元', 'チェックシート'], ['2027', '予想つき']],
+      aims: ['勉強の順番に迷ったら、このランキングの上から。S・A ランクで点の大半が決まる。', '直前期はチェックシートだけを持ち歩き、言えない行を減らしていく。', 'ランクが低くても「2027予想」が高い単元は要注意。'],
+      checklist: ['S ランクの単元を全部言える', 'チェックシートの✓が 8 割を超えた', '2027 予想で「出る」とされた単元を1周した'],
+      body: rankingBody(ds, name), note: '—' }) });
+});
+
+// ⑫ 共テ形式 ミニ模試（章をまたいで出題・時間を計って解く）
+function mockPrint({ id, subject, name, pool, n, minutes, seed, order, chapters, part }) {
+  const qs = pick(pool, n, seed, order);
+  add({ id, subject, category: '演習プリント', label: `${name} 共テ形式ミニ模試 ${part}（${qs.length}問・${minutes}分）`,
+    build: () => practicePrint({ subject, kicker: 'MINI MOCK EXAM', title: `${name} ミニ模試 ${part}`, sub: `全範囲から${qs.length}問・制限時間${minutes}分（解答・解説・分析シートつき）`, questions: qs, chapters, units: '全範囲',
+      intro: `<p class="tip">⏱ 開始時刻（　　：　　）→ 終了時刻（　　：　　）。${minutes}分たったら途中でも終わる。時間内に解けた数が本番の力です。</p>`,
+      aims: [`本番と同じく時間を計って、${minutes}分で全範囲を一気に解く。`, '終わったら分析シートで単元ごとの正答率を出し、★の単元をアプリで集中演習。', `もう1回分（${part === '第1回' ? '第2回' : '第1回'}）で、弱点が直ったかを確かめる。`],
+      checklist: ['時間内に最後まで解き切れた', '正答率 7 割以上', '★の単元をアプリで1周した'] }) });
+  return qs;
+}
+{
+  const order = Object.keys(CH.chemistry_basic).filter((k) => /^c\d_/.test(k));
+  const all = pick(Q.chemistry_basic, 60, 'cbmock', order);
+  const a = all.filter((_, i) => i % 2 === 0), b = all.filter((_, i) => i % 2 === 1);
+  mockPrint({ id: 'print_mock_cb_1', subject: 'chemistry_basic', name: '化学基礎', pool: a, n: 30, minutes: 30, seed: 'm1', order, chapters: CH.chemistry_basic, part: '第1回' });
+  mockPrint({ id: 'print_mock_cb_2', subject: 'chemistry_basic', name: '化学基礎', pool: b, n: 30, minutes: 30, seed: 'm2', order, chapters: CH.chemistry_basic, part: '第2回' });
+}
+mockPrint({ id: 'print_mock_joho_1', subject: 'joho', name: '情報Ⅰ', pool: Q.joho, n: 40, minutes: 40, seed: 'johomock', order: Object.keys(CH.joho).filter((k) => /^jh/.test(k)), chapters: CH.joho, part: '第1回' });
+mockPrint({ id: 'print_mock_bio_1', subject: 'biology_basic', name: '生物基礎', pool: Q.biology_basic, n: 40, minutes: 30, seed: 'biomock', order: Object.keys(CH.biology_basic), chapters: CH.biology_basic, part: '第1回' });
+
+// ⑬ 英単語 第2集（第1集と重ならない100語）
+[['lv2', '単語 Lv2 共通テスト標準'], ['lv3', '単語 Lv3 二次・私大標準']].forEach(([lv, name]) => {
+  const re = new RegExp(`^${lv}$`);
+  const pool = Q.english_vocab.filter((q) => re.test(q.ch) && q.id.endsWith('e2j'));
+  const first = new Set(pick(pool, 100, `vocab${lv}`).map((w) => w.id));
+  const words = pick(pool.filter((w) => !first.has(w.id)), 100, `vocab${lv}b`);
+  add({ id: `print_vocab_${lv}_2`, subject: 'english_vocab', category: '単語テスト', label: `英${name} 100語テスト 第2集`,
+    build: () => page({ subject: 'english_vocab', kicker: 'VOCABULARY TEST 100 — VOL.2', title: `英${name} 第2集`, sub: '第1集と重ならない100語（意味を書く＋4択確認・解答つき）',
+      meta: [['100語', '収録'], ['20問', '4択確認'], ['約15分', '目安時間']],
+      aims: ['第1集が8割書けたら第2集へ。', '書けなかった語はアプリの英単語で同じレベルを1周。', '3日後に✓の語だけもう一度。'],
+      body: vocabBody(words, `英${name} 第2集`), note: '100' }) });
 });
 
 // -------------------------------------------------------------------

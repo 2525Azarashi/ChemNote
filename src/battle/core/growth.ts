@@ -4,6 +4,7 @@
  */
 import type { BattleOutcome, BattlePlayerScore } from './types';
 import { GACHA_PRINTS, type GachaPrintDef } from '../../data/gachaPrints.generated';
+import { ACCESSORY_SLOTS, type AccessorySlot } from './tobiraParts';
 
 // ============================================================
 // 経験値（XP）
@@ -191,6 +192,13 @@ export interface GrowthProgress {
     pose: string;
     /** 枠の色 */
     frame: string;
+    /** 部位ごとのアクセサリ（'' = つけない） */
+    hat: string;
+    glasses: string;
+    cheek: string;
+    aura: string;
+    /** アプリの壁紙（'' = いつもの背景） */
+    wallpaper: string;
   };
   /** 今日のミッション進捗 */
   daily: DailyRecord;
@@ -236,7 +244,7 @@ export function emptyProgress(uid: string): GrowthProgress {
     subjects: {},
     badges: {},
     owned: [DEFAULT_POSE, DEFAULT_FRAME],
-    equipped: { title: '', pose: DEFAULT_POSE, frame: DEFAULT_FRAME },
+    equipped: { title: '', pose: DEFAULT_POSE, frame: DEFAULT_FRAME, hat: '', glasses: '', cheek: '', aura: '', wallpaper: '' },
     daily: { date: '', progress: {}, claimed: [] },
     lastRoomId: '',
     studySolved: 0,
@@ -316,6 +324,11 @@ export function normalizeProgress(uid: string, raw: unknown): GrowthProgress {
       title: str(eq.title, ''),
       pose: str(eq.pose, DEFAULT_POSE),
       frame: str(eq.frame, DEFAULT_FRAME),
+      hat: str(eq.hat, ''),
+      glasses: str(eq.glasses, ''),
+      cheek: str(eq.cheek, ''),
+      aura: str(eq.aura, ''),
+      wallpaper: str(eq.wallpaper, ''),
     },
     daily: {
       date: str(daily.date, ''),
@@ -734,8 +747,15 @@ export function badgeTierColor(tier: 1 | 2 | 3): string {
 // 扉くんの装備（ポーズ・枠）
 // ============================================================
 
-/** pose / frame は扉くんの装備。print は大当たりの学習プリント（PDF・装備はしない） */
-export type ItemKind = 'pose' | 'frame' | 'print';
+/**
+ * pose / frame は扉くん本体、hat / glasses / cheek / aura は部位ごとのアクセサリ（重ねて描く）、
+ * wallpaper はアプリの壁紙。print は大当たりの学習プリント（PDF・装備はしない）。
+ */
+export type ItemKind = 'pose' | 'frame' | AccessorySlot | 'wallpaper' | 'print';
+/** 装備できる種類（equipped のキー） */
+export type EquipKind = Exclude<ItemKind, 'print'>;
+/** 外せる種類（アクセサリと壁紙。ポーズと枠は常に何か1つ） */
+export const REMOVABLE_KINDS: readonly EquipKind[] = [...ACCESSORY_SLOTS, 'wallpaper'];
 /** ガチャのレア度：N（ノーマル）/ R（レア）/ SR（スーパーレア）/ UR（大当たり＝学習プリント） */
 export type GachaRarity = 'N' | 'R' | 'SR' | 'UR';
 
@@ -743,7 +763,7 @@ export interface ItemDef {
   id: string;
   kind: ItemKind;
   label: string;
-  /** pose: 画像パス（public/mascots）／ frame: 色コード ／ print: PDF のパス（public/prints） */
+  /** pose: 画像パス（public/mascots）／ frame: 色コード ／ アクセサリ: '形:色'（tobiraParts.ts）／ wallpaper: WALLPAPERS のキー ／ print: PDF のパス（public/prints） */
   value: string;
   gacha?: boolean;
   pattern?: 'dashed' | 'double' | 'dots' | 'rays' | 'stars' | 'stripes' | 'checker' | 'wave' | 'grid' | 'sparkle' | 'rainbow' | 'aurora' | 'neon' | 'prism' | 'galaxy';
@@ -816,6 +836,65 @@ export const ITEMS: readonly ItemDef[] = [
   { id: 'frame_scholar', kind: 'frame', label: '努力の証', value: '#2F7D6D', pattern: 'double', unlock: { badge: 'b_study_50' } },
   { id: 'frame_lightning', kind: 'frame', label: 'イナズマ', value: '#E0A800', pattern: 'rays', unlock: { badge: 'b_rush_2500' } },
   { id: 'frame_comet', kind: 'frame', label: 'コメット', value: '#5A67D8', pattern: 'sparkle', unlock: { badge: 'b_rush_combo10' } },
+  // ── 部位ごとのアクセサリ（とびら君に重ねて描く・ガチャ限定）。value は '形:色'（tobiraParts.ts）──
+  // 頭（帽子）
+  { id: 'hat_beanie_red', kind: 'hat', gacha: true, rarity: 'N', label: 'ニット帽（あか）', value: 'beanie:#E76F51', unlock: { gacha: true } },
+  { id: 'hat_beanie_navy', kind: 'hat', gacha: true, rarity: 'N', label: 'ニット帽（こん）', value: 'beanie:#3D5A80', unlock: { gacha: true } },
+  { id: 'hat_cap_blue', kind: 'hat', gacha: true, rarity: 'N', label: 'キャップ（そら）', value: 'cap:#4D96FF', unlock: { gacha: true } },
+  { id: 'hat_cap_green', kind: 'hat', gacha: true, rarity: 'N', label: 'キャップ（みどり）', value: 'cap:#43AA8B', unlock: { gacha: true } },
+  { id: 'hat_ribbon_pink', kind: 'hat', gacha: true, rarity: 'N', label: 'リボン（ピンク）', value: 'ribbon:#F28AB2', unlock: { gacha: true } },
+  { id: 'hat_flower', kind: 'hat', gacha: true, rarity: 'N', label: 'お花のかみかざり', value: 'flower:#FF8FAB', unlock: { gacha: true } },
+  { id: 'hat_beret', kind: 'hat', gacha: true, rarity: 'R', label: 'ベレー帽', value: 'beret:#9B2226', unlock: { gacha: true } },
+  { id: 'hat_bunny', kind: 'hat', gacha: true, rarity: 'R', label: 'うさみみ', value: 'bunny:#F8F9FA', unlock: { gacha: true } },
+  { id: 'hat_chef', kind: 'hat', gacha: true, rarity: 'R', label: 'コック帽', value: 'chef:#E63946', unlock: { gacha: true } },
+  { id: 'hat_graduation', kind: 'hat', gacha: true, rarity: 'R', label: '卒業帽（角帽）', value: 'graduation:#F4D03F', unlock: { gacha: true } },
+  { id: 'hat_wizard', kind: 'hat', gacha: true, rarity: 'SR', label: '魔法使いの帽子', value: 'wizard:#5A4FCF', unlock: { gacha: true } },
+  { id: 'hat_crown', kind: 'hat', gacha: true, rarity: 'SR', label: '王冠', value: 'crown:#F6C744', unlock: { gacha: true } },
+  { id: 'hat_tiara', kind: 'hat', gacha: true, rarity: 'SR', label: 'ティアラ', value: 'tiara:#C0C8D6', unlock: { gacha: true } },
+  { id: 'hat_halo', kind: 'hat', gacha: true, rarity: 'SR', label: '天使のわっか', value: 'halo:#FFD43B', unlock: { gacha: true } },
+  // 顔（メガネ）
+  { id: 'glasses_round', kind: 'glasses', gacha: true, rarity: 'N', label: 'まるメガネ', value: 'round:#3B2F2F', unlock: { gacha: true } },
+  { id: 'glasses_square', kind: 'glasses', gacha: true, rarity: 'N', label: 'スクエアメガネ', value: 'square:#1D3557', unlock: { gacha: true } },
+  { id: 'glasses_red', kind: 'glasses', gacha: true, rarity: 'N', label: 'あかぶちメガネ', value: 'round:#D62828', unlock: { gacha: true } },
+  { id: 'glasses_science', kind: 'glasses', gacha: true, rarity: 'N', label: '実験用ゴーグル', value: 'science:#74C0FC', unlock: { gacha: true } },
+  { id: 'glasses_sun', kind: 'glasses', gacha: true, rarity: 'R', label: 'サングラス', value: 'sun:#222222', unlock: { gacha: true } },
+  { id: 'glasses_monocle', kind: 'glasses', gacha: true, rarity: 'R', label: '名探偵の片メガネ', value: 'monocle:#B8860B', unlock: { gacha: true } },
+  { id: 'glasses_goggle', kind: 'glasses', gacha: true, rarity: 'R', label: 'スイミングゴーグル', value: 'goggle:#2A9D8F', unlock: { gacha: true } },
+  { id: 'glasses_star', kind: 'glasses', gacha: true, rarity: 'SR', label: 'スターグラス', value: 'star:#F9C74F', unlock: { gacha: true } },
+  { id: 'glasses_heart', kind: 'glasses', gacha: true, rarity: 'SR', label: 'ハートグラス', value: 'heart:#FF4D8D', unlock: { gacha: true } },
+  // ほっぺ
+  { id: 'cheek_blush', kind: 'cheek', gacha: true, rarity: 'N', label: 'ぽっとほっぺ', value: 'blush:#FF8FA3', unlock: { gacha: true } },
+  { id: 'cheek_orange', kind: 'cheek', gacha: true, rarity: 'N', label: 'みかんほっぺ', value: 'blush:#FFA94D', unlock: { gacha: true } },
+  { id: 'cheek_whisker', kind: 'cheek', gacha: true, rarity: 'N', label: 'ねこのおひげ', value: 'whisker:#5C4033', unlock: { gacha: true } },
+  { id: 'cheek_sticker', kind: 'cheek', gacha: true, rarity: 'R', label: 'ばんそうこう', value: 'sticker:#F4C28F', unlock: { gacha: true } },
+  { id: 'cheek_star', kind: 'cheek', gacha: true, rarity: 'R', label: 'ほしのペイント', value: 'star:#FFD43B', unlock: { gacha: true } },
+  { id: 'cheek_heart', kind: 'cheek', gacha: true, rarity: 'R', label: 'ハートのペイント', value: 'heart:#FF6B9D', unlock: { gacha: true } },
+  // オーラ（まわりに浮かぶ）
+  { id: 'aura_bubbles', kind: 'aura', gacha: true, rarity: 'N', label: 'シャボン玉', value: 'bubbles:#74C0FC', unlock: { gacha: true } },
+  { id: 'aura_petals', kind: 'aura', gacha: true, rarity: 'N', label: '桜ふぶき', value: 'petals:#F9A8C9', unlock: { gacha: true } },
+  { id: 'aura_notes', kind: 'aura', gacha: true, rarity: 'R', label: 'おんぷ', value: 'notes:#9775FA', unlock: { gacha: true } },
+  { id: 'aura_formula', kind: 'aura', gacha: true, rarity: 'R', label: '数式と化学式', value: 'formula:#4C6EF5', unlock: { gacha: true } },
+  { id: 'aura_hearts', kind: 'aura', gacha: true, rarity: 'R', label: 'ハート', value: 'hearts:#FF6B9D', unlock: { gacha: true } },
+  { id: 'aura_sparkle', kind: 'aura', gacha: true, rarity: 'SR', label: 'きらきら', value: 'sparkle:#FFC300', unlock: { gacha: true } },
+  { id: 'aura_stars', kind: 'aura', gacha: true, rarity: 'SR', label: '流れ星', value: 'stars:#FFD166', unlock: { gacha: true } },
+  { id: 'aura_flame', kind: 'aura', gacha: true, rarity: 'SR', label: 'やる気の炎', value: 'flame:#FF7B00', unlock: { gacha: true } },
+  // ── アプリの壁紙（ホームなどの背景）──
+  { id: 'wall_grid', kind: 'wallpaper', gacha: true, rarity: 'N', label: '壁紙：方眼ノート', value: 'grid', unlock: { gacha: true } },
+  { id: 'wall_lined', kind: 'wallpaper', gacha: true, rarity: 'N', label: '壁紙：大学ノート', value: 'lined', unlock: { gacha: true } },
+  { id: 'wall_mint', kind: 'wallpaper', gacha: true, rarity: 'N', label: '壁紙：ミントストライプ', value: 'mint', unlock: { gacha: true } },
+  { id: 'wall_sakura', kind: 'wallpaper', gacha: true, rarity: 'N', label: '壁紙：桜', value: 'sakura', unlock: { gacha: true } },
+  { id: 'wall_forest', kind: 'wallpaper', gacha: true, rarity: 'N', label: '壁紙：森の小道', value: 'forest', unlock: { gacha: true } },
+  { id: 'wall_ocean', kind: 'wallpaper', gacha: true, rarity: 'R', label: '壁紙：海', value: 'ocean', unlock: { gacha: true } },
+  { id: 'wall_sunset', kind: 'wallpaper', gacha: true, rarity: 'R', label: '壁紙：夕焼け', value: 'sunset', unlock: { gacha: true } },
+  { id: 'wall_chem', kind: 'wallpaper', gacha: true, rarity: 'R', label: '壁紙：化学式柄', value: 'chem', unlock: { gacha: true } },
+  { id: 'wall_math', kind: 'wallpaper', gacha: true, rarity: 'R', label: '壁紙：数式柄', value: 'math', unlock: { gacha: true } },
+  { id: 'wall_music', kind: 'wallpaper', gacha: true, rarity: 'R', label: '壁紙：五線譜', value: 'music', unlock: { gacha: true } },
+  { id: 'wall_chalk', kind: 'wallpaper', gacha: true, rarity: 'R', label: '壁紙：黒板', value: 'chalk', unlock: { gacha: true } },
+  { id: 'wall_night', kind: 'wallpaper', gacha: true, rarity: 'SR', label: '壁紙：夜空', value: 'night', unlock: { gacha: true } },
+  { id: 'wall_aurora', kind: 'wallpaper', gacha: true, rarity: 'SR', label: '壁紙：オーロラ', value: 'aurora', unlock: { gacha: true } },
+  { id: 'wall_galaxy', kind: 'wallpaper', gacha: true, rarity: 'SR', label: '壁紙：銀河', value: 'galaxy', unlock: { gacha: true } },
+  { id: 'wall_rainbow', kind: 'wallpaper', gacha: true, rarity: 'SR', label: '壁紙：レインボー', value: 'rainbow', unlock: { gacha: true } },
+  { id: 'wall_gold', kind: 'wallpaper', gacha: true, rarity: 'SR', label: '壁紙：黄金の書斎', value: 'gold', unlock: { gacha: true } },
   // ── UR（大当たり）：学習プリント PDF。ガチャからだけ出る（一覧は gachaPrints.generated.ts）──
   ...GACHA_PRINTS.map((p): ItemDef => ({ id: p.id, kind: 'print', gacha: true, rarity: 'UR', label: p.label, value: p.file, unlock: { gacha: true } })),
 ];
@@ -883,6 +962,26 @@ export function equipItem(progress: GrowthProgress, id: string): GrowthProgress 
   // 学習プリントは装備ではない（equipped に入れると扉くんの表示が壊れる）
   if (!item || item.kind === 'print' || !progress.owned.includes(id)) return progress;
   return { ...progress, equipped: { ...progress.equipped, [item.kind]: id } };
+}
+
+/** アクセサリ・壁紙を外す（ポーズ・枠・称号は外せない） */
+export function unequipKind(progress: GrowthProgress, kind: EquipKind): GrowthProgress {
+  if (!REMOVABLE_KINDS.includes(kind) || !progress.equipped[kind]) return progress;
+  return { ...progress, equipped: { ...progress.equipped, [kind]: '' } };
+}
+
+/** 装備中のアクセサリの見た目（'形:色'）。持っていない・種類が違うものは無視 */
+export function equippedAccessory(progress: GrowthProgress, slot: AccessorySlot): string | undefined {
+  const id = progress.equipped[slot];
+  const item = id ? itemById(id) : undefined;
+  return item && item.kind === slot && progress.owned.includes(id) ? item.value : undefined;
+}
+
+/** 装備中の壁紙のキー（WALLPAPERS）。無ければ '' */
+export function equippedWallpaper(progress: GrowthProgress): string {
+  const id = progress.equipped.wallpaper;
+  const item = id ? itemById(id) : undefined;
+  return item && item.kind === 'wallpaper' && progress.owned.includes(id) ? item.value : '';
 }
 
 /** 称号を身につける（'' でレート称号に戻す。持っていないバッジは拒否） */

@@ -7,6 +7,16 @@ import { drawGacha, drawGachaMulti, equip, GACHA_MULTI_COUNT } from '../battle/d
 import { GrowthAvatar } from '../battle/ui/GrowthParts';
 import { gachaRarityOf, printOf, type ItemDef, type GachaRarity, type GrowthProgress } from '../battle/core/growth';
 import { play, primeAudio } from '../battle/ui/feedback';
+import { wallpaperOf } from '../battle/core/tobiraParts';
+
+/** コレクションの分類（部位ごとに見られるように） */
+const COLLECTION_KINDS = [
+  { id: 'body', label: 'ポーズ・わく', match: (i: ItemDef) => i.kind === 'pose' || i.kind === 'frame' },
+  { id: 'parts', label: '帽子・メガネほか', match: (i: ItemDef) => ['hat', 'glasses', 'cheek', 'aura'].includes(i.kind) },
+  { id: 'wallpaper', label: '壁紙', match: (i: ItemDef) => i.kind === 'wallpaper' },
+  { id: 'print', label: '学習プリント', match: (i: ItemDef) => i.kind === 'print' },
+] as const;
+type CollectionKind = typeof COLLECTION_KINDS[number]['id'];
 
 const pct=(r:number)=>{const v=r*100;return (v>=10?v.toFixed(1):v>=1?v.toFixed(2):v.toFixed(3)).replace(/\.?0+$/,'');};
 function RarityTag({rarity}:{rarity:GachaRarity}){return <span className="gacha-rarity" data-rarity={rarity} aria-label={GACHA_RARITY_LABELS[rarity]}>{rarity}</span>;}
@@ -15,6 +25,7 @@ const bestOf=(list:{rarity:GachaRarity}[]):GachaRarity=>GACHA_RARITY_ORDER.find(
 /** アイテムの見た目：装備なら扉くんに着せたプレビュー、学習プリントなら1ページ目のサムネイル */
 function ItemArt({item,progress,size}:{item:ItemDef;progress:GrowthProgress|null;size:number}){
  const print=item.kind==='print'?printOf(item.id):undefined;
+ if(item.kind==='wallpaper') return <span className="gacha-wallpaper-art" style={{width:size,height:Math.round(size*1.3),background:wallpaperOf(item.value)?.css}}><img src="/mascots/basic.webp" alt="" width={Math.round(size*0.5)} height={Math.round(size*0.5)}/></span>;
  if(print) return <span className="gacha-print-thumb" style={{width:size,height:Math.round(size*1.414)}}><img src={print.thumb} alt={`${print.label}の1ページ目`} loading="lazy" decoding="async" width={size} height={Math.round(size*1.414)}/><em>{print.category}</em></span>;
  return progress ? <GrowthAvatar progress={{...progress,equipped:{...progress.equipped,[item.kind]:item.id}}} size={size} showLevel={false}/> : null;
 }
@@ -45,9 +56,11 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
  const [result,setResult]=useState<{item:ItemDef;rarity:GachaRarity;duplicate:boolean;refund:number}|null>(null);
  const [multi,setMulti]=useState<{item:ItemDef;rarity:GachaRarity;duplicate:boolean;refund:number}[]|null>(null);
  const bestRarity:GachaRarity|null=result?result.rarity:multi?bestOf(multi):null;
- const decor=items.filter(item=>item.kind!=='print');const prints=items.filter(item=>item.kind==='print');
+ const prints=items.filter(item=>item.kind==='print');
  const ownedPrints=prints.filter(item=>progress?.owned.includes(item.id));
- const [collectionKind,setCollectionKind]=useState<'decor'|'print'>('decor');
+ const [collectionKind,setCollectionKind]=useState<CollectionKind>('body');
+ const collectionList=items.filter(COLLECTION_KINDS.find(k=>k.id===collectionKind)!.match);
+ const partsCount=items.filter(COLLECTION_KINDS[1].match).length;const wallCount=items.filter(COLLECTION_KINDS[2].match).length;
  const [confirmMulti,setConfirmMulti]=useState(false);
  const multiCost=GACHA_COST*GACHA_MULTI_COUNT;
  const drawMulti=async()=>{
@@ -62,7 +75,7 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
  };
  return <section className={`gacha-room ${result?'has-result':''}`} data-best-rarity={!revealing && bestRarity ? bestRarity : undefined}>{!embedded && <button type="button" className="arena-back" onClick={onBack}><ArrowLeft size={18}/>マイページ</button>}
   <p className="home-eyebrow">TOBIRA COLLECTION</p><h1>とびら君の装飾ガチャ</h1>
-  <p>ポーズ＆フレーム{decor.length}種＋<strong className="gacha-ur-lead">大当たり 学習プリント{prints.length}種</strong>（共テ出題傾向レポート・演習プリント・単語テスト）。</p>
+  <p>ポーズ・わく・<b>帽子やメガネなど部位アクセ{partsCount}種</b>・<b>壁紙{wallCount}種</b>＋<strong className="gacha-ur-lead">大当たり 学習プリント{prints.length}種</strong>（共テ出題傾向・演習・単語テスト）。</p>
   <ul className="gacha-rarity-rates" aria-label="レア度ごとの提供割合">{GACHA_RARITY_ORDER.map(r=><li key={r} data-rarity={r}><RarityTag rarity={r}/>{pct(GACHA_RARITY_RATES[r])}%<small>{tiers[r].length}種</small></li>)}</ul>
   <div className={`gacha-machine gacha-preview-stage ${busy?'is-spinning':''}`} aria-label="ラインナップのプレビュー">
     <span className="gacha-preview-tag">LINEUP PREVIEW</span>
@@ -101,9 +114,9 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
     <header><h2 id="gacha-odds-title">装飾コレクション・提供割合</h2><button type="button" autoFocus onClick={()=>oddsDialog.current?.close()}>閉じる</button></header>
     <div className="game-details-body gacha-odds">
       <p>全{items.length}種類。まず<strong>レア度</strong>を抽選（UR {pct(GACHA_RARITY_RATES.UR)}%・SR {pct(GACHA_RARITY_RATES.SR)}%・R {pct(GACHA_RARITY_RATES.R)}%・N {pct(GACHA_RARITY_RATES.N)}%）し、同じレア度の中から等確率で1つ出ます。<strong>UR（大当たり）は学習プリント{tiers.UR.length}種</strong>で、1種あたり約{pct(GACHA_RARITY_RATES.UR/Math.max(1,tiers.UR.length))}%。<strong>5連は最後の1回が「R以上確定」</strong>（それまでにR以上が出ていなければ、UR {pct(GACHA_RARITY_RATES.UR/(1-GACHA_RARITY_RATES.N))}%・SR {pct(GACHA_RARITY_RATES.SR/(1-GACHA_RARITY_RATES.N))}%・R {pct(GACHA_RARITY_RATES.R/(1-GACHA_RARITY_RATES.N))}% で抽選）。重複は N {GACHA_DUPLICATE_REFUND_BY_RARITY.N}枚・R {GACHA_DUPLICATE_REFUND_BY_RARITY.R}枚・SR {GACHA_DUPLICATE_REFUND_BY_RARITY.SR}枚・UR {GACHA_DUPLICATE_REFUND_BY_RARITY.UR}枚返還。課金・換金なし／天井なし。UR・SR はガチャ限定です。フレームや一部ポーズはショップ交換・レベル・称号でも獲得できます。学習プリントの問題・正解はアプリ内の問題（確認済み）から作っています。</p>
-      <div className="gacha-collection-filters" role="group" aria-label="種類で切り替える">{([['decor',`装飾 ${decor.length}種`],['print',`学習プリント ${prints.length}種`]] as const).map(([id,label])=><button key={id} type="button" aria-pressed={collectionKind===id} onClick={()=>setCollectionKind(id)}>{label}</button>)}</div>
+      <div className="gacha-collection-filters gacha-collection-kinds" role="group" aria-label="種類で切り替える">{COLLECTION_KINDS.map(k=><button key={k.id} type="button" aria-pressed={collectionKind===k.id} onClick={()=>setCollectionKind(k.id)}>{k.label} {items.filter(k.match).length}</button>)}</div>
       <div className="gacha-collection-filters" role="group" aria-label="所持状況で絞り込む">{([['all','すべて'],['owned','所持済み'],['missing','未所持']] as const).map(([id,label])=><button key={id} type="button" aria-pressed={collectionFilter===id} onClick={()=>setCollectionFilter(id)}>{label}</button>)}</div>
-      <ul className="gacha-collection-grid" data-kind={collectionKind}>{(collectionKind==='print'?prints:decor).filter(item=>collectionFilter==='all'||(collectionFilter==='owned')===!!progress?.owned.includes(item.id)).map(item=>{
+      <ul className="gacha-collection-grid" data-kind={collectionKind}>{collectionList.filter(item=>collectionFilter==='all'||(collectionFilter==='owned')===!!progress?.owned.includes(item.id)).map(item=>{
         const owned=!!progress?.owned.includes(item.id);
         return <li key={item.id} data-owned={owned}>
           <ItemArt item={item} progress={progress} size={item.kind==='print'?64:76}/>
@@ -111,7 +124,7 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
           {owned && item.kind==='print' && <PrintLinks item={item} compact/>}
         </li>;
       })}</ul>
-      {(()=>{const list=collectionKind==='print'?prints:decor;const n=list.filter(item=>progress?.owned.includes(item.id)).length;
+      {(()=>{const list=collectionList;const n=list.filter(item=>progress?.owned.includes(item.id)).length;
         return <>{collectionFilter==='missing' && n===list.length && <p>全種類コレクション済みです。</p>}
         {collectionFilter==='owned' && n===0 && <p>{collectionKind==='print'?'まだ学習プリントを持っていません。大当たり（UR）で出ます。':'まだガチャ対象の装飾を持っていません。'}</p>}</>;})()}
       <p>プレビューは装備・コインを変更しません。装飾はこのブラウザのアカウントごとに保存されます。強さは変わりません。</p>
