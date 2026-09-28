@@ -52,7 +52,7 @@
  *   この型は原文の並びのまま固定し、並べ替え可能な2×2型で全体を均している。
  *
  * 正解位置の実測（このファイルに収録した分だけを数えた値）
- *   ①11問 / ②18問 / ③9問 / ④5問（計 43問）。最頻位置だけ塗った場合の正答率 42%。
+ *   ①11問 / ②18問 / ③10問 / ④5問（計 44問）。最頻位置だけ塗った場合の正答率 41%。
  *   実物イラストの問は並べ替えられないため、この偏りは
  *   PDF 原文の偏りがそのまま出たもの。自前生成の絵に
  *   置き換えた問から順に均していく。
@@ -2992,6 +2992,21 @@ const EL2_SET16_TRACKS: ListeningAudioTrack[] = [
     translation: '',
     keyPhrases: [],
   },
+  {
+    subId: 'q_el2_set16_3',
+    label: '問3',
+    hint: '男女がスポーツ用品店でテニスラケットを選んでいる。（話者：女性（客） / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set16_q3.mp3',
+    script: 'W: I\'m a beginner. Which racket do you recommend?\nM: This lightweight one is good for beginners. It has a larger head.\nW: And the color?\nM: Available in blue, black, or white.',
+    turns: [
+      { who: 'W', text: 'I\'m a beginner. Which racket do you recommend?' },
+      { who: 'M', text: 'This lightweight one is good for beginners. It has a larger head.' },
+      { who: 'W', text: 'And the color?' },
+      { who: 'M', text: 'Available in blue, black, or white.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
 ];
 
 const EL2_SET16: ListeningProblem = {
@@ -2999,7 +3014,7 @@ const EL2_SET16: ListeningProblem = {
   category: '第16回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET16_TRACKS,
-  text: `第16回　第2問（2問・2回読み）　【難易度：標準】
+  text: `第16回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -3021,7 +3036,11 @@ Question: Which cake will the man buy?
 Question: Which locker is the man's?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
-※ 問3 はイラストの準備中のため、この回では出題していません。`,
+────────────────────
+問3（話者：女性（客） / 男性（店員））
+場面：男女がスポーツ用品店でテニスラケットを選んでいる。
+Question: Which racket will the woman likely choose (based on the recommended features)?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
     {
       id: 'q_el2_set16_1',
@@ -3065,6 +3084,27 @@ Question: Which locker is the man's?
         ],
       },
     },
+    {
+      id: 'q_el2_set16_3',
+      label: '問3 Which racket will the woman likely choose (based on the recommended features)?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '③',
+      correctAnswerRate: 62,
+      imageUrl: '/listening_q2/el2_set16_q3.jpg',
+      imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
+      detailedExplanation: {
+        theme: '色は「どれでもよい」ため無関係',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
   ],
   explanation: `第16回（難易度：標準）の解説です。対話スクリプトと正解、そして PDF の解説をそのまま収録しています。各選択肢がどんな絵だったかも併せて載せているので、「どこを聞き分ければよかったか」を絵と対応させて確認できます。
 
@@ -3097,7 +3137,22 @@ Question: Which locker is the man's?
 ③ C列 上から3段目
 ④ A列 上から3段目
 正解の選択肢：③ C列 上から3段目
-女性の思い込み（row B, second from the top）を they moved me to row C が訂正し、Third from the top で段が確定する。列の訂正と段の指定を2段階で追う。①は訂正される前の位置、②は段だけ合っていて列が古い、④は列が違う。`,
+女性の思い込み（row B, second from the top）を they moved me to row C が訂正し、Third from the top で段が確定する。列の訂正と段の指定を2段階で追う。①は訂正される前の位置、②は段だけ合っていて列が古い、④は列が違う。
+
+問3　正解は ③
+場面：男女がスポーツ用品店でテニスラケットを選んでいる。（話者：女性（客） / 男性（店員））
+スクリプト：W: I'm a beginner. Which racket do you recommend?
+M: This lightweight one is good for beginners. It has a larger head.
+W: And the color?
+M: Available in blue, black, or white.
+Question: Which racket will the woman likely choose (based on the recommended features)?
+選択肢のイラスト：
+① 重量級・ヘッド大きめ
+② 軽量・ヘッド小さめ
+③ 軽量・ヘッド大きめ
+④ 重量級・ヘッド小さめ
+正解の選択肢：③ 軽量・ヘッド大きめ
+色は「どれでもよい」ため無関係。lightweight + larger head の2条件で決定。属性の掛け合わせ。`,
   surroundingKnowledge: [
     '第2問は2回読み。1回目で候補を2つに絞り、2回目で決め手を確認する二段構えが基本。',
     '「訂正の型」が最頻出。No, actually … / the other one / not A but B の後ろが答えになる。',
@@ -3113,7 +3168,7 @@ Question: Which locker is the man's?
   ],
 };
 
-/** 第2問の演習セット一覧（イラストが揃っている 16 セット 43 問）。 */
+/** 第2問の演習セット一覧（イラストが揃っている 16 セット 44 問）。 */
 export const EL2_PROBLEMS: ListeningProblem[] = [
   EL2_SET1,
   EL2_SET2,

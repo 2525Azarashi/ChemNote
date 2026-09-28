@@ -1830,10 +1830,10 @@
         "speakers": "女性(客) / 男性(店員)",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "軽量・ヘッド小さめ",
           "重量級・ヘッド大きめ",
-          "重量級・ヘッド小さめ",
-          "軽量・ヘッド大きめ"
+          "軽量・ヘッド小さめ",
+          "軽量・ヘッド大きめ",
+          "重量級・ヘッド小さめ"
         ],
         "turns": [
           {
@@ -1854,17 +1854,17 @@
           }
         ],
         "question": "Which racket will the woman likely choose (based on the recommended features)?",
-        "answerMark": "④",
+        "answerMark": "③",
         "answerText": "軽量・ヘッド大きめ",
         "explanation": "色は「どれでもよい」ため無関係。lightweight + larger head の2条件で決定。属性の掛け合わせ。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a tennis racket with a small label for weight and head size. Panel 1: racket with a SMALL head, label 'LIGHT'. Panel 2: racket with a large head, label 'HEAVY'. Panel 3: racket with a small head, label 'HEAVY'. Panel 4: racket with a LARGE oval head, label 'LIGHT'.",
-        "answerIndex": 4,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a tennis racket with a small label for weight and head size. Panel 1: racket with a large head, label 'HEAVY'. Panel 2: racket with a SMALL head, label 'LIGHT'. Panel 3: racket with a LARGE oval head, label 'LIGHT'. Panel 4: racket with a small head, label 'HEAVY'.",
+        "answerIndex": 3,
         "shuffled": true,
         "shufflePerm": [
-          2,
           1,
-          3,
-          0
+          2,
+          0,
+          3
         ]
       }
     ]
