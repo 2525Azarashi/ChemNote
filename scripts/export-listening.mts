@@ -82,6 +82,7 @@ put('src/battle/data/battlePool.ts', text('src/battle/data/battlePool.ts').repla
 for (const [template,target] of Object.entries({
   'ListeningHome.tsx':'src/components/ListeningHome.tsx',
   'ListeningSupport.tsx':'src/components/ListeningSupport.tsx',
+  'ListeningSubjectSelection.tsx':'src/components/ListeningSubjectSelection.tsx',
   'listening-home.css':'src/components/listening-home.css',
   'listeningSupport.ts':'src/data/listeningSupport.ts',
   'gen-listening-vocabulary.mts':'scripts/gen-listening-vocabulary.mts',
@@ -89,7 +90,12 @@ for (const [template,target] of Object.entries({
 const vocabSource='src/battle/data/external/english_vocab.json';
 originals[vocabSource]=sha(readFileSync(resolve(root,vocabSource)));
 put('src/data/listeningVocabularySource.json',readFileSync(resolve(root,vocabSource),'utf8'));
-edit('src/App.tsx', "import { Home } from './components/Home';", "import { ListeningHome as Home } from './components/ListeningHome';");
+edit('src/App.tsx', "import { Home } from './components/Home';", "import { ListeningHome as Home } from './components/ListeningHome';\nimport { ListeningSubjectSelection } from './components/ListeningSubjectSelection';");
+// 2026-09-29：ホームから科目をえらんだら、その科目の単元一覧へそのまま進む（英文法を選んでホームに戻されると迷うため）
+edit('src/App.tsx', "onChangeSubject={() => { setSubjectPickerReturnTo('home'); setSubjectPickerOrigin('change'); setAppState('subject_selection'); }}", "onChangeSubject={() => { setSubjectPickerReturnTo('home'); setSubjectPickerOrigin('start'); setAppState('subject_selection'); }}");
+// 2026-09-29：科目選択は専用画面（リスニング＋「英文法・英単語を固める」）。統合版の本棚は使わない。
+edit('src/App.tsx', '              <SubjectSelection\n', '              <ListeningSubjectSelection\n');
+edit('src/App.tsx', "                onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined}\n              />", "                onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined}\n                onBattle={FEATURES.battle ? () => setAppState('battle') : undefined}\n              />");
 edit('src/App.tsx', '<Home onPickSubject=', "<Home onListeningStart={(chapter,index)=>{setAppMode('practice');handleSelectChapter(chapter,index,false,{startIndex:index,endIndex:index},'practice');}} onPickSubject=");
 // Prevent inherited links from opening chemistry summaries or trees in the listening copy.
 edit('src/components/Home.tsx', "onStudyMode('learning')", "onStudyMode('practice')");
