@@ -25,7 +25,8 @@ import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import type { BattlePlayerScore, BattleQuestion, BattleRule } from '../core/types';
-import { countdownLabelAt, COUNTDOWN_TOTAL_MS, gapMessage, maxPointsPerQuestion, phaseOf } from '../core/battleLive';
+import { BGM_FILES } from '../audio/bgmFiles';
+import { countdownLabelAt, COUNTDOWN_START_HOLD_MS, COUNTDOWN_TOTAL_MS, gapMessage, maxPointsPerQuestion, phaseOf } from '../core/battleLive';
 import { answerNumber } from '../core/arenaRules';
 import { resolveTimeLimit } from '../core/battleCore';
 import { bgmTrackFor } from '../core/audioSettings';
@@ -96,7 +97,14 @@ export function BattleLiveStage(p: BattleLiveStageProps) {
   );
   const listening = p.question.subject === 'english_listening';
   const quiet = listening && !counting && !p.reveal;
-  const { play: playSound, unlock } = useBattleAudio(listening ? null : track);
+  // ★音源の対戦BGMがあるときは、カウントダウンの頭から対戦曲を鳴らす★
+  //   曲頭から dropSec（=7秒）で本編に入るように作ってあるので、START! と同時にドロップする。
+  //   合成音しか無いときは従来どおり、カウントダウン中は待合室の曲。
+  const countdownTrack = counting && BGM_FILES.battle ? 'normal' : track;
+  const startInMs = counting ? Math.max(0, p.preStartMs - COUNTDOWN_START_HOLD_MS) : undefined;
+  // リスニングは問題の音声と重ならないよう、問題中は鳴らさない（従来どおり）。
+  // カウントダウン中だけは待合室の曲を鳴らし続け、START! のあと問題が始まったら絞って止める。
+  const { play: playSound, unlock } = useBattleAudio(listening ? (counting ? 'matching' : null) : countdownTrack, startInMs);
   const play = useCallback((sound: Parameters<typeof playSound>[0]) => {
     if (!quiet) playSound(sound);
   }, [playSound, quiet]);
