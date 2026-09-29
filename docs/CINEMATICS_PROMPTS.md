@@ -26,6 +26,10 @@ Combo special attack: the character crouches with a determined look, the pencil 
 ```
 Title intro, "open the door of learning": the character wakes up with a blink and a stretch, gently opens the door on its face, soft glowing letters, notebook pages and little stars drift out and swirl around it like a gentle breeze, it waves hello to the viewer with the pencil, then closes the door halfway and settles back to the same standing pose, smiling. Warm cream background, soft morning light, calm and heartwarming, smooth polished Pixar-like animation.
 ```
+v2 は上の文で作ったら顔の前に崩れた文字が出て不採用。次に試す v3：
+```
+Title intro: the character wakes up with a blink and a happy stretch, waves hello to the viewer with the pencil, while a few small white paper airplanes and tiny soft stars glide gently in the background behind the character. Nothing covers the character's face. Absolutely no text, no letters, no writing, no symbols anywhere. The character then settles back into the exact same standing pose in the same place, smiling. Warm cream background, soft morning light, calm and heartwarming, smooth polished Pixar-like animation.
+```
 ※ タイトルは最後のコマから静止画シーンへクロスフェードする（LaunchScreen.tsx）。差し替えたら `docs/CODEMAP.md` の配置％を最後のコマで測り直す。
 
 ### ガチャ開封（gacha.mp4・参照＝今の title.mp4 の1コマ目）
