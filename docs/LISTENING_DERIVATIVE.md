@@ -94,3 +94,8 @@ GitHub Appにworkflows更新権限がなくCI登録は拒否されたため、�
 - `manatobi_listening_audio_sources_2026-09-29.zip`：`audio_sources/`（ElevenLabs 原本・分割記録・領収書、322MB）。
 - 重ねた状態での確認：tsc 0、audio:check 問題なし、374/374、vite build 成功（swap＋ヒープ3GB）、リスニングテスト 229/233（落ちる4件は統合版でも同じ）。
 - ネイティブ化用の ios/ android/（Capacitor）は統合版にも未作成。
+
+### UI参考ZIP（2026-09-29 追記）
+- `manatobi_listening_ui_2026-09-29.zip`：画面写真（新リスニング版4画面・今の統合版4画面、スマホ/PC）、画面のつながり（導線）の説明、リスニング版UIコード、統合版の画面コード（参考）、App.tsx の差し替え手順。
+- 新設：専用の科目選択画面 `ListeningSubjectSelection`（リスニングをメインに、「英文法・英単語を固める」ブロック＝英文法の演習／英単語・英熟語カード／聞き取りの文法／対戦で固める）。ホーム右上に「科目」ボタン。書き出しスクリプトにも組み込み済み。
+- 確認：書き出し先で tsc 0、vite build 成功、画面エラー0、スマホ/PCで横はみ出しなし、科目選択→英文法の単元一覧・単語カードが開く。
