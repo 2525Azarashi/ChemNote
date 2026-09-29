@@ -1,6 +1,6 @@
 {
  "batch": "elevenlabs_2026-09-29_q5",
- "createdAtUtc": "2026-09-29T00:58:26.912834+00:00",
+ "createdAtUtc": "2026-09-29T02:45:38.980631+00:00",
  "method": "台本と音声認識の単語を突き合わせ、文間の無音の中央で切断。速度・音程は無変更。mp3 はストリームコピー。",
  "sources": [
   {
@@ -559,7 +559,8 @@
      ],
      "start": 0.0,
      "end": 104.604,
-     "output": "q5set08_lecture.mp3"
+     "output": "q5set08_lecture.mp3",
+     "supersededBy": "ElevenLabs_2026-09-29T02_21_38_Oliver Silk - Deep Gravel Narrative_pvc_sp100_s30_sb80_v4.mp3"
     },
     {
      "stem": "q5set08_q33",
@@ -568,7 +569,8 @@
      "lastWordEnd": 128.04,
      "start": 104.604,
      "end": 128.444063,
-     "output": "q5set08_q33.mp3"
+     "output": "q5set08_q33.mp3",
+     "supersededBy": "ElevenLabs_2026-09-29T02_21_38_Oliver Silk - Deep Gravel Narrative_pvc_sp100_s30_sb80_v4.mp3"
     }
    ]
   },
@@ -613,9 +615,52 @@
      "output": "q5set04_q33.mp3"
     }
    ]
+  },
+  {
+   "file": "ElevenLabs_2026-09-29T02_21_38_Oliver Silk - Deep Gravel Narrative_pvc_sp100_s30_sb80_v4.mp3",
+   "sha256": "55601a5e49c09a69344f3f7d43bdd0d65e59fe30b65f72a5f526219c3d455d2c",
+   "durationSec": 143.647,
+   "tracks": [
+    {
+     "stem": "q5set08_lecture",
+     "cover": 0.971,
+     "firstWordStart": 0.0,
+     "lastWordEnd": 111.24,
+     "silence": [
+      111.485,
+      112.1
+     ],
+     "start": 0.0,
+     "end": 111.792,
+     "output": "q5set08_lecture.mp3"
+    },
+    {
+     "stem": "q5set08_q32",
+     "cover": 1.0,
+     "firstWordStart": 112.04,
+     "lastWordEnd": 121.2,
+     "silence": [
+      121.429,
+      121.983
+     ],
+     "start": 111.792,
+     "end": 121.706,
+     "output": "q5set08_q32.mp3"
+    },
+    {
+     "stem": "q5set08_q33",
+     "cover": 0.919,
+     "firstWordStart": 121.84,
+     "lastWordEnd": 143.3,
+     "start": 121.706,
+     "end": 143.647313,
+     "output": "q5set08_q33.mp3"
+    }
+   ]
   }
  ],
  "history": [
-  "2026-09-29T00:57:26.680598+00:00"
+  "2026-09-29T00:57:26.680598+00:00",
+  "2026-09-29T00:58:26.912834+00:00"
  ]
 }

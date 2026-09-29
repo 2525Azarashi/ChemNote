@@ -7,18 +7,27 @@ import { FEATURES, isSubjectEnabled } from '../src/config/features';
 import { POOL_COUNTS, loadPool } from '../src/battle/data/battlePool';
 import { defaultEnabledSubjects, normalizeRule } from '../src/battle/core/battleRules';
 import { arenaRule } from '../src/battle/core/arenaRules';
+import { EXTERNAL_SUBJECTS } from '../src/data/externalSubjects';
 const subject = 'english_listening';
-it('exposes only listening across study catalogs and battles', () => {
-  expect(SUBJECTS.map(s=>s.id)).toEqual([subject]);
-  expect(SUBJECT_INDEX.map(s=>s.id)).toEqual([subject]);
-  expect(Object.keys(SUBJECT_STATS)).toEqual([subject]);
-  expect(Object.keys(POOL_COUNTS)).toEqual([subject]);
-  expect(defaultEnabledSubjects()).toEqual([subject]);
+it('exposes listening first, with English grammar and vocabulary as sub-features only', () => {
+  expect(SUBJECTS.map(s=>s.id)).toEqual([subject,'english_grammar']);
+  expect(SUBJECT_INDEX.map(s=>s.id)).toEqual([subject,'english_grammar']);
+  expect(Object.keys(SUBJECT_STATS)).toEqual([subject,'english_grammar']);
+  expect(Object.keys(POOL_COUNTS)).toEqual([subject,'english_grammar','english_vocab']);
+  expect(defaultEnabledSubjects()).toEqual([subject,'english_grammar','english_vocab']);
+  expect(EXTERNAL_SUBJECTS.map(s=>s.id)).toEqual(['english_vocab']);
   expect(FEATURES.battle).toBe(true);
-  for(const other of ['math','chemistry','chemistry_basic','english_grammar','biology_basic','geography','rika','english_vocab']) {
+  expect(isSubjectEnabled('english_grammar')).toBe(true);
+  for(const other of ['math','chemistry','chemistry_basic','biology_basic','geography','rika','joho']) {
     expect(isSubjectEnabled(other)).toBe(false);
     expect(normalizeRule(other,{enabled:true}).enabled).toBe(false);
   }
+});
+it('keeps English grammar (__GRAMMAR_POOL__) and vocabulary (__VOCAB_POOL__) battle banks loadable', async () => {
+  expect(await loadPool('english_grammar')).toHaveLength(__GRAMMAR_POOL__);
+  expect(await loadPool('english_vocab')).toHaveLength(__VOCAB_POOL__);
+  expect(getChaptersOfSubject('english_grammar').length).toBeGreaterThan(0);
+  expect(normalizeRule('english_vocab',{}).enabled).toBe(true);
 });
 it('keeps nine units, __PRACTICE_TOTAL__ practice problems and their audio/images', () => {
   const chapters=getChaptersOfSubject(subject);
@@ -57,4 +66,5 @@ it('ships only commercial audio listed in the ledger', () => {
   expect(status.totalTracks).toBe(ledger.length);
   if(status.status==='approved'){expect(status.legacyTracks).toEqual([]);for(const r of ledger)expect(r.status,r.audioUrl).toBe('replaced');}
   for(const r of ledger)expect(existsSync(resolve('public','.'+r.audioUrl)),r.audioUrl).toBe(true);
+  expect(existsSync('license_evidence/README.md')).toBe(true);
 });

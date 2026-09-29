@@ -2,8 +2,8 @@
   "batch": "elevenlabs_2026-09-29_q5",
   "kind": "commercial",
   "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
-  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
-  "note": "第5問 15回分（Q5_1-3 に第1〜3回、他12本は1回ずつ）。講義＋問32＋問33 を1ファイルで録音",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。領収書 audio_sources/commercial/license_evidence/）",
+  "note": "第5問 第8回の取り直し（問32 を含む全体）。問32だけ使う",
   "files": [
     {
       "originalFilename": "Q5_1-3.mp3",
@@ -95,6 +95,13 @@
       "bytes": 2081784,
       "durationSeconds": 129.071,
       "receivedAtUtc": "2026-09-29T00:57:24.188Z"
+    },
+    {
+      "originalFilename": "ElevenLabs_2026-09-29T02_21_38_Oliver Silk - Deep Gravel Narrative_pvc_sp100_s30_sb80_v4.mp3",
+      "sha256": "55601a5e49c09a69344f3f7d43bdd0d65e59fe30b65f72a5f526219c3d455d2c",
+      "bytes": 2315005,
+      "durationSeconds": 143.647313,
+      "receivedAtUtc": "2026-09-29T02:45:36.569Z"
     }
   ]
 }

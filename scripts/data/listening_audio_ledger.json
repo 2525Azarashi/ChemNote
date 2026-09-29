@@ -4816,13 +4816,18 @@
  },
  {
   "audioUrl": "/listening_q5/q5set08_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。領収書 audio_sources/commercial/license_evidence/）",
+  "importedAt": "2026-09-29T02:46:21.218Z",
+  "sourceFile": "q5set08_q32.mp3",
+  "sha256": "1ad46d12fb5a6b8e7467cd00c6c34378a82e875b67374637e069d58dc1e953fe",
+  "durationSec": 9.95,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set08_q32.mp3"
+  ],
+  "note": "第5問 第8回 問32。取り直し（02_21_38）から分割。講義・問33 は 00_19_46 版のまま",
+  "legacyDiscardedAt": "2026-09-29T02:46:21.220Z"
  },
  {
   "audioUrl": "/listening_q5/q5set08_q33.mp3",

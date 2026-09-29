@@ -80,12 +80,18 @@ describe('リスニング音源台帳（商用音源と旧音源の分離）', (
   });
 });
 
-describe('第5問（2026-09-29 受領）', () => {
-  it('45本のうち44本が商用の新音源。残りは第8回 問32 だけ（録音に入っていなかった・取り直し待ち）', () => {
+describe('全音源が商用の新音源（2026-09-29 完了）', () => {
+  it('374本すべて replaced。旧音源（legacy_unverified）は1本も残っていない', () => {
+    expect(ledger.filter(r => r.status !== 'replaced').map(r => r.audioUrl)).toEqual([]);
+  });
+  it('第5問45本もすべて旧音源コピーを削除済み', () => {
     const rows = ledger.filter(r => r.audioUrl.startsWith('/listening_q5/'));
     expect(rows.length).toBe(45);
-    const legacy = rows.filter(r => r.status !== 'replaced').map(r => r.audioUrl);
-    expect(legacy).toEqual(['/listening_q5/q5set08_q32.mp3']);
+    for (const r of rows) { expect(r.status, r.audioUrl).toBe('replaced'); expect(r.legacyDiscardedAt, r.audioUrl).toBeTruthy(); }
+  });
+  it('ElevenLabs 有料契約の領収書が同梱されている', () => {
+    for (const f of ['README.md', 'elevenlabs_receipt_creator_2026-09-20.png', 'elevenlabs_receipt_starter_2026-09-28.png', 'elevenlabs_receipt_usage_2026-09-29.png'])
+      expect(fs.existsSync(path.join(ROOT, 'audio_sources/commercial/license_evidence', f)), f).toBe(true);
   });
 });
 
