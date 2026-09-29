@@ -16,12 +16,17 @@ try {
   await page.locator('.launch-start').click();await page.locator('.game-home').waitFor();
   for(const [width,height] of [[320,568],[390,844],[1280,900]]) {
     await page.setViewportSize({width,height});
-    assert.deepEqual(await page.locator('select[aria-label="学習する科目"] option').evaluateAll(es=>es.map(e=>e.value)),['english_listening']);
+    // 統合版と同じ1画面ホーム。科目のプルダウンは無く、下の帯に［科目］［英文法・英単語を固める］
+    assert.equal(await page.locator('select[aria-label="学習する科目"]').count(),0);
+    assert.equal(await page.locator('[data-home-foundation]').count(),1);
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+2),'home fits one screen at '+width+'x'+height);
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   }
   await page.setViewportSize({width:390,height:844});
   assert.equal(await page.getByRole('button',{name:'まとめプリント',exact:true}).count(),0);
-  await page.getByRole('button',{name:'大問を選ぶ',exact:true}).click();
+  await page.locator('[data-home-foundation]').click();
+  await page.locator('[data-listening-subjects]').waitFor();
+  await page.locator('[data-subject-id="english_listening"]').click();
   await page.getByRole('button',{name:/第1回演習/}).first().waitFor();
   await page.getByRole('button',{name:/第1回演習/}).first().click();
   await page.waitForTimeout(500);

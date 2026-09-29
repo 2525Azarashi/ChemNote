@@ -98,8 +98,12 @@ edit('src/App.tsx', '              <SubjectSelection\n', '              <Listeni
 edit('src/App.tsx', "                onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined}\n              />", "                onRika={FEATURES.rika ? () => { setRikaTab('practice'); setAppState('rika'); } : undefined}\n                onBattle={FEATURES.battle ? () => setAppState('battle') : undefined}\n              />");
 edit('src/App.tsx', '<Home onPickSubject=', "<Home onListeningStart={(chapter,index)=>{setAppMode('practice');handleSelectChapter(chapter,index,false,{startIndex:index,endIndex:index},'practice');}} onPickSubject=");
 // Prevent inherited links from opening chemistry summaries or trees in the listening copy.
-edit('src/components/Home.tsx', "onStudyMode('learning')", "onStudyMode('practice')");
-edit('src/components/Home.tsx', '>まとめプリント</button>', '>大問を選ぶ</button>');
+// 2026-09-29：ホームは統合版と同じ1画面の構造（とびら君・演習する／対戦する／復習ノート）をそのまま使う。
+// 下の帯だけリスニング用に：［科目（今の科目）］［英文法・英単語を固める］。どちらも専用の科目選択画面へ。
+edit('src/components/Home.tsx', "<button type=\"button\" onClick={() => onStudyMode ? onStudyMode('learning') : onStart()}><BookOpen size={16} />まとめプリント</button>", "<button type=\"button\" onClick={onChangeSubject} data-home-foundation><PenLine size={16} />英文法・英単語を固める</button>");
+edit('src/components/Home.tsx', "<button type=\"button\" onClick={onChangeSubject}>{subjectLabel}・変更</button>}", "<button type=\"button\" onClick={onChangeSubject} aria-label={`科目をえらぶ（いまは${subjectLabel}）`}><Headphones size={16} />{subjectLabel}<small>・科目</small></button>}");
+edit('src/components/Home.tsx', "Target, Zap } from 'lucide-react';", "Target, Zap, Headphones, PenLine } from 'lucide-react';");
+edit('src/components/Home.tsx', 'aria-label="科目とまとめプリント"', 'aria-label="科目と英文法・英単語"');
 edit('src/components/Home.tsx', '<button type="button" onClick={onLogicalTree}>全体のつながりを見る</button>', '');
 put('src/components/Home.tsx', text('src/components/Home.tsx').replaceAll('全科目の進捗を見る', 'リスニングの進捗を見る').replaceAll('教科別の記録を見る', '学習記録を見る'));
 edit('src/App.tsx', "    if (mode === 'learning') {", "    if (mode === 'learning' && selectedSubject === 'english_listening') {\n      setAppMode('practice'); setAppState('chapters'); return;\n    }\n    if (mode === 'learning') {");
