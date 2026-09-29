@@ -2704,6 +2704,9 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .gacha-cinema > p { text-align: center; font-size: 13px; padding: 14px; }
 .gacha-cinema > button { position: absolute; bottom: 8px; left: 8px; z-index: 2; min-height: 44px; padding: 6px 12px; border-radius: 12px; background: #fffaf1; border: 1px solid #d6c7a4; font-size: 12px; }
 .victory-cinema { position: relative; height: 150px; }
+/* 2026-09-29：勝利動画を5秒の本格版に差し替え。スマホで少し大きく見せる（正方形・中央） */
+@media (min-width: 380px) { .victory-cinema { height: 190px; } }
+.victory-cinema .cinematic-clip { border-radius: 18px; overflow: hidden; }
 .victory-cinema:not(:has(.cinematic-clip)) { display: none; }
 @media(min-width:1100px) { .gacha-cinema { grid-column: 2; } }
 
