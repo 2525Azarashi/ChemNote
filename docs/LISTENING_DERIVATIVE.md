@@ -50,3 +50,31 @@ GitHub Appにworkflows更新権限がなくCI登録は拒否されたため、�
 リスニング演習と復習を主軸にし、オンライン対戦は力試しの入口として維持する。
 単語・英文法はリスニングを助ける短い基礎学習に限定し、別教科・別対戦・大量のメニューに増やさない。
 専用ホームと補助学習はテンプレート側で進化させ、統合版のホームは保つ。
+
+## 分離の準備（2026-09-29 更新）
+
+利用者から「リスニングアプリと分離する準備」の依頼。**まだ分離（送付）はしていない。** 受け渡し先の部屋／リポジトリは未登録のまま。
+
+### 準備できたこと
+- 音源：第1〜4問・第6問は全部、利用者が ElevenLabs 有料契約中に生成した商用音源に差し替え済み。旧音源は削除。第5問も同じ作業中（状況は `npx tsx scripts/listening-audio.mts status`）。
+- 第2問：48問すべてに絵（配布PDFの実物 or 画像生成）と商用音源がそろった。
+- `scripts/export-listening.mts` を現在値に追従させた：
+  - 対戦のリスニング問題数を固定の 146 ではなく `POOL_COUNTS.english_listening` から取る
+  - `COMMERCIAL_AUDIO_STATUS.json` を台帳から作る（全部 replaced のときだけ `approved`。旧音源が1本でも残れば `npm run build` が止まる）。音源の sha256 が台帳と違えば書き出し自体を中止
+  - 台帳 `listening_audio_ledger.json` を専用版に同梱（1本ずつの生成元・商用根拠）
+  - 専用版テスト（standalone.test.ts）の大問数・対戦問題数を書き出し時の値で埋める。「台帳の音源が全部入っていて、approved なら旧音源ゼロ」を確認するテストを追加
+  - 専用版 README の「Kokoro で再生成中・公開保留」の記述を、台帳に基づく本数表示に置き換えた
+- 商用音源の元ファイル（`audio_sources/`）は統合版にだけ置く。専用版には public の配信用 mp3 と台帳だけを入れる（容量 290MB を持ち込まない）。
+
+### 分離する日の手順
+1. `npx tsx scripts/listening-audio.mts status` で全部 ✓完了、`check` が「問題なし」であること
+2. `TMPDIR=$PWD/.tmpwork npx tsx scripts/export-listening.mts .delivery/manatobi-listening-<日付>`
+3. 書き出し先で `npm ci && npm run lint && npm test && npm run build:demo`
+4. `COMMERCIAL_AUDIO_STATUS.json` が `approved` であること（`npm run build` が通る）
+5. ZIP 化して受け渡し。送付したら、この節とPR本文の「リスニング受け渡し状況」を事実どおりに更新する
+
+### 利用者に決めてもらうこと（未決）
+- 受け渡し先（別の部屋・リポジトリ名）
+- 専用 Firebase プロジェクト（README の手順。統合版の `mntb-4ef06` には接続できないようにしてある）
+- 公開ドメイン（統合版と同じオリジンのサブフォルダは不可）
+- ElevenLabs の契約画面の証拠（商用根拠はいま利用者の申告のみ）

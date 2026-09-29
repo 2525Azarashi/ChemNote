@@ -26,9 +26,9 @@ function walk(dir: string): string[] {
 }
 
 describe('リスニング音源台帳（商用音源と旧音源の分離）', () => {
-  it('台帳は 373 行で重複なし', () => {
-    expect(ledger.length).toBe(373);
-    expect(new Set(ledger.map(r => r.audioUrl)).size).toBe(373);
+  it('台帳は 374 行で重複なし', () => {
+    expect(ledger.length).toBe(374);
+    expect(new Set(ledger.map(r => r.audioUrl)).size).toBe(374);
   });
 
   it('差し替え済みの音は台帳のハッシュと一致し、生成元・商用根拠・元ファイルが記録されている', () => {
@@ -69,14 +69,23 @@ describe('リスニング音源台帳（商用音源と旧音源の分離）', (
     }
   });
 
-  it('第2問（47本）・第3問（90本）・第4問 A/B（45本）・第6問 A/B（30本）も全部商用の新音源で、旧音源コピーは削除済み', () => {
+  it('第2問（48本）・第3問（90本）・第4問 A/B（45本）・第6問 A/B（30本）も全部商用の新音源で、旧音源コピーは削除済み', () => {
     const rows = ledger.filter(r => /\/el2_|\/el3_|\/listening_q4\/set\d+_4[AB]|\/listening_q6\/q6set\d+_[AB]/.test(r.audioUrl));
-    expect(rows.length).toBe(212);
+    expect(rows.length).toBe(213);
     for (const r of rows) {
       expect(r.status, r.audioUrl).toBe('replaced');
       expect(r.legacyCopy, r.audioUrl).toBeUndefined();
       expect(r.legacyDiscardedAt, r.audioUrl).toBeTruthy();
     }
+  });
+});
+
+describe('第5問（2026-09-29 受領）', () => {
+  it('45本のうち44本が商用の新音源。残りは第8回 問32 だけ（録音に入っていなかった・取り直し待ち）', () => {
+    const rows = ledger.filter(r => r.audioUrl.startsWith('/listening_q5/'));
+    expect(rows.length).toBe(45);
+    const legacy = rows.filter(r => r.status !== 'replaced').map(r => r.audioUrl);
+    expect(legacy).toEqual(['/listening_q5/q5set08_q32.mp3']);
   });
 });
 

@@ -52,7 +52,7 @@
  *   この型は原文の並びのまま固定し、並べ替え可能な2×2型で全体を均している。
  *
  * 正解位置の実測（このファイルに収録した分だけを数えた値）
- *   ①11問 / ②19問 / ③11問 / ④6問（計 47問）。最頻位置だけ塗った場合の正答率 40%。
+ *   ①11問 / ②20問 / ③11問 / ④6問（計 48問）。最頻位置だけ塗った場合の正答率 42%。
  *   実物イラストの問は並べ替えられないため、この偏りは
  *   PDF 原文の偏りがそのまま出たもの。自前生成の絵に
  *   置き換えた問から順に均していく。
@@ -1343,6 +1343,21 @@ const EL2_SET7_TRACKS: ListeningAudioTrack[] = [
     keyPhrases: [],
   },
   {
+    subId: 'q_el2_set7_2',
+    label: '問2',
+    hint: '男女が科学館の展示ゾーンについて話している。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set7_q2.mp3',
+    script: 'W: There are four zones: space, ocean, dinosaurs, and robots.\nM: I\'m really into dinosaurs, but let\'s save that for last.\nW: Then let\'s start with the ocean, because I love it.\nM: OK. After that, space, then dinosaurs. We can skip the robots.',
+    turns: [
+      { who: 'W', text: 'There are four zones: space, ocean, dinosaurs, and robots.' },
+      { who: 'M', text: 'I\'m really into dinosaurs, but let\'s save that for last.' },
+      { who: 'W', text: 'Then let\'s start with the ocean, because I love it.' },
+      { who: 'M', text: 'OK. After that, space, then dinosaurs. We can skip the robots.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set7_3',
     label: '問3',
     hint: '男女が飛行機の座席表を見ながら席を選んでいる。（話者：男性 / 女性）',
@@ -1364,7 +1379,7 @@ const EL2_SET7: ListeningProblem = {
   category: '第7回 対話に合うイラストを選ぶ（やや難）',
   readCount: 2,
   audioTracks: EL2_SET7_TRACKS,
-  text: `第7回　第2問（2問・2回読み）　【難易度：やや難】
+  text: `第7回　第2問（3問・2回読み）　【難易度：やや難】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -1381,12 +1396,16 @@ Question: Which model will the woman probably choose?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
 ────────────────────
+問2（話者：女性 / 男性）
+場面：男女が科学館の展示ゾーンについて話している。
+Question: Which order will they follow?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問3（話者：男性 / 女性）
 場面：男女が飛行機の座席表を見ながら席を選んでいる。
 Question: Which seat will the woman choose?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
-
-※ 問2 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
     {
       id: 'q_el2_set7_1',
@@ -1410,12 +1429,33 @@ Question: Which seat will the woman choose?
       },
     },
     {
+      id: 'q_el2_set7_2',
+      label: '問2 Which order will they follow?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '②',
+      correctAnswerRate: 53,
+      imageUrl: '/listening_q2/el2_set7_q2.jpg',
+      imageCaption: '問2 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '順序と除外（skip the robots）を統合',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 4,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
       id: 'q_el2_set7_3',
       label: '問3 Which seat will the woman choose?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '④',
-      correctAnswerRate: 53,
+      correctAnswerRate: 50,
       imageUrl: '/listening_q2/el2_set7_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -1447,6 +1487,21 @@ Question: Which model will the woman probably choose?
 ④ 画面が大きく重いModel D
 正解の選択肢：② カメラが良く重いModel B
 優先順位（Photos are the priority）で重さの欠点を許容。2025年問10型（比較→優先条件で確定）。
+
+問2　正解は ②
+場面：男女が科学館の展示ゾーンについて話している。（話者：女性 / 男性）
+スクリプト：W: There are four zones: space, ocean, dinosaurs, and robots.
+M: I'm really into dinosaurs, but let's save that for last.
+W: Then let's start with the ocean, because I love it.
+M: OK. After that, space, then dinosaurs. We can skip the robots.
+Question: Which order will they follow?
+選択肢のイラスト：
+① 宇宙→海→恐竜→ロボット
+② 海→宇宙→恐竜(ロボットなし)
+③ 恐竜→海→宇宙→ロボット
+④ 海→ロボット→宇宙→恐竜
+正解の選択肢：② 海→宇宙→恐竜(ロボットなし)
+順序と除外（skip the robots）を統合。3つ以上の要素を並べる高難度型。
 
 問3　正解は ④
 場面：男女が飛行機の座席表を見ながら席を選んでいる。（話者：男性 / 女性）
@@ -3333,7 +3388,7 @@ Question: Which racket will the woman likely choose (based on the recommended fe
   ],
 };
 
-/** 第2問の演習セット一覧（イラストが揃っている 16 セット 47 問）。 */
+/** 第2問の演習セット一覧（イラストが揃っている 16 セット 48 問）。 */
 export const EL2_PROBLEMS: ListeningProblem[] = [
   EL2_SET1,
   EL2_SET2,

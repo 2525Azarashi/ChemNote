@@ -8,6 +8,8 @@ import ts from 'typescript';
 import { FEATURES } from '../src/config/features';
 import { SUBJECT_INDEX, SUBJECT_STATS } from '../src/data/chapterIndex.generated';
 import { BATTLE_RULES } from '../src/battle/core/battleRules';
+import { POOL_COUNTS, POOL_FORMAT_COUNTS } from '../src/battle/data/battlePool';
+import { getChaptersOfSubject } from '../src/data/allChapters';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, process.argv[2] || '.delivery/manatobi-listening');
@@ -65,7 +67,9 @@ initializer('src/data/chapterIndex.generated.ts', 'SUBJECT_STATS', JSON.stringif
 initializer('src/data/externalSubjects.ts', 'EXTERNAL_SUBJECTS', '[]');
 initializer('src/battle/core/battleRules.ts', 'BATTLE_RULES', JSON.stringify({ english_listening: { ...BATTLE_RULES.english_listening, timeLimitOverride: 55 } }, null, 2));
 edit('src/battle/core/battleRules.ts', '  const base = defaultRuleOf(subject);', "  const base = defaultRuleOf(subject);\n  if (subject !== 'english_listening') return base;");
-for (const [name, value] of Object.entries({ POOL_COUNTS: { english_listening: 146 }, POOL_FORMAT_COUNTS: { english_listening: { choice4: 146 } }, ANSWER_COUNTS: { english_listening: 0 } })) {
+// 対戦のリスニング問題数は統合版の現在値を使う（2026-09-29：固定の146から変更。第1問B・第2問の追加で増えた）
+const LISTENING_POOL = POOL_COUNTS.english_listening;
+for (const [name, value] of Object.entries({ POOL_COUNTS: { english_listening: LISTENING_POOL }, POOL_FORMAT_COUNTS: { english_listening: POOL_FORMAT_COUNTS.english_listening }, ANSWER_COUNTS: { english_listening: 0 } })) {
   initializer('src/battle/data/battlePool.ts', name, JSON.stringify(value));
 }
 put('src/battle/data/battlePool.ts', text('src/battle/data/battlePool.ts').replace(/    case '(?!english_listening')[^']+':\n      return \(await import\('[^']+'\)\)\.(POOL|ANSWERS);\n/g, ''));
@@ -128,7 +132,8 @@ if (USE_EMULATORS) {
 }
 `);
 edit('src/utils/googleAuth.ts', "import { auth, provider } from '../firebase';", "import { auth, provider, FIREBASE_CONFIGURED, USE_EMULATORS } from '../firebase';");
-edit('src/utils/googleAuth.ts', 'export async function signInWithGoogle(): Promise<GoogleSignInOutcome> {', "export async function signInWithGoogle(): Promise<GoogleSignInOutcome> {\n  if (!FIREBASE_CONFIGURED && !USE_EMULATORS) return { ok: false, message: 'オンライン機能は初期設定が必要です。運営者はREADMEに従って専用Firebaseを設定してください。ゲストで演習・AI対戦を試せます。' };");
+// 2026-09-29：Apple サインイン追加で Google/Apple 共通の signInWith に集約されたため、そこを塞ぐ（両方止まる）
+edit('src/utils/googleAuth.ts', 'export async function signInWith(method: SignInMethod): Promise<GoogleSignInOutcome> {', "export async function signInWith(method: SignInMethod): Promise<GoogleSignInOutcome> {\n  if (!FIREBASE_CONFIGURED && !USE_EMULATORS) return { ok: false, message: 'オンライン機能は初期設定が必要です。運営者はREADMEに従って専用Firebaseを設定してください。ゲストで演習・AI対戦を試せます。' };");
 edit('src/utils/googleAuth.ts', 'export async function consumeGoogleRedirectResult(): Promise<User | null> {', 'export async function consumeGoogleRedirectResult(): Promise<User | null> {\n  if (!FIREBASE_CONFIGURED && !USE_EMULATORS) return null;');
 edit('src/components/Onboarding.tsx', "import { auth } from '../firebase';", "import { auth, FIREBASE_CONFIGURED, USE_EMULATORS } from '../firebase';");
 edit('src/components/Onboarding.tsx', '<h2 className="text-center text-2xl font-bold text-[#1B2631] sm:text-[28px]">ようこそ！</h2>', '<h2 className="text-center text-2xl font-bold text-[#1B2631] sm:text-[28px]">ようこそ！</h2>{!FIREBASE_CONFIGURED && !USE_EMULATORS && <p role="status">設定前のプレビューです。ゲストで演習・AI対戦を試せます。オンライン対戦には専用Firebaseの設定が必要です。</p>}');
@@ -158,7 +163,21 @@ for(const [name,value] of Object.entries({SUBJECT_INDEX:SUBJECT_INDEX.filter(s=>
 }
 writeFileSync('src/data/chapterIndex.generated.ts',source);
 `);
-put('COMMERCIAL_AUDIO_STATUS.json',JSON.stringify({status:'pending',expectedTracks:364,reason:'Kokoro regeneration and quality/license review not complete'},null,2));
+// 音源の商用状況は台帳（scripts/data/listening_audio_ledger.json）から作る。手書きの値を置かない。
+// 全部 replaced（商用の新音源）になったときだけ status=approved。1本でも旧音源が残れば公開ビルドは止まる。
+const ledger: {audioUrl:string;status:string;provider:string;license:string;sha256:string}[] = JSON.parse(readFileSync(resolve(root,'scripts/data/listening_audio_ledger.json'),'utf8'));
+const legacyLeft = ledger.filter(r => r.status !== 'replaced');
+for (const r of ledger) if (r.status === 'replaced' && sha(readFileSync(resolve(root,'public'+r.audioUrl))) !== r.sha256) throw new Error('台帳と音源の中身が一致しない: '+r.audioUrl);
+put('COMMERCIAL_AUDIO_STATUS.json',JSON.stringify({
+  status: legacyLeft.length ? 'pending' : 'approved',
+  totalTracks: ledger.length, replacedTracks: ledger.length - legacyLeft.length,
+  legacyTracks: legacyLeft.map(r => r.audioUrl),
+  providers: [...new Set(ledger.filter(r=>r.status==='replaced').map(r=>r.provider+' / '+r.license))],
+  note: '商用根拠は利用者の申告（ElevenLabs 有料契約中に直接生成）。契約画面の証拠は未確認。音源ごとの生成元・sha256 は listening_audio_ledger.json',
+},null,2));
+put('listening_audio_ledger.json', readFileSync(resolve(root,'scripts/data/listening_audio_ledger.json'),'utf8'));
+// 専用版テストの期待値（大問数・対戦問題数）も統合版の現在値から作る
+const PRACTICE_TOTAL = getChaptersOfSubject('english_listening').reduce((n,c)=>n+c.practiceProblems.length+c.miniTest.length,0);
 put('COMMERCIAL_AUDIO_MIGRATION.md',readFileSync(resolve(root,'docs/COMMERCIAL_AUDIO_MIGRATION.md'),'utf8'));
 put('scripts/check-release.mjs', `import {loadEnv} from 'vite';
 import {readFileSync} from 'node:fs';
@@ -179,7 +198,8 @@ put('package.json', JSON.stringify(pkg, null, 2));
 const lock=JSON.parse(text('package-lock.json')); lock.name=pkg.name;lock.version=pkg.version;Object.assign(lock.packages[''],{name:pkg.name,version:pkg.version,engines:pkg.engines});put('package-lock.json',JSON.stringify(lock,null,2));
 put('vitest.config.ts', "import {defineConfig} from 'vitest/config';\nexport default defineConfig({test:{include:['tests/**/*.test.ts'],testTimeout:20000,hookTimeout:30000,fileParallelism:false}});\n");
 put('README.md', readFileSync(resolve(root,'scripts/listening-export/README.md'),'utf8'));
-for(const file of ['standalone.test.ts','standalone.browser.mjs','standalone-online.rules.test.ts']) put('tests/'+file,readFileSync(resolve(root,'scripts/listening-export/'+file),'utf8'));
+for(const file of ['standalone.test.ts','standalone.browser.mjs','standalone-online.rules.test.ts']) put('tests/'+file,readFileSync(resolve(root,'scripts/listening-export/'+file),'utf8').replaceAll('__POOL_TOTAL__',String(LISTENING_POOL)).replaceAll('__PRACTICE_TOTAL__',String(PRACTICE_TOTAL)));
+put('README.md', text('README.md').replaceAll('__POOL_TOTAL__',String(LISTENING_POOL)).replaceAll('__PRACTICE_TOTAL__',String(PRACTICE_TOTAL)).replaceAll('__AUDIO_REPLACED__',String(ledger.length-legacyLeft.length)).replaceAll('__AUDIO_TOTAL__',String(ledger.length)));
 put('DERIVATIVE_HANDOFF.md',readFileSync(resolve(root,'docs/LISTENING_DERIVATIVE.md'),'utf8'));
 put('CLAUDE.md','This is the listening derivative. Read README.md and DERIVATIVE_HANDOFF.md. Preserve dedicated Firebase settings and listening-first UI. Every PR must explicitly state listening delivery decision, reason, affected files, and actual handoff status. Do not claim delivery to another room without evidence.\n');
 execFileSync(process.execPath,['--import','tsx','scripts/gen-listening-vocabulary.mts'],{cwd:out,stdio:'inherit'});

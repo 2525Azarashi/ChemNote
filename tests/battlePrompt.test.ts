@@ -81,12 +81,12 @@ describe('全教科の空欄・ラベル監査', () => {
     // 2026-09-24 情報Ⅰ（joho・外部プール 450問）を追加。本体教科の数（4180 / 4066）は変わらない。
     // 2026-09-24 数学に手書き4択 140問（マナトビ基本演習 Step 87〜137）を追加。
     // 2026-09-25 リスニングの「絵を選ぶ」問題（第1問B 60問・第2問 38問）を対戦に追加。
-    // 2026-09-28 第2問に生成した絵の9問（商用音源つき）を追加（38→47問）。
-    expect(pool).toHaveLength(13721 + 450 + 140 + 98 + 9);
+    // 2026-09-28 第2問に生成した絵の10問（商用音源つき）を追加（38→48問・全問）。
+    expect(pool).toHaveLength(13721 + 450 + 140 + 98 + 10);
     expect(pool.filter(q => q.subject === 'joho')).toHaveLength(450);
     expect(pool.filter(q => q.subject === 'english_vocab')).toHaveLength(9541);
-    expect(pool.filter(q => q.subject !== 'english_vocab' && q.subject !== 'joho')).toHaveLength(4180 + 140 + 98 + 9);
-    expect(pool.filter(q => q.subject !== 'english_vocab' && q.subject !== 'joho' && !q.chapterId.startsWith('mc'))).toHaveLength(4066 + 140 + 98 + 9);
+    expect(pool.filter(q => q.subject !== 'english_vocab' && q.subject !== 'joho')).toHaveLength(4180 + 140 + 98 + 10);
+    expect(pool.filter(q => q.subject !== 'english_vocab' && q.subject !== 'joho' && !q.chapterId.startsWith('mc'))).toHaveLength(4066 + 140 + 98 + 10);
     expect(Object.keys(repairs)).toHaveLength(50);
     for (const [key, r] of Object.entries(repairs) as [string, any][]) {
       expect(source.get(key)?.correctAnswer, key).toBe(r.expectedAnswer);

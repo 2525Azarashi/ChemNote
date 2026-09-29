@@ -2025,6 +2025,21 @@
   "legacyDiscardedAt": "2026-09-28T18:28:33.142Z"
  },
  {
+  "audioUrl": "/listening_audio/el2_set7_q2.mp3",
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T00:46:00.417Z",
+  "sourceFile": "el2_set7_q2.mp3",
+  "sha256": "ab4a723a614b8616150e4ad932303dd8a389e5aeeba411a42676f3c7c3d114e3",
+  "durationSec": 23.2,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q2/listening_audio/el2_set7_q2.mp3"
+  ],
+  "note": "第2問 第7回問2（絵を生成できたので保管分を取り込み）。Q2_2 から分割",
+  "legacyDiscardedAt": "2026-09-29T00:46:00.419Z"
+ },
+ {
   "audioUrl": "/listening_audio/el2_set7_q3.mp3",
   "status": "replaced",
   "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
@@ -4471,223 +4486,333 @@
  },
  {
   "audioUrl": "/listening_q5/q5set01_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:14.978Z",
+  "sourceFile": "q5set01_lecture.mp3",
+  "sha256": "0d94fee9f3a15adf7e13f4052416ff162fc1aff20ddcd8581e69e8c377483c58",
+  "durationSec": 100.18,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set01_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:14.994Z"
  },
  {
   "audioUrl": "/listening_q5/q5set01_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:15.482Z",
+  "sourceFile": "q5set01_q32.mp3",
+  "sha256": "d445961470cbcbaee2467f648301d198e8ebf9ef8cda76c6de26eafed63dfdab",
+  "durationSec": 9.9,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set01_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:15.484Z"
  },
  {
   "audioUrl": "/listening_q5/q5set01_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:16.022Z",
+  "sourceFile": "q5set01_q33.mp3",
+  "sha256": "491667f8b4dd3b8c7b5481db1ac74c92f28f363cf1ac4f73886be06b4ca39777",
+  "durationSec": 23.8,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set01_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:16.026Z"
  },
  {
   "audioUrl": "/listening_q5/q5set02_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:17.247Z",
+  "sourceFile": "q5set02_lecture.mp3",
+  "sha256": "cd711d7c80721fd65f964796b07658134c243b0caef1e64541b57ee5d9e52907",
+  "durationSec": 98.74,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set02_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:17.266Z"
  },
  {
   "audioUrl": "/listening_q5/q5set02_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:17.650Z",
+  "sourceFile": "q5set02_q32.mp3",
+  "sha256": "fc3d08bb0e3e4e3b25e53baa41d1e96d40cc06c44cf29d6ce9312b42ad13478d",
+  "durationSec": 8.46,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set02_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:17.652Z"
  },
  {
   "audioUrl": "/listening_q5/q5set02_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:18.185Z",
+  "sourceFile": "q5set02_q33.mp3",
+  "sha256": "08db469fa2d3679f638f1429245fceba2059af00c99d187ac09c6d4f7a5e7d2e",
+  "durationSec": 21.73,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set02_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:18.189Z"
  },
  {
   "audioUrl": "/listening_q5/q5set03_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:19.342Z",
+  "sourceFile": "q5set03_lecture.mp3",
+  "sha256": "8f457f1d221f9b4285f8adfc2acc3514843d8e1ee8a64dde83b70df56a3ce389",
+  "durationSec": 93.34,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set03_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:19.356Z"
  },
  {
   "audioUrl": "/listening_q5/q5set03_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:19.798Z",
+  "sourceFile": "q5set03_q32.mp3",
+  "sha256": "334a7fa42c089cde226549832ca427cdad6acb714d51a596e119813bc9bfca4d",
+  "durationSec": 9.61,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set03_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:19.800Z"
  },
  {
   "audioUrl": "/listening_q5/q5set03_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:20.314Z",
+  "sourceFile": "q5set03_q33.mp3",
+  "sha256": "f71c4a44f64c2912b7f31aed8bf5e616cb180220843760564075ace842975a09",
+  "durationSec": 24.11,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set03_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:20.318Z"
  },
  {
   "audioUrl": "/listening_q5/q5set04_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:21.334Z",
+  "sourceFile": "q5set04_lecture.mp3",
+  "sha256": "6039195ab0abd5eea1849c0fa3f4fecddf8e6275b2c0a0c98e7d8047d742f0b0",
+  "durationSec": 90.75,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set04_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:21.348Z"
  },
  {
   "audioUrl": "/listening_q5/q5set04_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:21.728Z",
+  "sourceFile": "q5set04_q32.mp3",
+  "sha256": "87df0b2533cb3fb71495a6d1f96d412bd17b634888f234dc242e807ffbcaca73",
+  "durationSec": 8.36,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set04_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:21.729Z"
  },
  {
   "audioUrl": "/listening_q5/q5set04_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:22.262Z",
+  "sourceFile": "q5set04_q33.mp3",
+  "sha256": "54292600923eee97b74771c9e4e99baac73c5217faffc8f47e801215802560ba",
+  "durationSec": 25.18,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set04_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:22.266Z"
  },
  {
   "audioUrl": "/listening_q5/q5set05_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:23.347Z",
+  "sourceFile": "q5set05_lecture.mp3",
+  "sha256": "e75bde031be75498395690f686b407d7b90098217860a5f4054f13996d3df379",
+  "durationSec": 95.48,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set05_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:23.355Z"
  },
  {
   "audioUrl": "/listening_q5/q5set05_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:23.701Z",
+  "sourceFile": "q5set05_q32.mp3",
+  "sha256": "ef6fdc42823fdf60f1d918b0cabc9d0aa451b5a3b6f8cf9778722ede69fc4c06",
+  "durationSec": 9.33,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set05_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:23.703Z"
  },
  {
   "audioUrl": "/listening_q5/q5set05_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:24.119Z",
+  "sourceFile": "q5set05_q33.mp3",
+  "sha256": "1d5f7e195aa490bd461df3555d8170f3b580aaa5ca4b8b609636932753c45d81",
+  "durationSec": 24.35,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set05_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:24.124Z"
  },
  {
   "audioUrl": "/listening_q5/q5set06_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:25.379Z",
+  "sourceFile": "q5set06_lecture.mp3",
+  "sha256": "fb32a8b4c35cf63c2333156ee46acae1e2adf969d2723f67bd7ade81d4489c89",
+  "durationSec": 101.04,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set06_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:25.394Z"
  },
  {
   "audioUrl": "/listening_q5/q5set06_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:25.786Z",
+  "sourceFile": "q5set06_q32.mp3",
+  "sha256": "46c60691498c2acfee7c275375fc8bab6f8e260061760726294e40c803631db5",
+  "durationSec": 9.17,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set06_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:25.788Z"
  },
  {
   "audioUrl": "/listening_q5/q5set06_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:26.327Z",
+  "sourceFile": "q5set06_q33.mp3",
+  "sha256": "23fd3336879df01859fd1c1b28ab9c2eff6a3ecd9dacd79a22158219e0123067",
+  "durationSec": 21.11,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set06_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:26.330Z"
  },
  {
   "audioUrl": "/listening_q5/q5set07_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:27.500Z",
+  "sourceFile": "q5set07_lecture.mp3",
+  "sha256": "b1900d6130a593a7a7d93a52c6a89d51797397f2db40e08ae5893a9a2dba08b2",
+  "durationSec": 100.36,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set07_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:27.515Z"
  },
  {
   "audioUrl": "/listening_q5/q5set07_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:27.895Z",
+  "sourceFile": "q5set07_q32.mp3",
+  "sha256": "e522117e74a156d27be606f0f577eadf62e65e5e4b7722fd9133174b7ec092fa",
+  "durationSec": 8.33,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set07_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:27.897Z"
  },
  {
   "audioUrl": "/listening_q5/q5set07_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:28.415Z",
+  "sourceFile": "q5set07_q33.mp3",
+  "sha256": "0dec27f48772d7fb015390eaad2c29233c04b48025771ff682080e16bf780d4d",
+  "durationSec": 25.91,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set07_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:28.419Z"
  },
  {
   "audioUrl": "/listening_q5/q5set08_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:29.573Z",
+  "sourceFile": "q5set08_lecture.mp3",
+  "sha256": "3a414fc188eac15199b4c8fe69bd0443679f32c3cb68824f44e45b85b11e6334",
+  "durationSec": 104.65,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set08_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:29.589Z"
  },
  {
   "audioUrl": "/listening_q5/q5set08_q32.mp3",
@@ -4701,223 +4826,333 @@
  },
  {
   "audioUrl": "/listening_q5/q5set08_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:30.048Z",
+  "sourceFile": "q5set08_q33.mp3",
+  "sha256": "77d3754b1d5500d9721fc8a6fd5622cb12e2cd377714792e0e5e230e23e8fc90",
+  "durationSec": 23.85,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set08_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:30.050Z"
  },
  {
   "audioUrl": "/listening_q5/q5set09_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:31.329Z",
+  "sourceFile": "q5set09_lecture.mp3",
+  "sha256": "062f43e99b54349e728721c0f5b60e10afc9390d3d27988ef054385d83451c18",
+  "durationSec": 98.77,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set09_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:31.346Z"
  },
  {
   "audioUrl": "/listening_q5/q5set09_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:31.723Z",
+  "sourceFile": "q5set09_q32.mp3",
+  "sha256": "6efeee261426f263a0269e132c117ec61856b74e99c6d0b25b0f10969bffec75",
+  "durationSec": 9.59,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set09_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:31.724Z"
  },
  {
   "audioUrl": "/listening_q5/q5set09_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:32.153Z",
+  "sourceFile": "q5set09_q33.mp3",
+  "sha256": "323eb3da07261b7f9248f3692a93b552c7658b3c350b879957ec0fb521a3060a",
+  "durationSec": 22.65,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set09_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:32.157Z"
  },
  {
   "audioUrl": "/listening_q5/q5set10_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:33.391Z",
+  "sourceFile": "q5set10_lecture.mp3",
+  "sha256": "605cad919d179f38a2b8e6164cb44ef54d003870470faa9f35d939db249997c3",
+  "durationSec": 100.94,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set10_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:33.407Z"
  },
  {
   "audioUrl": "/listening_q5/q5set10_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:33.798Z",
+  "sourceFile": "q5set10_q32.mp3",
+  "sha256": "c09b4c9ed9b952b5f610ef6eb98d0d269559e1669d87157fba934ae6e4627e9d",
+  "durationSec": 10.08,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set10_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:33.799Z"
  },
  {
   "audioUrl": "/listening_q5/q5set10_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:34.246Z",
+  "sourceFile": "q5set10_q33.mp3",
+  "sha256": "ff60d6c859d37fb97857c7c5d5ec6e356078d8430f14ea3a5297485455bdc9aa",
+  "durationSec": 25.1,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set10_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:34.250Z"
  },
  {
   "audioUrl": "/listening_q5/q5set11_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:35.491Z",
+  "sourceFile": "q5set11_lecture.mp3",
+  "sha256": "92deb7002295d9b10d565f33817b46ca822a4773391485e58270cbe927d72c4f",
+  "durationSec": 107.6,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set11_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:35.508Z"
  },
  {
   "audioUrl": "/listening_q5/q5set11_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:35.918Z",
+  "sourceFile": "q5set11_q32.mp3",
+  "sha256": "5da8d33f56c6be643942fa561c312a71ece2fe83ff1e6ed0a6fda1bc573cfc7c",
+  "durationSec": 8.67,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set11_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:35.921Z"
  },
  {
   "audioUrl": "/listening_q5/q5set11_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:36.442Z",
+  "sourceFile": "q5set11_q33.mp3",
+  "sha256": "6f3308fd28df828571e6b4579eff21cbb8f6d04d2ab0eee14d464a8d0f4cd3b2",
+  "durationSec": 23.93,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set11_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:36.446Z"
  },
  {
   "audioUrl": "/listening_q5/q5set12_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:37.653Z",
+  "sourceFile": "q5set12_lecture.mp3",
+  "sha256": "fc4c90f84b6c13e0ce91ecb32b7cd46d0ff48f0af103df14f4f59ad569bdc90e",
+  "durationSec": 98.61,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set12_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:37.666Z"
  },
  {
   "audioUrl": "/listening_q5/q5set12_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:38.011Z",
+  "sourceFile": "q5set12_q32.mp3",
+  "sha256": "75974b8a392d4b4da5abf170b29d80840d2f490ab6dc1340472dc8982f382d42",
+  "durationSec": 7.5,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set12_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:38.012Z"
  },
  {
   "audioUrl": "/listening_q5/q5set12_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:38.541Z",
+  "sourceFile": "q5set12_q33.mp3",
+  "sha256": "37331d669a2f1bc40019a160bd3f4d3ca4eeae0aac78c281045c14afab6a0b28",
+  "durationSec": 20.4,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set12_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:38.544Z"
  },
  {
   "audioUrl": "/listening_q5/q5set13_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:39.700Z",
+  "sourceFile": "q5set13_lecture.mp3",
+  "sha256": "3f2cc9ec8cb78476cb42af608edc83c160cb328d77155235c4d1e7f70ba4c00b",
+  "durationSec": 101.02,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set13_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:39.715Z"
  },
  {
   "audioUrl": "/listening_q5/q5set13_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:40.127Z",
+  "sourceFile": "q5set13_q32.mp3",
+  "sha256": "1617077284aca33b2fa1a5a038579d0aee6e315003fa512bdf79fe2c80eb0e96",
+  "durationSec": 7.84,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set13_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:40.128Z"
  },
  {
   "audioUrl": "/listening_q5/q5set13_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:40.674Z",
+  "sourceFile": "q5set13_q33.mp3",
+  "sha256": "edcb1ffc362b4b82e6a309cfb767328b682b63fb17a9cfa729bf5932c997f2e7",
+  "durationSec": 22.31,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set13_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:40.677Z"
  },
  {
   "audioUrl": "/listening_q5/q5set14_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:41.966Z",
+  "sourceFile": "q5set14_lecture.mp3",
+  "sha256": "fa95c8386626e45ef9188f150427979b021701cde1d64918ed2b21b4055b487a",
+  "durationSec": 102.37,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set14_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:41.982Z"
  },
  {
   "audioUrl": "/listening_q5/q5set14_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:42.386Z",
+  "sourceFile": "q5set14_q32.mp3",
+  "sha256": "82f8da128c90b42d995a12ebee369e5d1332c7c8107404c38fd9f25818ec18b4",
+  "durationSec": 8.86,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set14_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:42.388Z"
  },
  {
   "audioUrl": "/listening_q5/q5set14_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:42.921Z",
+  "sourceFile": "q5set14_q33.mp3",
+  "sha256": "1c66ffc25841fa492d3b334a9dcb0fbf261945013edbba39960112e0a9f60102",
+  "durationSec": 26.72,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set14_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:42.928Z"
  },
  {
   "audioUrl": "/listening_q5/q5set15_lecture.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:44.090Z",
+  "sourceFile": "q5set15_lecture.mp3",
+  "sha256": "c7d38eb856855731a4ec3f193d8fe1998c6b8ab974288f4408557e6a1a13a10b",
+  "durationSec": 105.12,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set15_lecture.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:44.095Z"
  },
  {
   "audioUrl": "/listening_q5/q5set15_q32.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:44.523Z",
+  "sourceFile": "q5set15_q32.mp3",
+  "sha256": "041cef6b829939bfb0a401da9a5f94a600e0c4adb5d577827f7002778f22a654",
+  "durationSec": 8.59,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set15_q32.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:44.525Z"
  },
  {
   "audioUrl": "/listening_q5/q5set15_q33.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v4）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-29。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T01:19:45.018Z",
+  "sourceFile": "q5set15_q33.mp3",
+  "sha256": "092066a68ecc49a1d692f26dbc311c3f5cf8825b9019da0fa71391952fe4de6e",
+  "durationSec": 23.28,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-29_q5/listening_q5/q5set15_q33.mp3"
+  ],
+  "note": "第5問 44本（第8回問32は未収録）。13ファイルを台本×ASRで分割。第4回は混入2断片を無劣化カット（receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-29T01:19:45.022Z"
  },
  {
   "audioUrl": "/listening_q6/q6set01_A.mp3",

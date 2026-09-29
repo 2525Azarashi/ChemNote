@@ -12,7 +12,7 @@
  * を実行すること。
  *
  * -------------------------------------------------------------------
- * ■ 収録数: 253 問
+ * ■ 収録数: 254 問
  * -------------------------------------------------------------------
  *
  * ■ 中身は「タプルの配列」であって、読みやすさを捨てている。
@@ -182,6 +182,7 @@ export const POOL: readonly unknown[][] = [
   ["q:el2:q_el2_set6:q_el2_set6_2","el2","q_el2_set6","q_el2_set6_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which ruler will the woman buy?",["①","②","③","④"],2,[],17,"/listening_q2/el2_set6_q2.jpg"],
   ["q:el2:q_el2_set6:q_el2_set6_3","el2","q_el2_set6","q_el2_set6_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Where will the man put the balloons?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set6_q3.jpg"],
   ["q:el2:q_el2_set7:q_el2_set7_1","el2","q_el2_set7","q_el2_set7_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which model will the woman probably choose?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set7_q1.jpg"],
+  ["q:el2:q_el2_set7:q_el2_set7_2","el2","q_el2_set7","q_el2_set7_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which order will they follow?",["①","②","③","④"],1,[],17,"/listening_q2/el2_set7_q2.jpg"],
   ["q:el2:q_el2_set7:q_el2_set7_3","el2","q_el2_set7","q_el2_set7_3",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which seat will the woman choose?",["①","②","③","④"],3,[],17,"/listening_q2/el2_set7_q3.jpg"],
   ["q:el2:q_el2_set8:q_el2_set8_1","el2","q_el2_set8","q_el2_set8_1",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which cake matches the boy's request?",["①","②","③","④"],0,[],17,"/listening_q2/el2_set8_q1.jpg"],
   ["q:el2:q_el2_set8:q_el2_set8_2","el2","q_el2_set8","q_el2_set8_2",0,"音声を聞いて、内容に最も合う絵を選びなさい。","Which book cover did the woman choose?",["①","②","③","④"],3,[],17,"/listening_q2/el2_set8_q2.jpg"],
