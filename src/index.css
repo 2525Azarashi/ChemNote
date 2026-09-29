@@ -3011,3 +3011,19 @@ html[data-wallpaper] .mana-hub { background: linear-gradient(#f4f1eab8,#f4f1eaad
 .gacha-wallpaper-art img { object-fit: contain; margin-bottom: 8%; filter: drop-shadow(0 3px 2px #0003); }
 .gacha-collection-kinds { flex-wrap: wrap; }
 .gacha-collection-kinds button { flex: 1 1 45%; }
+
+/* ★対戦メニュー：ランク帯・おすすめ札（2026-09-28・市販ゲームの対戦入口にならう）★ */
+.arena-rank-chip{display:inline-block;margin-right:5px;padding:1px 6px;border-radius:999px;color:#fff;font-size:10px;font-weight:900;text-shadow:0 1px 0 rgba(0,0,0,.25)}
+.arena-rank-strip{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:4px 8px;padding:7px 10px;border:1px solid #e6d9b8;border-radius:14px;background:#fffaf0}
+.arena-rank-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;color:#fff;font-size:12px;font-weight:900;text-shadow:0 1px 0 rgba(0,0,0,.25);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.arena-rank-bar{height:9px;border-radius:999px;background:#ece5d3;overflow:hidden}
+.arena-rank-bar>i{display:block;height:100%;border-radius:999px;transition:width .6s ease}
+.arena-rank-strip small{grid-column:1/-1;font-size:10px;font-weight:800;color:#8a6d2a;text-align:right}
+.arena-mode-card header>span.arena-mode-pick{padding:2px 8px;border-radius:999px;background:#F4D03F;color:#3a2f10;letter-spacing:0;font-size:10px;font-weight:900;animation:arena-pick-pulse 2.4s ease-in-out infinite}
+@keyframes arena-pick-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.arena-menu-links{grid-template-columns:repeat(4,1fr)}
+.arena-menu-links button{display:flex;align-items:center;justify-content:center;gap:3px}
+@media (max-width:767px){.arena-menu-links{gap:4px}.arena-menu-links button{font-size:10px;padding:0 2px;line-height:1.2}.arena-menu-links button svg{display:none}}
+@media (max-height:720px) and (max-width:600px){.arena-rank-strip{padding:4px 8px;gap:2px 6px}.arena-rank-strip small{font-size:9px}}
+@media (prefers-reduced-motion:reduce){.arena-mode-card header>span.arena-mode-pick{animation:none}.arena-rank-bar>i{transition:none}}
+@media (min-width:1024px){.arena-menu .arena-rank-strip{grid-column:1/-1}.arena-menu .arena-mode-card header>span.arena-mode-pick{width:auto;align-self:flex-start;margin:6px 0}}

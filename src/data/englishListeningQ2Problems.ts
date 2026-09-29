@@ -52,7 +52,7 @@
  *   この型は原文の並びのまま固定し、並べ替え可能な2×2型で全体を均している。
  *
  * 正解位置の実測（このファイルに収録した分だけを数えた値）
- *   ①11問 / ②18問 / ③10問 / ④5問（計 44問）。最頻位置だけ塗った場合の正答率 41%。
+ *   ①11問 / ②19問 / ③11問 / ④6問（計 47問）。最頻位置だけ塗った場合の正答率 40%。
  *   実物イラストの問は並べ替えられないため、この偏りは
  *   PDF 原文の偏りがそのまま出たもの。自前生成の絵に
  *   置き換えた問から順に均していく。
@@ -313,6 +313,21 @@ const EL2_SET2_TRACKS: ListeningAudioTrack[] = [
     keyPhrases: [],
   },
   {
+    subId: 'q_el2_set2_2',
+    label: '問2',
+    hint: 'レストランで店員が客にテーブルを案内している。（話者：女性（店員） / 男性（客））',
+    audioUrl: '/listening_audio/el2_set2_q2.mp3',
+    script: 'W: We have a table by the window for two or a booth at the back for four.\nM: We\'re a group of three actually.\nW: Then how about this round table in the center?\nM: Great, we\'ll take it.',
+    turns: [
+      { who: 'W', text: 'We have a table by the window for two or a booth at the back for four.' },
+      { who: 'M', text: 'We\'re a group of three actually.' },
+      { who: 'W', text: 'Then how about this round table in the center?' },
+      { who: 'M', text: 'Great, we\'ll take it.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set2_3',
     label: '問3',
     hint: '男女がクラス写真の中で友人を探している。（話者：男性 / 女性）',
@@ -334,7 +349,7 @@ const EL2_SET2: ListeningProblem = {
   category: '第2回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET2_TRACKS,
-  text: `第2回　第2問（2問・2回読み）　【難易度：標準】
+  text: `第2回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -351,12 +366,16 @@ Question: Which item will they buy?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
 ────────────────────
+問2（話者：女性（店員） / 男性（客））
+場面：レストランで店員が客にテーブルを案内している。
+Question: Which table will the man's group take?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問3（話者：男性 / 女性）
 場面：男女がクラス写真の中で友人を探している。
 Question: Which boy is the woman's brother?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
-
-※ 問2 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）`,
   subQuestions: [
     {
       id: 'q_el2_set2_1',
@@ -380,12 +399,33 @@ Question: Which boy is the woman's brother?
       },
     },
     {
+      id: 'q_el2_set2_2',
+      label: '問2 Which table will the man\'s group take?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '③',
+      correctAnswerRate: 65,
+      imageUrl: '/listening_q2/el2_set2_q2.jpg',
+      imageCaption: '問2 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '人数（three）が2でも4でもないため、中央の丸テーブルが正解',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
       id: 'q_el2_set2_3',
       label: '問3 Which boy is the woman\'s brother?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '②',
-      correctAnswerRate: 65,
+      correctAnswerRate: 62,
       imageUrl: '/listening_q2/el2_set2_q3.jpg',
       imageCaption: '問3 の図（①〜④の位置）',
       detailedExplanation: {
@@ -418,6 +458,21 @@ Question: Which item will they buy?
 正解の選択肢：② 犬柄のマグ(箱入り)
 cats→dogs への訂正＋gift box の確認。柄と包装の2軸で選ぶ。2023年問9型（否定→訂正）。
 
+問2　正解は ③
+場面：レストランで店員が客にテーブルを案内している。（話者：女性（店員） / 男性（客））
+スクリプト：W: We have a table by the window for two or a booth at the back for four.
+M: We're a group of three actually.
+W: Then how about this round table in the center?
+M: Great, we'll take it.
+Question: Which table will the man's group take?
+選択肢のイラスト：
+① 窓際の2人席
+② 奥のボックス席(4人)
+③ 中央の丸テーブル
+④ カウンター席
+正解の選択肢：③ 中央の丸テーブル
+人数（three）が2でも4でもないため、中央の丸テーブルが正解。人数条件で候補を絞る。2024年問1 1型。
+
 問3　正解は ②
 場面：男女がクラス写真の中で友人を探している。（話者：男性 / 女性）
 スクリプト：M: Which one is your brother?
@@ -448,6 +503,21 @@ Question: Which boy is the woman's brother?
 };
 
 const EL2_SET3_TRACKS: ListeningAudioTrack[] = [
+  {
+    subId: 'q_el2_set3_1',
+    label: '問1',
+    hint: '男女が来週の予定表を見ながら話している。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set3_q1.mp3',
+    script: 'W: Are you free on Tuesday afternoon?\nM: No, I have tennis practice then. Wednesday morning is open.\nW: I have a class then. What about Thursday?\nM: Thursday afternoon works.',
+    turns: [
+      { who: 'W', text: 'Are you free on Tuesday afternoon?' },
+      { who: 'M', text: 'No, I have tennis practice then. Wednesday morning is open.' },
+      { who: 'W', text: 'I have a class then. What about Thursday?' },
+      { who: 'M', text: 'Thursday afternoon works.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
   {
     subId: 'q_el2_set3_2',
     label: '問2',
@@ -485,7 +555,7 @@ const EL2_SET3: ListeningProblem = {
   category: '第3回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET3_TRACKS,
-  text: `第3回　第2問（2問・2回読み）　【難易度：標準】
+  text: `第3回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -494,6 +564,12 @@ const EL2_SET3: ListeningProblem = {
 
 【解き方のコツ】
 音声が流れる前に「場面」を読み、4枚の絵を見比べて「どこが違うか」を1語で言えるようにしておきます（色・数・位置・あり／なし）。違いが分かっていれば、聞き取るべき1語が決まります。第2問は「No, actually …」「the other one」のような訂正が最頻出なので、最初に聞こえた候補で決めないことが大切です。
+
+────────────────────
+問1（話者：女性 / 男性）
+場面：男女が来週の予定表を見ながら話している。
+Question: When will they meet?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
 
 ────────────────────
 問2（話者：男性 / 女性）
@@ -505,17 +581,36 @@ Question: Which room will they choose?
 問3（話者：女性（客） / 男性（店員））
 場面：男女がベーカリーでパンを選んでいる。
 Question: Which bread did the woman buy?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
-
-※ 問1 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）`,
   subQuestions: [
+    {
+      id: 'q_el2_set3_1',
+      label: '問1 When will they meet?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '④',
+      correctAnswerRate: 68,
+      imageUrl: '/listening_q2/el2_set3_q1.jpg',
+      imageCaption: '問1 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '3つの候補が否定され、最後の Thursday afternoon works で確定',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
     {
       id: 'q_el2_set3_2',
       label: '問2 Which room will they choose?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '②',
-      correctAnswerRate: 68,
+      correctAnswerRate: 65,
       imageUrl: '/listening_q2/el2_set3_q2.jpg',
       imageCaption: '問2 の図（①〜④の位置）',
       detailedExplanation: {
@@ -536,7 +631,7 @@ Question: Which bread did the woman buy?
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '①',
-      correctAnswerRate: 65,
+      correctAnswerRate: 62,
       imageUrl: '/listening_q2/el2_set3_q3.jpg',
       imageCaption: '問3 の図（①〜④の位置）',
       detailedExplanation: {
@@ -553,6 +648,21 @@ Question: Which bread did the woman buy?
     },
   ],
   explanation: `第3回（難易度：標準）の解説です。対話スクリプトと正解、そして PDF の解説をそのまま収録しています。各選択肢がどんな絵だったかも併せて載せているので、「どこを聞き分ければよかったか」を絵と対応させて確認できます。
+
+問1　正解は ④
+場面：男女が来週の予定表を見ながら話している。（話者：女性 / 男性）
+スクリプト：W: Are you free on Tuesday afternoon?
+M: No, I have tennis practice then. Wednesday morning is open.
+W: I have a class then. What about Thursday?
+M: Thursday afternoon works.
+Question: When will they meet?
+選択肢のイラスト：
+① 火曜午後
+② 水曜午前
+③ 木曜午前
+④ 木曜午後
+正解の選択肢：④ 木曜午後
+3つの候補が否定され、最後の Thursday afternoon works で確定。第2問の典型的な消去法。
 
 問2　正解は ②
 場面：男女がホテルの部屋を選んでいる。（話者：男性 / 女性）
@@ -1796,6 +1906,21 @@ const EL2_SET10_TRACKS: ListeningAudioTrack[] = [
     keyPhrases: [],
   },
   {
+    subId: 'q_el2_set10_2',
+    label: '問2',
+    hint: '母と息子が新学期の時間割を見ている。（話者：母親 / 息子）',
+    audioUrl: '/listening_audio/el2_set10_q2.mp3',
+    script: 'M: You have PE on Monday and Thursday, right?\nS: No, Tuesday and Friday. Monday I have music.\nM: And when\'s your English class?\nS: Every day except Wednesday.',
+    turns: [
+      { who: 'M', text: 'You have PE on Monday and Thursday, right?' },
+      { who: 'S', text: 'No, Tuesday and Friday. Monday I have music.' },
+      { who: 'M', text: 'And when\'s your English class?' },
+      { who: 'S', text: 'Every day except Wednesday.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set10_3',
     label: '問3',
     hint: '男女がフリーマーケットで買い物をしている。（話者：女性 / 男性（店主））',
@@ -1817,7 +1942,7 @@ const EL2_SET10: ListeningProblem = {
   category: '第10回 対話に合うイラストを選ぶ（やや難）',
   readCount: 2,
   audioTracks: EL2_SET10_TRACKS,
-  text: `第10回　第2問（2問・2回読み）　【難易度：やや難】
+  text: `第10回　第2問（3問・2回読み）　【難易度：やや難】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -1834,12 +1959,16 @@ Question: Which route will they take today?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
 ────────────────────
+問2（話者：母親 / 息子）
+場面：母と息子が新学期の時間割を見ている。
+Question: Which timetable matches?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問3（話者：女性 / 男性（店主））
 場面：男女がフリーマーケットで買い物をしている。
 Question: How much will the woman pay?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
-
-※ 問2 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
     {
       id: 'q_el2_set10_1',
@@ -1863,12 +1992,33 @@ Question: How much will the woman pay?
       },
     },
     {
+      id: 'q_el2_set10_2',
+      label: '問2 Which timetable matches?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '②',
+      correctAnswerRate: 53,
+      imageUrl: '/listening_q2/el2_set10_q2.jpg',
+      imageCaption: '問2 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '母の推測（月・木体育）→息子の訂正（火・金）＋英語は水以外',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 4,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
       id: 'q_el2_set10_3',
       label: '問3 How much will the woman pay?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '③',
-      correctAnswerRate: 53,
+      correctAnswerRate: 50,
       imageUrl: '/listening_q2/el2_set10_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -1900,6 +2050,21 @@ Question: Which route will they take today?
 ④ バス5のみ
 正解の選択肢：② バス5→バス12
 直行便が週末限定→今日は水曜→乗換ルート。曜日条件の把握が鍵。
+
+問2　正解は ②
+場面：母と息子が新学期の時間割を見ている。（話者：母親 / 息子）
+スクリプト：M: You have PE on Monday and Thursday, right?
+S: No, Tuesday and Friday. Monday I have music.
+M: And when's your English class?
+S: Every day except Wednesday.
+Question: Which timetable matches?
+選択肢のイラスト：
+① 月曜:体育、水:英語なし
+② 火曜と金曜:体育、水:英語なし
+③ 月曜と木曜:体育、毎日英語
+④ 火曜と金曜:体育、毎日英語
+正解の選択肢：② 火曜と金曜:体育、水:英語なし
+母の推測（月・木体育）→息子の訂正（火・金）＋英語は水以外。訂正と例外の同時処理。2026年 問9型。
 
 問3　正解は ③
 場面：男女がフリーマーケットで買い物をしている。（話者：女性 / 男性（店主））
@@ -3168,7 +3333,7 @@ Question: Which racket will the woman likely choose (based on the recommended fe
   ],
 };
 
-/** 第2問の演習セット一覧（イラストが揃っている 16 セット 44 問）。 */
+/** 第2問の演習セット一覧（イラストが揃っている 16 セット 47 問）。 */
 export const EL2_PROBLEMS: ListeningProblem[] = [
   EL2_SET1,
   EL2_SET2,

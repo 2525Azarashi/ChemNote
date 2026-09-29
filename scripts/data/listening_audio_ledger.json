@@ -1800,6 +1800,21 @@
   "legacyDiscardedAt": "2026-09-28T18:28:28.172Z"
  },
  {
+  "audioUrl": "/listening_audio/el2_set2_q2.mp3",
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:22:54.006Z",
+  "sourceFile": "el2_set2_q2.mp3",
+  "sha256": "995ccbdb67ea59d1a9c941ef592abb0f6b1dee4e928e552993ef7aada93d7745",
+  "durationSec": 18.05,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q2/listening_audio/el2_set2_q2.mp3"
+  ],
+  "note": "第2問 第2回問2・第3回問1（絵を生成できたので保管分を取り込み）",
+  "legacyDiscardedAt": "2026-09-28T23:22:54.010Z"
+ },
+ {
   "audioUrl": "/listening_audio/el2_set2_q3.mp3",
   "status": "replaced",
   "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
@@ -1813,6 +1828,21 @@
   ],
   "note": "第2問。5ファイル（Q2_1〜5）を台本とASRで照合して分割。設問文（Question. …）まで含む",
   "legacyDiscardedAt": "2026-09-28T18:28:28.636Z"
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set3_q1.mp3",
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:22:54.393Z",
+  "sourceFile": "el2_set3_q1.mp3",
+  "sha256": "df74473d38197c94b81d9e15c9b74f700fe887064beca8e53d692d70c0d96424",
+  "durationSec": 16.82,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q2/listening_audio/el2_set3_q1.mp3"
+  ],
+  "note": "第2問 第2回問2・第3回問1（絵を生成できたので保管分を取り込み）",
+  "legacyDiscardedAt": "2026-09-28T23:22:54.394Z"
  },
  {
   "audioUrl": "/listening_audio/el2_set3_q2.mp3",
@@ -2113,6 +2143,21 @@
   ],
   "note": "第2問。5ファイル（Q2_1〜5）を台本とASRで照合して分割。設問文（Question. …）まで含む",
   "legacyDiscardedAt": "2026-09-28T18:28:19.132Z"
+ },
+ {
+  "audioUrl": "/listening_audio/el2_set10_q2.mp3",
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-29T00:00:34.111Z",
+  "sourceFile": "el2_set10_q2.mp3",
+  "sha256": "e6e9bbd822e6dc01888daa715966a5f671d5aa390c1f84cfdeed117e3be4bf25",
+  "durationSec": 16.14,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q2/listening_audio/el2_set10_q2.mp3"
+  ],
+  "note": "第2問 第10回問2。抜けていた1文を利用者の追加録音（q6b/receipt/…23_18_14）で補い、Q2_3 版の設問文と無劣化連結（pending_q2/README.json）",
+  "legacyDiscardedAt": "2026-09-29T00:00:34.114Z"
  },
  {
   "audioUrl": "/listening_audio/el2_set10_q3.mp3",
@@ -5101,152 +5146,227 @@
  },
  {
   "audioUrl": "/listening_q6/q6set01_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:20.559Z",
+  "sourceFile": "q6set01_B.mp3",
+  "sha256": "822d37fcd75e567111588ca57844c62fe8f4730100ebae691c29692e39570aaf",
+  "durationSec": 96.44,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set01_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:20.566Z"
  },
  {
   "audioUrl": "/listening_q6/q6set02_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:21.657Z",
+  "sourceFile": "q6set02_B.mp3",
+  "sha256": "69e55c0df754ce68ea940b6a4b53adafab4ced9f1965aab43ada27f3b98b56b2",
+  "durationSec": 98.01,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set02_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:21.662Z"
  },
  {
   "audioUrl": "/listening_q6/q6set03_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:22.715Z",
+  "sourceFile": "q6set03_B.mp3",
+  "sha256": "ffee3315c4344c4f7173acaef1b0241e6527d54f01bec11114e5fc7ad5155435",
+  "durationSec": 89.81,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set03_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:22.722Z"
  },
  {
   "audioUrl": "/listening_q6/q6set04_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:23.853Z",
+  "sourceFile": "q6set04_B.mp3",
+  "sha256": "6c2843a52289ba899b48e28c2466744d7474226cf96e5998180284f69d53b8c1",
+  "durationSec": 89.08,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set04_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:23.866Z"
  },
  {
   "audioUrl": "/listening_q6/q6set05_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:25.090Z",
+  "sourceFile": "q6set05_B.mp3",
+  "sha256": "0f56107ca9caff5c5b72b48acdffa80e1f1a3cc9f4ec64a520b5c9dc396175d7",
+  "durationSec": 100.08,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set05_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:25.105Z"
  },
  {
   "audioUrl": "/listening_q6/q6set06_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:26.523Z",
+  "sourceFile": "q6set06_B.mp3",
+  "sha256": "267d7d8a013992ea5987892ea417c86b172e62fd6cc49ed11387d172e5ebb0b2",
+  "durationSec": 116.48,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set06_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:26.541Z"
  },
  {
   "audioUrl": "/listening_q6/q6set07_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:27.583Z",
+  "sourceFile": "q6set07_B.mp3",
+  "sha256": "86fc79d8da46d4dc977ea2d1698a1ded7de809d95463ea8f23e2a09f8966c3cd",
+  "durationSec": 84.06,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set07_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:27.596Z"
  },
  {
   "audioUrl": "/listening_q6/q6set08_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:28.715Z",
+  "sourceFile": "q6set08_B.mp3",
+  "sha256": "0efe0bdca2a23c8103ff370401d1299f4565655a77772f649960386dfbb025b2",
+  "durationSec": 99.32,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set08_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:28.731Z"
  },
  {
   "audioUrl": "/listening_q6/q6set09_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:29.757Z",
+  "sourceFile": "q6set09_B.mp3",
+  "sha256": "bf04799fad36f2299c2757163855c7089880e7a2990dbd194432d5065542f82f",
+  "durationSec": 81.66,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set09_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:29.770Z"
  },
  {
   "audioUrl": "/listening_q6/q6set10_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:30.807Z",
+  "sourceFile": "q6set10_B.mp3",
+  "sha256": "999b4b2b872db7466117f87a09ba6b3c51f0d768dbd0735efd023778ed7e28fa",
+  "durationSec": 88.11,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set10_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:30.824Z"
  },
  {
   "audioUrl": "/listening_q6/q6set11_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:31.830Z",
+  "sourceFile": "q6set11_B.mp3",
+  "sha256": "5577ea7de7cf5a662b1f63d3f85f1754171bf4a895079f28f892078a2c397db2",
+  "durationSec": 78.63,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set11_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:31.842Z"
  },
  {
   "audioUrl": "/listening_q6/q6set12_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:32.898Z",
+  "sourceFile": "q6set12_B.mp3",
+  "sha256": "3ee0a68b797dfe6a4b6b42a40923b322fa75f38f0f4c2b902721da8923e76c30",
+  "durationSec": 84.14,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set12_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:32.911Z"
  },
  {
   "audioUrl": "/listening_q6/q6set13_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:33.965Z",
+  "sourceFile": "q6set13_B.mp3",
+  "sha256": "973856986782f726a81f31228386da60897f79f63feb82cd3ed0b2ea9e75b7d3",
+  "durationSec": 83.51,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set13_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:33.981Z"
  },
  {
   "audioUrl": "/listening_q6/q6set14_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:35.121Z",
+  "sourceFile": "q6set14_B.mp3",
+  "sha256": "004cc21c23a6bb1f3916935d2015f9bfb0a341c0de3552f817e259b5288ca2a5",
+  "durationSec": 88.56,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set14_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:35.135Z"
  },
  {
   "audioUrl": "/listening_q6/q6set15_B.mp3",
-  "status": "legacy_unverified",
-  "provider": "",
-  "license": "",
-  "importedAt": "",
-  "sourceFile": "",
-  "sha256": "",
-  "durationSec": 0
+  "status": "replaced",
+  "provider": "ElevenLabs（利用者が直接生成・eleven_v3）",
+  "license": "ElevenLabs有料契約中に新規生成（利用者申告 2026-09-28。契約画面の証拠は未確認）",
+  "importedAt": "2026-09-28T23:47:36.278Z",
+  "sourceFile": "q6set15_B.mp3",
+  "sha256": "6a2796e34fccad681c38ff58d0625b02ea84ec45ce318156014083a9c415df12",
+  "durationSec": 88.22,
+  "masterFiles": [
+   "audio_sources/commercial/elevenlabs_2026-09-28_q6b/listening_q6/q6set15_B.mp3"
+  ],
+  "note": "第6問B 15本。まとめ録り6本を台本×ASRで分割（第10回は2ファイルをまたぐため連結、第12・13回は重複録音から全文そろう版を採用。receipt/edit_note.json）",
+  "legacyDiscardedAt": "2026-09-28T23:47:36.292Z"
  }
 ]

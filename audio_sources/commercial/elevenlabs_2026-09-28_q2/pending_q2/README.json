@@ -1,0 +1,5 @@
+{
+ "note": "絵がまだ無い第2問の音声。絵ができたら import（docs/LISTENING_AUDIO_REPLACE.md）。",
+ "el2_set7_q2.mp3": "Q2_2.mp3 から分割（split_manifest.json）",
+ "el2_set10_q2.mp3": "取り込み済み（2026-09-29）。差し替え済み（2026-09-28）。Q2_3.mp3 版は『Every day except Wednesday.』が抜けていたため、利用者の追加録音 elevenlabs_2026-09-28_q6b/receipt/ElevenLabs_2026-09-28T23_18_14_…mp3（会話全体 0〜12.28秒）＋ Q2_3 版の 10.8秒以降（『Question. Which timetable matches?』）をストリームコピーで連結。small.en で全文確認済み"
+}

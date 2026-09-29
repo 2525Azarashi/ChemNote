@@ -187,7 +187,14 @@
         "answerText": "中央の丸テーブル",
         "explanation": "人数（three）が2でも4でもないため、中央の丸テーブルが正解。人数条件で候補を絞る。2024年問1 1型。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single drawing showing a three-shelf bookcase with photo albums on the top shelf and a boy holding books. FOUR circled numbers 1, 2, 3, 4 placed INSIDE the picture at four candidate spots: 1 on the top shelf, 2 on the middle shelf, 3 on the bottom shelf, 4 on the desk beside the bookcase. Plain white background, grayscale cartoon, no color, no other text.",
-        "answerIndex": 3
+        "answerIndex": 3,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       {
         "q": 3,
@@ -265,7 +272,14 @@
         "answerText": "木曜午後",
         "explanation": "3つの候補が否定され、最後の Thursday afternoon works で確定。第2問の典型的な消去法。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single top-down park map with FOUR circled numbers 1-4 placed INSIDE the map at four locations: 1 at a fountain, 2 at a bench near playground equipment, 3 under a large tree beside a pond, 4 in a parking lot. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 4
+        "answerIndex": 4,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       {
         "q": 2,
@@ -1120,7 +1134,14 @@
         "answerText": "火曜と金曜:体育、水:英語なし",
         "explanation": "母の推測（月・木体育）→息子の訂正（火・金）＋英語は水以外。訂正と例外の同時処理。2026年 問9型。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single family photo drawing with five people and a baby. FOUR circled numbers 1-4 placed INSIDE the picture pointing to four people: 1 the woman on the far left, 2 the woman second from left holding a baby, 3 a tall man standing behind, 4 a woman standing behind the leftmost woman. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 2
+        "answerIndex": 2,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       {
         "q": 3,
