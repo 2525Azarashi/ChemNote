@@ -104,3 +104,8 @@ GitHub Appにworkflows更新権限がなくCI登録は拒否されたため、�
 - 対戦BGMを音源ファイルで鳴らす仕組みを追加（`src/battle/audio/bgmFiles.ts`・台帳 `docs/BATTLE_BGM.md`）。待合室＝waiting、対戦＝battle（カウントダウン頭から再生し曲頭7秒で本編＝START!）。**曲そのものは生成クレジット不足で未生成**（登録なし＝従来の合成音）。
 - リスニング版ホームを統合版の1画面構造に変更（下の帯を［科目］［英文法・英単語を固める］に）。320×568／390×844／1280×900 でスクロールなし。
 - 共有：`manatobi_listening_bgm_home_2026-09-29.zip`（BGMの仕組み＋ホームUI＋写真）。
+
+## 2026-09-29 全部入りZIP（これまでの分割ZIPを1つに統合）
+- `manatobi_listening_ALL_2026-09-29.zip`（547MB）：書き出し一式＋補完ツール・テスト・手順書＋`audio_sources/`（原本・領収書）＋旧音源の削除ツール（`scripts/purge-legacy-listening-audio.mjs`）＋動画（勝利・コンボ・ガチャ新版）＋BGMの仕組み＋画面見本＋指示書1枚（`リスニングの部屋へ_これ1つで全部.md`）。
+- 前回「1件スキップ」は `listeningAudioLedger.test.ts` の原本照合（`audio_sources/` 未送付のため）。統合ZIPでは 162件合格・0件スキップ。
+- 統合ZIPの状態で確認：tsc 0件、audio:check 問題なし、374/374、旧音源0本・git履歴の旧音源0件、vite build 成功。
