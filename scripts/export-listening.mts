@@ -144,8 +144,8 @@ edit('src/components/Onboarding.tsx', "import { auth } from '../firebase';", "im
 edit('src/components/Onboarding.tsx', '<h2 className="text-center text-2xl font-bold text-[#1B2631] sm:text-[28px]">ようこそ！</h2>', '<h2 className="text-center text-2xl font-bold text-[#1B2631] sm:text-[28px]">ようこそ！</h2>{!FIREBASE_CONFIGURED && !USE_EMULATORS && <p role="status">設定前のプレビューです。ゲストで演習・AI対戦を試せます。オンライン対戦には専用Firebaseの設定が必要です。</p>}');
 // Do not send user registrations or feedback to the integrated app's spreadsheet.
 initializer('src/utils/feedback.ts', 'DEFAULT_FEEDBACK_WEBHOOK_URL', "''");
-// Do not reuse an unrelated analytics property or register a nonexistent service worker.
-put('src/main.tsx', text('src/main.tsx').replace("import { Analytics } from '@vercel/analytics/react';\n", '').replace('    <Analytics />', '').replace(/\/\/ PWA Service Worker[^]*?\n}\n/, ''));
+// Do not reuse an unrelated analytics property. 2026-09-29：Service Worker（public/sw.js・オフライン学習）の登録はアプリ化に必要なので残す。
+put('src/main.tsx', text('src/main.tsx').replace("import { Analytics } from '@vercel/analytics/react';\n", '').replace('    <Analytics />', ''));
 const index = text('index.html').replaceAll('マナトビ', 'マナトビ リスニング');
 put('index.html', index);
 const manifest = JSON.parse(text('public/manifest.json'));

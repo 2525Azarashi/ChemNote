@@ -87,3 +87,10 @@ GitHub Appにworkflows更新権限がなくCI登録は拒否されたため、�
 - 未確認：本番ビルド（サンドボックスでは時間切れ）、Firebase専用プロジェクトでの2人対戦、Safari実機。
 - 受け渡し状況：ZIPのダウンロードリンクを利用者に渡しただけ。移行先の部屋に取り込まれたことは未確認（未送付扱い）。
 - BGM（待機室・対戦）：クレジット不足で未生成。現状は battleAudio.ts の合成BGMのまま。
+
+### 補完ZIP（2026-09-29 追記）
+最初のZIPはアプリとして動く一式だったが、次が欠けていたので補完ZIPを別に出した（移行元の部屋のファイルは消さない）。
+- `manatobi_listening_supplement_2026-09-29.zip`：Service Worker 登録の差分（書き出しで消していた→今後の書き出しでは残すよう修正済み）、音源管理・問題データ生成・アイコン作成ツール、App Store/ビルド/対戦/Firestore の手順書、リスニングのテスト。既存ファイルは上書きしない構成。
+- `manatobi_listening_audio_sources_2026-09-29.zip`：`audio_sources/`（ElevenLabs 原本・分割記録・領収書、322MB）。
+- 重ねた状態での確認：tsc 0、audio:check 問題なし、374/374、vite build 成功（swap＋ヒープ3GB）、リスニングテスト 229/233（落ちる4件は統合版でも同じ）。
+- ネイティブ化用の ios/ android/（Capacitor）は統合版にも未作成。
