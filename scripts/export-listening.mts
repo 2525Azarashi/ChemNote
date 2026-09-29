@@ -177,6 +177,7 @@ put('COMMERCIAL_AUDIO_STATUS.json',JSON.stringify({
   status: legacyLeft.length ? 'pending' : 'approved',
   totalTracks: ledger.length, replacedTracks: ledger.length - legacyLeft.length,
   legacyTracks: legacyLeft.map(r => r.audioUrl),
+  licenseEvidence: { dir: 'license_evidence/', addedAt: '2026-09-29', receipts: ['#2084-3643-1031 Creator $12.10 (2026-09-20)', '#2495-9775-3869 Starter $6.00 (2026-09-28)', '#2466-8389-4576 $12.10 (2026-09-29)'], remark: 'providers 欄の「契約画面の証拠は未確認」は取り込み時点の記録。領収書は後日このフォルダに追加した。' },
   providers: [...new Set(ledger.filter(r=>r.status==='replaced').map(r=>r.provider+' / '+r.license))],
   note: 'ElevenLabs 有料契約中に運営者が直接生成。領収書3件（Creator 2026-09-20／Starter 2026-09-28／2026-09-29 更新）は license_evidence/ に同梱。音源ごとの生成元・sha256 は listening_audio_ledger.json',
 },null,2));
