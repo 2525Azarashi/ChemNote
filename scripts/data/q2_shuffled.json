@@ -187,7 +187,14 @@
         "answerText": "中央の丸テーブル",
         "explanation": "人数（three）が2でも4でもないため、中央の丸テーブルが正解。人数条件で候補を絞る。2024年問1 1型。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single drawing showing a three-shelf bookcase with photo albums on the top shelf and a boy holding books. FOUR circled numbers 1, 2, 3, 4 placed INSIDE the picture at four candidate spots: 1 on the top shelf, 2 on the middle shelf, 3 on the bottom shelf, 4 on the desk beside the bookcase. Plain white background, grayscale cartoon, no color, no other text.",
-        "answerIndex": 3
+        "answerIndex": 3,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       {
         "q": 3,
@@ -265,7 +272,14 @@
         "answerText": "木曜午後",
         "explanation": "3つの候補が否定され、最後の Thursday afternoon works で確定。第2問の典型的な消去法。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single top-down park map with FOUR circled numbers 1-4 placed INSIDE the map at four locations: 1 at a fountain, 2 at a bench near playground equipment, 3 under a large tree beside a pond, 4 in a parking lot. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 4
+        "answerIndex": 4,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       {
         "q": 2,
@@ -309,10 +323,10 @@
         "speakers": "女性(客) / 男性(店員)",
         "figureType": "1枚の図の中に①〜④",
         "options": [
+          "ゴマ付きの小さな丸パン",
           "ポピーシード付きの大きな丸パン",
           "ポピーシード付きの小さな丸パン",
-          "ゴマ付きの大きな丸パン",
-          "ゴマ付きの小さな丸パン"
+          "ゴマ付きの大きな丸パン"
         ],
         "turns": [
           {
@@ -333,11 +347,18 @@
           }
         ],
         "question": "Which bread did the woman buy?",
-        "answerMark": "④",
+        "answerMark": "①",
         "answerText": "ゴマ付きの小さな丸パン",
         "explanation": "種類（sesame）とサイズ（smaller）の2条件。poppy と sesame の音の聞き分けが鍵。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single aquarium floor map with two floors shown, Dolphin tank on 1F, Penguin area on 2F, and a Shark tank. FOUR different visitor routes drawn with arrows, each labeled with a circled number 1-4: route 1 goes Dolphin to Penguin to Shark, route 2 goes Dolphin to Penguin only (Shark crossed out), route 3 goes Penguin then Dolphin, route 4 goes Penguin to Dolphin to Shark. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 4
+        "answerIndex": 1,
+        "shuffled": true,
+        "shufflePerm": [
+          3,
+          0,
+          1,
+          2
+        ]
       }
     ]
   },
@@ -493,7 +514,14 @@
         "answerText": "初心者向けイタリア料理本",
         "explanation": "料理の種類（Italian）＋レベル（for beginners）の2条件。ダミー情報（20% off、French、Japanese）を排除。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single park map seen from above with FOUR circled numbers 1-4 marking four spots INSIDE the map: 1 at the fountain, 2 at a bench beside the playground, 3 under a big tree by the pond, 4 at the parking area. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 1
+        "answerIndex": 1,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       {
         "q": 2,
@@ -757,7 +785,14 @@
         "answerText": "海→宇宙→恐竜(ロボットなし)",
         "explanation": "順序と除外（skip the robots）を統合。3つ以上の要素を並べる高難度型。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single living room drawing with a sofa, a dining table, and decorations. FOUR circled numbers 1-4 placed INSIDE the picture at four decoration spots: 1 banner position on the wall above the sofa, 2 balloon position at the corner of the dining table, 3 a spot above the door, 4 a spot at the corner of the sofa. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 2
+        "answerIndex": 2,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       {
         "q": 3,
@@ -844,9 +879,9 @@
         "figureType": "1枚の図の中に①〜④",
         "options": [
           "バラ柄・しおりリボンなし",
-          "ヒマワリ柄・しおりリボンあり",
           "ヒマワリ柄・しおりリボンなし",
-          "ユリ柄・しおりリボンあり"
+          "ユリ柄・しおりリボンあり",
+          "ヒマワリ柄・しおりリボンあり"
         ],
         "turns": [
           {
@@ -867,11 +902,18 @@
           }
         ],
         "question": "Which book cover did the woman choose?",
-        "answerMark": "②",
+        "answerMark": "④",
         "answerText": "ヒマワリ柄・しおりリボンあり",
         "explanation": "柄（sunflowers）＋機能（ribbon）の2条件。花の種類の聞き分けが要点。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single event hall seating chart seen from above with rows of seats. FOUR circled numbers 1-4 placed INSIDE the chart on four seat blocks: 1 the front row, 2 the left side of the middle rows, 3 the back rows, 4 the right side of the middle rows. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 2
+        "answerIndex": 4,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          2,
+          3,
+          1
+        ]
       },
       {
         "q": 3,
@@ -1099,7 +1141,14 @@
         "answerText": "火曜と金曜:体育、水:英語なし",
         "explanation": "母の推測（月・木体育）→息子の訂正（火・金）＋英語は水以外。訂正と例外の同時処理。2026年 問9型。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single family photo drawing with five people and a baby. FOUR circled numbers 1-4 placed INSIDE the picture pointing to four people: 1 the woman on the far left, 2 the woman second from left holding a baby, 3 a tall man standing behind, 4 a woman standing behind the leftmost woman. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 2
+        "answerIndex": 2,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       {
         "q": 3,
@@ -1555,7 +1604,14 @@
         "answerText": "長毛ストレートの小型テリア(メス)",
         "explanation": "種類（terrier）＋毛（straight long）＋性別（female）の3条件。プードルと迷わせる。",
         "imagePrompt": "Black and white line-art illustration for a listening test. ONE single family photo drawing with several relatives. FOUR circled numbers 1-4 placed INSIDE the picture pointing to four people: 1 the leftmost woman, 2 the woman holding a baby next to her, 3 a tall man behind them, 4 a woman behind the aunt. Grayscale cartoon, no color, no other text.",
-        "answerIndex": 4
+        "answerIndex": 4,
+        "shuffled": true,
+        "shufflePerm": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       {
         "q": 3,
@@ -1719,10 +1775,10 @@
         "speakers": "女性(店員) / 男性(客)",
         "figureType": "2×2の4枚から選択",
         "options": [
-          "苺のショートケーキ",
           "チョコレートケーキ",
-          "桃のケーキ",
-          "チーズケーキ"
+          "苺のショートケーキ",
+          "チーズケーキ",
+          "桃のケーキ"
         ],
         "turns": [
           {
@@ -1743,17 +1799,17 @@
           }
         ],
         "question": "Which cake will the man buy?",
-        "answerMark": "③",
+        "answerMark": "④",
         "answerText": "桃のケーキ",
         "explanation": "「フルーツは好きだが苺はアレルギー」の情報から桃を新たに提案。3択→アレルギー→新提案の流 れ。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a whole cake on a plate with fruit/topping identifiable. Panel 1: strawberry shortcake with whole strawberries on top. Panel 2: chocolate cake with chocolate curls on top. Panel 3: cake topped with peach slices. Panel 4: cheesecake (plain, smooth top).",
-        "answerIndex": 3,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a whole cake on a plate with fruit/topping identifiable. Panel 1: chocolate cake with chocolate curls on top. Panel 2: strawberry shortcake with whole strawberries on top. Panel 3: cheesecake (plain, smooth top). Panel 4: cake topped with peach slices.",
+        "answerIndex": 4,
         "shuffled": true,
         "shufflePerm": [
-          1,
           0,
-          3,
-          2
+          1,
+          2,
+          3
         ]
       },
       {
@@ -1803,9 +1859,9 @@
         "figureType": "2×2の4枚から選択",
         "options": [
           "重量級・ヘッド大きめ",
-          "重量級・ヘッド小さめ",
           "軽量・ヘッド小さめ",
-          "軽量・ヘッド大きめ"
+          "軽量・ヘッド大きめ",
+          "重量級・ヘッド小さめ"
         ],
         "turns": [
           {
@@ -1826,17 +1882,17 @@
           }
         ],
         "question": "Which racket will the woman likely choose (based on the recommended features)?",
-        "answerMark": "④",
+        "answerMark": "③",
         "answerText": "軽量・ヘッド大きめ",
         "explanation": "色は「どれでもよい」ため無関係。lightweight + larger head の2条件で決定。属性の掛け合わせ。",
-        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a tennis racket with a small label for weight and head size. Panel 1: racket with a large head, label 'HEAVY'. Panel 2: racket with a small head, label 'HEAVY'. Panel 3: racket with a SMALL head, label 'LIGHT'. Panel 4: racket with a LARGE oval head, label 'LIGHT'.",
-        "answerIndex": 4,
+        "imagePrompt": "Black and white line-art illustration sheet for a listening test. A 2x2 grid of four equal square panels, thin gray borders, large circled numbers 1 2 3 4 at top-left of each panel, plain white background, grayscale only, clean cartoon line drawing, no color, no other text. Each panel shows a tennis racket with a small label for weight and head size. Panel 1: racket with a large head, label 'HEAVY'. Panel 2: racket with a SMALL head, label 'LIGHT'. Panel 3: racket with a LARGE oval head, label 'LIGHT'. Panel 4: racket with a small head, label 'HEAVY'.",
+        "answerIndex": 3,
         "shuffled": true,
         "shufflePerm": [
           1,
-          3,
           2,
-          0
+          0,
+          3
         ]
       }
     ]

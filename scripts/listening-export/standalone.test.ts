@@ -7,23 +7,32 @@ import { FEATURES, isSubjectEnabled } from '../src/config/features';
 import { POOL_COUNTS, loadPool } from '../src/battle/data/battlePool';
 import { defaultEnabledSubjects, normalizeRule } from '../src/battle/core/battleRules';
 import { arenaRule } from '../src/battle/core/arenaRules';
+import { EXTERNAL_SUBJECTS } from '../src/data/externalSubjects';
 const subject = 'english_listening';
-it('exposes only listening across study catalogs and battles', () => {
-  expect(SUBJECTS.map(s=>s.id)).toEqual([subject]);
-  expect(SUBJECT_INDEX.map(s=>s.id)).toEqual([subject]);
-  expect(Object.keys(SUBJECT_STATS)).toEqual([subject]);
-  expect(Object.keys(POOL_COUNTS)).toEqual([subject]);
-  expect(defaultEnabledSubjects()).toEqual([subject]);
+it('exposes listening first, with English grammar and vocabulary as sub-features only', () => {
+  expect(SUBJECTS.map(s=>s.id)).toEqual([subject,'english_grammar']);
+  expect(SUBJECT_INDEX.map(s=>s.id)).toEqual([subject,'english_grammar']);
+  expect(Object.keys(SUBJECT_STATS)).toEqual([subject,'english_grammar']);
+  expect(Object.keys(POOL_COUNTS)).toEqual([subject,'english_grammar','english_vocab']);
+  expect(defaultEnabledSubjects()).toEqual([subject,'english_grammar','english_vocab']);
+  expect(EXTERNAL_SUBJECTS.map(s=>s.id)).toEqual(['english_vocab']);
   expect(FEATURES.battle).toBe(true);
-  for(const other of ['math','chemistry','chemistry_basic','english_grammar','biology_basic','geography','rika','english_vocab']) {
+  expect(isSubjectEnabled('english_grammar')).toBe(true);
+  for(const other of ['math','chemistry','chemistry_basic','biology_basic','geography','rika','joho']) {
     expect(isSubjectEnabled(other)).toBe(false);
     expect(normalizeRule(other,{enabled:true}).enabled).toBe(false);
   }
 });
-it('keeps nine units, 135 practice problems and their audio/images', () => {
+it('keeps English grammar (__GRAMMAR_POOL__) and vocabulary (__VOCAB_POOL__) battle banks loadable', async () => {
+  expect(await loadPool('english_grammar')).toHaveLength(__GRAMMAR_POOL__);
+  expect(await loadPool('english_vocab')).toHaveLength(__VOCAB_POOL__);
+  expect(getChaptersOfSubject('english_grammar').length).toBeGreaterThan(0);
+  expect(normalizeRule('english_vocab',{}).enabled).toBe(true);
+});
+it('keeps nine units, __PRACTICE_TOTAL__ practice problems and their audio/images', () => {
   const chapters=getChaptersOfSubject(subject);
   expect(chapters).toHaveLength(9);
-  expect(chapters.reduce((sum,c)=>sum+c.practiceProblems.length+c.miniTest.length,0)).toBe(135);
+  expect(chapters.reduce((sum,c)=>sum+c.practiceProblems.length+c.miniTest.length,0)).toBe(__PRACTICE_TOTAL__);
   const audio=new Set<string>();const assets=new Set<string>();
   const walk=(value:unknown,key='')=>{
     if(typeof value==='string') {
@@ -37,9 +46,9 @@ it('keeps nine units, 135 practice problems and their audio/images', () => {
   for(const path of assets)expect(existsSync(resolve('public','.'+decodeURIComponent(path.split('?')[0]))),path).toBe(true);
   console.log(`Verified ${audio.size} distinct audio URLs and ${assets.size} referenced local assets.`);
 });
-it('loads 146 recorded battle questions with 55-second rounds',async()=>{
-  const pool=await loadPool(subject);expect(pool).toHaveLength(146);
-  expect(new Set(pool.map(q=>q.id)).size).toBe(146);
+it('loads __POOL_TOTAL__ recorded battle questions with 55-second rounds',async()=>{
+  const pool=await loadPool(subject);expect(pool).toHaveLength(__POOL_TOTAL__);
+  expect(new Set(pool.map(q=>q.id)).size).toBe(__POOL_TOTAL__);
   for(const q of pool){expect(q.subject).toBe(subject);expect(q.audioUrl).toBeTruthy();expect(existsSync(resolve('public','.'+q.audioUrl!))).toBe(true);}
   expect(arenaRule(normalizeRule(subject,{})).timeLimitOverride).toBe(55);
   expect(await loadPool('math')).toEqual([]);
@@ -50,4 +59,12 @@ it('does not reuse integrated credentials or non-listening home links',()=>{
   expect(JSON.parse(readFileSync('.firebaserc','utf8')).projects.default).toBe('demo-manatobi-listening');
   expect(readFileSync('src/components/Home.tsx','utf8')).not.toContain('>まとめプリント</button>');
   expect(readFileSync('src/components/Home.tsx','utf8')).not.toContain('>全体のつながりを見る</button>');
+});
+it('ships only commercial audio listed in the ledger', () => {
+  const status=JSON.parse(readFileSync('COMMERCIAL_AUDIO_STATUS.json','utf8'));
+  const ledger=JSON.parse(readFileSync('listening_audio_ledger.json','utf8'));
+  expect(status.totalTracks).toBe(ledger.length);
+  if(status.status==='approved'){expect(status.legacyTracks).toEqual([]);for(const r of ledger)expect(r.status,r.audioUrl).toBe('replaced');}
+  for(const r of ledger)expect(existsSync(resolve('public','.'+r.audioUrl)),r.audioUrl).toBe(true);
+  expect(existsSync('license_evidence/README.md')).toBe(true);
 });

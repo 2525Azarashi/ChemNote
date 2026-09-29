@@ -1,8 +1,9 @@
 /**
  * feedback — 対戦モードの「手触り」：効果音と振動
  *
- * ■ ★音源ファイルを置かない★
- *   WebAudio でその場で合成する（数十ミリ秒の短い音）。
+ * ■ 音源
+ *   public/sfx/battle/*.mp3（scripts/sfx/gen_battle_sfx.py で合成したオリジナル音・商用利用可）
+ *   を優先して鳴らす。読み込み前・失敗時は下の SFX 表から WebAudio でその場で合成する。
  *   ・読み込み待ちが無い（結果画面が出た瞬間に鳴る）
  *   ・バンドルが増えない
  *   ・ライセンスの心配が無い
@@ -21,6 +22,7 @@
  */
 
 import { readAudioPreferences, writeAudioPreferences } from '../audio/audioPreferences';
+import { playSample, preloadSamples } from '../audio/sfxSamples';
 
 export type SfxName =
   | 'tap' // ボタン
@@ -33,6 +35,9 @@ export type SfxName =
   | 'badge' // 新称号
   | 'coin' // 報酬受け取り
   | 'rankup' // 段位アップ
+  | 'chest' // 宝箱オープン
+  | 'jackpot' // 宝箱の大当たり
+  | 'gacha' // ガチャの結果
   | 'tick'; // カウントアップの刻み
 
 type Note = { f: number; t: number; d: number; type?: OscillatorType; g?: number };
@@ -82,6 +87,22 @@ const SFX: Record<SfxName, Note[]> = {
     { f: 1568, t: 300, d: 400 },
     { f: 1976, t: 300, d: 400, g: 0.05 },
   ],
+  chest: [
+    { f: 784, t: 0, d: 80 },
+    { f: 1047, t: 80, d: 80 },
+    { f: 1568, t: 160, d: 240 },
+  ],
+  jackpot: [
+    { f: 1047, t: 0, d: 70 },
+    { f: 1319, t: 70, d: 70 },
+    { f: 1568, t: 140, d: 70 },
+    { f: 2093, t: 210, d: 400 },
+  ],
+  gacha: [
+    { f: 1319, t: 0, d: 40, type: 'square', g: 0.04 },
+    { f: 1480, t: 90, d: 40, type: 'square', g: 0.04 },
+    { f: 2093, t: 220, d: 260 },
+  ],
 };
 
 const VIBE: Partial<Record<SfxName, number | number[]>> = {
@@ -94,6 +115,9 @@ const VIBE: Partial<Record<SfxName, number | number[]>> = {
   badge: [20, 40, 20],
   coin: 15,
   rankup: [30, 30, 30, 30, 80],
+  chest: [20, 30, 40],
+  jackpot: [30, 30, 30, 30, 80],
+  gacha: [15, 40, 30],
 };
 
 let ctx: AudioContext | null = null;
@@ -117,7 +141,8 @@ export function setSfxEnabled(on: boolean): void { writeAudioPreferences({ sfx: 
 /** ユーザー操作の中で先に呼ぶと、あとの音が iOS でも確実に鳴る */
 export function primeAudio(): void {
   if (!sfxEnabled()) return;
-  context();
+  const ac = context();
+  if (ac) preloadSamples(ac);
 }
 
 /**
@@ -127,7 +152,10 @@ export function primeAudio(): void {
 export function play(name: SfxName, vibrate = true): void {
   if (!sfxEnabled()) return;
   const ac = context();
-  if (ac) {
+  // 効果音ファイルが読めていればそれを鳴らす（音量は対戦の音量設定に合わせる）
+  if (ac && playSample(ac, ac.destination, name, 0.5 * readAudioPreferences().volume)) {
+    /* 鳴らせた */
+  } else if (ac) {
     try {
       const now = ac.currentTime;
       for (const n of SFX[name]) {

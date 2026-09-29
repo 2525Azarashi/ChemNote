@@ -136,3 +136,79 @@ export function offlineNotice(params: {
   if (!params.playing) return null;
   return '通信が切れています。電波が戻るまで解答できません（この間の問題は無回答になります）。';
 }
+
+// ============================================================
+// 通信の立て直し（市販の対戦ゲーム並みに「止まらない」ための判定）
+// ============================================================
+
+/**
+ * やり直せば通る見込みのある失敗か。
+ *
+ * ★permission-denied はやり直さない★
+ * ルールに拒否された書き込みは、何回送っても拒否される
+ * （締切後・二重解答・終わった部屋）。送り続けると無料枠を食うだけ。
+ */
+export function isTransientError(error: unknown): boolean {
+  const code = String((error as { code?: string } | null)?.code || '');
+  return code === 'unavailable' || code === 'deadline-exceeded' || code === 'aborted'
+    || code === 'resource-exhausted' || code === 'internal' || code === 'cancelled'
+    || code === 'unknown';
+}
+
+/**
+ * n 回目（0始まり）の再試行までの待ち時間。
+ * 0.4秒・0.8秒・1.6秒…と倍々に伸ばし、上限 maxMs。
+ * ±20% の揺らぎを足して、2人が同時に再送して衝突し続けるのを避ける。
+ */
+export function retryDelayMs(attempt: number, random = Math.random(), baseMs = 400, maxMs = 5_000): number {
+  const raw = Math.min(maxMs, baseMs * 2 ** Math.max(0, attempt));
+  const jitter = 0.8 + 0.4 * Math.min(1, Math.max(0, random));
+  return Math.round(raw * jitter);
+}
+
+/** 電波の強さ（画面のアンテナ表示用） */
+export type ConnectionQuality = 'good' | 'fair' | 'poor' | 'offline';
+
+/**
+ * 直近の往復時間（ms）から電波の強さを決める。
+ *   〜250ms … good（アンテナ3本）
+ *   〜800ms … fair（2本）
+ *   それ以上 … poor（1本）
+ * まだ測れていない（null）ときは good 扱い（根拠なく不安にさせない）。
+ */
+export function connectionQuality(rttMs: number | null, connection: ConnectionState): ConnectionQuality {
+  if (connection === 'offline') return 'offline';
+  if (rttMs == null || !Number.isFinite(rttMs)) return 'good';
+  if (rttMs <= 250) return 'good';
+  if (rttMs <= 800) return 'fair';
+  return 'poor';
+}
+
+/**
+ * 直近の往復時間をなめらかにする（指数移動平均）。
+ * 1回だけ遅かった書き込みでアンテナが激しく上下しないように。
+ */
+export function smoothRtt(prev: number | null, sample: number, weight = 0.3): number {
+  if (!Number.isFinite(sample) || sample < 0) return prev ?? 0;
+  if (prev == null) return sample;
+  return Math.round(prev * (1 - weight) + sample * weight);
+}
+
+/**
+ * 問題の進行が止まっていないか（進める書き込みが失われた場合の見張り）。
+ *
+ * 進める書き込みは両者が1回ずつ撃つが、2人とも電波が悪いと両方失われ、
+ * ★試合が永久に止まる★。一定時間たっても番号が変わらなければ撃ち直す。
+ * ルールが「今より大きい番号」しか通さないので、撃ち直しても壊れない。
+ */
+export const ADVANCE_RETRY_MS = 3_000;
+export function shouldRetryAdvance(params: { firedAt: number | null; now: number; indexChanged: boolean }): boolean {
+  if (params.indexChanged || params.firedAt == null) return false;
+  return params.now - params.firedAt >= ADVANCE_RETRY_MS;
+}
+
+/** 再接続したときに伝える文（切れていた時間が短ければ言わない） */
+export function reconnectNotice(offlineForMs: number): string | null {
+  if (!Number.isFinite(offlineForMs) || offlineForMs < 1_500) return null;
+  return '通信が戻りました。対戦を続けます。';
+}

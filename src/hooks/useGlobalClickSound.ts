@@ -43,7 +43,8 @@ export function useGlobalClickSound() {
       const target = event.target as HTMLElement;
       const button = target.closest('button, a[role="button"], input[type="button"], input[type="submit"], .cursor-pointer');
 
-      if (button) {
+      // 対戦中の画面は選択肢ごとに専用の効果音（tap）を鳴らすので、二重に鳴らさない
+      if (button && !button.closest('.arena-live-stage, [data-own-sfx]')) {
         playClickSound();
       }
     };

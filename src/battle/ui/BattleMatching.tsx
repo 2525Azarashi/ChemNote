@@ -47,6 +47,7 @@ import { Bot, Radar, Wifi, X, Zap } from 'lucide-react';
 import { subjectTheme } from '../../data/subjectTheme';
 import type { SubjectKey } from '../../data/allChapters';
 import { findOrEnqueue, leaveQueue, watchMatched } from '../data/battle';
+import { retryDelayMs } from '../core/connection';
 import { ArenaFighters } from './ArenaFighters';
 import { useBattleAudio } from '../hooks/useBattleAudio';
 import {
@@ -176,6 +177,26 @@ export function BattleMatching({
     [],
   );
 
+  /**
+   * ★検索が失敗したら自動でやり直す★（最大4回・間隔を伸ばす）。
+   * 電波が一瞬切れただけで「検索に失敗しました」で止まっていた。
+   * 端末がオンラインに戻ったときは待たずにやり直す。
+   */
+  const [searchNo, setSearchNo] = useState(0);
+  const searchFailRef = useRef(0);
+  const retrySearch = (message: string) => {
+    const n = searchFailRef.current;
+    searchFailRef.current = n + 1;
+    if (n >= 4) { setError(message); return; }
+    setError(null);
+    window.setTimeout(() => setSearchNo((v) => v + 1), retryDelayMs(n, Math.random(), 800, 6_000));
+  };
+  useEffect(() => {
+    const onOnline = () => { if (!doneRef.current) { searchFailRef.current = 0; setError(null); setSearchNo((v) => v + 1); } };
+    window.addEventListener('online', onOnline);
+    return () => window.removeEventListener('online', onOnline);
+  }, []);
+
   // マッチング本体
   useEffect(() => {
     let alive = true;
@@ -207,15 +228,13 @@ export function BattleMatching({
           // 待っても無駄だと分かるようにしておく。
           () => {
             if (!alive) return;
-            setError(
-              '対戦相手の検索に失敗しました。通信を確かめて、もう一度お試しください。',
-            );
+            retrySearch('対戦相手の検索に失敗しました。通信を確かめて、もう一度お試しください。');
           },
           { subject, sessionId: searchId },
         );
       })
       .catch((e: Error) => {
-        if (alive) setError(e.message);
+        if (alive && !controller.signal.aborted) retrySearch(e.message);
       });
 
     return () => {
@@ -227,7 +246,7 @@ export function BattleMatching({
       if (!doneRef.current) void leaveQueue(searchId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subject]);
+  }, [subject, searchNo]);
 
   const cancel = () => {
     void leaveQueue(sessionId.current);

@@ -258,6 +258,50 @@ ILLUSTRATION_SOURCE_LABEL: dict[tuple[int, int], tuple[int, int]] = {
 # ------------------------------------------------------------------
 EXCLUDED_PDF_ILLUSTRATIONS: frozenset[tuple[int, int]] = frozenset()
 
+# ===================================================================
+# ★画像生成で新しく作った絵を使う問（2026-09-28〜）★
+# ===================================================================
+# 配布 PDF に使える絵が無く、出題できていなかった10問
+#   (2,2) (3,1) (3,3) (5,1) (7,2) (8,2) (10,2) (14,2) (16,1) (16,3)
+# を、画像生成（利用者の指示で「クレジットを使ってちゃんと作る」）で1問ずつ描き、
+# 目で①〜④が選択肢どおりか確認できたものから下の表に登録して公開する。
+#
+# 並び順（perm[i] = 新しい i 番目に置く元の選択肢の番号）はここで固定し、乱数の並べ替えから外す
+#（絵は下の並びで描いてあるので、動かすと絵と食い違う）。
+# 正解位置は公開全体で ①〜④ が偏らないように選ぶ（公開済み38問は ①9 ②18 ③9 ④2 で ④ が少ない）。
+#
+#   (16, 1): public/listening_q2/el2_set16_q1.jpg（2026-09-28 生成・確認済み）
+#            ①チョコ ②苺 ③チーズ ④桃 → 正解 ④
+#   (14, 2): el2_set14_q2.jpg ①プードル♂ ②プードル♀ ③テリア♂ ④テリア♀ → 正解 ④
+#   (3, 3):  el2_set3_q3.jpg  ①小ゴマ ②大ポピー ③小ポピー ④大ゴマ → 正解 ①
+#   (8, 2):  el2_set8_q2.jpg  ①バラ×リボン ②ヒマワリ×リボン ③ユリ＋リボン ④ヒマワリ＋リボン → 正解 ④
+#            （1回目は全部にリボンが付いて解けない絵だったので不採用・描き直し）
+#   (16, 3): el2_set16_q3.jpg ①重・大 ②軽・小 ③軽・大 ④重・小 → 正解 ③（3回目で採用。1回目は大小が曖昧、2回目は④に2本描かれていた）
+#   (2, 2):  el2_set2_q2.jpg  1枚の店内見取り図。①窓際2人席 ②奥ボックス4人 ③中央丸テーブル ④カウンター → 正解 ③
+#   (3, 1):  el2_set3_q1.jpg  1枚の週間予定表。①火PM(テニス) ②水AM(授業) ③木AM ④木PM → 正解 ④
+#   (10, 2): el2_set10_q2.jpg 1枚の図に時間割4つ。①月体育・水英語なし ②火金体育・水英語なし ③月木体育・毎日英語 ④火金体育・毎日英語 → 正解 ②
+#   (7, 2):  el2_set7_q2.jpg  1枚の図に順路4本。①宇宙→海→恐竜→ロボ ②海→宇宙→恐竜(ロボなし) ③恐竜→海→宇宙→ロボ ④海→ロボ→宇宙→恐竜 → 正解 ②（3回目で採用）
+#   (5, 1):  el2_set5_q1.jpg  ①伊・初心者 ②伊・上級 ③仏・初心者 ④和・初心者 → 正解 ①
+#
+# 未登録（絵の生成待ち。台本・録り直しPDFは用意済み）：
+#   なし（48問すべて絵あり）
+DRAWN_ILLUSTRATION_PERMS: dict[tuple[int, int], tuple[int, int, int, int]] = {
+    (16, 1): (0, 1, 2, 3),   # 正解 ④ 桃のケーキ
+    (14, 2): (0, 1, 2, 3),   # 正解 ④ 長毛ストレートの小型テリア(メス)
+    (3, 3): (3, 0, 1, 2),    # 正解 ① ゴマ付きの小さな丸パン
+    (8, 2): (0, 2, 3, 1),    # 正解 ④ ヒマワリ柄・しおりリボンあり
+    (5, 1): (0, 1, 2, 3),    # 正解 ① 初心者向けイタリア料理本
+    (16, 3): (1, 2, 0, 3),   # 正解 ③ 軽量・ヘッド大きめ
+    (2, 2): (0, 1, 2, 3),    # 正解 ③ 中央の丸テーブル（1枚の図）
+    (3, 1): (0, 1, 2, 3),    # 正解 ④ 木曜午後（1枚の図）
+    (10, 2): (0, 1, 2, 3),   # 正解 ② 火・金が体育、水曜は英語なし
+    (7, 2): (0, 1, 2, 3),    # 正解 ② 海→宇宙→恐竜（ロボットなし）
+}
+DRAWN_ILLUSTRATION_QUESTIONS = frozenset(DRAWN_ILLUSTRATION_PERMS)
+
+# アプリに収録する問 ＝ 配布PDFの実物イラスト ＋ 新しく生成した絵
+PUBLISHED_QUESTIONS = PDF_ILLUSTRATION_QUESTIONS | DRAWN_ILLUSTRATION_QUESTIONS
+
 # Panel 記述の切り出し。「Panel 1: … Panel 2: …」を4つに分ける。
 RE_PANEL = re.compile(r'Panel\s*([1-4])\s*:\s*(.*?)(?=\s*Panel\s*[1-4]\s*:|$)', re.S)
 
@@ -269,7 +313,7 @@ def is_grid(q: dict) -> bool:
 
 def is_locked(set_no: int, q_no: int) -> bool:
     """配布 PDF の実物イラストを使う問（＝並べ替え禁止）かどうか。"""
-    return (set_no, q_no) in PDF_ILLUSTRATION_QUESTIONS
+    return (set_no, q_no) in PDF_ILLUSTRATION_QUESTIONS or (set_no, q_no) in DRAWN_ILLUSTRATION_QUESTIONS
 
 
 def split_prompt(prompt: str) -> tuple[str, list[str]] | None:
@@ -397,6 +441,10 @@ def shuffle(sets: list[dict]) -> list[dict]:
         non_identity = [p for p in candidates if p != (0, 1, 2, 3)]
         chosen = rng.choice(non_identity or candidates)
         index[key].update(apply_perm(q, chosen))
+
+    # プログラム描画の問は、決めた並びに固定する（絵はこの並びで描く）
+    for key, perm in DRAWN_ILLUSTRATION_PERMS.items():
+        index[key].update(apply_perm(index[key], perm))
 
     return out
 

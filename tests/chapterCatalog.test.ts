@@ -197,7 +197,7 @@ describe('章カタログ（到達率の分母）', () => {
         },
         "math": {
           "chapters": 103,
-          "problems": 463,
+          "problems": 514,
         },
       }
     `);

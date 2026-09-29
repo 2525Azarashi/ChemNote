@@ -14,6 +14,7 @@
 import { useEffect, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Check, Coins, Flag, Lock, Sparkles } from 'lucide-react';
+import { TobiraAccessories } from './TobiraAccessories';
 import {
   badgeById,
   badgeProgress,
@@ -21,6 +22,7 @@ import {
   equippedFrameColor,
   equippedFramePattern,
   equippedPoseSrc,
+  equippedAccessory,
   equippedTitleLabel,
   levelOf,
   missionById,
@@ -71,12 +73,15 @@ export function GrowthAvatar({
           boxShadow: `inset 0 -6px 12px -8px ${frame}AA`,
         }}
       >
-        <img
-          src={equippedPoseSrc(progress)}
-          alt="とびら君"
-          draggable={false}
-          className="max-h-[94%] max-w-[94%] object-contain drop-shadow select-none"
-        />
+        <span className="tobira-with-parts relative flex w-[94%] items-end justify-center" style={{ height: equippedAccessory(progress, 'hat') ? '80%' : '94%' }}>
+          <img
+            src={equippedPoseSrc(progress)}
+            alt="とびら君"
+            draggable={false}
+            className="h-full w-full object-contain object-bottom drop-shadow select-none"
+          />
+          <TobiraAccessories progress={progress} align="bottom" />
+        </span>
       </div>
       {showLevel && (
         <span

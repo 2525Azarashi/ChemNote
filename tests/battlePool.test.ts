@@ -53,6 +53,7 @@
  * したがって「選択肢は必ず4つ」という検査は choice には当てはまらない。
  */
 import { beforeAll, describe, it, expect } from 'vitest';
+import { existsSync } from 'node:fs';
 import type { BattleQuestion } from '../src/battle/core/types';
 import {
   POOL_COUNTS,
@@ -271,9 +272,28 @@ describe('出題プール — 形式ごとの決まり', () => {
       const bad = list
         .filter((q) => q.format === 'choice' || q.format === 'choice4')
         .filter((q) => q.options.every((o) => symbolOnly.test(String(o).trim())))
+        // ★例外：リスニングの「絵を選ぶ」問題（第1問B・第2問）★
+        //   選択肢は絵そのもので、①〜④ はその絵の番号。絵（imageUrl）が付いていて
+        //   実在するときだけ許す（絵が無いのに ①〜④ だけ、はこれまでどおり不可）。
+        .filter((q) => !(subject === 'english_listening' && q.imageUrl
+          && /^\/listening_q(1b|2)\//.test(q.imageUrl) && existsSync(`public${q.imageUrl}`)))
         .map((q) => `${idOf(q)} [${q.options.join(' / ')}]`);
       expect(bad).toEqual([]);
     }
+  });
+
+  it('★リスニングの「絵を選ぶ」問題は、絵・音源つきで第1問B・第2問が対戦に入っている★', async () => {
+    const list = await poolOf('english_listening');
+    const picture = list.filter((q) => q.imageUrl && /^\/listening_q(1b|2)\//.test(q.imageUrl));
+    expect(picture.filter((q) => q.chapterId === 'el1_B').length).toBeGreaterThanOrEqual(50);
+    expect(picture.filter((q) => q.chapterId === 'el2').length).toBeGreaterThanOrEqual(30);
+    for (const q of picture) {
+      expect(existsSync(`public${q.imageUrl}`)).toBe(true);
+      expect(q.options).toEqual(['①', '②', '③', '④']);
+      expect(q.prompt).toContain('絵を選びなさい');
+    }
+    // 第4問〜第6問は音声が長く、対戦の締切（60秒未満）に収まらないので入れない
+    expect(list.some((q) => /^el[456]/.test(q.chapterId))).toBe(false);
   });
 
   it('★panel は panelOrder が空でなく、すべて options の範囲内★', async () => {

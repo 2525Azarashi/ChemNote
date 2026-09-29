@@ -83,7 +83,7 @@ import {
   where,
   type Timestamp,
   type Unsubscribe,
-} from 'firebase/firestore';
+} from '../../utils/firestoreMetered';
 
 import { auth, db } from '../../firebase';
 import { resolveNickname } from '../../utils/leaderboard';
@@ -107,7 +107,9 @@ import {
   serverNow,
   toMillis,
 } from '../core/serverClock';
+import { isTransientError, retryDelayMs, smoothRtt } from '../core/connection';
 import { loadPool, poolIdsOf } from './battlePool';
+import { blockedUidSet } from '../../features/safety/userSafety';
 
 // ============================================================
 // コレクション名（1箇所にまとめる）
@@ -303,19 +305,79 @@ export interface CreatedRoom {
  * フレンド登録済みかどうかも問わないので、
  * 「クラスの子と今すぐ1戦」ができる。
  */
+/**
+ * ★同じ相手との再戦・部屋での設定変更に使う「次の部屋の合言葉」★
+ *
+ * 前の部屋IDから決まった手順で4文字を作る。2人とも前の部屋IDを知っているので、
+ * 相手は合言葉を打たずに battle_codes/{合言葉} を get するだけで次の部屋を見つけられる。
+ * ★Firestore のルールは変えていない★（合言葉の作成・get は従来どおりの権限で足りる）。
+ * 衝突したときのために attempt 0〜(SUCCESSOR_ATTEMPTS-1) を順に使う。
+ */
+export const SUCCESSOR_ATTEMPTS = 4;
+export function successorCode(prevRoomId: string, attempt: number): string {
+  let h = 0x811c9dc5;
+  const src = `${prevRoomId}#next#${attempt}`;
+  for (let i = 0; i < src.length; i += 1) { h ^= src.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  let out = '';
+  for (let i = 0; i < CODE_LENGTH; i += 1) {
+    out += CODE_ALPHABET[h % CODE_ALPHABET.length];
+    h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) >>> 0;
+  }
+  return out;
+}
+
+/**
+ * 前の部屋の続きの部屋（同じ部屋主が作った waiting の部屋）を探す。見つからなければ null。
+ * 探すのは get だけ（list 検索はしない）ので、読み取りは最大 SUCCESSOR_ATTEMPTS 件。
+ */
+export async function findSuccessorRoom(prevRoomId: string, hostUid: string): Promise<string | null> {
+  for (let attempt = 0; attempt < SUCCESSOR_ATTEMPTS; attempt += 1) {
+    const snap = await getDoc(doc(db, COL_CODES, successorCode(prevRoomId, attempt)));
+    if (!snap.exists()) continue;
+    if (snap.get('hostUid') !== hostUid) continue;
+    const roomId = String(snap.get('roomId') || '');
+    if (roomId && roomId !== prevRoomId) return roomId;
+  }
+  return null;
+}
+
+/** 前の部屋の続きに入る（見つかるまで intervalMs ごとに探す。signal で中止） */
+export async function followSuccessorRoom(prevRoomId: string, hostUid: string, opts: { timeoutMs?: number; intervalMs?: number; signal?: AbortSignal } = {}): Promise<string | null> {
+  const until = Date.now() + (opts.timeoutMs ?? 30_000);
+  while (Date.now() < until) {
+    opts.signal?.throwIfAborted();
+    try {
+      const next = await findSuccessorRoom(prevRoomId, hostUid);
+      if (next) { await joinRoomById(next); return next; }
+    } catch (e) {
+      if ((e as Error)?.name === 'AbortError') throw e;
+    }
+    await new Promise((r) => setTimeout(r, opts.intervalMs ?? 2500));
+  }
+  return null;
+}
+
 export async function createFriendRoom(
   subject: string,
   ruleOverride?: Partial<BattleRule>,
   chapterId?: string,
+  /** 同じ相手との再戦・設定変更のときの前の部屋ID（合言葉をそこから作る） */
+  successorOf?: string,
+  /** フレンド対戦のモード（friendModes.ts）。リスニングは音源の長さがあるので時間は変えない */
+  modeRules?: Partial<Pick<BattleRule, 'pointsSpeedMax' | 'timeLimitOverride'>>,
 ): Promise<CreatedRoom> {
   const uid = requireUid();
-  const rules = arenaRule(normalizeRule(subject, { ...loadRuleSync(subject), ...ruleOverride }));
+  const arena = arenaRule(normalizeRule(subject, { ...loadRuleSync(subject), ...ruleOverride }));
+  const rules: BattleRule = modeRules
+    ? { ...arena, ...(modeRules.pointsSpeedMax != null ? { pointsSpeedMax: modeRules.pointsSpeedMax } : {}),
+        ...(modeRules.timeLimitOverride != null && subject !== 'english_listening' ? { timeLimitOverride: modeRules.timeLimitOverride } : {}) }
+    : arena;
   const rating = await fetchMyRating();
 
   // 合言葉が既に使われていたら引き直す。
   // 31^4 = 約92万通りなので、同時に開いている部屋が数百でも衝突はまれ。
   for (let attempt = 0; attempt < 6; attempt += 1) {
-    const joinCode = randomCode();
+    const joinCode = successorOf && attempt < SUCCESSOR_ATTEMPTS ? successorCode(successorOf, attempt) : randomCode();
     const roomRef = doc(collection(db, COL_ROOMS));
     const codeRef = doc(db, COL_CODES, joinCode);
 
@@ -382,17 +444,25 @@ export async function joinRoomByCode(rawCode: string): Promise<string> {
     throw new Error(`合言葉は${CODE_LENGTH}文字です。`);
   }
 
-  const codeSnap = await getDoc(doc(db, COL_CODES, joinCode));
+  const codeSnap = await withRetry(() => getDoc(doc(db, COL_CODES, joinCode)), 8_000).catch((error) => {
+    throw friendlyError(error, '合言葉を確かめられませんでした。');
+  });
   if (!codeSnap.exists()) {
     throw new Error('その合言葉の部屋は見つかりませんでした。');
   }
   const roomId = String(codeSnap.get('roomId') || '');
   if (!roomId) throw new Error('その合言葉の部屋は見つかりませんでした。');
+  return joinRoomById(roomId);
+}
 
+/** 部屋IDで入室する（合言葉の入力なし。再戦・設定変更の追従で使う） */
+export async function joinRoomById(roomId: string): Promise<string> {
+  const uid = requireUid();
   const rating = await fetchMyRating();
 
   try {
-    await runTransaction(db, async (tx) => {
+    // ★入室は何度やり直しても同じ結果になる（入っていればそのまま通す）ので、一時的な失敗は再送する★
+    await withRetry(() => runTransaction(db, async (tx) => {
       const roomRef = doc(db, COL_ROOMS, roomId);
       const snap = await tx.get(roomRef);
       if (!snap.exists()) throw new Error('ROOM_GONE');
@@ -417,7 +487,7 @@ export async function joinRoomByCode(rawCode: string): Promise<string> {
         answers: { ...answers, [uid]: {} },
         updatedAt: serverTimestamp(),
       });
-    });
+    }), 12_000);
   } catch (error) {
     const message = (error as Error).message;
     if (message === 'ROOM_GONE') throw new Error('その部屋はもう存在しません。');
@@ -575,7 +645,9 @@ export async function findOrEnqueue(
     void leaveQueue(sessionId, uid);
     throw friendlyError(error, 'マッチングに失敗しました。');
   }
-  const candidate = waitingDocs.find((d) => d.id !== uid);
+  // ブロックした相手とは組まない（App Store 1.2。端末のブロック一覧で判定）
+  const blocked = blockedUidSet();
+  const candidate = waitingDocs.find((d) => d.id !== uid && !blocked.has(d.id));
   if (!candidate) {
     // 誰もいない。票を置いたまま、拾われるのを待つ（watchMatched）
     return { roomId: null };
@@ -748,7 +820,8 @@ export function watchMatched(
 export async function startBattle(roomId: string, firstTimeLimitSec: number): Promise<void> {
   requireUid();
   try {
-    await timedWrite(() =>
+    // 開始は再送してよい（2回目以降の permission-denied は「最初の送信で既に始まっている」）
+    await resilientWrite(() =>
       updateDoc(doc(db, COL_ROOMS, roomId), {
         status: 'playing',
         currentIndex: 0,
@@ -756,6 +829,7 @@ export async function startBattle(roomId: string, firstTimeLimitSec: number): Pr
         startedAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       }),
+      { budgetMs: 15_000, acceptDeniedAfterRetry: true, attemptTimeoutMs: 6_000 },
     );
   } catch (error) {
     throw friendlyError(error, '対戦を開始できませんでした。');
@@ -810,12 +884,94 @@ function deadlineFromNow(seconds: number): Date {
  *
  * ここでは送信の前後を測る部分だけを受け持つ。
  */
+/**
+ * ★書き込みの待ち時間の上限★
+ * Firestore の書き込みは圏外だと「送信待ち」のまま Promise が返ってこない。
+ * 以前は「はじめる」を押しても何も起きず、ずっと待っているように見えた
+ * （フレンド対戦でカウントダウンが始まらない不具合の原因の1つ）。
+ * 上限を過ぎたら 'deadline-exceeded' として投げ、画面に再試行を出す。
+ */
+export const WRITE_TIMEOUT_MS = 12_000;
+function withWriteTimeout<T>(promise: Promise<T>, ms = WRITE_TIMEOUT_MS): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(Object.assign(new Error('timeout'), { code: 'deadline-exceeded' })), ms);
+    promise.then((v) => { clearTimeout(timer); resolve(v); }, (e) => { clearTimeout(timer); reject(e); });
+  });
+}
+
 async function timedWrite(run: () => Promise<void>): Promise<void> {
   const sentAt = Date.now();
-  await run();
+  await withWriteTimeout(run());
   // 応答が返った時刻を覚えておく。サーバが刻んだ時刻そのものは
   // 購読側（watchRoom）で受け取るので、そこで突き合わせる。
-  lastWrite = { sentAt, ackAt: Date.now() };
+  const ackAt = Date.now();
+  lastWrite = { sentAt, ackAt };
+  reportRtt(ackAt - sentAt);
+}
+
+/**
+ * ★通信が一瞬切れても諦めない書き込み★
+ *
+ * 市販の対戦ゲームは、電波が1〜2秒途切れても操作が消えない。
+ * 以前は1回失敗するとそのまま「送信できませんでした」になり、
+ * 開始・解答・進行・結果の申告が失われて試合が止まることがあった。
+ *
+ *   ・やり直して通る見込みがある失敗（unavailable / deadline-exceeded など）だけ再送する
+ *   ・0.4秒→0.8秒→1.6秒…と間隔を伸ばす（揺らぎつき）
+ *   ・全体の締切（budgetMs）を過ぎたら諦める（締切後の解答はどうせ拒否される）
+ *   ・再送のあとの permission-denied は「最初の送信が実は届いていた」ことが多い。
+ *     acceptDeniedAfterRetry のときは成功として扱う（解答の二重送信はルールが止める）
+ */
+async function resilientWrite(
+  run: () => Promise<void>,
+  opts: { budgetMs?: number; acceptDeniedAfterRetry?: boolean; attemptTimeoutMs?: number } = {},
+): Promise<void> {
+  const started = Date.now();
+  const budget = opts.budgetMs ?? 20_000;
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      const sentAt = Date.now();
+      await withWriteTimeout(run(), Math.max(1_000, Math.min(opts.attemptTimeoutMs ?? WRITE_TIMEOUT_MS, budget - (sentAt - started))));
+      const ackAt = Date.now();
+      lastWrite = { sentAt, ackAt };
+      reportRtt(ackAt - sentAt);
+      return;
+    } catch (error) {
+      const code = (error as { code?: string })?.code;
+      if (attempt > 0 && code === 'permission-denied' && opts.acceptDeniedAfterRetry) return;
+      const wait = retryDelayMs(attempt);
+      if (!isTransientError(error) || Date.now() - started + wait >= budget) throw error;
+      await new Promise((r) => setTimeout(r, wait));
+    }
+  }
+}
+
+/** 読み取り・やり直しても同じ結果になる処理を、一時的な失敗のときだけ再試行する */
+async function withRetry<T>(run: () => Promise<T>, budgetMs: number): Promise<T> {
+  const started = Date.now();
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await withWriteTimeout(run(), Math.max(1_500, Math.min(WRITE_TIMEOUT_MS, budgetMs - (Date.now() - started))));
+    } catch (error) {
+      const wait = retryDelayMs(attempt);
+      if (!isTransientError(error) || Date.now() - started + wait >= budgetMs) throw error;
+      await new Promise((r) => setTimeout(r, wait));
+    }
+  }
+}
+
+// ---- 往復時間（アンテナ表示用）----
+let rttMs: number | null = null;
+const rttListeners = new Set<(ms: number) => void>();
+function reportRtt(sample: number) {
+  rttMs = smoothRtt(rttMs, sample);
+  for (const fn of rttListeners) { try { fn(rttMs); } catch { /* isolate */ } }
+}
+/** 直近の往復時間（ms、なめらか済み）。まだ測れていなければ null */
+export function currentRttMs(): number | null { return rttMs; }
+export function subscribeRtt(fn: (ms: number) => void): () => void {
+  rttListeners.add(fn);
+  return () => { rttListeners.delete(fn); };
 }
 
 /**
@@ -836,6 +992,7 @@ export async function submitAnswer(
   index: number,
   payload: { choice: number; panel: number[] },
   answered: boolean,
+  opts?: { budgetMs?: number },
 ): Promise<void> {
   const uid = requireUid();
 
@@ -857,7 +1014,10 @@ export async function submitAnswer(
     // ここを配列（`answers.{uid}` に配列を丸ごと入れる）でやっていたときは、
     //   serverTimestamp() is not currently supported inside arrays
     // で必ず例外になり、★1問も回答できなかった★。
-    await timedWrite(() =>
+    // ★解答は締切まで再送する★（一瞬の圏外で解答が消えないように）。
+    //   締切を過ぎたらルールが拒否するので、それ以上は送らない。
+    //   再送後の permission-denied は「最初の送信が届いていた」（二重解答の拒否）とみなす。
+    await resilientWrite(() =>
       updateDoc(doc(db, COL_ROOMS, roomId), {
         [`answers.${uid}.${answerKeyOf(index)}`]: {
           index,
@@ -870,6 +1030,7 @@ export async function submitAnswer(
         },
         updatedAt: serverTimestamp(),
       }),
+      { budgetMs: Math.max(1_500, opts?.budgetMs ?? 8_000), acceptDeniedAfterRetry: true, attemptTimeoutMs: 4_000 },
     );
   } catch (error) {
     throw friendlyError(error, '解答を送信できませんでした。');
@@ -893,12 +1054,13 @@ export async function advanceQuestion(
 ): Promise<void> {
   requireUid();
   try {
-    await timedWrite(() =>
+    await resilientWrite(() =>
       updateDoc(doc(db, COL_ROOMS, roomId), {
         currentIndex: nextIndex,
         deadlineAt: deadlineFromNow(nextTimeLimitSec),
         updatedAt: serverTimestamp(),
       }),
+      { budgetMs: 10_000, acceptDeniedAfterRetry: true, attemptTimeoutMs: 5_000 },
     );
   } catch (error) {
     // 相手が先に進めていた場合の競合は無視してよい（同じ状態になる）
@@ -921,7 +1083,7 @@ export async function attestResult(
 ): Promise<void> {
   const uid = requireUid();
   try {
-    await timedWrite(() =>
+    await resilientWrite(() =>
       updateDoc(doc(db, COL_ROOMS, roomId), {
         [`attest.${uid}`]: {
           myScore: attestation.myScore,
@@ -932,6 +1094,7 @@ export async function attestResult(
         status: 'finished',
         updatedAt: serverTimestamp(),
       }),
+      { budgetMs: 30_000, acceptDeniedAfterRetry: true },
     );
   } catch (error) {
     throw friendlyError(error, '結果を送信できませんでした。');

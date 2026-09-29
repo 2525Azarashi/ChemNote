@@ -47,6 +47,10 @@ import { GoogleLinkBanner } from './GoogleLinkBanner';
 import { RankingPodium } from './RankingPodium';
 import { qualifyLineFor } from '../utils/liveRank';
 import { displayNicknameForNational } from '../utils/nicknamePrivacy';
+import { UserSafetyMenu } from '../features/safety/UserSafetyMenu';
+import { useWithoutBlocked } from '../features/safety/useBlockedFilter';
+import { safeAvatarUrl } from '../features/safety/avatarUrl';
+import { displaySafeNickname } from '../features/safety/nicknameFilter';
 
 interface LeaderboardProps {
   onBack: () => void;
@@ -205,6 +209,8 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle, initi
   }, [tab, scope, period, chapterId]);
 
   // 自分が圏外かどうか判定
+  // ブロックした人は自分の画面に出さない（App Store 1.2）。順位の数字は元のまま。
+  const visibleRows = useWithoutBlocked<(typeof rows)[number]>(rows);
   const myRow = rows.find((r) => r.isMe);
   const me = auth.currentUser;
 
@@ -398,7 +404,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle, initi
         {rows.length > 0 && (
           <div className="ranking-podium-wrap relative z-10 mb-4">
             <RankingPodium
-              entries={rows.slice(0, 3).map((r) => ({
+              entries={visibleRows.slice(0, 3).map((r) => ({
                 rank: r.rank,
                 nickname: r.nickname,
                 photoURL: r.photoURL,
@@ -497,7 +503,7 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle, initi
             </div>
           ) : (
             <ul className="divide-y divide-gray-100">
-              {rows.map((r) => (
+              {visibleRows.map((r) => (
                 <React.Fragment key={`${r.uid}-${r.rank}`}>
                 {/* 進出ラインの区切り。
                     ここに線が1本あるだけで「あと1つ上がれば圏内」という当落線が生まれ、
@@ -518,19 +524,20 @@ export function Leaderboard({ onBack, isGuest, initialChapterId, onBattle, initi
                 >
                   <RankBadge rank={r.rank} />
                   <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shrink-0">
-                    {r.photoURL ? (
-                      <img src={r.photoURL} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    {safeAvatarUrl(r.photoURL) ? (
+                      <img src={safeAvatarUrl(r.photoURL)} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
                       <User size={16} className="text-gray-400" />
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className={`text-sm font-bold truncate ${r.isMe ? 'text-[#1B2631]' : 'text-[#1B2631]'}`}>
-                      {r.nickname}
+                      {r.isMe ? r.nickname : displaySafeNickname(r.nickname)}
                       {r.isMe && <span className="ml-2 text-[10px] text-[#D4A017] font-bold">YOU</span>}
                     </p>
                     {r.sub && <p className="text-[11px] text-gray-400 truncate">{r.sub}</p>}
                   </div>
+                  {!r.isMe && r.uid && <UserSafetyMenu target={{ uid: r.uid, nickname: r.nickname, where: 'ranking' }} />}
                   <p className="text-base font-bold tabular-nums font-handwriting text-[#1B2631] shrink-0">
                     {r.score}
                     <span className="text-[10px] text-gray-400 ml-1">pt</span>

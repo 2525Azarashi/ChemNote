@@ -113,7 +113,8 @@ describe('数学4単元の実データ', () => {
     };
     for (const m of mods) for (const k of Object.keys(m)) walk((m as Record<string, unknown>)[k]);
     // 数I・A 786 → 840（2026-09-24 マナトビ基本演習 Step 66〜86・三角比 21大問 54小問を追加）
-    expect(count).toBe(171 + 256 + 840);
+    // 数I・A 840 → 980（2026-09-24 マナトビ基本演習 Step 87〜137・場合の数と確率／データの分析 51大問 140小問を追加）
+    expect(count).toBe(171 + 256 + 980);
   });
 
   it('全短答式サブ設問に id / label / correctAnswer が入っている', async () => {

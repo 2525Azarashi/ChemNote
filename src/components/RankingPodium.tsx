@@ -24,6 +24,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Crown, User } from 'lucide-react';
+import { safeAvatarUrl } from '../features/safety/avatarUrl';
+import { displaySafeNickname } from '../features/safety/nicknameFilter';
 
 export interface PodiumEntry {
   rank: number;
@@ -105,9 +107,9 @@ export function RankingPodium({ entries, className = '' }: RankingPodiumProps) {
                     rank === 1 ? 'h-12 w-12 md:h-14 md:w-14' : 'h-9 w-9 md:h-11 md:w-11'
                   } ${entry ? '' : 'opacity-40'}`}
                 >
-                  {entry?.photoURL ? (
+                  {safeAvatarUrl(entry?.photoURL) ? (
                     <img
-                      src={entry.photoURL}
+                      src={safeAvatarUrl(entry?.photoURL)}
                       alt=""
                       className="h-full w-full object-cover"
                       referrerPolicy="no-referrer"
@@ -122,7 +124,7 @@ export function RankingPodium({ entries, className = '' }: RankingPodiumProps) {
                     rank === 1 ? 'text-xs md:text-sm' : 'text-[10px] md:text-xs'
                   }`}
                 >
-                  {entry ? entry.nickname : '空席'}
+                  {entry ? displaySafeNickname(entry.nickname) : '空席'}
                 </p>
                 {entry?.isMe && (
                   <span className="mt-0.5 rounded bg-white px-1.5 text-[9px] font-bold text-[#D4A017]">

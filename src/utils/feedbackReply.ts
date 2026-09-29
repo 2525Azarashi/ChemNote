@@ -35,7 +35,7 @@ import {
   serverTimestamp,
   updateDoc,
   where,
-} from 'firebase/firestore';
+} from './firestoreMetered';
 import type { User } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { FEEDBACK_COLLECTION, FEEDBACK_CATEGORY_LABELS, FEEDBACK_SCREEN_LABELS } from './feedback';

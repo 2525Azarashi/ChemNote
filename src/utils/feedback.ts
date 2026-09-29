@@ -29,7 +29,7 @@
  * 自動で再送する（flushFeedbackQueue）。
  */
 
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from './firestoreMetered';
 import { auth, db } from '../firebase';
 import { safeLocalStorage } from './safeLocalStorage';
 // タイムアウト付き fetch と 15秒のタイムアウト値は、ユーザー記録

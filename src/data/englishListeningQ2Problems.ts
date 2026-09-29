@@ -52,7 +52,7 @@
  *   この型は原文の並びのまま固定し、並べ替え可能な2×2型で全体を均している。
  *
  * 正解位置の実測（このファイルに収録した分だけを数えた値）
- *   ①9問 / ②18問 / ③9問 / ④2問（計 38問）。最頻位置だけ塗った場合の正答率 47%。
+ *   ①11問 / ②20問 / ③11問 / ④6問（計 48問）。最頻位置だけ塗った場合の正答率 42%。
  *   実物イラストの問は並べ替えられないため、この偏りは
  *   PDF 原文の偏りがそのまま出たもの。自前生成の絵に
  *   置き換えた問から順に均していく。
@@ -313,6 +313,21 @@ const EL2_SET2_TRACKS: ListeningAudioTrack[] = [
     keyPhrases: [],
   },
   {
+    subId: 'q_el2_set2_2',
+    label: '問2',
+    hint: 'レストランで店員が客にテーブルを案内している。（話者：女性（店員） / 男性（客））',
+    audioUrl: '/listening_audio/el2_set2_q2.mp3',
+    script: 'W: We have a table by the window for two or a booth at the back for four.\nM: We\'re a group of three actually.\nW: Then how about this round table in the center?\nM: Great, we\'ll take it.',
+    turns: [
+      { who: 'W', text: 'We have a table by the window for two or a booth at the back for four.' },
+      { who: 'M', text: 'We\'re a group of three actually.' },
+      { who: 'W', text: 'Then how about this round table in the center?' },
+      { who: 'M', text: 'Great, we\'ll take it.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set2_3',
     label: '問3',
     hint: '男女がクラス写真の中で友人を探している。（話者：男性 / 女性）',
@@ -334,7 +349,7 @@ const EL2_SET2: ListeningProblem = {
   category: '第2回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET2_TRACKS,
-  text: `第2回　第2問（2問・2回読み）　【難易度：標準】
+  text: `第2回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -351,12 +366,16 @@ Question: Which item will they buy?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
 ────────────────────
+問2（話者：女性（店員） / 男性（客））
+場面：レストランで店員が客にテーブルを案内している。
+Question: Which table will the man's group take?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問3（話者：男性 / 女性）
 場面：男女がクラス写真の中で友人を探している。
 Question: Which boy is the woman's brother?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
-
-※ 問2 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）`,
   subQuestions: [
     {
       id: 'q_el2_set2_1',
@@ -380,12 +399,33 @@ Question: Which boy is the woman's brother?
       },
     },
     {
+      id: 'q_el2_set2_2',
+      label: '問2 Which table will the man\'s group take?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '③',
+      correctAnswerRate: 65,
+      imageUrl: '/listening_q2/el2_set2_q2.jpg',
+      imageCaption: '問2 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '人数（three）が2でも4でもないため、中央の丸テーブルが正解',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
       id: 'q_el2_set2_3',
       label: '問3 Which boy is the woman\'s brother?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '②',
-      correctAnswerRate: 65,
+      correctAnswerRate: 62,
       imageUrl: '/listening_q2/el2_set2_q3.jpg',
       imageCaption: '問3 の図（①〜④の位置）',
       detailedExplanation: {
@@ -418,6 +458,21 @@ Question: Which item will they buy?
 正解の選択肢：② 犬柄のマグ(箱入り)
 cats→dogs への訂正＋gift box の確認。柄と包装の2軸で選ぶ。2023年問9型（否定→訂正）。
 
+問2　正解は ③
+場面：レストランで店員が客にテーブルを案内している。（話者：女性（店員） / 男性（客））
+スクリプト：W: We have a table by the window for two or a booth at the back for four.
+M: We're a group of three actually.
+W: Then how about this round table in the center?
+M: Great, we'll take it.
+Question: Which table will the man's group take?
+選択肢のイラスト：
+① 窓際の2人席
+② 奥のボックス席(4人)
+③ 中央の丸テーブル
+④ カウンター席
+正解の選択肢：③ 中央の丸テーブル
+人数（three）が2でも4でもないため、中央の丸テーブルが正解。人数条件で候補を絞る。2024年問1 1型。
+
 問3　正解は ②
 場面：男女がクラス写真の中で友人を探している。（話者：男性 / 女性）
 スクリプト：M: Which one is your brother?
@@ -449,6 +504,21 @@ Question: Which boy is the woman's brother?
 
 const EL2_SET3_TRACKS: ListeningAudioTrack[] = [
   {
+    subId: 'q_el2_set3_1',
+    label: '問1',
+    hint: '男女が来週の予定表を見ながら話している。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set3_q1.mp3',
+    script: 'W: Are you free on Tuesday afternoon?\nM: No, I have tennis practice then. Wednesday morning is open.\nW: I have a class then. What about Thursday?\nM: Thursday afternoon works.',
+    turns: [
+      { who: 'W', text: 'Are you free on Tuesday afternoon?' },
+      { who: 'M', text: 'No, I have tennis practice then. Wednesday morning is open.' },
+      { who: 'W', text: 'I have a class then. What about Thursday?' },
+      { who: 'M', text: 'Thursday afternoon works.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set3_2',
     label: '問2',
     hint: '男女がホテルの部屋を選んでいる。（話者：男性 / 女性）',
@@ -463,6 +533,21 @@ const EL2_SET3_TRACKS: ListeningAudioTrack[] = [
     translation: '',
     keyPhrases: [],
   },
+  {
+    subId: 'q_el2_set3_3',
+    label: '問3',
+    hint: '男女がベーカリーでパンを選んでいる。（話者：女性（客） / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set3_q3.mp3',
+    script: 'W: I\'d like the round bread with sesame seeds on top.\nM: The one with poppy seeds? Or the one with sesame?\nW: Sesame, please. And the smaller one.\nM: OK, here you go.',
+    turns: [
+      { who: 'W', text: 'I\'d like the round bread with sesame seeds on top.' },
+      { who: 'M', text: 'The one with poppy seeds? Or the one with sesame?' },
+      { who: 'W', text: 'Sesame, please. And the smaller one.' },
+      { who: 'M', text: 'OK, here you go.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
 ];
 
 const EL2_SET3: ListeningProblem = {
@@ -470,7 +555,7 @@ const EL2_SET3: ListeningProblem = {
   category: '第3回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET3_TRACKS,
-  text: `第3回　第2問（1問・2回読み）　【難易度：標準】
+  text: `第3回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -481,20 +566,51 @@ const EL2_SET3: ListeningProblem = {
 音声が流れる前に「場面」を読み、4枚の絵を見比べて「どこが違うか」を1語で言えるようにしておきます（色・数・位置・あり／なし）。違いが分かっていれば、聞き取るべき1語が決まります。第2問は「No, actually …」「the other one」のような訂正が最頻出なので、最初に聞こえた候補で決めないことが大切です。
 
 ────────────────────
+問1（話者：女性 / 男性）
+場面：男女が来週の予定表を見ながら話している。
+Question: When will they meet?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問2（話者：男性 / 女性）
 場面：男女がホテルの部屋を選んでいる。
 Question: Which room will they choose?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
 
-※ 問1・問3 はイラストの準備中のため、この回では出題していません。`,
+────────────────────
+問3（話者：女性（客） / 男性（店員））
+場面：男女がベーカリーでパンを選んでいる。
+Question: Which bread did the woman buy?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）`,
   subQuestions: [
+    {
+      id: 'q_el2_set3_1',
+      label: '問1 When will they meet?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '④',
+      correctAnswerRate: 68,
+      imageUrl: '/listening_q2/el2_set3_q1.jpg',
+      imageCaption: '問1 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '3つの候補が否定され、最後の Thursday afternoon works で確定',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
     {
       id: 'q_el2_set3_2',
       label: '問2 Which room will they choose?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '②',
-      correctAnswerRate: 68,
+      correctAnswerRate: 65,
       imageUrl: '/listening_q2/el2_set3_q2.jpg',
       imageCaption: '問2 の図（①〜④の位置）',
       detailedExplanation: {
@@ -509,8 +625,44 @@ Question: Which room will they choose?
         ],
       },
     },
+    {
+      id: 'q_el2_set3_3',
+      label: '問3 Which bread did the woman buy?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '①',
+      correctAnswerRate: 62,
+      imageUrl: '/listening_q2/el2_set3_q3.jpg',
+      imageCaption: '問3 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '種類（sesame）とサイズ（smaller）の2条件',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
   ],
   explanation: `第3回（難易度：標準）の解説です。対話スクリプトと正解、そして PDF の解説をそのまま収録しています。各選択肢がどんな絵だったかも併せて載せているので、「どこを聞き分ければよかったか」を絵と対応させて確認できます。
+
+問1　正解は ④
+場面：男女が来週の予定表を見ながら話している。（話者：女性 / 男性）
+スクリプト：W: Are you free on Tuesday afternoon?
+M: No, I have tennis practice then. Wednesday morning is open.
+W: I have a class then. What about Thursday?
+M: Thursday afternoon works.
+Question: When will they meet?
+選択肢のイラスト：
+① 火曜午後
+② 水曜午前
+③ 木曜午前
+④ 木曜午後
+正解の選択肢：④ 木曜午後
+3つの候補が否定され、最後の Thursday afternoon works で確定。第2問の典型的な消去法。
 
 問2　正解は ②
 場面：男女がホテルの部屋を選んでいる。（話者：男性 / 女性）
@@ -525,7 +677,22 @@ Question: Which room will they choose?
 ③ 街が見える部屋
 ④ 中庭が見える部屋
 正解の選択肢：② 山が見える部屋
-sea view→But it's twice the price→mountain view の値段による決定。2025年問11の cheaper 型。`,
+sea view→But it's twice the price→mountain view の値段による決定。2025年問11の cheaper 型。
+
+問3　正解は ①
+場面：男女がベーカリーでパンを選んでいる。（話者：女性（客） / 男性（店員））
+スクリプト：W: I'd like the round bread with sesame seeds on top.
+M: The one with poppy seeds? Or the one with sesame?
+W: Sesame, please. And the smaller one.
+M: OK, here you go.
+Question: Which bread did the woman buy?
+選択肢のイラスト：
+① ゴマ付きの小さな丸パン
+② ポピーシード付きの大きな丸パン
+③ ポピーシード付きの小さな丸パン
+④ ゴマ付きの大きな丸パン
+正解の選択肢：① ゴマ付きの小さな丸パン
+種類（sesame）とサイズ（smaller）の2条件。poppy と sesame の音の聞き分けが鍵。`,
   surroundingKnowledge: [
     '第2問は2回読み。1回目で候補を2つに絞り、2回目で決め手を確認する二段構えが基本。',
     '「訂正の型」が最頻出。No, actually … / the other one / not A but B の後ろが答えになる。',
@@ -749,6 +916,21 @@ Question: Which route will they take?
 
 const EL2_SET5_TRACKS: ListeningAudioTrack[] = [
   {
+    subId: 'q_el2_set5_1',
+    label: '問1',
+    hint: '男女が本屋で本を探している。（話者：女性（客） / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set5_q1.mp3',
+    script: 'W: I\'m looking for a cookbook, especially Italian food.\nM: We have Italian, French, and Japanese cookbooks. All 20% off this week.\nW: Great. Is there one for beginners?\nM: Yes, this one has step-by-step photos.',
+    turns: [
+      { who: 'W', text: 'I\'m looking for a cookbook, especially Italian food.' },
+      { who: 'M', text: 'We have Italian, French, and Japanese cookbooks. All 20% off this week.' },
+      { who: 'W', text: 'Great. Is there one for beginners?' },
+      { who: 'M', text: 'Yes, this one has step-by-step photos.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set5_2',
     label: '問2',
     hint: '父と娘が娘の自転車のパンクについて話している。（話者：父親 / 娘（中学生））',
@@ -785,7 +967,7 @@ const EL2_SET5: ListeningProblem = {
   category: '第5回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET5_TRACKS,
-  text: `第5回　第2問（2問・2回読み）　【難易度：標準】
+  text: `第5回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -794,6 +976,12 @@ const EL2_SET5: ListeningProblem = {
 
 【解き方のコツ】
 音声が流れる前に「場面」を読み、4枚の絵を見比べて「どこが違うか」を1語で言えるようにしておきます（色・数・位置・あり／なし）。違いが分かっていれば、聞き取るべき1語が決まります。第2問は「No, actually …」「the other one」のような訂正が最頻出なので、最初に聞こえた候補で決めないことが大切です。
+
+────────────────────
+問1（話者：女性（客） / 男性（店員））
+場面：男女が本屋で本を探している。
+Question: Which cookbook will the woman probably buy?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
 
 ────────────────────
 問2（話者：父親 / 娘（中学生））
@@ -805,17 +993,36 @@ Question: What is the condition of the bicycle?
 問3（話者：女性 / 男性）
 場面：女性が写真の中の子供を紹介している。
 Question: Which boy is the woman's nephew?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
-
-※ 問1 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
+    {
+      id: 'q_el2_set5_1',
+      label: '問1 Which cookbook will the woman probably buy?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '①',
+      correctAnswerRate: 68,
+      imageUrl: '/listening_q2/el2_set5_q1.jpg',
+      imageCaption: '問1 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '料理の種類（Italian）＋レベル（for beginners）の2条件',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
     {
       id: 'q_el2_set5_2',
       label: '問2 What is the condition of the bicycle?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '②',
-      correctAnswerRate: 68,
+      correctAnswerRate: 65,
       imageUrl: '/listening_q2/el2_set5_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -836,7 +1043,7 @@ Question: Which boy is the woman's nephew?
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '③',
-      correctAnswerRate: 65,
+      correctAnswerRate: 62,
       imageUrl: '/listening_q2/el2_set5_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -853,6 +1060,21 @@ Question: Which boy is the woman's nephew?
     },
   ],
   explanation: `第5回（難易度：標準）の解説です。対話スクリプトと正解、そして PDF の解説をそのまま収録しています。各選択肢がどんな絵だったかも併せて載せているので、「どこを聞き分ければよかったか」を絵と対応させて確認できます。
+
+問1　正解は ①
+場面：男女が本屋で本を探している。（話者：女性（客） / 男性（店員））
+スクリプト：W: I'm looking for a cookbook, especially Italian food.
+M: We have Italian, French, and Japanese cookbooks. All 20% off this week.
+W: Great. Is there one for beginners?
+M: Yes, this one has step-by-step photos.
+Question: Which cookbook will the woman probably buy?
+選択肢のイラスト：
+① 初心者向けイタリア料理本
+② 上級者向けイタリア料理本
+③ 初心者向けフランス料理本
+④ 初心者向け日本料理本
+正解の選択肢：① 初心者向けイタリア料理本
+料理の種類（Italian）＋レベル（for beginners）の2条件。ダミー情報（20% off、French、Japanese）を排除。
 
 問2　正解は ②
 場面：父と娘が娘の自転車のパンクについて話している。（話者：父親 / 娘（中学生））
@@ -1121,6 +1343,21 @@ const EL2_SET7_TRACKS: ListeningAudioTrack[] = [
     keyPhrases: [],
   },
   {
+    subId: 'q_el2_set7_2',
+    label: '問2',
+    hint: '男女が科学館の展示ゾーンについて話している。（話者：女性 / 男性）',
+    audioUrl: '/listening_audio/el2_set7_q2.mp3',
+    script: 'W: There are four zones: space, ocean, dinosaurs, and robots.\nM: I\'m really into dinosaurs, but let\'s save that for last.\nW: Then let\'s start with the ocean, because I love it.\nM: OK. After that, space, then dinosaurs. We can skip the robots.',
+    turns: [
+      { who: 'W', text: 'There are four zones: space, ocean, dinosaurs, and robots.' },
+      { who: 'M', text: 'I\'m really into dinosaurs, but let\'s save that for last.' },
+      { who: 'W', text: 'Then let\'s start with the ocean, because I love it.' },
+      { who: 'M', text: 'OK. After that, space, then dinosaurs. We can skip the robots.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set7_3',
     label: '問3',
     hint: '男女が飛行機の座席表を見ながら席を選んでいる。（話者：男性 / 女性）',
@@ -1142,7 +1379,7 @@ const EL2_SET7: ListeningProblem = {
   category: '第7回 対話に合うイラストを選ぶ（やや難）',
   readCount: 2,
   audioTracks: EL2_SET7_TRACKS,
-  text: `第7回　第2問（2問・2回読み）　【難易度：やや難】
+  text: `第7回　第2問（3問・2回読み）　【難易度：やや難】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -1159,12 +1396,16 @@ Question: Which model will the woman probably choose?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
 ────────────────────
+問2（話者：女性 / 男性）
+場面：男女が科学館の展示ゾーンについて話している。
+Question: Which order will they follow?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問3（話者：男性 / 女性）
 場面：男女が飛行機の座席表を見ながら席を選んでいる。
 Question: Which seat will the woman choose?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
-
-※ 問2 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
     {
       id: 'q_el2_set7_1',
@@ -1188,12 +1429,33 @@ Question: Which seat will the woman choose?
       },
     },
     {
+      id: 'q_el2_set7_2',
+      label: '問2 Which order will they follow?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '②',
+      correctAnswerRate: 53,
+      imageUrl: '/listening_q2/el2_set7_q2.jpg',
+      imageCaption: '問2 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '順序と除外（skip the robots）を統合',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 4,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
       id: 'q_el2_set7_3',
       label: '問3 Which seat will the woman choose?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '④',
-      correctAnswerRate: 53,
+      correctAnswerRate: 50,
       imageUrl: '/listening_q2/el2_set7_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -1225,6 +1487,21 @@ Question: Which model will the woman probably choose?
 ④ 画面が大きく重いModel D
 正解の選択肢：② カメラが良く重いModel B
 優先順位（Photos are the priority）で重さの欠点を許容。2025年問10型（比較→優先条件で確定）。
+
+問2　正解は ②
+場面：男女が科学館の展示ゾーンについて話している。（話者：女性 / 男性）
+スクリプト：W: There are four zones: space, ocean, dinosaurs, and robots.
+M: I'm really into dinosaurs, but let's save that for last.
+W: Then let's start with the ocean, because I love it.
+M: OK. After that, space, then dinosaurs. We can skip the robots.
+Question: Which order will they follow?
+選択肢のイラスト：
+① 宇宙→海→恐竜→ロボット
+② 海→宇宙→恐竜(ロボットなし)
+③ 恐竜→海→宇宙→ロボット
+④ 海→ロボット→宇宙→恐竜
+正解の選択肢：② 海→宇宙→恐竜(ロボットなし)
+順序と除外（skip the robots）を統合。3つ以上の要素を並べる高難度型。
 
 問3　正解は ④
 場面：男女が飛行機の座席表を見ながら席を選んでいる。（話者：男性 / 女性）
@@ -1272,6 +1549,21 @@ const EL2_SET8_TRACKS: ListeningAudioTrack[] = [
     keyPhrases: [],
   },
   {
+    subId: 'q_el2_set8_2',
+    label: '問2',
+    hint: '男女が本のカバーを選んでいる。（話者：女性 / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set8_q2.mp3',
+    script: 'W: I\'d like a book cover, please. Do you have any with flowers?\nM: Yes, we have roses, sunflowers, and lilies.\nW: Sunflowers, please. And do you have one with a bookmark ribbon?\nM: This one has a ribbon.',
+    turns: [
+      { who: 'W', text: 'I\'d like a book cover, please. Do you have any with flowers?' },
+      { who: 'M', text: 'Yes, we have roses, sunflowers, and lilies.' },
+      { who: 'W', text: 'Sunflowers, please. And do you have one with a bookmark ribbon?' },
+      { who: 'M', text: 'This one has a ribbon.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set8_3',
     label: '問3',
     hint: '男女が引越しの荷物をどの部屋へ運ぶか相談している。（話者：男性 / 女性）',
@@ -1293,7 +1585,7 @@ const EL2_SET8: ListeningProblem = {
   category: '第8回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET8_TRACKS,
-  text: `第8回　第2問（2問・2回読み）　【難易度：標準】
+  text: `第8回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -1310,12 +1602,16 @@ Question: Which cake matches the boy's request?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
 ────────────────────
+問2（話者：女性 / 男性（店員））
+場面：男女が本のカバーを選んでいる。
+Question: Which book cover did the woman choose?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問3（話者：男性 / 女性）
 場面：男女が引越しの荷物をどの部屋へ運ぶか相談している。
 Question: Which arrangement matches the woman's instructions?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
-
-※ 問2 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
     {
       id: 'q_el2_set8_1',
@@ -1339,12 +1635,33 @@ Question: Which arrangement matches the woman's instructions?
       },
     },
     {
+      id: 'q_el2_set8_2',
+      label: '問2 Which book cover did the woman choose?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '④',
+      correctAnswerRate: 65,
+      imageUrl: '/listening_q2/el2_set8_q2.jpg',
+      imageCaption: '問2 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '柄（sunflowers）＋機能（ribbon）の2条件',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
       id: 'q_el2_set8_3',
       label: '問3 Which arrangement matches the woman\'s instructions?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '①',
-      correctAnswerRate: 65,
+      correctAnswerRate: 62,
       imageUrl: '/listening_q2/el2_set8_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -1376,6 +1693,21 @@ Question: Which cake matches the boy's request?
 ④ 苺のみ、文字なし、側面プレーン
 正解の選択肢：① 苺・チョコ文字・側面プレーンクリーム
 苺＋チョコ文字＋側面プレーンの3条件。side はチョコを断る点に注意。
+
+問2　正解は ④
+場面：男女が本のカバーを選んでいる。（話者：女性 / 男性（店員））
+スクリプト：W: I'd like a book cover, please. Do you have any with flowers?
+M: Yes, we have roses, sunflowers, and lilies.
+W: Sunflowers, please. And do you have one with a bookmark ribbon?
+M: This one has a ribbon.
+Question: Which book cover did the woman choose?
+選択肢のイラスト：
+① バラ柄・しおりリボンなし
+② ヒマワリ柄・しおりリボンなし
+③ ユリ柄・しおりリボンあり
+④ ヒマワリ柄・しおりリボンあり
+正解の選択肢：④ ヒマワリ柄・しおりリボンあり
+柄（sunflowers）＋機能（ribbon）の2条件。花の種類の聞き分けが要点。
 
 問3　正解は ①
 場面：男女が引越しの荷物をどの部屋へ運ぶか相談している。（話者：男性 / 女性）
@@ -1629,6 +1961,21 @@ const EL2_SET10_TRACKS: ListeningAudioTrack[] = [
     keyPhrases: [],
   },
   {
+    subId: 'q_el2_set10_2',
+    label: '問2',
+    hint: '母と息子が新学期の時間割を見ている。（話者：母親 / 息子）',
+    audioUrl: '/listening_audio/el2_set10_q2.mp3',
+    script: 'M: You have PE on Monday and Thursday, right?\nS: No, Tuesday and Friday. Monday I have music.\nM: And when\'s your English class?\nS: Every day except Wednesday.',
+    turns: [
+      { who: 'M', text: 'You have PE on Monday and Thursday, right?' },
+      { who: 'S', text: 'No, Tuesday and Friday. Monday I have music.' },
+      { who: 'M', text: 'And when\'s your English class?' },
+      { who: 'S', text: 'Every day except Wednesday.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set10_3',
     label: '問3',
     hint: '男女がフリーマーケットで買い物をしている。（話者：女性 / 男性（店主））',
@@ -1650,7 +1997,7 @@ const EL2_SET10: ListeningProblem = {
   category: '第10回 対話に合うイラストを選ぶ（やや難）',
   readCount: 2,
   audioTracks: EL2_SET10_TRACKS,
-  text: `第10回　第2問（2問・2回読み）　【難易度：やや難】
+  text: `第10回　第2問（3問・2回読み）　【難易度：やや難】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -1667,12 +2014,16 @@ Question: Which route will they take today?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
 ────────────────────
+問2（話者：母親 / 息子）
+場面：母と息子が新学期の時間割を見ている。
+Question: Which timetable matches?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問3（話者：女性 / 男性（店主））
 場面：男女がフリーマーケットで買い物をしている。
 Question: How much will the woman pay?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
-
-※ 問2 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
     {
       id: 'q_el2_set10_1',
@@ -1696,12 +2047,33 @@ Question: How much will the woman pay?
       },
     },
     {
+      id: 'q_el2_set10_2',
+      label: '問2 Which timetable matches?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '②',
+      correctAnswerRate: 53,
+      imageUrl: '/listening_q2/el2_set10_q2.jpg',
+      imageCaption: '問2 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '母の推測（月・木体育）→息子の訂正（火・金）＋英語は水以外',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 4,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
       id: 'q_el2_set10_3',
       label: '問3 How much will the woman pay?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '③',
-      correctAnswerRate: 53,
+      correctAnswerRate: 50,
       imageUrl: '/listening_q2/el2_set10_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -1733,6 +2105,21 @@ Question: Which route will they take today?
 ④ バス5のみ
 正解の選択肢：② バス5→バス12
 直行便が週末限定→今日は水曜→乗換ルート。曜日条件の把握が鍵。
+
+問2　正解は ②
+場面：母と息子が新学期の時間割を見ている。（話者：母親 / 息子）
+スクリプト：M: You have PE on Monday and Thursday, right?
+S: No, Tuesday and Friday. Monday I have music.
+M: And when's your English class?
+S: Every day except Wednesday.
+Question: Which timetable matches?
+選択肢のイラスト：
+① 月曜:体育、水:英語なし
+② 火曜と金曜:体育、水:英語なし
+③ 月曜と木曜:体育、毎日英語
+④ 火曜と金曜:体育、毎日英語
+正解の選択肢：② 火曜と金曜:体育、水:英語なし
+母の推測（月・木体育）→息子の訂正（火・金）＋英語は水以外。訂正と例外の同時処理。2026年 問9型。
 
 問3　正解は ③
 場面：男女がフリーマーケットで買い物をしている。（話者：女性 / 男性（店主））
@@ -2398,6 +2785,21 @@ const EL2_SET14_TRACKS: ListeningAudioTrack[] = [
     keyPhrases: [],
   },
   {
+    subId: 'q_el2_set14_2',
+    label: '問2',
+    hint: '男女がペットショップで犬を選んでいる。（話者：女性 / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set14_q2.mp3',
+    script: 'W: I like small dogs with long fur.\nM: We have a small poodle with curly fur, and a small terrier with straight long fur.\nW: The terrier sounds good. Is it a male or female?\nM: This one\'s female.',
+    turns: [
+      { who: 'W', text: 'I like small dogs with long fur.' },
+      { who: 'M', text: 'We have a small poodle with curly fur, and a small terrier with straight long fur.' },
+      { who: 'W', text: 'The terrier sounds good. Is it a male or female?' },
+      { who: 'M', text: 'This one\'s female.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set14_3',
     label: '問3',
     hint: '男女が旅行の持ち物を確認している。（話者：男性 / 女性）',
@@ -2419,7 +2821,7 @@ const EL2_SET14: ListeningProblem = {
   category: '第14回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET14_TRACKS,
-  text: `第14回　第2問（2問・2回読み）　【難易度：標準】
+  text: `第14回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -2436,12 +2838,16 @@ Question: Which poster layout matches?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
 ────────────────────
+問2（話者：女性 / 男性（店員））
+場面：男女がペットショップで犬を選んでいる。
+Question: Which dog will the woman take?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（1枚の図の中に①〜④）
+
+────────────────────
 問3（話者：男性 / 女性）
 場面：男女が旅行の持ち物を確認している。
 Question: Which set matches their packing list?
-イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
-
-※ 問2 はイラストの準備中のため、この回では出題していません。`,
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
     {
       id: 'q_el2_set14_1',
@@ -2465,12 +2871,33 @@ Question: Which set matches their packing list?
       },
     },
     {
+      id: 'q_el2_set14_2',
+      label: '問2 Which dog will the woman take?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '④',
+      correctAnswerRate: 65,
+      imageUrl: '/listening_q2/el2_set14_q2.jpg',
+      imageCaption: '問2 の図（①〜④の位置）',
+      detailedExplanation: {
+        theme: '種類（terrier）＋毛（straight long）＋性別（female）の3条件',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
+    {
       id: 'q_el2_set14_3',
       label: '問3 Which set matches their packing list?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '②',
-      correctAnswerRate: 65,
+      correctAnswerRate: 62,
       imageUrl: '/listening_q2/el2_set14_q3.jpg',
       imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -2502,6 +2929,21 @@ Question: Which poster layout matches?
 ④ 上部に場所・中央にタイトル・下部に日付
 正解の選択肢：① 上部にタイトル・その下に日付・下部に場所・隅にロゴ
 4要素（タイトル／日付／場所／ロゴ）の位置指定。上→下、隅の位置関係を統合。
+
+問2　正解は ④
+場面：男女がペットショップで犬を選んでいる。（話者：女性 / 男性（店員））
+スクリプト：W: I like small dogs with long fur.
+M: We have a small poodle with curly fur, and a small terrier with straight long fur.
+W: The terrier sounds good. Is it a male or female?
+M: This one's female.
+Question: Which dog will the woman take?
+選択肢のイラスト：
+① 巻き毛の小型プードル(オス)
+② 巻き毛の小型プードル(メス)
+③ 長毛ストレートの小型テリア(オス)
+④ 長毛ストレートの小型テリア(メス)
+正解の選択肢：④ 長毛ストレートの小型テリア(メス)
+種類（terrier）＋毛（straight long）＋性別（female）の3条件。プードルと迷わせる。
 
 問3　正解は ②
 場面：男女が旅行の持ち物を確認している。（話者：男性 / 女性）
@@ -2740,6 +3182,21 @@ Question: Which is checked in (預け入れ) ?
 
 const EL2_SET16_TRACKS: ListeningAudioTrack[] = [
   {
+    subId: 'q_el2_set16_1',
+    label: '問1',
+    hint: '男女がケーキ屋でギフト用のケーキを選んでいる。（話者：女性（店員） / 男性（客））',
+    audioUrl: '/listening_audio/el2_set16_q1.mp3',
+    script: 'W: We have chocolate, strawberry, and cheesecake.\nM: She loves fruits, but not strawberries. Actually, she\'s allergic to them.\nW: How about our peach cake, then?\nM: Perfect. I\'ll take that.',
+    turns: [
+      { who: 'W', text: 'We have chocolate, strawberry, and cheesecake.' },
+      { who: 'M', text: 'She loves fruits, but not strawberries. Actually, she\'s allergic to them.' },
+      { who: 'W', text: 'How about our peach cake, then?' },
+      { who: 'M', text: 'Perfect. I\'ll take that.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
+  {
     subId: 'q_el2_set16_2',
     label: '問2',
     hint: '男女が学校の靴箱の位置を確認している。（話者：男性 / 女性）',
@@ -2755,6 +3212,21 @@ const EL2_SET16_TRACKS: ListeningAudioTrack[] = [
     translation: '',
     keyPhrases: [],
   },
+  {
+    subId: 'q_el2_set16_3',
+    label: '問3',
+    hint: '男女がスポーツ用品店でテニスラケットを選んでいる。（話者：女性（客） / 男性（店員））',
+    audioUrl: '/listening_audio/el2_set16_q3.mp3',
+    script: 'W: I\'m a beginner. Which racket do you recommend?\nM: This lightweight one is good for beginners. It has a larger head.\nW: And the color?\nM: Available in blue, black, or white.',
+    turns: [
+      { who: 'W', text: 'I\'m a beginner. Which racket do you recommend?' },
+      { who: 'M', text: 'This lightweight one is good for beginners. It has a larger head.' },
+      { who: 'W', text: 'And the color?' },
+      { who: 'M', text: 'Available in blue, black, or white.' },
+    ],
+    translation: '',
+    keyPhrases: [],
+  },
 ];
 
 const EL2_SET16: ListeningProblem = {
@@ -2762,7 +3234,7 @@ const EL2_SET16: ListeningProblem = {
   category: '第16回 対話に合うイラストを選ぶ（標準）',
   readCount: 2,
   audioTracks: EL2_SET16_TRACKS,
-  text: `第16回　第2問（1問・2回読み）　【難易度：標準】
+  text: `第16回　第2問（3問・2回読み）　【難易度：標準】
 
 第2問では、2人の短い対話と英語の設問が2回読まれます。その内容に最も合うイラストを、①〜④のうちから1つずつ選びなさい。
 
@@ -2773,20 +3245,51 @@ const EL2_SET16: ListeningProblem = {
 音声が流れる前に「場面」を読み、4枚の絵を見比べて「どこが違うか」を1語で言えるようにしておきます（色・数・位置・あり／なし）。違いが分かっていれば、聞き取るべき1語が決まります。第2問は「No, actually …」「the other one」のような訂正が最頻出なので、最初に聞こえた候補で決めないことが大切です。
 
 ────────────────────
+問1（話者：女性（店員） / 男性（客））
+場面：男女がケーキ屋でギフト用のケーキを選んでいる。
+Question: Which cake will the man buy?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
+
+────────────────────
 問2（話者：男性 / 女性）
 場面：男女が学校の靴箱の位置を確認している。
 Question: Which locker is the man's?
 イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）
 
-※ 問1・問3 はイラストの準備中のため、この回では出題していません。`,
+────────────────────
+問3（話者：女性（客） / 男性（店員））
+場面：男女がスポーツ用品店でテニスラケットを選んでいる。
+Question: Which racket will the woman likely choose (based on the recommended features)?
+イラスト①〜④から、対話と設問の内容に合うものを選びなさい。（2×2の4枚から選択）`,
   subQuestions: [
+    {
+      id: 'q_el2_set16_1',
+      label: '問1 Which cake will the man buy?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '④',
+      correctAnswerRate: 68,
+      imageUrl: '/listening_q2/el2_set16_q1.jpg',
+      imageCaption: '問1 の選択肢イラスト（①〜④の4枚）',
+      detailedExplanation: {
+        theme: '「フルーツは好きだが苺はアレルギー」の情報から桃を新たに提案',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
     {
       id: 'q_el2_set16_2',
       label: '問2 Which locker is the man\'s?',
       type: 'multiple_choice',
       options: MARK_OPTIONS,
       correctAnswer: '③',
-      correctAnswerRate: 68,
+      correctAnswerRate: 65,
       imageUrl: '/listening_q2/el2_set16_q2.jpg',
       imageCaption: '問2 の選択肢イラスト（①〜④の4枚）',
       detailedExplanation: {
@@ -2801,8 +3304,44 @@ Question: Which locker is the man's?
         ],
       },
     },
+    {
+      id: 'q_el2_set16_3',
+      label: '問3 Which racket will the woman likely choose (based on the recommended features)?',
+      type: 'multiple_choice',
+      options: MARK_OPTIONS,
+      correctAnswer: '③',
+      correctAnswerRate: 62,
+      imageUrl: '/listening_q2/el2_set16_q3.jpg',
+      imageCaption: '問3 の選択肢イラスト（①〜④の4枚）',
+      detailedExplanation: {
+        theme: '色は「どれでもよい」ため無関係',
+        type: 'イラスト選択型（短い対話）',
+        difficulty: 3,
+        steps: [
+          '① 音声の前に「場面（日本語）」を読み、4枚の絵の違いを1語で言語化する（色・数・位置・有無）',
+          '② 1回目は流れをつかむ。候補を2つに絞れれば十分（1枚に決めきらない）',
+          '③ 2回目で決め手の1語を確認する。No, actually / the other one / but の後ろが結論',
+          '④ 設問の主語（the man / the woman）を必ず見る。相手の発言を答えにしない',
+        ],
+      },
+    },
   ],
   explanation: `第16回（難易度：標準）の解説です。対話スクリプトと正解、そして PDF の解説をそのまま収録しています。各選択肢がどんな絵だったかも併せて載せているので、「どこを聞き分ければよかったか」を絵と対応させて確認できます。
+
+問1　正解は ④
+場面：男女がケーキ屋でギフト用のケーキを選んでいる。（話者：女性（店員） / 男性（客））
+スクリプト：W: We have chocolate, strawberry, and cheesecake.
+M: She loves fruits, but not strawberries. Actually, she's allergic to them.
+W: How about our peach cake, then?
+M: Perfect. I'll take that.
+Question: Which cake will the man buy?
+選択肢のイラスト：
+① チョコレートケーキ
+② 苺のショートケーキ
+③ チーズケーキ
+④ 桃のケーキ
+正解の選択肢：④ 桃のケーキ
+「フルーツは好きだが苺はアレルギー」の情報から桃を新たに提案。3択→アレルギー→新提案の流 れ。
 
 問2　正解は ③
 場面：男女が学校の靴箱の位置を確認している。（話者：男性 / 女性）
@@ -2818,7 +3357,22 @@ Question: Which locker is the man's?
 ③ C列 上から3段目
 ④ A列 上から3段目
 正解の選択肢：③ C列 上から3段目
-女性の思い込み（row B, second from the top）を they moved me to row C が訂正し、Third from the top で段が確定する。列の訂正と段の指定を2段階で追う。①は訂正される前の位置、②は段だけ合っていて列が古い、④は列が違う。`,
+女性の思い込み（row B, second from the top）を they moved me to row C が訂正し、Third from the top で段が確定する。列の訂正と段の指定を2段階で追う。①は訂正される前の位置、②は段だけ合っていて列が古い、④は列が違う。
+
+問3　正解は ③
+場面：男女がスポーツ用品店でテニスラケットを選んでいる。（話者：女性（客） / 男性（店員））
+スクリプト：W: I'm a beginner. Which racket do you recommend?
+M: This lightweight one is good for beginners. It has a larger head.
+W: And the color?
+M: Available in blue, black, or white.
+Question: Which racket will the woman likely choose (based on the recommended features)?
+選択肢のイラスト：
+① 重量級・ヘッド大きめ
+② 軽量・ヘッド小さめ
+③ 軽量・ヘッド大きめ
+④ 重量級・ヘッド小さめ
+正解の選択肢：③ 軽量・ヘッド大きめ
+色は「どれでもよい」ため無関係。lightweight + larger head の2条件で決定。属性の掛け合わせ。`,
   surroundingKnowledge: [
     '第2問は2回読み。1回目で候補を2つに絞り、2回目で決め手を確認する二段構えが基本。',
     '「訂正の型」が最頻出。No, actually … / the other one / not A but B の後ろが答えになる。',
@@ -2834,7 +3388,7 @@ Question: Which locker is the man's?
   ],
 };
 
-/** 第2問の演習セット一覧（イラストが揃っている 16 セット 38 問）。 */
+/** 第2問の演習セット一覧（イラストが揃っている 16 セット 48 問）。 */
 export const EL2_PROBLEMS: ListeningProblem[] = [
   EL2_SET1,
   EL2_SET2,

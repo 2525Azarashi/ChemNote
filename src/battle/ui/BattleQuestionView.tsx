@@ -173,6 +173,11 @@ export function BattleQuestionView({
         <p className="text-[15px] font-bold leading-relaxed" style={{ color: INK }}>
           <BattleText text={question.label} subject={question.subject} />
         </p>
+        {/* ★図・絵★（リスニング第1問B・第2問の「絵を選ぶ」問題、図つきの問題）
+            以前は対戦画面が画像を描かなかったため、絵を選ぶ問題は対戦に入れられなかった。 */}
+        {question.imageUrl && (
+          <BattleFigure key={question.id} src={question.imageUrl} picture={question.subject === 'english_listening'} />
+        )}
       </article>
 
       {reveal && (
@@ -729,4 +734,46 @@ function BattleListeningAudio({ src, stopped }: { key?: string; src?: string; st
     }}>音源を再読み込み</button>}
     <p className="text-[10px] text-slate-500">音量を確認してください。音源の再生中・停止中も制限時間は進みます。</p>
   </section>;
+}
+
+/**
+ * 対戦の図・絵。
+ *
+ * ★読み込みに失敗したら1回だけ読み直す★（電波が悪くても絵が出ないまま終わらないように）
+ * ★タップで大きく表示★（スマホで①〜④の細部が見えるように。もう一度タップで戻る）
+ * 読み込み中は枠だけ出して高さを確保し、選択肢の位置がずれて押し間違えないようにする。
+ */
+function BattleFigure({ src, picture }: { key?: string; src: string; picture: boolean }) {
+  const [attempt, setAttempt] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [zoom, setZoom] = useState(false);
+  const url = attempt === 0 ? src : `${src}${src.includes('?') ? '&' : '?'}r=${attempt}`;
+  return (
+    <figure className={`battle-figure mt-2 ${zoom ? 'is-zoom' : ''}`} data-battle-figure data-picture={picture || undefined}>
+      {failed ? (
+        <button type="button" className="min-h-11 w-full rounded-xl border border-dashed border-slate-300 text-sm font-bold text-slate-500"
+          onClick={() => { setFailed(false); setLoaded(false); setAttempt((n) => n + 1); }}>
+          絵を読み込めませんでした。タップしてもう一度読み込む
+        </button>
+      ) : (
+        <button type="button" className="battle-figure-button" onClick={() => setZoom((z) => !z)}
+          aria-label={zoom ? '絵を元の大きさに戻す' : '絵を大きく表示する'}>
+          {!loaded && <div className="battle-figure-skeleton" aria-hidden="true" />}
+          <img
+            src={url}
+            alt={picture ? '選択肢①〜④の絵' : '問題の図'}
+            decoding="async"
+            onLoad={() => setLoaded(true)}
+            onError={() => {
+              if (attempt < 1) { setAttempt((n) => n + 1); return; }
+              setFailed(true);
+            }}
+            // 読み込み中は枠（skeleton）が高さを持ち、画像は重ねて透明にしておく
+            style={loaded ? undefined : { position: 'absolute', inset: 0, opacity: 0 }}
+          />
+        </button>
+      )}
+    </figure>
+  );
 }

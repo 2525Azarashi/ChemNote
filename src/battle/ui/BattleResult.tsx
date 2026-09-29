@@ -104,6 +104,7 @@ import {
   ReviewPicks,
   useOutcomeJingle,
 } from './BattleResultLive';
+import { UserSafetyMenu } from '../../features/safety/UserSafetyMenu';
 
 function ScoreColumn({
   score,
@@ -152,7 +153,7 @@ export function BattleResult({
   result: BattleResultSummary;
   questions: BattleQuestion[];
   subject: string;
-  opponent: { nickname: string; photoURL: string; rating: number } | null;
+  opponent: { uid?: string; nickname: string; photoURL: string; rating: number } | null;
   meNickname: string;
   mePhotoURL?: string;
   /** レート変化。無効試合・未反映のときは null */
@@ -363,6 +364,9 @@ export function BattleResult({
             mask={maskOpponent}
             align="right"
           />
+          {opponent?.uid && (
+            <UserSafetyMenu target={{ uid: opponent.uid, nickname: opponent.nickname || '対戦相手', where: 'battle' }} />
+          )}
         </div>
         <div className="flex items-center">
           <ScoreColumn score={result.me} label="あなた" color={AMBER} />

@@ -27,10 +27,12 @@
  */
 
 import {
+  OAuthProvider,
   signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
   signOut,
+  type AuthProvider,
   type User,
   type UserCredential,
 } from 'firebase/auth';
@@ -93,36 +95,71 @@ export function describeAuthError(error: any): string {
   return String(error?.message || 'ログインに失敗しました。時間をおいてお試しください。');
 }
 
+/** ログイン方法 */
+export type SignInMethod = 'google' | 'apple';
+
 /**
- * Google アカウントで連携する。
+ * Apple でサインイン（App Store Review Guideline 4.8）。
+ * Google などの外部ログインを提供するアプリは、同等の選択肢として
+ * 「Sign in with Apple」も出す必要がある。
+ * ★Firebase コンソールで Apple プロバイダを有効化すること★（docs/APP_STORE.md）
+ */
+export function appleProvider(): OAuthProvider {
+  const p = new OAuthProvider('apple.com');
+  p.addScope('email');
+  p.addScope('name');
+  p.setCustomParameters({ locale: 'ja' });
+  return p;
+}
+
+function providerFor(method: SignInMethod): AuthProvider {
+  return method === 'apple' ? appleProvider() : provider;
+}
+
+/**
+ * 指定した方法で連携する。
  * popup が使えない環境では自動で redirect に切り替える。
  */
-export async function signInWithGoogle(): Promise<GoogleSignInOutcome> {
+export async function signInWith(method: SignInMethod): Promise<GoogleSignInOutcome> {
+  const label = method === 'apple' ? 'Apple' : 'Google';
   if (isInAppBrowser()) {
     return {
       ok: false,
       message:
-        'LINE や Instagram などのアプリ内ブラウザでは Google ログインが利用できません。右上のメニューから「ブラウザで開く」を選び、Safari や Chrome で開き直してください。',
+        `LINE や Instagram などのアプリ内ブラウザでは ${label} ログインが利用できません。右上のメニューから「ブラウザで開く」を選び、Safari や Chrome で開き直してください。`,
     };
   }
-
+  const p = providerFor(method);
   try {
-    const credential: UserCredential = await signInWithPopup(auth, provider);
+    const credential: UserCredential = await signInWithPopup(auth, p);
     return { ok: true, user: credential.user };
   } catch (error: any) {
     const code = String(error?.code || '');
     if (isPopupUnavailable(code)) {
-      // 同じタブで Google の画面へ遷移する。戻ってきたときは
+      // 同じタブでログイン画面へ遷移する。戻ってきたときは
       // consumeGoogleRedirectResult() が結果を受け取る。
       try {
-        await signInWithRedirect(auth, provider);
+        await signInWithRedirect(auth, p);
         return { ok: false, redirecting: true };
       } catch (redirectError: any) {
         return { ok: false, message: describeAuthError(redirectError) };
       }
     }
+    if (code.includes('operation-not-allowed')) {
+      return { ok: false, message: `${label} でのログインは現在準備中です。Google でログインしてください。` };
+    }
     return { ok: false, message: describeAuthError(error) };
   }
+}
+
+/** Google アカウントで連携する（既存の呼び出し口） */
+export function signInWithGoogle(): Promise<GoogleSignInOutcome> {
+  return signInWith('google');
+}
+
+/** Apple でサインインする */
+export function signInWithApple(): Promise<GoogleSignInOutcome> {
+  return signInWith('apple');
 }
 
 /**

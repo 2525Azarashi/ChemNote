@@ -33,7 +33,7 @@
  *   ゲストは個人を特定できる情報を持たないため、匿名の端末IDで数だけ数える。
  */
 
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp } from './firestoreMetered';
 import { auth, db } from '../firebase';
 import { safeLocalStorage } from './safeLocalStorage';
 // ユーザーごとの localStorage キー名は utils/userStorageKeys.ts が唯一の定義

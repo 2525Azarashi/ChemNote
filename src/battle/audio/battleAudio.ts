@@ -29,6 +29,10 @@
 
 import type { BattleAudioSettings, BattleBgmTrack } from '../core/audioSettings';
 import { DEFAULT_BATTLE_AUDIO } from '../core/audioSettings';
+import { playSample, preloadSamples } from './sfxSamples';
+
+/** 効果音ファイルの再生音量（ファイルはピーク約 -1dB で作ってあるので下げて合成音と揃える） */
+const SAMPLE_GAIN = 0.5;
 
 /** 効果音の種類 */
 export type BattleSfx =
@@ -39,6 +43,9 @@ export type BattleSfx =
   | 'opponent-correct'  // 相手が正解
   | 'combo'          // 連続正解
   | 'overtake'       // 逆転
+  | 'overtaken'      // 逆転された
+  | 'caught-up'      // 同点に追いついた
+  | 'timeup'         // 答える前に時間切れ
   | 'matched'        // 相手が見つかった／部屋に入ってきた
   | 'hurry'          // 残り3秒（控えめ）
   | 'countdown'      // 3・2・1
@@ -124,6 +131,7 @@ export class BattleAudioEngine {
   unlock(): void {
     const ctx = this.ensure();
     if (ctx && ctx.state === 'suspended') void ctx.resume().catch(() => {});
+    if (ctx) preloadSamples(ctx);
   }
 
   setSettings(next: BattleAudioSettings): void {
@@ -203,6 +211,10 @@ export class BattleAudioEngine {
     const t = ctx.currentTime;
     const g = this.sfxGain;
 
+    // 効果音ファイル（public/sfx/battle）が読み込めていればそれを鳴らす。
+    // まだなら下の合成音で代わりに鳴らす。
+    if (playSample(ctx, g, sfx, SAMPLE_GAIN)) return;
+
     switch (sfx) {
       case 'tap':
         this.tone(g, 880, t, 0.04, 'sine', 0.12);
@@ -235,6 +247,18 @@ export class BattleAudioEngine {
         this.tone(g, hz(-5), t, 0.08, 'square', 0.12);
         this.tone(g, hz(2), t + 0.08, 0.08, 'square', 0.12);
         this.tone(g, hz(7), t + 0.16, 0.2, 'square', 0.14);
+        break;
+      case 'overtaken':
+        this.tone(g, hz(7), t, 0.12, 'triangle', 0.16);
+        this.tone(g, hz(-2), t + 0.12, 0.24, 'triangle', 0.14);
+        break;
+      case 'caught-up':
+        this.tone(g, hz(5), t, 0.08, 'triangle', 0.22);
+        this.tone(g, hz(12), t + 0.08, 0.16, 'triangle', 0.24);
+        break;
+      case 'timeup':
+        this.tone(g, hz(0), t, 0.16, 'triangle', 0.2);
+        this.tone(g, hz(-12), t + 0.16, 0.3, 'triangle', 0.18);
         break;
       case 'matched':
         // 見つかった！ 明るい上昇3音

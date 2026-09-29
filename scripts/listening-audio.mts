@@ -19,6 +19,12 @@
  *   npx tsx scripts/listening-audio.mts status
  *   npx tsx scripts/listening-audio.mts restore <バックアップフォルダ>
  *   npx tsx scripts/listening-audio.mts use-legacy <stem | chapterId | all>   ← 旧音源に戻す
+ *   npx tsx scripts/listening-audio.mts receive <受領ファイル…> --batch <名前> [--apply] [--note "…"]
+ *        ← 送られてきた原本（まとめ録りも可）をそのまま commercial/<batch>/receipt/ に受領記録つきで保存
+ *   npx tsx scripts/listening-audio.mts purge-legacy <stem | chapterId> [--apply]
+ *        ← 差し替え済みの問題の旧音源コピー（audio_sources/legacy）を削除（利用者の指示があるときだけ）
+ *
+ *   --discard-legacy  import 時に旧音源を legacy/ へ保存しない（旧音源を捨てる指示があるとき）
  *
  *   --batch <名前>  新音源の元ファイルの保存フォルダ名（audio_sources/commercial/<名前>/）
  *   --note  <文>    台帳に残す品質メモ
@@ -50,7 +56,7 @@
  *   ffmpeg / ffprobe（サンドボックスには入っている）。
  */
 
-import {existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync, copyFileSync} from 'node:fs';
+import {existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync, copyFileSync} from 'node:fs';
 import {basename, dirname, extname, join, relative, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {execFileSync} from 'node:child_process';
@@ -139,7 +145,25 @@ type LedgerEntry = {
   masterFiles?: string[];
   /** 品質確認のメモ（例：ASR で a/the の聞き分け要確認） */
   note?: string;
+  /** 旧音源を利用者の指示で削除した日時（ISO）。削除後は use-legacy で戻せない */
+  legacyDiscardedAt?: string;
 };
+
+/**
+ * ★商用音源と旧音源を混ぜないための番人★
+ * 旧音源（legacy_unverified の public ファイル・audio_sources/legacy の保存物）と同じ中身のファイルを
+ * 「新音源」として取り込もうとしたら止める。取り違え・旧音源の再混入を防ぐ。
+ * ハッシュはデコード前のファイルそのものを比べる（旧音源をコピーしただけのファイルを確実に弾く）。
+ */
+function legacyHashes(tracks: Track[], ledger: Record<string, LedgerEntry>): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const t of tracks) {
+    if (ledger[t.audioUrl]?.status !== 'replaced' && existsSync(t.file)) out.set(sha256(t.file), 'public' + t.audioUrl);
+    const legacy = join(LEGACY_ROOT, t.audioUrl);
+    if (existsSync(legacy)) out.set(sha256(legacy), relative(ROOT, legacy));
+  }
+  return out;
+}
 
 // ------------------------------------------------------------------
 // 問題データから「必要な音源の一覧」を作る
@@ -294,6 +318,13 @@ function cmdCheck(): void {
     }
   }
   const ledger = readLedger();
+  // 差し替え済みの音が、あとから旧音源などで上書きされていないか（商用音源と旧音源の混在防止）
+  for (const t of tracks) {
+    const e = ledger[t.audioUrl];
+    if (e?.status !== 'replaced' || !existsSync(t.file)) continue;
+    if (sha256(t.file) !== e.sha256) problems.push(`差し替え済みなのに中身が台帳と違う（旧音源などで上書きされた可能性）: public${t.audioUrl}`);
+    for (const m of e.masterFiles ?? []) if (!existsSync(join(ROOT, m))) problems.push(`新音源の元ファイルがない: ${m}`);
+  }
   const replaced = tracks.filter(t => ledger[t.audioUrl]?.status === 'replaced').length;
   console.log(`音源 ${tracks.length} 本を検査しました。差し替え済み ${replaced} 本 / 旧音源 ${tracks.length - replaced} 本。`);
   if (problems.length) {
@@ -316,6 +347,7 @@ function cmdImport(args: string[]): void {
   const src = args.find(a => !a.startsWith('--') && !valued.has(a));
   if (!src || !existsSync(src)) throw new Error('取り込むフォルダを指定してください: import <フォルダ>');
   const apply = args.includes('--apply');
+  const discardLegacy = args.includes('--discard-legacy');
   const normalize = args.includes('--normalize');
   const gapOverride = argValue(args, '--gap');
   const provider = argValue(args, '--provider') ?? '';
@@ -363,6 +395,16 @@ function cmdImport(args: string[]): void {
     plans.set(track.stem, {track, kind: 'file', inputs: [p], note: '完成ファイル'});
   }
 
+  // 旧音源の混入チェック（新音源として旧音源そのものを渡していないか）
+  const oldHashes = legacyHashes(tracks, readLedger());
+  for (const [stem, plan] of [...plans]) {
+    const hit = plan.inputs.map(f => oldHashes.get(sha256(f))).find(Boolean);
+    if (hit) {
+      errors.push(`${stem}: 中身が旧音源（${hit}）と同じです。商用の新音源と混ぜないため取り込みません`);
+      plans.delete(stem);
+    }
+  }
+
   // 下見の表
   console.log(`取り込み元: ${srcRoot}`);
   console.log(`対象になる音源: ${plans.size} 本 / 全 ${tracks.length} 本\n`);
@@ -402,7 +444,7 @@ function cmdImport(args: string[]): void {
       // (1) 旧音源の恒久保存：まだ旧音源のまま（台帳が replaced でない）なら audio_sources/legacy へ1回だけ保存。
       //     すでに保存済みなら上書きしない（2回目以降の差し替えで新音源を「旧」扱いしないため）。
       const legacyPath = join(LEGACY_ROOT, track.audioUrl);
-      if (existsSync(track.file) && prev?.status !== 'replaced' && !existsSync(legacyPath)) {
+      if (!discardLegacy && existsSync(track.file) && prev?.status !== 'replaced' && !existsSync(legacyPath)) {
         mkdirSync(dirname(legacyPath), {recursive: true});
         copyFileSync(track.file, legacyPath);
       }
@@ -430,6 +472,7 @@ function cmdImport(args: string[]): void {
         sha256: sha256(track.file), durationSec: Math.round(sec * 100) / 100,
         legacyCopy: existsSync(legacyPath) ? relative(ROOT, legacyPath) : undefined,
         masterFiles, ...(note ? {note} : {}),
+        ...(discardLegacy && !existsSync(legacyPath) ? {legacyDiscardedAt: new Date().toISOString()} : prev?.legacyDiscardedAt ? {legacyDiscardedAt: prev.legacyDiscardedAt} : {}),
       };
       done++;
     } catch (e) {
@@ -538,6 +581,71 @@ function cmdUseLegacy(args: string[]): void {
 }
 
 // ------------------------------------------------------------------
+// receive：送られてきた原本を「商用の受領物」としてそのまま保存する（切り出し前の第一歩）
+//   まとめ録り（1ファイルに何問も入っている）でもよい。ここでは切らない・変換しない。
+//   旧音源と同じ中身なら受け付けない。
+// ------------------------------------------------------------------
+
+function cmdReceive(args: string[]): void {
+  const valued = new Set(['--batch', '--note', '--provider', '--license'].map(k => argValue(args, k)).filter(Boolean));
+  const files = args.filter(a => !a.startsWith('--') && !valued.has(a));
+  const batchArg = argValue(args, '--batch');
+  if (!files.length || !batchArg) throw new Error('receive <受領ファイル…> --batch <名前> を指定してください');
+  const batch = batchArg.replace(/[^A-Za-z0-9_.-]/g, '_');
+  const apply = args.includes('--apply');
+  const tracks = loadTracks();
+  const oldHashes = legacyHashes(tracks, readLedger());
+  const dir = join(COMMERCIAL_ROOT, batch, 'receipt');
+  const rows: Record<string, unknown>[] = [];
+  for (const f of files) {
+    if (!existsSync(f)) throw new Error(`ファイルがない: ${f}`);
+    const hash = sha256(f);
+    const old = oldHashes.get(hash);
+    if (old) { console.log(`  × ${basename(f)}: 旧音源（${old}）と同じ中身。受け付けません`); process.exitCode = 1; continue; }
+    rows.push({originalFilename: basename(f), sha256: hash, bytes: statSync(f).size, durationSeconds: probeDuration(f), receivedAtUtc: new Date().toISOString()});
+    console.log(`  ✓ ${basename(f)}  ${(probeDuration(f) ?? 0).toFixed(2)}秒  sha256 ${hash.slice(0, 12)}…`);
+  }
+  if (!apply) { console.log(`\n※ 下見のみ。--apply で ${relative(ROOT, dir)}/ に保存します。`); return; }
+  mkdirSync(dir, {recursive: true});
+  for (const [i, f] of files.entries()) if (rows.find(r => r.originalFilename === basename(f))) copyFileSync(f, join(dir, basename(f)));
+  const receiptPath = join(dir, 'receipt.json');
+  const prev = existsSync(receiptPath) ? JSON.parse(readFileSync(receiptPath, 'utf8')) : {};
+  writeFileSync(receiptPath, JSON.stringify({
+    ...prev, batch, kind: 'commercial', provider: argValue(args, '--provider') ?? prev.provider ?? '',
+    license: argValue(args, '--license') ?? prev.license ?? '', note: argValue(args, '--note') ?? prev.note ?? '',
+    files: [...(prev.files ?? []).filter((p: any) => !rows.some(r => r.sha256 === p.sha256)), ...rows],
+  }, null, 2) + '\n');
+  console.log(`\n${rows.length} 件を ${relative(ROOT, dir)}/ に保存しました。次に：切り出し（scripts/listening-split.py）→ import --batch ${batch}`);
+}
+
+// ------------------------------------------------------------------
+// purge-legacy：旧音源の保存コピーを消す（差し替え済みの問題だけ。利用者の指示があるときに使う）
+// ------------------------------------------------------------------
+
+function cmdPurgeLegacy(args: string[]): void {
+  const target = args.find(a => !a.startsWith('--'));
+  if (!target) throw new Error('purge-legacy <stem | chapterId> を指定してください');
+  const apply = args.includes('--apply');
+  const tracks = loadTracks();
+  const ledger = readLedger();
+  const picked = tracks.filter(t => t.stem === target || t.chapterId === target);
+  let n = 0;
+  for (const t of picked) {
+    const e = ledger[t.audioUrl];
+    if (e?.status !== 'replaced') { if (picked.length === 1) console.log(`  - ${t.stem}: まだ差し替えていないので消しません`); continue; }
+    const legacy = join(LEGACY_ROOT, t.audioUrl);
+    if (!existsSync(legacy)) continue;
+    if (apply) {
+      rmSync(legacy);
+      ledger[t.audioUrl] = {...e, legacyCopy: undefined, legacyDiscardedAt: new Date().toISOString()};
+    }
+    n++;
+  }
+  if (apply) { writeLedger(tracks, ledger); console.log(`${n} 本の旧音源コピーを削除しました（use-legacy では戻せなくなります）。`); }
+  else console.log(`${n} 本が削除対象です。--apply で削除します。`);
+}
+
+// ------------------------------------------------------------------
 // 入口
 // ------------------------------------------------------------------
 
@@ -550,6 +658,8 @@ switch (cmd) {
   case 'status': cmdStatus(); break;
   case 'restore': cmdRestore(rest); break;
   case 'use-legacy': cmdUseLegacy(rest); break;
+  case 'receive': cmdReceive(rest); break;
+  case 'purge-legacy': cmdPurgeLegacy(rest); break;
   case 'refresh-durations': console.log(`長さJSONを更新: ${refreshDurations()} 件`); break;
   case 'init-ledger': {
     // 台帳が無いときに、全音源を「旧音源（未確認）」として作る。既存の行は保持する。

@@ -29,10 +29,13 @@ import {
   ITEMS,
   levelOf,
   rankSubjects,
+  type EquipKind,
   type GrowthProgress,
   type ItemDef,
 } from '../core/growth';
-import { buyItem, equip, equipBadgeTitle } from '../data/growthStore';
+import { buyItem, equip, equipBadgeTitle, unequip } from '../data/growthStore';
+import { ACCESSORY_SLOTS, SLOT_LABELS, wallpaperOf } from '../core/tobiraParts';
+import { AccessoryLayer } from './TobiraAccessories';
 import { fetchMyRankingRow, ratingTitle } from '../data/battleRanking';
 import { play, primeAudio, setSfxEnabled, sfxEnabled } from './feedback';
 import {
@@ -266,6 +269,9 @@ function OutfitTab({ progress, busy, run, setNotice, shop = false }: { shop?: bo
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const poses = ITEMS.filter((i) => i.kind === 'pose' && (!shop || 'coins' in i.unlock));
   const frames = ITEMS.filter((i) => i.kind === 'frame' && (!shop || 'coins' in i.unlock));
+  // 部位アクセサリ・壁紙はガチャ限定なので、きせかえでは「持っているもの」だけ並べる
+  const partKinds: EquipKind[] = [...ACCESSORY_SLOTS, 'wallpaper'];
+  const ownedParts = (kind: EquipKind) => ITEMS.filter((i) => i.kind === kind && progress.owned.includes(i.id));
 
   const renderItem = (item: ItemDef) => {
     const owned = progress.owned.includes(item.id);
@@ -317,6 +323,13 @@ function OutfitTab({ progress, busy, run, setNotice, shop = false }: { shop?: bo
           <span className="flex h-14 w-14 items-end justify-center">
             <img src={item.value} alt={item.label} draggable={false} className="max-h-full max-w-full object-contain" style={{ filter: owned ? undefined : 'grayscale(1)' }} />
           </span>
+        ) : item.kind === 'wallpaper' ? (
+          <span className="wallpaper-swatch h-14 w-14" style={{ background: wallpaperOf(item.value)?.css }} />
+        ) : item.kind !== 'frame' ? (
+          <span className="relative flex h-14 w-14 items-end justify-center">
+            <img src="/mascots/basic.webp" alt="" draggable={false} className="h-full w-full object-contain object-bottom" />
+            <AccessoryLayer poseSrc="/mascots/basic.webp" parts={{ [item.kind]: item.value }} align="bottom" />
+          </span>
         ) : (
           <span data-frame-pattern={item.pattern} className="h-14 w-14 rounded-2xl border-[4px]" style={{ borderColor: item.value, background: `${item.value}22`, filter: owned ? undefined : 'grayscale(0.8)' }} />
         )}
@@ -354,6 +367,26 @@ function OutfitTab({ progress, busy, run, setNotice, shop = false }: { shop?: bo
         </h3>
         <div className="grid grid-cols-3 gap-2">{frames.map(renderItem)}</div>
       </section>
+      {!shop && partKinds.map((kind) => {
+        const list = ownedParts(kind);
+        const current = progress.equipped[kind];
+        return (
+          <section key={kind} data-outfit-part={kind}>
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="flex items-center gap-1 text-[11px] font-black" style={{ color: INK_SUB }}>
+                <Sparkles size={12} style={{ color: AMBER }} /> {SLOT_LABELS[kind as keyof typeof SLOT_LABELS]}（{list.length}）
+              </h3>
+              {current && (
+                <button type="button" disabled={busy} onClick={() => void run(() => unequip(kind), `${SLOT_LABELS[kind as keyof typeof SLOT_LABELS]}を外しました`)}
+                  className="min-h-[32px] rounded-full border px-3 text-[10px] font-bold" style={{ borderColor: LINE, color: INK_SUB }}>外す</button>
+              )}
+            </div>
+            {list.length === 0
+              ? <p className="rounded-2xl border px-3 py-3 text-center text-[11px] font-bold" style={{ borderColor: LINE, color: INK_SUB }}>まだありません。ガチャで出ます。</p>
+              : <div className="grid grid-cols-3 gap-2">{list.map(renderItem)}</div>}
+          </section>
+        );
+      })}
       <p className="text-[10px] font-bold leading-relaxed" style={{ color: INK_SUB }}>
         マナコインは対戦・日替わりボーナス・ミッションで手に入ります（課金はありません）。装備は見た目だけで、対戦の強さには影響しません。
       </p>

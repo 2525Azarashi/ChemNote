@@ -40,6 +40,10 @@ import {
   INK_SUB,
   LINE,
 } from './BattleParts';
+import { UserSafetyMenu } from '../../features/safety/UserSafetyMenu';
+import { useWithoutBlocked } from '../../features/safety/useBlockedFilter';
+import { safeAvatarUrl } from '../../features/safety/avatarUrl';
+import { displaySafeNickname } from '../../features/safety/nicknameFilter';
 
 type Tab = 'friend' | 'national';
 
@@ -57,6 +61,8 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
   const [tab, setTab] = useState<Tab>('friend');
   const [rows, setRows] = useState<BattleRankingRow[]>([]);
   const [loading, setLoading] = useState(true);
+  // ブロックした人は出さない（App Store 1.2）
+  const visibleRows = useWithoutBlocked<BattleRankingRow>(rows);
 
   const load = useCallback(async (which: Tab) => {
     setLoading(true);
@@ -144,12 +150,12 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
         </p>
       ) : (
         <ol className="grid gap-1.5">
-          {rows.map((row, i) => {
+          {visibleRows.map((row, i) => {
             const isMe = row.uid === uid;
             const title = ratingTitle(row.rating || 1500);
             const medal = MEDALS[i];
             const shown =
-              tab === 'national' && !isMe ? maskNickname(row.nickname || '') : row.nickname || '名前なし';
+              tab === 'national' && !isMe ? maskNickname(displaySafeNickname(row.nickname)) : isMe ? row.nickname || '名前なし' : displaySafeNickname(row.nickname);
 
             return (
               <li
@@ -177,9 +183,9 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
                 </span>
 
                 {/* アイコン */}
-                {row.photoURL ? (
+                {safeAvatarUrl(row.photoURL) ? (
                   <img
-                    src={row.photoURL}
+                    src={safeAvatarUrl(row.photoURL)}
                     alt=""
                     className="h-8 w-8 shrink-0 rounded-full object-cover"
                     referrerPolicy="no-referrer"
@@ -212,6 +218,8 @@ export function BattleRanking({ onBack }: { onBack: () => void }) {
                     {row.wins || 0}勝 {row.losses || 0}敗 {row.draws || 0}分
                   </span>
                 </span>
+
+                {!isMe && <UserSafetyMenu target={{ uid: row.uid, nickname: shown, where: 'ranking' }} />}
 
                 {/* レート */}
                 <span className="shrink-0 text-right">

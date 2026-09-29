@@ -27,7 +27,11 @@
  * 押すものは「やめる」だけにする。
  */
 
-import { Check, Copy, Share2, X } from 'lucide-react';
+import { Check, Copy, Settings2, Share2, X } from 'lucide-react';
+import { FRIEND_MODES, friendModeOfRules, type FriendModeId } from '../core/friendModes';
+import { POOL_FORMAT_COUNTS, poolCountOf } from '../data/battlePool';
+import { effectiveRule } from '../data/battle';
+import { QUESTION_COUNT_CHOICES, type QuestionCountChoice } from './BattleSubjectSelect';
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { useBattleAudio } from '../hooks/useBattleAudio';
@@ -47,18 +51,42 @@ import {
   PlayerBadge,
 } from './BattleParts';
 
+export interface FriendRoomSettings { subject: string; questionCount: QuestionCountChoice; mode: FriendModeId }
+
 export function BattleLobby({
   room,
   myUid,
   onStart,
   onLeave,
+  error,
+  starting = false,
+  poolReady = true,
+  onChangeSettings,
+  changing = false,
 }: {
   room: BattleRoom;
   myUid: string;
   onStart: () => void;
   onLeave: () => void;
+  /** 開始の失敗・問題の読み込み失敗など（以前は表示されず「押しても反応しない」ように見えた） */
+  error?: string | null;
+  starting?: boolean;
+  poolReady?: boolean;
+  /** 部屋主だけ：部屋の中で科目・モード・問題数を変える（相手は自動で次の部屋へ移る） */
+  onChangeSettings?: (next: FriendRoomSettings) => void;
+  changing?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
+  const currentMode = friendModeOfRules(room.rules);
+  const [showSettings, setShowSettings] = useState(false);
+  const [draft, setDraft] = useState<FriendRoomSettings>(() => ({
+    subject: room.subject,
+    questionCount: (QUESTION_COUNT_CHOICES as readonly number[]).includes(room.questionIds.length) ? room.questionIds.length as QuestionCountChoice : 10,
+    mode: currentMode.id,
+  }));
+  const subjects = Object.keys(POOL_FORMAT_COUNTS).filter((s) => {
+    try { const r = effectiveRule(s); return r.enabled && poolCountOf(s, r.formats) > 0; } catch { return false; }
+  });
   const theme = subjectTheme(room.subject as SubjectKey);
 
   const isHost = room.hostUid === myUid;
@@ -118,8 +146,8 @@ export function BattleLobby({
             // 全国対戦：開始は自動。押すものは「やめる」だけ。
             <BattleNotice message="まもなく始まります…" tone="info" />
           ) : isHost ? (
-            <BattleButton onClick={onStart} disabled={!ready}>
-              {ready ? 'はじめる' : '相手を待っています…'}
+            <BattleButton onClick={onStart} disabled={!ready || starting || changing}>
+              {changing ? '部屋を作り直しています…' : starting ? '開始しています…' : !poolReady ? '問題を準備中…（押すと再読み込み）' : ready ? 'はじめる' : '相手を待っています…'}
             </BattleButton>
           ) : (
             <BattleNotice
@@ -133,7 +161,50 @@ export function BattleLobby({
         </div>
       }
     >
-      <BattleTitle subtitle={`${theme.label} ／ ${room.questionIds.length}問しょうぶ`} />
+      <BattleTitle subtitle={`${theme.label} ／ ${room.questionIds.length}問しょうぶ${isNational ? '' : ` ／ ${currentMode.label}`}`} />
+      {error && <div className="mb-3" role="alert"><BattleNotice message={error} /></div>}
+
+      {/* ★部屋の中で科目・モード・問題数を選ぶ（部屋主）★ */}
+      {!isNational && isHost && onChangeSettings && (
+        <section className="battle-card-in mb-4 rounded-3xl border-2 p-4" style={{ borderColor: LINE, background: '#FFFFFF' }} data-room-settings>
+          <button type="button" className="flex w-full items-center justify-between text-sm font-black" style={{ color: INK }}
+            aria-expanded={showSettings} onClick={() => setShowSettings((v) => !v)}>
+            <span className="flex items-center gap-1.5"><Settings2 size={16} /> 対戦の設定（科目・モード・問題数）</span>
+            <span className="text-[11px]" style={{ color: INK_SUB }}>{showSettings ? 'とじる' : 'かえる'}</span>
+          </button>
+          {showSettings && <div className="mt-3 grid gap-3">
+            <label className="grid gap-1 text-[11px] font-black" style={{ color: INK_SUB }}>科目
+              <select className="min-h-11 rounded-xl border-2 bg-white px-2 text-sm font-bold" style={{ borderColor: LINE, color: INK }}
+                value={draft.subject} onChange={(e) => setDraft((d) => ({ ...d, subject: e.target.value }))}>
+                {subjects.map((s) => <option key={s} value={s}>{subjectTheme(s as SubjectKey).label}</option>)}
+              </select>
+            </label>
+            <div className="grid gap-1" role="radiogroup" aria-label="モード">
+              <span className="text-[11px] font-black" style={{ color: INK_SUB }}>モード</span>
+              {FRIEND_MODES.map((m) => <button key={m.id} type="button" role="radio" aria-checked={draft.mode === m.id}
+                onClick={() => setDraft((d) => ({ ...d, mode: m.id }))}
+                className="rounded-2xl border-2 px-3 py-2 text-left" style={{ borderColor: draft.mode === m.id ? AMBER : LINE, background: draft.mode === m.id ? `${GOLD}22` : '#FFFFFF' }}>
+                <span className="block text-sm font-black" style={{ color: INK }}>{m.label}</span>
+                <span className="block text-[11px] font-bold" style={{ color: INK_SUB }}>{m.desc}{draft.subject === 'english_listening' && m.rules.timeLimitOverride ? '（リスニングは音源のため時間は55秒のまま）' : ''}</span>
+              </button>)}
+            </div>
+            <div className="grid gap-1" role="radiogroup" aria-label="問題数">
+              <span className="text-[11px] font-black" style={{ color: INK_SUB }}>問題数</span>
+              <div className="grid grid-cols-3 gap-2">{QUESTION_COUNT_CHOICES.map((n) => <button key={n} type="button" role="radio" aria-checked={draft.questionCount === n}
+                onClick={() => setDraft((d) => ({ ...d, questionCount: n }))}
+                className="min-h-11 rounded-xl border-2 text-sm font-black" style={{ borderColor: draft.questionCount === n ? AMBER : LINE, background: draft.questionCount === n ? `${GOLD}22` : '#FFFFFF', color: INK }}>{n}問</button>)}</div>
+            </div>
+            <BattleButton onClick={() => { setShowSettings(false); onChangeSettings(draft); }} disabled={changing || starting}>
+              この設定にする{opponent ? '（相手も自動で移動します）' : ''}
+            </BattleButton>
+          </div>}
+        </section>
+      )}
+      {!isNational && !isHost && (
+        <p className="mb-3 text-center text-[11px] font-bold" style={{ color: INK_SUB }}>
+          設定は部屋を作った人が選びます。変わったときは自動で新しい設定の部屋へ移ります。
+        </p>
+      )}
 
       {/* 合言葉 */}
       {room.joinCode ? (

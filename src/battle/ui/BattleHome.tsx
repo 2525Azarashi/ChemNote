@@ -258,6 +258,29 @@ function ModeCard({
   );
 }
 
+/**
+ * ★市販の対戦ゲームにならった「ランク帯」（2026-09-28）★
+ * ポケポケ・eFootball・クラロワの対戦入口は、どれも
+ *   「いまの称号」と「次の称号まであと何点か」を常に見せている。
+ * 数字（RP）だけでは強くなった実感が出ないため、称号の色つきバッジと
+ * 次の称号までの進捗バーを並べる。計算は battleRanking の ratingTitle /
+ * ratingProgress（ランキング画面と同じ関数）を使い、表示だけを足している。
+ * ログインしていてレートが取れたときだけ出す（ゲストには出さない）。
+ */
+function RankStrip({ rating }: { rating: number }) {
+  const t = ratingTitle(rating);
+  const p = ratingProgress(rating);
+  return (
+    <div className="arena-rank-strip" aria-label={`称号 ${t.label}・${rating} RP`}>
+      <span className="arena-rank-badge" style={{ background: t.color }}><Trophy size={14} />{t.label}</span>
+      <div className="arena-rank-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(p.ratio * 100)}>
+        <i style={{ width: `${Math.round(p.ratio * 100)}%`, background: t.color }} />
+      </div>
+      <small>{p.remain > 0 ? `「${p.next}」まで あと ${p.remain} RP` : '最高位'}</small>
+    </div>
+  );
+}
+
 export function BattleHome({onChoose,onExit,onRequireLogin,notice}: {
  onChoose:(choice:BattleHomeChoice)=>void;onExit:()=>void;onRequireLogin?:()=>void;notice?:string|null;
 }) {
@@ -265,15 +288,16 @@ export function BattleHome({onChoose,onExit,onRequireLogin,notice}: {
  const [row,setRow]=useState<BattleRankingRow|null>(null);
  useEffect(()=>{let active=true;if(user)void fetchMyRankingRow().then(r=>{if(active)setRow(r);}).catch(()=>{});return()=>{active=false;};},[user]);
  return <BattleShell className="arena-menu">
-   <header className="arena-menu-header"><button type="button" onClick={onExit}>ホームへ</button><h1><Swords size={21}/>とびらバトル</h1><span>{row ? `${row.rating} RP` : user?'レート確認中':'ゲスト'}</span></header>
+   <header className="arena-menu-header"><button type="button" onClick={onExit}>ホームへ</button><h1><Swords size={21}/>とびらバトル</h1><span>{row ? <><b className="arena-rank-chip" style={{background:ratingTitle(row.rating).color}}>{ratingTitle(row.rating).label}</b>{row.rating} RP</> : user?'レート確認中':'ゲスト'}</span></header>
    <div className="arena-menu-player">{progress && <GrowthAvatar progress={progress} size={64}/>}<div><strong>学んだ力で、勝負しよう。</strong><p>正解60点 ＋ 速さ最大240点</p><small>完走10枚・正解ごと2枚・勝利10枚</small></div></div>
+   {row && <RankStrip rating={row.rating}/>}
    {notice && <BattleNotice message={notice} tone="info"/>}
-   <section className="arena-mode-card friend"><header><Users/><div><h2>フレンド対戦</h2><p>合言葉で友だちと1対1</p></div><span>FRIEND</span></header><div className="arena-mode-buttons"><button type="button" onClick={()=>user?onChoose('friend-create'):onRequireLogin?.()}>部屋をつくる</button><button type="button" onClick={()=>user?onChoose('friend-join'):onRequireLogin?.()}>合言葉で入る</button></div></section>
+   <section className="arena-mode-card friend"><header><Users/><div><h2>フレンド対戦</h2><p>合言葉で友だちと1対1</p></div><span className="arena-mode-pick">おすすめ</span></header><div className="arena-mode-buttons"><button type="button" onClick={()=>user?onChoose('friend-create'):onRequireLogin?.()}>部屋をつくる</button><button type="button" onClick={()=>user?onChoose('friend-join'):onRequireLogin?.()}>合言葉で入る</button></div></section>
    <section className="arena-mode-card national"><header><Wifi/><div><h2>全国対戦</h2><p>同じ教科のプレイヤーとマッチ</p></div><span>RANKED</span></header><button type="button" onClick={()=>user?onChoose('national'):onRequireLogin?.()}>相手を見つける<Zap size={17}/></button></section>
    <section className="arena-mode-card ai"><header><Bot/><div><h2>AIと対戦</h2><p>待ち時間なし・レート変動なし</p></div><span>TRAINING</span></header><button type="button" onClick={()=>onChoose('ai')}>AIと対戦する</button></section>
    {!user && <p className="arena-login-note">友だち・全国対戦にはログインが必要です。AIはゲストでも遊べます。</p>}
-   <div className="arena-menu-links"><button type="button" onClick={()=>onChoose('profile')}>きせかえ・ガチャ</button><button type="button" onClick={()=>onChoose('missions')}>ミッション</button><button type="button" onClick={()=>onChoose('history')}>対戦履歴</button></div>
+   <div className="arena-menu-links"><button type="button" onClick={()=>onChoose('profile')} aria-label="きせかえ・ガチャ">きせかえ</button><button type="button" onClick={()=>onChoose('missions')}>ミッション</button><button type="button" onClick={()=>onChoose('ranking')}><Trophy size={14}/>ランキング</button><button type="button" onClick={()=>onChoose('history')}><History size={14}/>対戦履歴</button></div>
    <FriendOnlineStrip/>
-   <details className="arena-rules-help"><summary>配点と対戦ルール</summary><p>正解のみ加点。速さ点は残り時間の割合rに対して240×(0.7r²+0.3r³)。500ms単位に丸めます。3連続以上に小さな連続点。旧ルームでは作成時の配点を使用します。フレンドもお互い更新してから遊んでください。</p><button type="button" onClick={()=>onChoose('ranking')}>ランキング</button></details>
+   <details className="arena-rules-help"><summary>配点と対戦ルール</summary><p>正解のみ加点。速さ点は残り時間の割合rに対して240×(0.7r²+0.3r³)。500ms単位に丸めます。3連続以上に小さな連続点。旧ルームでは作成時の配点を使用します。フレンドもお互い更新してから遊んでください。</p></details>
  </BattleShell>;
 }

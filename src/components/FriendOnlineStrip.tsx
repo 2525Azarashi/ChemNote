@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, onSnapshot } from '../utils/firestoreMetered';
 import { auth, db } from '../firebase';
 import { Users } from 'lucide-react';
 

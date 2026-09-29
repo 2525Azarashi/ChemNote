@@ -26,6 +26,10 @@ src/
   hooks/             React フック
   battle/            オンライン対戦（core=ルール, data=出題プール, ui=画面, hooks）
   features/rika/     理科（独立した小機能）
+  features/safety/   名前フィルタ・通報・ブロック・アイコンURL制限（App Store 1.2）
+  features/account/  アカウント削除（App Store 5.1.1(v)）と設定画面の「安全とアカウント」欄
+  features/legal/    利用規約・プライバシーポリシー（アプリ内表示）
+  features/auth/     Appleでサインインのボタン（App Store 4.8）
 public/              画像・音声・マスコット・PWA アイコン
 scripts/             データ生成・検査・音源取り込み等の道具（アプリ本体には入らない）
 tests/               vitest のテスト（*.test.ts）と Playwright 用（*.browser.mjs）
@@ -57,15 +61,17 @@ docs/                設計メモ・手順書
 | 情報Ⅰ（対戦専用・450問） | 元データ `docs/joho/joho-pool.source.json` → `python3 scripts/gen-joho-pool.py docs/joho/joho-pool.source.json` → `npm run gen:battle-pool`。教科名・色・単元は `src/data/externalSubjects.ts` |
 | 対戦専用教科（演習画面なし） | `externalSubjects.ts` の `BATTLE_ONLY_SUBJECTS`（英単語・情報Ⅰ） |
 
-> ⚠ `npm run gen:battle-pool` を回すと、化学基礎・化学・生物基礎の pool も少し書き換わることがある（生成器側の既存の揺れ）。
-> 追加したい教科以外の `pool.*.generated.ts` の差分は `git checkout -- <ファイル>` で戻してからコミットする。
+> ✅ 以前は `npm run gen:battle-pool` で化学基礎・化学・生物基礎のかな問題の秒数が揺れていたが、
+> 対戦の締切を `src/battle/core/battleTiming.ts` に固定したので**もう揺れない**（1人用の `scoring.ts` を変えても対戦は変わらない）。
 | 化学の表記ルール | `docs/UNIT_GUIDE.md`（検査：`npm run lint:chem`） |
 
 ### 音声（リスニング）
 
 | やりたいこと | 場所 |
 |---|---|
-| **録り直した音源を入れる** | **`docs/LISTENING_AUDIO_REPLACE.md` の手順どおり `scripts/listening-audio.mts` を使う** |
+| **録り直した音源を入れる** | **`docs/LISTENING_AUDIO_REPLACE.md` の手順どおり `scripts/listening-audio.mts` を使う**（送られた音声＝商用。`receive` → まとめ録りは `scripts/listening-split.py` → `import`。旧音源と混ぜない） |
+| 第2問の絵が無い問の絵 | 画像生成で作成→確認後に `shuffle_listening_q2_options.py` の `DRAWN_ILLUSTRATION_PERMS` へ登録（並びを固定）→ `gen_listening_q2_data.py` |
+| 第2問 録り直し台本PDF | `python3 scripts/build-q2-rerecord-pdf.py` → `.delivery/` |
 | 音源ファイルの実体 | `public/listening_audio/`（第1〜3問）、`public/listening_q4/` `q5/` `q6/`（第4〜6問） |
 | 音源の商用権の状態 | `scripts/data/listening_audio_ledger.json`（ツールが自動更新。手で編集しない） |
 | 旧音源 / 新音源の元ファイル | `audio_sources/legacy/` / `audio_sources/commercial/`（アプリには入らない。`audio_sources/README.md`） |
@@ -83,13 +89,15 @@ docs/                設計メモ・手順書
 |---|---|
 | ホーム | `src/components/Home.tsx` |
 | 教科選択 | `src/components/SubjectSelection.tsx` |
-| 単元選択 | `src/components/ChapterSelection.tsx` |
+| 単元選択 | `src/components/ChapterSelection.tsx`（数学のタブは `src/data/mathNavigation.ts` の `MATH_TOPICS`＝科目→教科書の分野。タブ内の見出し（数学の段階・地理の単元演習/模試・準備中）は `src/data/unitSections.ts`） |
 | 問題を解く | `src/components/Quiz.tsx`、`ProblemPane.tsx`、`AnswerPane.tsx` |
 | 解説 | `src/components/Explanation.tsx`、`ExplanationScreen.tsx` |
 | 復習・ノート | `src/components/StudyHub.tsx`、`ReviewList.tsx`、`NoteList.tsx` |
 | ガチャ・コイン・きせかえ | `src/components/GachaRoom.tsx`、`GrowthHub.tsx`、`src/battle/ui/ManaCoinBalance.tsx` |
+| ガチャ大当たり（UR）＝学習プリント PDF | 一覧 `src/data/gachaPrints.generated.ts`（自動生成）、PDF `public/prints/`、作り方 `scripts/gacha-prints/`（下の「学習プリントの作り直し」） |
 | マスコット（とびら君） | `src/components/DoorMascot.tsx`、画像 `public/mascots/`、セリフ `src/data/mascotTips.ts` |
 | 対戦 | `src/battle/ui/BattleMode.tsx`（入口）→ `BattleHome.tsx` など |
+| きょうのミッション・コンプリート宝箱 | 画面 `src/battle/ui/BattleMissions.tsx`、計算 `src/battle/core/growth.ts`（`missionsForDate`、`openCompleteChest`）、保存 `src/battle/data/growthStore.ts`（`openChest`、端末内のみ） |
 | フレンド | `src/components/FriendPanel.tsx`、`src/utils/friends.ts`（設計 `docs/FRIEND_SYSTEM.md`） |
 
 ### 保存・サーバー
@@ -98,9 +106,17 @@ docs/                設計メモ・手順書
 |---|---|
 | Firebase 設定 | `src/firebase.ts` |
 | Firestore のアクセス権 | `firestore.rules`（反映手順 `docs/いまやること.md`） |
+| ログイン（Google / Apple） | `src/utils/googleAuth.ts`（`signInWith('google' \| 'apple')`）、ボタン `src/features/auth/AppleSignInButton.tsx` |
+| 他人に見える名前のチェック | `src/features/safety/nicknameFilter.ts`（送信時 `sanitizeNickname`、表示時 `displaySafeNickname`） |
+| 通報・ブロック | `src/features/safety/userSafety.ts`、メニュー `UserSafetyMenu.tsx`（ランキング・フレンド・対戦結果） |
+| アカウント削除 | `src/features/account/accountDeletion.ts` |
+| セキュリティヘッダー（CSP） | `vercel.json` と `public/_headers`（**両方を同じ内容に**。`tests/securityHeaders.test.ts`） |
+| Service Worker | `public/sw.js`（同一オリジンの GET だけ。画面はネットワーク優先） |
+| App Store 申請の確認表 | `docs/APP_STORE.md` |
 | 学習進捗の保存 | `src/utils/progress.ts`、`studySync*.ts`、キー名 `userStorageKeys.ts` `quizStorageKeys.ts` |
 | ランキング | `src/utils/leaderboard.ts` |
 | 対戦のルール・採点 | `src/battle/core/battleRules.ts`、`battleCore.ts`（設計 `docs/BATTLE.md`） |
+| 対戦の問題ごとの秒数（生成時） | `src/battle/core/battleTiming.ts`（1人用から独立） |
 | 対戦の制限時間 | `battleCore.ts` の `resolveTimeLimit`（上限55秒）、`arenaRules.ts`（リスニング55秒）、1問目の締切は `battleLive.ts` の `firstDeadlineSec` |
 
 > ⚠ **対戦の締切は Firestore ルールで「今から60秒未満」に制限されている**（`firestore.rules` の `battleDeadlineSane`）。
@@ -149,3 +165,38 @@ docs/                設計メモ・手順書
 | 採点 | `docs/SCORING_ARCHITECTURE.md` |
 | リスニング専用版との分岐・PRルール | `docs/LISTENING_DERIVATIVE.md` |
 | ビルドとメモリ | `docs/BUILD.md` |
+
+
+## 学習プリント（ガチャ大当たり UR）の作り直し
+
+提供割合は `src/battle/core/arenaEconomy.ts` の `GACHA_RARITY_RATES`（UR 5%・SR 5%・R 25%・N 65%）。
+UR 枠の中は等確率なので、プリントを増やすと1種あたりの割合が自動で下がる（42種で約0.12%）。
+
+```bash
+# 0) 初回だけ：PDF 用の Chromium（アプリの依存には入れない）
+mkdir -p .tmpwork/pw && (cd .tmpwork/pw && npm i playwright && npx playwright install chromium)
+# 1) アプリの確認済みデータ（対戦プールの問題・正解・解説、出題傾向データ）を書き出す
+npx tsx scripts/gacha-prints/dump-data.mts .tmpwork/prints-data.json
+# 2) PDF を作る（カタログは build-prints.mjs の catalog）
+node scripts/gacha-prints/build-prints.mjs .tmpwork/prints-data.json
+# 3) 圧縮・サムネイル・一覧（src/data/gachaPrints.generated.ts）
+python3 scripts/gacha-prints/finalize.py
+```
+
+- 問題は新しく作らない（正解の誤りを配らないため、検証済みの対戦プールだけを使う）。
+- 二次関数の週課題（`scripts/gacha-prints/source/quadratic_weekly_6weeks.pdf`）はハブの教材をそのまま収録。
+- プリントは `kind: 'print'` のアイテム。装備はできず、ガチャ画面の「マイプリント」から開く・保存する。
+
+## とびら君の部位きせかえ・壁紙
+
+- 定義: `src/battle/core/tobiraParts.ts`（部位 hat / glasses / cheek / aura、ポーズごとの取り付け位置 `POSE_ANCHORS`、壁紙 `WALLPAPERS`）
+- 描画: `src/battle/ui/TobiraAccessories.tsx`（ポーズ画像に SVG を重ねる。画像と同じ viewBox なので大きさが変わってもずれない）
+- アイテム: `src/battle/core/growth.ts` の ITEMS（`kind: 'hat' | 'glasses' | 'cheek' | 'aura' | 'wallpaper'`、すべてガチャ限定）
+- 壁紙の適用: `src/components/AppWallpaper.tsx`（`<html data-wallpaper>` と CSS 変数だけ。App.tsx には触れない）
+- ポーズ画像を追加したら `POSE_ANCHORS` に頭・目の位置を足す（tests/tobiraParts.test.ts が未登録を検出）
+
+## タイトル画面の登場演出
+
+`src/components/LaunchScreen.tsx`。動画（2秒）の1コマ目を poster にして読み込み中も絵が飛ばないようにし、
+再生後は最後のコマを残したまま、同じ位置・大きさに配置した静止画シーン（装備を反映）へクロスフェードする。
+配置の % は title.mp4 の最後のコマを実測した値。動画を差し替えたら測り直す。

@@ -42,6 +42,8 @@ import {
   saveHistory,
   startBattle,
   submitAnswer,
+  subscribeRtt,
+  currentRttMs,
   watchRoom,
 } from '../data/battle';
 import { loadPool } from '../data/battlePool';
@@ -62,9 +64,14 @@ import { cycleKanaKey } from '../core/kanaKeyboard';
 import { isClockSkewed, serverNow, toMillis } from '../core/serverClock';
 import {
   canSubmitAnswer,
+  connectionQuality,
   didSuspend,
   offlineNotice,
+  reconnectNotice,
   resumeNotice,
+  retryDelayMs,
+  shouldRetryAdvance,
+  type ConnectionQuality,
   type ConnectionState,
 } from '../core/connection';
 import type {
@@ -76,12 +83,17 @@ import type {
   BattleRoom,
 } from '../core/types';
 import { answerIndexOf, answerKeyOf } from '../core/types';
-import { firstDeadlineSec } from '../core/battleLive';
+import { COUNTDOWN_TOTAL_MS, firstDeadlineSec } from '../core/battleLive';
+import { preloadTargets, warmAssets } from '../core/preload';
 
 /** 画面が使う対戦の状態 */
 export interface BattleRoomState {
   loading: boolean;
   error: string | null;
+  /** 開始の書き込み中 */
+  starting: boolean;
+  /** 出題プールを読み込めたか（false の間は開始できない） */
+  poolReady: boolean;
   room: BattleRoom | null;
   /** 出題（部屋の questionIds を本体に戻したもの） */
   questions: BattleQuestion[];
@@ -122,6 +134,13 @@ export interface BattleRoomState {
    * ★圏外でも購読は続く★ので、これがないと切れたことに気付けない。
    */
   connection: ConnectionState;
+  /** 電波の強さ（アンテナ表示）と直近の往復時間 */
+  quality: ConnectionQuality;
+  rttMs: number | null;
+  /** 解答を送信中（届くまでの間、押した選択肢を仮に出す） */
+  sending: boolean;
+  /** 通信が戻ったときの知らせ */
+  reconnectMessage: string | null;
   /** 圏外の知らせ（出す必要がないときは null） */
   offlineMessage: string | null;
   /** 画面を離れて戻ってきたときの知らせ（同） */
@@ -201,6 +220,8 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
 
   /** 二重実行を防ぐための記録（進行・申告・レート反映） */
   const advancedRef = useRef<number>(-1);
+  /** 最後に「進める」を撃った問題番号と時刻（撃ち直しの見張り用） */
+  const advanceFiredRef = useRef<{ index: number; at: number } | null>(null);
   const revealStartedRef = useRef<{ index: number; at: number } | null>(null);
   const attestedRef = useRef(false);
   const ratedRef = useRef(false);
@@ -208,51 +229,119 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
   // ------------------------------------------------------------
   // 部屋の購読
   // ------------------------------------------------------------
+  /**
+   * ★購読が切れても自動で張り直す★
+   * Firestore の購読はエラー（権限・一時的な障害・長時間の休止）で止まると、
+   * 二度と通知を返さない。以前はここで「通信が切れました」と出したまま
+   * 画面が固まり、再読み込みするしかなかった。
+   * 0.4秒→0.8秒→…と間隔を空けて張り直し、端末が「オンラインに戻った」
+   * 「画面に戻ってきた」ときは待たずにすぐ張り直す。
+   */
+  const [subscribeNo, setSubscribeNo] = useState(0);
+  const resubAttemptRef = useRef(0);
+  const connectionRef = useRef<ConnectionState>('online');
+  useEffect(() => {
+    if (!roomId) return;
+    const kick = () => { resubAttemptRef.current = 0; setSubscribeNo((n) => n + 1); };
+    const onVisible = () => { if (document.visibilityState === 'visible' && connectionRef.current === 'offline') kick(); };
+    window.addEventListener('online', kick);
+    document.addEventListener('visibilitychange', onVisible);
+    const onOffline = () => setConnection('offline');
+    window.addEventListener('offline', onOffline);
+    return () => {
+      window.removeEventListener('online', kick);
+      window.removeEventListener('offline', onOffline);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [roomId]);
+
+  const offlineSinceRef = useRef<number | null>(null);
+  const [reconnectMessage, setReconnectMessage] = useState<string | null>(null);
+  useEffect(() => {
+    const prev = connectionRef.current;
+    connectionRef.current = connection;
+    if (connection === 'offline' && prev !== 'offline') offlineSinceRef.current = Date.now();
+    if (connection === 'online' && prev === 'offline') {
+      const since = offlineSinceRef.current;
+      offlineSinceRef.current = null;
+      const msg = since ? reconnectNotice(Date.now() - since) : null;
+      if (msg) {
+        setReconnectMessage(msg);
+        const t = window.setTimeout(() => setReconnectMessage(null), 2500);
+        return () => window.clearTimeout(t);
+      }
+    }
+    return undefined;
+  }, [connection]);
+
   useEffect(() => {
     if (!roomId) {
       setLoading(false);
       return;
     }
-    setLoading(true);
+    if (subscribeNo === 0) setLoading(true);
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    let alive = true;
     const stop = watchRoom(
       roomId,
       (next) => {
+        if (!alive) return;
         setLoading(false);
+        resubAttemptRef.current = 0;
         if (!next) {
           setError('この対戦はすでに終了しています。');
           setRoom(null);
           return;
         }
+        // 一時的な通信エラーの表示は、届いた時点で消す
+        setError((e) => (e && /通信/.test(e) ? null : e));
         setRoom(next);
       },
       (e) => {
+        if (!alive) return;
         setLoading(false);
-        setError(e.message);
+        setConnection('offline');
+        // ★張り直す★（権限エラーでも、部屋が閉じたかどうかは次の購読で分かる）
+        const attempt = resubAttemptRef.current;
+        resubAttemptRef.current = attempt + 1;
+        if (attempt >= 8) { setError(e.message); return; }
+        retry = setTimeout(() => setSubscribeNo((n) => n + 1), retryDelayMs(attempt, Math.random(), 500, 8_000));
       },
       // 通信の状態を受け取る（圏外でも購読は続くので、これが無いと気付けない）
       setConnection,
     );
-    return stop;
-  }, [roomId]);
+    return () => { alive = false; if (retry) clearTimeout(retry); stop(); };
+  }, [roomId, subscribeNo]);
+
+  // 往復時間（アンテナ表示）
+  const [rttMs, setRttMs] = useState<number | null>(() => currentRttMs());
+  useEffect(() => subscribeRtt(setRttMs), []);
 
   // ------------------------------------------------------------
   // 教科のプールを読み込む（★選ばれた1教科だけ★）
   // ------------------------------------------------------------
   const subject = room?.subject;
+  // 読み込みに失敗したら自動でやり直す（2秒・4秒・8秒…最大5回）。
+  // 以前は1回失敗すると問題が空のまま残り、「はじめる」を押しても何も起きなかった。
+  const [poolAttempt, setPoolAttempt] = useState(0);
   useEffect(() => {
     if (!subject) return;
     let alive = true;
+    let retry: ReturnType<typeof setTimeout> | undefined;
     loadPool(subject)
       .then((list) => {
-        if (alive) setPool(list);
+        if (alive) { setPool(list); setError((e) => (e && e.startsWith('問題の読み込み') ? null : e)); }
       })
       .catch(() => {
-        if (alive) setError('問題の読み込みに失敗しました。通信環境をご確認ください。');
+        if (!alive) return;
+        setError('問題の読み込みに失敗しました。通信環境をご確認ください（自動で再試行します）。');
+        if (poolAttempt < 5) retry = setTimeout(() => setPoolAttempt((n) => n + 1), 2000 * 2 ** poolAttempt);
       });
     return () => {
       alive = false;
+      if (retry) clearTimeout(retry);
     };
-  }, [subject]);
+  }, [subject, poolAttempt]);
 
   // ------------------------------------------------------------
   // 時計を進める（残り時間の表示用）
@@ -395,6 +484,12 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
    */
   const clockSkewed = status === 'playing' && isClockSkewed();
 
+  // ★音源・絵の先読み★（いまの問題と次の問題。待機中・カウントダウン中から読み始める）
+  useEffect(() => {
+    if (questions.length === 0) return;
+    warmAssets(preloadTargets(questions, currentIndex, 2));
+  }, [questions, currentIndex]);
+
   // 問題が変わったらパネルの入力を捨てる
   useEffect(() => {
     setPanel([]);
@@ -427,9 +522,21 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
    * 1問目だけ、問題の開始時刻（締切 − 制限時間）までの残りを返す。
    * 両端末が同じ deadlineAt から引き算するので、同じタイミングで START! になる。
    */
+  /*
+   * ★締切がまだ届いていない1問目は「カウントダウン中」として扱う★
+   * status が playing に変わった直後は、
+   *   ・自分の書き込み（serverTimestamp 待ち）で deadlineAt がまだ読めない
+   *   ・now（200ms の時計）がまだ playing 用に動き出していない
+   * ことがあり、以前はここが 0 になって ★1フレームだけ問題文が描かれ★、
+   * そのあと「7」のカウントダウンに切り替わっていた（背景に問題が一瞬見える不具合）。
+   * 開始時刻が分からない間は問題を出さない側に倒す。
+   */
+  const liveNow = Math.max(now, serverNow());
   const preStartMs =
-    status === 'playing' && currentIndex === 0 && current && deadlineMs > 0
-      ? Math.max(0, deadlineMs - resolveTimeLimit(current, rules) * 1000 - now)
+    status === 'playing' && currentIndex === 0 && current
+      ? deadlineMs > 0
+        ? Math.max(0, deadlineMs - resolveTimeLimit(current, rules) * 1000 - liveNow)
+        : COUNTDOWN_TOTAL_MS
       : 0;
 
   // ------------------------------------------------------------
@@ -618,6 +725,7 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
   // 結果の申告
   // ------------------------------------------------------------
   const myAttest = room?.attest?.[uid];
+  const [attestRetry, setAttestRetry] = useState(0);
   useEffect(() => {
     if (!roomId || !result || !scores || attestedRef.current) return;
     // ★結果画面を再読み込みしたときに再申告しない★
@@ -633,8 +741,13 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
       myScore: scores.me.score,
       opponentScore: scores.other.score,
       outcome: result.outcome,
-    }).catch((e: Error) => setError(e.message));
-  }, [roomId, result, scores, myAttest]);
+    }).catch((e: Error) => {
+      // ★結果の申告が届かなかったら、通信が戻ったときにもう一度送る★
+      //   ここで諦めると、レートも履歴も残らない試合になる。
+      setError(`${e.message} 通信が戻ると自動で送り直します。`);
+      window.setTimeout(() => { attestedRef.current = false; setAttestRetry((n) => n + 1); }, 4_000);
+    });
+  }, [roomId, result, scores, myAttest, attestRetry]);
 
   // ------------------------------------------------------------
   // レート反映（★相互確認が揃ってから★）
@@ -698,14 +811,26 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
   // カウントダウン中は解答を受け付けない（問題文はまだ見せていない）
   const submittable = canSubmitAnswer({ connection, remainMs, answered }) && preStartMs <= 0;
 
+  /**
+   * ★送信中の解答（楽観的な表示）★
+   * 市販の対戦ゲームと同じく、押した瞬間に「押した」表示にする。
+   * 以前はサーバの返事が来るまで何も変わらず、電波が悪いと連打されていた。
+   * 送信は締切まで自動で再送し、届いたら部屋の内容に置き換わる。
+   */
+  const [pending, setPending] = useState<{ index: number; choice: number } | null>(null);
+  useEffect(() => { if (pending && (answered || pending.index !== currentIndex)) setPending(null); }, [answered, currentIndex, pending]);
+  const sendBudget = () => Math.max(1_500, remainMs + 1_500);
+
   const choose = useCallback(
     (index: number) => {
-      if (!roomId || !current || !submittable) return;
-      void submitAnswer(roomId, currentIndex, { choice: index, panel: [] }, answered).catch(
-        (e: Error) => setError(e.message),
+      if (!roomId || !current || !submittable || pending) return;
+      setPending({ index: currentIndex, choice: index });
+      void submitAnswer(roomId, currentIndex, { choice: index, panel: [] }, answered, { budgetMs: sendBudget() }).catch(
+        (e: Error) => { setPending(null); setError(e.message); },
       );
     },
-    [roomId, current, submittable, answered, currentIndex],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [roomId, current, submittable, answered, currentIndex, pending, remainMs],
   );
 
   /**
@@ -719,12 +844,14 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
   const commitPanel = useCallback(
     (order: number[]) => {
       if (!roomId || !current || !submittable) return;
-      if (order.length !== current.panelOrder.length) return;
-      void submitAnswer(roomId, currentIndex, { choice: NO_ANSWER, panel: order }, answered).catch(
-        (e: Error) => setError(e.message),
+      if (order.length !== current.panelOrder.length || pending) return;
+      setPending({ index: currentIndex, choice: NO_ANSWER });
+      void submitAnswer(roomId, currentIndex, { choice: NO_ANSWER, panel: order }, answered, { budgetMs: sendBudget() }).catch(
+        (e: Error) => { setPending(null); setError(e.message); },
       );
     },
-    [roomId, current, submittable, answered, currentIndex],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [roomId, current, submittable, answered, currentIndex, pending, remainMs],
   );
 
   const pushPanel = useCallback(
@@ -800,8 +927,16 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
     setPanel((prev) => prev.slice(0, -1));
   }, [answered]);
 
+  /** 開始の書き込み中（ボタンの二度押し防止・「開始しています…」の表示） */
+  const [starting, setStarting] = useState(false);
   const start = useCallback(() => {
-    if (!roomId || questions.length === 0) return;
+    if (!roomId) return;
+    if (questions.length === 0) {
+      // ★黙って何もしないのをやめる★（押しても反応が無い不具合）
+      setError('問題を準備しています。数秒待ってからもう一度押してください。');
+      setPoolAttempt((n) => n + 1);
+      return;
+    }
     /**
      * ★1問目の締切にカウントダウン（約3秒）を足す★
      * 3・2・1・START! の間は問題を隠すので、その分だけ締切を後ろに置く。
@@ -811,7 +946,11 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
      * 速さ点は「締切 − 制限時間」を開始時刻とするので、カウントダウンの分は入らない。
      */
     const first = firstDeadlineSec(resolveTimeLimit(questions[0], rules));
-    void startBattle(roomId, first).catch((e: Error) => setError(e.message));
+    setError(null);
+    setStarting(true);
+    void startBattle(roomId, first)
+      .catch((e: Error) => setError(`${e.message} もう一度「はじめる」を押してください。`))
+      .finally(() => setStarting(false));
   }, [roomId, questions, rules]);
 
   /**
@@ -882,6 +1021,8 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
   return {
     loading,
     error,
+    starting,
+    poolReady: pool.length > 0,
     room,
     questions,
     current,
@@ -892,9 +1033,10 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
      * 締切（deadlineAt）も同じ値で決めているので、バーの分母と実際の締切が合う。
      */
     limitSec: current ? resolveTimeLimit(current, rules) : 0,
-    answered,
+    // 送信中も「解答済み」として見せる（押した瞬間に反応する）。進行の判定は部屋の内容で行う。
+    answered: answered || Boolean(pending && pending.index === currentIndex),
     opponentAnswered,
-    myChoice: myRecord?.choice ?? NO_ANSWER,
+    myChoice: myRecord?.choice ?? (pending && pending.index === currentIndex ? pending.choice : NO_ANSWER),
     myPanel: myRecord ? myRecord.panel || [] : panel,
     result,
     myScore: scores?.me || null,
@@ -905,6 +1047,10 @@ export function useBattleRoom(roomId: string | null): BattleRoomState & BattleRo
     finished,
     clockSkewed,
     connection,
+    quality: connectionQuality(rttMs, connection),
+    rttMs,
+    sending: Boolean(pending),
+    reconnectMessage,
     offlineMessage: offlineNotice({ connection, playing: status === 'playing' }),
     resumeMessage,
     submittable,

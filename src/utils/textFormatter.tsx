@@ -129,17 +129,17 @@ export function convertBoldMarkdown(text: string): string {
 }
 
 /** 本文から数式を抜き出して KaTeX で組み、プレースホルダに退避する。 */
-function extractMath(text: string): { text: string; slots: string[] } {
+function extractMath(text: string, mathContext = false): { text: string; slots: string[] } {
   const slots: string[] = [];
 
   // 数式の可能性が全く無いテキスト（大多数）は走査コストを掛けずに返す。
   // 判定条件は mathTypeset 側と共有する（ここに条件を書き写すと、
   // トリガを増やしたときにアプリだけ古い判定のまま取り残される）。
-  if (!mayContainMath(text)) {
+  if (!mathContext && !mayContainMath(text)) {
     return { text, slots };
   }
 
-  const pieces = splitMathPieces(text);
+  const pieces = splitMathPieces(text, mathContext ? { auto: true, context: 'math' } : {});
   if (!pieces.some((p) => p.kind === 'math')) return { text, slots };
 
   const rebuilt = pieces
@@ -421,7 +421,23 @@ export type FormatTextOptions = {
    * 英語リスニング・英文法の英文（と、その訳・解説）で使う。
    */
   prose?: boolean;
+  /**
+   * true のとき数学の問題として数式を判定する（splitMathPieces の context:'math'）。
+   * 既定の判定では (2x + 3)^2・2/7・(a+b)/(2c) が素のテキストのまま残り、
+   * 同じ問題の中で 3√2 や x^5/5 だけが KaTeX で組まれて書体が混ざっていた。
+   * 対戦（BattleText）と同じ判定にそろえる。
+   */
+  math?: boolean;
 };
+
+/**
+ * 数学の画面かどうかを、画面を描いている部品の外から伝えるための既定値。
+ * Quiz / Explanation が数学の問題を開いている間だけ true にする
+ * （formatText の呼び出しは数十か所あるので、1か所ずつ引数を足すと必ず漏れる）。
+ */
+let mathContextDefault = false;
+export function setFormatMathContext(on: boolean): void { mathContextDefault = on; }
+export function isFormatMathContext(): boolean { return mathContextDefault; }
 
 export function formatText(
   text: string,
@@ -430,6 +446,7 @@ export function formatText(
 ) {
   if (!text) return null;
   const prose = options.prose === true;
+  const mathContext = !prose && (options.math ?? mathContextDefault);
 
   /*
     ★数式より先に「入力に元から入っている HTML タグ」を退避する★
@@ -461,7 +478,7 @@ export function formatText(
   // ★次に数式を KaTeX で組んで退避する★
   //   ここで抜いておくことで、以降の化学式変換・添字処理・分数処理は
   //   「数式ではない部分」だけを相手にすればよくなる。
-  const { text: maskedMath, slots: mathSlots } = extractMath(maskedForMath);
+  const { text: maskedMath, slots: mathSlots } = extractMath(maskedForMath, mathContext);
 
   // タグを戻してから従来の処理に渡す。以降の tagRegex での分割や
   // <u>/<hl> の読み替えは、これまでとまったく同じ入力を受け取る。

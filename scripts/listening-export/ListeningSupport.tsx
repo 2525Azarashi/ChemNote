@@ -4,7 +4,8 @@ import { LISTENING_GRAMMAR, VOCAB_LEVELS, filterVocabulary, parseSupportProgress
 import { safeLocalStorage } from '../utils/safeLocalStorage';
 import { speak, stopSpeech, isSpeechSupported } from '../utils/listeningSpeech';
 
-function ReadAloud({text}:{text:string}) {
+// key を渡せるよう React.Attributes を足す（@types/react が無い環境でも tsc が通るように。2026-09-29）
+function ReadAloud({text}:{text:string}&React.Attributes) {
   const [playing,setPlaying]=useState(false);
   const active=useRef(true);
   useEffect(()=>{active.current=true;return()=>{active.current=false;stopSpeech();};},[text]);
@@ -16,7 +17,7 @@ function ReadAloud({text}:{text:string}) {
   };
   return <button type="button" onClick={play} disabled={!isSpeechSupported()} className="ls-audio"><Volume2 size={17}/>{playing?'読み上げを止める':'端末の音声で読む'}</button>;
 }
-function WordCard({word,known,onMark,onPractice}:{word:ListeningWord;known:boolean;onMark:(done:boolean)=>void;onPractice:(chapter:string,index:number)=>void}) {
+function WordCard({word,known,onMark,onPractice}:{word:ListeningWord;known:boolean;onMark:(done:boolean)=>void;onPractice:(chapter:string,index:number)=>void}&React.Attributes) {
   const [mode,setMode]=useState<'learn'|'check'>('learn');
   const [reveal,setReveal]=useState(false);const [direction,setDirection]=useState(0);const [answer,setAnswer]=useState<number|null>(null);
   const question=word.questions[direction]||word.questions[0];

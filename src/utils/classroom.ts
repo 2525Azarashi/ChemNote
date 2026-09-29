@@ -50,7 +50,7 @@ import {
   query,
   where,
   serverTimestamp,
-} from 'firebase/firestore';
+} from './firestoreMetered';
 import { db, auth } from '../firebase';
 
 import {
@@ -71,6 +71,7 @@ import { STUDY_PROGRESS_COLLECTION } from './studySync';
 import { fromSyncedReviewItems, type SolvedMap } from './studySyncCore';
 import { REVIEW_INTERVALS_DAYS, type ReviewItem } from './reviewList';
 import { buildStudentSummary, type StudentSummary } from './studySummary';
+import { sanitizeNickname } from '../features/safety/nicknameFilter';
 
 export const CLASSROOMS_COLLECTION = 'classrooms';
 export const CLASS_CODES_COLLECTION = 'class_codes';
@@ -317,7 +318,7 @@ export async function joinClassroomByCode(rawCode: string, displayName: string):
     await setDoc(memberRef, {
       classId,
       uid,
-      displayName: (displayName || '').trim().slice(0, ROSTER_NAME_MAX) || '（名前未設定）',
+      displayName: sanitizeNickname((displayName || '').trim().slice(0, ROSTER_NAME_MAX), '（名前未設定）'),
       joinedAt: serverTimestamp(),
     });
 

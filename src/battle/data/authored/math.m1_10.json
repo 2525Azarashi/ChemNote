@@ -61,7 +61,7 @@
       ],
       "oneLine": "π。半径2の円の面積 4π の1/4にあたるので図形的にも検算できる。",
       "timeLimit": 22,
-      "grounding": "この積分は「半径2の円の面積の1/4」なので、図形的に (1/4)·π·2² = π"
+      "grounding": "実はこの積分は「半径2の円の面積の4分の1」なので、図形的にも検算できます。"
     },
     {
       "id": "a:m1_10:q_m1_10_trig:q_m1_10_t_1:2",
@@ -81,7 +81,7 @@
       ],
       "oneLine": "x = a sinθ とおく。1 - sin²θ = cos²θ になってルートが外れる。",
       "timeLimit": 16,
-      "grounding": "√(a²-x²) → x = a sinθ"
+      "grounding": "\\sqrt{a^2-x^2}\\quad\\longrightarrow\\quad x=a\\sin\\theta"
     },
     {
       "id": "a:m1_10:q_m1_10_trig:q_m1_10_t_2:1",

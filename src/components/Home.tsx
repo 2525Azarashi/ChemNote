@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope, Flame, Sparkles, Gift, Store, Shirt, Award, Target } from 'lucide-react';
+import { BookOpen, ChevronRight, Edit3, ArrowRight, BarChart3, ShieldCheck, Repeat2, Bell, Volume2, VolumeX, Swords, Microscope, Flame, Sparkles, Gift, Store, Shirt, Award, Target, Zap } from 'lucide-react';
 import { auth } from '../firebase';
 import { useGrowthProgress } from '../hooks/useGrowthProgress';
 import { equippedPoseSrc, equippedFrameColor, equippedFramePattern, levelOf, equippedTitleLabel } from '../battle/core/growth';
+import { TobiraAccessories } from '../battle/ui/TobiraAccessories';
 import { FriendOnlineStrip } from './FriendOnlineStrip';
 import type { GrowthPage } from './GrowthHub';
 const GrowthHomeStrip = React.lazy(() => import('../battle/ui/GrowthHomeStrip').then(m => ({ default: m.GrowthHomeStrip })));
@@ -375,7 +376,7 @@ export function Home({ onPickSubject, onStudyMode, onGrowth, onStart, onIntro, o
           <p className="game-stage-caption">{growth && equippedTitleLabel(growth) || '今日も、とびら君とひとつ先へ。'}</p>
           <div className="game-stage-floor" aria-hidden="true"><div className="game-equipped-ring" data-frame-pattern={growth ? equippedFramePattern(growth) : 'plain'} style={{borderColor: growth ? equippedFrameColor(growth) : undefined}} /><Swords /></div>
           {growth && <button type="button" className="game-mascot-button" onClick={() => onGrowth?.('outfit')} aria-label="とびら君をきせかえる" disabled={!onGrowth}>
-            <img className="home-mascot-art" src={equippedPoseSrc(growth)} alt="あなたのとびら君" draggable={false} style={{ filter: `drop-shadow(0 6px 0 ${equippedFrameColor(growth)}55)` }} />
+            <span className="home-mascot-wrap"><img className="home-mascot-art" src={equippedPoseSrc(growth)} alt="あなたのとびら君" draggable={false} style={{ filter: `drop-shadow(0 6px 0 ${equippedFrameColor(growth)}55)` }} /><TobiraAccessories progress={growth} /></span>
             <span>MY TOBIRA <b>Lv.{levelOf(growth.xp).level}</b></span>
           </button>}
           {onGrowth && <div className="game-stage-shortcuts" aria-label="ゲームメニュー">
@@ -395,7 +396,8 @@ export function Home({ onPickSubject, onStudyMode, onGrowth, onStart, onIntro, o
             : <button type="button" onClick={onChangeSubject}>{subjectLabel}・変更</button>}
           <button type="button" onClick={() => onStudyMode ? onStudyMode('learning') : onStart()}><BookOpen size={16} />まとめプリント</button>
         </section>
-        <div className="game-home-utility arena-home-bottom">
+        <div className={`game-home-utility arena-home-bottom ${onGrowth ? 'has-rush' : ''}`}>
+          {onGrowth && <button type="button" className="game-rush-entry" onClick={() => onGrowth('rush')} aria-label="マナラッシュ（60秒チャレンジ）を開く" data-home-rush><Zap size={17} />ラッシュ</button>}
           {onGrowth && <button type="button" onClick={() => onGrowth('missions')}><Target size={17} />ミッション</button>}
           <button type="button" onClick={() => progressDialog.current?.showModal()} aria-haspopup="dialog"><BarChart3 size={17} />学習状況</button>
           <button type="button" aria-label="アプリ紹介を開く" onClick={onIntro}><ShieldCheck size={17} />使い方</button>

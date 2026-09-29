@@ -66,6 +66,8 @@ export interface AnswerPaneProps {
   renderedAnswerGroups: any;
   /** 選択式の解答UI（実体は MultipleChoiceControl.tsx）。 */
   renderMultipleChoiceControl: (sq: any) => React.ReactNode;
+  /** スマホの数学で、入力の設問を 4択にしたもの（作れなければ null → 入力のまま） */
+  mobileChoiceSub?: (sq: any) => any | null;
   /** 並べ替えの解答UI（実体は SortingControl.tsx）。 */
   renderSortingControl: (sq: any) => React.ReactNode;
   /** この大問が数式パレットを要るかどうか。 */
@@ -98,6 +100,7 @@ export function AnswerPane({
   isLastNavSub,
   renderedAnswerGroups,
   renderMultipleChoiceControl,
+  mobileChoiceSub,
   renderSortingControl,
   questionNeedsMathPalette,
   isProblemExpanded,
@@ -487,7 +490,12 @@ export function AnswerPane({
                   </span>
                 )}
 
-                {sq.type === 'multiple_choice' ? (
+                {!isDesktop && sq.type === 'short_answer' && mobileChoiceSub?.(sq) ? (
+                  // ★スマホの数学は4択★（選んだ文字列をそのまま答えとして採点する。PC は入力のまま）
+                  <div className="w-full" data-math-mobile-choice>
+                    {renderMultipleChoiceControl(mobileChoiceSub(sq))}
+                  </div>
+                ) : sq.type === 'multiple_choice' ? (
                   // ★全教科・全端末で選択肢をカード内に直接表示する。
                   //   以前のスマホは「カード＝表示専用チップ → タップで下部
                   //   固定パネルにもう1つ選択UIが出る」2段構えで、同じ設問の
