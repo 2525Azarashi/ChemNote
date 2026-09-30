@@ -1,12 +1,13 @@
 import { useRef, useState } from 'react';
-import { CinematicClip, CINEMATIC_CLIPS } from './CinematicClip';
+import { GachaReveal, RarityStars } from './GachaReveal';
+import { RARITY_STARS } from './gachaRevealSteps';
 import { Gift, Coins, ArrowLeft, ChevronLeft, ChevronRight, FileText, Download } from 'lucide-react';
 import { useGrowthProgress } from '../hooks/useGrowthProgress';
 import { GACHA_COST, GACHA_DUPLICATE_REFUND_BY_RARITY, GACHA_RARITY_LABELS, GACHA_RARITY_ORDER, GACHA_RARITY_RATES, gachaItems, gachaItemsByRarity, gachaItemRate } from '../battle/core/arenaEconomy';
 import { drawGacha, drawGachaMulti, equip, GACHA_MULTI_COUNT } from '../battle/data/growthStore';
 import { GrowthAvatar } from '../battle/ui/GrowthParts';
 import { gachaRarityOf, printOf, type ItemDef, type GachaRarity, type GrowthProgress } from '../battle/core/growth';
-import { play, primeAudio } from '../battle/ui/feedback';
+import { primeAudio } from '../battle/ui/feedback';
 import { wallpaperOf } from '../battle/core/tobiraParts';
 
 /** コレクションの分類（部位ごとに見られるように） */
@@ -52,7 +53,7 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
  const previewItem=items[previewIndex % items.length];
  const ownedCount=items.filter(item=>progress?.owned.includes(item.id)).length;
  const [confirm,setConfirm]=useState(false);const [error,setError]=useState('');
- const [revealing,setRevealing]=useState(false);
+ const [revealing,setRevealing]=useState(false);const [revealKey,setRevealKey]=useState(0);
  const [result,setResult]=useState<{item:ItemDef;rarity:GachaRarity;duplicate:boolean;refund:number}|null>(null);
  const [multi,setMulti]=useState<{item:ItemDef;rarity:GachaRarity;duplicate:boolean;refund:number}[]|null>(null);
  const bestRarity:GachaRarity|null=result?result.rarity:multi?bestOf(multi):null;
@@ -65,12 +66,12 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
  const multiCost=GACHA_COST*GACHA_MULTI_COUNT;
  const drawMulti=async()=>{
   if(lock.current)return;lock.current=true;setBusy(true);setError('');setConfirmMulti(false);primeAudio();
-  try {const r=await drawGachaMulti(crypto.randomUUID(),owner);if(!r?.results){setError('抽選できませんでした。残高や保存設定を確認してください。');return;}setResult(null);setMulti(r.results);setRevealing(true);play(['UR','SR'].includes(bestOf(r.results))?'jackpot':'gacha',false);}
+  try {const r=await drawGachaMulti(crypto.randomUUID(),owner);if(!r?.results){setError('抽選できませんでした。残高や保存設定を確認してください。');return;}setResult(null);setMulti(r.results);setRevealKey(k=>k+1);setRevealing(true);}
   catch {setError('抽選できませんでした。再度お試しください。');}finally{lock.current=false;setBusy(false);}
  };
  const draw=async()=>{
   if(lock.current)return;lock.current=true;setBusy(true);setError('');setConfirm(false);primeAudio();
-  try {const r=await drawGacha(crypto.randomUUID(),owner);if(!r?.result){setError('抽選できませんでした。残高や保存設定を確認してください。');return;}setMulti(null);setResult(r.result);setRevealing(true);play(r.result.rarity==='UR'||r.result.rarity==='SR'?'jackpot':'gacha',false);}
+  try {const r=await drawGacha(crypto.randomUUID(),owner);if(!r?.result){setError('抽選できませんでした。残高や保存設定を確認してください。');return;}setMulti(null);setResult(r.result);setRevealKey(k=>k+1);setRevealing(true);}
   catch {setError('抽選できませんでした。再度お試しください。');}finally{lock.current=false;setBusy(false);}
  };
  return <section className={`gacha-room ${result?'has-result':''}`} data-best-rarity={!revealing && bestRarity ? bestRarity : undefined}>{!embedded && <button type="button" className="arena-back" onClick={onBack}><ArrowLeft size={18}/>マイページ</button>}
@@ -85,15 +86,15 @@ function GachaRoomContent({onBack,onMissions,owner,embedded=false}:GachaProps & 
     <div className="gacha-preview-info" aria-live="polite"><strong><RarityTag rarity={gachaRarityOf(previewItem)}/> {previewItem.label}</strong><span>{previewIndex+1} / {items.length} · {pct(gachaItemRate(previewItem))}%</span></div>
   </div>
   <p className="gacha-balance"><Coins size={20}/>所持 {progress?.coins ?? '—'} マナコイン</p>
-  {revealing ? <div className="gacha-cinema" data-rarity={bestRarity ?? undefined}><p>{bestRarity==='UR'?'🌈📄 画面が七色に…！大当たりの学習プリント！？':bestRarity==='SR'?'✨ 虹色に光った…！スーパーレアの予感':bestRarity==='R'?'金色に光った！レア以上が来る':'コレクションが届きました'}</p><CinematicClip src={CINEMATIC_CLIPS.gacha.src} label="ガチャの開封動画" onComplete={()=>setRevealing(false)} /><button type="button" onClick={()=>setRevealing(false)}>結果を見る</button></div> : result ? <div className="gacha-result" role="status" data-rarity={result.rarity}><h2><RarityTag rarity={result.rarity}/> {result.duplicate?'重複':'NEW!'} {result.item.label}</h2>{result.rarity==='UR' && <p className="gacha-sr-banner gacha-ur-banner">大当たり！ JACKPOT!</p>}{result.rarity==='SR' && <p className="gacha-sr-banner">SUPER RARE!</p>}
+  {revealing && bestRarity ? <GachaReveal key={revealKey} rarity={bestRarity} onDone={()=>setRevealing(false)} /> : result ? <div className="gacha-result" role="status" data-rarity={result.rarity}>{(result.rarity==='UR'||result.rarity==='SR') && <span className="gacha-result-halo" aria-hidden="true"/>}<RarityStars count={RARITY_STARS[result.rarity]}/><h2><RarityTag rarity={result.rarity}/> {result.duplicate?'重複':'NEW!'} {result.item.label}</h2>{result.rarity==='UR' && <p className="gacha-sr-banner gacha-ur-banner">大当たり！ JACKPOT!</p>}{result.rarity==='SR' && <p className="gacha-sr-banner">SUPER RARE!</p>}
     <div className="gacha-result-art" data-kind={result.item.kind}><ItemArt item={result.item} progress={progress} size={result.item.kind==='print'?96:88}/></div>
     <p>{result.duplicate?`重複分 ${result.refund} マナコイン返還（実質消費 ${GACHA_COST-result.refund}枚）`:result.item.kind==='print'?'マイプリントに追加しました。いつでも開けます':'コレクションに追加しました'}</p>
     {result.item.kind==='print' ? <PrintLinks item={result.item}/> : <button type="button" onClick={async()=>{if(await equip(result.item.id))setError('装備しました。ホームと対戦に反映されます。');else setError('装備を保存できませんでした。');}}>この装飾をつける</button>}
     <button type="button" onClick={()=>{setResult(null);setError('');}}>抽選画面にもどる</button></div>
-    : multi ? <div className="gacha-result gacha-multi-result" role="status" data-gacha-multi><h2>{GACHA_MULTI_COUNT}連の結果 · NEW {multi.filter(r=>!r.duplicate).length}種</h2>
-      <ul className="gacha-multi-grid">{multi.map((r,i)=><li key={`${r.item.id}:${i}`} data-new={!r.duplicate} data-rarity={r.rarity} style={{animationDelay:`${i*0.12}s`}}>
+    : multi ? <div className="gacha-result gacha-multi-result" role="status" data-gacha-multi>{(bestOf(multi)==='UR'||bestOf(multi)==='SR') && <p className={`gacha-sr-banner ${bestOf(multi)==='UR'?'gacha-ur-banner':''}`}>{bestOf(multi)==='UR'?'大当たり！ JACKPOT!':'SUPER RARE!'}</p>}<h2>{GACHA_MULTI_COUNT}連の結果 · NEW {multi.filter(r=>!r.duplicate).length}種</h2>
+      <ul className="gacha-multi-grid">{multi.map((r,i)=><li key={`${r.item.id}:${i}`} data-new={!r.duplicate} data-rarity={r.rarity} style={{animationDelay:`${i*0.18}s`}}>
         <ItemArt item={r.item} progress={progress} size={r.item.kind==='print'?52:64}/>
-        <RarityTag rarity={r.rarity}/><strong>{r.duplicate?'重複':'NEW!'}</strong><span>{r.item.label}</span>
+        <RarityStars count={RARITY_STARS[r.rarity]}/><RarityTag rarity={r.rarity}/><strong>{r.duplicate?'重複':'NEW!'}</strong><span>{r.item.label}</span>
         {r.item.kind==='print' ? <PrintLinks item={r.item} compact/> : !r.duplicate && <button type="button" onClick={async()=>{if(await equip(r.item.id))setError(`${r.item.label}を装備しました。`);else setError('装備を保存できませんでした。');}}>つける</button>}
       </li>)}</ul>
       <p>{multi.some(r=>r.duplicate)?`重複分 合計${multi.reduce((n,r)=>n+r.refund,0)}マナコイン返還`:'すべて新しい装飾です！'}</p>
