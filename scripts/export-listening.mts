@@ -25,7 +25,7 @@ const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, enc
 const tracked = execFileSync('git', ['ls-files', '-z'], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean);
 const top = new Set(['package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html', 'metadata.json', 'vercel.json', 'firestore.rules', 'firestore.indexes.json']);
 const scripts = new Set(['scripts/gen-chapter-index.mts', 'scripts/gen-battle-pool.mts', 'scripts/data/battle_prompt_repairs.json']);
-const selectedTests = new Set(['tests/listeningExplanation.test.ts', 'tests/listeningMaterials.browser.mjs', 'tests/cinematics.browser.mjs', 'tests/friends.rules.test.ts', 'tests/battle.rules.test.ts', 'tests/helpers/battleRules.ts', 'tests/leaderboard.rules.test.ts']);
+const selectedTests = new Set(['tests/connectionCheck.test.ts', 'tests/listeningExplanation.test.ts', 'tests/listeningMaterials.browser.mjs', 'tests/cinematics.browser.mjs', 'tests/friends.rules.test.ts', 'tests/battle.rules.test.ts', 'tests/helpers/battleRules.ts', 'tests/leaderboard.rules.test.ts']);
 const originals: Record<string, string> = {};
 const sha = (data: Buffer | string) => createHash('sha256').update(data).digest('hex');
 function put(file: string, content: string) {
@@ -122,7 +122,7 @@ put('src/components/Intro.tsx', `export function Intro({onBack,onBattle}:{onBack
 // Distinct Firebase app identity and no inherited production credentials.
 put('src/firebase.ts', `import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, connectAuthEmulator } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator, disableNetwork } from 'firebase/firestore';
+import { getFirestore, initializeFirestore, connectFirestoreEmulator, disableNetwork, type Firestore } from 'firebase/firestore';
 const env = import.meta.env;
 export const FIREBASE_CONFIGURED = Boolean(env.VITE_FIREBASE_API_KEY && env.VITE_FIREBASE_PROJECT_ID && env.VITE_FIREBASE_AUTH_DOMAIN && env.VITE_FIREBASE_APP_ID);
 export const USE_EMULATORS = env.VITE_USE_EMULATORS === 'true';
@@ -136,7 +136,11 @@ const app = initializeApp({
 }, 'manatobi-listening');
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
-export const db = getFirestore(app);
+// 統合版と同じ：学校・塾の Wi-Fi などでストリーム通信が詰まる環境だけ、自動でロングポーリングに切り替える
+function createDb(): Firestore {
+  try { return initializeFirestore(app, { experimentalAutoDetectLongPolling: true }); } catch { return getFirestore(app); }
+}
+export const db = createDb();
 if (USE_EMULATORS) {
   if (!projectId.startsWith('demo-')) throw new Error('Emulator testing requires a demo- project ID.');
   connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
@@ -213,11 +217,13 @@ console.log('Release target: '+env.VITE_FIREBASE_PROJECT_ID);
 `);
 const pkg = JSON.parse(text('package.json'));
 pkg.name = 'manatobi-listening'; pkg.version = '1.1.0'; pkg.engines = {node: '>=22'};
-pkg.scripts = {dev:'vite --port=3000 --host=0.0.0.0', build:'node scripts/check-release.mjs && vite build', 'build:demo':'vite build', preview:'vite preview', lint:'tsc --noEmit', 'gen:index':'tsx scripts/gen-chapter-index.mts && tsx scripts/scope-listening.mts', 'gen:battle-pool':'tsx scripts/gen-battle-pool.mts', 'gen:vocabulary':'tsx scripts/gen-listening-vocabulary.mts', test:'vitest run tests/standalone.test.ts tests/listeningExplanation.test.ts', 'test:rules':'firebase emulators:exec --only firestore --project demo-manatobi-listening "vitest run tests/battle.rules.test.ts tests/friends.rules.test.ts tests/leaderboard.rules.test.ts tests/standalone-online.rules.test.ts"', 'test:browser':'node tests/standalone.browser.mjs'};
+pkg.scripts = {dev:'vite --port=3000 --host=0.0.0.0', build:'node scripts/check-release.mjs && vite build', 'build:demo':'vite build', preview:'vite preview', lint:'tsc --noEmit', 'gen:index':'tsx scripts/gen-chapter-index.mts && tsx scripts/scope-listening.mts', 'gen:battle-pool':'tsx scripts/gen-battle-pool.mts', 'gen:vocabulary':'tsx scripts/gen-listening-vocabulary.mts', test:'vitest run tests/standalone.test.ts tests/listeningExplanation.test.ts tests/connectionCheck.test.ts', 'firebase:check':'node scripts/check-firebase-setup.mjs', 'test:rules':'firebase emulators:exec --only firestore --project demo-manatobi-listening "vitest run tests/battle.rules.test.ts tests/friends.rules.test.ts tests/leaderboard.rules.test.ts tests/standalone-online.rules.test.ts"', 'test:browser':'node tests/standalone.browser.mjs'};
 put('package.json', JSON.stringify(pkg, null, 2));
 const lock=JSON.parse(text('package-lock.json')); lock.name=pkg.name;lock.version=pkg.version;Object.assign(lock.packages[''],{name:pkg.name,version:pkg.version,engines:pkg.engines});put('package-lock.json',JSON.stringify(lock,null,2));
 put('vitest.config.ts', "import {defineConfig} from 'vitest/config';\nexport default defineConfig({test:{include:['tests/**/*.test.ts'],testTimeout:20000,hookTimeout:30000,fileParallelism:false}});\n");
 put('README.md', readFileSync(resolve(root,'scripts/listening-export/README.md'),'utf8'));
+// 2026-09-30：新しい Firebase につなぐ設定の確認スクリプト（読み取りのみ）
+put('scripts/check-firebase-setup.mjs', readFileSync(resolve(root,'scripts/listening-export/check-firebase-setup.mjs'),'utf8'));
 for(const file of ['standalone.test.ts','standalone.browser.mjs','standalone-online.rules.test.ts']) put('tests/'+file,readFileSync(resolve(root,'scripts/listening-export/'+file),'utf8').replaceAll('__POOL_TOTAL__',String(LISTENING_POOL)).replaceAll('__PRACTICE_TOTAL__',String(PRACTICE_TOTAL)).replaceAll('__GRAMMAR_POOL__',String(POOL_COUNTS.english_grammar)).replaceAll('__VOCAB_POOL__',String(POOL_COUNTS.english_vocab)));
 put('README.md', text('README.md').replaceAll('__POOL_TOTAL__',String(LISTENING_POOL)).replaceAll('__PRACTICE_TOTAL__',String(PRACTICE_TOTAL)).replaceAll('__AUDIO_REPLACED__',String(ledger.length-legacyLeft.length)).replaceAll('__AUDIO_TOTAL__',String(ledger.length)).replaceAll('__GRAMMAR_POOL__',String(POOL_COUNTS.english_grammar)).replaceAll('__VOCAB_POOL__',String(POOL_COUNTS.english_vocab)));
 put('DERIVATIVE_HANDOFF.md',readFileSync(resolve(root,'docs/LISTENING_DERIVATIVE.md'),'utf8'));

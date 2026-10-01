@@ -3093,3 +3093,21 @@ html[data-wallpaper] .mana-hub { background: linear-gradient(#f4f1eab8,#f4f1eaad
 .gacha-reveal-caption { white-space: nowrap; }
 @media (max-width: 360px) { .gacha-reveal-caption { font-size: 15px !important; } .gacha-reveal[data-stage=ur] .gacha-reveal-caption { font-size: 17px !important; } }
 @media (max-width: 360px) { .gacha-rarity-rates { gap: 4px; } .gacha-rarity-rates li { padding: 3px 5px; gap: 3px; } }
+
+/* 2026-09-30 通信チェック（対戦メニュー・マッチング失敗時） */
+.connection-check { display: grid; gap: 6px; margin: 6px 0; text-align: left; font-size: 12px; color: #2d4051; }
+.connection-check-run, .connection-check-copy { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 6px 12px; border: 1px solid #c9d4dc; border-radius: 12px; background: #fff; font-weight: 800; font-size: 12px; color: #2d4051; }
+.connection-check-run:disabled { opacity: .6; }
+.connection-check-summary { margin: 0; padding: 6px 10px; border-radius: 10px; font-weight: 900; }
+.connection-check-summary[data-tone=ok] { background: #e8f6ee; color: #1e7a45; }
+.connection-check-summary[data-tone=warn] { background: #fff5dc; color: #8a5a00; }
+.connection-check-summary[data-tone=fail] { background: #fdecea; color: #b03a2e; }
+.connection-check-list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.connection-check-list li { display: grid; grid-template-columns: 18px 1fr; gap: 4px; line-height: 1.55; }
+.connection-check-list small { display: block; color: #5c6d79; font-size: 11px; }
+.connection-check-list li[data-status=fail] .connection-check-mark { color: #c0392b; font-weight: 900; }
+.connection-check-list li[data-status=warn] .connection-check-mark { color: #b7791f; font-weight: 900; }
+.connection-check-list li[data-status=ok] .connection-check-mark { color: #27ae60; font-weight: 900; }
+.connection-check-list li[data-status=skip] { color: #8b98a5; }
+.connection-check.is-compact { font-size: 11px; }
+.arena-connection-help > .connection-check { margin-top: 4px; }
