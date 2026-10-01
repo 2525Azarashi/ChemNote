@@ -109,3 +109,9 @@ GitHub Appにworkflows更新権限がなくCI登録は拒否されたため、�
 - `manatobi_listening_ALL_2026-09-29.zip`（547MB）：書き出し一式＋補完ツール・テスト・手順書＋`audio_sources/`（原本・領収書）＋旧音源の削除ツール（`scripts/purge-legacy-listening-audio.mjs`）＋動画（勝利・コンボ・ガチャ新版）＋BGMの仕組み＋画面見本＋指示書1枚（`リスニングの部屋へ_これ1つで全部.md`）。
 - 前回「1件スキップ」は `listeningAudioLedger.test.ts` の原本照合（`audio_sources/` 未送付のため）。統合ZIPでは 162件合格・0件スキップ。
 - 統合ZIPの状態で確認：tsc 0件、audio:check 問題なし、374/374、旧音源0本・git履歴の旧音源0件、vite build 成功。
+
+## 2026-09-30 全部入りZIP（通信チェック・新Firebase接続手順・ガチャ確定演出）
+- `manatobi_listening_ALL_2026-09-30.zip`（548MB）。09-29版の内容＋以下。
+- 通信チェック（`src/battle/core/connectionCheck.ts`・`data/connectionProbe.ts`・`ui/ConnectionCheckPanel.tsx`）：統合版と同じコード。接続先は `src/firebase.ts`（.env.local）だけで切り替わる。読み取りのみ。
+- 書き出しの `src/firebase.ts` に自動ロングポーリング切り替えを追加（統合版と同じ）。`npm run firebase:check`（`scripts/check-firebase-setup.mjs`）で新しい Firebase の .env を確認。
+- 確認：tsc 0件、test:listening 13ファイル175件合格・スキップ0、test 40件、audio:check 問題なし、旧音源0本、build:demo 成功。設定前のビルドでは通信チェックが「運営側の設定が必要」と出ることを画面で確認。
