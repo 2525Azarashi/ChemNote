@@ -115,3 +115,4 @@ GitHub Appにworkflows更新権限がなくCI登録は拒否されたため、�
 - 通信チェック（`src/battle/core/connectionCheck.ts`・`data/connectionProbe.ts`・`ui/ConnectionCheckPanel.tsx`）：統合版と同じコード。接続先は `src/firebase.ts`（.env.local）だけで切り替わる。読み取りのみ。
 - 書き出しの `src/firebase.ts` に自動ロングポーリング切り替えを追加（統合版と同じ）。`npm run firebase:check`（`scripts/check-firebase-setup.mjs`）で新しい Firebase の .env を確認。
 - 確認：tsc 0件、test:listening 13ファイル175件合格・スキップ0、test 40件、audio:check 問題なし、旧音源0本、build:demo 成功。設定前のビルドでは通信チェックが「運営側の設定が必要」と出ることを画面で確認。
+- 利用者の指示（音声などは送り済み）で、送付用は**差分だけの更新ZIP** `manatobi_listening_update_2026-09-30.zip`（1.3MB・24ファイル＋patch）に切り替え。09-29版＋更新ZIP が 09-30全部入り版と一致すること、tsc 0件・テスト52件合格・build 成功を確認。
